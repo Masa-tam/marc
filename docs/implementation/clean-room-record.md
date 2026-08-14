@@ -20878,3 +20878,28 @@ discarded and the reviewed seed retained.
   `main`, with zero commits to integrate from `main`; all 2,921 Release tests
   already pass under MSVC and ClangCL, and final documentation-layout and
   diff-hygiene checks pass after the audit edits.
+
+## CR-0873: 2026-08-15 - Contextual tANS schema-40 external exchange
+
+- Authoring method: recorded the four verifier results supplied by the
+  repository owner after the merged schema-40 revision and CI artifacts were
+  available.
+- References used: DD-820; IR-0594; TVG-0686 through TVG-0695; BR-0129;
+  IX-0034; revision `e74473d1511990ed06ea43c739783d1c58daf065`; the two
+  schema-40 CI artifacts; and the independently generated Ubuntu 26.04 bundle.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, source code, tests, corpora, archives, patent text, and
+  optimization descriptions.
+- Independent decisions: require the exact revision and all 50 archives in
+  each direction; retain the established three-producer/four-verifier evidence
+  model; and record only completed byte-identical decode/re-encode results.
+- Generated-code task description: preserve the reported Windows-to-Ubuntu,
+  Ubuntu-24.04-to-Ubuntu-26.04, Ubuntu-26.04 self-verification, and
+  Ubuntu-to-Windows results as the schema-40 external admission record.
+- Similarity review: this record contains only marc-owned manifest semantics,
+  environment labels, revision identity, and observed verifier results. No
+  external implementation expression entered the change.
+- External validation: all four passes reported `Verified 50 archives` at the
+  exact revision. Producers were Windows/MSVC via Visual Studio 2026, Ubuntu
+  24.04 default compiler via Ninja, and Ubuntu 26.04 Clang 21.1.8 via Ninja;
+  the latter bundle was verified on both Ubuntu 26.04 and Windows/MSVC.

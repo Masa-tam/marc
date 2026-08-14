@@ -2241,3 +2241,12 @@ complete schema-40-through-1 compatibility chain, and the bounded Clang 22
 sanitizer campaign completes 1,000 inputs without a finding. Four-direction
 external schema-40 exchange remains required after the branch is merged and
 pushed.
+
+### BR-0129
+
+Schema 40 now has complete four-direction external evidence at revision
+`e74473d1511990ed06ea43c739783d1c58daf065`. All 50 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the 1 MiB
+Contextual tANS profile.

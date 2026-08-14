@@ -677,3 +677,19 @@ manifest order, size, SHA-256, fixture decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-39
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0034: Schema 40
+
+Revision `e74473d1511990ed06ea43c739783d1c58daf065` received the schema-40
+cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
+x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all 50
+archives from both the Windows/MSVC via Visual Studio 2026 and Ubuntu 24.04
+default-compiler/Ninja artifacts. It then generated and self-verified an
+`ubuntu-26.04-ninja-x64` 50-archive bundle. The Windows/MSVC executable
+verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest order, size, SHA-256, fixture decode, and byte-identical local
+re-encoding checks for every archive. This establishes canonical schema-40
+bytes across the three producers and bidirectional decoding between the
+recorded Windows and WSL2 Linux x86-64 environments.
