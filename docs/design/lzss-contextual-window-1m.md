@@ -412,6 +412,12 @@ selector explicitly, and public decoders require the same stream identity.
 This stage is implemented: C11 tests retain the exact 64 KiB route, admit the
 1 MiB route, and reject both crossed identities before raw publication.
 
+The next CLI stage adds `lzss-contextual-tans-1m` by the same explicit-name
+rule as Contextual Dynamic Range and Contextual rANS. It uses a 1,048,576-byte
+frame/window, `6F = 6,291,456` decision ceiling, `9F + 2 = 9,437,186` payload
+ceiling, and 128 MiB internal-buffer policy. The established name remains
+64 KiB and 8 MiB; decoding with either crossed name must fail atomically.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

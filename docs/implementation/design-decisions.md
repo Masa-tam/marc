@@ -16889,3 +16889,29 @@ the matching 1 MiB config and require exact output; repeat the inverse profile
 mismatch. Reject unknown selectors, nonzero reserved fields, wrong size or ABI
 version, one-byte-short workspaces, aliasing, and misalignment. CLI, benchmark,
 fuzzing, and interoperability remain later stages.
+
+## DD-817: Contextual tANS CLI selection uses two exact profile names
+
+- Date: 2026-08-15
+- Status: accepted
+
+Add `lzss-contextual-tans-1m` as the explicit CLI name for the selected
+Contextual tANS 1 MiB profile. Retain `lzss-contextual-tans` as the exact
+frozen 64 KiB profile. Follow the established Contextual Dynamic Range and
+Contextual rANS naming rule: a name selects both encoder configuration and
+strict decoder admission; neither name auto-detects, falls back to, aliases,
+or accepts the other stream identity.
+
+The 1 MiB adapter fixes frame size, window size, and maximum LZ distance at
+1,048,576 bytes. Its decision ceiling is `6F = 6,291,456`, its conservative
+tANS payload ceiling is `9F + 2 = 9,437,186` bytes, and its internal-buffer
+policy is 128 MiB. The frozen adapter retains 65,536 bytes, 393,216 decisions,
+589,826 payload bytes, and 8 MiB respectively. Both adapters call only the
+public initializer, requirements query, factory, process, and destroy API.
+
+Add the new name to the codec enum, parser, help inventory, configuration,
+workspace query, and factory dispatch without duplicating private layouts.
+Require CLI round trips for both names with exact `2/2 + 1/1 + 5/2` and
+`2/3 + 1/2 + 5/2` identities, and require both crossed decode directions to
+fail without replacing an existing output. Benchmark, fuzzing, and
+interoperability publication remain later stages.

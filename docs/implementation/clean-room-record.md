@@ -20664,3 +20664,23 @@ discarded and the reviewed seed retained.
   Release tests pass under MSVC and ClangCL within the 300-second per-test
   limit, including interoperability schema compatibility and documentation
   layout.
+
+## CR-0864: 2026-08-15 - Contextual tANS dual-name CLI design
+
+- Authoring method: derived the CLI boundary from marc's completed public tANS
+  selector and its existing Contextual Dynamic Range/rANS dual-name adapters.
+- References used: DD-790 through DD-817; IR-0591; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0692; marc's CLI parser, public-only adapter lifecycle,
+  round-trip harness, strict admission, and output-preservation checks.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, CLIs, adapters, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: add one explicit `-1m` name; retain the established
+  name as exact 64 KiB; use 1 MiB/6F/9F+2/128 MiB bounds; and require crossed
+  names to reject without destination replacement.
+- Generated-code task description: specify constants, enum/parser/help and
+  dispatch changes, public configuration translation, two exact round trips,
+  bidirectional mismatch rejection, and later benchmark/fuzz/schema work.
+- Similarity review: the design composes only marc-owned CLI, public C,
+  profile, workspace, streaming, tANS, and test-harness abstractions. No
+  external implementation expression entered the design.

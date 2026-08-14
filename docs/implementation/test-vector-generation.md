@@ -9486,3 +9486,18 @@ short, aliased, and misaligned workspaces must fail without a transform.
 Verify the static and shared libraries expose the same three existing symbol
 names and behavior. No new exported function is introduced. CLI, benchmark,
 fuzzing, and interoperability admission remain later vectors.
+
+### TVG-0692
+
+Invoke CLI encode and decode with `lzss-contextual-tans` and require exact
+dictionary/context/entropy identity `2/2 + 1/1 + 5/2`, unchanged round trip,
+and strict trailing-data rejection. Invoke both operations with the new
+`lzss-contextual-tans-1m` name and require `2/3 + 1/2 + 5/2`, exact round trip,
+and the same strict trailing-data behavior.
+
+Attempt to decode the 64 KiB archive with the 1 MiB name and the 1 MiB archive
+with the 64 KiB name. Both commands must fail, consume no trusted raw result,
+and leave a pre-existing destination sentinel unchanged. Require the help
+inventory to list each name once in order. Unknown near-miss names remain
+usage errors. Benchmark, fuzzing, and interoperability publication are later
+vectors.

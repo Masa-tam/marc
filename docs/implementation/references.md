@@ -5273,3 +5273,13 @@ completed Contextual rANS public admission as first-party references. No
 external LZSS or tANS implementation, C ABI, factory, workspace policy, source
 code, test, corpus, archive, patent text, or optimization description was
 consulted.
+
+### IR-0591
+
+The Contextual tANS CLI profile design uses DD-790 through DD-817, TVG-0665,
+TVG-0666, and TVG-0686 through TVG-0692; marc's existing Contextual Dynamic
+Range and Contextual rANS dual-name CLI adapters, completed public tANS profile
+admission, generic round-trip harness, and output-preservation checks as
+first-party references. No external LZSS or tANS implementation, CLI,
+adapter, source code, test, corpus, archive, patent text, or optimization
+description was consulted.
