@@ -16941,3 +16941,30 @@ timing; report encoded ratio, encode/decode throughput, both directional view
 extents, and peak caller-owned workspace. Compare profiles only with identical
 input, build, and iteration count. Fuzzing and interoperability publication
 remain later stages.
+
+## DD-819: One fixed-memory Contextual tANS target exercises both profiles
+
+- Date: 2026-08-15
+- Status: accepted
+
+Retain one `marc_fuzz_lzss_contextual_tans_stream` target and exercise the
+private complete-frame decoder plus both strict public C decoder admissions
+on every bounded input. The private parser selects either valid serialized
+layout. Public calls explicitly select 64 KiB and 1 MiB window-profile values,
+so crossed identities fail through the same production policy as CLI users.
+
+Keep supplied input capped at 32 KiB, total published output at 4 KiB, one raw
+frame and token staging at 1 KiB, decisions at 6,144, and payload at 9,218
+bytes. Increase only descriptor backing from the 9,029-byte 64 KiB ceiling to
+the 9,093-byte selected maximum. Keep the fixed 131,072-entry decode table and
+thread-local aggregate workspace; admitting the 1 MiB identity and distance
+limit must not allocate a 1 MiB frame or history buffer. Retain byte-derived
+chunks and a finite call budget.
+
+Parameterize deterministic malformed regressions over both profiles. Require
+every truncation, extreme length, descriptor-padding corruption, and
+reciprocal cross-profile public decode to fail atomically and retain sticky
+error information. Ordinary builds provide warning-clean compile evidence. A
+bounded sanitizer campaign is recorded separately and must use
+`-runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512` without a persistent
+corpus. Interoperability admission remains a later stage.

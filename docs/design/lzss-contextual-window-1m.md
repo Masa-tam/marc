@@ -419,11 +419,18 @@ ceiling, and 128 MiB internal-buffer policy. The established name remains
 64 KiB and 8 MiB; decoding with either crossed name fails atomically. Runtime
 inventory tests also keep both names ordered and reject near-miss spelling.
 
-The next benchmark stage mirrors `lzss-contextual-tans` and
+The benchmark stage mirrors `lzss-contextual-tans` and
 `lzss-contextual-tans-1m`. Selected complete-stream capacity is
 `112 + 9N + 9,159K`, where each frame reserves 64 header, 9,093 descriptor,
 and two final-state bytes. The benchmark reports public queried workspace and
 uses the existing pre-timing exact round trip; timings remain descriptive.
+
+The next fuzz stage retains the single Contextual tANS target and invokes both
+strict public profile admissions beside the private profile-aware decoder.
+Its 1 KiB frame/token and 131,072-entry transition ceilings remain unchanged;
+only fixed descriptor backing grows by 64 bytes to 9,093. Both canonical
+profiles, malformed variants, and reciprocal mismatches must preserve atomic
+failure and sticky errors before a bounded sanitizer campaign is recorded.
 
 ## Required validation
 

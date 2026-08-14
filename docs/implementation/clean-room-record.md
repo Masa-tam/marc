@@ -20760,3 +20760,22 @@ discarded and the reviewed seed retained.
   registered Release tests pass under both compilers with the 300-second
   per-test limit, including documentation layout and interoperability schema
   compatibility.
+
+## CR-0868: 2026-08-15 - Contextual tANS dual-profile fuzz design
+
+- Authoring method: derived the wider admission from marc's existing fixed-
+  memory tANS harness and completed Contextual rANS dual-profile fuzz boundary.
+- References used: DD-790 through DD-819; IR-0593; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0694; marc's selected public decoder lifecycle.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, fuzz harnesses, corpora, findings, source code, tests,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: retain one target; exercise both strict policies;
+  grow only descriptor backing; preserve small fixed raw storage; parameterize
+  malformed regressions; and bound sanitizer runs explicitly.
+- Generated-code task description: specify dual public admission, private
+  selected parsing, fixed capacities, reciprocal rejection, compile-smoke,
+  sanitizer command limits, and unchanged interoperability inventory.
+- Similarity review: the design composes only marc-owned fuzz, frame, public C,
+  profile, tANS, and test components. No external implementation expression
+  entered the design.

@@ -9517,3 +9517,21 @@ planner must use 1 MiB frames and `112 + 9N + 9,159K`, while the frozen route
 retains `112 + 9N + 9,095K`. Measurements are descriptive and impose no speed
 or ratio threshold. Fuzzing and interoperability publication remain later
 vectors.
+
+### TVG-0694
+
+Parameterize the Contextual tANS malformed regression over public window
+profiles 0 and 1. For each profile, generate a canonical stream, truncate it
+at every byte, corrupt extreme frame lengths and descriptor padding, and
+require private/public atomic failure without raw publication. Feed each
+canonical stream to the other strict public profile and require malformed-
+stream failure, zero output, unchanged sentinel bytes, and sticky category
+and positions.
+
+Compile the single harness warning-clean under MSVC and ClangCL. Its fixed
+thread-local storage must use the 9,093-byte descriptor capacity while keeping
+input at 32 KiB, output at 4 KiB, frame/token storage at 1 KiB, 6,144
+decisions, 9,218 payload bytes, and 131,072 decode entries. Build the existing
+sanitizer target and run a bounded campaign without a persistent corpus using
+`-runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`. Do not add a second
+target or an interoperability archive.

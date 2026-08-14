@@ -5293,3 +5293,12 @@ adapters, checked capacity planner, workspace report, and pre-timing round-trip
 contract as first-party references. No external LZSS or tANS implementation,
 benchmark, adapter, source code, test, corpus, archive, patent text, or
 optimization description was consulted.
+
+### IR-0593
+
+The dual-profile Contextual tANS fuzz boundary uses DD-790 through DD-819,
+TVG-0665, TVG-0666, and TVG-0686 through TVG-0694; marc's existing fixed-
+memory tANS dual-decoder harness, selected public decoder policy, and completed
+Contextual rANS dual-profile fuzz route as first-party references. No external
+LZSS or tANS implementation, fuzz harness, corpus, finding, source code, test,
+archive, patent text, or optimization description was consulted.
