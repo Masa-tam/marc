@@ -19864,3 +19864,25 @@ discarded and the reviewed seed retained.
   malformed and atomicity tests pass; and all 2,886 registered tests pass
   under both MSVC and ClangCL Release configurations with the 240-second per-
   test limit, including schema compatibility and documentation layout.
+
+## CR-0832: 2026-08-14 - Selected-layout Contextual rANS coding-core design
+
+- Authoring method: generalized the next internal coding boundary only after
+  the selected compact descriptor was implemented and validated.
+- References used: DD-790 through DD-802; IR-0576; TVG-0665; TVG-0666;
+  TVG-0676; TVG-0677; marc's model builder, reverse writer, decode-table
+  builder, event decoder, and selected field-context layout.
+- Known implementations intentionally not consulted: external rANS
+  implementations, coding cores, table builders, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: retain one immutable selected layout per stateful
+  object; expand fixed frequency/count storage but not the 126,976-entry decode
+  table; use the selected bypass maximum; preserve all variant-1 bytes and
+  defaults; and defer outer 1 MiB stream admission.
+- Generated-code task description: specify selected-layout propagation across
+  Contextual rANS model construction, reverse coding, decode-table creation,
+  and event decoding, with exact extended vectors, crossed-layout rejection,
+  boundary widths, fixed table extent, and atomic failure requirements.
+- Similarity review: the design composes only marc-owned field-layout and
+  Contextual rANS components. No external implementation expression entered
+  the design.

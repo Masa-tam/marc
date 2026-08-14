@@ -9146,3 +9146,23 @@ descriptor under the other variant and require atomic
 prefixes, trailing data, unsupported variants, and descriptor/table/buffer
 limits. The old default overload, if retained internally during migration,
 must select variant 1 only.
+
+### TVG-0677
+
+Run every frozen variant-1 Contextual rANS encoder, decoder, and decode-table
+vector through the default internal route and require identical descriptor and
+payload bytes. Then construct a variant-2 operation sequence containing a
+distance-context symbol with alphabet 21 and value 20 plus a 20-bit bypass
+value. Require planning, model normalization, reverse writing, descriptor
+serialization, table construction, forward decoding, and terminal checks to
+round trip exactly with `frequency_entry_count=4,550`.
+
+Require the same operation sequence to fail under variant 1 before publishing
+descriptor or payload. Parse or build the variant-2 model under variant 1 and
+the variant-1 model under variant 2 and require atomic crossed-layout
+rejection. Exercise unsupported variants, alphabet 17 versus 21, symbol 20,
+bypass widths 16, 17, 20, and 21, one-entry-short decode-table output, inactive
+contexts, decision budgets, and reuse after failure. Confirm the required
+decode-table extent remains exactly 126,976 entries and that output storage,
+views, descriptors, payload bytes, and decoded values remain unchanged on
+pre-publication failures.

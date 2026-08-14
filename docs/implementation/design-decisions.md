@@ -16447,3 +16447,31 @@ selects all 4,550 entries and a 9,089-byte ceiling. Its eight distance records
 use alphabet 21. Require the serialized entry count to equal the selected
 layout and reject crossed values atomically. This format stage changes no
 frame, streaming, public C, CLI, benchmark, fuzz, or interoperability surface.
+
+## DD-802: Contextual rANS coding core retains the selected field layout
+
+- Date: 2026-08-14
+- Status: accepted
+
+Pass `LzssFieldContextVariant` through operation planning, model construction,
+reverse payload writing, descriptor validation, decode-table construction, and
+event decoding. Each stateful core object selects and retains one immutable
+`LzssFieldContextLayout`; it must not infer or change layout from individual
+operations, descriptor sizes, serialized entry counts, or requested alphabet
+values. Retain variant 1 as the default only for internal migration callers.
+
+Allocate model counts and normalized frequencies for the maximum 4,550-entry
+layout. Iterate only the selected offsets and alphabets, publish the selected
+frequency-entry count, and require the unused variant-1 tail to remain zero.
+Use the selected maximum bypass width: 16 bits for variant 1 and 20 bits for
+variant 2. Reject unsupported selections, crossed alphabets, out-of-range
+symbols, and over-wide bypass requests before publishing descriptor, payload,
+decode table, or decoded value state.
+
+Retain exactly 126,976 decode-table entries because both layouts have 31
+contexts and each active rANS context has 4,096 slots; the wider distance
+alphabet changes frequency partitioning, not table extent. This coding-core
+stage preserves the entropy identity `4/3`, frozen variant-1 descriptor and
+payload bytes, and every outer frame, streaming, public C, CLI, benchmark,
+fuzz, and interoperability surface. Outer 1 MiB Contextual rANS admission is a
+later format-controlled stage.

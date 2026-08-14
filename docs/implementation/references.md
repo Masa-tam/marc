@@ -5125,3 +5125,13 @@ layouts, checked arithmetic, and transactional parser as first-party
 references. No external rANS implementation, compact-model format, source
 code, test, corpus, archive, patent text, or optimization description was
 consulted.
+
+### IR-0576
+
+The selected-layout Contextual rANS coding-core design uses DD-790 through
+DD-802, TVG-0665, TVG-0666, TVG-0676, and TVG-0677; marc's variant-1 model
+builder, reverse writer, decode-table builder, event decoder, selected LZSS
+field-context layout, compact descriptor, checked arithmetic, and atomic test
+helpers as first-party references. No external rANS implementation, coding
+core, table builder, source code, test, corpus, archive, patent text, or
+optimization description was consulted.
