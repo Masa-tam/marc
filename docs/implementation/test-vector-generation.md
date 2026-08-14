@@ -9464,3 +9464,25 @@ collection or raw publication. Exercise crossed identities, truncation,
 trailing bytes, unsupported flags, workspace aliases, table/token/raw
 shortage, and sticky errors. Public C, CLI, benchmark, fuzz, and
 interoperability admission remain later vectors.
+
+### TVG-0691
+
+Compile the public C header as C11 and require
+`sizeof(marc_lzss_contextual_tans_config) == 112`. Initialize both directions
+and require ABI version 1, the current structure size, 64 KiB frame/window
+defaults, `window_profile=0`, and zero reserved fields. Run the established
+64 KiB fixture and require byte-identical `2/2 + 1/1 + 5/2` output and exact
+workspace counts before and after the tail-field reinterpretation.
+
+Set a 1 MiB window, compatible hard limits, and profile value 1. Query and
+partition all three workspaces, create the encoder, and require exact
+`2/3 + 1/2 + 5/2` header fields including frequency-entry count 4,550. Query
+the matching decoder profile and require exact round trip. Decode that stream
+with profile 0 and decode the baseline stream with profile 1; both must report
+malformed stream before publishing raw bytes. Unknown profile values, nonzero
+reserved fields, wrong structure size or ABI version, invalid direction,
+short, aliased, and misaligned workspaces must fail without a transform.
+
+Verify the static and shared libraries expose the same three existing symbol
+names and behavior. No new exported function is introduced. CLI, benchmark,
+fuzzing, and interoperability admission remain later vectors.

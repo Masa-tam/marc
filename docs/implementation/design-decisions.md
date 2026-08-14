@@ -16859,3 +16859,33 @@ admission mismatch. A selected profile must round trip a HashChain frame whose
 match distance exceeds 65,536. Frozen default stream bytes and all existing
 64 KiB lifecycle behavior remain exact. Public C, CLI, benchmark, fuzzing, and
 interoperability are later stages.
+
+## DD-816: Contextual tANS C admission reuses the exact window selector
+
+- Date: 2026-08-15
+- Status: accepted
+
+Expose the selected private lifecycle through the existing
+`marc_lzss_contextual_tans_*` C family. Reinterpret the final 64-bit reserved
+extent of `marc_lzss_contextual_tans_config` as the already public 32-bit
+`marc_lzss_contextual_window_profile` followed by a 32-bit reserved word.
+Retain ABI version 1, the exact 112-byte structure extent, and every preceding
+field offset. A zero-initialized older configuration therefore selects the
+64 KiB value zero and remains binary-compatible; nonzero trailing reserved
+bits and unknown profile values are invalid.
+
+Configuration initialization selects `MARC_LZSS_CONTEXTUAL_WINDOW_64K`.
+Workspace query and encoder creation map the public selector to the private
+profile variant, while decoder query and creation map it to both the selected
+workspace ceiling and strict matching stream admission. The 1 MiB caller must
+also provide compatible window and hard-limit values; the selector never
+silently widens limits or infers identity from `window_size`.
+
+Require the frozen 64 KiB C lifecycle to retain exact stream bytes and
+workspace counts. Add a 1 MiB lifecycle proving dictionary variant 3, context
+variant 2, and frequency-entry count 4,550. Decode the selected stream first
+with a 64 KiB config and require atomic malformed-stream rejection, then with
+the matching 1 MiB config and require exact output; repeat the inverse profile
+mismatch. Reject unknown selectors, nonzero reserved fields, wrong size or ABI
+version, one-byte-short workspaces, aliasing, and misalignment. CLI, benchmark,
+fuzzing, and interoperability remain later stages.

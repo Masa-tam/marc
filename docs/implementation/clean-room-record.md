@@ -20613,3 +20613,25 @@ discarded and the reviewed seed retained.
   output. All 2,914 registered Release tests pass under MSVC in 175.54 seconds
   and ClangCL in 177.51 seconds with the 300-second per-test limit, including
   interoperability schema compatibility and documentation layout.
+
+## CR-0862: 2026-08-15 - Contextual tANS public C profile design
+
+- Authoring method: derived the C boundary from marc's selected private tANS
+  lifecycle and existing Contextual rANS tail-compatible profile extension.
+- References used: DD-790 through DD-816; IR-0590; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0691; marc's size-tagged tANS config, shared public
+  selector, workspace query, factory, and strict private admission.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, C ABIs, factories, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: preserve ABI version, 112-byte extent, all preceding
+  offsets, and exported symbol names; reinterpret only the zero-reserved tail;
+  require exact selector/parameter agreement; and bind decoders strictly to
+  the configured profile.
+- Generated-code task description: specify tail-compatible C selector
+  publication, initializer defaults, selected workspace/factory translation,
+  strict cross-profile rejection, exact bytes, invalid configs, and the next
+  CLI boundary.
+- Similarity review: the design composes only marc-owned C ABI, profile,
+  workspace, streaming, and selected-layout abstractions. No external
+  implementation expression entered the design.

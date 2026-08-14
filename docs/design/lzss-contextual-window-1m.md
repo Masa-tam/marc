@@ -404,6 +404,12 @@ before frame collection. A 65,546-byte selected frame is supplied and drained
 one byte at a time, contains a HashChain Match beyond 65,536, and round trips
 exactly. The private lifecycle is complete; public C selection remains next.
 
+The public C stage preserves the existing tANS three-function family and
+112-byte ABI-1 configuration. Its final zero-reserved eight bytes become the
+shared 32-bit window selector and a 32-bit reserved word, matching Contextual
+rANS without moving earlier fields. Workspace calculation and creation use the
+selector explicitly, and public decoders require the same stream identity.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

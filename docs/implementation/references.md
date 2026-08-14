@@ -5263,3 +5263,13 @@ completed dual-profile Contextual rANS lifecycle as first-party references.
 No external LZSS or tANS implementation, streaming lifecycle, workspace
 policy, source code, test, corpus, archive, patent text, or optimization
 description was consulted.
+
+### IR-0590
+
+The Contextual tANS public C admission uses DD-790 through DD-816, TVG-0665,
+TVG-0666, and TVG-0686 through TVG-0691; marc's existing size-tagged tANS C
+family, selected private lifecycle, shared public window-profile enum, and
+completed Contextual rANS public admission as first-party references. No
+external LZSS or tANS implementation, C ABI, factory, workspace policy, source
+code, test, corpus, archive, patent text, or optimization description was
+consulted.
