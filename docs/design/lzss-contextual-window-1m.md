@@ -305,8 +305,10 @@ The interoperability stage freezes schema 38 and appends the explicit
 Contextual rANS 1 MiB CLI archive once as schema-39 entry 49. Generation checks
 the 3/2 identity and local round trip; verification checks exact order, foreign
 decode, and byte-identical re-encoding. Removing only that final entry recovers
-schema 38 before the existing downgrade chain. External four-direction
-evidence remains pending until the schema-39 revision is pushed.
+schema 38 before the existing downgrade chain. Revision
+`be940789f90b084bdf87ddd315b50da3e32fda55` completed the four-direction
+exchange across the Windows/MSVC, Ubuntu 24.04 CI, and Ubuntu 26.04/Clang
+producers with all 49 archives verified in every pass.
 
 ## Required validation
 

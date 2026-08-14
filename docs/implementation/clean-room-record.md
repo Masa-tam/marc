@@ -20304,3 +20304,24 @@ discarded and the reviewed seed retained.
   schema-1-through-39 downgrade chain. All 2,902 registered Release tests pass
   under both compilers with the 240-second per-test limit, including the
   interoperability schema compatibility and documentation layout tests.
+
+## CR-0850: 2026-08-14 - Contextual rANS schema-39 external exchange
+
+- Authoring method: recorded the four successful verifier reports supplied by
+  the repository owner after the schema-39 revision and CI artifacts were
+  pushed.
+- References used: DD-810; IR-0584; TVG-0685; IX-0033; revision
+  `be940789f90b084bdf87ddd315b50da3e32fda55`; the four reported verifier
+  results.
+- Known implementations intentionally not consulted: external compression
+  implementations, archives outside the generated marc bundles, source code,
+  tests, corpora, patent text, and optimization descriptions.
+- Independent decisions: require the exact full revision and all 49 archives
+  in every pass; record two CI-to-Ubuntu checks, one Ubuntu self-check, and one
+  Ubuntu-to-Windows reverse check; and make no source or format change.
+- Similarity review: this entry records observed results from marc's own
+  generator and verifier only. No external implementation expression entered
+  the record.
+- External validation: Windows/MSVC and Ubuntu 24.04 CI bundles verified on
+  Ubuntu 26.04/Clang 21.1.8; the Ubuntu 26.04 bundle verified locally and on
+  Windows/MSVC. Every pass reported 49 archives and the exact revision above.

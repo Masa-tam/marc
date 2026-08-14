@@ -5178,5 +5178,11 @@ schema-39 manifest, removes only entry 49 to reconstruct schema 38, and then
 executes the complete established downgrade chain through schema 1. The shared
 8,193-byte fixture proves the extended profile identity and deterministic
 representation; dedicated long-distance vectors remain responsible for match
-references beyond 64 KiB. Cross-platform evidence is intentionally deferred
-until CI artifacts exist for the pushed revision.
+references beyond 64 KiB.
+
+The recorded schema-39 exchange at revision
+`be940789f90b084bdf87ddd315b50da3e32fda55` verifies all 49 archives in four
+directions: both CI producers on Ubuntu 26.04/Clang, and the Ubuntu 26.04
+producer locally and on Windows/MSVC. Exact fixture decoding and byte-identical
+re-encoding establish the extended Contextual rANS profile identity across all
+three recorded x86-64 producers.
