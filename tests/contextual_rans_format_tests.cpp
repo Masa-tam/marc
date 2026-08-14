@@ -16,6 +16,7 @@ namespace {
 using marc::entropy::internal::ContextualRansFormatError;
 using marc::entropy::internal::ContextualRansDescriptor;
 using marc::entropy::internal::contextual_rans_max_descriptor_size;
+using marc::context::internal::LzssFieldContextVariant;
 
 [[nodiscard]] ContextualRansDescriptor literal_a_descriptor() {
     ContextualRansDescriptor descriptor{};
@@ -39,14 +40,18 @@ using marc::entropy::internal::contextual_rans_max_descriptor_size;
 }
 
 [[nodiscard]] std::vector<std::byte> serialize(
-    const ContextualRansDescriptor& descriptor) {
-    std::array<std::byte, contextual_rans_max_descriptor_size>
+    const ContextualRansDescriptor& descriptor,
+    const LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) {
+    std::array<
+        std::byte,
+        marc::entropy::internal::contextual_rans_descriptor_capacity>
         storage{};
     std::size_t written{};
     EXPECT_EQ(
         marc::entropy::internal::serialize_contextual_rans_descriptor(
             descriptor, descriptor.decision_count, descriptor.payload_size,
-            {}, storage, written),
+            {}, storage, written, variant),
         ContextualRansFormatError::none);
     return {storage.begin(), storage.begin() + written};
 }
@@ -128,6 +133,140 @@ TEST(ContextualRansFormat, EveryDenseModelReachesExactMaximum) {
                   bytes, 1, 8, {}, parsed),
               ContextualRansFormatError::none);
     EXPECT_TRUE(descriptors_equal(parsed, descriptor));
+}
+
+TEST(ContextualRansFormat, ExtendedLayoutPreservesGrammarAndSelectsCount) {
+    const auto frozen = serialize(literal_a_descriptor());
+    auto descriptor = literal_a_descriptor();
+    descriptor.frequency_entry_count =
+        marc::context::internal::lzss_field_context_frequency_entries_v2;
+    const auto extended = serialize(
+        descriptor, LzssFieldContextVariant::field_context_1m);
+    auto expected = frozen;
+    expected[12] = std::byte{0xc6};
+    EXPECT_EQ(extended, expected);
+
+    ContextualRansDescriptor parsed{};
+    ASSERT_EQ(marc::entropy::internal::parse_contextual_rans_descriptor(
+                  extended, 2, 8, {}, parsed,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualRansFormatError::none);
+    EXPECT_TRUE(descriptors_equal(parsed, descriptor));
+
+    auto sentinel = literal_a_descriptor();
+    sentinel.flags = 0xa5;
+    const auto before = sentinel;
+    EXPECT_EQ(marc::entropy::internal::parse_contextual_rans_descriptor(
+                  extended, 2, 8, {}, sentinel),
+              ContextualRansFormatError::invalid_frequency_entry_count);
+    EXPECT_TRUE(descriptors_equal(sentinel, before));
+    EXPECT_EQ(marc::entropy::internal::parse_contextual_rans_descriptor(
+                  frozen, 2, 8, {}, sentinel,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualRansFormatError::invalid_frequency_entry_count);
+    EXPECT_TRUE(descriptors_equal(sentinel, before));
+}
+
+TEST(ContextualRansFormat, ExtendedEveryDenseModelReachesExactMaximum) {
+    ContextualRansDescriptor descriptor{};
+    descriptor.decision_count = 1;
+    descriptor.payload_size = 8;
+    descriptor.frequency_entry_count =
+        marc::context::internal::lzss_field_context_frequency_entries_v2;
+    const auto selected = marc::context::internal::
+        get_lzss_field_context_layout(
+            LzssFieldContextVariant::field_context_1m);
+    ASSERT_EQ(selected.error,
+              marc::context::internal::LzssFieldContextLayoutError::none);
+    for (std::size_t context = 0;
+         context < marc::context::internal::lzss_field_context_count;
+         ++context) {
+        const auto begin = (*selected.layout.offsets)[context];
+        const auto alphabet = (*selected.layout.alphabets)[context];
+        for (std::uint16_t symbol = 0; symbol + 1 < alphabet; ++symbol) {
+            descriptor.frequencies[begin + symbol] = 1;
+        }
+        descriptor.frequencies[begin + alphabet - 1] =
+            static_cast<std::uint16_t>(4096 - (alphabet - 1));
+    }
+
+    const auto bytes = serialize(
+        descriptor, LzssFieldContextVariant::field_context_1m);
+    ASSERT_EQ(bytes.size(),
+              marc::entropy::internal::
+                  contextual_rans_max_descriptor_size_v2);
+    ContextualRansDescriptor parsed{};
+    ASSERT_EQ(marc::entropy::internal::parse_contextual_rans_descriptor(
+                  bytes, 1, 8, {}, parsed,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualRansFormatError::none);
+    EXPECT_TRUE(descriptors_equal(parsed, descriptor));
+}
+
+TEST(ContextualRansFormat, ExtendedPrefixesAndUnusedFrozenTailAreAtomic) {
+    auto descriptor = literal_a_descriptor();
+    descriptor.frequency_entry_count =
+        marc::context::internal::lzss_field_context_frequency_entries_v2;
+    const auto extended = serialize(
+        descriptor, LzssFieldContextVariant::field_context_1m);
+    std::vector<std::byte> short_output(
+        extended.size() - 1, std::byte{0xa5});
+    std::size_t written = 0xa5a5;
+    EXPECT_EQ(marc::entropy::internal::serialize_contextual_rans_descriptor(
+                  descriptor, 2, 8, {}, short_output, written,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualRansFormatError::output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        short_output,
+        [](const auto value) { return value == std::byte{0xa5}; }));
+    EXPECT_EQ(written, 0xa5a5U);
+
+    for (std::size_t extent = 0; extent < extended.size(); ++extent) {
+        auto sentinel = literal_a_descriptor();
+        sentinel.flags = 0xa5;
+        const auto before = sentinel;
+        EXPECT_NE(marc::entropy::internal::parse_contextual_rans_descriptor(
+                      std::span<const std::byte>{extended}.first(extent),
+                      2, 8, {}, sentinel,
+                      LzssFieldContextVariant::field_context_1m),
+                  ContextualRansFormatError::none)
+            << extent;
+        EXPECT_TRUE(descriptors_equal(sentinel, before)) << extent;
+    }
+    auto trailing = extended;
+    trailing.push_back(std::byte{});
+    ContextualRansDescriptor sentinel{};
+    sentinel.flags = 0xa5;
+    const auto before = sentinel;
+    EXPECT_EQ(marc::entropy::internal::parse_contextual_rans_descriptor(
+                  trailing, 2, 8, {}, sentinel,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualRansFormatError::trailing_data);
+    EXPECT_TRUE(descriptors_equal(sentinel, before));
+
+    auto frozen = literal_a_descriptor();
+    frozen.frequencies[
+        marc::context::internal::lzss_field_context_frequency_entries_v1] = 1;
+    std::array<std::byte, marc::entropy::internal::
+        contextual_rans_descriptor_capacity> output{};
+    std::ranges::fill(output, std::byte{0xa5});
+    written = 0xa5a5;
+    EXPECT_EQ(marc::entropy::internal::serialize_contextual_rans_descriptor(
+                  frozen, 2, 8, {}, output, written),
+              ContextualRansFormatError::invalid_frequency_table);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [](const auto value) { return value == std::byte{0xa5}; }));
+    EXPECT_EQ(written, 0xa5a5U);
+}
+
+TEST(ContextualRansFormat, RejectsUnsupportedSelectedLayoutAtomically) {
+    const auto invalid = static_cast<LzssFieldContextVariant>(99);
+    auto descriptor = literal_a_descriptor();
+    std::size_t size = 0xa5a5;
+    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
+                  descriptor, 2, 8, {}, size, invalid),
+              ContextualRansFormatError::unsupported_context_variant);
+    EXPECT_EQ(size, 0xa5a5U);
 }
 
 TEST(ContextualRansFormat, RejectsEveryStrictPrefixAndTrailingData) {

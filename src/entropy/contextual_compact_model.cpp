@@ -53,15 +53,30 @@ enum class RecordMode : std::uint8_t {
 } // namespace
 
 ContextualCompactModelAnalysis analyze_contextual_compact_model(
-    const ContextualCompactFrequencies& frequencies) noexcept {
+    const ContextualCompactFrequencies& frequencies,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualCompactModelAnalysis analysis{};
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        analysis.error =
+            ContextualCompactModelError::unsupported_context_variant;
+        return analysis;
+    }
+    const auto& layout = selected.layout;
+    if (std::ranges::any_of(
+            frequencies.begin() + layout.frequency_entries,
+            frequencies.end(),
+            [](const std::uint16_t value) { return value != 0; })) {
+        analysis.error = ContextualCompactModelError::invalid_frequency_table;
+        return analysis;
+    }
     for (std::size_t context_id = 0;
          context_id < context::internal::lzss_field_context_count;
          ++context_id) {
-        const auto begin =
-            context::internal::lzss_field_context_offsets[context_id];
-        const auto end =
-            context::internal::lzss_field_context_offsets[context_id + 1];
+        const auto begin = (*layout.offsets)[context_id];
+        const auto end = (*layout.offsets)[context_id + 1];
         std::uint32_t sum{};
         std::size_t nonzero_count{};
         for (auto index = begin; index < end; ++index) {
@@ -76,8 +91,7 @@ ContextualCompactModelAnalysis analyze_contextual_compact_model(
             return analysis;
         }
         analysis.active_mask |= UINT32_C(1) << context_id;
-        const auto alphabet =
-            context::internal::lzss_field_context_alphabets[context_id];
+        const auto alphabet = (*layout.alphabets)[context_id];
         const auto record_size = sparse_is_canonical(alphabet, nonzero_count)
             ? sparse_record_size(nonzero_count)
             : dense_record_size(alphabet);
@@ -93,7 +107,10 @@ ContextualCompactModelAnalysis analyze_contextual_compact_model(
         analysis.error =
             ContextualCompactModelError::invalid_active_context_mask;
     } else if (analysis.records_size
-               > contextual_compact_model_max_records_size) {
+               > (variant == context::internal::LzssFieldContextVariant::
+                                  field_context_64k
+                      ? contextual_compact_model_max_records_size_v1
+                      : contextual_compact_model_max_records_size_v2)) {
         analysis.error = ContextualCompactModelError::arithmetic_overflow;
     }
     return analysis;
@@ -102,7 +119,15 @@ ContextualCompactModelAnalysis analyze_contextual_compact_model(
 ContextualCompactModelError parse_contextual_compact_model(
     const std::span<const std::byte> input,
     const std::uint32_t active_mask,
-    ContextualCompactFrequencies& frequencies) noexcept {
+    ContextualCompactFrequencies& frequencies,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return ContextualCompactModelError::unsupported_context_variant;
+    }
+    const auto& layout = selected.layout;
     if (active_mask == 0 || (active_mask & UINT32_C(0x80000000)) != 0) {
         return ContextualCompactModelError::invalid_active_context_mask;
     }
@@ -116,10 +141,8 @@ ContextualCompactModelError parse_contextual_compact_model(
         if (!read_byte(input, cursor, mode_value)) {
             return ContextualCompactModelError::truncated_records;
         }
-        const auto alphabet =
-            context::internal::lzss_field_context_alphabets[context_id];
-        const auto offset =
-            context::internal::lzss_field_context_offsets[context_id];
+        const auto alphabet = (*layout.alphabets)[context_id];
+        const auto offset = (*layout.offsets)[context_id];
         std::size_t nonzero_count{};
         if (mode_value == static_cast<std::uint8_t>(RecordMode::dense)) {
             std::uint32_t sum{};
@@ -201,7 +224,7 @@ ContextualCompactModelError parse_contextual_compact_model(
     if (cursor != input.size()) {
         return ContextualCompactModelError::trailing_data;
     }
-    const auto analysis = analyze_contextual_compact_model(parsed);
+    const auto analysis = analyze_contextual_compact_model(parsed, variant);
     if (analysis.error != ContextualCompactModelError::none) {
         return analysis.error;
     }
@@ -216,15 +239,24 @@ ContextualCompactModelError parse_contextual_compact_model(
 ContextualCompactModelError serialize_contextual_compact_model(
     const ContextualCompactFrequencies& frequencies,
     const std::span<std::byte> output,
-    std::size_t& bytes_written) noexcept {
-    const auto analysis = analyze_contextual_compact_model(frequencies);
+    std::size_t& bytes_written,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return ContextualCompactModelError::unsupported_context_variant;
+    }
+    const auto& layout = selected.layout;
+    const auto analysis = analyze_contextual_compact_model(
+        frequencies, variant);
     if (analysis.error != ContextualCompactModelError::none) {
         return analysis.error;
     }
     if (output.size() < analysis.records_size) {
         return ContextualCompactModelError::output_too_small;
     }
-    std::array<std::byte, contextual_compact_model_max_records_size> encoded{};
+    std::array<std::byte, contextual_compact_model_record_capacity> encoded{};
     const std::span<std::byte> bytes{encoded};
     std::size_t cursor{};
     for (std::size_t context_id = 0;
@@ -233,10 +265,8 @@ ContextualCompactModelError serialize_contextual_compact_model(
         if ((analysis.active_mask & (UINT32_C(1) << context_id)) == 0) {
             continue;
         }
-        const auto alphabet =
-            context::internal::lzss_field_context_alphabets[context_id];
-        const auto offset =
-            context::internal::lzss_field_context_offsets[context_id];
+        const auto alphabet = (*layout.alphabets)[context_id];
+        const auto offset = (*layout.offsets)[context_id];
         std::size_t nonzero_count{};
         for (std::uint16_t symbol = 0; symbol < alphabet; ++symbol) {
             if (frequencies[offset + symbol] != 0) ++nonzero_count;
@@ -277,10 +307,15 @@ ContextualCompactModelError serialize_contextual_compact_model(
     return ContextualCompactModelError::none;
 }
 
-static_assert(contextual_compact_model_max_records_size
+static_assert(contextual_compact_model_max_records_size_v1
               == 3 * (1 + 2 * (2 - 1))
                   + 17 * (1 + 2 * (256 - 1))
                   + 3 * (1 + 2 * (8 - 1))
                   + 8 * (1 + 2 * (17 - 1)));
+static_assert(contextual_compact_model_max_records_size_v2
+              == 3 * (1 + 2 * (2 - 1))
+                  + 17 * (1 + 2 * (256 - 1))
+                  + 3 * (1 + 2 * (8 - 1))
+                  + 8 * (1 + 2 * (21 - 1)));
 
 } // namespace marc::entropy::internal

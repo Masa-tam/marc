@@ -23,7 +23,7 @@ namespace {
     const std::uint16_t context_id,
     const std::array<std::uint32_t, contextual_rans_frequency_entries>& counts,
     const std::array<std::uint32_t, contextual_rans_context_count>& totals,
-    std::array<std::uint16_t, contextual_rans_frequency_entries>& frequencies)
+    ContextualRansFrequencies& frequencies)
     noexcept {
     const auto total = totals[context_id];
     if (total == 0) return true;

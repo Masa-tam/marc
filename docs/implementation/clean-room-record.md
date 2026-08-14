@@ -19833,3 +19833,34 @@ discarded and the reviewed seed retained.
 - Similarity review: all terminology, constants, boundaries, and vectors derive
   from marc-owned format and context-layout work. No external implementation
   expression entered the design.
+
+## CR-0831: 2026-08-14 - Selected-layout Contextual rANS descriptor implementation
+
+- Authoring method: implemented the descriptor slice directly from DD-801 and
+  the repository-owned compact-model grammar after its limits and rejection
+  behavior were fixed in documentation.
+- References used: DD-790; DD-791; DD-801; IR-0575; TVG-0665; TVG-0666;
+  TVG-0676; marc's variant-1 descriptor implementation and frozen vector; and
+  the already reserved variant-2 field-context layout.
+- Known implementations intentionally not consulted: external rANS
+  implementations, compact-model formats, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: retain the existing unqualified constants and default
+  arguments as variant 1; add explicit variant-specific maxima and maximum
+  storage capacities; pass the selected layout through analysis, parsing, and
+  serialization; require the unused variant-1 storage tail to be zero; and
+  leave the encoder, frame, streaming API, CLI, benchmark, fuzz, and
+  interoperability admission unchanged in this slice.
+- Generated-code task description: extend the internal compact rANS descriptor
+  to the selected 1 MiB context layout without changing frozen variant-1
+  bytes, then test exact maxima, cross-layout rejection, every strict prefix,
+  trailing input, one-byte-short output, unsupported selection, unused-tail
+  rejection, and atomic failure behavior.
+- Similarity review: the implementation generalizes marc's own selected field-
+  context layout and compact descriptor. No external implementation
+  expression entered the change.
+- Local validation: the 64 KiB frozen descriptor bytes remain exact; the 1 MiB
+  descriptor round trips at its exact 9,089-byte maximum; all selected-layout
+  malformed and atomicity tests pass; and all 2,886 registered tests pass
+  under both MSVC and ClangCL Release configurations with the 240-second per-
+  test limit, including schema compatibility and documentation layout.

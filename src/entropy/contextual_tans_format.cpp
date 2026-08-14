@@ -16,6 +16,8 @@ namespace {
     switch (error) {
     case ContextualCompactModelError::none:
         return ContextualTansFormatError::none;
+    case ContextualCompactModelError::unsupported_context_variant:
+        return ContextualTansFormatError::invalid_frequency_table;
     case ContextualCompactModelError::invalid_active_context_mask:
         return ContextualTansFormatError::invalid_active_context_mask;
     case ContextualCompactModelError::truncated_records:

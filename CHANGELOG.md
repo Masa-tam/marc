@@ -22,6 +22,11 @@ format versions, and C ABI versions are independent namespaces.
 - Added interoperability schema 38 by appending the 1 MiB Contextual Dynamic
   Range archive to the frozen schema-37 order, while retaining verification of
   every earlier schema.
+- Extended the internal Contextual rANS compact descriptor to select either
+  the frozen 64 KiB field layout or the reserved 1 MiB layout explicitly.
+  Fixed-capacity storage remains bounded by the larger layout, while each
+  selected layout retains its exact descriptor ceiling and rejects a
+  non-zero unused tail.
 
 ## 0.3.0 - 2026-08-13
 

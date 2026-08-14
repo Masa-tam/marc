@@ -17,6 +17,8 @@ namespace {
     switch (error) {
     case ContextualCompactModelError::none:
         return ContextualRansFormatError::none;
+    case ContextualCompactModelError::unsupported_context_variant:
+        return ContextualRansFormatError::unsupported_context_variant;
     case ContextualCompactModelError::invalid_active_context_mask:
         return ContextualRansFormatError::invalid_active_context_mask;
     case ContextualCompactModelError::truncated_records:
@@ -40,7 +42,14 @@ namespace {
 [[nodiscard]] ContextualRansFormatError validate_fields(
     const ContextualRansDescriptor& descriptor,
     const std::uint32_t expected_decision_count,
-    const std::uint32_t expected_payload_size) noexcept {
+    const std::uint32_t expected_payload_size,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return ContextualRansFormatError::unsupported_context_variant;
+    }
     if (descriptor.decision_count == 0) {
         return ContextualRansFormatError::invalid_decision_count;
     }
@@ -70,7 +79,7 @@ namespace {
         return ContextualRansFormatError::invalid_context_count;
     }
     if (descriptor.frequency_entry_count
-        != contextual_rans_frequency_entries) {
+        != selected.layout.frequency_entries) {
         return ContextualRansFormatError::
             invalid_frequency_entry_count;
     }
@@ -107,12 +116,13 @@ namespace {
 ContextualRansFormatError validate_contextual_rans_model(
     const ContextualRansDescriptor& descriptor,
     const std::uint32_t expected_decision_count,
-    const std::uint32_t expected_payload_size) noexcept {
+    const std::uint32_t expected_payload_size,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     const auto field_error = validate_fields(
-        descriptor, expected_decision_count, expected_payload_size);
+        descriptor, expected_decision_count, expected_payload_size, variant);
     if (field_error != ContextualRansFormatError::none) return field_error;
     return map_model_error(
-        analyze_contextual_compact_model(descriptor.frequencies).error);
+        analyze_contextual_compact_model(descriptor.frequencies, variant).error);
 }
 
 ContextualRansFormatError validate_contextual_rans_descriptor(
@@ -120,24 +130,29 @@ ContextualRansFormatError validate_contextual_rans_descriptor(
     const std::uint32_t expected_decision_count,
     const std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
-    std::size_t& serialized_size) noexcept {
+    std::size_t& serialized_size,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     const auto field_error = validate_fields(
-        descriptor, expected_decision_count, expected_payload_size);
+        descriptor, expected_decision_count, expected_payload_size, variant);
     if (field_error != ContextualRansFormatError::none) {
         return field_error;
     }
     const auto analysis =
-        analyze_contextual_compact_model(descriptor.frequencies);
+        analyze_contextual_compact_model(descriptor.frequencies, variant);
     const auto model_error = map_model_error(analysis.error);
     if (model_error != ContextualRansFormatError::none) {
         return model_error;
     }
     std::size_t total_size{};
+    const auto maximum_size =
+        variant == context::internal::LzssFieldContextVariant::field_context_64k
+        ? contextual_rans_max_descriptor_size_v1
+        : contextual_rans_max_descriptor_size_v2;
     if (!core::checked_add(
             contextual_rans_prefix_size,
             analysis.records_size, total_size)
         || total_size < contextual_rans_min_descriptor_size
-        || total_size > contextual_rans_max_descriptor_size) {
+        || total_size > maximum_size) {
         return ContextualRansFormatError::invalid_descriptor_size;
     }
     const auto limit_error = validate_limits(descriptor, total_size, limits);
@@ -153,12 +168,23 @@ ContextualRansFormatError parse_contextual_rans_descriptor(
     const std::uint32_t expected_decision_count,
     const std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
-    ContextualRansDescriptor& descriptor) noexcept {
+    ContextualRansDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     if (input.size() < contextual_rans_prefix_size) {
         return ContextualRansFormatError::truncated_descriptor;
     }
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return ContextualRansFormatError::unsupported_context_variant;
+    }
+    const auto maximum_size =
+        variant == context::internal::LzssFieldContextVariant::field_context_64k
+        ? contextual_rans_max_descriptor_size_v1
+        : contextual_rans_max_descriptor_size_v2;
     if (input.size() < contextual_rans_min_descriptor_size
-        || input.size() > contextual_rans_max_descriptor_size) {
+        || input.size() > maximum_size) {
         return ContextualRansFormatError::invalid_descriptor_size;
     }
     ContextualRansDescriptor parsed{};
@@ -173,13 +199,13 @@ ContextualRansFormatError parse_contextual_rans_descriptor(
     parsed.table_log = std::to_integer<std::uint8_t>(input[8]);
     parsed.flags = std::to_integer<std::uint8_t>(input[9]);
     const auto field_error = validate_fields(
-        parsed, expected_decision_count, expected_payload_size);
+        parsed, expected_decision_count, expected_payload_size, variant);
     if (field_error != ContextualRansFormatError::none) {
         return field_error;
     }
     const auto record_error = parse_contextual_compact_model(
         input.subspan(contextual_rans_prefix_size), active_mask,
-        parsed.frequencies);
+        parsed.frequencies, variant);
     const auto mapped_error = map_model_error(record_error);
     if (mapped_error != ContextualRansFormatError::none) {
         return mapped_error;
@@ -187,7 +213,7 @@ ContextualRansFormatError parse_contextual_rans_descriptor(
     std::size_t canonical_size{};
     const auto validation = validate_contextual_rans_descriptor(
         parsed, expected_decision_count, expected_payload_size, limits,
-        canonical_size);
+        canonical_size, variant);
     if (validation != ContextualRansFormatError::none) {
         return validation;
     }
@@ -204,11 +230,12 @@ ContextualRansFormatError serialize_contextual_rans_descriptor(
     const std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
     const std::span<std::byte> output,
-    std::size_t& bytes_written) noexcept {
+    std::size_t& bytes_written,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     std::size_t serialized_size{};
     const auto validation = validate_contextual_rans_descriptor(
         descriptor, expected_decision_count, expected_payload_size, limits,
-        serialized_size);
+        serialized_size, variant);
     if (validation != ContextualRansFormatError::none) {
         return validation;
     }
@@ -216,12 +243,12 @@ ContextualRansFormatError serialize_contextual_rans_descriptor(
         return ContextualRansFormatError::output_too_small;
     }
     const auto analysis =
-        analyze_contextual_compact_model(descriptor.frequencies);
+        analyze_contextual_compact_model(descriptor.frequencies, variant);
     const auto analysis_error = map_model_error(analysis.error);
     if (analysis_error != ContextualRansFormatError::none) {
         return analysis_error;
     }
-    std::array<std::byte, contextual_rans_max_descriptor_size>
+    std::array<std::byte, contextual_rans_descriptor_capacity>
         encoded{};
     const std::span<std::byte> bytes{encoded};
     if (!core::store_le(bytes, 0, descriptor.decision_count)
@@ -237,7 +264,7 @@ ContextualRansFormatError serialize_contextual_rans_descriptor(
     const auto record_error = serialize_contextual_compact_model(
         descriptor.frequencies,
         bytes.subspan(contextual_rans_prefix_size),
-        records_written);
+        records_written, variant);
     const auto mapped_error = map_model_error(record_error);
     if (mapped_error != ContextualRansFormatError::none) {
         return mapped_error;
@@ -254,6 +281,9 @@ ContextualRansFormatError serialize_contextual_rans_descriptor(
 static_assert(contextual_rans_max_descriptor_size
               == contextual_rans_prefix_size
                   + contextual_compact_model_max_records_size);
+static_assert(contextual_rans_max_descriptor_size_v2
+              == contextual_rans_prefix_size
+                  + contextual_compact_model_max_records_size_v2);
 static_assert(contextual_rans_total_frequency
               == contextual_compact_model_total_frequency);
 
