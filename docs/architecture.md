@@ -5199,5 +5199,8 @@ propagates the same immutable selection through model normalization,
 encode/decode transition-table construction, reverse state writing, forward
 state decoding, and operation-level planning and encoding. It reserves the
 fixed 131,072-entry transition workspace for either layout and applies the
-selected 16- or 20-bit bypass ceiling. The typed-token bridge, frame identity,
-streaming lifecycle, public API, CLI, and schema remain on the frozen route.
+selected 16- or 20-bit bypass ceiling. The direct typed-token bridge now uses
+the same selection for dictionary validation, distance alphabets, reverse
+writing, declared decision bounds, entropy inversion, and atomic typed-token
+reconstruction. Frame identity, streaming lifecycle, public API, CLI, and
+schema remain on the frozen route.

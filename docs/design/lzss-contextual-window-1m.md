@@ -355,6 +355,15 @@ bound and dictionary reconstruction limit. Its maximum-distance vector grows a
 1,048,576, avoiding a million-Literal test while still forcing class 20 and 20
 bypass bits. Frame and lifecycle integration remain separate.
 
+That typed-token stage is implemented. The direct encoder is byte-identical to
+the independently materialized operation route for the selected variant, and
+the decoder validates the complete selected token sequence before publishing
+it. The maximum-distance vector reaches a 1,048,576-byte prefix with one
+Literal, 4,064 distance-1 Matches of length 258, and one of length 63; its
+final length-5 Match at distance 1,048,576 round trips through class 20 and 20
+bypass bits. Default calls retain the frozen 64 KiB route. No complete tANS
+frame selects variant 2 yet.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

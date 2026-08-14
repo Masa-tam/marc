@@ -81,6 +81,7 @@ using entropy::internal::ContextualTansReverseWriter;
     ContextualTansModelBuilder& builder,
     const LzssFieldContextState& state,
     const LzssTypedToken& token,
+    const LzssFieldContextLayout& layout,
     LzssContextualTansEncodeResult& result) noexcept {
     const auto kind = token.kind == LzssTypedTokenKind::literal ? 0U : 1U;
     if (!add_symbol(builder, state.token_context(), 2, kind, result)) {
@@ -102,7 +103,9 @@ using entropy::internal::ContextualTansReverseWriter;
         && add_bypass(builder, length_class, length_extra, result)
         && add_symbol(
             builder, LzssFieldContextState::distance_context(length_class),
-            17, distance_class, result)
+            (*layout.alphabets)[LzssFieldContextState::distance_context(
+                length_class)],
+            distance_class, result)
         && add_bypass(builder, distance_class, distance_extra, result);
 }
 
@@ -148,7 +151,8 @@ struct ReverseContexts {
 [[nodiscard]] ContextualTansEncodeError encode_token_reverse(
     ContextualTansReverseWriter& writer,
     const ReverseContexts contexts,
-    const LzssTypedToken& token) noexcept {
+    const LzssTypedToken& token,
+    const LzssFieldContextLayout& layout) noexcept {
     if (token.kind == LzssTypedTokenKind::literal) {
         auto error = writer.encode_symbol(
             contexts.literal, 256, token.literal);
@@ -167,7 +171,9 @@ struct ReverseContexts {
         : writer.encode_bypass(distance_class, distance_extra);
     if (error != ContextualTansEncodeError::none) return error;
     error = writer.encode_symbol(
-        LzssFieldContextState::distance_context(length_class), 17,
+        LzssFieldContextState::distance_context(length_class),
+        (*layout.alphabets)[LzssFieldContextState::distance_context(
+            length_class)],
         distance_class);
     if (error != ContextualTansEncodeError::none) return error;
     if (length_class != 0) {
@@ -185,8 +191,14 @@ struct ReverseContexts {
     const std::span<const std::uint16_t> tables,
     const std::span<std::byte> output,
     std::size_t& payload_size,
-    std::uint8_t& final_valid_bits) noexcept {
-    ContextualTansReverseWriter writer(descriptor, tables, output);
+    std::uint8_t& final_valid_bits,
+    const LzssFieldContextVariant variant) noexcept {
+    const auto selected = get_lzss_field_context_layout(variant);
+    if (selected.error != LzssFieldContextLayoutError::none) {
+        return ContextualTansEncodeError::unsupported_context_variant;
+    }
+    const auto& layout = selected.layout;
+    ContextualTansReverseWriter writer(descriptor, tables, output, variant);
     std::size_t preceding_literal = tokens.empty()
         ? tokens.size()
         : find_literal_before(tokens, tokens.size() - 1);
@@ -194,7 +206,7 @@ struct ReverseContexts {
         const auto index = reverse - 1;
         const auto error = encode_token_reverse(
             writer, contexts_before(tokens, index, preceding_literal),
-            tokens[index]);
+            tokens[index], layout);
         if (error != ContextualTansEncodeError::none) return error;
         if (index != 0 && preceding_literal == index - 1) {
             preceding_literal = find_literal_before(tokens, index - 1);
@@ -246,7 +258,8 @@ LzssContextualTansEncodeResult plan_lzss_contextual_tans_tokens(
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<std::uint16_t> private_encode_tables,
-    entropy::internal::ContextualTansDescriptor& descriptor) noexcept {
+    entropy::internal::ContextualTansDescriptor& descriptor,
+    const LzssFieldContextVariant variant) noexcept {
     LzssContextualTansEncodeResult result{};
     std::size_t token_bytes{};
     std::size_t table_capacity_bytes{};
@@ -283,8 +296,18 @@ LzssContextualTansEncodeResult plan_lzss_contextual_tans_tokens(
         return result;
     }
 
+    const auto selected = get_lzss_field_context_layout(variant);
+    if (selected.error != LzssFieldContextLayoutError::none) {
+        result.token_validation.token_error =
+            dictionary::internal::LzssTypedTokenError::invalid_parameters;
+        result.token_validation.error = dictionary::internal::
+            LzssTypedFrameValidationError::invalid_parameters;
+        result.error = LzssContextualTansEncodeError::token_validation_error;
+        return result;
+    }
+    const auto& layout = selected.layout;
     result.token_validation = dictionary::internal::validate_lzss_typed_frame(
-        tokens, parameters, context, limits);
+        tokens, parameters, context, limits, layout.dictionary_variant);
     result.token_count = result.token_validation.token_count;
     result.token_index = result.token_validation.token_index;
     if (result.token_validation.error
@@ -301,11 +324,13 @@ LzssContextualTansEncodeResult plan_lzss_contextual_tans_tokens(
         return result;
     }
 
-    ContextualTansModelBuilder builder;
+    ContextualTansModelBuilder builder{variant};
     LzssFieldContextState state{};
     for (std::size_t index = 0; index < tokens.size(); ++index) {
         result.token_index = index;
-        if (!add_token(builder, state, tokens[index], result)) return result;
+        if (!add_token(builder, state, tokens[index], layout, result)) {
+            return result;
+        }
         state.accept(tokens[index]);
     }
     result.token_index = result.token_count;
@@ -316,7 +341,7 @@ LzssContextualTansEncodeResult plan_lzss_contextual_tans_tokens(
         return fail_entropy(result, entropy_error);
     }
     entropy_error = entropy::internal::build_contextual_tans_encode_tables(
-        planned, limits, private_encode_tables);
+        planned, limits, private_encode_tables, variant);
     if (entropy_error != ContextualTansEncodeError::none) {
         return fail_entropy(result, entropy_error);
     }
@@ -325,7 +350,7 @@ LzssContextualTansEncodeResult plan_lzss_contextual_tans_tokens(
         tokens, planned,
         private_encode_tables.first(
             entropy::internal::contextual_tans_encode_table_entries),
-        {}, result.payload_size, final_valid_bits);
+        {}, result.payload_size, final_valid_bits, variant);
     if (entropy_error != ContextualTansEncodeError::none) {
         return fail_entropy(result, entropy_error);
     }
@@ -340,7 +365,7 @@ LzssContextualTansEncodeResult plan_lzss_contextual_tans_tokens(
     const auto format_error =
         entropy::internal::validate_contextual_tans_descriptor(
             planned, planned.decision_count, planned.payload_size, limits,
-            descriptor_size);
+            descriptor_size, variant);
     if (format_error
         == entropy::internal::ContextualTansFormatError::limit_exceeded) {
         result.error = LzssContextualTansEncodeError::limit_exceeded;
@@ -376,7 +401,8 @@ LzssContextualTansEncodeResult encode_lzss_contextual_tans_tokens(
     const core::DecoderLimits& limits,
     const std::span<std::uint16_t> private_encode_tables,
     const std::span<std::byte> payload_output,
-    entropy::internal::ContextualTansDescriptor& descriptor) noexcept {
+    entropy::internal::ContextualTansDescriptor& descriptor,
+    const LzssFieldContextVariant variant) noexcept {
     LzssContextualTansEncodeResult initial{};
     std::size_t token_bytes{};
     std::size_t table_bytes{};
@@ -402,7 +428,8 @@ LzssContextualTansEncodeResult encode_lzss_contextual_tans_tokens(
 
     entropy::internal::ContextualTansDescriptor planned{};
     auto result = plan_lzss_contextual_tans_tokens(
-        tokens, parameters, context, limits, private_encode_tables, planned);
+        tokens, parameters, context, limits, private_encode_tables, planned,
+        variant);
     if (result.error != LzssContextualTansEncodeError::none) return result;
     if (payload_output.size() < result.payload_size) {
         result.error = LzssContextualTansEncodeError::payload_output_too_small;
@@ -416,7 +443,7 @@ LzssContextualTansEncodeResult encode_lzss_contextual_tans_tokens(
         tokens, planned,
         private_encode_tables.first(
             entropy::internal::contextual_tans_encode_table_entries),
-        output, encoded_size, final_valid_bits);
+        output, encoded_size, final_valid_bits, variant);
     if (entropy_error != ContextualTansEncodeError::none
         || encoded_size != result.payload_size
         || final_valid_bits != planned.final_valid_bits) {

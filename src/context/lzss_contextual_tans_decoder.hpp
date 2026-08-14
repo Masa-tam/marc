@@ -43,7 +43,9 @@ validate_lzss_contextual_tans_tokens(
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
-    std::span<entropy::internal::TansDecodeEntry> private_tables) noexcept;
+    std::span<entropy::internal::TansDecodeEntry> private_tables,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssContextualTansDecodeResult
 decode_lzss_contextual_tans_tokens(
@@ -53,7 +55,9 @@ decode_lzss_contextual_tans_tokens(
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
     std::span<entropy::internal::TansDecodeEntry> private_tables,
-    std::span<dictionary::internal::LzssTypedToken> private_tokens) noexcept;
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::context::internal
 

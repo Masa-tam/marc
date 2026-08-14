@@ -6709,6 +6709,15 @@ Symbol contexts plus bypass), hence 131,072 encode entries and 131,072 decode
 entries. The tANS state, bit order, payload, padding, and terminal-state rules
 are otherwise unchanged.
 
+The private direct LZSS typed-token adapter also receives the selection
+explicitly. It validates tokens with the selected dictionary variant, uses the
+selected distance alphabet during forward model construction and reverse tANS
+writing, and reconstructs with the selected 26- or 30-decision-per-token
+ceiling. A validate-only decode pass must finish the selected entropy state and
+typed-token validation before a second pass publishes caller-visible tokens.
+This adapter changes no serialized byte and does not admit the extended layout
+through a frame or stream header.
+
 This subsection defines the shared dictionary/context identity and the two
 exact ANS descriptor ceilings. Dynamic Range has complete internal, streaming,
 public C, CLI, benchmark, fuzz, and schema-38 interoperability admission.

@@ -39,7 +39,7 @@ using entropy::internal::TansDecodeEntry;
 
 [[nodiscard]] bool read_token(
     ContextualTansDecoder& decoder, const LzssFieldContextState& state,
-    LzssTypedToken& token,
+    const LzssFieldContextLayout& layout, LzssTypedToken& token,
     LzssContextualTansDecodeResult& result) noexcept {
     std::uint32_t kind{};
     if (!read_symbol(decoder, state.token_context(), 2, kind, result)) {
@@ -72,7 +72,9 @@ using entropy::internal::TansDecodeEntry;
 
     std::uint32_t distance_class{};
     if (!read_symbol(
-            decoder, LzssFieldContextState::distance_context(length_class), 17,
+            decoder, LzssFieldContextState::distance_context(length_class),
+            (*layout.alphabets)[LzssFieldContextState::distance_context(
+                length_class)],
             distance_class, result)) {
         return false;
     }
@@ -91,6 +93,7 @@ using entropy::internal::TansDecodeEntry;
 [[nodiscard]] bool validate_declared_bounds(
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
+    const LzssFieldContextLayout& layout,
     LzssContextualTansDecodeResult& result) noexcept {
     const auto token_count =
         static_cast<std::uint64_t>(context.declared_token_count);
@@ -103,7 +106,7 @@ using entropy::internal::TansDecodeEntry;
     if (token_count == 0 || raw_size == 0 || token_count > raw_size
         || event_count < 2 * token_count || event_count > 5 * token_count
         || event_count > 2 * raw_size || decision_count < event_count
-        || decision_count > 26 * token_count
+        || decision_count > layout.maximum_decisions_per_token * token_count
         || decision_count > 6 * raw_size) {
         result.error = LzssContextualTansDecodeError::invalid_counts;
         return false;
@@ -239,24 +242,35 @@ enum class OverlapCheck : std::uint8_t {
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<TansDecodeEntry> tables,
-    const std::span<LzssTypedToken> output) noexcept {
+    const std::span<LzssTypedToken> output,
+    const LzssFieldContextVariant variant) noexcept {
     LzssContextualTansDecodeResult result{};
+    const auto selected = get_lzss_field_context_layout(variant);
+    if (selected.error != LzssFieldContextLayoutError::none) {
+        result.token_error = LzssTypedTokenError::invalid_parameters;
+        result.error = LzssContextualTansDecodeError::invalid_parameters;
+        return result;
+    }
+    const auto& layout = selected.layout;
     result.token_error = dictionary::internal::validate_lzss_typed_parameters(
-        parameters, limits);
+        parameters, limits, layout.dictionary_variant);
     if (result.token_error != LzssTypedTokenError::none) {
         result.error = result.token_error == LzssTypedTokenError::limit_exceeded
             ? LzssContextualTansDecodeError::limit_exceeded
             : LzssContextualTansDecodeError::invalid_parameters;
         return result;
     }
-    if (!validate_declared_bounds(context, limits, result)) return result;
+    if (!validate_declared_bounds(context, limits, layout, result)) {
+        return result;
+    }
     if (descriptor.decision_count != context.declared_decision_count) {
         result.error = LzssContextualTansDecodeError::invalid_counts;
         return result;
     }
 
     ContextualTansDecoder decoder;
-    result.entropy = decoder.begin(descriptor, payload, limits, tables);
+    result.entropy = decoder.begin(
+        descriptor, payload, limits, tables, variant);
     if (result.entropy.error != ContextualTansDecodeError::none) {
         result.error = result.entropy.error
                 == ContextualTansDecodeError::table_output_too_small
@@ -269,13 +283,13 @@ enum class OverlapCheck : std::uint8_t {
     while (result.token_count < context.declared_token_count) {
         result.token_index = result.token_count;
         LzssTypedToken token{};
-        if (!read_token(decoder, state, token, result)) return result;
+        if (!read_token(decoder, state, layout, token, result)) return result;
 
         std::uint64_t next_raw_size{};
         result.token_error = dictionary::internal::validate_lzss_typed_token(
             token, parameters,
             {result.raw_size, context.declared_raw_size}, limits,
-            next_raw_size);
+            next_raw_size, layout.dictionary_variant);
         if (result.token_error != LzssTypedTokenError::none) {
             if (result.token_error == LzssTypedTokenError::limit_exceeded) {
                 result.error = LzssContextualTansDecodeError::limit_exceeded;
@@ -314,7 +328,8 @@ LzssContextualTansDecodeResult validate_lzss_contextual_tans_tokens(
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
-    const std::span<entropy::internal::TansDecodeEntry> private_tables)
+    const std::span<entropy::internal::TansDecodeEntry> private_tables,
+    const LzssFieldContextVariant variant)
     noexcept {
     const auto workspace = preflight_workspace(payload, private_tables);
     if (workspace.error != LzssContextualTansDecodeError::none) {
@@ -323,7 +338,8 @@ LzssContextualTansDecodeResult validate_lzss_contextual_tans_tokens(
     return run_pass(
         descriptor, payload, parameters, context, limits,
         private_tables.first(static_cast<std::size_t>(
-            entropy::internal::contextual_tans_decode_table_entries)), {});
+            entropy::internal::contextual_tans_decode_table_entries)), {},
+        variant);
 }
 
 LzssContextualTansDecodeResult decode_lzss_contextual_tans_tokens(
@@ -333,7 +349,8 @@ LzssContextualTansDecodeResult decode_lzss_contextual_tans_tokens(
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<entropy::internal::TansDecodeEntry> private_tables,
-    const std::span<dictionary::internal::LzssTypedToken> private_tokens)
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const LzssFieldContextVariant variant)
     noexcept {
     const auto workspace = preflight_workspace(payload, private_tables);
     if (workspace.error != LzssContextualTansDecodeError::none) {
@@ -349,7 +366,7 @@ LzssContextualTansDecodeResult decode_lzss_contextual_tans_tokens(
     }
 
     auto result = run_pass(
-        descriptor, payload, parameters, context, limits, tables, {});
+        descriptor, payload, parameters, context, limits, tables, {}, variant);
     if (result.error != LzssContextualTansDecodeError::none) return result;
     if (private_tokens.size() < context.declared_token_count) {
         result.error =
@@ -357,7 +374,8 @@ LzssContextualTansDecodeResult decode_lzss_contextual_tans_tokens(
         return result;
     }
     const auto decoded = run_pass(
-        descriptor, payload, parameters, context, limits, tables, tokens);
+        descriptor, payload, parameters, context, limits, tables, tokens,
+        variant);
     if (decoded.error != LzssContextualTansDecodeError::none
         || decoded.token_count != result.token_count
         || decoded.raw_size != result.raw_size

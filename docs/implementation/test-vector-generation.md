@@ -9385,7 +9385,7 @@ excluded from this vector.
 Construct an extended typed-token sequence without allocating one million
 Literal tokens: emit one Literal, use bounded distance-1 Matches to grow the
 raw prefix deterministically to exactly 1,048,576 bytes, then append a Match
-of length 4 at distance 1,048,576. The final Match must produce distance class
+of length 5 at distance 1,048,576. The final Match must produce distance class
 20 and a 20-bit LSB-first bypass field. Use 1,048,576-byte LZSS parameters,
 typed-token variant 3, and field-context variant 2.
 
@@ -9395,13 +9395,13 @@ same typed tokens through the direct adapter and require identical event and
 decision counts, descriptor frequencies and metadata, fixed 131,072-entry
 tables, payload extent, valid-bit count, payload bytes, and terminal state.
 Decode through the selected direct adapter and require exact typed-token
-identity, reconstructed raw extent 1,048,580, and no publication before the
+identity, reconstructed raw extent 1,048,581, and no publication before the
 validate-only pass succeeds.
 
 Run the frozen one-Literal and existing Match vectors through the default
-variant-1 adapter and require byte identity. Feed the extended sequence to the
-default adapter, cross variant-1 parameters with variant 2 and variant-2
-parameters with variant 1, and pass an unsupported selection; require stable
+variant-1 adapter and require byte identity. Feed the extended sequence and
+its 1 MiB parameters to the default adapter, cross descriptor counts and
+alphabets between layouts, and pass an unsupported selection; require stable
 parameter, token-validation, or entropy errors with unchanged descriptor,
 payload, table sentinel where promised, and token output. Repeat one-entry-
 short table, one-token-short output, payload/table/token alias, truncation,

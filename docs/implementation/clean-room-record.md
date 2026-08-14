@@ -20445,3 +20445,33 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned typed-token, context,
   tANS, and validation abstractions. No external implementation expression
   entered the design.
+
+## CR-0856: 2026-08-15 - Contextual tANS selected token composition
+
+- Authoring method: implemented DD-813 over marc's direct Contextual tANS
+  typed-token adapter and admitted selected entropy core, with the maximum-
+  distance test written first.
+- References used: DD-790 through DD-813; IR-0587; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0688; marc's materialized field-operation reference and
+  completed selected Contextual rANS token adapter.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, composition formats, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: retain explicit trailing variant arguments and
+  frozen defaults; use one selected layout for token validation, alphabets,
+  bypass bounds, tables, reverse writing, declared-count checks, and token
+  reconstruction; retain validate-before-publish decoding; and exercise the
+  maximum distance with 4,067 bounded tokens rather than one million Literals.
+- Generated-code task description: add a failing maximum-distance direct-token
+  vector; pass selected layout through direct planning, writing, validation,
+  entropy inversion, and atomic token publication; compare against the
+  materialized operation route; preserve every outer frame call on variant 1.
+- Similarity review: the implementation generalizes only marc-owned typed-
+  token, context, tANS, and validation code. No external implementation
+  expression entered the code or tests.
+- Local validation: the 1 MiB route reconstructs distance 1,048,576 as class
+  20 plus 20 LSB-first bypass bits and matches the materialized descriptor and
+  payload exactly; default and outer callers retain variant 1. All 2,908
+  registered Release tests pass under MSVC in 163.27 seconds and ClangCL in
+  164.52 seconds with the 300-second per-test limit, including interoperability
+  schema compatibility and documentation layout.

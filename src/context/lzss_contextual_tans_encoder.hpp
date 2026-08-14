@@ -1,6 +1,7 @@
 #ifndef MARC_CONTEXT_LZSS_CONTEXTUAL_TANS_ENCODER_HPP
 #define MARC_CONTEXT_LZSS_CONTEXTUAL_TANS_ENCODER_HPP
 
+#include "context/lzss_field_context.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 #include "entropy/contextual_tans_encoder.hpp"
 
@@ -44,7 +45,9 @@ plan_lzss_contextual_tans_tokens(
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
     std::span<std::uint16_t> private_encode_tables,
-    entropy::internal::ContextualTansDescriptor& descriptor) noexcept;
+    entropy::internal::ContextualTansDescriptor& descriptor,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssContextualTansEncodeResult
 encode_lzss_contextual_tans_tokens(
@@ -54,7 +57,9 @@ encode_lzss_contextual_tans_tokens(
     const core::DecoderLimits& limits,
     std::span<std::uint16_t> private_encode_tables,
     std::span<std::byte> payload_output,
-    entropy::internal::ContextualTansDescriptor& descriptor) noexcept;
+    entropy::internal::ContextualTansDescriptor& descriptor,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::context::internal
 
