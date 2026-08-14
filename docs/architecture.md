@@ -4447,18 +4447,20 @@ are sticky, and input/output chunk schedules cannot change encoded bytes.
 
 The contextual-rANS fuzz entry crosses the same two decoder-visible boundaries
 as the first Format 2 profile: the private complete-frame decoder after a
-valid 112-byte stream header and the public C streaming transform for every
-case. The supplied input is capped above the minimum 9,052-byte descriptor so
-complete frames remain reachable. Serialized staging, the fixed 126,976-entry
-decode tables, typed tokens, private raw staging, public output, and process
-calls all have predetermined ceilings.
+valid 112-byte stream header and both strict public C streaming profiles for
+every case. The supplied input is capped above the selected 9,089-byte maximum
+descriptor so complete frames remain reachable. Serialized staging, the fixed
+126,976-entry decode tables, typed tokens, private raw staging, public output,
+and process calls all have predetermined ceilings. The 1 MiB identity and
+distance hard limit do not enlarge the 1 KiB raw-frame or token arrays.
 
 The large native rANS views live in one fixed thread-local harness workspace,
 not on the per-call stack and never at an input-selected extent. Malformed
 status is normal completion; abort is reserved for workspace-query,
 construction, accounting, progress, final-input, or call-budget invariant
-violations. Compile-smoke and deterministic regressions are distinct from a
-sanitizer campaign.
+violations. Deterministic regressions cover both canonical profiles and their
+reciprocal strict rejection. Compile-smoke remains distinct from a separately
+bounded sanitizer campaign.
 
 ### Contextual rANS CLI boundary
 

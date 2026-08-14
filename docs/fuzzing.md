@@ -624,6 +624,23 @@ to the campaign process. No input corpus was supplied and no artifact was
 produced. This bounded smoke is evidence for the exercised inputs, not an
 exhaustive safety claim.
 
+### FZ-0025: Dual-profile Contextual rANS smoke
+
+The Contextual rANS private-frame/public-C target now drives both strict public
+window-profile admissions for every bounded input while retaining its 32 KiB
+input, 4 KiB output, 1 KiB frame/token storage, fixed 126,976-entry table, and
+finite call ceiling. Only descriptor backing grows to the selected 9,089-byte
+maximum; the wider identity does not allocate a 1 MiB frame.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 349530899 completed exactly 1,000 inputs under a 32 KiB maximum
+input, five-second per-input timeout, and 512 MiB RSS limit without a crash,
+hang, or sanitizer finding. Peak RSS was 44 MiB; final coverage was 200
+counters and 320 features over a seven-entry, 32-byte in-memory corpus. The
+matching sanitizer runtime path applied only to the campaign process. No input
+corpus was supplied and no artifact was produced. This bounded result is
+evidence for the exercised inputs, not an exhaustive safety claim.
+
 ## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the

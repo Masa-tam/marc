@@ -20234,3 +20234,28 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned fuzz, frame, public C,
   profile, and test components. No external implementation expression entered
   the design.
+
+## CR-0847: 2026-08-14 - Contextual rANS dual-profile fuzz admission
+
+- Authoring method: implemented DD-809 by parameterizing marc's existing
+  fixed-memory harness and malformed regression over both selected profiles.
+- References used: DD-790 through DD-809; IR-0583; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0684; marc's public decoder and sanitizer build route.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, fuzz harnesses, corpora, source code, tests, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: use the selected descriptor capacity; give both
+  public profiles the same 1 MiB safety limit so identity policy is isolated;
+  retain 1 KiB raw storage; verify sticky cross-profile errors; and run one
+  bounded target without a persistent corpus.
+- Generated-code task description: update fixed workspace, invoke both public
+  policies, parameterize truncation/length/descriptor regressions, add cross-
+  profile atomicity, compile under both compilers, and run bounded sanitizers.
+- Similarity review: the implementation parameterizes and composes only marc-
+  owned harness, public C lifecycle, selected format, and GoogleTest code. No
+  external implementation expression entered the change.
+- Local validation: all seven targeted malformed regressions pass under MSVC
+  and ClangCL; the Clang 22 ASan/UBSan target completes 1,000 bounded inputs
+  without finding and peaks at 44 MiB RSS; all 2,902 registered tests pass
+  under both Release configurations with the 240-second per-test limit,
+  including schema compatibility and documentation layout.

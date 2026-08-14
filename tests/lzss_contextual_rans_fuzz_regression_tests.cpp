@@ -2,9 +2,7 @@
 
 #include "dictionary/lzss_typed_token.hpp"
 #include "entropy/contextual_rans_format.hpp"
-#include "entropy/contextual_rans_format.hpp"
 #include "entropy/rans_decode_table.hpp"
-#include "frame/lzss_contextual_rans_frame_decoder.hpp"
 #include "frame/lzss_contextual_rans_frame_decoder.hpp"
 #include "frame/lzss_contextual_rans_format.hpp"
 
@@ -22,8 +20,6 @@ namespace {
 using RansDecodeEntry = marc::entropy::internal::RansDecodeEntry;
 using Token = marc::dictionary::internal::LzssTypedToken;
 
-enum class Representation { canonical };
-
 constexpr std::array raw{
     std::uint8_t{'A'}, std::uint8_t{'B'}, std::uint8_t{'A'},
     std::uint8_t{'B'}, std::uint8_t{'X'}};
@@ -32,9 +28,11 @@ constexpr std::size_t maximum_payload = raw.size() * 12 + 8;
 constexpr std::size_t maximum_internal = 2U << 20;
 
 [[nodiscard]] constexpr std::size_t maximum_encoded_frame(
-    const Representation) noexcept {
-    const auto descriptor_size =
-        marc::entropy::internal::contextual_rans_max_descriptor_size;
+    const marc_lzss_contextual_window_profile window_profile) noexcept {
+    const auto descriptor_size = window_profile
+            == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        ? marc::entropy::internal::contextual_rans_max_descriptor_size_v2
+        : marc::entropy::internal::contextual_rans_max_descriptor_size_v1;
     return marc::frame::internal::lzss_contextual_rans_frame_header_size
         + descriptor_size + maximum_payload;
 }
@@ -56,7 +54,9 @@ struct Config {
 };
 
 template <class T>
-void configure_fields(T& result) {
+void configure_fields(
+    T& result,
+    const marc_lzss_contextual_window_profile window_profile) {
     result.original_size = raw.size();
     result.frame_size = raw.size();
     result.max_total_output_size = 32;
@@ -64,20 +64,24 @@ void configure_fields(T& result) {
     result.max_block_size = maximum_decisions;
     result.max_compressed_payload_size = maximum_payload;
     result.max_internal_buffered_bytes = maximum_internal;
-    result.max_lz_distance = UINT64_C(1) << 16;
+    result.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
+    result.max_lz_distance = UINT64_C(1) << 20;
     result.max_lz_match_length = 258;
     result.max_entropy_table_entries =
         marc::entropy::internal::contextual_rans_decode_table_entries;
+    result.window_profile = window_profile;
 }
 
-[[nodiscard]] Config settings(const Representation representation,
+[[nodiscard]] Config settings(
+                              const marc_lzss_contextual_window_profile
+                                  window_profile,
                               const marc_direction direction) {
     Config result{};
-    static_cast<void>(representation);
     EXPECT_EQ(marc_lzss_contextual_rans_config_init(
                   direction, &result.value),
               MARC_STATUS_OK);
-    configure_fields(result.value);
+    configure_fields(result.value, window_profile);
     return result;
 }
 
@@ -98,8 +102,8 @@ void configure_fields(T& result) {
 }
 
 [[nodiscard]] std::vector<std::uint8_t> canonical_stream(
-    const Representation representation) {
-    auto config = settings(representation, MARC_DIRECTION_ENCODE);
+    const marc_lzss_contextual_window_profile window_profile) {
+    auto config = settings(window_profile, MARC_DIRECTION_ENCODE);
     auto workspace = workspace_for(config);
     marc_transform* encoder{};
     const marc_buffer primary{workspace.primary.data(),
@@ -112,7 +116,7 @@ void configure_fields(T& result) {
     EXPECT_EQ(status, MARC_STATUS_OK);
     std::vector<std::uint8_t> encoded(
         marc::frame::internal::lzss_contextual_rans_stream_header_size
-        + maximum_encoded_frame(representation));
+        + maximum_encoded_frame(window_profile));
     const auto result = marc_transform_process(
         encoder, {raw.data(), raw.size()}, {encoded.data(), encoded.size()},
         MARC_PROCESS_END_INPUT);
@@ -123,11 +127,12 @@ void configure_fields(T& result) {
 }
 
 class LzssContextualRansFuzzRegression
-    : public testing::TestWithParam<Representation> {
+    : public testing::TestWithParam<
+          marc_lzss_contextual_window_profile> {
 protected:
     LzssContextualRansFuzzRegression()
-        : representation_(GetParam()),
-          decode_config_(settings(representation_, MARC_DIRECTION_DECODE)),
+        : window_profile_(GetParam()),
+          decode_config_(settings(window_profile_, MARC_DIRECTION_DECODE)),
           public_workspace_(workspace_for(decode_config_)),
           tables_(marc::entropy::internal::
                       contextual_rans_decode_table_entries) {}
@@ -140,7 +145,7 @@ protected:
         limits.max_block_size = maximum_decisions;
         limits.max_compressed_payload_size = maximum_payload;
         limits.max_internal_buffered_bytes = maximum_internal;
-        limits.max_lz_distance = UINT64_C(1) << 16;
+        limits.max_lz_distance = UINT64_C(1) << 20;
         limits.max_lz_match_length = 258;
         limits.max_entropy_table_entries =
             marc::entropy::internal::contextual_rans_decode_table_entries;
@@ -210,7 +215,7 @@ protected:
     }
 
 private:
-    Representation representation_{};
+    marc_lzss_contextual_window_profile window_profile_{};
     Config decode_config_{};
     Workspace public_workspace_{};
     std::vector<RansDecodeEntry> tables_;
@@ -247,8 +252,76 @@ TEST_P(LzssContextualRansFuzzRegression,
     expect_dual_atomic_failure(encoded);
 }
 
+TEST(LzssContextualRansFuzzRegression,
+     CrossProfilePublicDecodersRejectAtomically) {
+    const auto frozen = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    auto extended_config = settings(
+        MARC_LZSS_CONTEXTUAL_WINDOW_1M, MARC_DIRECTION_DECODE);
+    auto extended_workspace = workspace_for(extended_config);
+    marc_transform* extended_decoder{};
+    ASSERT_EQ(marc_lzss_contextual_rans_create(
+                  &extended_config.value,
+                  {extended_workspace.primary.data(),
+                   extended_workspace.primary.size()},
+                  {extended_workspace.secondary.data(),
+                   extended_workspace.secondary.size()},
+                  extended_workspace.views_buffer(), &extended_decoder),
+              MARC_STATUS_OK);
+    std::array<std::uint8_t, raw.size()> output{};
+    output.fill(UINT8_C(0xa5));
+    auto result = marc_transform_process(
+        extended_decoder, {frozen.data(), frozen.size()},
+        {output.data(), output.size()}, MARC_PROCESS_END_INPUT);
+    EXPECT_EQ(result.status, MARC_STATUS_MALFORMED_STREAM);
+    EXPECT_EQ(result.output_produced, 0U);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::uint8_t value) {
+        return value == UINT8_C(0xa5);
+    }));
+    const auto extended_repeated = marc_transform_process(
+        extended_decoder, {nullptr, 0}, {nullptr, 0}, MARC_PROCESS_NONE);
+    EXPECT_EQ(extended_repeated.status, result.status);
+    EXPECT_EQ(extended_repeated.error_byte_position,
+              result.error_byte_position);
+    EXPECT_EQ(extended_repeated.error_bit_position,
+              result.error_bit_position);
+    marc_transform_destroy(extended_decoder);
+
+    const auto extended = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_1M);
+    auto frozen_config = settings(
+        MARC_LZSS_CONTEXTUAL_WINDOW_64K, MARC_DIRECTION_DECODE);
+    auto frozen_workspace = workspace_for(frozen_config);
+    marc_transform* frozen_decoder{};
+    ASSERT_EQ(marc_lzss_contextual_rans_create(
+                  &frozen_config.value,
+                  {frozen_workspace.primary.data(),
+                   frozen_workspace.primary.size()},
+                  {frozen_workspace.secondary.data(),
+                   frozen_workspace.secondary.size()},
+                  frozen_workspace.views_buffer(), &frozen_decoder),
+              MARC_STATUS_OK);
+    output.fill(UINT8_C(0xa5));
+    result = marc_transform_process(
+        frozen_decoder, {extended.data(), extended.size()},
+        {output.data(), output.size()}, MARC_PROCESS_END_INPUT);
+    EXPECT_EQ(result.status, MARC_STATUS_MALFORMED_STREAM);
+    EXPECT_EQ(result.output_produced, 0U);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::uint8_t value) {
+        return value == UINT8_C(0xa5);
+    }));
+    const auto frozen_repeated = marc_transform_process(
+        frozen_decoder, {nullptr, 0}, {nullptr, 0}, MARC_PROCESS_NONE);
+    EXPECT_EQ(frozen_repeated.status, result.status);
+    EXPECT_EQ(frozen_repeated.error_byte_position,
+              result.error_byte_position);
+    EXPECT_EQ(frozen_repeated.error_bit_position,
+              result.error_bit_position);
+    marc_transform_destroy(frozen_decoder);
+}
+
 INSTANTIATE_TEST_SUITE_P(
-    Canonical, LzssContextualRansFuzzRegression,
-    testing::Values(Representation::canonical));
+    Profiles, LzssContextualRansFuzzRegression,
+    testing::Values(
+        MARC_LZSS_CONTEXTUAL_WINDOW_64K,
+        MARC_LZSS_CONTEXTUAL_WINDOW_1M));
 
 } // namespace
