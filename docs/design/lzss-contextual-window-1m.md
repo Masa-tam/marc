@@ -454,6 +454,16 @@ completed the four-direction external exchange across the Windows/MSVC,
 Ubuntu 24.04 CI, and Ubuntu 26.04/Clang producers with all 50 archives
 reproduced byte-identically in every pass.
 
+The Contextual Blocked Huffman descriptor stage is implemented. Descriptor
+APIs receive the selected field-context variant explicitly while retaining
+64 KiB as the source-level default. Variant 1 preserves its exact 24-through-
+2,561-byte grammar; variant 2 admits 21-symbol distance records and the exact
+24-through-2,579-byte range. Both retain 35 tables and 17,885 decode nodes.
+Crossed layouts, every selected-size violation, odd dense-record padding,
+truncation, trailing bytes, and short output fail atomically. No entropy
+coding, typed-token, frame, streaming, public, or schema boundary selects the
+new descriptor yet.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

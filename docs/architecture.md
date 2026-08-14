@@ -5264,3 +5264,14 @@ requires the selected `2/3 + 1/2 + 5/2` stream identity and immediate local
 round trip. Compatibility removes only that final entry before exercising the
 unchanged schema-39-through-1 chain; external exchange remains post-push
 evidence.
+
+The next Contextual Blocked Huffman descriptor boundary receives the validated
+field-context layout explicitly. Its fixed model objects still reserve 256
+code lengths, but descriptor analysis addresses only the selected 17- or
+21-symbol distance alphabet. The frozen layout retains its 2,561-byte maximum;
+the selected layout adds two bytes for the pooled distance table and two bytes
+for each of eight distance-context overrides, reaching exactly 2,579 bytes.
+Table count and bounded node storage remain 35 and 17,885. Variant selection
+precedes all prefix, record, table, and allocation work, and crossed layouts
+fail without publishing a descriptor. Entropy coding and outer frame
+admission remain separate review boundaries.

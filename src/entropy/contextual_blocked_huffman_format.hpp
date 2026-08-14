@@ -1,7 +1,7 @@
 #ifndef MARC_ENTROPY_CONTEXTUAL_BLOCKED_HUFFMAN_FORMAT_HPP
 #define MARC_ENTROPY_CONTEXTUAL_BLOCKED_HUFFMAN_FORMAT_HPP
 
-#include "context/lzss_field_context_format.hpp"
+#include "context/lzss_field_context.hpp"
 #include "core/limits.hpp"
 #include "entropy/canonical_huffman.hpp"
 
@@ -17,6 +17,13 @@ inline constexpr std::size_t contextual_blocked_huffman_min_descriptor_size =
     24;
 inline constexpr std::size_t contextual_blocked_huffman_max_descriptor_size =
     2561;
+inline constexpr std::size_t
+    contextual_blocked_huffman_max_descriptor_size_v1 =
+        contextual_blocked_huffman_max_descriptor_size;
+inline constexpr std::size_t
+    contextual_blocked_huffman_max_descriptor_size_v2 = 2579;
+inline constexpr std::size_t contextual_blocked_huffman_descriptor_capacity =
+    contextual_blocked_huffman_max_descriptor_size_v2;
 inline constexpr std::size_t contextual_blocked_huffman_field_table_count = 4;
 inline constexpr std::size_t contextual_blocked_huffman_max_table_count =
     contextual_blocked_huffman_field_table_count
@@ -61,6 +68,7 @@ struct ContextualBlockedHuffmanDescriptor {
 
 enum class ContextualBlockedHuffmanFormatError : std::uint8_t {
     none,
+    unsupported_context_variant,
     truncated_descriptor,
     invalid_descriptor_size,
     invalid_decision_count,
@@ -88,7 +96,9 @@ validate_contextual_blocked_huffman_descriptor(
     std::uint32_t expected_decision_count,
     std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
-    std::size_t& serialized_size) noexcept;
+    std::size_t& serialized_size,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] ContextualBlockedHuffmanFormatError
 parse_contextual_blocked_huffman_descriptor(
@@ -96,7 +106,9 @@ parse_contextual_blocked_huffman_descriptor(
     std::uint32_t expected_decision_count,
     std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
-    ContextualBlockedHuffmanDescriptor& descriptor) noexcept;
+    ContextualBlockedHuffmanDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] ContextualBlockedHuffmanFormatError
 serialize_contextual_blocked_huffman_descriptor(
@@ -105,7 +117,9 @@ serialize_contextual_blocked_huffman_descriptor(
     std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
     std::span<std::byte> output,
-    std::size_t& bytes_written) noexcept;
+    std::size_t& bytes_written,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::entropy::internal
 

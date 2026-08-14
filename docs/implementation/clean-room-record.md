@@ -20925,3 +20925,28 @@ discarded and the reviewed seed retained.
 - Similarity review: the design uses only marc-owned format rules, arithmetic,
   source, tests, and provenance. No external implementation expression entered
   the change.
+
+## CR-0875: 2026-08-15 - Selected Contextual Blocked Huffman descriptor implementation
+
+- Authoring method: implemented the accepted selected-layout grammar directly
+  from marc's field-context selector and bounded canonical Huffman primitives.
+- References used: DD-821; IR-0595; TVG-0696; BR-0130; the existing marc-owned
+  Contextual Blocked Huffman descriptor, field-context tables, format tests,
+  and 64 KiB hand vector.
+- Known implementations intentionally not consulted: external Huffman or LZSS
+  implementations, descriptor formats, APIs, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: preserve the default 64 KiB API and bytes; require an
+  explicit field-context variant for the extended layout; select every field
+  and context alphabet through one bounded layout object; and reject unknown
+  variants before reading or publishing descriptor state.
+- Generated-code task description: implement variant-selected analysis,
+  parsing, serialization, bounds, and exhaustive malformed-layout tests while
+  keeping the legacy descriptor byte-identical.
+- Similarity review: the implementation and tests follow only marc-owned
+  structures and the accepted design arithmetic. No external implementation
+  expression entered the change.
+- Local validation: targeted descriptor tests pass under MSVC and ClangCL; the
+  complete ClangCL Release suite passes all 2,924 registered tests, while the
+  MSVC Release codec suite passes 2,923 tests and its separately repeated
+  schema-compatibility test passes all schemas 1 through 40.

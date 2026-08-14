@@ -6695,8 +6695,10 @@ remains 17,885 decode-node entries. Payload size remains zero through
 bound remains unchanged. A crossed layout, a 17-symbol distance table in a
 variant-2 descriptor, a 21-symbol distance table in variant 1, or a descriptor
 outside the selected exact size range is contradictory and must fail before
-table construction or raw publication. This reservation does not yet claim a
-selected descriptor implementation or a public 1 MiB profile.
+table construction or raw publication. The descriptor parser, validator, and
+serializer implement this selected boundary with variant 1 as the source-level
+default; entropy coding, typed-token, frame, lifecycle, and public 1 MiB
+admission remain later stages.
 
 Contextual rANS descriptor parsing never selects that layout itself. The
 dictionary/context pair in the already validated stream header selects field-

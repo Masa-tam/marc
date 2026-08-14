@@ -2250,3 +2250,18 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the 1 MiB
 Contextual tANS profile.
+
+### BR-0130
+
+The selected Contextual Blocked Huffman descriptor now supports both the
+frozen 64 KiB field-context layout and the prospective 1 MiB layout without
+changing existing bytes. The selected layout derives four field alphabets and
+31 context alphabets from the explicit field-context variant, retains the
+35-table/17,885-node workspace ceiling, and bounds the extended descriptor at
+2,579 bytes. Exact maximum-size, prefix, padding, crossed-layout, unknown-
+variant, and atomic-capacity tests pass under MSVC and ClangCL. All 2,924
+registered Release tests pass across the two configurations when the MSVC
+codec suite and schema test are combined; ClangCL passes the complete suite in
+one run. This admits only the bounded descriptor layer. Entropy coding,
+composition, framing, streaming, public surfaces, fuzzing, benchmarking, and
+interoperability admission for the new profile remain pending.

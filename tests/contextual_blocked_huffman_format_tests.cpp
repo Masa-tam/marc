@@ -2,12 +2,16 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <array>
+#include <bit>
 #include <cstddef>
+#include <cstdint>
 
 namespace {
 
 using namespace marc::entropy::internal;
+using marc::context::internal::LzssFieldContextVariant;
 
 [[nodiscard]] ContextualBlockedHuffmanDescriptor one_literal_descriptor() {
     ContextualBlockedHuffmanDescriptor descriptor{};
@@ -28,6 +32,53 @@ constexpr std::array<std::byte, 24> one_literal_bytes{
     std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00},
     std::byte{0x00}, std::byte{0x00}, std::byte{0x41}, std::byte{0x00},
 };
+
+void make_complete_dense_model(
+    ContextualBlockedHuffmanModel& model, const std::uint16_t alphabet) {
+    model = {};
+    model.active = true;
+    model.single_symbol = contextual_blocked_huffman_no_single_symbol;
+    const auto long_length = static_cast<std::uint8_t>(
+        std::bit_width(static_cast<std::uint16_t>(alphabet - 1U)));
+    const auto short_count = static_cast<std::uint16_t>(
+        (UINT32_C(1) << long_length) - alphabet);
+    for (std::uint16_t symbol = 0; symbol < alphabet; ++symbol) {
+        model.lengths[symbol] = static_cast<std::uint8_t>(
+            symbol < short_count ? long_length - 1U : long_length);
+    }
+}
+
+[[nodiscard]] ContextualBlockedHuffmanDescriptor extended_single_descriptor() {
+    ContextualBlockedHuffmanDescriptor descriptor{};
+    descriptor.decision_count = 4;
+    descriptor.field_active_mask = 0x0f;
+    for (auto& model : descriptor.field_models) model.active = true;
+    descriptor.field_models[0].single_symbol = 0;
+    descriptor.field_models[1].single_symbol = 'A';
+    descriptor.field_models[2].single_symbol = 0;
+    descriptor.field_models[3].single_symbol = 20;
+    return descriptor;
+}
+
+[[nodiscard]] ContextualBlockedHuffmanDescriptor extended_dense_descriptor() {
+    ContextualBlockedHuffmanDescriptor descriptor{};
+    descriptor.decision_count = 1;
+    descriptor.field_active_mask = 0x0f;
+    descriptor.override_mask = UINT32_C(0x7fffffff);
+    constexpr std::array<std::uint16_t, 4> field_alphabets{2, 256, 8, 21};
+    for (std::size_t field = 0; field < field_alphabets.size(); ++field) {
+        make_complete_dense_model(
+            descriptor.field_models[field], field_alphabets[field]);
+    }
+    for (std::size_t context_id = 0;
+         context_id < descriptor.context_models.size(); ++context_id) {
+        make_complete_dense_model(
+            descriptor.context_models[context_id],
+            marc::context::internal::
+                lzss_field_context_alphabets_v2[context_id]);
+    }
+    return descriptor;
+}
 
 } // namespace
 
@@ -157,4 +208,128 @@ TEST(ContextualBlockedHuffmanFormat, RejectsMasksSizesAndLimitsAtomically) {
                   marc::core::DecoderLimits{}, short_output, written),
               ContextualBlockedHuffmanFormatError::output_too_small);
     EXPECT_EQ(written, 0xCCCCU);
+}
+
+TEST(ContextualBlockedHuffmanFormat, SerializesSelectedExtendedDistance) {
+    const auto descriptor = extended_single_descriptor();
+    std::array<std::byte, 32> output{};
+    std::size_t written{};
+    ASSERT_EQ(serialize_contextual_blocked_huffman_descriptor(
+                  descriptor, 4, 0, {}, output, written,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualBlockedHuffmanFormatError::none);
+    ASSERT_EQ(written, output.size());
+    EXPECT_EQ(output[28], std::byte{0x00});
+    EXPECT_EQ(output[30], std::byte{0x14});
+
+    ContextualBlockedHuffmanDescriptor parsed{};
+    ASSERT_EQ(parse_contextual_blocked_huffman_descriptor(
+                  output, 4, 0, {}, parsed,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualBlockedHuffmanFormatError::none);
+    EXPECT_EQ(parsed.field_models[3].single_symbol, 20U);
+
+    std::size_t size = 0xa5a5;
+    EXPECT_EQ(validate_contextual_blocked_huffman_descriptor(
+                  descriptor, 4, 0, {}, size,
+                  LzssFieldContextVariant::field_context_64k),
+              ContextualBlockedHuffmanFormatError::invalid_model_symbol);
+    EXPECT_EQ(size, 0xa5a5U);
+}
+
+TEST(ContextualBlockedHuffmanFormat, SelectedDenseModelsReachExactMaximum) {
+    const auto descriptor = extended_dense_descriptor();
+    std::array<std::byte, contextual_blocked_huffman_descriptor_capacity>
+        output{};
+    std::size_t written{};
+    ASSERT_EQ(serialize_contextual_blocked_huffman_descriptor(
+                  descriptor, 1, 0, {}, output, written,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualBlockedHuffmanFormatError::none);
+    ASSERT_EQ(written, contextual_blocked_huffman_max_descriptor_size_v2);
+
+    ContextualBlockedHuffmanDescriptor parsed{};
+    ASSERT_EQ(parse_contextual_blocked_huffman_descriptor(
+                  output, 1, 0, {}, parsed,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualBlockedHuffmanFormatError::none);
+    EXPECT_EQ(parsed.override_mask, UINT32_C(0x7fffffff));
+
+    EXPECT_EQ(parse_contextual_blocked_huffman_descriptor(
+                  output, 1, 0, {}, parsed,
+                  LzssFieldContextVariant::field_context_64k),
+              ContextualBlockedHuffmanFormatError::invalid_descriptor_size);
+    for (std::size_t size = 2562; size <= output.size(); ++size) {
+        EXPECT_EQ(parse_contextual_blocked_huffman_descriptor(
+                      std::span<const std::byte>{output}.first(size), 1, 0,
+                      {}, parsed,
+                      LzssFieldContextVariant::field_context_64k),
+                  ContextualBlockedHuffmanFormatError::
+                      invalid_descriptor_size)
+            << size;
+    }
+
+    auto bad_padding = output;
+    bad_padding[175] |= std::byte{0xf0};
+    EXPECT_EQ(parse_contextual_blocked_huffman_descriptor(
+                  bad_padding, 1, 0, {}, parsed,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualBlockedHuffmanFormatError::
+                  noncanonical_representation);
+}
+
+TEST(ContextualBlockedHuffmanFormat, SelectedLayoutFailuresAreAtomic) {
+    const auto descriptor = extended_single_descriptor();
+    std::array<std::byte, 32> valid{};
+    std::size_t valid_size{};
+    ASSERT_EQ(serialize_contextual_blocked_huffman_descriptor(
+                  descriptor, 4, 0, {}, valid, valid_size,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualBlockedHuffmanFormatError::none);
+    ASSERT_EQ(valid_size, valid.size());
+
+    for (std::size_t extent = 0; extent < valid.size(); ++extent) {
+        ContextualBlockedHuffmanDescriptor sentinel{};
+        sentinel.decision_count = 0xccccccccU;
+        EXPECT_NE(parse_contextual_blocked_huffman_descriptor(
+                      std::span<const std::byte>{valid}.first(extent), 4, 0,
+                      {}, sentinel,
+                      LzssFieldContextVariant::field_context_1m),
+                  ContextualBlockedHuffmanFormatError::none)
+            << extent;
+        EXPECT_EQ(sentinel.decision_count, 0xccccccccU) << extent;
+    }
+    std::array<std::byte, 33> trailing{};
+    std::ranges::copy(valid, trailing.begin());
+    ContextualBlockedHuffmanDescriptor sentinel{};
+    sentinel.decision_count = 0xccccccccU;
+    EXPECT_EQ(parse_contextual_blocked_huffman_descriptor(
+                  trailing, 4, 0, {}, sentinel,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualBlockedHuffmanFormatError::trailing_data);
+    EXPECT_EQ(sentinel.decision_count, 0xccccccccU);
+    EXPECT_EQ(parse_contextual_blocked_huffman_descriptor(
+                  valid, 4, 0, {}, sentinel,
+                  LzssFieldContextVariant::field_context_64k),
+              ContextualBlockedHuffmanFormatError::invalid_model_symbol);
+    EXPECT_EQ(sentinel.decision_count, 0xccccccccU);
+
+    std::array<std::byte, 31> output{};
+    std::ranges::fill(output, std::byte{0xa5});
+    std::size_t written = 0xa5a5;
+    EXPECT_EQ(serialize_contextual_blocked_huffman_descriptor(
+                  descriptor, 4, 0, {}, output, written,
+                  LzssFieldContextVariant::field_context_1m),
+              ContextualBlockedHuffmanFormatError::output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [](const auto value) { return value == std::byte{0xa5}; }));
+    EXPECT_EQ(written, 0xa5a5U);
+
+    std::size_t size = 0xa5a5;
+    EXPECT_EQ(validate_contextual_blocked_huffman_descriptor(
+                  descriptor, 4, 0, {}, size,
+                  static_cast<LzssFieldContextVariant>(0xff)),
+              ContextualBlockedHuffmanFormatError::
+                  unsupported_context_variant);
+    EXPECT_EQ(size, 0xa5a5U);
 }

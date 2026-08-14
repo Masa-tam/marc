@@ -19,9 +19,39 @@ enum class RecordMode : std::uint8_t {
     dense = 2,
 };
 
-constexpr std::array<std::uint16_t,
-                     contextual_blocked_huffman_field_table_count>
-    field_alphabets{2, 256, 8, 17};
+struct SelectedLayout {
+    std::array<std::uint16_t,
+               contextual_blocked_huffman_field_table_count>
+        field_alphabets{};
+    const std::array<std::uint16_t,
+                     context::internal::lzss_field_context_count>*
+        context_alphabets{};
+    std::size_t maximum_descriptor_size{};
+};
+
+[[nodiscard]] bool select_layout(
+    const context::internal::LzssFieldContextVariant variant,
+    SelectedLayout& selected) noexcept {
+    using V = context::internal::LzssFieldContextVariant;
+    switch (variant) {
+    case V::field_context_64k:
+        selected.context_alphabets =
+            &context::internal::lzss_field_context_alphabets_v1;
+        selected.maximum_descriptor_size =
+            contextual_blocked_huffman_max_descriptor_size_v1;
+        break;
+    case V::field_context_1m:
+        selected.context_alphabets =
+            &context::internal::lzss_field_context_alphabets_v2;
+        selected.maximum_descriptor_size =
+            contextual_blocked_huffman_max_descriptor_size_v2;
+        break;
+    default: return false;
+    }
+    selected.field_alphabets = {
+        2, 256, 8, (*selected.context_alphabets)[23]};
+    return true;
+}
 
 [[nodiscard]] std::size_t dense_data_size(
     const std::uint16_t alphabet) noexcept {
@@ -158,11 +188,11 @@ constexpr std::array<std::uint16_t,
 
 [[nodiscard]] ContextualBlockedHuffmanFormatError analyze_descriptor(
     const ContextualBlockedHuffmanDescriptor& descriptor,
-    std::size_t& serialized_size,
+    const SelectedLayout& layout, std::size_t& serialized_size,
     std::size_t& model_count) noexcept {
     serialized_size = contextual_blocked_huffman_prefix_size;
     model_count = 0;
-    for (std::size_t field = 0; field < field_alphabets.size(); ++field) {
+    for (std::size_t field = 0; field < layout.field_alphabets.size(); ++field) {
         const bool expected_active =
             (descriptor.field_active_mask & (UINT8_C(1) << field)) != 0;
         if (descriptor.field_models[field].active != expected_active) {
@@ -171,7 +201,7 @@ constexpr std::array<std::uint16_t,
         }
         std::size_t record_size{};
         const auto error = analyze_model(
-            descriptor.field_models[field], field_alphabets[field],
+            descriptor.field_models[field], layout.field_alphabets[field],
             record_size);
         if (error != ContextualBlockedHuffmanFormatError::none) return error;
         if (!expected_active) continue;
@@ -192,7 +222,7 @@ constexpr std::array<std::uint16_t,
         std::size_t record_size{};
         const auto error = analyze_model(
             descriptor.context_models[context_id],
-            context::internal::lzss_field_context_alphabets[context_id],
+            (*layout.context_alphabets)[context_id],
             record_size);
         if (error != ContextualBlockedHuffmanFormatError::none) return error;
         if (!expected_active) continue;
@@ -203,7 +233,7 @@ constexpr std::array<std::uint16_t,
         }
     }
     if (serialized_size < contextual_blocked_huffman_min_descriptor_size
-        || serialized_size > contextual_blocked_huffman_max_descriptor_size) {
+        || serialized_size > layout.maximum_descriptor_size) {
         return ContextualBlockedHuffmanFormatError::invalid_descriptor_size;
     }
     return ContextualBlockedHuffmanFormatError::none;
@@ -363,7 +393,13 @@ validate_contextual_blocked_huffman_descriptor(
     const std::uint32_t expected_decision_count,
     const std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
-    std::size_t& serialized_size) noexcept {
+    std::size_t& serialized_size,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    SelectedLayout layout{};
+    if (!select_layout(variant, layout)) {
+        return ContextualBlockedHuffmanFormatError::
+            unsupported_context_variant;
+    }
     const auto prefix_error = validate_prefix(
         descriptor, expected_decision_count, expected_payload_size);
     if (prefix_error != ContextualBlockedHuffmanFormatError::none) {
@@ -371,7 +407,8 @@ validate_contextual_blocked_huffman_descriptor(
     }
     std::size_t size{};
     std::size_t model_count{};
-    const auto analysis = analyze_descriptor(descriptor, size, model_count);
+    const auto analysis = analyze_descriptor(
+        descriptor, layout, size, model_count);
     if (analysis != ContextualBlockedHuffmanFormatError::none) return analysis;
     std::size_t table_entries{};
     if (!core::checked_multiply(
@@ -402,12 +439,18 @@ parse_contextual_blocked_huffman_descriptor(
     const std::uint32_t expected_decision_count,
     const std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
-    ContextualBlockedHuffmanDescriptor& descriptor) noexcept {
+    ContextualBlockedHuffmanDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    SelectedLayout layout{};
+    if (!select_layout(variant, layout)) {
+        return ContextualBlockedHuffmanFormatError::
+            unsupported_context_variant;
+    }
     if (input.size() < contextual_blocked_huffman_prefix_size) {
         return ContextualBlockedHuffmanFormatError::truncated_descriptor;
     }
     if (input.size() < contextual_blocked_huffman_min_descriptor_size
-        || input.size() > contextual_blocked_huffman_max_descriptor_size) {
+        || input.size() > layout.maximum_descriptor_size) {
         return ContextualBlockedHuffmanFormatError::invalid_descriptor_size;
     }
     ContextualBlockedHuffmanDescriptor parsed{};
@@ -426,10 +469,11 @@ parse_contextual_blocked_huffman_descriptor(
         return prefix_error;
     }
     std::size_t cursor = contextual_blocked_huffman_prefix_size;
-    for (std::size_t field = 0; field < field_alphabets.size(); ++field) {
+    for (std::size_t field = 0; field < layout.field_alphabets.size(); ++field) {
         if ((parsed.field_active_mask & (UINT8_C(1) << field)) == 0) continue;
         const auto error = parse_model(
-            input, cursor, field_alphabets[field], parsed.field_models[field]);
+            input, cursor, layout.field_alphabets[field],
+            parsed.field_models[field]);
         if (error != ContextualBlockedHuffmanFormatError::none) return error;
     }
     for (std::size_t context_id = 0;
@@ -438,8 +482,7 @@ parse_contextual_blocked_huffman_descriptor(
             continue;
         }
         const auto error = parse_model(
-            input, cursor,
-            context::internal::lzss_field_context_alphabets[context_id],
+            input, cursor, (*layout.context_alphabets)[context_id],
             parsed.context_models[context_id]);
         if (error != ContextualBlockedHuffmanFormatError::none) return error;
     }
@@ -449,7 +492,7 @@ parse_contextual_blocked_huffman_descriptor(
     std::size_t canonical_size{};
     const auto validation = validate_contextual_blocked_huffman_descriptor(
         parsed, expected_decision_count, expected_payload_size, limits,
-        canonical_size);
+        canonical_size, variant);
     if (validation != ContextualBlockedHuffmanFormatError::none) {
         return validation;
     }
@@ -468,18 +511,24 @@ serialize_contextual_blocked_huffman_descriptor(
     const std::uint32_t expected_payload_size,
     const core::DecoderLimits& limits,
     const std::span<std::byte> output,
-    std::size_t& bytes_written) noexcept {
+    std::size_t& bytes_written,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    SelectedLayout layout{};
+    if (!select_layout(variant, layout)) {
+        return ContextualBlockedHuffmanFormatError::
+            unsupported_context_variant;
+    }
     std::size_t serialized_size{};
     const auto validation = validate_contextual_blocked_huffman_descriptor(
         descriptor, expected_decision_count, expected_payload_size, limits,
-        serialized_size);
+        serialized_size, variant);
     if (validation != ContextualBlockedHuffmanFormatError::none) {
         return validation;
     }
     if (output.size() < serialized_size) {
         return ContextualBlockedHuffmanFormatError::output_too_small;
     }
-    std::array<std::byte, contextual_blocked_huffman_max_descriptor_size>
+    std::array<std::byte, contextual_blocked_huffman_descriptor_capacity>
         encoded{};
     const std::span<std::byte> bytes{encoded};
     if (!core::store_le(bytes, 0, descriptor.decision_count)
@@ -492,10 +541,10 @@ serialize_contextual_blocked_huffman_descriptor(
     encoded[14] = static_cast<std::byte>(descriptor.field_active_mask);
     encoded[15] = static_cast<std::byte>(descriptor.flags);
     std::size_t cursor = contextual_blocked_huffman_prefix_size;
-    for (std::size_t field = 0; field < field_alphabets.size(); ++field) {
+    for (std::size_t field = 0; field < layout.field_alphabets.size(); ++field) {
         if (!descriptor.field_models[field].active) continue;
         const auto error = serialize_model(
-            descriptor.field_models[field], field_alphabets[field], bytes,
+            descriptor.field_models[field], layout.field_alphabets[field], bytes,
             cursor);
         if (error != ContextualBlockedHuffmanFormatError::none) return error;
     }
@@ -504,7 +553,7 @@ serialize_contextual_blocked_huffman_descriptor(
         if (!descriptor.context_models[context_id].active) continue;
         const auto error = serialize_model(
             descriptor.context_models[context_id],
-            context::internal::lzss_field_context_alphabets[context_id], bytes,
+            (*layout.context_alphabets)[context_id], bytes,
             cursor);
         if (error != ContextualBlockedHuffmanFormatError::none) return error;
     }
@@ -520,5 +569,9 @@ static_assert(contextual_blocked_huffman_max_descriptor_size
               == contextual_blocked_huffman_prefix_size
                   + 5 + 132 + 8 + 13
                   + 3 * 5 + 17 * 132 + 3 * 8 + 8 * 13);
+static_assert(contextual_blocked_huffman_max_descriptor_size_v2
+              == contextual_blocked_huffman_prefix_size
+                  + 5 + 132 + 8 + 15
+                  + 3 * 5 + 17 * 132 + 3 * 8 + 8 * 15);
 
 } // namespace marc::entropy::internal
