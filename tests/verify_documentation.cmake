@@ -850,6 +850,7 @@ foreach(required_experimental_benchmark IN ITEMS
         "`lzss-contextual-dynamic-range`"
         "`lzss-contextual-rans`"
         "`lzss-contextual-tans`"
+        "`lzss-contextual-tans-1m`"
         "`lzss-contextual-blocked-huffman`"
         "`lzss-contextual-adaptive-huffman`")
     string(FIND "${benchmark_content}" "${required_experimental_benchmark}"

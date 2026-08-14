@@ -20732,3 +20732,31 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned benchmark, public C,
   CLI-profile, workspace, streaming, tANS, and CMake test abstractions. No
   external implementation expression entered the design.
+
+## CR-0867: 2026-08-15 - Contextual tANS selected benchmark admission
+
+- Authoring method: implemented DD-818 through marc's public contextual-tANS
+  lifecycle and existing dependency-free benchmark adapter, then strengthened
+  the smoke from process success to report-contract validation.
+- References used: DD-790 through DD-818; IR-0592; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0693; marc's benchmark configuration, checked capacity,
+  workspace report, exact pre-timing round trip, and CTest infrastructure.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, benchmarks, adapters, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: use the selected profile for every public bound;
+  retain the frozen name unchanged; validate finite measurements and exact
+  workspace aggregation without thresholding speed; and reject a `-1M`
+  near-miss while requiring the canonical selected name once in help.
+- Generated-code task description: add the selected enum/name/configuration,
+  workspace/factory/capacity routing, strict report smoke, measurement record,
+  documentation inventory, and dual-compiler validation.
+- Similarity review: the implementation composes only marc-owned benchmark,
+  public C, CLI-profile, workspace, streaming, tANS, and CMake test code. No
+  external implementation expression entered the code or tests.
+- Local validation: both names emit 3,005 bytes for the 4,326-byte README;
+  selected peak workspace is 23,602,119 bytes and equals the decoder-region
+  sum. Both strict benchmark smokes pass under MSVC and ClangCL. All 2,917
+  registered Release tests pass under both compilers with the 300-second
+  per-test limit, including documentation layout and interoperability schema
+  compatibility.

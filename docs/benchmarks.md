@@ -57,6 +57,7 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-rans corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans-1m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-tans corpus.bin 5`,
+`marc_benchmark lzss-contextual-tans-1m corpus.bin 5`,
 `marc_benchmark lzss-contextual-blocked-huffman corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`.
 
@@ -252,6 +253,14 @@ header, at most 9,029 descriptor bytes, and two final-state bytes. Both
 directions are constructed through the public contextual-tANS C lifecycle;
 the report includes all directional workspace regions after an exact
 pre-timing round trip.
+
+The experimental `lzss-contextual-tans-1m` benchmark uses 1,048,576-byte raw
+frames and LZSS window, admits at most `6F` decisions, reserves `9F + 2`
+payload bytes, and applies a 128-MiB internal limit. Checked complete-stream
+capacity is `112 + 9N + 9,159K`: each nonempty frame reserves one 64-byte
+header, at most 9,093 descriptor bytes, and two final-state bytes. Use the
+same input, build, and iteration count as the 64 KiB name when comparing ratio,
+throughput, or queried workspace; measurements remain descriptive.
 
 The experimental `lzss-contextual-blocked-huffman` benchmark uses 65,536-byte
 raw frames, admits at most `6F` modeled decisions, reserves `12F` payload
@@ -1124,6 +1133,23 @@ extent is expected because this input cannot use a distance beyond 64 KiB.
 Exact public round trip, selected workspace bounds, checked
 `112 + 12N + 9,161K` capacity, and independent smoke success under both local
 compilers are the normative evidence.
+
+### BM-0050: 1 MiB Contextual tANS benchmark admission
+
+One Release iteration over the 4,326-byte README emits 3,005 bytes at ratio
+0.695 through both `lzss-contextual-tans` and
+`lzss-contextual-tans-1m`. The selected 1 MiB encoder reports
+primary/secondary/views workspaces of 4,326/48,093/396,896 bytes; its decoder
+reports 9,446,343/1,048,576/13,107,200 bytes. Peak caller-owned workspace is
+23,602,119 bytes, compared with 1,975,175 bytes for the same 64 KiB command.
+
+The 1 MiB smoke reports 1.800/2.343 MiB/s encode/decode under MSVC Release and
+1.872/2.144 MiB/s under ClangCL Release. These single-iteration, small-input
+timings are descriptive and are not throughput claims. The equal encoded
+extent is expected because this input cannot use a distance beyond 64 KiB.
+Exact public round trip, selected workspace bounds, checked
+`112 + 9N + 9,159K` capacity, strict name rejection, and independent smoke
+success under both local compilers are the normative evidence.
 
 ## Reporting results
 
