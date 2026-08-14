@@ -392,6 +392,13 @@ transactional header parsing and before frame collection. The stage must prove
 one-byte chunking and a distance above 64 KiB, but it does not yet expose the
 selection through the public C ABI, CLI, benchmark, fuzz, or schema.
 
+Profile selection and workspace calculation are now implemented. The 1 MiB
+profile publishes `2/3 + 1/2 + 5/2` with 4,550 frequency entries and increases
+the conservative serialized-frame requirement by exactly 64 bytes over the
+same 64 KiB raw extent. Unknown profile values and crossed dictionary limits
+leave requirements empty. The temporary streaming rejection remains in force
+until decoder admission and partial-buffer tests are implemented.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

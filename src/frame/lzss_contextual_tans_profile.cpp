@@ -106,6 +106,28 @@ inline constexpr std::uint64_t initial_state_bytes = 2;
         alignof(dictionary::internal::LzssTypedToken));
 }
 
+[[nodiscard]] context::internal::LzssFieldContextLayoutResult profile_layout(
+    const LzssContextualTansProfileVariant variant) noexcept {
+    switch (variant) {
+    case LzssContextualTansProfileVariant::field_context_64k:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_64k);
+    case LzssContextualTansProfileVariant::field_context_1m:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_1m);
+    }
+    return {{}, context::internal::LzssFieldContextLayoutError::
+                    unsupported_context_variant};
+}
+
+[[nodiscard]] constexpr std::size_t maximum_descriptor_size(
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    return variant
+            == context::internal::LzssFieldContextVariant::field_context_64k
+        ? entropy::internal::contextual_tans_max_descriptor_size_v1
+        : entropy::internal::contextual_tans_max_descriptor_size_v2;
+}
+
 } // namespace
 
 LzssContextualTansProfileError make_lzss_contextual_tans_profile(
@@ -119,19 +141,20 @@ LzssContextualTansProfileError make_lzss_contextual_tans_profile(
         || config.frame_size == 0) {
         return LzssContextualTansProfileError::invalid_configuration;
     }
-    const auto dictionary_error =
-        dictionary::internal::validate_lzss_parameters(
-            config.dictionary, limits);
-    if (dictionary_error != dictionary::internal::LzssFormatError::none) {
-        return dictionary_error
-                   == dictionary::internal::LzssFormatError::limit_exceeded
-            ? LzssContextualTansProfileError::limit_exceeded
-            : LzssContextualTansProfileError::invalid_configuration;
-    }
-    if (config.dictionary.min_match_length != 5
-        || config.dictionary.max_match_length > 258
-        || config.dictionary.window_size > 65536) {
+    const auto selected = profile_layout(config.variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
         return LzssContextualTansProfileError::unsupported;
+    }
+    const auto dictionary_error =
+        dictionary::internal::validate_lzss_typed_parameters(
+            config.dictionary, limits, selected.layout.dictionary_variant);
+    if (dictionary_error
+        != dictionary::internal::LzssTypedTokenError::none) {
+        return dictionary_error
+                   == dictionary::internal::LzssTypedTokenError::limit_exceeded
+            ? LzssContextualTansProfileError::limit_exceeded
+            : LzssContextualTansProfileError::unsupported;
     }
     if (config.original_size > limits.max_total_output_size
         || config.frame_size > limits.max_frame_size) {
@@ -141,6 +164,12 @@ LzssContextualTansProfileError make_lzss_contextual_tans_profile(
     stream.frame_size = config.frame_size;
     stream.original_size = config.original_size;
     stream.dictionary = config.dictionary;
+    stream.dictionary_variant = static_cast<std::uint16_t>(
+        selected.layout.dictionary_variant);
+    stream.context_variant = static_cast<std::uint16_t>(
+        selected.layout.context_variant);
+    stream.frequency_entry_count = static_cast<std::uint32_t>(
+        selected.layout.frequency_entries);
     const auto stream_error = validate_lzss_contextual_tans_stream_header(
         stream, limits);
     if (stream_error != LzssContextualTansStreamHeaderError::none) {
@@ -162,6 +191,8 @@ LzssContextualTansProfileError make_lzss_contextual_tans_profile(
     const std::uint64_t token_count{largest_frame};
     const std::uint64_t table_count{
         entropy::internal::contextual_tans_encode_table_entries};
+    const auto descriptor_size = maximum_descriptor_size(
+        selected.layout.context_variant);
     std::uint64_t payload_bytes{};
     std::uint64_t frame_encoded_bytes{};
     std::uint64_t table_offset{};
@@ -183,7 +214,7 @@ LzssContextualTansProfileError make_lzss_contextual_tans_profile(
             static_cast<std::uint64_t>(
                 lzss_contextual_tans_frame_header_size),
             static_cast<std::uint64_t>(
-                entropy::internal::contextual_tans_max_descriptor_size),
+                descriptor_size),
             frame_encoded_bytes)
         || !core::checked_add(
             frame_encoded_bytes, payload_bytes, frame_encoded_bytes)
@@ -221,12 +252,20 @@ LzssContextualTansProfileError make_lzss_contextual_tans_profile(
 LzssContextualTansProfileError
 calculate_lzss_contextual_tans_decoder_workspace(
     const core::DecoderLimits& limits,
-    LzssContextualTansDecoderWorkspaceRequirements& workspace) noexcept {
+    LzssContextualTansDecoderWorkspaceRequirements& workspace,
+    const LzssContextualTansProfileVariant variant) noexcept {
     workspace = {};
     if (core::validate_limits(limits) != core::LimitError::none) {
         return LzssContextualTansProfileError::invalid_configuration;
     }
-    if (entropy::internal::contextual_tans_decode_table_entries
+    const auto selected = profile_layout(variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return LzssContextualTansProfileError::unsupported;
+    }
+    if (lzss_contextual_tans_stream_header_size
+            > limits.max_internal_buffered_bytes
+        || entropy::internal::contextual_tans_decode_table_entries
         > limits.max_entropy_table_entries) {
         return LzssContextualTansProfileError::limit_exceeded;
     }
@@ -247,11 +286,13 @@ calculate_lzss_contextual_tans_decoder_workspace(
     std::uint64_t token_offset{};
     std::uint64_t views_bytes{};
     std::uint64_t aggregate_bytes{};
+    const auto descriptor_size = maximum_descriptor_size(
+        selected.layout.context_variant);
     if (!core::checked_add(
             static_cast<std::uint64_t>(
                 lzss_contextual_tans_frame_header_size),
             static_cast<std::uint64_t>(
-                entropy::internal::contextual_tans_max_descriptor_size),
+                descriptor_size),
             encoded_bytes)
         || !core::checked_add(encoded_bytes, payload_bytes, encoded_bytes)
         || !decoder_view_layout(

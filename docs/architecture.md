@@ -5217,3 +5217,10 @@ and 1 MiB profile selection, selected descriptor sizing over the unchanged
 Streaming identity is checked before frame collection; caller-owned raw,
 token, table, HashChain, and serialized-frame storage remains bounded by the
 same aggregate limit. Public surfaces remain a separate promotion.
+
+The selected private profile half is implemented. Its two-value configuration
+publishes the exact dictionary/context identity and model entry count, uses the
+selected descriptor ceiling in encoder and decoder storage, and preserves the
+fixed transition-table and HashChain extents. Default construction retains all
+64 KiB requirements exactly. Streaming still rejects variant 2 until the
+following state-machine admission commit.

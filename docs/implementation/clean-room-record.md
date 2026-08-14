@@ -20555,3 +20555,32 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned selected-layout,
   profile, workspace, streaming, tANS, and HashChain abstractions. No external
   implementation expression entered the design.
+
+## CR-0860: 2026-08-15 - Contextual tANS selected profile admission
+
+- Authoring method: implemented the profile half of DD-815 over marc's shared
+  selected layout, existing tANS workspace calculator, and exact HashChain
+  storage requirements, with selected sizing tests added first.
+- References used: DD-790 through DD-815; IR-0589; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0690; marc's Contextual tANS profile and completed
+  selected Contextual rANS profile migration.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, profile factories, workspace policies, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: append a source-compatible private variant field;
+  keep 64 KiB default arguments; select typed dictionary validation and model
+  count together; retain fixed table storage; derive only the descriptor-size
+  difference; and leave streaming rejection unchanged for the next commit.
+- Generated-code task description: add selected profile and decoder workspace
+  tests; implement variant selection, exact identity publication, descriptor
+  sizing, unknown-value rejection, and frozen default preservation; run all
+  registered tests without promoting streaming or public surfaces.
+- Similarity review: the implementation generalizes only marc-owned profile,
+  selected-layout, workspace, typed-token, tANS, and HashChain code. No
+  external implementation expression entered the code or tests.
+- Local validation: default 17-byte storage remains 9,248 bytes; selected
+  storage is 9,312 bytes; the bounded decoder example grows from 11,093 to
+  11,157 bytes while retaining identical table/token extents. All 2,912
+  registered Release tests pass under MSVC in 175.71 seconds and ClangCL in
+  176.95 seconds with the 300-second per-test limit, including interoperability
+  schema compatibility and documentation layout.

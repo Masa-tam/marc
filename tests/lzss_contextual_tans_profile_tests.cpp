@@ -95,6 +95,20 @@ TEST(LzssContextualTansProfile, UsesShortFrameAndEmptyEncoderExtent) {
     EXPECT_TRUE(views.tokens.empty());
     EXPECT_TRUE(views.tables.empty());
     EXPECT_TRUE(views.match_finder.empty());
+
+    LzssContextualTansProfileConfig extended{};
+    extended.original_size = 17;
+    extended.frame_size = 17;
+    extended.dictionary.window_size = UINT32_C(1) << 20;
+    extended.variant =
+        LzssContextualTansProfileVariant::field_context_1m;
+    ASSERT_EQ(make_lzss_contextual_tans_profile(
+                  extended, {}, stream, workspace),
+              LzssContextualTansProfileError::none);
+    EXPECT_EQ(stream.dictionary_variant, 3U);
+    EXPECT_EQ(stream.context_variant, 2U);
+    EXPECT_EQ(stream.frequency_entry_count, 4550U);
+    EXPECT_EQ(workspace.frame_encoded_bytes, 9312U);
 }
 
 TEST(LzssContextualTansProfile, RejectsUnsupportedAndBoundedConfigurations) {
@@ -105,6 +119,19 @@ TEST(LzssContextualTansProfile, RejectsUnsupportedAndBoundedConfigurations) {
     EXPECT_EQ(make_lzss_contextual_tans_profile(
                   unsupported, {}, stream, workspace),
               LzssContextualTansProfileError::unsupported);
+    unsupported = {};
+    unsupported.variant =
+        static_cast<LzssContextualTansProfileVariant>(255);
+    EXPECT_EQ(make_lzss_contextual_tans_profile(
+                  unsupported, {}, stream, workspace),
+              LzssContextualTansProfileError::unsupported);
+    EXPECT_EQ(workspace.views_bytes, 0U);
+    LzssContextualTansDecoderWorkspaceRequirements decoder_workspace{};
+    EXPECT_EQ(calculate_lzss_contextual_tans_decoder_workspace(
+                  {}, decoder_workspace,
+                  static_cast<LzssContextualTansProfileVariant>(255)),
+              LzssContextualTansProfileError::unsupported);
+    EXPECT_EQ(decoder_workspace.views_bytes, 0U);
 
     auto limits = marc::core::DecoderLimits{};
     limits.max_compressed_payload_size = 154;
@@ -155,6 +182,15 @@ TEST(LzssContextualTansProfile, CalculatesDecoderWorkspaceFromLimits) {
               expected_offset
                   + workspace.token_count
                       * sizeof(marc::dictionary::internal::LzssTypedToken));
+
+    LzssContextualTansDecoderWorkspaceRequirements extended{};
+    ASSERT_EQ(calculate_lzss_contextual_tans_decoder_workspace(
+                  limits, extended,
+                  LzssContextualTansProfileVariant::field_context_1m),
+              LzssContextualTansProfileError::none);
+    EXPECT_EQ(extended.frame_encoded_bytes, 11'157U);
+    EXPECT_EQ(extended.table_count, workspace.table_count);
+    EXPECT_EQ(extended.token_count, workspace.token_count);
 
     limits.max_entropy_table_entries = workspace.table_count - 1;
     EXPECT_EQ(calculate_lzss_contextual_tans_decoder_workspace(

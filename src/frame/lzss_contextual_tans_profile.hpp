@@ -12,10 +12,17 @@
 
 namespace marc::frame::internal {
 
+enum class LzssContextualTansProfileVariant : std::uint8_t {
+    field_context_64k,
+    field_context_1m,
+};
+
 struct LzssContextualTansProfileConfig {
     std::uint64_t original_size{};
     std::uint32_t frame_size{UINT32_C(1) << 16};
     dictionary::internal::LzssParameters dictionary{};
+    LzssContextualTansProfileVariant variant{
+        LzssContextualTansProfileVariant::field_context_64k};
 };
 
 struct LzssContextualTansEncoderWorkspaceRequirements {
@@ -77,7 +84,9 @@ make_lzss_contextual_tans_profile(
 [[nodiscard]] LzssContextualTansProfileError
 calculate_lzss_contextual_tans_decoder_workspace(
     const core::DecoderLimits& limits,
-    LzssContextualTansDecoderWorkspaceRequirements& workspace) noexcept;
+    LzssContextualTansDecoderWorkspaceRequirements& workspace,
+    LzssContextualTansProfileVariant variant =
+        LzssContextualTansProfileVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssContextualTansWorkspaceError
 partition_lzss_contextual_tans_encoder_views(
