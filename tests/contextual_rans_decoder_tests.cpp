@@ -51,13 +51,15 @@ using namespace marc::entropy::internal;
 
 [[nodiscard]] std::vector<std::byte> descriptor_bytes(
     const ContextualRansDescriptor& descriptor,
-    const marc::core::DecoderLimits& limits = {}) {
-    std::array<std::byte, contextual_rans_max_descriptor_size>
+    const marc::core::DecoderLimits& limits = {},
+    const LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) {
+    std::array<std::byte, contextual_rans_descriptor_capacity>
         storage{};
     std::size_t written{};
     EXPECT_EQ(serialize_contextual_rans_descriptor(
                   descriptor, descriptor.decision_count,
-                  descriptor.payload_size, limits, storage, written),
+                  descriptor.payload_size, limits, storage, written, variant),
               ContextualRansFormatError::none);
     return {storage.begin(), storage.begin() + written};
 }
@@ -70,11 +72,13 @@ using namespace marc::entropy::internal;
     ContextualRansDecoder& decoder,
     const ContextualRansDescriptor& model,
     const std::span<const std::byte> payload,
-    const std::span<RansDecodeEntry> tables) {
-    const auto descriptor = descriptor_bytes(model);
+    const std::span<RansDecodeEntry> tables,
+    const LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) {
+    const auto descriptor = descriptor_bytes(model, {}, variant);
     return decoder.begin(
         descriptor, model.decision_count, model.payload_size, payload, {},
-        tables);
+        tables, variant);
 }
 
 [[nodiscard]] bool table_marker(const RansDecodeEntry& entry) {
@@ -113,6 +117,79 @@ TEST(ContextualRansDecoder, DecodesSpecifiedOneLiteralVector) {
               ContextualRansDecodeError::none);
     EXPECT_EQ(value, 65U);
     EXPECT_EQ(decoder.finish(2, 2).error, ContextualRansDecodeError::none);
+}
+
+TEST(ContextualRansDecoder, ExtendedLayoutEnforcesSelectedRequests) {
+    constexpr std::array operations{
+        ModeledOperation{ModeledOperationKind::symbol, 23, 21, 20, 0},
+        ModeledOperation{
+            ModeledOperationKind::bypass_bits, 0, 0, 0xabcde, 20},
+    };
+    constexpr auto extended = LzssFieldContextVariant::field_context_1m;
+    ContextualRansDescriptor model{};
+    const auto plan = plan_contextual_rans_operations(
+        operations, {}, model, extended);
+    ASSERT_EQ(plan.error, ContextualRansEncodeError::none);
+    std::vector<std::byte> payload(plan.payload_size);
+    ASSERT_EQ(encode_contextual_rans_operations(
+                  operations, {}, payload, model, extended).error,
+              ContextualRansEncodeError::none);
+
+    auto tables = table_storage();
+    ContextualRansDecoder alphabet_decoder;
+    ASSERT_EQ(begin_model(
+                  alphabet_decoder, model, payload, tables, extended)
+                  .decode.error,
+              ContextualRansDecodeError::none);
+    std::uint32_t value{0xccccccccU};
+    EXPECT_EQ(alphabet_decoder.decode_symbol(23, 17, value).error,
+              ContextualRansDecodeError::invalid_alphabet);
+    EXPECT_EQ(value, 0xccccccccU);
+
+    tables = table_storage();
+    ContextualRansDecoder width_decoder;
+    ASSERT_EQ(begin_model(width_decoder, model, payload, tables, extended)
+                  .decode.error,
+              ContextualRansDecodeError::none);
+    ASSERT_EQ(width_decoder.decode_symbol(23, 21, value).error,
+              ContextualRansDecodeError::none);
+    value = 0xccccccccU;
+    EXPECT_EQ(width_decoder.decode_bypass(21, value).error,
+              ContextualRansDecodeError::invalid_bypass_width);
+    EXPECT_EQ(value, 0xccccccccU);
+
+    const auto serialized = descriptor_bytes(model, {}, extended);
+    tables = table_storage();
+    fill_table_markers(tables);
+    ContextualRansDecoder crossed_decoder;
+    const auto crossed = crossed_decoder.begin(
+        serialized, model.decision_count, model.payload_size, payload, {},
+        tables);
+    EXPECT_EQ(crossed.format_error,
+              ContextualRansFormatError::invalid_frequency_entry_count);
+    EXPECT_EQ(crossed.decode.error,
+              ContextualRansDecodeError::invalid_descriptor);
+    EXPECT_TRUE(std::ranges::all_of(tables, table_marker));
+
+    const auto frozen = descriptor_bytes(literal_a_descriptor());
+    constexpr auto frozen_payload = lower_bound_payload();
+    const auto reverse_crossed = crossed_decoder.begin(
+        frozen, 2, 8, frozen_payload, {}, tables, extended);
+    EXPECT_EQ(reverse_crossed.format_error,
+              ContextualRansFormatError::invalid_frequency_entry_count);
+    EXPECT_EQ(reverse_crossed.decode.error,
+              ContextualRansDecodeError::invalid_descriptor);
+    EXPECT_TRUE(std::ranges::all_of(tables, table_marker));
+
+    const auto invalid = static_cast<LzssFieldContextVariant>(99);
+    const auto unsupported = crossed_decoder.begin(
+        serialized, model.decision_count, model.payload_size, payload, {},
+        tables, invalid);
+    EXPECT_EQ(unsupported.format_error,
+              ContextualRansFormatError::unsupported_context_variant);
+    EXPECT_EQ(unsupported.decode.error,
+              ContextualRansDecodeError::invalid_descriptor);
+    EXPECT_TRUE(std::ranges::all_of(tables, table_marker));
 }
 
 TEST(ContextualRansDecoder, BuildsCanonicalDecodeTables) {

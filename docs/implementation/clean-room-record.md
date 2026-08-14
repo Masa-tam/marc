@@ -19886,3 +19886,33 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned field-layout and
   Contextual rANS components. No external implementation expression entered
   the design.
+
+## CR-0833: 2026-08-14 - Selected-layout Contextual rANS coding-core implementation
+
+- Authoring method: implemented DD-802 directly over marc's validated
+  selected-layout descriptor and existing Contextual rANS coding core.
+- References used: DD-790 through DD-802; IR-0576; TVG-0665; TVG-0666;
+  TVG-0676; TVG-0677; marc's model builder, reverse writer, decode-table
+  builder, decoder, and atomic test helpers.
+- Known implementations intentionally not consulted: external rANS
+  implementations, coding cores, table builders, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: store one selected layout in each stateful builder,
+  writer, and decoder; use maximum count capacity with selected iteration;
+  retain the fixed table extent; reject selection and request mismatches before
+  publication; and keep every outer 1 MiB rANS route unavailable.
+- Generated-code task description: propagate field-context selection through
+  operation planning, normalization, reverse payload writing, descriptor
+  validation, decode-table creation, and event decoding; add an extended
+  distance-class plus 20-bit bypass round trip and permanent crossed-layout,
+  width, table-boundary, unsupported-selection, and atomicity regressions.
+- Similarity review: the implementation only parameterizes repository-owned
+  Contextual rANS stages with the repository-owned selected layout. No
+  external implementation expression entered the change.
+- Local validation: the extended alphabet-21 symbol plus 20-bit bypass vector
+  round trips through planning, normalization, reverse writing, descriptor
+  serialization, fixed-size table construction, and decoding under both
+  compilers; all boundary and atomicity regressions pass; and all 2,889
+  registered tests pass under MSVC and ClangCL Release configurations with the
+  240-second per-test limit, including schema compatibility and documentation
+  layout.

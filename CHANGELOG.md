@@ -27,6 +27,11 @@ format versions, and C ABI versions are independent namespaces.
   Fixed-capacity storage remains bounded by the larger layout, while each
   selected layout retains its exact descriptor ceiling and rejects a
   non-zero unused tail.
+- Extended the internal Contextual rANS coding core to retain the selected
+  field layout through model normalization, reverse payload coding,
+  decode-table construction, and event decoding. The 1 MiB layout admits its
+  21-symbol distance classes and 20-bit bypass fields without increasing the
+  fixed 126,976-entry decode-table workspace.
 
 ## 0.3.0 - 2026-08-13
 

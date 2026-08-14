@@ -35,13 +35,17 @@ build_contextual_rans_decode_tables(
     const ContextualRansDescriptor& descriptor,
     const core::DecoderLimits& limits,
     std::span<RansDecodeEntry> output,
-    ContextualRansDecodeTables& tables) noexcept;
+    ContextualRansDecodeTables& tables,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] ContextualRansDecodeTableResult
 build_contextual_rans_decode_tables_from_model(
     const ContextualRansDescriptor& descriptor,
     std::span<RansDecodeEntry> output,
-    ContextualRansDecodeTables& tables) noexcept;
+    ContextualRansDecodeTables& tables,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::entropy::internal
 

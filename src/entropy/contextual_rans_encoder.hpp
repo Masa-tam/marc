@@ -22,13 +22,17 @@ struct ContextualRansEncodeResult {
 [[nodiscard]] ContextualRansEncodeResult plan_contextual_rans_operations(
     std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,
-    ContextualRansDescriptor& descriptor) noexcept;
+    ContextualRansDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] ContextualRansEncodeResult encode_contextual_rans_operations(
     std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,
     std::span<std::byte> payload_output,
-    ContextualRansDescriptor& descriptor) noexcept;
+    ContextualRansDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant =
+        context::internal::LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::entropy::internal
 

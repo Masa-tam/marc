@@ -54,7 +54,10 @@ public:
         std::uint32_t expected_payload_size,
         std::span<const std::byte> payload,
         const core::DecoderLimits& limits,
-        std::span<RansDecodeEntry> table_output) noexcept;
+        std::span<RansDecodeEntry> table_output,
+        context::internal::LzssFieldContextVariant variant =
+            context::internal::LzssFieldContextVariant::
+                field_context_64k) noexcept;
 
     [[nodiscard]] ContextualRansDecodeResult decode_symbol(
         std::uint16_t expected_context,
@@ -74,7 +77,8 @@ private:
     [[nodiscard]] ContextualRansDecodeResult begin_validated(
         const ContextualRansDescriptor& descriptor,
         std::span<const std::byte> payload,
-        std::span<RansDecodeEntry> table_output) noexcept;
+        std::span<RansDecodeEntry> table_output,
+        context::internal::LzssFieldContextVariant variant) noexcept;
     [[nodiscard]] ContextualRansDecodeResult result() const noexcept;
     [[nodiscard]] ContextualRansDecodeResult fail(
         ContextualRansDecodeError error) noexcept;
@@ -84,6 +88,7 @@ private:
 
     std::span<const std::byte> payload_{};
     std::span<const RansDecodeEntry> tables_{};
+    context::internal::LzssFieldContextLayout layout_{};
     std::array<bool, contextual_rans_context_count> active_contexts_{};
     std::array<bool, contextual_rans_context_count> requested_contexts_{};
     std::uint64_t state_{};

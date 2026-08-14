@@ -37,17 +37,19 @@ using namespace marc::entropy::internal;
     ContextualRansDecoder& decoder,
     const ContextualRansDescriptor& descriptor,
     const std::span<const std::byte> payload,
-    const std::span<RansDecodeEntry> table_storage) {
-    std::array<std::byte, contextual_rans_max_descriptor_size> bytes{};
+    const std::span<RansDecodeEntry> table_storage,
+    const LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) {
+    std::array<std::byte, contextual_rans_descriptor_capacity> bytes{};
     std::size_t written{};
     EXPECT_EQ(serialize_contextual_rans_descriptor(
                   descriptor, descriptor.decision_count,
-                  descriptor.payload_size, {}, bytes, written),
+                  descriptor.payload_size, {}, bytes, written, variant),
               ContextualRansFormatError::none);
     return decoder.begin(
         std::span<const std::byte>{bytes}.first(written),
         descriptor.decision_count, descriptor.payload_size, payload, {},
-        table_storage);
+        table_storage, variant);
 }
 
 } // namespace
@@ -108,6 +110,78 @@ TEST(ContextualRansEncoder, EncodesAndDecodesLsbFirstBypassVector) {
               ContextualRansDecodeError::none);
     EXPECT_EQ(value, 2U);
     EXPECT_EQ(decoder.finish(2, 3).error, ContextualRansDecodeError::none);
+}
+
+TEST(ContextualRansEncoder, ExtendedLayoutRoundTripsDistanceAndBypass) {
+    constexpr std::array operations{
+        ModeledOperation{ModeledOperationKind::symbol, 23, 21, 20, 0},
+        ModeledOperation{
+            ModeledOperationKind::bypass_bits, 0, 0, 0xabcde, 20},
+    };
+    constexpr auto extended = LzssFieldContextVariant::field_context_1m;
+
+    ContextualRansDescriptor descriptor{};
+    descriptor.decision_count = 0xa5a5;
+    const auto before = descriptor;
+    EXPECT_EQ(plan_contextual_rans_operations(
+                  operations, {}, descriptor).error,
+              ContextualRansEncodeError::invalid_alphabet);
+    EXPECT_EQ(descriptor.decision_count, before.decision_count);
+    std::array<std::byte, 64> rejected_payload{};
+    rejected_payload.fill(std::byte{0xa5});
+    EXPECT_EQ(encode_contextual_rans_operations(
+                  operations, {}, rejected_payload, descriptor).error,
+              ContextualRansEncodeError::invalid_alphabet);
+    EXPECT_TRUE(std::ranges::all_of(
+        rejected_payload,
+        [](const auto value) { return value == std::byte{0xa5}; }));
+    EXPECT_EQ(descriptor.decision_count, before.decision_count);
+    EXPECT_EQ(plan_contextual_rans_operations(
+                  operations, {}, descriptor,
+                  static_cast<LzssFieldContextVariant>(99)).error,
+              ContextualRansEncodeError::unsupported_context_variant);
+    EXPECT_EQ(descriptor.decision_count, before.decision_count);
+
+    const auto plan = plan_contextual_rans_operations(
+        operations, {}, descriptor, extended);
+    ASSERT_EQ(plan.error, ContextualRansEncodeError::none);
+    EXPECT_EQ(plan.decision_count, 21U);
+    EXPECT_EQ(descriptor.frequency_entry_count,
+              lzss_field_context_frequency_entries_v2);
+    const auto offset = lzss_field_context_offsets_v2[23];
+    EXPECT_EQ(descriptor.frequencies[offset + 20], 4096U);
+
+    std::vector<std::byte> payload(plan.payload_size, std::byte{0xa5});
+    ASSERT_EQ(encode_contextual_rans_operations(
+                  operations, {}, payload, descriptor, extended).error,
+              ContextualRansEncodeError::none);
+    auto table_storage = tables();
+    ContextualRansDecoder decoder;
+    ASSERT_EQ(begin_decoder(
+                  decoder, descriptor, payload, table_storage, extended)
+                  .decode.error,
+              ContextualRansDecodeError::none);
+    std::uint32_t value{0xccccccccU};
+    ASSERT_EQ(decoder.decode_symbol(23, 21, value).error,
+              ContextualRansDecodeError::none);
+    EXPECT_EQ(value, 20U);
+    value = 0xccccccccU;
+    ASSERT_EQ(decoder.decode_bypass(20, value).error,
+              ContextualRansDecodeError::none);
+    EXPECT_EQ(value, 0xabcdeU);
+    EXPECT_EQ(decoder.finish(2, 21).error, ContextualRansDecodeError::none);
+
+    ContextualRansModelBuilder builder{extended};
+    EXPECT_EQ(builder.add_bypass(16, 0), ContextualRansEncodeError::none);
+    EXPECT_EQ(builder.add_bypass(17, 0), ContextualRansEncodeError::none);
+    EXPECT_EQ(builder.add_bypass(20, 0), ContextualRansEncodeError::none);
+    EXPECT_EQ(builder.add_bypass(21, 0),
+              ContextualRansEncodeError::invalid_bypass_width);
+    ContextualRansModelBuilder frozen_builder;
+    EXPECT_EQ(frozen_builder.add_bypass(16, 0),
+              ContextualRansEncodeError::none);
+    EXPECT_EQ(frozen_builder.add_bypass(17, 0),
+              ContextualRansEncodeError::invalid_bypass_width);
 }
 
 TEST(ContextualRansEncoder, NormalizesAndRoundTripsRenormalizedContext) {

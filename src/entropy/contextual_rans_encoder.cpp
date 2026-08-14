@@ -51,9 +51,10 @@ using context::internal::ModeledOperationKind;
 
 [[nodiscard]] ContextualRansEncodeResult plan_model(
     const std::span<const ModeledOperation> operations,
-    ContextualRansDescriptor& descriptor) noexcept {
+    ContextualRansDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualRansEncodeResult result{};
-    ContextualRansModelBuilder builder;
+    ContextualRansModelBuilder builder{variant};
     for (const auto& operation : operations) {
         result.operation_index = result.operation_count;
         const auto error = add_operation(builder, operation);
@@ -75,8 +76,9 @@ using context::internal::ModeledOperationKind;
     const std::span<const ModeledOperation> operations,
     const ContextualRansDescriptor& descriptor,
     const std::span<std::byte> output,
-    std::size_t& payload_size) noexcept {
-    ContextualRansReverseWriter writer(descriptor, output);
+    std::size_t& payload_size,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    ContextualRansReverseWriter writer(descriptor, output, variant);
     for (std::size_t reverse = operations.size(); reverse != 0; --reverse) {
         const auto error = encode_operation(writer, operations[reverse - 1]);
         if (error != ContextualRansEncodeError::none) return error;
@@ -122,7 +124,8 @@ enum class OverlapCheck : std::uint8_t {
 ContextualRansEncodeResult plan_contextual_rans_operations(
     const std::span<const ModeledOperation> operations,
     const core::DecoderLimits& limits,
-    ContextualRansDescriptor& descriptor) noexcept {
+    ContextualRansDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     if (operations.empty()) {
         return {0, 0, 0, 0, ContextualRansEncodeError::empty_operations};
     }
@@ -142,10 +145,10 @@ ContextualRansEncodeResult plan_contextual_rans_operations(
     }
 
     ContextualRansDescriptor planned{};
-    auto result = plan_model(operations, planned);
+    auto result = plan_model(operations, planned, variant);
     if (result.error != ContextualRansEncodeError::none) return result;
     const auto encode_error = run_reverse(
-        operations, planned, {}, result.payload_size);
+        operations, planned, {}, result.payload_size, variant);
     if (encode_error != ContextualRansEncodeError::none) {
         return fail(result, encode_error);
     }
@@ -156,7 +159,7 @@ ContextualRansEncodeResult plan_contextual_rans_operations(
     std::size_t descriptor_size{};
     const auto format_error = validate_contextual_rans_descriptor(
         planned, planned.decision_count, planned.payload_size, limits,
-        descriptor_size);
+        descriptor_size, variant);
     if (format_error == ContextualRansFormatError::limit_exceeded) {
         return fail(result, ContextualRansEncodeError::limit_exceeded);
     }
@@ -174,10 +177,11 @@ ContextualRansEncodeResult encode_contextual_rans_operations(
     const std::span<const ModeledOperation> operations,
     const core::DecoderLimits& limits,
     const std::span<std::byte> payload_output,
-    ContextualRansDescriptor& descriptor) noexcept {
+    ContextualRansDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualRansDescriptor planned{};
     const auto plan =
-        plan_contextual_rans_operations(operations, limits, planned);
+        plan_contextual_rans_operations(operations, limits, planned, variant);
     if (plan.error != ContextualRansEncodeError::none) return plan;
     if (payload_output.size() < plan.payload_size) {
         return fail(plan,
@@ -193,7 +197,7 @@ ContextualRansEncodeResult encode_contextual_rans_operations(
     }
     std::size_t encoded_size{};
     const auto error = run_reverse(
-        operations, planned, output, encoded_size);
+        operations, planned, output, encoded_size, variant);
     if (error != ContextualRansEncodeError::none
         || encoded_size != plan.payload_size) {
         return fail(plan, ContextualRansEncodeError::internal_error);

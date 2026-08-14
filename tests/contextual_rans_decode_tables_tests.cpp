@@ -85,6 +85,60 @@ TEST(ContextualRansDecodeTables, MapsCanonicalMultiSymbolRanges) {
     EXPECT_EQ(context_zero[2731].frequency, 1365U);
 }
 
+TEST(ContextualRansDecodeTables, ExtendedLayoutKeepsFixedTableExtent) {
+    auto descriptor = literal_a_descriptor();
+    descriptor.decision_count = 1;
+    descriptor.frequency_entry_count =
+        marc::context::internal::lzss_field_context_frequency_entries_v2;
+    descriptor.frequencies.fill(0);
+    const auto offset =
+        marc::context::internal::lzss_field_context_offsets_v2[23];
+    descriptor.frequencies[offset + 20] = 4096;
+    std::vector<RansDecodeEntry> storage(
+        contextual_rans_decode_table_entries);
+    ContextualRansDecodeTables tables{};
+    constexpr auto extended = marc::context::internal::
+        LzssFieldContextVariant::field_context_1m;
+    const auto result =
+        marc::entropy::internal::build_contextual_rans_decode_tables(
+            descriptor, {}, storage, tables, extended);
+    ASSERT_EQ(result.error, ContextualRansDecodeTableError::none);
+    EXPECT_EQ(result.required_entries, contextual_rans_decode_table_entries);
+    EXPECT_EQ(result.active_context_count, 1U);
+    const auto context = tables.entries.subspan(
+        23 * contextual_rans_total_frequency,
+        contextual_rans_total_frequency);
+    EXPECT_TRUE(std::ranges::all_of(context, [](const auto& entry) {
+        return entry.symbol == 20 && entry.frequency == 4096;
+    }));
+
+    const RansDecodeEntry marker{0xa5a5, 0xa5a5, 0xa5};
+    std::ranges::fill(storage, marker);
+    ContextualRansDecodeTables short_tables{};
+    const auto short_result =
+        marc::entropy::internal::build_contextual_rans_decode_tables(
+            descriptor, {},
+            std::span<RansDecodeEntry>{storage}.first(storage.size() - 1),
+            short_tables, extended);
+    EXPECT_EQ(short_result.error,
+              ContextualRansDecodeTableError::output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(storage, sentinel));
+
+    ContextualRansDecodeTables sentinel_tables{};
+    sentinel_tables.entries = std::span<RansDecodeEntry>{storage}.first(1);
+    const auto original = sentinel_tables.entries;
+    const auto crossed =
+        marc::entropy::internal::build_contextual_rans_decode_tables(
+            descriptor, {}, storage, sentinel_tables);
+    EXPECT_EQ(crossed.error,
+              ContextualRansDecodeTableError::invalid_descriptor);
+    EXPECT_EQ(crossed.format_error,
+              ContextualRansFormatError::invalid_frequency_entry_count);
+    EXPECT_EQ(sentinel_tables.entries.data(), original.data());
+    EXPECT_EQ(sentinel_tables.entries.size(), original.size());
+    EXPECT_TRUE(std::ranges::all_of(storage, sentinel));
+}
+
 TEST(ContextualRansDecodeTables, PrewriteFailuresPreserveStorageAndView) {
     const RansDecodeEntry marker{0xa5a5, 0xa5a5, 0xa5};
     std::vector<RansDecodeEntry> storage(

@@ -1,6 +1,5 @@
 #include "entropy/contextual_rans_encode_core.hpp"
 
-#include "context/lzss_field_context_format.hpp"
 #include "core/checked_math.hpp"
 #include "core/endian.hpp"
 
@@ -21,16 +20,16 @@ namespace {
 
 [[nodiscard]] bool normalize_context(
     const std::uint16_t context_id,
-    const std::array<std::uint32_t, contextual_rans_frequency_entries>& counts,
+    const std::array<std::uint32_t, contextual_rans_frequency_capacity>& counts,
     const std::array<std::uint32_t, contextual_rans_context_count>& totals,
-    ContextualRansFrequencies& frequencies)
+    ContextualRansFrequencies& frequencies,
+    const context::internal::LzssFieldContextLayout& layout)
     noexcept {
     const auto total = totals[context_id];
     if (total == 0) return true;
     const auto begin =
-        context::internal::lzss_field_context_offsets[context_id];
-    const auto end =
-        context::internal::lzss_field_context_offsets[context_id + 1];
+        (*layout.offsets)[context_id];
+    const auto end = (*layout.offsets)[context_id + 1];
     std::uint32_t sum{};
     for (auto index = begin; index < end; ++index) {
         if (counts[index] == 0) continue;
@@ -83,9 +82,9 @@ namespace {
 
 [[nodiscard]] std::uint16_t cumulative_for(
     const ContextualRansDescriptor& descriptor,
-    const std::uint16_t context_id, const std::uint32_t value) noexcept {
-    const auto offset =
-        context::internal::lzss_field_context_offsets[context_id];
+    const std::uint16_t context_id, const std::uint32_t value,
+    const context::internal::LzssFieldContextLayout& layout) noexcept {
+    const auto offset = (*layout.offsets)[context_id];
     std::uint32_t cumulative{};
     for (std::uint32_t symbol = 0; symbol < value; ++symbol) {
         cumulative += descriptor.frequencies[offset + symbol];
@@ -95,19 +94,27 @@ namespace {
 
 } // namespace
 
+ContextualRansModelBuilder::ContextualRansModelBuilder(
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    layout_ = context::internal::get_lzss_field_context_layout(variant).layout;
+}
+
 ContextualRansEncodeError ContextualRansModelBuilder::add_symbol(
     const std::uint16_t context_id, const std::uint16_t alphabet,
     const std::uint32_t value) noexcept {
+    if (layout_.alphabets == nullptr || layout_.offsets == nullptr) {
+        return ContextualRansEncodeError::unsupported_context_variant;
+    }
     if (context_id >= contextual_rans_context_count) {
         return ContextualRansEncodeError::invalid_context;
     }
     if (alphabet
-        != context::internal::lzss_field_context_alphabets[context_id]) {
+        != (*layout_.alphabets)[context_id]) {
         return ContextualRansEncodeError::invalid_alphabet;
     }
     if (value >= alphabet) return ContextualRansEncodeError::invalid_symbol;
     const auto index =
-        context::internal::lzss_field_context_offsets[context_id] + value;
+        (*layout_.offsets)[context_id] + value;
     if (counts_[index] == UINT32_MAX || totals_[context_id] == UINT32_MAX
         || decision_count_ == UINT32_MAX) {
         return ContextualRansEncodeError::arithmetic_overflow;
@@ -120,7 +127,10 @@ ContextualRansEncodeError ContextualRansModelBuilder::add_symbol(
 
 ContextualRansEncodeError ContextualRansModelBuilder::add_bypass(
     const std::uint8_t bit_count, const std::uint32_t value) noexcept {
-    if (bit_count == 0 || bit_count > 16) {
+    if (layout_.alphabets == nullptr || layout_.offsets == nullptr) {
+        return ContextualRansEncodeError::unsupported_context_variant;
+    }
+    if (bit_count == 0 || bit_count > layout_.maximum_bypass_bits) {
         return ContextualRansEncodeError::invalid_bypass_width;
     }
     if ((value >> bit_count) != 0) {
@@ -137,15 +147,20 @@ ContextualRansEncodeError ContextualRansModelBuilder::add_bypass(
 
 ContextualRansEncodeError ContextualRansModelBuilder::finish(
     ContextualRansDescriptor& descriptor) const noexcept {
+    if (layout_.alphabets == nullptr || layout_.offsets == nullptr) {
+        return ContextualRansEncodeError::unsupported_context_variant;
+    }
     if (decision_count_ == 0) {
         return ContextualRansEncodeError::empty_operations;
     }
     ContextualRansDescriptor planned{};
     planned.decision_count = decision_count_;
+    planned.frequency_entry_count =
+        static_cast<std::uint32_t>(layout_.frequency_entries);
     for (std::uint16_t context_id = 0;
          context_id < contextual_rans_context_count; ++context_id) {
         if (!normalize_context(
-                context_id, counts_, totals_, planned.frequencies)) {
+                context_id, counts_, totals_, planned.frequencies, layout_)) {
             return ContextualRansEncodeError::normalization_error;
         }
     }
@@ -155,8 +170,17 @@ ContextualRansEncodeError ContextualRansModelBuilder::finish(
 
 ContextualRansReverseWriter::ContextualRansReverseWriter(
     const ContextualRansDescriptor& descriptor,
-    const std::span<std::byte> output) noexcept
-    : descriptor_(descriptor), output_(output), cursor_(output.size()) {}
+    const std::span<std::byte> output,
+    const context::internal::LzssFieldContextVariant variant) noexcept
+    : descriptor_(descriptor), output_(output), cursor_(output.size()) {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    layout_ = selected.layout;
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        error_ = ContextualRansEncodeError::unsupported_context_variant;
+    }
+}
 
 ContextualRansEncodeError ContextualRansReverseWriter::encode_range(
     const std::uint16_t cumulative, const std::uint16_t frequency) noexcept {
@@ -206,26 +230,34 @@ ContextualRansEncodeError ContextualRansReverseWriter::encode_range(
 ContextualRansEncodeError ContextualRansReverseWriter::encode_symbol(
     const std::uint16_t context_id, const std::uint16_t alphabet,
     const std::uint32_t value) noexcept {
+    if (layout_.alphabets == nullptr || layout_.offsets == nullptr) {
+        return error_ = ContextualRansEncodeError::
+            unsupported_context_variant;
+    }
     if (context_id >= contextual_rans_context_count) {
         return error_ = ContextualRansEncodeError::invalid_context;
     }
     if (alphabet
-        != context::internal::lzss_field_context_alphabets[context_id]) {
+        != (*layout_.alphabets)[context_id]) {
         return error_ = ContextualRansEncodeError::invalid_alphabet;
     }
     if (value >= alphabet) {
         return error_ = ContextualRansEncodeError::invalid_symbol;
     }
     const auto offset =
-        context::internal::lzss_field_context_offsets[context_id];
+        (*layout_.offsets)[context_id];
     return encode_range(
-        cumulative_for(descriptor_, context_id, value),
+        cumulative_for(descriptor_, context_id, value, layout_),
         descriptor_.frequencies[offset + value]);
 }
 
 ContextualRansEncodeError ContextualRansReverseWriter::encode_bypass(
     const std::uint8_t bit_count, const std::uint32_t value) noexcept {
-    if (bit_count == 0 || bit_count > 16) {
+    if (layout_.alphabets == nullptr || layout_.offsets == nullptr) {
+        return error_ = ContextualRansEncodeError::
+            unsupported_context_variant;
+    }
+    if (bit_count == 0 || bit_count > layout_.maximum_bypass_bits) {
         return error_ = ContextualRansEncodeError::invalid_bypass_width;
     }
     if ((value >> bit_count) != 0) {

@@ -11,6 +11,7 @@ namespace marc::entropy::internal {
 void ContextualRansDecoder::reset() noexcept {
     payload_ = {};
     tables_ = {};
+    layout_ = {};
     active_contexts_.fill(false);
     requested_contexts_.fill(false);
     state_ = 0;
@@ -44,24 +45,26 @@ ContextualRansBeginResult ContextualRansDecoder::begin(
     const std::uint32_t expected_payload_size,
     const std::span<const std::byte> payload,
     const core::DecoderLimits& limits,
-    const std::span<RansDecodeEntry> table_output) noexcept {
+    const std::span<RansDecodeEntry> table_output,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     reset();
     ContextualRansDescriptor descriptor{};
     const auto format_error = parse_contextual_rans_descriptor(
         serialized_descriptor, expected_decision_count, expected_payload_size,
-        limits, descriptor);
+        limits, descriptor, variant);
     if (format_error != ContextualRansFormatError::none) {
         return {fail(ContextualRansDecodeError::invalid_descriptor),
                 format_error};
     }
-    return {begin_validated(descriptor, payload, table_output),
+    return {begin_validated(descriptor, payload, table_output, variant),
             ContextualRansFormatError::none};
 }
 
 ContextualRansDecodeResult ContextualRansDecoder::begin_validated(
     const ContextualRansDescriptor& descriptor,
     const std::span<const std::byte> payload,
-    const std::span<RansDecodeEntry> table_output) noexcept {
+    const std::span<RansDecodeEntry> table_output,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     if (payload.size() != descriptor.payload_size) {
         return fail(ContextualRansDecodeError::payload_size_mismatch);
     }
@@ -75,7 +78,7 @@ ContextualRansDecodeResult ContextualRansDecoder::begin_validated(
 
     ContextualRansDecodeTables built{};
     const auto table_result = build_contextual_rans_decode_tables_from_model(
-        descriptor, table_output, built);
+        descriptor, table_output, built, variant);
     if (table_result.error
         == ContextualRansDecodeTableError::output_too_small) {
         return fail(ContextualRansDecodeError::table_output_too_small);
@@ -83,9 +86,16 @@ ContextualRansDecodeResult ContextualRansDecoder::begin_validated(
     if (table_result.error != ContextualRansDecodeTableError::none) {
         return fail(ContextualRansDecodeError::invalid_descriptor);
     }
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return fail(ContextualRansDecodeError::invalid_descriptor);
+    }
 
     payload_ = payload;
     tables_ = built.entries;
+    layout_ = selected.layout;
     active_contexts_ = built.active_contexts;
     expected_decisions_ = descriptor.decision_count;
     started_ = true;
@@ -144,8 +154,7 @@ ContextualRansDecodeResult ContextualRansDecoder::decode_symbol(
         return fail(ContextualRansDecodeError::invalid_context);
     }
     if (expected_alphabet
-        != marc::context::internal::lzss_field_context_alphabets[
-            expected_context]) {
+        != (*layout_.alphabets)[expected_context]) {
         return fail(ContextualRansDecodeError::invalid_alphabet);
     }
     if (!active_contexts_[expected_context]) {
@@ -189,7 +198,8 @@ ContextualRansDecodeResult ContextualRansDecoder::decode_bypass(
     }
     if (error_ != ContextualRansDecodeError::none) return result();
     if (finished_) return fail(ContextualRansDecodeError::already_finished);
-    if (expected_bit_count == 0 || expected_bit_count > 16) {
+    if (expected_bit_count == 0
+        || expected_bit_count > layout_.maximum_bypass_bits) {
         return fail(ContextualRansDecodeError::invalid_bypass_width);
     }
     if (decision_count_ > expected_decisions_

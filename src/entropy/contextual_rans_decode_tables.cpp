@@ -11,28 +11,31 @@ ContextualRansDecodeTableResult build_contextual_rans_decode_tables(
     const ContextualRansDescriptor& descriptor,
     const core::DecoderLimits& limits,
     const std::span<RansDecodeEntry> output,
-    ContextualRansDecodeTables& tables) noexcept {
+    ContextualRansDecodeTables& tables,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualRansDecodeTableResult result{};
     std::size_t descriptor_size{};
     result.format_error = validate_contextual_rans_descriptor(
         descriptor, descriptor.decision_count, descriptor.payload_size,
-        limits, descriptor_size);
+        limits, descriptor_size, variant);
     if (result.format_error != ContextualRansFormatError::none) {
         result.error = ContextualRansDecodeTableError::invalid_descriptor;
         return result;
     }
     return build_contextual_rans_decode_tables_from_model(
-        descriptor, output, tables);
+        descriptor, output, tables, variant);
 }
 
 ContextualRansDecodeTableResult
 build_contextual_rans_decode_tables_from_model(
     const ContextualRansDescriptor& descriptor,
     const std::span<RansDecodeEntry> output,
-    ContextualRansDecodeTables& tables) noexcept {
+    ContextualRansDecodeTables& tables,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualRansDecodeTableResult result{};
     result.format_error = validate_contextual_rans_model(
-        descriptor, descriptor.decision_count, descriptor.payload_size);
+        descriptor, descriptor.decision_count, descriptor.payload_size,
+        variant);
     if (result.format_error != ContextualRansFormatError::none) {
         result.error = ContextualRansDecodeTableError::invalid_descriptor;
         return result;
@@ -42,15 +45,24 @@ build_contextual_rans_decode_tables_from_model(
         return result;
     }
 
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.format_error =
+            ContextualRansFormatError::unsupported_context_variant;
+        result.error = ContextualRansDecodeTableError::invalid_descriptor;
+        return result;
+    }
+    const auto& layout = selected.layout;
+
     const auto frequencies = descriptor.frequencies;
     std::array<bool, contextual_rans_context_count> active{};
     for (std::size_t context_id = 0;
          context_id < contextual_rans_context_count; ++context_id) {
         const auto frequency_begin =
-            marc::context::internal::lzss_field_context_offsets[context_id];
-        const auto frequency_end =
-            marc::context::internal::lzss_field_context_offsets[
-                context_id + 1];
+            (*layout.offsets)[context_id];
+        const auto frequency_end = (*layout.offsets)[context_id + 1];
         active[context_id] = std::any_of(
             frequencies.begin() + frequency_begin,
             frequencies.begin() + frequency_end,
@@ -64,9 +76,8 @@ build_contextual_rans_decode_tables_from_model(
          context_id < contextual_rans_context_count; ++context_id) {
         if (!active[context_id]) continue;
         const auto frequency_begin =
-            marc::context::internal::lzss_field_context_offsets[context_id];
-        const auto alphabet =
-            marc::context::internal::lzss_field_context_alphabets[context_id];
+            (*layout.offsets)[context_id];
+        const auto alphabet = (*layout.alphabets)[context_id];
         const auto table_begin =
             context_id * contextual_rans_total_frequency;
         std::uint32_t cumulative{};
