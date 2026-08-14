@@ -20073,3 +20073,25 @@ discarded and the reviewed seed retained.
   all 2,895 registered tests pass under MSVC and ClangCL Release
   configurations with the 240-second per-test limit, including schema
   compatibility and documentation layout.
+
+## CR-0840: 2026-08-14 - Contextual rANS public C admission design
+
+- Authoring method: derived the public boundary from marc's selected internal
+  rANS lifecycle and existing ABI-preserving Contextual Dynamic Range window
+  selector.
+- References used: DD-790 through DD-806; IR-0580; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0681; marc's public rANS C lifecycle and shared window
+  profile.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, C ABIs, factories, workspace policies, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: reuse the shared values; split the reserved tail
+  without changing extent; map policy explicitly; keep private auto-admission;
+  enforce exact public decoder identity; and defer every outer tool surface.
+- Generated-code task description: specify ABI-preserving config evolution,
+  selected workspace queries and factories, exact public encode/decode,
+  cross-profile rejection, invalid values, limits, alignment, overlap,
+  ownership, terminal, and atomic malformed-stream tests.
+- Similarity review: the design composes only marc-owned C ABI, profile,
+  workspace, lifecycle, and stream-admission components. No external
+  implementation expression entered the design.

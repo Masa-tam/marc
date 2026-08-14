@@ -5165,3 +5165,13 @@ partitioners, selected Contextual Dynamic Range profile/lifecycle, and core
 stream-state contract as first-party references. No external LZSS or rANS
 implementation, lifecycle, workspace policy, source code, test, corpus,
 archive, patent text, or optimization description was consulted.
+
+### IR-0580
+
+The Contextual rANS public C admission uses DD-790 through DD-806, TVG-0665,
+TVG-0666, and TVG-0676 through TVG-0681; marc's size-tagged rANS C family,
+selected internal lifecycle, existing shared window-profile enum, and
+Contextual Dynamic Range public admission as first-party references. No
+external LZSS or rANS implementation, C ABI, factory, workspace policy,
+source code, test, corpus, archive, patent text, or optimization description
+was consulted.

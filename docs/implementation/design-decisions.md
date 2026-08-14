@@ -16561,3 +16561,29 @@ belongs to the later public selector.
 Preserve all 64 KiB profile requirements and stream bytes. This stage remains
 internal and does not yet expose the 1 MiB selector through public C, CLI,
 benchmark, fuzz, or interoperability schema.
+
+## DD-806: Contextual rANS C admission reuses the exact window selector
+
+- Date: 2026-08-14
+- Status: accepted
+
+Allocate the Contextual rANS configuration's former 64-bit reserved tail as a
+32-bit `window_profile` followed by a 32-bit reserved word. Retain ABI version
+1, the structure extent, and zero as the frozen 64 KiB default. Reuse
+`MARC_LZSS_CONTEXTUAL_WINDOW_64K` and
+`MARC_LZSS_CONTEXTUAL_WINDOW_1M`; reject every other value.
+
+Map that selector explicitly to the internal rANS profile for encoder and
+decoder workspace queries and encoder stream construction. Do not infer the
+profile from `frame_size`, `window_size`, descriptor length, or stream data.
+Add an admission policy to the private streaming decoder, defaulting to `any`
+for internal format tests; the public factory supplies exactly the selected
+64 KiB or 1 MiB admission and rejects the other known stream identity before
+frame allocation or raw publication.
+
+Preserve the existing three-function C family, transform ownership, workspace
+ordering, alignment, non-overlap checks, sticky errors, and 64 KiB bytes.
+Require the 1 MiB public lifecycle to serialize `2/3 + 1/2 + 4/3`, use the
+9,089-byte descriptor ceiling, round trip through matching public decode, and
+fail atomically through the other selector. CLI, benchmark, fuzz, and
+interoperability admission remain later stages.

@@ -9236,3 +9236,27 @@ aggregate limits between the two selected ceilings, one-byte-short and
 misaligned workspaces, insufficient frame/token/table/raw capacity, malformed
 selected headers, trailing input, and sticky lifecycle misuse. Public C, CLI,
 benchmark, fuzzing, and interoperability remain unavailable in this stage.
+
+### TVG-0681
+
+Initialize the public Contextual rANS configuration in both directions and
+require `window_profile=0`, the existing structure size, ABI version, limits,
+and 64 KiB defaults. Select value 1 with matching 1 MiB frame/window/LZ limits;
+require encoder and decoder queries to use the selected 9,089-byte frame
+ceiling while retaining the fixed table count and exact aligned views layout.
+Reject value 2, nonzero trailing reserved data, incompatible parameters, and
+one-below selected limits without publishing non-header workspace extents or
+a transform.
+
+Create the value-1 encoder exclusively from queried caller-owned workspaces,
+encode a deterministic input, and require stream identities `2/3 + 1/2 +
+4/3` with frequency-entry count 4,550. Decode through a value-1 public factory
+and require exact bytes. Feed the same stream to a value-0 decoder and require
+`MARC_STATUS_MALFORMED_STREAM` before output publication; symmetrically reject
+a frozen value-0 stream through value 1.
+
+Repeat short primary, secondary, and views workspaces, misalignment, every
+workspace overlap, null output handle, invalid direction, one-byte schedules,
+sticky terminal calls, and malformed final-frame atomicity for the selected
+profile. Preserve the existing value-0 requirements and encoded bytes. CLI,
+benchmark, fuzzing, and interoperability remain separate stages.
