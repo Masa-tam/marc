@@ -9558,3 +9558,22 @@ Ubuntu 26.04 schema-40 bundle from the same revision, then verify it with the
 Windows/MSVC executable. Require all four final lines to report 50 archives,
 the expected producer label, and one identical full revision before recording
 external evidence.
+
+### TVG-0696
+
+Retain every existing variant-1 descriptor byte and build selected-layout
+descriptor vectors without using descriptor length as the selector. For
+variant 2, require field alphabets `2, 256, 8, 21`, the 4,550-entry context
+layout, minimum size 24, and an independently counted all-dense size of 2,579
+bytes. Exercise Single, canonical sparse, and canonical dense distance records
+at symbols 0, 16, 17, 20, plus the sparse/dense crossover. Require the unused
+high nibble of every dense 21-symbol record to be zero.
+
+Parse and reserialize each accepted descriptor byte-identically under the
+explicit selected layout. Reject the same bytes under the crossed layout,
+sizes 2,562 through 2,579 under variant 1, an out-of-alphabet class 17 through
+20 in variant 1, a class above 20 in variant 2, noncanonical record choice,
+invalid Huffman lengths, truncation at every byte, trailing data, and short
+output without publishing a descriptor. Prove the 35-table and 17,885-node
+ceilings remain unchanged. No typed-token, frame, streaming, public C, CLI,
+benchmark, fuzz, or schema vector belongs to this descriptor stage.

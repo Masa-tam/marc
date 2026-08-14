@@ -1,8 +1,9 @@
 # LZSS contextual 1 MiB window
 
-Status: accepted design after project version 0.3.0. Implementation remains
-staged and MUST NOT begin until the decoder-visible reservations and validation
-vectors below are complete.
+Status: accepted design after project version 0.3.0. Dynamic Range, canonical
+contextual rANS, and contextual tANS are complete through external
+interoperability evidence. Contextual Blocked Huffman and Contextual Adaptive
+Huffman remain staged.
 
 ## Purpose
 
@@ -42,8 +43,8 @@ The planned pairings are:
 | Dynamic Range | `3/2` |
 | canonical contextual rANS | `4/3` |
 | contextual tANS | `5/2` |
-| Contextual Blocked Huffman | `1/2` |
-| Contextual Adaptive Huffman | `2/2` |
+| Contextual Blocked Huffman | `2/2` |
+| Contextual Adaptive Huffman | `1/2` |
 
 This parameterization does not change any old tuple. A backend descriptor in a
 `2/2 + 1/1` stream still has exactly the old 31-context, 4,518-entry meaning.
@@ -448,7 +449,10 @@ change.
 Local schema-40 admission is now complete. Both MSVC and ClangCL generate and
 verify all 50 archives, reject a reordered current manifest, remove only the
 new final archive to recover schema 39, and complete every downgrade through
-schema 1. Four-direction external exchange remains post-push evidence.
+schema 1. Revision `e74473d1511990ed06ea43c739783d1c58daf065`
+completed the four-direction external exchange across the Windows/MSVC,
+Ubuntu 24.04 CI, and Ubuntu 26.04/Clang producers with all 50 archives
+reproduced byte-identically in every pass.
 
 ## Required validation
 

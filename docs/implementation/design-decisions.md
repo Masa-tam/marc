@@ -16993,3 +16993,37 @@ is too short to require a distance beyond 65,536; dedicated extended-distance
 vectors remain authoritative. External Windows/Linux exchange is required
 after push and is recorded separately. This schema changes bundle inventory
 and manifest identity only, not any stream byte rule.
+
+## DD-821: Select the Contextual Blocked Huffman descriptor layout externally
+
+- Date: 2026-08-15
+- Status: accepted
+
+Reserve the 1 MiB composition as exact identity `2/3 + 1/2 + 2/2`. Correct
+the two prospective documents that had transposed Contextual Blocked Huffman
+`2/2` and Contextual Adaptive Huffman `1/2`; admitted stream bytes and source
+already use those identities correctly. Do not allocate a new entropy variant
+and do not reinterpret the frozen `2/2 + 1/1 + 2/2` stream.
+
+Pass the field-context layout selected from the validated stream header into
+descriptor analysis, parsing, validation, and serialization. Keep the existing
+16-byte prefix, four pooled field tables, 31 possible overrides, canonical
+Single/sparse/dense record rule, 15-bit maximum code, and LSB-first payload.
+The descriptor never infers the layout from its length or records.
+
+Variant 1 retains field alphabets `2, 256, 8, 17`, its 4,518-entry context
+layout, and exact 24..2,561 descriptor range. Variant 2 uses field alphabets
+`2, 256, 8, 21`, the 4,550-entry context layout, and exact 24..2,579 range.
+The variant-2 all-dense maximum is `16 + 160 + 2,403 = 2,579`: four field
+records contribute `5 + 132 + 8 + 15`, and all context records contribute
+`3*5 + 17*132 + 3*8 + 8*15`. The odd 21-symbol dense record requires a zero
+high nibble in its final byte.
+
+Retain the maximum of 35 active tables and 511 decode nodes per non-Single
+table, hence the unchanged conservative 17,885-entry workspace. Payload stays
+bounded by `ceil(15D/8)` for decision count D. Variant 2 admits at most 30
+decisions per token while retaining the common six-decisions-per-raw-byte
+bound. Reject crossed layouts, selected-size violations, out-of-alphabet code
+lengths, noncanonical sparse/dense choice, and nonzero dense padding before
+table construction. Typed-token, frame, lifecycle, public, and
+interoperability admission remain later stages.

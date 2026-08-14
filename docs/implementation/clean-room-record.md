@@ -20903,3 +20903,25 @@ discarded and the reviewed seed retained.
   exact revision. Producers were Windows/MSVC via Visual Studio 2026, Ubuntu
   24.04 default compiler via Ninja, and Ubuntu 26.04 Clang 21.1.8 via Ninja;
   the latter bundle was verified on both Ubuntu 26.04 and Windows/MSVC.
+
+## CR-0874: 2026-08-15 - Selected Contextual Blocked Huffman descriptor design
+
+- Authoring method: derived the next staged backend from marc's accepted 1 MiB
+  field-context layout and existing independent Contextual Blocked Huffman
+  descriptor grammar.
+- References used: DD-790 through DD-821; IR-0595; TVG-0665; TVG-0666;
+  TVG-0696; marc's field-context selectors, canonical Huffman primitives,
+  existing descriptor code, format, tests, and completed selected backends.
+- Known implementations intentionally not consulted: external Huffman or LZSS
+  implementations, descriptor formats, APIs, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: correct the prospective entropy-ID transposition;
+  retain entropy identity `2/2`; select layout only from dictionary/context
+  identity; derive the exact 2,579-byte maximum; and retain the fixed
+  35-table/17,885-node workspace ceiling.
+- Generated-code task description: specify selected field alphabets, exact
+  canonical record sizes, descriptor bounds, padding, crossed-layout
+  rejection, and descriptor-only validation vectors before implementation.
+- Similarity review: the design uses only marc-owned format rules, arithmetic,
+  source, tests, and provenance. No external implementation expression entered
+  the change.

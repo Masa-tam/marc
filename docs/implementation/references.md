@@ -5311,3 +5311,13 @@ inventory, explicit 1 MiB tANS CLI, bundle generator, verifier, and downgrade
 compatibility chain as first-party references. No external LZSS or tANS
 implementation, archive, manifest, interoperability suite, source code, test,
 corpus, patent text, or optimization description was consulted.
+
+### IR-0595
+
+The selected-layout Contextual Blocked Huffman descriptor design uses DD-790
+through DD-821, TVG-0665, TVG-0666, TVG-0696, and marc's existing canonical
+Huffman primitives, 64 KiB Contextual Blocked Huffman descriptor grammar,
+field-context variant selectors, and completed 1 MiB Dynamic Range, rANS, and
+tANS paths as first-party references. No external Huffman or LZSS
+implementation, descriptor grammar, source code, test, corpus, archive,
+patent text, or optimization description was consulted.

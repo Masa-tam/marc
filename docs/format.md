@@ -6665,10 +6665,38 @@ vectors and boundary tests.
 Canonical contextual rANS
 `4/3` uses frequency entry count 4,550 and a 23-through-9,089-byte descriptor.
 Contextual tANS `5/2` uses frequency entry count 4,550 and a
-27-through-9,093-byte descriptor. Contextual Blocked Huffman `1/2` and
-Contextual Adaptive Huffman `2/2` retain their backend arithmetic and
+27-through-9,093-byte descriptor. Contextual Blocked Huffman `2/2` and
+Contextual Adaptive Huffman `1/2` retain their backend arithmetic and
 descriptor grammars, but their exact selected-layout table, tree, payload, and
 workspace bounds must be specified before either pairing is admitted.
+
+The selected-layout Contextual Blocked Huffman reservation is the exact
+identity `2/3 + 1/2 + 2/2`. It retains the existing 16-byte entropy parameter
+region, 16-byte descriptor prefix, four pooled field tables, 31-bit ascending
+context-override mask, model-record version 1, Single/sparse/dense canonical
+record choice, maximum code length 15, LSB-first payload, strict zero padding,
+and per-frame reset. Stream identity selects the layout before descriptor
+analysis; descriptor size and record contents never select it.
+
+Variant 1 retains field alphabets `2, 256, 8, 17`, context alphabets defined
+by the 4,518-entry field layout, and its exact 24-through-2,561-byte descriptor
+range. Variant 2 uses field alphabets `2, 256, 8, 21` and the 4,550-entry
+context layout. Its minimum remains 24 bytes. Its all-dense maximum is exactly
+2,579 bytes: the 16-byte prefix, 160 bytes for four field records, and 2,403
+bytes for all 31 context overrides. Dense 21-symbol records occupy 15 bytes
+including their four-byte record prefix and require the unused high nibble to
+be zero.
+
+Both layouts retain at most 35 active tables. Each non-Single table retains
+the fixed 511-node bounded decode representation, so the conservative maximum
+remains 17,885 decode-node entries. Payload size remains zero through
+`ceil(15 * decision_count / 8)`. Selected typed-LZSS validation admits at most
+30 decisions per token for variant 2 while the common `decision_count <= 6F`
+bound remains unchanged. A crossed layout, a 17-symbol distance table in a
+variant-2 descriptor, a 21-symbol distance table in variant 1, or a descriptor
+outside the selected exact size range is contradictory and must fail before
+table construction or raw publication. This reservation does not yet claim a
+selected descriptor implementation or a public 1 MiB profile.
 
 Contextual rANS descriptor parsing never selects that layout itself. The
 dictionary/context pair in the already validated stream header selects field-
