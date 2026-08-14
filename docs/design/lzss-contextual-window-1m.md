@@ -295,7 +295,13 @@ reject one another. The benchmark stage uses the same explicit 1 MiB name and
 public configuration, with checked complete-stream capacity
 `112 + 12N + 9,161K`. It performs an exact untimed round trip before reporting
 descriptive speed, ratio, and caller-owned workspace values. Fuzz and
-interoperability stages remain separate.
+interoperability stages remain separate. The fuzz stage reuses the one
+Contextual rANS target for private auto-selected frame parsing and both strict
+public profiles. The 1 MiB identity and distance ceiling are admitted, but
+input remains 32 KiB, output 4 KiB, and frame/token storage 1 KiB; only the
+descriptor backing grows to the selected 9,089-byte maximum. Deterministic
+malformed regressions cover both profiles and their reciprocal rejection.
+Interoperability remains separate.
 
 ## Required validation
 

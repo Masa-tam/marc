@@ -63,13 +63,16 @@ identity and limits but cannot allocate a 1 MiB frame: fuzz storage and raw
 history remain capped at 1 KiB. Ordinary builds compile this target warning-
 clean.
 The experimental contextual-rANS Format 2 target caps supplied input at
-32 KiB so the 9,052-byte fixed descriptor and a complete bounded frame are
-reachable. It caps public output at 4 KiB and one raw frame at 1 KiB, admits at
-most 6,144 decisions and 12,296 payload bytes, and fixes the 126,976-entry
-decode tables plus 1,024 typed tokens before processing. Large views use one
-thread-local fixed harness workspace instead of per-call stack storage. The
-private complete-frame and public streaming paths share byte-derived chunking
-and a finite call budget; no sanitizer campaign is claimed by compile-smoke.
+32 KiB so the selected 9,089-byte maximum descriptor and a complete bounded
+frame are reachable. It caps public output at 4 KiB and one raw frame at 1 KiB,
+admits at most 6,144 decisions and 12,296 payload bytes, and fixes the
+126,976-entry decode tables plus 1,024 typed tokens before processing. Large
+views use one thread-local fixed harness workspace instead of per-call stack
+storage. The private complete-frame decoder accepts either valid layout, while
+the public streaming path separately selects the strict 64 KiB and 1 MiB
+profiles with byte-derived chunking and a finite call budget. The wider
+identity never allocates a 1 MiB frame or history buffer. Compile-smoke does
+not by itself claim a sanitizer campaign.
 The experimental contextual-tANS Format 2 target uses the same dual-boundary
 shape with its own fixed layout: at most 32 KiB supplied input, 4 KiB published
 raw output, one 1 KiB frame, 6,144 decisions, 9,218 payload bytes, the

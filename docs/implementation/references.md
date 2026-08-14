@@ -5193,3 +5193,12 @@ rANS lifecycle, 64 KiB rANS benchmark adapter, and 1 MiB Contextual Dynamic
 Range benchmark as first-party references. No external LZSS or rANS
 implementation, benchmark adapter, capacity formula, source code, test,
 corpus, archive, patent text, or optimization description was consulted.
+
+### IR-0583
+
+The dual-profile Contextual rANS fuzz boundary uses DD-790 through DD-809,
+TVG-0665, TVG-0666, and TVG-0676 through TVG-0684; marc's existing rANS
+dual-boundary harness, selected public decoder policy, and Dynamic Range
+dual-profile fuzz route as first-party references. No external LZSS or rANS
+implementation, fuzz harness, corpus, source code, test, archive, patent text,
+or optimization description was consulted.

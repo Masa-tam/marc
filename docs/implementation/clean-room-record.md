@@ -20215,3 +20215,22 @@ discarded and the reviewed seed retained.
   selected resource increase; all 2,898 registered tests pass under both
   compilers with the 240-second per-test limit, including benchmark smoke,
   schema compatibility, and documentation layout.
+
+## CR-0846: 2026-08-14 - Contextual rANS dual-profile fuzz design
+
+- Authoring method: derived the wider admission from marc's existing fixed-
+  memory rANS harness and Dynamic Range dual-profile fuzz boundary.
+- References used: DD-790 through DD-809; IR-0583; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0684; marc's public selected decoder lifecycle.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, fuzz harnesses, corpora, source code, tests, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: retain one target; exercise both strict policies;
+  grow only descriptor backing; preserve small fixed raw storage; parameterize
+  malformed regressions; and bound sanitizer runs explicitly.
+- Generated-code task description: specify dual public admission, private
+  selected parsing, fixed capacities, reciprocal rejection, compile-smoke,
+  sanitizer command limits, and unchanged interoperability inventory.
+- Similarity review: the design composes only marc-owned fuzz, frame, public C,
+  profile, and test components. No external implementation expression entered
+  the design.

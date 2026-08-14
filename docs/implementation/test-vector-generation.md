@@ -9288,3 +9288,20 @@ Register the command as an experimental benchmark smoke. Run the existing
 64 KiB benchmark independently and preserve its name, configuration, and
 `112 + 12N + 9,097K` capacity. Treat measured ratio and speed only as
 descriptive evidence; do not alter the interoperability schema in this stage.
+
+### TVG-0684
+
+Parameterize the Contextual rANS malformed regression over public window
+profiles 0 and 1. For each profile, generate a canonical stream, truncate it
+at every byte, corrupt extreme frame lengths and descriptor flags, and require
+private/public atomic failure without raw publication. Feed each canonical
+stream to the other strict public profile and require malformed-stream failure,
+zero output, unchanged sentinel bytes, and sticky category/positions.
+
+Compile the single harness warning-clean under MSVC and ClangCL. Its fixed
+thread-local storage must use the 9,089-byte descriptor capacity while keeping
+input at 32 KiB, output at 4 KiB, frame/token storage at 1 KiB, 6,144
+decisions, 12,296 payload bytes, and 126,976 decode entries. Build the existing
+sanitizer target and run a bounded campaign without a persistent corpus using
+`-runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`. Do not add a second
+target or an interoperability archive.
