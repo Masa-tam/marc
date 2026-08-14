@@ -76,7 +76,7 @@ using entropy::internal::ContextualRansReverseWriter;
 
 [[nodiscard]] bool add_token(
     ContextualRansModelBuilder& builder, const LzssFieldContextState& state,
-    const LzssTypedToken& token,
+    const LzssTypedToken& token, const LzssFieldContextLayout& layout,
     LzssContextualRansEncodeResult& result) noexcept {
     const auto kind = token.kind == LzssTypedTokenKind::literal ? 0U : 1U;
     if (!add_symbol(builder, state.token_context(), 2, kind, result)) {
@@ -98,7 +98,9 @@ using entropy::internal::ContextualRansReverseWriter;
         && add_bypass(builder, length_class, length_extra, result)
         && add_symbol(
             builder, LzssFieldContextState::distance_context(length_class),
-            17, distance_class, result)
+            (*layout.alphabets)[LzssFieldContextState::distance_context(
+                length_class)],
+            distance_class, result)
         && add_bypass(builder, distance_class, distance_extra, result);
 }
 
@@ -142,7 +144,8 @@ struct ReverseContexts {
 
 [[nodiscard]] ContextualRansEncodeError encode_token_reverse(
     ContextualRansReverseWriter& writer, const ReverseContexts contexts,
-    const LzssTypedToken& token) noexcept {
+    const LzssTypedToken& token,
+    const LzssFieldContextLayout& layout) noexcept {
     if (token.kind == LzssTypedTokenKind::literal) {
         auto error = writer.encode_symbol(
             contexts.literal, 256, token.literal);
@@ -161,7 +164,9 @@ struct ReverseContexts {
         : writer.encode_bypass(distance_class, distance_extra);
     if (error != ContextualRansEncodeError::none) return error;
     error = writer.encode_symbol(
-        LzssFieldContextState::distance_context(length_class), 17,
+        LzssFieldContextState::distance_context(length_class),
+        (*layout.alphabets)[LzssFieldContextState::distance_context(
+            length_class)],
         distance_class);
     if (error != ContextualRansEncodeError::none) return error;
     if (length_class != 0) {
@@ -177,8 +182,14 @@ struct ReverseContexts {
     const std::span<const LzssTypedToken> tokens,
     const entropy::internal::ContextualRansDescriptor& descriptor,
     const std::span<std::byte> output,
-    std::size_t& payload_size) noexcept {
-    ContextualRansReverseWriter writer(descriptor, output);
+    std::size_t& payload_size,
+    const LzssFieldContextVariant variant) noexcept {
+    const auto selected = get_lzss_field_context_layout(variant);
+    if (selected.error != LzssFieldContextLayoutError::none) {
+        return ContextualRansEncodeError::unsupported_context_variant;
+    }
+    const auto& layout = selected.layout;
+    ContextualRansReverseWriter writer(descriptor, output, variant);
     std::size_t preceding_literal = tokens.empty()
         ? tokens.size()
         : find_literal_before(tokens, tokens.size() - 1);
@@ -186,7 +197,7 @@ struct ReverseContexts {
         const auto index = reverse - 1;
         const auto error = encode_token_reverse(
             writer, contexts_before(tokens, index, preceding_literal),
-            tokens[index]);
+            tokens[index], layout);
         if (error != ContextualRansEncodeError::none) return error;
         if (index != 0 && preceding_literal == index - 1) {
             preceding_literal = find_literal_before(tokens, index - 1);
@@ -231,10 +242,22 @@ enum class OverlapCheck : std::uint8_t {
     const dictionary::internal::LzssParameters& parameters,
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
-    entropy::internal::ContextualRansDescriptor& descriptor) noexcept {
+    entropy::internal::ContextualRansDescriptor& descriptor,
+    const LzssFieldContextVariant variant) noexcept {
     LzssContextualRansEncodeResult result{};
+    const auto selected = get_lzss_field_context_layout(variant);
+    if (selected.error != LzssFieldContextLayoutError::none) {
+        result.token_validation.token_error =
+            dictionary::internal::LzssTypedTokenError::invalid_parameters;
+        result.token_validation.error = dictionary::internal::
+            LzssTypedFrameValidationError::invalid_parameters;
+        result.error =
+            LzssContextualRansEncodeError::token_validation_error;
+        return result;
+    }
+    const auto& layout = selected.layout;
     result.token_validation = dictionary::internal::validate_lzss_typed_frame(
-        tokens, parameters, context, limits);
+        tokens, parameters, context, limits, layout.dictionary_variant);
     result.token_count = result.token_validation.token_count;
     result.token_index = result.token_validation.token_index;
     if (result.token_validation.error
@@ -251,12 +274,12 @@ enum class OverlapCheck : std::uint8_t {
         return result;
     }
 
-    ContextualRansModelBuilder builder;
+    ContextualRansModelBuilder builder{variant};
     LzssFieldContextState state{};
     for (std::size_t index = 0; index < tokens.size(); ++index) {
         result.token_index = index;
         const auto& token = tokens[index];
-        if (!add_token(builder, state, token, result)) return result;
+        if (!add_token(builder, state, token, layout, result)) return result;
         state.accept(token);
     }
     result.token_index = result.token_count;
@@ -266,7 +289,8 @@ enum class OverlapCheck : std::uint8_t {
     if (entropy_error != ContextualRansEncodeError::none) {
         return fail_entropy(result, entropy_error);
     }
-    entropy_error = run_reverse(tokens, planned, {}, result.payload_size);
+    entropy_error = run_reverse(
+        tokens, planned, {}, result.payload_size, variant);
     if (entropy_error != ContextualRansEncodeError::none) {
         return fail_entropy(result, entropy_error);
     }
@@ -279,7 +303,7 @@ enum class OverlapCheck : std::uint8_t {
     const auto format_error =
         entropy::internal::validate_contextual_rans_descriptor(
             planned, planned.decision_count, planned.payload_size, limits,
-            result.descriptor_size);
+            result.descriptor_size, variant);
 
     if (format_error
         == entropy::internal::ContextualRansFormatError::
@@ -308,10 +332,11 @@ enum class OverlapCheck : std::uint8_t {
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<std::byte> payload_output,
-    entropy::internal::ContextualRansDescriptor& descriptor) noexcept {
+    entropy::internal::ContextualRansDescriptor& descriptor,
+    const LzssFieldContextVariant variant) noexcept {
     entropy::internal::ContextualRansDescriptor planned{};
     const auto plan = plan_tokens(
-        tokens, parameters, context, limits, planned);
+        tokens, parameters, context, limits, planned, variant);
     if (plan.error != LzssContextualRansEncodeError::none) return plan;
     if (payload_output.size() < plan.payload_size) {
         auto result = plan;
@@ -329,7 +354,7 @@ enum class OverlapCheck : std::uint8_t {
     }
     std::size_t encoded_size{};
     const auto entropy_error = run_reverse(
-        tokens, planned, output, encoded_size);
+        tokens, planned, output, encoded_size, variant);
     if (entropy_error != ContextualRansEncodeError::none
         || encoded_size != plan.payload_size) {
         auto result = plan;
@@ -348,8 +373,10 @@ LzssContextualRansEncodeResult plan_lzss_contextual_rans_tokens(
     const dictionary::internal::LzssParameters& parameters,
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
-    entropy::internal::ContextualRansDescriptor& descriptor) noexcept {
-    return plan_tokens(tokens, parameters, context, limits, descriptor);
+    entropy::internal::ContextualRansDescriptor& descriptor,
+    const LzssFieldContextVariant variant) noexcept {
+    return plan_tokens(
+        tokens, parameters, context, limits, descriptor, variant);
 }
 
 LzssContextualRansEncodeResult encode_lzss_contextual_rans_tokens(
@@ -358,9 +385,10 @@ LzssContextualRansEncodeResult encode_lzss_contextual_rans_tokens(
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<std::byte> payload_output,
-    entropy::internal::ContextualRansDescriptor& descriptor) noexcept {
+    entropy::internal::ContextualRansDescriptor& descriptor,
+    const LzssFieldContextVariant variant) noexcept {
     return encode_tokens(tokens, parameters, context, limits, payload_output,
-                         descriptor);
+                         descriptor, variant);
 }
 
 } // namespace marc::context::internal

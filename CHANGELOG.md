@@ -32,6 +32,10 @@ format versions, and C ABI versions are independent namespaces.
   decode-table construction, and event decoding. The 1 MiB layout admits its
   21-symbol distance classes and 20-bit bypass fields without increasing the
   fixed 126,976-entry decode-table workspace.
+- Extended the internal direct LZSS Contextual rANS token composition to use
+  the selected dictionary and context layout consistently. A distance-131,072
+  regression proves exact agreement with the independently materialized
+  field-operation path and exact typed-token reconstruction.
 
 ## 0.3.0 - 2026-08-13
 

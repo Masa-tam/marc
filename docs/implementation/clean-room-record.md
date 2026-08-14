@@ -19938,3 +19938,32 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only repository-owned typed-token,
   field-context, and Contextual rANS components. No external implementation
   expression entered the design.
+
+## CR-0835: 2026-08-14 - Selected-layout Contextual rANS token composition
+
+- Authoring method: implemented DD-803 over marc's selected typed-token and
+  Contextual rANS core interfaces after both boundaries were independently
+  validated.
+- References used: DD-790 through DD-803; IR-0577; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0678; marc's direct token path, materialized-operation
+  oracle, and atomic workspace checks.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, composition formats, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: select the layout before token validation; use its
+  dictionary variant, distance alphabet, and decision ceiling in both
+  directions; pass the same variant into every entropy stage; preserve the
+  default route; and leave all outer 1 MiB rANS surfaces unavailable.
+- Generated-code task description: implement selected direct-token planning,
+  reverse coding, validation, and decoding; prove distance 131,072 against the
+  materialized-operation reference; and add crossed and unsupported selection
+  regressions with atomic descriptor, table, payload, and token behavior.
+- Similarity review: the implementation composes and parameterizes only marc-
+  owned token, context, and entropy components. No external implementation
+  expression entered the change.
+- Local validation: the distance-131,072 direct path exactly matches the
+  materialized operation descriptor and payload, decodes every typed token,
+  and rejects crossed or unsupported selection without token publication;
+  all 2,890 registered tests pass under MSVC and ClangCL Release
+  configurations with the 240-second per-test limit, including schema
+  compatibility and documentation layout.

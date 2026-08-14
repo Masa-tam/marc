@@ -121,6 +121,129 @@ TEST(LzssContextualRansEncoder, MatchesMaterializedOperationReference) {
     EXPECT_EQ(direct_payload, reference_payload);
 }
 
+TEST(LzssContextualRansEncoder, ExtendedDistanceMatchesReferenceAndDecodes) {
+    constexpr std::uint32_t distance = 131072;
+    std::vector<LzssTypedToken> expected(
+        distance + 1,
+        LzssTypedToken{LzssTypedTokenKind::literal, 'A', 0, 0});
+    expected.back() = {LzssTypedTokenKind::match, 0, distance, 5};
+    auto parameters = marc::dictionary::internal::LzssParameters{};
+    parameters.window_size = 1048576;
+    const LzssTypedFrameValidationContext frame_context{
+        static_cast<std::uint32_t>(expected.size()), distance + 5, 0};
+    constexpr auto extended = LzssFieldContextVariant::field_context_1m;
+
+    const auto operation_plan = plan_lzss_field_context_operations(
+        expected, parameters, frame_context, {}, extended);
+    ASSERT_EQ(operation_plan.error, LzssFieldContextError::none);
+    std::vector<ModeledOperation> operations(operation_plan.operation_count);
+    ASSERT_EQ(model_lzss_field_context_tokens(
+                  expected, parameters, frame_context, {}, operations,
+                  extended).error,
+              LzssFieldContextError::none);
+    ASSERT_EQ(operations[operations.size() - 2].alphabet_size, 21U);
+    ASSERT_EQ(operations[operations.size() - 2].value, 17U);
+    ASSERT_EQ(operations.back().bit_count, 17U);
+
+    ContextualRansDescriptor reference_descriptor{};
+    const auto reference_plan =
+        marc::entropy::internal::plan_contextual_rans_operations(
+            operations, {}, reference_descriptor, extended);
+    ASSERT_EQ(reference_plan.error,
+              marc::entropy::internal::ContextualRansEncodeError::none);
+    std::vector<std::byte> reference_payload(reference_plan.payload_size);
+    ASSERT_EQ(marc::entropy::internal::encode_contextual_rans_operations(
+                  operations, {}, reference_payload, reference_descriptor,
+                  extended).error,
+              marc::entropy::internal::ContextualRansEncodeError::none);
+
+    ContextualRansDescriptor direct_descriptor{};
+    const auto direct_plan = plan_lzss_contextual_rans_tokens(
+        expected, parameters, frame_context, {}, direct_descriptor, extended);
+    ASSERT_EQ(direct_plan.error, LzssContextualRansEncodeError::none);
+    EXPECT_EQ(direct_plan.event_count, operations.size());
+    EXPECT_EQ(direct_plan.decision_count, reference_plan.decision_count);
+    EXPECT_EQ(direct_plan.payload_size, reference_payload.size());
+    EXPECT_EQ(direct_descriptor.frequency_entry_count,
+              lzss_field_context_frequency_entries_v2);
+    expect_descriptor_equal(direct_descriptor, reference_descriptor);
+
+    std::vector<std::byte> direct_payload(direct_plan.payload_size);
+    ASSERT_EQ(encode_lzss_contextual_rans_tokens(
+                  expected, parameters, frame_context, {}, direct_payload,
+                  direct_descriptor, extended).error,
+              LzssContextualRansEncodeError::none);
+    EXPECT_EQ(direct_payload, reference_payload);
+
+    std::vector<std::byte> serialized(direct_plan.descriptor_size);
+    std::size_t written{};
+    ASSERT_EQ(marc::entropy::internal::serialize_contextual_rans_descriptor(
+                  direct_descriptor, direct_plan.decision_count,
+                  static_cast<std::uint32_t>(direct_plan.payload_size), {},
+                  serialized, written, extended),
+              marc::entropy::internal::ContextualRansFormatError::none);
+    ASSERT_EQ(written, serialized.size());
+    auto table_storage = tables();
+    std::vector<LzssTypedToken> decoded(expected.size());
+    const LzssFieldContextValidationContext decode_context{
+        static_cast<std::uint32_t>(expected.size()),
+        static_cast<std::uint32_t>(direct_plan.event_count),
+        direct_plan.decision_count, distance + 5, 0};
+    const auto decoded_result = decode_lzss_contextual_rans_tokens(
+        serialized, direct_payload, parameters, decode_context, {},
+        table_storage, decoded, extended);
+    ASSERT_EQ(decoded_result.format_error,
+              marc::entropy::internal::ContextualRansFormatError::none);
+    ASSERT_EQ(decoded_result.decode.error,
+              LzssContextualRansDecodeError::none);
+    EXPECT_TRUE(std::ranges::equal(
+        expected, decoded, [](const auto& left, const auto& right) {
+            return left.kind == right.kind && left.literal == right.literal
+                && left.distance == right.distance
+                && left.length == right.length;
+        }));
+
+    ContextualRansDescriptor sentinel{};
+    sentinel.decision_count = 0xa5a5;
+    EXPECT_EQ(plan_lzss_contextual_rans_tokens(
+                  expected, parameters, frame_context, {}, sentinel).error,
+              LzssContextualRansEncodeError::token_validation_error);
+    EXPECT_EQ(sentinel.decision_count, 0xa5a5U);
+    EXPECT_EQ(plan_lzss_contextual_rans_tokens(
+                  expected, parameters, frame_context, {}, sentinel,
+                  static_cast<LzssFieldContextVariant>(99)).error,
+              LzssContextualRansEncodeError::token_validation_error);
+    EXPECT_EQ(sentinel.decision_count, 0xa5a5U);
+
+    table_storage = tables();
+    std::ranges::fill(decoded, LzssTypedToken{
+        LzssTypedTokenKind::match, 0xcc, 0xccccccccU, 0xccccccccU});
+    const auto crossed = decode_lzss_contextual_rans_tokens(
+        serialized, direct_payload, {}, decode_context, {}, table_storage,
+        decoded);
+    EXPECT_EQ(crossed.format_error,
+              marc::entropy::internal::ContextualRansFormatError::
+                  invalid_frequency_entry_count);
+    EXPECT_EQ(crossed.decode.error,
+              LzssContextualRansDecodeError::entropy_error);
+    EXPECT_TRUE(std::ranges::all_of(decoded, [](const auto& token) {
+        return token.literal == 0xcc && token.distance == 0xccccccccU
+            && token.length == 0xccccccccU;
+    }));
+
+    const auto unsupported = decode_lzss_contextual_rans_tokens(
+        serialized, direct_payload, parameters, decode_context, {},
+        table_storage, decoded, static_cast<LzssFieldContextVariant>(99));
+    EXPECT_EQ(unsupported.format_error,
+              marc::entropy::internal::ContextualRansFormatError::none);
+    EXPECT_EQ(unsupported.decode.error,
+              LzssContextualRansDecodeError::invalid_parameters);
+    EXPECT_TRUE(std::ranges::all_of(decoded, [](const auto& token) {
+        return token.literal == 0xcc && token.distance == 0xccccccccU
+            && token.length == 0xccccccccU;
+    }));
+}
+
 TEST(LzssContextualRansEncoder, DirectPayloadDecodesToMixedTokens) {
     constexpr auto expected = mixed_tokens();
     constexpr LzssTypedFrameValidationContext frame_context{

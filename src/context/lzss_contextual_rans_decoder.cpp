@@ -39,7 +39,7 @@ using entropy::internal::RansDecodeEntry;
 
 [[nodiscard]] bool read_token(
     ContextualRansDecoder& decoder, const LzssFieldContextState& state,
-    LzssTypedToken& token,
+    const LzssFieldContextLayout& layout, LzssTypedToken& token,
     LzssContextualRansDecodeResult& result) noexcept {
     std::uint32_t kind{};
     if (!read_symbol(decoder, state.token_context(), 2, kind, result)) {
@@ -72,7 +72,9 @@ using entropy::internal::RansDecodeEntry;
 
     std::uint32_t distance_class{};
     if (!read_symbol(
-            decoder, LzssFieldContextState::distance_context(length_class), 17,
+            decoder, LzssFieldContextState::distance_context(length_class),
+            (*layout.alphabets)[LzssFieldContextState::distance_context(
+                length_class)],
             distance_class, result)) {
         return false;
     }
@@ -91,6 +93,7 @@ using entropy::internal::RansDecodeEntry;
 [[nodiscard]] bool validate_declared_bounds(
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
+    const LzssFieldContextLayout& layout,
     LzssContextualRansDecodeResult& result) noexcept {
     const auto token_count =
         static_cast<std::uint64_t>(context.declared_token_count);
@@ -103,7 +106,7 @@ using entropy::internal::RansDecodeEntry;
     if (token_count == 0 || raw_size == 0 || token_count > raw_size
         || event_count < 2 * token_count || event_count > 5 * token_count
         || event_count > 2 * raw_size || decision_count < event_count
-        || decision_count > 26 * token_count
+        || decision_count > layout.maximum_decisions_per_token * token_count
         || decision_count > 6 * raw_size) {
         result.error = LzssContextualRansDecodeError::invalid_counts;
         return false;
@@ -176,16 +179,17 @@ enum class OverlapCheck : std::uint8_t {
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
+    const LzssFieldContextLayout& layout,
     LzssContextualRansDecodeResult& result) noexcept {
     result.token_error = dictionary::internal::validate_lzss_typed_parameters(
-        parameters, limits);
+        parameters, limits, layout.dictionary_variant);
     if (result.token_error != LzssTypedTokenError::none) {
         result.error = result.token_error == LzssTypedTokenError::limit_exceeded
             ? LzssContextualRansDecodeError::limit_exceeded
             : LzssContextualRansDecodeError::invalid_parameters;
         return false;
     }
-    return validate_declared_bounds(context, limits, result);
+    return validate_declared_bounds(context, limits, layout, result);
 }
 
 [[nodiscard]] LzssContextualRansDecodeResult decode_started_pass(
@@ -193,19 +197,20 @@ enum class OverlapCheck : std::uint8_t {
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
+    const LzssFieldContextLayout& layout,
     const std::span<LzssTypedToken> output,
     LzssContextualRansDecodeResult result) noexcept {
     LzssFieldContextState state{};
     while (result.token_count < context.declared_token_count) {
         result.token_index = result.token_count;
         LzssTypedToken token{};
-        if (!read_token(decoder, state, token, result)) return result;
+        if (!read_token(decoder, state, layout, token, result)) return result;
 
         std::uint64_t next_raw_size{};
         result.token_error = dictionary::internal::validate_lzss_typed_token(
             token, parameters,
             {result.raw_size, context.declared_raw_size}, limits,
-            next_raw_size);
+            next_raw_size, layout.dictionary_variant);
         if (result.token_error != LzssTypedTokenError::none) {
             if (result.token_error == LzssTypedTokenError::limit_exceeded) {
                 result.error = LzssContextualRansDecodeError::limit_exceeded;
@@ -243,10 +248,19 @@ enum class OverlapCheck : std::uint8_t {
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<RansDecodeEntry> tables,
-    const std::span<LzssTypedToken> output) noexcept {
+    const std::span<LzssTypedToken> output,
+    const LzssFieldContextVariant variant) noexcept {
     LzssContextualRansFormatDecodeResult result{};
+    const auto selected = get_lzss_field_context_layout(variant);
+    if (selected.error != LzssFieldContextLayoutError::none) {
+        result.decode.token_error = LzssTypedTokenError::invalid_parameters;
+        result.decode.error =
+            LzssContextualRansDecodeError::invalid_parameters;
+        return result;
+    }
+    const auto& layout = selected.layout;
     if (!validate_pass_start(
-            parameters, context, limits, result.decode)) {
+            parameters, context, limits, layout, result.decode)) {
         return result;
     }
     if (!std::in_range<std::uint32_t>(payload.size())) {
@@ -257,7 +271,8 @@ enum class OverlapCheck : std::uint8_t {
     ContextualRansDecoder decoder;
     const auto begin = decoder.begin(
         serialized_descriptor, context.declared_decision_count,
-        static_cast<std::uint32_t>(payload.size()), payload, limits, tables);
+        static_cast<std::uint32_t>(payload.size()), payload, limits, tables,
+        variant);
     result.decode.entropy = begin.decode;
     result.format_error = begin.format_error;
     if (result.decode.entropy.error != ContextualRansDecodeError::none) {
@@ -268,7 +283,7 @@ enum class OverlapCheck : std::uint8_t {
         return result;
     }
     result.decode = decode_started_pass(
-        decoder, parameters, context, limits, output, result.decode);
+        decoder, parameters, context, limits, layout, output, result.decode);
     return result;
 }
 
@@ -366,7 +381,8 @@ LzssContextualRansFormatDecodeResult validate_lzss_contextual_rans_tokens(
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
-    const std::span<entropy::internal::RansDecodeEntry> private_tables)
+    const std::span<entropy::internal::RansDecodeEntry> private_tables,
+    const LzssFieldContextVariant variant)
     noexcept {
     LzssContextualRansFormatDecodeResult result{};
     result.decode = preflight_workspace(
@@ -377,7 +393,8 @@ LzssContextualRansFormatDecodeResult validate_lzss_contextual_rans_tokens(
     return run_pass(
         serialized_descriptor, payload, parameters, context, limits,
         private_tables.first(
-            entropy::internal::contextual_rans_decode_table_entries), {});
+            entropy::internal::contextual_rans_decode_table_entries), {},
+        variant);
 }
 
 LzssContextualRansFormatDecodeResult decode_lzss_contextual_rans_tokens(
@@ -387,7 +404,8 @@ LzssContextualRansFormatDecodeResult decode_lzss_contextual_rans_tokens(
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<entropy::internal::RansDecodeEntry> private_tables,
-    const std::span<dictionary::internal::LzssTypedToken> private_tokens)
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const LzssFieldContextVariant variant)
     noexcept {
     LzssContextualRansFormatDecodeResult result{};
     result.decode = preflight_workspace(
@@ -426,7 +444,8 @@ LzssContextualRansFormatDecodeResult decode_lzss_contextual_rans_tokens(
     }
 
     result = run_pass(
-        serialized_descriptor, payload, parameters, context, limits, tables, {});
+        serialized_descriptor, payload, parameters, context, limits, tables,
+        {}, variant);
     if (result.decode.error != LzssContextualRansDecodeError::none) {
         return result;
     }
@@ -437,7 +456,7 @@ LzssContextualRansFormatDecodeResult decode_lzss_contextual_rans_tokens(
     }
     const auto decoded = run_pass(
         serialized_descriptor, payload, parameters, context, limits, tables,
-        tokens);
+        tokens, variant);
     if (decoded.decode.error != LzssContextualRansDecodeError::none
         || decoded.format_error != result.format_error
         || decoded.decode.token_count != result.decode.token_count
