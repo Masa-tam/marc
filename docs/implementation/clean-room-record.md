@@ -20852,3 +20852,29 @@ discarded and the reviewed seed retained.
   All 2,921 registered Release tests pass under both compilers with the
   300-second per-test limit, including documentation layout and schema
   compatibility.
+
+## CR-0872: 2026-08-15 - Contextual tANS 1 MiB branch completion audit
+
+- Authoring method: reviewed the complete branch against `main`, the accepted
+  staged design, public ABI and CLI documentation, local validation records,
+  and schema-40 scripts before merge preparation.
+- References used: DD-790 through DD-820; IR-0585 through IR-0594;
+  TVG-0686 through TVG-0695; BR-0128; marc's branch diff, public header,
+  C API guide, format, architecture, tests, and Git history.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, APIs, source code, tests, corpora, archives, patent text,
+  and optimization descriptions.
+- Independent decisions: retain the complete staged commit series; clarify
+  historical milestone wording rather than rewriting the record; document
+  tANS profile selection in the C API guide; and leave external schema-40
+  evidence explicitly pending until one pushed revision exists.
+- Generated-code task description: audit completeness, stale public
+  documentation, branch ancestry, diff hygiene, test evidence, and merge
+  readiness without changing implementation or serialized bytes.
+- Similarity review: the audit and documentation corrections use only marc-
+  owned implementation, tests, records, and observed validation results. No
+  external implementation expression entered the change.
+- Local validation: the feature history descends directly from current
+  `main`, with zero commits to integrate from `main`; all 2,921 Release tests
+  already pass under MSVC and ClangCL, and final documentation-layout and
+  diff-hygiene checks pass after the audit edits.

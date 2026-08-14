@@ -185,19 +185,29 @@ former 64-bit tail's ABI-1 extent and all-zero meaning. Entropy variant 2 is
 retired and reserved; the decoder rejects it.
 The experimental LZSS contextual tANS factory is a third distinct Format 2
 lifecycle. Call `marc_lzss_contextual_tans_workspace_requirements()` whenever
-the immutable direction, known size, frame/LZSS parameters, or hard limits
-change. Encoding uses primary for raw-frame input, secondary for the complete
-serialized frame, and aligned opaque views for typed tokens followed by tANS
-inverse tables. Decoding uses primary for serialized input, secondary for
-atomic raw output, and views for fixed tANS decode tables followed by typed
-tokens. The factory checks capacity, alignment, pairwise non-overlap, and the
-private partition before publishing a handle. It emits only entropy identity
-`5/2`; neither typed-token nor table representations form part of ABI 1. This
-additive function family does not change the ABI version and remains outside
-the baseline CLI and interoperability inventory. Its completion audit covers
-all required binary classes, deterministic mixed and one-byte chunk schedules,
-stable repeated terminal calls, and frame-atomic rejection of corrupted,
-truncated, or trailing final-frame data.
+the immutable direction, known size, frame/LZSS parameters, `window_profile`,
+or hard limits change. Encoding uses primary for raw-frame input, secondary
+for the complete serialized frame, and aligned opaque views for typed tokens
+followed by tANS inverse tables. Decoding uses primary for serialized input,
+secondary for atomic raw output, and views for fixed tANS decode tables
+followed by typed tokens. The factory checks capacity, alignment, pairwise
+non-overlap, and the private partition before publishing a handle. It emits
+only entropy identity `5/2`; neither typed-token nor table representations form
+part of ABI 1.
+
+`MARC_LZSS_CONTEXTUAL_WINDOW_64K` remains the initializer default and selects
+dictionary/context identity `2/2 + 1/1`.
+`MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects `2/3 + 1/2`. The selector is not
+inferred from `window_size`: encoding validates the selected parameters and
+decoding rejects the other known identity before frame collection or raw
+publication. The selector and trailing reserved word reuse the former 64-bit
+reserved tail, preserving the 112-byte ABI-1 extent and the all-zero default.
+The explicit CLI names expose both profiles, and interoperability schema 40
+includes only the selected 1 MiB name as its final experimental archive.
+
+The completion audit covers all required binary classes, deterministic mixed
+and one-byte chunk schedules, stable repeated terminal calls, and frame-atomic
+rejection of corrupted, truncated, or trailing final-frame data.
 The experimental LZSS Contextual Blocked Huffman factory is a fourth distinct
 Format 2 lifecycle. Initialize its size-tagged configuration with
 `marc_lzss_contextual_blocked_huffman_config_init()`, repeat

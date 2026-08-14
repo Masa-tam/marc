@@ -2228,3 +2228,16 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the 1 MiB
 Contextual Dynamic Range profile.
+
+### BR-0128
+
+The 1 MiB Contextual tANS profile is locally complete through descriptor,
+coding core, typed-token composition, frame, streaming, public C, CLI,
+benchmark, bounded fuzz, and schema-40 interoperability boundaries. The
+frozen 64 KiB bytes and 112-byte ABI-1 structure extent remain unchanged;
+strict profile selectors reject crossed identities before raw publication.
+Both local compilers pass all 2,921 registered Release tests, including the
+complete schema-40-through-1 compatibility chain, and the bounded Clang 22
+sanitizer campaign completes 1,000 inputs without a finding. Four-direction
+external schema-40 exchange remains required after the branch is merged and
+pushed.

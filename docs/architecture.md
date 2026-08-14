@@ -5207,13 +5207,14 @@ boundary now admit the exact selected identity `2/3 + 1/2 + 5/2`, applying the
 same layout to the 26/30-decision bound, 9,029/9,093-byte descriptor ceiling,
 direct token coding, and raw reconstruction. A HashChain frame containing a
 distance-65,542 Match proves the extended route; crossed identity pairs fail
-before output publication. Streaming and profile construction still reject
-variant 2 explicitly, leaving public API, CLI, benchmark, fuzz, and schema on
-the frozen route until lifecycle workspace promotion is reviewed.
+before output publication. At that stage, streaming and profile construction
+still rejected variant 2 explicitly, leaving public API, CLI, benchmark, fuzz,
+and schema on the frozen route until lifecycle workspace promotion.
 
-The next private Contextual tANS lifecycle stage introduces explicit 64 KiB
-and 1 MiB profile selection, selected descriptor sizing over the unchanged
-131,072-entry table extent, and decoder admission policy `any/64k/1m`.
+The following private Contextual tANS lifecycle stage introduces explicit
+64 KiB and 1 MiB profile selection, selected descriptor sizing over the
+unchanged 131,072-entry table extent, and decoder admission policy
+`any/64k/1m`.
 Streaming identity is checked before frame collection; caller-owned raw,
 token, table, HashChain, and serialized-frame storage remains bounded by the
 same aggregate limit. Public surfaces remain a separate promotion.

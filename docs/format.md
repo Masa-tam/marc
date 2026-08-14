@@ -6114,11 +6114,12 @@ is not included in schema 33.
 
 ### Reserved LZSS field-context plus tANS profile
 
-The next Format 2 profile is named `lzss-contextual-tans`. It retains
+The Format 2 profile was initially reserved as `lzss-contextual-tans`. It retains
 dictionary algorithm/variant `2/2` and context-model algorithm/variant `1/1`,
-and selects entropy algorithm/variant `5/2`. This reservation defines bytes
-only; it claims no encoder, decoder, C lifecycle, CLI selector, benchmark, or
-interoperability archive.
+and selects entropy algorithm/variant `5/2`. This initial reservation defined
+bytes only and made no encoder, decoder, C lifecycle, CLI selector, benchmark,
+or interoperability claim; the subsequent milestones below record those
+admissions without changing the reserved bytes.
 
 Its 16-byte entropy parameter region is:
 
