@@ -330,3 +330,20 @@ TEST(LzssContextualRansFrameStreamingEncoder,
                   .error.code,
               ErrorCode::unsupported);
 }
+
+TEST(LzssContextualRansFrameStreamingEncoder,
+     KeepsOneMiBIdentityUnavailableUntilLifecycleAdmission) {
+    auto stream = stream_config(1, 1);
+    stream.dictionary.window_size = UINT32_C(1) << 20;
+    stream.dictionary_variant = 3;
+    stream.context_variant = 2;
+    stream.frequency_entry_count = 4550;
+    std::array<std::byte, 1> raw{};
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<std::byte, 128> frame{};
+    LzssContextualRansFrameStreamingEncoder encoder{
+        stream, {}, raw, tokens, {}, frame};
+    const auto result = encoder.process({}, {}, 0);
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
+}

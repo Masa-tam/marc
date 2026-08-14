@@ -280,3 +280,17 @@ TEST(LzssContextualRansFrameStreamingDecoder,
     EXPECT_EQ(result.status, StreamStatus::error);
     EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
 }
+
+TEST(LzssContextualRansFrameStreamingDecoder,
+     KeepsOneMiBIdentityUnavailableUntilLifecycleAdmission) {
+    auto encoded = stream_header(1, 0);
+    encoded[14] = std::byte{0x03};
+    encoded[66] = std::byte{0x10};
+    encoded[84] = std::byte{0xc6};
+    encoded[85] = std::byte{0x11};
+    encoded[98] = std::byte{0x02};
+    LzssContextualRansFrameStreamingDecoder decoder{{}, {}, {}, {}, {}};
+    const auto result = decoder.process(encoded, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+}

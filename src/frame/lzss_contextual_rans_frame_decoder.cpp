@@ -55,6 +55,14 @@ decode_lzss_contextual_rans_frame(
         result.error = LzssContextualRansFrameDecodeError::preflight_error;
         return result;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        context.stream.dictionary_variant, context.stream.context_algorithm,
+        context.stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.error = LzssContextualRansFrameDecodeError::preflight_error;
+        return result;
+    }
 
     if (!std::in_range<std::size_t>(layout.header.token_count)
         || !std::in_range<std::size_t>(layout.header.uncompressed_size)
@@ -141,7 +149,8 @@ decode_lzss_contextual_rans_frame(
     result.token_decode =
         context::internal::decode_lzss_contextual_rans_tokens(
             serialized_descriptor, payload, context.stream.dictionary,
-            token_context, context.limits, tables, tokens);
+            token_context, context.limits, tables, tokens,
+            selected.layout.context_variant);
     if (result.token_decode.decode.error
         != context::internal::LzssContextualRansDecodeError::none) {
         result.error =
@@ -155,7 +164,8 @@ decode_lzss_contextual_rans_frame(
         context.output_already_committed,
     };
     result.reconstruction = dictionary::internal::reconstruct_lzss_typed_frame(
-        tokens, context.stream.dictionary, raw_context, context.limits, raw);
+        tokens, context.stream.dictionary, raw_context, context.limits, raw,
+        selected.layout.dictionary_variant);
     if (result.reconstruction.error
         != dictionary::internal::LzssTypedReconstructError::none) {
         result.error =

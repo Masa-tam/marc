@@ -38,6 +38,16 @@ canonical_stream_vector() {
     return stream;
 }
 
+[[nodiscard]] LzssContextualRansStreamHeader stream_config_1m() {
+    auto stream = stream_config();
+    stream.frame_size = UINT32_C(1) << 20;
+    stream.dictionary.window_size = UINT32_C(1) << 20;
+    stream.dictionary_variant = 3;
+    stream.context_variant = 2;
+    stream.frequency_entry_count = 4550;
+    return stream;
+}
+
 } // namespace
 
 TEST(LzssContextualRansStreamFormat, ParsesAndSerializesCanonicalHeader) {
@@ -106,4 +116,42 @@ TEST(LzssContextualRansStreamFormat,
     EXPECT_EQ(validate_lzss_contextual_rans_stream_header(
                   stream_config(), limits),
               LzssContextualRansStreamHeaderError::limit_exceeded);
+}
+
+TEST(LzssContextualRansStreamFormat,
+     RoundTripsSelectedOneMiBIdentityAndRejectsCrossedPairs) {
+    const auto stream = stream_config_1m();
+    std::array<std::byte, lzss_contextual_rans_stream_header_size> encoded{};
+    ASSERT_EQ(serialize_lzss_contextual_rans_stream_header(
+                  stream, {}, encoded),
+              LzssContextualRansStreamHeaderError::none);
+    EXPECT_EQ(encoded[14], std::byte{0x03});
+    EXPECT_EQ(encoded[98], std::byte{0x02});
+    EXPECT_EQ(encoded[66], std::byte{0x10});
+    EXPECT_EQ(encoded[84], std::byte{0xc6});
+    EXPECT_EQ(encoded[85], std::byte{0x11});
+
+    LzssContextualRansStreamHeader parsed{};
+    std::size_t consumed{};
+    ASSERT_EQ(parse_lzss_contextual_rans_stream_header(
+                  encoded, {}, parsed, consumed),
+              LzssContextualRansStreamHeaderError::none);
+    EXPECT_EQ(consumed, encoded.size());
+    EXPECT_EQ(parsed.dictionary.window_size, UINT32_C(1) << 20);
+    EXPECT_EQ(parsed.dictionary_variant, 3U);
+    EXPECT_EQ(parsed.context_variant, 2U);
+    EXPECT_EQ(parsed.frequency_entry_count, 4550U);
+
+    auto crossed = stream;
+    crossed.context_variant = 1;
+    EXPECT_EQ(validate_lzss_contextual_rans_stream_header(crossed, {}),
+              LzssContextualRansStreamHeaderError::contradictory_parameters);
+    crossed = stream;
+    crossed.dictionary_variant = 2;
+    EXPECT_EQ(validate_lzss_contextual_rans_stream_header(crossed, {}),
+              LzssContextualRansStreamHeaderError::contradictory_parameters);
+    crossed = stream;
+    crossed.frequency_entry_count = 4518;
+    EXPECT_EQ(validate_lzss_contextual_rans_stream_header(crossed, {}),
+              LzssContextualRansStreamHeaderError::invalid_entropy_parameters);
 }

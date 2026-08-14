@@ -6679,7 +6679,15 @@ never serialized or allowed to affect canonical model analysis.
 This subsection reserves the shared dictionary/context identity and the two
 exact ANS descriptor ceilings. Dynamic Range now has its complete internal,
 streaming, public C, CLI, benchmark, fuzz, and schema-38 interoperability
-admission. No other entropy backend is claimed here; each receives its own
-complete admission and hand-checkable serialized vector before release.
+admission. Contextual rANS now admits the exact `2/3 + 1/2 + 4/3` identity in
+its internal stream-header and complete-frame paths: the selected layout
+controls the 30-decision token ceiling, 9,089-byte descriptor ceiling,
+4,550-entry descriptor grammar, 21-symbol distance alphabets, 20-bit bypass
+ceiling, typed-token variant, and reconstruction limit. Complete-frame
+preflight must reject the same bytes under the `2/2 + 1/1` identity before raw
+publication. Its streaming lifecycle and every public surface remain
+unavailable until their own bounded-workspace admission. No other entropy
+backend is claimed here; each receives its own complete admission and
+hand-checkable serialized vector before release.
 The full design and staged validation contract is
 [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md).

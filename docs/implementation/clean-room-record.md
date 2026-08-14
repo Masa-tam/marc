@@ -19990,3 +19990,33 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only repository-owned format,
   dictionary, context, entropy, and frame components. No external
   implementation expression entered the design.
+
+## CR-0837: 2026-08-14 - Selected-layout Contextual rANS complete frames
+
+- Authoring method: implemented DD-804 over marc's reserved stream identity,
+  selected direct token composition, exact HashChain parser, and transactional
+  complete-frame path.
+- References used: DD-790 through DD-804; IR-0578; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0679; marc's 64 KiB rANS frames and selected Contextual
+  Dynamic Range frames.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, frame formats, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: add defaulted identity fields; select the layout
+  before every frame operation; derive count and descriptor bounds from it;
+  preserve all old bytes; prove an actual extended HashChain distance; and
+  retain explicit lifecycle rejection until later admission.
+- Generated-code task description: implement selected stream-header identity,
+  complete-frame planning, exact HashChain encoding, descriptor serialization
+  and preflight, decoding and reconstruction, extended-distance round trip,
+  crossed-layout atomic rejection, and lifecycle-unavailable guards.
+- Similarity review: the implementation parameterizes and composes only marc-
+  owned format, typed-token, context, rANS, frame, and streaming components.
+  No external implementation expression entered the change.
+- Local validation: a complete frame whose exact HashChain parse contains a
+  distance above 65,536 round trips under `2/3 + 1/2 + 4/3`; the same bytes
+  fail before raw publication under `2/2 + 1/1`; frozen variant-1 bytes remain
+  unchanged; lifecycle guards reject the unadmitted identity; and all 2,894
+  registered tests pass under MSVC and ClangCL Release configurations with
+  the 240-second per-test limit, including schema compatibility and
+  documentation layout.

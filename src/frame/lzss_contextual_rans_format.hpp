@@ -2,6 +2,7 @@
 #define MARC_FRAME_LZSS_CONTEXTUAL_RANS_FORMAT_HPP
 
 #include "core/limits.hpp"
+#include "context/lzss_field_context.hpp"
 #include "dictionary/lzss_format.hpp"
 #include "entropy/contextual_rans_format.hpp"
 
@@ -26,6 +27,9 @@ struct LzssContextualRansStreamHeader {
     std::uint32_t frequency_entry_count{
         static_cast<std::uint32_t>(
             entropy::internal::contextual_rans_frequency_entries)};
+    std::uint16_t dictionary_variant{2};
+    std::uint16_t context_algorithm{1};
+    std::uint16_t context_variant{1};
 };
 
 enum class LzssContextualRansStreamHeaderError : std::uint8_t {

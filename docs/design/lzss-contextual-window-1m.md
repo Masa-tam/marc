@@ -268,9 +268,19 @@ remain 126,976 entries. Descriptor APIs receive the field-context variant
 already selected from the stream header. Variant 1 retains 4,518 meaningful
 frequencies and its exact 9,025-byte ceiling; variant 2 selects 4,550 and the
 reserved 9,089-byte ceiling. One maximum-size backing array may serve both,
-but variant 1 requires its unused 32-entry tail to be zero. Frame decoder,
-encoder, profile, public C, CLI, benchmark, fuzz, and interoperability stages
-remain separate.
+but variant 1 requires its unused 32-entry tail to be zero. Descriptor,
+coding-core, and direct token-composition stages retain variant 1 as their
+default while accepting an explicit selected layout.
+
+The canonical rANS complete-frame stage is now admitted internally. The
+stream header serializes and parses the reserved `2/3 + 1/2 + 4/3` identity,
+then selects one immutable layout for frame-count bounds, descriptor parsing,
+exact HashChain tokenization, direct token coding, decode-table construction,
+and typed-token reconstruction. A deterministic frame proves a generated
+distance above 65,536 and exact raw round trip, while the frozen 64 KiB literal
+frame remains unchanged. Streaming lifecycle code explicitly rejects the new
+identity until its profile and workspace admission is completed; public C,
+CLI, benchmark, fuzz, and interoperability stages also remain separate.
 
 ## Required validation
 
