@@ -20635,3 +20635,32 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned C ABI, profile,
   workspace, streaming, and selected-layout abstractions. No external
   implementation expression entered the design.
+
+## CR-0863: 2026-08-15 - Contextual tANS public C profile admission
+
+- Authoring method: implemented DD-816 directly over marc's selected private
+  tANS lifecycle and the established Contextual rANS tail-compatible C
+  admission pattern, with C11 boundary tests updated first.
+- References used: DD-790 through DD-816; IR-0590; TVG-0665; TVG-0666;
+  TVG-0686 through TVG-0691; marc's public shared selector, size-tagged config,
+  profile workspace calculators, streaming factories, and strict admission.
+- Known implementations intentionally not consulted: external LZSS or tANS
+  implementations, C ABIs, factories, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: retain the exact ABI-1 extent and symbol family;
+  initialize selector zero explicitly; translate the selector independently
+  for profile sizing and decoder admission; and leave caller limits unchanged.
+- Generated-code task description: reinterpret the reserved config tail; add
+  selector validation and private mappings; route encoder/decoder workspace
+  and construction through the selected profile; prove exact baseline bytes,
+  selected identity, crossed rejection, invalid values, and workspace bounds.
+- Similarity review: the implementation composes only marc-owned public C,
+  profile, workspace, streaming, tANS, typed-token, and HashChain code. No
+  external implementation expression entered the code or tests.
+- Local validation: the C11 ABI remains 112 bytes; the frozen route retains
+  exact `2/2 + 1/1 + 5/2` bytes and 9,113-byte bounded workspace; the selected
+  route publishes `2/3 + 1/2 + 5/2`, 4,550 entries, and 9,177 bytes. Both
+  crossed identities fail before raw publication. All 2,914 registered
+  Release tests pass under MSVC and ClangCL within the 300-second per-test
+  limit, including interoperability schema compatibility and documentation
+  layout.

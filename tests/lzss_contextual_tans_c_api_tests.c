@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+_Static_assert(sizeof(marc_lzss_contextual_tans_config) == 112,
+               "contextual tANS ABI-1 configuration extent changed");
+
 static marc_buffer allocate(size_t size) {
     marc_buffer result = {size == 0 ? NULL : (uint8_t*)malloc(size), size};
     assert(size == 0 || result.data != NULL);
@@ -30,6 +33,7 @@ static void set_small_limits(marc_lzss_contextual_tans_config* config) {
 int main(void) {
     static const uint8_t input[] = {0x41, 0x42, 0x41, 0x42, 0x58};
     uint8_t encoded[40000];
+    uint8_t baseline_encoded[40000];
     uint8_t decoded[sizeof(input)];
     marc_lzss_contextual_tans_config config;
     marc_workspace_requirements needed;
@@ -41,6 +45,7 @@ int main(void) {
     assert(config.abi_version == MARC_ABI_VERSION);
     assert(config.frame_size == 65536);
     assert(config.window_size == 65536);
+    assert(config.window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_64K);
     assert(config.min_match_length == 5);
     assert(config.max_match_length == 258);
     config.original_size = sizeof(input);
@@ -49,7 +54,7 @@ int main(void) {
     assert(marc_lzss_contextual_tans_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
     assert(needed.primary_bytes == 2);
-    assert(needed.secondary_bytes > 9000);
+    assert(needed.secondary_bytes == 9113);
     assert(needed.views_bytes != 0 && needed.views_alignment != 0);
 
     marc_buffer primary = allocate(needed.primary_bytes);
@@ -71,6 +76,7 @@ int main(void) {
     assert(encoded[16] == 5 && encoded[17] == 0);
     assert(encoded[18] == 2 && encoded[19] == 0);
     const size_t encoded_size = result.output_produced;
+    memcpy(baseline_encoded, encoded, encoded_size);
     marc_transform_destroy(transform);
     release(primary);
     release(secondary);
@@ -81,7 +87,7 @@ int main(void) {
     set_small_limits(&config);
     assert(marc_lzss_contextual_tans_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
-    assert(needed.primary_bytes > 9000);
+    assert(needed.primary_bytes == 9113);
     assert(needed.secondary_bytes == 2);
     assert(needed.views_bytes != 0 && needed.views_alignment != 0);
     primary = allocate(needed.primary_bytes);
@@ -114,11 +120,16 @@ int main(void) {
                (marc_buffer){views.data, needed.views_bytes - 1},
                &transform) == MARC_STATUS_INVALID_ARGUMENT);
     assert(transform == NULL);
+    const size_t shared_size = needed.views_bytes > needed.primary_bytes
+        ? needed.views_bytes : needed.primary_bytes;
+    marc_buffer shared = allocate(shared_size);
     assert(marc_lzss_contextual_tans_create(
-               &config, primary, secondary,
-               (marc_buffer){primary.data, needed.views_bytes},
-               &transform) == MARC_STATUS_INVALID_ARGUMENT);
+               &config,
+               (marc_buffer){shared.data, needed.primary_bytes}, secondary,
+               (marc_buffer){shared.data, needed.views_bytes}, &transform)
+           == MARC_STATUS_INVALID_ARGUMENT);
     assert(transform == NULL);
+    release(shared);
     if (needed.views_alignment > 1) {
         marc_buffer storage = allocate(needed.views_bytes + 1);
         const marc_buffer misaligned = {
@@ -153,13 +164,122 @@ int main(void) {
                NULL, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     assert(marc_lzss_contextual_tans_workspace_requirements(
                &config, NULL) == MARC_STATUS_INVALID_ARGUMENT);
-    config.direction = 99;
+    config.direction = (marc_direction)99;
     assert(marc_lzss_contextual_tans_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
-    assert(marc_lzss_contextual_tans_config_init(0, &config)
+    assert(marc_lzss_contextual_tans_config_init(
+               (marc_direction)0, &config)
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(marc_lzss_contextual_tans_config_init(
                MARC_DIRECTION_ENCODE, NULL) == MARC_STATUS_INVALID_ARGUMENT);
+
+    release(primary);
+    release(secondary);
+    release(views);
+
+    assert(marc_lzss_contextual_tans_config_init(
+               MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
+    config.original_size = sizeof(input);
+    config.frame_size = 2;
+    config.window_size = UINT32_C(1) << 20;
+    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    set_small_limits(&config);
+    config.max_lz_distance = UINT64_C(1) << 20;
+    assert(marc_lzss_contextual_tans_workspace_requirements(
+               &config, &needed) == MARC_STATUS_OK);
+    assert(needed.primary_bytes == 2);
+    assert(needed.secondary_bytes == 9177);
+    primary = allocate(needed.primary_bytes);
+    secondary = allocate(needed.secondary_bytes);
+    views = allocate(needed.views_bytes);
+    assert(marc_lzss_contextual_tans_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    result = marc_transform_process(
+        transform, (marc_const_buffer){input, sizeof(input)},
+        (marc_buffer){encoded, sizeof(encoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_END_OF_STREAM);
+    assert(encoded[14] == 3 && encoded[15] == 0);
+    assert(encoded[84] == 0xc6 && encoded[85] == 0x11);
+    assert(encoded[98] == 2 && encoded[99] == 0);
+    const size_t extended_encoded_size = result.output_produced;
+    marc_transform_destroy(transform);
+    release(primary);
+    release(secondary);
+    release(views);
+
+    assert(marc_lzss_contextual_tans_config_init(
+               MARC_DIRECTION_DECODE, &config) == MARC_STATUS_OK);
+    set_small_limits(&config);
+    config.max_lz_distance = UINT64_C(1) << 20;
+    assert(marc_lzss_contextual_tans_workspace_requirements(
+               &config, &needed) == MARC_STATUS_OK);
+    assert(needed.primary_bytes == 9113);
+    primary = allocate(needed.primary_bytes);
+    secondary = allocate(needed.secondary_bytes);
+    views = allocate(needed.views_bytes);
+    assert(marc_lzss_contextual_tans_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    memset(decoded, 0xcc, sizeof(decoded));
+    result = marc_transform_process(
+        transform, (marc_const_buffer){encoded, extended_encoded_size},
+        (marc_buffer){decoded, sizeof(decoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_MALFORMED_STREAM);
+    assert(result.output_produced == 0);
+    for (size_t index = 0; index < sizeof(decoded); ++index) {
+        assert(decoded[index] == 0xcc);
+    }
+    marc_transform_destroy(transform);
+    release(primary);
+    release(secondary);
+    release(views);
+
+    assert(marc_lzss_contextual_tans_config_init(
+               MARC_DIRECTION_DECODE, &config) == MARC_STATUS_OK);
+    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    set_small_limits(&config);
+    config.max_lz_distance = UINT64_C(1) << 20;
+    assert(marc_lzss_contextual_tans_workspace_requirements(
+               &config, &needed) == MARC_STATUS_OK);
+    assert(needed.primary_bytes == 9177);
+    primary = allocate(needed.primary_bytes);
+    secondary = allocate(needed.secondary_bytes);
+    views = allocate(needed.views_bytes);
+    assert(marc_lzss_contextual_tans_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    result = marc_transform_process(
+        transform, (marc_const_buffer){encoded, extended_encoded_size},
+        (marc_buffer){decoded, sizeof(decoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_END_OF_STREAM);
+    assert(result.output_produced == sizeof(decoded));
+    assert(memcmp(decoded, input, sizeof(input)) == 0);
+    marc_transform_destroy(transform);
+
+    assert(marc_lzss_contextual_tans_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    memset(decoded, 0xcc, sizeof(decoded));
+    result = marc_transform_process(
+        transform, (marc_const_buffer){baseline_encoded, encoded_size},
+        (marc_buffer){decoded, sizeof(decoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_MALFORMED_STREAM);
+    assert(result.output_produced == 0);
+    for (size_t index = 0; index < sizeof(decoded); ++index) {
+        assert(decoded[index] == 0xcc);
+    }
+    marc_transform_destroy(transform);
+
+    config.window_profile = UINT32_C(2);
+    assert(marc_lzss_contextual_tans_workspace_requirements(
+               &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
+    assert(needed.primary_bytes == 0 && needed.secondary_bytes == 0
+           && needed.views_bytes == 0);
+    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.reserved2 = 1;
+    assert(marc_lzss_contextual_tans_workspace_requirements(
+               &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
 
     release(primary);
     release(secondary);

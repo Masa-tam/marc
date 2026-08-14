@@ -409,6 +409,8 @@ The public C stage preserves the existing tANS three-function family and
 shared 32-bit window selector and a 32-bit reserved word, matching Contextual
 rANS without moving earlier fields. Workspace calculation and creation use the
 selector explicitly, and public decoders require the same stream identity.
+This stage is implemented: C11 tests retain the exact 64 KiB route, admit the
+1 MiB route, and reject both crossed identities before raw publication.
 
 ## Required validation
 

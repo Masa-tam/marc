@@ -629,6 +629,26 @@ contextual_rans_stream_admission(
               field_context_64k;
 }
 
+[[nodiscard]] marc::frame::internal::LzssContextualTansProfileVariant
+contextual_tans_profile_variant(
+    const marc_lzss_contextual_window_profile profile) noexcept {
+    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        ? marc::frame::internal::LzssContextualTansProfileVariant::
+              field_context_1m
+        : marc::frame::internal::LzssContextualTansProfileVariant::
+              field_context_64k;
+}
+
+[[nodiscard]] marc::frame::internal::LzssContextualTansStreamAdmission
+contextual_tans_stream_admission(
+    const marc_lzss_contextual_window_profile profile) noexcept {
+    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        ? marc::frame::internal::LzssContextualTansStreamAdmission::
+              field_context_1m
+        : marc::frame::internal::LzssContextualTansStreamAdmission::
+              field_context_64k;
+}
+
 bool load_config(
     const marc_lzss_contextual_dynamic_range_config* config,
     marc::core::DecoderLimits& limits) noexcept {
@@ -687,7 +707,9 @@ bool load_config(
     if (config == nullptr
         || config->struct_size != sizeof(marc_lzss_contextual_tans_config)
         || config->abi_version != MARC_ABI_VERSION
-        || config->reserved != 0 || config->reserved2 != 0) {
+        || config->reserved != 0 || config->reserved2 != 0
+        || (config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
+            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -1508,7 +1530,8 @@ marc_status contextual_tans_workspace_requirements(
             LzssContextualTansEncoderWorkspaceRequirements needed{};
         const auto error =
             marc::frame::internal::make_lzss_contextual_tans_profile(
-                {config->original_size, config->frame_size, dictionary},
+                {config->original_size, config->frame_size, dictionary,
+                 contextual_tans_profile_variant(config->window_profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualTansProfileError::none) {
@@ -1526,7 +1549,9 @@ marc_status contextual_tans_workspace_requirements(
         marc::frame::internal::
             LzssContextualTansDecoderWorkspaceRequirements needed{};
         const auto error = marc::frame::internal::
-            calculate_lzss_contextual_tans_decoder_workspace(limits, needed);
+            calculate_lzss_contextual_tans_decoder_workspace(
+                limits, needed,
+                contextual_tans_profile_variant(config->window_profile));
         if (error != marc::frame::internal::
                          LzssContextualTansProfileError::none) {
             return status_for(
@@ -1595,7 +1620,8 @@ marc_status create_contextual_tans(
             LzssContextualTansEncoderWorkspaceRequirements needed{};
         const auto error =
             marc::frame::internal::make_lzss_contextual_tans_profile(
-                {config->original_size, config->frame_size, dictionary},
+                {config->original_size, config->frame_size, dictionary,
+                 contextual_tans_profile_variant(config->window_profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualTansProfileError::none) {
@@ -1617,7 +1643,9 @@ marc_status create_contextual_tans(
         marc::frame::internal::
             LzssContextualTansDecoderWorkspaceRequirements needed{};
         const auto error = marc::frame::internal::
-            calculate_lzss_contextual_tans_decoder_workspace(limits, needed);
+            calculate_lzss_contextual_tans_decoder_workspace(
+                limits, needed,
+                contextual_tans_profile_variant(config->window_profile));
         if (error != marc::frame::internal::
                          LzssContextualTansProfileError::none) {
             return MARC_STATUS_INTERNAL_ERROR;
@@ -1632,7 +1660,8 @@ marc_status create_contextual_tans(
         }
         implementation = new (std::nothrow) marc::frame::internal::
             LzssContextualTansFrameStreamingDecoder(
-                limits, primary, views.tables, views.tokens, secondary);
+                limits, primary, views.tables, views.tokens, secondary,
+                contextual_tans_stream_admission(config->window_profile));
     }
     return publish_transform(implementation, transform);
 }
@@ -4797,7 +4826,11 @@ marc_status marc_lzss_contextual_rans_create(
 marc_status marc_lzss_contextual_tans_config_init(
     const marc_direction direction,
     marc_lzss_contextual_tans_config* const config) noexcept {
-    return initialize_contextual_rans_config(direction, config);
+    const auto status = initialize_contextual_rans_config(direction, config);
+    if (status == MARC_STATUS_OK) {
+        config->window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+    }
+    return status;
 }
 
 marc_status marc_lzss_contextual_tans_workspace_requirements(

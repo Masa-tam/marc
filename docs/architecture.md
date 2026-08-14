@@ -5228,8 +5228,11 @@ transactional header parsing, before frame collection. A selected profile
 round trips an extended-distance HashChain frame under one-byte input/output;
 public factories remain the following boundary.
 
-The next public Contextual tANS boundary reuses the shared window-profile enum
+The public Contextual tANS boundary reuses the shared window-profile enum
 without adding exported symbols. Its 112-byte ABI-1 config replaces only the
 final zero-reserved 64-bit extent with a 32-bit selector plus 32-bit reserved
 word, preserving every offset and mapping zero to the frozen 64 KiB profile.
-Decoder construction binds strict profile admission; CLI remains separate.
+Workspace query and construction translate that selector into exact private
+profile sizing, and decoder construction binds strict admission before frame
+collection. The C11 lifecycle proves both selected identities and atomic
+cross-profile rejection; CLI remains separate.
