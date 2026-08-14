@@ -4462,14 +4462,16 @@ sanitizer campaign.
 
 ### Contextual rANS CLI boundary
 
-The transactional CLI admits the second Format 2 profile only through the
-explicit experimental selector `lzss-contextual-rans`. It fixes a 65,536-byte
-frame and conservative decision/payload limits, then obtains primary,
-secondary, and aligned opaque-view requirements from the public C lifecycle
-separately for encode and decode. The adapter includes no private Format 2
-header and reproduces no typed-token, modeled-operation, or rANS-table layout.
-Existing temporary-file publication ensures that failed decoding leaves no
-requested destination or temporary artifact.
+The transactional CLI admits the Contextual rANS Format 2 profiles only
+through explicit experimental selectors. `lzss-contextual-rans` fixes the
+64 KiB profile and `lzss-contextual-rans-1m` fixes the 1 MiB profile; encode
+and decode require the same name, so neither admits the other's serialized
+dictionary/context identity. Each adapter sets conservative decision/payload
+limits and obtains primary, secondary, and aligned opaque-view requirements
+from the public C lifecycle separately for encode and decode. The adapters
+include no private Format 2 header and reproduce no typed-token, modeled-
+operation, or rANS-table layout. Existing temporary-file publication ensures
+that failed decoding leaves no requested destination or temporary artifact.
 
 ### Contextual rANS benchmark boundary
 

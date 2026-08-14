@@ -20146,3 +20146,28 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned CLI, C lifecycle,
   profile, and stream-admission components. No external implementation
   expression entered the design.
+
+## CR-0843: 2026-08-14 - Contextual rANS 1 MiB CLI admission
+
+- Authoring method: implemented DD-807 over marc's public selected rANS C
+  lifecycle and transactional CLI adapter.
+- References used: DD-790 through DD-807; IR-0581; TVG-0665; TVG-0666;
+  TVG-0676 through TVG-0682; marc's existing rANS and Dynamic Range CLI tests.
+- Known implementations intentionally not consulted: external LZSS or rANS
+  implementations, command-line adapters, workspace policies, source code,
+  tests, corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: select the profile by an explicit enum value; derive
+  1 MiB decision and payload limits with checked public factories; leave the
+  old name and frozen inventory unchanged; and require reciprocal rejection.
+- Generated-code task description: add constants, name resolution, public C
+  configuration selection, exact header checks, matching round trip, cross-
+  profile failure, trailing-data rejection, and transactional cleanup.
+- Similarity review: the implementation parameterizes and composes only marc-
+  owned CLI, C lifecycle, limits, profile, and test infrastructure. No
+  external implementation expression entered the change.
+- Local validation: both CLI names emit their exact dictionary/context pair
+  with entropy `4/3`, round trip through the matching selector, reject the
+  other selector without retaining output, and reject trailing data; all
+  2,897 registered tests pass under MSVC and ClangCL Release configurations
+  with the 240-second per-test limit, including schema compatibility and
+  documentation layout.
