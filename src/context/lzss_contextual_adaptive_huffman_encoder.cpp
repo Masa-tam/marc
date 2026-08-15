@@ -301,7 +301,8 @@ plan_lzss_contextual_adaptive_huffman_tokens(
     result.token_index = 0;
     ContextualAdaptiveHuffmanForwardEncoder encoder;
     result.entropy = encoder.begin_plan(
-        limits, node_workspace, symbol_workspace);
+        limits, node_workspace, symbol_workspace,
+        LzssFieldContextVariant::field_context_64k);
     if (result.entropy.error != ContextualAdaptiveHuffmanEncodeError::none) {
         return fail_entropy(result, result.entropy);
     }
@@ -360,7 +361,8 @@ encode_lzss_contextual_adaptive_huffman_tokens(
     }
     ContextualAdaptiveHuffmanForwardEncoder encoder;
     auto entropy_result = encoder.begin_write(
-        planned, limits, node_workspace, symbol_workspace, payload);
+        planned, limits, node_workspace, symbol_workspace, payload,
+        LzssFieldContextVariant::field_context_64k);
     if (entropy_result.error != ContextualAdaptiveHuffmanEncodeError::none) {
         return fail_entropy(result, entropy_result);
     }

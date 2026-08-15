@@ -13,6 +13,7 @@ namespace marc::entropy::internal {
 
 enum class ContextualAdaptiveHuffmanDecodeError : std::uint8_t {
     none,
+    invalid_context_variant,
     invalid_descriptor,
     payload_size_mismatch,
     node_workspace_too_small,
@@ -50,7 +51,10 @@ public:
         std::span<const std::byte> payload,
         const core::DecoderLimits& limits,
         std::span<AdaptiveHuffmanNode> node_storage,
-        std::span<std::uint16_t> symbol_storage) noexcept;
+        std::span<std::uint16_t> symbol_storage,
+        context::internal::LzssFieldContextVariant variant =
+            context::internal::LzssFieldContextVariant::
+                field_context_64k) noexcept;
 
     [[nodiscard]] ContextualAdaptiveHuffmanDecodeResult decode_symbol(
         std::uint16_t expected_context,
@@ -75,6 +79,7 @@ private:
 
     std::span<const std::byte> payload_{};
     ContextualAdaptiveHuffmanModelBank models_{};
+    context::internal::LzssFieldContextLayout layout_{};
     std::size_t total_bits_{};
     std::size_t bit_offset_{};
     std::uint32_t expected_decisions_{};

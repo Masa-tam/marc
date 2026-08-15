@@ -21338,3 +21338,30 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned field-context,
   model-bank, bit-emission, and operation-lifecycle rules. No external
   implementation expression entered the design.
+
+## CR-0892: 2026-08-15 - Selected Contextual Adaptive Huffman operation coding
+
+- Authoring method: implemented DD-832 over marc's completed selected FGK
+  bank and existing forward and one-shot operation codec paths.
+- References used: DD-831; DD-832; IR-0606; TVG-0706; TVG-0707; BR-0142;
+  marc's existing Contextual Adaptive Huffman operation implementation.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: resolve one layout before capacity or alias checks;
+  retain it for the complete lifecycle; derive every model extent, alphabet,
+  and bypass limit from it; keep composed legacy callers explicit; and leave
+  the descriptor variant-neutral.
+- Generated-code task description: propagate the selected variant through
+  operation planning, forward writing, one-shot encoding, and decoding; add
+  selected capacity and stable variant errors; prove the exact class-20 hand
+  vector through both encoder paths; and retain atomic reciprocal failures.
+- Similarity review: the implementation extends only marc-owned checked-span,
+  field-context, FGK, and bitstream structures. No external implementation
+  expression entered the change.
+- Local validation: all targets build warning-clean under MSVC and ClangCL.
+  All 26 focused Contextual Adaptive Huffman model, encoder, and decoder tests
+  pass under both compilers. Both complete Release suites pass all 2,944
+  registered tests, including documentation layout and interoperability schema
+  compatibility, in 198.69 seconds under MSVC and 206.48 seconds under
+  ClangCL.

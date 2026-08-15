@@ -139,7 +139,9 @@ TEST(LzssContextualAdaptiveHuffmanEncoder,
                   encode_contextual_adaptive_huffman_operations(
                       operations, {}, operation_workspace.nodes,
                       operation_workspace.symbols, operation_payload,
-                      operation_descriptor).error,
+                      operation_descriptor,
+                      marc::context::internal::LzssFieldContextVariant::
+                          field_context_64k).error,
               marc::entropy::internal::
                   ContextualAdaptiveHuffmanEncodeError::none);
     EXPECT_EQ(token_payload, operation_payload);

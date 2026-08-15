@@ -577,6 +577,14 @@ Symbol alphabets, and 16/20-bit bypass ceiling while leaving the descriptor
 variant-neutral. The proving class-20 plus 20-bit bypass vector is
 `D4 9B 57 01`; typed-token and frame composition remain separate later work.
 
+That operation boundary is implemented. One-shot and forward two-pass coding
+derive region extents and limits from the selected layout, and decoding retains
+the same layout for every request. Existing composed callers name variant 1
+explicitly; source-level lifecycle defaults preserve the frozen 64 KiB route.
+The hand vector round trips identically through both encoding paths, while
+crossed alphabets, unsupported selections, and short selected workspaces fail
+without publishing descriptor, payload, or decoded values.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

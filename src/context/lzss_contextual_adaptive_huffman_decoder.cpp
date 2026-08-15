@@ -307,7 +307,8 @@ enum class OverlapCheck : std::uint8_t {
 
     ContextualAdaptiveHuffmanDecoder decoder;
     result.entropy = decoder.begin(
-        descriptor, payload, limits, nodes, symbols);
+        descriptor, payload, limits, nodes, symbols,
+        LzssFieldContextVariant::field_context_64k);
     if (result.entropy.error != ContextualAdaptiveHuffmanDecodeError::none) {
         result.error = LzssContextualAdaptiveHuffmanDecodeError::entropy_error;
         return result;

@@ -2409,3 +2409,20 @@ registered Release tests pass under MSVC and ClangCL, including documentation
 layout and schema compatibility. Selected descriptor, operation coding,
 frames, public lifecycle, benchmark, fuzz, and interoperability admission
 remain later boundaries.
+
+### BR-0142
+
+The selected Contextual Adaptive Huffman operation-coding boundary is locally
+complete. Planning, forward writing, one-shot encoding, and decoding receive
+one field-context selection and derive exact model capacities, Symbol
+alphabets, region accounting, and 16/20-bit bypass policy from it. The
+variant-2 class-20 plus `0xabcde` bypass vector produces exact payload
+`D4 9B 57 01`, consumes 25 bits, and round trips through both encoder paths.
+Fresh workspaces reproduce identical bytes. Variant 1 retains its existing
+vectors; crossed alphabets, unsupported selections, and independently short
+selected workspaces fail atomically. Existing composed callers explicitly
+retain variant 1, so no descriptor, frame, or public representation changes.
+All targets build warning-clean and all 2,944 registered Release tests pass
+under MSVC and ClangCL, including documentation layout and interoperability
+schema compatibility. Typed-token and complete-frame selected admission remain
+later boundaries.

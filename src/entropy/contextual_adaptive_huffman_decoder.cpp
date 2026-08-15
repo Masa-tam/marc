@@ -40,6 +40,7 @@ enum class OverlapCheck : std::uint8_t {
 void ContextualAdaptiveHuffmanDecoder::reset() noexcept {
     payload_ = {};
     models_ = {};
+    layout_ = {};
     total_bits_ = 0;
     bit_offset_ = 0;
     expected_decisions_ = 0;
@@ -66,8 +67,26 @@ ContextualAdaptiveHuffmanDecodeResult ContextualAdaptiveHuffmanDecoder::begin(
     const std::span<const std::byte> payload,
     const core::DecoderLimits& limits,
     const std::span<AdaptiveHuffmanNode> node_storage,
-    const std::span<std::uint16_t> symbol_storage) noexcept {
+    const std::span<std::uint16_t> symbol_storage,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     reset();
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return fail(
+            ContextualAdaptiveHuffmanDecodeError::invalid_context_variant);
+    }
+    const auto& layout = selected.layout;
+    std::size_t node_entries{};
+    if (!core::checked_multiply(
+            layout.frequency_entries, std::size_t{2}, node_entries)
+        || !core::checked_add(
+            node_entries,
+            static_cast<std::size_t>(context::internal::lzss_field_context_count),
+            node_entries)) {
+        return fail(ContextualAdaptiveHuffmanDecodeError::arithmetic_overflow);
+    }
     if (payload.size() != descriptor.payload_size) {
         return fail(ContextualAdaptiveHuffmanDecodeError::payload_size_mismatch);
     }
@@ -80,11 +99,11 @@ ContextualAdaptiveHuffmanDecodeResult ContextualAdaptiveHuffmanDecoder::begin(
     if (core::validate_limits(limits) != core::LimitError::none) {
         return fail(ContextualAdaptiveHuffmanDecodeError::invalid_descriptor);
     }
-    if (node_storage.size() < contextual_adaptive_huffman_node_entries) {
+    if (node_storage.size() < node_entries) {
         return fail(
             ContextualAdaptiveHuffmanDecodeError::node_workspace_too_small);
     }
-    if (symbol_storage.size() < contextual_adaptive_huffman_symbol_entries) {
+    if (symbol_storage.size() < layout.frequency_entries) {
         return fail(
             ContextualAdaptiveHuffmanDecodeError::symbol_workspace_too_small);
     }
@@ -106,10 +125,10 @@ ContextualAdaptiveHuffmanDecodeResult ContextualAdaptiveHuffmanDecoder::begin(
 
     std::size_t node_bytes{};
     std::size_t symbol_bytes{};
-    if (!core::checked_multiply(contextual_adaptive_huffman_node_entries,
+    if (!core::checked_multiply(node_entries,
                                 sizeof(AdaptiveHuffmanNode), node_bytes)
         || !core::checked_multiply(
-            contextual_adaptive_huffman_symbol_entries,
+            layout.frequency_entries,
             sizeof(std::uint16_t), symbol_bytes)) {
         return fail(ContextualAdaptiveHuffmanDecodeError::arithmetic_overflow);
     }
@@ -119,9 +138,12 @@ ContextualAdaptiveHuffmanDecodeResult ContextualAdaptiveHuffmanDecoder::begin(
         || !core::checked_add(model_bytes, payload.size(), aggregate_bytes)) {
         return fail(ContextualAdaptiveHuffmanDecodeError::arithmetic_overflow);
     }
-    if (contextual_adaptive_huffman_node_entries
-                + contextual_adaptive_huffman_symbol_entries
-            > limits.max_entropy_table_entries
+    std::size_t model_entries{};
+    if (!core::checked_add(
+            node_entries, layout.frequency_entries, model_entries)) {
+        return fail(ContextualAdaptiveHuffmanDecodeError::arithmetic_overflow);
+    }
+    if (model_entries > limits.max_entropy_table_entries
         || aggregate_bytes > limits.max_internal_buffered_bytes) {
         return fail(ContextualAdaptiveHuffmanDecodeError::limit_exceeded);
     }
@@ -143,14 +165,14 @@ ContextualAdaptiveHuffmanDecodeResult ContextualAdaptiveHuffmanDecoder::begin(
     }
 
     const auto model_error = models_.initialize(
-        context::internal::LzssFieldContextVariant::field_context_64k,
-        node_storage.first(contextual_adaptive_huffman_node_entries),
-        symbol_storage.first(contextual_adaptive_huffman_symbol_entries));
+        layout, node_storage.first(node_entries),
+        symbol_storage.first(layout.frequency_entries));
     if (model_error != ContextualAdaptiveHuffmanModelError::none
         || !models_.validate()) {
         return fail(ContextualAdaptiveHuffmanDecodeError::tree_error);
     }
     payload_ = payload;
+    layout_ = layout;
     total_bits_ = total_bits;
     expected_decisions_ = descriptor.decision_count;
     started_ = true;
@@ -186,7 +208,7 @@ ContextualAdaptiveHuffmanDecoder::decode_symbol(
         return fail(ContextualAdaptiveHuffmanDecodeError::invalid_context);
     }
     if (expected_alphabet
-        != context::internal::lzss_field_context_alphabets[expected_context]) {
+        != (*layout_.alphabets)[expected_context]) {
         return fail(ContextualAdaptiveHuffmanDecodeError::invalid_alphabet);
     }
     if (decision_count_ >= expected_decisions_) {
@@ -272,7 +294,8 @@ ContextualAdaptiveHuffmanDecoder::decode_bypass(
     if (finished_) {
         return fail(ContextualAdaptiveHuffmanDecodeError::already_finished);
     }
-    if (expected_bit_count == 0 || expected_bit_count > 16) {
+    if (expected_bit_count == 0
+        || expected_bit_count > layout_.maximum_bypass_bits) {
         return fail(
             ContextualAdaptiveHuffmanDecodeError::invalid_bypass_width);
     }

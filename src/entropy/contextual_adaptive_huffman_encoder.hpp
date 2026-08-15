@@ -14,6 +14,7 @@ namespace marc::entropy::internal {
 
 enum class ContextualAdaptiveHuffmanEncodeError : std::uint8_t {
     none,
+    invalid_context_variant,
     invalid_descriptor,
     not_started,
     already_finished,
@@ -49,14 +50,20 @@ public:
     [[nodiscard]] ContextualAdaptiveHuffmanEncodeResult begin_plan(
         const core::DecoderLimits& limits,
         std::span<AdaptiveHuffmanNode> node_workspace,
-        std::span<std::uint16_t> symbol_workspace) noexcept;
+        std::span<std::uint16_t> symbol_workspace,
+        context::internal::LzssFieldContextVariant variant =
+            context::internal::LzssFieldContextVariant::
+                field_context_64k) noexcept;
 
     [[nodiscard]] ContextualAdaptiveHuffmanEncodeResult begin_write(
         const ContextualAdaptiveHuffmanDescriptor& descriptor,
         const core::DecoderLimits& limits,
         std::span<AdaptiveHuffmanNode> node_workspace,
         std::span<std::uint16_t> symbol_workspace,
-        std::span<std::byte> payload_output) noexcept;
+        std::span<std::byte> payload_output,
+        context::internal::LzssFieldContextVariant variant =
+            context::internal::LzssFieldContextVariant::
+                field_context_64k) noexcept;
 
     [[nodiscard]] ContextualAdaptiveHuffmanEncodeResult encode_symbol(
         std::uint16_t context_id, std::uint16_t alphabet_size,
@@ -76,11 +83,13 @@ private:
         const core::DecoderLimits& limits,
         std::span<AdaptiveHuffmanNode> node_workspace,
         std::span<std::uint16_t> symbol_workspace,
-        std::span<std::byte> payload_output) noexcept;
+        std::span<std::byte> payload_output,
+        context::internal::LzssFieldContextVariant variant) noexcept;
     [[nodiscard]] ContextualAdaptiveHuffmanEncodeResult fail(
         ContextualAdaptiveHuffmanEncodeError error) noexcept;
 
     ContextualAdaptiveHuffmanModelBank models_{};
+    context::internal::LzssFieldContextLayout layout_{};
     core::DecoderLimits limits_{};
     std::span<std::byte> output_{};
     ContextualAdaptiveHuffmanDescriptor expected_{};
@@ -96,7 +105,8 @@ plan_contextual_adaptive_huffman_operations(
     const core::DecoderLimits& limits,
     std::span<AdaptiveHuffmanNode> node_workspace,
     std::span<std::uint16_t> symbol_workspace,
-    ContextualAdaptiveHuffmanDescriptor& descriptor) noexcept;
+    ContextualAdaptiveHuffmanDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant) noexcept;
 
 [[nodiscard]] ContextualAdaptiveHuffmanEncodeResult
 encode_contextual_adaptive_huffman_operations(
@@ -105,7 +115,8 @@ encode_contextual_adaptive_huffman_operations(
     std::span<AdaptiveHuffmanNode> node_workspace,
     std::span<std::uint16_t> symbol_workspace,
     std::span<std::byte> payload_output,
-    ContextualAdaptiveHuffmanDescriptor& descriptor) noexcept;
+    ContextualAdaptiveHuffmanDescriptor& descriptor,
+    context::internal::LzssFieldContextVariant variant) noexcept;
 
 } // namespace marc::entropy::internal
 

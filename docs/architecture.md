@@ -5374,3 +5374,10 @@ validation, region accounting, and bypass ceiling all use one resolved layout;
 the fixed descriptor remains data-only and cannot select a layout. This keeps
 variant 1 byte-frozen while allowing variant 2 to code class 20 and 20-bit
 bypass values directly.
+
+That private operation boundary is now implemented. Both one-shot and forward
+two-pass encoders calculate selected node, symbol, operation, and payload
+extents before mutation. The decoder fixes the same layout at `begin` and uses
+it for all later Symbol and bypass requests. Existing composed paths pass the
+64 KiB selection explicitly, so no typed-token or frame representation changes
+at this stage.

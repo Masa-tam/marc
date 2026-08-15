@@ -50,21 +50,31 @@ enum class OverlapCheck : std::uint8_t {
 
 struct Extents {
     std::size_t operation_bytes{};
+    std::size_t node_entries{};
+    std::size_t symbol_entries{};
     std::size_t node_bytes{};
     std::size_t symbol_bytes{};
 };
 
 [[nodiscard]] bool calculate_extents(
     const std::span<const ModeledOperation> operations,
+    const context::internal::LzssFieldContextLayout& layout,
     Extents& extents) noexcept {
+    extents.symbol_entries = layout.frequency_entries;
     return core::checked_multiply(
                operations.size(), sizeof(ModeledOperation),
                extents.operation_bytes)
         && core::checked_multiply(
-            contextual_adaptive_huffman_node_entries,
+            layout.frequency_entries, std::size_t{2}, extents.node_entries)
+        && core::checked_add(
+            extents.node_entries,
+            static_cast<std::size_t>(context::internal::lzss_field_context_count),
+            extents.node_entries)
+        && core::checked_multiply(
+            extents.node_entries,
             sizeof(AdaptiveHuffmanNode), extents.node_bytes)
         && core::checked_multiply(
-            contextual_adaptive_huffman_symbol_entries,
+            extents.symbol_entries,
             sizeof(std::uint16_t), extents.symbol_bytes);
 }
 
@@ -167,6 +177,7 @@ void write_bit(
 
 [[nodiscard]] ContextualAdaptiveHuffmanEncodeError emit_symbol(
     ContextualAdaptiveHuffmanModelBank& models,
+    const context::internal::LzssFieldContextLayout& layout,
     const ModeledOperation& operation,
     const std::span<std::byte> output,
     ContextualAdaptiveHuffmanEncodeResult& result) noexcept {
@@ -174,8 +185,7 @@ void write_bit(
         return ContextualAdaptiveHuffmanEncodeError::invalid_context;
     }
     if (operation.alphabet_size
-        != context::internal::lzss_field_context_alphabets[
-            operation.context_id]) {
+        != (*layout.alphabets)[operation.context_id]) {
         return ContextualAdaptiveHuffmanEncodeError::invalid_alphabet;
     }
     if (operation.value >= operation.alphabet_size) {
@@ -217,13 +227,14 @@ void write_bit(
     const std::span<const ModeledOperation> operations,
     const std::span<AdaptiveHuffmanNode> nodes,
     const std::span<std::uint16_t> symbols,
-    const std::span<std::byte> output) noexcept {
+    const std::span<std::byte> output,
+    const context::internal::LzssFieldContextLayout& layout,
+    const Extents& extents) noexcept {
     ContextualAdaptiveHuffmanEncodeResult result{};
     ContextualAdaptiveHuffmanModelBank models;
     if (models.initialize(
-            context::internal::LzssFieldContextVariant::field_context_64k,
-            nodes.first(contextual_adaptive_huffman_node_entries),
-            symbols.first(contextual_adaptive_huffman_symbol_entries))
+            layout, nodes.first(extents.node_entries),
+            symbols.first(extents.symbol_entries))
             != ContextualAdaptiveHuffmanModelError::none
         || !models.validate()) {
         return fail(result, ContextualAdaptiveHuffmanEncodeError::tree_error);
@@ -235,7 +246,7 @@ void write_bit(
         if (kind > static_cast<std::uint8_t>(ModeledOperationKind::bypass_bits)) {
             error = ContextualAdaptiveHuffmanEncodeError::invalid_operation_kind;
         } else if (operation.kind == ModeledOperationKind::symbol) {
-            error = emit_symbol(models, operation, output, result);
+            error = emit_symbol(models, layout, operation, output, result);
             if (error == ContextualAdaptiveHuffmanEncodeError::none) {
                 if (result.decision_count == UINT32_MAX) {
                     error = ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow;
@@ -246,7 +257,8 @@ void write_bit(
         } else if (operation.context_id != 0
                    || operation.alphabet_size != 0) {
             error = ContextualAdaptiveHuffmanEncodeError::nonzero_unused_field;
-        } else if (operation.bit_count == 0 || operation.bit_count > 16) {
+        } else if (operation.bit_count == 0
+                   || operation.bit_count > layout.maximum_bypass_bits) {
             error = ContextualAdaptiveHuffmanEncodeError::invalid_bypass_width;
         } else if ((operation.value >> operation.bit_count) != 0) {
             error = ContextualAdaptiveHuffmanEncodeError::nonzero_unused_field;
@@ -290,8 +302,10 @@ ContextualAdaptiveHuffmanForwardEncoder::begin_common(
     const core::DecoderLimits& limits,
     const std::span<AdaptiveHuffmanNode> node_workspace,
     const std::span<std::uint16_t> symbol_workspace,
-    const std::span<std::byte> payload_output) noexcept {
+    const std::span<std::byte> payload_output,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     models_ = {};
+    layout_ = {};
     limits_ = limits;
     output_ = {};
     expected_ = {};
@@ -302,25 +316,31 @@ ContextualAdaptiveHuffmanForwardEncoder::begin_common(
     if (core::validate_limits(limits_) != core::LimitError::none) {
         return fail(ContextualAdaptiveHuffmanEncodeError::limit_exceeded);
     }
-    if (node_workspace.size() < contextual_adaptive_huffman_node_entries) {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return fail(
+            ContextualAdaptiveHuffmanEncodeError::invalid_context_variant);
+    }
+    Extents extents{};
+    if (!calculate_extents({}, selected.layout, extents)) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
+    }
+    if (node_workspace.size() < extents.node_entries) {
         return fail(
             ContextualAdaptiveHuffmanEncodeError::node_workspace_too_small);
     }
-    if (symbol_workspace.size()
-        < contextual_adaptive_huffman_symbol_entries) {
+    if (symbol_workspace.size() < extents.symbol_entries) {
         return fail(
             ContextualAdaptiveHuffmanEncodeError::symbol_workspace_too_small);
     }
     std::size_t node_bytes{};
     std::size_t symbol_bytes{};
     std::size_t aggregate{};
-    if (!core::checked_multiply(
-            contextual_adaptive_huffman_node_entries,
-            sizeof(AdaptiveHuffmanNode), node_bytes)
-        || !core::checked_multiply(
-            contextual_adaptive_huffman_symbol_entries,
-            sizeof(std::uint16_t), symbol_bytes)
-        || !core::checked_add(node_bytes, symbol_bytes, aggregate)
+    node_bytes = extents.node_bytes;
+    symbol_bytes = extents.symbol_bytes;
+    if (!core::checked_add(node_bytes, symbol_bytes, aggregate)
         || !core::checked_add(aggregate, payload_output.size(), aggregate)) {
         return fail(
             ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
@@ -344,21 +364,23 @@ ContextualAdaptiveHuffmanForwardEncoder::begin_common(
     if (std::ranges::find(overlaps, OverlapCheck::overlap) != overlaps.end()) {
         return fail(ContextualAdaptiveHuffmanEncodeError::overlapping_buffers);
     }
-    if (contextual_adaptive_huffman_node_entries
-                + contextual_adaptive_huffman_symbol_entries
-            > limits_.max_entropy_table_entries
+    std::size_t model_entries{};
+    if (!core::checked_add(
+            extents.node_entries, extents.symbol_entries, model_entries)) {
+        return fail(ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
+    }
+    if (model_entries > limits_.max_entropy_table_entries
         || aggregate > limits_.max_internal_buffered_bytes) {
         return fail(ContextualAdaptiveHuffmanEncodeError::limit_exceeded);
     }
     if (models_.initialize(
-            context::internal::LzssFieldContextVariant::field_context_64k,
-            node_workspace.first(contextual_adaptive_huffman_node_entries),
-            symbol_workspace.first(
-                contextual_adaptive_huffman_symbol_entries))
+            selected.layout, node_workspace.first(extents.node_entries),
+            symbol_workspace.first(extents.symbol_entries))
             != ContextualAdaptiveHuffmanModelError::none
         || !models_.validate()) {
         return fail(ContextualAdaptiveHuffmanEncodeError::tree_error);
     }
+    layout_ = selected.layout;
     output_ = payload_output;
     started_ = true;
     return result_;
@@ -368,8 +390,9 @@ ContextualAdaptiveHuffmanEncodeResult
 ContextualAdaptiveHuffmanForwardEncoder::begin_plan(
     const core::DecoderLimits& limits,
     const std::span<AdaptiveHuffmanNode> node_workspace,
-    const std::span<std::uint16_t> symbol_workspace) noexcept {
-    return begin_common(limits, node_workspace, symbol_workspace, {});
+    const std::span<std::uint16_t> symbol_workspace,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    return begin_common(limits, node_workspace, symbol_workspace, {}, variant);
 }
 
 ContextualAdaptiveHuffmanEncodeResult
@@ -378,9 +401,11 @@ ContextualAdaptiveHuffmanForwardEncoder::begin_write(
     const core::DecoderLimits& limits,
     const std::span<AdaptiveHuffmanNode> node_workspace,
     const std::span<std::uint16_t> symbol_workspace,
-    const std::span<std::byte> payload_output) noexcept {
+    const std::span<std::byte> payload_output,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     if (payload_output.size() < descriptor.payload_size) {
         models_ = {};
+        layout_ = {};
         limits_ = limits;
         output_ = {};
         expected_ = {};
@@ -393,7 +418,7 @@ ContextualAdaptiveHuffmanForwardEncoder::begin_write(
     }
     const auto payload = payload_output.first(descriptor.payload_size);
     auto result = begin_common(
-        limits, node_workspace, symbol_workspace, payload);
+        limits, node_workspace, symbol_workspace, payload, variant);
     if (result.error != ContextualAdaptiveHuffmanEncodeError::none) {
         return result;
     }
@@ -429,7 +454,7 @@ ContextualAdaptiveHuffmanForwardEncoder::encode_symbol(
     if (result_.decision_count == UINT32_MAX) {
         return fail(ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
     }
-    const auto error = emit_symbol(models_, operation, output_, result_);
+    const auto error = emit_symbol(models_, layout_, operation, output_, result_);
     if (error != ContextualAdaptiveHuffmanEncodeError::none) {
         return fail(error);
     }
@@ -453,7 +478,7 @@ ContextualAdaptiveHuffmanForwardEncoder::encode_bypass(
     if (finished_) {
         return fail(ContextualAdaptiveHuffmanEncodeError::already_finished);
     }
-    if (bit_count == 0 || bit_count > 16) {
+    if (bit_count == 0 || bit_count > layout_.maximum_bypass_bits) {
         return fail(
             ContextualAdaptiveHuffmanEncodeError::invalid_bypass_width);
     }
@@ -511,11 +536,17 @@ ContextualAdaptiveHuffmanForwardEncoder::finish_plan(
     std::size_t node_bytes{};
     std::size_t symbol_bytes{};
     std::size_t aggregate{};
+    std::size_t node_entries{};
     if (!core::checked_multiply(
-            contextual_adaptive_huffman_node_entries,
-            sizeof(AdaptiveHuffmanNode), node_bytes)
+            layout_.frequency_entries, std::size_t{2}, node_entries)
+        || !core::checked_add(
+            node_entries,
+            static_cast<std::size_t>(context::internal::lzss_field_context_count),
+            node_entries)
         || !core::checked_multiply(
-            contextual_adaptive_huffman_symbol_entries,
+            node_entries, sizeof(AdaptiveHuffmanNode), node_bytes)
+        || !core::checked_multiply(
+            layout_.frequency_entries,
             sizeof(std::uint16_t), symbol_bytes)
         || !core::checked_add(node_bytes, symbol_bytes, aggregate)
         || !core::checked_add(aggregate, result_.payload_size, aggregate)) {
@@ -584,8 +615,17 @@ plan_contextual_adaptive_huffman_operations(
     const core::DecoderLimits& limits,
     const std::span<AdaptiveHuffmanNode> node_workspace,
     const std::span<std::uint16_t> symbol_workspace,
-    ContextualAdaptiveHuffmanDescriptor& descriptor) noexcept {
+    ContextualAdaptiveHuffmanDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualAdaptiveHuffmanEncodeResult initial{};
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return fail(
+            initial,
+            ContextualAdaptiveHuffmanEncodeError::invalid_context_variant);
+    }
     if (operations.empty()) {
         return fail(initial,
                     ContextualAdaptiveHuffmanEncodeError::empty_operations);
@@ -594,21 +634,20 @@ plan_contextual_adaptive_huffman_operations(
         return fail(initial,
                     ContextualAdaptiveHuffmanEncodeError::limit_exceeded);
     }
-    if (node_workspace.size() < contextual_adaptive_huffman_node_entries) {
+    Extents extents{};
+    if (!calculate_extents(operations, selected.layout, extents)) {
+        return fail(initial,
+                    ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
+    }
+    if (node_workspace.size() < extents.node_entries) {
         return fail(initial,
                     ContextualAdaptiveHuffmanEncodeError::
                         node_workspace_too_small);
     }
-    if (symbol_workspace.size()
-        < contextual_adaptive_huffman_symbol_entries) {
+    if (symbol_workspace.size() < extents.symbol_entries) {
         return fail(initial,
                     ContextualAdaptiveHuffmanEncodeError::
                         symbol_workspace_too_small);
-    }
-    Extents extents{};
-    if (!calculate_extents(operations, extents)) {
-        return fail(initial,
-                    ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
     }
     const auto region_error = validate_regions(
         operations, node_workspace, symbol_workspace, {}, extents);
@@ -621,15 +660,21 @@ plan_contextual_adaptive_huffman_operations(
         return fail(initial,
                     ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
     }
-    if (contextual_adaptive_huffman_node_entries
-                + contextual_adaptive_huffman_symbol_entries
-            > limits.max_entropy_table_entries
+    std::size_t model_entries{};
+    if (!core::checked_add(
+            extents.node_entries, extents.symbol_entries, model_entries)) {
+        return fail(initial,
+                    ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
+    }
+    if (model_entries > limits.max_entropy_table_entries
         || aggregate > limits.max_internal_buffered_bytes) {
         return fail(initial,
                     ContextualAdaptiveHuffmanEncodeError::limit_exceeded);
     }
 
-    auto result = run(operations, node_workspace, symbol_workspace, {});
+    auto result = run(
+        operations, node_workspace, symbol_workspace, {}, selected.layout,
+        extents);
     if (result.error != ContextualAdaptiveHuffmanEncodeError::none) {
         return result;
     }
@@ -677,10 +722,19 @@ encode_contextual_adaptive_huffman_operations(
     const std::span<AdaptiveHuffmanNode> node_workspace,
     const std::span<std::uint16_t> symbol_workspace,
     const std::span<std::byte> payload_output,
-    ContextualAdaptiveHuffmanDescriptor& descriptor) noexcept {
+    ContextualAdaptiveHuffmanDescriptor& descriptor,
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return fail(
+            {}, ContextualAdaptiveHuffmanEncodeError::invalid_context_variant);
+    }
     ContextualAdaptiveHuffmanDescriptor planned{};
     auto plan = plan_contextual_adaptive_huffman_operations(
-        operations, limits, node_workspace, symbol_workspace, planned);
+        operations, limits, node_workspace, symbol_workspace, planned,
+        variant);
     if (plan.error != ContextualAdaptiveHuffmanEncodeError::none) return plan;
     if (payload_output.size() < plan.payload_size) {
         return fail(
@@ -689,7 +743,7 @@ encode_contextual_adaptive_huffman_operations(
     }
     const auto payload = payload_output.first(plan.payload_size);
     Extents extents{};
-    if (!calculate_extents(operations, extents)) {
+    if (!calculate_extents(operations, selected.layout, extents)) {
         return fail(plan,
                     ContextualAdaptiveHuffmanEncodeError::arithmetic_overflow);
     }
@@ -710,7 +764,8 @@ encode_contextual_adaptive_huffman_operations(
     }
     std::ranges::fill(payload, std::byte{});
     const auto encoded = run(
-        operations, node_workspace, symbol_workspace, payload);
+        operations, node_workspace, symbol_workspace, payload,
+        selected.layout, extents);
     if (encoded.error != ContextualAdaptiveHuffmanEncodeError::none
         || encoded.operation_count != plan.operation_count
         || encoded.decision_count != plan.decision_count
