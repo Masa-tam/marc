@@ -745,6 +745,13 @@ reports 0.339 MiB/s encode and 1.865 MiB/s decode; ClangCL reports 0.331 and
 1.870 MiB/s. These small-input timings are descriptive and are neither a
 performance baseline nor a pass threshold.
 
+The planned `lzss-contextual-adaptive-huffman-1m` benchmark retains that
+public-C-only lifecycle with 1 MiB frames and windows, 13,681 model entries,
+the exact `ceil(267F/8)` payload ceiling, 1 MiB distance policy, and 128 MiB
+aggregate limit. It will use checked complete-stream capacity
+`112 + ceil(267N/8) + 80K`, perform an untimed round trip before measurement,
+and report performance descriptively beside the frozen 64 KiB name.
+
 ### BM-0024: LZSS Exact match-finder baseline
 
 The internal match-finder benchmark first verifies that Exhaustive and

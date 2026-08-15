@@ -21604,3 +21604,25 @@ discarded and the reviewed seed retained.
   suites pass all 2,953 registered tests, including documentation layout and
   interoperability schema compatibility, in 191.71 seconds under MSVC and
   195.35 seconds under ClangCL.
+
+## CR-0903: 2026-08-15 - Selected Contextual Adaptive Huffman benchmark design
+
+- Authoring method: derived an exact selected benchmark profile from marc's
+  completed public C lifecycle, CLI naming, and existing dependency-free
+  benchmark adapter.
+- References used: DD-831 through DD-838; IR-0612; TVG-0706 through TVG-0713;
+  marc's 64 KiB Contextual Adaptive Huffman benchmark and completed selected
+  Dynamic Range, rANS, tANS, and Blocked Huffman benchmarks.
+- Known implementations intentionally not consulted: external benchmarks,
+  Adaptive Huffman or LZSS implementations, adapters, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: preserve the legacy name; add one adjacent `-1m`
+  name; use checked exact complete-stream capacity; obtain all workspace
+  through the public ABI; require an untimed round trip; and keep performance
+  observations descriptive.
+- Generated-code task description: specify selected benchmark configuration,
+  routing, capacity, report validation, ordered usage, near-miss rejection,
+  documentation, and dual-compiler validation.
+- Similarity review: the design composes only marc-owned benchmark, public C,
+  profile, workspace, and CMake test patterns. No external implementation
+  expression entered the design.

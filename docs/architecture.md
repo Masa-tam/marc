@@ -5465,3 +5465,11 @@ recognize both adjacent exact names while sharing one public C adapter. The
 selected name emits `2/3 + 1/2 + 1/2`; both reciprocal decode routes remove
 their temporary output after the header-level mismatch. Benchmark exposure
 remains separate.
+
+The next benchmark boundary mirrors the two exact CLI names and public
+policies. It computes selected complete-stream capacity from the fixed header,
+per-frame header and descriptor, and Adaptive Huffman payload ceiling; queries
+both directional workspace layouts through ABI 1; proves an untimed round
+trip; then measures ratio and throughput. Peak workspace is the greater full
+directional caller-owned sum. Performance observations do not become
+admission thresholds.

@@ -17457,3 +17457,26 @@ marker-gap vector remains the proof of a Match beyond 64 KiB.
 
 This stage adds no benchmark, sanitizer fuzz campaign, interoperability entry,
 schema revision, public function, ABI version, or stream representation.
+
+## DD-838: Admit the Contextual Adaptive Huffman 1 MiB benchmark profile
+
+- Date: 2026-08-15
+- Status: accepted
+
+Add `lzss-contextual-adaptive-huffman-1m` as the exact benchmark name for the
+selected `2/3 + 1/2 + 1/2` public lifecycle. Keep the existing benchmark name
+fixed to the 64 KiB selector and policy. The selected benchmark uses 1 MiB
+frames and window, a `ceil(267F/8)` payload ceiling, 13,681 model entries,
+1 MiB distance policy, and 128 MiB aggregate limit.
+
+Complete-stream capacity is checked as `112 + ceil(267N/8) + 80K`, where `N`
+is input size and `K` is the number of nonempty 1 MiB frames. Both directions
+obtain every workspace extent through the public C requirements query and
+construct through the common public factory. An untimed exact round trip
+precedes measurement. The smoke validates finite report fields, exact
+directional workspace aggregation, the selected name appearing once after the
+legacy name, and rejection of a `-1M` near miss. Throughput and ratio remain
+descriptive and are not pass thresholds.
+
+This stage adds no stream representation, public API, CLI behavior, sanitizer
+fuzz campaign, interoperability entry, or schema revision.

@@ -677,6 +677,13 @@ policies, emit their expected identities, round trip deterministically, reject
 reciprocal archives without output, reject trailing data, and retain case-
 sensitive parsing. Benchmark admission is the next boundary.
 
+That next benchmark boundary adds the same explicit `-1m` name and policy,
+uses checked `112 + ceil(267N/8) + 80K` complete-stream capacity, obtains both
+directional workspace layouts through the public C lifecycle, and requires an
+untimed round trip before measurement. Ratio, throughput, and peak workspace
+remain descriptive observations. Fuzz and interoperability admission remain
+later boundaries.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

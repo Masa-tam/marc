@@ -5480,3 +5480,13 @@ tANS, and Blocked Huffman explicit-name patterns as first-party references.
 No external CLI, Adaptive Huffman or LZSS implementation, argument grammar,
 source code, test, corpus, archive, patent text, or optimization description
 was consulted.
+
+### IR-0612
+
+The selected Contextual Adaptive Huffman benchmark design uses DD-831 through
+DD-837, TVG-0706 through TVG-0712, marc's existing 64 KiB benchmark adapter,
+completed selected public C lifecycle and CLI naming, and the selected Dynamic
+Range, rANS, tANS, and Blocked Huffman benchmark patterns as first-party
+references. No external benchmark, Adaptive Huffman or LZSS implementation,
+adapter, source code, test, corpus, archive, patent text, or optimization
+description was consulted.

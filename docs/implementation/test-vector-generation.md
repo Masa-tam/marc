@@ -9893,3 +9893,21 @@ public selector, frame/window and distance policy, 13,681-entry model ceiling,
 aggregate limit. Retain all existing CLI exit-status, missing-path, bad-name,
 and same-path rejection. No benchmark, fuzz, interoperability, or schema
 vector belongs to this stage.
+
+### TVG-0713
+
+Run both exact Contextual Adaptive Huffman benchmark names over the same
+bounded fixture for one Release iteration. Require a successful untimed public
+C round trip before timing, finite ratio and throughput fields, positive
+directional workspace regions, and a reported peak equal to the greater
+complete directional sum. The selected profile must use checked complete-
+stream capacity `112 + ceil(267N/8) + 80K`, exact 1 MiB public configuration,
+and 13,681-entry model ceiling throughout.
+
+Require benchmark usage to list the legacy name immediately before
+`lzss-contextual-adaptive-huffman-1m`, with the selected name exactly once,
+and reject a `-1M` case near miss. Retain the legacy benchmark result and
+policy. Do not impose speed or compression-ratio thresholds; the small fixture
+is a wiring and accounting smoke, while distant-match use remains proven by
+the earlier marker-gap vectors. No fuzz, interoperability, schema, CLI, or
+format vector belongs to this stage.
