@@ -21508,3 +21508,25 @@ discarded and the reviewed seed retained.
   complete Release suites pass all 2,951 registered tests, including
   documentation layout and interoperability schema compatibility, in 213.44
   seconds under MSVC and 220.06 seconds under ClangCL.
+
+## CR-0899: 2026-08-15 - Selected Contextual Adaptive Huffman public C lifecycle design
+
+- Authoring method: derived the public boundary from marc's completed private
+  selected lifecycle and existing selected ABI-1 contextual factories.
+- References used: DD-831 through DD-836; IR-0610; TVG-0706 through TVG-0711;
+  marc's existing Contextual Adaptive Huffman C lifecycle and completed
+  selected Dynamic Range, rANS, tANS, and Blocked Huffman C lifecycles.
+- Known implementations intentionally not consulted: external C APIs,
+  Adaptive Huffman or LZSS implementations, ABI layouts, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: reuse the former reserved tail without changing its
+  extent; retain zero as the legacy selector; resolve query and construction
+  from one exact selector; and install reciprocal decoder admission before
+  frames.
+- Generated-code task description: specify selected workspace query, public
+  construction and transform processing, ABI/default preservation,
+  extended-distance round trip, reciprocal rejection, and transactional
+  setup failures while deferring later adapters.
+- Similarity review: the design composes only marc-owned ABI, selector,
+  workspace, profile, and streaming patterns. No external implementation
+  expression entered the design.

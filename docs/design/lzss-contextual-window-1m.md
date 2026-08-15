@@ -647,6 +647,14 @@ marker vector produces a Match beyond 64 KiB and round trips with one-byte
 buffers through both `any` and exact-1m modes. Public C admission is the next
 independent boundary.
 
+That next public boundary preserves the ABI-1 Contextual Adaptive Huffman
+configuration extent by splitting its trailing reserved 64 bits into the
+common window-profile selector and a 32-bit reserved word. Zero continues to
+mean the exact 64 KiB profile; one selects exact `2/3 + 1/2 + 1/2`. Workspace
+query, encoder construction, decoder sizing, and exact decoder admission all
+derive from that explicit selector. CLI, benchmark, fuzz, and interoperability
+admission remain later boundaries.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

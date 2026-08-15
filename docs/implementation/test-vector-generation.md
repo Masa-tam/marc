@@ -9856,3 +9856,24 @@ every existing overlap or misalignment. Retain Flush, ResetBlock, premature
 EndInput, trailing-input, aggregate-limit, and malformed-final-frame coverage.
 No public, CLI, benchmark, fuzz, or interoperability vector belongs to this
 stage.
+
+### TVG-0711
+
+Require C configuration initialization to preserve its ABI-1 extent, zero
+both reserved words, and select `MARC_LZSS_CONTEXTUAL_WINDOW_64K`. Query and
+construct both encode and decode directions for
+`MARC_LZSS_CONTEXTUAL_WINDOW_1M`, checking exact stream identity
+`2/3 + 1/2 + 1/2`, exact selected model workspace, and a marker-gap-marker
+Match beyond 64 KiB. Drive both public transforms with bounded input and
+output buffers and require exact deterministic round trip plus stable repeated
+terminal status.
+
+Construct each exact public decoder against the reciprocal stream and require
+`MARC_STATUS_MALFORMED_STREAM` immediately after the complete stream header
+with zero raw output. Reject an unknown selector, nonzero trailing reserved
+word, a 1 MiB window under the legacy selector, a 64 KiB window under the
+selected selector, independently one-byte-short workspace, view
+misalignment, every workspace overlap, invalid structure size or ABI version,
+and null factory output transactionally. Retain all existing public C binary-
+class, chunking, capacity, and malformed-final-frame coverage. No CLI,
+benchmark, fuzz, or interoperability vector belongs to this stage.

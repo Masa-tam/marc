@@ -17408,3 +17408,29 @@ round trip. Retain all existing partial-buffer, Flush, EndInput, repeated-end,
 malformed-final-frame, capacity, alignment, alias, and aggregate-limit
 contracts. This stage adds no public C, CLI, benchmark, fuzz, interoperability,
 or schema admission.
+
+## DD-836: Admit Contextual Adaptive Huffman 1 MiB through the C lifecycle
+
+- Date: 2026-08-15
+- Status: accepted
+
+Replace the Contextual Adaptive Huffman C configuration's trailing 64-bit
+reserved field with the common `marc_lzss_contextual_window_profile` selector
+and a 32-bit reserved word. This preserves the ABI-1 structure extent and its
+all-zero 64 KiB default. The selector is exact and is never inferred from
+`window_size`: encoder workspace query and construction map it to the selected
+profile variant, decoder workspace query uses the paired model extent, and
+decoder construction installs the paired immutable admission policy.
+
+The legacy selector must preserve every stream byte and workspace extent. The
+1 MiB selector must emit exact `2/3 + 1/2 + 1/2`, size 9,131 nodes and 4,550
+symbols, support a generated Match beyond 64 KiB, and reject a legacy stream
+before frame collection or raw publication. The legacy selector reciprocally
+rejects the selected stream. Unknown selectors, nonzero reserved words,
+crossed window parameters, short, misaligned, or aliased workspace, invalid
+size/version tags, and null factory outputs fail without publishing a
+transform.
+
+This stage adds no exported function, ABI version, CLI name, benchmark,
+sanitizer fuzz campaign, interoperability entry, schema revision, or stream
+representation.

@@ -6860,6 +6860,13 @@ one exact pair. This admission policy writes no stream bit, and a disallowed
 identity is malformed after the stream header and before frame collection or
 raw publication. Public admission is not defined by this stage.
 
+The public C Contextual Adaptive Huffman configuration exposes the same exact
+selection through `MARC_LZSS_CONTEXTUAL_WINDOW_64K` and
+`MARC_LZSS_CONTEXTUAL_WINDOW_1M`. The selector is not serialized separately
+and is not inferred from `window_size`. It determines which already defined
+dictionary/context identity the encoder emits and which exact identity the
+decoder admits after the complete stream header and before frame collection.
+
 The private direct typed-token adapter admits the selected Contextual Blocked
 Huffman layout without defining another serialized field. For variant 2, a
 distance of 131,072 is represented by distance class 17 in the 21-symbol

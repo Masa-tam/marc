@@ -5460,3 +5460,13 @@ Range, rANS, tANS, and Blocked Huffman lifecycle patterns as first-party
 references. No external Adaptive Huffman or LZSS implementation, allocator
 layout, streaming API, source code, test, corpus, archive, patent text, or
 optimization description was consulted.
+
+### IR-0610
+
+The selected Contextual Adaptive Huffman public C lifecycle design uses
+DD-831 through DD-835, TVG-0706 through TVG-0710, marc's completed selected
+private lifecycle, existing ABI-1 Contextual Adaptive Huffman factory, and the
+completed selected Dynamic Range, rANS, tANS, and Blocked Huffman public
+lifecycle patterns as first-party references. No external C API, Adaptive
+Huffman or LZSS implementation, ABI layout, source code, test, corpus,
+archive, patent text, or optimization description was consulted.

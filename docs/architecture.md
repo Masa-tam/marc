@@ -5432,3 +5432,12 @@ extents from the accepted header and checks caller capacity before collecting
 a frame. Both `any` and exact-1m lifecycle routes reproduce the extended-
 distance frame with one-byte buffers; the legacy default remains exact and
 byte-frozen. Public factory selection remains separate.
+
+The next public C boundary carries that exact selection in the preserved
+ABI-1 Contextual Adaptive Huffman configuration extent. Its former 64-bit
+reserved tail is divided into the common 32-bit window-profile selector and a
+32-bit reserved word, leaving an all-zero configuration on the 64 KiB profile.
+Workspace query and encoder construction resolve the selected profile;
+decoder query sizes the paired model bank and decoder construction installs
+exact immutable admission. No function, ABI version, or serialized field is
+added.
