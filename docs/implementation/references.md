@@ -5580,3 +5580,11 @@ contract, checked arithmetic, overlap detector, LZSS parameter validator, and
 elementary AVL height bounds as first-party and mathematical references. No
 external tree, match-finder, compressor, allocator, source code, test suite,
 patent, or layout description was consulted.
+
+### IR-0622
+
+The BinaryTree insertion, rotation, metadata, and structural validation stage
+uses DD-845, DD-847, DD-848, TVG-0719, TVG-0721, TVG-0722, the repository-owned
+finite suffix order, workspace representation, and elementary AVL invariants.
+No external AVL implementation, match finder, compressor, source code, test
+suite, patent, pseudocode, or optimization description was consulted.

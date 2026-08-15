@@ -17693,3 +17693,23 @@ Initialize links to `UINT32_MAX`, height to zero, and position metadata to
 arithmetic, and aggregate input-plus-workspace before modifying the workspace
 or publishing the finder. This stage intentionally exposes no match operation
 and cannot enter any production encoder path.
+
+## DD-848: BinaryTree insertion is isolated behind a structural validator
+
+- Date: 2026-08-15
+- Status: accepted
+
+Add a private one-position insertion primitive using the finite capped-suffix
+order from DD-845. Rebalance iteratively from the insertion parent, using the
+documented left-minus-right balance factor and deterministic single or double
+AVL rotations. Update height and subtree maximum position bottom-up after each
+link change. Equal capped suffixes remain distinct and sort by absolute
+position.
+
+Add a nonrecursive structural validator that rejects bad roots, active counts,
+inactive sentinels, indices, child positions, parent reciprocity, disconnected
+or cyclic parent paths, key order, height, balance, subtree maxima, and slot
+mapping. Validate child positions before any byte comparison so the validator
+itself remains safe on corrupted workspace state. Keep insertion, inspection,
+and validation internal and do not add deletion, `advance`, match queries, or a
+production encoder connection in this stage.

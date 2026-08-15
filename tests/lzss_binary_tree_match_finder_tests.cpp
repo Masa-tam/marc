@@ -3,6 +3,8 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <array>
+#include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -48,6 +50,50 @@ template<typename T>
     const std::span<const std::byte> workspace, const std::size_t offset,
     const std::size_t count) {
     return {reinterpret_cast<const T*>(workspace.data() + offset), count};
+}
+
+template<typename T>
+[[nodiscard]] std::span<T> mutable_array_at(
+    const std::span<std::byte> workspace, const std::size_t offset,
+    const std::size_t count) {
+    return {reinterpret_cast<T*>(workspace.data() + offset), count};
+}
+
+void expect_three_node_tree(
+    const std::string_view text, const std::array<std::size_t, 3>& order,
+    const std::size_t expected_root, const std::size_t expected_left,
+    const std::size_t expected_right,
+    const LzssParameters& parameters = {}) {
+    const auto input = bytes(text);
+    const auto required = calculate_lzss_binary_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssBinaryTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssBinaryTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, parameters, {}, storage.bytes, finder),
+              LzssBinaryTreeError::none);
+    for (const auto position : order) {
+        ASSERT_EQ(insert_lzss_binary_tree_position(finder, position),
+                  LzssBinaryTreeError::none);
+        ASSERT_EQ(validate_lzss_binary_tree(finder),
+                  LzssBinaryTreeValidationError::none);
+    }
+
+    ASSERT_EQ(finder.root_index(), expected_root);
+    const auto root = inspect_lzss_binary_tree_node(
+        finder, finder.root_index());
+    EXPECT_EQ(root.left, expected_left);
+    EXPECT_EQ(root.right, expected_right);
+    EXPECT_EQ(root.parent, lzss_binary_tree_null_node);
+    EXPECT_EQ(root.height, 2U);
+    EXPECT_EQ(root.subtree_maximum_position, 16U);
+    EXPECT_EQ(inspect_lzss_binary_tree_node(
+                  finder, static_cast<std::uint32_t>(expected_left)).parent,
+              expected_root);
+    EXPECT_EQ(inspect_lzss_binary_tree_node(
+                  finder, static_cast<std::uint32_t>(expected_right)).parent,
+              expected_root);
 }
 
 TEST(LzssBinaryTreeMatchFinder, CalculatesSeparatedBoundedWorkspace) {
@@ -253,6 +299,190 @@ TEST(LzssBinaryTreeMatchFinder, RejectsInvalidAndUnboundedRequirements) {
                   std::numeric_limits<std::size_t>::max(), parameters,
                   limits).error,
               LzssBinaryTreeError::arithmetic_overflow);
+}
+
+TEST(LzssBinaryTreeMatchFinder, PerformsDeterministicSingleRotations) {
+    expect_three_node_tree(
+        "C0000000B0000000A0000000", {0, 8, 16}, 8, 16, 0);
+    expect_three_node_tree(
+        "A0000000B0000000C0000000", {0, 8, 16}, 8, 0, 16);
+}
+
+TEST(LzssBinaryTreeMatchFinder, PerformsDeterministicDoubleRotations) {
+    expect_three_node_tree(
+        "C0000000A0000000B0000000", {0, 8, 16}, 16, 8, 0);
+    expect_three_node_tree(
+        "A0000000C0000000B0000000", {0, 8, 16}, 16, 0, 8);
+}
+
+TEST(LzssBinaryTreeMatchFinder, OrdersEqualCappedSuffixByPosition) {
+    LzssParameters parameters{};
+    parameters.max_match_length = 5;
+    expect_three_node_tree(
+        "ABCDE___ABCDE___ABCDE___", {0, 8, 16}, 8, 0, 16,
+        parameters);
+}
+
+TEST(LzssBinaryTreeMatchFinder, RejectsInvalidInsertionAtomically) {
+    LzssBinaryTreeMatchFinder uninitialized{};
+    EXPECT_EQ(insert_lzss_binary_tree_position(uninitialized, 0),
+              LzssBinaryTreeError::invalid_state);
+    EXPECT_EQ(validate_lzss_binary_tree(uninitialized),
+              LzssBinaryTreeValidationError::uninitialized);
+
+    const auto short_input = bytes("ABCD");
+    LzssBinaryTreeMatchFinder short_finder{};
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  short_input, {}, {}, {}, short_finder),
+              LzssBinaryTreeError::none);
+    EXPECT_EQ(insert_lzss_binary_tree_position(short_finder, 0),
+              LzssBinaryTreeError::invalid_state);
+    EXPECT_EQ(validate_lzss_binary_tree(short_finder),
+              LzssBinaryTreeValidationError::none);
+
+    const auto input = bytes("ABCDE___FGHIJ___KLMNO___");
+    LzssParameters parameters{};
+    parameters.window_size = 8;
+    const auto required = calculate_lzss_binary_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssBinaryTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssBinaryTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, parameters, {}, storage.bytes, finder),
+              LzssBinaryTreeError::none);
+    ASSERT_EQ(insert_lzss_binary_tree_position(finder, 0),
+              LzssBinaryTreeError::none);
+    const auto root_before = inspect_lzss_binary_tree_node(
+        finder, finder.root_index());
+    EXPECT_EQ(insert_lzss_binary_tree_position(finder, input.size() - 4U),
+              LzssBinaryTreeError::invalid_position);
+    EXPECT_EQ(insert_lzss_binary_tree_position(finder, 0),
+              LzssBinaryTreeError::invalid_state);
+    EXPECT_EQ(insert_lzss_binary_tree_position(finder, 8),
+              LzssBinaryTreeError::invalid_state);
+    EXPECT_EQ(inspect_lzss_binary_tree_node(finder, finder.root_index()).position,
+              root_before.position);
+    EXPECT_EQ(finder.active_node_count(), 1U);
+    EXPECT_EQ(validate_lzss_binary_tree(finder),
+              LzssBinaryTreeValidationError::none);
+}
+
+TEST(LzssBinaryTreeMatchFinder, ValidatorDetectsMetadataAndLinkCorruption) {
+    const auto input = bytes("A0000000B0000000C0000000");
+    const auto required = calculate_lzss_binary_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssBinaryTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssBinaryTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssBinaryTreeError::none);
+    for (const auto position : {0U, 8U, 16U}) {
+        ASSERT_EQ(insert_lzss_binary_tree_position(finder, position),
+                  LzssBinaryTreeError::none);
+    }
+    ASSERT_EQ(validate_lzss_binary_tree(finder),
+              LzssBinaryTreeValidationError::none);
+
+    auto links = mutable_array_at<std::uint32_t>(
+        storage.bytes, required.left_offset, required.node_count);
+    auto parents = mutable_array_at<std::uint32_t>(
+        storage.bytes, required.parent_offset, required.node_count);
+    auto heights = mutable_array_at<std::uint8_t>(
+        storage.bytes, required.height_offset, required.node_count);
+    auto subtree_maximum = mutable_array_at<std::size_t>(
+        storage.bytes, required.subtree_maximum_position_offset,
+        required.node_count);
+    auto positions = mutable_array_at<std::size_t>(
+        storage.bytes, required.position_offset, required.node_count);
+    const auto root = finder.root_index();
+    const auto left = links[root];
+    const auto right = inspect_lzss_binary_tree_node(finder, root).right;
+
+    heights[root] = 3;
+    EXPECT_EQ(validate_lzss_binary_tree(finder),
+              LzssBinaryTreeValidationError::invalid_height);
+    heights[root] = 2;
+
+    subtree_maximum[root] = 8;
+    EXPECT_EQ(validate_lzss_binary_tree(finder),
+              LzssBinaryTreeValidationError::invalid_subtree_maximum);
+    subtree_maximum[root] = 16;
+
+    const auto left_position = positions[left];
+    positions[left] = std::numeric_limits<std::size_t>::max();
+    EXPECT_EQ(validate_lzss_binary_tree(finder),
+              LzssBinaryTreeValidationError::invalid_slot_position);
+    positions[left] = left_position;
+
+    parents[left] = right;
+    EXPECT_EQ(validate_lzss_binary_tree(finder),
+              LzssBinaryTreeValidationError::invalid_parent);
+    parents[left] = root;
+
+    parents[left] = left;
+    EXPECT_EQ(validate_lzss_binary_tree(finder),
+              LzssBinaryTreeValidationError::cycle_or_disconnected);
+    parents[left] = root;
+
+    links[root] = static_cast<std::uint32_t>(required.node_count);
+    EXPECT_EQ(validate_lzss_binary_tree(finder),
+              LzssBinaryTreeValidationError::invalid_index);
+    links[root] = left;
+
+    links[1] = root;
+    EXPECT_EQ(validate_lzss_binary_tree(finder),
+              LzssBinaryTreeValidationError::invalid_inactive_node);
+    links[1] = lzss_binary_tree_null_node;
+    EXPECT_EQ(validate_lzss_binary_tree(finder),
+              LzssBinaryTreeValidationError::none);
+}
+
+TEST(LzssBinaryTreeMatchFinder, BulkInsertionIsBalancedAndDeterministic) {
+    std::vector<std::byte> input(512);
+    std::uint32_t state = UINT32_C(0x13579bdf);
+    for (auto& value : input) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        value = static_cast<std::byte>(state >> 24U);
+    }
+    const auto required = calculate_lzss_binary_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssBinaryTreeError::none);
+    auto first_storage = make_storage(required.workspace_size);
+    auto second_storage = make_storage(required.workspace_size);
+    LzssBinaryTreeMatchFinder first{};
+    LzssBinaryTreeMatchFinder second{};
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, {}, {}, first_storage.bytes, first),
+              LzssBinaryTreeError::none);
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, {}, {}, second_storage.bytes, second),
+              LzssBinaryTreeError::none);
+    const auto indexable_count = input.size() - lzss_binary_tree_prefix_size + 1U;
+    for (std::size_t position = 0; position < indexable_count; ++position) {
+        ASSERT_EQ(insert_lzss_binary_tree_position(first, position),
+                  LzssBinaryTreeError::none);
+        ASSERT_EQ(insert_lzss_binary_tree_position(second, position),
+                  LzssBinaryTreeError::none);
+    }
+
+    EXPECT_EQ(validate_lzss_binary_tree(first),
+              LzssBinaryTreeValidationError::none);
+    EXPECT_EQ(validate_lzss_binary_tree(second),
+              LzssBinaryTreeValidationError::none);
+    EXPECT_EQ(first.active_node_count(), indexable_count);
+    ASSERT_NE(first.root_index(), lzss_binary_tree_null_node);
+    const auto root = inspect_lzss_binary_tree_node(first, first.root_index());
+    EXPECT_LE(root.height, 2U * std::bit_width(indexable_count));
+    EXPECT_EQ(root.subtree_maximum_position, indexable_count - 1U);
+    EXPECT_EQ(first.root_index(), second.root_index());
+    for (std::size_t node = 0; node < input.size(); ++node) {
+        EXPECT_EQ(inspect_lzss_binary_tree_node(
+                      first, static_cast<std::uint32_t>(node)),
+                  inspect_lzss_binary_tree_node(
+                      second, static_cast<std::uint32_t>(node)));
+    }
 }
 
 } // namespace

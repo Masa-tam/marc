@@ -10054,3 +10054,20 @@ then present short, misaligned, and overlapping workspaces; require stable
 errors and byte-for-byte preservation of both finder observations and supplied
 storage. Cover short zero-workspace input, invalid limits and parameters, frame
 limits, aggregate workspace limits, and `size_t` addition overflow.
+
+### TVG-0722
+
+Construct three eight-byte records whose first bytes produce descending,
+ascending, left-right, and right-left insertion orders. Insert positions 0, 8,
+and 16 and require the hand-derived root and children after every single and
+double rotation. Repeat with three `ABCDE` prefixes and a five-byte comparison
+cap to prove the absolute-position tie-break. Require height two and subtree
+maximum position 16 at each final root.
+
+Reject uninitialized, non-indexable, duplicate, full-slot, and collision-slot
+insertions without changing the valid tree. Corrupt height, subtree maximum,
+child position, parent, index, parent-cycle, and inactive sentinels separately
+and require stable validator categories. Finally insert every indexable
+position of a 512-byte fixed-seed LCG input into two independent workspaces;
+require valid AVL bounds, complete maximum-position metadata, and identical
+node snapshots.

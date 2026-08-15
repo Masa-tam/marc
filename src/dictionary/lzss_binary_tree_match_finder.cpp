@@ -40,6 +40,132 @@ void construct_array(const std::span<T> values, const T initial) noexcept {
 
 } // namespace
 
+std::uint8_t LzssBinaryTreeMatchFinder::node_height(
+    const std::uint32_t node) const noexcept {
+    return node == lzss_binary_tree_null_node ? std::uint8_t{0}
+                                               : height_[node];
+}
+
+int LzssBinaryTreeMatchFinder::compare_positions(
+    const std::size_t left, const std::size_t right) const noexcept {
+    const auto left_size = std::min<std::size_t>(
+        input_.size() - left, parameters_.max_match_length);
+    const auto right_size = std::min<std::size_t>(
+        input_.size() - right, parameters_.max_match_length);
+    const auto common_size = std::min(left_size, right_size);
+    for (std::size_t index = 0; index < common_size; ++index) {
+        const auto left_byte = std::to_integer<std::uint8_t>(
+            input_[left + index]);
+        const auto right_byte = std::to_integer<std::uint8_t>(
+            input_[right + index]);
+        if (left_byte < right_byte) return -1;
+        if (left_byte > right_byte) return 1;
+    }
+    if (left_size < right_size) return -1;
+    if (left_size > right_size) return 1;
+    if (left < right) return -1;
+    if (left > right) return 1;
+    return 0;
+}
+
+void LzssBinaryTreeMatchFinder::update_metadata(
+    const std::uint32_t node) noexcept {
+    const auto left = left_[node];
+    const auto right = right_[node];
+    const auto maximum_child_height = std::max(
+        node_height(left), node_height(right));
+    height_[node] = static_cast<std::uint8_t>(
+        static_cast<unsigned>(maximum_child_height) + 1U);
+    auto maximum_position = position_[node];
+    if (left != lzss_binary_tree_null_node) {
+        maximum_position = std::max(
+            maximum_position, subtree_maximum_position_[left]);
+    }
+    if (right != lzss_binary_tree_null_node) {
+        maximum_position = std::max(
+            maximum_position, subtree_maximum_position_[right]);
+    }
+    subtree_maximum_position_[node] = maximum_position;
+}
+
+void LzssBinaryTreeMatchFinder::replace_parent_child(
+    const std::uint32_t parent, const std::uint32_t previous_child,
+    const std::uint32_t replacement) noexcept {
+    if (parent == lzss_binary_tree_null_node) {
+        root_ = replacement;
+    } else if (left_[parent] == previous_child) {
+        left_[parent] = replacement;
+    } else {
+        right_[parent] = replacement;
+    }
+    if (replacement != lzss_binary_tree_null_node) {
+        parent_[replacement] = parent;
+    }
+}
+
+std::uint32_t LzssBinaryTreeMatchFinder::rotate_left(
+    const std::uint32_t node) noexcept {
+    const auto promoted = right_[node];
+    const auto transferred = left_[promoted];
+    const auto parent = parent_[node];
+    replace_parent_child(parent, node, promoted);
+    left_[promoted] = node;
+    parent_[node] = promoted;
+    right_[node] = transferred;
+    if (transferred != lzss_binary_tree_null_node) {
+        parent_[transferred] = node;
+    }
+    update_metadata(node);
+    update_metadata(promoted);
+    return promoted;
+}
+
+std::uint32_t LzssBinaryTreeMatchFinder::rotate_right(
+    const std::uint32_t node) noexcept {
+    const auto promoted = left_[node];
+    const auto transferred = right_[promoted];
+    const auto parent = parent_[node];
+    replace_parent_child(parent, node, promoted);
+    right_[promoted] = node;
+    parent_[node] = promoted;
+    left_[node] = transferred;
+    if (transferred != lzss_binary_tree_null_node) {
+        parent_[transferred] = node;
+    }
+    update_metadata(node);
+    update_metadata(promoted);
+    return promoted;
+}
+
+int LzssBinaryTreeMatchFinder::balance_factor(
+    const std::uint32_t node) const noexcept {
+    return static_cast<int>(node_height(left_[node]))
+        - static_cast<int>(node_height(right_[node]));
+}
+
+void LzssBinaryTreeMatchFinder::rebalance_from(
+    std::uint32_t node) noexcept {
+    while (node != lzss_binary_tree_null_node) {
+        update_metadata(node);
+        auto subtree_root = node;
+        const auto balance = balance_factor(node);
+        if (balance == 2) {
+            const auto left = left_[node];
+            if (balance_factor(left) < 0) {
+                static_cast<void>(rotate_left(left));
+            }
+            subtree_root = rotate_right(node);
+        } else if (balance == -2) {
+            const auto right = right_[node];
+            if (balance_factor(right) > 0) {
+                static_cast<void>(rotate_right(right));
+            }
+            subtree_root = rotate_left(node);
+        }
+        node = parent_[subtree_root];
+    }
+}
+
 LzssBinaryTreeWorkspaceRequirements calculate_lzss_binary_tree_workspace(
     const std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits) noexcept {
@@ -156,6 +282,190 @@ LzssBinaryTreeError initialize_lzss_binary_tree_match_finder(
 
     finder = initialized;
     return LzssBinaryTreeError::none;
+}
+
+LzssBinaryTreeError insert_lzss_binary_tree_position(
+    LzssBinaryTreeMatchFinder& finder,
+    const std::size_t position) noexcept {
+    if (!finder.initialized_ || finder.left_.empty()) {
+        return LzssBinaryTreeError::invalid_state;
+    }
+    if (position >= finder.input_.size()
+        || finder.input_.size() - position < lzss_binary_tree_prefix_size) {
+        return LzssBinaryTreeError::invalid_position;
+    }
+    const auto slot = static_cast<std::uint32_t>(
+        position % finder.left_.size());
+    if (finder.height_[slot] != 0
+        || finder.active_node_count_ == finder.left_.size()) {
+        return LzssBinaryTreeError::invalid_state;
+    }
+
+    auto parent = lzss_binary_tree_null_node;
+    auto current = finder.root_;
+    int comparison{};
+    while (current != lzss_binary_tree_null_node) {
+        parent = current;
+        comparison = finder.compare_positions(
+            position, finder.position_[current]);
+        current = comparison < 0 ? finder.left_[current]
+                                 : finder.right_[current];
+    }
+
+    finder.left_[slot] = lzss_binary_tree_null_node;
+    finder.right_[slot] = lzss_binary_tree_null_node;
+    finder.parent_[slot] = parent;
+    finder.height_[slot] = 1;
+    finder.position_[slot] = position;
+    finder.subtree_maximum_position_[slot] = position;
+    if (parent == lzss_binary_tree_null_node) {
+        finder.root_ = slot;
+    } else if (comparison < 0) {
+        finder.left_[parent] = slot;
+    } else {
+        finder.right_[parent] = slot;
+    }
+    ++finder.active_node_count_;
+    finder.rebalance_from(parent);
+    return LzssBinaryTreeError::none;
+}
+
+LzssBinaryTreeValidationError validate_lzss_binary_tree(
+    const LzssBinaryTreeMatchFinder& finder) noexcept {
+    if (!finder.initialized_) {
+        return LzssBinaryTreeValidationError::uninitialized;
+    }
+    const auto capacity = finder.left_.size();
+    if (finder.right_.size() != capacity
+        || finder.parent_.size() != capacity
+        || finder.height_.size() != capacity
+        || finder.position_.size() != capacity
+        || finder.subtree_maximum_position_.size() != capacity) {
+        return LzssBinaryTreeValidationError::invalid_active_count;
+    }
+    if (finder.active_node_count_ > capacity) {
+        return LzssBinaryTreeValidationError::invalid_active_count;
+    }
+    if ((finder.active_node_count_ == 0)
+        != (finder.root_ == lzss_binary_tree_null_node)) {
+        return LzssBinaryTreeValidationError::invalid_root;
+    }
+    if (finder.root_ != lzss_binary_tree_null_node) {
+        if (finder.root_ >= capacity) {
+            return LzssBinaryTreeValidationError::invalid_root;
+        }
+        if (finder.parent_[finder.root_] != lzss_binary_tree_null_node) {
+            return LzssBinaryTreeValidationError::invalid_root;
+        }
+    }
+
+    std::size_t observed_active{};
+    for (std::size_t raw_node = 0; raw_node < capacity; ++raw_node) {
+        const auto node = static_cast<std::uint32_t>(raw_node);
+        if (finder.height_[node] == 0) {
+            if (finder.left_[node] != lzss_binary_tree_null_node
+                || finder.right_[node] != lzss_binary_tree_null_node
+                || finder.parent_[node] != lzss_binary_tree_null_node
+                || finder.position_[node]
+                    != std::numeric_limits<std::size_t>::max()
+                || finder.subtree_maximum_position_[node]
+                    != std::numeric_limits<std::size_t>::max()) {
+                return LzssBinaryTreeValidationError::invalid_inactive_node;
+            }
+            continue;
+        }
+        ++observed_active;
+        if (capacity == 0 || finder.position_[node] >= finder.input_.size()
+            || finder.input_.size() - finder.position_[node]
+                < lzss_binary_tree_prefix_size
+            || finder.position_[node] % capacity != node) {
+            return LzssBinaryTreeValidationError::invalid_slot_position;
+        }
+
+        const auto left = finder.left_[node];
+        const auto right = finder.right_[node];
+        for (const auto child : {left, right}) {
+            if (child != lzss_binary_tree_null_node
+                && (child >= capacity || finder.height_[child] == 0)) {
+                return LzssBinaryTreeValidationError::invalid_index;
+            }
+            if (child != lzss_binary_tree_null_node
+                && (finder.position_[child] >= finder.input_.size()
+                    || finder.input_.size() - finder.position_[child]
+                        < lzss_binary_tree_prefix_size
+                    || finder.position_[child] % capacity != child)) {
+                return LzssBinaryTreeValidationError::invalid_slot_position;
+            }
+        }
+        if ((left != lzss_binary_tree_null_node
+             && finder.parent_[left] != node)
+            || (right != lzss_binary_tree_null_node
+                && finder.parent_[right] != node)) {
+            return LzssBinaryTreeValidationError::invalid_parent;
+        }
+        if ((left != lzss_binary_tree_null_node
+             && finder.compare_positions(
+                    finder.position_[left], finder.position_[node]) >= 0)
+            || (right != lzss_binary_tree_null_node
+                && finder.compare_positions(
+                       finder.position_[right], finder.position_[node]) <= 0)) {
+            return LzssBinaryTreeValidationError::invalid_order;
+        }
+
+        const auto left_height = finder.node_height(left);
+        const auto right_height = finder.node_height(right);
+        const auto expected_height = static_cast<unsigned>(
+            std::max(left_height, right_height)) + 1U;
+        if (finder.height_[node] != expected_height) {
+            return LzssBinaryTreeValidationError::invalid_height;
+        }
+        const auto balance = static_cast<int>(left_height)
+            - static_cast<int>(right_height);
+        if (balance < -1 || balance > 1) {
+            return LzssBinaryTreeValidationError::unbalanced;
+        }
+        auto expected_maximum = finder.position_[node];
+        if (left != lzss_binary_tree_null_node) {
+            expected_maximum = std::max(
+                expected_maximum,
+                finder.subtree_maximum_position_[left]);
+        }
+        if (right != lzss_binary_tree_null_node) {
+            expected_maximum = std::max(
+                expected_maximum,
+                finder.subtree_maximum_position_[right]);
+        }
+        if (finder.subtree_maximum_position_[node] != expected_maximum) {
+            return LzssBinaryTreeValidationError::invalid_subtree_maximum;
+        }
+
+        auto ancestor = node;
+        std::size_t steps{};
+        while (ancestor != finder.root_ && steps <= finder.active_node_count_) {
+            ancestor = finder.parent_[ancestor];
+            if (ancestor == lzss_binary_tree_null_node
+                || ancestor >= capacity || finder.height_[ancestor] == 0) {
+                return LzssBinaryTreeValidationError::cycle_or_disconnected;
+            }
+            ++steps;
+        }
+        if (ancestor != finder.root_) {
+            return LzssBinaryTreeValidationError::cycle_or_disconnected;
+        }
+    }
+    if (observed_active != finder.active_node_count_) {
+        return LzssBinaryTreeValidationError::invalid_active_count;
+    }
+    return LzssBinaryTreeValidationError::none;
+}
+
+LzssBinaryTreeNodeSnapshot inspect_lzss_binary_tree_node(
+    const LzssBinaryTreeMatchFinder& finder,
+    const std::uint32_t node) noexcept {
+    if (!finder.initialized_ || node >= finder.left_.size()) return {};
+    return {finder.left_[node], finder.right_[node], finder.parent_[node],
+            finder.height_[node], finder.position_[node],
+            finder.subtree_maximum_position_[node]};
 }
 
 } // namespace marc::dictionary::internal

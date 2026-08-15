@@ -21976,3 +21976,29 @@ discarded and the reviewed seed retained.
   the user-directory Python 3.14 Silesia verifier, which passes separately in
   both configurations outside the sandbox. Documentation layout and
   `marc_interoperability_schema_compatibility` pass in both configurations.
+
+## CR-0917: 2026-08-15 - BinaryTree insertion and validation
+
+- Authoring method: derived iterative insertion, rotations, metadata updates,
+  and validation directly from marc's recorded finite-key and AVL invariants.
+- References used: DD-845, DD-847, DD-848; IR-0622; TVG-0719, TVG-0721, and
+  TVG-0722; the repository-owned BinaryTree workspace foundation.
+- Known implementations intentionally not consulted: external AVL trees,
+  match finders, compressors, source code, tests, patents, pseudocode, and
+  optimization descriptions.
+- Independent decisions: private one-position insertion; deterministic
+  bottom-up rebalancing; structural snapshots only for internal tests; parent
+  path cycle detection without recursion or extra workspace; and child
+  position validation before key comparison.
+- Generated-code task description: implement all four AVL rotation cases,
+  capped-suffix position ties, metadata propagation, stable invalid insertion,
+  corruption-safe validation, and deterministic bulk insertion tests without
+  adding deletion or a production encoder connection.
+- Similarity review: control flow and tests follow the repository's written
+  design and hand-derived fixtures. No external implementation expression or
+  vector entered the change.
+- Local validation: MSVC 19.50 and ClangCL 22.1.3 build warning-clean and pass
+  all 11 BinaryTree foundation and insertion tests. In each configuration the
+  2,974-test sandbox-safe inventory passes, including documentation layout and
+  `marc_interoperability_schema_compatibility`; the separately executed Python
+  3.14 Silesia verifier also passes, completing all 2,975 registered tests.
