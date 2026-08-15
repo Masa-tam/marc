@@ -17658,3 +17658,21 @@ Do not change format, IDs, public ABI, decoder behavior, default strategy, or
 the provisional WindowAdaptive threshold in this stage. The complete data
 structure and proof obligations are specified in
 `docs/design/lzss-binary-tree-match-finder.md`.
+
+## DD-846: Synthetic match-finder evidence is generated and untimed
+
+- Date: 2026-08-15
+- Status: accepted
+
+Add a strategy-explicit `--synthetic hash-chain-exact` benchmark path that
+generates zeros, a 251-byte period, equal-prefix records, known HashChain
+collision records, and a fixed-seed pseudorandom control. Generate one bounded
+frame at a time outside measured intervals, reuse the established HashChain
+workspace and validation path, and require counter-free timed passes to match
+the diagnostic pass's byte, frame, and token totals.
+
+Do not store generated payloads, add them to CTest as large fixtures, or turn
+their performance into pass thresholds. A small smoke fixes generator names,
+framing, classification invariants, and distinguishing properties. Use the
+one-MiB three-window matrix only as implementation-admission evidence for the
+private BinaryTree strategy, not as proof of a default or adaptive threshold.

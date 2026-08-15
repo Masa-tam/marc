@@ -467,6 +467,12 @@ if(MARC_BUILD_BENCHMARKS)
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_match_finder_frame_benchmark.cmake)
         set_tests_properties(marc_lzss_match_finder_frame_benchmark_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
+        add_test(NAME marc_lzss_match_finder_synthetic_benchmark_smoke
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_match_finder_benchmark>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_match_finder_synthetic_benchmark.cmake)
+        set_tests_properties(marc_lzss_match_finder_synthetic_benchmark_smoke
+            PROPERTIES LABELS benchmark-experimental-smoke)
     endif()
 
     add_executable(marc_contextual_huffman_estimator

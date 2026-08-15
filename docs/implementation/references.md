@@ -5562,3 +5562,12 @@ rules, and elementary lexicographic-order and AVL-tree properties as
 first-party and mathematical references. No external match-finder, AVL,
 suffix-tree, compressor, benchmark, source code, test suite, patent, or
 optimization description was consulted.
+
+### IR-0620
+
+The synthetic HashChain admission benchmark uses DD-841 through DD-846,
+TVG-0718 through TVG-0720, BM-0054 and BM-0055, marc's documented five-byte
+hash, existing fixed-seed LCG constants, checked arithmetic, bounded frame
+runner, and optional statistics as first-party references. No external
+generator, collision corpus, match-finder benchmark, compressor, source code,
+test, patent, or published performance result was consulted.

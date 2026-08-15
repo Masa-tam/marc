@@ -16,6 +16,7 @@
 #include "frame/lzss_tans_frame.hpp"
 
 #include <algorithm>
+#include <array>
 #include <bit>
 #include <charconv>
 #include <chrono>
@@ -210,6 +211,140 @@ void print_hash_chain_depth_histogram(
     return true;
 }
 
+enum class SyntheticInputKind : std::uint8_t {
+    zeros,
+    periodic,
+    equal_prefix,
+    hash_collision,
+    pseudorandom,
+};
+
+[[nodiscard]] bool parse_synthetic_input_kind(
+    const std::string_view text, SyntheticInputKind& kind) noexcept {
+    if (text == "zeros") kind = SyntheticInputKind::zeros;
+    else if (text == "periodic") kind = SyntheticInputKind::periodic;
+    else if (text == "equal-prefix") kind = SyntheticInputKind::equal_prefix;
+    else if (text == "hash-collision") {
+        kind = SyntheticInputKind::hash_collision;
+    } else if (text == "pseudorandom") {
+        kind = SyntheticInputKind::pseudorandom;
+    } else {
+        return false;
+    }
+    return true;
+}
+
+[[nodiscard]] std::string_view synthetic_input_name(
+    const SyntheticInputKind kind) noexcept {
+    switch (kind) {
+    case SyntheticInputKind::zeros: return "zeros";
+    case SyntheticInputKind::periodic: return "periodic";
+    case SyntheticInputKind::equal_prefix: return "equal-prefix";
+    case SyntheticInputKind::hash_collision: return "hash-collision";
+    case SyntheticInputKind::pseudorandom: return "pseudorandom";
+    }
+    return "unknown";
+}
+
+[[nodiscard]] std::uint32_t advance_synthetic_lcg(
+    const std::uint64_t steps) noexcept {
+    std::uint32_t accumulated_multiplier{1};
+    std::uint32_t accumulated_increment{};
+    std::uint32_t current_multiplier{UINT32_C(1664525)};
+    std::uint32_t current_increment{UINT32_C(1013904223)};
+    auto remaining = steps;
+    while (remaining != 0) {
+        if ((remaining & 1U) != 0) {
+            accumulated_multiplier *= current_multiplier;
+            accumulated_increment =
+                accumulated_increment * current_multiplier
+                + current_increment;
+        }
+        current_increment *= current_multiplier + 1U;
+        current_multiplier *= current_multiplier;
+        remaining >>= 1U;
+    }
+    return accumulated_multiplier * UINT32_C(0x13579bdf)
+        + accumulated_increment;
+}
+
+void fill_synthetic_input(
+    const SyntheticInputKind kind, const std::uint64_t absolute_offset,
+    const std::span<std::byte> output) noexcept {
+    constexpr std::array<std::byte, 5> equal_prefix{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}};
+    constexpr std::array<std::byte, 5> collision_a{
+        std::byte{0x01}, std::byte{0x00}, std::byte{0x00},
+        std::byte{0x58}, std::byte{0x59}};
+    constexpr std::array<std::byte, 5> collision_b{
+        std::byte{0x00}, std::byte{0x20}, std::byte{0x00},
+        std::byte{0x58}, std::byte{0x59}};
+    if (kind == SyntheticInputKind::pseudorandom) {
+        auto state = advance_synthetic_lcg(absolute_offset);
+        for (auto& value : output) {
+            state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+            value = static_cast<std::byte>(state >> 24U);
+        }
+        return;
+    }
+    for (std::size_t index = 0; index < output.size(); ++index) {
+        const auto position = absolute_offset + index;
+        switch (kind) {
+        case SyntheticInputKind::zeros:
+            output[index] = std::byte{0};
+            break;
+        case SyntheticInputKind::periodic:
+            output[index] = static_cast<std::byte>(position % 251U);
+            break;
+        case SyntheticInputKind::equal_prefix:
+        case SyntheticInputKind::hash_collision: {
+            const auto block = position / 8U;
+            const auto in_block = static_cast<std::size_t>(position % 8U);
+            if (in_block < 5) {
+                const auto& prefix = kind == SyntheticInputKind::equal_prefix
+                    ? equal_prefix
+                    : (block % 2U == 0 ? collision_a : collision_b);
+                output[index] = prefix[in_block];
+            } else {
+                const auto shift = static_cast<unsigned>((in_block - 5U) * 8U);
+                output[index] = static_cast<std::byte>(
+                    static_cast<std::uint8_t>((block >> shift) & 0xffU));
+            }
+            break;
+        }
+        case SyntheticInputKind::pseudorandom: break;
+        }
+    }
+}
+
+[[nodiscard]] bool process_hash_chain_frame(
+    const std::span<const std::byte> frame,
+    const LzssParameters& parameters,
+    const marc::core::DecoderLimits& limits,
+    const std::span<std::byte> workspace, const bool collect_statistics,
+    const bool measure, FrameRunResult& result) noexcept {
+    LzssMatchFinderStatistics frame_statistics{};
+    LzssHashChainMatchFinder finder{};
+    const auto begin = std::chrono::steady_clock::now();
+    if (initialize_lzss_hash_chain_match_finder(
+            frame, parameters, limits, workspace, finder,
+            collect_statistics ? &frame_statistics : nullptr)
+        != LzssHashChainError::none) {
+        return false;
+    }
+    const auto frame_tokens = parse_with_finder(frame, finder);
+    const auto end = std::chrono::steady_clock::now();
+    if (measure) {
+        result.seconds += std::chrono::duration<double>(end - begin).count();
+    }
+    return add_count(result.input_bytes, frame.size())
+        && add_count(result.frame_count, 1)
+        && add_count(result.token_count, frame_tokens)
+        && (!collect_statistics
+            || add_statistics(result.statistics, frame_statistics));
+}
+
 [[nodiscard]] bool process_hash_chain_frames(
     const std::filesystem::path& path, const std::uint64_t expected_file_size,
     const std::size_t frame_size, const LzssParameters& parameters,
@@ -229,28 +364,10 @@ void print_hash_chain_depth_histogram(
             return false;
         }
 
-        const auto frame = std::span<const std::byte>{input}.first(
-            current_size);
-        LzssMatchFinderStatistics frame_statistics{};
-        LzssHashChainMatchFinder finder{};
-        const auto begin = std::chrono::steady_clock::now();
-        if (initialize_lzss_hash_chain_match_finder(
-                frame, parameters, limits, workspace, finder,
-                collect_statistics ? &frame_statistics : nullptr)
-            != LzssHashChainError::none) {
-            return false;
-        }
-        const auto frame_tokens = parse_with_finder(frame, finder);
-        const auto end = std::chrono::steady_clock::now();
-        if (measure) {
-            result.seconds += std::chrono::duration<double>(end - begin).count();
-        }
-
-        if (!add_count(result.input_bytes, current_size)
-            || !add_count(result.frame_count, 1)
-            || !add_count(result.token_count, frame_tokens)
-            || (collect_statistics
-                && !add_statistics(result.statistics, frame_statistics))) {
+        const auto frame = std::span<const std::byte>{input}.first(current_size);
+        if (!process_hash_chain_frame(
+                frame, parameters, limits, workspace, collect_statistics,
+                measure, result)) {
             return false;
         }
         remaining -= current_size;
@@ -261,12 +378,82 @@ void print_hash_chain_depth_histogram(
     return stream.eof();
 }
 
+[[nodiscard]] bool process_synthetic_hash_chain_frames(
+    const SyntheticInputKind kind, const std::uint64_t input_size,
+    const std::size_t frame_size, const LzssParameters& parameters,
+    const marc::core::DecoderLimits& limits,
+    const std::span<std::byte> workspace, const bool collect_statistics,
+    const bool measure, FrameRunResult& result) {
+    std::vector<std::byte> input(frame_size);
+    std::uint64_t offset{};
+    while (offset < input_size) {
+        const auto current_size = static_cast<std::size_t>(
+            std::min<std::uint64_t>(input_size - offset, frame_size));
+        const auto frame = std::span<std::byte>{input}.first(current_size);
+        fill_synthetic_input(kind, offset, frame);
+        if (!process_hash_chain_frame(
+                frame, parameters, limits, workspace, collect_statistics,
+                measure, result)) {
+            return false;
+        }
+        offset += current_size;
+    }
+    return true;
+}
+
+void print_frame_report(
+    const std::string_view mode, const std::string_view synthetic_case,
+    const std::size_t frame_size, const std::size_t window_size,
+    const std::size_t iterations, const std::size_t workspace_size,
+    const FrameRunResult& verified, const double measured_seconds) {
+    std::cout << std::fixed << std::setprecision(6)
+              << "mode=" << mode << '\n'
+              << "strategy=hash-chain-exact\n";
+    if (!synthetic_case.empty()) {
+        std::cout << "synthetic_case=" << synthetic_case << '\n';
+    }
+    std::cout << "input_bytes=" << verified.input_bytes << '\n'
+              << "frame_bytes=" << frame_size << '\n'
+              << "window_bytes=" << window_size << '\n'
+              << "frame_count=" << verified.frame_count << '\n'
+              << "token_count=" << verified.token_count << '\n'
+              << "iterations=" << iterations << '\n'
+              << "hash_workspace_bytes=" << workspace_size << '\n'
+              << "hash_chain_queries="
+              << verified.statistics.query_count << '\n'
+              << "hash_chain_candidates="
+              << verified.statistics.candidate_count << '\n'
+              << "hash_chain_byte_comparisons="
+              << verified.statistics.byte_comparison_count << '\n'
+              << "hash_chain_prefix_matches="
+              << verified.statistics.hash_chain_prefix_match_count << '\n'
+              << "hash_chain_prefix_mismatches="
+              << verified.statistics.hash_chain_prefix_mismatch_count << '\n'
+              << "hash_chain_extension_byte_comparisons="
+              << verified.statistics
+                     .hash_chain_extension_byte_comparison_count
+              << '\n'
+              << "hash_chain_max_candidates_per_query="
+              << verified.statistics
+                     .hash_chain_maximum_candidates_per_query
+              << '\n'
+              << "hash_chain_frame_seconds=" << measured_seconds << '\n'
+              << "hash_chain_frame_mib_per_second="
+              << throughput(
+                     verified.input_bytes, iterations, measured_seconds)
+              << '\n';
+    print_hash_chain_depth_histogram(verified.statistics);
+}
+
 void print_usage() {
     std::cerr
         << "usage: marc_lzss_match_finder_benchmark "
            "<input-file> [iterations]\n"
         << "       marc_lzss_match_finder_benchmark --frames "
            "hash-chain-exact <input-file> [iterations] "
+           "[frame-bytes] [window-bytes]\n"
+        << "       marc_lzss_match_finder_benchmark --synthetic "
+           "hash-chain-exact <case> [input-bytes] [iterations] "
            "[frame-bytes] [window-bytes]\n";
 }
 
@@ -338,41 +525,78 @@ void print_usage() {
         measured_seconds += measured.seconds;
     }
 
-    std::cout << std::fixed << std::setprecision(6)
-              << "mode=frames\n"
-              << "strategy=hash-chain-exact\n"
-              << "input_bytes=" << verified.input_bytes << '\n'
-              << "frame_bytes=" << frame_size << '\n'
-              << "window_bytes=" << window_size << '\n'
-              << "frame_count=" << verified.frame_count << '\n'
-              << "token_count=" << verified.token_count << '\n'
-              << "iterations=" << iterations << '\n'
-              << "hash_workspace_bytes=" << requirements.workspace_size
-              << '\n'
-              << "hash_chain_queries="
-              << verified.statistics.query_count << '\n'
-              << "hash_chain_candidates="
-              << verified.statistics.candidate_count << '\n'
-              << "hash_chain_byte_comparisons="
-              << verified.statistics.byte_comparison_count << '\n'
-              << "hash_chain_prefix_matches="
-              << verified.statistics.hash_chain_prefix_match_count << '\n'
-              << "hash_chain_prefix_mismatches="
-              << verified.statistics.hash_chain_prefix_mismatch_count << '\n'
-              << "hash_chain_extension_byte_comparisons="
-              << verified.statistics
-                     .hash_chain_extension_byte_comparison_count
-              << '\n'
-              << "hash_chain_max_candidates_per_query="
-              << verified.statistics
-                     .hash_chain_maximum_candidates_per_query
-              << '\n'
-              << "hash_chain_frame_seconds=" << measured_seconds << '\n'
-              << "hash_chain_frame_mib_per_second="
-              << throughput(
-                     verified.input_bytes, iterations, measured_seconds)
-              << '\n';
-    print_hash_chain_depth_histogram(verified.statistics);
+    print_frame_report(
+        "frames", {}, frame_size, window_size, iterations,
+        requirements.workspace_size, verified, measured_seconds);
+    return 0;
+}
+
+[[nodiscard]] int run_synthetic_benchmark(
+    const int argc, const char* const argv[]) {
+    if (argc < 4 || argc > 8
+        || std::string_view{argv[2]} != "hash-chain-exact") {
+        print_usage();
+        return 2;
+    }
+    SyntheticInputKind kind{};
+    std::size_t input_size{UINT64_C(1) << 20};
+    std::size_t iterations{1};
+    std::size_t frame_size{UINT64_C(1) << 20};
+    std::size_t window_size{UINT64_C(1) << 20};
+    const marc::core::DecoderLimits limits{};
+    if (!parse_synthetic_input_kind(argv[3], kind)
+        || (argc >= 5 && !parse_size_argument(
+                argv[4], limits.max_total_output_size, input_size))
+        || (argc >= 6 && !parse_iterations(argv[5], iterations))
+        || (argc >= 7 && !parse_size_argument(
+                argv[6], limits.max_frame_size, frame_size))
+        || (argc >= 8 && !parse_size_argument(
+                argv[7], limits.max_lz_distance, window_size))
+        || window_size > std::numeric_limits<std::uint32_t>::max()) {
+        std::cerr << "invalid synthetic benchmark argument\n";
+        return 2;
+    }
+
+    LzssParameters parameters{};
+    parameters.window_size = static_cast<std::uint32_t>(window_size);
+    const auto requirements = calculate_lzss_hash_chain_workspace(
+        frame_size, parameters, limits);
+    if (requirements.error != LzssHashChainError::none) {
+        std::cerr << "cannot calculate synthetic HashChain workspace\n";
+        return 1;
+    }
+    AlignedWorkspace workspace_owner(requirements.workspace_size);
+    const auto workspace = workspace_owner.bytes(requirements.workspace_size);
+
+    FrameRunResult verified{};
+    if (!process_synthetic_hash_chain_frames(
+            kind, input_size, frame_size, parameters, limits, workspace,
+            true, false, verified)
+        || verified.input_bytes != input_size
+        || verified.statistics.query_count != verified.token_count
+        || !valid_hash_chain_statistics(verified.statistics)) {
+        std::cerr << "synthetic HashChain verification failed\n";
+        return 1;
+    }
+
+    double measured_seconds{};
+    for (std::size_t iteration = 0; iteration < iterations; ++iteration) {
+        FrameRunResult measured{};
+        if (!process_synthetic_hash_chain_frames(
+                kind, input_size, frame_size, parameters, limits, workspace,
+                false, true, measured)
+            || measured.input_bytes != verified.input_bytes
+            || measured.frame_count != verified.frame_count
+            || measured.token_count != verified.token_count) {
+            std::cerr << "timed synthetic HashChain processing failed\n";
+            return 1;
+        }
+        measured_seconds += measured.seconds;
+    }
+
+    print_frame_report(
+        "synthetic", synthetic_input_name(kind), frame_size, window_size,
+        iterations, requirements.workspace_size, verified, measured_seconds);
     return 0;
 }
 
@@ -381,6 +605,9 @@ void print_usage() {
 int main(const int argc, const char* const argv[]) {
     if (argc >= 2 && std::string_view{argv[1]} == "--frames") {
         return run_frame_benchmark(argc, argv);
+    }
+    if (argc >= 2 && std::string_view{argv[1]} == "--synthetic") {
+        return run_synthetic_benchmark(argc, argv);
     }
     if (argc < 2 || argc > 3) {
         print_usage();

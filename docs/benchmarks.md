@@ -115,6 +115,31 @@ index 0 counts zero-candidate queries, index 1 counts one-candidate queries,
 and index `n >= 2` counts queries visiting `2^(n-1)` through `2^n - 1`
 candidates. Only bins through the observed maximum are printed.
 
+### Synthetic LZSS match-finder mode
+
+Deterministic generated inputs can be measured without storing a fixture:
+
+```console
+marc_lzss_match_finder_benchmark --synthetic hash-chain-exact equal-prefix 1048576 1 1048576 1048576
+```
+
+The optional arguments are positive input bytes, iterations, frame bytes, and
+window bytes. Defaults are one MiB, one, one MiB, and one MiB. Generation is
+outside timed intervals. Supported cases are:
+
+- `zeros`: zero bytes;
+- `periodic`: the absolute position modulo 251;
+- `equal-prefix`: eight-byte records containing `ABCDE` and the low 24 bits of
+  the record number;
+- `hash-collision`: the alternating five-byte prefixes `01 00 00 58 59` and
+  `00 20 00 58 59`, followed by the low 24 record-number bits; and
+- `pseudorandom`: the existing fixed-seed 32-bit LCG sequence, with checked
+  logarithmic jump-ahead at frame boundaries.
+
+The collision prefixes independently produce the same low 16 hash bits under
+marc's documented five-byte HashChain hash. The suffix counter prevents the
+fixture from degenerating into only two indefinitely repeated records.
+
 ## Profile configurations
 
 ### Framing baseline
@@ -1282,6 +1307,39 @@ from 35,983,231 to 199,553,757, and measured throughput is 5.804 MiB/s.
 Therefore the large-window plateau is dominated by genuine equal-prefix chain
 growth rather than hash collision. This supports evaluating an exact ordered
 tree strategy; the timings remain descriptive rather than normative.
+
+### BM-0055: Synthetic HashChain admission matrix
+
+ClangCL 22 Release measured each deterministic one MiB input as one frame with
+64 KiB, 256 KiB, and one MiB windows. Generation is excluded and each result
+is one descriptive iteration.
+
+| Case | Window | Candidates | Prefix matches | False positives | Max depth | MiB/s |
+|---|---:|---:|---:|---:|---:|---:|
+| zeros | 64 KiB | 4,065 | 4,065 | 0 | 1 | 350.988 |
+| zeros | 256 KiB | 4,065 | 4,065 | 0 | 1 | 350.079 |
+| zeros | 1 MiB | 4,065 | 4,065 | 0 | 1 | 355.859 |
+| periodic | 64 KiB | 4,332 | 4,064 | 268 | 2 | 349.736 |
+| periodic | 256 KiB | 4,332 | 4,064 | 268 | 2 | 351.741 |
+| periodic | 1 MiB | 4,332 | 4,064 | 268 | 2 | 338.021 |
+| equal-prefix | 64 KiB | 20,812,519 | 20,643,586 | 168,933 | 8,192 | 11.805 |
+| equal-prefix | 256 KiB | 30,008,870 | 29,294,338 | 714,532 | 32,768 | 8.208 |
+| equal-prefix | 1 MiB | 34,798,860 | 33,488,643 | 1,310,217 | 65,537 | 6.922 |
+| hash-collision | 64 KiB | 24,774,824 | 12,254,418 | 12,520,406 | 8,193 | 10.420 |
+| hash-collision | 256 KiB | 42,695,364 | 20,891,842 | 21,803,522 | 32,772 | 6.071 |
+| hash-collision | 1 MiB | 55,921,725 | 27,164,333 | 28,757,392 | 65,546 | 4.622 |
+| pseudorandom | 64 KiB | 1,014,746 | 0 | 1,014,746 | 9 | 43.905 |
+| pseudorandom | 256 KiB | 3,667,908 | 0 | 3,667,908 | 17 | 18.947 |
+| pseudorandom | 1 MiB | 8,386,707 | 0 | 8,386,707 | 35 | 7.825 |
+
+Zeros and the 251-byte period quickly produce maximum-length greedy matches,
+so token skipping keeps their search depth at one or two. Equal-prefix and
+collision records deliberately keep many parse positions while growing the
+active candidate population; both reach roughly 65K candidates in one query.
+The pseudorandom control instead exposes bucket-cap collision growth with no
+five-byte prefix match. BinaryTree therefore has evidence to address the
+long-chain cases, but it must also prove that its ordered-key overhead does not
+regress short-chain and incompressible inputs before promotion.
 
 ## External Silesia measurements
 

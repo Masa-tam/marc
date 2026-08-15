@@ -10019,3 +10019,23 @@ import external vectors. Validate workspace shortness, alignment, aliasing,
 checked size overflow, aggregate limits, index sentinels, parent/child cycles,
 height, balance, subtree newest-position metadata, and counter saturation.
 Silesia remains external performance evidence and never a correctness gate.
+
+### TVG-0720
+
+Generate five 8,192-byte smoke inputs as two 4,096-byte frames with a
+4,096-byte window. Require exact mode, strategy, case, size, frame, window, and
+iteration report fields and require candidate classification to reconcile.
+Zeros must have prefix matches and no false positives; equal-prefix records
+must have more prefix matches than false positives; collision records must
+have false positives; the pseudorandom control must have false positives and
+no five-byte prefix match. Every case must report a depth histogram. Unknown
+case and zero input size must return usage failure.
+
+The equal-prefix record is `ABCDE` plus the low three little-endian bytes of
+its record number. The collision record alternates `01 00 00 58 59` and
+`00 20 00 58 59`, whose complete 32-bit hash values have the same low 16 bits
+(`11039`), and appends the same record number. Pseudorandom bytes use seed
+`0x13579bdf`, multiplier `1664525`, and increment `1013904223`; affine
+exponentiation positions the sequence at each frame offset without changing
+the byte stream. Separately measure one-MiB inputs at 64 KiB, 256 KiB, and one
+MiB windows and record results descriptively in BM-0055.

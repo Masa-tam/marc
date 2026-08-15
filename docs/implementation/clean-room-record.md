@@ -21921,3 +21921,31 @@ discarded and the reviewed seed retained.
 - Review result: the design closes the earlier unresolved node representation,
   expiration, balancing, pruning, and nearest-tie questions. It intentionally
   does not claim that one Silesia member proves a default-strategy threshold.
+
+## CR-0915: 2026-08-15 - Synthetic HashChain admission evidence
+
+- Authoring method: added bounded in-process generators to marc's existing
+  frame benchmark and derived the collision pair by independently enumerating
+  five-byte values under marc's documented hash.
+- References used: DD-841 through DD-846; IR-0620; TVG-0720; BM-0054 and
+  BM-0055; marc's hash, LCG constants, checked arithmetic, frame runner,
+  workspace, statistics, and report validation.
+- Known implementations intentionally not consulted: external generators,
+  collision corpora, LZSS or match-finder implementations, benchmarks,
+  profilers, source code, tests, patents, and published results.
+- Independent decisions: use no stored payload; preserve global generator
+  offsets across frames; exclude generation from timing; separate diagnostic
+  and timed passes; add low-24-bit record suffixes; and measure three windows
+  without creating pass thresholds.
+- Generated-code task description: implement five deterministic cases,
+  logarithmic LCG jump-ahead, bounded frame generation, CLI validation, smoke
+  classification, three-window measurements, documentation, and provenance.
+- Similarity review: all generator and runner structure derives from marc-owned
+  arithmetic and benchmark contracts. No external payload or implementation
+  expression entered the tracked change.
+- Local validation: MSVC 19.50 and ClangCL 22.1.3 build warning-clean and pass
+  the frame and all five generator smokes. The documentation layout check also
+  passes on both builds. All 2,963 CTest cases pass on both builds, including
+  `marc_interoperability_schema_compatibility`. Fifteen one-MiB diagnostic runs
+  complete; BM-0055 records their candidate populations, classifications,
+  maximum depths, and descriptive throughput.
