@@ -5381,3 +5381,12 @@ extents before mutation. The decoder fixes the same layout at `begin` and uses
 it for all later Symbol and bypass requests. Existing composed paths pass the
 64 KiB selection explicitly, so no typed-token or frame representation changes
 at this stage.
+
+The next direct typed-token boundary carries the same selection through LZSS
+token validation, field-context generation, FGK coding, and atomic two-pass
+decoding. It derives the 17/21-symbol distance alphabet, 16/20-bit bypass
+ceiling, 26/30-decision token bound, dictionary token variant, and exact model
+extents from one canonical layout. A bounded-token vector builds 1 MiB of
+history before a distance-1,048,576 Match and must encode identically through
+the direct bridge and an independently modeled operation sequence. Frame and
+public admission remain separate review stages.

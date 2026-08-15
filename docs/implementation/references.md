@@ -5429,3 +5429,13 @@ variant-1 operation encoder and decoder, and the selected Dynamic Range,
 rANS, tANS, and Blocked Huffman operation boundaries as first-party
 references. No external Adaptive Huffman or LZSS implementation, source code,
 test, corpus, archive, patent text, or optimization description was consulted.
+
+### IR-0607
+
+The selected Contextual Adaptive Huffman typed-token bridge design uses
+DD-831 through DD-833, TVG-0706 through TVG-0708, marc's completed selected
+FGK model bank and operation coder, the frozen 64 KiB LZSS typed-token bridge,
+and the completed selected Dynamic Range, rANS, tANS, and Blocked Huffman
+token boundaries as first-party references. No external Adaptive Huffman or
+LZSS implementation, source code, test, corpus, archive, patent text, or
+optimization description was consulted.

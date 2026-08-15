@@ -9781,3 +9781,27 @@ regions without changing the caller's descriptor, payload sentinel, or decoded
 value. Retain existing variant-1 hand vectors and operation bytes exactly. No
 typed-token, frame, streaming, public, benchmark, fuzz, or interoperability
 vector belongs to this stage.
+
+### TVG-0708
+
+Construct a variant-2 typed-token sequence from one literal, 4,064 length-258
+distance-1 Matches, one length-63 distance-1 Match, and one length-5 Match at
+distance 1,048,576. Require typed-token validation to report exact raw size
+1,048,581. Independently model the sequence as field-context operations and
+require its final two operations to be `Symbol(23..30,21,20)` for the selected
+length context followed by `BypassBits(20,0)`.
+
+Plan and encode those operations with the selected Contextual Adaptive
+Huffman operation coder, then plan and encode the tokens directly with 9,131
+nodes and 4,550 symbols. Require exact descriptor-field and payload identity.
+Decode the direct payload with the same variant and require every token,
+event, decision, raw-size, and consumed-bit result to match the independent
+reference and original sequence.
+
+Retain every variant-1 token payload byte through the source-level default.
+Require the 1 MiB parameters and sequence to fail under variant 1, an
+unsupported selection to fail, and independently one-short variant-2 node and
+symbol workspaces to fail without changing descriptor, payload sentinels, or
+token output. A crossed decoder must validate nothing into the caller's token
+region. No complete-frame, streaming, public, benchmark, fuzz, or
+interoperability vector belongs to this stage.

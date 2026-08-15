@@ -17307,3 +17307,38 @@ the same alphabet and bypass width while retaining all existing payload bytes.
 This stage changes no stream header, descriptor grammar, entropy parameters,
 frame, typed-token bridge, public API, benchmark, fuzz target, or
 interoperability schema.
+
+## DD-833: Contextual Adaptive Huffman token coding retains the selected LZSS layout
+
+- Date: 2026-08-15
+- Status: accepted
+
+Pass the externally validated `LzssFieldContextVariant` through the direct
+LZSS typed-token bridge. Resolve it before token validation, workspace
+partitioning, descriptor planning, payload writing, or decode publication.
+The resolved layout supplies the dictionary token variant, every field
+alphabet, maximum bypass width, maximum decisions per token, and the exact
+FGK node and symbol extents. The 16-byte entropy descriptor remains data-only
+and neither repeats nor infers this selection.
+
+Variant 1 remains the source-level default and retains a 17-symbol distance
+field, 16-bit bypass ceiling, 26 decisions per token, 9,067 nodes, and 4,518
+symbol slots. Variant 2 uses a 21-symbol distance field, 20-bit bypass ceiling,
+30 decisions per token, 9,131 nodes, and 4,550 symbol slots. Typed-token
+validation uses the corresponding 64 KiB or 1 MiB dictionary variant. An
+unsupported or crossed selection, a distance outside the selected profile,
+or a one-short selected workspace fails before descriptor, payload, or token
+publication.
+
+The maximum-distance proving sequence creates exactly 1,048,576 bytes of
+history from one literal and bounded distance-1 matches, then emits a
+length-5 Match at distance 1,048,576. Its final modeled operations must be a
+distance Symbol with alphabet 21 and value 20 followed by a 20-bit bypass
+value of zero. Direct token encoding must equal independently modeling those
+tokens into operations and applying the selected operation coder. Decode is
+atomic: a complete validate-only pass must finish both entropy and token
+validation before a second pass publishes exact tokens.
+
+This stage changes no stream header, descriptor grammar, complete-frame
+boundary, streaming lifecycle, public API, CLI, benchmark, fuzz target, or
+interoperability schema.

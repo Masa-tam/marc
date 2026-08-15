@@ -585,6 +585,20 @@ The hand vector round trips identically through both encoding paths, while
 crossed alphabets, unsupported selections, and short selected workspaces fail
 without publishing descriptor, payload, or decoded values.
 
+The direct Contextual Adaptive Huffman typed-token boundary next retains that
+immutable selection for its full lifetime. It validates the matching
+dictionary token variant, derives field alphabets and bypass widths from the
+selected layout, uses the selected 9,067/4,518 or 9,131/4,550 model extents,
+and applies the 26- or 30-decision-per-token bound during decode. Variant 1
+remains the source-level default and byte-frozen.
+
+Its maximum-distance proof builds exactly 1,048,576 history bytes from one
+literal and bounded distance-1 Matches, then emits a length-5 Match at distance
+1,048,576. The final distance field is class 20 in alphabet 21 followed by a
+20-bit zero bypass value. Direct token coding must equal independent operation
+modeling, and a validate-only pass must complete before decoded tokens become
+caller-visible. Complete-frame and public selection remain later stages.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

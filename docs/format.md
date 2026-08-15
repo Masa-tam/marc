@@ -6829,6 +6829,16 @@ bundle inventory and manifest identity; no stream representation changes.
 The full design and staged validation contract is
 [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md).
 
+The private direct LZSS typed-token adapter for Contextual Adaptive Huffman
+receives the same externally selected field-context layout. Variant 1 retains
+17-symbol distance contexts, at most 16 bypass bits, and at most 26 decisions
+per token. Variant 2 uses 21-symbol distance contexts, at most 20 bypass bits,
+and at most 30 decisions per token. The adapter validates the corresponding
+typed-token variant and uses selected 9,067/4,518 or 9,131/4,550 node/symbol
+workspaces. This selection is not serialized in the fixed 16-byte entropy
+descriptor and changes no stream byte by itself. Complete-frame and public
+admission remain later boundaries.
+
 The private direct typed-token adapter admits the selected Contextual Blocked
 Huffman layout without defining another serialized field. For variant 2, a
 distance of 131,072 is represented by distance class 17 in the 21-symbol

@@ -21365,3 +21365,22 @@ discarded and the reviewed seed retained.
   registered tests, including documentation layout and interoperability schema
   compatibility, in 198.69 seconds under MSVC and 206.48 seconds under
   ClangCL.
+
+## CR-0893: 2026-08-15 - Selected Contextual Adaptive Huffman token-bridge design
+
+- Authoring method: derived the next composition boundary from marc's selected
+  FGK operation coder and canonical dual-profile LZSS typed-token model.
+- References used: DD-831 through DD-833; IR-0607; TVG-0706 through TVG-0708;
+  marc's existing 64 KiB token bridge and completed selected backend patterns.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: keep the descriptor variant-neutral; carry one outer
+  selection into token validation, field mapping, workspace accounting, and
+  atomic two-pass decode; prove class 20 with a bounded-token 1 MiB history.
+- Generated-code task description: specify selected token composition, exact
+  modeled-operation equivalence, maximum-distance evidence, reciprocal and
+  workspace failures, frozen variant-1 behavior, and later-stage exclusions.
+- Similarity review: the design composes only marc-owned typed-token,
+  field-context, FGK, checked-workspace, and atomic-publication rules. No
+  external implementation expression entered the design.
