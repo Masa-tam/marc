@@ -6800,6 +6800,15 @@ cannot require a distance above 65,536. Contextual tANS now has complete
 internal, streaming, public C, CLI, benchmark, fuzz, and local schema-40
 admission for the selected profile. Schema 40 changes only bundle inventory
 and manifest identity; no stream representation changes.
+
+Interoperability schema 41 freezes all 50 schema-40 entries and appends the
+explicit `lzss-contextual-blocked-huffman-1m` CLI archive as entry 51. The
+common fixture proves exact `2/3 + 1/2 + 2/2` identity and deterministic re-
+encoding but cannot require a distance above 65,536. Contextual Blocked
+Huffman now has complete internal, streaming, public C, CLI, benchmark, fuzz,
+and local schema-41 admission for the selected profile. Schema 41 changes only
+bundle inventory and manifest identity; no stream representation changes.
+
 The full design and staged validation contract is
 [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md).
 

@@ -21222,3 +21222,29 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned CLI, bundle scripts,
   manifest rules, and compatibility tests. No external implementation
   expression entered the design.
+
+## CR-0887: 2026-08-15 - Contextual Blocked Huffman schema-41 local admission
+
+- Authoring method: implemented DD-830 directly in marc's existing append-
+  only interoperability generator, verifier, and downgrade test chain.
+- References used: DD-790 through DD-830; IR-0604; TVG-0665; TVG-0666;
+  TVG-0696 through TVG-0705; marc's schema-40 scripts and public CLI.
+- Known implementations intentionally not consulted: external Huffman or LZSS
+  implementations, archives, manifests, interoperability suites, source code,
+  tests, corpora, patent text, and optimization descriptions.
+- Independent decisions: append the explicit profile at entry 51; inspect the
+  exact `2/3 + 1/2 + 2/2` identity during generation; require codec set
+  `marc-cli-v41`; reject reordered manifests; and remove only entry 51 to
+  recover schema 40 before applying unchanged older conversions.
+- Generated-code task description: update the current inventory and manifest,
+  admit exact schema-41 verification, extend reorder rejection and downgrade,
+  run both local compiler routes, and record external work as pending.
+- Similarity review: the implementation changes only marc-owned PowerShell
+  scripts and documentation, using the repository's established append-only
+  schema pattern. No external implementation expression entered the change.
+- Local validation: MSVC and ClangCL each generate and verify all 51 current
+  archives, reject the reordered schema-41 manifest, and verify the complete
+  schema-1-through-41 downgrade chain in 81.92 and 75.24 seconds respectively.
+  Both complete Release suites pass all 2,939 registered tests, including
+  documentation layout and schema compatibility (189.04 seconds under MSVC
+  and 188.27 seconds under ClangCL).

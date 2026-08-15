@@ -131,7 +131,8 @@ $profiles = @(
     'lzss-contextual-adaptive-huffman',
     'lzss-contextual-dynamic-range-1m',
     'lzss-contextual-rans-1m',
-    'lzss-contextual-tans-1m'
+    'lzss-contextual-tans-1m',
+    'lzss-contextual-blocked-huffman-1m'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -141,7 +142,8 @@ foreach ($profile in $profiles) {
     Invoke-Marc @('encode', '--codec', $profile, $inputPath, $archivePath)
     if ($profile -eq 'lzss-contextual-dynamic-range-1m' -or
             $profile -eq 'lzss-contextual-rans-1m' -or
-            $profile -eq 'lzss-contextual-tans-1m') {
+            $profile -eq 'lzss-contextual-tans-1m' -or
+            $profile -eq 'lzss-contextual-blocked-huffman-1m') {
         $archiveBytes = [System.IO.File]::ReadAllBytes($archivePath)
         if ($archiveBytes.Length -le 98 -or
                 $archiveBytes[14] -ne 3 -or
@@ -156,6 +158,13 @@ foreach ($profile in $profiles) {
                  $archiveBytes[18] -ne 2 -or
                  $archiveBytes[19] -ne 0)) {
             throw "$profile archive does not carry entropy identity 5/2"
+        }
+        if ($profile -eq 'lzss-contextual-blocked-huffman-1m' -and
+                ($archiveBytes[16] -ne 2 -or
+                 $archiveBytes[17] -ne 0 -or
+                 $archiveBytes[18] -ne 2 -or
+                 $archiveBytes[19] -ne 0)) {
+            throw "$profile archive does not carry entropy identity 2/2"
         }
     }
     Invoke-Marc @('decode', '--codec', $profile, $archivePath, $decodedPath)
@@ -173,8 +182,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 40
-    codec_set = 'marc-cli-v40'
+    schema_version = 41
+    codec_set = 'marc-cli-v41'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

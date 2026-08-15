@@ -2373,3 +2373,13 @@ length, descriptor-flag, reciprocal-admission, atomic-output, and sticky-error
 behavior. A bounded 1,000-input Windows Clang 22 ASan/UBSan campaign completes
 without a finding at 41 MiB peak RSS. Interoperability admission remains
 pending.
+
+### BR-0139
+
+Interoperability schema 41 appends only
+`lzss-contextual-blocked-huffman-1m` as archive 51 and freezes every schema-40
+archive byte and order. Generation verifies exact `2/3 + 1/2 + 2/2` identity
+and an immediate round trip. Both local compilers generate and verify all 51
+archives, reject reordered current manifests, remove only the new final entry
+to recover schema 40, and verify every schema through version 1. External
+four-direction evidence remains pending until the revision is pushed.

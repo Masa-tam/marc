@@ -550,6 +550,11 @@ The compatibility suite removes only entry 51 to reconstruct schema 40 before
 its existing complete downgrade chain; no earlier archive or representation
 may change.
 
+Local schema-41 admission is now complete. Both MSVC and ClangCL generate and
+verify all 51 archives, reject a reordered current manifest, remove only the
+new final archive to recover schema 40, and complete every downgrade through
+schema 1. Four-direction external exchange remains post-push evidence.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:
