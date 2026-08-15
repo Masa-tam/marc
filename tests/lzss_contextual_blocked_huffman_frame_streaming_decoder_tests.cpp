@@ -355,6 +355,74 @@ TEST(LzssContextualBlockedHuffmanFrameStreamingDecoder,
 }
 
 TEST(LzssContextualBlockedHuffmanFrameStreamingDecoder,
+     EnforcesExplicitProfileAdmissionBeforeFrames) {
+    LzssContextualBlockedHuffmanStreamHeader baseline{};
+    baseline.frame_size = 1;
+    std::array<std::byte,
+               lzss_contextual_blocked_huffman_stream_header_size>
+        baseline_bytes{};
+    ASSERT_EQ(serialize_lzss_contextual_blocked_huffman_stream_header(
+                  baseline, {}, baseline_bytes),
+              LzssContextualBlockedHuffmanStreamHeaderError::none);
+    LzssContextualBlockedHuffmanFrameStreamingDecoder accept_baseline{
+        {}, {}, {}, {}, {},
+        LzssContextualBlockedHuffmanStreamAdmission::field_context_64k};
+    auto result = accept_baseline.process(
+        baseline_bytes, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.error.code, ErrorCode::none);
+    LzssContextualBlockedHuffmanFrameStreamingDecoder reject_baseline{
+        {}, {}, {}, {}, {},
+        LzssContextualBlockedHuffmanStreamAdmission::field_context_1m};
+    result = reject_baseline.process(
+        baseline_bytes, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+
+    auto extended = baseline;
+    extended.dictionary.window_size = UINT32_C(1) << 20;
+    extended.dictionary_variant = 3;
+    extended.context_variant = 2;
+    std::array<std::byte,
+               lzss_contextual_blocked_huffman_stream_header_size>
+        extended_bytes{};
+    ASSERT_EQ(serialize_lzss_contextual_blocked_huffman_stream_header(
+                  extended, {}, extended_bytes),
+              LzssContextualBlockedHuffmanStreamHeaderError::none);
+    LzssContextualBlockedHuffmanFrameStreamingDecoder accept_any{
+        {}, {}, {}, {}, {}};
+    result = accept_any.process(extended_bytes, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.error.code, ErrorCode::none);
+    LzssContextualBlockedHuffmanFrameStreamingDecoder accept_extended{
+        {}, {}, {}, {}, {},
+        LzssContextualBlockedHuffmanStreamAdmission::field_context_1m};
+    result = accept_extended.process(extended_bytes, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.error.code, ErrorCode::none);
+
+    LzssContextualBlockedHuffmanFrameStreamingDecoder reject_extended{
+        {}, {}, {}, {}, {},
+        LzssContextualBlockedHuffmanStreamAdmission::field_context_64k};
+    result = reject_extended.process(extended_bytes, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+}
+
+TEST(LzssContextualBlockedHuffmanFrameStreamingDecoder,
+     RejectsInvalidProfileAdmissionAtConstruction) {
+    LzssContextualBlockedHuffmanFrameStreamingDecoder decoder{
+        {}, {}, {}, {}, {},
+        static_cast<LzssContextualBlockedHuffmanStreamAdmission>(255)};
+    auto result = decoder.process({}, {}, 0);
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
+    result = decoder.process({}, {}, 0);
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
+}
+
+TEST(LzssContextualBlockedHuffmanFrameStreamingDecoder,
      RejectsWrongEntropyIdentity) {
     auto encoded = stream(1);
     encoded[16] = std::byte{4};

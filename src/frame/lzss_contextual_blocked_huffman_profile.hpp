@@ -12,10 +12,17 @@
 
 namespace marc::frame::internal {
 
+enum class LzssContextualBlockedHuffmanProfileVariant : std::uint8_t {
+    field_context_64k,
+    field_context_1m,
+};
+
 struct LzssContextualBlockedHuffmanProfileConfig {
     std::uint64_t original_size{};
     std::uint32_t frame_size{UINT32_C(1) << 16};
     dictionary::internal::LzssParameters dictionary{};
+    LzssContextualBlockedHuffmanProfileVariant variant{
+        LzssContextualBlockedHuffmanProfileVariant::field_context_64k};
 };
 
 struct LzssContextualBlockedHuffmanEncoderWorkspaceRequirements {
@@ -75,7 +82,9 @@ make_lzss_contextual_blocked_huffman_profile(
 [[nodiscard]] LzssContextualBlockedHuffmanProfileError
 calculate_lzss_contextual_blocked_huffman_decoder_workspace(
     const core::DecoderLimits& limits,
-    LzssContextualBlockedHuffmanDecoderWorkspaceRequirements& workspace)
+    LzssContextualBlockedHuffmanDecoderWorkspaceRequirements& workspace,
+    LzssContextualBlockedHuffmanProfileVariant variant =
+        LzssContextualBlockedHuffmanProfileVariant::field_context_64k)
     noexcept;
 
 [[nodiscard]] LzssContextualBlockedHuffmanWorkspaceError

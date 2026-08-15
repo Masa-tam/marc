@@ -5306,3 +5306,14 @@ preflight applies the selected decision and descriptor ceilings before caller
 workspace use. Variant 1 remains byte-frozen. The selected complete-frame
 path publishes raw bytes only after private entropy and dictionary validation;
 streaming lifecycle and public profile construction remain later boundaries.
+
+The selected Contextual Blocked Huffman profile boundary resolves one of two
+immutable layouts before sizing caller-owned storage. The 64 KiB default
+reserves the 2,561-byte descriptor ceiling; the 1 MiB selection reserves
+2,579 bytes and sizes its HashChain workspace from the selected dictionary.
+Both retain 35 decode tables, one token slot per possible raw byte, and the
+same checked aggregate-memory policy. Streaming encode consumes that validated
+stream identity. Streaming decode may admit either layout or require one exact
+layout, and applies that policy after the complete stream header but before
+frame buffering or raw publication. Public construction remains a separate
+review boundary.

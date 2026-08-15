@@ -11,6 +11,12 @@
 
 namespace marc::frame::internal {
 
+enum class LzssContextualBlockedHuffmanStreamAdmission : std::uint8_t {
+    any,
+    field_context_64k,
+    field_context_1m,
+};
+
 class LzssContextualBlockedHuffmanFrameStreamingDecoder final
     : public core::Transform {
 public:
@@ -19,7 +25,9 @@ public:
         std::span<std::byte> serialized_frame_workspace,
         std::span<entropy::internal::HuffmanDecodeTable> table_workspace,
         std::span<dictionary::internal::LzssTypedToken> token_workspace,
-        std::span<std::byte> raw_frame_workspace) noexcept;
+        std::span<std::byte> raw_frame_workspace,
+        LzssContextualBlockedHuffmanStreamAdmission admission =
+            LzssContextualBlockedHuffmanStreamAdmission::any) noexcept;
 
     [[nodiscard]] core::ProcessResult process(
         std::span<const std::byte> input, std::span<std::byte> output,
@@ -48,6 +56,8 @@ private:
     std::span<entropy::internal::HuffmanDecodeTable> table_workspace_{};
     std::span<dictionary::internal::LzssTypedToken> token_workspace_{};
     std::span<std::byte> raw_frame_workspace_{};
+    LzssContextualBlockedHuffmanStreamAdmission admission_{
+        LzssContextualBlockedHuffmanStreamAdmission::any};
     std::array<std::byte,
                lzss_contextual_blocked_huffman_stream_header_size>
         stream_header_bytes_{};

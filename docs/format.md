@@ -6823,3 +6823,12 @@ offsets 96/98; no new field or extent is introduced. Variant 1 retains
 decision, the 64-byte frame header, zero context side data, and zero checksum
 trailer. Crossed identities and descriptor layouts are malformed before raw
 publication. Streaming and public admission are not defined by this stage.
+
+The private Contextual Blocked Huffman profile and streaming lifecycle now
+admits both identities without changing their serialized representation.
+Profile selection maps `field_context_64k` to `2/1 + 1/1 + 2/2` and
+`field_context_1m` to `2/3 + 1/2 + 2/2`; the former remains the source-level
+default. Decoder construction may accept either identity or require one exact
+pair. Exact admission is an API policy only and writes no stream bit. A
+crossed or disallowed identity is malformed immediately after the complete
+112-byte stream header and before any frame or raw byte is published.

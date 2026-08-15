@@ -2308,3 +2308,18 @@ beyond 64 KiB and atomic crossed rejection. All targets build warning-clean
 and all 2,929 registered Release tests pass under MSVC and ClangCL, including
 schema compatibility through version 40. Selected profile, streaming, public,
 benchmark, fuzz, and interoperability admission remain pending.
+
+### BR-0134
+
+The selected Contextual Blocked Huffman profile and streaming lifecycle is
+locally complete. Explicit 64 KiB and 1 MiB selections emit the exact paired
+stream identities, reserve descriptor maxima of 2,561 and 2,579 bytes, and
+retain the same 35-table and token/raw workspace extents. A one-byte input and
+output lifecycle over the marker-gap-marker frame proves use of a Match beyond
+64 KiB, exact round trip, and sticky terminal state. Immutable decoder
+admission accepts either layout or one exact layout and rejects the reciprocal
+identity before frame or raw publication; unknown selections fail
+transactionally. All targets build warning-clean and all 2,932 registered
+Release tests pass under MSVC and ClangCL, including schema compatibility
+through version 40. Public C, CLI, benchmark, sanitizer fuzz, and
+interoperability admission for the selected profile remain pending.

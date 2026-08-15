@@ -27,6 +27,58 @@ using namespace marc::frame::internal;
     return marc::core::flag_value(marc::core::ProcessFlags::end_input);
 }
 
+[[nodiscard]] std::vector<std::byte> encode_one_byte_chunks(
+    LzssContextualBlockedHuffmanFrameStreamingEncoder& encoder,
+    const std::span<const std::byte> input) {
+    std::vector<std::byte> output;
+    std::size_t input_offset{};
+    std::array<std::byte, 1> byte{};
+    marc::core::StreamStatus status{};
+    do {
+        const auto count = std::min<std::size_t>(
+            1, input.size() - input_offset);
+        const auto chunk = input.subspan(input_offset, count);
+        const auto flags = input_offset + count == input.size()
+            ? end_flag()
+            : 0U;
+        const auto result = encoder.process(chunk, byte, flags);
+        EXPECT_TRUE(marc::core::is_valid(
+            result, chunk.size(), byte.size()));
+        EXPECT_NE(result.status, marc::core::StreamStatus::error);
+        input_offset += result.input_consumed;
+        if (result.output_produced != 0) output.push_back(byte[0]);
+        status = result.status;
+    } while (status != marc::core::StreamStatus::end_of_stream);
+    EXPECT_EQ(input_offset, input.size());
+    return output;
+}
+
+[[nodiscard]] std::vector<std::byte> decode_one_byte_chunks(
+    LzssContextualBlockedHuffmanFrameStreamingDecoder& decoder,
+    const std::span<const std::byte> input) {
+    std::vector<std::byte> output;
+    std::size_t input_offset{};
+    std::array<std::byte, 1> byte{};
+    marc::core::StreamStatus status{};
+    do {
+        const auto count = std::min<std::size_t>(
+            1, input.size() - input_offset);
+        const auto chunk = input.subspan(input_offset, count);
+        const auto flags = input_offset + count == input.size()
+            ? end_flag()
+            : 0U;
+        const auto result = decoder.process(chunk, byte, flags);
+        EXPECT_TRUE(marc::core::is_valid(
+            result, chunk.size(), byte.size()));
+        EXPECT_NE(result.status, marc::core::StreamStatus::error);
+        input_offset += result.input_consumed;
+        if (result.output_produced != 0) output.push_back(byte[0]);
+        status = result.status;
+    } while (status != marc::core::StreamStatus::end_of_stream);
+    EXPECT_EQ(input_offset, input.size());
+    return output;
+}
+
 } // namespace
 
 TEST(LzssContextualBlockedHuffmanProfile,
@@ -77,6 +129,19 @@ TEST(LzssContextualBlockedHuffmanProfile,
               LzssContextualBlockedHuffmanWorkspaceError::none);
     EXPECT_TRUE(views.tokens.empty());
     EXPECT_TRUE(views.match_finder.empty());
+
+    LzssContextualBlockedHuffmanProfileConfig extended{};
+    extended.original_size = 17;
+    extended.frame_size = 17;
+    extended.dictionary.window_size = UINT32_C(1) << 20;
+    extended.variant =
+        LzssContextualBlockedHuffmanProfileVariant::field_context_1m;
+    ASSERT_EQ(make_lzss_contextual_blocked_huffman_profile(
+                  extended, {}, stream, workspace),
+              LzssContextualBlockedHuffmanProfileError::none);
+    EXPECT_EQ(stream.dictionary_variant, 3U);
+    EXPECT_EQ(stream.context_variant, 2U);
+    EXPECT_EQ(workspace.frame_encoded_bytes, 2835U);
 }
 
 TEST(LzssContextualBlockedHuffmanProfile,
@@ -88,6 +153,25 @@ TEST(LzssContextualBlockedHuffmanProfile,
     EXPECT_EQ(make_lzss_contextual_blocked_huffman_profile(
                   unsupported, {}, stream, workspace),
               LzssContextualBlockedHuffmanProfileError::unsupported);
+    unsupported = {};
+    unsupported.dictionary.window_size = UINT32_C(1) << 20;
+    EXPECT_EQ(make_lzss_contextual_blocked_huffman_profile(
+                  unsupported, {}, stream, workspace),
+              LzssContextualBlockedHuffmanProfileError::unsupported);
+    unsupported = {};
+    unsupported.variant = static_cast<
+        LzssContextualBlockedHuffmanProfileVariant>(255);
+    EXPECT_EQ(make_lzss_contextual_blocked_huffman_profile(
+                  unsupported, {}, stream, workspace),
+              LzssContextualBlockedHuffmanProfileError::unsupported);
+    LzssContextualBlockedHuffmanDecoderWorkspaceRequirements
+        decoder_workspace{};
+    EXPECT_EQ(calculate_lzss_contextual_blocked_huffman_decoder_workspace(
+                  {}, decoder_workspace,
+                  static_cast<
+                      LzssContextualBlockedHuffmanProfileVariant>(255)),
+              LzssContextualBlockedHuffmanProfileError::unsupported);
+    EXPECT_EQ(decoder_workspace.views_bytes, 0U);
 
     auto limits = marc::core::DecoderLimits{};
     limits.max_compressed_payload_size = 191;
@@ -138,6 +222,18 @@ TEST(LzssContextualBlockedHuffmanProfile,
               marc::entropy::internal::
                   contextual_blocked_huffman_max_table_count);
     EXPECT_EQ(requirements.token_count, 1024U);
+
+    LzssContextualBlockedHuffmanDecoderWorkspaceRequirements extended{};
+    ASSERT_EQ(calculate_lzss_contextual_blocked_huffman_decoder_workspace(
+                  limits, extended,
+                  LzssContextualBlockedHuffmanProfileVariant::
+                      field_context_1m),
+              LzssContextualBlockedHuffmanProfileError::none);
+    EXPECT_EQ(extended.frame_encoded_bytes, 4643U);
+    EXPECT_EQ(extended.frame_decoded_bytes,
+              requirements.frame_decoded_bytes);
+    EXPECT_EQ(extended.table_count, requirements.table_count);
+    EXPECT_EQ(extended.token_count, requirements.token_count);
 
     std::vector<std::max_align_t> backing;
     auto storage = aligned_storage(backing, requirements.views_bytes);
@@ -266,6 +362,77 @@ TEST(LzssContextualBlockedHuffmanProfile,
     EXPECT_EQ(decoded_result.input_consumed, encoded.size());
     EXPECT_EQ(decoded_result.output_produced, raw.size());
     EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzssContextualBlockedHuffmanProfile,
+     OneMiBProfileStreamsExtendedDistanceWithOneByteBuffers) {
+    constexpr std::size_t gap = 65536;
+    std::vector<std::byte> raw(5 + gap + 5, std::byte{'Z'});
+    constexpr std::array marker{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}};
+    std::ranges::copy(marker, raw.begin());
+    std::ranges::copy(marker, raw.end() - marker.size());
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = raw.size();
+    limits.max_block_size = raw.size();
+    limits.max_compressed_payload_size = 1U << 20;
+    LzssContextualBlockedHuffmanProfileConfig config{};
+    config.original_size = raw.size();
+    config.frame_size = static_cast<std::uint32_t>(raw.size());
+    config.dictionary.window_size = UINT32_C(1) << 20;
+    config.variant =
+        LzssContextualBlockedHuffmanProfileVariant::field_context_1m;
+    LzssContextualBlockedHuffmanStreamHeader stream{};
+    LzssContextualBlockedHuffmanEncoderWorkspaceRequirements encoder_req{};
+    ASSERT_EQ(make_lzss_contextual_blocked_huffman_profile(
+                  config, limits, stream, encoder_req),
+              LzssContextualBlockedHuffmanProfileError::none);
+    std::vector<std::byte> frame_input(encoder_req.frame_input_bytes);
+    std::vector<std::byte> frame_encoded(encoder_req.frame_encoded_bytes);
+    std::vector<std::max_align_t> encode_backing;
+    auto encode_storage = aligned_storage(
+        encode_backing, encoder_req.views_bytes);
+    LzssContextualBlockedHuffmanEncoderViews encode_views{};
+    ASSERT_EQ(partition_lzss_contextual_blocked_huffman_encoder_views(
+                  encoder_req, encode_storage, encode_views),
+              LzssContextualBlockedHuffmanWorkspaceError::none);
+    LzssContextualBlockedHuffmanFrameStreamingEncoder encoder{
+        stream, limits, frame_input, encode_views.tokens,
+        encode_views.match_finder, frame_encoded};
+    const auto encoded = encode_one_byte_chunks(encoder, raw);
+    EXPECT_EQ(encoder.process({}, {}, 0).status,
+              marc::core::StreamStatus::end_of_stream);
+    ASSERT_TRUE(std::ranges::any_of(
+        encode_views.tokens, [](const auto& token) {
+            return token.kind
+                    == marc::dictionary::internal::LzssTypedTokenKind::match
+                && token.distance > 65536;
+        }));
+
+    LzssContextualBlockedHuffmanDecoderWorkspaceRequirements decoder_req{};
+    ASSERT_EQ(calculate_lzss_contextual_blocked_huffman_decoder_workspace(
+                  limits, decoder_req,
+                  LzssContextualBlockedHuffmanProfileVariant::
+                      field_context_1m),
+              LzssContextualBlockedHuffmanProfileError::none);
+    std::vector<std::byte> decode_encoded(decoder_req.frame_encoded_bytes);
+    std::vector<std::byte> decode_raw(decoder_req.frame_decoded_bytes);
+    std::vector<std::max_align_t> decode_backing;
+    auto decode_storage = aligned_storage(
+        decode_backing, decoder_req.views_bytes);
+    LzssContextualBlockedHuffmanDecoderViews decode_views{};
+    ASSERT_EQ(partition_lzss_contextual_blocked_huffman_decoder_views(
+                  decoder_req, decode_storage, decode_views),
+              LzssContextualBlockedHuffmanWorkspaceError::none);
+    LzssContextualBlockedHuffmanFrameStreamingDecoder decoder{
+        limits, decode_encoded, decode_views.tables, decode_views.tokens,
+        decode_raw,
+        LzssContextualBlockedHuffmanStreamAdmission::field_context_1m};
+    EXPECT_EQ(decode_one_byte_chunks(decoder, encoded), raw);
+    EXPECT_EQ(decoder.process({}, {}, 0).status,
+              marc::core::StreamStatus::end_of_stream);
 }
 
 TEST(LzssContextualBlockedHuffmanProfile, MapsStableCoreErrors) {

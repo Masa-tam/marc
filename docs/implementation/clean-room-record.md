@@ -21055,3 +21055,30 @@ discarded and the reviewed seed retained.
   all 53 Contextual Blocked Huffman regressions pass in both configurations;
   and both complete Release suites pass all 2,929 registered tests, including
   schema compatibility through version 40.
+
+## CR-0880: 2026-08-15 - Selected Contextual Blocked Huffman profile and streaming
+
+- Authoring method: extended marc's existing Contextual Blocked Huffman
+  profile/workspace and streaming lifecycle from the accepted selected-frame
+  design and the completed analogous selected contextual lifecycle patterns.
+- References used: DD-825; IR-0599; TVG-0700; BR-0134; marc's existing 64 KiB
+  profile partitioners, streaming state machines, selected complete-frame
+  implementation, and selected Dynamic Range, rANS, and tANS lifecycles.
+- Known implementations intentionally not consulted: external Huffman or LZSS
+  implementations, allocator layouts, streaming APIs, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: select a profile before workspace calculation; vary
+  only the descriptor maximum and dictionary-dependent match-finder storage;
+  retain 35 tables and common token/raw extents; and make decoder admission an
+  immutable non-serialized policy checked after the complete stream header.
+- Generated-code task description: add selected profile construction,
+  selected decoder workspace calculation, exact streaming admission, one-byte
+  extended-distance round trip, reciprocal rejection, and transactional
+  unknown-selection tests.
+- Similarity review: the implementation follows marc-owned profile,
+  partitioning, and streaming patterns and contains no externally derived
+  implementation expression.
+- Local validation: all targets build warning-clean under MSVC and ClangCL;
+  both complete Release suites pass all 2,932 registered tests, including
+  schema compatibility through version 40 (202.18 seconds under MSVC and
+  208.06 seconds under ClangCL).

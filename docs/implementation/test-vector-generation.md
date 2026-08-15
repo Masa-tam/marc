@@ -9633,3 +9633,24 @@ crossed variant-1 stream and require frame rejection without raw mutation.
 Retain every capacity, alias, aggregate-workspace, truncation, descriptor,
 payload, token, and reconstruction regression. No streaming, profile, public,
 benchmark, fuzz, or interoperability vector belongs to this stage.
+
+### TVG-0700
+
+Construct both profile variants from the same bounded configuration. Require
+the legacy profile to retain exact `2/1 + 1/1 + 2/2`, existing workspace
+extents, and serialized bytes. Require the selected profile to emit exact
+`2/3 + 1/2 + 2/2`, accept a 1 MiB window, reserve the 2,579-byte descriptor
+maximum, and increase same-limit decoder encoded-frame capacity by exactly 18
+bytes while retaining 35 tables and identical token/raw capacities. Reject
+unknown profile variants and crossed dictionary parameters without publishing
+stream or workspace requirements.
+
+Drive the selected streaming encoder and decoder with one-byte input and
+output over the marker-gap-marker frame whose Match exceeds 64 KiB. Require
+exact round trip, stable terminal repetition, and no frame publication before
+complete validation. An `any` decoder accepts both variants; exact 64 KiB and
+1 MiB policies accept only their paired identities and reject the reciprocal
+stream before raw output. Reject unknown admission values at construction.
+Retain all existing capacity, alias, EndInput, trailing-input, malformed-final-
+frame, and workspace partition regressions. No public, CLI, benchmark, fuzz,
+or interoperability vector belongs to this stage.

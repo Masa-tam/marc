@@ -96,6 +96,30 @@ inline constexpr std::uint64_t bits_per_decision = 15;
             .workspace_alignment);
 }
 
+[[nodiscard]] context::internal::LzssFieldContextLayoutResult profile_layout(
+    const LzssContextualBlockedHuffmanProfileVariant variant) noexcept {
+    switch (variant) {
+    case LzssContextualBlockedHuffmanProfileVariant::field_context_64k:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_64k);
+    case LzssContextualBlockedHuffmanProfileVariant::field_context_1m:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_1m);
+    }
+    return {{}, context::internal::LzssFieldContextLayoutError::
+                    unsupported_context_variant};
+}
+
+[[nodiscard]] constexpr std::size_t maximum_descriptor_size(
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    return variant
+            == context::internal::LzssFieldContextVariant::field_context_64k
+        ? entropy::internal::
+            contextual_blocked_huffman_max_descriptor_size_v1
+        : entropy::internal::
+            contextual_blocked_huffman_max_descriptor_size_v2;
+}
+
 } // namespace
 
 LzssContextualBlockedHuffmanProfileError
@@ -112,20 +136,20 @@ make_lzss_contextual_blocked_huffman_profile(
         return LzssContextualBlockedHuffmanProfileError::
             invalid_configuration;
     }
-    const auto dictionary_error =
-        dictionary::internal::validate_lzss_parameters(
-            config.dictionary, limits);
-    if (dictionary_error != dictionary::internal::LzssFormatError::none) {
-        return dictionary_error
-                   == dictionary::internal::LzssFormatError::limit_exceeded
-            ? LzssContextualBlockedHuffmanProfileError::limit_exceeded
-            : LzssContextualBlockedHuffmanProfileError::
-                invalid_configuration;
-    }
-    if (config.dictionary.min_match_length != 5
-        || config.dictionary.max_match_length > 258
-        || config.dictionary.window_size > 65536) {
+    const auto selected = profile_layout(config.variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
         return LzssContextualBlockedHuffmanProfileError::unsupported;
+    }
+    const auto dictionary_error =
+        dictionary::internal::validate_lzss_typed_parameters(
+            config.dictionary, limits, selected.layout.dictionary_variant);
+    if (dictionary_error
+        != dictionary::internal::LzssTypedTokenError::none) {
+        return dictionary_error
+                   == dictionary::internal::LzssTypedTokenError::limit_exceeded
+            ? LzssContextualBlockedHuffmanProfileError::limit_exceeded
+            : LzssContextualBlockedHuffmanProfileError::unsupported;
     }
     if (config.original_size > limits.max_total_output_size
         || config.frame_size > limits.max_frame_size) {
@@ -135,6 +159,10 @@ make_lzss_contextual_blocked_huffman_profile(
     stream.frame_size = config.frame_size;
     stream.original_size = config.original_size;
     stream.dictionary = config.dictionary;
+    stream.dictionary_variant = static_cast<std::uint16_t>(
+        selected.layout.dictionary_variant);
+    stream.context_variant = static_cast<std::uint16_t>(
+        selected.layout.context_variant);
     const auto stream_error =
         validate_lzss_contextual_blocked_huffman_stream_header(
             stream, limits);
@@ -159,6 +187,8 @@ make_lzss_contextual_blocked_huffman_profile(
     }
 
     const std::uint64_t token_count{largest_frame};
+    const auto descriptor_size = maximum_descriptor_size(
+        selected.layout.context_variant);
     std::uint64_t payload_bytes{};
     std::uint64_t frame_encoded_bytes{};
     std::uint64_t finder_offset{};
@@ -181,8 +211,7 @@ make_lzss_contextual_blocked_huffman_profile(
         || !core::checked_add(
             static_cast<std::uint64_t>(
                 lzss_contextual_blocked_huffman_frame_header_size),
-            static_cast<std::uint64_t>(entropy::internal::
-                contextual_blocked_huffman_max_descriptor_size),
+            static_cast<std::uint64_t>(descriptor_size),
             frame_encoded_bytes)
         || !core::checked_add(
             frame_encoded_bytes, payload_bytes, frame_encoded_bytes)
@@ -217,12 +246,18 @@ make_lzss_contextual_blocked_huffman_profile(
 LzssContextualBlockedHuffmanProfileError
 calculate_lzss_contextual_blocked_huffman_decoder_workspace(
     const core::DecoderLimits& limits,
-    LzssContextualBlockedHuffmanDecoderWorkspaceRequirements& workspace)
+    LzssContextualBlockedHuffmanDecoderWorkspaceRequirements& workspace,
+    const LzssContextualBlockedHuffmanProfileVariant variant)
     noexcept {
     workspace = {};
     if (core::validate_limits(limits) != core::LimitError::none) {
         return LzssContextualBlockedHuffmanProfileError::
             invalid_configuration;
+    }
+    const auto selected = profile_layout(variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return LzssContextualBlockedHuffmanProfileError::unsupported;
     }
     if (lzss_contextual_blocked_huffman_stream_header_size
             > limits.max_internal_buffered_bytes
@@ -247,11 +282,12 @@ calculate_lzss_contextual_blocked_huffman_decoder_workspace(
     std::uint64_t token_offset{};
     std::uint64_t views_bytes{};
     std::uint64_t aggregate_bytes{};
+    const auto descriptor_size = maximum_descriptor_size(
+        selected.layout.context_variant);
     if (!core::checked_add(
             static_cast<std::uint64_t>(
                 lzss_contextual_blocked_huffman_frame_header_size),
-            static_cast<std::uint64_t>(entropy::internal::
-                contextual_blocked_huffman_max_descriptor_size),
+            static_cast<std::uint64_t>(descriptor_size),
             encoded_bytes)
         || !core::checked_add(encoded_bytes, payload_bytes, encoded_bytes)
         || !decoder_view_layout(

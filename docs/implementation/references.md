@@ -5352,3 +5352,13 @@ Dynamic Range, rANS, and tANS complete-frame paths as first-party references.
 No external Huffman or LZSS implementation, frame format, API, source code,
 test, corpus, archive, patent text, or optimization description was
 consulted.
+
+### IR-0599
+
+The selected Contextual Blocked Huffman profile/streaming design uses DD-790
+through DD-825, TVG-0665, TVG-0666, TVG-0696 through TVG-0700, and marc's
+existing 64 KiB profile/workspace partitioners, streaming state machines,
+selected complete-frame implementation, and completed selected Dynamic Range,
+rANS, and tANS lifecycle paths as first-party references. No external Huffman
+or LZSS implementation, allocator layout, streaming API, source code, test,
+corpus, archive, patent text, or optimization description was consulted.

@@ -515,6 +515,14 @@ a Match beyond 64 KiB and round-trips through the selected complete decoder;
 crossed decoding leaves raw output untouched. The next independent boundary
 is selected profile workspace calculation and streaming lifecycle admission.
 
+That lifecycle boundary now adds an explicit profile variant and exact decoder
+admission policy. Selected encoder/decoder workspace differs from the frozen
+layout only where required by the 2,579-byte descriptor maximum, selected
+match-finder dictionary, and configured frame extent; table count and token
+representation remain unchanged. The one-byte streaming proof reuses the
+marker-gap-marker frame and requires reciprocal profile rejection before raw
+publication. The next independent boundary is the public C lifecycle.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

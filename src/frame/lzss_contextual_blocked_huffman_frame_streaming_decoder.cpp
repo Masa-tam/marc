@@ -61,6 +61,17 @@ enum class OverlapCheck : std::uint8_t {
                     limit_exceeded);
 }
 
+[[nodiscard]] constexpr bool valid_admission(
+    const LzssContextualBlockedHuffmanStreamAdmission admission) noexcept {
+    switch (admission) {
+    case LzssContextualBlockedHuffmanStreamAdmission::any:
+    case LzssContextualBlockedHuffmanStreamAdmission::field_context_64k:
+    case LzssContextualBlockedHuffmanStreamAdmission::field_context_1m:
+        return true;
+    }
+    return false;
+}
+
 } // namespace
 
 LzssContextualBlockedHuffmanFrameStreamingDecoder::
@@ -69,11 +80,12 @@ LzssContextualBlockedHuffmanFrameStreamingDecoder(
     const std::span<std::byte> serialized_frame_workspace,
     const std::span<entropy::internal::HuffmanDecodeTable> table_workspace,
     const std::span<dictionary::internal::LzssTypedToken> token_workspace,
-    const std::span<std::byte> raw_frame_workspace) noexcept
+    const std::span<std::byte> raw_frame_workspace,
+    const LzssContextualBlockedHuffmanStreamAdmission admission) noexcept
     : limits_(limits),
       serialized_frame_workspace_(serialized_frame_workspace),
       table_workspace_(table_workspace), token_workspace_(token_workspace),
-      raw_frame_workspace_(raw_frame_workspace) {
+      raw_frame_workspace_(raw_frame_workspace), admission_(admission) {
     std::size_t table_bytes{};
     std::size_t token_bytes{};
     const bool valid_extents = core::checked_multiply(
@@ -115,7 +127,7 @@ LzssContextualBlockedHuffmanFrameStreamingDecoder(
                   raw_frame_workspace_.data(), raw_frame_workspace_.size())
             : OverlapCheck::arithmetic_overflow,
     };
-    if (!valid_extents
+    if (!valid_extents || !valid_admission(admission_)
         || core::validate_limits(limits_) != core::LimitError::none
         || std::ranges::find_if(overlaps, [](const auto value) {
                return value != OverlapCheck::disjoint;
@@ -145,8 +157,21 @@ parse_collected_stream_header() noexcept {
                     limit_exceeded
             ? core::ErrorCode::limit_exceeded
             : core::ErrorCode::malformed_stream;
-    return error == LzssContextualBlockedHuffmanStreamHeaderError::none
-        && consumed == lzss_contextual_blocked_huffman_stream_header_size;
+    if (error != LzssContextualBlockedHuffmanStreamHeaderError::none
+        || consumed != lzss_contextual_blocked_huffman_stream_header_size) {
+        return false;
+    }
+    switch (admission_) {
+    case LzssContextualBlockedHuffmanStreamAdmission::any:
+        return true;
+    case LzssContextualBlockedHuffmanStreamAdmission::field_context_64k:
+        return stream_.dictionary_variant == 2
+            && stream_.context_variant == 1;
+    case LzssContextualBlockedHuffmanStreamAdmission::field_context_1m:
+        return stream_.dictionary_variant == 3
+            && stream_.context_variant == 2;
+    }
+    return false;
 }
 
 bool LzssContextualBlockedHuffmanFrameStreamingDecoder::

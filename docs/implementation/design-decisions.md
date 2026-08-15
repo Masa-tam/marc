@@ -17104,3 +17104,28 @@ variant and emit identical bytes. Decode must retain descriptor preflight,
 private token reconstruction, and atomic raw publication. This stage admits
 no streaming lifecycle, profile workspace API, public C API, CLI, benchmark,
 fuzz, or interoperability entry.
+
+## DD-825: Select Contextual Blocked Huffman profile and streaming admission
+
+- Date: 2026-08-15
+- Status: accepted
+
+Add explicit `field_context_64k` and `field_context_1m` profile variants,
+retaining 64 KiB as every source-level default. Profile construction resolves
+the variant once, validates the paired typed-token dictionary parameters, and
+emits exact stream identity `2/1 + 1/1 + 2/2` or `2/3 + 1/2 + 2/2`.
+Encoder and decoder workspace calculations use the selected descriptor maximum
+of 2,561 or 2,579 bytes. Token count, 35-table workspace, payload ceiling,
+alignment, checked arithmetic, match-finder sizing, and aggregate memory
+policy remain common.
+
+The streaming encoder consumes only a validated stream and its selected
+profile workspace. The streaming decoder adds an immutable admission policy:
+`any`, exact 64 KiB, or exact 1 MiB. Admission is checked immediately after
+the complete 112-byte stream header is parsed and before a frame header or
+caller-visible raw byte is accepted. Unknown admission enum values fail
+construction. Both selected lifecycles retain one-byte chunking, frame-atomic
+decode, sticky terminal/error states, and deterministic frame bytes.
+
+This stage admits no public C API, CLI, benchmark, sanitizer fuzz campaign, or
+interoperability entry for the selected profile.
