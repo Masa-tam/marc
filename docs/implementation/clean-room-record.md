@@ -21672,3 +21672,33 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned fuzz, frame, public
   C, profile, Adaptive Huffman, and test components. No external
   implementation expression entered the design.
+
+## CR-0906: 2026-08-15 - Contextual Adaptive Huffman dual-profile fuzz admission
+
+- Authoring method: extended marc's existing fixed-memory Contextual Adaptive
+  Huffman decoder harness according to its independently recorded dual-profile
+  design.
+- References used: DD-839; IR-0613; TVG-0714; BR-0149; FZ-0028; marc's public
+  exact-profile decoder lifecycle and malformed-stream regression patterns.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, fuzz harnesses, corpora, findings, source
+  code, tests, archives, patent text, and optimization descriptions.
+- Independent decisions: retain one target; invoke both strict public
+  profiles; expand only model backing and the distance safety limit; preserve
+  small frame and output storage; and require reciprocal atomic rejection.
+- Generated-code task description: update fixed model capacities, exercise
+  both public selectors, parameterize five malformed regression families, add
+  cross-profile rejection, run normal dual-compiler checks, and execute one
+  bounded sanitizer campaign without a persistent corpus.
+- Similarity review: the implementation composes only marc-owned fuzz, frame,
+  public C, profile, Adaptive Huffman, and GoogleTest components. No external
+  implementation expression entered the change.
+- Local sanitizer validation: Windows Clang 22 completed exactly 1,000 inputs
+  with `-max_len=65536 -timeout=5 -rss_limit_mb=512`; no crash, hang, ASan
+  finding, UBSan finding, or artifact occurred. Peak RSS was 42 MiB and final
+  coverage/features were 239/414 over a six-entry, 23-byte in-memory corpus.
+- Local normal-build validation: the modified harness and tests build warning-
+  clean under MSVC and ClangCL. All 11 focused dual-profile regressions pass,
+  and both complete Release suites pass all 2,960 registered tests, including
+  documentation layout and interoperability schema compatibility, in 206.82
+  and 204.58 seconds.

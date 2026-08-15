@@ -685,6 +685,24 @@ sanitizer runtime path applied only to the campaign process. No input corpus
 was supplied and no artifact was produced. This bounded result is evidence
 for the exercised inputs, not an exhaustive safety claim.
 
+### FZ-0028: Dual-profile Contextual Adaptive Huffman smoke
+
+The Contextual Adaptive Huffman private-frame/public-C target now drives both
+strict public window-profile admissions for every bounded input while
+retaining its 64 KiB input, 4 KiB output, 1 KiB frame/token storage,
+34,176-byte payload, and finite-call ceilings. Only fixed model backing grows
+to the selected maximum of 9,131 nodes and 4,550 symbols; the wider identity
+does not allocate a 1 MiB frame or history buffer.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 133978600 completed exactly 1,000 inputs under a 64 KiB maximum
+input, five-second per-input timeout, and 512 MiB RSS limit without a crash,
+hang, or sanitizer finding. Peak RSS was 42 MiB; final coverage was 239
+counters and 414 features over a six-entry, 23-byte in-memory corpus. The
+matching sanitizer runtime path applied only to the campaign process. No input
+corpus was supplied and no artifact was produced. This bounded result is
+evidence for the exercised inputs, not an exhaustive safety claim.
+
 ## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the

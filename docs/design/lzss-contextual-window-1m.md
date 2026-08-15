@@ -696,8 +696,15 @@ exercises private selected parsing plus both strict public profiles. It grows
 only fixed model backing to 9,131 nodes and 4,550 symbols, retains a 1 KiB raw
 buffer and 1,024 typed-token entries, and parameterizes deterministic
 malformed and reciprocal-admission regressions. The bounded campaign remains
-1,000 inputs with no
-persistent corpus; interoperability admission stays separate.
+1,000 inputs with no persistent corpus; interoperability admission stays
+separate.
+
+That sanitizer boundary is now implemented. Every bounded input reaches the
+private complete-frame decoder and both exact public admissions using the
+selected maximum model bank without allocating a 1 MiB frame. Eleven focused
+regressions pass under both normal compilers, and the fixed 1,000-input Clang
+22 sanitizer campaign completed without a crash, hang, or sanitizer finding.
+Interoperability inventory admission remains the next independent boundary.
 
 ## Required validation
 

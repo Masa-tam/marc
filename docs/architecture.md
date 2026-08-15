@@ -5486,3 +5486,11 @@ public decoder admissions for every input. The wider identity increases only
 the node and symbol model backing; input, raw frame, typed-token, output,
 payload, descriptor, and process-call ceilings remain small and independent
 of the 1 MiB serialized policy.
+
+That fuzz boundary is now implemented. Private complete-frame decoding and
+both strict public admissions share one 64 KiB-input harness, while only the
+fixed Adaptive Huffman model bank grows to the selected 9,131-node and
+4,550-symbol maxima. Parameterized malformed regressions cover both identities
+and reciprocal public rejection before output. A bounded sanitizer campaign
+completed without a finding; interoperability inventory admission remains
+separate.

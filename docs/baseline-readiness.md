@@ -2519,3 +2519,19 @@ ratio thresholds. The modified benchmark builds warning-clean and all 2,954
 registered Release tests pass under MSVC and ClangCL, including documentation
 layout and interoperability schema compatibility, in 208.40 and 208.11
 seconds. Sanitizer fuzz admission remains pending.
+
+### BR-0149
+
+The selected Contextual Adaptive Huffman sanitizer fuzz boundary is locally
+complete. One fixed-memory target parses private complete frames and drives
+both strict public decoder profiles for every input. Its 64 KiB input, 4 KiB
+output, 1 KiB frame, 1,024-token, 34,176-byte payload, and finite-call bounds
+remain fixed; only model backing grows to 9,131 nodes and 4,550 symbols.
+Eleven deterministic regressions cover both profiles, malformed atomicity,
+and reciprocal-profile rejection under MSVC and ClangCL. A bounded Windows
+Clang 22 sanitizer run completed exactly 1,000 inputs without a crash, hang,
+or sanitizer finding, peaking at 42 MiB RSS with final coverage 239 and 414
+features. All 2,960 registered Release tests pass under MSVC and ClangCL,
+including documentation layout and interoperability schema compatibility, in
+206.82 and 204.58 seconds. Interoperability inventory admission remains the
+next boundary.
