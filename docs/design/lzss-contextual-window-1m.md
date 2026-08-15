@@ -627,6 +627,16 @@ extended-distance Match and round trip deterministically; crossed identity and
 every independently one-short selected region fail without publishing output.
 The next independent boundary is profile and streaming-lifecycle admission.
 
+That next boundary uses one private profile selection for both sizing and
+stream construction. Variant 1 remains the default with 9,067 nodes and 4,518
+symbols; variant 2 uses 9,131 nodes and 4,550 symbols while sharing the fixed
+descriptor and payload ceiling. Workspace partitioning accepts only those two
+canonical pairs. Streaming encoders inherit the selected stream identity, and
+decoders may accept either supported identity or require the exact 64 KiB or
+1 MiB pair before frame collection. A one-byte-chunk marker-gap-marker round
+trip proves the selected state survives the complete lifecycle. Public, CLI,
+benchmark, fuzz, and interoperability admission remain later stages.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

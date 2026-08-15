@@ -6849,6 +6849,17 @@ model workspace. Both variants retain the 64-byte frame header, fixed 16-byte
 descriptor, payload rules, and zero context/checksum side extents. Profile and
 public admission remain later boundaries.
 
+The private Contextual Adaptive Huffman profile and streaming lifecycle select
+the same two identities without adding a serialized field. Profile variant
+`field_context_64k` remains the default and fixes `2/2 + 1/1 + 1/2`;
+`field_context_1m` fixes `2/3 + 1/2 + 1/2`. The selected layout determines
+dictionary validation and exact 9,067/4,518 or 9,131/4,550 FGK node/symbol
+workspace. The fixed descriptor and `ceil(267F/8)` payload ceiling are shared.
+Streaming decoder construction may accept either supported identity or require
+one exact pair. This admission policy writes no stream bit, and a disallowed
+identity is malformed after the stream header and before frame collection or
+raw publication. Public admission is not defined by this stage.
+
 The private direct typed-token adapter admits the selected Contextual Blocked
 Huffman layout without defining another serialized field. For variant 2, a
 distance of 131,072 is represented by distance class 17 in the 21-symbol

@@ -9828,3 +9828,31 @@ regions before destination publication. Exercise contradictory counts above
 26 but within 30 decisions per token only under variant 2. No streaming,
 public, CLI, benchmark, fuzz, or interoperability vector belongs to this
 stage.
+
+### TVG-0710
+
+Build both private Contextual Adaptive Huffman profiles from the same bounded
+configuration. Require variant 1 to preserve exact `2/2 + 1/1 + 1/2`, 9,067
+nodes, 4,518 symbols, and every existing workspace extent. Require variant 2
+to produce exact `2/3 + 1/2 + 1/2`, 9,131 nodes, and 4,550 symbols while
+retaining the same frame-encoded ceiling. Its view storage must increase only
+by 64 `AdaptiveHuffmanNode` objects and 32 `uint16_t` symbols, with all offsets
+recomputed by the common alignment rules.
+
+Construct variant-2 input as marker, 65,536 filler bytes, and repeated marker.
+Encode through the selected profile and streaming encoder with one-byte output
+chunks. Require a staged HashChain Match beyond 65,536, exact deterministic
+stream bytes, and complete decode with one-byte input and output chunks using
+both `any` and exact-1m admission. Repeated calls after completion must retain
+EndOfStream.
+
+Feed each canonical empty and nonempty stream to the reciprocal exact decoder
+and require malformed-stream failure immediately after its 112-byte header,
+zero raw publication, and unchanged output sentinels. Reject an unknown
+profile or admission value, a 1 MiB dictionary under the 64 KiB profile,
+crossed node/symbol requirements, independently one-short selected node,
+symbol, token, finder, serialized-frame, raw-frame, and output regions, and
+every existing overlap or misalignment. Retain Flush, ResetBlock, premature
+EndInput, trailing-input, aggregate-limit, and malformed-final-frame coverage.
+No public, CLI, benchmark, fuzz, or interoperability vector belongs to this
+stage.

@@ -5416,3 +5416,11 @@ reconstruction limits while the 16-byte descriptor and 64-byte frame header
 remain unchanged. Both Exhaustive and HashChain Exact complete-frame encoders
 share this route. The public profile and streaming state machines deliberately
 remain on the frozen 64 KiB selection until their own bounded admission step.
+
+The next private profile and streaming boundary carries that selection into
+workspace sizing and lifecycle construction. Its two canonical model extents
+are 9,067/4,518 and 9,131/4,550 nodes/symbols; all other frame and payload
+ceilings are shared. Streaming decoder admission is immutable local state:
+`any` accepts either validated identity, while exact 64 KiB and 1 MiB modes
+reject the reciprocal header before collecting a frame. This boundary does not
+yet expose the selected profile through the public C factory.

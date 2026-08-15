@@ -21457,3 +21457,26 @@ discarded and the reviewed seed retained.
   Both complete Release suites pass all 2,947 registered tests, including
   documentation layout and interoperability schema compatibility, in 203.77
   seconds under MSVC and 212.38 seconds under ClangCL.
+
+## CR-0897: 2026-08-15 - Selected Contextual Adaptive Huffman profile and streaming design
+
+- Authoring method: derived the lifecycle boundary from marc's completed
+  selected complete-frame transaction and existing dual-profile lifecycle
+  patterns.
+- References used: DD-831 through DD-835; IR-0609; TVG-0706 through TVG-0710;
+  marc's frozen Contextual Adaptive Huffman profile and streaming code plus
+  completed first-party selected lifecycle implementations.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, allocator layouts, streaming APIs, source
+  code, tests, corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: make selection explicit in private profile sizing;
+  accept only canonical model-count pairs in partitioners; keep payload and
+  descriptor ceilings shared; use immutable any/exact decoder admission; and
+  defer every public surface.
+- Generated-code task description: specify selected profile construction,
+  exact encoder and decoder workspace, streaming identity retention,
+  reciprocal pre-frame rejection, one-byte extended-distance lifecycle proof,
+  and stable negative cases without changing the format.
+- Similarity review: the design composes only marc-owned profile, checked-
+  workspace, streaming-state, selected-frame, and admission patterns. No
+  external implementation expression entered the design.

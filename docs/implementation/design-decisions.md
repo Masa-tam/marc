@@ -17372,3 +17372,39 @@ failure contracts.
 
 This stage does not admit variant 2 to profile sizing, streaming lifecycle,
 public C, CLI, benchmark, fuzz, or interoperability schema.
+
+## DD-835: Contextual Adaptive Huffman profiles retain one exact lifecycle selection
+
+- Date: 2026-08-15
+- Status: accepted
+
+Add `field_context_64k` and `field_context_1m` to the private Contextual
+Adaptive Huffman profile configuration, with 64 KiB remaining the source-level
+default. Resolve that selection before dictionary or workspace calculation.
+The encoder profile emits exact `2/2 + 1/1 + 1/2` or `2/3 + 1/2 + 1/2` and
+uses the corresponding typed-token validation, 9,067/4,518 or 9,131/4,550
+node/symbol counts, and HashChain workspace. The fixed descriptor and payload
+ceiling remain unchanged.
+
+Decoder workspace calculation receives the same profile selection, defaulting
+to 64 KiB. Workspace partitioners accept only either canonical node/symbol
+pair and reject crossed counts. Variant 2 adds exactly 64 nodes and 32 symbols,
+or 1,088 bytes with the current 16-byte node representation; all alignment,
+token, finder, frame, payload, and aggregate-limit rules remain checked. Empty
+encoder input retains zero frame workspace while preserving the selected
+stream identity.
+
+The streaming encoder uses the immutable selected stream produced by the
+profile. Add decoder admission values `any`, `field_context_64k`, and
+`field_context_1m`. `any` accepts either already validated canonical identity;
+the exact modes reject the reciprocal identity immediately after the complete
+112-byte stream header and before collecting a frame or publishing raw bytes.
+An unknown admission value is an invalid construction argument. Selection is
+local API state and is not serialized.
+
+Prove the selected lifecycle with marker, 65,536 filler bytes, and repeated
+marker, requiring a HashChain Match beyond 64 KiB and exact one-byte-chunk
+round trip. Retain all existing partial-buffer, Flush, EndInput, repeated-end,
+malformed-final-frame, capacity, alignment, alias, and aggregate-limit
+contracts. This stage adds no public C, CLI, benchmark, fuzz, interoperability,
+or schema admission.

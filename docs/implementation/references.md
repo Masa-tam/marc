@@ -5449,3 +5449,14 @@ Range, rANS, tANS, and Blocked Huffman frame boundaries as first-party
 references. No external Adaptive Huffman or LZSS implementation, frame
 format, source code, test, corpus, archive, patent text, or optimization
 description was consulted.
+
+### IR-0609
+
+The selected Contextual Adaptive Huffman profile and streaming-lifecycle
+design uses DD-831 through DD-834, TVG-0706 through TVG-0709, marc's completed
+selected complete-frame transaction, frozen 64 KiB profile/workspace
+partitioners and streaming state machines, and the completed selected Dynamic
+Range, rANS, tANS, and Blocked Huffman lifecycle patterns as first-party
+references. No external Adaptive Huffman or LZSS implementation, allocator
+layout, streaming API, source code, test, corpus, archive, patent text, or
+optimization description was consulted.
