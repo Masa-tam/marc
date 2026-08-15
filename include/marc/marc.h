@@ -457,7 +457,8 @@ typedef struct marc_lzss_contextual_adaptive_huffman_config {
     uint64_t max_lz_distance;
     uint64_t max_lz_match_length;
     uint64_t max_entropy_table_entries;
-    uint64_t reserved2;
+    marc_lzss_contextual_window_profile window_profile;
+    uint32_t reserved2;
 } marc_lzss_contextual_adaptive_huffman_config;
 
 typedef struct marc_lzss_contextual_blocked_huffman_config {

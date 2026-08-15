@@ -5441,3 +5441,12 @@ Workspace query and encoder construction resolve the selected profile;
 decoder query sizes the paired model bank and decoder construction installs
 exact immutable admission. No function, ABI version, or serialized field is
 added.
+
+That public C boundary is now implemented. Configuration initialization keeps
+the 112-byte extent, zero reserved words, and 64 KiB selector. Query and
+construction propagate one validated selector through the selected private
+profile and exact decoder admission. The 1 MiB lifecycle proves its wider
+identity and extended Match, while reciprocal public decoders fail before raw
+publication. A selected 1 MiB identity may deliberately use a smaller encoder
+search window; only a window exceeding the selected identity is contradictory.
+CLI exposure remains separate.

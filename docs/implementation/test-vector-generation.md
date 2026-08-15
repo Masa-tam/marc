@@ -9871,9 +9871,8 @@ terminal status.
 Construct each exact public decoder against the reciprocal stream and require
 `MARC_STATUS_MALFORMED_STREAM` immediately after the complete stream header
 with zero raw output. Reject an unknown selector, nonzero trailing reserved
-word, a 1 MiB window under the legacy selector, a 64 KiB window under the
-selected selector, independently one-byte-short workspace, view
-misalignment, every workspace overlap, invalid structure size or ABI version,
-and null factory output transactionally. Retain all existing public C binary-
-class, chunking, capacity, and malformed-final-frame coverage. No CLI,
-benchmark, fuzz, or interoperability vector belongs to this stage.
+word, a 1 MiB window under the legacy selector, independently one-byte-short
+workspace, view misalignment, every workspace overlap, invalid structure size
+or ABI version, and null factory output transactionally. Retain all existing
+public C binary-class, chunking, capacity, and malformed-final-frame coverage.
+No CLI, benchmark, fuzz, or interoperability vector belongs to this stage.

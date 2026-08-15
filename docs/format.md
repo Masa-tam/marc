@@ -6867,6 +6867,11 @@ and is not inferred from `window_size`. It determines which already defined
 dictionary/context identity the encoder emits and which exact identity the
 decoder admits after the complete stream header and before frame collection.
 
+That public selection is implemented without changing any stream byte rule.
+The 1 MiB selector emits exact `2/3 + 1/2 + 1/2`; the 64 KiB selector retains
+the frozen identity. Each exact public decoder rejects the reciprocal identity
+after the complete header and before frame or raw publication.
+
 The private direct typed-token adapter admits the selected Contextual Blocked
 Huffman layout without defining another serialized field. For variant 2, a
 distance of 131,072 is represented by distance class 17 in the 21-symbol

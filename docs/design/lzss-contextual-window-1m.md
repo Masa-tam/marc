@@ -655,6 +655,14 @@ query, encoder construction, decoder sizing, and exact decoder admission all
 derive from that explicit selector. CLI, benchmark, fuzz, and interoperability
 admission remain later boundaries.
 
+That public boundary is now implemented. The 112-byte configuration extent and
+all-zero 64 KiB default remain fixed; selected workspace query, construction,
+and reciprocal decoder admission share one validated selector. The 1 MiB
+public lifecycle emits its exact identity, uses a Match beyond 64 KiB, and
+round trips while both reciprocal decoder routes fail before raw publication.
+A 1 MiB identity may use a smaller configured search window, whereas the
+64 KiB identity cannot admit a larger one. CLI admission is the next boundary.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

@@ -2475,3 +2475,19 @@ through both selected admission modes. All targets build warning-clean and all
 2,951 registered Release tests pass under MSVC and ClangCL, including
 documentation layout and interoperability schema compatibility, in 213.44 and
 220.06 seconds. Public C admission remains the next boundary.
+
+### BR-0146
+
+The selected Contextual Adaptive Huffman public C lifecycle is locally
+complete. Its preserved 112-byte ABI-1 configuration tail now carries the
+common window-profile selector and a 32-bit reserved word, with all-zero
+initialization retaining exact 64 KiB behavior. Workspace query and encoder
+construction resolve either selected profile, decoder workspace uses its
+9,067/4,518 or 9,131/4,550 model extent, and decoder construction installs
+reciprocal exact admission. The 1 MiB C lifecycle emits exact
+`2/3 + 1/2 + 1/2`, produces a Match beyond 65,536, round trips, and rejects
+the legacy stream before raw publication; the legacy decoder reciprocally
+rejects the selected stream. All targets build warning-clean and all 2,951
+registered Release tests pass under MSVC and ClangCL, including documentation
+layout and interoperability schema compatibility, in 207.87 and 195.65
+seconds. CLI admission remains the next boundary.

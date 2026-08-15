@@ -21530,3 +21530,30 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned ABI, selector,
   workspace, profile, and streaming patterns. No external implementation
   expression entered the design.
+
+## CR-0900: 2026-08-15 - Selected Contextual Adaptive Huffman public C lifecycle
+
+- Authoring method: implemented DD-836 over marc's completed selected private
+  lifecycle and existing ABI-1 Contextual Adaptive Huffman factory.
+- References used: DD-831 through DD-836; IR-0610; TVG-0706 through TVG-0711;
+  BR-0146; marc's completed selected Dynamic Range, rANS, tANS, and Blocked
+  Huffman public C lifecycles.
+- Known implementations intentionally not consulted: external C APIs,
+  Adaptive Huffman or LZSS implementations, ABI layouts, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: split the reserved tail without changing its extent;
+  preserve zero as the exact legacy selector; propagate one validated selector
+  through profile and admission; permit a selected identity to use a smaller
+  encoder search window; and reject only windows exceeding that identity.
+- Generated-code task description: expose the selected profile through the
+  existing workspace and factory functions; retain ABI/default behavior; add
+  extended-distance round trip, reciprocal rejection, workspace delta, and
+  malformed setup regressions; and keep later adapters out of scope.
+- Similarity review: the implementation extends only marc-owned ABI, selector,
+  checked-workspace, profile, and streaming structures. No external
+  implementation expression entered the change.
+- Local validation: all targets build warning-clean under MSVC and ClangCL.
+  The focused public C test passes under both compilers. Both complete Release
+  suites pass all 2,951 registered tests, including documentation layout and
+  interoperability schema compatibility, in 207.87 seconds under MSVC and
+  195.65 seconds under ClangCL.
