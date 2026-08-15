@@ -17434,3 +17434,26 @@ transform.
 This stage adds no exported function, ABI version, CLI name, benchmark,
 sanitizer fuzz campaign, interoperability entry, schema revision, or stream
 representation.
+
+## DD-837: Add the explicit Contextual Adaptive Huffman 1 MiB CLI profile
+
+- Date: 2026-08-15
+- Status: accepted
+
+Add `lzss-contextual-adaptive-huffman-1m` as the sole command-line name for
+the selected `2/3 + 1/2 + 1/2` lifecycle. Keep
+`lzss-contextual-adaptive-huffman` fixed to `2/2 + 1/1 + 1/2`. The selected
+name configures 1,048,576-byte frames and windows, the 1 MiB public selector,
+a `ceil(267F/8)` payload ceiling, 13,681 model entries, a 1 MiB distance
+policy, and a 128 MiB aggregate-workspace limit. The legacy name retains its
+65,536-byte frame/window, 13,585 entries, and 8 MiB aggregate policy.
+
+Both names use the same public C functions after configuration. Decode is
+profile-exact, so each CLI name rejects the reciprocal archive before raw
+publication. Usage lists both adjacent names exactly once and parsing remains
+case-sensitive. The small CLI fixture proves identity, deterministic round
+trip, strict trailing-data rejection, and reciprocal rejection; the earlier
+marker-gap vector remains the proof of a Match beyond 64 KiB.
+
+This stage adds no benchmark, sanitizer fuzz campaign, interoperability entry,
+schema revision, public function, ABI version, or stream representation.

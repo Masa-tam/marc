@@ -9876,3 +9876,20 @@ workspace, view misalignment, every workspace overlap, invalid structure size
 or ABI version, and null factory output transactionally. Retain all existing
 public C binary-class, chunking, capacity, and malformed-final-frame coverage.
 No CLI, benchmark, fuzz, or interoperability vector belongs to this stage.
+
+### TVG-0712
+
+Require CLI usage to list `lzss-contextual-adaptive-huffman` immediately
+before `lzss-contextual-adaptive-huffman-1m`, each exactly once, and reject a
+`-1M` case near miss. Encode the common CLI fixture through each exact name.
+Require the legacy archive to retain `2/2 + 1/1 + 1/2`, the selected archive
+to emit `2/3 + 1/2 + 1/2`, byte-identical repeated encoding, exact decoding,
+and strict trailing-data rejection.
+
+Decode each archive through the reciprocal CLI name and require command
+failure without accepted output. Require the selected route to use the 1 MiB
+public selector, frame/window and distance policy, 13,681-entry model ceiling,
+`ceil(267F/8)` payload bound, checked complete-stream capacity, and 128 MiB
+aggregate limit. Retain all existing CLI exit-status, missing-path, bad-name,
+and same-path rejection. No benchmark, fuzz, interoperability, or schema
+vector belongs to this stage.

@@ -663,6 +663,14 @@ round trips while both reciprocal decoder routes fail before raw publication.
 A 1 MiB identity may use a smaller configured search window, whereas the
 64 KiB identity cannot admit a larger one. CLI admission is the next boundary.
 
+That next CLI boundary uses the explicit name
+`lzss-contextual-adaptive-huffman-1m` for 1 MiB frames, windows, and distance
+policy, 13,681 model entries, the fixed Adaptive Huffman payload formula, and
+a 128 MiB aggregate limit. The existing name remains exactly 64 KiB. Both
+names use the public C lifecycle and reject reciprocal archives before raw
+publication. Benchmark, fuzz, and interoperability admission remain later
+boundaries.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

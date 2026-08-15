@@ -5470,3 +5470,13 @@ completed selected Dynamic Range, rANS, tANS, and Blocked Huffman public
 lifecycle patterns as first-party references. No external C API, Adaptive
 Huffman or LZSS implementation, ABI layout, source code, test, corpus,
 archive, patent text, or optimization description was consulted.
+
+### IR-0611
+
+The selected Contextual Adaptive Huffman CLI design uses DD-831 through
+DD-836, TVG-0706 through TVG-0711, marc's completed selected public C
+lifecycle, existing 64 KiB CLI adapter, and the selected Dynamic Range, rANS,
+tANS, and Blocked Huffman explicit-name patterns as first-party references.
+No external CLI, Adaptive Huffman or LZSS implementation, argument grammar,
+source code, test, corpus, archive, patent text, or optimization description
+was consulted.

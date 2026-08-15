@@ -5450,3 +5450,11 @@ identity and extended Match, while reciprocal public decoders fail before raw
 publication. A selected 1 MiB identity may deliberately use a smaller encoder
 search window; only a window exceeding the selected identity is contradictory.
 CLI exposure remains separate.
+
+The next CLI boundary adds one exact `-1m` name adjacent to the legacy
+Contextual Adaptive Huffman name. It selects 1 MiB frames and windows, 13,681
+model entries, the existing `ceil(267F/8)` payload rule, 1 MiB distance policy,
+and 128 MiB aggregate limit through the public C lifecycle. The legacy name
+remains fixed to its released 64 KiB policy. Reciprocal names reject each
+other's archives before raw publication; no heuristic profile inference is
+introduced.

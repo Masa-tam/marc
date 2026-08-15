@@ -21557,3 +21557,23 @@ discarded and the reviewed seed retained.
   suites pass all 2,951 registered tests, including documentation layout and
   interoperability schema compatibility, in 207.87 seconds under MSVC and
   195.65 seconds under ClangCL.
+
+## CR-0901: 2026-08-15 - Selected Contextual Adaptive Huffman CLI design
+
+- Authoring method: derived one explicit selected CLI profile from marc's
+  completed public C lifecycle and existing exact-name CLI patterns.
+- References used: DD-831 through DD-837; IR-0611; TVG-0706 through TVG-0712;
+  marc's existing 64 KiB Contextual Adaptive Huffman CLI and completed selected
+  Dynamic Range, rANS, tANS, and Blocked Huffman CLI profiles.
+- Known implementations intentionally not consulted: external CLIs, Adaptive
+  Huffman or LZSS implementations, argument grammars, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: preserve the legacy name; add one case-sensitive
+  `-1m` name; bind it to explicit bounded policy values; and reuse the public
+  C lifecycle without reproducing private workspace layouts.
+- Generated-code task description: specify selected CLI parsing,
+  configuration, dispatch, usage inventory, exact-header round trip,
+  reciprocal rejection, trailing rejection, and case-near-miss rejection.
+- Similarity review: the design composes only marc-owned CLI configuration,
+  public factory, selector, and test patterns. No external implementation
+  expression entered the design.

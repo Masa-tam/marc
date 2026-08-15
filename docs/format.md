@@ -6872,6 +6872,11 @@ The 1 MiB selector emits exact `2/3 + 1/2 + 1/2`; the 64 KiB selector retains
 the frozen identity. Each exact public decoder rejects the reciprocal identity
 after the complete header and before frame or raw publication.
 
+The CLI names `lzss-contextual-adaptive-huffman` and
+`lzss-contextual-adaptive-huffman-1m` select exact 64 KiB and 1 MiB public
+profiles respectively. The names are application policy and add no serialized
+field. Each name requires its selected dictionary/context identity on decode.
+
 The private direct typed-token adapter admits the selected Contextual Blocked
 Huffman layout without defining another serialized field. For variant 2, a
 distance of 131,072 is represented by distance class 17 in the 21-symbol
