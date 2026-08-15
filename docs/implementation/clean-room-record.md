@@ -21949,3 +21949,30 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`. Fifteen one-MiB diagnostic runs
   complete; BM-0055 records their candidate populations, classifications,
   maximum depths, and descriptive throughput.
+
+## CR-0916: 2026-08-15 - BinaryTree workspace and empty state
+
+- Authoring method: implemented the first BinaryTree stage directly from the
+  repository design and existing bounded workspace contracts.
+- References used: DD-845 through DD-847; IR-0621; TVG-0719 and TVG-0721;
+  marc's checked arithmetic, overlap detector, LZSS parameter validation, and
+  HashChain calculator and initialization behavior.
+- Known implementations intentionally not consulted: external AVL trees,
+  match finders, compressors, allocators, source code, tests, patents, and
+  layout descriptions.
+- Independent decisions: separated arrays, `uint8_t` AVL height, 32-bit null
+  sentinel, `SIZE_MAX` inactive metadata, checked per-array alignment, and no
+  operational match interface in the foundation stage.
+- Generated-code task description: add calculator and atomic empty initializer,
+  validate all boundaries before publication, initialize only the required
+  extent, and test exact offsets, sentinels, overflow, overlap, alignment,
+  limits, and failure preservation.
+- Similarity review: implementation structure follows marc's local workspace
+  conventions and the independently recorded BinaryTree design. No external
+  implementation expression or test vector entered the change.
+- Local validation: MSVC 19.50 and ClangCL 22.1.3 build warning-clean and pass
+  all five BinaryTree foundation tests. The complete 2,969-test inventory has
+  2,968 passing tests in each sandboxed run; the sole process-launch failure is
+  the user-directory Python 3.14 Silesia verifier, which passes separately in
+  both configurations outside the sandbox. Documentation layout and
+  `marc_interoperability_schema_compatibility` pass in both configurations.

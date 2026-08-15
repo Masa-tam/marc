@@ -5571,3 +5571,12 @@ hash, existing fixed-seed LCG constants, checked arithmetic, bounded frame
 runner, and optional statistics as first-party references. No external
 generator, collision corpus, match-finder benchmark, compressor, source code,
 test, patent, or published performance result was consulted.
+
+### IR-0621
+
+The BinaryTree workspace calculator and empty initializer use DD-845 through
+DD-847, TVG-0719 through TVG-0721, the repository's HashChain workspace
+contract, checked arithmetic, overlap detector, LZSS parameter validator, and
+elementary AVL height bounds as first-party and mathematical references. No
+external tree, match-finder, compressor, allocator, source code, test suite,
+patent, or layout description was consulted.

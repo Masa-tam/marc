@@ -17676,3 +17676,20 @@ their performance into pass thresholds. A small smoke fixes generator names,
 framing, classification invariants, and distinguishing properties. Use the
 one-MiB three-window matrix only as implementation-admission evidence for the
 private BinaryTree strategy, not as proof of a default or adaptive threshold.
+
+## DD-847: BinaryTree workspace uses separated fixed-width arrays
+
+- Date: 2026-08-15
+- Status: accepted
+
+Represent the private BinaryTree workspace as three `uint32_t` link arrays,
+one `uint8_t` height array, and two `size_t` position arrays. Align every array
+start independently and expose every offset from checked workspace planning.
+The one-byte height represents every AVL height possible under the 32-bit node
+index ceiling and makes the 64-bit one-MiB-window requirement exactly 29 MiB.
+
+Initialize links to `UINT32_MAX`, height to zero, and position metadata to
+`SIZE_MAX`. Validate limits, parameters, capacity, alignment, input overlap,
+arithmetic, and aggregate input-plus-workspace before modifying the workspace
+or publishing the finder. This stage intentionally exposes no match operation
+and cannot enter any production encoder path.

@@ -71,14 +71,22 @@ absolute input position
 maximum absolute position in the subtree
 ```
 
-node参照は32-bit indexとし、`UINT32_MAX`をnull sentinelとする。`height == 0`
-はinactive、active leafはheight 1とする。位置と部分木最大位置は`size_t`で
-保持するが、シリアライズしない。
+node参照は32-bit indexとし、`UINT32_MAX`をnull sentinelとする。heightは
+`uint8_t`の分離配列で保持し、`height == 0`はinactive、active leafはheight 1
+とする。32-bit node indexで表現可能なAVL木の最大高はこの範囲に収まる。
+位置と部分木最大位置は`size_t`で保持するが、シリアライズしない。
 
 workspace calculatorはnode数、各配列offset、alignment、総byte数および
 aggregate input-plus-workspaceをchecked arithmeticで計算する。配列を分離し、
 構造体paddingへ依存しない。概算では64-bit環境の1,048,576 nodeに約29 MiB
 を要するが、実装されたcalculatorの値だけを正式値とする。
+
+初期layoutは`left`、`right`、`parent`の各`uint32_t`配列、`height`の
+`uint8_t`配列、`position`、`subtree maximum position`の各`size_t`配列の順と
+する。各配列開始位置をその要素型へalignし、末尾paddingは加えない。inactive
+nodeは三つのlinkを`UINT32_MAX`、heightを0、二つのposition値を`SIZE_MAX`で
+初期化する。64-bit環境の1,048,576 nodeに対する正式な初期workspaceは
+29 MiBである。
 
 workspaceは初期化時に一度だけ構築し、steady-stateでallocateしない。短い
 workspace、misalignment、inputとのoverlap、算術overflow、node index範囲、

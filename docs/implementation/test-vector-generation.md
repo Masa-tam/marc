@@ -10039,3 +10039,18 @@ its record number. The collision record alternates `01 00 00 58 59` and
 exponentiation positions the sequence at each frame offset without changing
 the byte stream. Separately measure one-MiB inputs at 64 KiB, 256 KiB, and one
 MiB windows and record results descriptively in BM-0055.
+
+### TVG-0721
+
+For the BinaryTree workspace foundation, derive the six-array layout by hand
+for five nodes: offsets 0, 20, 40, 60, 72, and 112, ending at 152 bytes on the
+supported 64-bit configurations. Also verify the portable element-size
+formula at 65,536 nodes and the 29-MiB result at 1,048,576 nodes.
+
+Initialize a small nonempty frame over caller-owned aligned storage and inspect
+every active array element for its documented inactive sentinel. Require an
+oversized supplied span to retain its unused tail. Seed a finder successfully,
+then present short, misaligned, and overlapping workspaces; require stable
+errors and byte-for-byte preservation of both finder observations and supplied
+storage. Cover short zero-workspace input, invalid limits and parameters, frame
+limits, aggregate workspace limits, and `size_t` addition overflow.
