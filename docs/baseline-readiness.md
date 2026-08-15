@@ -2383,3 +2383,12 @@ and an immediate round trip. Both local compilers generate and verify all 51
 archives, reject reordered current manifests, remove only the new final entry
 to recover schema 40, and verify every schema through version 1. External
 four-direction evidence remains pending until the revision is pushed.
+
+### BR-0140
+
+Schema 41 now has complete four-direction external evidence at revision
+`c3ea5f87784faaca8c93e98fe5e459df3290747c`. All 51 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the 1 MiB
+Contextual Blocked Huffman profile.
