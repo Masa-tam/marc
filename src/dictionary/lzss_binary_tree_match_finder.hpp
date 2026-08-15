@@ -101,6 +101,8 @@ private:
         LzssBinaryTreeMatchFinder&) noexcept;
     friend LzssBinaryTreeError insert_lzss_binary_tree_position(
         LzssBinaryTreeMatchFinder&, std::size_t) noexcept;
+    friend LzssBinaryTreeError remove_lzss_binary_tree_position(
+        LzssBinaryTreeMatchFinder&, std::size_t) noexcept;
     friend LzssBinaryTreeValidationError validate_lzss_binary_tree(
         const LzssBinaryTreeMatchFinder&) noexcept;
     friend LzssBinaryTreeNodeSnapshot inspect_lzss_binary_tree_node(
@@ -117,6 +119,8 @@ private:
     [[nodiscard]] std::uint32_t rotate_right(std::uint32_t node) noexcept;
     [[nodiscard]] int balance_factor(std::uint32_t node) const noexcept;
     void rebalance_from(std::uint32_t node) noexcept;
+    [[nodiscard]] std::uint32_t minimum_node(std::uint32_t node) const noexcept;
+    void clear_node(std::uint32_t node) noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
@@ -137,6 +141,9 @@ private:
     LzssBinaryTreeMatchFinder& finder) noexcept;
 
 [[nodiscard]] LzssBinaryTreeError insert_lzss_binary_tree_position(
+    LzssBinaryTreeMatchFinder& finder, std::size_t position) noexcept;
+
+[[nodiscard]] LzssBinaryTreeError remove_lzss_binary_tree_position(
     LzssBinaryTreeMatchFinder& finder, std::size_t position) noexcept;
 
 [[nodiscard]] LzssBinaryTreeValidationError validate_lzss_binary_tree(

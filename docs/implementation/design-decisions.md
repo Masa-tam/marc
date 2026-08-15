@@ -17713,3 +17713,21 @@ mapping. Validate child positions before any byte comparison so the validator
 itself remains safe on corrupted workspace state. Keep insertion, inspection,
 and validation internal and do not add deletion, `advance`, match queries, or a
 production encoder connection in this stage.
+
+## DD-849: BinaryTree deletion preserves slot identity by transplant
+
+- Date: 2026-08-15
+- Status: accepted
+
+Remove a private BinaryTree node only when its modulo-capacity slot is active
+and stores the requested absolute position. For zero or one child, transplant
+the child link directly. For two children, transplant the in-order successor
+node itself: detach it from its old parent when necessary, attach its original
+right child there, then move the successor links into the removed node's tree
+position. Never copy or swap node position payloads between slots.
+
+Clear the removed slot to all inactive sentinels, decrement the active count,
+and rebalance iteratively from the successor's old parent or the replacement
+subtree root as appropriate. This makes a retired modulo slot reusable by the
+later position exactly one window away. Keep deletion internal and explicit;
+automatic expiry and `advance` remain a separate stage.

@@ -166,6 +166,25 @@ void LzssBinaryTreeMatchFinder::rebalance_from(
     }
 }
 
+std::uint32_t LzssBinaryTreeMatchFinder::minimum_node(
+    std::uint32_t node) const noexcept {
+    while (left_[node] != lzss_binary_tree_null_node) {
+        node = left_[node];
+    }
+    return node;
+}
+
+void LzssBinaryTreeMatchFinder::clear_node(
+    const std::uint32_t node) noexcept {
+    left_[node] = lzss_binary_tree_null_node;
+    right_[node] = lzss_binary_tree_null_node;
+    parent_[node] = lzss_binary_tree_null_node;
+    height_[node] = 0;
+    position_[node] = std::numeric_limits<std::size_t>::max();
+    subtree_maximum_position_[node] =
+        std::numeric_limits<std::size_t>::max();
+}
+
 LzssBinaryTreeWorkspaceRequirements calculate_lzss_binary_tree_workspace(
     const std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits) noexcept {
@@ -327,6 +346,57 @@ LzssBinaryTreeError insert_lzss_binary_tree_position(
     }
     ++finder.active_node_count_;
     finder.rebalance_from(parent);
+    return LzssBinaryTreeError::none;
+}
+
+LzssBinaryTreeError remove_lzss_binary_tree_position(
+    LzssBinaryTreeMatchFinder& finder,
+    const std::size_t position) noexcept {
+    if (!finder.initialized_ || finder.left_.empty()) {
+        return LzssBinaryTreeError::invalid_state;
+    }
+    if (position >= finder.input_.size()
+        || finder.input_.size() - position < lzss_binary_tree_prefix_size) {
+        return LzssBinaryTreeError::invalid_position;
+    }
+    const auto removed = static_cast<std::uint32_t>(
+        position % finder.left_.size());
+    if (finder.height_[removed] == 0
+        || finder.position_[removed] != position) {
+        return LzssBinaryTreeError::invalid_state;
+    }
+
+    auto rebalance_start = lzss_binary_tree_null_node;
+    if (finder.left_[removed] == lzss_binary_tree_null_node) {
+        rebalance_start = finder.parent_[removed];
+        finder.replace_parent_child(
+            finder.parent_[removed], removed, finder.right_[removed]);
+    } else if (finder.right_[removed] == lzss_binary_tree_null_node) {
+        rebalance_start = finder.parent_[removed];
+        finder.replace_parent_child(
+            finder.parent_[removed], removed, finder.left_[removed]);
+    } else {
+        const auto successor = finder.minimum_node(finder.right_[removed]);
+        if (finder.parent_[successor] != removed) {
+            rebalance_start = finder.parent_[successor];
+            finder.replace_parent_child(
+                finder.parent_[successor], successor,
+                finder.right_[successor]);
+            finder.right_[successor] = finder.right_[removed];
+            finder.parent_[finder.right_[successor]] = successor;
+        } else {
+            rebalance_start = successor;
+        }
+        finder.replace_parent_child(
+            finder.parent_[removed], removed, successor);
+        finder.left_[successor] = finder.left_[removed];
+        finder.parent_[finder.left_[successor]] = successor;
+        finder.update_metadata(successor);
+    }
+
+    finder.clear_node(removed);
+    --finder.active_node_count_;
+    finder.rebalance_from(rebalance_start);
     return LzssBinaryTreeError::none;
 }
 

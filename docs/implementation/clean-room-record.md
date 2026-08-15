@@ -22002,3 +22002,29 @@ discarded and the reviewed seed retained.
   2,974-test sandbox-safe inventory passes, including documentation layout and
   `marc_interoperability_schema_compatibility`; the separately executed Python
   3.14 Silesia verifier also passes, completing all 2,975 registered tests.
+
+## CR-0918: 2026-08-15 - BinaryTree structural deletion
+
+- Authoring method: derived leaf, one-child, and two-child structural deletion
+  from the repository's slot-identity and iterative AVL design.
+- References used: DD-845, DD-848, DD-849; IR-0623; TVG-0719, TVG-0722, and
+  TVG-0723; marc's insertion, rotation, metadata, and validation primitives.
+- Known implementations intentionally not consulted: external AVL or binary
+  trees, match finders, compressors, source code, tests, patents, pseudocode,
+  and optimization descriptions.
+- Independent decisions: successor node transplant without payload copy;
+  rebalance origin selected from the detached successor path; complete inactive
+  sentinel restoration; explicit private removal; and separate automatic
+  expiry as a later stage.
+- Generated-code task description: implement structural removal, direct and
+  non-direct successor handling, deletion rotations, metadata repair, slot
+  reuse, atomic invalid requests, and deterministic bulk deletion tests.
+- Similarity review: control flow follows marc's written structural rules and
+  hand-derived fixtures. No external implementation expression or vector
+  entered the change.
+- Local validation: MSVC 19.50 and ClangCL 22.1.3 build warning-clean and pass
+  all 17 BinaryTree foundation, insertion, validation, and deletion tests. In
+  each configuration the 2,980-test sandbox-safe inventory passes, including
+  documentation layout and `marc_interoperability_schema_compatibility`; the
+  separately executed Python 3.14 Silesia verifier also passes, completing all
+  2,981 registered tests.

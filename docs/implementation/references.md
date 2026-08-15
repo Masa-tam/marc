@@ -5588,3 +5588,12 @@ uses DD-845, DD-847, DD-848, TVG-0719, TVG-0721, TVG-0722, the repository-owned
 finite suffix order, workspace representation, and elementary AVL invariants.
 No external AVL implementation, match finder, compressor, source code, test
 suite, patent, pseudocode, or optimization description was consulted.
+
+### IR-0623
+
+The BinaryTree structural deletion stage uses DD-845, DD-848, DD-849,
+TVG-0719, TVG-0722, TVG-0723, marc's separated slot representation, insertion
+rotations, and structural validator as first-party references. Only elementary
+binary-search-tree successor and AVL invariants were additionally used. No
+external tree, match finder, compressor, source code, test, patent, pseudocode,
+or optimization description was consulted.

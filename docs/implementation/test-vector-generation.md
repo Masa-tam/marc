@@ -10071,3 +10071,21 @@ and require stable validator categories. Finally insert every indexable
 position of a 512-byte fixed-seed LCG input into two independent workspaces;
 require valid AVL bounds, complete maximum-position metadata, and identical
 node snapshots.
+
+### TVG-0723
+
+Build ascending four-record input and remove its left leaf, requiring the
+deterministic deletion rotation and subsequent root transitions through a
+two-child root, a one-child root, and an empty tree. Separately remove a
+three-node root whose successor is its direct right child. For the non-direct
+case, build keys `D,B,F,E,G`, remove `D`, and require slot 24 (`E`) itself to
+become root while removed slot 0 becomes inactive; no payload may move into
+slot 0.
+
+With an eight-byte window, remove position 0 and insert position 8 into the
+same modulo slot. Reject absent and non-indexable removals without changing
+finder observations or workspace bytes. Finally insert every indexable
+position of a 256-byte fixed-seed LCG input into two independent trees, remove
+all even positions followed by all odd positions, validate after every
+deletion, compare roots throughout and all node snapshots after each parity,
+and require both trees to finish empty.
