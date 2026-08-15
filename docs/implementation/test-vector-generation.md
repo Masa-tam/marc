@@ -9911,3 +9911,24 @@ policy. Do not impose speed or compression-ratio thresholds; the small fixture
 is a wiring and accounting smoke, while distant-match use remains proven by
 the earlier marker-gap vectors. No fuzz, interoperability, schema, CLI, or
 format vector belongs to this stage.
+
+### TVG-0714
+
+Parameterize the Contextual Adaptive Huffman malformed regression over public
+window profiles 0 and 1. For each profile, generate a canonical stream,
+truncate it at every byte, mutate stream identity and reserved bytes, corrupt
+extreme frame lengths, descriptor fields, and payload padding, and require
+private/public atomic failure without raw publication. Feed each canonical
+stream to the other strict public profile and require malformed-stream
+failure, zero output, unchanged sentinels, and sticky error category and
+positions.
+
+Compile the single harness warning-clean under MSVC and ClangCL. Its fixed
+thread-local storage must use the selected 9,131-node and 4,550-symbol maxima
+while keeping input at 65,536 bytes, output at 4 KiB, raw-frame capacity at
+1,024 bytes, typed-token capacity at 1,024 entries, payload at 34,176 bytes,
+the descriptor at 16 bytes, and the process-call budget finite. Build the
+existing sanitizer target and run a bounded
+campaign without a persistent corpus using
+`-runs=1000 -max_len=65536 -timeout=5 -rss_limit_mb=512`. Do not add a second
+target or an interoperability archive.

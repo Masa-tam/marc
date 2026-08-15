@@ -17480,3 +17480,32 @@ descriptive and are not pass thresholds.
 
 This stage adds no stream representation, public API, CLI behavior, sanitizer
 fuzz campaign, interoperability entry, or schema revision.
+
+## DD-839: One fixed-memory Contextual Adaptive Huffman target exercises both profiles
+
+- Date: 2026-08-15
+- Status: accepted
+
+Retain one `marc_fuzz_lzss_contextual_adaptive_huffman_stream` target and
+drive the private complete-frame decoder plus both strict public C decoder
+admissions for every bounded input. The private parser accepts either valid
+serialized identity. Public calls explicitly select 64 KiB and 1 MiB window
+profiles so crossed identities exercise the production admission policy.
+
+Keep input capped at 65,536 bytes, published output at 4 KiB, raw-frame
+capacity at 1,024 bytes, typed-token capacity at 1,024 entries, the payload
+ceiling at `ceil(267 * 1024 / 8)` = 34,176 bytes, the 16-byte descriptor, and
+the finite process-call budget. Increase
+only the fixed model backing from 9,067 nodes and 4,518 symbol indices to the
+selected maxima of 9,131 and 4,550. Both public profiles use a 1 MiB safety
+distance limit, but the harness must not allocate a 1 MiB frame or history
+buffer.
+
+Parameterize deterministic malformed regressions over both profiles. Require
+every truncation, stream-identity or reserved-byte mutation, extreme frame
+length, invalid descriptor field, nonzero padding bit, and reciprocal cross-
+profile public decode to fail atomically with sticky error information.
+Ordinary builds provide warning-clean compile evidence. Run one bounded
+sanitizer campaign without a persistent corpus using
+`-runs=1000 -max_len=65536 -timeout=5 -rss_limit_mb=512`. Interoperability
+admission remains a later stage.

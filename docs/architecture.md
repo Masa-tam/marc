@@ -5480,3 +5480,9 @@ the 1 MiB selector and bounds into both directions, uses checked
 `112 + ceil(267N/8) + 80K` capacity, completes an untimed exact round trip,
 and reports the greater complete directional workspace sum. Fuzz admission is
 the next independent boundary.
+
+The next fuzz boundary retains one fixed-memory target and runs both exact
+public decoder admissions for every input. The wider identity increases only
+the node and symbol model backing; input, raw frame, typed-token, output,
+payload, descriptor, and process-call ceilings remain small and independent
+of the 1 MiB serialized policy.

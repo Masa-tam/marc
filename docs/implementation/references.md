@@ -5490,3 +5490,13 @@ Range, rANS, tANS, and Blocked Huffman benchmark patterns as first-party
 references. No external benchmark, Adaptive Huffman or LZSS implementation,
 adapter, source code, test, corpus, archive, patent text, or optimization
 description was consulted.
+
+### IR-0613
+
+The dual-profile Contextual Adaptive Huffman fuzz design uses DD-831 through
+DD-838, TVG-0706 through TVG-0713, marc's existing fixed-memory private/public
+decoder harness, completed selected public admission, deterministic malformed
+regressions, and dual-profile Contextual rANS, tANS, and Blocked Huffman fuzz
+routes as first-party references. No external Adaptive Huffman or LZSS
+implementation, fuzz harness, corpus, finding, source code, test, archive,
+patent text, or optimization description was consulted.

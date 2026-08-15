@@ -691,6 +691,14 @@ smoke verifies the untimed round trip, finite report, full directional
 workspace aggregation, adjacent usage, and case-near-miss rejection. Fuzz
 admission is the next boundary.
 
+That next sanitizer boundary keeps one Contextual Adaptive Huffman target and
+exercises private selected parsing plus both strict public profiles. It grows
+only fixed model backing to 9,131 nodes and 4,550 symbols, retains a 1 KiB raw
+buffer and 1,024 typed-token entries, and parameterizes deterministic
+malformed and reciprocal-admission regressions. The bounded campaign remains
+1,000 inputs with no
+persistent corpus; interoperability admission stays separate.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

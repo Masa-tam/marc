@@ -21652,3 +21652,23 @@ discarded and the reviewed seed retained.
   warning-clean; and both complete Release suites pass all 2,954 registered
   tests, including documentation layout and interoperability schema
   compatibility, in 208.40 and 208.11 seconds.
+
+## CR-0905: 2026-08-15 - Contextual Adaptive Huffman dual-profile fuzz design
+
+- Authoring method: derived the wider admission from marc's existing fixed-
+  memory Contextual Adaptive Huffman harness and completed dual-profile
+  entropy fuzz boundaries.
+- References used: DD-839; IR-0613; TVG-0714; marc's completed selected public
+  decoder lifecycle and deterministic malformed regressions.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, fuzz harnesses, corpora, findings, source
+  code, tests, archives, patent text, and optimization descriptions.
+- Independent decisions: retain one target; exercise both strict policies;
+  grow only model backing; preserve small fixed raw storage; parameterize
+  malformed regressions; and bound sanitizer execution explicitly.
+- Generated-code task description: specify dual public admission, private
+  selected parsing, fixed capacities, reciprocal rejection, compile-smoke,
+  sanitizer command limits, and unchanged interoperability inventory.
+- Similarity review: the design composes only marc-owned fuzz, frame, public
+  C, profile, Adaptive Huffman, and test components. No external
+  implementation expression entered the design.
