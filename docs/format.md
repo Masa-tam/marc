@@ -6713,6 +6713,23 @@ existing hand vector byte. Unknown or crossed selections fail before caller-
 visible descriptor, payload, table, or decoded-value publication. Typed-token,
 frame, lifecycle, and public 1 MiB admission remain later stages.
 
+Contextual Adaptive Huffman follows the same external-selection rule while
+retaining its fixed 16-byte descriptor and entropy identity `1/2`. Variant 1
+uses 4,518 symbol slots, 9,067 nodes, 17-symbol distance contexts, and at most
+16 bypass bits. Variant 2 uses 4,550 symbol slots, 9,131 nodes, 21-symbol
+distance contexts, and at most 20 bypass bits. All 31 trees still reset once
+per outer frame, and no model state or layout selector is serialized in the
+descriptor.
+
+The selected operation coder validates every Symbol alphabet against that
+layout and emits bypass values least-significant bit first. For variant 2,
+`Symbol(23,21,20)` followed by `BypassBits(20,0xabcde)` has decision count 21,
+payload `D4 9B 57 01`, and final-valid-bit count 1. The decoder consumes
+exactly 25 bits and recovers values 20 and `0xabcde`. Variant 1 rejects that
+21-symbol alphabet and 20-bit bypass width. Unknown or crossed selections fail
+before descriptor, payload, or decoded-value publication. Typed-token, frame,
+lifecycle, and public 1 MiB admission remain later stages.
+
 Contextual rANS descriptor parsing never selects that layout itself. The
 dictionary/context pair in the already validated stream header selects field-
 context variant 1 or 2, and that selection is supplied to descriptor analysis,

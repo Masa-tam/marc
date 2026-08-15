@@ -571,6 +571,12 @@ callers explicitly select variant 1, preserving every released stream byte;
 the selected variant-2 entropy coding path remains the next independent
 boundary.
 
+The following operation boundary passes that selection explicitly through
+planning, writing, and decoding. It uses the selected model-bank extents,
+Symbol alphabets, and 16/20-bit bypass ceiling while leaving the descriptor
+variant-neutral. The proving class-20 plus 20-bit bypass vector is
+`D4 9B 57 01`; typed-token and frame composition remain separate later work.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

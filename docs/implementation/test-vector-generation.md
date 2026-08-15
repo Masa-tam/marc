@@ -9764,3 +9764,20 @@ reset, and prove the initial NYT state and complete validation are restored.
 Retain all existing variant-1 model vectors byte-for-byte. No descriptor,
 payload, frame, public, fuzz, or interoperability vector belongs to this
 stage.
+
+### TVG-0707
+
+Plan and encode the exact variant-2 operations `Symbol(23,21,20)` and
+`BypassBits(20,0xabcde)` with selected 9,131-node and 4,550-symbol workspaces.
+Require descriptor decision count 21, payload size 4, final-valid-bit count 1,
+and exact payload `D4 9B 57 01`. Decode with the same explicit selection and
+require values 20 and `0xabcde`, two events, 21 decisions, 25 consumed bits,
+and exact completion.
+
+Require independent fresh workspaces to reproduce the same descriptor and
+payload. Variant 1 must reject alphabet 21 and 20-bit bypass requests. Reject
+an unsupported selection and independently one-short variant-2 node and symbol
+regions without changing the caller's descriptor, payload sentinel, or decoded
+value. Retain existing variant-1 hand vectors and operation bytes exactly. No
+typed-token, frame, streaming, public, benchmark, fuzz, or interoperability
+vector belongs to this stage.

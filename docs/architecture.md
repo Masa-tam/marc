@@ -5367,3 +5367,10 @@ regions, and checked extent failures before exposing an initialized tree. All
 the same selection. Existing operation encoder and decoder entry points pass
 variant 1 explicitly, so this boundary changes neither a descriptor nor a
 payload byte.
+
+The next private operation boundary carries the same immutable selection into
+planning, payload writing, and payload decoding. The model bank, Symbol request
+validation, region accounting, and bypass ceiling all use one resolved layout;
+the fixed descriptor remains data-only and cannot select a layout. This keeps
+variant 1 byte-frozen while allowing variant 2 to code class 20 and 20-bit
+bypass values directly.

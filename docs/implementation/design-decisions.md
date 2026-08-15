@@ -17276,3 +17276,34 @@ outer frame, entropy identity remains `1/2`, and the conservative payload
 ceiling remains `ceil(267F/8)`. The future selected stream identity is exact
 `2/3 + 1/2 + 1/2`; typed-token, complete-frame, streaming, public C, CLI,
 benchmark, fuzz, and interoperability admission remain later stages.
+
+## DD-832: Contextual Adaptive Huffman operation coding receives one external layout selection
+
+- Date: 2026-08-15
+- Status: accepted
+
+Pass one explicit `LzssFieldContextVariant` into Contextual Adaptive Huffman
+operation planning, writing, and decoding. Resolve it once at startup and use
+the selected layout for model-bank capacity, every requested Symbol alphabet,
+and the maximum bypass width. The 16-byte descriptor does not repeat or infer
+this selection: only the already validated outer dictionary/context identity
+selects variant 1 or 2.
+
+Variant 1 retains 4,518 symbols, 9,067 nodes, 17-symbol distance contexts,
+and at most 16 bypass bits. Variant 2 uses 4,550 symbols, 9,131 nodes,
+21-symbol distance contexts, and at most 20 bypass bits. An unsupported
+selection, crossed alphabet request, insufficient selected workspace, or
+out-of-profile bypass width fails before descriptor or decoded-value
+publication. All operation/model/payload regions remain pairwise disjoint and
+are charged using only the selected extents.
+
+The variant-2 hand vector is `Symbol(23,21,20)` followed by
+`BypassBits(20,0xabcde)`. A reset tree writes the new symbol as five LSB-first
+NYT raw bits, followed by the 20 LSB-first bypass bits, producing payload
+`D4 9B 57 01`, decision count 21, and one valid bit in the final byte. Decode
+must recover both values and consume the exact 25 bits. Variant 1 must reject
+the same alphabet and bypass width while retaining all existing payload bytes.
+
+This stage changes no stream header, descriptor grammar, entropy parameters,
+frame, typed-token bridge, public API, benchmark, fuzz target, or
+interoperability schema.

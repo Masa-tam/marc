@@ -5420,3 +5420,12 @@ Huffman representation, and completed selected Dynamic Range, rANS, tANS, and
 Blocked Huffman patterns as first-party references. No external Adaptive
 Huffman or LZSS implementation, source code, test, corpus, archive, patent
 text, or optimization description was consulted.
+
+### IR-0606
+
+The selected Contextual Adaptive Huffman operation-coding design uses DD-831,
+DD-832, TVG-0706, TVG-0707, marc's completed selected FGK model bank, frozen
+variant-1 operation encoder and decoder, and the selected Dynamic Range,
+rANS, tANS, and Blocked Huffman operation boundaries as first-party
+references. No external Adaptive Huffman or LZSS implementation, source code,
+test, corpus, archive, patent text, or optimization description was consulted.

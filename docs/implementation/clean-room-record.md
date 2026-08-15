@@ -21319,3 +21319,22 @@ discarded and the reviewed seed retained.
   Release suites pass all 2,942 registered tests, including documentation
   layout and interoperability schema compatibility, in 204.06 seconds under
   MSVC and 207.77 seconds under ClangCL.
+
+## CR-0891: 2026-08-15 - Selected Contextual Adaptive Huffman operation-coding design
+
+- Authoring method: derived the next boundary from marc's completed selected
+  FGK model bank and existing operation-level codec contract.
+- References used: DD-831; DD-832; IR-0606; TVG-0706; TVG-0707; marc's
+  existing Contextual Adaptive Huffman operation encoder and decoder.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: keep the descriptor variant-neutral; require one
+  external layout selection; derive workspace, alphabet, and bypass policy
+  from it; and freeze variant-1 bytes.
+- Generated-code task description: specify explicit variant propagation,
+  selected capacity and alias accounting, the class-20 plus 20-bit bypass hand
+  vector, reciprocal rejection, and later-stage exclusions.
+- Similarity review: the design composes only marc-owned field-context,
+  model-bank, bit-emission, and operation-lifecycle rules. No external
+  implementation expression entered the design.
