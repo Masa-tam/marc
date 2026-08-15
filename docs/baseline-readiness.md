@@ -2323,3 +2323,18 @@ transactionally. All targets build warning-clean and all 2,932 registered
 Release tests pass under MSVC and ClangCL, including schema compatibility
 through version 40. Public C, CLI, benchmark, sanitizer fuzz, and
 interoperability admission for the selected profile remain pending.
+
+### BR-0135
+
+The selected Contextual Blocked Huffman public C lifecycle is locally
+complete. Its 112-byte ABI-1 configuration replaces the former 64-bit reserved
+tail with the common exact window-profile selector and a 32-bit reserved word,
+preserving the all-zero 64 KiB default. Workspace query, encoder construction,
+descriptor capacity, and decoder admission now follow the selected profile.
+The C regression drives a 65,546-byte marker-gap-marker frame through the
+1 MiB lifecycle, verifies exact `2/3 + 1/2 + 2/2`, stable repeated terminal
+status, exact round trip, the 18-byte decoder-capacity delta, reciprocal
+pre-frame rejection, and transactional unknown/crossed/reserved failures. All
+targets build warning-clean and all 2,932 registered Release tests pass under
+MSVC and ClangCL, including schema compatibility through version 40. CLI,
+benchmark, sanitizer fuzz, and interoperability admission remain pending.

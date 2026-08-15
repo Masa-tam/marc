@@ -212,15 +212,22 @@ The experimental LZSS Contextual Blocked Huffman factory is a fourth distinct
 Format 2 lifecycle. Initialize its size-tagged configuration with
 `marc_lzss_contextual_blocked_huffman_config_init()`, repeat
 `marc_lzss_contextual_blocked_huffman_workspace_requirements()` whenever the
-immutable direction, known size, frame/LZSS parameters, or hard limits change,
-and give all three returned regions to the factory. Encoding uses primary for
+immutable direction, known size, frame/LZSS parameters, `window_profile`, or
+hard limits change, and give all three returned regions to the factory.
+Encoding uses primary for
 raw-frame input, secondary for the complete serialized frame, and aligned
 opaque views for typed tokens. Decoding uses primary for serialized input,
 secondary for atomic raw output, and views for at most 35 bounded Huffman
 decode tables followed by typed tokens. Capacity, alignment, and pairwise
-prefix non-overlap are checked before a handle is published. The additive ABI-1
-family emits only dictionary identity `2/2` and entropy identity `2/2`; no C++
-token or table layout crosses the ABI. CLI, benchmark, fuzzing, and
+prefix non-overlap are checked before a handle is published.
+`MARC_LZSS_CONTEXTUAL_WINDOW_64K` remains the initializer default and selects
+`2/2 + 1/1 + 2/2`; `MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects
+`2/3 + 1/2 + 2/2`. The selector is exact rather than inferred from
+`window_size`, and decoding rejects the reciprocal identity before frame or
+raw publication. It and the trailing 32-bit reserved word reuse the former
+64-bit reserved tail, preserving the 112-byte ABI-1 extent and all-zero
+legacy meaning. No C++ token or table layout crosses the ABI. CLI, benchmark,
+fuzzing, and
 interoperability admission remain later milestones. Its public completion
 audit covers the required binary classes, deterministic whole and mixed chunk
 schedules, stable repeated terminal calls, and frame-atomic rejection of a

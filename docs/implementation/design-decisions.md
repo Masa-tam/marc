@@ -17129,3 +17129,26 @@ decode, sticky terminal/error states, and deterministic frame bytes.
 
 This stage admits no public C API, CLI, benchmark, sanitizer fuzz campaign, or
 interoperability entry for the selected profile.
+
+## DD-826: Admit Contextual Blocked Huffman 1 MiB through the C lifecycle
+
+- Date: 2026-08-15
+- Status: accepted
+
+Replace the Contextual Blocked Huffman C configuration's trailing 64-bit
+reserved field with the common `marc_lzss_contextual_window_profile` selector
+and a 32-bit reserved word. This preserves the ABI-1 structure extent and its
+all-zero 64 KiB default. The selector is exact and is never inferred from
+`window_size`: encode maps it to the selected profile variant, decoder
+workspace uses the paired descriptor ceiling, and decoder construction uses
+the paired immutable admission policy.
+
+The legacy selector must preserve every byte and workspace extent. The 1 MiB
+selector must emit exact `2/3 + 1/2 + 2/2`, support a generated Match beyond
+64 KiB, and reject a legacy stream before frame or raw publication. The
+legacy selector reciprocally rejects the selected stream. Unknown selectors,
+nonzero reserved words, crossed window parameters, short/misaligned/aliased
+workspace, and invalid size tags fail without publishing a transform.
+
+This stage adds no new exported function, ABI version, CLI name, benchmark,
+sanitizer fuzz campaign, or interoperability entry.

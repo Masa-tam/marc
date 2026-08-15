@@ -5317,3 +5317,12 @@ stream identity. Streaming decode may admit either layout or require one exact
 layout, and applies that policy after the complete stream header but before
 frame buffering or raw publication. Public construction remains a separate
 review boundary.
+
+The public C Contextual Blocked Huffman configuration carries the same exact
+profile selection in its preserved 112-byte ABI-1 extent. The former 64-bit
+reserved tail is divided into the common 32-bit window-profile selector and a
+32-bit reserved word, so an all-zero legacy configuration still selects
+64 KiB. Workspace query and encoder construction resolve the selected profile;
+decoder construction additionally installs exact immutable admission. The
+selector changes no stream field beyond the already defined dictionary and
+context variant identities.

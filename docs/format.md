@@ -6832,3 +6832,10 @@ default. Decoder construction may accept either identity or require one exact
 pair. Exact admission is an API policy only and writes no stream bit. A
 crossed or disallowed identity is malformed immediately after the complete
 112-byte stream header and before any frame or raw byte is published.
+
+The public C Contextual Blocked Huffman configuration exposes that exact
+selection through `MARC_LZSS_CONTEXTUAL_WINDOW_64K` and
+`MARC_LZSS_CONTEXTUAL_WINDOW_1M`. This selector is not serialized separately
+and is not inferred from the configured window. It controls which already
+defined stream identity the encoder emits and which exact identity the decoder
+admits before frame collection.

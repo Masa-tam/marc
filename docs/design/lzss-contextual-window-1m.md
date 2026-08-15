@@ -521,7 +521,9 @@ layout only where required by the 2,579-byte descriptor maximum, selected
 match-finder dictionary, and configured frame extent; table count and token
 representation remain unchanged. The one-byte streaming proof reuses the
 marker-gap-marker frame and requires reciprocal profile rejection before raw
-publication. The next independent boundary is the public C lifecycle.
+publication. The public C lifecycle now carries the same exact selector in its
+preserved ABI-1 extent and enforces reciprocal decoder admission. The next
+independent boundary is the explicit CLI profile.
 
 ## Required validation
 

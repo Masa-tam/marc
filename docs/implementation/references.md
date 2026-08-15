@@ -5362,3 +5362,12 @@ selected complete-frame implementation, and completed selected Dynamic Range,
 rANS, and tANS lifecycle paths as first-party references. No external Huffman
 or LZSS implementation, allocator layout, streaming API, source code, test,
 corpus, archive, patent text, or optimization description was consulted.
+
+### IR-0600
+
+The selected Contextual Blocked Huffman public C lifecycle uses DD-790 through
+DD-826, TVG-0665, TVG-0666, TVG-0696 through TVG-0701, and marc's existing
+ABI-1 Contextual Blocked Huffman factory plus the completed selected Dynamic
+Range, rANS, and tANS public lifecycle patterns as first-party references. No
+external C API, Huffman or LZSS implementation, ABI layout, source code, test,
+corpus, archive, patent text, or optimization description was consulted.

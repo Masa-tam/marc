@@ -9654,3 +9654,20 @@ stream before raw output. Reject unknown admission values at construction.
 Retain all existing capacity, alias, EndInput, trailing-input, malformed-final-
 frame, and workspace partition regressions. No public, CLI, benchmark, fuzz,
 or interoperability vector belongs to this stage.
+
+### TVG-0701
+
+Require C configuration initialization to preserve its ABI-1 extent, zero
+reserved fields, and 64 KiB selector default. Query and construct both encode
+and decode directions for the 1 MiB selector, checking its exact stream
+identity, 18-byte descriptor-capacity delta, and a marker-gap-marker Match
+beyond 64 KiB. Drive the transform lifecycle with bounded buffers and require
+exact round trip plus stable repeated terminal status.
+
+Construct each exact decoder against the reciprocal stream and require
+`MARC_STATUS_MALFORMED_STREAM` with zero raw output. Reject an unknown selector,
+nonzero trailing reserved word, a 1 MiB window under the legacy selector,
+one-byte-short workspace, misalignment, overlap, invalid size/version tags,
+and null factory outputs transactionally. Retain all existing public C
+binary-class and malformed-final-frame coverage. No CLI, benchmark, fuzz, or
+interoperability vector belongs to this stage.

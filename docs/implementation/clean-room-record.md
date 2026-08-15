@@ -21082,3 +21082,27 @@ discarded and the reviewed seed retained.
   both complete Release suites pass all 2,932 registered tests, including
   schema compatibility through version 40 (202.18 seconds under MSVC and
   208.06 seconds under ClangCL).
+
+## CR-0881: 2026-08-15 - Selected Contextual Blocked Huffman public C lifecycle
+
+- Authoring method: extended marc's existing ABI-1 Contextual Blocked Huffman
+  factory with the accepted selected profile and exact streaming admission.
+- References used: DD-826; IR-0600; TVG-0701; BR-0135; marc's current public C
+  factory and completed selected Dynamic Range, rANS, and tANS C lifecycles.
+- Known implementations intentionally not consulted: external C APIs, Huffman
+  or LZSS implementations, ABI layouts, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: reuse the former reserved tail without changing its
+  extent; retain zero as the legacy selector; map query and construction from
+  one exact selector; and install reciprocal decoder admission before frames.
+- Generated-code task description: expose the 1 MiB selection through the
+  existing C functions, preserve ABI-1 extent and default behavior, and test
+  selected extended-distance round trip plus reciprocal and malformed setup
+  rejection.
+- Similarity review: the change follows marc-owned ABI, selector, workspace,
+  and streaming patterns and contains no externally derived implementation
+  expression.
+- Local validation: the selected C regression passes under MSVC and ClangCL;
+  all targets build warning-clean; and both complete Release suites pass all
+  2,932 registered tests, including schema compatibility through version 40
+  (200.87 seconds under MSVC and 206.95 seconds under ClangCL).
