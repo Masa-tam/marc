@@ -5371,3 +5371,12 @@ ABI-1 Contextual Blocked Huffman factory plus the completed selected Dynamic
 Range, rANS, and tANS public lifecycle patterns as first-party references. No
 external C API, Huffman or LZSS implementation, ABI layout, source code, test,
 corpus, archive, patent text, or optimization description was consulted.
+
+### IR-0601
+
+The selected Contextual Blocked Huffman CLI design uses DD-790 through DD-827,
+TVG-0665, TVG-0666, TVG-0696 through TVG-0702, marc's existing 64 KiB CLI
+adapter, completed selected public C lifecycle, and selected Dynamic Range,
+rANS, and tANS explicit-name patterns as first-party references. No external
+CLI, Huffman or LZSS implementation, argument grammar, source code, test,
+corpus, archive, patent text, or optimization description was consulted.

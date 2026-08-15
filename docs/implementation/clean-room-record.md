@@ -21106,3 +21106,26 @@ discarded and the reviewed seed retained.
   all targets build warning-clean; and both complete Release suites pass all
   2,932 registered tests, including schema compatibility through version 40
   (200.87 seconds under MSVC and 206.95 seconds under ClangCL).
+
+## CR-0882: 2026-08-15 - Selected Contextual Blocked Huffman CLI profile
+
+- Authoring method: extended marc's existing Contextual Blocked Huffman CLI
+  adapter with the accepted explicit selected-profile name and completed C
+  lifecycle.
+- References used: DD-827; IR-0601; TVG-0702; BR-0136; marc's legacy CLI
+  adapter and selected Dynamic Range, rANS, and tANS explicit-name patterns.
+- Known implementations intentionally not consulted: external CLIs, Huffman
+  or LZSS implementations, argument grammars, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: preserve the legacy name; add one case-sensitive
+  `-1m` name; bind it to explicit bounded policy values; and reuse the public
+  C lifecycle without reproducing private workspace layouts.
+- Generated-code task description: add selected CLI parsing, configuration,
+  dispatch, usage inventory, exact-header round trip, reciprocal rejection,
+  trailing rejection, and near-miss rejection.
+- Similarity review: the change follows marc-owned CLI configuration and test
+  patterns and contains no externally derived implementation expression.
+- Local validation: both new and legacy direct CLI suites pass under MSVC and
+  ClangCL; all targets build warning-clean; and both complete Release suites
+  pass all 2,934 registered tests, including schema compatibility through
+  version 40 (200.18 seconds under MSVC and 198.50 seconds under ClangCL).

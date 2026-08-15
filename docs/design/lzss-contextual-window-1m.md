@@ -525,6 +525,11 @@ publication. The public C lifecycle now carries the same exact selector in its
 preserved ABI-1 extent and enforces reciprocal decoder admission. The next
 independent boundary is the explicit CLI profile.
 
+The explicit `lzss-contextual-blocked-huffman-1m` CLI profile now binds the
+selected C lifecycle to a 1 MiB frame/window and bounded 128 MiB aggregate
+policy. The legacy CLI name remains fixed to 64 KiB, and each name rejects the
+reciprocal archive. The next independent boundary is benchmark admission.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

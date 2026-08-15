@@ -2338,3 +2338,17 @@ pre-frame rejection, and transactional unknown/crossed/reserved failures. All
 targets build warning-clean and all 2,932 registered Release tests pass under
 MSVC and ClangCL, including schema compatibility through version 40. CLI,
 benchmark, sanitizer fuzz, and interoperability admission remain pending.
+
+### BR-0136
+
+The selected Contextual Blocked Huffman CLI boundary is locally complete.
+`lzss-contextual-blocked-huffman-1m` explicitly selects the existing
+`2/3 + 1/2 + 2/2` public lifecycle with 1 MiB frames/windows, bounded decision
+and payload ceilings, 1 MiB distance policy, and a 128 MiB aggregate limit.
+The legacy name remains byte-frozen at `2/2 + 1/1 + 2/2`. Direct CLI tests
+prove deterministic round trip, exact headers, strict trailing-data rejection,
+reciprocal profile rejection, ordered single-entry usage text, and rejection
+of a case near miss. All targets build warning-clean and all 2,934 registered
+Release tests pass under MSVC and ClangCL, including schema compatibility
+through version 40. Benchmark, sanitizer fuzz, and interoperability admission
+remain pending.

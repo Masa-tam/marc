@@ -5326,3 +5326,10 @@ reserved tail is divided into the common 32-bit window-profile selector and a
 decoder construction additionally installs exact immutable admission. The
 selector changes no stream field beyond the already defined dictionary and
 context variant identities.
+
+The CLI adds one explicit selected name rather than inferring the profile from
+an archive or window size. The legacy Contextual Blocked Huffman name fixes
+the 64 KiB public selector; the `-1m` name fixes the 1 MiB selector and its
+larger bounded frame, payload, distance, and aggregate-workspace policy. Both
+then share the same C workspace/factory/process lifecycle, including
+reciprocal pre-frame rejection during decode.

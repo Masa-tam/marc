@@ -17152,3 +17152,26 @@ workspace, and invalid size tags fail without publishing a transform.
 
 This stage adds no new exported function, ABI version, CLI name, benchmark,
 sanitizer fuzz campaign, or interoperability entry.
+
+## DD-827: Add the explicit Contextual Blocked Huffman 1 MiB CLI profile
+
+- Date: 2026-08-15
+- Status: accepted
+
+Add `lzss-contextual-blocked-huffman-1m` as the sole command-line name for the
+selected `2/3 + 1/2 + 2/2` lifecycle. Keep
+`lzss-contextual-blocked-huffman` fixed to `2/2 + 1/1 + 2/2`. The selected
+name configures 1,048,576-byte frames and windows, the 1 MiB public selector,
+a six-decisions-per-byte block ceiling, a conservative twelve-payload-bytes-
+per-raw-byte ceiling, 1 MiB distance policy, and 128 MiB aggregate workspace.
+The legacy name and its 64 KiB/8 MiB policy remain unchanged.
+
+Both names use the same public C functions after configuration. Decode is
+profile-exact, so each CLI name rejects the reciprocal archive before raw
+publication. Usage lists both adjacent names exactly once and parsing remains
+case-sensitive. The small CLI fixture proves identity and deterministic round
+trip but does not replace the existing marker-gap proof of a Match beyond
+64 KiB.
+
+This stage adds no benchmark, sanitizer fuzz campaign, interoperability entry,
+schema change, or stream representation.

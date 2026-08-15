@@ -93,8 +93,10 @@ tANS entropy variant 2 under the frozen 64 KiB identity. The additive
 require the same explicit name; neither profile auto-detects or admits the
 other. Both remain outside the stable 42-profile inventory.
 `lzss-contextual-blocked-huffman` selects typed LZSS plus the selective
-Contextual Blocked Huffman entropy variant 2. It also requires the same
-explicit selector for encode and decode and remains experimental.
+Contextual Blocked Huffman entropy variant 2 under the frozen 64 KiB profile.
+`lzss-contextual-blocked-huffman-1m` selects exact
+`2/3 + 1/2 + 2/2`. Encode and decode require the same explicit name; neither
+profile auto-detects or admits the other. Both remain experimental.
 `lzss-contextual-adaptive-huffman` selects typed LZSS plus Contextual Adaptive
 Huffman entropy variant 2. It also requires the same explicit selector for
 encode and decode and remains outside the stable 42-profile inventory.
@@ -216,6 +218,14 @@ its aggregate policy is 8 MiB. Both directions call only the public
 configuration initializer, requirements query, factory, process, and destroy
 functions. Typed tokens and Huffman tables remain in the queried opaque views;
 the CLI neither names nor sizes those private layouts.
+
+The experimental `lzss-contextual-blocked-huffman-1m` adapter uses
+1,048,576-byte raw frames and LZSS window, a `6F = 6,291,456` decision
+ceiling, and a conservative `12F = 12,582,912` payload ceiling. Its descriptor
+is bounded at 2,579 bytes and its aggregate policy is 128 MiB. It changes only
+the public exact profile and bounded configuration values before using the
+same public lifecycle; queried workspace extents and alignment remain
+authoritative.
 
 The experimental `lzss-contextual-adaptive-huffman` adapter uses 65,536-byte
 raw frames, at most one typed token per raw byte, the exact 9,067-node plus
