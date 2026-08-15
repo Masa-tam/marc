@@ -21751,3 +21751,28 @@ discarded and the reviewed seed retained.
 - Local complete-suite validation: all 2,960 registered Release tests pass,
   including documentation layout and schema compatibility, in 207.34 seconds
   under MSVC and 206.42 seconds under ClangCL.
+
+## CR-0909: 2026-08-15 - Contextual Adaptive Huffman schema-42 external exchange
+
+- Authoring method: recorded the four verifier results supplied by the
+  repository owner after the merged schema-42 revision and CI artifacts were
+  available.
+- References used: DD-840; IR-0614; TVG-0715; BR-0151; IX-0036; revision
+  `f64259a88c94adfed8fe590f308307c2f1d029aa`; the two schema-42 CI artifacts;
+  and the independently generated Ubuntu 26.04 bundle.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: require the exact revision and all 52 archives in
+  each direction; retain the established three-producer/four-verifier evidence
+  model; and record only completed byte-identical decode/re-encode results.
+- Generated-code task description: preserve the reported Windows-to-Ubuntu,
+  Ubuntu-24.04-to-Ubuntu-26.04, Ubuntu-26.04 self-verification, and Ubuntu-to-
+  Windows results as the schema-42 external admission record.
+- Similarity review: this record contains only marc-owned manifest semantics,
+  environment labels, revision identity, and observed verifier results. No
+  external implementation expression entered the change.
+- External validation: all four passes reported `Verified 52 archives` at the
+  exact revision. Producers were Windows/MSVC via Visual Studio 2026, Ubuntu
+  24.04 default compiler via Ninja, and Ubuntu 26.04 Clang 21.1.8 via Ninja;
+  the latter bundle was verified on both Ubuntu 26.04 and Windows/MSVC.

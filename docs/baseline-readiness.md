@@ -2548,3 +2548,12 @@ through version 1 in 81.30 and 75.77 seconds. Complete registered-suite
 validation passes all 2,960 tests under MSVC and ClangCL, including
 documentation layout and schema compatibility, in 207.34 and 206.42 seconds.
 External four-direction evidence remains pending until the revision is pushed.
+
+### BR-0151
+
+Schema 42 now has complete four-direction external evidence at revision
+`f64259a88c94adfed8fe590f308307c2f1d029aa`. All 52 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the 1 MiB
+Contextual Adaptive Huffman profile.
