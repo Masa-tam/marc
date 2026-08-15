@@ -21156,3 +21156,47 @@ discarded and the reviewed seed retained.
   suites pass all 2,935 registered tests, including schema compatibility
   through version 40 (79.92 seconds under MSVC and 73.11 seconds under ClangCL
   for the schema test).
+
+## CR-0884: 2026-08-15 - Contextual Blocked Huffman dual-profile fuzz design
+
+- Authoring method: derived the wider admission from marc's existing fixed-
+  memory Contextual Blocked Huffman harness and dual-profile tANS boundary.
+- References used: DD-829; IR-0603; TVG-0704; marc's completed selected public
+  decoder lifecycle and deterministic malformed regressions.
+- Known implementations intentionally not consulted: external Huffman or LZSS
+  implementations, fuzz harnesses, corpora, findings, source code, tests,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: retain one target; exercise both strict policies;
+  grow only descriptor backing; preserve small fixed raw storage; parameterize
+  malformed regressions; and bound sanitizer execution explicitly.
+- Generated-code task description: specify dual public admission, private
+  selected parsing, fixed capacities, reciprocal rejection, compile-smoke,
+  sanitizer command limits, and unchanged interoperability inventory.
+- Similarity review: the design composes only marc-owned fuzz, frame, public
+  C, profile, Huffman, and test components. No external implementation
+  expression entered the design.
+
+## CR-0885: 2026-08-15 - Contextual Blocked Huffman dual-profile fuzz admission
+
+- Authoring method: implemented DD-829 by parameterizing marc's fixed-memory
+  harness and malformed regression over both selected profiles.
+- References used: DD-829; IR-0603; TVG-0704; BR-0138; FZ-0027; marc's public
+  decoder and established Windows sanitizer build route.
+- Known implementations intentionally not consulted: external Huffman or LZSS
+  implementations, fuzz harnesses, corpora, findings, source code, tests,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: use selected descriptor capacity; give both public
+  profiles the same 1 MiB safety limit; retain 1 KiB raw storage; verify sticky
+  crossed-profile errors; and run one bounded target without a corpus.
+- Generated-code task description: update fixed workspace, invoke both public
+  policies, parameterize malformed regressions, add reciprocal atomicity,
+  compile under both compilers, and run bounded sanitizers.
+- Similarity review: the implementation parameterizes and composes only marc-
+  owned harness, public C lifecycle, selected format, and GoogleTest code. No
+  external implementation expression entered the change.
+- Local validation: all seven targeted regressions pass under MSVC and
+  ClangCL; the Clang 22 ASan/UBSan target completes 1,000 bounded inputs with
+  seed 8292579 without a finding and peaks at 41 MiB RSS. All targets build
+  warning-clean, and both complete Release suites pass all 2,939 registered
+  tests, including schema compatibility through version 40 (198.25 seconds
+  under MSVC and 196.56 seconds under ClangCL).

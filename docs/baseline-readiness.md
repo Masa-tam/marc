@@ -2362,3 +2362,14 @@ report finite ratio, throughput, and all directional workspace regions. The
 25,573,831-byte direction-maximum workspace over the README smoke. Usage and
 near-miss tests enforce explicit profile naming without speed or ratio
 thresholds. Sanitizer fuzz and interoperability admission remain pending.
+
+### BR-0138
+
+The selected Contextual Blocked Huffman fuzz boundary is locally complete.
+One fixed-memory target exercises private parsing plus strict 64 KiB and
+1 MiB public decoder admissions without allocating a 1 MiB frame. Seven
+deterministic malformed regressions prove dual-profile truncation, extreme-
+length, descriptor-flag, reciprocal-admission, atomic-output, and sticky-error
+behavior. A bounded 1,000-input Windows Clang 22 ASan/UBSan campaign completes
+without a finding at 41 MiB peak RSS. Interoperability admission remains
+pending.

@@ -536,6 +536,13 @@ same selected C lifecycle and bounded policy. Its capacity accounts for the
 aggregation and exact naming without treating performance as a correctness
 threshold. The next independent boundary is sanitizer fuzz admission.
 
+The Contextual Blocked Huffman sanitizer target now exercises both exact
+public profile admissions and private selected parsing within one fixed
+workspace. Deterministic malformed regressions cover both layouts and crossed
+public policies, and a bounded 1,000-input ASan/UBSan campaign completed
+without a finding. The next independent boundary is interoperability
+admission.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

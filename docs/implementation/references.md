@@ -5390,3 +5390,13 @@ the selected Dynamic Range, rANS, and tANS benchmark patterns as first-party
 references. No external benchmark, Huffman or LZSS implementation, adapter,
 source code, test, corpus, archive, patent text, or optimization description
 was consulted.
+
+### IR-0603
+
+The dual-profile Contextual Blocked Huffman fuzz boundary uses DD-790 through
+DD-829, TVG-0665, TVG-0666, and TVG-0696 through TVG-0704; marc's existing
+fixed-memory private/public decoder harness, completed selected public
+admission, and dual-profile Contextual rANS and tANS fuzz routes as first-party
+references. No external Huffman or LZSS implementation, fuzz harness, corpus,
+finding, source code, test, archive, patent text, or optimization description
+was consulted.

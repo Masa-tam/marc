@@ -17198,3 +17198,29 @@ Throughput and ratio remain descriptive and are not pass thresholds.
 
 This stage adds no stream representation, public API, CLI behavior, sanitizer
 fuzz campaign, interoperability entry, or schema change.
+
+## DD-829: One fixed-memory Contextual Blocked Huffman target exercises both profiles
+
+- Date: 2026-08-15
+- Status: accepted
+
+Retain one `marc_fuzz_lzss_contextual_blocked_huffman_stream` target and drive
+the private complete-frame decoder plus both strict public C decoder
+admissions for every bounded input. The private parser accepts either valid
+serialized layout. Public calls explicitly select 64 KiB and 1 MiB window
+profiles so crossed identities exercise the production admission policy.
+
+Keep input capped at 32 KiB, published output at 4 KiB, frame and typed-token
+storage at 1 KiB, decisions at 6,144, the 15-bit Huffman payload ceiling at
+11,520 bytes, 35 decode tables, and the finite process-call budget. Increase
+only serialized-frame backing by the selected descriptor delta from 2,561 to
+2,579 bytes. Both public profiles use a 1 MiB safety distance limit, but the
+harness must not allocate a 1 MiB frame or history buffer.
+
+Parameterize deterministic malformed regressions over both profiles. Require
+every truncation, extreme frame length, nonzero descriptor flag, and reciprocal
+cross-profile public decode to fail atomically with sticky error information.
+Ordinary builds provide warning-clean compile evidence. Run one bounded
+sanitizer campaign without a persistent corpus using
+`-runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`. Interoperability
+admission remains a later stage.

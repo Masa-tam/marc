@@ -5339,3 +5339,8 @@ both directional workspace layouts from the public C lifecycle, verifies an
 untimed round trip, and uses the selected descriptor ceiling in checked
 complete-stream capacity. Ratio and throughput remain observations rather
 than admission thresholds.
+
+The fuzz boundary retains one fixed-memory target and runs both exact public
+decoder admissions for every input. The wider identity increases descriptor
+backing only; raw frame, typed-token, output, decode-table, and process-call
+ceilings remain small and independent of serialized sizes.
