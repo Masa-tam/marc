@@ -1,6 +1,9 @@
 /build*/
 /out/
 /marc-interop/
+/benchmarks/data/silesia/corpus/
+/benchmarks/data/silesia/downloads/
+/benchmarks/data/silesia/results/
 /.vs/
 /CMakeUserPresets.json
 *.user

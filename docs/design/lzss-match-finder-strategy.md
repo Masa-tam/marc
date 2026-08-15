@@ -305,7 +305,11 @@ Exhaustiveと次を完全一致させる。
 - LZSS解析スループット
 - 完全な圧縮スループット
 - 圧縮率
-- 一致候補の平均・最大評価数
+- query数とチェインから訪問した候補数
+- 同一bucket内で5-byte接頭辞が異なるhash false positive数
+- 実際に5-byte接頭辞が一致した候補数
+- match比較byte数
+- queryごとの候補数分布、平均および最大
 - 最大チェーン長または木探索深度
 - 探索ワークスペースのピークメモリ
 - 計画と書き込みを合わせた総時間
@@ -317,6 +321,15 @@ Exhaustiveと次を完全一致させる。
 WindowAdaptiveV1の64 KiB閾値は、複数カテゴリと複数ウィンドウサイズの結果
 から妥当性を確認する。単一サンプルの結果だけで固定しない。
 
+代表的な実データには、利用者が取得してリポジトリ外データとして配置した
+Silesia Corpusを使用する。Corpusを自動downloadまたは再配布せず、各構成
+ファイルを独立して測定する。配置、検証、集計および再現性の契約は
+[`silesia-benchmark-profile.md`](silesia-benchmark-profile.md)で定める。
+
+最初のHashChain診断は64 KiB、256 KiBおよび1 MiB windowを同一入力と設定で
+比較する。公開profileが存在しないwindow sizeはmatch-finder単体測定に限定
+し、公開codecの対応として扱わない。
+
 ## 12. 推奨実装順序
 
 1. 本文書と正式な設計判断で形式非変更方針を固定する。
@@ -326,22 +339,21 @@ WindowAdaptiveV1の64 KiB閾値は、複数カテゴリと複数ウィンドウ�
 5. caller-owned workspaceの必要容量計算を定義する。
 6. 固定5バイト接頭辞を使う`HashChain Exact`を実装する。
 7. Exhaustiveとの差分試験と有限fuzzingを行う。
-8. 各ウィンドウサイズでベンチマークする。
-9. 実測上の必要性とExact性の設計が確認された場合だけ
+8. Silesiaの外部配置、検証および測定契約を実装する。
+9. 64 KiB、256 KiB、1 MiBと合成worst-case入力でHashChainを診断する。
+10. 実測上の必要性とExact性の設計が確認された場合だけ
    `BinaryTree Exact`を実装する。
-10. 両戦略の結果がそろった場合だけ`WindowAdaptiveV1`を検討する。
-11. 必要性が確認された後にBoundedポリシーを追加する。
-12. 再現性情報を公開する必要が生じた場合は、ストリームではなく
+11. 両戦略の結果がそろった場合だけ`WindowAdaptiveV1`を検討する。
+12. 必要性が確認された後にBoundedポリシーを追加する。
+13. 再現性情報を公開する必要が生じた場合は、ストリームではなく
     エンコーダー設定または外部provenanceとして設計する。
 
 ## 13. 正式設計前の未決事項
 
-- HashChainのハッシュ関数
-- バケット数とウィンドウサイズの関係
-- チェーンリンクの整数幅と世代管理
 - BinaryTreeのノード表現と期限切れ位置の削除方法
 - BinaryTreeを平衡化するかどうか
 - Exactを保証しながら安全に枝刈りできる条件
+- 同一接頭辞群から最短距離tie-breakを保証する索引またはmetadata
 - WindowAdaptiveV1の最終閾値
 - 内部strategy設定をどの段階で公開エンコーダー設定へ昇格するか
 - 計画／書き込み間で型付きトークンを保持する標準経路
@@ -357,6 +369,7 @@ Exhaustiveを参照オラクルとして残し、最初にHashChain Exactを追�
 いずれもストリームへ探索設定を記録せず、必要な再符号化provenanceは
 エンコーダー利用側が管理する。
 
-BinaryTree、WindowAdaptiveV1およびBoundedは、HashChain Exactの性能、
-workspace、最悪挙動を測定し、追加の複雑性に価値があると確認してから
+BinaryTree、WindowAdaptiveV1およびBoundedは、Silesiaと合成worst-case入力
+からHashChain Exactの性能、hash false positive、同一接頭辞候補数、
+workspaceおよび最悪挙動を測定し、追加の複雑性に価値があると確認してから
 別の設計判断として採否を決める。

@@ -21776,3 +21776,30 @@ discarded and the reviewed seed retained.
   exact revision. Producers were Windows/MSVC via Visual Studio 2026, Ubuntu
   24.04 default compiler via Ninja, and Ubuntu 26.04 Clang 21.1.8 via Ninja;
   the latter bundle was verified on both Ubuntu 26.04 and Windows/MSVC.
+
+## CR-0910: 2026-08-15 - External Silesia and HashChain diagnostic design
+
+- Authoring method: separated external benchmark-data handling from marc's
+  build and validation lifecycle, then refined the existing BinaryTree
+  evidence gate to distinguish hash collisions from genuine repeated-prefix
+  chains.
+- References used: DD-841; IR-0615; marc's existing LZSS match-finder design,
+  HashChain Exact implementation contract, dependency-free benchmark policy,
+  and the official Silesia Corpus metadata page.
+- Known implementations intentionally not consulted: external LZSS,
+  HashChain, BinaryTree, or compressor implementations; benchmark source code,
+  published performance results, third-party Corpus mirrors, test suites,
+  patents, and optimization descriptions.
+- Independent decisions: require manual acquisition and local-only
+  verification; ignore the data directory; keep normal CTest independent of
+  Corpus presence; measure files separately; define byte-weighted totals;
+  split false hash positives from true prefix candidates; and require both
+  real-corpus and synthetic worst-case evidence before BinaryTree admission.
+- Generated-code task description: document an external Silesia layout and
+  published manifest, add a narrow ignore rule, define diagnostic counters,
+  comparison windows, aggregation and reproducibility rules, and record that
+  no stream or public interface changes in this stage.
+- Similarity review: the change contains documentation, metadata transcribed
+  from the official Corpus page, and marc-owned measurement policy only. No
+  external implementation expression or Corpus payload entered the
+  repository.

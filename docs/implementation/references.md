@@ -5511,3 +5511,16 @@ references. No external bundle format, interoperability suite, Adaptive
 Huffman or LZSS implementation, compressor, corpus, archive, source code,
 manifest, conformance vector, patent text, or optimization description was
 consulted.
+
+### IR-0615
+
+The external Silesia benchmark-profile design uses the official
+[Silesia Corpus page](https://sun.aei.polsl.pl/~sdeor/index.php?page=silesia)
+only for the Corpus purpose, twelve member names, uncompressed sizes,
+published MD5 identifiers, source descriptions, and manual-download location.
+The page's linked compressor implementations, benchmark results, source code,
+optimization descriptions, and third-party mirrors were not consulted. The
+match-finder diagnostic fields, non-redistribution policy, local-only
+verification boundary, aggregation rules, and BinaryTree evidence gate were
+designed independently from marc's existing HashChain Exact contract and
+benchmark infrastructure.

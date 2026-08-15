@@ -19,6 +19,8 @@ navigate chronological development records.
 
 - [LZSS match-finder strategy](design/lzss-match-finder-strategy.md): exact
   encoder-side acceleration without changing the LZSS stream format.
+- [Silesia external benchmark profile](design/silesia-benchmark-profile.md):
+  non-redistributed corpus handling and large-window match-finder measurement.
 - [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md): additive
   typed-token and context variants for extended-distance experiments.
 - [LZSS typed-token protocol](design/lzss-typed-token-protocol.md): bounded

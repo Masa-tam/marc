@@ -17529,3 +17529,36 @@ schema 41, then traverses its unchanged chain through schema 1. The common
 fixture proves selected identity and deterministic bytes, not a reference
 beyond 65,536; dedicated format vectors retain that responsibility. External
 four-direction evidence is recorded only after pushed artifacts are exchanged.
+
+## DD-841: Keep Silesia external and diagnose HashChain before BinaryTree
+
+- Date: 2026-08-15
+- Status: accepted
+
+Use the Silesia Corpus as an opt-in development benchmark for large-window
+LZSS match finding, but never vendor or redistribute its archive or extracted
+members. Keep the ignored data under
+`benchmarks/data/silesia/downloads/`, `corpus/`, and `results/`, retain a
+tracked README beside them, and
+require the user to obtain the Corpus manually from its official page. No
+configure, build, CTest, benchmark, or helper may download it. Corpus absence
+must not fail ordinary validation.
+
+A later network-free verifier must require the exact twelve direct child
+names, official uncompressed sizes, and published MD5 identifiers before
+measurement, then print SHA-256 values for experiment provenance. MD5 serves
+only as published-file identification. Measure members independently and
+report per-file plus byte-weighted aggregate results; do not silently
+concatenate the members or treat throughput, ratio, or an adaptive threshold
+as a stable pass criterion.
+
+Before specifying BinaryTree Exact, instrument HashChain to separate visited
+links, false-positive same-bucket candidates, actual equal five-byte prefixes,
+match-byte comparisons, and per-query candidate distribution. Compare at
+least 64 KiB, 256 KiB, and 1 MiB windows on the same inputs and parameters,
+with 256 KiB remaining an internal match-finder experiment until a public
+profile exists. Add repetitive, periodic, and collision-oriented synthetic
+inputs beside Silesia so aggregate corpus results cannot hide a pathological
+query. Promote neither BinaryTree nor `WindowAdaptiveV1` until these results
+show the cause and magnitude of the HashChain limit. This decision changes no
+stream representation, algorithm ID, public ABI, CLI, or decoder behavior.

@@ -1205,6 +1205,28 @@ encoded extent is expected because this fixture cannot use a distance beyond
 `112 + ceil(267N/8) + 80K` capacity, strict name rejection, and independent
 smoke success under both local compilers are the normative evidence.
 
+## External Silesia measurements
+
+Silesia Corpus measurements are opt-in development experiments. The Corpus is
+not redistributed by marc and is never downloaded by configure, build, CTest,
+or benchmark execution. Acquisition and local placement instructions are in
+[`benchmarks/data/silesia/README.md`](../benchmarks/data/silesia/README.md).
+
+Before measurement, verify all twelve direct child files by exact name,
+uncompressed size, and the MD5 values published by the official Corpus page.
+Record locally calculated SHA-256 values with an experiment when practical.
+MD5 identifies the published input and is not an authenticity guarantee.
+
+Run every member as an independent input. Report per-file results and totals;
+do not silently concatenate members or report only an unweighted mean of their
+ratios. Corpus absence must never fail an ordinary build or CTest run. The
+complete external-data and LZSS diagnostic contract is defined by
+[`docs/design/silesia-benchmark-profile.md`](design/silesia-benchmark-profile.md).
+
+These measurements remain descriptive. They may justify work on a new match
+finder, but do not by themselves make a throughput number or an adaptive
+strategy threshold normative.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,
