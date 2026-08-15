@@ -17562,3 +17562,28 @@ inputs beside Silesia so aggregate corpus results cannot hide a pathological
 query. Promote neither BinaryTree nor `WindowAdaptiveV1` until these results
 show the cause and magnitude of the HashChain limit. This decision changes no
 stream representation, algorithm ID, public ABI, CLI, or decoder behavior.
+
+## DD-842: The Silesia verifier is local, exact, and Corpus-independent in CTest
+
+- Date: 2026-08-15
+- Status: accepted
+
+Provide `tools/verify_silesia_corpus.py` as a Python 3.9-or-later,
+standard-library-only verifier. Its optional directory argument defaults to
+the ignored repository-local Corpus location. It contains no downloader and
+performs no network operation. Require exactly the twelve manifest names as
+direct children, reject symlinks and non-files, reject missing or unexpected
+entries, validate size before reading file contents, and stream MD5 plus
+SHA-256 calculation through a fixed 1 MiB buffer.
+
+MD5 must be requested as a non-security operation where the Python runtime
+supports that distinction. Emit a tab-separated manifest in official order
+and one exact total only after the complete directory succeeds; report each
+failure to standard error and return nonzero without publishing a partial
+success manifest. Keep the verification logic callable with a supplied small
+manifest so unit tests need neither the real Corpus nor large fixtures.
+
+When CMake discovers Python 3.9 or later, register the fixture-only verifier
+test with CTest. Interpreter or Corpus absence must not make normal configure,
+build, or CTest fail. This tool validates benchmark input identity only and
+changes no library, format, API, CLI, or benchmark result.

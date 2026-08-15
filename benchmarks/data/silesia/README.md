@@ -62,9 +62,25 @@ treated as a security or authenticity guarantee.
 | `x-ray` | 8,474,240 | `9baec32ad14ec3eff487d254382cb91c` |
 | **Total** | **211,938,580** | - |
 
-A future local-only verifier will check the exact names, sizes, and published
-MD5 values before measurement and will print SHA-256 values for experiment
-records. It will perform no network access.
+Run the local-only verifier from the repository root before measurement:
+
+```console
+py -3 tools/verify_silesia_corpus.py
+```
+
+On platforms where Python is exposed as `python3`, use:
+
+```console
+python3 tools/verify_silesia_corpus.py
+```
+
+An alternative Corpus directory may be supplied as the sole argument. The
+verifier checks the exact names, sizes, and published MD5 values, then prints
+SHA-256 values for experiment records. It performs no network access.
+
+The verifier requires Python 3.9 or later. Its fixture-only unit test is
+registered with CTest when CMake can discover a suitable Python interpreter;
+Corpus presence is never a condition for registering or passing that test.
 
 ## Usage policy
 

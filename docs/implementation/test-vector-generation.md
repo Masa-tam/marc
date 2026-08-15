@@ -9949,3 +9949,20 @@ compatibility chain through schema 1. Do not claim the common fixture exercises
 a distance greater than 65,536. Run the complete registered Release suite,
 including documentation layout and schema compatibility, under MSVC and
 ClangCL before local admission.
+
+### TVG-0716
+
+Exercise the offline Corpus verifier with temporary small files and a supplied
+manifest, never with a downloaded test dependency. Require exact regular
+files to succeed in manifest order and return the expected SHA-256. Require a
+missing plus unexpected entry to be reported together, wrong size to fail
+before content hashing, same-size wrong MD5 to fail, a directory in place of
+a member to fail, a missing root to fail, and duplicate manifest names to be
+rejected as a programmer error. Invoke the CLI on an invalid directory and
+require nonzero return, diagnostic standard error, and empty standard output
+so no partial success manifest is published.
+
+Separately run the production manifest against the owner-supplied local
+Silesia directory and require all twelve names, published sizes, and MD5
+values plus the exact 211,938,580-byte total. This local data validation is
+developer evidence, not a persistent CTest fixture or redistributed vector.

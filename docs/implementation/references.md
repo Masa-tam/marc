@@ -5524,3 +5524,12 @@ match-finder diagnostic fields, non-redistribution policy, local-only
 verification boundary, aggregation rules, and BinaryTree evidence gate were
 designed independently from marc's existing HashChain Exact contract and
 benchmark infrastructure.
+
+### IR-0616
+
+The offline Silesia verifier implementation uses DD-841, DD-842, IR-0615,
+Python standard-library file and hashing interfaces, CMake's documented
+`FindPython3` interpreter discovery, and marc's external-data design as
+first-party references. No downloader, remote service, third-party verifier,
+Corpus-processing script, compression implementation, benchmark result,
+source code, test suite, or optimization description was consulted.

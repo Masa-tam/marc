@@ -21803,3 +21803,34 @@ discarded and the reviewed seed retained.
   from the official Corpus page, and marc-owned measurement policy only. No
   external implementation expression or Corpus payload entered the
   repository.
+
+## CR-0911: 2026-08-15 - Offline Silesia verifier
+
+- Authoring method: implemented the accepted external-data boundary as a
+  small standard-library verifier with injectable manifest logic and
+  Corpus-independent temporary-file tests.
+- References used: DD-841; DD-842; IR-0615; IR-0616; TVG-0716; Python file,
+  argparse, hashlib, pathlib, tempfile, and unittest interfaces; CMake
+  `FindPython3`; and marc's tracked Silesia placement README.
+- Known implementations intentionally not consulted: external Corpus
+  downloaders or verifiers, compression tools, match finders, source code,
+  tests, benchmark results, mirrors, patents, and optimization descriptions.
+- Independent decisions: accept one optional directory; require exact direct
+  children and regular non-symlink files; validate size before bounded hashing;
+  emit no partial success table; use published MD5 only for identity; print
+  SHA-256 for provenance; and condition CTest registration only on interpreter
+  discovery, never on Corpus presence.
+- Generated-code task description: implement the fixed twelve-entry manifest,
+  bounded dual-hash pass, deterministic tab-separated report, stable failure
+  path, eight temporary-fixture unit tests, conditional CTest registration,
+  usage documentation, and local production-manifest validation.
+- Similarity review: the implementation follows only marc's accepted policy
+  and ordinary Python standard-library structure. No external verifier or
+  compressor expression and no Corpus payload entered the tracked change.
+- Local validation: all eight temporary-fixture tests pass under Python
+  3.13.13 and 3.14.5. The production manifest verifies all twelve locally
+  supplied files and the exact 211,938,580-byte total, producing the same
+  SHA-256 values as the independent placement check. With Python 3.14 supplied
+  explicitly to CMake, both the registered tooling test and documentation
+  layout test pass. With Python execution unavailable inside the sandbox,
+  configuration succeeds and omits only the optional tooling test as designed.

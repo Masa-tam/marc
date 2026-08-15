@@ -1517,6 +1517,14 @@ if(MARC_BUILD_TESTS)
         COMMAND ${CMAKE_COMMAND}
             "-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
             -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/verify_documentation.cmake)
+    find_package(Python3 3.9 QUIET COMPONENTS Interpreter)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_silesia_corpus_verifier_tests
+            COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_corpus_verifier_tests.py)
+        set_tests_properties(marc_silesia_corpus_verifier_tests
+            PROPERTIES LABELS tooling)
+    endif()
     if(TARGET marc_c_roundtrip_example)
         add_test(NAME marc_c_roundtrip_example COMMAND marc_c_roundtrip_example)
     endif()

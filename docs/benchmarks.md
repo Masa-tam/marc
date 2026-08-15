@@ -1217,6 +1217,12 @@ uncompressed size, and the MD5 values published by the official Corpus page.
 Record locally calculated SHA-256 values with an experiment when practical.
 MD5 identifies the published input and is not an authenticity guarantee.
 
+From the repository root, run `py -3 tools/verify_silesia_corpus.py` on
+Windows or `python3 tools/verify_silesia_corpus.py` where Python uses the
+`python3` command. Pass an alternative Corpus directory as the sole argument.
+The verifier performs no network access and emits results only after all
+twelve members pass.
+
 Run every member as an independent input. Report per-file results and totals;
 do not silently concatenate members or report only an unweighted mean of their
 ratios. Corpus absence must never fail an ordinary build or CTest run. The
