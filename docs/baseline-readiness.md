@@ -2392,3 +2392,20 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the 1 MiB
 Contextual Blocked Huffman profile.
+
+### BR-0141
+
+The selected Contextual Adaptive Huffman model-bank foundation is locally
+complete. One allocation-free owner now accepts only either canonical
+field-context layout, partitions all 31 reset-per-frame FGK trees, preserves
+variant 1 at exactly 4,518 symbols and 9,067 nodes, and admits variant 2 at
+4,550 symbols and 9,131 nodes. Stable failures cover unsupported and
+inconsistent layouts plus independently short node and symbol regions; all
+fail before the bank becomes observable. The eight widened distance trees
+accept class 20 and return to their initial NYT state after reset. Existing
+entropy callers select variant 1 explicitly, so no stream representation or
+public interface changes. All targets build warning-clean and all 2,942
+registered Release tests pass under MSVC and ClangCL, including documentation
+layout and schema compatibility. Selected descriptor, operation coding,
+frames, public lifecycle, benchmark, fuzz, and interoperability admission
+remain later boundaries.

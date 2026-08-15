@@ -21293,3 +21293,29 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned field-context, FGK,
   checked-workspace, and test components. No external implementation
   expression entered the design.
+
+## CR-0890: 2026-08-15 - Selected Contextual Adaptive Huffman model-bank implementation
+
+- Authoring method: implemented DD-831 directly over marc's existing
+  caller-owned FGK tree and validated field-context layout boundaries.
+- References used: DD-831; IR-0605; TVG-0706; BR-0141; marc's existing
+  Contextual Adaptive Huffman model, encoder, decoder, and field-context code.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: require an explicit canonical variant or layout;
+  derive all tree slices and checked extents from that selection; keep failed
+  initialization unobservable; and make existing entropy callers select
+  variant 1 explicitly until the selected coding path is implemented.
+- Generated-code task description: add variant-2 model capacities, canonical
+  layout validation, checked allocation-free partitioning, frozen variant-1
+  call sites, widened-distance/reset regressions, and stable capacity/layout
+  failures without changing serialized bytes.
+- Similarity review: the change extends only marc-owned model-bank and
+  field-context abstractions using their established checked-span style. No
+  external implementation expression entered the change.
+- Local validation: all targets build warning-clean under MSVC and ClangCL.
+  The seven focused model-bank tests pass under both compilers. Both complete
+  Release suites pass all 2,942 registered tests, including documentation
+  layout and interoperability schema compatibility, in 204.06 seconds under
+  MSVC and 207.77 seconds under ClangCL.

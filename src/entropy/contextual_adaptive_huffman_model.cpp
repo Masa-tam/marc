@@ -38,21 +38,61 @@ namespace marc::entropy::internal {
 
 ContextualAdaptiveHuffmanModelError
 ContextualAdaptiveHuffmanModelBank::initialize(
+    const context::internal::LzssFieldContextVariant variant,
+    const std::span<AdaptiveHuffmanNode> node_storage,
+    const std::span<std::uint16_t> symbol_storage) noexcept {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        initialized_ = false;
+        return ContextualAdaptiveHuffmanModelError::invalid_layout;
+    }
+    return initialize(selected.layout, node_storage, symbol_storage);
+}
+
+ContextualAdaptiveHuffmanModelError
+ContextualAdaptiveHuffmanModelBank::initialize(
+    const context::internal::LzssFieldContextLayout& layout,
     const std::span<AdaptiveHuffmanNode> node_storage,
     const std::span<std::uint16_t> symbol_storage) noexcept {
     initialized_ = false;
-    if (node_storage.size() < contextual_adaptive_huffman_node_entries) {
+    const auto selected = context::internal::get_lzss_field_context_layout(
+        layout.context_variant);
+    if (selected.error
+            != context::internal::LzssFieldContextLayoutError::none
+        || layout.dictionary_variant
+            != selected.layout.dictionary_variant
+        || layout.alphabets != selected.layout.alphabets
+        || layout.offsets != selected.layout.offsets
+        || layout.frequency_entries != selected.layout.frequency_entries
+        || layout.maximum_bypass_bits
+            != selected.layout.maximum_bypass_bits
+        || layout.maximum_decisions_per_token
+            != selected.layout.maximum_decisions_per_token) {
+        return ContextualAdaptiveHuffmanModelError::invalid_layout;
+    }
+    std::size_t node_entries{};
+    if (!core::checked_multiply(
+            layout.frequency_entries, std::size_t{2}, node_entries)
+        || !core::checked_add(
+            node_entries,
+            static_cast<std::size_t>(context::internal::lzss_field_context_count),
+            node_entries)) {
+        return ContextualAdaptiveHuffmanModelError::arithmetic_overflow;
+    }
+    if (node_storage.size() < node_entries) {
         return ContextualAdaptiveHuffmanModelError::node_workspace_too_small;
     }
-    if (symbol_storage.size() < contextual_adaptive_huffman_symbol_entries) {
+    if (symbol_storage.size() < layout.frequency_entries) {
         return ContextualAdaptiveHuffmanModelError::symbol_workspace_too_small;
     }
     std::size_t node_bytes{};
     std::size_t symbol_bytes{};
-    if (!core::checked_multiply(contextual_adaptive_huffman_node_entries,
+    if (!core::checked_multiply(node_entries,
                                 sizeof(AdaptiveHuffmanNode), node_bytes)
         || !core::checked_multiply(
-            contextual_adaptive_huffman_symbol_entries,
+            layout.frequency_entries,
             sizeof(std::uint16_t), symbol_bytes)) {
         return ContextualAdaptiveHuffmanModelError::arithmetic_overflow;
     }
@@ -67,11 +107,9 @@ ContextualAdaptiveHuffmanModelBank::initialize(
 
     std::size_t node_offset{};
     for (std::size_t context_id = 0; context_id < trees_.size(); ++context_id) {
-        const auto alphabet =
-            context::internal::lzss_field_context_alphabets[context_id];
+        const auto alphabet = (*layout.alphabets)[context_id];
         const auto node_count = static_cast<std::size_t>(2U * alphabet + 1U);
-        const auto symbol_offset =
-            context::internal::lzss_field_context_offsets[context_id];
+        const auto symbol_offset = (*layout.offsets)[context_id];
         const auto error = trees_[context_id].initialize(
             alphabet, node_storage.subspan(node_offset, node_count),
             symbol_storage.subspan(symbol_offset, alphabet));
@@ -80,9 +118,10 @@ ContextualAdaptiveHuffmanModelBank::initialize(
         }
         node_offset += node_count;
     }
-    if (node_offset != contextual_adaptive_huffman_node_entries) {
+    if (node_offset != node_entries) {
         return ContextualAdaptiveHuffmanModelError::tree_initialization_failed;
     }
+    layout_ = layout;
     initialized_ = true;
     return ContextualAdaptiveHuffmanModelError::none;
 }
@@ -112,7 +151,7 @@ bool ContextualAdaptiveHuffmanModelBank::validate() const noexcept {
     if (!initialized_) return false;
     for (std::size_t context_id = 0; context_id < trees_.size(); ++context_id) {
         if (trees_[context_id].alphabet_size()
-                != context::internal::lzss_field_context_alphabets[context_id]
+                != (*layout_.alphabets)[context_id]
             || !trees_[context_id].validate()) {
             return false;
         }

@@ -9757,9 +9757,10 @@ alphabets elsewhere.
 
 For variant 2, independently shorten the node and symbol workspaces by one and
 require the corresponding stable capacity error with no initialized bank.
-Reject an unsupported or inconsistent layout, overlapping workspaces, and
-checked byte-extent overflow atomically. Exercise one newly admitted distance-
-class symbol in each of the eight widened trees, reset, and prove the initial
-NYT state and complete validation are restored. Retain all existing variant-1
-model vectors byte-for-byte. No descriptor, payload, frame, public, fuzz, or
-interoperability vector belongs to this stage.
+Reject an unsupported or inconsistent layout atomically. Retain the existing
+overlapping-workspace rejection and checked byte-extent arithmetic. Exercise
+one newly admitted distance-class symbol in each of the eight widened trees,
+reset, and prove the initial NYT state and complete validation are restored.
+Retain all existing variant-1 model vectors byte-for-byte. No descriptor,
+payload, frame, public, fuzz, or interoperability vector belongs to this
+stage.

@@ -563,6 +563,14 @@ variant 1 retains 4,518 symbols and 9,067 nodes, while variant 2 uses 4,550
 symbols and 9,131 nodes across the same 31 reset-per-frame trees. No descriptor
 or payload-ceiling change belongs to that foundation.
 
+That model-bank foundation is implemented. Initialization now requires an
+explicit canonical field-context variant or layout, derives and checks the
+exact caller-owned node and symbol extents, and partitions all 31 FGK trees
+from the selected alphabets and offsets. Existing entropy encoder and decoder
+callers explicitly select variant 1, preserving every released stream byte;
+the selected variant-2 entropy coding path remains the next independent
+boundary.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

@@ -221,6 +221,7 @@ void write_bit(
     ContextualAdaptiveHuffmanEncodeResult result{};
     ContextualAdaptiveHuffmanModelBank models;
     if (models.initialize(
+            context::internal::LzssFieldContextVariant::field_context_64k,
             nodes.first(contextual_adaptive_huffman_node_entries),
             symbols.first(contextual_adaptive_huffman_symbol_entries))
             != ContextualAdaptiveHuffmanModelError::none
@@ -350,6 +351,7 @@ ContextualAdaptiveHuffmanForwardEncoder::begin_common(
         return fail(ContextualAdaptiveHuffmanEncodeError::limit_exceeded);
     }
     if (models_.initialize(
+            context::internal::LzssFieldContextVariant::field_context_64k,
             node_workspace.first(contextual_adaptive_huffman_node_entries),
             symbol_workspace.first(
                 contextual_adaptive_huffman_symbol_entries))

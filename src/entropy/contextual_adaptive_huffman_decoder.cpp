@@ -143,6 +143,7 @@ ContextualAdaptiveHuffmanDecodeResult ContextualAdaptiveHuffmanDecoder::begin(
     }
 
     const auto model_error = models_.initialize(
+        context::internal::LzssFieldContextVariant::field_context_64k,
         node_storage.first(contextual_adaptive_huffman_node_entries),
         symbol_storage.first(contextual_adaptive_huffman_symbol_entries));
     if (model_error != ContextualAdaptiveHuffmanModelError::none

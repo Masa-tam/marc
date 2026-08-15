@@ -20,13 +20,27 @@ struct ModelWorkspace {
         symbols{};
 };
 
+struct SelectedModelWorkspace {
+    std::array<AdaptiveHuffmanNode,
+               contextual_adaptive_huffman_node_entries_v2>
+        nodes{};
+    std::array<std::uint16_t,
+               contextual_adaptive_huffman_symbol_entries_v2>
+        symbols{};
+};
+
 static_assert(contextual_adaptive_huffman_node_entries == 9067);
 static_assert(contextual_adaptive_huffman_symbol_entries == 4518);
+static_assert(contextual_adaptive_huffman_node_entries_v2 == 9131);
+static_assert(contextual_adaptive_huffman_symbol_entries_v2 == 4550);
 
 TEST(ContextualAdaptiveHuffmanModel, PartitionsEveryFixedContextExactly) {
     ModelWorkspace workspace{};
     ContextualAdaptiveHuffmanModelBank models;
-    ASSERT_EQ(models.initialize(workspace.nodes, workspace.symbols),
+    ASSERT_EQ(models.initialize(
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_64k,
+                  workspace.nodes, workspace.symbols),
               ContextualAdaptiveHuffmanModelError::none);
     ASSERT_TRUE(models.initialized());
     ASSERT_TRUE(models.validate());
@@ -46,7 +60,10 @@ TEST(ContextualAdaptiveHuffmanModel, PartitionsEveryFixedContextExactly) {
 TEST(ContextualAdaptiveHuffmanModel, ContextsUpdateIndependentlyAndReset) {
     ModelWorkspace workspace{};
     ContextualAdaptiveHuffmanModelBank models;
-    ASSERT_EQ(models.initialize(workspace.nodes, workspace.symbols),
+    ASSERT_EQ(models.initialize(
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_64k,
+                  workspace.nodes, workspace.symbols),
               ContextualAdaptiveHuffmanModelError::none);
     auto* first = models.tree(0);
     auto* second = models.tree(1);
@@ -67,11 +84,15 @@ TEST(ContextualAdaptiveHuffmanModel, RejectsShortWorkspaceBeforePublication) {
     ModelWorkspace workspace{};
     ContextualAdaptiveHuffmanModelBank models;
     EXPECT_EQ(models.initialize(
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_64k,
                   std::span{workspace.nodes}.first(workspace.nodes.size() - 1),
                   workspace.symbols),
               ContextualAdaptiveHuffmanModelError::node_workspace_too_small);
     EXPECT_FALSE(models.initialized());
     EXPECT_EQ(models.initialize(
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_64k,
                   workspace.nodes,
                   std::span{workspace.symbols}.first(
                       workspace.symbols.size() - 1)),
@@ -85,8 +106,93 @@ TEST(ContextualAdaptiveHuffmanModel, RejectsOverlappingWorkspace) {
     const auto overlapping_symbols = std::span<std::uint16_t>{
         reinterpret_cast<std::uint16_t*>(workspace.nodes.data()),
         contextual_adaptive_huffman_symbol_entries};
-    EXPECT_EQ(models.initialize(workspace.nodes, overlapping_symbols),
+    EXPECT_EQ(models.initialize(
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_64k,
+                  workspace.nodes, overlapping_symbols),
               ContextualAdaptiveHuffmanModelError::overlapping_workspaces);
+    EXPECT_FALSE(models.initialized());
+}
+
+TEST(ContextualAdaptiveHuffmanModel,
+     SelectedLayoutWidensOnlyDistanceTreesAndResets) {
+    SelectedModelWorkspace workspace{};
+    ContextualAdaptiveHuffmanModelBank models;
+    ASSERT_EQ(models.initialize(
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_1m,
+                  workspace.nodes, workspace.symbols),
+              ContextualAdaptiveHuffmanModelError::none);
+    ASSERT_TRUE(models.validate());
+    for (std::uint16_t context_id = 0;
+         context_id < marc::context::internal::lzss_field_context_count;
+         ++context_id) {
+        auto* tree = models.tree(context_id);
+        ASSERT_NE(tree, nullptr);
+        EXPECT_EQ(tree->alphabet_size(),
+                  marc::context::internal::lzss_field_context_alphabets_v2[
+                      context_id]);
+        EXPECT_EQ(tree->node_count(), 1U);
+        if (context_id >= 23) {
+            ASSERT_EQ(tree->observe_new(20),
+                      ContextualAdaptiveHuffmanTreeError::none);
+            EXPECT_TRUE(tree->contains(20));
+        }
+    }
+    ASSERT_TRUE(models.validate());
+    models.reset();
+    for (std::uint16_t context_id = 23; context_id <= 30; ++context_id) {
+        const auto* tree = models.tree(context_id);
+        ASSERT_NE(tree, nullptr);
+        EXPECT_FALSE(tree->contains(20));
+        EXPECT_EQ(tree->node_count(), 1U);
+    }
+    EXPECT_TRUE(models.validate());
+}
+
+TEST(ContextualAdaptiveHuffmanModel,
+     SelectedLayoutRejectsEachShortWorkspaceBeforePublication) {
+    SelectedModelWorkspace workspace{};
+    ContextualAdaptiveHuffmanModelBank models;
+    EXPECT_EQ(models.initialize(
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_1m,
+                  std::span{workspace.nodes}.first(workspace.nodes.size() - 1),
+                  workspace.symbols),
+              ContextualAdaptiveHuffmanModelError::node_workspace_too_small);
+    EXPECT_FALSE(models.initialized());
+    EXPECT_EQ(models.initialize(
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_1m,
+                  workspace.nodes,
+                  std::span{workspace.symbols}.first(
+                      workspace.symbols.size() - 1)),
+              ContextualAdaptiveHuffmanModelError::symbol_workspace_too_small);
+    EXPECT_FALSE(models.initialized());
+}
+
+TEST(ContextualAdaptiveHuffmanModel,
+     RejectsUnsupportedAndInconsistentLayoutsAtomically) {
+    SelectedModelWorkspace workspace{};
+    ContextualAdaptiveHuffmanModelBank models;
+    EXPECT_EQ(models.initialize(
+                  static_cast<marc::context::internal::
+                                  LzssFieldContextVariant>(0xffff),
+                  workspace.nodes, workspace.symbols),
+              ContextualAdaptiveHuffmanModelError::invalid_layout);
+    EXPECT_FALSE(models.initialized());
+
+    const auto selected =
+        marc::context::internal::get_lzss_field_context_layout(
+            marc::context::internal::LzssFieldContextVariant::
+                field_context_1m);
+    ASSERT_EQ(selected.error,
+              marc::context::internal::LzssFieldContextLayoutError::none);
+    auto inconsistent = selected.layout;
+    --inconsistent.frequency_entries;
+    EXPECT_EQ(models.initialize(
+                  inconsistent, workspace.nodes, workspace.symbols),
+              ContextualAdaptiveHuffmanModelError::invalid_layout);
     EXPECT_FALSE(models.initialized());
 }
 

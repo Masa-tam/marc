@@ -5359,3 +5359,11 @@ symbol offsets explicitly. Variant 1 retains exactly 4,518 symbol slots and
 the eight distance contexts grows from 17 to 21 symbols. The fixed 16-byte
 descriptor, reset-per-frame rule, entropy identity `1/2`, and
 `ceil(267F/8)` payload ceiling do not change.
+
+The model bank now implements that selection without allocation. It rejects
+unsupported or noncanonical layouts, insufficient or overlapping caller-owned
+regions, and checked extent failures before exposing an initialized tree. All
+31 tree slices derive from the selected layout; reset and validation preserve
+the same selection. Existing operation encoder and decoder entry points pass
+variant 1 explicitly, so this boundary changes neither a descriptor nor a
+payload byte.

@@ -1,7 +1,7 @@
 #ifndef MARC_ENTROPY_CONTEXTUAL_ADAPTIVE_HUFFMAN_MODEL_HPP
 #define MARC_ENTROPY_CONTEXTUAL_ADAPTIVE_HUFFMAN_MODEL_HPP
 
-#include "context/lzss_field_context_format.hpp"
+#include "context/lzss_field_context.hpp"
 #include "entropy/contextual_adaptive_huffman_tree.hpp"
 
 #include <array>
@@ -16,6 +16,11 @@ inline constexpr std::size_t contextual_adaptive_huffman_node_entries =
     + context::internal::lzss_field_context_count;
 inline constexpr std::size_t contextual_adaptive_huffman_symbol_entries =
     context::internal::lzss_field_context_frequency_entries;
+inline constexpr std::size_t contextual_adaptive_huffman_node_entries_v2 =
+    2 * context::internal::lzss_field_context_frequency_entries_v2
+    + context::internal::lzss_field_context_count;
+inline constexpr std::size_t contextual_adaptive_huffman_symbol_entries_v2 =
+    context::internal::lzss_field_context_frequency_entries_v2;
 
 enum class ContextualAdaptiveHuffmanModelError : std::uint8_t {
     none,
@@ -23,6 +28,7 @@ enum class ContextualAdaptiveHuffmanModelError : std::uint8_t {
     symbol_workspace_too_small,
     overlapping_workspaces,
     arithmetic_overflow,
+    invalid_layout,
     tree_initialization_failed,
     invalid_context,
     invalid_model,
@@ -31,6 +37,11 @@ enum class ContextualAdaptiveHuffmanModelError : std::uint8_t {
 class ContextualAdaptiveHuffmanModelBank {
 public:
     [[nodiscard]] ContextualAdaptiveHuffmanModelError initialize(
+        context::internal::LzssFieldContextVariant variant,
+        std::span<AdaptiveHuffmanNode> node_storage,
+        std::span<std::uint16_t> symbol_storage) noexcept;
+    [[nodiscard]] ContextualAdaptiveHuffmanModelError initialize(
+        const context::internal::LzssFieldContextLayout& layout,
         std::span<AdaptiveHuffmanNode> node_storage,
         std::span<std::uint16_t> symbol_storage) noexcept;
     void reset() noexcept;
@@ -46,6 +57,7 @@ private:
     std::array<ContextualAdaptiveHuffmanTree,
                context::internal::lzss_field_context_count>
         trees_{};
+    context::internal::LzssFieldContextLayout layout_{};
     bool initialized_{};
 };
 
