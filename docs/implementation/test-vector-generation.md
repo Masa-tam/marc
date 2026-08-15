@@ -9722,3 +9722,26 @@ while keeping input at 32 KiB, output at 4 KiB, frame/token storage at 1 KiB,
 sanitizer target and run a bounded campaign without a persistent corpus using
 `-runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`. Do not add a second
 target or an interoperability archive.
+
+### TVG-0705
+
+Generate schema 41 from the unchanged deterministic 8,193-byte fixture and
+the exact schema-40 archive order, then append
+`lzss-contextual-blocked-huffman-1m.marc` as entry 51. Require generation-time
+header identities `2/3 + 1/2 + 2/2`, immediate local round trip,
+`schema_version=41`, codec set `marc-cli-v41`, full revision, exact order,
+unique leaf names/codecs, size and SHA-256 agreement, fixture decode, and
+byte-identical local re-encoding.
+
+Swap the first two schema-41 records and require exact-order rejection. Remove
+only entry 51 to reconstruct schema 40, verify it, and continue the complete
+frozen schema-40-through-1 chain including the historical Contextual rANS
+rename. The shared fixture establishes identity rather than an extended-
+distance Match; do not import generated bundles into the repository.
+
+After push and successful CI, verify the Windows/MSVC and Ubuntu 24.04/Ninja
+schema-41 artifacts with Ubuntu 26.04/Clang. Generate and self-verify an
+Ubuntu 26.04 schema-41 bundle from the same revision, then verify it with the
+Windows/MSVC executable. Require all four final lines to report 51 archives,
+the expected producer label, and one identical full revision before recording
+external evidence.

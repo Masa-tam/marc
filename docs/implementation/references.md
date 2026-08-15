@@ -5400,3 +5400,13 @@ admission, and dual-profile Contextual rANS and tANS fuzz routes as first-party
 references. No external Huffman or LZSS implementation, fuzz harness, corpus,
 finding, source code, test, archive, patent text, or optimization description
 was consulted.
+
+### IR-0604
+
+Schema-41 Contextual Blocked Huffman interoperability uses DD-790 through
+DD-830, TVG-0665, TVG-0666, and TVG-0696 through TVG-0705; marc's frozen
+schema-40 inventory, explicit 1 MiB Contextual Blocked Huffman CLI, bundle
+generator, verifier, and downgrade compatibility chain as first-party
+references. No external Huffman or LZSS implementation, archive, manifest,
+interoperability suite, source code, test, corpus, patent text, or optimization
+description was consulted.

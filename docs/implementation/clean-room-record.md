@@ -21200,3 +21200,25 @@ discarded and the reviewed seed retained.
   warning-clean, and both complete Release suites pass all 2,939 registered
   tests, including schema compatibility through version 40 (198.25 seconds
   under MSVC and 196.56 seconds under ClangCL).
+
+## CR-0886: 2026-08-15 - Contextual Blocked Huffman schema-41 design
+
+- Authoring method: derived the new bundle boundary from marc's frozen
+  schema-40 inventory and explicit 1 MiB Contextual Blocked Huffman CLI
+  selector.
+- References used: DD-790 through DD-830; IR-0604; TVG-0665; TVG-0666;
+  TVG-0696 through TVG-0705; marc's generator, verifier, and compatibility
+  chain.
+- Known implementations intentionally not consulted: external Huffman or LZSS
+  implementations, archives, manifests, interoperability suites, source code,
+  tests, corpora, patent text, and optimization descriptions.
+- Independent decisions: append once at entry 51; validate
+  `2/3 + 1/2 + 2/2` at generation; preserve every schema-40 byte/order; remove
+  only the new entry for downgrade; and defer external evidence until a pushed
+  revision exists.
+- Generated-code task description: specify schema/codec-set increment, exact
+  inventory, generation round trip and identity, verifier admission, reorder
+  rejection, full downgrade chain, and four-direction handoff.
+- Similarity review: the design composes only marc-owned CLI, bundle scripts,
+  manifest rules, and compatibility tests. No external implementation
+  expression entered the design.

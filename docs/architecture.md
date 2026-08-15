@@ -5344,3 +5344,10 @@ The fuzz boundary retains one fixed-memory target and runs both exact public
 decoder admissions for every input. The wider identity increases descriptor
 backing only; raw frame, typed-token, output, decode-table, and process-call
 ceilings remain small and independent of serialized sizes.
+
+The following interoperability boundary freezes schema 40's exact 50-archive
+inventory and appends only `lzss-contextual-blocked-huffman-1m` as schema-41
+entry 51. Generation proves selected identity `2/3 + 1/2 + 2/2` and an
+immediate local round trip. Compatibility removes only that final entry before
+running the unchanged schema-40-through-1 downgrade chain; cross-platform
+exchange remains post-push evidence.

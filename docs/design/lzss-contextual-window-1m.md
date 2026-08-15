@@ -543,6 +543,13 @@ public policies, and a bounded 1,000-input ASan/UBSan campaign completed
 without a finding. The next independent boundary is interoperability
 admission.
 
+That publication boundary freezes all 50 schema-40 archives and appends only
+`lzss-contextual-blocked-huffman-1m` as schema-41 entry 51. Its generator must
+verify selected identity `2/3 + 1/2 + 2/2` and an immediate exact round trip.
+The compatibility suite removes only entry 51 to reconstruct schema 40 before
+its existing complete downgrade chain; no earlier archive or representation
+may change.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:
