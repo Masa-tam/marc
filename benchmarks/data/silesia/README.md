@@ -82,6 +82,18 @@ The verifier requires Python 3.9 or later. Its fixture-only unit test is
 registered with CTest when CMake can discover a suitable Python interpreter;
 Corpus presence is never a condition for registering or passing that test.
 
+After verification, an individual member can be measured without loading the
+complete file into memory. For example, compare 64 KiB and 1 MiB windows with
+the same one MiB raw-frame boundary:
+
+```console
+marc_lzss_match_finder_benchmark --frames hash-chain-exact benchmarks/data/silesia/corpus/dickens 1 1048576 65536
+marc_lzss_match_finder_benchmark --frames hash-chain-exact benchmarks/data/silesia/corpus/dickens 1 1048576 1048576
+```
+
+Run each of the twelve members independently. Corpus-wide orchestration and
+aggregate report generation are later tooling steps.
+
 ## Usage policy
 
 - Corpus measurements are opt-in developer benchmarks, not CTest pass gates.

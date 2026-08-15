@@ -1,0 +1,115 @@
+if(NOT DEFINED MARC_BENCHMARK OR NOT DEFINED BENCHMARK_INPUT)
+    message(FATAL_ERROR "MARC_BENCHMARK and BENCHMARK_INPUT are required")
+endif()
+
+set(frame_size 1024)
+file(SIZE "${BENCHMARK_INPUT}" input_size)
+math(EXPR expected_frames
+    "(${input_size} + ${frame_size} - 1) / ${frame_size}")
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames hash-chain-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536
+    RESULT_VARIABLE benchmark_result
+    OUTPUT_VARIABLE report
+    ERROR_VARIABLE benchmark_error)
+if(NOT benchmark_result EQUAL 0)
+    message(FATAL_ERROR
+        "frame benchmark failed: ${benchmark_result}: ${benchmark_error}")
+endif()
+
+foreach(expected_line IN ITEMS
+        "mode=frames"
+        "strategy=hash-chain-exact"
+        "input_bytes=${input_size}"
+        "frame_bytes=${frame_size}"
+        "window_bytes=65536"
+        "frame_count=${expected_frames}"
+        "iterations=1")
+    string(FIND "${report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR "missing frame report line: ${expected_line}")
+    endif()
+endforeach()
+
+foreach(positive_key IN ITEMS
+        token_count hash_workspace_bytes hash_chain_queries
+        hash_chain_candidates hash_chain_byte_comparisons)
+    string(REGEX MATCH "${positive_key}=([0-9]+)" value_match "${report}")
+    if(value_match STREQUAL "" OR CMAKE_MATCH_1 EQUAL 0)
+        message(FATAL_ERROR "missing positive ${positive_key}")
+    endif()
+endforeach()
+
+foreach(decimal_key IN ITEMS
+        hash_chain_frame_seconds hash_chain_frame_mib_per_second)
+    string(REGEX MATCH "${decimal_key}=[0-9]+\\.[0-9]+" decimal_match
+        "${report}")
+    if(decimal_match STREQUAL "")
+        message(FATAL_ERROR "missing finite ${decimal_key}")
+    endif()
+endforeach()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames unknown "${BENCHMARK_INPUT}"
+    RESULT_VARIABLE unknown_strategy_result
+    OUTPUT_QUIET
+    ERROR_QUIET)
+if(NOT unknown_strategy_result EQUAL 2)
+    message(FATAL_ERROR
+        "unknown frame strategy returned ${unknown_strategy_result}")
+endif()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames hash-chain-exact
+        "${BENCHMARK_INPUT}" 1 0 65536
+    RESULT_VARIABLE zero_frame_result
+    OUTPUT_QUIET
+    ERROR_QUIET)
+if(NOT zero_frame_result EQUAL 2)
+    message(FATAL_ERROR "zero frame size returned ${zero_frame_result}")
+endif()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames hash-chain-exact
+        "${BENCHMARK_INPUT}"
+    RESULT_VARIABLE default_result
+    OUTPUT_VARIABLE default_report
+    ERROR_VARIABLE default_error)
+if(NOT default_result EQUAL 0)
+    message(FATAL_ERROR
+        "default frame benchmark failed: ${default_result}: ${default_error}")
+endif()
+foreach(default_line IN ITEMS
+        "frame_bytes=1048576"
+        "window_bytes=65536"
+        "frame_count=1"
+        "iterations=1")
+    string(FIND "${default_report}" "${default_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR "missing default line: ${default_line}")
+    endif()
+endforeach()
+
+set(empty_input "${CMAKE_CURRENT_BINARY_DIR}/lzss-match-finder-empty.bin")
+file(WRITE "${empty_input}" "")
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames hash-chain-exact
+        "${empty_input}" 1 1024 65536
+    RESULT_VARIABLE empty_result
+    OUTPUT_VARIABLE empty_report
+    ERROR_VARIABLE empty_error)
+if(NOT empty_result EQUAL 0)
+    message(FATAL_ERROR
+        "empty frame benchmark failed: ${empty_result}: ${empty_error}")
+endif()
+foreach(empty_line IN ITEMS
+        "input_bytes=0"
+        "frame_count=0"
+        "token_count=0"
+        "hash_chain_queries=0")
+    string(FIND "${empty_report}" "${empty_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR "missing empty-input line: ${empty_line}")
+    endif()
+endforeach()

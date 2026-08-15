@@ -5533,3 +5533,13 @@ Python standard-library file and hashing interfaces, CMake's documented
 first-party references. No downloader, remote service, third-party verifier,
 Corpus-processing script, compression implementation, benchmark result,
 source code, test suite, or optimization description was consulted.
+
+### IR-0617
+
+The large-file HashChain frame benchmark uses DD-841 through DD-843,
+TVG-0716 and TVG-0717, marc's existing exact finder contract, checked
+arithmetic, caller-owned aligned workspace, statistics, benchmark timing
+conventions, and external Silesia profile as first-party references. No
+external match-finder benchmark, large-file runner, LZSS implementation,
+compressor, Corpus result, source code, test, patent text, or optimization
+description was consulted.

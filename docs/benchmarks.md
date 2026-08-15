@@ -83,6 +83,30 @@ decoder caller-owned primary-plus-secondary-plus-views workspace requirements;
 it excludes the input, encoded, decoded, executable, and operating-system
 memory. Direction-specific views-workspace bytes are also reported separately.
 
+### Large-file LZSS match-finder mode
+
+The internal match-finder benchmark retains its legacy one-shot Exhaustive
+equivalence mode for inputs no larger than one MiB. For larger diagnostic
+inputs, run:
+
+```console
+marc_lzss_match_finder_benchmark --frames hash-chain-exact input.bin 1 1048576 65536
+```
+
+Arguments after the input are optional positive iteration count, raw frame
+bytes, and window bytes. Their defaults are 1, 1,048,576, and 65,536. The
+current frame mode accepts only `hash-chain-exact`; the strategy position is
+reserved so a later exact BinaryTree implementation can use the same report
+contract.
+
+The tool allocates one frame and one maximum-frame HashChain workspace, reads
+the file sequentially, and resets the finder at every frame. File opening and
+reading are outside the measured intervals. Each interval includes finder
+initialization, workspace clearing, and parsing. One untimed pass collects
+work counts; timed passes disable counters and must reproduce its byte, frame,
+and token totals. This mode reports match-finder behavior only. It neither
+emits nor decodes a marc stream, so it reports no compression ratio.
+
 ## Profile configurations
 
 ### Framing baseline
@@ -1204,6 +1228,28 @@ encoded extent is expected because this fixture cannot use a distance beyond
 64 KiB. Exact public round trip, selected workspace bounds, checked
 `112 + ceil(267N/8) + 80K` capacity, strict name rejection, and independent
 smoke success under both local compilers are the normative evidence.
+
+### BM-0053: Bounded large-file HashChain frame runner
+
+The strategy-explicit frame mode preserves the legacy one-shot benchmark and
+processes the locally supplied 10,192,446-byte `dickens` member as ten
+independent one MiB-or-shorter frames. Both MSVC and ClangCL build the modified
+benchmark warning-clean and pass the unchanged one-shot smoke plus the new
+multi-frame, default, empty-input, and invalid-argument smoke.
+
+One ClangCL 22 Release diagnostic pass with a 65,536-byte window reports
+2,175,668 tokens, 21,551,687 candidates, 135,323,122 byte comparisons,
+786,432 workspace bytes, and 38.180 MiB/s. Changing only the window to
+1,048,576 bytes reports 1,485,210 tokens, 123,501,362 candidates,
+775,660,369 byte comparisons, 4,718,592 workspace bytes, and 5.680 MiB/s.
+File I/O is excluded; finder initialization and workspace clearing are
+included.
+
+These single-file timings are descriptive and are not a performance threshold
+or a Corpus-wide result. The current aggregate candidate counter does not
+distinguish false hash positives from genuine equal-prefix candidates, so the
+observed 1 MiB slowdown demonstrates the need for the next diagnostic stage
+but does not establish hash collision as its cause.
 
 ## External Silesia measurements
 

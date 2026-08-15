@@ -17587,3 +17587,29 @@ When CMake discovers Python 3.9 or later, register the fixture-only verifier
 test with CTest. Interpreter or Corpus absence must not make normal configure,
 build, or CTest fail. This tool validates benchmark input identity only and
 changes no library, format, API, CLI, or benchmark result.
+
+## DD-843: Large-file match-finder measurement is frame-bounded and strategy-explicit
+
+- Date: 2026-08-15
+- Status: accepted
+
+Preserve the existing at-most-1-MiB one-shot benchmark as the detailed
+Exhaustive-versus-HashChain equivalence and complete-frame comparison. Add a
+separate `--frames <strategy> <input> [iterations] [frame-bytes]
+[window-bytes]` contract, initially accepting only `hash-chain-exact`.
+Defaults are one iteration, 1,048,576-byte frames, and a 65,536-byte window.
+Reject unknown strategies, zero values, values beyond decoder limits, missing
+files, changed file extents, workspace errors, and checked counter overflow.
+
+Read one frame into bounded storage and reset HashChain at every frame. Reuse
+one aligned workspace sized for the configured maximum frame. Exclude file
+opening and reads from timing; include finder initialization, workspace
+clearing, and parsing. An untimed pass gathers queries, candidates, and byte
+comparisons. Every counter-free timed pass must reproduce the untimed input,
+frame, and token totals. Report total measured seconds and binary-MiB/s along
+with configuration, workspace, and untimed work counts.
+
+This mode measures the match finder, not a full encoder. It does not emit a
+stream, report a compression ratio, replace the Exhaustive oracle, or make a
+performance threshold normative. It changes no library source, format,
+algorithm ID, public ABI, or marc CLI.

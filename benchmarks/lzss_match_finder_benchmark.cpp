@@ -2,6 +2,7 @@
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "dictionary/lzss_match_finder.hpp"
 #include "dictionary/lzss_typed_encoder.hpp"
+#include "core/checked_math.hpp"
 #include "frame/lzss_typed_context_frame_encoder.hpp"
 #include "frame/lzss_contextual_rans_frame_encoder.hpp"
 #include "frame/lzss_contextual_tans_frame_encoder.hpp"
@@ -22,6 +23,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <span>
 #include <string_view>
 #include <vector>
@@ -78,7 +80,7 @@ template <typename Function>
 }
 
 [[nodiscard]] double throughput(
-    const std::size_t input_size, const std::size_t iterations,
+    const std::uint64_t input_size, const std::size_t iterations,
     const double seconds) noexcept {
     if (seconds == 0.0) return 0.0;
     return static_cast<double>(input_size) * static_cast<double>(iterations)
@@ -110,12 +112,204 @@ void print_measurement(
               << throughput(input_size, iterations, seconds) << '\n';
 }
 
+struct FrameRunResult {
+    std::uint64_t input_bytes{};
+    std::uint64_t frame_count{};
+    std::uint64_t token_count{};
+    LzssMatchFinderStatistics statistics{};
+    double seconds{};
+};
+
+[[nodiscard]] bool add_count(
+    std::uint64_t& total, const std::uint64_t value) noexcept {
+    return marc::core::checked_add(total, value, total);
+}
+
+[[nodiscard]] bool add_statistics(
+    LzssMatchFinderStatistics& total,
+    const LzssMatchFinderStatistics& frame) noexcept {
+    return add_count(total.query_count, frame.query_count)
+        && add_count(total.candidate_count, frame.candidate_count)
+        && add_count(total.byte_comparison_count,
+                     frame.byte_comparison_count);
+}
+
+[[nodiscard]] bool parse_size_argument(
+    const std::string_view text, const std::uint64_t maximum,
+    std::size_t& value) noexcept {
+    std::uint64_t parsed{};
+    const auto result = std::from_chars(
+        text.data(), text.data() + text.size(), parsed);
+    if (result.ec != std::errc{}
+        || result.ptr != text.data() + text.size()
+        || parsed == 0 || parsed > maximum
+        || parsed > std::numeric_limits<std::size_t>::max()) {
+        return false;
+    }
+    value = static_cast<std::size_t>(parsed);
+    return true;
+}
+
+[[nodiscard]] bool process_hash_chain_frames(
+    const std::filesystem::path& path, const std::uint64_t expected_file_size,
+    const std::size_t frame_size, const LzssParameters& parameters,
+    const marc::core::DecoderLimits& limits,
+    const std::span<std::byte> workspace, const bool collect_statistics,
+    const bool measure, FrameRunResult& result) {
+    std::ifstream stream(path, std::ios::binary);
+    if (!stream) return false;
+    std::vector<std::byte> input(frame_size);
+    std::uint64_t remaining = expected_file_size;
+    while (remaining != 0) {
+        const auto current_size = static_cast<std::size_t>(
+            std::min<std::uint64_t>(remaining, frame_size));
+        stream.read(reinterpret_cast<char*>(input.data()),
+                    static_cast<std::streamsize>(current_size));
+        if (stream.gcount() != static_cast<std::streamsize>(current_size)) {
+            return false;
+        }
+
+        const auto frame = std::span<const std::byte>{input}.first(
+            current_size);
+        LzssMatchFinderStatistics frame_statistics{};
+        LzssHashChainMatchFinder finder{};
+        const auto begin = std::chrono::steady_clock::now();
+        if (initialize_lzss_hash_chain_match_finder(
+                frame, parameters, limits, workspace, finder,
+                collect_statistics ? &frame_statistics : nullptr)
+            != LzssHashChainError::none) {
+            return false;
+        }
+        const auto frame_tokens = parse_with_finder(frame, finder);
+        const auto end = std::chrono::steady_clock::now();
+        if (measure) {
+            result.seconds += std::chrono::duration<double>(end - begin).count();
+        }
+
+        if (!add_count(result.input_bytes, current_size)
+            || !add_count(result.frame_count, 1)
+            || !add_count(result.token_count, frame_tokens)
+            || (collect_statistics
+                && !add_statistics(result.statistics, frame_statistics))) {
+            return false;
+        }
+        remaining -= current_size;
+    }
+
+    char extra{};
+    if (stream.read(&extra, 1)) return false;
+    return stream.eof();
+}
+
+void print_usage() {
+    std::cerr
+        << "usage: marc_lzss_match_finder_benchmark "
+           "<input-file> [iterations]\n"
+        << "       marc_lzss_match_finder_benchmark --frames "
+           "hash-chain-exact <input-file> [iterations] "
+           "[frame-bytes] [window-bytes]\n";
+}
+
+[[nodiscard]] int run_frame_benchmark(
+    const int argc, const char* const argv[]) {
+    if (argc < 4 || argc > 7
+        || std::string_view{argv[2]} != "hash-chain-exact") {
+        print_usage();
+        return 2;
+    }
+
+    std::size_t iterations{1};
+    std::size_t frame_size{UINT64_C(1) << 20};
+    std::size_t window_size{UINT64_C(1) << 16};
+    const marc::core::DecoderLimits limits{};
+    if ((argc >= 5 && !parse_iterations(argv[4], iterations))
+        || (argc >= 6 && !parse_size_argument(
+                argv[5], limits.max_frame_size, frame_size))
+        || (argc >= 7 && !parse_size_argument(
+                argv[6], limits.max_lz_distance, window_size))
+        || window_size > std::numeric_limits<std::uint32_t>::max()) {
+        std::cerr << "invalid frame benchmark argument\n";
+        return 2;
+    }
+
+    std::error_code file_error{};
+    const auto raw_file_size = std::filesystem::file_size(argv[3], file_error);
+    if (file_error
+        || raw_file_size > std::numeric_limits<std::uint64_t>::max()) {
+        std::cerr << "cannot determine input size\n";
+        return 2;
+    }
+    const auto file_size = static_cast<std::uint64_t>(raw_file_size);
+
+    LzssParameters parameters{};
+    parameters.window_size = static_cast<std::uint32_t>(window_size);
+    const auto requirements = calculate_lzss_hash_chain_workspace(
+        frame_size, parameters, limits);
+    if (requirements.error != LzssHashChainError::none) {
+        std::cerr << "cannot calculate frame HashChain workspace\n";
+        return 1;
+    }
+    AlignedWorkspace workspace_owner(requirements.workspace_size);
+    const auto workspace = workspace_owner.bytes(requirements.workspace_size);
+
+    FrameRunResult verified{};
+    if (!process_hash_chain_frames(
+            argv[3], file_size, frame_size, parameters, limits, workspace,
+            true, false, verified)
+        || verified.input_bytes != file_size
+        || verified.statistics.query_count != verified.token_count) {
+        std::cerr << "HashChain frame verification failed\n";
+        return 1;
+    }
+
+    double measured_seconds{};
+    for (std::size_t iteration = 0; iteration < iterations; ++iteration) {
+        FrameRunResult measured{};
+        if (!process_hash_chain_frames(
+                argv[3], file_size, frame_size, parameters, limits, workspace,
+                false, true, measured)
+            || measured.input_bytes != verified.input_bytes
+            || measured.frame_count != verified.frame_count
+            || measured.token_count != verified.token_count) {
+            std::cerr << "timed HashChain frame processing failed\n";
+            return 1;
+        }
+        measured_seconds += measured.seconds;
+    }
+
+    std::cout << std::fixed << std::setprecision(6)
+              << "mode=frames\n"
+              << "strategy=hash-chain-exact\n"
+              << "input_bytes=" << verified.input_bytes << '\n'
+              << "frame_bytes=" << frame_size << '\n'
+              << "window_bytes=" << window_size << '\n'
+              << "frame_count=" << verified.frame_count << '\n'
+              << "token_count=" << verified.token_count << '\n'
+              << "iterations=" << iterations << '\n'
+              << "hash_workspace_bytes=" << requirements.workspace_size
+              << '\n'
+              << "hash_chain_queries="
+              << verified.statistics.query_count << '\n'
+              << "hash_chain_candidates="
+              << verified.statistics.candidate_count << '\n'
+              << "hash_chain_byte_comparisons="
+              << verified.statistics.byte_comparison_count << '\n'
+              << "hash_chain_frame_seconds=" << measured_seconds << '\n'
+              << "hash_chain_frame_mib_per_second="
+              << throughput(
+                     verified.input_bytes, iterations, measured_seconds)
+              << '\n';
+    return 0;
+}
+
 } // namespace
 
 int main(const int argc, const char* const argv[]) {
+    if (argc >= 2 && std::string_view{argv[1]} == "--frames") {
+        return run_frame_benchmark(argc, argv);
+    }
     if (argc < 2 || argc > 3) {
-        std::cerr << "usage: marc_lzss_match_finder_benchmark "
-                     "<input-file> [iterations]\n";
+        print_usage();
         return 2;
     }
     std::size_t iterations{1};

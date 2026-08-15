@@ -21834,3 +21834,35 @@ discarded and the reviewed seed retained.
   explicitly to CMake, both the registered tooling test and documentation
   layout test pass. With Python execution unavailable inside the sandbox,
   configuration succeeds and omits only the optional tooling test as designed.
+
+## CR-0912: 2026-08-15 - Bounded large-file HashChain frame benchmark
+
+- Authoring method: extended marc's existing internal match-finder benchmark
+  with a separate strategy-explicit, frame-bounded path while leaving its
+  detailed one-shot equivalence path unchanged.
+- References used: DD-841 through DD-843; IR-0617; TVG-0717; BM-0024;
+  BM-0053; marc's exact HashChain finder, caller-owned workspace calculator,
+  statistics, checked arithmetic, and benchmark timing helpers.
+- Known implementations intentionally not consulted: external LZSS,
+  HashChain, BinaryTree, benchmark-runner, or compressor implementations;
+  source code, tests, published Corpus results, patents, and optimization
+  descriptions.
+- Independent decisions: reserve a strategy argument; stream one raw frame at
+  a time; reset the finder per frame; time initialization and parsing but not
+  file I/O; collect counters only in an untimed pass; require timed total
+  identity; retain empty input; and keep Silesia outside CTest.
+- Generated-code task description: add checked frame/window parsing, bounded
+  file traversal, reusable aligned workspace, aggregate counters and timing,
+  deterministic report fields, multi-frame/default/empty/error smokes,
+  Silesia usage documentation, and dual-compiler validation.
+- Similarity review: the implementation composes only marc-owned finder,
+  workspace, statistics, benchmark, CMake-test, and documentation patterns.
+  No external implementation expression or Corpus payload entered the
+  tracked change.
+- Local validation: MSVC 19.51.36252 and ClangCL 22.1.3 build the benchmark
+  warning-clean and pass both old and new smokes. The locally supplied
+  10,192,446-byte `dickens` input is traversed in ten frames under ClangCL at
+  both 64 KiB and 1 MiB windows; the exact descriptive counts and timings are
+  recorded in BM-0053. The first sandboxed MSVC build stopped in `ZERO_CHECK`
+  at the known FileTracker access denial; the same target and tests succeeded
+  outside that sandbox without source changes.

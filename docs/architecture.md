@@ -103,6 +103,13 @@ state and leave the ordinary encoder path uninstrumented. A dedicated internal
 benchmark verifies exact output first, then separately times planning and the
 current two-pass encoding entry points while reporting these work counts and
 the exact HashChain workspace.
+A separate `--frames hash-chain-exact` benchmark mode reads only one bounded
+raw frame at a time and resets the finder at every configured frame boundary.
+It times HashChain initialization plus parsing while excluding file I/O, and
+aggregates bytes, frames, tokens, queries, candidates, and byte comparisons
+over the complete file. The legacy one-shot mode remains the Exhaustive
+equivalence oracle; the frame mode is a large-input diagnostic and does not
+claim to emit or round-trip a canonical archive.
 A separate typed-token single-pass entry point reserves the conservative
 maximum of one token per raw byte before parsing. Once capacity, aggregate
 raw/workspace/token memory, alignment, and aliasing are accepted, HashChain

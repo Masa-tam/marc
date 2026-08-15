@@ -9966,3 +9966,20 @@ Separately run the production manifest against the owner-supplied local
 Silesia directory and require all twelve names, published sizes, and MD5
 values plus the exact 211,938,580-byte total. This local data validation is
 developer evidence, not a persistent CTest fixture or redistributed vector.
+
+### TVG-0717
+
+Retain the existing one-shot README smoke unchanged. Invoke the new frame mode
+on that same repository-owned input with 1,024-byte frames, one iteration, and
+a 65,536-byte window. Calculate the expected frame count from the current file
+size and require exact mode, strategy, input, configuration, frame, and
+iteration fields plus positive token, workspace, query, candidate, comparison,
+seconds, and throughput fields.
+
+Require omitted optional arguments to select 1/1,048,576/65,536, an unknown
+strategy to return usage failure, and zero frame size to fail. Generate an
+empty file only in the build tree and require successful zero-byte, zero-frame,
+zero-token, and zero-query reporting. Separately process the locally supplied
+`dickens` member with 1 MiB frames and both 64 KiB and 1 MiB windows to prove
+that a 10,192,446-byte input is traversed as ten bounded frames. Do not add
+Corpus data or Corpus-dependent CTest cases.
