@@ -599,6 +599,15 @@ literal and bounded distance-1 Matches, then emits a length-5 Match at distance
 modeling, and a validate-only pass must complete before decoded tokens become
 caller-visible. Complete-frame and public selection remain later stages.
 
+That direct typed-token boundary is implemented. Both planning and writing use
+the selected dictionary variant and exact model slices; decoding resolves the
+same layout before any caller-visible mutation and retains its two-pass
+publication rule. The maximum-distance token sequence produces the same
+descriptor and payload as its independently modeled operation sequence.
+Legacy, unsupported, crossed, and one-short selected paths leave their
+descriptor, payload, and token destinations unchanged. The next independent
+boundary is complete-frame selection.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

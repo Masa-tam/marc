@@ -1,6 +1,7 @@
 #ifndef MARC_CONTEXT_LZSS_CONTEXTUAL_ADAPTIVE_HUFFMAN_ENCODER_HPP
 #define MARC_CONTEXT_LZSS_CONTEXTUAL_ADAPTIVE_HUFFMAN_ENCODER_HPP
 
+#include "context/lzss_field_context.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 #include "entropy/contextual_adaptive_huffman_encoder.hpp"
 
@@ -45,7 +46,9 @@ plan_lzss_contextual_adaptive_huffman_tokens(
     const core::DecoderLimits& limits,
     std::span<entropy::internal::AdaptiveHuffmanNode> node_workspace,
     std::span<std::uint16_t> symbol_workspace,
-    entropy::internal::ContextualAdaptiveHuffmanDescriptor& descriptor)
+    entropy::internal::ContextualAdaptiveHuffmanDescriptor& descriptor,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k)
     noexcept;
 
 [[nodiscard]] LzssContextualAdaptiveHuffmanEncodeResult
@@ -57,7 +60,9 @@ encode_lzss_contextual_adaptive_huffman_tokens(
     std::span<entropy::internal::AdaptiveHuffmanNode> node_workspace,
     std::span<std::uint16_t> symbol_workspace,
     std::span<std::byte> payload_output,
-    entropy::internal::ContextualAdaptiveHuffmanDescriptor& descriptor)
+    entropy::internal::ContextualAdaptiveHuffmanDescriptor& descriptor,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k)
     noexcept;
 
 } // namespace marc::context::internal

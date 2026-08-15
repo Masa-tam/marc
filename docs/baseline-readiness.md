@@ -2426,3 +2426,20 @@ All targets build warning-clean and all 2,944 registered Release tests pass
 under MSVC and ClangCL, including documentation layout and interoperability
 schema compatibility. Typed-token and complete-frame selected admission remain
 later boundaries.
+
+### BR-0143
+
+The selected Contextual Adaptive Huffman direct typed-token boundary is
+locally complete. Its APIs accept one field-context selection and use the
+corresponding dictionary token variant, 17/21-symbol distance alphabets,
+16/20-bit bypass ceiling, 26/30-decision token bound, and exact 9,067/4,518 or
+9,131/4,550 node/symbol workspace. A 4,067-token vector builds exactly
+1,048,576 history bytes and emits a final length-5 Match at the maximum
+distance; direct coding produces the same descriptor and payload as the
+independently materialized class-20 operation sequence and decodes every token
+exactly. Variant 1 retains its existing bytes. Legacy, unsupported, crossed,
+and independently one-short selected routes fail before descriptor, payload,
+or token publication. All targets build warning-clean and all 2,945 registered
+Release tests pass under MSVC and ClangCL, including documentation layout and
+interoperability schema compatibility, in 197.88 and 196.89 seconds. Selected
+complete-frame admission remains the next boundary.

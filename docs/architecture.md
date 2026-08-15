@@ -5390,3 +5390,12 @@ extents from one canonical layout. A bounded-token vector builds 1 MiB of
 history before a distance-1,048,576 Match and must encode identically through
 the direct bridge and an independently modeled operation sequence. Frame and
 public admission remain separate review stages.
+
+That direct boundary is now implemented. Planning and writing validate the
+selected token profile before model mutation and partition only its exact
+caller-owned node and symbol extents. Decoding resolves the same selection
+before workspace preflight and completes a private validation pass before
+publishing tokens. The maximum-distance vector is byte-identical to its
+materialized-operation reference, while legacy, unknown, crossed, and
+one-short selected routes fail atomically. Complete-frame admission is the
+next independent boundary.

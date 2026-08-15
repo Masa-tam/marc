@@ -43,7 +43,8 @@ using entropy::internal::ContextualAdaptiveHuffmanDescriptor;
 
 [[nodiscard]] bool read_token(
     ContextualAdaptiveHuffmanDecoder& decoder,
-    const LzssFieldContextState& state, LzssTypedToken& token,
+    const LzssFieldContextState& state,
+    const LzssFieldContextLayout& layout, LzssTypedToken& token,
     LzssContextualAdaptiveHuffmanDecodeResult& result) noexcept {
     std::uint32_t kind{};
     if (!read_symbol(decoder, state.token_context(), 2, kind, result)) {
@@ -76,7 +77,9 @@ using entropy::internal::ContextualAdaptiveHuffmanDescriptor;
 
     std::uint32_t distance_class{};
     if (!read_symbol(
-            decoder, LzssFieldContextState::distance_context(length_class), 17,
+            decoder, LzssFieldContextState::distance_context(length_class),
+            (*layout.alphabets)[
+                LzssFieldContextState::distance_context(length_class)],
             distance_class, result)) {
         return false;
     }
@@ -122,6 +125,7 @@ enum class OverlapCheck : std::uint8_t {
     const std::size_t payload_size,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
+    const LzssFieldContextLayout& layout,
     LzssContextualAdaptiveHuffmanDecodeResult& result) noexcept {
     const auto token_count =
         static_cast<std::uint64_t>(context.declared_token_count);
@@ -133,7 +137,7 @@ enum class OverlapCheck : std::uint8_t {
     if (token_count == 0 || raw_size == 0 || token_count > raw_size
         || event_count < 2 * token_count || event_count > 5 * token_count
         || event_count > 2 * raw_size || decision_count < event_count
-        || decision_count > 26 * token_count
+        || decision_count > layout.maximum_decisions_per_token * token_count
         || decision_count > 6 * raw_size) {
         result.error =
             LzssContextualAdaptiveHuffmanDecodeError::invalid_counts;
@@ -144,14 +148,19 @@ enum class OverlapCheck : std::uint8_t {
     std::size_t symbol_bytes{};
     std::size_t model_bytes{};
     std::size_t aggregate_bytes{};
+    std::size_t node_entries{};
     if (!core::checked_multiply(
             static_cast<std::size_t>(context.declared_token_count),
             sizeof(LzssTypedToken), token_bytes)
         || !core::checked_multiply(
-            entropy::internal::contextual_adaptive_huffman_node_entries,
-            sizeof(AdaptiveHuffmanNode), node_bytes)
+            layout.frequency_entries, std::size_t{2}, node_entries)
+        || !core::checked_add(
+            node_entries, static_cast<std::size_t>(lzss_field_context_count),
+            node_entries)
         || !core::checked_multiply(
-            entropy::internal::contextual_adaptive_huffman_symbol_entries,
+            node_entries, sizeof(AdaptiveHuffmanNode), node_bytes)
+        || !core::checked_multiply(
+            layout.frequency_entries,
             sizeof(std::uint16_t), symbol_bytes)
         || !core::checked_add(token_bytes, node_bytes, model_bytes)
         || !core::checked_add(model_bytes, symbol_bytes, model_bytes)
@@ -186,25 +195,32 @@ enum class OverlapCheck : std::uint8_t {
     const std::span<const std::byte> payload,
     const std::span<AdaptiveHuffmanNode> private_nodes,
     const std::span<std::uint16_t> private_symbols,
+    const LzssFieldContextLayout& layout,
     std::span<AdaptiveHuffmanNode>& nodes,
     std::span<std::uint16_t>& symbols) noexcept {
     LzssContextualAdaptiveHuffmanDecodeResult result{};
-    if (private_nodes.size()
-        < entropy::internal::contextual_adaptive_huffman_node_entries) {
+    std::size_t node_entries{};
+    if (!core::checked_multiply(
+            layout.frequency_entries, std::size_t{2}, node_entries)
+        || !core::checked_add(
+            node_entries, static_cast<std::size_t>(lzss_field_context_count),
+            node_entries)) {
+        result.error =
+            LzssContextualAdaptiveHuffmanDecodeError::arithmetic_overflow;
+        return result;
+    }
+    if (private_nodes.size() < node_entries) {
         result.error = LzssContextualAdaptiveHuffmanDecodeError::
             node_workspace_too_small;
         return result;
     }
-    if (private_symbols.size()
-        < entropy::internal::contextual_adaptive_huffman_symbol_entries) {
+    if (private_symbols.size() < layout.frequency_entries) {
         result.error = LzssContextualAdaptiveHuffmanDecodeError::
             symbol_workspace_too_small;
         return result;
     }
-    nodes = private_nodes.first(
-        entropy::internal::contextual_adaptive_huffman_node_entries);
-    symbols = private_symbols.first(
-        entropy::internal::contextual_adaptive_huffman_symbol_entries);
+    nodes = private_nodes.first(node_entries);
+    symbols = private_symbols.first(layout.frequency_entries);
     std::size_t node_bytes{};
     std::size_t symbol_bytes{};
     if (!core::checked_multiply(nodes.size(), sizeof(AdaptiveHuffmanNode),
@@ -286,17 +302,20 @@ enum class OverlapCheck : std::uint8_t {
     const core::DecoderLimits& limits,
     const std::span<AdaptiveHuffmanNode> nodes,
     const std::span<std::uint16_t> symbols,
-    const std::span<LzssTypedToken> output) noexcept {
+    const std::span<LzssTypedToken> output,
+    const LzssFieldContextVariant variant,
+    const LzssFieldContextLayout& layout) noexcept {
     LzssContextualAdaptiveHuffmanDecodeResult result{};
     result.token_error = dictionary::internal::validate_lzss_typed_parameters(
-        parameters, limits);
+        parameters, limits, layout.dictionary_variant);
     if (result.token_error != LzssTypedTokenError::none) {
         result.error = result.token_error == LzssTypedTokenError::limit_exceeded
             ? LzssContextualAdaptiveHuffmanDecodeError::limit_exceeded
             : LzssContextualAdaptiveHuffmanDecodeError::invalid_parameters;
         return result;
     }
-    if (!validate_declared_bounds(payload.size(), context, limits, result)) {
+    if (!validate_declared_bounds(
+            payload.size(), context, limits, layout, result)) {
         return result;
     }
     if (descriptor.decision_count != context.declared_decision_count) {
@@ -307,8 +326,7 @@ enum class OverlapCheck : std::uint8_t {
 
     ContextualAdaptiveHuffmanDecoder decoder;
     result.entropy = decoder.begin(
-        descriptor, payload, limits, nodes, symbols,
-        LzssFieldContextVariant::field_context_64k);
+        descriptor, payload, limits, nodes, symbols, variant);
     if (result.entropy.error != ContextualAdaptiveHuffmanDecodeError::none) {
         result.error = LzssContextualAdaptiveHuffmanDecodeError::entropy_error;
         return result;
@@ -318,11 +336,11 @@ enum class OverlapCheck : std::uint8_t {
     while (result.token_count < context.declared_token_count) {
         result.token_index = result.token_count;
         LzssTypedToken token{};
-        if (!read_token(decoder, state, token, result)) return result;
+        if (!read_token(decoder, state, layout, token, result)) return result;
         std::uint64_t next_raw_size{};
         result.token_error = dictionary::internal::validate_lzss_typed_token(
             token, parameters, {result.raw_size, context.declared_raw_size},
-            limits, next_raw_size);
+            limits, next_raw_size, layout.dictionary_variant);
         if (result.token_error != LzssTypedTokenError::none) {
             if (result.token_error == LzssTypedTokenError::limit_exceeded) {
                 result.error =
@@ -366,17 +384,27 @@ validate_lzss_contextual_adaptive_huffman_tokens(
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
     const std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
-    const std::span<std::uint16_t> private_symbols) noexcept {
+    const std::span<std::uint16_t> private_symbols,
+    const LzssFieldContextVariant variant) noexcept {
+    const auto selected = get_lzss_field_context_layout(variant);
+    if (selected.error != LzssFieldContextLayoutError::none) {
+        LzssContextualAdaptiveHuffmanDecodeResult result{};
+        result.error =
+            LzssContextualAdaptiveHuffmanDecodeError::invalid_parameters;
+        return result;
+    }
+    const auto& layout = selected.layout;
     std::span<AdaptiveHuffmanNode> nodes{};
     std::span<std::uint16_t> symbols{};
     const auto workspace = preflight_workspace(
-        payload, private_nodes, private_symbols, nodes, symbols);
+        payload, private_nodes, private_symbols, layout, nodes, symbols);
     if (workspace.error
         != LzssContextualAdaptiveHuffmanDecodeError::none) {
         return workspace;
     }
     return run_pass(
-        descriptor, payload, parameters, context, limits, nodes, symbols, {});
+        descriptor, payload, parameters, context, limits, nodes, symbols, {},
+        variant, layout);
 }
 
 LzssContextualAdaptiveHuffmanDecodeResult
@@ -388,12 +416,21 @@ decode_lzss_contextual_adaptive_huffman_tokens(
     const core::DecoderLimits& limits,
     const std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
     const std::span<std::uint16_t> private_symbols,
-    const std::span<dictionary::internal::LzssTypedToken> private_tokens)
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const LzssFieldContextVariant variant)
     noexcept {
+    const auto selected = get_lzss_field_context_layout(variant);
+    if (selected.error != LzssFieldContextLayoutError::none) {
+        LzssContextualAdaptiveHuffmanDecodeResult result{};
+        result.error =
+            LzssContextualAdaptiveHuffmanDecodeError::invalid_parameters;
+        return result;
+    }
+    const auto& layout = selected.layout;
     std::span<AdaptiveHuffmanNode> nodes{};
     std::span<std::uint16_t> symbols{};
     const auto workspace = preflight_workspace(
-        payload, private_nodes, private_symbols, nodes, symbols);
+        payload, private_nodes, private_symbols, layout, nodes, symbols);
     if (workspace.error
         != LzssContextualAdaptiveHuffmanDecodeError::none) {
         return workspace;
@@ -408,7 +445,8 @@ decode_lzss_contextual_adaptive_huffman_tokens(
     }
 
     auto result = run_pass(
-        descriptor, payload, parameters, context, limits, nodes, symbols, {});
+        descriptor, payload, parameters, context, limits, nodes, symbols, {},
+        variant, layout);
     if (result.error
         != LzssContextualAdaptiveHuffmanDecodeError::none) {
         return result;
@@ -420,7 +458,7 @@ decode_lzss_contextual_adaptive_huffman_tokens(
     }
     const auto decoded = run_pass(
         descriptor, payload, parameters, context, limits, nodes, symbols,
-        tokens);
+        tokens, variant, layout);
     if (decoded.error != LzssContextualAdaptiveHuffmanDecodeError::none
         || decoded.token_count != result.token_count
         || decoded.raw_size != result.raw_size

@@ -45,7 +45,9 @@ validate_lzss_contextual_adaptive_huffman_tokens(
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
     std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
-    std::span<std::uint16_t> private_symbols) noexcept;
+    std::span<std::uint16_t> private_symbols,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 [[nodiscard]] LzssContextualAdaptiveHuffmanDecodeResult
 decode_lzss_contextual_adaptive_huffman_tokens(
@@ -56,7 +58,9 @@ decode_lzss_contextual_adaptive_huffman_tokens(
     const core::DecoderLimits& limits,
     std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
     std::span<std::uint16_t> private_symbols,
-    std::span<dictionary::internal::LzssTypedToken> private_tokens) noexcept;
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    LzssFieldContextVariant variant =
+        LzssFieldContextVariant::field_context_64k) noexcept;
 
 } // namespace marc::context::internal
 

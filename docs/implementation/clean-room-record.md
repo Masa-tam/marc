@@ -21384,3 +21384,29 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned typed-token,
   field-context, FGK, checked-workspace, and atomic-publication rules. No
   external implementation expression entered the design.
+
+## CR-0894: 2026-08-15 - Selected Contextual Adaptive Huffman token bridge
+
+- Authoring method: implemented DD-833 directly over marc's completed
+  selected operation coder and existing allocation-free LZSS token bridge.
+- References used: DD-831 through DD-833; IR-0607; TVG-0706 through TVG-0708;
+  BR-0143; marc's existing Contextual Adaptive Huffman and selected token
+  implementations.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: resolve the canonical layout before validation or
+  workspace use; slice only selected model extents; retain variant 1 as the
+  source default; and preserve two-pass atomic token publication.
+- Generated-code task description: propagate the selected variant through
+  direct token planning, writing, validation, and decoding; replace fixed
+  distance alphabets and decision bounds; prove maximum distance against the
+  independently modeled operation path; and retain stable reciprocal errors.
+- Similarity review: the implementation extends only marc-owned checked-span,
+  typed-token, field-context, FGK, and two-pass decoder structures. No external
+  implementation expression entered the change.
+- Local validation: all targets build warning-clean under MSVC and ClangCL.
+  All 15 focused token encoder/decoder tests pass under both compilers. Both
+  complete Release suites pass all 2,945 registered tests, including
+  documentation layout and interoperability schema compatibility, in 197.88
+  seconds under MSVC and 196.89 seconds under ClangCL.
