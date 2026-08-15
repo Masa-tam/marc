@@ -5399,3 +5399,12 @@ publishing tokens. The maximum-distance vector is byte-identical to its
 materialized-operation reference, while legacy, unknown, crossed, and
 one-short selected routes fail atomically. Complete-frame admission is the
 next independent boundary.
+
+The next complete-frame boundary exposes the already serialized dictionary
+and context identities in the Adaptive Huffman stream-header object and
+resolves their canonical layout before work. That one selection controls typed
+matching, direct token coding, 26/30-decision validation, exact model slices,
+and reconstruction. Exact `2/3 + 1/2 + 1/2` admits the extended route without
+changing the fixed descriptor or any header extent. A marker-gap-marker frame
+must emit a Match beyond 64 KiB and reciprocal decoding must leave raw output
+untouched. Streaming and public construction remain later boundaries.

@@ -608,6 +608,15 @@ Legacy, unsupported, crossed, and one-short selected paths leave their
 descriptor, payload, and token destinations unchanged. The next independent
 boundary is complete-frame selection.
 
+The selected Contextual Adaptive Huffman complete-frame boundary next exposes
+the existing dictionary/context identity fields and accepts only paired
+`2/2 + 1/1` or `2/3 + 1/2` layouts with entropy `1/2`. It carries that layout
+through typed matching, token entropy coding, frame bounds, model workspace,
+and reconstruction while retaining the fixed 16-byte descriptor and 64-byte
+frame header. The permanent marker-gap-marker proof must require a distance
+beyond 64 KiB and crossed decode must publish no raw byte. Profile, streaming,
+and public admission remain later stages.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

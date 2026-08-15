@@ -6839,6 +6839,16 @@ workspaces. This selection is not serialized in the fixed 16-byte entropy
 descriptor and changes no stream byte by itself. Complete-frame and public
 admission remain later boundaries.
 
+The private complete-frame Contextual Adaptive Huffman boundary admits the
+extended layout only under exact stream identity `2/3 + 1/2 + 1/2`. Variant 1
+retains `2/2 + 1/1 + 1/2`. The 112-byte stream header already stores the
+dictionary variant at offset 14 and context algorithm/variant at offsets 96
+and 98; no new serialized selector is introduced. The selected layout governs
+typed-token encoding/reconstruction, 26/30 decisions per token, and exact FGK
+model workspace. Both variants retain the 64-byte frame header, fixed 16-byte
+descriptor, payload rules, and zero context/checksum side extents. Profile and
+public admission remain later boundaries.
+
 The private direct typed-token adapter admits the selected Contextual Blocked
 Huffman layout without defining another serialized field. For variant 2, a
 distance of 131,072 is represented by distance class 17 in the 21-symbol

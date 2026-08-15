@@ -17342,3 +17342,33 @@ validation before a second pass publishes exact tokens.
 This stage changes no stream header, descriptor grammar, complete-frame
 boundary, streaming lifecycle, public API, CLI, benchmark, fuzz target, or
 interoperability schema.
+
+## DD-834: Contextual Adaptive Huffman complete frames select one paired identity
+
+- Date: 2026-08-15
+- Status: accepted
+
+Expose the already serialized dictionary variant and context algorithm/variant
+from offsets 14, 96, and 98 of the 112-byte Contextual Adaptive Huffman stream
+header. Resolve that exact pair before dictionary, entropy, workspace, frame,
+or raw-output work. Variant 1 remains `dictionary 2/2 + context 1/1 + entropy
+1/2`; variant 2 is exactly `dictionary 2/3 + context 1/2 + entropy 1/2`.
+Crossed or unsupported identities are malformed. No new field is serialized.
+
+The selected layout controls typed-token encoding and reconstruction, direct
+Contextual Adaptive Huffman token coding, the 26- or 30-decision-per-token
+frame bound, and exact model workspaces of 9,067/4,518 or 9,131/4,550 node/
+symbol entries. Both variants retain a 64-byte frame header, fixed 16-byte
+descriptor, no context side data or checksum trailer, the same payload bound,
+and reset all 31 FGK trees per frame. Variant 1 must remain byte-identical.
+
+The permanent variant-2 frame vector repeats a five-byte marker after 65,536
+filler bytes. HashChain Exact must emit at least one Match whose distance is
+greater than 65,536, and complete decode must reproduce the raw frame. The
+same encoded frame presented with the reciprocal 64 KiB identity must fail
+before raw publication. Independently one-short selected model, token, raw,
+match-finder, and serialized-output regions retain their existing atomic
+failure contracts.
+
+This stage does not admit variant 2 to profile sizing, streaming lifecycle,
+public C, CLI, benchmark, fuzz, or interoperability schema.

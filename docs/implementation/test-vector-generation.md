@@ -9805,3 +9805,26 @@ symbol workspaces to fail without changing descriptor, payload sentinels, or
 token output. A crossed decoder must validate nothing into the caller's token
 region. No complete-frame, streaming, public, benchmark, fuzz, or
 interoperability vector belongs to this stage.
+
+### TVG-0709
+
+Serialize and parse both exact Contextual Adaptive Huffman stream identities:
+variant 1 `2/2 + 1/1 + 1/2` and variant 2 `2/3 + 1/2 + 1/2`. Require offsets
+14, 96, and 98 to retain the selected values and all released variant-1 bytes
+to remain unchanged. Reject reciprocal dictionary/context pairs, unsupported
+selectors, a 1 MiB dictionary under variant 1, and insufficient selected model
+limits without publishing a parsed header.
+
+For variant 2, construct `marker + 65,536 filler bytes + marker`, configure a
+1 MiB window, and encode through HashChain Exact. Require a staged Match with
+distance above 65,536, exact header identities, a 30-decision token ceiling,
+9,131 node and 4,550 symbol requirements, deterministic repeated output, and
+complete raw round trip. Present that frame under a canonical variant-1 stream
+context and require failure with the raw sentinel unchanged.
+
+Retain all variant-1 hand vectors and exhaustive/HashChain identity. Reject
+one-short selected node, symbol, token, raw, match-finder, and serialized
+regions before destination publication. Exercise contradictory counts above
+26 but within 30 decisions per token only under variant 2. No streaming,
+public, CLI, benchmark, fuzz, or interoperability vector belongs to this
+stage.

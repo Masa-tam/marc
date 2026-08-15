@@ -21410,3 +21410,22 @@ discarded and the reviewed seed retained.
   complete Release suites pass all 2,945 registered tests, including
   documentation layout and interoperability schema compatibility, in 197.88
   seconds under MSVC and 196.89 seconds under ClangCL.
+
+## CR-0895: 2026-08-15 - Selected Contextual Adaptive Huffman complete-frame design
+
+- Authoring method: derived the frame boundary from marc's completed selected
+  token bridge and existing dual-profile complete-frame pattern.
+- References used: DD-831 through DD-834; IR-0608; TVG-0706 through TVG-0709;
+  marc's frozen Adaptive Huffman frame and selected first-party frame paths.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, formats, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: expose existing identity fields without adding bytes;
+  select one canonical layout before work; retain the fixed descriptor; and
+  prove extended distance through a frame-atomic HashChain vector.
+- Generated-code task description: specify selected stream validation, frame
+  decision/workspace bounds, exact token/reconstruction propagation, extended-
+  distance and reciprocal proofs, frozen variant-1 bytes, and later exclusions.
+- Similarity review: the design composes only marc-owned stream-header,
+  typed-token, FGK, HashChain, checked-workspace, and atomic-frame rules. No
+  external implementation expression entered the design.
