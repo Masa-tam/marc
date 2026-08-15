@@ -10001,3 +10001,21 @@ maximum depth zero, and the single zero-valued histogram bin. Separately use
 the owner-supplied `dickens` member to distinguish the collision and genuine
 equal-prefix populations at 64 KiB and one MiB windows; do not make the Corpus
 a CTest dependency.
+
+### TVG-0719
+
+Before implementing BinaryTree Exact, fix the required test families from
+DD-845. Use hand-authored insertion sequences for every AVL single and double
+rotation; explicit root, leaf, one-child, and two-child retirement; distance
+exactly at and one beyond the window; skipped positions after a match; capped
+suffix duplicates requiring the newest position; maximum-LCP candidates on
+both lexicographic sides; and an all-`0xff` prefix with no finite upper bound.
+
+For small deterministic binary inputs, compare every query position against
+Exhaustive and HashChain Exact before comparing typed tokens, serialized
+tokens, and complete pipeline bytes. Generate pseudorandom and structured
+zero/periodic/equal-prefix cases locally from documented fixed seeds; do not
+import external vectors. Validate workspace shortness, alignment, aliasing,
+checked size overflow, aggregate limits, index sentinels, parent/child cycles,
+height, balance, subtree newest-position metadata, and counter saturation.
+Silesia remains external performance evidence and never a correctness gate.

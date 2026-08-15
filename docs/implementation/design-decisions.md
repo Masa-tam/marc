@@ -17632,3 +17632,29 @@ bounded. Use saturating increments and set an overflow flag instead of
 wrapping diagnostic counts. The large-file runner must reject an overflowed
 frame or aggregate, require classified candidates and histogram queries to
 reconcile with their totals, and emit only bins through the observed maximum.
+
+## DD-845: BinaryTree Exact uses AVL prefix-range aggregation
+
+- Date: 2026-08-15
+- Status: accepted for private experimental implementation
+
+Implement the next LZSS match-finder candidate as a caller-workspace-backed
+AVL tree over capped suffix byte keys with absolute position as the final
+tie-break. Retire the distance-window node before reusing its ring slot, use
+structural node transplant rather than payload swapping, maintain height and
+maximum absolute position per subtree, and perform all traversal iteratively.
+
+Find maximum match length from the virtual query key's lexicographic
+predecessor and successor. Then cover every key sharing that maximum-length
+prefix and use subtree maximum-position metadata to choose the nearest
+candidate. This second prefix-range step is mandatory: a simple tree search or
+nearest lexicographic neighbor does not by itself preserve marc's nearest-
+distance tie-break among equal-length matches.
+
+Keep BinaryTree private and explicitly selected until Exhaustive differential
+tests, bounded-workspace validation, all LZSS pipeline byte comparisons,
+Silesia-wide measurements, and synthetic worst-case measurements are complete.
+Do not change format, IDs, public ABI, decoder behavior, default strategy, or
+the provisional WindowAdaptive threshold in this stage. The complete data
+structure and proof obligations are specified in
+`docs/design/lzss-binary-tree-match-finder.md`.

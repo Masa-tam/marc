@@ -21893,3 +21893,31 @@ discarded and the reviewed seed retained.
   targets warning-clean and pass the HashChain unit tests. ClangCL processes
   the local 10,192,446-byte `dickens` file at both window sizes; BM-0054 records
   the exact classification, depth, comparison, and descriptive timing results.
+
+## CR-0914: 2026-08-15 - BinaryTree Exact pre-implementation design
+
+- Authoring method: derived an exact ordered-set query from marc's existing
+  longest-match and nearest-distance rules, then selected a fixed-array AVL
+  representation to keep depth and memory bounded.
+- References used: DD-760 through DD-765; DD-841 through DD-845; IR-0619;
+  TVG-0719; BM-0053 and BM-0054; marc-owned Exhaustive, HashChain, workspace,
+  limits, and deterministic tie-break contracts; elementary lexicographic and
+  AVL properties.
+- Known implementations intentionally not consulted: external LZSS,
+  BinaryTree, AVL, suffix-tree, match-finder, compressor, benchmark, profiler,
+  source code, tests, patents, and optimization descriptions.
+- Independent decisions: use suffix bytes plus position as a total order;
+  preserve slot identity through structural transplant; balance with
+  deterministic AVL rotations; obtain length from adjacent keys; recover the
+  nearest equal-length position through augmented prefix-range aggregation;
+  and defer default or adaptive selection.
+- Generated-code task description: specify exactness proof, fixed workspace,
+  active-window lifecycle, insertion/deletion rules, iterative balancing,
+  prefix bounds, aggregate query, diagnostics, negative tests, differential
+  tests, benchmark admission, and staged rollout.
+- Similarity review: the design follows marc-specific API, frame, workspace,
+  determinism, and tie-break constraints and uses only general data-structure
+  mathematics. No external implementation expression entered the change.
+- Review result: the design closes the earlier unresolved node representation,
+  expiration, balancing, pruning, and nearest-tie questions. It intentionally
+  does not claim that one Silesia member proves a default-strategy threshold.

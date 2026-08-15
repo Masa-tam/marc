@@ -7,8 +7,9 @@
 デコード規則やストリーム表現ではない。
 
 最初の実装対象は、現在の完全探索を正解オラクルとして維持した上での
-`HashChain Exact`である。`BinaryTree`、`WindowAdaptiveV1`および
-`Bounded`は、HashChainの測定と検証を終えるまで将来候補として扱う。
+`HashChain Exact`である。`BinaryTree Exact`はHashChain診断後に実装設計が
+受理されたprivate実験候補である。`WindowAdaptiveV1`および`Bounded`は、
+両Exact戦略の測定と検証を終えるまで将来候補として扱う。
 この段階ではストリーム仕様、アルゴリズムID、variant ID、公開C ABI、
 CLI設定を変更しない。
 
@@ -82,7 +83,7 @@ LZSS match finder strategy
 候補に到達した時点で、それ以前もすべて期限切れなので探索を終了できる。
 これらはcaller-owned workspace内の実装表現であり、シリアライズしない。
 
-### 4.3 将来候補: BinaryTree
+### 4.3 実験候補: BinaryTree Exact
 
 ウィンドウ内の候補位置を、後続バイト列の辞書式比較に基づく二分木で管理
 する。
@@ -92,12 +93,10 @@ LZSS match finder strategy
 - 同一接頭辞や重複領域を決定的に処理する。
 - 完全モードではExhaustiveと同じ最長一致とtie-breakを返す。
 
-木の平衡化を行うか、ウィンドウ位置に対応した固定配列を使うか、最悪探索
-深度をどのように制御するかは、実装前に別途決定する。
-
-典型的な二分木探索が、同一接頭辞を持つ全候補から最短距離tie-breakまで
-常に発見できるとは限らない。正式実装前に、枝刈りを含むExact性の証明と
-最悪探索深度の有界化を別途要求する。
+固定配列上のAVL木、期限切れnodeの構造的削除、辞書順近傍による最長一致、
+部分木の最新位置を使うprefix区間集約によってExact性を保証する。詳細は
+[`lzss-binary-tree-match-finder.md`](lzss-binary-tree-match-finder.md)で定める。
+実装完了まではprivate実験戦略であり、既定経路へ使用しない。
 
 ### 4.4 将来候補: WindowAdaptiveV1
 
@@ -341,19 +340,14 @@ Silesia Corpusを使用する。Corpusを自動downloadまたは再配布せず�
 7. Exhaustiveとの差分試験と有限fuzzingを行う。
 8. Silesiaの外部配置、検証および測定契約を実装する。
 9. 64 KiB、256 KiB、1 MiBと合成worst-case入力でHashChainを診断する。
-10. 実測上の必要性とExact性の設計が確認された場合だけ
-   `BinaryTree Exact`を実装する。
+10. 受理済みのExact設計に従い、privateな`BinaryTree Exact`を実装する。
 11. 両戦略の結果がそろった場合だけ`WindowAdaptiveV1`を検討する。
 12. 必要性が確認された後にBoundedポリシーを追加する。
 13. 再現性情報を公開する必要が生じた場合は、ストリームではなく
     エンコーダー設定または外部provenanceとして設計する。
 
-## 13. 正式設計前の未決事項
+## 13. 残る未決事項
 
-- BinaryTreeのノード表現と期限切れ位置の削除方法
-- BinaryTreeを平衡化するかどうか
-- Exactを保証しながら安全に枝刈りできる条件
-- 同一接頭辞群から最短距離tie-breakを保証する索引またはmetadata
 - WindowAdaptiveV1の最終閾値
 - 内部strategy設定をどの段階で公開エンコーダー設定へ昇格するか
 - 計画／書き込み間で型付きトークンを保持する標準経路
@@ -369,7 +363,8 @@ Exhaustiveを参照オラクルとして残し、最初にHashChain Exactを追�
 いずれもストリームへ探索設定を記録せず、必要な再符号化provenanceは
 エンコーダー利用側が管理する。
 
-BinaryTree、WindowAdaptiveV1およびBoundedは、Silesiaと合成worst-case入力
-からHashChain Exactの性能、hash false positive、同一接頭辞候補数、
-workspaceおよび最悪挙動を測定し、追加の複雑性に価値があると確認してから
-別の設計判断として採否を決める。
+BinaryTree Exactは、長い同一接頭辞chainという実測問題に対し、AVL近傍探索
+とprefix区間集約でExhaustiveのtie-breakまで保つ設計を採用した。ただし、
+合成worst-caseとSilesia全体の証拠がそろうまではprivate実験候補とする。
+`WindowAdaptiveV1`とBoundedはHashChain/BinaryTree双方の性能、workspaceおよび
+最悪挙動を測定してから別の設計判断として採否を決める。

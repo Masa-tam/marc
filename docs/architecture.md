@@ -76,8 +76,11 @@ same longest match and nearest-distance tie break at every parse position,
 while a future bounded-effort strategy may select a shorter valid match. Finder
 selection and effort limits are not decoder-visible and do not change the
 stream format. The first accelerated boundary is a caller-workspace-backed
-five-byte-prefix HashChain Exact; BinaryTree, automatic selection, and bounded
-effort remain deferred until measurements justify their complexity.
+five-byte-prefix HashChain Exact. BinaryTree Exact now has an accepted
+[pre-implementation design](design/lzss-binary-tree-match-finder.md) using a
+caller-workspace-backed AVL tree and prefix-range newest-position aggregation,
+but remains private and unimplemented pending its admission measurements.
+Automatic selection and bounded effort remain deferred.
 The internal finder contract has a const match query plus an `advance` notice
 for every consumed half-open raw range. Exhaustive implements the query with
 the original complete scan and treats `advance` as a no-op. Both canonical

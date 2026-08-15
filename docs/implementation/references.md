@@ -5552,3 +5552,13 @@ statistics pointer, checked arithmetic, and bounded frame runner as first-party
 references. No external HashChain, binary-tree, compressor, profiling tool,
 Corpus analysis, benchmark result, source code, test, patent, or optimization
 description was consulted.
+
+### IR-0619
+
+The BinaryTree Exact design uses DD-760 through DD-765, DD-841 through DD-845,
+BM-0053 and BM-0054, the existing Exhaustive and HashChain contracts, marc's
+nearest-distance tie-break, caller-owned workspace and checked-arithmetic
+rules, and elementary lexicographic-order and AVL-tree properties as
+first-party and mathematical references. No external match-finder, AVL,
+suffix-tree, compressor, benchmark, source code, test suite, patent, or
+optimization description was consulted.
