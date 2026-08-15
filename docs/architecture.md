@@ -5408,3 +5408,11 @@ and reconstruction. Exact `2/3 + 1/2 + 1/2` admits the extended route without
 changing the fixed descriptor or any header extent. A marker-gap-marker frame
 must emit a Match beyond 64 KiB and reciprocal decoding must leave raw output
 untouched. Streaming and public construction remain later boundaries.
+
+That complete-frame boundary now selects either exact `2/2 + 1/1 + 1/2` or
+`2/3 + 1/2 + 1/2` identity before any frame transaction. The selected layout
+defines matcher token width, decision ceiling, FGK node and symbol slices, and
+reconstruction limits while the 16-byte descriptor and 64-byte frame header
+remain unchanged. Both Exhaustive and HashChain Exact complete-frame encoders
+share this route. The public profile and streaming state machines deliberately
+remain on the frozen 64 KiB selection until their own bounded admission step.

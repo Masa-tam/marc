@@ -81,15 +81,26 @@ struct RegionSizes {
 
 [[nodiscard]] bool calculate_region_sizes(
     const std::span<dictionary::internal::LzssTypedToken> tokens,
+    const context::internal::LzssFieldContextLayout& layout,
     RegionSizes& sizes) noexcept {
+    std::size_t node_entries{};
+    if (!core::checked_multiply(
+            layout.frequency_entries, std::size_t{2}, node_entries)
+        || !core::checked_add(
+            node_entries,
+            static_cast<std::size_t>(
+                context::internal::lzss_field_context_count),
+            node_entries)) {
+        return false;
+    }
     return core::checked_multiply(
                tokens.size(), sizeof(dictionary::internal::LzssTypedToken),
                sizes.tokens)
         && core::checked_multiply(
-            entropy::internal::contextual_adaptive_huffman_node_entries,
-            sizeof(entropy::internal::AdaptiveHuffmanNode), sizes.nodes)
+            node_entries, sizeof(entropy::internal::AdaptiveHuffmanNode),
+            sizes.nodes)
         && core::checked_multiply(
-            entropy::internal::contextual_adaptive_huffman_symbol_entries,
+            layout.frequency_entries,
             sizeof(std::uint16_t), sizes.symbols);
 }
 
@@ -136,6 +147,23 @@ template <bool UseHashChain>
     noexcept {
     using E = LzssContextualAdaptiveHuffmanFrameEncodeError;
     LzssContextualAdaptiveHuffmanFrameEncodeResult result{};
+    if (validate_lzss_contextual_adaptive_huffman_stream_header(stream, limits)
+        != LzssContextualAdaptiveHuffmanStreamHeaderError::none) {
+        result.error = E::invalid_stream;
+        return result;
+    }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        stream.dictionary_variant, stream.context_algorithm,
+        stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.error = E::invalid_stream;
+        return result;
+    }
+    result.required_node_entries =
+        2 * selected.layout.frequency_entries
+        + context::internal::lzss_field_context_count;
+    result.required_symbol_entries = selected.layout.frequency_entries;
     if (private_nodes.size() < result.required_node_entries) {
         result.error = E::node_staging_too_small;
         return result;
@@ -145,7 +173,7 @@ template <bool UseHashChain>
         return result;
     }
     RegionSizes sizes{};
-    if (!calculate_region_sizes(private_tokens, sizes)) {
+    if (!calculate_region_sizes(private_tokens, selected.layout, sizes)) {
         result.error = E::arithmetic_overflow;
         return result;
     }
@@ -174,11 +202,6 @@ template <bool UseHashChain>
                 return fail_overlap(result, finder_overlap);
         }
     }
-    if (validate_lzss_contextual_adaptive_huffman_stream_header(stream, limits)
-        != LzssContextualAdaptiveHuffmanStreamHeaderError::none) {
-        result.error = E::invalid_stream;
-        return result;
-    }
     if (!exact_input_size(stream, output_already_committed,
                           raw_input.size())) {
         result.error = E::input_size_mismatch;
@@ -189,10 +212,12 @@ template <bool UseHashChain>
         result.token_encode = dictionary::internal::
             encode_lzss_typed_tokens_hash_chain_single_pass(
                 raw_input, stream.dictionary, limits, private_tokens,
-                match_finder_workspace, statistics);
+                match_finder_workspace, statistics,
+                selected.layout.dictionary_variant);
     } else {
         result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
-            raw_input, stream.dictionary, limits, private_tokens);
+            raw_input, stream.dictionary, limits, private_tokens,
+            selected.layout.dictionary_variant);
     }
     result.token_count = result.token_encode.token_count;
     if (result.token_encode.error
@@ -216,7 +241,7 @@ template <bool UseHashChain>
     result.entropy_encode =
         context::internal::plan_lzss_contextual_adaptive_huffman_tokens(
             tokens, stream.dictionary, token_context, limits, private_nodes,
-            private_symbols, descriptor);
+            private_symbols, descriptor, selected.layout.context_variant);
     result.event_count = result.entropy_encode.event_count;
     result.decision_count = result.entropy_encode.decision_count;
     result.payload_size = result.entropy_encode.payload_size;
@@ -322,6 +347,23 @@ template <bool UseHashChain>
     noexcept {
     using E = LzssContextualAdaptiveHuffmanFrameEncodeError;
     LzssContextualAdaptiveHuffmanFrameEncodeResult result{};
+    if (validate_lzss_contextual_adaptive_huffman_stream_header(stream, limits)
+        != LzssContextualAdaptiveHuffmanStreamHeaderError::none) {
+        result.error = E::invalid_stream;
+        return result;
+    }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        stream.dictionary_variant, stream.context_algorithm,
+        stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.error = E::invalid_stream;
+        return result;
+    }
+    result.required_node_entries =
+        2 * selected.layout.frequency_entries
+        + context::internal::lzss_field_context_count;
+    result.required_symbol_entries = selected.layout.frequency_entries;
     if (private_nodes.size() < result.required_node_entries) {
         result.error = E::node_staging_too_small;
         return result;
@@ -331,7 +373,7 @@ template <bool UseHashChain>
         return result;
     }
     RegionSizes sizes{};
-    if (!calculate_region_sizes(private_tokens, sizes)) {
+    if (!calculate_region_sizes(private_tokens, selected.layout, sizes)) {
         result.error = E::arithmetic_overflow;
         return result;
     }
@@ -389,7 +431,8 @@ template <bool UseHashChain>
         context::internal::encode_lzss_contextual_adaptive_huffman_tokens(
             tokens, stream.dictionary, token_context, limits, private_nodes,
             private_symbols,
-            output.subspan(payload_offset, result.payload_size), descriptor);
+            output.subspan(payload_offset, result.payload_size), descriptor,
+            selected.layout.context_variant);
     if (result.entropy_encode.error
             != context::internal::
                 LzssContextualAdaptiveHuffmanEncodeError::none

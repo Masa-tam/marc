@@ -617,6 +617,16 @@ frame header. The permanent marker-gap-marker proof must require a distance
 beyond 64 KiB and crossed decode must publish no raw byte. Profile, streaming,
 and public admission remain later stages.
 
+That complete-frame boundary is implemented. Stream parsing and serialization
+now expose the existing identity fields at offsets 14, 96, and 98, and frame
+validation resolves one canonical layout before capacity, workspace, token, or
+raw-output work. Exact selected model extents and decision bounds flow through
+Exhaustive and HashChain Exact encoding, Adaptive Huffman token coding, and
+reconstruction. A marker, 65,536-byte gap, and repeated marker force an
+extended-distance Match and round trip deterministically; crossed identity and
+every independently one-short selected region fail without publishing output.
+The next independent boundary is profile and streaming-lifecycle admission.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

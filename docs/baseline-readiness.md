@@ -2443,3 +2443,19 @@ or token publication. All targets build warning-clean and all 2,945 registered
 Release tests pass under MSVC and ClangCL, including documentation layout and
 interoperability schema compatibility, in 197.88 and 196.89 seconds. Selected
 complete-frame admission remains the next boundary.
+
+### BR-0144
+
+The selected Contextual Adaptive Huffman complete-frame boundary is locally
+complete. Its stream-header object exposes the already serialized dictionary
+and context identities and admits only exact `2/2 + 1/1 + 1/2` or
+`2/3 + 1/2 + 1/2`. One resolved layout controls typed matching, the 26/30
+decision bound, exact 9,067/4,518 or 9,131/4,550 node/symbol workspace,
+Adaptive Huffman token coding, and reconstruction. A marker plus 65,536-byte
+gap plus repeated marker forces an extended-distance HashChain Match and
+round trips deterministically. Crossed identities and independently one-short
+token, raw, node, symbol, finder, and output regions fail atomically. Variant 1
+retains its existing bytes. All targets build warning-clean and all 2,947
+registered Release tests pass under MSVC and ClangCL, including documentation
+layout and interoperability schema compatibility, in 203.77 and 212.38
+seconds. Profile and streaming-lifecycle admission remains the next boundary.

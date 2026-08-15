@@ -21,6 +21,17 @@ using marc::entropy::internal::ContextualAdaptiveHuffmanFormatError;
     return stream;
 }
 
+[[nodiscard]] LzssContextualAdaptiveHuffmanStreamHeader selected_stream_config(
+    const std::uint64_t size) {
+    auto stream = stream_config();
+    stream.frame_size = static_cast<std::uint32_t>(size);
+    stream.original_size = size;
+    stream.dictionary.window_size = 1'048'576;
+    stream.dictionary_variant = 3;
+    stream.context_variant = 2;
+    return stream;
+}
+
 [[nodiscard]] std::vector<std::byte> frame_vector() {
     std::vector<std::byte> frame(82);
     const auto stream = stream_config();
@@ -132,6 +143,59 @@ TEST(LzssContextualAdaptiveHuffmanFormat,
                   invalid_entropy, {}),
               LzssContextualAdaptiveHuffmanStreamHeaderError::
                   invalid_entropy_parameters);
+}
+
+TEST(LzssContextualAdaptiveHuffmanFormat,
+     SelectedStreamIdentityRoundTripsAndRejectsCrossedPairs) {
+    const auto stream = selected_stream_config(5);
+    std::array<std::byte,
+               lzss_contextual_adaptive_huffman_stream_header_size>
+        bytes{};
+    ASSERT_EQ(serialize_lzss_contextual_adaptive_huffman_stream_header(
+                  stream, {}, bytes),
+              LzssContextualAdaptiveHuffmanStreamHeaderError::none);
+    EXPECT_EQ(bytes[14], std::byte{3});
+    EXPECT_EQ(bytes[16], std::byte{1});
+    EXPECT_EQ(bytes[18], std::byte{2});
+    EXPECT_EQ(bytes[96], std::byte{1});
+    EXPECT_EQ(bytes[98], std::byte{2});
+
+    LzssContextualAdaptiveHuffmanStreamHeader parsed{};
+    std::size_t consumed{};
+    ASSERT_EQ(parse_lzss_contextual_adaptive_huffman_stream_header(
+                  bytes, {}, parsed, consumed),
+              LzssContextualAdaptiveHuffmanStreamHeaderError::none);
+    EXPECT_EQ(consumed, bytes.size());
+    EXPECT_EQ(parsed.dictionary.window_size, 1'048'576U);
+    EXPECT_EQ(parsed.dictionary_variant, 3U);
+    EXPECT_EQ(parsed.context_algorithm, 1U);
+    EXPECT_EQ(parsed.context_variant, 2U);
+
+    auto crossed = stream;
+    crossed.context_variant = 1;
+    EXPECT_EQ(validate_lzss_contextual_adaptive_huffman_stream_header(
+                  crossed, {}),
+              LzssContextualAdaptiveHuffmanStreamHeaderError::
+                  contradictory_parameters);
+    crossed = stream;
+    crossed.dictionary_variant = 2;
+    EXPECT_EQ(validate_lzss_contextual_adaptive_huffman_stream_header(
+                  crossed, {}),
+              LzssContextualAdaptiveHuffmanStreamHeaderError::
+                  contradictory_parameters);
+
+    const LzssContextualAdaptiveHuffmanFrameHeader extended_counts{
+        0, 0, 5, 1, 2, 27, 1, 16, 0, 0};
+    EXPECT_EQ(validate_lzss_contextual_adaptive_huffman_frame_header(
+                  extended_counts, {stream, {}, 0, 0}),
+              LzssContextualAdaptiveHuffmanFrameHeaderError::none);
+    auto legacy = stream_config();
+    legacy.frame_size = 5;
+    legacy.original_size = 5;
+    EXPECT_EQ(validate_lzss_contextual_adaptive_huffman_frame_header(
+                  extended_counts, {legacy, {}, 0, 0}),
+              LzssContextualAdaptiveHuffmanFrameHeaderError::
+                  contradictory_counts);
 }
 
 TEST(LzssContextualAdaptiveHuffmanFormat,

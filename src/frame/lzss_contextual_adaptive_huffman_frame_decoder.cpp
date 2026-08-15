@@ -57,6 +57,19 @@ decode_lzss_contextual_adaptive_huffman_frame(
         result.error = E::preflight_error;
         return result;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        context.stream.dictionary_variant,
+        context.stream.context_algorithm, context.stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.error = E::preflight_error;
+        result.preflight.error =
+            LzssContextualAdaptiveHuffmanFramePreflightError::header_error;
+        result.preflight.header_error =
+            LzssContextualAdaptiveHuffmanFrameHeaderError::
+                invalid_stream_header;
+        return result;
+    }
     if (!std::in_range<std::size_t>(layout.header.token_count)
         || !std::in_range<std::size_t>(layout.header.uncompressed_size)
         || !std::in_range<std::size_t>(layout.header.descriptor_size)
@@ -66,9 +79,9 @@ decode_lzss_contextual_adaptive_huffman_frame(
     }
 
     result.required_node_entries =
-        entropy::internal::contextual_adaptive_huffman_node_entries;
-    result.required_symbol_entries =
-        entropy::internal::contextual_adaptive_huffman_symbol_entries;
+        2 * selected.layout.frequency_entries
+        + context::internal::lzss_field_context_count;
+    result.required_symbol_entries = selected.layout.frequency_entries;
     result.required_token_count =
         static_cast<std::size_t>(layout.header.token_count);
     result.required_raw_size =
@@ -150,7 +163,8 @@ decode_lzss_contextual_adaptive_huffman_frame(
     result.token_decode =
         context::internal::decode_lzss_contextual_adaptive_huffman_tokens(
             layout.descriptor, payload, context.stream.dictionary,
-            token_context, context.limits, nodes, symbols, tokens);
+            token_context, context.limits, nodes, symbols, tokens,
+            selected.layout.context_variant);
     if (result.token_decode.error
         != context::internal::
             LzssContextualAdaptiveHuffmanDecodeError::none) {
@@ -164,7 +178,8 @@ decode_lzss_contextual_adaptive_huffman_frame(
         context.output_already_committed,
     };
     result.reconstruction = dictionary::internal::reconstruct_lzss_typed_frame(
-        tokens, context.stream.dictionary, raw_context, context.limits, raw);
+        tokens, context.stream.dictionary, raw_context, context.limits, raw,
+        selected.layout.dictionary_variant);
     if (result.reconstruction.error
         != dictionary::internal::LzssTypedReconstructError::none) {
         result.error = E::reconstruction_error;

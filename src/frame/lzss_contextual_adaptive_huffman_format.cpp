@@ -75,7 +75,22 @@ constexpr std::array frame_magic{
 
 [[nodiscard]] LzssContextualRansStreamHeader to_common(
     const LzssContextualAdaptiveHuffmanStreamHeader& header) noexcept {
-    return {header.frame_size, header.original_size, header.dictionary};
+    LzssContextualRansStreamHeader result{};
+    result.frame_size = header.frame_size;
+    result.original_size = header.original_size;
+    result.dictionary = header.dictionary;
+    result.dictionary_variant = header.dictionary_variant;
+    result.context_algorithm = header.context_algorithm;
+    result.context_variant = header.context_variant;
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        header.dictionary_variant, header.context_algorithm,
+        header.context_variant);
+    if (selected.error
+        == context::internal::LzssFieldContextLayoutError::none) {
+        result.frequency_entry_count = static_cast<std::uint32_t>(
+            selected.layout.frequency_entries);
+    }
+    return result;
 }
 
 [[nodiscard]] LzssContextualAdaptiveHuffmanStreamHeader from_common(
@@ -84,12 +99,16 @@ constexpr std::array frame_magic{
     result.frame_size = header.frame_size;
     result.original_size = header.original_size;
     result.dictionary = header.dictionary;
+    result.dictionary_variant = header.dictionary_variant;
+    result.context_algorithm = header.context_algorithm;
+    result.context_variant = header.context_variant;
     return result;
 }
 
-[[nodiscard]] constexpr std::uint64_t model_entries() noexcept {
-    return entropy::internal::contextual_adaptive_huffman_node_entries
-        + entropy::internal::contextual_adaptive_huffman_symbol_entries;
+[[nodiscard]] std::uint64_t model_entries(
+    const context::internal::LzssFieldContextLayout& layout) noexcept {
+    return 3 * static_cast<std::uint64_t>(layout.frequency_entries)
+        + context::internal::lzss_field_context_count;
 }
 
 } // namespace
@@ -108,17 +127,34 @@ validate_lzss_contextual_adaptive_huffman_stream_header(
                > limits.max_internal_buffered_bytes) {
         return E::limit_exceeded;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        header.dictionary_variant, header.context_algorithm,
+        header.context_variant);
+    switch (selected.error) {
+    case context::internal::LzssFieldContextLayoutError::none:
+        break;
+    case context::internal::LzssFieldContextLayoutError::
+        unknown_dictionary_variant:
+        return E::unsupported_dictionary_variant;
+    case context::internal::LzssFieldContextLayoutError::
+        unknown_context_algorithm:
+        return E::unknown_context_model;
+    case context::internal::LzssFieldContextLayoutError::
+        unsupported_context_variant:
+        return E::unsupported_context_variant;
+    case context::internal::LzssFieldContextLayoutError::
+        incompatible_variants:
+        return E::contradictory_parameters;
+    }
     const auto dictionary_error =
-        dictionary::internal::validate_lzss_parameters(
-            header.dictionary, limits);
+        dictionary::internal::validate_lzss_typed_parameters(
+            header.dictionary, limits, selected.layout.dictionary_variant);
     if (dictionary_error
-        == dictionary::internal::LzssFormatError::limit_exceeded) {
+        == dictionary::internal::LzssTypedTokenError::limit_exceeded) {
         return E::limit_exceeded;
     }
-    if (dictionary_error != dictionary::internal::LzssFormatError::none
-        || header.dictionary.min_match_length != 5
-        || header.dictionary.max_match_length > 258
-        || header.dictionary.window_size > 65536) {
+    if (dictionary_error
+        != dictionary::internal::LzssTypedTokenError::none) {
         return E::invalid_dictionary_parameters;
     }
     if (header.max_symbol_events
@@ -130,7 +166,7 @@ validate_lzss_contextual_adaptive_huffman_stream_header(
         || header.max_nyt_raw_width != 8 || header.flags != 0) {
         return E::invalid_entropy_parameters;
     }
-    if (model_entries() > limits.max_entropy_table_entries) {
+    if (model_entries(selected.layout) > limits.max_entropy_table_entries) {
         return E::limit_exceeded;
     }
     return E::none;
@@ -184,8 +220,14 @@ parse_lzss_contextual_adaptive_huffman_stream_header(
     }
     std::uint16_t entropy_algorithm{};
     std::uint16_t entropy_variant{};
+    std::uint16_t dictionary_variant{};
+    std::uint16_t context_algorithm{};
+    std::uint16_t context_variant{};
     if (!core::load_le(input, 16, entropy_algorithm)
-        || !core::load_le(input, 18, entropy_variant)) {
+        || !core::load_le(input, 18, entropy_variant)
+        || !core::load_le(input, 14, dictionary_variant)
+        || !core::load_le(input, 96, context_algorithm)
+        || !core::load_le(input, 98, context_variant)) {
         return E::arithmetic_overflow;
     }
     std::array<std::byte,
@@ -199,8 +241,14 @@ parse_lzss_contextual_adaptive_huffman_stream_header(
     }
     adapted[80] = std::byte{12};
     adapted[81] = std::byte{1};
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        dictionary_variant, context_algorithm, context_variant);
+    const auto frequency_entries = selected.error
+            == context::internal::LzssFieldContextLayoutError::none
+        ? selected.layout.frequency_entries
+        : context::internal::lzss_field_context_frequency_entries;
     if (!core::store_le(bytes, 82, std::uint16_t{31})
-        || !core::store_le(bytes, 84, std::uint32_t{4518})
+        || !core::store_le(bytes, 84, frequency_entries)
         || !core::store_le(bytes, 88, std::uint32_t{0})
         || !core::store_le(bytes, 92, std::uint32_t{0})) {
         return E::arithmetic_overflow;
@@ -241,6 +289,13 @@ validate_lzss_contextual_adaptive_huffman_frame_header(
         != LzssContextualAdaptiveHuffmanStreamHeaderError::none) {
         return E::invalid_stream_header;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        context.stream.dictionary_variant,
+        context.stream.context_algorithm, context.stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return E::invalid_stream_header;
+    }
     if (header.flags != 0) return E::unknown_flags;
     if (header.sequence != context.expected_sequence) {
         return E::unexpected_sequence;
@@ -267,7 +322,8 @@ validate_lzss_contextual_adaptive_huffman_frame_header(
         || !checked_product_at_most(
             6, header.uncompressed_size, header.decision_count)
         || !checked_product_at_most(
-            26, header.token_count, header.decision_count)
+            selected.layout.maximum_decisions_per_token,
+            header.token_count, header.decision_count)
         || header.payload_size == 0
         || header.descriptor_size
                != entropy::internal::
@@ -281,7 +337,8 @@ validate_lzss_contextual_adaptive_huffman_frame_header(
     const core::FrameBounds bounds{
         header.uncompressed_size, 0, header.payload_size,
         header.uncompressed_size, 0, context.stream.dictionary.window_size,
-        context.stream.dictionary.max_match_length, 0, model_entries(), 0,
+        context.stream.dictionary.max_match_length, 0,
+        model_entries(selected.layout), 0,
         header.descriptor_size, header.payload_size, 1};
     const auto limit = core::validate_frame_bounds(
         context.limits, bounds, context.output_already_committed);

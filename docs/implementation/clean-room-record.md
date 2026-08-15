@@ -21429,3 +21429,31 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned stream-header,
   typed-token, FGK, HashChain, checked-workspace, and atomic-frame rules. No
   external implementation expression entered the design.
+
+## CR-0896: 2026-08-15 - Selected Contextual Adaptive Huffman complete-frame admission
+
+- Authoring method: implemented DD-834 over marc's completed selected token
+  bridge and existing allocation-free complete-frame encoder and decoder.
+- References used: DD-831 through DD-834; IR-0608; TVG-0706 through TVG-0709;
+  BR-0144; marc's frozen Contextual Adaptive Huffman frame and selected
+  first-party frame implementations.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, formats, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: expose the existing serialized identity fields in
+  the private header object; resolve one canonical selection before work; use
+  exact selected model and decision extents throughout the transaction; keep
+  the descriptor and frame-header sizes fixed; and defer profile and streaming
+  admission.
+- Generated-code task description: propagate selected identity through stream
+  parsing and validation, complete-frame planning, Exhaustive and HashChain
+  Exact encoding, direct token coding, decoding, and reconstruction; prove a
+  useful Match beyond 64 KiB; and retain reciprocal atomic failures.
+- Similarity review: the implementation extends only marc-owned stream-header,
+  typed-token, FGK, HashChain, checked-workspace, and atomic-frame structures.
+  No external implementation expression entered the change.
+- Local validation: all targets build warning-clean under MSVC and ClangCL.
+  All 21 focused format and complete-frame tests pass under both compilers.
+  Both complete Release suites pass all 2,947 registered tests, including
+  documentation layout and interoperability schema compatibility, in 203.77
+  seconds under MSVC and 212.38 seconds under ClangCL.

@@ -28,6 +28,9 @@ struct LzssContextualAdaptiveHuffmanStreamHeader {
         entropy::internal::contextual_adaptive_huffman_context_count};
     std::uint8_t max_nyt_raw_width{8};
     std::uint8_t flags{};
+    std::uint16_t dictionary_variant{2};
+    std::uint16_t context_algorithm{1};
+    std::uint16_t context_variant{1};
 };
 
 enum class LzssContextualAdaptiveHuffmanStreamHeaderError : std::uint8_t {
