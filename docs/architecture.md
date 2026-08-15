@@ -5458,3 +5458,10 @@ and 128 MiB aggregate limit through the public C lifecycle. The legacy name
 remains fixed to its released 64 KiB policy. Reciprocal names reject each
 other's archives before raw publication; no heuristic profile inference is
 introduced.
+
+That CLI boundary is now implemented. Parsing, usage inventory, bounded
+configuration, workspace query, factory dispatch, and transform processing
+recognize both adjacent exact names while sharing one public C adapter. The
+selected name emits `2/3 + 1/2 + 1/2`; both reciprocal decode routes remove
+their temporary output after the header-level mismatch. Benchmark exposure
+remains separate.

@@ -21577,3 +21577,30 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned CLI configuration,
   public factory, selector, and test patterns. No external implementation
   expression entered the design.
+
+## CR-0902: 2026-08-15 - Selected Contextual Adaptive Huffman CLI profile
+
+- Authoring method: implemented DD-837 over marc's existing 64 KiB CLI
+  adapter and completed selected public C lifecycle.
+- References used: DD-831 through DD-837; IR-0611; TVG-0706 through TVG-0712;
+  BR-0147; marc's selected Dynamic Range, rANS, tANS, and Blocked Huffman CLI
+  profiles.
+- Known implementations intentionally not consulted: external CLIs, Adaptive
+  Huffman or LZSS implementations, argument grammars, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: preserve the legacy exact name and policy; add one
+  adjacent case-sensitive `-1m` name; configure 1 MiB and 128 MiB bounds
+  explicitly; and keep workspace layout authoritative in the C requirements
+  query.
+- Generated-code task description: add selected constants, parsing, usage,
+  configuration and common dispatch; register legacy/selected round trips,
+  exact identities, reciprocal rejection, trailing rejection, and inventory
+  near-miss coverage; and update the public CLI reference.
+- Similarity review: the implementation extends only marc-owned CLI, public C
+  adapter, CMake test, and temporary-output patterns. No external
+  implementation expression entered the change.
+- Local validation: all targets build warning-clean under MSVC and ClangCL.
+  The three focused CLI tests pass under both compilers. Both complete Release
+  suites pass all 2,953 registered tests, including documentation layout and
+  interoperability schema compatibility, in 191.71 seconds under MSVC and
+  195.35 seconds under ClangCL.

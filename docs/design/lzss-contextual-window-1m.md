@@ -671,6 +671,12 @@ names use the public C lifecycle and reject reciprocal archives before raw
 publication. Benchmark, fuzz, and interoperability admission remain later
 boundaries.
 
+That CLI boundary is now implemented. The existing and selected names appear
+adjacent exactly once, configure their exact public selectors and bounded
+policies, emit their expected identities, round trip deterministically, reject
+reciprocal archives without output, reject trailing data, and retain case-
+sensitive parsing. Benchmark admission is the next boundary.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

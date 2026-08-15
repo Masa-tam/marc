@@ -98,8 +98,11 @@ Contextual Blocked Huffman entropy variant 2 under the frozen 64 KiB profile.
 `2/3 + 1/2 + 2/2`. Encode and decode require the same explicit name; neither
 profile auto-detects or admits the other. Both remain experimental.
 `lzss-contextual-adaptive-huffman` selects typed LZSS plus Contextual Adaptive
-Huffman entropy variant 2. It also requires the same explicit selector for
-encode and decode and remains outside the stable 42-profile inventory.
+Huffman entropy variant 2 under the frozen 64 KiB profile. The additive
+`lzss-contextual-adaptive-huffman-1m` name selects exact
+`2/3 + 1/2 + 1/2`. Encode and decode require the same explicit name; neither
+profile auto-detects or admits the other. Both remain outside the stable
+42-profile inventory.
 
 ### Common stream rules
 
@@ -234,6 +237,13 @@ aggregate policy is 8 MiB. Both directions call only the public configuration
 initializer, requirements query, factory, process, and destroy functions.
 Typed tokens and FGK model storage remain in the queried opaque views; the CLI
 neither names nor sizes those private layouts.
+
+The experimental `lzss-contextual-adaptive-huffman-1m` adapter uses
+1,048,576-byte raw frames and LZSS window, the exact 9,131-node plus
+4,550-symbol model bank, and a `ceil(267F/8) = 34,996,224` payload ceiling.
+Its aggregate policy is 128 MiB. It changes only the public exact profile and
+bounded configuration values before using the same public lifecycle; queried
+workspace extents and alignment remain authoritative.
 
 ### LZ78 profile parameters
 

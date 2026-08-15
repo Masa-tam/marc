@@ -2491,3 +2491,18 @@ rejects the selected stream. All targets build warning-clean and all 2,951
 registered Release tests pass under MSVC and ClangCL, including documentation
 layout and interoperability schema compatibility, in 207.87 and 195.65
 seconds. CLI admission remains the next boundary.
+
+### BR-0147
+
+The selected Contextual Adaptive Huffman CLI profile is locally complete.
+`lzss-contextual-adaptive-huffman` remains fixed to exact
+`2/2 + 1/1 + 1/2`; the adjacent
+`lzss-contextual-adaptive-huffman-1m` name selects exact
+`2/3 + 1/2 + 1/2`, 1 MiB frame/window/distance policy, 13,681 model entries,
+the 34,996,224-byte payload ceiling, and 128 MiB aggregate limit. Both names
+use only the public C lifecycle and reject reciprocal archives without
+retaining output. Usage lists each once in order and rejects the `-1M` near
+miss. All targets build warning-clean and all 2,953 registered Release tests
+pass under MSVC and ClangCL, including documentation layout and
+interoperability schema compatibility, in 191.71 and 195.35 seconds. Benchmark
+admission remains the next boundary.
