@@ -21724,3 +21724,30 @@ discarded and the reviewed seed retained.
 - Similarity review: the design extends only marc-owned append-only manifest,
   verification, compatibility, CLI, and documentation patterns. No external
   implementation expression entered the design.
+
+## CR-0908: 2026-08-15 - Contextual Adaptive Huffman schema-42 local admission
+
+- Authoring method: implemented DD-840 directly in marc's existing append-
+  only interoperability generator, verifier, and compatibility chain.
+- References used: DD-831 through DD-840; IR-0614; TVG-0706 through TVG-0715;
+  marc's schema-41 scripts and selected public CLI profile.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, bundle formats, archives, manifests,
+  interoperability suites, source code, tests, corpora, conformance vectors,
+  patent text, and optimization descriptions.
+- Independent decisions: append the explicit profile at entry 52; inspect
+  exact `2/3 + 1/2 + 1/2` identity during generation; require codec set
+  `marc-cli-v42`; reject reordered manifests; and remove only entry 52 to
+  recover schema 41 before applying unchanged older conversions.
+- Generated-code task description: update current generation and verification,
+  extend reordered-current rejection and compatibility conversion, run both
+  local compiler routes, and record external work as pending.
+- Similarity review: the implementation changes only marc-owned PowerShell
+  scripts and documentation using the repository's established append-only
+  schema pattern. No external implementation expression entered the change.
+- Local schema validation: MSVC and ClangCL each generate and verify all 52
+  current archives, reject the reordered schema-42 manifest, and verify the
+  complete schema-1-through-42 chain in 81.30 and 75.77 seconds respectively.
+- Local complete-suite validation: all 2,960 registered Release tests pass,
+  including documentation layout and schema compatibility, in 207.34 seconds
+  under MSVC and 206.42 seconds under ClangCL.

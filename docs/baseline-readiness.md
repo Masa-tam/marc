@@ -2535,3 +2535,16 @@ features. All 2,960 registered Release tests pass under MSVC and ClangCL,
 including documentation layout and interoperability schema compatibility, in
 206.82 and 204.58 seconds. Interoperability inventory admission remains the
 next boundary.
+
+### BR-0150
+
+Interoperability schema 42 appends only
+`lzss-contextual-adaptive-huffman-1m` as archive 52 and freezes every
+schema-41 archive byte and order. Generation verifies exact
+`2/3 + 1/2 + 1/2` identity and an immediate round trip. Both local compilers
+generate and verify all 52 archives, reject reordered current manifests,
+remove only the new final entry to recover schema 41, and verify every schema
+through version 1 in 81.30 and 75.77 seconds. Complete registered-suite
+validation passes all 2,960 tests under MSVC and ClangCL, including
+documentation layout and schema compatibility, in 207.34 and 206.42 seconds.
+External four-direction evidence remains pending until the revision is pushed.

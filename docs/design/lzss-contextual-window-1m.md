@@ -714,6 +714,11 @@ re-encoding; compatibility removes only the new leaf to reconstruct schema 41.
 The common fixture remains identity/determinism evidence rather than a distant-
 match vector. External exchange follows local dual-compiler admission.
 
+Local schema-42 admission is now complete. Both MSVC and ClangCL generate and
+verify all 52 archives, reject a reordered current manifest, remove only the
+new final archive to recover schema 41, and complete every downgrade through
+schema 1. Four-direction external exchange remains post-push evidence.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:
