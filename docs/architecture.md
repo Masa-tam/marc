@@ -5494,3 +5494,11 @@ fixed Adaptive Huffman model bank grows to the selected 9,131-node and
 and reciprocal public rejection before output. A bounded sanitizer campaign
 completed without a finding; interoperability inventory admission remains
 separate.
+
+The next interoperability boundary freezes schema 41's 51 archives and
+appends only `lzss-contextual-adaptive-huffman-1m` as schema-42 entry 52.
+Generation proves a local round trip and exact `2/3 + 1/2 + 1/2` identity;
+verification enforces exact order, foreign decoding, and byte-identical local
+re-encoding. Compatibility removes only the appended entry before traversing
+the frozen schema-41-to-1 chain. The shared fixture establishes identity and
+determinism, while dedicated vectors remain responsible for distant matches.

@@ -9932,3 +9932,20 @@ existing sanitizer target and run a bounded
 campaign without a persistent corpus using
 `-runs=1000 -max_len=65536 -timeout=5 -rss_limit_mb=512`. Do not add a second
 target or an interoperability archive.
+
+### TVG-0715
+
+Generate schema 42 from the unchanged deterministic 8,193-byte fixture and
+the exact schema-41 archive order, then append one
+`lzss-contextual-adaptive-huffman-1m` archive as entry 52. Require an immediate
+round trip, `schema_version=42`, `codec_set=marc-cli-v42`, a full source
+revision, exact manifest order, unique leaf-only names, size/SHA-256 agreement,
+foreign decode equality, and byte-identical local re-encoding.
+
+Inspect dictionary, context, and entropy identities as exact `2/3 + 1/2 +
+1/2`. Swap the first two schema-42 entries and require verifier rejection.
+Remove only entry 52 to reconstruct schema 41, then verify its unchanged
+compatibility chain through schema 1. Do not claim the common fixture exercises
+a distance greater than 65,536. Run the complete registered Release suite,
+including documentation layout and schema compatibility, under MSVC and
+ClangCL before local admission.

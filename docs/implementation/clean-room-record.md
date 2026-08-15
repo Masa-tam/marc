@@ -21702,3 +21702,25 @@ discarded and the reviewed seed retained.
   and both complete Release suites pass all 2,960 registered tests, including
   documentation layout and interoperability schema compatibility, in 206.82
   and 204.58 seconds.
+
+## CR-0907: 2026-08-15 - Contextual Adaptive Huffman interoperability design
+
+- Authoring method: derived an append-only schema boundary from marc's frozen
+  schema-41 inventory and completed selected Contextual Adaptive Huffman CLI.
+- References used: DD-840; IR-0614; TVG-0715; marc's current bundle generator,
+  verifier, compatibility chain, deterministic fixture, and hashing helpers.
+- Known implementations intentionally not consulted: external bundle formats,
+  interoperability suites, Adaptive Huffman or LZSS implementations,
+  compressors, corpora, archives, source code, manifests, conformance vectors,
+  patent text, and optimization descriptions.
+- Independent decisions: append exactly one selected archive; advance to
+  schema 42 and `marc-cli-v42`; inspect all three exact variant identities;
+  reconstruct schema 41 by removing only entry 52; and keep distant-match
+  evidence separate from the common fixture.
+- Generated-code task description: specify schema-42 generation, exact-order
+  verification, reordered-manifest rejection, byte-identical re-encoding,
+  schema-41 recovery, dual-compiler local validation, and later four-direction
+  external exchange.
+- Similarity review: the design extends only marc-owned append-only manifest,
+  verification, compatibility, CLI, and documentation patterns. No external
+  implementation expression entered the design.

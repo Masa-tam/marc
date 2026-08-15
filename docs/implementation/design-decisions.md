@@ -17509,3 +17509,23 @@ Ordinary builds provide warning-clean compile evidence. Run one bounded
 sanitizer campaign without a persistent corpus using
 `-runs=1000 -max_len=65536 -timeout=5 -rss_limit_mb=512`. Interoperability
 admission remains a later stage.
+
+## DD-840: Schema 42 appends selected Contextual Adaptive Huffman once
+
+- Date: 2026-08-15
+- Status: accepted
+
+Freeze schema 41's exact 51-entry inventory and append one
+`lzss-contextual-adaptive-huffman-1m` archive as entry 52. Set
+`schema_version` to 42 and `codec_set` to `marc-cli-v42`. Preserve the shared
+deterministic 8,193-byte fixture, full source revision, producer identity, CLI
+SHA-256, and every input/archive size and SHA-256.
+
+Generation must prove an immediate round trip and inspect exact stream identity
+`2/3 + 1/2 + 1/2`. Verification requires exact order, unique leaf-only names,
+foreign decode equality, and byte-identical local re-encoding. A reordered
+schema-42 manifest must fail. Compatibility removes only entry 52 to recover
+schema 41, then traverses its unchanged chain through schema 1. The common
+fixture proves selected identity and deterministic bytes, not a reference
+beyond 65,536; dedicated format vectors retain that responsibility. External
+four-direction evidence is recorded only after pushed artifacts are exchanged.

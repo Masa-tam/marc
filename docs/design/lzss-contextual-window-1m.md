@@ -706,6 +706,14 @@ regressions pass under both normal compilers, and the fixed 1,000-input Clang
 22 sanitizer campaign completed without a crash, hang, or sanitizer finding.
 Interoperability inventory admission remains the next independent boundary.
 
+That next interoperability boundary freezes schema 41 and appends
+`lzss-contextual-adaptive-huffman-1m` once as schema-42 entry 52. Its generator
+must prove a local round trip and inspect exact `2/3 + 1/2 + 1/2` identity.
+The verifier enforces exact order, foreign decode equality, and byte-identical
+re-encoding; compatibility removes only the new leaf to reconstruct schema 41.
+The common fixture remains identity/determinism evidence rather than a distant-
+match vector. External exchange follows local dual-compiler admission.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

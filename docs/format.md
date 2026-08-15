@@ -6826,6 +6826,14 @@ Huffman now has complete internal, streaming, public C, CLI, benchmark, fuzz,
 and local schema-41 admission for the selected profile. Schema 41 changes only
 bundle inventory and manifest identity; no stream representation changes.
 
+Interoperability schema 42 freezes all 51 schema-41 entries and appends the
+explicit `lzss-contextual-adaptive-huffman-1m` CLI archive as entry 52. The
+common fixture proves exact `2/3 + 1/2 + 1/2` identity and deterministic re-
+encoding but cannot require a distance above 65,536. Contextual Adaptive
+Huffman then has complete internal, streaming, public C, CLI, benchmark, fuzz,
+and local schema-42 admission for the selected profile. Schema 42 changes only
+bundle inventory and manifest identity; no stream representation changes.
+
 The full design and staged validation contract is
 [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md).
 

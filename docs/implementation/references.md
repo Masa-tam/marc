@@ -5500,3 +5500,14 @@ regressions, and dual-profile Contextual rANS, tANS, and Blocked Huffman fuzz
 routes as first-party references. No external Adaptive Huffman or LZSS
 implementation, fuzz harness, corpus, finding, source code, test, archive,
 patent text, or optimization description was consulted.
+
+### IR-0614
+
+Contextual Adaptive Huffman selected-profile interoperability uses DD-831
+through DD-839, TVG-0706 through TVG-0714, marc's frozen schema-41 inventory,
+explicit selected CLI profile, manifest contract, PowerShell bundle scripts,
+compatibility conversion, and SHA-256/file-equality helpers as first-party
+references. No external bundle format, interoperability suite, Adaptive
+Huffman or LZSS implementation, compressor, corpus, archive, source code,
+manifest, conformance vector, patent text, or optimization description was
+consulted.
