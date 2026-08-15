@@ -1,7 +1,8 @@
 if(NOT DEFINED MARC_BENCHMARK OR NOT DEFINED BENCHMARK_CODEC
-    OR NOT DEFINED BENCHMARK_INPUT)
+    OR NOT DEFINED BENCHMARK_INPUT OR NOT DEFINED BENCHMARK_PROFILE_BASE)
     message(FATAL_ERROR
-        "MARC_BENCHMARK, BENCHMARK_CODEC, and BENCHMARK_INPUT are required")
+        "MARC_BENCHMARK, BENCHMARK_CODEC, BENCHMARK_INPUT, and "
+        "BENCHMARK_PROFILE_BASE are required")
 endif()
 
 execute_process(
@@ -64,15 +65,21 @@ if(NOT usage_result EQUAL 2)
     message(FATAL_ERROR "benchmark usage returned ${usage_result}, expected 2")
 endif()
 set(usage_text "${usage_stdout}${usage_stderr}")
-string(REGEX MATCHALL "lzss-contextual-tans-1m" selected_matches
+set(selected_name "${BENCHMARK_PROFILE_BASE}-1m")
+string(REGEX MATCHALL "${selected_name}" selected_matches
     "${usage_text}")
 list(LENGTH selected_matches selected_count)
 if(NOT selected_count EQUAL 1)
     message(FATAL_ERROR "benchmark usage must list the selected name once")
 endif()
+string(FIND "${usage_text}"
+    "${BENCHMARK_PROFILE_BASE}, ${selected_name}," profile_pair_offset)
+if(profile_pair_offset EQUAL -1)
+    message(FATAL_ERROR "benchmark profiles are missing or nonadjacent")
+endif()
 
 execute_process(
-    COMMAND "${MARC_BENCHMARK}" lzss-contextual-tans-1M
+    COMMAND "${MARC_BENCHMARK}" "${BENCHMARK_PROFILE_BASE}-1M"
         "${BENCHMARK_INPUT}" 1
     RESULT_VARIABLE near_miss_result
     OUTPUT_QUIET

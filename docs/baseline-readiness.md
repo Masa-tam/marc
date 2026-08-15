@@ -2352,3 +2352,13 @@ of a case near miss. All targets build warning-clean and all 2,934 registered
 Release tests pass under MSVC and ClangCL, including schema compatibility
 through version 40. Benchmark, sanitizer fuzz, and interoperability admission
 remain pending.
+
+### BR-0137
+
+The selected Contextual Blocked Huffman benchmark boundary is locally
+complete. Both exact profile names perform an untimed public C round trip and
+report finite ratio, throughput, and all directional workspace regions. The
+1 MiB profile uses checked `112 + 12N + 2,643K` capacity and reports the exact
+25,573,831-byte direction-maximum workspace over the README smoke. Usage and
+near-miss tests enforce explicit profile naming without speed or ratio
+thresholds. Sanitizer fuzz and interoperability admission remain pending.

@@ -530,6 +530,12 @@ selected C lifecycle to a 1 MiB frame/window and bounded 128 MiB aggregate
 policy. The legacy CLI name remains fixed to 64 KiB, and each name rejects the
 reciprocal archive. The next independent boundary is benchmark admission.
 
+The explicit 1 MiB Contextual Blocked Huffman benchmark profile now uses the
+same selected C lifecycle and bounded policy. Its capacity accounts for the
+2,579-byte selected descriptor, and its strict report smoke covers workspace
+aggregation and exact naming without treating performance as a correctness
+threshold. The next independent boundary is sanitizer fuzz admission.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

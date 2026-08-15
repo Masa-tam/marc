@@ -17175,3 +17175,26 @@ trip but does not replace the existing marker-gap proof of a Match beyond
 
 This stage adds no benchmark, sanitizer fuzz campaign, interoperability entry,
 schema change, or stream representation.
+
+## DD-828: Admit the Contextual Blocked Huffman 1 MiB benchmark profile
+
+- Date: 2026-08-15
+- Status: accepted
+
+Add `lzss-contextual-blocked-huffman-1m` as the exact benchmark name for the
+selected `2/3 + 1/2 + 2/2` public lifecycle. Keep the existing benchmark name
+fixed to the 64 KiB selector and policy. The selected benchmark uses 1 MiB
+frames and window, a `6F` decision ceiling, `12F` payload ceiling, 1 MiB
+distance policy, and 128 MiB aggregate limit.
+
+Complete-stream capacity is checked as `112 + 12N + 2,643K`, where each
+nonempty frame reserves one 64-byte frame header and the selected 2,579-byte
+descriptor maximum. Both directions obtain every workspace extent through the
+public C requirements query and construct through the common public factory.
+An untimed exact round trip precedes measurement. The smoke validates finite
+report fields, exact directional workspace aggregation, the selected name
+appearing once after the legacy name, and rejection of a `-1M` near miss.
+Throughput and ratio remain descriptive and are not pass thresholds.
+
+This stage adds no stream representation, public API, CLI behavior, sanitizer
+fuzz campaign, interoperability entry, or schema change.

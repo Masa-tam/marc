@@ -58,7 +58,8 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-rans-1m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-tans corpus.bin 5`,
 `marc_benchmark lzss-contextual-tans-1m corpus.bin 5`,
-`marc_benchmark lzss-contextual-blocked-huffman corpus.bin 5`, or
+`marc_benchmark lzss-contextual-blocked-huffman corpus.bin 5`,
+`marc_benchmark lzss-contextual-blocked-huffman-1m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`.
 
 The optional positive iteration count defaults to three. Use the same build,
@@ -270,6 +271,14 @@ aggregate limit. Checked complete-stream capacity is
 header plus maximum descriptor. Both directions are constructed only through
 the public C lifecycle; an exact round trip precedes timing, and the report
 includes ratio, throughput, peak workspace, and all directional regions.
+
+The experimental `lzss-contextual-blocked-huffman-1m` benchmark uses
+1,048,576-byte raw frames and LZSS window, admits at most `6F` modeled
+decisions, reserves `12F` payload bytes, retains the selected 2,579-byte
+descriptor ceiling, and applies a 128-MiB aggregate limit. Checked complete-
+stream capacity is `112 + 12N + 2,643K`. Use identical input, build, and
+iteration count with the unqualified 64 KiB command when comparing ratio,
+throughput, or queried workspace; measurements remain descriptive.
 
 The experimental `lzss-contextual-adaptive-huffman` benchmark uses
 65,536-byte raw frames, reserves at most one typed token per raw byte, fixes
@@ -1150,6 +1159,25 @@ extent is expected because this input cannot use a distance beyond 64 KiB.
 Exact public round trip, selected workspace bounds, checked
 `112 + 9N + 9,159K` capacity, strict name rejection, and independent smoke
 success under both local compilers are the normative evidence.
+
+### BM-0051: 1 MiB Contextual Blocked Huffman benchmark admission
+
+One Release iteration over the 4,326-byte README emits 2,504 bytes through
+`lzss-contextual-blocked-huffman` and 2,506 bytes through
+`lzss-contextual-blocked-huffman-1m`; both round to ratio 0.579. The selected
+encoder reports primary/secondary/views workspaces of 4,326/51,311/134,752
+bytes. Its decoder reports 11,799,123/1,048,576/12,726,132 bytes, making the
+direction-maximum caller-owned workspace 25,573,831 bytes, compared with
+1,735,093 bytes for the 64 KiB command.
+
+The selected smoke reports 9.728/14.330 MiB/s encode/decode under MSVC Release
+and 10.834/16.410 MiB/s under ClangCL Release. These single-iteration,
+small-input timings are descriptive and not throughput claims. The two-byte
+stream difference is the selected profile's wider descriptor identity; the
+fixture contains no proof of a useful distance beyond 64 KiB. Exact public
+round trip, selected workspace bounds, checked `112 + 12N + 2,643K` capacity,
+strict name rejection, and independent smoke success under both local
+compilers are the normative evidence.
 
 ## Reporting results
 

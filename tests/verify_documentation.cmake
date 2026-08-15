@@ -659,6 +659,7 @@ foreach(required_experimental_cli IN ITEMS
         "`lzss-contextual-tans`"
         "`lzss-contextual-tans-1m`"
         "`lzss-contextual-blocked-huffman`"
+        "`lzss-contextual-blocked-huffman-1m`"
         "`lzss-contextual-adaptive-huffman`")
     string(FIND "${cli_content}" "${required_experimental_cli}"
         experimental_cli_offset)
@@ -852,6 +853,7 @@ foreach(required_experimental_benchmark IN ITEMS
         "`lzss-contextual-tans`"
         "`lzss-contextual-tans-1m`"
         "`lzss-contextual-blocked-huffman`"
+        "`lzss-contextual-blocked-huffman-1m`"
         "`lzss-contextual-adaptive-huffman`")
     string(FIND "${benchmark_content}" "${required_experimental_benchmark}"
         experimental_benchmark_offset)

@@ -9687,3 +9687,20 @@ missing-path, bad-name, and same-path rejection. The small fixture is an
 identity/lifecycle vector only; the earlier marker-gap tests remain the proof
 of extended-distance use. No benchmark, fuzz, interoperability, or schema
 vector belongs to this stage.
+
+### TVG-0703
+
+Run both exact Contextual Blocked Huffman benchmark names over the same bounded
+fixture for one Release iteration. Require a successful untimed public C round
+trip before timing, finite ratio and throughput fields, positive directional
+workspace regions, and a reported peak equal to the greater complete
+directional sum. The selected profile must use checked complete-stream
+capacity `112 + 12N + 2,643K` and the 1 MiB public configuration throughout.
+
+Require benchmark usage to list the legacy name immediately before
+`lzss-contextual-blocked-huffman-1m`, with the selected name exactly once, and
+reject a `-1M` case near miss. Retain the legacy benchmark result and policy.
+Do not impose speed or compression-ratio thresholds; the small fixture is a
+wiring and accounting smoke, while distant-match use remains proven by the
+earlier marker-gap vectors. No fuzz, interoperability, schema, CLI, or format
+vector belongs to this stage.

@@ -5380,3 +5380,13 @@ adapter, completed selected public C lifecycle, and selected Dynamic Range,
 rANS, and tANS explicit-name patterns as first-party references. No external
 CLI, Huffman or LZSS implementation, argument grammar, source code, test,
 corpus, archive, patent text, or optimization description was consulted.
+
+### IR-0602
+
+The selected Contextual Blocked Huffman benchmark design uses DD-790 through
+DD-828, TVG-0665, TVG-0666, TVG-0696 through TVG-0703, marc's existing 64 KiB
+benchmark adapter, completed selected public C lifecycle and CLI naming, and
+the selected Dynamic Range, rANS, and tANS benchmark patterns as first-party
+references. No external benchmark, Huffman or LZSS implementation, adapter,
+source code, test, corpus, archive, patent text, or optimization description
+was consulted.

@@ -5333,3 +5333,9 @@ the 64 KiB public selector; the `-1m` name fixes the 1 MiB selector and its
 larger bounded frame, payload, distance, and aggregate-workspace policy. Both
 then share the same C workspace/factory/process lifecycle, including
 reciprocal pre-frame rejection during decode.
+
+The benchmark boundary mirrors those exact names and policies. It obtains
+both directional workspace layouts from the public C lifecycle, verifies an
+untimed round trip, and uses the selected descriptor ceiling in checked
+complete-stream capacity. Ratio and throughput remain observations rather
+than admission thresholds.

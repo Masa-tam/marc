@@ -21129,3 +21129,30 @@ discarded and the reviewed seed retained.
   ClangCL; all targets build warning-clean; and both complete Release suites
   pass all 2,934 registered tests, including schema compatibility through
   version 40 (200.18 seconds under MSVC and 198.50 seconds under ClangCL).
+
+## CR-0883: 2026-08-15 - Selected Contextual Blocked Huffman benchmark
+
+- Authoring method: extended marc's dependency-free benchmark adapter with the
+  accepted exact selected-profile name and completed public C lifecycle.
+- References used: DD-828; IR-0602; TVG-0703; BR-0137; BM-0051; marc's legacy
+  Contextual Blocked Huffman benchmark and selected Dynamic Range, rANS, and
+  tANS benchmark profiles.
+- Known implementations intentionally not consulted: external benchmarks,
+  Huffman or LZSS implementations, adapters, source code, tests, corpora,
+  archives, patent text, and optimization descriptions.
+- Independent decisions: preserve the legacy benchmark name; add one exact
+  `-1m` name; account for the selected descriptor in checked capacity; query
+  all workspace regions through the C ABI; and keep performance descriptive.
+- Generated-code task description: add selected benchmark configuration,
+  routing, capacity, report validation, ordered usage and near-miss tests,
+  measurement documentation, and dual-compiler validation.
+- Similarity review: the implementation composes only marc-owned benchmark,
+  public C, profile, workspace, CMake test, and documentation patterns. No
+  externally derived implementation expression entered the change.
+- Local validation: the 4,326-byte README emits 2,504 bytes under the legacy
+  name and 2,506 bytes under the selected name; selected peak caller-owned
+  workspace is 25,573,831 bytes. Both strict profile smokes pass under MSVC
+  and ClangCL; all targets build warning-clean; and both complete Release
+  suites pass all 2,935 registered tests, including schema compatibility
+  through version 40 (79.92 seconds under MSVC and 73.11 seconds under ClangCL
+  for the schema test).
