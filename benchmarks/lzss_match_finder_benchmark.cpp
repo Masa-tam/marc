@@ -16,6 +16,7 @@
 #include "frame/lzss_tans_frame.hpp"
 
 #include <algorithm>
+#include <bit>
 #include <charconv>
 #include <chrono>
 #include <cstddef>
@@ -128,10 +129,69 @@ struct FrameRunResult {
 [[nodiscard]] bool add_statistics(
     LzssMatchFinderStatistics& total,
     const LzssMatchFinderStatistics& frame) noexcept {
-    return add_count(total.query_count, frame.query_count)
-        && add_count(total.candidate_count, frame.candidate_count)
-        && add_count(total.byte_comparison_count,
-                     frame.byte_comparison_count);
+    if (frame.overflowed) return false;
+    if (!add_count(total.query_count, frame.query_count)
+        || !add_count(total.candidate_count, frame.candidate_count)
+        || !add_count(total.byte_comparison_count,
+                      frame.byte_comparison_count)) {
+        return false;
+    }
+    if (!add_count(total.hash_chain_prefix_match_count,
+                   frame.hash_chain_prefix_match_count)
+        || !add_count(total.hash_chain_prefix_mismatch_count,
+                      frame.hash_chain_prefix_mismatch_count)
+        || !add_count(
+            total.hash_chain_extension_byte_comparison_count,
+            frame.hash_chain_extension_byte_comparison_count)) {
+        return false;
+    }
+    total.hash_chain_maximum_candidates_per_query = std::max(
+        total.hash_chain_maximum_candidates_per_query,
+        frame.hash_chain_maximum_candidates_per_query);
+    for (std::size_t bin = 0;
+         bin < total.hash_chain_query_depth_histogram.size(); ++bin) {
+        if (!add_count(total.hash_chain_query_depth_histogram[bin],
+                       frame.hash_chain_query_depth_histogram[bin])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void print_hash_chain_depth_histogram(
+    const LzssMatchFinderStatistics& statistics) {
+    const auto last_bin = statistics.hash_chain_maximum_candidates_per_query
+        == 0 ? 0U
+        : std::bit_width(
+            statistics.hash_chain_maximum_candidates_per_query);
+    std::cout << "hash_chain_query_depth_histogram=";
+    for (std::size_t bin = 0; bin <= last_bin; ++bin) {
+        if (bin != 0) std::cout << ',';
+        std::cout << statistics.hash_chain_query_depth_histogram[bin];
+    }
+    std::cout << '\n';
+}
+
+[[nodiscard]] bool valid_hash_chain_statistics(
+    const LzssMatchFinderStatistics& statistics) noexcept {
+    if (statistics.overflowed
+        || statistics.hash_chain_extension_byte_comparison_count
+            > statistics.byte_comparison_count) {
+        return false;
+    }
+    std::uint64_t classified_candidates{};
+    if (!marc::core::checked_add(
+            statistics.hash_chain_prefix_match_count,
+            statistics.hash_chain_prefix_mismatch_count,
+            classified_candidates)
+        || classified_candidates != statistics.candidate_count) {
+        return false;
+    }
+    std::uint64_t histogram_queries{};
+    for (const auto count : statistics.hash_chain_query_depth_histogram) {
+        if (!add_count(histogram_queries, count)) return false;
+    }
+    return histogram_queries == statistics.query_count;
 }
 
 [[nodiscard]] bool parse_size_argument(
@@ -257,7 +317,8 @@ void print_usage() {
             argv[3], file_size, frame_size, parameters, limits, workspace,
             true, false, verified)
         || verified.input_bytes != file_size
-        || verified.statistics.query_count != verified.token_count) {
+        || verified.statistics.query_count != verified.token_count
+        || !valid_hash_chain_statistics(verified.statistics)) {
         std::cerr << "HashChain frame verification failed\n";
         return 1;
     }
@@ -294,11 +355,24 @@ void print_usage() {
               << verified.statistics.candidate_count << '\n'
               << "hash_chain_byte_comparisons="
               << verified.statistics.byte_comparison_count << '\n'
+              << "hash_chain_prefix_matches="
+              << verified.statistics.hash_chain_prefix_match_count << '\n'
+              << "hash_chain_prefix_mismatches="
+              << verified.statistics.hash_chain_prefix_mismatch_count << '\n'
+              << "hash_chain_extension_byte_comparisons="
+              << verified.statistics
+                     .hash_chain_extension_byte_comparison_count
+              << '\n'
+              << "hash_chain_max_candidates_per_query="
+              << verified.statistics
+                     .hash_chain_maximum_candidates_per_query
+              << '\n'
               << "hash_chain_frame_seconds=" << measured_seconds << '\n'
               << "hash_chain_frame_mib_per_second="
               << throughput(
                      verified.input_bytes, iterations, measured_seconds)
               << '\n';
+    print_hash_chain_depth_histogram(verified.statistics);
     return 0;
 }
 

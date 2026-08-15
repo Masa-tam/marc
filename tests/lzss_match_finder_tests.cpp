@@ -291,6 +291,42 @@ TEST(LzssHashChainMatchFinder, ReportsOptionalComparableWorkStatistics) {
     EXPECT_EQ(hash_statistics.candidate_count, 4U);
     EXPECT_GT(exhaustive_statistics.byte_comparison_count,
               hash_statistics.byte_comparison_count);
+    EXPECT_EQ(hash_statistics.hash_chain_prefix_match_count, 1U);
+    EXPECT_EQ(hash_statistics.hash_chain_prefix_mismatch_count, 3U);
+    EXPECT_EQ(hash_statistics.hash_chain_prefix_match_count
+                  + hash_statistics.hash_chain_prefix_mismatch_count,
+              hash_statistics.candidate_count);
+    EXPECT_EQ(hash_statistics.hash_chain_extension_byte_comparison_count,
+              0U);
+    EXPECT_EQ(hash_statistics.hash_chain_maximum_candidates_per_query, 2U);
+    EXPECT_EQ(hash_statistics.hash_chain_query_depth_histogram[0], 7U);
+    EXPECT_EQ(hash_statistics.hash_chain_query_depth_histogram[1], 2U);
+    EXPECT_EQ(hash_statistics.hash_chain_query_depth_histogram[2], 1U);
+    EXPECT_FALSE(hash_statistics.overflowed);
+}
+
+TEST(LzssHashChainMatchFinder, ReportsStatisticsCounterOverflow) {
+    const auto input = bytes("ABCDE");
+    const auto required = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssHashChainError::none);
+    auto storage = make_hash_chain_storage(required.workspace_size);
+    LzssMatchFinderStatistics statistics{};
+    statistics.query_count = std::numeric_limits<std::uint64_t>::max();
+    statistics.hash_chain_query_depth_histogram[0] =
+        std::numeric_limits<std::uint64_t>::max();
+    LzssHashChainMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+                  input, {}, {}, storage.bytes.first(required.workspace_size),
+                  finder, &statistics),
+              LzssHashChainError::none);
+
+    EXPECT_EQ(finder.find_match(0), LzssMatch{});
+    EXPECT_TRUE(statistics.overflowed);
+    EXPECT_EQ(statistics.query_count,
+              std::numeric_limits<std::uint64_t>::max());
+    EXPECT_EQ(statistics.hash_chain_query_depth_histogram[0],
+              std::numeric_limits<std::uint64_t>::max());
 }
 
 } // namespace

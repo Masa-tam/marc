@@ -3,12 +3,15 @@
 
 #include "dictionary/lzss_format.hpp"
 
+#include <array>
 #include <concepts>
 #include <cstddef>
 #include <cstdint>
 #include <span>
 
 namespace marc::dictionary::internal {
+
+inline constexpr std::size_t lzss_match_finder_depth_histogram_size = 65;
 
 struct LzssMatch {
     std::uint32_t distance{};
@@ -18,9 +21,20 @@ struct LzssMatch {
 };
 
 struct LzssMatchFinderStatistics {
+    // Optional diagnostics. HashChain-only fields remain zero for Exhaustive.
+    // Depth bin 0 is zero candidates, bin 1 is one, and bin n >= 2 is
+    // [2^(n-1), 2^n - 1]. Counter overflow saturates and sets overflowed.
     std::uint64_t query_count{};
     std::uint64_t candidate_count{};
     std::uint64_t byte_comparison_count{};
+    std::uint64_t hash_chain_prefix_match_count{};
+    std::uint64_t hash_chain_prefix_mismatch_count{};
+    std::uint64_t hash_chain_extension_byte_comparison_count{};
+    std::uint64_t hash_chain_maximum_candidates_per_query{};
+    std::array<std::uint64_t,
+               lzss_match_finder_depth_histogram_size>
+        hash_chain_query_depth_histogram{};
+    bool overflowed{};
 };
 
 template <typename Finder>

@@ -110,6 +110,11 @@ aggregates bytes, frames, tokens, queries, candidates, and byte comparisons
 over the complete file. The legacy one-shot mode remains the Exhaustive
 equivalence oracle; the frame mode is a large-input diagnostic and does not
 claim to emit or round-trip a canonical archive.
+Optional HashChain diagnostics further divide candidates into exact five-byte
+prefix matches and hash-bucket false positives, count comparisons beyond that
+prefix, and record a logarithmic per-query chain-depth histogram. These
+counters use saturating increments with an explicit overflow indication and
+are disabled in ordinary encoder construction.
 A separate typed-token single-pass entry point reserves the conservative
 maximum of one token per raw byte before parsing. Once capacity, aggregate
 raw/workspace/token memory, alignment, and aliasing are accepted, HashChain

@@ -34,12 +34,34 @@ endforeach()
 
 foreach(positive_key IN ITEMS
         token_count hash_workspace_bytes hash_chain_queries
-        hash_chain_candidates hash_chain_byte_comparisons)
+        hash_chain_candidates hash_chain_byte_comparisons
+        hash_chain_prefix_matches hash_chain_prefix_mismatches
+        hash_chain_extension_byte_comparisons
+        hash_chain_max_candidates_per_query)
     string(REGEX MATCH "${positive_key}=([0-9]+)" value_match "${report}")
     if(value_match STREQUAL "" OR CMAKE_MATCH_1 EQUAL 0)
         message(FATAL_ERROR "missing positive ${positive_key}")
     endif()
 endforeach()
+
+string(REGEX MATCH "hash_chain_candidates=([0-9]+)" ignored "${report}")
+set(candidate_count "${CMAKE_MATCH_1}")
+string(REGEX MATCH "hash_chain_prefix_matches=([0-9]+)" ignored "${report}")
+set(prefix_matches "${CMAKE_MATCH_1}")
+string(REGEX MATCH "hash_chain_prefix_mismatches=([0-9]+)" ignored "${report}")
+set(prefix_mismatches "${CMAKE_MATCH_1}")
+math(EXPR classified_candidates "${prefix_matches} + ${prefix_mismatches}")
+if(NOT classified_candidates EQUAL candidate_count)
+    message(FATAL_ERROR
+        "candidate classification mismatch: ${report}")
+endif()
+
+string(REGEX MATCH
+    "hash_chain_query_depth_histogram=[0-9]+(,[0-9]+)*"
+    histogram_match "${report}")
+if(histogram_match STREQUAL "")
+    message(FATAL_ERROR "missing query-depth histogram")
+endif()
 
 foreach(decimal_key IN ITEMS
         hash_chain_frame_seconds hash_chain_frame_mib_per_second)
@@ -107,7 +129,11 @@ foreach(empty_line IN ITEMS
         "input_bytes=0"
         "frame_count=0"
         "token_count=0"
-        "hash_chain_queries=0")
+        "hash_chain_queries=0"
+        "hash_chain_prefix_matches=0"
+        "hash_chain_prefix_mismatches=0"
+        "hash_chain_max_candidates_per_query=0"
+        "hash_chain_query_depth_histogram=0")
     string(FIND "${empty_report}" "${empty_line}\n" line_offset)
     if(line_offset EQUAL -1)
         message(FATAL_ERROR "missing empty-input line: ${empty_line}")

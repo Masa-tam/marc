@@ -17613,3 +17613,22 @@ This mode measures the match finder, not a full encoder. It does not emit a
 stream, report a compression ratio, replace the Exhaustive oracle, or make a
 performance threshold normative. It changes no library source, format,
 algorithm ID, public ABI, or marc CLI.
+
+## DD-844: HashChain diagnostics separate collisions from equal-prefix depth
+
+- Date: 2026-08-15
+- Status: accepted
+
+Extend the optional internal match-finder statistics without changing the
+public API, format, finder result, or counter-free production path. Partition
+every visited HashChain candidate by whether all five bytes used by the hash
+key actually match. Count byte comparisons after that prefix separately and
+record the maximum candidates visited by one query.
+
+Record query depth in 65 fixed bins: bin zero represents no candidate, bin one
+represents one candidate, and bin `n >= 2` represents
+`[2^(n-1), 2^n - 1]`. This covers every uint64 depth while keeping aggregation
+bounded. Use saturating increments and set an overflow flag instead of
+wrapping diagnostic counts. The large-file runner must reject an overflowed
+frame or aggregate, require classified candidates and histogram queries to
+reconcile with their totals, and emit only bins through the observed maximum.

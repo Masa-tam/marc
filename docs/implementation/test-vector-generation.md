@@ -9983,3 +9983,21 @@ zero-token, and zero-query reporting. Separately process the locally supplied
 `dickens` member with 1 MiB frames and both 64 KiB and 1 MiB windows to prove
 that a 10,192,446-byte input is traversed as ten bounded frames. Do not add
 Corpus data or Corpus-dependent CTest cases.
+
+### TVG-0718
+
+For the hand-checkable `ABCDEABCDE` finder fixture, require four HashChain
+candidates to partition into one complete five-byte prefix match and three
+prefix mismatches. Require ten queries to occupy logarithmic depth bins as
+seven zero-candidate, two one-candidate, and one two-to-three-candidate query,
+with maximum depth two and no overflow. Preload a counter and its zero-depth
+bin to `uint64` maximum, execute one valid query, and require saturation plus
+the explicit overflow flag.
+
+Extend the frame-runner smoke to require positive classification, extension,
+maximum-depth, and histogram fields, and require prefix matches plus mismatches
+to equal total candidates. Empty input must report zero classifications,
+maximum depth zero, and the single zero-valued histogram bin. Separately use
+the owner-supplied `dickens` member to distinguish the collision and genuine
+equal-prefix populations at 64 KiB and one MiB windows; do not make the Corpus
+a CTest dependency.

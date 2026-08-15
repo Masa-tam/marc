@@ -25,6 +25,30 @@ namespace {
     return hash ^ (hash >> 16U);
 }
 
+void increment_statistic(
+    LzssMatchFinderStatistics& statistics,
+    std::uint64_t& value) noexcept {
+    if (value == std::numeric_limits<std::uint64_t>::max()) {
+        statistics.overflowed = true;
+        return;
+    }
+    ++value;
+}
+
+void record_query_depth(
+    LzssMatchFinderStatistics& statistics,
+    const std::uint64_t candidate_count) noexcept {
+    statistics.hash_chain_maximum_candidates_per_query = std::max(
+        statistics.hash_chain_maximum_candidates_per_query,
+        candidate_count);
+    const auto raw_bin = candidate_count == 0 ? 0U
+        : std::bit_width(candidate_count);
+    const auto bin = std::min<std::size_t>(
+        raw_bin, statistics.hash_chain_query_depth_histogram.size() - 1U);
+    increment_statistic(
+        statistics, statistics.hash_chain_query_depth_histogram[bin]);
+}
+
 } // namespace
 
 LzssHashChainWorkspaceRequirements calculate_lzss_hash_chain_workspace(
@@ -144,9 +168,12 @@ LzssMatch LzssHashChainMatchFinder::find_match(
     if (position != next_position_ || position >= input_.size()) {
         return best;
     }
-    if (statistics_ != nullptr) ++statistics_->query_count;
+    if (statistics_ != nullptr) {
+        increment_statistic(*statistics_, statistics_->query_count);
+    }
     if (heads_.empty()
         || input_.size() - position < lzss_hash_chain_prefix_size) {
+        if (statistics_ != nullptr) record_query_depth(*statistics_, 0);
         return best;
     }
     const auto maximum_length = std::min<std::size_t>(
@@ -155,17 +182,34 @@ LzssMatch LzssHashChainMatchFinder::find_match(
     const auto bucket = static_cast<std::size_t>(
         prefix_hash(input_, position)) & (heads_.size() - 1U);
     auto candidate = heads_[bucket];
+    std::uint64_t query_candidate_count{};
     while (candidate != std::numeric_limits<std::size_t>::max()) {
         const auto distance = position - candidate;
         if (distance == 0 || distance > parameters_.window_size) break;
-        if (statistics_ != nullptr) ++statistics_->candidate_count;
+        if (statistics_ != nullptr) {
+            ++query_candidate_count;
+            increment_statistic(*statistics_, statistics_->candidate_count);
+        }
         std::size_t length{};
         while (length < maximum_length) {
-            if (statistics_ != nullptr)
-                ++statistics_->byte_comparison_count;
+            if (statistics_ != nullptr) {
+                increment_statistic(
+                    *statistics_, statistics_->byte_comparison_count);
+                if (length >= lzss_hash_chain_prefix_size) {
+                    increment_statistic(
+                        *statistics_,
+                        statistics_->hash_chain_extension_byte_comparison_count);
+                }
+            }
             if (input_[position + length] != input_[candidate + length])
                 break;
             ++length;
+        }
+        if (statistics_ != nullptr) {
+            auto& prefix_count = length >= lzss_hash_chain_prefix_size
+                ? statistics_->hash_chain_prefix_match_count
+                : statistics_->hash_chain_prefix_mismatch_count;
+            increment_statistic(*statistics_, prefix_count);
         }
         if (length >= parameters_.min_match_length
             && length > best.length) {
@@ -176,6 +220,9 @@ LzssMatch LzssHashChainMatchFinder::find_match(
         const auto previous_distance = links_[candidate % links_.size()];
         if (previous_distance == 0 || previous_distance > candidate) break;
         candidate -= previous_distance;
+    }
+    if (statistics_ != nullptr) {
+        record_query_depth(*statistics_, query_candidate_count);
     }
     return best;
 }

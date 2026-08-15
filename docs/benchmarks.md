@@ -107,6 +107,14 @@ work counts; timed passes disable counters and must reproduce its byte, frame,
 and token totals. This mode reports match-finder behavior only. It neither
 emits nor decodes a marc stream, so it reports no compression ratio.
 
+The diagnostic report partitions every visited HashChain candidate into a
+five-byte prefix match or prefix mismatch. It separately reports byte
+comparisons after the five-byte prefix and the maximum candidates visited by
+one query. `hash_chain_query_depth_histogram` is a comma-separated sequence:
+index 0 counts zero-candidate queries, index 1 counts one-candidate queries,
+and index `n >= 2` counts queries visiting `2^(n-1)` through `2^n - 1`
+candidates. Only bins through the observed maximum are printed.
+
 ## Profile configurations
 
 ### Framing baseline
@@ -1250,6 +1258,30 @@ or a Corpus-wide result. The current aggregate candidate counter does not
 distinguish false hash positives from genuine equal-prefix candidates, so the
 observed 1 MiB slowdown demonstrates the need for the next diagnostic stage
 but does not establish hash collision as its cause.
+
+### BM-0054: HashChain candidate classification rejects collision hypothesis
+
+The optional statistics path now classifies every HashChain candidate and
+records logarithmic per-query depth without changing the counter-free timed
+path. The `ABCDEABCDE` hand-checkable fixture visits four candidates: one
+matches the complete five-byte prefix and three are bucket false positives.
+Its ten queries occupy depth bins as seven at zero, two at one, and one at
+two-to-three candidates. Saturating counters expose overflow rather than
+wrapping.
+
+One ClangCL 22 Release diagnostic pass over the locally supplied
+10,192,446-byte `dickens` member, using one MiB frames and a 65,536-byte
+window, visits 21,551,687 candidates. Of these, 19,394,534 (89.99%) match the
+five-byte prefix and 2,157,153 (10.01%) are bucket false positives. The maximum
+query depth is 786 and measured throughput is 36.043 MiB/s.
+
+Changing only the window to 1,048,576 bytes visits 123,501,362 candidates:
+112,912,391 (91.43%) prefix matches and 10,588,971 (8.57%) false positives.
+The maximum query depth rises to 10,864, comparisons beyond the prefix rise
+from 35,983,231 to 199,553,757, and measured throughput is 5.804 MiB/s.
+Therefore the large-window plateau is dominated by genuine equal-prefix chain
+growth rather than hash collision. This supports evaluating an exact ordered
+tree strategy; the timings remain descriptive rather than normative.
 
 ## External Silesia measurements
 

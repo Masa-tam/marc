@@ -5543,3 +5543,12 @@ conventions, and external Silesia profile as first-party references. No
 external match-finder benchmark, large-file runner, LZSS implementation,
 compressor, Corpus result, source code, test, patent text, or optimization
 description was consulted.
+
+### IR-0618
+
+The HashChain classification diagnostic uses DD-843 and DD-844, BM-0053 and
+BM-0054, marc's existing five-byte prefix hash, exact match loop, optional
+statistics pointer, checked arithmetic, and bounded frame runner as first-party
+references. No external HashChain, binary-tree, compressor, profiling tool,
+Corpus analysis, benchmark result, source code, test, patent, or optimization
+description was consulted.

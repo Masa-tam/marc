@@ -21866,3 +21866,30 @@ discarded and the reviewed seed retained.
   recorded in BM-0053. The first sandboxed MSVC build stopped in `ZERO_CHECK`
   at the known FileTracker access denial; the same target and tests succeeded
   outside that sandbox without source changes.
+
+## CR-0913: 2026-08-15 - HashChain collision and query-depth diagnostics
+
+- Authoring method: extended marc's optional internal finder statistics at the
+  existing candidate-comparison loop, then aggregated and reported them only
+  from the established bounded frame benchmark.
+- References used: DD-843 and DD-844; IR-0618; TVG-0718; BM-0053 and BM-0054;
+  marc's five-byte hash prefix, checked arithmetic, statistics pointer, tests,
+  and owner-supplied verified Silesia profile.
+- Known implementations intentionally not consulted: external HashChain,
+  binary-tree, LZSS, compressor, benchmark, profiler, or Corpus-analysis source
+  code, tests, results, patents, and optimization descriptions.
+- Independent decisions: classify by the complete existing five-byte key;
+  separate post-prefix comparisons; use uint64 logarithmic depth bins; expose
+  saturation; reconcile aggregate classifications before reporting; preserve
+  the uninstrumented path; and treat Corpus timing as diagnostic evidence
+  rather than a threshold.
+- Generated-code task description: add bounded optional counters, histogram
+  aggregation and reporting, exact hand-checkable and overflow tests, frame
+  smoke invariants, dual-window Silesia evidence, and provenance.
+- Similarity review: all structure and naming derive from marc-owned internal
+  types and the independently selected diagnostic questions. No external
+  implementation expression or Corpus payload entered the tracked change.
+- Local validation: ClangCL 22.1.3 and MSVC 19.51.36252 build the affected
+  targets warning-clean and pass the HashChain unit tests. ClangCL processes
+  the local 10,192,446-byte `dickens` file at both window sizes; BM-0054 records
+  the exact classification, depth, comparison, and descriptive timing results.
