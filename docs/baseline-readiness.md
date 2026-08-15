@@ -2506,3 +2506,16 @@ miss. All targets build warning-clean and all 2,953 registered Release tests
 pass under MSVC and ClangCL, including documentation layout and
 interoperability schema compatibility, in 191.71 and 195.35 seconds. Benchmark
 admission remains the next boundary.
+
+### BR-0148
+
+The selected Contextual Adaptive Huffman benchmark boundary is locally
+complete. Both exact profile names perform an untimed public C round trip and
+report finite ratio, throughput, and all directional workspace regions. The
+1 MiB profile uses checked `112 + ceil(267N/8) + 80K` capacity and reports the
+exact 48,782,988-byte direction-maximum workspace over the README smoke.
+Usage and near-miss tests enforce explicit profile naming without speed or
+ratio thresholds. The modified benchmark builds warning-clean and all 2,954
+registered Release tests pass under MSVC and ClangCL, including documentation
+layout and interoperability schema compatibility, in 208.40 and 208.11
+seconds. Sanitizer fuzz admission remains pending.

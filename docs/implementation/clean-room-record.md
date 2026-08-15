@@ -21626,3 +21626,29 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned benchmark, public C,
   profile, workspace, and CMake test patterns. No external implementation
   expression entered the design.
+
+## CR-0904: 2026-08-15 - Selected Contextual Adaptive Huffman benchmark
+
+- Authoring method: extended marc's dependency-free benchmark adapter with the
+  accepted exact selected-profile name and completed public C lifecycle.
+- References used: DD-838; IR-0612; TVG-0713; BR-0148; BM-0052; marc's legacy
+  Contextual Adaptive Huffman benchmark and selected Dynamic Range, rANS,
+  tANS, and Blocked Huffman benchmark profiles.
+- Known implementations intentionally not consulted: external benchmarks,
+  Adaptive Huffman or LZSS implementations, adapters, source code, tests,
+  corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: preserve the legacy benchmark name; add one exact
+  `-1m` name; use checked bit-ceiling capacity; query every workspace region
+  through the C ABI; and keep performance descriptive.
+- Generated-code task description: add selected benchmark configuration,
+  routing, capacity, report validation, ordered usage and near-miss tests,
+  measurement documentation, and dual-compiler validation.
+- Similarity review: the implementation composes only marc-owned benchmark,
+  public C, profile, workspace, CMake test, and documentation patterns. No
+  externally derived implementation expression entered the change.
+- Local validation: the 4,326-byte README emits 2,572 bytes under both exact
+  names; selected peak caller-owned workspace is 48,782,988 bytes. Both strict
+  profile smokes pass under MSVC and ClangCL; the modified benchmark builds
+  warning-clean; and both complete Release suites pass all 2,954 registered
+  tests, including documentation layout and interoperability schema
+  compatibility, in 208.40 and 208.11 seconds.

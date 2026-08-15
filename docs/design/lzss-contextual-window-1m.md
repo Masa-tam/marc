@@ -684,6 +684,13 @@ untimed round trip before measurement. Ratio, throughput, and peak workspace
 remain descriptive observations. Fuzz and interoperability admission remain
 later boundaries.
 
+That benchmark boundary is now implemented. Both exact names query and create
+through the common public C lifecycle, and the selected name fixes the 1 MiB
+selector, 13,681-entry model ceiling, payload and aggregate bounds. Its strict
+smoke verifies the untimed round trip, finite report, full directional
+workspace aggregation, adjacent usage, and case-near-miss rejection. Fuzz
+admission is the next boundary.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

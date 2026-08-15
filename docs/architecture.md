@@ -5473,3 +5473,10 @@ both directional workspace layouts through ABI 1; proves an untimed round
 trip; then measures ratio and throughput. Peak workspace is the greater full
 directional caller-owned sum. Performance observations do not become
 admission thresholds.
+
+That benchmark boundary is now implemented. Both exact names use the common
+public C workspace, factory, and process lifecycle. The selected name carries
+the 1 MiB selector and bounds into both directions, uses checked
+`112 + ceil(267N/8) + 80K` capacity, completes an untimed exact round trip,
+and reports the greater complete directional workspace sum. Fuzz admission is
+the next independent boundary.

@@ -60,7 +60,8 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-tans-1m corpus.bin 5`,
 `marc_benchmark lzss-contextual-blocked-huffman corpus.bin 5`,
 `marc_benchmark lzss-contextual-blocked-huffman-1m corpus.bin 5`, or
-`marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`.
+`marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`, or
+`marc_benchmark lzss-contextual-adaptive-huffman-1m corpus.bin 5`.
 
 The optional positive iteration count defaults to three. Use the same build,
 input, and count when comparing codecs or revisions. Release builds are required
@@ -289,6 +290,14 @@ prefix and each 64-byte common frame header plus fixed 16-byte descriptor.
 Both directions are constructed only through the public C lifecycle; an exact
 round trip precedes timing, and the report includes ratio, throughput, peak
 workspace, and all directional regions.
+
+The experimental `lzss-contextual-adaptive-huffman-1m` benchmark uses
+1,048,576-byte raw frames and LZSS window, fixes the selected model bank at
+9,131 nodes plus 4,550 symbol indices, reserves `ceil(267F/8)` payload bytes,
+and applies a 128-MiB aggregate limit. Checked complete-stream capacity is
+`112 + 80K + ceil(267N/8)`. Use identical input, build, and iteration count
+with the unqualified 64 KiB command when comparing ratio, throughput, or
+queried workspace; measurements remain descriptive.
 
 ### LZ78 profiles
 
@@ -745,13 +754,6 @@ reports 0.339 MiB/s encode and 1.865 MiB/s decode; ClangCL reports 0.331 and
 1.870 MiB/s. These small-input timings are descriptive and are neither a
 performance baseline nor a pass threshold.
 
-The planned `lzss-contextual-adaptive-huffman-1m` benchmark retains that
-public-C-only lifecycle with 1 MiB frames and windows, 13,681 model entries,
-the exact `ceil(267F/8)` payload ceiling, 1 MiB distance policy, and 128 MiB
-aggregate limit. It will use checked complete-stream capacity
-`112 + ceil(267N/8) + 80K`, perform an untimed round trip before measurement,
-and report performance descriptively beside the frozen 64 KiB name.
-
 ### BM-0024: LZSS Exact match-finder baseline
 
 The internal match-finder benchmark first verifies that Exhaustive and
@@ -1185,6 +1187,23 @@ fixture contains no proof of a useful distance beyond 64 KiB. Exact public
 round trip, selected workspace bounds, checked `112 + 12N + 2,643K` capacity,
 strict name rejection, and independent smoke success under both local
 compilers are the normative evidence.
+
+### BM-0052: 1 MiB Contextual Adaptive Huffman benchmark admission
+
+One Release iteration over the 4,326-byte README emits 2,572 bytes at ratio
+0.595 through both `lzss-contextual-adaptive-huffman` and
+`lzss-contextual-adaptive-huffman-1m`. The selected encoder reports
+primary/secondary/views workspaces of 4,326/144,461/289,952 bytes; its decoder
+reports 34,996,304/1,048,576/12,738,108 bytes. Peak caller-owned workspace is
+48,782,988 bytes, compared with 3,193,420 bytes for the 64 KiB command.
+
+The selected smoke reports 1.136/1.808 MiB/s encode/decode under MSVC Release
+and 1.247/1.785 MiB/s under ClangCL Release. These single-iteration,
+small-input timings are descriptive and not throughput claims. The equal
+encoded extent is expected because this fixture cannot use a distance beyond
+64 KiB. Exact public round trip, selected workspace bounds, checked
+`112 + ceil(267N/8) + 80K` capacity, strict name rejection, and independent
+smoke success under both local compilers are the normative evidence.
 
 ## Reporting results
 

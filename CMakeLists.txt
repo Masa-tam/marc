@@ -652,10 +652,25 @@ if(MARC_BUILD_BENCHMARKS)
             marc_benchmark_lzss_contextual_blocked_huffman_1m_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
         add_test(NAME marc_benchmark_lzss_contextual_adaptive_huffman_smoke
-            COMMAND marc_benchmark lzss-contextual-adaptive-huffman
-                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"
+                "-DBENCHMARK_CODEC=lzss-contextual-adaptive-huffman"
+                "-DBENCHMARK_PROFILE_BASE=lzss-contextual-adaptive-huffman"
+                "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_report.cmake)
         set_tests_properties(
             marc_benchmark_lzss_contextual_adaptive_huffman_smoke
+            PROPERTIES LABELS benchmark-experimental-smoke)
+        add_test(
+            NAME marc_benchmark_lzss_contextual_adaptive_huffman_1m_smoke
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"
+                "-DBENCHMARK_CODEC=lzss-contextual-adaptive-huffman-1m"
+                "-DBENCHMARK_PROFILE_BASE=lzss-contextual-adaptive-huffman"
+                "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_report.cmake)
+        set_tests_properties(
+            marc_benchmark_lzss_contextual_adaptive_huffman_1m_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
         add_test(NAME marc_benchmark_lzss_rans_smoke
             COMMAND marc_benchmark lzss-rans
