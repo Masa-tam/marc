@@ -5410,3 +5410,13 @@ generator, verifier, and downgrade compatibility chain as first-party
 references. No external Huffman or LZSS implementation, archive, manifest,
 interoperability suite, source code, test, corpus, patent text, or optimization
 description was consulted.
+
+### IR-0605
+
+The selected Contextual Adaptive Huffman model-bank design uses DD-790 through
+DD-831, TVG-0665, TVG-0666, and TVG-0706; marc's validated dual field-context
+layouts, existing caller-owned 31-tree FGK bank, frozen 64 KiB Adaptive
+Huffman representation, and completed selected Dynamic Range, rANS, tANS, and
+Blocked Huffman patterns as first-party references. No external Adaptive
+Huffman or LZSS implementation, source code, test, corpus, archive, patent
+text, or optimization description was consulted.

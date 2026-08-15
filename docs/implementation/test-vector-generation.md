@@ -9745,3 +9745,21 @@ Ubuntu 26.04 schema-41 bundle from the same revision, then verify it with the
 Windows/MSVC executable. Require all four final lines to report 51 archives,
 the expected producer label, and one identical full revision before recording
 external evidence.
+
+### TVG-0706
+
+Initialize the Contextual Adaptive Huffman model bank with each validated
+field-context layout. Require variant 1 to retain exactly 4,518 symbol entries,
+9,067 node entries, the frozen 31 alphabets and offsets, successful validation,
+and identical reset behavior. Require variant 2 to use exactly 4,550 symbols
+and 9,131 nodes, with alphabet 21 for contexts 23 through 30 and unchanged
+alphabets elsewhere.
+
+For variant 2, independently shorten the node and symbol workspaces by one and
+require the corresponding stable capacity error with no initialized bank.
+Reject an unsupported or inconsistent layout, overlapping workspaces, and
+checked byte-extent overflow atomically. Exercise one newly admitted distance-
+class symbol in each of the eight widened trees, reset, and prove the initial
+NYT state and complete validation are restored. Retain all existing variant-1
+model vectors byte-for-byte. No descriptor, payload, frame, public, fuzz, or
+interoperability vector belongs to this stage.

@@ -5350,4 +5350,12 @@ inventory and appends only `lzss-contextual-blocked-huffman-1m` as schema-41
 entry 51. Generation proves selected identity `2/3 + 1/2 + 2/2` and an
 immediate local round trip. Compatibility removes only that final entry before
 running the unchanged schema-40-through-1 downgrade chain; cross-platform
-exchange remains post-push evidence.
+exchange is recorded separately after the pushed revision.
+
+The Contextual Adaptive Huffman 1 MiB path begins at its caller-owned FGK
+model bank. The selected field-context layout supplies all 31 alphabets and
+symbol offsets explicitly. Variant 1 retains exactly 4,518 symbol slots and
+9,067 nodes; variant 2 uses 4,550 symbol slots and 9,131 nodes because each of
+the eight distance contexts grows from 17 to 21 symbols. The fixed 16-byte
+descriptor, reset-per-frame rule, entropy identity `1/2`, and
+`ceil(267F/8)` payload ceiling do not change.

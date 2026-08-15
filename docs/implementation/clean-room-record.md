@@ -21273,3 +21273,23 @@ discarded and the reviewed seed retained.
   exact revision. Producers were Windows/MSVC via Visual Studio 2026, Ubuntu
   24.04 default compiler via Ninja, and Ubuntu 26.04 Clang 21.1.8 via Ninja;
   the latter bundle was verified on both Ubuntu 26.04 and Windows/MSVC.
+
+## CR-0889: 2026-08-15 - Selected Contextual Adaptive Huffman model-bank design
+
+- Authoring method: derived the final backend's first boundary from marc's
+  validated dual field-context layouts and existing caller-owned FGK bank.
+- References used: DD-790 through DD-831; IR-0605; TVG-0665; TVG-0666;
+  TVG-0706; marc's frozen Contextual Adaptive Huffman implementation and the
+  completed selected backend patterns.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: select the layout explicitly; retain 31 trees;
+  derive 4,550 symbols and 9,131 nodes for variant 2; preserve variant 1;
+  reject invalid layouts before initialization; and change no stream byte.
+- Generated-code task description: specify selected bank capacity, alphabet
+  and offset ownership, exact failure atomicity, reset validation, frozen
+  legacy behavior, and later-stage exclusions.
+- Similarity review: the design composes only marc-owned field-context, FGK,
+  checked-workspace, and test components. No external implementation
+  expression entered the design.

@@ -555,6 +555,14 @@ verify all 51 archives, reject a reordered current manifest, remove only the
 new final archive to recover schema 40, and complete every downgrade through
 schema 1. Four-direction external exchange remains post-push evidence.
 
+Revision `c3ea5f87784faaca8c93e98fe5e459df3290747c` completed that four-
+direction exchange with all 51 archives reproduced byte-identically. This
+closes the Contextual Blocked Huffman vertical path. The final backend begins
+by selecting the Contextual Adaptive Huffman FGK model-bank layout explicitly:
+variant 1 retains 4,518 symbols and 9,067 nodes, while variant 2 uses 4,550
+symbols and 9,131 nodes across the same 31 reset-per-frame trees. No descriptor
+or payload-ceiling change belongs to that foundation.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

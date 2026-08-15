@@ -17249,3 +17249,30 @@ is too short to require a distance beyond 65,536; dedicated extended-distance
 vectors remain authoritative. External Windows/Linux exchange is required
 after push and is recorded separately. This schema changes bundle inventory
 and manifest identity only, not any stream byte rule.
+
+## DD-831: Contextual Adaptive Huffman selects its FGK bank layout explicitly
+
+- Date: 2026-08-15
+- Status: accepted
+
+Carry the already validated `LzssFieldContextLayout` into the caller-owned
+Contextual Adaptive Huffman model bank. Initialization must use that layout's
+31 alphabet sizes, offsets, and frequency-entry count rather than the frozen
+variant-1 aliases. Variant 1 remains exactly 4,518 symbol slots and 9,067 FGK
+nodes. Variant 2 uses 4,550 symbol slots and
+`2 * 4,550 + 31 = 9,131` nodes. Each of its eight distance trees has alphabet
+21 instead of 17; all other trees retain their existing alphabet and order.
+
+The bank must reject an unsupported or internally inconsistent layout before
+publishing initialized state. Exact node and symbol extents are checked before
+tree construction, node and symbol workspaces remain disjoint, and reset and
+validation traverse the same fixed 31-tree order. A failed initialization
+leaves the bank unusable. Variant-1 tree numbering, NYT roots, paths, updates,
+rescaling, and bytes must remain unchanged.
+
+This foundation changes no descriptor or payload byte. The descriptor remains
+16 bytes, the entropy parameter region remains 16 bytes, all trees reset per
+outer frame, entropy identity remains `1/2`, and the conservative payload
+ceiling remains `ceil(267F/8)`. The future selected stream identity is exact
+`2/3 + 1/2 + 1/2`; typed-token, complete-frame, streaming, public C, CLI,
+benchmark, fuzz, and interoperability admission remain later stages.
