@@ -21480,3 +21480,31 @@ discarded and the reviewed seed retained.
 - Similarity review: the design composes only marc-owned profile, checked-
   workspace, streaming-state, selected-frame, and admission patterns. No
   external implementation expression entered the design.
+
+## CR-0898: 2026-08-15 - Selected Contextual Adaptive Huffman profile and streaming lifecycle
+
+- Authoring method: implemented DD-835 over marc's selected complete-frame
+  transaction, private profile calculators, workspace partitioners, and
+  streaming state machines.
+- References used: DD-831 through DD-835; IR-0609; TVG-0706 through TVG-0710;
+  BR-0145; marc's existing Contextual Adaptive Huffman lifecycle and completed
+  first-party dual-profile lifecycle implementations.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman or LZSS implementations, allocator layouts, streaming APIs, source
+  code, tests, corpora, archives, patent text, and optimization descriptions.
+- Independent decisions: resolve profile selection before dictionary sizing;
+  accept only canonical node/symbol count pairs; derive streaming decode model
+  capacity from the accepted header; reject reciprocal admission before frame
+  collection; and retain every public surface unchanged.
+- Generated-code task description: add selected profile and decoder-workspace
+  variants, selected view partitioning, immutable streaming admission, exact
+  capacity propagation, extended-distance one-byte lifecycle tests, and stable
+  reciprocal and unknown-selection failures.
+- Similarity review: the implementation extends only marc-owned checked-
+  workspace, selected-frame, profile, and streaming-state structures. No
+  external implementation expression entered the change.
+- Local validation: all targets build warning-clean under MSVC and ClangCL.
+  All 24 focused profile and streaming tests pass under both compilers. Both
+  complete Release suites pass all 2,951 registered tests, including
+  documentation layout and interoperability schema compatibility, in 213.44
+  seconds under MSVC and 220.06 seconds under ClangCL.

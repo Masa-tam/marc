@@ -637,6 +637,16 @@ decoders may accept either supported identity or require the exact 64 KiB or
 trip proves the selected state survives the complete lifecycle. Public, CLI,
 benchmark, fuzz, and interoperability admission remain later stages.
 
+That private lifecycle boundary is implemented. Profile construction resolves
+the selected layout before dictionary and workspace calculation, and its
+partitioners admit only the canonical 9,067/4,518 or 9,131/4,550 model pairs.
+The selected streaming encoder retains the exact identity through every frame;
+decoder construction fixes `any`, exact 64 KiB, or exact 1 MiB admission and
+rejects reciprocal headers before frame collection. The extended marker-gap-
+marker vector produces a Match beyond 64 KiB and round trips with one-byte
+buffers through both `any` and exact-1m modes. Public C admission is the next
+independent boundary.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

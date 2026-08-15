@@ -5424,3 +5424,11 @@ ceilings are shared. Streaming decoder admission is immutable local state:
 `any` accepts either validated identity, while exact 64 KiB and 1 MiB modes
 reject the reciprocal header before collecting a frame. This boundary does not
 yet expose the selected profile through the public C factory.
+
+That private profile and streaming boundary is now implemented. Encoder and
+decoder workspace calculation use the selected canonical model counts, while
+partitioning rejects crossed pairs. The streaming decoder resolves exact model
+extents from the accepted header and checks caller capacity before collecting
+a frame. Both `any` and exact-1m lifecycle routes reproduce the extended-
+distance frame with one-byte buffers; the legacy default remains exact and
+byte-frozen. Public factory selection remains separate.

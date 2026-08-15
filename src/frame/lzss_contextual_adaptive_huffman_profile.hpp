@@ -12,10 +12,17 @@
 
 namespace marc::frame::internal {
 
+enum class LzssContextualAdaptiveHuffmanProfileVariant : std::uint8_t {
+    field_context_64k,
+    field_context_1m,
+};
+
 struct LzssContextualAdaptiveHuffmanProfileConfig {
     std::uint64_t original_size{};
     std::uint32_t frame_size{UINT32_C(1) << 16};
     dictionary::internal::LzssParameters dictionary{};
+    LzssContextualAdaptiveHuffmanProfileVariant variant{
+        LzssContextualAdaptiveHuffmanProfileVariant::field_context_64k};
 };
 
 struct LzssContextualAdaptiveHuffmanEncoderWorkspaceRequirements {
@@ -84,7 +91,9 @@ make_lzss_contextual_adaptive_huffman_profile(
 [[nodiscard]] LzssContextualAdaptiveHuffmanProfileError
 calculate_lzss_contextual_adaptive_huffman_decoder_workspace(
     const core::DecoderLimits& limits,
-    LzssContextualAdaptiveHuffmanDecoderWorkspaceRequirements& workspace)
+    LzssContextualAdaptiveHuffmanDecoderWorkspaceRequirements& workspace,
+    LzssContextualAdaptiveHuffmanProfileVariant variant =
+        LzssContextualAdaptiveHuffmanProfileVariant::field_context_64k)
     noexcept;
 
 [[nodiscard]] LzssContextualAdaptiveHuffmanWorkspaceError

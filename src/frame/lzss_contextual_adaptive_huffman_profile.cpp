@@ -119,6 +119,37 @@ inline constexpr std::uint64_t bits_per_raw_byte = 267;
         alignof(std::uint16_t)});
 }
 
+[[nodiscard]] context::internal::LzssFieldContextLayoutResult profile_layout(
+    const LzssContextualAdaptiveHuffmanProfileVariant variant) noexcept {
+    switch (variant) {
+    case LzssContextualAdaptiveHuffmanProfileVariant::field_context_64k:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_64k);
+    case LzssContextualAdaptiveHuffmanProfileVariant::field_context_1m:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_1m);
+    }
+    return {{}, context::internal::LzssFieldContextLayoutError::
+                    unsupported_context_variant};
+}
+
+[[nodiscard]] constexpr bool canonical_model_counts(
+    const std::uint64_t node_count,
+    const std::uint64_t symbol_count) noexcept {
+    return (node_count
+                == entropy::internal::
+                    contextual_adaptive_huffman_node_entries
+            && symbol_count
+                == entropy::internal::
+                    contextual_adaptive_huffman_symbol_entries)
+        || (node_count
+                == entropy::internal::
+                    contextual_adaptive_huffman_node_entries_v2
+            && symbol_count
+                == entropy::internal::
+                    contextual_adaptive_huffman_symbol_entries_v2);
+}
+
 } // namespace
 
 LzssContextualAdaptiveHuffmanProfileError
@@ -135,19 +166,20 @@ make_lzss_contextual_adaptive_huffman_profile(
         || config.frame_size == 0) {
         return E::invalid_configuration;
     }
-    const auto dictionary_error =
-        dictionary::internal::validate_lzss_parameters(
-            config.dictionary, limits);
-    if (dictionary_error != dictionary::internal::LzssFormatError::none) {
-        return dictionary_error
-                == dictionary::internal::LzssFormatError::limit_exceeded
-            ? E::limit_exceeded
-            : E::invalid_configuration;
-    }
-    if (config.dictionary.min_match_length != 5
-        || config.dictionary.max_match_length > 258
-        || config.dictionary.window_size > 65536) {
+    const auto selected = profile_layout(config.variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
         return E::unsupported;
+    }
+    const auto dictionary_error =
+        dictionary::internal::validate_lzss_typed_parameters(
+            config.dictionary, limits, selected.layout.dictionary_variant);
+    if (dictionary_error
+        != dictionary::internal::LzssTypedTokenError::none) {
+        return dictionary_error
+                == dictionary::internal::LzssTypedTokenError::limit_exceeded
+            ? E::limit_exceeded
+            : E::unsupported;
     }
     if (config.original_size > limits.max_total_output_size
         || config.frame_size > limits.max_frame_size) {
@@ -157,6 +189,11 @@ make_lzss_contextual_adaptive_huffman_profile(
     stream.frame_size = config.frame_size;
     stream.original_size = config.original_size;
     stream.dictionary = config.dictionary;
+    stream.dictionary_variant = static_cast<std::uint16_t>(
+        selected.layout.dictionary_variant);
+    stream.context_algorithm = 1;
+    stream.context_variant = static_cast<std::uint16_t>(
+        selected.layout.context_variant);
     const auto stream_error =
         validate_lzss_contextual_adaptive_huffman_stream_header(
             stream, limits);
@@ -173,9 +210,9 @@ make_lzss_contextual_adaptive_huffman_profile(
         config.original_size, config.frame_size);
     if (largest_frame == 0) return E::none;
     const std::uint64_t node_count{
-        entropy::internal::contextual_adaptive_huffman_node_entries};
-    const std::uint64_t symbol_count{
-        entropy::internal::contextual_adaptive_huffman_symbol_entries};
+        2 * selected.layout.frequency_entries
+        + context::internal::lzss_field_context_count};
+    const std::uint64_t symbol_count{selected.layout.frequency_entries};
     if (largest_frame > limits.max_block_size
         || node_count + symbol_count > limits.max_entropy_table_entries) {
         return E::limit_exceeded;
@@ -247,17 +284,22 @@ make_lzss_contextual_adaptive_huffman_profile(
 LzssContextualAdaptiveHuffmanProfileError
 calculate_lzss_contextual_adaptive_huffman_decoder_workspace(
     const core::DecoderLimits& limits,
-    LzssContextualAdaptiveHuffmanDecoderWorkspaceRequirements& workspace)
-    noexcept {
+    LzssContextualAdaptiveHuffmanDecoderWorkspaceRequirements& workspace,
+    const LzssContextualAdaptiveHuffmanProfileVariant variant) noexcept {
     using E = LzssContextualAdaptiveHuffmanProfileError;
     workspace = {};
     if (core::validate_limits(limits) != core::LimitError::none) {
         return E::invalid_configuration;
     }
+    const auto selected = profile_layout(variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return E::unsupported;
+    }
     const std::uint64_t node_count{
-        entropy::internal::contextual_adaptive_huffman_node_entries};
-    const std::uint64_t symbol_count{
-        entropy::internal::contextual_adaptive_huffman_symbol_entries};
+        2 * selected.layout.frequency_entries
+        + context::internal::lzss_field_context_count};
+    const std::uint64_t symbol_count{selected.layout.frequency_entries};
     if (node_count + symbol_count > limits.max_entropy_table_entries) {
         return E::limit_exceeded;
     }
@@ -340,10 +382,8 @@ partition_lzss_contextual_adaptive_huffman_encoder_views(
             ? E::none
             : E::invalid_requirements;
     }
-    if (requirements.node_count
-            != entropy::internal::contextual_adaptive_huffman_node_entries
-        || requirements.symbol_count
-            != entropy::internal::contextual_adaptive_huffman_symbol_entries
+    if (!canonical_model_counts(
+            requirements.node_count, requirements.symbol_count)
         || expected_node_offset != requirements.node_offset
         || expected_symbol_offset != requirements.symbol_offset
         || expected_finder_offset != requirements.match_finder_offset
@@ -389,10 +429,8 @@ partition_lzss_contextual_adaptive_huffman_decoder_views(
             expected_token_offset, expected_bytes)) {
         return E::arithmetic_overflow;
     }
-    if (requirements.node_count
-            != entropy::internal::contextual_adaptive_huffman_node_entries
-        || requirements.symbol_count
-            != entropy::internal::contextual_adaptive_huffman_symbol_entries
+    if (!canonical_model_counts(
+            requirements.node_count, requirements.symbol_count)
         || expected_symbol_offset != requirements.symbol_offset
         || expected_token_offset != requirements.token_offset
         || expected_bytes != requirements.views_bytes

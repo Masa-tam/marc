@@ -2459,3 +2459,19 @@ retains its existing bytes. All targets build warning-clean and all 2,947
 registered Release tests pass under MSVC and ClangCL, including documentation
 layout and interoperability schema compatibility, in 203.77 and 212.38
 seconds. Profile and streaming-lifecycle admission remains the next boundary.
+
+### BR-0145
+
+The selected Contextual Adaptive Huffman private profile and streaming
+lifecycle is locally complete. Profile selection emits exact
+`2/2 + 1/1 + 1/2` or `2/3 + 1/2 + 1/2`, sizes the corresponding
+9,067/4,518 or 9,131/4,550 node/symbol model regions, and preserves the shared
+fixed descriptor and frame ceiling. Workspace partitioners accept only those
+canonical pairs; variant 2 adds exactly 1,088 model bytes. Streaming decoder
+admission is immutable `any`, exact 64 KiB, or exact 1 MiB state and rejects
+reciprocal identities before frame collection. The marker-gap-marker vector
+emits a Match beyond 65,536 and round trips with one-byte input and output
+through both selected admission modes. All targets build warning-clean and all
+2,951 registered Release tests pass under MSVC and ClangCL, including
+documentation layout and interoperability schema compatibility, in 213.44 and
+220.06 seconds. Public C admission remains the next boundary.

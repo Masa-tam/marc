@@ -61,6 +61,17 @@ enum class OverlapCheck : std::uint8_t {
                     ContextualAdaptiveHuffmanFormatError::limit_exceeded);
 }
 
+[[nodiscard]] constexpr bool valid_admission(
+    const LzssContextualAdaptiveHuffmanStreamAdmission admission) noexcept {
+    switch (admission) {
+    case LzssContextualAdaptiveHuffmanStreamAdmission::any:
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_64k:
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m:
+        return true;
+    }
+    return false;
+}
+
 } // namespace
 
 LzssContextualAdaptiveHuffmanFrameStreamingDecoder::
@@ -70,12 +81,13 @@ LzssContextualAdaptiveHuffmanFrameStreamingDecoder(
     const std::span<entropy::internal::AdaptiveHuffmanNode> node_workspace,
     const std::span<std::uint16_t> symbol_workspace,
     const std::span<dictionary::internal::LzssTypedToken> token_workspace,
-    const std::span<std::byte> raw_frame_workspace) noexcept
+    const std::span<std::byte> raw_frame_workspace,
+    const LzssContextualAdaptiveHuffmanStreamAdmission admission) noexcept
     : limits_(limits),
       serialized_frame_workspace_(serialized_frame_workspace),
       node_workspace_(node_workspace), symbol_workspace_(symbol_workspace),
       token_workspace_(token_workspace),
-      raw_frame_workspace_(raw_frame_workspace) {
+      raw_frame_workspace_(raw_frame_workspace), admission_(admission) {
     std::size_t node_bytes{};
     std::size_t symbol_bytes{};
     std::size_t token_bytes{};
@@ -141,11 +153,19 @@ LzssContextualAdaptiveHuffmanFrameStreamingDecoder(
                   raw_frame_workspace_.data(), raw_frame_workspace_.size())
             : OverlapCheck::arithmetic_overflow,
     };
-    if (!valid_extents
+    const auto minimum_node_count = admission_
+            == LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m
+        ? entropy::internal::contextual_adaptive_huffman_node_entries_v2
+        : entropy::internal::contextual_adaptive_huffman_node_entries;
+    const auto minimum_symbol_count = admission_
+            == LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m
+        ? entropy::internal::contextual_adaptive_huffman_symbol_entries_v2
+        : entropy::internal::contextual_adaptive_huffman_symbol_entries;
+    if (!valid_extents || !valid_admission(admission_)
         || node_workspace_.size()
-               < entropy::internal::contextual_adaptive_huffman_node_entries
+               < minimum_node_count
         || symbol_workspace_.size()
-               < entropy::internal::contextual_adaptive_huffman_symbol_entries
+               < minimum_symbol_count
         || core::validate_limits(limits_) != core::LimitError::none
         || std::ranges::find_if(overlaps, [](const auto value) {
                return value != OverlapCheck::disjoint;
@@ -173,8 +193,44 @@ parse_collected_stream_header() noexcept {
         error == LzssContextualAdaptiveHuffmanStreamHeaderError::limit_exceeded
         ? core::ErrorCode::limit_exceeded
         : core::ErrorCode::malformed_stream;
-    return error == LzssContextualAdaptiveHuffmanStreamHeaderError::none
-        && consumed == lzss_contextual_adaptive_huffman_stream_header_size;
+    if (error != LzssContextualAdaptiveHuffmanStreamHeaderError::none
+        || consumed != lzss_contextual_adaptive_huffman_stream_header_size) {
+        return false;
+    }
+    switch (admission_) {
+    case LzssContextualAdaptiveHuffmanStreamAdmission::any:
+        break;
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_64k:
+        if (stream_.dictionary_variant != 2
+            || stream_.context_algorithm != 1
+            || stream_.context_variant != 1) {
+            return false;
+        }
+        break;
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m:
+        if (stream_.dictionary_variant != 3
+            || stream_.context_algorithm != 1
+            || stream_.context_variant != 2) {
+            return false;
+        }
+        break;
+    }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        stream_.dictionary_variant, stream_.context_algorithm,
+        stream_.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return false;
+    }
+    selected_node_count_ = 2 * selected.layout.frequency_entries
+        + context::internal::lzss_field_context_count;
+    selected_symbol_count_ = selected.layout.frequency_entries;
+    if (node_workspace_.size() < selected_node_count_
+        || symbol_workspace_.size() < selected_symbol_count_) {
+        preparation_error_ = core::ErrorCode::out_of_memory;
+        return false;
+    }
+    return true;
 }
 
 bool LzssContextualAdaptiveHuffmanFrameStreamingDecoder::
@@ -209,10 +265,10 @@ prepare_collected_frame() noexcept {
             serialized_size, static_cast<std::size_t>(frame_.payload_size),
             serialized_size)
         || !core::checked_multiply(
-            entropy::internal::contextual_adaptive_huffman_node_entries,
+            selected_node_count_,
             sizeof(entropy::internal::AdaptiveHuffmanNode), node_bytes)
         || !core::checked_multiply(
-            entropy::internal::contextual_adaptive_huffman_symbol_entries,
+            selected_symbol_count_,
             sizeof(std::uint16_t), symbol_bytes)
         || !core::checked_multiply(
             static_cast<std::size_t>(frame_.token_count),
@@ -263,10 +319,8 @@ decode_collected_frame() noexcept {
     const auto decoded = decode_lzss_contextual_adaptive_huffman_frame(
         serialized_frame_workspace_.first(frame_serialized_size_),
         validation_context,
-        node_workspace_.first(
-            entropy::internal::contextual_adaptive_huffman_node_entries),
-        symbol_workspace_.first(
-            entropy::internal::contextual_adaptive_huffman_symbol_entries),
+        node_workspace_.first(selected_node_count_),
+        symbol_workspace_.first(selected_symbol_count_),
         token_workspace_.first(frame_.token_count),
         raw_frame_workspace_.first(frame_.uncompressed_size));
     if (decoded.error

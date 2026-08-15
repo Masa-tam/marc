@@ -11,6 +11,12 @@
 
 namespace marc::frame::internal {
 
+enum class LzssContextualAdaptiveHuffmanStreamAdmission : std::uint8_t {
+    any,
+    field_context_64k,
+    field_context_1m,
+};
+
 class LzssContextualAdaptiveHuffmanFrameStreamingDecoder final
     : public core::Transform {
 public:
@@ -20,7 +26,9 @@ public:
         std::span<entropy::internal::AdaptiveHuffmanNode> node_workspace,
         std::span<std::uint16_t> symbol_workspace,
         std::span<dictionary::internal::LzssTypedToken> token_workspace,
-        std::span<std::byte> raw_frame_workspace) noexcept;
+        std::span<std::byte> raw_frame_workspace,
+        LzssContextualAdaptiveHuffmanStreamAdmission admission =
+            LzssContextualAdaptiveHuffmanStreamAdmission::any) noexcept;
 
     [[nodiscard]] core::ProcessResult process(
         std::span<const std::byte> input, std::span<std::byte> output,
@@ -50,6 +58,8 @@ private:
     std::span<std::uint16_t> symbol_workspace_{};
     std::span<dictionary::internal::LzssTypedToken> token_workspace_{};
     std::span<std::byte> raw_frame_workspace_{};
+    LzssContextualAdaptiveHuffmanStreamAdmission admission_{
+        LzssContextualAdaptiveHuffmanStreamAdmission::any};
     std::array<std::byte,
                lzss_contextual_adaptive_huffman_stream_header_size>
         stream_header_bytes_{};
@@ -63,6 +73,8 @@ private:
     std::size_t frame_collected_{};
     std::size_t decoded_size_{};
     std::size_t output_offset_{};
+    std::size_t selected_node_count_{};
+    std::size_t selected_symbol_count_{};
     std::uint64_t input_position_{};
     std::uint64_t output_committed_{};
     std::uint64_t frame_sequence_{};

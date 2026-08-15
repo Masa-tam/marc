@@ -321,3 +321,87 @@ TEST(LzssContextualAdaptiveHuffmanFrameStreamingDecoder,
     EXPECT_EQ(decoder.process({}, {}, 0).error.code,
               ErrorCode::invalid_argument);
 }
+
+TEST(LzssContextualAdaptiveHuffmanFrameStreamingDecoder,
+     EnforcesExplicitProfileAdmissionBeforeFrames) {
+    LzssContextualAdaptiveHuffmanStreamHeader baseline{};
+    baseline.frame_size = 1;
+    baseline.original_size = 0;
+    std::array<std::byte,
+               lzss_contextual_adaptive_huffman_stream_header_size>
+        baseline_bytes{};
+    ASSERT_EQ(serialize_lzss_contextual_adaptive_huffman_stream_header(
+                  baseline, {}, baseline_bytes),
+              LzssContextualAdaptiveHuffmanStreamHeaderError::none);
+
+    std::array<marc::entropy::internal::AdaptiveHuffmanNode,
+               marc::entropy::internal::
+                   contextual_adaptive_huffman_node_entries_v2>
+        nodes{};
+    std::array<std::uint16_t,
+               marc::entropy::internal::
+                   contextual_adaptive_huffman_symbol_entries_v2>
+        symbols{};
+    LzssContextualAdaptiveHuffmanFrameStreamingDecoder accept_baseline{
+        {}, {}, nodes, symbols, {}, {},
+        LzssContextualAdaptiveHuffmanStreamAdmission::field_context_64k};
+    auto result = accept_baseline.process(
+        baseline_bytes, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.error.code, ErrorCode::none);
+    LzssContextualAdaptiveHuffmanFrameStreamingDecoder reject_baseline{
+        {}, {}, nodes, symbols, {}, {},
+        LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m};
+    result = reject_baseline.process(baseline_bytes, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+
+    auto extended = baseline;
+    extended.dictionary.window_size = UINT32_C(1) << 20;
+    extended.dictionary_variant = 3;
+    extended.context_variant = 2;
+    std::array<std::byte,
+               lzss_contextual_adaptive_huffman_stream_header_size>
+        extended_bytes{};
+    ASSERT_EQ(serialize_lzss_contextual_adaptive_huffman_stream_header(
+                  extended, {}, extended_bytes),
+              LzssContextualAdaptiveHuffmanStreamHeaderError::none);
+    LzssContextualAdaptiveHuffmanFrameStreamingDecoder accept_any{
+        {}, {}, nodes, symbols, {}, {}};
+    result = accept_any.process(extended_bytes, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.error.code, ErrorCode::none);
+    LzssContextualAdaptiveHuffmanFrameStreamingDecoder accept_extended{
+        {}, {}, nodes, symbols, {}, {},
+        LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m};
+    result = accept_extended.process(extended_bytes, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(result.error.code, ErrorCode::none);
+    LzssContextualAdaptiveHuffmanFrameStreamingDecoder reject_extended{
+        {}, {}, nodes, symbols, {}, {},
+        LzssContextualAdaptiveHuffmanStreamAdmission::field_context_64k};
+    result = reject_extended.process(extended_bytes, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+}
+
+TEST(LzssContextualAdaptiveHuffmanFrameStreamingDecoder,
+     RejectsInvalidProfileAdmissionAtConstruction) {
+    std::array<marc::entropy::internal::AdaptiveHuffmanNode,
+               marc::entropy::internal::
+                   contextual_adaptive_huffman_node_entries>
+        nodes{};
+    std::array<std::uint16_t,
+               marc::entropy::internal::
+                   contextual_adaptive_huffman_symbol_entries>
+        symbols{};
+    LzssContextualAdaptiveHuffmanFrameStreamingDecoder decoder{
+        {}, {}, nodes, symbols, {}, {},
+        static_cast<LzssContextualAdaptiveHuffmanStreamAdmission>(255)};
+    auto result = decoder.process({}, {}, 0);
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
+    result = decoder.process({}, {}, 0);
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
+}
