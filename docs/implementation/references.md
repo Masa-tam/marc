@@ -5341,3 +5341,14 @@ modeler/inverter, typed-token validators, and selected rANS/tANS direct
 adapters as first-party references. No external Huffman or LZSS
 implementation, adapter, format, API, source code, test, corpus, archive,
 patent text, or optimization description was consulted.
+
+### IR-0598
+
+The selected Contextual Blocked Huffman complete-frame design uses DD-790
+through DD-824, TVG-0665, TVG-0666, TVG-0696 through TVG-0699, and marc's
+existing 64 KiB Contextual Blocked Huffman stream/frame format, direct typed-
+token adapter, selected descriptor/coding core, and completed selected
+Dynamic Range, rANS, and tANS complete-frame paths as first-party references.
+No external Huffman or LZSS implementation, frame format, API, source code,
+test, corpus, archive, patent text, or optimization description was
+consulted.

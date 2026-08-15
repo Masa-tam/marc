@@ -93,6 +93,79 @@ TEST(LzssContextualBlockedHuffmanFrameFormat,
 }
 
 TEST(LzssContextualBlockedHuffmanFrameFormat,
+     SelectsOneMiBIdentityAndFrameCeilings) {
+    auto selected = stream_config();
+    selected.original_size = 5;
+    selected.dictionary.window_size = 1'048'576;
+    selected.dictionary_variant = 3;
+    selected.context_variant = 2;
+    std::array<std::byte, 112> encoded{};
+    ASSERT_EQ(serialize_lzss_contextual_blocked_huffman_stream_header(
+                  selected, {}, encoded),
+              LzssContextualBlockedHuffmanStreamHeaderError::none);
+    EXPECT_EQ(encoded[14], std::byte{3});
+    EXPECT_EQ(encoded[15], std::byte{0});
+    EXPECT_EQ(encoded[96], std::byte{1});
+    EXPECT_EQ(encoded[98], std::byte{2});
+
+    LzssContextualBlockedHuffmanStreamHeader parsed{};
+    std::size_t consumed{};
+    ASSERT_EQ(parse_lzss_contextual_blocked_huffman_stream_header(
+                  encoded, {}, parsed, consumed),
+              LzssContextualBlockedHuffmanStreamHeaderError::none);
+    EXPECT_EQ(consumed, encoded.size());
+    EXPECT_EQ(parsed.dictionary_variant, 3U);
+    EXPECT_EQ(parsed.context_algorithm, 1U);
+    EXPECT_EQ(parsed.context_variant, 2U);
+    EXPECT_EQ(parsed.dictionary.window_size, 1'048'576U);
+
+    auto crossed = selected;
+    crossed.dictionary_variant = 2;
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_stream_header(
+                  crossed, {}),
+              LzssContextualBlockedHuffmanStreamHeaderError::
+                  contradictory_parameters);
+    crossed = selected;
+    crossed.context_variant = 1;
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_stream_header(
+                  crossed, {}),
+              LzssContextualBlockedHuffmanStreamHeaderError::
+                  contradictory_parameters);
+    crossed = selected;
+    crossed.dictionary_variant = 99;
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_stream_header(
+                  crossed, {}),
+              LzssContextualBlockedHuffmanStreamHeaderError::
+                  unsupported_dictionary_variant);
+    crossed = selected;
+    crossed.context_algorithm = 99;
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_stream_header(
+                  crossed, {}),
+              LzssContextualBlockedHuffmanStreamHeaderError::
+                  unknown_context_model);
+    crossed = selected;
+    crossed.context_variant = 99;
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_stream_header(
+                  crossed, {}),
+              LzssContextualBlockedHuffmanStreamHeaderError::
+                  unsupported_context_variant);
+
+    LzssContextualBlockedHuffmanFrameHeader header{
+        0, 0, 5, 1, 2, 30, 1, 2579, 0, 0};
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_frame_header(
+                  header, {selected, {}, 0, 0}),
+              LzssContextualBlockedHuffmanFrameHeaderError::none);
+    auto legacy = selected;
+    legacy.dictionary.window_size = 65536;
+    legacy.dictionary_variant = 2;
+    legacy.context_variant = 1;
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_frame_header(
+                  header, {legacy, {}, 0, 0}),
+              LzssContextualBlockedHuffmanFrameHeaderError::
+                  contradictory_counts);
+}
+
+TEST(LzssContextualBlockedHuffmanFrameFormat,
      RejectsStreamIdentityAndParametersAtomically) {
     std::array<std::byte, 112> encoded{};
     ASSERT_EQ(serialize_lzss_contextual_blocked_huffman_stream_header(

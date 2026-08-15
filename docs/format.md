@@ -6812,3 +6812,14 @@ then the selected Contextual Blocked Huffman coder. Variant 1 continues to use
 the frozen 17-symbol distance field and rejects that token. This adapter stage
 does not admit the selected layout at the complete-frame or public stream
 boundary.
+
+The private complete-frame boundary now admits the exact selected identity
+`dictionary 2/3 + context 1/2 + entropy 2/2`. The existing 112-byte stream
+header stores dictionary variant at offset 14 and context algorithm/variant at
+offsets 96/98; no new field or extent is introduced. Variant 1 retains
+`2/1 + 1/1 + 2/2`, at most 26 decisions per token, and descriptor extent
+24..2,561. Variant 2 uses at most 30 decisions per token and descriptor extent
+24..2,579. Both retain at most six decisions per raw byte, 15 bits per
+decision, the 64-byte frame header, zero context side data, and zero checksum
+trailer. Crossed identities and descriptor layouts are malformed before raw
+publication. Streaming and public admission are not defined by this stage.

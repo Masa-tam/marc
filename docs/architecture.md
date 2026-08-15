@@ -5296,3 +5296,13 @@ the entire entropy and typed-token sequence, and only the second pass publishes
 tokens. Variant 1 remains the source-level default; crossed or unknown
 selections fail before caller descriptor, payload, table, or token mutation.
 Frame and public profile admission remain separate boundaries.
+
+The selected Contextual Blocked Huffman complete-frame boundary pairs the
+dictionary and context selectors carried by the 112-byte stream header. Stream
+validation resolves the layout before dictionary or entropy work, and the
+same immutable choice governs exact and HashChain tokenization, direct typed-
+token coding, descriptor parsing, token decoding, and reconstruction. Frame
+preflight applies the selected decision and descriptor ceilings before caller
+workspace use. Variant 1 remains byte-frozen. The selected complete-frame
+path publishes raw bytes only after private entropy and dictionary validation;
+streaming lifecycle and public profile construction remain later boundaries.

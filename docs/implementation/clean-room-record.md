@@ -21029,3 +21029,29 @@ discarded and the reviewed seed retained.
   all 13 direct Contextual Blocked Huffman encoder/decoder tests pass in both
   configurations; and both complete Release suites pass all 2,927 registered
   tests, including schema compatibility through version 40.
+
+## CR-0879: 2026-08-15 - Selected Contextual Blocked Huffman complete frame
+
+- Authoring method: extended marc's existing Contextual Blocked Huffman
+  stream/frame boundary from the accepted selected-layout design and the
+  completed direct typed-token adapter.
+- References used: DD-824; IR-0598; TVG-0699; BR-0133; marc's 64 KiB frame
+  format, selected descriptor/coding layers, and completed selected Dynamic
+  Range, rANS, and tANS complete-frame patterns.
+- Known implementations intentionally not consulted: external Huffman or LZSS
+  implementations, frame formats, APIs, source code, tests, corpora, archives,
+  patent text, and optimization descriptions.
+- Independent decisions: retain the existing stream and frame extents; add
+  in-memory selector fields with legacy defaults; adapt the shared stream-
+  header parser using the selected frequency-layout extent; and bind every
+  dictionary, descriptor, entropy, and reconstruction call to one layout.
+- Generated-code task description: admit exact `2/3 + 1/2 + 2/2` through
+  stream serialization, frame validation/preflight, exhaustive and HashChain
+  encoding, complete decode, and atomic crossed rejection.
+- Similarity review: the implementation follows marc-owned selector and
+  complete-frame patterns and retains the existing Huffman-specific format
+  and control flow. No external implementation expression entered the change.
+- Local validation: all targets build warning-clean under MSVC and ClangCL;
+  all 53 Contextual Blocked Huffman regressions pass in both configurations;
+  and both complete Release suites pass all 2,929 registered tests, including
+  schema compatibility through version 40.

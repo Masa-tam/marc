@@ -26,6 +26,9 @@ struct LzssContextualBlockedHuffmanStreamHeader {
     std::uint16_t context_count{
         context::internal::lzss_field_context_count};
     std::uint16_t model_record_version{1};
+    std::uint16_t dictionary_variant{2};
+    std::uint16_t context_algorithm{1};
+    std::uint16_t context_variant{1};
 };
 
 enum class LzssContextualBlockedHuffmanStreamHeaderError : std::uint8_t {

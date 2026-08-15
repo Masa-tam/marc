@@ -123,6 +123,15 @@ template <bool UseHashChain>
             LzssContextualBlockedHuffmanFrameEncodeError::invalid_stream;
         return result;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        stream.dictionary_variant, stream.context_algorithm,
+        stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.error =
+            LzssContextualBlockedHuffmanFrameEncodeError::invalid_stream;
+        return result;
+    }
     if (!exact_input_size(stream, output_already_committed, raw_input.size())) {
         result.error =
             LzssContextualBlockedHuffmanFrameEncodeError::input_size_mismatch;
@@ -133,10 +142,12 @@ template <bool UseHashChain>
         result.token_encode = dictionary::internal::
             encode_lzss_typed_tokens_hash_chain_single_pass(
                 raw_input, stream.dictionary, limits, private_tokens,
-                match_finder_workspace, statistics);
+                match_finder_workspace, statistics,
+                selected.layout.dictionary_variant);
     } else {
         result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
-            raw_input, stream.dictionary, limits, private_tokens);
+            raw_input, stream.dictionary, limits, private_tokens,
+            selected.layout.dictionary_variant);
     }
     result.token_count = result.token_encode.token_count;
     if (result.token_encode.error
@@ -160,7 +171,8 @@ template <bool UseHashChain>
     entropy::internal::ContextualBlockedHuffmanDescriptor descriptor{};
     result.entropy_encode =
         context::internal::plan_lzss_contextual_blocked_huffman_tokens(
-            tokens, stream.dictionary, token_context, limits, descriptor);
+            tokens, stream.dictionary, token_context, limits, descriptor,
+            selected.layout.context_variant);
     result.event_count = result.entropy_encode.event_count;
     result.decision_count = result.entropy_encode.decision_count;
     result.descriptor_size = result.entropy_encode.descriptor_size;
@@ -181,7 +193,7 @@ template <bool UseHashChain>
         entropy::internal::validate_contextual_blocked_huffman_descriptor(
             descriptor, result.decision_count,
             static_cast<std::uint32_t>(result.payload_size), limits,
-            result.descriptor_size);
+            result.descriptor_size, selected.layout.context_variant);
     if (result.descriptor_error
         != entropy::internal::ContextualBlockedHuffmanFormatError::none) {
         result.error =
@@ -302,6 +314,15 @@ template <bool UseHashChain>
         != LzssContextualBlockedHuffmanFrameEncodeError::none) {
         return result;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        stream.dictionary_variant, stream.context_algorithm,
+        stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        result.error =
+            LzssContextualBlockedHuffmanFrameEncodeError::invalid_stream;
+        return result;
+    }
     if (serialized_output.size() < result.serialized_size) {
         result.error = LzssContextualBlockedHuffmanFrameEncodeError::
             serialized_output_too_small;
@@ -325,7 +346,8 @@ template <bool UseHashChain>
     result.entropy_encode =
         context::internal::encode_lzss_contextual_blocked_huffman_tokens(
             tokens, stream.dictionary, token_context, limits,
-            output.subspan(payload_offset, result.payload_size), descriptor);
+            output.subspan(payload_offset, result.payload_size), descriptor,
+            selected.layout.context_variant);
     if (result.entropy_encode.error
             != context::internal::
                 LzssContextualBlockedHuffmanEncodeError::none
@@ -345,7 +367,7 @@ template <bool UseHashChain>
             output.subspan(
                 lzss_contextual_blocked_huffman_frame_header_size,
                 result.descriptor_size),
-            descriptor_written);
+            descriptor_written, selected.layout.context_variant);
     if (result.descriptor_error
             != entropy::internal::ContextualBlockedHuffmanFormatError::none
         || descriptor_written != result.descriptor_size) {

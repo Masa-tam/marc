@@ -499,6 +499,22 @@ descriptors fail atomically. The next independent boundary is complete-frame
 admission for the exact `2/3 + 1/2 + 2/2` identity; streaming, public C, CLI,
 benchmark, fuzz, and interoperability admission remain later stages.
 
+That complete-frame boundary will serialize and validate the exact selected
+identity, use the selected 30-decision token and 2,579-byte descriptor ceilings,
+and pass the immutable layout through dictionary matching, direct entropy
+coding, descriptor parsing, token decoding, and reconstruction. The permanent
+frame vector repeats a five-byte marker after 65,536 filler bytes so the exact
+HashChain encoder must exercise a distance above 64 KiB. Crossed stream
+identities and descriptor layouts must fail before raw publication.
+
+That complete-frame boundary is implemented. The selected stream header
+round-trips exact `2/3 + 1/2 + 2/2`, frame validation applies the 30-decision
+and 2,579-byte ceilings, and both match-finder and reconstruction paths use
+the paired typed-token variant. The permanent marker-gap-marker vector emits
+a Match beyond 64 KiB and round-trips through the selected complete decoder;
+crossed decoding leaves raw output untouched. The next independent boundary
+is selected profile workspace calculation and streaming lifecycle admission.
+
 ## Required validation
 
 In addition to ordinary Format 2 coverage, require:

@@ -76,7 +76,22 @@ constexpr std::array frame_magic{
 
 [[nodiscard]] LzssContextualRansStreamHeader to_common(
     const LzssContextualBlockedHuffmanStreamHeader& header) noexcept {
-    return {header.frame_size, header.original_size, header.dictionary};
+    LzssContextualRansStreamHeader result{};
+    result.frame_size = header.frame_size;
+    result.original_size = header.original_size;
+    result.dictionary = header.dictionary;
+    result.dictionary_variant = header.dictionary_variant;
+    result.context_algorithm = header.context_algorithm;
+    result.context_variant = header.context_variant;
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        header.dictionary_variant, header.context_algorithm,
+        header.context_variant);
+    if (selected.error
+        == context::internal::LzssFieldContextLayoutError::none) {
+        result.frequency_entry_count = static_cast<std::uint32_t>(
+            selected.layout.frequency_entries);
+    }
+    return result;
 }
 
 [[nodiscard]] LzssContextualBlockedHuffmanStreamHeader from_common(
@@ -85,6 +100,9 @@ constexpr std::array frame_magic{
     result.frame_size = header.frame_size;
     result.original_size = header.original_size;
     result.dictionary = header.dictionary;
+    result.dictionary_variant = header.dictionary_variant;
+    result.context_algorithm = header.context_algorithm;
+    result.context_variant = header.context_variant;
     return result;
 }
 
@@ -106,16 +124,38 @@ validate_lzss_contextual_blocked_huffman_stream_header(
                > limits.max_internal_buffered_bytes) {
         return LzssContextualBlockedHuffmanStreamHeaderError::limit_exceeded;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        header.dictionary_variant, header.context_algorithm,
+        header.context_variant);
+    switch (selected.error) {
+    case context::internal::LzssFieldContextLayoutError::none:
+        break;
+    case context::internal::LzssFieldContextLayoutError::
+        unknown_dictionary_variant:
+        return LzssContextualBlockedHuffmanStreamHeaderError::
+            unsupported_dictionary_variant;
+    case context::internal::LzssFieldContextLayoutError::
+        unknown_context_algorithm:
+        return LzssContextualBlockedHuffmanStreamHeaderError::
+            unknown_context_model;
+    case context::internal::LzssFieldContextLayoutError::
+        unsupported_context_variant:
+        return LzssContextualBlockedHuffmanStreamHeaderError::
+            unsupported_context_variant;
+    case context::internal::LzssFieldContextLayoutError::
+        incompatible_variants:
+        return LzssContextualBlockedHuffmanStreamHeaderError::
+            contradictory_parameters;
+    }
     const auto dictionary_error =
-        dictionary::internal::validate_lzss_parameters(
-            header.dictionary, limits);
-    if (dictionary_error == dictionary::internal::LzssFormatError::limit_exceeded) {
+        dictionary::internal::validate_lzss_typed_parameters(
+            header.dictionary, limits, selected.layout.dictionary_variant);
+    if (dictionary_error
+        == dictionary::internal::LzssTypedTokenError::limit_exceeded) {
         return LzssContextualBlockedHuffmanStreamHeaderError::limit_exceeded;
     }
-    if (dictionary_error != dictionary::internal::LzssFormatError::none
-        || header.dictionary.min_match_length != 5
-        || header.dictionary.max_match_length > 258
-        || header.dictionary.window_size > 65536) {
+    if (dictionary_error
+        != dictionary::internal::LzssTypedTokenError::none) {
         return LzssContextualBlockedHuffmanStreamHeaderError::
             invalid_dictionary_parameters;
     }
@@ -184,8 +224,14 @@ parse_lzss_contextual_blocked_huffman_stream_header(
     }
     std::uint16_t entropy_algorithm{};
     std::uint16_t entropy_variant{};
+    std::uint16_t dictionary_variant{};
+    std::uint16_t context_algorithm{};
+    std::uint16_t context_variant{};
     if (!core::load_le(input, 16, entropy_algorithm)
-        || !core::load_le(input, 18, entropy_variant)) {
+        || !core::load_le(input, 18, entropy_variant)
+        || !core::load_le(input, 14, dictionary_variant)
+        || !core::load_le(input, 96, context_algorithm)
+        || !core::load_le(input, 98, context_variant)) {
         return LzssContextualBlockedHuffmanStreamHeaderError::
             arithmetic_overflow;
     }
@@ -201,8 +247,14 @@ parse_lzss_contextual_blocked_huffman_stream_header(
     }
     adapted[80] = std::byte{12};
     adapted[81] = std::byte{1};
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        dictionary_variant, context_algorithm, context_variant);
+    const auto frequency_entries = selected.error
+            == context::internal::LzssFieldContextLayoutError::none
+        ? selected.layout.frequency_entries
+        : context::internal::lzss_field_context_frequency_entries;
     if (!core::store_le(bytes, 82, std::uint16_t{31})
-        || !core::store_le(bytes, 84, std::uint32_t{4518})
+        || !core::store_le(bytes, 84, frequency_entries)
         || !core::store_le(bytes, 88, std::uint32_t{0})
         || !core::store_le(bytes, 92, std::uint32_t{0})) {
         return LzssContextualBlockedHuffmanStreamHeaderError::
@@ -261,6 +313,13 @@ validate_lzss_contextual_blocked_huffman_frame_header(
         != LzssContextualBlockedHuffmanStreamHeaderError::none) {
         return E::invalid_stream_header;
     }
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        context.stream.dictionary_variant,
+        context.stream.context_algorithm, context.stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return E::invalid_stream_header;
+    }
     if (header.flags != 0) return E::unknown_flags;
     if (header.sequence != context.expected_sequence) {
         return E::unexpected_sequence;
@@ -284,14 +343,20 @@ validate_lzss_contextual_blocked_huffman_frame_header(
         || !checked_product_at_most(5, header.token_count, header.event_count)
         || !checked_product_at_most(6, header.uncompressed_size,
                                     header.decision_count)
-        || !checked_product_at_most(26, header.token_count,
-                                    header.decision_count)
+        || !checked_product_at_most(
+            selected.layout.maximum_decisions_per_token,
+            header.token_count, header.decision_count)
         || header.descriptor_size
                < entropy::internal::
                    contextual_blocked_huffman_min_descriptor_size
         || header.descriptor_size
-               > entropy::internal::
-                   contextual_blocked_huffman_max_descriptor_size) {
+               > (selected.layout.context_variant
+                           == context::internal::LzssFieldContextVariant::
+                               field_context_64k
+                       ? entropy::internal::
+                           contextual_blocked_huffman_max_descriptor_size_v1
+                       : entropy::internal::
+                           contextual_blocked_huffman_max_descriptor_size_v2)) {
         return E::contradictory_counts;
     }
     std::uint64_t maximum_bits{};
@@ -421,10 +486,20 @@ preflight_lzss_contextual_blocked_huffman_frame(
     if (input.size() < payload_offset) return {P::truncated_frame};
     const auto descriptor_input = input.subspan(
         header_bytes, static_cast<std::size_t>(parsed.header.descriptor_size));
+    const auto selected = context::internal::select_lzss_field_context_layout(
+        context.stream.dictionary_variant,
+        context.stream.context_algorithm, context.stream.context_variant);
+    if (selected.error
+        != context::internal::LzssFieldContextLayoutError::none) {
+        return {P::header_error,
+                LzssContextualBlockedHuffmanFrameHeaderError::
+                    invalid_stream_header};
+    }
     const auto descriptor_error =
         entropy::internal::parse_contextual_blocked_huffman_descriptor(
             descriptor_input, parsed.header.decision_count,
-            parsed.header.payload_size, context.limits, parsed.descriptor);
+            parsed.header.payload_size, context.limits, parsed.descriptor,
+            selected.layout.context_variant);
     if (descriptor_error
         != entropy::internal::ContextualBlockedHuffmanFormatError::none) {
         return {P::descriptor_error,

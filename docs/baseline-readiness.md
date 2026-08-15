@@ -2293,3 +2293,18 @@ storage. All targets build warning-clean and all 2,927 registered Release
 tests pass under both MSVC and ClangCL, including schema compatibility through
 version 40. Complete-frame, streaming, public, benchmark, fuzz, and
 interoperability admission for the new profile remain pending.
+
+### BR-0133
+
+The selected Contextual Blocked Huffman complete-frame boundary is locally
+complete. The 112-byte stream header admits exact `2/3 + 1/2 + 2/2` while
+preserving all variant-1 bytes. Variant-specific frame validation applies the
+26/30-decision token ceilings and 2,561/2,579-byte descriptor ceilings before
+descriptor parsing or workspace publication. Exhaustive and HashChain paths
+use the selected dictionary variant, entropy coding and parsing use the
+selected context variant, and reconstruction publishes raw bytes only after
+private validation. A 65,536-byte marker-gap vector proves a generated Match
+beyond 64 KiB and atomic crossed rejection. All targets build warning-clean
+and all 2,929 registered Release tests pass under MSVC and ClangCL, including
+schema compatibility through version 40. Selected profile, streaming, public,
+benchmark, fuzz, and interoperability admission remain pending.

@@ -17077,3 +17077,30 @@ fail atomically.
 
 This stage changes no stream bytes and admits no frame, streaming, public API,
 CLI, benchmark, fuzz, or interoperability surface.
+
+## DD-824: Admit the selected Contextual Blocked Huffman complete frame
+
+- Date: 2026-08-15
+- Status: accepted
+
+Admit the exact selected stream identity `2/3 + 1/2 + 2/2` at the private
+complete-frame boundary. Store dictionary variant, context algorithm, and
+context variant explicitly in the in-memory stream header, retaining `2/1/1`
+as defaults and preserving its serialized bytes. Select one immutable field-
+context layout during stream validation and use it for dictionary admission,
+frame count ceilings, descriptor size, typed-token coding, descriptor
+serialization, entropy decoding, and raw reconstruction.
+
+Variant 1 retains at most 26 decisions per token and descriptor extent
+24..2,561. Variant 2 admits at most 30 decisions per token and descriptor
+extent 24..2,579. Both retain the common six-decisions-per-raw-byte bound,
+15-bit canonical codes, at most 35 decode tables, and payload ceiling
+`ceil(15D/8)`. The selected identity changes no frame-header fields and adds no
+side data. Crossed identities, descriptor layouts, and typed-token distances
+fail before raw publication.
+
+The exhaustive and HashChain Exact encoders must use the selected typed-token
+variant and emit identical bytes. Decode must retain descriptor preflight,
+private token reconstruction, and atomic raw publication. This stage admits
+no streaming lifecycle, profile workspace API, public C API, CLI, benchmark,
+fuzz, or interoperability entry.

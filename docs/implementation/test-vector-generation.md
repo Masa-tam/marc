@@ -9613,3 +9613,23 @@ tokens or decode tables. Retain all existing 64 KiB direct-adapter vectors,
 workspace/alias checks, malformed entropy checks, and raw/count validation.
 No frame, streaming, public, benchmark, fuzz, or schema vector belongs to this
 typed-token stage.
+
+### TVG-0699
+
+Retain the exact documented variant-1 stream header and one-literal frame.
+Serialize and parse a selected stream carrying dictionary variant 3, context
+algorithm 1, context variant 2, a 1 MiB window, and the unchanged Contextual
+Blocked Huffman entropy identity 2/2. Reject crossed `2/2` and `3/1` pairs,
+unknown selectors, a variant-2 descriptor under variant 1, descriptor sizes
+2,562..2,579 under variant 1, and counts above the selected 26- or 30-
+decisions-per-token ceiling without publishing a header or layout.
+
+For complete-frame proof, place `ABCDE`, 65,536 filler bytes, and `ABCDE` in
+one selected frame. Require HashChain Exact to produce at least one Match with
+distance above 65,536, encode and decode the frame, and reconstruct the exact
+raw bytes. Require Exhaustive and HashChain Exact to remain byte-identical on
+the existing small deterministic vector. Decode the extended frame under a
+crossed variant-1 stream and require frame rejection without raw mutation.
+Retain every capacity, alias, aggregate-workspace, truncation, descriptor,
+payload, token, and reconstruction regression. No streaming, profile, public,
+benchmark, fuzz, or interoperability vector belongs to this stage.
