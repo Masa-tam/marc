@@ -1,4 +1,5 @@
 #include "dictionary/lzss_binary_tree_match_finder.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -146,6 +147,43 @@ void expect_three_node_tree(
     EXPECT_EQ(inspect_lzss_binary_tree_node(
                   finder, static_cast<std::uint32_t>(expected_right)).parent,
               expected_root);
+}
+
+void expect_exact_finders_equal(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters = {}) {
+    const auto binary_required = calculate_lzss_binary_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(binary_required.error, LzssBinaryTreeError::none);
+    auto binary_storage = make_storage(binary_required.workspace_size);
+    LzssBinaryTreeMatchFinder binary{};
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, parameters, {}, binary_storage.bytes, binary),
+              LzssBinaryTreeError::none);
+
+    const auto hash_required = calculate_lzss_hash_chain_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(hash_required.error, LzssHashChainError::none);
+    auto hash_storage = make_storage(hash_required.workspace_size);
+    LzssHashChainMatchFinder hash{};
+    ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+                  input, parameters, {}, hash_storage.bytes, hash),
+              LzssHashChainError::none);
+    LzssExhaustiveMatchFinder exhaustive{input, parameters};
+
+    for (std::size_t position = 0; position <= input.size(); ++position) {
+        const auto expected = exhaustive.find_match(position);
+        EXPECT_EQ(binary.find_match(position), expected) << position;
+        EXPECT_EQ(hash.find_match(position), expected) << position;
+        if (position != input.size()) {
+            binary.advance(position, position + 1U);
+            hash.advance(position, position + 1U);
+            exhaustive.advance(position, position + 1U);
+            ASSERT_TRUE(binary.state_valid()) << position;
+            ASSERT_EQ(validate_lzss_binary_tree(binary),
+                      LzssBinaryTreeValidationError::none) << position;
+        }
+    }
 }
 
 TEST(LzssBinaryTreeMatchFinder, CalculatesSeparatedBoundedWorkspace) {
@@ -1105,6 +1143,7 @@ TEST(LzssBinaryTreeMatchFinder, PrefixRangeSelectsNonadjacentNewestCandidate) {
     EXPECT_EQ(candidate.error, LzssBinaryTreeError::none);
     EXPECT_EQ(candidate.candidate_position, 24U);
     EXPECT_EQ(candidate.length, 5U);
+    EXPECT_EQ(finder.find_match(32), (LzssMatch{8, 5}));
 }
 
 TEST(LzssBinaryTreeMatchFinder, PrefixRangeHandlesAllMaximumBytePrefix) {
@@ -1174,6 +1213,84 @@ TEST(LzssBinaryTreeMatchFinder, CandidateMatchesActiveWindowEnumeration) {
                   LzssBinaryTreeValidationError::none) << position;
     }
     EXPECT_GT(qualifying_queries, 0U);
+}
+
+TEST(LzssBinaryTreeMatchFinder, ExactMatchEqualsOtherFindersAcrossInputClasses) {
+    expect_exact_finders_equal(bytes(""));
+    expect_exact_finders_equal(bytes("A"));
+    expect_exact_finders_equal(bytes("ABABABABABABABAB"));
+    expect_exact_finders_equal(bytes("ABCDE1ABCDE2ABCDE3"));
+    expect_exact_finders_equal(bytes(
+        "AAAAABAAAACAAAAADAAAAEAAAAAFAAAAAGAAAAAHAAAAAI"));
+
+    std::vector<std::byte> all_values{};
+    for (std::uint32_t value = 0; value < 256; ++value) {
+        all_values.push_back(static_cast<std::byte>(value));
+    }
+    all_values.insert(all_values.end(), all_values.begin(), all_values.end());
+    expect_exact_finders_equal(all_values);
+
+    std::vector<std::byte> pseudorandom(1024);
+    std::uint32_t state = UINT32_C(0x13579bdf);
+    for (auto& value : pseudorandom) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        value = static_cast<std::byte>(state >> 24U);
+    }
+    expect_exact_finders_equal(pseudorandom);
+}
+
+TEST(LzssBinaryTreeMatchFinder, ExactMatchEqualsParameterMatrix) {
+    std::vector<std::byte> input{};
+    for (std::size_t index = 0; index < 512; ++index) {
+        input.push_back(static_cast<std::byte>(
+            index % 29 == 0 ? index & 0xffU : index % 7));
+    }
+    for (const std::uint32_t window : {1U, 5U, 17U, 256U, 65'536U}) {
+        for (const std::uint32_t maximum : {5U, 17U, 258U}) {
+            LzssParameters parameters{};
+            parameters.window_size = window;
+            parameters.max_match_length = maximum;
+            expect_exact_finders_equal(input, parameters);
+        }
+    }
+}
+
+TEST(LzssBinaryTreeMatchFinder, ExactMatchIndexesEverySkippedPosition) {
+    const auto input = bytes("ABABABABABABABABXYZABABABAB");
+    const auto binary_required = calculate_lzss_binary_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(binary_required.error, LzssBinaryTreeError::none);
+    auto binary_storage = make_storage(binary_required.workspace_size);
+    LzssBinaryTreeMatchFinder binary{};
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, {}, {}, binary_storage.bytes, binary),
+              LzssBinaryTreeError::none);
+    const auto hash_required = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(hash_required.error, LzssHashChainError::none);
+    auto hash_storage = make_storage(hash_required.workspace_size);
+    LzssHashChainMatchFinder hash{};
+    ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+                  input, {}, {}, hash_storage.bytes, hash),
+              LzssHashChainError::none);
+    LzssExhaustiveMatchFinder exhaustive{input, {}};
+
+    const std::array<std::size_t, 4> landings{0, 2, 16, input.size()};
+    for (std::size_t index = 0; index < landings.size(); ++index) {
+        const auto position = landings[index];
+        const auto expected = exhaustive.find_match(position);
+        EXPECT_EQ(binary.find_match(position), expected) << position;
+        EXPECT_EQ(hash.find_match(position), expected) << position;
+        if (index + 1U != landings.size()) {
+            const auto next = landings[index + 1U];
+            binary.advance(position, next);
+            hash.advance(position, next);
+            exhaustive.advance(position, next);
+            ASSERT_TRUE(binary.state_valid());
+            ASSERT_EQ(validate_lzss_binary_tree(binary),
+                      LzssBinaryTreeValidationError::none);
+        }
+    }
 }
 
 } // namespace

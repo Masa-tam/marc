@@ -175,6 +175,12 @@ pathにより有限upper-boundをmaterializeせず、`0xff`だけのprefixも同
 `L < min_match_length`なら区間queryを省略してmatchなしを返す。この二段階
 手順により、最長一致と最短距離の双方をExhaustiveと一致させる。
 
+private finderの`find_match(position)`は、range結果の候補位置`c_max`から
+`distance = position - c_max`を導出し、`LzssMatch{distance, L}`へ変換する。
+候補なしまたは内部query errorでは空matchを返す。詳細な内部errorは
+`find_candidate`結果に保持し、共通finder conceptへ新しいerror表現を持ち
+込まない。
+
 ## 9. 計算量と限界
 
 AVL heightはactive node数`N`に対して`O(log N)`である。挿入、削除、辞書順

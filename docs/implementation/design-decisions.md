@@ -17795,3 +17795,24 @@ matches of global maximum length. Return it with `L` as a private intermediate
 candidate. Skip aggregation when `L` is below the minimum and treat a missing
 split after a valid neighbor result as internal invalid state. Do not yet
 expose `LzssMatch`, compute a public distance, or connect a production encoder.
+
+## DD-853: BinaryTree satisfies the private Exact finder contract
+
+- Date: 2026-08-17
+- Status: accepted
+
+Add a concept-compatible private `find_match(position)` that calls the bounded
+candidate query and, only on success, returns `distance = position -
+candidate_position` with the selected maximum length. The established active-
+window invariant proves positive distance bounded by configured `window_size`,
+and LZSS parameter validation bounds both fields to their 32-bit representation.
+Return an empty match for no candidate or internal query error, matching the
+existing common finder contract; retain the stable detailed error only in the
+private candidate result.
+
+Differentially run BinaryTree Exact, HashChain Exact, and Exhaustive with the
+same immutable input, parameters, query positions, and advancement intervals.
+Require complete `LzssMatch` equality at every position, including exact end,
+window boundaries, capped lengths, equal-length nearest-distance ties, skipped
+positions, and structured binary inputs. Keep BinaryTree unavailable to the
+strategy enum, production encoder, public API, and stream format in this stage.

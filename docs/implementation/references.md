@@ -5627,3 +5627,12 @@ Only elementary binary-search-tree interval decomposition is additionally
 used. No external range tree, suffix structure, match finder, compressor,
 source code, test, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0627
+
+The private BinaryTree Exact finder contract and three-strategy differential
+stage uses DD-760 through DD-765, DD-845, DD-850 through DD-853, TVG-0719,
+TVG-0724 through TVG-0727, the repository-owned `LzssMatchFinder` concept,
+Exhaustive reference finder, and HashChain Exact finder. No external match
+finder, tree, compressor, source code, test, patent, pseudocode, or
+optimization description was consulted.

@@ -10139,3 +10139,18 @@ enumerate the active window, determine global maximum LCP and the greatest
 position having that length, and compare both fields with the BinaryTree
 candidate before advancing. Require at least one qualifying match and validate
 the tree after every transition.
+
+### TVG-0727
+
+Convert the nonadjacent newest-prefix fixture from TVG-0726 into the hand-
+checkable match `{distance 8, length 5}`. Require empty, one-byte, overlap,
+repeated-record, all-byte-value, fixed-seed pseudorandom, and structured mixed
+inputs to produce identical `LzssMatch` results from BinaryTree Exact,
+HashChain Exact, and Exhaustive at every position through exact input end.
+
+Sweep window sizes 1, 5, 17, 256, and 65,536 and maximum lengths 5, 17, and
+258 over the structured mixed input. After each query, advance all stateful
+finders over the same one-byte interval and validate BinaryTree structure.
+Separately advance across multi-byte parser skips and compare at each landing
+position. Do not compare tree shape or diagnostic work counters and do not
+connect BinaryTree to production selection.

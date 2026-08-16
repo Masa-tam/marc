@@ -22114,3 +22114,33 @@ discarded and the reviewed seed retained.
   including documentation layout and
   `marc_interoperability_schema_compatibility`; the separately executed Python
   3.14 Silesia verifier also passes, completing all 2,993 registered tests.
+
+## CR-0922: 2026-08-17 - Private BinaryTree Exact finder contract
+
+- Authoring method: converted the independently derived private candidate into
+  marc's existing common match-finder value and exercised it alongside both
+  established Exact strategies.
+- References used: DD-760 through DD-765, DD-845, DD-850 through DD-853;
+  IR-0627; TVG-0719, TVG-0724 through TVG-0727; marc's `LzssMatchFinder`
+  concept, Exhaustive reference, HashChain Exact finder, and BinaryTree range
+  candidate.
+- Known implementations intentionally not consulted: external match finders,
+  trees, compressors, source code, tests, patents, pseudocode, and optimization
+  descriptions.
+- Independent decisions: preserve detailed errors below the common concept;
+  derive distance only from a successful earlier absolute position; return an
+  empty common match on internal failure; validate tree state during
+  differential advancement; and keep strategy selection unchanged.
+- Generated-code task description: make BinaryTree concept-compatible, convert
+  the hand range fixture to a match, compare three Exact finders across input
+  classes and a parameter matrix, and verify identical multi-byte skip
+  indexing without production exposure.
+- Similarity review: adapter and tests use only marc-owned interfaces, locally
+  generated inputs, and previously recorded fixtures. No external
+  implementation expression or vector entered the change.
+- Local validation: MSVC 19.50 and ClangCL 22.1.3 build warning-clean and pass
+  all 32 BinaryTree foundation, query, range, and three-Exact-finder
+  differential tests. In each configuration the 2,995-test sandbox-safe
+  inventory passes, including documentation layout and
+  `marc_interoperability_schema_compatibility`; the separately executed Python
+  3.14 Silesia verifier also passes, completing all 2,996 registered tests.

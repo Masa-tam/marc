@@ -561,6 +561,19 @@ LzssBinaryTreeMatchFinder::find_candidate(
     return result;
 }
 
+LzssMatch LzssBinaryTreeMatchFinder::find_match(
+    const std::size_t position) const noexcept {
+    const auto candidate = find_candidate(position);
+    if (candidate.error != LzssBinaryTreeError::none
+        || candidate.candidate_position == lzss_binary_tree_no_position
+        || candidate.candidate_position >= position) {
+        return {};
+    }
+    const auto distance = position - candidate.candidate_position;
+    if (distance > std::numeric_limits<std::uint32_t>::max()) return {};
+    return {static_cast<std::uint32_t>(distance), candidate.length};
+}
+
 void LzssBinaryTreeMatchFinder::advance(
     const std::size_t position,
     const std::size_t next_position) noexcept {

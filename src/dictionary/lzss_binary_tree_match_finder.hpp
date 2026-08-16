@@ -2,7 +2,7 @@
 #define MARC_DICTIONARY_LZSS_BINARY_TREE_MATCH_FINDER_HPP
 
 #include "core/limits.hpp"
-#include "dictionary/lzss_format.hpp"
+#include "dictionary/lzss_match_finder.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -123,6 +123,8 @@ public:
         std::size_t position) const noexcept;
     [[nodiscard]] LzssBinaryTreeCandidateQueryResult find_candidate(
         std::size_t position) const noexcept;
+    [[nodiscard]] LzssMatch find_match(
+        std::size_t position) const noexcept;
     void advance(std::size_t position, std::size_t next_position) noexcept;
 
 private:
@@ -172,6 +174,8 @@ private:
     bool initialized_{};
     bool state_valid_{};
 };
+
+static_assert(LzssMatchFinder<LzssBinaryTreeMatchFinder>);
 
 [[nodiscard]] LzssBinaryTreeError initialize_lzss_binary_tree_match_finder(
     std::span<const std::byte> input, const LzssParameters& parameters,
