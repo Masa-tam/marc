@@ -10123,3 +10123,19 @@ tree. Finally, for every indexable query in a fixed-seed binary input, compute
 the maximum LCP by enumerating the active half-open window and compare it with
 the maximum of the BinaryTree predecessor and successor LCPs before advancing
 one byte. Validate the tree after every advance.
+
+### TVG-0726
+
+Place `ABCDEA`, `ABCDEL`, `ABCDEN`, and `ABCDEB` records before query
+`ABCDEM`. Require the lexicographic predecessor and successor to establish
+maximum LCP five while prefix-range aggregation selects the lexicographically
+nonadjacent newest record at position 24. Repeat with an all-`0xff` five-byte
+prefix, ordering sixth bytes so the newest equal-prefix record is not the
+predecessor and no finite prefix upper bound exists.
+
+Require empty and below-minimum LCP results to skip range aggregation and return
+no candidate. For every indexable position of a fixed-seed low-alphabet input,
+enumerate the active window, determine global maximum LCP and the greatest
+position having that length, and compare both fields with the BinaryTree
+candidate before advancing. Require at least one qualifying match and validate
+the tree after every transition.

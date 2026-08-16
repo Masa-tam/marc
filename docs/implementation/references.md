@@ -5617,3 +5617,13 @@ that strings sharing a prefix form a contiguous lexicographic interval is the
 only additional basis. No external tree, suffix structure, match finder,
 compressor, source code, test, patent, pseudocode, or optimization description
 was consulted.
+
+### IR-0626
+
+The BinaryTree equal-prefix range aggregation stage uses DD-845, DD-848,
+DD-851, DD-852, TVG-0719, TVG-0722, TVG-0725, and TVG-0726, together with the
+repository-owned subtree maximum-position metadata and neighbor-LCP result.
+Only elementary binary-search-tree interval decomposition is additionally
+used. No external range tree, suffix structure, match finder, compressor,
+source code, test, patent, pseudocode, or optimization description was
+consulted.

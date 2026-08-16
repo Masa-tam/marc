@@ -82,6 +82,20 @@ std::uint32_t LzssBinaryTreeMatchFinder::common_prefix_length(
     return static_cast<std::uint32_t>(length);
 }
 
+int LzssBinaryTreeMatchFinder::compare_prefix(
+    const std::size_t position, const std::size_t query_position,
+    const std::uint32_t length) const noexcept {
+    for (std::size_t index = 0; index < length; ++index) {
+        const auto byte = std::to_integer<std::uint8_t>(
+            input_[position + index]);
+        const auto query_byte = std::to_integer<std::uint8_t>(
+            input_[query_position + index]);
+        if (byte < query_byte) return -1;
+        if (byte > query_byte) return 1;
+    }
+    return 0;
+}
+
 void LzssBinaryTreeMatchFinder::update_metadata(
     const std::uint32_t node) noexcept {
     const auto left = left_[node];
@@ -468,6 +482,82 @@ LzssBinaryTreeMatchFinder::find_neighbors(
     }
     result.maximum_lcp = std::max(
         result.predecessor_lcp, result.successor_lcp);
+    return result;
+}
+
+LzssBinaryTreeCandidateQueryResult
+LzssBinaryTreeMatchFinder::find_candidate(
+    const std::size_t position) const noexcept {
+    LzssBinaryTreeCandidateQueryResult result{};
+    const auto neighbors = find_neighbors(position);
+    if (neighbors.error != LzssBinaryTreeError::none) {
+        result.error = neighbors.error;
+        return result;
+    }
+    if (neighbors.maximum_lcp < parameters_.min_match_length) {
+        return result;
+    }
+
+    auto split = lzss_binary_tree_null_node;
+    auto current = root_;
+    while (current != lzss_binary_tree_null_node) {
+        const auto comparison = compare_prefix(
+            position_[current], position, neighbors.maximum_lcp);
+        if (comparison < 0) {
+            current = right_[current];
+        } else if (comparison > 0) {
+            current = left_[current];
+        } else {
+            split = current;
+            break;
+        }
+    }
+    if (split == lzss_binary_tree_null_node) {
+        result.error = LzssBinaryTreeError::invalid_state;
+        return result;
+    }
+
+    auto maximum_position = position_[split];
+    current = left_[split];
+    while (current != lzss_binary_tree_null_node) {
+        const auto comparison = compare_prefix(
+            position_[current], position, neighbors.maximum_lcp);
+        if (comparison < 0) {
+            current = right_[current];
+        } else if (comparison > 0) {
+            current = left_[current];
+        } else {
+            maximum_position = std::max(maximum_position, position_[current]);
+            if (right_[current] != lzss_binary_tree_null_node) {
+                maximum_position = std::max(
+                    maximum_position,
+                    subtree_maximum_position_[right_[current]]);
+            }
+            current = left_[current];
+        }
+    }
+
+    current = right_[split];
+    while (current != lzss_binary_tree_null_node) {
+        const auto comparison = compare_prefix(
+            position_[current], position, neighbors.maximum_lcp);
+        if (comparison < 0) {
+            current = right_[current];
+        } else if (comparison > 0) {
+            current = left_[current];
+        } else {
+            maximum_position = std::max(maximum_position, position_[current]);
+            if (left_[current] != lzss_binary_tree_null_node) {
+                maximum_position = std::max(
+                    maximum_position,
+                    subtree_maximum_position_[left_[current]]);
+            }
+            current = right_[current];
+        }
+    }
+
+    result.candidate_position = maximum_position;
+    result.length = neighbors.maximum_lcp;
     return result;
 }
 

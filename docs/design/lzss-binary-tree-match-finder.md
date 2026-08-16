@@ -165,6 +165,13 @@ AVL nodeの`maximum absolute position in the subtree`を使い、lower/upperの
 一度参照してまとめる。全候補を列挙せず、区間内最大位置`c_max`を得る。
 `p - c_max`が同長候補中の最短距離になる。
 
+実装では先頭`L` byteだけを比較してprefix区間内のsplit nodeを一つ求める。
+splitの左側では同prefix node自身とそのright subtreeを集約してleftへ進み、
+prefix未満ならrightへ進む。splitの右側では同prefix node自身とそのleft
+subtreeを集約してrightへ進み、prefix超過ならleftへ進む。これら二つの境界
+pathにより有限upper-boundをmaterializeせず、`0xff`だけのprefixも同じ処理で
+扱う。
+
 `L < min_match_length`なら区間queryを省略してmatchなしを返す。この二段階
 手順により、最長一致と最短距離の双方をExhaustiveと一致させる。
 

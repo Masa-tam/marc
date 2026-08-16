@@ -22085,3 +22085,32 @@ discarded and the reviewed seed retained.
   including documentation layout and
   `marc_interoperability_schema_compatibility`; the separately executed Python
   3.14 Silesia verifier also passes, completing all 2,990 registered tests.
+
+## CR-0921: 2026-08-17 - BinaryTree equal-prefix range aggregation
+
+- Authoring method: implemented two iterative AVL boundary paths directly from
+  marc's prefix-contiguity proof and existing subtree maximum-position
+  metadata.
+- References used: DD-845, DD-848, DD-851, DD-852; IR-0626; TVG-0719,
+  TVG-0722, TVG-0725, and TVG-0726; marc's neighbor-LCP query, finite prefix
+  comparison, and structural metadata validator.
+- Known implementations intentionally not consulted: external range or suffix
+  trees, match finders, compressors, source code, tests, patents, pseudocode,
+  and optimization descriptions.
+- Independent decisions: locate one equal-prefix split; aggregate the inward
+  sibling subtree on each boundary path; avoid constructing an exclusive upper
+  key; use the existing subtree newest-position field; and keep the result as a
+  private absolute-position candidate rather than a public distance.
+- Generated-code task description: add bounded prefix comparison and range
+  aggregation, select a lexicographically nonadjacent newest candidate, cover
+  an all-maximum-byte prefix, and compare every low-alphabet query with active-
+  window enumeration without production connection.
+- Similarity review: interval traversal and tests derive from marc's documented
+  AVL invariants and locally authored binary fixtures. No external
+  implementation expression or vector entered the change.
+- Local validation: MSVC 19.50 and ClangCL 22.1.3 build warning-clean and pass
+  all 29 BinaryTree foundation, mutation, query, and range-aggregation tests.
+  In each configuration the 2,992-test sandbox-safe inventory passes,
+  including documentation layout and
+  `marc_interoperability_schema_compatibility`; the separately executed Python
+  3.14 Silesia verifier also passes, completing all 2,993 registered tests.

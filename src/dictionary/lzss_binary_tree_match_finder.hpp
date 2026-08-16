@@ -70,6 +70,14 @@ struct LzssBinaryTreeNeighborQueryResult {
     bool operator==(const LzssBinaryTreeNeighborQueryResult&) const = default;
 };
 
+struct LzssBinaryTreeCandidateQueryResult {
+    std::size_t candidate_position{lzss_binary_tree_no_position};
+    std::uint32_t length{};
+    LzssBinaryTreeError error{LzssBinaryTreeError::none};
+
+    bool operator==(const LzssBinaryTreeCandidateQueryResult&) const = default;
+};
+
 struct LzssBinaryTreeWorkspaceRequirements {
     std::size_t workspace_size{};
     std::size_t workspace_alignment{
@@ -113,6 +121,8 @@ public:
     }
     [[nodiscard]] LzssBinaryTreeNeighborQueryResult find_neighbors(
         std::size_t position) const noexcept;
+    [[nodiscard]] LzssBinaryTreeCandidateQueryResult find_candidate(
+        std::size_t position) const noexcept;
     void advance(std::size_t position, std::size_t next_position) noexcept;
 
 private:
@@ -134,6 +144,9 @@ private:
         std::size_t left, std::size_t right) const noexcept;
     [[nodiscard]] std::uint32_t common_prefix_length(
         std::size_t left, std::size_t right) const noexcept;
+    [[nodiscard]] int compare_prefix(
+        std::size_t position, std::size_t query_position,
+        std::uint32_t length) const noexcept;
     void update_metadata(std::uint32_t node) noexcept;
     void replace_parent_child(
         std::uint32_t parent, std::uint32_t previous_child,

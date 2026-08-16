@@ -17773,3 +17773,25 @@ equal-prefix range, expose `find_match`, or connect a production encoder.
 Require the query position to equal the recorded next position. End-of-input
 and fewer-than-five-byte tails return a successful empty result without tree
 traversal; other position or state violations return stable internal errors.
+
+## DD-852: BinaryTree prefix range selects the newest equal-length candidate
+
+- Date: 2026-08-17
+- Status: accepted
+
+When neighbor maximum LCP `L` is at least `min_match_length`, find one AVL node
+whose first `L` bytes equal the query prefix. Treat it as a split point. Along
+the split's left side, an equal-prefix node and its right subtree are wholly
+inside the range; aggregate their stored maximum position and continue left.
+Along the right side, aggregate an equal-prefix node and its left subtree and
+continue right. Prefix-less and prefix-greater nodes direct traversal toward
+the interval without aggregation. Include the split node itself.
+
+This visits only two AVL boundary paths and uses existing subtree maxima, so it
+does not enumerate equal-prefix candidates or allocate an upper-bound key. An
+all-`0xff` prefix follows the same comparison and needs no special sentinel.
+The resulting maximum absolute position is the nearest candidate among all
+matches of global maximum length. Return it with `L` as a private intermediate
+candidate. Skip aggregation when `L` is below the minimum and treat a missing
+split after a valid neighbor result as internal invalid state. Do not yet
+expose `LzssMatch`, compute a public distance, or connect a production encoder.
