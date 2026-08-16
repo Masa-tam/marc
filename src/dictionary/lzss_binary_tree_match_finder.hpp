@@ -13,6 +13,8 @@ namespace marc::dictionary::internal {
 
 inline constexpr std::size_t lzss_binary_tree_prefix_size = 5;
 inline constexpr std::uint32_t lzss_binary_tree_null_node = UINT32_MAX;
+inline constexpr std::size_t lzss_binary_tree_no_position =
+    std::numeric_limits<std::size_t>::max();
 
 enum class LzssBinaryTreeError : std::uint8_t {
     none,
@@ -57,6 +59,17 @@ struct LzssBinaryTreeNodeSnapshot {
     bool operator==(const LzssBinaryTreeNodeSnapshot&) const = default;
 };
 
+struct LzssBinaryTreeNeighborQueryResult {
+    std::size_t predecessor_position{lzss_binary_tree_no_position};
+    std::size_t successor_position{lzss_binary_tree_no_position};
+    std::uint32_t predecessor_lcp{};
+    std::uint32_t successor_lcp{};
+    std::uint32_t maximum_lcp{};
+    LzssBinaryTreeError error{LzssBinaryTreeError::none};
+
+    bool operator==(const LzssBinaryTreeNeighborQueryResult&) const = default;
+};
+
 struct LzssBinaryTreeWorkspaceRequirements {
     std::size_t workspace_size{};
     std::size_t workspace_alignment{
@@ -98,6 +111,8 @@ public:
     [[nodiscard]] std::size_t next_position() const noexcept {
         return next_position_;
     }
+    [[nodiscard]] LzssBinaryTreeNeighborQueryResult find_neighbors(
+        std::size_t position) const noexcept;
     void advance(std::size_t position, std::size_t next_position) noexcept;
 
 private:
@@ -116,6 +131,8 @@ private:
 
     [[nodiscard]] std::uint8_t node_height(std::uint32_t node) const noexcept;
     [[nodiscard]] int compare_positions(
+        std::size_t left, std::size_t right) const noexcept;
+    [[nodiscard]] std::uint32_t common_prefix_length(
         std::size_t left, std::size_t right) const noexcept;
     void update_metadata(std::uint32_t node) noexcept;
     void replace_parent_child(

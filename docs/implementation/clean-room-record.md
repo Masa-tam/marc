@@ -22056,3 +22056,32 @@ discarded and the reviewed seed retained.
   documentation layout and `marc_interoperability_schema_compatibility`; the
   separately executed Python 3.14 Silesia verifier also passes, completing all
   2,986 registered tests.
+
+## CR-0920: 2026-08-17 - BinaryTree lexicographic neighbors and LCP
+
+- Authoring method: implemented virtual-key AVL traversal and bounded LCP
+  comparison directly from marc's recorded finite suffix order and the
+  contiguous-prefix interval argument.
+- References used: DD-845, DD-848, DD-850, DD-851; IR-0625; TVG-0719,
+  TVG-0722, TVG-0724, and TVG-0725; marc's active-window implementation,
+  capped suffix comparison, structural validator, and Exhaustive reference.
+- Known implementations intentionally not consulted: external AVL or suffix
+  structures, match finders, compressors, source code, tests, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: return both neighbor positions and individual LCPs;
+  preserve the maximum as an intermediate result; treat the query as following
+  equal capped keys by absolute position; accept short tails as empty; and
+  defer minimum-length filtering, distance selection, and range aggregation.
+- Generated-code task description: add a const one-pass neighbor query,
+  finite bounded LCP helper, hand-checkable two-sided and equal-key fixtures,
+  state and tail validation, and fixed-seed per-position comparison against
+  active-window enumeration without exposing `find_match` or production use.
+- Similarity review: traversal and fixtures derive from marc's documented key
+  order and locally generated data. No external implementation expression or
+  vector entered the change.
+- Local validation: MSVC 19.50 and ClangCL 22.1.3 build warning-clean and pass
+  all 26 BinaryTree foundation, mutation, advancement, and neighbor-query
+  tests. In each configuration the 2,989-test sandbox-safe inventory passes,
+  including documentation layout and
+  `marc_interoperability_schema_compatibility`; the separately executed Python
+  3.14 Silesia verifier also passes, completing all 2,990 registered tests.

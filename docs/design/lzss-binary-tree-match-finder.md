@@ -139,6 +139,12 @@ successor node自体を構造的にtransplantする。successorの旧parentか�
 仮想queryキーの辞書順predecessorとsuccessorをAVL木から求める。それぞれと
 queryのLCPを`max_match_length`まで計算し、大きい方を`L`とする。
 
+この近傍探索はquery位置がfinderの記録する次位置と一致するときだけ行う。
+query位置が入力終端と一致する場合、または残りが5-byte prefix未満の場合は
+正常な候補なしを返し、木を探索しない。近傍結果はpredecessor/successorの
+絶対位置と個別LCPを保持する。この段階では`min_match_length`を適用せず、距離
+およびtoken costも決定しない。
+
 辞書順集合では、queryとのLCPが最大となる要素はqueryの直前または直後に
 存在する。より離れた要素が長いLCPを持つなら、その共通prefixを持つ要素は
 辞書順上連続区間を作るため、直前または直後にも同じ以上のLCPを持つ要素が

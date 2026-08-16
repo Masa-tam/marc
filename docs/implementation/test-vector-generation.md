@@ -10106,3 +10106,20 @@ active count, root, and every node snapshot, with both structures valid. Begin
 an advance at an unexpected position and require an unchanged workspace,
 sticky invalid protocol state, a stable validator category, and rejection of
 all later insertion, removal, and advance attempts.
+
+### TVG-0725
+
+Place capped records `ABCDE`, `ABCDG`, and query `ABCDF` at eight-byte
+boundaries. Advance to the query and require positions zero and eight to be
+its predecessor and successor with LCP four on both sides. Repeat with two
+identical `ABCDE` records and an identical query, requiring the virtual
+absolute-position tie-break to make the newest equal record the predecessor
+with the full capped LCP.
+
+Cover an empty tree, exact input end, and a query with fewer than five bytes
+remaining as successful empty results. Reject an unexpected current position,
+an out-of-range position, and a sticky-invalid finder without reading the
+tree. Finally, for every indexable query in a fixed-seed binary input, compute
+the maximum LCP by enumerating the active half-open window and compare it with
+the maximum of the BinaryTree predecessor and successor LCPs before advancing
+one byte. Validate the tree after every advance.

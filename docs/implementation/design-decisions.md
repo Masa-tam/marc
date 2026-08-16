@@ -17751,3 +17751,25 @@ omitting insertion there. Require calls to begin at the finder's recorded next
 position and move monotonically within the input. A protocol violation makes
 the private finder state sticky-invalid; later mutation cannot silently resume.
 This stage adds no query operation or production encoder connection.
+
+## DD-851: BinaryTree maximum LCP comes from virtual-key neighbors
+
+- Date: 2026-08-17
+- Status: accepted
+
+Search the private AVL tree once with virtual key `(capped query suffix,
+query_position)`. When the query key is smaller than a visited node, retain
+that node as the current successor and descend left; otherwise retain it as
+the current predecessor and descend right. Active positions always precede
+the current query, so absolute-position tie-breaking places a byte-identical
+query after every equal capped suffix.
+
+Compute LCP independently against the final predecessor and successor, bounded
+by both finite suffix extents and `max_match_length`; their maximum is the
+global maximum candidate length because an equal-prefix set is lexicographically
+contiguous. Return both positions and both LCPs as an internal intermediate
+result. Do not yet apply `min_match_length`, select a distance, aggregate the
+equal-prefix range, expose `find_match`, or connect a production encoder.
+Require the query position to equal the recorded next position. End-of-input
+and fewer-than-five-byte tails return a successful empty result without tree
+traversal; other position or state violations return stable internal errors.

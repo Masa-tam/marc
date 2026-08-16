@@ -5606,3 +5606,14 @@ structural deletion, slot mapping, and validator as first-party references.
 Only elementary half-open sliding-window arithmetic is additionally used. No
 external tree, match finder, compressor, source code, test, patent, pseudocode,
 or optimization description was consulted.
+
+### IR-0625
+
+The BinaryTree lexicographic-neighbor and LCP stage uses DD-845, DD-848,
+DD-850, DD-851, TVG-0719, TVG-0722, TVG-0724, and TVG-0725, together with the
+repository-owned finite suffix order, active-window protocol, structural
+validator, and Exhaustive reference comparison rules. The mathematical fact
+that strings sharing a prefix form a contiguous lexicographic interval is the
+only additional basis. No external tree, suffix structure, match finder,
+compressor, source code, test, patent, pseudocode, or optimization description
+was consulted.
