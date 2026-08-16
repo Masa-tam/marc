@@ -4,6 +4,7 @@
 #include "core/checked_math.hpp"
 
 #include <algorithm>
+#include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -11,6 +12,42 @@
 
 namespace marc::dictionary::internal {
 namespace {
+
+void increment_statistic(
+    LzssMatchFinderStatistics* const statistics,
+    std::uint64_t& value) noexcept {
+    if (statistics == nullptr) return;
+    if (value == std::numeric_limits<std::uint64_t>::max()) {
+        statistics->overflowed = true;
+        return;
+    }
+    ++value;
+}
+
+void record_binary_tree_query(
+    LzssMatchFinderStatistics* const statistics,
+    const std::uint64_t nodes_visited) noexcept {
+    if (statistics == nullptr) return;
+    increment_statistic(statistics, statistics->query_count);
+    statistics->binary_tree_maximum_nodes_per_query = std::max(
+        statistics->binary_tree_maximum_nodes_per_query, nodes_visited);
+    const auto raw_bin = nodes_visited == 0 ? 0U
+        : std::bit_width(nodes_visited);
+    const auto bin = std::min<std::size_t>(
+        raw_bin,
+        statistics->binary_tree_query_depth_histogram.size() - 1U);
+    increment_statistic(
+        statistics, statistics->binary_tree_query_depth_histogram[bin]);
+}
+
+void record_binary_tree_height(
+    LzssMatchFinderStatistics* const statistics,
+    const std::uint8_t height) noexcept {
+    if (statistics == nullptr) return;
+    statistics->binary_tree_maximum_height = std::max(
+        statistics->binary_tree_maximum_height,
+        static_cast<std::uint64_t>(height));
+}
 
 [[nodiscard]] bool append_array(
     const std::size_t count, const std::size_t element_size,
@@ -48,12 +85,21 @@ std::uint8_t LzssBinaryTreeMatchFinder::node_height(
 
 int LzssBinaryTreeMatchFinder::compare_positions(
     const std::size_t left, const std::size_t right) const noexcept {
+    if (statistics_ != nullptr) {
+        increment_statistic(
+            statistics_, statistics_->binary_tree_key_comparison_count);
+    }
     const auto left_size = std::min<std::size_t>(
         input_.size() - left, parameters_.max_match_length);
     const auto right_size = std::min<std::size_t>(
         input_.size() - right, parameters_.max_match_length);
     const auto common_size = std::min(left_size, right_size);
     for (std::size_t index = 0; index < common_size; ++index) {
+        if (statistics_ != nullptr) {
+            increment_statistic(
+                statistics_,
+                statistics_->binary_tree_key_byte_comparison_count);
+        }
         const auto left_byte = std::to_integer<std::uint8_t>(
             input_[left + index]);
         const auto right_byte = std::to_integer<std::uint8_t>(
@@ -75,8 +121,13 @@ std::uint32_t LzssBinaryTreeMatchFinder::common_prefix_length(
         input_.size() - right,
         static_cast<std::size_t>(parameters_.max_match_length)});
     std::size_t length{};
-    while (length < maximum
-           && input_[left + length] == input_[right + length]) {
+    while (length < maximum) {
+        if (statistics_ != nullptr) {
+            increment_statistic(
+                statistics_,
+                statistics_->binary_tree_lcp_byte_comparison_count);
+        }
+        if (input_[left + length] != input_[right + length]) break;
         ++length;
     }
     return static_cast<std::uint32_t>(length);
@@ -85,7 +136,19 @@ std::uint32_t LzssBinaryTreeMatchFinder::common_prefix_length(
 int LzssBinaryTreeMatchFinder::compare_prefix(
     const std::size_t position, const std::size_t query_position,
     const std::uint32_t length) const noexcept {
+    if (statistics_ != nullptr) {
+        increment_statistic(
+            statistics_, statistics_->binary_tree_key_comparison_count);
+        increment_statistic(
+            statistics_,
+            statistics_->binary_tree_prefix_range_comparison_count);
+    }
     for (std::size_t index = 0; index < length; ++index) {
+        if (statistics_ != nullptr) {
+            increment_statistic(
+                statistics_,
+                statistics_->binary_tree_key_byte_comparison_count);
+        }
         const auto byte = std::to_integer<std::uint8_t>(
             input_[position + index]);
         const auto query_byte = std::to_integer<std::uint8_t>(
@@ -133,6 +196,10 @@ void LzssBinaryTreeMatchFinder::replace_parent_child(
 
 std::uint32_t LzssBinaryTreeMatchFinder::rotate_left(
     const std::uint32_t node) noexcept {
+    if (statistics_ != nullptr) {
+        increment_statistic(
+            statistics_, statistics_->binary_tree_rotation_count);
+    }
     const auto promoted = right_[node];
     const auto transferred = left_[promoted];
     const auto parent = parent_[node];
@@ -150,6 +217,10 @@ std::uint32_t LzssBinaryTreeMatchFinder::rotate_left(
 
 std::uint32_t LzssBinaryTreeMatchFinder::rotate_right(
     const std::uint32_t node) noexcept {
+    if (statistics_ != nullptr) {
+        increment_statistic(
+            statistics_, statistics_->binary_tree_rotation_count);
+    }
     const auto promoted = left_[node];
     const auto transferred = right_[promoted];
     const auto parent = parent_[node];
@@ -271,7 +342,8 @@ LzssBinaryTreeError initialize_lzss_binary_tree_match_finder(
     const std::span<const std::byte> input,
     const LzssParameters& parameters, const core::DecoderLimits& limits,
     const std::span<std::byte> workspace,
-    LzssBinaryTreeMatchFinder& finder) noexcept {
+    LzssBinaryTreeMatchFinder& finder,
+    LzssMatchFinderStatistics* const statistics) noexcept {
     const auto required = calculate_lzss_binary_tree_workspace(
         input.size(), parameters, limits);
     if (required.error != LzssBinaryTreeError::none) return required.error;
@@ -297,6 +369,7 @@ LzssBinaryTreeError initialize_lzss_binary_tree_match_finder(
     LzssBinaryTreeMatchFinder initialized{};
     initialized.input_ = input;
     initialized.parameters_ = parameters;
+    initialized.statistics_ = statistics;
     initialized.initialized_ = true;
     initialized.state_valid_ = true;
     if (required.workspace_size == 0) {
@@ -376,6 +449,13 @@ LzssBinaryTreeError insert_lzss_binary_tree_position(
     }
     ++finder.active_node_count_;
     finder.rebalance_from(parent);
+    if (finder.statistics_ != nullptr) {
+        increment_statistic(
+            finder.statistics_,
+            finder.statistics_->binary_tree_insertion_count);
+        record_binary_tree_height(
+            finder.statistics_, finder.node_height(finder.root_));
+    }
     return LzssBinaryTreeError::none;
 }
 
@@ -428,12 +508,26 @@ LzssBinaryTreeError remove_lzss_binary_tree_position(
     finder.clear_node(removed);
     --finder.active_node_count_;
     finder.rebalance_from(rebalance_start);
+    if (finder.statistics_ != nullptr) {
+        increment_statistic(
+            finder.statistics_,
+            finder.statistics_->binary_tree_retirement_count);
+        record_binary_tree_height(
+            finder.statistics_, finder.node_height(finder.root_));
+    }
     return LzssBinaryTreeError::none;
 }
 
 LzssBinaryTreeNeighborQueryResult
 LzssBinaryTreeMatchFinder::find_neighbors(
     const std::size_t position) const noexcept {
+    return find_neighbors_impl(position, nullptr);
+}
+
+LzssBinaryTreeNeighborQueryResult
+LzssBinaryTreeMatchFinder::find_neighbors_impl(
+    const std::size_t position,
+    std::uint64_t* const nodes_visited) const noexcept {
     LzssBinaryTreeNeighborQueryResult result{};
     if (!initialized_ || !state_valid_) {
         result.error = LzssBinaryTreeError::invalid_state;
@@ -456,6 +550,7 @@ LzssBinaryTreeMatchFinder::find_neighbors(
     auto successor = lzss_binary_tree_null_node;
     auto current = root_;
     while (current != lzss_binary_tree_null_node) {
+        if (nodes_visited != nullptr) ++*nodes_visited;
         const auto comparison = compare_positions(position, position_[current]);
         if (comparison == 0) {
             result.error = LzssBinaryTreeError::invalid_state;
@@ -489,18 +584,25 @@ LzssBinaryTreeCandidateQueryResult
 LzssBinaryTreeMatchFinder::find_candidate(
     const std::size_t position) const noexcept {
     LzssBinaryTreeCandidateQueryResult result{};
-    const auto neighbors = find_neighbors(position);
+    std::uint64_t nodes_visited{};
+    const auto finish = [this, &nodes_visited]() noexcept {
+        record_binary_tree_query(statistics_, nodes_visited);
+    };
+    const auto neighbors = find_neighbors_impl(position, &nodes_visited);
     if (neighbors.error != LzssBinaryTreeError::none) {
         result.error = neighbors.error;
+        finish();
         return result;
     }
     if (neighbors.maximum_lcp < parameters_.min_match_length) {
+        finish();
         return result;
     }
 
     auto split = lzss_binary_tree_null_node;
     auto current = root_;
     while (current != lzss_binary_tree_null_node) {
+        ++nodes_visited;
         const auto comparison = compare_prefix(
             position_[current], position, neighbors.maximum_lcp);
         if (comparison < 0) {
@@ -514,12 +616,14 @@ LzssBinaryTreeMatchFinder::find_candidate(
     }
     if (split == lzss_binary_tree_null_node) {
         result.error = LzssBinaryTreeError::invalid_state;
+        finish();
         return result;
     }
 
     auto maximum_position = position_[split];
     current = left_[split];
     while (current != lzss_binary_tree_null_node) {
+        ++nodes_visited;
         const auto comparison = compare_prefix(
             position_[current], position, neighbors.maximum_lcp);
         if (comparison < 0) {
@@ -539,6 +643,7 @@ LzssBinaryTreeMatchFinder::find_candidate(
 
     current = right_[split];
     while (current != lzss_binary_tree_null_node) {
+        ++nodes_visited;
         const auto comparison = compare_prefix(
             position_[current], position, neighbors.maximum_lcp);
         if (comparison < 0) {
@@ -558,6 +663,7 @@ LzssBinaryTreeMatchFinder::find_candidate(
 
     result.candidate_position = maximum_position;
     result.length = neighbors.maximum_lcp;
+    finish();
     return result;
 }
 

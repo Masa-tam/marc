@@ -22174,3 +22174,31 @@ discarded and the reviewed seed retained.
   including documentation layout and
   `marc_interoperability_schema_compatibility`; the separately executed Python
   3.14 Silesia verifier also passes, completing all 2,998 registered tests.
+
+## CR-0924: 2026-08-17 - Optional BinaryTree diagnostic statistics
+
+- Authoring method: instrumented the independently implemented private AVL
+  operations at their documented comparison, mutation, and query boundaries,
+  reusing marc's existing saturating-counter and logarithmic-bin conventions.
+- References used: DD-760, DD-765, DD-845, DD-855; IR-0629; TVG-0719,
+  TVG-0727 through TVG-0729; marc's common match-finder statistics object,
+  HashChain diagnostic rules, private BinaryTree finder, and typed parser.
+- Known implementations intentionally not consulted: external profilers,
+  trees, match finders, compressors, source code, tests, patents, pseudocode,
+  and optimization descriptions.
+- Independent decisions: count one complete candidate query rather than each
+  low-level neighbor inspection; sum three bounded search paths for query
+  depth; separate key and LCP byte comparisons; count only successful tree
+  mutations; and keep a null-pointer production-cost path.
+- Generated-code task description: add optional bounded-work statistics to the
+  private BinaryTree finder, propagate them through the private typed entry,
+  compare measured and unmeasured matches, verify histogram conservation and
+  saturation, and leave production selection unchanged.
+- Similarity review: counter placement follows marc-owned operation boundaries
+  and existing local diagnostics. The fixture is locally authored and no
+  external implementation expression or vector entered the change.
+- Local validation: MSVC 19.50 and ClangCL 22.1.3 build warning-clean and pass
+  all 36 focused BinaryTree and typed-entry tests. In each configuration the
+  2,999-test sandbox-safe inventory passes, including documentation layout and
+  `marc_interoperability_schema_compatibility`; the separately executed Python
+  3.14 Silesia verifier also passes, completing all 3,000 registered tests.

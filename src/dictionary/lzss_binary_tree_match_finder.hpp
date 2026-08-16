@@ -131,7 +131,7 @@ private:
     friend LzssBinaryTreeError initialize_lzss_binary_tree_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
-        LzssBinaryTreeMatchFinder&) noexcept;
+        LzssBinaryTreeMatchFinder&, LzssMatchFinderStatistics*) noexcept;
     friend LzssBinaryTreeError insert_lzss_binary_tree_position(
         LzssBinaryTreeMatchFinder&, std::size_t) noexcept;
     friend LzssBinaryTreeError remove_lzss_binary_tree_position(
@@ -149,6 +149,8 @@ private:
     [[nodiscard]] int compare_prefix(
         std::size_t position, std::size_t query_position,
         std::uint32_t length) const noexcept;
+    [[nodiscard]] LzssBinaryTreeNeighborQueryResult find_neighbors_impl(
+        std::size_t position, std::uint64_t* nodes_visited) const noexcept;
     void update_metadata(std::uint32_t node) noexcept;
     void replace_parent_child(
         std::uint32_t parent, std::uint32_t previous_child,
@@ -171,6 +173,7 @@ private:
     std::uint32_t root_{lzss_binary_tree_null_node};
     std::size_t active_node_count_{};
     std::size_t next_position_{};
+    LzssMatchFinderStatistics* statistics_{};
     bool initialized_{};
     bool state_valid_{};
 };
@@ -180,7 +183,8 @@ static_assert(LzssMatchFinder<LzssBinaryTreeMatchFinder>);
 [[nodiscard]] LzssBinaryTreeError initialize_lzss_binary_tree_match_finder(
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::span<std::byte> workspace,
-    LzssBinaryTreeMatchFinder& finder) noexcept;
+    LzssBinaryTreeMatchFinder& finder,
+    LzssMatchFinderStatistics* statistics = nullptr) noexcept;
 
 [[nodiscard]] LzssBinaryTreeError insert_lzss_binary_tree_position(
     LzssBinaryTreeMatchFinder& finder, std::size_t position) noexcept;

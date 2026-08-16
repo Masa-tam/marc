@@ -17837,3 +17837,24 @@ them to canonical `LzssToken` serialization and require byte identity with the
 established Exhaustive stream. Keep the entry out of public headers, strategy
 selection, normal encoder dispatch, frame profiles, and interoperability
 artifacts until later admission stages.
+
+## DD-855: BinaryTree diagnostics are optional and operation-defined
+
+- Date: 2026-08-17
+- Status: accepted
+
+Attach the existing internal match-finder statistics object only through an
+optional pointer captured at successful BinaryTree initialization. A null
+pointer performs no diagnostic counter update. Count one parser query per
+`find_candidate`, including a successful empty result at input end. Its node
+depth is the sum of nodes visited by the neighbor search and both prefix-range
+boundary paths. Use the existing logarithmic histogram bins.
+
+Count finite-suffix and prefix-boundary comparisons and their compared bytes,
+LCP compared bytes including the terminal mismatch, range-boundary comparison
+calls, AVL rotations, successful insertions and retirements, maximum observed
+root height, and maximum nodes in one query. All additive counters saturate at
+`uint64_t` maximum and set the shared overflow flag. Maxima remain monotonic.
+Do not count validator inspection or a directly requested low-level neighbor
+query as a parser query. Propagate the pointer through only the private typed
+BinaryTree entry; do not change production strategy selection in this stage.

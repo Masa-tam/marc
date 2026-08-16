@@ -5645,3 +5645,12 @@ with the repository-owned typed parser, token validation, overlap checks,
 checked arithmetic, BinaryTree workspace initializer, and canonical LZSS token
 serializer. No external parser, match finder, compressor, source code, test,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0629
+
+The private BinaryTree diagnostic-counter stage uses DD-760, DD-765, DD-845,
+DD-855, TVG-0719, TVG-0727 through TVG-0729, the repository-owned common
+match-finder statistics contract, HashChain saturation and logarithmic-bin
+rules, and the existing private BinaryTree operation boundaries. No external
+tree, profiler, match finder, compressor, source code, test, patent,
+pseudocode, or optimization description was consulted.

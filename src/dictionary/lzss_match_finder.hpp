@@ -21,9 +21,11 @@ struct LzssMatch {
 };
 
 struct LzssMatchFinderStatistics {
-    // Optional diagnostics. HashChain-only fields remain zero for Exhaustive.
-    // Depth bin 0 is zero candidates, bin 1 is one, and bin n >= 2 is
-    // [2^(n-1), 2^n - 1]. Counter overflow saturates and sets overflowed.
+    // Optional diagnostics. Strategy-specific fields remain zero for other
+    // strategies.
+    // A depth histogram's bin 0 is zero work items, bin 1 is one, and bin
+    // n >= 2 is [2^(n-1), 2^n - 1]. Counter overflow saturates and sets
+    // overflowed.
     std::uint64_t query_count{};
     std::uint64_t candidate_count{};
     std::uint64_t byte_comparison_count{};
@@ -34,6 +36,18 @@ struct LzssMatchFinderStatistics {
     std::array<std::uint64_t,
                lzss_match_finder_depth_histogram_size>
         hash_chain_query_depth_histogram{};
+    std::uint64_t binary_tree_key_comparison_count{};
+    std::uint64_t binary_tree_key_byte_comparison_count{};
+    std::uint64_t binary_tree_lcp_byte_comparison_count{};
+    std::uint64_t binary_tree_prefix_range_comparison_count{};
+    std::uint64_t binary_tree_rotation_count{};
+    std::uint64_t binary_tree_insertion_count{};
+    std::uint64_t binary_tree_retirement_count{};
+    std::uint64_t binary_tree_maximum_height{};
+    std::uint64_t binary_tree_maximum_nodes_per_query{};
+    std::array<std::uint64_t,
+               lzss_match_finder_depth_histogram_size>
+        binary_tree_query_depth_histogram{};
     bool overflowed{};
 };
 

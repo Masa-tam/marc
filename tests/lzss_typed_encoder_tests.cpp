@@ -101,15 +101,19 @@ void expect_binary_tree_typed_equals_exact(
         LzssTypedTokenKind::match, 0, UINT32_C(0xdeadbeef),
         UINT32_C(0xcafebabe)};
     std::vector<LzssTypedToken> binary_tokens(input.size(), sentinel);
+    LzssMatchFinderStatistics binary_statistics{};
     const auto binary_result =
         encode_lzss_typed_tokens_binary_tree_single_pass(
-            input, parameters, {}, binary_tokens, binary_workspace, variant);
+            input, parameters, {}, binary_tokens, binary_workspace,
+            &binary_statistics, variant);
     ASSERT_EQ(binary_result.error, LzssTypedEncodeError::none);
     EXPECT_EQ(binary_result.binary_tree_match_finder_error,
               LzssBinaryTreeError::none);
     EXPECT_EQ(binary_result.token_count, reference.size());
     EXPECT_EQ(binary_result.token_storage_size,
               reference.size() * sizeof(LzssTypedToken));
+    EXPECT_EQ(binary_statistics.query_count, binary_result.token_count);
+    EXPECT_FALSE(binary_statistics.overflowed);
     ASSERT_EQ(hash_tokens.size(), reference.size());
     for (std::size_t index = 0; index < reference.size(); ++index) {
         EXPECT_TRUE(equal_token(hash_tokens[index], reference[index]));

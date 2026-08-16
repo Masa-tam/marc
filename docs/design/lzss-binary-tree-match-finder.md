@@ -221,6 +221,15 @@ counterはuint64飽和とoverflow flagを使用する。benchmarkはcounter有�
 untimed passとcounter無効のtimed passを分離し、bytes、framesおよびtokensの
 一致を要求する。
 
+`key comparisons`は挿入またはqueryで行う有限suffix比較とprefix-range境界
+比較の呼出し数、`key bytes compared`はそれらが実際に比較したbyte数とする。
+`predecessor/successor LCP bytes compared`は二つの最終近傍とのLCP走査で比較
+したbyte数であり、不一致を検出した最後のbyteも含む。`query nodes visited`は
+一回の`find_candidate`における近傍経路と二本のprefix-range境界経路のnode
+訪問数の合計とする。深さhistogramはHashChainと同じく0、1、以降
+`[2^(n-1), 2^n - 1]`のbinを使用する。公開された低水準neighbor queryだけを
+直接呼ぶ診断はparser query数に含めない。
+
 ## 11. テスト要件
 
 実装は次の順序で検証する。

@@ -1293,4 +1293,74 @@ TEST(LzssBinaryTreeMatchFinder, ExactMatchIndexesEverySkippedPosition) {
     }
 }
 
+TEST(LzssBinaryTreeMatchFinder, ReportsOptionalBoundedWorkStatistics) {
+    const auto input = bytes(
+        "ABCDE1ABCDE2ABCDE3ABCDE4ABCDE5ABCDE6ABCDE7ABCDE8");
+    LzssParameters parameters{};
+    parameters.window_size = 16;
+    const auto required = calculate_lzss_binary_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssBinaryTreeError::none);
+    auto measured_storage = make_storage(required.workspace_size);
+    auto plain_storage = make_storage(required.workspace_size);
+    LzssMatchFinderStatistics statistics{};
+    LzssBinaryTreeMatchFinder measured{};
+    LzssBinaryTreeMatchFinder plain{};
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, parameters, {}, measured_storage.bytes, measured,
+                  &statistics),
+              LzssBinaryTreeError::none);
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, parameters, {}, plain_storage.bytes, plain),
+              LzssBinaryTreeError::none);
+
+    for (std::size_t position = 0; position <= input.size(); ++position) {
+        EXPECT_EQ(measured.find_match(position), plain.find_match(position))
+            << position;
+        if (position != input.size()) {
+            measured.advance(position, position + 1U);
+            plain.advance(position, position + 1U);
+            ASSERT_TRUE(measured.state_valid()) << position;
+            ASSERT_TRUE(plain.state_valid()) << position;
+        }
+    }
+
+    EXPECT_EQ(statistics.query_count, input.size() + 1U);
+    EXPECT_EQ(statistics.binary_tree_insertion_count, input.size() - 4U);
+    EXPECT_EQ(statistics.binary_tree_retirement_count,
+              input.size() - parameters.window_size);
+    EXPECT_GT(statistics.binary_tree_key_comparison_count, 0U);
+    EXPECT_GT(statistics.binary_tree_key_byte_comparison_count, 0U);
+    EXPECT_GT(statistics.binary_tree_lcp_byte_comparison_count, 0U);
+    EXPECT_GT(statistics.binary_tree_prefix_range_comparison_count, 0U);
+    EXPECT_GT(statistics.binary_tree_rotation_count, 0U);
+    EXPECT_GT(statistics.binary_tree_maximum_height, 0U);
+    EXPECT_GT(statistics.binary_tree_maximum_nodes_per_query, 0U);
+    std::uint64_t histogram_queries{};
+    for (const auto count : statistics.binary_tree_query_depth_histogram) {
+        histogram_queries += count;
+    }
+    EXPECT_EQ(histogram_queries, statistics.query_count);
+    EXPECT_FALSE(statistics.overflowed);
+}
+
+TEST(LzssBinaryTreeMatchFinder, ReportsStatisticsCounterOverflow) {
+    const std::span<const std::byte> input{};
+    LzssMatchFinderStatistics statistics{};
+    statistics.query_count = std::numeric_limits<std::uint64_t>::max();
+    statistics.binary_tree_query_depth_histogram[0] =
+        std::numeric_limits<std::uint64_t>::max();
+    LzssBinaryTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, {}, {}, {}, finder, &statistics),
+              LzssBinaryTreeError::none);
+
+    EXPECT_EQ(finder.find_match(0), LzssMatch{});
+    EXPECT_TRUE(statistics.overflowed);
+    EXPECT_EQ(statistics.query_count,
+              std::numeric_limits<std::uint64_t>::max());
+    EXPECT_EQ(statistics.binary_tree_query_depth_histogram[0],
+              std::numeric_limits<std::uint64_t>::max());
+}
+
 } // namespace

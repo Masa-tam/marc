@@ -80,6 +80,7 @@ encode_lzss_typed_tokens_binary_tree_single_pass(
     const core::DecoderLimits& limits,
     std::span<LzssTypedToken> private_tokens,
     std::span<std::byte> match_finder_workspace,
+    LzssMatchFinderStatistics* statistics = nullptr,
     LzssTypedTokenVariant variant =
         LzssTypedTokenVariant::field_context_64k) noexcept;
 

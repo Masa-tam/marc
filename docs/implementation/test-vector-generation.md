@@ -10170,3 +10170,20 @@ output/workspace overlap, and aggregate-memory shortage without changing any
 output token. Require stable generic and BinaryTree-specific errors. Successful
 encoding may modify only the reported token prefix; unused output remains the
 sentinel. Do not add a production strategy selector or interoperability archive.
+
+### TVG-0729
+
+Run two BinaryTree Exact finders over the same repeated-record fixture with a
+sixteen-byte window, one with diagnostics and one without. Compare every match
+through exact input end and advance both by one byte. Require the measured
+query count to include input end; successful insertion and retirement counts
+to match the finite five-byte indexing and window rules; every comparison,
+LCP, range, rotation, height, and query-depth category to be exercised; and
+the query histogram sum to equal the query count.
+
+Initialize an empty finder with the query counter and zero-depth histogram bin
+already at `uint64_t` maximum. One exact-end query must leave both saturated
+and set the shared overflow flag. Separately pass diagnostics through the
+private typed BinaryTree encoder and require its query count to equal the
+produced token count without changing any token or canonical byte comparison.
+Do not expose the counters through a public API or production strategy.
