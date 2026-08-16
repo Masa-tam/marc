@@ -5597,3 +5597,12 @@ rotations, and structural validator as first-party references. Only elementary
 binary-search-tree successor and AVL invariants were additionally used. No
 external tree, match finder, compressor, source code, test, patent, pseudocode,
 or optimization description was consulted.
+
+### IR-0624
+
+The BinaryTree window-advancement stage uses DD-845, DD-848 through DD-850,
+TVG-0719, TVG-0722 through TVG-0724, the repository-owned insertion,
+structural deletion, slot mapping, and validator as first-party references.
+Only elementary half-open sliding-window arithmetic is additionally used. No
+external tree, match finder, compressor, source code, test, patent, pseudocode,
+or optimization description was consulted.

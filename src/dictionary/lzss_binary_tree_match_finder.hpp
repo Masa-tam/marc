@@ -42,6 +42,7 @@ enum class LzssBinaryTreeValidationError : std::uint8_t {
     unbalanced,
     invalid_subtree_maximum,
     invalid_slot_position,
+    invalid_protocol_state,
 };
 
 struct LzssBinaryTreeNodeSnapshot {
@@ -93,6 +94,11 @@ public:
         return active_node_count_;
     }
     [[nodiscard]] std::uint32_t root_index() const noexcept { return root_; }
+    [[nodiscard]] bool state_valid() const noexcept { return state_valid_; }
+    [[nodiscard]] std::size_t next_position() const noexcept {
+        return next_position_;
+    }
+    void advance(std::size_t position, std::size_t next_position) noexcept;
 
 private:
     friend LzssBinaryTreeError initialize_lzss_binary_tree_match_finder(
@@ -132,7 +138,9 @@ private:
     std::span<std::size_t> subtree_maximum_position_{};
     std::uint32_t root_{lzss_binary_tree_null_node};
     std::size_t active_node_count_{};
+    std::size_t next_position_{};
     bool initialized_{};
+    bool state_valid_{};
 };
 
 [[nodiscard]] LzssBinaryTreeError initialize_lzss_binary_tree_match_finder(

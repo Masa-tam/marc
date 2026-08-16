@@ -17731,3 +17731,23 @@ and rebalance iteratively from the successor's old parent or the replacement
 subtree root as appropriate. This makes a retired modulo slot reusable by the
 later position exactly one window away. Keep deletion internal and explicit;
 automatic expiry and `advance` remain a separate stage.
+
+## DD-850: BinaryTree advancement occurs after the current query
+
+- Date: 2026-08-17
+- Status: accepted
+
+Define `advance(position, next_position)` as the parser action performed after
+querying `position`. Immediately before query `x`, the tree contains every
+indexable active position in `[max(0, x - window_size), x)`. Therefore the
+candidate at distance exactly `window_size` remains available to query `x`.
+While advancing from `x`, retire `x - window_size` first and then insert `x`,
+reusing the same modulo slot only after structural removal.
+
+Process every position in `[position, next_position)` sequentially so a parser
+skip caused by a match produces the same final tree as repeated one-byte
+advancement. Continue expiry through the non-indexable input tail while
+omitting insertion there. Require calls to begin at the finder's recorded next
+position and move monotonically within the input. A protocol violation makes
+the private finder state sticky-invalid; later mutation cannot silently resume.
+This stage adds no query operation or production encoder connection.

@@ -22028,3 +22028,31 @@ discarded and the reviewed seed retained.
   documentation layout and `marc_interoperability_schema_compatibility`; the
   separately executed Python 3.14 Silesia verifier also passes, completing all
   2,981 registered tests.
+
+## CR-0919: 2026-08-17 - BinaryTree window advancement
+
+- Authoring method: implemented the post-query window transition directly from
+  the repository's half-open active-window and modulo-slot design.
+- References used: DD-845, DD-848 through DD-850; IR-0624; TVG-0719 and
+  TVG-0722 through TVG-0724; marc's private insertion, structural deletion,
+  slot identity, validator, and sticky-state conventions.
+- Known implementations intentionally not consulted: external trees, match
+  finders, compressors, source code, tests, patents, pseudocode, and
+  optimization descriptions.
+- Independent decisions: retain distance exactly `W` until after the current
+  query; retire before same-slot insertion; process skipped positions
+  sequentially; continue expiry through the non-indexable tail; and make call-
+  order violations sticky rather than partially recoverable.
+- Generated-code task description: add monotonic `advance`, recorded next
+  position, sticky protocol validation, boundary and tail fixtures, skipped-
+  position coverage, and complete bulk-versus-bytewise structure comparison
+  without adding a match query or production connection.
+- Similarity review: control flow and tests follow marc's recorded lifecycle
+  and locally derived arithmetic. No external implementation expression or
+  vector entered the change.
+- Local validation: MSVC 19.50 and ClangCL 22.1.3 build warning-clean and pass
+  all 22 BinaryTree foundation, mutation, validation, and advancement tests. In
+  each configuration the 2,985-test sandbox-safe inventory passes, including
+  documentation layout and `marc_interoperability_schema_compatibility`; the
+  separately executed Python 3.14 Silesia verifier also passes, completing all
+  2,986 registered tests.

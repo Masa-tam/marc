@@ -10089,3 +10089,20 @@ position of a 256-byte fixed-seed LCG input into two independent trees, remove
 all even positions followed by all odd positions, validate after every
 deletion, compare roots throughout and all node snapshots after each parity,
 and require both trees to finish empty.
+
+### TVG-0724
+
+With an eight-byte window, advance from zero to eight and require position zero
+to remain present for the query at position eight. Then advance one position,
+requiring position zero to retire before position eight reuses its modulo slot.
+Advance sixteen positions in one call and inspect every skipped position to
+prove sequential insertion. Advance a twelve-byte input through its final four
+non-indexable positions and require expiry to leave only positions four through
+seven active.
+
+On a 128-byte fixed-seed LCG input with a sixteen-byte window, compare a single
+whole-range advance against 128 one-byte advances. Require equal next position,
+active count, root, and every node snapshot, with both structures valid. Begin
+an advance at an unexpected position and require an unchanged workspace,
+sticky invalid protocol state, a stable validator category, and rejection of
+all later insertion, removal, and advance attempts.

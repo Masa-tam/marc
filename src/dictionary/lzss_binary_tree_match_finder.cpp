@@ -270,6 +270,7 @@ LzssBinaryTreeError initialize_lzss_binary_tree_match_finder(
     initialized.input_ = input;
     initialized.parameters_ = parameters;
     initialized.initialized_ = true;
+    initialized.state_valid_ = true;
     if (required.workspace_size == 0) {
         finder = initialized;
         return LzssBinaryTreeError::none;
@@ -306,7 +307,8 @@ LzssBinaryTreeError initialize_lzss_binary_tree_match_finder(
 LzssBinaryTreeError insert_lzss_binary_tree_position(
     LzssBinaryTreeMatchFinder& finder,
     const std::size_t position) noexcept {
-    if (!finder.initialized_ || finder.left_.empty()) {
+    if (!finder.initialized_ || !finder.state_valid_
+        || finder.left_.empty()) {
         return LzssBinaryTreeError::invalid_state;
     }
     if (position >= finder.input_.size()
@@ -352,7 +354,8 @@ LzssBinaryTreeError insert_lzss_binary_tree_position(
 LzssBinaryTreeError remove_lzss_binary_tree_position(
     LzssBinaryTreeMatchFinder& finder,
     const std::size_t position) noexcept {
-    if (!finder.initialized_ || finder.left_.empty()) {
+    if (!finder.initialized_ || !finder.state_valid_
+        || finder.left_.empty()) {
         return LzssBinaryTreeError::invalid_state;
     }
     if (position >= finder.input_.size()
@@ -400,10 +403,44 @@ LzssBinaryTreeError remove_lzss_binary_tree_position(
     return LzssBinaryTreeError::none;
 }
 
+void LzssBinaryTreeMatchFinder::advance(
+    const std::size_t position,
+    const std::size_t next_position) noexcept {
+    if (!initialized_ || !state_valid_ || position != next_position_
+        || next_position < position || next_position > input_.size()) {
+        state_valid_ = false;
+        next_position_ = input_.size();
+        return;
+    }
+    for (auto current = position; current < next_position; ++current) {
+        if (current >= parameters_.window_size) {
+            const auto expired = current - parameters_.window_size;
+            if (input_.size() - expired >= lzss_binary_tree_prefix_size
+                && remove_lzss_binary_tree_position(*this, expired)
+                    != LzssBinaryTreeError::none) {
+                state_valid_ = false;
+                next_position_ = input_.size();
+                return;
+            }
+        }
+        if (input_.size() - current >= lzss_binary_tree_prefix_size
+            && insert_lzss_binary_tree_position(*this, current)
+                != LzssBinaryTreeError::none) {
+            state_valid_ = false;
+            next_position_ = input_.size();
+            return;
+        }
+    }
+    next_position_ = next_position;
+}
+
 LzssBinaryTreeValidationError validate_lzss_binary_tree(
     const LzssBinaryTreeMatchFinder& finder) noexcept {
     if (!finder.initialized_) {
         return LzssBinaryTreeValidationError::uninitialized;
+    }
+    if (!finder.state_valid_) {
+        return LzssBinaryTreeValidationError::invalid_protocol_state;
     }
     const auto capacity = finder.left_.size();
     if (finder.right_.size() != capacity
