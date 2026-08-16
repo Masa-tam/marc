@@ -5636,3 +5636,12 @@ TVG-0724 through TVG-0727, the repository-owned `LzssMatchFinder` concept,
 Exhaustive reference finder, and HashChain Exact finder. No external match
 finder, tree, compressor, source code, test, patent, pseudocode, or
 optimization description was consulted.
+
+### IR-0628
+
+The private BinaryTree typed-token single-pass entry uses DD-760 through
+DD-765, DD-845, DD-853, DD-854, TVG-0719, TVG-0727, and TVG-0728, together
+with the repository-owned typed parser, token validation, overlap checks,
+checked arithmetic, BinaryTree workspace initializer, and canonical LZSS token
+serializer. No external parser, match finder, compressor, source code, test,
+patent, pseudocode, or optimization description was consulted.

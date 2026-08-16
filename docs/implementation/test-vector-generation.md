@@ -10154,3 +10154,19 @@ finders over the same one-byte interval and validate BinaryTree structure.
 Separately advance across multi-byte parser skips and compare at each landing
 position. Do not compare tree shape or diagnostic work counters and do not
 connect BinaryTree to production selection.
+
+### TVG-0728
+
+Run the private BinaryTree typed single-pass entry on empty, one-byte,
+repetitive, nearest-distance, all-byte-value, fixed-seed pseudorandom, and
+structured mixed inputs. Require token count, token storage size, every typed
+field, and canonical serialized byte sequence to equal both established Exact
+paths. Exercise both 64-KiB and one-MiB typed variants where their parameter
+ranges apply.
+
+Pre-fill output with a noncanonical sentinel and reject one-token-short output,
+one-byte-short workspace, input/output overlap, input/workspace overlap,
+output/workspace overlap, and aggregate-memory shortage without changing any
+output token. Require stable generic and BinaryTree-specific errors. Successful
+encoding may modify only the reported token prefix; unused output remains the
+sentinel. Do not add a production strategy selector or interoperability archive.

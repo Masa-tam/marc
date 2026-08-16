@@ -17816,3 +17816,24 @@ Require complete `LzssMatch` equality at every position, including exact end,
 window boundaries, capped lengths, equal-length nearest-distance ties, skipped
 positions, and structured binary inputs. Keep BinaryTree unavailable to the
 strategy enum, production encoder, public API, and stream format in this stage.
+
+## DD-854: BinaryTree first enters the existing typed parser privately
+
+- Date: 2026-08-17
+- Status: accepted
+
+Add only a private BinaryTree single-pass typed-token encoder entry. Require a
+caller-owned output span with worst-case capacity equal to the input byte count
+and the exact calculator-sized BinaryTree workspace. Reuse the existing typed
+parser template and strict beneficial-match cost rule; do not fork tokenization
+logic. Validate limits, typed variant, input extent, output capacity, all input/
+output/workspace overlap pairs, checked aggregate memory, and finder
+initialization before the first output token is written.
+
+Report BinaryTree-specific initialization failure separately inside the
+internal typed result while retaining the existing generic match-finder error.
+Compare produced typed tokens against Exhaustive and HashChain output, then map
+them to canonical `LzssToken` serialization and require byte identity with the
+established Exhaustive stream. Keep the entry out of public headers, strategy
+selection, normal encoder dispatch, frame profiles, and interoperability
+artifacts until later admission stages.

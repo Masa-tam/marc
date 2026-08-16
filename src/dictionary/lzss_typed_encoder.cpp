@@ -115,6 +115,16 @@ template <LzssMatchFinder Finder, typename Consumer>
     return result;
 }
 
+[[nodiscard]] LzssTypedEncodeResult typed_binary_tree_failure(
+    const std::size_t input_size,
+    const LzssBinaryTreeError finder_error) noexcept {
+    LzssTypedEncodeResult result{};
+    result.input_size = input_size;
+    result.error = LzssTypedEncodeError::match_finder_error;
+    result.binary_tree_match_finder_error = finder_error;
+    return result;
+}
+
 [[nodiscard]] LzssTypedEncodeResult preflight_hash_chain(
     const std::span<const std::byte> input,
     const LzssParameters& parameters, const core::DecoderLimits& limits,
@@ -383,6 +393,68 @@ LzssTypedEncodeResult encode_lzss_typed_tokens_hash_chain_single_pass(
         input, parameters, limits, active_workspace, finder, statistics);
     if (finder_error != LzssHashChainError::none)
         return typed_finder_failure(input.size(), finder_error);
+    return run_typed_parser(
+        input, finder,
+        [private_tokens](const LzssTypedToken& token,
+                         const std::size_t index) noexcept {
+            private_tokens[index] = token;
+            return true;
+        });
+}
+
+LzssTypedEncodeResult encode_lzss_typed_tokens_binary_tree_single_pass(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters, const core::DecoderLimits& limits,
+    const std::span<LzssTypedToken> private_tokens,
+    const std::span<std::byte> match_finder_workspace,
+    const LzssTypedTokenVariant variant) noexcept {
+    auto validation = validate_hash_chain_encode_buffers(
+        input, parameters, limits, private_tokens,
+        match_finder_workspace, variant);
+    if (validation.error != LzssTypedEncodeError::none) return validation;
+
+    std::size_t maximum_token_storage{};
+    if (!core::checked_multiply(
+            input.size(), sizeof(LzssTypedToken), maximum_token_storage)) {
+        validation.error = LzssTypedEncodeError::arithmetic_overflow;
+        return validation;
+    }
+    validation.token_count = input.size();
+    validation.token_storage_size = maximum_token_storage;
+    if (private_tokens.size() < input.size()) {
+        validation.error = LzssTypedEncodeError::output_too_small;
+        return validation;
+    }
+
+    const auto required = calculate_lzss_binary_tree_workspace(
+        input.size(), parameters, limits);
+    if (required.error != LzssBinaryTreeError::none) {
+        return typed_binary_tree_failure(input.size(), required.error);
+    }
+    if (match_finder_workspace.size() < required.workspace_size) {
+        return typed_binary_tree_failure(
+            input.size(), LzssBinaryTreeError::workspace_too_small);
+    }
+    std::size_t aggregate{};
+    if (!core::checked_add(input.size(), required.workspace_size, aggregate)
+        || !core::checked_add(
+            aggregate, maximum_token_storage, aggregate)) {
+        validation.error = LzssTypedEncodeError::arithmetic_overflow;
+        return validation;
+    }
+    if (aggregate > limits.max_internal_buffered_bytes) {
+        validation.error = LzssTypedEncodeError::token_storage_limit_exceeded;
+        return validation;
+    }
+
+    const auto active_workspace =
+        match_finder_workspace.first(required.workspace_size);
+    LzssBinaryTreeMatchFinder finder{};
+    const auto finder_error = initialize_lzss_binary_tree_match_finder(
+        input, parameters, limits, active_workspace, finder);
+    if (finder_error != LzssBinaryTreeError::none) {
+        return typed_binary_tree_failure(input.size(), finder_error);
+    }
     return run_typed_parser(
         input, finder,
         [private_tokens](const LzssTypedToken& token,

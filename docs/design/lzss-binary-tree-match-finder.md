@@ -181,6 +181,12 @@ private finderの`find_match(position)`は、range結果の候補位置`c_max`�
 `find_candidate`結果に保持し、共通finder conceptへ新しいerror表現を持ち
 込まない。
 
+最初のparser統合はprivateなtyped-token single-pass入口とする。callerは入力
+byte数分のworst-case token spanとcalculatorどおりのBinaryTree workspaceを
+供給する。入口は全buffer境界とaggregate memoryを検証してからfinderを初期化
+し、既存parserのcost判定をそのまま使用する。strategy enum、通常のencoder
+entry pointおよびframe profileは変更しない。
+
 ## 9. 計算量と限界
 
 AVL heightはactive node数`N`に対して`O(log N)`である。挿入、削除、辞書順

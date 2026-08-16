@@ -22144,3 +22144,33 @@ discarded and the reviewed seed retained.
   inventory passes, including documentation layout and
   `marc_interoperability_schema_compatibility`; the separately executed Python
   3.14 Silesia verifier also passes, completing all 2,996 registered tests.
+
+## CR-0923: 2026-08-17 - Private BinaryTree typed-token entry
+
+- Authoring method: injected the private BinaryTree finder into marc's existing
+  generic typed parser and reused its established one-pass validation pattern.
+- References used: DD-760 through DD-765, DD-845, DD-853, DD-854; IR-0628;
+  TVG-0719, TVG-0727, and TVG-0728; marc's typed parser, HashChain single-pass
+  entry, buffer-overlap checks, checked arithmetic, BinaryTree initializer, and
+  canonical LZSS token serializer.
+- Known implementations intentionally not consulted: external parsers, match
+  finders, compressors, source code, tests, patents, pseudocode, and
+  optimization descriptions.
+- Independent decisions: reserve worst-case token count; expose a separate
+  internal BinaryTree error field; initialize only after all non-finder buffer
+  checks; preserve unused output; and compare canonical bytes without adding a
+  production strategy.
+- Generated-code task description: add a private BinaryTree typed single-pass
+  entry, compare all token fields and canonical serialization across three
+  Exact paths, cover both typed variants, and reject every buffer overlap,
+  short extent, and aggregate shortage atomically.
+- Similarity review: integration follows marc's local generic parser and
+  validation contracts. All fixtures are repository-owned or locally
+  generated; no external implementation expression or vector entered the
+  change.
+- Local validation: MSVC 19.50 and ClangCL 22.1.3 build warning-clean and pass
+  all 45 BinaryTree, typed-parser, atomic-failure, and canonical-byte focused
+  tests. In each configuration the 2,997-test sandbox-safe inventory passes,
+  including documentation layout and
+  `marc_interoperability_schema_compatibility`; the separately executed Python
+  3.14 Silesia verifier also passes, completing all 2,998 registered tests.

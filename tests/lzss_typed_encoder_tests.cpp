@@ -39,6 +39,23 @@ using namespace marc::dictionary::internal;
                          token.length};
 }
 
+[[nodiscard]] std::vector<std::byte> serialize_typed_tokens(
+    const std::span<const LzssTypedToken> tokens) {
+    std::vector<std::byte> result{};
+    for (const auto& token : tokens) {
+        const auto raw = token.kind == LzssTypedTokenKind::literal
+            ? LzssToken{LzssTokenTag::literal, 0, 0, token.literal}
+            : LzssToken{LzssTokenTag::match, token.distance,
+                        token.length, 0};
+        std::array<std::byte, lzss_match_size> buffer{};
+        std::size_t written{};
+        EXPECT_EQ(serialize_lzss_token(raw, buffer, written),
+                  LzssFormatError::none);
+        result.insert(result.end(), buffer.begin(), buffer.begin() + written);
+    }
+    return result;
+}
+
 struct AlignedWorkspace {
     explicit AlignedWorkspace(const std::size_t size)
         : storage((size + sizeof(std::max_align_t) - 1)
@@ -50,6 +67,69 @@ struct AlignedWorkspace {
 
     std::vector<std::max_align_t> storage;
 };
+
+void expect_binary_tree_typed_equals_exact(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters = {},
+    const LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) {
+    const auto reference_plan = plan_lzss_typed_tokens(
+        input, parameters, {}, variant);
+    ASSERT_EQ(reference_plan.error, LzssTypedEncodeError::none);
+    std::vector<LzssTypedToken> reference(reference_plan.token_count);
+    ASSERT_EQ(encode_lzss_typed_tokens(
+                  input, parameters, {}, reference, variant).error,
+              LzssTypedEncodeError::none);
+
+    const auto hash_required = calculate_lzss_hash_chain_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(hash_required.error, LzssHashChainError::none);
+    AlignedWorkspace hash_owner(hash_required.workspace_size);
+    auto hash_workspace = hash_owner.bytes(hash_required.workspace_size);
+    std::vector<LzssTypedToken> hash_tokens(input.size());
+    const auto hash_result = encode_lzss_typed_tokens_hash_chain_single_pass(
+        input, parameters, {}, hash_tokens, hash_workspace, nullptr, variant);
+    ASSERT_EQ(hash_result.error, LzssTypedEncodeError::none);
+    hash_tokens.resize(hash_result.token_count);
+
+    const auto binary_required = calculate_lzss_binary_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(binary_required.error, LzssBinaryTreeError::none);
+    AlignedWorkspace binary_owner(binary_required.workspace_size);
+    auto binary_workspace = binary_owner.bytes(binary_required.workspace_size);
+    const LzssTypedToken sentinel{
+        LzssTypedTokenKind::match, 0, UINT32_C(0xdeadbeef),
+        UINT32_C(0xcafebabe)};
+    std::vector<LzssTypedToken> binary_tokens(input.size(), sentinel);
+    const auto binary_result =
+        encode_lzss_typed_tokens_binary_tree_single_pass(
+            input, parameters, {}, binary_tokens, binary_workspace, variant);
+    ASSERT_EQ(binary_result.error, LzssTypedEncodeError::none);
+    EXPECT_EQ(binary_result.binary_tree_match_finder_error,
+              LzssBinaryTreeError::none);
+    EXPECT_EQ(binary_result.token_count, reference.size());
+    EXPECT_EQ(binary_result.token_storage_size,
+              reference.size() * sizeof(LzssTypedToken));
+    ASSERT_EQ(hash_tokens.size(), reference.size());
+    for (std::size_t index = 0; index < reference.size(); ++index) {
+        EXPECT_TRUE(equal_token(hash_tokens[index], reference[index]));
+        EXPECT_TRUE(equal_token(binary_tokens[index], reference[index]));
+    }
+    for (std::size_t index = reference.size(); index < binary_tokens.size();
+         ++index) {
+        EXPECT_TRUE(equal_token(binary_tokens[index], sentinel));
+    }
+
+    const auto byte_plan = plan_lzss_token_stream(input, parameters, {});
+    ASSERT_EQ(byte_plan.error, LzssEncodeError::none);
+    std::vector<std::byte> canonical(byte_plan.output_size);
+    ASSERT_EQ(encode_lzss_token_stream(
+                  input, parameters, {}, canonical).error,
+              LzssEncodeError::none);
+    EXPECT_EQ(serialize_typed_tokens(
+                  std::span{binary_tokens}.first(binary_result.token_count)),
+              canonical);
+}
 
 } // namespace
 
@@ -394,6 +474,132 @@ TEST(LzssTypedEncoder, HashChainSinglePassReservesWorstCaseAtomically) {
               LzssTypedEncodeError::token_storage_limit_exceeded);
     EXPECT_TRUE(std::ranges::all_of(
         output, [&sentinel](const LzssTypedToken& token) {
+            return equal_token(token, sentinel);
+        }));
+}
+
+TEST(LzssTypedEncoder, BinaryTreePrivateEntryMatchesExactTokensAndBytes) {
+    expect_binary_tree_typed_equals_exact(bytes(""));
+    expect_binary_tree_typed_equals_exact(bytes("A"));
+    expect_binary_tree_typed_equals_exact(bytes("AAAAAAAAAAAAAAAA"));
+    expect_binary_tree_typed_equals_exact(bytes("ABCDE1ABCDE2ABCDE3"));
+
+    std::vector<std::byte> all_values{};
+    for (std::uint32_t value = 0; value < 256; ++value) {
+        all_values.push_back(static_cast<std::byte>(value));
+    }
+    all_values.insert(all_values.end(), all_values.begin(), all_values.end());
+    expect_binary_tree_typed_equals_exact(all_values);
+
+    std::vector<std::byte> pseudorandom(1024);
+    std::uint32_t state = UINT32_C(0x5d2a19c7);
+    for (auto& value : pseudorandom) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        value = static_cast<std::byte>(state >> 24U);
+    }
+    expect_binary_tree_typed_equals_exact(pseudorandom);
+
+    std::vector<std::byte> mixed{};
+    for (std::size_t index = 0; index < 512; ++index) {
+        mixed.push_back(static_cast<std::byte>(
+            index % 29 == 0 ? index & 0xffU : index % 7));
+    }
+    expect_binary_tree_typed_equals_exact(mixed);
+
+    LzssParameters extended{};
+    extended.window_size = 1U << 20;
+    expect_binary_tree_typed_equals_exact(
+        all_values, extended, LzssTypedTokenVariant::field_context_1m);
+}
+
+TEST(LzssTypedEncoder, BinaryTreePrivateEntryFailuresAreAtomicAndBounded) {
+    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    const auto required = calculate_lzss_binary_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssBinaryTreeError::none);
+    ASSERT_GT(required.workspace_size, 0U);
+    AlignedWorkspace owner(required.workspace_size);
+    auto workspace = owner.bytes(required.workspace_size);
+    const LzssTypedToken sentinel{
+        LzssTypedTokenKind::match, 0, 123, 456};
+
+    std::vector<LzssTypedToken> short_output(input.size() - 1U, sentinel);
+    auto result = encode_lzss_typed_tokens_binary_tree_single_pass(
+        input, {}, {}, short_output, workspace);
+    EXPECT_EQ(result.error, LzssTypedEncodeError::output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        short_output, [&sentinel](const auto& token) {
+            return equal_token(token, sentinel);
+        }));
+
+    std::vector<LzssTypedToken> output(input.size(), sentinel);
+    result = encode_lzss_typed_tokens_binary_tree_single_pass(
+        input, {}, {}, output, workspace.first(required.workspace_size - 1U));
+    EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
+    EXPECT_EQ(result.binary_tree_match_finder_error,
+              LzssBinaryTreeError::workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [&sentinel](const auto& token) {
+            return equal_token(token, sentinel);
+        }));
+
+    std::vector<LzssTypedToken> input_alias(input.size(), sentinel);
+    auto input_alias_bytes = std::as_writable_bytes(
+        std::span{input_alias});
+    std::ranges::copy(input, input_alias_bytes.begin());
+    const auto input_alias_snapshot = input_alias;
+    result = encode_lzss_typed_tokens_binary_tree_single_pass(
+        std::span<const std::byte>{input_alias_bytes}.first(input.size()),
+        {}, {}, input_alias, workspace);
+    EXPECT_EQ(result.error, LzssTypedEncodeError::overlapping_buffers);
+    EXPECT_TRUE(std::ranges::equal(
+        input_alias, input_alias_snapshot, equal_token));
+
+    AlignedWorkspace input_workspace_owner(
+        required.workspace_size + input.size());
+    auto input_workspace = input_workspace_owner.bytes(
+        required.workspace_size + input.size());
+    std::ranges::copy(input, input_workspace.begin());
+    std::ranges::fill(output, sentinel);
+    result = encode_lzss_typed_tokens_binary_tree_single_pass(
+        std::span<const std::byte>{input_workspace}.first(input.size()),
+        {}, {}, output, input_workspace.first(required.workspace_size));
+    EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
+    EXPECT_EQ(result.binary_tree_match_finder_error,
+              LzssBinaryTreeError::overlapping_buffers);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [&sentinel](const auto& token) {
+            return equal_token(token, sentinel);
+        }));
+
+    const auto aliased_token_count = std::max(
+        input.size(),
+        (required.workspace_size + sizeof(LzssTypedToken) - 1U)
+            / sizeof(LzssTypedToken));
+    std::vector<LzssTypedToken> output_workspace(
+        aliased_token_count, sentinel);
+    const auto output_workspace_snapshot = output_workspace;
+    result = encode_lzss_typed_tokens_binary_tree_single_pass(
+        input, {}, {}, std::span{output_workspace}.first(input.size()),
+        std::as_writable_bytes(std::span{output_workspace})
+            .first(required.workspace_size));
+    EXPECT_EQ(result.error, LzssTypedEncodeError::overlapping_buffers);
+    EXPECT_TRUE(std::ranges::equal(
+        output_workspace, output_workspace_snapshot, equal_token));
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = input.size();
+    limits.max_block_size = input.size();
+    limits.max_internal_buffered_bytes = input.size()
+        + required.workspace_size
+        + input.size() * sizeof(LzssTypedToken) - 1U;
+    std::ranges::fill(output, sentinel);
+    result = encode_lzss_typed_tokens_binary_tree_single_pass(
+        input, {}, limits, output, workspace);
+    EXPECT_EQ(result.error,
+              LzssTypedEncodeError::token_storage_limit_exceeded);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [&sentinel](const auto& token) {
             return equal_token(token, sentinel);
         }));
 }
