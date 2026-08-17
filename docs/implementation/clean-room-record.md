@@ -22293,3 +22293,32 @@ discarded and the reviewed seed retained.
   results directory. Revision and environment metadata identify ClangCL
   22.1.3, Ninja Release, Python 3.14.5, and revision
   `50160f00d7d343efa51cac38e9367a1682288f8d`.
+
+## CR-0928: 2026-08-17 - Deterministic synthetic matrix runner
+
+- Authoring method: composed the repository-owned deterministic synthetic CLI
+  with the already reviewed strict report parser and aggregation layer.
+- References used: DD-731 through DD-734, DD-846, DD-856, DD-858, DD-859;
+  IR-0630 through IR-0632; TVG-0641, TVG-0730 through TVG-0732; marc's five
+  local generators, private strategy reports, and ignored-output policy.
+- Known implementations intentionally not consulted: external benchmark
+  runners, data generators, match finders, compressors, source code, tests,
+  result sets, patents, pseudocode, and optimization descriptions.
+- Independent decisions: preserve one child process per strategy/case/window;
+  require Exact token pairing before output; reuse typed report validation;
+  distinguish generated case count from Corpus member count; and keep all
+  formal output below ignored `out/` storage.
+- Generated-code task description: add a standard-library-only five-case,
+  three-window, two-strategy runner, versioned JSON output, environment and
+  exact-command metadata, shared aggregate semantics, and fixture-only tests
+  for case identity, pair completeness, token mismatch, and case counting.
+- Similarity review: all orchestration, fixtures, parser rules, generators, and
+  reports are marc-owned. No external implementation expression, fixture, or
+  result set entered the change.
+- Local validation: Python 3.14 passes the three new fixture-only tests, the
+  three existing Silesia runner tests, and the new runner's help path. Formal
+  reconfiguration registers all 3,003 tests in both configurations. MSVC
+  19.50 passes all 3,003 in 167.64 seconds and ClangCL 22.1.3 passes all 3,003
+  in 171.38 seconds, including all three Python tooling tests, documentation
+  layout, benchmark smokes, and `marc_interoperability_schema_compatibility`.
+  No benchmark matrix or network operation was run in this tooling stage.

@@ -17926,3 +17926,25 @@ at the same three windows and use the separated comparison, rotation,
 retirement, height, and depth counters to identify the dominant costs. Do not
 choose an adaptive threshold from one winning Corpus pair and do not optimize
 away the Exact nearest-distance contract.
+
+## DD-859: Synthetic cost isolation uses an exact-paired offline runner
+
+- Date: 2026-08-17
+- Status: accepted
+
+Orchestrate the existing deterministic zeros, periodic, equal-prefix,
+hash-collision, and pseudorandom generators without storing their payloads.
+Run HashChain Exact and BinaryTree Exact independently for every case at
+64-KiB, 256-KiB, and one-MiB windows with one-MiB input and frame defaults.
+
+Reuse the Silesia runner's strict key/value parser, strategy-specific required
+fields, histogram aggregation, checked configuration comparison, environment
+metadata, and iteration-weighted throughput calculation. Require pairwise
+token equality before publishing the versioned JSON. Rename the aggregate
+group count to `case_count`; do not describe generated inputs as Corpus
+members. The runner must use only deterministic local generation, launch no
+network operation, and place formal results under ignored `out/` storage.
+
+This orchestration is diagnostic tooling. It does not change generators,
+match-finder semantics, format, ABI, production selection, performance
+thresholds, or the BinaryTree admission decision in DD-858.

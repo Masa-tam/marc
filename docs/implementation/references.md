@@ -5672,3 +5672,12 @@ repository-owned strict Corpus verifier, strategy-explicit frame benchmark,
 JSON reporting conventions, and external-data policy. No external benchmark
 or Corpus orchestration implementation, source code, test, result set, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0632
+
+The deterministic synthetic matrix runner uses DD-731 through DD-734, DD-846,
+DD-856, DD-858, DD-859, TVG-0641, TVG-0730 through TVG-0732, the
+repository-owned five synthetic generators, strategy-explicit benchmark, and
+strict Silesia report parsing and aggregation rules. No external benchmark
+runner, generator, match finder, compressor, source code, test, result set,
+patent, pseudocode, or optimization description was consulted.

@@ -111,9 +111,13 @@ def _require_float(report: dict[str, Any], key: str) -> float:
 def _validate_report(
     report: dict[str, Any], strategy: str, expected_size: int,
     frame_size: int, window_size: int, iterations: int,
+    *, mode: str = "frames", synthetic_case: Optional[str] = None,
 ) -> None:
-    if report.get("mode") != "frames" or report.get("strategy") != strategy:
+    if report.get("mode") != mode or report.get("strategy") != strategy:
         raise RunnerError("benchmark mode or strategy changed")
+    if synthetic_case is not None \
+            and report.get("synthetic_case") != synthetic_case:
+        raise RunnerError("synthetic benchmark case changed")
     expected = {
         "input_bytes": expected_size,
         "frame_bytes": frame_size,

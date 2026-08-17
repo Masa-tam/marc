@@ -10217,3 +10217,16 @@ workspace, height, and maximum query depth to take their maximum; histogram
 bins to extend and sum; and aggregate throughput to use total bytes divided by
 total time. These fixture-only tests must neither access the real Silesia
 directory nor start a benchmark process or network operation.
+
+### TVG-0732
+
+Parse and validate a hand-written `synthetic` BinaryTree report with an exact
+case identity and complete strategy-specific diagnostics. Reject a different
+case identity under otherwise identical configuration.
+
+Accept one complete HashChain/BinaryTree pair only when its token counts are
+equal. Reject a mismatch and either incomplete pair. Aggregate an artificial
+synthetic report through the shared sum, maximum, histogram, workspace, and
+throughput rules, then require the group count to be named `case_count` rather
+than `member_count`. These fixture-only tests must not launch the benchmark,
+generate a large input, access the Corpus, write result JSON, or use a network.

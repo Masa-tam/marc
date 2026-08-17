@@ -140,6 +140,19 @@ The collision prefixes independently produce the same low 16 hash bits under
 marc's documented five-byte HashChain hash. The suffix counter prevents the
 fixture from degenerating into only two indefinitely repeated records.
 
+The complete five-case, three-window, two-strategy matrix can be generated as
+one versioned local JSON document with:
+
+```console
+py -3.14 tools/run_lzss_match_finder_synthetic_matrix.py out/build/windows-clang/marc_lzss_match_finder_benchmark.exe --output out/benchmarks/lzss-match-finder-synthetic-clangcl.json --compiler "ClangCL 22.1.3" --generator Ninja --build-type Release
+```
+
+The runner generates no persistent fixture, performs no network or external
+data access, validates every strategy-specific report, and rejects unequal
+Exact token counts for any case/window pair. It stores the exact commands,
+environment, per-run reports, and strategy/window aggregates. The output under
+`out/` is an ignored local experiment artifact, not a conformance vector.
+
 ## Profile configurations
 
 ### Framing baseline
