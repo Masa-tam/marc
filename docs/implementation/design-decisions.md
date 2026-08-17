@@ -18245,3 +18245,30 @@ errors and make the finder sticky-invalid. Existing default diagnostics and
 output remain unchanged. This private integration changes no public selector,
 format, ABI, token representation, or interoperability artifact; performance
 and LCP-skipping decisions remain later stages.
+
+## DD-871: HashTree diagnostics first separate route and population cost
+
+- Date: 2026-08-18
+- Status: accepted
+
+Before exposing HashTree to the benchmark, add optional saturating diagnostics
+for completed Chain, trigger, and promoted-Tree queries; Chain candidates;
+successful promotions and trigger candidate depth; nodes built at promotion;
+nodes visited by Tree queries; successful post-promotion insertions and
+retirements; and maximum simultaneous promoted buckets and nodes. Give Chain
+and Tree query work separate logarithmic histograms using the established
+match-finder bin convention.
+
+The finder tracks current promoted bucket and node population regardless of
+whether a statistics pointer exists because population is also an internal
+consistency invariant. Only copying those facts into counters is optional.
+Counter absence must not affect a promotion decision, tree shape, root, mode,
+match, token boundary, or workspace byte. All additions saturate at
+`UINT64_MAX` and set the shared overflow flag; maxima never wrap.
+
+This first diagnostic layer deliberately uses existing component results:
+builder node count and query nodes visited. Key comparisons, compared bytes,
+LCP-skipped bytes, rotations, and maximum tree height require instrumentation
+inside the builder, query, and mutation components and remain the next
+independent diagnostic change. No performance threshold or public selector is
+introduced here.

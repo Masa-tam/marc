@@ -10403,3 +10403,22 @@ corrupt a published root/node before query and a reached tree path before
 mutation; require distinct stable finder errors, empty later matches, no later
 workspace mutation, and finite completion. With default options, require the
 entire pre-integration Chain-only workspace and diagnostics behavior unchanged.
+
+### TVG-0743
+
+Run an immediately promoting repetitive fixture with and without a statistics
+object. At every query and advance require equal matches, roots, modes, and all
+workspace bytes. Require the counted run to report two completed Chain queries,
+one trigger, one successful promotion, a non-zero promotion-build population,
+later Tree queries and visits, post-promotion insertions, and internally
+consistent maximum promoted bucket and node populations. Require Chain-query
+plus Tree-query counts to equal the generic completed query count.
+
+Run a fixture whose promoted bucket becomes empty and later active again.
+Require one monotonic promoted bucket, retirement and reinsertion counts, a
+null root while empty without decreasing the recorded maximum, and unchanged
+Exact matches. Seed every additive HashTree counter and both reached histogram
+bins at `UINT64_MAX`, exercise its update, and require saturation plus the
+shared overflow flag rather than wraparound. Default-disabled HashTree must
+leave every new strategy-specific counter zero while retaining its established
+HashChain diagnostics.

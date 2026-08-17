@@ -22644,3 +22644,30 @@ discarded and the reviewed seed retained.
   per-test limit, including `marc_interoperability_schema_compatibility`
   after every target is fully rebuilt (64.76 seconds under MSVC and 72.16
   seconds under ClangCL). Total suite times are 162.30 and 176.22 seconds.
+
+## CR-0940: 2026-08-18 - HashTree route and population diagnostics
+
+- Authoring method: derived the first diagnostic surface from already returned
+  planner, builder, query, and mutation facts and marc's existing saturating
+  match-finder counter convention.
+- References used: DD-861 through DD-871, IR-0633 through IR-0643, TVG-0733
+  through TVG-0743, and repository-owned match-finder statistics.
+- Known implementations intentionally not consulted: external profilers,
+  adaptive match finders, compressors, source code, tests, benchmark schemas,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: count completed routes and successful mutations;
+  maintain population independently of the optional observer; split Chain and
+  Tree depth histograms; and defer component-internal comparison and rotation
+  instrumentation to a separate reviewed change.
+- Generated-code task description: add bounded saturating HashTree route and
+  population diagnostics, prove observer invariance, and retain the disabled
+  default and every public or serialized surface.
+- Similarity review: names, boundaries, update points, and tests derive only
+  from marc-owned design and component contracts. No external implementation
+  expression entered this change.
+- Local validation: all 45 focused HashTree planner, builder, query, mutation,
+  and finder tests pass under MSVC 19.50 and ClangCL 21.1.8. After full target
+  rebuilds, both complete suites pass 3053/3053 with the 300-second per-test
+  limit, including `marc_interoperability_schema_compatibility` (65.27 seconds
+  under MSVC and 72.25 seconds under ClangCL). Total suite times are 164.70 and
+  178.96 seconds.

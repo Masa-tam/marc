@@ -48,6 +48,26 @@ struct LzssMatchFinderStatistics {
     std::array<std::uint64_t,
                lzss_match_finder_depth_histogram_size>
         binary_tree_query_depth_histogram{};
+    std::uint64_t hash_tree_chain_query_count{};
+    std::uint64_t hash_tree_chain_candidate_count{};
+    std::uint64_t hash_tree_trigger_query_count{};
+    std::uint64_t hash_tree_tree_query_count{};
+    std::uint64_t hash_tree_promotion_count{};
+    std::uint64_t hash_tree_promotion_trigger_candidate_count{};
+    std::uint64_t hash_tree_promotion_maximum_trigger_candidates{};
+    std::uint64_t hash_tree_promotion_build_node_count{};
+    std::uint64_t hash_tree_tree_query_node_count{};
+    std::uint64_t hash_tree_maximum_nodes_per_query{};
+    std::uint64_t hash_tree_insertion_count{};
+    std::uint64_t hash_tree_retirement_count{};
+    std::uint64_t hash_tree_maximum_promoted_buckets{};
+    std::uint64_t hash_tree_maximum_promoted_nodes{};
+    std::array<std::uint64_t,
+               lzss_match_finder_depth_histogram_size>
+        hash_tree_chain_query_depth_histogram{};
+    std::array<std::uint64_t,
+               lzss_match_finder_depth_histogram_size>
+        hash_tree_tree_query_depth_histogram{};
     bool overflowed{};
 };
 

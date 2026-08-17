@@ -5772,3 +5772,12 @@ TVG-0733 through TVG-0742, and only the repository-owned promotion planner,
 bucket builder, Exact query, mutation, HashChain route, and Exhaustive/global
 BinaryTree oracles. No external hybrid match finder, compressor, source code,
 test, patent, pseudocode, or optimization description was consulted.
+
+### IR-0643
+
+The first integrated HashTree diagnostic layer uses DD-861 through DD-871,
+TVG-0733 through TVG-0743, the repository-owned promotion, builder, query, and
+mutation result contracts, and marc's existing saturating match-finder
+statistics and logarithmic depth-bin convention. No external profiler, match
+finder, adaptive tree, compressor, source code, test, benchmark schema, patent,
+pseudocode, or optimization description was consulted.

@@ -459,6 +459,21 @@ TEST(LzssHashTreeMatchFinder, ChainPathMatchesHashChainStatistics) {
               chain_statistics.hash_chain_maximum_candidates_per_query);
     EXPECT_EQ(tree_statistics.hash_chain_query_depth_histogram,
               chain_statistics.hash_chain_query_depth_histogram);
+    EXPECT_EQ(tree_statistics.hash_tree_chain_query_count, 0U);
+    EXPECT_EQ(tree_statistics.hash_tree_chain_candidate_count, 0U);
+    EXPECT_EQ(tree_statistics.hash_tree_trigger_query_count, 0U);
+    EXPECT_EQ(tree_statistics.hash_tree_tree_query_count, 0U);
+    EXPECT_EQ(tree_statistics.hash_tree_promotion_count, 0U);
+    EXPECT_EQ(tree_statistics.hash_tree_promotion_build_node_count, 0U);
+    EXPECT_EQ(tree_statistics.hash_tree_tree_query_node_count, 0U);
+    EXPECT_EQ(tree_statistics.hash_tree_insertion_count, 0U);
+    EXPECT_EQ(tree_statistics.hash_tree_retirement_count, 0U);
+    EXPECT_TRUE(std::ranges::all_of(
+        tree_statistics.hash_tree_chain_query_depth_histogram,
+        [](const auto value) { return value == 0; }));
+    EXPECT_TRUE(std::ranges::all_of(
+        tree_statistics.hash_tree_tree_query_depth_histogram,
+        [](const auto value) { return value == 0; }));
 }
 
 TEST(LzssHashTreeMatchFinder, ConstructsLazyLinkBeforePublishingHead) {
@@ -722,6 +737,35 @@ TEST(LzssHashTreeMatchFinder, StatisticsDoNotChangePromotionState) {
     EXPECT_TRUE(std::ranges::equal(
         plain_storage.bytes.first(required.workspace_size),
         counted_storage.bytes.first(required.workspace_size)));
+    EXPECT_EQ(statistics.hash_tree_chain_query_count
+                  + statistics.hash_tree_tree_query_count,
+              statistics.query_count);
+    EXPECT_GT(statistics.hash_tree_chain_candidate_count, 0U);
+    EXPECT_GT(statistics.hash_tree_trigger_query_count, 0U);
+    EXPECT_EQ(statistics.hash_tree_trigger_query_count,
+              statistics.hash_tree_promotion_count);
+    EXPECT_GT(statistics.hash_tree_promotion_build_node_count, 0U);
+    EXPECT_GT(statistics.hash_tree_tree_query_count, 0U);
+    EXPECT_GE(statistics.hash_tree_tree_query_node_count,
+              statistics.hash_tree_tree_query_count);
+    EXPECT_GT(statistics.hash_tree_insertion_count, 0U);
+    EXPECT_EQ(statistics.hash_tree_maximum_promoted_buckets,
+              statistics.hash_tree_promotion_count);
+    EXPECT_GT(statistics.hash_tree_maximum_promoted_nodes, 0U);
+    std::uint64_t chain_histogram_total{};
+    std::uint64_t tree_histogram_total{};
+    for (const auto value :
+         statistics.hash_tree_chain_query_depth_histogram) {
+        chain_histogram_total += value;
+    }
+    for (const auto value :
+         statistics.hash_tree_tree_query_depth_histogram) {
+        tree_histogram_total += value;
+    }
+    EXPECT_EQ(chain_histogram_total,
+              statistics.hash_tree_chain_query_count);
+    EXPECT_EQ(tree_histogram_total,
+              statistics.hash_tree_tree_query_count);
 }
 
 TEST(LzssHashTreeMatchFinder, PromotionBuildFailureDoesNotPublish) {
@@ -804,8 +848,9 @@ TEST(LzssHashTreeMatchFinder, PromotedModeSurvivesEmptyAndReactivation) {
         input.size(), parameters, {});
     auto storage = make_storage(required.workspace_size);
     LzssHashTreeMatchFinder finder{};
+    LzssMatchFinderStatistics statistics{};
     ASSERT_EQ(initialize_lzss_hash_tree_match_finder(
-                  input, parameters, {}, storage.bytes, finder, nullptr,
+                  input, parameters, {}, storage.bytes, finder, &statistics,
                   LzssHashTreeOptions{0}),
               LzssHashTreeError::none);
     auto roots = mutable_array_at<std::uint32_t>(
@@ -834,6 +879,64 @@ TEST(LzssHashTreeMatchFinder, PromotedModeSurvivesEmptyAndReactivation) {
     EXPECT_EQ(modes[target_bucket],
               LzssHashTreeBucketMode::promoted_tree);
     EXPECT_NE(roots[target_bucket], lzss_hash_tree_null_node);
+    EXPECT_GT(statistics.hash_tree_retirement_count, 0U);
+    EXPECT_GT(statistics.hash_tree_insertion_count, 0U);
+    EXPECT_GT(statistics.hash_tree_maximum_promoted_buckets, 0U);
+    EXPECT_GT(statistics.hash_tree_maximum_promoted_nodes, 0U);
+}
+
+TEST(LzssHashTreeMatchFinder, HashTreeStatisticsSaturate) {
+    const auto input = bytes("AAAAAAAAAAAAAAAAAAAAAAAA");
+    LzssParameters parameters{};
+    parameters.window_size = 5;
+    const auto required = calculate_lzss_hash_tree_workspace(
+        input.size(), parameters, {});
+    auto storage = make_storage(required.workspace_size);
+    const auto maximum = std::numeric_limits<std::uint64_t>::max();
+    LzssMatchFinderStatistics statistics{};
+    statistics.hash_tree_chain_query_count = maximum;
+    statistics.hash_tree_chain_candidate_count = maximum;
+    statistics.hash_tree_trigger_query_count = maximum;
+    statistics.hash_tree_tree_query_count = maximum;
+    statistics.hash_tree_promotion_count = maximum;
+    statistics.hash_tree_promotion_trigger_candidate_count = maximum;
+    statistics.hash_tree_promotion_build_node_count = maximum;
+    statistics.hash_tree_tree_query_node_count = maximum;
+    statistics.hash_tree_insertion_count = maximum;
+    statistics.hash_tree_retirement_count = maximum;
+    std::ranges::fill(
+        statistics.hash_tree_chain_query_depth_histogram, maximum);
+    std::ranges::fill(
+        statistics.hash_tree_tree_query_depth_histogram, maximum);
+    LzssHashTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_hash_tree_match_finder(
+                  input, parameters, {}, storage.bytes, finder, &statistics,
+                  LzssHashTreeOptions{0}),
+              LzssHashTreeError::none);
+
+    for (std::size_t position = 0; position < input.size(); ++position) {
+        static_cast<void>(finder.find_match(position));
+        finder.advance(position, position + 1U);
+        ASSERT_TRUE(finder.state_valid()) << position;
+    }
+    EXPECT_TRUE(statistics.overflowed);
+    EXPECT_EQ(statistics.hash_tree_chain_query_count, maximum);
+    EXPECT_EQ(statistics.hash_tree_chain_candidate_count, maximum);
+    EXPECT_EQ(statistics.hash_tree_trigger_query_count, maximum);
+    EXPECT_EQ(statistics.hash_tree_tree_query_count, maximum);
+    EXPECT_EQ(statistics.hash_tree_promotion_count, maximum);
+    EXPECT_EQ(statistics.hash_tree_promotion_trigger_candidate_count,
+              maximum);
+    EXPECT_EQ(statistics.hash_tree_promotion_build_node_count, maximum);
+    EXPECT_EQ(statistics.hash_tree_tree_query_node_count, maximum);
+    EXPECT_EQ(statistics.hash_tree_insertion_count, maximum);
+    EXPECT_EQ(statistics.hash_tree_retirement_count, maximum);
+    EXPECT_TRUE(std::ranges::all_of(
+        statistics.hash_tree_chain_query_depth_histogram,
+        [maximum](const auto value) { return value == maximum; }));
+    EXPECT_TRUE(std::ranges::all_of(
+        statistics.hash_tree_tree_query_depth_histogram,
+        [maximum](const auto value) { return value == maximum; }));
 }
 
 TEST(LzssHashTreeMatchFinder, TreeMutationFailureIsSticky) {

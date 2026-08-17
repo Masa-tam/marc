@@ -117,8 +117,11 @@ private:
     std::span<std::size_t> position_{};
     std::span<std::size_t> subtree_maximum_position_{};
     std::size_t next_position_{};
+    std::size_t promoted_bucket_count_{};
+    std::size_t promoted_node_count_{};
     LzssHashTreePromotionState promotion_{};
     LzssMatchFinderStatistics* statistics_{};
+    bool hash_tree_diagnostics_enabled_{};
     LzssHashTreeError last_error_{LzssHashTreeError::none};
     bool initialized_{};
     bool state_valid_{};
