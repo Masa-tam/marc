@@ -267,3 +267,9 @@ untimed passとcounter無効のtimed passを分離し、bytes、framesおよびt
 実装は専用branchで行い、各段階を独立commitにする。BinaryTreeが有効な
 streamを生成できても、Exact差分、malformed境界、workspace、安全性および
 性能証拠がそろう前に既定経路へ接続しない。
+
+段階6のbenchmarkは既存の`marc_lzss_match_finder_benchmark`へprivate strategy
+名`binary-tree-exact`を追加する。file frameと五種類の決定的synthetic入力を
+HashChainと同じframe/window引数で処理する。統計passと計時passのinput byte、
+frame、token数を内部で一致させ、smoke testでは同じ入力に対するHashChain
+Exactとのtoken数も一致させる。これは公開codec strategyやformat IDではない。

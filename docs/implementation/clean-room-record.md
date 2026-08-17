@@ -22202,3 +22202,33 @@ discarded and the reviewed seed retained.
   2,999-test sandbox-safe inventory passes, including documentation layout and
   `marc_interoperability_schema_compatibility`; the separately executed Python
   3.14 Silesia verifier also passes, completing all 3,000 registered tests.
+
+## CR-0925: 2026-08-17 - Private BinaryTree benchmark mode
+
+- Authoring method: generalized marc's repository-owned experimental
+  HashChain benchmark driver at its strategy boundary and retained separate
+  strategy-specific initialization, validation, report fields, and workspace.
+- References used: DD-731 through DD-734, DD-845, DD-855, DD-856; IR-0630;
+  TVG-0640, TVG-0641, TVG-0729, and TVG-0730; marc's deterministic frame and
+  synthetic benchmark paths and private BinaryTree diagnostics.
+- Known implementations intentionally not consulted: external benchmark
+  harnesses, trees, match finders, compressors, source code, tests, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: preserve HashChain report keys; use an explicit
+  private strategy enum; aggregate only like-for-like counters; separate
+  counter-enabled verification from counter-free timing; and compare Exact
+  token counts without exposing a production selector.
+- Generated-code task description: add `binary-tree-exact` file-frame and
+  synthetic benchmark modes, print and validate dedicated diagnostics, compare
+  token counts with HashChain across five deterministic input classes, retain
+  empty-input behavior, and add cross-compiler smoke coverage.
+- Similarity review: driver structure and all fixtures are repository-owned.
+  No external implementation expression, measurement harness, or vector
+  entered the change.
+- Local validation: MSVC 19.50 and ClangCL 22.1.3 build the benchmark
+  warning-clean and pass the new BinaryTree smoke test plus both existing
+  HashChain frame and synthetic smoke tests. In each configuration the
+  3,000-test sandbox-safe inventory passes, including documentation layout and
+  `marc_interoperability_schema_compatibility`; after formal out-of-sandbox
+  configure restored the optional Python registration, the separate Python
+  3.14 Silesia verifier also passes, completing all 3,001 registered tests.

@@ -17858,3 +17858,23 @@ root height, and maximum nodes in one query. All additive counters saturate at
 Do not count validator inspection or a directly requested low-level neighbor
 query as a parser query. Propagate the pointer through only the private typed
 BinaryTree entry; do not change production strategy selection in this stage.
+
+## DD-856: BinaryTree benchmark is a private peer of HashChain Exact
+
+- Date: 2026-08-17
+- Status: accepted
+
+Extend the experimental match-finder benchmark's existing `--frames` and
+`--synthetic` strategy argument with `binary-tree-exact`. Preserve every
+HashChain report key and validation rule. Give BinaryTree separate workspace,
+counter, histogram, timing, and throughput keys so reports cannot silently mix
+different work units.
+
+For each selected strategy, perform one counter-enabled untimed verification
+pass and separate counter-free timed passes. Require input bytes, frame count,
+and token count to remain identical between them. Validate counter overflow,
+query/token conservation, prefix-boundary subset, and histogram/query
+conservation before timing is reported. Smoke tests must run BinaryTree and
+HashChain on identical file frames and all five deterministic synthetic input
+classes and require equal token counts. Keep this CLI strategy experimental
+and internal; it does not admit BinaryTree to codec dispatch or stream format.

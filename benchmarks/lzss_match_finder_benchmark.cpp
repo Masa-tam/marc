@@ -1,4 +1,5 @@
 #include "dictionary/lzss_encoder.hpp"
+#include "dictionary/lzss_binary_tree_match_finder.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "dictionary/lzss_match_finder.hpp"
 #include "dictionary/lzss_typed_encoder.hpp"
@@ -32,6 +33,29 @@
 
 namespace {
 using namespace marc::dictionary::internal;
+
+enum class BenchmarkStrategy : std::uint8_t {
+    hash_chain_exact,
+    binary_tree_exact,
+};
+
+[[nodiscard]] bool parse_strategy(
+    const std::string_view text, BenchmarkStrategy& strategy) noexcept {
+    if (text == "hash-chain-exact") {
+        strategy = BenchmarkStrategy::hash_chain_exact;
+    } else if (text == "binary-tree-exact") {
+        strategy = BenchmarkStrategy::binary_tree_exact;
+    } else {
+        return false;
+    }
+    return true;
+}
+
+[[nodiscard]] std::string_view strategy_name(
+    const BenchmarkStrategy strategy) noexcept {
+    return strategy == BenchmarkStrategy::hash_chain_exact
+        ? "hash-chain-exact" : "binary-tree-exact";
+}
 
 struct AlignedWorkspace {
     explicit AlignedWorkspace(const std::size_t size)
@@ -156,6 +180,35 @@ struct FrameRunResult {
             return false;
         }
     }
+    if (!add_count(total.binary_tree_key_comparison_count,
+                   frame.binary_tree_key_comparison_count)
+        || !add_count(total.binary_tree_key_byte_comparison_count,
+                      frame.binary_tree_key_byte_comparison_count)
+        || !add_count(total.binary_tree_lcp_byte_comparison_count,
+                      frame.binary_tree_lcp_byte_comparison_count)
+        || !add_count(total.binary_tree_prefix_range_comparison_count,
+                      frame.binary_tree_prefix_range_comparison_count)
+        || !add_count(total.binary_tree_rotation_count,
+                      frame.binary_tree_rotation_count)
+        || !add_count(total.binary_tree_insertion_count,
+                      frame.binary_tree_insertion_count)
+        || !add_count(total.binary_tree_retirement_count,
+                      frame.binary_tree_retirement_count)) {
+        return false;
+    }
+    total.binary_tree_maximum_height = std::max(
+        total.binary_tree_maximum_height,
+        frame.binary_tree_maximum_height);
+    total.binary_tree_maximum_nodes_per_query = std::max(
+        total.binary_tree_maximum_nodes_per_query,
+        frame.binary_tree_maximum_nodes_per_query);
+    for (std::size_t bin = 0;
+         bin < total.binary_tree_query_depth_histogram.size(); ++bin) {
+        if (!add_count(total.binary_tree_query_depth_histogram[bin],
+                       frame.binary_tree_query_depth_histogram[bin])) {
+            return false;
+        }
+    }
     return true;
 }
 
@@ -169,6 +222,20 @@ void print_hash_chain_depth_histogram(
     for (std::size_t bin = 0; bin <= last_bin; ++bin) {
         if (bin != 0) std::cout << ',';
         std::cout << statistics.hash_chain_query_depth_histogram[bin];
+    }
+    std::cout << '\n';
+}
+
+void print_binary_tree_depth_histogram(
+    const LzssMatchFinderStatistics& statistics) {
+    const auto last_bin = statistics.binary_tree_maximum_nodes_per_query
+        == 0 ? 0U
+        : std::bit_width(
+            statistics.binary_tree_maximum_nodes_per_query);
+    std::cout << "binary_tree_query_depth_histogram=";
+    for (std::size_t bin = 0; bin <= last_bin; ++bin) {
+        if (bin != 0) std::cout << ',';
+        std::cout << statistics.binary_tree_query_depth_histogram[bin];
     }
     std::cout << '\n';
 }
@@ -190,6 +257,20 @@ void print_hash_chain_depth_histogram(
     }
     std::uint64_t histogram_queries{};
     for (const auto count : statistics.hash_chain_query_depth_histogram) {
+        if (!add_count(histogram_queries, count)) return false;
+    }
+    return histogram_queries == statistics.query_count;
+}
+
+[[nodiscard]] bool valid_binary_tree_statistics(
+    const LzssMatchFinderStatistics& statistics) noexcept {
+    if (statistics.overflowed
+        || statistics.binary_tree_prefix_range_comparison_count
+            > statistics.binary_tree_key_comparison_count) {
+        return false;
+    }
+    std::uint64_t histogram_queries{};
+    for (const auto count : statistics.binary_tree_query_depth_histogram) {
         if (!add_count(histogram_queries, count)) return false;
     }
     return histogram_queries == statistics.query_count;
@@ -318,22 +399,35 @@ void fill_synthetic_input(
     }
 }
 
-[[nodiscard]] bool process_hash_chain_frame(
+[[nodiscard]] bool process_frame(
+    const BenchmarkStrategy strategy,
     const std::span<const std::byte> frame,
     const LzssParameters& parameters,
     const marc::core::DecoderLimits& limits,
     const std::span<std::byte> workspace, const bool collect_statistics,
     const bool measure, FrameRunResult& result) noexcept {
     LzssMatchFinderStatistics frame_statistics{};
-    LzssHashChainMatchFinder finder{};
     const auto begin = std::chrono::steady_clock::now();
-    if (initialize_lzss_hash_chain_match_finder(
-            frame, parameters, limits, workspace, finder,
-            collect_statistics ? &frame_statistics : nullptr)
-        != LzssHashChainError::none) {
-        return false;
+    std::size_t frame_tokens{};
+    if (strategy == BenchmarkStrategy::hash_chain_exact) {
+        LzssHashChainMatchFinder finder{};
+        if (initialize_lzss_hash_chain_match_finder(
+                frame, parameters, limits, workspace, finder,
+                collect_statistics ? &frame_statistics : nullptr)
+            != LzssHashChainError::none) {
+            return false;
+        }
+        frame_tokens = parse_with_finder(frame, finder);
+    } else {
+        LzssBinaryTreeMatchFinder finder{};
+        if (initialize_lzss_binary_tree_match_finder(
+                frame, parameters, limits, workspace, finder,
+                collect_statistics ? &frame_statistics : nullptr)
+            != LzssBinaryTreeError::none) {
+            return false;
+        }
+        frame_tokens = parse_with_finder(frame, finder);
     }
-    const auto frame_tokens = parse_with_finder(frame, finder);
     const auto end = std::chrono::steady_clock::now();
     if (measure) {
         result.seconds += std::chrono::duration<double>(end - begin).count();
@@ -345,7 +439,8 @@ void fill_synthetic_input(
             || add_statistics(result.statistics, frame_statistics));
 }
 
-[[nodiscard]] bool process_hash_chain_frames(
+[[nodiscard]] bool process_frames(
+    const BenchmarkStrategy strategy,
     const std::filesystem::path& path, const std::uint64_t expected_file_size,
     const std::size_t frame_size, const LzssParameters& parameters,
     const marc::core::DecoderLimits& limits,
@@ -365,9 +460,9 @@ void fill_synthetic_input(
         }
 
         const auto frame = std::span<const std::byte>{input}.first(current_size);
-        if (!process_hash_chain_frame(
-                frame, parameters, limits, workspace, collect_statistics,
-                measure, result)) {
+        if (!process_frame(
+                strategy, frame, parameters, limits, workspace,
+                collect_statistics, measure, result)) {
             return false;
         }
         remaining -= current_size;
@@ -378,7 +473,8 @@ void fill_synthetic_input(
     return stream.eof();
 }
 
-[[nodiscard]] bool process_synthetic_hash_chain_frames(
+[[nodiscard]] bool process_synthetic_frames(
+    const BenchmarkStrategy strategy,
     const SyntheticInputKind kind, const std::uint64_t input_size,
     const std::size_t frame_size, const LzssParameters& parameters,
     const marc::core::DecoderLimits& limits,
@@ -391,9 +487,9 @@ void fill_synthetic_input(
             std::min<std::uint64_t>(input_size - offset, frame_size));
         const auto frame = std::span<std::byte>{input}.first(current_size);
         fill_synthetic_input(kind, offset, frame);
-        if (!process_hash_chain_frame(
-                frame, parameters, limits, workspace, collect_statistics,
-                measure, result)) {
+        if (!process_frame(
+                strategy, frame, parameters, limits, workspace,
+                collect_statistics, measure, result)) {
             return false;
         }
         offset += current_size;
@@ -402,13 +498,14 @@ void fill_synthetic_input(
 }
 
 void print_frame_report(
+    const BenchmarkStrategy strategy,
     const std::string_view mode, const std::string_view synthetic_case,
     const std::size_t frame_size, const std::size_t window_size,
     const std::size_t iterations, const std::size_t workspace_size,
     const FrameRunResult& verified, const double measured_seconds) {
     std::cout << std::fixed << std::setprecision(6)
               << "mode=" << mode << '\n'
-              << "strategy=hash-chain-exact\n";
+              << "strategy=" << strategy_name(strategy) << '\n';
     if (!synthetic_case.empty()) {
         std::cout << "synthetic_case=" << synthetic_case << '\n';
     }
@@ -417,32 +514,67 @@ void print_frame_report(
               << "window_bytes=" << window_size << '\n'
               << "frame_count=" << verified.frame_count << '\n'
               << "token_count=" << verified.token_count << '\n'
-              << "iterations=" << iterations << '\n'
-              << "hash_workspace_bytes=" << workspace_size << '\n'
-              << "hash_chain_queries="
+              << "iterations=" << iterations << '\n';
+    if (strategy == BenchmarkStrategy::hash_chain_exact) {
+        std::cout << "hash_workspace_bytes=" << workspace_size << '\n'
+                  << "hash_chain_queries="
+                  << verified.statistics.query_count << '\n'
+                  << "hash_chain_candidates="
+                  << verified.statistics.candidate_count << '\n'
+                  << "hash_chain_byte_comparisons="
+                  << verified.statistics.byte_comparison_count << '\n'
+                  << "hash_chain_prefix_matches="
+                  << verified.statistics.hash_chain_prefix_match_count << '\n'
+                  << "hash_chain_prefix_mismatches="
+                  << verified.statistics.hash_chain_prefix_mismatch_count
+                  << '\n'
+                  << "hash_chain_extension_byte_comparisons="
+                  << verified.statistics
+                         .hash_chain_extension_byte_comparison_count
+                  << '\n'
+                  << "hash_chain_max_candidates_per_query="
+                  << verified.statistics
+                         .hash_chain_maximum_candidates_per_query
+                  << '\n'
+                  << "hash_chain_frame_seconds=" << measured_seconds << '\n'
+                  << "hash_chain_frame_mib_per_second="
+                  << throughput(
+                         verified.input_bytes, iterations, measured_seconds)
+                  << '\n';
+        print_hash_chain_depth_histogram(verified.statistics);
+        return;
+    }
+    std::cout << "binary_tree_workspace_bytes=" << workspace_size << '\n'
+              << "binary_tree_queries="
               << verified.statistics.query_count << '\n'
-              << "hash_chain_candidates="
-              << verified.statistics.candidate_count << '\n'
-              << "hash_chain_byte_comparisons="
-              << verified.statistics.byte_comparison_count << '\n'
-              << "hash_chain_prefix_matches="
-              << verified.statistics.hash_chain_prefix_match_count << '\n'
-              << "hash_chain_prefix_mismatches="
-              << verified.statistics.hash_chain_prefix_mismatch_count << '\n'
-              << "hash_chain_extension_byte_comparisons="
-              << verified.statistics
-                     .hash_chain_extension_byte_comparison_count
+              << "binary_tree_key_comparisons="
+              << verified.statistics.binary_tree_key_comparison_count << '\n'
+              << "binary_tree_key_byte_comparisons="
+              << verified.statistics.binary_tree_key_byte_comparison_count
               << '\n'
-              << "hash_chain_max_candidates_per_query="
-              << verified.statistics
-                     .hash_chain_maximum_candidates_per_query
+              << "binary_tree_lcp_byte_comparisons="
+              << verified.statistics.binary_tree_lcp_byte_comparison_count
               << '\n'
-              << "hash_chain_frame_seconds=" << measured_seconds << '\n'
-              << "hash_chain_frame_mib_per_second="
+              << "binary_tree_prefix_range_comparisons="
+              << verified.statistics.binary_tree_prefix_range_comparison_count
+              << '\n'
+              << "binary_tree_rotations="
+              << verified.statistics.binary_tree_rotation_count << '\n'
+              << "binary_tree_insertions="
+              << verified.statistics.binary_tree_insertion_count << '\n'
+              << "binary_tree_retirements="
+              << verified.statistics.binary_tree_retirement_count << '\n'
+              << "binary_tree_maximum_height="
+              << verified.statistics.binary_tree_maximum_height << '\n'
+              << "binary_tree_max_nodes_per_query="
+              << verified.statistics.binary_tree_maximum_nodes_per_query
+              << '\n'
+              << "binary_tree_frame_seconds=" << measured_seconds << '\n'
+              << "binary_tree_frame_mib_per_second="
               << throughput(
                      verified.input_bytes, iterations, measured_seconds)
               << '\n';
-    print_hash_chain_depth_histogram(verified.statistics);
+    print_binary_tree_depth_histogram(verified.statistics);
 }
 
 void print_usage() {
@@ -450,17 +582,18 @@ void print_usage() {
         << "usage: marc_lzss_match_finder_benchmark "
            "<input-file> [iterations]\n"
         << "       marc_lzss_match_finder_benchmark --frames "
-           "hash-chain-exact <input-file> [iterations] "
+           "<hash-chain-exact|binary-tree-exact> <input-file> [iterations] "
            "[frame-bytes] [window-bytes]\n"
         << "       marc_lzss_match_finder_benchmark --synthetic "
-           "hash-chain-exact <case> [input-bytes] [iterations] "
+           "<hash-chain-exact|binary-tree-exact> <case> "
+           "[input-bytes] [iterations] "
            "[frame-bytes] [window-bytes]\n";
 }
 
 [[nodiscard]] int run_frame_benchmark(
     const int argc, const char* const argv[]) {
-    if (argc < 4 || argc > 7
-        || std::string_view{argv[2]} != "hash-chain-exact") {
+    BenchmarkStrategy strategy{};
+    if (argc < 4 || argc > 7 || !parse_strategy(argv[2], strategy)) {
         print_usage();
         return 2;
     }
@@ -490,51 +623,66 @@ void print_usage() {
 
     LzssParameters parameters{};
     parameters.window_size = static_cast<std::uint32_t>(window_size);
-    const auto requirements = calculate_lzss_hash_chain_workspace(
-        frame_size, parameters, limits);
-    if (requirements.error != LzssHashChainError::none) {
-        std::cerr << "cannot calculate frame HashChain workspace\n";
-        return 1;
+    std::size_t workspace_size{};
+    if (strategy == BenchmarkStrategy::hash_chain_exact) {
+        const auto requirements = calculate_lzss_hash_chain_workspace(
+            frame_size, parameters, limits);
+        if (requirements.error != LzssHashChainError::none) {
+            std::cerr << "cannot calculate frame HashChain workspace\n";
+            return 1;
+        }
+        workspace_size = requirements.workspace_size;
+    } else {
+        const auto requirements = calculate_lzss_binary_tree_workspace(
+            frame_size, parameters, limits);
+        if (requirements.error != LzssBinaryTreeError::none) {
+            std::cerr << "cannot calculate frame BinaryTree workspace\n";
+            return 1;
+        }
+        workspace_size = requirements.workspace_size;
     }
-    AlignedWorkspace workspace_owner(requirements.workspace_size);
-    const auto workspace = workspace_owner.bytes(requirements.workspace_size);
+    AlignedWorkspace workspace_owner(workspace_size);
+    const auto workspace = workspace_owner.bytes(workspace_size);
 
     FrameRunResult verified{};
-    if (!process_hash_chain_frames(
-            argv[3], file_size, frame_size, parameters, limits, workspace,
-            true, false, verified)
+    const auto valid_statistics =
+        strategy == BenchmarkStrategy::hash_chain_exact
+        ? valid_hash_chain_statistics : valid_binary_tree_statistics;
+    if (!process_frames(
+            strategy, argv[3], file_size, frame_size, parameters, limits,
+            workspace, true, false, verified)
         || verified.input_bytes != file_size
         || verified.statistics.query_count != verified.token_count
-        || !valid_hash_chain_statistics(verified.statistics)) {
-        std::cerr << "HashChain frame verification failed\n";
+        || !valid_statistics(verified.statistics)) {
+        std::cerr << "match-finder frame verification failed\n";
         return 1;
     }
 
     double measured_seconds{};
     for (std::size_t iteration = 0; iteration < iterations; ++iteration) {
         FrameRunResult measured{};
-        if (!process_hash_chain_frames(
-                argv[3], file_size, frame_size, parameters, limits, workspace,
-                false, true, measured)
+        if (!process_frames(
+                strategy, argv[3], file_size, frame_size, parameters, limits,
+                workspace, false, true, measured)
             || measured.input_bytes != verified.input_bytes
             || measured.frame_count != verified.frame_count
             || measured.token_count != verified.token_count) {
-            std::cerr << "timed HashChain frame processing failed\n";
+            std::cerr << "timed match-finder frame processing failed\n";
             return 1;
         }
         measured_seconds += measured.seconds;
     }
 
     print_frame_report(
-        "frames", {}, frame_size, window_size, iterations,
-        requirements.workspace_size, verified, measured_seconds);
+        strategy, "frames", {}, frame_size, window_size, iterations,
+        workspace_size, verified, measured_seconds);
     return 0;
 }
 
 [[nodiscard]] int run_synthetic_benchmark(
     const int argc, const char* const argv[]) {
-    if (argc < 4 || argc > 8
-        || std::string_view{argv[2]} != "hash-chain-exact") {
+    BenchmarkStrategy strategy{};
+    if (argc < 4 || argc > 8 || !parse_strategy(argv[2], strategy)) {
         print_usage();
         return 2;
     }
@@ -559,44 +707,59 @@ void print_usage() {
 
     LzssParameters parameters{};
     parameters.window_size = static_cast<std::uint32_t>(window_size);
-    const auto requirements = calculate_lzss_hash_chain_workspace(
-        frame_size, parameters, limits);
-    if (requirements.error != LzssHashChainError::none) {
-        std::cerr << "cannot calculate synthetic HashChain workspace\n";
-        return 1;
+    std::size_t workspace_size{};
+    if (strategy == BenchmarkStrategy::hash_chain_exact) {
+        const auto requirements = calculate_lzss_hash_chain_workspace(
+            frame_size, parameters, limits);
+        if (requirements.error != LzssHashChainError::none) {
+            std::cerr << "cannot calculate synthetic HashChain workspace\n";
+            return 1;
+        }
+        workspace_size = requirements.workspace_size;
+    } else {
+        const auto requirements = calculate_lzss_binary_tree_workspace(
+            frame_size, parameters, limits);
+        if (requirements.error != LzssBinaryTreeError::none) {
+            std::cerr << "cannot calculate synthetic BinaryTree workspace\n";
+            return 1;
+        }
+        workspace_size = requirements.workspace_size;
     }
-    AlignedWorkspace workspace_owner(requirements.workspace_size);
-    const auto workspace = workspace_owner.bytes(requirements.workspace_size);
+    AlignedWorkspace workspace_owner(workspace_size);
+    const auto workspace = workspace_owner.bytes(workspace_size);
 
     FrameRunResult verified{};
-    if (!process_synthetic_hash_chain_frames(
-            kind, input_size, frame_size, parameters, limits, workspace,
-            true, false, verified)
+    const auto valid_statistics =
+        strategy == BenchmarkStrategy::hash_chain_exact
+        ? valid_hash_chain_statistics : valid_binary_tree_statistics;
+    if (!process_synthetic_frames(
+            strategy, kind, input_size, frame_size, parameters, limits,
+            workspace, true, false, verified)
         || verified.input_bytes != input_size
         || verified.statistics.query_count != verified.token_count
-        || !valid_hash_chain_statistics(verified.statistics)) {
-        std::cerr << "synthetic HashChain verification failed\n";
+        || !valid_statistics(verified.statistics)) {
+        std::cerr << "synthetic match-finder verification failed\n";
         return 1;
     }
 
     double measured_seconds{};
     for (std::size_t iteration = 0; iteration < iterations; ++iteration) {
         FrameRunResult measured{};
-        if (!process_synthetic_hash_chain_frames(
-                kind, input_size, frame_size, parameters, limits, workspace,
-                false, true, measured)
+        if (!process_synthetic_frames(
+                strategy, kind, input_size, frame_size, parameters, limits,
+                workspace, false, true, measured)
             || measured.input_bytes != verified.input_bytes
             || measured.frame_count != verified.frame_count
             || measured.token_count != verified.token_count) {
-            std::cerr << "timed synthetic HashChain processing failed\n";
+            std::cerr << "timed synthetic match-finder processing failed\n";
             return 1;
         }
         measured_seconds += measured.seconds;
     }
 
     print_frame_report(
-        "synthetic", synthetic_input_name(kind), frame_size, window_size,
-        iterations, requirements.workspace_size, verified, measured_seconds);
+        strategy, "synthetic", synthetic_input_name(kind), frame_size,
+        window_size, iterations, workspace_size, verified, measured_seconds);
     return 0;
 }
 

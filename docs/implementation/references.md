@@ -5654,3 +5654,12 @@ match-finder statistics contract, HashChain saturation and logarithmic-bin
 rules, and the existing private BinaryTree operation boundaries. No external
 tree, profiler, match finder, compressor, source code, test, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0630
+
+The private BinaryTree benchmark stage uses DD-731 through DD-734, DD-845,
+DD-855, DD-856, TVG-0640, TVG-0641, TVG-0729, and TVG-0730, together with the
+repository-owned HashChain benchmark driver, deterministic synthetic inputs,
+frame splitting, throughput calculation, and BinaryTree diagnostic contract.
+No external benchmark harness, tree, match finder, compressor, source code,
+test, patent, pseudocode, or optimization description was consulted.
