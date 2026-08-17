@@ -10347,3 +10347,19 @@ corrupted constructed invariant. Every failure must return a null root,
 terminate within node capacity, and leave caller-owned head, links, roots,
 modes, and promotion state unchanged. No test connects the builder to finder
 query or advance in this stage.
+
+### TVG-0740
+
+Build promoted bucket trees for ascending, descending, equal-capped,
+repetitive, binary, and deliberate hash-collision inputs. At each eligible
+query position compare the private tree result byte-for-byte with Exhaustive
+and HashChain, including longest length and nearest distance. Cover empty
+root, no match, one-sided neighbors, two-sided neighbors, maximum-length
+matches, and multiple equal-length candidates.
+
+Independently corrupt root, child index, slot position, bucket ownership,
+subtree maximum, and a traversal cycle using already constructed test nodes.
+Require a stable private error, empty match, and termination within a bound
+derived from node capacity. Query must not modify Chain links, any node field,
+root, mode, promotion state, input, or diagnostics. Finder integration and
+LCP comparison skipping remain outside this stage.

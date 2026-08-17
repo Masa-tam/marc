@@ -18160,3 +18160,27 @@ stable private error and a null result root. Partially constructed trivial node
 objects may remain only in the still-unpublished arena. The builder never
 changes heads, links, roots, modes, the promotion planner, format, ABI, token
 representation, selector, or interoperability output.
+
+## DD-868: Promoted bucket query first establishes an Exact reference path
+
+- Date: 2026-08-18
+- Status: accepted
+
+Implement the promoted-bucket query independently before publishing promotion
+through the finder. It receives immutable input, parameters, bucket identity,
+one private root, and immutable node arrays. It cannot mutate Chain, tree,
+promotion, root, or mode state.
+
+Use the repository BinaryTree proof: find lexical predecessor and successor,
+measure their exact capped LCP with the query, then search the contiguous
+prefix interval for the larger LCP and aggregate its newest absolute position
+with subtree maxima. This preserves the longest-match and nearest-distance
+tie-break. Validate every reached index, slot generation, active-window
+position, bucket hash, bounded traversal, and selected maximum before return.
+
+This is the clear scalar Exact reference. It may rescan final-neighbor and
+prefix-range bytes. The bracket-LCP skip optimization in the HashTree design
+is a later result-preserving change, measured against this path rather than
+mixed into first correctness. Empty tree and sub-minimum LCP return an empty
+match without error. This stage remains disconnected from finder query,
+format, ABI, tokens, selectors, and interoperability output.

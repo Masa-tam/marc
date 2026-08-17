@@ -5748,3 +5748,11 @@ contract. The bounded non-recursive validation and private-root publication
 rule were written for this repository. No external hash tree, match finder,
 compressor, source code, test, patent, pseudocode, or optimization description
 was consulted.
+
+### IR-0640
+
+The private promoted-bucket Exact query uses DD-861 through DD-868,
+TVG-0733 through TVG-0740, marc's repository-owned BinaryTree neighbor and
+prefix-interval proof, HashTree bucket builder, and Exhaustive/HashChain
+oracles. No external tree query, compressor, source code, test, patent,
+pseudocode, or optimization description was consulted.

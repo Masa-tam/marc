@@ -22552,3 +22552,32 @@ discarded and the reviewed seed retained.
   tests. Hand-checkable fixtures cover four AVL rotation shapes, equal capped
   keys, exact and exceeded window boundaries, empty publication, malformed
   contexts and Chains, and post-build metadata rejection.
+
+## CR-0937: 2026-08-18 - HashTree promoted-bucket Exact query
+
+- Authoring method: isolated the read-only query proof from promotion and
+  mutation, transferring marc's own BinaryTree neighbor/prefix interval logic
+  to one validated HashTree bucket.
+- References used: DD-861 through DD-868, IR-0633 through IR-0640, TVG-0733
+  through TVG-0740, and repository-owned BinaryTree, HashTree builder,
+  Exhaustive, and HashChain behavior.
+- Known implementations intentionally not consulted: external tree queries,
+  match finders, compressors, source code, tests, patents, pseudocode, and
+  optimization descriptions.
+- Independent decisions: keep the first path scalar and explicit; validate
+  every reached node and aggregate; return no mutable spans; and defer LCP
+  skipping until exact differential behavior is permanent.
+- Generated-code task description: query one private promoted AVL exactly,
+  preserve nearest tie-break through subtree maxima, reject malformed reached
+  state finitely, and remain disconnected from finder publication.
+- Similarity review: traversal, tie-break, checks, errors, and tests derive
+  entirely from marc-owned components and this design. No external
+  implementation expression entered this change.
+- Local validation: MSVC 18.8.2 and ClangCL 22.1.3 Release builds pass all 32
+  focused query, builder, promotion, and HashTree tests and all 3,040 CTest
+  cases at a 300-second per-test limit. Both complete runs include the Python
+  tooling tests and `marc_interoperability_schema_compatibility`. Differential
+  fixtures compare every eligible position in repetitive, periodic, distinct,
+  and collision inputs against both Exhaustive and HashChain, while permanent
+  negative cases cover invalid context, root generation, cycles, and selected
+  subtree-maximum corruption.
