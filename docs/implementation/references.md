@@ -5764,3 +5764,11 @@ through TVG-0741, marc's repository-owned BinaryTree insertion, structural
 deletion, AVL metadata rules, and HashTree ring/bucket contracts. No external
 tree mutation, match finder, compressor, source code, test, patent, pseudocode,
 or optimization description was consulted.
+
+### IR-0642
+
+The integrated private HashTree finder uses DD-861 through DD-870,
+TVG-0733 through TVG-0742, and only the repository-owned promotion planner,
+bucket builder, Exact query, mutation, HashChain route, and Exhaustive/global
+BinaryTree oracles. No external hybrid match finder, compressor, source code,
+test, patent, pseudocode, or optimization description was consulted.

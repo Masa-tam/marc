@@ -87,6 +87,51 @@ namespace {
     return 0;
 }
 
+[[nodiscard]] bool valid_local_node(
+    const LzssHashTreeBucketMutationContext& context,
+    const std::uint32_t node) noexcept {
+    if (!valid_node(context, node)) return false;
+    const auto left = context.left[node];
+    const auto right = context.right[node];
+    for (const auto child : {left, right}) {
+        if (child == lzss_hash_tree_null_node) continue;
+        if (child == node || !valid_node(context, child)
+            || context.parent[child] != node) {
+            return false;
+        }
+    }
+    if (left != lzss_hash_tree_null_node
+        && compare_positions(
+            context, context.position[left], context.position[node]) >= 0) {
+        return false;
+    }
+    if (right != lzss_hash_tree_null_node
+        && compare_positions(
+            context, context.position[right], context.position[node]) <= 0) {
+        return false;
+    }
+    const auto left_height = left == lzss_hash_tree_null_node
+        ? std::uint8_t{0} : context.height[left];
+    const auto right_height = right == lzss_hash_tree_null_node
+        ? std::uint8_t{0} : context.height[right];
+    const auto balance = static_cast<int>(left_height)
+        - static_cast<int>(right_height);
+    const auto expected_height = static_cast<std::uint8_t>(
+        static_cast<unsigned>(std::max(left_height, right_height)) + 1U);
+    auto expected_maximum = context.position[node];
+    if (left != lzss_hash_tree_null_node) {
+        expected_maximum = std::max(
+            expected_maximum, context.subtree_maximum_position[left]);
+    }
+    if (right != lzss_hash_tree_null_node) {
+        expected_maximum = std::max(
+            expected_maximum, context.subtree_maximum_position[right]);
+    }
+    return context.height[node] == expected_height
+        && balance >= -1 && balance <= 1
+        && context.subtree_maximum_position[node] == expected_maximum;
+}
+
 struct SearchResult {
     std::uint32_t node{lzss_hash_tree_null_node};
     std::uint32_t parent{lzss_hash_tree_null_node};
@@ -102,7 +147,8 @@ struct SearchResult {
     auto current = root;
     std::size_t visited{};
     while (current != lzss_hash_tree_null_node) {
-        if (visited++ == context.left.size() || !valid_node(context, current)) {
+        if (visited++ == context.left.size()
+            || !valid_local_node(context, current)) {
             result.error = LzssHashTreeBucketMutationError::invalid_tree;
             return result;
         }
@@ -382,7 +428,7 @@ LzssHashTreeBucketMutationResult remove_lzss_hash_tree_bucket_position(
         std::size_t visited{};
         while (true) {
             if (visited++ == context.left.size()
-                || !valid_node(context, successor)) {
+                || !valid_local_node(context, successor)) {
                 result.error = LzssHashTreeBucketMutationError::invalid_tree;
                 return result;
             }

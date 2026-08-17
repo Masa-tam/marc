@@ -22610,3 +22610,37 @@ discarded and the reviewed seed retained.
   reactivation, every deletion shape including direct and deeper successors,
   insertion rotations, preflight byte preservation, cycles, active-range
   validation, and Exact query agreement with Exhaustive after every update.
+
+## CR-0939: 2026-08-18 - Integrated private HashTree Exact route
+
+- Authoring method: connected five already tested marc-owned components only
+  at their documented boundaries, keeping the opt-in threshold private and the
+  existing default route disabled.
+- References used: DD-861 through DD-870, IR-0633 through IR-0642, TVG-0733
+  through TVG-0742, and repository-owned HashTree Chain, planner, builder,
+  query, mutation, Exhaustive, HashChain, and BinaryTree behavior.
+- Known implementations intentionally not consulted: external hybrid match
+  finders, compressors, source code, tests, patents, pseudocode, and
+  optimization descriptions.
+- Independent decisions: preserve the trigger query; publish only a validated
+  root; keep mode monotonic; retire before shared-ring insertion; continue the
+  Chain after promotion; and keep the default threshold disabled.
+- Test-discovered defect and correction: the finder-level mutation-failure
+  case exposed that validating only the selected search child could leave a
+  corrupt sibling self-link for AVL rebalancing, causing a cycle after the
+  first write. Mutation search now validates both immediate children, their
+  parent reciprocity and ordering, and the reached node's height, balance, and
+  subtree maximum before any write. The permanent regression requires a
+  finite sticky `tree_mutation_failure` response.
+- Generated-code task description: integrate the complete private HashTree
+  state machine, differentially prove Exact results and chunk skips, and reject
+  component failures without changing public selection or stream output.
+- Similarity review: dispatch, transaction order, errors, options, and tests
+  derive entirely from marc-owned designs and components. No external
+  implementation expression entered this change.
+- Local validation: the 44 focused planner/builder/query/mutation/finder tests
+  pass under MSVC 19.50 (Visual Studio 2026 18.8.2) and ClangCL 21.1.8. The
+  complete suites pass 3052/3052 under both compilers with the 300-second
+  per-test limit, including `marc_interoperability_schema_compatibility`
+  after every target is fully rebuilt (64.76 seconds under MSVC and 72.16
+  seconds under ClangCL). Total suite times are 162.30 and 176.22 seconds.

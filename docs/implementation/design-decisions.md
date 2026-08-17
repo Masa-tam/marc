@@ -18214,3 +18214,34 @@ path.
 This stage leaves the builder implementation unchanged as an independent
 construction oracle. It does not publish a mode, connect the finder, change a
 selector, or affect format, ABI, tokens, or interoperability output.
+
+## DD-870: HashTree components connect as one private monotonic route
+
+- Date: 2026-08-18
+- Status: accepted
+
+Connect the promotion planner, private builder, Exact bucket query, and bucket
+mutation to the HashTree finder only after all four independent contracts pass.
+Add a private initialization option whose promotion candidate threshold
+defaults to `UINT64_MAX`; existing callers and the production selector remain
+Chain-only unless a test or benchmark explicitly opts in.
+
+A completed Chain query records Pending after preserving its exact result. The
+following valid `advance` begins the transaction, builds and validates from the
+pre-advance Chain, writes the validated root, changes mode monotonically to
+PromotedTree, and commits the planner. No component failure publishes root or
+mode. Once published, query dispatches only through the read-only Exact tree
+route.
+
+For every consumed position, first retire the exact distance-window position
+from its promoted bucket, then construct and publish the common Chain link and
+head, then insert the current position into its promoted bucket. This order
+makes a reused ring slot available before construction and retains every
+skipped parser position. Chain maintenance continues for promoted buckets so
+the representation remains available to validators and deterministic evidence.
+
+Map builder, query, mutation, or planner failure to distinct stable finder
+errors and make the finder sticky-invalid. Existing default diagnostics and
+output remain unchanged. This private integration changes no public selector,
+format, ABI, token representation, or interoperability artifact; performance
+and LCP-skipping decisions remain later stages.

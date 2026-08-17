@@ -10382,3 +10382,24 @@ short-suffix position, invalid root, corrupt reached child, and a search cycle.
 Each preflight failure must return a stable error result, preserve the copied
 root and every node byte, and terminate within node capacity. Mutation must
 not receive or modify Chain links, bucket roots/modes, or promotion state.
+
+### TVG-0742
+
+Run the connected finder with threshold zero, small finite thresholds, and the
+disabled maximum threshold over empty, short, repetitive, periodic, binary,
+collision, incompressible, window-boundary, and skipped-interval inputs. At
+every query require matches to equal Exhaustive, HashChain, and global
+BinaryTree. Counter-present and counter-null runs must produce identical
+matches, promotion positions, modes, and roots.
+
+Require the trigger query to leave mode Chain and root null. Require its next
+valid advance to publish one validated root and PromotedTree mode before the
+following query. Slide beyond the window, exercise ring reuse, make a promoted
+bucket empty and active again, and require mode never to return to Chain.
+
+After Pending, corrupt its reachable Chain link and require build failure to
+leave root and mode unpublished and make the finder sticky-invalid. Separately
+corrupt a published root/node before query and a reached tree path before
+mutation; require distinct stable finder errors, empty later matches, no later
+workspace mutation, and finite completion. With default options, require the
+entire pre-integration Chain-only workspace and diagnostics behavior unchanged.

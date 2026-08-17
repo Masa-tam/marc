@@ -2,6 +2,9 @@
 
 #include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
+#include "dictionary/lzss_hash_tree_bucket_builder.hpp"
+#include "dictionary/lzss_hash_tree_bucket_mutation.hpp"
+#include "dictionary/lzss_hash_tree_bucket_query.hpp"
 
 #include <algorithm>
 #include <bit>
@@ -103,6 +106,17 @@ LzssMatch LzssHashTreeMatchFinder::find_match(
     }
     const auto bucket = static_cast<std::size_t>(prefix_hash.value)
         & (heads_.size() - 1U);
+    if (modes_[bucket] == LzssHashTreeBucketMode::promoted_tree) {
+        const auto query = query_lzss_hash_tree_bucket_exact({
+            input_, parameters_, position, bucket, heads_.size(),
+            roots_[bucket], left_, right_, parent_, height_, position_,
+            subtree_maximum_position_});
+        if (query.error != LzssHashTreeBucketQueryError::none) {
+            mark_error(LzssHashTreeError::tree_query_failure);
+            return {};
+        }
+        return query.match;
+    }
     if (modes_[bucket] != LzssHashTreeBucketMode::chain
         || roots_[bucket] != lzss_hash_tree_null_node) {
         mark_error(LzssHashTreeError::invalid_state);
@@ -163,6 +177,12 @@ LzssMatch LzssHashTreeMatchFinder::find_match(
         candidate -= previous_distance;
     }
     record_chain_query_depth(statistics_, query_candidate_count);
+    const auto promotion = promotion_.record_completed_chain_query(
+        bucket, query_candidate_count);
+    if (promotion.error != LzssHashTreePromotionError::none) {
+        mark_error(LzssHashTreeError::promotion_failure);
+        return {};
+    }
     return best;
 }
 
@@ -180,7 +200,69 @@ void LzssHashTreeMatchFinder::advance(
         return;
     }
 
+    const auto pending = promotion_.begin_advance();
+    if (pending.error != LzssHashTreePromotionError::none) {
+        mark_error(LzssHashTreeError::promotion_failure);
+        return;
+    }
+    if (pending.required) {
+        const auto bucket = pending.bucket;
+        if (bucket >= heads_.size()
+            || modes_[bucket] != LzssHashTreeBucketMode::chain
+            || roots_[bucket] != lzss_hash_tree_null_node) {
+            mark_error(LzssHashTreeError::promotion_failure);
+            return;
+        }
+        const auto build = build_lzss_hash_tree_bucket({
+            input_, parameters_, position, bucket, heads_.size(),
+            heads_[bucket], links_,
+            {left_, right_, parent_, height_, position_,
+             subtree_maximum_position_}});
+        if (build.error != LzssHashTreeBucketBuildError::none
+            || build.root == lzss_hash_tree_null_node) {
+            mark_error(LzssHashTreeError::promotion_failure);
+            return;
+        }
+        roots_[bucket] = build.root;
+        modes_[bucket] = LzssHashTreeBucketMode::promoted_tree;
+        if (promotion_.commit(bucket)
+            != LzssHashTreePromotionError::none) {
+            mark_error(LzssHashTreeError::promotion_failure);
+            return;
+        }
+    }
+
     for (auto current = position; current < next_position; ++current) {
+        if (current >= parameters_.window_size) {
+            const auto expired = current - parameters_.window_size;
+            if (input_.size() - expired
+                >= lzss_match_finder_prefix_size) {
+                const auto expired_hash = calculate_lzss_prefix_hash(
+                    input_, expired);
+                if (!expired_hash.valid) {
+                    mark_error(LzssHashTreeError::invalid_state);
+                    return;
+                }
+                const auto expired_bucket =
+                    static_cast<std::size_t>(expired_hash.value)
+                    & (heads_.size() - 1U);
+                if (modes_[expired_bucket]
+                    == LzssHashTreeBucketMode::promoted_tree) {
+                    const auto removed =
+                        remove_lzss_hash_tree_bucket_position(
+                            {input_, parameters_, expired_bucket,
+                             heads_.size(), left_, right_, parent_, height_,
+                             position_, subtree_maximum_position_},
+                            roots_[expired_bucket], expired);
+                    if (removed.error
+                        != LzssHashTreeBucketMutationError::none) {
+                        mark_error(LzssHashTreeError::tree_mutation_failure);
+                        return;
+                    }
+                    roots_[expired_bucket] = removed.root;
+                }
+            }
+        }
         if (input_.size() - current < lzss_match_finder_prefix_size) continue;
         const auto prefix_hash = calculate_lzss_prefix_hash(input_, current);
         if (!prefix_hash.valid) {
@@ -190,7 +272,12 @@ void LzssHashTreeMatchFinder::advance(
         const auto bucket = static_cast<std::size_t>(prefix_hash.value)
             & (heads_.size() - 1U);
         if (modes_[bucket] != LzssHashTreeBucketMode::chain
-            || roots_[bucket] != lzss_hash_tree_null_node) {
+            && modes_[bucket] != LzssHashTreeBucketMode::promoted_tree) {
+            mark_error(LzssHashTreeError::invalid_state);
+            return;
+        }
+        if (modes_[bucket] == LzssHashTreeBucketMode::chain
+            && roots_[bucket] != lzss_hash_tree_null_node) {
             mark_error(LzssHashTreeError::invalid_state);
             return;
         }
@@ -212,6 +299,18 @@ void LzssHashTreeMatchFinder::advance(
         std::construct_at(
             links_.data() + current % links_.size(), previous_distance);
         heads_[bucket] = current;
+        if (modes_[bucket] == LzssHashTreeBucketMode::promoted_tree) {
+            const auto inserted = insert_lzss_hash_tree_bucket_position(
+                {input_, parameters_, bucket, heads_.size(), left_, right_,
+                 parent_, height_, position_, subtree_maximum_position_},
+                roots_[bucket], current);
+            if (inserted.error
+                != LzssHashTreeBucketMutationError::none) {
+                mark_error(LzssHashTreeError::tree_mutation_failure);
+                return;
+            }
+            roots_[bucket] = inserted.root;
+        }
     }
     next_position_ = next_position;
 }
@@ -286,7 +385,8 @@ LzssHashTreeError initialize_lzss_hash_tree_match_finder(
     const LzssParameters& parameters, const core::DecoderLimits& limits,
     const std::span<std::byte> workspace,
     LzssHashTreeMatchFinder& finder,
-    LzssMatchFinderStatistics* const statistics) noexcept {
+    LzssMatchFinderStatistics* const statistics,
+    const LzssHashTreeOptions& options) noexcept {
     const auto required = calculate_lzss_hash_tree_workspace(
         input.size(), parameters, limits);
     if (required.error != LzssHashTreeError::none) return required.error;
@@ -313,6 +413,9 @@ LzssHashTreeError initialize_lzss_hash_tree_match_finder(
     initialized.input_ = input;
     initialized.parameters_ = parameters;
     initialized.statistics_ = statistics;
+    initialize_lzss_hash_tree_promotion_state(
+        required.bucket_count, options.promotion_candidate_threshold,
+        initialized.promotion_);
     initialized.initialized_ = true;
     initialized.state_valid_ = true;
     if (required.workspace_size == 0) {

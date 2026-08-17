@@ -4,6 +4,7 @@
 #include "core/limits.hpp"
 #include "dictionary/lzss_match_finder.hpp"
 #include "dictionary/lzss_prefix_hash.hpp"
+#include "dictionary/lzss_hash_tree_promotion.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -29,11 +30,19 @@ enum class LzssHashTreeError : std::uint8_t {
     invalid_position,
     invalid_state,
     invalid_protocol,
+    promotion_failure,
+    tree_query_failure,
+    tree_mutation_failure,
 };
 
 enum class LzssHashTreeBucketMode : std::uint8_t {
     chain = 0,
     promoted_tree = 1,
+};
+
+struct LzssHashTreeOptions {
+    std::uint64_t promotion_candidate_threshold{
+        std::numeric_limits<std::uint64_t>::max()};
 };
 
 struct LzssHashTreeWorkspaceRequirements {
@@ -90,7 +99,8 @@ private:
     friend LzssHashTreeError initialize_lzss_hash_tree_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
-        LzssHashTreeMatchFinder&, LzssMatchFinderStatistics*) noexcept;
+        LzssHashTreeMatchFinder&, LzssMatchFinderStatistics*,
+        const LzssHashTreeOptions&) noexcept;
 
     void mark_error(LzssHashTreeError error) noexcept;
 
@@ -107,6 +117,7 @@ private:
     std::span<std::size_t> position_{};
     std::span<std::size_t> subtree_maximum_position_{};
     std::size_t next_position_{};
+    LzssHashTreePromotionState promotion_{};
     LzssMatchFinderStatistics* statistics_{};
     LzssHashTreeError last_error_{LzssHashTreeError::none};
     bool initialized_{};
@@ -119,7 +130,8 @@ static_assert(LzssMatchFinder<LzssHashTreeMatchFinder>);
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::span<std::byte> workspace,
     LzssHashTreeMatchFinder& finder,
-    LzssMatchFinderStatistics* statistics = nullptr) noexcept;
+    LzssMatchFinderStatistics* statistics = nullptr,
+    const LzssHashTreeOptions& options = {}) noexcept;
 
 } // namespace marc::dictionary::internal
 
