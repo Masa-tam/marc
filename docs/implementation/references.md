@@ -5703,3 +5703,11 @@ implemented, tested through Exact differential matching, and used to define
 the HashTree bucket partition. No external hash function, hash tree, match
 finder, compressor, source code, test, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0635
+
+The private HashTree workspace calculator uses DD-861, DD-862, TVG-0733,
+TVG-0734, the repository-owned HashChain and BinaryTree checked workspace
+calculators, and the exact array inventory in the HashTree pre-implementation
+design. No external hash tree, match finder, memory layout, compressor, source
+code, test, patent, pseudocode, or optimization description was consulted.

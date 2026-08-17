@@ -10268,3 +10268,16 @@ Retain the independently discovered pair `01 00 00 58 59` and
 `00 20 00 58 59` as an exact 32-bit collision with hash `0x00102b1f` so the
 helper cannot be mistaken for an equality proof. Existing Exhaustive-versus-
 HashChain tests remain the token-level differential oracle after extraction.
+
+### TVG-0735
+
+Fix HashTree workspace requirements for input sizes below the five-byte prefix,
+exactly five bytes, 64 KiB, and 1 MiB. Check power-of-two bucket sizing, node
+capacity, every array offset, element alignment, non-overlap, and exact final
+extent. On the current 64-bit supported host, require 35,454,976 bytes for a
+one-MiB window and 65,536 buckets.
+
+Reject invalid limits, invalid LZSS parameters, input beyond frame bounds,
+workspace beyond the internal-buffer limit, and input-plus-workspace arithmetic
+overflow with stable private error categories. The calculator must allocate
+nothing and must not receive or modify caller workspace in this stage.

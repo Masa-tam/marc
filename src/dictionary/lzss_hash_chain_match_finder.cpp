@@ -61,7 +61,7 @@ LzssHashChainWorkspaceRequirements calculate_lzss_hash_chain_workspace(
         result.link_count = std::min<std::size_t>(
             input_size, static_cast<std::size_t>(parameters.window_size));
         const auto bucket_target = std::min(
-            result.link_count, lzss_hash_chain_max_bucket_count);
+            result.link_count, lzss_match_finder_max_bucket_count);
         result.bucket_count = std::bit_ceil(bucket_target);
     }
 

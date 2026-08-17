@@ -8,6 +8,7 @@
 namespace marc::dictionary::internal {
 
 inline constexpr std::size_t lzss_match_finder_prefix_size = 5;
+inline constexpr std::size_t lzss_match_finder_max_bucket_count = 65'536;
 
 struct LzssPrefixHashResult {
     std::uint32_t value{};

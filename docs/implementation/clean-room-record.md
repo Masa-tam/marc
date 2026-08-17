@@ -22410,3 +22410,29 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`. The helper remains inline so
   sharing the checked expression does not impose an out-of-line call in the
   per-position HashChain path.
+
+## CR-0932: 2026-08-18 - HashTree checked workspace requirements
+
+- Authoring method: composed marc's existing HashChain partition sizing and
+  BinaryTree separated-array layout into the array inventory fixed by the
+  private HashTree design.
+- References used: DD-861 through DD-863, IR-0633 through IR-0635, TVG-0733
+  through TVG-0735, and the repository-owned checked arithmetic, limits,
+  HashChain workspace, and BinaryTree workspace implementations and tests.
+- Known implementations intentionally not consulted: external hash trees,
+  match finders, memory layouts, compressors, source code, tests, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: expose all ten offsets; preserve HashChain bucket
+  sizing; use absolute positions as slot generations; keep promotion state per
+  bucket; and reject all invalid requirements before any caller storage exists.
+- Generated-code task description: implement only the bounded HashTree layout
+  calculator, prove every array is aligned and disjoint, fix the 1 MiB bound,
+  and reject limits and arithmetic failures without adding tree behavior.
+- Similarity review: the layout, checked construction, tests, terminology, and
+  exact bounds originate entirely in marc's preceding components and design.
+  No external implementation expression or test entered this change.
+- Local validation: MSVC 18.8.2 and ClangCL 22.1.3 Release builds pass the 11
+  focused HashTree-workspace/HashChain tests and all 3,012 CTest cases at a
+  300-second per-test limit, including the Python tooling tests and
+  `marc_interoperability_schema_compatibility`. The calculator performs no
+  allocation and receives no caller workspace.

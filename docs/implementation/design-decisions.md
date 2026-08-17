@@ -18033,3 +18033,25 @@ the helper does not imply byte equality. This extraction changes no bucket
 masking, workspace calculation, traversal, token choice, format, ABI, public
 selector, or interoperability representation. HashTree must reuse this helper
 rather than acquire a similar private copy.
+
+## DD-863: HashTree workspace layout is fixed before tree behavior
+
+- Date: 2026-08-18
+- Status: accepted
+
+Implement a private checked requirements calculator before initialization,
+promotion, or tree traversal. In order, place HashChain heads and predecessor
+links, per-bucket tree roots and promotion modes, then tree left, right,
+parent, height, absolute position, and subtree-maximum-position arrays. Align
+every start for its element type and expose every offset in the requirements.
+
+For readable five-byte input, node capacity is the smaller of input size and
+window size. Bucket count is the next power of two of the smaller of node
+capacity and 65,536, exactly matching HashChain partitioning. Short input has
+zero buckets, nodes, and workspace. Validate limits, parameters, input bounds,
+all layout arithmetic, input-plus-workspace aggregate memory, and the internal
+buffer limit without allocating or touching caller storage.
+
+On a 64-bit host, one-MiB node capacity and 65,536 buckets require exactly
+35,454,976 bytes. This stage adds no finder object, initialization, tree
+mutation, public selector, format, ABI, token, or interoperability change.

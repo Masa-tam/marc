@@ -138,7 +138,7 @@ TEST(LzssHashChainMatchFinder, CalculatesBoundedWorkspace) {
     required = calculate_lzss_hash_chain_workspace(
         1U << 20, large_window, {});
     EXPECT_EQ(required.error, LzssHashChainError::none);
-    EXPECT_EQ(required.bucket_count, lzss_hash_chain_max_bucket_count);
+    EXPECT_EQ(required.bucket_count, lzss_match_finder_max_bucket_count);
     EXPECT_EQ(required.link_count, 1U << 20);
 }
 

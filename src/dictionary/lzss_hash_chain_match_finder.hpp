@@ -11,8 +11,6 @@
 
 namespace marc::dictionary::internal {
 
-inline constexpr std::size_t lzss_hash_chain_max_bucket_count = 65'536;
-
 enum class LzssHashChainError : std::uint8_t {
     none,
     invalid_limits,
