@@ -22522,3 +22522,33 @@ discarded and the reviewed seed retained.
   cases prove strict thresholding, threshold-zero and maximum-threshold
   behavior, idempotent Pending recording, checked begin/commit, sticky invalid
   buckets and transitions, and unchanged Exact Chain behavior.
+
+## CR-0936: 2026-08-18 - HashTree private bucket AVL builder
+
+- Authoring method: transferred marc's repository-owned AVL ordering and
+  metadata invariants into a bucket-local builder whose type cannot access the
+  published HashTree root or mode arrays.
+- References used: DD-861 through DD-867, IR-0633 through IR-0639, TVG-0733
+  through TVG-0739, and the repository-owned BinaryTree, prefix hash, Chain
+  ring, lazy-lifetime, and checked-state conventions.
+- Known implementations intentionally not consulted: external hash trees,
+  match finders, compressors, source code, tests, patents, pseudocode, and
+  optimization descriptions.
+- Independent decisions: traverse newest-to-oldest without a list; construct
+  all node fields before linking; validate every active node back to one
+  private root; and make failure incapable of publishing a bucket mode.
+- Generated-code task description: build and validate one bounded bucket AVL
+  in unpublished HashTree arrays, with exact Chain membership and stable
+  malformed-state rejection, but no finder or promotion integration.
+- Similarity review: ordering, rotations, metadata, validation, errors, and
+  tests derive from marc-owned components and this design record. No external
+  implementation expression entered this change.
+- Local validation: MSVC 18.8.2 and ClangCL 22.1.3 Release builds pass all 27
+  focused builder, promotion, and HashTree tests and all 3,035 CTest cases at
+  a 300-second per-test limit. Both complete runs include the Python tooling
+  tests and `marc_interoperability_schema_compatibility`. One incremental MSVC
+  attempt encountered the environment's known FileTracker `E_ACCESSDENIED`;
+  the identical formal out-of-sandbox build succeeded before focused and full
+  tests. Hand-checkable fixtures cover four AVL rotation shapes, equal capped
+  keys, exact and exceeded window boundaries, empty publication, malformed
+  contexts and Chains, and post-build metadata rejection.

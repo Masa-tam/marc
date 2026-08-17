@@ -5738,3 +5738,13 @@ existing first-error sticky-state conventions. The transition proof is a
 repository-owned finite state machine over Idle, Pending, and Building. No
 external hash tree, adaptive index, match finder, compressor, source code,
 test, patent, pseudocode, or optimization description was consulted.
+
+### IR-0639
+
+The private HashTree bucket builder uses DD-861 through DD-867, TVG-0733
+through TVG-0739, marc's repository-owned BinaryTree AVL invariants and
+rotations, the checked prefix hash, and HashTree's lazy workspace lifetime
+contract. The bounded non-recursive validation and private-root publication
+rule were written for this repository. No external hash tree, match finder,
+compressor, source code, test, patent, pseudocode, or optimization description
+was consulted.

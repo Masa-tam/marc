@@ -18128,3 +18128,35 @@ statistics pointers, bucket population, timing, CPU identity, and benchmark
 history cannot affect it. This stage is not yet connected to finder query or
 advance and changes no workspace, selector, format, ABI, token, or
 interoperability behavior.
+
+## DD-867: A bucket AVL is built and validated behind a private root
+
+- Date: 2026-08-18
+- Status: accepted
+
+Implement an independent bounded builder before connecting promotion to the
+finder. It receives an immutable input, parameters, current query position,
+bucket identity, one copied Chain head, immutable predecessor links, and the
+six unpublished tree-node arrays. It receives no root or mode array and
+therefore cannot publish PromotedTree.
+
+Traverse the active Chain newest-to-oldest without allocation or a temporary
+position list. Stop beyond the window, require every reachable active position
+to be earlier than the query, five-byte readable, mapped to the requested
+bucket, and linked by a checked positive backward distance. Map absolute
+positions to the existing window ring. The active half-open interval contains
+at most one position per ring slot.
+
+Construct every field before linking a new node, order by the same capped
+lexicographic key and absolute-position tie-break as the repository BinaryTree,
+and restore AVL height and subtree-maximum-position metadata after rotations.
+Before returning a non-null private root, re-traverse the active Chain and
+verify root parentage, indices, child/parent reciprocity, strict local order,
+height, balance, subtree maximum, and a bounded parent path from every node to
+that root. Validation is iterative and uses no scratch allocation.
+
+Any invalid argument, Chain, slot, or constructed-tree invariant returns a
+stable private error and a null result root. Partially constructed trivial node
+objects may remain only in the still-unpublished arena. The builder never
+changes heads, links, roots, modes, the promotion planner, format, ABI, token
+representation, selector, or interoperability output.

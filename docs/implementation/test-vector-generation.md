@@ -10325,3 +10325,25 @@ Building bucket to commit. Independently submit an out-of-range bucket, a
 different query while Pending, a query while Building, and a wrong commit;
 each must preserve the first stable error and terminate without publishing a
 bucket mode or touching finder workspace.
+
+### TVG-0739
+
+Build one bucket from hand-checkable newest-to-oldest Chains that require no
+rotation, left and right single rotations, and both double rotations. Require
+the returned position set to equal the active Chain set, exact parent/child
+links, correct height and subtree maximum, and a null parent at the private
+root. Include equal capped suffixes so absolute position is the deterministic
+final key.
+
+Place one predecessor exactly at the window edge and one immediately beyond;
+only the edge node may be constructed. Use a capacity smaller than the
+absolute positions to prove ring-slot mapping. Require empty head to produce a
+valid empty build without touching tree storage.
+
+Independently reject an invalid bucket count or identity, wrong node-array
+extent, query position outside input, future or short-suffix head, excessive
+or forward predecessor distance, reachable prefix in another bucket, and a
+corrupted constructed invariant. Every failure must return a null root,
+terminate within node capacity, and leave caller-owned head, links, roots,
+modes, and promotion state unchanged. No test connects the builder to finder
+query or advance in this stage.
