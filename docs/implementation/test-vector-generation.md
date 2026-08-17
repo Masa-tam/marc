@@ -10363,3 +10363,22 @@ Require a stable private error, empty match, and termination within a bound
 derived from node capacity. Query must not modify Chain links, any node field,
 root, mode, promotion state, input, or diagnostics. Finder integration and
 LCP comparison skipping remain outside this stage.
+
+### TVG-0741
+
+Starting from hand-built promoted buckets, insert keys that require no
+rotation, each single rotation, and each double rotation. Remove a leaf, a
+one-child node, the root, and a two-child node whose successor is both direct
+and deeper. After every operation require the diagnostic active-range
+validator to accept and the Exact query to match Exhaustive and HashChain.
+
+Advance a small window position-by-position, deleting the exact distance-W
+node only after its query and inserting every skipped position. Include an
+empty promoted bucket becoming active again, equal capped keys, hash
+collisions, and ring-slot reuse.
+
+Independently attempt duplicate insertion, absent removal, wrong bucket,
+short-suffix position, invalid root, corrupt reached child, and a search cycle.
+Each preflight failure must return a stable error result, preserve the copied
+root and every node byte, and terminate within node capacity. Mutation must
+not receive or modify Chain links, bucket roots/modes, or promotion state.

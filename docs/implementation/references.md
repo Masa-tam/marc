@@ -5756,3 +5756,11 @@ TVG-0733 through TVG-0740, marc's repository-owned BinaryTree neighbor and
 prefix-interval proof, HashTree bucket builder, and Exhaustive/HashChain
 oracles. No external tree query, compressor, source code, test, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0641
+
+The private promoted-bucket mutation uses DD-861 through DD-869, TVG-0733
+through TVG-0741, marc's repository-owned BinaryTree insertion, structural
+deletion, AVL metadata rules, and HashTree ring/bucket contracts. No external
+tree mutation, match finder, compressor, source code, test, patent, pseudocode,
+or optimization description was consulted.

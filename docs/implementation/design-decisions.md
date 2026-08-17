@@ -18184,3 +18184,33 @@ is a later result-preserving change, measured against this path rather than
 mixed into first correctness. Empty tree and sub-minimum LCP return an empty
 match without error. This stage remains disconnected from finder query,
 format, ABI, tokens, selectors, and interoperability output.
+
+## DD-869: Promoted bucket mutation validates before changing structure
+
+- Date: 2026-08-18
+- Status: accepted
+
+Implement bucket-local insertion and structural deletion independently before
+finder integration. Both receive immutable input and bucket identity, mutable
+node arrays, and a copied root; they return the replacement root. They cannot
+access HashChain heads/links, bucket roots/modes, or promotion state.
+
+Search and validate the complete mutation path before the first write. Reject
+invalid parameters, bucket, root, position, slot generation, duplicate insert,
+missing removal, invalid reached index, cycle, or cross-bucket node without
+changing any node field. After successful preflight, insertion constructs all
+six fields before linking; removal uses structural successor transplant,
+clears the retired slot to sentinels, and rebalances to the root. Once writes
+begin, the repository-owned rotations and metadata updates have no fallible
+branch.
+
+Add a diagnostic non-recursive validator over an explicit active half-open
+position range. It scans at most one window, derives the exact bucket member
+set from the shared prefix hash, and verifies ring generation, one root,
+parent/child reciprocity, strict order, height, balance, subtree maximum,
+connectivity, and exact member count. It is not called in the steady query
+path.
+
+This stage leaves the builder implementation unchanged as an independent
+construction oracle. It does not publish a mode, connect the finder, change a
+selector, or affect format, ABI, tokens, or interoperability output.

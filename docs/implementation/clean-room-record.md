@@ -22581,3 +22581,32 @@ discarded and the reviewed seed retained.
   and collision inputs against both Exhaustive and HashChain, while permanent
   negative cases cover invalid context, root generation, cycles, and selected
   subtree-maximum corruption.
+
+## CR-0938: 2026-08-18 - HashTree promoted-bucket mutation
+
+- Authoring method: isolated insertion, structural deletion, and diagnostic
+  range validation from finder publication, using marc's existing AVL rules as
+  the repository-owned behavioral source.
+- References used: DD-861 through DD-869, IR-0633 through IR-0641, TVG-0733
+  through TVG-0741, and repository-owned BinaryTree, prefix hash, HashTree
+  builder/query, Exhaustive, and HashChain behavior.
+- Known implementations intentionally not consulted: external tree mutation,
+  match finders, compressors, source code, tests, patents, pseudocode, and
+  optimization descriptions.
+- Independent decisions: complete fallible search before mutation; return a
+  copied replacement root; clear retired slots; and validate exact membership
+  by a bounded active-range scan outside the steady path.
+- Generated-code task description: insert and retire promoted bucket nodes,
+  preserve AVL metadata and ring generations, prove preflight atomicity, and
+  remain disconnected from finder roots and modes.
+- Similarity review: mutation order, checks, metadata, errors, and tests derive
+  entirely from marc-owned components and this design. No external
+  implementation expression entered this change.
+- Local validation: MSVC 18.8.2 and ClangCL 22.1.3 Release builds pass all 37
+  focused mutation, query, builder, promotion, and HashTree tests and all
+  3,045 CTest cases at a 300-second per-test limit. Both complete runs include
+  the Python tooling tests and `marc_interoperability_schema_compatibility`.
+  Permanent fixtures cover sliding-window retirement, ring reuse, empty-tree
+  reactivation, every deletion shape including direct and deeper successors,
+  insertion rotations, preflight byte preservation, cycles, active-range
+  validation, and Exact query agreement with Exhaustive after every update.
