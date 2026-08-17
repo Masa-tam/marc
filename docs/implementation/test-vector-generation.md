@@ -10294,3 +10294,19 @@ Initialize input shorter than five bytes with empty workspace and require a
 valid zero-capacity finder. Seed a distinct finder, then independently reject
 short workspace, misaligned workspace, and input/workspace overlap. Each
 failure must preserve the seeded finder and every caller byte exactly.
+
+### TVG-0737
+
+Run the HashTree Chain-only finder position-by-position over empty, short,
+binary, repetitive, collision, incompressible, and window-boundary inputs.
+Require every match to equal both Exhaustive and HashChain and require optional
+Chain diagnostics to preserve results. Advance across multi-position parser
+skips and require skipped positions to become candidates.
+
+Before a position is published, require its lazy predecessor link to be
+constructed; unreachable later slots must remain at their byte fixture pattern.
+Independently violate query position and advance interval, and corrupt a
+reachable head or predecessor distance out of range. Require a stable first
+error, sticky-invalid state, empty later matches, unchanged later workspace,
+and finite completion. No test may activate a tree mode or inspect an
+unconstructed tree-node field through its eventual type.

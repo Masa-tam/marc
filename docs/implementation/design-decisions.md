@@ -18079,3 +18079,27 @@ Successful short-input initialization needs no workspace but still publishes
 an initialized, valid, position-zero finder. This stage adds no query, advance,
 promotion, tree mutation, public selector, format, ABI, token, or
 interoperability change.
+
+## DD-865: HashTree completes an Exact Chain-only protocol before promotion
+
+- Date: 2026-08-18
+- Status: accepted
+
+Implement query and advance using only the existing five-byte HashChain
+partition. Each consumed position with five readable bytes constructs or
+replaces its predecessor-distance ring slot before publishing that position as
+the bucket head. Insert every position in a skipped parser interval. Query
+traverses newest-to-oldest, stops beyond the window, selects longest match and
+nearest distance exactly, and records the same Chain diagnostics as HashChain.
+
+Make HashTree query non-const now because a later completed Chain query may
+publish pending promotion state. Refine the private finder concept to require a
+query callable on a non-const object; all existing const-query finders continue
+to satisfy it. No hidden `mutable` state is introduced.
+
+Uninitialized use, wrong query position, invalid advance interval, or an
+out-of-range reachable head/link makes the finder sticky-invalid and preserves
+the first stable private error. Later query returns an empty match and later
+advance performs no workspace mutation. This stage never promotes a bucket and
+does not read any tree-node field. It changes no public selector, format, ABI,
+token representation, or interoperability artifact.

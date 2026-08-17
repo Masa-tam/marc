@@ -1,4 +1,5 @@
 #include "dictionary/lzss_hash_tree_match_finder.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -46,12 +47,59 @@ template<typename T>
     return {reinterpret_cast<const T*>(workspace.data() + offset), count};
 }
 
+template<typename T>
+[[nodiscard]] std::span<T> mutable_array_at(
+    const std::span<std::byte> workspace, const std::size_t offset,
+    const std::size_t count) {
+    return {reinterpret_cast<T*>(workspace.data() + offset), count};
+}
+
 void expect_all_bytes(
     const std::span<const std::byte> values,
     const std::byte expected) {
     EXPECT_TRUE(std::ranges::all_of(values, [expected](const auto value) {
         return value == expected;
     }));
+}
+
+void expect_hash_tree_matches_existing_finders(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters = {}) {
+    const auto tree_required = calculate_lzss_hash_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(tree_required.error, LzssHashTreeError::none);
+    auto tree_storage = make_storage(tree_required.workspace_size);
+    LzssHashTreeMatchFinder tree{};
+    ASSERT_EQ(initialize_lzss_hash_tree_match_finder(
+                  input, parameters, {},
+                  tree_storage.bytes.first(tree_required.workspace_size),
+                  tree),
+              LzssHashTreeError::none);
+
+    const auto chain_required = calculate_lzss_hash_chain_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(chain_required.error, LzssHashChainError::none);
+    auto chain_storage = make_storage(chain_required.workspace_size);
+    LzssHashChainMatchFinder chain{};
+    ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+                  input, parameters, {},
+                  chain_storage.bytes.first(chain_required.workspace_size),
+                  chain),
+              LzssHashChainError::none);
+    LzssExhaustiveMatchFinder exhaustive{input, parameters};
+
+    for (std::size_t position = 0; position <= input.size(); ++position) {
+        const auto expected = exhaustive.find_match(position);
+        EXPECT_EQ(tree.find_match(position), expected) << position;
+        EXPECT_EQ(chain.find_match(position), expected) << position;
+        EXPECT_TRUE(tree.state_valid()) << position;
+        EXPECT_EQ(tree.last_error(), LzssHashTreeError::none) << position;
+        if (position != input.size()) {
+            tree.advance(position, position + 1U);
+            chain.advance(position, position + 1U);
+            exhaustive.advance(position, position + 1U);
+        }
+    }
 }
 
 [[nodiscard]] constexpr std::size_t align_size(
@@ -320,6 +368,212 @@ TEST(LzssHashTreeMatchFinder, RejectsWorkspaceFailuresAtomically) {
               LzssHashTreeError::overlapping_buffers);
     EXPECT_EQ(finder.input_size(), seed_input.size());
     EXPECT_TRUE(std::ranges::equal(arena.bytes, original_arena));
+}
+
+TEST(LzssHashTreeMatchFinder, ChainPathMatchesExistingExactFinders) {
+    const auto empty = bytes("");
+    expect_hash_tree_matches_existing_finders(empty);
+    const auto short_input = bytes("ABCD");
+    expect_hash_tree_matches_existing_finders(short_input);
+    const auto repetitive = bytes("ABABABABABABABABABABABABABAB");
+    expect_hash_tree_matches_existing_finders(repetitive);
+    const auto collision = std::array{
+        std::byte{1}, std::byte{0}, std::byte{0}, std::byte{0x58},
+        std::byte{0x59}, std::byte{0}, std::byte{0x20}, std::byte{0},
+        std::byte{0x58}, std::byte{0x59}, std::byte{1}, std::byte{0},
+        std::byte{0}, std::byte{0x58}, std::byte{0x59}};
+    expect_hash_tree_matches_existing_finders(collision);
+
+    std::vector<std::byte> binary(512);
+    for (std::size_t index = 0; index < binary.size(); ++index) {
+        binary[index] = static_cast<std::byte>(index & 0xffU);
+    }
+    for (const auto window : {5U, 17U, 64U}) {
+        LzssParameters parameters{};
+        parameters.window_size = window;
+        expect_hash_tree_matches_existing_finders(binary, parameters);
+    }
+}
+
+TEST(LzssHashTreeMatchFinder, ChainPathIndexesSkippedPositions) {
+    const auto input = bytes("ABABABABABABABABXYZABABABAB");
+    const auto required = calculate_lzss_hash_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssHashTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssHashTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_hash_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssHashTreeError::none);
+    LzssExhaustiveMatchFinder exhaustive{input, {}};
+
+    EXPECT_EQ(finder.find_match(0), exhaustive.find_match(0));
+    finder.advance(0, 2);
+    exhaustive.advance(0, 2);
+    EXPECT_EQ(finder.find_match(2), exhaustive.find_match(2));
+    finder.advance(2, 16);
+    exhaustive.advance(2, 16);
+    EXPECT_EQ(finder.find_match(16), exhaustive.find_match(16));
+    EXPECT_TRUE(finder.state_valid());
+}
+
+TEST(LzssHashTreeMatchFinder, ChainPathMatchesHashChainStatistics) {
+    const auto input = bytes("ABCDEABCDEABCDE");
+    const auto tree_required = calculate_lzss_hash_tree_workspace(
+        input.size(), {}, {});
+    auto tree_storage = make_storage(tree_required.workspace_size);
+    LzssMatchFinderStatistics tree_statistics{};
+    LzssHashTreeMatchFinder tree{};
+    ASSERT_EQ(initialize_lzss_hash_tree_match_finder(
+                  input, {}, {}, tree_storage.bytes, tree, &tree_statistics),
+              LzssHashTreeError::none);
+
+    const auto chain_required = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    auto chain_storage = make_storage(chain_required.workspace_size);
+    LzssMatchFinderStatistics chain_statistics{};
+    LzssHashChainMatchFinder chain{};
+    ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+                  input, {}, {}, chain_storage.bytes, chain,
+                  &chain_statistics),
+              LzssHashChainError::none);
+
+    for (std::size_t position = 0; position < input.size(); ++position) {
+        EXPECT_EQ(tree.find_match(position), chain.find_match(position));
+        tree.advance(position, position + 1U);
+        chain.advance(position, position + 1U);
+    }
+    EXPECT_EQ(tree_statistics.query_count, chain_statistics.query_count);
+    EXPECT_EQ(tree_statistics.candidate_count,
+              chain_statistics.candidate_count);
+    EXPECT_EQ(tree_statistics.byte_comparison_count,
+              chain_statistics.byte_comparison_count);
+    EXPECT_EQ(tree_statistics.hash_chain_prefix_match_count,
+              chain_statistics.hash_chain_prefix_match_count);
+    EXPECT_EQ(tree_statistics.hash_chain_prefix_mismatch_count,
+              chain_statistics.hash_chain_prefix_mismatch_count);
+    EXPECT_EQ(tree_statistics.hash_chain_extension_byte_comparison_count,
+              chain_statistics.hash_chain_extension_byte_comparison_count);
+    EXPECT_EQ(tree_statistics.hash_chain_maximum_candidates_per_query,
+              chain_statistics.hash_chain_maximum_candidates_per_query);
+    EXPECT_EQ(tree_statistics.hash_chain_query_depth_histogram,
+              chain_statistics.hash_chain_query_depth_histogram);
+}
+
+TEST(LzssHashTreeMatchFinder, ConstructsLazyLinkBeforePublishingHead) {
+    const auto input = bytes("ABCDEABCDE");
+    const auto required = calculate_lzss_hash_tree_workspace(
+        input.size(), {}, {});
+    auto storage = make_storage(required.workspace_size);
+    std::ranges::fill(storage.bytes, std::byte{0xa5});
+    LzssHashTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_hash_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssHashTreeError::none);
+
+    finder.advance(0, 1);
+    ASSERT_TRUE(finder.state_valid());
+    const auto links = array_at<std::uint32_t>(
+        storage.bytes, required.link_offset, 1);
+    EXPECT_EQ(links[0], 0U);
+    expect_all_bytes(
+        storage.bytes.subspan(required.link_offset + sizeof(std::uint32_t),
+                              sizeof(std::uint32_t)),
+        std::byte{0xa5});
+    const auto hash = calculate_lzss_prefix_hash(input, 0);
+    ASSERT_TRUE(hash.valid);
+    const auto bucket = static_cast<std::size_t>(hash.value)
+        & (required.bucket_count - 1U);
+    const auto heads = array_at<std::size_t>(
+        storage.bytes, required.head_offset, required.bucket_count);
+    EXPECT_EQ(heads[bucket], 0U);
+}
+
+TEST(LzssHashTreeMatchFinder, ProtocolFailuresAreStickyAndFinite) {
+    const auto input = bytes("ABCDEABCDE");
+    const auto required = calculate_lzss_hash_tree_workspace(
+        input.size(), {}, {});
+    auto storage = make_storage(required.workspace_size);
+    LzssHashTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_hash_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssHashTreeError::none);
+    const auto original = std::vector<std::byte>(
+        storage.bytes.begin(), storage.bytes.end());
+
+    EXPECT_EQ(finder.find_match(1), LzssMatch{});
+    EXPECT_FALSE(finder.state_valid());
+    EXPECT_EQ(finder.last_error(), LzssHashTreeError::invalid_protocol);
+    EXPECT_EQ(finder.find_match(0), LzssMatch{});
+    finder.advance(0, 1);
+    EXPECT_EQ(finder.last_error(), LzssHashTreeError::invalid_protocol);
+    EXPECT_TRUE(std::ranges::equal(storage.bytes, original));
+
+    LzssHashTreeMatchFinder uninitialized{};
+    EXPECT_EQ(uninitialized.find_match(0), LzssMatch{});
+    EXPECT_EQ(uninitialized.last_error(), LzssHashTreeError::invalid_state);
+
+    auto second_storage = make_storage(required.workspace_size);
+    LzssHashTreeMatchFinder second{};
+    ASSERT_EQ(initialize_lzss_hash_tree_match_finder(
+                  input, {}, {}, second_storage.bytes, second),
+              LzssHashTreeError::none);
+    second.advance(1, 2);
+    EXPECT_FALSE(second.state_valid());
+    EXPECT_EQ(second.last_error(), LzssHashTreeError::invalid_protocol);
+}
+
+TEST(LzssHashTreeMatchFinder, ReachableCorruptionBecomesStickyInvalid) {
+    const auto input = std::array{
+        std::byte{1}, std::byte{0}, std::byte{0}, std::byte{0x58},
+        std::byte{0x59}, std::byte{0}, std::byte{0x20}, std::byte{0},
+        std::byte{0x58}, std::byte{0x59}, std::byte{1}, std::byte{0},
+        std::byte{0}, std::byte{0x58}, std::byte{0x59}};
+    const auto required = calculate_lzss_hash_tree_workspace(
+        input.size(), {}, {});
+    auto storage = make_storage(required.workspace_size);
+    LzssHashTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_hash_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssHashTreeError::none);
+    finder.advance(0, 10);
+    ASSERT_TRUE(finder.state_valid());
+
+    const auto hash = calculate_lzss_prefix_hash(input, 10);
+    ASSERT_TRUE(hash.valid);
+    const auto bucket = static_cast<std::size_t>(hash.value)
+        & (required.bucket_count - 1U);
+    auto heads = mutable_array_at<std::size_t>(
+        storage.bytes, required.head_offset, required.bucket_count);
+    const auto reachable_head = heads[bucket];
+    ASSERT_LT(reachable_head, 10U);
+    ASSERT_NE(input[reachable_head], input[10]);
+    auto link = mutable_array_at<std::uint32_t>(
+        storage.bytes,
+        required.link_offset
+            + reachable_head * sizeof(std::uint32_t), 1);
+    link[0] = static_cast<std::uint32_t>(reachable_head + 1U);
+    const auto corrupted = std::vector<std::byte>(
+        storage.bytes.begin(), storage.bytes.end());
+
+    EXPECT_EQ(finder.find_match(10), LzssMatch{});
+    EXPECT_FALSE(finder.state_valid());
+    EXPECT_EQ(finder.last_error(), LzssHashTreeError::invalid_state);
+    finder.advance(10, 11);
+    EXPECT_TRUE(std::ranges::equal(storage.bytes, corrupted));
+
+    auto head_storage = make_storage(required.workspace_size);
+    LzssHashTreeMatchFinder head_finder{};
+    ASSERT_EQ(initialize_lzss_hash_tree_match_finder(
+                  input, {}, {}, head_storage.bytes, head_finder),
+              LzssHashTreeError::none);
+    head_finder.advance(0, 10);
+    auto bad_heads = mutable_array_at<std::size_t>(
+        head_storage.bytes, required.head_offset, required.bucket_count);
+    bad_heads[bucket] = input.size();
+    EXPECT_EQ(head_finder.find_match(10), LzssMatch{});
+    EXPECT_FALSE(head_finder.state_valid());
+    EXPECT_EQ(head_finder.last_error(), LzssHashTreeError::invalid_state);
 }
 
 } // namespace

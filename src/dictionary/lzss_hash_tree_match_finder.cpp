@@ -7,6 +7,7 @@
 #include <bit>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <memory>
 
 namespace marc::dictionary::internal {
@@ -38,7 +39,182 @@ void construct_array(const std::span<T> values, const T initial) noexcept {
     }
 }
 
+void increment_statistic(
+    LzssMatchFinderStatistics* const statistics,
+    std::uint64_t& value) noexcept {
+    if (statistics == nullptr) return;
+    if (value == std::numeric_limits<std::uint64_t>::max()) {
+        statistics->overflowed = true;
+        return;
+    }
+    ++value;
+}
+
+void record_chain_query_depth(
+    LzssMatchFinderStatistics* const statistics,
+    const std::uint64_t candidate_count) noexcept {
+    if (statistics == nullptr) return;
+    statistics->hash_chain_maximum_candidates_per_query = std::max(
+        statistics->hash_chain_maximum_candidates_per_query,
+        candidate_count);
+    const auto raw_bin = candidate_count == 0 ? 0U
+        : std::bit_width(candidate_count);
+    const auto bin = std::min<std::size_t>(
+        raw_bin, statistics->hash_chain_query_depth_histogram.size() - 1U);
+    increment_statistic(
+        statistics, statistics->hash_chain_query_depth_histogram[bin]);
+}
+
 } // namespace
+
+void LzssHashTreeMatchFinder::mark_error(
+    const LzssHashTreeError error) noexcept {
+    if (last_error_ == LzssHashTreeError::none) last_error_ = error;
+    state_valid_ = false;
+    next_position_ = input_.size();
+}
+
+LzssMatch LzssHashTreeMatchFinder::find_match(
+    const std::size_t position) noexcept {
+    LzssMatch best{};
+    if (!initialized_) {
+        mark_error(LzssHashTreeError::invalid_state);
+        return best;
+    }
+    if (!state_valid_) return best;
+    if (position != next_position_ || position > input_.size()) {
+        mark_error(LzssHashTreeError::invalid_protocol);
+        return best;
+    }
+    if (position == input_.size()) return best;
+    if (statistics_ != nullptr) {
+        increment_statistic(statistics_, statistics_->query_count);
+    }
+    if (heads_.empty()
+        || input_.size() - position < lzss_match_finder_prefix_size) {
+        record_chain_query_depth(statistics_, 0);
+        return best;
+    }
+
+    const auto prefix_hash = calculate_lzss_prefix_hash(input_, position);
+    if (!prefix_hash.valid) {
+        mark_error(LzssHashTreeError::invalid_state);
+        return {};
+    }
+    const auto bucket = static_cast<std::size_t>(prefix_hash.value)
+        & (heads_.size() - 1U);
+    if (modes_[bucket] != LzssHashTreeBucketMode::chain
+        || roots_[bucket] != lzss_hash_tree_null_node) {
+        mark_error(LzssHashTreeError::invalid_state);
+        return {};
+    }
+
+    const auto maximum_length = std::min<std::size_t>(
+        input_.size() - position,
+        static_cast<std::size_t>(parameters_.max_match_length));
+    auto candidate = heads_[bucket];
+    std::uint64_t query_candidate_count{};
+    while (candidate != lzss_hash_tree_no_position) {
+        if (candidate >= position || candidate >= input_.size()
+            || input_.size() - candidate < lzss_match_finder_prefix_size) {
+            mark_error(LzssHashTreeError::invalid_state);
+            return {};
+        }
+        const auto distance = position - candidate;
+        if (distance > parameters_.window_size) break;
+        ++query_candidate_count;
+        if (statistics_ != nullptr) {
+            increment_statistic(statistics_, statistics_->candidate_count);
+        }
+
+        std::size_t length{};
+        while (length < maximum_length) {
+            if (statistics_ != nullptr) {
+                increment_statistic(
+                    statistics_, statistics_->byte_comparison_count);
+            }
+            if (statistics_ != nullptr
+                && length >= lzss_match_finder_prefix_size) {
+                increment_statistic(
+                    statistics_,
+                    statistics_->hash_chain_extension_byte_comparison_count);
+            }
+            if (input_[position + length] != input_[candidate + length]) break;
+            ++length;
+        }
+        if (statistics_ != nullptr) {
+            auto& prefix_count = length >= lzss_match_finder_prefix_size
+                ? statistics_->hash_chain_prefix_match_count
+                : statistics_->hash_chain_prefix_mismatch_count;
+            increment_statistic(statistics_, prefix_count);
+        }
+        if (length >= parameters_.min_match_length && length > best.length) {
+            best.distance = static_cast<std::uint32_t>(distance);
+            best.length = static_cast<std::uint32_t>(length);
+            if (length == maximum_length) break;
+        }
+
+        const auto previous_distance = links_[candidate % links_.size()];
+        if (previous_distance == 0) break;
+        if (previous_distance > candidate) {
+            mark_error(LzssHashTreeError::invalid_state);
+            return {};
+        }
+        candidate -= previous_distance;
+    }
+    record_chain_query_depth(statistics_, query_candidate_count);
+    return best;
+}
+
+void LzssHashTreeMatchFinder::advance(
+    const std::size_t position,
+    const std::size_t next_position) noexcept {
+    if (!initialized_) {
+        mark_error(LzssHashTreeError::invalid_state);
+        return;
+    }
+    if (!state_valid_) return;
+    if (position != next_position_ || next_position < position
+        || next_position > input_.size()) {
+        mark_error(LzssHashTreeError::invalid_protocol);
+        return;
+    }
+
+    for (auto current = position; current < next_position; ++current) {
+        if (input_.size() - current < lzss_match_finder_prefix_size) continue;
+        const auto prefix_hash = calculate_lzss_prefix_hash(input_, current);
+        if (!prefix_hash.valid) {
+            mark_error(LzssHashTreeError::invalid_state);
+            return;
+        }
+        const auto bucket = static_cast<std::size_t>(prefix_hash.value)
+            & (heads_.size() - 1U);
+        if (modes_[bucket] != LzssHashTreeBucketMode::chain
+            || roots_[bucket] != lzss_hash_tree_null_node) {
+            mark_error(LzssHashTreeError::invalid_state);
+            return;
+        }
+
+        const auto previous = heads_[bucket];
+        std::uint32_t previous_distance{};
+        if (previous != lzss_hash_tree_no_position) {
+            if (previous >= current || previous >= input_.size()
+                || input_.size() - previous
+                    < lzss_match_finder_prefix_size) {
+                mark_error(LzssHashTreeError::invalid_state);
+                return;
+            }
+            const auto distance = current - previous;
+            if (distance <= parameters_.window_size) {
+                previous_distance = static_cast<std::uint32_t>(distance);
+            }
+        }
+        std::construct_at(
+            links_.data() + current % links_.size(), previous_distance);
+        heads_[bucket] = current;
+    }
+    next_position_ = next_position;
+}
 
 LzssHashTreeWorkspaceRequirements calculate_lzss_hash_tree_workspace(
     const std::size_t input_size, const LzssParameters& parameters,

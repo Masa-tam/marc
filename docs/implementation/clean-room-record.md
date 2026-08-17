@@ -22464,3 +22464,33 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`. Byte-pattern fixtures confirm
   that successful initialization touches only control arrays and every tested
   failure touches neither finder nor workspace.
+
+## CR-0934: 2026-08-18 - HashTree Exact Chain-only path
+
+- Authoring method: transferred marc's proven Exact HashChain semantics into
+  the initialized HashTree arena, adding explicit lazy-link lifetime and sticky
+  protocol failure before implementing any promotion behavior.
+- References used: DD-861 through DD-865, IR-0633 through IR-0637, TVG-0733
+  through TVG-0737, and the repository-owned shared prefix hash, HashChain,
+  Exhaustive finder, BinaryTree state handling, and match statistics.
+- Known implementations intentionally not consulted: external hash trees,
+  match finders, compressors, source code, tests, patents, pseudocode, and
+  optimization descriptions.
+- Independent decisions: construct each link before head publication; preserve
+  all skipped positions; make query explicitly non-const; keep the first sticky
+  error; and leave every tree region unreachable and unread.
+- Generated-code task description: implement only the Exact Chain route,
+  differentially match existing finders, prove lazy link publication order,
+  and reject protocol and reachable-index corruption without promotion.
+- Similarity review: traversal, tie-break, lifetime rule, state machine, errors,
+  and tests derive entirely from marc-owned designs and components. No external
+  implementation expression entered this change.
+- Local validation: MSVC 18.8.2 and ClangCL 22.1.3 Release builds pass all 13
+  focused HashTree tests and all 3,021 CTest cases at a 300-second per-test
+  limit, including the Python tooling tests and
+  `marc_interoperability_schema_compatibility`. Exact matches and Chain
+  diagnostics equal the existing HashChain and Exhaustive oracles. An initial
+  corruption fixture assumed position 5 remained the bucket head; the test
+  exposed an additional overlapping-prefix collision at position 8, so the
+  permanent regression now corrupts the actual newest reachable head instead
+  of encoding the false position assumption.

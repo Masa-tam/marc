@@ -26,6 +26,9 @@ enum class LzssHashTreeError : std::uint8_t {
     workspace_too_small,
     misaligned_workspace,
     overlapping_buffers,
+    invalid_position,
+    invalid_state,
+    invalid_protocol,
 };
 
 enum class LzssHashTreeBucketMode : std::uint8_t {
@@ -77,12 +80,19 @@ public:
     [[nodiscard]] std::size_t next_position() const noexcept {
         return next_position_;
     }
+    [[nodiscard]] LzssHashTreeError last_error() const noexcept {
+        return last_error_;
+    }
+    [[nodiscard]] LzssMatch find_match(std::size_t position) noexcept;
+    void advance(std::size_t position, std::size_t next_position) noexcept;
 
 private:
     friend LzssHashTreeError initialize_lzss_hash_tree_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
         LzssHashTreeMatchFinder&, LzssMatchFinderStatistics*) noexcept;
+
+    void mark_error(LzssHashTreeError error) noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
@@ -98,9 +108,12 @@ private:
     std::span<std::size_t> subtree_maximum_position_{};
     std::size_t next_position_{};
     LzssMatchFinderStatistics* statistics_{};
+    LzssHashTreeError last_error_{LzssHashTreeError::none};
     bool initialized_{};
     bool state_valid_{};
 };
+
+static_assert(LzssMatchFinder<LzssHashTreeMatchFinder>);
 
 [[nodiscard]] LzssHashTreeError initialize_lzss_hash_tree_match_finder(
     std::span<const std::byte> input, const LzssParameters& parameters,

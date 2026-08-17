@@ -53,9 +53,9 @@ struct LzssMatchFinderStatistics {
 
 template <typename Finder>
 concept LzssMatchFinder = requires(
-    Finder& finder, const Finder& constant_finder, std::size_t position,
+    Finder& finder, std::size_t position,
     std::size_t next_position) {
-    { constant_finder.find_match(position) } noexcept
+    { finder.find_match(position) } noexcept
         -> std::same_as<LzssMatch>;
     { finder.advance(position, next_position) } noexcept
         -> std::same_as<void>;

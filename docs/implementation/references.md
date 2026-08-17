@@ -5720,3 +5720,12 @@ repository-owned buffer-overlap classifier, and the atomic-publication pattern
 of the HashChain and BinaryTree initializers. No external hash tree, match
 finder, lazy arena, compressor, source code, test, patent, pseudocode, or
 optimization description was consulted.
+
+### IR-0637
+
+The private HashTree Chain-only query and advance path uses DD-861 through
+DD-864, TVG-0733 through TVG-0736, marc's shared five-byte hash, the
+repository-owned Exact HashChain traversal, lazy workspace lifetime proof,
+sticky BinaryTree protocol state, and Exhaustive differential oracle. No
+external hash tree, match finder, compressor, source code, test, patent,
+pseudocode, or optimization description was consulted.
