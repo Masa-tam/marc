@@ -17900,3 +17900,29 @@ throughput is total iteration-weighted input bytes divided by total measured
 seconds; additive counters are summed, maxima are maximized, and histograms are
 summed by bin.
 Fixture-only unit tests must not require the real Corpus or launch benchmarks.
+
+## DD-858: Silesia evidence keeps the current BinaryTree private
+
+- Date: 2026-08-17
+- Status: accepted
+
+The first complete ClangCL Release Silesia matrix proves exact token equality
+between HashChain and BinaryTree for all twelve members at 64 KiB, 256 KiB,
+and one-MiB windows. It also proves that AVL height and query-node growth stay
+bounded as the window grows. These correctness and structural results do not
+admit the current implementation to production selection.
+
+At every aggregate window BinaryTree is slower than HashChain. It maintains
+one ordered suffix node for almost every input byte, performs billions of
+finite-key comparisons and hundreds of millions of rotations, and requires
+approximately 29 MiB of workspace at a one-MiB window. Only `mr` at the
+one-MiB window favors BinaryTree; the other 35 member/window pairs do not.
+
+Keep BinaryTree private, explicit, and absent from format, ABI, and default or
+adaptive strategy selection. Preserve the implementation and evidence because
+they identify a real long-chain rescue case. Before changing its data
+structure or maintenance policy, run the complete five-class synthetic matrix
+at the same three windows and use the separated comparison, rotation,
+retirement, height, and depth counters to identify the dominant costs. Do not
+choose an adaptive threshold from one winning Corpus pair and do not optimize
+away the Exact nearest-distance contract.

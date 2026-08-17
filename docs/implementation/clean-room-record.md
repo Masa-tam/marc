@@ -22262,3 +22262,34 @@ discarded and the reviewed seed retained.
   documentation layout, and `marc_interoperability_schema_compatibility`.
   Together with the two separated Python tooling tests, all 3,002 registered
   tests pass. No production Corpus measurement was run in this tooling stage.
+
+## CR-0927: 2026-08-17 - Silesia Exact match-finder evidence
+
+- Authoring method: ran the repository-owned offline matrix runner against the
+  locally supplied, strictly verified Silesia Corpus and recorded only
+  aggregate descriptive evidence in tracked documentation.
+- References used: DD-841 through DD-845, DD-855 through DD-858; IR-0630 and
+  IR-0631; TVG-0716 through TVG-0718, TVG-0730, and TVG-0731; BM-0053 through
+  BM-0056; marc's verified local manifest, private strategy reports, and
+  ignored-result policy.
+- Known implementations intentionally not consulted: external match finders,
+  trees, compressors, benchmark results, optimization descriptions, source
+  code, tests, patents, and pseudocode.
+- Independent decisions: require pairwise Exact token equality; distinguish
+  bounded query growth from total maintenance cost; retain the one observed
+  long-chain win without generalizing it into a strategy threshold; and keep
+  BinaryTree private pending synthetic cost isolation.
+- Generated-code task description: execute the twelve-member, three-window,
+  two-strategy matrix; audit all 72 reports and six aggregates; compare
+  throughput, workspace, search work, rotations, height, and per-member wins;
+  then record the admission decision without tracking Corpus payload or raw
+  result JSON.
+- Similarity review: the measurement uses only repository-owned tooling and
+  report fields over the user-supplied standard Corpus. No external
+  implementation expression or third-party result set entered the work.
+- Local validation: the runner verified all twelve members, completed all 72
+  child executions in 1,003.2 wall-clock seconds, rejected no report, found no
+  Exact token mismatch, and wrote the versioned result under the ignored local
+  results directory. Revision and environment metadata identify ClangCL
+  22.1.3, Ninja Release, Python 3.14.5, and revision
+  `50160f00d7d343efa51cac38e9367a1682288f8d`.

@@ -1341,6 +1341,39 @@ five-byte prefix match. BinaryTree therefore has evidence to address the
 long-chain cases, but it must also prove that its ordered-key overhead does not
 regress short-chain and incompressible inputs before promotion.
 
+### BM-0056: Silesia Exact match-finder matrix
+
+The offline runner verified all twelve locally supplied Silesia members and
+measured revision `50160f00d7d343efa51cac38e9367a1682288f8d` with ClangCL
+22.1.3, Ninja Release, Python 3.14.5, one iteration, one-MiB frames, and an AMD
+Family 25 Model 97 processor on Windows 11. The 211,938,580 input bytes form
+207 independent frames. HashChain Exact and BinaryTree Exact produced equal
+token counts for every one of the 36 member/window pairs.
+
+| Strategy | Window | Tokens | Measured seconds | MiB/s | Principal search work | Maximum query work | Workspace |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| HashChain Exact | 64 KiB | 52,377,870 | 11.224 | 18.007 | 1,315,521,317 candidates | 47,251 candidates | 786,432 B |
+| HashChain Exact | 256 KiB | 45,236,322 | 28.290 | 7.145 | 3,405,773,748 candidates | 126,159 candidates | 1,572,864 B |
+| HashChain Exact | 1 MiB | 42,185,181 | 56.265 | 3.592 | 6,309,333,525 candidates | 296,876 candidates | 4,718,592 B |
+| BinaryTree Exact | 64 KiB | 52,377,870 | 101.351 | 1.994 | 4,583,438,677 key comparisons | 54 nodes | 1,900,544 B |
+| BinaryTree Exact | 256 KiB | 45,236,322 | 127.455 | 1.586 | 4,964,930,446 key comparisons | 60 nodes | 7,602,176 B |
+| BinaryTree Exact | 1 MiB | 42,185,181 | 104.939 | 1.926 | 5,170,659,733 key comparisons | 65 nodes | 30,408,704 B |
+
+The tree bounds query growth: its maximum height rises only from 20 to 25 and
+maximum nodes per query from 54 to 65, while HashChain's worst query grows by
+more than six times. That asymptotic result does not offset the current tree's
+constant work. Across the three windows it performs 40.8, 48.8, and 53.5
+billion finite-key byte comparisons plus 251.6, 237.9, and 172.3 million AVL
+rotations. Its aggregate throughput is below HashChain at every window.
+
+BinaryTree wins one individual comparison: the `mr` member at a one-MiB
+window measures 1.38 MiB/s versus HashChain's 0.80 MiB/s. It loses the other
+35 pairs, with ratios as low as approximately 0.03. The private experiment
+therefore demonstrates a possible rescue path for a severely degraded long
+chain, but the present AVL suffix-key representation is not suitable as the
+default or as a public selectable strategy. The ignored full JSON remains the
+local audit record; these aggregate values are descriptive, not thresholds.
+
 ## External Silesia measurements
 
 Silesia Corpus measurements are opt-in development experiments. The Corpus is
