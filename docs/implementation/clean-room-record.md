@@ -22350,3 +22350,37 @@ discarded and the reviewed seed retained.
   Release, Python 3.14.5, all 30 successful child executions, and no Exact
   token mismatch. The complete matrix took approximately 40 wall-clock
   seconds and wrote no generated input or tracked result artifact.
+
+## CR-0930: 2026-08-18 - HashTree Exact pre-implementation design
+
+- Authoring method: derived a hot-bucket hybrid from marc's measured Chain and
+  global AVL operation costs, then specified its state, proof, workspace,
+  failure, validation, diagnostic, and staged-admission contracts before code.
+- References used: DD-760 through DD-765, DD-841 through DD-861; IR-0623
+  through IR-0633; TVG-0719, TVG-0724 through TVG-0733; BM-0053 through
+  BM-0057; the repository-owned HashChain and private BinaryTree designs,
+  implementations, validators, fixtures, and counters.
+- Known implementations intentionally not consulted: external hash trees,
+  adaptive indices, match finders, compressors, source code, tests, benchmark
+  results, patents, pseudocode, and optimization descriptions.
+- Independent decisions: keep Chain as the unconditional baseline; promote
+  only after real query work; complete the trigger query before atomic
+  promotion in the following `advance`; make the internal query explicitly
+  non-const; build from its active predecessor chain; never demote during a
+  frame; retain Chain after promotion; and reuse only mathematically proven
+  bracket LCP bytes.
+- Generated-code task description: write a private HashTree Exact design that
+  bounds memory, performs no steady-state allocation or recursion, preserves
+  all skipped positions and nearest-distance ties, makes promotion independent
+  of diagnostics, rejects the stale window-only selection hypothesis, and
+  defines implementation stages and differential evidence gates.
+- Similarity review: the hybrid structure and all terminology are expressed
+  from marc-owned components and measurements. No external implementation
+  expression, control flow, data layout, test, or result set entered the work.
+- Local validation: design review reconciles the active-window timing,
+  predecessor-chain ordering, bucket completeness proof, per-frame monotonic
+  promotion, LCP bracket proof, provisional 64-bit one-MiB workspace bound,
+  non-const query/pending-advance transition, and all current Exact tie-break
+  rules. MSVC and ClangCL documentation-layout tests both pass. No production
+  code, format, ABI, benchmark result, or interoperability artifact changed in
+  this stage.

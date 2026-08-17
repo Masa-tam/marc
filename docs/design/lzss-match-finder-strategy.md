@@ -7,9 +7,11 @@
 デコード規則やストリーム表現ではない。
 
 最初の実装対象は、現在の完全探索を正解オラクルとして維持した上での
-`HashChain Exact`である。`BinaryTree Exact`はHashChain診断後に実装設計が
-受理されたprivate実験候補である。`WindowAdaptiveV1`および`Bounded`は、
-両Exact戦略の測定と検証を終えるまで将来候補として扱う。
+`HashChain Exact`である。global `BinaryTree Exact`はExact性を満たしたが、
+Silesiaおよび合成測定で常時AVL維持の高い費用が確認され、private参照実装に
+留まる。次のprivate実験候補は、深いbucketだけを昇格する`HashTree Exact`で
+ある。`WindowAdaptiveV1`および`Bounded`は、HashTreeの測定と検証を終えるまで
+将来候補として扱う。
 この段階ではストリーム仕様、アルゴリズムID、variant ID、公開C ABI、
 CLI設定を変更しない。
 
@@ -96,22 +98,37 @@ LZSS match finder strategy
 固定配列上のAVL木、期限切れnodeの構造的削除、辞書順近傍による最長一致、
 部分木の最新位置を使うprefix区間集約によってExact性を保証する。詳細は
 [`lzss-binary-tree-match-finder.md`](lzss-binary-tree-match-finder.md)で定める。
-実装完了まではprivate実験戦略であり、既定経路へ使用しない。
+Silesiaと合成matrixの結果、global AVLは既定化しない。privateな正確性oracle
+および構造比較対象として保持する。
 
-### 4.4 将来候補: WindowAdaptiveV1
+### 4.4 実験候補: HashTree Exact
 
-スライドウィンドウサイズだけを入力として、HashChainまたはBinaryTreeを
-決定的に選択する複合戦略。
+HashChainを常時維持し、実際のquery候補数がprivate閾値を超えたbucketだけを
+per-bucket AVLへ一度だけ昇格する。浅いbucketはChainのままなので、global
+BinaryTreeで観測した全位置の無条件な木更新を避けられる。tree traversalは
+既知LCP bracketを保持し、同じquery内で確定済みprefixを再比較しない。
 
-暫定規則は次のとおりとする。
+昇格query自体はHashChain Exactで完了し、次queryからtreeを使用する。閾値、
+診断counterまたはbucket状態はstreamへ記録しない。いずれの経路もExhaustiveと
+同じmatchを返すため、閾値は圧縮結果へ影響しない。詳細は
+[`lzss-hash-tree-match-finder.md`](lzss-hash-tree-match-finder.md)で定める。
+
+### 4.5 将来候補: WindowAdaptiveV1
+
+スライドウィンドウサイズだけを入力としてHashChainまたは別のExact索引を
+決定的に選択する将来の複合戦略である。
+
+過去の暫定仮説は次であった。
 
 ```text
 window_size <= 65,536 bytes : HashChain
 window_size >  65,536 bytes : BinaryTree
 ```
 
-この閾値は単なる仮説であり、HashChainと将来のBinaryTreeを複数カテゴリ、
-複数ウィンドウサイズで測定するまで正式値として使用しない。
+BM-0056とBM-0057はこの規則を棄却した。global BinaryTreeは大窓aggregateでも
+HashChainより遅く、window sizeだけでは安全に選択できない。現在有効な
+`WindowAdaptiveV1`規則またはIDは存在しない。HashTreeはbucket内部で実作業量を
+用いて昇格するprivate Exact索引であり、この旧仮説とは別である。
 
 正式な`WindowAdaptiveV1`として採用した後は、同じIDのまま閾値や選択規則
 を変更しない。将来異なる規則を採用する場合は`WindowAdaptiveV2`などの
@@ -147,6 +164,7 @@ match_finder_strategy:
     Exhaustive
     HashChain
     BinaryTree
+    HashTree
     WindowAdaptiveV1
 
 search_effort:
@@ -248,7 +266,7 @@ raw frame
 
 ### 10.1 Exact同値性
 
-HashChain、BinaryTreeおよびWindowAdaptiveV1のExactモードについて、
+HashChain、global BinaryTreeおよびprivate HashTreeのExactモードについて、
 Exhaustiveと次を完全一致させる。
 
 - 各入力位置で選択した距離と長さ
@@ -271,7 +289,7 @@ Exhaustiveと次を完全一致させる。
 - 長いゼロ列および周期列
 - ランダムデータ
 - フレーム境界と辞書リセット
-- 65,535、65,536、65,537バイトの自動選択境界
+- HashTree promotion閾値の直前、同値、直後
 
 ### 10.3 決定性
 
@@ -317,8 +335,9 @@ Exhaustiveと次を完全一致させる。
 入力カテゴリにはテキスト、UTF-8日本語テキスト、実行ファイル、画像、既圧縮
 データ、ランダムデータ、ゼロ列、周期列および大きな反復データを含める。
 
-WindowAdaptiveV1の64 KiB閾値は、複数カテゴリと複数ウィンドウサイズの結果
-から妥当性を確認する。単一サンプルの結果だけで固定しない。
+過去のWindowAdaptiveV1 64 KiB仮説は棄却済みであり、benchmark対象または
+pass条件にしない。HashTreeのprivate promotion閾値は複数カテゴリと複数
+window sizeでsweepし、単一サンプルから固定しない。
 
 代表的な実データには、利用者が取得してリポジトリ外データとして配置した
 Silesia Corpusを使用する。Corpusを自動downloadまたは再配布せず、各構成
@@ -341,14 +360,17 @@ Silesia Corpusを使用する。Corpusを自動downloadまたは再配布せず�
 8. Silesiaの外部配置、検証および測定契約を実装する。
 9. 64 KiB、256 KiB、1 MiBと合成worst-case入力でHashChainを診断する。
 10. 受理済みのExact設計に従い、privateな`BinaryTree Exact`を実装する。
-11. 両戦略の結果がそろった場合だけ`WindowAdaptiveV1`を検討する。
-12. 必要性が確認された後にBoundedポリシーを追加する。
-13. 再現性情報を公開する必要が生じた場合は、ストリームではなく
+11. global BinaryTreeを合成matrixとSilesiaで測定し、常時AVL仮説を判定する。
+12. 深いbucketだけを昇格するprivate `HashTree Exact`を段階実装する。
+13. HashTreeの閾値sweepとSilesia証拠後にproduction昇格可否を判断する。
+14. 必要性が確認された後にBoundedポリシーを追加する。
+15. 再現性情報を公開する必要が生じた場合は、ストリームではなく
     エンコーダー設定または外部provenanceとして設計する。
 
 ## 13. 残る未決事項
 
-- WindowAdaptiveV1の最終閾値
+- HashTreeのprivate promotion閾値とproduction昇格可否
+- WindowAdaptiveV1を将来も必要とするか
 - 内部strategy設定をどの段階で公開エンコーダー設定へ昇格するか
 - 計画／書き込み間で型付きトークンを保持する標準経路
 - 探索ワークスペースを公開ABIのopaque viewへどう割り当てるか
@@ -363,8 +385,11 @@ Exhaustiveを参照オラクルとして残し、最初にHashChain Exactを追�
 いずれもストリームへ探索設定を記録せず、必要な再符号化provenanceは
 エンコーダー利用側が管理する。
 
-BinaryTree Exactは、長い同一接頭辞chainという実測問題に対し、AVL近傍探索
-とprefix区間集約でExhaustiveのtie-breakまで保つ設計を採用した。ただし、
-合成worst-caseとSilesia全体の証拠がそろうまではprivate実験候補とする。
-`WindowAdaptiveV1`とBoundedはHashChain/BinaryTree双方の性能、workspaceおよび
-最悪挙動を測定してから別の設計判断として採否を決める。
+global BinaryTree ExactはAVL近傍探索とprefix区間集約でExhaustiveのtie-breakを
+保つことを証明したが、常時維持費によりproduction候補から外れた。HashTree
+ExactはHashChainを安い基底として残し、実際に深いbucketだけを同じExact木へ
+一度だけ昇格する。既知LCPをtree traversal内で再利用し、診断有無と無関係な
+決定的閾値を使う。
+
+`WindowAdaptiveV1`に現在有効な規則はない。HashTreeの合成・Silesia証拠後に
+production昇格を別decisionで判断し、BoundedもExact経路と分離して検討する。

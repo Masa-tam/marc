@@ -17975,3 +17975,44 @@ active position required by skipped parser intervals, select the longest match
 and nearest distance exactly, use caller-bounded workspace, and differentially
 match Exhaustive and HashChain. Compare it against both current strategies on
 the same synthetic and Silesia matrices before considering production use.
+
+## DD-861: HashTree promotes only demonstrably deep buckets
+
+- Date: 2026-08-18
+- Status: accepted for private pre-implementation
+
+Design the successor as `HashTree Exact`: preserve the current five-byte
+HashChain for every position and promote one masked hash bucket to an
+independent AVL only after a completed Chain query visits strictly more than
+an explicit private candidate threshold. The triggering query returns its
+Chain result; Tree begins with the following query. Promotion is monotonic per
+bucket for the frame, even if the bucket later becomes empty.
+
+Build the initial tree by traversing that bucket's active predecessor chain
+newest-to-oldest. Do not scan the whole window or allocate a temporary list.
+Continue maintaining HashChain after promotion, explicitly retire promoted
+tree nodes at the window boundary, and insert skipped parser positions into
+both applicable structures. Keep one ring slot per active absolute position
+and one caller-owned checked workspace.
+
+Refine the private finder concept to a non-const match query. HashTree's query
+stores only a pending promotion after returning the completed Chain match;
+the immediately following `advance` atomically builds that pending bucket
+before inserting the consumed interval. Do not hide this state change behind
+`mutable`. Existing finders retain their behavior and no public API changes.
+
+Tree comparisons return both lexical order and exact LCP. Preserve lower and
+upper query brackets with their LCPs, skip only the smaller prefix proven by
+both finite brackets, and reuse the final neighbor LCPs instead of rescanning.
+Hash equality never authorizes byte equality. Use per-bucket subtree maximum
+position to preserve the nearest-distance tie-break over the maximum-LCP
+prefix interval.
+
+The promotion visit count exists independently of optional statistics;
+counter-enabled and counter-free runs must promote at identical positions.
+Threshold changes performance only because Chain and Tree are both Exact, but
+no threshold becomes public or default before synthetic and Silesia sweeps.
+Reject the old window-only `WindowAdaptiveV1` hypothesis and make no format,
+ABI, decoder, interoperability, or production-selector change in this stage.
+The complete proof and workspace contract is in
+`docs/design/lzss-hash-tree-match-finder.md`.

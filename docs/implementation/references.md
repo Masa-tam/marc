@@ -5681,3 +5681,16 @@ repository-owned five synthetic generators, strategy-explicit benchmark, and
 strict Silesia report parsing and aggregation rules. No external benchmark
 runner, generator, match finder, compressor, source code, test, result set,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0633
+
+The private HashTree Exact pre-implementation design uses DD-760 through
+DD-765, DD-841 through DD-845, DD-850 through DD-860, TVG-0719, TVG-0724
+through TVG-0733, BM-0053 through BM-0057, the repository-owned five-byte
+HashChain partition and predecessor-distance ring, the private AVL structural
+validator and prefix-range maximum-position proof, and the measured Silesia
+and synthetic operation counters. The additional basis is elementary AVL
+partitioning and the fact that two strings each share at least the smaller of
+their known common-prefix lengths with the same third string. No external hash
+tree, adaptive index, match finder, compressor, source code, test, benchmark
+result, patent, pseudocode, or optimization description was consulted.

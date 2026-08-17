@@ -10230,3 +10230,28 @@ synthetic report through the shared sum, maximum, histogram, workspace, and
 throughput rules, then require the group count to be named `case_count` rather
 than `member_count`. These fixture-only tests must not launch the benchmark,
 generate a large input, access the Corpus, write result JSON, or use a network.
+
+### TVG-0733
+
+Before implementation, fix HashTree Exact fixtures for the shared five-byte
+hash, Chain/PromotedTree state transition, threshold values immediately below,
+equal to, and above observed candidate depth, and threshold zero. Require the
+non-const triggering query to return the Chain result and publish only a
+pending promotion; require the following `advance` to build it before interval
+insertion and the next query to use the tree. Make one bucket empty and later
+active again without a second promotion.
+
+Construct active predecessor chains containing hash collisions, equal capped
+suffixes, window-edge positions, short final suffixes, and skipped parser
+intervals. Promote newest-to-oldest without a temporary allocation and require
+the promoted position set to equal the active Chain set. At each following
+position compare HashTree match, typed token, and canonical serialization with
+Exhaustive, HashChain, and global BinaryTree.
+
+For LCP traversal, hand-construct lower-only, upper-only, two-sided, unequal
+bracket-LCP, exact-key, and zero-known-prefix paths. Require skipped bytes to
+be a proven common prefix and compare every remaining byte needed for order.
+Corrupt bucket mode, root, slot generation, links, height, balance, subtree
+maximum, and cross-bucket ownership independently and require bounded stable
+failure. Counter-present and counter-null runs must have identical promotion
+positions and tokens.
