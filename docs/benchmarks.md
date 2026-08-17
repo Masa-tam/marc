@@ -1369,6 +1369,19 @@ These measurements remain descriptive. They may justify work on a new match
 finder, but do not by themselves make a throughput number or an adaptive
 strategy threshold normative.
 
+After building `marc_lzss_match_finder_benchmark`, the complete offline matrix
+can be generated on Windows with:
+
+```console
+py -3.14 tools/run_silesia_match_finder_benchmark.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --output benchmarks/data/silesia/results/msvc.json --compiler "MSVC 19.50" --generator "Visual Studio 18 2026"
+```
+
+The runner performs the existing exact Corpus verification first, invokes no
+network operation, measures both Exact strategies at 64 KiB, 256 KiB, and
+1 MiB windows, and rejects any per-member token-count disagreement. Output is
+local ignored JSON containing commands, environment metadata, per-member
+reports, and byte-weighted aggregate throughput.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

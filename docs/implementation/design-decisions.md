@@ -17878,3 +17878,25 @@ conservation before timing is reported. Smoke tests must run BinaryTree and
 HashChain on identical file frames and all five deterministic synthetic input
 classes and require equal token counts. Keep this CLI strategy experimental
 and internal; it does not admit BinaryTree to codec dispatch or stream format.
+
+## DD-857: Silesia matrix orchestration is offline and exact-paired
+
+- Date: 2026-08-17
+- Status: accepted
+
+Add a Python 3.9 standard-library runner that accepts an already built
+match-finder benchmark and a locally supplied Corpus. Reuse the exact existing
+Silesia verifier before starting any child process; provide no downloader or
+network path. Run every manifest member independently at 64 KiB, 256 KiB, and
+1 MiB windows with one-MiB frame boundaries, first HashChain Exact and then
+BinaryTree Exact.
+
+Strictly parse each key/value report, validate the selected strategy and all
+sizes, retain the exact child command, and reject a token-count disagreement
+for any member/window pair. Store revision, environment labels, verified
+manifest SHA-256, per-run reports, and strategy/window aggregates in a
+versioned JSON document under the ignored local results directory. Aggregate
+throughput is total iteration-weighted input bytes divided by total measured
+seconds; additive counters are summed, maxima are maximized, and histograms are
+summed by bin.
+Fixture-only unit tests must not require the real Corpus or launch benchmarks.

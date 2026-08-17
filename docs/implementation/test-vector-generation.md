@@ -10203,3 +10203,17 @@ pseudorandom inputs. Require positive core BinaryTree work counters and equal
 token counts for every class. An empty file must report zero bytes, frames,
 tokens, queries, insertions, retirements, and a single zero histogram bin.
 Retain the established rejection of unknown strategies and invalid sizes.
+
+### TVG-0731
+
+Parse a hand-written BinaryTree key/value report containing all required
+configuration, diagnostic, timing, and histogram fields and require exact
+typed values. Reject duplicate keys and an incomplete HashChain report.
+
+Aggregate two artificial BinaryTree member reports at one window. Require
+input bytes, iteration-weighted measured bytes, frames, tokens, elapsed time,
+and additive counters to sum;
+workspace, height, and maximum query depth to take their maximum; histogram
+bins to extend and sum; and aggregate throughput to use total bytes divided by
+total time. These fixture-only tests must neither access the real Silesia
+directory nor start a benchmark process or network operation.

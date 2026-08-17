@@ -5663,3 +5663,12 @@ repository-owned HashChain benchmark driver, deterministic synthetic inputs,
 frame splitting, throughput calculation, and BinaryTree diagnostic contract.
 No external benchmark harness, tree, match finder, compressor, source code,
 test, patent, pseudocode, or optimization description was consulted.
+
+### IR-0631
+
+The offline Silesia matrix runner uses DD-841 through DD-844, DD-856, DD-857,
+TVG-0716 through TVG-0718, TVG-0730, and TVG-0731, together with marc's
+repository-owned strict Corpus verifier, strategy-explicit frame benchmark,
+JSON reporting conventions, and external-data policy. No external benchmark
+or Corpus orchestration implementation, source code, test, result set, patent,
+pseudocode, or optimization description was consulted.

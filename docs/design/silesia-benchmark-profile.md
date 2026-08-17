@@ -151,3 +151,17 @@ per-file and aggregate results
 7. 結果を基にBinaryTree Exactの不変条件と構造を確定する。
 8. 専用branchでBinaryTree Exactを実装し、Exhaustive差分試験を行う。
 9. 両戦略のCorpus結果がそろってから既定戦略や自動選択を検討する。
+
+## 9. Corpus-wide runner
+
+`tools/run_silesia_match_finder_benchmark.py`はdownloadを行わず、既存の厳密な
+manifest検証が全12 memberで成功した後だけ測定を開始する。benchmark実行file、
+Corpus directory、出力JSON、iteration、frame size、window集合および環境labelを
+明示的な引数とする。既定window集合は65,536、262,144、1,048,576 byteである。
+
+各member/windowについてHashChain ExactとBinaryTree Exactを独立processで実行
+し、report schema、入力byte数、frame数、設定値および戦略固有指標を検証する。
+両戦略のtoken数が一致しなければ結果を公開しない。JSONには実行command、
+Corpus SHA-256、revision、環境、per-file reportと、入力byte数および時間を合算
+したstrategy/window別aggregateを保存する。結果fileはignored `results/`へ置き、
+tracked sourceまたは配布物へ含めない。

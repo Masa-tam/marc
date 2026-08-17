@@ -22232,3 +22232,33 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`; after formal out-of-sandbox
   configure restored the optional Python registration, the separate Python
   3.14 Silesia verifier also passes, completing all 3,001 registered tests.
+
+## CR-0926: 2026-08-17 - Offline Silesia match-finder matrix runner
+
+- Authoring method: composed marc's strict local Corpus verifier and private
+  strategy-explicit benchmark through a new standard-library-only process and
+  JSON orchestration layer.
+- References used: DD-841 through DD-844, DD-856, DD-857; IR-0631; TVG-0716
+  through TVG-0718, TVG-0730, and TVG-0731; the repository-owned Silesia
+  manifest, verifier, frame benchmark reports, and ignored-results policy.
+- Known implementations intentionally not consulted: external Corpus or
+  benchmark runners, result schemas, match finders, compressors, source code,
+  tests, result sets, patents, pseudocode, and optimization descriptions.
+- Independent decisions: verify the entire manifest before child execution;
+  preserve every exact child command; pair strategies per member/window;
+  reject token differences; distinguish raw and iteration-weighted bytes; and
+  aggregate sums, maxima, histograms, and throughput by their metric meaning.
+- Generated-code task description: add an offline twelve-member, three-window,
+  two-strategy runner with strict report parsing, versioned ignored JSON,
+  environment and provenance fields, pairwise Exact checks, fixture-only unit
+  tests, and no download or real-Corpus CTest dependency.
+- Similarity review: orchestration and schema use only marc-owned inputs and
+  report contracts. No external runner expression, Corpus payload, or result
+  entered the tracked change.
+- Local validation: Python 3.14 passes all three runner unit tests directly and
+  through both formally configured MSVC and ClangCL CTest inventories; the
+  existing verifier test also passes in both. Each configuration passes the
+  3,000-test sandbox-safe inventory, including all benchmark smokes,
+  documentation layout, and `marc_interoperability_schema_compatibility`.
+  Together with the two separated Python tooling tests, all 3,002 registered
+  tests pass. No production Corpus measurement was run in this tooling stage.
