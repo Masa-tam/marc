@@ -1387,6 +1387,50 @@ chain, but the present AVL suffix-key representation is not suitable as the
 default or as a public selectable strategy. The ignored full JSON remains the
 local audit record; these aggregate values are descriptive, not thresholds.
 
+### BM-0057: Synthetic Exact cost-isolation matrix
+
+Revision `37aadfa3e2ef6acb0fe13f5ca123cd820049e37c` ran the five
+deterministic one-MiB cases with ClangCL 22.1.3, Ninja Release, one iteration,
+one-MiB frames, and the three standard windows. All fifteen HashChain and
+BinaryTree pairs produced equal token counts. The complete 30-run matrix
+finished in approximately 40 wall-clock seconds.
+
+| Case | Window | HashChain MiB/s | BinaryTree MiB/s | Tree/chain | Hash candidates | Tree key bytes | Tree rotations |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| zeros | 64 KiB | 351.61 | 0.53 | 0.001 | 4,065 | 4,611,701,384 | 1,540,000 |
+| zeros | 1 MiB | 348.95 | 0.48 | 0.001 | 4,065 | 5,197,676,407 | 1,048,551 |
+| periodic | 64 KiB | 349.21 | 0.85 | 0.002 | 4,332 | 2,579,812,438 | 1,529,983 |
+| periodic | 1 MiB | 326.12 | 0.70 | 0.002 | 4,332 | 3,286,852,613 | 1,045,302 |
+| equal-prefix | 64 KiB | 10.74 | 2.67 | 0.249 | 20,812,519 | 93,397,342 | 1,445,625 |
+| equal-prefix | 1 MiB | 7.05 | 3.43 | 0.486 | 34,798,860 | 106,684,679 | 646,626 |
+| hash-collision | 64 KiB | 10.15 | 2.64 | 0.260 | 24,774,824 | 90,885,506 | 1,448,963 |
+| hash-collision | 1 MiB | 4.64 | 3.42 | 0.735 | 55,921,725 | 102,752,392 | 673,241 |
+| pseudorandom | 64 KiB | 43.90 | 1.63 | 0.037 | 1,014,746 | 53,466,367 | 1,091,895 |
+| pseudorandom | 1 MiB | 7.77 | 1.59 | 0.204 | 8,386,707 | 69,756,994 | 732,639 |
+
+The omitted 256-KiB rows follow the same ordering. BinaryTree never wins this
+matrix, although its relative result improves as deliberate HashChain depth
+grows. The strongest case is the one-MiB hash-collision input at 73.5% of
+HashChain throughput. This is consistent with the isolated `mr` win in
+BM-0056, but it does not supply a safe selection threshold.
+
+Zeros and the 251-byte period expose the decisive weakness. Greedy parsing
+produces only 4,066 and 4,315 tokens, but exact future matching still advances
+the finder through almost every input position. The global AVL repeatedly
+compares long equal capped suffixes and maintains one node per position, while
+HashChain performs only about four thousand candidate visits. Equal-prefix
+and collision inputs reduce the key-byte cost to roughly 91--107 million and
+make the tree more competitive, showing that the data structure's asymptotic
+query bound works only after paying its unconditional ordered-maintenance
+cost. Pseudorandom input confirms the same fixed-cost regression without long
+equal suffixes.
+
+The result rejects micro-tuning or direct admission of the current global AVL.
+A successor experiment must first avoid repeated long-key work and unnecessary
+global ordering, while preserving every active position and the Exact nearest-
+distance tie-break. Timings remain descriptive and the full JSON remains below
+ignored `out/` storage.
+
 ## External Silesia measurements
 
 Silesia Corpus measurements are opt-in development experiments. The Corpus is

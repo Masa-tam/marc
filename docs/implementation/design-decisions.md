@@ -17948,3 +17948,30 @@ network operation, and place formal results under ignored `out/` storage.
 This orchestration is diagnostic tooling. It does not change generators,
 match-finder semantics, format, ABI, production selection, performance
 thresholds, or the BinaryTree admission decision in DD-858.
+
+## DD-860: Synthetic evidence rejects the global AVL cost model
+
+- Date: 2026-08-17
+- Status: accepted
+
+The complete synthetic matrix preserves Exact token equality but gives the
+current BinaryTree no throughput win in fifteen case/window comparisons. Its
+relative result approaches HashChain only when deliberately deep equal-prefix
+or collision chains grow with the window. Repetitive inputs are catastrophic:
+the parser emits few tokens, yet exact advancement inserts almost every byte
+position and the AVL repeatedly compares long equal capped suffixes.
+
+Do not promote, adaptively select, or micro-optimize the current global AVL.
+The measured tree height and query-node bounds are already satisfactory; the
+dominant problem is unconditional ordered maintenance, especially repeated
+key bytes, plus per-position mutation. Rotation reduction alone cannot remove
+that cost. Retain the implementation as a correctness reference and evidence
+for the isolated long-chain rescue behavior.
+
+Before another implementation, specify a new private variant that places a
+cheap bounded partition ahead of ordered search and carries enough comparison
+state to avoid restarting known equal prefixes. It must still retain every
+active position required by skipped parser intervals, select the longest match
+and nearest distance exactly, use caller-bounded workspace, and differentially
+match Exhaustive and HashChain. Compare it against both current strategies on
+the same synthetic and Silesia matrices before considering production use.

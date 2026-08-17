@@ -22322,3 +22322,31 @@ discarded and the reviewed seed retained.
   in 171.38 seconds, including all three Python tooling tests, documentation
   layout, benchmark smokes, and `marc_interoperability_schema_compatibility`.
   No benchmark matrix or network operation was run in this tooling stage.
+
+## CR-0929: 2026-08-17 - Synthetic Exact cost-isolation evidence
+
+- Authoring method: ran the repository-owned deterministic matrix runner and
+  interpreted its separated match-finder operation counters before proposing
+  another data-structure stage.
+- References used: DD-731 through DD-734, DD-845, DD-855 through DD-860;
+  IR-0630 through IR-0632; TVG-0641 and TVG-0730 through TVG-0732; BM-0055
+  through BM-0057; marc's five generated inputs and private strategy reports.
+- Known implementations intentionally not consulted: external match finders,
+  trees, hash trees, compressors, benchmark results, optimization
+  descriptions, source code, tests, patents, and pseudocode.
+- Independent decisions: distinguish query depth from unconditional ordered
+  maintenance; treat repeated suffix-byte comparisons as stronger evidence
+  than rotation count alone; retain the approaching collision result without
+  deriving a threshold; and require a separately specified private successor.
+- Generated-code task description: execute thirty deterministic measurements,
+  require all fifteen Exact token pairs, audit case-specific throughput and
+  operation counts, identify the repetitive-input regression, and record why
+  the global AVL remains a reference rather than a production strategy.
+- Similarity review: all inputs, operations, counters, runner logic, and
+  interpretation originate in marc's documented implementation. No external
+  implementation expression or third-party measurement entered the work.
+- Local validation: the versioned ignored JSON records revision
+  `37aadfa3e2ef6acb0fe13f5ca123cd820049e37c`, ClangCL 22.1.3, Ninja
+  Release, Python 3.14.5, all 30 successful child executions, and no Exact
+  token mismatch. The complete matrix took approximately 40 wall-clock
+  seconds and wrote no generated input or tracked result artifact.
