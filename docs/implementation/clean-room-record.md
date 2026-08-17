@@ -22494,3 +22494,31 @@ discarded and the reviewed seed retained.
   exposed an additional overlapping-prefix collision at position 8, so the
   permanent regression now corrupts the actual newest reachable head instead
   of encoding the false position assumption.
+
+## CR-0935: 2026-08-18 - HashTree two-phase promotion planner
+
+- Authoring method: isolated the promotion boundary from tree mutation as a
+  finite private state machine so tests can prove threshold and publication
+  order before any AVL construction exists.
+- References used: DD-861 through DD-866, IR-0633 through IR-0638, TVG-0733
+  through TVG-0738, and the repository-owned completed Chain-query count and
+  sticky first-error conventions.
+- Known implementations intentionally not consulted: external hash trees,
+  adaptive indices, match finders, compressors, source code, tests, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: use strict greater-than thresholding; exclude empty
+  queries; make identical Pending records idempotent; separate begin from
+  commit; and leave per-bucket monotonicity to the future caller's mode array.
+- Generated-code task description: implement and exhaustively test the bounded
+  Idle/Pending/Building planner without workspace, allocation, diagnostics,
+  finder integration, or partial tree publication.
+- Similarity review: states, transitions, errors, tests, and naming originate
+  entirely in marc's HashTree design. No external implementation expression
+  entered this change.
+- Local validation: MSVC 18.8.2 and ClangCL 22.1.3 Release builds pass all 21
+  focused promotion and HashTree tests and all 3,029 CTest cases at a
+  300-second per-test limit. Both complete runs include the Python tooling
+  tests and `marc_interoperability_schema_compatibility`. The focused boundary
+  cases prove strict thresholding, threshold-zero and maximum-threshold
+  behavior, idempotent Pending recording, checked begin/commit, sticky invalid
+  buckets and transitions, and unchanged Exact Chain behavior.

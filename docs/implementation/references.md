@@ -5729,3 +5729,12 @@ repository-owned Exact HashChain traversal, lazy workspace lifetime proof,
 sticky BinaryTree protocol state, and Exhaustive differential oracle. No
 external hash tree, match finder, compressor, source code, test, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0638
+
+The private HashTree promotion state machine uses DD-861 through DD-866,
+TVG-0733 through TVG-0738, the completed Chain-query boundary, and marc's
+existing first-error sticky-state conventions. The transition proof is a
+repository-owned finite state machine over Idle, Pending, and Building. No
+external hash tree, adaptive index, match finder, compressor, source code,
+test, patent, pseudocode, or optimization description was consulted.

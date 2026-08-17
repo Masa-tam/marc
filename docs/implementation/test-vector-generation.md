@@ -10310,3 +10310,18 @@ reachable head or predecessor distance out of range. Require a stable first
 error, sticky-invalid state, empty later matches, unchanged later workspace,
 and finite completion. No test may activate a tree mode or inspect an
 unconstructed tree-node field through its eventual type.
+
+### TVG-0738
+
+For a fixed completed-query depth, test thresholds immediately below, equal
+to, and above it; only the below case may become Pending. At threshold zero,
+zero candidates remain Idle and one candidate becomes Pending. Repeat an
+identical completed query and require an idempotent Pending state independent
+of any diagnostic object.
+
+Require `begin_advance` on Idle to report no work, and on Pending to return the
+exact bucket and trigger count while entering Building. Require only a matching
+Building bucket to commit. Independently submit an out-of-range bucket, a
+different query while Pending, a query while Building, and a wrong commit;
+each must preserve the first stable error and terminate without publishing a
+bucket mode or touching finder workspace.

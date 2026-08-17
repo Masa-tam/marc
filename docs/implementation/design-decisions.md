@@ -18103,3 +18103,28 @@ the first stable private error. Later query returns an empty match and later
 advance performs no workspace mutation. This stage never promotes a bucket and
 does not read any tree-node field. It changes no public selector, format, ABI,
 token representation, or interoperability artifact.
+
+## DD-866: Promotion planning is a checked two-phase private state machine
+
+- Date: 2026-08-18
+- Status: accepted
+
+Implement promotion planning independently of the finder and AVL mutation so
+no incomplete tree can be exposed. A completed Chain query records Pending
+only when its local visited-candidate count is strictly greater than the
+configured private threshold. Zero candidates never trigger, including at
+threshold zero. Repeating the same completed query is idempotent; a different
+record before advance is an invalid transition.
+
+`begin_advance` changes Pending to Building and returns the exact bucket and
+trigger count without publishing PromotedTree. The future caller must build
+and validate the complete bucket tree, publish its root and mode, then call
+`commit`. Commit accepts only the active Building bucket and returns the state
+to Idle. Bucket monotonicity remains owned by the per-bucket mode array.
+
+Invalid bucket or transition makes this planner sticky-invalid and preserves
+the first error. Threshold comparison receives only the local candidate count;
+statistics pointers, bucket population, timing, CPU identity, and benchmark
+history cannot affect it. This stage is not yet connected to finder query or
+advance and changes no workspace, selector, format, ABI, token, or
+interoperability behavior.

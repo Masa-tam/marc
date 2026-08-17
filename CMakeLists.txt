@@ -113,6 +113,7 @@ set(MARC_SOURCES
     src/dictionary/lzss_match_finder.cpp
     src/dictionary/lzss_hash_chain_match_finder.cpp
     src/dictionary/lzss_binary_tree_match_finder.cpp
+    src/dictionary/lzss_hash_tree_promotion.cpp
     src/dictionary/lzss_hash_tree_match_finder.cpp
     src/dictionary/lzss_typed_encoder.cpp
     src/dictionary/lzss_streaming_decoder.cpp
@@ -1654,6 +1655,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_match_finder_tests.cpp
         tests/lzss_prefix_hash_tests.cpp
         tests/lzss_binary_tree_match_finder_tests.cpp
+        tests/lzss_hash_tree_promotion_tests.cpp
         tests/lzss_hash_tree_match_finder_tests.cpp
         tests/lzss_streaming_decoder_tests.cpp
         tests/lzss_streaming_encoder_tests.cpp
