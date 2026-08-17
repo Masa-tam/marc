@@ -22384,3 +22384,29 @@ discarded and the reviewed seed retained.
   rules. MSVC and ClangCL documentation-layout tests both pass. No production
   code, format, ABI, benchmark result, or interoperability artifact changed in
   this stage.
+
+## CR-0931: 2026-08-18 - Shared checked LZSS prefix hash
+
+- Authoring method: extracted marc's existing five-byte HashChain expression
+  unchanged into a bounded private helper before implementing HashTree.
+- References used: DD-861, DD-862, IR-0633, IR-0634, TVG-0733, TVG-0734, and
+  the repository-owned HashChain implementation and differential tests.
+- Known implementations intentionally not consulted: external hash functions,
+  hash trees, match finders, compressors, source code, tests, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: make insufficient input an explicit invalid result,
+  preserve the complete 32-bit collision as a warning that a bucket is not an
+  equality proof, and share the same helper between current Chain and future
+  HashTree paths.
+- Generated-code task description: extract the exact five-byte prefix hash,
+  reject all short or out-of-range requests, preserve HashChain workspace and
+  token behavior, and fix hand-checkable and exhaustive byte-boundary tests.
+- Similarity review: the expression, vectors, collision, naming, checked
+  boundary, and integration originate entirely in marc's documented work. No
+  external implementation expression or test entered this change.
+- Local validation: MSVC 18.8.2 and ClangCL 22.1.3 Release builds pass the 12
+  focused helper/HashChain tests and all 3,008 CTest cases at a 300-second
+  per-test limit, including the Python tooling tests and
+  `marc_interoperability_schema_compatibility`. The helper remains inline so
+  sharing the checked expression does not impose an out-of-line call in the
+  per-position HashChain path.

@@ -3,6 +3,7 @@
 
 #include "core/limits.hpp"
 #include "dictionary/lzss_match_finder.hpp"
+#include "dictionary/lzss_prefix_hash.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -10,7 +11,6 @@
 
 namespace marc::dictionary::internal {
 
-inline constexpr std::size_t lzss_hash_chain_prefix_size = 5;
 inline constexpr std::size_t lzss_hash_chain_max_bucket_count = 65'536;
 
 enum class LzssHashChainError : std::uint8_t {

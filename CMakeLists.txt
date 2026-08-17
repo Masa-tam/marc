@@ -1651,6 +1651,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_decoder_tests.cpp
         tests/lzss_encoder_tests.cpp
         tests/lzss_match_finder_tests.cpp
+        tests/lzss_prefix_hash_tests.cpp
         tests/lzss_binary_tree_match_finder_tests.cpp
         tests/lzss_streaming_decoder_tests.cpp
         tests/lzss_streaming_encoder_tests.cpp

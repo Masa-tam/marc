@@ -13,18 +13,6 @@
 namespace marc::dictionary::internal {
 namespace {
 
-[[nodiscard]] std::uint32_t prefix_hash(
-    const std::span<const std::byte> input,
-    const std::size_t position) noexcept {
-    std::uint32_t hash{};
-    for (std::size_t index = 0; index < lzss_hash_chain_prefix_size;
-         ++index) {
-        hash = (hash << 5U) ^ (hash >> 2U)
-            ^ std::to_integer<std::uint8_t>(input[position + index]);
-    }
-    return hash ^ (hash >> 16U);
-}
-
 void increment_statistic(
     LzssMatchFinderStatistics& statistics,
     std::uint64_t& value) noexcept {
@@ -69,7 +57,7 @@ LzssHashChainWorkspaceRequirements calculate_lzss_hash_chain_workspace(
         result.error = LzssHashChainError::input_limit_exceeded;
         return result;
     }
-    if (input_size >= lzss_hash_chain_prefix_size) {
+    if (input_size >= lzss_match_finder_prefix_size) {
         result.link_count = std::min<std::size_t>(
             input_size, static_cast<std::size_t>(parameters.window_size));
         const auto bucket_target = std::min(
@@ -172,15 +160,20 @@ LzssMatch LzssHashChainMatchFinder::find_match(
         increment_statistic(*statistics_, statistics_->query_count);
     }
     if (heads_.empty()
-        || input_.size() - position < lzss_hash_chain_prefix_size) {
+        || input_.size() - position < lzss_match_finder_prefix_size) {
         if (statistics_ != nullptr) record_query_depth(*statistics_, 0);
         return best;
     }
     const auto maximum_length = std::min<std::size_t>(
         input_.size() - position,
         static_cast<std::size_t>(parameters_.max_match_length));
-    const auto bucket = static_cast<std::size_t>(
-        prefix_hash(input_, position)) & (heads_.size() - 1U);
+    const auto prefix_hash = calculate_lzss_prefix_hash(input_, position);
+    if (!prefix_hash.valid) {
+        if (statistics_ != nullptr) record_query_depth(*statistics_, 0);
+        return best;
+    }
+    const auto bucket = static_cast<std::size_t>(prefix_hash.value)
+        & (heads_.size() - 1U);
     auto candidate = heads_[bucket];
     std::uint64_t query_candidate_count{};
     while (candidate != std::numeric_limits<std::size_t>::max()) {
@@ -195,7 +188,7 @@ LzssMatch LzssHashChainMatchFinder::find_match(
             if (statistics_ != nullptr) {
                 increment_statistic(
                     *statistics_, statistics_->byte_comparison_count);
-                if (length >= lzss_hash_chain_prefix_size) {
+                if (length >= lzss_match_finder_prefix_size) {
                     increment_statistic(
                         *statistics_,
                         statistics_->hash_chain_extension_byte_comparison_count);
@@ -206,7 +199,7 @@ LzssMatch LzssHashChainMatchFinder::find_match(
             ++length;
         }
         if (statistics_ != nullptr) {
-            auto& prefix_count = length >= lzss_hash_chain_prefix_size
+            auto& prefix_count = length >= lzss_match_finder_prefix_size
                 ? statistics_->hash_chain_prefix_match_count
                 : statistics_->hash_chain_prefix_mismatch_count;
             increment_statistic(*statistics_, prefix_count);
@@ -237,10 +230,16 @@ void LzssHashChainMatchFinder::advance(
     }
     if (!heads_.empty()) {
         for (auto current = position; current < next_position; ++current) {
-            if (input_.size() - current < lzss_hash_chain_prefix_size)
+            if (input_.size() - current < lzss_match_finder_prefix_size)
                 continue;
-            const auto bucket = static_cast<std::size_t>(
-                prefix_hash(input_, current)) & (heads_.size() - 1U);
+            const auto prefix_hash = calculate_lzss_prefix_hash(
+                input_, current);
+            if (!prefix_hash.valid) {
+                next_position_ = input_.size();
+                return;
+            }
+            const auto bucket = static_cast<std::size_t>(prefix_hash.value)
+                & (heads_.size() - 1U);
             const auto previous = heads_[bucket];
             std::uint32_t previous_distance{};
             if (previous != std::numeric_limits<std::size_t>::max()) {

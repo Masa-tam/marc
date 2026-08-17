@@ -5694,3 +5694,12 @@ partitioning and the fact that two strings each share at least the smaller of
 their known common-prefix lengths with the same third string. No external hash
 tree, adaptive index, match finder, compressor, source code, test, benchmark
 result, patent, pseudocode, or optimization description was consulted.
+
+### IR-0634
+
+The shared private LZSS five-byte prefix-hash helper uses DD-861, TVG-0733,
+and the repository-owned HashChain hash expression that was already specified,
+implemented, tested through Exact differential matching, and used to define
+the HashTree bucket partition. No external hash function, hash tree, match
+finder, compressor, source code, test, patent, pseudocode, or optimization
+description was consulted.

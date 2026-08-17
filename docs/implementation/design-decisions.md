@@ -18016,3 +18016,20 @@ Reject the old window-only `WindowAdaptiveV1` hypothesis and make no format,
 ABI, decoder, interoperability, or production-selector change in this stage.
 The complete proof and workspace contract is in
 `docs/design/lzss-hash-tree-match-finder.md`.
+
+## DD-862: One checked helper owns the LZSS match-finder prefix hash
+
+- Date: 2026-08-18
+- Status: accepted
+
+Move the existing five-byte HashChain hash expression into one private helper
+before HashTree implementation. The helper accepts an input span and absolute
+position, rejects every request with fewer than five readable bytes without
+reading input, and returns the unchanged 32-bit hash for valid input. HashChain
+uses the checked result for both query and insertion.
+
+The prefix width and expression remain unchanged, including known collisions;
+the helper does not imply byte equality. This extraction changes no bucket
+masking, workspace calculation, traversal, token choice, format, ABI, public
+selector, or interoperability representation. HashTree must reuse this helper
+rather than acquire a similar private copy.

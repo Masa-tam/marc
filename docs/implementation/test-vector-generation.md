@@ -10255,3 +10255,16 @@ Corrupt bucket mode, root, slot generation, links, height, balance, subtree
 maximum, and cross-bucket ownership independently and require bounded stable
 failure. Counter-present and counter-null runs must have identical promotion
 positions and tokens.
+
+### TVG-0734
+
+Fix hand-calculated five-byte prefix-hash vectors for all-zero, a single low
+byte followed by zeros, all-`0xff`, and ascending input. Exercise a nonzero
+input position, every byte value in every prefix offset, every short remaining
+length, and a position beyond the input. Invalid requests must return a zeroed,
+invalid result without reading input.
+
+Retain the independently discovered pair `01 00 00 58 59` and
+`00 20 00 58 59` as an exact 32-bit collision with hash `0x00102b1f` so the
+helper cannot be mistaken for an equality proof. Existing Exhaustive-versus-
+HashChain tests remain the token-level differential oracle after extraction.
