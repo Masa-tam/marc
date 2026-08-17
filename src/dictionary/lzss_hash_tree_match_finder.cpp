@@ -65,6 +65,66 @@ void add_statistic(
     value += increment;
 }
 
+void aggregate_builder_statistics(
+    LzssMatchFinderStatistics* const statistics,
+    const LzssHashTreeComponentStatistics& component) noexcept {
+    if (statistics == nullptr) return;
+    add_statistic(statistics,
+        statistics->hash_tree_promotion_build_key_comparison_count,
+        component.key_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_promotion_build_key_byte_comparison_count,
+        component.key_byte_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_promotion_build_rotation_count,
+        component.rotation_count);
+    statistics->hash_tree_maximum_height = std::max(
+        statistics->hash_tree_maximum_height, component.maximum_height);
+    statistics->overflowed = statistics->overflowed || component.overflowed;
+}
+
+void aggregate_query_statistics(
+    LzssMatchFinderStatistics* const statistics,
+    const LzssHashTreeComponentStatistics& component) noexcept {
+    if (statistics == nullptr) return;
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_key_comparison_count,
+        component.key_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_key_byte_comparison_count,
+        component.key_byte_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_lcp_byte_comparison_count,
+        component.lcp_byte_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_prefix_range_comparison_count,
+        component.prefix_range_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_prefix_range_byte_comparison_count,
+        component.prefix_range_byte_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_lcp_skipped_byte_count,
+        component.lcp_skipped_byte_count);
+    statistics->overflowed = statistics->overflowed || component.overflowed;
+}
+
+void aggregate_mutation_statistics(
+    LzssMatchFinderStatistics* const statistics,
+    const LzssHashTreeComponentStatistics& component) noexcept {
+    if (statistics == nullptr) return;
+    add_statistic(statistics,
+        statistics->hash_tree_maintenance_key_comparison_count,
+        component.key_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_maintenance_key_byte_comparison_count,
+        component.key_byte_comparison_count);
+    add_statistic(statistics, statistics->hash_tree_rotation_count,
+        component.rotation_count);
+    statistics->hash_tree_maximum_height = std::max(
+        statistics->hash_tree_maximum_height, component.maximum_height);
+    statistics->overflowed = statistics->overflowed || component.overflowed;
+}
+
 void record_hash_tree_depth(
     LzssMatchFinderStatistics* const statistics,
     std::array<std::uint64_t,
@@ -151,15 +211,20 @@ LzssMatch LzssHashTreeMatchFinder::find_match(
     const auto bucket = static_cast<std::size_t>(prefix_hash.value)
         & (heads_.size() - 1U);
     if (modes_[bucket] == LzssHashTreeBucketMode::promoted_tree) {
+        LzssHashTreeComponentStatistics component_statistics{};
+        auto* const component_observer = hash_tree_diagnostics_enabled_
+                && statistics_ != nullptr
+            ? &component_statistics : nullptr;
         const auto query = query_lzss_hash_tree_bucket_exact({
             input_, parameters_, position, bucket, heads_.size(),
             roots_[bucket], left_, right_, parent_, height_, position_,
-            subtree_maximum_position_});
+            subtree_maximum_position_, component_observer});
         if (query.error != LzssHashTreeBucketQueryError::none) {
             mark_error(LzssHashTreeError::tree_query_failure);
             return {};
         }
         if (hash_tree_diagnostics_enabled_ && statistics_ != nullptr) {
+            aggregate_query_statistics(statistics_, component_statistics);
             increment_statistic(
                 statistics_, statistics_->hash_tree_tree_query_count);
             add_statistic(
@@ -294,11 +359,15 @@ void LzssHashTreeMatchFinder::advance(
             mark_error(LzssHashTreeError::promotion_failure);
             return;
         }
+        LzssHashTreeComponentStatistics component_statistics{};
+        auto* const component_observer = hash_tree_diagnostics_enabled_
+                && statistics_ != nullptr
+            ? &component_statistics : nullptr;
         const auto build = build_lzss_hash_tree_bucket({
             input_, parameters_, position, bucket, heads_.size(),
             heads_[bucket], links_,
             {left_, right_, parent_, height_, position_,
-             subtree_maximum_position_}});
+             subtree_maximum_position_}, component_observer});
         if (build.error != LzssHashTreeBucketBuildError::none
             || build.root == lzss_hash_tree_null_node) {
             mark_error(LzssHashTreeError::promotion_failure);
@@ -320,6 +389,7 @@ void LzssHashTreeMatchFinder::advance(
         ++promoted_bucket_count_;
         promoted_node_count_ += build.node_count;
         if (hash_tree_diagnostics_enabled_ && statistics_ != nullptr) {
+            aggregate_builder_statistics(statistics_, component_statistics);
             increment_statistic(
                 statistics_, statistics_->hash_tree_promotion_count);
             add_statistic(
@@ -350,11 +420,16 @@ void LzssHashTreeMatchFinder::advance(
                         mark_error(LzssHashTreeError::invalid_state);
                         return;
                     }
+                    LzssHashTreeComponentStatistics component_statistics{};
+                    auto* const component_observer =
+                        hash_tree_diagnostics_enabled_ && statistics_ != nullptr
+                        ? &component_statistics : nullptr;
                     const auto removed =
                         remove_lzss_hash_tree_bucket_position(
                             {input_, parameters_, expired_bucket,
                              heads_.size(), left_, right_, parent_, height_,
-                             position_, subtree_maximum_position_},
+                             position_, subtree_maximum_position_,
+                             component_observer},
                             roots_[expired_bucket], expired);
                     if (removed.error
                         != LzssHashTreeBucketMutationError::none) {
@@ -365,6 +440,8 @@ void LzssHashTreeMatchFinder::advance(
                     --promoted_node_count_;
                     if (hash_tree_diagnostics_enabled_
                         && statistics_ != nullptr) {
+                        aggregate_mutation_statistics(
+                            statistics_, component_statistics);
                         increment_statistic(
                             statistics_,
                             statistics_->hash_tree_retirement_count);
@@ -413,9 +490,14 @@ void LzssHashTreeMatchFinder::advance(
                 mark_error(LzssHashTreeError::invalid_state);
                 return;
             }
+            LzssHashTreeComponentStatistics component_statistics{};
+            auto* const component_observer = hash_tree_diagnostics_enabled_
+                    && statistics_ != nullptr
+                ? &component_statistics : nullptr;
             const auto inserted = insert_lzss_hash_tree_bucket_position(
                 {input_, parameters_, bucket, heads_.size(), left_, right_,
-                 parent_, height_, position_, subtree_maximum_position_},
+                 parent_, height_, position_, subtree_maximum_position_,
+                 component_observer},
                 roots_[bucket], current);
             if (inserted.error
                 != LzssHashTreeBucketMutationError::none) {
@@ -425,6 +507,8 @@ void LzssHashTreeMatchFinder::advance(
             roots_[bucket] = inserted.root;
             ++promoted_node_count_;
             if (hash_tree_diagnostics_enabled_ && statistics_ != nullptr) {
+                aggregate_mutation_statistics(
+                    statistics_, component_statistics);
                 increment_statistic(
                     statistics_, statistics_->hash_tree_insertion_count);
                 record_hash_tree_population(

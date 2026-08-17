@@ -12,6 +12,26 @@
 namespace marc::dictionary::internal {
 namespace {
 
+void increment_statistic(
+    LzssHashTreeComponentStatistics* const statistics,
+    std::uint64_t& value) noexcept {
+    if (statistics == nullptr) return;
+    if (value == std::numeric_limits<std::uint64_t>::max()) {
+        statistics->overflowed = true;
+        return;
+    }
+    ++value;
+}
+
+void record_height(
+    LzssHashTreeComponentStatistics* const statistics,
+    const std::span<std::uint8_t> height,
+    const std::uint32_t root) noexcept {
+    if (statistics == nullptr || root == lzss_hash_tree_null_node) return;
+    statistics->maximum_height = std::max<std::uint64_t>(
+        statistics->maximum_height, height[root]);
+}
+
 [[nodiscard]] LzssHashTreeBucketMutationError validate_context(
     const LzssHashTreeBucketMutationContext& context) noexcept {
     const auto capacity = context.left.size();
@@ -72,7 +92,16 @@ namespace {
     const auto right_size = std::min<std::size_t>(
         context.input.size() - right, context.parameters.max_match_length);
     const auto common_size = std::min(left_size, right_size);
+    if (context.statistics != nullptr) {
+        increment_statistic(
+            context.statistics, context.statistics->key_comparison_count);
+    }
     for (std::size_t index = 0; index < common_size; ++index) {
+        if (context.statistics != nullptr) {
+            increment_statistic(
+                context.statistics,
+                context.statistics->key_byte_comparison_count);
+        }
         const auto left_byte = std::to_integer<std::uint8_t>(
             context.input[left + index]);
         const auto right_byte = std::to_integer<std::uint8_t>(
@@ -273,6 +302,10 @@ private:
 
     [[nodiscard]] std::uint32_t rotate_left(
         const std::uint32_t node) noexcept {
+        if (context_.statistics != nullptr) {
+            increment_statistic(
+                context_.statistics, context_.statistics->rotation_count);
+        }
         const auto promoted = context_.right[node];
         const auto transferred = context_.left[promoted];
         const auto parent = context_.parent[node];
@@ -290,6 +323,10 @@ private:
 
     [[nodiscard]] std::uint32_t rotate_right(
         const std::uint32_t node) noexcept {
+        if (context_.statistics != nullptr) {
+            increment_statistic(
+                context_.statistics, context_.statistics->rotation_count);
+        }
         const auto promoted = context_.left[node];
         const auto transferred = context_.right[promoted];
         const auto parent = context_.parent[node];
@@ -391,6 +428,7 @@ LzssHashTreeBucketMutationResult insert_lzss_hash_tree_bucket_position(
     MutableBucketTree tree{context, root};
     tree.insert(position, search.parent, search.order);
     result.root = tree.root();
+    record_height(context.statistics, context.height, result.root);
     return result;
 }
 
@@ -439,6 +477,7 @@ LzssHashTreeBucketMutationResult remove_lzss_hash_tree_bucket_position(
     MutableBucketTree tree{context, root};
     tree.remove(search.node);
     result.root = tree.root();
+    record_height(context.statistics, context.height, result.root);
     return result;
 }
 

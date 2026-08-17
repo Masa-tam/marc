@@ -5781,3 +5781,12 @@ mutation result contracts, and marc's existing saturating match-finder
 statistics and logarithmic depth-bin convention. No external profiler, match
 finder, adaptive tree, compressor, source code, test, benchmark schema, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0644
+
+HashTree component-cost diagnostics use DD-861 through DD-872, TVG-0733
+through TVG-0744, the repository-owned builder, query, mutation, validator,
+and match-finder statistics contracts, and the existing saturating-counter
+policy. No external tree profiler, match finder, compressor, source code,
+test, benchmark schema, patent, pseudocode, or optimization description was
+consulted.

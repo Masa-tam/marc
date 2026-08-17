@@ -20,6 +20,18 @@ struct LzssMatch {
     [[nodiscard]] bool operator==(const LzssMatch&) const noexcept = default;
 };
 
+struct LzssHashTreeComponentStatistics {
+    std::uint64_t key_comparison_count{};
+    std::uint64_t key_byte_comparison_count{};
+    std::uint64_t lcp_byte_comparison_count{};
+    std::uint64_t prefix_range_comparison_count{};
+    std::uint64_t prefix_range_byte_comparison_count{};
+    std::uint64_t lcp_skipped_byte_count{};
+    std::uint64_t rotation_count{};
+    std::uint64_t maximum_height{};
+    bool overflowed{};
+};
+
 struct LzssMatchFinderStatistics {
     // Optional diagnostics. Strategy-specific fields remain zero for other
     // strategies.
@@ -62,6 +74,19 @@ struct LzssMatchFinderStatistics {
     std::uint64_t hash_tree_retirement_count{};
     std::uint64_t hash_tree_maximum_promoted_buckets{};
     std::uint64_t hash_tree_maximum_promoted_nodes{};
+    std::uint64_t hash_tree_promotion_build_key_comparison_count{};
+    std::uint64_t hash_tree_promotion_build_key_byte_comparison_count{};
+    std::uint64_t hash_tree_promotion_build_rotation_count{};
+    std::uint64_t hash_tree_tree_query_key_comparison_count{};
+    std::uint64_t hash_tree_tree_query_key_byte_comparison_count{};
+    std::uint64_t hash_tree_tree_query_lcp_byte_comparison_count{};
+    std::uint64_t hash_tree_tree_query_prefix_range_comparison_count{};
+    std::uint64_t hash_tree_tree_query_prefix_range_byte_comparison_count{};
+    std::uint64_t hash_tree_tree_query_lcp_skipped_byte_count{};
+    std::uint64_t hash_tree_maintenance_key_comparison_count{};
+    std::uint64_t hash_tree_maintenance_key_byte_comparison_count{};
+    std::uint64_t hash_tree_rotation_count{};
+    std::uint64_t hash_tree_maximum_height{};
     std::array<std::uint64_t,
                lzss_match_finder_depth_histogram_size>
         hash_tree_chain_query_depth_histogram{};

@@ -10422,3 +10422,25 @@ bins at `UINT64_MAX`, exercise its update, and require saturation plus the
 shared overflow flag rather than wraparound. Default-disabled HashTree must
 leave every new strategy-specific counter zero while retaining its established
 HashChain diagnostics.
+
+### TVG-0744
+
+Attach and omit the component observer on an identical three-node
+double-rotation builder fixture. Require byte-identical trees and results,
+positive key comparisons and byte tests, two rotations, and maximum height
+two. Require validator comparisons to be included.
+
+On a hand-checkable promoted query, require identical Exact result and
+read-only arrays with and without the observer. Require positive finite-key,
+LCP, and prefix-range work, and require LCP-skipped bytes to remain zero for
+the current reference traversal. On insertion and removal fixtures, require
+identical roots and arrays, positive preflight/search comparisons, expected
+rotations where forced, and the resulting maximum height.
+
+Seed each currently active component additive counter at `UINT64_MAX`, execute
+a path that would increment it, and require saturation plus component
+overflow. Keep the reserved LCP-skipped counter at zero until skipping exists.
+Through the integrated finder, require each successful component total to
+reach its separate HashTree aggregate, maximum height never to decrease,
+counter-null and counter-present matches/workspace to remain identical, and
+the complete disabled-default diagnostic surface to remain zero.

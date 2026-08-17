@@ -22671,3 +22671,29 @@ discarded and the reviewed seed retained.
   limit, including `marc_interoperability_schema_compatibility` (65.27 seconds
   under MSVC and 72.25 seconds under ClangCL). Total suite times are 164.70 and
   178.96 seconds.
+
+## CR-0941: 2026-08-18 - HashTree component-cost diagnostics
+
+- Authoring method: instrumented the exact comparison loops and AVL rotation
+  boundaries already owned by marc, without changing their control flow or
+  result contracts.
+- References used: DD-861 through DD-872, IR-0633 through IR-0644, TVG-0733
+  through TVG-0744, and repository-owned HashTree components and statistics.
+- Known implementations intentionally not consulted: external tree profilers,
+  adaptive match finders, compressors, source code, tests, benchmark schemas,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: include mandatory validation in build cost; separate
+  build, query, and maintenance work; count actual byte tests; report zero LCP
+  skipping until it exists; and aggregate only successful component results.
+- Generated-code task description: add optional saturating component-cost
+  observers, prove observer invariance with hand-checkable rotations and Exact
+  queries, and aggregate the results without exposing HashTree publicly.
+- Similarity review: counter names, boundaries, saturation, and tests derive
+  only from marc-owned code paths and design. No external implementation
+  expression entered this change.
+- Validation: all targets build without warnings under MSVC 18.8.2 and
+  ClangCL. Focused builder/query/mutation/finder tests pass 44/44 on both
+  compilers. The complete CTest suite passes 3060/3060 with a 300-second
+  per-test limit, including `marc_interoperability_schema_compatibility`
+  (65.44 seconds under MSVC and 72.17 seconds under ClangCL). Total suite
+  times are 168.11 and 186.07 seconds.

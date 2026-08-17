@@ -40,6 +40,7 @@ struct LzssHashTreeBucketBuildContext {
     std::size_t head_position{lzss_hash_tree_no_position};
     std::span<const std::uint32_t> links{};
     LzssHashTreeBucketNodeArrays nodes{};
+    LzssHashTreeComponentStatistics* statistics{};
 };
 
 struct LzssHashTreeBucketBuildResult {

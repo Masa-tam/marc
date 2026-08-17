@@ -41,10 +41,11 @@ struct MutationFixture {
         subtree_maximum.assign(capacity, lzss_hash_tree_no_position);
     }
 
-    [[nodiscard]] LzssHashTreeBucketMutationContext context() {
+    [[nodiscard]] LzssHashTreeBucketMutationContext context(
+        LzssHashTreeComponentStatistics* const statistics = nullptr) {
         return {
             input, parameters, 0, 1, left, right, parent, height,
-            position, subtree_maximum};
+            position, subtree_maximum, statistics};
     }
 
     [[nodiscard]] LzssHashTreeBucketQueryContext query_context(
@@ -280,6 +281,72 @@ TEST(LzssHashTreeBucketMutation, SearchCycleFailsFinitelyBeforeMutation) {
     EXPECT_EQ(fixture.height, height);
     EXPECT_EQ(fixture.position, positions);
     EXPECT_EQ(fixture.subtree_maximum, maxima);
+}
+
+TEST(LzssHashTreeBucketMutation, ReportsMaintenanceWork) {
+    MutationFixture fixture{bytes("AAAAAAAAAAAAAAAAAAAA"), 16};
+    LzssHashTreeComponentStatistics statistics{};
+    for (std::size_t position = 0; position < 3; ++position) {
+        const auto result = insert_lzss_hash_tree_bucket_position(
+            fixture.context(&statistics), fixture.root, position);
+        ASSERT_EQ(result.error, LzssHashTreeBucketMutationError::none);
+        fixture.root = result.root;
+    }
+    EXPECT_GT(statistics.key_comparison_count, 0U);
+    EXPECT_GT(statistics.key_byte_comparison_count, 0U);
+    EXPECT_EQ(statistics.rotation_count, 1U);
+    EXPECT_EQ(statistics.maximum_height, 2U);
+    fixture.expect_valid(0, 3);
+}
+
+TEST(LzssHashTreeBucketMutation, ObserverDoesNotChangeSlidingTree) {
+    MutationFixture plain{bytes("AAAAAAAAAAAAAAAAAAAA"), 8};
+    MutationFixture observed{bytes("AAAAAAAAAAAAAAAAAAAA"), 8};
+    LzssHashTreeComponentStatistics statistics{};
+    for (std::size_t position = 0; position < 10; ++position) {
+        if (position >= 8) {
+            plain.remove(position - 8);
+            const auto removed = remove_lzss_hash_tree_bucket_position(
+                observed.context(&statistics), observed.root, position - 8);
+            ASSERT_EQ(removed.error, LzssHashTreeBucketMutationError::none);
+            observed.root = removed.root;
+        }
+        plain.insert(position);
+        const auto inserted = insert_lzss_hash_tree_bucket_position(
+            observed.context(&statistics), observed.root, position);
+        ASSERT_EQ(inserted.error, LzssHashTreeBucketMutationError::none);
+        observed.root = inserted.root;
+    }
+    EXPECT_EQ(observed.root, plain.root);
+    EXPECT_EQ(observed.left, plain.left);
+    EXPECT_EQ(observed.right, plain.right);
+    EXPECT_EQ(observed.parent, plain.parent);
+    EXPECT_EQ(observed.height, plain.height);
+    EXPECT_EQ(observed.position, plain.position);
+    EXPECT_EQ(observed.subtree_maximum, plain.subtree_maximum);
+    EXPECT_GT(statistics.key_comparison_count, 0U);
+    EXPECT_GT(statistics.key_byte_comparison_count, 0U);
+    EXPECT_GT(statistics.rotation_count, 0U);
+    EXPECT_GT(statistics.maximum_height, 0U);
+}
+
+TEST(LzssHashTreeBucketMutation, StatisticsSaturate) {
+    MutationFixture fixture{bytes("AAAAAAAAAAAAAAAAAAAA"), 16};
+    const auto maximum = std::numeric_limits<std::uint64_t>::max();
+    LzssHashTreeComponentStatistics statistics{};
+    statistics.key_comparison_count = maximum;
+    statistics.key_byte_comparison_count = maximum;
+    statistics.rotation_count = maximum;
+    for (std::size_t position = 0; position < 3; ++position) {
+        const auto result = insert_lzss_hash_tree_bucket_position(
+            fixture.context(&statistics), fixture.root, position);
+        ASSERT_EQ(result.error, LzssHashTreeBucketMutationError::none);
+        fixture.root = result.root;
+    }
+    EXPECT_TRUE(statistics.overflowed);
+    EXPECT_EQ(statistics.key_comparison_count, maximum);
+    EXPECT_EQ(statistics.key_byte_comparison_count, maximum);
+    EXPECT_EQ(statistics.rotation_count, maximum);
 }
 
 } // namespace

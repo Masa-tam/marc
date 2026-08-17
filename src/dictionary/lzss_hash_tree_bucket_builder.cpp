@@ -6,10 +6,30 @@
 #include <bit>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <memory>
 
 namespace marc::dictionary::internal {
 namespace {
+
+void increment_statistic(
+    LzssHashTreeComponentStatistics* const statistics,
+    std::uint64_t& value) noexcept {
+    if (statistics == nullptr) return;
+    if (value == std::numeric_limits<std::uint64_t>::max()) {
+        statistics->overflowed = true;
+        return;
+    }
+    ++value;
+}
+
+void record_height(
+    LzssHashTreeComponentStatistics* const statistics,
+    const std::uint8_t height) noexcept {
+    if (statistics == nullptr) return;
+    statistics->maximum_height = std::max(
+        statistics->maximum_height, static_cast<std::uint64_t>(height));
+}
 
 [[nodiscard]] LzssHashTreeBucketBuildError validate_context(
     const LzssHashTreeBucketBuildContext& context) noexcept {
@@ -48,7 +68,16 @@ namespace {
     const auto right_size = std::min<std::size_t>(
         context.input.size() - right, context.parameters.max_match_length);
     const auto common_size = std::min(left_size, right_size);
+    if (context.statistics != nullptr) {
+        increment_statistic(
+            context.statistics, context.statistics->key_comparison_count);
+    }
     for (std::size_t index = 0; index < common_size; ++index) {
+        if (context.statistics != nullptr) {
+            increment_statistic(
+                context.statistics,
+                context.statistics->key_byte_comparison_count);
+        }
         const auto left_byte = std::to_integer<std::uint8_t>(
             context.input[left + index]);
         const auto right_byte = std::to_integer<std::uint8_t>(
@@ -139,6 +168,7 @@ public:
             absolute_position);
         if (root_ == lzss_hash_tree_null_node) {
             root_ = node;
+            record_height(context_.statistics, std::uint8_t{1});
             return;
         }
 
@@ -157,6 +187,7 @@ public:
         if (order < 0) context_.nodes.left[parent] = node;
         else context_.nodes.right[parent] = node;
         rebalance_from(parent);
+        record_height(context_.statistics, context_.nodes.height[root_]);
     }
 
 private:
@@ -201,6 +232,11 @@ private:
 
     [[nodiscard]] std::uint32_t rotate_left(
         const std::uint32_t node) noexcept {
+        if (context_.statistics != nullptr) {
+            increment_statistic(
+                context_.statistics,
+                context_.statistics->rotation_count);
+        }
         const auto promoted = context_.nodes.right[node];
         const auto transferred = context_.nodes.left[promoted];
         const auto parent = context_.nodes.parent[node];
@@ -218,6 +254,11 @@ private:
 
     [[nodiscard]] std::uint32_t rotate_right(
         const std::uint32_t node) noexcept {
+        if (context_.statistics != nullptr) {
+            increment_statistic(
+                context_.statistics,
+                context_.statistics->rotation_count);
+        }
         const auto promoted = context_.nodes.left[node];
         const auto transferred = context_.nodes.right[promoted];
         const auto parent = context_.nodes.parent[node];

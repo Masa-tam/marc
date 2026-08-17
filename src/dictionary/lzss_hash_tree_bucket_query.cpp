@@ -10,6 +10,17 @@
 namespace marc::dictionary::internal {
 namespace {
 
+void increment_statistic(
+    LzssHashTreeComponentStatistics* const statistics,
+    std::uint64_t& value) noexcept {
+    if (statistics == nullptr) return;
+    if (value == std::numeric_limits<std::uint64_t>::max()) {
+        statistics->overflowed = true;
+        return;
+    }
+    ++value;
+}
+
 [[nodiscard]] LzssHashTreeBucketQueryError validate_context(
     const LzssHashTreeBucketQueryContext& context) noexcept {
     const auto capacity = context.left.size();
@@ -74,7 +85,16 @@ namespace {
     const auto right_size = std::min<std::size_t>(
         context.input.size() - right, context.parameters.max_match_length);
     const auto common_size = std::min(left_size, right_size);
+    if (context.statistics != nullptr) {
+        increment_statistic(
+            context.statistics, context.statistics->key_comparison_count);
+    }
     for (std::size_t index = 0; index < common_size; ++index) {
+        if (context.statistics != nullptr) {
+            increment_statistic(
+                context.statistics,
+                context.statistics->key_byte_comparison_count);
+        }
         const auto left_byte = std::to_integer<std::uint8_t>(
             context.input[left + index]);
         const auto right_byte = std::to_integer<std::uint8_t>(
@@ -97,8 +117,15 @@ namespace {
         context.input.size() - right,
         static_cast<std::size_t>(context.parameters.max_match_length)});
     std::size_t length{};
-    while (length < maximum
-           && context.input[left + length] == context.input[right + length]) {
+    while (length < maximum) {
+        if (context.statistics != nullptr) {
+            increment_statistic(
+                context.statistics,
+                context.statistics->lcp_byte_comparison_count);
+        }
+        if (context.input[left + length] != context.input[right + length]) {
+            break;
+        }
         ++length;
     }
     return static_cast<std::uint32_t>(length);
@@ -107,7 +134,17 @@ namespace {
 [[nodiscard]] int compare_prefix(
     const LzssHashTreeBucketQueryContext& context,
     const std::size_t position, const std::uint32_t length) noexcept {
+    if (context.statistics != nullptr) {
+        increment_statistic(
+            context.statistics,
+            context.statistics->prefix_range_comparison_count);
+    }
     for (std::size_t index = 0; index < length; ++index) {
+        if (context.statistics != nullptr) {
+            increment_statistic(
+                context.statistics,
+                context.statistics->prefix_range_byte_comparison_count);
+        }
         const auto byte = std::to_integer<std::uint8_t>(
             context.input[position + index]);
         const auto query_byte = std::to_integer<std::uint8_t>(

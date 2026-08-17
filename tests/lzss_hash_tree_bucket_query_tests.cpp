@@ -84,10 +84,12 @@ struct QueryFixture {
     }
 
     [[nodiscard]] LzssHashTreeBucketQueryContext query_context(
-        const std::uint32_t root) const {
+        const std::uint32_t root,
+        LzssHashTreeComponentStatistics* const statistics = nullptr) const {
         return {
             input, parameters, query_position, 0, 1, root,
-            left, right, parent, height, position, subtree_maximum};
+            left, right, parent, height, position, subtree_maximum,
+            statistics};
     }
 
     std::vector<std::byte> input{};
@@ -241,6 +243,51 @@ TEST(LzssHashTreeBucketQuery, CycleAndBadSubtreeMaximumFailFinitely) {
         maximum.query_context(build.root));
     EXPECT_EQ(result.error, LzssHashTreeBucketQueryError::invalid_tree);
     EXPECT_EQ(result.match, LzssMatch{});
+}
+
+TEST(LzssHashTreeBucketQuery, ReportsSeparatedComparisonWork) {
+    QueryFixture fixture{bytes("AAAAAAAAAAAAAAAAAAAA"), 15, 20};
+    const auto build = build_lzss_hash_tree_bucket(fixture.build_context());
+    ASSERT_EQ(build.error, LzssHashTreeBucketBuildError::none);
+    const auto plain = query_lzss_hash_tree_bucket_exact(
+        fixture.query_context(build.root));
+    LzssHashTreeComponentStatistics statistics{};
+    const auto result = query_lzss_hash_tree_bucket_exact(
+        fixture.query_context(build.root, &statistics));
+    ASSERT_EQ(result.error, LzssHashTreeBucketQueryError::none);
+    EXPECT_EQ(result.match, plain.match);
+    EXPECT_EQ(result.candidate_position, plain.candidate_position);
+    EXPECT_EQ(result.maximum_lcp, plain.maximum_lcp);
+    EXPECT_EQ(result.nodes_visited, plain.nodes_visited);
+    EXPECT_EQ(result.match, (LzssMatch{1, 5}));
+    EXPECT_GT(statistics.key_comparison_count, 0U);
+    EXPECT_GT(statistics.key_byte_comparison_count, 0U);
+    EXPECT_GT(statistics.lcp_byte_comparison_count, 0U);
+    EXPECT_GT(statistics.prefix_range_comparison_count, 0U);
+    EXPECT_GT(statistics.prefix_range_byte_comparison_count, 0U);
+    EXPECT_EQ(statistics.lcp_skipped_byte_count, 0U);
+}
+
+TEST(LzssHashTreeBucketQuery, StatisticsSaturate) {
+    QueryFixture fixture{bytes("AAAAAAAAAAAAAAAAAAAA"), 15, 20};
+    const auto build = build_lzss_hash_tree_bucket(fixture.build_context());
+    ASSERT_EQ(build.error, LzssHashTreeBucketBuildError::none);
+    const auto maximum = std::numeric_limits<std::uint64_t>::max();
+    LzssHashTreeComponentStatistics statistics{};
+    statistics.key_comparison_count = maximum;
+    statistics.key_byte_comparison_count = maximum;
+    statistics.lcp_byte_comparison_count = maximum;
+    statistics.prefix_range_comparison_count = maximum;
+    statistics.prefix_range_byte_comparison_count = maximum;
+    const auto result = query_lzss_hash_tree_bucket_exact(
+        fixture.query_context(build.root, &statistics));
+    ASSERT_EQ(result.error, LzssHashTreeBucketQueryError::none);
+    EXPECT_TRUE(statistics.overflowed);
+    EXPECT_EQ(statistics.key_comparison_count, maximum);
+    EXPECT_EQ(statistics.key_byte_comparison_count, maximum);
+    EXPECT_EQ(statistics.lcp_byte_comparison_count, maximum);
+    EXPECT_EQ(statistics.prefix_range_comparison_count, maximum);
+    EXPECT_EQ(statistics.prefix_range_byte_comparison_count, maximum);
 }
 
 } // namespace

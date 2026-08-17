@@ -18272,3 +18272,35 @@ LCP-skipped bytes, rotations, and maximum tree height require instrumentation
 inside the builder, query, and mutation components and remain the next
 independent diagnostic change. No performance threshold or public selector is
 introduced here.
+
+## DD-872: HashTree component work has explicit non-overlapping counters
+
+- Date: 2026-08-18
+- Status: accepted
+
+Add one optional component-statistics observer as a trailing field of the
+private builder, query, and mutation contexts. Its absence performs no counter
+updates. Its presence must not alter result fields, tree bytes, traversal,
+rotation, error, or publication.
+
+Builder key comparisons and bytes include AVL construction and the mandatory
+post-build validator because both are paid by promotion. Builder rotations are
+separate from steady promoted-tree rotations. Query records finite-key
+comparisons and bytes, direct LCP bytes, prefix-range comparisons and bytes,
+and LCP-skipped bytes. The current reference query begins each comparison at
+offset zero, so its skipped count is exactly zero until a later independently
+tested LCP-carrying optimization. Mutation key comparisons and bytes include
+preflight structural checks and insertion/removal search. Its rotations cover
+only successful steady-state insertion or retirement rebalancing.
+
+Each actual byte equality/order test counts once, including the first
+mismatching byte. A comparison call counts once even if finite length or
+absolute-position tie-breaking decides it after zero byte tests. Maximum height
+is sampled after each successful build insertion or mutation and aggregated
+across the finder. All component counters saturate and expose overflow; finder
+aggregation saturates again. Invalid component results are not added to the
+finder's completed-work totals.
+
+This diagnostic change does not implement LCP skipping, select HashTree in the
+benchmark or production, or change public APIs, stream format, ABI, tokens, or
+interoperability output.
