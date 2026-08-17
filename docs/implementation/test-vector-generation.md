@@ -10281,3 +10281,16 @@ Reject invalid limits, invalid LZSS parameters, input beyond frame bounds,
 workspace beyond the internal-buffer limit, and input-plus-workspace arithmetic
 overflow with stable private error categories. The calculator must allocate
 nothing and must not receive or modify caller workspace in this stage.
+
+### TVG-0736
+
+Fill an aligned workspace and excess guard region with `0xa5`, initialize a
+private HashTree finder, and require only heads, roots, and modes to change to
+their canonical Chain control values. Require predecessor links, alignment
+padding, all tree-node arrays, and excess caller capacity to retain the exact
+byte pattern. Do not inspect a lazy region through its eventual typed view.
+
+Initialize input shorter than five bytes with empty workspace and require a
+valid zero-capacity finder. Seed a distinct finder, then independently reject
+short workspace, misaligned workspace, and input/workspace overlap. Each
+failure must preserve the seeded finder and every caller byte exactly.

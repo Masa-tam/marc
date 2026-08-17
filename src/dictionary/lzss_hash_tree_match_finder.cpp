@@ -1,11 +1,13 @@
 #include "dictionary/lzss_hash_tree_match_finder.hpp"
 
+#include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
 
 #include <algorithm>
 #include <bit>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 
 namespace marc::dictionary::internal {
 namespace {
@@ -20,6 +22,20 @@ namespace {
     return core::checked_add(cursor, padding, offset)
         && core::checked_multiply(count, element_size, bytes)
         && core::checked_add(offset, bytes, cursor);
+}
+
+template<typename T>
+[[nodiscard]] std::span<T> array_at(
+    const std::span<std::byte> workspace, const std::size_t offset,
+    const std::size_t count) noexcept {
+    return {reinterpret_cast<T*>(workspace.data() + offset), count};
+}
+
+template<typename T>
+void construct_array(const std::span<T> values, const T initial) noexcept {
+    for (std::size_t index = 0; index < values.size(); ++index) {
+        std::construct_at(values.data() + index, initial);
+    }
 }
 
 } // namespace
@@ -87,6 +103,75 @@ LzssHashTreeWorkspaceRequirements calculate_lzss_hash_tree_workspace(
         result.error = LzssHashTreeError::workspace_limit_exceeded;
     }
     return result;
+}
+
+LzssHashTreeError initialize_lzss_hash_tree_match_finder(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters, const core::DecoderLimits& limits,
+    const std::span<std::byte> workspace,
+    LzssHashTreeMatchFinder& finder,
+    LzssMatchFinderStatistics* const statistics) noexcept {
+    const auto required = calculate_lzss_hash_tree_workspace(
+        input.size(), parameters, limits);
+    if (required.error != LzssHashTreeError::none) return required.error;
+    if (workspace.size() < required.workspace_size) {
+        return LzssHashTreeError::workspace_too_small;
+    }
+    const auto active_workspace = workspace.first(required.workspace_size);
+    if (!active_workspace.empty()
+        && reinterpret_cast<std::uintptr_t>(active_workspace.data())
+               % required.workspace_alignment != 0) {
+        return LzssHashTreeError::misaligned_workspace;
+    }
+    const auto overlap = core::check_buffer_overlap(
+        input.data(), input.size(), active_workspace.data(),
+        active_workspace.size());
+    if (overlap == core::BufferOverlap::overlap) {
+        return LzssHashTreeError::overlapping_buffers;
+    }
+    if (overlap == core::BufferOverlap::arithmetic_overflow) {
+        return LzssHashTreeError::arithmetic_overflow;
+    }
+
+    LzssHashTreeMatchFinder initialized{};
+    initialized.input_ = input;
+    initialized.parameters_ = parameters;
+    initialized.statistics_ = statistics;
+    initialized.initialized_ = true;
+    initialized.state_valid_ = true;
+    if (required.workspace_size == 0) {
+        finder = initialized;
+        return LzssHashTreeError::none;
+    }
+
+    initialized.heads_ = array_at<std::size_t>(
+        active_workspace, required.head_offset, required.bucket_count);
+    initialized.links_ = array_at<std::uint32_t>(
+        active_workspace, required.link_offset, required.node_count);
+    initialized.roots_ = array_at<std::uint32_t>(
+        active_workspace, required.root_offset, required.bucket_count);
+    initialized.modes_ = array_at<LzssHashTreeBucketMode>(
+        active_workspace, required.mode_offset, required.bucket_count);
+    initialized.left_ = array_at<std::uint32_t>(
+        active_workspace, required.left_offset, required.node_count);
+    initialized.right_ = array_at<std::uint32_t>(
+        active_workspace, required.right_offset, required.node_count);
+    initialized.parent_ = array_at<std::uint32_t>(
+        active_workspace, required.parent_offset, required.node_count);
+    initialized.height_ = array_at<std::uint8_t>(
+        active_workspace, required.height_offset, required.node_count);
+    initialized.position_ = array_at<std::size_t>(
+        active_workspace, required.position_offset, required.node_count);
+    initialized.subtree_maximum_position_ = array_at<std::size_t>(
+        active_workspace, required.subtree_maximum_position_offset,
+        required.node_count);
+
+    construct_array(initialized.heads_, lzss_hash_tree_no_position);
+    construct_array(initialized.roots_, lzss_hash_tree_null_node);
+    construct_array(initialized.modes_, LzssHashTreeBucketMode::chain);
+
+    finder = initialized;
+    return LzssHashTreeError::none;
 }
 
 } // namespace marc::dictionary::internal

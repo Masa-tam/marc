@@ -18055,3 +18055,27 @@ buffer limit without allocating or touching caller storage.
 On a 64-bit host, one-MiB node capacity and 65,536 buckets require exactly
 35,454,976 bytes. This stage adds no finder object, initialization, tree
 mutation, public selector, format, ABI, token, or interoperability change.
+
+## DD-864: HashTree initialization constructs only reachable control state
+
+- Date: 2026-08-18
+- Status: accepted
+
+After validating requirements, workspace size, base alignment, and complete
+input/workspace non-overlap, bind all ten private array spans into a temporary
+finder. Construct every bucket head as no-position, every tree root as null,
+and every promotion mode as Chain, then publish the temporary finder. Any
+failure leaves both the destination finder and all caller workspace unchanged.
+
+Do not bulk-construct predecessor links or any tree-node field. A link becomes
+live only when its position is inserted and before the corresponding head is
+published. A tree slot becomes live only when insertion constructs every node
+field and before any root or child references it. Thus no reachable state may
+read an unconstructed object, while a one-MiB Chain-only frame avoids clearing
+the link and tree-node regions. Tests inspect lazy regions only as bytes until
+their object lifetimes begin.
+
+Successful short-input initialization needs no workspace but still publishes
+an initialized, valid, position-zero finder. This stage adds no query, advance,
+promotion, tree mutation, public selector, format, ABI, token, or
+interoperability change.

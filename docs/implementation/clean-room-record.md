@@ -22436,3 +22436,31 @@ discarded and the reviewed seed retained.
   300-second per-test limit, including the Python tooling tests and
   `marc_interoperability_schema_compatibility`. The calculator performs no
   allocation and receives no caller workspace.
+
+## CR-0933: 2026-08-18 - HashTree atomic lazy initialization
+
+- Authoring method: applied marc's existing checked and atomic initializer
+  pattern to the HashTree layout while narrowing eager construction to state
+  reachable from an empty Chain index.
+- References used: DD-861 through DD-864, IR-0633 through IR-0636, TVG-0733
+  through TVG-0736, and the repository-owned workspace calculator,
+  buffer-overlap classifier, HashChain initializer, and BinaryTree initializer.
+- Known implementations intentionally not consulted: external hash trees,
+  match finders, lazy arenas, compressors, source code, tests, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: publish through a temporary finder; construct only
+  heads, roots, and modes; leave links and nodes as unreachable raw storage;
+  and inspect lazy memory only through its byte representation.
+- Generated-code task description: bind all bounded arrays, initialize only
+  reachable control state, preserve every lazy and guard byte, and make size,
+  alignment, and overlap failures fully atomic without adding query behavior.
+- Similarity review: initialization order, reachability proof, lazy-lifetime
+  rule, error categories, and tests originate entirely in marc's design and
+  existing components. No external implementation expression entered this
+  change.
+- Local validation: MSVC 18.8.2 and ClangCL 22.1.3 Release builds pass all
+  seven focused HashTree tests and all 3,015 CTest cases at a 300-second
+  per-test limit, including the Python tooling tests and
+  `marc_interoperability_schema_compatibility`. Byte-pattern fixtures confirm
+  that successful initialization touches only control arrays and every tested
+  failure touches neither finder nor workspace.
