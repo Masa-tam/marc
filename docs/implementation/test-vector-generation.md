@@ -10531,3 +10531,20 @@ chain-only, skipped-position, wraparound, promotion, reachable-corruption, and
 sticky-error paths and retain Exact equality with HashChain and Exhaustive.
 Run all tests, including interoperability schema compatibility and the five
 Python tooling tests, under both MSVC and ClangCL.
+
+### TVG-0750
+
+Change the HashTree workspace-layout oracle a second time so the node
+absolute-position array uses the fixed-width stored-position type while the
+subtree-maximum array remains host-width. Require its alignment and segment
+extent to be independent of `size_t`, and fix the exact 64-KiB and one-MiB
+intermediate workspace totals.
+
+Make the builder, query, mutation, and integrated-finder fixtures store node
+positions in the fixed-width representation. Preserve the host-width result
+and subtree-maximum interfaces. Require checked storage, explicit widening at
+mixed-width arithmetic, the stored sentinel on retirement, every existing
+tree invariant and corruption rejection, Exact match equivalence, and sticky
+failure behavior. First observe compilation failures where the old
+host-width assumptions cross the new span boundary; then require all four
+focused component suites and the complete MSVC and ClangCL suites to pass.

@@ -23078,3 +23078,36 @@ discarded and the reviewed seed retained.
   approved external execution route in both builds. Interoperability schema
   compatibility passes in both complete runs. The one-MiB intermediate
   workspace is 35,192,832 bytes.
+
+## CR-0955: 2026-08-19 - Fixed-width HashTree node-position slice
+
+- Authoring method: changed the repository-owned layout oracles and component
+  fixtures first, observed compile-time failures at every old host-width
+  assumption, then implemented only the per-node absolute-position storage
+  boundary and reran both compiler routes.
+- References used: DD-881 through DD-883, TVG-0749 through TVG-0750,
+  CR-0953 through CR-0954, and marc's private HashTree builder, mutation,
+  query, finder, and tests.
+- Known implementations intentionally not consulted: external match finders,
+  compressors, compact tree layouts, source code, tests, schemas, patents,
+  pseudocode, and optimization guidance.
+- Independent decisions: retain host-width subtree maxima for a later slice;
+  reject an unrepresentable component input extent; convert only at the
+  checked storage boundary; widen before mixed-width maximum arithmetic; and
+  use the representation-specific sentinel when retiring a node.
+- Generated-code task description: make node-position layout and fixture types
+  fail against the old implementation, identify every implicit narrowing or
+  mixed-width maximum, implement explicit checked conversions, and preserve
+  every existing topology and Exact oracle.
+- Similarity review: the representation, conversions, tests, names, and size
+  arithmetic derive solely from marc's existing private finder and DD-881.
+  No external implementation expression was consulted or introduced.
+- Validation: the intended red MSVC build exposed the old `size_t` workspace
+  span, implicit construction narrowing, host-sentinel truncation, and mixed-
+  width maximum calls. After the boundary implementation, all 51 focused
+  builder, mutation, query, and finder tests pass under MSVC and ClangCL. The
+  intermediate workspaces are 2,490,368, 8,192,000, and 30,998,528 bytes for
+  64 KiB, 256 KiB, and one MiB. All 3,070 registered tests pass under MSVC in
+  173.18 seconds and ClangCL in 188.02 seconds with a 600-second per-test
+  limit; both runs include all five Python tooling tests and
+  `marc_interoperability_schema_compatibility`.

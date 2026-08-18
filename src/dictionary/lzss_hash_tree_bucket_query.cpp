@@ -33,6 +33,9 @@ void increment_statistic(
         || context.bucket >= context.bucket_count) {
         return LzssHashTreeBucketQueryError::invalid_bucket;
     }
+    if (!lzss_hash_tree_position_extent_representable(context.input.size())) {
+        return LzssHashTreeBucketQueryError::invalid_parameters;
+    }
     if (context.query_position > context.input.size()) {
         return LzssHashTreeBucketQueryError::invalid_query_position;
     }
@@ -252,7 +255,8 @@ LzssHashTreeBucketQueryResult query_lzss_hash_tree_bucket_exact(
         return result;
     }
 
-    auto maximum_position = context.position[split];
+    auto maximum_position = static_cast<std::size_t>(
+        context.position[split]);
     current = context.left[split];
     traversal_steps = 0;
     while (current != lzss_hash_tree_null_node) {
@@ -269,7 +273,8 @@ LzssHashTreeBucketQueryResult query_lzss_hash_tree_bucket_exact(
         else if (comparison > 0) current = context.left[current];
         else {
             maximum_position = std::max(
-                maximum_position, context.position[current]);
+                maximum_position,
+                static_cast<std::size_t>(context.position[current]));
             const auto right = context.right[current];
             if (right != lzss_hash_tree_null_node) {
                 if (!validate_node(context, right)) {
@@ -300,7 +305,8 @@ LzssHashTreeBucketQueryResult query_lzss_hash_tree_bucket_exact(
         else if (comparison > 0) current = context.left[current];
         else {
             maximum_position = std::max(
-                maximum_position, context.position[current]);
+                maximum_position,
+                static_cast<std::size_t>(context.position[current]));
             const auto left = context.left[current];
             if (left != lzss_hash_tree_null_node) {
                 if (!validate_node(context, left)) {

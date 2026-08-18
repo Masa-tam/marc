@@ -44,6 +44,9 @@ void record_height(
         || context.bucket >= context.bucket_count) {
         return LzssHashTreeBucketMutationError::invalid_bucket;
     }
+    if (!lzss_hash_tree_position_extent_representable(context.input.size())) {
+        return LzssHashTreeBucketMutationError::invalid_parameters;
+    }
     const auto expected_capacity = std::min<std::size_t>(
         context.input.size(), context.parameters.window_size);
     if (capacity == 0 || capacity != expected_capacity
@@ -147,7 +150,8 @@ void record_height(
         - static_cast<int>(right_height);
     const auto expected_height = static_cast<std::uint8_t>(
         static_cast<unsigned>(std::max(left_height, right_height)) + 1U);
-    auto expected_maximum = context.position[node];
+    auto expected_maximum = static_cast<std::size_t>(
+        context.position[node]);
     if (left != lzss_hash_tree_null_node) {
         expected_maximum = std::max(
             expected_maximum, context.subtree_maximum_position[left]);
@@ -182,7 +186,8 @@ void record_height(
         - static_cast<int>(right_height);
     const auto expected_height = static_cast<std::uint8_t>(
         static_cast<unsigned>(std::max(left_height, right_height)) + 1U);
-    auto expected_maximum = context.position[node];
+    auto expected_maximum = static_cast<std::size_t>(
+        context.position[node]);
     if (left != lzss_hash_tree_null_node) {
         expected_maximum = std::max(
             expected_maximum, context.subtree_maximum_position[left]);
@@ -300,7 +305,9 @@ public:
         std::construct_at(context_.parent.data() + node,
                           lzss_hash_tree_null_node);
         std::construct_at(context_.height.data() + node, std::uint8_t{1});
-        std::construct_at(context_.position.data() + node, absolute_position);
+        std::construct_at(context_.position.data() + node,
+                          static_cast<LzssHashTreeStoredPosition>(
+                              absolute_position));
         std::construct_at(
             context_.subtree_maximum_position.data() + node,
             absolute_position);
@@ -359,7 +366,7 @@ private:
         context_.height[node] = static_cast<std::uint8_t>(
             static_cast<unsigned>(
                 std::max(node_height(left), node_height(right))) + 1U);
-        auto maximum = context_.position[node];
+        auto maximum = static_cast<std::size_t>(context_.position[node]);
         if (left != lzss_hash_tree_null_node) {
             maximum = std::max(
                 maximum, context_.subtree_maximum_position[left]);
@@ -467,7 +474,7 @@ private:
         context_.right[node] = lzss_hash_tree_null_node;
         context_.parent[node] = lzss_hash_tree_null_node;
         context_.height[node] = 0;
-        context_.position[node] = lzss_hash_tree_no_position;
+        context_.position[node] = lzss_hash_tree_no_stored_position;
         context_.subtree_maximum_position[node] = lzss_hash_tree_no_position;
     }
 

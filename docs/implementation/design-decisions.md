@@ -18540,3 +18540,23 @@ bytes. This intermediate value is intentional: it isolates head layout,
 sentinel handling, chain traversal, corruption detection, and promotion
 handoff before the two component-wide array changes. It does not satisfy the
 complete DD-881 memory target or alter production selection.
+
+## DD-883: Narrow HashTree node positions as an independent second slice
+
+- Date: 2026-08-19
+- Status: accepted
+
+Change the per-node absolute-position array from host-width `size_t` to the
+private `LzssHashTreeStoredPosition` while retaining host-width subtree
+maxima. Treat stored values only as representation: validate the input extent
+before component use, convert a checked absolute position explicitly when it
+is stored, and widen it explicitly before it participates in host-size maxima
+or indexing arithmetic. Retire a ring slot with the distinct stored-position
+sentinel rather than truncating the host sentinel.
+
+Keep subtree maxima host-width in this slice. On a 64-bit host the exact
+workspace becomes 2,490,368, 8,192,000, and 30,998,528 bytes for the 64-KiB,
+256-KiB, and one-MiB configurations. The one-MiB value is a 12.6% reduction
+from the original 35,454,976 bytes, but it remains above DD-881's final
+26,804,224-byte target. This step changes neither match choice, tree topology,
+promotion policy, production selection, nor the authorized maximum window.

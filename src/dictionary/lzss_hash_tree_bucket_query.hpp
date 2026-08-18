@@ -31,7 +31,7 @@ struct LzssHashTreeBucketQueryContext {
     std::span<const std::uint32_t> right{};
     std::span<const std::uint32_t> parent{};
     std::span<const std::uint8_t> height{};
-    std::span<const std::size_t> position{};
+    std::span<const LzssHashTreeStoredPosition> position{};
     std::span<const std::size_t> subtree_maximum_position{};
     LzssHashTreeComponentStatistics* statistics{};
 };

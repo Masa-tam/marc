@@ -37,7 +37,7 @@ struct MutationFixture {
         right.assign(capacity, lzss_hash_tree_null_node);
         parent.assign(capacity, lzss_hash_tree_null_node);
         height.assign(capacity, 0);
-        position.assign(capacity, lzss_hash_tree_no_position);
+        position.assign(capacity, lzss_hash_tree_no_stored_position);
         subtree_maximum.assign(capacity, lzss_hash_tree_no_position);
     }
 
@@ -83,7 +83,7 @@ struct MutationFixture {
     std::vector<std::uint32_t> right{};
     std::vector<std::uint32_t> parent{};
     std::vector<std::uint8_t> height{};
-    std::vector<std::size_t> position{};
+    std::vector<LzssHashTreeStoredPosition> position{};
     std::vector<std::size_t> subtree_maximum{};
 };
 
@@ -200,7 +200,7 @@ TEST(LzssHashTreeBucketMutation, RemovesStructuralShapesAndRestoresSet) {
         }
         candidate.remove(target);
         EXPECT_EQ(candidate.position[target % candidate.position.size()],
-                  lzss_hash_tree_no_position);
+                  lzss_hash_tree_no_stored_position);
         candidate.insert(target);
         candidate.expect_valid(0, 15);
     }
@@ -377,7 +377,9 @@ TEST(LzssHashTreeBucketMutation,
     bool removed_two_children{};
     bool removed_root{};
     for (std::size_t node = 0; node < 15; ++node) {
-        if (original.position[node] == lzss_hash_tree_no_position) continue;
+        if (original.position[node] == lzss_hash_tree_no_stored_position) {
+            continue;
+        }
         const auto child_count =
             (original.left[node] != lzss_hash_tree_null_node ? 1U : 0U)
             + (original.right[node] != lzss_hash_tree_null_node ? 1U : 0U);
@@ -569,7 +571,8 @@ TEST(LzssHashTreeBucketMutation,
     }
     std::uint32_t target_node{};
     while (target_node == fixture.root
-           || fixture.position[target_node] == lzss_hash_tree_no_position) {
+           || fixture.position[target_node]
+               == lzss_hash_tree_no_stored_position) {
         ++target_node;
     }
     const auto target = fixture.position[target_node];

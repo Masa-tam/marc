@@ -17,6 +17,11 @@ inline constexpr std::uint32_t lzss_hash_tree_null_node = UINT32_MAX;
 using LzssHashTreeStoredPosition = std::uint32_t;
 inline constexpr LzssHashTreeStoredPosition
     lzss_hash_tree_no_stored_position = UINT32_MAX;
+[[nodiscard]] constexpr bool lzss_hash_tree_position_extent_representable(
+    const std::size_t extent) noexcept {
+    return extent <= static_cast<std::size_t>(
+        lzss_hash_tree_no_stored_position);
+}
 inline constexpr std::size_t lzss_hash_tree_no_position =
     std::numeric_limits<std::size_t>::max();
 
@@ -117,7 +122,7 @@ private:
     std::span<std::uint32_t> right_{};
     std::span<std::uint32_t> parent_{};
     std::span<std::uint8_t> height_{};
-    std::span<std::size_t> position_{};
+    std::span<LzssHashTreeStoredPosition> position_{};
     std::span<std::size_t> subtree_maximum_position_{};
     std::size_t next_position_{};
     std::size_t promoted_bucket_count_{};

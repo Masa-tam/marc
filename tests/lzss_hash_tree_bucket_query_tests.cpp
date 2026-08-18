@@ -54,7 +54,7 @@ struct QueryFixture {
         right.assign(capacity, lzss_hash_tree_null_node);
         parent.assign(capacity, lzss_hash_tree_null_node);
         height.assign(capacity, 0);
-        position.assign(capacity, std::numeric_limits<std::size_t>::max());
+        position.assign(capacity, lzss_hash_tree_no_stored_position);
         subtree_maximum.assign(
             capacity, std::numeric_limits<std::size_t>::max());
 
@@ -101,7 +101,7 @@ struct QueryFixture {
     std::vector<std::uint32_t> right{};
     std::vector<std::uint32_t> parent{};
     std::vector<std::uint8_t> height{};
-    std::vector<std::size_t> position{};
+    std::vector<LzssHashTreeStoredPosition> position{};
     std::vector<std::size_t> subtree_maximum{};
 };
 

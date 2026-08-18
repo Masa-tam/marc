@@ -43,6 +43,9 @@ void record_height(
         || context.bucket >= context.bucket_count) {
         return LzssHashTreeBucketBuildError::invalid_bucket;
     }
+    if (!lzss_hash_tree_position_extent_representable(context.input.size())) {
+        return LzssHashTreeBucketBuildError::invalid_parameters;
+    }
     if (context.query_position > context.input.size()) {
         return LzssHashTreeBucketBuildError::invalid_query_position;
     }
@@ -162,7 +165,8 @@ public:
         std::construct_at(context_.nodes.height.data() + node,
                           std::uint8_t{1});
         std::construct_at(context_.nodes.position.data() + node,
-                          absolute_position);
+                          static_cast<LzssHashTreeStoredPosition>(
+                              absolute_position));
         std::construct_at(
             context_.nodes.subtree_maximum_position.data() + node,
             absolute_position);
@@ -202,7 +206,8 @@ private:
         const auto right = context_.nodes.right[node];
         context_.nodes.height[node] = static_cast<std::uint8_t>(
             static_cast<unsigned>(std::max(height(left), height(right))) + 1U);
-        auto maximum = context_.nodes.position[node];
+        auto maximum = static_cast<std::size_t>(
+            context_.nodes.position[node]);
         if (left != lzss_hash_tree_null_node) {
             maximum = std::max(
                 maximum,

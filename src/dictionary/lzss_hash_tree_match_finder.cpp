@@ -581,8 +581,10 @@ LzssHashTreeWorkspaceRequirements calculate_lzss_hash_tree_workspace(
                          alignof(std::uint32_t), cursor, result.parent_offset)
         || !append_array(result.node_count, sizeof(std::uint8_t),
                          alignof(std::uint8_t), cursor, result.height_offset)
-        || !append_array(result.node_count, sizeof(std::size_t),
-                         alignof(std::size_t), cursor, result.position_offset)
+        || !append_array(result.node_count,
+                         sizeof(LzssHashTreeStoredPosition),
+                         alignof(LzssHashTreeStoredPosition), cursor,
+                         result.position_offset)
         || !append_array(
             result.node_count, sizeof(std::size_t), alignof(std::size_t),
             cursor, result.subtree_maximum_position_offset)) {
@@ -665,7 +667,7 @@ LzssHashTreeError initialize_lzss_hash_tree_match_finder(
         active_workspace, required.parent_offset, required.node_count);
     initialized.height_ = array_at<std::uint8_t>(
         active_workspace, required.height_offset, required.node_count);
-    initialized.position_ = array_at<std::size_t>(
+    initialized.position_ = array_at<LzssHashTreeStoredPosition>(
         active_workspace, required.position_offset, required.node_count);
     initialized.subtree_maximum_position_ = array_at<std::size_t>(
         active_workspace, required.subtree_maximum_position_offset,
