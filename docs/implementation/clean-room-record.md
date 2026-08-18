@@ -23048,3 +23048,33 @@ discarded and the reviewed seed retained.
   and 26,804,224 bytes, respectively. The one-MiB decrease is 24.4%; all
   values remain below the `uint32_t` sentinel under the current 16-MiB default
   frame and distance limits.
+
+## CR-0954: 2026-08-19 - Fixed-width HashTree bucket-head slice
+
+- Authoring method: changed the repository-owned workspace and chain-head
+  tests first, observed the expected old-width failures, then implemented the
+  smallest head-only storage slice and reran focused and complete tests.
+- References used: DD-881 through DD-882, TVG-0749, CR-0953, the private
+  HashTree calculator/finder, and its existing workspace and Exact tests.
+- Known implementations intentionally not consulted: external match finders,
+  compressors, fixed-width workspace layouts, source code, tests, schemas,
+  patents, pseudocode, and optimization guidance.
+- Independent decisions: give stored positions a distinct type and sentinel;
+  reject unrepresentable extents before layout; convert the builder handoff
+  explicitly; keep the two tree-node position arrays unchanged until the next
+  independently tested slice.
+- Generated-code task description: make bucket-head layout expectations fail
+  against the host-width implementation; implement fixed-width calculation,
+  initialization, traversal, publication, and corruption handling; verify the
+  exact intermediate sizes and both compiler suites.
+- Similarity review: all names, control changes, tests, and arithmetic derive
+  from marc's existing private finder and DD-881. No external implementation
+  expression was consulted or introduced.
+- Validation: the expected red tests reported the old 64-bit head offset and
+  workspace totals. After implementation all 21 focused finder tests pass
+  under MSVC and ClangCL. The complete 3,070-test runs pass except that the
+  sandbox reports `BAD_COMMAND` for five tests whose configured Python
+  executable lies outside the workspace; those exact five pass under the
+  approved external execution route in both builds. Interoperability schema
+  compatibility passes in both complete runs. The one-MiB intermediate
+  workspace is 35,192,832 bytes.

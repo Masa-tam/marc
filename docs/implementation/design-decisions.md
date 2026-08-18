@@ -18521,3 +18521,22 @@ layout boundaries, logical-array equivalence, Exact tokens, deterministic
 routes and mutations, and full-suite stability. Then rerun the same synthetic
 and Silesia matrices and report memory and speed independently. This decision
 does not select HashTree in production or authorize a window above one MiB.
+
+## DD-882: Narrow the HashTree bucket head as an independent first slice
+
+- Date: 2026-08-19
+- Status: accepted
+
+Introduce a private `LzssHashTreeStoredPosition` equal to `uint32_t` and a
+distinct `UINT32_MAX` stored-position sentinel. Use it first for the bucket
+head array only. Reject an input extent greater than the stored sentinel in
+the workspace calculator, construct only the fixed-width heads during
+initialization, map the stored sentinel explicitly when handing a head to the
+tree builder, and widen values before host-size indexing and comparisons.
+
+Keep node positions and subtree maxima host-width in this slice. On a 64-bit
+host the one-MiB workspace therefore falls only from 35,454,976 to 35,192,832
+bytes. This intermediate value is intentional: it isolates head layout,
+sentinel handling, chain traversal, corruption detection, and promotion
+handoff before the two component-wide array changes. It does not satisfy the
+complete DD-881 memory target or alter production selection.

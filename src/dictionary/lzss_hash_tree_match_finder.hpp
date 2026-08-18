@@ -14,6 +14,9 @@
 namespace marc::dictionary::internal {
 
 inline constexpr std::uint32_t lzss_hash_tree_null_node = UINT32_MAX;
+using LzssHashTreeStoredPosition = std::uint32_t;
+inline constexpr LzssHashTreeStoredPosition
+    lzss_hash_tree_no_stored_position = UINT32_MAX;
 inline constexpr std::size_t lzss_hash_tree_no_position =
     std::numeric_limits<std::size_t>::max();
 
@@ -106,7 +109,7 @@ private:
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
-    std::span<std::size_t> heads_{};
+    std::span<LzssHashTreeStoredPosition> heads_{};
     std::span<std::uint32_t> links_{};
     std::span<std::uint32_t> roots_{};
     std::span<LzssHashTreeBucketMode> modes_{};

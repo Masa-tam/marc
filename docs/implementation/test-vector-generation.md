@@ -10515,3 +10515,19 @@ matrix only after all functional tests pass. Require Exact agreement as a
 hard gate and record maintenance key-byte comparisons descriptively; do not
 use timing as a test assertion or proceed to external Silesia evidence without
 a material comparison reduction.
+
+### TVG-0749
+
+Change the HashTree workspace-layout oracle so bucket heads use the private
+fixed-width stored-position type while node positions and subtree maxima
+remain host-width. Check every array offset, size, alignment, non-overlap, the
+exact 64-KiB and one-MiB intermediate workspace totals, and unchanged lazy
+initialization of non-control arrays.
+
+Accept the largest representable input extent and reject the next extent
+before workspace access on hosts where `size_t` is wider than `uint32_t`.
+Require stored heads to initialize to their distinct sentinel. Exercise empty,
+chain-only, skipped-position, wraparound, promotion, reachable-corruption, and
+sticky-error paths and retain Exact equality with HashChain and Exhaustive.
+Run all tests, including interoperability schema compatibility and the five
+Python tooling tests, under both MSVC and ClangCL.

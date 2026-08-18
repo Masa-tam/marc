@@ -500,3 +500,9 @@ window     current bytes   workspace-v2 bytes   reduction   HashChain ratio
 root、token、route、promotion、mutation、rotationを差分試験し、全既存試験後に
 syntheticおよびSilesia行列を再実行する。速度低下と実workspace減少を別々に報告し、
 この段階だけではproduction選択または1 MiB超windowを許可しない。
+
+実装は一度に3配列を変更せず、まずbucket headだけを固定幅化する。64-bit hostの
+中間workspaceは64 KiB、256 KiB、1 MiBでそれぞれ2,752,512、9,240,576、
+35,192,832 bytesとなる。この段階でsentinel境界、chain traversal、promotionへの
+head引き渡し、破損検出および全試験を独立に固定してから、node positionとsubtree
+maximumを同じ保存型へ変更する。中間値を最終workspace-v2値と混同しない。
