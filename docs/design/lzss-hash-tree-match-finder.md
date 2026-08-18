@@ -460,3 +460,43 @@ threshold 1024は12 members中6件で個別にも上回った。したがってm
 意味とExact結果を変えずにworkspace形式を圧縮し、CPU効果とmemory効果を分離して
 同じsyntheticおよびSilesia行列を再測定する。1 MiB超windowはその証拠後まで
 許可しない。
+
+## 20. Workspace v2: fixed-width position storage
+
+最初のworkspace圧縮は探索、promotion、tree topology、node slot、配列分離および
+論理値を変えず、絶対位置を保持する次の3配列だけを`size_t`から`uint32_t`へ
+変更する。
+
+```text
+HashChain bucket heads:       bucket_count * sizeof(uint32_t)
+tree positions:              node_capacity * sizeof(uint32_t)
+tree subtree maxima:         node_capacity * sizeof(uint32_t)
+```
+
+`UINT32_MAX`をposition sentinelとする。保存前に必ずchecked conversionし、
+入力extent、node capacityまたは位置がsentinelと衝突する構成はworkspace計算時に
+拒否する。既定limitの最大frameおよび最大LZ distanceは16 MiBであり、この表現の
+範囲内である。公開formatの`uint32` distance上限を暗黙に狭めず、HashTree private
+finder自身の表現可能性を明示的に検証する。
+
+その他の配列は変更しない。特にleft/right/parentは`uint32`、heightは`uint8`、
+rootとmodeは別配列、predecessor linkは`uint32`のままとする。24-bit packed index、
+parent/height packing、mode/root sentinel統合、node poolまたはpromotion budgetは、
+CPU効果と安全性を独立評価する後続decisionなしには導入しない。
+
+64-bit hostでpaddingを除く式は`25 * node_capacity + 9 * bucket_count`となる。
+既存の`33 * node_capacity + 13 * bucket_count`との比較は次のとおりである。
+
+```text
+window     current bytes   workspace-v2 bytes   reduction   HashChain ratio
+64 KiB        3,014,656           2,228,224        26.1%             2.83
+256 KiB       9,502,720           7,143,424        24.8%             4.54
+1 MiB        35,454,976          26,804,224        24.4%             5.68
+```
+
+実装はcalculator offset、alignment、overflow、sentinel境界、misalignment、overlap、
+初期化failure不変を先に試験する。builder/query/mutation/validatorは保存型を明示し、
+算術とinput indexには`size_t`へlosslessに拡張した値だけを使う。旧・新の論理配列、
+root、token、route、promotion、mutation、rotationを差分試験し、全既存試験後に
+syntheticおよびSilesia行列を再実行する。速度低下と実workspace減少を別々に報告し、
+この段階だけではproduction選択または1 MiB超windowを許可しない。

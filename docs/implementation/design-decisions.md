@@ -18496,3 +18496,28 @@ candidate and authorize a separate workspace-compaction design and evidence
 cycle. That work must preserve Exact results and deterministic structure and
 must rerun both matrices before any production selector or greater-than-one-
 MiB window decision.
+
+## DD-881: First compress HashTree positions without bit packing
+
+- Date: 2026-08-19
+- Status: accepted
+
+Keep HashTree topology, promotion, ring slots, separate arrays, and every
+logical value unchanged. Change only bucket heads, node absolute positions,
+and subtree-maximum absolute positions from host-width `size_t` storage to
+`uint32_t` storage. Reserve `UINT32_MAX` as the position sentinel and reject
+an unrepresentable private-finder configuration before laying out or reading
+workspace. Convert stored positions losslessly to `size_t` before input-index
+or distance arithmetic.
+
+Under a 64-bit host this changes the unpadded formula from 33 bytes per node
+plus 13 bytes per bucket to 25 bytes per node plus 9 bytes per bucket. The
+one-MiB configuration falls from 35,454,976 to 26,804,224 bytes, a 24.4%
+reduction, and from 7.51 to 5.68 times the existing HashChain workspace.
+
+Do not combine root and mode, pack 24-bit indices, pack parent and height, add
+a node-pool budget, or alter promotion in this decision. First prove checked
+layout boundaries, logical-array equivalence, Exact tokens, deterministic
+routes and mutations, and full-suite stability. Then rerun the same synthetic
+and Silesia matrices and report memory and speed independently. This decision
+does not select HashTree in production or authorize a window above one MiB.

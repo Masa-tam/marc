@@ -23019,3 +23019,32 @@ discarded and the reviewed seed retained.
   reaches paired aggregate ratios 0.35, 0.69, and 1.33; at one MiB it wins six
   members while retaining a 7.51-times workspace cost. The result JSON remains
   ignored and local.
+
+## CR-0953: 2026-08-19 - Fixed-width HashTree workspace v2 design
+
+- Authoring method: derived every workspace term from marc's current private
+  HashTree calculator, field spans, default limits, and verified Silesia
+  workspace evidence, then separated a lossless storage-width change from
+  later packed or budgeted representations.
+- References used: DD-877 through DD-881, CR-0948 through CR-0952,
+  `src/dictionary/lzss_hash_tree_match_finder.*`, marc's core limits, and the
+  repository HashTree design and tests.
+- Known implementations intentionally not consulted: external match finders,
+  compressors, packed-tree layouts, source code, tests, schemas, patents,
+  pseudocode, tuning advice, and benchmark results.
+- Independent decisions: retain all logical arrays and topology; narrow only
+  three absolute-position arrays to `uint32_t`; reserve an explicit sentinel;
+  reject unrepresentable configurations before workspace access; postpone
+  packed indices, combined fields, and bounded node pools.
+- Generated-code task description: audit the 64-bit workspace formula,
+  identify losslessly narrowable fields under marc's limits, calculate exact
+  sizes for the three established windows, specify checked conversions and
+  differential tests, and preserve separate CPU and memory evidence gates.
+- Similarity review: the design and arithmetic follow solely from marc-owned
+  data structures, constraints, and measurements. No external implementation
+  expression was consulted or introduced.
+- Validation: the unpadded formula changes from `33N + 13B` to `25N + 9B`.
+  For 64 KiB, 256 KiB, and one MiB windows it predicts 2,228,224, 7,143,424,
+  and 26,804,224 bytes, respectively. The one-MiB decrease is 24.4%; all
+  values remain below the `uint32_t` sentinel under the current 16-MiB default
+  frame and distance limits.
