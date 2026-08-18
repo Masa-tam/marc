@@ -18392,3 +18392,26 @@ threshold/window across all members, using summed bytes/work/time/histograms
 and maximum workspace/peaks. Do not publish partial JSON after failure or use
 performance as a test assertion. The runner performs no network access and
 does not alter public selection, stream format, ABI, defaults, or artifacts.
+
+## DD-877: Silesia rejects current HashTree maintenance, not tree search
+
+- Date: 2026-08-18
+- Status: accepted
+
+At revision `b704ca5`, run the complete verified Silesia threshold matrix under
+MSVC 19.50. All 144 HashTree records retain Exact token equality. Threshold
+1024 is aggregate-fastest at every window but reaches only 0.158, 0.293, and
+0.744 of HashChain throughput for 64 KiB, 256 KiB, and 1 MiB windows. Only
+seven candidate records win, confined to three 1 MiB member/window groups.
+This rejects the current HashTree for production and rejects threshold-only
+tuning as a sufficient remedy.
+
+The same threshold reduces Chain candidate visits by 71.9%, 80.5%, and 85.4%,
+so preserve the evidence that selective tree queries can remove search work.
+Attribute the aggregate loss to the measured implementation costs: roughly
+101.6, 124.2, and 78.5 billion maintenance key-byte comparisons and maximum
+workspace ratios of 3.83, 6.04, and 7.51. Before extending the LZSS window
+beyond 1 MiB, require a separately documented successor that structurally
+reduces ordered-key maintenance and workspace while retaining Exact output,
+bounds, and determinism. Keep the present finder private and re-run the same
+synthetic and Silesia evidence after any successor change.

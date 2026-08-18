@@ -22805,3 +22805,28 @@ discarded and the reviewed seed retained.
   73.59 seconds under ClangCL). Total suite times are 180.93 and 201.64
   seconds. The external twelve-member measurement remains deliberately
   unexecuted until the next opt-in experiment step.
+
+## CR-0946: 2026-08-18 - Complete Silesia HashTree threshold evidence
+
+- Authoring method: executed the repository-owned strict Silesia threshold
+  runner at revision `b704ca5` and summarized its validated ignored JSON
+  without changing algorithms, thresholds, reports, or measured values.
+- References used: DD-876, IR-0647, TVG-0747, the verified local Silesia
+  manifest, and the generated `marc-silesia-hash-tree-threshold-v1` JSON.
+- Known implementations intentionally not consulted: external benchmark
+  results, match finders, compressors, source code, tests, schemas, tuning
+  guidance, patents, pseudocode, and optimization descriptions.
+- Independent decisions: retain local wins and aggregate losses together;
+  distinguish successful Chain-candidate reduction from costly maintenance;
+  reject production and threshold-only tuning; and require structural cost
+  reduction before a wider LZSS window.
+- Generated-code task description: verify and aggregate all 180 measurements,
+  compare every candidate to its paired baseline, identify route/workspace
+  cost, and record a reversible engineering decision from negative evidence.
+- Similarity review: conclusions derive only from marc-generated reports and
+  counters. No external implementation expression entered this record.
+- Validation: the strict twelve-member manifest passed; 36 baseline records,
+  144 HashTree records, three baseline aggregates, and twelve threshold
+  aggregates were emitted. Every candidate retained Exact tokens and report
+  invariants. Seven candidate records won locally, while every aggregate
+  threshold/window remained slower than HashChain.

@@ -357,3 +357,23 @@ throughputでbaselineを上回る測定はなかった。閾値0と4は大window
 異なる移行域を実データで評価するための縮約である。HashTreeのproduction昇格は
 引き続き禁止し、Silesia結果または初期化・未promotion経路の改善証拠を別decisionで
 要求する。
+
+## 16. 最初のSilesia判定
+
+revision `b704ca5`の完全Silesia matrixでは、全144候補が36 HashChain baselineと
+Exact一致した。HashTreeは1 MiB windowの`mozilla`、`mr`、`reymont`で局所的に
+baselineを上回り、最大は`reymont` threshold 256の1.24倍だった。しかし
+Corpus aggregateでは最良のthreshold 1024でも64 KiB、256 KiB、1 MiBで
+HashChainの0.158倍、0.293倍、0.744倍であり、production昇格条件を満たさない。
+
+threshold 1024はChain候補訪問をwindow順に71.9%、80.5%、85.4%削減したため、
+Tree queryへの置換そのものには効果がある。一方、maintenance key byte comparisonは
+約1016億、1242億、785億回、最大workspaceはHashChainの3.83倍、6.04倍、7.51倍
+だった。したがって支配的問題はpromotion thresholdの微調整ではなく、長いordered
+keyを使うbuild/insert/retire維持とcombined workspaceである。
+
+現在のHashTreeはprivateのまま不採用とする。1 MiBを超えるwindow拡張より先に、
+maintenance比較とworkspaceを構造的に削減する後継設計を別decisionで定義する。
+後継はExact token、bounded memory、決定性、全既存試験を維持し、同一syntheticと
+Silesia matrixを再実行しなければならない。既存実装を単一thresholdへtuningして
+production化してはならない。

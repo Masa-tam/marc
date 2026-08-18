@@ -1480,6 +1480,44 @@ HashChain baseline records and 144 HashTree records for the default 12-member,
 aggregates. Every candidate must reproduce its paired baseline token count.
 The full run is opt-in and its ignored result is not a CTest fixture.
 
+### First complete Silesia HashTree threshold measurement
+
+The first complete Silesia matrix ran on 2026-08-18 at revision `b704ca5`
+with MSVC 19.50 from Visual Studio 18.8.2. The strict manifest verified all
+twelve members. All 144 HashTree records matched their 36 HashChain baselines
+exactly in token count and passed every report invariant.
+
+Threshold 1,024 produced the best aggregate throughput at every window:
+
+| Window | HashChain MiB/s | HashTree MiB/s | Ratio | Promotions | Tree queries |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 65,536 | 12.93 | 2.05 | 0.158 | 781 | 0.28% |
+| 262,144 | 5.29 | 1.55 | 0.293 | 2,951 | 0.65% |
+| 1,048,576 | 2.78 | 2.07 | 0.744 | 7,758 | 1.00% |
+
+Only seven of 144 candidate records exceeded their paired baseline, all at a
+1 MiB window. They belonged to three member/window groups: `mozilla` reached
+1.16 times baseline at threshold 1,024, `mr` reached 1.05 times at 1,024, and
+`reymont` reached 1.24 times at threshold 256. Threshold 1,024 was the fastest
+HashTree setting in 35 of 36 member/window groups; `reymont` at 1 MiB was the
+sole threshold-256 exception. The Corpus aggregate therefore rejects a
+production threshold while confirming that selective tree search can help a
+small subset of large-window inputs.
+
+At threshold 1,024, HashTree reduced Chain candidate visits by 71.9%, 80.5%,
+and 85.4% as the window grew. That useful query reduction was overwhelmed by
+approximately 101.6, 124.2, and 78.5 billion maintenance key-byte comparisons.
+Maximum caller-owned workspace was 3.83, 6.04, and 7.51 times the HashChain
+workspace. These measurements include per-frame initialization and show that
+the current ordered-key maintenance and full combined workspace, rather than
+failure to reduce Chain search, are the dominant blockers.
+
+The current HashTree remains private and must not be selected by a production
+encoder. A successor experiment must reduce long-key maintenance work and
+workspace before extending LZSS beyond the existing 1 MiB window. It must
+retain the same Exact tokens and re-run both synthetic and Silesia evidence;
+micro-tuning the promotion threshold alone is not supported by these results.
+
 ## External Silesia measurements
 
 ### Private HashTree Exact benchmark route
