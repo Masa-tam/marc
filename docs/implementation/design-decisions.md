@@ -18560,3 +18560,23 @@ workspace becomes 2,490,368, 8,192,000, and 30,998,528 bytes for the 64-KiB,
 from the original 35,454,976 bytes, but it remains above DD-881's final
 26,804,224-byte target. This step changes neither match choice, tree topology,
 promotion policy, production selection, nor the authorized maximum window.
+
+## DD-884: Complete fixed-width HashTree position storage
+
+- Date: 2026-08-19
+- Status: accepted
+
+Change the remaining per-node subtree-maximum absolute-position array from
+host-width `size_t` to `LzssHashTreeStoredPosition`. Use the same checked input
+extent and representation sentinel as bucket heads and node positions. Widen
+subtree maxima explicitly before host-size maximum, candidate, input-index, or
+distance calculations, and explicitly convert only already-representable
+results when updating the stored aggregate.
+
+No host-width array remains in the private HashTree workspace, so its required
+alignment becomes `alignof(uint32_t)`. On a 64-bit host the final unpadded
+formula is 25 bytes per node plus 9 bytes per bucket. The exact workspaces are
+2,228,224, 7,143,424, and 26,804,224 bytes for 64 KiB, 256 KiB, and one MiB,
+meeting DD-881's target. This completes the representation change only. Keep
+HashTree private until the unchanged synthetic and Silesia matrices separately
+prove Exact identity and quantify speed and memory after compaction.

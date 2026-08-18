@@ -55,9 +55,7 @@ struct LzssHashTreeOptions {
 
 struct LzssHashTreeWorkspaceRequirements {
     std::size_t workspace_size{};
-    std::size_t workspace_alignment{
-        alignof(std::size_t) > alignof(std::uint32_t)
-            ? alignof(std::size_t) : alignof(std::uint32_t)};
+    std::size_t workspace_alignment{alignof(std::uint32_t)};
     std::size_t bucket_count{};
     std::size_t node_count{};
     std::size_t head_offset{};
@@ -123,7 +121,7 @@ private:
     std::span<std::uint32_t> parent_{};
     std::span<std::uint8_t> height_{};
     std::span<LzssHashTreeStoredPosition> position_{};
-    std::span<std::size_t> subtree_maximum_position_{};
+    std::span<LzssHashTreeStoredPosition> subtree_maximum_position_{};
     std::size_t next_position_{};
     std::size_t promoted_bucket_count_{};
     std::size_t promoted_node_count_{};

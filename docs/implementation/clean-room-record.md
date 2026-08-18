@@ -23111,3 +23111,34 @@ discarded and the reviewed seed retained.
   173.18 seconds and ClangCL in 188.02 seconds with a 600-second per-test
   limit; both runs include all five Python tooling tests and
   `marc_interoperability_schema_compatibility`.
+
+## CR-0956: 2026-08-19 - Fixed-width HashTree subtree-maximum slice
+
+- Authoring method: changed the final workspace oracle and component fixture
+  type first, observed failures at the old host-width layout and arithmetic
+  boundaries, then implemented only the subtree-maximum storage conversion.
+- References used: DD-881 through DD-884, TVG-0749 through TVG-0751,
+  CR-0953 through CR-0955, and marc's private HashTree workspace, builder,
+  mutation, query, finder, and tests.
+- Known implementations intentionally not consulted: external match finders,
+  compressors, compact tree layouts, source code, tests, schemas, patents,
+  pseudocode, and optimization guidance.
+- Independent decisions: reuse the existing stored-position representation
+  and extent gate; remove the final host-width workspace array; widen stored
+  aggregates at arithmetic boundaries; retain every topology, promotion, and
+  selection rule; and defer performance interpretation to separate matrices.
+- Generated-code task description: make subtree-maximum layout and fixtures
+  reject the old representation, enumerate mixed-width maxima and sentinel
+  writes, implement explicit lossless conversions, and prove the final DD-881
+  layout without changing match behavior.
+- Similarity review: all representation choices, arithmetic, tests, and names
+  derive solely from marc-owned structures and the preceding fixed-width
+  design. No external implementation expression was consulted or introduced.
+- Validation: the intended red build exposed mixed-width `std::max` calls and
+  implicit narrowing at construction, update, and retirement. After repair,
+  both compilers build without warnings and all 51 focused builder, mutation,
+  query, and finder tests pass. The exact final workspaces are 2,228,224,
+  7,143,424, and 26,804,224 bytes for 64 KiB, 256 KiB, and one MiB. All 3,070
+  registered tests pass under MSVC in 173.91 seconds and ClangCL in 189.74
+  seconds with a 600-second per-test limit; both runs include all five Python
+  tooling tests and `marc_interoperability_schema_compatibility`.

@@ -38,7 +38,8 @@ struct MutationFixture {
         parent.assign(capacity, lzss_hash_tree_null_node);
         height.assign(capacity, 0);
         position.assign(capacity, lzss_hash_tree_no_stored_position);
-        subtree_maximum.assign(capacity, lzss_hash_tree_no_position);
+        subtree_maximum.assign(
+            capacity, lzss_hash_tree_no_stored_position);
     }
 
     [[nodiscard]] LzssHashTreeBucketMutationContext context(
@@ -84,7 +85,7 @@ struct MutationFixture {
     std::vector<std::uint32_t> parent{};
     std::vector<std::uint8_t> height{};
     std::vector<LzssHashTreeStoredPosition> position{};
-    std::vector<std::size_t> subtree_maximum{};
+    std::vector<LzssHashTreeStoredPosition> subtree_maximum{};
 };
 
 void expect_same_tree(
@@ -657,7 +658,7 @@ TEST(LzssHashTreeBucketMutation,
     {
         auto fixture = original;
         fixture.subtree_maximum[fixture.root] =
-            lzss_hash_tree_no_position;
+            lzss_hash_tree_no_stored_position;
         expect_v2_insert_failure_preserves_tree(
             fixture, 15, LzssHashTreeBucketMutationError::invalid_tree);
     }

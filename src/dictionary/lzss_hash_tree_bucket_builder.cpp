@@ -169,7 +169,7 @@ public:
                               absolute_position));
         std::construct_at(
             context_.nodes.subtree_maximum_position.data() + node,
-            absolute_position);
+            static_cast<LzssHashTreeStoredPosition>(absolute_position));
         if (root_ == lzss_hash_tree_null_node) {
             root_ = node;
             record_height(context_.statistics, std::uint8_t{1});
@@ -211,14 +211,17 @@ private:
         if (left != lzss_hash_tree_null_node) {
             maximum = std::max(
                 maximum,
-                context_.nodes.subtree_maximum_position[left]);
+                static_cast<std::size_t>(
+                    context_.nodes.subtree_maximum_position[left]));
         }
         if (right != lzss_hash_tree_null_node) {
             maximum = std::max(
                 maximum,
-                context_.nodes.subtree_maximum_position[right]);
+                static_cast<std::size_t>(
+                    context_.nodes.subtree_maximum_position[right]));
         }
-        context_.nodes.subtree_maximum_position[node] = maximum;
+        context_.nodes.subtree_maximum_position[node] =
+            static_cast<LzssHashTreeStoredPosition>(maximum);
     }
 
     void replace_parent_child(
@@ -410,12 +413,14 @@ LzssHashTreeBucketBuildError validate_lzss_hash_tree_bucket(
         if (left != lzss_hash_tree_null_node) {
             expected_maximum = std::max(
                 expected_maximum,
-                context.nodes.subtree_maximum_position[left]);
+                static_cast<std::size_t>(
+                    context.nodes.subtree_maximum_position[left]));
         }
         if (right != lzss_hash_tree_null_node) {
             expected_maximum = std::max(
                 expected_maximum,
-                context.nodes.subtree_maximum_position[right]);
+                static_cast<std::size_t>(
+                    context.nodes.subtree_maximum_position[right]));
         }
         if (context.nodes.height[node] != expected_height
             || balance < -1 || balance > 1

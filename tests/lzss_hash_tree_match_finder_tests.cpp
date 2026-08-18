@@ -139,12 +139,11 @@ TEST(LzssHashTreeMatchFinder, CalculatesEmptyAndFiveByteWorkspace) {
               align_size(required.height_offset + 5U,
                          alignof(LzssHashTreeStoredPosition)));
     EXPECT_EQ(required.subtree_maximum_position_offset,
-              align_size(required.position_offset
-                             + 5U * sizeof(LzssHashTreeStoredPosition),
-                         alignof(std::size_t)));
+              required.position_offset
+                  + 5U * sizeof(LzssHashTreeStoredPosition));
     EXPECT_EQ(required.workspace_size,
               required.subtree_maximum_position_offset
-                  + 5U * sizeof(std::size_t));
+                  + 5U * sizeof(LzssHashTreeStoredPosition));
 }
 
 TEST(LzssHashTreeMatchFinder, FixesLargeWorkspaceLayoutAndBound) {
@@ -152,14 +151,12 @@ TEST(LzssHashTreeMatchFinder, FixesLargeWorkspaceLayoutAndBound) {
     ASSERT_EQ(required.error, LzssHashTreeError::none);
     EXPECT_EQ(required.bucket_count, 65'536U);
     EXPECT_EQ(required.node_count, 65'536U);
-    EXPECT_EQ(required.workspace_alignment,
-              std::max(alignof(std::size_t), alignof(std::uint32_t)));
+    EXPECT_EQ(required.workspace_alignment, alignof(std::uint32_t));
     EXPECT_EQ(required.workspace_size,
-              (22U + sizeof(std::size_t)
-                   + 2U * sizeof(LzssHashTreeStoredPosition))
+              (22U + 3U * sizeof(LzssHashTreeStoredPosition))
                   * static_cast<std::size_t>(65'536));
     if constexpr (sizeof(std::size_t) == 8) {
-        EXPECT_EQ(required.workspace_size, 2'490'368U);
+        EXPECT_EQ(required.workspace_size, 2'228'224U);
     }
 
     LzssParameters parameters{};
@@ -170,13 +167,12 @@ TEST(LzssHashTreeMatchFinder, FixesLargeWorkspaceLayoutAndBound) {
     EXPECT_EQ(required.bucket_count, 65'536U);
     EXPECT_EQ(required.node_count, 1U << 20);
     const auto expected = static_cast<std::size_t>(1U << 20)
-            * (17U + sizeof(std::size_t)
-                + sizeof(LzssHashTreeStoredPosition))
+            * (17U + 2U * sizeof(LzssHashTreeStoredPosition))
         + static_cast<std::size_t>(65'536)
             * (5U + sizeof(LzssHashTreeStoredPosition));
     EXPECT_EQ(required.workspace_size, expected);
     if constexpr (sizeof(std::size_t) == 8) {
-        EXPECT_EQ(required.workspace_size, 30'998'528U);
+        EXPECT_EQ(required.workspace_size, 26'804'224U);
     }
 }
 
@@ -212,8 +208,9 @@ TEST(LzssHashTreeMatchFinder, AlignsAndSeparatesEveryArray) {
                 sizeof(LzssHashTreeStoredPosition),
                 alignof(LzssHashTreeStoredPosition)},
         Segment{required.subtree_maximum_position_offset,
-                required.node_count, sizeof(std::size_t),
-                alignof(std::size_t)},
+                required.node_count,
+                sizeof(LzssHashTreeStoredPosition),
+                alignof(LzssHashTreeStoredPosition)},
     };
 
     std::size_t previous_end{};

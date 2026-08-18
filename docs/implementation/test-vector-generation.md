@@ -10548,3 +10548,20 @@ tree invariant and corruption rejection, Exact match equivalence, and sticky
 failure behavior. First observe compilation failures where the old
 host-width assumptions cross the new span boundary; then require all four
 focused component suites and the complete MSVC and ClangCL suites to pass.
+
+### TVG-0751
+
+Change the last HashTree workspace-layout segment, subtree maximum, to the
+fixed-width stored-position representation. Require four-byte workspace
+alignment, exact segment adjacency and non-overlap, and exact 64-KiB and one-
+MiB final totals of 2,228,224 and 26,804,224 bytes on a 64-bit host.
+
+Change all builder, mutation, and query fixtures to the same stored type.
+Require explicit widening when a subtree maximum enters host-size arithmetic,
+the representation sentinel after retirement, unchanged atomic corruption
+failures, and identical tree arrays between reference and maintenance-v2
+routes. Observe the old mixed-width and implicit-narrowing build failures
+first. Then require all 51 focused tests and all registered tests, including
+the five Python tooling tests and interoperability schema compatibility, under
+both compilers. Keep benchmark timing out of functional assertions; rerun the
+complete synthetic and external Silesia matrices as a separate evidence step.

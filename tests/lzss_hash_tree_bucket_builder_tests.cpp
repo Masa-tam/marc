@@ -41,7 +41,7 @@ struct BucketFixture {
         position.assign(
             capacity, lzss_hash_tree_no_stored_position - 1U);
         subtree_maximum.assign(
-            capacity, std::numeric_limits<std::size_t>::max() - 1U);
+            capacity, lzss_hash_tree_no_stored_position - 1U);
     }
 
     [[nodiscard]] LzssHashTreeBucketBuildContext context(
@@ -71,7 +71,7 @@ struct BucketFixture {
     std::vector<std::uint32_t> parent{};
     std::vector<std::uint8_t> height{};
     std::vector<LzssHashTreeStoredPosition> position{};
-    std::vector<std::size_t> subtree_maximum{};
+    std::vector<LzssHashTreeStoredPosition> subtree_maximum{};
 };
 
 void expect_three_node_build(

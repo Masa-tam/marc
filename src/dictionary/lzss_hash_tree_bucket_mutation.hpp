@@ -32,7 +32,7 @@ struct LzssHashTreeBucketMutationContext {
     std::span<std::uint32_t> parent{};
     std::span<std::uint8_t> height{};
     std::span<LzssHashTreeStoredPosition> position{};
-    std::span<std::size_t> subtree_maximum_position{};
+    std::span<LzssHashTreeStoredPosition> subtree_maximum_position{};
     LzssHashTreeComponentStatistics* statistics{};
 };
 

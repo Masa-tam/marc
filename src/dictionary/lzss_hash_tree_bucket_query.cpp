@@ -283,7 +283,8 @@ LzssHashTreeBucketQueryResult query_lzss_hash_tree_bucket_exact(
                 }
                 maximum_position = std::max(
                     maximum_position,
-                    context.subtree_maximum_position[right]);
+                    static_cast<std::size_t>(
+                        context.subtree_maximum_position[right]));
             }
             current = context.left[current];
         }
@@ -315,7 +316,8 @@ LzssHashTreeBucketQueryResult query_lzss_hash_tree_bucket_exact(
                 }
                 maximum_position = std::max(
                     maximum_position,
-                    context.subtree_maximum_position[left]);
+                    static_cast<std::size_t>(
+                        context.subtree_maximum_position[left]));
             }
             current = context.right[current];
         }
