@@ -22983,3 +22983,39 @@ discarded and the reviewed seed retained.
   to 0.437, 0.561, and 0.893. No v2 candidate beats HashChain. The verified
   temporary source and build directories were removed; ignored evidence JSON
   remains local for the next review.
+
+## CR-0952: 2026-08-19 - Maintenance v2 Silesia evidence
+
+- Authoring method: verified all twelve locally supplied Silesia members,
+  executed the repository-owned offline HashTree threshold runner against the
+  current dedicated MSVC benchmark, and analyzed its ignored JSON by paired
+  member, window, and threshold.
+- References used: DD-857, DD-876 through DD-880, IR-0646, IR-0648,
+  TVG-0746, TVG-0748, CR-0948 through CR-0951, the repository Silesia
+  manifest, and the locally generated
+  `marc-silesia-hash-tree-threshold-v1` documents for revisions `b704ca5` and
+  `15a6c22`.
+- Known implementations intentionally not consulted: external compressors,
+  match finders, source code, benchmark results, tuning guidance, schemas,
+  tests, patents, pseudocode, and optimization descriptions.
+- Independent decisions: require corpus verification and Exact pairing before
+  interpreting time; compare deterministic structural reports across
+  revisions; normalize candidate speed to the HashChain measured in the same
+  run; separate the passed one-MiB CPU gate from the unresolved workspace
+  cost and production-selection decision.
+- Generated-code task description: execute 36 paired baselines and 144
+  HashTree candidates for thresholds 16, 64, 256, and 1024; validate all
+  reports; compare old and new structural fields; calculate maintenance
+  reductions, aggregate ratios, individual wins, and workspace ratios; record
+  the bounded next decision without redistributing corpus data or result JSON.
+- Similarity review: orchestration, comparison, and conclusions use only
+  marc-owned runners and diagnostics plus the locally supplied corpus bytes.
+  No external implementation expression entered the repository.
+- Validation: all twelve manifest hashes and 211,938,580 bytes verify. The
+  output records revision `15a6c22`, MSVC 19.51.36252.0, 36 baselines, 144
+  candidates, and twelve aggregates; every Exact gate passes. All 5,472
+  comparable non-time, non-maintenance-counter fields match the prior matrix.
+  Maintenance comparisons fall by 64.10% through 82.34%. Threshold 1024
+  reaches paired aggregate ratios 0.35, 0.69, and 1.33; at one MiB it wins six
+  members while retaining a 7.51-times workspace cost. The result JSON remains
+  ignored and local.

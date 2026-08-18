@@ -18470,3 +18470,29 @@ No one of the 105 v2 candidates beats its paired HashChain baseline, so keep
 HashTree private and reject production selection. Authorize the same verified
 Silesia thresholds 16, 64, 256, and 1024 as the next evidence step. Do not yet
 change workspace layout or permit a window above 1 MiB.
+
+## DD-880: Maintenance v2 passes the one-MiB Silesia CPU gate
+
+- Date: 2026-08-19
+- Status: accepted
+
+At revision `15a6c22`, run the complete verified Silesia matrix under MSVC
+19.51.36252.0 with HashTree thresholds 16, 64, 256, and 1024. All 144
+candidates retain the Exact token count of their 36 paired HashChain
+baselines. The 5,472 comparable report fields other than timing and the two
+changed maintenance-comparison counters also agree with revision `b704ca5`.
+
+Maintenance v2 reduces key comparisons by 64.10% through 81.36% and key-byte
+comparisons by 63.75% through 82.34%. Threshold 1024 is aggregate-fastest at
+every window. Its paired HashTree/HashChain throughput ratios are 0.35, 0.69,
+and 1.33 for 64 KiB, 256 KiB, and 1 MiB. At 1 MiB all four thresholds beat
+the aggregate baseline; threshold 1024 also wins six of twelve individual
+members. Accept this as passing the one-MiB CPU gate.
+
+Do not yet select HashTree in production. At threshold 1024 its maximum
+workspace remains 3.83, 6.04, and 7.51 times HashChain, and the two smaller
+windows remain slower. Retain one MiB plus threshold 1024 as the bounded next
+candidate and authorize a separate workspace-compaction design and evidence
+cycle. That work must preserve Exact results and deterministic structure and
+must rerun both matrices before any production selector or greater-than-one-
+MiB window decision.

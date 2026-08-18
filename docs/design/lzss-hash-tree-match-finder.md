@@ -438,3 +438,25 @@ v2はmaintenance key comparisonを64.05%～80.01%、key-byte comparisonを63.79%
 禁止する。次に同一のSilesia threshold 16、64、256、1024を再測定し、実データの
 局所勝利とaggregateを判定する。workspace圧縮と1 MiB超windowはその後の
 別decisionに留める。
+
+## 19. Maintenance v2のSilesia判定
+
+revision `15a6c22`をMSVC 19.51.36252.0でbuildし、検証済みのSilesia Corpus
+12 members、3 window、threshold 16、64、256、1024を完全測定した。36件の
+HashChain baselineと144件のHashTree候補を取得し、全候補が対応baselineと
+Exact token一致した。旧revision `b704ca5`と比較可能な時間・maintenance比較量
+以外の5,472フィールドも完全一致した。
+
+v2は旧実装に対してmaintenance key comparisonを64.10%～81.36%、key-byte
+comparisonを63.75%～82.34%削減した。同一run内で最速のthreshold 1024を
+HashChainへ正規化すると、64 KiB、256 KiB、1 MiBのaggregate比はそれぞれ
+0.35、0.69、1.33である。1 MiBでは全thresholdがaggregateでHashChainを上回り、
+threshold 1024は12 members中6件で個別にも上回った。したがってmaintenance v2は
+1 MiB windowにおけるCPU性能gateを通過する。
+
+一方、threshold 1024の最大workspaceはHashChain比で3.83倍、6.04倍、7.51倍で
+あり、64 KiBと256 KiBではaggregate速度も劣る。HashTreeを直ちにproductionへ
+昇格せず、1 MiB・threshold 1024を次の限定候補として保持する。次工程では配列の
+意味とExact結果を変えずにworkspace形式を圧縮し、CPU効果とmemory効果を分離して
+同じsyntheticおよびSilesia行列を再測定する。1 MiB超windowはその証拠後まで
+許可しない。
