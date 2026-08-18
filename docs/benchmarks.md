@@ -1431,6 +1431,40 @@ global ordering, while preserving every active position and the Exact nearest-
 distance tie-break. Timings remain descriptive and the full JSON remains below
 ignored `out/` storage.
 
+### First complete synthetic HashTree threshold measurement
+
+The first complete default matrix ran on 2026-08-18 at revision `090a8c6`
+with MSVC 19.50 from Visual Studio 18.8.2. Each of the five synthetic cases
+used 1 MiB of input, one 1 MiB frame, one timed iteration, all three windows,
+and all seven default thresholds. All 105 HashTree records matched their 15
+HashChain baselines exactly in token count. No HashTree record exceeded its
+corresponding HashChain baseline in measured throughput.
+
+The aggregate best observed HashTree result for each window was:
+
+| Window | HashChain MiB/s | Best threshold | HashTree MiB/s | Ratio |
+| ---: | ---: | ---: | ---: | ---: |
+| 65,536 | 18.08 | 1,024 | 6.05 | 0.335 |
+| 262,144 | 11.34 | 1,024 | 5.36 | 0.472 |
+| 1,048,576 | 8.58 | 64 | 6.78 | 0.791 |
+
+Threshold zero promoted 96,848 to 99,679 buckets per window aggregate and
+measured only 0.20 to 0.33 MiB/s. Threshold 64 routed approximately 12.4% to
+12.6% of queries through trees. Threshold 256 reduced that population to
+0.1% to 0.3%, while threshold 1,024 produced only six promotions per window
+aggregate. Threshold 4 still caused 67,904 to 99,348 promotions at the two
+larger windows. Threshold 4,096 had effectively the same route population as
+1,024 and no stable timing advantage in this single-iteration experiment.
+
+These values include finder initialization for every frame and remain
+descriptive rather than performance assertions. They reject production
+promotion of the current HashTree and narrow the later Silesia experiment to
+thresholds 16, 64, 256, and 1,024. That set retains an early, intermediate,
+late, and nearly-Chain transition regime without repeating the pathological
+zero/four behavior or the redundant 4,096 route. Silesia evidence may still
+reject the strategy entirely or motivate reducing its initialization and
+unpromoted-route overhead before another production review.
+
 ## External Silesia measurements
 
 ### Private HashTree Exact benchmark route

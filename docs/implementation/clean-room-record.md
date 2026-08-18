@@ -22753,3 +22753,27 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility` (66.88 seconds under MSVC and
   74.66 seconds under ClangCL). Total suite times are 165.37 and 244.20
   seconds.
+
+## CR-0944: 2026-08-18 - Complete synthetic HashTree threshold evidence
+
+- Authoring method: executed the repository-owned versioned synthetic runner
+  at revision `090a8c6` and summarized the validated raw JSON without changing
+  the finder, benchmark, schema, or measured values.
+- References used: DD-874, IR-0646, TVG-0746, the locally generated ignored
+  `marc-lzss-hash-tree-threshold-synthetic-v1` JSON, and repository-owned
+  benchmark semantics.
+- Known implementations intentionally not consulted: external benchmark
+  results, adaptive match finders, compressors, source code, tests, schemas,
+  tuning guidance, patents, pseudocode, and optimization descriptions.
+- Independent decisions: treat every timing as descriptive; record that no
+  HashTree measurement won; retain four distinct transition regimes for
+  Silesia; and keep HashTree private rather than tuning toward one fixture.
+- Generated-code task description: validate and aggregate the complete local
+  matrix, preserve Exact equality as the hard gate, document negative
+  performance evidence, and narrow the next experiment without selecting a
+  production threshold.
+- Similarity review: the conclusions derive only from marc-generated counters
+  and timings. No external implementation expression entered this record.
+- Validation: 15 HashChain baselines, 105 HashTree records, and 21 aggregates
+  were emitted. Every case/window/threshold retained Exact token count; all
+  report invariants passed; no HashTree record exceeded its paired baseline.

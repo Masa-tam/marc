@@ -18350,3 +18350,25 @@ time, taking maxima for bounded resources and peaks, and summing histograms.
 Do not use timing as a test threshold. This does not access external data,
 select HashTree in production, or change a stream, public API, ABI, or
 interoperability artifact.
+
+## DD-875: Synthetic evidence narrows but does not promote HashTree
+
+- Date: 2026-08-18
+- Status: accepted
+
+At revision `090a8c6`, run the complete default synthetic matrix under MSVC
+19.50. All 105 HashTree measurements must first retain Exact token equality.
+Treat throughput as descriptive. The observed HashTree does not beat its
+HashChain baseline in any case/window/threshold record; the best aggregate
+ratios are 0.335, 0.472, and 0.791 for the 64 KiB, 256 KiB, and 1 MiB windows.
+This rejects production selection of the current implementation.
+
+For the later Silesia schema, retain thresholds 16, 64, 256, and 1024 as four
+distinct transition regimes. Exclude zero because immediate promotion is
+pathological, four because it still promotes excessively at larger windows,
+and 4096 because its route population is effectively redundant with 1024.
+This narrowing is an experiment-size decision, not a normative threshold or
+a performance guarantee. Finder initialization remains inside measured frame
+cost. Silesia may reject HashTree entirely; any production review remains a
+separate decision after real-data evidence or a proven reduction in
+initialization and unpromoted-route overhead.

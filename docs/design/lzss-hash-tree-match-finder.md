@@ -349,3 +349,11 @@ production既定値を意味しない。callerは重複しない有限uint64閾�
 threshold/window別の合成集計を分離し、実行command、revision、environmentと
 完全なreportを保持する。このrunnerはnetworkもSilesia Corpusも使用せず、
 public API、stream、ABI、encoder選択、既存JSON schemaを変更しない。
+
+最初の完全合成matrixでは全105 HashTree測定がHashChain baselineとExact一致したが、
+throughputでbaselineを上回る測定はなかった。閾値0と4は大windowでpromotion過多、
+4096は1024とroute構成がほぼ重複した。したがって次のSilesia段階は
+16、64、256、1024だけを候補とする。これはproduction既定値の選択ではなく、
+異なる移行域を実データで評価するための縮約である。HashTreeのproduction昇格は
+引き続き禁止し、Silesia結果または初期化・未promotion経路の改善証拠を別decisionで
+要求する。
