@@ -18415,3 +18415,33 @@ beyond 1 MiB, require a separately documented successor that structurally
 reduces ordered-key maintenance and workspace while retaining Exact output,
 bounds, and determinism. Keep the present finder private and re-run the same
 synthetic and Silesia evidence after any successor change.
+
+## DD-878: HashTree maintenance v2 first removes redundant key searches
+
+- Date: 2026-08-19
+- Status: accepted
+
+Keep the entire first-generation HashTree workspace layout, promotion policy,
+query representation, and private benchmark surface unchanged while isolating
+one CPU-only successor step. Treat the fully validated published AVL ordering
+as an inductive invariant preserved by insertion and structural deletion.
+Hot-path local checks validate bounded indices, reciprocal parent/child links,
+ring-slot identity, height, balance, and subtree metadata without comparing
+each child's suffix key again.
+
+Insertion compares the new suffix with each visited node exactly once.
+Retirement derives the node directly from `position % capacity`, verifies its
+stored absolute position and bucket, and proves reachability by following
+reciprocal parent links to the supplied root. It then deletes by node handle;
+neither lookup nor successor traversal performs an ordered-key search. Keep
+full key-order checking in promotion publication, the explicit active-range
+validator, and corruption tests.
+
+Prove byte-identical roots and arrays against the current mutation behavior
+for builds, every structural deletion case, wraparound, and randomized
+sequences before replacing it. Preserve Exact tokens against HashChain and
+Exhaustive. Re-run the synthetic threshold matrix first and proceed to
+Silesia only after meaningful maintenance-comparison reduction. Do not alter
+workspace size in this step, so CPU and memory effects remain separable. This
+decision does not select HashTree in production, change public API or ABI,
+change stream format, or authorize a window above 1 MiB.

@@ -10490,3 +10490,28 @@ ordered aggregates, rename the group cardinality to `member_count`, and omit
 the synthetic-only `case_count`. Keep the actual twelve-member measurement
 outside CTest; the shared Corpus verifier has its own small local fixtures and
 the full external data remains opt-in.
+
+### TVG-0748
+
+Run the existing ordered-key mutation and maintenance v2 over identical
+hand-checkable builds and leaf, one-child, two-child, and root removals.
+Require identical results, roots, and every workspace array. Repeat through
+ring-slot reuse and deterministic randomized insert/retire sequences, running
+the full active-range validator after every successful mutation.
+
+For v2 insertion, require one ordered-key decision per visited search node and
+no child-order comparison from local structural checks. For v2 retirement,
+require direct ring-slot selection, reciprocal parent-chain reachability to
+the supplied root, and zero ordered-key comparisons through lookup and
+successor traversal. Independently corrupt indices, reciprocal links, stored
+position, height, balance, and subtree maximum and require stable bounded
+failure. Corrupt only key order and require the explicit full validator to
+reject it.
+
+Through the integrated finder, retain byte-identical Exact matches and tokens
+against HashChain and Exhaustive across boundary, repetitive, collision,
+wraparound, and randomized fixtures. Re-run the complete synthetic threshold
+matrix only after all functional tests pass. Require Exact agreement as a
+hard gate and record maintenance key-byte comparisons descriptively; do not
+use timing as a test assertion or proceed to external Silesia evidence without
+a material comparison reduction.

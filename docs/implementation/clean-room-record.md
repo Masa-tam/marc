@@ -22830,3 +22830,30 @@ discarded and the reviewed seed retained.
   aggregates were emitted. Every candidate retained Exact tokens and report
   invariants. Seven candidate records won locally, while every aggregate
   threshold/window remained slower than HashChain.
+
+## CR-0947: 2026-08-19 - HashTree maintenance v2 design
+
+- Authoring method: derived a CPU-only successor boundary from marc's measured
+  Silesia costs and inspected the repository-owned mutation invariants before
+  changing implementation.
+- References used: DD-861 through DD-878, IR-0641 through IR-0648, TVG-0733
+  through TVG-0748, the current private mutation and active-range validator,
+  and the recorded `marc-silesia-hash-tree-threshold-v1` evidence.
+- Known implementations intentionally not consulted: external hash-tree match
+  finders, balanced-tree deletion optimizations, compressors, source code,
+  tests, benchmark results, patents, pseudocode, and optimization descriptions.
+- Independent decisions: preserve workspace layout to isolate CPU effects;
+  rely on a validated published order as an inductive invariant; compare once
+  per insertion step; derive retirement nodes from ring identity; prove their
+  reachability structurally; and retain complete order validation outside the
+  hot mutation path.
+- Generated-code task description: specify a direct-retirement and structural-
+  preflight mutation stage, differential tests against current array results,
+  stable corruption rejection, Exact integration gates, and synthetic-first
+  evidence before any external rerun.
+- Similarity review: the successor boundary follows only from marc-owned data
+  layout, invariants, validators, and measured counters. No external
+  implementation expression entered this design.
+- Validation: documentation-only design review; implementation, differential
+  tests, complete CTest, synthetic evidence, and any Silesia rerun remain
+  subsequent gated steps.

@@ -5817,3 +5817,13 @@ benchmark report, HashChain oracle, threshold aggregator, and existing v1
 runner conventions. No external benchmark runner, adaptive match finder,
 compressor, source code, test, result schema, Corpus harness, tuning guide,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0648
+
+HashTree maintenance v2 uses DD-861 through DD-878, TVG-0733 through
+TVG-0748, the repository-owned ring-slot identity, published AVL invariant,
+mutation, active-range validator, HashChain and Exhaustive oracles, and the
+measured Silesia maintenance counters. No external hash-tree match finder,
+balanced-tree deletion optimization, compressor, source code, test,
+benchmark result, patent, pseudocode, or optimization description was
+consulted.

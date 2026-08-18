@@ -377,3 +377,43 @@ maintenance比較とworkspaceを構造的に削減する後継設計を別decisi
 後継はExact token、bounded memory、決定性、全既存試験を維持し、同一syntheticと
 Silesia matrixを再実行しなければならない。既存実装を単一thresholdへtuningして
 production化してはならない。
+
+## 17. Maintenance v2: direct retirement and structural hot-path checks
+
+Silesiaで支配的だったordered-key maintenanceを、workspace形式の変更と
+混同せず先に分離して削減する。第一段階ではbucket、node、root、left、
+right、parent、height、absolute position、subtree maximumの全配列と
+promotion/query契約を変更しない。これによりCPU効果と後続workspace
+圧縮の効果を別々に評価できる。
+
+promotion時の完全validatorがordered AVLを公開し、挿入と削除がその不変条件を
+保存することを帰納的契約とする。hot pathの各探索stepは子ノードと
+親ノードの長いsuffix keyを再比較せず、次の構造とmetadataだけを
+有界に確認する。
+
+- node index、child index、parent indexが範囲内かnullである。
+- childが指すparentとparentが指すchildが相互に一致する。
+- 訪問回数がcapacityを超えず、cycleを無限追跡しない。
+- height、balance、subtree maximumが直接の子から得る値と一致する。
+- nodeのabsolute positionが対応するring slotとbucketに属する。
+
+挿入では新位置と各訪問ノードを1回だけ比較し、その結果で次の子を
+選ぶ。局所構造確認のためのordered-key比較は行わない。
+
+期限切れ位置の削除では、対象nodeを`position % capacity`から直接
+得る。保存されたabsolute positionとbucketを確認し、parent chainをrootまで
+追跡して到達性と相互linkを有界に確認する。その後はnode handleで直接
+構造削除し、successor探索もchild/parent/metadataのみを確認する。削除時の
+suffix-key searchはゼロでなければならない。
+
+キー順序の破壊は、promotion公開前validator、明示的active-range validator、および
+独立した破壊試験が検出する。hot mutationは内部workspaceに対する完全な
+再検査ではなく、正常に公開された不変条件を保存する操作とする。
+
+参照実装とv2に同一のbuild、leaf/one-child/two-child/root削除、ring
+wraparound、randomized insert/retireを与え、rootと全配列の同一性を確認する。
+integrated finderではHashChainとExhaustiveに対するExact token同一性を維持する。
+そのうえでsynthetic matrixを先に再実行し、maintenance key-byte comparisonの減少を
+確認する。Exactが一件でも異なるか、比較削減が実質的でなければSilesiaへ
+進まない。第二段階のworkspace圧縮と1 MiB超windowは、このCPU変更の
+証拠と分離した別decisionとする。
