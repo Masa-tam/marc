@@ -5790,3 +5790,12 @@ and match-finder statistics contracts, and the existing saturating-counter
 policy. No external tree profiler, match finder, compressor, source code,
 test, benchmark schema, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0645
+
+The private HashTree benchmark route uses DD-861 through DD-873, TVG-0733
+through TVG-0745, the repository-owned match-finder benchmark contract,
+HashTree initializer, diagnostics, and existing HashChain/BinaryTree smoke-test
+style. No external benchmark harness, adaptive match finder, compressor,
+source code, test, result schema, patent, pseudocode, or optimization
+description was consulted.

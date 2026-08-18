@@ -10444,3 +10444,17 @@ Through the integrated finder, require each successful component total to
 reach its separate HashTree aggregate, maximum height never to decrease,
 counter-null and counter-present matches/workspace to remain identical, and
 the complete disabled-default diagnostic surface to remain zero.
+
+### TVG-0745
+
+Run frame and all five synthetic benchmark cases through explicit
+`hash-tree-exact` with threshold zero and a small non-zero threshold. Require
+the report to contain the exact threshold and every HashTree diagnostic field,
+finite timing, a valid workspace, internally consistent Chain/Tree histogram
+totals, and token counts identical to `hash-chain-exact` on the same input.
+
+Require omitted, non-numeric, overflowing, and disabled-maximum thresholds to
+fail before measurement. Require HashChain and BinaryTree to reject an extra
+threshold argument so an experiment cannot silently record an unused effort
+parameter. Empty frame input must report zero queries, frames, tokens,
+promotions, and route histograms without error.

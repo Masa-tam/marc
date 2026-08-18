@@ -1433,6 +1433,27 @@ ignored `out/` storage.
 
 ## External Silesia measurements
 
+### Private HashTree Exact benchmark route
+
+`marc_lzss_match_finder_benchmark` accepts private `hash-tree-exact` in frame
+and synthetic modes. Unlike the two established Exact strategies, HashTree
+requires every positional setting and a final finite promotion-candidate
+threshold. For example:
+
+```console
+marc_lzss_match_finder_benchmark --synthetic hash-tree-exact hash-collision 1048576 1 1048576 1048576 32
+marc_lzss_match_finder_benchmark --frames hash-tree-exact benchmarks/data/silesia/corpus/dickens 1 1048576 1048576 32
+```
+
+Threshold zero promotes after the first non-empty completed Chain query;
+larger values retain a bucket as Chain until one completed query visits more
+than that many candidates. The report records the exact threshold, separate
+Chain/Tree query distributions, promotion and population totals, and
+build/query/maintenance comparison work. This is a private experiment only:
+it does not select an encoder strategy, change a stream, or participate in the
+current `marc-silesia-match-finder-v1` JSON runner. A versioned threshold-sweep
+runner follows after the synthetic matrix contract is complete.
+
 Silesia Corpus measurements are opt-in development experiments. The Corpus is
 not redistributed by marc and is never downloaded by configure, build, CTest,
 or benchmark execution. Acquisition and local placement instructions are in

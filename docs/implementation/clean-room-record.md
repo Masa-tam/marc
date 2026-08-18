@@ -22697,3 +22697,31 @@ discarded and the reviewed seed retained.
   per-test limit, including `marc_interoperability_schema_compatibility`
   (65.44 seconds under MSVC and 72.17 seconds under ClangCL). Total suite
   times are 168.11 and 186.07 seconds.
+
+## CR-0942: 2026-08-18 - Private HashTree benchmark route
+
+- Authoring method: extended marc's repository-owned Exact match-finder
+  benchmark after freezing its threshold, report, validation, and rejection
+  contract in DD-873 and TVG-0745.
+- References used: DD-861 through DD-873, IR-0633 through IR-0645, TVG-0733
+  through TVG-0745, and repository-owned HashTree diagnostics and existing
+  HashChain/BinaryTree benchmark smoke tests.
+- Known implementations intentionally not consulted: external benchmark
+  harnesses, adaptive match finders, compressors, source code, tests, result
+  schemas, patents, pseudocode, and optimization descriptions.
+- Independent decisions: require a finite explicit threshold; preserve old
+  strategy command lines; keep HashTree outside the public selector and v1
+  Silesia runner; and reject a report whose route histograms do not account
+  for every completed query.
+- Generated-code task description: expose private HashTree only in the local
+  frame/synthetic benchmark, print all component costs, verify Exact token
+  equality, and reject ambiguous effort arguments.
+- Similarity review: CLI grammar, report keys, aggregation, validation, and
+  smoke fixtures follow only marc-owned conventions. No external
+  implementation expression entered this change.
+- Validation: all targets build without warnings under MSVC 18.8.2 and
+  ClangCL. The dedicated HashTree benchmark smoke passes on both compilers.
+  The complete CTest suite passes 3061/3061 with a 300-second per-test limit,
+  including `marc_interoperability_schema_compatibility` (64.63 seconds under
+  MSVC and 72.68 seconds under ClangCL). Total suite times are 162.27 and
+  177.36 seconds.

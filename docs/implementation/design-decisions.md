@@ -18304,3 +18304,27 @@ finder's completed-work totals.
 This diagnostic change does not implement LCP skipping, select HashTree in the
 benchmark or production, or change public APIs, stream format, ABI, tokens, or
 interoperability output.
+
+## DD-873: HashTree benchmark selection requires an explicit finite threshold
+
+- Date: 2026-08-18
+- Status: accepted
+
+Add private `hash-tree-exact` selection only to the repository-owned
+match-finder benchmark. Require its promotion-candidate threshold as the final
+positional argument in both frame and synthetic modes; accept zero through
+`UINT64_MAX - 1` and reject omission, overflow, and the disabled
+`UINT64_MAX` value. HashChain and BinaryTree command lines remain unchanged
+and reject an extra threshold argument.
+
+The diagnostic pass and every timed pass receive the same threshold. Report
+the threshold, workspace, route populations, build/query/maintenance work,
+rotations, maxima, and separate Chain/Tree query histograms. Require generic
+query count to equal Chain plus Tree query counts and require each histogram
+sum to equal its corresponding route count. Counter overflow or finder error
+invalidates the run. Timed passes still omit counters and must reproduce the
+diagnostic token and frame counts.
+
+This step adds neither HashTree to a public encoder selector nor HashTree to
+the existing Silesia JSON schema. Synthetic threshold orchestration and the
+versioned Silesia runner change remain later independent commits.

@@ -315,3 +315,8 @@ hangまたはcrashは恒久回帰fixtureにする。
 
 各段階を独立commitにし、性能証拠前にpublic selector、format、ABI、既定戦略、
 `WindowAdaptiveV1`またはinteroperability artifactへ接続しない。
+
+`strategy-explicit benchmark mode`では`hash-tree-exact`を指定し、frameまたは
+synthetic modeの末尾に有限なpromotion candidate thresholdを必須指定する。
+閾値はstreamやpublic APIへ保存せず、benchmark reportだけに記録する。既存の
+Silesia JSON runnerへは合成threshold sweepの後にversioned schemaとして接続する。

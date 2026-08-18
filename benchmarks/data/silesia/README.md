@@ -91,8 +91,17 @@ marc_lzss_match_finder_benchmark --frames hash-chain-exact benchmarks/data/siles
 marc_lzss_match_finder_benchmark --frames hash-chain-exact benchmarks/data/silesia/corpus/dickens 1 1048576 1048576
 ```
 
-Run each of the twelve members independently. Corpus-wide orchestration and
-aggregate report generation are later tooling steps.
+The private HashTree experiment requires an additional finite promotion
+threshold and is currently run manually rather than through the v1 Corpus
+runner:
+
+```console
+marc_lzss_match_finder_benchmark --frames hash-tree-exact benchmarks/data/silesia/corpus/dickens 1 1048576 1048576 32
+```
+
+Run each of the twelve members independently. The existing Corpus-wide v1
+runner orchestrates HashChain/BinaryTree only; HashTree threshold-sweep
+orchestration will use a later versioned report contract.
 
 ## Usage policy
 
