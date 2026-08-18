@@ -22887,3 +22887,29 @@ discarded and the reviewed seed retained.
   are 189.04 and 203.63 seconds; `marc_interoperability_schema_compatibility`
   passes in 67.22 and 75.32 seconds. The v2 path remains disconnected from the
   finder, so benchmark and stream behavior are unchanged.
+
+## CR-0949: 2026-08-19 - HashTree maintenance v2 corruption boundary
+
+- Authoring method: completed the negative half of TVG-0748 around the internal
+  parallel v2 path without modifying mutation or finder implementation.
+- References used: DD-878, IR-0648, TVG-0748, CR-0948, marc's repository-owned
+  structural preflight, active-range validator, and mutation fixture.
+- Known implementations intentionally not consulted: external hash-tree match
+  finders, corruption suites, compressors, source code, tests, benchmark
+  results, patents, pseudocode, and optimization descriptions.
+- Independent decisions: inject one structural or metadata fault at a time;
+  require a stable pre-mutation error and byte-for-byte preserved corrupted
+  workspace; and separately prove that removing ordered-key checks from the
+  hot path does not remove them from the complete validator.
+- Generated-code task description: test out-of-range child indices, reciprocal
+  link disagreement, self-cycle, stored height, balance input, subtree maximum,
+  and ring-position corruption; then swap ordered subtrees and require the full
+  active-range validator to reject the order violation.
+- Similarity review: faults and expected categories derive solely from marc's
+  v2 contract and array invariants. No external implementation expression
+  entered this test change.
+- Validation: all 15 focused mutation tests pass under MSVC 19.50 and ClangCL.
+  The complete CTest suite passes 3070/3070 under both compilers with the
+  600-second per-test limit and no exclusions. Total times are 186.46 and
+  203.37 seconds; `marc_interoperability_schema_compatibility` passes in 66.98
+  and 75.38 seconds. Production and benchmark paths remain unchanged.

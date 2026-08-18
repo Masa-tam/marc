@@ -98,6 +98,28 @@ void expect_same_tree(
     EXPECT_EQ(candidate.subtree_maximum, reference.subtree_maximum);
 }
 
+void expect_v2_insert_failure_preserves_tree(
+    MutationFixture& fixture, const std::size_t inserted_position,
+    const LzssHashTreeBucketMutationError expected_error) {
+    const auto root = fixture.root;
+    const auto left = fixture.left;
+    const auto right = fixture.right;
+    const auto parent = fixture.parent;
+    const auto height = fixture.height;
+    const auto position = fixture.position;
+    const auto subtree_maximum = fixture.subtree_maximum;
+    const auto result = insert_lzss_hash_tree_bucket_position_v2(
+        fixture.context(), fixture.root, inserted_position);
+    EXPECT_EQ(result.error, expected_error);
+    EXPECT_EQ(result.root, root);
+    EXPECT_EQ(fixture.left, left);
+    EXPECT_EQ(fixture.right, right);
+    EXPECT_EQ(fixture.parent, parent);
+    EXPECT_EQ(fixture.height, height);
+    EXPECT_EQ(fixture.position, position);
+    EXPECT_EQ(fixture.subtree_maximum, subtree_maximum);
+}
+
 TEST(LzssHashTreeBucketMutation, InsertsAndSlidesAcrossRingReuse) {
     MutationFixture fixture{
         bytes("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), 8};
@@ -575,6 +597,92 @@ TEST(LzssHashTreeBucketMutation,
     EXPECT_EQ(fixture.height, heights);
     EXPECT_EQ(fixture.position, positions);
     EXPECT_EQ(fixture.subtree_maximum, maxima);
+}
+
+TEST(LzssHashTreeBucketMutation,
+     MaintenanceV2RejectsEachStructuralMetadataCorruptionAtomically) {
+    MutationFixture original{
+        bytes("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), 16};
+    for (std::size_t position = 0; position < 15; ++position) {
+        const auto inserted = insert_lzss_hash_tree_bucket_position_v2(
+            original.context(), original.root, position);
+        ASSERT_EQ(inserted.error, LzssHashTreeBucketMutationError::none);
+        original.root = inserted.root;
+    }
+    original.expect_valid(0, 15);
+    const auto child = original.left[original.root]
+            != lzss_hash_tree_null_node
+        ? original.left[original.root] : original.right[original.root];
+    ASSERT_NE(child, lzss_hash_tree_null_node);
+
+    {
+        auto fixture = original;
+        if (fixture.left[fixture.root] != lzss_hash_tree_null_node) {
+            fixture.left[fixture.root] =
+                static_cast<std::uint32_t>(fixture.left.size());
+        } else {
+            fixture.right[fixture.root] =
+                static_cast<std::uint32_t>(fixture.right.size());
+        }
+        expect_v2_insert_failure_preserves_tree(
+            fixture, 15, LzssHashTreeBucketMutationError::invalid_root);
+    }
+    {
+        auto fixture = original;
+        fixture.parent[child] = lzss_hash_tree_null_node;
+        expect_v2_insert_failure_preserves_tree(
+            fixture, 15, LzssHashTreeBucketMutationError::invalid_tree);
+    }
+    {
+        auto fixture = original;
+        fixture.left[fixture.root] = fixture.root;
+        expect_v2_insert_failure_preserves_tree(
+            fixture, 15, LzssHashTreeBucketMutationError::invalid_tree);
+    }
+    {
+        auto fixture = original;
+        ++fixture.height[fixture.root];
+        expect_v2_insert_failure_preserves_tree(
+            fixture, 15, LzssHashTreeBucketMutationError::invalid_tree);
+    }
+    {
+        auto fixture = original;
+        fixture.height[child] = std::numeric_limits<std::uint8_t>::max();
+        expect_v2_insert_failure_preserves_tree(
+            fixture, 15, LzssHashTreeBucketMutationError::invalid_tree);
+    }
+    {
+        auto fixture = original;
+        fixture.subtree_maximum[fixture.root] =
+            lzss_hash_tree_no_position;
+        expect_v2_insert_failure_preserves_tree(
+            fixture, 15, LzssHashTreeBucketMutationError::invalid_tree);
+    }
+    {
+        auto fixture = original;
+        ++fixture.position[fixture.root];
+        expect_v2_insert_failure_preserves_tree(
+            fixture, 15, LzssHashTreeBucketMutationError::invalid_root);
+    }
+}
+
+TEST(LzssHashTreeBucketMutation,
+     FullValidatorRetainsOrderedKeyCorruptionDetection) {
+    MutationFixture fixture{
+        bytes("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), 16};
+    for (std::size_t position = 0; position < 15; ++position) {
+        const auto inserted = insert_lzss_hash_tree_bucket_position_v2(
+            fixture.context(), fixture.root, position);
+        ASSERT_EQ(inserted.error, LzssHashTreeBucketMutationError::none);
+        fixture.root = inserted.root;
+    }
+    fixture.expect_valid(0, 15);
+    ASSERT_NE(fixture.left[fixture.root], lzss_hash_tree_null_node);
+    ASSERT_NE(fixture.right[fixture.root], lzss_hash_tree_null_node);
+    std::swap(fixture.left[fixture.root], fixture.right[fixture.root]);
+    EXPECT_EQ(validate_lzss_hash_tree_bucket_active_range(
+                  fixture.context(), fixture.root, 0, 15),
+              LzssHashTreeBucketMutationError::invalid_tree);
 }
 
 TEST(LzssHashTreeBucketMutation, StatisticsSaturate) {
