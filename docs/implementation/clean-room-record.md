@@ -23142,3 +23142,33 @@ discarded and the reviewed seed retained.
   registered tests pass under MSVC in 173.91 seconds and ClangCL in 189.74
   seconds with a 600-second per-test limit; both runs include all five Python
   tooling tests and `marc_interoperability_schema_compatibility`.
+
+## CR-0957: 2026-08-19 - Fixed-width HashTree complete matrix evidence
+
+- Authoring method: rebuilt the repository benchmark at revision `f567415`,
+  verified the already-local Silesia Corpus, ran both unchanged complete
+  threshold matrices, and compared their ignored JSON reports mechanically
+  with maintenance-v2 revision `15a6c22`.
+- References used: IR-0649, DD-881 through DD-885, TVG-0749 through TVG-0752,
+  CR-0953 through CR-0956, repository-owned runners, local verified Corpus,
+  and prior ignored benchmark JSON.
+- Known implementations intentionally not consulted: external match finders,
+  compressors, source code, tests, benchmark results, compact layouts, tuning
+  guidance, patents, pseudocode, and optimization descriptions.
+- Independent decisions: use Exact equality as the hard gate; exclude only
+  time and workspace from logical-report comparison; normalize speed within
+  each run; accept the memory result independently; and retain private status
+  despite the preserved one-MiB CPU win.
+- Generated-code task description: rerun 15 baselines plus 105 candidates and
+  36 baselines plus 144 candidates, reject any Exact mismatch, mechanically
+  compare logical diagnostics, calculate workspace and same-run speed ratios,
+  and avoid causal claims from separate-run timing.
+- Similarity review: all orchestration, comparisons, metrics, and conclusions
+  derive from marc-owned runners and evidence. No external implementation
+  expression was consulted or introduced.
+- Validation: all candidates pass Exact gates. Zero mismatches occur across
+  4,455 synthetic and 6,192 Silesia non-time, non-workspace report fields.
+  Workspace ratios fall from 3.83/6.04/7.51 to 2.83/4.54/5.68. At threshold
+  1024, Silesia speed ratios are 0.36/0.60/1.20 with six one-MiB member wins;
+  synthetic ratios are 0.36/0.48/0.77. Both result files remain ignored and
+  local, and no network access occurred.

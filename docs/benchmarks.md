@@ -1600,6 +1600,30 @@ network operation, measures both Exact strategies at 64 KiB, 256 KiB, and
 local ignored JSON containing commands, environment metadata, per-member
 reports, and byte-weighted aggregate throughput.
 
+### Fixed-width HashTree workspace evidence
+
+On 2026-08-19, revision `f567415` was built with MSVC 19.51.36252.0 and the
+complete synthetic and Silesia threshold matrices were rerun after narrowing
+all HashTree position arrays to `uint32_t`. The synthetic run contains 15
+HashChain baselines, 105 HashTree candidates, and 21 aggregates. The Silesia
+run contains 36 baselines, 144 candidates, and 12 aggregates. Every candidate
+retains its paired Exact token count.
+
+Compared with the maintenance-v2 evidence at revision `15a6c22`, all 4,455
+synthetic and 6,192 Silesia report fields other than time and workspace are
+identical. The new maximum HashTree workspaces are 2,228,224, 7,143,424, and
+26,804,224 bytes. Against the paired HashChain workspaces these are 2.83,
+4.54, and 5.68 times for 64 KiB, 256 KiB, and one MiB, replacing 3.83, 6.04,
+and 7.51 times.
+
+At threshold 1024, the same-run Silesia HashTree/HashChain throughput ratios
+are 0.36, 0.60, and 1.20. The one-MiB route wins six of twelve individual
+members and retains its aggregate CPU win; the two smaller windows remain
+slower. The synthetic ratios are 0.36, 0.48, and 0.77. Absolute speed changes
+between separate runs disagree between synthetic and Silesia, so no speed
+improvement is attributed to narrower storage. This evidence establishes the
+memory reduction and logical identity only; HashTree remains private.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

@@ -506,3 +506,25 @@ syntheticおよびSilesia行列を再実行する。速度低下と実workspace�
 35,192,832 bytesとなる。この段階でsentinel境界、chain traversal、promotionへの
 head引き渡し、破損検出および全試験を独立に固定してから、node positionとsubtree
 maximumを同じ保存型へ変更する。中間値を最終workspace-v2値と混同しない。
+
+## 21. Workspace v2の完全行列判定
+
+revision `f567415`をMSVC 19.51.36252.0でbuildし、固定幅化前と同じsynthetic
+5 cases、3 windows、7 thresholds、および検証済みSilesia 12 members、3 windows、
+4 thresholdsを完全測定した。syntheticは15 baseline、105候補、21 aggregate、
+Silesiaは36 baseline、144候補、12 aggregateを生成し、全候補が対応するHashChain
+baselineとExact token一致した。
+
+maintenance v2 revision `15a6c22`と比較すると、時間とworkspaceを除くsynthetic
+4,455 report fieldsとSilesia 6,192 report fieldsは完全一致した。したがって固定幅化は
+token、route、promotion、mutation、rotation、比較量および測定されたtree診断値を
+変更していない。
+最大workspaceは64 KiB、256 KiB、1 MiBで2,228,224、7,143,424、26,804,224 bytes、
+HashChain比は2.83、4.54、5.68となり、設計上のmemory目標を満たした。
+
+Silesia threshold 1024の同一run内HashTree/HashChain速度比は0.36、0.60、1.20で、
+1 MiBは12 members中6件に勝つ。synthetic比は0.36、0.48、0.77であり、別run間の
+絶対速度変化もsyntheticとSilesiaで一致しない。このため固定幅化による速度改善は
+主張せず、memory削減と論理同一性だけを採択する。小windowでの劣位と5.68倍の
+workspace負担が残るためHashTreeはprivateのままとし、production selectorを変更
+しない。1 MiB超windowも別のbounded designなしに公開しない。

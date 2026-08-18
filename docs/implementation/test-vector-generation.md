@@ -10565,3 +10565,18 @@ first. Then require all 51 focused tests and all registered tests, including
 the five Python tooling tests and interoperability schema compatibility, under
 both compilers. Keep benchmark timing out of functional assertions; rerun the
 complete synthetic and external Silesia matrices as a separate evidence step.
+
+### TVG-0752
+
+Build revision `f567415` with MSVC 19.51.36252.0. Verify all twelve local
+Silesia members before measurement. Run the unchanged complete synthetic
+matrix at thresholds 0, 4, 16, 64, 256, 1024, and 4096 and the unchanged
+Silesia matrix at thresholds 16, 64, 256, and 1024 over all three established
+windows.
+
+Require all 105 synthetic and 144 Silesia candidates to match their paired
+HashChain Exact token counts. Key records by case or member, window, and
+threshold and compare every report field with the maintenance-v2 evidence,
+excluding only timing and workspace. Require zero mismatches. Report exact
+workspace and same-run speed ratios separately. Treat cross-run timing as
+descriptive and do not use it to claim a fixed-width speedup.

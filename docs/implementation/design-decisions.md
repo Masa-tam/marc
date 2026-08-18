@@ -18580,3 +18580,27 @@ formula is 25 bytes per node plus 9 bytes per bucket. The exact workspaces are
 meeting DD-881's target. This completes the representation change only. Keep
 HashTree private until the unchanged synthetic and Silesia matrices separately
 prove Exact identity and quantify speed and memory after compaction.
+
+## DD-885: Fixed-width HashTree passes identity and memory evidence
+
+- Date: 2026-08-19
+- Status: accepted
+
+At revision `f567415`, run the complete synthetic threshold matrix and the
+verified Silesia threshold matrix under MSVC 19.51.36252.0. Require every one
+of the 105 synthetic and 144 Silesia HashTree candidates to retain its paired
+HashChain Exact token count. Compare against maintenance-v2 revision
+`15a6c22`: all 4,455 synthetic and 6,192 Silesia report fields other than time
+and workspace agree.
+
+Accept the fixed-width memory target. Maximum HashTree workspace is 2,228,224,
+7,143,424, and 26,804,224 bytes, or 2.83, 4.54, and 5.68 times HashChain at
+64 KiB, 256 KiB, and one MiB. At threshold 1024 the same-run Silesia speed
+ratios are 0.36, 0.60, and 1.20, with six of twelve individual one-MiB wins.
+The synthetic ratios are 0.36, 0.48, and 0.77. Do not infer a speed change
+from separate-run absolute timings because synthetic and Silesia disagree.
+
+Keep HashTree private: the two smaller windows remain slower and the one-MiB
+workspace remains 5.68 times HashChain. Do not change the production selector
+or expose a window above one MiB in this decision. A larger-window experiment
+requires a separate bounded-memory and format decision.

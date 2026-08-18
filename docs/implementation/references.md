@@ -5827,3 +5827,12 @@ measured Silesia maintenance counters. No external hash-tree match finder,
 balanced-tree deletion optimization, compressor, source code, test,
 benchmark result, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0649
+
+Fixed-width HashTree workspace evidence uses DD-881 through DD-884,
+TVG-0749 through TVG-0751, the repository-owned synthetic and Silesia matrix
+runners, verified local Corpus manifest, maintenance-v2 JSON evidence, and
+HashChain Exact baselines. No external match finder, compressor, source code,
+test, benchmark result, packed layout, tuning guide, patent, pseudocode, or
+optimization description was consulted.
