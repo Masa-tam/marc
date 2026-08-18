@@ -52,6 +52,16 @@ remove_lzss_hash_tree_bucket_position(
     const LzssHashTreeBucketMutationContext& context,
     std::uint32_t root, std::size_t position) noexcept;
 
+[[nodiscard]] LzssHashTreeBucketMutationResult
+insert_lzss_hash_tree_bucket_position_v2(
+    const LzssHashTreeBucketMutationContext& context,
+    std::uint32_t root, std::size_t position) noexcept;
+
+[[nodiscard]] LzssHashTreeBucketMutationResult
+remove_lzss_hash_tree_bucket_position_v2(
+    const LzssHashTreeBucketMutationContext& context,
+    std::uint32_t root, std::size_t position) noexcept;
+
 [[nodiscard]] LzssHashTreeBucketMutationError
 validate_lzss_hash_tree_bucket_active_range(
     const LzssHashTreeBucketMutationContext& context,

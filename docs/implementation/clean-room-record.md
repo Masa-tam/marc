@@ -22857,3 +22857,33 @@ discarded and the reviewed seed retained.
 - Validation: documentation-only design review; implementation, differential
   tests, complete CTest, synthetic evidence, and any Silesia rerun remain
   subsequent gated steps.
+
+## CR-0948: 2026-08-19 - HashTree maintenance v2 differential foundation
+
+- Authoring method: implemented the DD-878 CPU path as internal parallel
+  mutation entry points while retaining the first-generation functions as the
+  differential oracle and leaving the integrated finder unchanged.
+- References used: DD-878, IR-0648, TVG-0748, marc's repository-owned ring
+  identity, AVL metadata updates, active-range validator, component counters,
+  and existing mutation fixtures.
+- Known implementations intentionally not consulted: external hash-tree match
+  finders, balanced-tree deletion optimizations, compressors, source code,
+  tests, benchmark results, patents, pseudocode, and optimization descriptions.
+- Independent decisions: perform structural-only insertion traversal; derive
+  retirement from the ring slot; verify reciprocal parent reachability before
+  mutation; preserve the existing structural deletion; and keep both paths
+  temporarily so every workspace byte can be compared before integration.
+- Generated-code task description: add internal v2 insert/remove functions;
+  compare them with the existing path for every deletion shape, ring reuse,
+  and a fixed-seed randomized sliding sequence; prove zero retirement key
+  comparisons; and reject a disconnected node before mutation.
+- Similarity review: control flow and tests derive only from marc's existing
+  arrays, invariants, counters, and reference mutation. No external
+  implementation expression entered this change.
+- Validation: all 13 focused mutation tests pass under MSVC 19.50 and ClangCL,
+  including five new differential and bounded-failure cases. All targets build
+  without warnings. The complete CTest suite passes 3068/3068 under both
+  compilers with the 600-second per-test limit and no exclusions. Total times
+  are 189.04 and 203.63 seconds; `marc_interoperability_schema_compatibility`
+  passes in 67.22 and 75.32 seconds. The v2 path remains disconnected from the
+  finder, so benchmark and stream behavior are unchanged.

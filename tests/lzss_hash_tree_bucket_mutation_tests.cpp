@@ -87,6 +87,17 @@ struct MutationFixture {
     std::vector<std::size_t> subtree_maximum{};
 };
 
+void expect_same_tree(
+    const MutationFixture& reference, const MutationFixture& candidate) {
+    EXPECT_EQ(candidate.root, reference.root);
+    EXPECT_EQ(candidate.left, reference.left);
+    EXPECT_EQ(candidate.right, reference.right);
+    EXPECT_EQ(candidate.parent, reference.parent);
+    EXPECT_EQ(candidate.height, reference.height);
+    EXPECT_EQ(candidate.position, reference.position);
+    EXPECT_EQ(candidate.subtree_maximum, reference.subtree_maximum);
+}
+
 TEST(LzssHashTreeBucketMutation, InsertsAndSlidesAcrossRingReuse) {
     MutationFixture fixture{
         bytes("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), 8};
@@ -328,6 +339,242 @@ TEST(LzssHashTreeBucketMutation, ObserverDoesNotChangeSlidingTree) {
     EXPECT_GT(statistics.key_byte_comparison_count, 0U);
     EXPECT_GT(statistics.rotation_count, 0U);
     EXPECT_GT(statistics.maximum_height, 0U);
+}
+
+TEST(LzssHashTreeBucketMutation,
+     MaintenanceV2MatchesEveryReferenceRemovalShape) {
+    MutationFixture original{
+        bytes("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), 16};
+    for (std::size_t position = 0; position < 15; ++position) {
+        original.insert(position);
+    }
+    original.expect_valid(0, 15);
+
+    bool removed_leaf{};
+    bool removed_one_child{};
+    bool removed_two_children{};
+    bool removed_root{};
+    for (std::size_t node = 0; node < 15; ++node) {
+        if (original.position[node] == lzss_hash_tree_no_position) continue;
+        const auto child_count =
+            (original.left[node] != lzss_hash_tree_null_node ? 1U : 0U)
+            + (original.right[node] != lzss_hash_tree_null_node ? 1U : 0U);
+        const auto target = original.position[node];
+        MutationFixture reference = original;
+        MutationFixture candidate = original;
+
+        const auto expected = remove_lzss_hash_tree_bucket_position(
+            reference.context(), reference.root, target);
+        ASSERT_EQ(expected.error, LzssHashTreeBucketMutationError::none);
+        reference.root = expected.root;
+        const auto actual = remove_lzss_hash_tree_bucket_position_v2(
+            candidate.context(), candidate.root, target);
+        ASSERT_EQ(actual.error, LzssHashTreeBucketMutationError::none);
+        candidate.root = actual.root;
+        expect_same_tree(reference, candidate);
+
+        if (node == original.root) removed_root = true;
+        if (child_count == 0) removed_leaf = true;
+        if (child_count == 1) removed_one_child = true;
+        if (child_count == 2) removed_two_children = true;
+    }
+
+    MutationFixture one_child_original{
+        bytes("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), 16};
+    for (std::size_t position = 0; position < 6; ++position) {
+        one_child_original.insert(position);
+    }
+    for (std::size_t node = 0; node < 6; ++node) {
+        const auto child_count =
+            (one_child_original.left[node] != lzss_hash_tree_null_node
+                 ? 1U : 0U)
+            + (one_child_original.right[node] != lzss_hash_tree_null_node
+                   ? 1U : 0U);
+        if (child_count != 1) continue;
+        MutationFixture reference = one_child_original;
+        MutationFixture candidate = one_child_original;
+        const auto target = one_child_original.position[node];
+        const auto expected = remove_lzss_hash_tree_bucket_position(
+            reference.context(), reference.root, target);
+        ASSERT_EQ(expected.error, LzssHashTreeBucketMutationError::none);
+        reference.root = expected.root;
+        const auto actual = remove_lzss_hash_tree_bucket_position_v2(
+            candidate.context(), candidate.root, target);
+        ASSERT_EQ(actual.error, LzssHashTreeBucketMutationError::none);
+        candidate.root = actual.root;
+        expect_same_tree(reference, candidate);
+        removed_one_child = true;
+        break;
+    }
+    EXPECT_TRUE(removed_leaf);
+    EXPECT_TRUE(removed_one_child);
+    EXPECT_TRUE(removed_two_children);
+    EXPECT_TRUE(removed_root);
+}
+
+TEST(LzssHashTreeBucketMutation,
+     MaintenanceV2MatchesReferenceAcrossRingReuse) {
+    MutationFixture reference{
+        bytes("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), 8};
+    MutationFixture candidate = reference;
+    for (std::size_t current = 0;
+         current + reference.parameters.max_match_length
+             <= reference.input.size();
+         ++current) {
+        if (current >= reference.parameters.window_size) {
+            const auto retired = current - reference.parameters.window_size;
+            const auto expected = remove_lzss_hash_tree_bucket_position(
+                reference.context(), reference.root, retired);
+            ASSERT_EQ(expected.error, LzssHashTreeBucketMutationError::none);
+            reference.root = expected.root;
+            const auto actual = remove_lzss_hash_tree_bucket_position_v2(
+                candidate.context(), candidate.root, retired);
+            ASSERT_EQ(actual.error, LzssHashTreeBucketMutationError::none);
+            candidate.root = actual.root;
+        }
+
+        const auto expected = insert_lzss_hash_tree_bucket_position(
+            reference.context(), reference.root, current);
+        ASSERT_EQ(expected.error, LzssHashTreeBucketMutationError::none);
+        reference.root = expected.root;
+        const auto actual = insert_lzss_hash_tree_bucket_position_v2(
+            candidate.context(), candidate.root, current);
+        ASSERT_EQ(actual.error, LzssHashTreeBucketMutationError::none);
+        candidate.root = actual.root;
+        expect_same_tree(reference, candidate);
+
+        const auto begin = current + 1U > reference.parameters.window_size
+            ? current + 1U - reference.parameters.window_size : 0U;
+        reference.expect_valid(begin, current + 1U);
+        candidate.expect_valid(begin, current + 1U);
+    }
+}
+
+TEST(LzssHashTreeBucketMutation,
+     MaintenanceV2MatchesDeterministicRandomizedSequence) {
+    std::vector<std::byte> input(257);
+    std::uint32_t state = 0xC001D00DU;
+    for (auto& value : input) {
+        state = state * 1664525U + 1013904223U;
+        value = static_cast<std::byte>(state >> 24U);
+    }
+    MutationFixture reference{input, 31};
+    MutationFixture candidate = reference;
+    for (std::size_t current = 0;
+         current + reference.parameters.max_match_length
+             <= reference.input.size();
+         ++current) {
+        if (current >= reference.parameters.window_size) {
+            const auto retired = current - reference.parameters.window_size;
+            const auto expected = remove_lzss_hash_tree_bucket_position(
+                reference.context(), reference.root, retired);
+            ASSERT_EQ(expected.error, LzssHashTreeBucketMutationError::none);
+            reference.root = expected.root;
+            const auto actual = remove_lzss_hash_tree_bucket_position_v2(
+                candidate.context(), candidate.root, retired);
+            ASSERT_EQ(actual.error, LzssHashTreeBucketMutationError::none);
+            candidate.root = actual.root;
+        }
+        const auto expected = insert_lzss_hash_tree_bucket_position(
+            reference.context(), reference.root, current);
+        ASSERT_EQ(expected.error, LzssHashTreeBucketMutationError::none);
+        reference.root = expected.root;
+        const auto actual = insert_lzss_hash_tree_bucket_position_v2(
+            candidate.context(), candidate.root, current);
+        ASSERT_EQ(actual.error, LzssHashTreeBucketMutationError::none);
+        candidate.root = actual.root;
+        expect_same_tree(reference, candidate);
+
+        const auto begin = current + 1U > reference.parameters.window_size
+            ? current + 1U - reference.parameters.window_size : 0U;
+        ASSERT_EQ(validate_lzss_hash_tree_bucket_active_range(
+                      candidate.context(), candidate.root, begin,
+                      current + 1U),
+                  LzssHashTreeBucketMutationError::none);
+    }
+}
+
+TEST(LzssHashTreeBucketMutation,
+     MaintenanceV2RemovesWithoutOrderedKeyComparisons) {
+    MutationFixture reference{bytes("AAAAAAAAAAAAAAAAAAAA"), 16};
+    MutationFixture candidate = reference;
+    LzssHashTreeComponentStatistics reference_statistics{};
+    LzssHashTreeComponentStatistics candidate_statistics{};
+    for (std::size_t position = 0; position < 12; ++position) {
+        const auto expected = insert_lzss_hash_tree_bucket_position(
+            reference.context(&reference_statistics), reference.root,
+            position);
+        ASSERT_EQ(expected.error, LzssHashTreeBucketMutationError::none);
+        reference.root = expected.root;
+        const auto actual = insert_lzss_hash_tree_bucket_position_v2(
+            candidate.context(&candidate_statistics), candidate.root,
+            position);
+        ASSERT_EQ(actual.error, LzssHashTreeBucketMutationError::none);
+        candidate.root = actual.root;
+    }
+    expect_same_tree(reference, candidate);
+    EXPECT_LT(candidate_statistics.key_comparison_count,
+              reference_statistics.key_comparison_count);
+    EXPECT_LT(candidate_statistics.key_byte_comparison_count,
+              reference_statistics.key_byte_comparison_count);
+
+    reference_statistics = {};
+    candidate_statistics = {};
+    const auto target = reference.position[reference.root];
+    const auto expected = remove_lzss_hash_tree_bucket_position(
+        reference.context(&reference_statistics), reference.root, target);
+    ASSERT_EQ(expected.error, LzssHashTreeBucketMutationError::none);
+    reference.root = expected.root;
+    const auto actual = remove_lzss_hash_tree_bucket_position_v2(
+        candidate.context(&candidate_statistics), candidate.root, target);
+    ASSERT_EQ(actual.error, LzssHashTreeBucketMutationError::none);
+    candidate.root = actual.root;
+    expect_same_tree(reference, candidate);
+    EXPECT_GT(reference_statistics.key_comparison_count, 0U);
+    EXPECT_GT(reference_statistics.key_byte_comparison_count, 0U);
+    EXPECT_EQ(candidate_statistics.key_comparison_count, 0U);
+    EXPECT_EQ(candidate_statistics.key_byte_comparison_count, 0U);
+}
+
+TEST(LzssHashTreeBucketMutation,
+     MaintenanceV2RejectsDisconnectedNodeBeforeMutation) {
+    MutationFixture fixture{bytes("AAAAAAAAAAAAAAAAAAAA"), 16};
+    for (std::size_t position = 0; position < 8; ++position) {
+        const auto inserted = insert_lzss_hash_tree_bucket_position_v2(
+            fixture.context(), fixture.root, position);
+        ASSERT_EQ(inserted.error, LzssHashTreeBucketMutationError::none);
+        fixture.root = inserted.root;
+    }
+    std::uint32_t target_node{};
+    while (target_node == fixture.root
+           || fixture.position[target_node] == lzss_hash_tree_no_position) {
+        ++target_node;
+    }
+    const auto target = fixture.position[target_node];
+    const auto parent = fixture.parent[target_node];
+    ASSERT_NE(parent, lzss_hash_tree_null_node);
+    if (fixture.left[parent] == target_node) {
+        fixture.left[parent] = lzss_hash_tree_null_node;
+    } else {
+        ASSERT_EQ(fixture.right[parent], target_node);
+        fixture.right[parent] = lzss_hash_tree_null_node;
+    }
+    const auto left = fixture.left;
+    const auto right = fixture.right;
+    const auto parents = fixture.parent;
+    const auto heights = fixture.height;
+    const auto positions = fixture.position;
+    const auto maxima = fixture.subtree_maximum;
+
+    const auto removed = remove_lzss_hash_tree_bucket_position_v2(
+        fixture.context(), fixture.root, target);
+    EXPECT_EQ(removed.error, LzssHashTreeBucketMutationError::invalid_tree);
+    EXPECT_EQ(fixture.left, left);
+    EXPECT_EQ(fixture.right, right);
+    EXPECT_EQ(fixture.parent, parents);
+    EXPECT_EQ(fixture.height, heights);
+    EXPECT_EQ(fixture.position, positions);
+    EXPECT_EQ(fixture.subtree_maximum, maxima);
 }
 
 TEST(LzssHashTreeBucketMutation, StatisticsSaturate) {
