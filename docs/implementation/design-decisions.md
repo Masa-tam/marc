@@ -18445,3 +18445,28 @@ Silesia only after meaningful maintenance-comparison reduction. Do not alter
 workspace size in this step, so CPU and memory effects remain separable. This
 decision does not select HashTree in production, change public API or ABI,
 change stream format, or authorize a window above 1 MiB.
+
+## DD-879: Maintenance v2 passes the synthetic gate without promotion
+
+- Date: 2026-08-19
+- Status: accepted
+
+Build the retained reference finder at `c270a76` and integrated v2 at
+`212a671` as separate dedicated match-finder benchmark executables under MSVC
+19.51.36252.0. Run the complete identical 5-case, 3-window, 7-threshold
+matrix. Require all 105 candidates to retain Exact tokens and compare token,
+route, promotion, mutation, rotation, and workspace identities across both
+runs before interpreting work or time.
+
+The 945 identity fields agree. V2 reduces maintenance key comparisons by
+64.05% through 80.01% and maintenance key-byte comparisons by 63.79% through
+89.92%. Because absolute throughput differs between the isolated build
+directories, use each run's paired HashChain baseline rather than attributing
+the raw cross-build speedup to v2. The best normalized HashTree ratios improve
+from 0.316 to 0.437, 0.445 to 0.561, and 0.756 to 0.893 for 64 KiB, 256 KiB,
+and 1 MiB windows. This is material enough to pass the synthetic gate.
+
+No one of the 105 v2 candidates beats its paired HashChain baseline, so keep
+HashTree private and reject production selection. Authorize the same verified
+Silesia thresholds 16, 64, 256, and 1024 as the next evidence step. Do not yet
+change workspace layout or permit a window above 1 MiB.

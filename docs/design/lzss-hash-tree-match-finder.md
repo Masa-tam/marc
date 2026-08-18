@@ -417,3 +417,24 @@ integrated finderではHashChainとExhaustiveに対するExact token同一性を
 確認する。Exactが一件でも異なるか、比較削減が実質的でなければSilesiaへ
 進まない。第二段階のworkspace圧縮と1 MiB超windowは、このCPU変更の
 証拠と分離した別decisionとする。
+
+## 18. Maintenance v2のsynthetic判定
+
+revision `c270a76`の旧finderとrevision `212a671`のv2 finderを、どちらも
+MSVC 19.51.36252.0で専用benchmark targetとしてbuildし、同一の5 case、3 window、
+7 thresholdを完全測定した。全105候補でExact tokenは一致し、token、
+route、promotion、insertion、retirement、rotation、workspaceの945比較値も
+一致した。
+
+v2はmaintenance key comparisonを64.05%～80.01%、key-byte comparisonを63.79%～
+89.92%削減した。build directory間の絶対速度差をv2効果と混同しないため、
+それぞれの同一run内HashChain baselineで正規化する。最良HashTree/HashChain比は
+64 KiBで0.316から0.437、256 KiBで0.445から0.561、1 MiBで0.756から
+0.893へ改善した。最速thresholdは旧の1024/4096/4096からv2では全window
+64へ変わった。
+
+比較削減と正規化速度改善はsynthetic gateを通過するに十分である。ただし
+105候補のうちHashChainに勝った個別測定はゼロであり、production採用は依然
+禁止する。次に同一のSilesia threshold 16、64、256、1024を再測定し、実データの
+局所勝利とaggregateを判定する。workspace圧縮と1 MiB超windowはその後の
+別decisionに留める。

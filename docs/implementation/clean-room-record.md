@@ -22943,3 +22943,43 @@ discarded and the reviewed seed retained.
   Studio 18.8.2 `FileTracker` `E_ACCESSDENIED`; the established approved
   out-of-sandbox retry built both targets without warnings. Synthetic
   threshold evidence remains the next independent gate.
+
+## CR-0951: 2026-08-19 - Paired synthetic maintenance v2 evidence
+
+- Authoring method: ran the repository-owned complete synthetic threshold
+  runner against an isolated retained-reference worktree at `c270a76` and the
+  integrated v2 at `212a671`, then compared their ignored JSON records by
+  case, window, and threshold.
+- References used: DD-874, DD-878 through DD-879, IR-0646, IR-0648, TVG-0746,
+  TVG-0748, CR-0948 through CR-0950, and both locally generated
+  `marc-lzss-hash-tree-threshold-synthetic-v1` documents.
+- Known implementations intentionally not consulted: external benchmark
+  results, match finders, compressors, source code, tests, schemas, tuning
+  guidance, patents, pseudocode, and optimization descriptions.
+- Independent decisions: build the exact pre-integration commit as the
+  reference; require identity before cost comparison; treat counters as the
+  primary structural evidence; normalize timing to each run's HashChain; pass
+  the synthetic gate while continuing to reject production selection.
+- Generated-code task description: execute paired 120-measurement matrices,
+  validate every report and Exact token count, compare 945 invariant fields,
+  quantify maintenance reductions and normalized throughput, and remove the
+  temporary worktree/build after preserving ignored evidence JSON.
+- Similarity review: execution, validation, pairing, and conclusions derive
+  only from marc-owned runners, reports, revisions, and counters. No external
+  implementation expression entered this record.
+- Measurement recovery: the first attempt used the generic codec benchmark and
+  failed before measurement without writing JSON. An initial current run then
+  exposed identical old/new maintenance counters; investigation found that
+  `marc_lzss_match_finder_benchmark` had not been rebuilt when only the generic
+  `marc_benchmark` target was requested. Those current results were discarded.
+  The dedicated target was explicitly rebuilt, a direct raw report proved the
+  counter change, and the complete current matrix was regenerated with the
+  corrected compiler label. No discarded value entered DD-879.
+- Validation: both final JSON documents identify MSVC 19.51.36252.0 and their
+  correct source revisions. Each contains 15 baselines, 105 candidates, and 21
+  aggregates; all reports and Exact gates pass. All 945 selected invariant
+  fields agree. Maintenance key comparisons fall by 64.05% to 80.01%, byte
+  comparisons by 63.79% to 89.92%, and paired normalized best ratios improve
+  to 0.437, 0.561, and 0.893. No v2 candidate beats HashChain. The verified
+  temporary source and build directories were removed; ignored evidence JSON
+  remains local for the next review.
