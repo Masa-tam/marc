@@ -320,3 +320,32 @@ hangまたはcrashは恒久回帰fixtureにする。
 synthetic modeの末尾に有限なpromotion candidate thresholdを必須指定する。
 閾値はstreamやpublic APIへ保存せず、benchmark reportだけに記録する。既存の
 Silesia JSON runnerへは合成threshold sweepの後にversioned schemaとして接続する。
+
+## 15. 合成threshold sweep契約
+
+private HashTreeをSilesiaへ接続する前に、外部データを必要としない独立runnerで
+promotion thresholdの挙動を比較する。runnerは既存の二戦略用
+`marc-lzss-match-finder-synthetic-v1`を変更せず、
+`marc-lzss-hash-tree-threshold-synthetic-v1`を生成する。
+
+既定matrixは5つの決定的合成case、64 KiB、256 KiB、1 MiB window、および
+閾値0、4、16、64、256、1024、4096からなる。この対数的な閾値集合は
+Chain、promotion、Treeの仕事量が移行する範囲を観測するための実験設定であり、
+production既定値を意味しない。callerは重複しない有限uint64閾値と正のwindowを
+明示して置換できる。
+
+各case/windowについてHashChain Exactを一度だけbaselineとして測定し、その後
+すべてのHashTree閾値を測定する。各HashTree reportは次を満たさなければならない。
+
+1. mode、case、input、frame、window、iterations、thresholdが要求値と一致する。
+2. generic query数がChain routeとTree routeの和に一致する。
+3. trigger query数がpromotion数に一致する。
+4. ChainおよびTreeの各depth histogramの和が対応route数に一致する。
+5. 必須のworkspace、component cost、最大値、時間値がすべて存在する。
+6. token数が同じcase/windowのHashChain baselineと完全一致する。
+
+不一致時は部分JSONを公開せず失敗する。時間やthroughputは記録するがpass/fail
+閾値にはしない。JSONはbaseline records、threshold records、および
+threshold/window別の合成集計を分離し、実行command、revision、environmentと
+完全なreportを保持する。このrunnerはnetworkもSilesia Corpusも使用せず、
+public API、stream、ABI、encoder選択、既存JSON schemaを変更しない。

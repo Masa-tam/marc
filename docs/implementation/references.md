@@ -5799,3 +5799,12 @@ HashTree initializer, diagnostics, and existing HashChain/BinaryTree smoke-test
 style. No external benchmark harness, adaptive match finder, compressor,
 source code, test, result schema, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0646
+
+The private synthetic HashTree threshold runner uses DD-861 through DD-874,
+TVG-0733 through TVG-0746, marc's repository-owned deterministic synthetic
+cases, benchmark report, HashChain Exact oracle, histogram convention, and
+existing local JSON runner structure. No external benchmark runner, adaptive
+match finder, compressor, source code, test, result schema, Corpus harness,
+patent, pseudocode, or optimization description was consulted.

@@ -22725,3 +22725,31 @@ discarded and the reviewed seed retained.
   including `marc_interoperability_schema_compatibility` (64.63 seconds under
   MSVC and 72.68 seconds under ClangCL). Total suite times are 162.27 and
   177.36 seconds.
+
+## CR-0943: 2026-08-18 - Synthetic HashTree threshold sweep
+
+- Authoring method: defined a new private JSON contract from marc's existing
+  synthetic cases and HashTree report after freezing validation and grouping
+  in DD-874 and TVG-0746.
+- References used: DD-861 through DD-874, IR-0633 through IR-0646, TVG-0733
+  through TVG-0746, and repository-owned benchmark/parser conventions.
+- Known implementations intentionally not consulted: external benchmark
+  runners, adaptive match finders, compressors, source code, tests, schemas,
+  Corpus harnesses, patents, pseudocode, and optimization descriptions.
+- Independent decisions: retain existing v1 schemas; measure HashChain once
+  per case/window; use logarithmic descriptive thresholds; validate both
+  route histograms and promotions; and refuse partial output after an Exact
+  mismatch.
+- Generated-code task description: add an offline synthetic threshold runner,
+  independently validate the complete HashTree report, preserve every raw
+  command/report, aggregate by threshold/window, and test invariant failures.
+- Similarity review: schema, field grouping, validation, aggregation, and
+  tests derive solely from marc-owned reports and runner conventions. No
+  external implementation expression entered this change.
+- Validation: the five-test Python runner suite, documentation layout, and a
+  real 5-case by 2-threshold MSVC smoke matrix pass. All targets build without
+  warnings under MSVC 18.8.2 and ClangCL. The complete CTest suite passes
+  3062/3062 with a 300-second per-test limit, including
+  `marc_interoperability_schema_compatibility` (66.88 seconds under MSVC and
+  74.66 seconds under ClangCL). Total suite times are 165.37 and 244.20
+  seconds.

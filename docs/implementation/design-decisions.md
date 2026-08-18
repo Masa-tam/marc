@@ -18328,3 +18328,25 @@ diagnostic token and frame counts.
 This step adds neither HashTree to a public encoder selector nor HashTree to
 the existing Silesia JSON schema. Synthetic threshold orchestration and the
 versioned Silesia runner change remain later independent commits.
+
+## DD-874: Synthetic HashTree threshold sweep has an independent schema
+
+- Date: 2026-08-18
+- Status: accepted
+
+Keep the established two-strategy synthetic and Silesia v1 schemas unchanged.
+Add an offline synthetic-only runner with schema
+`marc-lzss-hash-tree-threshold-synthetic-v1`. For each deterministic case and
+window, run one HashChain Exact baseline followed by every requested finite
+HashTree threshold. The defaults are 0, 4, 16, 64, 256, 1024, and 4096;
+they are logarithmic observation points rather than an encoder default.
+
+Reject duplicate windows or thresholds, disabled `UINT64_MAX`, incomplete
+component fields, route-total disagreement, promotion-total disagreement,
+route-histogram disagreement, and any token-count difference from the
+HashChain baseline. Preserve the complete command and report for every run.
+Aggregate HashTree results only by threshold and window, summing work and
+time, taking maxima for bounded resources and peaks, and summing histograms.
+Do not use timing as a test threshold. This does not access external data,
+select HashTree in production, or change a stream, public API, ABI, or
+interoperability artifact.

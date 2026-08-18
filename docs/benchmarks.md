@@ -1452,7 +1452,27 @@ Chain/Tree query distributions, promotion and population totals, and
 build/query/maintenance comparison work. This is a private experiment only:
 it does not select an encoder strategy, change a stream, or participate in the
 current `marc-silesia-match-finder-v1` JSON runner. A versioned threshold-sweep
-runner follows after the synthetic matrix contract is complete.
+runner is therefore defined independently below; Silesia integration remains
+a later schema change.
+
+The independent synthetic threshold sweep is now available as
+`tools/run_lzss_hash_tree_threshold_matrix.py`. It measures one HashChain
+Exact baseline per case/window and then HashTree Exact at finite thresholds
+0, 4, 16, 64, 256, 1024, and 4096 by default:
+
+```console
+py -3.14 tools/run_lzss_hash_tree_threshold_matrix.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --output out/benchmarks/lzss-hash-tree-threshold-msvc.json --compiler "MSVC 19.50" --generator "Visual Studio 18 2026"
+```
+
+Use `python3` in place of `py -3.14` on platforms where appropriate. The
+runner performs no network or external-data access. It rejects incomplete or
+internally inconsistent HashTree diagnostics and rejects any HashTree token
+count that differs from its HashChain baseline. Its versioned
+`marc-lzss-hash-tree-threshold-synthetic-v1` output keeps baseline records,
+threshold records, and threshold/window aggregates separate. The default
+thresholds are descriptive experiment points, not a production default; use
+`--thresholds` to supply another unique finite set. Results belong under
+ignored `out/` storage.
 
 Silesia Corpus measurements are opt-in development experiments. The Corpus is
 not redistributed by marc and is never downloaded by configure, build, CTest,

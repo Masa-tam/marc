@@ -10458,3 +10458,20 @@ fail before measurement. Require HashChain and BinaryTree to reject an extra
 threshold argument so an experiment cannot silently record an unused effort
 parameter. Empty frame input must report zero queries, frames, tokens,
 promotions, and route histograms without error.
+
+### TVG-0746
+
+Parse a complete hand-checkable HashTree synthetic report and require exact
+identity/configuration fields, all component counters and maxima, finite
+timing, Chain plus Tree routes equal generic queries, triggers equal
+promotions, and each route histogram sum equal its route population. Mutate
+each of the latter invariants independently and require rejection.
+
+Use a HashChain token count as the oracle for multiple HashTree thresholds and
+require every threshold to agree; one mismatch must reject the entire group.
+Aggregate reports with different thresholds and require separate ordered
+threshold/window records, retained case counts, and exact counter totals.
+Run a small real benchmark sweep through the new runner to prove CLI parsing,
+report validation, JSON serialization, and threshold aggregation without
+external data. Keep the full default matrix opt-in because performance is not
+a CTest pass/fail property.
