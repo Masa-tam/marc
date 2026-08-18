@@ -425,7 +425,7 @@ void LzssHashTreeMatchFinder::advance(
                         hash_tree_diagnostics_enabled_ && statistics_ != nullptr
                         ? &component_statistics : nullptr;
                     const auto removed =
-                        remove_lzss_hash_tree_bucket_position(
+                        remove_lzss_hash_tree_bucket_position_v2(
                             {input_, parameters_, expired_bucket,
                              heads_.size(), left_, right_, parent_, height_,
                              position_, subtree_maximum_position_,
@@ -494,7 +494,7 @@ void LzssHashTreeMatchFinder::advance(
             auto* const component_observer = hash_tree_diagnostics_enabled_
                     && statistics_ != nullptr
                 ? &component_statistics : nullptr;
-            const auto inserted = insert_lzss_hash_tree_bucket_position(
+            const auto inserted = insert_lzss_hash_tree_bucket_position_v2(
                 {input_, parameters_, bucket, heads_.size(), left_, right_,
                  parent_, height_, position_, subtree_maximum_position_,
                  component_observer},

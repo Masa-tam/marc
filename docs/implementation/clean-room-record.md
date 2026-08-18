@@ -22913,3 +22913,33 @@ discarded and the reviewed seed retained.
   600-second per-test limit and no exclusions. Total times are 186.46 and
   203.37 seconds; `marc_interoperability_schema_compatibility` passes in 66.98
   and 75.38 seconds. Production and benchmark paths remain unchanged.
+
+## CR-0950: 2026-08-19 - Integrated HashTree maintenance v2 route
+
+- Authoring method: changed only the private integrated HashTree finder's
+  promoted-bucket insertion and retirement calls from the retained reference
+  mutation to the independently differential-tested v2 entry points.
+- References used: DD-878, IR-0648, TVG-0748, CR-0948 through CR-0949, the
+  repository-owned integrated HashTree route, and its Exact oracles and
+  diagnostics.
+- Known implementations intentionally not consulted: external hash-tree match
+  finders, balanced-tree optimizations, compressors, source code, tests,
+  benchmark results, patents, pseudocode, and optimization descriptions.
+- Independent decisions: preserve builder, query, promotion threshold,
+  workspace layout, counters, errors, and private benchmark schema; replace
+  only steady-state promoted insertion and retirement after differential and
+  corruption gates passed.
+- Generated-code task description: connect both v2 mutation entry points to
+  the private finder, rebuild benchmark and tests, retain Exact and sticky-
+  error behavior, and run benchmark smoke plus complete cross-compiler CTest.
+- Similarity review: integration is a two-call substitution between marc-owned
+  interfaces. No external implementation expression entered this change.
+- Validation: all 36 focused mutation/finder tests and the private HashTree
+  benchmark smoke pass under MSVC 19.50 and ClangCL. The complete CTest suite
+  passes 3070/3070 under both compilers with the 600-second per-test limit and
+  no exclusions. Total times are 187.45 and 203.13 seconds;
+  `marc_interoperability_schema_compatibility` passes in 67.92 and 75.50
+  seconds. The first sandboxed MSBuild attempts stopped at the known Visual
+  Studio 18.8.2 `FileTracker` `E_ACCESSDENIED`; the established approved
+  out-of-sandbox retry built both targets without warnings. Synthetic
+  threshold evidence remains the next independent gate.
