@@ -18372,3 +18372,23 @@ a performance guarantee. Finder initialization remains inside measured frame
 cost. Silesia may reject HashTree entirely; any production review remains a
 separate decision after real-data evidence or a proven reduction in
 initialization and unpromoted-route overhead.
+
+## DD-876: Silesia HashTree thresholds use a separate verified schema
+
+- Date: 2026-08-18
+- Status: accepted
+
+Preserve `marc-silesia-match-finder-v1` unchanged and add private
+`marc-silesia-hash-tree-threshold-v1`. Require the established exact twelve-
+member Corpus verification to complete before any benchmark process. For each
+member/window, measure one HashChain Exact baseline and HashTree Exact at the
+synthetically narrowed thresholds 16, 64, 256, and 1024 by default.
+
+Require unique positive windows, unique finite thresholds, complete frame-mode
+HashTree reports, internal route/promotion/histogram consistency, and token
+count equality against the paired baseline. Store verified SHA-256, command,
+and raw report per record. Aggregate baselines by window and candidates by
+threshold/window across all members, using summed bytes/work/time/histograms
+and maximum workspace/peaks. Do not publish partial JSON after failure or use
+performance as a test assertion. The runner performs no network access and
+does not alter public selection, stream format, ABI, defaults, or artifacts.

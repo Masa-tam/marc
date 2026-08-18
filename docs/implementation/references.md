@@ -5808,3 +5808,12 @@ cases, benchmark report, HashChain Exact oracle, histogram convention, and
 existing local JSON runner structure. No external benchmark runner, adaptive
 match finder, compressor, source code, test, result schema, Corpus harness,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0647
+
+The Silesia HashTree threshold runner uses DD-874 through DD-876, TVG-0746
+through TVG-0747, marc's repository-owned strict Silesia verifier, frame-mode
+benchmark report, HashChain oracle, threshold aggregator, and existing v1
+runner conventions. No external benchmark runner, adaptive match finder,
+compressor, source code, test, result schema, Corpus harness, tuning guide,
+patent, pseudocode, or optimization description was consulted.

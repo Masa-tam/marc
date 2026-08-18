@@ -22777,3 +22777,31 @@ discarded and the reviewed seed retained.
 - Validation: 15 HashChain baselines, 105 HashTree records, and 21 aggregates
   were emitted. Every case/window/threshold retained Exact token count; all
   report invariants passed; no HashTree record exceeded its paired baseline.
+
+## CR-0945: 2026-08-18 - Silesia HashTree threshold runner
+
+- Authoring method: composed marc's strict local Corpus verifier, HashChain
+  frame runner, complete HashTree report contract, and synthetic threshold
+  aggregation only after freezing the separate schema in DD-876 and TVG-0747.
+- References used: DD-874 through DD-876, IR-0646 through IR-0647, TVG-0746
+  through TVG-0747, and repository-owned Silesia and HashTree tooling.
+- Known implementations intentionally not consulted: external benchmark
+  runners, match finders, compressors, source code, tests, schemas, Corpus
+  harnesses, tuning guidance, patents, pseudocode, and optimizations.
+- Independent decisions: preserve v1; verify all inputs before measurement;
+  measure each baseline once; retain four synthetic transition regimes; and
+  separate baseline from threshold records and aggregates.
+- Generated-code task description: add a no-network Silesia HashTree runner,
+  share complete frame/synthetic validation, enforce paired Exact tokens, and
+  preserve manifest, commands, reports, environment, and bounded aggregates.
+- Similarity review: orchestration, schema, validation, and tests derive only
+  from marc-owned tooling and measured evidence. No external implementation
+  expression entered this change.
+- Validation: all targets build without warnings under MSVC 18.8.2 and
+  ClangCL. Existing and new synthetic/Silesia tooling tests pass on both
+  compilers. The complete CTest suite passes 3063/3063 with the adopted
+  600-second per-test limit, including
+  `marc_interoperability_schema_compatibility` (65.71 seconds under MSVC and
+  73.59 seconds under ClangCL). Total suite times are 180.93 and 201.64
+  seconds. The external twelve-member measurement remains deliberately
+  unexecuted until the next opt-in experiment step.

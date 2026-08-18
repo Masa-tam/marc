@@ -83,10 +83,32 @@ def _validate_hash_tree_report(
     report: dict[str, Any], case_name: str, expected_size: int,
     frame_size: int, window_size: int, iterations: int, threshold: int,
 ) -> None:
-    if report.get("mode") != "synthetic" \
+    _validate_hash_tree_report_common(
+        report, expected_size, frame_size, window_size, iterations, threshold,
+        mode="synthetic", synthetic_case=case_name,
+    )
+
+
+def _validate_hash_tree_frame_report(
+    report: dict[str, Any], expected_size: int, frame_size: int,
+    window_size: int, iterations: int, threshold: int,
+) -> None:
+    _validate_hash_tree_report_common(
+        report, expected_size, frame_size, window_size, iterations, threshold,
+        mode="frames",
+    )
+
+
+def _validate_hash_tree_report_common(
+    report: dict[str, Any], expected_size: int, frame_size: int,
+    window_size: int, iterations: int, threshold: int, *, mode: str,
+    synthetic_case: Optional[str] = None,
+) -> None:
+    if report.get("mode") != mode \
             or report.get("strategy") != HASH_TREE_STRATEGY:
         raise RunnerError("benchmark mode or HashTree strategy changed")
-    if report.get("synthetic_case") != case_name:
+    if synthetic_case is not None \
+            and report.get("synthetic_case") != synthetic_case:
         raise RunnerError("synthetic benchmark case changed")
     expected = {
         "input_bytes": expected_size,

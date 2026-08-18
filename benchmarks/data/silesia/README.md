@@ -99,6 +99,18 @@ runner:
 marc_lzss_match_finder_benchmark --frames hash-tree-exact benchmarks/data/silesia/corpus/dickens 1 1048576 1048576 32
 ```
 
+After building the benchmark, the complete private HashTree threshold matrix
+can be run without network access:
+
+```console
+py -3.14 tools/run_silesia_hash_tree_threshold_benchmark.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --output benchmarks/data/silesia/results/hash-tree-threshold-msvc.json --compiler "MSVC 19.50" --generator "Visual Studio 18 2026"
+```
+
+Use `python3` instead of `py -3.14` where appropriate. The runner first
+verifies all twelve local members, then measures one HashChain baseline and
+HashTree thresholds 16, 64, 256, and 1,024 at each configured window. Results
+remain local under the ignored `results/` directory.
+
 Run each of the twelve members independently. The existing Corpus-wide v1
 runner orchestrates HashChain/BinaryTree only; HashTree threshold-sweep
 orchestration will use a later versioned report contract.

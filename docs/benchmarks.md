@@ -1465,6 +1465,21 @@ zero/four behavior or the redundant 4,096 route. Silesia evidence may still
 reject the strategy entirely or motivate reducing its initialization and
 unpromoted-route overhead before another production review.
 
+The narrowed external-data experiment is implemented separately as
+`tools/run_silesia_hash_tree_threshold_benchmark.py`:
+
+```console
+py -3.14 tools/run_silesia_hash_tree_threshold_benchmark.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --output benchmarks/data/silesia/results/hash-tree-threshold-msvc.json --compiler "MSVC 19.50" --generator "Visual Studio 18 2026"
+```
+
+The runner verifies the complete local Corpus before launching a benchmark,
+performs no network access, and measures thresholds 16, 64, 256, and 1,024 by
+default. Its independent `marc-silesia-hash-tree-threshold-v1` JSON stores 36
+HashChain baseline records and 144 HashTree records for the default 12-member,
+3-window matrix, with separate baseline/window and threshold/window
+aggregates. Every candidate must reproduce its paired baseline token count.
+The full run is opt-in and its ignored result is not a CTest fixture.
+
 ## External Silesia measurements
 
 ### Private HashTree Exact benchmark route

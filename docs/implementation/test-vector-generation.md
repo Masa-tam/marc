@@ -10475,3 +10475,18 @@ Run a small real benchmark sweep through the new runner to prove CLI parsing,
 report validation, JSON serialization, and threshold aggregation without
 external data. Keep the full default matrix opt-in because performance is not
 a CTest pass/fail property.
+
+### TVG-0747
+
+Refactor the complete HashTree report validator behind mode-specific
+synthetic and frame wrappers. Require the existing synthetic fixtures to
+remain valid. Parse a complete hand-checkable frame report, require its frame
+identity and all HashTree invariants, then change its mode to synthetic and
+require frame validation to fail.
+
+Freeze the narrowed Silesia default threshold tuple as 16, 64, 256, and 1024.
+Aggregate hand-checkable frame reports at two thresholds, require distinct
+ordered aggregates, rename the group cardinality to `member_count`, and omit
+the synthetic-only `case_count`. Keep the actual twelve-member measurement
+outside CTest; the shared Corpus verifier has its own small local fixtures and
+the full external data remains opt-in.

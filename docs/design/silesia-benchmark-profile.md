@@ -165,3 +165,30 @@ Corpus directory、出力JSON、iteration、frame size、window集合および�
 Corpus SHA-256、revision、環境、per-file reportと、入力byte数および時間を合算
 したstrategy/window別aggregateを保存する。結果fileはignored `results/`へ置き、
 tracked sourceまたは配布物へ含めない。
+
+## 10. HashTree threshold runner
+
+`tools/run_silesia_hash_tree_threshold_benchmark.py`は既存の二戦略比較schema
+`marc-silesia-match-finder-v1`を変更せず、private HashTreeだけを評価する独立
+schema `marc-silesia-hash-tree-threshold-v1`を生成する。通常runnerと同じ厳密な
+12 member manifest検証が完了するまでbenchmark processを起動してはならず、
+network access、download、Corpus生成を行ってはならない。
+
+既定値は1 MiB frame、65,536、262,144、1,048,576 byte window、1回の診断pass、
+1回のtimed pass、および合成matrixで縮約したthreshold 16、64、256、1024である。
+thresholdは有限uint64かつ重複なし、windowは正かつ重複なしとする。callerは
+明示的に置換できるが、実行JSONへ完全な設定とcommandを保存する。
+
+各member/windowでHashChain Exact baselineを一度測定し、その後すべてのHashTree
+thresholdを独立processで測定する。各reportはmode、size、frame count、window、
+iteration、threshold、全HashTree診断値、route合計、promotion合計、histogram合計、
+有限な時間値を検証する。すべてのHashTree token数は対応するHashChain baselineと
+一致しなければならず、不一致時は部分JSONを生成しない。
+
+JSONはmanifest、environment、revision、configuration、baseline records、
+threshold records、baseline/window aggregates、threshold/window aggregatesを
+分離する。各recordはmember名、検証済みSHA-256、完全command、生reportを保持する。
+aggregateは全12 memberの入力byteと時間を合算し、workspaceとpeak値は最大、
+diagnostic workとhistogramは合算する。性能値を合否条件にせず、結果はignored
+`results/`へだけ保存する。この実験はpublic selector、stream、ABI、既定戦略、
+interoperability artifactを変更しない。
