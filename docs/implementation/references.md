@@ -5918,3 +5918,12 @@ and rotations, sparse allocator contract, pool-local Exact query, and bounded
 parent-link validation. No external tree builder, sparse match finder,
 compressor, source code, test, benchmark, tuning guide, patent, pseudocode, or
 optimization description was consulted.
+
+### IR-0659
+
+The pool-local mutation primitives use DD-891 through DD-895, TVG-0758
+through TVG-0762, the repository-owned AVL mutation V2 implementation,
+pool allocator reserved state, pool-local query identity, and atomic builder
+fixtures. No external tree mutation, sparse match finder, compressor, source
+code, test, benchmark, tuning guide, patent, pseudocode, or optimization
+description was consulted.

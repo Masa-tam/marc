@@ -789,3 +789,21 @@ searchでtree内に確認する。全検証成功後にだけrootとnode count�
 走査または変更しない。allocator自体が破損してsticky errorになった場合はpool全体を破棄する
 hard failureであり、通常のcapacity fallbackとして扱わない。この段階ではbucket metadata、
 promotion state、mutation、production matcherまたは公開profileへ接続しない。
+
+## 30. Pool-local mutation primitives
+
+mutation contextはqueryと同じ`RingPosition`または`PoolLocal` identityを明示する。
+既存ring insert/removeおよびactive-range validatorはring identityだけを受理し、新しい
+pool primitiveはpool-local identityだけを受理する。これにより同じarray shapeからnode ID
+規則を推測せず、誤った剰余nodeへのmutationを拒否する。
+
+pool insertはallocatorが返したreserved node IDをcallerから受け取る。reserved nodeは
+`height == 1`、全linkがnull、positionとsubtree maximumがsentinelでなければならない。
+tree全体とduplicate positionを事前検査した後だけ、そのnodeをAVLへ挿入する。preflight
+failureはtreeとreserved nodeの全byteを変更しない。
+
+pool detachはabsolute positionをbounded BST searchし、ring slot計算を行わない。対象を
+AVLから削除・再平衡化した後、nodeをreserved stateへ戻し、そのIDを`affected_node`として
+返す。callerは直後にpool `release`を行う。missing position、cycle、壊れたmetadataは
+mutation前に拒否する。この段階ではpool exhaustion、whole-bucket demotion、bucket mode、
+promotion stateおよびproduction matcherへ接続しない。

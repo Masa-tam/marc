@@ -18808,3 +18808,23 @@ must preserve unrelated active pool nodes. Treat allocator corruption as a
 sticky hard failure requiring pool disposal, never as capacity fallback. Keep
 bucket metadata, promotion state, mutation, matcher, profile, ABI, CLI, and
 format integration outside this change.
+
+## DD-895: Separate ring mutation from pool-local reserve/detach operations
+
+- Date: 2026-08-20
+- Status: accepted
+
+Make node identity explicit in the private mutation context. Keep all existing
+insert, remove, and active-range entry points ring-only. Add pool-local entry
+points that insert an explicitly reserved allocator node and detach a node found
+by bounded absolute-position search. A detached node returns to reserved state
+and is reported to the caller for immediate allocator release.
+
+Require exact reserved sentinels before insertion and reject identity misuse,
+duplicates, missing positions, and structural corruption before mutation. Reuse
+the repository-owned AVL rotations and deletion logic so ring and pool-local
+trees retain the same ordering and balance rules. Assign into already-live pool
+objects while retaining the ring workspace's established construction path.
+Defer allocator exhaustion,
+whole-bucket demotion, bucket modes, promotion state, matcher, profile, ABI,
+CLI, and format integration.

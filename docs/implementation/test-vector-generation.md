@@ -10743,3 +10743,20 @@ whole-bucket release to restore exact free/active accounting. Run all
 eight tests under MSVC and ClangCL, then run every registered test under both
 compilers with a 600-second per-test limit and no exclusions, including
 interoperability schema compatibility.
+
+### TVG-0762
+
+Build the three-node pool-local fixture, allocate its fourth node, insert
+absolute position 11, and validate the resulting four-position chain and Exact
+query. Detach absolute position 5 through the two-child deletion shape, require
+the returned node to be in reserved sentinel state, release it through the
+pool, and validate the remaining chain and nearest match at position 11.
+
+Reject a non-reserved node and a duplicate position without changing either
+the tree or reserved node. Reject ring identity at the pool entry point and
+pool identity at the ring entry point. Corrupt a reached child link into a
+cycle and require bounded preflight failure with byte-for-byte unchanged pool
+arrays. Run these five pool-local fixtures and all fifteen existing ring
+mutation fixtures under MSVC and ClangCL, then run every registered test under
+both compilers with a 600-second per-test limit and no exclusions, including
+interoperability schema compatibility.

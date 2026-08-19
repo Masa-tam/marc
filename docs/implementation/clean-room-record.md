@@ -23416,3 +23416,29 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`. The public format, ABI, CLI,
   bucket metadata, promotion state, mutation, and production matcher are
   unchanged.
+
+## CR-0967: 2026-08-20 - Pool-local mutation primitives
+
+- Authoring method: extended the established mutation context with explicit
+  identity, parameterized the repository-owned AVL insert/remove node choice,
+  then added pool reserve/detach entry points and five direct fixtures.
+- References used: IR-0659, DD-891 through DD-895, TVG-0758 through TVG-0762,
+  CR-0963 through CR-0966, and marc's existing mutation V2 tests.
+- Known implementations intentionally not consulted: external tree mutation,
+  sparse match finders, compressors, source code, tests, benchmarks, tuning
+  guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: preserve ring-only legacy entry points; require exact
+  allocator sentinels; return detached IDs in reserved state; make allocator
+  release a separate explicit step; and defer demotion policy.
+- Generated-code task description: adapt the private AVL mutation component to
+  explicit pool-local IDs while preserving every ring result and proving
+  preflight failures byte-for-byte atomic.
+- Similarity review: identity checks, reserve/detach states, AVL operations, and
+  tests derive solely from marc's preceding pool design and existing mutation
+  component. No external implementation expression was consulted or introduced.
+- Validation: all five pool-local and fifteen ring mutation tests pass under
+  MSVC and ClangCL. All 3,095 registered tests pass under each compiler with a
+  600-second per-test limit; both runs include all six Python tooling tests and
+  `marc_interoperability_schema_compatibility`. The public format, ABI, CLI,
+  pool-exhaustion policy, bucket modes, promotion state, and production matcher
+  are unchanged.

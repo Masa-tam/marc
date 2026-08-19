@@ -47,9 +47,16 @@ void record_height(
     if (!lzss_hash_tree_position_extent_representable(context.input.size())) {
         return LzssHashTreeBucketMutationError::invalid_parameters;
     }
-    const auto expected_capacity = std::min<std::size_t>(
+    if (context.node_identity != LzssHashTreeNodeIdentity::ring_position
+        && context.node_identity != LzssHashTreeNodeIdentity::pool_local) {
+        return LzssHashTreeBucketMutationError::invalid_node_arrays;
+    }
+    const auto expected_ring_capacity = std::min<std::size_t>(
         context.input.size(), context.parameters.window_size);
-    if (capacity == 0 || capacity != expected_capacity
+    if (capacity == 0
+        || capacity > static_cast<std::size_t>(UINT32_MAX)
+        || (context.node_identity == LzssHashTreeNodeIdentity::ring_position
+            && capacity != expected_ring_capacity)
         || context.right.size() != capacity
         || context.parent.size() != capacity
         || context.height.size() != capacity
@@ -80,7 +87,8 @@ void record_height(
     if (node >= context.left.size()) return false;
     const auto position = context.position[node];
     return position_belongs_to_bucket(context, position)
-        && position % context.left.size() == node
+        && (context.node_identity == LzssHashTreeNodeIdentity::pool_local
+            || position % context.left.size() == node)
         && (context.left[node] == lzss_hash_tree_null_node
             || context.left[node] < context.left.size())
         && (context.right[node] == lzss_hash_tree_null_node
@@ -299,22 +307,33 @@ public:
 
     void insert(
         const std::size_t absolute_position,
-        const std::uint32_t parent, const int order) noexcept {
-        const auto node = static_cast<std::uint32_t>(
-            absolute_position % context_.left.size());
-        std::construct_at(context_.left.data() + node,
-                          lzss_hash_tree_null_node);
-        std::construct_at(context_.right.data() + node,
-                          lzss_hash_tree_null_node);
-        std::construct_at(context_.parent.data() + node,
-                          lzss_hash_tree_null_node);
-        std::construct_at(context_.height.data() + node, std::uint8_t{1});
-        std::construct_at(context_.position.data() + node,
-                          static_cast<LzssHashTreeStoredPosition>(
-                              absolute_position));
-        std::construct_at(
-            context_.subtree_maximum_position.data() + node,
-            static_cast<LzssHashTreeStoredPosition>(absolute_position));
+        const std::uint32_t parent, const int order,
+        const std::uint32_t node) noexcept {
+        if (context_.node_identity == LzssHashTreeNodeIdentity::pool_local) {
+            context_.left[node] = lzss_hash_tree_null_node;
+            context_.right[node] = lzss_hash_tree_null_node;
+            context_.parent[node] = lzss_hash_tree_null_node;
+            context_.height[node] = 1;
+            context_.position[node] =
+                static_cast<LzssHashTreeStoredPosition>(absolute_position);
+            context_.subtree_maximum_position[node] =
+                static_cast<LzssHashTreeStoredPosition>(absolute_position);
+        } else {
+            std::construct_at(context_.left.data() + node,
+                              lzss_hash_tree_null_node);
+            std::construct_at(context_.right.data() + node,
+                              lzss_hash_tree_null_node);
+            std::construct_at(context_.parent.data() + node,
+                              lzss_hash_tree_null_node);
+            std::construct_at(
+                context_.height.data() + node, std::uint8_t{1});
+            std::construct_at(
+                context_.position.data() + node,
+                static_cast<LzssHashTreeStoredPosition>(absolute_position));
+            std::construct_at(
+                context_.subtree_maximum_position.data() + node,
+                static_cast<LzssHashTreeStoredPosition>(absolute_position));
+        }
         if (parent == lzss_hash_tree_null_node) {
             root_ = node;
             return;
@@ -325,7 +344,9 @@ public:
         rebalance_from(parent);
     }
 
-    void remove(const std::uint32_t removed) noexcept {
+    void remove(
+        const std::uint32_t removed,
+        const bool keep_reserved) noexcept {
         auto rebalance_start = lzss_hash_tree_null_node;
         if (context_.left[removed] == lzss_hash_tree_null_node) {
             rebalance_start = context_.parent[removed];
@@ -353,7 +374,8 @@ public:
             context_.parent[context_.left[successor]] = successor;
             update(successor);
         }
-        clear(removed);
+        if (keep_reserved) reserve(removed);
+        else clear(removed);
         rebalance_from(rebalance_start);
     }
 
@@ -486,6 +508,16 @@ private:
             lzss_hash_tree_no_stored_position;
     }
 
+    void reserve(const std::uint32_t node) noexcept {
+        context_.left[node] = lzss_hash_tree_null_node;
+        context_.right[node] = lzss_hash_tree_null_node;
+        context_.parent[node] = lzss_hash_tree_null_node;
+        context_.height[node] = 1;
+        context_.position[node] = lzss_hash_tree_no_stored_position;
+        context_.subtree_maximum_position[node] =
+            lzss_hash_tree_no_stored_position;
+    }
+
     const LzssHashTreeBucketMutationContext& context_;
     std::uint32_t root_;
 };
@@ -498,6 +530,19 @@ private:
         && position_belongs_to_bucket(context, position);
 }
 
+[[nodiscard]] bool valid_reserved_pool_node(
+    const LzssHashTreeBucketMutationContext& context,
+    const std::uint32_t node) noexcept {
+    return node < context.left.size()
+        && context.left[node] == lzss_hash_tree_null_node
+        && context.right[node] == lzss_hash_tree_null_node
+        && context.parent[node] == lzss_hash_tree_null_node
+        && context.height[node] == 1
+        && context.position[node] == lzss_hash_tree_no_stored_position
+        && context.subtree_maximum_position[node]
+            == lzss_hash_tree_no_stored_position;
+}
+
 } // namespace
 
 LzssHashTreeBucketMutationResult insert_lzss_hash_tree_bucket_position(
@@ -506,6 +551,10 @@ LzssHashTreeBucketMutationResult insert_lzss_hash_tree_bucket_position(
     LzssHashTreeBucketMutationResult result{root};
     result.error = validate_context(context);
     if (result.error != LzssHashTreeBucketMutationError::none) return result;
+    if (context.node_identity != LzssHashTreeNodeIdentity::ring_position) {
+        result.error = LzssHashTreeBucketMutationError::invalid_node;
+        return result;
+    }
     if (!position_belongs_to_bucket(context, position)) {
         result.error = LzssHashTreeBucketMutationError::invalid_position;
         return result;
@@ -526,7 +575,9 @@ LzssHashTreeBucketMutationResult insert_lzss_hash_tree_bucket_position(
         return result;
     }
     MutableBucketTree tree{context, root};
-    tree.insert(position, search.parent, search.order);
+    tree.insert(
+        position, search.parent, search.order,
+        static_cast<std::uint32_t>(position % context.left.size()));
     result.root = tree.root();
     record_height(context.statistics, context.height, result.root);
     return result;
@@ -538,6 +589,10 @@ LzssHashTreeBucketMutationResult remove_lzss_hash_tree_bucket_position(
     LzssHashTreeBucketMutationResult result{root};
     result.error = validate_context(context);
     if (result.error != LzssHashTreeBucketMutationError::none) return result;
+    if (context.node_identity != LzssHashTreeNodeIdentity::ring_position) {
+        result.error = LzssHashTreeBucketMutationError::invalid_node;
+        return result;
+    }
     if (!position_belongs_to_bucket(context, position)) {
         result.error = LzssHashTreeBucketMutationError::invalid_position;
         return result;
@@ -575,7 +630,7 @@ LzssHashTreeBucketMutationResult remove_lzss_hash_tree_bucket_position(
         }
     }
     MutableBucketTree tree{context, root};
-    tree.remove(search.node);
+    tree.remove(search.node, false);
     result.root = tree.root();
     record_height(context.statistics, context.height, result.root);
     return result;
@@ -587,6 +642,10 @@ LzssHashTreeBucketMutationResult insert_lzss_hash_tree_bucket_position_v2(
     LzssHashTreeBucketMutationResult result{root};
     result.error = validate_context(context);
     if (result.error != LzssHashTreeBucketMutationError::none) return result;
+    if (context.node_identity != LzssHashTreeNodeIdentity::ring_position) {
+        result.error = LzssHashTreeBucketMutationError::invalid_node;
+        return result;
+    }
     if (!position_belongs_to_bucket(context, position)) {
         result.error = LzssHashTreeBucketMutationError::invalid_position;
         return result;
@@ -607,7 +666,9 @@ LzssHashTreeBucketMutationResult insert_lzss_hash_tree_bucket_position_v2(
         return result;
     }
     MutableBucketTree tree{context, root};
-    tree.insert(position, search.parent, search.order);
+    tree.insert(
+        position, search.parent, search.order,
+        static_cast<std::uint32_t>(position % context.left.size()));
     result.root = tree.root();
     record_height(context.statistics, context.height, result.root);
     return result;
@@ -619,6 +680,10 @@ LzssHashTreeBucketMutationResult remove_lzss_hash_tree_bucket_position_v2(
     LzssHashTreeBucketMutationResult result{root};
     result.error = validate_context(context);
     if (result.error != LzssHashTreeBucketMutationError::none) return result;
+    if (context.node_identity != LzssHashTreeNodeIdentity::ring_position) {
+        result.error = LzssHashTreeBucketMutationError::invalid_node;
+        return result;
+    }
     if (!position_belongs_to_bucket(context, position)) {
         result.error = LzssHashTreeBucketMutationError::invalid_position;
         return result;
@@ -659,8 +724,102 @@ LzssHashTreeBucketMutationResult remove_lzss_hash_tree_bucket_position_v2(
         }
     }
     MutableBucketTree tree{context, root};
-    tree.remove(removed);
+    tree.remove(removed, false);
     result.root = tree.root();
+    record_height(context.statistics, context.height, result.root);
+    return result;
+}
+
+LzssHashTreeBucketMutationResult insert_lzss_hash_tree_bucket_pool_node_v2(
+    const LzssHashTreeBucketMutationContext& context,
+    const std::uint32_t root, const std::size_t position,
+    const std::uint32_t reserved_node) noexcept {
+    LzssHashTreeBucketMutationResult result{root};
+    result.error = validate_context(context);
+    if (result.error != LzssHashTreeBucketMutationError::none) return result;
+    if (context.node_identity != LzssHashTreeNodeIdentity::pool_local
+        || !valid_reserved_pool_node(context, reserved_node)) {
+        result.error = LzssHashTreeBucketMutationError::invalid_node;
+        return result;
+    }
+    if (!position_belongs_to_bucket(context, position)) {
+        result.error = LzssHashTreeBucketMutationError::invalid_position;
+        return result;
+    }
+    if (root != lzss_hash_tree_null_node
+        && (root >= context.left.size() || !valid_node(context, root)
+            || context.parent[root] != lzss_hash_tree_null_node)) {
+        result.error = LzssHashTreeBucketMutationError::invalid_root;
+        return result;
+    }
+    const auto search = search_tree_v2(context, root, position);
+    if (search.error != LzssHashTreeBucketMutationError::none) {
+        result.error = search.error;
+        return result;
+    }
+    if (search.node != lzss_hash_tree_null_node) {
+        result.error = LzssHashTreeBucketMutationError::duplicate_position;
+        return result;
+    }
+    MutableBucketTree tree{context, root};
+    tree.insert(position, search.parent, search.order, reserved_node);
+    result.root = tree.root();
+    result.affected_node = reserved_node;
+    record_height(context.statistics, context.height, result.root);
+    return result;
+}
+
+LzssHashTreeBucketMutationResult
+detach_lzss_hash_tree_bucket_pool_position_v2(
+    const LzssHashTreeBucketMutationContext& context,
+    const std::uint32_t root, const std::size_t position) noexcept {
+    LzssHashTreeBucketMutationResult result{root};
+    result.error = validate_context(context);
+    if (result.error != LzssHashTreeBucketMutationError::none) return result;
+    if (context.node_identity != LzssHashTreeNodeIdentity::pool_local) {
+        result.error = LzssHashTreeBucketMutationError::invalid_node;
+        return result;
+    }
+    if (!position_belongs_to_bucket(context, position)) {
+        result.error = LzssHashTreeBucketMutationError::invalid_position;
+        return result;
+    }
+    if (root == lzss_hash_tree_null_node) {
+        result.error = LzssHashTreeBucketMutationError::missing_position;
+        return result;
+    }
+    if (root >= context.left.size() || !valid_node(context, root)
+        || context.parent[root] != lzss_hash_tree_null_node) {
+        result.error = LzssHashTreeBucketMutationError::invalid_root;
+        return result;
+    }
+    const auto search = search_tree_v2(context, root, position);
+    if (search.error != LzssHashTreeBucketMutationError::none) {
+        result.error = search.error;
+        return result;
+    }
+    if (search.node == lzss_hash_tree_null_node) {
+        result.error = LzssHashTreeBucketMutationError::missing_position;
+        return result;
+    }
+    if (context.left[search.node] != lzss_hash_tree_null_node
+        && context.right[search.node] != lzss_hash_tree_null_node) {
+        auto successor = context.right[search.node];
+        std::size_t visited{};
+        while (true) {
+            if (visited++ == context.left.size()
+                || !valid_local_node_structural(context, successor)) {
+                result.error = LzssHashTreeBucketMutationError::invalid_tree;
+                return result;
+            }
+            if (context.left[successor] == lzss_hash_tree_null_node) break;
+            successor = context.left[successor];
+        }
+    }
+    MutableBucketTree tree{context, root};
+    tree.remove(search.node, true);
+    result.root = tree.root();
+    result.affected_node = search.node;
     record_height(context.statistics, context.height, result.root);
     return result;
 }
@@ -672,6 +831,9 @@ LzssHashTreeBucketMutationError validate_lzss_hash_tree_bucket_active_range(
     const auto context_error = validate_context(context);
     if (context_error != LzssHashTreeBucketMutationError::none) {
         return context_error;
+    }
+    if (context.node_identity != LzssHashTreeNodeIdentity::ring_position) {
+        return LzssHashTreeBucketMutationError::invalid_node;
     }
     if (active_begin > active_end || active_end > context.input.size()
         || active_end - active_begin > context.parameters.window_size) {

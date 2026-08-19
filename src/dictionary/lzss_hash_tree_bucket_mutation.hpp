@@ -19,6 +19,7 @@ enum class LzssHashTreeBucketMutationError : std::uint8_t {
     invalid_position,
     duplicate_position,
     missing_position,
+    invalid_node,
     invalid_tree,
 };
 
@@ -34,12 +35,15 @@ struct LzssHashTreeBucketMutationContext {
     std::span<LzssHashTreeStoredPosition> position{};
     std::span<LzssHashTreeStoredPosition> subtree_maximum_position{};
     LzssHashTreeComponentStatistics* statistics{};
+    LzssHashTreeNodeIdentity node_identity{
+        LzssHashTreeNodeIdentity::ring_position};
 };
 
 struct LzssHashTreeBucketMutationResult {
     std::uint32_t root{lzss_hash_tree_null_node};
     LzssHashTreeBucketMutationError error{
         LzssHashTreeBucketMutationError::none};
+    std::uint32_t affected_node{lzss_hash_tree_null_node};
 };
 
 [[nodiscard]] LzssHashTreeBucketMutationResult
@@ -59,6 +63,17 @@ insert_lzss_hash_tree_bucket_position_v2(
 
 [[nodiscard]] LzssHashTreeBucketMutationResult
 remove_lzss_hash_tree_bucket_position_v2(
+    const LzssHashTreeBucketMutationContext& context,
+    std::uint32_t root, std::size_t position) noexcept;
+
+[[nodiscard]] LzssHashTreeBucketMutationResult
+insert_lzss_hash_tree_bucket_pool_node_v2(
+    const LzssHashTreeBucketMutationContext& context,
+    std::uint32_t root, std::size_t position,
+    std::uint32_t reserved_node) noexcept;
+
+[[nodiscard]] LzssHashTreeBucketMutationResult
+detach_lzss_hash_tree_bucket_pool_position_v2(
     const LzssHashTreeBucketMutationContext& context,
     std::uint32_t root, std::size_t position) noexcept;
 

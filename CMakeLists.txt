@@ -1688,6 +1688,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_hash_tree_bucket_mutation_tests.cpp
         tests/lzss_hash_tree_match_finder_tests.cpp
         tests/lzss_sparse_hash_tree_bucket_builder_tests.cpp
+        tests/lzss_sparse_hash_tree_bucket_mutation_tests.cpp
         tests/lzss_sparse_hash_tree_pool_tests.cpp
         tests/lzss_streaming_decoder_tests.cpp
         tests/lzss_streaming_encoder_tests.cpp
