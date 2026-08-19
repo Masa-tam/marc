@@ -10760,3 +10760,22 @@ arrays. Run these five pool-local fixtures and all fifteen existing ring
 mutation fixtures under MSVC and ClangCL, then run every registered test under
 both compilers with a 600-second per-test limit and no exclusions, including
 interoperability schema compatibility.
+
+### TVG-0763
+
+Drive the sparse bucket state component directly. With a three-position chain
+and capacity two, require promotion to publish `PoolRejectedChain` without any
+pool mutation. With sufficient capacity, require a complete promoted tree. At
+exact pool exhaustion, request a new insertion and require validated release of
+all three nodes followed by null root, zero count, and terminal chain mode.
+With one spare node, require ordinary pool-local insertion and retained promoted
+mode.
+
+Reject re-promotion from `PoolRejectedChain`. Make a malformed chain fail hard
+without entering the terminal capacity state. Force a duplicate insertion and
+require the original promoted metadata plus exact free/active accounting after
+reserved-node rollback. Corrupt a promoted root's subtree maximum at exhaustion
+and require pre-release validation failure with no partial node release. Run all
+eight focused state tests under MSVC and ClangCL, then run every registered test
+under both compilers with a 600-second per-test limit and no exclusions,
+including interoperability schema compatibility.

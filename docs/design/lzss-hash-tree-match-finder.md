@@ -807,3 +807,25 @@ AVLから削除・再平衡化した後、nodeをreserved stateへ戻し、そ�
 返す。callerは直後にpool `release`を行う。missing position、cycle、壊れたmetadataは
 mutation前に拒否する。この段階ではpool exhaustion、whole-bucket demotion、bucket mode、
 promotion stateおよびproduction matcherへ接続しない。
+
+## 31. Pool-exhaustion bucket state transitions
+
+sparse bucket state controllerはmetadataを直接参照で書き換えず、入力されたmode、root、
+node countを成功結果としてまとめて返す。callerは成功結果だけをbucket metadataへcommit
+する。`Chain`からのpromotionでbuilderが`InsufficientCapacity`を返した場合、poolおよび
+node arrayを変更せず、null root、zero count、`PoolRejectedChain`を返す。empty chainは
+`Chain`のままであり、builder、validatorまたはallocatorの異常はhard errorとして元metadata
+を返す。
+
+`PromotedTree`への挿入でfree nodeがある場合は、一nodeをreserveし、Section 30のpool-local
+insertを実行してrootとcountを更新する。preflight failureではreserved nodeをpoolへ戻し、
+元のpromoted metadataとallocation accountingを維持する。free countがzeroの場合だけ、
+Section 29のwhole-bucket validator/releaseを実行し、全nodeの解放成功後にnull root、zero
+count、`PoolRejectedChain`を返す。release contextは新positionをchainへ接続する直前のhead、
+または接続後に保存したprevious headから構成し、treeに実在するposition集合と一致しなければ
+ならない。
+
+`PoolRejectedChain`からのpromotion再試行はinvalid modeとして拒否する。壊れたchain、tree、
+metadata、allocator stateは容量不足へ読み替えず、部分解放またはsilent demotionを行わない。
+この段階ではbucket metadata array、frame reset、retirement、production matcher、profile、
+ABI、CLIおよびstream formatへ接続しない。

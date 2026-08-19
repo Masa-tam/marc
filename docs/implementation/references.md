@@ -5927,3 +5927,12 @@ pool allocator reserved state, pool-local query identity, and atomic builder
 fixtures. No external tree mutation, sparse match finder, compressor, source
 code, test, benchmark, tuning guide, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0660
+
+The pool-exhaustion bucket state transitions use DD-891 through DD-896,
+TVG-0758 through TVG-0763, the repository-owned atomic sparse builder,
+validated whole-bucket release, pool-local mutation primitive, allocator
+accounting, and the three-state design in Section 26. No external sparse state
+machine, tree fallback, match finder, compressor, source code, test, benchmark,
+tuning guide, patent, pseudocode, or optimization description was consulted.

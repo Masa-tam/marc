@@ -23442,3 +23442,33 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`. The public format, ABI, CLI,
   pool-exhaustion policy, bucket modes, promotion state, and production matcher
   are unchanged.
+
+## CR-0968: 2026-08-20 - Pool-exhaustion bucket state transitions
+
+- Authoring method: derived a private state-result API from the accepted
+  three-mode design, then fixed promotion shortage, insertion exhaustion,
+  terminal-state, rollback, and hard-failure behavior in eight direct fixtures.
+- References used: IR-0660, DD-891 through DD-896, TVG-0758 through TVG-0763,
+  CR-0963 through CR-0967, and marc's existing sparse builder, allocator, and
+  pool-local mutation components.
+- Known implementations intentionally not consulted: external sparse state
+  machines, tree fallback implementations, match finders, compressors, source
+  code, tests, benchmarks, tuning guides, patents, pseudocode, and optimization
+  descriptions.
+- Independent decisions: publish metadata as one result; make capacity rejection
+  terminal per frame; validate a whole promoted tree before releasing it; roll
+  back a reserved node after mutation failure; and keep all corruption paths
+  distinct from ordinary exhaustion.
+- Generated-code task description: connect the independently implemented sparse
+  builder, pool mutation, and complete-tree release through a bounded terminal
+  capacity-fallback state component without yet changing the production matcher.
+- Similarity review: transition ordering, state values, error separation,
+  rollback, and fixtures derive solely from marc's preceding design and private
+  components. No external implementation expression was consulted or introduced.
+- Validation: all eight focused state tests and all thirty-six related builder,
+  ring/pool mutation, and state tests pass under MSVC and ClangCL. All 3,103
+  registered tests pass under each compiler with a 600-second per-test limit;
+  both runs include all six Python tooling tests and
+  `marc_interoperability_schema_compatibility`. The public format, ABI, CLI,
+  metadata-array owner, frame reset, retirement, and production matcher are
+  unchanged.

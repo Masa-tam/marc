@@ -18828,3 +18828,22 @@ objects while retaining the ring workspace's established construction path.
 Defer allocator exhaustion,
 whole-bucket demotion, bucket modes, promotion state, matcher, profile, ABI,
 CLI, and format integration.
+
+## DD-896: Make pool exhaustion a terminal whole-bucket transition
+
+- Date: 2026-08-20
+- Status: accepted
+
+Map ordinary capacity shortage during promotion directly from `Chain` to
+`PoolRejectedChain` without allocating nodes. When an already promoted bucket
+cannot reserve a node for a new position, validate and release its complete
+tree before publishing null root, zero count, and the same terminal mode.
+Never expose or query a partial tree.
+
+Return all metadata as one transition result rather than mutating caller-owned
+bucket fields piecemeal. Reject promotion from the terminal state for the rest
+of the frame. Preserve hard build, mutation, tree, and allocator failures as
+errors rather than treating them as capacity fallback. Require the demotion
+release context to describe exactly the position set currently represented by
+the tree. Defer metadata-array ownership, reset, retirement, production matcher,
+profile, ABI, CLI, and format integration.
