@@ -10690,3 +10690,20 @@ change when a bucket does not fit, full rollback on injected build failure,
 complete commit on success, and no retry after `PoolRejectedChain`. Mutation
 fixtures must force full-pool insertion demotion and compare every resulting
 match and token directly with HashChain Exact.
+
+### TVG-0759
+
+Add nine focused tests for the first sparse foundation. Verify empty/sub-
+prefix layout, all eleven aligned segments on a small odd capacity, the exact
+four-MiB no-pool value 17,629,184, the one-node padded delta 24, the four-node
+delta 84, and the full-pool `21P` delta. Reject `P > N`, valid-but-insufficient
+aggregate limits, invalid limit configurations, invalid dictionary parameters,
+unrepresentable input extent on wide `size_t`, and frame limit excess. Accept
+the exact aggregate limit and reject the same bound reduced by one byte.
+
+Initialize capacities zero and three. Require ascending allocation, normal
+exhaustion, exact free/active accounting, LIFO reuse, sticky double-release and
+out-of-range errors, and rejection of short and misaligned workspaces without
+publishing an initialized pool. Run the nine tests under MSVC and ClangCL,
+then run every registered test under both compilers with a 600-second per-test
+limit and no exclusions, including interoperability schema compatibility.

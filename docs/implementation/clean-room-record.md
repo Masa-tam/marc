@@ -23337,3 +23337,28 @@ discarded and the reviewed seed retained.
   adds 21 bytes plus at most six total alignment bytes. The design keeps complete
   chain coverage in every state and exposes no format ID, ABI, CLI name, or
   production selector.
+
+## CR-0964: 2026-08-19 - Sparse workspace and node-pool foundation
+
+- Authoring method: added calculator and allocator boundary tests first,
+  observed the intended missing-source configure failure, implemented checked
+  layout and free-list state, then closed an empty-span pointer-arithmetic edge.
+- References used: IR-0656, DD-890 through DD-892, TVG-0757 through TVG-0759,
+  CR-0962 through CR-0963, and marc's existing checked workspace patterns.
+- Known implementations intentionally not consulted: external sparse match
+  finders, pools, allocators, compressors, source code, tests, benchmarks,
+  tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: accept explicit capacity; recalculate layout during
+  initialization; use zero height as free state; return normal exhaustion
+  without error; make misuse sticky; and keep matcher integration absent.
+- Generated-code task description: implement the Section 26 checked layout and
+  deterministic bounded allocator, beginning with red boundary tests and
+  validating both supported Windows compilers and the complete suite.
+- Similarity review: API, layout code, allocator transitions, and tests derive
+  solely from marc's preceding design and existing internal conventions. No
+  external implementation expression was consulted or introduced.
+- Validation: nine focused tests pass under MSVC and ClangCL. All 3,080
+  registered tests pass under each compiler with a 600-second per-test limit;
+  both runs include all six Python tooling tests and
+  `marc_interoperability_schema_compatibility`. The public format, ABI, CLI,
+  production selector, and existing match finders are unchanged.

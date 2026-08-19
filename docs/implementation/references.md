@@ -5891,3 +5891,12 @@ HashTree builder/query/mutation invariants, promotion transaction, checked
 workspace layout, and aggregate-memory audit. No external sparse match finder,
 node pool, allocator, compressor, source code, test, benchmark result, tuning
 guide, patent, pseudocode, or optimization description was consulted.
+
+### IR-0656
+
+The sparse workspace calculator and allocator use DD-890 through DD-892,
+TVG-0757 through TVG-0759, the repository-owned checked-math helpers,
+fixed-width position sentinels, HashTree workspace conventions, decoder-limit
+validation, and aligned raw-workspace initialization style. No external pool,
+allocator, sparse match finder, compressor, source code, test, benchmark,
+tuning guide, patent, pseudocode, or optimization description was consulted.

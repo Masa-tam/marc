@@ -732,3 +732,24 @@ one node、exact fit、one-byte-short、maximum pool、alignment、overflowお�
 componentとHashChain Exactをoracleにする。最後にpromotion/demotion state machineへ接続し、
 全容量でdirect token equality、fingerprint equality、bounded workspaceおよびdiagnostic
 accountingを検証する。公開profileまたはformat設計はSilesiaの複数pool容量行列の後とする。
+
+## 27. Sparse workspace calculator and allocator foundation
+
+最初のprivate componentは明示的な`pool_node_capacity`を受け、Section 26の全arrayを
+checked alignment、multiplication、additionで配置する。`P > N`を拒否し、input extentは
+`uint32` position sentinelと衝突してはならない。calculatorはworkspace単体だけでなく
+`input_size + workspace_size`も`max_internal_buffered_bytes`以下であることを要求する。
+backend profileが後から選ぶ`P`は、さらにtoken、entropyおよびencoded-frame領域を含む
+外側のaggregate計算を通過しなければならない。
+
+node-pool initializerはcalculatorを再実行し、shortまたはmisaligned workspaceを配列へ
+触れる前に拒否する。zero-capacityは空spanとして正常に初期化し、null data pointerへ
+offset arithmeticを行わない。allocationは初期状態でnode 0から昇順に返し、releaseした
+nodeはfree-list先頭から再利用する。全node使用後のallocationは`allocated = false`かつ
+errorなしで、free/active countおよびstateを変えない。
+
+範囲外release、double releaseおよびfree-list accounting不整合はsticky hard errorである。
+free nodeは`height == 0`、reserved/active nodeは非zeroとし、allocation時に全tree linkと
+position fieldを既知のsentinelへ初期化する。releaseは全fieldを無効化してからfree listへ
+戻す。このcomponentはまだbucket metadata、builder、query、mutation、matcherまたは公開
+profileへ接続しない。

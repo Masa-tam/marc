@@ -18754,3 +18754,22 @@ and validation. Maintain the chain in every state so zero capacity and every
 demotion remain Exact. Treat capacity and free-list order as private performance
 choices that cannot affect tokens or the stream. Implement and test the
 calculator and allocator before adapting tree components or the matcher.
+
+## DD-892: Land the sparse calculator and allocator without matcher coupling
+
+- Date: 2026-08-19
+- Status: accepted
+
+Add a private checked workspace calculator with explicit pool-node capacity and
+an independently initialized node-pool allocator. Recalculate requirements at
+initialization rather than trusting caller-provided offsets. Accept ordinary
+pool exhaustion without error or accounting changes. Use sticky errors for
+uninitialized use, out-of-range release, double release, corrupt free links,
+and impossible free/active counts.
+
+Treat zero capacity as a valid initialized allocator and avoid pointer
+arithmetic on an empty workspace. Initialize allocation links in ascending
+order and release to the head for deterministic LIFO reuse. Keep all bucket,
+tree-component, matcher, profile, stream, ABI, and selector integration out of
+this foundation commit so subsequent components can be tested against a stable
+bounded allocator contract.
