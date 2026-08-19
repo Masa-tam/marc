@@ -751,3 +751,28 @@ in class 16. A separate distance-131,072 vector must exercise the first new
 class, 17, and a maximum-distance vector must exercise class 20. Small vectors
 remain necessary for exact header and model serialization, but they cannot
 establish that the extended window is used.
+
+## Future windows above 1 MiB
+
+Dictionary variant 3 and context variant 2 are permanently bounded to the
+documented 1,048,576-byte window. A faster match finder, a larger configured
+limit, or a successful private benchmark must not widen either identity.
+The next candidate is a private four-MiB match-finder experiment described in
+`lzss-hash-tree-match-finder.md`; it has no decoder-visible identity and does
+not reserve a public algorithm or variant number.
+
+If that experiment passes its Exact, CPU, compression-opportunity, and memory
+gates, a public successor requires a new dictionary variant and a new context
+variant. A four-MiB ceiling would require distance classes 0 through 22, a
+23-symbol distance alphabet, and 4,566 flattened symbol slots:
+
+```text
+3*2 + 17*256 + 3*8 + 8*23 = 4,566
+```
+
+These values are design consequences, not current format reservations. Each
+entropy backend must receive its own checked descriptor, model, workspace,
+malformed-input, fuzz, benchmark, and interoperability admission. Crossed old
+and new dictionary/context identities must be rejected. The frame must also
+be large enough for a distance above one MiB to occur; widening only the
+window while retaining one-MiB frame resets would provide no such benefit.

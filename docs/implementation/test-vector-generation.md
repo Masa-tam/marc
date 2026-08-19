@@ -10580,3 +10580,25 @@ threshold and compare every report field with the maintenance-v2 evidence,
 excluding only timing and workspace. Require zero mismatches. Report exact
 workspace and same-run speed ratios separately. Treat cross-run timing as
 descriptive and do not use it to claim a fixed-width speedup.
+
+### TVG-0753
+
+Before adding a public window above one MiB, add a benchmark-only four-MiB
+configuration and keep all current profile selectors unchanged. Fix frame and
+window to 4,194,304 bytes, maximum match to 258, minimum match to five, and
+HashTree promotion threshold initially to 1024. Verify all local Silesia
+members before measurement and retain one MiB as the paired control.
+
+For every four-MiB member, run HashChain Exact and HashTree Exact over the same
+bytes. Reject a mismatch in token count or a deterministic token fingerprint;
+the fingerprint must cover token kind and every literal, length, and distance
+field in logical order. Continue to use small Exhaustive fixtures for an
+independent third oracle rather than attempting an unbounded Corpus run.
+
+Record per-member and byte-weighted aggregate elapsed time, throughput, token
+count, literal count, match count, matched bytes, workspace bytes, route
+counts, promotion counts, and the token fingerprint. Report the HashTree to
+HashChain same-run speed ratio and the four-MiB to one-MiB parse opportunity
+separately. Do not describe fewer tokens or more matched bytes as a final
+compressed-size gain. No interoperability vector, stream fixture, ABI test,
+or public CLI name is generated at this stage.

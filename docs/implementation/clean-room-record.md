@@ -23172,3 +23172,31 @@ discarded and the reviewed seed retained.
   1024, Silesia speed ratios are 0.36/0.60/1.20 with six one-MiB member wins;
   synthetic ratios are 0.36/0.48/0.77. Both result files remain ignored and
   local, and no network access occurred.
+
+## CR-0958: 2026-08-19 - Private four-MiB HashTree experiment design
+
+- Authoring method: audited the frozen one-MiB contextual identities, current
+  distance-class layout, fixed-width HashTree formula, frame and LZ limits,
+  and 128-MiB aggregate-memory policy before defining a benchmark-only gate.
+- References used: IR-0650, DD-881 through DD-886, TVG-0749 through TVG-0753,
+  CR-0953 through CR-0957, and marc's repository-owned design and evidence.
+- Known implementations intentionally not consulted: external match finders,
+  sparse-tree pools, compressors, source code, tests, formats, benchmark
+  results, tuning guidance, patents, pseudocode, and optimization descriptions.
+- Independent decisions: freeze existing public identities; make four MiB a
+  private frame/window experiment; calculate complete-tree and input memory
+  before admission; require token fingerprints in addition to counts; separate
+  parse opportunity from compressed size; and defer both a sparse pool and a
+  public successor until their independent gates are satisfied.
+- Generated-code task description: document the four-MiB private boundary,
+  exact oracle, Silesia evidence fields, memory arithmetic, format non-
+  reservation, successor context arithmetic, and conservative sparse-pool
+  fallback without implementing or exposing any of them.
+- Similarity review: all formulas, gates, names, and proposed boundaries derive
+  solely from marc-owned formats, match finders, limits, and measurements. No
+  external implementation expression was consulted or introduced.
+- Validation: the complete HashTree formula gives 105,447,424 workspace bytes
+  and 109,641,728 bytes including a four-MiB input, leaving 24,576,000 bytes
+  under 128 MiB. The prospective distance alphabet would contain 23 symbols
+  and the flattened context layout 4,566 symbols. Both remain design evidence,
+  not public format commitments.

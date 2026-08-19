@@ -18604,3 +18604,40 @@ Keep HashTree private: the two smaller windows remain slower and the one-MiB
 workspace remains 5.68 times HashChain. Do not change the production selector
 or expose a window above one MiB in this decision. A larger-window experiment
 requires a separate bounded-memory and format decision.
+
+## DD-886: Gate a four-MiB window as a private match-finder experiment
+
+- Date: 2026-08-19
+- Status: accepted
+
+Freeze dictionary variant 3, context variant 2, and every current one-MiB
+public profile. Do not reserve a successor ID yet. First admit a private
+benchmark configuration with a 4,194,304-byte frame and window, unchanged
+five-byte minimum and 258-byte maximum match, and the existing deterministic
+Exact selection rule. Search strategy and HashTree promotion threshold remain
+encoder implementation details and are not serialized.
+
+The complete fixed-width HashTree requires 105,447,424 bytes at four MiB.
+Together with its input it occupies 109,641,728 bytes, leaving 24,576,000
+bytes under the default 128-MiB internal-buffer limit. This is sufficient to
+measure the match finder in isolation but does not prove that a contextual
+encoder, its typed tokens, entropy workspace, payload, and frame structures
+fit concurrently. Public admission requires a separate checked aggregate-
+workspace proof.
+
+Use HashChain Exact as the same-size oracle and retain Exhaustive on bounded
+fixtures. Require complete token-sequence identity, same-run aggregate
+HashTree speed above HashChain, and a strict aggregate token-count reduction
+or matched-byte-coverage increase over the one-MiB control before designing a
+format successor. Treat the latter only as compression opportunity until an
+actual contextual backend is measured.
+
+If the complete tree cannot meet production memory bounds, investigate a
+separate bounded sparse node pool while retaining complete HashChain links.
+A promoted bucket must be represented completely; pool pressure
+deterministically demotes the whole bucket to its complete chain so match
+results cannot depend on pool capacity. Specify allocation, reverse mapping,
+promotion, retirement, demotion, validation, and workspace arithmetic in a
+later decision before implementation. A possible four-MiB format would need
+classes 0 through 22 and 4,566 context symbols, but those identities and values
+are not reserved by this decision.

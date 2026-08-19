@@ -528,3 +528,43 @@ Silesia threshold 1024の同一run内HashTree/HashChain速度比は0.36、0.60�
 主張せず、memory削減と論理同一性だけを採択する。小windowでの劣位と5.68倍の
 workspace負担が残るためHashTreeはprivateのままとし、production selectorを変更
 しない。1 MiB超windowも別のbounded designなしに公開しない。
+
+## 22. 4 MiB private実験の境界
+
+1 MiBより大きいwindowの最初の候補を4 MiBとする。ただしこれはstream format、
+public profile、C ABI、CLI archive名またはproduction selectorの予約ではない。
+既存のdictionary variant 3、context variant 2および1 MiB上限は凍結し、最初は
+match-finder benchmarkだけが使うprivateな実験値とする。frameとwindowをともに
+4,194,304 bytes、minimum matchを5、maximum matchを258に固定し、Exactの
+longest-matchと同長時nearest-distance規則を変えない。探索戦略とpromotion thresholdは
+引き続きstreamへ記録しない。
+
+固定幅HashTreeの64-bit host上の未padding式は`25 * N + 9 * B`である。
+`N = 4,194,304`、`B = 65,536`ではworkspaceは105,447,424 bytes、入力を
+同時保持すると109,641,728 bytesとなる。128 MiBの既定internal-buffer上限までの
+残りは24,576,000 bytesしかない。この計算はmatch-finder単体の実験を許すが、
+typed-token、entropy model、payload、frame viewその他の同時生存領域を必要とする
+public contextual encoderを許可しない。公開候補は全workspaceのchecked aggregateを
+別に証明しなければならない。
+
+最初の実験は検証済みSilesia 12 membersを独立に処理し、1 MiBをcontrol、4 MiBを
+candidateとする。4 MiB内ではHashChain Exactをoracle、HashTree threshold 1024を
+候補とし、両者のtoken列が完全一致しなければならない。token countだけでなく、
+決定的なtoken fingerprintまたはcanonical typed-token operation列の一致をrunnerで
+記録する。Exhaustiveは全Corpusには使用せず、小さい境界fixtureで両Exact実装の
+独立oracleとして維持する。1 MiBと4 MiBのtoken列はwindow差により変化してよい。
+
+次のformat設計へ進む条件は次の全てである。
+
+- 4 MiB HashTreeとHashChainのExact token列が全memberで一致する。
+- 同一runのbyte-weighted aggregateでHashTreeがHashChainより高速である。
+- 4 MiBが1 MiBより少ないaggregate token数または多いmatched-byte coverageを示す。
+- 結果を最終圧縮率とは呼ばず、より広いwindowの圧縮機会として報告する。
+- production encoder全体がconfigured memory limitを満たす設計を別途提示する。
+
+完全HashTreeが全体memory gateを満たさない場合の次候補は、完全なHashChainを全位置に
+保持し、昇格bucketだけをbounded node poolへ複製するsparse HashTreeである。pool不足時は
+bucket全体を決定的にchainへ降格し、部分treeだけを探索してはならない。これにより
+Exact結果をpool容量から独立させる。ring slotからpool nodeへの逆引き、atomic promotion、
+retirement、pool exhaustionおよびdemotionは後続decisionで定義する。本decisionでは
+node-pool表現もpublic IDも実装しない。

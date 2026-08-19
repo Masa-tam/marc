@@ -5836,3 +5836,13 @@ runners, verified local Corpus manifest, maintenance-v2 JSON evidence, and
 HashChain Exact baselines. No external match finder, compressor, source code,
 test, benchmark result, packed layout, tuning guide, patent, pseudocode, or
 optimization description was consulted.
+
+### IR-0650
+
+The private four-MiB HashTree experiment design uses DD-881 through DD-886,
+TVG-0749 through TVG-0753, the repository-owned fixed-width workspace formula,
+HashChain and Exhaustive Exact oracles, Silesia verifier and matrix runners,
+current 128-MiB aggregate-memory policy, and frozen one-MiB contextual-format
+design. No external match finder, sparse tree, compressor, source code, test,
+benchmark result, format extension, tuning guide, patent, pseudocode, or
+optimization description was consulted.
