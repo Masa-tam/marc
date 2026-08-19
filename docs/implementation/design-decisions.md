@@ -18847,3 +18847,21 @@ errors rather than treating them as capacity fallback. Require the demotion
 release context to describe exactly the position set currently represented by
 the tree. Defer metadata-array ownership, reset, retirement, production matcher,
 profile, ABI, CLI, and format integration.
+
+## DD-897: Give the complete sparse layout one frame-scoped owner
+
+- Date: 2026-08-20
+- Status: accepted
+
+Expose the already specified heads, complete-chain links, roots, modes, bucket
+node counts, and node pool through one private workspace object without changing
+the calculator or byte layout. Publish the object only after all size, alignment,
+and initialization checks succeed. Provide mutable and const metadata views for
+later state-machine integration.
+
+Define frame reset as a complete return to sentinel heads, zero links and counts,
+null roots, `Chain` modes, and an ascending free list with no active nodes. Permit
+reset only while the allocator remains valid. A sticky pool error requires full
+workspace reinitialization or disposal and must not be erased by reset. Defer
+retirement, metadata commit helpers, production matcher, profile, ABI, CLI, and
+format integration.

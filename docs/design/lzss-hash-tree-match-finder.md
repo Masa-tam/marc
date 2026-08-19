@@ -829,3 +829,21 @@ count、`PoolRejectedChain`を返す。release contextは新positionをchainへ�
 metadata、allocator stateは容量不足へ読み替えず、部分解放またはsilent demotionを行わない。
 この段階ではbucket metadata array、frame reset、retirement、production matcher、profile、
 ABI、CLIおよびstream formatへ接続しない。
+
+## 32. Sparse workspace ownership and frame reset
+
+Section 27のbyte layoutを変更せず、bucket heads、complete-chain links、tree roots、modes、
+bucket node countsおよびnode poolを一つのprivate workspace ownerとして公開する。initializer
+はcalculatorを再実行し、sizeとalignmentを全て検証してから各object lifetimeを開始する。
+失敗時はownerを未初期化のまま保ち、部分的なspanを公開しない。zero bucketおよびzero pool
+も空spanを持つ正常なinitialized workspaceである。
+
+frame resetは全headをposition sentinel、linkとcountをzero、rootをnull、modeを`Chain`へ
+戻し、node poolの全nodeをfree-list昇順初期状態へ戻す。これによりactive treeと
+`PoolRejectedChain`はいずれも次frameへ持ち越されない。reset前にpoolがsticky hard errorへ
+入っている場合はmetadataにもpoolにも触れず`InvalidState`を返し、callerはworkspace全体を
+再初期化または破棄する。resetによってallocator corruptionを隠してはならない。
+
+ownerはmutable viewとconst viewを明示し、callerが既存のbuilder、query、mutation、state
+componentへ必要なspanとpoolを渡せるようにする。この段階ではretirement、metadata commit
+helper、production matcher、profile、ABI、CLIおよびstream formatへ接続しない。

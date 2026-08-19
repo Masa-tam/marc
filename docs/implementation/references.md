@@ -5936,3 +5936,12 @@ validated whole-bucket release, pool-local mutation primitive, allocator
 accounting, and the three-state design in Section 26. No external sparse state
 machine, tree fallback, match finder, compressor, source code, test, benchmark,
 tuning guide, patent, pseudocode, or optimization description was consulted.
+
+### IR-0661
+
+The sparse workspace owner and frame reset use DD-890 through DD-897,
+TVG-0757 through TVG-0764, the repository-owned checked layout, node-pool
+sentinels and accounting, three-state bucket design, and raw-workspace lifetime
+conventions. No external workspace owner, allocator reset, sparse match finder,
+compressor, source code, test, benchmark, tuning guide, patent, pseudocode, or
+optimization description was consulted.

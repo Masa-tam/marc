@@ -10779,3 +10779,21 @@ and require pre-release validation failure with no partial node release. Run all
 eight focused state tests under MSVC and ClangCL, then run every registered test
 under both compilers with a 600-second per-test limit and no exclusions,
 including interoperability schema compatibility.
+
+### TVG-0764
+
+Initialize the complete sparse workspace for an eight-byte input and three-node
+pool. Require every span length to match the checked layout and every head,
+link, root, mode, count, and allocator value to equal its canonical initial
+state. Dirty all metadata classes, reserve two nodes, reset the frame, and
+require canonical metadata, zero active nodes, the complete free count, and
+node zero as the next allocation.
+
+Put the pool into sticky failure, then require frame reset to reject without
+changing bucket mode or clearing the allocator error. Reject short and
+misaligned storage without publishing an initialized workspace. Accept and
+reset the zero-byte layout as a normal initialized workspace. Run these five
+owner fixtures together with all nine allocator/layout fixtures under MSVC and
+ClangCL, then run every registered test under both compilers with a 600-second
+per-test limit and no exclusions, including interoperability schema
+compatibility.

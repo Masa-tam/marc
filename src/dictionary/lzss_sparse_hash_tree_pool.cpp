@@ -126,6 +126,25 @@ void LzssSparseHashTreeNodePool::mark_error(
     state_valid_ = false;
 }
 
+void LzssSparseHashTreeNodePool::reset_valid_storage() noexcept {
+    for (std::size_t index = 0; index < left_.size(); ++index) {
+        left_[index] = index + 1U < left_.size()
+            ? static_cast<std::uint32_t>(index + 1U)
+            : lzss_hash_tree_null_node;
+        right_[index] = lzss_hash_tree_null_node;
+        parent_[index] = lzss_hash_tree_null_node;
+        height_[index] = 0;
+        position_[index] = lzss_hash_tree_no_stored_position;
+        subtree_maximum_position_[index] =
+            lzss_hash_tree_no_stored_position;
+    }
+    free_head_ = left_.empty() ? lzss_hash_tree_null_node : UINT32_C(0);
+    free_count_ = left_.size();
+    active_count_ = 0;
+    last_error_ = LzssSparseHashTreeError::none;
+    state_valid_ = true;
+}
+
 LzssSparseHashTreeNodeAllocation
 LzssSparseHashTreeNodePool::allocate() noexcept {
     if (!initialized_) {
@@ -256,6 +275,80 @@ LzssSparseHashTreeError initialize_lzss_sparse_hash_tree_node_pool(
     initialized.initialized_ = true;
     initialized.state_valid_ = true;
     pool = initialized;
+    return LzssSparseHashTreeError::none;
+}
+
+LzssSparseHashTreeError LzssSparseHashTreeWorkspace::reset_frame() noexcept {
+    if (!initialized_ || !node_pool_.initialized()
+        || !node_pool_.state_valid()) {
+        return LzssSparseHashTreeError::invalid_state;
+    }
+    std::fill(heads_.begin(), heads_.end(),
+              lzss_hash_tree_no_stored_position);
+    std::fill(links_.begin(), links_.end(), UINT32_C(0));
+    std::fill(roots_.begin(), roots_.end(), lzss_hash_tree_null_node);
+    std::fill(modes_.begin(), modes_.end(),
+              LzssSparseHashTreeBucketMode::chain);
+    std::fill(bucket_node_counts_.begin(), bucket_node_counts_.end(),
+              UINT32_C(0));
+    node_pool_.reset_valid_storage();
+    return LzssSparseHashTreeError::none;
+}
+
+LzssSparseHashTreeError initialize_lzss_sparse_hash_tree_workspace(
+    const std::size_t input_size, const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::size_t pool_node_capacity,
+    const std::span<std::byte> storage,
+    LzssSparseHashTreeWorkspace& workspace) noexcept {
+    const auto required = calculate_lzss_sparse_hash_tree_workspace(
+        input_size, parameters, limits, pool_node_capacity);
+    if (required.error != LzssSparseHashTreeError::none) {
+        return required.error;
+    }
+    if (storage.size() < required.workspace_size) {
+        return LzssSparseHashTreeError::workspace_too_small;
+    }
+    const auto active_storage = storage.first(required.workspace_size);
+    if (!active_storage.empty()
+        && reinterpret_cast<std::uintptr_t>(active_storage.data())
+               % required.workspace_alignment != 0) {
+        return LzssSparseHashTreeError::misaligned_workspace;
+    }
+
+    LzssSparseHashTreeWorkspace initialized{};
+    const auto pool_error = initialize_lzss_sparse_hash_tree_node_pool(
+        input_size, parameters, limits, pool_node_capacity,
+        active_storage, initialized.node_pool_);
+    if (pool_error != LzssSparseHashTreeError::none) return pool_error;
+
+    initialized.heads_ = array_at<LzssHashTreeStoredPosition>(
+        active_storage, required.head_offset, required.bucket_count);
+    initialized.links_ = array_at<std::uint32_t>(
+        active_storage, required.link_offset, required.chain_node_count);
+    initialized.roots_ = array_at<std::uint32_t>(
+        active_storage, required.root_offset, required.bucket_count);
+    initialized.modes_ = array_at<LzssSparseHashTreeBucketMode>(
+        active_storage, required.mode_offset, required.bucket_count);
+    initialized.bucket_node_counts_ = array_at<std::uint32_t>(
+        active_storage, required.bucket_node_count_offset,
+        required.bucket_count);
+    for (std::size_t index = 0; index < required.bucket_count; ++index) {
+        std::construct_at(initialized.heads_.data() + index,
+                          lzss_hash_tree_no_stored_position);
+        std::construct_at(initialized.roots_.data() + index,
+                          lzss_hash_tree_null_node);
+        std::construct_at(initialized.modes_.data() + index,
+                          LzssSparseHashTreeBucketMode::chain);
+        std::construct_at(initialized.bucket_node_counts_.data() + index,
+                          UINT32_C(0));
+    }
+    for (std::size_t index = 0;
+         index < required.chain_node_count; ++index) {
+        std::construct_at(initialized.links_.data() + index, UINT32_C(0));
+    }
+    initialized.initialized_ = true;
+    workspace = initialized;
     return LzssSparseHashTreeError::none;
 }
 

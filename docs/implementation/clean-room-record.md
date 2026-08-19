@@ -23472,3 +23472,31 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`. The public format, ABI, CLI,
   metadata-array owner, frame reset, retirement, and production matcher are
   unchanged.
+
+## CR-0969: 2026-08-20 - Sparse workspace ownership and frame reset
+
+- Authoring method: wrapped the already allocated metadata segments and node
+  pool in one private owner, then fixed initial publication, complete reset, and
+  sticky-error refusal in five direct fixtures.
+- References used: IR-0661, DD-890 through DD-897, TVG-0757 through TVG-0764,
+  CR-0962 through CR-0968, and marc's existing sparse layout and allocator tests.
+- Known implementations intentionally not consulted: external workspace owners,
+  allocator reset implementations, sparse match finders, compressors, source
+  code, tests, benchmarks, tuning guides, patents, pseudocode, and optimization
+  descriptions.
+- Independent decisions: retain the exact byte layout; publish all metadata
+  spans atomically; restore deterministic ascending allocation on frame reset;
+  expose const and mutable views; and refuse to hide sticky pool failure.
+- Generated-code task description: turn the existing sparse workspace layout
+  into a frame-scoped private owner with bounded initialization and deterministic
+  reset, without connecting retirement or the production matcher.
+- Similarity review: ownership boundaries, sentinel initialization, reset order,
+  failure policy, and fixtures derive solely from marc's preceding design and
+  private allocator. No external implementation expression was consulted or
+  introduced.
+- Validation: all five workspace-owner and nine allocator/layout tests pass
+  under MSVC and ClangCL. All 3,108 registered tests pass under each compiler
+  with a 600-second per-test limit; both runs include all six Python tooling
+  tests and `marc_interoperability_schema_compatibility`. The workspace byte
+  count, public format, ABI, CLI, retirement, metadata commit, and production
+  matcher are unchanged.
