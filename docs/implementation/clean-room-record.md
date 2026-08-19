@@ -23200,3 +23200,33 @@ discarded and the reviewed seed retained.
   under 128 MiB. The prospective distance alphabet would contain 23 symbols
   and the flattened context layout 4,566 symbols. Both remain design evidence,
   not public format commitments.
+
+## CR-0959: 2026-08-19 - Match-finder canonical token fingerprint
+
+- Authoring method: made three benchmark smoke tests require the new summary
+  and fingerprint first, observed their intended missing-field failures, then
+  added canonical record hashing to the untimed parse path only.
+- References used: IR-0651, DD-887, TVG-0754, CR-0958, marc's existing SHA-256
+  implementation, checked arithmetic, benchmark, and CMake smoke tests.
+- Known implementations intentionally not consulted: external benchmark
+  fingerprint formats, match finders, compressors, source code, tests,
+  schemas, or optimization descriptions.
+- Independent decisions: use fixed nine-byte records; include frame size to
+  retain reset boundaries; use explicit little-endian fields and zero fill;
+  count token kinds and matched bytes; exclude hashing from timing; and keep
+  the digest outside every public format and API.
+- Generated-code task description: make report tests fail without a complete
+  summary, add an independently enumerated all-Literal hand vector, hash every
+  logical token in the verification pass, enforce reconstruction invariants,
+  and compare Exact strategy fingerprints.
+- Similarity review: the record grammar and integration are newly specified
+  from marc's token fields and benchmark requirements. The hash primitive is
+  marc's already-reviewed implementation. No external implementation
+  expression was consulted or introduced.
+- Validation: the three benchmark smoke tests pass under both compilers after
+  the intended red failures. The eight-Literal hand vector agrees with an
+  independent platform SHA-256 calculation, and empty input reports the
+  standard empty digest. All 3,070 registered tests pass under MSVC in 169.20
+  seconds and ClangCL in 183.20 seconds with a 600-second per-test limit; both
+  runs include all five Python tooling tests and
+  `marc_interoperability_schema_compatibility`.

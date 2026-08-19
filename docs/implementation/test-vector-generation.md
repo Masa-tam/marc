@@ -10602,3 +10602,21 @@ HashChain same-run speed ratio and the four-MiB to one-MiB parse opportunity
 separately. Do not describe fewer tokens or more matched bytes as a final
 compressed-size gain. No interoperability vector, stream fixture, ABI test,
 or public CLI name is generated at this stage.
+
+### TVG-0754
+
+First require frame, synthetic, and HashTree benchmark smoke tests to reject
+reports without literal count, match count, matched bytes, and a 64-digit
+lowercase SHA-256 token fingerprint. Require HashTree and HashChain reports
+over the same input, frame, and window to have identical token counts and
+fingerprints. Empty input must report all counters as zero and the standard
+empty SHA-256 value.
+
+Use an independently enumerated hand vector: one eight-byte frame containing
+the periodic bytes 0 through 7 produces eight Literals, no Matches, no matched
+bytes, and fingerprint
+`01bb0535b2b2d15fdd53c366283247566c1bd9411af6b5eddd84f6d838f9aeb9`.
+The record sequence consists of the frame marker and size followed by eight
+Literal records; do not obtain the expected digest from the benchmark under
+test. After implementation, run all three benchmark smoke tests and the full
+MSVC and ClangCL suites with the 600-second per-test limit.

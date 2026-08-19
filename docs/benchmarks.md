@@ -1624,6 +1624,22 @@ between separate runs disagree between synthetic and Silesia, so no speed
 improvement is attributed to narrower storage. This evidence establishes the
 memory reduction and logical identity only; HashTree remains private.
 
+### Exact token fingerprints
+
+The match-finder benchmark's untimed verification pass reports literal count,
+match count, matched bytes, and `token_fingerprint_sha256`. The digest covers
+a nine-byte frame record before every non-empty frame and one nine-byte record
+per logical token, using the canonical layout in
+[`docs/design/lzss-hash-tree-match-finder.md`](design/lzss-hash-tree-match-finder.md).
+It is excluded from timed passes. Empty input reports the SHA-256 digest of an
+empty message.
+
+The counters must reconstruct both token count and input extent. Exact
+strategy comparisons require both token count and fingerprint equality; the
+digest strengthens benchmark evidence but does not replace direct token-array
+equality in bounded component tests. It is benchmark metadata only and is not
+part of a marc stream or public hash contract.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

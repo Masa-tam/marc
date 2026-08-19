@@ -30,6 +30,21 @@ foreach(case_name IN ITEMS
         endif()
     endforeach()
 
+    foreach(summary_key IN ITEMS
+            token_count literal_count match_count matched_bytes)
+        string(REGEX MATCH "${summary_key}=([0-9]+)" summary_match "${report}")
+        if(summary_match STREQUAL "")
+            message(FATAL_ERROR
+                "${case_name} missing token summary: ${summary_key}")
+        endif()
+    endforeach()
+    string(REGEX MATCH "token_fingerprint_sha256=([0-9a-f]+)"
+        fingerprint_match "${report}")
+    string(LENGTH "${CMAKE_MATCH_1}" fingerprint_length)
+    if(fingerprint_match STREQUAL "" OR NOT fingerprint_length EQUAL 64)
+        message(FATAL_ERROR "${case_name} invalid token fingerprint")
+    endif()
+
     string(REGEX MATCH "hash_chain_candidates=([0-9]+)" ignored "${report}")
     set(candidate_count "${CMAKE_MATCH_1}")
     string(REGEX MATCH
@@ -70,6 +85,29 @@ foreach(case_name IN ITEMS
             message(FATAL_ERROR
                 "pseudorandom control classification changed: ${report}")
         endif()
+    endif()
+endforeach()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --synthetic hash-chain-exact
+        periodic 8 1 8 8
+    RESULT_VARIABLE fingerprint_result
+    OUTPUT_VARIABLE fingerprint_report
+    ERROR_VARIABLE fingerprint_error)
+if(NOT fingerprint_result EQUAL 0)
+    message(FATAL_ERROR
+        "hand fingerprint vector failed: ${fingerprint_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "token_count=8"
+        "literal_count=8"
+        "match_count=0"
+        "matched_bytes=0"
+        "token_fingerprint_sha256=01bb0535b2b2d15fdd53c366283247566c1bd9411af6b5eddd84f6d838f9aeb9")
+    string(FIND "${fingerprint_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR
+            "hand fingerprint vector missing: ${expected_line}")
     endif()
 endforeach()
 

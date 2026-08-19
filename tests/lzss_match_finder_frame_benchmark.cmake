@@ -33,7 +33,8 @@ foreach(expected_line IN ITEMS
 endforeach()
 
 foreach(positive_key IN ITEMS
-        token_count hash_workspace_bytes hash_chain_queries
+        token_count literal_count match_count matched_bytes
+        hash_workspace_bytes hash_chain_queries
         hash_chain_candidates hash_chain_byte_comparisons
         hash_chain_prefix_matches hash_chain_prefix_mismatches
         hash_chain_extension_byte_comparisons
@@ -43,6 +44,16 @@ foreach(positive_key IN ITEMS
         message(FATAL_ERROR "missing positive ${positive_key}")
     endif()
 endforeach()
+
+string(REGEX MATCH "token_fingerprint_sha256=([0-9a-f]+)"
+    fingerprint_match "${report}")
+if(fingerprint_match STREQUAL "")
+    message(FATAL_ERROR "missing token fingerprint")
+endif()
+string(LENGTH "${CMAKE_MATCH_1}" fingerprint_length)
+if(NOT fingerprint_length EQUAL 64)
+    message(FATAL_ERROR "invalid token fingerprint")
+endif()
 
 string(REGEX MATCH "hash_chain_candidates=([0-9]+)" ignored "${report}")
 set(candidate_count "${CMAKE_MATCH_1}")
@@ -129,6 +140,10 @@ foreach(empty_line IN ITEMS
         "input_bytes=0"
         "frame_count=0"
         "token_count=0"
+        "literal_count=0"
+        "match_count=0"
+        "matched_bytes=0"
+        "token_fingerprint_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         "hash_chain_queries=0"
         "hash_chain_prefix_matches=0"
         "hash_chain_prefix_mismatches=0"

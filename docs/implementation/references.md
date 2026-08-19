@@ -5846,3 +5846,11 @@ current 128-MiB aggregate-memory policy, and frozen one-MiB contextual-format
 design. No external match finder, sparse tree, compressor, source code, test,
 benchmark result, format extension, tuning guide, patent, pseudocode, or
 optimization description was consulted.
+
+### IR-0651
+
+The match-finder token fingerprint uses DD-887, TVG-0754, marc's existing
+SHA-256 implementation and checked arithmetic, the private benchmark parser,
+and its CMake smoke tests. No external benchmark fingerprint format, match
+finder, compressor, source code, test vector, schema, or optimization
+description was consulted.

@@ -26,6 +26,7 @@ function(require_hash_tree_report report expected_mode expected_case threshold)
     endforeach()
     foreach(key IN ITEMS
             input_bytes frame_bytes window_bytes frame_count token_count
+            literal_count match_count matched_bytes
             iterations hash_tree_workspace_bytes hash_tree_queries
             hash_tree_chain_queries hash_tree_chain_candidates
             hash_tree_trigger_queries hash_tree_tree_queries
@@ -47,6 +48,15 @@ function(require_hash_tree_report report expected_mode expected_case threshold)
             hash_tree_max_promoted_buckets hash_tree_max_promoted_nodes)
         extract_integer("${report}" "${key}" value)
     endforeach()
+    string(REGEX MATCH "token_fingerprint_sha256=([0-9a-f]+)"
+        fingerprint_match "${report}")
+    if(fingerprint_match STREQUAL "")
+        message(FATAL_ERROR "missing token fingerprint: ${report}")
+    endif()
+    string(LENGTH "${CMAKE_MATCH_1}" fingerprint_length)
+    if(NOT fingerprint_length EQUAL 64)
+        message(FATAL_ERROR "invalid token fingerprint: ${report}")
+    endif()
     foreach(histogram IN ITEMS
             hash_tree_chain_query_depth_histogram
             hash_tree_tree_query_depth_histogram)
@@ -85,7 +95,14 @@ if(NOT chain_result EQUAL 0)
 endif()
 extract_integer("${tree_report}" token_count tree_tokens)
 extract_integer("${chain_report}" token_count chain_tokens)
-if(NOT tree_tokens EQUAL chain_tokens)
+string(REGEX MATCH "token_fingerprint_sha256=([0-9a-f]+)"
+    ignored "${tree_report}")
+set(tree_fingerprint "${CMAKE_MATCH_1}")
+string(REGEX MATCH "token_fingerprint_sha256=([0-9a-f]+)"
+    ignored "${chain_report}")
+set(chain_fingerprint "${CMAKE_MATCH_1}")
+if(NOT tree_tokens EQUAL chain_tokens
+        OR NOT tree_fingerprint STREQUAL chain_fingerprint)
     message(FATAL_ERROR "frame token mismatch")
 endif()
 
@@ -115,7 +132,14 @@ foreach(case_name IN ITEMS
             endif()
             extract_integer("${tree_report}" token_count tree_tokens)
             extract_integer("${chain_report}" token_count chain_tokens)
-            if(NOT tree_tokens EQUAL chain_tokens)
+            string(REGEX MATCH "token_fingerprint_sha256=([0-9a-f]+)"
+                ignored "${tree_report}")
+            set(tree_fingerprint "${CMAKE_MATCH_1}")
+            string(REGEX MATCH "token_fingerprint_sha256=([0-9a-f]+)"
+                ignored "${chain_report}")
+            set(chain_fingerprint "${CMAKE_MATCH_1}")
+            if(NOT tree_tokens EQUAL chain_tokens
+                    OR NOT tree_fingerprint STREQUAL chain_fingerprint)
                 message(FATAL_ERROR "${case_name} token mismatch")
             endif()
         endif()
@@ -134,6 +158,8 @@ if(NOT empty_result EQUAL 0)
 endif()
 foreach(expected_line IN ITEMS
         "input_bytes=0" "frame_count=0" "token_count=0"
+        "literal_count=0" "match_count=0" "matched_bytes=0"
+        "token_fingerprint_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         "hash_tree_queries=0" "hash_tree_promotions=0"
         "hash_tree_chain_query_depth_histogram=0"
         "hash_tree_tree_query_depth_histogram=0")

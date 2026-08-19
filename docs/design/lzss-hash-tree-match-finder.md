@@ -568,3 +568,21 @@ bucket全体を決定的にchainへ降格し、部分treeだけを探索して�
 Exact結果をpool容量から独立させる。ring slotからpool nodeへの逆引き、atomic promotion、
 retirement、pool exhaustionおよびdemotionは後続decisionで定義する。本decisionでは
 node-pool表現もpublic IDも実装しない。
+
+## 23. benchmark token fingerprint
+
+4 MiB実験でtoken countだけの一致をExact証拠にしないため、benchmarkのuntimed
+verification passはSHA-256 fingerprintを計算する。計測passでは計算せず、探索時間へ
+hash costを混入させない。入力は次の9-byte canonical recordsの連結である。
+
+```text
+frame:   f0 | frame raw size uint64 little-endian
+literal: 00 | literal byte | seven zero bytes
+match:   01 | length uint32 little-endian | distance uint32 little-endian
+```
+
+各non-empty frameの先頭にframe recordを一つ置く。empty inputはrecordを持たず、
+fingerprintはempty SHA-256となる。併せてliteral count、match countおよびmatched bytesを
+記録し、`literal_count + match_count == token_count`かつ
+`literal_count + matched_bytes == input_bytes`をuntimed passで検証する。この表現は
+benchmark evidenceだけに使用し、stream format、hash descriptorまたはpublic APIではない。

@@ -5,6 +5,7 @@
 #include "dictionary/lzss_match_finder.hpp"
 #include "dictionary/lzss_typed_encoder.hpp"
 #include "core/checked_math.hpp"
+#include "core/sha256.hpp"
 #include "frame/lzss_typed_context_frame_encoder.hpp"
 #include "frame/lzss_contextual_rans_frame_encoder.hpp"
 #include "frame/lzss_contextual_tans_frame_encoder.hpp"
@@ -130,16 +131,74 @@ template <typename Function>
         / (1024.0 * 1024.0) / seconds;
 }
 
+struct TokenSummary {
+    std::uint64_t literal_count{};
+    std::uint64_t match_count{};
+    std::uint64_t matched_bytes{};
+    marc::core::Sha256 fingerprint{};
+    bool valid{true};
+
+    void begin_frame(const std::size_t frame_size) noexcept {
+        std::array<std::byte, 9> record{};
+        record[0] = std::byte{0xf0};
+        auto value = static_cast<std::uint64_t>(frame_size);
+        for (std::size_t index = 0; index < 8; ++index) {
+            record[index + 1] = static_cast<std::byte>(value & 0xffU);
+            value >>= 8U;
+        }
+        valid = valid && fingerprint.update(record);
+    }
+
+    void add_literal(const std::byte literal) noexcept {
+        std::array<std::byte, 9> record{};
+        record[0] = std::byte{0};
+        record[1] = literal;
+        valid = valid
+            && marc::core::checked_add(
+                literal_count, UINT64_C(1), literal_count)
+            && fingerprint.update(record);
+    }
+
+    void add_match(const LzssMatch match) noexcept {
+        std::array<std::byte, 9> record{};
+        record[0] = std::byte{1};
+        auto length = match.length;
+        auto distance = match.distance;
+        for (std::size_t index = 0; index < 4; ++index) {
+            record[index + 1] = static_cast<std::byte>(length & 0xffU);
+            record[index + 5] = static_cast<std::byte>(distance & 0xffU);
+            length >>= 8U;
+            distance >>= 8U;
+        }
+        valid = valid
+            && marc::core::checked_add(
+                match_count, UINT64_C(1), match_count)
+            && marc::core::checked_add(
+                matched_bytes, static_cast<std::uint64_t>(match.length),
+                matched_bytes)
+            && fingerprint.update(record);
+    }
+};
+
 template <LzssMatchFinder Finder>
 [[nodiscard]] std::size_t parse_with_finder(
-    const std::span<const std::byte> input, Finder& finder) noexcept {
+    const std::span<const std::byte> input, Finder& finder,
+    TokenSummary* const summary = nullptr) noexcept {
     std::size_t position{};
     std::size_t token_count{};
     while (position < input.size()) {
         const auto match = finder.find_match(position);
-        const auto advance = match.length != 0
-                && lzss_match_is_beneficial(match)
+        const auto use_match = match.length != 0
+            && lzss_match_is_beneficial(match);
+        const auto advance = use_match
             ? static_cast<std::size_t>(match.length) : 1U;
+        if (summary != nullptr) {
+            if (use_match) {
+                summary->add_match(match);
+            } else {
+                summary->add_literal(input[position]);
+            }
+        }
         finder.advance(position, position + advance);
         position += advance;
         ++token_count;
@@ -159,6 +218,7 @@ struct FrameRunResult {
     std::uint64_t input_bytes{};
     std::uint64_t frame_count{};
     std::uint64_t token_count{};
+    TokenSummary token_summary{};
     LzssMatchFinderStatistics statistics{};
     double seconds{};
 };
@@ -166,6 +226,21 @@ struct FrameRunResult {
 [[nodiscard]] bool add_count(
     std::uint64_t& total, const std::uint64_t value) noexcept {
     return marc::core::checked_add(total, value, total);
+}
+
+[[nodiscard]] bool valid_token_summary(
+    const FrameRunResult& result) noexcept {
+    std::uint64_t tokens{};
+    std::uint64_t reconstructed_bytes{};
+    return result.token_summary.valid
+        && add_count(tokens, result.token_summary.literal_count)
+        && add_count(tokens, result.token_summary.match_count)
+        && tokens == result.token_count
+        && add_count(
+            reconstructed_bytes, result.token_summary.literal_count)
+        && add_count(
+            reconstructed_bytes, result.token_summary.matched_bytes)
+        && reconstructed_bytes == result.input_bytes;
 }
 
 [[nodiscard]] bool add_statistics(
@@ -565,6 +640,9 @@ void fill_synthetic_input(
     const bool measure, const std::uint64_t promotion_threshold,
     FrameRunResult& result) noexcept {
     LzssMatchFinderStatistics frame_statistics{};
+    auto* const token_summary = collect_statistics
+        ? &result.token_summary : nullptr;
+    if (token_summary != nullptr) token_summary->begin_frame(frame.size());
     const auto begin = std::chrono::steady_clock::now();
     std::size_t frame_tokens{};
     if (strategy == BenchmarkStrategy::hash_chain_exact) {
@@ -575,7 +653,7 @@ void fill_synthetic_input(
             != LzssHashChainError::none) {
             return false;
         }
-        frame_tokens = parse_with_finder(frame, finder);
+        frame_tokens = parse_with_finder(frame, finder, token_summary);
     } else if (strategy == BenchmarkStrategy::binary_tree_exact) {
         LzssBinaryTreeMatchFinder finder{};
         if (initialize_lzss_binary_tree_match_finder(
@@ -584,7 +662,7 @@ void fill_synthetic_input(
             != LzssBinaryTreeError::none) {
             return false;
         }
-        frame_tokens = parse_with_finder(frame, finder);
+        frame_tokens = parse_with_finder(frame, finder, token_summary);
     } else {
         LzssHashTreeMatchFinder finder{};
         if (initialize_lzss_hash_tree_match_finder(
@@ -594,18 +672,37 @@ void fill_synthetic_input(
             != LzssHashTreeError::none) {
             return false;
         }
-        frame_tokens = parse_with_finder(frame, finder);
+        frame_tokens = parse_with_finder(frame, finder, token_summary);
         if (!finder.state_valid()) return false;
     }
     const auto end = std::chrono::steady_clock::now();
     if (measure) {
         result.seconds += std::chrono::duration<double>(end - begin).count();
     }
-    return add_count(result.input_bytes, frame.size())
+    return (token_summary == nullptr || token_summary->valid)
+        && add_count(result.input_bytes, frame.size())
         && add_count(result.frame_count, 1)
         && add_count(result.token_count, frame_tokens)
         && (!collect_statistics
             || add_statistics(result.statistics, frame_statistics));
+}
+
+[[nodiscard]] std::array<char, marc::core::sha256_digest_size * 2 + 1>
+token_fingerprint_hex(const TokenSummary& summary) noexcept {
+    std::array<std::byte, marc::core::sha256_digest_size> digest{};
+    auto snapshot = summary.fingerprint;
+    const auto finalized = snapshot.finalize(digest);
+    constexpr std::array<char, 16> hex{
+        '0', '1', '2', '3', '4', '5', '6', '7',
+        '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    std::array<char, marc::core::sha256_digest_size * 2 + 1> result{};
+    if (!finalized) return result;
+    for (std::size_t index = 0; index < digest.size(); ++index) {
+        const auto value = std::to_integer<unsigned>(digest[index]);
+        result[index * 2] = hex[value >> 4U];
+        result[index * 2 + 1] = hex[value & 0x0fU];
+    }
+    return result;
 }
 
 [[nodiscard]] bool process_frames(
@@ -675,6 +772,7 @@ void print_frame_report(
     const std::size_t iterations, const std::size_t workspace_size,
     const std::uint64_t promotion_threshold,
     const FrameRunResult& verified, const double measured_seconds) {
+    const auto fingerprint = token_fingerprint_hex(verified.token_summary);
     std::cout << std::fixed << std::setprecision(6)
               << "mode=" << mode << '\n'
               << "strategy=" << strategy_name(strategy) << '\n';
@@ -686,6 +784,12 @@ void print_frame_report(
               << "window_bytes=" << window_size << '\n'
               << "frame_count=" << verified.frame_count << '\n'
               << "token_count=" << verified.token_count << '\n'
+              << "literal_count=" << verified.token_summary.literal_count
+              << '\n'
+              << "match_count=" << verified.token_summary.match_count << '\n'
+              << "matched_bytes=" << verified.token_summary.matched_bytes
+              << '\n'
+              << "token_fingerprint_sha256=" << fingerprint.data() << '\n'
               << "iterations=" << iterations << '\n';
     if (strategy == BenchmarkStrategy::hash_chain_exact) {
         std::cout << "hash_workspace_bytes=" << workspace_size << '\n'
@@ -923,6 +1027,7 @@ void print_usage() {
             workspace, true, false, promotion_threshold, verified)
         || verified.input_bytes != file_size
         || verified.statistics.query_count != verified.token_count
+        || !valid_token_summary(verified)
         || !valid_statistics(strategy, verified.statistics)) {
         std::cerr << "match-finder frame verification failed\n";
         return 1;
@@ -1018,6 +1123,7 @@ void print_usage() {
             workspace, true, false, promotion_threshold, verified)
         || verified.input_bytes != input_size
         || verified.statistics.query_count != verified.token_count
+        || !valid_token_summary(verified)
         || !valid_statistics(strategy, verified.statistics)) {
         std::cerr << "synthetic match-finder verification failed\n";
         return 1;

@@ -18641,3 +18641,23 @@ promotion, retirement, demotion, validation, and workspace arithmetic in a
 later decision before implementation. A possible four-MiB format would need
 classes 0 through 22 and 4,566 context symbols, but those identities and values
 are not reserved by this decision.
+
+## DD-887: Fingerprint complete benchmark token sequences outside timing
+
+- Date: 2026-08-19
+- Status: accepted
+
+Strengthen private match-finder evidence beyond token count with a SHA-256
+fingerprint generated only during the untimed verification pass. Prefix every
+non-empty frame by `f0` and its eight-byte little-endian raw size. Represent a
+Literal as `00`, the literal byte, and seven zero bytes. Represent a Match as
+`01`, four-byte little-endian length, and four-byte little-endian distance.
+Hash the concatenated nine-byte records in logical order. Empty input hashes
+the empty message.
+
+Report literal count, match count, and matched bytes with the digest. Reject a
+verification pass unless literal plus match count equals token count and
+literal count plus matched bytes equals input size. Timed passes retain only
+the prior token count check, so hashing does not alter measured match-finder
+throughput. This fingerprint is benchmark metadata, not a stream field,
+public hash target, or substitute for direct bounded token-array tests.
