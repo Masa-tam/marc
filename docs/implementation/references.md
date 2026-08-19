@@ -5954,3 +5954,12 @@ allocator reserved/release contract, complete-chain ring overwrite ordering,
 and sparse three-state model. No external tree-retirement implementation,
 sparse match finder, compressor, source code, test, benchmark, tuning guide,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0663
+
+The sparse metadata commit and position controller use DD-891 through DD-899,
+TVG-0758 through TVG-0766, the repository-owned complete-chain insertion order,
+workspace metadata views, state transitions, retirement contract, and checked
+fixed-width counts. No external sparse controller, concurrent commit scheme,
+match finder, compressor, source code, test, benchmark, tuning guide, patent,
+pseudocode, or optimization description was consulted.

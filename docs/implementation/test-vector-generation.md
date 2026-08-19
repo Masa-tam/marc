@@ -10814,3 +10814,21 @@ before detach. Run these six new fixtures with all eight prior state fixtures
 under MSVC and ClangCL, then run the related builder and mutation suites and
 every registered test under both compilers with a 600-second per-test limit and
 no exclusions, including interoperability schema compatibility.
+
+### TVG-0766
+
+Initialize the real multi-bucket sparse workspace and insert equal-prefix
+positions 0, 5, and 10 through the controller. Require deterministic complete-
+chain head and distances at the calculated hash bucket. Promote that bucket,
+then insert position 20: require position 0 retirement, same-bucket tree
+reinsertion, three active nodes, head 20, and ring-slot distance 10. This fixes
+the `current + 1` post-retirement active-chain boundary.
+
+Insert into `PoolRejectedChain` and require no promotion retry. Attempt commit
+with stale expected metadata and with an internally inconsistent successful
+transition; require byte-stable metadata rejection. Supply invalid bucket
+metadata and a prefix-less tail position and require no chain write or pool
+mutation. Run all seven controller fixtures under MSVC and ClangCL, then run the
+related workspace, builder, mutation, and state suites and every registered test
+under both compilers with a 600-second per-test limit and no exclusions,
+including interoperability schema compatibility.

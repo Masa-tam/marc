@@ -23529,3 +23529,34 @@ discarded and the reviewed seed retained.
   both runs include all six Python tooling tests and
   `marc_interoperability_schema_compatibility`. The complete-chain ring write,
   metadata commit, public format, ABI, CLI, and production matcher are unchanged.
+
+## CR-0971: 2026-08-20 - Sparse metadata commit and position controller
+
+- Authoring method: defined compare-and-commit metadata publication and a
+  one-position controller, then fixed complete-chain insertion, retirement plus
+  reinsertion, terminal mode, stale commit, inconsistent result, corrupt
+  metadata, and tail rejection in seven direct fixtures.
+- References used: IR-0663, DD-891 through DD-899, TVG-0758 through TVG-0766,
+  CR-0963 through CR-0970, and marc's existing complete-chain advance, sparse
+  workspace, and state-transition components.
+- Known implementations intentionally not consulted: external sparse
+  controllers, concurrent commit schemes, match finders, compressors, source
+  code, tests, benchmarks, tuning guides, patents, pseudocode, and optimization
+  descriptions.
+- Independent decisions: compare expected metadata before commit; validate the
+  transition status graph; preflight current metadata before retirement; use
+  `current + 1` for the post-retirement chain view; and publish chain bytes only
+  after tree state succeeds.
+- Generated-code task description: connect sparse retirement and insertion
+  results to the frame workspace through atomic metadata publication and one
+  complete-chain position write, without selecting the production backend.
+- Similarity review: commit validation, operation order, active-chain boundary,
+  errors, and fixtures derive solely from marc's preceding design and private
+  components. No external implementation expression was consulted or introduced.
+- Validation: all seven controller tests and all sixty-three related workspace,
+  allocator, builder, ring/pool mutation, state, and controller tests pass under
+  MSVC and ClangCL. All 3,121 registered tests pass under each compiler with a
+  600-second per-test limit; both runs include all six Python tooling tests and
+  `marc_interoperability_schema_compatibility`. Automatic promotion,
+  multi-position advance, query dispatch, public format, ABI, CLI, and the
+  production matcher are unchanged.

@@ -867,3 +867,24 @@ sticky pool errorはring slotを上書きする前のhard failureである。sin
 有効なpoolではdetach成功後のreleaseは失敗しない。万一releaseが失敗した場合はpool全体を
 破棄し、処理を継続しない。この段階ではring-slot書込み、bucket metadata commit helper、
 production matcher、profile、ABI、CLIおよびstream formatへ接続しない。
+
+## 34. Sparse metadata commit and position insertion controller
+
+private controllerは一positionについてcurrent prefix hash、previous head、distance、current
+bucket metadataをread-onlyで検査してからmutationを開始する。positionがwindowを進める場合は
+Section 33のretirementを先に実行し、その成功結果をexpected mode/root/countとのcompare-and-
+commitでexpired bucketへ公開する。stale expected metadata、error result、statusと前後状態が
+矛盾するresult、範囲外root/countはmetadataへ一切書かず拒否する。
+
+retirement後のpromoted insertionでは、complete chainをまだ変更せずtree insertまたはdemotion
+を行う。whole-tree release validatorへ渡すchain viewのquery positionは`current + 1`とする。
+これにより`current - window_size`のretire済み末尾だけがwindow外となり、それより新しい全node
+はtreeとchainで一致する。transition成功とmetadata commitの後にだけ
+`links[current % ring_size]`とbucket headを書き込む。tree hard failure時にchainだけが先行する
+ことはない。
+
+`Chain`と`PoolRejectedChain`はroot null/count zeroを検証後、complete chainだけを更新し、
+terminal modeからpromotionを再試行しない。controllerはprefixを持たない末尾positionを受理せず、
+上位advance loopが従来どおりskipする。現段階ではexplicit promotion trigger、multi-position
+advance、Exact query dispatch、diagnostic aggregation、production matcher、profile、ABI、CLI、
+stream formatへ接続しない。

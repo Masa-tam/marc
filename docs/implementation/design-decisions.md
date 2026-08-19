@@ -18884,3 +18884,23 @@ tree mutation but must retain null root and zero count. Reject missing positions
 structural corruption, node-array mismatch, and sticky allocator failure before
 ring-slot reuse. Defer the ring write itself, metadata commit helper, production
 matcher, profile, ABI, CLI, and format integration.
+
+## DD-899: Commit sparse state before publishing complete-chain insertion
+
+- Date: 2026-08-20
+- Status: accepted
+
+Validate the current position, previous head, distance, and current bucket
+metadata before mutation. Retire an expired promoted node first and commit its
+result only when the caller's expected mode, root, and count still match. Apply
+the same compare-and-commit rule to insertion, demotion, and later promotion.
+Reject error results and status/state combinations that cannot be produced by a
+valid transition.
+
+Perform promoted-tree insertion or whole-bucket demotion before overwriting the
+complete-chain ring slot. Present the demotion validator with query position
+`current + 1`, excluding exactly the already retired `current - window_size`
+tail while retaining every newer tree member. Publish the link and head only
+after tree transition and metadata commit succeed. Defer automatic promotion,
+multi-position advance, query dispatch, diagnostics, production matcher,
+profile, ABI, CLI, and format integration.
