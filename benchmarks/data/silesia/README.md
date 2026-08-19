@@ -115,6 +115,20 @@ Run each of the twelve members independently. The existing Corpus-wide v1
 runner orchestrates HashChain/BinaryTree only; HashTree threshold-sweep
 orchestration will use a later versioned report contract.
 
+The fixed private four-MiB experiment uses a separate runner and report
+contract. After building the benchmark, run on Windows:
+
+```console
+py -3.14 tools/run_silesia_hash_tree_4m_experiment.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --output benchmarks/data/silesia/results/hash-tree-4m-msvc.json --compiler "MSVC 19.51" --generator "Visual Studio 18 2026"
+```
+
+Use `python3` in place of `py -3.14` on other platforms. The runner performs
+no download or network access. It verifies all twelve members, then measures
+the fixed one-MiB HashChain control, four-MiB HashChain oracle, and four-MiB
+HashTree threshold-1,024 candidate. A four-MiB Exact fingerprint mismatch is
+fatal; failed performance or parse-opportunity gates remain recorded as valid
+negative evidence. Output remains ignored under `results/`.
+
 ## Usage policy
 
 - Corpus measurements are opt-in developer benchmarks, not CTest pass gates.

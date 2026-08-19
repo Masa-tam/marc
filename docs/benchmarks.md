@@ -1640,6 +1640,25 @@ digest strengthens benchmark evidence but does not replace direct token-array
 equality in bounded component tests. It is benchmark metadata only and is not
 part of a marc stream or public hash contract.
 
+### Private four-MiB HashTree experiment
+
+Run the fixed offline Silesia experiment with:
+
+```console
+py -3.14 tools/run_silesia_hash_tree_4m_experiment.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --output benchmarks/data/silesia/results/hash-tree-4m-msvc.json --compiler "MSVC 19.51" --generator "Visual Studio 18 2026"
+```
+
+The runner verifies the external local Corpus before launching a benchmark
+and performs no network access. It measures 36 independent records: a one-MiB
+HashChain control and four-MiB HashChain/HashTree Exact pair for each of twelve
+members. The HashTree threshold is fixed at 1,024. Four-MiB token summaries
+and fingerprints must match exactly or no result is published.
+
+Aggregate CPU and wider-window parse-opportunity gates are reported rather
+than used as process success. A negative gate is useful evidence. A positive
+`eligible_for_format_design` permits only the next bounded aggregate-workspace
+design; it does not reserve a variant or establish final compressed-size gain.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

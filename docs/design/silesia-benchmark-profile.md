@@ -192,3 +192,30 @@ aggregateは全12 memberの入力byteと時間を合算し、workspaceとpeak値
 diagnostic workとhistogramは合算する。性能値を合否条件にせず、結果はignored
 `results/`へだけ保存する。この実験はpublic selector、stream、ABI、既定戦略、
 interoperability artifactを変更しない。
+
+## 11. Private 4 MiB HashTree experiment runner
+
+`tools/run_silesia_hash_tree_4m_experiment.py`は既存のv1 matrix schemaを
+変更せず、`marc-silesia-hash-tree-4m-experiment-v1`を生成する。全12 memberの
+manifest検証が成功するまでbenchmarkを起動せず、network accessまたはdownloadを
+行わない。各memberを次の固定された3経路で独立processとして測定する。
+
+```text
+control-1m:   frame 1,048,576, window 1,048,576, HashChain Exact
+oracle-4m:    frame 4,194,304, window 4,194,304, HashChain Exact
+candidate-4m: frame 4,194,304, window 4,194,304, HashTree Exact threshold 1,024
+```
+
+4 MiB oracleとcandidateはtoken count、literal count、match count、matched bytes、
+token fingerprintの全てが一致しなければならず、不一致時はJSONを生成しない。
+1 MiB controlと4 MiB oracleはframe resetとwindowが異なるためtoken列の一致を要求
+しない。各summaryはtoken kind数からtoken countを、literal数とmatched bytesから
+入力extentを再構成し、fingerprintは64桁lowercase SHA-256でなければならない。
+
+JSONはmanifest、environment、revision、固定configuration、36 records、role別の
+byte-weighted aggregate、比較値およびgateを保存する。HashTree/HashChain aggregate
+throughput比が1を超えることと、4 MiB oracleが1 MiB controlよりaggregate token数を
+減らすかmatched-byte coverageを増やすことを別々に判定する。これらが不成立でも
+測定は有効な否定的証拠なのでrunnerを失敗させない。両方が成立した場合だけ
+`eligible_for_format_design`をtrueとする。この値はpublic formatの承認ではなく、
+aggregate workspace設計へ進むためのgateにすぎない。

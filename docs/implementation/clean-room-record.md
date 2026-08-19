@@ -23230,3 +23230,32 @@ discarded and the reviewed seed retained.
   seconds and ClangCL in 183.20 seconds with a 600-second per-test limit; both
   runs include all five Python tooling tests and
   `marc_interoperability_schema_compatibility`.
+
+## CR-0960: 2026-08-19 - Private four-MiB Silesia experiment runner
+
+- Authoring method: added a fixture-only runner test and CTest registration
+  first, then implemented strict token-summary validation, three fixed roles,
+  Exact admission, aggregate comparisons, and versioned JSON orchestration.
+- References used: IR-0652, DD-886 through DD-888, TVG-0753 through TVG-0755,
+  CR-0958 through CR-0959, and marc's existing local Silesia tooling.
+- Known implementations intentionally not consulted: external benchmark
+  runners, match finders, compressors, source code, tests, result schemas,
+  tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: keep existing v1 matrices unchanged; fix three
+  experiment roles; make only Exact disagreement fatal; retain unsuccessful
+  CPU and parse gates as evidence; protect digit-only SHA-256 text in the
+  common parser; and make format eligibility an explicit non-normative result.
+- Generated-code task description: implement an offline 36-record Silesia
+  experiment with strict fingerprints, byte-weighted role summaries, separate
+  comparisons and gates, atomic output, fixture tests, documentation, and no
+  public format or selector change.
+- Similarity review: orchestration, validation, naming, aggregates, and gate
+  semantics derive solely from marc's preceding designs and local runners. No
+  external implementation expression was consulted or introduced.
+- Validation: all six tooling tests pass without requiring Corpus access under
+  both compilers. The new runner test covers fixed configuration, digit-only
+  digest parsing, malformed summaries, field-by-field Exact mismatch,
+  aggregation, maximum workspace, positive gates, and retained negative gate
+  evidence. All 3,071 registered tests pass under MSVC in 164.74 seconds and
+  ClangCL in 181.92 seconds with a 600-second per-test limit; both runs include
+  all six Python tooling tests and `marc_interoperability_schema_compatibility`.

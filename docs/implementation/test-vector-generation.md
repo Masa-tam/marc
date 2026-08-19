@@ -10620,3 +10620,22 @@ The record sequence consists of the frame marker and size followed by eight
 Literal records; do not obtain the expected digest from the benchmark under
 test. After implementation, run all three benchmark smoke tests and the full
 MSVC and ClangCL suites with the 600-second per-test limit.
+
+### TVG-0755
+
+Add fixture-only tests for the dedicated four-MiB runner before invoking the
+external Corpus. Fix its one-MiB and four-MiB frame/window constants and
+threshold 1024. Require the common report parser to preserve even an all-
+decimal 64-character SHA-256 value as text. Reject uppercase, wrong-length,
+or non-hex fingerprints; negative counters; token-kind totals that do not
+equal token count; and literal plus matched extents that do not equal input.
+
+Require the four-MiB candidate to match its oracle in token count, literal
+count, match count, matched bytes, and fingerprint. Construct consistent
+multi-member role fixtures proving byte-summed counters, measured-byte
+throughput, maximum workspace, strict CPU and parse-opportunity gates, and the
+combined eligibility value. Add a slower candidate with no parse improvement
+and require all gates to remain false without raising an error. Register the
+test as ordinary tooling independent of Corpus presence. After implementation,
+run all six Python tooling tests, then both complete compiler suites including
+schema compatibility.

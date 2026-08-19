@@ -84,6 +84,8 @@ def _parse_report(text: str) -> dict[str, Any]:
                 report[key] = [int(item) for item in value.split(",")]
             except ValueError as error:
                 raise RunnerError(f"invalid histogram for {key}") from error
+        elif key.endswith("_sha256"):
+            report[key] = value
         elif value.isdecimal():
             report[key] = int(value)
         else:

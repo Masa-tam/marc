@@ -18661,3 +18661,25 @@ literal count plus matched bytes equals input size. Timed passes retain only
 the prior token count check, so hashing does not alter measured match-finder
 throughput. This fingerprint is benchmark metadata, not a stream field,
 public hash target, or substitute for direct bounded token-array tests.
+
+## DD-888: Preserve negative evidence in the fixed four-MiB runner
+
+- Date: 2026-08-19
+- Status: accepted
+
+Add a separate `marc-silesia-hash-tree-4m-experiment-v1` report rather than
+changing any existing matrix schema. For each verified Silesia member, run a
+one-MiB frame/window HashChain control, a four-MiB frame/window HashChain
+oracle, and a four-MiB frame/window HashTree candidate at threshold 1024.
+Require the oracle and candidate to agree on every token-summary counter and
+the canonical SHA-256 fingerprint. Exact disagreement is fatal and prevents
+partial JSON publication.
+
+Compute byte-weighted role aggregates and separately report the candidate-to-
+oracle throughput ratio and four-MiB-minus-one-MiB token and matched-byte
+deltas. The CPU gate requires candidate throughput above the oracle. The
+parse-opportunity gate requires fewer oracle tokens or more oracle matched
+bytes than the control. A false performance or opportunity gate remains a
+successful, reproducible negative experiment result; only Exact mismatch,
+invalid reports, Corpus failure, or execution failure aborts the runner. Both
+gates must be true before a separate public-format workspace design begins.

@@ -5854,3 +5854,12 @@ SHA-256 implementation and checked arithmetic, the private benchmark parser,
 and its CMake smoke tests. No external benchmark fingerprint format, match
 finder, compressor, source code, test vector, schema, or optimization
 description was consulted.
+
+### IR-0652
+
+The private four-MiB Silesia runner uses DD-886 through DD-888, TVG-0753
+through TVG-0755, the repository-owned Corpus verifier, frame benchmark,
+HashChain and HashTree report validators, canonical token fingerprint, and
+prior versioned local-runner structure. No external runner, match finder,
+compressor, source code, test, benchmark result, schema, tuning guide,
+patent, pseudocode, or optimization description was consulted.
