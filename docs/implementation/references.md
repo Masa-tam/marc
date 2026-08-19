@@ -5963,3 +5963,13 @@ workspace metadata views, state transitions, retirement contract, and checked
 fixed-width counts. No external sparse controller, concurrent commit scheme,
 match finder, compressor, source code, test, benchmark, tuning guide, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0664
+
+The sparse Exact query dispatcher and promotion trigger use DD-891 through
+DD-900, TVG-0758 through TVG-0767, the repository-owned complete-chain Exact
+selection rule, pool-local tree query, promotion-state threshold contract,
+builder, state transition, and metadata commit controller. No external sparse
+query dispatcher, adaptive match finder, compressor, source code, test,
+benchmark, tuning guide, patent, pseudocode, or optimization description was
+consulted.

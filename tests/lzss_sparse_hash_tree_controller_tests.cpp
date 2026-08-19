@@ -55,6 +55,15 @@ struct ControllerFixture {
         return {input, parameters, &workspace, nullptr};
     }
 
+    [[nodiscard]] LzssSparseHashTreePositionContext promotion_context() {
+        return {input, parameters, &workspace, nullptr, &promotion};
+    }
+
+    void initialize_promotion(const std::uint64_t threshold) {
+        initialize_lzss_hash_tree_promotion_state(
+            workspace.heads().size(), threshold, promotion);
+    }
+
     [[nodiscard]] LzssSparseHashTreeBucketBuildContext build_context(
         const std::size_t query_position) {
         return {input, parameters, query_position, bucket,
@@ -66,6 +75,7 @@ struct ControllerFixture {
     LzssParameters parameters{};
     AlignedStorage storage{};
     LzssSparseHashTreeWorkspace workspace{};
+    LzssHashTreePromotionState promotion{};
     std::size_t bucket{};
 };
 
@@ -191,6 +201,138 @@ TEST(LzssSparseHashTreeController,
               LzssSparseHashTreeControllerError::invalid_position);
     EXPECT_EQ(fixture.workspace.heads()[fixture.bucket], before_head);
     EXPECT_EQ(fixture.workspace.node_pool().active_count(), 0U);
+}
+
+TEST(LzssSparseHashTreeController, ChainQueryReturnsNearestExactMatch) {
+    ControllerFixture fixture{};
+    for (const auto position : {0U, 5U, 10U}) {
+        ASSERT_EQ(insert_lzss_sparse_hash_tree_position(
+                      fixture.context(), position).error,
+                  LzssSparseHashTreeControllerError::none);
+    }
+    const auto query = query_lzss_sparse_hash_tree_exact(
+        fixture.context(), 15);
+    EXPECT_EQ(query.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(query.source, LzssSparseHashTreeQuerySource::chain);
+    EXPECT_EQ(query.bucket, fixture.bucket);
+    EXPECT_EQ(query.match, (LzssMatch{5, 5}));
+    EXPECT_EQ(query.candidate_count, 1U);
+}
+
+TEST(LzssSparseHashTreeController,
+     PendingThresholdPromotesBeforePositionInsertion) {
+    ControllerFixture fixture{4};
+    for (const auto position : {0U, 5U, 10U}) {
+        ASSERT_EQ(insert_lzss_sparse_hash_tree_position(
+                      fixture.context(), position).error,
+                  LzssSparseHashTreeControllerError::none);
+    }
+    fixture.initialize_promotion(0);
+    const auto chain = query_lzss_sparse_hash_tree_exact(
+        fixture.promotion_context(), 15);
+    ASSERT_EQ(chain.error, LzssSparseHashTreeControllerError::none);
+    ASSERT_EQ(fixture.promotion.phase(),
+              LzssHashTreePromotionPhase::pending);
+
+    const auto inserted = insert_lzss_sparse_hash_tree_position(
+        fixture.promotion_context(), 15);
+    ASSERT_EQ(inserted.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(fixture.promotion.phase(), LzssHashTreePromotionPhase::idle);
+    EXPECT_EQ(fixture.workspace.modes()[fixture.bucket],
+              LzssSparseHashTreeBucketMode::promoted_tree);
+    EXPECT_EQ(fixture.workspace.bucket_node_counts()[fixture.bucket], 4U);
+    EXPECT_EQ(fixture.workspace.node_pool().active_count(), 4U);
+
+    const auto tree = query_lzss_sparse_hash_tree_exact(
+        fixture.promotion_context(), 20);
+    EXPECT_EQ(tree.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(tree.source, LzssSparseHashTreeQuerySource::pool_tree);
+    EXPECT_EQ(tree.match, chain.match);
+}
+
+TEST(LzssSparseHashTreeController,
+     ChainAndPromotedTreeAgreeAtSameQueryPosition) {
+    ControllerFixture fixture{4};
+    for (const auto position : {0U, 5U, 10U}) {
+        ASSERT_EQ(insert_lzss_sparse_hash_tree_position(
+                      fixture.context(), position).error,
+                  LzssSparseHashTreeControllerError::none);
+    }
+    fixture.initialize_promotion(0);
+    const auto chain = query_lzss_sparse_hash_tree_exact(
+        fixture.promotion_context(), 15);
+    ASSERT_EQ(chain.error, LzssSparseHashTreeControllerError::none);
+    const auto promotion = promote_pending_lzss_sparse_hash_tree_bucket(
+        fixture.promotion_context(), 15);
+    ASSERT_EQ(promotion.error, LzssSparseHashTreeControllerError::none);
+    ASSERT_TRUE(promotion.promoted);
+    const auto tree = query_lzss_sparse_hash_tree_exact(
+        fixture.promotion_context(), 15);
+    EXPECT_EQ(tree.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(tree.source, LzssSparseHashTreeQuerySource::pool_tree);
+    EXPECT_EQ(tree.bucket, chain.bucket);
+    EXPECT_EQ(tree.match, chain.match);
+}
+
+TEST(LzssSparseHashTreeController,
+     PromotionCapacityFailureBecomesTerminalChain) {
+    ControllerFixture fixture{2};
+    for (const auto position : {0U, 5U, 10U}) {
+        ASSERT_EQ(insert_lzss_sparse_hash_tree_position(
+                      fixture.context(), position).error,
+                  LzssSparseHashTreeControllerError::none);
+    }
+    fixture.initialize_promotion(0);
+    ASSERT_EQ(query_lzss_sparse_hash_tree_exact(
+                  fixture.promotion_context(), 15).error,
+              LzssSparseHashTreeControllerError::none);
+    ASSERT_EQ(insert_lzss_sparse_hash_tree_position(
+                  fixture.promotion_context(), 15).error,
+              LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(fixture.workspace.modes()[fixture.bucket],
+              LzssSparseHashTreeBucketMode::pool_rejected_chain);
+    EXPECT_EQ(fixture.workspace.node_pool().active_count(), 0U);
+    EXPECT_EQ(fixture.promotion.phase(), LzssHashTreePromotionPhase::idle);
+
+    const auto query = query_lzss_sparse_hash_tree_exact(
+        fixture.promotion_context(), 20);
+    EXPECT_EQ(query.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(query.source, LzssSparseHashTreeQuerySource::chain);
+    EXPECT_EQ(query.match, (LzssMatch{5, 5}));
+    EXPECT_EQ(fixture.promotion.phase(), LzssHashTreePromotionPhase::idle);
+}
+
+TEST(LzssSparseHashTreeController,
+     CorruptPromotedMetadataRejectsQuery) {
+    ControllerFixture fixture{};
+    fixture.workspace.modes()[fixture.bucket] =
+        LzssSparseHashTreeBucketMode::promoted_tree;
+    fixture.workspace.roots()[fixture.bucket] = 0;
+    const auto query = query_lzss_sparse_hash_tree_exact(
+        fixture.context(), 5);
+    EXPECT_EQ(query.error,
+              LzssSparseHashTreeControllerError::invalid_metadata);
+    EXPECT_EQ(query.source, LzssSparseHashTreeQuerySource::none);
+}
+
+TEST(LzssSparseHashTreeController, PrefixlessTailQueryIsEmpty) {
+    ControllerFixture fixture{};
+    const auto query = query_lzss_sparse_hash_tree_exact(
+        fixture.context(), fixture.input.size() - 1U);
+    EXPECT_EQ(query.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(query.source, LzssSparseHashTreeQuerySource::none);
+    EXPECT_EQ(query.match, LzssMatch{});
+}
+
+TEST(LzssSparseHashTreeController,
+     MismatchedPromotionStateRejectsContext) {
+    ControllerFixture fixture{};
+    initialize_lzss_hash_tree_promotion_state(
+        fixture.workspace.heads().size() / 2U, 0, fixture.promotion);
+    const auto query = query_lzss_sparse_hash_tree_exact(
+        fixture.promotion_context(), 5);
+    EXPECT_EQ(query.error,
+              LzssSparseHashTreeControllerError::invalid_context);
 }
 
 } // namespace

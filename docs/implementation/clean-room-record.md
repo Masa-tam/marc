@@ -23560,3 +23560,33 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`. Automatic promotion,
   multi-position advance, query dispatch, public format, ABI, CLI, and the
   production matcher are unchanged.
+
+## CR-0972: 2026-08-20 - Sparse Exact query dispatch and promotion trigger
+
+- Authoring method: connected the private sparse controller to complete-chain
+  and pool-tree Exact queries, then consumed threshold-triggered promotion before
+  the following position insertion.
+- References used: IR-0664, DD-891 through DD-900, TVG-0758 through TVG-0767,
+  CR-0963 through CR-0971, and marc's existing match-selection,
+  promotion-state, sparse builder, transition, and metadata-commit components.
+- Known implementations intentionally not consulted: external sparse query
+  dispatchers, adaptive match finders, compressors, source code, tests,
+  benchmarks, tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: scan chain modes completely for Exact; record
+  candidates only in promotable `Chain`; consume pending promotion before the
+  next advance; make pool rejection terminal; preserve hard failures before
+  chain publication; and compare chain/tree results at one identical query
+  position.
+- Generated-code task description: add deterministic sparse Exact query routing
+  and the first explicit promotion trigger without selecting it as the
+  production matcher.
+- Similarity review: dispatch rules, trigger timing, terminal-state behavior,
+  error boundaries, and fixtures derive solely from marc's preceding design and
+  private components. No external implementation expression was consulted or
+  introduced.
+- Validation: all fourteen controller tests and all seventy related workspace,
+  allocator, builder, ring/pool mutation, state, and controller tests pass under
+  MSVC and ClangCL. All 3,128 registered tests pass under each compiler with a
+  600-second per-test limit; both runs include all six Python tooling tests and
+  `marc_interoperability_schema_compatibility`. Multi-position advance, public
+  format, ABI, CLI, and the production matcher are unchanged.

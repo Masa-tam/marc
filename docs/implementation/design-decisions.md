@@ -18904,3 +18904,25 @@ tail while retaining every newer tree member. Publish the link and head only
 after tree transition and metadata commit succeed. Defer automatic promotion,
 multi-position advance, query dispatch, diagnostics, production matcher,
 profile, ABI, CLI, and format integration.
+
+## DD-900: Dispatch Exact queries and promote before the next insertion
+
+- Date: 2026-08-20
+- Status: accepted
+
+Dispatch an Exact query by validated bucket mode. Scan the complete chain to
+the active-window boundary for `Chain` and `PoolRejectedChain`, selecting the
+longest match and then the nearest distance. Record candidate count only for
+`Chain`; a count strictly greater than the configured threshold makes that
+bucket pending. Never re-pend a terminal `PoolRejectedChain`. Query a
+`PromotedTree` through its pool-local root and declared node count.
+
+Consume a pending promotion immediately before the next position advance.
+Build from the still-complete chain, publish the resulting metadata through the
+existing compare-and-commit rule, and then insert the current position into the
+selected state. Convert pool-capacity failure into the one-way terminal-chain
+state, but preserve validator, builder, metadata, and promotion-state failures
+as hard errors before chain publication. Require chain and promoted-tree Exact
+queries at the same query position to return the same bucket and `LzssMatch`.
+Defer multi-position advance, diagnostic aggregation, production matcher,
+profile, ABI, CLI, and format integration.

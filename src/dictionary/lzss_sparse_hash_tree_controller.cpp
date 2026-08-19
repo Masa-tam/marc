@@ -81,7 +81,12 @@ namespace {
     }
     const auto expected_links = std::min<std::size_t>(
         context.input.size(), context.parameters.window_size);
-    return context.workspace->links().size() == expected_links;
+    if (context.workspace->links().size() != expected_links) return false;
+    return context.promotion_state == nullptr
+        || (context.promotion_state->initialized()
+            && context.promotion_state->state_valid()
+            && context.promotion_state->bucket_count()
+                == context.workspace->heads().size());
 }
 
 [[nodiscard]] LzssHashTreeBucketMutationContext mutation_context(
@@ -140,6 +145,170 @@ commit_lzss_sparse_hash_tree_bucket_transition(
     return LzssSparseHashTreeControllerError::none;
 }
 
+LzssSparseHashTreeQueryResult query_lzss_sparse_hash_tree_exact(
+    const LzssSparseHashTreePositionContext& context,
+    const std::size_t position) noexcept {
+    LzssSparseHashTreeQueryResult result{};
+    if (!valid_context(context)) {
+        result.error = LzssSparseHashTreeControllerError::invalid_context;
+        return result;
+    }
+    if (position >= context.input.size()) {
+        result.error = LzssSparseHashTreeControllerError::invalid_position;
+        return result;
+    }
+    if (context.input.size() - position < lzss_match_finder_prefix_size) {
+        return result;
+    }
+    const auto hash = calculate_lzss_prefix_hash(context.input, position);
+    if (!hash.valid) {
+        result.error = LzssSparseHashTreeControllerError::hash_failure;
+        return result;
+    }
+    result.bucket = static_cast<std::size_t>(hash.value)
+        & (context.workspace->heads().size() - 1U);
+    const auto mode = context.workspace->modes()[result.bucket];
+    const auto root = context.workspace->roots()[result.bucket];
+    const auto count = context.workspace->bucket_node_counts()[result.bucket];
+    if (!valid_mode_metadata(*context.workspace, mode, root, count)) {
+        result.error = LzssSparseHashTreeControllerError::invalid_metadata;
+        return result;
+    }
+
+    if (mode == LzssSparseHashTreeBucketMode::promoted_tree) {
+        const auto nodes = context.workspace->node_pool().node_arrays();
+        const auto tree = query_lzss_hash_tree_bucket_exact({
+            context.input, context.parameters, position, result.bucket,
+            context.workspace->heads().size(), root, nodes.left, nodes.right,
+            nodes.parent, nodes.height, nodes.position,
+            nodes.subtree_maximum_position, context.statistics,
+            LzssHashTreeNodeIdentity::pool_local});
+        result.tree_error = tree.error;
+        if (tree.error != LzssHashTreeBucketQueryError::none) {
+            result.error = LzssSparseHashTreeControllerError::query_failure;
+            return result;
+        }
+        result.match = tree.match;
+        result.candidate_count = tree.nodes_visited;
+        result.source = LzssSparseHashTreeQuerySource::pool_tree;
+        return result;
+    }
+
+    result.source = LzssSparseHashTreeQuerySource::chain;
+    const auto maximum_length = std::min<std::size_t>(
+        context.input.size() - position,
+        context.parameters.max_match_length);
+    auto candidate = context.workspace->heads()[result.bucket];
+    while (candidate != lzss_hash_tree_no_stored_position) {
+        const auto candidate_position = static_cast<std::size_t>(candidate);
+        if (candidate_position >= position) {
+            result.error = LzssSparseHashTreeControllerError::invalid_metadata;
+            return result;
+        }
+        const auto distance = position - candidate_position;
+        if (distance > context.parameters.window_size) break;
+        if (candidate_position >= context.input.size()
+            || context.input.size() - candidate_position
+                < lzss_match_finder_prefix_size
+            || result.candidate_count == context.workspace->links().size()) {
+            result.error = LzssSparseHashTreeControllerError::invalid_metadata;
+            return result;
+        }
+        ++result.candidate_count;
+        std::size_t length{};
+        while (length < maximum_length
+               && context.input[position + length]
+                   == context.input[candidate_position + length]) {
+            ++length;
+        }
+        if (length >= context.parameters.min_match_length
+            && length > result.match.length) {
+            result.match.distance = static_cast<std::uint32_t>(distance);
+            result.match.length = static_cast<std::uint32_t>(length);
+            if (length == maximum_length) break;
+        }
+        const auto previous_distance = context.workspace->links()[
+            candidate_position % context.workspace->links().size()];
+        if (previous_distance == 0) break;
+        if (previous_distance > candidate_position) {
+            result.error = LzssSparseHashTreeControllerError::invalid_metadata;
+            return result;
+        }
+        candidate = static_cast<LzssHashTreeStoredPosition>(
+            candidate_position - previous_distance);
+    }
+
+    if (mode == LzssSparseHashTreeBucketMode::chain
+        && context.promotion_state != nullptr) {
+        const auto recorded =
+            context.promotion_state->record_completed_chain_query(
+                result.bucket, result.candidate_count);
+        result.promotion_error = recorded.error;
+        if (recorded.error != LzssHashTreePromotionError::none) {
+            result.error = LzssSparseHashTreeControllerError::promotion_failure;
+        }
+    }
+    return result;
+}
+
+LzssSparseHashTreePromotionResult
+promote_pending_lzss_sparse_hash_tree_bucket(
+    const LzssSparseHashTreePositionContext& context,
+    const std::size_t query_position) noexcept {
+    LzssSparseHashTreePromotionResult result{};
+    if (!valid_context(context) || context.promotion_state == nullptr) {
+        result.error = LzssSparseHashTreeControllerError::invalid_context;
+        return result;
+    }
+    if (query_position > context.input.size()) {
+        result.error = LzssSparseHashTreeControllerError::invalid_position;
+        return result;
+    }
+    const auto begin = context.promotion_state->begin_advance();
+    result.promotion_error = begin.error;
+    if (begin.error != LzssHashTreePromotionError::none) {
+        result.error = LzssSparseHashTreeControllerError::promotion_failure;
+        return result;
+    }
+    if (!begin.required) return result;
+    result.attempted = true;
+    result.bucket = begin.bucket;
+    const auto head = context.workspace->heads()[begin.bucket];
+    const auto mode = context.workspace->modes()[begin.bucket];
+    const auto root = context.workspace->roots()[begin.bucket];
+    const auto count = context.workspace->bucket_node_counts()[begin.bucket];
+    const auto transition = promote_lzss_sparse_hash_tree_bucket(
+        {context.input, context.parameters, query_position, begin.bucket,
+         context.workspace->heads().size(),
+         head == lzss_hash_tree_no_stored_position
+             ? lzss_hash_tree_no_position : static_cast<std::size_t>(head),
+         context.workspace->links(), &context.workspace->node_pool(),
+         context.statistics},
+        mode, root, count);
+    result.transition_error = transition.error;
+    if (transition.error
+        != LzssSparseHashTreeBucketTransitionError::none) {
+        result.error = LzssSparseHashTreeControllerError::promotion_failure;
+        return result;
+    }
+    if (commit_lzss_sparse_hash_tree_bucket_transition(
+            *context.workspace, begin.bucket, mode, root, count, transition)
+        != LzssSparseHashTreeControllerError::none) {
+        result.error = LzssSparseHashTreeControllerError::commit_failure;
+        return result;
+    }
+    result.promotion_error = context.promotion_state->commit(begin.bucket);
+    if (result.promotion_error != LzssHashTreePromotionError::none) {
+        result.error = LzssSparseHashTreeControllerError::promotion_failure;
+        return result;
+    }
+    result.promoted = transition.status
+        == LzssSparseHashTreeBucketTransitionStatus::promoted;
+    result.pool_rejected = transition.status
+        == LzssSparseHashTreeBucketTransitionStatus::pool_rejected_chain;
+    return result;
+}
+
 LzssSparseHashTreePositionResult insert_lzss_sparse_hash_tree_position(
     const LzssSparseHashTreePositionContext& context,
     const std::size_t position) noexcept {
@@ -153,6 +322,15 @@ LzssSparseHashTreePositionResult insert_lzss_sparse_hash_tree_position(
         || position == std::numeric_limits<std::size_t>::max()) {
         result.error = LzssSparseHashTreeControllerError::invalid_position;
         return result;
+    }
+    if (context.promotion_state != nullptr) {
+        const auto promotion = promote_pending_lzss_sparse_hash_tree_bucket(
+            context, position);
+        if (promotion.error != LzssSparseHashTreeControllerError::none) {
+            result.error = promotion.error;
+            result.transition_error = promotion.transition_error;
+            return result;
+        }
     }
     const auto current_hash = calculate_lzss_prefix_hash(
         context.input, position);

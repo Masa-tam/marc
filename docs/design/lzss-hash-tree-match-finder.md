@@ -888,3 +888,22 @@ terminal modeからpromotionを再試行しない。controllerはprefixを持た
 上位advance loopが従来どおりskipする。現段階ではexplicit promotion trigger、multi-position
 advance、Exact query dispatch、diagnostic aggregation、production matcher、profile、ABI、CLI、
 stream formatへ接続しない。
+
+## 35. Sparse Exact query dispatch and promotion trigger
+
+private controllerのExact queryはbucket modeを検証してからbackendを選ぶ。`Chain`はcomplete
+chainをwindow境界まで全探索し、最長一致、同長なら最短distanceを返す。探索したcandidate数を
+promotion stateへ記録し、`candidate_count > promotion_threshold`ならbucketをpendingにする。
+`PoolRejectedChain`も同じ完全探索結果を返すが、terminal modeなのでcandidate数を記録せず、
+再promotionを要求しない。`PromotedTree`はpool-local rootとnode countを使って既存Exact tree
+queryへdispatchする。prefixを持たない末尾queryは空matchを返し、stateを変更しない。
+
+pending promotionは次positionをretireまたはinsertする直前に消費する。builderが現在のcomplete
+chainからtreeを構築し、Section 34のcompare-and-commitを通過した場合だけbucket metadataと
+promotion stateを確定する。pool capacity不足はhard errorではなく`PoolRejectedChain`へ一度だけ
+遷移し、validator、builder、metadataまたはpromotion stateの異常はchain publication前にhard
+failureとする。promotion成功後は同じadvanceでcurrent positionをpromoted treeへ挿入する。
+
+Chain queryとpromotion直後のtree queryは同一workspace、同一query positionで同じbucketと
+`LzssMatch`を返さなければならない。この段階ではmulti-position advance、diagnostic aggregation、
+production matcher、profile、ABI、CLIおよびstream formatへ接続しない。

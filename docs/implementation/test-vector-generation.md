@@ -10832,3 +10832,22 @@ mutation. Run all seven controller fixtures under MSVC and ClangCL, then run the
 related workspace, builder, mutation, and state suites and every registered test
 under both compilers with a 600-second per-test limit and no exclusions,
 including interoperability schema compatibility.
+
+### TVG-0767
+
+Insert equal-prefix positions into a complete chain and require its Exact query
+to choose the nearest of equal-length matches. Set promotion threshold zero,
+query the chain, then advance one position: require the pending bucket to become
+a promoted pool-local tree before current insertion. Exhaust the pool and
+require the same trigger to produce terminal `PoolRejectedChain`; its later
+queries must not become pending again.
+
+Corrupt promoted metadata and require query rejection, query a prefix-less tail
+and require empty success, and supply a promotion state with mismatched bucket
+count and require context rejection. Finally query one chain at a fixed
+position, explicitly promote it at that same position, query the resulting tree,
+and require identical bucket and `LzssMatch`. Run all fourteen controller
+fixtures under MSVC and ClangCL, then run the related workspace, allocator,
+builder, mutation, and state suites and every registered test under both
+compilers with a 600-second per-test limit and no exclusions, including
+interoperability schema compatibility.
