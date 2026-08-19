@@ -10671,3 +10671,22 @@ fixtures before mutation code. Prove that pool exhaustion selects a complete
 HashChain route for the affected bucket and never exposes a partial tree.
 Compare resulting tokens directly with HashChain Exact and retain fingerprint
 comparison in later Corpus evidence.
+
+### TVG-0758
+
+For the sparse workspace calculator, derive `N` and `B` exactly as the complete
+HashChain and require explicit pool capacity `P <= N`. Verify zero input,
+sub-prefix input, zero pool, one node, capacities around four-byte alignment,
+exact workspace budget, one-byte-short budget, maximum pool, invalid limits,
+invalid parameters, unrepresentable position extent, multiplication/addition
+overflow, and aggregate-limit rejection. Assert every offset is aligned,
+non-overlapping, monotonic, and reconstructs the reported final size.
+
+For the allocator, require deterministic initialization, unique allocation up
+to exhaustion, normal exhaustion without state corruption, LIFO release and
+reuse, double-release rejection, foreign/out-of-range node rejection, and
+exact free/active accounting. Later promotion fixtures must prove no metadata
+change when a bucket does not fit, full rollback on injected build failure,
+complete commit on success, and no retry after `PoolRejectedChain`. Mutation
+fixtures must force full-pool insertion demotion and compare every resulting
+match and token directly with HashChain Exact.

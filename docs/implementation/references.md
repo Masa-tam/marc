@@ -5882,3 +5882,12 @@ decoder limits, and revision `9de8d29` experiment evidence. No external match
 finder, allocator, compressor, source code, test, benchmark result, sparse-pool
 layout, tuning guide, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0655
+
+The bounded sparse HashTree design uses DD-886 through DD-891, TVG-0753
+through TVG-0758, the repository-owned complete HashChain, fixed-width
+HashTree builder/query/mutation invariants, promotion transaction, checked
+workspace layout, and aggregate-memory audit. No external sparse match finder,
+node pool, allocator, compressor, source code, test, benchmark result, tuning
+guide, patent, pseudocode, or optimization description was consulted.

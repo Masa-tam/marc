@@ -23311,3 +23311,29 @@ discarded and the reviewed seed retained.
   159,973,376 bytes, exceeding the default limit by 25,755,648 bytes before
   entropy or encoded-frame storage. The complete-tree public route is rejected;
   existing format IDs, ABI, CLI names, and production selection remain intact.
+
+## CR-0963: 2026-08-19 - Bounded sparse HashTree design
+
+- Authoring method: traced complete-tree node identity, builder, query,
+  mutation, promotion, and chain lifetime; rejected a window-sized reverse map;
+  then specified a pool-local identity and whole-bucket transaction model.
+- References used: IR-0655, DD-886 through DD-891, TVG-0753 through TVG-0758,
+  CR-0958 through CR-0962, and marc's existing complete HashChain and HashTree
+  components.
+- Known implementations intentionally not consulted: external sparse match
+  finders, node pools, allocators, compressors, source code, tests, benchmarks,
+  tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: retain a complete chain; omit a reverse map; use
+  pool-local IDs and absolute-position retirement; use zero height for free
+  nodes and reuse inactive left links; make rejection terminal per frame; and
+  distinguish capacity fallback from hard structural failure.
+- Generated-code task description: define a checked sparse workspace layout,
+  pool allocator semantics, atomic promotion, whole-bucket demotion, Exact
+  invariants, and a calculator-first implementation sequence.
+- Similarity review: layout, states, transactions, and failure boundaries derive
+  solely from marc's existing data structures and memory contract. No external
+  implementation expression was consulted or introduced.
+- Validation: the no-pool four-MiB base is 17,629,184 bytes and each pool node
+  adds 21 bytes plus at most six total alignment bytes. The design keeps complete
+  chain coverage in every state and exposes no format ID, ABI, CLI name, or
+  production selector.

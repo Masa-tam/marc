@@ -646,3 +646,89 @@ pool byte budgetはbackendごとの固定workspaceと最大encoded frameを先�
 そのbucketを完全chainへ決定的に戻し、部分tree探索は禁止する。token storageの圧縮や
 lifetime再構成は別の最適化候補であり、sparse poolのExact性またはmemory証明に暗黙に
 含めない。
+
+## 26. Bounded sparse HashTree node pool
+
+### 26.1 Identity and workspace
+
+sparse finderは全positionを保持する完全HashChainを常設し、選択されたbucketだけを
+pool-local node IDのAVL treeへ複製する。complete HashTreeの
+`node = absolute_position % window_size`規則をsparse nodeへ適用してはならない。
+retirementはexpired absolute positionを対応bucketのtreeで検索してnode IDを得るため、
+window全体のposition-to-node reverse mapを持たない。
+
+`N`をchain ring size、`B`をbucket count、`P`をpool node capacityとする。workspaceは
+次の配列を順にalignment付きで配置する。
+
+```text
+bucket heads                 uint32[B]
+complete chain links         uint32[N]
+tree roots                   uint32[B]
+bucket modes                  uint8[B]
+bucket tree-node counts      uint32[B]
+pool left/right/parent       uint32[P] each
+pool height                   uint8[P]
+pool absolute positions      uint32[P]
+pool subtree max positions   uint32[P]
+```
+
+free nodeでは`height == 0`をfree markerとし、`left`をfree-list linkとして再利用する。
+allocationはnodeをlistから外して`height = 1`のreserved stateにしてから他fieldを構築し、
+releaseは`height != 0`を確認して全fieldを無効化する。これにより別のallocator配列なしで
+double releaseを検出する。free listは初期状態で昇順に連結し、releaseはLIFOとする。
+
+64-bit hostのpaddingを除く式は`4N + 13B + 21P`である。`mode`からbucket count、
+`height`からpositionへのalignment paddingが各最大3 bytes、合計最大6 bytes加わる。
+4 MiBの`N = 4,194,304`、`B = 65,536`ではpoolなしの常設部分は
+17,629,184 bytesとなる。`P`はwindow sizeを超えてはならず、callerが指定したfinder
+workspace budgetとconfigured aggregate limitの双方に収まる最大値をchecked arithmeticで
+選ぶ。pool容量やpromotion thresholdはencoder実装情報でありstreamへ記録しない。
+
+### 26.2 Bucket states
+
+bucket stateは次の3値とする。
+
+```text
+Chain             complete chainのみ。promotion可能。
+PromotedTree      complete chainと完全なbucket treeの両方を保持。
+PoolRejectedChain complete chainのみ。このframeでは再promotionしない。
+```
+
+`PoolRejectedChain`はpool不足時の再構築thrashingを防ぐterminal per-frame stateである。
+windowが進んでpoolに空きが生じても同じbucketを再promotionしない。frame resetで全stateを
+`Chain`へ戻す。どのstateでもcomplete chainの挿入とretirementを継続するため、chainへ
+戻ることは常に可能である。
+
+### 26.3 Atomic promotion and fallback
+
+promotionはまずchainをread-onlyで検査し、active node数、link整合、bucket一致および
+pool free countを確定する。必要数がfree countを超える場合はtreeへ一切書かず、promotion
+transactionを完了して`PoolRejectedChain`へ移る。収まる場合だけfree listからnodeを取得し、
+modeとrootをまだ公開しないprivate rootへtreeを構築する。全nodeの構築とvalidator通過後に
+root、node count、modeをこの順の論理transactionとしてcommitする。
+
+不正chain、tree構築error、validator failureまたはallocator accounting不整合は内部hard
+errorであり、silent fallbackしない。単なる容量不足だけが正常なchain fallbackである。
+commit前のfailureは取得済みnodeを全てfree listへ戻し、bucket metadataを変更しない。
+
+### 26.4 Mutation under pressure
+
+`PromotedTree`からexpireするpositionはabsolute-position tree searchで一意に削除し、その
+nodeをfree listへ返す。新positionはcomplete chainへ必ず挿入する。対応treeへの挿入時に
+free nodeがなければ、部分treeのままqueryせず、そのbucketの全tree nodeを非再帰走査で
+解放してrootとcountをclearし、`PoolRejectedChain`へ移る。そのcurrent positionはtreeへ
+挿入しない。
+
+tree queryは`PromotedTree`かつroot/countが完全に整合する場合だけ許す。他の2 stateは
+同じcomplete chain queryを使用する。したがってpool size、allocation order、promotion
+成功数またはdemotion時点は速度だけを変え、longest-matchとnearest-distanceのExact token
+列を変えてはならない。
+
+### 26.5 Implementation sequence
+
+最初にworkspace calculatorとpool allocatorだけを実装し、matcherへ接続しない。zero pool、
+one node、exact fit、one-byte-short、maximum pool、alignment、overflowおよびlimit rejectionを
+固定する。次にpool-local builder/query/mutationを小さい直接fixtureで実装し、complete-tree
+componentとHashChain Exactをoracleにする。最後にpromotion/demotion state machineへ接続し、
+全容量でdirect token equality、fingerprint equality、bounded workspaceおよびdiagnostic
+accountingを検証する。公開profileまたはformat設計はSilesiaの複数pool容量行列の後とする。

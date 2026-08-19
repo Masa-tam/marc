@@ -18726,3 +18726,31 @@ over a complete HashChain. Derive its byte budget only after subtracting every
 backend-specific concurrently live extent. Require whole-bucket fallback to
 the chain on pool pressure so Exact output remains independent of capacity.
 Keep token compaction and lifetime restructuring outside this decision.
+
+## DD-891: Use pool-local nodes and terminal per-frame capacity fallback
+
+- Date: 2026-08-19
+- Status: accepted
+
+Keep a complete chain for every active position and allocate AVL nodes only
+for promoted buckets. Use pool-local node IDs; find an expired node by its
+absolute position in the owning tree instead of allocating a window-sized
+reverse map. Store bucket heads, chain links, roots, modes, per-bucket tree
+counts, and six structure/value arrays. Mark free nodes with zero height, mark
+reserved/active nodes with non-zero height, and reuse an inactive node's left
+link as the free-list link. Initialize the list in ascending order and release
+to its head. The layout is `4N + 13B + 21P` bytes before at most six bytes of
+mode-to-count and height-to-position padding.
+
+Add a `PoolRejectedChain` state. Insufficient capacity during promotion writes
+no tree state and suppresses further promotion of that bucket for the frame.
+Insufficient capacity during insertion demotes the complete bucket, frees all
+its nodes non-recursively, and suppresses re-promotion. Only capacity pressure
+is a normal fallback; malformed chain/tree state, failed validation, and
+allocator inconsistency remain hard errors.
+
+Never query a partial tree. Commit promotion only after complete construction
+and validation. Maintain the chain in every state so zero capacity and every
+demotion remain Exact. Treat capacity and free-list order as private performance
+choices that cannot affect tokens or the stream. Implement and test the
+calculator and allocator before adapting tree components or the matcher.
