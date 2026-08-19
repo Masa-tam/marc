@@ -13,6 +13,7 @@ enum class LzssSparseHashTreeBucketTransitionStatus : std::uint8_t {
     unchanged,
     promoted,
     inserted,
+    retired,
     pool_rejected_chain,
 };
 
@@ -51,6 +52,13 @@ promote_lzss_sparse_hash_tree_bucket(
 [[nodiscard]] LzssSparseHashTreeBucketTransitionResult
 insert_lzss_sparse_hash_tree_bucket_or_demote(
     const LzssSparseHashTreeBucketBuildContext& release_context,
+    const LzssHashTreeBucketMutationContext& mutation_context,
+    LzssSparseHashTreeBucketMode mode, std::uint32_t root,
+    std::size_t node_count, std::size_t position) noexcept;
+
+[[nodiscard]] LzssSparseHashTreeBucketTransitionResult
+retire_lzss_sparse_hash_tree_bucket_position(
+    LzssSparseHashTreeNodePool& pool,
     const LzssHashTreeBucketMutationContext& mutation_context,
     LzssSparseHashTreeBucketMode mode, std::uint32_t root,
     std::size_t node_count, std::size_t position) noexcept;

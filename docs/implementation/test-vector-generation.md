@@ -10797,3 +10797,20 @@ owner fixtures together with all nine allocator/layout fixtures under MSVC and
 ClangCL, then run every registered test under both compilers with a 600-second
 per-test limit and no exclusions, including interoperability schema
 compatibility.
+
+### TVG-0765
+
+Promote the three-position sparse fixture, retire its middle absolute position
+through the two-child shape, and require a decremented count plus exact pool
+free/active accounting. Build a one-node promoted tree, retire its final node,
+then insert a new position and require a valid one-node promoted tree. Represent
+an empty promoted bucket while an unrelated node exhausts the pool and require
+direct terminal-chain fallback without releasing that unrelated node.
+
+Require `Chain` and `PoolRejectedChain` retirement to leave the pool untouched.
+Request retirement of a missing position and require unchanged promoted
+metadata and accounting. Put the pool into sticky failure and require rejection
+before detach. Run these six new fixtures with all eight prior state fixtures
+under MSVC and ClangCL, then run the related builder and mutation suites and
+every registered test under both compilers with a 600-second per-test limit and
+no exclusions, including interoperability schema compatibility.

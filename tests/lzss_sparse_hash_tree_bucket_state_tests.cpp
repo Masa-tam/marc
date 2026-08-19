@@ -231,4 +231,125 @@ TEST(LzssSparseHashTreeBucketState,
               lzss_hash_tree_no_stored_position);
 }
 
+TEST(LzssSparseHashTreeBucketState,
+     RetiresPromotedPositionAndReleasesDetachedNode) {
+    StateFixture fixture{4};
+    const auto promoted = promote_lzss_sparse_hash_tree_bucket(
+        fixture.build_context(), LzssSparseHashTreeBucketMode::chain,
+        lzss_hash_tree_null_node, 0);
+    ASSERT_EQ(promoted.error,
+              LzssSparseHashTreeBucketTransitionError::none);
+    const auto retired = retire_lzss_sparse_hash_tree_bucket_position(
+        fixture.pool, fixture.mutation_context(), promoted.mode,
+        promoted.root, promoted.node_count, 5);
+    EXPECT_EQ(retired.error,
+              LzssSparseHashTreeBucketTransitionError::none);
+    EXPECT_EQ(retired.status,
+              LzssSparseHashTreeBucketTransitionStatus::retired);
+    EXPECT_EQ(retired.mode, LzssSparseHashTreeBucketMode::promoted_tree);
+    EXPECT_EQ(retired.node_count, 2U);
+    EXPECT_EQ(fixture.pool.free_count(), 2U);
+    EXPECT_EQ(fixture.pool.active_count(), 2U);
+}
+
+TEST(LzssSparseHashTreeBucketState,
+     SingleNodeRetirementLeavesReusableEmptyPromotedTree) {
+    StateFixture fixture{1};
+    fixture.links[10] = 0;
+    const auto promoted = promote_lzss_sparse_hash_tree_bucket(
+        fixture.build_context(), LzssSparseHashTreeBucketMode::chain,
+        lzss_hash_tree_null_node, 0);
+    ASSERT_EQ(promoted.node_count, 1U);
+    const auto retired = retire_lzss_sparse_hash_tree_bucket_position(
+        fixture.pool, fixture.mutation_context(), promoted.mode,
+        promoted.root, promoted.node_count, 10);
+    ASSERT_EQ(retired.error,
+              LzssSparseHashTreeBucketTransitionError::none);
+    EXPECT_EQ(retired.root, lzss_hash_tree_null_node);
+    EXPECT_EQ(retired.node_count, 0U);
+    EXPECT_EQ(retired.mode, LzssSparseHashTreeBucketMode::promoted_tree);
+    ASSERT_EQ(fixture.pool.free_count(), 1U);
+
+    const auto inserted = insert_lzss_sparse_hash_tree_bucket_or_demote(
+        fixture.build_context(), fixture.mutation_context(), retired.mode,
+        retired.root, retired.node_count, 11);
+    EXPECT_EQ(inserted.error,
+              LzssSparseHashTreeBucketTransitionError::none);
+    EXPECT_EQ(inserted.status,
+              LzssSparseHashTreeBucketTransitionStatus::inserted);
+    EXPECT_NE(inserted.root, lzss_hash_tree_null_node);
+    EXPECT_EQ(inserted.node_count, 1U);
+}
+
+TEST(LzssSparseHashTreeBucketState,
+     EmptyPromotedTreeDemotesWhenOtherBucketsExhaustPool) {
+    StateFixture fixture{1};
+    const auto unrelated = fixture.pool.allocate();
+    ASSERT_TRUE(unrelated.allocated);
+    const auto transition = insert_lzss_sparse_hash_tree_bucket_or_demote(
+        fixture.build_context(), fixture.mutation_context(),
+        LzssSparseHashTreeBucketMode::promoted_tree,
+        lzss_hash_tree_null_node, 0, 11);
+    EXPECT_EQ(transition.error,
+              LzssSparseHashTreeBucketTransitionError::none);
+    EXPECT_EQ(transition.status,
+              LzssSparseHashTreeBucketTransitionStatus::pool_rejected_chain);
+    EXPECT_EQ(transition.mode,
+              LzssSparseHashTreeBucketMode::pool_rejected_chain);
+    EXPECT_EQ(fixture.pool.active_count(), 1U);
+}
+
+TEST(LzssSparseHashTreeBucketState,
+     ChainModesIgnoreRetirementWithoutTouchingPool) {
+    for (const auto mode : {LzssSparseHashTreeBucketMode::chain,
+                            LzssSparseHashTreeBucketMode::pool_rejected_chain}) {
+        StateFixture fixture{1};
+        const auto retired = retire_lzss_sparse_hash_tree_bucket_position(
+            fixture.pool, fixture.mutation_context(), mode,
+            lzss_hash_tree_null_node, 0, 5);
+        EXPECT_EQ(retired.error,
+                  LzssSparseHashTreeBucketTransitionError::none);
+        EXPECT_EQ(retired.status,
+                  LzssSparseHashTreeBucketTransitionStatus::unchanged);
+        EXPECT_EQ(retired.mode, mode);
+        EXPECT_EQ(fixture.pool.free_count(), 1U);
+    }
+}
+
+TEST(LzssSparseHashTreeBucketState,
+     MissingRetirementPositionPreservesTreeAndAccounting) {
+    StateFixture fixture{4};
+    const auto promoted = promote_lzss_sparse_hash_tree_bucket(
+        fixture.build_context(), LzssSparseHashTreeBucketMode::chain,
+        lzss_hash_tree_null_node, 0);
+    const auto retired = retire_lzss_sparse_hash_tree_bucket_position(
+        fixture.pool, fixture.mutation_context(), promoted.mode,
+        promoted.root, promoted.node_count, 11);
+    EXPECT_EQ(retired.error,
+              LzssSparseHashTreeBucketTransitionError::mutation_failure);
+    EXPECT_EQ(retired.mutation_error,
+              LzssHashTreeBucketMutationError::missing_position);
+    EXPECT_EQ(retired.root, promoted.root);
+    EXPECT_EQ(retired.node_count, promoted.node_count);
+    EXPECT_EQ(fixture.pool.free_count(), 1U);
+    EXPECT_EQ(fixture.pool.active_count(), 3U);
+}
+
+TEST(LzssSparseHashTreeBucketState,
+     StickyPoolFailureRejectsRetirementBeforeTreeMutation) {
+    StateFixture fixture{4};
+    const auto promoted = promote_lzss_sparse_hash_tree_bucket(
+        fixture.build_context(), LzssSparseHashTreeBucketMode::chain,
+        lzss_hash_tree_null_node, 0);
+    ASSERT_EQ(fixture.pool.release(4),
+              LzssSparseHashTreeError::invalid_node);
+    const auto retired = retire_lzss_sparse_hash_tree_bucket_position(
+        fixture.pool, fixture.mutation_context(), promoted.mode,
+        promoted.root, promoted.node_count, 5);
+    EXPECT_EQ(retired.error,
+              LzssSparseHashTreeBucketTransitionError::invalid_metadata);
+    EXPECT_EQ(retired.root, promoted.root);
+    EXPECT_EQ(retired.node_count, promoted.node_count);
+}
+
 } // namespace

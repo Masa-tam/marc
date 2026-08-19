@@ -87,7 +87,7 @@ insert_lzss_sparse_hash_tree_bucket_or_demote(
         result.error = LzssSparseHashTreeBucketTransitionError::invalid_mode;
         return result;
     }
-    if (root == lzss_hash_tree_null_node || node_count == 0
+    if ((root == lzss_hash_tree_null_node) != (node_count == 0)
         || release_context.pool == nullptr
         || mutation_context.node_identity
             != LzssHashTreeNodeIdentity::pool_local
@@ -104,13 +104,15 @@ insert_lzss_sparse_hash_tree_bucket_or_demote(
     }
 
     if (release_context.pool->free_count() == 0) {
-        result.build_error = release_lzss_sparse_hash_tree_bucket(
-            release_context, root, node_count);
-        if (result.build_error !=
-            LzssSparseHashTreeBucketBuildError::none) {
-            result.error =
-                LzssSparseHashTreeBucketTransitionError::build_failure;
-            return result;
+        if (node_count != 0) {
+            result.build_error = release_lzss_sparse_hash_tree_bucket(
+                release_context, root, node_count);
+            if (result.build_error !=
+                LzssSparseHashTreeBucketBuildError::none) {
+                result.error =
+                    LzssSparseHashTreeBucketTransitionError::build_failure;
+                return result;
+            }
         }
         result.root = lzss_hash_tree_null_node;
         result.node_count = 0;
@@ -141,6 +143,53 @@ insert_lzss_sparse_hash_tree_bucket_or_demote(
     result.root = mutation.root;
     result.node_count = node_count + 1U;
     result.status = LzssSparseHashTreeBucketTransitionStatus::inserted;
+    return result;
+}
+
+LzssSparseHashTreeBucketTransitionResult
+retire_lzss_sparse_hash_tree_bucket_position(
+    LzssSparseHashTreeNodePool& pool,
+    const LzssHashTreeBucketMutationContext& mutation_context,
+    const LzssSparseHashTreeBucketMode mode, const std::uint32_t root,
+    const std::size_t node_count, const std::size_t position) noexcept {
+    auto result = initial_result(mode, root, node_count);
+    if (mode == LzssSparseHashTreeBucketMode::chain
+        || mode == LzssSparseHashTreeBucketMode::pool_rejected_chain) {
+        if (root != lzss_hash_tree_null_node || node_count != 0) {
+            result.error =
+                LzssSparseHashTreeBucketTransitionError::invalid_metadata;
+        }
+        return result;
+    }
+    if (mode != LzssSparseHashTreeBucketMode::promoted_tree) {
+        result.error = LzssSparseHashTreeBucketTransitionError::invalid_mode;
+        return result;
+    }
+    if (root == lzss_hash_tree_null_node || node_count == 0
+        || !pool.initialized() || !pool.state_valid()
+        || mutation_context.node_identity
+            != LzssHashTreeNodeIdentity::pool_local
+        || !same_node_arrays(pool.node_arrays(), mutation_context)) {
+        result.error =
+            LzssSparseHashTreeBucketTransitionError::invalid_metadata;
+        return result;
+    }
+
+    const auto mutation = detach_lzss_hash_tree_bucket_pool_position_v2(
+        mutation_context, root, position);
+    result.mutation_error = mutation.error;
+    if (mutation.error != LzssHashTreeBucketMutationError::none) {
+        result.error =
+            LzssSparseHashTreeBucketTransitionError::mutation_failure;
+        return result;
+    }
+    result.root = mutation.root;
+    result.node_count = node_count - 1U;
+    result.status = LzssSparseHashTreeBucketTransitionStatus::retired;
+    result.pool_error = pool.release(mutation.affected_node);
+    if (result.pool_error != LzssSparseHashTreeError::none) {
+        result.error = LzssSparseHashTreeBucketTransitionError::pool_failure;
+    }
     return result;
 }
 

@@ -5945,3 +5945,12 @@ sentinels and accounting, three-state bucket design, and raw-workspace lifetime
 conventions. No external workspace owner, allocator reset, sparse match finder,
 compressor, source code, test, benchmark, tuning guide, patent, pseudocode, or
 optimization description was consulted.
+
+### IR-0662
+
+The promoted-bucket retirement transition uses DD-891 through DD-898,
+TVG-0758 through TVG-0765, the repository-owned pool-local detach primitive,
+allocator reserved/release contract, complete-chain ring overwrite ordering,
+and sparse three-state model. No external tree-retirement implementation,
+sparse match finder, compressor, source code, test, benchmark, tuning guide,
+patent, pseudocode, or optimization description was consulted.

@@ -847,3 +847,23 @@ frame resetは全headをposition sentinel、linkとcountをzero、rootをnull、
 ownerはmutable viewとconst viewを明示し、callerが既存のbuilder、query、mutation、state
 componentへ必要なspanとpoolを渡せるようにする。この段階ではretirement、metadata commit
 helper、production matcher、profile、ABI、CLIおよびstream formatへ接続しない。
+
+## 33. Sparse promoted-bucket retirement
+
+complete chainはexpired positionを物理unlinkしない。queryがwindow外candidateのlinkを読む前に
+停止し、その後のcurrent position挿入が同じring slotを上書きする既存規則を維持する。
+sparse state controllerはこのslot再利用より先に呼ばれ、expired positionが属するbucketの
+tree側retirementだけを担当する。
+
+modeが`PromotedTree`なら、pool-local absolute-position detachを実行し、返されたreserved
+nodeを直ちにpoolへreleaseする。成功結果は新root、count minus one、`Retired` statusを一括で
+返す。最後のnodeをretireした場合もmodeは`PromotedTree`のまま、null rootとzero countを
+正当な完全空treeとして保持する。次の同bucket挿入はfree nodeがあれば再び一node treeを
+作り、他bucketがpoolを使い切っていればtree解放なしで`PoolRejectedChain`へ移る。
+
+`Chain`と`PoolRejectedChain`のretirementはroot null、count zeroを検証した上でtree/poolを
+変更しない。missing position、wrong bucket、壊れたtree、metadata/node-array不一致または
+sticky pool errorはring slotを上書きする前のhard failureである。single-threaded callerの
+有効なpoolではdetach成功後のreleaseは失敗しない。万一releaseが失敗した場合はpool全体を
+破棄し、処理を継続しない。この段階ではring-slot書込み、bucket metadata commit helper、
+production matcher、profile、ABI、CLIおよびstream formatへ接続しない。

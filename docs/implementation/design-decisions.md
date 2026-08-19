@@ -18865,3 +18865,22 @@ reset only while the allocator remains valid. A sticky pool error requires full
 workspace reinitialization or disposal and must not be erased by reset. Defer
 retirement, metadata commit helpers, production matcher, profile, ABI, CLI, and
 format integration.
+
+## DD-898: Retire promoted nodes before complete-chain slot reuse
+
+- Date: 2026-08-20
+- Status: accepted
+
+Keep the complete HashChain's existing implicit retirement: stop before reading
+an out-of-window candidate's link and later overwrite its ring slot. Before that
+overwrite, detach the same absolute position from a promoted pool-local tree and
+release the returned reserved node. Return root, decremented count, and status
+as one transition result.
+
+Treat null root plus zero count as a valid empty `PromotedTree`, not as corrupt
+metadata. A later insertion may rebuild its one-node tree or move it directly to
+`PoolRejectedChain` if other buckets exhaust the pool. Chain modes perform no
+tree mutation but must retain null root and zero count. Reject missing positions,
+structural corruption, node-array mismatch, and sticky allocator failure before
+ring-slot reuse. Defer the ring write itself, metadata commit helper, production
+matcher, profile, ABI, CLI, and format integration.

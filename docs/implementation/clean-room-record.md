@@ -23500,3 +23500,32 @@ discarded and the reviewed seed retained.
   tests and `marc_interoperability_schema_compatibility`. The workspace byte
   count, public format, ABI, CLI, retirement, metadata commit, and production
   matcher are unchanged.
+
+## CR-0970: 2026-08-20 - Sparse promoted-bucket retirement
+
+- Authoring method: extended the private state result with retirement, then
+  fixed middle-node removal, final-node empty state, reinsertion, exhausted
+  empty-tree fallback, chain modes, missing positions, and sticky pool failure
+  in six direct fixtures.
+- References used: IR-0662, DD-891 through DD-898, TVG-0758 through TVG-0765,
+  CR-0963 through CR-0969, and marc's existing ring-chain advance and pool-local
+  detach components.
+- Known implementations intentionally not consulted: external tree-retirement
+  implementations, sparse match finders, compressors, source code, tests,
+  benchmarks, tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: retire tree nodes before ring-slot reuse; preserve an
+  empty promoted state; release detached nodes immediately; leave chain modes
+  untouched; and reject every hard failure before caller chain mutation.
+- Generated-code task description: synchronize promoted pool-tree retirement
+  with the existing complete-chain visibility and ring-reuse rules without yet
+  connecting the production matcher.
+- Similarity review: retirement order, empty-state representation, allocator
+  handoff, errors, and fixtures derive solely from marc's preceding design and
+  private components. No external implementation expression was consulted or
+  introduced.
+- Validation: all fourteen state tests and all forty-two related builder,
+  ring/pool mutation, and state tests pass under MSVC and ClangCL. All 3,114
+  registered tests pass under each compiler with a 600-second per-test limit;
+  both runs include all six Python tooling tests and
+  `marc_interoperability_schema_compatibility`. The complete-chain ring write,
+  metadata commit, public format, ABI, CLI, and production matcher are unchanged.
