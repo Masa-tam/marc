@@ -10723,3 +10723,23 @@ without performing input arithmetic on the sentinel. Run all nine bucket-query
 tests under MSVC and ClangCL, then run
 every registered test under both compilers with a 600-second per-test limit and
 no exclusions, including interoperability schema compatibility.
+
+### TVG-0761
+
+Add eight direct pool-local builder tests. Build a three-position equal-key
+chain into exactly three nodes, validate it, and require the pool-local Exact
+query to return `{distance = 5, length = 5}`. Reproduce the complete builder's
+single-left, single-right, left-right, and right-left rotation shapes and check
+the expected root position and height.
+
+With capacity two for a three-node chain, require normal insufficient capacity,
+zero allocation, byte-for-byte unchanged node arrays, and no published root or
+count. Accept an empty chain with zero capacity. Preallocate and release nodes
+to force noncontiguous IDs while retaining one unrelated allocation; require
+successful build/query/release without changing it. Reject a malformed chain
+before pool mutation. Reject corrupt subtree metadata and require a release
+attempt on that tree to leave every pool field unchanged. Require the validated
+whole-bucket release to restore exact free/active accounting. Run all
+eight tests under MSVC and ClangCL, then run every registered test under both
+compilers with a 600-second per-test limit and no exclusions, including
+interoperability schema compatibility.

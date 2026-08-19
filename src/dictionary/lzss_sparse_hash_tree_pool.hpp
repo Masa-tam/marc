@@ -64,6 +64,15 @@ struct LzssSparseHashTreeNodeAllocation {
     LzssSparseHashTreeError error{LzssSparseHashTreeError::none};
 };
 
+struct LzssSparseHashTreeNodeArrays {
+    std::span<std::uint32_t> left{};
+    std::span<std::uint32_t> right{};
+    std::span<std::uint32_t> parent{};
+    std::span<std::uint8_t> height{};
+    std::span<LzssHashTreeStoredPosition> position{};
+    std::span<LzssHashTreeStoredPosition> subtree_maximum_position{};
+};
+
 class LzssSparseHashTreeNodePool {
 public:
     LzssSparseHashTreeNodePool() noexcept = default;
@@ -81,6 +90,10 @@ public:
     }
     [[nodiscard]] LzssSparseHashTreeError last_error() const noexcept {
         return last_error_;
+    }
+    [[nodiscard]] LzssSparseHashTreeNodeArrays node_arrays() noexcept {
+        return {left_, right_, parent_, height_, position_,
+                subtree_maximum_position_};
     }
 
     [[nodiscard]] LzssSparseHashTreeNodeAllocation allocate() noexcept;

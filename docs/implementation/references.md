@@ -5909,3 +5909,12 @@ subtree-maximum invariant, bounded traversal checks, and sparse-pool free-node
 marker. No external tree query, sparse match finder, compressor, source code,
 test, benchmark, tuning guide, patent, pseudocode, or optimization description
 was consulted.
+
+### IR-0658
+
+The atomic pool-local bucket builder uses DD-891 through DD-894, TVG-0758
+through TVG-0761, the repository-owned complete-chain inspection, AVL ordering
+and rotations, sparse allocator contract, pool-local Exact query, and bounded
+parent-link validation. No external tree builder, sparse match finder,
+compressor, source code, test, benchmark, tuning guide, patent, pseudocode, or
+optimization description was consulted.

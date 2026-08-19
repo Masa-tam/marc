@@ -18790,3 +18790,21 @@ bounded BST search instead of deriving a pool node with modulo arithmetic.
 Reject a missing position, invalid reached node, or cycle before publishing a
 match. Keep allocator, builder, mutation, promotion, matcher, profile, ABI,
 CLI, and format integration outside this change.
+
+## DD-894: Build pool-local buckets as private validated transactions
+
+- Date: 2026-08-20
+- Status: accepted
+
+Inspect the complete chain and determine its exact active count before touching
+the pool. Return ordinary insufficient capacity with no allocation or node
+mutation. When capacity is sufficient, allocate pool-local IDs, build an AVL
+tree under a private root, validate the complete reachable structure and every
+chain position, and publish root and count only through a successful result.
+
+Provide a shared validated whole-bucket release operation for builder rollback
+and later demotion. It must release only nodes reachable from that bucket and
+must preserve unrelated active pool nodes. Treat allocator corruption as a
+sticky hard failure requiring pool disposal, never as capacity fallback. Keep
+bucket metadata, promotion state, mutation, matcher, profile, ABI, CLI, and
+format integration outside this change.

@@ -23387,3 +23387,32 @@ discarded and the reviewed seed retained.
   per-test limit; both runs include all six Python tooling tests and
   `marc_interoperability_schema_compatibility`. The public format, ABI, CLI,
   production selector, allocator, builder, mutation, and matcher are unchanged.
+
+## CR-0966: 2026-08-20 - Atomic pool-local bucket builder
+
+- Authoring method: declared the private transactional API and eight direct
+  fixtures first, observed the intended missing-source configure failure, then
+  implemented chain inspection, pool-local AVL construction, full validation,
+  and validated whole-bucket release.
+- References used: IR-0658, DD-891 through DD-894, TVG-0758 through TVG-0761,
+  CR-0963 through CR-0965, and marc's existing complete HashTree components.
+- Known implementations intentionally not consulted: external tree builders,
+  sparse match finders, compressors, source code, tests, benchmarks, tuning
+  guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: keep root private until validation; distinguish normal
+  capacity rejection from hard pool failure; verify chain membership by bounded
+  search; release complete trees by bounded leaf removal; and preserve unrelated
+  active nodes.
+- Generated-code task description: implement a bounded atomic pool-local bucket
+  builder and reusable complete-tree release without connecting production
+  selection, beginning with capacity and ownership red fixtures.
+- Similarity review: transaction order, AVL operations, validation, rollback,
+  and tests derive solely from marc's preceding design and repository-owned
+  complete-tree implementation. No external implementation expression was
+  consulted or introduced.
+- Validation: all eight focused builder tests pass under MSVC and ClangCL. All
+  3,090 registered tests pass under each compiler with a 600-second per-test
+  limit; both runs include all six Python tooling tests and
+  `marc_interoperability_schema_compatibility`. The public format, ABI, CLI,
+  bucket metadata, promotion state, mutation, and production matcher are
+  unchanged.

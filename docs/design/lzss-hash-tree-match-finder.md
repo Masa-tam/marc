@@ -770,3 +770,22 @@ ring identityの既存経路とstream representationは変更しない。
 この段階ではpool-local treeを直接fixtureで与えるだけとし、allocator、builder、mutation、
 promotion stateまたはproduction matcherへ接続しない。次段階で同じidentity contractを
 builderとmutationへ展開する。
+
+## 29. Atomic pool-local bucket builder
+
+pool-local builderはcomplete chainを最初にread-only検査し、active node数、link範囲、
+bucket一致およびwindow範囲を確定する。必要数がpool free countを超える場合は
+`InsufficientCapacity`を正常結果として返し、allocator、node array、rootおよびcountへ
+一切書かない。empty chainはzero-capacity poolでも正常である。
+
+容量が足りる場合だけnodeを取得し、呼出し中だけ見えるprivate rootへAVL treeを構築する。
+node IDはallocatorの結果をそのまま使い、absolute positionの剰余から生成しない。構築後の
+validatorはparent linkを用いたbounded非再帰walkでreachable node数、ordering、height、
+balanceおよびsubtree maximumを検証し、さらにchainの各absolute positionをbounded BST
+searchでtree内に確認する。全検証成功後にだけrootとnode countを戻り値として公開する。
+
+共通のbucket release処理は完全なtreeを検証してからleaf単位で全nodeをpoolへ返す。
+これはbuilderのprivate rollbackと後続demotionで再利用する。releaseはtree外のactive nodeを
+走査または変更しない。allocator自体が破損してsticky errorになった場合はpool全体を破棄する
+hard failureであり、通常のcapacity fallbackとして扱わない。この段階ではbucket metadata、
+promotion state、mutation、production matcherまたは公開profileへ接続しない。
