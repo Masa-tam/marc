@@ -1659,6 +1659,21 @@ than used as process success. A negative gate is useful evidence. A positive
 `eligible_for_format_design` permits only the next bounded aggregate-workspace
 design; it does not reserve a variant or establish final compressed-size gain.
 
+The 2026-08-19 MSVC 19.51.36252.0 Release measurement at revision `9de8d29`
+completed all 36 records over 211,938,580 Corpus bytes. Every four-MiB
+HashTree token summary and fingerprint matched its HashChain oracle. Aggregate
+throughput was 1.77 MiB/s for HashTree and 0.80 MiB/s for HashChain, a ratio of
+2.218. The four-MiB parse used 5,659,280 fewer tokens and covered 5,487,848
+more bytes with matches than the one-MiB control. Maximum workspaces were
+4,718,592 bytes for the control, 17,301,504 bytes for the oracle, and
+105,447,424 bytes for the candidate.
+
+All admission gates are positive, so aggregate-workspace design may begin.
+These numbers do not select a production finder, reserve a stream variant, or
+prove final compressed-size improvement. Three individual members still ran
+slower with HashTree than with the same-size HashChain, and the complete tree
+does not yet have a whole-encoder memory proof under the 128-MiB limit.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

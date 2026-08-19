@@ -18683,3 +18683,25 @@ bytes than the control. A false performance or opportunity gate remains a
 successful, reproducible negative experiment result; only Exact mismatch,
 invalid reports, Corpus failure, or execution failure aborts the runner. Both
 gates must be true before a separate public-format workspace design begins.
+
+## DD-889: Admit aggregate-workspace design after the four-MiB experiment
+
+- Date: 2026-08-19
+- Status: accepted
+
+The fixed private experiment at revision `9de8d29` completed 36 records over
+all twelve verified Silesia members. Require and observe complete equality of
+the four-MiB HashChain and HashTree token summaries and SHA-256 fingerprints.
+The byte-weighted HashTree/HashChain throughput ratio is 2.218. Relative to
+the one-MiB control, the four-MiB oracle emits 5,659,280 fewer tokens and
+covers 5,487,848 more bytes with matches. Therefore Exact, CPU, parse-
+opportunity, and combined eligibility gates all pass.
+
+Permit the next aggregate-workspace design but do not reserve or expose a
+format identity. Preserve the existing one-MiB public profiles and production
+selector. The candidate's 105,447,424-byte match-finder workspace is not a
+whole-encoder memory proof. Enumerate every concurrently live buffer under
+checked arithmetic next, and design a bounded sparse node pool if the complete
+tree cannot fit the configured limit. Retain per-member speed losses and the
+distinction between parse opportunity and final compressed size as explicit
+limitations of the evidence.

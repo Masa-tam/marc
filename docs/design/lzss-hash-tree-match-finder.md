@@ -586,3 +586,34 @@ fingerprintはempty SHA-256となる。併せてliteral count、match countお�
 記録し、`literal_count + match_count == token_count`かつ
 `literal_count + matched_bytes == input_bytes`をuntimed passで検証する。この表現は
 benchmark evidenceだけに使用し、stream format、hash descriptorまたはpublic APIではない。
+
+## 24. 4 MiB private実験の判定
+
+revision `9de8d29`をMSVC 19.51.36252.0のRelease buildで測定した。検証済み
+Silesia 12 membersを各々独立に処理し、1 MiB HashChain control、4 MiB HashChain
+oracle、4 MiB HashTree threshold 1024 candidateの36 recordsを生成した。全4 MiB
+oracle/candidate pairはtoken count、literal count、match count、matched bytesおよび
+SHA-256 token fingerprintが一致し、Exact gateを通過した。
+
+全211,938,580 input bytesのbyte-weighted aggregateは次のとおりである。
+
+```text
+role          seconds    MiB/s   tokens      matched bytes   max workspace
+control-1m      80.74     2.50   42,185,181   183,670,668       4,718,592
+oracle-4m      253.62     0.80   36,525,901   189,158,516      17,301,504
+candidate-4m   114.35     1.77   36,525,901   189,158,516     105,447,424
+```
+
+HashTreeは同じ4 MiB parseをHashChainの2.218倍のthroughputで生成した。4 MiB oracleは
+1 MiB controlよりtokenが5,659,280少なく、matched bytesが5,487,848多い。全12
+membersがtoken減少とmatched-byte増加を示し、CPU、parse opportunityおよびcombined
+format-design eligibility gateは全て成立した。ただし個別速度ではHashTreeがHashChainに
+負けるmemberも3件あり、この結果を普遍的な速度優位とはしない。またtoken差を最終的な
+圧縮率差とはしない。
+
+この判定は次のbounded aggregate-workspace設計へ進むことだけを許す。完全HashTreeは
+match-finder単体で105,447,424 bytesを占有するため、既定128 MiB limit下でpublic
+contextual encoderを構成できる証拠にはならない。既存format ID、variant、C ABI、CLI
+archive名およびproduction selectorは変更しない。次工程ではtyped-token、entropy、
+payload、frame viewおよびinputを含む同時生存workspaceをchecked arithmeticで列挙し、
+完全treeが収まらなければSection 22のbounded sparse node poolを独立に設計する。

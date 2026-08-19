@@ -5863,3 +5863,12 @@ HashChain and HashTree report validators, canonical token fingerprint, and
 prior versioned local-runner structure. No external runner, match finder,
 compressor, source code, test, benchmark result, schema, tuning guide,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0653
+
+The private four-MiB experiment evidence uses DD-886 through DD-889,
+TVG-0753 through TVG-0756, the repository-owned strict Silesia verifier,
+versioned experiment runner, canonical token fingerprint, and the locally
+generated revision `9de8d29` JSON result. No external match finder,
+compressor, source code, test, benchmark result, format design, tuning guide,
+patent, pseudocode, or optimization description was consulted.

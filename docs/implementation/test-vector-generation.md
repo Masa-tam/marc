@@ -10639,3 +10639,19 @@ and require all gates to remain false without raising an error. Register the
 test as ordinary tooling independent of Corpus presence. After implementation,
 run all six Python tooling tests, then both complete compiler suites including
 schema compatibility.
+
+### TVG-0756
+
+Build revision `9de8d29` with MSVC 19.51.36252.0 in Release mode and run the
+dedicated four-MiB experiment once over every verified Silesia member. Require
+exactly 36 records, twelve unique members, and the fixed one-MiB control plus
+four-MiB oracle/candidate roles. Reject publication unless each four-MiB pair
+matches in token count, literal count, match count, matched bytes, and token
+fingerprint.
+
+Sum input and token counters by role, calculate throughput from summed measured
+bytes and seconds, and take the maximum workspace per role. Record the same-run
+HashTree/HashChain ratio and four-MiB-minus-one-MiB token and matched-byte
+deltas. Preserve negative per-member speed results even when aggregate gates
+pass. Keep the ignored local JSON outside version control; record its revision,
+configuration, aggregate evidence, and conclusions in maintained documents.

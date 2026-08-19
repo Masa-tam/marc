@@ -23259,3 +23259,29 @@ discarded and the reviewed seed retained.
   evidence. All 3,071 registered tests pass under MSVC in 164.74 seconds and
   ClangCL in 181.92 seconds with a 600-second per-test limit; both runs include
   all six Python tooling tests and `marc_interoperability_schema_compatibility`.
+
+## CR-0961: 2026-08-19 - Private four-MiB Silesia evidence
+
+- Authoring method: ran the fixed offline experiment without changing its
+  iteration count, roles, threshold, input manifest, or admission rules;
+  inspected the complete versioned JSON; then recorded aggregates and limits.
+- References used: IR-0653, DD-886 through DD-889, TVG-0753 through TVG-0756,
+  CR-0958 through CR-0960, and the ignored local revision `9de8d29` result.
+- Known implementations intentionally not consulted: external match finders,
+  compressors, source code, tests, benchmark results, format extensions,
+  tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: treat complete token fingerprints as the Exact gate;
+  use same-run byte-weighted throughput; retain individual losses; distinguish
+  parse opportunity from compressed size; and admit only aggregate-memory
+  design rather than a public format or production selector.
+- Generated-code task description: execute all 36 fixed Silesia measurements,
+  verify role and member completeness, report Exact, performance, opportunity,
+  and workspace evidence, and preserve the local raw JSON outside Git.
+- Similarity review: the experiment, gates, arithmetic, and conclusions derive
+  solely from marc-owned tooling, formats, limits, and locally measured data.
+  No external implementation expression was consulted or introduced.
+- Validation: all twelve four-MiB pairs have identical token summaries and
+  fingerprints. Aggregate HashTree/HashChain throughput is 2.218; four MiB
+  reduces tokens by 5,659,280 and increases matched bytes by 5,487,848 over
+  one MiB. The maximum candidate workspace is 105,447,424 bytes. All four
+  experiment gates pass; no format ID, ABI, CLI name, or selector changed.
