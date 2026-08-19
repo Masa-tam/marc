@@ -60,6 +60,11 @@ struct ControllerFixture {
         return {input, parameters, &workspace, nullptr, &promotion};
     }
 
+    [[nodiscard]] LzssSparseHashTreePositionContext statistics_context(
+        LzssMatchFinderStatistics& statistics) {
+        return {input, parameters, &workspace, &statistics, &promotion};
+    }
+
     void initialize_promotion(const std::uint64_t threshold) {
         initialize_lzss_hash_tree_promotion_state(
             workspace.heads().size(), threshold, promotion);
@@ -442,6 +447,66 @@ TEST(LzssSparseHashTreeController,
     EXPECT_EQ(repeated.error,
               LzssSparseHashTreeControllerError::invalid_protocol);
     EXPECT_EQ(fixture.workspace.heads()[fixture.bucket], before_head);
+}
+
+TEST(LzssSparseHashTreeController,
+     StatisticsObserveChainPromotionTreeAndMaintenance) {
+    ControllerFixture fixture{};
+    for (const auto position : {0U, 5U, 10U}) {
+        ASSERT_EQ(insert_lzss_sparse_hash_tree_position(
+                      fixture.context(), position).error,
+                  LzssSparseHashTreeControllerError::none);
+    }
+    fixture.initialize_promotion(0);
+    LzssMatchFinderStatistics statistics{};
+    auto context = fixture.statistics_context(statistics);
+
+    const auto chain = query_lzss_sparse_hash_tree_exact(context, 15);
+    ASSERT_EQ(chain.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(chain.match, (LzssMatch{5, 5}));
+    EXPECT_EQ(statistics.query_count, 1U);
+    EXPECT_EQ(statistics.candidate_count, 1U);
+    EXPECT_EQ(statistics.byte_comparison_count, 5U);
+    EXPECT_EQ(statistics.hash_tree_chain_query_count, 1U);
+    EXPECT_EQ(statistics.hash_tree_chain_candidate_count, 1U);
+    EXPECT_EQ(statistics.hash_tree_trigger_query_count, 1U);
+    EXPECT_EQ(statistics.hash_tree_promotion_trigger_candidate_count, 1U);
+
+    ASSERT_EQ(insert_lzss_sparse_hash_tree_position(context, 15).error,
+              LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(statistics.hash_tree_promotion_count, 1U);
+    EXPECT_EQ(statistics.hash_tree_promotion_build_node_count, 3U);
+    EXPECT_EQ(statistics.hash_tree_insertion_count, 1U);
+    EXPECT_EQ(statistics.hash_tree_maximum_promoted_buckets, 1U);
+    EXPECT_EQ(statistics.hash_tree_maximum_promoted_nodes, 4U);
+
+    const auto tree = query_lzss_sparse_hash_tree_exact(context, 20);
+    ASSERT_EQ(tree.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(tree.match, chain.match);
+    EXPECT_EQ(statistics.query_count, 2U);
+    EXPECT_EQ(statistics.hash_tree_tree_query_count, 1U);
+    EXPECT_GT(statistics.hash_tree_tree_query_node_count, 0U);
+    EXPECT_GT(statistics.hash_tree_tree_query_key_comparison_count, 0U);
+
+    ASSERT_EQ(insert_lzss_sparse_hash_tree_position(context, 20).error,
+              LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(statistics.hash_tree_retirement_count, 1U);
+    EXPECT_EQ(statistics.hash_tree_insertion_count, 2U);
+    EXPECT_EQ(fixture.workspace.node_pool().active_count(), 4U);
+    EXPECT_FALSE(statistics.overflowed);
+}
+
+TEST(LzssSparseHashTreeController, StatisticsSaturateWithoutChangingMatch) {
+    ControllerFixture fixture{};
+    fixture.initialize_promotion(0);
+    LzssMatchFinderStatistics statistics{};
+    statistics.query_count = UINT64_MAX;
+    const auto query = query_lzss_sparse_hash_tree_exact(
+        fixture.statistics_context(statistics), fixture.input.size() - 1U);
+    EXPECT_EQ(query.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(query.match, LzssMatch{});
+    EXPECT_EQ(statistics.query_count, UINT64_MAX);
+    EXPECT_TRUE(statistics.overflowed);
 }
 
 } // namespace

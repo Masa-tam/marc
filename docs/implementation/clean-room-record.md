@@ -23618,3 +23618,31 @@ discarded and the reviewed seed retained.
   compiler with a 600-second per-test limit; both runs include all six Python
   tooling tests and `marc_interoperability_schema_compatibility`. Diagnostics,
   public format, ABI, CLI, and the production matcher are unchanged.
+
+## CR-0974: 2026-08-20 - Sparse diagnostic aggregation
+
+- Authoring method: mapped private sparse operations onto marc's existing match
+  finder counters, isolated component observations by operation, and fixed
+  committed population and saturation expectations in direct fixtures.
+- References used: IR-0666, DD-891 through DD-902, TVG-0758 through TVG-0769,
+  CR-0963 through CR-0973, and marc's existing statistics structure,
+  saturating-counter behavior, promotion state, workspace, and pool accounting.
+- Known implementations intentionally not consulted: external diagnostic
+  schemas, sparse matcher instrumentation, compressors, source code, tests,
+  benchmarks, tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: observe components separately; aggregate only after
+  success; map chain work to both common and strategy-specific counters; derive
+  population from committed workspace state; and make null observation
+  behavior-neutral.
+- Generated-code task description: add optional sparse-controller diagnostics
+  without changing query, promotion, mutation, or token-selection behavior.
+- Similarity review: counter mapping, commit boundary, population source,
+  saturation behavior, and fixtures derive solely from marc's preceding design
+  and components. No external implementation expression was consulted or
+  introduced.
+- Validation: all nineteen controller tests and all seventy-five related
+  workspace, allocator, builder, ring/pool mutation, state, and controller tests
+  pass under MSVC and ClangCL. All 3,133 registered tests pass under each
+  compiler with a 600-second per-test limit; both runs include all six Python
+  tooling tests and `marc_interoperability_schema_compatibility`. The production
+  matcher, public format, ABI, and CLI are unchanged.

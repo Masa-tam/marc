@@ -926,3 +926,21 @@ position数、最初のcontroller errorおよび下位transition errorを区別�
 比較し、`LzssMatch`、beneficial判定および次のadvance幅が一致することを要求する。この段階では
 private controllerのままとし、diagnostic aggregation、production matcher、profile、ABI、CLI、
 stream formatへ接続しない。
+
+## 37. Sparse diagnostic aggregation
+
+sparse controllerのoptional observerは公開済み`LzssMatchFinderStatistics`へ集約する。observerが
+nullの場合、component primitiveへもnullを渡し、比較、回転、人口走査のための診断処理を行わない。
+observerの有無はquery結果、promotion判断、tree形状、chain、pool accountingおよび生成tokenを
+変更してはならない。
+
+chain queryは共通query/candidate/byte-comparison counter、HashChain prefix counterとdepth、
+HashTree chain query/candidate/trigger counterとdepthへ記録する。pool-tree queryは一操作だけの
+component observerを使い、成功後にtree query comparison/LCP counter、visited node数、最大値、
+depthへ集約する。promotion build、insert、retireも個別component observerを使い、成功した
+transitionだけを対応するbuildまたはmaintenance counterへ集約する。
+
+最大promoted node数はpoolのactive count、最大promoted bucket数はcommit済みmode arrayから
+記録する。counter加算は飽和し、wrapせず`overflowed`を立てる。失敗したcomponentの途中統計は
+aggregateしない。この段階では既存full HashTreeとのhelper共有、production matcher、profile、
+ABI、CLIおよびstream formatへ接続しない。

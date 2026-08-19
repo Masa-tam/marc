@@ -5982,3 +5982,12 @@ reference matcher, complete-chain cursor convention, promotion trigger,
 retirement, insertion, and metadata controller. No external matcher advance
 loop, sparse tree controller, compressor, source code, test, benchmark, tuning
 guide, patent, pseudocode, or optimization description was consulted.
+
+### IR-0666
+
+The sparse diagnostic aggregation uses DD-891 through DD-902, TVG-0758 through
+TVG-0769, the repository-owned `LzssMatchFinderStatistics`, component observers,
+saturating counter convention, promotion state, sparse workspace metadata, and
+pool accounting. No external diagnostic schema, sparse matcher instrumentation,
+compressor, source code, test, benchmark, tuning guide, patent, pseudocode, or
+optimization description was consulted.

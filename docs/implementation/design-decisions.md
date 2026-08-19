@@ -18946,3 +18946,22 @@ Report processed and inserted counts separately. Compare sparse Exact output to
 the stateless exhaustive reference at actual LZSS token boundaries, including
 the beneficial-match decision that selects the next range. Defer diagnostics,
 production matcher, profile, ABI, CLI, and format integration.
+
+## DD-902: Aggregate sparse diagnostics only after successful operations
+
+- Date: 2026-08-20
+- Status: accepted
+
+Use the existing `LzssMatchFinderStatistics` as the optional sparse-controller
+observer. Keep one local component-statistics object per tree query, promotion
+build, insertion, or retirement and merge it only after that operation and its
+metadata publication succeed. Record chain work directly in the common,
+HashChain, and HashTree-chain counters. Record promotion triggers only when the
+promotion state actually becomes pending.
+
+Derive maximum promoted-node population from the pool's committed active count
+and maximum promoted-bucket population from committed bucket modes. Saturate
+every additive counter and set `overflowed` instead of wrapping. A null observer
+must bypass component instrumentation and must not affect matches, transitions,
+or token selection. Defer helper sharing with the full-tree implementation,
+production matcher, profile, ABI, CLI, and format integration.

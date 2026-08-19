@@ -7,6 +7,124 @@
 namespace marc::dictionary::internal {
 namespace {
 
+void increment_statistic(
+    LzssMatchFinderStatistics* const statistics,
+    std::uint64_t& value) noexcept {
+    if (statistics == nullptr) return;
+    if (value == std::numeric_limits<std::uint64_t>::max()) {
+        statistics->overflowed = true;
+        return;
+    }
+    ++value;
+}
+
+void add_statistic(
+    LzssMatchFinderStatistics* const statistics,
+    std::uint64_t& value, const std::uint64_t increment) noexcept {
+    if (statistics == nullptr || increment == 0) return;
+    if (value > std::numeric_limits<std::uint64_t>::max() - increment) {
+        value = std::numeric_limits<std::uint64_t>::max();
+        statistics->overflowed = true;
+        return;
+    }
+    value += increment;
+}
+
+void aggregate_builder_statistics(
+    LzssMatchFinderStatistics* const statistics,
+    const LzssHashTreeComponentStatistics& component) noexcept {
+    if (statistics == nullptr) return;
+    add_statistic(statistics,
+        statistics->hash_tree_promotion_build_key_comparison_count,
+        component.key_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_promotion_build_key_byte_comparison_count,
+        component.key_byte_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_promotion_build_rotation_count,
+        component.rotation_count);
+    statistics->hash_tree_maximum_height = std::max(
+        statistics->hash_tree_maximum_height, component.maximum_height);
+    statistics->overflowed = statistics->overflowed || component.overflowed;
+}
+
+void aggregate_query_statistics(
+    LzssMatchFinderStatistics* const statistics,
+    const LzssHashTreeComponentStatistics& component) noexcept {
+    if (statistics == nullptr) return;
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_key_comparison_count,
+        component.key_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_key_byte_comparison_count,
+        component.key_byte_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_lcp_byte_comparison_count,
+        component.lcp_byte_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_prefix_range_comparison_count,
+        component.prefix_range_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_prefix_range_byte_comparison_count,
+        component.prefix_range_byte_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_tree_query_lcp_skipped_byte_count,
+        component.lcp_skipped_byte_count);
+    statistics->overflowed = statistics->overflowed || component.overflowed;
+}
+
+void aggregate_mutation_statistics(
+    LzssMatchFinderStatistics* const statistics,
+    const LzssHashTreeComponentStatistics& component) noexcept {
+    if (statistics == nullptr) return;
+    add_statistic(statistics,
+        statistics->hash_tree_maintenance_key_comparison_count,
+        component.key_comparison_count);
+    add_statistic(statistics,
+        statistics->hash_tree_maintenance_key_byte_comparison_count,
+        component.key_byte_comparison_count);
+    add_statistic(statistics, statistics->hash_tree_rotation_count,
+        component.rotation_count);
+    statistics->hash_tree_maximum_height = std::max(
+        statistics->hash_tree_maximum_height, component.maximum_height);
+    statistics->overflowed = statistics->overflowed || component.overflowed;
+}
+
+void record_depth(
+    LzssMatchFinderStatistics* const statistics,
+    std::array<std::uint64_t, lzss_match_finder_depth_histogram_size>& histogram,
+    const std::uint64_t work_items) noexcept {
+    if (statistics == nullptr) return;
+    const auto raw_bin = work_items == 0 ? 0U : std::bit_width(work_items);
+    const auto bin = std::min<std::size_t>(raw_bin, histogram.size() - 1U);
+    increment_statistic(statistics, histogram[bin]);
+}
+
+void record_chain_depth(
+    LzssMatchFinderStatistics* const statistics,
+    const std::uint64_t candidate_count) noexcept {
+    if (statistics == nullptr) return;
+    statistics->hash_chain_maximum_candidates_per_query = std::max(
+        statistics->hash_chain_maximum_candidates_per_query,
+        candidate_count);
+    record_depth(statistics,
+        statistics->hash_chain_query_depth_histogram, candidate_count);
+}
+
+void record_population(
+    const LzssSparseHashTreeWorkspace& workspace,
+    LzssMatchFinderStatistics* const statistics) noexcept {
+    if (statistics == nullptr) return;
+    const auto promoted_buckets = static_cast<std::uint64_t>(std::count(
+        workspace.modes().begin(), workspace.modes().end(),
+        LzssSparseHashTreeBucketMode::promoted_tree));
+    statistics->hash_tree_maximum_promoted_buckets = std::max(
+        statistics->hash_tree_maximum_promoted_buckets, promoted_buckets);
+    statistics->hash_tree_maximum_promoted_nodes = std::max(
+        statistics->hash_tree_maximum_promoted_nodes,
+        static_cast<std::uint64_t>(workspace.node_pool().active_count()));
+}
+
 [[nodiscard]] bool valid_mode_metadata(
     const LzssSparseHashTreeWorkspace& workspace,
     const LzssSparseHashTreeBucketMode mode, const std::uint32_t root,
@@ -91,19 +209,21 @@ namespace {
 
 [[nodiscard]] LzssHashTreeBucketMutationContext mutation_context(
     const LzssSparseHashTreePositionContext& context,
-    const std::size_t bucket) noexcept {
+    const std::size_t bucket,
+    LzssHashTreeComponentStatistics* const statistics = nullptr) noexcept {
     const auto nodes = context.workspace->node_pool().node_arrays();
     return {
         context.input, context.parameters, bucket,
         context.workspace->heads().size(), nodes.left, nodes.right,
         nodes.parent, nodes.height, nodes.position,
-        nodes.subtree_maximum_position, context.statistics,
+        nodes.subtree_maximum_position, statistics,
         LzssHashTreeNodeIdentity::pool_local};
 }
 
 [[nodiscard]] LzssSparseHashTreeBucketBuildContext release_context(
     const LzssSparseHashTreePositionContext& context,
-    const std::size_t position, const std::size_t bucket) noexcept {
+    const std::size_t position, const std::size_t bucket,
+    LzssHashTreeComponentStatistics* const statistics = nullptr) noexcept {
     const auto head = context.workspace->heads()[bucket];
     return {
         context.input, context.parameters, position + 1U, bucket,
@@ -111,7 +231,7 @@ namespace {
         head == lzss_hash_tree_no_stored_position
             ? lzss_hash_tree_no_position : static_cast<std::size_t>(head),
         context.workspace->links(), &context.workspace->node_pool(),
-        context.statistics};
+        statistics};
 }
 
 } // namespace
@@ -175,7 +295,18 @@ LzssSparseHashTreeQueryResult query_lzss_sparse_hash_tree_exact(
         result.error = LzssSparseHashTreeControllerError::invalid_position;
         return result;
     }
+    if (context.statistics != nullptr) {
+        increment_statistic(context.statistics,
+            context.statistics->query_count);
+    }
     if (context.input.size() - position < lzss_match_finder_prefix_size) {
+        if (context.statistics != nullptr) {
+            record_chain_depth(context.statistics, 0);
+            increment_statistic(context.statistics,
+                context.statistics->hash_tree_chain_query_count);
+            record_depth(context.statistics,
+                context.statistics->hash_tree_chain_query_depth_histogram, 0);
+        }
         return result;
     }
     const auto hash = calculate_lzss_prefix_hash(context.input, position);
@@ -194,12 +325,14 @@ LzssSparseHashTreeQueryResult query_lzss_sparse_hash_tree_exact(
     }
 
     if (mode == LzssSparseHashTreeBucketMode::promoted_tree) {
+        LzssHashTreeComponentStatistics component{};
         const auto nodes = context.workspace->node_pool().node_arrays();
         const auto tree = query_lzss_hash_tree_bucket_exact({
             context.input, context.parameters, position, result.bucket,
             context.workspace->heads().size(), root, nodes.left, nodes.right,
             nodes.parent, nodes.height, nodes.position,
-            nodes.subtree_maximum_position, context.statistics,
+            nodes.subtree_maximum_position,
+            context.statistics == nullptr ? nullptr : &component,
             LzssHashTreeNodeIdentity::pool_local});
         result.tree_error = tree.error;
         if (tree.error != LzssHashTreeBucketQueryError::none) {
@@ -209,6 +342,20 @@ LzssSparseHashTreeQueryResult query_lzss_sparse_hash_tree_exact(
         result.match = tree.match;
         result.candidate_count = tree.nodes_visited;
         result.source = LzssSparseHashTreeQuerySource::pool_tree;
+        if (context.statistics != nullptr) {
+            aggregate_query_statistics(context.statistics, component);
+            increment_statistic(context.statistics,
+                context.statistics->hash_tree_tree_query_count);
+            add_statistic(context.statistics,
+                context.statistics->hash_tree_tree_query_node_count,
+                tree.nodes_visited);
+            context.statistics->hash_tree_maximum_nodes_per_query = std::max(
+                context.statistics->hash_tree_maximum_nodes_per_query,
+                tree.nodes_visited);
+            record_depth(context.statistics,
+                context.statistics->hash_tree_tree_query_depth_histogram,
+                tree.nodes_visited);
+        }
         return result;
     }
 
@@ -233,11 +380,31 @@ LzssSparseHashTreeQueryResult query_lzss_sparse_hash_tree_exact(
             return result;
         }
         ++result.candidate_count;
+        if (context.statistics != nullptr) {
+            increment_statistic(context.statistics,
+                context.statistics->candidate_count);
+        }
         std::size_t length{};
-        while (length < maximum_length
-               && context.input[position + length]
-                   == context.input[candidate_position + length]) {
+        while (length < maximum_length) {
+            if (context.statistics != nullptr) {
+                increment_statistic(context.statistics,
+                    context.statistics->byte_comparison_count);
+            }
+            if (context.statistics != nullptr
+                && length >= lzss_match_finder_prefix_size) {
+                increment_statistic(context.statistics,
+                    context.statistics->
+                        hash_chain_extension_byte_comparison_count);
+            }
+            if (context.input[position + length]
+                != context.input[candidate_position + length]) break;
             ++length;
+        }
+        if (context.statistics != nullptr) {
+            auto& prefix_count = length >= lzss_match_finder_prefix_size
+                ? context.statistics->hash_chain_prefix_match_count
+                : context.statistics->hash_chain_prefix_mismatch_count;
+            increment_statistic(context.statistics, prefix_count);
         }
         if (length >= context.parameters.min_match_length
             && length > result.match.length) {
@@ -256,6 +423,17 @@ LzssSparseHashTreeQueryResult query_lzss_sparse_hash_tree_exact(
             candidate_position - previous_distance);
     }
 
+    if (context.statistics != nullptr) {
+        record_chain_depth(context.statistics, result.candidate_count);
+        increment_statistic(context.statistics,
+            context.statistics->hash_tree_chain_query_count);
+        add_statistic(context.statistics,
+            context.statistics->hash_tree_chain_candidate_count,
+            result.candidate_count);
+        record_depth(context.statistics,
+            context.statistics->hash_tree_chain_query_depth_histogram,
+            result.candidate_count);
+    }
     if (mode == LzssSparseHashTreeBucketMode::chain
         && context.promotion_state != nullptr) {
         const auto recorded =
@@ -264,6 +442,18 @@ LzssSparseHashTreeQueryResult query_lzss_sparse_hash_tree_exact(
         result.promotion_error = recorded.error;
         if (recorded.error != LzssHashTreePromotionError::none) {
             result.error = LzssSparseHashTreeControllerError::promotion_failure;
+        } else if (recorded.pending && context.statistics != nullptr) {
+            increment_statistic(context.statistics,
+                context.statistics->hash_tree_trigger_query_count);
+            add_statistic(context.statistics,
+                context.statistics->
+                    hash_tree_promotion_trigger_candidate_count,
+                result.candidate_count);
+            context.statistics->
+                hash_tree_promotion_maximum_trigger_candidates = std::max(
+                    context.statistics->
+                        hash_tree_promotion_maximum_trigger_candidates,
+                    result.candidate_count);
         }
     }
     return result;
@@ -295,13 +485,14 @@ promote_pending_lzss_sparse_hash_tree_bucket(
     const auto mode = context.workspace->modes()[begin.bucket];
     const auto root = context.workspace->roots()[begin.bucket];
     const auto count = context.workspace->bucket_node_counts()[begin.bucket];
+    LzssHashTreeComponentStatistics component{};
     const auto transition = promote_lzss_sparse_hash_tree_bucket(
         {context.input, context.parameters, query_position, begin.bucket,
          context.workspace->heads().size(),
          head == lzss_hash_tree_no_stored_position
              ? lzss_hash_tree_no_position : static_cast<std::size_t>(head),
          context.workspace->links(), &context.workspace->node_pool(),
-         context.statistics},
+         context.statistics == nullptr ? nullptr : &component},
         mode, root, count);
     result.transition_error = transition.error;
     if (transition.error
@@ -324,6 +515,15 @@ promote_pending_lzss_sparse_hash_tree_bucket(
         == LzssSparseHashTreeBucketTransitionStatus::promoted;
     result.pool_rejected = transition.status
         == LzssSparseHashTreeBucketTransitionStatus::pool_rejected_chain;
+    if (result.promoted && context.statistics != nullptr) {
+        aggregate_builder_statistics(context.statistics, component);
+        increment_statistic(context.statistics,
+            context.statistics->hash_tree_promotion_count);
+        add_statistic(context.statistics,
+            context.statistics->hash_tree_promotion_build_node_count,
+            transition.node_count);
+        record_population(*context.workspace, context.statistics);
+    }
     return result;
 }
 
@@ -404,9 +604,13 @@ LzssSparseHashTreePositionResult insert_lzss_sparse_hash_tree_position(
             const auto expected_root = context.workspace->roots()[expired_bucket];
             const auto expected_count =
                 context.workspace->bucket_node_counts()[expired_bucket];
+            LzssHashTreeComponentStatistics component{};
             const auto retired = retire_lzss_sparse_hash_tree_bucket_position(
                 context.workspace->node_pool(),
-                mutation_context(context, expired_bucket), expected_mode,
+                mutation_context(
+                    context, expired_bucket,
+                    context.statistics == nullptr ? nullptr : &component),
+                expected_mode,
                 expected_root, expected_count, expired);
             result.transition_error = retired.error;
             if (retired.error
@@ -424,6 +628,11 @@ LzssSparseHashTreePositionResult insert_lzss_sparse_hash_tree_position(
             }
             result.retired = retired.status
                 == LzssSparseHashTreeBucketTransitionStatus::retired;
+            if (result.retired && context.statistics != nullptr) {
+                aggregate_mutation_statistics(context.statistics, component);
+                increment_statistic(context.statistics,
+                    context.statistics->hash_tree_retirement_count);
+            }
         }
     }
 
@@ -437,9 +646,15 @@ LzssSparseHashTreePositionResult insert_lzss_sparse_hash_tree_position(
         return result;
     }
     if (mode == LzssSparseHashTreeBucketMode::promoted_tree) {
+        LzssHashTreeComponentStatistics component{};
         const auto inserted = insert_lzss_sparse_hash_tree_bucket_or_demote(
-            release_context(context, position, result.bucket),
-            mutation_context(context, result.bucket), mode, root, count,
+            release_context(
+                context, position, result.bucket,
+                context.statistics == nullptr ? nullptr : &component),
+            mutation_context(
+                context, result.bucket,
+                context.statistics == nullptr ? nullptr : &component),
+            mode, root, count,
             position);
         result.transition_error = inserted.error;
         if (inserted.error
@@ -452,6 +667,15 @@ LzssSparseHashTreePositionResult insert_lzss_sparse_hash_tree_position(
             != LzssSparseHashTreeControllerError::none) {
             result.error = LzssSparseHashTreeControllerError::commit_failure;
             return result;
+        }
+        if (context.statistics != nullptr) {
+            aggregate_mutation_statistics(context.statistics, component);
+            if (inserted.status
+                == LzssSparseHashTreeBucketTransitionStatus::inserted) {
+                increment_statistic(context.statistics,
+                    context.statistics->hash_tree_insertion_count);
+                record_population(*context.workspace, context.statistics);
+            }
         }
     }
 

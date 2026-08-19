@@ -10869,3 +10869,22 @@ fixtures under MSVC and ClangCL, then run the related workspace, allocator,
 builder, mutation, state, and controller suites and every registered test under
 both compilers with a 600-second per-test limit and no exclusions, including
 interoperability schema compatibility.
+
+### TVG-0769
+
+Build a three-position equal-prefix chain with diagnostics enabled, query it at
+the fourth position, and require one common query/candidate, five compared
+bytes, one HashTree chain query, one candidate, and one promotion trigger.
+Advance that position and require one three-node promotion build, one promoted
+bucket, four maximum active nodes, and one tree insertion. Query the resulting
+tree and require the same match plus non-zero tree-node and key-comparison
+counters. Advance across the window boundary and require one retirement, a
+second insertion, and unchanged four-node active population.
+
+Initialize the common query counter at `UINT64_MAX`, perform a prefix-less tail
+query, and require an unchanged saturated value, `overflowed == true`, and the
+same empty match. Run all nineteen controller fixtures under MSVC and ClangCL,
+then run the related workspace, allocator, builder, mutation, state, and
+controller suites and every registered test under both compilers with a
+600-second per-test limit and no exclusions, including interoperability schema
+compatibility.

@@ -35,7 +35,7 @@ struct LzssSparseHashTreePositionContext {
     std::span<const std::byte> input{};
     LzssParameters parameters{};
     LzssSparseHashTreeWorkspace* workspace{};
-    LzssHashTreeComponentStatistics* statistics{};
+    LzssMatchFinderStatistics* statistics{};
     LzssHashTreePromotionState* promotion_state{};
 };
 
