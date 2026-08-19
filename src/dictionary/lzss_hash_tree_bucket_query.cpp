@@ -39,9 +39,16 @@ void increment_statistic(
     if (context.query_position > context.input.size()) {
         return LzssHashTreeBucketQueryError::invalid_query_position;
     }
-    const auto expected_capacity = std::min<std::size_t>(
+    if (context.node_identity != LzssHashTreeNodeIdentity::ring_position
+        && context.node_identity != LzssHashTreeNodeIdentity::pool_local) {
+        return LzssHashTreeBucketQueryError::invalid_node_arrays;
+    }
+    const auto expected_ring_capacity = std::min<std::size_t>(
         context.input.size(), context.parameters.window_size);
-    if (capacity == 0 || capacity != expected_capacity
+    if (capacity == 0
+        || capacity > static_cast<std::size_t>(UINT32_MAX)
+        || (context.node_identity == LzssHashTreeNodeIdentity::ring_position
+            && capacity != expected_ring_capacity)
         || context.right.size() != capacity
         || context.parent.size() != capacity
         || context.height.size() != capacity
@@ -67,7 +74,10 @@ void increment_statistic(
             > context.parameters.window_size
         || context.input.size() - position
             < lzss_match_finder_prefix_size
-        || position % context.left.size() != node
+        || (context.node_identity == LzssHashTreeNodeIdentity::ring_position
+            && position % context.left.size() != node)
+        || (context.node_identity == LzssHashTreeNodeIdentity::pool_local
+            && context.height[node] == 0)
         || (context.left[node] != lzss_hash_tree_null_node
             && context.left[node] >= context.left.size())
         || (context.right[node] != lzss_hash_tree_null_node
@@ -167,6 +177,26 @@ void increment_statistic(
         ++total_nodes;
     }
     return true;
+}
+
+[[nodiscard]] std::uint32_t find_pool_local_node_by_position(
+    const LzssHashTreeBucketQueryContext& context,
+    const std::size_t position, std::uint64_t& total_nodes) noexcept {
+    auto current = context.root;
+    std::size_t traversal_steps{};
+    while (current != lzss_hash_tree_null_node) {
+        if (!take_step(
+                context.left.size(), traversal_steps, total_nodes)
+            || !validate_node(context, current)) {
+            return lzss_hash_tree_null_node;
+        }
+        const auto comparison = compare_positions(
+            context, position, context.position[current]);
+        if (comparison == 0) return current;
+        current = comparison < 0 ? context.left[current]
+                                 : context.right[current];
+    }
+    return lzss_hash_tree_null_node;
 }
 
 } // namespace
@@ -323,8 +353,21 @@ LzssHashTreeBucketQueryResult query_lzss_hash_tree_bucket_exact(
         }
     }
 
-    const auto candidate_node = static_cast<std::uint32_t>(
-        maximum_position % context.left.size());
+    if (maximum_position >= context.query_position
+        || maximum_position >= context.input.size()
+        || context.query_position - maximum_position
+            > context.parameters.window_size
+        || context.input.size() - maximum_position
+            < lzss_match_finder_prefix_size) {
+        result.error = LzssHashTreeBucketQueryError::invalid_tree;
+        return result;
+    }
+    const auto candidate_node =
+        context.node_identity == LzssHashTreeNodeIdentity::ring_position
+        ? static_cast<std::uint32_t>(
+              maximum_position % context.left.size())
+        : find_pool_local_node_by_position(
+              context, maximum_position, result.nodes_visited);
     if (!validate_node(context, candidate_node)
         || context.position[candidate_node] != maximum_position
         || common_prefix_length(

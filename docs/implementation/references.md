@@ -5900,3 +5900,12 @@ fixed-width position sentinels, HashTree workspace conventions, decoder-limit
 validation, and aligned raw-workspace initialization style. No external pool,
 allocator, sparse match finder, compressor, source code, test, benchmark,
 tuning guide, patent, pseudocode, or optimization description was consulted.
+
+### IR-0657
+
+The pool-local Exact query boundary uses DD-891 through DD-893, TVG-0758
+through TVG-0760, the repository-owned complete-tree query ordering,
+subtree-maximum invariant, bounded traversal checks, and sparse-pool free-node
+marker. No external tree query, sparse match finder, compressor, source code,
+test, benchmark, tuning guide, patent, pseudocode, or optimization description
+was consulted.

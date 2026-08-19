@@ -23362,3 +23362,28 @@ discarded and the reviewed seed retained.
   both runs include all six Python tooling tests and
   `marc_interoperability_schema_compatibility`. The public format, ABI, CLI,
   production selector, and existing match finders are unchanged.
+
+## CR-0965: 2026-08-20 - Pool-local Exact query identity
+
+- Authoring method: added failing arbitrary-node-ID and missing-position
+  fixtures first, observed rejection by the ring-only capacity rule, then made
+  identity explicit and added bounded absolute-position lookup.
+- References used: IR-0657, DD-891 through DD-893, TVG-0758 through TVG-0760,
+  CR-0963 through CR-0964, and marc's existing Exact query implementation.
+- Known implementations intentionally not consulted: external tree queries,
+  sparse match finders, compressors, source code, tests, benchmarks, tuning
+  guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: retain the modulo fast path for ring identity; use
+  bounded BST search only for pool-local reverse lookup; treat zero height as
+  inactive; and leave every producer and production selector disconnected.
+- Generated-code task description: extend the private Exact query to arbitrary
+  bounded pool-local IDs without changing ring results or public streams,
+  beginning with direct red fixtures and validating both Windows compilers.
+- Similarity review: the identity contract, lookup, error boundaries, and tests
+  derive solely from marc's sparse-pool design and existing query invariants.
+  No external implementation expression was consulted or introduced.
+- Validation: all nine focused bucket-query tests pass under MSVC and ClangCL.
+  All 3,082 registered tests pass under each compiler with a 600-second
+  per-test limit; both runs include all six Python tooling tests and
+  `marc_interoperability_schema_compatibility`. The public format, ABI, CLI,
+  production selector, allocator, builder, mutation, and matcher are unchanged.

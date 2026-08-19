@@ -25,6 +25,11 @@ inline constexpr LzssHashTreeStoredPosition
 inline constexpr std::size_t lzss_hash_tree_no_position =
     std::numeric_limits<std::size_t>::max();
 
+enum class LzssHashTreeNodeIdentity : std::uint8_t {
+    ring_position,
+    pool_local,
+};
+
 enum class LzssHashTreeError : std::uint8_t {
     none,
     invalid_limits,

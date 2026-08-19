@@ -18773,3 +18773,20 @@ order and release to the head for deterministic LIFO reuse. Keep all bucket,
 tree-component, matcher, profile, stream, ABI, and selector integration out of
 this foundation commit so subsequent components can be tested against a stable
 bounded allocator contract.
+
+## DD-893: Make Exact query node identity explicit before integration
+
+- Date: 2026-08-20
+- Status: accepted
+
+Add explicit ring-position and pool-local node identities to the private
+HashTree query context. Preserve the existing modulo identity check only for
+the complete ring tree. For a pool-local tree, accept a bounded node-array
+capacity independent of the window and require every reached node to have the
+pool's nonzero active marker.
+
+Resolve the absolute nearest position produced by subtree maxima through a
+bounded BST search instead of deriving a pool node with modulo arithmetic.
+Reject a missing position, invalid reached node, or cycle before publishing a
+match. Keep allocator, builder, mutation, promotion, matcher, profile, ABI,
+CLI, and format integration outside this change.

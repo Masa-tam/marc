@@ -753,3 +753,20 @@ free nodeは`height == 0`、reserved/active nodeは非zeroとし、allocation時
 position fieldを既知のsentinelへ初期化する。releaseは全fieldを無効化してからfree listへ
 戻す。このcomponentはまだbucket metadata、builder、query、mutation、matcherまたは公開
 profileへ接続しない。
+
+## 28. Pool-local Exact query boundary
+
+完全tree componentのnode identityを暗黙のring slotから分離する。query contextは
+`RingPosition`または`PoolLocal`を明示し、前者だけが
+`absolute_position % node_capacity == node_id`を要求する。後者ではnode arrayの容量は
+window sizeから独立し、reached nodeがactiveであることをnonzero heightで確認する。
+
+Exact queryがsubtree maximumから得たnearest absolute positionをpool nodeへ戻す際は、
+剰余による逆引きを行わない。rootから同じtotal-order comparisonでbounded BST searchを
+行い、対応nodeが存在し、保存positionとLCPが一致する場合だけmatchを公開する。探索は
+node capacity回で停止するため、欠落position、cycleまたは壊れたlinkを有限時間で拒否する。
+ring identityの既存経路とstream representationは変更しない。
+
+この段階ではpool-local treeを直接fixtureで与えるだけとし、allocator、builder、mutation、
+promotion stateまたはproduction matcherへ接続しない。次段階で同じidentity contractを
+builderとmutationへ展開する。

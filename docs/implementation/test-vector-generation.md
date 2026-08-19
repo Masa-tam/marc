@@ -10707,3 +10707,19 @@ out-of-range errors, and rejection of short and misaligned workspaces without
 publishing an initialized pool. Run the nine tests under MSVC and ClangCL,
 then run every registered test under both compilers with a 600-second per-test
 limit and no exclusions, including interoperability schema compatibility.
+
+### TVG-0760
+
+Construct a three-node pool-local AVL tree whose node IDs are deliberately
+unrelated to absolute-position modulo values. Use equal capped keys at
+positions 0, 5, and 10 with query position 15, and require the Exact nearest
+match `{distance = 5, length = 5}`. Reclassifying the same arrays as a complete
+ring tree must fail the ring-capacity invariant.
+
+Construct a second pool-local tree whose reached subtree maximum names an
+absolute position absent from the tree, then replace it with the stored-position
+sentinel. Require bounded `invalid_tree` failure and no match in both cases,
+without performing input arithmetic on the sentinel. Run all nine bucket-query
+tests under MSVC and ClangCL, then run
+every registered test under both compilers with a 600-second per-test limit and
+no exclusions, including interoperability schema compatibility.

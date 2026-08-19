@@ -35,6 +35,8 @@ struct LzssHashTreeBucketQueryContext {
     std::span<const LzssHashTreeStoredPosition>
         subtree_maximum_position{};
     LzssHashTreeComponentStatistics* statistics{};
+    LzssHashTreeNodeIdentity node_identity{
+        LzssHashTreeNodeIdentity::ring_position};
 };
 
 struct LzssHashTreeBucketQueryResult {
