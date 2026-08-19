@@ -10851,3 +10851,21 @@ fixtures under MSVC and ClangCL, then run the related workspace, allocator,
 builder, mutation, and state suites and every registered test under both
 compilers with a 600-second per-test limit and no exclusions, including
 interoperability schema compatibility.
+
+### TVG-0768
+
+Drive a mixed literal and repetitive byte sequence at real LZSS token
+boundaries. At each boundary compare the private sparse Exact result to the
+stateless exhaustive reference, require identical `LzssMatch` and beneficial
+decision, and advance every consumed raw position by the selected token width.
+Require both token traces and the final cursor to agree at input end.
+
+Start an advance at a position different from its cursor and require a sticky
+protocol error without workspace mutation. Advance a prefix-less tail position
+and require success without insertion. Build a one-node promoted bucket whose
+node expires at a prefix-less tail position and require detach, pool release,
+zero node count, and retained empty-tree mode. Run all seventeen controller
+fixtures under MSVC and ClangCL, then run the related workspace, allocator,
+builder, mutation, state, and controller suites and every registered test under
+both compilers with a 600-second per-test limit and no exclusions, including
+interoperability schema compatibility.

@@ -116,6 +116,24 @@ namespace {
 
 } // namespace
 
+void LzssSparseHashTreeAdvanceState::mark_error(
+    const LzssSparseHashTreeControllerError error) noexcept {
+    if (last_error_ == LzssSparseHashTreeControllerError::none) {
+        last_error_ = error;
+    }
+    state_valid_ = false;
+}
+
+void initialize_lzss_sparse_hash_tree_advance_state(
+    const std::size_t input_size,
+    LzssSparseHashTreeAdvanceState& state) noexcept {
+    LzssSparseHashTreeAdvanceState initialized{};
+    initialized.input_size_ = input_size;
+    initialized.initialized_ = true;
+    initialized.state_valid_ = true;
+    state = initialized;
+}
+
 LzssSparseHashTreeControllerError
 commit_lzss_sparse_hash_tree_bucket_transition(
     LzssSparseHashTreeWorkspace& workspace, const std::size_t bucket,
@@ -318,7 +336,6 @@ LzssSparseHashTreePositionResult insert_lzss_sparse_hash_tree_position(
         return result;
     }
     if (position >= context.input.size()
-        || context.input.size() - position < lzss_match_finder_prefix_size
         || position == std::numeric_limits<std::size_t>::max()) {
         result.error = LzssSparseHashTreeControllerError::invalid_position;
         return result;
@@ -332,38 +349,42 @@ LzssSparseHashTreePositionResult insert_lzss_sparse_hash_tree_position(
             return result;
         }
     }
-    const auto current_hash = calculate_lzss_prefix_hash(
-        context.input, position);
-    if (!current_hash.valid) {
-        result.error = LzssSparseHashTreeControllerError::hash_failure;
-        return result;
-    }
-    result.bucket = static_cast<std::size_t>(current_hash.value)
-        & (context.workspace->heads().size() - 1U);
-
-    const auto previous = context.workspace->heads()[result.bucket];
+    const bool has_prefix = context.input.size() - position
+        >= lzss_match_finder_prefix_size;
+    LzssHashTreeStoredPosition previous{lzss_hash_tree_no_stored_position};
     std::uint32_t previous_distance{};
-    if (previous != lzss_hash_tree_no_stored_position) {
-        const auto previous_position = static_cast<std::size_t>(previous);
-        if (previous_position >= position
-            || previous_position >= context.input.size()
-            || context.input.size() - previous_position
-                < lzss_match_finder_prefix_size) {
+    if (has_prefix) {
+        const auto current_hash = calculate_lzss_prefix_hash(
+            context.input, position);
+        if (!current_hash.valid) {
+            result.error = LzssSparseHashTreeControllerError::hash_failure;
+            return result;
+        }
+        result.bucket = static_cast<std::size_t>(current_hash.value)
+            & (context.workspace->heads().size() - 1U);
+        previous = context.workspace->heads()[result.bucket];
+        if (previous != lzss_hash_tree_no_stored_position) {
+            const auto previous_position = static_cast<std::size_t>(previous);
+            if (previous_position >= position
+                || previous_position >= context.input.size()
+                || context.input.size() - previous_position
+                    < lzss_match_finder_prefix_size) {
+                result.error =
+                    LzssSparseHashTreeControllerError::invalid_metadata;
+                return result;
+            }
+            const auto distance = position - previous_position;
+            if (distance <= context.parameters.window_size) {
+                previous_distance = static_cast<std::uint32_t>(distance);
+            }
+        }
+        if (!valid_mode_metadata(
+                *context.workspace, context.workspace->modes()[result.bucket],
+                context.workspace->roots()[result.bucket],
+                context.workspace->bucket_node_counts()[result.bucket])) {
             result.error = LzssSparseHashTreeControllerError::invalid_metadata;
             return result;
         }
-        const auto distance = position - previous_position;
-        if (distance <= context.parameters.window_size) {
-            previous_distance = static_cast<std::uint32_t>(distance);
-        }
-    }
-
-    if (!valid_mode_metadata(
-            *context.workspace, context.workspace->modes()[result.bucket],
-            context.workspace->roots()[result.bucket],
-            context.workspace->bucket_node_counts()[result.bucket])) {
-        result.error = LzssSparseHashTreeControllerError::invalid_metadata;
-        return result;
     }
 
     if (position >= context.parameters.window_size) {
@@ -406,6 +427,8 @@ LzssSparseHashTreePositionResult insert_lzss_sparse_hash_tree_position(
         }
     }
 
+    if (!has_prefix) return result;
+
     const auto mode = context.workspace->modes()[result.bucket];
     const auto root = context.workspace->roots()[result.bucket];
     const auto count = context.workspace->bucket_node_counts()[result.bucket];
@@ -437,6 +460,55 @@ LzssSparseHashTreePositionResult insert_lzss_sparse_hash_tree_position(
     context.workspace->heads()[result.bucket] =
         static_cast<LzssHashTreeStoredPosition>(position);
     result.inserted = true;
+    return result;
+}
+
+LzssSparseHashTreeAdvanceResult advance_lzss_sparse_hash_tree_positions(
+    const LzssSparseHashTreePositionContext& context,
+    LzssSparseHashTreeAdvanceState& state,
+    const std::size_t position,
+    const std::size_t next_position) noexcept {
+    LzssSparseHashTreeAdvanceResult result{};
+    if (state.initialized_ && !state.state_valid_) {
+        result.error = state.last_error_;
+        return result;
+    }
+    if (!valid_context(context) || context.promotion_state == nullptr
+        || !state.initialized_
+        || state.input_size_ != context.input.size()) {
+        result.error = LzssSparseHashTreeControllerError::invalid_context;
+        if (state.initialized_) state.mark_error(result.error);
+        return result;
+    }
+    if (position != state.next_position_ || next_position < position
+        || next_position > context.input.size()) {
+        result.error = LzssSparseHashTreeControllerError::invalid_protocol;
+        state.mark_error(result.error);
+        return result;
+    }
+
+    const auto promotion = promote_pending_lzss_sparse_hash_tree_bucket(
+        context, position);
+    if (promotion.error != LzssSparseHashTreeControllerError::none) {
+        result.error = promotion.error;
+        result.transition_error = promotion.transition_error;
+        state.mark_error(result.error);
+        return result;
+    }
+    for (auto current = position; current < next_position; ++current) {
+        const auto inserted = insert_lzss_sparse_hash_tree_position(
+            context, current);
+        if (inserted.error != LzssSparseHashTreeControllerError::none) {
+            result.position_error = inserted.error;
+            result.transition_error = inserted.transition_error;
+            result.error = inserted.error;
+            state.mark_error(result.error);
+            return result;
+        }
+        ++result.positions_processed;
+        if (inserted.inserted) ++result.positions_inserted;
+    }
+    state.next_position_ = next_position;
     return result;
 }
 

@@ -907,3 +907,22 @@ failureとする。promotion成功後は同じadvanceでcurrent positionをpromo
 Chain queryとpromotion直後のtree queryは同一workspace、同一query positionで同じbucketと
 `LzssMatch`を返さなければならない。この段階ではmulti-position advance、diagnostic aggregation、
 production matcher、profile、ABI、CLIおよびstream formatへ接続しない。
+
+## 36. Sparse multi-position advance protocol
+
+private sparse advanceはcallerが渡す`position`と保持cursorが一致し、
+`position <= next_position <= input.size()`である場合だけ進行する。advance開始時にpending
+promotionを一度消費し、その後`[position, next_position)`の全raw positionを昇順に処理する。
+各positionではwindowから外れるabsolute positionを先にretireし、現在位置が5-byte prefixを
+持つ場合だけcomplete chainおよびpromoted treeへinsertする。したがってframe末尾4positionも
+retirementを行うがindexへは追加しない。
+
+成功時だけcursorを`next_position`へ進める。protocol違反、promotion、retirement、mutation、
+metadata commitのいずれかが失敗した場合はcursor stateをsticky invalidにし、部分的に変更された
+workspaceを同じadvanceとして再実行させない。結果は処理済みposition数、実際にindexへ追加した
+position数、最初のcontroller errorおよび下位transition errorを区別する。
+
+同値性oracleは実際のLZSS token boundaryごとにsparse Exact queryとstateless exhaustive referenceを
+比較し、`LzssMatch`、beneficial判定および次のadvance幅が一致することを要求する。この段階では
+private controllerのままとし、diagnostic aggregation、production matcher、profile、ABI、CLI、
+stream formatへ接続しない。

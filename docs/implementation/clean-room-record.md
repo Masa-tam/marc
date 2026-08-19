@@ -23590,3 +23590,31 @@ discarded and the reviewed seed retained.
   600-second per-test limit; both runs include all six Python tooling tests and
   `marc_interoperability_schema_compatibility`. Multi-position advance, public
   format, ABI, CLI, and the production matcher are unchanged.
+
+## CR-0973: 2026-08-20 - Sparse multi-position advance protocol
+
+- Authoring method: added an explicit cursor state and bounded range advance,
+  compared its match and token decisions with the exhaustive reference, and
+  used a failing promoted-tail fixture to correct retirement ordering.
+- References used: IR-0665, DD-891 through DD-901, TVG-0758 through TVG-0768,
+  CR-0963 through CR-0972, and marc's existing LZSS token loop, exhaustive
+  matcher, promotion, retirement, and sparse position controller.
+- Known implementations intentionally not consulted: external matcher advance
+  loops, sparse tree controllers, compressors, source code, tests, benchmarks,
+  tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: own a sticky caller cursor; promote once before the
+  range; retire before prefix qualification; index only complete prefixes;
+  distinguish processed from inserted positions; and compare at real token
+  boundaries rather than only at consecutive bytes.
+- Generated-code task description: compose the private sparse primitives into a
+  multi-position advance protocol and prove exact token-selection equivalence
+  without enabling the production backend.
+- Similarity review: cursor protocol, tail ordering, failure behavior, oracle,
+  and fixtures derive solely from marc's preceding design and components. No
+  external implementation expression was consulted or introduced.
+- Validation: all seventeen controller tests and all seventy-three related
+  workspace, allocator, builder, ring/pool mutation, state, and controller tests
+  pass under MSVC and ClangCL. All 3,131 registered tests pass under each
+  compiler with a 600-second per-test limit; both runs include all six Python
+  tooling tests and `marc_interoperability_schema_compatibility`. Diagnostics,
+  public format, ABI, CLI, and the production matcher are unchanged.

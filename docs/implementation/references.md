@@ -5973,3 +5973,12 @@ builder, state transition, and metadata commit controller. No external sparse
 query dispatcher, adaptive match finder, compressor, source code, test,
 benchmark, tuning guide, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0665
+
+The sparse multi-position advance protocol uses DD-891 through DD-901,
+TVG-0758 through TVG-0768, the repository-owned LZSS token loop, exhaustive
+reference matcher, complete-chain cursor convention, promotion trigger,
+retirement, insertion, and metadata controller. No external matcher advance
+loop, sparse tree controller, compressor, source code, test, benchmark, tuning
+guide, patent, pseudocode, or optimization description was consulted.

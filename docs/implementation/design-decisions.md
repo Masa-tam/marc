@@ -18926,3 +18926,23 @@ as hard errors before chain publication. Require chain and promoted-tree Exact
 queries at the same query position to return the same bucket and `LzssMatch`.
 Defer multi-position advance, diagnostic aggregation, production matcher,
 profile, ABI, CLI, and format integration.
+
+## DD-901: Advance every consumed raw position under a sticky cursor protocol
+
+- Date: 2026-08-20
+- Status: accepted
+
+Require an initialized private advance state whose cursor equals the supplied
+start position and whose input extent equals the controller input. Consume one
+pending promotion at advance entry, then process every raw position in the
+half-open consumed range. Retire the position leaving the window before deciding
+whether the current position has a complete five-byte prefix. Insert only
+complete-prefix positions, but continue retirement through the final four input
+positions.
+
+Advance the cursor only after the whole range succeeds. Make protocol and
+component failures sticky so a caller cannot replay a partially applied range.
+Report processed and inserted counts separately. Compare sparse Exact output to
+the stateless exhaustive reference at actual LZSS token boundaries, including
+the beneficial-match decision that selects the next range. Defer diagnostics,
+production matcher, profile, ABI, CLI, and format integration.

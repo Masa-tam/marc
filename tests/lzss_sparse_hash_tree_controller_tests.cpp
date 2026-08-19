@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <span>
 #include <string_view>
+#include <tuple>
 #include <vector>
 
 namespace {
@@ -192,14 +193,44 @@ TEST(LzssSparseHashTreeController,
 }
 
 TEST(LzssSparseHashTreeController,
-     InvalidPositionDoesNotChangeWorkspace) {
+     PrefixlessTailRetiresWithoutInsertion) {
     ControllerFixture fixture{};
-    const auto before_head = fixture.workspace.heads()[fixture.bucket];
+    ASSERT_EQ(insert_lzss_sparse_hash_tree_position(
+                  fixture.context(), 0).error,
+              LzssSparseHashTreeControllerError::none);
     const auto inserted = insert_lzss_sparse_hash_tree_position(
         fixture.context(), fixture.input.size() - 1U);
-    EXPECT_EQ(inserted.error,
-              LzssSparseHashTreeControllerError::invalid_position);
-    EXPECT_EQ(fixture.workspace.heads()[fixture.bucket], before_head);
+    EXPECT_EQ(inserted.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_FALSE(inserted.inserted);
+    EXPECT_EQ(fixture.workspace.node_pool().active_count(), 0U);
+}
+
+TEST(LzssSparseHashTreeController,
+     PrefixlessTailRetiresPromotedNode) {
+    ControllerFixture fixture{};
+    ASSERT_EQ(insert_lzss_sparse_hash_tree_position(
+                  fixture.context(), 10).error,
+              LzssSparseHashTreeControllerError::none);
+    const auto promoted = promote_lzss_sparse_hash_tree_bucket(
+        fixture.build_context(15), LzssSparseHashTreeBucketMode::chain,
+        lzss_hash_tree_null_node, 0);
+    ASSERT_EQ(promoted.error,
+              LzssSparseHashTreeBucketTransitionError::none);
+    ASSERT_EQ(commit_lzss_sparse_hash_tree_bucket_transition(
+                  fixture.workspace, fixture.bucket,
+                  LzssSparseHashTreeBucketMode::chain,
+                  lzss_hash_tree_null_node, 0, promoted),
+              LzssSparseHashTreeControllerError::none);
+    ASSERT_EQ(fixture.workspace.node_pool().active_count(), 1U);
+
+    const auto advanced = insert_lzss_sparse_hash_tree_position(
+        fixture.context(), 30);
+    EXPECT_EQ(advanced.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_TRUE(advanced.retired);
+    EXPECT_FALSE(advanced.inserted);
+    EXPECT_EQ(fixture.workspace.modes()[fixture.bucket],
+              LzssSparseHashTreeBucketMode::promoted_tree);
+    EXPECT_EQ(fixture.workspace.bucket_node_counts()[fixture.bucket], 0U);
     EXPECT_EQ(fixture.workspace.node_pool().active_count(), 0U);
 }
 
@@ -333,6 +364,84 @@ TEST(LzssSparseHashTreeController,
         fixture.promotion_context(), 5);
     EXPECT_EQ(query.error,
               LzssSparseHashTreeControllerError::invalid_context);
+}
+
+TEST(LzssSparseHashTreeController,
+     MultiPositionAdvanceMatchesExhaustiveTokenBoundaries) {
+    const auto input = bytes(
+        "abracadabra abracadabra -- abracadabra -- xyzxyzxyzxyz -- "
+        "abracadabra");
+    LzssParameters parameters{};
+    parameters.window_size = 32;
+    parameters.max_match_length = 12;
+    const auto required = calculate_lzss_sparse_hash_tree_workspace(
+        input.size(), parameters, {}, parameters.window_size);
+    ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssSparseHashTreeWorkspace workspace{};
+    ASSERT_EQ(initialize_lzss_sparse_hash_tree_workspace(
+                  input.size(), parameters, {}, parameters.window_size,
+                  storage.bytes.first(required.workspace_size), workspace),
+              LzssSparseHashTreeError::none);
+    LzssHashTreePromotionState promotion{};
+    initialize_lzss_hash_tree_promotion_state(
+        workspace.heads().size(), 0, promotion);
+    LzssSparseHashTreeAdvanceState advance_state{};
+    initialize_lzss_sparse_hash_tree_advance_state(
+        input.size(), advance_state);
+    LzssSparseHashTreePositionContext context{
+        input, parameters, &workspace, nullptr, &promotion};
+    LzssExhaustiveMatchFinder exhaustive{input, parameters};
+
+    std::vector<std::tuple<std::size_t, LzssMatch, bool>> sparse_tokens{};
+    std::vector<std::tuple<std::size_t, LzssMatch, bool>> reference_tokens{};
+    std::size_t position{};
+    while (position < input.size()) {
+        const auto sparse = query_lzss_sparse_hash_tree_exact(
+            context, position);
+        ASSERT_EQ(sparse.error, LzssSparseHashTreeControllerError::none);
+        const auto reference = exhaustive.find_match(position);
+        const bool sparse_match = lzss_match_is_beneficial(sparse.match);
+        const bool reference_match = lzss_match_is_beneficial(reference);
+        sparse_tokens.emplace_back(position, sparse.match, sparse_match);
+        reference_tokens.emplace_back(position, reference, reference_match);
+        ASSERT_EQ(sparse.match, reference);
+        ASSERT_EQ(sparse_match, reference_match);
+        const auto consumed = sparse_match
+            ? static_cast<std::size_t>(sparse.match.length) : 1U;
+        const auto advanced = advance_lzss_sparse_hash_tree_positions(
+            context, advance_state, position, position + consumed);
+        ASSERT_EQ(advanced.error,
+                  LzssSparseHashTreeControllerError::none);
+        exhaustive.advance(position, position + consumed);
+        position += consumed;
+    }
+    EXPECT_EQ(sparse_tokens, reference_tokens);
+    EXPECT_EQ(advance_state.next_position(), input.size());
+    EXPECT_TRUE(advance_state.state_valid());
+}
+
+TEST(LzssSparseHashTreeController,
+     InvalidAdvanceProtocolPoisonsCursorWithoutMutation) {
+    ControllerFixture fixture{};
+    fixture.initialize_promotion(0);
+    LzssSparseHashTreeAdvanceState state{};
+    initialize_lzss_sparse_hash_tree_advance_state(
+        fixture.input.size(), state);
+    const auto before_head = fixture.workspace.heads()[fixture.bucket];
+    const auto advanced = advance_lzss_sparse_hash_tree_positions(
+        fixture.promotion_context(), state, 1, 2);
+    EXPECT_EQ(advanced.error,
+              LzssSparseHashTreeControllerError::invalid_protocol);
+    EXPECT_FALSE(state.state_valid());
+    EXPECT_EQ(state.last_error(),
+              LzssSparseHashTreeControllerError::invalid_protocol);
+    EXPECT_EQ(fixture.workspace.heads()[fixture.bucket], before_head);
+    const auto repeated = advance_lzss_sparse_hash_tree_positions(
+        fixture.promotion_context(), state, 0, 1);
+    EXPECT_EQ(repeated.error,
+              LzssSparseHashTreeControllerError::invalid_protocol);
+    EXPECT_EQ(fixture.workspace.heads()[fixture.bucket], before_head);
 }
 
 } // namespace

@@ -22,6 +22,7 @@ enum class LzssSparseHashTreeControllerError : std::uint8_t {
     commit_failure,
     query_failure,
     promotion_failure,
+    invalid_protocol,
 };
 
 enum class LzssSparseHashTreeQuerySource : std::uint8_t {
@@ -36,6 +37,42 @@ struct LzssSparseHashTreePositionContext {
     LzssSparseHashTreeWorkspace* workspace{};
     LzssHashTreeComponentStatistics* statistics{};
     LzssHashTreePromotionState* promotion_state{};
+};
+
+struct LzssSparseHashTreeAdvanceResult;
+
+class LzssSparseHashTreeAdvanceState {
+public:
+    LzssSparseHashTreeAdvanceState() noexcept = default;
+
+    [[nodiscard]] bool initialized() const noexcept { return initialized_; }
+    [[nodiscard]] bool state_valid() const noexcept { return state_valid_; }
+    [[nodiscard]] std::size_t input_size() const noexcept {
+        return input_size_;
+    }
+    [[nodiscard]] std::size_t next_position() const noexcept {
+        return next_position_;
+    }
+    [[nodiscard]] LzssSparseHashTreeControllerError last_error()
+        const noexcept { return last_error_; }
+
+private:
+    friend void initialize_lzss_sparse_hash_tree_advance_state(
+        std::size_t, LzssSparseHashTreeAdvanceState&) noexcept;
+    friend LzssSparseHashTreeAdvanceResult
+    advance_lzss_sparse_hash_tree_positions(
+        const LzssSparseHashTreePositionContext&,
+        LzssSparseHashTreeAdvanceState&, std::size_t,
+        std::size_t) noexcept;
+
+    void mark_error(LzssSparseHashTreeControllerError error) noexcept;
+
+    std::size_t input_size_{};
+    std::size_t next_position_{};
+    LzssSparseHashTreeControllerError last_error_{
+        LzssSparseHashTreeControllerError::none};
+    bool initialized_{};
+    bool state_valid_{};
 };
 
 struct LzssSparseHashTreeQueryResult {
@@ -75,6 +112,21 @@ struct LzssSparseHashTreePositionResult {
         LzssSparseHashTreeBucketTransitionError::none};
 };
 
+struct LzssSparseHashTreeAdvanceResult {
+    std::size_t positions_processed{};
+    std::size_t positions_inserted{};
+    LzssSparseHashTreeControllerError error{
+        LzssSparseHashTreeControllerError::none};
+    LzssSparseHashTreeControllerError position_error{
+        LzssSparseHashTreeControllerError::none};
+    LzssSparseHashTreeBucketTransitionError transition_error{
+        LzssSparseHashTreeBucketTransitionError::none};
+};
+
+void initialize_lzss_sparse_hash_tree_advance_state(
+    std::size_t input_size,
+    LzssSparseHashTreeAdvanceState& state) noexcept;
+
 [[nodiscard]] LzssSparseHashTreeControllerError
 commit_lzss_sparse_hash_tree_bucket_transition(
     LzssSparseHashTreeWorkspace& workspace, std::size_t bucket,
@@ -96,6 +148,12 @@ promote_pending_lzss_sparse_hash_tree_bucket(
 insert_lzss_sparse_hash_tree_position(
     const LzssSparseHashTreePositionContext& context,
     std::size_t position) noexcept;
+
+[[nodiscard]] LzssSparseHashTreeAdvanceResult
+advance_lzss_sparse_hash_tree_positions(
+    const LzssSparseHashTreePositionContext& context,
+    LzssSparseHashTreeAdvanceState& state,
+    std::size_t position, std::size_t next_position) noexcept;
 
 } // namespace marc::dictionary::internal
 
