@@ -10888,3 +10888,22 @@ then run the related workspace, allocator, builder, mutation, state, and
 controller suites and every registered test under both compilers with a
 600-second per-test limit and no exclusions, including interoperability schema
 compatibility.
+
+### TVG-0770
+
+Initialize empty and four-byte inputs with zero workspace, query each position,
+advance bytewise, and require a valid end cursor. On a mixed repetitive input,
+compare sparse and exhaustive matches at every byte while forcing promotion and
+retirement. Repeat comparison at actual token boundaries. Limit the pool to one
+node on an equal-byte input, force terminal-chain rejection, and require Exact
+matches to remain equal with zero active tree nodes.
+
+Reject pool capacity above the window, one-byte-short workspace, misaligned
+workspace, and overlapping input/workspace without initializing the destination
+finder. Violate the query cursor and require a sticky protocol error with no
+later advance. Finally combine all byte values, deterministic pseudorandom
+bytes, and copied regions, then require sparse, full HashTree, and exhaustive
+matches to agree at every selected token boundary. Run all eight private matcher
+fixtures and the related sparse component suites under MSVC and ClangCL, then
+run every registered test under both compilers with a 600-second per-test limit
+and no exclusions, including interoperability schema compatibility.

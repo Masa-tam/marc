@@ -23646,3 +23646,32 @@ discarded and the reviewed seed retained.
   compiler with a 600-second per-test limit; both runs include all six Python
   tooling tests and `marc_interoperability_schema_compatibility`. The production
   matcher, public format, ABI, and CLI are unchanged.
+
+## CR-0975: 2026-08-20 - Private sparse match-finder integration
+
+- Authoring method: wrapped the independently built sparse workspace,
+  controller, promotion, advance, and diagnostic components in the repository's
+  existing match-finder protocol, then compared three independent internal
+  routes over text and deterministic binary inputs.
+- References used: IR-0667, DD-891 through DD-903, TVG-0758 through TVG-0770,
+  CR-0963 through CR-0974, and marc's existing match-finder concept, workspace
+  validation, overlap check, exhaustive reference, and full HashTree finder.
+- Known implementations intentionally not consulted: external sparse
+  match-finder classes, compressors, source code, tests, benchmarks, tuning
+  guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: keep storage caller-owned; make capacity and threshold
+  explicit; accept zero-workspace short input; preserve initialization
+  atomically; retain matcher and controller error layers; and delay production
+  selection until broad Exact equivalence is established.
+- Generated-code task description: compose the private sparse implementation
+  into an existing-concept match finder without exposing or selecting it.
+- Similarity review: ownership, initialization order, option semantics, sticky
+  errors, and three-route oracle derive solely from marc's preceding design and
+  components. No external implementation expression was consulted or
+  introduced.
+- Validation: all eight private matcher tests and all eighty-three related
+  matcher, controller, workspace, allocator, builder, mutation, and state tests
+  pass under MSVC and ClangCL. All 3,141 registered tests pass under each
+  compiler with a 600-second per-test limit; both runs include all six Python
+  tooling tests and `marc_interoperability_schema_compatibility`. The encoder
+  strategy, public profile, format, ABI, CLI, and benchmark routes are unchanged.

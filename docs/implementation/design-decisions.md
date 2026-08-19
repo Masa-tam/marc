@@ -18965,3 +18965,23 @@ every additive counter and set `overflowed` instead of wrapping. A null observer
 must bypass component instrumentation and must not affect matches, transitions,
 or token selection. Defer helper sharing with the full-tree implementation,
 production matcher, profile, ABI, CLI, and format integration.
+
+## DD-903: Own sparse components behind the existing match-finder concept
+
+- Date: 2026-08-20
+- Status: accepted
+
+Create a private match finder that owns the sparse workspace view, promotion
+state, advance cursor, and optional statistics observer while retaining
+caller-owned backing storage and immutable input. Match the existing
+`find_match`/`advance` concept and initialization argument order. Keep pool
+capacity and promotion threshold explicit options; zero capacity plus disabled
+promotion is a valid chain-only configuration.
+
+Treat an empty or sub-prefix input as a valid zero-workspace state. Validate
+limits, parameters, pool capacity, workspace size and alignment, and input
+overlap before replacing the caller's finder. Preserve the first runtime error
+and controller suberror as sticky state. Require bytewise and token-boundary
+Exact equality with exhaustive and full-tree finders, including terminal-chain
+pool rejection. Defer encoder strategy, profile, ABI, CLI, format, and benchmark
+integration.

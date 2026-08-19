@@ -944,3 +944,23 @@ transitionだけを対応するbuildまたはmaintenance counterへ集約する�
 記録する。counter加算は飽和し、wrapせず`overflowed`を立てる。失敗したcomponentの途中統計は
 aggregateしない。この段階では既存full HashTreeとのhelper共有、production matcher、profile、
 ABI、CLIおよびstream formatへ接続しない。
+
+## 38. Private sparse match-finder integration
+
+private `LzssSparseHashTreeMatchFinder`はinput、parameters、caller-owned workspaceのview、sparse
+workspace owner、promotion state、advance cursorおよびoptional statistics observerを一instanceに
+束ねる。既存match-finder conceptと同じ`find_match(position)`および
+`advance(position, next_position)`を公開し、初期化引数順もfull HashTreeと同じ
+`workspace, finder, statistics, options`とする。
+
+optionsはpool node capacityとpromotion candidate thresholdを明示する。capacityはworkspace計算時に
+window内node上限以下でなければならず、threshold最大値はpromotion無効、zero capacityはchain-onlyを
+表す。5-byte prefixを持たない空・短入力はzero workspace、zero bucket、zero link、zero poolを
+正当な初期状態として扱い、各raw positionのadvanceとend queryを受理する。
+
+初期化はlimits、parameters、capacity、workspace size/alignment、inputとの非overlapを確認し、全て
+成功した場合だけcallerのfinderを置き換える。実行中のprotocolまたはcontroller failureは最初の
+matcher errorとcontroller suberrorをstickyに保存し、以後workspaceを変更しない。bytewise、実token
+boundary、pool rejection、およびbinary corpusでexhaustiveとfull HashTreeにExact一致しなければ
+ならない。この段階ではprivate classのままとし、encoder strategy、profile、ABI、CLI、format、
+benchmarkへ接続しない。

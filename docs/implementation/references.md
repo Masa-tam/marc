@@ -5991,3 +5991,12 @@ saturating counter convention, promotion state, sparse workspace metadata, and
 pool accounting. No external diagnostic schema, sparse matcher instrumentation,
 compressor, source code, test, benchmark, tuning guide, patent, pseudocode, or
 optimization description was consulted.
+
+### IR-0667
+
+The private sparse match finder uses DD-891 through DD-903, TVG-0758 through
+TVG-0770, the repository-owned match-finder concept, workspace validation,
+buffer-overlap check, sparse workspace owner, controller, promotion state,
+advance cursor, and error conventions. No external sparse match-finder class,
+compressor, source code, test, benchmark, tuning guide, patent, pseudocode, or
+optimization description was consulted.

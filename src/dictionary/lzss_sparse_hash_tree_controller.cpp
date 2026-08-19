@@ -187,8 +187,6 @@ void record_population(
     const LzssSparseHashTreePositionContext& context) noexcept {
     if (context.workspace == nullptr || !context.workspace->initialized()
         || !context.workspace->node_pool().state_valid()
-        || context.workspace->heads().empty()
-        || !std::has_single_bit(context.workspace->heads().size())
         || context.workspace->heads().size()
             != context.workspace->roots().size()
         || context.workspace->heads().size()
@@ -197,9 +195,16 @@ void record_population(
             != context.workspace->bucket_node_counts().size()) {
         return false;
     }
-    const auto expected_links = std::min<std::size_t>(
-        context.input.size(), context.parameters.window_size);
+    const auto expected_links = context.input.size()
+            < lzss_match_finder_prefix_size
+        ? 0U : std::min<std::size_t>(
+            context.input.size(), context.parameters.window_size);
     if (context.workspace->links().size() != expected_links) return false;
+    if ((!context.workspace->heads().empty()
+         && !std::has_single_bit(context.workspace->heads().size()))
+        || (context.workspace->heads().empty() && expected_links != 0)) {
+        return false;
+    }
     return context.promotion_state == nullptr
         || (context.promotion_state->initialized()
             && context.promotion_state->state_valid()
