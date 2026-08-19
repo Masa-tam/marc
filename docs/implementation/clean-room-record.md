@@ -23285,3 +23285,29 @@ discarded and the reviewed seed retained.
   reduces tokens by 5,659,280 and increases matched bytes by 5,487,848 over
   one MiB. The maximum candidate workspace is 105,447,424 bytes. All four
   experiment gates pass; no format ID, ABI, CLI name, or selector changed.
+
+## CR-0962: 2026-08-19 - Four-MiB aggregate-workspace audit
+
+- Authoring method: traced the existing contextual profile calculators from
+  frame extent through token views, finder offsets, payload ceilings, and
+  aggregate-limit checks; then evaluated the smallest common live subtotal.
+- References used: IR-0654, DD-886 through DD-890, TVG-0753 through TVG-0757,
+  CR-0958 through CR-0961, current profile and workspace calculators, and the
+  revision `9de8d29` private experiment evidence.
+- Known implementations intentionally not consulted: external match finders,
+  sparse pools, allocators, compressors, source code, tests, memory profiles,
+  tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: use worst-case token capacity; reject a complete tree
+  before backend-specific additions; retain the 128-MiB default; require a
+  backend-budgeted sparse pool and whole-bucket chain fallback; and keep token
+  compaction as a separate possible optimization.
+- Generated-code task description: enumerate concurrently live four-MiB
+  encoder extents with checked source formulas, identify the earliest common
+  memory failure, and define the bounded next design without exposing a format.
+- Similarity review: the lifetime audit and fallback boundary derive solely
+  from marc's current layouts, calculators, limits, and preceding decisions.
+  No external implementation expression was consulted or introduced.
+- Validation: input, maximum typed-token storage, and complete HashTree total
+  159,973,376 bytes, exceeding the default limit by 25,755,648 bytes before
+  entropy or encoded-frame storage. The complete-tree public route is rejected;
+  existing format IDs, ABI, CLI names, and production selection remain intact.

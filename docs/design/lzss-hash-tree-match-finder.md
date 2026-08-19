@@ -617,3 +617,32 @@ contextual encoderを構成できる証拠にはならない。既存format ID�
 archive名およびproduction selectorは変更しない。次工程ではtyped-token、entropy、
 payload、frame viewおよびinputを含む同時生存workspaceをchecked arithmeticで列挙し、
 完全treeが収まらなければSection 22のbounded sparse node poolを独立に設計する。
+
+## 25. 4 MiB aggregate workspace監査
+
+現行contextual encoder profileは、最悪時のtoken countをframe raw byte数とし、frame
+input、`LzssTypedToken`配列、match-finder workspaceおよびencoded frameを同時生存
+領域として加算する。MSVC/Clangの現在のsupported layoutでは`LzssTypedToken`は12
+bytesである。4 MiB frameと完全HashTreeのencoded-frame以前の下限は次になる。
+
+```text
+frame input                         4,194,304
+4,194,304 typed tokens * 12       50,331,648
+complete HashTree workspace       105,447,424
+subtotal                          159,973,376
+default internal-buffer limit     134,217,728
+excess before entropy/output       25,755,648
+```
+
+これはentropy backendに依存しない不成立証拠である。実際のprofileはさらにcontext
+model/table、alignment padding、payload ceiling、frame headerおよびdescriptorを加える。
+したがって完全HashTreeを既定128 MiB limitのpublic 4 MiB contextual encoderへ使用
+してはならない。limitを引き上げて問題を隠すことも、最悪token countをCorpusの平均で
+置き換えることも認めない。
+
+次の実装候補を完全HashChainとbounded sparse HashTree node poolの組合せに限定する。
+pool byte budgetはbackendごとの固定workspaceと最大encoded frameを先に差し引いて
+算出し、configured limitを超えない値とする。poolがbucket全体を収容できない場合は
+そのbucketを完全chainへ決定的に戻し、部分tree探索は禁止する。token storageの圧縮や
+lifetime再構成は別の最適化候補であり、sparse poolのExact性またはmemory証明に暗黙に
+含めない。

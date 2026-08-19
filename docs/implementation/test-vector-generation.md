@@ -10655,3 +10655,19 @@ HashTree/HashChain ratio and four-MiB-minus-one-MiB token and matched-byte
 deltas. Preserve negative per-member speed results even when aggregate gates
 pass. Keep the ignored local JSON outside version control; record its revision,
 configuration, aggregate evidence, and conclusions in maintained documents.
+
+### TVG-0757
+
+Audit the four-MiB encoder bound from checked profile-calculator terms, not
+process RSS or average Corpus token count. Use the maximum one-token-per-byte
+extent and the actual supported-build `sizeof(LzssTypedToken)`. Add frame input
+and the exact fixed-width complete-HashTree workspace before considering any
+entropy backend. Require the subtotal to be rejected when it exceeds the
+default internal-buffer limit.
+
+For the following sparse-pool calculator, add overflow, alignment, exact-fit,
+one-byte-short, zero-pool, full-pool, and backend-specific payload-ceiling
+fixtures before mutation code. Prove that pool exhaustion selects a complete
+HashChain route for the affected bucket and never exposes a partial tree.
+Compare resulting tokens directly with HashChain Exact and retain fingerprint
+comparison in later Corpus evidence.

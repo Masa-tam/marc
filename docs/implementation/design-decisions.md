@@ -18705,3 +18705,24 @@ checked arithmetic next, and design a bounded sparse node pool if the complete
 tree cannot fit the configured limit. Retain per-member speed losses and the
 distinction between parse opportunity and final compressed size as explicit
 limitations of the evidence.
+
+## DD-890: Reject the complete four-MiB tree under the default memory limit
+
+- Date: 2026-08-19
+- Status: accepted
+
+Audit the current contextual encoder lifetime rather than comparing the finder
+workspace with the limit in isolation. At a four-MiB worst-case frame, the
+input is 4,194,304 bytes, the maximum 4,194,304 current 12-byte typed tokens
+occupy 50,331,648 bytes, and the complete fixed-width HashTree occupies
+105,447,424 bytes. Their 159,973,376-byte subtotal already exceeds the
+134,217,728-byte default internal-buffer limit by 25,755,648 bytes before any
+entropy state, padding, descriptor, header, payload, or encoded-frame storage.
+
+Reject the complete tree for a default-limit public contextual profile. Do not
+raise the default limit or replace worst-case token storage with measured
+Corpus averages. Proceed with a separately specified bounded sparse node pool
+over a complete HashChain. Derive its byte budget only after subtracting every
+backend-specific concurrently live extent. Require whole-bucket fallback to
+the chain on pool pressure so Exact output remains independent of capacity.
+Keep token compaction and lifetime restructuring outside this decision.

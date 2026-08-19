@@ -5872,3 +5872,13 @@ versioned experiment runner, canonical token fingerprint, and the locally
 generated revision `9de8d29` JSON result. No external match finder,
 compressor, source code, test, benchmark result, format design, tuning guide,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0654
+
+The four-MiB aggregate-workspace audit uses DD-886 through DD-890,
+TVG-0753 through TVG-0757, the repository-owned contextual profile
+calculators, `LzssTypedToken` layout, fixed-width HashTree calculator, default
+decoder limits, and revision `9de8d29` experiment evidence. No external match
+finder, allocator, compressor, source code, test, benchmark result, sparse-pool
+layout, tuning guide, patent, pseudocode, or optimization description was
+consulted.
