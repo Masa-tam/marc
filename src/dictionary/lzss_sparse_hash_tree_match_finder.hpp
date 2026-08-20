@@ -94,6 +94,10 @@ private:
 static_assert(LzssMatchFinder<LzssSparseHashTreeMatchFinder>);
 
 [[nodiscard]] LzssSparseHashTreeMatchFinderError
+map_lzss_sparse_hash_tree_match_finder_error(
+    LzssSparseHashTreeError error) noexcept;
+
+[[nodiscard]] LzssSparseHashTreeMatchFinderError
 initialize_lzss_sparse_hash_tree_match_finder(
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::span<std::byte> workspace,

@@ -68,7 +68,7 @@ struct AlignedWorkspace {
     std::vector<std::max_align_t> storage;
 };
 
-void expect_binary_tree_typed_equals_exact(
+void expect_private_match_finders_typed_equal_exact(
     const std::span<const std::byte> input,
     const LzssParameters& parameters = {},
     const LzssTypedTokenVariant variant =
@@ -115,13 +115,42 @@ void expect_binary_tree_typed_equals_exact(
     EXPECT_EQ(binary_statistics.query_count, binary_result.token_count);
     EXPECT_FALSE(binary_statistics.overflowed);
     ASSERT_EQ(hash_tokens.size(), reference.size());
+
+    const auto sparse_capacity =
+        input.size() < lzss_match_finder_prefix_size
+        ? 0U
+        : std::min<std::size_t>(input.size(), parameters.window_size);
+    const LzssSparseHashTreeMatchFinderOptions sparse_options{
+        sparse_capacity, 0};
+    const auto sparse_required = calculate_lzss_sparse_hash_tree_workspace(
+        input.size(), parameters, {}, sparse_capacity);
+    ASSERT_EQ(sparse_required.error, LzssSparseHashTreeError::none);
+    AlignedWorkspace sparse_owner(sparse_required.workspace_size);
+    auto sparse_workspace = sparse_owner.bytes(sparse_required.workspace_size);
+    std::vector<LzssTypedToken> sparse_tokens(input.size(), sentinel);
+    LzssMatchFinderStatistics sparse_statistics{};
+    const auto sparse_result =
+        encode_lzss_typed_tokens_sparse_hash_tree_single_pass(
+            input, parameters, {}, sparse_tokens, sparse_workspace,
+            sparse_options, &sparse_statistics, variant);
+    ASSERT_EQ(sparse_result.error, LzssTypedEncodeError::none);
+    EXPECT_EQ(sparse_result.sparse_hash_tree_match_finder_error,
+              LzssSparseHashTreeMatchFinderError::none);
+    EXPECT_EQ(sparse_result.token_count, reference.size());
+    EXPECT_EQ(sparse_result.token_storage_size,
+              reference.size() * sizeof(LzssTypedToken));
+    EXPECT_EQ(sparse_statistics.query_count, sparse_result.token_count);
+    EXPECT_FALSE(sparse_statistics.overflowed);
+
     for (std::size_t index = 0; index < reference.size(); ++index) {
         EXPECT_TRUE(equal_token(hash_tokens[index], reference[index]));
         EXPECT_TRUE(equal_token(binary_tokens[index], reference[index]));
+        EXPECT_TRUE(equal_token(sparse_tokens[index], reference[index]));
     }
     for (std::size_t index = reference.size(); index < binary_tokens.size();
          ++index) {
         EXPECT_TRUE(equal_token(binary_tokens[index], sentinel));
+        EXPECT_TRUE(equal_token(sparse_tokens[index], sentinel));
     }
 
     const auto byte_plan = plan_lzss_token_stream(input, parameters, {});
@@ -132,6 +161,9 @@ void expect_binary_tree_typed_equals_exact(
               LzssEncodeError::none);
     EXPECT_EQ(serialize_typed_tokens(
                   std::span{binary_tokens}.first(binary_result.token_count)),
+              canonical);
+    EXPECT_EQ(serialize_typed_tokens(
+                  std::span{sparse_tokens}.first(sparse_result.token_count)),
               canonical);
 }
 
@@ -482,18 +514,20 @@ TEST(LzssTypedEncoder, HashChainSinglePassReservesWorstCaseAtomically) {
         }));
 }
 
-TEST(LzssTypedEncoder, BinaryTreePrivateEntryMatchesExactTokensAndBytes) {
-    expect_binary_tree_typed_equals_exact(bytes(""));
-    expect_binary_tree_typed_equals_exact(bytes("A"));
-    expect_binary_tree_typed_equals_exact(bytes("AAAAAAAAAAAAAAAA"));
-    expect_binary_tree_typed_equals_exact(bytes("ABCDE1ABCDE2ABCDE3"));
+TEST(LzssTypedEncoder, PrivateMatchFinderEntriesMatchExactTokensAndBytes) {
+    expect_private_match_finders_typed_equal_exact(bytes(""));
+    expect_private_match_finders_typed_equal_exact(bytes("A"));
+    expect_private_match_finders_typed_equal_exact(
+        bytes("AAAAAAAAAAAAAAAA"));
+    expect_private_match_finders_typed_equal_exact(
+        bytes("ABCDE1ABCDE2ABCDE3"));
 
     std::vector<std::byte> all_values{};
     for (std::uint32_t value = 0; value < 256; ++value) {
         all_values.push_back(static_cast<std::byte>(value));
     }
     all_values.insert(all_values.end(), all_values.begin(), all_values.end());
-    expect_binary_tree_typed_equals_exact(all_values);
+    expect_private_match_finders_typed_equal_exact(all_values);
 
     std::vector<std::byte> pseudorandom(1024);
     std::uint32_t state = UINT32_C(0x5d2a19c7);
@@ -501,18 +535,18 @@ TEST(LzssTypedEncoder, BinaryTreePrivateEntryMatchesExactTokensAndBytes) {
         state = state * UINT32_C(1664525) + UINT32_C(1013904223);
         value = static_cast<std::byte>(state >> 24U);
     }
-    expect_binary_tree_typed_equals_exact(pseudorandom);
+    expect_private_match_finders_typed_equal_exact(pseudorandom);
 
     std::vector<std::byte> mixed{};
     for (std::size_t index = 0; index < 512; ++index) {
         mixed.push_back(static_cast<std::byte>(
             index % 29 == 0 ? index & 0xffU : index % 7));
     }
-    expect_binary_tree_typed_equals_exact(mixed);
+    expect_private_match_finders_typed_equal_exact(mixed);
 
     LzssParameters extended{};
     extended.window_size = 1U << 20;
-    expect_binary_tree_typed_equals_exact(
+    expect_private_match_finders_typed_equal_exact(
         all_values, extended, LzssTypedTokenVariant::field_context_1m);
 }
 
@@ -602,6 +636,43 @@ TEST(LzssTypedEncoder, BinaryTreePrivateEntryFailuresAreAtomicAndBounded) {
         input, {}, limits, output, workspace);
     EXPECT_EQ(result.error,
               LzssTypedEncodeError::token_storage_limit_exceeded);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [&sentinel](const auto& token) {
+            return equal_token(token, sentinel);
+        }));
+}
+
+TEST(LzssTypedEncoder,
+     SparseHashTreePrivateEntryRejectsCapacityAndShortWorkspaceAtomically) {
+    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    const LzssTypedToken sentinel{
+        LzssTypedTokenKind::match, 0, 123, 456};
+    std::vector<LzssTypedToken> output(input.size(), sentinel);
+
+    LzssSparseHashTreeMatchFinderOptions options{
+        input.size() + 1U, 0};
+    auto result = encode_lzss_typed_tokens_sparse_hash_tree_single_pass(
+        input, {}, {}, output, {}, options);
+    EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
+    EXPECT_EQ(result.sparse_hash_tree_match_finder_error,
+              LzssSparseHashTreeMatchFinderError::invalid_pool_capacity);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [&sentinel](const auto& token) {
+            return equal_token(token, sentinel);
+        }));
+
+    options.pool_node_capacity = 4;
+    const auto required = calculate_lzss_sparse_hash_tree_workspace(
+        input.size(), {}, {}, options.pool_node_capacity);
+    ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
+    ASSERT_GT(required.workspace_size, 0U);
+    AlignedWorkspace owner(required.workspace_size);
+    result = encode_lzss_typed_tokens_sparse_hash_tree_single_pass(
+        input, {}, {}, output,
+        owner.bytes(required.workspace_size - 1U), options);
+    EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
+    EXPECT_EQ(result.sparse_hash_tree_match_finder_error,
+              LzssSparseHashTreeMatchFinderError::workspace_too_small);
     EXPECT_TRUE(std::ranges::all_of(
         output, [&sentinel](const auto& token) {
             return equal_token(token, sentinel);

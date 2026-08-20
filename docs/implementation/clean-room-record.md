@@ -23675,3 +23675,32 @@ discarded and the reviewed seed retained.
   compiler with a 600-second per-test limit; both runs include all six Python
   tooling tests and `marc_interoperability_schema_compatibility`. The encoder
   strategy, public profile, format, ABI, CLI, and benchmark routes are unchanged.
+
+## CR-0976: 2026-08-20 - Explicit private sparse typed-encoder route
+
+- Authoring method: connected the repository-owned sparse matcher to the
+  existing typed-token single-pass parser through a separately named private
+  entry, then reused the established independent token and byte oracles.
+- References used: IR-0668, DD-891 through DD-904, TVG-0758 through TVG-0771,
+  CR-0963 through CR-0975, and marc's existing typed encoder, sparse workspace,
+  matcher error, bounded-memory, overlap, and canonical serialization rules.
+- Known implementations intentionally not consulted: external encoder
+  dispatch systems, adaptive match-finder integrations, compressors, source
+  code, tests, benchmarks, tuning guides, patents, pseudocode, and optimization
+  descriptions.
+- Independent decisions: require an explicitly named route and explicit
+  capacity/threshold options; retain caller ownership; preserve sparse errors
+  separately; reject knowable failures before output; detect sticky runtime
+  failure; and leave every released/public selection boundary unchanged.
+- Generated-code task description: expose the private sparse matcher to one
+  typed-token experimental encoder route without changing format or defaults.
+- Similarity review: selection boundary, option propagation, validation order,
+  error mapping, and multi-route oracle derive solely from marc's preceding
+  design and components. No external implementation expression was consulted
+  or introduced.
+- Validation: all fourteen typed-encoder tests and all eight private sparse
+  matcher tests pass under MSVC and ClangCL. All 3,142 registered tests pass
+  under each compiler with a 600-second per-test limit; both runs include all
+  six Python tooling tests and `marc_interoperability_schema_compatibility`.
+  The default encoder strategy, public profile, format, ABI, CLI, and benchmark
+  routes are unchanged.

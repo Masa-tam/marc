@@ -6000,3 +6000,13 @@ buffer-overlap check, sparse workspace owner, controller, promotion state,
 advance cursor, and error conventions. No external sparse match-finder class,
 compressor, source code, test, benchmark, tuning guide, patent, pseudocode, or
 optimization description was consulted.
+
+### IR-0668
+
+The explicit private typed-encoder route uses DD-891 through DD-904,
+TVG-0758 through TVG-0771, the repository-owned typed-token single-pass
+contract, sparse match finder, workspace calculator, overlap validation,
+bounded-memory policy, exhaustive oracle, and canonical token serializer. No
+external encoder dispatch, adaptive match-finder integration, compressor,
+source code, test, benchmark, tuning guide, patent, pseudocode, or optimization
+description was consulted.

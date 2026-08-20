@@ -10907,3 +10907,20 @@ matches to agree at every selected token boundary. Run all eight private matcher
 fixtures and the related sparse component suites under MSVC and ClangCL, then
 run every registered test under both compilers with a 600-second per-test limit
 and no exclusions, including interoperability schema compatibility.
+
+### TVG-0771
+
+Invoke the private sparse typed-token entry only with explicit full-pool and
+immediate-promotion options. For empty, one-byte, repetitive, copied-pattern,
+all-byte-value, deterministic pseudorandom, mixed-pattern, and extended-profile
+inputs, compare its token count, token fields, storage size, and canonical byte
+serialization with exhaustive, HashChain, and BinaryTree routes. Require one
+query per emitted token and no diagnostic overflow.
+
+Supply pool capacity above the input/window bound and a one-byte-short aligned
+workspace, require the dedicated sparse error category, and prove the caller's
+token storage remains unchanged. Run all fourteen typed-encoder fixtures and
+the related sparse matcher/component suites under MSVC and ClangCL, then run
+every registered test under both compilers with a 600-second per-test limit and
+no exclusions, including all Python tooling tests and
+`marc_interoperability_schema_compatibility`.

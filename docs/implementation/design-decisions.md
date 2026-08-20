@@ -18985,3 +18985,24 @@ and controller suberror as sticky state. Require bytewise and token-boundary
 Exact equality with exhaustive and full-tree finders, including terminal-chain
 pool rejection. Defer encoder strategy, profile, ABI, CLI, format, and benchmark
 integration.
+
+## DD-904: Select sparse HashTree only through an explicit private encoder route
+
+- Date: 2026-08-20
+- Status: accepted
+
+Add one private typed-token single-pass encoder entry whose function identity
+and required options explicitly select sparse HashTree. Require caller-owned,
+aligned match-finder workspace and worst-case token storage. Keep the existing
+default, HashChain, and BinaryTree routes unchanged; do not add a profile,
+public ABI selector, CLI name, algorithm identifier, or serialized strategy
+field. Match-finder choice remains encoder-local because it is not required for
+decoding.
+
+Run all validation before token publication where the failure is knowable:
+limits, typed variant, overlap, output extent, sparse workspace calculation,
+workspace extent, and aggregate memory. Preserve sparse workspace errors in a
+dedicated result field and reject a sticky runtime matcher failure. Require
+full-pool immediate-promotion output to equal exhaustive, HashChain, and
+BinaryTree tokens and canonical bytes. Defer default strategy selection,
+profile, ABI, CLI, format, and benchmark integration.

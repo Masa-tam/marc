@@ -6,9 +6,9 @@
 #include <cstdint>
 
 namespace marc::dictionary::internal {
-namespace {
 
-[[nodiscard]] LzssSparseHashTreeMatchFinderError map_workspace_error(
+LzssSparseHashTreeMatchFinderError
+map_lzss_sparse_hash_tree_match_finder_error(
     const LzssSparseHashTreeError error) noexcept {
     switch (error) {
     case LzssSparseHashTreeError::none:
@@ -36,8 +36,6 @@ namespace {
     }
     return LzssSparseHashTreeMatchFinderError::invalid_state;
 }
-
-} // namespace
 
 void LzssSparseHashTreeMatchFinder::mark_error(
     const LzssSparseHashTreeMatchFinderError error,
@@ -108,7 +106,7 @@ initialize_lzss_sparse_hash_tree_match_finder(
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
         input.size(), parameters, limits, options.pool_node_capacity);
     if (required.error != LzssSparseHashTreeError::none) {
-        return map_workspace_error(required.error);
+        return map_lzss_sparse_hash_tree_match_finder_error(required.error);
     }
     if (workspace.size() < required.workspace_size) {
         return LzssSparseHashTreeMatchFinderError::workspace_too_small;
@@ -137,7 +135,7 @@ initialize_lzss_sparse_hash_tree_match_finder(
         input.size(), parameters, limits, options.pool_node_capacity,
         active_workspace, initialized.workspace_);
     if (workspace_error != LzssSparseHashTreeError::none) {
-        return map_workspace_error(workspace_error);
+        return map_lzss_sparse_hash_tree_match_finder_error(workspace_error);
     }
     initialize_lzss_hash_tree_promotion_state(
         required.bucket_count, options.promotion_candidate_threshold,

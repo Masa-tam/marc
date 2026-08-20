@@ -964,3 +964,22 @@ matcher errorとcontroller suberrorをstickyに保存し、以後workspaceを変
 boundary、pool rejection、およびbinary corpusでexhaustiveとfull HashTreeにExact一致しなければ
 ならない。この段階ではprivate classのままとし、encoder strategy、profile、ABI、CLI、format、
 benchmarkへ接続しない。
+
+## 39. Explicit private typed-encoder route
+
+private typed-token encoderへsparse HashTreeのsingle-pass entryを追加する。callerはpool node
+capacity、promotion candidate threshold、整列済みworkspaceおよび最大input数のtoken storageを
+明示し、このentryを呼んだ場合にだけsparse strategyを選択する。既定のexhaustive、HashChain、
+BinaryTree経路、public profile、C ABI、CLIおよびstream formatは変更しない。探索strategyと
+optionsはencoder-localであり、生成tokenが同一ならarchiveへ記録しない。
+
+entryは既存single-pass契約と同じく、解析前にlimits、typed variant、buffer overlap、最大token
+storage、strategy固有workspaceおよびaggregate memoryを検証する。workspace calculatorの各失敗は
+sparse matcher固有errorへ写し、初期化または実行中のsticky matcher errorを成功へ読み替えない。
+pool不足によるbucket単位のterminal-chain fallbackは正常動作であり、hard failureではない。
+
+full-poolかつ即時promotionの明示設定について、空、短入力、反復、全byte値、決定的疑似random、
+mixed patternおよび1 MiB typed variantでexhaustive、HashChain、BinaryTree、sparseのtoken列とcanonical
+byte serializationが一致しなければならない。不正pool capacityとone-byte-short workspaceは出力を
+変更せず拒否する。この段階ではprofile、ABI、CLI、format、benchmarkおよび既定strategy選択へ
+接続しない。
