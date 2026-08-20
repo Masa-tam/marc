@@ -1031,3 +1031,14 @@ identityはcheckpoint schema、Git revision、benchmarkとrunner依存sourceのS
 全体を固定する。一項目でも異なれば既存測定を混ぜず拒否する。復元時は全recordのcommand、member hash、
 grid所属、report invariant、重複なし、baseline先行、およびExact token一致を再検証する。完了済みkeyは
 processを再起動せず、未完了keyだけをcanonical順に測り、最終JSONもcanonical順へ再構築する。
+
+## 43. Bounded sparse matrix batches
+
+`--max-new-points N`はcheckpoint必須のexecution controlで、HashChain baselineとSparse候補の新規processを
+合わせて最大N件だけ起動する。復元recordはbudgetを消費しない。各新規reportが検証され原子的に保存された
+境界でのみ正常終了し、完了数/計画総数を表示する。0は復元検証と進捗表示だけを行う。batch sizeは再開ごとに
+変えられるためidentityへ含めない。
+
+partial batchはfinal `--output`と併用できない。全点完了後、limitを外して`--output`を指定した再開により、
+processを再起動せずcanonical final JSONを生成する。強制終了を通常の分割手段にせず、測定単位の正常終了を
+運用上の境界とする。

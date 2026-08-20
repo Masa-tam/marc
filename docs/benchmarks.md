@@ -1707,6 +1707,14 @@ or Exact-token-inconsistent records abort the run. The final report is rebuilt
 in canonical grid order, and both checkpoint and final JSON remain ignored
 local artifacts.
 
+Use `--max-new-points N` with `--checkpoint` and without `--output` to execute
+at most N new baseline/candidate processes. The control is deliberately absent
+from checkpoint identity because batch sizes may vary between resumptions. Zero
+validates and reports progress without launching a point. Each bounded run exits
+successfully only at a saved record boundary; after progress reaches the planned
+total, rerun without the limit and with `--output` to materialize the final v1
+report from the checkpoint.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

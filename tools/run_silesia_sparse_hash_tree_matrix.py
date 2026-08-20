@@ -431,6 +431,13 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
             "identity-matching checkpoint"
         ),
     )
+    parser.add_argument(
+        "--max-new-points", type=int,
+        help=(
+            "stop successfully after this many newly launched baseline or "
+            "sparse points; requires --checkpoint and forbids --output"
+        ),
+    )
     parser.add_argument("--iterations", type=int, default=1)
     parser.add_argument("--frame-size", type=int, default=1_048_576)
     parser.add_argument("--windows", type=int, nargs="+", default=DEFAULT_WINDOWS)
@@ -448,6 +455,12 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
     parsed = parser.parse_args(arguments)
     if parsed.iterations <= 0 or parsed.frame_size <= 0:
         parser.error("iterations and frame size must be positive")
+    if parsed.max_new_points is not None and parsed.max_new_points < 0:
+        parser.error("maximum new points must be nonnegative")
+    if parsed.max_new_points is not None and parsed.checkpoint is None:
+        parser.error("maximum new points requires a checkpoint")
+    if parsed.max_new_points is not None and parsed.output is not None:
+        parser.error("batched runs do not write a final output")
     if any(window <= 0 for window in parsed.windows):
         parser.error("window sizes must be positive")
     maximum_pool = min(parsed.frame_size, min(parsed.windows))
@@ -506,12 +519,32 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
             parsed.frame_size, parsed.windows, parsed.pool_capacities,
             parsed.thresholds,
         )
+        total_points = len(manifest) * len(parsed.windows) * (
+            1 + len(parsed.pool_capacities) * len(parsed.thresholds)
+        )
+        new_points = 0
+
+        def finish_batch() -> int:
+            completed_points = len(baseline_index) + len(sparse_index)
+            print(
+                f"checkpointed {new_points} new points; "
+                f"progress={completed_points}/{total_points}",
+                file=sys.stderr,
+            )
+            return 0
+
+        if parsed.max_new_points == 0:
+            return finish_batch()
+
         for member in manifest:
             member_path = corpus / member.name
             for window_size in parsed.windows:
                 baseline_key = (member.name, window_size)
                 baseline_record = baseline_index.get(baseline_key)
                 if baseline_record is None:
+                    if parsed.max_new_points is not None \
+                            and new_points >= parsed.max_new_points:
+                        return finish_batch()
                     baseline, command = _run_member(
                         benchmark, member_path, HASH_CHAIN_STRATEGY,
                         parsed.iterations, parsed.frame_size, window_size,
@@ -524,6 +557,7 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
                     }
                     checkpoint["baseline_records"].append(baseline_record)
                     baseline_index[baseline_key] = baseline_record
+                    new_points += 1
                     if checkpoint_path is not None:
                         _save_checkpoint(checkpoint_path, checkpoint)
                 baseline = baseline_record["report"]
@@ -534,6 +568,9 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
                         )
                         sparse_record = sparse_index.get(sparse_key)
                         if sparse_record is None:
+                            if parsed.max_new_points is not None \
+                                    and new_points >= parsed.max_new_points:
+                                return finish_batch()
                             report, command = _run_sparse_member(
                                 benchmark, member_path, parsed.iterations,
                                 parsed.frame_size, window_size, pool_capacity,
@@ -550,6 +587,7 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
                             }
                             checkpoint["sparse_records"].append(sparse_record)
                             sparse_index[sparse_key] = sparse_record
+                            new_points += 1
                             if checkpoint_path is not None:
                                 _save_checkpoint(checkpoint_path, checkpoint)
                             progress = "completed"
@@ -560,6 +598,8 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
                             f"pool={pool_capacity} threshold={threshold}",
                             file=sys.stderr, flush=True,
                         )
+        if parsed.max_new_points is not None:
+            return finish_batch()
         baseline_records = [
             baseline_index[(member.name, window_size)]
             for member in manifest for window_size in parsed.windows

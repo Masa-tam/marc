@@ -246,3 +246,10 @@ aggregateはwindow/capacity/thresholdごとに時間とworkを合算し、worksp
 benchmark絶対path/SHA-256、runner依存source SHA-256、Corpus絶対path/manifest、全測定設定とplatform/build環境全体を含め、完全一致を要求する。
 復元recordも通常実行と同じvalidatorへ戻し、重複、grid外、baseline不在、command差異、token差異を
 拒否する。checkpointは性能結果ではなく進捗journalであり、最終schemaはv1のまま変更しない。
+
+### 12.2 Bounded batch contract
+
+`--max-new-points`はcheckpointを必須とし、final outputとは併用しない。復元済みrecordを除くbaselineまたは
+候補processの起動数を数え、指定数を保存した直後の境界で成功終了する。0は検証専用とする。この値は測定設定
+ではないためcheckpoint identityに含めず、再開ごとに変更できる。表示するprogressは検証済みbaseline数と
+候補数の和を、`members * windows * (1 + pools * thresholds)`で割った値とする。

@@ -10977,3 +10977,19 @@ records, retained checkpoint, and valid final schemas. Then run every registered
 test under MSVC and ClangCL with a 600-second per-test limit and no exclusions,
 including all Python tooling tests and
 `marc_interoperability_schema_compatibility`.
+
+### TVG-0775
+
+Split the one-member, one-window, one-pool, one-threshold integration fixture
+into two batches of one new point. Require the first batch to launch and persist
+only its HashChain baseline and the second to reuse that baseline and launch
+only its sparse candidate. Then forbid both launch functions and generate two
+byte-identical final reports from the completed checkpoint. Retain the direct
+complete-resume and corruption cases from TVG-0774.
+
+On the real local Corpus, run the selected `dickens` point with a bounded first
+batch, resume the remaining point in a second batch, validate status with a
+zero budget, and finally generate an identical canonical report without new
+measurement. Run every registered test under MSVC and ClangCL with a 600-second
+per-test limit and no exclusions, including all Python tooling tests and
+`marc_interoperability_schema_compatibility`.

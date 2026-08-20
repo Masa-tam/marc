@@ -23795,3 +23795,31 @@ discarded and the reviewed seed retained.
   with a 600-second per-test limit; both runs include all seven Python tooling
   tests and `marc_interoperability_schema_compatibility`. No production
   selection, codec format, ABI, or CLI changed.
+
+## CR-0980: 2026-08-21 - Bounded sparse matrix batch execution
+
+- Authoring method: placed an explicit new-process budget around marc's existing
+  canonical checkpointed loop and exposed validated completed/total progress.
+- References used: IR-0671 through IR-0672, DD-907 through DD-908, TVG-0774
+  through TVG-0775, CR-0979, and the repository-owned atomic checkpoint and
+  restored-record index.
+- Known implementations intentionally not consulted: external batch runners,
+  workflow engines, schedulers, compressors, source code, tests, benchmark
+  results, tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: count both baseline and candidate processes; exclude
+  restored records; allow zero for status; keep budget outside identity; forbid
+  partial final output; and stop only before launching the next missing point.
+- Generated-code task description: make long local Silesia measurements
+  intentionally divisible without relying on forced termination.
+- Similarity review: the budget and progress semantics follow solely from
+  marc's canonical loop and checkpoint contract. No external implementation
+  expression was consulted or introduced.
+- Validation: all ten sparse-runner unit tests pass under MSVC and ClangCL. The
+  complete local twelve-member manifest verified for a selected `dickens`
+  smoke: the first one-point batch stored only its HashChain baseline, the
+  second stored only its sparse candidate, a zero-point pass reported 2/2, and
+  two unlimited resumptions reproduced byte-identical final JSON without new
+  measurement. All 3,143 registered tests pass under each compiler with a
+  600-second per-test limit; both runs include all seven Python tooling tests
+  and `marc_interoperability_schema_compatibility`. No measurement format,
+  production selector, codec format, ABI, or CLI changed.

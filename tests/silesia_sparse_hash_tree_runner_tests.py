@@ -262,10 +262,26 @@ class SilesiaSparseHashTreeRunnerTests(unittest.TestCase):
                 sparse_runner, "_run_sparse_member", side_effect=run_sparse,
             ) as sparse_mock:
                 self.assertEqual(
-                    sparse_runner.main(arguments + ["--output", str(first_output)]),
+                    sparse_runner.main(arguments + ["--max-new-points", "1"]),
                     0,
                 )
                 self.assertEqual(baseline_mock.call_count, 1)
+                self.assertEqual(sparse_mock.call_count, 0)
+
+            with mock.patch.object(
+                sparse_runner, "verify_directory", return_value=[member],
+            ), mock.patch.object(
+                sparse_runner, "_git_revision", return_value="revision",
+            ), mock.patch.object(
+                sparse_runner, "_run_member",
+                side_effect=AssertionError("baseline relaunched"),
+            ), mock.patch.object(
+                sparse_runner, "_run_sparse_member", side_effect=run_sparse,
+            ) as sparse_mock:
+                self.assertEqual(
+                    sparse_runner.main(arguments + ["--max-new-points", "1"]),
+                    0,
+                )
                 self.assertEqual(sparse_mock.call_count, 1)
 
             with mock.patch.object(
@@ -279,6 +295,12 @@ class SilesiaSparseHashTreeRunnerTests(unittest.TestCase):
                 sparse_runner, "_run_sparse_member",
                 side_effect=AssertionError("sparse point relaunched"),
             ):
+                self.assertEqual(
+                    sparse_runner.main(
+                        arguments + ["--output", str(first_output)],
+                    ),
+                    0,
+                )
                 self.assertEqual(
                     sparse_runner.main(
                         arguments + ["--output", str(second_output)],

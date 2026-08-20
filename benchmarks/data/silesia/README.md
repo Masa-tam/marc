@@ -140,6 +140,15 @@ Corpus, selected grid, member set, or recorded platform/build environment is rej
 than mixed with earlier measurements. A completed checkpoint is retained for
 audit and fast deterministic report regeneration.
 
+To run a bounded batch, omit `--output` and add for example
+`--max-new-points 12`. The limit counts newly launched HashChain baselines and
+sparse candidates together; restored points do not consume the budget. The
+runner exits successfully at a validated checkpoint boundary and prints
+`progress=completed/total`. Repeat the same command until complete, then remove
+`--max-new-points`, add `--output`, and run once more to publish the final report
+without relaunching completed points. A value of zero performs a status-only
+resume validation.
+
 Run each of the twelve members independently. The existing Corpus-wide v1
 runner orchestrates HashChain/BinaryTree only; HashTree threshold-sweep
 orchestration will use a later versioned report contract.

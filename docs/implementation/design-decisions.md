@@ -19065,3 +19065,21 @@ Publish the temporary JSON with flush, file synchronization, and same-directory
 replacement. Retain a complete checkpoint for audit and deterministic report
 regeneration; do not delete or silently restart on mismatch. This changes only
 the offline runner and no codec, selector, ABI, CLI, profile, or format.
+
+## DD-908: Stop sparse matrix batches only at persisted point boundaries
+
+- Date: 2026-08-21
+- Status: accepted
+
+Add optional `--max-new-points N` execution control. Require an explicit
+checkpoint, forbid simultaneous final output, and count only newly launched
+HashChain baselines or sparse candidates. Stop successfully immediately before
+the next missing point once N validated records have been atomically persisted.
+Allow zero as a validation/status pass.
+
+Exclude the batch limit from checkpoint identity so successive invocations may
+use different operational budgets. Report validated completed points against
+the complete plan. Even when the plan is complete, a batched invocation does
+not publish a final report; a subsequent unlimited invocation with `--output`
+reconstructs it without relaunching work. This avoids treating forced process
+termination as ordinary scheduling and changes no measured configuration.

@@ -6037,3 +6037,11 @@ TVG-0774, Python's documented JSON, file flush, `os.fsync`, and `os.replace`
 operations, and marc's existing strict report and Corpus validators. No external
 checkpoint runner, scheduler, compressor, source code, test, benchmark result,
 tuning guide, patent, pseudocode, or optimization description was consulted.
+
+### IR-0672
+
+Bounded sparse matrix batching uses DD-907 through DD-908, TVG-0774 through
+TVG-0775, the repository-owned checkpoint index, canonical matrix loop, and
+validated-record publication boundary. No external batch runner, scheduler,
+workflow engine, compressor, source code, test, benchmark result, tuning guide,
+patent, pseudocode, or optimization description was consulted.
