@@ -127,6 +127,19 @@ a bounded development smoke, add for example `--members dickens --windows
 manifest is still verified before the selected members run. Output remains
 local under the ignored `results/` directory.
 
+Long runs should also specify an ignored checkpoint:
+
+```console
+py -3.14 tools/run_silesia_sparse_hash_tree_matrix.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --checkpoint benchmarks/data/silesia/results/sparse-hash-tree-msvc.checkpoint.json --output benchmarks/data/silesia/results/sparse-hash-tree-msvc.json --compiler "MSVC 19.51" --generator "Visual Studio 18 2026"
+```
+
+The runner saves after every completed baseline or sparse point and resumes
+automatically when the checkpoint identity matches exactly. Do not edit the
+checkpoint. A different revision, benchmark or runner-source content or path,
+Corpus, selected grid, member set, or recorded platform/build environment is rejected rather
+than mixed with earlier measurements. A completed checkpoint is retained for
+audit and fast deterministic report regeneration.
+
 Run each of the twelve members independently. The existing Corpus-wide v1
 runner orchestrates HashChain/BinaryTree only; HashTree threshold-sweep
 orchestration will use a later versioned report contract.

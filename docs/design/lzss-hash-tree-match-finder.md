@@ -1018,3 +1018,16 @@ baseline aggregateおよびwindow/capacity/threshold別aggregateを保持する�
 `--members`は測定だけをcanonical manifest順の部分集合へ制限する。全Corpus検証は省略せず、unknown
 または重複名を拒否する。これにより長時間gridと開発smokeを分離する。結果はignored local JSONで、
 性能をgate、既定strategy、profile、ABI、CLIまたはstream formatへ昇格させない。
+
+## 42. Sparse matrix checkpoint and resume
+
+長時間matrixでは明示した`--checkpoint`をbaselineまたはsparse point完了ごとに更新する。
+同一directoryの`.tmp`へUTF-8 JSON全体を書き、flushと`fsync`後に`os.replace`するため、強制終了時も
+最後に公開済みの完全checkpointを再利用できる。残った一時fileは入力にせず、正常完了後も
+checkpointを監査と最終report再生成のため保持する。
+
+identityはcheckpoint schema、Git revision、benchmarkとrunner依存sourceのSHA-256、benchmark/Corpus絶対path、選択member
+の完全manifest、iterations、frame、window、pool、threshold、およびplatform/build labelを含む記録環境
+全体を固定する。一項目でも異なれば既存測定を混ぜず拒否する。復元時は全recordのcommand、member hash、
+grid所属、report invariant、重複なし、baseline先行、およびExact token一致を再検証する。完了済みkeyは
+processを再起動せず、未完了keyだけをcanonical順に測り、最終JSONもcanonical順へ再構築する。

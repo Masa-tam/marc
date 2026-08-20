@@ -238,3 +238,11 @@ report validatorは明示設定、共通/sparse workspace一致、有限時間�
 histogram、`promotions <= triggers`および`maximum promoted nodes <= pool capacity`を検証する。
 aggregateはwindow/capacity/thresholdごとに時間とworkを合算し、workspaceとpeakを最大化する。
 結果はignored directoryにのみ保存し、性能を合否条件、public selectorまたはformat規則にしない。
+
+### 12.1 Checkpoint contract
+
+`--checkpoint`は明示したlocal JSONを新規作成し、存在時は自動再開する。各baselineまたは候補processが
+正常終了し、report検証とExact token検証が完了した後だけ原子的に置換する。identityにはrevision、
+benchmark絶対path/SHA-256、runner依存source SHA-256、Corpus絶対path/manifest、全測定設定とplatform/build環境全体を含め、完全一致を要求する。
+復元recordも通常実行と同じvalidatorへ戻し、重複、grid外、baseline不在、command差異、token差異を
+拒否する。checkpointは性能結果ではなく進捗journalであり、最終schemaはv1のまま変更しない。

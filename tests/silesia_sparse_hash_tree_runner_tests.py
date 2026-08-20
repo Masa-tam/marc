@@ -3,10 +3,13 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from types import SimpleNamespace
 import sys
+import tempfile
 import unittest
+from unittest import mock
 
 
 TOOLS = Path(__file__).resolve().parents[1] / "tools"
@@ -16,14 +19,37 @@ from run_silesia_match_finder_benchmark import (  # noqa: E402
     RunnerError,
     _parse_report,
 )
+import run_silesia_sparse_hash_tree_matrix as sparse_runner  # noqa: E402
 from run_silesia_sparse_hash_tree_matrix import (  # noqa: E402
+    CHECKPOINT_SCHEMA,
     DEFAULT_POOL_CAPACITIES,
     DEFAULT_THRESHOLDS,
     _aggregate_sparse,
+    _atomic_write_json,
+    _checkpoint_identity,
+    _index_checkpoint_records,
+    _load_checkpoint,
+    _new_checkpoint,
     _require_exact_tokens,
     _select_members,
     _validate_sparse_report,
 )
+
+
+def _baseline_report(token_count: int = 4) -> dict:
+    text = (
+        "mode=frames\nstrategy=hash-chain-exact\ninput_bytes=8\n"
+        "frame_bytes=8\nwindow_bytes=8\nframe_count=1\n"
+        f"token_count={token_count}\niterations=1\n"
+        "hash_workspace_bytes=64\nhash_chain_queries=4\n"
+        "hash_chain_candidates=5\nhash_chain_byte_comparisons=6\n"
+        "hash_chain_prefix_matches=2\nhash_chain_prefix_mismatches=2\n"
+        "hash_chain_extension_byte_comparisons=3\n"
+        "hash_chain_max_candidates_per_query=4\n"
+        "hash_chain_frame_seconds=0.5\n"
+        "hash_chain_query_depth_histogram=0,4\n"
+    )
+    return _parse_report(text)
 
 
 def _sparse_report(
@@ -145,6 +171,168 @@ class SilesiaSparseHashTreeRunnerTests(unittest.TestCase):
         for requested in (["missing"], ["mr", "mr"]):
             with self.assertRaises(RunnerError):
                 _select_members(manifest, requested)
+
+    def test_writes_json_atomically_without_leaving_temporary_file(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "nested" / "checkpoint.json"
+            _atomic_write_json(path, {"value": 1})
+            self.assertEqual(json.loads(path.read_text(encoding="utf-8")),
+                             {"value": 1})
+            self.assertFalse(path.with_name(path.name + ".tmp").exists())
+            _atomic_write_json(path, {"value": 2})
+            self.assertEqual(json.loads(path.read_text(encoding="utf-8")),
+                             {"value": 2})
+
+    def test_checkpoint_identity_must_match_exactly(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            member = SimpleNamespace(name="sample", size=8, sha256="abc")
+            benchmark = root / "benchmark"
+            benchmark.write_bytes(b"fixture")
+            identity = _checkpoint_identity(
+                "revision", benchmark, root / "corpus", [member],
+                1, 8, [8], [4], [4], {"compiler": "fixture"},
+            )
+            checkpoint = _new_checkpoint(identity)
+            path = root / "checkpoint.json"
+            _atomic_write_json(path, checkpoint)
+            self.assertEqual(
+                _load_checkpoint(path, identity)["schema"], CHECKPOINT_SCHEMA,
+            )
+            changed = dict(identity)
+            changed["revision"] = "other"
+            with self.assertRaises(RunnerError):
+                _load_checkpoint(path, changed)
+            changed_source = dict(identity)
+            changed_source["tool_source_sha256"] = dict(
+                identity["tool_source_sha256"],
+            )
+            source_name = next(iter(changed_source["tool_source_sha256"]))
+            changed_source["tool_source_sha256"][source_name] = "0" * 64
+            with self.assertRaises(RunnerError):
+                _load_checkpoint(path, changed_source)
+            benchmark.write_bytes(b"rebuilt fixture")
+            rebuilt_identity = _checkpoint_identity(
+                "revision", benchmark, root / "corpus", [member],
+                1, 8, [8], [4], [4], {"compiler": "fixture"},
+            )
+            with self.assertRaises(RunnerError):
+                _load_checkpoint(path, rebuilt_identity)
+
+    def test_resumes_complete_grid_without_relaunching_benchmark(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            corpus = root / "corpus"
+            corpus.mkdir()
+            member_path = corpus / "sample"
+            member_path.write_bytes(b"12345678")
+            benchmark = root / "benchmark.exe"
+            benchmark.write_bytes(b"fixture")
+            member = SimpleNamespace(name="sample", size=8, sha256="abc")
+            checkpoint = root / "checkpoint.json"
+            first_output = root / "first.json"
+            second_output = root / "second.json"
+
+            def run_baseline(*args):
+                return _baseline_report(), [
+                    str(benchmark.resolve()), "--frames", "hash-chain-exact",
+                    str(member_path.resolve()), "1", "8", "8",
+                ]
+
+            def run_sparse(*args):
+                return _sparse_report(), [
+                    str(benchmark.resolve()), "--frames",
+                    "sparse-hash-tree-exact", str(member_path.resolve()),
+                    "1", "8", "8", "4", "4",
+                ]
+
+            arguments = [
+                str(benchmark), "--corpus", str(corpus), "--iterations", "1",
+                "--frame-size", "8", "--windows", "8",
+                "--pool-capacities", "4", "--thresholds", "4",
+                "--checkpoint", str(checkpoint),
+            ]
+            with mock.patch.object(
+                sparse_runner, "verify_directory", return_value=[member],
+            ), mock.patch.object(
+                sparse_runner, "_git_revision", return_value="revision",
+            ), mock.patch.object(
+                sparse_runner, "_run_member", side_effect=run_baseline,
+            ) as baseline_mock, mock.patch.object(
+                sparse_runner, "_run_sparse_member", side_effect=run_sparse,
+            ) as sparse_mock:
+                self.assertEqual(
+                    sparse_runner.main(arguments + ["--output", str(first_output)]),
+                    0,
+                )
+                self.assertEqual(baseline_mock.call_count, 1)
+                self.assertEqual(sparse_mock.call_count, 1)
+
+            with mock.patch.object(
+                sparse_runner, "verify_directory", return_value=[member],
+            ), mock.patch.object(
+                sparse_runner, "_git_revision", return_value="revision",
+            ), mock.patch.object(
+                sparse_runner, "_run_member",
+                side_effect=AssertionError("baseline relaunched"),
+            ), mock.patch.object(
+                sparse_runner, "_run_sparse_member",
+                side_effect=AssertionError("sparse point relaunched"),
+            ):
+                self.assertEqual(
+                    sparse_runner.main(
+                        arguments + ["--output", str(second_output)],
+                    ),
+                    0,
+                )
+            self.assertEqual(
+                json.loads(first_output.read_text(encoding="utf-8")),
+                json.loads(second_output.read_text(encoding="utf-8")),
+            )
+
+    def test_rejects_duplicate_or_token_mismatched_checkpoint_records(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            corpus = root / "corpus"
+            corpus.mkdir()
+            member_path = corpus / "sample"
+            member_path.write_bytes(b"12345678")
+            benchmark = (root / "benchmark.exe").resolve()
+            benchmark.write_bytes(b"fixture")
+            member = SimpleNamespace(name="sample", size=8, sha256="abc")
+            identity = _checkpoint_identity(
+                "revision", benchmark, corpus.resolve(), [member],
+                1, 8, [8], [4], [4], {"compiler": "fixture"},
+            )
+            checkpoint = _new_checkpoint(identity)
+            baseline_record = {
+                "member": "sample", "sha256": "abc",
+                "command": [
+                    str(benchmark), "--frames", "hash-chain-exact",
+                    str(member_path.resolve()), "1", "8", "8",
+                ],
+                "report": _baseline_report(),
+            }
+            checkpoint["baseline_records"] = [baseline_record, baseline_record]
+            with self.assertRaises(RunnerError):
+                _index_checkpoint_records(
+                    checkpoint, benchmark, corpus.resolve(), [member],
+                    1, 8, [8], [4], [4],
+                )
+            checkpoint["baseline_records"] = [baseline_record]
+            checkpoint["sparse_records"] = [{
+                "member": "sample", "sha256": "abc",
+                "command": [
+                    str(benchmark), "--frames", "sparse-hash-tree-exact",
+                    str(member_path.resolve()), "1", "8", "8", "4", "4",
+                ],
+                "report": _sparse_report(token_count=5),
+            }]
+            with self.assertRaises(RunnerError):
+                _index_checkpoint_records(
+                    checkpoint, benchmark, corpus.resolve(), [member],
+                    1, 8, [8], [4], [4],
+                )
 
 
 if __name__ == "__main__":

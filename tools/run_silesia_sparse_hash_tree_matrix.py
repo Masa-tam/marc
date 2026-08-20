@@ -6,8 +6,10 @@ from __future__ import annotations
 import argparse
 from collections import defaultdict
 from datetime import datetime, timezone
+import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import platform
 import subprocess
@@ -30,13 +32,21 @@ from run_silesia_match_finder_benchmark import (
     _require_float,
     _require_integer,
     _run_member,
+    _validate_report,
 )
 from verify_silesia_corpus import VerificationError, verify_directory
 
 
 SPARSE_HASH_TREE_STRATEGY = "sparse-hash-tree-exact"
+CHECKPOINT_SCHEMA = "marc-silesia-sparse-hash-tree-checkpoint-v1"
 DEFAULT_POOL_CAPACITIES = (4_096, 16_384, 65_536)
 DEFAULT_THRESHOLDS = (16, 64, 256, 1_024)
+CHECKPOINT_TOOL_SOURCES = (
+    "run_silesia_sparse_hash_tree_matrix.py",
+    "run_silesia_match_finder_benchmark.py",
+    "run_lzss_hash_tree_threshold_matrix.py",
+    "verify_silesia_corpus.py",
+)
 
 
 def _sum_histograms(histograms: Iterable[list[int]]) -> list[int]:
@@ -64,6 +74,189 @@ def _select_members(
     if missing:
         raise RunnerError(f"unknown Silesia member: {missing[0]}")
     return [member for member in manifest if member.name in requested_set]
+
+
+def _atomic_write_json(path: Path, value: dict[str, Any]) -> None:
+    serialized = json.dumps(
+        value, indent=2, sort_keys=True, allow_nan=False,
+    ) + "\n"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(path.name + ".tmp")
+    with temporary.open("w", encoding="utf-8", newline="\n") as stream:
+        stream.write(serialized)
+        stream.flush()
+        os.fsync(stream.fileno())
+    os.replace(temporary, path)
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        while chunk := stream.read(1024 * 1024):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _checkpoint_identity(
+    revision: str, benchmark: Path, corpus: Path, manifest: Sequence[Any],
+    iterations: int, frame_size: int, windows: Sequence[int],
+    pool_capacities: Sequence[int], thresholds: Sequence[int],
+    environment: dict[str, str],
+) -> dict[str, Any]:
+    tools_directory = Path(__file__).resolve().parent
+    return {
+        "revision": revision,
+        "benchmark": {
+            "path": str(benchmark),
+            "sha256": _sha256_file(benchmark),
+        },
+        "tool_source_sha256": {
+            name: _sha256_file(tools_directory / name)
+            for name in CHECKPOINT_TOOL_SOURCES
+        },
+        "corpus": str(corpus),
+        "environment": environment,
+        "configuration": {
+            "iterations": iterations,
+            "frame_bytes": frame_size,
+            "window_bytes": list(windows),
+            "pool_node_capacities": list(pool_capacities),
+            "promotion_candidate_thresholds": list(thresholds),
+            "members": [member.name for member in manifest],
+        },
+        "manifest": [vars(member) for member in manifest],
+    }
+
+
+def _new_checkpoint(identity: dict[str, Any]) -> dict[str, Any]:
+    now = datetime.now(timezone.utc).isoformat()
+    return {
+        "schema": CHECKPOINT_SCHEMA,
+        "started_utc": now,
+        "updated_utc": now,
+        "identity": identity,
+        "baseline_records": [],
+        "sparse_records": [],
+    }
+
+
+def _load_checkpoint(
+    path: Path, expected_identity: dict[str, Any],
+) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise RunnerError(f"cannot read checkpoint: {path}: {error}") from error
+    if not isinstance(value, dict) \
+            or value.get("schema") != CHECKPOINT_SCHEMA:
+        raise RunnerError("checkpoint schema changed or is missing")
+    if value.get("identity") != expected_identity:
+        raise RunnerError("checkpoint identity does not match this run")
+    for key in ("started_utc", "updated_utc"):
+        if not isinstance(value.get(key), str) or not value[key]:
+            raise RunnerError(f"invalid checkpoint field: {key}")
+    for key in ("baseline_records", "sparse_records"):
+        if not isinstance(value.get(key), list):
+            raise RunnerError(f"invalid checkpoint field: {key}")
+    return value
+
+
+def _record_identity(
+    record: Any, members: dict[str, Any], expected_command: list[str],
+) -> tuple[Any, dict[str, Any]]:
+    if not isinstance(record, dict):
+        raise RunnerError("invalid checkpoint record")
+    member_name = record.get("member")
+    member = members.get(member_name)
+    if member is None or record.get("sha256") != member.sha256:
+        raise RunnerError("checkpoint record member identity changed")
+    if record.get("command") != expected_command:
+        raise RunnerError("checkpoint record command changed")
+    report = record.get("report")
+    if not isinstance(report, dict):
+        raise RunnerError("checkpoint record report is missing")
+    return member, report
+
+
+def _index_checkpoint_records(
+    checkpoint: dict[str, Any], benchmark: Path, corpus: Path,
+    manifest: Sequence[Any], iterations: int, frame_size: int,
+    windows: Sequence[int], pool_capacities: Sequence[int],
+    thresholds: Sequence[int],
+) -> tuple[
+    dict[tuple[str, int], dict[str, Any]],
+    dict[tuple[str, int, int, int], dict[str, Any]],
+]:
+    members = {member.name: member for member in manifest}
+    allowed_windows = set(windows)
+    allowed_capacities = set(pool_capacities)
+    allowed_thresholds = set(thresholds)
+    baselines: dict[tuple[str, int], dict[str, Any]] = {}
+    sparse: dict[tuple[str, int, int, int], dict[str, Any]] = {}
+    for record in checkpoint["baseline_records"]:
+        if not isinstance(record, dict) or not isinstance(record.get("report"), dict):
+            raise RunnerError("invalid checkpoint baseline record")
+        report = record["report"]
+        member_name = record.get("member")
+        window_size = report.get("window_bytes")
+        if member_name not in members or window_size not in allowed_windows:
+            raise RunnerError("checkpoint baseline is outside the selected grid")
+        member_path = corpus / member_name
+        command = [
+            str(benchmark), "--frames", HASH_CHAIN_STRATEGY,
+            str(member_path), str(iterations), str(frame_size),
+            str(window_size),
+        ]
+        member, report = _record_identity(record, members, command)
+        _validate_report(
+            report, HASH_CHAIN_STRATEGY, member_path.stat().st_size,
+            frame_size, window_size, iterations,
+        )
+        key = (member.name, window_size)
+        if key in baselines:
+            raise RunnerError("duplicate checkpoint baseline record")
+        baselines[key] = record
+    for record in checkpoint["sparse_records"]:
+        if not isinstance(record, dict) or not isinstance(record.get("report"), dict):
+            raise RunnerError("invalid checkpoint sparse record")
+        report = record["report"]
+        member_name = record.get("member")
+        window_size = report.get("window_bytes")
+        pool_capacity = report.get("sparse_hash_tree_pool_node_capacity")
+        threshold = report.get(
+            "sparse_hash_tree_promotion_candidate_threshold",
+        )
+        if member_name not in members or window_size not in allowed_windows \
+                or pool_capacity not in allowed_capacities \
+                or threshold not in allowed_thresholds:
+            raise RunnerError("checkpoint sparse record is outside the selected grid")
+        member_path = corpus / member_name
+        command = [
+            str(benchmark), "--frames", SPARSE_HASH_TREE_STRATEGY,
+            str(member_path), str(iterations), str(frame_size),
+            str(window_size), str(pool_capacity), str(threshold),
+        ]
+        member, report = _record_identity(record, members, command)
+        _validate_sparse_report(
+            report, member_path.stat().st_size, frame_size, window_size,
+            iterations, pool_capacity, threshold,
+        )
+        baseline = baselines.get((member.name, window_size))
+        if baseline is None:
+            raise RunnerError("checkpoint sparse record has no baseline")
+        _require_exact_tokens(
+            baseline["report"], [report], member.name, window_size,
+        )
+        key = (member.name, window_size, pool_capacity, threshold)
+        if key in sparse:
+            raise RunnerError("duplicate checkpoint sparse record")
+        sparse[key] = record
+    return baselines, sparse
+
+
+def _save_checkpoint(path: Path, checkpoint: dict[str, Any]) -> None:
+    checkpoint["updated_utc"] = datetime.now(timezone.utc).isoformat()
+    _atomic_write_json(path, checkpoint)
 
 
 def _validate_sparse_report(
@@ -231,6 +424,13 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--corpus", type=Path,
                         default=_default_corpus_directory())
     parser.add_argument("--output", type=Path)
+    parser.add_argument(
+        "--checkpoint", type=Path,
+        help=(
+            "atomically save each completed point and resume an existing "
+            "identity-matching checkpoint"
+        ),
+    )
     parser.add_argument("--iterations", type=int, default=1)
     parser.add_argument("--frame-size", type=int, default=1_048_576)
     parser.add_argument("--windows", type=int, nargs="+", default=DEFAULT_WINDOWS)
@@ -267,61 +467,115 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
     benchmark = parsed.benchmark.resolve()
     if not benchmark.is_file():
         parser.error(f"benchmark is not a file: {benchmark}")
+    corpus = parsed.corpus.resolve()
+    output = parsed.output.resolve() if parsed.output is not None else None
+    checkpoint_path = (
+        parsed.checkpoint.resolve()
+        if parsed.checkpoint is not None else None
+    )
+    if output is not None and checkpoint_path == output:
+        parser.error("output and checkpoint paths must differ")
 
     try:
-        verified_manifest = verify_directory(parsed.corpus)
+        verified_manifest = verify_directory(corpus)
         manifest = _select_members(verified_manifest, parsed.members)
-        baseline_records: list[dict[str, Any]] = []
-        sparse_records: list[dict[str, Any]] = []
+        revision = _git_revision()
+        environment = {
+            "platform": platform.platform(),
+            "machine": platform.machine(),
+            "processor": platform.processor(),
+            "python": platform.python_version(),
+            "compiler": parsed.compiler,
+            "generator": parsed.generator,
+            "build_type": parsed.build_type,
+        }
+        identity = _checkpoint_identity(
+            revision, benchmark, corpus, manifest, parsed.iterations,
+            parsed.frame_size, parsed.windows, parsed.pool_capacities,
+            parsed.thresholds, environment,
+        )
+        if checkpoint_path is None:
+            checkpoint = _new_checkpoint(identity)
+        elif checkpoint_path.exists():
+            checkpoint = _load_checkpoint(checkpoint_path, identity)
+        else:
+            checkpoint = _new_checkpoint(identity)
+            _save_checkpoint(checkpoint_path, checkpoint)
+        baseline_index, sparse_index = _index_checkpoint_records(
+            checkpoint, benchmark, corpus, manifest, parsed.iterations,
+            parsed.frame_size, parsed.windows, parsed.pool_capacities,
+            parsed.thresholds,
+        )
         for member in manifest:
-            member_path = parsed.corpus / member.name
+            member_path = corpus / member.name
             for window_size in parsed.windows:
-                baseline, command = _run_member(
-                    benchmark, member_path, HASH_CHAIN_STRATEGY,
-                    parsed.iterations, parsed.frame_size, window_size,
-                )
-                baseline_records.append({
-                    "member": member.name,
-                    "sha256": member.sha256,
-                    "command": command,
-                    "report": baseline,
-                })
-                candidates: list[dict[str, Any]] = []
+                baseline_key = (member.name, window_size)
+                baseline_record = baseline_index.get(baseline_key)
+                if baseline_record is None:
+                    baseline, command = _run_member(
+                        benchmark, member_path, HASH_CHAIN_STRATEGY,
+                        parsed.iterations, parsed.frame_size, window_size,
+                    )
+                    baseline_record = {
+                        "member": member.name,
+                        "sha256": member.sha256,
+                        "command": command,
+                        "report": baseline,
+                    }
+                    checkpoint["baseline_records"].append(baseline_record)
+                    baseline_index[baseline_key] = baseline_record
+                    if checkpoint_path is not None:
+                        _save_checkpoint(checkpoint_path, checkpoint)
+                baseline = baseline_record["report"]
                 for pool_capacity in parsed.pool_capacities:
                     for threshold in parsed.thresholds:
-                        report, command = _run_sparse_member(
-                            benchmark, member_path, parsed.iterations,
-                            parsed.frame_size, window_size, pool_capacity,
-                            threshold,
+                        sparse_key = (
+                            member.name, window_size, pool_capacity, threshold,
                         )
-                        candidates.append(report)
-                        sparse_records.append({
-                            "member": member.name,
-                            "sha256": member.sha256,
-                            "command": command,
-                            "report": report,
-                        })
+                        sparse_record = sparse_index.get(sparse_key)
+                        if sparse_record is None:
+                            report, command = _run_sparse_member(
+                                benchmark, member_path, parsed.iterations,
+                                parsed.frame_size, window_size, pool_capacity,
+                                threshold,
+                            )
+                            _require_exact_tokens(
+                                baseline, [report], member.name, window_size,
+                            )
+                            sparse_record = {
+                                "member": member.name,
+                                "sha256": member.sha256,
+                                "command": command,
+                                "report": report,
+                            }
+                            checkpoint["sparse_records"].append(sparse_record)
+                            sparse_index[sparse_key] = sparse_record
+                            if checkpoint_path is not None:
+                                _save_checkpoint(checkpoint_path, checkpoint)
+                            progress = "completed"
+                        else:
+                            progress = "resumed"
                         print(
-                            f"completed {member.name} window={window_size} "
+                            f"{progress} {member.name} window={window_size} "
                             f"pool={pool_capacity} threshold={threshold}",
                             file=sys.stderr, flush=True,
                         )
-                _require_exact_tokens(
-                    baseline, candidates, member.name, window_size,
-                )
+        baseline_records = [
+            baseline_index[(member.name, window_size)]
+            for member in manifest for window_size in parsed.windows
+        ]
+        sparse_records = [
+            sparse_index[(member.name, window_size, pool_capacity, threshold)]
+            for member in manifest
+            for window_size in parsed.windows
+            for pool_capacity in parsed.pool_capacities
+            for threshold in parsed.thresholds
+        ]
         result = {
             "schema": "marc-silesia-sparse-hash-tree-v1",
-            "created_utc": datetime.now(timezone.utc).isoformat(),
-            "revision": _git_revision(),
-            "environment": {
-                "platform": platform.platform(),
-                "machine": platform.machine(),
-                "processor": platform.processor(),
-                "python": platform.python_version(),
-                "compiler": parsed.compiler,
-                "generator": parsed.generator,
-                "build_type": parsed.build_type,
-            },
+            "created_utc": checkpoint["started_utc"],
+            "revision": revision,
+            "environment": environment,
             "configuration": {
                 "iterations": parsed.iterations,
                 "warmup_diagnostic_passes": 1,
@@ -348,13 +602,14 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
             print(f"error: {error}", file=sys.stderr)
         return 1
 
-    serialized = json.dumps(result, indent=2, sort_keys=True) + "\n"
-    if parsed.output is None:
-        sys.stdout.write(serialized)
+    if output is None:
+        sys.stdout.write(
+            json.dumps(result, indent=2, sort_keys=True, allow_nan=False)
+            + "\n"
+        )
     else:
-        parsed.output.parent.mkdir(parents=True, exist_ok=True)
-        parsed.output.write_text(serialized, encoding="utf-8")
-        print(f"wrote {parsed.output}")
+        _atomic_write_json(output, result)
+        print(f"wrote {output}")
     return 0
 
 

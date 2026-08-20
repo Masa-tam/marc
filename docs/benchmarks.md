@@ -1697,6 +1697,16 @@ the sparse implementation's chain-only behavior and may be slow on collision-
 heavy data. Reports remain descriptive, ignored local JSON and do not select a
 production strategy.
 
+For a long matrix, pass `--checkpoint` together with `--output`. The checkpoint
+is atomically replaced after each completed baseline and sparse point. An
+existing checkpoint resumes automatically only when its schema, Git revision,
+benchmark path and SHA-256, Corpus path and selected manifest, complete grid,
+runner/dependency source SHA-256 values, and the recorded platform/build
+environment match. Invalid, duplicate, out-of-grid,
+or Exact-token-inconsistent records abort the run. The final report is rebuilt
+in canonical grid order, and both checkpoint and final JSON remain ignored
+local artifacts.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

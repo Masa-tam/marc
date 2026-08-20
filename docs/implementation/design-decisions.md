@@ -19045,3 +19045,23 @@ canonical manifest order, and reject unknown or duplicate names. This keeps
 development smoke runs bounded after real data exposed multi-minute members.
 Defer checkpoint/resume, performance gates, production selection, profile,
 ABI, CLI, and format integration.
+
+## DD-907: Resume sparse Silesia measurements only from an exact checkpoint identity
+
+- Date: 2026-08-21
+- Status: accepted
+
+Add an explicit `--checkpoint` path to the offline sparse matrix runner. Create
+or atomically replace a versioned checkpoint after each validated HashChain
+baseline or sparse point. If the path already exists, resume automatically only
+when Git revision, benchmark absolute path and SHA-256, Corpus absolute path and
+selected manifest, runner/dependency source SHA-256 values, iterations,
+frame/window/pool/threshold grid, member set, and the complete recorded platform
+and build environment match exactly.
+
+Revalidate every restored command, member digest, report invariant, grid key,
+baseline dependency, uniqueness, and Exact token count before skipping work.
+Publish the temporary JSON with flush, file synchronization, and same-directory
+replacement. Retain a complete checkpoint for audit and deterministic report
+regeneration; do not delete or silently restart on mismatch. This changes only
+the offline runner and no codec, selector, ABI, CLI, profile, or format.

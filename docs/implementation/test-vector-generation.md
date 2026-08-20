@@ -10960,3 +10960,20 @@ valid schema record and aggregate with Exact baseline equality. Run all six
 runner unit fixtures and every registered test under MSVC and ClangCL with a
 600-second per-test limit and no exclusions, including all seven Python tooling
 tests and `marc_interoperability_schema_compatibility`.
+
+### TVG-0774
+
+Write and replace a checkpoint fixture atomically and require parseable UTF-8
+JSON with no residual temporary file. Require exact identity acceptance and
+reject a changed revision, rebuilt benchmark content, or changed recorded tool-source digest. Build a one-member, one-window, one-pool,
+one-threshold fixture whose first run launches one baseline and one sparse
+process, then whose second run reconstructs an identical final report while
+both launch functions are forbidden. Independently reject duplicate baseline
+keys and a sparse token count that differs from its restored baseline.
+
+Run the real local `dickens` smoke once with a fresh checkpoint and again with
+benchmark launches absent from progress output. Require identical measurement
+records, retained checkpoint, and valid final schemas. Then run every registered
+test under MSVC and ClangCL with a 600-second per-test limit and no exclusions,
+including all Python tooling tests and
+`marc_interoperability_schema_compatibility`.

@@ -23763,3 +23763,35 @@ discarded and the reviewed seed retained.
   600-second per-test limit; both runs include all seven Python tooling tests
   and `marc_interoperability_schema_compatibility`. The full default matrix was
   not run and no performance gate or production selection changed.
+
+## CR-0979: 2026-08-21 - Sparse matrix atomic checkpoint and resume
+
+- Authoring method: extended marc's offline sparse runner with a versioned
+  progress journal, exact invocation identity, strict restored-record indexing,
+  and same-directory atomic JSON publication.
+- References used: IR-0670 through IR-0671, DD-906 through DD-907, TVG-0773
+  through TVG-0774, CR-0978, Python's documented JSON and file replacement
+  operations, and repository-owned report, manifest, and Exact-token checks.
+- Known implementations intentionally not consulted: external checkpoint
+  runners, workflow engines, schedulers, compressors, source code, tests,
+  benchmark results, tuning guides, patents, pseudocode, and optimization
+  descriptions.
+- Independent decisions: make checkpointing explicit; resume automatically
+  only under exact identity; hash the executable content; persist after each
+  validated point; hash the runner dependency sources so dirty development is
+  distinguishable; retain completed journals; and reject instead of restarting
+  or repairing inconsistent records.
+- Generated-code task description: add crash-tolerant sparse matrix progress
+  persistence and prove completed work is never relaunched on valid resume.
+- Similarity review: schema, identity, validation, ordering, and fixtures derive
+  solely from marc's preceding runner contracts and Python platform primitives.
+  No external implementation expression was consulted or introduced.
+- Validation: ten sparse-runner unit tests pass under MSVC and ClangCL. The
+  complete local twelve-member manifest verified before both runs of a selected
+  `dickens` smoke at 64 KiB window, 65,536-node pool, and threshold 64. The
+  first run stored one baseline and one candidate; the second reported the
+  candidate as resumed, launched no measured point, and reproduced a
+  byte-identical final JSON. All 3,143 registered tests pass under each compiler
+  with a 600-second per-test limit; both runs include all seven Python tooling
+  tests and `marc_interoperability_schema_compatibility`. No production
+  selection, codec format, ABI, or CLI changed.

@@ -6029,3 +6029,11 @@ runner, sparse benchmark report, deterministic manifest order, report parser,
 and aggregate conventions. No external sparse matrix runner, checkpoint
 scheme, compressor, source code, test, benchmark result, tuning guide, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0671
+
+Sparse matrix checkpointing uses DD-906 through DD-907, TVG-0773 through
+TVG-0774, Python's documented JSON, file flush, `os.fsync`, and `os.replace`
+operations, and marc's existing strict report and Corpus validators. No external
+checkpoint runner, scheduler, compressor, source code, test, benchmark result,
+tuning guide, patent, pseudocode, or optimization description was consulted.
