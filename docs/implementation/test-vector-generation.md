@@ -10924,3 +10924,20 @@ the related sparse matcher/component suites under MSVC and ClangCL, then run
 every registered test under both compilers with a 600-second per-test limit and
 no exclusions, including all Python tooling tests and
 `marc_interoperability_schema_compatibility`.
+
+### TVG-0772
+
+Run `sparse-hash-tree-exact` over a fixture whose final 1,024-byte frame is
+shorter than the configured 256-node pool ceiling and require successful
+per-frame capacity clamping. Require the explicit strategy, frame/window,
+capacity, threshold, workspace, query, chain-candidate, timing, and throughput
+fields. Supply capacity 1,025 for a 1,024-byte frame and require argument
+rejection.
+
+Run the deterministic equal-prefix synthetic fixture as two 4,096-byte frames
+with a 512-node pool and threshold four. Freeze its token fingerprint, require
+both chain and tree queries, triggers, successful promotions, and non-zero
+promoted population, timing, and throughput. Run both benchmark smoke tests and
+then every registered test under MSVC and ClangCL with a 600-second per-test
+limit and no exclusions, including all Python tooling tests and
+`marc_interoperability_schema_compatibility`.

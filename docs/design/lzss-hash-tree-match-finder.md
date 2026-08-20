@@ -983,3 +983,21 @@ mixed patternおよび1 MiB typed variantでexhaustive、HashChain、BinaryTree�
 byte serializationが一致しなければならない。不正pool capacityとone-byte-short workspaceは出力を
 変更せず拒否する。この段階ではprofile、ABI、CLI、format、benchmarkおよび既定strategy選択へ
 接続しない。
+
+## 40. Explicit sparse benchmark route
+
+private match-finder benchmarkへ`sparse-hash-tree-exact`を追加する。file frame modeと決定的
+synthetic modeはいずれもframe size、window size、最大pool node capacityおよびpromotion
+candidate thresholdを必須引数とし、既定値による暗黙選択を行わない。指定pool容量はfull frame用の
+上限であり、各frameでは`min(configured capacity, current frame size, window size)`へ縮小する。
+これにより最後の短いframeと5-byte prefix未満のframeも同じ最大workspaceを再利用して処理できる。
+
+検証passはtoken summary、fingerprint、query accounting、chain/tree histogram、promotion、pool人口、
+workspaceを記録する。sparseではpool拒否によりtrigger数が成功promotion数を上回り得るため、
+`promotions <= triggers`を要求し、両query routeとhistogramが全queryを過不足なく説明することを
+要求する。時間測定passはobserverを外し、検証passとframe/token数が一致する場合だけ採用する。
+
+reportは明示したcapacity、threshold、最大workspace、時間、throughputと既存HashTree診断を出力する。
+smoke testは短い最終frame、promotionとpool rejectionを含むsynthetic fixture、固定fingerprint、
+過大capacity拒否を覆う。この段階ではoffline matrix runner、Silesia集約schema、既定strategy、
+profile、ABI、CLIおよびstream formatへ接続しない。

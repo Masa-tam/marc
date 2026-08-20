@@ -6010,3 +6010,13 @@ bounded-memory policy, exhaustive oracle, and canonical token serializer. No
 external encoder dispatch, adaptive match-finder integration, compressor,
 source code, test, benchmark, tuning guide, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0669
+
+The explicit sparse benchmark route uses DD-891 through DD-905,
+TVG-0758 through TVG-0772, the repository-owned frame benchmark lifecycle,
+synthetic generators, token fingerprint, sparse matcher options, workspace
+calculator, diagnostic aggregation, and timing separation. No external sparse
+benchmark harness, tuning matrix, compressor, source code, test, benchmark
+result, tuning guide, patent, pseudocode, or optimization description was
+consulted.

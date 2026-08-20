@@ -23704,3 +23704,32 @@ discarded and the reviewed seed retained.
   six Python tooling tests and `marc_interoperability_schema_compatibility`.
   The default encoder strategy, public profile, format, ABI, CLI, and benchmark
   routes are unchanged.
+
+## CR-0977: 2026-08-21 - Explicit sparse HashTree benchmark route
+
+- Authoring method: extended marc's private match-finder benchmark dispatch,
+  frame workspace lifecycle, diagnostic report, and deterministic smoke
+  fixtures with the repository-owned sparse matcher.
+- References used: IR-0669, DD-891 through DD-905, TVG-0758 through TVG-0772,
+  CR-0963 through CR-0976, and marc's existing benchmark, synthetic input,
+  fingerprint, statistics, workspace, and timing contracts.
+- Known implementations intentionally not consulted: external sparse
+  benchmark harnesses, tuning matrices, compressors, source code, tests,
+  benchmark results, tuning guides, patents, pseudocode, and optimization
+  descriptions.
+- Independent decisions: require both sparse options; interpret capacity as a
+  per-frame maximum; clamp short frames; separate observed verification from
+  timing; admit terminal pool rejection; and retain the existing report fields
+  for common diagnostics.
+- Generated-code task description: add a bounded, reproducible private sparse
+  benchmark route without selecting it in production or changing the format.
+- Similarity review: argument shape, frame clamping, verification invariants,
+  reporting, and smoke vectors derive solely from marc's preceding benchmark
+  and sparse components. No external implementation expression was consulted
+  or introduced.
+- Validation: all four private match-finder benchmark smoke tests pass under
+  MSVC and ClangCL, including the sparse frame and synthetic paths. All 3,142
+  registered tests pass under each compiler with a 600-second per-test limit;
+  both runs include all six Python tooling tests and
+  `marc_interoperability_schema_compatibility`. Production strategy selection,
+  public profile, format, ABI, and CLI are unchanged.

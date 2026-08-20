@@ -94,6 +94,60 @@ if(NOT unknown_strategy_result EQUAL 2)
 endif()
 
 execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames sparse-hash-tree-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 256 4
+    RESULT_VARIABLE sparse_result
+    OUTPUT_VARIABLE sparse_report
+    ERROR_VARIABLE sparse_error)
+if(NOT sparse_result EQUAL 0)
+    message(FATAL_ERROR
+        "sparse frame benchmark failed: ${sparse_result}: ${sparse_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=frames"
+        "strategy=sparse-hash-tree-exact"
+        "input_bytes=${input_size}"
+        "frame_bytes=${frame_size}"
+        "window_bytes=65536"
+        "frame_count=${expected_frames}"
+        "sparse_hash_tree_pool_node_capacity=256"
+        "sparse_hash_tree_promotion_candidate_threshold=4")
+    string(FIND "${sparse_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR "missing sparse frame line: ${expected_line}")
+    endif()
+endforeach()
+foreach(positive_key IN ITEMS
+        sparse_hash_tree_workspace_bytes hash_tree_queries
+        hash_tree_chain_queries hash_tree_chain_candidates)
+    string(REGEX MATCH "${positive_key}=([0-9]+)" value_match
+        "${sparse_report}")
+    if(value_match STREQUAL "" OR CMAKE_MATCH_1 EQUAL 0)
+        message(FATAL_ERROR "missing positive sparse ${positive_key}")
+    endif()
+endforeach()
+foreach(decimal_key IN ITEMS
+        sparse_hash_tree_frame_seconds
+        sparse_hash_tree_frame_mib_per_second)
+    string(REGEX MATCH "${decimal_key}=[0-9]+\\.[0-9]+" decimal_match
+        "${sparse_report}")
+    if(decimal_match STREQUAL "")
+        message(FATAL_ERROR "missing finite sparse ${decimal_key}")
+    endif()
+endforeach()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames sparse-hash-tree-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 1025 4
+    RESULT_VARIABLE oversized_sparse_pool_result
+    OUTPUT_QUIET
+    ERROR_QUIET)
+if(NOT oversized_sparse_pool_result EQUAL 2)
+    message(FATAL_ERROR
+        "oversized sparse pool returned ${oversized_sparse_pool_result}")
+endif()
+
+execute_process(
     COMMAND "${MARC_BENCHMARK}" --frames hash-chain-exact
         "${BENCHMARK_INPUT}" 1 0 65536
     RESULT_VARIABLE zero_frame_result

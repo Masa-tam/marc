@@ -89,6 +89,53 @@ foreach(case_name IN ITEMS
 endforeach()
 
 execute_process(
+    COMMAND "${MARC_BENCHMARK}" --synthetic sparse-hash-tree-exact
+        equal-prefix 8192 1 4096 4096 512 4
+    RESULT_VARIABLE sparse_result
+    OUTPUT_VARIABLE sparse_report
+    ERROR_VARIABLE sparse_error)
+if(NOT sparse_result EQUAL 0)
+    message(FATAL_ERROR
+        "sparse synthetic benchmark failed: ${sparse_result}: ${sparse_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=synthetic"
+        "strategy=sparse-hash-tree-exact"
+        "synthetic_case=equal-prefix"
+        "input_bytes=8192"
+        "frame_bytes=4096"
+        "window_bytes=4096"
+        "frame_count=2"
+        "sparse_hash_tree_pool_node_capacity=512"
+        "sparse_hash_tree_promotion_candidate_threshold=4"
+        "token_fingerprint_sha256=799fd32a675f3cb2e09d8f3acf553ef21cf06586eb7bd4fd07718c3669137b41")
+    string(FIND "${sparse_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR "missing sparse synthetic line: ${expected_line}")
+    endif()
+endforeach()
+foreach(positive_key IN ITEMS
+        sparse_hash_tree_workspace_bytes hash_tree_queries
+        hash_tree_chain_queries hash_tree_tree_queries
+        hash_tree_trigger_queries hash_tree_promotions
+        hash_tree_max_promoted_nodes)
+    string(REGEX MATCH "${positive_key}=([0-9]+)" value_match
+        "${sparse_report}")
+    if(value_match STREQUAL "" OR CMAKE_MATCH_1 EQUAL 0)
+        message(FATAL_ERROR "missing positive sparse ${positive_key}")
+    endif()
+endforeach()
+foreach(decimal_key IN ITEMS
+        sparse_hash_tree_frame_seconds
+        sparse_hash_tree_frame_mib_per_second)
+    string(REGEX MATCH "${decimal_key}=[0-9]+\\.[0-9]+" decimal_match
+        "${sparse_report}")
+    if(decimal_match STREQUAL "")
+        message(FATAL_ERROR "missing finite sparse ${decimal_key}")
+    endif()
+endforeach()
+
+execute_process(
     COMMAND "${MARC_BENCHMARK}" --synthetic hash-chain-exact
         periodic 8 1 8 8
     RESULT_VARIABLE fingerprint_result

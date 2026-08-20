@@ -19006,3 +19006,21 @@ dedicated result field and reject a sticky runtime matcher failure. Require
 full-pool immediate-promotion output to equal exhaustive, HashChain, and
 BinaryTree tokens and canonical bytes. Defer default strategy selection,
 profile, ABI, CLI, format, and benchmark integration.
+
+## DD-905: Benchmark sparse HashTree only with explicit bounded options
+
+- Date: 2026-08-21
+- Status: accepted
+
+Add `sparse-hash-tree-exact` only to the private frame and deterministic
+synthetic benchmark modes. Require both maximum pool-node capacity and finite
+promotion-candidate threshold on every invocation. Size one reusable workspace
+for a full frame, but clamp the effective capacity for each frame to its input
+and window extent so a short final frame remains valid.
+
+Keep the diagnostic warmup separate from observer-free timing. Accept fewer
+successful promotions than triggers because pool rejection is a defined
+terminal-chain outcome, while requiring chain/tree routes and their histograms
+to account for every query. Report sparse configuration, workspace, timing,
+throughput, and shared HashTree diagnostics. Defer offline matrix aggregation,
+Silesia report schema, default selection, profile, ABI, CLI, and format changes.
