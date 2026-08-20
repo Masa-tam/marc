@@ -111,6 +111,22 @@ verifies all twelve local members, then measures one HashChain baseline and
 HashTree thresholds 16, 64, 256, and 1,024 at each configured window. Results
 remain local under the ignored `results/` directory.
 
+The private sparse HashTree pool/threshold matrix uses a separate report and
+keeps the existing runners unchanged:
+
+```console
+py -3.14 tools/run_silesia_sparse_hash_tree_matrix.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --output benchmarks/data/silesia/results/sparse-hash-tree-msvc.json --compiler "MSVC 19.51" --generator "Visual Studio 18 2026"
+```
+
+The default grid uses pool capacities 4,096, 16,384, and 65,536 nodes with
+promotion thresholds 16, 64, 256, and 1,024 at each standard window. Capacity
+zero remains an optional explicit chain-only control (`--pool-capacities 0`),
+but is not repeated across the default threshold grid. For
+a bounded development smoke, add for example `--members dickens --windows
+65536 --pool-capacities 65536 --thresholds 64`. The complete twelve-member
+manifest is still verified before the selected members run. Output remains
+local under the ignored `results/` directory.
+
 Run each of the twelve members independently. The existing Corpus-wide v1
 runner orchestrates HashChain/BinaryTree only; HashTree threshold-sweep
 orchestration will use a later versioned report contract.

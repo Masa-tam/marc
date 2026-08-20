@@ -19024,3 +19024,24 @@ terminal-chain outcome, while requiring chain/tree routes and their histograms
 to account for every query. Report sparse configuration, workspace, timing,
 throughput, and shared HashTree diagnostics. Defer offline matrix aggregation,
 Silesia report schema, default selection, profile, ABI, CLI, and format changes.
+
+## DD-906: Keep the sparse Silesia grid offline, explicit, and resumably small
+
+- Date: 2026-08-21
+- Status: accepted
+
+Create a separate `marc-silesia-sparse-hash-tree-v1` runner rather than
+changing an existing report schema. Verify the complete twelve-member Corpus
+before launching any benchmark. Measure one HashChain baseline per
+member/window and every explicit sparse pool-capacity/threshold grid point as
+an independent process. Require Exact token-count equality before publishing
+JSON.
+
+Use bounded defaults of 4,096, 16,384, and 65,536 pool nodes with thresholds
+16, 64, 256, and 1,024. Accept zero only as an explicitly requested chain-only
+control; omit it from defaults because thresholds cannot affect that route. Allow
+`--members` to limit measurement after full-manifest verification, preserve
+canonical manifest order, and reject unknown or duplicate names. This keeps
+development smoke runs bounded after real data exposed multi-minute members.
+Defer checkpoint/resume, performance gates, production selection, profile,
+ABI, CLI, and format integration.

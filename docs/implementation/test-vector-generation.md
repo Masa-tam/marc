@@ -10941,3 +10941,22 @@ promoted population, timing, and throughput. Run both benchmark smoke tests and
 then every registered test under MSVC and ClangCL with a 600-second per-test
 limit and no exclusions, including all Python tooling tests and
 `marc_interoperability_schema_compatibility`.
+
+### TVG-0773
+
+Parse a complete synthetic sparse report with two triggers, one successful
+promotion, four-node pool population, consistent route/histogram totals,
+matching workspace aliases, and finite timing. Independently corrupt total
+queries, promotions, pool population, Chain histogram, timing, and workspace
+alias; require stable runner rejection. Require every grid candidate token
+count to equal its HashChain baseline and aggregate three distinct
+pool/threshold points independently.
+
+Select two names in reverse argument order and require canonical manifest
+order. Reject unknown and duplicate names, while a missing selector returns the
+complete manifest. Then verify the real twelve-member local Corpus and run only
+`dickens` at 64 KiB window, 65,536-node pool, and threshold 64. Require one
+valid schema record and aggregate with Exact baseline equality. Run all six
+runner unit fixtures and every registered test under MSVC and ClangCL with a
+600-second per-test limit and no exclusions, including all seven Python tooling
+tests and `marc_interoperability_schema_compatibility`.

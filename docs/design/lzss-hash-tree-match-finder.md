@@ -1001,3 +1001,20 @@ reportは明示したcapacity、threshold、最大workspace、時間、throughpu
 smoke testは短い最終frame、promotionとpool rejectionを含むsynthetic fixture、固定fingerprint、
 過大capacity拒否を覆う。この段階ではoffline matrix runner、Silesia集約schema、既定strategy、
 profile、ABI、CLIおよびstream formatへ接続しない。
+
+## 41. Offline sparse Silesia matrix
+
+local-only runnerは全12 memberのmanifestを検証後、member/windowごとにHashChain baselineを一度、
+Sparse HashTreeの全pool capacity/threshold組合せを独立processで測る。既定capacityは4,096、
+16,384、65,536 node、thresholdは16、64、256、1,024とする。capacity 0はsparse controllerの
+明示的chain-only対照として受理するが、threshold非依存なので既定gridには含めない。全capacityは選択した最小frame/window以下、各引数集合は
+重複なしでなければならない。
+
+各候補はbaselineとExact token countが一致し、reportのworkspace別名、query route、histogram、
+promotion順序、pool人口上限および有限時間を満たす場合だけ集約する。JSONは既存schemaを変更せず
+`marc-silesia-sparse-hash-tree-v1`として、完全command、revision、環境、選択設定、per-member record、
+baseline aggregateおよびwindow/capacity/threshold別aggregateを保持する。
+
+`--members`は測定だけをcanonical manifest順の部分集合へ制限する。全Corpus検証は省略せず、unknown
+または重複名を拒否する。これにより長時間gridと開発smokeを分離する。結果はignored local JSONで、
+性能をgate、既定strategy、profile、ABI、CLIまたはstream formatへ昇格させない。

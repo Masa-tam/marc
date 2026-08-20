@@ -219,3 +219,22 @@ throughput比が1を超えることと、4 MiB oracleが1 MiB controlよりaggre
 測定は有効な否定的証拠なのでrunnerを失敗させない。両方が成立した場合だけ
 `eligible_for_format_design`をtrueとする。この値はpublic formatの承認ではなく、
 aggregate workspace設計へ進むためのgateにすぎない。
+
+## 12. Sparse HashTree pool/threshold runner
+
+`tools/run_silesia_sparse_hash_tree_matrix.py`は既存schemaを変更せず、独立schema
+`marc-silesia-sparse-hash-tree-v1`を生成する。測定開始前に全12 memberの厳密なmanifestを
+必ず検証する。開発時smokeでは`--members`により測定memberだけを限定できるが、Corpus検証を
+部分化してはならず、unknownまたは重複member名を拒否する。選択順はmanifestのcanonical順とし、
+引数順によってJSONまたは実行順を変えない。
+
+既定gridは1 MiB frame、標準3 window、pool capacity 4,096、16,384、65,536 nodeとthreshold
+16、64、256、1,024である。全capacityは選択した全frame/windowの最小extent以下、全thresholdは
+有限uint64、各集合は重複なしとする。capacity 0は明示的なchain-only測定として受理するが、
+閾値間で同じ処理を繰り返すため既定gridには含めない。各member/windowでHashChain Exact baselineを一度だけ測り、
+全pool/threshold候補のtoken countが一致しなければJSONを生成しない。
+
+report validatorは明示設定、共通/sparse workspace一致、有限時間、全診断値、query route、
+histogram、`promotions <= triggers`および`maximum promoted nodes <= pool capacity`を検証する。
+aggregateはwindow/capacity/thresholdごとに時間とworkを合算し、workspaceとpeakを最大化する。
+結果はignored directoryにのみ保存し、性能を合否条件、public selectorまたはformat規則にしない。

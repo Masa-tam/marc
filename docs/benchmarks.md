@@ -1674,6 +1674,29 @@ prove final compressed-size improvement. Three individual members still ran
 slower with HashTree than with the same-size HashChain, and the complete tree
 does not yet have a whole-encoder memory proof under the 128-MiB limit.
 
+### Sparse HashTree pool/threshold matrix
+
+Run the independent offline sparse matrix with:
+
+```console
+py -3.14 tools/run_silesia_sparse_hash_tree_matrix.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --output benchmarks/data/silesia/results/sparse-hash-tree-msvc.json --compiler "MSVC 19.51" --generator "Visual Studio 18 2026"
+```
+
+It verifies the complete local Corpus without network access, measures one
+HashChain baseline per member/window, and checks every sparse pool/threshold
+point for the same Exact token count. The default capacities are 4,096, 16,384,
+and 65,536 nodes; default thresholds are 16, 64, 256, and 1,024. Capacity zero
+remains available as an explicit chain-only measurement but is omitted from
+the default grid because its result does not depend on the threshold.
+
+Use `--members dickens` (or another explicit set) for a development smoke.
+Member selection limits measurement only: the complete twelve-member manifest
+is still verified, unknown or repeated names are rejected, and selected records
+remain in canonical manifest order. The pool-zero route deliberately measures
+the sparse implementation's chain-only behavior and may be slow on collision-
+heavy data. Reports remain descriptive, ignored local JSON and do not select a
+production strategy.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

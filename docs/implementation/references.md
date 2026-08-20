@@ -6020,3 +6020,12 @@ calculator, diagnostic aggregation, and timing separation. No external sparse
 benchmark harness, tuning matrix, compressor, source code, test, benchmark
 result, tuning guide, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0670
+
+The offline sparse Silesia matrix uses DD-891 through DD-906, TVG-0758 through
+TVG-0773, the repository-owned strict Corpus verifier, HashChain baseline
+runner, sparse benchmark report, deterministic manifest order, report parser,
+and aggregate conventions. No external sparse matrix runner, checkpoint
+scheme, compressor, source code, test, benchmark result, tuning guide, patent,
+pseudocode, or optimization description was consulted.

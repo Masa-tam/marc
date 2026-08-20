@@ -23733,3 +23733,33 @@ discarded and the reviewed seed retained.
   both runs include all six Python tooling tests and
   `marc_interoperability_schema_compatibility`. Production strategy selection,
   public profile, format, ABI, and CLI are unchanged.
+
+## CR-0978: 2026-08-21 - Offline sparse Silesia matrix runner
+
+- Authoring method: composed marc's strict local Corpus verifier, HashChain
+  baseline invocation, sparse benchmark schema, and existing JSON aggregation
+  conventions into an independent pool/threshold runner.
+- References used: IR-0670, DD-891 through DD-906, TVG-0758 through TVG-0773,
+  CR-0963 through CR-0977, and marc's existing offline runners, manifest,
+  report parser, exact-token checks, and ignored-result policy.
+- Known implementations intentionally not consulted: external sparse matrix
+  runners, checkpoint systems, compressors, source code, tests, benchmark
+  results, tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: retain a new schema; measure a HashChain oracle once;
+  use absolute bounded positive pool capacities by default while accepting zero
+  as an explicit chain-only control; validate every report; aggregate by
+  window/capacity/threshold; and separate full-manifest validation from
+  optional canonical member measurement selection.
+- Generated-code task description: create a network-free Silesia sparse
+  pool/threshold runner with bounded smoke selection and exact-oracle checks.
+- Similarity review: schema, grid, selector semantics, validators, aggregation,
+  and fixtures derive solely from marc's preceding tools and sparse benchmark.
+  No external implementation expression was consulted or introduced.
+- Validation: all six sparse-runner unit tests pass under MSVC and ClangCL.
+  The complete local twelve-member manifest verified before a selected
+  `dickens` smoke at 64 KiB window, 65,536-node pool, and threshold 64; its
+  HashChain and sparse Exact token counts agreed and schema aggregation
+  completed. All 3,143 registered tests pass under each compiler with a
+  600-second per-test limit; both runs include all seven Python tooling tests
+  and `marc_interoperability_schema_compatibility`. The full default matrix was
+  not run and no performance gate or production selection changed.
