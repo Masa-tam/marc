@@ -144,6 +144,27 @@ remains deferred. Admission requires a proven tighter safe bound or a bounded
 streaming redesign; the default 128 MiB aggregate policy and 64 MiB compressed
 payload limit are not raised merely to make it fit.
 
+The 128 MiB aggregate limit is a current safety default, not a permanent
+format constant. A later larger-window design may separate the profile's
+checked minimum workspace, the caller-configured hard limit, and the library
+default before proposing a higher value. Such a change requires measured peak
+memory, overflow and one-short tests, denial-of-service analysis, and explicit
+documentation; window growth alone does not silently increase the limit.
+
+## Shared groundwork status
+
+The shared dictionary and context stage is implemented internally. Typed-token
+variant 4 enforces the 4,194,304-byte ceiling. Context variant 3 owns exact
+23-symbol distance alphabets, 4,566 flattened entries, 22-bit bypass and
+32-decision token ceilings, and the selected `7F` raw-frame bound. Pair
+selection admits only `2/2 + 1/1`, `2/3 + 1/2`, and `2/4 + 1/3`.
+
+The maximum-distance test constructs four MiB of history with bounded overlap
+Matches, then models and reconstructs a length-258 Match at distance 4,194,304.
+It therefore exercises class 22 and a 22-bit zero bypass without a
+multi-million-Literal fixture. This stage changes no frame parser, entropy
+backend admission, public C selector, CLI profile, or stream inventory.
+
 ## Planned public policy
 
 After one backend completes its vertical path, the common C window-profile

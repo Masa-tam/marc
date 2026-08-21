@@ -23884,3 +23884,32 @@ discarded and the reviewed seed retained.
 - Validation: documentation cross-links and chronological record layout are
   checked in this stage. No codec code, ABI, CLI, emitted stream, decoder
   behavior, benchmark selector, or interoperability inventory changes.
+
+## CR-0983: 2026-08-22 - Four-MiB shared typed-token and context boundary
+
+- Authoring method: extended marc's existing enum-selected typed-token and
+  field-context layouts using the already reserved four-MiB arithmetic, while
+  retaining frozen aliases and outer backend admission boundaries.
+- References used: IR-0673 through IR-0674, DD-910 through DD-911, TVG-0776
+  through TVG-0777, CR-0982, and repository-owned checked validators and model
+  inversion tests. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  context mappers, large-window formats, source code, tests, benchmarks,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: store the raw-byte decision multiplier in the
+  selected layout; keep six for old variants and seven for variant 3; construct
+  maximum history with overlap Matches; and leave every entropy/public boundary
+  closed until its independent vertical stage.
+- Generated-code task description: implement and prove only the shared
+  four-MiB dictionary/context value boundary without prematurely publishing a
+  codec profile.
+- Similarity review: enum values, arrays, bounds, pair selection, and vectors
+  are direct consequences of marc's reserved format and existing internal
+  abstractions. No external implementation expression was consulted or
+  introduced.
+- Validation: all 3,145 registered tests pass under MSVC in 188.25 seconds and
+  ClangCL in 205.93 seconds with a 600-second per-test limit. Both runs include
+  the maximum class-22 round trip, all seven Python tooling tests, sixteen
+  experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. The public ABI, CLI, entropy
+  triples, emitted streams, and interoperability inventory remain unchanged.

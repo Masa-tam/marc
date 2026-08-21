@@ -15,6 +15,7 @@ namespace marc::context::internal {
 enum class LzssFieldContextVariant : std::uint16_t {
     field_context_64k = 1,
     field_context_1m = 2,
+    field_context_4m = 3,
 };
 
 struct LzssFieldContextLayout {
@@ -27,6 +28,7 @@ struct LzssFieldContextLayout {
     std::size_t frequency_entries{};
     std::uint8_t maximum_bypass_bits{};
     std::uint8_t maximum_decisions_per_token{};
+    std::uint8_t maximum_decisions_per_raw_byte{};
 };
 
 enum class LzssFieldContextLayoutError : std::uint8_t {

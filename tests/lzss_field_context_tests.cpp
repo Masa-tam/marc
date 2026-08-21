@@ -96,7 +96,7 @@ TEST(LzssFieldContextModel, PlansAndMaterializesSpecifiedStatefulVector) {
     }
 }
 
-TEST(LzssFieldContextLayout, SelectsOnlyTheTwoReservedVariantPairs) {
+TEST(LzssFieldContextLayout, SelectsOnlyTheThreeReservedVariantPairs) {
     const auto old_layout = select_lzss_field_context_layout(2, 1, 1);
     ASSERT_EQ(old_layout.error, LzssFieldContextLayoutError::none);
     EXPECT_EQ(old_layout.layout.context_variant,
@@ -104,6 +104,7 @@ TEST(LzssFieldContextLayout, SelectsOnlyTheTwoReservedVariantPairs) {
     EXPECT_EQ(old_layout.layout.frequency_entries, 4518U);
     EXPECT_EQ(old_layout.layout.maximum_bypass_bits, 16U);
     EXPECT_EQ(old_layout.layout.maximum_decisions_per_token, 26U);
+    EXPECT_EQ(old_layout.layout.maximum_decisions_per_raw_byte, 6U);
     ASSERT_NE(old_layout.layout.alphabets, nullptr);
     EXPECT_EQ((*old_layout.layout.alphabets)[23], 17U);
     EXPECT_EQ(old_layout.layout.offsets->back(), 4518U);
@@ -115,19 +116,39 @@ TEST(LzssFieldContextLayout, SelectsOnlyTheTwoReservedVariantPairs) {
     EXPECT_EQ(extended_layout.layout.frequency_entries, 4550U);
     EXPECT_EQ(extended_layout.layout.maximum_bypass_bits, 20U);
     EXPECT_EQ(extended_layout.layout.maximum_decisions_per_token, 30U);
+    EXPECT_EQ(extended_layout.layout.maximum_decisions_per_raw_byte, 6U);
     ASSERT_NE(extended_layout.layout.alphabets, nullptr);
     EXPECT_EQ((*extended_layout.layout.alphabets)[23], 21U);
     EXPECT_EQ(extended_layout.layout.offsets->back(), 4550U);
+
+    const auto four_mib_layout = select_lzss_field_context_layout(4, 1, 3);
+    ASSERT_EQ(four_mib_layout.error, LzssFieldContextLayoutError::none);
+    EXPECT_EQ(four_mib_layout.layout.context_variant,
+              LzssFieldContextVariant::field_context_4m);
+    EXPECT_EQ(four_mib_layout.layout.dictionary_variant,
+              marc::dictionary::internal::LzssTypedTokenVariant::
+                  field_context_4m);
+    EXPECT_EQ(four_mib_layout.layout.frequency_entries, 4566U);
+    EXPECT_EQ(four_mib_layout.layout.maximum_bypass_bits, 22U);
+    EXPECT_EQ(four_mib_layout.layout.maximum_decisions_per_token, 32U);
+    EXPECT_EQ(four_mib_layout.layout.maximum_decisions_per_raw_byte, 7U);
+    ASSERT_NE(four_mib_layout.layout.alphabets, nullptr);
+    EXPECT_EQ((*four_mib_layout.layout.alphabets)[23], 23U);
+    EXPECT_EQ(four_mib_layout.layout.offsets->back(), 4566U);
 
     EXPECT_EQ(select_lzss_field_context_layout(1, 1, 1).error,
               LzssFieldContextLayoutError::unknown_dictionary_variant);
     EXPECT_EQ(select_lzss_field_context_layout(2, 2, 1).error,
               LzssFieldContextLayoutError::unknown_context_algorithm);
-    EXPECT_EQ(select_lzss_field_context_layout(2, 1, 3).error,
+    EXPECT_EQ(select_lzss_field_context_layout(2, 1, 4).error,
               LzssFieldContextLayoutError::unsupported_context_variant);
     EXPECT_EQ(select_lzss_field_context_layout(2, 1, 2).error,
               LzssFieldContextLayoutError::incompatible_variants);
     EXPECT_EQ(select_lzss_field_context_layout(3, 1, 1).error,
+              LzssFieldContextLayoutError::incompatible_variants);
+    EXPECT_EQ(select_lzss_field_context_layout(3, 1, 3).error,
+              LzssFieldContextLayoutError::incompatible_variants);
+    EXPECT_EQ(select_lzss_field_context_layout(4, 1, 2).error,
               LzssFieldContextLayoutError::incompatible_variants);
 }
 
@@ -166,7 +187,7 @@ TEST(LzssFieldContextLayout, KeepsVariantOneAliasesByteIdentical) {
     }
 }
 
-TEST(LzssFieldContextLayout, ClassifiesEveryExtendedWindowBoundaryExactly) {
+TEST(LzssFieldContextLayout, ClassifiesEveryWideWindowBoundaryExactly) {
     struct Boundary {
         std::uint32_t distance;
         std::uint8_t expected_class;
@@ -175,7 +196,9 @@ TEST(LzssFieldContextLayout, ClassifiesEveryExtendedWindowBoundaryExactly) {
         Boundary{65535, 15}, Boundary{65536, 16},
         Boundary{65537, 16}, Boundary{131071, 16},
         Boundary{131072, 17}, Boundary{1048575, 19},
-        Boundary{1048576, 20}};
+        Boundary{1048576, 20}, Boundary{1048577, 20},
+        Boundary{2097151, 20}, Boundary{2097152, 21},
+        Boundary{4194303, 21}, Boundary{4194304, 22}};
     for (const auto& boundary : boundaries) {
         EXPECT_EQ(lzss_field_context_value_class(boundary.distance),
                   boundary.expected_class)
@@ -233,6 +256,68 @@ TEST(LzssFieldContextModel, VariantThreeModelsFirstNewDistanceClass) {
                   operations, parameters, validation,
                   marc::core::DecoderLimits{},
                   LzssFieldContextVariant::field_context_64k).error,
+              LzssFieldContextError::invalid_parameters);
+}
+
+TEST(LzssFieldContextModel, VariantFourModelsMaximumDistanceClass) {
+    constexpr std::uint32_t maximum_distance = 4194304;
+    std::vector<LzssTypedToken> tokens;
+    tokens.reserve(16259);
+    tokens.push_back({LzssTypedTokenKind::literal, 'A', 0, 0});
+    for (std::size_t index = 0; index < 16256; ++index) {
+        tokens.push_back({LzssTypedTokenKind::match, 0, 1, 258});
+    }
+    tokens.push_back({LzssTypedTokenKind::match, 0, 1, 255});
+    tokens.push_back(
+        {LzssTypedTokenKind::match, 0, maximum_distance, 258});
+
+    auto parameters = marc::dictionary::internal::LzssParameters{};
+    parameters.window_size = maximum_distance;
+    constexpr std::uint32_t raw_size = maximum_distance + 258;
+    const marc::dictionary::internal::LzssTypedFrameValidationContext context{
+        static_cast<std::uint32_t>(tokens.size()), raw_size, 0};
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = limits.max_frame_size;
+
+    const auto plan = plan_lzss_field_context_operations(
+        tokens, parameters, context, limits,
+        LzssFieldContextVariant::field_context_4m);
+    ASSERT_EQ(plan.error, LzssFieldContextError::none);
+    std::vector<ModeledOperation> operations(plan.operation_count);
+    const auto modeled = model_lzss_field_context_tokens(
+        tokens, parameters, context, limits, operations,
+        LzssFieldContextVariant::field_context_4m);
+    ASSERT_EQ(modeled.error, LzssFieldContextError::none);
+    ASSERT_GE(operations.size(), 5U);
+
+    const auto distance_symbol = operations[operations.size() - 2];
+    EXPECT_EQ(distance_symbol.kind, ModeledOperationKind::symbol);
+    EXPECT_EQ(distance_symbol.context_id, 30U);
+    EXPECT_EQ(distance_symbol.alphabet_size, 23U);
+    EXPECT_EQ(distance_symbol.value, 22U);
+    const auto distance_bypass = operations.back();
+    EXPECT_EQ(distance_bypass.kind, ModeledOperationKind::bypass_bits);
+    EXPECT_EQ(distance_bypass.value, 0U);
+    EXPECT_EQ(distance_bypass.bit_count, 22U);
+
+    std::vector<LzssTypedToken> reconstructed(tokens.size());
+    const LzssFieldContextValidationContext validation{
+        static_cast<std::uint32_t>(tokens.size()),
+        static_cast<std::uint32_t>(operations.size()),
+        modeled.decision_count,
+        raw_size,
+        0};
+    const auto inverted = invert_lzss_field_context_operations(
+        operations, parameters, validation, limits,
+        reconstructed, LzssFieldContextVariant::field_context_4m);
+    ASSERT_EQ(inverted.error, LzssFieldContextError::none);
+    EXPECT_EQ(reconstructed.back().distance, maximum_distance);
+    EXPECT_EQ(reconstructed.back().length, 258U);
+
+    EXPECT_EQ(validate_lzss_field_context_operations(
+                  operations, parameters, validation,
+                  limits,
+                  LzssFieldContextVariant::field_context_1m).error,
               LzssFieldContextError::invalid_parameters);
 }
 

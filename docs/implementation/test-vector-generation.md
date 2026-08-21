@@ -11011,3 +11011,20 @@ bounded-history vectors must exercise classes 21 and 22 without constructing
 millions of Literal tokens. Full admission later requires MSVC and ClangCL
 tests with a 600-second per-test limit, sanitizer fuzzing, and
 `marc_interoperability_schema_compatibility` without exclusion.
+
+### TVG-0777
+
+Require typed-token variant 4 to accept the documented class-transition and
+maximum-distance values through 4,194,304, reject 4,194,305 through its
+parameter ceiling, and leave variants 2 and 3 unchanged. Require exact layout
+selection for `2/4 + 1/3`, with 23-symbol distance contexts, 4,566 entries,
+22 bypass bits, 32 decisions per token, and a seven-decisions-per-raw-byte
+preflight multiplier. Reject every crossed pair and the next unknown IDs.
+
+Construct exactly 4,194,304 bytes of history from one Literal, 16,256
+distance-one Matches of length 258, and one distance-one Match of length 255.
+Append a length-258 Match at distance 4,194,304. Require its final Symbol to be
+class 22 in context 30 with alphabet 23, followed by a 22-bit zero bypass, and
+require exact typed-token reconstruction. Run every registered test under
+MSVC and ClangCL with a 600-second per-test limit and no exclusions, including
+`marc_interoperability_schema_compatibility`.

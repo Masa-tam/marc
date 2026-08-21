@@ -11,6 +11,7 @@ namespace marc::context::internal {
 inline constexpr std::uint16_t lzss_field_context_count = 31;
 inline constexpr std::size_t lzss_field_context_frequency_entries_v1 = 4518;
 inline constexpr std::size_t lzss_field_context_frequency_entries_v2 = 4550;
+inline constexpr std::size_t lzss_field_context_frequency_entries_v3 = 4566;
 inline constexpr std::size_t lzss_field_context_frequency_entries =
     lzss_field_context_frequency_entries_v1;
 
@@ -37,6 +38,8 @@ inline constexpr auto lzss_field_context_alphabets_v1 =
     make_lzss_field_context_alphabets(17);
 inline constexpr auto lzss_field_context_alphabets_v2 =
     make_lzss_field_context_alphabets(21);
+inline constexpr auto lzss_field_context_alphabets_v3 =
+    make_lzss_field_context_alphabets(23);
 inline constexpr auto lzss_field_context_alphabets =
     lzss_field_context_alphabets_v1;
 
@@ -54,6 +57,8 @@ inline constexpr auto lzss_field_context_offsets_v1 =
     make_lzss_field_context_offsets(lzss_field_context_alphabets_v1);
 inline constexpr auto lzss_field_context_offsets_v2 =
     make_lzss_field_context_offsets(lzss_field_context_alphabets_v2);
+inline constexpr auto lzss_field_context_offsets_v3 =
+    make_lzss_field_context_offsets(lzss_field_context_alphabets_v3);
 inline constexpr auto lzss_field_context_offsets =
     lzss_field_context_offsets_v1;
 
@@ -61,6 +66,8 @@ static_assert(lzss_field_context_offsets.back()
               == lzss_field_context_frequency_entries);
 static_assert(lzss_field_context_offsets_v2.back()
               == lzss_field_context_frequency_entries_v2);
+static_assert(lzss_field_context_offsets_v3.back()
+              == lzss_field_context_frequency_entries_v3);
 
 } // namespace marc::context::internal
 

@@ -22,7 +22,8 @@ using dictionary::internal::LzssTypedTokenKind;
                 &lzss_field_context_offsets_v1,
                 lzss_field_context_frequency_entries_v1,
                 16,
-                26};
+                26,
+                6};
     case LzssFieldContextVariant::field_context_1m:
         return {variant,
                 dictionary::internal::LzssTypedTokenVariant::field_context_1m,
@@ -30,7 +31,17 @@ using dictionary::internal::LzssTypedTokenKind;
                 &lzss_field_context_offsets_v2,
                 lzss_field_context_frequency_entries_v2,
                 20,
-                30};
+                30,
+                6};
+    case LzssFieldContextVariant::field_context_4m:
+        return {variant,
+                dictionary::internal::LzssTypedTokenVariant::field_context_4m,
+                &lzss_field_context_alphabets_v3,
+                &lzss_field_context_offsets_v3,
+                lzss_field_context_frequency_entries_v3,
+                22,
+                32,
+                7};
     }
     return {};
 }
@@ -294,7 +305,8 @@ using dictionary::internal::LzssTypedTokenKind;
     }
     if (decision_count < event_count
         || decision_count > layout.maximum_decisions_per_token * token_count
-        || decision_count > 6 * raw_size) {
+        || decision_count
+               > layout.maximum_decisions_per_raw_byte * raw_size) {
         result.error = LzssFieldContextError::decision_count_mismatch;
         return result;
     }
@@ -522,14 +534,14 @@ LzssFieldContextLayoutResult select_lzss_field_context_layout(
     const std::uint16_t dictionary_variant,
     const std::uint16_t context_algorithm,
     const std::uint16_t context_variant) noexcept {
-    if (dictionary_variant != 2 && dictionary_variant != 3) {
+    if (dictionary_variant < 2 || dictionary_variant > 4) {
         return {{},
                 LzssFieldContextLayoutError::unknown_dictionary_variant};
     }
     if (context_algorithm != 1) {
         return {{}, LzssFieldContextLayoutError::unknown_context_algorithm};
     }
-    if (context_variant != 1 && context_variant != 2) {
+    if (context_variant < 1 || context_variant > 3) {
         return {{},
                 LzssFieldContextLayoutError::unsupported_context_variant};
     }
@@ -538,7 +550,9 @@ LzssFieldContextLayoutResult select_lzss_field_context_layout(
     }
     const auto variant = context_variant == 1
         ? LzssFieldContextVariant::field_context_64k
-        : LzssFieldContextVariant::field_context_1m;
+        : context_variant == 2
+        ? LzssFieldContextVariant::field_context_1m
+        : LzssFieldContextVariant::field_context_4m;
     return {layout_for_variant(variant), LzssFieldContextLayoutError::none};
 }
 

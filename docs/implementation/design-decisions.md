@@ -19125,3 +19125,21 @@ MiB aggregate policy to admit a backend: defer Contextual Adaptive Huffman
 until its conservative payload and total workspace fit through a tighter
 proof or bounded redesign. Add no public selector or CLI name during the
 shared design stage.
+
+## DD-911: Implement only the shared four-MiB value boundary first
+
+- Date: 2026-08-22
+- Status: accepted
+
+Add typed-token variant 4 and field-context variant 3 before admitting an
+entropy backend. Fix their maximum window at 4,194,304 bytes, distance alphabet
+at 23, flattened model extent at 4,566, bypass ceiling at 22, token-decision
+ceiling at 32, and raw-frame decision multiplier at seven. Accept only the
+three canonical dictionary/context pairs and reject every crossed or unknown
+identity.
+
+Keep all outer frames, entropy backends, public selectors, CLI names, and
+interoperability inventory unchanged. Retain 128 MiB as the present default,
+but classify it as a future policy-review point rather than a format constant:
+any increase must separately document profile requirements, configurable hard
+limits, defaults, measured memory, and denial-of-service consequences.

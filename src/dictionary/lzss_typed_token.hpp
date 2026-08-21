@@ -13,6 +13,7 @@ namespace marc::dictionary::internal {
 enum class LzssTypedTokenVariant : std::uint16_t {
     field_context_64k = 2,
     field_context_1m = 3,
+    field_context_4m = 4,
 };
 
 enum class LzssTypedTokenKind : std::uint8_t {

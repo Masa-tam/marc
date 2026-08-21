@@ -6054,3 +6054,12 @@ workspace rules, and its repository-owned HashChain, Exhaustive, complete
 HashTree, sparse HashTree, and Silesia evidence. No external compressor,
 source code, test, format extension, match finder, tuning guide, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0674
+
+The four-MiB shared value-boundary implementation uses IR-0673, DD-910 through
+DD-911, TVG-0776 through TVG-0777, the repository-owned typed-token validator,
+field-context mapping, checked arithmetic, and frozen old-layout tests. No
+external compressor, context mapper, large-window implementation, source code,
+test, benchmark, patent, pseudocode, or optimization description was
+consulted.

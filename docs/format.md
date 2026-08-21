@@ -6950,3 +6950,8 @@ particular, Contextual Adaptive Huffman's present conservative payload bound
 does not fit the default aggregate policy at a four-MiB frame and is deferred.
 The complete staged contract is [LZSS contextual 4 MiB
 window](design/lzss-contextual-window-4m.md).
+
+The shared typed-token/context implementation now recognizes the exact pair
+and its layout internally. This does not make any entropy triple valid: outer
+frame parsers and backend-specific entry points continue to admit only the
+previously completed pairs until their four-MiB vertical stage is implemented.
