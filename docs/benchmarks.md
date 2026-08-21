@@ -1518,6 +1518,45 @@ workspace before extending LZSS beyond the existing 1 MiB window. It must
 retain the same Exact tokens and re-run both synthetic and Silesia evidence;
 micro-tuning the promotion threshold alone is not supported by these results.
 
+### First complete sparse HashTree pool/threshold measurement
+
+The complete sparse HashTree matrix ran from 2026-08-21 through 2026-08-22 at
+revision `a457ae2b5aaef0f571fe4fc3fea774d62e0a8a06` with MSVC
+19.51.36252.0 and Visual Studio 18 2026 x64. The strict manifest verified all
+twelve Silesia members. A versioned atomic checkpoint preserved each validated
+point across bounded batches, and the completed checkpoint regenerated the
+canonical `marc-silesia-sparse-hash-tree-v1` report without relaunching a
+measurement.
+
+The report contains 36 HashChain baselines and 432 sparse candidates: three
+pool capacities (4,096, 16,384, and 65,536 nodes), four promotion thresholds
+(16, 64, 256, and 1,024), and all three established windows. Every sparse
+record reproduced its paired HashChain Exact token count. No sparse candidate
+was the fastest strategy in any of the 36 member/window groups. Selecting the
+best sparse aggregate independently at each window produced:
+
+| Window | HashChain MiB/s | Pool | Threshold | Sparse MiB/s | Ratio | Tree queries | Workspace ratio |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 65,536 | 13.845 | 4,096 | 1,024 | 6.441 | 0.465 | 34,014 (0.065%) | 1.526 |
+| 262,144 | 5.453 | 4,096 | 1,024 | 3.428 | 0.629 | 58,504 (0.129%) | 1.263 |
+| 1,048,576 | 2.467 | 4,096 | 256 | 2.027 | 0.821 | 98,112 (0.233%) | 1.088 |
+
+Across member/window groups, the best sparse candidate averaged 59.05% of its
+paired HashChain throughput. The closest group was `dickens` at 1 MiB, where
+sparse reached 89.62%; the widest gap was `xml` at 64 KiB, where it reached
+28.12%. Pool 4,096 with threshold 1,024 was the fastest sparse configuration in
+22 of 36 groups, while the 1 MiB aggregate preferred threshold 256. These are
+descriptive results, not a universal tuning recommendation.
+
+The evidence rejects the current sparse design as a production selector for
+windows through 1 MiB. It does not reject sparse promotion as a future
+larger-window technique: aggregate relative throughput improves from 46.5% to
+82.1% and the workspace premium contracts from 52.6% to 8.8% as the window
+grows. Keep the implementation private and default-disabled. A future 4 MiB or
+larger-window experiment may reuse it only with an explicit new measurement
+profile, the same HashChain/Exact-token oracle, bounded workspace reporting,
+and no assumption that the present pool or threshold grid remains optimal.
+
 ## External Silesia measurements
 
 ### Private HashTree Exact benchmark route

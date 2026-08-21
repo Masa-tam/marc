@@ -23823,3 +23823,37 @@ discarded and the reviewed seed retained.
   600-second per-test limit; both runs include all seven Python tooling tests
   and `marc_interoperability_schema_compatibility`. No measurement format,
   production selector, codec format, ABI, or CLI changed.
+
+## CR-0981: 2026-08-22 - Complete sparse Silesia evidence and disposition
+
+- Authoring method: completed marc's repository-owned checkpointed sparse
+  matrix in canonical bounded batches, regenerated its final versioned JSON
+  without relaunching measurements, and derived the production disposition
+  only from the validated local report.
+- References used: IR-0670 through IR-0672, DD-891 through DD-908,
+  TVG-0758 through TVG-0775, CR-0963 through CR-0980, revision
+  `a457ae2b5aaef0f571fe4fc3fea774d62e0a8a06`, and the locally generated
+  `marc-silesia-sparse-hash-tree-v1` report. No new external technical source
+  was used.
+- Known implementations intentionally not consulted: external sparse match
+  finders, compressors, benchmark results, tuning guides, source code, tests,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: reject production selection through 1 MiB because
+  sparse won zero of 36 member/window groups; retain the private experiment
+  because Exact tokens matched at all 432 points and relative throughput plus
+  workspace ratios improved with window size; and require a separate bounded
+  4 MiB-or-larger profile before reconsideration.
+- Generated-code task description: publish the complete local sparse matrix
+  evidence as a concise repository record and distinguish present rejection
+  from a future larger-window hypothesis.
+- Similarity review: measurement interpretation, thresholds, retention rule,
+  and reevaluation gate derive solely from marc's report and preceding design
+  contracts. No external implementation expression was consulted or
+  introduced.
+- Validation: the completed checkpoint contains 36 HashChain and 432 sparse
+  records, all 432 sparse token counts equal their paired baselines, and no
+  sparse candidate exceeds HashChain within its member/window group. The
+  canonical ignored report was regenerated with SHA-256
+  `e1634213ead93f2d66004e69f9bb090ba4196e8a11ed9ca7c28a8c31b52e6c6c`.
+  This record changes no code, production selector, profile, ABI, CLI, stream
+  format, or decoder behavior.

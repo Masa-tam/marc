@@ -19083,3 +19083,26 @@ the complete plan. Even when the plan is complete, a batched invocation does
 not publish a final report; a subsequent unlimited invocation with `--output`
 reconstructs it without relaunching work. This avoids treating forced process
 termination as ordinary scheduling and changes no measured configuration.
+
+## DD-909: Keep sparse HashTree private below one MiB and remeasure larger windows
+
+- Date: 2026-08-22
+- Status: accepted
+
+The complete default sparse Silesia matrix contains 36 HashChain baselines and
+432 pool/threshold candidates at 64 KiB, 256 KiB, and 1 MiB windows. Require
+all candidates to retain their demonstrated Exact-token equality, but do not
+select sparse HashTree for production: no candidate exceeded its paired
+HashChain baseline in any member/window group, and the best per-group sparse
+candidate averaged only 59.05% of HashChain throughput.
+
+Keep the implementation, explicit private encoder route, benchmark mode, and
+diagnostics default-disabled rather than deleting them. Corpus aggregate
+relative throughput improved from 46.5% at 64 KiB to 82.1% at 1 MiB, while the
+best workspace ratio contracted from 1.526 to 1.088. Treat that only as a
+reason to permit a later explicit 4 MiB-or-larger experiment, not as evidence
+for extrapolated production selection. Any reevaluation must use a separately
+documented bounded profile, HashChain and Exact-token oracles, observer-free
+timing, complete query accounting, and fresh pool/threshold exploration. Do
+not serialize the encoder-local search strategy or change the decoder, format,
+public ABI, CLI, or existing production profiles.

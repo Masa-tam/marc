@@ -1042,3 +1042,18 @@ processを再起動せず、未完了keyだけをcanonical順に測り、最終J
 partial batchはfinal `--output`と併用できない。全点完了後、limitを外して`--output`を指定した再開により、
 processを再起動せずcanonical final JSONを生成する。強制終了を通常の分割手段にせず、測定単位の正常終了を
 運用上の境界とする。
+
+## 44. Measured sparse disposition and larger-window reevaluation
+
+revision `a457ae2b5aaef0f571fe4fc3fea774d62e0a8a06`の完全Silesia matrixは、
+36 HashChain baselineと432 sparse候補の全てについてExact token count一致を確認した。一方、現在の
+64 KiB、256 KiB、1 MiB windowでは、各member/windowの最速sparse候補もHashChainを上回らなかった。
+Corpus aggregateの最良sparse/HashChain比は順に0.465、0.629、0.821であり、現行上限1 MiBまでを
+production selector、public profile、ABIまたはCLIへ昇格させる根拠はない。
+
+ただしwindow増加に伴いrelative throughputは改善し、最良aggregateのworkspace比も1.526、1.263、
+1.088へ縮小した。この傾向は1 MiBより大きい履歴で固定費を回収できる可能性を示すが、外挿による採用を
+認めるものではない。private sparse routeと診断はdefault-disabledのまま保持し、4 MiB以上を検討する
+場合は独立した明示profileで再測定する。その実験はHashChain baseline、全Exact token一致、bounded
+workspace、全query accounting、observer-free timingを必須とし、現行pool/threshold gridを最適値と
+仮定しない。streamには探索戦略を記録せず、decoderおよびformatは変更しない。

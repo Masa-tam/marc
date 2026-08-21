@@ -82,8 +82,13 @@ prefix-range newest-position aggregation, but Silesia and synthetic evidence
 reject its unconditional maintenance cost for production use. The next
 private [HashTree Exact design](design/lzss-hash-tree-match-finder.md) keeps
 HashChain as the cheap baseline and promotes only buckets whose real query
-depth exceeds a deterministic threshold. Automatic public selection and
-bounded effort remain deferred.
+depth exceeds a deterministic threshold. Its bounded sparse-pool successor
+preserves Exact tokens, but the complete Silesia matrix rejects production
+selection through the current 1 MiB maximum window. The aggregate throughput
+gap and workspace premium both narrow monotonically as the window grows, so
+the private route remains available for a separately measured larger-window
+experiment rather than being removed. Automatic public selection and bounded
+effort remain deferred.
 The internal finder contract has a const match query plus an `advance` notice
 for every consumed half-open raw range. Exhaustive implements the query with
 the original complete scan and treats `advance` as a no-op. Both canonical
