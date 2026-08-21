@@ -105,6 +105,14 @@ using marc::dictionary::internal::LzssTypedToken;
     return bytes;
 }
 
+[[nodiscard]] constexpr auto four_mib_stream_header() {
+    auto header = stream_header(1, 1);
+    header[14] = std::byte{0x04};
+    header[66] = std::byte{0x40};
+    header[98] = std::byte{0x03};
+    return header;
+}
+
 [[nodiscard]] constexpr std::uint32_t end_flag() {
     return marc::core::flag_value(ProcessFlags::end_input);
 }
@@ -170,6 +178,20 @@ TEST(LzssTypedContextFrameStreamingDecoder,
     } while (status != StreamStatus::end_of_stream);
     EXPECT_EQ(input_offset, encoded.size());
     EXPECT_EQ(output[0], std::byte{'A'});
+}
+
+TEST(LzssTypedContextFrameStreamingDecoder,
+     FourMiBVariantRemainsClosedDuringCompleteFrameStage) {
+    constexpr auto header = four_mib_stream_header();
+    std::array<std::byte, 86> frame{};
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<std::byte, 1> raw{};
+    LzssTypedContextFrameStreamingDecoder decoder{{}, frame, tokens, raw};
+
+    const auto result = decoder.process(header, {}, end_flag());
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+    EXPECT_EQ(result.output_produced, 0U);
 }
 
 TEST(LzssTypedContextFrameStreamingDecoder,

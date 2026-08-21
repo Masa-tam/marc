@@ -6942,16 +6942,25 @@ bytes therefore uses the checked common bounds `token_count <= F`,
 `decision_count <= 32*token_count`. The older `6F` bound remains part of the
 older variants and does not validate this family.
 
-This shared reservation does not admit an entropy triple, public C selector,
-CLI profile, or interoperability archive. Each existing contextual entropy
-identity must independently define and implement its selected descriptor,
-payload, model, workspace, malformed-input, and publication bounds. In
-particular, Contextual Adaptive Huffman's present conservative payload bound
-does not fit the default aggregate policy at a four-MiB frame and is deferred.
+The exact private Dynamic Range triple `2/4 + 1/3 + 3/2` is admitted for
+stream-header preflight and complete-frame decoding. It retains the existing
+16-byte Dynamic Range descriptor, 31 contexts, model-total 32,768, and
+byte-oriented payload arithmetic. Its selected adaptive-frequency storage has
+4,566 entries. Frame validation applies `decision_count <= 7F` and
+`decision_count <= 32*token_count`; older triples retain their frozen bounds.
+The complete-frame encoder, profile and streaming lifecycle, public C
+selector, CLI profile, and interoperability archive are not admitted by this
+decoder stage.
+
+Every other contextual entropy identity must independently define and
+implement its selected descriptor, payload, model, workspace, malformed-input,
+and publication bounds. In particular, Contextual Adaptive Huffman's present
+conservative payload bound does not fit the default aggregate policy at a
+four-MiB frame and is deferred.
 The complete staged contract is [LZSS contextual 4 MiB
 window](design/lzss-contextual-window-4m.md).
 
-The shared typed-token/context implementation now recognizes the exact pair
-and its layout internally. This does not make any entropy triple valid: outer
-frame parsers and backend-specific entry points continue to admit only the
-previously completed pairs until their four-MiB vertical stage is implemented.
+The shared typed-token/context implementation recognizes the exact pair and
+its layout internally. Only the Dynamic Range decoder boundary described above
+currently admits a four-MiB entropy triple; other backend-specific entry points
+continue to admit only their previously completed pairs.

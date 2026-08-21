@@ -97,6 +97,15 @@ extended_stream_vector() {
     return stream;
 }
 
+[[nodiscard]] TypedContextStreamHeader four_mib_stream_config() {
+    auto stream = stream_config();
+    stream.frame_size = 4194304;
+    stream.dictionary.window_size = 4194304;
+    stream.dictionary_variant = 4;
+    stream.context_variant = 3;
+    return stream;
+}
+
 [[nodiscard]] TypedContextFrameValidationContext frame_context(
     const TypedContextStreamHeader& stream,
     const marc::core::DecoderLimits& limits) {
@@ -255,6 +264,14 @@ TEST(TypedContextStreamFormat, SelectsVariantSpecificTableLimit) {
     EXPECT_EQ(validate_typed_context_stream_header(
                   extended_stream_config(), limits),
               TypedContextStreamHeaderError::none);
+
+    EXPECT_EQ(validate_typed_context_stream_header(
+                  four_mib_stream_config(), limits),
+              TypedContextStreamHeaderError::limit_exceeded);
+    limits.max_entropy_table_entries = 4566;
+    EXPECT_EQ(validate_typed_context_stream_header(
+                  four_mib_stream_config(), limits),
+              TypedContextStreamHeaderError::none);
 }
 
 TEST(TypedContextStreamFormat, RejectsReservedAndParameterViolations) {
@@ -339,6 +356,20 @@ TEST(TypedContextFrameFormat, SelectsVariantSpecificDecisionCeiling) {
     EXPECT_EQ(validate_typed_context_frame_header(
                   header, frame_context(extended_stream, limits)),
               TypedContextFrameHeaderError::none);
+
+    auto four_mib_stream = four_mib_stream_config();
+    four_mib_stream.frame_size = 5;
+    four_mib_stream.original_size = 5;
+    const TypedContextFrameHeader four_mib_header{
+        0, 0, 5, 1, 5, 32, 5, 16, 0, 0};
+    EXPECT_EQ(validate_typed_context_frame_header(
+                  four_mib_header,
+                  frame_context(four_mib_stream, limits)),
+              TypedContextFrameHeaderError::none);
+    EXPECT_EQ(validate_typed_context_frame_header(
+                  four_mib_header,
+                  frame_context(extended_stream, limits)),
+              TypedContextFrameHeaderError::contradictory_counts);
 }
 
 TEST(TypedContextFrameFormat, SerializesHeaderAndDescriptorTransactionally) {

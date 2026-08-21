@@ -46,6 +46,16 @@ using namespace marc::frame::internal;
     return stream;
 }
 
+[[nodiscard]] TypedContextStreamHeader four_mib_stream_config(
+    const std::uint32_t frame_size,
+    const std::uint64_t original_size) noexcept {
+    auto stream = stream_config(frame_size, original_size);
+    stream.dictionary.window_size = 4194304;
+    stream.dictionary_variant = 4;
+    stream.context_variant = 3;
+    return stream;
+}
+
 [[nodiscard]] constexpr std::array<std::byte, 86> one_literal_frame() {
     std::array<std::byte, 86> encoded{};
     encoded[0] = std::byte{0x4D};
@@ -121,6 +131,26 @@ TEST(LzssTypedContextFrameEncoder,
         stream, {}, 0, 0, input, tokens, operations, output);
     ASSERT_EQ(encoded.error, LzssTypedContextFrameEncodeError::none);
     EXPECT_EQ(output, one_literal_frame());
+}
+
+TEST(LzssTypedContextFrameEncoder,
+     FourMiBVariantRemainsClosedDuringDecoderStage) {
+    constexpr std::array input{std::byte{'A'}};
+    const auto stream = four_mib_stream_config(4194304, 1);
+    std::array<marc::dictionary::internal::LzssTypedToken, 1> tokens{};
+    std::array<marc::context::internal::ModeledOperation, 2> operations{};
+    std::array<std::byte, 86> output{};
+    output.fill(std::byte{0xCC});
+
+    EXPECT_EQ(plan_lzss_typed_context_frame(
+                  stream, {}, 0, 0, input, tokens, operations).error,
+              LzssTypedContextFrameEncodeError::invalid_stream);
+    EXPECT_EQ(encode_lzss_typed_context_frame(
+                  stream, {}, 0, 0, input, tokens, operations, output).error,
+              LzssTypedContextFrameEncodeError::invalid_stream);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xCC};
+    }));
 }
 
 TEST(LzssTypedContextFrameEncoder, RoundTripsMatchBearingFrame) {

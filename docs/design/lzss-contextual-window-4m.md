@@ -162,8 +162,17 @@ selection admits only `2/2 + 1/1`, `2/3 + 1/2`, and `2/4 + 1/3`.
 The maximum-distance test constructs four MiB of history with bounded overlap
 Matches, then models and reconstructs a length-258 Match at distance 4,194,304.
 It therefore exercises class 22 and a 22-bit zero bypass without a
-multi-million-Literal fixture. This stage changes no frame parser, entropy
-backend admission, public C selector, CLI profile, or stream inventory.
+multi-million-Literal fixture.
+
+The subsequent Dynamic Range decoder stage admits the exact private triple
+`2/4 + 1/3 + 3/2` at stream-header preflight and complete-frame decode. Its
+selected model storage has 4,566 entries, its count validator uses `7F`, and
+its first complete-frame vector contains a real distance-1,048,577 Match.
+Crossed identities and one-entry-short token/raw workspaces fail before any
+raw publication. The operation-level Dynamic Range encoder is large enough to
+serve as the deterministic test-vector oracle, but the complete-frame encoder,
+profile/workspace lifecycle, public C selector, CLI profile, and
+interoperability inventory remain closed.
 
 ## Planned public policy
 

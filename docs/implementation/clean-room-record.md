@@ -23913,3 +23913,35 @@ discarded and the reviewed seed retained.
   experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`. The public ABI, CLI, entropy
   triples, emitted streams, and interoperability inventory remain unchanged.
+
+## CR-0984: 2026-08-22 - Four-MiB Contextual Dynamic Range decoder boundary
+
+- Authoring method: extended marc's selected typed-context frame validator and
+  integer Dynamic Range model storage from the already implemented shared
+  four-MiB layout, while adding an explicit encoder-stage gate.
+- References used: IR-0673 through IR-0675, DD-910 through DD-912, TVG-0776
+  through TVG-0778, CR-0982 through CR-0983, and repository-owned frame,
+  operation-model, range-coder, checked arithmetic, and reconstruction code.
+  No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  range coders, large-window formats, source code, tests, benchmarks, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: select `7F` through the validated layout; size the
+  private range frequency arrays for the largest admitted layout; keep old
+  bytes unchanged; use the operation-level encoder only as a fixture oracle;
+  and reject complete-frame encoding until its workspace/profile stage.
+- Generated-code task description: admit exact private triple
+  `2/4 + 1/3 + 3/2` through preflight and atomic complete-frame decoding,
+  including a semantically necessary distance-1,048,577 vector, class 22,
+  crossed identities, and one-short workspaces.
+- Similarity review: storage extents, bounds, pair selection, fixture history,
+  and stage gate follow directly from marc's preceding shared layout and
+  existing private abstractions. No external implementation expression was
+  consulted or introduced.
+- Validation: all 3,152 registered tests pass under MSVC in 204.25 seconds
+  and ClangCL in 218.57 seconds with the 600-second per-test limit. Both
+  complete runs include the new first-distance and
+  class-22 vectors, all seven Python tooling tests, sixteen experimental
+  benchmark smokes, and `marc_interoperability_schema_compatibility`. The
+  complete-frame encoder remains closed for variant 3, and the public ABI,
+  CLI, streaming profiles, and interoperability inventory remain unchanged.

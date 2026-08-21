@@ -6063,3 +6063,12 @@ field-context mapping, checked arithmetic, and frozen old-layout tests. No
 external compressor, context mapper, large-window implementation, source code,
 test, benchmark, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0675
+
+The four-MiB Contextual Dynamic Range decoder stage uses IR-0673 through
+IR-0674, DD-910 through DD-912, TVG-0776 through TVG-0778, the repository-owned
+typed-context frame validator, adaptive integer range coder, checked workspace
+publication boundary, and frozen older vectors. No external compressor, range
+coder implementation, large-window format, source code, test, benchmark,
+patent, pseudocode, or optimization description was consulted.

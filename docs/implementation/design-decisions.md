@@ -19143,3 +19143,24 @@ interoperability inventory unchanged. Retain 128 MiB as the present default,
 but classify it as a future policy-review point rather than a format constant:
 any increase must separately document profile requirements, configurable hard
 limits, defaults, measured memory, and denial-of-service consequences.
+
+## DD-912: Admit the four-MiB Dynamic Range decoder before its public lifecycle
+
+- Date: 2026-08-22
+- Status: accepted
+
+Admit exact private triple `2/4 + 1/3 + 3/2` at the common typed-context stream
+preflight and complete-frame decoder. Size the Dynamic Range adaptive-frequency
+storage for 4,566 entries and select the raw decision multiplier from the
+validated layout, so variant 3 uses `7F` while variants 1 and 2 retain `6F`.
+Require the first complete-frame vector to reconstruct a real Match at distance
+1,048,577, and exercise class 22 plus its 22-bit bypass independently.
+
+Keep the complete-frame encoder explicitly closed for variant 3 during this
+stage. The operation-level encoder may support the selected layout as a
+deterministic fixture oracle, but profile/workspace calculation, streaming,
+public C and CLI selection, benchmarks, fuzz admission, and interoperability
+inventory wait for their later stages. Crossed identities and insufficient
+token/raw workspaces fail transactionally. Retain 128 MiB as a configurable
+current default and defer any aggregate-limit change to a separately measured
+profile decision.

@@ -103,6 +103,9 @@ parse_collected_stream_header() noexcept {
         || consumed != typed_context_stream_header_size) {
         return false;
     }
+    if (stream_.dictionary_variant == 4 || stream_.context_variant == 3) {
+        return false;
+    }
     switch (admission_) {
     case LzssTypedContextStreamAdmission::any:
         return true;

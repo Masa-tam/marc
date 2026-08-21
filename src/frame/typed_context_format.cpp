@@ -307,8 +307,9 @@ TypedContextFrameHeaderError validate_typed_context_frame_header(
                                     header.event_count)
         || !checked_product_at_most(5, header.token_count,
                                     header.event_count)
-        || !checked_product_at_most(6, header.uncompressed_size,
-                                    header.decision_count)
+        || !checked_product_at_most(
+            layout.layout.maximum_decisions_per_raw_byte,
+            header.uncompressed_size, header.decision_count)
         || !checked_product_at_most(
             layout.layout.maximum_decisions_per_token, header.token_count,
                                     header.decision_count)) {

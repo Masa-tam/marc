@@ -39,6 +39,16 @@ using marc::dictionary::internal::LzssTypedToken;
     return stream;
 }
 
+[[nodiscard]] TypedContextStreamHeader four_mib_stream_config(
+    const std::uint32_t frame_size,
+    const std::uint64_t original_size) noexcept {
+    auto stream = stream_config(frame_size, original_size);
+    stream.dictionary.window_size = 4194304;
+    stream.dictionary_variant = 4;
+    stream.context_variant = 3;
+    return stream;
+}
+
 [[nodiscard]] constexpr std::array<std::byte, 112> stream_header(
     const std::uint8_t frame_size,
     const std::uint8_t original_size) noexcept {
@@ -203,6 +213,21 @@ TEST(LzssTypedContextFrameStreamingEncoder,
         status = result.status;
     } while (status != StreamStatus::end_of_stream);
     EXPECT_EQ(actual, expected);
+}
+
+TEST(LzssTypedContextFrameStreamingEncoder,
+     FourMiBVariantRemainsClosedDuringCompleteFrameStage) {
+    std::array<std::byte, 1> raw{};
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<ModeledOperation, 2> operations{};
+    std::array<std::byte, 86> frame{};
+    LzssTypedContextFrameStreamingEncoder encoder{
+        four_mib_stream_config(4194304, 1), {}, raw, tokens, operations, {},
+        frame};
+
+    const auto result = encoder.process({}, {}, 0);
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
 }
 
 TEST(LzssTypedContextFrameStreamingEncoder,

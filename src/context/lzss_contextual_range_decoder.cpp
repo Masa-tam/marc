@@ -113,7 +113,8 @@ using entropy::internal::ContextualDynamicRangeDescriptor;
         || event_count > 2 * raw_size || decision_count < event_count
         || decision_count
                > layout.maximum_decisions_per_token * token_count
-        || decision_count > 6 * raw_size) {
+        || decision_count
+               > layout.maximum_decisions_per_raw_byte * raw_size) {
         result.error = LzssContextualRangeDecodeError::invalid_counts;
         return false;
     }

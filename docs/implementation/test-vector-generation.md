@@ -11028,3 +11028,22 @@ class 22 in context 30 with alphabet 23, followed by a 22-bit zero bypass, and
 require exact typed-token reconstruction. Run every registered test under
 MSVC and ClangCL with a 600-second per-test limit and no exclusions, including
 `marc_interoperability_schema_compatibility`.
+
+### TVG-0778
+
+For the first four-MiB Dynamic Range vertical stage, encode the final class-22
+Symbol in context 30 with alphabet 23 and a 22-bit zero bypass through marc's
+operation-level Dynamic Range coder, then require exact decoder recovery.
+Construct 1,048,577 bytes of history from one Literal, 4,064 distance-one
+Matches of length 258, and one distance-one Match of length 64. Append a
+length-258 Match at distance 1,048,577, serialize the existing 64-byte frame
+header and 16-byte descriptor, and require complete-frame reconstruction to
+all `A` bytes.
+
+Require 4,566 entries at stream preflight, variant-selected `7F` acceptance,
+frozen `6F` rejection for the older variant, crossed-pair rejection, and
+transactional failure when either token or raw workspace is one element short.
+Keep the variant-3 complete-frame encoder closed and prove that its failed
+attempt does not alter serialized output. Run all registered tests under MSVC
+and ClangCL with the 600-second per-test limit, including
+`marc_interoperability_schema_compatibility`.
