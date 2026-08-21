@@ -23860,3 +23860,27 @@ discarded and the reviewed seed retained.
   Python tooling tests, sixteen experimental benchmark smoke tests, and
   `marc_interoperability_schema_compatibility`. This record changes no code,
   production selector, profile, ABI, CLI, stream format, or decoder behavior.
+
+## CR-0982: 2026-08-22 - Four-MiB contextual LZSS design reservation
+
+- Authoring method: derived a new additive dictionary/context identity from
+  marc's frozen typed-token grammar, distance-class mathematics, selected
+  context layout, checked limits, and completed local match-finder evidence.
+- References used: IR-0673, DD-909 through DD-910, TVG-0776, CR-0981, and the
+  repository-owned 64-KiB, one-MiB, HashChain, HashTree, and workspace records.
+  No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  large-window formats, match finders, source code, tests, benchmark results,
+  tuning guides, patents, pseudocode, and optimization descriptions.
+- Independent decisions: reserve `2/4 + 1/3`; keep prior pairs frozen; use
+  classes 0 through 22, 4,566 model entries, and a new `7F` decision bound;
+  retain HashChain Exact initially; admit backends separately; and defer
+  Adaptive Huffman rather than weakening common memory limits.
+- Generated-code task description: specify the exact shared four-MiB boundary
+  and its safety gates before adding decoder-visible implementation code.
+- Similarity review: identities, formulas, staging, and rejection rules derive
+  solely from marc's preceding formats and arithmetic. No external
+  implementation expression was consulted or introduced.
+- Validation: documentation cross-links and chronological record layout are
+  checked in this stage. No codec code, ABI, CLI, emitted stream, decoder
+  behavior, benchmark selector, or interoperability inventory changes.

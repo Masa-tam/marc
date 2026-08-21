@@ -10993,3 +10993,21 @@ zero budget, and finally generate an identical canonical report without new
 measurement. Run every registered test under MSVC and ClangCL with a 600-second
 per-test limit and no exclusions, including all Python tooling tests and
 `marc_interoperability_schema_compatibility`.
+
+### TVG-0776
+
+For the shared four-MiB design, derive distance classes independently from
+`floor(log2(distance))`. Require exact boundary cases at 1,048,575/1,048,576/
+1,048,577, 2,097,151/2,097,152, and 4,194,303/4,194,304, plus rejection of
+4,194,305 and every reference beyond current frame history. Check the exact
+23-symbol distance alphabet, 4,566-entry flattening, 22-bit bypass ceiling,
+32-decision Match ceiling, and `7F` raw-frame decision bound. Require all old
+variant vectors and bytes to remain unchanged and every crossed pair to fail
+before allocation or publication.
+
+Backend-specific vectors are added only with their vertical implementation.
+The first complete-frame vector must force distance 1,048,577; separate
+bounded-history vectors must exercise classes 21 and 22 without constructing
+millions of Literal tokens. Full admission later requires MSVC and ClangCL
+tests with a 600-second per-test limit, sanitizer fuzzing, and
+`marc_interoperability_schema_compatibility` without exclusion.

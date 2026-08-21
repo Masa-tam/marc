@@ -19106,3 +19106,22 @@ documented bounded profile, HashChain and Exact-token oracles, observer-free
 timing, complete query accounting, and fresh pool/threshold exploration. Do
 not serialize the encoder-local search strategy or change the decoder, format,
 public ABI, CLI, or existing production profiles.
+
+## DD-910: Reserve an additive four-MiB contextual LZSS family
+
+- Date: 2026-08-22
+- Status: accepted
+
+Reserve exact dictionary/context pair `2/4 + 1/3` rather than widening either
+existing identity. Use four-MiB reference frames and windows, distance classes
+0 through 22, 23-symbol distance alphabets, 4,566 flattened Symbol entries,
+and a 32-decision-per-Match ceiling. Replace the older-family `6F` frame bound
+with `7F` only for the new variant.
+
+Build one entropy backend vertical path at a time, beginning with Dynamic
+Range. Keep HashChain Exact as the initial production matcher and both
+HashTree forms private pending fresh four-MiB evidence. Do not raise the 128
+MiB aggregate policy to admit a backend: defer Contextual Adaptive Huffman
+until its conservative payload and total workspace fit through a tighter
+proof or bounded redesign. Add no public selector or CLI name during the
+shared design stage.

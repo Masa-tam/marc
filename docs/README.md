@@ -25,6 +25,8 @@ navigate chronological development records.
   non-redistributed corpus handling and large-window match-finder measurement.
 - [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md): additive
   typed-token and context variants for extended-distance experiments.
+- [LZSS contextual 4 MiB window](design/lzss-contextual-window-4m.md): the next
+  additive identity, expanded decision bounds, and per-backend memory gates.
 - [LZSS typed-token protocol](design/lzss-typed-token-protocol.md): bounded
   dictionary-to-context value boundary.
 - [Context-model contract](design/context-model-contract.md): invertible field

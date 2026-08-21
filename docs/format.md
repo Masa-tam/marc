@@ -6921,3 +6921,32 @@ selection through `MARC_LZSS_CONTEXTUAL_WINDOW_64K` and
 and is not inferred from the configured window. It controls which already
 defined stream identity the encoder emits and which exact identity the decoder
 admits before frame collection.
+
+### Reserved 4 MiB LZSS field-context family
+
+Format 2.0 reserves dictionary algorithm/variant `2/4` together with context-
+model algorithm/variant `1/3`. They MUST occur together. Existing
+`2/2 + 1/1` and `2/3 + 1/2` meanings remain frozen, and every crossed pair is
+contradictory.
+
+Dictionary variant 4 reuses the existing 16-byte parameter layout, requires
+minimum match length 5 and maximum match length at most 258, and permits a
+window no larger than 4,194,304 bytes. Context variant 3 reuses the context
+extension layout and expands only contexts 23 through 30 to distance alphabet
+23. It admits distance classes 0 through 22 and at most 22 LSB-first bypass
+bits. Its flattened Symbol layout has exactly 4,566 entries.
+
+One Match has at most five modeled events and 32 decisions. A raw frame of `F`
+bytes therefore uses the checked common bounds `token_count <= F`,
+`event_count <= 2F`, `decision_count <= 7F`, and
+`decision_count <= 32*token_count`. The older `6F` bound remains part of the
+older variants and does not validate this family.
+
+This shared reservation does not admit an entropy triple, public C selector,
+CLI profile, or interoperability archive. Each existing contextual entropy
+identity must independently define and implement its selected descriptor,
+payload, model, workspace, malformed-input, and publication bounds. In
+particular, Contextual Adaptive Huffman's present conservative payload bound
+does not fit the default aggregate policy at a four-MiB frame and is deferred.
+The complete staged contract is [LZSS contextual 4 MiB
+window](design/lzss-contextual-window-4m.md).

@@ -6045,3 +6045,12 @@ TVG-0775, the repository-owned checkpoint index, canonical matrix loop, and
 validated-record publication boundary. No external batch runner, scheduler,
 workflow engine, compressor, source code, test, benchmark result, tuning guide,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0673
+
+The four-MiB contextual LZSS design uses DD-909 through DD-910, the frozen
+64-KiB and one-MiB typed-token/context formats, marc's checked profile and
+workspace rules, and its repository-owned HashChain, Exhaustive, complete
+HashTree, sparse HashTree, and Silesia evidence. No external compressor,
+source code, test, format extension, match finder, tuning guide, patent,
+pseudocode, or optimization description was consulted.
