@@ -23855,5 +23855,8 @@ discarded and the reviewed seed retained.
   sparse candidate exceeds HashChain within its member/window group. The
   canonical ignored report was regenerated with SHA-256
   `e1634213ead93f2d66004e69f9bb090ba4196e8a11ed9ca7c28a8c31b52e6c6c`.
-  This record changes no code, production selector, profile, ABI, CLI, stream
-  format, or decoder behavior.
+  The complete Release build and all 3,143 registered tests pass under MSVC
+  and ClangCL with a 600-second per-test limit; both runs include all seven
+  Python tooling tests, sixteen experimental benchmark smoke tests, and
+  `marc_interoperability_schema_compatibility`. This record changes no code,
+  production selector, profile, ABI, CLI, stream format, or decoder behavior.
