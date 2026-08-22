@@ -6960,9 +6960,12 @@ this exact triple only for Contextual Dynamic Range. It is not serialized and
 is not inferred from any size. It does not change the 64 KiB initializer or
 the 128 MiB aggregate default, so encoder workspace query fails until the
 caller explicitly raises that limit. Other contextual C factories reject the
-known selector until their backend-specific four-MiB paths are complete. CLI,
-benchmark, fuzzing, and interoperability archive admission remain later
-boundaries.
+known selector until their backend-specific four-MiB paths are complete.
+
+The CLI name `lzss-contextual-dynamic-range-4m` selects this exact triple and
+uses four-MiB frames/windows plus an explicit 256-MiB application aggregate
+limit. The name and limit are not serialized. Benchmark, fuzzing, and
+interoperability archive admission remain later boundaries.
 
 Every other contextual entropy identity must independently define and
 implement its selected descriptor, payload, model, workspace, malformed-input,

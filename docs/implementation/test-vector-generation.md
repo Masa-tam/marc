@@ -11078,3 +11078,18 @@ to reject the known four-MiB selector rather than falling back to another
 profile. Keep selector 3 unknown. Preserve both older selectors, all stream
 bytes, initializer defaults, CLI names, fuzzing targets, and interoperability
 inventory.
+
+### TVG-0781
+
+Run the explicit `lzss-contextual-dynamic-range-4m` CLI name through encode,
+decode, deterministic overwrite refusal, malformed input, strict trailing
+data, empty input, and transactional profile-mismatch rejection. Require exact
+stream identities `2/4 + 1/3 + 3/2`, and require both the 64-KiB and one-MiB
+CLI decoders to reject the produced stream without creating or changing an
+output file.
+
+Keep the test payload small while retaining the real four-MiB workspace query
+and factory lifecycle. Require the 256-MiB application hard limit, the
+`14F + 5` payload ceiling, and public-query-owned allocation sizes. Preserve
+the older CLI names and stream bytes, and leave benchmark, fuzzing, and the
+52-archive interoperability inventory unchanged.

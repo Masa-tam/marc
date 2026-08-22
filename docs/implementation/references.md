@@ -6091,3 +6091,12 @@ window selector, exact typed-context profile mapping, checked workspace query,
 and backend-specific configuration validators. No external compressor, C API,
 large-window selector, memory policy, source code, test, benchmark, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0678
+
+The four-MiB Contextual Dynamic Range CLI boundary uses IR-0673 through
+IR-0677, DD-910 through DD-914, TVG-0776 through TVG-0780, the repository-owned
+CLI selector, public C initializer/query/factory lifecycle, transactional file
+commit, and cross-profile round-trip harness. No external compressor, CLI,
+large-window profile, memory policy, source code, test, benchmark, patent,
+pseudocode, or optimization description was consulted.

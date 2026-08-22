@@ -66,6 +66,13 @@ constexpr std::uint64_t lzss_contextual_dynamic_range_1m_payload_size =
     + UINT64_C(5);
 constexpr std::uint64_t lzss_contextual_dynamic_range_1m_buffered_size =
     UINT64_C(128) << 20;
+constexpr std::uint64_t lzss_contextual_dynamic_range_4m_frame_size =
+    UINT64_C(1) << 22;
+constexpr std::uint64_t lzss_contextual_dynamic_range_4m_payload_size =
+    lzss_contextual_dynamic_range_4m_frame_size * UINT64_C(14)
+    + UINT64_C(5);
+constexpr std::uint64_t lzss_contextual_dynamic_range_4m_buffered_size =
+    UINT64_C(256) << 20;
 constexpr std::uint64_t lzss_contextual_rans_frame_size =
     UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_contextual_rans_decision_count =
@@ -269,6 +276,7 @@ enum class Codec {
     lzss_dynamic_range,
     lzss_contextual_dynamic_range,
     lzss_contextual_dynamic_range_1m,
+    lzss_contextual_dynamic_range_4m,
     lzss_contextual_rans,
     lzss_contextual_rans_1m,
     lzss_contextual_tans,
@@ -900,22 +908,35 @@ bool configure(
         print_status("configuration failed", status);
         return false;
     }
-    const bool extended_window =
+    if (window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
+        && window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        && window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+        return false;
+    }
+    const bool one_mib_window =
         window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M;
-    const auto selected_frame_size = extended_window
-        ? lzss_contextual_dynamic_range_1m_frame_size
-        : lzss_contextual_dynamic_range_frame_size;
+    const bool four_mib_window =
+        window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+    const auto selected_frame_size = four_mib_window
+        ? lzss_contextual_dynamic_range_4m_frame_size
+        : one_mib_window
+            ? lzss_contextual_dynamic_range_1m_frame_size
+            : lzss_contextual_dynamic_range_frame_size;
     config.original_size = original_size;
     config.frame_size = static_cast<std::uint32_t>(selected_frame_size);
     config.window_size = static_cast<std::uint32_t>(selected_frame_size);
     config.max_frame_size = selected_frame_size;
     config.max_block_size = selected_frame_size;
-    config.max_compressed_payload_size = extended_window
-        ? lzss_contextual_dynamic_range_1m_payload_size
-        : lzss_contextual_dynamic_range_payload_size;
-    config.max_internal_buffered_bytes = extended_window
-        ? lzss_contextual_dynamic_range_1m_buffered_size
-        : lzss_contextual_dynamic_range_buffered_size;
+    config.max_compressed_payload_size = four_mib_window
+        ? lzss_contextual_dynamic_range_4m_payload_size
+        : one_mib_window
+            ? lzss_contextual_dynamic_range_1m_payload_size
+            : lzss_contextual_dynamic_range_payload_size;
+    config.max_internal_buffered_bytes = four_mib_window
+        ? lzss_contextual_dynamic_range_4m_buffered_size
+        : one_mib_window
+            ? lzss_contextual_dynamic_range_1m_buffered_size
+            : lzss_contextual_dynamic_range_buffered_size;
     config.max_lz_distance = selected_frame_size;
     config.max_lz_match_length = 258;
     config.window_profile = window_profile;
@@ -1799,12 +1820,15 @@ bool process_file(const marc_direction direction,
         if (!configure(direction, source_size, lzss_range_combined_config))
             return false;
     } else if (codec == Codec::lzss_contextual_dynamic_range
-               || codec == Codec::lzss_contextual_dynamic_range_1m) {
+               || codec == Codec::lzss_contextual_dynamic_range_1m
+               || codec == Codec::lzss_contextual_dynamic_range_4m) {
         if (!configure(
                 direction, source_size, lzss_contextual_range_config,
-                codec == Codec::lzss_contextual_dynamic_range_1m
-                    ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-                    : MARC_LZSS_CONTEXTUAL_WINDOW_64K))
+                codec == Codec::lzss_contextual_dynamic_range_4m
+                    ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+                    : codec == Codec::lzss_contextual_dynamic_range_1m
+                        ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
+                        : MARC_LZSS_CONTEXTUAL_WINDOW_64K))
             return false;
     } else if (codec == Codec::lzss_contextual_rans
                || codec == Codec::lzss_contextual_rans_1m) {
@@ -1965,7 +1989,8 @@ bool process_file(const marc_direction direction,
         status = marc_lzss_dynamic_range_workspace_requirements(
             &lzss_range_combined_config, &needed);
     else if (codec == Codec::lzss_contextual_dynamic_range
-             || codec == Codec::lzss_contextual_dynamic_range_1m)
+             || codec == Codec::lzss_contextual_dynamic_range_1m
+             || codec == Codec::lzss_contextual_dynamic_range_4m)
         status = marc_lzss_contextual_dynamic_range_workspace_requirements(
             &lzss_contextual_range_config, &needed);
     else if (codec == Codec::lzss_contextual_rans
@@ -2146,7 +2171,8 @@ bool process_file(const marc_direction direction,
             &lzss_range_combined_config, primary_buffer, secondary_buffer,
             &raw_transform);
     else if (codec == Codec::lzss_contextual_dynamic_range
-             || codec == Codec::lzss_contextual_dynamic_range_1m)
+             || codec == Codec::lzss_contextual_dynamic_range_1m
+             || codec == Codec::lzss_contextual_dynamic_range_4m)
         status = marc_lzss_contextual_dynamic_range_create(
             &lzss_contextual_range_config, primary_buffer, secondary_buffer,
             views_buffer, &raw_transform);
@@ -2419,6 +2445,7 @@ void usage() {
                  "lzss, lzss-blocked-huffman, lzss-adaptive-huffman, "
                  "lzss-dynamic-range, lzss-contextual-dynamic-range, "
                  "lzss-contextual-dynamic-range-1m, "
+                 "lzss-contextual-dynamic-range-4m, "
                  "lzss-contextual-rans, lzss-contextual-rans-1m, "
                  "lzss-contextual-tans, lzss-contextual-tans-1m, "
                  "lzss-contextual-blocked-huffman, "
@@ -2487,6 +2514,8 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzss_contextual_dynamic_range;
         else if (name == "lzss-contextual-dynamic-range-1m")
             codec = Codec::lzss_contextual_dynamic_range_1m;
+        else if (name == "lzss-contextual-dynamic-range-4m")
+            codec = Codec::lzss_contextual_dynamic_range_4m;
         else if (name == "lzss-contextual-rans")
             codec = Codec::lzss_contextual_rans;
         else if (name == "lzss-contextual-rans-1m")

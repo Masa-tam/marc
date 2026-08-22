@@ -197,15 +197,17 @@ Crossed identities and one-entry-short token, raw, and aggregate workspaces
 fail before publication. The C selector value
 `MARC_LZSS_CONTEXTUAL_WINDOW_4M` publishes this exact path without changing
 the default limits; all other contextual C backends reject that known value.
-CLI profile, benchmarks, fuzzing, and the interoperability inventory remain
-closed.
+The explicit CLI name `lzss-contextual-dynamic-range-4m` uses a 256-MiB
+application limit while retaining public-query-owned allocation extents.
+Benchmarks, fuzzing, and the interoperability inventory remain closed.
 
 ## Planned public policy
 
 The common C window-profile selector assigns value 2 to the exact 4 MiB
 identity. Value 0 remains 64 KiB and value 1 remains 1 MiB. Backend admission
-is independent: only Contextual Dynamic Range presently accepts value 2. A
-completed CLI backend may later add an explicit `-4m` name.
+is independent: only Contextual Dynamic Range presently accepts value 2. Its
+completed CLI backend uses the explicit `lzss-contextual-dynamic-range-4m`
+name.
 
 An exact public decoder admits only its selected dictionary/context pair; it
 does not infer a profile from `window_size`, descriptor size, or distance seen

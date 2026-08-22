@@ -79,10 +79,18 @@ if(NOT compare_result EQUAL 0)
     message(FATAL_ERROR "CLI round trip changed the input")
 endif()
 
+set(reject_codecs)
 if(DEFINED CLI_REJECT_CODEC AND NOT CLI_REJECT_CODEC STREQUAL "")
-    set(wrong_profile_output "${TEST_DIR}/wrong-profile.bin")
+    list(APPEND reject_codecs "${CLI_REJECT_CODEC}")
+endif()
+if(DEFINED CLI_REJECT_CODEC_2 AND NOT CLI_REJECT_CODEC_2 STREQUAL "")
+    list(APPEND reject_codecs "${CLI_REJECT_CODEC_2}")
+endif()
+foreach(reject_codec IN LISTS reject_codecs)
+    set(wrong_profile_output
+        "${TEST_DIR}/wrong-profile-${reject_codec}.bin")
     execute_process(
-        COMMAND "${MARC_CLI}" decode --codec "${CLI_REJECT_CODEC}"
+        COMMAND "${MARC_CLI}" decode --codec "${reject_codec}"
             "${encoded}" "${wrong_profile_output}"
         RESULT_VARIABLE wrong_profile_result)
     if(wrong_profile_result EQUAL 0)
@@ -96,7 +104,7 @@ if(DEFINED CLI_REJECT_CODEC AND NOT CLI_REJECT_CODEC STREQUAL "")
     file(WRITE "${wrong_profile_output}" "profile-mismatch-sentinel")
     file(READ "${wrong_profile_output}" wrong_profile_before HEX)
     execute_process(
-        COMMAND "${MARC_CLI}" decode --codec "${CLI_REJECT_CODEC}"
+        COMMAND "${MARC_CLI}" decode --codec "${reject_codec}"
             "${encoded}" "${wrong_profile_output}"
         RESULT_VARIABLE existing_wrong_profile_result)
     file(READ "${wrong_profile_output}" wrong_profile_after HEX)
@@ -106,7 +114,7 @@ if(DEFINED CLI_REJECT_CODEC AND NOT CLI_REJECT_CODEC STREQUAL "")
         message(FATAL_ERROR
             "CLI changed existing output during profile rejection")
     endif()
-endif()
+endforeach()
 
 set(malformed "${TEST_DIR}/malformed.marc")
 set(rejected "${TEST_DIR}/rejected.bin")

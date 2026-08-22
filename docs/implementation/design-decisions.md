@@ -19203,3 +19203,22 @@ selector must not silently raise a hard limit. Require exact 64-bit workspace
 figures and one-short admission through the public query, plus explicit
 backend-scoped rejection. Defer allocation-heavy C round trip, CLI policy,
 benchmark, fuzzing, and interoperability inventory to later stages.
+
+## DD-915: Make four-MiB Dynamic Range an explicit 256-MiB CLI profile
+
+- Date: 2026-08-22
+- Status: accepted
+
+Add exact application name `lzss-contextual-dynamic-range-4m`. Configure a
+4,194,304-byte frame, window, block, and distance ceiling; select public C
+window value 2; and use the format-derived `14F + 5` payload ceiling. Encode
+and decode require this exact name and reject the 64-KiB and one-MiB stream
+identities before output publication.
+
+Set the CLI's explicit aggregate hard limit to 256 MiB. This is application
+policy, not a library-default change and not a serialization field. Do not
+copy the native 264,765,525-byte workspace partition into CLI allocation
+logic: the public direction-specific requirements query remains authoritative
+for all three allocations and their alignment. If a supported native layout
+requires more than the CLI ceiling, fail safely at query rather than silently
+raising policy. Keep benchmark, fuzzing, and interoperability inventory closed.

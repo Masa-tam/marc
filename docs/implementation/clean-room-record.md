@@ -24007,3 +24007,34 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`. The CLI, fuzzing targets,
   benchmark profiles, emitted old streams, and 52-archive interoperability
   inventory remain unchanged.
+
+## CR-0987: 2026-08-22 - Four-MiB Dynamic Range CLI boundary
+
+- Authoring method: extended marc's existing explicit contextual CLI profile
+  family through the public four-MiB C selector, retaining the common
+  direction-specific query, aligned allocation, factory, processing, and
+  transactional file-commit lifecycle.
+- References used: IR-0673 through IR-0678, DD-910 through DD-915, TVG-0776
+  through TVG-0781, CR-0982 through CR-0986, and repository-owned CLI and
+  cross-profile round-trip harness. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  CLIs, large-window profiles, memory policies, source code, tests, benchmarks,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: use an explicit `-4m` name; set four-MiB frame,
+  window, block, and distance policy; retain `14F + 5`; choose a 256-MiB
+  application ceiling without changing the library default; and leave actual
+  allocation extents owned by the public C query.
+- Generated-code task description: publish the completed four-MiB Dynamic
+  Range path in the CLI with exact identities, cross-profile rejection,
+  bounded allocation, strict malformed/trailing handling, and no benchmark,
+  fuzzing, or interoperability promotion.
+- Similarity review: name selection, constants, dispatch, hard-limit policy,
+  and tests follow directly from marc's preceding CLI and C boundaries. No
+  external implementation expression was consulted or introduced.
+- Validation: all 3,154 registered tests pass under MSVC in 200.15 seconds and
+  ClangCL in 204.44 seconds with a 600-second per-test limit. Both complete
+  runs include the new CLI round trip, all seven Python tooling tests, sixteen
+  experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. The existing CLI profiles,
+  benchmark/fuzz selectors, stream bytes, and 52-archive interoperability
+  inventory remain unchanged.
