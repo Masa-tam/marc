@@ -740,6 +740,25 @@ path applied only to the campaign process. No input corpus was supplied, no
 generated mutation was retained, and no artifact was produced. This bounded
 result is evidence for the exercised inputs, not an exhaustive safety claim.
 
+### FZ-0031: Triple-profile Contextual tANS smoke
+
+The Contextual tANS private-frame/public-C decoder target now drives the
+64-KiB, one-MiB, and four-MiB strict admissions for every bounded input. It
+retains its 32-KiB input, 4-KiB total output, one-KiB frame/token storage,
+fixed 131,072-entry decode-table bank, and finite call ceiling. The largest
+admitted limits are 7,168 decisions, 10,754 payload bytes, a 9,125-byte
+descriptor, and a 4,194,304-byte LZ distance; the four-MiB identity does not
+allocate a four-MiB fuzz frame.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 20260822 completed exactly 1,000 inputs under a 32-KiB maximum input,
+five-second per-input timeout, and 512-MiB RSS limit without a crash, hang, or
+sanitizer finding. Peak RSS was 44 MiB; final coverage was 235 counters and
+406 features over a six-entry, 23-byte in-memory corpus. The matching runtime
+path applied only to the campaign process. No input corpus was supplied, no
+generated mutation was retained, and no artifact was produced. This bounded
+result is evidence for the exercised inputs, not an exhaustive safety claim.
+
 ## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the

@@ -6294,3 +6294,12 @@ public C initializer, requirements query, factory, streaming lifecycle,
 bounded output-capacity calculator, and benchmark report harness. No external
 compressor, tANS benchmark, workspace policy, source code, test result, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0700
+
+The four-MiB Contextual tANS bounded fuzz boundary uses IR-0692 through
+IR-0699, DD-929 through DD-936, TVG-0795 through TVG-0802, the repository-owned
+private complete-frame decoder, public C streaming decoder, fixed table/token/
+raw workspaces, finite call loop, and permanent malformed regressions. No
+external compressor, tANS fuzzer, corpus, source code, test, vulnerability
+report, patent, pseudocode, or optimization description was consulted.

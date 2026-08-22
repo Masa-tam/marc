@@ -24707,3 +24707,38 @@ benchmark, fuzz target, or interoperability inventory changes.
   `marc_interoperability_schema_compatibility`. The 54-archive inventory is
   unchanged; fuzzing and interoperability Contextual tANS admission remain
   closed.
+
+## CR-1011: 2026-08-22 - Four-MiB Contextual tANS bounded fuzz boundary
+
+- Authoring method: extended the repository-owned fixed-memory dual-path
+  target and parameterized malformed regressions with the completed public
+  profile while retaining caller-sized raw storage.
+- References used: IR-0692 through IR-0700, DD-929 through DD-937, TVG-0795
+  through TVG-0803, CR-1003 through CR-1010, and repository-owned decoder,
+  public C lifecycle, fuzz harness, and regression code. No new external
+  technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  tANS fuzzers, corpora, source code, tests, vulnerability reports, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: reuse one target; cap raw frames at one KiB; raise
+  decisions, payload, descriptor, and distance only to context-variant-3
+  needs; require reciprocal exact-profile rejection; and retain no generated
+  mutation or artifact.
+- Generated-code task description: admit four-MiB Contextual tANS in the
+  bounded private/public decoder harness, add permanent malformed/profile
+  regressions, and run a fixed-seed sanitizer campaign.
+- Similarity review: bound changes, profile dispatch, and regression assertions
+  follow directly from marc's preceding dual-profile target and completed
+  four-MiB validation rules. No external implementation expression was
+  consulted or introduced.
+- Validation: the harness compile-smoke and all ten focused malformed/profile
+  regressions pass under MSVC and ClangCL. Windows Clang 22 libFuzzer/ASan/
+  UBSan completed 1,000 inputs at seed 20260822 with 32-KiB max input,
+  five-second timeout, and 512-MiB RSS limit. No crash, hang, or sanitizer
+  finding occurred; peak RSS was 44 MiB and final coverage was 235 counters /
+  406 features over six in-memory entries totaling 23 bytes. All 3,188
+  registered tests pass with a 600-second per-test limit in 194.39 and 198.37
+  seconds respectively, including seven Python tooling tests, nineteen
+  experimental benchmark smokes, forty-two benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. The 54-archive inventory is
+  unchanged; interoperability admission remains closed.

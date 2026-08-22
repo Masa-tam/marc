@@ -7133,3 +7133,11 @@ configuration uses `F = 4,194,304`, decision limit `7F`, payload limit
 nonempty-frame count `K`, its checked output allocation is
 `112 + ceil(21N/2) + 9,191K`. This is an application-side upper bound, not an
 additional format field or decoder-visible rule.
+
+The bounded Contextual tANS decoder fuzz target admits exact identity
+`2/4 + 1/3 + 5/2` alongside both older public profiles. Fuzz policy caps raw
+frames at 1,024 bytes, total raw output at 4,096 bytes, decisions at
+`7*1024`, payload at `ceil(21*1024/2) + 2 = 10,754` bytes, and supplied input
+at 32 KiB while permitting the four-MiB distance identity. Fixed table/token/
+frame storage and a finite call ceiling make this an application test boundary
+only; it adds no serialized rule. Interoperability admission remains closed.

@@ -19585,3 +19585,21 @@ the unnecessary over-allocation of an integral `11N` approximation. Require
 all three profile smokes, exact ordered help inventory, near-miss rejection,
 and directional workspace-sum validation. This boundary changes no stream
 representation and leaves fuzzing and interoperability closed.
+
+## DD-937: Extend one bounded Contextual tANS fuzzer to three profiles
+
+- Date: 2026-08-22
+- Status: accepted
+
+Retain one `marc_fuzz_lzss_contextual_tans_stream` target and exercise exact
+64-KiB, one-MiB, and four-MiB public decoder admissions for every bounded
+input. Raise only the fixed local maxima required by context variant 3:
+`7*1024` decisions, `ceil(21*1024/2) + 2 = 10,754` payload bytes, the
+9,125-byte descriptor, and four-MiB LZ distance. Retain 32-KiB input, 4-KiB
+total output, one-KiB raw frame/token storage, fixed tables, byte-derived
+chunking, and finite calls.
+
+Add permanent truncation, malformed-header/descriptor, and reciprocal
+three-profile regressions. Run one fixed-seed 1,000-input Clang libFuzzer/
+ASan/UBSan campaign without retaining generated mutations. This stage changes
+no format and keeps interoperability closed.

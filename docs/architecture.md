@@ -5612,3 +5612,11 @@ public C lifecycle. The benchmark reserves the format-derived payload ceiling
 and checked complete-stream capacity rather than reproducing private workspace
 partitioning. It adds no codec state or stream representation; fuzzing and
 interoperability admission remain separate later boundaries.
+
+The bounded Contextual tANS decoder fuzz boundary now admits the same three
+exact public window profiles. Four-MiB identity selection raises only local
+decision, payload, descriptor, and distance limits; raw frame/token storage
+remains one KiB and total output remains four KiB. Private complete-frame and
+public streaming paths share fixed storage and finite calls. No four-MiB raw
+buffer, history allocation, generated corpus file, or serialized rule is
+introduced. Interoperability remains the final closed boundary.

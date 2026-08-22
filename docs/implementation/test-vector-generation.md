@@ -11405,3 +11405,18 @@ bytes, ratio 0.695, encoder regions 4,326/54,614/396,896, decoder regions
 44,049,383/4,194,304/50,855,936, and peak 99,099,623 bytes. Exercise both
 MSVC and ClangCL while leaving fuzzing and interoperability inventories
 unchanged.
+
+### TVG-0803
+
+Extend the Contextual tANS malformed regression parameter set with public
+window value 2. Generate its canonical five-byte stream, then require every
+truncation, extreme frame-length corruption, and nonzero descriptor reserved
+byte to fail atomically in both private complete-frame and public streaming
+decoders. Require every four-MiB-versus-older profile direction to reject with
+stable repeated terminal errors and unchanged raw output.
+
+Compile the fixed-memory harness under MSVC and ClangCL, then build it with
+Windows Clang 22 libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer.
+Run exactly 1,000 inputs with seed 20260822, `-max_len=32768`, `-timeout=5`,
+and `-rss_limit_mb=512`. Require zero crash, hang, or sanitizer finding and no
+retained artifact. Preserve the 54-archive interoperability inventory.
