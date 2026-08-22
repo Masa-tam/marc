@@ -24118,8 +24118,8 @@ discarded and the reviewed seed retained.
   patents, pseudocode, and optimizations.
 - Independent decisions: append only entry 53; inspect exact dictionary/context
   `2/4 + 1/3` and entropy `3/2` bytes before publication; freeze the 52-entry
-  predecessor; recover it
-  by removing only the new leaf; and defer external work products until push.
+  predecessor; recover it by removing only the new leaf; and defer external
+  work products until push.
 - Generated-code task description: create and verify schema 43 with one
   four-MiB Dynamic Range archive, exact order/hash/re-encode checks, reordered
   rejection, and compatibility through every prior schema.
@@ -24133,3 +24133,29 @@ discarded and the reviewed seed retained.
   seven Python tooling tests, seventeen experimental benchmark smokes, and
   schema compatibility. No bundle work product was retained in the repository;
   four-direction external evidence remains pending.
+
+## CR-0991: 2026-08-22 - Schema 43 four-direction external admission
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-918, IR-0681, TVG-0784, BR-0152 through BR-0153,
+  IX-0037, CR-0990, and full revision
+  `a871a05dad68c99712ba210a0b8a9f5f6eb6b3b3`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: require one exact revision for all directions,
+  preserve work products outside the repository, and accept evidence only
+  when every verifier reports the complete 53-archive inventory.
+- Generated-code task description: record the completed schema-43
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks.
+- Similarity review: this change records project-generated artifact evidence
+  only and introduces no codec implementation expression.
+- External validation: all four passes reported `Verified 53 archives` at
+  revision `a871a05dad68c99712ba210a0b8a9f5f6eb6b3b3`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.

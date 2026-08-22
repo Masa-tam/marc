@@ -2571,3 +2571,12 @@ All 3,157 registered tests pass under MSVC and ClangCL in 205.51 and 208.69
 seconds, including documentation layout, seven Python tooling tests, and
 schema compatibility. External four-direction evidence remains pending until
 the revision is pushed.
+
+### BR-0153
+
+Schema 43 now has complete four-direction external evidence at revision
+`a871a05dad68c99712ba210a0b8a9f5f6eb6b3b3`. All 53 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the four-MiB
+Contextual Dynamic Range profile.

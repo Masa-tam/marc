@@ -203,6 +203,8 @@ The matching dependency-free benchmark name exposes the same profile without
 changing its policy. The bounded decoder fuzz target also admits the exact
 triple while retaining one-KiB frames. Interoperability schema 43 appends the
 matching archive after the frozen 52-entry schema-42 inventory.
+Revision `a871a05dad68c99712ba210a0b8a9f5f6eb6b3b3` verifies all 53 archives
+through the recorded four-direction Windows and Linux exchange.
 
 ## Planned public policy
 

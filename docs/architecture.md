@@ -5544,5 +5544,7 @@ Interoperability schema 43 freezes all 52 schema-42 archives and appends only
 `lzss-contextual-dynamic-range-4m` as entry 53. Both local compilers generate,
 decode, re-encode, hash, and order-check that inventory, reject a reordered
 manifest, remove only entry 53 to reconstruct schema 42, and complete the
-compatibility chain through schema 1. Four-direction external exchange remains
-post-push evidence.
+compatibility chain through schema 1. Revision
+`a871a05dad68c99712ba210a0b8a9f5f6eb6b3b3` has complete four-direction
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang evidence for all 53
+archives.
