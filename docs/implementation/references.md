@@ -6120,3 +6120,13 @@ decoder, sanitizer build route, and permanent malformed-stream regressions.
 No external fuzzer harness, compressor, corpus, large-window implementation,
 source code, test, vulnerability report, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0681
+
+The four-MiB Contextual Dynamic Range interoperability boundary uses IR-0673
+through IR-0680, DD-910 through DD-917, TVG-0776 through TVG-0783, the
+repository-owned schema-42 generator/verifier, deterministic 8,193-byte
+fixture, explicit CLI selector, manifest hashing, and one-generation
+compatibility chain. No external archive, compressor, interoperability suite,
+source code, test vector, manifest schema, patent, pseudocode, or optimization
+description was consulted.

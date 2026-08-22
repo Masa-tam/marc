@@ -2557,3 +2557,17 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the 1 MiB
 Contextual Adaptive Huffman profile.
+
+### BR-0152
+
+The four-MiB Contextual Dynamic Range vertical path and local interoperability
+admission are complete. Schema 43 appends only
+`lzss-contextual-dynamic-range-4m` as archive 53, verifies exact
+`2/4 + 1/3 + 3/2` identity, and freezes all schema-42 bytes and order. Both
+local compilers generate and verify all 53 archives, reject reordered current
+manifests, remove only the final entry to recover schema 42, and verify every
+schema through version 1; the schema tests complete in 81.06 and 76.94 seconds.
+All 3,157 registered tests pass under MSVC and ClangCL in 205.51 and 208.69
+seconds, including documentation layout, seven Python tooling tests, and
+schema compatibility. External four-direction evidence remains pending until
+the revision is pushed.

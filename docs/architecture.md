@@ -5530,3 +5530,19 @@ That local boundary is now implemented. Both MSVC and ClangCL generate and
 verify all 52 archives, reject a reordered schema-42 manifest, remove only the
 new final archive to recover schema 41, and complete every compatibility step
 through schema 1. Four-direction external exchange remains post-push evidence.
+
+The additive four-MiB Contextual Dynamic Range vertical path is now locally
+complete. Exact dictionary/context identity `2/4 + 1/3` expands the distance
+alphabet through class 22 while entropy identity `3/2` retains the established
+range descriptor and arithmetic. The public C selector, explicit CLI name,
+dependency-free benchmark, and bounded triple-profile decoder fuzzer all use
+checked caller limits without changing the 128-MiB library default. Encoder
+workspace above that default requires explicit admission; decoder/fuzzer
+workspace contracts to the caller's smaller permitted frame when selected.
+
+Interoperability schema 43 freezes all 52 schema-42 archives and appends only
+`lzss-contextual-dynamic-range-4m` as entry 53. Both local compilers generate,
+decode, re-encode, hash, and order-check that inventory, reject a reordered
+manifest, remove only entry 53 to reconstruct schema 42, and complete the
+compatibility chain through schema 1. Four-direction external exchange remains
+post-push evidence.

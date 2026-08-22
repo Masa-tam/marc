@@ -19259,3 +19259,20 @@ profile-rejection regressions for value 2. Compile the ordinary warning-clean
 object under both local compilers, then run only a bounded sanitizer smoke with
 no retained generated corpus unless a finding occurs. Do not fuzz the large
 encoder workspace in this stage and do not change interoperability inventory.
+
+## DD-918: Append four-MiB Dynamic Range as schema 43 archive 53
+
+- Date: 2026-08-22
+- Status: accepted
+
+Preserve all schema-42 archives byte-for-byte and in exact order, then append
+only `lzss-contextual-dynamic-range-4m.marc` as entry 53. Set
+`schema_version=43` and `codec_set=marc-cli-v43`. Require generated stream
+identity `2/4 + 1/3 + 3/2`, immediate local round trip, SHA-256 recording, and
+byte-identical local re-encoding by the verifier.
+
+Teach the verifier exact schema 43 while retaining schemas 1 through 42.
+Compatibility must remove only entry 53 to reconstruct schema 42, then follow
+the unchanged one-generation chain. Reject a reordered current manifest.
+Repository tests generate bundles only in temporary directories; cross-system
+four-direction evidence remains a post-push user-run step.

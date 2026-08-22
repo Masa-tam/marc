@@ -24103,3 +24103,33 @@ discarded and the reviewed seed retained.
   205.87 seconds, including seven Python tooling tests, seventeen experimental
   benchmark smokes, and `marc_interoperability_schema_compatibility`. No
   corpus/artifact or interoperability archive was added.
+
+## CR-0990: 2026-08-22 - Four-MiB Dynamic Range interoperability boundary
+
+- Authoring method: extended marc's append-only interoperability manifest by
+  one exact public CLI profile and advanced the existing one-generation
+  compatibility chain from schema 42 to schema 43.
+- References used: IR-0673 through IR-0681, DD-910 through DD-918, TVG-0776
+  through TVG-0784, CR-0982 through CR-0989, and repository-owned fixture,
+  generator, verifier, manifest hash, and schema converter. No new external
+  technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  archives, interoperability suites, test vectors, source code, manifests,
+  patents, pseudocode, and optimizations.
+- Independent decisions: append only entry 53; inspect exact dictionary/context
+  `2/4 + 1/3` and entropy `3/2` bytes before publication; freeze the 52-entry
+  predecessor; recover it
+  by removing only the new leaf; and defer external work products until push.
+- Generated-code task description: create and verify schema 43 with one
+  four-MiB Dynamic Range archive, exact order/hash/re-encode checks, reordered
+  rejection, and compatibility through every prior schema.
+- Similarity review: schema number, codec set, append position, identity check,
+  and downgrade rule follow directly from marc's preceding append-only schema
+  process. No external implementation expression was consulted or introduced.
+- Validation: both local compilers generated and verified all 53 archives and
+  completed schemas 43 through 1; the schema tests took 81.06 seconds under
+  MSVC and 76.94 seconds under ClangCL. All 3,157 registered tests pass in
+  205.51 and 208.69 seconds respectively, including documentation layout,
+  seven Python tooling tests, seventeen experimental benchmark smokes, and
+  schema compatibility. No bundle work product was retained in the repository;
+  four-direction external evidence remains pending.

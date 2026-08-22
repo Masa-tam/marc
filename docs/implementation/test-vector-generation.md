@@ -11125,3 +11125,19 @@ under the existing finite call bound. Require MSVC and ClangCL warning-clean
 compile smoke, then a short ClangCL sanitizer run with bounded input count,
 timeout, RSS, and no source-corpus mutation. Preserve the format, CLI,
 benchmark, and 52-archive interoperability inventory.
+
+### TVG-0784
+
+Generate schema 43 from the unchanged deterministic 8,193-byte fixture.
+Preserve all 52 schema-42 entries and append exactly
+`lzss-contextual-dynamic-range-4m` as entry 53. Require dictionary variant
+bytes 4/0, context variant bytes 3/0, entropy identity bytes 3/0 + 2/0,
+immediate decode equality, full source revision, leaf-only file name, size,
+and SHA-256. Require local re-encoding to reproduce every archive byte.
+
+Swap the first two schema-43 entries and require order rejection. Remove only
+entry 53, set schema/version names back to 42/`marc-cli-v42`, and verify the
+unchanged 52-entry predecessor before continuing compatibility through schema
+1. Run complete MSVC and ClangCL inventories including Python tooling. The
+later external protocol must report four successful 53-archive directions at
+one pushed revision.

@@ -6968,7 +6968,8 @@ limit. The matching dependency-free benchmark name measures this same public
 profile and reports query-owned workspace extents. Neither name nor limit is
 serialized. The bounded decoder fuzz target admits this triple with a one-KiB
 caller frame limit; fuzz admission adds no serialized rule. Interoperability
-archive admission remains a later boundary.
+schema 43 appends the matching CLI archive as entry 53 without changing its
+stream representation.
 
 Every other contextual entropy identity must independently define and
 implement its selected descriptor, payload, model, workspace, malformed-input,

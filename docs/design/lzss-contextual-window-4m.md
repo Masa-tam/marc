@@ -201,8 +201,8 @@ The explicit CLI name `lzss-contextual-dynamic-range-4m` uses a 256-MiB
 application limit while retaining public-query-owned allocation extents.
 The matching dependency-free benchmark name exposes the same profile without
 changing its policy. The bounded decoder fuzz target also admits the exact
-triple while retaining one-KiB frames. The interoperability inventory remains
-closed.
+triple while retaining one-KiB frames. Interoperability schema 43 appends the
+matching archive after the frozen 52-entry schema-42 inventory.
 
 ## Planned public policy
 
