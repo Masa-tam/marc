@@ -2619,3 +2619,12 @@ tooling tests, nineteen experimental benchmark smokes, forty-two benchmark
 smokes, and schema compatibility. The full-suite schema test itself completes
 in 94.43 and 82.35 seconds. External four-direction evidence remains pending
 until this revision is pushed.
+
+### BR-0157
+
+Schema 45 now has complete four-direction external evidence at revision
+`2d5d582e974442a33151d0593c532e426e536e46`. All 55 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the four-MiB
+Contextual tANS profile.

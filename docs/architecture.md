@@ -5626,4 +5626,6 @@ Interoperability schema 45 freezes all 54 schema-44 archives and appends only
 `2/4 + 1/3 + 5/2`, round trip, size, and SHA-256. Verification enforces exact
 order and local byte-identical re-encoding. Compatibility removes only entry
 55 to reconstruct schema 44 before traversing the unchanged chain through
-schema 1. External four-direction evidence remains pending.
+schema 1. Revision `2d5d582e974442a33151d0593c532e426e536e46` has complete
+four-direction Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
+evidence for all 55 archives.

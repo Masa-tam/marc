@@ -1,7 +1,8 @@
 # LZSS contextual tANS 4 MiB window
 
-Status: locally complete through interoperability schema 45; external
-four-direction interoperability evidence remains pending.
+Status: complete through interoperability schema 45. Revision
+`2d5d582e974442a33151d0593c532e426e536e46` has complete four-direction
+Windows and Linux evidence for all 55 archives.
 
 ## Purpose and identity
 
