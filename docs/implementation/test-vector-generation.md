@@ -11420,3 +11420,17 @@ Windows Clang 22 libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer.
 Run exactly 1,000 inputs with seed 20260822, `-max_len=32768`, `-timeout=5`,
 and `-rss_limit_mb=512`. Require zero crash, hang, or sanitizer finding and no
 retained artifact. Preserve the 54-archive interoperability inventory.
+
+### TVG-0804
+
+Generate schema 45 from the unchanged deterministic 8,193-byte binary fixture.
+Require the first 54 archives to retain schema-44 names and order, then append
+only `lzss-contextual-tans-4m.marc`. Require dictionary variant bytes 4/0,
+context variant bytes 3/0, and entropy identity bytes 5/0 + 2/0 before an
+immediate byte-exact decode.
+
+Verify all 55 archive sizes and SHA-256 values, decode each archive to the
+fixture, and re-encode each byte-identically under both MSVC and ClangCL.
+Reject a reordered schema-45 manifest. Remove only entry 55, declare
+`marc-cli-v44`, and verify schema 44 before traversing the unchanged legacy
+chain through schema 1.

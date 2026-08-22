@@ -1,8 +1,7 @@
 # LZSS contextual tANS 4 MiB window
 
-Status: implementation in progress; descriptor, coding-core, direct typed-
-token, complete-frame, private profile, streaming, public C, CLI, benchmark,
-and bounded fuzz boundaries are complete; interoperability remains closed.
+Status: locally complete through interoperability schema 45; external
+four-direction interoperability evidence remains pending.
 
 ## Purpose and identity
 
@@ -115,9 +114,8 @@ entries, and internal buffered bytes admit these extents. A full profile sets
    streaming with exact and one-short aggregate tests.
 5. **Complete.** Allow public C selector value 2 only for contextual tANS,
    then add the explicit CLI and dependency-free benchmark name.
-6. **Fuzzer complete; interoperability pending.** Extend the bounded decoder
-   fuzzer, then append one interoperability archive only after that boundary
-   passes.
+6. **Complete.** Extend the bounded decoder fuzzer, then append exactly one
+   interoperability archive as schema-45 entry 55 after that boundary passes.
 
 Each stage preserves old serialized bytes and keeps incomplete public
 boundaries closed. HashChain Exact remains the production match finder;
@@ -128,4 +126,5 @@ complete and sparse HashTree implementations remain private experiments.
 This design does not change tANS normalization, spreading, state count, table
 log, bypass coding, match finder, aggregate default, or profile selection.
 Contextual Blocked Huffman and Contextual Adaptive Huffman retain separate
-memory and format admission work.
+memory and format admission work. External schema-45 verification is an
+evidence step and does not change this design or its serialized identity.

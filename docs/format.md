@@ -7141,3 +7141,8 @@ frames at 1,024 bytes, total raw output at 4,096 bytes, decisions at
 at 32 KiB while permitting the four-MiB distance identity. Fixed table/token/
 frame storage and a finite call ceiling make this an application test boundary
 only; it adds no serialized rule. Interoperability admission remains closed.
+
+Interoperability schema 45 appends `lzss-contextual-tans-4m` as archive 55
+after the frozen 54-entry schema-44 inventory. Generation requires exact
+identity `2/4 + 1/3 + 5/2`; verification decodes and re-encodes the complete
+archive byte-identically. This admission adds no serialized rule.

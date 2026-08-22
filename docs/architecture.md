@@ -5620,3 +5620,10 @@ remains one KiB and total output remains four KiB. Private complete-frame and
 public streaming paths share fixed storage and finite calls. No four-MiB raw
 buffer, history allocation, generated corpus file, or serialized rule is
 introduced. Interoperability remains the final closed boundary.
+
+Interoperability schema 45 freezes all 54 schema-44 archives and appends only
+`lzss-contextual-tans-4m` as entry 55. Generation checks exact identity
+`2/4 + 1/3 + 5/2`, round trip, size, and SHA-256. Verification enforces exact
+order and local byte-identical re-encoding. Compatibility removes only entry
+55 to reconstruct schema 44 before traversing the unchanged chain through
+schema 1. External four-direction evidence remains pending.

@@ -6303,3 +6303,12 @@ private complete-frame decoder, public C streaming decoder, fixed table/token/
 raw workspaces, finite call loop, and permanent malformed regressions. No
 external compressor, tANS fuzzer, corpus, source code, test, vulnerability
 report, patent, pseudocode, or optimization description was consulted.
+
+### IR-0701
+
+The four-MiB Contextual tANS interoperability admission uses IR-0692 through
+IR-0700, DD-929 through DD-937, TVG-0795 through TVG-0803, the repository-owned
+schema-44 generator and verifier, deterministic interoperability fixture,
+exact CLI selector, and legacy conversion chain. No external compressor, tANS
+format, interoperability suite, archive, source code, test vector, patent,
+pseudocode, or optimization description was consulted.

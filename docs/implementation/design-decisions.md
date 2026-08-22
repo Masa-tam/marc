@@ -19603,3 +19603,20 @@ Add permanent truncation, malformed-header/descriptor, and reciprocal
 three-profile regressions. Run one fixed-seed 1,000-input Clang libFuzzer/
 ASan/UBSan campaign without retaining generated mutations. This stage changes
 no format and keeps interoperability closed.
+
+## DD-938: Append four-MiB Contextual tANS as schema-45 entry 55
+
+- Date: 2026-08-22
+- Status: accepted
+
+Preserve every schema-44 archive byte and exact order, then append only
+`lzss-contextual-tans-4m` as archive 55. Set `schema_version` to 45 and
+`codec_set` to `marc-cli-v45`. During generation, require exact stream identity
+`2/4 + 1/3 + 5/2`, immediate round trip, byte count, and SHA-256.
+
+Teach the verifier schema 45 while retaining exact schemas 1 through 44.
+Require exact manifest order and local byte-identical re-encoding. The
+compatibility test must reject a reordered schema-45 manifest, remove only
+entry 55 to reconstruct schema 44, and then traverse the unchanged conversion
+chain through schema 1. External four-direction verification remains a later
+evidence step and changes no stream byte.

@@ -24742,3 +24742,33 @@ benchmark, fuzz target, or interoperability inventory changes.
   experimental benchmark smokes, forty-two benchmark smokes, and
   `marc_interoperability_schema_compatibility`. The 54-archive inventory is
   unchanged; interoperability admission remains closed.
+
+## CR-1012: 2026-08-22 - Four-MiB Contextual tANS interoperability admission
+
+- Authoring method: extended the repository-owned append-only bundle schema,
+  exact verifier inventory, and downgrade chain after every implementation,
+  public, benchmark, and fuzz boundary had passed.
+- References used: IR-0692 through IR-0701, DD-929 through DD-938, TVG-0795
+  through TVG-0804, CR-1003 through CR-1011, and repository-owned bundle
+  scripts, deterministic fixture, CLI selector, and legacy schemas. No new
+  external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  tANS formats, interoperability suites, archives, source code, tests, test
+  vectors, patents, pseudocode, and optimization descriptions.
+- Independent decisions: freeze all 54 schema-44 entries; append only the
+  exact four-MiB Contextual tANS archive; require identity bytes before round
+  trip; reject reordered schema 45; and remove only entry 55 for downgrade.
+- Generated-code task description: admit `lzss-contextual-tans-4m` as
+  schema-45 archive 55 while retaining exact verification of schemas 1 through
+  44 and byte-identical local re-encoding.
+- Similarity review: inventory extension, manifest versioning, exact identity
+  checks, and compatibility conversion follow marc's preceding append-only
+  Contextual rANS admission. No external implementation expression was
+  consulted or introduced.
+- Validation: focused schema generation, 55-archive verification, reordered-
+  manifest rejection, and schemas 45 through 1 pass under MSVC and ClangCL in
+  92.84 and 81.23 seconds. All 3,188 registered tests pass with a 600-second
+  per-test limit in 214.84 and 209.76 seconds respectively, including seven
+  Python tooling tests, nineteen experimental benchmark smokes, forty-two
+  benchmark smokes, documentation layout, and complete schema compatibility.
+  External four-direction verification remains pending until push.

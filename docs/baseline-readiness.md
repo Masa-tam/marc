@@ -2602,3 +2602,20 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the four-MiB
 Contextual rANS profile.
+
+### BR-0156
+
+The four-MiB Contextual tANS vertical path and local interoperability admission
+are complete. Schema 45 appends only `lzss-contextual-tans-4m` as archive 55,
+verifies exact `2/4 + 1/3 + 5/2` identity, and freezes every schema-44 archive
+byte and order. Both local compilers generate and verify all 55 archives,
+reject reordered current manifests, remove only the final entry to recover
+schema 44, and verify every schema through version 1; focused schema tests
+complete in 92.84 and 81.23 seconds under MSVC and ClangCL.
+
+All 3,188 registered tests pass with a 600-second per-test limit in 214.84 and
+209.76 seconds respectively, including documentation layout, seven Python
+tooling tests, nineteen experimental benchmark smokes, forty-two benchmark
+smokes, and schema compatibility. The full-suite schema test itself completes
+in 94.43 and 82.35 seconds. External four-direction evidence remains pending
+until this revision is pushed.
