@@ -234,8 +234,11 @@ contextual tANS, and Contextual Blocked Huffman accept value 2. Their completed 
 `lzss-contextual-tans-4m` names, with
 `lzss-contextual-blocked-huffman-4m` completing the default-128-MiB group.
 Contextual Adaptive Huffman may accept the same selector only with its exact
-backend validation; its explicit CLI application raises payload and aggregate
-limits to the documented bounded 256-MiB policy.
+backend validation. Its backend-specific profile helper applies one coherent
+64-KiB, one-MiB, or four-MiB preset atomically; the explicit CLI uses that
+helper to raise payload and aggregate limits to the documented bounded
+256-MiB policy. Callers may override the returned settings before the
+workspace query revalidates them.
 
 An exact public decoder admits only its selected dictionary/context pair; it
 does not infer a profile from `window_size`, descriptor size, or distance seen

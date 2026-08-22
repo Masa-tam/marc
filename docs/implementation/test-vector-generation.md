@@ -11559,3 +11559,20 @@ beyond one MiB, round-trip it with one-byte buffers, and require reciprocal
 64-KiB/one-MiB/four-MiB public admissions to reject before raw publication.
 Later tool and interoperability vectors remain closed until their preceding
 implementation stages pass.
+
+### TVG-0813
+
+Initialize sentinel encode and decode configurations, apply each known window
+profile, and require exact backend-specific frame/window, match, frame/block,
+payload, aggregate, LZ, and entropy-entry values. Preserve direction, original
+size, total-output limit, structure size, ABI version, and reserved zeros.
+Repeat an application to prove idempotence.
+
+Pass null, a short structure, wrong ABI version, invalid direction, nonzero
+reserved fields, and unknown profile values; require
+`MARC_STATUS_INVALID_ARGUMENT` and byte-for-byte unchanged configuration.
+After applying four MiB, lower payload and each directional aggregate limit
+separately and require the workspace query to return
+`MARC_STATUS_LIMIT_EXCEEDED`; restore or raise them and require exact workspace
+success. Require the CLI preset and direct helper result to agree before codec
+creation.

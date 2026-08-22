@@ -106,8 +106,27 @@ payload limit.
 
 ## Opt-in limit policy
 
-The library defaults remain unchanged. A caller selecting this four-MiB
-profile must explicitly supply at least:
+The library defaults remain unchanged. Profile selection is applied explicitly
+through this additive C helper:
+
+```c
+marc_status
+marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
+    marc_lzss_contextual_adaptive_huffman_config* config,
+    marc_lzss_contextual_window_profile profile);
+```
+
+The caller first initializes the configuration, then applies one exact window
+profile, then may override individual values before querying workspaces. The
+helper allocates no memory. It updates a private copy and publishes the whole
+configuration only after pointer, structure size, ABI version, direction,
+reserved fields, and profile value validate. Failure leaves every caller byte
+unchanged.
+
+The helper overwrites `window_profile`, frame/window size, minimum/maximum
+match length, frame/block/payload/aggregate limits, LZ distance/match limits,
+and entropy-entry limit. It preserves direction, original size, total-output
+limit, ABI metadata, and reserved fields. For the four-MiB profile it applies:
 
 ```text
 max_frame_size               4,194,304 bytes
@@ -118,12 +137,18 @@ max_internal_buffered_bytes  268,435,456 bytes
 maximum LZ distance           4,194,304 bytes
 ```
 
+The 64-KiB and one-MiB selections receive their already documented coherent
+application presets through the same helper. `config_init()` retains its
+64-KiB default and does not select a larger profile. A caller may deliberately
+raise or lower any applied value afterward; the workspace query revalidates
+the final configuration and returns `MARC_STATUS_LIMIT_EXCEEDED` when it no
+longer satisfies the profile.
+
 The concrete profile calculator derives its directional requirement and
 rejects an aggregate limit one byte below that result. The CLI and benchmark
-may choose the 256-MiB application policy for their explicit `-4m` name, as
-the four-MiB Dynamic Range application already does. Merely setting a larger
-window, encountering a wider identity, or using the generic library defaults
-must not raise any limit automatically.
+use the same canonical preset for their explicit `-4m` name. Merely changing
+one field, encountering a wider identity, or using the generic library
+defaults must not raise any limit automatically.
 
 This bounded opt-in is preferred to inventing a tighter average-case payload
 formula. A later bounded streaming redesign would require a distinct format
@@ -141,8 +166,8 @@ variant if it changes frame reset, atomic publication, or payload layout.
    and one-byte streaming lifecycles. A complete frame must contain a real
    Match beyond one MiB without exceeding its four-MiB raw extent.
 4. Admit existing ABI-1 value `MARC_LZSS_CONTEXTUAL_WINDOW_4M` only for this
-   backend, then add exact CLI name `lzss-contextual-adaptive-huffman-4m` with
-   the explicit 256-MiB application policy.
+   backend, add the atomic profile-application helper, then add exact CLI name
+   `lzss-contextual-adaptive-huffman-4m` through the same canonical preset.
 5. Add the dependency-free benchmark and bounded dual-path decoder fuzzer.
    Fuzz identity and distance limits may widen, but raw/token storage and call
    count remain small and fixed.
@@ -160,7 +185,10 @@ vectors; deterministic Exhaustive and HashChain Exact agreement; all required
 binary input classes; one-byte and mixed chunking; terminal stability; exact
 and one-short workspaces; malformed descriptor, count, padding, truncation,
 overflow, alias, and trailing-data rejection; reciprocal three-profile public
-rejection; bounded sanitizer fuzzing; and four-direction interoperability.
+rejection; atomic helper success/failure for all known and unknown profiles;
+preservation of direction, original size, and total-output limit; deliberate
+post-helper override and workspace-query rejection; bounded sanitizer fuzzing;
+and four-direction interoperability.
 
 The maximum-distance typed-token vector is independent of the complete-frame
 vector because a Match beginning after four MiB of history cannot also fit

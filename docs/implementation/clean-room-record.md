@@ -25064,3 +25064,28 @@ benchmark, fuzz target, or interoperability inventory changes.
 - Validation: checked arithmetic produces the documented 211,968,172-byte
   encoder and 194,666,668-byte decoder aggregates, both below 256 MiB. No
   codec code or serialized representation changed in this stage.
+
+## CR-1023: 2026-08-23 - Contextual Adaptive Huffman profile helper policy
+
+- Authoring method: refined the accepted four-MiB memory policy by separating
+  explicit profile selection from manual coordination of its dependent limit
+  fields before any public function was implemented.
+- References used: IR-0709 through IR-0710, DD-946 through DD-947, TVG-0812
+  through TVG-0813, CR-1022, and repository-owned size-tagged C configuration
+  and workspace-query contracts. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  C APIs, configuration libraries, source code, tests, vectors, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: use one backend-specific atomic helper; preserve
+  caller-owned direction/output policy; overwrite only profile-dependent
+  fields; allow later overrides; retain workspace query as final authority;
+  and allocate no memory in the helper.
+- Generated-code task description: specify the helper signature, validation,
+  atomicity, owned and preserved fields, canonical presets, override behavior,
+  and permanent tests before public implementation.
+- Similarity review: the design extends marc's existing ABI-1 initialization
+  and exact-profile patterns. No external implementation expression was
+  consulted or introduced.
+- Validation: design review confirms the helper adds a function without
+  changing the 112-byte configuration, ABI version, serialized bytes, or
+  existing initializer default. No codec code changed in this stage.

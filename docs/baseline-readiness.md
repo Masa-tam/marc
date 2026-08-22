@@ -2748,3 +2748,17 @@ Both directions fit an explicit 256-MiB application policy. Library defaults
 remain 128 MiB aggregate and 64 MiB payload, so the profile cannot be admitted
 accidentally. Implementation, public, tool, fuzz, and interoperability
 boundaries remain closed pending exact-limit and one-short tests.
+
+### BR-0166
+
+The accepted four-MiB Contextual Adaptive Huffman policy now includes an
+ABI-additive atomic profile-application helper. It will apply all dependent
+frame, window, match, payload, aggregate, LZ, and entropy-entry settings while
+preserving direction, original size, and total-output policy. Initialization
+remains on 64 KiB; callers may override the applied preset before the existing
+workspace query validates the final configuration.
+
+The helper will allocate no memory, will leave the configuration byte-exactly
+unchanged on invalid input, and will not infer a limit increase from stream
+bytes or one changed field. Public implementation remains closed until its
+three-profile, idempotence, failure-atomicity, and override tests are present.

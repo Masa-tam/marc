@@ -6387,3 +6387,12 @@ repository-owned selected field-context layout, FGK tree and model-bank types,
 profile, and completed four-MiB backend profiles. No external compressor,
 Adaptive Huffman implementation, source code, test vector, patent,
 pseudocode, payload bound, or optimization description was consulted.
+
+### IR-0710
+
+The Contextual Adaptive Huffman profile-application helper design uses
+IR-0709, the repository-owned ABI-1 size-tagged configuration, initializer,
+workspace-query validation, stable status mapping, and explicit CLI profile
+policies. No external C API, compression library, configuration helper,
+source code, test vector, patent, pseudocode, or optimization description was
+consulted.

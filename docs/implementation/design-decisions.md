@@ -19763,3 +19763,24 @@ four-MiB application profile may raise compressed-payload capacity to the
 proven ceiling and aggregate capacity to 256 MiB. Require exact-limit and
 one-byte-short tests. Do not substitute an empirical payload bound or infer
 limits from the stream identity.
+
+## DD-947: Apply Contextual Adaptive Huffman window profiles atomically
+
+- Date: 2026-08-23
+- Status: accepted
+
+Add
+`marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(config,
+profile)` as an ABI-additive C function when the public four-MiB boundary is
+admitted. Require `config_init()` first. Validate the pointer, full ABI-1
+metadata, direction, reserved fields, and profile before mutation; unknown or
+invalid input returns `MARC_STATUS_INVALID_ARGUMENT` and preserves every
+caller byte.
+
+Apply frame/window and match parameters plus frame, block, payload, aggregate,
+LZ, and entropy-entry limits as one coherent backend-specific preset. Preserve
+direction, original size, total-output limit, ABI metadata, and reserved
+fields. Keep initialization on 64 KiB. Permit callers to override applied
+values afterward; the ordinary workspace query remains authoritative and must
+reject insufficient overrides. The helper allocates no memory and neither a
+stream identity nor a lone field silently raises a limit.
