@@ -6211,3 +6211,13 @@ owned private complete-frame decoder, public C streaming decoder, fixed table
 and token workspaces, finite call loop, and permanent malformed regressions.
 No external compressor, rANS fuzzer, corpus, source code, test, vulnerability
 report, patent, pseudocode, or optimization description was consulted.
+
+### IR-0691
+
+The four-MiB contextual rANS interoperability boundary uses IR-0682 through
+IR-0690, DD-919 through DD-927, TVG-0785 through TVG-0793, the repository-owned
+schema-43 generator/verifier, deterministic 8,193-byte fixture, exact CLI
+selector, manifest hashing, and one-generation compatibility chain. No
+external archive, compressor, interoperability suite, source code, test
+vector, manifest schema, patent, pseudocode, or optimization description was
+consulted.

@@ -5548,3 +5548,14 @@ compatibility chain through schema 1. Revision
 `a871a05dad68c99712ba210a0b8a9f5f6eb6b3b3` has complete four-direction
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang evidence for all 53
 archives.
+
+The four-MiB Contextual rANS vertical path is now locally complete through its
+bounded decoder fuzzer. Exact identity `2/4 + 1/3 + 4/3` uses the expanded
+9,121-byte compact descriptor, `7F` decision bound, `14F + 8` payload bound,
+and checked caller-owned workspaces while retaining the 128-MiB default.
+
+Interoperability schema 44 freezes all 53 schema-43 archives and appends only
+`lzss-contextual-rans-4m` as entry 54. Generation checks the exact identity,
+round trip, size, and SHA-256. Verification enforces exact order and local
+byte-identical re-encoding. Compatibility removes only entry 54 to reconstruct
+schema 43 before traversing the unchanged chain through schema 1.

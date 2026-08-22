@@ -11269,3 +11269,17 @@ Windows Clang 22 libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer.
 Run exactly 1,000 inputs with seed 20260822, `-max_len=32768`, `-timeout=5`,
 and `-rss_limit_mb=512`. Require zero crash, hang, or sanitizer finding and
 no retained artifact. Preserve the 53-archive interoperability inventory.
+
+### TVG-0794
+
+Generate schema 44 from the unchanged deterministic 8,193-byte fixture.
+Preserve all 53 schema-43 entries and append exactly
+`lzss-contextual-rans-4m` as entry 54. Require dictionary variant bytes 4/0,
+context variant bytes 3/0, entropy identity bytes 4/0 + 3/0, immediate decode
+equality, full source revision, leaf-only file name, size, and SHA-256. Require
+local re-encoding to reproduce every archive byte.
+
+Swap the first two schema-44 entries and require order rejection. Remove only
+entry 54, set schema/version names back to 43/`marc-cli-v43`, and verify the
+unchanged 53-entry predecessor before continuing compatibility through schema
+1. Run complete MSVC and ClangCL inventories including Python tooling.

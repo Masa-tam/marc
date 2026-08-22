@@ -19430,3 +19430,20 @@ Add permanent truncation, malformed-header/descriptor, and reciprocal profile
 regressions for the four-MiB identity. Run one fixed-seed 1,000-input Clang
 libFuzzer/ASan/UBSan campaign without retaining generated mutations. This
 stage changes no format and keeps interoperability closed.
+
+## DD-928: Append four-MiB contextual rANS as schema 44 archive 54
+
+- Date: 2026-08-22
+- Status: accepted
+
+Preserve all schema-43 archives byte-for-byte and in exact order, then append
+only `lzss-contextual-rans-4m.marc` as entry 54. Set `schema_version=44` and
+`codec_set=marc-cli-v44`. Require generated stream identity
+`2/4 + 1/3 + 4/3`, immediate local round trip, SHA-256 recording, and byte-
+identical local re-encoding by the verifier.
+
+Teach the verifier exact schema 44 while retaining schemas 1 through 43.
+Compatibility must remove only entry 54 to reconstruct schema 43, then follow
+the unchanged one-generation chain. Reject a reordered current manifest.
+Repository tests generate bundles only in temporary directories; cross-system
+work products remain outside the repository.

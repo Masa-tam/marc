@@ -24409,3 +24409,35 @@ discarded and the reviewed seed retained.
   tooling tests, eighteen experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`. The 53-archive inventory
   remains byte-exact; schema admission is unchanged.
+
+## CR-1001: 2026-08-22 - Four-MiB contextual rANS interoperability boundary
+
+- Authoring method: extended marc's append-only interoperability manifest by
+  one exact public CLI profile and advanced the existing one-generation
+  compatibility chain from schema 43 to schema 44.
+- References used: IR-0682 through IR-0691, DD-919 through DD-928, TVG-0785
+  through TVG-0794, CR-0992 through CR-1000, and repository-owned fixture,
+  generator, verifier, manifest hash, and schema converter. No new external
+  technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  interoperability suites, archives, source code, tests, vectors, manifest
+  schemas, patents, pseudocode, and optimization descriptions.
+- Independent decisions: append exactly one archive; validate identity
+  `2/4 + 1/3 + 4/3` before publication; freeze the 53-entry predecessor;
+  recover it by removing only the new leaf; and retain external work products
+  outside the repository.
+- Generated-code task description: create and verify schema 44 with one
+  four-MiB contextual rANS archive, exact order/hash/re-encode checks,
+  reordered rejection, and compatibility through every prior schema.
+- Similarity review: schema number, codec set, append position, identity check,
+  and downgrade rule follow directly from marc's preceding append-only schema
+  process. No external implementation expression was consulted or introduced.
+- Validation: both local compilers generated and verified all 54 archives,
+  rejected reordered schema-44 manifests, and completed schemas 44 through 1;
+  the focused schema tests took 79.34 seconds under MSVC and 77.11 seconds
+  under ClangCL. All 3,172 registered tests pass in 189.68 and 195.34 seconds
+  respectively with a 600-second per-test limit, including seven Python
+  tooling tests, eighteen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. No bundle work product was
+  retained in the repository; four-direction external evidence remains
+  pending.

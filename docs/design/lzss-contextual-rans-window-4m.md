@@ -3,7 +3,8 @@
 Status: accepted staged design after completion of the four-MiB Contextual
 Dynamic Range vertical path. The descriptor/model, private complete-frame,
 profile, one-byte streaming, public C, CLI, benchmark, and bounded fuzzing
-boundaries are implemented; interoperability remains closed.
+boundaries and schema-44 interoperability admission are implemented. External
+four-direction evidence remains pending.
 
 ## Purpose and identity
 
@@ -109,6 +110,12 @@ default is silently increased.
    explicit CLI and dependency-free benchmark name.
 5. Extend the bounded decoder fuzzer and append one interoperability archive
    only after all preceding boundaries pass.
+
+Schema 44 freezes all 53 schema-43 archives and appends only
+`lzss-contextual-rans-4m` as archive 54. The generator requires exact identity
+`2/4 + 1/3 + 4/3`, immediate round trip, and SHA-256 recording. The verifier
+requires exact order and byte-identical local re-encoding; compatibility
+removes only archive 54 to reconstruct schema 43.
 
 Each stage preserves old serialized bytes and keeps incomplete public
 boundaries closed. HashChain Exact remains the production match finder;

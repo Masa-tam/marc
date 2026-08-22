@@ -7052,4 +7052,9 @@ at 1,024 bytes, total raw output at 4,096 bytes, decisions at `7*1024`, payload
 at `14*1024 + 8`, and input at 32 KiB while allowing the four-MiB distance
 identity. It uses fixed table/token/frame storage and a finite call ceiling;
 selecting the four-MiB identity does not allocate a four-MiB fuzz frame and
-adds no serialized rule. Interoperability admission remains closed.
+adds no serialized rule.
+
+Interoperability schema 44 appends `lzss-contextual-rans-4m` as archive 54
+after the frozen 53-entry schema-43 inventory. Generation requires exact
+identity `2/4 + 1/3 + 4/3`; verification decodes and re-encodes the complete
+archive byte-identically. This admission adds no serialized rule.
