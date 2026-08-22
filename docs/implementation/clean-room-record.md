@@ -24267,3 +24267,29 @@ discarded and the reviewed seed retained.
   seven Python tooling tests, seventeen experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`. The existing 53 archives remain
   byte-exact.
+
+## CR-0996: 2026-08-22 - Four-MiB contextual rANS profile and streaming
+
+- Authoring method: extended marc's existing selected rANS profile enum,
+  layout-derived workspace arithmetic, partitioners, and streaming admission
+  with the already completed four-MiB frame path.
+- References used: IR-0682 through IR-0686, DD-919 through DD-923, TVG-0785
+  through TVG-0789, CR-0992 through CR-0995, and repository-owned profile and
+  streaming code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  rANS lifecycles, workspace layouts, source code, tests, benchmark results,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: derive payload multiplier from the layout; preserve
+  the 128-MiB default; record exact native workspace boundaries; add immutable
+  exact admission; and leave public surfaces closed.
+- Generated-code task description: add four-MiB rANS profile/workspace and
+  one-byte streaming encode/decode with exact/one-short aggregates and cross-
+  profile rejection.
+- Similarity review: enum extension, switches, arithmetic, partitions, and
+  tests follow directly from marc's prior selected profiles and completed
+  four-MiB frame code. No external implementation expression was consulted.
+- Validation: all 23 targeted profile/streaming tests pass under MSVC and
+  ClangCL. All 3,166 registered tests pass in 201.51 and 204.40 seconds
+  respectively, including seven Python tooling tests, seventeen experimental
+  benchmark smokes, and `marc_interoperability_schema_compatibility`. Public C,
+  CLI, benchmark, fuzzing, and interoperability remain unchanged.

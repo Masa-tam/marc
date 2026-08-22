@@ -19345,3 +19345,19 @@ HashChain token trace to contain a Match beyond 1,048,576, decode the complete
 frame byte-exactly, and reject it under the one-MiB identity without raw
 publication. Keep profile, streaming, public, benchmark, fuzzing, and
 interoperability admission closed.
+
+## DD-923: Admit four-MiB rANS profile and streaming under 128 MiB
+
+- Date: 2026-08-22
+- Status: accepted
+
+Add private profile variant `field_context_4m`, select descriptor and payload
+bounds from its validated layout, and add exact streaming-decoder admission
+for dictionary/context `4/3`. Preserve `any`, 64-KiB, and one-MiB behavior.
+
+On supported 64-bit builds require encoder aggregate 130,556,905 bytes and
+decoder aggregate 114,017,257 bytes, with one-byte-short rejection and exact-
+limit success. Retain the 128-MiB default; a caller must raise only the default
+one-MiB block limit for a full frame. Require one-byte encode/decode and cross-
+profile rejection on a small frame. Keep public C and all later surfaces
+closed.

@@ -1,9 +1,9 @@
 # LZSS contextual rANS 4 MiB window
 
 Status: accepted staged design after completion of the four-MiB Contextual
-Dynamic Range vertical path. The descriptor/model and private complete-frame
-encoder/decoder boundaries are implemented; profile/public admission remains
-closed.
+Dynamic Range vertical path. The descriptor/model, private complete-frame,
+profile, and one-byte streaming boundaries are implemented; public admission
+remains closed.
 
 ## Purpose and identity
 

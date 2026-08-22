@@ -11197,3 +11197,16 @@ Run HashChain Exact with an explicitly raised block limit, require at least one
 emitted Match distance above 1,048,576, encode and decode the complete frame,
 and compare every raw byte. Decode the same frame under `2/3 + 1/2 + 4/3` and
 require preflight rejection with unchanged raw output.
+
+### TVG-0789
+
+For `F=4,194,304`, require profile output identities `2/4 + 1/3 + 4/3`,
+4,566 entries, 58,729,449 encoded-frame bytes, 67,633,152 encoder views, and
+130,556,905 aggregate bytes on the supported 64-bit layout. Reject aggregate
+130,556,904 and accept the exact value under the unchanged 128-MiB default.
+
+Require decoder table offset 761,856, views 51,093,504, and aggregate
+114,017,257 bytes; reject one byte below and accept exact. Stream one Literal
+through encoder and exact-4m decoder with one-byte buffers, require header
+variants 4/3, and require exact-1m admission to reject without output. Preserve
+public selector rejection and the 53-archive inventory.

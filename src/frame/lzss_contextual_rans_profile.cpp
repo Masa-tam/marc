@@ -11,7 +11,6 @@
 namespace marc::frame::internal {
 namespace {
 
-inline constexpr std::uint64_t decisions_per_raw_byte = 6;
 inline constexpr std::uint64_t payload_bytes_per_decision = 2;
 inline constexpr std::uint64_t rans_state_bytes = 8;
 
@@ -39,7 +38,9 @@ inline constexpr std::uint64_t rans_state_bytes = 8;
 }
 
 [[nodiscard]] bool payload_ceiling(
-    const std::uint64_t raw_bytes, std::uint64_t& payload_bytes) noexcept {
+    const std::uint64_t raw_bytes,
+    const std::uint64_t decisions_per_raw_byte,
+    std::uint64_t& payload_bytes) noexcept {
     std::uint64_t decisions{};
     return core::checked_multiply(
                raw_bytes, decisions_per_raw_byte, decisions)
@@ -103,6 +104,9 @@ inline constexpr std::uint64_t rans_state_bytes = 8;
     case LzssContextualRansProfileVariant::field_context_1m:
         return context::internal::get_lzss_field_context_layout(
             context::internal::LzssFieldContextVariant::field_context_1m);
+    case LzssContextualRansProfileVariant::field_context_4m:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_4m);
     }
     return {{}, context::internal::LzssFieldContextLayoutError::
                     unsupported_context_variant};
@@ -110,10 +114,15 @@ inline constexpr std::uint64_t rans_state_bytes = 8;
 
 [[nodiscard]] constexpr std::size_t maximum_descriptor_size(
     const context::internal::LzssFieldContextVariant variant) noexcept {
-    return variant
-            == context::internal::LzssFieldContextVariant::field_context_64k
-        ? entropy::internal::contextual_rans_max_descriptor_size_v1
-        : entropy::internal::contextual_rans_max_descriptor_size_v2;
+    switch (variant) {
+    case context::internal::LzssFieldContextVariant::field_context_64k:
+        return entropy::internal::contextual_rans_max_descriptor_size_v1;
+    case context::internal::LzssFieldContextVariant::field_context_1m:
+        return entropy::internal::contextual_rans_max_descriptor_size_v2;
+    case context::internal::LzssFieldContextVariant::field_context_4m:
+        return entropy::internal::contextual_rans_max_descriptor_size_v3;
+    }
+    return 0;
 }
 
 } // namespace
@@ -197,7 +206,9 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
             ? LzssContextualRansProfileError::limit_exceeded
             : LzssContextualRansProfileError::arithmetic_overflow;
     }
-    if (!payload_ceiling(largest_frame, payload_bytes)
+    if (!payload_ceiling(
+            largest_frame,
+            selected.layout.maximum_decisions_per_raw_byte, payload_bytes)
         || !core::checked_add(
             static_cast<std::uint64_t>(
                 lzss_contextual_rans_frame_header_size),
@@ -263,7 +274,9 @@ calculate_lzss_contextual_rans_decoder_workspace(
         std::min(limits.max_frame_size, limits.max_block_size),
         std::numeric_limits<std::uint32_t>::max());
     std::uint64_t modeled_payload_bytes{};
-    if (!payload_ceiling(raw_bytes, modeled_payload_bytes)) {
+    if (!payload_ceiling(
+            raw_bytes, selected.layout.maximum_decisions_per_raw_byte,
+            modeled_payload_bytes)) {
         return LzssContextualRansProfileError::arithmetic_overflow;
     }
     const auto payload_bytes = std::min<std::uint64_t>(

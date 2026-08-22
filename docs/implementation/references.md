@@ -6166,3 +6166,12 @@ direct typed-token encoder, HashChain Exact matcher, selected frame validator,
 compact descriptor serializer, and complete decoder. No external compressor,
 rANS encoder implementation, match finder, source code, test vector, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0686
+
+The four-MiB contextual rANS profile/streaming boundary uses IR-0682 through
+IR-0685, DD-919 through DD-922, TVG-0785 through TVG-0788, the repository-owned
+profile calculator, native workspace partitioners, HashChain Exact streaming
+encoder, atomic streaming decoder, and exact admission enum. No external
+compressor, rANS lifecycle, workspace layout, source code, test, patent,
+pseudocode, or optimization description was consulted.
