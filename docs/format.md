@@ -7000,8 +7000,8 @@ completed entropy triples. It is
 not serialized and is not inferred from any size. It does not change the
 64 KiB initializer or the 128 MiB aggregate default; Dynamic Range encoding
 requires an explicit larger aggregate, while rANS and tANS fit the default.
-Contextual Adaptive Huffman rejects the known selector until its backend-
-specific path is complete.
+Contextual Adaptive Huffman also accepts it for its completed exact
+`2/4 + 1/3 + 1/2` path.
 
 The CLI name `lzss-contextual-dynamic-range-4m` selects this exact triple and
 uses four-MiB frames/windows plus an explicit 256-MiB application aggregate
@@ -7014,9 +7014,10 @@ stream representation.
 
 Every other contextual entropy identity must independently define and
 implement its selected descriptor, payload, model, workspace, malformed-input,
-and publication bounds. In particular, Contextual Adaptive Huffman's present
-conservative payload bound does not fit the default aggregate policy at a
-four-MiB frame and is deferred.
+and publication bounds. Contextual Adaptive Huffman's conservative payload
+bound does not fit the default payload or aggregate policies at a four-MiB
+frame; its explicit profile helper therefore applies the proven
+139,984,896-byte payload and 256-MiB aggregate limits.
 The complete staged contract is [LZSS contextual 4 MiB
 window](design/lzss-contextual-window-4m.md).
 
@@ -7252,4 +7253,8 @@ The exact CLI and benchmark name is
 `lzss-contextual-adaptive-huffman-4m`. Both use that public helper and add no
 serialized selector. All three public decoders admit only their selected
 dictionary/context identity before frame collection or raw publication.
-Fuzzing and interoperability admission remain closed.
+The bounded decoder fuzz target admits all three exact identities through both
+the private complete-frame validator and public streaming decoder. The wider
+identity changes no serialized byte and does not enlarge the fixed one-KiB raw
+or token storage, four-KiB output storage, 64-KiB input cap, or finite call
+ceiling. Interoperability admission remains closed.

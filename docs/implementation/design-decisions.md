@@ -19856,3 +19856,19 @@ Make exact CLI and benchmark name `lzss-contextual-adaptive-huffman-4m` call
 that helper rather than own another preset. Require reciprocal public profile
 rejection before raw publication. Keep decoder fuzzing and interoperability
 closed for their independent boundedness and schema reviews.
+
+## DD-952: Widen Adaptive Huffman fuzz identity without widening storage
+
+- Date: 2026-08-23
+- Status: accepted
+
+Admit the exact four-MiB identity in the existing dual-path decoder fuzz
+harness. Use variant-3 model extents and a four-MiB distance ceiling for both
+the private complete-frame validator and public streaming configuration, and
+invoke every 64-KiB, one-MiB, and four-MiB public admission for each bounded
+input.
+
+Keep maximum fuzz input at 65,536 bytes, total output at 4,096 bytes, raw frame
+and token arrays at 1,024 entries, and the arithmetic call ceiling unchanged.
+Require permanent malformed-stream and reciprocal three-profile atomicity
+tests under both MSVC and ClangCL. Do not admit interoperability in this stage.

@@ -2,9 +2,8 @@
 
 Status: accepted staged design after completion of the four-MiB Dynamic Range,
 canonical contextual rANS, contextual tANS, and Contextual Blocked Huffman
-vertical paths. Model-bank and checked-profile stage 1 is complete; later
-entropy-operation, frame, public, tooling, and interoperability boundaries
-remain closed.
+vertical paths. Model-bank, entropy-operation, frame, public, benchmark, and
+bounded-fuzz stages are complete; interoperability remains closed.
 
 ## Purpose and exact identity
 
@@ -173,9 +172,9 @@ variant if it changes frame reset, atomic publication, or payload layout.
 4. **Complete.** Admit existing ABI-1 value `MARC_LZSS_CONTEXTUAL_WINDOW_4M` only for this
    backend, add the atomic profile-application helper, then add exact CLI name
    `lzss-contextual-adaptive-huffman-4m` through the same canonical preset.
-5. Add the dependency-free benchmark and bounded dual-path decoder fuzzer.
-   Fuzz identity and distance limits may widen, but raw/token storage and call
-   count remain small and fixed.
+5. **Complete.** Add the dependency-free benchmark and bounded dual-path
+   decoder fuzzer. Fuzz identity and distance limits may widen, but raw/token
+   storage and call count remain small and fixed.
 6. Append exactly one interoperability archive after every earlier boundary
    passes. Preserve all older archive bytes and schema order.
 

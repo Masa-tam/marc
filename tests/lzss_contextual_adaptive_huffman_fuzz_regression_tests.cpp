@@ -25,9 +25,9 @@ constexpr std::array raw{
 constexpr std::size_t maximum_payload = (raw.size() * 267 + 7) / 8;
 constexpr std::size_t maximum_internal = 2U << 20;
 constexpr std::size_t node_count = marc::entropy::internal::
-    contextual_adaptive_huffman_node_entries_v2;
+    contextual_adaptive_huffman_node_entries_v3;
 constexpr std::size_t symbol_count = marc::entropy::internal::
-    contextual_adaptive_huffman_symbol_entries_v2;
+    contextual_adaptive_huffman_symbol_entries_v3;
 constexpr std::size_t maximum_encoded_frame =
     marc::frame::internal::
         lzss_contextual_adaptive_huffman_frame_header_size
@@ -56,14 +56,16 @@ struct Workspace {
               MARC_STATUS_OK);
     result.original_size = raw.size();
     result.frame_size = raw.size();
-    result.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
+    result.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? UINT32_C(1) << 22
+        : window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
     result.max_total_output_size = 32;
     result.max_frame_size = raw.size();
     result.max_block_size = raw.size();
     result.max_compressed_payload_size = maximum_payload;
     result.max_internal_buffered_bytes = maximum_internal;
-    result.max_lz_distance = UINT64_C(1) << 20;
+    result.max_lz_distance = UINT64_C(1) << 22;
     result.max_lz_match_length = 258;
     result.max_entropy_table_entries = node_count + symbol_count;
     result.window_profile = window_profile;
@@ -137,7 +139,7 @@ protected:
         limits.max_block_size = raw.size();
         limits.max_compressed_payload_size = maximum_payload;
         limits.max_internal_buffered_bytes = maximum_internal;
-        limits.max_lz_distance = UINT64_C(1) << 16;
+        limits.max_lz_distance = UINT64_C(1) << 22;
         limits.max_lz_match_length = 258;
         limits.max_entropy_table_entries = node_count + symbol_count;
         const auto bytes = std::as_bytes(input);
@@ -328,12 +330,19 @@ TEST(LzssContextualAdaptiveHuffmanFuzzRegression,
     const auto extended =
         canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_1M);
     expect_rejection(extended, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    const auto four_mib =
+        canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_1M);
+    expect_rejection(frozen, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    expect_rejection(extended, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
 }
 
 INSTANTIATE_TEST_SUITE_P(
     Profiles, LzssContextualAdaptiveHuffmanFuzzRegression,
     testing::Values(
         MARC_LZSS_CONTEXTUAL_WINDOW_64K,
-        MARC_LZSS_CONTEXTUAL_WINDOW_1M));
+        MARC_LZSS_CONTEXTUAL_WINDOW_1M,
+        MARC_LZSS_CONTEXTUAL_WINDOW_4M));
 
 } // namespace

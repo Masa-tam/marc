@@ -6436,3 +6436,13 @@ exact streaming admission, CLI inventory tests, and benchmark-report
 contract. No external compressor, C API, Adaptive Huffman implementation,
 source code, test vector, patent, pseudocode, payload bound, or optimization
 description was consulted.
+
+### IR-0715
+
+The four-MiB Contextual Adaptive Huffman bounded-fuzz admission uses IR-0714,
+DD-951, TVG-0817, the repository-owned selected-layout frame validator,
+fixed-memory dual-path fuzz harness, permanent atomicity regressions, and the
+completed four-MiB Contextual Blocked Huffman fuzz boundary as an internal
+precedent. No external fuzzer harness, compressor, Adaptive Huffman
+implementation, source code, test vector, patent, pseudocode, payload bound,
+or optimization description was consulted.

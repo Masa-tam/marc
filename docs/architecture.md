@@ -5700,8 +5700,8 @@ alphabet 23, model extents, dictionary variant 4, and the 22-bit bypass bound
 to the generic FGK and LZSS adapters. A hand vector fixes class-22 physical
 bytes, and a caller-owned 4,194,304-byte-history token vector round-trips
 without an intermediate operation buffer. Both older selections reject the
-crossed route without publishing tokens. Complete frames and outward surfaces
-remain closed.
+crossed route without publishing tokens. Later stages admitted the exact
+complete-frame and outward surfaces without changing this operation path.
 
 The private four-MiB Contextual Adaptive Huffman complete-frame and streaming
 lifecycle now select exact identity `2/4 + 1/3 + 1/2`. Frame validation derives
@@ -5713,7 +5713,8 @@ proof, fixed descriptor, 211,968,176-byte encoder aggregate, and
 HashChain produces a complete frame with a distance beyond one MiB, and the
 selected lifecycle round-trips with one-byte input/output. Decoder construction
 requires the exact variant-3 model extents and reciprocal older admission
-rejects before raw publication. Public C and CLI surfaces remain closed.
+rejects before raw publication. The following public stage reuses this exact
+lifecycle.
 
 The four-MiB Contextual Adaptive Huffman public/tooling boundary reuses one
 atomic C profile helper as the canonical application preset. It validates the
@@ -5722,5 +5723,13 @@ backend-specific sizes and limits on a private copy, and publishes only on
 success. Direct field assignment never raises limits implicitly. Public
 profile mapping carries selector 2 to the already completed variant-3 profile
 and exact streaming admission; CLI and benchmark names call the helper rather
-than duplicate its constants. Fuzzing and interoperability remain later
-boundaries.
+than duplicate its constants.
+
+The bounded dual-path decoder harness now exercises the private complete-frame
+validator and all three public streaming admissions, including four MiB. Its
+identity and distance ceilings use variant 3, while its maximum input remains
+64 KiB, raw frame and token storage remain 1 KiB, output remains 4 KiB, and
+the call count retains its fixed arithmetic ceiling. Permanent truncation,
+header, descriptor, length, padding, terminal-state, and reciprocal
+cross-profile regressions run for all three identities. Interoperability
+remains the only later boundary.

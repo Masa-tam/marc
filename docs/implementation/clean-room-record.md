@@ -25200,3 +25200,29 @@ both bounds.
   documentation layout, and complete schema compatibility. The expanded
   helper-only ABI, direction, reserved-field, idempotence, payload, and both
   directional aggregate assertions also pass under both compilers.
+
+## CR-1028: 2026-08-23 - Four-MiB Adaptive Huffman bounded fuzz boundary
+
+- Authoring method: widened the existing fixed-memory dual-path harness only
+  after the public profile completed, then added the third profile to every
+  permanent malformed and reciprocal identity regression.
+- References used: IR-0714 through IR-0715, DD-951 through DD-952, TVG-0817
+  through TVG-0818, CR-1027, and repository-owned Adaptive and Blocked Huffman
+  fuzz structures. No new external technical source was used.
+- Known implementations intentionally not consulted: external fuzzers,
+  compressors, Adaptive Huffman implementations, source code, tests, vectors,
+  patents, pseudocode, payload bounds, and optimization descriptions.
+- Independent decisions: widen only model identity and distance validation;
+  keep raw, token, input, output, and call-count bounds fixed; run both private
+  and public paths; and retain interoperability as a later stage.
+- Generated-code task description: compile all three selected identities in a
+  fixed-memory harness and prove malformed-input atomicity, stable terminal
+  errors, and reciprocal profile rejection without unbounded fuzz execution.
+- Similarity review: only repository-owned bounded harness and regression
+  patterns were reused; no external implementation expression was added.
+- Validation: the harness compile-smoke and all sixteen focused dual-path
+  regressions pass under MSVC and ClangCL. Their full 3,211-test suites pass in
+  199.44 and 205.57 seconds, including seven Python tooling tests, twenty-one
+  experimental benchmark smokes, forty-two benchmark smokes, documentation
+  layout, and complete schema compatibility. No randomized or unbounded fuzz
+  run was performed in this stage.

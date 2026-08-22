@@ -11639,3 +11639,18 @@ Pass null, short metadata, and selector 3 to the helper and compare the whole
 configuration byte-for-byte with its snapshot. Run exact CLI identity and
 crossed one-MiB rejection, inventory ordering and near-miss rejection, and the
 dependency-free four-MiB benchmark smoke through the public lifecycle.
+
+### TVG-0818
+
+Compile the fixed-memory Adaptive Huffman stream fuzz harness with variant-3
+9,163-node and 4,566-symbol storage. Present each bounded input to the private
+complete-frame decoder once and to public 64-KiB, one-MiB, and four-MiB
+streaming decoders with deterministic 1..17-byte input and 1..19-byte output
+chunks. Retain the 65,536-byte input, 4,096-byte output, 1,024-byte raw frame,
+1,024-token, and finite `input + output + 32` call ceilings.
+
+For every profile, mutate every canonical truncation plus stream identity,
+reserved bytes, frame lengths, descriptor fields, and payload padding. Require
+both decoder paths to reject without changing sentinel raw output and require
+the public error state to remain stable. Encode all three profiles and require
+each stream to be rejected atomically by both mismatched public decoders.
