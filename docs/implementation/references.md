@@ -6110,3 +6110,13 @@ encoded-capacity calculation, and existing measurement schema. No external
 compressor, benchmark harness, large-window measurement, memory policy, source
 code, test, benchmark result, patent, pseudocode, or optimization description
 was consulted.
+
+### IR-0680
+
+The four-MiB Contextual Dynamic Range fuzz boundary uses IR-0673 through
+IR-0679, DD-910 through DD-916, TVG-0776 through TVG-0782, the repository-owned
+dual-profile decoder harness, public C bounded-workspace query, complete-frame
+decoder, sanitizer build route, and permanent malformed-stream regressions.
+No external fuzzer harness, compressor, corpus, large-window implementation,
+source code, test, vulnerability report, patent, pseudocode, or optimization
+description was consulted.

@@ -19240,3 +19240,22 @@ Silesia Corpus in the repository or run it as part of the default suite. Keep
 this stage observational: do not select a new match finder, change format or
 limits, add a fuzz target, or append an interoperability archive based solely
 on benchmark availability.
+
+## DD-917: Extend the bounded Dynamic Range fuzzer to all three profiles
+
+- Date: 2026-08-22
+- Status: accepted
+
+Drive exact public admissions 0, 1, and 2 for every bounded input through the
+existing Contextual Dynamic Range decoder target. Retain an 8-KiB fuzz-input,
+4-KiB total-output, one-KiB frame/block, fixed-array, and finite-call policy.
+Use the largest admitted shared bounds: `14F + 5` payload, 4,566 model entries,
+and four-MiB distance. A four-MiB window identity does not require a four-MiB
+test frame; the public decoder query must derive workspace from the stricter
+one-KiB caller block limit.
+
+Add permanent canonical truncation, descriptor-reserved, and all-pairs public
+profile-rejection regressions for value 2. Compile the ordinary warning-clean
+object under both local compilers, then run only a bounded sanitizer smoke with
+no retained generated corpus unless a finding occurs. Do not fuzz the large
+encoder workspace in this stage and do not change interoperability inventory.

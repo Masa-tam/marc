@@ -703,6 +703,24 @@ matching sanitizer runtime path applied only to the campaign process. No input
 corpus was supplied and no artifact was produced. This bounded result is
 evidence for the exercised inputs, not an exhaustive safety claim.
 
+### FZ-0029: Triple-profile Contextual Dynamic Range smoke
+
+The Contextual Dynamic Range private-frame/public-C decoder target now drives
+the 64-KiB, one-MiB, and four-MiB strict admissions for every bounded input.
+It retains its 8-KiB input, 4-KiB total output, one-KiB frame/token storage,
+fixed arrays, and finite call ceiling. The largest admitted limits are
+`14*1024 + 5` payload bytes, 4,566 flattened model entries, and a 4,194,304-
+byte distance; the four-MiB identity does not allocate a four-MiB fuzz frame.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 20260822 completed exactly 1,000 inputs under an 8-KiB maximum input,
+five-second per-input timeout, and 512-MiB RSS limit without a crash, hang, or
+sanitizer finding. Peak RSS was 41 MiB; final coverage was 208 counters and
+328 features over a six-entry, 24-byte in-memory corpus. The matching runtime
+path applied only to the campaign process. No input corpus was supplied, no
+generated mutation was retained, and no artifact was produced. This bounded
+result is evidence for the exercised inputs, not an exhaustive safety claim.
+
 ## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the

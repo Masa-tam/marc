@@ -21,7 +21,7 @@ using Token = marc::dictionary::internal::LzssTypedToken;
 constexpr std::array raw{
     std::uint8_t{'A'}, std::uint8_t{'B'}, std::uint8_t{'A'},
     std::uint8_t{'B'}, std::uint8_t{'X'}};
-constexpr std::size_t maximum_payload = raw.size() * 12 + 5;
+constexpr std::size_t maximum_payload = raw.size() * 14 + 5;
 constexpr std::size_t maximum_encoded_frame = 64 + 16 + maximum_payload;
 constexpr std::size_t maximum_internal = 8192;
 
@@ -47,17 +47,19 @@ struct Workspace {
               MARC_STATUS_OK);
     result.original_size = raw.size();
     result.frame_size = raw.size();
-    result.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
+    result.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? UINT32_C(1) << 22
+        : window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
     result.max_total_output_size = 32;
     result.max_frame_size = raw.size();
     result.max_block_size = raw.size();
     result.max_compressed_payload_size = maximum_payload;
     result.max_internal_buffered_bytes = maximum_internal;
-    result.max_lz_distance = UINT64_C(1) << 20;
+    result.max_lz_distance = UINT64_C(1) << 22;
     result.max_lz_match_length = 258;
     result.max_entropy_table_entries =
-        marc::context::internal::lzss_field_context_frequency_entries_v2;
+        marc::context::internal::lzss_field_context_frequency_entries_v3;
     result.max_range_model_total = UINT64_C(1) << 24;
     result.window_profile = window_profile;
     return result;
@@ -205,6 +207,16 @@ TEST(LzssContextualDynamicRangeFuzzRegression,
 }
 
 TEST(LzssContextualDynamicRangeFuzzRegression,
+     EveryFourMiBCanonicalTruncationIsAtomic) {
+    const auto encoded = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    for (std::size_t size = 0; size < encoded.size(); ++size) {
+        expect_dual_atomic_failure(
+            std::span<const std::uint8_t>{encoded}.first(size),
+            MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    }
+}
+
+TEST(LzssContextualDynamicRangeFuzzRegression,
      CrossProfilePublicDecodersRejectAtomically) {
     const auto frozen = canonical_stream();
     expect_public_atomic_failure(
@@ -212,6 +224,15 @@ TEST(LzssContextualDynamicRangeFuzzRegression,
     const auto extended = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_1M);
     expect_public_atomic_failure(
         extended, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    const auto four_mib = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    expect_public_atomic_failure(
+        frozen, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    expect_public_atomic_failure(
+        extended, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    expect_public_atomic_failure(
+        four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    expect_public_atomic_failure(
+        four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_1M);
 }
 
 TEST(LzssContextualDynamicRangeFuzzRegression,
@@ -246,6 +267,18 @@ TEST(LzssContextualDynamicRangeFuzzRegression,
     encoded[descriptor_reserved] = 1;
     expect_dual_atomic_failure(
         encoded, MARC_LZSS_CONTEXTUAL_WINDOW_1M);
+}
+
+TEST(LzssContextualDynamicRangeFuzzRegression,
+     FourMiBNonzeroDescriptorReservedByteIsAtomic) {
+    auto encoded = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    constexpr auto descriptor_reserved =
+        marc::frame::internal::typed_context_stream_header_size
+        + marc::frame::internal::typed_context_frame_header_size
+        + marc::frame::internal::typed_context_range_descriptor_size - 1;
+    encoded[descriptor_reserved] = 1;
+    expect_dual_atomic_failure(
+        encoded, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
 }
 
 } // namespace

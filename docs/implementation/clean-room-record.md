@@ -24070,3 +24070,36 @@ discarded and the reviewed seed retained.
   experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`; the 52-archive inventory is
   unchanged.
+
+## CR-0989: 2026-08-22 - Four-MiB Dynamic Range fuzz boundary
+
+- Authoring method: extended marc's existing fixed-array Contextual Dynamic
+  Range private/public decoder harness and permanent regression generator from
+  two exact public window profiles to three.
+- References used: IR-0673 through IR-0680, DD-910 through DD-917, TVG-0776
+  through TVG-0783, CR-0982 through CR-0988, and repository-owned decoder,
+  C workspace query, sanitizer route, and atomic malformed-stream tests. No
+  new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  fuzz harnesses, corpora, large-window implementations, vulnerability
+  reports, source code, tests, patents, pseudocode, and optimizations.
+- Independent decisions: retain a one-KiB frame under the four-MiB identity;
+  select the largest `14F+5`, 4,566-entry, and four-MiB-distance bounds for
+  all harness calls; avoid the encoder; and retain generated mutations only
+  in memory when no finding occurs.
+- Generated-code task description: admit selector 2 in the bounded Dynamic
+  Range decoder fuzzer, add complete canonical truncation/reserved-byte and
+  six-direction mismatch regressions, compile warning-clean, and run a bounded
+  sanitizer smoke.
+- Similarity review: limits, selector calls, canonical seeds, and failure
+  expectations follow directly from marc's completed public profile and prior
+  dual-profile harness. No external implementation expression was consulted
+  or introduced.
+- Validation: Windows Clang 22 libFuzzer with ASan/UBSan, seed 20260822,
+  `-runs=1000`, 8-KiB maximum input, five-second per-input timeout, and
+  512-MiB RSS limit completed without a finding; peak RSS was 41 MiB and final
+  coverage was 208 counters/328 features over a six-entry in-memory corpus.
+  All 3,157 registered tests pass under MSVC in 198.00 seconds and ClangCL in
+  205.87 seconds, including seven Python tooling tests, seventeen experimental
+  benchmark smokes, and `marc_interoperability_schema_compatibility`. No
+  corpus/artifact or interoperability archive was added.

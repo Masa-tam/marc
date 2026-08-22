@@ -11109,3 +11109,19 @@ older benchmark names and output fields. Run the full MSVC and ClangCL CTest
 inventories with Python tooling and interoperability schema compatibility,
 while leaving Silesia measurement, fuzzing, and archive inventory for later
 explicit stages.
+
+### TVG-0783
+
+Generate the five-byte canonical stream independently through each public
+window selector. For selector 2 require exact `2/4 + 1/3 + 3/2`, reject every
+proper truncation atomically through both complete-frame and public streaming
+decoders, reject a nonzero descriptor-reserved byte, and require all six
+ordered cross-profile decoder mismatches to publish no raw byte.
+
+For the live harness retain fixed one-KiB token/raw staging and set its largest
+payload bound to `14*1024 + 5`, flattened model limit to 4,566, and distance
+limit to 4,194,304. Exercise all three strict public admissions for each input
+under the existing finite call bound. Require MSVC and ClangCL warning-clean
+compile smoke, then a short ClangCL sanitizer run with bounded input count,
+timeout, RSS, and no source-corpus mutation. Preserve the format, CLI,
+benchmark, and 52-archive interoperability inventory.
