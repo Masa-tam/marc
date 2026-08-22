@@ -169,8 +169,6 @@ LzssTypedContextFrameStreamingEncoder(
     if (!valid_extents
         || validate_typed_context_stream_header(stream_, limits_)
             != TypedContextStreamHeaderError::none
-        || stream_.dictionary_variant == 4
-        || stream_.context_variant == 3
         || raw_frame_workspace_.size() < required_raw
         || raw_tokens != OverlapCheck::disjoint
         || raw_operations != OverlapCheck::disjoint

@@ -10,11 +10,11 @@
 namespace marc::frame::internal {
 namespace {
 
-// Format 2 admits at most two operations and six arithmetic decisions per
-// raw byte. Before every range decision range >= 2^24, while model totals are
-// <= 2^15, so even a unit-frequency update needs at most two byte shifts.
+// Format 2 admits at most two operations per raw byte. The selected context
+// layout supplies the variant-specific decision multiplier. Before every
+// range decision range >= 2^24, while model totals are <= 2^15, so even a
+// unit-frequency update needs at most two byte shifts.
 inline constexpr std::uint64_t operations_per_raw_byte = 2;
-inline constexpr std::uint64_t decisions_per_raw_byte = 6;
 inline constexpr std::uint64_t payload_bytes_per_decision = 2;
 inline constexpr std::uint64_t range_termination_bytes = 5;
 
@@ -92,6 +92,9 @@ inline constexpr std::uint64_t range_termination_bytes = 5;
     case LzssTypedContextProfileVariant::field_context_1m:
         return context::internal::get_lzss_field_context_layout(
             context::internal::LzssFieldContextVariant::field_context_1m);
+    case LzssTypedContextProfileVariant::field_context_4m:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_4m);
     }
     return {{}, context::internal::LzssFieldContextLayoutError::
                     unsupported_context_variant};
@@ -189,7 +192,10 @@ LzssTypedContextProfileError make_lzss_typed_context_profile(
     if (!core::checked_multiply(
             largest_frame, operations_per_raw_byte, operation_count)
         || !core::checked_multiply(
-            largest_frame, decisions_per_raw_byte, decision_count)
+            largest_frame,
+            static_cast<std::uint64_t>(
+                selected.layout.maximum_decisions_per_raw_byte),
+            decision_count)
         || !core::checked_multiply(
             decision_count, payload_bytes_per_decision, payload_bytes)
         || !core::checked_add(
@@ -269,6 +275,7 @@ calculate_lzss_typed_context_decoder_workspace(
         std::numeric_limits<std::uint32_t>::max());
     std::uint64_t encoded_bytes{};
     std::uint64_t views_bytes{};
+    std::uint64_t aggregate_bytes{};
     if (!core::checked_add(
             static_cast<std::uint64_t>(typed_context_frame_header_size),
             static_cast<std::uint64_t>(
@@ -276,12 +283,21 @@ calculate_lzss_typed_context_decoder_workspace(
             encoded_bytes)
         || !core::checked_add(encoded_bytes, payload_bytes, encoded_bytes)
         || !decoder_view_layout(raw_bytes, views_bytes)
+        || !core::checked_add(encoded_bytes, raw_bytes, aggregate_bytes)
+        || !core::checked_add(
+            aggregate_bytes, views_bytes, aggregate_bytes)
         || !to_size(encoded_bytes, workspace.frame_encoded_bytes)
         || !to_size(raw_bytes, workspace.frame_decoded_bytes)
         || !to_size(raw_bytes, workspace.token_count)
         || !to_size(views_bytes, workspace.views_bytes)) {
         workspace = {};
         return LzssTypedContextProfileError::arithmetic_overflow;
+    }
+    if (encoded_bytes > limits.max_internal_buffered_bytes
+        || views_bytes > limits.max_internal_buffered_bytes
+        || aggregate_bytes > limits.max_internal_buffered_bytes) {
+        workspace = {};
+        return LzssTypedContextProfileError::limit_exceeded;
     }
     if (workspace.token_count != 0) {
         workspace.views_alignment =

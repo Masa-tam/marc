@@ -19164,3 +19164,22 @@ inventory wait for their later stages. Crossed identities and insufficient
 token/raw workspaces fail transactionally. Retain 128 MiB as a configurable
 current default and defer any aggregate-limit change to a separately measured
 profile decision.
+
+## DD-913: Gate the four-MiB Dynamic Range lifecycle by calculated workspace
+
+- Date: 2026-08-22
+- Status: accepted
+
+Open exact private triple `2/4 + 1/3 + 3/2` through complete-frame encoding,
+Format 2 stream-header parsing, checked profile calculation, and one-byte
+streaming. Select the payload multiplier from the context layout so variant 3
+uses `7F` while older profiles retain `6F`.
+
+Calculate workspace from native staging types and the existing HashChain
+requirements rather than logical field widths. On supported 64-bit builds the
+four-MiB encoder needs 264,765,525 aggregate bytes and is rejected by the
+unchanged 128 MiB default; require the caller to raise the hard limit
+explicitly. Enforce the decoder's complete encoded/raw/token aggregate too;
+its 121,634,896-byte conservative requirement fits the default. Require exact
+and one-byte-short tests for both directions. Keep the C selector, CLI,
+benchmark, fuzzing, and interoperability inventory closed for the next stage.

@@ -11047,3 +11047,18 @@ Keep the variant-3 complete-frame encoder closed and prove that its failed
 attempt does not alter serialized output. Run all registered tests under MSVC
 and ClangCL with the 600-second per-test limit, including
 `marc_interoperability_schema_compatibility`.
+
+### TVG-0779
+
+For the four-MiB Dynamic Range encoder lifecycle, require a one-Literal frame
+to retain the frozen Dynamic Range frame bytes while its Format 2 stream header
+uses exact identities `2/4 + 1/3 + 3/2`. Feed both encoder and decoder one byte
+at a time through stable EndInput draining.
+
+For a maximum four-MiB encoder profile, derive `14F + 85` complete-frame bytes,
+`F` native typed tokens, `2F` native modeled operations, and the exact
+HashChain workspace. Require failure under the 128 MiB default, failure at one
+byte below the calculated aggregate, and success at the exact limit. For the
+decoder, aggregate its caller-selected payload ceiling plus frame header,
+four-MiB raw staging, and `F` native typed tokens; require the same one-short
+and exact boundary. Keep public selection and interoperability unchanged.

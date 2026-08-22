@@ -216,7 +216,8 @@ TEST(LzssTypedContextFrameStreamingEncoder,
 }
 
 TEST(LzssTypedContextFrameStreamingEncoder,
-     FourMiBVariantRemainsClosedDuringCompleteFrameStage) {
+     FourMiBVariantCompletesWithOneByteInputAndOutput) {
+    constexpr std::array input{std::byte{'A'}};
     std::array<std::byte, 1> raw{};
     std::array<LzssTypedToken, 1> tokens{};
     std::array<ModeledOperation, 2> operations{};
@@ -225,9 +226,27 @@ TEST(LzssTypedContextFrameStreamingEncoder,
         four_mib_stream_config(4194304, 1), {}, raw, tokens, operations, {},
         frame};
 
-    const auto result = encoder.process({}, {}, 0);
-    EXPECT_EQ(result.status, StreamStatus::error);
-    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
+    std::vector<std::byte> encoded;
+    std::array<std::byte, 1> output{};
+    std::size_t input_offset{};
+    StreamStatus status{};
+    do {
+        const auto chunk = std::span<const std::byte>{input}.subspan(
+            input_offset, input_offset == input.size() ? 0 : 1);
+        const auto result = encoder.process(chunk, output, end_flag());
+        ASSERT_TRUE(marc::core::is_valid(
+            result, chunk.size(), output.size()));
+        ASSERT_NE(result.status, StreamStatus::error);
+        input_offset += result.input_consumed;
+        if (result.output_produced != 0) encoded.push_back(output[0]);
+        status = result.status;
+    } while (status != StreamStatus::end_of_stream);
+    EXPECT_EQ(input_offset, input.size());
+    ASSERT_EQ(encoded.size(), typed_context_stream_header_size + 86U);
+    EXPECT_EQ(encoded[14], std::byte{0x04});
+    EXPECT_EQ(encoded[22], std::byte{0x40});
+    EXPECT_EQ(encoded[66], std::byte{0x40});
+    EXPECT_EQ(encoded[98], std::byte{0x03});
 }
 
 TEST(LzssTypedContextFrameStreamingEncoder,

@@ -90,6 +90,97 @@ TEST(LzssTypedContextProfile, BuildsExtendedOneMiBProfileAndWorkspace) {
               marc::core::DecoderLimits{}.max_internal_buffered_bytes);
 }
 
+TEST(LzssTypedContextProfile,
+     FourMiBProfileRequiresExplicitAggregateLimit) {
+    LzssTypedContextProfileConfig config{};
+    config.original_size = 4'194'304;
+    config.frame_size = 4'194'304;
+    config.dictionary.window_size = 4'194'304;
+    config.variant = LzssTypedContextProfileVariant::field_context_4m;
+    TypedContextStreamHeader stream{};
+    LzssTypedContextEncoderWorkspaceRequirements workspace{};
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 4'194'304;
+    EXPECT_EQ(make_lzss_typed_context_profile(
+                  config, limits, stream, workspace),
+              LzssTypedContextProfileError::limit_exceeded);
+    EXPECT_EQ(workspace.views_bytes, 0U);
+
+    limits.max_internal_buffered_bytes = UINT64_C(256) << 20;
+    ASSERT_EQ(make_lzss_typed_context_profile(
+                  config, limits, stream, workspace),
+              LzssTypedContextProfileError::none);
+    const auto required_aggregate = workspace.frame_input_bytes
+        + workspace.views_bytes + workspace.frame_encoded_bytes;
+    if constexpr (sizeof(std::size_t) == 8) {
+        EXPECT_EQ(required_aggregate, 264'765'525U);
+    }
+
+    limits.max_internal_buffered_bytes = required_aggregate - 1;
+    EXPECT_EQ(make_lzss_typed_context_profile(
+                  config, limits, stream, workspace),
+              LzssTypedContextProfileError::limit_exceeded);
+    EXPECT_EQ(workspace.views_bytes, 0U);
+
+    limits.max_internal_buffered_bytes = required_aggregate;
+    ASSERT_EQ(make_lzss_typed_context_profile(
+                  config, limits, stream, workspace),
+              LzssTypedContextProfileError::none);
+    EXPECT_EQ(stream.dictionary_variant, 4U);
+    EXPECT_EQ(stream.context_variant, 3U);
+    EXPECT_EQ(workspace.frame_input_bytes, 4'194'304U);
+    EXPECT_EQ(workspace.frame_encoded_bytes, 58'720'341U);
+    EXPECT_EQ(workspace.token_count, 4'194'304U);
+    EXPECT_EQ(workspace.operation_count, 8'388'608U);
+    EXPECT_EQ(workspace.operation_offset,
+              4'194'304U
+                  * sizeof(marc::dictionary::internal::LzssTypedToken));
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            4'194'304, config.dictionary, limits);
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    EXPECT_EQ(workspace.match_finder_offset,
+              workspace.operation_offset
+                  + 8'388'608U
+                      * sizeof(marc::context::internal::ModeledOperation));
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.views_bytes,
+              workspace.match_finder_offset + finder.workspace_size);
+    EXPECT_EQ(workspace.frame_input_bytes + workspace.views_bytes
+                  + workspace.frame_encoded_bytes,
+              required_aggregate);
+
+    limits.max_compressed_payload_size = UINT64_C(64) << 20;
+    LzssTypedContextDecoderWorkspaceRequirements decoder_workspace{};
+    limits.max_internal_buffered_bytes = UINT64_C(128) << 20;
+    ASSERT_EQ(calculate_lzss_typed_context_decoder_workspace(
+                  limits, decoder_workspace,
+                  LzssTypedContextProfileVariant::field_context_4m),
+              LzssTypedContextProfileError::none);
+    const auto decoder_aggregate = decoder_workspace.frame_encoded_bytes
+        + decoder_workspace.frame_decoded_bytes
+        + decoder_workspace.views_bytes;
+    if constexpr (sizeof(marc::dictionary::internal::LzssTypedToken) == 12) {
+        EXPECT_EQ(decoder_aggregate, 121'634'896U);
+    }
+    limits.max_internal_buffered_bytes = decoder_aggregate - 1;
+    EXPECT_EQ(calculate_lzss_typed_context_decoder_workspace(
+                  limits, decoder_workspace,
+                  LzssTypedContextProfileVariant::field_context_4m),
+              LzssTypedContextProfileError::limit_exceeded);
+    EXPECT_EQ(decoder_workspace.views_bytes, 0U);
+    limits.max_internal_buffered_bytes = decoder_aggregate;
+    ASSERT_EQ(calculate_lzss_typed_context_decoder_workspace(
+                  limits, decoder_workspace,
+                  LzssTypedContextProfileVariant::field_context_4m),
+              LzssTypedContextProfileError::none);
+    EXPECT_EQ(decoder_workspace.frame_encoded_bytes, 67'108'944U);
+    EXPECT_EQ(decoder_workspace.frame_decoded_bytes, 4'194'304U);
+    EXPECT_EQ(decoder_workspace.views_bytes, 50'331'648U);
+}
+
 TEST(LzssTypedContextProfile, UsesActualShortFrameAndEmptyExtent) {
     TypedContextStreamHeader stream{};
     LzssTypedContextEncoderWorkspaceRequirements workspace{};
@@ -168,7 +259,7 @@ TEST(LzssTypedContextProfile, CalculatesDecoderWorkspaceFromLimits) {
     limits.max_frame_size = 4096;
     limits.max_block_size = 1024;
     limits.max_compressed_payload_size = 2000;
-    limits.max_internal_buffered_bytes = 8192;
+    limits.max_internal_buffered_bytes = 15'392;
     LzssTypedContextDecoderWorkspaceRequirements workspace{};
     ASSERT_EQ(calculate_lzss_typed_context_decoder_workspace(
                   limits, workspace),
@@ -262,7 +353,7 @@ TEST(LzssTypedContextProfile, PartitionsTypedViewsTransactionally) {
     limits.max_frame_size = 32;
     limits.max_block_size = 32;
     limits.max_compressed_payload_size = 64;
-    limits.max_internal_buffered_bytes = 256;
+    limits.max_internal_buffered_bytes = 560;
     LzssTypedContextDecoderWorkspaceRequirements decoder_requirements{};
     ASSERT_EQ(calculate_lzss_typed_context_decoder_workspace(
                   limits, decoder_requirements),

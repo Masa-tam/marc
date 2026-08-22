@@ -6072,3 +6072,13 @@ typed-context frame validator, adaptive integer range coder, checked workspace
 publication boundary, and frozen older vectors. No external compressor, range
 coder implementation, large-window format, source code, test, benchmark,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0676
+
+The four-MiB Contextual Dynamic Range encoder/profile/streaming stage uses
+IR-0673 through IR-0675, DD-910 through DD-913, TVG-0776 through TVG-0779,
+marc's repository-owned complete-frame encoder, streaming state machines,
+HashChain workspace calculator, native typed staging layouts, and checked
+aggregate arithmetic. No external compressor, range coder implementation,
+large-window format, memory profile, source code, test, benchmark, patent,
+pseudocode, or optimization description was consulted.

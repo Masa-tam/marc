@@ -23945,3 +23945,34 @@ discarded and the reviewed seed retained.
   benchmark smokes, and `marc_interoperability_schema_compatibility`. The
   complete-frame encoder remains closed for variant 3, and the public ABI,
   CLI, streaming profiles, and interoperability inventory remain unchanged.
+
+## CR-0985: 2026-08-22 - Four-MiB Dynamic Range encoder lifecycle
+
+- Authoring method: extended marc's already admitted private Dynamic Range
+  frame decoder through the repository-owned encoder, profile, Format 2
+  parser, and streaming state machines, with checked aggregate calculations.
+- References used: IR-0673 through IR-0676, DD-910 through DD-913, TVG-0776
+  through TVG-0779, CR-0982 through CR-0984, and repository-owned typed-token,
+  context, range, HashChain, workspace-partition, and streaming code. No new
+  external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  range coders, large-window formats, memory profiles, source code, tests,
+  benchmarks, patents, pseudocode, and optimization descriptions.
+- Independent decisions: use actual native staging extents; retain the 128 MiB
+  default; require explicit caller admission for the 264,765,525-byte encoder
+  aggregate; add decoder aggregate enforcement; and leave all public and
+  interoperability surfaces closed.
+- Generated-code task description: complete the private four-MiB Dynamic Range
+  frame encoder, profile/workspace, stream-header parser, and one-byte
+  streaming lifecycle with exact and one-short aggregate boundaries.
+- Similarity review: formulas, identity admission, parser values, state-machine
+  gates, and vectors follow directly from marc's preceding private format and
+  native workspace abstractions. No external implementation expression was
+  consulted or introduced.
+- Validation: all 3,153 registered tests pass under MSVC in 194.71 seconds and
+  ClangCL in 211.60 seconds with the 600-second per-test limit. Both complete
+  runs include exact and one-short aggregate boundaries, one-byte encoder and
+  decoder streaming, all seven Python tooling tests, sixteen experimental
+  benchmark smokes, and `marc_interoperability_schema_compatibility`. The
+  public ABI, CLI, benchmarks, fuzz admission, and interoperability inventory
+  remain unchanged.

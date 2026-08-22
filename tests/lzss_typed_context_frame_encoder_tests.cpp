@@ -134,23 +134,27 @@ TEST(LzssTypedContextFrameEncoder,
 }
 
 TEST(LzssTypedContextFrameEncoder,
-     FourMiBVariantRemainsClosedDuringDecoderStage) {
+     FourMiBVariantEmitsAndDecodesOneLiteralFrame) {
     constexpr std::array input{std::byte{'A'}};
     const auto stream = four_mib_stream_config(4194304, 1);
     std::array<marc::dictionary::internal::LzssTypedToken, 1> tokens{};
     std::array<marc::context::internal::ModeledOperation, 2> operations{};
     std::array<std::byte, 86> output{};
-    output.fill(std::byte{0xCC});
-
-    EXPECT_EQ(plan_lzss_typed_context_frame(
-                  stream, {}, 0, 0, input, tokens, operations).error,
-              LzssTypedContextFrameEncodeError::invalid_stream);
-    EXPECT_EQ(encode_lzss_typed_context_frame(
+    const auto plan = plan_lzss_typed_context_frame(
+        stream, {}, 0, 0, input, tokens, operations);
+    ASSERT_EQ(plan.error, LzssTypedContextFrameEncodeError::none);
+    ASSERT_EQ(encode_lzss_typed_context_frame(
                   stream, {}, 0, 0, input, tokens, operations, output).error,
-              LzssTypedContextFrameEncodeError::invalid_stream);
-    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
-        return value == std::byte{0xCC};
-    }));
+              LzssTypedContextFrameEncodeError::none);
+    EXPECT_EQ(output, one_literal_frame());
+
+    std::array<marc::dictionary::internal::LzssTypedToken, 1>
+        decoded_tokens{};
+    std::array<std::byte, 1> reconstructed{};
+    const auto decoded = decode_lzss_typed_context_frame(
+        output, {stream, {}, 0, 0}, decoded_tokens, reconstructed);
+    ASSERT_EQ(decoded.error, LzssTypedContextFrameDecodeError::none);
+    EXPECT_EQ(reconstructed, input);
 }
 
 TEST(LzssTypedContextFrameEncoder, RoundTripsMatchBearingFrame) {

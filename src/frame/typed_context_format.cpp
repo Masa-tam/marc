@@ -141,7 +141,8 @@ TypedContextStreamHeaderError parse_typed_context_stream_header(
     if (dictionary_algorithm != 2) {
         return TypedContextStreamHeaderError::unknown_dictionary_algorithm;
     }
-    if (dictionary_variant != 2 && dictionary_variant != 3) {
+    if (dictionary_variant != 2 && dictionary_variant != 3
+        && dictionary_variant != 4) {
         return TypedContextStreamHeaderError::unsupported_dictionary_variant;
     }
     if (entropy_algorithm != 3) {
@@ -198,7 +199,8 @@ TypedContextStreamHeaderError parse_typed_context_stream_header(
     if (context_algorithm != 1) {
         return TypedContextStreamHeaderError::unknown_context_model;
     }
-    if (context_variant != 1 && context_variant != 2) {
+    if (context_variant != 1 && context_variant != 2
+        && context_variant != 3) {
         return TypedContextStreamHeaderError::unsupported_context_variant;
     }
     if (context_flags != 0 || !all_zero(bytes.subspan(104, 8))) {

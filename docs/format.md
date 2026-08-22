@@ -6943,14 +6943,18 @@ bytes therefore uses the checked common bounds `token_count <= F`,
 older variants and does not validate this family.
 
 The exact private Dynamic Range triple `2/4 + 1/3 + 3/2` is admitted for
-stream-header preflight and complete-frame decoding. It retains the existing
+stream-header parsing, complete-frame encoding and decoding, checked profile
+calculation, and streaming. It retains the existing
 16-byte Dynamic Range descriptor, 31 contexts, model-total 32,768, and
 byte-oriented payload arithmetic. Its selected adaptive-frequency storage has
 4,566 entries. Frame validation applies `decision_count <= 7F` and
 `decision_count <= 32*token_count`; older triples retain their frozen bounds.
-The complete-frame encoder, profile and streaming lifecycle, public C
-selector, CLI profile, and interoperability archive are not admitted by this
-decoder stage.
+On supported 64-bit builds its four-MiB encoder profile requires a conservative
+264,765,525-byte aggregate and therefore requires an explicit caller limit
+above the unchanged 128 MiB default. Its decoder aggregate is 121,634,896
+bytes under the 64 MiB payload limit and fits the default once the block-size
+limit is separately raised. Public C selection, CLI profile, benchmark,
+fuzzing, and interoperability archive are not yet admitted.
 
 Every other contextual entropy identity must independently define and
 implement its selected descriptor, payload, model, workspace, malformed-input,
@@ -6961,6 +6965,6 @@ The complete staged contract is [LZSS contextual 4 MiB
 window](design/lzss-contextual-window-4m.md).
 
 The shared typed-token/context implementation recognizes the exact pair and
-its layout internally. Only the Dynamic Range decoder boundary described above
-currently admits a four-MiB entropy triple; other backend-specific entry points
-continue to admit only their previously completed pairs.
+its layout internally. Only the Dynamic Range private lifecycle described
+above currently admits a four-MiB entropy triple; other backend-specific entry
+points continue to admit only their previously completed pairs.

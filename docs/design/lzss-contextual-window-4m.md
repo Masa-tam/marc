@@ -1,7 +1,8 @@
 # LZSS contextual 4 MiB window
 
-Status: accepted design after project version 0.3.0. No public 4 MiB profile is
-implemented by this document.
+Status: accepted design after project version 0.3.0. The private Dynamic Range
+vertical path has complete-frame and streaming support; no public 4 MiB
+selector is implemented by this document.
 
 ## Purpose
 
@@ -114,12 +115,36 @@ size, offset, and reconstruction arithmetic must remain checked.
 
 ## Backend and memory gates
 
-Dynamic Range retains its descriptor and arithmetic. Its decision-derived
-payload ceiling must be recalculated from `7F`; a provisional conservative
-ceiling is `14F + 5` payload bytes and `14F + 85` complete-frame bytes. At a
-4 MiB frame this remains below the existing 64 MiB compressed-payload limit,
-but aggregate encoder and decoder workspace must still be calculated from the
-actual implementation before admission.
+Dynamic Range retains its descriptor and arithmetic. Its conservative ceiling
+is `14F + 5` payload bytes and `14F + 85` complete-frame bytes. At the 4 MiB
+reference frame this is 58,720,261 payload bytes and 58,720,341 complete-frame
+bytes, below the existing 64 MiB compressed-payload limit.
+
+On the supported 64-bit build, the encoder profile holds these extents at the
+same time:
+
+```text
+raw frame                         4,194,304 bytes
+4,194,304 typed tokens           50,331,648 bytes
+8,388,608 modeled operations    134,217,728 bytes
+HashChain heads and links         17,301,504 bytes
+complete encoded frame            58,720,341 bytes
+aggregate                        264,765,525 bytes
+```
+
+The operation extent uses the actual 16-byte native `ModeledOperation`,
+including ABI padding; it is not inferred by adding its logical fields. The
+profile therefore fails under the 128 MiB default and succeeds only when the
+caller explicitly supplies an aggregate limit of at least 264,765,525 bytes
+on that build. The library default is unchanged.
+
+The decoder workspace calculation now enforces the aggregate of its encoded
+frame, raw frame, and typed-token staging instead of checking only individual
+buffers. With the existing 64 MiB compressed-payload limit, a four-MiB raw
+frame, and 12-byte typed tokens on the supported 64-bit build, its conservative
+aggregate is 121,634,896 bytes. This fits the 128 MiB default once the caller
+separately raises `max_block_size` to four MiB. Both directions reject an
+aggregate limit one byte below their calculated requirement.
 
 Canonical contextual rANS grows its maximum descriptor from 9,089 to 9,121
 bytes, and contextual tANS grows from 9,093 to 9,125 bytes. These values follow
@@ -164,15 +189,14 @@ Matches, then models and reconstructs a length-258 Match at distance 4,194,304.
 It therefore exercises class 22 and a 22-bit zero bypass without a
 multi-million-Literal fixture.
 
-The subsequent Dynamic Range decoder stage admits the exact private triple
-`2/4 + 1/3 + 3/2` at stream-header preflight and complete-frame decode. Its
-selected model storage has 4,566 entries, its count validator uses `7F`, and
-its first complete-frame vector contains a real distance-1,048,577 Match.
-Crossed identities and one-entry-short token/raw workspaces fail before any
-raw publication. The operation-level Dynamic Range encoder is large enough to
-serve as the deterministic test-vector oracle, but the complete-frame encoder,
-profile/workspace lifecycle, public C selector, CLI profile, and
-interoperability inventory remain closed.
+The private Dynamic Range vertical path admits exact triple `2/4 + 1/3 + 3/2`
+through stream-header parsing, complete-frame encode/decode, checked profile
+calculation, and one-byte streaming. Its selected model storage has 4,566
+entries, its count validator and encoder ceiling use `7F`, and its first
+complete-frame decoder vector contains a real distance-1,048,577 Match.
+Crossed identities and one-entry-short token, raw, and aggregate workspaces
+fail before publication. Public C selection, CLI profile, benchmarks, fuzzing,
+and the interoperability inventory remain closed.
 
 ## Planned public policy
 

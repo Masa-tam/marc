@@ -212,7 +212,7 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
                  TypedContextStreamHeaderError::unknown_context_model},
         Mutation{98, std::byte{2},
                  TypedContextStreamHeaderError::contradictory_parameters},
-        Mutation{98, std::byte{3},
+        Mutation{98, std::byte{4},
                  TypedContextStreamHeaderError::unsupported_context_variant},
     };
     for (const auto& mutation : mutations) {
