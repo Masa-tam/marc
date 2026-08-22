@@ -5604,3 +5604,11 @@ schema 43 before traversing the unchanged chain through schema 1.
 Revision `7f2b893f6ebeb968cab287420caa97201ce5b3b8` has complete four-direction
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang evidence for all 54
 archives.
+
+The dependency-free benchmark surface now admits the exact four-MiB
+Contextual tANS public profile through `lzss-contextual-tans-4m`. Configuration,
+workspace discovery, creation, encode, and decode remain entirely on the
+public C lifecycle. The benchmark reserves the format-derived payload ceiling
+and checked complete-stream capacity rather than reproducing private workspace
+partitioning. It adds no codec state or stream representation; fuzzing and
+interoperability admission remain separate later boundaries.

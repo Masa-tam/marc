@@ -7125,3 +7125,11 @@ field. Decode requires this exact name/profile; the 64-KiB and one-MiB names
 reject the four-MiB identity before frame collection or raw publication.
 Benchmark, fuzzing, and interoperability Contextual tANS admission remain
 later boundaries.
+
+The experimental `lzss-contextual-tans-4m` benchmark name selects this exact
+public profile without changing any serialized byte. Its bounded application
+configuration uses `F = 4,194,304`, decision limit `7F`, payload limit
+`ceil(21F/2) + 2`, and aggregate limit 128 MiB. For input length `N` and
+nonempty-frame count `K`, its checked output allocation is
+`112 + ceil(21N/2) + 9,191K`. This is an application-side upper bound, not an
+additional format field or decoder-visible rule.

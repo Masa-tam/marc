@@ -6285,3 +6285,12 @@ C initializer, requirements query, factory, streaming lifecycle, common CLI
 driver, profile inventory, and round-trip harness. No external compressor,
 tANS command-line interface, workspace policy, source code, test, benchmark
 result, patent, pseudocode, or optimization description was consulted.
+
+### IR-0699
+
+The four-MiB Contextual tANS dependency-free benchmark uses IR-0692 through
+IR-0698, DD-929 through DD-935, TVG-0795 through TVG-0801, the repository-owned
+public C initializer, requirements query, factory, streaming lifecycle,
+bounded output-capacity calculator, and benchmark report harness. No external
+compressor, tANS benchmark, workspace policy, source code, test result, patent,
+pseudocode, or optimization description was consulted.

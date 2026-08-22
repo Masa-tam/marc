@@ -11389,3 +11389,19 @@ trailing byte. Require CLI usage to list 64-KiB, one-MiB, and four-MiB names
 once in exact order. Exercise the full public query/factory lifecycle with a
 small fixture; run under MSVC and ClangCL while leaving benchmark, fuzzing,
 and interoperability inventories unchanged.
+
+### TVG-0802
+
+Run one dependency-free Release benchmark iteration over the repository README
+with `lzss-contextual-tans-4m`. Before timing, require the public C encoder and
+decoder to round-trip exactly using the selected profile. Require finite ratio
+and throughput fields, all six positive directional workspace regions, and a
+reported peak equal to the larger directional sum.
+
+Run the same report harness for the 64-KiB and one-MiB names. Require CLI help
+to list all three names once in exact adjacency and reject the case-mismatched
+`lzss-contextual-tans-4M` name. For the 4,326-byte README, record 3,005 encoded
+bytes, ratio 0.695, encoder regions 4,326/54,614/396,896, decoder regions
+44,049,383/4,194,304/50,855,936, and peak 99,099,623 bytes. Exercise both
+MSVC and ClangCL while leaving fuzzing and interoperability inventories
+unchanged.

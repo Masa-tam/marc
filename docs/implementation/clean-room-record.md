@@ -24672,3 +24672,38 @@ benchmark, fuzz target, or interoperability inventory changes.
   permission-enabled reconfiguration restored the complete equal inventory
   before the recorded full run. The 54-archive inventory remains byte-exact;
   benchmark, fuzzing, and schema admission are unchanged.
+
+## CR-1010: 2026-08-22 - Four-MiB Contextual tANS benchmark boundary
+
+- Authoring method: extended the repository-owned dependency-free benchmark
+  enumeration, public configuration dispatch, workspace query/factory
+  dispatch, checked complete-stream capacity calculation, help/parser
+  inventory, and CMake report smoke with one exact profile.
+- References used: IR-0692 through IR-0699, DD-929 through DD-936, TVG-0795
+  through TVG-0802, CR-1003 through CR-1009, and repository-owned public C,
+  CLI, benchmark, and report-harness code. No new external technical source
+  was used.
+- Known implementations intentionally not consulted: external compressors,
+  tANS benchmarks, source code, tests, benchmark results, patents, pseudocode,
+  and optimization descriptions.
+- Independent decisions: obtain all workspace values through the public C
+  query; retain the exact `7F`/128-MiB policy; calculate
+  `ceil(21N/2)` as 21 bytes per pair plus 11 for an odd remainder; reserve
+  9,191 fixed bytes per nonempty frame; and leave fuzzing and interoperability
+  admission closed.
+- Generated-code task description: add `lzss-contextual-tans-4m` to the
+  dependency-free benchmark with exact public limits, checked output sizing,
+  three-profile report validation, and no private workspace reproduction.
+- Similarity review: selector helpers, dispatch branches, capacity checks, and
+  smoke wiring derive directly from marc's existing Contextual tANS benchmark
+  profiles and completed four-MiB public/CLI boundaries. No external
+  implementation expression was consulted or introduced.
+- Validation: all three focused benchmark report smokes and documentation
+  layout pass under MSVC and ClangCL. The 4,326-byte README produces 3,005
+  bytes at ratio 0.695 and reports exact peak workspace 99,099,623 bytes. All
+  3,185 registered tests pass with a 600-second per-test limit in 201.35 and
+  197.50 seconds respectively, including seven Python tooling tests, nineteen
+  experimental benchmark smokes, forty-two benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. The 54-archive inventory is
+  unchanged; fuzzing and interoperability Contextual tANS admission remain
+  closed.

@@ -65,21 +65,30 @@ if(NOT usage_result EQUAL 2)
     message(FATAL_ERROR "benchmark usage returned ${usage_result}, expected 2")
 endif()
 set(usage_text "${usage_stdout}${usage_stderr}")
-set(selected_name "${BENCHMARK_PROFILE_BASE}-1m")
-string(REGEX MATCHALL "${selected_name}" selected_matches
-    "${usage_text}")
-list(LENGTH selected_matches selected_count)
-if(NOT selected_count EQUAL 1)
-    message(FATAL_ERROR "benchmark usage must list the selected name once")
+set(selected_1m "${BENCHMARK_PROFILE_BASE}-1m")
+if(BENCHMARK_HAS_4M)
+    set(selected_4m "${BENCHMARK_PROFILE_BASE}-4m")
+    set(profile_sequence
+        "${BENCHMARK_PROFILE_BASE}, ${selected_1m}, ${selected_4m},")
+    set(near_miss "${BENCHMARK_PROFILE_BASE}-4M")
+    set(expected_base_count 3)
+else()
+    set(profile_sequence "${BENCHMARK_PROFILE_BASE}, ${selected_1m},")
+    set(near_miss "${BENCHMARK_PROFILE_BASE}-1M")
+    set(expected_base_count 2)
 endif()
-string(FIND "${usage_text}"
-    "${BENCHMARK_PROFILE_BASE}, ${selected_name}," profile_pair_offset)
+string(REGEX MATCHALL "${BENCHMARK_PROFILE_BASE}" base_matches "${usage_text}")
+list(LENGTH base_matches base_count)
+if(NOT base_count EQUAL expected_base_count)
+    message(FATAL_ERROR "benchmark usage must list each profile once")
+endif()
+string(FIND "${usage_text}" "${profile_sequence}" profile_pair_offset)
 if(profile_pair_offset EQUAL -1)
     message(FATAL_ERROR "benchmark profiles are missing or nonadjacent")
 endif()
 
 execute_process(
-    COMMAND "${MARC_BENCHMARK}" "${BENCHMARK_PROFILE_BASE}-1M"
+    COMMAND "${MARC_BENCHMARK}" "${near_miss}"
         "${BENCHMARK_INPUT}" 1
     RESULT_VARIABLE near_miss_result
     OUTPUT_QUIET

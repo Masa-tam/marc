@@ -19567,3 +19567,21 @@ by both older Contextual tANS names, strict trailing-data rejection, exact
 profile-inventory order, and both compiler inventories. The selector changes
 no representation and does not admit benchmark, fuzzing, or interoperability
 surfaces.
+
+## DD-936: Admit the exact four-MiB Contextual tANS benchmark profile
+
+- Date: 2026-08-22
+- Status: accepted
+
+Add `lzss-contextual-tans-4m` beside the frozen 64-KiB and one-MiB benchmark
+names. Select the public four-MiB profile and its established `F`, `7F`,
+`ceil(21F/2) + 2`, LZ-distance, and 128-MiB limits. Obtain every workspace
+region and alignment exclusively from the public C requirements query.
+
+Use checked complete-stream capacity
+`112 + ceil(21N/2) + 9,191K`. Compute the half-byte term as 21 bytes per pair
+plus 11 bytes for an odd remainder, avoiding floating point, truncation, and
+the unnecessary over-allocation of an integral `11N` approximation. Require
+all three profile smokes, exact ordered help inventory, near-miss rejection,
+and directional workspace-sum validation. This boundary changes no stream
+representation and leaves fuzzing and interoperability closed.

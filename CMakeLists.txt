@@ -665,6 +665,7 @@ if(MARC_BUILD_BENCHMARKS)
                 "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"
                 "-DBENCHMARK_CODEC=lzss-contextual-tans"
                 "-DBENCHMARK_PROFILE_BASE=lzss-contextual-tans"
+                -DBENCHMARK_HAS_4M=ON
                 "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_report.cmake)
         set_tests_properties(
@@ -675,10 +676,22 @@ if(MARC_BUILD_BENCHMARKS)
                 "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"
                 "-DBENCHMARK_CODEC=lzss-contextual-tans-1m"
                 "-DBENCHMARK_PROFILE_BASE=lzss-contextual-tans"
+                -DBENCHMARK_HAS_4M=ON
                 "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_report.cmake)
         set_tests_properties(
             marc_benchmark_lzss_contextual_tans_1m_smoke
+            PROPERTIES LABELS benchmark-experimental-smoke)
+        add_test(NAME marc_benchmark_lzss_contextual_tans_4m_smoke
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"
+                "-DBENCHMARK_CODEC=lzss-contextual-tans-4m"
+                "-DBENCHMARK_PROFILE_BASE=lzss-contextual-tans"
+                -DBENCHMARK_HAS_4M=ON
+                "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_report.cmake)
+        set_tests_properties(
+            marc_benchmark_lzss_contextual_tans_4m_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
         add_test(NAME marc_benchmark_lzss_contextual_blocked_huffman_smoke
             COMMAND ${CMAKE_COMMAND}

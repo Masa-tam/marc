@@ -60,6 +60,7 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-rans-4m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-tans corpus.bin 5`,
 `marc_benchmark lzss-contextual-tans-1m corpus.bin 5`,
+`marc_benchmark lzss-contextual-tans-4m corpus.bin 5`,
 `marc_benchmark lzss-contextual-blocked-huffman corpus.bin 5`,
 `marc_benchmark lzss-contextual-blocked-huffman-1m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`, or
@@ -1788,3 +1789,21 @@ report from the checkpoint.
 Measurements are descriptive, not stable tests. Record compiler, build type,
 CPU, input provenance, input size, iteration count, and command line when
 publishing results. Smoke measurements establish wiring and correctness only.
+
+### Contextual tANS four-MiB profile
+
+The experimental `lzss-contextual-tans-4m` benchmark selects the exact public
+four-MiB window profile. It uses 4,194,304-byte raw frames/window and LZ
+distance, admits `7F = 29,360,128` decisions, reserves the exact
+`ceil(21F/2) + 2 = 44,040,194` payload ceiling, and retains the 128-MiB
+aggregate limit. The complete-stream capacity calculation is
+`112 + ceil(21N/2) + 9,191K`, where `N` is input bytes and `K` is the number
+of nonempty frames. The half-byte term is evaluated with checked integer
+arithmetic and no floating point.
+
+One MSVC Release smoke iteration over the 4,326-byte README emitted 3,005
+bytes at ratio 0.695. Encoder primary/secondary/views workspaces were
+4,326/54,614/396,896 bytes; decoder regions were
+44,049,383/4,194,304/50,855,936 bytes. Peak caller-owned workspace was the
+decoder aggregate of 99,099,623 bytes. These values establish benchmark
+wiring and bounded allocation, not a production-performance claim.
