@@ -5656,3 +5656,13 @@ held layout. A hand vector fixes physical bypass bytes `DE BC 2A`, and a
 4,194,304-distance typed-token vector round-trips without operation workspace.
 Crossed one-MiB decoding publishes neither tables nor tokens. Frames, profiles,
 public surfaces, tools, fuzzing, and interoperability remain closed.
+
+The private four-MiB Contextual Blocked Huffman complete-frame identity is now
+`2/4 + 1/3 + 2/2`. Frame validation derives its `7F`, `32T`, and 2,588-byte
+descriptor ceilings from the selected layout, while older layouts retain
+their frozen limits. Checked profile calculation reserves 55,052,892 encoded
+bytes and proves 126,880,348-byte encoder and 109,722,064-byte decoder
+aggregates on the supported 64-bit layout. Exact-limit succeeds and one byte
+less fails. HashChain produces and decodes a distance beyond one MiB, and the
+selected streaming lifecycle round-trips with one-byte input/output. Public C
+selectors, CLI, benchmark, fuzz, and interoperability admission remain closed.

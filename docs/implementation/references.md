@@ -6340,3 +6340,13 @@ immutable field-context layout, generic model builder/writer/decoder, direct
 LZSS typed-token composition, and typed-token validation. No external
 compressor, Huffman implementation, source code, test vector, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0705
+
+The private four-MiB Contextual Blocked Huffman frame and lifecycle admission
+uses IR-0704, DD-941, TVG-0807, repository-owned selected-layout frame
+validation, HashChain workspace calculation, profile partitioners, streaming
+state machines, and the completed four-MiB tANS lifecycle as an internal
+architectural precedent. No external compressor, Huffman implementation,
+source code, test vector, patent, pseudocode, or optimization description was
+consulted.

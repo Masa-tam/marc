@@ -2,8 +2,9 @@
 
 Status: implementation in progress after completion of the Dynamic Range,
 canonical contextual rANS, and contextual tANS four-MiB vertical paths. The
-descriptor, entropy-operation, and direct typed-token boundaries are complete;
-frames and outward surfaces remain closed.
+descriptor, entropy-operation, direct typed-token, complete-frame, profile,
+and streaming-lifecycle boundaries are complete; public and outward surfaces
+remain closed.
 
 ## Purpose and exact identity
 
@@ -132,7 +133,7 @@ A full profile sets `max_frame_size` and LZ distance to four MiB,
    and atomic rejection.
 2. **Complete.** Carry the immutable selection through model building, operation coding,
    direct typed-token encode/decode, and their hand vectors.
-3. Admit exact complete-frame identity `2/4 + 1/3 + 2/2`, then add checked
+3. **Complete.** Admit exact complete-frame identity `2/4 + 1/3 + 2/2`, then add checked
    profile calculation and one-byte streaming with exact aggregate tests.
 4. Admit common public C window selector value 2 only for Contextual Blocked
    Huffman, then add the explicit CLI name

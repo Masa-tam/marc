@@ -11,7 +11,6 @@
 namespace marc::frame::internal {
 namespace {
 
-inline constexpr std::uint64_t decisions_per_raw_byte = 6;
 inline constexpr std::uint64_t bits_per_decision = 15;
 
 [[nodiscard]] bool to_size(
@@ -38,7 +37,9 @@ inline constexpr std::uint64_t bits_per_decision = 15;
 }
 
 [[nodiscard]] bool payload_ceiling(
-    const std::uint64_t raw_bytes, std::uint64_t& payload_bytes) noexcept {
+    const std::uint64_t raw_bytes,
+    const std::uint64_t decisions_per_raw_byte,
+    std::uint64_t& payload_bytes) noexcept {
     std::uint64_t decisions{};
     std::uint64_t bits{};
     return core::checked_multiply(
@@ -105,6 +106,9 @@ inline constexpr std::uint64_t bits_per_decision = 15;
     case LzssContextualBlockedHuffmanProfileVariant::field_context_1m:
         return context::internal::get_lzss_field_context_layout(
             context::internal::LzssFieldContextVariant::field_context_1m);
+    case LzssContextualBlockedHuffmanProfileVariant::field_context_4m:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_4m);
     }
     return {{}, context::internal::LzssFieldContextLayoutError::
                     unsupported_context_variant};
@@ -112,12 +116,18 @@ inline constexpr std::uint64_t bits_per_decision = 15;
 
 [[nodiscard]] constexpr std::size_t maximum_descriptor_size(
     const context::internal::LzssFieldContextVariant variant) noexcept {
-    return variant
-            == context::internal::LzssFieldContextVariant::field_context_64k
-        ? entropy::internal::
-            contextual_blocked_huffman_max_descriptor_size_v1
-        : entropy::internal::
+    switch (variant) {
+    case context::internal::LzssFieldContextVariant::field_context_64k:
+        return entropy::internal::
+            contextual_blocked_huffman_max_descriptor_size_v1;
+    case context::internal::LzssFieldContextVariant::field_context_1m:
+        return entropy::internal::
             contextual_blocked_huffman_max_descriptor_size_v2;
+    case context::internal::LzssFieldContextVariant::field_context_4m:
+        return entropy::internal::
+            contextual_blocked_huffman_max_descriptor_size_v3;
+    }
+    return 0;
 }
 
 } // namespace
@@ -207,7 +217,9 @@ make_lzss_contextual_blocked_huffman_profile(
             ? LzssContextualBlockedHuffmanProfileError::limit_exceeded
             : LzssContextualBlockedHuffmanProfileError::arithmetic_overflow;
     }
-    if (!payload_ceiling(largest_frame, payload_bytes)
+    if (!payload_ceiling(
+            largest_frame,
+            selected.layout.maximum_decisions_per_raw_byte, payload_bytes)
         || !core::checked_add(
             static_cast<std::uint64_t>(
                 lzss_contextual_blocked_huffman_frame_header_size),
@@ -269,7 +281,9 @@ calculate_lzss_contextual_blocked_huffman_decoder_workspace(
         std::min(limits.max_frame_size, limits.max_block_size),
         std::numeric_limits<std::uint32_t>::max());
     std::uint64_t modeled_payload_bytes{};
-    if (!payload_ceiling(raw_bytes, modeled_payload_bytes)) {
+    if (!payload_ceiling(
+            raw_bytes, selected.layout.maximum_decisions_per_raw_byte,
+            modeled_payload_bytes)) {
         return LzssContextualBlockedHuffmanProfileError::arithmetic_overflow;
     }
     const auto payload_bytes = std::min<std::uint64_t>(

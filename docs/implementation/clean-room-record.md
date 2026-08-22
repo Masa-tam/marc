@@ -24886,3 +24886,37 @@ benchmark, fuzz target, or interoperability inventory changes.
   layout, and complete schema compatibility. No production entropy branch was
   needed, and no frame, public, fuzz, benchmark, or interoperability boundary
   is opened.
+
+## CR-1017: 2026-08-22 - Four-MiB Contextual Blocked Huffman frames
+
+- Authoring method: generalized repository-owned fixed frame/profile bounds
+  to the already selected immutable layout, then added private identity,
+  complete-frame, HashChain, profile, and streaming tests before any public
+  admission.
+- References used: IR-0704 through IR-0705, DD-941 through DD-942, TVG-0807
+  through TVG-0808, CR-1016, repository-owned Contextual Blocked Huffman
+  frames, and the internal four-MiB tANS lifecycle precedent. No new external
+  technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source code, tests, vectors, patents, pseudocode,
+  and optimization descriptions.
+- Independent decisions: retain entropy identity 2/2; derive `7F` and
+  descriptor maximum from the layout; preserve `32T`; retain HashChain Exact
+  and 128 MiB; and expose only private profile/admission enums.
+- Generated-code task description: implement private exact identity, checked
+  frame/profile bounds, complete-frame and beyond-one-MiB HashChain round trips,
+  one-byte streaming, aggregate boundaries, and crossed-layout atomicity.
+- Similarity review: changes extend marc's variant-generic frame architecture
+  and checked workspace calculators. No external implementation expression
+  was consulted or introduced.
+- Validation: the first focused run exposed two test-specification gaps. A
+  35-decision five-byte frame also requires two tokens to satisfy `32T`, and a
+  crossed one-MiB frame reaches typed-token rejection rather than preflight
+  when distance class 20 is syntactically shared. The tests now assert those
+  actual independent limits without weakening validation. All five focused
+  tests then pass in 103 and 48 milliseconds under MSVC and ClangCL. Both full
+  logs contain 3,198 `Test Passed.` markers and no failure marker; the captured
+  MSVC run completed in 217.65 seconds with seven Python tooling tests,
+  nineteen experimental benchmark smokes, forty-two benchmark smokes,
+  documentation layout, and complete schema compatibility. Public, CLI,
+  benchmark, fuzz, and interoperability admission remain closed.

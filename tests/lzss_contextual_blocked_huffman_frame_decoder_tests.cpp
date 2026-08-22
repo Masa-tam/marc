@@ -24,6 +24,16 @@ using marc::entropy::internal::HuffmanDecodeTable;
     return stream;
 }
 
+[[nodiscard]] LzssContextualBlockedHuffmanStreamHeader stream_config_4m() {
+    auto stream = stream_config();
+    stream.frame_size = UINT32_C(1) << 22;
+    stream.original_size = 5;
+    stream.dictionary.window_size = UINT32_C(1) << 22;
+    stream.dictionary_variant = 4;
+    stream.context_variant = 3;
+    return stream;
+}
+
 [[nodiscard]] constexpr std::array<std::byte, 24> descriptor_bytes() {
     return {
         std::byte{2}, std::byte{0}, std::byte{0}, std::byte{0},
@@ -161,6 +171,73 @@ TEST(LzssContextualBlockedHuffmanFrameFormat,
     legacy.context_variant = 1;
     EXPECT_EQ(validate_lzss_contextual_blocked_huffman_frame_header(
                   header, {legacy, {}, 0, 0}),
+              LzssContextualBlockedHuffmanFrameHeaderError::
+                  contradictory_counts);
+}
+
+TEST(LzssContextualBlockedHuffmanFrameFormat,
+     RoundTripsFourMiBIdentityAndSelectsSevenFBound) {
+    const auto stream = stream_config_4m();
+    std::array<std::byte, 112> encoded{};
+    ASSERT_EQ(serialize_lzss_contextual_blocked_huffman_stream_header(
+                  stream, {}, encoded),
+              LzssContextualBlockedHuffmanStreamHeaderError::none);
+    EXPECT_EQ(encoded[14], std::byte{4});
+    EXPECT_EQ(encoded[15], std::byte{0});
+    EXPECT_EQ(encoded[16], std::byte{2});
+    EXPECT_EQ(encoded[18], std::byte{2});
+    EXPECT_EQ(encoded[98], std::byte{3});
+
+    LzssContextualBlockedHuffmanStreamHeader parsed{};
+    std::size_t consumed{};
+    ASSERT_EQ(parse_lzss_contextual_blocked_huffman_stream_header(
+                  encoded, {}, parsed, consumed),
+              LzssContextualBlockedHuffmanStreamHeaderError::none);
+    EXPECT_EQ(consumed, encoded.size());
+    EXPECT_EQ(parsed.dictionary.window_size, UINT32_C(1) << 22);
+    EXPECT_EQ(parsed.dictionary_variant, 4U);
+    EXPECT_EQ(parsed.context_variant, 3U);
+
+    auto crossed = stream;
+    crossed.context_variant = 2;
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_stream_header(
+                  crossed, {}),
+              LzssContextualBlockedHuffmanStreamHeaderError::
+                  contradictory_parameters);
+    crossed = stream;
+    crossed.dictionary_variant = 3;
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_stream_header(
+                  crossed, {}),
+              LzssContextualBlockedHuffmanStreamHeaderError::
+                  contradictory_parameters);
+
+    LzssContextualBlockedHuffmanFrameHeader header{
+        0, 0, 5, 2, 4, 35, 1,
+        static_cast<std::uint32_t>(
+            marc::entropy::internal::
+                contextual_blocked_huffman_min_descriptor_size),
+        0, 0};
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_frame_header(
+                  header, {stream, {}, 0, 0}),
+              LzssContextualBlockedHuffmanFrameHeaderError::none);
+    auto one_mib = stream;
+    one_mib.dictionary.window_size = UINT32_C(1) << 20;
+    one_mib.dictionary_variant = 3;
+    one_mib.context_variant = 2;
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_frame_header(
+                  header, {one_mib, {}, 0, 0}),
+              LzssContextualBlockedHuffmanFrameHeaderError::
+                  contradictory_counts);
+
+    header.decision_count = 30;
+    header.descriptor_size = static_cast<std::uint32_t>(
+        marc::entropy::internal::
+            contextual_blocked_huffman_max_descriptor_size_v3);
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_frame_header(
+                  header, {stream, {}, 0, 0}),
+              LzssContextualBlockedHuffmanFrameHeaderError::none);
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_frame_header(
+                  header, {one_mib, {}, 0, 0}),
               LzssContextualBlockedHuffmanFrameHeaderError::
                   contradictory_counts);
 }

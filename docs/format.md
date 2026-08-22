@@ -7128,6 +7128,15 @@ hand-checkable bypass value `0x2ABCDE` is therefore stored as payload bytes
 decoder, and typed-token validation retain one selected layout for the entire
 operation. This does not yet admit a complete frame or any public stream name.
 
+The private complete-frame identity `dictionary 2/4 + context 1/3 + entropy
+2/2` is now admitted. It retains the existing stream and frame header sizes,
+entropy algorithm/variant, canonical descriptor grammar, and LSB-first
+payload. Variant 3 selects `decision_count <= 7F`, `decision_count <= 32T`,
+descriptor size at most 2,588, payload at most `ceil(105F/8)`, and complete
+frame extent at most `ceil(105F/8) + 2,652`. Variants 1 and 2 retain their
+existing `6F` and descriptor ceilings. The public selector and CLI still do
+not name this identity.
+
 The private Contextual tANS profile and streaming lifecycle now select all
 three exact layouts. Variant 3 derives `ceil(21F/2) + 2` payload and 9,125-byte
 descriptor ceilings from the validated layout, retains the fixed 131,072-entry

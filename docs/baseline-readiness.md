@@ -2658,3 +2658,21 @@ completed in 213.32 seconds. This includes documentation layout, seven Python
 tooling tests, nineteen experimental benchmark smokes, forty-two benchmark
 smokes, and complete schema compatibility. Complete frames and every outward
 four-MiB Contextual Blocked Huffman boundary remain closed.
+
+### BR-0160
+
+The private four-MiB Contextual Blocked Huffman complete-frame, profile, and
+streaming-lifecycle boundaries are complete. Exact stream identity `2/4 +
+1/3 + 2/2`, `7F`/`32T` count limits, the 2,588-byte descriptor ceiling,
+canonical literal frames, a HashChain match beyond one MiB, and one-byte
+streaming all pass. Crossed one-MiB decoding rejects before raw publication.
+
+The four-MiB profile reserves exactly 55,052,892 encoded bytes. On the
+supported 64-bit layout, encoder and decoder aggregate requirements are
+126,880,348 and 109,722,064 bytes; exact limits succeed and one byte less
+fails. Both MSVC and ClangCL logs contain 3,198 successful test markers and no
+failure marker with a 600-second per-test limit; the captured MSVC run
+completed in 217.65 seconds, including seven Python tooling tests, nineteen
+experimental benchmark smokes, forty-two benchmark smokes, documentation
+layout, and complete schema compatibility. Public and outward admission stays
+closed.

@@ -11479,3 +11479,20 @@ history before the final token using 16,259 tokens total. Require direct
 encode/decode equality, distance symbol 22 in the pooled model, exact event
 and decision counts, and crossed one-MiB decoding to preserve all tables and
 tokens.
+
+### TVG-0808
+
+Serialize and parse stream identity `2/4 + 1/3 + 2/2`; cross dictionary or
+context variants independently and require contradiction. For a five-byte
+frame, admit 35 decisions only with at least two tokens under variant 3, then
+separately admit the 2,588-byte descriptor maximum. Require variant 2 to
+reject each widened bound.
+
+Round-trip a canonical literal complete frame under the new identity. Build a
+frame whose repeated five-byte marker is separated by more than one MiB,
+require HashChain to emit a match beyond one MiB, decode it byte-exactly, and
+require crossed one-MiB typed-token validation to preserve raw output. Verify
+one-byte streaming with explicit four-MiB admission and reciprocal one-MiB
+rejection. Finally require exact 4,194,304-byte profile inputs,
+55,052,892-byte encoded frames, 126,880,348/109,722,064 directional aggregates,
+one-byte-short failure, and exact-limit success.

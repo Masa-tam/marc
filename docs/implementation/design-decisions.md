@@ -19672,3 +19672,21 @@ a bounded direct-token vector that reaches exactly 4,194,304 bytes of history
 before emitting the maximum-distance match. Require the one-MiB layout to
 reject both the widened operation and crossed direct decode atomically. Keep
 complete frames and every outward admission closed.
+
+## DD-942: Derive private four-MiB frame bounds from the selected layout
+
+- Date: 2026-08-22
+- Status: accepted
+
+Admit private complete-frame identity `2/4 + 1/3 + 2/2` without changing
+header sizes or the entropy variant. Replace fixed Contextual Blocked Huffman
+frame/profile assumptions with the immutable layout's maximum decisions per
+raw byte and an exhaustive variant-to-descriptor-maximum selection. Retain
+`32T`, 15-bit canonical codes, HashChain Exact, and the 128-MiB aggregate
+default.
+
+Require checked exact profile extents, exact-limit/one-short aggregate tests,
+a complete frame containing a match beyond one MiB, and one-byte streaming
+under an explicit private four-MiB admission. Crossed one-MiB decoding must
+publish no raw bytes. Keep public C selector, CLI, benchmark, fuzz, and
+interoperability boundaries closed.
