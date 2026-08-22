@@ -63,6 +63,15 @@ struct SelectedWorkspace {
         symbols{};
 };
 
+struct FourMiBWorkspace {
+    std::array<AdaptiveHuffmanNode,
+               contextual_adaptive_huffman_node_entries_v3>
+        nodes{};
+    std::array<std::uint16_t,
+               contextual_adaptive_huffman_symbol_entries_v3>
+        symbols{};
+};
+
 [[nodiscard]] constexpr ModeledOperation symbol(
     const std::uint16_t context, const std::uint16_t alphabet,
     const std::uint32_t value) {
@@ -86,6 +95,10 @@ struct SelectedWorkspace {
 
 [[nodiscard]] constexpr auto selected_operations() {
     return std::array{symbol(23, 21, 20), bypass(20, UINT32_C(0xabcde))};
+}
+
+[[nodiscard]] constexpr auto four_mib_operations() {
+    return std::array{symbol(23, 23, 22), bypass(22, 0)};
 }
 
 } // namespace
@@ -558,4 +571,58 @@ TEST(ContextualAdaptiveHuffmanEncoder,
                   workspace.symbols,
                   static_cast<LzssFieldContextVariant>(UINT16_C(0xffff))).error,
               ContextualAdaptiveHuffmanDecodeError::invalid_context_variant);
+}
+
+TEST(ContextualAdaptiveHuffmanEncoder,
+     FourMiBLayoutEncodesAndDecodesClassTwentyTwoHandVector) {
+    constexpr auto operations = four_mib_operations();
+    constexpr auto variant = LzssFieldContextVariant::field_context_4m;
+    FourMiBWorkspace workspace{};
+    ContextualAdaptiveHuffmanDescriptor descriptor{};
+    const auto plan = marc::entropy::internal::
+        plan_contextual_adaptive_huffman_operations(
+            operations, {}, workspace.nodes, workspace.symbols, descriptor,
+            variant);
+    ASSERT_EQ(plan.error, ContextualAdaptiveHuffmanEncodeError::none);
+    EXPECT_EQ(plan.operation_count, 2U);
+    EXPECT_EQ(plan.decision_count, 23U);
+    EXPECT_EQ(plan.payload_bits, 27U);
+    EXPECT_EQ(plan.payload_size, 4U);
+    EXPECT_EQ(descriptor.final_valid_bits, 3U);
+
+    std::array<std::byte, 4> payload{};
+    ASSERT_EQ(marc::entropy::internal::
+                  encode_contextual_adaptive_huffman_operations(
+                      operations, {}, workspace.nodes, workspace.symbols,
+                      payload, descriptor, variant).error,
+              ContextualAdaptiveHuffmanEncodeError::none);
+    constexpr std::array expected{
+        std::byte{0x16}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}};
+    EXPECT_EQ(payload, expected);
+
+    ContextualAdaptiveHuffmanDecoder decoder;
+    ASSERT_EQ(decoder.begin(
+                  descriptor, payload, {}, workspace.nodes,
+                  workspace.symbols, variant).error,
+              ContextualAdaptiveHuffmanDecodeError::none);
+    std::uint32_t value{};
+    ASSERT_EQ(decoder.decode_symbol(23, 23, value).error,
+              ContextualAdaptiveHuffmanDecodeError::none);
+    EXPECT_EQ(value, 22U);
+    ASSERT_EQ(decoder.decode_bypass(22, value).error,
+              ContextualAdaptiveHuffmanDecodeError::none);
+    EXPECT_EQ(value, 0U);
+    EXPECT_EQ(decoder.finish(2, 23).error,
+              ContextualAdaptiveHuffmanDecodeError::none);
+
+    ContextualAdaptiveHuffmanDecoder crossed;
+    ASSERT_EQ(crossed.begin(
+                  descriptor, payload, {}, workspace.nodes,
+                  workspace.symbols,
+                  LzssFieldContextVariant::field_context_1m).error,
+              ContextualAdaptiveHuffmanDecodeError::none);
+    value = UINT32_C(0xcccccccc);
+    EXPECT_EQ(crossed.decode_symbol(23, 23, value).error,
+              ContextualAdaptiveHuffmanDecodeError::invalid_alphabet);
+    EXPECT_EQ(value, UINT32_C(0xcccccccc));
 }

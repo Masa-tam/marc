@@ -11592,3 +11592,19 @@ offsets and aggregates, including the encoder's four-byte HashChain alignment,
 and one-short aggregate, payload, or entropy limits to fail without publishing
 views. Run the complete model/profile suites under both MSVC and ClangCL while
 leaving later codec boundaries closed.
+
+### TVG-0815
+
+For field-context variant 3, encode a new distance-class symbol 22 in context
+23 with alphabet 23, followed by 22 zero bypass bits. Require 23 decisions,
+27 payload bits, four payload bytes `16 00 00 00`, three valid final bits, and
+exact reciprocal decoding. Begin the same descriptor under variant 2 and
+require alphabet 23 to fail without changing the caller's symbol output.
+
+Construct exactly 4,194,304 bytes of validated history from one literal,
+16,256 length-258 matches, and one length-255 match, then append a length-five
+match at distance 4,194,304. Require its final operations to be symbol 22 in
+alphabet 23 plus 22 zero bypass bits. Compare direct typed-token planning and
+encoding against the materialized operation path byte-for-byte, decode every
+token exactly, and require variants 1 and 2 to reject without modifying
+sentinel token storage.

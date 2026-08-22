@@ -25118,3 +25118,30 @@ existing initializer default. No codec code changed in this stage.
   The first executable test exposed a previously omitted four-byte alignment
   before HashChain storage; tests and all current design records were corrected
   to the implementation-derived 211,968,176-byte encoder aggregate.
+
+## CR-1025: 2026-08-23 - Four-MiB Adaptive Huffman direct composition
+
+- Authoring method: added exact class-22 operation and four-MiB-history token
+  vectors before changing production code, then confirmed the existing generic
+  selected-layout path already carried variant 3 through both directions.
+- References used: IR-0711 through IR-0712, DD-948 through DD-949, TVG-0814
+  through TVG-0815, CR-1024, and repository-owned FGK operation and direct
+  typed-token code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, tests, vectors, patents,
+  pseudocode, payload bounds, and optimization descriptions.
+- Independent decisions: retain the generic immutable-layout path; freeze a
+  minimal physical class-22 vector; build exact history using bounded typed
+  tokens rather than a four-MiB raw allocation; and require reciprocal older-
+  layout rejection before token publication.
+- Generated-code task description: prove operation bytes, direct/materialized
+  equivalence, exact maximum distance, round trip, and crossed-layout atomicity
+  without opening the complete-frame identity.
+- Similarity review: only repository-owned selected-layout patterns and test
+  structures were reused; no external implementation expression was added.
+- Validation: both new focused tests pass under MSVC and ClangCL. Their full
+  3,207-test suites pass in 196.99 and 202.21 seconds, including seven Python
+  tooling tests, twenty experimental benchmark smokes, forty-two benchmark
+  smokes, documentation layout, and complete schema compatibility. The
+  production operation and direct-composition code required no change because
+  its lifetime-bound layout selection was already generic.

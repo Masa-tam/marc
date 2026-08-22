@@ -163,9 +163,9 @@ variant if it changes frame reset, atomic publication, or payload layout.
    calculator. Prove
    9,163/4,566 model extents, exact directional aggregates, exact-limit
    success, one-byte-short failure, and unchanged older selections.
-2. Carry the immutable selection through FGK operation coding and direct LZSS
-   typed-token composition. Require a distance-4,194,304 token-boundary vector
-   and reciprocal atomic rejection by older layouts.
+2. **Complete.** Carry the immutable selection through FGK operation coding
+   and direct LZSS typed-token composition. Require a distance-4,194,304
+   token-boundary vector and reciprocal atomic rejection by older layouts.
 3. Admit complete-frame identity `2/4 + 1/3 + 1/2`, then add selected profile
    and one-byte streaming lifecycles. A complete frame must contain a real
    Match beyond one MiB without exceeding its four-MiB raw extent.

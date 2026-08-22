@@ -5692,3 +5692,13 @@ requires exact identity `2/4 + 1/3 + 2/2`, round trip, size, and SHA-256.
 Verification enforces exact order and local byte-identical re-encoding.
 Compatibility removes only entry 56 to reconstruct schema 45 before
 traversing the unchanged chain through schema 1.
+
+The four-MiB Contextual Adaptive Huffman entropy-operation and direct
+typed-token boundaries reuse the existing immutable selected-layout path.
+No four-MiB-specific coding branch is required: the held layout supplies
+alphabet 23, model extents, dictionary variant 4, and the 22-bit bypass bound
+to the generic FGK and LZSS adapters. A hand vector fixes class-22 physical
+bytes, and a caller-owned 4,194,304-byte-history token vector round-trips
+without an intermediate operation buffer. Both older selections reject the
+crossed route without publishing tokens. Complete frames and outward surfaces
+remain closed.

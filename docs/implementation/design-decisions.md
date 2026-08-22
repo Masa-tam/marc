@@ -19804,3 +19804,20 @@ after its symbol-index array. Reject insufficient node, symbol, payload,
 entropy-entry, and aggregate limits before publishing workspace requirements.
 Keep entropy-operation, complete-frame, public C, CLI, benchmark, fuzz, and
 interoperability admission closed.
+
+## DD-949: Reuse immutable selected layout for four-MiB FGK operations
+
+- Date: 2026-08-23
+- Status: accepted
+
+Admit context variant 3 in the private Adaptive Huffman operation coder and
+direct LZSS typed-token composition without introducing a variant-specific
+coding branch. The already-held field-context layout supplies alphabet 23,
+dictionary variant 4, model extents, and the maximum bypass width to both
+directions for their complete operation lifetime.
+
+Freeze the new-symbol-22 plus 22-zero-bypass hand vector as 27 bits and bytes
+`16 00 00 00`, with three valid final bits. Require direct typed-token bytes
+to equal the independently materialized operation path, round-trip a token at
+distance 4,194,304, and make both older layouts reject without publishing
+tokens. Complete-frame and all outward admission remain closed.

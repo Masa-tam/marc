@@ -7211,3 +7211,14 @@ Interoperability schema 46 appends `lzss-contextual-blocked-huffman-4m` as
 archive 56 after the frozen 55-entry schema-45 inventory. Generation requires
 exact identity `2/4 + 1/3 + 2/2`; verification decodes and re-encodes the
 complete archive byte-identically. This admission adds no serialized rule.
+
+The private Contextual Adaptive Huffman operation coder and direct LZSS
+typed-token composition now select context variant 3 without admitting its
+complete-frame identity. Distance class 22 uses alphabet 23 and is followed
+by 22 LSB-first bypass bits. The hand vector containing new symbol 22 followed
+by 22 zero bypass bits has 27 payload bits and exact bytes `16 00 00 00`, with
+three valid bits in the final byte. The FGK model, operation encoder/decoder,
+and typed-token validator retain one selected layout for the whole operation.
+Older layouts reject the crossed alphabet or dictionary parameters before
+publishing a token. No public name, header identity, or serialized rule is
+added at this stage.

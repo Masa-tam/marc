@@ -21,8 +21,10 @@ using marc::entropy::internal::AdaptiveHuffmanNode;
 using marc::entropy::internal::ContextualAdaptiveHuffmanDescriptor;
 using marc::entropy::internal::contextual_adaptive_huffman_node_entries;
 using marc::entropy::internal::contextual_adaptive_huffman_node_entries_v2;
+using marc::entropy::internal::contextual_adaptive_huffman_node_entries_v3;
 using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries;
 using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries_v2;
+using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries_v3;
 
 struct Workspace {
     std::vector<AdaptiveHuffmanNode> nodes =
@@ -40,6 +42,14 @@ struct SelectedWorkspace {
         contextual_adaptive_huffman_symbol_entries_v2);
 };
 
+struct FourMiBWorkspace {
+    std::vector<AdaptiveHuffmanNode> nodes =
+        std::vector<AdaptiveHuffmanNode>(
+            contextual_adaptive_huffman_node_entries_v3);
+    std::vector<std::uint16_t> symbols = std::vector<std::uint16_t>(
+        contextual_adaptive_huffman_symbol_entries_v3);
+};
+
 [[nodiscard]] std::vector<LzssTypedToken> maximum_distance_tokens() {
     std::vector<LzssTypedToken> tokens;
     tokens.reserve(4067);
@@ -50,6 +60,19 @@ struct SelectedWorkspace {
     tokens.push_back({LzssTypedTokenKind::match, 0, 1, 63});
     tokens.push_back(
         {LzssTypedTokenKind::match, 0, 1'048'576, 5});
+    return tokens;
+}
+
+[[nodiscard]] std::vector<LzssTypedToken> four_mib_distance_tokens() {
+    std::vector<LzssTypedToken> tokens;
+    tokens.reserve(16'259);
+    tokens.push_back({LzssTypedTokenKind::literal, 'A', 0, 0});
+    for (std::size_t index = 0; index < 16'256; ++index) {
+        tokens.push_back({LzssTypedTokenKind::match, 0, 1, 258});
+    }
+    tokens.push_back({LzssTypedTokenKind::match, 0, 1, 255});
+    tokens.push_back(
+        {LzssTypedTokenKind::match, 0, 4'194'304, 5});
     return tokens;
 }
 
@@ -496,4 +519,117 @@ TEST(LzssContextualAdaptiveHuffmanEncoder,
                 && left.distance == right.distance
                 && left.length == right.length;
         }));
+}
+
+TEST(LzssContextualAdaptiveHuffmanEncoder,
+     FourMiBLayoutMatchesOperationsAndRejectsOlderLayoutsAtomically) {
+    const auto expected = four_mib_distance_tokens();
+    constexpr std::uint32_t prefix_size = 4'194'304;
+    constexpr std::uint32_t raw_size = prefix_size + 5;
+    constexpr auto variant = LzssFieldContextVariant::field_context_4m;
+    auto parameters = marc::dictionary::internal::LzssParameters{};
+    parameters.window_size = prefix_size;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = raw_size;
+    limits.max_block_size = raw_size;
+    limits.max_lz_distance = prefix_size;
+    limits.max_entropy_table_entries = 13'729;
+    const LzssTypedFrameValidationContext context{
+        static_cast<std::uint32_t>(expected.size()), raw_size, 0};
+
+    const auto operation_plan = plan_lzss_field_context_operations(
+        expected, parameters, context, limits, variant);
+    ASSERT_EQ(operation_plan.error, LzssFieldContextError::none);
+    std::vector<ModeledOperation> operations(operation_plan.operation_count);
+    ASSERT_EQ(model_lzss_field_context_tokens(
+                  expected, parameters, context, limits, operations,
+                  variant).error,
+              LzssFieldContextError::none);
+    ASSERT_GE(operations.size(), 2U);
+    EXPECT_EQ(operations[operations.size() - 2].alphabet_size, 23U);
+    EXPECT_EQ(operations[operations.size() - 2].value, 22U);
+    EXPECT_EQ(operations.back().kind, ModeledOperationKind::bypass_bits);
+    EXPECT_EQ(operations.back().bit_count, 22U);
+    EXPECT_EQ(operations.back().value, 0U);
+
+    FourMiBWorkspace reference_workspace{};
+    ContextualAdaptiveHuffmanDescriptor reference_descriptor{};
+    const auto reference_plan = marc::entropy::internal::
+        plan_contextual_adaptive_huffman_operations(
+            operations, limits, reference_workspace.nodes,
+            reference_workspace.symbols, reference_descriptor, variant);
+    ASSERT_EQ(reference_plan.error,
+              marc::entropy::internal::
+                  ContextualAdaptiveHuffmanEncodeError::none);
+    std::vector<std::byte> reference_payload(reference_plan.payload_size);
+    ASSERT_EQ(marc::entropy::internal::
+                  encode_contextual_adaptive_huffman_operations(
+                      operations, limits, reference_workspace.nodes,
+                      reference_workspace.symbols, reference_payload,
+                      reference_descriptor, variant).error,
+              marc::entropy::internal::
+                  ContextualAdaptiveHuffmanEncodeError::none);
+
+    FourMiBWorkspace direct_workspace{};
+    ContextualAdaptiveHuffmanDescriptor direct_descriptor{};
+    const auto direct_plan = plan_lzss_contextual_adaptive_huffman_tokens(
+        expected, parameters, context, limits, direct_workspace.nodes,
+        direct_workspace.symbols, direct_descriptor, variant);
+    ASSERT_EQ(direct_plan.error,
+              LzssContextualAdaptiveHuffmanEncodeError::none);
+    EXPECT_EQ(direct_plan.event_count, operations.size());
+    EXPECT_EQ(direct_plan.decision_count, reference_plan.decision_count);
+    EXPECT_EQ(direct_plan.payload_bits, reference_plan.payload_bits);
+    EXPECT_EQ(direct_plan.payload_size, reference_payload.size());
+    expect_descriptor_eq(direct_descriptor, reference_descriptor);
+
+    std::vector<std::byte> direct_payload(direct_plan.payload_size);
+    ASSERT_EQ(encode_lzss_contextual_adaptive_huffman_tokens(
+                  expected, parameters, context, limits,
+                  direct_workspace.nodes, direct_workspace.symbols,
+                  direct_payload, direct_descriptor, variant).error,
+              LzssContextualAdaptiveHuffmanEncodeError::none);
+    EXPECT_EQ(direct_payload, reference_payload);
+
+    FourMiBWorkspace decode_workspace{};
+    std::vector<LzssTypedToken> decoded(expected.size());
+    const LzssFieldContextValidationContext decode_context{
+        static_cast<std::uint32_t>(expected.size()),
+        static_cast<std::uint32_t>(direct_plan.event_count),
+        direct_plan.decision_count, raw_size, 0};
+    const auto decoded_result =
+        decode_lzss_contextual_adaptive_huffman_tokens(
+            direct_descriptor, direct_payload, parameters, decode_context,
+            limits, decode_workspace.nodes, decode_workspace.symbols,
+            decoded, variant);
+    ASSERT_EQ(decoded_result.error,
+              LzssContextualAdaptiveHuffmanDecodeError::none);
+    EXPECT_TRUE(std::ranges::equal(
+        expected, decoded, [](const auto& left, const auto& right) {
+            return left.kind == right.kind && left.literal == right.literal
+                && left.distance == right.distance
+                && left.length == right.length;
+        }));
+
+    std::ranges::fill(decoded, LzssTypedToken{
+        LzssTypedTokenKind::match, 0xCC, 0xCCCCCCCCU, 0xCCCCCCCCU});
+    const auto before = decoded;
+    for (const auto older : {
+             LzssFieldContextVariant::field_context_64k,
+             LzssFieldContextVariant::field_context_1m}) {
+        const auto crossed = decode_lzss_contextual_adaptive_huffman_tokens(
+            direct_descriptor, direct_payload, parameters, decode_context,
+            limits, decode_workspace.nodes, decode_workspace.symbols,
+            decoded, older);
+        EXPECT_EQ(crossed.error,
+                  LzssContextualAdaptiveHuffmanDecodeError::
+                      invalid_parameters);
+        EXPECT_TRUE(std::ranges::equal(
+            decoded, before, [](const auto& left, const auto& right) {
+                return left.kind == right.kind
+                    && left.literal == right.literal
+                    && left.distance == right.distance
+                    && left.length == right.length;
+            }));
+    }
 }

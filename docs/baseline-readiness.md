@@ -2780,3 +2780,21 @@ documentation layout, and complete schema compatibility. The tests found and
 permanently record the encoder's required four-byte alignment before its
 HashChain workspace. Entropy-operation, frame, public, tooling, fuzz, and
 interoperability boundaries remain closed for subsequent stages.
+
+### BR-0168
+
+The private four-MiB Contextual Adaptive Huffman operation coder and direct
+LZSS typed-token path are admitted. The generic selected-layout architecture
+needs no backend-specific branch: variant 3 supplies alphabet 23, class 22,
+22 bypass bits, model extents, and dictionary variant 4 throughout planning,
+writing, validation, and decoding.
+
+The permanent hand vector is 27 bits with exact bytes `16 00 00 00`. A
+16,259-token vector builds exactly 4,194,304 bytes of history, emits a real
+distance-4,194,304 match, agrees byte-for-byte with the materialized operation
+path, and round-trips exactly. Both older variants reject atomically. The two
+focused tests pass under MSVC and ClangCL; their full 3,207-test suites pass in
+196.99 and 202.21 seconds, including seven Python tooling tests, twenty
+experimental benchmark smokes, forty-two benchmark smokes, documentation
+layout, and complete schema compatibility. Complete-frame and outward
+boundaries remain closed.

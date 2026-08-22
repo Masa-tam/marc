@@ -6406,3 +6406,12 @@ FGK model partitioner, HashChain workspace calculator, and checked directional
 profile arithmetic. No external compressor, Adaptive Huffman implementation,
 source code, test vector, patent, pseudocode, payload bound, or optimization
 description was consulted.
+
+### IR-0712
+
+The four-MiB Contextual Adaptive Huffman operation and direct typed-token
+admission uses IR-0711, DD-948, TVG-0814, the repository-owned immutable
+selected-layout encoder/decoder, FGK model bank, field-context state machine,
+typed-token validator, and one-MiB direct-composition tests. No external
+compressor, Adaptive Huffman implementation, source code, test vector, patent,
+pseudocode, payload bound, or optimization description was consulted.
