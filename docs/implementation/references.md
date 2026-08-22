@@ -6312,3 +6312,13 @@ schema-44 generator and verifier, deterministic interoperability fixture,
 exact CLI selector, and legacy conversion chain. No external compressor, tANS
 format, interoperability suite, archive, source code, test vector, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0702
+
+The four-MiB Contextual Blocked Huffman staged design uses the repository-owned
+Format 2 identity rules, field-context variant-3 layout, canonical contextual
+Blocked Huffman grammar, one-MiB selected implementation, checked HashChain
+workspace calculator, profile partitioners, and completed four-MiB backend
+designs. No external compressor, DEFLATE implementation, Huffman source code,
+table layout, test, benchmark result, patent, pseudocode, or optimization
+description was consulted.

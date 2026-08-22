@@ -19620,3 +19620,21 @@ compatibility test must reject a reordered schema-45 manifest, remove only
 entry 55 to reconstruct schema 44, and then traverse the unchanged conversion
 chain through schema 1. External four-direction verification remains a later
 evidence step and changes no stream byte.
+
+## DD-939: Stage four-MiB Contextual Blocked Huffman under exact identity
+
+- Date: 2026-08-22
+- Status: accepted
+
+Reserve no new entropy representation. Pair existing entropy identity `2/2`
+only with dictionary/context `2/4 + 1/3`. Retain four pooled models, 31
+overrides, canonical Single/sparse/dense records, 15-bit maximum codes, 35
+decode tables, LSB-first payload, and strict zero padding.
+
+Set context-variant-3 descriptor maximum to 2,588 bytes: the 23-symbol dense
+distance record is one byte larger than variant 2 for one pooled model and up
+to eight overrides. Use `7F` decisions, `ceil(105F/8)` payload, and
+`ceil(105F/8) + 2,652` complete-frame ceilings. At four MiB, require checked
+encoder and decoder aggregate minima of 126,880,348 and 109,722,064 bytes on
+the supported 64-bit layout. Retain the 128-MiB default and stage each outward
+boundary separately.

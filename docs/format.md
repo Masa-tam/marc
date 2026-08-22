@@ -7097,6 +7097,21 @@ after the frozen 53-entry schema-43 inventory. Generation requires exact
 identity `2/4 + 1/3 + 4/3`; verification decodes and re-encodes the complete
 archive byte-identically. This admission adds no serialized rule.
 
+The reserved four-MiB Contextual Blocked Huffman triple is dictionary/context
+`2/4 + 1/3` with entropy `2/2`. Entropy grammar remains unchanged: a 16-byte
+prefix, four pooled field models, optional overrides for contexts 0 through
+30, canonical Single/sparse/dense records, 15-bit maximum codes, LSB-first
+payload, and strict zero padding. The 23-symbol distance field increases only
+the context-variant-3 descriptor maximum to 2,588 bytes; the minimum remains
+24 bytes and the decode-table ceiling remains 35.
+
+For raw frame extent `F`, this exact triple permits at most `7F` decisions and
+`ceil(105F/8)` payload bytes. Its complete-frame ceiling is
+`ceil(105F/8) + 2,652`. These are validator and allocation bounds, not encoded
+fields. No encoder, decoder, public selector, CLI name, or interoperability
+schema admits this reserved triple until its corresponding staged boundary is
+implemented and tested.
+
 The private Contextual tANS profile and streaming lifecycle now select all
 three exact layouts. Variant 3 derives `ceil(21F/2) + 2` payload and 9,125-byte
 descriptor ceilings from the validated layout, retains the fixed 131,072-entry

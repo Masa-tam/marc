@@ -5629,3 +5629,12 @@ order and local byte-identical re-encoding. Compatibility removes only entry
 schema 1. Revision `2d5d582e974442a33151d0593c532e426e536e46` has complete
 four-direction Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
 evidence for all 55 archives.
+
+The fourth four-MiB backend is staged as exact Contextual Blocked Huffman
+identity `2/4 + 1/3 + 2/2`. It retains 35 bounded decode tables while the
+23-symbol distance alphabet raises the descriptor maximum to 2,588 bytes.
+Its `7F` decision bound gives payload ceiling `ceil(105F/8)`. On the supported
+64-bit layout, checked four-MiB encoder and decoder aggregates are 126,880,348
+and 109,722,064 bytes, so both fit the unchanged 128-MiB default. Descriptor,
+coding, frame, public, tool, fuzz, and interoperability admission remain
+separate review boundaries.

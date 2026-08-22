@@ -1,7 +1,8 @@
 # LZSS contextual 4 MiB window
 
-Status: accepted design after project version 0.3.0. The Dynamic Range and
-canonical contextual rANS vertical paths have complete external evidence.
+Status: accepted design after project version 0.3.0. The Dynamic Range,
+canonical contextual rANS, and contextual tANS vertical paths have complete
+external evidence. Contextual Blocked Huffman has an accepted staged design.
 
 ## Purpose
 
@@ -35,8 +36,8 @@ The candidate backend identities remain unchanged:
 |---|---:|---|
 | Dynamic Range | `3/2` | complete vertical path |
 | canonical contextual rANS | `4/3` | complete vertical path |
-| contextual tANS | `5/2` | accepted staged design |
-| Contextual Blocked Huffman | `2/2` | staged |
+| contextual tANS | `5/2` | complete vertical path |
+| Contextual Blocked Huffman | `2/2` | accepted staged design |
 | Contextual Adaptive Huffman | `1/2` | deferred pending a memory proof |
 
 Reservation of the shared pair does not admit any backend by itself. Each
@@ -210,16 +211,21 @@ The completed second-backend path is
 Revision `7f2b893f6ebeb968cab287420caa97201ce5b3b8` verifies its schema-44
 54-archive inventory through the recorded four-direction Windows and Linux
 exchange.
-The third-backend plan is
+The completed third-backend path is
 [LZSS contextual tANS 4 MiB window](lzss-contextual-tans-window-4m.md).
+Revision `2d5d582e974442a33151d0593c532e426e536e46` verifies its schema-45
+55-archive inventory through the recorded four-direction Windows and Linux
+exchange. The fourth-backend plan is
+[LZSS contextual Blocked Huffman 4 MiB window](lzss-contextual-blocked-huffman-window-4m.md).
 
 ## Planned public policy
 
 The common C window-profile selector assigns value 2 to the exact 4 MiB
 identity. Value 0 remains 64 KiB and value 1 remains 1 MiB. Backend admission
-is independent: Contextual Dynamic Range and canonical contextual rANS accept
-value 2. Their completed CLI backends use the explicit
-`lzss-contextual-dynamic-range-4m` and `lzss-contextual-rans-4m` names.
+is independent: Contextual Dynamic Range, canonical contextual rANS, and
+contextual tANS accept value 2. Their completed CLI backends use the explicit
+`lzss-contextual-dynamic-range-4m`, `lzss-contextual-rans-4m`, and
+`lzss-contextual-tans-4m` names.
 
 An exact public decoder admits only its selected dictionary/context pair; it
 does not infer a profile from `window_size`, descriptor size, or distance seen

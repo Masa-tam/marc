@@ -11434,3 +11434,17 @@ fixture, and re-encode each byte-identically under both MSVC and ClangCL.
 Reject a reordered schema-45 manifest. Remove only entry 55, declare
 `marc-cli-v44`, and verify schema 44 before traversing the unchanged legacy
 chain through schema 1.
+
+### TVG-0805
+
+Construct context-variant-3 Contextual Blocked Huffman descriptors whose
+pooled distance model and all eight distance-context overrides use canonical
+23-symbol dense records. Require the exact 2,588-byte maximum and verify that
+changing only the selected layout preserves every variant-1 and variant-2
+serialized byte.
+
+Exercise distance symbol 22, odd dense-record high-nibble padding, every
+descriptor truncation, noncanonical sparse/dense choice, crossed and unknown
+layouts, short descriptor output, table-count ceiling 35, and exact/one-short
+limits. No entropy payload, typed-token, frame, public, fuzz, or
+interoperability boundary selects variant 3 in this first stage.

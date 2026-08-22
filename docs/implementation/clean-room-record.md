@@ -24798,3 +24798,29 @@ benchmark, fuzz target, or interoperability inventory changes.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1014: 2026-08-22 - Four-MiB Contextual Blocked Huffman staged design
+
+- Authoring method: derived the fourth four-MiB backend from marc's completed
+  selected one-MiB Contextual Blocked Huffman grammar and shared variant-3
+  field-context layout before changing codec code.
+- References used: IR-0702, DD-939, TVG-0805, CR-1013, the repository-owned
+  descriptor analyzer, decode-table type, HashChain calculator, profile
+  partitioners, and completed four-MiB backend designs. No new external
+  technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  DEFLATE implementations, Huffman source code, table layouts, tests,
+  benchmark results, patents, pseudocode, and optimization descriptions.
+- Independent decisions: retain entropy identity `2/2`; pair it only with
+  `2/4 + 1/3`; derive the 2,588-byte descriptor maximum from nine widened
+  distance records; use `7F` decisions and `ceil(105F/8)` payload; and retain
+  the 128-MiB default after explicit directional workspace proofs.
+- Generated-code task description: document exact descriptor, payload,
+  complete-frame, table, workspace, admission, and staged-validation rules for
+  a four-MiB Contextual Blocked Huffman profile.
+- Similarity review: the design follows marc's own selected-layout grammar and
+  checked workspace components. No external implementation expression was
+  consulted or introduced.
+- Validation: documentation layout passes under MSVC and ClangCL in 0.33
+  seconds each. No codec source, stream admission, public selector, test
+  inventory, benchmark, fuzz target, or interoperability schema changes.
