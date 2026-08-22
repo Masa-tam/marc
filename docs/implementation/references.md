@@ -6378,3 +6378,12 @@ strict manifest verifier, schema downgrade chain, and prior schema-45
 interoperability design as internal precedents. No external archive format,
 compressor, Huffman implementation, interoperability suite, source code, test
 vector, patent, pseudocode, or optimization description was consulted.
+
+### IR-0709
+
+The four-MiB Contextual Adaptive Huffman staged design uses IR-0708, the
+repository-owned selected field-context layout, FGK tree and model-bank types,
+267-bit-per-raw-byte proof, HashChain workspace calculator, one-MiB Adaptive
+profile, and completed four-MiB backend profiles. No external compressor,
+Adaptive Huffman implementation, source code, test vector, patent,
+pseudocode, payload bound, or optimization description was consulted.

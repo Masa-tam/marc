@@ -25038,3 +25038,29 @@ benchmark, fuzz target, or interoperability inventory changes.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1022: 2026-08-23 - Four-MiB Contextual Adaptive Huffman memory gate
+
+- Authoring method: audited the repository's existing worst-case payload proof
+  and caller-owned workspace layouts before admitting any new identity in
+  code, then derived both direction-specific aggregates with checked-profile
+  arithmetic.
+- References used: IR-0708 through IR-0709, DD-945 through DD-946, TVG-0811
+  through TVG-0812, CR-1021, and repository-owned Adaptive Huffman and
+  four-MiB profile designs. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, tests, vectors, patents,
+  pseudocode, payload bounds, and optimization descriptions.
+- Independent decisions: retain the conservative 267-bit proof; preserve all
+  library defaults; make 256 MiB an explicit application policy; require
+  directional exact and one-short limits; and keep every implementation and
+  outward boundary closed until separately tested.
+- Generated-code task description: document exact identity, model extents,
+  payload and aggregate arithmetic, opt-in limits, staged admission, and
+  boundary vectors before implementation.
+- Similarity review: the design composes marc's existing selected-layout,
+  FGK, HashChain, workspace, and four-MiB patterns. No external implementation
+  expression was consulted or introduced.
+- Validation: checked arithmetic produces the documented 211,968,172-byte
+  encoder and 194,666,668-byte decoder aggregates, both below 256 MiB. No
+  codec code or serialized representation changed in this stage.

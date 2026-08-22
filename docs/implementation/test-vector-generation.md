@@ -11542,3 +11542,20 @@ re-encode each profile byte-identically with the local CLI. Reject a manifest
 whose last two entries are exchanged. Remove only archive 56 to reconstruct
 schema 45, verify that bundle, and continue through every frozen schema down
 to schema 1.
+
+### TVG-0812
+
+Resolve exact field-context variant 3 and require 4,566 symbol entries, 9,163
+FGK nodes, and 13,729 combined entropy entries. On the supported 64-bit layout,
+derive 139,984,896 payload bytes, a 139,984,976-byte complete frame,
+67,788,892 encoder-view bytes, 50,487,388 decoder-view bytes, and directional
+aggregates 211,968,172/194,666,668 bytes for a four-MiB frame. Require each
+exact limit to succeed and one byte less to fail without publishing views.
+
+At the typed-token boundary, build enough validated history to encode distance
+4,194,304 as class 22 with 22 zero bypass bits and require older layouts to
+reject atomically. Separately, encode a complete frame containing a real Match
+beyond one MiB, round-trip it with one-byte buffers, and require reciprocal
+64-KiB/one-MiB/four-MiB public admissions to reject before raw publication.
+Later tool and interoperability vectors remain closed until their preceding
+implementation stages pass.

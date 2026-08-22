@@ -2735,3 +2735,16 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the four-MiB
 Contextual Blocked Huffman profile.
+
+### BR-0165
+
+The four-MiB Contextual Adaptive Huffman memory gate has an accepted bounded
+design. Exact identity `2/4 + 1/3 + 1/2` retains entropy variant 2 and the
+existing `ceil(267F/8)` proof. At a four-MiB frame, payload and complete-frame
+ceilings are 139,984,896 and 139,984,976 bytes; supported-layout encoder and
+decoder aggregates are 211,968,172 and 194,666,668 bytes.
+
+Both directions fit an explicit 256-MiB application policy. Library defaults
+remain 128 MiB aggregate and 64 MiB payload, so the profile cannot be admitted
+accidentally. Implementation, public, tool, fuzz, and interoperability
+boundaries remain closed pending exact-limit and one-short tests.

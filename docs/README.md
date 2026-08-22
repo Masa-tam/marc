@@ -33,6 +33,8 @@ navigate chronological development records.
   the third backend's table, payload, and 128-MiB workspace proof.
 - [LZSS contextual Blocked Huffman 4 MiB window](design/lzss-contextual-blocked-huffman-window-4m.md):
   the fourth backend's descriptor, payload, and 128-MiB workspace proof.
+- [LZSS contextual Adaptive Huffman 4 MiB window](design/lzss-contextual-adaptive-huffman-window-4m.md):
+  the fifth backend's conservative payload proof and explicit 256-MiB policy.
 - [LZSS typed-token protocol](design/lzss-typed-token-protocol.md): bounded
   dictionary-to-context value boundary.
 - [Context-model contract](design/context-model-contract.md): invertible field

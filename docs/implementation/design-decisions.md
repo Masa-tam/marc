@@ -19744,3 +19744,22 @@ Reject a reordered schema-46 manifest. Reconstruct schema 45 by removing only
 entry 56 and changing only its schema and codec-set fields, then traverse the
 unchanged downgrade chain. This admission changes no stream byte, public ABI,
 profile default, workspace limit, or older archive.
+
+## DD-946: Four-MiB Contextual Adaptive Huffman is an explicit 256-MiB profile
+
+- Date: 2026-08-23
+- Status: accepted
+
+Admit future exact identity `2/4 + 1/3 + 1/2` without changing Adaptive
+Huffman entropy variant 2, the fixed descriptor, FGK update rules, frame reset,
+or the established `ceil(267F/8)` payload proof. For `F = 4,194,304`, reserve
+139,984,896 payload bytes and a 139,984,976-byte complete frame.
+
+On the supported 64-bit layout, require 9,163 nodes, 4,566 symbol indices,
+4,194,304 typed tokens, and the existing HashChain workspace. The checked
+encoder and decoder aggregates are 211,968,172 and 194,666,668 bytes. Keep the
+library defaults at 128 MiB aggregate and 64 MiB payload; only an explicit
+four-MiB application profile may raise compressed-payload capacity to the
+proven ceiling and aggregate capacity to 256 MiB. Require exact-limit and
+one-byte-short tests. Do not substitute an empirical payload bound or infer
+limits from the stream identity.

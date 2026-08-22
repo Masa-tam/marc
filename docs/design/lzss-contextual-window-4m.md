@@ -1,8 +1,9 @@
 # LZSS contextual 4 MiB window
 
-Status: accepted design after project version 0.3.0. The Dynamic Range,
-canonical contextual rANS, and contextual tANS vertical paths have complete
-external evidence. Contextual Blocked Huffman has an accepted staged design.
+Status: accepted design after project version 0.3.0. Dynamic Range, canonical
+contextual rANS, contextual tANS, and Contextual Blocked Huffman have complete
+external evidence. Contextual Adaptive Huffman has an accepted staged design
+under an explicit 256-MiB application policy.
 
 ## Purpose
 
@@ -37,8 +38,8 @@ The candidate backend identities remain unchanged:
 | Dynamic Range | `3/2` | complete vertical path |
 | canonical contextual rANS | `4/3` | complete vertical path |
 | contextual tANS | `5/2` | complete vertical path |
-| Contextual Blocked Huffman | `2/2` | accepted staged design |
-| Contextual Adaptive Huffman | `1/2` | deferred pending a memory proof |
+| Contextual Blocked Huffman | `2/2` | complete vertical path |
+| Contextual Adaptive Huffman | `1/2` | accepted opt-in staged design |
 
 Reservation of the shared pair does not admit any backend by itself. Each
 triple requires its own exact bounds, validator, encoder, decoder, public
@@ -153,9 +154,9 @@ Their table counts do not change, but their payload, token staging, serialized
 frame, and aggregate workspace ceilings must be rederived from the new
 decision bound.
 
-Contextual Blocked Huffman uses a 23-symbol distance alphabet. Its pooled and
-override descriptor maxima, payload ceiling, decode-table allocation, and
-aggregate workspace must be derived before its triple is admitted.
+Contextual Blocked Huffman uses a 23-symbol distance alphabet. Its completed
+profile retains 35 decode tables, a 2,588-byte descriptor ceiling, and
+`ceil(105F/8)` payload ceiling while fitting the default 128-MiB aggregate.
 
 Contextual Adaptive Huffman would require 4,566 symbol slots and:
 
@@ -163,11 +164,12 @@ Contextual Adaptive Huffman would require 4,566 symbol slots and:
 2*4,566 + 31 = 9,163 nodes
 ```
 
-The current conservative `ceil(267F/8)` payload rule exceeds 128 MiB for a
-4 MiB frame even before other workspace is counted. This backend therefore
-remains deferred. Admission requires a proven tighter safe bound or a bounded
-streaming redesign; the default 128 MiB aggregate policy and 64 MiB compressed
-payload limit are not raised merely to make it fit.
+The conservative `ceil(267F/8)` payload rule produces 139,984,896 bytes for a
+four-MiB frame. On the supported 64-bit layout, complete encoder and decoder
+aggregates are 211,968,172 and 194,666,668 bytes. Both fit an explicitly
+selected 256-MiB application policy. The default 128-MiB aggregate and 64-MiB
+compressed-payload limits remain unchanged; this backend is opt-in rather than
+deferred.
 
 The 128 MiB aggregate limit is a current safety default, not a permanent
 format constant. A later larger-window design may separate the profile's
@@ -215,17 +217,25 @@ The completed third-backend path is
 [LZSS contextual tANS 4 MiB window](lzss-contextual-tans-window-4m.md).
 Revision `2d5d582e974442a33151d0593c532e426e536e46` verifies its schema-45
 55-archive inventory through the recorded four-direction Windows and Linux
-exchange. The fourth-backend plan is
+exchange. The completed fourth-backend path is
 [LZSS contextual Blocked Huffman 4 MiB window](lzss-contextual-blocked-huffman-window-4m.md).
+Revision `e0ec10aef942c3ef9646b2332cec504ac176d4bf` verifies its schema-46
+56-archive inventory through the recorded four-direction Windows and Linux
+exchange. The fifth-backend plan is
+[LZSS contextual Adaptive Huffman 4 MiB window](lzss-contextual-adaptive-huffman-window-4m.md).
 
 ## Planned public policy
 
 The common C window-profile selector assigns value 2 to the exact 4 MiB
 identity. Value 0 remains 64 KiB and value 1 remains 1 MiB. Backend admission
 is independent: Contextual Dynamic Range, canonical contextual rANS, and
-contextual tANS accept value 2. Their completed CLI backends use the explicit
+contextual tANS, and Contextual Blocked Huffman accept value 2. Their completed CLI backends use the explicit
 `lzss-contextual-dynamic-range-4m`, `lzss-contextual-rans-4m`, and
-`lzss-contextual-tans-4m` names.
+`lzss-contextual-tans-4m` names, with
+`lzss-contextual-blocked-huffman-4m` completing the default-128-MiB group.
+Contextual Adaptive Huffman may accept the same selector only with its exact
+backend validation; its explicit CLI application raises payload and aggregate
+limits to the documented bounded 256-MiB policy.
 
 An exact public decoder admits only its selected dictionary/context pair; it
 does not infer a profile from `window_size`, descriptor size, or distance seen
@@ -241,7 +251,7 @@ canonical pair from the validated stream header.
 5. canonical contextual rANS;
 6. contextual tANS;
 7. Contextual Blocked Huffman;
-8. Contextual Adaptive Huffman only after its memory gate is solved.
+8. Contextual Adaptive Huffman under its explicit 256-MiB application policy.
 
 Each stage must retain old stream bytes, source defaults, and exact admission
 rules. Public names are added one backend at a time, not when shared groundwork
