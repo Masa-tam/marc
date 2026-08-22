@@ -220,9 +220,9 @@ to 29,360,128. The selector is not inferred from `window_size`: encoding
 validates the selected parameters and decoding rejects every other known
 identity before frame collection or raw publication. The selector and trailing
 reserved word reuse the former 64-bit reserved tail, preserving the 112-byte
-ABI-1 extent and the all-zero default. The explicit CLI names still expose only
-the first two profiles, and interoperability schema 40 includes only the
-selected 1 MiB name as its final experimental archive.
+ABI-1 extent and the all-zero default. All three explicit CLI names expose the
+exact profiles, and interoperability schema 45 includes the four-MiB name as
+its final experimental archive.
 
 The completion audit covers all required binary classes, deterministic mixed
 and one-byte chunk schedules, stable repeated terminal calls, and frame-atomic
@@ -241,13 +241,17 @@ decode tables followed by typed tokens. Capacity, alignment, and pairwise
 prefix non-overlap are checked before a handle is published.
 `MARC_LZSS_CONTEXTUAL_WINDOW_64K` remains the initializer default and selects
 `2/2 + 1/1 + 2/2`; `MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects
-`2/3 + 1/2 + 2/2`. The selector is exact rather than inferred from
-`window_size`, and decoding rejects the reciprocal identity before frame or
-raw publication. It and the trailing 32-bit reserved word reuse the former
-64-bit reserved tail, preserving the 112-byte ABI-1 extent and all-zero
-legacy meaning. No C++ token or table layout crosses the ABI. CLI, benchmark,
-fuzzing, and
-interoperability admission remain later milestones. Its public completion
+`2/3 + 1/2 + 2/2`; `MARC_LZSS_CONTEXTUAL_WINDOW_4M` selects
+`2/4 + 1/3 + 2/2`. The four-MiB profile uses `7F = 29,360,128` as its
+decision/block limit and a 55,050,240-byte payload limit. On supported 64-bit
+layouts its full encoder and decoder aggregate requirements are 126,880,348
+and 109,722,064 bytes, both within the unchanged 128-MiB default. The selector
+is exact rather than inferred from `window_size`, and decoding rejects either
+other identity before frame or raw publication. It and the trailing 32-bit
+reserved word reuse the former 64-bit reserved tail, preserving the 112-byte
+ABI-1 extent and all-zero legacy meaning. No C++ token or table layout crosses
+the ABI. Benchmark, fuzzing, and interoperability admission remain later
+milestones. Its public completion
 audit covers the required binary classes, deterministic whole and mixed chunk
 schedules, stable repeated terminal calls, and frame-atomic rejection of a
 corrupted, truncated, or trailing final frame.

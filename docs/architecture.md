@@ -5666,3 +5666,12 @@ aggregates on the supported 64-bit layout. Exact-limit succeeds and one byte
 less fails. HashChain produces and decodes a distance beyond one MiB, and the
 selected streaming lifecycle round-trips with one-byte input/output. Public C
 selectors, CLI, benchmark, fuzz, and interoperability admission remain closed.
+
+The four-MiB Contextual Blocked Huffman public boundary now admits existing
+ABI-1 window selector value 2 and the exact CLI name
+`lzss-contextual-blocked-huffman-4m`. Both select only identity
+`2/4 + 1/3 + 2/2`; the 64-KiB and one-MiB profiles reject it before raw
+publication, and the four-MiB profile reciprocally rejects them. Public
+workspace queries preserve the checked 126,880,348-byte encoder and
+109,722,064-byte decoder aggregates under the unchanged 128-MiB default.
+Benchmark, fuzz, and interoperability boundaries remain closed.

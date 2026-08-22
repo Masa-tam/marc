@@ -135,7 +135,7 @@ A full profile sets `max_frame_size` and LZ distance to four MiB,
    direct typed-token encode/decode, and their hand vectors.
 3. **Complete.** Admit exact complete-frame identity `2/4 + 1/3 + 2/2`, then add checked
    profile calculation and one-byte streaming with exact aggregate tests.
-4. Admit common public C window selector value 2 only for Contextual Blocked
+4. **Complete.** Admit common public C window selector value 2 only for Contextual Blocked
    Huffman, then add the explicit CLI name
    `lzss-contextual-blocked-huffman-4m`.
 5. Add the dependency-free benchmark and bounded dual-path decoder fuzzer;

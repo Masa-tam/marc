@@ -3748,6 +3748,20 @@ if(MARC_BUILD_TESTS)
                 "-DCLI_TRAILING_TEST=ON"
                 "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzss-contextual-blocked-huffman-1m-test-$<CONFIG>"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        add_test(NAME marc_cli_lzss_contextual_blocked_huffman_4m_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DCLI_CODEC=lzss-contextual-blocked-huffman-4m"
+                "-DCLI_DICTIONARY_VARIANT=04"
+                "-DCLI_CONTEXT_VARIANT=03"
+                "-DCLI_ENTROPY_ALGORITHM=02"
+                "-DCLI_ENTROPY_VARIANT=02"
+                "-DCLI_REJECT_CODEC=lzss-contextual-blocked-huffman-1m"
+                "-DCLI_REJECT_CODEC_2=lzss-contextual-blocked-huffman"
+                "-DCLI_REPEAT=128"
+                "-DCLI_TRAILING_TEST=ON"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzss-contextual-blocked-huffman-4m-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
         add_test(NAME marc_cli_lzss_contextual_adaptive_huffman_round_trip
             COMMAND ${CMAKE_COMMAND}
                 "-DMARC_CLI=$<TARGET_FILE:marc_cli>"

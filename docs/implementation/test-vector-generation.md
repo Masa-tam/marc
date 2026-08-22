@@ -11496,3 +11496,18 @@ one-byte streaming with explicit four-MiB admission and reciprocal one-MiB
 rejection. Finally require exact 4,194,304-byte profile inputs,
 55,052,892-byte encoded frames, 126,880,348/109,722,064 directional aggregates,
 one-byte-short failure, and exact-limit success.
+
+### TVG-0809
+
+Set public Contextual Blocked Huffman window profile value 2 with a four-MiB
+window and require workspace query, factory creation, exact stream identity
+`2/4 + 1/3 + 2/2`, and byte-exact round trip. Decode the same stream under
+profile value 1 and require malformed-stream status, zero published bytes, and
+unchanged output; then decode it under value 2. Reject unknown value 3.
+
+For a full four-MiB profile, require encoder aggregate 126,880,348 and decoder
+aggregate 109,722,064 bytes, one-byte-short failure, exact-limit success, and
+exact public workspace extents. List the CLI names in 64K/1M/4M order exactly
+once, reject `-4M`, emit dictionary/context bytes 4/3 with entropy 2/2, reject
+both older CLI names on decode, round-trip repeated input, and reject trailing
+data.

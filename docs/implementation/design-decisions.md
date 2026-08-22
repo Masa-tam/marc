@@ -19690,3 +19690,20 @@ a complete frame containing a match beyond one MiB, and one-byte streaming
 under an explicit private four-MiB admission. Crossed one-MiB decoding must
 publish no raw bytes. Keep public C selector, CLI, benchmark, fuzz, and
 interoperability boundaries closed.
+
+## DD-943: Publish the exact four-MiB Contextual Blocked Huffman profile
+
+- Date: 2026-08-22
+- Status: accepted
+
+Admit existing ABI-1 value `MARC_LZSS_CONTEXTUAL_WINDOW_4M` only in the
+Contextual Blocked Huffman configuration validator and map it to the completed
+four-MiB profile and streaming admission. Do not change the 112-byte config,
+ABI version, default selector, serialized fields, or aggregate default.
+
+Add only the exact CLI name `lzss-contextual-blocked-huffman-4m`. Configure
+four-MiB frames/windows, `7F` decisions, `ceil(105F/8)` payload, and 128 MiB
+through the public initializer/query/factory lifecycle. Require exact C
+workspace boundaries, reciprocal three-profile rejection without raw
+publication, case-sensitive inventory, canonical identity bytes, and CLI
+round trip. Keep benchmark, fuzz, and interoperability admission closed.

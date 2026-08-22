@@ -24920,3 +24920,34 @@ benchmark, fuzz target, or interoperability inventory changes.
   nineteen experimental benchmark smokes, forty-two benchmark smokes,
   documentation layout, and complete schema compatibility. Public, CLI,
   benchmark, fuzz, and interoperability admission remain closed.
+
+## CR-1018: 2026-08-22 - Public four-MiB Contextual Blocked Huffman profile
+
+- Authoring method: extended only the repository-owned ABI-1 selector mapper,
+  configuration validator, public workspace/factory lifecycle, common CLI
+  inventory, and exact-profile tests after the private lifecycle was complete.
+- References used: IR-0705 through IR-0706, DD-942 through DD-943, TVG-0808
+  through TVG-0809, CR-1017, and repository-owned four-MiB Contextual tANS C
+  and CLI architecture as an internal precedent. No new external technical
+  source was used.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman bindings, C APIs, command-line tools, source code, tests, vectors,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: reuse existing selector value 2 without ABI growth;
+  retain exact entropy identity 2/2 and the 128-MiB default; expose one
+  case-sensitive CLI name; and keep later outward boundaries closed.
+- Generated-code task description: publish exact C selection and CLI routing,
+  prove checked workspace limits and reciprocal profile rejection, and retain
+  byte-identical older profiles.
+- Similarity review: the changes extend marc's existing backend-specific
+  selector and common CLI patterns. No external implementation expression was
+  consulted or introduced.
+- Validation: C API, CLI inventory, and CLI four-MiB round trip pass in 1.34
+  and 1.30 seconds under MSVC and ClangCL. A sandboxed CMake configure could
+  not execute Python 3.14.5 and therefore silently registered only 3,192
+  tests; that incomplete run is not release evidence. Reconfiguration through
+  the formal external-tool route restored all seven tooling tests. The final
+  suites pass 3,199/3,199 in 208.81 and 211.01 seconds, including seven Python
+  tooling tests, nineteen experimental benchmark smokes, forty-two benchmark
+  smokes, documentation layout, and schema compatibility in 88.68 and 83.36
+  seconds. Benchmark, fuzz, and interoperability admission remain closed.

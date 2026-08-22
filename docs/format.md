@@ -6995,12 +6995,13 @@ limit is separately raised.
 
 The public C selector `MARC_LZSS_CONTEXTUAL_WINDOW_4M` has value 2 and selects
 the exact `2/4 + 1/3` pair. Contextual Dynamic Range and canonical contextual
-rANS and tANS accept it with their respective completed entropy triples. It is
+rANS, tANS, and Contextual Blocked Huffman accept it with their respective
+completed entropy triples. It is
 not serialized and is not inferred from any size. It does not change the
 64 KiB initializer or the 128 MiB aggregate default; Dynamic Range encoding
 requires an explicit larger aggregate, while rANS and tANS fit the default.
-Other contextual C factories reject the known selector until their backend-
-specific paths are complete.
+Contextual Adaptive Huffman rejects the known selector until its backend-
+specific path is complete.
 
 The CLI name `lzss-contextual-dynamic-range-4m` selects this exact triple and
 uses four-MiB frames/windows plus an explicit 256-MiB application aggregate
@@ -7186,3 +7187,12 @@ Interoperability schema 45 appends `lzss-contextual-tans-4m` as archive 55
 after the frozen 54-entry schema-44 inventory. Generation requires exact
 identity `2/4 + 1/3 + 5/2`; verification decodes and re-encodes the complete
 archive byte-identically. This admission adds no serialized rule.
+
+The public C selector value 2 and CLI name
+`lzss-contextual-blocked-huffman-4m` now admit exact Contextual Blocked
+Huffman identity `2/4 + 1/3 + 2/2`. They add no serialized field and do not
+infer identity from frame or window size. Application limits are four-MiB
+frames/windows, `7F = 29,360,128` decisions, a 55,050,240-byte payload, and
+the unchanged 128-MiB aggregate policy. Exact-profile decoding rejects the
+other two known window identities before raw publication. Benchmark, fuzz,
+and interoperability admission remain separate later boundaries.

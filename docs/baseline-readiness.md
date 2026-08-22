@@ -2676,3 +2676,19 @@ completed in 217.65 seconds, including seven Python tooling tests, nineteen
 experimental benchmark smokes, forty-two benchmark smokes, documentation
 layout, and complete schema compatibility. Public and outward admission stays
 closed.
+
+### BR-0161
+
+The public C lifecycle and explicit CLI now admit the exact four-MiB
+Contextual Blocked Huffman profile `2/4 + 1/3 + 2/2`. Existing ABI-1 selector
+value 2 changes no structure extent or default. Public workspace queries prove
+the 126,880,348-byte encoder and 109,722,064-byte decoder aggregates, and
+three-profile crossed decoding publishes no raw bytes. The CLI name
+`lzss-contextual-blocked-huffman-4m` is case-sensitive, ordered after the two
+older names, emits the exact identity, and rejects both older selectors.
+
+Both final suites pass 3,199/3,199 with a 600-second per-test limit. MSVC and
+ClangCL complete in 208.81 and 211.01 seconds, including seven Python tooling
+tests, nineteen experimental benchmark smokes, forty-two benchmark smokes,
+documentation layout, and complete schema compatibility. Benchmark, fuzz, and
+interoperability admission remain closed.

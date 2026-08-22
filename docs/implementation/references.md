@@ -6350,3 +6350,12 @@ state machines, and the completed four-MiB tANS lifecycle as an internal
 architectural precedent. No external compressor, Huffman implementation,
 source code, test vector, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0706
+
+The four-MiB Contextual Blocked Huffman public C and CLI admission uses
+IR-0705, DD-942, TVG-0808, the repository-owned ABI-1 common window selector,
+backend-specific profile/admission mappers, checked workspace query, factory,
+common CLI driver, and exact-profile round-trip harness. No external C API,
+compressor, Huffman binding, command-line interface, source code, test vector,
+patent, pseudocode, or optimization description was consulted.

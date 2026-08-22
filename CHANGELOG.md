@@ -36,6 +36,11 @@ format versions, and C ABI versions are independent namespaces.
   the selected dictionary and context layout consistently. A distance-131,072
   regression proves exact agreement with the independently materialized
   field-operation path and exact typed-token reconstruction.
+- Added the four-MiB LZSS Contextual Blocked Huffman public C profile and the
+  explicit `lzss-contextual-blocked-huffman-4m` CLI selector. The profile
+  admits only Format 2 identity `2/4 + 1/3 + 2/2`, retains the 128-MiB
+  aggregate default, and reciprocally rejects the 64-KiB and one-MiB
+  identities before raw publication.
 
 ## 0.3.0 - 2026-08-13
 
