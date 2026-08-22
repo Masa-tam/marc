@@ -11,6 +11,19 @@
 namespace marc::entropy::internal {
 namespace {
 
+[[nodiscard]] constexpr std::size_t maximum_records_size(
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    switch (variant) {
+    case context::internal::LzssFieldContextVariant::field_context_64k:
+        return contextual_compact_model_max_records_size_v1;
+    case context::internal::LzssFieldContextVariant::field_context_1m:
+        return contextual_compact_model_max_records_size_v2;
+    case context::internal::LzssFieldContextVariant::field_context_4m:
+        return contextual_compact_model_max_records_size_v3;
+    }
+    return 0;
+}
+
 enum class RecordMode : std::uint8_t {
     dense = 0,
     sparse = 1,
@@ -106,11 +119,7 @@ ContextualCompactModelAnalysis analyze_contextual_compact_model(
     if (analysis.active_mask == 0) {
         analysis.error =
             ContextualCompactModelError::invalid_active_context_mask;
-    } else if (analysis.records_size
-               > (variant == context::internal::LzssFieldContextVariant::
-                                  field_context_64k
-                      ? contextual_compact_model_max_records_size_v1
-                      : contextual_compact_model_max_records_size_v2)) {
+    } else if (analysis.records_size > maximum_records_size(variant)) {
         analysis.error = ContextualCompactModelError::arithmetic_overflow;
     }
     return analysis;
@@ -317,5 +326,10 @@ static_assert(contextual_compact_model_max_records_size_v2
                   + 17 * (1 + 2 * (256 - 1))
                   + 3 * (1 + 2 * (8 - 1))
                   + 8 * (1 + 2 * (21 - 1)));
+static_assert(contextual_compact_model_max_records_size_v3
+              == 3 * (1 + 2 * (2 - 1))
+                  + 17 * (1 + 2 * (256 - 1))
+                  + 3 * (1 + 2 * (8 - 1))
+                  + 8 * (1 + 2 * (23 - 1)));
 
 } // namespace marc::entropy::internal

@@ -184,6 +184,51 @@ TEST(ContextualRansEncoder, ExtendedLayoutRoundTripsDistanceAndBypass) {
               ContextualRansEncodeError::invalid_bypass_width);
 }
 
+TEST(ContextualRansEncoder, FourMiBLayoutRoundTripsClass22AndBypass) {
+    constexpr std::array operations{
+        ModeledOperation{ModeledOperationKind::symbol, 23, 23, 22, 0},
+        ModeledOperation{
+            ModeledOperationKind::bypass_bits, 0, 0, 0x2abcde, 22},
+    };
+    constexpr auto variant = LzssFieldContextVariant::field_context_4m;
+
+    ContextualRansDescriptor descriptor{};
+    const auto plan = plan_contextual_rans_operations(
+        operations, {}, descriptor, variant);
+    ASSERT_EQ(plan.error, ContextualRansEncodeError::none);
+    EXPECT_EQ(plan.decision_count, 23U);
+    EXPECT_EQ(descriptor.frequency_entry_count,
+              lzss_field_context_frequency_entries_v3);
+    const auto offset = lzss_field_context_offsets_v3[23];
+    EXPECT_EQ(descriptor.frequencies[offset + 22], 4096U);
+
+    std::vector<std::byte> payload(plan.payload_size, std::byte{0xa5});
+    ASSERT_EQ(encode_contextual_rans_operations(
+                  operations, {}, payload, descriptor, variant).error,
+              ContextualRansEncodeError::none);
+    auto table_storage = tables();
+    ContextualRansDecoder decoder;
+    ASSERT_EQ(begin_decoder(
+                  decoder, descriptor, payload, table_storage, variant)
+                  .decode.error,
+              ContextualRansDecodeError::none);
+    std::uint32_t value{0xccccccccU};
+    ASSERT_EQ(decoder.decode_symbol(23, 23, value).error,
+              ContextualRansDecodeError::none);
+    EXPECT_EQ(value, 22U);
+    value = 0xccccccccU;
+    ASSERT_EQ(decoder.decode_bypass(22, value).error,
+              ContextualRansDecodeError::none);
+    EXPECT_EQ(value, 0x2abcdeU);
+    EXPECT_EQ(decoder.finish(2, 23).error,
+              ContextualRansDecodeError::none);
+
+    ContextualRansModelBuilder builder{variant};
+    EXPECT_EQ(builder.add_bypass(22, 0), ContextualRansEncodeError::none);
+    EXPECT_EQ(builder.add_bypass(23, 0),
+              ContextualRansEncodeError::invalid_bypass_width);
+}
+
 TEST(ContextualRansEncoder, NormalizesAndRoundTripsRenormalizedContext) {
     std::vector<ModeledOperation> operations;
     operations.reserve(512);

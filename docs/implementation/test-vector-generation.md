@@ -11156,3 +11156,17 @@ encoded frame. Require decoder views of 51,093,504 bytes and aggregate
 and raw staging. Record their exact headroom below 128 MiB. No implementation,
 selector admission, emitted stream, benchmark, fuzzer, or interoperability
 inventory changes in this design-only stage.
+
+### TVG-0786
+
+Serialize a one-Literal descriptor under context variant 3 and require only
+its little-endian frequency-entry count to change to 4,566; parse it back and
+reject it under variant 2 without publishing a descriptor. Construct every
+context as a dense model and require the exact 9,121-byte maximum descriptor
+and complete round trip.
+
+Encode one Symbol request in context 23 with alphabet 23 and value 22 followed
+by a 22-bit bypass value through canonical contextual rANS, then require the
+scalar decoder to recover both values and exact decision counts. Reject bypass
+width 23. Run all older descriptor vectors unchanged under MSVC and ClangCL;
+outer rANS stream/frame/profile/public selectors remain unchanged.

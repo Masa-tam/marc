@@ -24184,3 +24184,30 @@ discarded and the reviewed seed retained.
 - Validation: documentation layout, chronology, formulas, and cross-links are
   checked in this design-only stage. No codec, ABI, CLI, emitted stream,
   benchmark, fuzz target, or interoperability inventory changes.
+
+## CR-0993: 2026-08-22 - Four-MiB contextual rANS descriptor boundary
+
+- Authoring method: extended marc's native compact frequency/record storage
+  and exact per-variant maximum selection to the already implemented context
+  variant 3, then exercised the existing scalar rANS operation lifecycle.
+- References used: IR-0682 through IR-0683, DD-919 through DD-920, TVG-0785
+  through TVG-0786, CR-0992, and repository-owned compact-model and contextual
+  rANS code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  rANS implementations, descriptor formats, source code, tests, corpora,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: grow only native capacities; select exact maxima by
+  variant; retain canonical grammar and entropy identity; and leave every
+  outer/public boundary closed.
+- Generated-code task description: implement and test the 4,566-entry,
+  9,121-byte contextual rANS descriptor/model boundary with exact maximum,
+  crossed-layout rejection, class 22, and 22-bit bypass recovery.
+- Similarity review: capacity differences, maximum sizes, switches, and
+  vectors follow directly from marc's selected layout and existing compact
+  grammar. No external implementation expression was consulted or introduced.
+- Validation: targeted contextual rANS format/encoder/decoder suites pass 34
+  tests under both MSVC and ClangCL. All 3,160 registered tests pass in 207.58
+  and 208.98 seconds respectively with a 600-second per-test limit, including
+  seven Python tooling tests, seventeen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. Stream/frame/profile/public
+  rANS admission remains unchanged.

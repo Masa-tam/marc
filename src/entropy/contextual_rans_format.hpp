@@ -20,7 +20,7 @@ inline constexpr std::uint16_t contextual_rans_context_count =
 inline constexpr std::size_t contextual_rans_frequency_entries =
     marc::context::internal::lzss_field_context_frequency_entries_v1;
 inline constexpr std::size_t contextual_rans_frequency_capacity =
-    marc::context::internal::lzss_field_context_frequency_entries_v2;
+    marc::context::internal::lzss_field_context_frequency_entries_v3;
 inline constexpr std::uint64_t contextual_rans_decode_table_entries =
     static_cast<std::uint64_t>(contextual_rans_context_count)
     * contextual_rans_total_frequency;
@@ -31,8 +31,9 @@ inline constexpr std::size_t contextual_rans_max_descriptor_size =
 inline constexpr std::size_t contextual_rans_max_descriptor_size_v1 =
     contextual_rans_max_descriptor_size;
 inline constexpr std::size_t contextual_rans_max_descriptor_size_v2 = 9089;
+inline constexpr std::size_t contextual_rans_max_descriptor_size_v3 = 9121;
 inline constexpr std::size_t contextual_rans_descriptor_capacity =
-    contextual_rans_max_descriptor_size_v2;
+    contextual_rans_max_descriptor_size_v3;
 
 using ContextualRansFrequencies = std::array<
     std::uint16_t, contextual_rans_frequency_capacity>;

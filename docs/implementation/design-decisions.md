@@ -19295,3 +19295,19 @@ MiB. Require checked runtime sizing and one-short tests; do not treat recorded
 native extents as portable struct serialization. Implement descriptor,
 frame, profile/streaming, C/CLI/benchmark, fuzz, and interoperability in that
 order, closing every later boundary until its stage is complete.
+
+## DD-920: Expand only the rANS descriptor/model value boundary first
+
+- Date: 2026-08-22
+- Status: accepted
+
+Increase native compact-frequency capacity from 4,550 to 4,566 entries,
+maximum compact records from 9,069 to 9,101 bytes, and canonical rANS
+descriptor capacity from 9,089 to 9,121 bytes. Select exact v1/v2/v3 maxima by
+context variant; do not widen an old variant's accepted extent.
+
+Require canonical variant-3 dense/sparse parsing and serialization, crossed-
+layout rejection, exact maximum construction, and scalar operation round trip
+for distance class 22 plus a 22-bit bypass. Keep every stream/frame/profile and
+public rANS admission closed in this stage. Native capacity growth may rebuild
+other contextual owners but must not alter their serialized bytes.

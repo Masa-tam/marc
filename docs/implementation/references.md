@@ -6139,3 +6139,12 @@ contextual rANS format/profile, compact model, typed-token layout, HashChain
 workspace calculator, and C hard limits. No external compressor, rANS
 implementation, large-window format, source code, test, benchmark, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0683
+
+The four-MiB contextual rANS descriptor/model boundary uses IR-0682, DD-919,
+TVG-0785, the repository-owned compact model grammar, contextual rANS format,
+selected field-context layout, checked serialization, operation encoder, and
+scalar decoder. No external rANS implementation, descriptor format, source
+code, test, malformed corpus, patent, pseudocode, or optimization description
+was consulted.

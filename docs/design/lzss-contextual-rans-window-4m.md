@@ -1,7 +1,8 @@
 # LZSS contextual rANS 4 MiB window
 
 Status: accepted staged design after completion of the four-MiB Contextual
-Dynamic Range vertical path.
+Dynamic Range vertical path. The descriptor/model boundary is implemented;
+outer rANS frame admission remains closed.
 
 ## Purpose and identity
 

@@ -15,16 +15,18 @@ inline constexpr std::size_t contextual_compact_model_max_records_size_v1 =
     9005;
 inline constexpr std::size_t contextual_compact_model_max_records_size_v2 =
     9069;
+inline constexpr std::size_t contextual_compact_model_max_records_size_v3 =
+    9101;
 inline constexpr std::size_t contextual_compact_model_max_records_size =
     contextual_compact_model_max_records_size_v1;
 inline constexpr std::size_t contextual_compact_model_record_capacity =
-    contextual_compact_model_max_records_size_v2;
+    contextual_compact_model_max_records_size_v3;
 inline constexpr std::uint32_t contextual_compact_model_total_frequency =
     UINT32_C(4096);
 
 using ContextualCompactFrequencies = std::array<
     std::uint16_t,
-    context::internal::lzss_field_context_frequency_entries_v2>;
+    context::internal::lzss_field_context_frequency_entries_v3>;
 
 enum class ContextualCompactModelError : std::uint8_t {
     none,

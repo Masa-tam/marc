@@ -12,6 +12,19 @@
 namespace marc::entropy::internal {
 namespace {
 
+[[nodiscard]] constexpr std::size_t maximum_descriptor_size(
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    switch (variant) {
+    case context::internal::LzssFieldContextVariant::field_context_64k:
+        return contextual_rans_max_descriptor_size_v1;
+    case context::internal::LzssFieldContextVariant::field_context_1m:
+        return contextual_rans_max_descriptor_size_v2;
+    case context::internal::LzssFieldContextVariant::field_context_4m:
+        return contextual_rans_max_descriptor_size_v3;
+    }
+    return 0;
+}
+
 [[nodiscard]] ContextualRansFormatError map_model_error(
     const ContextualCompactModelError error) noexcept {
     switch (error) {
@@ -144,10 +157,7 @@ ContextualRansFormatError validate_contextual_rans_descriptor(
         return model_error;
     }
     std::size_t total_size{};
-    const auto maximum_size =
-        variant == context::internal::LzssFieldContextVariant::field_context_64k
-        ? contextual_rans_max_descriptor_size_v1
-        : contextual_rans_max_descriptor_size_v2;
+    const auto maximum_size = maximum_descriptor_size(variant);
     if (!core::checked_add(
             contextual_rans_prefix_size,
             analysis.records_size, total_size)
@@ -179,10 +189,7 @@ ContextualRansFormatError parse_contextual_rans_descriptor(
         != context::internal::LzssFieldContextLayoutError::none) {
         return ContextualRansFormatError::unsupported_context_variant;
     }
-    const auto maximum_size =
-        variant == context::internal::LzssFieldContextVariant::field_context_64k
-        ? contextual_rans_max_descriptor_size_v1
-        : contextual_rans_max_descriptor_size_v2;
+    const auto maximum_size = maximum_descriptor_size(variant);
     if (input.size() < contextual_rans_min_descriptor_size
         || input.size() > maximum_size) {
         return ContextualRansFormatError::invalid_descriptor_size;
@@ -284,6 +291,9 @@ static_assert(contextual_rans_max_descriptor_size
 static_assert(contextual_rans_max_descriptor_size_v2
               == contextual_rans_prefix_size
                   + contextual_compact_model_max_records_size_v2);
+static_assert(contextual_rans_max_descriptor_size_v3
+              == contextual_rans_prefix_size
+                  + contextual_compact_model_max_records_size_v3);
 static_assert(contextual_rans_total_frequency
               == contextual_compact_model_total_frequency);
 

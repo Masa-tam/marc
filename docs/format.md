@@ -6983,3 +6983,13 @@ The shared typed-token/context implementation recognizes the exact pair and
 its layout internally. Only the Dynamic Range private lifecycle described
 above currently admits a four-MiB entropy triple; other backend-specific entry
 points continue to admit only their previously completed pairs.
+
+The standalone canonical contextual rANS descriptor/model boundary recognizes
+context variant 3 without admitting an outer rANS frame. Its frequency storage
+has 4,566 entries and its maximum compact descriptor is 9,121 bytes. The
+20-byte prefix, canonical dense/sparse grammar, table log 12, total frequency
+4,096, scalar state, payload arithmetic, and all old descriptor bytes remain
+unchanged. A context-variant-3 operation may use distance alphabet 23 and a
+22-bit bypass; crossed descriptor/layout selections are rejected atomically.
+Stream-header, complete-frame, profile, public, CLI, and interoperability rANS
+admission remain closed.
