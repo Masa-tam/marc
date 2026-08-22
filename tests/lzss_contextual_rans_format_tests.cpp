@@ -48,6 +48,16 @@ canonical_stream_vector() {
     return stream;
 }
 
+[[nodiscard]] LzssContextualRansStreamHeader stream_config_4m() {
+    auto stream = stream_config();
+    stream.frame_size = UINT32_C(1) << 22;
+    stream.dictionary.window_size = UINT32_C(1) << 22;
+    stream.dictionary_variant = 4;
+    stream.context_variant = 3;
+    stream.frequency_entry_count = 4566;
+    return stream;
+}
+
 } // namespace
 
 TEST(LzssContextualRansStreamFormat, ParsesAndSerializesCanonicalHeader) {
@@ -154,4 +164,55 @@ TEST(LzssContextualRansStreamFormat,
     crossed.frequency_entry_count = 4518;
     EXPECT_EQ(validate_lzss_contextual_rans_stream_header(crossed, {}),
               LzssContextualRansStreamHeaderError::invalid_entropy_parameters);
+}
+
+TEST(LzssContextualRansStreamFormat,
+     RoundTripsFourMiBIdentityAndSelectsSevenFBound) {
+    const auto stream = stream_config_4m();
+    std::array<std::byte, lzss_contextual_rans_stream_header_size> encoded{};
+    ASSERT_EQ(serialize_lzss_contextual_rans_stream_header(
+                  stream, {}, encoded),
+              LzssContextualRansStreamHeaderError::none);
+    EXPECT_EQ(encoded[14], std::byte{0x04});
+    EXPECT_EQ(encoded[98], std::byte{0x03});
+    EXPECT_EQ(encoded[84], std::byte{0xd6});
+    EXPECT_EQ(encoded[85], std::byte{0x11});
+
+    LzssContextualRansStreamHeader parsed{};
+    std::size_t consumed{};
+    ASSERT_EQ(parse_lzss_contextual_rans_stream_header(
+                  encoded, {}, parsed, consumed),
+              LzssContextualRansStreamHeaderError::none);
+    EXPECT_EQ(consumed, encoded.size());
+    EXPECT_EQ(parsed.dictionary.window_size, UINT32_C(1) << 22);
+    EXPECT_EQ(parsed.dictionary_variant, 4U);
+    EXPECT_EQ(parsed.context_variant, 3U);
+    EXPECT_EQ(parsed.frequency_entry_count, 4566U);
+
+    auto crossed = stream;
+    crossed.context_variant = 2;
+    EXPECT_EQ(validate_lzss_contextual_rans_stream_header(crossed, {}),
+              LzssContextualRansStreamHeaderError::contradictory_parameters);
+    crossed = stream;
+    crossed.dictionary_variant = 3;
+    EXPECT_EQ(validate_lzss_contextual_rans_stream_header(crossed, {}),
+              LzssContextualRansStreamHeaderError::contradictory_parameters);
+
+    auto small = stream_config();
+    small.frame_size = 5;
+    small.original_size = 5;
+    LzssContextualRansFrameHeader header{
+        0, 0, 5, 1, 5, 32, 8,
+        static_cast<std::uint32_t>(
+            marc::entropy::internal::contextual_rans_min_descriptor_size),
+        0, 0};
+    EXPECT_EQ(validate_lzss_contextual_rans_frame_header(
+                  header, {small, {}, 0, 0}),
+              LzssContextualRansFrameHeaderError::contradictory_counts);
+    auto selected = stream;
+    selected.frame_size = 5;
+    selected.original_size = 5;
+    EXPECT_EQ(validate_lzss_contextual_rans_frame_header(
+                  header, {selected, {}, 0, 0}),
+              LzssContextualRansFrameHeaderError::none);
 }

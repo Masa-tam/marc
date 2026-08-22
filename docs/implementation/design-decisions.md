@@ -19311,3 +19311,20 @@ layout rejection, exact maximum construction, and scalar operation round trip
 for distance class 22 plus a 22-bit bypass. Keep every stream/frame/profile and
 public rANS admission closed in this stage. Native capacity growth may rebuild
 other contextual owners but must not alter their serialized bytes.
+
+## DD-921: Admit the four-MiB rANS decoder before its encoder lifecycle
+
+- Date: 2026-08-22
+- Status: accepted
+
+Open exact triple `2/4 + 1/3 + 4/3` through private stream parse/serialize,
+frame-header validation, descriptor preflight, token decode, and atomic raw
+reconstruction. Select descriptor maximum and raw decision multiplier from the
+validated layout so variant 3 uses 9,121 bytes and `7F`, while old variants
+retain frozen bounds.
+
+Generate the first-distance fixture through the already admitted direct token
+rANS encoder, not the complete-frame encoder. Require a real distance
+1,048,577 Match, exact reconstruction, and one-entry-short token/raw failures.
+Keep complete-frame encoding explicitly closed and preserve profile,
+streaming, public, benchmark, fuzzing, and interoperability boundaries.

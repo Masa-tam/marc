@@ -37,6 +37,17 @@ using marc::entropy::internal::contextual_rans_decode_table_entries;
     return stream;
 }
 
+[[nodiscard]] LzssContextualRansStreamHeader stream_for_4m(
+    const std::uint64_t original_size) {
+    auto stream = stream_for(original_size);
+    stream.frame_size = static_cast<std::uint32_t>(original_size);
+    stream.dictionary.window_size = UINT32_C(1) << 22;
+    stream.dictionary_variant = 4;
+    stream.context_variant = 3;
+    stream.frequency_entry_count = 4566;
+    return stream;
+}
+
 [[nodiscard]] std::vector<std::byte> documented_literal_frame() {
     std::vector<std::byte> bytes(98);
     bytes[0] = std::byte{0x4d}; bytes[1] = std::byte{0x52};
@@ -243,6 +254,27 @@ TEST(LzssContextualRansFrameEncoder,
         stream, limits, 0, 0, workspace_raw, workspace_tokens);
     EXPECT_EQ(result.error,
               LzssContextualRansFrameEncodeError::workspace_limit);
+}
+
+TEST(LzssContextualRansFrameEncoder,
+     FourMiBIdentityRemainsClosedAndOutputAtomic) {
+    constexpr std::array raw{std::byte{'A'}};
+    const auto stream = stream_for_4m(raw.size());
+    std::array<LzssTypedToken, 1> tokens{};
+    auto plan = plan_lzss_contextual_rans_frame(
+        stream, {}, 0, 0, raw, tokens);
+    EXPECT_EQ(plan.error,
+              LzssContextualRansFrameEncodeError::invalid_stream);
+
+    std::array<std::byte, 256> output{};
+    output.fill(std::byte{0xa5});
+    const auto encoded = encode_lzss_contextual_rans_frame(
+        stream, {}, 0, 0, raw, tokens, output);
+    EXPECT_EQ(encoded.error,
+              LzssContextualRansFrameEncodeError::invalid_stream);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
 }
 
 TEST(LzssContextualRansFrameEncoder,

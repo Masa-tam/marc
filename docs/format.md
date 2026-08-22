@@ -6991,5 +6991,14 @@ has 4,566 entries and its maximum compact descriptor is 9,121 bytes. The
 4,096, scalar state, payload arithmetic, and all old descriptor bytes remain
 unchanged. A context-variant-3 operation may use distance alphabet 23 and a
 22-bit bypass; crossed descriptor/layout selections are rejected atomically.
-Stream-header, complete-frame, profile, public, CLI, and interoperability rANS
-admission remain closed.
+That descriptor-only stage left stream-header, complete-frame, profile,
+public, CLI, and interoperability rANS admission closed.
+
+The private rANS stream/header and complete-frame decoder now admit exact
+triple `2/4 + 1/3 + 4/3`. Stream parsing accepts only the three canonical
+dictionary/context pairs. Variant 3 selects the 9,121-byte descriptor ceiling,
+`7F` raw decision bound, 32-decision token bound, 23-symbol distance fields,
+and 22-bit bypass. Complete decoding remains atomic across table, token, and
+raw workspaces. The complete-frame encoder is explicitly closed for this
+triple; profile, streaming, public C, CLI, benchmark, fuzzing, and
+interoperability rANS admission remain later boundaries.

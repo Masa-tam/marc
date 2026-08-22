@@ -11170,3 +11170,18 @@ by a 22-bit bypass value through canonical contextual rANS, then require the
 scalar decoder to recover both values and exact decision counts. Reject bypass
 width 23. Run all older descriptor vectors unchanged under MSVC and ClangCL;
 outer rANS stream/frame/profile/public selectors remain unchanged.
+
+### TVG-0787
+
+Round-trip a Format 2 rANS stream header with exact identities
+`2/4 + 1/3 + 4/3`, four-MiB window, and frequency count 4,566. Reject crossed
+known pairs. At raw size five, require decision count 32 to fail the old `6F`
+profile and pass variant 3's `7F` plus 32-per-token bounds.
+
+Construct 1,048,577 bytes of history from one Literal, 4,064 distance-one
+Matches of length 258, and one distance-one Match of length 64. Append a
+length-258 Match at distance 1,048,577, encode only the typed-token rANS
+descriptor/payload as a fixture oracle, and require complete-frame decoder
+reconstruction to all `A` bytes. Reject token and raw workspaces one entry
+short without publication. Prove the complete-frame encoder rejects the same
+identity without changing output.

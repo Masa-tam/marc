@@ -123,6 +123,11 @@ template <bool UseHashChain>
         result.error = LzssContextualRansFrameEncodeError::invalid_stream;
         return result;
     }
+    if (selected.layout.context_variant
+        == context::internal::LzssFieldContextVariant::field_context_4m) {
+        result.error = LzssContextualRansFrameEncodeError::invalid_stream;
+        return result;
+    }
     if (!exact_input_size(stream, output_already_committed,
                           raw_input.size())) {
         result.error = LzssContextualRansFrameEncodeError::input_size_mismatch;
@@ -304,7 +309,10 @@ template <bool UseHashChain>
         stream.dictionary_variant, stream.context_algorithm,
         stream.context_variant);
     if (selected.error
-        != context::internal::LzssFieldContextLayoutError::none) {
+            != context::internal::LzssFieldContextLayoutError::none
+        || selected.layout.context_variant
+               == context::internal::LzssFieldContextVariant::
+                   field_context_4m) {
         result.error = LzssContextualRansFrameEncodeError::invalid_stream;
         return result;
     }

@@ -6148,3 +6148,12 @@ selected field-context layout, checked serialization, operation encoder, and
 scalar decoder. No external rANS implementation, descriptor format, source
 code, test, malformed corpus, patent, pseudocode, or optimization description
 was consulted.
+
+### IR-0684
+
+The four-MiB contextual rANS decoder boundary uses IR-0682 through IR-0683,
+DD-919 through DD-920, TVG-0785 through TVG-0786, the repository-owned Format
+2 rANS stream/frame validator, direct typed-token rANS oracle, complete-frame
+decoder, typed reconstructor, and checked workspace contracts. No external
+compressor, rANS frame format, source code, test vector, malformed corpus,
+patent, pseudocode, or optimization description was consulted.

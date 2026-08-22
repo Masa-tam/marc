@@ -24211,3 +24211,32 @@ discarded and the reviewed seed retained.
   seven Python tooling tests, seventeen experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`. Stream/frame/profile/public
   rANS admission remains unchanged.
+
+## CR-0994: 2026-08-22 - Four-MiB contextual rANS decoder boundary
+
+- Authoring method: extended marc's rANS stream/frame validators and direct
+  typed-token decoder using the already admitted descriptor and shared layout,
+  while adding an explicit complete-frame encoder gate.
+- References used: IR-0682 through IR-0684, DD-919 through DD-921, TVG-0785
+  through TVG-0787, CR-0992 through CR-0993, and repository-owned frame,
+  direct-token rANS, reconstruction, and checked-limit code. No new external
+  technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  rANS frame formats, source code, test vectors, malformed corpora, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: select `7F` and descriptor size from the validated
+  layout; generate the semantic fixture below the complete-frame boundary;
+  keep the encoder closed; and test one-short publication atomicity.
+- Generated-code task description: admit exact private decoder triple
+  `2/4 + 1/3 + 4/3`, including header round trip, selected count bounds, a real
+  distance-1,048,577 Match, short workspaces, and encoder rejection.
+- Similarity review: identity admission, switches, limits, fixture history,
+  and failure rules follow directly from marc's preceding shared and
+  descriptor boundaries. No external implementation expression was consulted
+  or introduced.
+- Validation: 22 targeted stream-format/frame-decoder/frame-encoder tests pass
+  under MSVC and ClangCL. All 3,163 registered tests pass in 211.73 and 206.87
+  seconds respectively with a 600-second per-test limit, including seven
+  Python tooling tests, seventeen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. Profile, streaming, public,
+  benchmark, fuzzing, and interoperability admission remain unchanged.
