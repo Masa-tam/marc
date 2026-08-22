@@ -2,8 +2,8 @@
 
 Status: accepted staged design after completion of the four-MiB Contextual
 Dynamic Range vertical path. The descriptor/model, private complete-frame,
-profile, one-byte streaming, public C, and CLI boundaries are implemented;
-benchmark and later surfaces remain closed.
+profile, one-byte streaming, public C, CLI, and benchmark boundaries are
+implemented; fuzzing and interoperability surfaces remain closed.
 
 ## Purpose and identity
 

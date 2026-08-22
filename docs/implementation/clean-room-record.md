@@ -24348,3 +24348,31 @@ discarded and the reviewed seed retained.
   Python tooling tests, seventeen experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`. The 53-archive inventory
   remains byte-exact; benchmark, fuzzing, and schema admission are unchanged.
+
+## CR-0999: 2026-08-22 - Four-MiB contextual rANS benchmark boundary
+
+- Authoring method: extended the repository-owned dependency-free benchmark
+  enum, profile helpers, checked output-capacity calculation, parser/report
+  path, and CTest smoke with the completed public profile.
+- References used: IR-0682 through IR-0689, DD-919 through DD-926, TVG-0785
+  through TVG-0792, CR-0992 through CR-0998, and repository-owned public C,
+  CLI, and benchmark code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  rANS benchmarks, corpus measurements, source code, tests, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: centralize rANS window selection; retain 128 MiB;
+  derive `112 + 14N + 9,193K`; record ratio/workspace but not infer speed from
+  README; and leave fuzzing and interoperability closed.
+- Generated-code task description: add dependency-free four-MiB contextual
+  rANS benchmarking through the public C lifecycle with checked capacity,
+  directional workspace reporting, exact round trip, and Release smoke.
+- Similarity review: helpers, arithmetic, dispatch, and report fields follow
+  directly from marc's completed three-profile Dynamic Range benchmark and
+  existing rANS benchmark paths. No external expression was consulted.
+- Validation: both focused Release smokes pass and independently report 4,326
+  input bytes, 3,006 encoded bytes, ratio 0.695, and 114,017,257 peak caller-
+  owned workspace. All 3,168 registered tests pass in 193.33 and 199.36
+  seconds under MSVC and ClangCL respectively with a 600-second per-test
+  limit, including seven Python tooling tests, eighteen experimental benchmark
+  smokes, and `marc_interoperability_schema_compatibility`. The 53-archive
+  inventory remains byte-exact; fuzzing and schema admission are unchanged.

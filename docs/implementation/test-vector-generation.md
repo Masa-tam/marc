@@ -11241,3 +11241,16 @@ trailing byte. Exercise the four-MiB application configuration with a small
 fixture so the test verifies the full public query/factory lifecycle without
 making runtime proportional to the maximum frame. Run under MSVC and ClangCL;
 leave benchmark, fuzzing, and interoperability inventories unchanged.
+
+### TVG-0792
+
+Run `marc_benchmark lzss-contextual-rans-4m README.md 1` under MSVC and
+ClangCL Release builds. Require successful pre-timing encode/decode through
+the public C lifecycle, exact codec name, finite ratio and throughput fields,
+all six positive directional workspace fields, and peak workspace equal to
+the larger directional aggregate.
+
+For the 4,326-byte repository README require both builds to produce 3,006
+bytes, ratio 0.695, and peak caller-owned workspace 114,017,257 bytes. Record
+throughput only as a smoke observation. Register the command as the eighteenth
+experimental benchmark smoke; do not change fuzzing or interoperability.

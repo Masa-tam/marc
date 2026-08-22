@@ -56,7 +56,8 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-dynamic-range-1m corpus.bin 5`,
 `marc_benchmark lzss-contextual-dynamic-range-4m corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans corpus.bin 5`,
-`marc_benchmark lzss-contextual-rans-1m corpus.bin 5`, or
+`marc_benchmark lzss-contextual-rans-1m corpus.bin 5`,
+`marc_benchmark lzss-contextual-rans-4m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-tans corpus.bin 5`,
 `marc_benchmark lzss-contextual-tans-1m corpus.bin 5`,
 `marc_benchmark lzss-contextual-blocked-huffman corpus.bin 5`,
@@ -329,6 +330,21 @@ state. Use identical input, build, and iteration count with the unqualified
 64 KiB command when comparing ratio, throughput, or workspace. Measurements
 are descriptive; the exact pre-timing round trip and bounded public lifecycle
 are normative.
+
+The experimental `lzss-contextual-rans-4m` benchmark fixes raw frames and the
+LZSS window at 4,194,304 bytes and selects public window profile 2. It admits
+at most `7F` decisions and `14F + 8` payload bytes under the unchanged 128-MiB
+aggregate policy. Its checked complete-stream capacity for input extent `N`
+and nonempty frame count `K` is `112 + 14N + 9,193K`: the per-frame term
+contains the 9,121-byte selected descriptor ceiling, 64-byte frame header,
+and 8-byte final state. All directional workspace extents and alignment come
+from the public requirements query.
+
+The initial one-iteration README smoke produced 3,006 bytes from 4,326 bytes
+(ratio 0.695) under both local compilers and reported peak caller-owned
+workspace of 114,017,257 bytes. Throughput from this short smoke is descriptive
+only; compare all three rANS window profiles on the same larger external input
+before drawing performance conclusions.
 
 The experimental `lzss-contextual-tans` benchmark uses 65,536-byte raw
 frames, admits at most `6F` modeled decisions, reserves `9F + 2` payload

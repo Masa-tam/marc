@@ -654,6 +654,12 @@ if(MARC_BUILD_BENCHMARKS)
         set_tests_properties(
             marc_benchmark_lzss_contextual_rans_1m_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
+        add_test(NAME marc_benchmark_lzss_contextual_rans_4m_smoke
+            COMMAND marc_benchmark lzss-contextual-rans-4m
+                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+        set_tests_properties(
+            marc_benchmark_lzss_contextual_rans_4m_smoke
+            PROPERTIES LABELS benchmark-experimental-smoke)
         add_test(NAME marc_benchmark_lzss_contextual_tans_smoke
             COMMAND ${CMAKE_COMMAND}
                 "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"

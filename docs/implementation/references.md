@@ -6193,3 +6193,12 @@ C initializer, requirements query, factory, streaming lifecycle, common CLI
 driver, and round-trip harness. No external compressor, rANS command-line
 interface, workspace policy, source code, test, benchmark result, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0689
+
+The four-MiB contextual rANS benchmark boundary uses IR-0682 through IR-0688,
+DD-919 through DD-925, TVG-0785 through TVG-0791, the repository-owned public
+C lifecycle, checked complete-stream capacity calculator, dependency-free
+timer/report driver, and benchmark smoke harness. No external compressor,
+rANS benchmark implementation, corpus result, source code, test, patent,
+pseudocode, or optimization description was consulted.

@@ -19397,3 +19397,19 @@ Require encode/decode round trip, exact four variant bytes, reciprocal
 rejection by both older rANS names, strict trailing-data rejection, and both
 compiler inventories. The selector changes no representation and does not
 admit benchmark, fuzzing, or interoperability surfaces.
+
+## DD-926: Add the four-MiB contextual rANS benchmark surface
+
+- Date: 2026-08-22
+- Status: accepted
+
+Add `lzss-contextual-rans-4m` to the dependency-free benchmark using only the
+completed public C lifecycle. Centralize the three rANS profile selections for
+frame size, aggregate policy, and public window value. Select `7F` decisions,
+`14F + 8` payload, and checked complete-stream capacity
+`112 + 14N + 9,193K` only for the four-MiB name; freeze older calculations.
+
+Report the exact selector, complete-stream ratio, directional throughput, and
+all queried workspace regions after a pre-timing round trip. Register a short
+Release smoke under the experimental benchmark label. Treat its throughput as
+descriptive and leave fuzzing and interoperability closed.

@@ -7038,3 +7038,10 @@ hard limits add no stream field. Decode requires this exact name/profile;
 the 64-KiB and one-MiB CLI names reject the four-MiB identity before frame or
 raw publication. Benchmark, fuzzing, and interoperability rANS admission
 remain later boundaries.
+
+The dependency-free benchmark name `lzss-contextual-rans-4m` selects the same
+public profile and changes no stream byte. Its checked complete-stream output
+capacity is `112 + 14N + 9,193K` for input extent `N` and nonempty frame count
+`K`. Directional workspace regions and their alignment come only from the
+public requirements query. Fuzzing and interoperability admission remain
+later boundaries.
