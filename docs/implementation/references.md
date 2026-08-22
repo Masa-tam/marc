@@ -6221,3 +6221,12 @@ selector, manifest hashing, and one-generation compatibility chain. No
 external archive, compressor, interoperability suite, source code, test
 vector, manifest schema, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0692
+
+The four-MiB Contextual tANS design uses IR-0673 through IR-0691, DD-910
+through DD-928, TVG-0776 through TVG-0794, the repository-owned contextual
+tANS format/profile, compact model, selected typed-token layout, fixed table
+staging, HashChain workspace calculator, and C hard limits. No external
+compressor, tANS implementation, large-window format, source code, test,
+benchmark, patent, pseudocode, or optimization description was consulted.

@@ -1,7 +1,7 @@
 # LZSS contextual 4 MiB window
 
-Status: accepted design after project version 0.3.0. The Dynamic Range
-vertical path has complete-frame, streaming, and C workspace-query support.
+Status: accepted design after project version 0.3.0. The Dynamic Range and
+canonical contextual rANS vertical paths have complete external evidence.
 
 ## Purpose
 
@@ -34,8 +34,8 @@ The candidate backend identities remain unchanged:
 | Backend | Entropy algorithm/variant | Initial disposition |
 |---|---:|---|
 | Dynamic Range | `3/2` | complete vertical path |
-| canonical contextual rANS | `4/3` | accepted staged design |
-| contextual tANS | `5/2` | staged |
+| canonical contextual rANS | `4/3` | complete vertical path |
+| contextual tANS | `5/2` | accepted staged design |
 | Contextual Blocked Huffman | `2/2` | staged |
 | Contextual Adaptive Huffman | `1/2` | deferred pending a memory proof |
 
@@ -205,16 +205,21 @@ triple while retaining one-KiB frames. Interoperability schema 43 appends the
 matching archive after the frozen 52-entry schema-42 inventory.
 Revision `a871a05dad68c99712ba210a0b8a9f5f6eb6b3b3` verifies all 53 archives
 through the recorded four-direction Windows and Linux exchange.
-The second-backend plan is
+The completed second-backend path is
 [LZSS contextual rANS 4 MiB window](lzss-contextual-rans-window-4m.md).
+Revision `7f2b893f6ebeb968cab287420caa97201ce5b3b8` verifies its schema-44
+54-archive inventory through the recorded four-direction Windows and Linux
+exchange.
+The third-backend plan is
+[LZSS contextual tANS 4 MiB window](lzss-contextual-tans-window-4m.md).
 
 ## Planned public policy
 
 The common C window-profile selector assigns value 2 to the exact 4 MiB
 identity. Value 0 remains 64 KiB and value 1 remains 1 MiB. Backend admission
-is independent: only Contextual Dynamic Range presently accepts value 2. Its
-completed CLI backend uses the explicit `lzss-contextual-dynamic-range-4m`
-name.
+is independent: Contextual Dynamic Range and canonical contextual rANS accept
+value 2. Their completed CLI backends use the explicit
+`lzss-contextual-dynamic-range-4m` and `lzss-contextual-rans-4m` names.
 
 An exact public decoder admits only its selected dictionary/context pair; it
 does not infer a profile from `window_size`, descriptor size, or distance seen

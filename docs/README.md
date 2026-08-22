@@ -29,6 +29,8 @@ navigate chronological development records.
   additive identity, expanded decision bounds, and per-backend memory gates.
 - [LZSS contextual rANS 4 MiB window](design/lzss-contextual-rans-window-4m.md):
   the second backend's descriptor, payload, and 128-MiB workspace proof.
+- [LZSS contextual tANS 4 MiB window](design/lzss-contextual-tans-window-4m.md):
+  the third backend's table, payload, and 128-MiB workspace proof.
 - [LZSS typed-token protocol](design/lzss-typed-token-protocol.md): bounded
   dictionary-to-context value boundary.
 - [Context-model contract](design/context-model-contract.md): invertible field

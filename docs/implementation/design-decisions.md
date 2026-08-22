@@ -19447,3 +19447,21 @@ Compatibility must remove only entry 54 to reconstruct schema 43, then follow
 the unchanged one-generation chain. Reject a reordered current manifest.
 Repository tests generate bundles only in temporary directories; cross-system
 work products remain outside the repository.
+
+## DD-929: Stage four-MiB contextual tANS within 128 MiB
+
+- Date: 2026-08-22
+- Status: accepted
+
+Use exact triple `2/4 + 1/3 + 5/2` as the third four-MiB entropy path. Expand
+the compact tANS descriptor ceiling from 9,093 to 9,125 bytes and select `7F`
+decisions, `ceil(21F/2) + 2` payload, and `ceil(21F/2) + 9,191` complete-frame
+bounds only for context variant 3. Retain one state, table log 12, normalized
+total 4,096, deterministic spreading, implicit bypass table, and old bytes.
+
+On the supported 64-bit layout require encoder aggregate 116,138,983 bytes and
+decoder aggregate 99,099,623 bytes. Both fit the unchanged 128-MiB default.
+Require checked runtime sizing, `7F` block/decision admission, and one-short
+tests; do not treat native extents as serialized ABI. Implement descriptor,
+typed coding/frame, profile/streaming, C/CLI/benchmark, fuzz, and
+interoperability in that order, closing every later boundary until complete.

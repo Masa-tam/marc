@@ -11283,3 +11283,19 @@ Swap the first two schema-44 entries and require order rejection. Remove only
 entry 54, set schema/version names back to 43/`marc-cli-v43`, and verify the
 unchanged 53-entry predecessor before continuing compatibility through schema
 1. Run complete MSVC and ClangCL inventories including Python tooling.
+
+### TVG-0795
+
+For the four-MiB Contextual tANS design, derive the 4,566-entry compact model,
+9,125-byte maximum descriptor, fixed 131,072-entry encode/decode table bank,
+`7F` decision ceiling, `ceil(21F/2) + 2` payload ceiling, and
+`ceil(21F/2) + 9,191` complete-frame ceiling independently from the selected
+layout and existing single-state format.
+
+At `F=4,194,304`, require the supported encoder arithmetic to total
+116,138,983 bytes from raw, native tokens, uint16 encode tables, exact
+HashChain workspace, and encoded frame. Require decoder views of 50,855,936
+bytes and aggregate 99,099,623 bytes from four-byte table entries, native
+tokens, encoded frame, and raw staging. Record exact headroom below 128 MiB.
+No implementation, selector admission, emitted stream, benchmark, fuzzer, or
+interoperability inventory changes in this design-only stage.

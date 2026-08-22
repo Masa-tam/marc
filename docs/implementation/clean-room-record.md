@@ -24467,3 +24467,27 @@ discarded and the reviewed seed retained.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1003: 2026-08-22 - Four-MiB Contextual tANS design reservation
+
+- Authoring method: derived the third four-MiB backend entirely from marc's
+  completed shared context layout, contextual tANS representation, native
+  workspace calculators, and current public hard limits.
+- References used: IR-0673 through IR-0692, DD-910 through DD-929, TVG-0776
+  through TVG-0795, CR-0982 through CR-1002, and repository-owned format and
+  profile code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  tANS implementations, large-window formats, source code, tests, benchmark
+  results, patents, pseudocode, and optimization descriptions.
+- Independent decisions: retain entropy identity `5/2`; expand only selected
+  descriptor and decision bounds; keep one state and fixed table staging;
+  retain HashChain Exact and 128 MiB; and stage outer boundaries independently.
+- Generated-code task description: specify exact descriptor, table, payload,
+  encoder/decoder workspace, limit, identity, and implementation-order proof
+  for a four-MiB contextual tANS vertical path.
+- Similarity review: all identities, counts, sizes, and staging arithmetic
+  derive directly from marc's existing types and frozen shared four-MiB
+  context layout. No external implementation expression was consulted.
+- Validation: documentation layout, chronology, formulas, and cross-links are
+  checked in this design-only stage. No codec, ABI, CLI, emitted stream,
+  benchmark, fuzz target, or interoperability inventory changes.
