@@ -6276,3 +6276,12 @@ common window selector, backend-specific validator, exact profile/admission
 mappers, workspace query, factory, and streaming lifecycle. No external C API,
 compressor, tANS binding, workspace policy, source code, test, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0698
+
+The four-MiB Contextual tANS CLI boundary uses IR-0692 through IR-0697,
+DD-929 through DD-934, TVG-0795 through TVG-0800, the repository-owned public
+C initializer, requirements query, factory, streaming lifecycle, common CLI
+driver, profile inventory, and round-trip harness. No external compressor,
+tANS command-line interface, workspace policy, source code, test, benchmark
+result, patent, pseudocode, or optimization description was consulted.

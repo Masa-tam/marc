@@ -24641,3 +24641,34 @@ benchmark, fuzz target, or interoperability inventory changes.
   build encountered the known Visual Studio 18.8.2 FileTracker
   `E_ACCESSDENIED`; the established permission-enabled build completed cleanly.
   CLI, benchmark, fuzzing, and interoperability inventories remain unchanged.
+
+## CR-1009: 2026-08-22 - Four-MiB Contextual tANS CLI boundary
+
+- Authoring method: extended the repository-owned codec enumeration, parser,
+  help text, public configuration dispatch, workspace query/factory dispatch,
+  exact profile inventory, and common round-trip harness with one selector.
+- References used: IR-0692 through IR-0698, DD-929 through DD-935, TVG-0795
+  through TVG-0801, CR-1003 through CR-1008, and repository-owned public C and
+  CLI code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  tANS command-line interfaces, source code, tests, benchmark results, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: retain the 128-MiB aggregate policy; distinguish the
+  `7F` decision/block limit from the four-MiB frame limit; calculate the exact
+  half-byte payload ceiling without floating point; reject both older exact
+  names; and leave benchmark, fuzzing, and interoperability closed.
+- Generated-code task description: add exact `lzss-contextual-tans-4m`
+  command-line encode/decode through only the public C lifecycle, with identity,
+  reciprocal-profile, trailing-data, and usage-inventory checks.
+- Similarity review: constants, selection branches, and test assertions derive
+  directly from marc's completed public profile and existing 64-KiB/one-MiB
+  CLI paths. No external implementation expression was consulted.
+- Validation: the focused CLI round-trip and profile-inventory tests pass under
+  MSVC and ClangCL. All 3,184 registered tests pass with a 600-second per-test
+  limit in 211.37 and 205.80 seconds respectively, including seven Python
+  tooling tests, eighteen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. A sandboxed ClangCL
+  reconfiguration initially omitted the seven externally hosted Python tests;
+  permission-enabled reconfiguration restored the complete equal inventory
+  before the recorded full run. The 54-archive inventory remains byte-exact;
+  benchmark, fuzzing, and schema admission are unchanged.

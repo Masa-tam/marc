@@ -7116,3 +7116,12 @@ least 44,040,194, LZ distance limit at least 4,194,304, and the unchanged
 128-MiB aggregate limit. Exact one-MiB public decoding rejects this identity
 before frame collection and raw publication. CLI, benchmark, fuzzing, and
 interoperability Contextual tANS admission remain later boundaries.
+
+The CLI name `lzss-contextual-tans-4m` selects the same exact public profile.
+It fixes four-MiB frames/windows, the `7F` decision/block ceiling,
+`ceil(21F/2) + 2 = 44,040,194` payload ceiling, and the unchanged 128-MiB
+aggregate policy. Neither the name nor these application limits add a stream
+field. Decode requires this exact name/profile; the 64-KiB and one-MiB names
+reject the four-MiB identity before frame collection or raw publication.
+Benchmark, fuzzing, and interoperability Contextual tANS admission remain
+later boundaries.

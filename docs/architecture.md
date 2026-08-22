@@ -5286,6 +5286,14 @@ limit is permissive. The 64-KiB initializer, aggregate default, serialized
 identity, and every other contextual backend remain unchanged; CLI and later
 surfaces stay closed.
 
+The command-line adapter now names that exact public profile
+`lzss-contextual-tans-4m`. It supplies four-MiB frame/window/distance limits,
+the `7F` common decision limit, `ceil(21F/2)+2` payload limit, and unchanged
+128-MiB aggregate policy before querying all caller-owned workspace. Encode
+and decode use only the public C lifecycle; the older exact names reject its
+identity before frame collection. The name changes no stream byte, and
+benchmark, fuzzing, and interoperability remain separate promotion steps.
+
 The public Contextual tANS boundary reuses the shared window-profile enum
 without adding exported symbols. Its 112-byte ABI-1 config replaces only the
 final zero-reserved 64-bit extent with a 32-bit selector plus 32-bit reserved

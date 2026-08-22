@@ -19549,3 +19549,21 @@ atomic rejection by an exact one-MiB decoder under permissive generic limits,
 full directional workspace values, and one-short aggregate failures. Preserve
 the 64-KiB initializer, 112-byte config, and 128-MiB aggregate default. Keep
 CLI, benchmark, fuzzing, and interoperability Contextual tANS admission closed.
+
+## DD-935: Add an exact four-MiB Contextual tANS CLI selector
+
+- Date: 2026-08-22
+- Status: accepted
+
+Add `lzss-contextual-tans-4m` as the sole command-line name for exact identity
+`2/4 + 1/3 + 5/2`. Configure four-MiB raw frames/window and LZ distance,
+`7F = 29,360,128` decisions through the common block limit, the
+`ceil(21F/2) + 2` payload limit of 44,040,194 bytes, and the unchanged
+128-MiB aggregate. Obtain all three workspace regions and opaque alignment
+from the public query.
+
+Require encode/decode round trip, exact identity bytes, reciprocal rejection
+by both older Contextual tANS names, strict trailing-data rejection, exact
+profile-inventory order, and both compiler inventories. The selector changes
+no representation and does not admit benchmark, fuzzing, or interoperability
+surfaces.

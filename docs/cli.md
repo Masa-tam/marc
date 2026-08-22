@@ -91,9 +91,10 @@ profile. `lzss-contextual-rans-4m` selects exact identity
 name auto-detects or admits another profile.
 `lzss-contextual-tans` selects the same typed LZSS contexts with contextual
 tANS entropy variant 2 under the frozen 64 KiB identity. The additive
-`lzss-contextual-tans-1m` name selects `2/3 + 1/2 + 5/2`. Encode and decode
-require the same explicit name; neither profile auto-detects or admits the
-other. Both remain outside the stable 42-profile inventory.
+`lzss-contextual-tans-1m` name selects `2/3 + 1/2 + 5/2`, and
+`lzss-contextual-tans-4m` selects exact identity `2/4 + 1/3 + 5/2`. Encode and
+decode require the same explicit name; no profile auto-detects or admits
+another. All three remain outside the stable 42-profile inventory.
 `lzss-contextual-blocked-huffman` selects typed LZSS plus the selective
 Contextual Blocked Huffman entropy variant 2 under the frozen 64 KiB profile.
 `lzss-contextual-blocked-huffman-1m` selects exact
@@ -232,6 +233,16 @@ frames and LZSS window. Its decision ceiling is `6F = 6,291,456`, its payload
 ceiling is `9F + 2 = 9,437,186` bytes, and its internal-buffer policy is
 128 MiB. It changes only public profile and bounded configuration values
 before using the same public lifecycle; queried workspace extents remain
+authoritative.
+
+The experimental `lzss-contextual-tans-4m` adapter fixes raw frames and the
+LZSS window at 4,194,304 bytes. Context variant 3 requires the distinct
+`7F = 29,360,128` decision/block ceiling and the tANS payload ceiling is
+`ceil(21F/2) + 2 = 44,040,194` bytes. The application retains the public
+128-MiB aggregate policy: supported 64-bit encoder and decoder requirements
+fit without an implicit increase. It selects public window profile value 2
+and otherwise uses the same initializer, requirements query, factory, process,
+and destroy lifecycle. Queried workspace extents and alignment remain
 authoritative.
 
 The experimental `lzss-contextual-blocked-huffman` adapter uses 65,536-byte

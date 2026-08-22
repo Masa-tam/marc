@@ -2,7 +2,7 @@
 
 Status: implementation in progress; descriptor, coding-core, direct typed-
 token, complete-frame, private profile, and streaming boundaries complete;
-public admission is implemented through the C ABI; CLI and later boundaries
+public C and CLI admission are implemented; benchmark and later boundaries
 remain closed.
 
 ## Purpose and identity

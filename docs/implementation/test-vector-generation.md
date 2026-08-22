@@ -11375,3 +11375,17 @@ Through the public requirements query, require supported 64-bit encoder regions
 4,194,304 / 50,855,936. Under `max_frame_size=F` and `max_block_size=7F`,
 reject aggregate values 116,138,982 and 99,099,622, then accept exact limits.
 Keep unknown selector 3 invalid and all older C vectors byte-identical.
+
+### TVG-0801
+
+Run the common CLI round-trip harness with explicit selector
+`lzss-contextual-tans-4m` and a deterministic repeated binary fixture. Require
+stream dictionary variant byte 4, context variant byte 3, entropy algorithm
+byte 5, and entropy variant byte 2. Decode byte-exactly through the same name.
+
+Require both `lzss-contextual-tans-1m` and `lzss-contextual-tans` to reject the
+archive without raw publication, and require strict decode to reject one
+trailing byte. Require CLI usage to list 64-KiB, one-MiB, and four-MiB names
+once in exact order. Exercise the full public query/factory lifecycle with a
+small fixture; run under MSVC and ClangCL while leaving benchmark, fuzzing,
+and interoperability inventories unchanged.
