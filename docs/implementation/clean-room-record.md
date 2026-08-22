@@ -25013,3 +25013,28 @@ benchmark, fuzz target, or interoperability inventory changes.
   benchmark smokes, forty-two benchmark smokes, documentation layout, and
   schema compatibility in 90.27 and 84.94 seconds. External four-direction
   schema-46 evidence remains pending.
+
+## CR-1021: 2026-08-23 - Schema 46 four-direction external admission
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-945, IR-0708, TVG-0811, BR-0163, IX-0040, CR-1020, and
+  full revision `e0ec10aef942c3ef9646b2332cec504ac176d4bf`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: require one exact revision for all directions,
+  preserve work products outside the repository, and accept evidence only
+  when every verifier reports the complete 56-archive inventory.
+- Generated-code task description: record the completed schema-46
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks.
+- Similarity review: this change records project-generated artifact evidence
+  only and introduces no codec implementation expression.
+- External validation: all four passes reported `Verified 56 archives` at
+  revision `e0ec10aef942c3ef9646b2332cec504ac176d4bf`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.

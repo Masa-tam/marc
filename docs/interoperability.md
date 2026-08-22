@@ -143,10 +143,9 @@ workflow run. GitHub may expire workflow artifacts according to repository
 retention settings; regenerate them by running CI for the required commit.
 
 Schema 46 has local generation, exact-order verification, byte-identical
-re-encoding, reordered-manifest rejection, and schemas 1 through 45
-compatibility evidence under MSVC and ClangCL. Schema 45 remains the latest
-bundle with recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
-four-direction evidence; schema-46 external evidence remains pending.
+re-encoding, reordered-manifest rejection, schemas 1 through 45 compatibility
+evidence under MSVC and ClangCL, and complete Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang four-direction evidence.
 
 ## Work-product policy
 
@@ -784,5 +783,21 @@ verified that bundle in the reverse direction.
 Each of the four verifier passes reported the exact full revision and required
 manifest order, size, SHA-256, fixture decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-45
+bytes across the three producers and bidirectional decoding between the
+recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0040: Schema 46
+
+Revision `e0ec10aef942c3ef9646b2332cec504ac176d4bf` received the schema-46
+cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
+x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all 56
+archives from both the Windows/MSVC via Visual Studio 2026 and Ubuntu 24.04
+default-compiler/Ninja artifacts. It then generated and self-verified an
+`ubuntu-26.04-ninja-x64` 56-archive bundle. The Windows/MSVC executable
+verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest order, size, SHA-256, fixture decode, and byte-identical local
+re-encoding checks for every archive. This establishes canonical schema-46
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.

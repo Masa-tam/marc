@@ -2726,3 +2726,12 @@ including seven Python tooling tests, twenty experimental benchmark smokes,
 forty-two benchmark smokes, documentation layout, and complete schema
 compatibility in 90.27 and 84.94 seconds. External four-direction schema-46
 evidence remains pending.
+
+### BR-0164
+
+Schema 46 now has complete four-direction external evidence at revision
+`e0ec10aef942c3ef9646b2332cec504ac176d4bf`. All 56 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the four-MiB
+Contextual Blocked Huffman profile.
