@@ -24610,3 +24610,34 @@ benchmark, fuzz target, or interoperability inventory changes.
   seven Python tooling tests, eighteen experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`. Public C, CLI, benchmark,
   fuzzing, and interoperability inventories remain unchanged.
+
+## CR-1008: 2026-08-22 - Four-MiB Contextual tANS public C boundary
+
+- Authoring method: extended only the Contextual tANS validator and exact
+  profile/admission mappers for the common ABI-1 selector value already used by
+  completed Dynamic Range and rANS paths, then reused the completed private
+  lifecycle.
+- References used: IR-0692 through IR-0697, DD-929 through DD-934, TVG-0795
+  through TVG-0800, CR-1003 through CR-1007, and repository-owned C adapter.
+  No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  C APIs, tANS bindings, workspace policies, source code, tests, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: reuse ABI value 2; keep backend admission exact;
+  preserve the 112-byte config and defaults; test common decision-limit versus
+  aggregate rejection separately; and leave every later surface closed.
+- Generated-code task description: expose four-MiB Contextual tANS through the
+  C ABI with exact workspace boundaries, small round trip, header bytes,
+  crossed-profile atomic rejection, and unknown-selector rejection.
+- Similarity review: mapper branches, validation, and C tests follow directly
+  from marc's existing two Contextual tANS profiles and completed four-MiB
+  Dynamic Range/rANS selectors. No external implementation expression was
+  consulted or introduced.
+- Validation: the focused public C test passes under MSVC and ClangCL. All
+  3,183 registered tests pass with a 600-second per-test limit in 212.56 and
+  216.46 seconds respectively, including documentation layout, seven Python
+  tooling tests, eighteen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. The first sandboxed MSVC target
+  build encountered the known Visual Studio 18.8.2 FileTracker
+  `E_ACCESSDENIED`; the established permission-enabled build completed cleanly.
+  CLI, benchmark, fuzzing, and interoperability inventories remain unchanged.

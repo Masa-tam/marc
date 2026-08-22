@@ -11361,3 +11361,17 @@ Require decoder table offset 524,288, views 50,855,936, and aggregate
 through the encoder and exact-4m decoder with one-byte buffers, require header
 variants 4/3, and require exact-1m admission to reject without changing output.
 Preserve public selector rejection and the 54-archive inventory.
+
+### TVG-0800
+
+Select C ABI window value 2 for a two-byte-frame Contextual tANS encoder,
+round-trip the five-byte binary fixture, and require stream dictionary/context
+bytes 4/3 plus frequency count bytes `d6 11`. Configure an exact one-MiB public
+decoder with a permissive four-MiB distance limit and require malformed-stream
+profile rejection with zero output, then decode successfully under value 2.
+
+Through the public requirements query, require supported 64-bit encoder regions
+4,194,304 / 44,049,383 / 67,895,296 and decoder regions 44,049,383 /
+4,194,304 / 50,855,936. Under `max_frame_size=F` and `max_block_size=7F`,
+reject aggregate values 116,138,982 and 99,099,622, then accept exact limits.
+Keep unknown selector 3 invalid and all older C vectors byte-identical.

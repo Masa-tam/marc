@@ -210,13 +210,19 @@ part of ABI 1.
 
 `MARC_LZSS_CONTEXTUAL_WINDOW_64K` remains the initializer default and selects
 dictionary/context identity `2/2 + 1/1`.
-`MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects `2/3 + 1/2`. The selector is not
-inferred from `window_size`: encoding validates the selected parameters and
-decoding rejects the other known identity before frame collection or raw
-publication. The selector and trailing reserved word reuse the former 64-bit
-reserved tail, preserving the 112-byte ABI-1 extent and the all-zero default.
-The explicit CLI names expose both profiles, and interoperability schema 40
-includes only the selected 1 MiB name as its final experimental archive.
+`MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects `2/3 + 1/2`, and
+`MARC_LZSS_CONTEXTUAL_WINDOW_4M` selects `2/4 + 1/3`. The four-MiB profile uses
+the 9,125-byte descriptor ceiling and retains the 128-MiB aggregate default.
+On supported 64-bit native layouts its full encoder and decoder requirements
+are 116,138,983 and 99,099,623 bytes; full-frame callers set
+`max_frame_size` to 4,194,304 and the common `max_block_size` decision limit
+to 29,360,128. The selector is not inferred from `window_size`: encoding
+validates the selected parameters and decoding rejects every other known
+identity before frame collection or raw publication. The selector and trailing
+reserved word reuse the former 64-bit reserved tail, preserving the 112-byte
+ABI-1 extent and the all-zero default. The explicit CLI names still expose only
+the first two profiles, and interoperability schema 40 includes only the
+selected 1 MiB name as its final experimental archive.
 
 The completion audit covers all required binary classes, deterministic mixed
 and one-byte chunk schedules, stable repeated terminal calls, and frame-atomic

@@ -5277,6 +5277,15 @@ admission recognizes only dictionary/context `4/3`; one-byte streaming is
 byte-stable, and crossed one-MiB admission fails before raw publication. The
 public factory remains the following boundary.
 
+The public Contextual tANS C boundary now admits common selector value 2 only
+for this completed backend path. It maps the unchanged 112-byte ABI-1 config
+to private profile/admission variant 3, repeats checked workspace calculation
+at construction, and publishes no handle on failure. Exact one-MiB decoding
+rejects a four-MiB identity before frame collection even when its generic LZ
+limit is permissive. The 64-KiB initializer, aggregate default, serialized
+identity, and every other contextual backend remain unchanged; CLI and later
+surfaces stay closed.
+
 The public Contextual tANS boundary reuses the shared window-profile enum
 without adding exported symbols. Its 112-byte ABI-1 config replaces only the
 final zero-reserved 64-bit extent with a 32-bit selector plus 32-bit reserved

@@ -6995,12 +6995,12 @@ limit is separately raised.
 
 The public C selector `MARC_LZSS_CONTEXTUAL_WINDOW_4M` has value 2 and selects
 the exact `2/4 + 1/3` pair. Contextual Dynamic Range and canonical contextual
-rANS accept it with their respective completed entropy triples. It is not
-serialized and is not inferred from any size. It does not change the 64 KiB
-initializer or the 128 MiB aggregate default; Dynamic Range encoding requires
-an explicit larger aggregate, while rANS fits the default. Other contextual C
-factories reject the known selector until their backend-specific paths are
-complete.
+rANS and tANS accept it with their respective completed entropy triples. It is
+not serialized and is not inferred from any size. It does not change the
+64 KiB initializer or the 128 MiB aggregate default; Dynamic Range encoding
+requires an explicit larger aggregate, while rANS and tANS fit the default.
+Other contextual C factories reject the known selector until their backend-
+specific paths are complete.
 
 The CLI name `lzss-contextual-dynamic-range-4m` selects this exact triple and
 uses four-MiB frames/windows plus an explicit 256-MiB application aggregate
@@ -7020,8 +7020,8 @@ The complete staged contract is [LZSS contextual 4 MiB
 window](design/lzss-contextual-window-4m.md).
 
 The shared typed-token/context implementation recognizes the exact pair and
-its layout internally. Dynamic Range and canonical contextual rANS admit
-completed four-MiB entropy triples; other backend-specific entry points
+its layout internally. Dynamic Range and canonical contextual rANS and tANS
+admit completed four-MiB entropy triples; other backend-specific entry points
 continue to admit only their previously completed pairs.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
@@ -7107,3 +7107,12 @@ unchanged 128-MiB default when the caller sets `max_frame_size` to four MiB and
 the common block/decision limit to `7F = 29,360,128`. One-byte chunking changes
 no stream byte. Public C, CLI, benchmark, fuzzing, and interoperability
 Contextual tANS admission remain later boundaries.
+
+The public Contextual tANS C factory now admits common window selector value 2
+as exact identity `2/4 + 1/3 + 5/2`. The selector adds no serialized field and
+is not inferred from a size. A full configuration uses
+`max_frame_size = 4,194,304`, `max_block_size >= 29,360,128`, payload limit at
+least 44,040,194, LZ distance limit at least 4,194,304, and the unchanged
+128-MiB aggregate limit. Exact one-MiB public decoding rejects this identity
+before frame collection and raw publication. CLI, benchmark, fuzzing, and
+interoperability Contextual tANS admission remain later boundaries.

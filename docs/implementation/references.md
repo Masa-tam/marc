@@ -6267,3 +6267,12 @@ partitioners, HashChain Exact streaming encoder, atomic streaming decoder, and
 exact admission enum. No external compressor, tANS lifecycle, workspace
 layout, source code, test, benchmark, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0697
+
+The four-MiB Contextual tANS public C boundary uses IR-0692 through IR-0696,
+DD-929 through DD-933, TVG-0795 through TVG-0799, the repository-owned ABI-1
+common window selector, backend-specific validator, exact profile/admission
+mappers, workspace query, factory, and streaming lifecycle. No external C API,
+compressor, tANS binding, workspace policy, source code, test, patent,
+pseudocode, or optimization description was consulted.

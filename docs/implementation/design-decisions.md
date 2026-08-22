@@ -19533,3 +19533,19 @@ rejection, and exact-limit success. Retain the 128-MiB default; a full profile
 sets the raw-frame limit to `F` and the common block/decision limit to `7F`.
 Require one-byte encode/decode and crossed-profile rejection on a small frame.
 Keep public C and every later surface closed.
+
+## DD-934: Publish selector value 2 through the Contextual tANS C factory
+
+- Date: 2026-08-22
+- Status: accepted
+
+Admit existing common ABI-1 value `MARC_LZSS_CONTEXTUAL_WINDOW_4M` only in the
+Contextual tANS backend in addition to its completed Dynamic Range and rANS
+meanings. Map it exactly to private profile/admission variant 3; add no ABI
+field, function, structure extent, default, or serialized value.
+
+Require small public encode/decode, header identity and frequency-count bytes,
+atomic rejection by an exact one-MiB decoder under permissive generic limits,
+full directional workspace values, and one-short aggregate failures. Preserve
+the 64-KiB initializer, 112-byte config, and 128-MiB aggregate default. Keep
+CLI, benchmark, fuzzing, and interoperability Contextual tANS admission closed.
