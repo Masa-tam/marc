@@ -24376,3 +24376,36 @@ discarded and the reviewed seed retained.
   limit, including seven Python tooling tests, eighteen experimental benchmark
   smokes, and `marc_interoperability_schema_compatibility`. The 53-archive
   inventory remains byte-exact; fuzzing and schema admission are unchanged.
+
+## CR-1000: 2026-08-22 - Four-MiB contextual rANS bounded fuzz boundary
+
+- Authoring method: extended the repository-owned fixed-memory dual-path
+  harness and parameterized malformed regressions with the completed public
+  profile while retaining caller-sized raw storage.
+- References used: IR-0682 through IR-0690, DD-919 through DD-927, TVG-0785
+  through TVG-0793, CR-0992 through CR-0999, and repository-owned decoder,
+  C lifecycle, fuzz harness, and regression code. No new external technical
+  source was used.
+- Known implementations intentionally not consulted: external compressors,
+  rANS fuzzers, corpora, source code, tests, vulnerability reports, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: reuse one target; cap the raw frame at one KiB;
+  raise decisions/payload/descriptor/distance only to variant-3 needs; add
+  reciprocal exact-profile rejection; and retain no generated mutation.
+- Generated-code task description: admit four-MiB contextual rANS in the
+  bounded private/public decoder harness, add permanent malformed/profile
+  regressions, and run a fixed-seed sanitizer campaign.
+- Similarity review: bound changes, profile call, and regressions follow
+  directly from marc's preceding dual-profile target and completed four-MiB
+  validation rules. No external implementation expression was consulted.
+- Validation: the harness compile-smoke and all eleven focused malformed
+  regressions pass under MSVC and ClangCL. Windows Clang 22 libFuzzer/ASan/
+  UBSan completed 1,000 inputs at seed 20260822 with 32-KiB max input,
+  five-second timeout, and 512-MiB RSS limit. No crash, hang, or sanitizer
+  finding occurred; peak RSS was 45 MiB and final coverage was 216 counters /
+  336 features over six in-memory entries totaling 24 bytes. All 3,172
+  registered tests pass in 191.27 and 197.62 seconds under MSVC and ClangCL
+  respectively with a 600-second per-test limit, including seven Python
+  tooling tests, eighteen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. The 53-archive inventory
+  remains byte-exact; schema admission is unchanged.

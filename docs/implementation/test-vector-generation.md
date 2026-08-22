@@ -11254,3 +11254,18 @@ For the 4,326-byte repository README require both builds to produce 3,006
 bytes, ratio 0.695, and peak caller-owned workspace 114,017,257 bytes. Record
 throughput only as a smoke observation. Register the command as the eighteenth
 experimental benchmark smoke; do not change fuzzing or interoperability.
+
+### TVG-0793
+
+Extend the existing contextual rANS malformed regression parameter set with
+public window value 2. Generate its canonical five-byte stream, then require
+every truncation, extreme frame-length corruption, and nonzero descriptor
+flags to fail atomically in both private complete-frame and public streaming
+decoders. Require four-MiB versus each older exact decoder to reject in both
+directions with stable repeated terminal errors and unchanged raw output.
+
+Compile the fixed-memory harness under MSVC and ClangCL, then build it with
+Windows Clang 22 libFuzzer, AddressSanitizer, and UndefinedBehaviorSanitizer.
+Run exactly 1,000 inputs with seed 20260822, `-max_len=32768`, `-timeout=5`,
+and `-rss_limit_mb=512`. Require zero crash, hang, or sanitizer finding and
+no retained artifact. Preserve the 53-archive interoperability inventory.

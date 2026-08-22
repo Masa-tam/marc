@@ -7045,3 +7045,11 @@ capacity is `112 + 14N + 9,193K` for input extent `N` and nonempty frame count
 `K`. Directional workspace regions and their alignment come only from the
 public requirements query. Fuzzing and interoperability admission remain
 later boundaries.
+
+The bounded contextual rANS decoder fuzz target admits all three exact public
+window profiles, including `2/4 + 1/3 + 4/3`. Fuzz policy caps one raw frame
+at 1,024 bytes, total raw output at 4,096 bytes, decisions at `7*1024`, payload
+at `14*1024 + 8`, and input at 32 KiB while allowing the four-MiB distance
+identity. It uses fixed table/token/frame storage and a finite call ceiling;
+selecting the four-MiB identity does not allocate a four-MiB fuzz frame and
+adds no serialized rule. Interoperability admission remains closed.

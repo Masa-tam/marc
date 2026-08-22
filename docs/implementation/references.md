@@ -6202,3 +6202,12 @@ C lifecycle, checked complete-stream capacity calculator, dependency-free
 timer/report driver, and benchmark smoke harness. No external compressor,
 rANS benchmark implementation, corpus result, source code, test, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0690
+
+The four-MiB contextual rANS bounded fuzz boundary uses IR-0682 through
+IR-0689, DD-919 through DD-926, TVG-0785 through TVG-0792, the repository-
+owned private complete-frame decoder, public C streaming decoder, fixed table
+and token workspaces, finite call loop, and permanent malformed regressions.
+No external compressor, rANS fuzzer, corpus, source code, test, vulnerability
+report, patent, pseudocode, or optimization description was consulted.

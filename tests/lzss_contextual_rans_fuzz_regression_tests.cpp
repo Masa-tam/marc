@@ -23,16 +23,18 @@ using Token = marc::dictionary::internal::LzssTypedToken;
 constexpr std::array raw{
     std::uint8_t{'A'}, std::uint8_t{'B'}, std::uint8_t{'A'},
     std::uint8_t{'B'}, std::uint8_t{'X'}};
-constexpr std::size_t maximum_decisions = raw.size() * 6;
-constexpr std::size_t maximum_payload = raw.size() * 12 + 8;
+constexpr std::size_t maximum_decisions = raw.size() * 7;
+constexpr std::size_t maximum_payload = raw.size() * 14 + 8;
 constexpr std::size_t maximum_internal = 2U << 20;
 
 [[nodiscard]] constexpr std::size_t maximum_encoded_frame(
     const marc_lzss_contextual_window_profile window_profile) noexcept {
     const auto descriptor_size = window_profile
-            == MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        ? marc::entropy::internal::contextual_rans_max_descriptor_size_v2
-        : marc::entropy::internal::contextual_rans_max_descriptor_size_v1;
+            == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? marc::entropy::internal::contextual_rans_max_descriptor_size_v3
+        : window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            ? marc::entropy::internal::contextual_rans_max_descriptor_size_v2
+            : marc::entropy::internal::contextual_rans_max_descriptor_size_v1;
     return marc::frame::internal::lzss_contextual_rans_frame_header_size
         + descriptor_size + maximum_payload;
 }
@@ -64,9 +66,11 @@ void configure_fields(
     result.max_block_size = maximum_decisions;
     result.max_compressed_payload_size = maximum_payload;
     result.max_internal_buffered_bytes = maximum_internal;
-    result.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
-    result.max_lz_distance = UINT64_C(1) << 20;
+    result.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? UINT32_C(1) << 22
+        : window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
+    result.max_lz_distance = UINT64_C(1) << 22;
     result.max_lz_match_length = 258;
     result.max_entropy_table_entries =
         marc::entropy::internal::contextual_rans_decode_table_entries;
@@ -126,6 +130,38 @@ void configure_fields(
     return encoded;
 }
 
+void expect_public_profile_rejection(
+    const std::span<const std::uint8_t> encoded,
+    const marc_lzss_contextual_window_profile decoder_profile) {
+    auto config = settings(decoder_profile, MARC_DIRECTION_DECODE);
+    auto workspace = workspace_for(config);
+    marc_transform* decoder{};
+    ASSERT_EQ(marc_lzss_contextual_rans_create(
+                  &config.value,
+                  {workspace.primary.data(), workspace.primary.size()},
+                  {workspace.secondary.data(), workspace.secondary.size()},
+                  workspace.views_buffer(), &decoder),
+              MARC_STATUS_OK);
+    std::array<std::uint8_t, raw.size()> output{};
+    output.fill(UINT8_C(0xa5));
+    const auto result = marc_transform_process(
+        decoder, {encoded.data(), encoded.size()},
+        {output.data(), output.size()}, MARC_PROCESS_END_INPUT);
+    EXPECT_EQ(result.status, MARC_STATUS_MALFORMED_STREAM);
+    EXPECT_EQ(result.output_produced, 0U);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::uint8_t value) {
+        return value == UINT8_C(0xa5);
+    }));
+    const auto repeated = marc_transform_process(
+        decoder, {nullptr, 0}, {nullptr, 0}, MARC_PROCESS_NONE);
+    EXPECT_EQ(repeated.status, result.status);
+    EXPECT_EQ(repeated.error_byte_position, result.error_byte_position);
+    EXPECT_EQ(repeated.error_bit_position, result.error_bit_position);
+    EXPECT_EQ(repeated.input_consumed, 0U);
+    EXPECT_EQ(repeated.output_produced, 0U);
+    marc_transform_destroy(decoder);
+}
+
 class LzssContextualRansFuzzRegression
     : public testing::TestWithParam<
           marc_lzss_contextual_window_profile> {
@@ -145,7 +181,7 @@ protected:
         limits.max_block_size = maximum_decisions;
         limits.max_compressed_payload_size = maximum_payload;
         limits.max_internal_buffered_bytes = maximum_internal;
-        limits.max_lz_distance = UINT64_C(1) << 20;
+        limits.max_lz_distance = UINT64_C(1) << 22;
         limits.max_lz_match_length = 258;
         limits.max_entropy_table_entries =
             marc::entropy::internal::contextual_rans_decode_table_entries;
@@ -318,10 +354,27 @@ TEST(LzssContextualRansFuzzRegression,
     marc_transform_destroy(frozen_decoder);
 }
 
+TEST(LzssContextualRansFuzzRegression,
+     FourMiBAndOlderPublicDecodersRejectAtomically) {
+    const auto frozen = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    const auto one_mib = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_1M);
+    const auto four_mib = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+
+    expect_public_profile_rejection(
+        four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    expect_public_profile_rejection(
+        four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_1M);
+    expect_public_profile_rejection(
+        frozen, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    expect_public_profile_rejection(
+        one_mib, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+}
+
 INSTANTIATE_TEST_SUITE_P(
     Profiles, LzssContextualRansFuzzRegression,
     testing::Values(
         MARC_LZSS_CONTEXTUAL_WINDOW_64K,
-        MARC_LZSS_CONTEXTUAL_WINDOW_1M));
+        MARC_LZSS_CONTEXTUAL_WINDOW_1M,
+        MARC_LZSS_CONTEXTUAL_WINDOW_4M));
 
 } // namespace

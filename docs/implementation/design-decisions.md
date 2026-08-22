@@ -19413,3 +19413,20 @@ Report the exact selector, complete-stream ratio, directional throughput, and
 all queried workspace regions after a pre-timing round trip. Register a short
 Release smoke under the experimental benchmark label. Treat its throughput as
 descriptive and leave fuzzing and interoperability closed.
+
+## DD-927: Extend one bounded contextual rANS fuzzer to three profiles
+
+- Date: 2026-08-22
+- Status: accepted
+
+Retain one `marc_fuzz_lzss_contextual_rans_stream` target and exercise exact
+64-KiB, one-MiB, and four-MiB public decoder admissions for every bounded
+input. Raise only the fixed local maxima required by context variant 3:
+`7*1024` decisions, `14*1024 + 8` payload bytes, the 9,121-byte descriptor,
+and four-MiB LZ distance. Retain 32-KiB input, 4-KiB total output, one-KiB raw
+frame/token storage, fixed tables, byte-derived chunking, and finite calls.
+
+Add permanent truncation, malformed-header/descriptor, and reciprocal profile
+regressions for the four-MiB identity. Run one fixed-seed 1,000-input Clang
+libFuzzer/ASan/UBSan campaign without retaining generated mutations. This
+stage changes no format and keeps interoperability closed.

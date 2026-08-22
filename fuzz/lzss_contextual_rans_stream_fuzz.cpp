@@ -24,8 +24,8 @@ using PublicConfig = marc_lzss_contextual_rans_config;
 constexpr std::size_t maximum_fuzz_input = 32768;
 constexpr std::size_t maximum_total_output = 4096;
 constexpr std::size_t maximum_frame = 1024;
-constexpr std::size_t maximum_decisions = maximum_frame * 6;
-constexpr std::size_t maximum_payload = maximum_frame * 12 + 8;
+constexpr std::size_t maximum_decisions = maximum_frame * 7;
+constexpr std::size_t maximum_payload = maximum_frame * 14 + 8;
 constexpr std::size_t maximum_encoded_frame =
     marc::frame::internal::lzss_contextual_rans_frame_header_size
     + marc::entropy::internal::contextual_rans_descriptor_capacity
@@ -62,7 +62,7 @@ thread_local FuzzWorkspace workspace{};
     limits.max_block_size = maximum_decisions;
     limits.max_compressed_payload_size = maximum_payload;
     limits.max_internal_buffered_bytes = maximum_internal;
-    limits.max_lz_distance = UINT64_C(1) << 20;
+    limits.max_lz_distance = UINT64_C(1) << 22;
     limits.max_lz_match_length = 258;
     limits.max_entropy_table_entries = table_entries;
     return limits;
@@ -140,9 +140,11 @@ void exercise_public_streaming(
     config.max_block_size = maximum_decisions;
     config.max_compressed_payload_size = maximum_payload;
     config.max_internal_buffered_bytes = maximum_internal;
-    config.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
-    config.max_lz_distance = UINT64_C(1) << 20;
+    config.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? UINT32_C(1) << 22
+        : window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
+    config.max_lz_distance = UINT64_C(1) << 22;
     config.max_lz_match_length = 258;
     config.max_entropy_table_entries = table_entries;
     config.window_profile = window_profile;
@@ -243,5 +245,6 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data,
     exercise_complete_frame(input);
     exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
     exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_WINDOW_1M);
+    exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
     return 0;
 }
