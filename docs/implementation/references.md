@@ -6239,3 +6239,12 @@ field-context layout, and frozen Contextual tANS descriptor vectors. No
 external compressor, tANS implementation, descriptor format, source code,
 test, benchmark, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0694
+
+The four-MiB Contextual tANS coding and direct typed-token boundaries use
+IR-0693, DD-930, TVG-0796, the repository-owned selected operation coder,
+single-state tANS tables, direct typed-LZSS adapter, and two-pass atomic
+decoder. No external compressor, tANS implementation, typed-token format,
+source code, test, benchmark, patent, pseudocode, or optimization description
+was consulted.

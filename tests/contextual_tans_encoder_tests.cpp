@@ -37,6 +37,14 @@ using namespace marc::entropy::internal;
     };
 }
 
+[[nodiscard]] constexpr auto four_mib_operations() {
+    return std::array{
+        ModeledOperation{ModeledOperationKind::symbol, 23, 23, 22, 0},
+        ModeledOperation{
+            ModeledOperationKind::bypass_bits, 0, 0, 0x2abcde, 22},
+    };
+}
+
 [[nodiscard]] std::vector<std::uint16_t> encode_tables() {
     return std::vector<std::uint16_t>(contextual_tans_encode_table_entries);
 }
@@ -172,6 +180,61 @@ TEST(ContextualTansEncoder, SelectedLayoutEncodesClassTwentyAndBypassTwenty) {
                   operations, {}, tables, sentinel,
                   static_cast<LzssFieldContextVariant>(0xff)).error,
               ContextualTansEncodeError::unsupported_context_variant);
+    EXPECT_EQ(sentinel.decision_count, 0xa5a5U);
+}
+
+TEST(ContextualTansEncoder, FourMiBLayoutEncodesClassTwentyTwoAndBypass) {
+    constexpr auto operations = four_mib_operations();
+    constexpr auto variant = LzssFieldContextVariant::field_context_4m;
+    auto tables = encode_tables();
+    ContextualTansDescriptor descriptor{};
+    const auto plan = plan_contextual_tans_operations(
+        operations, {}, tables, descriptor, variant);
+    ASSERT_EQ(plan.error, ContextualTansEncodeError::none);
+    EXPECT_EQ(plan.decision_count, 23U);
+    EXPECT_EQ(descriptor.frequency_entry_count,
+              lzss_field_context_frequency_entries_v3);
+    const auto offset = lzss_field_context_offsets_v3[23];
+    EXPECT_EQ(descriptor.frequencies[offset + 22], 4096U);
+    EXPECT_EQ(plan.required_table_entries,
+              contextual_tans_encode_table_entries);
+
+    std::vector<std::byte> payload(plan.payload_size);
+    const auto encoded = encode_contextual_tans_operations(
+        operations, {}, tables, payload, descriptor, variant);
+    ASSERT_EQ(encoded.error, ContextualTansEncodeError::none);
+    EXPECT_EQ(encoded.payload_size, plan.payload_size);
+    EXPECT_EQ(descriptor.final_valid_bits, 6U);
+    EXPECT_EQ(payload, (std::vector{
+        std::byte{0x0b}, std::byte{0x00}, std::byte{0xb1},
+        std::byte{0xfd}, std::byte{0x07}}));
+
+    auto decoder_tables = decode_tables();
+    ContextualTansDecoder decoder;
+    ASSERT_EQ(decoder.begin(
+                  descriptor, payload, {}, decoder_tables, variant).error,
+              ContextualTansDecodeError::none);
+    std::uint32_t value{};
+    ASSERT_EQ(decoder.decode_symbol(23, 23, value).error,
+              ContextualTansDecodeError::none);
+    EXPECT_EQ(value, 22U);
+    ASSERT_EQ(decoder.decode_bypass(22, value).error,
+              ContextualTansDecodeError::none);
+    EXPECT_EQ(value, 0x2abcdeU);
+    EXPECT_EQ(decoder.finish(2, 23).error,
+              ContextualTansDecodeError::none);
+
+    ContextualTansModelBuilder builder{variant};
+    EXPECT_EQ(builder.add_bypass(22, 0), ContextualTansEncodeError::none);
+    EXPECT_EQ(builder.add_bypass(23, 0),
+              ContextualTansEncodeError::invalid_bypass_width);
+
+    ContextualTansDescriptor sentinel{};
+    sentinel.decision_count = 0xa5a5;
+    EXPECT_EQ(plan_contextual_tans_operations(
+                  operations, {}, tables, sentinel,
+                  LzssFieldContextVariant::field_context_1m).error,
+              ContextualTansEncodeError::invalid_alphabet);
     EXPECT_EQ(sentinel.decision_count, 0xa5a5U);
 }
 

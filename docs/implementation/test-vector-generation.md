@@ -11314,3 +11314,19 @@ undersized output, a variant-3 descriptor under variant 2, and a variant-2
 descriptor under variant 3. Retain the existing literal descriptor vector
 byte-for-byte. Run the focused descriptor inventory under MSVC and ClangCL;
 do not admit an outer four-MiB Contextual tANS frame.
+
+### TVG-0797
+
+Under Contextual tANS context variant 3, encode the operation sequence
+`Symbol(23,23,22)` then `BypassBits(22,0x2abcde)`. Require 4,566 descriptor
+frequencies, decision count 23, the unchanged 131,072-entry table requirement,
+payload `0B 00 B1 FD 07`, six final valid bits, and exact decode equality.
+Reject the same operation alphabet under variant 2 without changing a sentinel
+descriptor; accept 22 bypass bits and reject 23.
+
+Build a valid typed-LZSS token sequence whose final match has distance
+1,048,577 and length 258 after an exact raw prefix. Under dictionary/context
+variants 4/3 require materialized and direct operation paths to produce equal
+counts, descriptors, and payloads, then recover every token and raw extent.
+Require variant 2 to reject before descriptor publication. Run both focused
+inventories under MSVC and ClangCL; do not construct an outer frame.

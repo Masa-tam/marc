@@ -5234,6 +5234,18 @@ before output publication. At that stage, streaming and profile construction
 still rejected variant 2 explicitly, leaving public API, CLI, benchmark, fuzz,
 and schema on the frozen route until lifecycle workspace promotion.
 
+The staged four-MiB Contextual tANS extension keeps that layout selection
+immutable while raising fixed descriptor backing to 4,566 frequencies.
+Descriptor processing admits context variant 3 at an exact 9,125-byte ceiling.
+The already layout-driven coding core then admits its 23-symbol distance
+alphabet and 22-bit bypass ceiling without a separate transition algorithm;
+all variants still share exactly 131,072 encode and decode entries. The direct
+typed-token bridge selects dictionary variant 4 and proves distance 1,048,577
+through both materialized-operation and direct paths. Complete-frame,
+streaming, profile, public C, CLI, benchmark, fuzz, and interoperability
+boundaries remain closed to `2/4 + 1/3 + 5/2` until their own staged
+admission.
+
 The following private Contextual tANS lifecycle stage introduces explicit
 64 KiB and 1 MiB profile selection, selected descriptor sizing over the
 unchanged 131,072-entry table extent, and decoder admission policy

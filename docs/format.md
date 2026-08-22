@@ -6769,22 +6769,37 @@ existing serialized byte and does not make a four-MiB stream decodable.
 
 The Contextual tANS coding core receives that same externally selected layout;
 neither descriptor length nor operation contents may change it. Model counts
-reserve 4,550 entries but normalize only the selected 4,518 or 4,550 entries.
-Symbol transitions use the selected context offsets and alphabets, while the
-implicit bypass table remains binary and fixed at 4,096 states. Variant 1
-admits at most 16 LSB-first bypass decisions per bypass operation and variant 2
-admits at most 20. Both variants retain exactly 32 transition regions (31
-Symbol contexts plus bypass), hence 131,072 encode entries and 131,072 decode
-entries. The tANS state, bit order, payload, padding, and terminal-state rules
-are otherwise unchanged.
+reserve 4,566 entries but normalize only the selected 4,518, 4,550, or 4,566
+entries. Symbol transitions use the selected context offsets and alphabets,
+while the implicit bypass table remains binary and fixed at 4,096 states.
+Variants 1, 2, and 3 admit at most 16, 20, and 22 LSB-first bypass decisions
+per bypass operation respectively. Every variant retains exactly 32 transition
+regions (31 Symbol contexts plus bypass), hence 131,072 encode entries and
+131,072 decode entries. The tANS state, bit order, payload, padding, and
+terminal-state rules are otherwise unchanged.
+
+For variant 3, `Symbol(23,23,22)` followed by
+`BypassBits(22,0x2abcde)` has decision count 23, payload
+`0B 00 B1 FD 07`, and final-valid-bit count 6. Variant 2 rejects the
+23-symbol distance alphabet and 22-bit bypass width. Unknown or crossed
+selections fail before descriptor, table, payload, or decoded-value
+publication.
 
 The private direct LZSS typed-token adapter also receives the selection
 explicitly. It validates tokens with the selected dictionary variant, uses the
 selected distance alphabet during forward model construction and reverse tANS
-writing, and reconstructs with the selected 26- or 30-decision-per-token
-ceiling. A validate-only decode pass must finish the selected entropy state and
-typed-token validation before a second pass publishes caller-visible tokens.
-This adapter changes no serialized byte.
+writing, and reconstructs with the selected 26-, 30-, or 32-decision-per-token
+ceiling. Variant 3 round-trips the first newly admitted distance 1,048,577
+through the same payload as the materialized-operation reference path, while
+variant 2 rejects that token frame before publication. A validate-only decode
+pass must finish the selected entropy state and typed-token validation before
+a second pass publishes caller-visible tokens. This adapter changes no
+serialized byte.
+
+Coding-core and direct typed-token processing now admit variant 3. Complete-
+frame and streaming lifecycles, public C construction, CLI, benchmark, fuzz,
+and interoperability boundaries remain closed to exact identity
+`2/4 + 1/3 + 5/2`.
 
 The private complete-frame Contextual tANS boundary admits the extended layout
 only when the stream header carries the exact paired identity `2/3 + 1/2 +

@@ -19482,3 +19482,21 @@ strict prefix, trailing data, invalid record mode, atomic output failure, and
 reciprocal crossed-layout rejection. Preserve the frozen old descriptor bytes.
 Do not admit variant 3 in coding, typed-token, frame, streaming, public C,
 CLI, benchmark, fuzz, or interoperability boundaries in this stage.
+
+## DD-931: Reuse selected tANS coding for four-MiB typed tokens
+
+- Date: 2026-08-22
+- Status: accepted
+
+Admit context variant 3 in the existing selected Contextual tANS model builder,
+fixed encode/decode tables, reverse writer, state decoder, and direct typed-
+LZSS encode/decode adapter. No new coding branch is needed: the existing
+layout object already supplies the 23-symbol distance alphabet, 22-bit bypass
+ceiling, 4,566 frequency entries, and dictionary variant 4.
+
+Freeze `Symbol(23,23,22) + BypassBits(22,0x2abcde)` as payload
+`0B 00 B1 FD 07` with decision count 23 and six final valid bits. Require the
+direct adapter to match the materialized-operation reference and round-trip
+distance 1,048,577, the first distance unavailable to variant 2. Crossed
+layouts must fail atomically. Keep complete-frame, streaming, public C, CLI,
+benchmark, fuzz, and interoperability boundaries closed.

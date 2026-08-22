@@ -24522,3 +24522,33 @@ benchmark, fuzz target, or interoperability inventory changes.
   could not start the Python executable outside the workspace, so the seven
   registered tooling commands were rerun unchanged with the required host
   access and all passed.
+
+## CR-1005: 2026-08-22 - Four-MiB Contextual tANS typed coding boundary
+
+- Authoring method: admitted marc's existing externally selected tANS coding
+  core and direct typed-LZSS adapter for the completed variant-3 layout; no
+  alternate coder or serialized representation was introduced.
+- References used: IR-0693 through IR-0694, DD-930 through DD-931,
+  TVG-0796 through TVG-0797, CR-1004, and repository-owned selected coding,
+  typed-token, and atomic decode code. No new external technical source was
+  used.
+- Known implementations intentionally not consulted: external compressors,
+  tANS implementations, typed-token formats, source code, tests, benchmark
+  results, patents, pseudocode, and optimization descriptions.
+- Independent decisions: reuse the layout-driven core without a new branch;
+  freeze the class-22 payload; prove the first distance above one MiB through
+  both direct and materialized paths; and keep every outer boundary closed.
+- Generated-code task description: test and document Contextual tANS variant-3
+  operation coding and direct typed-LZSS composition with exact old-layout
+  rejection and atomic publication.
+- Similarity review: all added vectors and paths derive from marc's own field
+  layout and single-state transition rules. No external implementation
+  expression was consulted.
+- Local validation: all 17 focused Contextual tANS operation/direct typed-
+  token tests pass under MSVC and ClangCL, including the exact payload,
+  first-new-distance round trip, materialized/direct equality, and crossed
+  rejection. All 3,177 registered tests pass under MSVC and ClangCL with a
+  600-second per-test limit, including documentation layout, seven Python
+  tooling tests, eighteen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`; MSVC completed in 196.48
+  seconds, and the ClangCL log records 3,177 `Test Passed` results.
