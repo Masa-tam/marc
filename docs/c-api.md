@@ -185,7 +185,12 @@ This canonical lifecycle emits only variable-length entropy variant 3.
 `MARC_LZSS_CONTEXTUAL_WINDOW_64K` is the initializer default, selects
 dictionary/context `2/2 + 1/1`, and uses the 9,025-byte descriptor ceiling.
 `MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects `2/3 + 1/2` and uses the 9,089-byte
-ceiling. The selector is not inferred from `window_size`; encoding validates
+ceiling. `MARC_LZSS_CONTEXTUAL_WINDOW_4M` selects `2/4 + 1/3`, uses the
+9,121-byte ceiling, and retains the 128-MiB aggregate default. On supported
+64-bit native layouts its full encoder and decoder requirements are
+130,556,905 and 114,017,257 bytes; full-frame callers must raise
+`max_block_size` to 4,194,304 bytes. The selector is not inferred from
+`window_size`; encoding validates
 parameters against it and public decoding rejects the other profile before
 frame allocation. The field and trailing 32-bit reserved word retain the
 former 64-bit tail's ABI-1 extent and all-zero meaning. Entropy variant 2 is

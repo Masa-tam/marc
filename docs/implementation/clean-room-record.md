@@ -24293,3 +24293,29 @@ discarded and the reviewed seed retained.
   respectively, including seven Python tooling tests, seventeen experimental
   benchmark smokes, and `marc_interoperability_schema_compatibility`. Public C,
   CLI, benchmark, fuzzing, and interoperability remain unchanged.
+
+## CR-0997: 2026-08-22 - Four-MiB contextual rANS C boundary
+
+- Authoring method: extended only the contextual rANS mapping and validator for
+  the common ABI-1 selector value already published by Dynamic Range, then used
+  the completed private profile and streaming lifecycle.
+- References used: IR-0682 through IR-0687, DD-919 through DD-924, TVG-0785
+  through TVG-0790, CR-0992 through CR-0996, and repository-owned C adapter.
+  No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  C APIs, rANS bindings, workspace policies, source code, tests, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: reuse ABI value 2; keep backend admission exact;
+  retain defaults; test hard-limit versus profile rejection separately; and
+  leave every later surface closed.
+- Generated-code task description: expose four-MiB contextual rANS through C
+  with exact workspace boundaries, small round trip, header bytes, cross-
+  profile atomic rejection, and unknown-selector rejection.
+- Similarity review: mapping branches, validation, and tests follow directly
+  from marc's existing two rANS profiles and completed Dynamic Range selector.
+  No external implementation expression was consulted or introduced.
+- Validation: the focused C ABI test passes under MSVC and ClangCL. All 3,166
+  registered tests pass in 204.44 and 204.65 seconds respectively, including
+  seven Python tooling tests, seventeen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. CLI, benchmark, fuzzing, and
+  interoperability remain unchanged.

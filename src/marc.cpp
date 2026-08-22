@@ -622,21 +622,31 @@ typed_context_stream_admission(
 [[nodiscard]] marc::frame::internal::LzssContextualRansProfileVariant
 contextual_rans_profile_variant(
     const marc_lzss_contextual_window_profile profile) noexcept {
-    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        ? marc::frame::internal::LzssContextualRansProfileVariant::
-              field_context_1m
-        : marc::frame::internal::LzssContextualRansProfileVariant::
-              field_context_64k;
+    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+        return marc::frame::internal::LzssContextualRansProfileVariant::
+            field_context_4m;
+    }
+    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M) {
+        return marc::frame::internal::LzssContextualRansProfileVariant::
+            field_context_1m;
+    }
+    return marc::frame::internal::LzssContextualRansProfileVariant::
+        field_context_64k;
 }
 
 [[nodiscard]] marc::frame::internal::LzssContextualRansStreamAdmission
 contextual_rans_stream_admission(
     const marc_lzss_contextual_window_profile profile) noexcept {
-    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        ? marc::frame::internal::LzssContextualRansStreamAdmission::
-              field_context_1m
-        : marc::frame::internal::LzssContextualRansStreamAdmission::
-              field_context_64k;
+    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+        return marc::frame::internal::LzssContextualRansStreamAdmission::
+            field_context_4m;
+    }
+    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M) {
+        return marc::frame::internal::LzssContextualRansStreamAdmission::
+            field_context_1m;
+    }
+    return marc::frame::internal::LzssContextualRansStreamAdmission::
+        field_context_64k;
 }
 
 [[nodiscard]] marc::frame::internal::LzssContextualTansProfileVariant
@@ -739,7 +749,8 @@ bool load_config(
         || config->abi_version != MARC_ABI_VERSION
         || config->reserved != 0 || config->reserved2 != 0
         || (config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M)) {
+            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;

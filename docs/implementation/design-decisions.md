@@ -19361,3 +19361,19 @@ limit success. Retain the 128-MiB default; a caller must raise only the default
 one-MiB block limit for a full frame. Require one-byte encode/decode and cross-
 profile rejection on a small frame. Keep public C and all later surfaces
 closed.
+
+## DD-924: Publish selector value 2 through the contextual rANS C factory
+
+- Date: 2026-08-22
+- Status: accepted
+
+Admit existing common ABI-1 value `MARC_LZSS_CONTEXTUAL_WINDOW_4M` in only the
+contextual rANS backend in addition to its already completed Dynamic Range
+meaning. Map it exactly to private profile/admission variant 3; add no ABI
+field, function, structure extent, default, or serialized value.
+
+Require small public encode/decode, header identity and frequency-count bytes,
+atomic rejection by a one-MiB exact decoder after permissive hard limits, full
+directional workspace values, and one-short aggregate failures. Preserve the
+64-KiB initializer and 128-MiB aggregate default. Keep CLI, benchmark, fuzzing,
+and interoperability rANS admission closed.

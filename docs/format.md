@@ -6956,11 +6956,13 @@ bytes under the 64 MiB payload limit and fits the default once the block-size
 limit is separately raised.
 
 The public C selector `MARC_LZSS_CONTEXTUAL_WINDOW_4M` has value 2 and selects
-this exact triple only for Contextual Dynamic Range. It is not serialized and
-is not inferred from any size. It does not change the 64 KiB initializer or
-the 128 MiB aggregate default, so encoder workspace query fails until the
-caller explicitly raises that limit. Other contextual C factories reject the
-known selector until their backend-specific four-MiB paths are complete.
+the exact `2/4 + 1/3` pair. Contextual Dynamic Range and canonical contextual
+rANS accept it with their respective completed entropy triples. It is not
+serialized and is not inferred from any size. It does not change the 64 KiB
+initializer or the 128 MiB aggregate default; Dynamic Range encoding requires
+an explicit larger aggregate, while rANS fits the default. Other contextual C
+factories reject the known selector until their backend-specific paths are
+complete.
 
 The CLI name `lzss-contextual-dynamic-range-4m` selects this exact triple and
 uses four-MiB frames/windows plus an explicit 256-MiB application aggregate
@@ -6980,9 +6982,9 @@ The complete staged contract is [LZSS contextual 4 MiB
 window](design/lzss-contextual-window-4m.md).
 
 The shared typed-token/context implementation recognizes the exact pair and
-its layout internally. Only the Dynamic Range private lifecycle described
-above currently admits a four-MiB entropy triple; other backend-specific entry
-points continue to admit only their previously completed pairs.
+its layout internally. Dynamic Range and canonical contextual rANS admit
+completed four-MiB entropy triples; other backend-specific entry points
+continue to admit only their previously completed pairs.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

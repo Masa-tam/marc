@@ -6175,3 +6175,12 @@ profile calculator, native workspace partitioners, HashChain Exact streaming
 encoder, atomic streaming decoder, and exact admission enum. No external
 compressor, rANS lifecycle, workspace layout, source code, test, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0687
+
+The four-MiB contextual rANS C boundary uses IR-0682 through IR-0686, DD-919
+through DD-923, TVG-0785 through TVG-0789, the repository-owned ABI-1 common
+window selector, backend-specific config validator, exact profile mapper,
+workspace query, factory, and streaming lifecycle. No external C API,
+compressor, rANS binding, workspace policy, source code, test, patent,
+pseudocode, or optimization description was consulted.
