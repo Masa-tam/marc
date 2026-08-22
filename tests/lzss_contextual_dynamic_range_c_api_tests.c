@@ -225,7 +225,48 @@ int main(void) {
     assert(marc_lzss_contextual_dynamic_range_create(
                &config, primary, secondary, views, NULL)
            == MARC_STATUS_INVALID_ARGUMENT);
-    config.window_profile = UINT32_C(2);
+    assert(marc_lzss_contextual_dynamic_range_config_init(
+               MARC_DIRECTION_ENCODE, &config)
+           == MARC_STATUS_OK);
+    config.original_size = UINT32_C(1) << 22;
+    config.frame_size = UINT32_C(1) << 22;
+    config.window_size = UINT32_C(1) << 22;
+    config.max_block_size = UINT32_C(1) << 22;
+    config.max_lz_distance = UINT32_C(1) << 22;
+    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_LIMIT_EXCEEDED);
+#if SIZE_MAX > UINT32_MAX
+    config.max_internal_buffered_bytes = UINT64_C(264765524);
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_LIMIT_EXCEEDED);
+    config.max_internal_buffered_bytes = UINT64_C(264765525);
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+    assert(needed.primary_bytes == 4194304);
+    assert(needed.secondary_bytes == 58720341);
+    assert(needed.views_bytes == 201850880);
+#endif
+
+    assert(marc_lzss_contextual_dynamic_range_config_init(
+               MARC_DIRECTION_DECODE, &config)
+           == MARC_STATUS_OK);
+    config.max_block_size = UINT32_C(1) << 22;
+    config.max_lz_distance = UINT32_C(1) << 22;
+    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+#if SIZE_MAX > UINT32_MAX
+    assert(needed.primary_bytes == 67108944);
+    assert(needed.secondary_bytes == 4194304);
+    assert(needed.views_bytes == 50331648);
+#endif
+
+    config.window_profile = UINT32_C(3);
     assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
                &config, &needed)
            == MARC_STATUS_INVALID_ARGUMENT);

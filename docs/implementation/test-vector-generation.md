@@ -11062,3 +11062,19 @@ byte below the calculated aggregate, and success at the exact limit. For the
 decoder, aggregate its caller-selected payload ceiling plus frame header,
 four-MiB raw staging, and `F` native typed tokens; require the same one-short
 and exact boundary. Keep public selection and interoperability unchanged.
+
+### TVG-0780
+
+For public C admission, require the new selector value 2 to map the Contextual
+Dynamic Range workspace query to exact `2/4 + 1/3 + 3/2`. On supported 64-bit
+layouts, require the encoder to fail under the unchanged default and at
+264,765,524 bytes, then report 4,194,304 primary, 58,720,341 secondary, and
+201,850,880 views bytes at the exact 264,765,525-byte aggregate. Require the
+decoder to report 67,108,944 primary, 4,194,304 secondary, and 50,331,648
+views bytes after its block limit is explicitly raised.
+
+Require contextual rANS, tANS, Blocked Huffman, and Adaptive Huffman C queries
+to reject the known four-MiB selector rather than falling back to another
+profile. Keep selector 3 unknown. Preserve both older selectors, all stream
+bytes, initializer defaults, CLI names, fuzzing targets, and interoperability
+inventory.

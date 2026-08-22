@@ -23976,3 +23976,34 @@ discarded and the reviewed seed retained.
   benchmark smokes, and `marc_interoperability_schema_compatibility`. The
   public ABI, CLI, benchmarks, fuzz admission, and interoperability inventory
   remain unchanged.
+
+## CR-0986: 2026-08-22 - Four-MiB Dynamic Range C selector boundary
+
+- Authoring method: extended marc's existing ABI-1 contextual window selector
+  through the already completed Dynamic Range profile and workspace query,
+  while retaining backend-specific configuration admission.
+- References used: IR-0673 through IR-0677, DD-910 through DD-914, TVG-0776
+  through TVG-0780, CR-0982 through CR-0985, and repository-owned C factory,
+  profile mapping, limit, and workspace-partition code. No new external
+  technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  C APIs, large-window selectors, memory policies, source code, tests,
+  benchmarks, patents, pseudocode, and optimization descriptions.
+- Independent decisions: publish value 2 without changing ABI structure
+  extent; admit it only for Dynamic Range; retain 64 KiB and 128 MiB defaults;
+  require explicit caller limits; and keep CLI, fuzzing, benchmark, and
+  interoperability selection closed.
+- Generated-code task description: expose exact four-MiB Dynamic Range
+  workspace admission through C while proving one-short bounds, unknown-value
+  rejection, and rejection by every unfinished contextual backend.
+- Similarity review: selector value, profile mapping, workspace figures, and
+  rejection policy follow directly from marc's preceding private lifecycle
+  and existing ABI conventions. No external implementation expression was
+  consulted or introduced.
+- Validation: all 3,153 registered tests pass under MSVC in 228.83 seconds and
+  ClangCL in 207.66 seconds with a 600-second per-test limit. Both complete
+  runs include the new C boundary tests, all seven Python tooling tests,
+  sixteen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. The CLI, fuzzing targets,
+  benchmark profiles, emitted old streams, and 52-archive interoperability
+  inventory remain unchanged.

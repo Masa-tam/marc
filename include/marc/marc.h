@@ -36,6 +36,7 @@ typedef uint32_t marc_direction;
 typedef uint32_t marc_lzss_contextual_window_profile;
 #define MARC_LZSS_CONTEXTUAL_WINDOW_64K UINT32_C(0)
 #define MARC_LZSS_CONTEXTUAL_WINDOW_1M UINT32_C(1)
+#define MARC_LZSS_CONTEXTUAL_WINDOW_4M UINT32_C(2)
 
 typedef uint32_t marc_process_flags;
 #define MARC_PROCESS_NONE UINT32_C(0)

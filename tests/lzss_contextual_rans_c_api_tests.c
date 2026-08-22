@@ -273,11 +273,14 @@ int main(void) {
     }
     marc_transform_destroy(transform);
 
-    config.window_profile = UINT32_C(2);
+    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     assert(needed.primary_bytes == 0 && needed.secondary_bytes == 0
            && needed.views_bytes == 0);
+    config.window_profile = UINT32_C(3);
+    assert(marc_lzss_contextual_rans_workspace_requirements(
+               &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
     config.reserved2 = 1;
     assert(marc_lzss_contextual_rans_workspace_requirements(

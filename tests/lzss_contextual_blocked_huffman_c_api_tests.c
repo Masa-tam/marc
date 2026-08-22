@@ -152,11 +152,14 @@ static void run_extended_profile(
     assert(result.output_produced == 0 && decoded[0] == 0xcc);
     marc_transform_destroy(transform);
 
-    config.window_profile = UINT32_C(2);
+    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     assert(needed.primary_bytes == 0 && needed.secondary_bytes == 0
            && needed.views_bytes == 0);
+    config.window_profile = UINT32_C(3);
+    assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     assert(marc_lzss_contextual_blocked_huffman_config_init(
                MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
     config.original_size = 1;

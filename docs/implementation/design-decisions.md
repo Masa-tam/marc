@@ -19183,3 +19183,23 @@ explicitly. Enforce the decoder's complete encoded/raw/token aggregate too;
 its 121,634,896-byte conservative requirement fits the default. Require exact
 and one-byte-short tests for both directions. Keep the C selector, CLI,
 benchmark, fuzzing, and interoperability inventory closed for the next stage.
+
+## DD-914: Publish four MiB only for the completed Dynamic Range C boundary
+
+- Date: 2026-08-22
+- Status: accepted
+
+Add `MARC_LZSS_CONTEXTUAL_WINDOW_4M` as value 2 to the shared ABI-1 window
+selector, but admit it only in the Contextual Dynamic Range configuration.
+Map it exactly to `2/4 + 1/3 + 3/2`; do not infer it from configured sizes.
+The other contextual C factories must reject the now-known value until their
+own four-MiB vertical paths establish format, workspace, and malformed-input
+bounds.
+
+Keep the initializer default at 64 KiB and the library aggregate default at
+128 MiB. The four-MiB encoder query therefore reports `limit_exceeded` until
+the caller explicitly supplies at least its calculated aggregate; the
+selector must not silently raise a hard limit. Require exact 64-bit workspace
+figures and one-short admission through the public query, plus explicit
+backend-scoped rejection. Defer allocation-heavy C round trip, CLI policy,
+benchmark, fuzzing, and interoperability inventory to later stages.

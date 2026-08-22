@@ -154,10 +154,17 @@ decoder workspace sizing comes only from its hard limits and validates stream
 parameters later. `window_profile` selects one exact dictionary/context pair:
 `MARC_LZSS_CONTEXTUAL_WINDOW_64K` selects `2/2 + 1/1` and remains the
 initializer default, while `MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects
-`2/3 + 1/2`. The selector is not inferred from `window_size`; encoding rejects
-parameters outside the selected profile and decoding rejects a stream whose
+`2/3 + 1/2`. `MARC_LZSS_CONTEXTUAL_WINDOW_4M` selects `2/4 + 1/3` only for
+this Dynamic Range factory. The selector is not inferred from `window_size`;
+encoding rejects parameters outside the selected profile and decoding rejects
+a stream whose
 identity does not match it. Re-query all three workspace regions after
-changing the selector. The field and its trailing 32-bit reserved word occupy
+changing the selector. The 4 MiB encoder retains the 128 MiB default and
+returns `MARC_STATUS_LIMIT_EXCEEDED` until the caller explicitly raises
+`max_internal_buffered_bytes` to at least its calculated requirement
+(264,765,525 bytes on the supported 64-bit native layouts). Its decoder also
+requires `max_block_size` of at least 4,194,304 bytes. The field and its
+trailing 32-bit reserved word occupy
 the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
 all-zero meaning used by earlier callers. The profile remains outside the
 baseline CLI and interoperability inventories.

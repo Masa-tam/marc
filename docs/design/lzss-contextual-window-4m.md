@@ -1,8 +1,7 @@
 # LZSS contextual 4 MiB window
 
-Status: accepted design after project version 0.3.0. The private Dynamic Range
-vertical path has complete-frame and streaming support; no public 4 MiB
-selector is implemented by this document.
+Status: accepted design after project version 0.3.0. The Dynamic Range
+vertical path has complete-frame, streaming, and C workspace-query support.
 
 ## Purpose
 
@@ -189,22 +188,24 @@ Matches, then models and reconstructs a length-258 Match at distance 4,194,304.
 It therefore exercises class 22 and a 22-bit zero bypass without a
 multi-million-Literal fixture.
 
-The private Dynamic Range vertical path admits exact triple `2/4 + 1/3 + 3/2`
+The Dynamic Range vertical path admits exact triple `2/4 + 1/3 + 3/2`
 through stream-header parsing, complete-frame encode/decode, checked profile
 calculation, and one-byte streaming. Its selected model storage has 4,566
 entries, its count validator and encoder ceiling use `7F`, and its first
 complete-frame decoder vector contains a real distance-1,048,577 Match.
 Crossed identities and one-entry-short token, raw, and aggregate workspaces
-fail before publication. Public C selection, CLI profile, benchmarks, fuzzing,
-and the interoperability inventory remain closed.
+fail before publication. The C selector value
+`MARC_LZSS_CONTEXTUAL_WINDOW_4M` publishes this exact path without changing
+the default limits; all other contextual C backends reject that known value.
+CLI profile, benchmarks, fuzzing, and the interoperability inventory remain
+closed.
 
 ## Planned public policy
 
-After one backend completes its vertical path, the common C window-profile
-selector may add value 2 for the exact 4 MiB identity. Value 0 remains 64 KiB
-and value 1 remains 1 MiB. A completed CLI backend may add an explicit `-4m`
-name. Neither source-level value nor CLI name is reserved as public API by this
-design-only stage.
+The common C window-profile selector assigns value 2 to the exact 4 MiB
+identity. Value 0 remains 64 KiB and value 1 remains 1 MiB. Backend admission
+is independent: only Contextual Dynamic Range presently accepts value 2. A
+completed CLI backend may later add an explicit `-4m` name.
 
 An exact public decoder admits only its selected dictionary/context pair; it
 does not infer a profile from `window_size`, descriptor size, or distance seen

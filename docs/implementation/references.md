@@ -6082,3 +6082,12 @@ HashChain workspace calculator, native typed staging layouts, and checked
 aggregate arithmetic. No external compressor, range coder implementation,
 large-window format, memory profile, source code, test, benchmark, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0677
+
+The four-MiB Contextual Dynamic Range C boundary uses IR-0673 through IR-0676,
+DD-910 through DD-913, TVG-0776 through TVG-0779, the repository-owned ABI-1
+window selector, exact typed-context profile mapping, checked workspace query,
+and backend-specific configuration validators. No external compressor, C API,
+large-window selector, memory policy, source code, test, benchmark, patent,
+pseudocode, or optimization description was consulted.

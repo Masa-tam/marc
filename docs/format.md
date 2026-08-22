@@ -6942,7 +6942,7 @@ bytes therefore uses the checked common bounds `token_count <= F`,
 `decision_count <= 32*token_count`. The older `6F` bound remains part of the
 older variants and does not validate this family.
 
-The exact private Dynamic Range triple `2/4 + 1/3 + 3/2` is admitted for
+The exact Dynamic Range triple `2/4 + 1/3 + 3/2` is admitted for
 stream-header parsing, complete-frame encoding and decoding, checked profile
 calculation, and streaming. It retains the existing
 16-byte Dynamic Range descriptor, 31 contexts, model-total 32,768, and
@@ -6953,8 +6953,16 @@ On supported 64-bit builds its four-MiB encoder profile requires a conservative
 264,765,525-byte aggregate and therefore requires an explicit caller limit
 above the unchanged 128 MiB default. Its decoder aggregate is 121,634,896
 bytes under the 64 MiB payload limit and fits the default once the block-size
-limit is separately raised. Public C selection, CLI profile, benchmark,
-fuzzing, and interoperability archive are not yet admitted.
+limit is separately raised.
+
+The public C selector `MARC_LZSS_CONTEXTUAL_WINDOW_4M` has value 2 and selects
+this exact triple only for Contextual Dynamic Range. It is not serialized and
+is not inferred from any size. It does not change the 64 KiB initializer or
+the 128 MiB aggregate default, so encoder workspace query fails until the
+caller explicitly raises that limit. Other contextual C factories reject the
+known selector until their backend-specific four-MiB paths are complete. CLI,
+benchmark, fuzzing, and interoperability archive admission remain later
+boundaries.
 
 Every other contextual entropy identity must independently define and
 implement its selected descriptor, payload, model, workspace, malformed-input,
