@@ -2593,3 +2593,12 @@ suite validation passes all 3,172 tests under MSVC and ClangCL in 189.68 and
 195.34 seconds, including documentation layout, seven Python tooling tests,
 eighteen experimental benchmark smokes, and schema compatibility. External
 four-direction evidence remains pending until the revision is pushed.
+
+### BR-0155
+
+Schema 44 now has complete four-direction external evidence at revision
+`7f2b893f6ebeb968cab287420caa97201ce5b3b8`. All 54 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the four-MiB
+Contextual rANS profile.

@@ -3,8 +3,9 @@
 Status: accepted staged design after completion of the four-MiB Contextual
 Dynamic Range vertical path. The descriptor/model, private complete-frame,
 profile, one-byte streaming, public C, CLI, benchmark, and bounded fuzzing
-boundaries and schema-44 interoperability admission are implemented. External
-four-direction evidence remains pending.
+boundaries and schema-44 interoperability admission are implemented. Revision
+`7f2b893f6ebeb968cab287420caa97201ce5b3b8` has complete four-direction
+Windows and Linux evidence for all 54 archives.
 
 ## Purpose and identity
 

@@ -24441,3 +24441,29 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`. No bundle work product was
   retained in the repository; four-direction external evidence remains
   pending.
+
+## CR-1002: 2026-08-22 - Schema 44 four-direction external admission
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-928, IR-0691, TVG-0794, BR-0154 through BR-0155,
+  IX-0038, CR-1001, and full revision
+  `7f2b893f6ebeb968cab287420caa97201ce5b3b8`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: require one exact revision for all directions,
+  preserve work products outside the repository, and accept evidence only
+  when every verifier reports the complete 54-archive inventory.
+- Generated-code task description: record the completed schema-44
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks.
+- Similarity review: this change records project-generated artifact evidence
+  only and introduces no codec implementation expression.
+- External validation: all four passes reported `Verified 54 archives` at
+  revision `7f2b893f6ebeb968cab287420caa97201ce5b3b8`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.

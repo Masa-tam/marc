@@ -140,9 +140,8 @@ retention settings; regenerate them by running CI for the required commit.
 
 Schema 44 has local generation, exact-order verification, byte-identical
 re-encoding, reordered-manifest rejection, and schemas 1 through 43
-compatibility evidence under MSVC and ClangCL. Its external four-direction
-evidence remains pending. Completed earlier cross-platform evidence is
-recorded below.
+compatibility evidence under MSVC and ClangCL. Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang four-direction evidence is recorded below.
 
 ## Work-product policy
 
@@ -748,5 +747,21 @@ verified that bundle in the reverse direction.
 Each of the four verifier passes reported the exact full revision and required
 manifest order, size, SHA-256, fixture decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-43
+bytes across the three producers and bidirectional decoding between the
+recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0038: Schema 44
+
+Revision `7f2b893f6ebeb968cab287420caa97201ce5b3b8` received the schema-44
+cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
+x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all 54
+archives from both the Windows/MSVC via Visual Studio 2026 and Ubuntu 24.04
+default-compiler/Ninja artifacts. It then generated and self-verified an
+`ubuntu-26.04-ninja-x64` 54-archive bundle. The Windows/MSVC executable
+verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest order, size, SHA-256, fixture decode, and byte-identical local
+re-encoding checks for every archive. This establishes canonical schema-44
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
