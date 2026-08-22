@@ -24824,3 +24824,34 @@ benchmark, fuzz target, or interoperability inventory changes.
 - Validation: documentation layout passes under MSVC and ClangCL in 0.33
   seconds each. No codec source, stream admission, public selector, test
   inventory, benchmark, fuzz target, or interoperability schema changes.
+
+## CR-1015: 2026-08-22 - Four-MiB Contextual Blocked Huffman descriptor
+
+- Authoring method: extended the repository-owned selected descriptor grammar
+  with one explicit variant case and permanent exact/negative tests before
+  opening entropy coding.
+- References used: IR-0702 through IR-0703, DD-939 through DD-940, TVG-0805
+  through TVG-0806, CR-1014, and repository-owned descriptor and field-context
+  code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, descriptor grammars, source code, tests, vectors,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: set capacity to 2,588; keep all selected maxima
+  distinct; map only variant 3 to 23-symbol alphabets; and keep every outward
+  layer closed.
+- Generated-code task description: implement exact variant-3 descriptor
+  parse/validate/serialize support with maximum, padding, truncation, crossed-
+  layout, short-output, and old-byte regressions.
+- Similarity review: the new selector case and tests are direct extensions of
+  marc's existing variant-1/2 grammar. No external implementation expression
+  was consulted or introduced.
+- Validation: the first focused run correctly rejected a variant-2 test that
+  passed the enlarged 2,588-byte capacity instead of its 2,579-byte written
+  extent. The test now passes only the actual serialized span; this preserves
+  strict trailing-data behavior rather than weakening the parser. All ten
+  focused format tests then pass under MSVC and ClangCL in 3.89 seconds. All
+  3,191 registered tests pass with a 600-second per-test limit in 217.25 and
+  212.04 seconds respectively, including seven Python tooling tests, nineteen
+  experimental benchmark smokes, forty-two benchmark smokes, documentation
+  layout, and complete schema compatibility. No entropy, frame, public, fuzz,
+  benchmark, or interoperability boundary is opened.

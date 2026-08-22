@@ -19638,3 +19638,20 @@ to eight overrides. Use `7F` decisions, `ceil(105F/8)` payload, and
 encoder and decoder aggregate minima of 126,880,348 and 109,722,064 bytes on
 the supported 64-bit layout. Retain the 128-MiB default and stage each outward
 boundary separately.
+
+## DD-940: Separate descriptor capacity from selected serialized extent
+
+- Date: 2026-08-22
+- Status: accepted
+
+Raise the internal Contextual Blocked Huffman descriptor capacity to the
+variant-3 maximum of 2,588 bytes, but never treat that capacity as a serialized
+extent. Select 2,561, 2,579, or 2,588 bytes exclusively from the immutable
+context variant before parsing, validation, or serialization.
+
+Admit context variant 3 only in the descriptor layer and map it to the existing
+23-symbol field-context alphabets. Require symbol 22, exact all-dense maximum,
+odd dense-padding rejection, every truncation, trailing data, crossed layout,
+one-short output, and unchanged older vectors. Pass only the returned written
+extent to a parser; unused caller capacity is not stream input. Keep entropy
+coding and all outer admission closed.

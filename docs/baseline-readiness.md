@@ -2628,3 +2628,16 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the four-MiB
 Contextual tANS profile.
+
+### BR-0158
+
+The four-MiB Contextual Blocked Huffman descriptor boundary is complete.
+Context variant 3 admits the exact 2,588-byte all-dense maximum and distance
+symbol 22 while variants 1 and 2 retain their frozen 2,561- and 2,579-byte
+extents. Ten focused format tests pass under both compilers in 3.89 seconds.
+
+All 3,191 registered tests pass with a 600-second per-test limit in 217.25 and
+212.04 seconds under MSVC and ClangCL, including documentation layout, seven
+Python tooling tests, nineteen experimental benchmark smokes, forty-two
+benchmark smokes, and complete schema compatibility. Entropy coding and all
+outer four-MiB Contextual Blocked Huffman boundaries remain closed.

@@ -7112,6 +7112,14 @@ fields. No encoder, decoder, public selector, CLI name, or interoperability
 schema admits this reserved triple until its corresponding staged boundary is
 implemented and tested.
 
+Descriptor parsing, validation, and serialization now implement the
+context-variant-3 selection. Their shared scratch/output capacity is 2,588
+bytes, but a descriptor's accepted extent is always the maximum selected by
+its explicit context variant. Variant 1 and 2 therefore remain capped at
+2,561 and 2,579 bytes and do not consume unused capacity as stream data.
+Entropy payload coding, typed-token composition, frame identity admission,
+and every public surface remain closed for this triple.
+
 The private Contextual tANS profile and streaming lifecycle now select all
 three exact layouts. Variant 3 derives `ceil(21F/2) + 2` payload and 9,125-byte
 descriptor ceilings from the validated layout, retains the fixed 131,072-entry

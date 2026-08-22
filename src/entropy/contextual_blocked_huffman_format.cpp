@@ -46,6 +46,12 @@ struct SelectedLayout {
         selected.maximum_descriptor_size =
             contextual_blocked_huffman_max_descriptor_size_v2;
         break;
+    case V::field_context_4m:
+        selected.context_alphabets =
+            &context::internal::lzss_field_context_alphabets_v3;
+        selected.maximum_descriptor_size =
+            contextual_blocked_huffman_max_descriptor_size_v3;
+        break;
     default: return false;
     }
     selected.field_alphabets = {

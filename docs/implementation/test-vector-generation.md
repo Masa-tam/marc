@@ -11448,3 +11448,18 @@ descriptor truncation, noncanonical sparse/dense choice, crossed and unknown
 layouts, short descriptor output, table-count ceiling 35, and exact/one-short
 limits. No entropy payload, typed-token, frame, public, fuzz, or
 interoperability boundary selects variant 3 in this first stage.
+
+### TVG-0806
+
+Serialize a four-model descriptor whose distance field is Single symbol 22
+under context variant 3, then parse it byte-exactly and require variant 2 to
+reject the same model atomically. Serialize four pooled and all 31 override
+models densely using variant-3 alphabets and require exactly 2,588 bytes,
+distance length 22 present, and high-nibble padding zero in every odd
+23-symbol distance record.
+
+Mutate the first pooled distance padding nibble, truncate every byte of the
+small hand vector, append one trailing byte, and supply an output one byte
+short of the maximum. Require no descriptor, output, or written-count
+publication. Retain all variant-1 and variant-2 format tests, parsing their
+actual returned serialized extents rather than unused enlarged capacity.

@@ -6322,3 +6322,12 @@ workspace calculator, profile partitioners, and completed four-MiB backend
 designs. No external compressor, DEFLATE implementation, Huffman source code,
 table layout, test, benchmark result, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0703
+
+The four-MiB Contextual Blocked Huffman descriptor implementation uses
+IR-0702, DD-939, TVG-0805, the repository-owned selected-layout dispatcher,
+canonical record analyzer/parser/serializer, variant-3 alphabet table, and
+atomic descriptor tests. No external compressor, Huffman implementation,
+descriptor grammar, source code, test vector, patent, pseudocode, or
+optimization description was consulted.

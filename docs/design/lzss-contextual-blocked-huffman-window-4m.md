@@ -1,7 +1,9 @@
 # LZSS contextual Blocked Huffman 4 MiB window
 
-Status: accepted staged design after completion of the Dynamic Range,
-canonical contextual rANS, and contextual tANS four-MiB vertical paths.
+Status: implementation in progress after completion of the Dynamic Range,
+canonical contextual rANS, and contextual tANS four-MiB vertical paths. The
+descriptor boundary is complete; entropy coding and outward surfaces remain
+closed.
 
 ## Purpose and exact identity
 
@@ -125,7 +127,7 @@ A full profile sets `max_frame_size` and LZ distance to four MiB,
 
 ## Staged implementation
 
-1. Expand descriptor selection and capacity to context variant 3. Prove the
+1. **Complete.** Expand descriptor selection and capacity to context variant 3. Prove the
    exact 2,588-byte maximum, canonical 23-symbol records, unchanged old bytes,
    and atomic rejection.
 2. Carry the immutable selection through model building, operation coding,

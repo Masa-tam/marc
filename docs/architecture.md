@@ -5638,3 +5638,11 @@ Its `7F` decision bound gives payload ceiling `ceil(105F/8)`. On the supported
 and 109,722,064 bytes, so both fit the unchanged 128-MiB default. Descriptor,
 coding, frame, public, tool, fuzz, and interoperability admission remain
 separate review boundaries.
+
+The four-MiB Contextual Blocked Huffman descriptor boundary now selects
+context variant 3 explicitly. The shared temporary capacity is 2,588 bytes,
+while each parser and validator retains its selected 2,561-, 2,579-, or
+2,588-byte maximum. Variant 3 serializes symbol 22 and the exact all-dense
+maximum, rejects odd dense padding and crossed layouts atomically, and leaves
+all older descriptor bytes unchanged. Entropy coding and outer frames remain
+closed.
