@@ -653,6 +653,70 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
     }
 }
 
+TEST(LzssContextualAdaptiveHuffmanProfile,
+     FourMiBIdentityRoundTripsWithOneByteBuffers) {
+    constexpr std::array input{std::byte{'A'}};
+    LzssContextualAdaptiveHuffmanStreamHeader stream{};
+    stream.frame_size = 1;
+    stream.original_size = 1;
+    stream.dictionary.window_size = UINT32_C(1) << 22;
+    stream.dictionary_variant = 4;
+    stream.context_variant = 3;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_lz_distance = UINT32_C(1) << 22;
+    limits.max_entropy_table_entries = 13'729;
+    std::array<std::byte, 1> raw{};
+    std::array<marc::dictionary::internal::LzssTypedToken, 1> tokens{};
+    std::array<marc::entropy::internal::AdaptiveHuffmanNode, 9'163> nodes{};
+    std::array<std::uint16_t, 4'566> symbols{};
+    std::array<std::byte, 128> frame{};
+    LzssContextualAdaptiveHuffmanFrameStreamingEncoder encoder{
+        stream, limits, raw, tokens, nodes, symbols, {}, frame};
+    const auto encoded = encode_one_byte_chunks(encoder, input);
+    ASSERT_GT(encoded.size(),
+              lzss_contextual_adaptive_huffman_stream_header_size);
+    EXPECT_EQ(encoded[14], std::byte{4});
+    EXPECT_EQ(encoded[98], std::byte{3});
+
+    std::array<std::byte, 128> serialized{};
+    std::array<marc::dictionary::internal::LzssTypedToken, 1>
+        decode_tokens{};
+    std::array<std::byte, 1> decode_raw{};
+    LzssContextualAdaptiveHuffmanFrameStreamingDecoder decoder{
+        limits, serialized, nodes, symbols, decode_tokens, decode_raw,
+        LzssContextualAdaptiveHuffmanStreamAdmission::field_context_4m};
+    EXPECT_EQ(decode_one_byte_chunks(decoder, encoded),
+              std::vector<std::byte>(input.begin(), input.end()));
+
+    LzssContextualAdaptiveHuffmanFrameStreamingDecoder crossed{
+        limits, serialized, nodes, symbols, decode_tokens, decode_raw,
+        LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m};
+    std::array<std::byte, 1> output{std::byte{0xcc}};
+    const auto rejected = crossed.process(encoded, output, end_flag());
+    EXPECT_EQ(rejected.status, marc::core::StreamStatus::error);
+    EXPECT_EQ(output[0], std::byte{0xcc});
+
+    LzssContextualAdaptiveHuffmanFrameStreamingDecoder short_nodes{
+        limits, serialized,
+        std::span{nodes}.first(nodes.size() - 1), symbols, decode_tokens,
+        decode_raw,
+        LzssContextualAdaptiveHuffmanStreamAdmission::field_context_4m};
+    output[0] = std::byte{0xcc};
+    EXPECT_EQ(short_nodes.process(encoded, output, end_flag()).status,
+              marc::core::StreamStatus::error);
+    EXPECT_EQ(output[0], std::byte{0xcc});
+
+    LzssContextualAdaptiveHuffmanFrameStreamingDecoder short_symbols{
+        limits, serialized, nodes,
+        std::span{symbols}.first(symbols.size() - 1), decode_tokens,
+        decode_raw,
+        LzssContextualAdaptiveHuffmanStreamAdmission::field_context_4m};
+    output[0] = std::byte{0xcc};
+    EXPECT_EQ(short_symbols.process(encoded, output, end_flag()).status,
+              marc::core::StreamStatus::error);
+    EXPECT_EQ(output[0], std::byte{0xcc});
+}
+
 TEST(LzssContextualAdaptiveHuffmanProfile, MapsStableCoreErrors) {
     using marc::core::ErrorCode;
     using E = LzssContextualAdaptiveHuffmanProfileError;

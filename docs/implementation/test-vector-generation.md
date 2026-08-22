@@ -11608,3 +11608,20 @@ alphabet 23 plus 22 zero bypass bits. Compare direct typed-token planning and
 encoding against the materialized operation path byte-for-byte, decode every
 token exactly, and require variants 1 and 2 to reject without modifying
 sentinel token storage.
+
+### TVG-0816
+
+Serialize and parse exact stream identity `2/4 + 1/3 + 1/2`; require header
+bytes 14/15 = 4/0, 16/17 = 1/0, 18/19 = 2/0, and 98/99 = 3/0. With `F=5` and
+`T=2`, accept decision counts 31 through 35 under variant 3, reject 31 under
+variant 2's `6F` bound, reject 36 under variant 3's `7F` bound, and retain the
+independent `32T` check. Reject crossed dictionary/context pairs.
+
+Round-trip the canonical literal frame with exact variant-3 model extents.
+Then place the same five-byte marker more than one MiB apart inside a complete
+HashChain frame, require a real Match whose distance exceeds one MiB, decode
+byte-exactly, and reject the crossed one-MiB identity without raw publication.
+
+Drive the selected encoder and decoder to EndOfStream with one-byte input and
+output, verify exact header identity, and require the one-MiB admission plus
+one-short node and symbol workspaces to fail without changing caller output.

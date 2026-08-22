@@ -6415,3 +6415,14 @@ selected-layout encoder/decoder, FGK model bank, field-context state machine,
 typed-token validator, and one-MiB direct-composition tests. No external
 compressor, Adaptive Huffman implementation, source code, test vector, patent,
 pseudocode, payload bound, or optimization description was consulted.
+
+### IR-0713
+
+The four-MiB Contextual Adaptive Huffman complete-frame, checked-profile, and
+streaming admission uses IR-0712, DD-949, TVG-0815, the repository-owned
+selected stream/frame validator, HashChain frame encoder, caller-owned profile
+partitioners, streaming state machines, and completed one-MiB Adaptive and
+four-MiB Blocked Huffman lifecycles as internal architectural precedents. No
+external compressor, Adaptive Huffman implementation, source code, test
+vector, patent, pseudocode, payload bound, or optimization description was
+consulted.

@@ -2798,3 +2798,20 @@ focused tests pass under MSVC and ClangCL; their full 3,207-test suites pass in
 experimental benchmark smokes, forty-two benchmark smokes, documentation
 layout, and complete schema compatibility. Complete-frame and outward
 boundaries remain closed.
+
+### BR-0169
+
+The private four-MiB Contextual Adaptive Huffman complete-frame and streaming
+lifecycle is admitted as exact identity `2/4 + 1/3 + 1/2`. Frame and direct
+decoder validation now derive `6F/7F` from the selected layout while retaining
+the independent `32T` bound. Variant-3 streaming admission requires exactly
+the widened 9,163-node and 4,566-symbol minimum extents.
+
+A canonical literal frame round-trips, a complete HashChain frame contains a
+real distance beyond one MiB, crossed one-MiB admission publishes no raw bytes,
+and one-byte streaming reaches stable EndOfStream. One-short model workspaces
+fail at construction. Five focused tests pass under MSVC and ClangCL. Their
+full 3,211-test suites pass in 204.47 and 204.36 seconds, including seven
+Python tooling tests, twenty experimental benchmark smokes, forty-two
+benchmark smokes, documentation layout, and complete schema compatibility.
+Public C, CLI, benchmark, fuzz, and interoperability boundaries remain closed.

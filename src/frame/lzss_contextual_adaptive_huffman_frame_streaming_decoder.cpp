@@ -67,6 +67,7 @@ enum class OverlapCheck : std::uint8_t {
     case LzssContextualAdaptiveHuffmanStreamAdmission::any:
     case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_64k:
     case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m:
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_4m:
         return true;
     }
     return false;
@@ -153,14 +154,29 @@ LzssContextualAdaptiveHuffmanFrameStreamingDecoder(
                   raw_frame_workspace_.data(), raw_frame_workspace_.size())
             : OverlapCheck::arithmetic_overflow,
     };
-    const auto minimum_node_count = admission_
-            == LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m
-        ? entropy::internal::contextual_adaptive_huffman_node_entries_v2
-        : entropy::internal::contextual_adaptive_huffman_node_entries;
-    const auto minimum_symbol_count = admission_
-            == LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m
-        ? entropy::internal::contextual_adaptive_huffman_symbol_entries_v2
-        : entropy::internal::contextual_adaptive_huffman_symbol_entries;
+    std::size_t minimum_node_count{};
+    std::size_t minimum_symbol_count{};
+    switch (admission_) {
+    case LzssContextualAdaptiveHuffmanStreamAdmission::any:
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_64k:
+        minimum_node_count =
+            entropy::internal::contextual_adaptive_huffman_node_entries;
+        minimum_symbol_count =
+            entropy::internal::contextual_adaptive_huffman_symbol_entries;
+        break;
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m:
+        minimum_node_count =
+            entropy::internal::contextual_adaptive_huffman_node_entries_v2;
+        minimum_symbol_count =
+            entropy::internal::contextual_adaptive_huffman_symbol_entries_v2;
+        break;
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_4m:
+        minimum_node_count =
+            entropy::internal::contextual_adaptive_huffman_node_entries_v3;
+        minimum_symbol_count =
+            entropy::internal::contextual_adaptive_huffman_symbol_entries_v3;
+        break;
+    }
     if (!valid_extents || !valid_admission(admission_)
         || node_workspace_.size()
                < minimum_node_count
@@ -211,6 +227,13 @@ parse_collected_stream_header() noexcept {
         if (stream_.dictionary_variant != 3
             || stream_.context_algorithm != 1
             || stream_.context_variant != 2) {
+            return false;
+        }
+        break;
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_4m:
+        if (stream_.dictionary_variant != 4
+            || stream_.context_algorithm != 1
+            || stream_.context_variant != 3) {
             return false;
         }
         break;

@@ -19821,3 +19821,21 @@ Freeze the new-symbol-22 plus 22-zero-bypass hand vector as 27 bits and bytes
 to equal the independently materialized operation path, round-trip a token at
 distance 4,194,304, and make both older layouts reject without publishing
 tokens. Complete-frame and all outward admission remain closed.
+
+## DD-950: Admit exact four-MiB Adaptive Huffman frame lifecycle
+
+- Date: 2026-08-23
+- Status: accepted
+
+Admit private complete-frame identity `2/4 + 1/3 + 1/2` without changing the
+stream header, frame header, fixed descriptor, FGK payload grammar, or frame
+reset. Replace the Adaptive frame/direct-decoder `6F` constant with the held
+layout's exact maximum so variants 1 and 2 remain at six while variant 3 uses
+seven; retain the independent `32T` bound.
+
+Add exact four-MiB streaming admission and require its 9,163-node/4,566-symbol
+minimum before collection. Preserve the established `ceil(267F/8)` payload,
+checked directional aggregates, and explicit 256-MiB application policy.
+Require a complete HashChain frame with distance beyond one MiB, one-byte
+streaming, crossed-identity atomic rejection, and short-model rejection. Keep
+public C and CLI admission closed.

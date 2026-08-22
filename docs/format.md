@@ -7222,3 +7222,19 @@ and typed-token validator retain one selected layout for the whole operation.
 Older layouts reject the crossed alphabet or dictionary parameters before
 publishing a token. No public name, header identity, or serialized rule is
 added at this stage.
+
+The private complete-frame Contextual Adaptive Huffman boundary now admits
+exact identity `2/4 + 1/3 + 1/2`. It retains the 112-byte stream header,
+64-byte frame header, fixed 16-byte entropy descriptor, forward LSB-first FGK
+payload, and reset-per-frame policy. Variant 3 selects both
+`decision_count <= 7F` and `decision_count <= 32T`; variants 1 and 2 retain
+their established `6F` bounds. The conservative payload ceiling remains
+`ceil(267F/8)`, so the complete-frame ceiling remains that payload plus 80
+bytes.
+
+The private profile and one-byte streaming lifecycle select the same exact
+identity. Exact decoder admission distinguishes all three dictionary/context
+pairs and variant 3 requires 9,163 node plus 4,566 symbol entries before
+collecting a frame. A complete HashChain frame contains a real distance beyond
+one MiB and decodes without raw publication under a crossed older identity.
+No public C selector or CLI name is admitted yet.

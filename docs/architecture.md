@@ -5702,3 +5702,15 @@ bytes, and a caller-owned 4,194,304-byte-history token vector round-trips
 without an intermediate operation buffer. Both older selections reject the
 crossed route without publishing tokens. Complete frames and outward surfaces
 remain closed.
+
+The private four-MiB Contextual Adaptive Huffman complete-frame and streaming
+lifecycle now select exact identity `2/4 + 1/3 + 1/2`. Frame validation derives
+its `7F` and `32T` decision limits from the immutable field layout while older
+identities retain `6F`. The checked profile keeps its 267-bit raw-byte payload
+proof, fixed descriptor, 211,968,176-byte encoder aggregate, and
+194,666,668-byte decoder aggregate under the explicit 256-MiB policy.
+
+HashChain produces a complete frame with a distance beyond one MiB, and the
+selected lifecycle round-trips with one-byte input/output. Decoder construction
+requires the exact variant-3 model extents and reciprocal older admission
+rejects before raw publication. Public C and CLI surfaces remain closed.

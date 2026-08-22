@@ -25145,3 +25145,31 @@ existing initializer default. No codec code changed in this stage.
   smokes, documentation layout, and complete schema compatibility. The
   production operation and direct-composition code required no change because
   its lifetime-bound layout selection was already generic.
+
+## CR-1026: 2026-08-23 - Four-MiB Adaptive Huffman frame lifecycle
+
+- Authoring method: added exact identity, compound decision-bound, complete
+  real-distance frame, one-byte lifecycle, crossed-admission, and short-model
+  tests before opening the private frame route.
+- References used: IR-0712 through IR-0713, DD-949 through DD-950, TVG-0815
+  through TVG-0816, CR-1025, and repository-owned Adaptive Huffman frame and
+  selected-layout lifecycle code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, tests, vectors, patents,
+  pseudocode, payload bounds, and optimization descriptions.
+- Independent decisions: derive `6F/7F` from the held layout; retain `32T` as
+  a simultaneous bound; add exact variant-3 admission and model minima; reuse
+  the established payload proof; and keep outward surfaces closed.
+- Generated-code task description: admit exact private identity, prove both
+  count bounds and selected workspace, round-trip a complete extended-distance
+  frame and one-byte lifecycle, and reject crossed/short configurations before
+  raw publication.
+- Similarity review: the change follows repository-owned selected-layout and
+  lifecycle patterns without importing external implementation expression.
+- Validation: five focused format/frame/profile tests pass under MSVC and
+  ClangCL. Their full 3,211-test suites pass in 204.47 and 204.36 seconds,
+  including seven Python tooling tests, twenty experimental benchmark smokes,
+  forty-two benchmark smokes, documentation layout, and complete schema
+  compatibility. An initial vector attempting `7F=35` with `T=1` was
+  correctly rejected by `32T`; the permanent vector uses `T=2` and records
+  both bounds.
