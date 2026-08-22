@@ -199,6 +199,81 @@ TEST(LzssContextualTansProfile, CalculatesDecoderWorkspaceFromLimits) {
     EXPECT_EQ(workspace.views_bytes, 0U);
 }
 
+TEST(LzssContextualTansProfile,
+     FourMiBProfileFitsDefaultAggregateWithExactBoundaries) {
+    constexpr std::uint64_t frame_size = UINT64_C(1) << 22;
+    constexpr std::uint64_t decision_limit = 7 * frame_size;
+    LzssContextualTansProfileConfig config{};
+    config.original_size = frame_size;
+    config.frame_size = static_cast<std::uint32_t>(frame_size);
+    config.dictionary.window_size = static_cast<std::uint32_t>(frame_size);
+    config.variant = LzssContextualTansProfileVariant::field_context_4m;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = frame_size;
+    limits.max_block_size = decision_limit;
+    LzssContextualTansStreamHeader stream{};
+    LzssContextualTansEncoderWorkspaceRequirements encoder{};
+    ASSERT_EQ(make_lzss_contextual_tans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualTansProfileError::none);
+    EXPECT_EQ(stream.dictionary_variant, 4U);
+    EXPECT_EQ(stream.context_variant, 3U);
+    EXPECT_EQ(stream.frequency_entry_count, 4566U);
+    EXPECT_EQ(encoder.frame_input_bytes, 4'194'304U);
+    EXPECT_EQ(encoder.frame_encoded_bytes, 44'049'383U);
+    EXPECT_EQ(encoder.token_count, 4'194'304U);
+    EXPECT_EQ(encoder.table_count, 131'072U);
+    const auto encoder_aggregate = encoder.frame_input_bytes
+        + encoder.views_bytes + encoder.frame_encoded_bytes;
+    if constexpr (sizeof(std::size_t) == 8) {
+        EXPECT_EQ(encoder.table_offset, 50'331'648U);
+        EXPECT_EQ(encoder.match_finder_offset, 50'593'792U);
+        EXPECT_EQ(encoder.match_finder_bytes, 17'301'504U);
+        EXPECT_EQ(encoder.views_bytes, 67'895'296U);
+        EXPECT_EQ(encoder_aggregate, 116'138'983U);
+    }
+    limits.max_internal_buffered_bytes = encoder_aggregate - 1;
+    EXPECT_EQ(make_lzss_contextual_tans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualTansProfileError::limit_exceeded);
+    EXPECT_EQ(encoder.views_bytes, 0U);
+    limits.max_internal_buffered_bytes = encoder_aggregate;
+    ASSERT_EQ(make_lzss_contextual_tans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualTansProfileError::none);
+
+    LzssContextualTansDecoderWorkspaceRequirements decoder{};
+    limits.max_internal_buffered_bytes = UINT64_C(128) << 20;
+    ASSERT_EQ(calculate_lzss_contextual_tans_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualTansProfileVariant::field_context_4m),
+              LzssContextualTansProfileError::none);
+    EXPECT_EQ(decoder.frame_encoded_bytes, 44'049'383U);
+    EXPECT_EQ(decoder.frame_decoded_bytes, 4'194'304U);
+    EXPECT_EQ(decoder.table_count, 131'072U);
+    EXPECT_EQ(decoder.token_count, 4'194'304U);
+    const auto decoder_aggregate = decoder.frame_encoded_bytes
+        + decoder.frame_decoded_bytes + decoder.views_bytes;
+    if constexpr (sizeof(marc::entropy::internal::TansDecodeEntry) == 4
+                  && sizeof(marc::dictionary::internal::LzssTypedToken)
+                         == 12) {
+        EXPECT_EQ(decoder.token_offset, 524'288U);
+        EXPECT_EQ(decoder.views_bytes, 50'855'936U);
+        EXPECT_EQ(decoder_aggregate, 99'099'623U);
+    }
+    limits.max_internal_buffered_bytes = decoder_aggregate - 1;
+    EXPECT_EQ(calculate_lzss_contextual_tans_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualTansProfileVariant::field_context_4m),
+              LzssContextualTansProfileError::limit_exceeded);
+    EXPECT_EQ(decoder.views_bytes, 0U);
+    limits.max_internal_buffered_bytes = decoder_aggregate;
+    ASSERT_EQ(calculate_lzss_contextual_tans_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualTansProfileVariant::field_context_4m),
+              LzssContextualTansProfileError::none);
+}
+
 TEST(LzssContextualTansProfile, PartitionsTypedViewsTransactionally) {
     LzssContextualTansStreamHeader stream{};
     LzssContextualTansEncoderWorkspaceRequirements requirements{};

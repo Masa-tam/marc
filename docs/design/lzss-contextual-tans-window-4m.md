@@ -1,8 +1,8 @@
 # LZSS contextual tANS 4 MiB window
 
 Status: implementation in progress; descriptor, coding-core, direct typed-
-token, and complete-frame boundaries complete; streaming and every public
-boundary remain closed.
+token, complete-frame, private profile, and streaming boundaries complete;
+every public boundary remains closed.
 
 ## Purpose and identity
 
@@ -111,8 +111,8 @@ entries, and internal buffered bytes admit these extents. A full profile sets
    core and direct typed-token encode/decode boundary.
 3. **Complete.** Carry the selected layout through stream/frame preflight,
    complete-frame decoding, and then complete-frame encoding.
-4. Add checked profile/workspace calculation and one-byte streaming with exact
-   and one-short aggregate tests.
+4. **Complete.** Add checked profile/workspace calculation and one-byte
+   streaming with exact and one-short aggregate tests.
 5. Allow public C selector value 2 only for contextual tANS, then add the
    explicit CLI and dependency-free benchmark name.
 6. Extend the bounded decoder fuzzer and append one interoperability archive

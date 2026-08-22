@@ -6257,3 +6257,13 @@ typed-token coder, atomic frame decoder, exhaustive/HashChain Exact encoder,
 and checked bounds. No external compressor, tANS frame format, source code,
 test, benchmark, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0696
+
+The four-MiB Contextual tANS private profile and streaming boundary uses
+IR-0692 through IR-0695, DD-929 through DD-932, TVG-0795 through TVG-0798,
+the repository-owned layout-derived profile calculator, native workspace
+partitioners, HashChain Exact streaming encoder, atomic streaming decoder, and
+exact admission enum. No external compressor, tANS lifecycle, workspace
+layout, source code, test, benchmark, patent, pseudocode, or optimization
+description was consulted.

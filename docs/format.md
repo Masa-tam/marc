@@ -7096,3 +7096,14 @@ Interoperability schema 44 appends `lzss-contextual-rans-4m` as archive 54
 after the frozen 53-entry schema-43 inventory. Generation requires exact
 identity `2/4 + 1/3 + 4/3`; verification decodes and re-encodes the complete
 archive byte-identically. This admission adds no serialized rule.
+
+The private Contextual tANS profile and streaming lifecycle now select all
+three exact layouts. Variant 3 derives `ceil(21F/2) + 2` payload and 9,125-byte
+descriptor ceilings from the validated layout, retains the fixed 131,072-entry
+table bank and HashChain Exact, and installs exact dictionary/context `4/3`
+decoder admission. At `F=4,194,304`, the supported 64-bit encoder aggregate is
+116,138,983 bytes and decoder aggregate is 99,099,623 bytes; both fit the
+unchanged 128-MiB default when the caller sets `max_frame_size` to four MiB and
+the common block/decision limit to `7F = 29,360,128`. One-byte chunking changes
+no stream byte. Public C, CLI, benchmark, fuzzing, and interoperability
+Contextual tANS admission remain later boundaries.

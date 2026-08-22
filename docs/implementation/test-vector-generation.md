@@ -11347,3 +11347,17 @@ to be `d6 11`. Through HashChain Exact, encode a marker repeated beyond one
 MiB, require an actual greater-than-one-MiB Match, exact round trip, and atomic
 variant-2 rejection. Run all focused frame tests under MSVC and ClangCL;
 streaming and public surfaces remain closed.
+
+### TVG-0799
+
+For `F=4,194,304`, require private profile identity `2/4 + 1/3 + 5/2`, 4,566
+frequency entries, 44,049,383 encoded-frame bytes, 67,895,296 encoder views,
+and 116,138,983 aggregate bytes on the supported 64-bit layout. Under
+`max_frame_size=F` and `max_block_size=7F`, require the unchanged 128-MiB
+default to pass, reject aggregate 116,138,982, and accept the exact value.
+
+Require decoder table offset 524,288, views 50,855,936, and aggregate
+99,099,623 bytes; reject one byte below and accept exact. Stream one Literal
+through the encoder and exact-4m decoder with one-byte buffers, require header
+variants 4/3, and require exact-1m admission to reject without changing output.
+Preserve public selector rejection and the 54-archive inventory.

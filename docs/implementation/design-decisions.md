@@ -19517,3 +19517,19 @@ literal frame, atomic first-new-distance decode, HashChain production of a
 distance above one MiB, one-short token/raw rejection, and crossed-profile
 preflight rejection. Preserve variants 1 and 2 byte-for-byte. Keep profile,
 streaming, public C, CLI, benchmark, fuzz, and interoperability closed.
+
+## DD-933: Admit four-MiB Contextual tANS private lifecycle under 128 MiB
+
+- Date: 2026-08-22
+- Status: accepted
+
+Add private profile variant `field_context_4m`, derive descriptor and payload
+bounds from its validated layout, and add exact streaming-decoder admission
+for dictionary/context `4/3`. Preserve `any`, 64-KiB, and one-MiB behavior.
+
+At `F=4,194,304`, require supported encoder aggregate 116,138,983 bytes and
+decoder aggregate 99,099,623 bytes, with default success, one-byte-short
+rejection, and exact-limit success. Retain the 128-MiB default; a full profile
+sets the raw-frame limit to `F` and the common block/decision limit to `7F`.
+Require one-byte encode/decode and crossed-profile rejection on a small frame.
+Keep public C and every later surface closed.

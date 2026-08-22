@@ -15,6 +15,7 @@ enum class LzssContextualTansStreamAdmission : std::uint8_t {
     any,
     field_context_64k,
     field_context_1m,
+    field_context_4m,
 };
 
 class LzssContextualTansFrameStreamingDecoder final

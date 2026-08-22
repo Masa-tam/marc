@@ -419,6 +419,45 @@ TEST(LzssContextualTansFrameStreamingEncoder,
 }
 
 TEST(LzssContextualTansFrameStreamingEncoder,
+     FourMiBIdentityRoundTripsWithOneByteBuffers) {
+    constexpr std::array input{std::byte{'A'}};
+    auto stream = stream_config(1, 1);
+    stream.dictionary.window_size = UINT32_C(1) << 22;
+    stream.dictionary_variant = 4;
+    stream.context_variant = 3;
+    stream.frequency_entry_count = 4566;
+    std::array<std::byte, 1> raw{};
+    std::array<LzssTypedToken, 1> tokens{};
+    auto table_storage = tables();
+    std::array<std::byte, 128> frame{};
+    LzssContextualTansFrameStreamingEncoder encoder{
+        stream, {}, raw, tokens, table_storage, frame};
+    const auto encoded = encode_one_byte_chunks(encoder, input);
+    ASSERT_GT(encoded.size(), lzss_contextual_tans_stream_header_size);
+    EXPECT_EQ(encoded[14], std::byte{0x04});
+    EXPECT_EQ(encoded[98], std::byte{0x03});
+
+    std::array<std::byte, 128> serialized{};
+    std::vector<marc::entropy::internal::TansDecodeEntry> decode_tables(
+        marc::entropy::internal::contextual_tans_decode_table_entries);
+    std::array<LzssTypedToken, 1> decode_tokens{};
+    std::array<std::byte, 1> decode_raw{};
+    LzssContextualTansFrameStreamingDecoder decoder{
+        {}, serialized, decode_tables, decode_tokens, decode_raw,
+        LzssContextualTansStreamAdmission::field_context_4m};
+    EXPECT_EQ(decode_one_byte_chunks(decoder, encoded),
+              std::vector<std::byte>(input.begin(), input.end()));
+
+    LzssContextualTansFrameStreamingDecoder crossed{
+        {}, serialized, decode_tables, decode_tokens, decode_raw,
+        LzssContextualTansStreamAdmission::field_context_1m};
+    std::array<std::byte, 1> output{std::byte{0xcc}};
+    const auto rejected = crossed.process(encoded, output, end_flag());
+    EXPECT_EQ(rejected.status, StreamStatus::error);
+    EXPECT_EQ(output[0], std::byte{0xcc});
+}
+
+TEST(LzssContextualTansFrameStreamingEncoder,
      OneMiBProfileStreamsExtendedDistanceWithOneByteBuffers) {
     constexpr std::size_t gap = 65536;
     std::vector<std::byte> raw(5 + gap + 5, std::byte{'Z'});

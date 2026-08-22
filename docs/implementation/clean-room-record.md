@@ -24580,3 +24580,33 @@ benchmark, fuzz target, or interoperability inventory changes.
   respectively, including documentation layout, seven Python tooling tests,
   eighteen experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`.
+
+## CR-1007: 2026-08-22 - Four-MiB Contextual tANS private lifecycle
+
+- Authoring method: extended marc's existing selected Contextual tANS profile
+  enum, layout-derived workspace arithmetic, native partitioners, and exact
+  streaming admission with the completed variant-3 complete-frame path.
+- References used: IR-0692 through IR-0696, DD-929 through DD-933, TVG-0795
+  through TVG-0799, CR-1003 through CR-1006, and repository-owned profile,
+  workspace, streaming, and checked-limit code. No new external technical
+  source was used.
+- Known implementations intentionally not consulted: external compressors,
+  tANS lifecycles, workspace layouts, source code, tests, benchmark results,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: obtain decisions-per-raw-byte and descriptor ceiling
+  from the validated layout; preserve the 128-MiB default; require exact native
+  aggregate boundaries; add immutable exact `4/3` admission; and leave every
+  public surface closed.
+- Generated-code task description: add the four-MiB Contextual tANS private
+  profile/workspace and one-byte streaming encode/decode with default,
+  one-short, exact-limit, and crossed-profile tests.
+- Similarity review: enum extension, switches, checked arithmetic, workspace
+  partitioning, and tests generalize marc's prior selected profiles and
+  completed four-MiB frame code. No external implementation expression was
+  consulted.
+- Validation: all 24 targeted profile and streaming tests pass under MSVC and
+  ClangCL. All 3,183 registered tests pass with a 600-second per-test limit in
+  199.66 and 205.10 seconds respectively, including documentation layout,
+  seven Python tooling tests, eighteen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. Public C, CLI, benchmark,
+  fuzzing, and interoperability inventories remain unchanged.

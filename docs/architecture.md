@@ -5267,6 +5267,16 @@ transactional header parsing, before frame collection. A selected profile
 round trips an extended-distance HashChain frame under one-byte input/output;
 public factories remain the following boundary.
 
+The four-MiB private Contextual tANS lifecycle extends that explicit selection
+to a third value. Profile arithmetic obtains `7F` decisions and the 9,125-byte
+descriptor ceiling from the immutable layout while retaining the fixed
+131,072-entry table bank and HashChain Exact workspace. At `F=4,194,304`, the
+supported native encoder aggregate is 116,138,983 bytes and decoder aggregate
+is 99,099,623 bytes, both within the unchanged 128-MiB default. Exact decoder
+admission recognizes only dictionary/context `4/3`; one-byte streaming is
+byte-stable, and crossed one-MiB admission fails before raw publication. The
+public factory remains the following boundary.
+
 The public Contextual tANS boundary reuses the shared window-profile enum
 without adding exported symbols. Its 112-byte ABI-1 config replaces only the
 final zero-reserved 64-bit extent with a 32-bit selector plus 32-bit reserved
