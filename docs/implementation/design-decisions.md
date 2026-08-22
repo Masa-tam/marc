@@ -19381,3 +19381,19 @@ count instead of publishing a configuration that can fail by input content.
 Preserve the
 64-KiB initializer and 128-MiB aggregate default. Keep CLI, benchmark, fuzzing,
 and interoperability rANS admission closed.
+
+## DD-925: Add an exact four-MiB contextual rANS CLI selector
+
+- Date: 2026-08-22
+- Status: accepted
+
+Add `lzss-contextual-rans-4m` as the sole command-line name for exact identity
+`2/4 + 1/3 + 4/3`. Configure four-MiB raw frames/window and LZ distance,
+`7F = 29,360,128` decisions through the common block limit, a `14F + 8`
+payload limit of 58,720,264 bytes, and the unchanged 128-MiB aggregate. Obtain
+all three workspace regions and opaque alignment from the public query.
+
+Require encode/decode round trip, exact four variant bytes, reciprocal
+rejection by both older rANS names, strict trailing-data rejection, and both
+compiler inventories. The selector changes no representation and does not
+admit benchmark, fuzzing, or interoperability surfaces.

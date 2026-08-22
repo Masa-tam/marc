@@ -24321,3 +24321,30 @@ discarded and the reviewed seed retained.
   seven Python tooling tests, seventeen experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`. CLI, benchmark, fuzzing, and
   interoperability remain unchanged.
+
+## CR-0998: 2026-08-22 - Four-MiB contextual rANS CLI boundary
+
+- Authoring method: extended the repository-owned codec enumeration, parser,
+  help text, public configuration dispatch, workspace query/factory dispatch,
+  and common round-trip harness with one exact selector.
+- References used: IR-0682 through IR-0688, DD-919 through DD-925, TVG-0785
+  through TVG-0791, CR-0992 through CR-0997, and repository-owned public C and
+  CLI code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  rANS command-line interfaces, source code, tests, benchmark results,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: keep the 128-MiB aggregate policy; distinguish the
+  `7F` decision/block bound from the four-MiB frame bound; reject both older
+  exact names; and leave benchmark, fuzzing, and interoperability closed.
+- Generated-code task description: add exact `lzss-contextual-rans-4m`
+  command-line encode/decode through only the public C lifecycle, with header,
+  reciprocal-profile, and trailing-data checks.
+- Similarity review: constants, selection branches, and test assertions derive
+  directly from marc's completed public profile and existing 64-KiB/one-MiB
+  CLI paths. No external implementation expression was consulted.
+- Validation: the focused CLI round-trip and documentation-layout checks pass
+  under MSVC and ClangCL. All 3,167 registered tests pass in 209.68 and 213.95
+  seconds respectively with a 600-second per-test limit, including seven
+  Python tooling tests, seventeen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. The 53-archive inventory
+  remains byte-exact; benchmark, fuzzing, and schema admission are unchanged.

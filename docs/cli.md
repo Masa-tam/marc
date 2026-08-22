@@ -86,8 +86,9 @@ the corresponding Format 2 typed-token and field-context pipeline with the
 canonical variable-size descriptor of scalar contextual rANS variant 3.
 Entropy variant 2 is retired and reserved; no diagnostic selector or alias
 remains. `lzss-contextual-rans-1m` selects the additive `2/3 + 1/2` window
-profile. Encode and decode use the same explicit selector; neither rANS name
-auto-detects or admits the other profile.
+profile. `lzss-contextual-rans-4m` selects exact identity
+`2/4 + 1/3 + 4/3`. Encode and decode use the same explicit selector; no rANS
+name auto-detects or admits another profile.
 `lzss-contextual-tans` selects the same typed LZSS contexts with contextual
 tANS entropy variant 2 under the frozen 64 KiB identity. The additive
 `lzss-contextual-tans-1m` name selects `2/3 + 1/2 + 5/2`. Encode and decode
@@ -207,6 +208,16 @@ its internal-buffer policy is 128 MiB. It changes only the public window
 profile and bounded configuration values before using the same initializer,
 requirements, factory, process, and destroy lifecycle. The queried byte
 regions and opaque views alignment remain authoritative.
+
+The experimental `lzss-contextual-rans-4m` adapter fixes raw frames and the
+LZSS window at 4,194,304 bytes. Context variant 3 requires the distinct
+`7F = 29,360,128` decision/block ceiling and its scalar rANS payload ceiling
+is `14F + 8 = 58,720,264` bytes. The application retains the public 128-MiB
+aggregate policy: the supported 64-bit encoder and decoder requirements fit
+without an implicit increase. It selects public window profile value 2 and
+otherwise uses the same initializer, requirements query, factory, process,
+and destroy lifecycle. Queried workspace extents and alignment remain
+authoritative.
 
 The experimental `lzss-contextual-tans` adapter uses 65,536-byte raw frames,
 a `6F = 393,216` decision ceiling, and a `9F + 2 = 589,826` payload ceiling.

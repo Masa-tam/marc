@@ -11227,3 +11227,17 @@ Through the public requirements query, require supported 64-bit encoder regions
 then accept exact limits. Configure a four-MiB maximum frame and a 29,360,128-
 decision block limit. Keep unknown selector 3 invalid and all older C vectors
 byte-identical.
+
+### TVG-0791
+
+Run the common CLI round-trip harness with explicit selector
+`lzss-contextual-rans-4m` and a deterministic repeated binary fixture. Require
+stream dictionary variant byte 4, context variant byte 3, entropy algorithm
+byte 4, and entropy variant byte 3. Decode byte-exactly through the same name.
+
+Require both `lzss-contextual-rans-1m` and `lzss-contextual-rans` to reject the
+archive without raw publication, and require strict decode to reject one
+trailing byte. Exercise the four-MiB application configuration with a small
+fixture so the test verifies the full public query/factory lifecycle without
+making runtime proportional to the maximum frame. Run under MSVC and ClangCL;
+leave benchmark, fuzzing, and interoperability inventories unchanged.

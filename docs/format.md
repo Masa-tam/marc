@@ -7022,3 +7022,19 @@ unchanged 128-MiB default. For a full profile the caller sets
 bounds decision count. One-byte chunking changes no stream byte. Public C,
 CLI, benchmark, fuzzing, and interoperability rANS admission remain later
 boundaries.
+
+The public contextual rANS C factory admits common window selector value 2
+as exact identity `2/4 + 1/3 + 4/3`. The selector is application policy and
+adds no serialized field. A full four-MiB configuration requires
+`max_frame_size = 4,194,304`, `max_block_size >= 29,360,128`, payload limit
+at least `58,720,264`, LZ distance limit at least 4,194,304, and the unchanged
+128-MiB aggregate limit. Profile calculation rejects an insufficient decision
+limit before transform construction.
+
+The CLI name `lzss-contextual-rans-4m` selects that same public profile. It
+uses four-MiB frames/windows, the `7F` decision/block ceiling, `14F + 8`
+payload ceiling, and the unchanged 128-MiB aggregate policy. The name and its
+hard limits add no stream field. Decode requires this exact name/profile;
+the 64-KiB and one-MiB CLI names reject the four-MiB identity before frame or
+raw publication. Benchmark, fuzzing, and interoperability rANS admission
+remain later boundaries.

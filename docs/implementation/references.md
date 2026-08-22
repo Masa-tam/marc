@@ -6184,3 +6184,12 @@ window selector, backend-specific config validator, exact profile mapper,
 workspace query, factory, and streaming lifecycle. No external C API,
 compressor, rANS binding, workspace policy, source code, test, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0688
+
+The four-MiB contextual rANS CLI boundary uses IR-0682 through IR-0687,
+DD-919 through DD-924, TVG-0785 through TVG-0790, the repository-owned public
+C initializer, requirements query, factory, streaming lifecycle, common CLI
+driver, and round-trip harness. No external compressor, rANS command-line
+interface, workspace policy, source code, test, benchmark result, patent,
+pseudocode, or optimization description was consulted.
