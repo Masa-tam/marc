@@ -19328,3 +19328,20 @@ rANS encoder, not the complete-frame encoder. Require a real distance
 1,048,577 Match, exact reconstruction, and one-entry-short token/raw failures.
 Keep complete-frame encoding explicitly closed and preserve profile,
 streaming, public, benchmark, fuzzing, and interoperability boundaries.
+
+## DD-922: Open four-MiB rANS complete-frame encoding with HashChain Exact
+
+- Date: 2026-08-22
+- Status: accepted
+
+Remove only the explicit variant-3 encoder gate after descriptor and decoder
+admission. Reuse the selected typed-token layout, canonical scalar rANS
+descriptor/payload, frame validator, and HashChain Exact route; introduce no
+new serialized identity or matcher strategy.
+
+Require a canonical one-Literal round trip whose descriptor count is 4,566.
+Then place identical five-byte markers more than one MiB apart, require the
+HashChain token trace to contain a Match beyond 1,048,576, decode the complete
+frame byte-exactly, and reject it under the one-MiB identity without raw
+publication. Keep profile, streaming, public, benchmark, fuzzing, and
+interoperability admission closed.

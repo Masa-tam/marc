@@ -24240,3 +24240,30 @@ discarded and the reviewed seed retained.
   Python tooling tests, seventeen experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`. Profile, streaming, public,
   benchmark, fuzzing, and interoperability admission remain unchanged.
+
+## CR-0995: 2026-08-22 - Four-MiB contextual rANS complete-frame encoder
+
+- Authoring method: removed the temporary encoder gate and exercised marc's
+  already selected typed-token, HashChain Exact, compact rANS, frame, and
+  decoder components without adding another representation.
+- References used: IR-0682 through IR-0685, DD-919 through DD-922, TVG-0785
+  through TVG-0788, CR-0992 through CR-0994, and repository-owned encoder and
+  decoder code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  rANS encoders, match finders, source code, tests, benchmark results, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: reuse HashChain Exact; freeze old bytes; prove a
+  real distance beyond one MiB; reject the crossed identity; and leave outer
+  lifecycle/public boundaries closed.
+- Generated-code task description: enable exact four-MiB complete-frame rANS
+  encoding and prove canonical Literal, distant HashChain Match, complete
+  round trip, and crossed-profile atomic rejection.
+- Similarity review: gate removal, inputs, assertions, and byte checks derive
+  directly from marc's admitted decoder and existing one-MiB encoder tests.
+  No external implementation expression was consulted or introduced.
+- Validation: all eleven complete-frame encoder tests pass under MSVC and
+  ClangCL; the beyond-one-MiB case completes in 84/53 milliseconds. All 3,164
+  registered tests pass in 202.35 and 203.39 seconds respectively, including
+  seven Python tooling tests, seventeen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. The existing 53 archives remain
+  byte-exact.

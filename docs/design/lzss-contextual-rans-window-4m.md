@@ -2,7 +2,7 @@
 
 Status: accepted staged design after completion of the four-MiB Contextual
 Dynamic Range vertical path. The descriptor/model and private complete-frame
-decoder boundaries are implemented; encoder/profile/public admission remains
+encoder/decoder boundaries are implemented; profile/public admission remains
 closed.
 
 ## Purpose and identity

@@ -11185,3 +11185,15 @@ descriptor/payload as a fixture oracle, and require complete-frame decoder
 reconstruction to all `A` bytes. Reject token and raw workspaces one entry
 short without publication. Prove the complete-frame encoder rejects the same
 identity without changing output.
+
+### TVG-0788
+
+Encode one Literal through the four-MiB complete-frame encoder and require the
+canonical scalar payload, descriptor frequency count bytes `d6 11`, and exact
+complete-decoder recovery. Preserve all old Literal frame bytes.
+
+Create raw input from marker `ABCDE`, 1,048,576 `Z` bytes, and marker `ABCDE`.
+Run HashChain Exact with an explicitly raised block limit, require at least one
+emitted Match distance above 1,048,576, encode and decode the complete frame,
+and compare every raw byte. Decode the same frame under `2/3 + 1/2 + 4/3` and
+require preflight rejection with unchanged raw output.

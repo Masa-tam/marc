@@ -7000,5 +7000,11 @@ dictionary/context pairs. Variant 3 selects the 9,121-byte descriptor ceiling,
 `7F` raw decision bound, 32-decision token bound, 23-symbol distance fields,
 and 22-bit bypass. Complete decoding remains atomic across table, token, and
 raw workspaces. The complete-frame encoder is explicitly closed for this
-triple; profile, streaming, public C, CLI, benchmark, fuzzing, and
+triple at the decoder-only stage.
+
+The private complete-frame rANS encoder now admits the same exact triple. A
+one-Literal frame retains the scalar payload and compact grammar while its
+descriptor records frequency count 4,566. HashChain Exact may select Matches
+beyond one MiB under dictionary variant 4, and the complete decoder recovers
+their raw bytes. Profile, streaming, public C, CLI, benchmark, fuzzing, and
 interoperability rANS admission remain later boundaries.

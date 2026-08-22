@@ -257,24 +257,35 @@ TEST(LzssContextualRansFrameEncoder,
 }
 
 TEST(LzssContextualRansFrameEncoder,
-     FourMiBIdentityRemainsClosedAndOutputAtomic) {
+     FourMiBIdentityRoundTripsCanonicalLiteral) {
     constexpr std::array raw{std::byte{'A'}};
     const auto stream = stream_for_4m(raw.size());
     std::array<LzssTypedToken, 1> tokens{};
-    auto plan = plan_lzss_contextual_rans_frame(
+    const auto plan = plan_lzss_contextual_rans_frame(
         stream, {}, 0, 0, raw, tokens);
-    EXPECT_EQ(plan.error,
-              LzssContextualRansFrameEncodeError::invalid_stream);
+    ASSERT_EQ(plan.error, LzssContextualRansFrameEncodeError::none);
+    EXPECT_EQ(plan.token_count, 1U);
+    EXPECT_EQ(plan.event_count, 2U);
+    EXPECT_EQ(plan.decision_count, 2U);
+    EXPECT_EQ(plan.payload_size, 8U);
 
-    std::array<std::byte, 256> output{};
-    output.fill(std::byte{0xa5});
+    std::vector<std::byte> output(plan.serialized_size, std::byte{0xa5});
     const auto encoded = encode_lzss_contextual_rans_frame(
         stream, {}, 0, 0, raw, tokens, output);
-    EXPECT_EQ(encoded.error,
-              LzssContextualRansFrameEncodeError::invalid_stream);
-    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
-        return value == std::byte{0xa5};
-    }));
+    ASSERT_EQ(encoded.error, LzssContextualRansFrameEncodeError::none);
+    ASSERT_GT(encoded.descriptor_size, 12U);
+    EXPECT_EQ(output[lzss_contextual_rans_frame_header_size + 12],
+              std::byte{0xd6});
+    EXPECT_EQ(output[lzss_contextual_rans_frame_header_size + 13],
+              std::byte{0x11});
+
+    auto table_storage = tables();
+    std::array<LzssTypedToken, 1> decoded_tokens{};
+    std::array<std::byte, 1> decoded{};
+    const auto result = decode_lzss_contextual_rans_frame(
+        output, {stream, {}, 0, 0}, table_storage, decoded_tokens, decoded);
+    ASSERT_EQ(result.error, LzssContextualRansFrameDecodeError::none);
+    EXPECT_EQ(decoded, raw);
 }
 
 TEST(LzssContextualRansFrameEncoder,
@@ -436,6 +447,67 @@ TEST(LzssContextualRansFrameEncoder,
     std::ranges::fill(decoded, std::byte{0xcc});
     const auto rejected = decode_lzss_contextual_rans_frame(
         encoded, {crossed, {}, 0, 0}, table_storage, decode_tokens, decoded);
+    EXPECT_EQ(rejected.error,
+              LzssContextualRansFrameDecodeError::preflight_error);
+    EXPECT_TRUE(std::ranges::all_of(decoded, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
+}
+
+TEST(LzssContextualRansFrameEncoder,
+     FourMiBHashChainRoundTripExercisesDistanceBeyondOneMiB) {
+    constexpr std::size_t gap = UINT32_C(1) << 20;
+    std::vector<std::byte> raw(5 + gap + 5, std::byte{'Z'});
+    constexpr std::array marker{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}};
+    std::ranges::copy(marker, raw.begin());
+    std::ranges::copy(marker, raw.end() - marker.size());
+    const auto stream = stream_for_4m(raw.size());
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = limits.max_frame_size;
+    std::vector<LzssTypedToken> encode_tokens(raw.size());
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            raw.size(), stream.dictionary, limits);
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+
+    const auto plan = plan_lzss_contextual_rans_frame_hash_chain(
+        stream, limits, 0, 0, raw, encode_tokens, workspace);
+    ASSERT_EQ(plan.error, LzssContextualRansFrameEncodeError::none);
+    ASSERT_TRUE(std::ranges::any_of(
+        std::span<const LzssTypedToken>{encode_tokens}.first(plan.token_count),
+        [](const LzssTypedToken& token) {
+            return token.kind
+                    == marc::dictionary::internal::LzssTypedTokenKind::match
+                && token.distance > (UINT32_C(1) << 20);
+        }));
+
+    std::vector<std::byte> encoded(plan.serialized_size);
+    ASSERT_EQ(encode_lzss_contextual_rans_frame_hash_chain(
+                  stream, limits, 0, 0, raw, encode_tokens, workspace, encoded)
+                  .error,
+              LzssContextualRansFrameEncodeError::none);
+    auto table_storage = tables();
+    std::vector<LzssTypedToken> decode_tokens(plan.token_count);
+    std::vector<std::byte> decoded(raw.size());
+    const auto result = decode_lzss_contextual_rans_frame(
+        encoded, {stream, limits, 0, 0}, table_storage, decode_tokens, decoded);
+    ASSERT_EQ(result.error, LzssContextualRansFrameDecodeError::none);
+    EXPECT_EQ(decoded, raw);
+
+    auto crossed = stream;
+    crossed.dictionary.window_size = UINT32_C(1) << 20;
+    crossed.dictionary_variant = 3;
+    crossed.context_variant = 2;
+    crossed.frequency_entry_count = 4550;
+    std::ranges::fill(decoded, std::byte{0xcc});
+    const auto rejected = decode_lzss_contextual_rans_frame(
+        encoded, {crossed, limits, 0, 0}, table_storage, decode_tokens,
+        decoded);
     EXPECT_EQ(rejected.error,
               LzssContextualRansFrameDecodeError::preflight_error);
     EXPECT_TRUE(std::ranges::all_of(decoded, [](const std::byte value) {

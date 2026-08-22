@@ -6157,3 +6157,12 @@ DD-919 through DD-920, TVG-0785 through TVG-0786, the repository-owned Format
 decoder, typed reconstructor, and checked workspace contracts. No external
 compressor, rANS frame format, source code, test vector, malformed corpus,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0685
+
+The four-MiB contextual rANS complete-frame encoder uses IR-0682 through
+IR-0684, DD-919 through DD-921, TVG-0785 through TVG-0787, the repository-owned
+direct typed-token encoder, HashChain Exact matcher, selected frame validator,
+compact descriptor serializer, and complete decoder. No external compressor,
+rANS encoder implementation, match finder, source code, test vector, patent,
+pseudocode, or optimization description was consulted.
