@@ -32,6 +32,19 @@ constexpr std::array frame_magic{
         && value <= product;
 }
 
+[[nodiscard]] constexpr std::size_t maximum_descriptor_size(
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    switch (variant) {
+    case context::internal::LzssFieldContextVariant::field_context_64k:
+        return entropy::internal::contextual_tans_max_descriptor_size_v1;
+    case context::internal::LzssFieldContextVariant::field_context_1m:
+        return entropy::internal::contextual_tans_max_descriptor_size_v2;
+    case context::internal::LzssFieldContextVariant::field_context_4m:
+        return entropy::internal::contextual_tans_max_descriptor_size_v3;
+    }
+    return 0;
+}
+
 [[nodiscard]] LzssContextualTansStreamHeaderError map_stream_header_error(
     const LzssContextualRansStreamHeaderError error) noexcept {
     switch (error) {
@@ -284,7 +297,8 @@ LzssContextualTansFrameHeaderError validate_lzss_contextual_tans_frame_header(
         || !checked_product_at_most(
             5, header.token_count, header.event_count)
         || !checked_product_at_most(
-            6, header.uncompressed_size, header.decision_count)
+            selected.layout.maximum_decisions_per_raw_byte,
+            header.uncompressed_size, header.decision_count)
         || !checked_product_at_most(
             selected.layout.maximum_decisions_per_token,
             header.token_count, header.decision_count)) {
@@ -301,13 +315,7 @@ LzssContextualTansFrameHeaderError validate_lzss_contextual_tans_frame_header(
         || header.descriptor_size
                < entropy::internal::contextual_tans_min_descriptor_size
         || header.descriptor_size
-               > (selected.layout.context_variant
-                          == context::internal::LzssFieldContextVariant::
-                              field_context_1m
-                      ? entropy::internal::
-                            contextual_tans_max_descriptor_size_v2
-                      : entropy::internal::
-                            contextual_tans_max_descriptor_size_v1)) {
+               > maximum_descriptor_size(selected.layout.context_variant)) {
         return LzssContextualTansFrameHeaderError::contradictory_counts;
     }
     if (header.context_side_data_size != 0

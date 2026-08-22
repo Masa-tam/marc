@@ -6816,6 +6816,21 @@ the same selected ceilings. Streaming decoders may accept either supported
 identity or require exactly the 64 KiB or 1 MiB pair; admission policy is local
 API state and is not serialized.
 
+The complete-frame boundary now also admits context variant 3 only under exact
+identity `2/4 + 1/3 + 5/2`. It selects the 9,125-byte descriptor ceiling,
+32-decision-per-token and `7F` per-raw-byte bounds, 23-symbol distance
+alphabets, 22-bit bypass ceiling, dictionary variant 4, and the unchanged
+131,072-entry transition workspace before descriptor parsing. Its conservative
+complete-frame ceiling is `ceil(21F/2) + 9,191` bytes, including the 64-byte
+frame header, maximum descriptor, and two-byte tANS initial state.
+
+A canonical frame reconstructs distance 1,048,577 atomically, and the
+HashChain frame encoder emits and decodes a Match beyond one MiB under variant
+3. Token-output and raw-output one-short failures publish no raw bytes;
+crossed known identities fail during preflight. Variants 1 and 2 retain their
+existing bytes and limits. Streaming, profile, public C, CLI, benchmark, fuzz,
+and interoperability boundaries remain closed to variant 3.
+
 This subsection defines the shared dictionary/context identity and the two
 exact ANS descriptor ceilings. Dynamic Range has complete internal, streaming,
 public C, CLI, benchmark, fuzz, and schema-38 interoperability admission.

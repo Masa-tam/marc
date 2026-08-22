@@ -24552,3 +24552,31 @@ benchmark, fuzz target, or interoperability inventory changes.
   tooling tests, eighteen experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`; MSVC completed in 196.48
   seconds, and the ClangCL log records 3,177 `Test Passed` results.
+
+## CR-1006: 2026-08-22 - Four-MiB Contextual tANS complete-frame boundary
+
+- Authoring method: extended marc's selected Format 2 validation and complete-
+  frame transactions to the completed tANS variant-3 descriptor and typed
+  coder, retaining the existing Exhaustive and HashChain Exact routes.
+- References used: IR-0694 through IR-0695, DD-931 through DD-932,
+  TVG-0797 through TVG-0798, CR-1005, and repository-owned frame, typed-token,
+  tANS, and checked-bound code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  tANS frame formats, source code, tests, benchmark results, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: derive every bound from the selected layout; admit
+  only exact identity `2/4 + 1/3 + 5/2`; prove both constructed and HashChain
+  long-distance frames; and keep lifecycle/public boundaries closed.
+- Generated-code task description: implement, test, and document four-MiB
+  Contextual tANS stream/frame preflight, atomic complete-frame decoding, and
+  deterministic complete-frame encoding without changing older bytes.
+- Similarity review: the implementation generalizes marc's own selected frame
+  path and uses no external implementation expression.
+- Local validation: all 24 focused Contextual tANS format, complete-frame
+  decoder, and complete-frame encoder tests pass under MSVC and ClangCL,
+  including exact identity, `7F`, first-new-distance atomicity, and an actual
+  HashChain Match beyond one MiB. All 3,181 registered tests pass under MSVC
+  and ClangCL with a 600-second per-test limit in 197.01 and 203.60 seconds
+  respectively, including documentation layout, seven Python tooling tests,
+  eighteen experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`.

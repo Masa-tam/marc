@@ -5241,10 +5241,13 @@ The already layout-driven coding core then admits its 23-symbol distance
 alphabet and 22-bit bypass ceiling without a separate transition algorithm;
 all variants still share exactly 131,072 encode and decode entries. The direct
 typed-token bridge selects dictionary variant 4 and proves distance 1,048,577
-through both materialized-operation and direct paths. Complete-frame,
-streaming, profile, public C, CLI, benchmark, fuzz, and interoperability
-boundaries remain closed to `2/4 + 1/3 + 5/2` until their own staged
-admission.
+through both materialized-operation and direct paths. Stream/frame preflight
+and the complete-frame decoder and encoder now apply the same selection,
+`7F` decision bound, 9,125-byte descriptor ceiling, and atomic workspace
+rules. HashChain Exact produces a Match beyond one MiB without changing match-
+finder serialization. Streaming, profile, public C, CLI, benchmark, fuzz, and
+interoperability boundaries remain closed to `2/4 + 1/3 + 5/2` until their
+own staged admission.
 
 The following private Contextual tANS lifecycle stage introduces explicit
 64 KiB and 1 MiB profile selection, selected descriptor sizing over the

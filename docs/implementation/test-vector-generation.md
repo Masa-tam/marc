@@ -11330,3 +11330,20 @@ variants 4/3 require materialized and direct operation paths to produce equal
 counts, descriptors, and payloads, then recover every token and raw extent.
 Require variant 2 to reject before descriptor publication. Run both focused
 inventories under MSVC and ClangCL; do not construct an outer frame.
+
+### TVG-0798
+
+Serialize and parse a Contextual tANS stream header carrying exact identity
+`2/4 + 1/3 + 5/2`, four-MiB window, and frequency count 4,566. Require the
+identity bytes at their fixed offsets and reciprocal rejection of crossed
+dictionary/context variants. At raw size five, require decision count 32 to
+fail the older `6F` profile and pass variant 3's `7F` and 32-per-token bounds.
+
+Build one canonical complete frame from typed tokens ending in distance
+1,048,577 and length 258. Require descriptor preflight, one-short token and
+raw failures without raw publication, complete decode, and exact all-`A` raw
+output. Encode a literal complete frame and require its descriptor count bytes
+to be `d6 11`. Through HashChain Exact, encode a marker repeated beyond one
+MiB, require an actual greater-than-one-MiB Match, exact round trip, and atomic
+variant-2 rejection. Run all focused frame tests under MSVC and ClangCL;
+streaming and public surfaces remain closed.

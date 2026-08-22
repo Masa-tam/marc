@@ -1,5 +1,7 @@
 #include "frame/lzss_contextual_tans_frame_decoder.hpp"
 
+#include "context/lzss_contextual_tans_encoder.hpp"
+
 #include <gtest/gtest.h>
 
 #include <algorithm>
@@ -18,6 +20,7 @@ using marc::entropy::internal::ContextualTansDecodeError;
 using marc::entropy::internal::ContextualTansFormatError;
 using marc::entropy::internal::TansDecodeEntry;
 using marc::entropy::internal::contextual_tans_decode_table_entries;
+using marc::entropy::internal::contextual_tans_encode_table_entries;
 
 [[nodiscard]] std::vector<std::byte> frame_vector() {
     std::vector<std::byte> bytes(96);
@@ -52,6 +55,23 @@ using marc::entropy::internal::contextual_tans_decode_table_entries;
     return stream;
 }
 
+[[nodiscard]] LzssContextualTansStreamHeader four_mib_stream_config(
+    const std::uint32_t raw_size) {
+    auto stream = stream_config();
+    stream.frame_size = raw_size;
+    stream.original_size = raw_size;
+    stream.dictionary.window_size = UINT32_C(1) << 22;
+    stream.dictionary_variant = 4;
+    stream.context_variant = 3;
+    stream.frequency_entry_count = 4566;
+    return stream;
+}
+
+[[nodiscard]] std::vector<std::uint16_t> encode_tables() {
+    return std::vector<std::uint16_t>(
+        contextual_tans_encode_table_entries);
+}
+
 [[nodiscard]] std::vector<TansDecodeEntry> tables() {
     return std::vector<TansDecodeEntry>(
         contextual_tans_decode_table_entries);
@@ -83,6 +103,115 @@ TEST(LzssContextualTansFrameDecoder, DecodesSpecifiedFrameAtomically) {
     EXPECT_EQ(tokens[1].literal, 0xcc);
     EXPECT_EQ(raw[0], std::byte{'A'});
     EXPECT_EQ(raw[1], std::byte{0xcc});
+}
+
+TEST(LzssContextualTansFrameDecoder,
+     FourMiBIdentityDecodesFirstNewDistanceExactly) {
+    constexpr std::uint32_t distance = 1'048'577;
+    std::vector<LzssTypedToken> source_tokens;
+    source_tokens.reserve(4'067);
+    source_tokens.push_back({LzssTypedTokenKind::literal, 'A', 0, 0});
+    for (std::size_t index = 0; index < 4'064; ++index) {
+        source_tokens.push_back({LzssTypedTokenKind::match, 0, 1, 258});
+    }
+    source_tokens.push_back({LzssTypedTokenKind::match, 0, 1, 64});
+    source_tokens.push_back(
+        {LzssTypedTokenKind::match, 0, distance, 258});
+    constexpr std::uint32_t raw_size = distance + 258;
+    const auto stream = four_mib_stream_config(raw_size);
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = limits.max_frame_size;
+    const marc::dictionary::internal::LzssTypedFrameValidationContext
+        token_context{static_cast<std::uint32_t>(source_tokens.size()),
+                      raw_size, 0};
+    constexpr auto variant = marc::context::internal::
+        LzssFieldContextVariant::field_context_4m;
+    auto encode_table_storage = encode_tables();
+    marc::entropy::internal::ContextualTansDescriptor descriptor{};
+    const auto entropy_plan = marc::context::internal::
+        plan_lzss_contextual_tans_tokens(
+            source_tokens, stream.dictionary, token_context, limits,
+            encode_table_storage, descriptor, variant);
+    ASSERT_EQ(entropy_plan.error,
+              marc::context::internal::
+                  LzssContextualTansEncodeError::none);
+    std::vector<std::byte> payload(entropy_plan.payload_size);
+    ASSERT_EQ(marc::context::internal::encode_lzss_contextual_tans_tokens(
+                  source_tokens, stream.dictionary, token_context, limits,
+                  encode_table_storage, payload, descriptor, variant).error,
+              marc::context::internal::
+                  LzssContextualTansEncodeError::none);
+    std::size_t descriptor_size{};
+    ASSERT_EQ(marc::entropy::internal::validate_contextual_tans_descriptor(
+                  descriptor, entropy_plan.decision_count,
+                  static_cast<std::uint32_t>(payload.size()), limits,
+                  descriptor_size, variant),
+              ContextualTansFormatError::none);
+    std::vector<std::byte> serialized_descriptor(descriptor_size);
+    std::size_t descriptor_written{};
+    ASSERT_EQ(marc::entropy::internal::serialize_contextual_tans_descriptor(
+                  descriptor, entropy_plan.decision_count,
+                  static_cast<std::uint32_t>(payload.size()), limits,
+                  serialized_descriptor, descriptor_written, variant),
+              ContextualTansFormatError::none);
+    ASSERT_EQ(descriptor_written, serialized_descriptor.size());
+
+    const LzssContextualTansFrameHeader header{
+        0,
+        0,
+        raw_size,
+        static_cast<std::uint32_t>(source_tokens.size()),
+        static_cast<std::uint32_t>(entropy_plan.event_count),
+        entropy_plan.decision_count,
+        static_cast<std::uint32_t>(payload.size()),
+        static_cast<std::uint32_t>(serialized_descriptor.size()),
+        0,
+        0};
+    std::vector<std::byte> frame(
+        lzss_contextual_tans_frame_header_size
+        + serialized_descriptor.size() + payload.size());
+    ASSERT_EQ(serialize_lzss_contextual_tans_frame_header(
+                  header, {stream, limits, 0, 0},
+                  std::span<std::byte,
+                            lzss_contextual_tans_frame_header_size>{
+                      frame.data(), lzss_contextual_tans_frame_header_size}),
+              LzssContextualTansFrameHeaderError::none);
+    std::ranges::copy(
+        serialized_descriptor,
+        frame.begin() + lzss_contextual_tans_frame_header_size);
+    std::ranges::copy(
+        payload,
+        frame.begin() + lzss_contextual_tans_frame_header_size
+            + serialized_descriptor.size());
+
+    auto table_storage = tables();
+    std::vector<LzssTypedToken> decoded_tokens(source_tokens.size());
+    std::vector<std::byte> raw(raw_size, std::byte{0xcc});
+    auto failed = decode_lzss_contextual_tans_frame(
+        frame, {stream, limits, 0, 0}, table_storage,
+        std::span{decoded_tokens}.first(decoded_tokens.size() - 1), raw);
+    EXPECT_EQ(failed.error,
+              LzssContextualTansFrameDecodeError::token_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
+    failed = decode_lzss_contextual_tans_frame(
+        frame, {stream, limits, 0, 0}, table_storage, decoded_tokens,
+        std::span{raw}.first(raw.size() - 1));
+    EXPECT_EQ(failed.error,
+              LzssContextualTansFrameDecodeError::raw_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
+    const auto decoded = decode_lzss_contextual_tans_frame(
+        frame, {stream, limits, 0, 0}, table_storage, decoded_tokens, raw);
+    ASSERT_EQ(decoded.error, LzssContextualTansFrameDecodeError::none);
+    EXPECT_EQ(decoded.serialized_consumed, frame.size());
+    EXPECT_EQ(decoded_tokens.back().distance, distance);
+    EXPECT_EQ(decoded_tokens.back().length, 258U);
+    EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
+        return value == std::byte{'A'};
+    }));
 }
 
 TEST(LzssContextualTansFrameDecoder, ConsumesOnePreflightedFrame) {

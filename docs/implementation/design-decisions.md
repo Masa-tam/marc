@@ -19500,3 +19500,20 @@ direct adapter to match the materialized-operation reference and round-trip
 distance 1,048,577, the first distance unavailable to variant 2. Crossed
 layouts must fail atomically. Keep complete-frame, streaming, public C, CLI,
 benchmark, fuzz, and interoperability boundaries closed.
+
+## DD-932: Admit exact four-MiB Contextual tANS complete frames
+
+- Date: 2026-08-22
+- Status: accepted
+
+Admit exact identity `2/4 + 1/3 + 5/2` in stream serialization/parsing,
+frame-header validation and preflight, complete-frame decoding, and both
+Exhaustive and HashChain Exact complete-frame encoding. Select descriptor
+ceiling 9,125, `7F` decisions, 32 decisions per token, dictionary variant 4,
+and the existing fixed tANS tables exclusively from the validated identity.
+
+Require an exact header round trip, `7F` versus `6F` boundary test, canonical
+literal frame, atomic first-new-distance decode, HashChain production of a
+distance above one MiB, one-short token/raw rejection, and crossed-profile
+preflight rejection. Preserve variants 1 and 2 byte-for-byte. Keep profile,
+streaming, public C, CLI, benchmark, fuzz, and interoperability closed.

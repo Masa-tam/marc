@@ -6248,3 +6248,12 @@ single-state tANS tables, direct typed-LZSS adapter, and two-pass atomic
 decoder. No external compressor, tANS implementation, typed-token format,
 source code, test, benchmark, patent, pseudocode, or optimization description
 was consulted.
+
+### IR-0695
+
+The four-MiB Contextual tANS complete-frame boundary uses IR-0694, DD-931,
+TVG-0797, the repository-owned Format 2 stream/frame parser, selected direct
+typed-token coder, atomic frame decoder, exhaustive/HashChain Exact encoder,
+and checked bounds. No external compressor, tANS frame format, source code,
+test, benchmark, patent, pseudocode, or optimization description was
+consulted.
