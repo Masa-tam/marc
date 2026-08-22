@@ -6446,3 +6446,13 @@ completed four-MiB Contextual Blocked Huffman fuzz boundary as an internal
 precedent. No external fuzzer harness, compressor, Adaptive Huffman
 implementation, source code, test vector, patent, pseudocode, payload bound,
 or optimization description was consulted.
+
+### IR-0716
+
+The four-MiB Contextual Adaptive Huffman interoperability admission uses
+IR-0715, DD-952, TVG-0818, the repository-owned append-only bundle generator,
+strict manifest verifier, schema downgrade chain, and prior schema-46
+interoperability design as internal precedents. No external archive format,
+compressor, Adaptive Huffman implementation, interoperability suite, source
+code, test vector, patent, pseudocode, or optimization description was
+consulted.

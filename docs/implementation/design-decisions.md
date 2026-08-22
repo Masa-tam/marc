@@ -19872,3 +19872,18 @@ Keep maximum fuzz input at 65,536 bytes, total output at 4,096 bytes, raw frame
 and token arrays at 1,024 entries, and the arithmetic call ceiling unchanged.
 Require permanent malformed-stream and reciprocal three-profile atomicity
 tests under both MSVC and ClangCL. Do not admit interoperability in this stage.
+
+## DD-953: Append four-MiB Contextual Adaptive Huffman as schema 47 entry 57
+
+- Date: 2026-08-23
+- Status: accepted
+
+Freeze every schema-46 profile and archive byte in its existing order, then
+append only `lzss-contextual-adaptive-huffman-4m`. Require codec set
+`marc-cli-v47`, exact identity `2/4 + 1/3 + 1/2`, fixture round trip, size and
+SHA-256 recording, foreign decoding, and byte-identical local re-encoding.
+
+Reject reordered schema-47 manifests. Reconstruct schema 46 by removing only
+entry 57 and its file, then verify the unchanged downgrade chain through
+schema 1. The schema addition changes no stream byte, API, profile default, or
+limit.

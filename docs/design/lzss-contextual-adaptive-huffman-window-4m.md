@@ -2,8 +2,8 @@
 
 Status: accepted staged design after completion of the four-MiB Dynamic Range,
 canonical contextual rANS, contextual tANS, and Contextual Blocked Huffman
-vertical paths. Model-bank, entropy-operation, frame, public, benchmark, and
-bounded-fuzz stages are complete; interoperability remains closed.
+vertical paths. All six implementation stages, including schema-47
+interoperability admission, are complete.
 
 ## Purpose and exact identity
 
@@ -175,8 +175,8 @@ variant if it changes frame reset, atomic publication, or payload layout.
 5. **Complete.** Add the dependency-free benchmark and bounded dual-path
    decoder fuzzer. Fuzz identity and distance limits may widen, but raw/token
    storage and call count remain small and fixed.
-6. Append exactly one interoperability archive after every earlier boundary
-   passes. Preserve all older archive bytes and schema order.
+6. **Complete.** Append exactly one interoperability archive after every
+   earlier boundary passes. Preserve all older archive bytes and schema order.
 
 Each stage leaves later outward surfaces closed. Exact-profile decoders reject
 the other two window identities before raw publication. Encoder and decoder

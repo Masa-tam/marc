@@ -11654,3 +11654,15 @@ reserved bytes, frame lengths, descriptor fields, and payload padding. Require
 both decoder paths to reject without changing sentinel raw output and require
 the public error state to remain stable. Encode all three profiles and require
 each stream to be rejected atomically by both mismatched public decoders.
+
+### TVG-0819
+
+Generate schema 47 from the frozen schema-46 profile order plus exactly
+`lzss-contextual-adaptive-huffman-4m`. Before publishing its archive, require
+stream bytes 14/15 = 4/0, 16/17 = 1/0, 18/19 = 2/0, and 98/99 = 3/0. Decode
+the fixture exactly and record leaf name, byte count, and SHA-256.
+
+Verify codec set `marc-cli-v47`, all 57 entries in exact order, foreign
+decoding, and byte-identical local re-encoding. Reject a manifest whose first
+two entries are exchanged. Remove only archive 57 to reconstruct schema 46,
+verify it, and continue through every frozen schema down to schema 1.

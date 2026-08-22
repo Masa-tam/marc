@@ -277,6 +277,9 @@ output, and views for nodes, symbols, then tokens. Capacity, alignment, and
 pairwise used-prefix overlap are validated before handle publication. The
 additive ABI-1 family emits only the explicitly selected identity; no typed
 C++ layout crosses the ABI.
+Its four-MiB identity is covered by the fixed-memory dual-path decoder harness
+and schema-47 interoperability bundle without adding an ABI or serialized
+selector.
 Its public completion audit covers all required binary classes, deterministic
 whole, one-byte, and mixed chunk schedules, stable repeated terminal calls,
 and frame-atomic rejection of corrupted, truncated, or trailing final-frame

@@ -2832,3 +2832,30 @@ CLI inventory, reciprocal round-trip, and benchmark tests pass under MSVC and
 ClangCL. Their full 3,206-test suites pass in 198.30 and 212.44 seconds,
 including documentation layout and complete schema compatibility. Fuzzing and
 interoperability remain closed.
+
+### BR-0171
+
+The bounded dual-path decoder fuzz boundary now admits all three exact
+Contextual Adaptive Huffman profiles. Variant-3 model storage and a four-MiB
+distance ceiling reach both the private complete-frame validator and public
+streaming decoder, while input remains 64 KiB, raw/token storage remains one
+KiB, output remains four KiB, and the call ceiling remains finite.
+
+All sixteen focused malformed and reciprocal-profile regressions pass under
+MSVC and ClangCL. Their full 3,211-test suites pass in 199.44 and 205.57
+seconds, including complete schema compatibility. No randomized or unbounded
+fuzz run was performed. Interoperability remains the final closed boundary.
+
+### BR-0172
+
+Interoperability schema 47 freezes all 56 schema-46 archives and appends only
+`lzss-contextual-adaptive-huffman-4m` as archive 57. Generation requires exact
+identity `2/4 + 1/3 + 1/2`, size, SHA-256, and round trip. Verification enforces
+exact manifest order, foreign decode, and byte-identical local re-encoding;
+reordered schema-47 manifests fail, while removing only entry 57 reconstructs
+schema 46 and preserves verification through schema 1.
+
+Focused compatibility passes under MSVC and ClangCL in 90.07 and 87.54
+seconds. Their full 3,211-test suites pass in 199.86 and 211.20 seconds,
+including documentation layout and complete schema compatibility. External
+four-direction schema-47 evidence remains pending.

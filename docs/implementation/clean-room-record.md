@@ -25226,3 +25226,30 @@ both bounds.
   experimental benchmark smokes, forty-two benchmark smokes, documentation
   layout, and complete schema compatibility. No randomized or unbounded fuzz
   run was performed in this stage.
+
+## CR-1029: 2026-08-23 - Four-MiB Adaptive Huffman interoperability
+
+- Authoring method: appended one exact public profile to the frozen schema-46
+  generator order, then extended strict verification and the downgrade chain
+  without modifying any earlier profile definition.
+- References used: IR-0715 through IR-0716, DD-952 through DD-953, TVG-0818
+  through TVG-0819, CR-1028, and repository-owned schema-46 bundle machinery.
+  No new external technical source was used.
+- Known implementations intentionally not consulted: external archive
+  formats, compressors, Adaptive Huffman implementations, interoperability
+  suites, source code, tests, vectors, patents, pseudocode, and optimization
+  descriptions.
+- Independent decisions: append exactly one archive; validate exact identity
+  before manifest publication; reject reordered manifests; and remove only
+  entry 57 when reconstructing schema 46.
+- Generated-code task description: add schema-47 generation, exact-profile
+  validation, strict verification, and full compatibility through schema 1.
+- Similarity review: only repository-owned append-only schema machinery was
+  reused; no external implementation expression was added.
+- Validation: focused schema-47 generation, verification, reorder rejection,
+  and schemas 1-through-46 compatibility pass under MSVC and ClangCL in 90.07
+  and 87.54 seconds. Their full 3,211-test suites pass in 199.86 and 211.20
+  seconds, including seven Python tooling tests, twenty-one experimental
+  benchmark smokes, forty-two benchmark smokes, documentation layout, and
+  complete schema compatibility. External four-direction evidence remains
+  pending.

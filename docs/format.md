@@ -7257,4 +7257,10 @@ The bounded decoder fuzz target admits all three exact identities through both
 the private complete-frame validator and public streaming decoder. The wider
 identity changes no serialized byte and does not enlarge the fixed one-KiB raw
 or token storage, four-KiB output storage, 64-KiB input cap, or finite call
-ceiling. Interoperability admission remains closed.
+ceiling.
+
+Interoperability schema 47 appends
+`lzss-contextual-adaptive-huffman-4m` as archive 57 after the frozen
+56-entry schema-46 inventory. Generation requires exact identity
+`2/4 + 1/3 + 1/2`; verification decodes and re-encodes the complete archive
+byte-identically. This admission adds no serialized rule.

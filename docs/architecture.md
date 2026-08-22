@@ -5732,4 +5732,11 @@ identity and distance ceilings use variant 3, while its maximum input remains
 the call count retains its fixed arithmetic ceiling. Permanent truncation,
 header, descriptor, length, padding, terminal-state, and reciprocal
 cross-profile regressions run for all three identities. Interoperability
-remains the only later boundary.
+was the only later boundary.
+
+Interoperability schema 47 freezes schema 46's exact 56-archive order and
+appends only `lzss-contextual-adaptive-huffman-4m` as entry 57. Generation
+requires exact identity `2/4 + 1/3 + 1/2`, round trip, size, and SHA-256.
+Verification enforces exact order and local byte-identical re-encoding.
+Compatibility removes only entry 57 to reconstruct schema 46 before
+traversing the unchanged chain through schema 1.
