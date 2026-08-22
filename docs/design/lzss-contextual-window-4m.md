@@ -33,8 +33,8 @@ The candidate backend identities remain unchanged:
 
 | Backend | Entropy algorithm/variant | Initial disposition |
 |---|---:|---|
-| Dynamic Range | `3/2` | first vertical path |
-| canonical contextual rANS | `4/3` | staged |
+| Dynamic Range | `3/2` | complete vertical path |
+| canonical contextual rANS | `4/3` | accepted staged design |
 | contextual tANS | `5/2` | staged |
 | Contextual Blocked Huffman | `2/2` | staged |
 | Contextual Adaptive Huffman | `1/2` | deferred pending a memory proof |
@@ -205,6 +205,8 @@ triple while retaining one-KiB frames. Interoperability schema 43 appends the
 matching archive after the frozen 52-entry schema-42 inventory.
 Revision `a871a05dad68c99712ba210a0b8a9f5f6eb6b3b3` verifies all 53 archives
 through the recorded four-direction Windows and Linux exchange.
+The second-backend plan is
+[LZSS contextual rANS 4 MiB window](lzss-contextual-rans-window-4m.md).
 
 ## Planned public policy
 

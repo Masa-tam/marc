@@ -6130,3 +6130,12 @@ fixture, explicit CLI selector, manifest hashing, and one-generation
 compatibility chain. No external archive, compressor, interoperability suite,
 source code, test vector, manifest schema, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0682
+
+The four-MiB Contextual rANS design uses IR-0673 through IR-0681, DD-910
+through DD-918, TVG-0776 through TVG-0784, the repository-owned canonical
+contextual rANS format/profile, compact model, typed-token layout, HashChain
+workspace calculator, and C hard limits. No external compressor, rANS
+implementation, large-window format, source code, test, benchmark, patent,
+pseudocode, or optimization description was consulted.

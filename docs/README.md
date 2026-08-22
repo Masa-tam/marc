@@ -27,6 +27,8 @@ navigate chronological development records.
   typed-token and context variants for extended-distance experiments.
 - [LZSS contextual 4 MiB window](design/lzss-contextual-window-4m.md): the next
   additive identity, expanded decision bounds, and per-backend memory gates.
+- [LZSS contextual rANS 4 MiB window](design/lzss-contextual-rans-window-4m.md):
+  the second backend's descriptor, payload, and 128-MiB workspace proof.
 - [LZSS typed-token protocol](design/lzss-typed-token-protocol.md): bounded
   dictionary-to-context value boundary.
 - [Context-model contract](design/context-model-contract.md): invertible field

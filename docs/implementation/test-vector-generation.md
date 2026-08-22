@@ -11141,3 +11141,18 @@ unchanged 52-entry predecessor before continuing compatibility through schema
 1. Run complete MSVC and ClangCL inventories including Python tooling. The
 later external protocol must report four successful 53-archive directions at
 one pushed revision.
+
+### TVG-0785
+
+For the four-MiB Contextual rANS design, derive the 4,566-entry compact model,
+9,121-byte maximum descriptor, fixed 126,976-entry decode-table bank, `7F`
+decision ceiling, `14F + 8` payload ceiling, and `14F + 9,193` complete-frame
+ceiling independently from the selected layout and existing scalar format.
+
+At `F=4,194,304`, require the supported encoder arithmetic to total
+130,556,905 bytes from raw, native tokens, exact HashChain workspace, and
+encoded frame. Require decoder views of 51,093,504 bytes and aggregate
+114,017,257 bytes from six-byte table entries, native tokens, encoded frame,
+and raw staging. Record their exact headroom below 128 MiB. No implementation,
+selector admission, emitted stream, benchmark, fuzzer, or interoperability
+inventory changes in this design-only stage.

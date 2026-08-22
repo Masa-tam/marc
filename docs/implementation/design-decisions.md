@@ -19276,3 +19276,22 @@ Compatibility must remove only entry 53 to reconstruct schema 42, then follow
 the unchanged one-generation chain. Reject a reordered current manifest.
 Repository tests generate bundles only in temporary directories; cross-system
 four-direction evidence remains a post-push user-run step.
+
+## DD-919: Stage four-MiB canonical contextual rANS within 128 MiB
+
+- Date: 2026-08-22
+- Status: accepted
+
+Use exact triple `2/4 + 1/3 + 4/3` as the second four-MiB entropy path. Expand
+the compact descriptor ceiling from 9,089 to 9,121 bytes and select `7F`
+decisions, `14F + 8` payload, and `14F + 9,193` complete-frame bounds only for
+context variant 3. Retain scalar state, table log, normalization, and old
+profile bytes.
+
+On the supported 64-bit layout require exact encoder aggregate 130,556,905
+bytes and decoder aggregate 114,017,257 bytes. Both fit the unchanged 128-MiB
+default, but a full profile must explicitly raise `max_block_size` to four
+MiB. Require checked runtime sizing and one-short tests; do not treat recorded
+native extents as portable struct serialization. Implement descriptor,
+frame, profile/streaming, C/CLI/benchmark, fuzz, and interoperability in that
+order, closing every later boundary until its stage is complete.

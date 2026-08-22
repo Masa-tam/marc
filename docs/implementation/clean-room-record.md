@@ -24159,3 +24159,28 @@ discarded and the reviewed seed retained.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-0992: 2026-08-22 - Four-MiB Contextual rANS design reservation
+
+- Authoring method: derived the second four-MiB backend entirely from marc's
+  completed shared context layout, canonical contextual rANS representation,
+  native workspace calculators, and current public hard limits.
+- References used: IR-0673 through IR-0682, DD-910 through DD-919, TVG-0776
+  through TVG-0785, CR-0982 through CR-0991, and repository-owned format and
+  profile code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  rANS implementations, large-window formats, source code, tests, benchmark
+  results, patents, pseudocode, and optimization descriptions.
+- Independent decisions: retain entropy identity `4/3`; expand only the
+  selected descriptor and decision bounds; keep HashChain Exact; retain the
+  128-MiB default; and stage every outer/public boundary independently.
+- Generated-code task description: specify the exact descriptor, payload,
+  encoder/decoder workspace, limit, identity, and implementation-order proof
+  for a four-MiB canonical contextual rANS vertical path.
+- Similarity review: all identities, counts, sizes, and staging arithmetic
+  derive directly from marc's existing types and the already frozen shared
+  four-MiB context layout. No external implementation expression was
+  consulted or introduced.
+- Validation: documentation layout, chronology, formulas, and cross-links are
+  checked in this design-only stage. No codec, ABI, CLI, emitted stream,
+  benchmark, fuzz target, or interoperability inventory changes.
