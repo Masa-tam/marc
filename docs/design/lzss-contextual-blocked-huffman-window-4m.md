@@ -3,8 +3,8 @@
 Status: implementation in progress after completion of the Dynamic Range,
 canonical contextual rANS, and contextual tANS four-MiB vertical paths. The
 descriptor, entropy-operation, direct typed-token, complete-frame, profile,
-and streaming-lifecycle boundaries are complete; public and outward surfaces
-remain closed.
+streaming-lifecycle, public, CLI, benchmark, and bounded-fuzz boundaries are
+complete; interoperability remains closed.
 
 ## Purpose and exact identity
 
@@ -138,7 +138,7 @@ A full profile sets `max_frame_size` and LZ distance to four MiB,
 4. **Complete.** Admit common public C window selector value 2 only for Contextual Blocked
    Huffman, then add the explicit CLI name
    `lzss-contextual-blocked-huffman-4m`.
-5. Add the dependency-free benchmark and bounded dual-path decoder fuzzer;
+5. **Complete.** Add the dependency-free benchmark and bounded dual-path decoder fuzzer;
    retain generated fuzz mutations outside the repository.
 6. Append exactly one interoperability archive only after every earlier
    boundary passes. Preserve all old archive bytes and schema order.

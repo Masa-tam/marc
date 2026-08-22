@@ -23,7 +23,7 @@ using Token = marc::dictionary::internal::LzssTypedToken;
 constexpr std::array raw{
     std::uint8_t{'A'}, std::uint8_t{'B'}, std::uint8_t{'A'},
     std::uint8_t{'B'}, std::uint8_t{'X'}};
-constexpr std::size_t maximum_decisions = raw.size() * 6;
+constexpr std::size_t maximum_decisions = raw.size() * 7;
 constexpr std::size_t maximum_payload =
     (maximum_decisions * 15 + 7) / 8;
 constexpr std::size_t maximum_internal = 2U << 20;
@@ -32,11 +32,14 @@ constexpr std::size_t table_count =
 [[nodiscard]] constexpr std::size_t maximum_encoded_frame(
     const marc_lzss_contextual_window_profile window_profile) noexcept {
     const auto descriptor_size = window_profile
-            == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            == MARC_LZSS_CONTEXTUAL_WINDOW_4M
         ? marc::entropy::internal::
-              contextual_blocked_huffman_max_descriptor_size_v2
-        : marc::entropy::internal::
-              contextual_blocked_huffman_max_descriptor_size_v1;
+              contextual_blocked_huffman_max_descriptor_size_v3
+        : window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            ? marc::entropy::internal::
+                  contextual_blocked_huffman_max_descriptor_size_v2
+            : marc::entropy::internal::
+                  contextual_blocked_huffman_max_descriptor_size_v1;
     return marc::frame::internal::
                lzss_contextual_blocked_huffman_frame_header_size
         + descriptor_size + maximum_payload;
@@ -64,14 +67,16 @@ struct Workspace {
               MARC_STATUS_OK);
     result.original_size = raw.size();
     result.frame_size = raw.size();
-    result.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
+    result.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? UINT32_C(1) << 22
+        : window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
     result.max_total_output_size = 32;
     result.max_frame_size = raw.size();
     result.max_block_size = maximum_decisions;
     result.max_compressed_payload_size = maximum_payload;
     result.max_internal_buffered_bytes = maximum_internal;
-    result.max_lz_distance = UINT64_C(1) << 20;
+    result.max_lz_distance = UINT64_C(1) << 22;
     result.max_lz_match_length = 258;
     result.max_entropy_table_entries = UINT64_C(1) << 20;
     result.window_profile = window_profile;
@@ -135,7 +140,7 @@ protected:
         limits.max_block_size = maximum_decisions;
         limits.max_compressed_payload_size = maximum_payload;
         limits.max_internal_buffered_bytes = maximum_internal;
-        limits.max_lz_distance = UINT64_C(1) << 20;
+        limits.max_lz_distance = UINT64_C(1) << 22;
         limits.max_lz_match_length = 258;
         limits.max_entropy_table_entries = UINT64_C(1) << 20;
         const auto bytes = std::as_bytes(input);
@@ -287,12 +292,19 @@ TEST(LzssContextualBlockedHuffmanFuzzRegression,
     const auto extended =
         canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_1M);
     expect_rejection(extended, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    const auto four_mib =
+        canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_1M);
+    expect_rejection(frozen, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    expect_rejection(extended, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
 }
 
 INSTANTIATE_TEST_SUITE_P(
     Profiles, LzssContextualBlockedHuffmanFuzzRegression,
     testing::Values(
         MARC_LZSS_CONTEXTUAL_WINDOW_64K,
-        MARC_LZSS_CONTEXTUAL_WINDOW_1M));
+        MARC_LZSS_CONTEXTUAL_WINDOW_1M,
+        MARC_LZSS_CONTEXTUAL_WINDOW_4M));
 
 } // namespace

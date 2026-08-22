@@ -2692,3 +2692,21 @@ ClangCL complete in 208.81 and 211.01 seconds, including seven Python tooling
 tests, nineteen experimental benchmark smokes, forty-two benchmark smokes,
 documentation layout, and complete schema compatibility. Benchmark, fuzz, and
 interoperability admission remain closed.
+
+### BR-0162
+
+The dependency-free benchmark and bounded dual-path decoder fuzz boundary now
+admit the exact four-MiB Contextual Blocked Huffman identity `2/4 + 1/3 +
+2/2`. Benchmark capacity uses `ceil(105N/8) + 2,652K` plus the stream prefix,
+reports queried public-C workspaces, round-trips exactly, and keeps the three
+profile names ordered. The fuzzer admits all three identities and a four-MiB
+distance while retaining one-KiB raw/token staging, four-KiB total output,
+fixed tables, and finite calls.
+
+Ten focused malformed regressions pass under both compilers. A bounded
+Windows Clang 22 sanitizer campaign completes 1,000 inputs without a crash,
+hang, or finding and retains no generated files. Both full suites pass
+3,203/3,203 in 209.32 and 217.03 seconds, including seven Python tooling
+tests, twenty experimental benchmark smokes, forty-two benchmark smokes,
+documentation layout, and complete schema compatibility. Interoperability
+remains the final closed boundary.

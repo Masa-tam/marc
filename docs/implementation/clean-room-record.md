@@ -24951,3 +24951,38 @@ benchmark, fuzz target, or interoperability inventory changes.
   tooling tests, nineteen experimental benchmark smokes, forty-two benchmark
   smokes, documentation layout, and schema compatibility in 88.68 and 83.36
   seconds. Benchmark, fuzz, and interoperability admission remain closed.
+
+## CR-1019: 2026-08-22 - Four-MiB Contextual Blocked Huffman tooling
+
+- Authoring method: extended the repository-owned benchmark selector and
+  fixed-memory dual-path decoder harness only after public exact-profile
+  admission was complete, then parameterized permanent malformed regressions
+  before the sanitizer smoke.
+- References used: IR-0706 through IR-0707, DD-943 through DD-944, TVG-0809
+  through TVG-0810, CR-1018, and repository-owned four-MiB Contextual tANS
+  benchmark/fuzz architecture as an internal precedent. No new external
+  technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman benchmarks, fuzzer harnesses, source code, tests, vectors, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: expose an ordered exact benchmark name; derive all
+  capacities from documented profile bounds; widen fuzz identity and distance
+  without widening raw/token storage; retain fixed tables and finite calls;
+  and keep generated mutations outside the repository.
+- Generated-code task description: add public-C benchmark routing, checked
+  worst-case allocation, three-profile dual-path malformed regressions, and a
+  bounded sanitizer campaign without changing serialized bytes.
+- Similarity review: changes reuse marc's generic benchmark and fixed-memory
+  fuzz patterns. No external implementation expression was consulted or
+  introduced.
+- Validation: benchmark smoke, ten focused malformed regressions, MSVC and
+  ClangCL warning-clean fuzzer compile smokes, and a Windows Clang 22 bounded
+  1,000-input ASan/UBSan/libFuzzer campaign pass without a crash, hang, or
+  sanitizer finding. Generated mutations remained in memory. The first
+  campaign attempt did not start because only the compiler `bin` directory,
+  not Clang's versioned sanitizer-runtime directory, was placed on `PATH`;
+  it is excluded from evidence. Both formal suites then pass 3,203/3,203 in
+  209.32 and 217.03 seconds, including seven Python tooling tests, twenty
+  experimental benchmark smokes, forty-two benchmark smokes, documentation
+  layout, and schema compatibility in 87.98 and 82.31 seconds.
+  Interoperability remains closed.

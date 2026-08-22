@@ -5675,3 +5675,13 @@ publication, and the four-MiB profile reciprocally rejects them. Public
 workspace queries preserve the checked 126,880,348-byte encoder and
 109,722,064-byte decoder aggregates under the unchanged 128-MiB default.
 Benchmark, fuzz, and interoperability boundaries remain closed.
+
+The dependency-free benchmark and bounded decoder fuzz boundary now admit
+the exact four-MiB Contextual Blocked Huffman profile. Benchmark configuration
+uses only the public C lifecycle and reserves `7F`, `ceil(105F/8)`, the
+2,588-byte descriptor, and the 128-MiB aggregate policy. The dual-path fuzzer
+drives private complete-frame and public streaming decoders for all three
+window identities while retaining one-KiB frame/token storage, four-KiB total
+output, fixed arrays, and finite calls. It widens only selected identity,
+decision, payload, descriptor, and distance limits; interoperability remains
+closed.

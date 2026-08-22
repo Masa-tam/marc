@@ -7196,3 +7196,13 @@ frames/windows, `7F = 29,360,128` decisions, a 55,050,240-byte payload, and
 the unchanged 128-MiB aggregate policy. Exact-profile decoding rejects the
 other two known window identities before raw publication. Benchmark, fuzz,
 and interoperability admission remain separate later boundaries.
+
+The benchmark selector `lzss-contextual-blocked-huffman-4m` and bounded
+decoder fuzz target select the same exact `2/4 + 1/3 + 2/2` identity without
+adding a serialized field. The benchmark uses four-MiB frames/windows,
+`7F` decisions, `ceil(105F/8)` payload bytes, a 2,588-byte descriptor, and a
+128-MiB aggregate limit. The fuzz application deliberately caps raw frames
+and typed tokens at 1,024, total output at 4,096, decisions at 7,168, payload
+at 13,440 bytes, and supplied input at 32 KiB while admitting a 4,194,304-byte
+distance. These are application bounds only. Interoperability admission
+remains closed.

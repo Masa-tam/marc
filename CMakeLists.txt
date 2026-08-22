@@ -698,6 +698,7 @@ if(MARC_BUILD_BENCHMARKS)
                 "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"
                 "-DBENCHMARK_CODEC=lzss-contextual-blocked-huffman"
                 "-DBENCHMARK_PROFILE_BASE=lzss-contextual-blocked-huffman"
+                -DBENCHMARK_HAS_4M=ON
                 "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_report.cmake)
         set_tests_properties(
@@ -709,10 +710,23 @@ if(MARC_BUILD_BENCHMARKS)
                 "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"
                 "-DBENCHMARK_CODEC=lzss-contextual-blocked-huffman-1m"
                 "-DBENCHMARK_PROFILE_BASE=lzss-contextual-blocked-huffman"
+                -DBENCHMARK_HAS_4M=ON
                 "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_report.cmake)
         set_tests_properties(
             marc_benchmark_lzss_contextual_blocked_huffman_1m_smoke
+            PROPERTIES LABELS benchmark-experimental-smoke)
+        add_test(
+            NAME marc_benchmark_lzss_contextual_blocked_huffman_4m_smoke
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"
+                "-DBENCHMARK_CODEC=lzss-contextual-blocked-huffman-4m"
+                "-DBENCHMARK_PROFILE_BASE=lzss-contextual-blocked-huffman"
+                -DBENCHMARK_HAS_4M=ON
+                "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_report.cmake)
+        set_tests_properties(
+            marc_benchmark_lzss_contextual_blocked_huffman_4m_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
         add_test(NAME marc_benchmark_lzss_contextual_adaptive_huffman_smoke
             COMMAND ${CMAKE_COMMAND}

@@ -11511,3 +11511,20 @@ exact public workspace extents. List the CLI names in 64K/1M/4M order exactly
 once, reject `-4M`, emit dictionary/context bytes 4/3 with entropy 2/2, reject
 both older CLI names on decode, round-trip repeated input, and reject trailing
 data.
+
+### TVG-0810
+
+Select `lzss-contextual-blocked-huffman-4m` in the dependency-free benchmark,
+require the exact reported codec name, mandatory round trip, positive
+directional workspaces, peak equal to the larger aggregate, ordered
+64K/1M/4M usage inventory, and rejection of `-4M`. Exercise the same smoke
+under MSVC and ClangCL.
+
+Parameterize every permanent dual-path malformed regression over all three
+window profiles. For each canonical stream, truncate every byte and require
+private raw staging and public output to remain unchanged. Corrupt extreme
+frame lengths and descriptor flags, then require stable sticky failure.
+Decode each profile with both other public selectors and require no raw
+publication. Compile the fixed-memory harness warning-clean under both
+toolchains, then run 1,000 in-memory sanitizer mutations with no repository
+corpus or artifact.

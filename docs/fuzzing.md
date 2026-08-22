@@ -759,6 +759,26 @@ path applied only to the campaign process. No input corpus was supplied, no
 generated mutation was retained, and no artifact was produced. This bounded
 result is evidence for the exercised inputs, not an exhaustive safety claim.
 
+### FZ-0032: Triple-profile Contextual Blocked Huffman smoke
+
+The Contextual Blocked Huffman private-frame/public-C decoder target now
+drives the 64-KiB, one-MiB, and four-MiB strict admissions for every bounded
+input. It retains a 32-KiB input cap, four-KiB total output, one-KiB raw and
+token storage, 35 fixed decode tables, and a finite call ceiling. The largest
+admitted local limits are 7,168 decisions, 13,440 payload bytes, a 2,588-byte
+descriptor, and a 4,194,304-byte LZ distance. The four-MiB identity does not
+allocate a four-MiB fuzz frame or history buffer.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 20260822 completed exactly 1,000 inputs under a 32-KiB maximum
+input, five-second per-input timeout, and 512-MiB RSS limit without a crash,
+hang, or sanitizer finding. Peak RSS was 42 MiB; final coverage was 231
+counters and 402 features over a six-entry, 23-byte in-memory corpus. The
+matching sanitizer runtime path applied only to the campaign process. No
+input corpus was supplied, no generated mutation was retained, and no
+artifact was produced. This bounded result is evidence for the exercised
+inputs, not an exhaustive safety claim.
+
 ## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the

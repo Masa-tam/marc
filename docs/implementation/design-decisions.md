@@ -19707,3 +19707,24 @@ through the public initializer/query/factory lifecycle. Require exact C
 workspace boundaries, reciprocal three-profile rejection without raw
 publication, case-sensitive inventory, canonical identity bytes, and CLI
 round trip. Keep benchmark, fuzz, and interoperability admission closed.
+
+## DD-944: Admit four-MiB Contextual Blocked Huffman tooling without large fuzz allocation
+
+- Date: 2026-08-22
+- Status: accepted
+
+Add the exact dependency-free benchmark selector after the two older profiles
+and configure it exclusively through the public C initializer, workspace
+query, factory, process, and destroy lifecycle. Derive capacity from `7F`,
+`ceil(105F/8)`, the 2,588-byte descriptor, and the existing 128-MiB aggregate
+limit. Require exact round trip, directional workspace reporting, checked
+capacity arithmetic, ordered inventory, and case-sensitive near-miss
+rejection.
+
+Extend the existing private-frame/public-streaming fuzzer rather than create
+a parallel harness. Admit all three exact identities and a four-MiB distance,
+but retain 1,024 raw bytes/tokens, 4,096 total output bytes, fixed table
+storage, 32-KiB supplied input, and finite calls. Add permanent three-profile
+truncation, malformed-header, descriptor, and reciprocal atomicity
+regressions. Run generated mutations only in memory and keep interoperability
+closed.

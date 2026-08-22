@@ -41,6 +41,10 @@ format versions, and C ABI versions are independent namespaces.
   admits only Format 2 identity `2/4 + 1/3 + 2/2`, retains the 128-MiB
   aggregate default, and reciprocally rejects the 64-KiB and one-MiB
   identities before raw publication.
+- Added dependency-free benchmark selection and bounded dual-path decoder
+  fuzz coverage for the four-MiB LZSS Contextual Blocked Huffman profile.
+  Fuzz admission widens identity and distance validation without allocating
+  a four-MiB raw frame or retaining generated mutations in the repository.
 
 ## 0.3.0 - 2026-08-13
 

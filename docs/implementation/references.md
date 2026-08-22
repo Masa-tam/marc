@@ -6359,3 +6359,13 @@ backend-specific profile/admission mappers, checked workspace query, factory,
 common CLI driver, and exact-profile round-trip harness. No external C API,
 compressor, Huffman binding, command-line interface, source code, test vector,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0707
+
+The four-MiB Contextual Blocked Huffman benchmark and bounded-fuzz admission
+uses IR-0706, DD-943, TVG-0809, the repository-owned dependency-free public-C
+benchmark adapter, selected-layout frame validator, fixed-memory dual-path
+fuzz harness, permanent atomicity regressions, and the completed four-MiB
+Contextual tANS tooling boundary as an internal precedent. No external
+benchmark, fuzzer harness, compressor, Huffman implementation, source code,
+test vector, patent, pseudocode, or optimization description was consulted.

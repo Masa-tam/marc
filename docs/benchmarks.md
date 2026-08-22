@@ -1807,3 +1807,21 @@ bytes at ratio 0.695. Encoder primary/secondary/views workspaces were
 44,049,383/4,194,304/50,855,936 bytes. Peak caller-owned workspace was the
 decoder aggregate of 99,099,623 bytes. These values establish benchmark
 wiring and bounded allocation, not a production-performance claim.
+
+### Contextual Blocked Huffman four-MiB profile
+
+The dependency-free `lzss-contextual-blocked-huffman-4m` benchmark selects
+the exact public four-MiB window profile. It uses 4,194,304-byte raw frames,
+window, and LZ distance; admits `7F = 29,360,128` decisions; reserves the
+exact `ceil(105F/8) = 55,050,240` payload ceiling; and retains the 128-MiB
+aggregate limit. Checked complete-stream capacity is
+`112 + ceil(105N/8) + 2,652K`, where `N` is total input bytes and `K` is the
+number of nonempty frames.
+
+One MSVC Release smoke iteration over the 4,326-byte README emitted 2,507
+bytes at ratio 0.580. Encoder primary/secondary/views workspaces were
+4,326/59,431/134,752 bytes; decoder regions were
+55,052,892/4,194,304/50,474,868 bytes. Peak caller-owned workspace was the
+decoder aggregate of 109,722,064 bytes. These values establish public-C
+wiring, exact round trip, and bounded allocation, not a stable performance
+claim.
