@@ -15,6 +15,7 @@ namespace marc::frame::internal {
 enum class LzssContextualAdaptiveHuffmanProfileVariant : std::uint8_t {
     field_context_64k,
     field_context_1m,
+    field_context_4m,
 };
 
 struct LzssContextualAdaptiveHuffmanProfileConfig {

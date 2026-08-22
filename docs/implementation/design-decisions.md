@@ -19757,7 +19757,9 @@ or the established `ceil(267F/8)` payload proof. For `F = 4,194,304`, reserve
 
 On the supported 64-bit layout, require 9,163 nodes, 4,566 symbol indices,
 4,194,304 typed tokens, and the existing HashChain workspace. The checked
-encoder and decoder aggregates are 211,968,172 and 194,666,668 bytes. Keep the
+encoder and decoder aggregates are 211,968,176 and 194,666,668 bytes. The
+encoder value includes four bytes that align the HashChain workspace after
+the two-byte symbol-index array. Keep the
 library defaults at 128 MiB aggregate and 64 MiB payload; only an explicit
 four-MiB application profile may raise compressed-payload capacity to the
 proven ceiling and aggregate capacity to 256 MiB. Require exact-limit and
@@ -19784,3 +19786,21 @@ fields. Keep initialization on 64 KiB. Permit callers to override applied
 values afterward; the ordinary workspace query remains authoritative and must
 reject insufficient overrides. The helper allocates no memory and neither a
 stream identity nor a lone field silently raises a limit.
+
+## DD-948: Admit four-MiB Adaptive Huffman model and profile selection
+
+- Date: 2026-08-23
+- Status: accepted
+
+Extend only the internal model-bank and checked-profile selectors to exact
+field-context variant 3. Require 9,163 FGK nodes, 4,566 symbol indices, and
+13,729 combined entropy entries. Distance contexts admit class 22 while every
+older model extent and selection remains unchanged.
+
+For a four-MiB frame, require exact encoder and decoder aggregates of
+211,968,176 and 194,666,668 bytes. The encoder calculation aligns the
+HashChain workspace to eight bytes and therefore includes four padding bytes
+after its symbol-index array. Reject insufficient node, symbol, payload,
+entropy-entry, and aggregate limits before publishing workspace requirements.
+Keep entropy-operation, complete-frame, public C, CLI, benchmark, fuzz, and
+interoperability admission closed.

@@ -2,7 +2,9 @@
 
 Status: accepted staged design after completion of the four-MiB Dynamic Range,
 canonical contextual rANS, contextual tANS, and Contextual Blocked Huffman
-vertical paths. Implementation has not started.
+vertical paths. Model-bank and checked-profile stage 1 is complete; later
+entropy-operation, frame, public, tooling, and interoperability boundaries
+remain closed.
 
 ## Purpose and exact identity
 
@@ -82,9 +84,10 @@ raw frame                              4,194,304 bytes
 9,163 FGK nodes                          146,608 bytes
 4,566 symbol indices                       9,132 bytes
 HashChain heads and links             17,301,504 bytes
-views total                            67,788,892 bytes
+alignment before HashChain workspace           4 bytes
+views total                            67,788,896 bytes
 complete encoded frame               139,984,976 bytes
-aggregate                            211,968,172 bytes
+aggregate                            211,968,176 bytes
 ```
 
 The decoder needs:
@@ -99,7 +102,7 @@ raw frame                              4,194,304 bytes
 aggregate                            194,666,668 bytes
 ```
 
-Both aggregates fit a 256-MiB hard limit with 56,467,284 and 73,768,788 bytes
+Both aggregates fit a 256-MiB hard limit with 56,467,280 and 73,768,788 bytes
 of headroom respectively. They do not fit the library's default 128-MiB
 aggregate limit, and the payload does not fit the default 64-MiB compressed-
 payload limit.
@@ -156,7 +159,8 @@ variant if it changes frame reset, atomic publication, or payload layout.
 
 ## Staged implementation
 
-1. Select context variant 3 in the model bank and profile calculator. Prove
+1. **Complete.** Select context variant 3 in the model bank and profile
+   calculator. Prove
    9,163/4,566 model extents, exact directional aggregates, exact-limit
    success, one-byte-short failure, and unchanged older selections.
 2. Carry the immutable selection through FGK operation coding and direct LZSS

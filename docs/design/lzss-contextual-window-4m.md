@@ -166,7 +166,8 @@ Contextual Adaptive Huffman would require 4,566 symbol slots and:
 
 The conservative `ceil(267F/8)` payload rule produces 139,984,896 bytes for a
 four-MiB frame. On the supported 64-bit layout, complete encoder and decoder
-aggregates are 211,968,172 and 194,666,668 bytes. Both fit an explicitly
+aggregates are 211,968,176 and 194,666,668 bytes. The encoder total includes
+four bytes of alignment before the HashChain workspace. Both fit an explicitly
 selected 256-MiB application policy. The default 128-MiB aggregate and 64-MiB
 compressed-payload limits remain unchanged; this backend is opt-in rather than
 deferred.

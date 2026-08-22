@@ -287,6 +287,98 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
 }
 
 TEST(LzssContextualAdaptiveHuffmanProfile,
+     FourMiBProfileProvesExactDirectionalAggregates) {
+    constexpr std::uint64_t frame_size = UINT64_C(1) << 22;
+    constexpr std::uint64_t payload_size = UINT64_C(139984896);
+    constexpr std::uint64_t encoded_size = UINT64_C(139984976);
+    constexpr std::uint64_t encoder_views = UINT64_C(67788896);
+    constexpr std::uint64_t encoder_aggregate = UINT64_C(211968176);
+    constexpr std::uint64_t decoder_views = UINT64_C(50487388);
+    constexpr std::uint64_t decoder_aggregate = UINT64_C(194666668);
+    constexpr std::uint64_t entropy_entries = UINT64_C(13729);
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = frame_size;
+    limits.max_block_size = frame_size;
+    limits.max_compressed_payload_size = payload_size;
+    limits.max_internal_buffered_bytes = UINT64_C(256) << 20;
+    limits.max_lz_distance = frame_size;
+    limits.max_entropy_table_entries = entropy_entries;
+
+    LzssContextualAdaptiveHuffmanProfileConfig config{};
+    config.original_size = frame_size;
+    config.frame_size = static_cast<std::uint32_t>(frame_size);
+    config.dictionary.window_size = static_cast<std::uint32_t>(frame_size);
+    config.variant =
+        LzssContextualAdaptiveHuffmanProfileVariant::field_context_4m;
+    LzssContextualAdaptiveHuffmanStreamHeader stream{};
+    LzssContextualAdaptiveHuffmanEncoderWorkspaceRequirements encoder{};
+    ASSERT_EQ(make_lzss_contextual_adaptive_huffman_profile(
+                  config, limits, stream, encoder),
+              LzssContextualAdaptiveHuffmanProfileError::none);
+    EXPECT_EQ(stream.dictionary_variant, 4U);
+    EXPECT_EQ(stream.context_algorithm, 1U);
+    EXPECT_EQ(stream.context_variant, 3U);
+    EXPECT_EQ(encoder.frame_input_bytes, frame_size);
+    EXPECT_EQ(encoder.frame_encoded_bytes, encoded_size);
+    EXPECT_EQ(encoder.token_count, frame_size);
+    EXPECT_EQ(encoder.node_count, 9163U);
+    EXPECT_EQ(encoder.symbol_count, 4566U);
+    EXPECT_EQ(encoder.node_offset, 50331648U);
+    EXPECT_EQ(encoder.symbol_offset, 50478256U);
+    EXPECT_EQ(encoder.match_finder_offset, 50487392U);
+    EXPECT_EQ(encoder.match_finder_bytes, 17301504U);
+    EXPECT_EQ(encoder.views_bytes, encoder_views);
+    EXPECT_EQ(encoder.frame_input_bytes + encoder.frame_encoded_bytes
+                  + encoder.views_bytes,
+              encoder_aggregate);
+
+    auto one_short = limits;
+    one_short.max_internal_buffered_bytes = encoder_aggregate - 1;
+    EXPECT_EQ(make_lzss_contextual_adaptive_huffman_profile(
+                  config, one_short, stream, encoder),
+              LzssContextualAdaptiveHuffmanProfileError::limit_exceeded);
+    EXPECT_EQ(encoder.views_bytes, 0U);
+    one_short = limits;
+    one_short.max_compressed_payload_size = payload_size - 1;
+    EXPECT_EQ(make_lzss_contextual_adaptive_huffman_profile(
+                  config, one_short, stream, encoder),
+              LzssContextualAdaptiveHuffmanProfileError::limit_exceeded);
+    one_short = limits;
+    one_short.max_entropy_table_entries = entropy_entries - 1;
+    EXPECT_EQ(make_lzss_contextual_adaptive_huffman_profile(
+                  config, one_short, stream, encoder),
+              LzssContextualAdaptiveHuffmanProfileError::limit_exceeded);
+
+    LzssContextualAdaptiveHuffmanDecoderWorkspaceRequirements decoder{};
+    ASSERT_EQ(calculate_lzss_contextual_adaptive_huffman_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualAdaptiveHuffmanProfileVariant::
+                      field_context_4m),
+              LzssContextualAdaptiveHuffmanProfileError::none);
+    EXPECT_EQ(decoder.frame_encoded_bytes, encoded_size);
+    EXPECT_EQ(decoder.frame_decoded_bytes, frame_size);
+    EXPECT_EQ(decoder.node_count, 9163U);
+    EXPECT_EQ(decoder.symbol_count, 4566U);
+    EXPECT_EQ(decoder.symbol_offset, 146608U);
+    EXPECT_EQ(decoder.token_offset, 155740U);
+    EXPECT_EQ(decoder.token_count, frame_size);
+    EXPECT_EQ(decoder.views_bytes, decoder_views);
+    EXPECT_EQ(decoder.frame_encoded_bytes + decoder.frame_decoded_bytes
+                  + decoder.views_bytes,
+              decoder_aggregate);
+
+    one_short = limits;
+    one_short.max_internal_buffered_bytes = decoder_aggregate - 1;
+    EXPECT_EQ(calculate_lzss_contextual_adaptive_huffman_decoder_workspace(
+                  one_short, decoder,
+                  LzssContextualAdaptiveHuffmanProfileVariant::
+                      field_context_4m),
+              LzssContextualAdaptiveHuffmanProfileError::limit_exceeded);
+    EXPECT_EQ(decoder.views_bytes, 0U);
+}
+
+TEST(LzssContextualAdaptiveHuffmanProfile,
      CalculatesDecoderWorkspaceFromLimits) {
     auto limits = marc::core::DecoderLimits{};
     limits.max_frame_size = 4096;

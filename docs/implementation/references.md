@@ -6396,3 +6396,13 @@ workspace-query validation, stable status mapping, and explicit CLI profile
 policies. No external C API, compression library, configuration helper,
 source code, test vector, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0711
+
+The four-MiB Contextual Adaptive Huffman model-bank and checked-profile
+admission uses IR-0709 through IR-0710, DD-946 through DD-947, TVG-0812
+through TVG-0813, the repository-owned selected field-context layout, generic
+FGK model partitioner, HashChain workspace calculator, and checked directional
+profile arithmetic. No external compressor, Adaptive Huffman implementation,
+source code, test vector, patent, pseudocode, payload bound, or optimization
+description was consulted.

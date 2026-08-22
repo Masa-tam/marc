@@ -2742,7 +2742,8 @@ The four-MiB Contextual Adaptive Huffman memory gate has an accepted bounded
 design. Exact identity `2/4 + 1/3 + 1/2` retains entropy variant 2 and the
 existing `ceil(267F/8)` proof. At a four-MiB frame, payload and complete-frame
 ceilings are 139,984,896 and 139,984,976 bytes; supported-layout encoder and
-decoder aggregates are 211,968,172 and 194,666,668 bytes.
+decoder aggregates are 211,968,176 and 194,666,668 bytes. The encoder total
+includes four bytes of alignment before the HashChain workspace.
 
 Both directions fit an explicit 256-MiB application policy. Library defaults
 remain 128 MiB aggregate and 64 MiB payload, so the profile cannot be admitted
@@ -2762,3 +2763,20 @@ The helper will allocate no memory, will leave the configuration byte-exactly
 unchanged on invalid input, and will not infer a limit increase from stream
 bytes or one changed field. Public implementation remains closed until its
 three-profile, idempotence, failure-atomicity, and override tests are present.
+
+### BR-0167
+
+The four-MiB Contextual Adaptive Huffman model-bank and checked-profile stage
+is implemented internally. Variant 3 partitions exactly 9,163 FGK nodes and
+4,566 symbol indices across 31 contexts, admits distance class 22, and rejects
+each one-short model extent atomically. Checked profile calculation reports
+exact encoder/decoder aggregates of 211,968,176/194,666,668 bytes and rejects
+one-short aggregate, payload, or entropy-entry limits before publication.
+
+MSVC and ClangCL each pass all 18 focused model/profile tests and the full
+3,205-test suite in 199.96 and 204.44 seconds, including seven Python tooling
+tests, twenty experimental benchmark smokes, forty-two benchmark smokes,
+documentation layout, and complete schema compatibility. The tests found and
+permanently record the encoder's required four-byte alignment before its
+HashChain workspace. Entropy-operation, frame, public, tooling, fuzz, and
+interoperability boundaries remain closed for subsequent stages.

@@ -25061,9 +25061,10 @@ benchmark, fuzz target, or interoperability inventory changes.
 - Similarity review: the design composes marc's existing selected-layout,
   FGK, HashChain, workspace, and four-MiB patterns. No external implementation
   expression was consulted or introduced.
-- Validation: checked arithmetic produces the documented 211,968,172-byte
+- Validation: checked arithmetic produces the documented 211,968,176-byte
   encoder and 194,666,668-byte decoder aggregates, both below 256 MiB. No
-  codec code or serialized representation changed in this stage.
+  codec code or serialized representation changed in this stage. The encoder
+  value includes four bytes of alignment before its HashChain workspace.
 
 ## CR-1023: 2026-08-23 - Contextual Adaptive Huffman profile helper policy
 
@@ -25088,4 +25089,32 @@ benchmark, fuzz target, or interoperability inventory changes.
   consulted or introduced.
 - Validation: design review confirms the helper adds a function without
   changing the 112-byte configuration, ABI version, serialized bytes, or
-  existing initializer default. No codec code changed in this stage.
+existing initializer default. No codec code changed in this stage.
+
+## CR-1024: 2026-08-23 - Four-MiB Adaptive Huffman model/profile admission
+
+- Authoring method: added permanent exact-layout and checked-workspace tests
+  first, observed the expected unsupported-selector compilation failure, then
+  admitted only context variant 3 in the generic model and profile selectors.
+- References used: IR-0709 through IR-0711, DD-946 through DD-948, TVG-0812
+  through TVG-0814, CR-1022 through CR-1023, and repository-owned selected
+  field-layout and workspace code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, tests, vectors, patents,
+  pseudocode, payload bounds, and optimization descriptions.
+- Independent decisions: retain one generic FGK model bank; add only exact
+  variant-3 model constants and selector mapping; preserve every earlier
+  extent; validate directional limits before publication; and keep all later
+  codec and outward boundaries closed.
+- Generated-code task description: prove exact four-MiB model partitioning,
+  distance class 22, directional offsets and aggregates, and atomic one-short
+  rejection before extending the internal selectors.
+- Similarity review: the implementation follows marc's existing selected
+  layout and checked-profile structure without importing external expression.
+- Validation: MSVC and ClangCL each pass all 18 focused model/profile tests
+  and the full 3,205-test suite in 199.96 and 204.44 seconds, including seven
+  Python tooling tests, twenty experimental benchmark smokes, forty-two
+  benchmark smokes, documentation layout, and complete schema compatibility.
+  The first executable test exposed a previously omitted four-byte alignment
+  before HashChain storage; tests and all current design records were corrected
+  to the implementation-derived 211,968,176-byte encoder aggregate.

@@ -11548,9 +11548,11 @@ to schema 1.
 Resolve exact field-context variant 3 and require 4,566 symbol entries, 9,163
 FGK nodes, and 13,729 combined entropy entries. On the supported 64-bit layout,
 derive 139,984,896 payload bytes, a 139,984,976-byte complete frame,
-67,788,892 encoder-view bytes, 50,487,388 decoder-view bytes, and directional
-aggregates 211,968,172/194,666,668 bytes for a four-MiB frame. Require each
-exact limit to succeed and one byte less to fail without publishing views.
+67,788,896 encoder-view bytes, 50,487,388 decoder-view bytes, and directional
+aggregates 211,968,176/194,666,668 bytes for a four-MiB frame. The encoder
+vector includes four bytes of alignment before the HashChain workspace.
+Require each exact limit to succeed and one byte less to fail without
+publishing views.
 
 At the typed-token boundary, build enough validated history to encode distance
 4,194,304 as class 22 with 22 zero bypass bits and require older layouts to
@@ -11576,3 +11578,17 @@ separately and require the workspace query to return
 `MARC_STATUS_LIMIT_EXCEEDED`; restore or raise them and require exact workspace
 success. Require the CLI preset and direct helper result to agree before codec
 creation.
+
+### TVG-0814
+
+Initialize the Contextual Adaptive Huffman model bank with field-context
+variant 3 and exact 9,163-node/4,566-symbol storage. Require all 31 tree
+alphabets to match the selected layout, distance contexts to learn symbol 22,
+and one-short node or symbol storage to fail atomically.
+
+Build a four-MiB checked profile with the proven payload, entropy-entry, and
+256-MiB application limits. Require context variant 3, exact directional
+offsets and aggregates, including the encoder's four-byte HashChain alignment,
+and one-short aggregate, payload, or entropy limits to fail without publishing
+views. Run the complete model/profile suites under both MSVC and ClangCL while
+leaving later codec boundaries closed.
