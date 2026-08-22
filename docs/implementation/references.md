@@ -6369,3 +6369,12 @@ fuzz harness, permanent atomicity regressions, and the completed four-MiB
 Contextual tANS tooling boundary as an internal precedent. No external
 benchmark, fuzzer harness, compressor, Huffman implementation, source code,
 test vector, patent, pseudocode, or optimization description was consulted.
+
+### IR-0708
+
+The four-MiB Contextual Blocked Huffman interoperability admission uses
+IR-0707, DD-944, TVG-0810, the repository-owned append-only bundle generator,
+strict manifest verifier, schema downgrade chain, and prior schema-45
+interoperability design as internal precedents. No external archive format,
+compressor, Huffman implementation, interoperability suite, source code, test
+vector, patent, pseudocode, or optimization description was consulted.

@@ -7206,3 +7206,8 @@ and typed tokens at 1,024, total output at 4,096, decisions at 7,168, payload
 at 13,440 bytes, and supplied input at 32 KiB while admitting a 4,194,304-byte
 distance. These are application bounds only. Interoperability admission
 remains closed.
+
+Interoperability schema 46 appends `lzss-contextual-blocked-huffman-4m` as
+archive 56 after the frozen 55-entry schema-45 inventory. Generation requires
+exact identity `2/4 + 1/3 + 2/2`; verification decodes and re-encodes the
+complete archive byte-identically. This admission adds no serialized rule.

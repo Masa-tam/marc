@@ -5685,3 +5685,10 @@ window identities while retaining one-KiB frame/token storage, four-KiB total
 output, fixed arrays, and finite calls. It widens only selected identity,
 decision, payload, descriptor, and distance limits; interoperability remains
 closed.
+
+Interoperability schema 46 freezes schema 45's exact 55-archive order and
+appends only `lzss-contextual-blocked-huffman-4m` as entry 56. Generation
+requires exact identity `2/4 + 1/3 + 2/2`, round trip, size, and SHA-256.
+Verification enforces exact order and local byte-identical re-encoding.
+Compatibility removes only entry 56 to reconstruct schema 45 before
+traversing the unchanged chain through schema 1.

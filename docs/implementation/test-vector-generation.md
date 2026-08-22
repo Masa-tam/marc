@@ -11528,3 +11528,17 @@ Decode each profile with both other public selectors and require no raw
 publication. Compile the fixed-memory harness warning-clean under both
 toolchains, then run 1,000 in-memory sanitizer mutations with no repository
 corpus or artifact.
+
+### TVG-0811
+
+Generate schema 46 from the frozen schema-45 profile order plus exactly
+`lzss-contextual-blocked-huffman-4m`. Before publishing its archive, require
+header bytes 14/15 = 4/0, 16/17 = 2/0, 18/19 = 2/0, and 98/99 = 3/0; then
+decode byte-exactly, record size and SHA-256, and retain the exact archive
+leaf in the manifest.
+
+Verify all 56 manifest entries in order, decode every foreign archive, and
+re-encode each profile byte-identically with the local CLI. Reject a manifest
+whose last two entries are exchanged. Remove only archive 56 to reconstruct
+schema 45, verify that bundle, and continue through every frozen schema down
+to schema 1.

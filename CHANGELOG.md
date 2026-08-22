@@ -7,6 +7,10 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added interoperability schema 46 by appending the four-MiB LZSS Contextual
+  Blocked Huffman archive to the frozen schema-45 order, while retaining exact
+  verification of every earlier schema.
+
 - Added explicit 64 KiB and 1 MiB window-profile selection to the public LZSS
   Contextual Dynamic Range C lifecycle. The extended selector emits and admits
   only the reserved Format 2 dictionary/context identity `2/3 + 1/2`, while

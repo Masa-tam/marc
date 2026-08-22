@@ -250,8 +250,8 @@ is exact rather than inferred from `window_size`, and decoding rejects either
 other identity before frame or raw publication. It and the trailing 32-bit
 reserved word reuse the former 64-bit reserved tail, preserving the 112-byte
 ABI-1 extent and all-zero legacy meaning. No C++ token or table layout crosses
-the ABI. Benchmark and bounded fuzzing admission are complete;
-interoperability remains a later milestone. Its public completion
+the ABI. Benchmark, bounded fuzzing, and schema-46 interoperability admission
+are complete. Its public completion
 audit covers the required binary classes, deterministic whole and mixed chunk
 schedules, stable repeated terminal calls, and frame-atomic rejection of a
 corrupted, truncated, or trailing final frame.

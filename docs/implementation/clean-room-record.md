@@ -24986,3 +24986,30 @@ benchmark, fuzz target, or interoperability inventory changes.
   experimental benchmark smokes, forty-two benchmark smokes, documentation
   layout, and schema compatibility in 87.98 and 82.31 seconds.
   Interoperability remains closed.
+
+## CR-1020: 2026-08-23 - Four-MiB Contextual Blocked Huffman interoperability
+
+- Authoring method: extended the repository-owned append-only bundle profile
+  list and versioned verifier only after descriptor, coding, lifecycle,
+  public, benchmark, and fuzz boundaries were complete.
+- References used: IR-0707 through IR-0708, DD-944 through DD-945, TVG-0810
+  through TVG-0811, CR-1019, and schema-45 bundle compatibility machinery as
+  an internal precedent. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, archive formats, interoperability suites, source
+  code, tests, vectors, patents, pseudocode, and optimization descriptions.
+- Independent decisions: append one exact archive; require canonical header
+  identity before publication; freeze every older byte and order; reject
+  reordered manifests; and reconstruct schema 45 by removing only entry 56.
+- Generated-code task description: add schema-46 generation, exact-profile
+  verification, byte-identical re-encoding, reorder rejection, and complete
+  legacy-schema traversal without changing stream representation.
+- Similarity review: changes reuse marc's versioned manifest and downgrade
+  patterns. No external implementation expression was consulted or
+  introduced.
+- Validation: focused schema compatibility passes in 90.09 and 85.49 seconds
+  under MSVC and ClangCL. Both formal suites pass 3,203/3,203 in 208.70 and
+  210.15 seconds, including seven Python tooling tests, twenty experimental
+  benchmark smokes, forty-two benchmark smokes, documentation layout, and
+  schema compatibility in 90.27 and 84.94 seconds. External four-direction
+  schema-46 evidence remains pending.

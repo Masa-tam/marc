@@ -2710,3 +2710,19 @@ hang, or finding and retains no generated files. Both full suites pass
 tests, twenty experimental benchmark smokes, forty-two benchmark smokes,
 documentation layout, and complete schema compatibility. Interoperability
 remains the final closed boundary.
+
+### BR-0163
+
+Interoperability schema 46 freezes all 55 schema-45 archives and appends only
+`lzss-contextual-blocked-huffman-4m` as archive 56. Generation requires exact
+identity `2/4 + 1/3 + 2/2`, size, SHA-256, and round trip. Verification enforces
+exact manifest order, foreign decode, and byte-identical local re-encoding;
+reordered schema-46 manifests fail, while removing only entry 56 reconstructs
+schema 45 and preserves verification through schema 1.
+
+Focused compatibility passes under MSVC and ClangCL. Both full suites pass
+3,203/3,203 in 208.70 and 210.15 seconds with a 600-second per-test limit,
+including seven Python tooling tests, twenty experimental benchmark smokes,
+forty-two benchmark smokes, documentation layout, and complete schema
+compatibility in 90.27 and 84.94 seconds. External four-direction schema-46
+evidence remains pending.

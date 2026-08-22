@@ -19728,3 +19728,19 @@ storage, 32-KiB supplied input, and finite calls. Add permanent three-profile
 truncation, malformed-header, descriptor, and reciprocal atomicity
 regressions. Run generated mutations only in memory and keep interoperability
 closed.
+
+## DD-945: Append four-MiB Contextual Blocked Huffman as schema 46 entry 56
+
+- Date: 2026-08-23
+- Status: accepted
+
+Freeze schema 45's exact 55-entry order and append only
+`lzss-contextual-blocked-huffman-4m`. Require codec set `marc-cli-v46`, exact
+stream identity `2/4 + 1/3 + 2/2`, round trip, leaf-only names, size, SHA-256,
+and byte-identical local re-encoding. The verifier must continue to accept
+schemas 1 through 45 without inheriting the new profile.
+
+Reject a reordered schema-46 manifest. Reconstruct schema 45 by removing only
+entry 56 and changing only its schema and codec-set fields, then traverse the
+unchanged downgrade chain. This admission changes no stream byte, public ABI,
+profile default, workspace limit, or older archive.
