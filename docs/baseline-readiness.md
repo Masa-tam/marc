@@ -2815,3 +2815,20 @@ full 3,211-test suites pass in 204.47 and 204.36 seconds, including seven
 Python tooling tests, twenty experimental benchmark smokes, forty-two
 benchmark smokes, documentation layout, and complete schema compatibility.
 Public C, CLI, benchmark, fuzz, and interoperability boundaries remain closed.
+
+### BR-0170
+
+The four-MiB Contextual Adaptive Huffman public C, CLI, and benchmark boundary
+is admitted. ABI-1 selector value 2 maps only to exact identity
+`2/4 + 1/3 + 1/2`. The additive helper applies the 4,194,304-byte frame/window,
+139,984,896-byte payload, 256-MiB aggregate, and 13,729-entry model limits as
+one atomic preset while preserving caller policy fields.
+
+Unknown selectors and invalid ABI shells leave every configuration byte
+unchanged; one-short aggregate overrides fail through the ordinary workspace
+query. CLI and benchmark expose exactly
+`lzss-contextual-adaptive-huffman-4m` and consume the same helper. Focused C,
+CLI inventory, reciprocal round-trip, and benchmark tests pass under MSVC and
+ClangCL. Their full 3,206-test suites pass in 198.30 and 212.44 seconds,
+including documentation layout and complete schema compatibility. Fuzzing and
+interoperability remain closed.

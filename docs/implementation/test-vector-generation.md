@@ -11625,3 +11625,17 @@ byte-exactly, and reject the crossed one-MiB identity without raw publication.
 Drive the selected encoder and decoder to EndOfStream with one-byte input and
 output, verify exact header identity, and require the one-MiB admission plus
 one-short node and symbol workspaces to fail without changing caller output.
+
+### TVG-0817
+
+Initialize a C configuration, preserve distinctive direction, original-size,
+and total-output values, then apply all three known profiles. Require exact
+four-MiB values `4,194,304`, `139,984,896`, `268,435,456`, and `13,729` plus
+the established older presets. Lower the computed encoder aggregate by one
+byte and require `MARC_STATUS_LIMIT_EXCEEDED`; restore the exact value and
+require success.
+
+Pass null, short metadata, and selector 3 to the helper and compare the whole
+configuration byte-for-byte with its snapshot. Run exact CLI identity and
+crossed one-MiB rejection, inventory ordering and near-miss rejection, and the
+dependency-free four-MiB benchmark smoke through the public lifecycle.

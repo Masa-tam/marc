@@ -19,12 +19,23 @@ if(NOT selected_count EQUAL 1)
     message(FATAL_ERROR
         "CLI usage must list lzss-contextual-adaptive-huffman-1m exactly once")
 endif()
+string(REGEX MATCHALL "lzss-contextual-adaptive-huffman-4m" four_mib_matches
+    "${usage_text}")
+list(LENGTH four_mib_matches four_mib_count)
+if(NOT four_mib_count EQUAL 1)
+    message(FATAL_ERROR
+        "CLI usage must list lzss-contextual-adaptive-huffman-4m exactly once")
+endif()
 string(FIND "${usage_text}" "lzss-contextual-adaptive-huffman,"
     baseline_offset)
 string(FIND "${usage_text}" "lzss-contextual-adaptive-huffman-1m,"
     selected_offset)
+string(FIND "${usage_text}" "lzss-contextual-adaptive-huffman-4m,"
+    four_mib_offset)
 if(baseline_offset EQUAL -1 OR selected_offset EQUAL -1
-    OR selected_offset LESS_EQUAL baseline_offset)
+    OR four_mib_offset EQUAL -1
+    OR selected_offset LESS_EQUAL baseline_offset
+    OR four_mib_offset LESS_EQUAL selected_offset)
     message(FATAL_ERROR
         "Contextual Adaptive Huffman CLI profiles are missing or unordered")
 endif()

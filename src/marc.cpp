@@ -713,6 +713,10 @@ contextual_blocked_huffman_stream_admission(
     LzssContextualAdaptiveHuffmanProfileVariant
 contextual_adaptive_huffman_profile_variant(
     const marc_lzss_contextual_window_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+        return marc::frame::internal::
+            LzssContextualAdaptiveHuffmanProfileVariant::field_context_4m;
+    }
     return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
         ? marc::frame::internal::
               LzssContextualAdaptiveHuffmanProfileVariant::field_context_1m
@@ -724,6 +728,10 @@ contextual_adaptive_huffman_profile_variant(
     LzssContextualAdaptiveHuffmanStreamAdmission
 contextual_adaptive_huffman_stream_admission(
     const marc_lzss_contextual_window_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+        return marc::frame::internal::
+            LzssContextualAdaptiveHuffmanStreamAdmission::field_context_4m;
+    }
     return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
         ? marc::frame::internal::
               LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m
@@ -820,7 +828,8 @@ bool load_config(
         || config->abi_version != MARC_ABI_VERSION
         || config->reserved != 0 || config->reserved2 != 0
         || (config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M)) {
+            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -4967,6 +4976,58 @@ marc_status marc_lzss_contextual_adaptive_huffman_config_init(
         config->window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
     }
     return status;
+}
+
+marc_status
+marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
+    marc_lzss_contextual_adaptive_huffman_config* const config,
+    const marc_lzss_contextual_window_profile profile) noexcept {
+    if (config == nullptr
+        || config->struct_size
+            != sizeof(marc_lzss_contextual_adaptive_huffman_config)
+        || config->abi_version != MARC_ABI_VERSION
+        || (config->direction != MARC_DIRECTION_ENCODE
+            && config->direction != MARC_DIRECTION_DECODE)
+        || config->reserved != 0 || config->reserved2 != 0
+        || (profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
+            && profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            && profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M)) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+
+    auto applied = *config;
+    const std::uint32_t extent = profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? UINT32_C(1) << 22
+        : profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            ? UINT32_C(1) << 20
+            : UINT32_C(1) << 16;
+    const std::uint64_t payload =
+        (static_cast<std::uint64_t>(extent) * UINT64_C(267)
+         + UINT64_C(7)) / UINT64_C(8);
+    applied.frame_size = extent;
+    applied.window_size = extent;
+    applied.min_match_length = 5;
+    applied.max_match_length = 258;
+    applied.max_frame_size = extent;
+    applied.max_block_size = extent;
+    applied.max_compressed_payload_size = payload;
+    applied.max_internal_buffered_bytes =
+        profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? UINT64_C(256) << 20
+        : profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            ? UINT64_C(128) << 20
+            : UINT64_C(8) << 20;
+    applied.max_lz_distance = extent;
+    applied.max_lz_match_length = 258;
+    applied.max_entropy_table_entries =
+        profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? UINT64_C(13729)
+        : profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            ? UINT64_C(13681)
+            : UINT64_C(13585);
+    applied.window_profile = profile;
+    *config = applied;
+    return MARC_STATUS_OK;
 }
 
 marc_status

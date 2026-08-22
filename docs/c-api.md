@@ -260,13 +260,23 @@ Format 2 lifecycle. Initialize its size-tagged configuration with
 `marc_lzss_contextual_adaptive_huffman_config_init()`, then call
 `marc_lzss_contextual_adaptive_huffman_workspace_requirements()` again after
 changing direction, known size, frame/LZSS parameters, or hard limits.
+`MARC_LZSS_CONTEXTUAL_WINDOW_64K`, `_1M`, and `_4M` select exact identities
+`2/2 + 1/1 + 1/2`, `2/3 + 1/2 + 1/2`, and `2/4 + 1/3 + 1/2` respectively.
+After initialization, callers may apply a coherent preset with
+`marc_lzss_contextual_adaptive_huffman_config_apply_window_profile()` and
+then override individual values before querying workspaces. The helper
+allocates nothing, validates the complete ABI shell before mutation, preserves
+direction, original size, total-output limit, metadata, and reserved zeros,
+and leaves every byte unchanged on failure. The four-MiB preset uses a
+139,984,896-byte payload ceiling, 13,729 entropy entries, and a 256-MiB
+aggregate limit.
 Encoding uses primary for raw-frame input, secondary for one retained
 serialized frame, and aligned opaque views for tokens, FGK nodes, then symbol
 indices. Decoding uses primary for serialized input, secondary for atomic raw
 output, and views for nodes, symbols, then tokens. Capacity, alignment, and
 pairwise used-prefix overlap are validated before handle publication. The
-additive ABI-1 family emits only dictionary identity `2/2`, context identity
-`1/1`, and entropy identity `1/2`; no typed C++ layout crosses the ABI.
+additive ABI-1 family emits only the explicitly selected identity; no typed
+C++ layout crosses the ABI.
 Its public completion audit covers all required binary classes, deterministic
 whole, one-byte, and mixed chunk schedules, stable repeated terminal calls,
 and frame-atomic rejection of corrupted, truncated, or trailing final-frame

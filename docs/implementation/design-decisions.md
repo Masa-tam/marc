@@ -19839,3 +19839,20 @@ checked directional aggregates, and explicit 256-MiB application policy.
 Require a complete HashChain frame with distance beyond one MiB, one-byte
 streaming, crossed-identity atomic rejection, and short-model rejection. Keep
 public C and CLI admission closed.
+
+## DD-951: Publish one atomic four-MiB Adaptive Huffman preset
+
+- Date: 2026-08-23
+- Status: accepted
+
+Admit existing ABI-1 selector value 2 only through the Contextual Adaptive
+Huffman public mapping and add the previously designed atomic profile helper.
+Apply exact frame/window, match, payload, aggregate, LZ, and entropy-entry
+values on a private configuration copy; preserve direction, original size,
+total-output limit, ABI metadata, and reserved zeros; publish only after full
+shell and selector validation.
+
+Make exact CLI and benchmark name `lzss-contextual-adaptive-huffman-4m` call
+that helper rather than own another preset. Require reciprocal public profile
+rejection before raw publication. Keep decoder fuzzing and interoperability
+closed for their independent boundedness and schema reviews.

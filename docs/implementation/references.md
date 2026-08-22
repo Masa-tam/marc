@@ -6426,3 +6426,13 @@ four-MiB Blocked Huffman lifecycles as internal architectural precedents. No
 external compressor, Adaptive Huffman implementation, source code, test
 vector, patent, pseudocode, payload bound, or optimization description was
 consulted.
+
+### IR-0714
+
+The four-MiB Contextual Adaptive Huffman public C, CLI, and benchmark
+admission uses IR-0713, DD-947 and DD-950, TVG-0813 and TVG-0816, the
+repository-owned ABI-1 configuration validation, checked profile calculator,
+exact streaming admission, CLI inventory tests, and benchmark-report
+contract. No external compressor, C API, Adaptive Huffman implementation,
+source code, test vector, patent, pseudocode, payload bound, or optimization
+description was consulted.

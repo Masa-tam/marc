@@ -7238,3 +7238,18 @@ pairs and variant 3 requires 9,163 node plus 4,566 symbol entries before
 collecting a frame. A complete HashChain frame contains a real distance beyond
 one MiB and decodes without raw publication under a crossed older identity.
 No public C selector or CLI name is admitted yet.
+
+The public Contextual Adaptive Huffman boundary now admits existing ABI-1
+selector `MARC_LZSS_CONTEXTUAL_WINDOW_4M` as exact identity
+`2/4 + 1/3 + 1/2`. The additive
+`marc_lzss_contextual_adaptive_huffman_config_apply_window_profile()` helper
+atomically applies the canonical 64-KiB, one-MiB, or four-MiB parameter and
+limit set while preserving direction, original size, total-output limit, ABI
+metadata, and reserved zeros. Invalid metadata or selector values leave the
+configuration byte-for-byte unchanged.
+
+The exact CLI and benchmark name is
+`lzss-contextual-adaptive-huffman-4m`. Both use that public helper and add no
+serialized selector. All three public decoders admit only their selected
+dictionary/context identity before frame collection or raw publication.
+Fuzzing and interoperability admission remain closed.

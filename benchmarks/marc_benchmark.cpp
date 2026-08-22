@@ -79,14 +79,14 @@ constexpr std::uint64_t lzss_contextual_adaptive_huffman_frame_size =
     UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_contextual_adaptive_huffman_buffered_size =
     UINT64_C(8) << 20;
-constexpr std::uint64_t lzss_contextual_adaptive_huffman_model_entries =
-    UINT64_C(9067) + UINT64_C(4518);
 constexpr std::uint64_t lzss_contextual_adaptive_huffman_1m_frame_size =
     UINT64_C(1) << 20;
 constexpr std::uint64_t lzss_contextual_adaptive_huffman_1m_buffered_size =
     UINT64_C(128) << 20;
-constexpr std::uint64_t lzss_contextual_adaptive_huffman_1m_model_entries =
-    UINT64_C(9131) + UINT64_C(4550);
+constexpr std::uint64_t lzss_contextual_adaptive_huffman_4m_frame_size =
+    UINT64_C(1) << 22;
+constexpr std::uint64_t lzss_contextual_adaptive_huffman_4m_buffered_size =
+    UINT64_C(256) << 20;
 constexpr std::uint64_t lzss_rans_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_tans_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lz78_adaptive_frame_size = UINT64_C(1) << 16;
@@ -215,6 +215,7 @@ enum class Codec {
     lzss_contextual_blocked_huffman_4m,
     lzss_contextual_adaptive_huffman,
     lzss_contextual_adaptive_huffman_1m,
+    lzss_contextual_adaptive_huffman_4m,
     lzss_rans,
     lzss_tans,
     lz78,
@@ -385,6 +386,43 @@ selected_lzss_contextual_blocked_huffman_window_profile(
             : MARC_LZSS_CONTEXTUAL_WINDOW_64K;
 }
 
+[[nodiscard]] constexpr bool is_lzss_contextual_adaptive_huffman(
+    const Codec codec) noexcept {
+    return codec == Codec::lzss_contextual_adaptive_huffman
+        || codec == Codec::lzss_contextual_adaptive_huffman_1m
+        || codec == Codec::lzss_contextual_adaptive_huffman_4m;
+}
+
+[[nodiscard]] constexpr std::uint64_t
+selected_lzss_contextual_adaptive_huffman_frame_size(
+    const Codec codec) noexcept {
+    return codec == Codec::lzss_contextual_adaptive_huffman_4m
+        ? lzss_contextual_adaptive_huffman_4m_frame_size
+        : codec == Codec::lzss_contextual_adaptive_huffman_1m
+            ? lzss_contextual_adaptive_huffman_1m_frame_size
+            : lzss_contextual_adaptive_huffman_frame_size;
+}
+
+[[nodiscard]] constexpr std::uint64_t
+selected_lzss_contextual_adaptive_huffman_buffered_size(
+    const Codec codec) noexcept {
+    return codec == Codec::lzss_contextual_adaptive_huffman_4m
+        ? lzss_contextual_adaptive_huffman_4m_buffered_size
+        : codec == Codec::lzss_contextual_adaptive_huffman_1m
+            ? lzss_contextual_adaptive_huffman_1m_buffered_size
+            : lzss_contextual_adaptive_huffman_buffered_size;
+}
+
+[[nodiscard]] constexpr marc_lzss_contextual_window_profile
+selected_lzss_contextual_adaptive_huffman_window_profile(
+    const Codec codec) noexcept {
+    return codec == Codec::lzss_contextual_adaptive_huffman_4m
+        ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        : codec == Codec::lzss_contextual_adaptive_huffman_1m
+            ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
+            : MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+}
+
 struct TransformDeleter {
     void operator()(marc_transform* transform) const noexcept {
         marc_transform_destroy(transform);
@@ -511,6 +549,8 @@ struct Measurement {
         return "lzss-contextual-adaptive-huffman";
     if (codec == Codec::lzss_contextual_adaptive_huffman_1m)
         return "lzss-contextual-adaptive-huffman-1m";
+    if (codec == Codec::lzss_contextual_adaptive_huffman_4m)
+        return "lzss-contextual-adaptive-huffman-4m";
     if (codec == Codec::lzss_rans) return "lzss-rans";
     if (codec == Codec::lzss_tans) return "lzss-tans";
     if (codec == Codec::lz78) return "lz78";
@@ -586,8 +626,7 @@ struct Measurement {
     if (is_lzss_contextual_blocked_huffman(codec))
         return codec == Codec::lzss_contextual_blocked_huffman_4m
             ? UINT64_C(14) : UINT64_C(12);
-    if (codec == Codec::lzss_contextual_adaptive_huffman
-        || codec == Codec::lzss_contextual_adaptive_huffman_1m)
+    if (is_lzss_contextual_adaptive_huffman(codec))
         return UINT64_C(34);
     if (codec == Codec::lzss_rans) return lzss_token_size;
     if (codec == Codec::lzss_tans)
@@ -748,10 +787,8 @@ struct Measurement {
             ? selected_lzss_contextual_tans_frame_size(codec)
         : is_lzss_contextual_blocked_huffman(codec)
             ? selected_lzss_contextual_blocked_huffman_frame_size(codec)
-        : codec == Codec::lzss_contextual_adaptive_huffman
-            ? lzss_contextual_adaptive_huffman_frame_size
-        : codec == Codec::lzss_contextual_adaptive_huffman_1m
-            ? lzss_contextual_adaptive_huffman_1m_frame_size
+        : is_lzss_contextual_adaptive_huffman(codec)
+            ? selected_lzss_contextual_adaptive_huffman_frame_size(codec)
         : codec == Codec::lzss_rans
             ? lzss_rans_frame_size
         : codec == Codec::lzss_tans
@@ -789,8 +826,7 @@ struct Measurement {
                         : codec == Codec::lzmw_tans
                             ? lzmw_tans_frame_size : frame_size;
     const auto maximum_payload =
-        (codec == Codec::lzss_contextual_adaptive_huffman
-             || codec == Codec::lzss_contextual_adaptive_huffman_1m
+        (is_lzss_contextual_adaptive_huffman(codec)
              ? (raw_frame_size * UINT64_C(267) + UINT64_C(7)) / UINT64_C(8)
              : codec == Codec::lzss_contextual_tans_4m
                  ? raw_frame_size / UINT64_C(2) * UINT64_C(21)
@@ -906,12 +942,9 @@ struct Measurement {
     } else if (is_lzss_contextual_blocked_huffman(codec)) {
         maximum_buffered =
             selected_lzss_contextual_blocked_huffman_buffered_size(codec);
-    } else if (codec == Codec::lzss_contextual_adaptive_huffman
-               || codec == Codec::lzss_contextual_adaptive_huffman_1m) {
+    } else if (is_lzss_contextual_adaptive_huffman(codec)) {
         maximum_buffered =
-            codec == Codec::lzss_contextual_adaptive_huffman_1m
-            ? lzss_contextual_adaptive_huffman_1m_buffered_size
-            : lzss_contextual_adaptive_huffman_buffered_size;
+            selected_lzss_contextual_adaptive_huffman_buffered_size(codec);
     } else if (codec == Codec::lzss_rans) {
         maximum_buffered = lzss_rans_buffered_size;
     } else if (codec == Codec::lzss_tans) {
@@ -1257,33 +1290,18 @@ struct Measurement {
         config.max_lz_match_length = 258;
         config.window_profile =
             selected_lzss_contextual_blocked_huffman_window_profile(codec);
-    } else if (codec == Codec::lzss_contextual_adaptive_huffman
-               || codec == Codec::lzss_contextual_adaptive_huffman_1m) {
+    } else if (is_lzss_contextual_adaptive_huffman(codec)) {
         auto& config = result.lzss_contextual_adaptive_huffman;
         if (marc_lzss_contextual_adaptive_huffman_config_init(
                 direction, &config) != MARC_STATUS_OK)
             return false;
-        const auto selected_frame_size =
-            codec == Codec::lzss_contextual_adaptive_huffman_1m
-            ? lzss_contextual_adaptive_huffman_1m_frame_size
-            : lzss_contextual_adaptive_huffman_frame_size;
+        if (marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
+                &config,
+                selected_lzss_contextual_adaptive_huffman_window_profile(
+                    codec)) != MARC_STATUS_OK) {
+            return false;
+        }
         config.original_size = original_size;
-        config.frame_size = static_cast<std::uint32_t>(selected_frame_size);
-        config.window_size = static_cast<std::uint32_t>(selected_frame_size);
-        config.max_frame_size = selected_frame_size;
-        config.max_block_size = selected_frame_size;
-        config.max_compressed_payload_size = maximum_payload;
-        config.max_internal_buffered_bytes = maximum_buffered;
-        config.max_lz_distance = selected_frame_size;
-        config.max_lz_match_length = 258;
-        config.max_entropy_table_entries =
-            codec == Codec::lzss_contextual_adaptive_huffman_1m
-            ? lzss_contextual_adaptive_huffman_1m_model_entries
-            : lzss_contextual_adaptive_huffman_model_entries;
-        config.window_profile =
-            codec == Codec::lzss_contextual_adaptive_huffman_1m
-            ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            : MARC_LZSS_CONTEXTUAL_WINDOW_64K;
     } else if (codec == Codec::lzss_rans) {
         auto& config = result.lzss_rans;
         if (marc_lzss_rans_config_init(direction, &config)
@@ -1755,8 +1773,7 @@ struct Measurement {
     if (is_lzss_contextual_blocked_huffman(config.codec))
         return marc_lzss_contextual_blocked_huffman_workspace_requirements(
             &config.lzss_contextual_blocked_huffman, &requirements);
-    if (config.codec == Codec::lzss_contextual_adaptive_huffman
-        || config.codec == Codec::lzss_contextual_adaptive_huffman_1m)
+    if (is_lzss_contextual_adaptive_huffman(config.codec))
         return marc_lzss_contextual_adaptive_huffman_workspace_requirements(
             &config.lzss_contextual_adaptive_huffman, &requirements);
     if (config.codec == Codec::lzss_rans)
@@ -1907,8 +1924,7 @@ struct Measurement {
         return marc_lzss_contextual_blocked_huffman_create(
             &config.lzss_contextual_blocked_huffman, primary, secondary,
             views, transform);
-    if (config.codec == Codec::lzss_contextual_adaptive_huffman
-        || config.codec == Codec::lzss_contextual_adaptive_huffman_1m)
+    if (is_lzss_contextual_adaptive_huffman(config.codec))
         return marc_lzss_contextual_adaptive_huffman_create(
             &config.lzss_contextual_adaptive_huffman, primary, secondary,
             views, transform);
@@ -2053,10 +2069,8 @@ struct Measurement {
             ? selected_lzss_contextual_tans_frame_size(codec)
         : is_lzss_contextual_blocked_huffman(codec)
             ? selected_lzss_contextual_blocked_huffman_frame_size(codec)
-        : codec == Codec::lzss_contextual_adaptive_huffman
-            ? lzss_contextual_adaptive_huffman_frame_size
-        : codec == Codec::lzss_contextual_adaptive_huffman_1m
-            ? lzss_contextual_adaptive_huffman_1m_frame_size
+        : is_lzss_contextual_adaptive_huffman(codec)
+            ? selected_lzss_contextual_adaptive_huffman_frame_size(codec)
         : codec == Codec::lzss_rans
             ? lzss_rans_frame_size
         : codec == Codec::lzss_tans
@@ -2195,8 +2209,7 @@ struct Measurement {
         result = prefix_size + payload + frames * per_frame;
         return true;
     }
-    if (codec == Codec::lzss_contextual_adaptive_huffman
-        || codec == Codec::lzss_contextual_adaptive_huffman_1m) {
+    if (is_lzss_contextual_adaptive_huffman(codec)) {
         constexpr auto prefix_size = std::size_t{112};
         constexpr auto bits_per_input = std::size_t{267};
         constexpr auto per_frame = std::size_t{80};
@@ -2469,6 +2482,7 @@ void print_usage() {
                  "lzss-contextual-blocked-huffman-4m, "
                  "lzss-contextual-adaptive-huffman, "
                  "lzss-contextual-adaptive-huffman-1m, "
+                 "lzss-contextual-adaptive-huffman-4m, "
                  "lzss-rans, lzss-tans, lz78, "
                  "lz78-blocked-huffman, lz78-adaptive-huffman, "
                  "lz78-dynamic-range, lz78-rans, lz78-tans, "
@@ -2632,6 +2646,8 @@ int main(const int argc, const char* const argv[]) {
         codec = Codec::lzss_contextual_adaptive_huffman;
     else if (name == "lzss-contextual-adaptive-huffman-1m")
         codec = Codec::lzss_contextual_adaptive_huffman_1m;
+    else if (name == "lzss-contextual-adaptive-huffman-4m")
+        codec = Codec::lzss_contextual_adaptive_huffman_4m;
     else if (name == "lzss-rans")
         codec = Codec::lzss_rans;
     else if (name == "lzss-tans")

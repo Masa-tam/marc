@@ -5714,3 +5714,13 @@ HashChain produces a complete frame with a distance beyond one MiB, and the
 selected lifecycle round-trips with one-byte input/output. Decoder construction
 requires the exact variant-3 model extents and reciprocal older admission
 rejects before raw publication. Public C and CLI surfaces remain closed.
+
+The four-MiB Contextual Adaptive Huffman public/tooling boundary reuses one
+atomic C profile helper as the canonical application preset. It validates the
+complete ABI-1 configuration shell before copying, changes the coherent
+backend-specific sizes and limits on a private copy, and publishes only on
+success. Direct field assignment never raises limits implicitly. Public
+profile mapping carries selector 2 to the already completed variant-3 profile
+and exact streaming admission; CLI and benchmark names call the helper rather
+than duplicate its constants. Fuzzing and interoperability remain later
+boundaries.

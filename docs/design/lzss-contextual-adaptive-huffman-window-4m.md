@@ -170,7 +170,7 @@ variant if it changes frame reset, atomic publication, or payload layout.
    selected profile and one-byte streaming lifecycles. A complete frame must
    contain a real Match beyond one MiB without exceeding its four-MiB raw
    extent.
-4. Admit existing ABI-1 value `MARC_LZSS_CONTEXTUAL_WINDOW_4M` only for this
+4. **Complete.** Admit existing ABI-1 value `MARC_LZSS_CONTEXTUAL_WINDOW_4M` only for this
    backend, add the atomic profile-application helper, then add exact CLI name
    `lzss-contextual-adaptive-huffman-4m` through the same canonical preset.
 5. Add the dependency-free benchmark and bounded dual-path decoder fuzzer.

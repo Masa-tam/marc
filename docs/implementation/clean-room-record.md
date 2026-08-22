@@ -25172,4 +25172,31 @@ existing initializer default. No codec code changed in this stage.
   forty-two benchmark smokes, documentation layout, and complete schema
   compatibility. An initial vector attempting `7F=35` with `T=1` was
   correctly rejected by `32T`; the permanent vector uses `T=2` and records
-  both bounds.
+both bounds.
+
+## CR-1027: 2026-08-23 - Four-MiB Adaptive Huffman public preset
+
+- Authoring method: implemented the already documented atomic helper contract,
+  opened only the existing ABI selector mapping, and made both tools consume
+  the helper before adding focused public tests.
+- References used: IR-0713 through IR-0714, DD-947 through DD-951,
+  TVG-0813 through TVG-0817, CR-1026, and repository-owned public profile and
+  tooling patterns. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  C APIs, Adaptive Huffman implementations, source code, tests, vectors,
+  patents, pseudocode, payload bounds, and optimization descriptions.
+- Independent decisions: preserve caller policy fields; publish a whole
+  private copy atomically; use one helper for library, CLI, and benchmark
+  configuration; and leave fuzz/schema admission closed.
+- Generated-code task description: open exact public selector 2, prove atomic
+  canonical preset application and post-override rejection, and add exact tool
+  names without duplicating backend limits.
+- Similarity review: only repository-owned ABI validation, selected-profile,
+  and tool inventory patterns were reused.
+- Validation: focused public C, CLI inventory, CLI round-trip, and benchmark
+  smoke tests pass under MSVC and ClangCL. Their full 3,206-test suites pass
+  in 198.30 and 212.44 seconds, including seven Python tooling tests,
+  twenty-one experimental benchmark smokes, forty-two benchmark smokes,
+  documentation layout, and complete schema compatibility. The expanded
+  helper-only ABI, direction, reserved-field, idempotence, payload, and both
+  directional aggregate assertions also pass under both compilers.

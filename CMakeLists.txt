@@ -733,6 +733,7 @@ if(MARC_BUILD_BENCHMARKS)
                 "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"
                 "-DBENCHMARK_CODEC=lzss-contextual-adaptive-huffman"
                 "-DBENCHMARK_PROFILE_BASE=lzss-contextual-adaptive-huffman"
+                "-DBENCHMARK_HAS_4M=ON"
                 "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_report.cmake)
         set_tests_properties(
@@ -744,10 +745,23 @@ if(MARC_BUILD_BENCHMARKS)
                 "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"
                 "-DBENCHMARK_CODEC=lzss-contextual-adaptive-huffman-1m"
                 "-DBENCHMARK_PROFILE_BASE=lzss-contextual-adaptive-huffman"
+                "-DBENCHMARK_HAS_4M=ON"
                 "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_report.cmake)
         set_tests_properties(
             marc_benchmark_lzss_contextual_adaptive_huffman_1m_smoke
+            PROPERTIES LABELS benchmark-experimental-smoke)
+        add_test(
+            NAME marc_benchmark_lzss_contextual_adaptive_huffman_4m_smoke
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_benchmark>"
+                "-DBENCHMARK_CODEC=lzss-contextual-adaptive-huffman-4m"
+                "-DBENCHMARK_PROFILE_BASE=lzss-contextual-adaptive-huffman"
+                "-DBENCHMARK_HAS_4M=ON"
+                "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/benchmark_report.cmake)
+        set_tests_properties(
+            marc_benchmark_lzss_contextual_adaptive_huffman_4m_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
         add_test(NAME marc_benchmark_lzss_rans_smoke
             COMMAND marc_benchmark lzss-rans
@@ -3803,6 +3817,18 @@ if(MARC_BUILD_TESTS)
                 "-DCLI_REJECT_CODEC=lzss-contextual-adaptive-huffman"
                 "-DCLI_TRAILING_TEST=ON"
                 "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzss-contextual-adaptive-huffman-1m-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        add_test(NAME marc_cli_lzss_contextual_adaptive_huffman_4m_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DCLI_CODEC=lzss-contextual-adaptive-huffman-4m"
+                "-DCLI_DICTIONARY_VARIANT=04"
+                "-DCLI_CONTEXT_VARIANT=03"
+                "-DCLI_ENTROPY_ALGORITHM=01"
+                "-DCLI_ENTROPY_VARIANT=02"
+                "-DCLI_REJECT_CODEC=lzss-contextual-adaptive-huffman-1m"
+                "-DCLI_TRAILING_TEST=ON"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzss-contextual-adaptive-huffman-4m-test-$<CONFIG>"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
         add_test(NAME marc_cli_lz78_round_trip
             COMMAND ${CMAKE_COMMAND}
