@@ -6100,3 +6100,13 @@ CLI selector, public C initializer/query/factory lifecycle, transactional file
 commit, and cross-profile round-trip harness. No external compressor, CLI,
 large-window profile, memory policy, source code, test, benchmark, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0679
+
+The four-MiB Contextual Dynamic Range benchmark boundary uses IR-0673 through
+IR-0678, DD-910 through DD-915, TVG-0776 through TVG-0781, the repository-owned
+dependency-free benchmark lifecycle, public C workspace query/factory, checked
+encoded-capacity calculation, and existing measurement schema. No external
+compressor, benchmark harness, large-window measurement, memory policy, source
+code, test, benchmark result, patent, pseudocode, or optimization description
+was consulted.

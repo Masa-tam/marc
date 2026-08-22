@@ -54,6 +54,7 @@ The experimental Format 2 profile is deliberately outside that stable
 42-command matrix. Invoke it explicitly as
 `marc_benchmark lzss-contextual-dynamic-range corpus.bin 5`,
 `marc_benchmark lzss-contextual-dynamic-range-1m corpus.bin 5`,
+`marc_benchmark lzss-contextual-dynamic-range-4m corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans-1m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-tans corpus.bin 5`,
@@ -294,6 +295,18 @@ decode workspaces. Both directions are constructed only through the public C
 lifecycle, and the report exposes all returned regions and peak caller-owned
 reservation after an exact pre-timing round trip. Run the 64 KiB and 1 MiB
 commands with the same input/build/count for a meaningful profile comparison.
+
+The experimental `lzss-contextual-dynamic-range-4m` benchmark uses
+4,194,304-byte frames/windows, public selector value 2, the `14F + 5` payload
+ceiling, and an explicit 256-MiB aggregate hard limit. Its checked complete-
+stream capacity is `112 + 14N + 85K`. Direction-specific workspace extents
+and alignment come from the public C requirements query; the benchmark does
+not reproduce native staging layouts. Availability of this selector does not
+by itself select a match finder or promote the profile into interoperability.
+The initial one-iteration README smoke produced 2,395 bytes from 4,326 bytes
+(ratio 0.554) under both local compilers and reported peak caller-owned
+workspace of 113,246,293 bytes. Throughput from this short smoke is descriptive
+only; use larger external data for performance conclusions.
 
 The experimental `lzss-contextual-rans` benchmark uses the same 65,536-byte
 raw frames, admits at most `6F` modeled decisions and `12F + 8` payload bytes,

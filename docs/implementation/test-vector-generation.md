@@ -11093,3 +11093,19 @@ and factory lifecycle. Require the 256-MiB application hard limit, the
 `14F + 5` payload ceiling, and public-query-owned allocation sizes. Preserve
 the older CLI names and stream bytes, and leave benchmark, fuzzing, and the
 52-archive interoperability inventory unchanged.
+
+### TVG-0782
+
+Run one Release iteration of
+`marc_benchmark lzss-contextual-dynamic-range-4m` over the existing short
+synthetic smoke input. Require successful public-C encode/decode round trip,
+the exact reported codec name, encoded size and ratio, nonzero throughput
+fields, all six direction-specific workspace fields, and peak workspace equal
+to the larger aggregate.
+
+Require the checked capacity ceiling to use factor 14 only for the four-MiB
+profile and factor 12 for the frozen 64-KiB and one-MiB profiles. Preserve all
+older benchmark names and output fields. Run the full MSVC and ClangCL CTest
+inventories with Python tooling and interoperability schema compatibility,
+while leaving Silesia measurement, fuzzing, and archive inventory for later
+explicit stages.

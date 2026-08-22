@@ -6964,8 +6964,10 @@ known selector until their backend-specific four-MiB paths are complete.
 
 The CLI name `lzss-contextual-dynamic-range-4m` selects this exact triple and
 uses four-MiB frames/windows plus an explicit 256-MiB application aggregate
-limit. The name and limit are not serialized. Benchmark, fuzzing, and
-interoperability archive admission remain later boundaries.
+limit. The matching dependency-free benchmark name measures this same public
+profile and reports query-owned workspace extents. Neither name nor limit is
+serialized. Fuzzing and interoperability archive admission remain later
+boundaries.
 
 Every other contextual entropy identity must independently define and
 implement its selected descriptor, payload, model, workspace, malformed-input,

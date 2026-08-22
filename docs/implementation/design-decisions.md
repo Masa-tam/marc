@@ -19222,3 +19222,21 @@ logic: the public direction-specific requirements query remains authoritative
 for all three allocations and their alignment. If a supported native layout
 requires more than the CLI ceiling, fail safely at query rather than silently
 raising policy. Keep benchmark, fuzzing, and interoperability inventory closed.
+
+## DD-916: Benchmark the four-MiB public profile without promoting it
+
+- Date: 2026-08-22
+- Status: accepted
+
+Add `lzss-contextual-dynamic-range-4m` to the dependency-free benchmark using
+the same public C selector and 256-MiB application hard limit as the CLI.
+Report direction-specific public workspace extents, peak workspace, encoded
+size, ratio, and encode/decode throughput through the existing schema. Derive
+encoded capacity with checked `14*input + 85*frames + 112` arithmetic; retain
+`12F` for both older profiles.
+
+Register only a short synthetic smoke test in ordinary CTest. Do not place the
+Silesia Corpus in the repository or run it as part of the default suite. Keep
+this stage observational: do not select a new match finder, change format or
+limits, add a fuzz target, or append an interoperability archive based solely
+on benchmark availability.

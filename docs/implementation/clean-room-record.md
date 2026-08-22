@@ -24038,3 +24038,35 @@ discarded and the reviewed seed retained.
   `marc_interoperability_schema_compatibility`. The existing CLI profiles,
   benchmark/fuzz selectors, stream bytes, and 52-archive interoperability
   inventory remain unchanged.
+
+## CR-0988: 2026-08-22 - Four-MiB Dynamic Range benchmark boundary
+
+- Authoring method: extended marc's dependency-free public-C benchmark family
+  with a shared exact selector helper for the three Dynamic Range window
+  profiles, retaining checked capacity arithmetic and the existing report.
+- References used: IR-0673 through IR-0679, DD-910 through DD-916, TVG-0776
+  through TVG-0782, CR-0982 through CR-0987, and repository-owned benchmark,
+  CLI policy, C workspace query, and smoke infrastructure. No new external
+  technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  benchmark harnesses, large-window measurements, memory policies, source
+  code, tests, benchmark results, patents, pseudocode, and optimizations.
+- Independent decisions: use factor 14 only for the four-MiB capacity bound;
+  retain factor 12 for old profiles; centralize profile/frame/limit selection;
+  use the CLI's 256-MiB policy; and keep Silesia, fuzzing, and interoperability
+  promotion outside this stage.
+- Generated-code task description: expose the completed four-MiB Dynamic
+  Range profile through the dependency-free benchmark with checked capacity,
+  query-owned workspace reporting, pre-timing round trip, and a short smoke.
+- Similarity review: selector dispatch, capacity formula, report fields, and
+  test registration follow directly from marc's prior two benchmark profiles
+  and the completed public four-MiB boundaries. No external implementation
+  expression was consulted or introduced.
+- Validation: the one-iteration README smoke deterministically produced 2,395
+  bytes from 4,326 bytes (ratio 0.554) and peak workspace 113,246,293 bytes
+  under both local compilers. All 3,155 registered tests pass under MSVC in
+  201.67 seconds and ClangCL in 206.55 seconds with a 600-second per-test
+  limit. Both complete runs include all seven Python tooling tests, seventeen
+  experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`; the 52-archive inventory is
+  unchanged.

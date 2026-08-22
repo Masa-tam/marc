@@ -199,7 +199,8 @@ fail before publication. The C selector value
 the default limits; all other contextual C backends reject that known value.
 The explicit CLI name `lzss-contextual-dynamic-range-4m` uses a 256-MiB
 application limit while retaining public-query-owned allocation extents.
-Benchmarks, fuzzing, and the interoperability inventory remain closed.
+The matching dependency-free benchmark name exposes the same profile without
+changing its policy. Fuzzing and the interoperability inventory remain closed.
 
 ## Planned public policy
 
