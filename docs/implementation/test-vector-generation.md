@@ -11204,6 +11204,8 @@ For `F=4,194,304`, require profile output identities `2/4 + 1/3 + 4/3`,
 4,566 entries, 58,729,449 encoded-frame bytes, 67,633,152 encoder views, and
 130,556,905 aggregate bytes on the supported 64-bit layout. Reject aggregate
 130,556,904 and accept the exact value under the unchanged 128-MiB default.
+Require encoder profile rejection when `max_block_size` is one below the
+`7F = 29,360,128` decision ceiling.
 
 Require decoder table offset 761,856, views 51,093,504, and aggregate
 114,017,257 bytes; reject one byte below and accept exact. Stream one Literal
@@ -11222,5 +11224,6 @@ profile rejection with zero output, then decode successfully under value 2.
 Through the public requirements query, require supported 64-bit encoder regions
 4,194,304 / 58,729,449 / 67,633,152 and decoder regions 58,729,449 /
 4,194,304 / 51,093,504. Reject aggregate values 130,556,904 and 114,017,256,
-then accept exact limits. Keep unknown selector 3 invalid and all older C
-vectors byte-identical.
+then accept exact limits. Configure a four-MiB maximum frame and a 29,360,128-
+decision block limit. Keep unknown selector 3 invalid and all older C vectors
+byte-identical.

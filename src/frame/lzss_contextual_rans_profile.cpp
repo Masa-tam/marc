@@ -179,7 +179,16 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
     const auto largest_frame = std::min<std::uint64_t>(
         config.original_size, config.frame_size);
     if (largest_frame == 0) return LzssContextualRansProfileError::none;
-    if (largest_frame > limits.max_block_size) {
+    std::uint64_t maximum_decisions{};
+    if (!core::checked_multiply(
+            largest_frame,
+            static_cast<std::uint64_t>(
+                selected.layout.maximum_decisions_per_raw_byte),
+            maximum_decisions)) {
+        return LzssContextualRansProfileError::arithmetic_overflow;
+    }
+    if (largest_frame > limits.max_block_size
+        || maximum_decisions > limits.max_block_size) {
         return LzssContextualRansProfileError::limit_exceeded;
     }
 

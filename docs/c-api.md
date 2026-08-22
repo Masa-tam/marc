@@ -189,7 +189,8 @@ ceiling. `MARC_LZSS_CONTEXTUAL_WINDOW_4M` selects `2/4 + 1/3`, uses the
 9,121-byte ceiling, and retains the 128-MiB aggregate default. On supported
 64-bit native layouts its full encoder and decoder requirements are
 130,556,905 and 114,017,257 bytes; full-frame callers must raise
-`max_block_size` to 4,194,304 bytes. The selector is not inferred from
+`max_frame_size` to 4,194,304 bytes and `max_block_size` to the
+29,360,128-decision ceiling. The selector is not inferred from
 `window_size`; encoding validates
 parameters against it and public decoding rejects the other profile before
 frame allocation. The field and trailing 32-bit reserved word retain the

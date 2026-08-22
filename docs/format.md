@@ -7016,6 +7016,9 @@ layouts. Variant 3 calculates `14F + 8` payload and 9,121-byte descriptor
 ceilings, retains HashChain Exact, and installs exact `2/4 + 1/3` decoder
 admission. On the supported 64-bit layout, a full four-MiB encoder aggregate
 is 130,556,905 bytes and decoder aggregate is 114,017,257 bytes; both fit the
-unchanged 128-MiB default after the caller raises `max_block_size` to four MiB.
-One-byte chunking changes no stream byte. Public C, CLI, benchmark, fuzzing,
-and interoperability rANS admission remain later boundaries.
+unchanged 128-MiB default. For a full profile the caller sets
+`max_frame_size` to four MiB and
+`max_block_size` to `7F = 29,360,128`, because the common block limit also
+bounds decision count. One-byte chunking changes no stream byte. Public C,
+CLI, benchmark, fuzzing, and interoperability rANS admission remain later
+boundaries.

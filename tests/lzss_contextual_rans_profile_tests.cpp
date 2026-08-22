@@ -133,7 +133,8 @@ TEST(LzssContextualRansProfile,
     config.dictionary.window_size = UINT32_C(1) << 22;
     config.variant = LzssContextualRansProfileVariant::field_context_4m;
     auto limits = marc::core::DecoderLimits{};
-    limits.max_block_size = UINT32_C(1) << 22;
+    limits.max_frame_size = UINT32_C(1) << 22;
+    limits.max_block_size = UINT32_C(7) << 22;
     LzssContextualRansStreamHeader stream{};
     LzssContextualRansEncoderWorkspaceRequirements encoder{};
     ASSERT_EQ(make_lzss_contextual_rans_profile(
@@ -162,6 +163,12 @@ TEST(LzssContextualRansProfile,
     ASSERT_EQ(make_lzss_contextual_rans_profile(
                   config, limits, stream, encoder),
               LzssContextualRansProfileError::none);
+
+    limits.max_block_size = (UINT32_C(7) << 22) - 1;
+    EXPECT_EQ(make_lzss_contextual_rans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualRansProfileError::limit_exceeded);
+    limits.max_block_size = UINT32_C(7) << 22;
 
     LzssContextualRansDecoderWorkspaceRequirements decoder{};
     limits.max_internal_buffered_bytes = UINT64_C(128) << 20;

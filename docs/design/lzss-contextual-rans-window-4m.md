@@ -91,10 +91,11 @@ This is 20,200,471 bytes below 128 MiB. Decoder sizing must continue to derive
 raw/token extents from the caller's smaller frame/block limit, so a bounded
 fuzzer need not allocate a four-MiB frame merely to select the identity.
 
-The library defaults for maximum frame size, compressed payload, LZ distance,
-entropy table entries, and internal buffered bytes are otherwise sufficient.
-A caller selecting a full four-MiB frame must explicitly raise the one-MiB
-`max_block_size` default to four MiB. No default is silently increased.
+The library defaults for compressed payload, LZ distance, entropy table
+entries, and internal buffered bytes are otherwise sufficient. A full profile
+sets `max_frame_size` to four MiB so decoder workspace remains profile-bounded,
+and raises `max_block_size` to the `7F = 29,360,128` decision ceiling. No
+default is silently increased.
 
 ## Staged implementation
 

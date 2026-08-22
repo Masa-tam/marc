@@ -24306,16 +24306,18 @@ discarded and the reviewed seed retained.
   C APIs, rANS bindings, workspace policies, source code, tests, patents,
   pseudocode, and optimization descriptions.
 - Independent decisions: reuse ABI value 2; keep backend admission exact;
-  retain defaults; test hard-limit versus profile rejection separately; and
-  leave every later surface closed.
+  retain defaults; reject a worst-case decision ceiling beyond the common
+  block limit during profile query; test hard-limit versus profile rejection
+  separately; and leave every later surface closed.
 - Generated-code task description: expose four-MiB contextual rANS through C
   with exact workspace boundaries, small round trip, header bytes, cross-
   profile atomic rejection, and unknown-selector rejection.
 - Similarity review: mapping branches, validation, and tests follow directly
   from marc's existing two rANS profiles and completed Dynamic Range selector.
   No external implementation expression was consulted or introduced.
-- Validation: the focused C ABI test passes under MSVC and ClangCL. All 3,166
-  registered tests pass in 204.44 and 204.65 seconds respectively, including
+- Validation: the focused C ABI and corrected profile-limit tests pass under
+  MSVC and ClangCL. All 3,166 registered tests pass in 200.04 and 205.04
+  seconds respectively, including
   seven Python tooling tests, seventeen experimental benchmark smokes, and
   `marc_interoperability_schema_compatibility`. CLI, benchmark, fuzzing, and
   interoperability remain unchanged.

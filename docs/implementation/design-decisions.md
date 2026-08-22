@@ -19290,9 +19290,10 @@ profile bytes.
 
 On the supported 64-bit layout require exact encoder aggregate 130,556,905
 bytes and decoder aggregate 114,017,257 bytes. Both fit the unchanged 128-MiB
-default, but a full profile must explicitly raise `max_block_size` to four
-MiB. Require checked runtime sizing and one-short tests; do not treat recorded
-native extents as portable struct serialization. Implement descriptor,
+default. A full profile sets `max_frame_size` to four MiB and
+`max_block_size` to `7F = 29,360,128`. Require checked runtime sizing and
+one-short tests; do not treat recorded native extents as portable struct
+serialization. Implement descriptor,
 frame, profile/streaming, C/CLI/benchmark, fuzz, and interoperability in that
 order, closing every later boundary until its stage is complete.
 
@@ -19357,10 +19358,10 @@ for dictionary/context `4/3`. Preserve `any`, 64-KiB, and one-MiB behavior.
 
 On supported 64-bit builds require encoder aggregate 130,556,905 bytes and
 decoder aggregate 114,017,257 bytes, with one-byte-short rejection and exact-
-limit success. Retain the 128-MiB default; a caller must raise only the default
-one-MiB block limit for a full frame. Require one-byte encode/decode and cross-
-profile rejection on a small frame. Keep public C and all later surfaces
-closed.
+limit success. Retain the 128-MiB default. A full profile sets a four-MiB frame
+limit and raises the common block limit to `7F = 29,360,128`, because it also
+bounds decision count. Require one-byte encode/decode and cross-profile
+rejection on a small frame. Keep public C and all later surfaces closed.
 
 ## DD-924: Publish selector value 2 through the contextual rANS C factory
 
@@ -19374,6 +19375,9 @@ field, function, structure extent, default, or serialized value.
 
 Require small public encode/decode, header identity and frequency-count bytes,
 atomic rejection by a one-MiB exact decoder after permissive hard limits, full
-directional workspace values, and one-short aggregate failures. Preserve the
+directional workspace values, and one-short aggregate failures. A full encoder
+query must also reject a common block limit below the `7F` worst-case decision
+count instead of publishing a configuration that can fail by input content.
+Preserve the
 64-KiB initializer and 128-MiB aggregate default. Keep CLI, benchmark, fuzzing,
 and interoperability rANS admission closed.

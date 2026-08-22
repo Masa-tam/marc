@@ -365,7 +365,8 @@ int main(void) {
     config.original_size = UINT32_C(1) << 22;
     config.frame_size = UINT32_C(1) << 22;
     config.window_size = UINT32_C(1) << 22;
-    config.max_block_size = UINT32_C(1) << 22;
+    config.max_frame_size = UINT32_C(1) << 22;
+    config.max_block_size = UINT32_C(7) << 22;
     config.max_lz_distance = UINT32_C(1) << 22;
     config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
 #if SIZE_MAX > UINT32_MAX
@@ -384,7 +385,8 @@ int main(void) {
 
     assert(marc_lzss_contextual_rans_config_init(
                MARC_DIRECTION_DECODE, &config) == MARC_STATUS_OK);
-    config.max_block_size = UINT32_C(1) << 22;
+    config.max_frame_size = UINT32_C(1) << 22;
+    config.max_block_size = UINT32_C(7) << 22;
     config.max_lz_distance = UINT32_C(1) << 22;
     config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
     assert(marc_lzss_contextual_rans_workspace_requirements(
