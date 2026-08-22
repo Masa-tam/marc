@@ -6230,3 +6230,12 @@ tANS format/profile, compact model, selected typed-token layout, fixed table
 staging, HashChain workspace calculator, and C hard limits. No external
 compressor, tANS implementation, large-window format, source code, test,
 benchmark, patent, pseudocode, or optimization description was consulted.
+
+### IR-0693
+
+The four-MiB Contextual tANS descriptor boundary uses IR-0692, DD-929,
+TVG-0795, the repository-owned common compact-model grammar, selected
+field-context layout, and frozen Contextual tANS descriptor vectors. No
+external compressor, tANS implementation, descriptor format, source code,
+test, benchmark, patent, pseudocode, or optimization description was
+consulted.

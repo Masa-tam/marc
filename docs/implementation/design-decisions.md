@@ -19465,3 +19465,20 @@ Require checked runtime sizing, `7F` block/decision admission, and one-short
 tests; do not treat native extents as serialized ABI. Implement descriptor,
 typed coding/frame, profile/streaming, C/CLI/benchmark, fuzz, and
 interoperability in that order, closing every later boundary until complete.
+
+## DD-930: Admit only the four-MiB Contextual tANS descriptor first
+
+- Date: 2026-08-22
+- Status: accepted
+
+Expand the fixed in-memory frequency capacity from 4,550 to 4,566 and admit
+context variant 3 only in Contextual tANS descriptor analysis, parsing,
+validation, and serialization. Retain the 24-byte prefix and common canonical
+Single/sparse/dense record grammar. The exact selected range is 27 through
+9,125 bytes; crossed variant-2/variant-3 counts and alphabets are malformed.
+
+Require a sparse hand vector, an exact 9,125-byte all-dense vector, every
+strict prefix, trailing data, invalid record mode, atomic output failure, and
+reciprocal crossed-layout rejection. Preserve the frozen old descriptor bytes.
+Do not admit variant 3 in coding, typed-token, frame, streaming, public C,
+CLI, benchmark, fuzz, or interoperability boundaries in this stage.

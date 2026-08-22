@@ -120,6 +120,19 @@ namespace {
     return ContextualTansFormatError::none;
 }
 
+[[nodiscard]] constexpr std::size_t maximum_descriptor_size(
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    switch (variant) {
+    case context::internal::LzssFieldContextVariant::field_context_64k:
+        return contextual_tans_max_descriptor_size_v1;
+    case context::internal::LzssFieldContextVariant::field_context_1m:
+        return contextual_tans_max_descriptor_size_v2;
+    case context::internal::LzssFieldContextVariant::field_context_4m:
+        return contextual_tans_max_descriptor_size_v3;
+    }
+    return 0;
+}
+
 } // namespace
 
 ContextualTansFormatError validate_contextual_tans_descriptor(
@@ -137,10 +150,7 @@ ContextualTansFormatError validate_contextual_tans_descriptor(
     const auto model_error = map_model_error(analysis.error);
     if (model_error != ContextualTansFormatError::none) return model_error;
     std::size_t total_size{};
-    const auto maximum_size =
-        variant == context::internal::LzssFieldContextVariant::field_context_64k
-        ? contextual_tans_max_descriptor_size_v1
-        : contextual_tans_max_descriptor_size_v2;
+    const auto maximum_size = maximum_descriptor_size(variant);
     if (!core::checked_add(
             contextual_tans_descriptor_prefix_size,
             analysis.records_size, total_size)
@@ -170,10 +180,7 @@ ContextualTansFormatError parse_contextual_tans_descriptor(
         != context::internal::LzssFieldContextLayoutError::none) {
         return ContextualTansFormatError::unsupported_context_variant;
     }
-    const auto maximum_size =
-        variant == context::internal::LzssFieldContextVariant::field_context_64k
-        ? contextual_tans_max_descriptor_size_v1
-        : contextual_tans_max_descriptor_size_v2;
+    const auto maximum_size = maximum_descriptor_size(variant);
     if (input.size() < contextual_tans_min_descriptor_size
         || input.size() > maximum_size) {
         return ContextualTansFormatError::invalid_descriptor_size;
@@ -268,6 +275,8 @@ static_assert(contextual_tans_min_descriptor_size == 27);
 static_assert(contextual_tans_max_descriptor_size == 9029);
 static_assert(contextual_tans_max_descriptor_size_v1 == 9029);
 static_assert(contextual_tans_max_descriptor_size_v2 == 9093);
+static_assert(contextual_tans_max_descriptor_size_v3 == 9125);
+static_assert(contextual_tans_descriptor_capacity == 9125);
 static_assert(contextual_tans_decode_table_entries == 131072);
 static_assert(contextual_tans_total_frequency
               == contextual_compact_model_total_frequency);

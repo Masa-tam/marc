@@ -1,7 +1,7 @@
 # LZSS contextual tANS 4 MiB window
 
-Status: accepted staged design after completion of the four-MiB Contextual
-rANS vertical path.
+Status: implementation in progress; descriptor boundary complete and every
+outer coding/frame/public boundary remains closed.
 
 ## Purpose and identity
 
@@ -103,8 +103,9 @@ entries, and internal buffered bytes admit these extents. A full profile sets
 
 ## Staged implementation
 
-1. Expand contextual tANS descriptor capacity and canonical parse/serialize
-   bounds for context variant 3 without admitting an outer frame.
+1. **Complete.** Expand contextual tANS descriptor capacity and canonical
+   parse/serialize bounds for context variant 3 without admitting an outer
+   frame.
 2. Carry the selected layout through direct typed-token coding, stream/frame
    preflight, complete-frame decoding, and then complete-frame encoding.
 3. Add checked profile/workspace calculation and one-byte streaming with exact

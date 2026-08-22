@@ -11299,3 +11299,18 @@ bytes and aggregate 99,099,623 bytes from four-byte table entries, native
 tokens, encoded frame, and raw staging. Record exact headroom below 128 MiB.
 No implementation, selector admission, emitted stream, benchmark, fuzzer, or
 interoperability inventory changes in this design-only stage.
+
+### TVG-0796
+
+Construct a Contextual tANS variant-3 descriptor with one sparse distance
+model at context 23, symbol 22, frequency 4,096. Require a 27-byte canonical
+descriptor, serialized frequency-entry count 4,566 (`d6 11` little-endian),
+exact parse equality, and rejection under variant 2. Construct all 31 selected
+models densely and require the exact 9,125-byte maximum and parse equality.
+
+Require every strict prefix of the sparse descriptor to fail without changing
+a sentinel output object. Reject one trailing byte, an invalid model mode,
+undersized output, a variant-3 descriptor under variant 2, and a variant-2
+descriptor under variant 3. Retain the existing literal descriptor vector
+byte-for-byte. Run the focused descriptor inventory under MSVC and ClangCL;
+do not admit an outer four-MiB Contextual tANS frame.

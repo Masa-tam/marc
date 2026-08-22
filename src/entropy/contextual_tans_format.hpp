@@ -20,7 +20,7 @@ inline constexpr std::uint16_t contextual_tans_context_count =
 inline constexpr std::size_t contextual_tans_frequency_entries =
     context::internal::lzss_field_context_frequency_entries;
 inline constexpr std::size_t contextual_tans_frequency_capacity =
-    context::internal::lzss_field_context_frequency_entries_v2;
+    context::internal::lzss_field_context_frequency_entries_v3;
 inline constexpr std::size_t contextual_tans_descriptor_prefix_size = 24;
 inline constexpr std::size_t contextual_tans_min_descriptor_size =
     contextual_tans_descriptor_prefix_size
@@ -33,8 +33,11 @@ inline constexpr std::size_t contextual_tans_max_descriptor_size_v1 =
 inline constexpr std::size_t contextual_tans_max_descriptor_size_v2 =
     contextual_tans_descriptor_prefix_size
     + contextual_compact_model_max_records_size_v2;
+inline constexpr std::size_t contextual_tans_max_descriptor_size_v3 =
+    contextual_tans_descriptor_prefix_size
+    + contextual_compact_model_max_records_size_v3;
 inline constexpr std::size_t contextual_tans_descriptor_capacity =
-    contextual_tans_max_descriptor_size_v2;
+    contextual_tans_max_descriptor_size_v3;
 inline constexpr std::uint64_t contextual_tans_decode_table_entries =
     static_cast<std::uint64_t>(contextual_tans_context_count + 1)
     * contextual_tans_total_frequency;

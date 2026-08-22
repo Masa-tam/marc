@@ -24490,4 +24490,35 @@ discarded and the reviewed seed retained.
   context layout. No external implementation expression was consulted.
 - Validation: documentation layout, chronology, formulas, and cross-links are
   checked in this design-only stage. No codec, ABI, CLI, emitted stream,
-  benchmark, fuzz target, or interoperability inventory changes.
+benchmark, fuzz target, or interoperability inventory changes.
+
+## CR-1004: 2026-08-22 - Four-MiB Contextual tANS descriptor boundary
+
+- Authoring method: extended marc's selected Contextual tANS descriptor over
+  the already completed shared context-variant-3 layout and common compact
+  model records, without opening any outer coding or frame boundary.
+- References used: IR-0692 through IR-0693, DD-929 through DD-930,
+  TVG-0795 through TVG-0796, CR-1003, and repository-owned descriptor and
+  field-context code. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  tANS implementations, descriptor formats, source code, tests, benchmark
+  results, patents, pseudocode, and optimization descriptions.
+- Independent decisions: increase only fixed frequency/descriptor capacity;
+  select variant 3 externally; require exact 4,566-entry and 9,125-byte
+  bounds; reject crossed layouts; and keep every outer boundary closed.
+- Generated-code task description: implement and test canonical sparse/dense
+  Contextual tANS descriptor processing for the four-MiB selected layout while
+  preserving every existing descriptor byte.
+- Similarity review: the change reuses marc's own compact-model grammar and
+  selected-layout tables. No external implementation expression was
+  consulted.
+- Local validation: all 14 focused Contextual tANS format tests pass under
+  MSVC and ClangCL, including frozen old bytes, exact maximum, strict-prefix,
+  trailing-data, invalid-mode, atomic-output, and crossed-layout cases. The
+  complete 3,175-test inventories also pass under both compilers with a
+  600-second per-test limit, including seven Python tooling tests, eighteen
+  experimental benchmark smokes, and
+  `marc_interoperability_schema_compatibility`. The sandboxed aggregate run
+  could not start the Python executable outside the workspace, so the seven
+  registered tooling commands were rerun unchanged with the required host
+  access and all passed.
