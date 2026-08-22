@@ -6331,3 +6331,12 @@ canonical record analyzer/parser/serializer, variant-3 alphabet table, and
 atomic descriptor tests. No external compressor, Huffman implementation,
 descriptor grammar, source code, test vector, patent, pseudocode, or
 optimization description was consulted.
+
+### IR-0704
+
+The four-MiB Contextual Blocked Huffman entropy-operation and direct
+typed-token admission uses IR-0703, DD-940, TVG-0806, the repository-owned
+immutable field-context layout, generic model builder/writer/decoder, direct
+LZSS typed-token composition, and typed-token validation. No external
+compressor, Huffman implementation, source code, test vector, patent,
+pseudocode, or optimization description was consulted.

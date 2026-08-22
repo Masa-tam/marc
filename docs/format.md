@@ -7120,6 +7120,14 @@ its explicit context variant. Variant 1 and 2 therefore remain capped at
 Entropy payload coding, typed-token composition, frame identity admission,
 and every public surface remain closed for this triple.
 
+The private Contextual Blocked Huffman operation coder and direct LZSS
+typed-token composition now select context variant 3. Distance class 22 uses
+alphabet 23 and may be followed by exactly 22 LSB-first bypass bits. The
+hand-checkable bypass value `0x2ABCDE` is therefore stored as payload bytes
+`DE BC 2A` with six valid bits in the final byte. Model construction, writer,
+decoder, and typed-token validation retain one selected layout for the entire
+operation. This does not yet admit a complete frame or any public stream name.
+
 The private Contextual tANS profile and streaming lifecycle now select all
 three exact layouts. Variant 3 derives `ceil(21F/2) + 2` payload and 9,125-byte
 descriptor ceilings from the validated layout, retains the fixed 131,072-entry

@@ -2641,3 +2641,20 @@ All 3,191 registered tests pass with a 600-second per-test limit in 217.25 and
 Python tooling tests, nineteen experimental benchmark smokes, forty-two
 benchmark smokes, and complete schema compatibility. Entropy coding and all
 outer four-MiB Contextual Blocked Huffman boundaries remain closed.
+
+### BR-0159
+
+The four-MiB Contextual Blocked Huffman entropy-operation and direct
+typed-token boundaries are complete. A five-operation hand vector proves
+distance class 22, a 22-bit LSB-first bypass payload `DE BC 2A`, exact decision
+counts, and rejection by the one-MiB layout. A 16,259-token vector constructs
+exactly 4,194,304 bytes of history with bounded overlapping matches, then
+round-trips a distance-4,194,304 token. Crossed decoding leaves every private
+table and output token unchanged.
+
+Both MSVC and ClangCL logs contain 3,193 successful test markers and no
+failure marker with a 600-second per-test limit; the captured MSVC run
+completed in 213.32 seconds. This includes documentation layout, seven Python
+tooling tests, nineteen experimental benchmark smokes, forty-two benchmark
+smokes, and complete schema compatibility. Complete frames and every outward
+four-MiB Contextual Blocked Huffman boundary remain closed.

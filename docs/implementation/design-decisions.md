@@ -19655,3 +19655,20 @@ odd dense-padding rejection, every truncation, trailing data, crossed layout,
 one-short output, and unchanged older vectors. Pass only the returned written
 extent to a parser; unused caller capacity is not stream input. Keep entropy
 coding and all outer admission closed.
+
+## DD-941: Reuse one immutable layout through Contextual Blocked Huffman core
+
+- Date: 2026-08-22
+- Status: accepted
+
+Do not add a second four-MiB-specific entropy implementation. Once descriptor
+admission has selected context variant 3, retain the existing immutable
+`LzssFieldContextLayout` through frequency gathering, pooled/override model
+selection, canonical writing, decoding, direct typed-token composition, and
+typed-token validation.
+
+Prove the boundary with an independent five-operation physical-bit vector and
+a bounded direct-token vector that reaches exactly 4,194,304 bytes of history
+before emitting the maximum-distance match. Require the one-MiB layout to
+reject both the widened operation and crossed direct decode atomically. Keep
+complete frames and every outward admission closed.

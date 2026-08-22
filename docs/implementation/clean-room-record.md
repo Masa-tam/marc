@@ -24855,3 +24855,34 @@ benchmark, fuzz target, or interoperability inventory changes.
   experimental benchmark smokes, forty-two benchmark smokes, documentation
   layout, and complete schema compatibility. No entropy, frame, public, fuzz,
   benchmark, or interoperability boundary is opened.
+
+## CR-1016: 2026-08-22 - Four-MiB Contextual Blocked Huffman entropy core
+
+- Authoring method: verified the repository-owned generic immutable-layout
+  path before adding permanent hand-vector and maximum-distance tests; no
+  parallel four-MiB entropy implementation was introduced.
+- References used: IR-0703 through IR-0704, DD-940 through DD-941, TVG-0806
+  through TVG-0807, CR-1015, and repository-owned Contextual Blocked Huffman
+  and direct typed-token sources. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source code, tests, vectors, patents, pseudocode,
+  and optimization descriptions.
+- Independent decisions: reuse the held variant-3 layout end to end; fix the
+  22-bit physical payload independently; synthesize four MiB of valid history
+  with bounded overlapping tokens; and keep all frame/outward layers closed.
+- Generated-code task description: prove model building, operation coding,
+  entropy decode, and direct typed-token encode/decode for distance class 22,
+  including atomic crossed-layout rejection.
+- Similarity review: only marc's existing variant-generic control path and
+  repository-owned test conventions were extended. No external implementation
+  expression was consulted or introduced.
+- Validation: two focused tests pass under MSVC and ClangCL in three
+  milliseconds. After the first sandboxed CTest correctly reported seven
+  external-Python tests as not runnable, both suites were rerun with the
+  repository's formal external-tool permission. Each final log contains
+  3,193 `Test Passed.` markers and no failure marker; the captured MSVC run
+  completed in 213.32 seconds, including seven Python tooling tests, nineteen
+  experimental benchmark smokes, forty-two benchmark smokes, documentation
+  layout, and complete schema compatibility. No production entropy branch was
+  needed, and no frame, public, fuzz, benchmark, or interoperability boundary
+  is opened.

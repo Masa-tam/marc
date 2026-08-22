@@ -11463,3 +11463,19 @@ small hand vector, append one trailing byte, and supply an output one byte
 short of the maximum. Require no descriptor, output, or written-count
 publication. Retain all variant-1 and variant-2 format tests, parsing their
 actual returned serialized extents rather than unused enlarged capacity.
+
+### TVG-0807
+
+Model token kind 1, literal `A`, length class 1, distance class 22 in alphabet
+23, and bypass value `0x2ABCDE` with width 22 under context variant 3. Require
+26 decisions, three payload bytes `DE BC 2A`, six final valid bits, exact
+decode, and atomic rejection under context variant 2. Require a variant-3
+model builder to accept bypass width 22 and reject 23.
+
+For direct typed-token composition, emit literal `A`, 16,256 overlapping
+distance-one matches of length 258, one distance-one match of length 255, then
+a distance-4,194,304 match of length 5. This creates exactly 4,194,304 bytes of
+history before the final token using 16,259 tokens total. Require direct
+encode/decode equality, distance symbol 22 in the pooled model, exact event
+and decision counts, and crossed one-MiB decoding to preserve all tables and
+tokens.

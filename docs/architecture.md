@@ -5646,3 +5646,13 @@ while each parser and validator retains its selected 2,561-, 2,579-, or
 maximum, rejects odd dense padding and crossed layouts atomically, and leaves
 all older descriptor bytes unchanged. Entropy coding and outer frames remain
 closed.
+
+The four-MiB Contextual Blocked Huffman entropy-operation and direct
+typed-token boundaries now use the same immutable selected layout for model
+building, writing, decoding, and LZSS token validation. The common core needed
+no variant-specific branch beyond descriptor admission: alphabet 23, distance
+class 22, maximum 22-bit bypass, and dictionary variant 4 all derive from the
+held layout. A hand vector fixes physical bypass bytes `DE BC 2A`, and a
+4,194,304-distance typed-token vector round-trips without operation workspace.
+Crossed one-MiB decoding publishes neither tables nor tokens. Frames, profiles,
+public surfaces, tools, fuzzing, and interoperability remain closed.
