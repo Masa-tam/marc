@@ -271,6 +271,15 @@ TEST(ContextualDynamicRangeDecoder, EnforcesTableAndModelLimits) {
               ContextualDynamicRangeDecodeError::invalid_descriptor);
 
     limits = {};
+    limits.max_entropy_table_entries =
+        marc::context::internal::lzss_field_context_frequency_entries_v4 - 1;
+    EXPECT_EQ(decoder.begin(
+                  {2, 6, 31}, payload, limits,
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_16m).error,
+              ContextualDynamicRangeDecodeError::invalid_descriptor);
+
+    limits = {};
     limits.max_range_model_total =
         contextual_dynamic_range_model_total_limit - 1;
     EXPECT_EQ(decoder.begin({2, 6, 31}, payload, limits).error,

@@ -45,12 +45,6 @@ TypedContextStreamHeaderError validate_typed_context_stream_header(
             > limits.max_internal_buffered_bytes) {
         return TypedContextStreamHeaderError::limit_exceeded;
     }
-    if (header.dictionary_variant == 5) {
-        return TypedContextStreamHeaderError::unsupported_dictionary_variant;
-    }
-    if (header.context_variant == 4) {
-        return TypedContextStreamHeaderError::unsupported_context_variant;
-    }
     const auto layout = context::internal::select_lzss_field_context_layout(
         header.dictionary_variant, header.context_algorithm,
         header.context_variant);
@@ -234,6 +228,12 @@ TypedContextStreamHeaderError serialize_typed_context_stream_header(
     noexcept {
     const auto error = validate_typed_context_stream_header(header, limits);
     if (error != TypedContextStreamHeaderError::none) return error;
+    if (header.dictionary_variant == 5) {
+        return TypedContextStreamHeaderError::unsupported_dictionary_variant;
+    }
+    if (header.context_variant == 4) {
+        return TypedContextStreamHeaderError::unsupported_context_variant;
+    }
     std::array<std::byte, typed_context_stream_header_size> encoded{};
     std::ranges::copy(stream_magic, encoded.begin());
     const std::span<std::byte> bytes{encoded};

@@ -20053,3 +20053,25 @@ the new stream pair. The current Dynamic Range parser and serializer reject
 dictionary variant 5 atomically; compact rANS/tANS format validation returns
 unsupported context variant 4. Existing identities, encoded bytes, public ABI,
 profile selectors, defaults, CLI inventory, and schema 47 remain unchanged.
+
+## DD-962: Admit only private 16-MiB Dynamic Range frame decoding
+
+- Date: 2026-08-23
+- Status: accepted
+
+Allow direct stream-header validation, frame preflight, and atomic complete-
+frame decoding for exact triple `2/5 + 1/4 + 3/2`. Select 4,582 frequency
+entries, maximum 34 decisions per token, and maximum seven decisions per raw
+byte. Keep the serialized stream parser and stream serializer closed, and
+explicitly reject the triple in the complete-frame encoder, so no producer or
+streaming lifecycle can publish the reserved bytes during this decoder-only
+stage.
+
+Use distance 4,194,305 for the first complete-frame vector because it is the
+smallest reference that distinguishes variant 5 from completed variant 4.
+Build its prefix from one Literal and bounded overlapping Matches, encode the
+modeled operations only as test setup, then require exact token and raw
+reconstruction. Check model-table and `7F`/`34T` ceilings plus one-short
+caller workspaces atomically. Existing serialized bytes, public ABI, profile
+selectors, defaults, CLI inventory, streaming admission, and schema 47 remain
+unchanged.

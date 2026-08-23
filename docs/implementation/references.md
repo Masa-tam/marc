@@ -6520,3 +6520,12 @@ layout and state machine, checked count validation, prior three variant
 boundary vectors, and explicit backend admission gates. No external
 compression library, source code, tests, vectors, patents, pseudocode, model
 layout, or optimization description was consulted.
+
+### IR-0724
+
+The private 16-MiB Dynamic Range decoder stage uses IR-0722 through IR-0723,
+DD-960 through DD-961, TVG-0824 through TVG-0825, marc's existing four-MiB
+decoder-only staging pattern, typed-context frame preflight, contextual range
+decoder, typed-token reconstruction, and atomic workspace tests. No external
+compression library, source code, tests, vectors, patents, pseudocode, format
+layout, or optimization description was consulted.

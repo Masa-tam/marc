@@ -1,8 +1,9 @@
 # LZSS contextual 16 MiB window
 
-Status: shared dictionary/context primitives implemented after project
-version 0.4.0. No entropy backend, public selector, CLI profile, or
-interoperability archive is admitted yet.
+Status: Dynamic Range decoder preflight and private complete-frame decoding
+implemented after project version 0.4.0. Stream-header parsing/serialization,
+encoding, streaming, public selectors, CLI profiles, and interoperability
+remain unadmitted.
 
 ## Purpose
 
@@ -177,18 +178,24 @@ larger than 16,777,216 bytes. The hand vector builds the required prefix from
 bounded overlap Matches and verifies a class-24 symbol, 24 zero bypass bits,
 34 added decisions, inversion, and rejection by variant 3.
 
-The current Dynamic Range stream parser and serializer continue to reject
-dictionary variant 5 before publication. Compact rANS/tANS model paths also
-return their stable unsupported-context error for context variant 4. Internal
-frequency storage has enough capacity for the shared layout, preventing a
-reserved value from becoming an out-of-bounds access while backend-specific
-descriptors remain unimplemented.
+Dynamic Range header validation and private complete-frame decoding now admit
+the exact `2/5 + 1/4 + 3/2` triple. Preflight selects 4,582 model entries,
+`7F`, and `34T`; complete decoding validates the entropy payload, reconstructs
+typed tokens, and then reconstructs raw bytes into caller-owned disjoint
+workspaces. The first backend-specific vector decodes distance 4,194,305, the
+first distance outside variant 4, from overlap-built history.
+
+The serialized Dynamic Range stream parser and serializer continue to reject
+dictionary variant 5, and both complete-frame encoder entry points reject the
+private triple. Streaming therefore remains closed until the exact workspace
+profile and lifecycle are implemented together. Compact rANS/tANS model paths
+also return their stable unsupported-context error for context variant 4.
 
 ## Staged implementation order
 
 1. shared dictionary/context constants, layouts, validators, and hand vectors
    (complete);
-2. Dynamic Range decoder preflight and complete-frame decode;
+2. Dynamic Range decoder preflight and complete-frame decode (complete);
 3. Dynamic Range encoder, exact workspace query, and streaming lifecycle;
 4. Dynamic Range C helper, CLI, benchmark, bounded fuzzing, and schema entry;
 5. canonical contextual rANS;

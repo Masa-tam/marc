@@ -25562,3 +25562,38 @@ both bounds.
   Python tooling tests, documentation validation, every existing public C and
   CLI path, and `marc_interoperability_schema_compatibility`, which passed in
   87.49 and 86.31 seconds respectively. The final diff is whitespace-clean.
+
+## CR-1041: 2026-08-23 - Private 16-MiB Dynamic Range frame decoder
+
+- Authoring method: followed marc's prior four-MiB decoder-only staging
+  boundary, extending only selected limits and tests derived from the accepted
+  16-MiB design before opening any producing or streaming path.
+- References used: IR-0722 through IR-0724, DD-960 through DD-962, TVG-0824
+  through TVG-0826, CR-1039 through CR-1040, and the repository-owned typed-
+  context preflight, Dynamic Range decoder, token reconstructor, and atomic
+  frame tests.
+- Known implementations intentionally not consulted: external compressor
+  source, formats, tests, vectors, decoder control flow, patents, pseudocode,
+  and optimization descriptions.
+- Independent decisions: admit direct header validation and complete-frame
+  decoding for exact `2/5 + 1/4 + 3/2`; keep stream parsing/serialization and
+  encoding closed; use the first newly representable distance 4,194,305; and
+  construct its history from bounded overlap Matches.
+- Generated-code task description: implement 16-MiB Dynamic Range decoder
+  preflight, selected model/count limits, complete-frame reconstruction,
+  exact and one-short workspace tests, producer non-admission, and synchronized
+  format/provenance documentation.
+- Similarity review: implementation and tests extend marc's first-party
+  four-MiB staged structure and independently derived numeric boundaries. No
+  external implementation expression or test structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. All 3,223 registered tests passed on each toolchain with
+  the 600-second per-test limit. Because sandbox policy denied the configured
+  Python executable, the seven tooling tests were rerun outside the sandbox
+  and all passed; the remaining 3,216 passed in 218.03 seconds under MSVC and
+  223.83 seconds under ClangCL. Both runs included all 21 experimental and 42
+  public benchmark smokes, documentation validation, every public C and CLI
+  path, and `marc_interoperability_schema_compatibility`, which passed in
+  93.41 and 87.90 seconds respectively. An initial sandboxed MSVC all-target
+  build hit the known FileTracker access denial; the unrestricted retry
+  completed successfully. The final diff is whitespace-clean.

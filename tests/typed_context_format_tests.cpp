@@ -106,6 +106,15 @@ extended_stream_vector() {
     return stream;
 }
 
+[[nodiscard]] TypedContextStreamHeader sixteen_mib_stream_config() {
+    auto stream = stream_config();
+    stream.frame_size = 16777216;
+    stream.dictionary.window_size = 16777216;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    return stream;
+}
+
 [[nodiscard]] TypedContextFrameValidationContext frame_context(
     const TypedContextStreamHeader& stream,
     const marc::core::DecoderLimits& limits) {
@@ -232,18 +241,17 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
     }
 }
 
-TEST(TypedContextStreamFormat, KeepsReservedSixteenMibPairUnadmitted) {
-    auto stream = four_mib_stream_config();
-    stream.frame_size = 16777216;
-    stream.dictionary.window_size = 16777216;
-    stream.dictionary_variant = 5;
-    stream.context_variant = 4;
+TEST(TypedContextStreamFormat,
+     AdmitsPrivateSixteenMibPreflightButNotStreamSerialization) {
+    const auto stream = sixteen_mib_stream_config();
     auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = stream.frame_size;
     limits.max_block_size = stream.frame_size;
+    limits.max_lz_distance = stream.dictionary.window_size;
     limits.max_entropy_table_entries = 4582;
 
     EXPECT_EQ(validate_typed_context_stream_header(stream, limits),
-              TypedContextStreamHeaderError::unsupported_dictionary_variant);
+              TypedContextStreamHeaderError::none);
     std::array<std::byte, typed_context_stream_header_size> output{};
     output.fill(std::byte{0xa5});
     EXPECT_EQ(serialize_typed_context_stream_header(stream, limits, output),
@@ -294,6 +302,19 @@ TEST(TypedContextStreamFormat, SelectsVariantSpecificTableLimit) {
     limits.max_entropy_table_entries = 4566;
     EXPECT_EQ(validate_typed_context_stream_header(
                   four_mib_stream_config(), limits),
+              TypedContextStreamHeaderError::none);
+
+    auto sixteen_mib_limits = marc::core::DecoderLimits{};
+    sixteen_mib_limits.max_frame_size = 16777216;
+    sixteen_mib_limits.max_block_size = 16777216;
+    sixteen_mib_limits.max_lz_distance = 16777216;
+    sixteen_mib_limits.max_entropy_table_entries = 4581;
+    EXPECT_EQ(validate_typed_context_stream_header(
+                  sixteen_mib_stream_config(), sixteen_mib_limits),
+              TypedContextStreamHeaderError::limit_exceeded);
+    sixteen_mib_limits.max_entropy_table_entries = 4582;
+    EXPECT_EQ(validate_typed_context_stream_header(
+                  sixteen_mib_stream_config(), sixteen_mib_limits),
               TypedContextStreamHeaderError::none);
 }
 
@@ -392,6 +413,29 @@ TEST(TypedContextFrameFormat, SelectsVariantSpecificDecisionCeiling) {
     EXPECT_EQ(validate_typed_context_frame_header(
                   four_mib_header,
                   frame_context(extended_stream, limits)),
+              TypedContextFrameHeaderError::contradictory_counts);
+
+    auto sixteen_mib_stream = sixteen_mib_stream_config();
+    sixteen_mib_stream.frame_size = 5;
+    sixteen_mib_stream.original_size = 5;
+    auto sixteen_mib_limits = limits;
+    sixteen_mib_limits.max_lz_distance = 16777216;
+    sixteen_mib_limits.max_entropy_table_entries = 4582;
+    const TypedContextFrameHeader sixteen_mib_header{
+        0, 0, 5, 1, 5, 34, 5, 16, 0, 0};
+    EXPECT_EQ(validate_typed_context_frame_header(
+                  sixteen_mib_header,
+                  frame_context(sixteen_mib_stream, sixteen_mib_limits)),
+              TypedContextFrameHeaderError::none);
+    auto excessive = sixteen_mib_header;
+    excessive.decision_count = 35;
+    EXPECT_EQ(validate_typed_context_frame_header(
+                  excessive,
+                  frame_context(sixteen_mib_stream, sixteen_mib_limits)),
+              TypedContextFrameHeaderError::contradictory_counts);
+    EXPECT_EQ(validate_typed_context_frame_header(
+                  sixteen_mib_header,
+                  frame_context(four_mib_stream, sixteen_mib_limits)),
               TypedContextFrameHeaderError::contradictory_counts);
 }
 

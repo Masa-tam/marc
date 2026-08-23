@@ -11764,3 +11764,20 @@ Require variant 3 to reject the same operations. Finally, prove the existing
 Dynamic Range stream parser/serializer and compact rANS/tANS formats reject
 the reserved pair atomically so shared constants cannot silently admit a
 backend.
+
+### TVG-0826
+
+For the decoder-only Dynamic Range stage, admit direct validation of exact
+pair `2/5 + 1/4` only when the caller supplies the 16-MiB LZ distance and
+4,582-entry model limits. Require 4,581 entries to fail. At a five-byte frame
+and one token, accept 34 decisions, reject 35, and require variant 3 to reject
+the same header.
+
+Construct 4,194,305 bytes of history from one Literal, 16,256 overlapping
+length-258 Matches, and one length-256 Match. Append a distance-4,194,305,
+length-258 Match, model and range-encode it as test setup, then require private
+complete-frame decoding to recover the final token and an all-`A` raw frame.
+For the one-Literal frame, require exact token/raw workspace capacity and
+atomic rejection at one element/byte short and for a crossed context pair.
+Continue to reject dictionary variant 5 in serialized stream parsing and
+serialization and in complete-frame encoding.

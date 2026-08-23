@@ -194,6 +194,19 @@ TEST(LzssTypedContextFrameEncoder, RejectsInvalidStreamAndFrameExtent) {
         stream, {}, 0, 0, input, tokens, operations);
     EXPECT_EQ(result.error, LzssTypedContextFrameEncodeError::invalid_stream);
 
+    stream = stream_config(1, 1);
+    stream.dictionary.window_size = 16777216;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    auto sixteen_mib_limits = marc::core::DecoderLimits{};
+    sixteen_mib_limits.max_frame_size = 16777216;
+    sixteen_mib_limits.max_block_size = 16777216;
+    sixteen_mib_limits.max_lz_distance = 16777216;
+    sixteen_mib_limits.max_entropy_table_entries = 4582;
+    result = plan_lzss_typed_context_frame(
+        stream, sixteen_mib_limits, 0, 0, input, tokens, operations);
+    EXPECT_EQ(result.error, LzssTypedContextFrameEncodeError::invalid_stream);
+
     stream = stream_config(64, 2);
     result = plan_lzss_typed_context_frame(
         stream, {}, 0, 0, input, tokens, operations);

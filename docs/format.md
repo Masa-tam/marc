@@ -7024,9 +7024,11 @@ window](design/lzss-contextual-window-4m.md).
 ### Reserved 16 MiB LZSS field-context family
 
 Format 2.0 reserves dictionary algorithm/variant `2/5` together with context-
-model algorithm/variant `1/4`. They MUST occur together. No current public or
-private stream entry point admits this pair; reservation does not authorize an
-encoder to emit it.
+model algorithm/variant `1/4`. They MUST occur together. Private Dynamic Range
+header validation and complete-frame decoding admit the exact
+`2/5 + 1/4 + 3/2` triple. Serialized stream-header parsing and serialization,
+all encoders, streaming, and public entry points remain closed; reservation
+does not authorize an encoder to emit it.
 
 Dictionary variant 5 retains the 16-byte parameter layout, minimum match
 length 5, maximum match length 258, and permits a window no larger than
@@ -7056,9 +7058,15 @@ fields. Existing initializers remain 64 KiB. The complete staged contract is
 [LZSS contextual 16 MiB window](design/lzss-contextual-window-16m.md).
 
 The shared typed-token/context implementation recognizes the exact pair and
-its layout internally. Dynamic Range and canonical contextual rANS and tANS
-admit completed four-MiB entropy triples; other backend-specific entry points
-continue to admit only their previously completed pairs.
+its layout internally. The private Dynamic Range frame preflight selects
+4,582 model entries, `decision_count <= 7F`, and
+`decision_count <= 34*token_count`; complete-frame decoding uses caller-owned
+token and raw workspaces and rejects short, crossed, overlapping, malformed,
+or locally over-limit inputs before publishing success. Its first backend-
+specific vector exercises distance 4,194,305. Dynamic Range stream parsing,
+serialization, and encoding remain closed at this stage. Canonical contextual
+rANS and tANS continue to admit only their completed four-MiB entropy triples;
+other backend-specific entry points retain their previously completed pairs.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

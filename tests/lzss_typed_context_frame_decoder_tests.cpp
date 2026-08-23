@@ -69,6 +69,24 @@ using marc::dictionary::internal::LzssTypedTokenKind;
     return stream;
 }
 
+[[nodiscard]] constexpr TypedContextStreamHeader sixteen_mib_stream_config() {
+    auto stream = stream_config();
+    stream.frame_size = 16777216;
+    stream.dictionary.window_size = 16777216;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    return stream;
+}
+
+[[nodiscard]] marc::core::DecoderLimits sixteen_mib_limits() {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = 16777216;
+    limits.max_block_size = 16777216;
+    limits.max_lz_distance = 16777216;
+    limits.max_entropy_table_entries = 4582;
+    return limits;
+}
+
 } // namespace
 
 TEST(LzssTypedContextFrameDecoder, DecodesSpecifiedFrameAtomically) {
@@ -268,6 +286,163 @@ TEST(LzssTypedContextFrameDecoder,
     EXPECT_EQ(decoded.serialized_consumed, frame.size());
     EXPECT_EQ(decoded_tokens.back().distance, distance);
     EXPECT_EQ(decoded_tokens.back().length, 258U);
+    EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
+        return value == std::byte{'A'};
+    }));
+}
+
+TEST(LzssTypedContextFrameDecoder,
+     SixteenMiBIdentityChecksWorkspaceAndCrossingBeforeWrites) {
+    constexpr auto frame = frame_vector();
+    auto stream = sixteen_mib_stream_config();
+    stream.frame_size = 1;
+    const auto limits = sixteen_mib_limits();
+    std::array<LzssTypedToken, 1> tokens{
+        LzssTypedToken{LzssTypedTokenKind::match, 0xCC, 0xCCCCCCCCU,
+                       0xCCCCCCCCU}};
+    const auto before = tokens[0];
+    std::array raw{std::byte{0xCC}};
+
+    auto result = decode_lzss_typed_context_frame(
+        frame, {stream, limits, 0, 0}, tokens, raw);
+    ASSERT_EQ(result.error, LzssTypedContextFrameDecodeError::none);
+    EXPECT_EQ(result.serialized_consumed, frame.size());
+    EXPECT_EQ(tokens[0].kind, LzssTypedTokenKind::literal);
+    EXPECT_EQ(tokens[0].literal, 'A');
+    EXPECT_EQ(raw[0], std::byte{'A'});
+
+    tokens[0] = before;
+    raw[0] = std::byte{0xCC};
+    result = decode_lzss_typed_context_frame(
+        frame, {stream, limits, 0, 0},
+        std::span<LzssTypedToken>{tokens}.first(0), raw);
+    EXPECT_EQ(result.error,
+              LzssTypedContextFrameDecodeError::token_output_too_small);
+    EXPECT_EQ(tokens[0].kind, before.kind);
+    EXPECT_EQ(raw[0], std::byte{0xCC});
+
+    result = decode_lzss_typed_context_frame(
+        frame, {stream, limits, 0, 0}, tokens,
+        std::span<std::byte>{raw}.first(0));
+    EXPECT_EQ(result.error,
+              LzssTypedContextFrameDecodeError::raw_output_too_small);
+    EXPECT_EQ(tokens[0].kind, before.kind);
+    EXPECT_EQ(tokens[0].literal, before.literal);
+    EXPECT_EQ(tokens[0].distance, before.distance);
+    EXPECT_EQ(tokens[0].length, before.length);
+    EXPECT_EQ(raw[0], std::byte{0xCC});
+
+    auto crossed = stream;
+    crossed.context_variant = 3;
+    result = decode_lzss_typed_context_frame(
+        frame, {crossed, limits, 0, 0}, tokens, raw);
+    EXPECT_EQ(result.error,
+              LzssTypedContextFrameDecodeError::preflight_error);
+    EXPECT_EQ(tokens[0].kind, before.kind);
+    EXPECT_EQ(raw[0], std::byte{0xCC});
+}
+
+TEST(LzssTypedContextFrameDecoder,
+     SixteenMiBIdentityDecodesFirstNewDistanceExactly) {
+    constexpr std::uint32_t distance = 4194305;
+    constexpr std::size_t full_matches = 16256;
+    constexpr std::uint32_t tail_length = 256;
+    constexpr std::uint32_t final_match_length = 258;
+    constexpr std::uint32_t raw_size = distance + final_match_length;
+
+    std::vector<LzssTypedToken> source_tokens;
+    source_tokens.reserve(full_matches + 3);
+    source_tokens.push_back({LzssTypedTokenKind::literal, 'A', 0, 0});
+    for (std::size_t index = 0; index < full_matches; ++index) {
+        source_tokens.push_back({LzssTypedTokenKind::match, 0, 1, 258});
+    }
+    source_tokens.push_back(
+        {LzssTypedTokenKind::match, 0, 1, tail_length});
+    source_tokens.push_back(
+        {LzssTypedTokenKind::match, 0, distance, final_match_length});
+
+    auto stream = sixteen_mib_stream_config();
+    stream.frame_size = raw_size;
+    stream.original_size = raw_size;
+    auto limits = sixteen_mib_limits();
+    const marc::dictionary::internal::LzssTypedFrameValidationContext
+        token_context{static_cast<std::uint32_t>(source_tokens.size()),
+                      raw_size, 0};
+    const auto operation_plan =
+        marc::context::internal::plan_lzss_field_context_operations(
+            source_tokens, stream.dictionary, token_context, limits,
+            marc::context::internal::LzssFieldContextVariant::
+                field_context_16m);
+    ASSERT_EQ(operation_plan.error,
+              marc::context::internal::LzssFieldContextError::none);
+    std::vector<marc::context::internal::ModeledOperation> operations(
+        operation_plan.operation_count);
+    const auto modeled =
+        marc::context::internal::model_lzss_field_context_tokens(
+            source_tokens, stream.dictionary, token_context, limits,
+            operations,
+            marc::context::internal::LzssFieldContextVariant::
+                field_context_16m);
+    ASSERT_EQ(modeled.error,
+              marc::context::internal::LzssFieldContextError::none);
+
+    TypedContextRangeDescriptor descriptor{};
+    const auto entropy_plan = marc::entropy::internal::
+        plan_contextual_dynamic_range_operations(
+            operations, limits, descriptor,
+            marc::context::internal::LzssFieldContextVariant::
+                field_context_16m);
+    ASSERT_EQ(entropy_plan.error,
+              marc::entropy::internal::
+                  ContextualDynamicRangeEncodeError::none);
+    std::vector<std::byte> payload(entropy_plan.payload_size);
+    ASSERT_EQ(marc::entropy::internal::
+                  encode_contextual_dynamic_range_operations(
+                      operations, limits, payload, descriptor,
+                      marc::context::internal::LzssFieldContextVariant::
+                          field_context_16m).error,
+              marc::entropy::internal::
+                  ContextualDynamicRangeEncodeError::none);
+
+    const TypedContextFrameHeader header{
+        0,
+        0,
+        raw_size,
+        static_cast<std::uint32_t>(source_tokens.size()),
+        static_cast<std::uint32_t>(operations.size()),
+        modeled.decision_count,
+        static_cast<std::uint32_t>(payload.size()),
+        typed_context_range_descriptor_size,
+        0,
+        0};
+    std::vector<std::byte> frame(
+        typed_context_frame_header_size
+        + typed_context_range_descriptor_size + payload.size());
+    ASSERT_EQ(serialize_typed_context_frame_header(
+                  header, {stream, limits, 0, 0},
+                  std::span<std::byte, typed_context_frame_header_size>{
+                      frame.data(), typed_context_frame_header_size}),
+              TypedContextFrameHeaderError::none);
+    ASSERT_EQ(serialize_typed_context_range_descriptor(
+                  descriptor, header, limits,
+                  std::span<std::byte,
+                            typed_context_range_descriptor_size>{
+                      frame.data() + typed_context_frame_header_size,
+                      typed_context_range_descriptor_size}),
+              TypedContextRangeDescriptorError::none);
+    std::ranges::copy(
+        payload,
+        frame.begin() + typed_context_frame_header_size
+            + typed_context_range_descriptor_size);
+
+    std::vector<LzssTypedToken> decoded_tokens(source_tokens.size());
+    std::vector<std::byte> raw(raw_size, std::byte{0xCC});
+    const auto decoded = decode_lzss_typed_context_frame(
+        frame, {stream, limits, 0, 0}, decoded_tokens, raw);
+    ASSERT_EQ(decoded.error, LzssTypedContextFrameDecodeError::none);
+    EXPECT_EQ(decoded.serialized_consumed, frame.size());
+    EXPECT_EQ(decoded_tokens.back().distance, distance);
+    EXPECT_EQ(decoded_tokens.back().length, final_match_length);
     EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
         return value == std::byte{'A'};
     }));
