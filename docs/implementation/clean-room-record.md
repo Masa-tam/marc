@@ -25253,3 +25253,28 @@ both bounds.
   benchmark smokes, forty-two benchmark smokes, documentation layout, and
   complete schema compatibility. External four-direction evidence remains
   pending.
+
+## CR-1030: 2026-08-23 - Schema 47 four-direction external admission
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-953, IR-0716, TVG-0819, BR-0172, IX-0041, CR-1029, and
+  full revision `c107daf9be319523402b0a4b4d9089c46a702ced`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: require one exact revision for all directions,
+  preserve work products outside the repository, and accept evidence only
+  when every verifier reports the complete 57-archive inventory.
+- Generated-code task description: record the completed schema-47
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks.
+- Similarity review: this change records project-generated artifact evidence
+  only and introduces no codec implementation expression.
+- External validation: all four passes reported `Verified 57 archives` at
+  revision `c107daf9be319523402b0a4b4d9089c46a702ced`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.
