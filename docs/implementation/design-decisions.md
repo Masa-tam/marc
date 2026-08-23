@@ -19908,3 +19908,20 @@ default. Require every helper to validate before mutation, fail byte-atomically,
 preserve caller identity and output-policy fields, set one coherent backend
 resource envelope, remain idempotent, permit stricter later overrides, and
 leave allocation to the authoritative workspace query.
+
+## DD-955: Admit atomic Dynamic Range and rANS profile helpers
+
+- Date: 2026-08-23
+- Status: accepted
+
+Apply all three established resource envelopes through strongly typed Dynamic
+Range and rANS helpers. Dynamic Range owns exact model-entry counts
+4,518/4,550/4,566 and model total 32,768 in addition to its frame, payload,
+and aggregate limits. rANS owns its `6F/6F/7F` decision bounds, `12F+8`,
+`12F+8`, and `14F+8` payload bounds, fixed 126,976-entry decode-table limit,
+and established 8/128/128-MiB aggregate policies.
+
+Validate the complete ABI shell and selector before copying, preserve
+direction, original size, total-output policy, ABI metadata, and reserved
+zeros, and publish the private copy only after all values are complete. Do not
+alter initializers, ABI extents, stream identities, CLI behavior, or schema 47.

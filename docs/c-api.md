@@ -166,11 +166,14 @@ this Dynamic Range factory. The selector is not inferred from `window_size`;
 encoding rejects parameters outside the selected profile and decoding rejects
 a stream whose
 identity does not match it. Re-query all three workspace regions after
-changing the selector. The 4 MiB encoder retains the 128 MiB default and
-returns `MARC_STATUS_LIMIT_EXCEEDED` until the caller explicitly raises
-`max_internal_buffered_bytes` to at least its calculated requirement
-(264,765,525 bytes on the supported 64-bit native layouts). Its decoder also
-requires `max_block_size` of at least 4,194,304 bytes. The field and its
+changing the selector. Use
+`marc_lzss_contextual_dynamic_range_config_apply_profile()` to apply the
+selected frame, dictionary, payload, model, and aggregate limits atomically;
+it preserves direction, original size, and the caller's total-output limit.
+The four-MiB preset raises `max_internal_buffered_bytes` to 256 MiB, which
+covers its 264,765,525-byte encoder requirement on the supported 64-bit native
+layouts. Its decoder also receives the required `max_block_size` of
+4,194,304 bytes. The field and its
 trailing 32-bit reserved word occupy
 the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
 all-zero meaning used by earlier callers. The profile remains outside the
@@ -197,7 +200,10 @@ ceiling. `MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects `2/4 + 1/3`, uses the
 64-bit native layouts its full encoder and decoder requirements are
 130,556,905 and 114,017,257 bytes; full-frame callers must raise
 `max_frame_size` to 4,194,304 bytes and `max_block_size` to the
-29,360,128-decision ceiling. The selector is not inferred from
+29,360,128-decision ceiling. The
+`marc_lzss_contextual_rans_config_apply_profile()` helper applies those
+values, the payload and table limits, and the 128-MiB aggregate policy as one
+atomic preset while preserving caller-specific fields. The selector is not inferred from
 `window_size`; encoding validates
 parameters against it and public decoding rejects the other profile before
 frame allocation. The field and trailing 32-bit reserved word retain the

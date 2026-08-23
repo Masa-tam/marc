@@ -25332,3 +25332,28 @@ both bounds.
   MSVC run exposed one stale pre-rename C test executable; the required
   all-target relink removed that build-product mismatch before the recorded
   complete pass.
+
+## CR-1033: 2026-08-23 - Dynamic Range and rANS profile helpers
+
+- Authoring method: moved the already documented three-profile resource
+  envelopes into two strongly typed atomic public helpers, then added focused
+  pure-C contract tests before changing tool policy.
+- References used: IR-0717 through IR-0719, DD-954 through DD-955, TVG-0820
+  through TVG-0821, CR-1031 through CR-1032, and repository-owned profile,
+  public C, CLI, benchmark, and test sources. No new external technical source
+  was used.
+- Known implementations intentionally not consulted: external compressors,
+  C APIs, source code, tests, vectors, patents, pseudocode, payload bounds,
+  and optimization descriptions.
+- Independent decisions: set exact selected model limits rather than loose
+  defaults; preserve caller identity and total-output policy; publish a
+  private copy; and defer CLI/benchmark migration until every helper exists.
+- Generated-code task description: add Dynamic Range and rANS profile helpers
+  and prove their complete values, preservation, idempotence, and atomic
+  invalid-input behavior in both C toolchains.
+- Similarity review: only the repository-owned Adaptive Huffman helper shape
+  and established resource-policy expressions were reused.
+- Validation: both focused pure-C helper tests pass under MSVC and ClangCL.
+  Their complete 3,211-case CTest suites pass in 195.77 and 201.51 seconds
+  respectively, including documentation layout, contextual CLI round trips,
+  and complete schema compatibility.

@@ -1203,6 +1203,10 @@ MARC_API marc_status marc_lzss_dynamic_range_create(
 MARC_API marc_status marc_lzss_contextual_dynamic_range_config_init(
     marc_direction direction,
     marc_lzss_contextual_dynamic_range_config* config) MARC_NOEXCEPT;
+MARC_API marc_status
+marc_lzss_contextual_dynamic_range_config_apply_profile(
+    marc_lzss_contextual_dynamic_range_config* config,
+    marc_lzss_contextual_profile profile) MARC_NOEXCEPT;
 MARC_API marc_status marc_lzss_contextual_dynamic_range_workspace_requirements(
     const marc_lzss_contextual_dynamic_range_config* config,
     marc_workspace_requirements* requirements) MARC_NOEXCEPT;
@@ -1220,6 +1224,9 @@ MARC_API marc_status marc_lzss_contextual_dynamic_range_create(
 MARC_API marc_status marc_lzss_contextual_rans_config_init(
     marc_direction direction,
     marc_lzss_contextual_rans_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_contextual_rans_config_apply_profile(
+    marc_lzss_contextual_rans_config* config,
+    marc_lzss_contextual_profile profile) MARC_NOEXCEPT;
 MARC_API marc_status marc_lzss_contextual_rans_workspace_requirements(
     const marc_lzss_contextual_rans_config* config,
     marc_workspace_requirements* requirements) MARC_NOEXCEPT;

@@ -6473,3 +6473,12 @@ TVG-0820, the repository-owned header, C adapter, CLI, benchmark, fuzz
 harnesses, C tests, and current user-facing documentation. No external
 compression library, C API, source code, tests, vectors, patents, pseudocode,
 payload bounds, or optimization descriptions were consulted.
+
+### IR-0719
+
+The Contextual Dynamic Range and rANS profile helpers use IR-0717 through
+IR-0718, DD-954, TVG-0820, the repository-owned profile calculators, public
+initializers, prior Adaptive Huffman private-copy helper, CLI policy values,
+and C API tests. No external compression library, C API, source code, tests,
+vectors, patents, pseudocode, payload bounds, or optimization descriptions
+were consulted.

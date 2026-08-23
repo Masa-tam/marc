@@ -4761,6 +4761,59 @@ marc_status marc_lzss_contextual_dynamic_range_config_init(
     return MARC_STATUS_OK;
 }
 
+marc_status marc_lzss_contextual_dynamic_range_config_apply_profile(
+    marc_lzss_contextual_dynamic_range_config* const config,
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (config == nullptr
+        || config->struct_size
+            != sizeof(marc_lzss_contextual_dynamic_range_config)
+        || config->abi_version != MARC_ABI_VERSION
+        || (config->direction != MARC_DIRECTION_ENCODE
+            && config->direction != MARC_DIRECTION_DECODE)
+        || config->reserved != 0 || config->reserved2 != 0
+        || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+
+    auto applied = *config;
+    const std::uint32_t extent = profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+        ? UINT32_C(1) << 22
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            ? UINT32_C(1) << 20
+            : UINT32_C(1) << 16;
+    const std::uint64_t decisions_per_byte =
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M ? 14 : 12;
+    const std::uint64_t payload =
+        static_cast<std::uint64_t>(extent) * decisions_per_byte + 5;
+    applied.frame_size = extent;
+    applied.window_size = extent;
+    applied.min_match_length = 5;
+    applied.max_match_length = 258;
+    applied.max_frame_size = extent;
+    applied.max_block_size = extent;
+    applied.max_compressed_payload_size = payload;
+    applied.max_internal_buffered_bytes =
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+        ? UINT64_C(256) << 20
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            ? UINT64_C(128) << 20
+            : UINT64_C(8) << 20;
+    applied.max_lz_distance = extent;
+    applied.max_lz_match_length = 258;
+    applied.max_entropy_table_entries =
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+        ? UINT64_C(4566)
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            ? UINT64_C(4550)
+            : UINT64_C(4518);
+    applied.max_range_model_total = UINT64_C(1) << 15;
+    applied.profile = profile;
+    *config = applied;
+    return MARC_STATUS_OK;
+}
+
 marc_status marc_lzss_contextual_dynamic_range_workspace_requirements(
     const marc_lzss_contextual_dynamic_range_config* config,
     marc_workspace_requirements* requirements) noexcept {
@@ -4922,6 +4975,52 @@ marc_status marc_lzss_contextual_rans_config_init(
         config->profile = MARC_LZSS_CONTEXTUAL_PROFILE_64K;
     }
     return status;
+}
+
+marc_status marc_lzss_contextual_rans_config_apply_profile(
+    marc_lzss_contextual_rans_config* const config,
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (config == nullptr
+        || config->struct_size != sizeof(marc_lzss_contextual_rans_config)
+        || config->abi_version != MARC_ABI_VERSION
+        || (config->direction != MARC_DIRECTION_ENCODE
+            && config->direction != MARC_DIRECTION_DECODE)
+        || config->reserved != 0 || config->reserved2 != 0
+        || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
+        return MARC_STATUS_INVALID_ARGUMENT;
+    }
+
+    auto applied = *config;
+    const std::uint32_t extent = profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+        ? UINT32_C(1) << 22
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            ? UINT32_C(1) << 20
+            : UINT32_C(1) << 16;
+    const std::uint64_t decisions_per_byte =
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M ? 7 : 6;
+    const std::uint64_t payload_bytes_per_raw =
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M ? 14 : 12;
+    applied.frame_size = extent;
+    applied.window_size = extent;
+    applied.min_match_length = 5;
+    applied.max_match_length = 258;
+    applied.max_frame_size = extent;
+    applied.max_block_size =
+        static_cast<std::uint64_t>(extent) * decisions_per_byte;
+    applied.max_compressed_payload_size =
+        static_cast<std::uint64_t>(extent) * payload_bytes_per_raw + 8;
+    applied.max_internal_buffered_bytes =
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_64K
+        ? UINT64_C(8) << 20
+        : UINT64_C(128) << 20;
+    applied.max_lz_distance = extent;
+    applied.max_lz_match_length = 258;
+    applied.max_entropy_table_entries = 126976;
+    applied.profile = profile;
+    *config = applied;
+    return MARC_STATUS_OK;
 }
 
 marc_status marc_lzss_contextual_rans_workspace_requirements(

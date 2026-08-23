@@ -31,7 +31,106 @@ static void set_small_limits(
     config->max_entropy_table_entries = UINT64_C(1) << 20;
 }
 
+static void test_apply_profile(void) {
+    static const marc_lzss_contextual_profile profiles[] = {
+        MARC_LZSS_CONTEXTUAL_PROFILE_64K,
+        MARC_LZSS_CONTEXTUAL_PROFILE_1M,
+        MARC_LZSS_CONTEXTUAL_PROFILE_4M};
+    static const uint32_t extents[] = {
+        UINT32_C(1) << 16, UINT32_C(1) << 20, UINT32_C(1) << 22};
+    static const uint64_t blocks[] = {
+        UINT64_C(393216), UINT64_C(6291456), UINT64_C(29360128)};
+    static const uint64_t payloads[] = {
+        UINT64_C(786440), UINT64_C(12582920), UINT64_C(58720264)};
+    static const uint64_t aggregates[] = {
+        UINT64_C(8) << 20, UINT64_C(128) << 20, UINT64_C(128) << 20};
+    static const marc_direction directions[] = {
+        MARC_DIRECTION_ENCODE, MARC_DIRECTION_DECODE};
+
+    for (size_t direction_index = 0;
+         direction_index < sizeof(directions) / sizeof(directions[0]);
+         ++direction_index) {
+        marc_lzss_contextual_rans_config config;
+        assert(marc_lzss_contextual_rans_config_init(
+                   directions[direction_index], &config) == MARC_STATUS_OK);
+        config.original_size = UINT64_C(1234567);
+        config.max_total_output_size = UINT64_C(7654321);
+        for (size_t index = 0;
+             index < sizeof(profiles) / sizeof(profiles[0]); ++index) {
+            assert(marc_lzss_contextual_rans_config_apply_profile(
+                       &config, profiles[index]) == MARC_STATUS_OK);
+            assert(config.direction == directions[direction_index]);
+            assert(config.original_size == UINT64_C(1234567));
+            assert(config.max_total_output_size == UINT64_C(7654321));
+            assert(config.frame_size == extents[index]);
+            assert(config.window_size == extents[index]);
+            assert(config.min_match_length == 5);
+            assert(config.max_match_length == 258);
+            assert(config.max_frame_size == extents[index]);
+            assert(config.max_block_size == blocks[index]);
+            assert(config.max_compressed_payload_size == payloads[index]);
+            assert(config.max_internal_buffered_bytes == aggregates[index]);
+            assert(config.max_lz_distance == extents[index]);
+            assert(config.max_lz_match_length == 258);
+            assert(config.max_entropy_table_entries == UINT64_C(126976));
+            assert(config.profile == profiles[index]);
+            const marc_lzss_contextual_rans_config snapshot = config;
+            assert(marc_lzss_contextual_rans_config_apply_profile(
+                       &config, profiles[index]) == MARC_STATUS_OK);
+            assert(memcmp(&config, &snapshot, sizeof(config)) == 0);
+        }
+    }
+
+    marc_lzss_contextual_rans_config config;
+    assert(marc_lzss_contextual_rans_config_init(
+               MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
+    marc_lzss_contextual_rans_config invalid = config;
+    --invalid.struct_size;
+    marc_lzss_contextual_rans_config snapshot = invalid;
+    assert(marc_lzss_contextual_rans_config_apply_profile(
+               &invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
+           == MARC_STATUS_INVALID_ARGUMENT);
+    assert(memcmp(&invalid, &snapshot, sizeof(invalid)) == 0);
+    invalid = config;
+    ++invalid.abi_version;
+    snapshot = invalid;
+    assert(marc_lzss_contextual_rans_config_apply_profile(
+               &invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
+           == MARC_STATUS_INVALID_ARGUMENT);
+    assert(memcmp(&invalid, &snapshot, sizeof(invalid)) == 0);
+    invalid = config;
+    invalid.direction = (marc_direction)99;
+    snapshot = invalid;
+    assert(marc_lzss_contextual_rans_config_apply_profile(
+               &invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
+           == MARC_STATUS_INVALID_ARGUMENT);
+    assert(memcmp(&invalid, &snapshot, sizeof(invalid)) == 0);
+    invalid = config;
+    invalid.reserved = 1;
+    snapshot = invalid;
+    assert(marc_lzss_contextual_rans_config_apply_profile(
+               &invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
+           == MARC_STATUS_INVALID_ARGUMENT);
+    assert(memcmp(&invalid, &snapshot, sizeof(invalid)) == 0);
+    invalid = config;
+    invalid.reserved2 = 1;
+    snapshot = invalid;
+    assert(marc_lzss_contextual_rans_config_apply_profile(
+               &invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
+           == MARC_STATUS_INVALID_ARGUMENT);
+    assert(memcmp(&invalid, &snapshot, sizeof(invalid)) == 0);
+    snapshot = config;
+    assert(marc_lzss_contextual_rans_config_apply_profile(
+               &config, (marc_lzss_contextual_profile)3)
+           == MARC_STATUS_INVALID_ARGUMENT);
+    assert(memcmp(&config, &snapshot, sizeof(config)) == 0);
+    assert(marc_lzss_contextual_rans_config_apply_profile(
+               NULL, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
+           == MARC_STATUS_INVALID_ARGUMENT);
+}
+
 int main(void) {
+    test_apply_profile();
     static const uint8_t input[] = {0x41, 0x42, 0x41, 0x42, 0x58};
     uint8_t encoded[40000];
     uint8_t baseline_encoded[40000];

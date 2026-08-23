@@ -17,6 +17,11 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
+- Added atomic `config_apply_profile()` helpers for LZSS Contextual Dynamic
+  Range and rANS. Each helper applies the complete 64-KiB, one-MiB, or
+  four-MiB resource envelope while preserving direction, original size, and
+  the caller's total-output policy.
+
 - Added interoperability schema 46 by appending the four-MiB LZSS Contextual
   Blocked Huffman archive to the frozen schema-45 order, while retaining exact
   verification of every earlier schema.
