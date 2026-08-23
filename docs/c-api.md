@@ -226,6 +226,11 @@ dictionary/context identity `2/2 + 1/1`.
 `MARC_LZSS_CONTEXTUAL_PROFILE_1M` selects `2/3 + 1/2`, and
 `MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects `2/4 + 1/3`. The four-MiB profile uses
 the 9,125-byte descriptor ceiling and retains the 128-MiB aggregate default.
+Call `marc_lzss_contextual_tans_config_apply_profile()` to apply the selected
+frame, decision, payload, fixed-table, LZ, and aggregate limits atomically.
+The helper validates before mutation and preserves direction, original size,
+and the caller's total-output policy; callers may tighten individual hard
+limits before re-querying all workspaces.
 On supported 64-bit native layouts its full encoder and decoder requirements
 are 116,138,983 and 99,099,623 bytes; full-frame callers set
 `max_frame_size` to 4,194,304 and the common `max_block_size` decision limit
@@ -256,8 +261,13 @@ prefix non-overlap are checked before a handle is published.
 `2/2 + 1/1 + 2/2`; `MARC_LZSS_CONTEXTUAL_PROFILE_1M` selects
 `2/3 + 1/2 + 2/2`; `MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects
 `2/4 + 1/3 + 2/2`. The four-MiB profile uses `7F = 29,360,128` as its
-decision/block limit and a 55,050,240-byte payload limit. On supported 64-bit
-layouts its full encoder and decoder aggregate requirements are 126,880,348
+decision/block limit and a 55,050,240-byte payload limit.
+`marc_lzss_contextual_blocked_huffman_config_apply_profile()` applies
+the selected frame, decision, payload, 35-table, LZ, and aggregate limits as
+one atomic preset. It preserves direction, original size, and the caller's
+total-output policy, and callers may tighten hard limits before re-querying
+all workspaces. On supported 64-bit layouts its full encoder and decoder
+aggregate requirements are 126,880,348
 and 109,722,064 bytes, both within the unchanged 128-MiB default. The selector
 is exact rather than inferred from `window_size`, and decoding rejects either
 other identity before frame or raw publication. It and the trailing 32-bit

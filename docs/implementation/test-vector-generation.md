@@ -11697,3 +11697,18 @@ invalid direction, non-zero leading reserved word, non-zero trailing reserved
 word, and selector 3. Require `MARC_STATUS_INVALID_ARGUMENT` and byte-identical
 failure. Pass null separately. Compile and execute the two pure-C tests against
 the shared library under MSVC and ClangCL before running the complete suites.
+
+### TVG-0822
+
+For both tANS and Blocked Huffman, initialize encode and decode
+configurations, set distinctive original-size and total-output values, and
+apply profiles 0, 1, and 2 in sequence. Require exact frame/window/match/LZ
+limits and the backend-specific block, payload, aggregate, and table limits
+from DD-956. Reapply each selector and compare the complete structure
+byte-for-byte.
+
+For each type, snapshot then present a short structure, wrong ABI version,
+invalid direction, non-zero leading reserved word, non-zero trailing reserved
+word, and selector 3. Require `MARC_STATUS_INVALID_ARGUMENT` and byte-identical
+failure. Pass null separately. Compile and execute the two pure-C tests against
+the shared library under MSVC and ClangCL before running the complete suites.

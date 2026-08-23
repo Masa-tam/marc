@@ -6482,3 +6482,12 @@ initializers, prior Adaptive Huffman private-copy helper, CLI policy values,
 and C API tests. No external compression library, C API, source code, tests,
 vectors, patents, pseudocode, payload bounds, or optimization descriptions
 were consulted.
+
+### IR-0720
+
+The Contextual tANS and Blocked Huffman profile helpers use IR-0717 through
+IR-0719, DD-954 through DD-955, TVG-0820 through TVG-0821, the
+repository-owned profile calculators, public initializers, prior atomic
+helpers, CLI policy values, and pure-C tests. No external compression library,
+C API, source code, tests, vectors, patents, pseudocode, payload bounds, or
+optimization descriptions were consulted.

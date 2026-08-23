@@ -28,6 +28,95 @@ static void set_small_limits(
     config->max_entropy_table_entries = UINT64_C(1) << 20;
 }
 
+static void expect_apply_failure(
+    marc_lzss_contextual_blocked_huffman_config config,
+    marc_lzss_contextual_profile profile) {
+    const marc_lzss_contextual_blocked_huffman_config snapshot = config;
+    assert(marc_lzss_contextual_blocked_huffman_config_apply_profile(
+               &config, profile) == MARC_STATUS_INVALID_ARGUMENT);
+    assert(memcmp(&config, &snapshot, sizeof(config)) == 0);
+}
+
+static void test_apply_profile(void) {
+    static const marc_lzss_contextual_profile profiles[] = {
+        MARC_LZSS_CONTEXTUAL_PROFILE_64K,
+        MARC_LZSS_CONTEXTUAL_PROFILE_1M,
+        MARC_LZSS_CONTEXTUAL_PROFILE_4M};
+    static const uint32_t extents[] = {
+        UINT32_C(1) << 16, UINT32_C(1) << 20, UINT32_C(1) << 22};
+    static const uint64_t blocks[] = {
+        UINT64_C(393216), UINT64_C(6291456), UINT64_C(29360128)};
+    static const uint64_t payloads[] = {
+        UINT64_C(786432), UINT64_C(12582912), UINT64_C(55050240)};
+    static const uint64_t aggregates[] = {
+        UINT64_C(8) << 20, UINT64_C(128) << 20, UINT64_C(128) << 20};
+    static const marc_direction directions[] = {
+        MARC_DIRECTION_ENCODE, MARC_DIRECTION_DECODE};
+
+    for (size_t direction_index = 0;
+         direction_index < sizeof(directions) / sizeof(directions[0]);
+         ++direction_index) {
+        marc_lzss_contextual_blocked_huffman_config config;
+        assert(marc_lzss_contextual_blocked_huffman_config_init(
+                   directions[direction_index], &config) == MARC_STATUS_OK);
+        config.original_size = UINT64_C(1234567);
+        config.max_total_output_size = UINT64_C(7654321);
+        for (size_t index = 0;
+             index < sizeof(profiles) / sizeof(profiles[0]); ++index) {
+            assert(marc_lzss_contextual_blocked_huffman_config_apply_profile(
+                       &config, profiles[index]) == MARC_STATUS_OK);
+            assert(config.direction == directions[direction_index]);
+            assert(config.original_size == UINT64_C(1234567));
+            assert(config.max_total_output_size == UINT64_C(7654321));
+            assert(config.frame_size == extents[index]);
+            assert(config.window_size == extents[index]);
+            assert(config.min_match_length == 5);
+            assert(config.max_match_length == 258);
+            assert(config.max_frame_size == extents[index]);
+            assert(config.max_block_size == blocks[index]);
+            assert(config.max_compressed_payload_size == payloads[index]);
+            assert(config.max_internal_buffered_bytes == aggregates[index]);
+            assert(config.max_lz_distance == extents[index]);
+            assert(config.max_lz_match_length == 258);
+            assert(config.max_entropy_table_entries == 35);
+            assert(config.profile == profiles[index]);
+            const marc_lzss_contextual_blocked_huffman_config snapshot =
+                config;
+            assert(marc_lzss_contextual_blocked_huffman_config_apply_profile(
+                       &config, profiles[index]) == MARC_STATUS_OK);
+            assert(memcmp(&config, &snapshot, sizeof(config)) == 0);
+        }
+    }
+
+    marc_lzss_contextual_blocked_huffman_config invalid;
+    assert(marc_lzss_contextual_blocked_huffman_config_init(
+               MARC_DIRECTION_ENCODE, &invalid) == MARC_STATUS_OK);
+    --invalid.struct_size;
+    expect_apply_failure(invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    assert(marc_lzss_contextual_blocked_huffman_config_init(
+               MARC_DIRECTION_ENCODE, &invalid) == MARC_STATUS_OK);
+    ++invalid.abi_version;
+    expect_apply_failure(invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    assert(marc_lzss_contextual_blocked_huffman_config_init(
+               MARC_DIRECTION_ENCODE, &invalid) == MARC_STATUS_OK);
+    invalid.direction = (marc_direction)99;
+    expect_apply_failure(invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    assert(marc_lzss_contextual_blocked_huffman_config_init(
+               MARC_DIRECTION_ENCODE, &invalid) == MARC_STATUS_OK);
+    invalid.reserved = 1;
+    expect_apply_failure(invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    assert(marc_lzss_contextual_blocked_huffman_config_init(
+               MARC_DIRECTION_ENCODE, &invalid) == MARC_STATUS_OK);
+    invalid.reserved2 = 1;
+    expect_apply_failure(invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    assert(marc_lzss_contextual_blocked_huffman_config_init(
+               MARC_DIRECTION_ENCODE, &invalid) == MARC_STATUS_OK);
+    expect_apply_failure(invalid, (marc_lzss_contextual_profile)3);
+    assert(marc_lzss_contextual_blocked_huffman_config_apply_profile(
+               NULL, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
+           == MARC_STATUS_INVALID_ARGUMENT);
+}
+
 static void set_extended_limits(
     marc_lzss_contextual_blocked_huffman_config* config,
     size_t raw_size) {
@@ -312,6 +401,7 @@ static void run_four_mib_profile(void) {
 }
 
 int main(void) {
+    test_apply_profile();
     static const uint8_t input[] = {0x41, 0x42, 0x41, 0x42, 0x58};
     uint8_t encoded[20000];
     uint8_t decoded[sizeof(input)];

@@ -1244,6 +1244,9 @@ MARC_API marc_status marc_lzss_contextual_rans_create(
 MARC_API marc_status marc_lzss_contextual_tans_config_init(
     marc_direction direction,
     marc_lzss_contextual_tans_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_contextual_tans_config_apply_profile(
+    marc_lzss_contextual_tans_config* config,
+    marc_lzss_contextual_profile profile) MARC_NOEXCEPT;
 MARC_API marc_status marc_lzss_contextual_tans_workspace_requirements(
     const marc_lzss_contextual_tans_config* config,
     marc_workspace_requirements* requirements) MARC_NOEXCEPT;
@@ -1283,6 +1286,10 @@ MARC_API marc_status marc_lzss_contextual_adaptive_huffman_create(
 MARC_API marc_status marc_lzss_contextual_blocked_huffman_config_init(
     marc_direction direction,
     marc_lzss_contextual_blocked_huffman_config* config) MARC_NOEXCEPT;
+MARC_API marc_status
+marc_lzss_contextual_blocked_huffman_config_apply_profile(
+    marc_lzss_contextual_blocked_huffman_config* config,
+    marc_lzss_contextual_profile profile) MARC_NOEXCEPT;
 MARC_API marc_status
 marc_lzss_contextual_blocked_huffman_workspace_requirements(
     const marc_lzss_contextual_blocked_huffman_config* config,

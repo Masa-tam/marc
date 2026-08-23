@@ -19925,3 +19925,20 @@ Validate the complete ABI shell and selector before copying, preserve
 direction, original size, total-output policy, ABI metadata, and reserved
 zeros, and publish the private copy only after all values are complete. Do not
 alter initializers, ABI extents, stream identities, CLI behavior, or schema 47.
+
+## DD-956: Admit atomic tANS and Blocked Huffman profile helpers
+
+- Date: 2026-08-23
+- Status: accepted
+
+Apply all three established resource envelopes through strongly typed tANS
+and Blocked Huffman helpers. Both own the common `6F/6F/7F` decision limits.
+tANS owns payload limits `9F+2`, `9F+2`, and `21F/2+2`, plus its fixed
+131,072-entry decode-table limit. Blocked Huffman owns payload limits `12F`,
+`12F`, and `105F/8`, plus its maximum 35 simultaneous decode tables. Both
+retain the established 8/128/128-MiB aggregate policies.
+
+Validate the complete ABI shell and selector before copying, preserve
+direction, original size, total-output policy, ABI metadata, and reserved
+zeros, and publish the private copy only after all values are complete. Do not
+alter initializers, ABI extents, stream identities, CLI behavior, or schema 47.
