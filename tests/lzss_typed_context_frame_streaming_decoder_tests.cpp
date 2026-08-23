@@ -115,6 +115,25 @@ using marc::dictionary::internal::LzssTypedToken;
     return header;
 }
 
+[[nodiscard]] constexpr auto sixteen_mib_stream_header() {
+    auto header = stream_header(1, 1);
+    header[14] = std::byte{0x05};
+    header[20] = std::byte{0x00};
+    header[23] = std::byte{0x01};
+    header[66] = std::byte{0x00};
+    header[67] = std::byte{0x01};
+    header[98] = std::byte{0x04};
+    return header;
+}
+
+[[nodiscard]] marc::core::DecoderLimits sixteen_mib_limits() noexcept {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 16777216;
+    limits.max_lz_distance = 16777216;
+    limits.max_entropy_table_entries = 4582;
+    return limits;
+}
+
 [[nodiscard]] constexpr std::uint32_t end_flag() {
     return marc::core::flag_value(ProcessFlags::end_input);
 }
@@ -221,6 +240,58 @@ TEST(LzssTypedContextFrameStreamingDecoder,
     } while (status != StreamStatus::end_of_stream);
     EXPECT_EQ(input_offset, encoded.size());
     EXPECT_EQ(output[0], std::byte{'A'});
+}
+
+TEST(LzssTypedContextFrameStreamingDecoder,
+     SixteenMiBVariantCompletesWithOneByteInputAndOutput) {
+    constexpr auto header = sixteen_mib_stream_header();
+    constexpr auto frame_bytes = literal_frame(0);
+    std::array<std::byte, header.size() + frame_bytes.size()> encoded{};
+    std::ranges::copy(header, encoded.begin());
+    std::ranges::copy(frame_bytes, encoded.begin() + header.size());
+    std::array<std::byte, 86> frame{};
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<std::byte, 1> raw{};
+    LzssTypedContextFrameStreamingDecoder decoder{
+        sixteen_mib_limits(), frame, tokens, raw,
+        LzssTypedContextStreamAdmission::field_context_16m};
+
+    std::size_t input_offset{};
+    std::array<std::byte, 1> output{};
+    StreamStatus status{};
+    do {
+        const auto chunk = std::span<const std::byte>{encoded}.subspan(
+            input_offset, 1);
+        const auto result = decoder.process(
+            chunk, output,
+            input_offset + 1 == encoded.size() ? end_flag() : 0U);
+        ASSERT_TRUE(marc::core::is_valid(
+            result, chunk.size(), output.size()));
+        ASSERT_NE(result.status, StreamStatus::error)
+            << "code=" << static_cast<unsigned>(result.error.code)
+            << " input_offset=" << input_offset
+            << " error_byte=" << result.error.byte_position;
+        input_offset += result.input_consumed;
+        status = result.status;
+    } while (status != StreamStatus::end_of_stream);
+    EXPECT_EQ(input_offset, encoded.size());
+    EXPECT_EQ(output[0], std::byte{'A'});
+}
+
+TEST(LzssTypedContextFrameStreamingDecoder,
+     OlderAdmissionsRejectSixteenMiBIdentityAfterHeader) {
+    constexpr auto header = sixteen_mib_stream_header();
+    for (const auto admission : {
+             LzssTypedContextStreamAdmission::field_context_64k,
+             LzssTypedContextStreamAdmission::field_context_1m,
+             LzssTypedContextStreamAdmission::field_context_4m}) {
+        LzssTypedContextFrameStreamingDecoder decoder{
+            sixteen_mib_limits(), {}, {}, {}, admission};
+        const auto result = decoder.process(header, {}, 0);
+        EXPECT_EQ(result.status, StreamStatus::error);
+        EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+        EXPECT_EQ(result.input_consumed, header.size());
+    }
 }
 
 TEST(LzssTypedContextFrameStreamingDecoder,

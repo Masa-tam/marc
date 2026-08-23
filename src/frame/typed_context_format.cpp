@@ -142,7 +142,7 @@ TypedContextStreamHeaderError parse_typed_context_stream_header(
         return TypedContextStreamHeaderError::unknown_dictionary_algorithm;
     }
     if (dictionary_variant != 2 && dictionary_variant != 3
-        && dictionary_variant != 4) {
+        && dictionary_variant != 4 && dictionary_variant != 5) {
         return TypedContextStreamHeaderError::unsupported_dictionary_variant;
     }
     if (entropy_algorithm != 3) {
@@ -200,7 +200,7 @@ TypedContextStreamHeaderError parse_typed_context_stream_header(
         return TypedContextStreamHeaderError::unknown_context_model;
     }
     if (context_variant != 1 && context_variant != 2
-        && context_variant != 3) {
+        && context_variant != 3 && context_variant != 4) {
         return TypedContextStreamHeaderError::unsupported_context_variant;
     }
     if (context_flags != 0 || !all_zero(bytes.subspan(104, 8))) {
@@ -228,12 +228,6 @@ TypedContextStreamHeaderError serialize_typed_context_stream_header(
     noexcept {
     const auto error = validate_typed_context_stream_header(header, limits);
     if (error != TypedContextStreamHeaderError::none) return error;
-    if (header.dictionary_variant == 5) {
-        return TypedContextStreamHeaderError::unsupported_dictionary_variant;
-    }
-    if (header.context_variant == 4) {
-        return TypedContextStreamHeaderError::unsupported_context_variant;
-    }
     std::array<std::byte, typed_context_stream_header_size> encoded{};
     std::ranges::copy(stream_magic, encoded.begin());
     const std::span<std::byte> bytes{encoded};

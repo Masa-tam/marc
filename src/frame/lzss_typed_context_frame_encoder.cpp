@@ -133,11 +133,6 @@ template <bool UseHashChain>
         result.error = LzssTypedContextFrameEncodeError::invalid_stream;
         return result;
     }
-    if (selected.layout.context_variant
-        == context::internal::LzssFieldContextVariant::field_context_16m) {
-        result.error = LzssTypedContextFrameEncodeError::invalid_stream;
-        return result;
-    }
     if (!exact_input_size(stream, output_already_committed,
                           raw_input.size())) {
         result.error = LzssTypedContextFrameEncodeError::input_size_mismatch;

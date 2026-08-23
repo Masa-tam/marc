@@ -214,7 +214,7 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
         Mutation{14, std::byte{1},
                  TypedContextStreamHeaderError::unsupported_dictionary_variant},
         Mutation{14, std::byte{5},
-                 TypedContextStreamHeaderError::unsupported_dictionary_variant},
+                 TypedContextStreamHeaderError::contradictory_parameters},
         Mutation{16, std::byte{4},
                  TypedContextStreamHeaderError::unknown_entropy_algorithm},
         Mutation{18, std::byte{1},
@@ -224,7 +224,7 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
         Mutation{98, std::byte{2},
                  TypedContextStreamHeaderError::contradictory_parameters},
         Mutation{98, std::byte{4},
-                 TypedContextStreamHeaderError::unsupported_context_variant},
+                 TypedContextStreamHeaderError::contradictory_parameters},
     };
     for (const auto& mutation : mutations) {
         auto bytes = stream_vector();
@@ -242,7 +242,7 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
 }
 
 TEST(TypedContextStreamFormat,
-     AdmitsPrivateSixteenMibPreflightButNotStreamSerialization) {
+     SerializesAndParsesPrivateSixteenMibStreamHeader) {
     const auto stream = sixteen_mib_stream_config();
     auto limits = marc::core::DecoderLimits{};
     limits.max_frame_size = stream.frame_size;
@@ -253,12 +253,23 @@ TEST(TypedContextStreamFormat,
     EXPECT_EQ(validate_typed_context_stream_header(stream, limits),
               TypedContextStreamHeaderError::none);
     std::array<std::byte, typed_context_stream_header_size> output{};
-    output.fill(std::byte{0xa5});
-    EXPECT_EQ(serialize_typed_context_stream_header(stream, limits, output),
-              TypedContextStreamHeaderError::unsupported_dictionary_variant);
-    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
-        return value == std::byte{0xa5};
-    }));
+    ASSERT_EQ(serialize_typed_context_stream_header(stream, limits, output),
+              TypedContextStreamHeaderError::none);
+    EXPECT_EQ(output[14], std::byte{5});
+    EXPECT_EQ(output[23], std::byte{1});
+    EXPECT_EQ(output[66], std::byte{0});
+    EXPECT_EQ(output[67], std::byte{1});
+    EXPECT_EQ(output[98], std::byte{4});
+    TypedContextStreamHeader parsed{};
+    std::size_t consumed{};
+    ASSERT_EQ(parse_typed_context_stream_header(
+                  output, limits, parsed, consumed),
+              TypedContextStreamHeaderError::none);
+    EXPECT_EQ(consumed, output.size());
+    EXPECT_EQ(parsed.dictionary_variant, 5U);
+    EXPECT_EQ(parsed.context_variant, 4U);
+    EXPECT_EQ(parsed.frame_size, 16777216U);
+    EXPECT_EQ(parsed.dictionary.window_size, 16777216U);
 }
 
 TEST(TypedContextStreamFormat, RejectsCrossedKnownVariantPairsAtomically) {

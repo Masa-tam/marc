@@ -339,7 +339,7 @@ foreach(required_window_16m_term IN ITEMS
         "decision_count <= 7F"
         "aggregate                      1,057,488,981 bytes"
         "A 64-MiB jump would require class 26"
-        "Stream-header parsing/serialization,"
+        "private Dynamic Range encoder/decoder and streaming lifecycle"
         "Match-finder strategy remains encoder-local and is not serialized")
     string(FIND "${lzss_contextual_window_16m_content}"
         "${required_window_16m_term}" required_window_16m_term_offset)

@@ -20075,3 +20075,23 @@ reconstruction. Check model-table and `7F`/`34T` ceilings plus one-short
 caller workspaces atomically. Existing serialized bytes, public ABI, profile
 selectors, defaults, CLI inventory, streaming admission, and schema 47 remain
 unchanged.
+
+## DD-963: Complete the private 16-MiB Dynamic Range lifecycle
+
+- Date: 2026-08-23
+- Status: accepted
+
+Admit exact triple `2/5 + 1/4 + 3/2` in serialized stream parsing and
+serialization, both complete-frame encoder paths, and streaming encode/decode.
+Add a private profile selector and explicit streaming admission without adding
+the reserved public C selector, CLI name, benchmark name, fuzz admission, or
+interoperability schema entry.
+
+Use the selected context layout's seven-decisions-per-raw-byte multiplier in
+the existing checked encoder query. At a full 16-MiB frame, require exact
+encoder aggregate 1,057,488,981 bytes and decoder aggregate 452,984,917 bytes;
+equality succeeds and one byte short clears the unpublished workspace result.
+Keep the initializer default at 64 KiB, require caller-supplied local limits,
+and make older explicit streaming admissions reject the new pair after the
+complete header. Preserve all earlier stream bytes and keep every other
+entropy backend closed at context variant 4.

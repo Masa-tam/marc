@@ -25597,3 +25597,40 @@ both bounds.
   93.41 and 87.90 seconds respectively. An initial sandboxed MSVC all-target
   build hit the known FileTracker access denial; the unrestricted retry
   completed successfully. The final diff is whitespace-clean.
+
+## CR-1042: 2026-08-23 - Private 16-MiB Dynamic Range lifecycle
+
+- Authoring method: extended marc's completed four-MiB Dynamic Range lifecycle
+  only after the 16-MiB decoder and exact resource arithmetic were fixed and
+  tested independently.
+- References used: IR-0722 through IR-0725, DD-960 through DD-963, TVG-0824
+  through TVG-0827, CR-1039 through CR-1041, and the repository-owned stream
+  serializer, profile calculator, HashChain frame encoder, and streaming state
+  machines.
+- Known implementations intentionally not consulted: external compressor
+  source, formats, stream control flow, workspace formulas, tests, vectors,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: open only the private Dynamic Range lifecycle; use
+  exact selected-layout aggregates; admit the new identity explicitly while
+  making older admissions reject it; preserve the public ABI and every other
+  backend gate; and avoid allocating full-profile workspaces in boundary
+  tests.
+- Generated-code task description: implement stream-header production and
+  parsing, direct and HashChain frame encoding, exact workspace queries,
+  one-byte streaming round trips, old-admission rejection, atomic one-short
+  bounds, and synchronized format/provenance documentation.
+- Similarity review: implementation and tests extend marc's immediately prior
+  first-party lifecycle and independently derived 16-MiB design. No external
+  implementation expression or test structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. All 3,228 registered tests passed on each toolchain with
+  the 600-second per-test limit. The seven tooling tests passed separately
+  outside the sandbox; the remaining 3,221 passed in 214.94 seconds under
+  MSVC and 221.81 seconds under ClangCL. Both runs included all 21 experimental
+  and 42 public benchmark smokes, every public C and CLI path, documentation
+  validation, and `marc_interoperability_schema_compatibility`, which passed
+  in 98.25 and 91.81 seconds respectively. The MSVC documentation validator
+  initially retained one decoder-only stage phrase; after updating that
+  required term, its focused rerun passed. A sandboxed incremental MSVC build
+  hit the known FileTracker access denial; the unrestricted retry and full
+  build succeeded. The final diff is whitespace-clean.

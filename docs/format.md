@@ -7024,11 +7024,11 @@ window](design/lzss-contextual-window-4m.md).
 ### Reserved 16 MiB LZSS field-context family
 
 Format 2.0 reserves dictionary algorithm/variant `2/5` together with context-
-model algorithm/variant `1/4`. They MUST occur together. Private Dynamic Range
-header validation and complete-frame decoding admit the exact
-`2/5 + 1/4 + 3/2` triple. Serialized stream-header parsing and serialization,
-all encoders, streaming, and public entry points remain closed; reservation
-does not authorize an encoder to emit it.
+model algorithm/variant `1/4`. They MUST occur together. The private Dynamic
+Range lifecycle admits the exact `2/5 + 1/4 + 3/2` triple in stream-header
+parsing and serialization, complete-frame encoding and decoding, and
+streaming. Public C entry points remain closed, so this private lifecycle does
+not yet authorize public tools or applications to emit it.
 
 Dictionary variant 5 retains the 16-byte parameter layout, minimum match
 length 5, maximum match length 258, and permits a window no larger than
@@ -7051,7 +7051,7 @@ limits. At `F = 16,777,216`, the Dynamic Range candidate retains payload
 ceiling `14F+5 = 234,881,029` and complete-frame ceiling
 `14F+85 = 234,881,109`; these numbers reserve no public resource policy.
 
-The source-level selector value 3 and `MARC_LZSS_CONTEXTUAL_PROFILE_16M` name
+The public selector value 3 and `MARC_LZSS_CONTEXTUAL_PROFILE_16M` name
 are reserved for a later public stage. They are not serialized, do not exist
 in the current ABI, and must not be inferred from frame, window, or distance
 fields. Existing initializers remain 64 KiB. The complete staged contract is
@@ -7063,10 +7063,12 @@ its layout internally. The private Dynamic Range frame preflight selects
 `decision_count <= 34*token_count`; complete-frame decoding uses caller-owned
 token and raw workspaces and rejects short, crossed, overlapping, malformed,
 or locally over-limit inputs before publishing success. Its first backend-
-specific vector exercises distance 4,194,305. Dynamic Range stream parsing,
-serialization, and encoding remain closed at this stage. Canonical contextual
-rANS and tANS continue to admit only their completed four-MiB entropy triples;
-other backend-specific entry points retain their previously completed pairs.
+specific vector exercises distance 4,194,305. The private encoder and
+streaming lifecycle use the same frame representation and exact checked
+workspace queries; older explicit streaming admissions reject this identity.
+Canonical contextual rANS and tANS continue to admit only their completed
+four-MiB entropy triples; other backend-specific entry points retain their
+previously completed pairs.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

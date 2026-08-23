@@ -11781,3 +11781,20 @@ For the one-Literal frame, require exact token/raw workspace capacity and
 atomic rejection at one element/byte short and for a crossed context pair.
 Continue to reject dictionary variant 5 in serialized stream parsing and
 serialization and in complete-frame encoding.
+
+### TVG-0827
+
+For the private Dynamic Range lifecycle, serialize and parse exact pair
+`2/5 + 1/4`, then encode and decode a one-Literal frame through both direct
+and one-byte input/output streaming paths. Require the stream header to carry
+dictionary variant 5, the 16-MiB frame/window values, and context variant 4.
+Require the 64-KiB, one-MiB, and four-MiB explicit streaming admissions to
+reject that complete identity.
+
+Query the full 16-MiB encoder profile under its explicit one-GiB policy and
+require frame input 16,777,216, encoded frame 234,881,109, token staging
+201,326,592, operation staging 536,870,912, HashChain staging 67,633,152, and
+aggregate 1,057,488,981 bytes. Query the decoder and require aggregate
+452,984,917 bytes. At one byte below either aggregate, require failure and a
+cleared workspace result without allocating the full extent. Retain all old
+one-Literal frame bytes exactly.

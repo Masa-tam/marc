@@ -16,6 +16,7 @@ enum class LzssTypedContextStreamAdmission : std::uint8_t {
     field_context_64k,
     field_context_1m,
     field_context_4m,
+    field_context_16m,
 };
 
 class LzssTypedContextFrameStreamingDecoder final : public core::Transform {

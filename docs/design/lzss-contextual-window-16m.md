@@ -1,9 +1,8 @@
 # LZSS contextual 16 MiB window
 
-Status: Dynamic Range decoder preflight and private complete-frame decoding
-implemented after project version 0.4.0. Stream-header parsing/serialization,
-encoding, streaming, public selectors, CLI profiles, and interoperability
-remain unadmitted.
+Status: private Dynamic Range encoder/decoder and streaming lifecycle
+implemented after project version 0.4.0. Public selectors, C lifecycle, CLI
+profiles, bounded fuzzing, and interoperability remain unadmitted.
 
 ## Purpose
 
@@ -185,18 +184,28 @@ typed tokens, and then reconstructs raw bytes into caller-owned disjoint
 workspaces. The first backend-specific vector decodes distance 4,194,305, the
 first distance outside variant 4, from overlap-built history.
 
-The serialized Dynamic Range stream parser and serializer continue to reject
-dictionary variant 5, and both complete-frame encoder entry points reject the
-private triple. Streaming therefore remains closed until the exact workspace
-profile and lifecycle are implemented together. Compact rANS/tANS model paths
-also return their stable unsupported-context error for context variant 4.
+The private Dynamic Range stream parser and serializer now admit only the
+exact dictionary-variant-5/context-variant-4 pair. Complete-frame encoding,
+HashChain encoding, and one-byte input/output streaming round trips use the
+same existing Dynamic Range frame representation. Explicit stream admission
+can select the 16-MiB identity, while every older explicit admission rejects
+it after collecting the complete stream header.
+
+The authoritative encoder workspace query uses the selected layout's `7F`
+decision multiplier and returns the exact 1,057,488,981-byte full-profile
+aggregate on the supported 64-bit object layout. The decoder query returns
+452,984,917 bytes. Equality succeeds and one byte short fails before workspace
+publication. No full-size workspace is allocated by boundary tests. Compact
+rANS/tANS model paths continue to return their stable unsupported-context
+error for context variant 4.
 
 ## Staged implementation order
 
 1. shared dictionary/context constants, layouts, validators, and hand vectors
    (complete);
 2. Dynamic Range decoder preflight and complete-frame decode (complete);
-3. Dynamic Range encoder, exact workspace query, and streaming lifecycle;
+3. Dynamic Range encoder, exact workspace query, and streaming lifecycle
+   (complete);
 4. Dynamic Range C helper, CLI, benchmark, bounded fuzzing, and schema entry;
 5. canonical contextual rANS;
 6. contextual tANS;

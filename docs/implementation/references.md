@@ -6529,3 +6529,13 @@ decoder-only staging pattern, typed-context frame preflight, contextual range
 decoder, typed-token reconstruction, and atomic workspace tests. No external
 compression library, source code, tests, vectors, patents, pseudocode, format
 layout, or optimization description was consulted.
+
+### IR-0725
+
+The private 16-MiB Dynamic Range producing and streaming lifecycle uses
+IR-0722 through IR-0724, DD-960 through DD-962, TVG-0824 through TVG-0826,
+marc's existing four-MiB lifecycle, selected-layout workspace arithmetic,
+transactional stream-header serializer, HashChain encoder, and chunked stream
+state machines. No external compression library, source code, tests, vectors,
+patents, pseudocode, format layout, workspace formula, or optimization
+description was consulted.

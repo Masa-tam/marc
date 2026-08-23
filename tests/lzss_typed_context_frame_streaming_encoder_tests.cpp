@@ -49,6 +49,24 @@ using marc::dictionary::internal::LzssTypedToken;
     return stream;
 }
 
+[[nodiscard]] TypedContextStreamHeader sixteen_mib_stream_config(
+    const std::uint32_t frame_size,
+    const std::uint64_t original_size) noexcept {
+    auto stream = stream_config(frame_size, original_size);
+    stream.dictionary.window_size = 16777216;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    return stream;
+}
+
+[[nodiscard]] marc::core::DecoderLimits sixteen_mib_limits() noexcept {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 16777216;
+    limits.max_lz_distance = 16777216;
+    limits.max_entropy_table_entries = 4582;
+    return limits;
+}
+
 [[nodiscard]] constexpr std::array<std::byte, 112> stream_header(
     const std::uint8_t frame_size,
     const std::uint8_t original_size) noexcept {
@@ -247,6 +265,41 @@ TEST(LzssTypedContextFrameStreamingEncoder,
     EXPECT_EQ(encoded[22], std::byte{0x40});
     EXPECT_EQ(encoded[66], std::byte{0x40});
     EXPECT_EQ(encoded[98], std::byte{0x03});
+}
+
+TEST(LzssTypedContextFrameStreamingEncoder,
+     SixteenMiBVariantCompletesWithOneByteInputAndOutput) {
+    constexpr std::array input{std::byte{'A'}};
+    std::array<std::byte, 1> raw{};
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<ModeledOperation, 2> operations{};
+    std::array<std::byte, 86> frame{};
+    LzssTypedContextFrameStreamingEncoder encoder{
+        sixteen_mib_stream_config(16777216, 1), sixteen_mib_limits(), raw,
+        tokens, operations, {}, frame};
+
+    std::vector<std::byte> encoded;
+    std::array<std::byte, 1> output{};
+    std::size_t input_offset{};
+    StreamStatus status{};
+    do {
+        const auto chunk = std::span<const std::byte>{input}.subspan(
+            input_offset, input_offset == input.size() ? 0 : 1);
+        const auto result = encoder.process(chunk, output, end_flag());
+        ASSERT_TRUE(marc::core::is_valid(
+            result, chunk.size(), output.size()));
+        ASSERT_NE(result.status, StreamStatus::error)
+            << static_cast<unsigned>(result.error.code);
+        input_offset += result.input_consumed;
+        if (result.output_produced != 0) encoded.push_back(output[0]);
+        status = result.status;
+    } while (status != StreamStatus::end_of_stream);
+    EXPECT_EQ(input_offset, input.size());
+    ASSERT_EQ(encoded.size(), typed_context_stream_header_size + 86U);
+    EXPECT_EQ(encoded[14], std::byte{0x05});
+    EXPECT_EQ(encoded[23], std::byte{0x01});
+    EXPECT_EQ(encoded[67], std::byte{0x01});
+    EXPECT_EQ(encoded[98], std::byte{0x04});
 }
 
 TEST(LzssTypedContextFrameStreamingEncoder,
