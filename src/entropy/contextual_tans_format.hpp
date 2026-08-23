@@ -20,7 +20,7 @@ inline constexpr std::uint16_t contextual_tans_context_count =
 inline constexpr std::size_t contextual_tans_frequency_entries =
     context::internal::lzss_field_context_frequency_entries;
 inline constexpr std::size_t contextual_tans_frequency_capacity =
-    context::internal::lzss_field_context_frequency_entries_v3;
+    context::internal::lzss_field_context_frequency_entries_v4;
 inline constexpr std::size_t contextual_tans_descriptor_prefix_size = 24;
 inline constexpr std::size_t contextual_tans_min_descriptor_size =
     contextual_tans_descriptor_prefix_size

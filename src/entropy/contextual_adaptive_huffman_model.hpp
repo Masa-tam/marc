@@ -26,6 +26,11 @@ inline constexpr std::size_t contextual_adaptive_huffman_node_entries_v3 =
     + context::internal::lzss_field_context_count;
 inline constexpr std::size_t contextual_adaptive_huffman_symbol_entries_v3 =
     context::internal::lzss_field_context_frequency_entries_v3;
+inline constexpr std::size_t contextual_adaptive_huffman_node_entries_v4 =
+    2 * context::internal::lzss_field_context_frequency_entries_v4
+    + context::internal::lzss_field_context_count;
+inline constexpr std::size_t contextual_adaptive_huffman_symbol_entries_v4 =
+    context::internal::lzss_field_context_frequency_entries_v4;
 
 enum class ContextualAdaptiveHuffmanModelError : std::uint8_t {
     none,

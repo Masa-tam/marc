@@ -41,6 +41,8 @@ constexpr std::array frame_magic{
         return entropy::internal::contextual_tans_max_descriptor_size_v2;
     case context::internal::LzssFieldContextVariant::field_context_4m:
         return entropy::internal::contextual_tans_max_descriptor_size_v3;
+    case context::internal::LzssFieldContextVariant::field_context_16m:
+        return 0;
     }
     return 0;
 }

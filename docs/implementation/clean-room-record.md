@@ -25531,3 +25531,34 @@ both bounds.
   ClangCL Release trees with the 600-second per-test limit. The final diff is
   whitespace-clean; codec and interoperability tests are unchanged because
   this commit reserves documentation and validator contracts only.
+
+## CR-1040: 2026-08-23 - Shared 16-MiB contextual primitives
+
+- Authoring method: extended marc's existing three typed-token and field-
+  context variants mechanically from the accepted 16-MiB design, then used
+  tests to distinguish the inclusive window capability from the reachable
+  distance of an equal-sized reset frame.
+- References used: IR-0722 through IR-0723, DD-960 through DD-961, TVG-0824
+  through TVG-0825, CR-1039, and the repository-owned typed-token, context,
+  format-admission, and boundary-test implementations.
+- Known implementations intentionally not consulted: external compressor
+  source, token layouts, context models, tests, vectors, match finders,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: add only the shared `2/5 + 1/4` layout; construct
+  the full-distance vector from bounded overlap Matches; enlarge internal
+  array capacity where the shared layout can reach it; and preserve explicit
+  Dynamic Range and compact ANS rejection until backend-specific work exists.
+- Generated-code task description: implement the 16-MiB token and context
+  constants, exact selector, checked limits, class-24 round trip, crossed-pair
+  rejection, backend non-admission, documentation clarification, and warning-
+  clean dual-toolchain validation.
+- Similarity review: code structure follows marc's immediately preceding
+  first-party variants and tests. No external implementation expression or
+  test structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. All 3,221 registered tests passed with the 600-second per-
+  test limit: 210.89 seconds under MSVC and 223.31 seconds under ClangCL. Both
+  runs included all 21 experimental and 42 public benchmark smokes, seven
+  Python tooling tests, documentation validation, every existing public C and
+  CLI path, and `marc_interoperability_schema_compatibility`, which passed in
+  87.49 and 86.31 seconds respectively. The final diff is whitespace-clean.

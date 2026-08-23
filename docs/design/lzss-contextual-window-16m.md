@@ -1,7 +1,8 @@
 # LZSS contextual 16 MiB window
 
-Status: reserved design after project version 0.4.0. No implementation,
-public selector, CLI profile, or interoperability archive is admitted yet.
+Status: shared dictionary/context primitives implemented after project
+version 0.4.0. No entropy backend, public selector, CLI profile, or
+interoperability archive is admitted yet.
 
 ## Purpose
 
@@ -62,6 +63,13 @@ cross the current frame's reconstructed prefix. HashChain Exact is the
 initial production strategy and Exhaustive remains the small-input oracle.
 BinaryTree, complete HashTree, and sparse HashTree remain private experiments
 until fresh 16-MiB corpus evidence justifies a strategy change.
+
+Because the reference profile resets at that frame boundary, its greatest
+reachable distance is `16,777,216 - minimum_match_length`, not the inclusive
+window parameter ceiling. The shared variant nevertheless defines class 24
+and validates the full 16,777,216-byte distance for a caller-supplied frame
+larger than its window. The hand vector uses that larger test frame; it does
+not imply cross-frame history or widen the future fixed profile.
 
 ## Context variant 4
 
@@ -146,8 +154,8 @@ no estimate in this shared document admits them.
 ## Required tests before any backend admission
 
 - hand-check distance classes 0, 22, 23, and 24;
-- reconstruct an exact distance-16,777,216 Match without storing sixteen MiB
-  of literal test source;
+- reconstruct an exact distance-16,777,216 Match in an explicitly larger
+  primitive-test frame without storing sixteen MiB of literal test source;
 - reject variant-5/context-variant-4 crossings with every older pair;
 - prove `7F` and `34T` count limits at equality and one above;
 - verify every workspace extent at exact capacity and one byte short;
@@ -160,9 +168,26 @@ no estimate in this shared document admits them.
 - append an interoperability archive only after the complete public surface
   is admitted.
 
+## Shared primitive implementation
+
+The repository now owns dictionary variant 5, context variant 4, the
+25-symbol distance alphabets, 4,582-entry offsets, `24/34/7` checked layout
+limits, and the exact pair selector. Typed-token validation admits a window no
+larger than 16,777,216 bytes. The hand vector builds the required prefix from
+bounded overlap Matches and verifies a class-24 symbol, 24 zero bypass bits,
+34 added decisions, inversion, and rejection by variant 3.
+
+The current Dynamic Range stream parser and serializer continue to reject
+dictionary variant 5 before publication. Compact rANS/tANS model paths also
+return their stable unsupported-context error for context variant 4. Internal
+frequency storage has enough capacity for the shared layout, preventing a
+reserved value from becoming an out-of-bounds access while backend-specific
+descriptors remain unimplemented.
+
 ## Staged implementation order
 
-1. shared dictionary/context constants, layouts, validators, and hand vectors;
+1. shared dictionary/context constants, layouts, validators, and hand vectors
+   (complete);
 2. Dynamic Range decoder preflight and complete-frame decode;
 3. Dynamic Range encoder, exact workspace query, and streaming lifecycle;
 4. Dynamic Range C helper, CLI, benchmark, bounded fuzzing, and schema entry;

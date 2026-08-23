@@ -90,7 +90,7 @@ private:
 struct ModelState {
     std::array<std::uint16_t,
                marc::context::internal::
-                   lzss_field_context_frequency_entries_v3>
+                   lzss_field_context_frequency_entries_v4>
         frequencies{};
     std::array<std::uint32_t,
                marc::context::internal::lzss_field_context_count> totals{};

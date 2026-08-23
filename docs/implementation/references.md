@@ -6511,3 +6511,12 @@ derived directly from marc's current token representation and object extents.
 No external compression library, source code, tests, vectors, patents,
 pseudocode, payload bounds, memory policy, or optimization description was
 consulted.
+
+### IR-0723
+
+The shared 16-MiB dictionary/context primitive implementation uses IR-0722,
+DD-960, TVG-0824, the repository-owned typed-token validator, field-context
+layout and state machine, checked count validation, prior three variant
+boundary vectors, and explicit backend admission gates. No external
+compression library, source code, tests, vectors, patents, pseudocode, model
+layout, or optimization description was consulted.

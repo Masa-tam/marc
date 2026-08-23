@@ -20,6 +20,8 @@ namespace {
         return contextual_compact_model_max_records_size_v2;
     case context::internal::LzssFieldContextVariant::field_context_4m:
         return contextual_compact_model_max_records_size_v3;
+    case context::internal::LzssFieldContextVariant::field_context_16m:
+        return 0;
     }
     return 0;
 }
@@ -69,6 +71,12 @@ ContextualCompactModelAnalysis analyze_contextual_compact_model(
     const ContextualCompactFrequencies& frequencies,
     const context::internal::LzssFieldContextVariant variant) noexcept {
     ContextualCompactModelAnalysis analysis{};
+    if (variant
+        == context::internal::LzssFieldContextVariant::field_context_16m) {
+        analysis.error =
+            ContextualCompactModelError::unsupported_context_variant;
+        return analysis;
+    }
     const auto selected = context::internal::get_lzss_field_context_layout(
         variant);
     if (selected.error
@@ -130,6 +138,10 @@ ContextualCompactModelError parse_contextual_compact_model(
     const std::uint32_t active_mask,
     ContextualCompactFrequencies& frequencies,
     const context::internal::LzssFieldContextVariant variant) noexcept {
+    if (variant
+        == context::internal::LzssFieldContextVariant::field_context_16m) {
+        return ContextualCompactModelError::unsupported_context_variant;
+    }
     const auto selected = context::internal::get_lzss_field_context_layout(
         variant);
     if (selected.error
@@ -250,6 +262,10 @@ ContextualCompactModelError serialize_contextual_compact_model(
     const std::span<std::byte> output,
     std::size_t& bytes_written,
     const context::internal::LzssFieldContextVariant variant) noexcept {
+    if (variant
+        == context::internal::LzssFieldContextVariant::field_context_16m) {
+        return ContextualCompactModelError::unsupported_context_variant;
+    }
     const auto selected = context::internal::get_lzss_field_context_layout(
         variant);
     if (selected.error

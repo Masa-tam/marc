@@ -204,6 +204,8 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
                  TypedContextStreamHeaderError::unknown_dictionary_algorithm},
         Mutation{14, std::byte{1},
                  TypedContextStreamHeaderError::unsupported_dictionary_variant},
+        Mutation{14, std::byte{5},
+                 TypedContextStreamHeaderError::unsupported_dictionary_variant},
         Mutation{16, std::byte{4},
                  TypedContextStreamHeaderError::unknown_entropy_algorithm},
         Mutation{18, std::byte{1},
@@ -228,6 +230,27 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
         EXPECT_EQ(output.original_size, 123U);
         EXPECT_EQ(consumed, 7U);
     }
+}
+
+TEST(TypedContextStreamFormat, KeepsReservedSixteenMibPairUnadmitted) {
+    auto stream = four_mib_stream_config();
+    stream.frame_size = 16777216;
+    stream.dictionary.window_size = 16777216;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = stream.frame_size;
+    limits.max_entropy_table_entries = 4582;
+
+    EXPECT_EQ(validate_typed_context_stream_header(stream, limits),
+              TypedContextStreamHeaderError::unsupported_dictionary_variant);
+    std::array<std::byte, typed_context_stream_header_size> output{};
+    output.fill(std::byte{0xa5});
+    EXPECT_EQ(serialize_typed_context_stream_header(stream, limits, output),
+              TypedContextStreamHeaderError::unsupported_dictionary_variant);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
 }
 
 TEST(TypedContextStreamFormat, RejectsCrossedKnownVariantPairsAtomically) {

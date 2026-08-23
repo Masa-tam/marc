@@ -44,6 +44,8 @@ constexpr std::array frame_magic{
     case context::internal::LzssFieldContextVariant::field_context_4m:
         return entropy::internal::
             contextual_blocked_huffman_max_descriptor_size_v3;
+    case context::internal::LzssFieldContextVariant::field_context_16m:
+        return 0;
     }
     return 0;
 }

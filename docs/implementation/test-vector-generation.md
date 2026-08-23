@@ -11746,3 +11746,21 @@ limit is honored. Measure HashChain Exact and any private candidate against
 the verified external Silesia Corpus before changing production selection.
 Append an interoperability archive only after the complete public lifecycle
 for that backend is admitted.
+
+### TVG-0825
+
+Validate dictionary variant 5 at distances immediately around 4 MiB, 8 MiB,
+and 16 MiB, accept the inclusive 16,777,216-byte limit under an explicitly
+larger frame bound, and reject one byte above plus an unknown enum value.
+Select the exact `2/5 + 1/4` layout and require 25-symbol distance alphabets,
+4,582 offsets, 24 bypass bits, 34 decisions per token, and seven per raw byte;
+reject every adjacent crossed pair.
+
+Build exactly 16,777,216 bytes of history from one Literal, 65,027 overlapping
+length-258 Matches, and one length-249 Match. Append a distance-16,777,216,
+length-258 Match and require five added operations, 34 added decisions, class
+24, zero extra value, 24 bypass bits, and byte-identical token inversion.
+Require variant 3 to reject the same operations. Finally, prove the existing
+Dynamic Range stream parser/serializer and compact rANS/tANS formats reject
+the reserved pair atomically so shared constants cannot silently admit a
+backend.

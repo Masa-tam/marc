@@ -20028,3 +20028,28 @@ Stage Dynamic Range first, followed by rANS, tANS, Blocked Huffman, and
 Adaptive Huffman. Retain HashChain Exact until verified 16-MiB corpus evidence
 justifies a match-finder change. Defer 64 MiB to a separate design because
 class 26 permits 36 decisions for a minimum Match and thus exceeds `7F`.
+
+## DD-961: Implement shared 16-MiB primitives without backend admission
+
+- Date: 2026-08-23
+- Status: accepted
+
+Add typed-token variant 5 and field-context variant 4 to the shared internal
+model. Bound the window at 16,777,216 bytes; use distance alphabet 25, 4,582
+flattened entries, maximum bypass width 24, maximum 34 decisions per token,
+and maximum seven decisions per raw byte. Select only the exact `2/5 + 1/4`
+pair and preserve stable error categories for unknown and crossed variants.
+
+Distinguish the inclusive shared window limit from the fixed profile's
+reachable distance. With per-frame reset and equal frame/window sizes, the
+future profile can reach only `F-5`; the shared primitive must still validate
+distance 16,777,216 in an explicitly larger test frame. Construct its history
+from overlap Matches so the test remains bounded and hand-check class 24,
+24 bypass bits, and a 34-decision increment.
+
+Increase internal frequency-array capacity to 4,582 wherever a shared layout
+can reach it, but do not define backend-specific descriptor ceilings or admit
+the new stream pair. The current Dynamic Range parser and serializer reject
+dictionary variant 5 atomically; compact rANS/tANS format validation returns
+unsupported context variant 4. Existing identities, encoded bytes, public ABI,
+profile selectors, defaults, CLI inventory, and schema 47 remain unchanged.

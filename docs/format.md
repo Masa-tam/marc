@@ -7035,6 +7035,12 @@ contexts 23 through 30 to distance alphabet 25. It admits distance classes 0
 through 24, at most 24 LSB-first bypass bits, and exactly 4,582 flattened
 Symbol entries.
 
+The future fixed profile uses an equally sized frame and window, so its
+reachable distance is at most `frame_size - minimum_match_length`. Class 24
+still belongs to the shared variant: an independently configured frame may be
+larger than its 16-MiB window. This does not permit history across frame
+resets.
+
 One Match has at most five modeled events and 34 decisions. A raw frame of
 `F` bytes therefore uses checked common bounds `token_count <= F`,
 `event_count <= 2F`, `decision_count <= 7F`, and

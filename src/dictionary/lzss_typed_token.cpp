@@ -26,6 +26,9 @@ LzssTypedTokenError validate_lzss_typed_parameters(
     case LzssTypedTokenVariant::field_context_4m:
         maximum_window = 4194304;
         break;
+    case LzssTypedTokenVariant::field_context_16m:
+        maximum_window = 16777216;
+        break;
     default:
         return LzssTypedTokenError::invalid_parameters;
     }
