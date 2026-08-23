@@ -11848,3 +11848,20 @@ capacity factor at 14 for both four- and 16-MiB profiles and at 12 for the two
 older profiles. Run complete MSVC and ClangCL inventories, including Python
 tooling and schema compatibility, while leaving Silesia measurement, fuzz,
 and the 57-archive inventory unchanged.
+
+### TVG-0831
+
+Generate the five-byte canonical stream independently through each public
+window selector. For selector 3 require exact `2/5 + 1/4 + 3/2`, reject every
+proper truncation atomically through both complete-frame and public streaming
+decoders, reject a nonzero descriptor-reserved byte, and require all six new
+ordered cross-profile decoder mismatches to publish no raw byte.
+
+For the live harness retain fixed one-KiB token/raw staging and set its largest
+payload bound to `14*1024 + 5`, flattened model limit to 4,582, and distance
+limit to 16,777,216. Exercise all four strict public admissions for each input
+under the existing finite call bound. Require MSVC and ClangCL warning-clean
+compile smoke, then a short ClangCL sanitizer run with fixed seed, bounded
+input count, eight-KiB maximum input, five-second timeout, and 512-MiB RSS
+limit. Retain no generated corpus or artifact without a finding, and keep the
+57-archive interoperability inventory unchanged.

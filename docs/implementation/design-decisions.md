@@ -20150,3 +20150,22 @@ Register only a one-iteration README smoke and validate the report plus the
 four adjacent profile names. Do not run Silesia in the default suite, change
 the production match finder, add a fuzz target, or append an interoperability
 archive based solely on benchmark availability.
+
+## DD-967: Extend the bounded Dynamic Range fuzzer to all four profiles
+
+- Date: 2026-08-23
+- Status: accepted
+
+Drive exact public admissions 0, 1, 2, and 3 for every bounded input through
+the existing Contextual Dynamic Range decoder target. Retain an eight-KiB
+fuzz-input, four-KiB total-output, one-KiB frame/block, fixed-array, and
+finite-call policy. Raise only the shared validation bounds to `14F + 5`
+payload, 4,582 model entries, and 16-MiB distance. The 16-MiB identity must not
+allocate a 16-MiB fuzz frame or history buffer.
+
+Add permanent canonical truncation, descriptor-reserved, and all new ordered
+cross-profile rejection regressions for value 3. Compile the ordinary object
+warning-clean under both local compilers, then run one bounded sanitizer smoke
+without retaining generated mutations when no finding occurs. Do not fuzz the
+large encoder workspace or change the interoperability inventory in this
+stage.

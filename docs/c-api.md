@@ -185,8 +185,8 @@ implemented. The field and its
 trailing 32-bit reserved word occupy
 the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
 all-zero meaning used by earlier callers. The explicit Dynamic Range CLI name
-and benchmark names are now admitted; the 16-MiB profile remains outside fuzz
-and interoperability inventories.
+and benchmark names and bounded decoder-fuzz admission are now present; the
+16-MiB profile remains outside the interoperability inventory.
 The experimental LZSS contextual rANS factory is a distinct Format 2
 lifecycle. Call `marc_lzss_contextual_rans_workspace_requirements()` after
 changing direction, known size, frame/LZSS parameters, `profile`, or

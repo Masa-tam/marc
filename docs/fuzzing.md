@@ -57,11 +57,11 @@ contextual Dynamic Range target bounds supplied input at 8 KiB, published raw
 output at 4 KiB, one raw frame at 1 KiB, contextual payload at 12,293 bytes,
 and native typed-token views at 1,024 fixed records. It exercises the private
 complete-frame decoder only after the 112-byte header is accepted and always
-exercises both the 64 KiB and 1 MiB public C decoder admissions with byte-
-derived chunks and a finite call budget. The wider profile permits the 1 MiB
-identity and limits but cannot allocate a 1 MiB frame: fuzz storage and raw
-history remain capped at 1 KiB. Ordinary builds compile this target warning-
-clean.
+exercises the 64 KiB, 1 MiB, 4 MiB, and 16 MiB public C decoder admissions with
+byte-derived chunks and a finite call budget. The largest profile permits the
+16 MiB identity, distance, and 4,582-entry model bound but cannot allocate a
+16 MiB frame: fuzz storage and raw history remain capped at 1 KiB. Ordinary
+builds compile this target warning-clean.
 The experimental contextual-rANS Format 2 target caps supplied input at
 32 KiB so the selected 9,089-byte maximum descriptor and a complete bounded
 frame are reachable. It caps public output at 4 KiB and one raw frame at 1 KiB,
@@ -778,6 +778,25 @@ matching sanitizer runtime path applied only to the campaign process. No
 input corpus was supplied, no generated mutation was retained, and no
 artifact was produced. This bounded result is evidence for the exercised
 inputs, not an exhaustive safety claim.
+
+### FZ-0033: Four-profile Contextual Dynamic Range smoke
+
+The Contextual Dynamic Range private-frame/public-C decoder target now drives
+the 64-KiB, one-MiB, four-MiB, and 16-MiB strict admissions for every bounded
+input. It retains its 8-KiB input, 4-KiB total output, one-KiB frame/token
+storage, fixed arrays, and finite call ceiling. The largest admitted limits
+are `14*1024 + 5` payload bytes, 4,582 flattened model entries, and a
+16,777,216-byte distance; the 16-MiB identity does not allocate a 16-MiB fuzz
+frame or history buffer.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 20260823 completed exactly 1,000 inputs under an 8-KiB maximum input,
+five-second per-input timeout, and 512-MiB RSS limit without a crash, hang, or
+sanitizer finding. Peak RSS was 42 MiB; final coverage was 215 counters and
+327 features over a six-entry, 23-byte in-memory corpus. The matching runtime
+path applied only to the campaign process. No input corpus was supplied, no
+generated mutation was retained, and no artifact was produced. This bounded
+result is evidence for the exercised inputs, not an exhaustive safety claim.
 
 ## Finding retention policy
 

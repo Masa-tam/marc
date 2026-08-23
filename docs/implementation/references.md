@@ -6570,3 +6570,13 @@ query, checked complete-stream capacity, and report validator. No external
 compressor, benchmark harness, large-window measurement, memory policy,
 source code, test, benchmark result, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0729
+
+The 16-MiB Contextual Dynamic Range bounded fuzz boundary uses IR-0722 through
+IR-0728, DD-960 through DD-966, TVG-0824 through TVG-0830, the repository-owned
+fixed-array dual-decoder harness, public C workspace query, complete-frame
+decoder, sanitizer build route, and permanent malformed-stream regressions.
+No external fuzzer harness, compressor, corpus, large-window implementation,
+source code, test, vulnerability report, patent, pseudocode, or optimization
+description was consulted.

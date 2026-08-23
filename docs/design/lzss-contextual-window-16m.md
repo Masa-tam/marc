@@ -1,7 +1,7 @@
 # LZSS contextual 16 MiB window
 
-Status: Dynamic Range C, CLI, and benchmark lifecycle implemented after
-project version 0.4.0. Bounded fuzzing and interoperability remain unadmitted.
+Status: Dynamic Range C, CLI, benchmark, and bounded decoder-fuzz lifecycle
+implemented after project version 0.4.0. Interoperability remains unadmitted.
 
 ## Purpose
 
@@ -221,6 +221,11 @@ It uses checked `112 + 14N + 85K` complete-stream capacity, performs an exact
 pre-timing round trip, and reports all query-owned workspace regions. Benchmark
 availability changes neither match-finder selection nor stream identity.
 
+The existing fixed-array Dynamic Range fuzz harness also admits the 16-MiB
+identity. It retains one-KiB frame/token storage and limits the larger profile
+to its scalar distance and 4,582-entry model bounds; it neither allocates a
+16-MiB history buffer nor exercises the large encoder workspace.
+
 ## Staged implementation order
 
 1. shared dictionary/context constants, layouts, validators, and hand vectors
@@ -228,8 +233,8 @@ availability changes neither match-finder selection nor stream identity.
 2. Dynamic Range decoder preflight and complete-frame decode (complete);
 3. Dynamic Range encoder, exact workspace query, and streaming lifecycle
    (complete);
-4. Dynamic Range C helper, CLI, and benchmark (complete), then bounded fuzzing
-   and schema entry;
+4. Dynamic Range C helper, CLI, benchmark, and bounded fuzzing (complete),
+   then schema entry;
 5. canonical contextual rANS;
 6. contextual tANS;
 7. Contextual Blocked Huffman;

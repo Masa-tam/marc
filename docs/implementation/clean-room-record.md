@@ -25743,3 +25743,40 @@ both bounds.
   16,777,216 secondary, and 201,326,592 view bytes; the input-sized encoder
   reported 4,326 primary, 60,649 secondary, and 273,184 view bytes. The final
   diff is whitespace-clean.
+
+## CR-1046: 2026-08-23 - Sixteen-MiB Dynamic Range bounded fuzz boundary
+
+- Authoring method: extended marc's existing fixed-array Contextual Dynamic
+  Range private/public decoder harness and permanent regression generator from
+  three exact public window profiles to four.
+- References used: IR-0722 through IR-0729, DD-960 through DD-967, TVG-0824
+  through TVG-0831, CR-1039 through CR-1045, and the repository-owned decoder,
+  C workspace query, sanitizer route, and atomic malformed-stream tests.
+- Known implementations intentionally not consulted: external compressors,
+  fuzz harnesses, corpora, large-window implementations, vulnerability
+  reports, source code, tests, patents, pseudocode, and optimizations.
+- Independent decisions: retain a one-KiB frame under the 16-MiB identity;
+  raise only the shared model and distance validation ceilings; avoid the
+  encoder; and retain generated mutations only if a finding occurs.
+- Generated-code task description: admit selector 3 in the bounded Dynamic
+  Range decoder fuzzer, add complete canonical truncation/reserved-byte and
+  six new ordered mismatch regressions, compile warning-clean, and run a
+  bounded sanitizer smoke.
+- Similarity review: limits, selector calls, canonical seeds, and failure
+  expectations follow directly from marc's completed public profile and prior
+  triple-profile harness. No external implementation expression was consulted
+  or introduced.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. All 3,232 registered tests passed on each toolchain with
+  the 600-second per-test limit. The seven tooling tests passed separately in
+  1.10 seconds under MSVC and 1.13 seconds under ClangCL; the remaining 3,225
+  passed in 212.93 and 214.91 seconds respectively. Both runs included all ten
+  Dynamic Range fuzz regressions, all 22 experimental and 42 public benchmark
+  smokes, every public C and CLI path, documentation validation, and
+  `marc_interoperability_schema_compatibility`, which passed in 96.75 and
+  89.32 seconds respectively. Windows Clang 22 libFuzzer with ASan/UBSan, seed
+  20260823, `-runs=1000`, eight-KiB maximum input, five-second per-input
+  timeout, and 512-MiB RSS limit completed without a finding; peak RSS was
+  42 MiB and final coverage was 215 counters/327 features over a six-entry,
+  23-byte in-memory corpus. No generated mutation or artifact was retained.
+  The final diff is whitespace-clean.
