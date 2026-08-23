@@ -7024,11 +7024,11 @@ window](design/lzss-contextual-window-4m.md).
 ### Reserved 16 MiB LZSS field-context family
 
 Format 2.0 reserves dictionary algorithm/variant `2/5` together with context-
-model algorithm/variant `1/4`. They MUST occur together. The private Dynamic
-Range lifecycle admits the exact `2/5 + 1/4 + 3/2` triple in stream-header
-parsing and serialization, complete-frame encoding and decoding, and
-streaming. Public C entry points remain closed, so this private lifecycle does
-not yet authorize public tools or applications to emit it.
+model algorithm/variant `1/4`. They MUST occur together. The Dynamic Range
+lifecycle admits the exact `2/5 + 1/4 + 3/2` triple in stream-header parsing
+and serialization, complete-frame encoding and decoding, and streaming. Its
+public C profile helper and workspace lifecycle admit the same exact triple;
+CLI, benchmark, fuzz, and interoperability entry points remain closed.
 
 Dictionary variant 5 retains the 16-byte parameter layout, minimum match
 length 5, maximum match length 258, and permits a window no larger than
@@ -7051,10 +7051,15 @@ limits. At `F = 16,777,216`, the Dynamic Range candidate retains payload
 ceiling `14F+5 = 234,881,029` and complete-frame ceiling
 `14F+85 = 234,881,109`; these numbers reserve no public resource policy.
 
-The public selector value 3 and `MARC_LZSS_CONTEXTUAL_PROFILE_16M` name
-are reserved for a later public stage. They are not serialized, do not exist
-in the current ABI, and must not be inferred from frame, window, or distance
-fields. Existing initializers remain 64 KiB. The complete staged contract is
+The public selector value 3 is named `MARC_LZSS_CONTEXTUAL_PROFILE_16M`. It is
+not serialized and must not be inferred from frame, window, or distance
+fields. The Dynamic Range profile helper applies a 234,881,029-byte payload
+ceiling, 4,582 model entries, and a one-GiB aggregate policy. Its authoritative
+workspace queries require exactly 1,057,488,981 encoder bytes or 452,984,917
+decoder bytes on the supported 64-bit native layout. Other contextual codec
+factories reject this known selector until independently admitted. Existing
+initializers remain 64 KiB, and the current ABI structure extent is unchanged.
+The complete staged contract is
 [LZSS contextual 16 MiB window](design/lzss-contextual-window-16m.md).
 
 The shared typed-token/context implementation recognizes the exact pair and

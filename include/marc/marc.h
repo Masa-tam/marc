@@ -37,6 +37,7 @@ typedef uint32_t marc_lzss_contextual_profile;
 #define MARC_LZSS_CONTEXTUAL_PROFILE_64K UINT32_C(0)
 #define MARC_LZSS_CONTEXTUAL_PROFILE_1M UINT32_C(1)
 #define MARC_LZSS_CONTEXTUAL_PROFILE_4M UINT32_C(2)
+#define MARC_LZSS_CONTEXTUAL_PROFILE_16M UINT32_C(3)
 
 typedef uint32_t marc_process_flags;
 #define MARC_PROCESS_NONE UINT32_C(0)

@@ -25634,3 +25634,38 @@ both bounds.
   required term, its focused rerun passed. A sandboxed incremental MSVC build
   hit the known FileTracker access denial; the unrestricted retry and full
   build succeeded. The final diff is whitespace-clean.
+
+## CR-1043: 2026-08-23 - Public 16-MiB Dynamic Range C selector
+
+- Authoring method: promoted only the already proven private Dynamic Range
+  identity through marc's existing C profile-helper and workspace contracts,
+  leaving every tool and other entropy backend behind an explicit gate.
+- References used: IR-0722 through IR-0726, DD-960 through DD-964, TVG-0824
+  through TVG-0828, CR-1039 through CR-1042, and the repository-owned public
+  configuration loader, profile helpers, and selected-layout workspace
+  calculators.
+- Known implementations intentionally not consulted: external compressor
+  source, formats, C APIs, tests, vectors, workspace formulas, patents,
+  pseudocode, resource policies, and optimization descriptions.
+- Independent decisions: assign public selector value 3 without changing ABI
+  extent; admit it only for Dynamic Range; apply the exact one-GiB envelope
+  while preserving caller-specific fields; make all other contextual codecs
+  reject the known selector; and keep CLI, benchmark, fuzz, and schema
+  inventories closed.
+- Generated-code task description: expose the 16-MiB selector and Dynamic
+  Range helper, prove exact and one-short public workspace requirements,
+  verify preservation and idempotence, reject it in other codecs, and
+  synchronize C API, format, design, provenance, and documentation checks.
+- Similarity review: implementation and tests extend marc's first-party
+  profile-helper structure and previously derived resource arithmetic. No
+  external implementation expression or test structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. All 3,228 registered tests passed on each toolchain with
+  the 600-second per-test limit. The seven tooling tests passed separately
+  outside the sandbox; the remaining 3,221 passed in 221.06 seconds under
+  MSVC and 219.79 seconds under ClangCL. Both runs included all 21 experimental
+  and 42 public benchmark smokes, every public C and CLI path, documentation
+  validation, and `marc_interoperability_schema_compatibility`, which passed
+  in 100.10 and 90.42 seconds respectively. The initial sandboxed MSVC focused
+  build hit the known FileTracker access denial; its unrestricted retry and
+  the full build succeeded. The final diff is whitespace-clean.

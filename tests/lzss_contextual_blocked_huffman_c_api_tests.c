@@ -114,7 +114,8 @@ static void test_apply_profile(void) {
     expect_apply_failure(invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
     assert(marc_lzss_contextual_blocked_huffman_config_init(
                MARC_DIRECTION_ENCODE, &invalid) == MARC_STATUS_OK);
-    expect_apply_failure(invalid, (marc_lzss_contextual_profile)3);
+    expect_apply_failure(invalid, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+    expect_apply_failure(invalid, (marc_lzss_contextual_profile)4);
     assert(marc_lzss_contextual_blocked_huffman_config_apply_profile(
                NULL, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
            == MARC_STATUS_INVALID_ARGUMENT);
@@ -244,7 +245,10 @@ static void run_extended_profile(
     assert(result.output_produced == 0 && decoded[0] == 0xcc);
     marc_transform_destroy(transform);
 
-    config.profile = UINT32_C(3);
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_16M;
+    assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
+    config.profile = UINT32_C(4);
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     assert(marc_lzss_contextual_blocked_huffman_config_init(

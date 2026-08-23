@@ -161,8 +161,9 @@ decoder workspace sizing comes only from its hard limits and validates stream
 parameters later. `profile` selects one exact dictionary/context pair:
 `MARC_LZSS_CONTEXTUAL_PROFILE_64K` selects `2/2 + 1/1` and remains the
 initializer default, while `MARC_LZSS_CONTEXTUAL_PROFILE_1M` selects
-`2/3 + 1/2`. `MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects `2/4 + 1/3` only for
-this Dynamic Range factory. The selector is not inferred from `window_size`;
+`2/3 + 1/2`. `MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects `2/4 + 1/3`, and
+`MARC_LZSS_CONTEXTUAL_PROFILE_16M` selects `2/5 + 1/4`, only for this Dynamic
+Range factory. The selector is not inferred from `window_size`;
 encoding rejects parameters outside the selected profile and decoding rejects
 a stream whose
 identity does not match it. Re-query all three workspace regions after
@@ -173,11 +174,18 @@ it preserves direction, original size, and the caller's total-output limit.
 The four-MiB preset raises `max_internal_buffered_bytes` to 256 MiB, which
 covers its 264,765,525-byte encoder requirement on the supported 64-bit native
 layouts. Its decoder also receives the required `max_block_size` of
-4,194,304 bytes. The field and its
+4,194,304 bytes. The 16-MiB preset applies a 234,881,029-byte payload ceiling,
+4,582 model entries, and a one-GiB aggregate policy. On the supported 64-bit
+native layout, the authoritative workspace query returns exactly
+1,057,488,981 bytes for encoding and 452,984,917 bytes for decoding; one byte
+less fails. A caller may tighten any returned hard limit and must then re-query
+before allocation. The other contextual codec factories recognize the 16-MiB
+selector as known but reject it until their backend-specific admission is
+implemented. The field and its
 trailing 32-bit reserved word occupy
 the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
-all-zero meaning used by earlier callers. The profile remains outside the
-baseline CLI and interoperability inventories.
+all-zero meaning used by earlier callers. The 16-MiB profile remains outside
+the CLI, benchmark, fuzz, and interoperability inventories.
 The experimental LZSS contextual rANS factory is a distinct Format 2
 lifecycle. Call `marc_lzss_contextual_rans_workspace_requirements()` after
 changing direction, known size, frame/LZSS parameters, `profile`, or

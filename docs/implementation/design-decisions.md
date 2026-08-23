@@ -20095,3 +20095,24 @@ Keep the initializer default at 64 KiB, require caller-supplied local limits,
 and make older explicit streaming admissions reject the new pair after the
 complete header. Preserve all earlier stream bytes and keep every other
 entropy backend closed at context variant 4.
+
+## DD-964: Expose the 16-MiB selector only for Dynamic Range C
+
+- Date: 2026-08-23
+- Status: accepted
+
+Define `MARC_LZSS_CONTEXTUAL_PROFILE_16M` as public selector value 3 without
+changing any ABI structure extent or initializer default. Admit it only in the
+LZSS Contextual Dynamic Range configuration loader and profile helper. The
+helper applies a 16,777,216-byte frame, window, block, and LZ-distance limit;
+maximum match length 258; payload ceiling 234,881,029; 4,582 entropy entries;
+range-model total 32,768; and a one-GiB aggregate policy. Preserve direction,
+original size, and the caller's total-output limit exactly.
+
+Require the public workspace queries to publish the independently proven
+1,057,488,981-byte encoder and 452,984,917-byte decoder aggregates on the
+supported 64-bit native layout. Equality succeeds and one byte short fails
+without publishing a workspace. Treat selector 3 as known but unsupported in
+rANS, tANS, Blocked Huffman, and Adaptive Huffman helpers and factories; keep
+raw selector 4 unknown. Leave CLI, benchmark, fuzz, and interoperability
+inventories closed for separate audited stages.

@@ -11798,3 +11798,22 @@ aggregate 1,057,488,981 bytes. Query the decoder and require aggregate
 452,984,917 bytes. At one byte below either aggregate, require failure and a
 cleared workspace result without allocating the full extent. Retain all old
 one-Literal frame bytes exactly.
+
+### TVG-0828
+
+Apply every public Dynamic Range contextual profile in both directions and
+require exact 64-KiB, one-MiB, four-MiB, and 16-MiB fields. For the new
+selector require frame/window/block/distance 16,777,216, payload 234,881,029,
+model entries 4,582, range total 32,768, and aggregate policy one GiB.
+Preserve direction, original size, and maximum total output; require repeated
+application to be idempotent and an unknown selector to leave the complete
+configuration unchanged.
+
+Query the full encoder profile at exact aggregate 1,057,488,981 and require
+primary 16,777,216, secondary 234,881,109, and views 805,830,656 bytes. Query
+the decoder at exact aggregate 452,984,917 and require primary 234,881,109,
+secondary 16,777,216, and views 201,326,592 bytes. For both directions, lower
+the aggregate by one byte and require failure with no published workspace and
+without allocating the full extent. Require every other contextual profile
+helper and workspace query to reject known selector 3 while raw selector 4
+remains invalid. Retain all earlier profile values and defaults exactly.

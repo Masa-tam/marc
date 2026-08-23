@@ -6539,3 +6539,14 @@ transactional stream-header serializer, HashChain encoder, and chunked stream
 state machines. No external compression library, source code, tests, vectors,
 patents, pseudocode, format layout, workspace formula, or optimization
 description was consulted.
+
+### IR-0726
+
+The public 16-MiB Dynamic Range C selector stage uses IR-0722 through
+IR-0725, DD-960 through DD-963, TVG-0824 through TVG-0827, marc's existing
+profile-helper contract, public configuration loader, and authoritative
+workspace queries. The selector value, payload and model ceilings, exact
+aggregates, and one-GiB policy are derived from the repository-owned private
+lifecycle. No external compression library, C API, source code, tests,
+vectors, patents, pseudocode, resource policy, or optimization description
+was consulted.

@@ -1,8 +1,8 @@
 # LZSS contextual 16 MiB window
 
-Status: private Dynamic Range encoder/decoder and streaming lifecycle
-implemented after project version 0.4.0. Public selectors, C lifecycle, CLI
-profiles, bounded fuzzing, and interoperability remain unadmitted.
+Status: Dynamic Range C selector and lifecycle implemented after project
+version 0.4.0. CLI profiles, benchmarks, bounded fuzzing, and interoperability
+remain unadmitted.
 
 ## Purpose
 
@@ -199,6 +199,18 @@ publication. No full-size workspace is allocated by boundary tests. Compact
 rANS/tANS model paths continue to return their stable unsupported-context
 error for context variant 4.
 
+The public C selector `MARC_LZSS_CONTEXTUAL_PROFILE_16M` has value 3 and is
+admitted only by the Dynamic Range configuration loader and profile helper.
+The helper applies the 16-MiB frame/window/distance limits, 234,881,029-byte
+payload ceiling, 4,582 model entries, and one-GiB aggregate policy while
+preserving direction, original size, and the caller's total-output limit.
+The public encoder and decoder workspace queries return the same exact
+1,057,488,981-byte and 452,984,917-byte aggregates proven privately; equality
+succeeds and one byte short fails without allocation. Existing initializers
+remain 64 KiB and the ABI-1 configuration structure extent is unchanged. The
+other contextual codec factories reject this known selector until their own
+backend admission is complete.
+
 ## Staged implementation order
 
 1. shared dictionary/context constants, layouts, validators, and hand vectors
@@ -206,7 +218,8 @@ error for context variant 4.
 2. Dynamic Range decoder preflight and complete-frame decode (complete);
 3. Dynamic Range encoder, exact workspace query, and streaming lifecycle
    (complete);
-4. Dynamic Range C helper, CLI, benchmark, bounded fuzzing, and schema entry;
+4. Dynamic Range C helper (complete), then CLI, benchmark, bounded fuzzing,
+   and schema entry;
 5. canonical contextual rANS;
 6. contextual tANS;
 7. Contextual Blocked Huffman;
