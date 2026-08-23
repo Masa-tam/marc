@@ -7027,8 +7027,9 @@ Format 2.0 reserves dictionary algorithm/variant `2/5` together with context-
 model algorithm/variant `1/4`. They MUST occur together. The Dynamic Range
 lifecycle admits the exact `2/5 + 1/4 + 3/2` triple in stream-header parsing
 and serialization, complete-frame encoding and decoding, and streaming. Its
-public C profile helper and workspace lifecycle admit the same exact triple;
-CLI, benchmark, fuzz, and interoperability entry points remain closed.
+public C profile helper, workspace lifecycle, and explicit CLI name admit the
+same exact triple; benchmark, fuzz, and interoperability entry points remain
+closed.
 
 Dictionary variant 5 retains the 16-byte parameter layout, minimum match
 length 5, maximum match length 258, and permits a window no larger than
@@ -7061,6 +7062,12 @@ factories reject this known selector until independently admitted. Existing
 initializers remain 64 KiB, and the current ABI structure extent is unchanged.
 The complete staged contract is
 [LZSS contextual 16 MiB window](design/lzss-contextual-window-16m.md).
+
+The CLI name `lzss-contextual-dynamic-range-16m` selects this exact triple and
+the helper's one-GiB application policy. The name and local resource policy
+are not serialized. Its public workspace query remains authoritative for
+actual allocation, and every other Dynamic Range contextual CLI name rejects
+the stream identity transactionally.
 
 The shared typed-token/context implementation recognizes the exact pair and
 its layout internally. The private Dynamic Range frame preflight selects

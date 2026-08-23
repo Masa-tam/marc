@@ -25669,3 +25669,38 @@ both bounds.
   in 100.10 and 90.42 seconds respectively. The initial sandboxed MSVC focused
   build hit the known FileTracker access denial; its unrestricted retry and
   the full build succeeded. The final diff is whitespace-clean.
+
+## CR-1044: 2026-08-23 - Sixteen-MiB Dynamic Range CLI boundary
+
+- Authoring method: extended marc's explicit contextual Dynamic Range CLI
+  family through the public 16-MiB helper, retaining the common requirements,
+  allocation, factory, processing, and transactional file-commit lifecycle.
+- References used: IR-0722 through IR-0727, DD-960 through DD-965, TVG-0824
+  through TVG-0829, CR-1039 through CR-1043, and the repository-owned CLI
+  selector, profile helper, workspace query, and round-trip harness.
+- Known implementations intentionally not consulted: external compressors,
+  CLIs, large-window profiles, memory policies, source code, tests, benchmarks,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: use the explicit `-16m` name; delegate all resource
+  policy and extent calculation to the public helper/query; reject older
+  identities transactionally; and keep benchmark, fuzz, and interoperability
+  promotion closed.
+- Generated-code task description: publish the completed 16-MiB Dynamic Range
+  path in the CLI with exact identity, cross-profile rejection, input-sized
+  queried allocation, strict malformed/trailing handling, synchronized docs,
+  and no benchmark, fuzz, or schema promotion.
+- Similarity review: selector dispatch and tests extend marc's first-party CLI
+  family and immediately preceding public C boundary. No external
+  implementation expression or test structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. All 3,229 registered tests passed on each toolchain with
+  the 600-second per-test limit. The seven tooling tests passed separately
+  outside the sandbox; the remaining 3,222 passed in 215.43 seconds under
+  MSVC and 219.67 seconds under ClangCL. Both runs included the new CLI round
+  trip, all 21 experimental and 42 public benchmark smokes, every public C and
+  CLI path, documentation validation, and
+  `marc_interoperability_schema_compatibility`, which passed in 99.62 and
+  91.52 seconds respectively. The sandboxed ClangCL automatic reconfiguration
+  temporarily omitted the optional external-Python tests; an explicit formal
+  configure with Python 3.14 restored all seven, and they passed unchanged.
+  The final diff is whitespace-clean.

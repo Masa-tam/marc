@@ -20116,3 +20116,20 @@ without publishing a workspace. Treat selector 3 as known but unsupported in
 rANS, tANS, Blocked Huffman, and Adaptive Huffman helpers and factories; keep
 raw selector 4 unknown. Leave CLI, benchmark, fuzz, and interoperability
 inventories closed for separate audited stages.
+
+## DD-965: Add an explicit 16-MiB Dynamic Range CLI name
+
+- Date: 2026-08-23
+- Status: accepted
+
+Add exact application name `lzss-contextual-dynamic-range-16m`. Configure it
+only by applying public selector `MARC_LZSS_CONTEXTUAL_PROFILE_16M`; do not
+duplicate the 16-MiB payload, model, aggregate, or workspace arithmetic in the
+CLI. Encode and decode require the same explicit name and reject the 64-KiB,
+one-MiB, and four-MiB identities before output publication.
+
+Retain the helper's explicit one-GiB application policy and let the public
+direction- and input-size-specific workspace query determine all three
+allocations and alignment. Keep the name and policy unserialized. Preserve
+the stable Format 1 inventory and leave benchmark, fuzz, and interoperability
+admission closed for independent stages.

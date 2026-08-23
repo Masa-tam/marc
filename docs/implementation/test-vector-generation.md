@@ -11817,3 +11817,17 @@ the aggregate by one byte and require failure with no published workspace and
 without allocating the full extent. Require every other contextual profile
 helper and workspace query to reject known selector 3 while raw selector 4
 remains invalid. Retain all earlier profile values and defaults exactly.
+
+### TVG-0829
+
+Run explicit `lzss-contextual-dynamic-range-16m` through encode, decode,
+deterministic overwrite refusal, malformed input, strict trailing data, empty
+input, and transactional profile-mismatch rejection. Require exact stream
+identity `2/5 + 1/4 + 3/2`, and require the four-MiB and 64-KiB Dynamic Range
+CLI names to reject the archive without creating or changing an output file.
+
+Keep the payload small while selecting the real 16-MiB public helper and
+direction-specific workspace query. This proves the CLI allocates the queried
+input-sized regions rather than a hard-coded full-profile partition. Preserve
+all older CLI names and stream bytes, the stable Format 1 inventory, and the
+benchmark, fuzz, and 57-archive interoperability boundaries.

@@ -1,8 +1,7 @@
 # LZSS contextual 16 MiB window
 
-Status: Dynamic Range C selector and lifecycle implemented after project
-version 0.4.0. CLI profiles, benchmarks, bounded fuzzing, and interoperability
-remain unadmitted.
+Status: Dynamic Range C and CLI lifecycle implemented after project version
+0.4.0. Benchmarks, bounded fuzzing, and interoperability remain unadmitted.
 
 ## Purpose
 
@@ -211,6 +210,12 @@ remain 64 KiB and the ABI-1 configuration structure extent is unchanged. The
 other contextual codec factories reject this known selector until their own
 backend admission is complete.
 
+The explicit CLI name `lzss-contextual-dynamic-range-16m` selects only this
+Dynamic Range identity. It uses the public helper and authoritative workspace
+query, retains transactional output on malformed and profile-mismatched input,
+and does not reproduce backend layout arithmetic. The CLI name and one-GiB
+application policy are not serialized.
+
 ## Staged implementation order
 
 1. shared dictionary/context constants, layouts, validators, and hand vectors
@@ -218,7 +223,7 @@ backend admission is complete.
 2. Dynamic Range decoder preflight and complete-frame decode (complete);
 3. Dynamic Range encoder, exact workspace query, and streaming lifecycle
    (complete);
-4. Dynamic Range C helper (complete), then CLI, benchmark, bounded fuzzing,
+4. Dynamic Range C helper and CLI (complete), then benchmark, bounded fuzzing,
    and schema entry;
 5. canonical contextual rANS;
 6. contextual tANS;

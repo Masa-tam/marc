@@ -6550,3 +6550,13 @@ aggregates, and one-GiB policy are derived from the repository-owned private
 lifecycle. No external compression library, C API, source code, tests,
 vectors, patents, pseudocode, resource policy, or optimization description
 was consulted.
+
+### IR-0727
+
+The 16-MiB Dynamic Range CLI boundary uses IR-0722 through IR-0726, DD-960
+through DD-964, TVG-0824 through TVG-0828, the repository-owned explicit
+contextual CLI selector family, public profile helper, authoritative workspace
+query, transactional file commit, and cross-profile round-trip harness. No
+external compressor, CLI, large-window profile, memory policy, source code,
+test, benchmark, patent, pseudocode, or optimization description was
+consulted.

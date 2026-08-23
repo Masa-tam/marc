@@ -79,9 +79,10 @@ field-context, contextual Dynamic Range pipeline with the frozen 64 KiB
 dictionary/context identity `2/2 + 1/1`.
 `lzss-contextual-dynamic-range-1m` selects its additive 1 MiB identity
 `2/3 + 1/2`. `lzss-contextual-dynamic-range-4m` selects exact identity
-`2/4 + 1/3`. Decode requires the same selector used for encode; none of these
-names auto-detects or admits another profile. All are intentionally outside the
-stable 42-profile Format 1 inventory above. `lzss-contextual-rans` selects
+`2/4 + 1/3`, and `lzss-contextual-dynamic-range-16m` selects exact identity
+`2/5 + 1/4`. Decode requires the same selector used for encode; none of these
+names auto-detects or admits another profile. All are intentionally outside
+the stable 42-profile Format 1 inventory above. `lzss-contextual-rans` selects
 the corresponding Format 2 typed-token and field-context pipeline with the
 canonical variable-size descriptor of scalar contextual rANS variant 3.
 Entropy variant 2 is retired and reserved; no diagnostic selector or alias
@@ -195,6 +196,15 @@ library's 128-MiB default. The CLI does not reproduce the native workspace
 partition: its public C requirements query supplies all three extents and the
 opaque views alignment. A native layout exceeding the application ceiling is
 rejected rather than admitted by an implicit limit increase.
+
+The experimental `lzss-contextual-dynamic-range-16m` adapter uses
+16,777,216-byte raw frames and window, the `14F + 5` payload ceiling of
+234,881,029 bytes, 4,582 model entries, and the public helper's explicit
+one-GiB aggregate policy. The CLI selects that helper and then relies on the
+direction- and input-size-specific public workspace query; it does not
+reproduce private token, operation, model, or HashChain extents. Decode
+requires the same explicit `-16m` name, and profile mismatch remains
+transactional.
 
 The experimental `lzss-contextual-rans` adapter also fixes raw frames at
 65,536 bytes. Its public Format 2 decision ceiling is `6F = 393,216`, its
