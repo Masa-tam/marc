@@ -149,10 +149,9 @@ workflow run. GitHub may expire workflow artifacts according to repository
 retention settings; regenerate them by running CI for the required commit.
 
 Schema 48 has local generation, exact-order verification, byte-identical
-re-encoding, reordered-manifest rejection, and schemas 1 through 47
-compatibility evidence under MSVC and ClangCL. Cross-platform four-direction
-evidence remains pending. Schema 47 retains complete Windows/MSVC, Ubuntu
-24.04/Ninja, and Ubuntu 26.04/Clang four-direction evidence.
+re-encoding, reordered-manifest rejection, schemas 1 through 47 compatibility
+evidence under MSVC and ClangCL, and complete Windows/MSVC, Ubuntu 24.04/Ninja,
+and Ubuntu 26.04/Clang four-direction evidence.
 
 ## Work-product policy
 
@@ -841,3 +840,19 @@ re-encoding checks for every archive. This reconfirms canonical schema-47
 bytes after the format-neutral profile-helper consolidation and establishes
 bidirectional decoding between the recorded Windows and WSL2 Linux x86-64
 environments for the 0.4.0 release candidate.
+
+### IX-0042: Schema 48
+
+Revision `891cadf5d0618b69f7993e4db47fb19da7da5f3e` received the schema-48
+cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
+x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all 58
+archives from both the Windows/MSVC via Visual Studio 2026 and Ubuntu 24.04
+default-compiler/Ninja artifacts. It then generated and self-verified an
+`ubuntu-26.04-ninja-x64` 58-archive bundle. The Windows/MSVC executable
+verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest order, size, SHA-256, fixture decode, and byte-identical local
+re-encoding checks for every archive. This establishes canonical schema-48
+bytes across the three producers and bidirectional decoding between the
+recorded Windows and WSL2 Linux x86-64 environments.

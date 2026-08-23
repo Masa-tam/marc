@@ -25815,3 +25815,28 @@ both bounds.
   corrected the current verifier description from 57 to 58 foreign archives;
   no implementation, schema, or historical schema-47 statement changed. The
   final diff is whitespace-clean.
+
+## CR-1048: 2026-08-24 - Schema 48 four-direction external admission
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-968, IR-0730, TVG-0832, BR-0174, IX-0042, CR-1047, and
+  full revision `891cadf5d0618b69f7993e4db47fb19da7da5f3e`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: require one exact revision for all directions,
+  preserve work products outside the repository, and accept evidence only
+  when every verifier reports the complete 58-archive inventory.
+- Generated-code task description: record the completed schema-48
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks.
+- Similarity review: this change records project-generated artifact evidence
+  only and introduces no codec implementation expression.
+- External validation: all four passes reported `Verified 58 archives` at
+  revision `891cadf5d0618b69f7993e4db47fb19da7da5f3e`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.

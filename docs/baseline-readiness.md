@@ -2882,3 +2882,12 @@ Focused compatibility passes under MSVC and ClangCL in 98.96 and 91.06
 seconds. Their complete 3,232-test suites pass in 215.64 and 216.39 seconds,
 including documentation layout and complete schema compatibility. External
 four-direction schema-48 evidence remains pending.
+
+### BR-0175
+
+Schema 48 now has complete four-direction external evidence at revision
+`891cadf5d0618b69f7993e4db47fb19da7da5f3e`. All 58 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the 16-MiB
+Contextual Dynamic Range profile.
