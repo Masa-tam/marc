@@ -527,8 +527,8 @@ foreach(required_readiness_section IN ITEMS
 endforeach()
 foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
-        "each enumerate 2,858 tests under"
-        "four-direction schema-37 exchange")
+        "each enumerate 3,218 tests under"
+        "four-direction schema-47 exchange")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)
     if(current_baseline_offset EQUAL -1)

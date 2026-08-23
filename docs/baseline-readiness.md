@@ -169,12 +169,12 @@ kept separate because it requires artifacts produced outside the local build.
 ## Current validation baseline
 
 All forty-two baseline profiles in the composition matrix satisfy the local
-`Ready` definition and remain present in interoperability schema 37 alongside
-the five experimental typed-token LZSS contextual profiles. The internal
-canonical Huffman primitives remain support components rather than a separate
-public profile.
+`Ready` definition and remain present in interoperability schema 47 alongside
+the fifteen typed-token LZSS contextual profiles spanning five entropy
+backends and three resource profiles. The internal canonical Huffman
+primitives remain support components rather than a separate public profile.
 
-The optimized Release configurations each enumerate 2,858 tests under
+The optimized Release configurations each enumerate 3,218 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -185,10 +185,11 @@ additionally rebuilt all eleven affected ClangCL 22 ASan/UBSan/libFuzzer
 targets and completed 100 bounded inputs per target at maximum input length
 8,192 without a finding.
 
-The 0.3.0 release candidate completed a four-direction schema-37 exchange at
-revision `b13cb7a51c782a66e63c493a7e5d1a5721edd86c`, verifying all forty-seven
-archives across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
-producers. The remaining evidence gaps are listed below.
+The established four-direction schema-47 exchange at revision
+`c107daf9be319523402b0a4b4d9089c46a702ced` verifies all fifty-seven archives
+across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
+producers. The exact 0.4.0 release candidate must repeat that exchange after
+pushed CI; the remaining general evidence gaps are listed below.
 
 ## Remaining release evidence
 

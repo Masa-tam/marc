@@ -19961,3 +19961,24 @@ Blocked Huffman, distinguish the 35 caller-owned table objects from the
 `max_entropy_table_entries` limit, which counts their conservative 511-node
 capacity and is therefore 17,885. Preserve all algorithm identities, archive
 bytes, CLI names, benchmark labels, initializer defaults, and ABI extents.
+
+## DD-958: Project version 0.4.0 publishes complete four-MiB contextual profiles
+
+- Date: 2026-08-23
+- Status: accepted
+
+Release the completed 64-KiB, one-MiB, and four-MiB LZSS Contextual profile
+set across Dynamic Range, rANS, tANS, Blocked Huffman, and Adaptive Huffman as
+project version `0.4.0`. The minor-version boundary communicates fifteen
+explicit resource profiles, their larger caller-owned workspaces, and the
+pre-release public naming consolidation around one common profile selector
+and five atomic `config_apply_profile()` helpers.
+
+Retain C ABI lifecycle version 1, every established selector value and
+structure extent, stream-format identities and bytes, and interoperability
+schema 47. The renamed pre-release identifiers have no compatibility aliases;
+initializers retain the 64-KiB default, and no decoder infers wider resource
+admission from untrusted stream fields. Require synchronized CMake, runtime,
+metadata-test, changelog, readiness, and provenance records; complete both
+Windows Release suites, pushed CI, and an exact schema-47 four-direction
+exchange before tagging.

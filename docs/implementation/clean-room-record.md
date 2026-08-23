@@ -25412,3 +25412,41 @@ both bounds.
   under MSVC and ClangCL. Their complete 3,211-case CTest suites pass in
   199.99 and 211.02 seconds respectively, including documentation layout,
   every contextual profile round trip, and complete schema compatibility.
+
+## CR-1036: 2026-08-23 - Project version 0.4.0 release preparation
+
+- Authoring method: advanced marc's project/package version after completing
+  all five four-MiB LZSS Contextual profiles and consolidating their public
+  resource-envelope helpers, then reconciled the observable ABI, format,
+  workspace, tooling, and interoperability boundaries.
+- References used: DD-790 through DD-958; CR-0819 through CR-1035; the
+  repository release procedure; public runtime-version query; CMake package
+  version generation; changelog history; readiness baseline; and schema-47
+  compatibility chain.
+- Known implementations intentionally not consulted: external compressor
+  source code, profile APIs, release scripts, changelog generators, package
+  policies, binary distributions, and third-party release notes.
+- Independent decisions: use project version `0.4.0` for the completed
+  four-MiB contextual generation and unified helper contract; retain C ABI
+  lifecycle version 1, established selector values and structure extents,
+  every stream representation, and schema 47; and keep the GitHub release
+  marked pre-release while wider windows remain future work.
+- Generated-code task description: synchronize CMake and runtime versions,
+  metadata test, dated changelog, current readiness baseline, release
+  decision, and provenance without changing codec bytes.
+- Similarity review: release metadata and prose were derived exclusively from
+  marc's first-party implementation and validation records. No external
+  implementation expression, release automation, or prose was copied or
+  structurally reproduced.
+- Local validation: official CMake 4.3.4 generated warning-clean optimized
+  Release builds with MSVC 19.51.36252.0 through Visual Studio 2026 18.8.2 and
+  ClangCL 22.1.3 on Windows x64. All 3,218 registered tests passed in 208.14
+  seconds under MSVC and 207.05 seconds under ClangCL with the 600-second
+  per-test limit. Both runs included runtime version `0.4.0`, generated CMake
+  package version `0.4.0`, documentation validation, all 21 experimental and
+  42 public benchmark smokes, seven Python tooling tests, and
+  `marc_interoperability_schema_compatibility`, which passed in 89.12 and
+  85.32 seconds respectively. The checked-out GoogleTest commit
+  `52eb8108c5bdec04579160ae17225d66034bd723` matches the recorded gitlink. The
+  exact release-preparation commit still requires pushed CI and a schema-47
+  four-direction exchange before tagging.
