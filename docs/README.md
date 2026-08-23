@@ -35,6 +35,8 @@ navigate chronological development records.
   aggregate-policy gate.
 - [LZSS contextual rANS 4 MiB window](design/lzss-contextual-rans-window-4m.md):
   the second backend's descriptor, payload, and 128-MiB workspace proof.
+- [LZSS contextual rANS 16 MiB window](design/lzss-contextual-rans-window-16m.md):
+  the staged descriptor, payload, and 512-MiB workspace proof.
 - [LZSS contextual tANS 4 MiB window](design/lzss-contextual-tans-window-4m.md):
   the third backend's table, payload, and 128-MiB workspace proof.
 - [LZSS contextual Blocked Huffman 4 MiB window](design/lzss-contextual-blocked-huffman-window-4m.md):

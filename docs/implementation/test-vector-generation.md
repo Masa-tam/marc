@@ -11882,3 +11882,16 @@ a schema-48 manifest whose first two entries are exchanged. Remove only entry
 reconstructed schema 47 before traversing the unchanged compatibility chain
 through schema 1. Run focused and complete MSVC/ClangCL validation while
 leaving external four-direction evidence for the pushed revision.
+
+### TVG-0833
+
+Validate the 16-MiB canonical Contextual rANS design as documentation before
+implementation. Require exact identity `2/5 + 1/4 + 4/3`, compact descriptor
+growth from 9,121 to 9,153 bytes, `7F` and `34T` decision bounds, payload
+`14F+8`, complete frame `14F+9,225`, and exact supported-layout aggregates
+520,627,209 and 453,755,913 bytes under an explicit 512-MiB profile.
+
+Require the design to state that no rANS code path admits the identity. Later
+descriptor, frame, lifecycle, public, fuzz, and interoperability stages must
+each add their own equality, one-above or one-short, malformed-input,
+determinism, and cross-profile tests without changing older bytes.

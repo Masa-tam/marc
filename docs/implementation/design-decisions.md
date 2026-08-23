@@ -20184,3 +20184,20 @@ Reject a reordered schema-48 manifest. Remove only entry 58 and its file to
 reconstruct schema 47, then run the unchanged downgrade/rename chain through
 schema 1. Do not alter any earlier schema inventory, archive bytes, or format
 rule, and keep cross-platform evidence separate from local admission.
+
+## DD-969: Stage canonical Contextual rANS for the 16-MiB family
+
+- Date: 2026-08-24
+- Status: accepted
+
+Reserve exact triple `2/5 + 1/4 + 4/3` without admitting any rANS code path.
+Extend only the planned compact descriptor ceiling from 9,121 to 9,153 bytes
+for the 4,582-entry context layout. Retain canonical scalar rANS variant 3,
+31 contexts, table log 12, one state, the 126,976-entry decode bank, and the
+shared `7F` and `34T` decision limits.
+
+Use payload ceiling `14F+8`, complete-frame ceiling `14F+9,225`, and an
+explicit 512-MiB backend profile. At the 16-MiB reference frame require exact
+checked encoder and decoder aggregates 520,627,209 and 453,755,913 bytes.
+Keep initializers, public selectors, CLI, fuzzing, and interoperability closed
+until their own staged boundaries are proven.

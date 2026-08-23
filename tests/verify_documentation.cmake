@@ -315,6 +315,7 @@ endforeach()
 foreach(experimental_design IN ITEMS
         "lzss-contextual-window-1m.md"
         "lzss-contextual-window-16m.md"
+        "lzss-contextual-rans-window-16m.md"
         "lzss-typed-token-protocol.md"
         "context-model-contract.md"
         "entropy-backend-contract.md")
@@ -323,6 +324,32 @@ foreach(experimental_design IN ITEMS
     if(NOT EXISTS "${experimental_design_path}")
         message(FATAL_ERROR
             "Missing experimental design document: ${experimental_design}")
+    endif()
+endforeach()
+
+set(lzss_contextual_rans_window_16m_design
+    "${source_dir}/docs/design/lzss-contextual-rans-window-16m.md")
+file(READ "${lzss_contextual_rans_window_16m_design}"
+    lzss_contextual_rans_window_16m_content)
+foreach(required_rans_window_16m_term IN ITEMS
+        "dictionary algorithm/variant 2/5"
+        "context-model algorithm/variant 1/4"
+        "entropy algorithm/variant 4/3"
+        "from 9,121 to 9,153 bytes"
+        "decision_count <= 34*token_count"
+        "complete_frame_size <= 14F + 9,225"
+        "aggregate                        520,627,209 bytes"
+        "aggregate                        453,755,913 bytes"
+        "7F = 117,440,512"
+        "aggregate buffered bytes to 512 MiB"
+        "No rANS code path admits this identity yet")
+    string(FIND "${lzss_contextual_rans_window_16m_content}"
+        "${required_rans_window_16m_term}"
+        required_rans_window_16m_term_offset)
+    if(required_rans_window_16m_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 16 MiB contextual rANS design: "
+            "${required_rans_window_16m_term}")
     endif()
 endforeach()
 

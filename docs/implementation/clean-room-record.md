@@ -25840,3 +25840,30 @@ both bounds.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1049: 2026-08-24 - Design 16-MiB canonical Contextual rANS
+
+- Authoring method: derived the next entropy-backend design independently
+  from the repository-owned context-variant-4 layout, canonical scalar rANS
+  representation, checked native workspace model, and completed smaller-
+  profile lifecycle evidence.
+- References used: DD-969, IR-0731, TVG-0833, the existing Format 2 grammar,
+  and repository-local 4-MiB Contextual rANS and 16-MiB Contextual Dynamic
+  Range design and implementation records.
+- Known implementations intentionally not consulted: external compressors,
+  rANS implementations, source code, test suites, large-window profiles,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: retain entropy variant 3; grow only the context-
+  selected compact descriptor; use checked `7F`, `34T`, `14F+8`, and
+  `14F+9,225` bounds; and assign an explicit 512-MiB backend policy only after
+  both encoder and decoder aggregates were calculated.
+- Generated-code task description: document the exact identity, descriptor,
+  payload, workspace, hard-limit, and staged-admission contract without
+  enabling an implementation path.
+- Similarity review: prose, arithmetic, terminology, and validation rules were
+  independently expressed from repository-owned contracts; no external
+  implementation expression or test structure was used.
+- Validation: official CMake 4.3.4 documentation-layout checks passed under
+  both existing MSVC and ClangCL Release builds. The final diff is whitespace-
+  clean; no rANS parser, encoder, decoder, factory, public API, CLI, benchmark,
+  fuzz, or interoperability path was admitted.

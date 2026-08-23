@@ -7100,6 +7100,17 @@ Canonical contextual rANS and tANS continue to admit only their completed
 four-MiB entropy triples; other backend-specific entry points retain their
 previously completed pairs.
 
+The next canonical contextual rANS stage reserves exact triple
+`2/5 + 1/4 + 4/3` without admitting it in any parser, factory, C API, CLI,
+benchmark, fuzz target, or interoperability schema. Context variant 4 expands
+the compact descriptor from 9,121 to 9,153 bytes while retaining 31 contexts,
+table log 12, total frequency 4,096, one scalar state, and 126,976 decode
+entries. It uses the shared bounds `decision_count <= 7F` and
+`decision_count <= 34*token_count`, rANS payload ceiling `14F + 8`, and
+complete-frame ceiling `14F + 9,225`. No rANS code path admits this identity
+yet. The staged contract is [LZSS contextual rANS 16 MiB
+window](design/lzss-contextual-rans-window-16m.md).
+
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage
 has 4,566 entries and its maximum compact descriptor is 9,121 bytes. The

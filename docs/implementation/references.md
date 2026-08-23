@@ -6589,3 +6589,13 @@ repository-owned append-only bundle generator, exact-order verifier,
 byte-identical re-encoder, and schema downgrade harness. No external archive,
 compressor, manifest, interoperability suite, source code, test, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0731
+
+The 16-MiB canonical Contextual rANS design uses IR-0722 through IR-0730,
+DD-960 through DD-968, TVG-0824 through TVG-0832, the repository-owned
+16-MiB typed-token/context layout, canonical scalar rANS variant 3, compact
+descriptor grammar, checked workspace queries, and completed 4-MiB rANS and
+16-MiB Dynamic Range lifecycle evidence. No external compressor, rANS source
+code, large-window model, memory policy, test, benchmark, patent, pseudocode,
+or optimization description was consulted.
