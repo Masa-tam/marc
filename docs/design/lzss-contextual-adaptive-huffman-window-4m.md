@@ -113,9 +113,9 @@ through this additive C helper:
 
 ```c
 marc_status
-marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
+marc_lzss_contextual_adaptive_huffman_config_apply_profile(
     marc_lzss_contextual_adaptive_huffman_config* config,
-    marc_lzss_contextual_window_profile profile);
+    marc_lzss_contextual_profile profile);
 ```
 
 The caller first initializes the configuration, then applies one exact window
@@ -125,7 +125,7 @@ configuration only after pointer, structure size, ABI version, direction,
 reserved fields, and profile value validate. Failure leaves every caller byte
 unchanged.
 
-The helper overwrites `window_profile`, frame/window size, minimum/maximum
+The helper overwrites `profile`, frame/window size, minimum/maximum
 match length, frame/block/payload/aggregate limits, LZ distance/match limits,
 and entropy-entry limit. It preserves direction, original size, total-output
 limit, ABI metadata, and reserved fields. For the four-MiB profile it applies:
@@ -169,7 +169,7 @@ variant if it changes frame reset, atomic publication, or payload layout.
    selected profile and one-byte streaming lifecycles. A complete frame must
    contain a real Match beyond one MiB without exceeding its four-MiB raw
    extent.
-4. **Complete.** Admit existing ABI-1 value `MARC_LZSS_CONTEXTUAL_WINDOW_4M` only for this
+4. **Complete.** Admit existing ABI-1 value `MARC_LZSS_CONTEXTUAL_PROFILE_4M` only for this
    backend, add the atomic profile-application helper, then add exact CLI name
    `lzss-contextual-adaptive-huffman-4m` through the same canonical preset.
 5. **Complete.** Add the dependency-free benchmark and bounded dual-path

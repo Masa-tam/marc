@@ -16,14 +16,14 @@ static void release(marc_buffer buffer) {
     free(buffer.data);
 }
 
-static void test_window_profile_helper(void) {
+static void test_profile_helper(void) {
     marc_lzss_contextual_adaptive_huffman_config config;
     assert(marc_lzss_contextual_adaptive_huffman_config_init(
                MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
     config.original_size = UINT64_C(1) << 22;
     config.max_total_output_size = UINT64_C(99) << 20;
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-               &config, MARC_LZSS_CONTEXTUAL_WINDOW_4M) == MARC_STATUS_OK);
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_4M) == MARC_STATUS_OK);
     assert(config.direction == MARC_DIRECTION_ENCODE);
     assert(config.original_size == (UINT64_C(1) << 22));
     assert(config.max_total_output_size == (UINT64_C(99) << 20));
@@ -37,11 +37,11 @@ static void test_window_profile_helper(void) {
     assert(config.max_lz_distance == (UINT64_C(1) << 22));
     assert(config.max_lz_match_length == 258);
     assert(config.max_entropy_table_entries == UINT64_C(13729));
-    assert(config.window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    assert(config.profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M);
 
     const marc_lzss_contextual_adaptive_huffman_config applied = config;
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-               &config, MARC_LZSS_CONTEXTUAL_WINDOW_4M) == MARC_STATUS_OK);
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_4M) == MARC_STATUS_OK);
     assert(memcmp(&config, &applied, sizeof(config)) == 0);
 
     marc_workspace_requirements needed;
@@ -64,8 +64,8 @@ static void test_window_profile_helper(void) {
                MARC_DIRECTION_DECODE, &config) == MARC_STATUS_OK);
     config.original_size = UINT64_C(1) << 22;
     config.max_total_output_size = UINT64_C(99) << 20;
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-               &config, MARC_LZSS_CONTEXTUAL_WINDOW_4M) == MARC_STATUS_OK);
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_4M) == MARC_STATUS_OK);
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
     const uint64_t decode_aggregate = needed.primary_bytes
@@ -77,61 +77,61 @@ static void test_window_profile_helper(void) {
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
 
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-               &config, MARC_LZSS_CONTEXTUAL_WINDOW_1M) == MARC_STATUS_OK);
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_1M) == MARC_STATUS_OK);
     assert(config.frame_size == (UINT32_C(1) << 20));
     assert(config.max_compressed_payload_size == UINT64_C(34996224));
     assert(config.max_internal_buffered_bytes == (UINT64_C(128) << 20));
     assert(config.max_entropy_table_entries == UINT64_C(13681));
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-               &config, MARC_LZSS_CONTEXTUAL_WINDOW_64K) == MARC_STATUS_OK);
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_64K) == MARC_STATUS_OK);
     assert(config.frame_size == (UINT32_C(1) << 16));
     assert(config.max_compressed_payload_size == UINT64_C(2187264));
     assert(config.max_internal_buffered_bytes == (UINT64_C(8) << 20));
     assert(config.max_entropy_table_entries == UINT64_C(13585));
 
     const marc_lzss_contextual_adaptive_huffman_config snapshot = config;
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
                &config, UINT32_C(3)) == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&config, &snapshot, sizeof(config)) == 0);
     --config.struct_size;
     const marc_lzss_contextual_adaptive_huffman_config invalid = config;
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-               &config, MARC_LZSS_CONTEXTUAL_WINDOW_4M)
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_4M)
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&config, &invalid, sizeof(config)) == 0);
     config = snapshot;
     ++config.abi_version;
     const marc_lzss_contextual_adaptive_huffman_config wrong_abi = config;
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-               &config, MARC_LZSS_CONTEXTUAL_WINDOW_4M)
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_4M)
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&config, &wrong_abi, sizeof(config)) == 0);
     config = snapshot;
     config.direction = 99;
     const marc_lzss_contextual_adaptive_huffman_config wrong_direction =
         config;
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-               &config, MARC_LZSS_CONTEXTUAL_WINDOW_4M)
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_4M)
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&config, &wrong_direction, sizeof(config)) == 0);
     config = snapshot;
     config.reserved = 1;
     const marc_lzss_contextual_adaptive_huffman_config wrong_reserved = config;
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-               &config, MARC_LZSS_CONTEXTUAL_WINDOW_4M)
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_4M)
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&config, &wrong_reserved, sizeof(config)) == 0);
     config = snapshot;
     config.reserved2 = 1;
     const marc_lzss_contextual_adaptive_huffman_config wrong_reserved2 =
         config;
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-               &config, MARC_LZSS_CONTEXTUAL_WINDOW_4M)
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_4M)
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&config, &wrong_reserved2, sizeof(config)) == 0);
-    assert(marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-               NULL, MARC_LZSS_CONTEXTUAL_WINDOW_4M)
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               NULL, MARC_LZSS_CONTEXTUAL_PROFILE_4M)
            == MARC_STATUS_INVALID_ARGUMENT);
 }
 
@@ -178,11 +178,11 @@ static void run_extended_profile(
     marc_transform* transform = NULL;
     assert(marc_lzss_contextual_adaptive_huffman_config_init(
                MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
-    assert(config.window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    assert(config.profile == MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     config.original_size = raw_size;
     config.frame_size = (uint32_t)raw_size;
     config.window_size = UINT32_C(1) << 20;
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     set_extended_limits(&config, raw_size);
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
@@ -218,7 +218,7 @@ static void run_extended_profile(
     marc_workspace_requirements legacy_needed;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &legacy_needed) == MARC_STATUS_OK);
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     config.window_size = UINT32_C(1) << 20;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
@@ -227,7 +227,7 @@ static void run_extended_profile(
     primary = allocate(legacy_needed.primary_bytes);
     secondary = allocate(legacy_needed.secondary_bytes);
     views = allocate(legacy_needed.views_bytes);
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_64K;
     config.window_size = UINT32_C(1) << 16;
     assert(marc_lzss_contextual_adaptive_huffman_create(
                &config, primary, secondary, views, &transform)
@@ -243,7 +243,7 @@ static void run_extended_profile(
     release(secondary);
     release(views);
 
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     config.window_size = UINT32_C(1) << 20;
     primary = allocate(needed.primary_bytes);
     secondary = allocate(needed.secondary_bytes);
@@ -271,18 +271,18 @@ static void run_extended_profile(
     assert(result.output_produced == 0 && decoded[0] == 0xcc);
     marc_transform_destroy(transform);
 
-    config.window_profile = UINT32_C(3);
+    config.profile = UINT32_C(3);
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     assert(marc_lzss_contextual_adaptive_huffman_config_init(
                MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
     config.original_size = 1;
     config.frame_size = 1;
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_64K;
     config.window_size = UINT32_C(1) << 20;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_UNSUPPORTED);
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     config.window_size = UINT32_C(1) << 20;
     config.reserved2 = 1;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
@@ -302,7 +302,7 @@ static size_t maximum3(size_t first, size_t second, size_t third) {
 }
 
 int main(void) {
-    test_window_profile_helper();
+    test_profile_helper();
     static const uint8_t input[] = {0x41, 0x42, 0x41, 0x42, 0x58};
     uint8_t encoded[40000];
     uint8_t decoded[sizeof(input)];
@@ -318,7 +318,7 @@ int main(void) {
     assert(config.window_size == 65536);
     assert(config.min_match_length == 5);
     assert(config.max_match_length == 258);
-    assert(config.window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    assert(config.profile == MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     assert(config.reserved2 == 0);
     assert(sizeof(config) == 112);
     config.original_size = sizeof(input);

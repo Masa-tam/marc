@@ -591,12 +591,12 @@ bool load_config(const marc_lzss_dynamic_range_config* config,
 
 [[nodiscard]] marc::frame::internal::LzssTypedContextProfileVariant
 typed_context_profile_variant(
-    const marc_lzss_contextual_window_profile profile) noexcept {
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::LzssTypedContextProfileVariant::
             field_context_4m;
     }
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M) {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M) {
         return marc::frame::internal::LzssTypedContextProfileVariant::
             field_context_1m;
     }
@@ -606,12 +606,12 @@ typed_context_profile_variant(
 
 [[nodiscard]] marc::frame::internal::LzssTypedContextStreamAdmission
 typed_context_stream_admission(
-    const marc_lzss_contextual_window_profile profile) noexcept {
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::LzssTypedContextStreamAdmission::
             field_context_4m;
     }
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M) {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M) {
         return marc::frame::internal::LzssTypedContextStreamAdmission::
             field_context_1m;
     }
@@ -621,12 +621,12 @@ typed_context_stream_admission(
 
 [[nodiscard]] marc::frame::internal::LzssContextualRansProfileVariant
 contextual_rans_profile_variant(
-    const marc_lzss_contextual_window_profile profile) noexcept {
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::LzssContextualRansProfileVariant::
             field_context_4m;
     }
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M) {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M) {
         return marc::frame::internal::LzssContextualRansProfileVariant::
             field_context_1m;
     }
@@ -636,12 +636,12 @@ contextual_rans_profile_variant(
 
 [[nodiscard]] marc::frame::internal::LzssContextualRansStreamAdmission
 contextual_rans_stream_admission(
-    const marc_lzss_contextual_window_profile profile) noexcept {
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::LzssContextualRansStreamAdmission::
             field_context_4m;
     }
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M) {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M) {
         return marc::frame::internal::LzssContextualRansStreamAdmission::
             field_context_1m;
     }
@@ -651,12 +651,12 @@ contextual_rans_stream_admission(
 
 [[nodiscard]] marc::frame::internal::LzssContextualTansProfileVariant
 contextual_tans_profile_variant(
-    const marc_lzss_contextual_window_profile profile) noexcept {
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::LzssContextualTansProfileVariant::
             field_context_4m;
     }
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M) {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M) {
         return marc::frame::internal::LzssContextualTansProfileVariant::
             field_context_1m;
     }
@@ -666,12 +666,12 @@ contextual_tans_profile_variant(
 
 [[nodiscard]] marc::frame::internal::LzssContextualTansStreamAdmission
 contextual_tans_stream_admission(
-    const marc_lzss_contextual_window_profile profile) noexcept {
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::LzssContextualTansStreamAdmission::
             field_context_4m;
     }
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M) {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M) {
         return marc::frame::internal::LzssContextualTansStreamAdmission::
             field_context_1m;
     }
@@ -682,12 +682,12 @@ contextual_tans_stream_admission(
 [[nodiscard]] marc::frame::internal::
     LzssContextualBlockedHuffmanProfileVariant
 contextual_blocked_huffman_profile_variant(
-    const marc_lzss_contextual_window_profile profile) noexcept {
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::
             LzssContextualBlockedHuffmanProfileVariant::field_context_4m;
     }
-    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+    return profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
         ? marc::frame::internal::
               LzssContextualBlockedHuffmanProfileVariant::field_context_1m
         : marc::frame::internal::
@@ -697,12 +697,12 @@ contextual_blocked_huffman_profile_variant(
 [[nodiscard]] marc::frame::internal::
     LzssContextualBlockedHuffmanStreamAdmission
 contextual_blocked_huffman_stream_admission(
-    const marc_lzss_contextual_window_profile profile) noexcept {
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::
             LzssContextualBlockedHuffmanStreamAdmission::field_context_4m;
     }
-    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+    return profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
         ? marc::frame::internal::
               LzssContextualBlockedHuffmanStreamAdmission::field_context_1m
         : marc::frame::internal::
@@ -712,12 +712,12 @@ contextual_blocked_huffman_stream_admission(
 [[nodiscard]] marc::frame::internal::
     LzssContextualAdaptiveHuffmanProfileVariant
 contextual_adaptive_huffman_profile_variant(
-    const marc_lzss_contextual_window_profile profile) noexcept {
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::
             LzssContextualAdaptiveHuffmanProfileVariant::field_context_4m;
     }
-    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+    return profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
         ? marc::frame::internal::
               LzssContextualAdaptiveHuffmanProfileVariant::field_context_1m
         : marc::frame::internal::
@@ -727,12 +727,12 @@ contextual_adaptive_huffman_profile_variant(
 [[nodiscard]] marc::frame::internal::
     LzssContextualAdaptiveHuffmanStreamAdmission
 contextual_adaptive_huffman_stream_admission(
-    const marc_lzss_contextual_window_profile profile) noexcept {
-    if (profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::
             LzssContextualAdaptiveHuffmanStreamAdmission::field_context_4m;
     }
-    return profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+    return profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
         ? marc::frame::internal::
               LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m
         : marc::frame::internal::
@@ -747,9 +747,9 @@ bool load_config(
             != sizeof(marc_lzss_contextual_dynamic_range_config)
         || config->abi_version != MARC_ABI_VERSION
         || config->reserved != 0 || config->reserved2 != 0
-        || (config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M)) {
+        || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -774,9 +774,9 @@ bool load_config(
         || config->struct_size != sizeof(marc_lzss_contextual_rans_config)
         || config->abi_version != MARC_ABI_VERSION
         || config->reserved != 0 || config->reserved2 != 0
-        || (config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M)) {
+        || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -800,9 +800,9 @@ bool load_config(
         || config->struct_size != sizeof(marc_lzss_contextual_tans_config)
         || config->abi_version != MARC_ABI_VERSION
         || config->reserved != 0 || config->reserved2 != 0
-        || (config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M)) {
+        || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -827,9 +827,9 @@ bool load_config(
             != sizeof(marc_lzss_contextual_adaptive_huffman_config)
         || config->abi_version != MARC_ABI_VERSION
         || config->reserved != 0 || config->reserved2 != 0
-        || (config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M)) {
+        || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -854,9 +854,9 @@ bool load_config(
             != sizeof(marc_lzss_contextual_blocked_huffman_config)
         || config->abi_version != MARC_ABI_VERSION
         || config->reserved != 0 || config->reserved2 != 0
-        || (config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            && config->window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M)) {
+        || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -1471,7 +1471,7 @@ marc_status contextual_rans_workspace_requirements(
         const auto error =
             marc::frame::internal::make_lzss_contextual_rans_profile(
                 {config->original_size, config->frame_size, dictionary,
-                 contextual_rans_profile_variant(config->window_profile)},
+                 contextual_rans_profile_variant(config->profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
@@ -1491,7 +1491,7 @@ marc_status contextual_rans_workspace_requirements(
         const auto error = marc::frame::internal::
             calculate_lzss_contextual_rans_decoder_workspace(
                 limits, needed,
-                contextual_rans_profile_variant(config->window_profile));
+                contextual_rans_profile_variant(config->profile));
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
             return status_for(
@@ -1562,7 +1562,7 @@ marc_status create_contextual_rans(
         const auto error =
             marc::frame::internal::make_lzss_contextual_rans_profile(
                 {config->original_size, config->frame_size, dictionary,
-                 contextual_rans_profile_variant(config->window_profile)},
+                 contextual_rans_profile_variant(config->profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
@@ -1587,7 +1587,7 @@ marc_status create_contextual_rans(
         const auto error = marc::frame::internal::
             calculate_lzss_contextual_rans_decoder_workspace(
                 limits, needed,
-                contextual_rans_profile_variant(config->window_profile));
+                contextual_rans_profile_variant(config->profile));
         if (error != marc::frame::internal::
                          LzssContextualRansProfileError::none) {
             return MARC_STATUS_INTERNAL_ERROR;
@@ -1605,7 +1605,7 @@ marc_status create_contextual_rans(
                 LzssContextualRansFrameStreamingDecoder(
                     limits, primary, views.tables, views.tokens, secondary,
                     contextual_rans_stream_admission(
-                        config->window_profile));
+                        config->profile));
     }
     return publish_transform(implementation, transform);
 }
@@ -1630,7 +1630,7 @@ marc_status contextual_tans_workspace_requirements(
         const auto error =
             marc::frame::internal::make_lzss_contextual_tans_profile(
                 {config->original_size, config->frame_size, dictionary,
-                 contextual_tans_profile_variant(config->window_profile)},
+                 contextual_tans_profile_variant(config->profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualTansProfileError::none) {
@@ -1650,7 +1650,7 @@ marc_status contextual_tans_workspace_requirements(
         const auto error = marc::frame::internal::
             calculate_lzss_contextual_tans_decoder_workspace(
                 limits, needed,
-                contextual_tans_profile_variant(config->window_profile));
+                contextual_tans_profile_variant(config->profile));
         if (error != marc::frame::internal::
                          LzssContextualTansProfileError::none) {
             return status_for(
@@ -1720,7 +1720,7 @@ marc_status create_contextual_tans(
         const auto error =
             marc::frame::internal::make_lzss_contextual_tans_profile(
                 {config->original_size, config->frame_size, dictionary,
-                 contextual_tans_profile_variant(config->window_profile)},
+                 contextual_tans_profile_variant(config->profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualTansProfileError::none) {
@@ -1744,7 +1744,7 @@ marc_status create_contextual_tans(
         const auto error = marc::frame::internal::
             calculate_lzss_contextual_tans_decoder_workspace(
                 limits, needed,
-                contextual_tans_profile_variant(config->window_profile));
+                contextual_tans_profile_variant(config->profile));
         if (error != marc::frame::internal::
                          LzssContextualTansProfileError::none) {
             return MARC_STATUS_INTERNAL_ERROR;
@@ -1760,7 +1760,7 @@ marc_status create_contextual_tans(
         implementation = new (std::nothrow) marc::frame::internal::
             LzssContextualTansFrameStreamingDecoder(
                 limits, primary, views.tables, views.tokens, secondary,
-                contextual_tans_stream_admission(config->window_profile));
+                contextual_tans_stream_admission(config->profile));
     }
     return publish_transform(implementation, transform);
 }
@@ -1788,7 +1788,7 @@ marc_status contextual_adaptive_huffman_workspace_requirements(
             make_lzss_contextual_adaptive_huffman_profile(
                 {config->original_size, config->frame_size, dictionary,
                  contextual_adaptive_huffman_profile_variant(
-                     config->window_profile)},
+                     config->profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualAdaptiveHuffmanProfileError::none) {
@@ -1809,7 +1809,7 @@ marc_status contextual_adaptive_huffman_workspace_requirements(
             calculate_lzss_contextual_adaptive_huffman_decoder_workspace(
                 limits, needed,
                 contextual_adaptive_huffman_profile_variant(
-                    config->window_profile));
+                    config->profile));
         if (error != marc::frame::internal::
                          LzssContextualAdaptiveHuffmanProfileError::none) {
             return status_for(marc::frame::internal::
@@ -1881,7 +1881,7 @@ marc_status create_contextual_adaptive_huffman(
             make_lzss_contextual_adaptive_huffman_profile(
                 {config->original_size, config->frame_size, dictionary,
                  contextual_adaptive_huffman_profile_variant(
-                     config->window_profile)},
+                     config->profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualAdaptiveHuffmanProfileError::none) {
@@ -1908,7 +1908,7 @@ marc_status create_contextual_adaptive_huffman(
             calculate_lzss_contextual_adaptive_huffman_decoder_workspace(
                 limits, needed,
                 contextual_adaptive_huffman_profile_variant(
-                    config->window_profile));
+                    config->profile));
         if (error != marc::frame::internal::
                          LzssContextualAdaptiveHuffmanProfileError::none) {
             return MARC_STATUS_INTERNAL_ERROR;
@@ -1926,7 +1926,7 @@ marc_status create_contextual_adaptive_huffman(
             LzssContextualAdaptiveHuffmanFrameStreamingDecoder(
                 limits, primary, views.nodes, views.symbols, views.tokens,
                 secondary, contextual_adaptive_huffman_stream_admission(
-                               config->window_profile));
+                               config->profile));
     }
     return publish_transform(implementation, transform);
 }
@@ -1953,7 +1953,7 @@ marc_status contextual_blocked_huffman_workspace_requirements(
             make_lzss_contextual_blocked_huffman_profile(
                 {config->original_size, config->frame_size, dictionary,
                  contextual_blocked_huffman_profile_variant(
-                     config->window_profile)},
+                     config->profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualBlockedHuffmanProfileError::none) {
@@ -1973,7 +1973,7 @@ marc_status contextual_blocked_huffman_workspace_requirements(
             calculate_lzss_contextual_blocked_huffman_decoder_workspace(
                 limits, needed,
                 contextual_blocked_huffman_profile_variant(
-                    config->window_profile));
+                    config->profile));
         if (error != marc::frame::internal::
                          LzssContextualBlockedHuffmanProfileError::none) {
             return status_for(marc::frame::internal::
@@ -2044,7 +2044,7 @@ marc_status create_contextual_blocked_huffman(
                 make_lzss_contextual_blocked_huffman_profile(
                     {config->original_size, config->frame_size, dictionary,
                      contextual_blocked_huffman_profile_variant(
-                         config->window_profile)},
+                         config->profile)},
                     limits, stream, needed)
             != marc::frame::internal::
                    LzssContextualBlockedHuffmanProfileError::none) {
@@ -2069,7 +2069,7 @@ marc_status create_contextual_blocked_huffman(
                 calculate_lzss_contextual_blocked_huffman_decoder_workspace(
                     limits, needed,
                     contextual_blocked_huffman_profile_variant(
-                        config->window_profile))
+                        config->profile))
             != marc::frame::internal::
                    LzssContextualBlockedHuffmanProfileError::none) {
             return MARC_STATUS_INTERNAL_ERROR;
@@ -2086,7 +2086,7 @@ marc_status create_contextual_blocked_huffman(
             LzssContextualBlockedHuffmanFrameStreamingDecoder(
                 limits, primary, views.tables, views.tokens, secondary,
                 contextual_blocked_huffman_stream_admission(
-                    config->window_profile));
+                    config->profile));
     }
     return publish_transform(implementation, transform);
 }
@@ -4757,7 +4757,7 @@ marc_status marc_lzss_contextual_dynamic_range_config_init(
     config->max_entropy_table_entries =
         limits.max_entropy_table_entries;
     config->max_range_model_total = limits.max_range_model_total;
-    config->window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+    config->profile = MARC_LZSS_CONTEXTUAL_PROFILE_64K;
     return MARC_STATUS_OK;
 }
 
@@ -4781,7 +4781,7 @@ marc_status marc_lzss_contextual_dynamic_range_workspace_requirements(
         const auto error =
             marc::frame::internal::make_lzss_typed_context_profile(
                 {config->original_size, config->frame_size, dictionary,
-                 typed_context_profile_variant(config->window_profile)},
+                 typed_context_profile_variant(config->profile)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssTypedContextProfileError::none) {
@@ -4801,7 +4801,7 @@ marc_status marc_lzss_contextual_dynamic_range_workspace_requirements(
         const auto error = marc::frame::internal::
             calculate_lzss_typed_context_decoder_workspace(
                 limits, needed,
-                typed_context_profile_variant(config->window_profile));
+                typed_context_profile_variant(config->profile));
         if (error != marc::frame::internal::
                          LzssTypedContextProfileError::none) {
             return status_for(
@@ -4871,7 +4871,7 @@ marc_status marc_lzss_contextual_dynamic_range_create(
             LzssTypedContextEncoderWorkspaceRequirements needed{};
         if (marc::frame::internal::make_lzss_typed_context_profile(
                 {config->original_size, config->frame_size, dictionary,
-                 typed_context_profile_variant(config->window_profile)},
+                 typed_context_profile_variant(config->profile)},
                 limits, stream, needed)
             != marc::frame::internal::
                    LzssTypedContextProfileError::none) {
@@ -4894,7 +4894,7 @@ marc_status marc_lzss_contextual_dynamic_range_create(
         if (marc::frame::internal::
                 calculate_lzss_typed_context_decoder_workspace(
                     limits, needed,
-                    typed_context_profile_variant(config->window_profile))
+                    typed_context_profile_variant(config->profile))
             != marc::frame::internal::
                    LzssTypedContextProfileError::none) {
             return MARC_STATUS_INTERNAL_ERROR;
@@ -4909,7 +4909,7 @@ marc_status marc_lzss_contextual_dynamic_range_create(
         implementation = new (std::nothrow)
             marc::frame::internal::LzssTypedContextFrameStreamingDecoder(
                 limits, primary, views.tokens, secondary,
-                typed_context_stream_admission(config->window_profile));
+                typed_context_stream_admission(config->profile));
     }
     return publish_transform(implementation, transform);
 }
@@ -4919,7 +4919,7 @@ marc_status marc_lzss_contextual_rans_config_init(
     marc_lzss_contextual_rans_config* config) noexcept {
     const auto status = initialize_contextual_rans_config(direction, config);
     if (status == MARC_STATUS_OK) {
-        config->window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+        config->profile = MARC_LZSS_CONTEXTUAL_PROFILE_64K;
     }
     return status;
 }
@@ -4946,7 +4946,7 @@ marc_status marc_lzss_contextual_tans_config_init(
     marc_lzss_contextual_tans_config* const config) noexcept {
     const auto status = initialize_contextual_rans_config(direction, config);
     if (status == MARC_STATUS_OK) {
-        config->window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+        config->profile = MARC_LZSS_CONTEXTUAL_PROFILE_64K;
     }
     return status;
 }
@@ -4973,15 +4973,15 @@ marc_status marc_lzss_contextual_adaptive_huffman_config_init(
     marc_lzss_contextual_adaptive_huffman_config* const config) noexcept {
     const auto status = initialize_contextual_rans_config(direction, config);
     if (status == MARC_STATUS_OK) {
-        config->window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+        config->profile = MARC_LZSS_CONTEXTUAL_PROFILE_64K;
     }
     return status;
 }
 
 marc_status
-marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
+marc_lzss_contextual_adaptive_huffman_config_apply_profile(
     marc_lzss_contextual_adaptive_huffman_config* const config,
-    const marc_lzss_contextual_window_profile profile) noexcept {
+    const marc_lzss_contextual_profile profile) noexcept {
     if (config == nullptr
         || config->struct_size
             != sizeof(marc_lzss_contextual_adaptive_huffman_config)
@@ -4989,16 +4989,16 @@ marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE)
         || config->reserved != 0 || config->reserved2 != 0
-        || (profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-            && profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            && profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M)) {
+        || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
         return MARC_STATUS_INVALID_ARGUMENT;
     }
 
     auto applied = *config;
-    const std::uint32_t extent = profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+    const std::uint32_t extent = profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
         ? UINT32_C(1) << 22
-        : profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
             ? UINT32_C(1) << 20
             : UINT32_C(1) << 16;
     const std::uint64_t payload =
@@ -5012,20 +5012,20 @@ marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
     applied.max_block_size = extent;
     applied.max_compressed_payload_size = payload;
     applied.max_internal_buffered_bytes =
-        profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
         ? UINT64_C(256) << 20
-        : profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
             ? UINT64_C(128) << 20
             : UINT64_C(8) << 20;
     applied.max_lz_distance = extent;
     applied.max_lz_match_length = 258;
     applied.max_entropy_table_entries =
-        profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
         ? UINT64_C(13729)
-        : profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
             ? UINT64_C(13681)
             : UINT64_C(13585);
-    applied.window_profile = profile;
+    applied.profile = profile;
     *config = applied;
     return MARC_STATUS_OK;
 }
@@ -5054,7 +5054,7 @@ marc_status marc_lzss_contextual_blocked_huffman_config_init(
     marc_lzss_contextual_blocked_huffman_config* const config) noexcept {
     const auto status = initialize_contextual_rans_config(direction, config);
     if (status == MARC_STATUS_OK) {
-        config->window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+        config->profile = MARC_LZSS_CONTEXTUAL_PROFILE_64K;
     }
     return status;
 }

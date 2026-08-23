@@ -218,7 +218,7 @@ selected the old profile until the following explicit ABI field was
 introduced.
 
 The Contextual Dynamic Range C lifecycle now allocates the former 64-bit
-reserved tail as a 32-bit `window_profile` followed by a 32-bit reserved word,
+reserved tail as a 32-bit `profile` followed by a 32-bit reserved word,
 retaining the ABI-1 structure extent and the prior all-zero default. Value 0
 selects only the frozen `2/2 + 1/1` identity; value 1 selects only the extended
 `2/3 + 1/2` identity. Workspace queries derive the selected 4,518- or
@@ -285,7 +285,7 @@ buffer lifecycle proves a generated distance above 65,536 and exact raw round
 trip, while the frozen 64 KiB requirements and bytes remain unchanged. The
 private decoder auto-selects a valid serialized identity; explicit profile
 policy belongs to the public selector. The Contextual rANS C configuration now
-splits its former 64-bit reserved tail into the shared 32-bit `window_profile`
+splits its former 64-bit reserved tail into the shared 32-bit `profile`
 and a 32-bit reserved word without changing ABI-1 extent. Public workspace
 queries and encoders select the exact profile, while public decoders reject
 the other identity before frame allocation. The CLI stage uses the explicit

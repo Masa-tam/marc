@@ -271,14 +271,14 @@ selected_lzss_contextual_dynamic_range_buffered_size(
             : lzss_contextual_dynamic_range_buffered_size;
 }
 
-[[nodiscard]] constexpr marc_lzss_contextual_window_profile
-selected_lzss_contextual_dynamic_range_window_profile(
+[[nodiscard]] constexpr marc_lzss_contextual_profile
+selected_lzss_contextual_dynamic_range_profile(
     const Codec codec) noexcept {
     return codec == Codec::lzss_contextual_dynamic_range_4m
-        ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
         : codec == Codec::lzss_contextual_dynamic_range_1m
-            ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            : MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+            ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            : MARC_LZSS_CONTEXTUAL_PROFILE_64K;
 }
 
 [[nodiscard]] constexpr bool is_lzss_contextual_rans(
@@ -306,13 +306,13 @@ selected_lzss_contextual_rans_buffered_size(const Codec codec) noexcept {
             : lzss_contextual_rans_buffered_size;
 }
 
-[[nodiscard]] constexpr marc_lzss_contextual_window_profile
-selected_lzss_contextual_rans_window_profile(const Codec codec) noexcept {
+[[nodiscard]] constexpr marc_lzss_contextual_profile
+selected_lzss_contextual_rans_profile(const Codec codec) noexcept {
     return codec == Codec::lzss_contextual_rans_4m
-        ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
         : codec == Codec::lzss_contextual_rans_1m
-            ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            : MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+            ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            : MARC_LZSS_CONTEXTUAL_PROFILE_64K;
 }
 
 [[nodiscard]] constexpr bool is_lzss_contextual_tans(
@@ -340,13 +340,13 @@ selected_lzss_contextual_tans_buffered_size(const Codec codec) noexcept {
             : lzss_contextual_tans_buffered_size;
 }
 
-[[nodiscard]] constexpr marc_lzss_contextual_window_profile
-selected_lzss_contextual_tans_window_profile(const Codec codec) noexcept {
+[[nodiscard]] constexpr marc_lzss_contextual_profile
+selected_lzss_contextual_tans_profile(const Codec codec) noexcept {
     return codec == Codec::lzss_contextual_tans_4m
-        ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
         : codec == Codec::lzss_contextual_tans_1m
-            ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            : MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+            ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            : MARC_LZSS_CONTEXTUAL_PROFILE_64K;
 }
 
 [[nodiscard]] constexpr bool is_lzss_contextual_blocked_huffman(
@@ -376,14 +376,14 @@ selected_lzss_contextual_blocked_huffman_buffered_size(
             : lzss_contextual_blocked_huffman_buffered_size;
 }
 
-[[nodiscard]] constexpr marc_lzss_contextual_window_profile
-selected_lzss_contextual_blocked_huffman_window_profile(
+[[nodiscard]] constexpr marc_lzss_contextual_profile
+selected_lzss_contextual_blocked_huffman_profile(
     const Codec codec) noexcept {
     return codec == Codec::lzss_contextual_blocked_huffman_4m
-        ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
         : codec == Codec::lzss_contextual_blocked_huffman_1m
-            ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            : MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+            ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            : MARC_LZSS_CONTEXTUAL_PROFILE_64K;
 }
 
 [[nodiscard]] constexpr bool is_lzss_contextual_adaptive_huffman(
@@ -413,14 +413,14 @@ selected_lzss_contextual_adaptive_huffman_buffered_size(
             : lzss_contextual_adaptive_huffman_buffered_size;
 }
 
-[[nodiscard]] constexpr marc_lzss_contextual_window_profile
-selected_lzss_contextual_adaptive_huffman_window_profile(
+[[nodiscard]] constexpr marc_lzss_contextual_profile
+selected_lzss_contextual_adaptive_huffman_profile(
     const Codec codec) noexcept {
     return codec == Codec::lzss_contextual_adaptive_huffman_4m
-        ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+        ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
         : codec == Codec::lzss_contextual_adaptive_huffman_1m
-            ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-            : MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+            ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
+            : MARC_LZSS_CONTEXTUAL_PROFILE_64K;
 }
 
 struct TransformDeleter {
@@ -1228,8 +1228,8 @@ struct Measurement {
         config.max_internal_buffered_bytes = maximum_buffered;
         config.max_lz_distance = selected_frame_size;
         config.max_lz_match_length = 258;
-        config.window_profile =
-            selected_lzss_contextual_dynamic_range_window_profile(codec);
+        config.profile =
+            selected_lzss_contextual_dynamic_range_profile(codec);
     } else if (is_lzss_contextual_rans(codec)) {
         auto& config = result.lzss_contextual_rans;
         if (marc_lzss_contextual_rans_config_init(direction, &config)
@@ -1248,8 +1248,8 @@ struct Measurement {
         config.max_internal_buffered_bytes = maximum_buffered;
         config.max_lz_distance = selected_frame_size;
         config.max_lz_match_length = 258;
-        config.window_profile =
-            selected_lzss_contextual_rans_window_profile(codec);
+        config.profile =
+            selected_lzss_contextual_rans_profile(codec);
     } else if (is_lzss_contextual_tans(codec)) {
         auto& config = result.lzss_contextual_tans;
         if (marc_lzss_contextual_tans_config_init(direction, &config)
@@ -1268,8 +1268,8 @@ struct Measurement {
         config.max_internal_buffered_bytes = maximum_buffered;
         config.max_lz_distance = selected_frame_size;
         config.max_lz_match_length = 258;
-        config.window_profile =
-            selected_lzss_contextual_tans_window_profile(codec);
+        config.profile =
+            selected_lzss_contextual_tans_profile(codec);
     } else if (is_lzss_contextual_blocked_huffman(codec)) {
         auto& config = result.lzss_contextual_blocked_huffman;
         if (marc_lzss_contextual_blocked_huffman_config_init(
@@ -1288,16 +1288,16 @@ struct Measurement {
         config.max_internal_buffered_bytes = maximum_buffered;
         config.max_lz_distance = selected_frame_size;
         config.max_lz_match_length = 258;
-        config.window_profile =
-            selected_lzss_contextual_blocked_huffman_window_profile(codec);
+        config.profile =
+            selected_lzss_contextual_blocked_huffman_profile(codec);
     } else if (is_lzss_contextual_adaptive_huffman(codec)) {
         auto& config = result.lzss_contextual_adaptive_huffman;
         if (marc_lzss_contextual_adaptive_huffman_config_init(
                 direction, &config) != MARC_STATUS_OK)
             return false;
-        if (marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
+        if (marc_lzss_contextual_adaptive_huffman_config_apply_profile(
                 &config,
-                selected_lzss_contextual_adaptive_huffman_window_profile(
+                selected_lzss_contextual_adaptive_huffman_profile(
                     codec)) != MARC_STATUS_OK) {
             return false;
         }

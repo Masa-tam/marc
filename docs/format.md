@@ -6907,8 +6907,8 @@ identity is malformed after the stream header and before frame collection or
 raw publication. Public admission is not defined by this stage.
 
 The public C Contextual Adaptive Huffman configuration exposes the same exact
-selection through `MARC_LZSS_CONTEXTUAL_WINDOW_64K` and
-`MARC_LZSS_CONTEXTUAL_WINDOW_1M`. The selector is not serialized separately
+selection through `MARC_LZSS_CONTEXTUAL_PROFILE_64K` and
+`MARC_LZSS_CONTEXTUAL_PROFILE_1M`. The selector is not serialized separately
 and is not inferred from `window_size`. It determines which already defined
 dictionary/context identity the encoder emits and which exact identity the
 decoder admits after the complete stream header and before frame collection.
@@ -6954,8 +6954,8 @@ crossed or disallowed identity is malformed immediately after the complete
 112-byte stream header and before any frame or raw byte is published.
 
 The public C Contextual Blocked Huffman configuration exposes that exact
-selection through `MARC_LZSS_CONTEXTUAL_WINDOW_64K` and
-`MARC_LZSS_CONTEXTUAL_WINDOW_1M`. This selector is not serialized separately
+selection through `MARC_LZSS_CONTEXTUAL_PROFILE_64K` and
+`MARC_LZSS_CONTEXTUAL_PROFILE_1M`. This selector is not serialized separately
 and is not inferred from the configured window. It controls which already
 defined stream identity the encoder emits and which exact identity the decoder
 admits before frame collection.
@@ -6993,7 +6993,7 @@ above the unchanged 128 MiB default. Its decoder aggregate is 121,634,896
 bytes under the 64 MiB payload limit and fits the default once the block-size
 limit is separately raised.
 
-The public C selector `MARC_LZSS_CONTEXTUAL_WINDOW_4M` has value 2 and selects
+The public C selector `MARC_LZSS_CONTEXTUAL_PROFILE_4M` has value 2 and selects
 the exact `2/4 + 1/3` pair. Contextual Dynamic Range and canonical contextual
 rANS, tANS, and Contextual Blocked Huffman accept it with their respective
 completed entropy triples. It is
@@ -7241,9 +7241,9 @@ one MiB and decodes without raw publication under a crossed older identity.
 No public C selector or CLI name is admitted yet.
 
 The public Contextual Adaptive Huffman boundary now admits existing ABI-1
-selector `MARC_LZSS_CONTEXTUAL_WINDOW_4M` as exact identity
+selector `MARC_LZSS_CONTEXTUAL_PROFILE_4M` as exact identity
 `2/4 + 1/3 + 1/2`. The additive
-`marc_lzss_contextual_adaptive_huffman_config_apply_window_profile()` helper
+`marc_lzss_contextual_adaptive_huffman_config_apply_profile()` helper
 atomically applies the canonical 64-KiB, one-MiB, or four-MiB parameter and
 limit set while preserving direction, original size, total-output limit, ABI
 metadata, and reserved zeros. Invalid metadata or selector values leave the

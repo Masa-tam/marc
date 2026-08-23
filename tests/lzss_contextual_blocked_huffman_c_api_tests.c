@@ -59,11 +59,11 @@ static void run_extended_profile(
     marc_transform* transform = NULL;
     assert(marc_lzss_contextual_blocked_huffman_config_init(
                MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
-    assert(config.window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    assert(config.profile == MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     config.original_size = raw_size;
     config.frame_size = (uint32_t)raw_size;
     config.window_size = UINT32_C(1) << 20;
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     set_extended_limits(&config, raw_size);
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
@@ -99,7 +99,7 @@ static void run_extended_profile(
     marc_workspace_requirements legacy_needed;
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &legacy_needed) == MARC_STATUS_OK);
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     config.window_size = UINT32_C(1) << 20;
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
@@ -108,7 +108,7 @@ static void run_extended_profile(
     primary = allocate(legacy_needed.primary_bytes);
     secondary = allocate(legacy_needed.secondary_bytes);
     views = allocate(legacy_needed.views_bytes);
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_64K;
     config.window_size = UINT32_C(1) << 16;
     assert(marc_lzss_contextual_blocked_huffman_create(
                &config, primary, secondary, views, &transform)
@@ -124,7 +124,7 @@ static void run_extended_profile(
     release(secondary);
     release(views);
 
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     config.window_size = UINT32_C(1) << 20;
     primary = allocate(needed.primary_bytes);
     secondary = allocate(needed.secondary_bytes);
@@ -152,18 +152,18 @@ static void run_extended_profile(
     assert(result.output_produced == 0 && decoded[0] == 0xcc);
     marc_transform_destroy(transform);
 
-    config.window_profile = UINT32_C(3);
+    config.profile = UINT32_C(3);
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     assert(marc_lzss_contextual_blocked_huffman_config_init(
                MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
     config.original_size = 1;
     config.frame_size = 1;
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_64K;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_64K;
     config.window_size = UINT32_C(1) << 20;
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_UNSUPPORTED);
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     config.reserved2 = 1;
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
@@ -189,7 +189,7 @@ static void run_four_mib_profile(void) {
     config.original_size = sizeof(input);
     config.frame_size = 2;
     config.window_size = UINT32_C(1) << 22;
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_4M;
     set_small_limits(&config);
     config.max_lz_distance = UINT64_C(1) << 22;
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
@@ -221,7 +221,7 @@ static void run_four_mib_profile(void) {
                MARC_DIRECTION_DECODE, &config) == MARC_STATUS_OK);
     set_small_limits(&config);
     config.max_lz_distance = UINT64_C(1) << 22;
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
     primary = allocate(needed.primary_bytes);
@@ -244,7 +244,7 @@ static void run_four_mib_profile(void) {
     release(secondary);
     release(views);
 
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_4M;
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
     assert(needed.primary_bytes >= 2657);
@@ -274,7 +274,7 @@ static void run_four_mib_profile(void) {
     config.max_block_size = UINT64_C(7) << 22;
     config.max_compressed_payload_size = UINT64_C(55050240);
     config.max_lz_distance = UINT32_C(1) << 22;
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_4M;
 #if SIZE_MAX > UINT32_MAX
     config.max_internal_buffered_bytes = UINT64_C(126880347);
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
@@ -295,7 +295,7 @@ static void run_four_mib_profile(void) {
     config.max_block_size = UINT64_C(7) << 22;
     config.max_compressed_payload_size = UINT64_C(55050240);
     config.max_lz_distance = UINT32_C(1) << 22;
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_4M;
 #if SIZE_MAX > UINT32_MAX
     config.max_internal_buffered_bytes = UINT64_C(109722063);
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
@@ -327,7 +327,7 @@ int main(void) {
     assert(config.window_size == 65536);
     assert(config.min_match_length == 5);
     assert(config.max_match_length == 258);
-    assert(config.window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    assert(config.profile == MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     assert(config.reserved2 == 0);
     assert(sizeof(config) == 112);
     config.original_size = sizeof(input);

@@ -44,7 +44,7 @@ int main(void) {
     assert(config.abi_version == MARC_ABI_VERSION);
     assert(config.frame_size == 65536);
     assert(config.window_size == 65536);
-    assert(config.window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    assert(config.profile == MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     assert(config.min_match_length == 5);
     assert(config.max_match_length == 258);
     config.original_size = sizeof(input);
@@ -113,7 +113,7 @@ int main(void) {
     config.original_size = sizeof(input);
     config.frame_size = 2;
     config.window_size = UINT32_C(1) << 20;
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     set_small_limits(&config);
     config.max_lz_distance = UINT64_C(1) << 20;
     config.max_entropy_table_entries = 4549;
@@ -168,7 +168,7 @@ int main(void) {
     assert(marc_lzss_contextual_dynamic_range_config_init(
                MARC_DIRECTION_DECODE, &config)
            == MARC_STATUS_OK);
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     set_small_limits(&config);
     config.max_lz_distance = UINT64_C(1) << 20;
     assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
@@ -233,7 +233,7 @@ int main(void) {
     config.window_size = UINT32_C(1) << 22;
     config.max_block_size = UINT32_C(1) << 22;
     config.max_lz_distance = UINT32_C(1) << 22;
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_4M;
     assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
                &config, &needed)
            == MARC_STATUS_LIMIT_EXCEEDED);
@@ -256,7 +256,7 @@ int main(void) {
            == MARC_STATUS_OK);
     config.max_block_size = UINT32_C(1) << 22;
     config.max_lz_distance = UINT32_C(1) << 22;
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_4M;
     assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
                &config, &needed)
            == MARC_STATUS_OK);
@@ -266,11 +266,11 @@ int main(void) {
     assert(needed.views_bytes == 50331648);
 #endif
 
-    config.window_profile = UINT32_C(3);
+    config.profile = UINT32_C(3);
     assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
                &config, &needed)
            == MARC_STATUS_INVALID_ARGUMENT);
-    config.window_profile = MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     config.reserved2 = 1;
     assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
                &config, &needed)

@@ -28,11 +28,11 @@ constexpr std::size_t maximum_payload = raw.size() * 14 + 8;
 constexpr std::size_t maximum_internal = 2U << 20;
 
 [[nodiscard]] constexpr std::size_t maximum_encoded_frame(
-    const marc_lzss_contextual_window_profile window_profile) noexcept {
-    const auto descriptor_size = window_profile
-            == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+    const marc_lzss_contextual_profile profile) noexcept {
+    const auto descriptor_size = profile
+            == MARC_LZSS_CONTEXTUAL_PROFILE_4M
         ? marc::entropy::internal::contextual_rans_max_descriptor_size_v3
-        : window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
             ? marc::entropy::internal::contextual_rans_max_descriptor_size_v2
             : marc::entropy::internal::contextual_rans_max_descriptor_size_v1;
     return marc::frame::internal::lzss_contextual_rans_frame_header_size
@@ -58,7 +58,7 @@ struct Config {
 template <class T>
 void configure_fields(
     T& result,
-    const marc_lzss_contextual_window_profile window_profile) {
+    const marc_lzss_contextual_profile profile) {
     result.original_size = raw.size();
     result.frame_size = raw.size();
     result.max_total_output_size = 32;
@@ -66,26 +66,26 @@ void configure_fields(
     result.max_block_size = maximum_decisions;
     result.max_compressed_payload_size = maximum_payload;
     result.max_internal_buffered_bytes = maximum_internal;
-    result.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+    result.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
         ? UINT32_C(1) << 22
-        : window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
             ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
     result.max_lz_distance = UINT64_C(1) << 22;
     result.max_lz_match_length = 258;
     result.max_entropy_table_entries =
         marc::entropy::internal::contextual_rans_decode_table_entries;
-    result.window_profile = window_profile;
+    result.profile = profile;
 }
 
 [[nodiscard]] Config settings(
-                              const marc_lzss_contextual_window_profile
-                                  window_profile,
+                              const marc_lzss_contextual_profile
+                                  profile,
                               const marc_direction direction) {
     Config result{};
     EXPECT_EQ(marc_lzss_contextual_rans_config_init(
                   direction, &result.value),
               MARC_STATUS_OK);
-    configure_fields(result.value, window_profile);
+    configure_fields(result.value, profile);
     return result;
 }
 
@@ -106,8 +106,8 @@ void configure_fields(
 }
 
 [[nodiscard]] std::vector<std::uint8_t> canonical_stream(
-    const marc_lzss_contextual_window_profile window_profile) {
-    auto config = settings(window_profile, MARC_DIRECTION_ENCODE);
+    const marc_lzss_contextual_profile profile) {
+    auto config = settings(profile, MARC_DIRECTION_ENCODE);
     auto workspace = workspace_for(config);
     marc_transform* encoder{};
     const marc_buffer primary{workspace.primary.data(),
@@ -120,7 +120,7 @@ void configure_fields(
     EXPECT_EQ(status, MARC_STATUS_OK);
     std::vector<std::uint8_t> encoded(
         marc::frame::internal::lzss_contextual_rans_stream_header_size
-        + maximum_encoded_frame(window_profile));
+        + maximum_encoded_frame(profile));
     const auto result = marc_transform_process(
         encoder, {raw.data(), raw.size()}, {encoded.data(), encoded.size()},
         MARC_PROCESS_END_INPUT);
@@ -132,7 +132,7 @@ void configure_fields(
 
 void expect_public_profile_rejection(
     const std::span<const std::uint8_t> encoded,
-    const marc_lzss_contextual_window_profile decoder_profile) {
+    const marc_lzss_contextual_profile decoder_profile) {
     auto config = settings(decoder_profile, MARC_DIRECTION_DECODE);
     auto workspace = workspace_for(config);
     marc_transform* decoder{};
@@ -164,11 +164,11 @@ void expect_public_profile_rejection(
 
 class LzssContextualRansFuzzRegression
     : public testing::TestWithParam<
-          marc_lzss_contextual_window_profile> {
+          marc_lzss_contextual_profile> {
 protected:
     LzssContextualRansFuzzRegression()
-        : window_profile_(GetParam()),
-          decode_config_(settings(window_profile_, MARC_DIRECTION_DECODE)),
+        : profile_(GetParam()),
+          decode_config_(settings(profile_, MARC_DIRECTION_DECODE)),
           public_workspace_(workspace_for(decode_config_)),
           tables_(marc::entropy::internal::
                       contextual_rans_decode_table_entries) {}
@@ -251,7 +251,7 @@ protected:
     }
 
 private:
-    marc_lzss_contextual_window_profile window_profile_{};
+    marc_lzss_contextual_profile profile_{};
     Config decode_config_{};
     Workspace public_workspace_{};
     std::vector<RansDecodeEntry> tables_;
@@ -290,9 +290,9 @@ TEST_P(LzssContextualRansFuzzRegression,
 
 TEST(LzssContextualRansFuzzRegression,
      CrossProfilePublicDecodersRejectAtomically) {
-    const auto frozen = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+    const auto frozen = canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     auto extended_config = settings(
-        MARC_LZSS_CONTEXTUAL_WINDOW_1M, MARC_DIRECTION_DECODE);
+        MARC_LZSS_CONTEXTUAL_PROFILE_1M, MARC_DIRECTION_DECODE);
     auto extended_workspace = workspace_for(extended_config);
     marc_transform* extended_decoder{};
     ASSERT_EQ(marc_lzss_contextual_rans_create(
@@ -322,9 +322,9 @@ TEST(LzssContextualRansFuzzRegression,
               result.error_bit_position);
     marc_transform_destroy(extended_decoder);
 
-    const auto extended = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_1M);
+    const auto extended = canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_1M);
     auto frozen_config = settings(
-        MARC_LZSS_CONTEXTUAL_WINDOW_64K, MARC_DIRECTION_DECODE);
+        MARC_LZSS_CONTEXTUAL_PROFILE_64K, MARC_DIRECTION_DECODE);
     auto frozen_workspace = workspace_for(frozen_config);
     marc_transform* frozen_decoder{};
     ASSERT_EQ(marc_lzss_contextual_rans_create(
@@ -356,25 +356,25 @@ TEST(LzssContextualRansFuzzRegression,
 
 TEST(LzssContextualRansFuzzRegression,
      FourMiBAndOlderPublicDecodersRejectAtomically) {
-    const auto frozen = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_64K);
-    const auto one_mib = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_1M);
-    const auto four_mib = canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+    const auto frozen = canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_64K);
+    const auto one_mib = canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    const auto four_mib = canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_4M);
 
     expect_public_profile_rejection(
-        four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+        four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     expect_public_profile_rejection(
-        four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_1M);
+        four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
     expect_public_profile_rejection(
-        frozen, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+        frozen, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
     expect_public_profile_rejection(
-        one_mib, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+        one_mib, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
 }
 
 INSTANTIATE_TEST_SUITE_P(
     Profiles, LzssContextualRansFuzzRegression,
     testing::Values(
-        MARC_LZSS_CONTEXTUAL_WINDOW_64K,
-        MARC_LZSS_CONTEXTUAL_WINDOW_1M,
-        MARC_LZSS_CONTEXTUAL_WINDOW_4M));
+        MARC_LZSS_CONTEXTUAL_PROFILE_64K,
+        MARC_LZSS_CONTEXTUAL_PROFILE_1M,
+        MARC_LZSS_CONTEXTUAL_PROFILE_4M));
 
 } // namespace

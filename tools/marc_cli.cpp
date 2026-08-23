@@ -912,23 +912,23 @@ bool configure(
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_contextual_dynamic_range_config& config,
-    const marc_lzss_contextual_window_profile window_profile =
-        MARC_LZSS_CONTEXTUAL_WINDOW_64K) {
+    const marc_lzss_contextual_profile profile =
+        MARC_LZSS_CONTEXTUAL_PROFILE_64K) {
     const auto status = marc_lzss_contextual_dynamic_range_config_init(
         direction, &config);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    if (window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-        && window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        && window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    if (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return false;
     }
     const bool one_mib_window =
-        window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     const bool four_mib_window =
-        window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M;
     const auto selected_frame_size = four_mib_window
         ? lzss_contextual_dynamic_range_4m_frame_size
         : one_mib_window
@@ -951,29 +951,29 @@ bool configure(
             : lzss_contextual_dynamic_range_buffered_size;
     config.max_lz_distance = selected_frame_size;
     config.max_lz_match_length = 258;
-    config.window_profile = window_profile;
+    config.profile = profile;
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_contextual_rans_config& config,
-    const marc_lzss_contextual_window_profile window_profile) {
+    const marc_lzss_contextual_profile profile) {
     const auto status =
         marc_lzss_contextual_rans_config_init(direction, &config);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    if (window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-        && window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        && window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    if (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return false;
     }
     const bool one_mib_window =
-        window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     const bool four_mib_window =
-        window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M;
     const auto selected_frame_size = four_mib_window
         ? lzss_contextual_rans_4m_frame_size
         : one_mib_window
@@ -999,29 +999,29 @@ bool configure(
             : lzss_contextual_rans_buffered_size;
     config.max_lz_distance = selected_frame_size;
     config.max_lz_match_length = 258;
-    config.window_profile = window_profile;
+    config.profile = profile;
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_contextual_tans_config& config,
-    const marc_lzss_contextual_window_profile window_profile) {
+    const marc_lzss_contextual_profile profile) {
     const auto status =
         marc_lzss_contextual_tans_config_init(direction, &config);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    if (window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-        && window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        && window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    if (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return false;
     }
     const bool one_mib_window =
-        window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     const bool four_mib_window =
-        window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M;
     const auto selected_frame_size = four_mib_window
         ? lzss_contextual_tans_4m_frame_size
         : one_mib_window
@@ -1048,29 +1048,29 @@ bool configure(
             : lzss_contextual_tans_buffered_size;
     config.max_lz_distance = selected_frame_size;
     config.max_lz_match_length = 258;
-    config.window_profile = window_profile;
+    config.profile = profile;
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_contextual_blocked_huffman_config& config,
-    const marc_lzss_contextual_window_profile window_profile) {
+    const marc_lzss_contextual_profile profile) {
     const auto status =
         marc_lzss_contextual_blocked_huffman_config_init(direction, &config);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    if (window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_64K
-        && window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_1M
-        && window_profile != MARC_LZSS_CONTEXTUAL_WINDOW_4M) {
+    if (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
+        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
+        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return false;
     }
     const bool one_mib_window =
-        window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M;
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M;
     const bool four_mib_window =
-        window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M;
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M;
     const auto selected_frame_size = four_mib_window
         ? lzss_contextual_blocked_huffman_4m_frame_size
         : one_mib_window
@@ -1097,22 +1097,22 @@ bool configure(
             : lzss_contextual_blocked_huffman_buffered_size;
     config.max_lz_distance = selected_frame_size;
     config.max_lz_match_length = 258;
-    config.window_profile = window_profile;
+    config.profile = profile;
     return true;
 }
 
 bool configure(
     const marc_direction direction, const std::uint64_t original_size,
     marc_lzss_contextual_adaptive_huffman_config& config,
-    const marc_lzss_contextual_window_profile window_profile) {
+    const marc_lzss_contextual_profile profile) {
     const auto status =
         marc_lzss_contextual_adaptive_huffman_config_init(direction, &config);
     if (status != MARC_STATUS_OK) {
         print_status("configuration failed", status);
         return false;
     }
-    if (marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
-            &config, window_profile) != MARC_STATUS_OK) {
+    if (marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+            &config, profile) != MARC_STATUS_OK) {
         print_status("configuration failed", MARC_STATUS_INVALID_ARGUMENT);
         return false;
     }
@@ -1858,10 +1858,10 @@ bool process_file(const marc_direction direction,
         if (!configure(
                 direction, source_size, lzss_contextual_range_config,
                 codec == Codec::lzss_contextual_dynamic_range_4m
-                    ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+                    ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
                     : codec == Codec::lzss_contextual_dynamic_range_1m
-                        ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-                        : MARC_LZSS_CONTEXTUAL_WINDOW_64K))
+                        ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
+                        : MARC_LZSS_CONTEXTUAL_PROFILE_64K))
             return false;
     } else if (codec == Codec::lzss_contextual_rans
                || codec == Codec::lzss_contextual_rans_1m
@@ -1869,10 +1869,10 @@ bool process_file(const marc_direction direction,
         if (!configure(
                 direction, source_size, lzss_contextual_rans_settings,
                 codec == Codec::lzss_contextual_rans_4m
-                    ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+                    ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
                     : codec == Codec::lzss_contextual_rans_1m
-                        ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-                        : MARC_LZSS_CONTEXTUAL_WINDOW_64K))
+                        ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
+                        : MARC_LZSS_CONTEXTUAL_PROFILE_64K))
             return false;
     } else if (codec == Codec::lzss_contextual_tans
                || codec == Codec::lzss_contextual_tans_1m
@@ -1880,10 +1880,10 @@ bool process_file(const marc_direction direction,
         if (!configure(
                 direction, source_size, lzss_contextual_tans_settings,
                 codec == Codec::lzss_contextual_tans_4m
-                    ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+                    ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
                     : codec == Codec::lzss_contextual_tans_1m
-                        ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-                        : MARC_LZSS_CONTEXTUAL_WINDOW_64K)) {
+                        ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
+                        : MARC_LZSS_CONTEXTUAL_PROFILE_64K)) {
             return false;
         }
     } else if (codec == Codec::lzss_contextual_blocked_huffman
@@ -1893,10 +1893,10 @@ bool process_file(const marc_direction direction,
                 direction, source_size,
                 lzss_contextual_blocked_huffman_settings,
                 codec == Codec::lzss_contextual_blocked_huffman_4m
-                    ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+                    ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
                     : codec == Codec::lzss_contextual_blocked_huffman_1m
-                        ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-                        : MARC_LZSS_CONTEXTUAL_WINDOW_64K)) {
+                        ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
+                        : MARC_LZSS_CONTEXTUAL_PROFILE_64K)) {
             return false;
         }
     } else if (codec == Codec::lzss_contextual_adaptive_huffman
@@ -1906,10 +1906,10 @@ bool process_file(const marc_direction direction,
                 direction, source_size,
                 lzss_contextual_adaptive_huffman_settings,
                 codec == Codec::lzss_contextual_adaptive_huffman_4m
-                    ? MARC_LZSS_CONTEXTUAL_WINDOW_4M
+                    ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
                     : codec == Codec::lzss_contextual_adaptive_huffman_1m
-                        ? MARC_LZSS_CONTEXTUAL_WINDOW_1M
-                        : MARC_LZSS_CONTEXTUAL_WINDOW_64K)) {
+                        ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
+                        : MARC_LZSS_CONTEXTUAL_PROFILE_64K)) {
             return false;
         }
     } else if (codec == Codec::lzss_rans) {

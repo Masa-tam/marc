@@ -158,10 +158,10 @@ atomic raw-frame output, and views for typed tokens. The factory validates
 capacity, alignment, and pairwise non-overlap before publishing a handle.
 Encoder sizes and LZSS parameters are read from the size-tagged configuration;
 decoder workspace sizing comes only from its hard limits and validates stream
-parameters later. `window_profile` selects one exact dictionary/context pair:
-`MARC_LZSS_CONTEXTUAL_WINDOW_64K` selects `2/2 + 1/1` and remains the
-initializer default, while `MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects
-`2/3 + 1/2`. `MARC_LZSS_CONTEXTUAL_WINDOW_4M` selects `2/4 + 1/3` only for
+parameters later. `profile` selects one exact dictionary/context pair:
+`MARC_LZSS_CONTEXTUAL_PROFILE_64K` selects `2/2 + 1/1` and remains the
+initializer default, while `MARC_LZSS_CONTEXTUAL_PROFILE_1M` selects
+`2/3 + 1/2`. `MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects `2/4 + 1/3` only for
 this Dynamic Range factory. The selector is not inferred from `window_size`;
 encoding rejects parameters outside the selected profile and decoding rejects
 a stream whose
@@ -177,7 +177,7 @@ all-zero meaning used by earlier callers. The profile remains outside the
 baseline CLI and interoperability inventories.
 The experimental LZSS contextual rANS factory is a distinct Format 2
 lifecycle. Call `marc_lzss_contextual_rans_workspace_requirements()` after
-changing direction, known size, frame/LZSS parameters, `window_profile`, or
+changing direction, known size, frame/LZSS parameters, `profile`, or
 hard limits.
 Encoding uses primary for raw-frame input, secondary for the complete
 serialized frame, and aligned opaque views for typed tokens. Decoding uses
@@ -189,10 +189,10 @@ Its public completion audit covers all required binary classes, deterministic
 one-byte and mixed chunk schedules, repeated terminal calls, and frame-atomic
 malformed final-frame rejection without promoting it into the baseline matrix.
 This canonical lifecycle emits only variable-length entropy variant 3.
-`MARC_LZSS_CONTEXTUAL_WINDOW_64K` is the initializer default, selects
+`MARC_LZSS_CONTEXTUAL_PROFILE_64K` is the initializer default, selects
 dictionary/context `2/2 + 1/1`, and uses the 9,025-byte descriptor ceiling.
-`MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects `2/3 + 1/2` and uses the 9,089-byte
-ceiling. `MARC_LZSS_CONTEXTUAL_WINDOW_4M` selects `2/4 + 1/3`, uses the
+`MARC_LZSS_CONTEXTUAL_PROFILE_1M` selects `2/3 + 1/2` and uses the 9,089-byte
+ceiling. `MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects `2/4 + 1/3`, uses the
 9,121-byte ceiling, and retains the 128-MiB aggregate default. On supported
 64-bit native layouts its full encoder and decoder requirements are
 130,556,905 and 114,017,257 bytes; full-frame callers must raise
@@ -205,7 +205,7 @@ former 64-bit tail's ABI-1 extent and all-zero meaning. Entropy variant 2 is
 retired and reserved; the decoder rejects it.
 The experimental LZSS contextual tANS factory is a third distinct Format 2
 lifecycle. Call `marc_lzss_contextual_tans_workspace_requirements()` whenever
-the immutable direction, known size, frame/LZSS parameters, `window_profile`,
+the immutable direction, known size, frame/LZSS parameters, `profile`,
 or hard limits change. Encoding uses primary for raw-frame input, secondary
 for the complete serialized frame, and aligned opaque views for typed tokens
 followed by tANS inverse tables. Decoding uses primary for serialized input,
@@ -215,10 +215,10 @@ non-overlap, and the private partition before publishing a handle. It emits
 only entropy identity `5/2`; neither typed-token nor table representations form
 part of ABI 1.
 
-`MARC_LZSS_CONTEXTUAL_WINDOW_64K` remains the initializer default and selects
+`MARC_LZSS_CONTEXTUAL_PROFILE_64K` remains the initializer default and selects
 dictionary/context identity `2/2 + 1/1`.
-`MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects `2/3 + 1/2`, and
-`MARC_LZSS_CONTEXTUAL_WINDOW_4M` selects `2/4 + 1/3`. The four-MiB profile uses
+`MARC_LZSS_CONTEXTUAL_PROFILE_1M` selects `2/3 + 1/2`, and
+`MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects `2/4 + 1/3`. The four-MiB profile uses
 the 9,125-byte descriptor ceiling and retains the 128-MiB aggregate default.
 On supported 64-bit native layouts its full encoder and decoder requirements
 are 116,138,983 and 99,099,623 bytes; full-frame callers set
@@ -238,7 +238,7 @@ The experimental LZSS Contextual Blocked Huffman factory is a fourth distinct
 Format 2 lifecycle. Initialize its size-tagged configuration with
 `marc_lzss_contextual_blocked_huffman_config_init()`, repeat
 `marc_lzss_contextual_blocked_huffman_workspace_requirements()` whenever the
-immutable direction, known size, frame/LZSS parameters, `window_profile`, or
+immutable direction, known size, frame/LZSS parameters, `profile`, or
 hard limits change, and give all three returned regions to the factory.
 Encoding uses primary for
 raw-frame input, secondary for the complete serialized frame, and aligned
@@ -246,9 +246,9 @@ opaque views for typed tokens. Decoding uses primary for serialized input,
 secondary for atomic raw output, and views for at most 35 bounded Huffman
 decode tables followed by typed tokens. Capacity, alignment, and pairwise
 prefix non-overlap are checked before a handle is published.
-`MARC_LZSS_CONTEXTUAL_WINDOW_64K` remains the initializer default and selects
-`2/2 + 1/1 + 2/2`; `MARC_LZSS_CONTEXTUAL_WINDOW_1M` selects
-`2/3 + 1/2 + 2/2`; `MARC_LZSS_CONTEXTUAL_WINDOW_4M` selects
+`MARC_LZSS_CONTEXTUAL_PROFILE_64K` remains the initializer default and selects
+`2/2 + 1/1 + 2/2`; `MARC_LZSS_CONTEXTUAL_PROFILE_1M` selects
+`2/3 + 1/2 + 2/2`; `MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects
 `2/4 + 1/3 + 2/2`. The four-MiB profile uses `7F = 29,360,128` as its
 decision/block limit and a 55,050,240-byte payload limit. On supported 64-bit
 layouts its full encoder and decoder aggregate requirements are 126,880,348
@@ -267,10 +267,10 @@ Format 2 lifecycle. Initialize its size-tagged configuration with
 `marc_lzss_contextual_adaptive_huffman_config_init()`, then call
 `marc_lzss_contextual_adaptive_huffman_workspace_requirements()` again after
 changing direction, known size, frame/LZSS parameters, or hard limits.
-`MARC_LZSS_CONTEXTUAL_WINDOW_64K`, `_1M`, and `_4M` select exact identities
+`MARC_LZSS_CONTEXTUAL_PROFILE_64K`, `_1M`, and `_4M` select exact identities
 `2/2 + 1/1 + 1/2`, `2/3 + 1/2 + 1/2`, and `2/4 + 1/3 + 1/2` respectively.
 After initialization, callers may apply a coherent preset with
-`marc_lzss_contextual_adaptive_huffman_config_apply_window_profile()` and
+`marc_lzss_contextual_adaptive_huffman_config_apply_profile()` and
 then override individual values before querying workspaces. The helper
 allocates nothing, validates the complete ABI shell before mutation, preserves
 direction, original size, total-output limit, metadata, and reserved zeros,

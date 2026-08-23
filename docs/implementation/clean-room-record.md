@@ -25303,3 +25303,32 @@ both bounds.
 - Validation: the MSVC documentation-layout test passes. Production
   declarations, implementations, and the full validation matrix remain for
   the staged work that follows this design record.
+
+## CR-1032: 2026-08-23 - Contextual public profile-name normalization
+
+- Authoring method: mechanically replaced the pre-release common selector,
+  constants, five configuration fields, and existing Adaptive Huffman helper
+  across production, tools, fuzz harnesses, tests, and current public
+  documentation while retaining historical implementation records.
+- References used: IR-0717 through IR-0718, DD-954, TVG-0820, CR-1031, and
+  repository-owned public C, tool, benchmark, fuzz, test, and documentation
+  sources. No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  C APIs, source code, tests, vectors, patents, pseudocode, payload bounds,
+  and optimization descriptions.
+- Independent decisions: perform a hard pre-release rename without aliases;
+  preserve integer values, layout, behavior, and bytes; update current design
+  documents while retaining old names in chronological records; and rebuild
+  every C test executable after the shared-library export changed.
+- Generated-code task description: normalize public profile terminology and
+  prove that it is a source-name change only, before adding helpers to the
+  remaining four contextual families.
+- Similarity review: the change is a repository-local symbol normalization and
+  introduces no external implementation expression.
+- Validation: MSVC and ClangCL compile every target, including all five
+  contextual fuzz compile-smokes. Their complete 3,211-case CTest suites pass
+  in 201.17 and 218.32 seconds respectively, including all renamed C API
+  tests, documentation layout, and complete schema compatibility. An initial
+  MSVC run exposed one stale pre-rename C test executable; the required
+  all-target relink removed that build-product mismatch before the recorded
+  complete pass.

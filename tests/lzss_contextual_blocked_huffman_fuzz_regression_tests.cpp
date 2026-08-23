@@ -30,12 +30,12 @@ constexpr std::size_t maximum_internal = 2U << 20;
 constexpr std::size_t table_count =
     marc::entropy::internal::contextual_blocked_huffman_max_table_count;
 [[nodiscard]] constexpr std::size_t maximum_encoded_frame(
-    const marc_lzss_contextual_window_profile window_profile) noexcept {
-    const auto descriptor_size = window_profile
-            == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+    const marc_lzss_contextual_profile profile) noexcept {
+    const auto descriptor_size = profile
+            == MARC_LZSS_CONTEXTUAL_PROFILE_4M
         ? marc::entropy::internal::
               contextual_blocked_huffman_max_descriptor_size_v3
-        : window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
             ? marc::entropy::internal::
                   contextual_blocked_huffman_max_descriptor_size_v2
             : marc::entropy::internal::
@@ -59,17 +59,17 @@ struct Workspace {
 
 [[nodiscard]] marc_lzss_contextual_blocked_huffman_config settings(
     const marc_direction direction,
-    const marc_lzss_contextual_window_profile window_profile =
-        MARC_LZSS_CONTEXTUAL_WINDOW_64K) {
+    const marc_lzss_contextual_profile profile =
+        MARC_LZSS_CONTEXTUAL_PROFILE_64K) {
     marc_lzss_contextual_blocked_huffman_config result{};
     EXPECT_EQ(marc_lzss_contextual_blocked_huffman_config_init(
                   direction, &result),
               MARC_STATUS_OK);
     result.original_size = raw.size();
     result.frame_size = raw.size();
-    result.window_size = window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_4M
+    result.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
         ? UINT32_C(1) << 22
-        : window_profile == MARC_LZSS_CONTEXTUAL_WINDOW_1M
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
             ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
     result.max_total_output_size = 32;
     result.max_frame_size = raw.size();
@@ -79,7 +79,7 @@ struct Workspace {
     result.max_lz_distance = UINT64_C(1) << 22;
     result.max_lz_match_length = 258;
     result.max_entropy_table_entries = UINT64_C(1) << 20;
-    result.window_profile = window_profile;
+    result.profile = profile;
     return result;
 }
 
@@ -101,8 +101,8 @@ struct Workspace {
 }
 
 [[nodiscard]] std::vector<std::uint8_t> canonical_stream(
-    const marc_lzss_contextual_window_profile window_profile) {
-    auto config = settings(MARC_DIRECTION_ENCODE, window_profile);
+    const marc_lzss_contextual_profile profile) {
+    auto config = settings(MARC_DIRECTION_ENCODE, profile);
     auto workspace = workspace_for(config);
     marc_transform* encoder{};
     EXPECT_EQ(marc_lzss_contextual_blocked_huffman_create(
@@ -114,7 +114,7 @@ struct Workspace {
     std::vector<std::uint8_t> encoded(
         marc::frame::internal::
             lzss_contextual_blocked_huffman_stream_header_size
-        + maximum_encoded_frame(window_profile));
+        + maximum_encoded_frame(profile));
     const auto result = marc_transform_process(
         encoder, {raw.data(), raw.size()}, {encoded.data(), encoded.size()},
         MARC_PROCESS_END_INPUT);
@@ -126,7 +126,7 @@ struct Workspace {
 
 class LzssContextualBlockedHuffmanFuzzRegression
     : public testing::TestWithParam<
-          marc_lzss_contextual_window_profile> {
+          marc_lzss_contextual_profile> {
 protected:
     LzssContextualBlockedHuffmanFuzzRegression()
         : decode_config_(settings(MARC_DIRECTION_DECODE, GetParam())),
@@ -251,7 +251,7 @@ TEST(LzssContextualBlockedHuffmanFuzzRegression,
      CrossProfilePublicDecodersRejectAtomically) {
     const auto expect_rejection = [](
         const std::span<const std::uint8_t> input,
-        const marc_lzss_contextual_window_profile decoder_profile) {
+        const marc_lzss_contextual_profile decoder_profile) {
         auto config = settings(MARC_DIRECTION_DECODE, decoder_profile);
         auto decoder_workspace = workspace_for(config);
         marc_transform* decoder{};
@@ -287,24 +287,24 @@ TEST(LzssContextualBlockedHuffmanFuzzRegression,
     };
 
     const auto frozen =
-        canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_64K);
-    expect_rejection(frozen, MARC_LZSS_CONTEXTUAL_WINDOW_1M);
+        canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_64K);
+    expect_rejection(frozen, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
     const auto extended =
-        canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_1M);
-    expect_rejection(extended, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
+        canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    expect_rejection(extended, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     const auto four_mib =
-        canonical_stream(MARC_LZSS_CONTEXTUAL_WINDOW_4M);
-    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_64K);
-    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_WINDOW_1M);
-    expect_rejection(frozen, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
-    expect_rejection(extended, MARC_LZSS_CONTEXTUAL_WINDOW_4M);
+        canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_4M);
+    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
+    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    expect_rejection(frozen, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
+    expect_rejection(extended, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
 }
 
 INSTANTIATE_TEST_SUITE_P(
     Profiles, LzssContextualBlockedHuffmanFuzzRegression,
     testing::Values(
-        MARC_LZSS_CONTEXTUAL_WINDOW_64K,
-        MARC_LZSS_CONTEXTUAL_WINDOW_1M,
-        MARC_LZSS_CONTEXTUAL_WINDOW_4M));
+        MARC_LZSS_CONTEXTUAL_PROFILE_64K,
+        MARC_LZSS_CONTEXTUAL_PROFILE_1M,
+        MARC_LZSS_CONTEXTUAL_PROFILE_4M));
 
 } // namespace

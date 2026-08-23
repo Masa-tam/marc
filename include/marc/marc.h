@@ -33,10 +33,10 @@ typedef uint32_t marc_direction;
 #define MARC_DIRECTION_DECODE UINT32_C(2)
 
 /* Selects an exact dictionary/context stream identity; it is not inferred. */
-typedef uint32_t marc_lzss_contextual_window_profile;
-#define MARC_LZSS_CONTEXTUAL_WINDOW_64K UINT32_C(0)
-#define MARC_LZSS_CONTEXTUAL_WINDOW_1M UINT32_C(1)
-#define MARC_LZSS_CONTEXTUAL_WINDOW_4M UINT32_C(2)
+typedef uint32_t marc_lzss_contextual_profile;
+#define MARC_LZSS_CONTEXTUAL_PROFILE_64K UINT32_C(0)
+#define MARC_LZSS_CONTEXTUAL_PROFILE_1M UINT32_C(1)
+#define MARC_LZSS_CONTEXTUAL_PROFILE_4M UINT32_C(2)
 
 typedef uint32_t marc_process_flags;
 #define MARC_PROCESS_NONE UINT32_C(0)
@@ -392,7 +392,7 @@ typedef struct marc_lzss_contextual_dynamic_range_config {
     uint64_t max_lz_match_length;
     uint64_t max_entropy_table_entries;
     uint64_t max_range_model_total;
-    marc_lzss_contextual_window_profile window_profile;
+    marc_lzss_contextual_profile profile;
     uint32_t reserved2;
 } marc_lzss_contextual_dynamic_range_config;
 
@@ -414,7 +414,7 @@ typedef struct marc_lzss_contextual_rans_config {
     uint64_t max_lz_distance;
     uint64_t max_lz_match_length;
     uint64_t max_entropy_table_entries;
-    marc_lzss_contextual_window_profile window_profile;
+    marc_lzss_contextual_profile profile;
     uint32_t reserved2;
 } marc_lzss_contextual_rans_config;
 
@@ -436,7 +436,7 @@ typedef struct marc_lzss_contextual_tans_config {
     uint64_t max_lz_distance;
     uint64_t max_lz_match_length;
     uint64_t max_entropy_table_entries;
-    marc_lzss_contextual_window_profile window_profile;
+    marc_lzss_contextual_profile profile;
     uint32_t reserved2;
 } marc_lzss_contextual_tans_config;
 
@@ -458,7 +458,7 @@ typedef struct marc_lzss_contextual_adaptive_huffman_config {
     uint64_t max_lz_distance;
     uint64_t max_lz_match_length;
     uint64_t max_entropy_table_entries;
-    marc_lzss_contextual_window_profile window_profile;
+    marc_lzss_contextual_profile profile;
     uint32_t reserved2;
 } marc_lzss_contextual_adaptive_huffman_config;
 
@@ -480,7 +480,7 @@ typedef struct marc_lzss_contextual_blocked_huffman_config {
     uint64_t max_lz_distance;
     uint64_t max_lz_match_length;
     uint64_t max_entropy_table_entries;
-    marc_lzss_contextual_window_profile window_profile;
+    marc_lzss_contextual_profile profile;
     uint32_t reserved2;
 } marc_lzss_contextual_blocked_huffman_config;
 
@@ -1255,9 +1255,9 @@ MARC_API marc_status marc_lzss_contextual_adaptive_huffman_config_init(
     marc_direction direction,
     marc_lzss_contextual_adaptive_huffman_config* config) MARC_NOEXCEPT;
 MARC_API marc_status
-marc_lzss_contextual_adaptive_huffman_config_apply_window_profile(
+marc_lzss_contextual_adaptive_huffman_config_apply_profile(
     marc_lzss_contextual_adaptive_huffman_config* config,
-    marc_lzss_contextual_window_profile profile) MARC_NOEXCEPT;
+    marc_lzss_contextual_profile profile) MARC_NOEXCEPT;
 MARC_API marc_status
 marc_lzss_contextual_adaptive_huffman_workspace_requirements(
     const marc_lzss_contextual_adaptive_huffman_config* config,

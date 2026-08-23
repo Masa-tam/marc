@@ -199,7 +199,7 @@ entries, its count validator and encoder ceiling use `7F`, and its first
 complete-frame decoder vector contains a real distance-1,048,577 Match.
 Crossed identities and one-entry-short token, raw, and aggregate workspaces
 fail before publication. The C selector value
-`MARC_LZSS_CONTEXTUAL_WINDOW_4M` publishes this exact path without changing
+`MARC_LZSS_CONTEXTUAL_PROFILE_4M` publishes this exact path without changing
 the default limits; all other contextual C backends reject that known value.
 The explicit CLI name `lzss-contextual-dynamic-range-4m` uses a 256-MiB
 application limit while retaining public-query-owned allocation extents.

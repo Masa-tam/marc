@@ -6465,3 +6465,11 @@ size-tagged ABI validation, checked workspace calculators, public tools, and
 tests. No external compression library, C API, configuration-helper source,
 test vector, patent, pseudocode, payload bound, or optimization description
 was consulted.
+
+### IR-0718
+
+The public contextual profile-name normalization uses IR-0717, DD-954,
+TVG-0820, the repository-owned header, C adapter, CLI, benchmark, fuzz
+harnesses, C tests, and current user-facing documentation. No external
+compression library, C API, source code, tests, vectors, patents, pseudocode,
+payload bounds, or optimization descriptions were consulted.

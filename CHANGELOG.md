@@ -5,6 +5,16 @@ format versions, and C ABI versions are independent namespaces.
 
 ## Unreleased
 
+### Changed
+
+- Renamed the pre-release LZSS contextual resource selector and configuration
+  field from window-only terminology to `marc_lzss_contextual_profile` and
+  `profile`, with `MARC_LZSS_CONTEXTUAL_PROFILE_*` constants. Renamed the
+  Adaptive Huffman preset helper to
+  `marc_lzss_contextual_adaptive_huffman_config_apply_profile()`. Selector
+  values, ABI extents, defaults, algorithm identities, and stream bytes are
+  unchanged; the replaced names have no compatibility aliases.
+
 ### Added
 
 - Added interoperability schema 46 by appending the four-MiB LZSS Contextual
