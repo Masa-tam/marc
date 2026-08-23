@@ -2868,3 +2868,17 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the four-MiB
 Contextual Adaptive Huffman profile.
+
+### BR-0174
+
+Interoperability schema 48 freezes all 57 schema-47 archives and appends only
+`lzss-contextual-dynamic-range-16m` as archive 58. Generation requires exact
+identity `2/5 + 1/4 + 3/2`, size, SHA-256, and round trip. Verification
+enforces exact manifest order, foreign decode, and byte-identical local
+re-encoding; reordered schema-48 manifests fail, while removing only entry 58
+reconstructs schema 47 and preserves verification through schema 1.
+
+Focused compatibility passes under MSVC and ClangCL in 98.96 and 91.06
+seconds. Their complete 3,232-test suites pass in 215.64 and 216.39 seconds,
+including documentation layout and complete schema compatibility. External
+four-direction schema-48 evidence remains pending.

@@ -10,9 +10,9 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-Each current schema-47 bundle contains the same generated `input.bin`, the
-frozen 42 stable-profile archives, fifteen experimental Format 2 archives,
-and `manifest.json`. The manifest declares codec set `marc-cli-v47` and records
+Each current schema-48 bundle contains the same generated `input.bin`, the
+frozen 42 stable-profile archives, sixteen experimental Format 2 archives,
+and `manifest.json`. The manifest declares codec set `marc-cli-v48` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -46,7 +46,7 @@ has this form:
 artifact: marc-interoperability-windows-msvc-x64
 local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
-result: Verified 57 archives from windows-msvc-x64 (...), revision <Git object ID>
+result: Verified 58 archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
 
 ## Schema compatibility
@@ -137,6 +137,10 @@ requires `marc-cli-v47` and all fifty-seven archives, appending
 `lzss-contextual-adaptive-huffman-4m` to the frozen schema-46 order. No schema
 silently inherits profiles or names added by a later schema.
 
+Schema 48 requires `marc-cli-v48` and all fifty-eight archives, appending
+`lzss-contextual-dynamic-range-16m` to the frozen schema-47 order. No earlier
+schema silently inherits this later profile or name.
+
 ## Integrity and current evidence
 
 The SHA-256 values detect accidental artifact changes but are not signatures
@@ -144,10 +148,11 @@ and do not authenticate the producer. Use bundles downloaded from a trusted
 workflow run. GitHub may expire workflow artifacts according to repository
 retention settings; regenerate them by running CI for the required commit.
 
-Schema 47 has local generation, exact-order verification, byte-identical
-re-encoding, reordered-manifest rejection, schemas 1 through 46 compatibility
-evidence, and complete Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
-26.04/Clang four-direction evidence.
+Schema 48 has local generation, exact-order verification, byte-identical
+re-encoding, reordered-manifest rejection, and schemas 1 through 47
+compatibility evidence under MSVC and ClangCL. Cross-platform four-direction
+evidence remains pending. Schema 47 retains complete Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang four-direction evidence.
 
 ## Work-product policy
 

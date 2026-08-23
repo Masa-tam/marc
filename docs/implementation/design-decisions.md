@@ -20169,3 +20169,18 @@ warning-clean under both local compilers, then run one bounded sanitizer smoke
 without retaining generated mutations when no finding occurs. Do not fuzz the
 large encoder workspace or change the interoperability inventory in this
 stage.
+
+## DD-968: Append 16-MiB Dynamic Range as schema 48 entry 58
+
+- Date: 2026-08-23
+- Status: accepted
+
+Freeze the exact schema-47 order and append only
+`lzss-contextual-dynamic-range-16m` as archive 58. Require codec set
+`marc-cli-v48`, exact identity `2/5 + 1/4 + 3/2`, deterministic round trip,
+size, SHA-256, exact manifest order, and byte-identical local re-encoding.
+
+Reject a reordered schema-48 manifest. Remove only entry 58 and its file to
+reconstruct schema 47, then run the unchanged downgrade/rename chain through
+schema 1. Do not alter any earlier schema inventory, archive bytes, or format
+rule, and keep cross-platform evidence separate from local admission.

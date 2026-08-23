@@ -1,7 +1,7 @@
 # LZSS contextual 16 MiB window
 
-Status: Dynamic Range C, CLI, benchmark, and bounded decoder-fuzz lifecycle
-implemented after project version 0.4.0. Interoperability remains unadmitted.
+Status: Dynamic Range lifecycle, including schema-48 interoperability
+admission, implemented after project version 0.4.0.
 
 ## Purpose
 
@@ -226,6 +226,11 @@ identity. It retains one-KiB frame/token storage and limits the larger profile
 to its scalar distance and 4,582-entry model bounds; it neither allocates a
 16-MiB history buffer nor exercises the large encoder workspace.
 
+Interoperability schema 48 appends only the matching Dynamic Range CLI archive
+as entry 58 after the frozen schema-47 inventory. Generation validates exact
+identity `2/5 + 1/4 + 3/2`; compatibility removes only entry 58 before
+traversing the unchanged schema-47-through-1 chain.
+
 ## Staged implementation order
 
 1. shared dictionary/context constants, layouts, validators, and hand vectors
@@ -233,8 +238,8 @@ to its scalar distance and 4,582-entry model bounds; it neither allocates a
 2. Dynamic Range decoder preflight and complete-frame decode (complete);
 3. Dynamic Range encoder, exact workspace query, and streaming lifecycle
    (complete);
-4. Dynamic Range C helper, CLI, benchmark, and bounded fuzzing (complete),
-   then schema entry;
+4. Dynamic Range C helper, CLI, benchmark, bounded fuzzing, and schema entry
+   (complete);
 5. canonical contextual rANS;
 6. contextual tANS;
 7. Contextual Blocked Huffman;

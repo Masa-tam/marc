@@ -7028,8 +7028,8 @@ model algorithm/variant `1/4`. They MUST occur together. The Dynamic Range
 lifecycle admits the exact `2/5 + 1/4 + 3/2` triple in stream-header parsing
 and serialization, complete-frame encoding and decoding, and streaming. Its
 public C profile helper, workspace lifecycle, explicit CLI name, matching
-benchmark name, and fixed-memory decoder fuzz harness admit the same exact
-triple; interoperability entry points remain closed.
+benchmark name, fixed-memory decoder fuzz harness, and schema-48
+interoperability entry admit the same exact triple.
 
 Dictionary variant 5 retains the 16-byte parameter layout, minimum match
 length 5, maximum match length 258, and permits a window no larger than
@@ -7078,6 +7078,14 @@ The decoder fuzz harness admits the same identity only under one-KiB local
 frame/token storage, an eight-KiB supplied-input cap, and a finite call count.
 Its 16-MiB distance and 4,582-entry model limits are validation bounds, not
 serialized fuzz policy or permission for input-controlled allocation.
+
+Interoperability schema 48 appends
+`lzss-contextual-dynamic-range-16m` as archive 58 after the frozen 57-entry
+schema-47 inventory. Generation requires exact identity `2/5 + 1/4 + 3/2`;
+verification decodes and re-encodes the complete archive byte-identically.
+Compatibility removes only archive 58 to reconstruct schema 47 before
+traversing the unchanged chain through schema 1. This admission adds no
+serialized rule.
 
 The shared typed-token/context implementation recognizes the exact pair and
 its layout internally. The private Dynamic Range frame preflight selects

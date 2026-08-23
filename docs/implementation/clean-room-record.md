@@ -25780,3 +25780,35 @@ both bounds.
   42 MiB and final coverage was 215 counters/327 features over a six-entry,
   23-byte in-memory corpus. No generated mutation or artifact was retained.
   The final diff is whitespace-clean.
+
+## CR-1047: 2026-08-23 - Sixteen-MiB Dynamic Range interoperability boundary
+
+- Authoring method: extended marc's append-only interoperability manifest by
+  one exact public CLI profile and advanced the existing one-generation
+  compatibility chain from schema 47 to schema 48.
+- References used: IR-0722 through IR-0730, DD-960 through DD-968, TVG-0824
+  through TVG-0832, CR-1039 through CR-1046, and the repository-owned bundle
+  generator, verifier, downgrade harness, and deterministic fixture.
+- Known implementations intentionally not consulted: external compressors,
+  archives, manifests, interoperability suites, source code, tests, patents,
+  pseudocode, and optimizations.
+- Independent decisions: append only archive 58; require exact identity bytes;
+  reject reordered manifests; remove only the new tail when reconstructing
+  schema 47; and keep external exchange evidence separate.
+- Generated-code task description: generate and verify schema 48 with exact
+  16-MiB Dynamic Range identity, preserve all earlier archive order and bytes,
+  reject reordering, and prove the complete downgrade chain through schema 1.
+- Similarity review: manifest extension, byte checks, and downgrade sequencing
+  follow marc's repository-authored append-only schema process. No external
+  implementation expression or test structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. All 3,232 registered tests passed on each toolchain with
+  the 600-second per-test limit. The seven tooling tests passed separately in
+  0.98 seconds under MSVC and 1.03 seconds under ClangCL; the remaining 3,225
+  passed in 215.64 and 216.39 seconds respectively. Both runs included exact
+  schema-48 generation, verification, reordered-manifest rejection, the
+  complete downgrade chain, all 22 experimental and 42 public benchmark
+  smokes, every public C and CLI path, and documentation validation. The full
+  `marc_interoperability_schema_compatibility` passes took 99.41 and 90.68
+  seconds; earlier focused passes took 98.96 and 91.06 seconds. External
+  four-direction evidence remains pending. The final diff is whitespace-clean.

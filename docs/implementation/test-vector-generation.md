@@ -11865,3 +11865,20 @@ compile smoke, then a short ClangCL sanitizer run with fixed seed, bounded
 input count, eight-KiB maximum input, five-second timeout, and 512-MiB RSS
 limit. Retain no generated corpus or artifact without a finding, and keep the
 57-archive interoperability inventory unchanged.
+
+### TVG-0832
+
+Generate the deterministic shared 8,193-byte fixture through exact CLI name
+`lzss-contextual-dynamic-range-16m` and append only its archive as entry 58.
+Require header bytes for dictionary variant 5, context variant 4, and Dynamic
+Range identity 3/2 before accepting its round trip. Set
+`schema_version=48` and `codec_set=marc-cli-v48`, and record full source
+revision, exact order, size, SHA-256, platform, compiler, architecture, and
+CLI digest.
+
+Verify all 58 archives by decode and byte-identical local re-encoding. Reject
+a schema-48 manifest whose first two entries are exchanged. Remove only entry
+58 and its file, change only schema version and codec set, and verify the
+reconstructed schema 47 before traversing the unchanged compatibility chain
+through schema 1. Run focused and complete MSVC/ClangCL validation while
+leaving external four-direction evidence for the pushed revision.

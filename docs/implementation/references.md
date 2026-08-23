@@ -6580,3 +6580,12 @@ decoder, sanitizer build route, and permanent malformed-stream regressions.
 No external fuzzer harness, compressor, corpus, large-window implementation,
 source code, test, vulnerability report, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0730
+
+The 16-MiB Contextual Dynamic Range interoperability boundary uses IR-0722
+through IR-0729, DD-960 through DD-967, TVG-0824 through TVG-0831, the
+repository-owned append-only bundle generator, exact-order verifier,
+byte-identical re-encoder, and schema downgrade harness. No external archive,
+compressor, manifest, interoperability suite, source code, test, patent,
+pseudocode, or optimization description was consulted.

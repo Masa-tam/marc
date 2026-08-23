@@ -5741,6 +5741,13 @@ Verification enforces exact order and local byte-identical re-encoding.
 Compatibility removes only entry 57 to reconstruct schema 46 before
 traversing the unchanged chain through schema 1.
 
+Interoperability schema 48 freezes schema 47's exact 57-archive order and
+appends only `lzss-contextual-dynamic-range-16m` as entry 58. Generation
+requires exact identity `2/5 + 1/4 + 3/2`, round trip, size, and SHA-256.
+Verification enforces exact order and byte-identical local re-encoding.
+Compatibility removes only entry 58 to reconstruct schema 47 before
+traversing the unchanged chain through schema 1.
+
 Profile-bearing LZSS contextual configurations use atomic, strongly typed
 application helpers as their single public resource-policy boundary. A helper
 validates the complete ABI shell and profile before publishing a private-copy
