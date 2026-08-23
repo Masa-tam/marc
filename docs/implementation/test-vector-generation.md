@@ -11666,3 +11666,20 @@ Verify codec set `marc-cli-v47`, all 57 entries in exact order, foreign
 decoding, and byte-identical local re-encoding. Reject a manifest whose first
 two entries are exchanged. Remove only archive 57 to reconstruct schema 46,
 verify it, and continue through every frozen schema down to schema 1.
+
+### TVG-0820
+
+For Dynamic Range, rANS, tANS, Blocked Huffman, and Adaptive Huffman, apply
+each 64-KiB, one-MiB, and four-MiB profile in both directions. Compare every
+profile-owned field with its canonical resource envelope; preserve direction,
+original size, total-output policy, ABI metadata, and reserved zeros; then
+reapply and require the entire configuration to remain byte-identical.
+
+Pass null, short-size, wrong-version, invalid-direction, non-zero-reserved, and
+selector-3 inputs. Require stable status and byte-atomic failure. Tighten each
+documented hard limit after application and require the workspace query to
+honor it. For every used primary, secondary, and views region, create with the
+exact reported extent and reject a one-byte-short extent without publishing a
+handle. Compare CLI and benchmark construction against helper results, retain
+all ABI extent assertions, and require schema-47 streams and downgrade
+compatibility to remain byte-identical.

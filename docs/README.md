@@ -17,6 +17,9 @@ navigate chronological development records.
 
 ## Experimental design
 
+- [Contextual profile application](design/contextual-profile-application.md):
+  atomic resource-profile helpers for profile-bearing contextual codecs and
+  the complete-default rule for codecs without such helpers.
 - [LZSS match-finder strategy](design/lzss-match-finder-strategy.md): exact
   encoder-side acceleration without changing the LZSS stream format.
 - [LZSS HashTree Exact design](design/lzss-hash-tree-match-finder.md):

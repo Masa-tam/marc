@@ -5740,3 +5740,13 @@ requires exact identity `2/4 + 1/3 + 1/2`, round trip, size, and SHA-256.
 Verification enforces exact order and local byte-identical re-encoding.
 Compatibility removes only entry 57 to reconstruct schema 46 before
 traversing the unchanged chain through schema 1.
+
+Profile-bearing LZSS contextual configurations use atomic, strongly typed
+application helpers as their single public resource-policy boundary. A helper
+validates the complete ABI shell and profile before publishing a private-copy
+update, preserves caller identity and output-policy fields, and never infers a
+larger profile from stream data. The subsequent workspace query remains the
+authoritative allocation contract. Codec configurations without multiple
+named profiles expose no ceremonial helper: their initializer already returns
+a complete usable default. Profile application changes neither serialized
+identity nor decoder-visible bytes.

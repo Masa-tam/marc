@@ -25278,3 +25278,28 @@ both bounds.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1031: 2026-08-23 - Common contextual profile-helper design
+
+- Authoring method: audited the five repository-owned contextual public
+  configurations, the existing Adaptive Huffman helper, duplicated CLI and
+  benchmark policy, and workspace-query contracts before defining a staged
+  common interface.
+- References used: IR-0710, IR-0717, DD-951, DD-954, TVG-0817, TVG-0820,
+  CR-1027, and repository-owned public C, tool, benchmark, and test sources.
+  No new external technical source was used.
+- Known implementations intentionally not consulted: external compressors,
+  C APIs, configuration-helper implementations, source code, tests, vectors,
+  patents, pseudocode, payload bounds, and optimization descriptions.
+- Independent decisions: expose helpers only for configurations with multiple
+  named profiles; use complete-default initializers elsewhere; replace the
+  window-only public terminology without aliases; preserve ABI values and
+  stream bytes; and make workspace queries authoritative.
+- Generated-code task description: define the common atomic helper contract,
+  its staged migration, its complete validation matrix, and the no-helper
+  initializer rule before changing production declarations.
+- Similarity review: only repository-owned ABI validation, private-copy
+  publication, selected-profile, workspace, and tool patterns were reused.
+- Validation: the MSVC documentation-layout test passes. Production
+  declarations, implementations, and the full validation matrix remain for
+  the staged work that follows this design record.

@@ -46,6 +46,13 @@ here; the declarations in `<marc/marc.h>` remain the normative ABI inventory.
 The library owns the opaque handle. It does not own the three workspaces or any
 input/output buffer. No allocator callback is required by these profiles.
 
+An `apply_profile` function, when declared for a configuration, is reserved for
+a codec with two or more named resource profiles. A configuration without a
+declared profile helper is not incomplete: its `config_init()` result is a
+complete usable default, and the caller may apply documented field overrides
+before querying workspace requirements. The absence of a profile helper does
+not imply reduced codec support.
+
 For either encoder, `primary_bytes` is raw-frame storage and `secondary_bytes`
 is serialized-frame storage. For either decoder, `primary_bytes` is serialized-
 frame storage and `secondary_bytes` is decoded-frame storage. Blocked Huffman

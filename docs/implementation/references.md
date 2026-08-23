@@ -6456,3 +6456,12 @@ interoperability design as internal precedents. No external archive format,
 compressor, Adaptive Huffman implementation, interoperability suite, source
 code, test vector, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0717
+
+The common contextual profile-application contract uses IR-0710, DD-951,
+TVG-0817, the repository-owned five contextual C configurations, their
+size-tagged ABI validation, checked workspace calculators, public tools, and
+tests. No external compression library, C API, configuration-helper source,
+test vector, patent, pseudocode, payload bound, or optimization description
+was consulted.

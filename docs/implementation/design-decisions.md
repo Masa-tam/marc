@@ -19887,3 +19887,24 @@ Reject reordered schema-47 manifests. Reconstruct schema 46 by removing only
 entry 57 and its file, then verify the unchanged downgrade chain through
 schema 1. The schema addition changes no stream byte, API, profile default, or
 limit.
+
+## DD-954: Standardize profile application only where profiles exist
+
+- Date: 2026-08-23
+- Status: accepted
+
+Give all five profile-bearing LZSS contextual families one atomic
+`marc_<codec>_config_apply_profile(config, profile)` helper. Rename the common
+selector from window-only terminology to `marc_lzss_contextual_profile`, each
+configuration field to `profile`, and the existing Adaptive Huffman helper to
+`apply_profile`. Because marc remains pre-release, replace the former public
+names without compatibility aliases. Preserve selector values, field widths,
+structure extents, initializer defaults, algorithm identities, and every
+serialized byte.
+
+Do not add helpers to configurations that lack two or more named resource
+profiles. Document instead that their initializer result is a complete usable
+default. Require every helper to validate before mutation, fail byte-atomically,
+preserve caller identity and output-policy fields, set one coherent backend
+resource envelope, remain idempotent, permit stricter later overrides, and
+leave allocation to the authoritative workspace query.
