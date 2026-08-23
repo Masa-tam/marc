@@ -185,11 +185,10 @@ additionally rebuilt all eleven affected ClangCL 22 ASan/UBSan/libFuzzer
 targets and completed 100 bounded inputs per target at maximum input length
 8,192 without a finding.
 
-The established four-direction schema-47 exchange at revision
-`c107daf9be319523402b0a4b4d9089c46a702ced` verifies all fifty-seven archives
-across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
-producers. The exact 0.4.0 release candidate must repeat that exchange after
-pushed CI; the remaining general evidence gaps are listed below.
+The 0.4.0 release candidate completed a four-direction schema-47 exchange at
+revision `b030c0a63f4d8195c9904546e95e2122e3cac487`, verifying all fifty-seven
+archives across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
+producers. The remaining general evidence gaps are listed below.
 
 ## Remaining release evidence
 

@@ -25450,3 +25450,31 @@ both bounds.
   `52eb8108c5bdec04579160ae17225d66034bd723` matches the recorded gitlink. The
   exact release-preparation commit still requires pushed CI and a schema-47
   four-direction exchange before tagging.
+
+## CR-1037: 2026-08-23 - Project version 0.4.0 interoperability evidence
+
+- Authoring method: recorded the externally executed four-direction exchange
+  for the pushed 0.4.0 release-preparation revision after GitHub CI completed
+  successfully.
+- References used: DD-958; CR-1036; the project-version 0.4.0 repeat recorded
+  under IX-0041; the two schema-47 CI artifacts; and the independently
+  generated Ubuntu 26.04 bundle and four verifier reports.
+- Known implementations intentionally not consulted: external codec source,
+  interoperability suites, archive fixtures, manifests, and release tooling.
+- Independent decisions: retain schema 47 because the public helper and
+  naming consolidation does not change decoder-visible bytes; require all
+  four directions to identify the same full revision and all 57 archives; and
+  keep generated bundles outside the repository.
+- Generated-code task description: record successful Windows/MSVC and Ubuntu
+  24.04 CI artifact verification on Ubuntu 26.04, Ubuntu 26.04 self-
+  verification, and reverse Ubuntu 26.04-to-Windows/MSVC verification for the
+  exact pushed release candidate.
+- Similarity review: this record contains only first-party test procedure and
+  observed verifier results. No external implementation expression was used.
+- External validation: all four verifier passes reported 57 archives and
+  revision `b030c0a63f4d8195c9904546e95e2122e3cac487`. Producers were
+  Windows/MSVC via Visual Studio 2026, the default Ubuntu 24.04 C++ compiler
+  via Ninja, and Ubuntu Clang 21.1.8 via Ninja on Ubuntu 26.04. Every pass
+  validated manifest order, sizes, SHA-256 values, foreign decoding, and
+  byte-identical local re-encoding. The resulting documentation-only evidence
+  commit requires final pushed CI before the annotated `v0.4.0` tag.
