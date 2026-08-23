@@ -25811,4 +25811,7 @@ both bounds.
   smokes, every public C and CLI path, and documentation validation. The full
   `marc_interoperability_schema_compatibility` passes took 99.41 and 90.68
   seconds; earlier focused passes took 98.96 and 91.06 seconds. External
-  four-direction evidence remains pending. The final diff is whitespace-clean.
+  four-direction evidence remains pending. A post-push documentation audit
+  corrected the current verifier description from 57 to 58 foreign archives;
+  no implementation, schema, or historical schema-47 statement changed. The
+  final diff is whitespace-clean.
