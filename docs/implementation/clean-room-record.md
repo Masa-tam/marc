@@ -25381,4 +25381,34 @@ both bounds.
 - Validation: both focused pure-C helper tests pass under MSVC and ClangCL.
   Their complete 3,211-case CTest suites pass in 243.33 and 244.52 seconds
   respectively, including documentation layout, contextual CLI round trips,
-  and complete schema compatibility.
+  and complete schema compatibility. Subsequent tool migration exposed that
+  the initial Blocked Huffman helper confused its 35 table objects with the
+  public limit's conservative 17,885 decode-node entries; workspace-query
+  regressions now enforce the corrected unit before tool publication.
+
+## CR-1035: 2026-08-23 - Contextual tool profile-helper migration
+
+- Authoring method: replaced four manual CLI and benchmark resource-envelope
+  assignments with their public helpers, retained the existing Adaptive
+  Huffman helper path, and removed only tool-local constants made unreachable.
+- References used: IR-0717 through IR-0721, DD-954 through DD-957, TVG-0820
+  through TVG-0823, CR-1031 through CR-1034, and repository-owned public C,
+  CLI, benchmark, workspace-query, and test sources. No new external technical
+  source was used.
+- Known implementations intentionally not consulted: external compressors,
+  tools, benchmarks, C APIs, source code, tests, vectors, patents, pseudocode,
+  payload bounds, and optimization descriptions.
+- Independent decisions: make the public helper the one policy source; retain
+  tool inventory mappings; set original size after application; report exact
+  helper status; and add workspace-query regression coverage for backend-unit
+  mistakes.
+- Generated-code task description: migrate every repository tool contextual
+  configuration to the public helper, remove duplicate constants, and prove
+  identical round trips and benchmark admission in both C++ toolchains.
+- Similarity review: the change deletes repository-local policy duplication
+  and calls repository-owned public APIs; it introduces no external
+  implementation expression.
+- Validation: all 35 focused helper, CLI, inventory, and benchmark tests pass
+  under MSVC and ClangCL. Their complete 3,211-case CTest suites pass in
+  199.99 and 211.02 seconds respectively, including documentation layout,
+  every contextual profile round trip, and complete schema compatibility.

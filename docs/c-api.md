@@ -263,11 +263,11 @@ prefix non-overlap are checked before a handle is published.
 `2/4 + 1/3 + 2/2`. The four-MiB profile uses `7F = 29,360,128` as its
 decision/block limit and a 55,050,240-byte payload limit.
 `marc_lzss_contextual_blocked_huffman_config_apply_profile()` applies
-the selected frame, decision, payload, 35-table, LZ, and aggregate limits as
-one atomic preset. It preserves direction, original size, and the caller's
-total-output policy, and callers may tighten hard limits before re-querying
-all workspaces. On supported 64-bit layouts its full encoder and decoder
-aggregate requirements are 126,880,348
+the selected frame, decision, payload, 35-table/17,885-node, LZ, and aggregate
+limits as one atomic preset. It preserves direction, original size, and the
+caller's total-output policy, and callers may tighten hard limits before
+re-querying all workspaces. On supported 64-bit layouts its full encoder and
+decoder aggregate requirements are 126,880,348
 and 109,722,064 bytes, both within the unchanged 128-MiB default. The selector
 is exact rather than inferred from `window_size`, and decoding rejects either
 other identity before frame or raw publication. It and the trailing 32-bit

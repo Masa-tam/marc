@@ -19935,10 +19935,29 @@ Apply all three established resource envelopes through strongly typed tANS
 and Blocked Huffman helpers. Both own the common `6F/6F/7F` decision limits.
 tANS owns payload limits `9F+2`, `9F+2`, and `21F/2+2`, plus its fixed
 131,072-entry decode-table limit. Blocked Huffman owns payload limits `12F`,
-`12F`, and `105F/8`, plus its maximum 35 simultaneous decode tables. Both
-retain the established 8/128/128-MiB aggregate policies.
+`12F`, and `105F/8`, plus its maximum 35 simultaneous decode tables with 511
+nodes each, for a 17,885-entry hard limit. Both retain the established
+8/128/128-MiB aggregate policies.
 
 Validate the complete ABI shell and selector before copying, preserve
 direction, original size, total-output policy, ABI metadata, and reserved
 zeros, and publish the private copy only after all values are complete. Do not
 alter initializers, ABI extents, stream identities, CLI behavior, or schema 47.
+
+## DD-957: Make public profile helpers authoritative for repository tools
+
+- Date: 2026-08-23
+- Status: accepted
+
+After initialization, require the CLI and experimental benchmark to apply the
+selected resource envelope through the corresponding public helper for all
+five LZSS Contextual backends. Set caller-specific `original_size` only after
+successful application. Remove duplicate CLI constants and manual tool field
+assignment; retain profile-to-selector and profile-to-report-size mappings
+where they describe tool inventory rather than configuration policy.
+
+Treat a successful workspace query as part of helper-contract validation. For
+Blocked Huffman, distinguish the 35 caller-owned table objects from the
+`max_entropy_table_entries` limit, which counts their conservative 511-node
+capacity and is therefore 17,885. Preserve all algorithm identities, archive
+bytes, CLI names, benchmark labels, initializer defaults, and ABI extents.

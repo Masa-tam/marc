@@ -78,8 +78,11 @@ static void test_apply_profile(void) {
             assert(config.max_internal_buffered_bytes == aggregates[index]);
             assert(config.max_lz_distance == extents[index]);
             assert(config.max_lz_match_length == 258);
-            assert(config.max_entropy_table_entries == 35);
+            assert(config.max_entropy_table_entries == UINT64_C(17885));
             assert(config.profile == profiles[index]);
+            marc_workspace_requirements requirements;
+            assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
+                       &config, &requirements) == MARC_STATUS_OK);
             const marc_lzss_contextual_blocked_huffman_config snapshot =
                 config;
             assert(marc_lzss_contextual_blocked_huffman_config_apply_profile(

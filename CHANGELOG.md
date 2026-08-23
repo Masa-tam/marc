@@ -14,6 +14,10 @@ format versions, and C ABI versions are independent namespaces.
   `marc_lzss_contextual_adaptive_huffman_config_apply_profile()`. Selector
   values, ABI extents, defaults, algorithm identities, and stream bytes are
   unchanged; the replaced names have no compatibility aliases.
+- Changed the CLI and experimental benchmark to construct every LZSS
+  Contextual resource envelope through its public `config_apply_profile()`
+  helper, removing duplicate tool-local policy tables without changing stream
+  identities or bytes.
 
 ### Added
 

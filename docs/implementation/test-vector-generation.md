@@ -11712,3 +11712,18 @@ invalid direction, non-zero leading reserved word, non-zero trailing reserved
 word, and selector 3. Require `MARC_STATUS_INVALID_ARGUMENT` and byte-identical
 failure. Pass null separately. Compile and execute the two pure-C tests against
 the shared library under MSVC and ClangCL before running the complete suites.
+
+### TVG-0823
+
+Construct each of the five contextual families at 64 KiB, one MiB, and four
+MiB through the CLI and experimental benchmark after replacing their manual
+policy assignment with the public helpers. Require all 15 benchmark smokes,
+all contextual CLI round trips, and all profile inventory checks to retain
+their prior success and names under MSVC and ClangCL.
+
+For tANS and Blocked Huffman, query workspaces immediately after every helper
+application in both directions. This must permanently reject the mistaken
+interpretation of Blocked Huffman's 35 table objects as 35 decode-node entries;
+require the exact 17,885-entry hard limit and successful workspace calculation
+for all three profiles. Then run the complete suites, including documentation
+layout and every interoperability schema.

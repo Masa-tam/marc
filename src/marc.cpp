@@ -5247,7 +5247,7 @@ marc_status marc_lzss_contextual_blocked_huffman_config_apply_profile(
         : UINT64_C(128) << 20;
     applied.max_lz_distance = extent;
     applied.max_lz_match_length = 258;
-    applied.max_entropy_table_entries = 35;
+    applied.max_entropy_table_entries = 17885;
     applied.profile = profile;
     *config = applied;
     return MARC_STATUS_OK;

@@ -1217,79 +1217,43 @@ struct Measurement {
         if (marc_lzss_contextual_dynamic_range_config_init(
                 direction, &config) != MARC_STATUS_OK)
             return false;
+        if (marc_lzss_contextual_dynamic_range_config_apply_profile(
+                &config,
+                selected_lzss_contextual_dynamic_range_profile(codec))
+            != MARC_STATUS_OK)
+            return false;
         config.original_size = original_size;
-        const auto selected_frame_size =
-            selected_lzss_contextual_dynamic_range_frame_size(codec);
-        config.frame_size = static_cast<std::uint32_t>(selected_frame_size);
-        config.window_size = static_cast<std::uint32_t>(selected_frame_size);
-        config.max_frame_size = selected_frame_size;
-        config.max_block_size = selected_frame_size;
-        config.max_compressed_payload_size = maximum_payload;
-        config.max_internal_buffered_bytes = maximum_buffered;
-        config.max_lz_distance = selected_frame_size;
-        config.max_lz_match_length = 258;
-        config.profile =
-            selected_lzss_contextual_dynamic_range_profile(codec);
     } else if (is_lzss_contextual_rans(codec)) {
         auto& config = result.lzss_contextual_rans;
         if (marc_lzss_contextual_rans_config_init(direction, &config)
             != MARC_STATUS_OK)
             return false;
-        const auto selected_frame_size =
-            selected_lzss_contextual_rans_frame_size(codec);
+        if (marc_lzss_contextual_rans_config_apply_profile(
+                &config, selected_lzss_contextual_rans_profile(codec))
+            != MARC_STATUS_OK)
+            return false;
         config.original_size = original_size;
-        config.frame_size = static_cast<std::uint32_t>(selected_frame_size);
-        config.window_size = static_cast<std::uint32_t>(selected_frame_size);
-        config.max_frame_size = selected_frame_size;
-        config.max_block_size = selected_frame_size
-            * (codec == Codec::lzss_contextual_rans_4m
-                ? UINT64_C(7) : UINT64_C(6));
-        config.max_compressed_payload_size = maximum_payload;
-        config.max_internal_buffered_bytes = maximum_buffered;
-        config.max_lz_distance = selected_frame_size;
-        config.max_lz_match_length = 258;
-        config.profile =
-            selected_lzss_contextual_rans_profile(codec);
     } else if (is_lzss_contextual_tans(codec)) {
         auto& config = result.lzss_contextual_tans;
         if (marc_lzss_contextual_tans_config_init(direction, &config)
             != MARC_STATUS_OK)
             return false;
-        const auto selected_frame_size =
-            selected_lzss_contextual_tans_frame_size(codec);
+        if (marc_lzss_contextual_tans_config_apply_profile(
+                &config, selected_lzss_contextual_tans_profile(codec))
+            != MARC_STATUS_OK)
+            return false;
         config.original_size = original_size;
-        config.frame_size = static_cast<std::uint32_t>(selected_frame_size);
-        config.window_size = static_cast<std::uint32_t>(selected_frame_size);
-        config.max_frame_size = selected_frame_size;
-        config.max_block_size = selected_frame_size
-            * (codec == Codec::lzss_contextual_tans_4m
-                ? UINT64_C(7) : UINT64_C(6));
-        config.max_compressed_payload_size = maximum_payload;
-        config.max_internal_buffered_bytes = maximum_buffered;
-        config.max_lz_distance = selected_frame_size;
-        config.max_lz_match_length = 258;
-        config.profile =
-            selected_lzss_contextual_tans_profile(codec);
     } else if (is_lzss_contextual_blocked_huffman(codec)) {
         auto& config = result.lzss_contextual_blocked_huffman;
         if (marc_lzss_contextual_blocked_huffman_config_init(
                 direction, &config) != MARC_STATUS_OK)
             return false;
-        const auto selected_frame_size =
-            selected_lzss_contextual_blocked_huffman_frame_size(codec);
+        if (marc_lzss_contextual_blocked_huffman_config_apply_profile(
+                &config,
+                selected_lzss_contextual_blocked_huffman_profile(codec))
+            != MARC_STATUS_OK)
+            return false;
         config.original_size = original_size;
-        config.frame_size = static_cast<std::uint32_t>(selected_frame_size);
-        config.window_size = static_cast<std::uint32_t>(selected_frame_size);
-        config.max_frame_size = selected_frame_size;
-        config.max_block_size = selected_frame_size
-            * (codec == Codec::lzss_contextual_blocked_huffman_4m
-                ? UINT64_C(7) : UINT64_C(6));
-        config.max_compressed_payload_size = maximum_payload;
-        config.max_internal_buffered_bytes = maximum_buffered;
-        config.max_lz_distance = selected_frame_size;
-        config.max_lz_match_length = 258;
-        config.profile =
-            selected_lzss_contextual_blocked_huffman_profile(codec);
     } else if (is_lzss_contextual_adaptive_huffman(codec)) {
         auto& config = result.lzss_contextual_adaptive_huffman;
         if (marc_lzss_contextual_adaptive_huffman_config_init(

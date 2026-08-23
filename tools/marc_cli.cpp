@@ -53,100 +53,6 @@ constexpr std::uint64_t lzss_adaptive_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_hash_chain_max_workspace_per_input_byte =
     sizeof(std::size_t) + sizeof(std::uint32_t);
 constexpr std::uint64_t lzss_dynamic_range_frame_size = UINT64_C(1) << 16;
-constexpr std::uint64_t lzss_contextual_dynamic_range_frame_size =
-    UINT64_C(1) << 16;
-constexpr std::uint64_t lzss_contextual_dynamic_range_payload_size =
-    lzss_contextual_dynamic_range_frame_size * UINT64_C(12) + UINT64_C(5);
-constexpr std::uint64_t lzss_contextual_dynamic_range_buffered_size =
-    UINT64_C(8) << 20;
-constexpr std::uint64_t lzss_contextual_dynamic_range_1m_frame_size =
-    UINT64_C(1) << 20;
-constexpr std::uint64_t lzss_contextual_dynamic_range_1m_payload_size =
-    lzss_contextual_dynamic_range_1m_frame_size * UINT64_C(12)
-    + UINT64_C(5);
-constexpr std::uint64_t lzss_contextual_dynamic_range_1m_buffered_size =
-    UINT64_C(128) << 20;
-constexpr std::uint64_t lzss_contextual_dynamic_range_4m_frame_size =
-    UINT64_C(1) << 22;
-constexpr std::uint64_t lzss_contextual_dynamic_range_4m_payload_size =
-    lzss_contextual_dynamic_range_4m_frame_size * UINT64_C(14)
-    + UINT64_C(5);
-constexpr std::uint64_t lzss_contextual_dynamic_range_4m_buffered_size =
-    UINT64_C(256) << 20;
-constexpr std::uint64_t lzss_contextual_rans_frame_size =
-    UINT64_C(1) << 16;
-constexpr std::uint64_t lzss_contextual_rans_decision_count =
-    lzss_contextual_rans_frame_size * UINT64_C(6);
-constexpr std::uint64_t lzss_contextual_rans_payload_size =
-    lzss_contextual_rans_frame_size * UINT64_C(12) + UINT64_C(8);
-constexpr std::uint64_t lzss_contextual_rans_buffered_size =
-    UINT64_C(8) << 20;
-constexpr std::uint64_t lzss_contextual_rans_1m_frame_size =
-    UINT64_C(1) << 20;
-constexpr std::uint64_t lzss_contextual_rans_1m_decision_count =
-    lzss_contextual_rans_1m_frame_size * UINT64_C(6);
-constexpr std::uint64_t lzss_contextual_rans_1m_payload_size =
-    lzss_contextual_rans_1m_frame_size * UINT64_C(12) + UINT64_C(8);
-constexpr std::uint64_t lzss_contextual_rans_1m_buffered_size =
-    UINT64_C(128) << 20;
-constexpr std::uint64_t lzss_contextual_rans_4m_frame_size =
-    UINT64_C(1) << 22;
-constexpr std::uint64_t lzss_contextual_rans_4m_decision_count =
-    lzss_contextual_rans_4m_frame_size * UINT64_C(7);
-constexpr std::uint64_t lzss_contextual_rans_4m_payload_size =
-    lzss_contextual_rans_4m_frame_size * UINT64_C(14) + UINT64_C(8);
-constexpr std::uint64_t lzss_contextual_rans_4m_buffered_size =
-    UINT64_C(128) << 20;
-constexpr std::uint64_t lzss_contextual_tans_frame_size =
-    UINT64_C(1) << 16;
-constexpr std::uint64_t lzss_contextual_tans_decision_count =
-    lzss_contextual_tans_frame_size * UINT64_C(6);
-constexpr std::uint64_t lzss_contextual_tans_payload_size =
-    lzss_contextual_tans_frame_size * UINT64_C(9) + UINT64_C(2);
-constexpr std::uint64_t lzss_contextual_tans_buffered_size =
-    UINT64_C(8) << 20;
-constexpr std::uint64_t lzss_contextual_tans_1m_frame_size =
-    UINT64_C(1) << 20;
-constexpr std::uint64_t lzss_contextual_tans_1m_decision_count =
-    lzss_contextual_tans_1m_frame_size * UINT64_C(6);
-constexpr std::uint64_t lzss_contextual_tans_1m_payload_size =
-    lzss_contextual_tans_1m_frame_size * UINT64_C(9) + UINT64_C(2);
-constexpr std::uint64_t lzss_contextual_tans_1m_buffered_size =
-    UINT64_C(128) << 20;
-constexpr std::uint64_t lzss_contextual_tans_4m_frame_size =
-    UINT64_C(1) << 22;
-constexpr std::uint64_t lzss_contextual_tans_4m_decision_count =
-    lzss_contextual_tans_4m_frame_size * UINT64_C(7);
-constexpr std::uint64_t lzss_contextual_tans_4m_payload_size =
-    lzss_contextual_tans_4m_frame_size * UINT64_C(21) / UINT64_C(2)
-    + UINT64_C(2);
-constexpr std::uint64_t lzss_contextual_tans_4m_buffered_size =
-    UINT64_C(128) << 20;
-constexpr std::uint64_t lzss_contextual_blocked_huffman_frame_size =
-    UINT64_C(1) << 16;
-constexpr std::uint64_t lzss_contextual_blocked_huffman_decision_count =
-    lzss_contextual_blocked_huffman_frame_size * UINT64_C(6);
-constexpr std::uint64_t lzss_contextual_blocked_huffman_payload_size =
-    lzss_contextual_blocked_huffman_frame_size * UINT64_C(12);
-constexpr std::uint64_t lzss_contextual_blocked_huffman_buffered_size =
-    UINT64_C(8) << 20;
-constexpr std::uint64_t lzss_contextual_blocked_huffman_1m_frame_size =
-    UINT64_C(1) << 20;
-constexpr std::uint64_t lzss_contextual_blocked_huffman_1m_decision_count =
-    lzss_contextual_blocked_huffman_1m_frame_size * UINT64_C(6);
-constexpr std::uint64_t lzss_contextual_blocked_huffman_1m_payload_size =
-    lzss_contextual_blocked_huffman_1m_frame_size * UINT64_C(12);
-constexpr std::uint64_t lzss_contextual_blocked_huffman_1m_buffered_size =
-    UINT64_C(128) << 20;
-constexpr std::uint64_t lzss_contextual_blocked_huffman_4m_frame_size =
-    UINT64_C(1) << 22;
-constexpr std::uint64_t lzss_contextual_blocked_huffman_4m_decision_count =
-    lzss_contextual_blocked_huffman_4m_frame_size * UINT64_C(7);
-constexpr std::uint64_t lzss_contextual_blocked_huffman_4m_payload_size =
-    lzss_contextual_blocked_huffman_4m_frame_size * UINT64_C(105)
-    / UINT64_C(8);
-constexpr std::uint64_t lzss_contextual_blocked_huffman_4m_buffered_size =
-    UINT64_C(128) << 20;
 constexpr std::uint64_t lzss_rans_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_rans_dictionary_size =
     lzss_rans_frame_size * UINT64_C(2);
@@ -920,38 +826,14 @@ bool configure(
         print_status("configuration failed", status);
         return false;
     }
-    if (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
-        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
-        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
+    const auto apply_status =
+        marc_lzss_contextual_dynamic_range_config_apply_profile(
+            &config, profile);
+    if (apply_status != MARC_STATUS_OK) {
+        print_status("configuration failed", apply_status);
         return false;
     }
-    const bool one_mib_window =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M;
-    const bool four_mib_window =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M;
-    const auto selected_frame_size = four_mib_window
-        ? lzss_contextual_dynamic_range_4m_frame_size
-        : one_mib_window
-            ? lzss_contextual_dynamic_range_1m_frame_size
-            : lzss_contextual_dynamic_range_frame_size;
     config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(selected_frame_size);
-    config.window_size = static_cast<std::uint32_t>(selected_frame_size);
-    config.max_frame_size = selected_frame_size;
-    config.max_block_size = selected_frame_size;
-    config.max_compressed_payload_size = four_mib_window
-        ? lzss_contextual_dynamic_range_4m_payload_size
-        : one_mib_window
-            ? lzss_contextual_dynamic_range_1m_payload_size
-            : lzss_contextual_dynamic_range_payload_size;
-    config.max_internal_buffered_bytes = four_mib_window
-        ? lzss_contextual_dynamic_range_4m_buffered_size
-        : one_mib_window
-            ? lzss_contextual_dynamic_range_1m_buffered_size
-            : lzss_contextual_dynamic_range_buffered_size;
-    config.max_lz_distance = selected_frame_size;
-    config.max_lz_match_length = 258;
-    config.profile = profile;
     return true;
 }
 
@@ -965,41 +847,13 @@ bool configure(
         print_status("configuration failed", status);
         return false;
     }
-    if (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
-        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
-        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
+    const auto apply_status =
+        marc_lzss_contextual_rans_config_apply_profile(&config, profile);
+    if (apply_status != MARC_STATUS_OK) {
+        print_status("configuration failed", apply_status);
         return false;
     }
-    const bool one_mib_window =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M;
-    const bool four_mib_window =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M;
-    const auto selected_frame_size = four_mib_window
-        ? lzss_contextual_rans_4m_frame_size
-        : one_mib_window
-            ? lzss_contextual_rans_1m_frame_size
-            : lzss_contextual_rans_frame_size;
     config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(selected_frame_size);
-    config.max_frame_size = selected_frame_size;
-    config.max_block_size = four_mib_window
-        ? lzss_contextual_rans_4m_decision_count
-        : one_mib_window
-            ? lzss_contextual_rans_1m_decision_count
-            : lzss_contextual_rans_decision_count;
-    config.max_compressed_payload_size = four_mib_window
-        ? lzss_contextual_rans_4m_payload_size
-        : one_mib_window
-            ? lzss_contextual_rans_1m_payload_size
-            : lzss_contextual_rans_payload_size;
-    config.max_internal_buffered_bytes = four_mib_window
-        ? lzss_contextual_rans_4m_buffered_size
-        : one_mib_window
-            ? lzss_contextual_rans_1m_buffered_size
-            : lzss_contextual_rans_buffered_size;
-    config.max_lz_distance = selected_frame_size;
-    config.max_lz_match_length = 258;
-    config.profile = profile;
     return true;
 }
 
@@ -1013,42 +867,13 @@ bool configure(
         print_status("configuration failed", status);
         return false;
     }
-    if (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
-        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
-        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
+    const auto apply_status =
+        marc_lzss_contextual_tans_config_apply_profile(&config, profile);
+    if (apply_status != MARC_STATUS_OK) {
+        print_status("configuration failed", apply_status);
         return false;
     }
-    const bool one_mib_window =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M;
-    const bool four_mib_window =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M;
-    const auto selected_frame_size = four_mib_window
-        ? lzss_contextual_tans_4m_frame_size
-        : one_mib_window
-            ? lzss_contextual_tans_1m_frame_size
-            : lzss_contextual_tans_frame_size;
     config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(selected_frame_size);
-    config.window_size = static_cast<std::uint32_t>(selected_frame_size);
-    config.max_frame_size = selected_frame_size;
-    config.max_block_size = four_mib_window
-        ? lzss_contextual_tans_4m_decision_count
-        : one_mib_window
-            ? lzss_contextual_tans_1m_decision_count
-            : lzss_contextual_tans_decision_count;
-    config.max_compressed_payload_size = four_mib_window
-        ? lzss_contextual_tans_4m_payload_size
-        : one_mib_window
-            ? lzss_contextual_tans_1m_payload_size
-            : lzss_contextual_tans_payload_size;
-    config.max_internal_buffered_bytes = four_mib_window
-        ? lzss_contextual_tans_4m_buffered_size
-        : one_mib_window
-            ? lzss_contextual_tans_1m_buffered_size
-            : lzss_contextual_tans_buffered_size;
-    config.max_lz_distance = selected_frame_size;
-    config.max_lz_match_length = 258;
-    config.profile = profile;
     return true;
 }
 
@@ -1062,42 +887,14 @@ bool configure(
         print_status("configuration failed", status);
         return false;
     }
-    if (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
-        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
-        && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
+    const auto apply_status =
+        marc_lzss_contextual_blocked_huffman_config_apply_profile(
+            &config, profile);
+    if (apply_status != MARC_STATUS_OK) {
+        print_status("configuration failed", apply_status);
         return false;
     }
-    const bool one_mib_window =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M;
-    const bool four_mib_window =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M;
-    const auto selected_frame_size = four_mib_window
-        ? lzss_contextual_blocked_huffman_4m_frame_size
-        : one_mib_window
-            ? lzss_contextual_blocked_huffman_1m_frame_size
-            : lzss_contextual_blocked_huffman_frame_size;
     config.original_size = original_size;
-    config.frame_size = static_cast<std::uint32_t>(selected_frame_size);
-    config.window_size = static_cast<std::uint32_t>(selected_frame_size);
-    config.max_frame_size = selected_frame_size;
-    config.max_block_size = four_mib_window
-        ? lzss_contextual_blocked_huffman_4m_decision_count
-        : one_mib_window
-            ? lzss_contextual_blocked_huffman_1m_decision_count
-            : lzss_contextual_blocked_huffman_decision_count;
-    config.max_compressed_payload_size = four_mib_window
-        ? lzss_contextual_blocked_huffman_4m_payload_size
-        : one_mib_window
-            ? lzss_contextual_blocked_huffman_1m_payload_size
-            : lzss_contextual_blocked_huffman_payload_size;
-    config.max_internal_buffered_bytes = four_mib_window
-        ? lzss_contextual_blocked_huffman_4m_buffered_size
-        : one_mib_window
-            ? lzss_contextual_blocked_huffman_1m_buffered_size
-            : lzss_contextual_blocked_huffman_buffered_size;
-    config.max_lz_distance = selected_frame_size;
-    config.max_lz_match_length = 258;
-    config.profile = profile;
     return true;
 }
 
@@ -1111,9 +908,11 @@ bool configure(
         print_status("configuration failed", status);
         return false;
     }
-    if (marc_lzss_contextual_adaptive_huffman_config_apply_profile(
-            &config, profile) != MARC_STATUS_OK) {
-        print_status("configuration failed", MARC_STATUS_INVALID_ARGUMENT);
+    const auto apply_status =
+        marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+            &config, profile);
+    if (apply_status != MARC_STATUS_OK) {
+        print_status("configuration failed", apply_status);
         return false;
     }
     config.original_size = original_size;

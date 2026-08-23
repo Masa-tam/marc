@@ -6491,3 +6491,12 @@ repository-owned profile calculators, public initializers, prior atomic
 helpers, CLI policy values, and pure-C tests. No external compression library,
 C API, source code, tests, vectors, patents, pseudocode, payload bounds, or
 optimization descriptions were consulted.
+
+### IR-0721
+
+The contextual CLI and benchmark profile migration uses IR-0717 through
+IR-0720, DD-954 through DD-956, TVG-0820 through TVG-0822, the repository-owned
+public helpers, tool configuration adapters, workspace queries, CLI
+round-trips, profile inventories, and benchmark smokes. No external
+compression tool, benchmark, C API, source code, tests, vectors, patents,
+pseudocode, payload bounds, or optimization descriptions were consulted.
