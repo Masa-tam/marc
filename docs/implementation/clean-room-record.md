@@ -25503,3 +25503,31 @@ both bounds.
 - Validation: `marc_documentation_layout` passes under the MSVC Release tree,
   and the final diff is whitespace-clean. Codec and interoperability tests are
   unchanged because this correction modifies only release documentation.
+
+## CR-1039: 2026-08-23 - Reserved 16-MiB contextual LZSS design
+
+- Authoring method: derived the next additive LZSS Contextual identity and
+  resource boundary from marc's completed one-MiB and four-MiB formats,
+  current typed-token representation, checked workspace formulas, and public
+  profile-helper contract before writing implementation code.
+- References used: IR-0722, DD-960, TVG-0824, the repository-owned contextual
+  window and entropy-backend designs, current object extents, HashChain
+  workspace calculation, and private Silesia match-finder evidence.
+- Known implementations intentionally not consulted: external compressor
+  source, format layouts, tests, vectors, memory policies, match finders,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: reserve the inseparable `2/5 + 1/4` pair; preserve
+  `7F` through distance class 24 and a 4,582-entry model; make one GiB an
+  explicit Dynamic Range application policy rather than a default; retain
+  HashChain Exact; and defer 64 MiB because its minimum-Match decision ratio
+  exceeds the shared bound.
+- Generated-code task description: synchronize the design index, format
+  reservation, decision, test-vector, provenance, and documentation-validator
+  contracts without admitting a runtime selector or changing stream bytes.
+- Similarity review: all prose and arithmetic were synthesized from marc's
+  first-party specifications and checked implementation sizes. No external
+  implementation expression or test structure was used.
+- Validation: `marc_documentation_layout` passed under both the MSVC and
+  ClangCL Release trees with the 600-second per-test limit. The final diff is
+  whitespace-clean; codec and interoperability tests are unchanged because
+  this commit reserves documentation and validator contracts only.

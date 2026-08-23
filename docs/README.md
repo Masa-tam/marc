@@ -30,6 +30,9 @@ navigate chronological development records.
   typed-token and context variants for extended-distance experiments.
 - [LZSS contextual 4 MiB window](design/lzss-contextual-window-4m.md): the next
   additive identity, expanded decision bounds, and per-backend memory gates.
+- [LZSS contextual 16 MiB window](design/lzss-contextual-window-16m.md): the
+  reserved post-0.4.0 identity, retained `7F` boundary, and explicit one-GiB
+  aggregate-policy gate.
 - [LZSS contextual rANS 4 MiB window](design/lzss-contextual-rans-window-4m.md):
   the second backend's descriptor, payload, and 128-MiB workspace proof.
 - [LZSS contextual tANS 4 MiB window](design/lzss-contextual-tans-window-4m.md):

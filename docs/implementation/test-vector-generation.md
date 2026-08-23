@@ -11727,3 +11727,22 @@ interpretation of Blocked Huffman's 35 table objects as 35 decode-node entries;
 require the exact 17,885-entry hard limit and successful workspace calculation
 for all three profiles. Then run the complete suites, including documentation
 layout and every interoperability schema.
+
+### TVG-0824
+
+Before admitting any 16-MiB backend, hand-check distance classes 0, 22, 23,
+and 24 and reconstruct an exact distance-16,777,216 Match using overlap and
+bounded generated input rather than a checked-in giant literal fixture.
+Reject every crossing between dictionary variant 5/context variant 4 and the
+older pairs before frame allocation. Exercise `7F` and `34T` count bounds at
+equality and one above, plus every backend workspace extent at exact capacity
+and one byte short.
+
+For every staged backend, require old 64-KiB, one-MiB, and four-MiB archives
+to remain byte-identical; prove atomic payload, model, aggregate, and output-
+limit failures; and keep all fuzz buffers fixed-memory. Query the exact
+workspace after helper application and prove that a caller-tightened hard
+limit is honored. Measure HashChain Exact and any private candidate against
+the verified external Silesia Corpus before changing production selection.
+Append an interoperability archive only after the complete public lifecycle
+for that backend is admitted.

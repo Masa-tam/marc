@@ -6500,3 +6500,14 @@ public helpers, tool configuration adapters, workspace queries, CLI
 round-trips, profile inventories, and benchmark smokes. No external
 compression tool, benchmark, C API, source code, tests, vectors, patents,
 pseudocode, payload bounds, or optimization descriptions were consulted.
+
+### IR-0722
+
+The reserved 16-MiB contextual LZSS profile uses the repository-owned one-
+MiB and four-MiB window designs, typed-token and context contracts, checked
+workspace calculators, HashChain workspace formulas, public profile-helper
+policy, and private Silesia match-finder evidence. All numeric limits were
+derived directly from marc's current token representation and object extents.
+No external compression library, source code, tests, vectors, patents,
+pseudocode, payload bounds, memory policy, or optimization description was
+consulted.

@@ -7021,6 +7021,34 @@ frame; its explicit profile helper therefore applies the proven
 The complete staged contract is [LZSS contextual 4 MiB
 window](design/lzss-contextual-window-4m.md).
 
+### Reserved 16 MiB LZSS field-context family
+
+Format 2.0 reserves dictionary algorithm/variant `2/5` together with context-
+model algorithm/variant `1/4`. They MUST occur together. No current public or
+private stream entry point admits this pair; reservation does not authorize an
+encoder to emit it.
+
+Dictionary variant 5 retains the 16-byte parameter layout, minimum match
+length 5, maximum match length 258, and permits a window no larger than
+16,777,216 bytes. Context variant 4 retains 31 contexts and expands only
+contexts 23 through 30 to distance alphabet 25. It admits distance classes 0
+through 24, at most 24 LSB-first bypass bits, and exactly 4,582 flattened
+Symbol entries.
+
+One Match has at most five modeled events and 34 decisions. A raw frame of
+`F` bytes therefore uses checked common bounds `token_count <= F`,
+`event_count <= 2F`, `decision_count <= 7F`, and
+`decision_count <= 34*token_count`. Earlier variants retain their frozen
+limits. At `F = 16,777,216`, the Dynamic Range candidate retains payload
+ceiling `14F+5 = 234,881,029` and complete-frame ceiling
+`14F+85 = 234,881,109`; these numbers reserve no public resource policy.
+
+The source-level selector value 3 and `MARC_LZSS_CONTEXTUAL_PROFILE_16M` name
+are reserved for a later public stage. They are not serialized, do not exist
+in the current ABI, and must not be inferred from frame, window, or distance
+fields. Existing initializers remain 64 KiB. The complete staged contract is
+[LZSS contextual 16 MiB window](design/lzss-contextual-window-16m.md).
+
 The shared typed-token/context implementation recognizes the exact pair and
 its layout internally. Dynamic Range and canonical contextual rANS and tANS
 admit completed four-MiB entropy triples; other backend-specific entry points

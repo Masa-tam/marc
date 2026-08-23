@@ -20000,3 +20000,31 @@ evidence. Commit and push the documentation repair, require CI success, then
 delete the old local and remote tag explicitly and create a new annotated tag
 on the repaired commit. This is an authorized pre-publication correction, not
 a silent replacement of an already published GitHub Release.
+
+## DD-960: Reserve 16 MiB as the last common 7F contextual window
+
+- Date: 2026-08-23
+- Status: accepted
+
+Reserve dictionary variant 5 and context variant 4 as the inseparable
+`2/5 + 1/4` pair for a future 16,777,216-byte LZSS Contextual window. Retain
+the existing 16-byte dictionary parameters, minimum Match length 5, maximum
+Match length 258, 31 contexts, and all context-selection rules. Expand only
+the eight distance alphabets through class 24, giving alphabet 25, exactly
+4,582 flattened model entries, and at most 34 entropy decisions per Match.
+The minimum five-byte Match consequently preserves the checked common
+`decision_count <= 7F` ceiling.
+
+Reserve only the decoder-visible identity and source-level selector spelling;
+admit no encoder, decoder, ABI selector, CLI profile, benchmark profile, or
+interoperability archive yet. Existing initializers remain 64 KiB and stream
+fields never widen local policy. Each backend must later receive an atomic
+profile helper with independently proven payload, model, workspace, and
+aggregate limits. For Dynamic Range, the conservative encoder requirement is
+1,057,488,981 bytes and therefore fits an explicit one-GiB application policy
+with 16,252,843 bytes of headroom; this does not change the library default.
+
+Stage Dynamic Range first, followed by rANS, tANS, Blocked Huffman, and
+Adaptive Huffman. Retain HashChain Exact until verified 16-MiB corpus evidence
+justifies a match-finder change. Defer 64 MiB to a separate design because
+class 26 permits 36 decisions for a minimum Match and thus exceeds `7F`.

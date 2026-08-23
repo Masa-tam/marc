@@ -314,6 +314,7 @@ endforeach()
 
 foreach(experimental_design IN ITEMS
         "lzss-contextual-window-1m.md"
+        "lzss-contextual-window-16m.md"
         "lzss-typed-token-protocol.md"
         "context-model-contract.md"
         "entropy-backend-contract.md")
@@ -322,6 +323,30 @@ foreach(experimental_design IN ITEMS
     if(NOT EXISTS "${experimental_design_path}")
         message(FATAL_ERROR
             "Missing experimental design document: ${experimental_design}")
+    endif()
+endforeach()
+
+set(lzss_contextual_window_16m_design
+    "${source_dir}/docs/design/lzss-contextual-window-16m.md")
+file(READ "${lzss_contextual_window_16m_design}"
+    lzss_contextual_window_16m_content)
+foreach(required_window_16m_term IN ITEMS
+        "dictionary algorithm ID 2, dictionary variant 5"
+        "context-model algorithm ID 1, context variant 4"
+        "16,777,216-byte frame and window"
+        "exactly 4,582 entries"
+        "34 decisions for at least five raw bytes"
+        "decision_count <= 7F"
+        "aggregate                      1,057,488,981 bytes"
+        "A 64-MiB jump would require class 26"
+        "No implementation,"
+        "Match-finder strategy remains encoder-local and is not serialized")
+    string(FIND "${lzss_contextual_window_16m_content}"
+        "${required_window_16m_term}" required_window_16m_term_offset)
+    if(required_window_16m_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 16 MiB contextual LZSS design: "
+            "${required_window_16m_term}")
     endif()
 endforeach()
 
@@ -361,6 +386,23 @@ foreach(required_typed_format_term IN ITEMS
     if(typed_format_term_offset EQUAL -1)
         message(FATAL_ERROR
             "Incomplete typed format reservation: ${required_typed_format_term}")
+    endif()
+endforeach()
+foreach(required_16m_format_term IN ITEMS
+        "### Reserved 16 MiB LZSS field-context family"
+        "dictionary algorithm/variant `2/5`"
+        "model algorithm/variant `1/4`"
+        "exactly 4,582 flattened"
+        "decision_count <= 34*token_count"
+        "14F+85 = 234,881,109"
+        "MARC_LZSS_CONTEXTUAL_PROFILE_16M"
+        "current ABI")
+    string(FIND "${format_content}" "${required_16m_format_term}"
+        required_16m_format_term_offset)
+    if(required_16m_format_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 16 MiB typed format reservation: "
+            "${required_16m_format_term}")
     endif()
 endforeach()
 
