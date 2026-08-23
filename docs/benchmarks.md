@@ -55,6 +55,7 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-dynamic-range corpus.bin 5`,
 `marc_benchmark lzss-contextual-dynamic-range-1m corpus.bin 5`,
 `marc_benchmark lzss-contextual-dynamic-range-4m corpus.bin 5`,
+`marc_benchmark lzss-contextual-dynamic-range-16m corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans-1m corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans-4m corpus.bin 5`, or
@@ -310,6 +311,20 @@ The initial one-iteration README smoke produced 2,395 bytes from 4,326 bytes
 (ratio 0.554) under both local compilers and reported peak caller-owned
 workspace of 113,246,293 bytes. Throughput from this short smoke is descriptive
 only; use larger external data for performance conclusions.
+
+The experimental `lzss-contextual-dynamic-range-16m` benchmark selects public
+profile value 3 with 16,777,216-byte frames/windows, `14F + 5` payload ceiling,
+4,582 model entries, and the helper's one-GiB aggregate policy. Its checked
+complete-stream capacity remains `112 + 14N + 85K`. Actual directional
+workspace extents and alignment come only from the public query. The encoder
+scales with known input; the decoder conservatively reserves the full-profile
+452,984,917-byte requirement before parsing an untrusted stream. The initial
+one-iteration README smoke produced 2,397 bytes from 4,326 bytes (ratio 0.554)
+under both local compilers and reported that decoder requirement as peak
+caller-owned workspace. The registered smoke validates the complete report
+and round trip; larger external data such as the verified Silesia Corpus
+remains an explicit developer measurement, not a default test or repository
+fixture.
 
 The experimental `lzss-contextual-rans` benchmark uses the same 65,536-byte
 raw frames, admits at most `6F` modeled decisions and `12F + 8` payload bytes,

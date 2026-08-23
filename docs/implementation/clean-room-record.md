@@ -25686,9 +25686,9 @@ both bounds.
   identities transactionally; and keep benchmark, fuzz, and interoperability
   promotion closed.
 - Generated-code task description: publish the completed 16-MiB Dynamic Range
-  path in the CLI with exact identity, cross-profile rejection, input-sized
-  queried allocation, strict malformed/trailing handling, synchronized docs,
-  and no benchmark, fuzz, or schema promotion.
+  path in the CLI with exact identity, cross-profile rejection, query-owned
+  allocation, strict malformed/trailing handling, synchronized docs, and no
+  benchmark, fuzz, or schema promotion.
 - Similarity review: selector dispatch and tests extend marc's first-party CLI
   family and immediately preceding public C boundary. No external
   implementation expression or test structure was used.
@@ -25704,3 +25704,42 @@ both bounds.
   temporarily omitted the optional external-Python tests; an explicit formal
   configure with Python 3.14 restored all seven, and they passed unchanged.
   The final diff is whitespace-clean.
+
+## CR-1045: 2026-08-23 - Sixteen-MiB Dynamic Range benchmark boundary
+
+- Authoring method: extended marc's dependency-free contextual Dynamic Range
+  benchmark family through the public 16-MiB helper and existing checked
+  report lifecycle.
+- References used: IR-0722 through IR-0728, DD-960 through DD-966, TVG-0824
+  through TVG-0830, CR-1039 through CR-1044, and the repository-owned profile
+  selector, workspace query, capacity calculator, measurement report, and
+  report validator.
+- Known implementations intentionally not consulted: external compressors,
+  benchmark harnesses, large-window measurements, memory policies, source
+  code, tests, benchmark results, patents, pseudocode, and optimizations.
+- Independent decisions: use factor 14 for both four- and 16-MiB capacity;
+  obtain all resource extents from the public query; validate all report
+  fields and the four-name inventory; and keep Silesia, fuzz, and schema
+  promotion outside this stage.
+- Generated-code task description: expose the completed 16-MiB Dynamic Range
+  profile through the dependency-free benchmark with checked capacity,
+  query-owned workspace reporting, pre-timing round trip, and a validated
+  one-iteration README smoke.
+- Similarity review: dispatch, capacity, report, and test registration extend
+  marc's first-party benchmark family and immediately preceding public CLI
+  boundary. No external implementation expression or test structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. All 3,230 registered tests passed on each toolchain with
+  the 600-second per-test limit. The seven tooling tests passed separately in
+  0.98 seconds under MSVC and 1.01 seconds under ClangCL; the remaining 3,223
+  passed in 218.55 and 208.68 seconds respectively. Both runs included the new
+  benchmark smoke, all 22 experimental and 42 public benchmark smokes, every
+  public C and CLI path, documentation validation, and
+  `marc_interoperability_schema_compatibility`, which passed in 95.69 and
+  88.48 seconds respectively. A focused one-iteration README measurement on
+  both toolchains produced 2,397 encoded bytes from 4,326 input bytes (ratio
+  0.554) and reported 452,984,917 peak workspace bytes. The decoder's
+  conservative pre-parse query accounted for 234,881,109 primary,
+  16,777,216 secondary, and 201,326,592 view bytes; the input-sized encoder
+  reported 4,326 primary, 60,649 secondary, and 273,184 view bytes. The final
+  diff is whitespace-clean.

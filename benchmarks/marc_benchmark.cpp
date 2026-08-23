@@ -39,6 +39,10 @@ constexpr std::uint64_t lzss_contextual_dynamic_range_4m_frame_size =
     UINT64_C(1) << 22;
 constexpr std::uint64_t lzss_contextual_dynamic_range_4m_buffered_size =
     UINT64_C(256) << 20;
+constexpr std::uint64_t lzss_contextual_dynamic_range_16m_frame_size =
+    UINT64_C(1) << 24;
+constexpr std::uint64_t lzss_contextual_dynamic_range_16m_buffered_size =
+    UINT64_C(1) << 30;
 constexpr std::uint64_t lzss_contextual_rans_frame_size =
     UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_contextual_rans_buffered_size =
@@ -204,6 +208,7 @@ enum class Codec {
     lzss_contextual_dynamic_range,
     lzss_contextual_dynamic_range_1m,
     lzss_contextual_dynamic_range_4m,
+    lzss_contextual_dynamic_range_16m,
     lzss_contextual_rans,
     lzss_contextual_rans_1m,
     lzss_contextual_rans_4m,
@@ -248,14 +253,17 @@ enum class Codec {
     const Codec codec) noexcept {
     return codec == Codec::lzss_contextual_dynamic_range
         || codec == Codec::lzss_contextual_dynamic_range_1m
-        || codec == Codec::lzss_contextual_dynamic_range_4m;
+        || codec == Codec::lzss_contextual_dynamic_range_4m
+        || codec == Codec::lzss_contextual_dynamic_range_16m;
 }
 
 [[nodiscard]] constexpr std::uint64_t
 selected_lzss_contextual_dynamic_range_frame_size(
     const Codec codec) noexcept {
-    return codec == Codec::lzss_contextual_dynamic_range_4m
-        ? lzss_contextual_dynamic_range_4m_frame_size
+    return codec == Codec::lzss_contextual_dynamic_range_16m
+        ? lzss_contextual_dynamic_range_16m_frame_size
+        : codec == Codec::lzss_contextual_dynamic_range_4m
+            ? lzss_contextual_dynamic_range_4m_frame_size
         : codec == Codec::lzss_contextual_dynamic_range_1m
             ? lzss_contextual_dynamic_range_1m_frame_size
             : lzss_contextual_dynamic_range_frame_size;
@@ -264,8 +272,10 @@ selected_lzss_contextual_dynamic_range_frame_size(
 [[nodiscard]] constexpr std::uint64_t
 selected_lzss_contextual_dynamic_range_buffered_size(
     const Codec codec) noexcept {
-    return codec == Codec::lzss_contextual_dynamic_range_4m
-        ? lzss_contextual_dynamic_range_4m_buffered_size
+    return codec == Codec::lzss_contextual_dynamic_range_16m
+        ? lzss_contextual_dynamic_range_16m_buffered_size
+        : codec == Codec::lzss_contextual_dynamic_range_4m
+            ? lzss_contextual_dynamic_range_4m_buffered_size
         : codec == Codec::lzss_contextual_dynamic_range_1m
             ? lzss_contextual_dynamic_range_1m_buffered_size
             : lzss_contextual_dynamic_range_buffered_size;
@@ -274,8 +284,10 @@ selected_lzss_contextual_dynamic_range_buffered_size(
 [[nodiscard]] constexpr marc_lzss_contextual_profile
 selected_lzss_contextual_dynamic_range_profile(
     const Codec codec) noexcept {
-    return codec == Codec::lzss_contextual_dynamic_range_4m
-        ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
+    return codec == Codec::lzss_contextual_dynamic_range_16m
+        ? MARC_LZSS_CONTEXTUAL_PROFILE_16M
+        : codec == Codec::lzss_contextual_dynamic_range_4m
+            ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
         : codec == Codec::lzss_contextual_dynamic_range_1m
             ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
             : MARC_LZSS_CONTEXTUAL_PROFILE_64K;
@@ -527,6 +539,8 @@ struct Measurement {
         return "lzss-contextual-dynamic-range-1m";
     if (codec == Codec::lzss_contextual_dynamic_range_4m)
         return "lzss-contextual-dynamic-range-4m";
+    if (codec == Codec::lzss_contextual_dynamic_range_16m)
+        return "lzss-contextual-dynamic-range-16m";
     if (codec == Codec::lzss_contextual_rans)
         return "lzss-contextual-rans";
     if (codec == Codec::lzss_contextual_rans_1m)
@@ -616,6 +630,7 @@ struct Measurement {
         return lzss_token_size * UINT64_C(2);
     if (is_lzss_contextual_dynamic_range(codec))
         return codec == Codec::lzss_contextual_dynamic_range_4m
+                || codec == Codec::lzss_contextual_dynamic_range_16m
             ? UINT64_C(14) : UINT64_C(12);
     if (is_lzss_contextual_rans(codec))
         return codec == Codec::lzss_contextual_rans_4m
@@ -2437,6 +2452,7 @@ void print_usage() {
                  "lzss-dynamic-range, lzss-contextual-dynamic-range, "
                  "lzss-contextual-dynamic-range-1m, "
                  "lzss-contextual-dynamic-range-4m, "
+                 "lzss-contextual-dynamic-range-16m, "
                  "lzss-contextual-rans, lzss-contextual-rans-1m, "
                  "lzss-contextual-rans-4m, "
                  "lzss-contextual-tans, lzss-contextual-tans-1m, "
@@ -2588,6 +2604,8 @@ int main(const int argc, const char* const argv[]) {
         codec = Codec::lzss_contextual_dynamic_range_1m;
     else if (name == "lzss-contextual-dynamic-range-4m")
         codec = Codec::lzss_contextual_dynamic_range_4m;
+    else if (name == "lzss-contextual-dynamic-range-16m")
+        codec = Codec::lzss_contextual_dynamic_range_16m;
     else if (name == "lzss-contextual-rans")
         codec = Codec::lzss_contextual_rans;
     else if (name == "lzss-contextual-rans-1m")

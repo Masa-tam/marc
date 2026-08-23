@@ -11827,7 +11827,24 @@ identity `2/5 + 1/4 + 3/2`, and require the four-MiB and 64-KiB Dynamic Range
 CLI names to reject the archive without creating or changing an output file.
 
 Keep the payload small while selecting the real 16-MiB public helper and
-direction-specific workspace query. This proves the CLI allocates the queried
-input-sized regions rather than a hard-coded full-profile partition. Preserve
-all older CLI names and stream bytes, the stable Format 1 inventory, and the
-benchmark, fuzz, and 57-archive interoperability boundaries.
+direction-specific workspace query. Require query-owned allocation rather
+than a hard-coded partition: encoder regions scale with known input, while the
+decoder conservatively requests its full-profile requirement before parsing
+the stream. Preserve all older CLI names and stream bytes, the stable Format 1
+inventory, and the benchmark, fuzz, and 57-archive interoperability
+boundaries.
+
+### TVG-0830
+
+Run one Release iteration of
+`marc_benchmark lzss-contextual-dynamic-range-16m` over README.md. Require a
+successful public-C encode/decode round trip, exact reported codec name,
+finite ratio and throughput fields, positive values for all six directional
+workspace regions, and peak workspace equal to the larger directional sum.
+
+Require usage to list the 64-KiB, one-MiB, four-MiB, and 16-MiB names exactly
+once and adjacently, and reject the near-miss `-16M` spelling. Keep the checked
+capacity factor at 14 for both four- and 16-MiB profiles and at 12 for the two
+older profiles. Run complete MSVC and ClangCL inventories, including Python
+tooling and schema compatibility, while leaving Silesia measurement, fuzz,
+and the 57-archive inventory unchanged.

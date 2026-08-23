@@ -1,7 +1,7 @@
 # LZSS contextual 16 MiB window
 
-Status: Dynamic Range C and CLI lifecycle implemented after project version
-0.4.0. Benchmarks, bounded fuzzing, and interoperability remain unadmitted.
+Status: Dynamic Range C, CLI, and benchmark lifecycle implemented after
+project version 0.4.0. Bounded fuzzing and interoperability remain unadmitted.
 
 ## Purpose
 
@@ -216,6 +216,11 @@ query, retains transactional output on malformed and profile-mismatched input,
 and does not reproduce backend layout arithmetic. The CLI name and one-GiB
 application policy are not serialized.
 
+The matching dependency-free benchmark name measures the same public profile.
+It uses checked `112 + 14N + 85K` complete-stream capacity, performs an exact
+pre-timing round trip, and reports all query-owned workspace regions. Benchmark
+availability changes neither match-finder selection nor stream identity.
+
 ## Staged implementation order
 
 1. shared dictionary/context constants, layouts, validators, and hand vectors
@@ -223,7 +228,7 @@ application policy are not serialized.
 2. Dynamic Range decoder preflight and complete-frame decode (complete);
 3. Dynamic Range encoder, exact workspace query, and streaming lifecycle
    (complete);
-4. Dynamic Range C helper and CLI (complete), then benchmark, bounded fuzzing,
+4. Dynamic Range C helper, CLI, and benchmark (complete), then bounded fuzzing
    and schema entry;
 5. canonical contextual rANS;
 6. contextual tANS;

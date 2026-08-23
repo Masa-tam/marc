@@ -6560,3 +6560,13 @@ query, transactional file commit, and cross-profile round-trip harness. No
 external compressor, CLI, large-window profile, memory policy, source code,
 test, benchmark, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0728
+
+The 16-MiB Dynamic Range benchmark boundary uses IR-0722 through IR-0727,
+DD-960 through DD-965, TVG-0824 through TVG-0829, the repository-owned
+dependency-free benchmark lifecycle, public profile helper and workspace
+query, checked complete-stream capacity, and report validator. No external
+compressor, benchmark harness, large-window measurement, memory policy,
+source code, test, benchmark result, patent, pseudocode, or optimization
+description was consulted.

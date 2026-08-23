@@ -20133,3 +20133,20 @@ direction- and input-size-specific workspace query determine all three
 allocations and alignment. Keep the name and policy unserialized. Preserve
 the stable Format 1 inventory and leave benchmark, fuzz, and interoperability
 admission closed for independent stages.
+
+## DD-966: Benchmark the public 16-MiB Dynamic Range profile
+
+- Date: 2026-08-23
+- Status: accepted
+
+Add `lzss-contextual-dynamic-range-16m` to the dependency-free benchmark using
+the same public selector and helper-applied one-GiB policy as the CLI. Extend
+the common Dynamic Range profile selector rather than reproducing private
+workspace formulas. Retain checked complete-stream capacity
+`112 + 14N + 85K`, the exact pre-timing round trip, and the existing report of
+ratio, throughput, all six workspace regions, and directional peak.
+
+Register only a one-iteration README smoke and validate the report plus the
+four adjacent profile names. Do not run Silesia in the default suite, change
+the production match finder, add a fuzz target, or append an interoperability
+archive based solely on benchmark availability.

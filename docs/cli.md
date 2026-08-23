@@ -201,8 +201,10 @@ The experimental `lzss-contextual-dynamic-range-16m` adapter uses
 16,777,216-byte raw frames and window, the `14F + 5` payload ceiling of
 234,881,029 bytes, 4,582 model entries, and the public helper's explicit
 one-GiB aggregate policy. The CLI selects that helper and then relies on the
-direction- and input-size-specific public workspace query; it does not
-reproduce private token, operation, model, or HashChain extents. Decode
+direction-specific public workspace query; it does not reproduce private
+token, operation, model, or HashChain extents. Encoder workspace scales with
+known input, while the decoder conservatively reserves its 452,984,917-byte
+full-profile requirement before inspecting an untrusted stream. Decode
 requires the same explicit `-16m` name, and profile mismatch remains
 transactional.
 
