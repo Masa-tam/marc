@@ -21,53 +21,32 @@ format versions, and C ABI versions are independent namespaces.
 
 ### Added
 
-- Added atomic `config_apply_profile()` helpers for LZSS Contextual Dynamic
-  Range, rANS, tANS, and Blocked Huffman. Each helper applies the complete
-  64-KiB, one-MiB, or four-MiB resource envelope while preserving direction,
-  original size, and the caller's total-output policy.
-
-- Added interoperability schema 46 by appending the four-MiB LZSS Contextual
-  Blocked Huffman archive to the frozen schema-45 order, while retaining exact
-  verification of every earlier schema.
-
-- Added explicit 64 KiB and 1 MiB window-profile selection to the public LZSS
-  Contextual Dynamic Range C lifecycle. The extended selector emits and admits
-  only the reserved Format 2 dictionary/context identity `2/3 + 1/2`, while
-  the zero default preserves `2/2 + 1/1` and the ABI-1 structure extent.
-- Added the explicit `lzss-contextual-dynamic-range-1m` CLI selector. The
-  existing unqualified selector remains the frozen 64 KiB profile, and each
-  decode selector rejects streams belonging to the other profile.
-- Added a matching dependency-free benchmark selector reporting ratio,
-  directional throughput, queried workspaces, and peak caller reservation
-  after a mandatory exact round trip.
-- Extended the fixed-memory Contextual Dynamic Range fuzz target and permanent
-  malformed regressions to cover both 64 KiB and 1 MiB profile admissions.
-- Added interoperability schema 38 by appending the 1 MiB Contextual Dynamic
-  Range archive to the frozen schema-37 order, while retaining verification of
-  every earlier schema.
-- Extended the internal Contextual rANS compact descriptor to select either
-  the frozen 64 KiB field layout or the reserved 1 MiB layout explicitly.
-  Fixed-capacity storage remains bounded by the larger layout, while each
-  selected layout retains its exact descriptor ceiling and rejects a
-  non-zero unused tail.
-- Extended the internal Contextual rANS coding core to retain the selected
-  field layout through model normalization, reverse payload coding,
-  decode-table construction, and event decoding. The 1 MiB layout admits its
-  21-symbol distance classes and 20-bit bypass fields without increasing the
-  fixed 126,976-entry decode-table workspace.
-- Extended the internal direct LZSS Contextual rANS token composition to use
-  the selected dictionary and context layout consistently. A distance-131,072
-  regression proves exact agreement with the independently materialized
-  field-operation path and exact typed-token reconstruction.
-- Added the four-MiB LZSS Contextual Blocked Huffman public C profile and the
-  explicit `lzss-contextual-blocked-huffman-4m` CLI selector. The profile
-  admits only Format 2 identity `2/4 + 1/3 + 2/2`, retains the 128-MiB
-  aggregate default, and reciprocally rejects the 64-KiB and one-MiB
-  identities before raw publication.
-- Added dependency-free benchmark selection and bounded dual-path decoder
-  fuzz coverage for the four-MiB LZSS Contextual Blocked Huffman profile.
-  Fuzz admission widens identity and distance validation without allocating
-  a four-MiB raw frame or retaining generated mutations in the repository.
+- Added explicit 1-MiB and 4-MiB LZSS Contextual profiles for Dynamic Range,
+  rANS, tANS, Blocked Huffman, and Adaptive Huffman. Together with each
+  existing unqualified 64-KiB profile, the public C ABI, CLI, and experimental
+  benchmark now expose fifteen exact dictionary/context combinations.
+- Added distinct Format 2 dictionary and context identities for every wider
+  profile. Each decoder admits only its selected identity, rejects reciprocal
+  64-KiB/1-MiB/4-MiB profiles before publishing raw bytes, and preserves every
+  previously emitted 64-KiB archive byte.
+- Added profile-specific, queryable frame, window, payload, entropy-model, and
+  aggregate workspace limits. The larger profiles retain bounded caller-owned
+  memory and enforce maximum distance 1,048,576 or 4,194,304 as selected.
+- Added atomic `config_apply_profile()` helpers across all five LZSS
+  Contextual entropy backends. A helper validates before mutation, preserves
+  direction, original size, and caller output policy, applies one coherent
+  resource envelope, remains idempotent, and permits stricter later limits.
+- Extended the five fixed-memory contextual fuzz targets and permanent
+  malformed-stream regressions across all three profiles without allocating
+  unbounded input-controlled storage.
+- Added interoperability schemas 38 through 47. Each schema appends exactly
+  one wider profile to the frozen order, culminating in all 57 archives under
+  `marc-cli-v47`, while retaining exact verification through schema 1.
+- Added offline Silesia Corpus validation and benchmark runners plus private
+  exact BinaryTree, HashTree, and sparse HashTree match-finder experiments.
+  Differential and corpus measurements retain HashChain Exact as the public
+  production strategy; the alternatives do not alter stream metadata or
+  deterministic archive bytes.
 
 ## 0.3.0 - 2026-08-13
 

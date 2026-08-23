@@ -19982,3 +19982,21 @@ admission from untrusted stream fields. Require synchronized CMake, runtime,
 metadata-test, changelog, readiness, and provenance records; complete both
 Windows Release suites, pushed CI, and an exact schema-47 four-direction
 exchange before tagging.
+
+## DD-959: Rebuild the unpublished 0.4.0 tag after changelog reconciliation
+
+- Date: 2026-08-23
+- Status: accepted
+
+Before creating the GitHub Release, replace the pushed annotated `v0.4.0` tag
+because its source changelog describes only selected implementation stages
+rather than the completed public release surface. Consolidate the section
+around all ten wider profiles, all five profile helpers, their bounded
+validation surfaces, schemas 38 through 47, and the private match-finder
+experiments whose measured outcome retained HashChain Exact.
+
+Do not change code, package version, ABI, format, schema, or prior validation
+evidence. Commit and push the documentation repair, require CI success, then
+delete the old local and remote tag explicitly and create a new annotated tag
+on the repaired commit. This is an authorized pre-publication correction, not
+a silent replacement of an already published GitHub Release.

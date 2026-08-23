@@ -25478,3 +25478,28 @@ both bounds.
   validated manifest order, sizes, SHA-256 values, foreign decoding, and
   byte-identical local re-encoding. The resulting documentation-only evidence
   commit requires final pushed CI before the annotated `v0.4.0` tag.
+
+## CR-1038: 2026-08-23 - Project version 0.4.0 changelog reconciliation
+
+- Authoring method: audited the tagged changelog against the complete first-
+  party commit history and readiness evidence before GitHub Release creation,
+  then replaced stage-specific fragments with one complete user-facing scope.
+- References used: DD-958 through DD-959; CR-0819 through CR-1037; CHANGELOG;
+  the schema-38-through-schema-47 records; the public C, CLI, benchmark, fuzz,
+  and match-finder experiment histories; and the repository release process.
+- Known implementations intentionally not consulted: external changelogs,
+  release notes, compressors, APIs, source code, tests, and release tooling.
+- Independent decisions: enumerate all ten wider profiles and all five helper
+  contracts; state preservation of 64-KiB bytes; group schemas 38 through 47;
+  and describe private match-finder experiments by their retained-production-
+  strategy outcome rather than presenting rejected routes as public codecs.
+- Generated-code task description: make the tagged 0.4.0 changelog complete
+  before publication without modifying implementation or compatibility
+  claims, validate its document structure, and explicitly rebuild the tag
+  only after pushed CI succeeds.
+- Similarity review: all corrected release prose was synthesized from marc's
+  first-party chronological records. No external implementation expression or
+  release prose was copied or structurally reproduced.
+- Validation: `marc_documentation_layout` passes under the MSVC Release tree,
+  and the final diff is whitespace-clean. Codec and interoperability tests are
+  unchanged because this correction modifies only release documentation.
