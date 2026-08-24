@@ -1,8 +1,8 @@
 # LZSS contextual tANS 16 MiB window
 
-Status: private stream/header, frame preflight, and complete-frame decoder
-implemented after project version 0.4.0. The complete-frame encoder, public,
-tooling, fuzzing, and interoperability boundaries remain closed.
+Status: private complete-frame encoder and decoder implemented after project
+version 0.4.0. Profile, streaming, public, tooling, fuzzing, and
+interoperability boundaries remain closed.
 
 ## Purpose and identity
 
@@ -107,7 +107,7 @@ limits.
 3. Admit exact triple `2/5 + 1/4 + 5/2` in stream/header validation, frame
    preflight, and complete-frame decoding while keeping encoding explicitly
    closed (complete).
-4. Admit complete-frame encoding for the exact triple.
+4. Admit complete-frame encoding for the exact triple (complete).
 5. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests.
 6. Admit public C profile value 3 only for contextual tANS, then add the

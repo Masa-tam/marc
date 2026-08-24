@@ -7178,9 +7178,12 @@ crossed dictionary/context pairs remain contradictory. Frame preflight selects
 the 9,157-byte descriptor ceiling, `7F` per-raw-byte and 34-decision-per-token
 bounds, 25-symbol distance alphabet, and 24-bit bypass ceiling. A canonical
 complete frame reconstructs the first new distance 4,194,305. Token-output and
-raw-output one-short failures publish no raw bytes. The complete-frame encoder
-explicitly rejects this triple before mutating token staging or serialized
-output. Workspace/profile, streaming, public, CLI, benchmark, fuzzing, and
+raw-output one-short failures publish no raw bytes. The private complete-frame
+encoder admits the same triple through both exhaustive and HashChain Exact
+routes. A canonical Literal frame records frequency-entry count 4,582, and
+HashChain Exact emits and round-trips a Match beyond distance 4,194,304. The
+same frame is rejected under the four-MiB identity before raw publication.
+Profile/workspace, streaming, public, CLI, benchmark, fuzzing, and
 interoperability boundaries remain closed.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes

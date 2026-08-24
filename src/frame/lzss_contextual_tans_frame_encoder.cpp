@@ -98,11 +98,6 @@ template <bool UseHashChain>
     dictionary::internal::LzssMatchFinderStatistics* const statistics)
     noexcept {
     LzssContextualTansFrameEncodeResult result{};
-    if (stream.context_variant == static_cast<std::uint16_t>(
-            context::internal::LzssFieldContextVariant::field_context_16m)) {
-        result.error = LzssContextualTansFrameEncodeError::invalid_stream;
-        return result;
-    }
     std::size_t token_capacity_bytes{};
     std::size_t table_capacity_bytes{};
     if (!calculate_capacity_bytes(

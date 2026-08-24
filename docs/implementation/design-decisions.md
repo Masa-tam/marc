@@ -20432,3 +20432,22 @@ complete frame. Token-output and raw-output one-short failures must be atomic.
 Keep complete-frame encoding explicitly closed at the plan boundary so shared
 header admission cannot widen it accidentally. Defer profile/workspace,
 streaming, public, CLI, benchmark, fuzz, and interoperability admission.
+
+## DD-983: Open 16-MiB contextual tANS complete-frame encoding
+
+- Date: 2026-08-25
+- Status: accepted
+
+Remove only the temporary context-variant-4 complete-frame encoder gate. Reuse
+the selected typed-token layout, fixed 131,072-entry tANS table bank, compact
+descriptor, existing state and bit rules, frame validator, exhaustive reference
+route, and HashChain Exact production route. Introduce no serialized identity,
+entropy transition, or match-finder change.
+
+Because the streaming encoder delegates to the complete-frame encoder, add a
+replacement constructor gate for context variant 4. Require a canonical
+one-Literal frame with frequency-entry count 4,582 and a production HashChain
+frame containing a Match beyond 4,194,304. Decode both exactly, and reject the
+large-distance frame under the four-MiB identity without raw publication. Keep
+profile/workspace, streaming, public, CLI, benchmark, fuzz, and interoperability
+admission closed.

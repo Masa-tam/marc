@@ -419,6 +419,27 @@ TEST(LzssContextualTansFrameStreamingEncoder,
 }
 
 TEST(LzssContextualTansFrameStreamingEncoder,
+     SixteenMiBIdentityRemainsClosedBeforeStreamingAdmission) {
+    auto stream = stream_config(1, 1);
+    stream.dictionary.window_size = UINT32_C(1) << 24;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    stream.frequency_entry_count = 4582;
+    std::array<std::byte, 1> raw{};
+    std::array<LzssTypedToken, 1> tokens{};
+    auto table_storage = tables();
+    std::array<std::byte, 128> frame{};
+    LzssContextualTansFrameStreamingEncoder encoder{
+        stream, {}, raw, tokens, table_storage, frame};
+
+    const auto result = encoder.process({}, {}, 0);
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
+    EXPECT_EQ(result.input_consumed, 0U);
+    EXPECT_EQ(result.output_produced, 0U);
+}
+
+TEST(LzssContextualTansFrameStreamingEncoder,
      FourMiBIdentityRoundTripsWithOneByteBuffers) {
     constexpr std::array input{std::byte{'A'}};
     auto stream = stream_config(1, 1);

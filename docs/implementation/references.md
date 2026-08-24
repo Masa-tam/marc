@@ -6722,3 +6722,13 @@ and the preceding 16-MiB Contextual rANS staged admission pattern. No external
 compressor, tANS or FSE implementation, source code, archive, encoded vector,
 test suite, patent, pseudocode, benchmark result, optimization description, or
 malformed-stream corpus was consulted.
+
+### IR-0745
+
+The 16-MiB Contextual tANS complete-frame encoder admission uses IR-0741
+through IR-0744, DD-979 through DD-982, TVG-0843 through TVG-0846, the
+repository-owned exhaustive and HashChain Exact typed-token encoders,
+contextual tANS descriptor/payload encoder, complete-frame decoder, and
+crossed-profile validator. No external compressor, tANS or FSE implementation,
+match finder, source code, archive, encoded vector, test suite, patent,
+pseudocode, benchmark result, or optimization description was consulted.

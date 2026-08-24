@@ -12092,3 +12092,18 @@ and encoding for the admitted header and require explicit `invalid_stream`
 without token-staging or serialized-output mutation. Preserve all earlier
 stream bytes and run the complete registered suite warning-clean under MSVC
 and ClangCL.
+
+### TVG-0847
+
+Encode one Literal through the complete-frame exhaustive route under exact
+identity `2/5 + 1/4 + 5/2`. Require one token, two events, two decisions, the
+unchanged two-byte tANS payload, descriptor frequency-entry bytes `e6 11`, and
+successful complete-frame decoding.
+
+For the production route, place `ABCDE` at both ends of a frame separated by
+4,194,304 filler bytes. Require HashChain Exact to emit a Match whose distance
+exceeds 4,194,304, encode and decode the frame exactly, then reinterpret it
+under four-MiB identity `2/4 + 1/3 + 5/2` and require preflight rejection with
+untouched raw output. Construct the streaming encoder with context variant 4
+and require stable zero-progress `invalid_argument` before any header byte is
+emitted. Run focused and complete registered suites under MSVC and ClangCL.

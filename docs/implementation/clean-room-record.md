@@ -26247,3 +26247,31 @@ both bounds.
   tests. Each ordinary toolchain then passed all 3,252 registered tests with
   interoperability schema compatibility included; documentation validation
   passed independently on both.
+
+## CR-1064: 2026-08-25 - Admit 16-MiB Contextual tANS frame encoding
+
+- Authoring method: removed the repository-local temporary complete-frame
+  encoder gate and extended existing marc frame tests to the selected 16-MiB
+  typed-token/context layout.
+- References used: DD-983, IR-0745, TVG-0847, CR-1063, and repository-owned
+  exhaustive, HashChain Exact, contextual tANS descriptor, complete decoder,
+  and crossed-profile paths.
+- Known implementations intentionally not consulted: external compressors,
+  tANS or FSE implementations, match finders, source code, archives, encoded
+  vectors, test suites, patents, pseudocode, benchmark results, and
+  optimization descriptions.
+- Independent decisions: retain both match-finder routes; prove a canonical
+  Literal and a real Match beyond four MiB; reject crossed identity before raw
+  publication; and move the admission gate to the streaming constructor.
+- Generated-code task description: admit exact complete-frame encoding for
+  `2/5 + 1/4 + 5/2`, add exhaustive and extended-distance round trips, retain
+  streaming closure, and verify both supported toolchains.
+- Similarity review: implementation removes only a repository-local staging
+  gate, while tests extend marc's own fixtures and invariants; no external
+  implementation expression, vector, naming structure, or test structure was
+  used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. Focused complete-frame and streaming-encoder validation
+  passed all 22 tests on each toolchain. All 3,254 registered tests passed on
+  both with the 600-second per-test limit, including documentation validation
+  and the complete schema-49 compatibility chain.
