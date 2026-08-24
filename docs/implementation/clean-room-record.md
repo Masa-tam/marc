@@ -26275,3 +26275,30 @@ both bounds.
   passed all 22 tests on each toolchain. All 3,254 registered tests passed on
   both with the 600-second per-test limit, including documentation validation
   and the complete schema-49 compatibility chain.
+
+## CR-1065: 2026-08-25 - Admit 16-MiB Contextual tANS streaming
+
+- Authoring method: extended marc's repository-local checked profile and
+  streaming lifecycle to the already admitted exact Contextual tANS identity.
+- References used: DD-984, IR-0746, TVG-0848, CR-1064, and repository-owned
+  profile arithmetic, HashChain Exact workspace query, selected decoder
+  admission, and one-byte streaming helpers.
+- Known implementations intentionally not consulted: external compressors,
+  tANS or FSE implementations, match finders, source code, archives, encoded
+  vectors, test suites, patents, pseudocode, benchmark results, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: preserve the 128-MiB default; require an explicit
+  512-MiB aggregate for a full profile; bind admission to exact pair `5/4`;
+  and keep every public and interoperability boundary closed.
+- Generated-code task description: calculate exact 16-MiB encoder and decoder
+  workspaces, prove exact and one-short aggregate limits, enable one-byte
+  streaming for `2/5 + 1/4 + 5/2`, and reject crossed profile admission before
+  raw publication.
+- Similarity review: changes extend only marc's own profile, workspace, and
+  streaming patterns with tANS-specific sizes; no external implementation
+  expression, vector, naming structure, or test structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. The 26 focused profile and streaming tests passed on both,
+  as did independent documentation validation. All 3,255 registered tests
+  passed under each toolchain with the 600-second per-test limit, including
+  the complete schema-49 interoperability compatibility chain.

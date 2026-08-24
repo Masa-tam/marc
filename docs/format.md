@@ -7183,8 +7183,19 @@ encoder admits the same triple through both exhaustive and HashChain Exact
 routes. A canonical Literal frame records frequency-entry count 4,582, and
 HashChain Exact emits and round-trips a Match beyond distance 4,194,304. The
 same frame is rejected under the four-MiB identity before raw publication.
-Profile/workspace, streaming, public, CLI, benchmark, fuzzing, and
-interoperability boundaries remain closed.
+
+The private Contextual tANS profile and streaming lifecycle admit this exact
+identity. For `F = 16,777,216`, checked profile calculation uses the 9,157-byte
+descriptor ceiling, payload limit `ceil(21F/2) + 2 = 176,160,770`, fixed
+131,072-entry table bank, and HashChain Exact. On the supported 64-bit native
+layout, the encoder aggregate is 462,169,095 bytes and the decoder aggregate
+is 394,798,087 bytes. The unchanged 128-MiB default therefore rejects this
+full profile; an explicit 512-MiB aggregate policy admits exact capacity, and
+one byte less fails before workspace publication. The common block limit must
+admit `7F = 117,440,512` decisions. One-byte input and output chunking changes
+no stream byte. A selected decoder admission accepts only dictionary/context
+pair `5/4`; the four-MiB selection rejects it before raw publication. Public,
+CLI, benchmark, fuzzing, and interoperability boundaries remain closed.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

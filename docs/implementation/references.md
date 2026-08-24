@@ -6732,3 +6732,14 @@ contextual tANS descriptor/payload encoder, complete-frame decoder, and
 crossed-profile validator. No external compressor, tANS or FSE implementation,
 match finder, source code, archive, encoded vector, test suite, patent,
 pseudocode, benchmark result, or optimization description was consulted.
+
+### IR-0746
+
+The 16-MiB Contextual tANS profile and streaming admission uses IR-0741
+through IR-0745, DD-979 through DD-983, TVG-0843 through TVG-0847, the
+repository-owned profile arithmetic, HashChain Exact workspace query, and
+one-byte streaming lifecycle established by the earlier contextual tANS
+profiles. No external compressor, tANS or FSE implementation, match finder,
+source code, archive, encoded vector, test suite, patent, pseudocode,
+benchmark result, optimization description, or malformed-stream corpus was
+consulted.

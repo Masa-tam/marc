@@ -1,8 +1,8 @@
 # LZSS contextual tANS 16 MiB window
 
-Status: private complete-frame encoder and decoder implemented after project
-version 0.4.0. Profile, streaming, public, tooling, fuzzing, and
-interoperability boundaries remain closed.
+Status: private profile and streaming lifecycle implemented after project
+version 0.4.0. Public, tooling, fuzzing, and interoperability boundaries
+remain closed.
 
 ## Purpose and identity
 
@@ -109,7 +109,7 @@ limits.
    closed (complete).
 4. Admit complete-frame encoding for the exact triple (complete).
 5. Add checked profile/workspace calculation and one-byte streaming with exact
-   and one-short aggregate tests.
+   and one-short aggregate tests (complete).
 6. Admit public C profile value 3 only for contextual tANS, then add the
    explicit CLI and dependency-free benchmark names.
 7. Extend bounded decoder fuzzing without profile-sized allocation.

@@ -12107,3 +12107,19 @@ under four-MiB identity `2/4 + 1/3 + 5/2` and require preflight rejection with
 untouched raw output. Construct the streaming encoder with context variant 4
 and require stable zero-progress `invalid_argument` before any header byte is
 emitted. Run focused and complete registered suites under MSVC and ClangCL.
+
+### TVG-0848
+
+Calculate the full 16-MiB Contextual tANS profile with frame/window
+16,777,216, decision limit 117,440,512, payload limit 176,160,770, 4,582 model
+entries, and 131,072 table entries. Require the 128-MiB aggregate default to
+reject it. Under an explicit 512-MiB policy require encoder aggregate
+462,169,095 and decoder aggregate 394,798,087 bytes; equality succeeds and one
+byte short fails before workspace publication. Also reject a block limit one
+decision short.
+
+Encode raw `A` through the streaming lifecycle using one-byte input and output
+buffers. Require serialized dictionary/context bytes 5 and 4, exact selected
+decoder round trip, and rejection by the four-MiB selected admission without
+changing a sentinel output byte. Run focused and complete registered suites
+under MSVC and ClangCL.

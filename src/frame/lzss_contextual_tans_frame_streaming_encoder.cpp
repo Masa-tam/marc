@@ -195,8 +195,6 @@ LzssContextualTansFrameStreamingEncoder(
             stream_, limits_, stream_header_);
     if (!valid_extents
         || stream_error != LzssContextualTansStreamHeaderError::none
-        || stream_.context_variant == static_cast<std::uint16_t>(
-            context::internal::LzssFieldContextVariant::field_context_16m)
         || raw_frame_workspace_.size() < required_raw
         || std::ranges::find_if(overlaps, [](const auto value) {
                return value != OverlapCheck::disjoint;

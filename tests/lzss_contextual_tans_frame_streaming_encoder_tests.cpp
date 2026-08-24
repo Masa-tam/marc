@@ -419,7 +419,8 @@ TEST(LzssContextualTansFrameStreamingEncoder,
 }
 
 TEST(LzssContextualTansFrameStreamingEncoder,
-     SixteenMiBIdentityRemainsClosedBeforeStreamingAdmission) {
+     SixteenMiBIdentityRoundTripsWithOneByteBuffers) {
+    constexpr std::array input{std::byte{'A'}};
     auto stream = stream_config(1, 1);
     stream.dictionary.window_size = UINT32_C(1) << 24;
     stream.dictionary_variant = 5;
@@ -431,12 +432,29 @@ TEST(LzssContextualTansFrameStreamingEncoder,
     std::array<std::byte, 128> frame{};
     LzssContextualTansFrameStreamingEncoder encoder{
         stream, {}, raw, tokens, table_storage, frame};
+    const auto encoded = encode_one_byte_chunks(encoder, input);
+    ASSERT_GT(encoded.size(), lzss_contextual_tans_stream_header_size);
+    EXPECT_EQ(encoded[14], std::byte{0x05});
+    EXPECT_EQ(encoded[98], std::byte{0x04});
 
-    const auto result = encoder.process({}, {}, 0);
-    EXPECT_EQ(result.status, StreamStatus::error);
-    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
-    EXPECT_EQ(result.input_consumed, 0U);
-    EXPECT_EQ(result.output_produced, 0U);
+    std::array<std::byte, 128> serialized{};
+    std::vector<marc::entropy::internal::TansDecodeEntry> decode_tables(
+        marc::entropy::internal::contextual_tans_decode_table_entries);
+    std::array<LzssTypedToken, 1> decode_tokens{};
+    std::array<std::byte, 1> decode_raw{};
+    LzssContextualTansFrameStreamingDecoder decoder{
+        {}, serialized, decode_tables, decode_tokens, decode_raw,
+        LzssContextualTansStreamAdmission::field_context_16m};
+    EXPECT_EQ(decode_one_byte_chunks(decoder, encoded),
+              std::vector<std::byte>(input.begin(), input.end()));
+
+    LzssContextualTansFrameStreamingDecoder crossed{
+        {}, serialized, decode_tables, decode_tokens, decode_raw,
+        LzssContextualTansStreamAdmission::field_context_4m};
+    std::array<std::byte, 1> output{std::byte{0xcc}};
+    const auto rejected = crossed.process(encoded, output, end_flag());
+    EXPECT_EQ(rejected.status, StreamStatus::error);
+    EXPECT_EQ(output[0], std::byte{0xcc});
 }
 
 TEST(LzssContextualTansFrameStreamingEncoder,

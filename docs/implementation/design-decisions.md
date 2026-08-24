@@ -20451,3 +20451,20 @@ frame containing a Match beyond 4,194,304. Decode both exactly, and reject the
 large-distance frame under the four-MiB identity without raw publication. Keep
 profile/workspace, streaming, public, CLI, benchmark, fuzz, and interoperability
 admission closed.
+
+## DD-984: Admit checked 16-MiB contextual tANS profile and streaming
+
+- Date: 2026-08-25
+- Status: accepted
+
+Add context variant 4 to the private profile selector and use its 9,157-byte
+descriptor ceiling in both encoder and decoder workspace calculation. Retain
+the fixed tANS table bank and authoritative HashChain Exact query. A full
+16-MiB frame requires explicit payload, `7F` block, and 512-MiB aggregate
+limits; the unchanged 128-MiB aggregate default must reject it.
+
+Remove the temporary streaming-encoder gate only after exact and one-short
+workspace tests pass. Add exact dictionary/context `5/4` decoder admission and
+prove one-byte input and output chunking. Earlier selected admissions must
+reject the new identity before raw publication. Keep public C, CLI, benchmark,
+fuzz, and interoperability admission closed.

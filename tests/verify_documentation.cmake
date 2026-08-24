@@ -395,8 +395,8 @@ foreach(required_tans_window_16m_term IN ITEMS
         "aggregate                        462,169,095 bytes"
         "aggregate                        394,798,087 bytes"
         "payload limit 176,160,770"
-        "private complete-frame encoder and decoder implemented"
-        "Profile, streaming, public")
+        "private profile and streaming lifecycle implemented"
+        "Public, tooling, fuzzing")
     string(FIND "${lzss_contextual_tans_window_16m_content}"
         "${required_tans_window_16m_term}"
         required_tans_window_16m_term_offset)
