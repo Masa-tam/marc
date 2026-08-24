@@ -20468,3 +20468,20 @@ workspace tests pass. Add exact dictionary/context `5/4` decoder admission and
 prove one-byte input and output chunking. Earlier selected admissions must
 reject the new identity before raw publication. Keep public C, CLI, benchmark,
 fuzz, and interoperability admission closed.
+
+## DD-985: Expose the 16-MiB contextual tANS C profile
+
+- Date: 2026-08-25
+- Status: accepted
+
+Admit existing common selector value 3 only in the Contextual tANS config
+helper, loader, direction-specific workspace query, and factory. Map it to
+exact private profile/admission `field_context_16m` and serialized identity
+`2/5 + 1/4 + 5/2`; do not add or resize an ABI field.
+
+The helper applies frame, window, and distance 16,777,216, block limit
+117,440,512, payload limit 176,160,770, 131,072 table entries, and a 512-MiB
+aggregate. Preserve direction, original size, and total-output policy, so a
+caller may retain a stricter incompatible limit and receive a later query
+failure. Initializers remain 64 KiB and decoder limits never widen from stream
+fields. Keep CLI, benchmark, fuzz, and interoperability admission closed.

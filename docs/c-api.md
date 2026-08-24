@@ -244,8 +244,12 @@ part of ABI 1.
 `MARC_LZSS_CONTEXTUAL_PROFILE_64K` remains the initializer default and selects
 dictionary/context identity `2/2 + 1/1`.
 `MARC_LZSS_CONTEXTUAL_PROFILE_1M` selects `2/3 + 1/2`, and
-`MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects `2/4 + 1/3`. The four-MiB profile uses
-the 9,125-byte descriptor ceiling and retains the 128-MiB aggregate default.
+`MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects `2/4 + 1/3`.
+`MARC_LZSS_CONTEXTUAL_PROFILE_16M` selects `2/5 + 1/4`; this identity uses the
+9,157-byte descriptor ceiling, `7F = 117,440,512` as its decision/block limit,
+a 176,160,770-byte payload limit, and a 512-MiB aggregate default. The
+four-MiB profile retains its 9,125-byte descriptor ceiling and 128-MiB
+aggregate default.
 Call `marc_lzss_contextual_tans_config_apply_profile()` to apply the selected
 frame, decision, payload, fixed-table, LZ, and aggregate limits atomically.
 The helper validates before mutation and preserves direction, original size,
@@ -254,13 +258,16 @@ limits before re-querying all workspaces.
 On supported 64-bit native layouts its full encoder and decoder requirements
 are 116,138,983 and 99,099,623 bytes; full-frame callers set
 `max_frame_size` to 4,194,304 and the common `max_block_size` decision limit
-to 29,360,128. The selector is not inferred from `window_size`: encoding
-validates the selected parameters and decoding rejects every other known
-identity before frame collection or raw publication. The selector and trailing
-reserved word reuse the former 64-bit reserved tail, preserving the 112-byte
-ABI-1 extent and the all-zero default. All three explicit CLI names expose the
-exact profiles, and interoperability schema 45 includes the four-MiB name as
-its final experimental archive.
+to 29,360,128. For the full 16-MiB profile the corresponding encoder and
+decoder requirements are 462,169,095 and 394,798,087 bytes; their regions are
+16,777,216 / 176,169,991 / 269,221,888 bytes and
+176,169,991 / 16,777,216 / 201,850,880 bytes respectively. The selector is not
+inferred from `window_size`: encoding validates the selected parameters and
+decoding rejects every other known identity before frame collection or raw
+publication. The selector and trailing reserved word reuse the former 64-bit
+reserved tail, preserving the 112-byte ABI-1 extent and the all-zero default.
+The 16-MiB profile is currently a public C helper/query/factory surface only;
+its CLI, benchmark, fuzzing, and interoperability-schema stages remain closed.
 
 The completion audit covers all required binary classes, deterministic mixed
 and one-byte chunk schedules, stable repeated terminal calls, and frame-atomic

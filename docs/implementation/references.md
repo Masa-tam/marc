@@ -6743,3 +6743,13 @@ profiles. No external compressor, tANS or FSE implementation, match finder,
 source code, archive, encoded vector, test suite, patent, pseudocode,
 benchmark result, optimization description, or malformed-stream corpus was
 consulted.
+
+### IR-0747
+
+The 16-MiB Contextual tANS public C admission uses IR-0741 through IR-0746,
+DD-979 through DD-984, TVG-0843 through TVG-0848, the repository-owned common
+profile selector and helper contract, checked workspace query, streaming
+factory, and earlier contextual rANS public admission pattern. No external
+compressor, tANS or FSE implementation, source code, archive, encoded vector,
+test suite, patent, pseudocode, benchmark result, optimization description, or
+malformed-stream corpus was consulted.

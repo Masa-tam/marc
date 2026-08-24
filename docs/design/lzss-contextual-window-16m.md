@@ -2,8 +2,8 @@
 
 Status: Dynamic Range and canonical contextual rANS lifecycles, including
 schema-48 and schema-49 interoperability admission, implemented after project
-version 0.4.0. Contextual tANS has private profile and streaming lifecycle
-admission; its public and later boundaries remain closed.
+version 0.4.0. Contextual tANS has public C profile, workspace-query, and
+factory admission; its tooling and later boundaries remain closed.
 
 ## Purpose
 
@@ -198,20 +198,22 @@ aggregate on the supported 64-bit object layout. The decoder query returns
 452,984,917 bytes. Equality succeeds and one byte short fails before workspace
 publication. No full-size workspace is allocated by boundary tests. Canonical
 contextual rANS and tANS descriptor/model paths recognize context variant 4.
-The rANS lifecycle is complete; the tANS private profile and streaming
-lifecycle are admitted while later boundaries remain independently staged.
+The rANS lifecycle is complete; the tANS public C profile and factory are
+admitted while later boundaries remain independently staged.
 
 The public C selector `MARC_LZSS_CONTEXTUAL_PROFILE_16M` has value 3 and is
-admitted only by the Dynamic Range configuration loader and profile helper.
-The helper applies the 16-MiB frame/window/distance limits, 234,881,029-byte
-payload ceiling, 4,582 model entries, and one-GiB aggregate policy while
-preserving direction, original size, and the caller's total-output limit.
-The public encoder and decoder workspace queries return the same exact
+admitted by the Dynamic Range and contextual tANS configuration loaders and
+profile helpers. For Dynamic Range the helper applies the 16-MiB
+frame/window/distance limits, 234,881,029-byte payload ceiling, 4,582 model
+entries, and one-GiB aggregate policy while preserving direction, original
+size, and the caller's total-output limit. Its public encoder and decoder
+workspace queries return the same exact
 1,057,488,981-byte and 452,984,917-byte aggregates proven privately; equality
 succeeds and one byte short fails without allocation. Existing initializers
 remain 64 KiB and the ABI-1 configuration structure extent is unchanged. The
-other contextual codec factories reject this known selector until their own
-backend admission is complete.
+other contextual codec factories still reject this known selector until their
+own backend admission is complete. Contextual tANS uses the separately
+specified 512-MiB policy and workspace extents.
 
 The explicit CLI name `lzss-contextual-dynamic-range-16m` selects only this
 Dynamic Range identity. It uses the public helper and authoritative workspace
@@ -244,8 +246,8 @@ traversing the unchanged schema-47-through-1 chain.
 4. Dynamic Range C helper, CLI, benchmark, bounded fuzzing, and schema entry
    (complete);
 5. canonical contextual rANS (complete);
-6. contextual tANS (private profile and streaming lifecycle complete; public
-   and later boundaries closed);
+6. contextual tANS (public C profile and factory complete; tooling and later
+   boundaries closed);
 7. Contextual Blocked Huffman;
 8. Contextual Adaptive Huffman;
 9. only then evaluate whether 16 MiB evidence justifies a later 64-MiB design.

@@ -12123,3 +12123,19 @@ buffers. Require serialized dictionary/context bytes 5 and 4, exact selected
 decoder round trip, and rejection by the four-MiB selected admission without
 changing a sentinel output byte. Run focused and complete registered suites
 under MSVC and ClangCL.
+
+### TVG-0849
+
+Apply public Contextual tANS selector value 3 in both directions. Require
+frame/window/distance 16,777,216, block limit 117,440,512, payload limit
+176,160,770, 131,072 table entries, 512-MiB aggregate policy, unchanged ABI
+extent, preserved direction/original-size/total-output fields, idempotence, and
+transactional rejection of unknown selector 4.
+
+Encode and decode `41 42 41 42 58` through public workspace queries and
+factories; require stream dictionary/context bytes 5 and 4. Decode that stream
+under public four-MiB selection and require malformed-stream failure without
+changing sentinel raw output. For a full 16-MiB query, require encoder extents
+16,777,216, 176,169,991, and 269,221,888 with aggregate exact/one-short
+462,169,095; require decoder extents 176,169,991, 16,777,216, and 201,850,880
+with aggregate exact/one-short 394,798,087.

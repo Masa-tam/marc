@@ -26302,3 +26302,28 @@ both bounds.
   as did independent documentation validation. All 3,255 registered tests
   passed under each toolchain with the 600-second per-test limit, including
   the complete schema-49 interoperability compatibility chain.
+
+## CR-1066: 2026-08-25 - Expose 16-MiB Contextual tANS C profile
+
+- Authoring method: connected the already proved private profile and streaming
+  lifecycle to marc's existing common public C selector and helper contract.
+- References used: DD-985, IR-0747, TVG-0849, CR-1065, and repository-owned
+  Contextual tANS C factory, workspace query, profile helper, and C tests.
+- Known implementations intentionally not consulted: external compressors,
+  tANS or FSE implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: reuse selector value 3 without ABI growth; preserve
+  caller-specific fields; apply the explicit 512-MiB policy; require exact
+  `5/4` decoder admission; and keep all tooling and schema boundaries closed.
+- Generated-code task description: admit 16-MiB Contextual tANS through the C
+  helper, workspace query, and factory; prove exact and one-short workspaces,
+  public round trip, crossed-profile atomic rejection, and ABI stability.
+- Similarity review: changes reuse only marc's repository-local public profile
+  pattern and tANS-specific private calculations; no external implementation
+  expression, vector, naming structure, or test structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. The dedicated public C API and documentation tests passed
+  on both. All 3,255 registered tests passed under each toolchain with the
+  600-second per-test limit, including the unchanged complete schema-49
+  interoperability compatibility chain.

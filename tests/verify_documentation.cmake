@@ -395,8 +395,8 @@ foreach(required_tans_window_16m_term IN ITEMS
         "aggregate                        462,169,095 bytes"
         "aggregate                        394,798,087 bytes"
         "payload limit 176,160,770"
-        "private profile and streaming lifecycle implemented"
-        "Public, tooling, fuzzing")
+        "public C profile, workspace query, and factory implemented"
+        "CLI, benchmark, fuzzing")
     string(FIND "${lzss_contextual_tans_window_16m_content}"
         "${required_tans_window_16m_term}"
         required_tans_window_16m_term_offset)
@@ -818,6 +818,12 @@ string(FIND "${c_api_content}"
     c_api_contextual_tans_profile_offset)
 if(c_api_contextual_tans_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API contextual tANS inventory is stale")
+endif()
+string(FIND "${c_api_content}"
+    "For the full 16-MiB profile the corresponding encoder and"
+    c_api_contextual_tans_16m_profile_offset)
+if(c_api_contextual_tans_16m_profile_offset EQUAL -1)
+    message(FATAL_ERROR "C API contextual tANS 16 MiB profile is stale")
 endif()
 string(FIND "${c_api_content}"
     "`marc_lzss_contextual_blocked_huffman_workspace_requirements()`"

@@ -1,8 +1,8 @@
 # LZSS contextual tANS 16 MiB window
 
-Status: private profile and streaming lifecycle implemented after project
-version 0.4.0. Public, tooling, fuzzing, and interoperability boundaries
-remain closed.
+Status: public C profile, workspace query, and factory implemented after
+project version 0.4.0. CLI, benchmark, fuzzing, and interoperability
+boundaries remain closed.
 
 ## Purpose and identity
 
@@ -90,7 +90,7 @@ This is 142,072,825 bytes below 512 MiB. Decoder sizing must derive raw and
 token extents from the caller's smaller frame/block limit. Selecting this
 identity in a bounded decoder fuzzer must not allocate a 16-MiB history.
 
-The eventual additive public helper applies frame, window, and distance
+The additive public helper applies frame, window, and distance
 16,777,216; block limit `7F = 117,440,512`; payload limit 176,160,770;
 4,582 flattened model entries; 131,072 entropy-table entries; and a 512-MiB
 aggregate policy. It preserves direction, original size, and total-output
@@ -110,10 +110,10 @@ limits.
 4. Admit complete-frame encoding for the exact triple (complete).
 5. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests (complete).
-6. Admit public C profile value 3 only for contextual tANS, then add the
-   explicit CLI and dependency-free benchmark names.
-7. Extend bounded decoder fuzzing without profile-sized allocation.
-8. Append exactly one interoperability archive only after all preceding
+6. Admit public C profile value 3 only for contextual tANS (complete).
+7. Add the explicit CLI and dependency-free benchmark names.
+8. Extend bounded decoder fuzzing without profile-sized allocation.
+9. Append exactly one interoperability archive only after all preceding
    boundaries pass.
 
 Every stage preserves existing stream bytes and keeps later public boundaries

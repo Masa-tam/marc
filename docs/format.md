@@ -7194,8 +7194,15 @@ full profile; an explicit 512-MiB aggregate policy admits exact capacity, and
 one byte less fails before workspace publication. The common block limit must
 admit `7F = 117,440,512` decisions. One-byte input and output chunking changes
 no stream byte. A selected decoder admission accepts only dictionary/context
-pair `5/4`; the four-MiB selection rejects it before raw publication. Public,
-CLI, benchmark, fuzzing, and interoperability boundaries remain closed.
+pair `5/4`; the four-MiB selection rejects it before raw publication. Public
+selector `MARC_LZSS_CONTEXTUAL_PROFILE_16M` binds this exact identity through
+`marc_lzss_contextual_tans_config_apply_profile()`, the direction-specific
+workspace query, and the existing factory without changing any ABI structure
+extent or initializer default. The helper applies `F = 16,777,216`, `7F`,
+`ceil(21F/2) + 2`, 131,072 entropy-table entries, and a 512-MiB aggregate
+policy while preserving direction, original size, and the caller's total-
+output limit. CLI, benchmark, fuzzing, and interoperability boundaries remain
+closed.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

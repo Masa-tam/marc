@@ -34,7 +34,12 @@ typedef uint32_t marc_lzss_contextual_profile;
 #define MARC_LZSS_CONTEXTUAL_PROFILE_64K ((marc_lzss_contextual_profile)0u)
 #define MARC_LZSS_CONTEXTUAL_PROFILE_1M  ((marc_lzss_contextual_profile)1u)
 #define MARC_LZSS_CONTEXTUAL_PROFILE_4M  ((marc_lzss_contextual_profile)2u)
+#define MARC_LZSS_CONTEXTUAL_PROFILE_16M ((marc_lzss_contextual_profile)3u)
 ```
+
+The selector namespace is shared, but support is family-specific. A helper
+accepts only the profiles documented for that codec and leaves the
+configuration unchanged when given another known or unknown selector value.
 
 Each profile-bearing configuration stores the selector in `profile`, and each
 family exposes this shape:
@@ -97,8 +102,8 @@ helper is not introduced merely to reduce implementation repetition.
 
 ## Validation matrix
 
-The implementation must cover all five families, all three profiles, and both
-directions. Tests must prove:
+The implementation must cover all five families, every profile supported by
+each family, and both directions. Tests must prove:
 
 - every profile-owned value and every preserved caller value;
 - byte-atomic failure for null, short, wrong-version, invalid-direction,
