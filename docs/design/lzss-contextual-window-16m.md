@@ -243,8 +243,8 @@ traversing the unchanged schema-47-through-1 chain.
 4. Dynamic Range C helper, CLI, benchmark, bounded fuzzing, and schema entry
    (complete);
 5. canonical contextual rANS (complete);
-6. contextual tANS (compact descriptor/model boundary complete; outer frame
-   closed);
+6. contextual tANS (operation and direct typed-token coding complete; outer
+   frame closed);
 7. Contextual Blocked Huffman;
 8. Contextual Adaptive Huffman;
 9. only then evaluate whether 16 MiB evidence justifies a later 64-MiB design.

@@ -395,7 +395,7 @@ foreach(required_tans_window_16m_term IN ITEMS
         "aggregate                        462,169,095 bytes"
         "aggregate                        394,798,087 bytes"
         "payload limit 176,160,770"
-        "compact descriptor/model boundary implemented"
+        "operation and typed-token coding boundaries implemented"
         "No outer tANS frame path admits this identity yet")
     string(FIND "${lzss_contextual_tans_window_16m_content}"
         "${required_tans_window_16m_term}"

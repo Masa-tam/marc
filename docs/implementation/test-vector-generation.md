@@ -12062,3 +12062,18 @@ unknown-variant rejection. Construct exact stream identity `2/5 + 1/4 + 5/2`
 from a canonical four-MiB header and require validator, serializer, and parser
 closure without output, parsed-header, or consumed-count mutation. Run the
 complete registered suite warning-clean under MSVC and ClangCL.
+
+### TVG-0845
+
+Under context variant 4, encode operation pair `(context 23, alphabet 25,
+symbol 24)` and `(24 bypass bits, value 0xabcdef)`. Require 25 decisions,
+frequency-entry count 4,582, the class-24 frequency 4,096, exact decode, and
+acceptance of bypass width 24 while width 25 fails. Require variant-3 crossed
+planning to leave the descriptor sentinel unchanged.
+
+Build valid typed-token history of 4,194,305 bytes from one Literal and
+bounded overlapping Matches, then append a distance-4,194,305 Match. Require
+the canonical modeled-operation and direct token paths to produce identical
+descriptor and payload, followed by exact direct decode. Require variant-3
+cross-selection to report invalid dictionary parameters without changing any
+previously decoded token. Keep every outer frame and stream boundary closed.

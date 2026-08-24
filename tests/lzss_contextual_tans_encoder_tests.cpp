@@ -63,6 +63,19 @@ using marc::entropy::internal::contextual_tans_encode_table_entries;
     return tokens;
 }
 
+[[nodiscard]] std::vector<LzssTypedToken> sixteen_mib_distance_tokens() {
+    std::vector<LzssTypedToken> tokens;
+    tokens.reserve(16'259);
+    tokens.push_back({LzssTypedTokenKind::literal, 'A', 0, 0});
+    for (std::size_t index = 0; index < 16'256; ++index) {
+        tokens.push_back({LzssTypedTokenKind::match, 0, 1, 258});
+    }
+    tokens.push_back({LzssTypedTokenKind::match, 0, 1, 256});
+    tokens.push_back(
+        {LzssTypedTokenKind::match, 0, 4'194'305, 258});
+    return tokens;
+}
+
 [[nodiscard]] std::vector<std::uint16_t> encode_tables() {
     return std::vector<std::uint16_t>(
         contextual_tans_encode_table_entries);
@@ -368,6 +381,104 @@ TEST(LzssContextualTansEncoder,
                   sentinel, LzssFieldContextVariant::field_context_1m).error,
               LzssContextualTansEncodeError::token_validation_error);
     EXPECT_EQ(sentinel.decision_count, 0xa5a5U);
+}
+
+TEST(LzssContextualTansEncoder,
+     SixteenMiBLayoutEncodesAndDecodesFirstNewDistance) {
+    const auto expected = sixteen_mib_distance_tokens();
+    constexpr std::uint32_t distance = 4'194'305;
+    constexpr std::uint32_t raw_size = distance + 258;
+    auto parameters = marc::dictionary::internal::LzssParameters{};
+    parameters.window_size = 16'777'216;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = 16'777'216;
+    limits.max_block_size = 7U * limits.max_frame_size;
+    limits.max_lz_distance = parameters.window_size;
+    const LzssTypedFrameValidationContext frame_context{
+        static_cast<std::uint32_t>(expected.size()), raw_size, 0};
+    constexpr auto variant = LzssFieldContextVariant::field_context_16m;
+
+    const auto operation_plan = plan_lzss_field_context_operations(
+        expected, parameters, frame_context, limits, variant);
+    ASSERT_EQ(operation_plan.error, LzssFieldContextError::none);
+    std::vector<ModeledOperation> operations(operation_plan.operation_count);
+    ASSERT_EQ(model_lzss_field_context_tokens(
+                  expected, parameters, frame_context, limits, operations,
+                  variant).error,
+              LzssFieldContextError::none);
+    ASSERT_EQ(operations[operations.size() - 2].alphabet_size, 25U);
+    ASSERT_EQ(operations[operations.size() - 2].value, 22U);
+    ASSERT_EQ(operations.back().bit_count, 22U);
+    ASSERT_EQ(operations.back().value, 1U);
+
+    auto reference_tables = encode_tables();
+    ContextualTansDescriptor reference_descriptor{};
+    const auto reference_plan =
+        marc::entropy::internal::plan_contextual_tans_operations(
+            operations, limits, reference_tables, reference_descriptor,
+            variant);
+    ASSERT_EQ(reference_plan.error,
+              marc::entropy::internal::ContextualTansEncodeError::none);
+    std::vector<std::byte> reference_payload(reference_plan.payload_size);
+    ASSERT_EQ(marc::entropy::internal::encode_contextual_tans_operations(
+                  operations, limits, reference_tables, reference_payload,
+                  reference_descriptor, variant).error,
+              marc::entropy::internal::ContextualTansEncodeError::none);
+
+    auto direct_tables = encode_tables();
+    ContextualTansDescriptor direct_descriptor{};
+    const auto direct_plan = plan_lzss_contextual_tans_tokens(
+        expected, parameters, frame_context, limits, direct_tables,
+        direct_descriptor, variant);
+    ASSERT_EQ(direct_plan.error, LzssContextualTansEncodeError::none);
+    EXPECT_EQ(direct_plan.event_count, operations.size());
+    EXPECT_EQ(direct_plan.decision_count, reference_plan.decision_count);
+    EXPECT_EQ(direct_plan.payload_size, reference_payload.size());
+    EXPECT_EQ(direct_descriptor.frequency_entry_count,
+              lzss_field_context_frequency_entries_v4);
+    expect_descriptor_equal(direct_descriptor, reference_descriptor);
+
+    std::vector<std::byte> direct_payload(direct_plan.payload_size);
+    ASSERT_EQ(encode_lzss_contextual_tans_tokens(
+                  expected, parameters, frame_context, limits, direct_tables,
+                  direct_payload, direct_descriptor, variant).error,
+              LzssContextualTansEncodeError::none);
+    EXPECT_EQ(direct_payload, reference_payload);
+
+    auto decoder_tables = decode_tables();
+    std::vector<LzssTypedToken> decoded(expected.size());
+    const LzssFieldContextValidationContext decode_context{
+        static_cast<std::uint32_t>(expected.size()),
+        static_cast<std::uint32_t>(direct_plan.event_count),
+        direct_plan.decision_count, raw_size, 0};
+    const auto decoded_result = decode_lzss_contextual_tans_tokens(
+        direct_descriptor, direct_payload, parameters, decode_context, limits,
+        decoder_tables, decoded, variant);
+    ASSERT_EQ(decoded_result.error, LzssContextualTansDecodeError::none);
+    EXPECT_EQ(decoded_result.raw_size, raw_size);
+    EXPECT_TRUE(std::ranges::equal(
+        expected, decoded, [](const auto& left, const auto& right) {
+            return left.kind == right.kind && left.literal == right.literal
+                && left.distance == right.distance
+                && left.length == right.length;
+        }));
+
+    auto crossed_tokens = decoded;
+    const auto crossed = decode_lzss_contextual_tans_tokens(
+        direct_descriptor, direct_payload, parameters, decode_context, limits,
+        decoder_tables, crossed_tokens,
+        LzssFieldContextVariant::field_context_4m);
+    EXPECT_EQ(crossed.error,
+              LzssContextualTansDecodeError::invalid_parameters);
+    EXPECT_EQ(crossed.token_error,
+              marc::dictionary::internal::LzssTypedTokenError::
+                  invalid_parameters);
+    EXPECT_TRUE(std::ranges::equal(
+        decoded, crossed_tokens, [](const auto& left, const auto& right) {
+            return left.kind == right.kind && left.literal == right.literal
+                && left.distance == right.distance
+                && left.length == right.length;
+        }));
 }
 
 TEST(LzssContextualTansEncoder, PrewriteFailuresPreserveOutputs) {

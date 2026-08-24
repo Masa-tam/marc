@@ -26196,3 +26196,27 @@ both bounds.
   descriptor/header boundary selection. Each ordinary toolchain then passed
   all 3,248 registered tests with the interoperability schema-compatibility
   test included; documentation validation passed independently on both.
+
+## CR-1062: 2026-08-25 - Prove 16-MiB Contextual tANS direct coding
+
+- Authoring method: exercised the repository-owned selected-layout tANS and
+  typed-LZSS paths without changing their frozen coding rules.
+- References used: DD-981, IR-0743, TVG-0845, CR-1061, and the existing
+  four-MiB operation and direct typed-token tests.
+- Known implementations intentionally not consulted: external compressors,
+  tANS or FSE implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, and optimization
+  descriptions.
+- Independent decisions: prove class 24 and bypass width 24 at the operation
+  boundary; use the first newly representable distance at the typed-token
+  boundary; compare direct output with canonical operation staging; and keep
+  all outer format admissions closed.
+- Generated-code task description: add operation and typed-token encode/decode
+  tests, exact selected-layout metadata checks, byte-identical direct/reference
+  comparison, and atomic crossed-layout rejection.
+- Similarity review: the tests extend only marc's repository-owned four-MiB
+  boundary pattern and contain no external implementation expression.
+- Validation: warning-clean MSVC and ClangCL builds each passed all 39 focused
+  contextual tANS coding tests. Each toolchain then passed all 3,250
+  registered tests with interoperability schema compatibility included;
+  documentation validation passed on both.

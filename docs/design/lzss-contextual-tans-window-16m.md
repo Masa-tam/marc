@@ -1,8 +1,8 @@
 # LZSS contextual tANS 16 MiB window
 
-Status: compact descriptor/model boundary implemented after project version 0.4.0.
-No outer tANS frame path admits this identity yet. Public, tooling, fuzzing,
-and interoperability boundaries remain closed.
+Status: operation and typed-token coding boundaries implemented after project
+version 0.4.0. No outer tANS frame path admits this identity yet. Public,
+tooling, fuzzing, and interoperability boundaries remain closed.
 
 ## Purpose and identity
 
@@ -103,7 +103,7 @@ limits.
    serialization for context variant 4 without admitting an outer frame
    (complete).
 2. Carry the selected layout through contextual tANS coding and direct typed-
-   token encode/decode tests.
+   token encode/decode tests (complete).
 3. Admit exact triple `2/5 + 1/4 + 5/2` in stream/header validation, frame
    preflight, complete-frame decoding, and then encoding.
 4. Add checked profile/workspace calculation and one-byte streaming with exact

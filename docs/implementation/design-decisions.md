@@ -20399,3 +20399,19 @@ tANS stream-header validation, serialization, and parsing explicitly closed
 for `2/5 + 1/4 + 5/2`; do not infer admission merely because the shared
 dictionary/context selector recognizes the pair. Defer frame preflight,
 coding, workspace/profile, public, tooling, fuzz, and interoperability work.
+
+## DD-981: Prove selected-layout tANS coding before frame admission
+
+- Date: 2026-08-25
+- Status: accepted
+
+Use the existing externally selected contextual tANS coding paths for context
+variant 4. Prove the new layout directly with distance-class symbol 24 in the
+25-symbol alphabet and a 24-bit bypass value. Do not change tANS state,
+normalization, table, reverse-order, or bit-order rules.
+
+At the typed-token boundary, model and encode the first distance outside the
+four-MiB layout, 4,194,305, through both canonical operation staging and the
+direct path; require identical descriptors and payloads, then decode the exact
+tokens. Cross-selection under the four-MiB layout must fail before token
+publication. Keep stream/header and all frame boundaries closed.

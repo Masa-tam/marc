@@ -7160,9 +7160,24 @@ caller state. A variant-4 descriptor parsed under variant 3, or a variant-3
 descriptor parsed under variant 4, is rejected as an invalid selected layout.
 Unknown context variants retain the unsupported-context error. Private tANS
 stream-header validation, serialization, and parsing explicitly reject exact
-triple `2/5 + 1/4 + 5/2`; frame preflight, coding, profiles, public APIs, CLI,
-benchmark, fuzzing, and interoperability remain closed until their ordered
-stages are implemented. No existing descriptor or stream byte changes.
+triple `2/5 + 1/4 + 5/2`; frame preflight, complete-frame coding, profiles,
+public APIs, CLI, benchmark, fuzzing, and interoperability remain closed until
+their ordered stages are implemented. No existing descriptor or stream byte
+changes.
+
+The contextual tANS operation and direct typed-token coding boundaries now
+carry context variant 4 through their existing externally selected layout.
+The operation boundary encodes and decodes distance-class symbol 24 in the
+25-symbol alphabet and a 24-bit bypass value while retaining entropy variant
+2 state transitions, reverse encode order, and LSB-first bypass order. The
+direct typed-token boundary independently models, encodes, and decodes the
+first distance outside the four-MiB profile, 4,194,305, using class 22 and a
+22-bit bypass value of one. Its descriptor records 4,582 frequency entries
+and its direct payload is byte-identical to the canonical modeled-operation
+path. Selection under the four-MiB layout fails before token publication.
+These are internal coding proofs only: stream/header and every outer frame,
+workspace/profile, public, CLI, benchmark, fuzzing, and interoperability
+boundary continue to reject or omit exact triple `2/5 + 1/4 + 5/2`.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

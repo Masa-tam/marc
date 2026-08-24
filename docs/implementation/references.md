@@ -6703,3 +6703,12 @@ grammar, and completed four-MiB contextual tANS descriptor. No external
 compressor, tANS or FSE implementation, source code, archive, encoded vector,
 test suite, patent, pseudocode, benchmark result, or optimization description
 was consulted.
+
+### IR-0743
+
+The 16-MiB Contextual tANS operation and typed-token coding proof uses
+IR-0741 through IR-0742, DD-979 through DD-980, TVG-0843 through TVG-0844,
+the repository-owned selected-layout encoder/decoder paths, and typed-LZSS
+context model. No external compressor, tANS or FSE implementation, source
+code, archive, encoded vector, test suite, patent, pseudocode, benchmark
+result, or optimization description was consulted.
