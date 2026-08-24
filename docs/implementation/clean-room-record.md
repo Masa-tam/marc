@@ -25894,3 +25894,32 @@ both bounds.
   207.70 and 208.74 seconds respectively with the 600-second per-test limit;
   both runs included documentation validation and the complete schema-48
   compatibility chain. The final schema tests took 96.80 and 88.87 seconds.
+
+## CR-1051: 2026-08-24 - Admit 16-MiB rANS complete-frame decoding
+
+- Authoring method: extended the repository-owned exact-pair stream parser,
+  frame preflight, contextual-rANS token decoder, and raw reconstruction path
+  to the already implemented context-variant-4 descriptor boundary.
+- References used: DD-971, IR-0733, TVG-0835, CR-1050, and repository-local
+  four-MiB decoder-first admission tests and 16-MiB typed-token contracts.
+- Known implementations intentionally not consulted: external compressors,
+  rANS implementations, source code, test suites, large-window models,
+  encoded vectors, patents, pseudocode, and optimization descriptions.
+- Independent decisions: admit only exact triple `2/5 + 1/4 + 4/3`; generate
+  the decoder fixture through the private direct typed-token encoder; exercise
+  the first distance beyond four MiB; preserve atomic short-workspace errors;
+  and add an explicit complete-frame encoder gate for this stage.
+- Generated-code task description: open private stream/header and complete-
+  frame decoder admission, add exact and crossed-pair tests, retain every
+  later lifecycle boundary closed, and verify both supported Windows
+  toolchains.
+- Similarity review: changes reuse repository-owned switches, validators,
+  checked bounds, and atomic test patterns; no external implementation
+  expression, vector, naming structure, or test structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. Focused format, decoder, and encoder validation passed all
+  26 tests on each toolchain. All 3,237 registered tests passed in 201.75 and
+  206.90 seconds respectively with the 600-second per-test limit, including
+  all seven Python tooling tests, documentation validation, and the complete
+  schema-48 compatibility chain. The final schema tests took 90.06 and 86.21
+  seconds.

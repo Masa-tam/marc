@@ -11909,3 +11909,19 @@ Retain the 9,121-byte four-MiB maximum below the enlarged private capacity.
 Reject an unknown context variant atomically. Independently require exact
 `2/5 + 1/4 + 4/3` stream-header validation, serialization, and parsing to
 remain closed and leave output/result sentinels unchanged.
+
+### TVG-0835
+
+Serialize and parse exact private stream-header identity `2/5 + 1/4 + 4/3`
+and reject crossed pairs `2/5 + 1/3` and `2/4 + 1/4`. Build a complete-frame
+decoder fixture from one Literal, 16,256 length-258 distance-one Matches, one
+length-256 distance-one Match, and a final length-258 Match at distance
+4,194,305. Encode only the typed-token entropy payload directly, serialize its
+compact descriptor and frame header, and require exact raw reconstruction.
+
+Before successful publication, provide one fewer token and one fewer raw byte
+and require stable errors with untouched raw sentinels. Independently require
+the exhaustive complete-frame planner and encoder to reject the same identity
+before changing token or serialized-output sentinels. Run the focused format,
+decoder, and encoder suites under both MSVC and ClangCL, followed by all
+registered tests including schema compatibility.

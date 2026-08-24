@@ -42,7 +42,7 @@ constexpr std::array frame_magic{
     case context::internal::LzssFieldContextVariant::field_context_4m:
         return entropy::internal::contextual_rans_max_descriptor_size_v3;
     case context::internal::LzssFieldContextVariant::field_context_16m:
-        return 0;
+        return entropy::internal::contextual_rans_max_descriptor_size_v4;
     }
     return 0;
 }
@@ -80,11 +80,6 @@ validate_lzss_contextual_rans_stream_header(
     case context::internal::LzssFieldContextLayoutError::
         incompatible_variants:
         return LzssContextualRansStreamHeaderError::contradictory_parameters;
-    }
-    if (layout.layout.context_variant
-        == context::internal::LzssFieldContextVariant::field_context_16m) {
-        return LzssContextualRansStreamHeaderError::
-            unsupported_dictionary_variant;
     }
     const auto dictionary_error =
         dictionary::internal::validate_lzss_typed_parameters(
@@ -168,7 +163,7 @@ parse_lzss_contextual_rans_stream_header_impl(
             unknown_dictionary_algorithm;
     }
     if (dictionary_variant != 2 && dictionary_variant != 3
-        && dictionary_variant != 4) {
+        && dictionary_variant != 4 && dictionary_variant != 5) {
         return LzssContextualRansStreamHeaderError::
             unsupported_dictionary_variant;
     }
@@ -232,7 +227,7 @@ parse_lzss_contextual_rans_stream_header_impl(
         return LzssContextualRansStreamHeaderError::unknown_context_model;
     }
     if (context_variant != 1 && context_variant != 2
-        && context_variant != 3) {
+        && context_variant != 3 && context_variant != 4) {
         return LzssContextualRansStreamHeaderError::unsupported_context_variant;
     }
     if (context_flags != 0 || !all_zero(bytes.subspan(104, 8))) {

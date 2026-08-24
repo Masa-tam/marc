@@ -20216,3 +20216,20 @@ Keep stream-header, frame, lifecycle, profile, public C, CLI, benchmark, fuzz,
 and interoperability paths closed. Explicitly reject the exact 16-MiB pair in
 structure-based stream-header validation and serialization so they remain
 consistent with parser rejection until the next admission stage.
+
+## DD-971: Admit the 16-MiB rANS private decoder boundary first
+
+- Date: 2026-08-24
+- Status: accepted
+
+Admit exact triple `2/5 + 1/4 + 4/3` to private stream-header validation,
+serialization, parsing, frame validation/preflight, and complete-frame
+decoding. Select the context-variant-4 descriptor ceiling and shared `7F` and
+`34T` bounds without changing prior identities or bytes.
+
+Construct the first-new-distance fixture through the already validated direct
+typed-token rANS encoder, then require exact distance 4,194,305 recovery and
+atomic one-token-short and one-raw-byte-short failures. Keep complete-frame
+encoding explicitly closed before it touches caller storage; profile,
+streaming, factories, public C, CLI, benchmark, fuzzing, and interoperability
+remain later boundaries.

@@ -7101,16 +7101,21 @@ four-MiB entropy triples; other backend-specific entry points retain their
 previously completed pairs.
 
 The standalone canonical contextual rANS descriptor/model boundary now
-recognizes context variant 4 without admitting an outer rANS frame. It expands
+recognizes context variant 4. It expands
 the compact descriptor from 9,121 to 9,153 bytes while retaining 31 contexts,
 table log 12, total frequency 4,096, one scalar state, and 126,976 decode
 entries. It uses the shared bounds `decision_count <= 7F` and
 `decision_count <= 34*token_count`, rANS payload ceiling `14F + 8`, and
-complete-frame ceiling `14F + 9,225`. Stream-header validation and
-serialization, complete-frame paths, factories, public C, CLI, benchmark,
-fuzz, and interoperability all continue to reject exact triple
-`2/5 + 1/4 + 4/3`. The staged contract is [LZSS contextual rANS 16 MiB
-window](design/lzss-contextual-rans-window-16m.md).
+complete-frame ceiling `14F + 9,225`. Private stream-header validation,
+serialization, and parsing admit only exact triple `2/5 + 1/4 + 4/3` among
+the new variants. Frame validation and preflight select the 9,153-byte
+descriptor ceiling and the shared `7F` and `34T` bounds. Complete-frame
+decoding is atomic across its table, token, and raw workspaces and reconstructs
+distance 4,194,305 exactly. The complete-frame encoder explicitly rejects the
+triple before changing caller-owned token or serialized-output storage;
+profile, streaming, factories, public C, CLI, benchmark, fuzz, and
+interoperability remain closed. The staged contract is [LZSS contextual rANS
+16 MiB window](design/lzss-contextual-rans-window-16m.md).
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

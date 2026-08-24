@@ -6608,3 +6608,14 @@ context-variant layouts, checked descriptor serializer/parser, and atomic
 format tests. No external compressor, rANS implementation, source code, test
 suite, large-window model, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0733
+
+The 16-MiB canonical Contextual rANS private stream/header and complete-frame
+decoder admission uses IR-0731 through IR-0732, DD-969 through DD-970,
+TVG-0833 through TVG-0834, the repository-owned exact-pair validator, frame
+preflight, direct typed-token rANS encoder used only to construct a decoder
+fixture, complete-frame decoder, and raw reconstruction path. No external
+compressor, rANS implementation, source code, test suite, large-window model,
+patent, pseudocode, optimization description, or encoded vector was
+consulted.

@@ -84,6 +84,11 @@ template <bool UseHashChain>
     dictionary::internal::LzssMatchFinderStatistics* const statistics)
     noexcept {
     LzssContextualRansFrameEncodeResult result{};
+    if (stream.context_variant == static_cast<std::uint16_t>(
+            context::internal::LzssFieldContextVariant::field_context_16m)) {
+        result.error = LzssContextualRansFrameEncodeError::invalid_stream;
+        return result;
+    }
     std::size_t token_capacity_bytes{};
     if (!core::checked_multiply(
             private_tokens.size(),

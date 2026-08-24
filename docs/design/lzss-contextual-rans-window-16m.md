@@ -1,8 +1,8 @@
 # LZSS contextual rANS 16 MiB window
 
-Status: compact descriptor/model boundary implemented after completion of the
-16-MiB Contextual Dynamic Range lifecycle.
-No outer rANS frame path admits this identity yet.
+Status: private stream/header, frame preflight, and complete-frame decoder
+implemented after the compact descriptor/model boundary.
+Complete-frame encoding remains closed.
 
 ## Purpose and identity
 
@@ -97,13 +97,14 @@ fields never enlarge local hard limits.
 
 1. Expand contextual rANS descriptor storage and canonical parse/serialize
    bounds for context variant 4 without admitting an outer frame (complete).
-2. Admit exact triple `2/5 + 1/4 + 4/3` in stream/frame preflight and complete-
-   frame decoding, then encoding.
-3. Add checked profile/workspace calculation and one-byte streaming with exact
+2. Admit exact triple `2/5 + 1/4 + 4/3` in private stream/header parsing and
+   serialization, frame preflight, and complete-frame decoding (complete).
+3. Admit complete-frame encoding while retaining later lifecycle boundaries.
+4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests.
-4. Admit public C profile value 3 for contextual rANS, then add the explicit
+5. Admit public C profile value 3 for contextual rANS, then add the explicit
    CLI and dependency-free benchmark name.
-5. Extend bounded decoder fuzzing and append one interoperability archive only
+6. Extend bounded decoder fuzzing and append one interoperability archive only
    after every preceding boundary passes.
 
 Each stage preserves old serialized bytes and keeps incomplete public
