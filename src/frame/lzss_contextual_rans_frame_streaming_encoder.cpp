@@ -163,6 +163,8 @@ LzssContextualRansFrameStreamingEncoder(
             stream_, limits_, stream_header_);
     if (!valid_extent
         || stream_error != LzssContextualRansStreamHeaderError::none
+        || stream_.context_variant == static_cast<std::uint16_t>(
+            context::internal::LzssFieldContextVariant::field_context_16m)
         || raw_frame_workspace_.size() < required_raw
         || raw_tokens != OverlapCheck::disjoint
         || raw_serialized != OverlapCheck::disjoint

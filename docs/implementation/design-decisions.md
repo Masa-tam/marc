@@ -20233,3 +20233,26 @@ atomic one-token-short and one-raw-byte-short failures. Keep complete-frame
 encoding explicitly closed before it touches caller storage; profile,
 streaming, factories, public C, CLI, benchmark, fuzzing, and interoperability
 remain later boundaries.
+
+## DD-972: Open 16-MiB rANS complete-frame encoding with HashChain Exact
+
+- Date: 2026-08-24
+- Status: accepted
+
+Remove only the explicit context-variant-4 encoder gate after descriptor and
+decoder admission. Reuse the selected typed-token layout, canonical scalar
+rANS descriptor/payload, frame validator, exhaustive reference route, and
+HashChain Exact production route; introduce no new serialized identity or
+match-finder strategy.
+
+Because the streaming encoder delegates to the complete-frame encoder, add a
+replacement constructor gate for context variant 4 when removing the frame
+gate. The streaming decoder remains closed through its explicit admission
+enum. Thus complete-frame admission cannot implicitly publish the lifecycle.
+
+Require a canonical one-Literal round trip whose descriptor count is 4,582.
+Then place identical five-byte markers more than four MiB apart, require the
+HashChain token trace to contain a Match beyond 4,194,304, decode the complete
+frame byte-exactly, and reject it under the four-MiB identity without raw
+publication. Keep profile, streaming, factories, public C, CLI, benchmark,
+fuzzing, and interoperability admission closed.

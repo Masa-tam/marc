@@ -1,8 +1,8 @@
 # LZSS contextual rANS 16 MiB window
 
-Status: private stream/header, frame preflight, and complete-frame decoder
-implemented after the compact descriptor/model boundary.
-Complete-frame encoding remains closed.
+Status: private complete-frame encoder and decoder implemented after the
+compact descriptor/model boundary.
+Profile and streaming remain closed.
 
 ## Purpose and identity
 
@@ -99,7 +99,8 @@ fields never enlarge local hard limits.
    bounds for context variant 4 without admitting an outer frame (complete).
 2. Admit exact triple `2/5 + 1/4 + 4/3` in private stream/header parsing and
    serialization, frame preflight, and complete-frame decoding (complete).
-3. Admit complete-frame encoding while retaining later lifecycle boundaries.
+3. Admit complete-frame encoding while retaining later lifecycle boundaries
+   (complete).
 4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests.
 5. Admit public C profile value 3 for contextual rANS, then add the explicit

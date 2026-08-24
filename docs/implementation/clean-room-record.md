@@ -25923,3 +25923,37 @@ both bounds.
   all seven Python tooling tests, documentation validation, and the complete
   schema-48 compatibility chain. The final schema tests took 90.06 and 86.21
   seconds.
+
+## CR-1052: 2026-08-24 - Admit 16-MiB rANS complete-frame encoding
+
+- Authoring method: removed the temporary encoder admission gate and extended
+  repository-owned four-MiB complete-frame tests to the selected 16-MiB typed-
+  token/context layout.
+- References used: DD-972, IR-0734, TVG-0836, CR-1051, and repository-local
+  exhaustive, HashChain Exact, contextual-rANS descriptor, frame decoder, and
+  crossed-profile validation paths.
+- Known implementations intentionally not consulted: external compressors,
+  rANS implementations, match finders, source code, test suites, encoded
+  vectors, patents, pseudocode, and optimization descriptions.
+- Independent decisions: retain both existing match-finder routes; prove the
+  reference route with a canonical Literal; prove the production route with a
+  real Match beyond four MiB; reject the resulting frame under the four-MiB
+  identity before raw publication; and keep profile and streaming closed.
+- Boundary audit: moving the admission gate exposed the streaming encoder's
+  delegation to the complete-frame encoder, so a replacement constructor gate
+  and permanent zero-progress rejection test were added. The decoder remains
+  closed through its explicit admission enum.
+- Generated-code task description: admit exact complete-frame encoding for
+  `2/5 + 1/4 + 4/3`, add canonical and extended-distance round trips, preserve
+  crossed-profile atomic rejection, and verify both supported toolchains.
+- Similarity review: implementation removes a repository-local staging gate,
+  while tests extend established repository-owned fixtures and invariants; no
+  external implementation expression, vector, naming structure, or test
+  structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. Focused complete-frame and streaming-encoder validation
+  passed all 24 tests on each toolchain. All 3,239 registered tests passed in
+  224.76 and 228.28 seconds respectively with the 600-second per-test limit,
+  including all seven Python tooling tests, documentation validation, and the
+  complete schema-48 compatibility chain. The final schema tests took 100.52
+  and 90.25 seconds.

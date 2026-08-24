@@ -11925,3 +11925,21 @@ the exhaustive complete-frame planner and encoder to reject the same identity
 before changing token or serialized-output sentinels. Run the focused format,
 decoder, and encoder suites under both MSVC and ClangCL, followed by all
 registered tests including schema compatibility.
+
+### TVG-0836
+
+Encode one Literal through the complete-frame reference route under exact
+identity `2/5 + 1/4 + 4/3`. Require one token, two events, two decisions, the
+unchanged eight-byte scalar payload, descriptor frequency-entry bytes
+`e6 11`, and successful complete-frame decoding.
+
+For the production route, place `ABCDE` at both ends of a frame separated by
+4,194,304 filler bytes. Require HashChain Exact to emit at least one Match
+whose distance exceeds 4,194,304, encode the frame deterministically, and
+recover every raw byte. Reinterpret the frame under exact four-MiB identity
+`2/4 + 1/3 + 4/3` and require preflight rejection with untouched raw sentinels.
+Construct the streaming encoder with the 16-MiB identity and require a stable
+zero-progress `invalid_argument` error before it emits the stream header. Run
+the focused complete-frame and streaming-encoder suites and all registered
+tests under both MSVC and ClangCL while profile and streaming admission remain
+closed.

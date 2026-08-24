@@ -7111,11 +7111,14 @@ serialization, and parsing admit only exact triple `2/5 + 1/4 + 4/3` among
 the new variants. Frame validation and preflight select the 9,153-byte
 descriptor ceiling and the shared `7F` and `34T` bounds. Complete-frame
 decoding is atomic across its table, token, and raw workspaces and reconstructs
-distance 4,194,305 exactly. The complete-frame encoder explicitly rejects the
-triple before changing caller-owned token or serialized-output storage;
-profile, streaming, factories, public C, CLI, benchmark, fuzz, and
-interoperability remain closed. The staged contract is [LZSS contextual rANS
-16 MiB window](design/lzss-contextual-rans-window-16m.md).
+distance 4,194,305 exactly. The private complete-frame encoder admits the same
+triple through both exhaustive and HashChain Exact routes. A canonical Literal
+frame records frequency-entry count 4,582, and HashChain Exact may emit and
+round-trip a Match beyond distance 4,194,304. Decoding that frame under the
+four-MiB identity fails before raw publication. Profile, streaming, factories,
+public C, CLI, benchmark, fuzz, and interoperability remain closed. The staged
+contract is [LZSS contextual rANS 16 MiB
+window](design/lzss-contextual-rans-window-16m.md).
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

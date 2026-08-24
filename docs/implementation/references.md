@@ -6619,3 +6619,13 @@ fixture, complete-frame decoder, and raw reconstruction path. No external
 compressor, rANS implementation, source code, test suite, large-window model,
 patent, pseudocode, optimization description, or encoded vector was
 consulted.
+
+### IR-0734
+
+The 16-MiB canonical Contextual rANS complete-frame encoder admission uses
+IR-0731 through IR-0733, DD-969 through DD-971, TVG-0833 through TVG-0835,
+the repository-owned typed-token exhaustive and HashChain Exact encoders,
+canonical scalar rANS encoder, compact descriptor serializer, complete-frame
+decoder, and crossed-profile validator. No external compressor, rANS
+implementation, match finder, source code, test suite, encoded vector, patent,
+pseudocode, or optimization description was consulted.

@@ -413,6 +413,26 @@ TEST(LzssContextualRansFrameStreamingEncoder,
 }
 
 TEST(LzssContextualRansFrameStreamingEncoder,
+     SixteenMiBIdentityRemainsClosedBeforeStreamingAdmission) {
+    auto stream = stream_config(1, 1);
+    stream.dictionary.window_size = UINT32_C(1) << 24;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    stream.frequency_entry_count = 4582;
+    std::array<std::byte, 1> raw{};
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<std::byte, 128> frame{};
+    LzssContextualRansFrameStreamingEncoder encoder{
+        stream, {}, raw, tokens, {}, frame};
+
+    const auto result = encoder.process({}, {}, 0);
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::invalid_argument);
+    EXPECT_EQ(result.input_consumed, 0U);
+    EXPECT_EQ(result.output_produced, 0U);
+}
+
+TEST(LzssContextualRansFrameStreamingEncoder,
      OneMiBProfileStreamsExtendedDistanceWithOneByteBuffers) {
     constexpr std::size_t gap = 65536;
     std::vector<std::byte> raw(5 + gap + 5, std::byte{'Z'});
