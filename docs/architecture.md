@@ -5775,4 +5775,9 @@ path decoder harness admits profile 3 through its already-variant-4 descriptor
 and table backing while raising only the distance validation ceiling: supplied
 input remains 32 KiB, raw and token storage remain one KiB, total output
 remains four KiB, tables remain fixed, and the process loop remains finite.
-Interoperability admission remains a separate stage.
+Interoperability schema 49 freezes schema 48's exact 58-archive order and
+appends only `lzss-contextual-rans-16m` as entry 59. Generation requires exact
+identity `2/5 + 1/4 + 4/3`, round trip, size, and SHA-256. Verification
+enforces exact order and byte-identical local re-encoding. Compatibility
+removes only entry 59 to reconstruct schema 48 before traversing the unchanged
+chain through schema 1.

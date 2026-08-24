@@ -1,8 +1,7 @@
 # LZSS contextual rANS 16 MiB window
 
-Status: explicit CLI and dependency-free benchmark names implemented after
-the public C profile, workspace query, and factory.
-Bounded decoder fuzzing is implemented; interoperability remains closed.
+Status: complete lifecycle, including schema-49 interoperability admission,
+implemented after project version 0.4.0.
 
 ## Purpose and identity
 
@@ -106,12 +105,19 @@ fields never enlarge local hard limits.
 5. Admit public C profile value 3 for contextual rANS (complete).
 6. Add the explicit CLI name (complete).
 7. Add the dependency-free benchmark name (complete).
-8. Extend bounded decoder fuzzing (complete), then append one interoperability
-   archive only after every preceding boundary passes.
+8. Extend bounded decoder fuzzing (complete).
+9. Append exactly one schema-49 interoperability archive after every preceding
+   boundary passes (complete).
 
 Each stage preserves old serialized bytes and keeps incomplete public
 boundaries closed. HashChain Exact remains the production match finder;
 private match-finder experiments do not change the stream identity.
+
+Interoperability schema 49 freezes schema 48's exact 58-archive order and
+appends only `lzss-contextual-rans-16m` as archive 59. Generation requires
+exact identity `2/5 + 1/4 + 4/3`; verification decodes and re-encodes every
+archive byte-identically. Compatibility removes only archive 59 before
+traversing the unchanged schema-48-through-1 chain.
 
 ## Deferred decisions
 

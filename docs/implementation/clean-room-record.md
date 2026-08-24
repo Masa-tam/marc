@@ -26096,3 +26096,29 @@ both bounds.
   including all seven Python tooling tests and the complete schema-48
   compatibility chain. The final schema tests took 94.44 and 90.11 seconds;
   the complete runs took 218.40 and 219.76 seconds, respectively.
+
+## CR-1058: 2026-08-24 - Admit 16-MiB Contextual rANS interoperability
+
+- Authoring method: extended the repository-owned append-only interoperability
+  schema and compatibility chain by one already completed CLI profile.
+- References used: DD-978, IR-0740, TVG-0842, CR-1057, and the local schema-48
+  generator, verifier, compatibility converter, and exact identity precedent.
+- Known implementations intentionally not consulted: external compressors,
+  rANS implementations, archives, encoded vectors, source code, test suites,
+  patents, pseudocode, and interoperability implementations.
+- Independent decisions: freeze all 58 schema-48 entries; append only the
+  16-MiB Contextual rANS archive; validate exact `2/5 + 1/4 + 4/3`; reject
+  reordered manifests; and remove only entry 59 for legacy traversal.
+- Generated-code task description: add schema 49 generation and verification,
+  traverse schemas 48 through 1, update normative and user documentation, and
+  validate under both supported Windows compiler routes.
+- Similarity review: the change follows only marc's repository-owned schema,
+  PowerShell, documentation, and test conventions; no external expression,
+  archive structure, naming structure, or test structure was used.
+- Focused validation: schema-49 generation, 59-archive verification, reordered-
+  manifest rejection, and the full legacy chain passed under MSVC and ClangCL
+  in 99.73 and 97.93 seconds.
+- Complete validation: all 3,245 registered tests passed under MSVC and
+  ClangCL in 229.46 and 196.63 seconds, including documentation layout, all
+  seven Python tooling tests, and the schema-49-through-1 compatibility chain.
+  External four-direction evidence remains pending.

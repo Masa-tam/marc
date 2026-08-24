@@ -6675,3 +6675,12 @@ owned fixed-array dual-path harness, public decoder lifecycle, canonical small-
 frame generator, malformed regressions, and established Clang sanitizer
 workflow. No external compressor, rANS fuzzer, corpus, source code, test suite,
 patent, pseudocode, or vulnerability description was consulted.
+
+### IR-0740
+
+The 16-MiB Contextual rANS interoperability admission uses IR-0731 through
+IR-0739, DD-969 through DD-977, TVG-0833 through TVG-0841, the repository-
+owned schema-48 manifest order, exact CLI identity checks, bundle generator,
+verifier, and compatibility converter. No external compressor, rANS
+implementation, archive, encoded vector, source code, test suite, patent,
+pseudocode, or interoperability implementation was consulted.

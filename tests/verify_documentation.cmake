@@ -342,7 +342,9 @@ foreach(required_rans_window_16m_term IN ITEMS
         "aggregate                        453,755,913 bytes"
         "7F = 117,440,512"
         "aggregate buffered bytes to 512 MiB"
-        "Bounded decoder fuzzing is implemented")
+        "schema-49 interoperability admission"
+        "appends only `lzss-contextual-rans-16m` as archive 59"
+        "removes only archive 59")
     string(FIND "${lzss_contextual_rans_window_16m_content}"
         "${required_rans_window_16m_term}"
         required_rans_window_16m_term_offset)
@@ -398,6 +400,7 @@ foreach(required_window_term IN ITEMS
             "Incomplete 1 MiB contextual LZSS design: ${required_window_term}")
     endif()
 endforeach()
+
 foreach(required_typed_format_term IN ITEMS
         "dictionary algorithm ID 2, dictionary variant 2"
         "context-model algorithm ID 1, context variant 1"

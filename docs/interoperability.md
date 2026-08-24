@@ -10,9 +10,9 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-Each current schema-48 bundle contains the same generated `input.bin`, the
-frozen 42 stable-profile archives, sixteen experimental Format 2 archives,
-and `manifest.json`. The manifest declares codec set `marc-cli-v48` and records
+Each current schema-49 bundle contains the same generated `input.bin`, the
+frozen 42 stable-profile archives, seventeen experimental Format 2 archives,
+and `manifest.json`. The manifest declares codec set `marc-cli-v49` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -33,7 +33,7 @@ arguments. The verifier performs all of the following:
 
 1. validates the manifest version, exact codec set and profile order, leaf-only
    file names, sizes, and SHA-256 values;
-2. decodes all fifty-eight foreign archives and compares their output byte
+2. decodes all fifty-nine foreign archives and compares their output byte
    for byte with `input.bin`;
 3. re-encodes `input.bin` with the local executable and compares every complete
    archive byte for byte with the foreign archive.
@@ -46,7 +46,7 @@ has this form:
 artifact: marc-interoperability-windows-msvc-x64
 local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
-result: Verified 58 archives from windows-msvc-x64 (...), revision <Git object ID>
+result: Verified 59 archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
 
 ## Schema compatibility
@@ -141,6 +141,10 @@ Schema 48 requires `marc-cli-v48` and all fifty-eight archives, appending
 `lzss-contextual-dynamic-range-16m` to the frozen schema-47 order. No earlier
 schema silently inherits this later profile or name.
 
+Schema 49 requires `marc-cli-v49` and all fifty-nine archives, appending
+`lzss-contextual-rans-16m` to the frozen schema-48 order. No earlier schema
+silently inherits this later profile or name.
+
 ## Integrity and current evidence
 
 The SHA-256 values detect accidental artifact changes but are not signatures
@@ -148,10 +152,10 @@ and do not authenticate the producer. Use bundles downloaded from a trusted
 workflow run. GitHub may expire workflow artifacts according to repository
 retention settings; regenerate them by running CI for the required commit.
 
-Schema 48 has local generation, exact-order verification, byte-identical
-re-encoding, reordered-manifest rejection, schemas 1 through 47 compatibility
-evidence under MSVC and ClangCL, and complete Windows/MSVC, Ubuntu 24.04/Ninja,
-and Ubuntu 26.04/Clang four-direction evidence.
+Schema 49 has local generation, exact-order verification, byte-identical
+re-encoding, reordered-manifest rejection, and schemas 1 through 48
+compatibility evidence under MSVC and ClangCL. External four-direction
+evidence remains pending.
 
 ## Work-product policy
 

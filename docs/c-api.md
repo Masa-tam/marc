@@ -227,7 +227,8 @@ bytes and decoder regions 234,890,249 / 16,777,216 / 202,088,448 bytes. The
 explicit `lzss-contextual-rans-16m` CLI name uses only this helper, query, and
 factory; the matching dependency-free benchmark uses the same public
 lifecycle and reports the query-owned allocations. Neither tool alters ABI 1
-nor infers the profile from stream fields.
+nor infers the profile from stream fields. Bounded decoder fuzzing and the
+schema-49 archive exercise the same public profile without changing the C ABI.
 The experimental LZSS contextual tANS factory is a third distinct Format 2
 lifecycle. Call `marc_lzss_contextual_tans_workspace_requirements()` whenever
 the immutable direction, known size, frame/LZSS parameters, `profile`,

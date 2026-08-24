@@ -12016,3 +12016,19 @@ inputs with seed 20260824, maximum input 32,768, five-second timeout, and
 512-MiB RSS ceiling. Supply no corpus path and retain no generated mutation or
 artifact. Then run all registered tests on both ordinary toolchains while
 interoperability remains closed.
+
+### TVG-0842
+
+Generate the unchanged deterministic interoperability fixture with all 58
+schema-48 profiles in their frozen order, then append exactly one
+`lzss-contextual-rans-16m` archive as entry 59. Require header dictionary
+variant bytes 5/0, context variant bytes 4/0, entropy algorithm/variant bytes
+4/0 and 3/0, immediate local round trip, size, and SHA-256. Write
+`schema_version=49`, `codec_set=marc-cli-v49`, and a full source revision.
+
+Verify all 59 archives by decoding and by byte-identical local re-encoding.
+Swap the first two manifest entries and require exact-order rejection. Remove
+only the new archive, restore schema 48 metadata, and verify schemas 48 through
+1 without changing their inventories. Run documentation validation and the
+complete registered suite under MSVC and ClangCL. External bundles remain
+outside the repository and four-direction evidence remains pending.

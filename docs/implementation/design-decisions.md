@@ -20346,3 +20346,20 @@ ordered cross-profile rejection regressions. Require ordinary warning-clean
 MSVC and ClangCL harness builds, then one fixed-seed 1,000-input Clang 22
 libFuzzer/ASan/UBSan campaign with the matching runtime path and no retained
 mutations. Keep interoperability closed.
+
+## DD-978: Append 16-MiB Contextual rANS as schema 49 entry 59
+
+- Date: 2026-08-24
+- Status: accepted
+
+Freeze schema 48's exact 58-archive order and append only
+`lzss-contextual-rans-16m` as archive 59. Set `schema_version=49` and
+`codec_set=marc-cli-v49`. Generation must require exact identity
+`2/5 + 1/4 + 4/3`, local round trip, size, and SHA-256 before publishing the
+manifest.
+
+Verification must enforce the exact profile order, foreign decode, and byte-
+identical local re-encoding. Reject a reordered schema-49 manifest. Remove
+only entry 59 to reconstruct schema 48, then traverse the unchanged
+compatibility chain through schema 1. Do not alter any existing archive bytes,
+profile names, or legacy verifier contract.

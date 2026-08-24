@@ -7140,7 +7140,12 @@ the fixed-memory decoder fuzz harness admits the same exact profile while
 retaining a 32-KiB input cap, 4-KiB total output, one-KiB frame/token storage,
 126,976 fixed decode-table entries, and a finite call ceiling. Its 16-MiB
 distance admission does not allocate a 16-MiB frame or history buffer and adds
-no serialized rule. Interoperability remains closed. The staged contract is
+no serialized rule. Interoperability schema 49 appends only
+`lzss-contextual-rans-16m` as archive 59 after the frozen 58-entry schema-48
+inventory. Generation requires exact identity `2/5 + 1/4 + 4/3`; verification
+decodes and re-encodes the complete archive byte-identically. Compatibility
+removes only archive 59 to reconstruct schema 48 before traversing the
+unchanged legacy chain. The staged contract is
 [LZSS contextual rANS 16 MiB
 window](design/lzss-contextual-rans-window-16m.md).
 

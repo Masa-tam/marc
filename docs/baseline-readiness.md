@@ -2891,3 +2891,18 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the 16-MiB
 Contextual Dynamic Range profile.
+
+### BR-0176
+
+Interoperability schema 49 freezes all 58 schema-48 archives and appends only
+`lzss-contextual-rans-16m` as archive 59. Generation requires exact identity
+`2/5 + 1/4 + 4/3`, size, SHA-256, and round trip. Verification enforces exact
+manifest order, foreign decode, and byte-identical local re-encoding;
+reordered schema-49 manifests fail, while removing only entry 59 reconstructs
+schema 48 and preserves verification through schema 1.
+
+Focused compatibility passes under MSVC and ClangCL in 99.73 and 97.93
+seconds. Their complete 3,245-test suites pass in 229.46 and 196.63 seconds,
+including documentation layout, all seven Python tooling tests, and complete
+schema compatibility. External Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
+26.04/Clang four-direction schema-49 evidence remains pending.
