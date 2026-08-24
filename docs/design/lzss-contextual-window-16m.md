@@ -2,7 +2,8 @@
 
 Status: Dynamic Range and canonical contextual rANS lifecycles, including
 schema-48 and schema-49 interoperability admission, implemented after project
-version 0.4.0. Contextual tANS design is accepted; implementation remains
+version 0.4.0. Contextual tANS has private stream/header, frame preflight, and
+complete-frame decoder admission; its encoder and later boundaries remain
 closed.
 
 ## Purpose
@@ -197,8 +198,9 @@ decision multiplier and returns the exact 1,057,488,981-byte full-profile
 aggregate on the supported 64-bit object layout. The decoder query returns
 452,984,917 bytes. Equality succeeds and one byte short fails before workspace
 publication. No full-size workspace is allocated by boundary tests. Canonical
-contextual rANS and tANS descriptor/model paths now recognize context variant
-4 internally; their outer admissions remain independently staged.
+contextual rANS and tANS descriptor/model paths recognize context variant 4.
+The rANS lifecycle is complete; the tANS private complete-frame decoder is
+admitted while its encoder and later boundaries remain independently staged.
 
 The public C selector `MARC_LZSS_CONTEXTUAL_PROFILE_16M` has value 3 and is
 admitted only by the Dynamic Range configuration loader and profile helper.

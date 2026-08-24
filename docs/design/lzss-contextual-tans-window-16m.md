@@ -1,7 +1,7 @@
 # LZSS contextual tANS 16 MiB window
 
-Status: operation and typed-token coding boundaries implemented after project
-version 0.4.0. No outer tANS frame path admits this identity yet. Public,
+Status: private stream/header, frame preflight, and complete-frame decoder
+implemented after project version 0.4.0. The complete-frame encoder, public,
 tooling, fuzzing, and interoperability boundaries remain closed.
 
 ## Purpose and identity
@@ -105,13 +105,15 @@ limits.
 2. Carry the selected layout through contextual tANS coding and direct typed-
    token encode/decode tests (complete).
 3. Admit exact triple `2/5 + 1/4 + 5/2` in stream/header validation, frame
-   preflight, complete-frame decoding, and then encoding.
-4. Add checked profile/workspace calculation and one-byte streaming with exact
+   preflight, and complete-frame decoding while keeping encoding explicitly
+   closed (complete).
+4. Admit complete-frame encoding for the exact triple.
+5. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests.
-5. Admit public C profile value 3 only for contextual tANS, then add the
+6. Admit public C profile value 3 only for contextual tANS, then add the
    explicit CLI and dependency-free benchmark names.
-6. Extend bounded decoder fuzzing without profile-sized allocation.
-7. Append exactly one interoperability archive only after all preceding
+7. Extend bounded decoder fuzzing without profile-sized allocation.
+8. Append exactly one interoperability archive only after all preceding
    boundaries pass.
 
 Every stage preserves existing stream bytes and keeps later public boundaries

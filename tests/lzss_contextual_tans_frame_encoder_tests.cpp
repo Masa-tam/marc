@@ -61,6 +61,17 @@ struct AlignedWorkspace {
     return stream;
 }
 
+[[nodiscard]] LzssContextualTansStreamHeader stream_for_16m(
+    const std::uint64_t original_size) {
+    auto stream = stream_for(original_size);
+    stream.frame_size = static_cast<std::uint32_t>(original_size);
+    stream.dictionary.window_size = UINT32_C(1) << 24;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    stream.frequency_entry_count = 4582;
+    return stream;
+}
+
 [[nodiscard]] std::vector<std::byte> documented_literal_frame() {
     std::vector<std::byte> bytes(96);
     bytes[0] = std::byte{0x4d}; bytes[1] = std::byte{0x52};
@@ -156,6 +167,32 @@ TEST(LzssContextualTansFrameEncoder,
         decoded);
     ASSERT_EQ(result.error, LzssContextualTansFrameDecodeError::none);
     EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzssContextualTansFrameEncoder,
+     SixteenMiBIdentityRemainsClosedAtomically) {
+    constexpr std::array raw{std::byte{'A'}};
+    const auto stream = stream_for_16m(raw.size());
+    std::array<LzssTypedToken, 1> tokens{};
+    tokens[0].literal = 0xcc;
+    auto tables = encode_tables();
+    std::array<std::byte, 128> output{};
+    output.fill(std::byte{0xcc});
+
+    auto result = plan_lzss_contextual_tans_frame(
+        stream, {}, 0, 0, raw, tokens, tables);
+    EXPECT_EQ(result.error,
+              LzssContextualTansFrameEncodeError::invalid_stream);
+    EXPECT_EQ(tokens[0].literal, 0xcc);
+
+    result = encode_lzss_contextual_tans_frame(
+        stream, {}, 0, 0, raw, tokens, tables, output);
+    EXPECT_EQ(result.error,
+              LzssContextualTansFrameEncodeError::invalid_stream);
+    EXPECT_EQ(tokens[0].literal, 0xcc);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
 }
 
 TEST(LzssContextualTansFrameEncoder,

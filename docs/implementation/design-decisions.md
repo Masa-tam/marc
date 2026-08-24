@@ -20415,3 +20415,20 @@ four-MiB layout, 4,194,305, through both canonical operation staging and the
 direct path; require identical descriptors and payloads, then decode the exact
 tokens. Cross-selection under the four-MiB layout must fail before token
 publication. Keep stream/header and all frame boundaries closed.
+
+## DD-982: Admit the 16-MiB contextual tANS complete-frame decoder first
+
+- Date: 2026-08-25
+- Status: accepted
+
+Admit exact triple `2/5 + 1/4 + 5/2` in private stream-header validation,
+serialization, parsing, frame preflight, and complete-frame decoding. Select
+the 9,157-byte descriptor ceiling, `7F` raw and 34-decision token bounds, and
+the already proved variant-4 typed-token decoder from the validated header.
+Reject crossed dictionary/context pairs without reinterpretation.
+
+Prove the first newly representable distance 4,194,305 through a canonical
+complete frame. Token-output and raw-output one-short failures must be atomic.
+Keep complete-frame encoding explicitly closed at the plan boundary so shared
+header admission cannot widen it accidentally. Defer profile/workspace,
+streaming, public, CLI, benchmark, fuzz, and interoperability admission.

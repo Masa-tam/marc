@@ -6712,3 +6712,13 @@ the repository-owned selected-layout encoder/decoder paths, and typed-LZSS
 context model. No external compressor, tANS or FSE implementation, source
 code, archive, encoded vector, test suite, patent, pseudocode, benchmark
 result, or optimization description was consulted.
+
+### IR-0744
+
+The 16-MiB Contextual tANS private stream/header and complete-frame decoder
+admission uses IR-0741 through IR-0743, DD-979 through DD-981, TVG-0843
+through TVG-0845, the repository-owned four-MiB tANS frame format and decoder,
+and the preceding 16-MiB Contextual rANS staged admission pattern. No external
+compressor, tANS or FSE implementation, source code, archive, encoded vector,
+test suite, patent, pseudocode, benchmark result, optimization description, or
+malformed-stream corpus was consulted.

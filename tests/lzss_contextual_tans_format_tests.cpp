@@ -194,39 +194,40 @@ TEST(LzssContextualTansFormat,
 }
 
 TEST(LzssContextualTansFormat,
-     KeepsSixteenMiBIdentityClosedBeforeFrameAdmission) {
+     RoundTripsSixteenMiBIdentityAndRejectsCrossedPairs) {
     const auto stream = stream_config_16m();
     EXPECT_EQ(validate_lzss_contextual_tans_stream_header(stream, {}),
-              LzssContextualTansStreamHeaderError::
-                  unsupported_dictionary_variant);
+              LzssContextualTansStreamHeaderError::none);
 
     std::array<std::byte, lzss_contextual_tans_stream_header_size> output{};
-    output.fill(std::byte{0xa5});
-    EXPECT_EQ(serialize_lzss_contextual_tans_stream_header(
-                  stream, {}, output),
-              LzssContextualTansStreamHeaderError::
-                  unsupported_dictionary_variant);
-    EXPECT_TRUE(std::ranges::all_of(output, [](const auto value) {
-        return value == std::byte{0xa5};
-    }));
-
-    const auto canonical = stream_config_4m();
-    std::array<std::byte, lzss_contextual_tans_stream_header_size> encoded{};
     ASSERT_EQ(serialize_lzss_contextual_tans_stream_header(
-                  canonical, {}, encoded),
+                  stream, {}, output),
               LzssContextualTansStreamHeaderError::none);
-    encoded[14] = std::byte{0x05};
-    encoded[98] = std::byte{0x04};
-    encoded[84] = std::byte{0xe6};
+    EXPECT_EQ(output[14], std::byte{0x05});
+    EXPECT_EQ(output[16], std::byte{0x05});
+    EXPECT_EQ(output[18], std::byte{0x02});
+    EXPECT_EQ(output[98], std::byte{0x04});
+    EXPECT_EQ(output[84], std::byte{0xe6});
+    EXPECT_EQ(output[85], std::byte{0x11});
+
     LzssContextualTansStreamHeader parsed{};
-    parsed.original_size = 0xa5;
-    std::size_t consumed = 0xa5;
-    EXPECT_EQ(parse_lzss_contextual_tans_stream_header(
-                  encoded, {}, parsed, consumed),
-              LzssContextualTansStreamHeaderError::
-                  unsupported_dictionary_variant);
-    EXPECT_EQ(parsed.original_size, 0xa5U);
-    EXPECT_EQ(consumed, 0xa5U);
+    std::size_t consumed{};
+    ASSERT_EQ(parse_lzss_contextual_tans_stream_header(
+                  output, {}, parsed, consumed),
+              LzssContextualTansStreamHeaderError::none);
+    EXPECT_EQ(consumed, output.size());
+    EXPECT_EQ(parsed.dictionary_variant, 5U);
+    EXPECT_EQ(parsed.context_variant, 4U);
+    EXPECT_EQ(parsed.frequency_entry_count, 4582U);
+
+    auto crossed = stream;
+    crossed.context_variant = 3;
+    EXPECT_EQ(validate_lzss_contextual_tans_stream_header(crossed, {}),
+              LzssContextualTansStreamHeaderError::contradictory_parameters);
+    crossed = stream;
+    crossed.dictionary_variant = 4;
+    EXPECT_EQ(validate_lzss_contextual_tans_stream_header(crossed, {}),
+              LzssContextualTansStreamHeaderError::contradictory_parameters);
 }
 
 TEST(LzssContextualTansFormat, PreflightsDocumentedOneLiteralFrame) {

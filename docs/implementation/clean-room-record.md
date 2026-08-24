@@ -26220,3 +26220,30 @@ both bounds.
   contextual tANS coding tests. Each toolchain then passed all 3,250
   registered tests with interoperability schema compatibility included;
   documentation validation passed on both.
+
+## CR-1063: 2026-08-25 - Admit 16-MiB Contextual tANS decoder
+
+- Authoring method: extended the repository-owned contextual tANS stream and
+  complete-frame decoder through the already proved selected-layout boundary.
+- References used: DD-982, IR-0744, TVG-0846, CR-1062, the completed four-MiB
+  contextual tANS decoder, and marc's preceding 16-MiB contextual rANS staged
+  admission.
+- Known implementations intentionally not consulted: external compressors,
+  tANS or FSE implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: admit only the exact private stream triple and
+  complete decoder; select bounds from the validated layout; prove the first
+  new distance and one-short atomicity; and install an explicit encoder guard.
+- Generated-code task description: open stream/header validation and frame
+  preflight for context variant 4, add complete decoding evidence, preserve
+  atomic capacity failures, and keep complete encoding and later boundaries
+  closed.
+- Similarity review: changes mirror only marc's repository-owned staged rANS
+  admission while retaining tANS-specific tables, descriptor, payload, and
+  decode path; no external implementation expression was used.
+- Validation: warning-clean MSVC and ClangCL focused builds passed all 27
+  stream/header, complete-frame decoder, and complete-frame encoder boundary
+  tests. Each ordinary toolchain then passed all 3,252 registered tests with
+  interoperability schema compatibility included; documentation validation
+  passed independently on both.

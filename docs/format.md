@@ -7149,21 +7149,17 @@ unchanged legacy chain. The staged contract is
 [LZSS contextual rANS 16 MiB
 window](design/lzss-contextual-rans-window-16m.md).
 
-The standalone contextual tANS descriptor/model boundary also recognizes
-context variant 4 without admitting an outer tANS frame. It retains the
-24-byte prefix, table log 12, total frequency 4,096, 31 Symbol contexts, one
+The standalone contextual tANS descriptor/model boundary recognizes context
+variant 4. It retains the 24-byte prefix, table log 12, total frequency 4,096,
+31 Symbol contexts, one
 implicit bypass context, deterministic compact dense/sparse grammar, and
 131,072 table entries. The selected frequency-entry count is 4,582 and the
 maximum descriptor grows from 9,125 to 9,157 bytes. Exact descriptor plus
 two-byte payload capacity succeeds; one byte less fails before publishing
 caller state. A variant-4 descriptor parsed under variant 3, or a variant-3
 descriptor parsed under variant 4, is rejected as an invalid selected layout.
-Unknown context variants retain the unsupported-context error. Private tANS
-stream-header validation, serialization, and parsing explicitly reject exact
-triple `2/5 + 1/4 + 5/2`; frame preflight, complete-frame coding, profiles,
-public APIs, CLI, benchmark, fuzzing, and interoperability remain closed until
-their ordered stages are implemented. No existing descriptor or stream byte
-changes.
+Unknown context variants retain the unsupported-context error. No existing
+descriptor or stream byte changes.
 
 The contextual tANS operation and direct typed-token coding boundaries now
 carry context variant 4 through their existing externally selected layout.
@@ -7175,9 +7171,17 @@ first distance outside the four-MiB profile, 4,194,305, using class 22 and a
 22-bit bypass value of one. Its descriptor records 4,582 frequency entries
 and its direct payload is byte-identical to the canonical modeled-operation
 path. Selection under the four-MiB layout fails before token publication.
-These are internal coding proofs only: stream/header and every outer frame,
-workspace/profile, public, CLI, benchmark, fuzzing, and interoperability
-boundary continue to reject or omit exact triple `2/5 + 1/4 + 5/2`.
+The private stream/header and complete-frame decoder now admit only exact
+triple `2/5 + 1/4 + 5/2`. Serialization records dictionary variant 5,
+context variant 4, frequency-entry count 4,582, and entropy identity `5/2`;
+crossed dictionary/context pairs remain contradictory. Frame preflight selects
+the 9,157-byte descriptor ceiling, `7F` per-raw-byte and 34-decision-per-token
+bounds, 25-symbol distance alphabet, and 24-bit bypass ceiling. A canonical
+complete frame reconstructs the first new distance 4,194,305. Token-output and
+raw-output one-short failures publish no raw bytes. The complete-frame encoder
+explicitly rejects this triple before mutating token staging or serialized
+output. Workspace/profile, streaming, public, CLI, benchmark, fuzzing, and
+interoperability boundaries remain closed.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

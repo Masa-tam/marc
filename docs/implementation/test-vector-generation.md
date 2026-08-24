@@ -12077,3 +12077,18 @@ the canonical modeled-operation and direct token paths to produce identical
 descriptor and payload, followed by exact direct decode. Require variant-3
 cross-selection to report invalid dictionary parameters without changing any
 previously decoded token. Keep every outer frame and stream boundary closed.
+
+### TVG-0846
+
+Serialize and parse exact private stream identity `2/5 + 1/4 + 5/2`, requiring
+dictionary variant 5, context variant 4, frequency-entry count 4,582, and
+entropy identity `5/2`. Reject both crossed dictionary/context pairs. Construct
+a canonical complete frame from one Literal, bounded overlapping Matches, and
+a final distance-4,194,305 Match; require exact complete decode.
+
+Supply token output one element short and raw output one byte short separately;
+both failures must leave raw output unchanged. Invoke complete-frame planning
+and encoding for the admitted header and require explicit `invalid_stream`
+without token-staging or serialized-output mutation. Preserve all earlier
+stream bytes and run the complete registered suite warning-clean under MSVC
+and ClangCL.
