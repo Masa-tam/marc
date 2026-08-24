@@ -2906,3 +2906,12 @@ seconds. Their complete 3,245-test suites pass in 229.46 and 196.63 seconds,
 including documentation layout, all seven Python tooling tests, and complete
 schema compatibility. External Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
 26.04/Clang four-direction schema-49 evidence remains pending.
+
+### BR-0177
+
+Schema 49 now has complete four-direction external evidence at revision
+`0013741df87db1456a0deca0d7fc3345b3a1036a`. All 59 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the 16-MiB
+Contextual rANS profile.

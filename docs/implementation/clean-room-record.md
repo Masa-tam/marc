@@ -26122,3 +26122,28 @@ both bounds.
   ClangCL in 229.46 and 196.63 seconds, including documentation layout, all
   seven Python tooling tests, and the schema-49-through-1 compatibility chain.
   External four-direction evidence remains pending.
+
+## CR-1059: 2026-08-24 - Schema 49 four-direction external admission
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-978, IR-0740, TVG-0842, BR-0176, IX-0043, CR-1058, and
+  full revision `0013741df87db1456a0deca0d7fc3345b3a1036a`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: require one exact revision for all directions,
+  preserve work products outside the repository, and accept evidence only
+  when every verifier reports the complete 59-archive inventory.
+- Generated-code task description: record the completed schema-49
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks.
+- Similarity review: this change records project-generated artifact evidence
+  only and introduces no codec implementation expression.
+- External validation: all four passes reported `Verified 59 archives` at
+  revision `0013741df87db1456a0deca0d7fc3345b3a1036a`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.
