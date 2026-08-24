@@ -20310,3 +20310,20 @@ Require emitted identity `2/5 + 1/4 + 4/3`, byte-exact nonempty and empty round
 trips, overwrite refusal, malformed and trailing-data cleanup, and rejection
 under the four-MiB and 64-KiB names without destination or temporary output.
 Keep benchmark, fuzzing, and interoperability closed.
+
+## DD-976: Add the 16-MiB Contextual rANS benchmark surface
+
+- Date: 2026-08-24
+- Status: accepted
+
+Add `lzss-contextual-rans-16m` to the dependency-free benchmark using only the
+completed public C lifecycle. Extend the common rANS profile selectors with
+frame size 16 MiB, aggregate policy 512 MiB, and public profile value 3.
+Retain `14F + 8` payload arithmetic and use checked complete-stream capacity
+`112 + 14N + 9,225K`; do not reproduce private workspace layout arithmetic.
+
+Require an untimed round trip before measurement, the exact selector in the
+report, ratio and directional throughput, all six queried workspace regions,
+their directional maximum, four adjacent usage names, and near-miss rejection.
+Register only a one-iteration README smoke. Keep the external Silesia corpus
+out of the default suite and leave fuzzing and interoperability closed.

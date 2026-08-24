@@ -7130,8 +7130,14 @@ preserving direction, original size, and the caller's total-output limit.
 The explicit CLI name `lzss-contextual-rans-16m` selects only this public
 profile for both encode and decode. It adds no serialized field, performs no
 profile inference, and rejects crossed profile identities before retaining
-output. Benchmark, fuzz, and interoperability remain closed. The staged
-contract is [LZSS contextual rANS 16 MiB
+output. The dependency-free benchmark uses the same exact selector and public
+profile/query lifecycle. For input extent `N` and nonempty frame count `K`,
+its checked complete-stream output capacity is `112 + 14N + 9,225K`. It
+performs a byte-exact untimed round trip before reporting ratio, directional
+throughput, all six queried workspace regions, and their directional maximum.
+These application measurements add no serialized field or profile inference;
+fuzzing and interoperability remain closed. The staged contract is [LZSS
+contextual rANS 16 MiB
 window](design/lzss-contextual-rans-window-16m.md).
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes

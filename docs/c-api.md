@@ -225,7 +225,9 @@ descriptor ceiling, `7F = 117,440,512`, `14F + 8 = 234,881,032`, and a
 frame query reports encoder regions 16,777,216 / 234,890,249 / 268,959,744
 bytes and decoder regions 234,890,249 / 16,777,216 / 202,088,448 bytes. The
 explicit `lzss-contextual-rans-16m` CLI name uses only this helper, query, and
-factory; it does not alter ABI 1 or infer the profile from stream fields.
+factory; the matching dependency-free benchmark uses the same public
+lifecycle and reports the query-owned allocations. Neither tool alters ABI 1
+nor infers the profile from stream fields.
 The experimental LZSS contextual tANS factory is a third distinct Format 2
 lifecycle. Call `marc_lzss_contextual_tans_workspace_requirements()` whenever
 the immutable direction, known size, frame/LZSS parameters, `profile`,

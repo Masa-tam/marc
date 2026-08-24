@@ -26038,3 +26038,29 @@ both bounds.
   complete schema-48 compatibility chain. The final schema tests took 94.84
   and 90.62 seconds; the complete runs took 229.26 and 231.21 seconds,
   respectively.
+
+## CR-1056: 2026-08-24 - Add the 16-MiB Contextual rANS benchmark boundary
+
+- Authoring method: registered a failing common report regression first, then
+  extended the repository-owned benchmark enum, profile selectors, checked
+  capacity arithmetic, parser, usage, and public lifecycle dispatch.
+- References used: DD-976, IR-0738, TVG-0840, CR-1055, and the local Dynamic
+  Range 16-MiB and Contextual rANS four-MiB benchmark boundaries.
+- Known implementations intentionally not consulted: external compressors,
+  rANS benchmarks, frameworks, source code, corpus results, test suites,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: reuse the exact CLI name; calculate only the outer
+  allocation ceiling locally; delegate all actual allocation to the public
+  query; gate timing on an untimed round trip; and keep Silesia opt-in.
+- Generated-code task description: add a failing one-iteration README smoke,
+  then extend common profile selection, checked capacity, usage, parsing, and
+  report validation without admitting fuzzing or interoperability.
+- Similarity review: the change follows only marc's repository-owned
+  dependency-free benchmark and test conventions; no external expression,
+  naming structure, result, or test structure was used.
+- Validation: warning-clean official-CMake MSVC and ClangCL full builds; the
+  focused benchmark and documentation regressions and all 3,242 registered
+  tests passed on both toolchains, including all seven Python tooling tests and
+  the complete schema-48 compatibility chain. The final schema tests took
+  94.69 and 90.56 seconds; the complete runs took 217.31 and 219.56 seconds,
+  respectively.

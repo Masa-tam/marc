@@ -11986,3 +11986,17 @@ header dictionary variant 5, context variant 4, entropy algorithm/variant
 existing sentinel. Retain overwrite, malformed, trailing-data, and empty-input
 checks. Run the focused regression and all registered tests under both MSVC
 and ClangCL while benchmark, fuzzing, and interoperability remain closed.
+
+### TVG-0840
+
+Run `marc_benchmark lzss-contextual-rans-16m README.md 1` under MSVC and
+ClangCL. Require a successful pre-timing round trip, exact codec text, finite
+ratio and directional timing/throughput fields, six positive public-query
+workspace regions, and a peak equal to the larger directional sum. Require
+the usage text to list the base, one-MiB, four-MiB, and 16-MiB selectors once
+and adjacently, and reject case-near-miss `lzss-contextual-rans-16M`.
+
+Use checked capacity `112 + 14N + 9,225K`, where `N` is input size and `K` is
+the nonempty 16-MiB frame count. Keep Silesia opt-in and run the focused smoke
+plus all registered tests on both toolchains while fuzzing and interoperability
+remain closed.

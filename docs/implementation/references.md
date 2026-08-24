@@ -6657,3 +6657,12 @@ transactional CLI enum/parser/help/dispatch structure, public C profile helper,
 and common CLI round-trip harness. No external compressor, rANS CLI, wrapper,
 source code, archive, test suite, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0738
+
+The 16-MiB Contextual rANS dependency-free benchmark boundary uses IR-0731
+through IR-0737, DD-969 through DD-975, TVG-0833 through TVG-0839, the
+repository-owned benchmark profile selectors, checked capacity arithmetic,
+public C profile/workspace/factory lifecycle, and common report validator. No
+external compressor, rANS benchmark, framework, source code, corpus result,
+test suite, patent, pseudocode, or optimization description was consulted.

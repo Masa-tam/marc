@@ -1,8 +1,8 @@
 # LZSS contextual rANS 16 MiB window
 
-Status: explicit CLI selector implemented after the public C profile,
-workspace query, and factory.
-Benchmark and later surfaces remain closed.
+Status: explicit CLI and dependency-free benchmark names implemented after
+the public C profile, workspace query, and factory.
+Fuzzing and interoperability remain closed.
 
 ## Purpose and identity
 
@@ -105,7 +105,7 @@ fields never enlarge local hard limits.
    and one-short aggregate tests (complete).
 5. Admit public C profile value 3 for contextual rANS (complete).
 6. Add the explicit CLI name (complete).
-7. Add the dependency-free benchmark name.
+7. Add the dependency-free benchmark name (complete).
 8. Extend bounded decoder fuzzing and append one interoperability archive only
    after every preceding boundary passes.
 

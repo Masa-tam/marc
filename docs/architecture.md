@@ -5765,4 +5765,10 @@ explicit enum value; resource constants remain solely in the public profile
 helper. The common CLI regression proves identity `2/5 + 1/4 + 4/3`, exact
 round trip, empty input, overwrite refusal, malformed and trailing rejection,
 and reciprocal profile rejection without destination or temporary output.
-Benchmark, fuzz, and interoperability admission remain separate stages.
+The matching dependency-free benchmark carries the same explicit enum/profile
+mapping and obtains both directional allocations solely from the public query.
+Its checked `112 + 14N + 9,225K` capacity is application policy; an untimed
+round trip gates ratio, throughput, six-region, and directional-peak reporting.
+The default smoke uses only repository-owned README input, so the external
+Silesia corpus remains an explicit local benchmark choice. Fuzzing and
+interoperability admission remain separate stages.

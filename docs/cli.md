@@ -245,6 +245,13 @@ private token, table, HashChain, or frame-layout arithmetic. Decode requires
 the same `-16m` name; mismatch, malformed input, and trailing data retain no
 destination or temporary output.
 
+The matching dependency-free benchmark selector uses this same public profile
+helper and direction-specific workspace query. Its checked output allocation
+is `112 + 14N + 9,225K` for input size `N` and nonempty frame count `K`. It
+verifies a byte-exact round trip before measuring either direction, reports
+all six workspace regions and their directional maximum, and does not include
+the external Silesia corpus in the default test suite.
+
 The experimental `lzss-contextual-tans` adapter uses 65,536-byte raw frames,
 a `6F = 393,216` decision ceiling, and a `9F + 2 = 589,826` payload ceiling.
 Its internal-buffer policy is 8 MiB. Encode and decode call only the public
