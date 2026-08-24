@@ -58,6 +58,16 @@ canonical_stream_vector() {
     return stream;
 }
 
+[[nodiscard]] LzssContextualRansStreamHeader stream_config_16m() {
+    auto stream = stream_config();
+    stream.frame_size = UINT32_C(1) << 24;
+    stream.dictionary.window_size = UINT32_C(1) << 24;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    stream.frequency_entry_count = 4582;
+    return stream;
+}
+
 } // namespace
 
 TEST(LzssContextualRansStreamFormat, ParsesAndSerializesCanonicalHeader) {
@@ -215,4 +225,36 @@ TEST(LzssContextualRansStreamFormat,
     EXPECT_EQ(validate_lzss_contextual_rans_frame_header(
                   header, {selected, {}, 0, 0}),
               LzssContextualRansFrameHeaderError::none);
+}
+
+TEST(LzssContextualRansStreamFormat,
+     KeepsSixteenMiBIdentityClosedBeforeFrameAdmission) {
+    const auto stream = stream_config_16m();
+    EXPECT_EQ(validate_lzss_contextual_rans_stream_header(stream, {}),
+              LzssContextualRansStreamHeaderError::
+                  unsupported_dictionary_variant);
+
+    std::array<std::byte, lzss_contextual_rans_stream_header_size> output{};
+    output.fill(std::byte{0xa5});
+    EXPECT_EQ(serialize_lzss_contextual_rans_stream_header(
+                  stream, {}, output),
+              LzssContextualRansStreamHeaderError::
+                  unsupported_dictionary_variant);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const auto value) {
+        return value == std::byte{0xa5};
+    }));
+
+    auto encoded = canonical_stream_vector();
+    encoded[14] = std::byte{0x05};
+    encoded[98] = std::byte{0x04};
+    encoded[84] = std::byte{0xe6};
+    LzssContextualRansStreamHeader parsed{};
+    parsed.original_size = 0xa5;
+    std::size_t consumed = 0xa5;
+    EXPECT_EQ(parse_lzss_contextual_rans_stream_header(
+                  encoded, {}, parsed, consumed),
+              LzssContextualRansStreamHeaderError::
+                  unsupported_dictionary_variant);
+    EXPECT_EQ(parsed.original_size, 0xa5U);
+    EXPECT_EQ(consumed, 0xa5U);
 }

@@ -22,7 +22,7 @@ namespace {
     case context::internal::LzssFieldContextVariant::field_context_4m:
         return contextual_rans_max_descriptor_size_v3;
     case context::internal::LzssFieldContextVariant::field_context_16m:
-        return 0;
+        return contextual_rans_max_descriptor_size_v4;
     }
     return 0;
 }
@@ -59,10 +59,6 @@ namespace {
     const std::uint32_t expected_decision_count,
     const std::uint32_t expected_payload_size,
     const context::internal::LzssFieldContextVariant variant) noexcept {
-    if (variant
-        == context::internal::LzssFieldContextVariant::field_context_16m) {
-        return ContextualRansFormatError::unsupported_context_variant;
-    }
     const auto selected = context::internal::get_lzss_field_context_layout(
         variant);
     if (selected.error
@@ -300,6 +296,9 @@ static_assert(contextual_rans_max_descriptor_size_v2
 static_assert(contextual_rans_max_descriptor_size_v3
               == contextual_rans_prefix_size
                   + contextual_compact_model_max_records_size_v3);
+static_assert(contextual_rans_max_descriptor_size_v4
+              == contextual_rans_prefix_size
+                  + contextual_compact_model_max_records_size_v4);
 static_assert(contextual_rans_total_frequency
               == contextual_compact_model_total_frequency);
 

@@ -81,6 +81,11 @@ validate_lzss_contextual_rans_stream_header(
         incompatible_variants:
         return LzssContextualRansStreamHeaderError::contradictory_parameters;
     }
+    if (layout.layout.context_variant
+        == context::internal::LzssFieldContextVariant::field_context_16m) {
+        return LzssContextualRansStreamHeaderError::
+            unsupported_dictionary_variant;
+    }
     const auto dictionary_error =
         dictionary::internal::validate_lzss_typed_parameters(
             header.dictionary, limits, layout.layout.dictionary_variant);

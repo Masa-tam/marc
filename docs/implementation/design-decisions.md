@@ -20201,3 +20201,18 @@ explicit 512-MiB backend profile. At the 16-MiB reference frame require exact
 checked encoder and decoder aggregates 520,627,209 and 453,755,913 bytes.
 Keep initializers, public selectors, CLI, fuzzing, and interoperability closed
 until their own staged boundaries are proven.
+
+## DD-970: Implement only the 16-MiB rANS descriptor/model boundary
+
+- Date: 2026-08-24
+- Status: accepted
+
+Extend compact-model record capacity to 9,133 bytes and contextual-rANS
+descriptor capacity to 9,153 bytes. Admit context variant 4 only to bounded
+model analysis, canonical parse/serialize, descriptor validation, and their
+internal tests. Retain exact old variant sizes and serialized bytes.
+
+Keep stream-header, frame, lifecycle, profile, public C, CLI, benchmark, fuzz,
+and interoperability paths closed. Explicitly reject the exact 16-MiB pair in
+structure-based stream-header validation and serialization so they remain
+consistent with parser rejection until the next admission stage.

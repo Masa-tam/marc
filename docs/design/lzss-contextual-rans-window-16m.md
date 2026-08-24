@@ -1,7 +1,8 @@
 # LZSS contextual rANS 16 MiB window
 
-Status: accepted staged design after completion of the 16-MiB Contextual
-Dynamic Range lifecycle. No rANS code path admits this identity yet.
+Status: compact descriptor/model boundary implemented after completion of the
+16-MiB Contextual Dynamic Range lifecycle.
+No outer rANS frame path admits this identity yet.
 
 ## Purpose and identity
 
@@ -95,7 +96,7 @@ fields never enlarge local hard limits.
 ## Staged implementation
 
 1. Expand contextual rANS descriptor storage and canonical parse/serialize
-   bounds for context variant 4 without admitting an outer frame.
+   bounds for context variant 4 without admitting an outer frame (complete).
 2. Admit exact triple `2/5 + 1/4 + 4/3` in stream/frame preflight and complete-
    frame decoding, then encoding.
 3. Add checked profile/workspace calculation and one-byte streaming with exact

@@ -17,10 +17,12 @@ inline constexpr std::size_t contextual_compact_model_max_records_size_v2 =
     9069;
 inline constexpr std::size_t contextual_compact_model_max_records_size_v3 =
     9101;
+inline constexpr std::size_t contextual_compact_model_max_records_size_v4 =
+    9133;
 inline constexpr std::size_t contextual_compact_model_max_records_size =
     contextual_compact_model_max_records_size_v1;
 inline constexpr std::size_t contextual_compact_model_record_capacity =
-    contextual_compact_model_max_records_size_v3;
+    contextual_compact_model_max_records_size_v4;
 inline constexpr std::uint32_t contextual_compact_model_total_frequency =
     UINT32_C(4096);
 

@@ -342,7 +342,7 @@ foreach(required_rans_window_16m_term IN ITEMS
         "aggregate                        453,755,913 bytes"
         "7F = 117,440,512"
         "aggregate buffered bytes to 512 MiB"
-        "No rANS code path admits this identity yet")
+        "No outer rANS frame path admits this identity yet")
     string(FIND "${lzss_contextual_rans_window_16m_content}"
         "${required_rans_window_16m_term}"
         required_rans_window_16m_term_offset)

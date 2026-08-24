@@ -6599,3 +6599,12 @@ descriptor grammar, checked workspace queries, and completed 4-MiB rANS and
 16-MiB Dynamic Range lifecycle evidence. No external compressor, rANS source
 code, large-window model, memory policy, test, benchmark, patent, pseudocode,
 or optimization description was consulted.
+
+### IR-0732
+
+The 16-MiB canonical Contextual rANS compact descriptor/model implementation
+uses IR-0731, DD-969, TVG-0833, the repository-owned compact model grammar,
+context-variant layouts, checked descriptor serializer/parser, and atomic
+format tests. No external compressor, rANS implementation, source code, test
+suite, large-window model, patent, pseudocode, or optimization description was
+consulted.

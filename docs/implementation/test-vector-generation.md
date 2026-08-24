@@ -11895,3 +11895,17 @@ Require the design to state that no rANS code path admits the identity. Later
 descriptor, frame, lifecycle, public, fuzz, and interoperability stages must
 each add their own equality, one-above or one-short, malformed-input,
 determinism, and cross-profile tests without changing older bytes.
+
+### TVG-0834
+
+For context variant 4, serialize the unchanged one-Literal model with exact
+frequency-entry count 4,582, parse it back, and reject it atomically under the
+four-MiB layout. Construct all 31 dense models from the selected 25-symbol
+distance alphabets and require the exact 9,153-byte descriptor maximum,
+successful parse, full frequency equality, exact descriptor-plus-payload
+aggregate success, and one-byte-short atomic limit failure.
+
+Retain the 9,121-byte four-MiB maximum below the enlarged private capacity.
+Reject an unknown context variant atomically. Independently require exact
+`2/5 + 1/4 + 4/3` stream-header validation, serialization, and parsing to
+remain closed and leave output/result sentinels unchanged.

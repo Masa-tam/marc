@@ -25867,3 +25867,30 @@ both bounds.
   both existing MSVC and ClangCL Release builds. The final diff is whitespace-
   clean; no rANS parser, encoder, decoder, factory, public API, CLI, benchmark,
   fuzz, or interoperability path was admitted.
+
+## CR-1050: 2026-08-24 - Implement 16-MiB rANS compact descriptor
+
+- Authoring method: extended the repository-owned compact descriptor grammar
+  mechanically from the selected context-variant-4 alphabet and retained all
+  prior representation choices.
+- References used: DD-970, IR-0732, TVG-0834, CR-1049, and repository-local
+  compact-model, contextual-rANS format, and field-context implementations.
+- Known implementations intentionally not consulted: external compressors,
+  rANS implementations, source code, test suites, large-window descriptors,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: add the 9,133-byte record and 9,153-byte descriptor
+  capacities; admit only internal model/descriptor functions; preserve every
+  old byte; and make structure-based stream-header rejection explicit while
+  outer admission remains deferred.
+- Generated-code task description: implement variant-4 compact model
+  analysis, canonical serialization/parsing, exact maximum tests, crossed-
+  layout atomic rejection, and a permanent closed-outer-header regression.
+- Similarity review: the changes extend existing repository-local switches,
+  checked buffers, arithmetic identities, and test patterns; no external
+  implementation expression or test structure was used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. Focused validation passed all 21 descriptor and stream-
+  header tests on each toolchain. All 3,235 registered tests then passed in
+  207.70 and 208.74 seconds respectively with the 600-second per-test limit;
+  both runs included documentation validation and the complete schema-48
+  compatibility chain. The final schema tests took 96.80 and 88.87 seconds.
