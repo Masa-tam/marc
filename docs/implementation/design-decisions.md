@@ -20294,3 +20294,19 @@ limit. Require helper idempotence and failure atomicity, direction-specific
 exact workspace results, one-short aggregate rejection, factory round trip,
 and crossed-profile rejection without output. Keep CLI, benchmark, fuzzing,
 and interoperability closed.
+
+## DD-975: Add one exact 16-MiB Contextual rANS CLI selector
+
+- Date: 2026-08-24
+- Status: accepted
+
+Add exact name `lzss-contextual-rans-16m` to the existing experimental CLI.
+Map it only to public Contextual rANS profile value 3 for encode and decode.
+Do not reproduce frame, decision, payload, model, aggregate, partition, or
+alignment arithmetic in the application; the public helper and workspace
+query remain authoritative.
+
+Require emitted identity `2/5 + 1/4 + 4/3`, byte-exact nonempty and empty round
+trips, overwrite refusal, malformed and trailing-data cleanup, and rejection
+under the four-MiB and 64-KiB names without destination or temporary output.
+Keep benchmark, fuzzing, and interoperability closed.

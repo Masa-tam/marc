@@ -6648,3 +6648,12 @@ profile helper contract, checked workspace query and partitioning, public C
 factory, and Dynamic Range 16-MiB C-boundary precedent. No external
 compressor, rANS implementation, C wrapper, source code, test suite, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0737
+
+The 16-MiB Contextual rANS CLI boundary uses IR-0731 through IR-0736,
+DD-969 through DD-974, TVG-0833 through TVG-0838, the repository-owned
+transactional CLI enum/parser/help/dispatch structure, public C profile helper,
+and common CLI round-trip harness. No external compressor, rANS CLI, wrapper,
+source code, archive, test suite, patent, pseudocode, or optimization
+description was consulted.

@@ -26012,3 +26012,29 @@ both bounds.
   complete schema-48 compatibility chain. The final schema tests took 95.92
   and 91.66 seconds; the complete runs took 226.43 and 228.66 seconds,
   respectively.
+
+## CR-1055: 2026-08-24 - Add the 16-MiB Contextual rANS CLI boundary
+
+- Authoring method: extended the repository-owned experimental codec enum,
+  parser, help, public configuration dispatch, workspace/factory dispatch, and
+  common transactional CLI regression by one exact profile.
+- References used: DD-975, IR-0737, TVG-0839, CR-1054, and the local Dynamic
+  Range 16-MiB and Contextual rANS four-MiB CLI boundaries.
+- Known implementations intentionally not consulted: external compressors,
+  rANS command-line tools, wrappers, archives, source code, test suites,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: expose one explicit `-16m` name; delegate every
+  resource value to the public helper/query; require the same name to decode;
+  and retain benchmark, fuzz, and interoperability as later stages.
+- Generated-code task description: add a failing common CLI regression first,
+  then extend only enum/parser/help and public lifecycle dispatch, prove exact
+  identity and transactional rejection, and document the boundary.
+- Similarity review: the change follows only marc's repository-owned CLI and
+  C lifecycle conventions; no external expression, naming structure, or test
+  structure was used.
+- Validation: warning-clean official-CMake MSVC and ClangCL full builds; the
+  focused CLI and documentation regressions and all 3,241 registered tests
+  passed on both toolchains, including all seven Python tooling tests and the
+  complete schema-48 compatibility chain. The final schema tests took 94.84
+  and 90.62 seconds; the complete runs took 229.26 and 231.21 seconds,
+  respectively.

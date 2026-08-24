@@ -7127,8 +7127,11 @@ workspace query, and the existing factory without changing any ABI structure
 extent or initializer default. The helper applies `F = 16,777,216`, `7F`,
 `14F + 8`, 126,976 entropy-table entries, and a 512-MiB aggregate policy while
 preserving direction, original size, and the caller's total-output limit.
-CLI, benchmark, fuzz, and interoperability remain closed. The staged contract
-is [LZSS contextual rANS 16 MiB
+The explicit CLI name `lzss-contextual-rans-16m` selects only this public
+profile for both encode and decode. It adds no serialized field, performs no
+profile inference, and rejects crossed profile identities before retaining
+output. Benchmark, fuzz, and interoperability remain closed. The staged
+contract is [LZSS contextual rANS 16 MiB
 window](design/lzss-contextual-rans-window-16m.md).
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes

@@ -179,9 +179,9 @@ layouts. Its decoder also receives the required `max_block_size` of
 native layout, the authoritative workspace query returns exactly
 1,057,488,981 bytes for encoding and 452,984,917 bytes for decoding; one byte
 less fails. A caller may tighten any returned hard limit and must then re-query
-before allocation. The other contextual codec factories recognize the 16-MiB
-selector as known but reject it until their backend-specific admission is
-implemented. The field and its
+before allocation. Contextual rANS now also admits this selector through its
+own independently bounded profile; contextual tANS and both Huffman factories
+continue to reject it. The field and its
 trailing 32-bit reserved word occupy
 the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
 all-zero meaning used by earlier callers. The explicit Dynamic Range CLI name
@@ -218,6 +218,14 @@ parameters against it and public decoding rejects the other profile before
 frame allocation. The field and trailing 32-bit reserved word retain the
 former 64-bit tail's ABI-1 extent and all-zero meaning. Entropy variant 2 is
 retired and reserved; the decoder rejects it.
+
+`MARC_LZSS_CONTEXTUAL_PROFILE_16M` selects `2/5 + 1/4`, uses the 9,153-byte
+descriptor ceiling, `7F = 117,440,512`, `14F + 8 = 234,881,032`, and a
+512-MiB aggregate policy. On supported 64-bit layouts the authoritative full-
+frame query reports encoder regions 16,777,216 / 234,890,249 / 268,959,744
+bytes and decoder regions 234,890,249 / 16,777,216 / 202,088,448 bytes. The
+explicit `lzss-contextual-rans-16m` CLI name uses only this helper, query, and
+factory; it does not alter ABI 1 or infer the profile from stream fields.
 The experimental LZSS contextual tANS factory is a third distinct Format 2
 lifecycle. Call `marc_lzss_contextual_tans_workspace_requirements()` whenever
 the immutable direction, known size, frame/LZSS parameters, `profile`,

@@ -1,8 +1,8 @@
 # LZSS contextual rANS 16 MiB window
 
-Status: public C profile, workspace query, and factory implemented after the
-private streaming lifecycle.
-CLI and later surfaces remain closed.
+Status: explicit CLI selector implemented after the public C profile,
+workspace query, and factory.
+Benchmark and later surfaces remain closed.
 
 ## Purpose and identity
 
@@ -104,8 +104,9 @@ fields never enlarge local hard limits.
 4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests (complete).
 5. Admit public C profile value 3 for contextual rANS (complete).
-6. Add the explicit CLI and dependency-free benchmark name.
-7. Extend bounded decoder fuzzing and append one interoperability archive only
+6. Add the explicit CLI name (complete).
+7. Add the dependency-free benchmark name.
+8. Extend bounded decoder fuzzing and append one interoperability archive only
    after every preceding boundary passes.
 
 Each stage preserves old serialized bytes and keeps incomplete public

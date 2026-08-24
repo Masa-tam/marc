@@ -5757,3 +5757,12 @@ authoritative allocation contract. Codec configurations without multiple
 named profiles expose no ceremonial helper: their initializer already returns
 a complete usable default. Profile application changes neither serialized
 identity nor decoder-visible bytes.
+
+The 16-MiB Contextual rANS transactional CLI boundary adds exact selector
+`lzss-contextual-rans-16m` after its public C lifecycle is complete. Parser,
+help, configuration, workspace-query, and factory dispatch all carry one
+explicit enum value; resource constants remain solely in the public profile
+helper. The common CLI regression proves identity `2/5 + 1/4 + 4/3`, exact
+round trip, empty input, overwrite refusal, malformed and trailing rejection,
+and reciprocal profile rejection without destination or temporary output.
+Benchmark, fuzz, and interoperability admission remain separate stages.

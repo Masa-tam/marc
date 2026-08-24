@@ -11975,3 +11975,14 @@ stream with no output. For a full frame require public encode workspace
 `16,777,216 + 268,959,744 + 234,890,249` and decode workspace
 `234,890,249 + 16,777,216 + 202,088,448`; reject each aggregate minus one and
 accept the exact bound on supported 64-bit layouts.
+
+### TVG-0839
+
+Register `lzss-contextual-rans-16m` with the common transactional CLI harness.
+Encode 128 repetitions of the deterministic binary-text payload and require
+header dictionary variant 5, context variant 4, entropy algorithm/variant
+`4/3`, then decode byte-exactly with the same name. Require the four-MiB and
+64-KiB names to reject without new or temporary output and without changing an
+existing sentinel. Retain overwrite, malformed, trailing-data, and empty-input
+checks. Run the focused regression and all registered tests under both MSVC
+and ClangCL while benchmark, fuzzing, and interoperability remain closed.
