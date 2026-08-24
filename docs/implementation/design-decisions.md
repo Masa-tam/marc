@@ -20327,3 +20327,22 @@ report, ratio and directional throughput, all six queried workspace regions,
 their directional maximum, four adjacent usage names, and near-miss rejection.
 Register only a one-iteration README smoke. Keep the external Silesia corpus
 out of the default suite and leave fuzzing and interoperability closed.
+
+## DD-977: Extend bounded Contextual rANS fuzzing to profile 3
+
+- Date: 2026-08-24
+- Status: accepted
+
+Retain one `marc_fuzz_lzss_contextual_rans_stream` target and submit every
+bounded input to exact public admissions 0 through 3. Preserve the 32-KiB
+input cap, four-KiB total-output cap, one-KiB frame/token storage, 7,168
+decision limit, 14,344-byte payload limit, fixed 126,976-entry table bank, and
+finite call ceiling. Keep the descriptor backing already sized for 9,153
+bytes and raise only the validation distance to 16,777,216; never allocate a
+profile-size frame or history buffer.
+
+Add permanent profile-3 truncation, extreme-length, descriptor-flag, and all
+ordered cross-profile rejection regressions. Require ordinary warning-clean
+MSVC and ClangCL harness builds, then one fixed-seed 1,000-input Clang 22
+libFuzzer/ASan/UBSan campaign with the matching runtime path and no retained
+mutations. Keep interoperability closed.

@@ -5770,5 +5770,9 @@ mapping and obtains both directional allocations solely from the public query.
 Its checked `112 + 14N + 9,225K` capacity is application policy; an untimed
 round trip gates ratio, throughput, six-region, and directional-peak reporting.
 The default smoke uses only repository-owned README input, so the external
-Silesia corpus remains an explicit local benchmark choice. Fuzzing and
-interoperability admission remain separate stages.
+Silesia corpus remains an explicit local benchmark choice. The bounded dual-
+path decoder harness admits profile 3 through its already-variant-4 descriptor
+and table backing while raising only the distance validation ceiling: supplied
+input remains 32 KiB, raw and token storage remain one KiB, total output
+remains four KiB, tables remain fixed, and the process loop remains finite.
+Interoperability admission remains a separate stage.

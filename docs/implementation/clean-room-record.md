@@ -26064,3 +26064,35 @@ both bounds.
   the complete schema-48 compatibility chain. The final schema tests took
   94.69 and 90.56 seconds; the complete runs took 217.31 and 219.56 seconds,
   respectively.
+
+## CR-1057: 2026-08-24 - Admit 16-MiB Contextual rANS decoder fuzzing
+
+- Authoring method: extended the repository-owned fixed-memory dual-path
+  harness and its parameterized malformed/cross-profile regressions by one
+  already implemented public decoder profile.
+- References used: DD-977, IR-0739, TVG-0841, CR-1056, FZ-0030, FZ-0033, and
+  the local Contextual rANS public profile and sanitizer workflow.
+- Known implementations intentionally not consulted: external compressors,
+  rANS fuzzers, corpora, source code, test suites, vulnerability reports,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: preserve all byte/storage/call ceilings; raise only
+  the distance admission; reuse variant-4 descriptor/table backing; exercise
+  all ordered crossed profiles; and retain no generated mutation.
+- Generated-code task description: add permanent profile-3 malformed tests,
+  extend the fixed-array public decoder loop, compile it under both ordinary
+  compilers, and run one bounded sanitizer campaign with matching runtime.
+- Similarity review: the change follows only marc's repository-owned harness,
+  tests, and sanitizer command conventions; no external expression, finding,
+  corpus structure, naming structure, or test structure was used.
+- Sanitizer validation: Windows Clang 22 libFuzzer with ASan/UBSan, seed
+  20260824, processed exactly 1,000 inputs with 32-KiB maximum input,
+  five-second timeout, and 512-MiB RSS limit. Peak RSS was 46 MiB; final
+  coverage was 224 counters and 336 features over a five-entry, 21-byte in-
+  memory corpus. No crash, hang, sanitizer finding, retained mutation, or
+  artifact occurred.
+- Ordinary validation: warning-clean official-CMake MSVC and ClangCL full
+  builds; the 14 focused malformed/cross-profile regressions, documentation
+  validation, and all 3,245 registered tests passed on both toolchains,
+  including all seven Python tooling tests and the complete schema-48
+  compatibility chain. The final schema tests took 94.44 and 90.11 seconds;
+  the complete runs took 218.40 and 219.76 seconds, respectively.

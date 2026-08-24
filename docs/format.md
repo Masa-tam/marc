@@ -7136,8 +7136,12 @@ its checked complete-stream output capacity is `112 + 14N + 9,225K`. It
 performs a byte-exact untimed round trip before reporting ratio, directional
 throughput, all six queried workspace regions, and their directional maximum.
 These application measurements add no serialized field or profile inference;
-fuzzing and interoperability remain closed. The staged contract is [LZSS
-contextual rANS 16 MiB
+the fixed-memory decoder fuzz harness admits the same exact profile while
+retaining a 32-KiB input cap, 4-KiB total output, one-KiB frame/token storage,
+126,976 fixed decode-table entries, and a finite call ceiling. Its 16-MiB
+distance admission does not allocate a 16-MiB frame or history buffer and adds
+no serialized rule. Interoperability remains closed. The staged contract is
+[LZSS contextual rANS 16 MiB
 window](design/lzss-contextual-rans-window-16m.md).
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes

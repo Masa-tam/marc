@@ -2,7 +2,7 @@
 
 Status: explicit CLI and dependency-free benchmark names implemented after
 the public C profile, workspace query, and factory.
-Fuzzing and interoperability remain closed.
+Bounded decoder fuzzing is implemented; interoperability remains closed.
 
 ## Purpose and identity
 
@@ -106,8 +106,8 @@ fields never enlarge local hard limits.
 5. Admit public C profile value 3 for contextual rANS (complete).
 6. Add the explicit CLI name (complete).
 7. Add the dependency-free benchmark name (complete).
-8. Extend bounded decoder fuzzing and append one interoperability archive only
-   after every preceding boundary passes.
+8. Extend bounded decoder fuzzing (complete), then append one interoperability
+   archive only after every preceding boundary passes.
 
 Each stage preserves old serialized bytes and keeps incomplete public
 boundaries closed. HashChain Exact remains the production match finder;

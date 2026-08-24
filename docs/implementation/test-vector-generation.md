@@ -12000,3 +12000,19 @@ Use checked capacity `112 + 14N + 9,225K`, where `N` is input size and `K` is
 the nonempty 16-MiB frame count. Keep Silesia opt-in and run the focused smoke
 plus all registered tests on both toolchains while fuzzing and interoperability
 remain closed.
+
+### TVG-0841
+
+Instantiate the Contextual rANS malformed regression for public profile 3.
+Generate its canonical five-byte stream and require every truncation, all-ones
+frame lengths, and a nonzero descriptor flag to fail without changing private
+or public output. For all twelve ordered pairs of distinct profiles 0 through
+3, require public decoding to return stable malformed-stream status with zero
+output and untouched sentinels.
+
+Compile the fixed-array harness warning-clean under MSVC and ClangCL. Rebuild
+the dedicated Clang 22 libFuzzer/ASan/UBSan target and execute exactly 1,000
+inputs with seed 20260824, maximum input 32,768, five-second timeout, and
+512-MiB RSS ceiling. Supply no corpus path and retain no generated mutation or
+artifact. Then run all registered tests on both ordinary toolchains while
+interoperability remains closed.

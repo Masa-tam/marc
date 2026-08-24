@@ -6666,3 +6666,12 @@ repository-owned benchmark profile selectors, checked capacity arithmetic,
 public C profile/workspace/factory lifecycle, and common report validator. No
 external compressor, rANS benchmark, framework, source code, corpus result,
 test suite, patent, pseudocode, or optimization description was consulted.
+
+### IR-0739
+
+The 16-MiB Contextual rANS bounded decoder-fuzz admission uses IR-0731 through
+IR-0738, DD-969 through DD-976, TVG-0833 through TVG-0840, the repository-
+owned fixed-array dual-path harness, public decoder lifecycle, canonical small-
+frame generator, malformed regressions, and established Clang sanitizer
+workflow. No external compressor, rANS fuzzer, corpus, source code, test suite,
+patent, pseudocode, or vulnerability description was consulted.
