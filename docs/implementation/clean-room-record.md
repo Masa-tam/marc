@@ -26147,3 +26147,27 @@ both bounds.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1060: 2026-08-24 - Design 16-MiB Contextual tANS profile
+
+- Authoring method: derived the proposed profile entirely from repository-
+  owned shared context layouts, completed four-MiB tANS arithmetic, current
+  native workspace partitioning, and checked 16-MiB HashChain requirements.
+- References used: DD-979, IR-0741, TVG-0843, CR-1059, the shared 16-MiB
+  design, and the completed four-MiB contextual tANS design.
+- Known implementations intentionally not consulted: external compressors,
+  tANS or FSE implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, and optimization
+  descriptions.
+- Independent decisions: preserve entropy variant 2 and every tANS coding
+  rule; increase only selected model capacity; use 512 MiB because both proven
+  layouts fit; and keep all implementation/public boundaries closed.
+- Generated-code task description: specify exact identity, descriptor and
+  payload ceilings, supported-layout workspace proofs, public-profile policy,
+  staged admissions, deferred decisions, and executable documentation terms.
+- Similarity review: the document follows only marc's repository-owned staged
+  profile design structure and contains no external implementation expression.
+- Validation: arithmetic was independently recomputed from `F=16,777,216`,
+  12-byte typed tokens, 131,072 two-byte encoder/four-byte decoder entries,
+  the checked 67,633,152-byte HashChain workspace, 9,157-byte descriptor, and
+  twelve-bit decision ceiling. No codec identity was admitted by this change.

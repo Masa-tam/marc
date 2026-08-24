@@ -6684,3 +6684,13 @@ owned schema-48 manifest order, exact CLI identity checks, bundle generator,
 verifier, and compatibility converter. No external compressor, rANS
 implementation, archive, encoded vector, source code, test suite, patent,
 pseudocode, or interoperability implementation was consulted.
+
+### IR-0741
+
+The 16-MiB Contextual tANS design uses the repository-owned shared dictionary
+variant 5/context variant 4 contract, completed four-MiB contextual tANS
+lifecycle, compact-model grammar, tANS table definitions, HashChain workspace
+query, and completed 16-MiB Dynamic Range and rANS proofs. No external
+compressor, tANS or FSE implementation, source code, archive, encoded vector,
+test suite, patent, pseudocode, benchmark result, or optimization description
+was consulted.

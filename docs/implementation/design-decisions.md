@@ -20363,3 +20363,22 @@ identical local re-encoding. Reject a reordered schema-49 manifest. Remove
 only entry 59 to reconstruct schema 48, then traverse the unchanged
 compatibility chain through schema 1. Do not alter any existing archive bytes,
 profile names, or legacy verifier contract.
+
+## DD-979: Stage 16-MiB contextual tANS within 512 MiB
+
+- Date: 2026-08-24
+- Status: accepted
+
+Reserve exact triple `2/5 + 1/4 + 5/2` without admitting it at design time.
+Retain entropy variant 2, table log 12, one state, deterministic spreading,
+implicit bypass table, 131,072-entry table bank, and two-byte initial state.
+Context variant 4 raises only the flattened model and maximum compact
+descriptor from 9,125 to 9,157 bytes.
+
+Use `ceil(21F/2)+2` payload and `ceil(21F/2)+9,223` complete-frame ceilings.
+At `F=16,777,216`, record supported-layout encoder and decoder aggregates
+462,169,095 and 394,798,087 bytes, respectively, under an explicit 512-MiB
+profile. Keep initializers at 64 KiB, require an additive helper, preserve
+caller-specific policy fields, and forbid stream-driven limit expansion.
+Implementation, C, CLI, benchmark, fuzz, and interoperability admission remain
+separate ordered stages.

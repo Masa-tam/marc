@@ -1,7 +1,9 @@
 # LZSS contextual 16 MiB window
 
-Status: Dynamic Range lifecycle, including schema-48 interoperability
-admission, implemented after project version 0.4.0.
+Status: Dynamic Range and canonical contextual rANS lifecycles, including
+schema-48 and schema-49 interoperability admission, implemented after project
+version 0.4.0. Contextual tANS design is accepted; implementation remains
+closed.
 
 ## Purpose
 
@@ -240,8 +242,8 @@ traversing the unchanged schema-47-through-1 chain.
    (complete);
 4. Dynamic Range C helper, CLI, benchmark, bounded fuzzing, and schema entry
    (complete);
-5. canonical contextual rANS;
-6. contextual tANS;
+5. canonical contextual rANS (complete);
+6. contextual tANS (design accepted; implementation closed);
 7. Contextual Blocked Huffman;
 8. Contextual Adaptive Huffman;
 9. only then evaluate whether 16 MiB evidence justifies a later 64-MiB design.

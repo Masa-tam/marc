@@ -12032,3 +12032,18 @@ only the new archive, restore schema 48 metadata, and verify schemas 48 through
 1 without changing their inventories. Run documentation validation and the
 complete registered suite under MSVC and ClangCL. External bundles remain
 outside the repository and four-direction evidence remains pending.
+
+### TVG-0843
+
+Before admitting 16-MiB contextual tANS, require hand-checkable context-
+variant-4 compact descriptor bounds at 9,157 bytes, exact class-24 and 24-bit
+bypass operation coding, and rejection under every older layout. Require exact
+triple `2/5 + 1/4 + 5/2` only at the stream stage and reject every crossed
+dictionary/context or entropy identity without output mutation.
+
+For `F=16,777,216`, prove payload 176,160,770 and complete frame 176,169,991.
+On supported 64-bit layouts require encoder views 269,221,888 and aggregate
+462,169,095; decoder views 201,850,880 and aggregate 394,798,087. Test exact
+limits and one byte short without allocating full workspaces. Preserve all
+older vectors byte-for-byte. Add public, CLI, benchmark, bounded-fuzz, and
+interoperability evidence only in their documented later stages.

@@ -316,6 +316,7 @@ foreach(experimental_design IN ITEMS
         "lzss-contextual-window-1m.md"
         "lzss-contextual-window-16m.md"
         "lzss-contextual-rans-window-16m.md"
+        "lzss-contextual-tans-window-16m.md"
         "lzss-typed-token-protocol.md"
         "context-model-contract.md"
         "entropy-backend-contract.md")
@@ -368,7 +369,7 @@ foreach(required_window_16m_term IN ITEMS
         "decision_count <= 7F"
         "aggregate                      1,057,488,981 bytes"
         "A 64-MiB jump would require class 26"
-        "Dynamic Range lifecycle, including schema-48 interoperability"
+        "Dynamic Range and canonical contextual rANS lifecycles"
         "Match-finder strategy remains encoder-local and is not serialized")
     string(FIND "${lzss_contextual_window_16m_content}"
         "${required_window_16m_term}" required_window_16m_term_offset)
@@ -376,6 +377,32 @@ foreach(required_window_16m_term IN ITEMS
         message(FATAL_ERROR
             "Incomplete 16 MiB contextual LZSS design: "
             "${required_window_16m_term}")
+    endif()
+endforeach()
+
+set(lzss_contextual_tans_window_16m_design
+    "${source_dir}/docs/design/lzss-contextual-tans-window-16m.md")
+file(READ "${lzss_contextual_tans_window_16m_design}"
+    lzss_contextual_tans_window_16m_content)
+foreach(required_tans_window_16m_term IN ITEMS
+        "dictionary algorithm/variant 2/5"
+        "context-model algorithm/variant 1/4"
+        "entropy algorithm/variant 5/2"
+        "from 9,125 to 9,157 bytes"
+        "exactly 131,072 entries"
+        "decision_count <= 34*token_count"
+        "complete_frame_size <= ceil(21F/2) + 9,223"
+        "aggregate                        462,169,095 bytes"
+        "aggregate                        394,798,087 bytes"
+        "payload limit 176,160,770"
+        "All implementation, public, tooling, fuzzing, and interoperability boundaries remain closed")
+    string(FIND "${lzss_contextual_tans_window_16m_content}"
+        "${required_tans_window_16m_term}"
+        required_tans_window_16m_term_offset)
+    if(required_tans_window_16m_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 16 MiB contextual tANS design: "
+            "${required_tans_window_16m_term}")
     endif()
 endforeach()
 
