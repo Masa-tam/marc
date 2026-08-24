@@ -153,6 +153,11 @@ validate_lzss_contextual_tans_stream_header(
                 contradictory_parameters;
         }
     }
+    if (selected.layout.context_variant
+        == context::internal::LzssFieldContextVariant::field_context_16m) {
+        return LzssContextualTansStreamHeaderError::
+            unsupported_dictionary_variant;
+    }
     const auto dictionary_error =
         dictionary::internal::validate_lzss_typed_parameters(
             header.dictionary, limits, selected.layout.dictionary_variant);

@@ -20,6 +20,7 @@ using marc::entropy::internal::contextual_tans_descriptor_capacity;
 using marc::entropy::internal::contextual_tans_max_descriptor_size;
 using marc::entropy::internal::contextual_tans_max_descriptor_size_v2;
 using marc::entropy::internal::contextual_tans_max_descriptor_size_v3;
+using marc::entropy::internal::contextual_tans_max_descriptor_size_v4;
 using marc::context::internal::LzssFieldContextVariant;
 
 [[nodiscard]] ContextualTansDescriptor literal_a_descriptor() {
@@ -79,6 +80,18 @@ using marc::context::internal::LzssFieldContextVariant;
     const auto offset =
         marc::context::internal::lzss_field_context_offsets_v3[23];
     descriptor.frequencies[offset + 22] = 4096;
+    return descriptor;
+}
+
+[[nodiscard]] ContextualTansDescriptor sixteen_mib_distance_descriptor() {
+    ContextualTansDescriptor descriptor{};
+    descriptor.decision_count = 1;
+    descriptor.payload_size = 2;
+    descriptor.frequency_entry_count = static_cast<std::uint32_t>(
+        marc::context::internal::lzss_field_context_frequency_entries_v4);
+    const auto offset =
+        marc::context::internal::lzss_field_context_offsets_v4[23];
+    descriptor.frequencies[offset + 24] = 4096;
     return descriptor;
 }
 
@@ -258,6 +271,80 @@ TEST(ContextualTansFormat, FourMibDenseModelsReachExactMaximum) {
                   LzssFieldContextVariant::field_context_4m),
               ContextualTansFormatError::none);
     EXPECT_TRUE(descriptors_equal(parsed, descriptor));
+    EXPECT_LT(contextual_tans_max_descriptor_size_v3,
+              contextual_tans_descriptor_capacity);
+}
+
+TEST(ContextualTansFormat, SixteenMiBLayoutSelectsCountAndCanonicalGrammar) {
+    const auto frozen = serialize(literal_a_descriptor());
+    auto descriptor = literal_a_descriptor();
+    descriptor.frequency_entry_count =
+        marc::context::internal::lzss_field_context_frequency_entries_v4;
+    constexpr auto variant = LzssFieldContextVariant::field_context_16m;
+    const auto selected = serialize(descriptor, variant);
+    auto expected = frozen;
+    expected[16] = std::byte{0xe6};
+    EXPECT_EQ(selected, expected);
+
+    ContextualTansDescriptor parsed{};
+    ASSERT_EQ(marc::entropy::internal::parse_contextual_tans_descriptor(
+                  selected, 2, 2, {}, parsed, variant),
+              ContextualTansFormatError::none);
+    EXPECT_TRUE(descriptors_equal(parsed, descriptor));
+
+    auto sentinel = literal_a_descriptor();
+    sentinel.flags = 0xa5;
+    const auto before = sentinel;
+    EXPECT_EQ(marc::entropy::internal::parse_contextual_tans_descriptor(
+                  selected, 2, 2, {}, sentinel,
+                  LzssFieldContextVariant::field_context_4m),
+              ContextualTansFormatError::invalid_frequency_entry_count);
+    EXPECT_TRUE(descriptors_equal(sentinel, before));
+}
+
+TEST(ContextualTansFormat, SixteenMiBEveryDenseModelReachesExactMaximum) {
+    ContextualTansDescriptor descriptor{};
+    descriptor.decision_count = 1;
+    descriptor.payload_size = 2;
+    descriptor.frequency_entry_count =
+        marc::context::internal::lzss_field_context_frequency_entries_v4;
+    constexpr auto variant = LzssFieldContextVariant::field_context_16m;
+    const auto selected = marc::context::internal::
+        get_lzss_field_context_layout(variant);
+    ASSERT_EQ(selected.error,
+              marc::context::internal::LzssFieldContextLayoutError::none);
+    for (std::size_t context = 0;
+         context < marc::context::internal::lzss_field_context_count;
+         ++context) {
+        const auto begin = (*selected.layout.offsets)[context];
+        const auto alphabet = (*selected.layout.alphabets)[context];
+        for (std::uint16_t symbol = 0; symbol + 1 < alphabet; ++symbol) {
+            descriptor.frequencies[begin + symbol] = 1;
+        }
+        descriptor.frequencies[begin + alphabet - 1] =
+            static_cast<std::uint16_t>(4096 - (alphabet - 1));
+    }
+
+    const auto bytes = serialize(descriptor, variant);
+    ASSERT_EQ(bytes.size(), contextual_tans_max_descriptor_size_v4);
+    EXPECT_EQ(contextual_tans_descriptor_capacity, bytes.size());
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = 1;
+    limits.max_internal_buffered_bytes = bytes.size() + 2;
+    ContextualTansDescriptor parsed{};
+    ASSERT_EQ(marc::entropy::internal::parse_contextual_tans_descriptor(
+                  bytes, 1, 2, limits, parsed, variant),
+              ContextualTansFormatError::none);
+    EXPECT_TRUE(descriptors_equal(parsed, descriptor));
+
+    limits.max_internal_buffered_bytes = bytes.size() + 1;
+    auto sentinel = literal_a_descriptor();
+    sentinel.flags = 0xa5;
+    const auto before = sentinel;
+    EXPECT_EQ(marc::entropy::internal::parse_contextual_tans_descriptor(
+                  bytes, 1, 2, limits, sentinel, variant),
+              ContextualTansFormatError::limit_exceeded);
+    EXPECT_TRUE(descriptors_equal(sentinel, before));
 }
 
 TEST(ContextualTansFormat, RejectsCrossedAndUnsupportedSelectedLayouts) {
@@ -270,9 +357,20 @@ TEST(ContextualTansFormat, RejectsCrossedAndUnsupportedSelectedLayouts) {
               ContextualTansFormatError::invalid_frequency_entry_count);
     EXPECT_EQ(size, 0xa5a5U);
     const auto four_mib = four_mib_distance_descriptor();
+    const auto sixteen_mib = sixteen_mib_distance_descriptor();
     EXPECT_EQ(marc::entropy::internal::validate_contextual_tans_descriptor(
                   four_mib, 1, 2, {}, size,
                   LzssFieldContextVariant::field_context_1m),
+              ContextualTansFormatError::invalid_frequency_entry_count);
+    EXPECT_EQ(size, 0xa5a5U);
+    EXPECT_EQ(marc::entropy::internal::validate_contextual_tans_descriptor(
+                  sixteen_mib, 1, 2, {}, size,
+                  LzssFieldContextVariant::field_context_4m),
+              ContextualTansFormatError::invalid_frequency_entry_count);
+    EXPECT_EQ(size, 0xa5a5U);
+    EXPECT_EQ(marc::entropy::internal::validate_contextual_tans_descriptor(
+                  four_mib, 1, 2, {}, size,
+                  LzssFieldContextVariant::field_context_16m),
               ContextualTansFormatError::invalid_frequency_entry_count);
     EXPECT_EQ(size, 0xa5a5U);
     EXPECT_EQ(marc::entropy::internal::validate_contextual_tans_descriptor(
@@ -290,12 +388,6 @@ TEST(ContextualTansFormat, RejectsCrossedAndUnsupportedSelectedLayouts) {
                   static_cast<LzssFieldContextVariant>(0xff)),
               ContextualTansFormatError::unsupported_context_variant);
     EXPECT_EQ(size, 0xa5a5U);
-    EXPECT_EQ(marc::entropy::internal::validate_contextual_tans_descriptor(
-                  frozen, 2, 2, {}, size,
-                  LzssFieldContextVariant::field_context_16m),
-              ContextualTansFormatError::unsupported_context_variant);
-    EXPECT_EQ(size, 0xa5a5U);
-
     auto nonzero_tail = frozen;
     nonzero_tail.frequencies[
         marc::context::internal::lzss_field_context_frequency_entries_v1] = 1;

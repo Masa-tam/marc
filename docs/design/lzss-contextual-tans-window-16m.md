@@ -1,7 +1,8 @@
 # LZSS contextual tANS 16 MiB window
 
-Status: design accepted after project version 0.4.0.
-All implementation, public, tooling, fuzzing, and interoperability boundaries remain closed.
+Status: compact descriptor/model boundary implemented after project version 0.4.0.
+No outer tANS frame path admits this identity yet. Public, tooling, fuzzing,
+and interoperability boundaries remain closed.
 
 ## Purpose and identity
 
@@ -24,7 +25,7 @@ identity remain contradictory or unsupported.
 
 Context variant 4 contains 4,582 flattened frequency entries, sixteen more
 than context variant 3. Its compact records grow by exactly 32 bytes. With the
-With the unchanged 24-byte tANS prefix, it grows from 9,125 to 9,157 bytes.
+unchanged 24-byte tANS prefix, it grows from 9,125 to 9,157 bytes.
 
 The fixed table bank remains 32 tables times 4,096 states: 31 Symbol contexts
 and one implicit bypass context. It contains exactly 131,072 entries in both
@@ -99,7 +100,8 @@ limits.
 ## Staged implementation
 
 1. Expand descriptor capacity and canonical compact-model parsing and
-   serialization for context variant 4 without admitting an outer frame.
+   serialization for context variant 4 without admitting an outer frame
+   (complete).
 2. Carry the selected layout through contextual tANS coding and direct typed-
    token encode/decode tests.
 3. Admit exact triple `2/5 + 1/4 + 5/2` in stream/header validation, frame

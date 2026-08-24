@@ -196,9 +196,9 @@ The authoritative encoder workspace query uses the selected layout's `7F`
 decision multiplier and returns the exact 1,057,488,981-byte full-profile
 aggregate on the supported 64-bit object layout. The decoder query returns
 452,984,917 bytes. Equality succeeds and one byte short fails before workspace
-publication. No full-size workspace is allocated by boundary tests. Compact
-rANS/tANS model paths continue to return their stable unsupported-context
-error for context variant 4.
+publication. No full-size workspace is allocated by boundary tests. Canonical
+contextual rANS and tANS descriptor/model paths now recognize context variant
+4 internally; their outer admissions remain independently staged.
 
 The public C selector `MARC_LZSS_CONTEXTUAL_PROFILE_16M` has value 3 and is
 admitted only by the Dynamic Range configuration loader and profile helper.
@@ -243,7 +243,8 @@ traversing the unchanged schema-47-through-1 chain.
 4. Dynamic Range C helper, CLI, benchmark, bounded fuzzing, and schema entry
    (complete);
 5. canonical contextual rANS (complete);
-6. contextual tANS (design accepted; implementation closed);
+6. contextual tANS (compact descriptor/model boundary complete; outer frame
+   closed);
 7. Contextual Blocked Huffman;
 8. Contextual Adaptive Huffman;
 9. only then evaluate whether 16 MiB evidence justifies a later 64-MiB design.

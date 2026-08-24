@@ -26171,3 +26171,28 @@ both bounds.
   12-byte typed tokens, 131,072 two-byte encoder/four-byte decoder entries,
   the checked 67,633,152-byte HashChain workspace, 9,157-byte descriptor, and
   twelve-bit decision ceiling. No codec identity was admitted by this change.
+
+## CR-1061: 2026-08-25 - Implement 16-MiB Contextual tANS descriptor boundary
+
+- Authoring method: extended the repository-owned contextual tANS descriptor
+  only through the already completed context-variant-4 compact-model layout.
+- References used: DD-980, IR-0742, TVG-0844, CR-1060, and the existing
+  four-MiB contextual tANS descriptor implementation and tests.
+- Known implementations intentionally not consulted: external compressors,
+  tANS or FSE implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, and optimization
+  descriptions.
+- Independent decisions: raise only the internal descriptor capacity, retain
+  every frozen tANS model rule, reject crossed selections atomically, and add
+  an explicit stream-header guard so shared layout support cannot widen the
+  outer format accidentally.
+- Generated-code task description: implement context-variant-4 descriptor
+  selection, exact-capacity and one-short tests, permanent crossed/unknown
+  rejection, and transactional outer-header closure.
+- Similarity review: changes follow marc's own preceding contextual rANS
+  staged-boundary pattern while retaining tANS-specific prefix and payload
+  rules; no external implementation expression was used.
+- Validation: warning-clean MSVC and ClangCL builds passed the focused 23-test
+  descriptor/header boundary selection. Each ordinary toolchain then passed
+  all 3,248 registered tests with the interoperability schema-compatibility
+  test included; documentation validation passed independently on both.

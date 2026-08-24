@@ -12047,3 +12047,18 @@ On supported 64-bit layouts require encoder views 269,221,888 and aggregate
 limits and one byte short without allocating full workspaces. Preserve all
 older vectors byte-for-byte. Add public, CLI, benchmark, bounded-fuzz, and
 interoperability evidence only in their documented later stages.
+
+### TVG-0844
+
+For the 16-MiB Contextual tANS descriptor boundary, serialize the frozen
+Literal model under context variant 4 and require identical canonical bytes
+except for frequency-entry count 4,582. Parse it under the selected layout,
+then require atomic crossed-layout rejection under variant 3.
+
+Fill every one of the 31 Symbol-context alphabets densely and require exact
+maximum descriptor size 9,157, exact descriptor-plus-two-byte-payload memory
+success, and one-byte-short failure without caller-state mutation. Retain
+unknown-variant rejection. Construct exact stream identity `2/5 + 1/4 + 5/2`
+from a canonical four-MiB header and require validator, serializer, and parser
+closure without output, parsed-header, or consumed-count mutation. Run the
+complete registered suite warning-clean under MSVC and ClangCL.

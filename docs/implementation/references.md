@@ -6694,3 +6694,12 @@ query, and completed 16-MiB Dynamic Range and rANS proofs. No external
 compressor, tANS or FSE implementation, source code, archive, encoded vector,
 test suite, patent, pseudocode, benchmark result, or optimization description
 was consulted.
+
+### IR-0742
+
+The 16-MiB Contextual tANS descriptor/model implementation uses IR-0741,
+DD-979, TVG-0843, the repository-owned context-variant-4 layout, compact-model
+grammar, and completed four-MiB contextual tANS descriptor. No external
+compressor, tANS or FSE implementation, source code, archive, encoded vector,
+test suite, patent, pseudocode, benchmark result, or optimization description
+was consulted.

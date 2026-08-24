@@ -20382,3 +20382,20 @@ profile. Keep initializers at 64 KiB, require an additive helper, preserve
 caller-specific policy fields, and forbid stream-driven limit expansion.
 Implementation, C, CLI, benchmark, fuzz, and interoperability admission remain
 separate ordered stages.
+
+## DD-980: Admit only the 16-MiB contextual tANS descriptor boundary
+
+- Date: 2026-08-25
+- Status: accepted
+
+Permit context variant 4 only in canonical contextual tANS descriptor/model
+validation, serialization, and parsing. Raise internal descriptor capacity to
+9,157 bytes for 4,582 flattened entries while retaining the frozen 24-byte
+prefix, compact dense/sparse grammar, table log 12, total frequency 4,096,
+and 131,072-entry table bank.
+
+Reject crossed selected layouts and unknown variants atomically. Keep private
+tANS stream-header validation, serialization, and parsing explicitly closed
+for `2/5 + 1/4 + 5/2`; do not infer admission merely because the shared
+dictionary/context selector recognizes the pair. Defer frame preflight,
+coding, workspace/profile, public, tooling, fuzz, and interoperability work.

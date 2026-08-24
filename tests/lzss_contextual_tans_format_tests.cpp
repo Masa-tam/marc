@@ -40,6 +40,16 @@ using marc::entropy::internal::ContextualTansFormatError;
     return stream;
 }
 
+[[nodiscard]] LzssContextualTansStreamHeader stream_config_16m() {
+    auto stream = stream_config();
+    stream.frame_size = UINT32_C(1) << 24;
+    stream.dictionary.window_size = UINT32_C(1) << 24;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    stream.frequency_entry_count = 4582;
+    return stream;
+}
+
 [[nodiscard]] std::vector<std::byte> frame_vector() {
     std::vector<std::byte> bytes(96);
     bytes[0] = std::byte{0x4d};
@@ -181,6 +191,42 @@ TEST(LzssContextualTansFormat,
     EXPECT_EQ(validate_lzss_contextual_tans_frame_header(
                   header, {selected, {}, 0, 0}),
               LzssContextualTansFrameHeaderError::none);
+}
+
+TEST(LzssContextualTansFormat,
+     KeepsSixteenMiBIdentityClosedBeforeFrameAdmission) {
+    const auto stream = stream_config_16m();
+    EXPECT_EQ(validate_lzss_contextual_tans_stream_header(stream, {}),
+              LzssContextualTansStreamHeaderError::
+                  unsupported_dictionary_variant);
+
+    std::array<std::byte, lzss_contextual_tans_stream_header_size> output{};
+    output.fill(std::byte{0xa5});
+    EXPECT_EQ(serialize_lzss_contextual_tans_stream_header(
+                  stream, {}, output),
+              LzssContextualTansStreamHeaderError::
+                  unsupported_dictionary_variant);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const auto value) {
+        return value == std::byte{0xa5};
+    }));
+
+    const auto canonical = stream_config_4m();
+    std::array<std::byte, lzss_contextual_tans_stream_header_size> encoded{};
+    ASSERT_EQ(serialize_lzss_contextual_tans_stream_header(
+                  canonical, {}, encoded),
+              LzssContextualTansStreamHeaderError::none);
+    encoded[14] = std::byte{0x05};
+    encoded[98] = std::byte{0x04};
+    encoded[84] = std::byte{0xe6};
+    LzssContextualTansStreamHeader parsed{};
+    parsed.original_size = 0xa5;
+    std::size_t consumed = 0xa5;
+    EXPECT_EQ(parse_lzss_contextual_tans_stream_header(
+                  encoded, {}, parsed, consumed),
+              LzssContextualTansStreamHeaderError::
+                  unsupported_dictionary_variant);
+    EXPECT_EQ(parsed.original_size, 0xa5U);
+    EXPECT_EQ(consumed, 0xa5U);
 }
 
 TEST(LzssContextualTansFormat, PreflightsDocumentedOneLiteralFrame) {

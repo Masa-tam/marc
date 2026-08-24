@@ -7149,6 +7149,21 @@ unchanged legacy chain. The staged contract is
 [LZSS contextual rANS 16 MiB
 window](design/lzss-contextual-rans-window-16m.md).
 
+The standalone contextual tANS descriptor/model boundary also recognizes
+context variant 4 without admitting an outer tANS frame. It retains the
+24-byte prefix, table log 12, total frequency 4,096, 31 Symbol contexts, one
+implicit bypass context, deterministic compact dense/sparse grammar, and
+131,072 table entries. The selected frequency-entry count is 4,582 and the
+maximum descriptor grows from 9,125 to 9,157 bytes. Exact descriptor plus
+two-byte payload capacity succeeds; one byte less fails before publishing
+caller state. A variant-4 descriptor parsed under variant 3, or a variant-3
+descriptor parsed under variant 4, is rejected as an invalid selected layout.
+Unknown context variants retain the unsupported-context error. Private tANS
+stream-header validation, serialization, and parsing explicitly reject exact
+triple `2/5 + 1/4 + 5/2`; frame preflight, coding, profiles, public APIs, CLI,
+benchmark, fuzzing, and interoperability remain closed until their ordered
+stages are implemented. No existing descriptor or stream byte changes.
+
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage
 has 4,566 entries and its maximum compact descriptor is 9,121 bytes. The
