@@ -7120,7 +7120,13 @@ the 9,153-byte descriptor, `14F + 8` payload ceiling, HashChain Exact, and
 exact `2/5 + 1/4` decoder admission. A full 16-MiB frame requires explicit
 512-MiB policy: the supported 64-bit encoder and decoder aggregates are
 520,627,209 and 453,755,913 bytes. One-byte streaming accepts only the selected
-admission and retains unchanged chunk-independent bytes. Factories, public C,
+admission and retains unchanged chunk-independent bytes. Public selector
+`MARC_LZSS_CONTEXTUAL_PROFILE_16M` binds this exact identity through
+`marc_lzss_contextual_rans_config_apply_profile()`, the direction-specific
+workspace query, and the existing factory without changing any ABI structure
+extent or initializer default. The helper applies `F = 16,777,216`, `7F`,
+`14F + 8`, 126,976 entropy-table entries, and a 512-MiB aggregate policy while
+preserving direction, original size, and the caller's total-output limit.
 CLI, benchmark, fuzz, and interoperability remain closed. The staged contract
 is [LZSS contextual rANS 16 MiB
 window](design/lzss-contextual-rans-window-16m.md).

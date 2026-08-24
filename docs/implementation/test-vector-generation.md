@@ -11959,3 +11959,19 @@ views 202,088,448, and aggregate 453,755,913. Reject aggregate minus one and
 accept the exact limit. Finally stream one Literal through one-byte input and
 output chunks, require header identity `5/4`, decode only under explicit
 16-MiB admission, and reject it under four-MiB admission without output.
+
+### TVG-0838
+
+Extend the pure-C Contextual rANS ABI test to apply profiles 0 through 3 for
+both directions. For profile 3 require extent 16,777,216, block limit
+117,440,512, payload limit 234,881,032, aggregate policy 536,870,912, retained
+caller-owned fields, idempotence, and unknown value 4 rejection without config
+mutation.
+
+With a two-byte frame and five-byte input, query caller-owned workspaces,
+construct the public encoder and decoder, require stream identity `5/4`, and
+round-trip exactly. Decode the same bytes under profile 2 and require malformed
+stream with no output. For a full frame require public encode workspace
+`16,777,216 + 268,959,744 + 234,890,249` and decode workspace
+`234,890,249 + 16,777,216 + 202,088,448`; reject each aggregate minus one and
+accept the exact bound on supported 64-bit layouts.

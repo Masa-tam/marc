@@ -20275,3 +20275,22 @@ rejection, and exact-limit success. The caller must also raise the common
 block limit to `7F = 117,440,512` and compressed-payload limit to 234,881,032.
 Require one-byte encode/decode and cross-profile rejection on a small frame.
 Keep factories, public C, CLI, benchmark, fuzzing, and interoperability closed.
+
+## DD-974: Expose the 16-MiB rANS selector through the existing C ABI
+
+- Date: 2026-08-24
+- Status: accepted
+
+Admit existing public selector value `MARC_LZSS_CONTEXTUAL_PROFILE_16M` only
+in the Contextual rANS configuration loader, profile helper, workspace query,
+and factory. Map it to private profile and decoder-admission variant 16 MiB.
+Do not change the ABI version, configuration extent, initializer default, or
+the accepted profiles of tANS and either Huffman backend.
+
+The helper applies frame, window, and LZ-distance 16,777,216; block limit
+117,440,512; payload limit 234,881,032; 126,976 entropy-table entries; and
+512-MiB aggregate policy. Preserve direction, original size, and total-output
+limit. Require helper idempotence and failure atomicity, direction-specific
+exact workspace results, one-short aggregate rejection, factory round trip,
+and crossed-profile rejection without output. Keep CLI, benchmark, fuzzing,
+and interoperability closed.

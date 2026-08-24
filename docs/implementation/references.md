@@ -6639,3 +6639,12 @@ workspace query, streaming encoder/decoder, explicit decoder admission enum,
 and one-byte chunk helpers. No external compressor, rANS implementation,
 streaming framework, workspace policy, source code, test suite, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0736
+
+The 16-MiB Contextual rANS public C boundary uses IR-0731 through IR-0735,
+DD-969 through DD-973, TVG-0833 through TVG-0837, the repository-owned
+profile helper contract, checked workspace query and partitioning, public C
+factory, and Dynamic Range 16-MiB C-boundary precedent. No external
+compressor, rANS implementation, C wrapper, source code, test suite, patent,
+pseudocode, or optimization description was consulted.

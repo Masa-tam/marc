@@ -630,6 +630,10 @@ typed_context_stream_admission(
 [[nodiscard]] marc::frame::internal::LzssContextualRansProfileVariant
 contextual_rans_profile_variant(
     const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
+        return marc::frame::internal::LzssContextualRansProfileVariant::
+            field_context_16m;
+    }
     if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::LzssContextualRansProfileVariant::
             field_context_4m;
@@ -645,6 +649,10 @@ contextual_rans_profile_variant(
 [[nodiscard]] marc::frame::internal::LzssContextualRansStreamAdmission
 contextual_rans_stream_admission(
     const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
+        return marc::frame::internal::LzssContextualRansStreamAdmission::
+            field_context_16m;
+    }
     if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::LzssContextualRansStreamAdmission::
             field_context_4m;
@@ -785,7 +793,8 @@ bool load_config(
         || config->reserved != 0 || config->reserved2 != 0
         || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
-            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -5008,20 +5017,30 @@ marc_status marc_lzss_contextual_rans_config_apply_profile(
         || config->reserved != 0 || config->reserved2 != 0
         || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
-            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M)) {
         return MARC_STATUS_INVALID_ARGUMENT;
     }
 
     auto applied = *config;
-    const std::uint32_t extent = profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
-        ? UINT32_C(1) << 22
-        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
-            ? UINT32_C(1) << 20
-            : UINT32_C(1) << 16;
+    std::uint32_t extent = UINT32_C(1) << 16;
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M) {
+        extent = UINT32_C(1) << 20;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
+        extent = UINT32_C(1) << 22;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
+        extent = UINT32_C(1) << 24;
+    }
     const std::uint64_t decisions_per_byte =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M ? 7 : 6;
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+                || profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+            ? 7
+            : 6;
     const std::uint64_t payload_bytes_per_raw =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M ? 14 : 12;
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+                || profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+            ? 14
+            : 12;
     applied.frame_size = extent;
     applied.window_size = extent;
     applied.min_match_length = 5;
@@ -5031,10 +5050,13 @@ marc_status marc_lzss_contextual_rans_config_apply_profile(
         static_cast<std::uint64_t>(extent) * decisions_per_byte;
     applied.max_compressed_payload_size =
         static_cast<std::uint64_t>(extent) * payload_bytes_per_raw + 8;
-    applied.max_internal_buffered_bytes =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_64K
-        ? UINT64_C(8) << 20
-        : UINT64_C(128) << 20;
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64K) {
+        applied.max_internal_buffered_bytes = UINT64_C(8) << 20;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
+        applied.max_internal_buffered_bytes = UINT64_C(512) << 20;
+    } else {
+        applied.max_internal_buffered_bytes = UINT64_C(128) << 20;
+    }
     applied.max_lz_distance = extent;
     applied.max_lz_match_length = 258;
     applied.max_entropy_table_entries = 126976;

@@ -25986,3 +25986,29 @@ both bounds.
   validation, and the complete schema-48 compatibility chain. The final schema
   tests took 96.94 and 91.37 seconds; the complete runs took 218.90 and 227.05
   seconds, respectively.
+
+## CR-1054: 2026-08-24 - Expose the 16-MiB rANS public C boundary
+
+- Authoring method: extended the repository-owned Contextual rANS C wrapper to
+  the already completed private profile and streaming identity.
+- References used: DD-974, IR-0736, TVG-0838, CR-1053, and repository-local
+  C helper, workspace, factory, crossed-profile, and ABI stability tests.
+- Known implementations intentionally not consulted: external compressors,
+  rANS implementations, C wrappers, source code, test suites, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: reuse selector value 3 and the unchanged ABI structs;
+  admit it only for rANS; apply 512-MiB policy; preserve caller-owned fields;
+  and retain every later application and adversarial surface as closed.
+- Generated-code task description: test first, then admit selector 3 in the
+  rANS loader and mappings, extend the helper, prove exact public workspaces,
+  round-trip through the DLL C factory, and reject a crossed profile without
+  output.
+- Similarity review: changes extend repository-owned profile switches,
+  arithmetic, C tests, and documentation; no external implementation
+  expression, naming structure, or test structure was used.
+- Validation: warning-clean official-CMake MSVC and ClangCL full builds; the
+  focused pure-C ABI and documentation tests and all 3,240 registered tests
+  passed on both toolchains, including all seven Python tooling tests and the
+  complete schema-48 compatibility chain. The final schema tests took 95.92
+  and 91.66 seconds; the complete runs took 226.43 and 228.66 seconds,
+  respectively.
