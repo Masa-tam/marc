@@ -25957,3 +25957,32 @@ both bounds.
   including all seven Python tooling tests, documentation validation, and the
   complete schema-48 compatibility chain. The final schema tests took 100.52
   and 90.25 seconds.
+
+## CR-1053: 2026-08-24 - Admit 16-MiB rANS profile and streaming
+
+- Authoring method: extended the repository-owned checked contextual-rANS
+  profile and explicit streaming admission mechanisms to the already completed
+  16-MiB frame identity.
+- References used: DD-973, IR-0735, TVG-0837, CR-1052, and repository-local
+  profile arithmetic, HashChain workspace, partitioning, one-byte streaming,
+  and cross-profile rejection implementations.
+- Known implementations intentionally not consulted: external compressors,
+  rANS implementations, streaming frameworks, workspace policies, source code,
+  test suites, patents, pseudocode, and optimization descriptions.
+- Independent decisions: require explicit 512-MiB policy for a full profile;
+  preserve exact queried native extents; retain default-policy failure; admit
+  decoder identity `5/4` explicitly; and remove the temporary encoder gate only
+  with the complete lifecycle present.
+- Generated-code task description: add private profile variant 16 MiB, exact
+  encoder and decoder workspace boundaries, default and one-short failures,
+  exact-limit success, one-byte round trip, and crossed-admission rejection
+  while keeping all public surfaces closed.
+- Similarity review: implementation extends repository-owned enums, checked
+  switches, arithmetic, and lifecycle tests; no external implementation
+  expression, naming structure, or test structure was used.
+- Validation: warning-clean official-CMake MSVC and ClangCL builds; the focused
+  25-test profile/streaming suite and all 3,240 registered tests passed on both
+  toolchains, including all seven Python tooling tests, documentation
+  validation, and the complete schema-48 compatibility chain. The final schema
+  tests took 96.94 and 91.37 seconds; the complete runs took 218.90 and 227.05
+  seconds, respectively.

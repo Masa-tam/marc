@@ -7115,9 +7115,14 @@ distance 4,194,305 exactly. The private complete-frame encoder admits the same
 triple through both exhaustive and HashChain Exact routes. A canonical Literal
 frame records frequency-entry count 4,582, and HashChain Exact may emit and
 round-trip a Match beyond distance 4,194,304. Decoding that frame under the
-four-MiB identity fails before raw publication. Profile, streaming, factories,
-public C, CLI, benchmark, fuzz, and interoperability remain closed. The staged
-contract is [LZSS contextual rANS 16 MiB
+four-MiB identity fails before raw publication. The private profile selects
+the 9,153-byte descriptor, `14F + 8` payload ceiling, HashChain Exact, and
+exact `2/5 + 1/4` decoder admission. A full 16-MiB frame requires explicit
+512-MiB policy: the supported 64-bit encoder and decoder aggregates are
+520,627,209 and 453,755,913 bytes. One-byte streaming accepts only the selected
+admission and retains unchanged chunk-independent bytes. Factories, public C,
+CLI, benchmark, fuzz, and interoperability remain closed. The staged contract
+is [LZSS contextual rANS 16 MiB
 window](design/lzss-contextual-rans-window-16m.md).
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes

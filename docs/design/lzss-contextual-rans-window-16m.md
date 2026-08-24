@@ -1,8 +1,8 @@
 # LZSS contextual rANS 16 MiB window
 
-Status: private complete-frame encoder and decoder implemented after the
-compact descriptor/model boundary.
-Profile and streaming remain closed.
+Status: private profile and streaming lifecycle implemented after the
+complete-frame encoder and decoder.
+Public C and later surfaces remain closed.
 
 ## Purpose and identity
 
@@ -102,7 +102,7 @@ fields never enlarge local hard limits.
 3. Admit complete-frame encoding while retaining later lifecycle boundaries
    (complete).
 4. Add checked profile/workspace calculation and one-byte streaming with exact
-   and one-short aggregate tests.
+   and one-short aggregate tests (complete).
 5. Admit public C profile value 3 for contextual rANS, then add the explicit
    CLI and dependency-free benchmark name.
 6. Extend bounded decoder fuzzing and append one interoperability archive only

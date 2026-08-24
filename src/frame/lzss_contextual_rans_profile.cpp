@@ -107,6 +107,9 @@ inline constexpr std::uint64_t rans_state_bytes = 8;
     case LzssContextualRansProfileVariant::field_context_4m:
         return context::internal::get_lzss_field_context_layout(
             context::internal::LzssFieldContextVariant::field_context_4m);
+    case LzssContextualRansProfileVariant::field_context_16m:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_16m);
     }
     return {{}, context::internal::LzssFieldContextLayoutError::
                     unsupported_context_variant};
@@ -122,7 +125,7 @@ inline constexpr std::uint64_t rans_state_bytes = 8;
     case context::internal::LzssFieldContextVariant::field_context_4m:
         return entropy::internal::contextual_rans_max_descriptor_size_v3;
     case context::internal::LzssFieldContextVariant::field_context_16m:
-        return 0;
+        return entropy::internal::contextual_rans_max_descriptor_size_v4;
     }
     return 0;
 }

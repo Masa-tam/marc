@@ -11943,3 +11943,19 @@ zero-progress `invalid_argument` error before it emits the stream header. Run
 the focused complete-frame and streaming-encoder suites and all registered
 tests under both MSVC and ClangCL while profile and streaming admission remain
 closed.
+
+### TVG-0837
+
+Calculate the full 16-MiB private encoder profile under exact identity
+`2/5 + 1/4 + 4/3`. Require default-128-MiB rejection, then exact frame input
+16,777,216, encoded frame 234,890,249, token count 16,777,216, match-finder
+offset 201,326,592, match-finder bytes 67,633,152, views 268,959,744, and
+aggregate 520,627,209 under explicit 512 MiB. Reject `7F - 1`, aggregate minus
+one, and accept the exact limits.
+
+For decoding require default-128-MiB rejection, encoded frame 234,890,249, raw
+frame 16,777,216, 126,976 tables, 16,777,216 tokens, token offset 761,856,
+views 202,088,448, and aggregate 453,755,913. Reject aggregate minus one and
+accept the exact limit. Finally stream one Literal through one-byte input and
+output chunks, require header identity `5/4`, decode only under explicit
+16-MiB admission, and reject it under four-MiB admission without output.

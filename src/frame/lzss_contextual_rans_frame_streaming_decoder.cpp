@@ -140,6 +140,9 @@ parse_collected_stream_header() noexcept {
     case LzssContextualRansStreamAdmission::field_context_4m:
         return stream_.dictionary_variant == 4
             && stream_.context_variant == 3;
+    case LzssContextualRansStreamAdmission::field_context_16m:
+        return stream_.dictionary_variant == 5
+            && stream_.context_variant == 4;
     }
     return false;
 }

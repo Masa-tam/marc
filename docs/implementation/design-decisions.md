@@ -20256,3 +20256,22 @@ HashChain token trace to contain a Match beyond 4,194,304, decode the complete
 frame byte-exactly, and reject it under the four-MiB identity without raw
 publication. Keep profile, streaming, factories, public C, CLI, benchmark,
 fuzzing, and interoperability admission closed.
+
+## DD-973: Admit the 16-MiB rANS profile and streaming under 512 MiB
+
+- Date: 2026-08-24
+- Status: accepted
+
+Add private profile variant `field_context_16m`, select the 9,153-byte
+descriptor and `14F + 8` payload ceiling from its validated layout, and add
+exact streaming-decoder admission for dictionary/context `5/4`. Remove the
+temporary streaming-encoder gate only after both profile and decoder admission
+exist. Preserve `any`, 64-KiB, one-MiB, and four-MiB behavior.
+
+For a full 16-MiB frame require explicit 512-MiB policy. On the supported
+64-bit layout, require exact encoder aggregate 520,627,209 and decoder
+aggregate 453,755,913 bytes, with default-128-MiB failure, one-byte-short
+rejection, and exact-limit success. The caller must also raise the common
+block limit to `7F = 117,440,512` and compressed-payload limit to 234,881,032.
+Require one-byte encode/decode and cross-profile rejection on a small frame.
+Keep factories, public C, CLI, benchmark, fuzzing, and interoperability closed.

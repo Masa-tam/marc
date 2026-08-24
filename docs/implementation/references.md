@@ -6629,3 +6629,13 @@ canonical scalar rANS encoder, compact descriptor serializer, complete-frame
 decoder, and crossed-profile validator. No external compressor, rANS
 implementation, match finder, source code, test suite, encoded vector, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0735
+
+The 16-MiB canonical Contextual rANS private profile and streaming lifecycle
+uses IR-0731 through IR-0734, DD-969 through DD-972, TVG-0833 through
+TVG-0836, the repository-owned checked profile arithmetic, HashChain Exact
+workspace query, streaming encoder/decoder, explicit decoder admission enum,
+and one-byte chunk helpers. No external compressor, rANS implementation,
+streaming framework, workspace policy, source code, test suite, patent,
+pseudocode, or optimization description was consulted.
