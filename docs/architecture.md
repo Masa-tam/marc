@@ -5837,3 +5837,15 @@ of views and a 438,450,649-byte aggregate. Equality succeeds and one byte short
 fails without publishing requirements. The streaming encoder consumes the
 selected stream header unchanged, while the decoder adds an explicit 16-MiB
 admission value and rejects crossed selectors before frame publication.
+
+The public Contextual Blocked Huffman C boundary now maps common selector
+value 3 to the already-proven private variant-4 profile and explicit streaming
+admission. The atomic helper applies the sixteen-MiB frame/window/distance,
+117,440,512 decision, 220,200,960 payload, 17,885 entropy-entry, and 512-MiB
+aggregate limits while preserving direction, original size, total-output
+policy, ABI metadata, and reserved zeros. Direction-specific workspace queries
+return the exact private extents rather than duplicating layout arithmetic.
+Small caller-tightened workspaces still carry exact identity `2/5 + 1/4 +
+2/2`; crossed four-MiB decoding rejects it before raw publication. The 64-KiB
+initializer, ABI-1 structure extent, tooling names, fuzz admission, and
+interoperability inventory remain unchanged.

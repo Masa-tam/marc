@@ -20612,3 +20612,18 @@ tables, the authoritative HashChain workspace, and supported-layout exact
 aggregates 505,940,581/438,450,649 bytes. Require equality success, one-byte-
 short atomic failure, one-byte streaming, and reciprocal four-MiB selector
 rejection. Keep public, tooling, fuzzing, and interoperability closed.
+
+## DD-995: Admit the public Blocked Huffman 16-MiB selector
+
+- Date: 2026-08-26
+- Status: accepted
+
+Accept common public selector value 3 only in the Contextual Blocked Huffman
+configuration loader and atomic profile helper. Apply frame/window/distance
+16,777,216, decision limit 117,440,512, payload limit 220,200,960, entropy-node
+limit 17,885, and aggregate limit 512 MiB while preserving direction,
+original size, total-output policy, ABI metadata, and reserved zeros. Reuse
+the private exact workspace queries and explicit decoder admission. Keep the
+64-KiB initializer and 112-byte ABI-1 extent unchanged; do not infer or raise
+limits from stream fields, and keep tooling, fuzzing, and interoperability
+closed.

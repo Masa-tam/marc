@@ -348,7 +348,10 @@ foreach(required_blocked_huffman_window_16m_term IN ITEMS
         "explicit 512-MiB aggregate policy"
         "bounded complete-frame"
         "checked profile/streaming"
-        "Public, tooling, fuzzing, and interoperability boundaries"
+        "public C stages implemented"
+        "Tooling, fuzzing, and interoperability boundaries"
+        "common selector value 3"
+        "17,885 entropy-table entries"
         "Bounded encoding and decoding are complete."
         "(complete)"
         "schema-50 archive bytes and order")

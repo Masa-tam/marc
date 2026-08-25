@@ -289,8 +289,11 @@ prefix non-overlap are checked before a handle is published.
 `MARC_LZSS_CONTEXTUAL_PROFILE_64K` remains the initializer default and selects
 `2/2 + 1/1 + 2/2`; `MARC_LZSS_CONTEXTUAL_PROFILE_1M` selects
 `2/3 + 1/2 + 2/2`; `MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects
-`2/4 + 1/3 + 2/2`. The four-MiB profile uses `7F = 29,360,128` as its
-decision/block limit and a 55,050,240-byte payload limit.
+`2/4 + 1/3 + 2/2`; and `MARC_LZSS_CONTEXTUAL_PROFILE_16M` selects
+`2/5 + 1/4 + 2/2`. The four-MiB profile uses `7F = 29,360,128` as its
+decision/block limit and a 55,050,240-byte payload limit. The sixteen-MiB
+profile uses `7F = 117,440,512`, a 220,200,960-byte payload limit, and a
+512-MiB aggregate policy.
 `marc_lzss_contextual_blocked_huffman_config_apply_profile()` applies
 the selected frame, decision, payload, 35-table/17,885-node, LZ, and aggregate
 limits as one atomic preset. It preserves direction, original size, and the
@@ -307,6 +310,15 @@ are complete. Its public completion
 audit covers the required binary classes, deterministic whole and mixed chunk
 schedules, stable repeated terminal calls, and frame-atomic rejection of a
 corrupted, truncated, or trailing final frame.
+
+For the sixteen-MiB selection, the authoritative supported-layout encoder
+query returns primary/secondary/views extents 16,777,216 / 220,203,621 /
+268,959,744 bytes, aggregate 505,940,581. The decoder returns
+220,203,621 / 16,777,216 / 201,469,812 bytes, aggregate 438,450,649. Equality
+succeeds and one byte short fails before requirements or a handle are
+published. Applying the helper twice is byte-identical, unknown selectors do
+not change the configuration, and a four-MiB decoder rejects the sixteen-MiB
+identity before publishing raw bytes.
 The experimental LZSS Contextual Adaptive Huffman factory is another distinct
 Format 2 lifecycle. Initialize its size-tagged configuration with
 `marc_lzss_contextual_adaptive_huffman_config_init()`, then call

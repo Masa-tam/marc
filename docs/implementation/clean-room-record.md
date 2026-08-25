@@ -26586,3 +26586,31 @@ both bounds.
   Their complete 3,271-test suites pass in 223.79 and approximately 218
   seconds, including all seven Python tooling entries and schema compatibility
   passes of 93.60 and 82 seconds.
+
+## CR-1077: 2026-08-26 - Admit public C 16-MiB Blocked Huffman selection
+
+- Authoring method: connected marc's existing common profile selector to the
+  already-admitted repository-owned Blocked Huffman profile/workspace and
+  explicit streaming admission; no external implementation was consulted.
+- References used: DD-995, IR-0757, TVG-0859, CR-1076, the common contextual
+  profile-helper contract, and marc's completed 16-MiB contextual rANS public
+  boundary.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: retain selector value 3 and the 112-byte ABI shell,
+  reuse exact private workspace arithmetic, allow caller-tightened hard
+  limits after helper application, and require reciprocal profile rejection
+  before raw publication.
+- Generated-code task description: admit only public Contextual Blocked
+  Huffman selector 3 with atomic helper values, exact/one-short public
+  workspace queries, a tightened public round trip, and four-MiB crossed
+  rejection while keeping tooling, fuzzing, and interoperability closed.
+- Similarity review: only repository-owned public lifecycle and selected-
+  profile paths were connected; no external implementation expression was
+  introduced.
+- Validation: the focused public C boundary passes under MSVC and ClangCL.
+  Their complete 3,271-test suites pass in approximately 217 and 213 seconds,
+  including all seven Python tooling entries, documentation layout, and schema
+  compatibility passes of 98.95 and 94.53 seconds.

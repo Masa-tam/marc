@@ -12263,3 +12263,21 @@ Encode one Literal through the 16-MiB streaming identity using one-byte input
 and output buffers. Require header selectors 5/4, exact decode under explicit
 16-MiB admission, and rejection under four-MiB admission without changing a
 sentinel raw byte.
+
+### TVG-0859
+
+For both public directions, initialize the 112-byte Contextual Blocked Huffman
+ABI configuration, preserve distinctive original-size and total-output values,
+and apply selectors 0 through 3 in sequence. Require exact frame/window/LZ,
+decision, payload, entropy-node, and aggregate limits; reapply each selector
+and compare the whole structure byte-for-byte. Invalid metadata and selector 4
+must leave the complete configuration unchanged.
+
+Apply selector 3, then tighten the frame and payload limits for five-byte
+`ABABX`. Require public workspace query, factory creation, exact stream
+identity `2/5 + 1/4 + 2/2`, and byte-exact round trip. Decode the same stream
+under selector 2 and require malformed-stream status, zero raw publication,
+and unchanged sentinels. Separately query the full sixteen-MiB encoder and
+decoder at aggregate equality and one byte short; require exact workspace
+extents 16,777,216 / 220,203,621 / 268,959,744 and 220,203,621 /
+16,777,216 / 201,469,812, respectively.

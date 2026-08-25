@@ -3006,3 +3006,19 @@ boundaries remain closed. Twenty-six focused profile/streaming tests pass under
 MSVC and ClangCL. Their complete 3,271-test suites pass in 223.79 and
 approximately 218 seconds, including all seven Python tooling entries and
 schema compatibility passes of 93.60 and 82 seconds.
+
+### BR-0185
+
+The public C lifecycle now admits common selector value 3 for exact 16-MiB
+Contextual Blocked Huffman identity `2/5 + 1/4 + 2/2`. Its atomic helper fixes
+the designed frame, decision, payload, entropy-node, and 512-MiB aggregate
+limits without changing direction, known size, total-output policy, ABI-1
+extent, reserved zeros, or the 64-KiB initializer. Public queries reproduce
+the private 505,940,581- and 438,450,649-byte aggregates at equality and reject
+one byte short. A tightened five-byte public lifecycle round-trips exact
+identity, while four-MiB admission rejects it without raw publication. The
+focused C boundary passes under MSVC and ClangCL. Their complete 3,271-test
+suites pass in approximately 217 and 213 seconds, including all seven Python
+tooling entries, documentation layout, and schema compatibility passes of
+98.95 and 94.53 seconds. Tooling, fuzzing, and interoperability remain closed
+pending their separate stages.

@@ -1,9 +1,9 @@
 # LZSS contextual Blocked Huffman 16 MiB window
 
-Status: descriptor, operation/direct typed-token, bounded complete-frame, and
-checked profile/streaming stages implemented after schema-50 interoperability
-admission. Public, tooling, fuzzing, and interoperability boundaries remain
-closed.
+Status: descriptor, operation/direct typed-token, bounded complete-frame,
+checked profile/streaming, and public C stages implemented after schema-50
+interoperability admission. Tooling, fuzzing, and interoperability boundaries
+remain closed.
 
 ## Purpose and exact identity
 
@@ -109,13 +109,13 @@ token, payload, descriptor, and table extents from the caller's smaller local
 limits. Selecting the identity in a bounded fuzzer must not allocate a
 16-MiB history.
 
-The future additive public helper for common selector value 3 will apply
-frame, window, and distance 16,777,216; block limit `7F = 117,440,512`;
-payload limit 220,200,960; at least 35 entropy-table entries; and a 512-MiB
-aggregate policy. It must preserve direction, original size, total-output
-policy, ABI metadata, and reserved zeros. Initializers remain 64 KiB, callers
-may tighten returned hard limits, and stream fields never enlarge local hard
-limits.
+The additive public helper accepts common selector value 3 and atomically
+applies frame, window, and distance 16,777,216; block limit
+`7F = 117,440,512`; payload limit 220,200,960; 17,885 entropy-table entries;
+and a 512-MiB aggregate policy. It preserves direction, original size,
+total-output policy, ABI metadata, and reserved zeros. Initializers remain
+64 KiB, callers may tighten returned hard limits, and stream fields never
+enlarge local hard limits.
 
 ## Staged implementation
 
@@ -131,6 +131,7 @@ limits.
 4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests. (complete)
 5. Admit common public C selector value 3 only for Contextual Blocked Huffman.
+   (complete)
 6. Add explicit CLI and dependency-free benchmark names.
 7. Extend bounded dual-path decoder fuzzing without profile-sized allocation.
 8. Append exactly one interoperability archive after every earlier boundary

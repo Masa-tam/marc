@@ -7498,3 +7498,13 @@ before view publication. Streaming bytes are identical to the bounded encoder,
 including under one-byte input and output chunking. Decoder admission for
 variant 4 rejects 64-KiB, one-MiB, and four-MiB selectors reciprocally. No new
 serialized field or public algorithm name is introduced.
+
+The public C profile selector value 3 now admits the existing Contextual
+Blocked Huffman identity `2/5 + 1/4 + 2/2`. This is an API admission only: it
+adds no stream field and changes no descriptor, frame, or stream byte. The
+initializer remains selector 0. The helper's 16,777,216-byte frame/window,
+117,440,512-decision, 220,200,960-byte payload, 17,885-node, and 512-MiB
+limits are local resource policy; serialized stream fields never raise them.
+Exact decoder admission rejects all crossed dictionary/context pairs before
+raw publication. CLI, benchmark, fuzz, and interoperability names remain
+unassigned at this stage.

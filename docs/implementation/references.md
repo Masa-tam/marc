@@ -6842,3 +6842,13 @@ machines, and completed 16-MiB contextual rANS/tANS profile pattern. No
 external compressor, Huffman implementation, source code, archive, encoded
 vector, test suite, patent, pseudocode, benchmark result, optimization
 description, or malformed-stream corpus was consulted.
+
+### IR-0757
+
+The public-C 16-MiB Contextual Blocked Huffman stage uses IR-0751 through
+IR-0756, DD-989 through DD-994, TVG-0853 through TVG-0858, the repository's
+common contextual profile selector and atomic helper contract, the already-
+admitted private profile/workspace calculations, and the explicit streaming
+admission. No external compressor, Huffman implementation, source code,
+archive, encoded vector, test suite, patent, pseudocode, benchmark result,
+optimization description, or malformed-stream corpus was consulted.
