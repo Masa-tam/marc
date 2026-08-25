@@ -5849,3 +5849,16 @@ Small caller-tightened workspaces still carry exact identity `2/5 + 1/4 +
 2/2`; crossed four-MiB decoding rejects it before raw publication. The 64-KiB
 initializer, ABI-1 structure extent, tooling names, fuzz admission, and
 interoperability inventory remain unchanged.
+
+The 16-MiB Contextual Blocked Huffman application boundary adds exact selector
+`lzss-contextual-blocked-huffman-16m` only after its public C lifecycle is
+complete. Parser, help, configuration, workspace-query, and factory dispatch
+carry one explicit enum value and obtain resource policy solely through public
+profile value 3. The transactional CLI regression proves identity
+`2/5 + 1/4 + 2/2`, round trip, trailing rejection, reciprocal four-MiB
+rejection, and exact near-miss-name rejection without retaining output. The
+dependency-free benchmark uses the same selector and direction-specific
+queries. Its checked `112 + ceil(105N/8) + 2,661K` capacity is application
+policy rather than serialized format, and an untimed round trip gates every
+reported measurement. Fuzz admission and interoperability inventory remain
+unchanged.

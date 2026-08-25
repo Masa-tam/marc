@@ -26614,3 +26614,31 @@ both bounds.
   Their complete 3,271-test suites pass in approximately 217 and 213 seconds,
   including all seven Python tooling entries, documentation layout, and schema
   compatibility passes of 98.95 and 94.53 seconds.
+
+## CR-1078: 2026-08-26 - Expose Blocked Huffman 16-MiB application tooling
+
+- Authoring method: connected marc's public Contextual Blocked Huffman
+  profile helper and workspace lifecycle to its repository-owned CLI and
+  dependency-free benchmark harnesses; no external implementation was
+  consulted.
+- References used: DD-996, IR-0758, TVG-0860, CR-1077, and marc's completed
+  16-MiB contextual rANS/tANS application boundaries.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: expose one exact lowercase name, retain enum-based
+  dispatch, derive resource policy from public profile value 3, and use the
+  specified complete-frame ceiling only for checked application output
+  capacity.
+- Generated-code task description: expose exact 16-MiB Contextual Blocked
+  Huffman CLI and benchmark names with ordered inventory, near-name rejection,
+  transactional round trip, profile rejection, and benchmark preflight while
+  keeping fuzzing and interoperability closed.
+- Similarity review: only repository-owned application harnesses and public C
+  lifecycle were extended; no external implementation expression was
+  introduced.
+- Validation: seven focused application/documentation tests pass under MSVC
+  and ClangCL. Their complete 3,266-test suites pass in 221.44 and 222.20
+  seconds, including all seven Python tooling entries and schema compatibility
+  passes of 101.27 and 97.21 seconds.

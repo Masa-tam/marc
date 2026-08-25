@@ -6852,3 +6852,13 @@ admitted private profile/workspace calculations, and the explicit streaming
 admission. No external compressor, Huffman implementation, source code,
 archive, encoded vector, test suite, patent, pseudocode, benchmark result,
 optimization description, or malformed-stream corpus was consulted.
+
+### IR-0758
+
+The 16-MiB Contextual Blocked Huffman CLI and dependency-free benchmark stage
+uses IR-0751 through IR-0757, DD-989 through DD-995, TVG-0853 through
+TVG-0859, marc's public profile helper/workspace lifecycle, common
+transactional CLI harness, and common benchmark report harness. No external
+compressor, Huffman implementation, source code, archive, encoded vector,
+test suite, patent, pseudocode, benchmark result, optimization description,
+or malformed-stream corpus was consulted.

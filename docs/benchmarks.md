@@ -63,7 +63,9 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-tans-1m corpus.bin 5`,
 `marc_benchmark lzss-contextual-tans-4m corpus.bin 5`,
 `marc_benchmark lzss-contextual-blocked-huffman corpus.bin 5`,
-`marc_benchmark lzss-contextual-blocked-huffman-1m corpus.bin 5`, or
+`marc_benchmark lzss-contextual-blocked-huffman-1m corpus.bin 5`,
+`marc_benchmark lzss-contextual-blocked-huffman-4m corpus.bin 5`, or
+`marc_benchmark lzss-contextual-blocked-huffman-16m corpus.bin 5`,
 `marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman-1m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman-4m corpus.bin 5`.
@@ -1865,4 +1867,22 @@ bytes at ratio 0.695. Encoder primary/secondary/views workspaces were
 4,326/54,646/396,896 bytes; decoder regions were
 176,169,991/16,777,216/201,850,880 bytes. Peak caller-owned workspace was the
 decoder aggregate of 394,798,087 bytes. These values establish wiring and
+bounded allocation, not a production-performance claim.
+
+### Contextual Blocked Huffman 16-MiB profile
+
+The dependency-free `lzss-contextual-blocked-huffman-16m` benchmark selects
+exact public profile `2/5 + 1/4 + 2/2`. It uses a 16,777,216-byte
+frame/window/distance, admits `7F = 117,440,512` decisions, reserves
+`ceil(105F/8) = 220,200,960` payload bytes, and applies the 512-MiB aggregate
+policy. Checked complete-stream capacity is
+`112 + ceil(105N/8) + 2,661K`, where `N` is input bytes and `K` is the number
+of nonempty frames. Configuration and all six reported workspace regions come
+from the public profile helper and direction-specific query.
+
+One MSVC Release smoke iteration over the 4,326-byte README emitted 2,508
+bytes at ratio 0.580. Encoder primary/secondary/views workspaces were
+4,326/59,440/134,752 bytes; decoder regions were
+220,203,621/16,777,216/201,469,812 bytes. Peak caller-owned workspace was the
+decoder aggregate of 438,450,649 bytes. These values establish wiring and
 bounded allocation, not a production-performance claim.

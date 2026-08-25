@@ -12281,3 +12281,19 @@ and unchanged sentinels. Separately query the full sixteen-MiB encoder and
 decoder at aggregate equality and one byte short; require exact workspace
 extents 16,777,216 / 220,203,621 / 268,959,744 and 220,203,621 /
 16,777,216 / 201,469,812, respectively.
+
+### TVG-0860
+
+List the four Contextual Blocked Huffman CLI names exactly once and in
+64-KiB, one-MiB, four-MiB, sixteen-MiB order. Reject `-16M` as a case-near
+name. Encode repeated repository-owned input through exact selector
+`lzss-contextual-blocked-huffman-16m`, require stream identity
+`2/5 + 1/4 + 2/2`, byte-exact round trip, trailing rejection, and reciprocal
+four-MiB rejection without destination publication.
+
+Run the dependency-free benchmark over repository-owned README input for all
+four names. Require the same ordered inventory, public helper/query success,
+untimed round trip, finite measurements, and internally consistent six-region
+workspace reporting. For sixteen MiB, use checked application capacity
+`112 + ceil(105N/8) + 2,661K`; do not infer allocation policy from stream
+fields.

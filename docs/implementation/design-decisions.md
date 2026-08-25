@@ -20627,3 +20627,17 @@ the private exact workspace queries and explicit decoder admission. Keep the
 64-KiB initializer and 112-byte ABI-1 extent unchanged; do not infer or raise
 limits from stream fields, and keep tooling, fuzzing, and interoperability
 closed.
+
+## DD-996: Expose the Blocked Huffman 16-MiB application selector
+
+- Date: 2026-08-26
+- Status: accepted
+
+Add exact application name `lzss-contextual-blocked-huffman-16m` to the CLI
+and dependency-free benchmark only after the public C lifecycle is complete.
+Carry an explicit enum value through parser, help, configuration,
+workspace-query, and factory dispatch; apply public profile value 3 and obtain
+both directional allocation layouts from the authoritative public query.
+Use checked benchmark capacity `112 + ceil(105N/8) + 2,661K`, require an
+untimed round trip before measurement, and reject crossed selectors and
+case-near names exactly. Keep fuzzing and interoperability closed.

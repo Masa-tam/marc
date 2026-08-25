@@ -102,8 +102,9 @@ another. All four remain outside the stable 42-profile inventory.
 Contextual Blocked Huffman entropy variant 2 under the frozen 64 KiB profile.
 `lzss-contextual-blocked-huffman-1m` selects exact
 `2/3 + 1/2 + 2/2`, and `lzss-contextual-blocked-huffman-4m` selects exact
-`2/4 + 1/3 + 2/2`. Encode and decode require the same explicit name; no
-profile auto-detects or admits another. All three remain experimental.
+`2/4 + 1/3 + 2/2`. `lzss-contextual-blocked-huffman-16m` selects exact
+`2/5 + 1/4 + 2/2`. Encode and decode require the same explicit name; no
+profile auto-detects or admits another. All four remain experimental.
 `lzss-contextual-adaptive-huffman` selects typed LZSS plus Contextual Adaptive
 Huffman entropy variant 2 under the frozen 64 KiB profile. The additive
 `lzss-contextual-adaptive-huffman-1m` name selects exact
@@ -309,6 +310,15 @@ ceiling. Its descriptor is bounded at 2,588 bytes and its aggregate policy
 remains 128 MiB. It selects public window profile value 2 and otherwise uses
 the same public lifecycle; queried workspace extents and alignment remain
 authoritative.
+
+The experimental `lzss-contextual-blocked-huffman-16m` adapter uses
+16,777,216-byte raw frames and LZSS window, a `7F = 117,440,512` decision
+ceiling, and the exact conservative `ceil(105F/8) = 220,200,960` payload
+ceiling. Its descriptor is bounded at 2,597 bytes and its aggregate policy is
+512 MiB. Both directions apply public profile value 3 and obtain every
+allocation extent and opaque alignment from the public workspace query.
+Decode requires the same `-16m` name; crossed-profile, malformed, and trailing
+input retain no destination or temporary output.
 
 The experimental `lzss-contextual-adaptive-huffman` adapter uses 65,536-byte
 raw frames, at most one typed token per raw byte, the exact 9,067-node plus

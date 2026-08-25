@@ -3022,3 +3022,18 @@ suites pass in approximately 217 and 213 seconds, including all seven Python
 tooling entries, documentation layout, and schema compatibility passes of
 98.95 and 94.53 seconds. Tooling, fuzzing, and interoperability remain closed
 pending their separate stages.
+
+### BR-0186
+
+The CLI and dependency-free benchmark now expose exact 16-MiB Contextual
+Blocked Huffman selector `lzss-contextual-blocked-huffman-16m`. Both apply
+public profile value 3 and use authoritative direction-specific workspace
+queries; neither duplicates private object extents or infers limits from
+stream fields. CLI inventory, case-near-name rejection, exact identity
+`2/5 + 1/4 + 2/2`, round trip, trailing rejection, and reciprocal four-MiB
+rejection pass. All four benchmark selectors pass ordered inventory, public
+preflight, untimed round trip, and six-region reporting over repository-owned
+README input. Fuzzing and interoperability remain closed pending their
+separate stages. Seven focused application/documentation tests and the
+complete 3,266-test suites pass under MSVC and ClangCL in 221.44 and 222.20
+seconds; schema compatibility is included in both runs.
