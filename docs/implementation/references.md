@@ -6793,3 +6793,12 @@ query, and checked profile arithmetic. No external compressor, Huffman
 implementation, source code, archive, encoded vector, test suite, patent,
 pseudocode, benchmark result, optimization description, or malformed-stream
 corpus was consulted.
+
+### IR-0752
+
+The 16-MiB Contextual Blocked Huffman descriptor stage uses IR-0751, DD-989,
+TVG-0853, marc's existing atomic canonical descriptor parser/serializer, and
+the repository-owned context-variant-4 field layout. No external compressor,
+Huffman implementation, source code, archive, encoded vector, test suite,
+patent, pseudocode, benchmark result, optimization description, or malformed-
+stream corpus was consulted.

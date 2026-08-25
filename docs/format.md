@@ -7455,3 +7455,13 @@ Interoperability schema 47 appends
 56-entry schema-46 inventory. Generation requires exact identity
 `2/4 + 1/3 + 1/2`; verification decodes and re-encodes the complete archive
 byte-identically. This admission adds no serialized rule.
+
+The standalone Contextual Blocked Huffman descriptor parser and serializer
+now recognize explicitly selected context variant 4. It retains descriptor
+version 1 and every earlier record rule, widens only the distance alphabet to
+25 symbols, and caps the selected descriptor at exactly 2,597 bytes. A dense
+25-symbol distance record occupies thirteen bytes and its unused high nibble
+must be zero. Variants 1 through 3 retain their 2,561-, 2,579-, and
+2,588-byte maxima and canonical bytes. This format-stage recognition does not
+admit complete-frame identity `2/5 + 1/4 + 2/2`; operation coding, frame
+parsing, and every public name remain closed.

@@ -12192,3 +12192,14 @@ frame 220,203,621. On the supported 64-bit layout require encoder views
 268,959,744 and aggregate 505,940,581; require decoder views 201,469,812 and
 aggregate 438,450,649. Recompute both margins below 512 MiB and require future
 queries to succeed at equality and fail one byte short before publication.
+
+### TVG-0854
+
+Serialize a variant-4 descriptor containing only distance class 24, parse it
+back under variant 4, and require rejection under variant 3. Serialize the
+same class-22 descriptor under variants 3 and 4 and require identical bytes.
+Construct all 35 dense models with distance alphabet 25 and require an exact
+2,597-byte descriptor, active symbol 24, rejection by variant 3, and rejection
+when the unused high nibble of a 25-symbol dense record is nonzero. For every
+proper prefix and one trailing byte, require atomic failure with an unchanged
+sentinel descriptor under both MSVC and ClangCL.

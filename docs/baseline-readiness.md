@@ -2937,3 +2937,18 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the 16-MiB
 Contextual tANS profile.
+
+### BR-0180
+
+The private Contextual Blocked Huffman descriptor boundary now recognizes
+context variant 4 without admitting complete-frame identity
+`2/5 + 1/4 + 2/2`. Canonical parsing and serialization accept distance class
+24, enforce the exact 2,597-byte maximum and odd-alphabet zero padding, and
+retain byte-identical output for every older representable descriptor.
+All truncation points, trailing data, crossed older layouts, and nonzero dense
+padding fail atomically. Thirteen focused format tests pass under MSVC and
+ClangCL. The complete registered 3,263-test set passes in both configurations;
+the seven Python tooling entries required a separate sandbox-external rerun
+because the sandbox denied execution of the registered Python 3.14 binary.
+Schema compatibility passes in 107.43 and 96.89 seconds. Operation coding and
+every later boundary remain closed.

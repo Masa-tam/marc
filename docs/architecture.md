@@ -5801,3 +5801,12 @@ Generation requires exact identity `2/5 + 1/4 + 5/2`, round trip, size, and
 SHA-256. Verification enforces exact order and byte-identical local re-
 encoding. Compatibility removes only entry 60 to reconstruct schema 49 before
 traversing the unchanged chain through schema 1.
+
+The Contextual Blocked Huffman descriptor boundary now selects all four typed
+field layouts independently of complete-frame admission. Variant 4 supplies
+the 25-symbol distance alphabet and 2,597-byte maximum to the same atomic
+canonical parser/serializer used by older variants; it does not change the
+35-table/17,885-node backing shape. Layout selection occurs before record or
+size validation, and failures publish neither a partial descriptor nor a
+crossed frame identity. Operation coding and all outward 16-MiB Contextual
+Blocked Huffman boundaries remain closed.

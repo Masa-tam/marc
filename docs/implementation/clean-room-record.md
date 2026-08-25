@@ -26461,3 +26461,29 @@ both bounds.
   records, `F=16,777,216`, twelve-byte typed tokens, the checked 67,633,152-
   byte HashChain workspace, 35 current decode tables, and the fifteen-bit
   decision ceiling. No codec identity was admitted by this change.
+
+## CR-1072: 2026-08-25 - Implement 16-MiB Blocked Huffman descriptor stage
+
+- Authoring method: extended marc's repository-owned selected-layout table and
+  canonical descriptor tests without consulting an external implementation.
+- References used: DD-990, IR-0752, TVG-0854, CR-1071, and the existing
+  context variants 1 through 3 descriptor implementation.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: raise only caller-owned scratch capacity, preserve
+  selected older descriptor extents, add variant 4 through the immutable
+  layout selector, and keep operation/frame/public admission closed.
+- Generated-code task description: implement variant-4 canonical descriptor
+  parsing and serialization plus class-24, exact-maximum, padding, crossing,
+  truncation, trailing-data, and atomicity regressions.
+- Similarity review: the change is a mechanical extension of marc's own
+  selector and test grammar and contains no external implementation
+  expression.
+- Validation: thirteen focused descriptor tests and the complete registered
+  3,263-test set pass under MSVC and ClangCL. Schema compatibility passes in
+  107.43 and 96.89 seconds. The seven Python tooling entries initially report
+  `BAD_COMMAND` because the sandbox denies the registered Python 3.14 binary;
+  the same entries pass 7/7 in both configurations when rerun through the
+  established sandbox-external test route.

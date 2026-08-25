@@ -20547,3 +20547,16 @@ At `F=16,777,216`, use 220,200,960 payload bytes and supported-layout exact
 encoder/decoder aggregates 505,940,581/438,450,649 under an explicit 512-MiB
 policy. Keep every implementation and outward boundary closed until its own
 tests pass.
+
+## DD-990: Implement only the 16-MiB Blocked Huffman descriptor boundary
+
+- Date: 2026-08-25
+- Status: accepted
+
+Add context variant 4 to the standalone canonical descriptor selector and
+raise only shared caller-owned descriptor capacity to 2,597 bytes. Select the
+25-symbol distance alphabet before validation, retain every older selected
+maximum and byte representation, and reject crossed layouts, truncation,
+trailing data, and nonzero odd-alphabet padding without publishing output.
+Do not admit operation coding, complete-frame identity `2/5 + 1/4 + 2/2`, or
+any public surface in this stage.

@@ -1,8 +1,8 @@
 # LZSS contextual Blocked Huffman 16 MiB window
 
-Status: design accepted after schema-50 interoperability admission. All
-implementation, public, tooling, fuzzing, and interoperability boundaries
-remain closed.
+Status: descriptor-format stage implemented after schema-50 interoperability
+admission. Operation coding, frame identity, public, tooling, fuzzing, and
+interoperability boundaries remain closed.
 
 ## Purpose and exact identity
 
@@ -120,6 +120,7 @@ limits.
 
 1. Extend descriptor selection, canonical parsing, and serialization to
    context variant 4; prove the 2,597-byte maximum and unchanged older bytes.
+   (complete)
 2. Carry the immutable layout through model building, operation coding, and
    direct typed-token encode/decode with a class-24 hand vector.
 3. Admit only exact complete-frame identity `2/5 + 1/4 + 2/2`, initially for

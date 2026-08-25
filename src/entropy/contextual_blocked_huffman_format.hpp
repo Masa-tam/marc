@@ -24,8 +24,10 @@ inline constexpr std::size_t
     contextual_blocked_huffman_max_descriptor_size_v2 = 2579;
 inline constexpr std::size_t
     contextual_blocked_huffman_max_descriptor_size_v3 = 2588;
+inline constexpr std::size_t
+    contextual_blocked_huffman_max_descriptor_size_v4 = 2597;
 inline constexpr std::size_t contextual_blocked_huffman_descriptor_capacity =
-    contextual_blocked_huffman_max_descriptor_size_v3;
+    contextual_blocked_huffman_max_descriptor_size_v4;
 inline constexpr std::size_t contextual_blocked_huffman_field_table_count = 4;
 inline constexpr std::size_t contextual_blocked_huffman_max_table_count =
     contextual_blocked_huffman_field_table_count
