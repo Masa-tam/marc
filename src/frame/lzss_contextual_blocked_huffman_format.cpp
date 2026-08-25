@@ -50,6 +50,16 @@ constexpr std::array frame_magic{
     return 0;
 }
 
+[[nodiscard]] constexpr std::size_t decoder_maximum_descriptor_size(
+    const context::internal::LzssFieldContextVariant variant) noexcept {
+    if (variant
+        == context::internal::LzssFieldContextVariant::field_context_16m) {
+        return entropy::internal::
+            contextual_blocked_huffman_max_descriptor_size_v4;
+    }
+    return maximum_descriptor_size(variant);
+}
+
 [[nodiscard]] LzssContextualBlockedHuffmanStreamHeaderError map_stream_error(
     const LzssContextualRansStreamHeaderError error) noexcept {
     using B = LzssContextualBlockedHuffmanStreamHeaderError;
@@ -320,11 +330,11 @@ parse_lzss_contextual_blocked_huffman_stream_header(
     return LzssContextualBlockedHuffmanStreamHeaderError::none;
 }
 
-LzssContextualBlockedHuffmanFrameHeaderError
-validate_lzss_contextual_blocked_huffman_frame_header(
+[[nodiscard]] static LzssContextualBlockedHuffmanFrameHeaderError
+validate_frame_header_with_admission(
     const LzssContextualBlockedHuffmanFrameHeader& header,
-    const LzssContextualBlockedHuffmanFrameValidationContext& context)
-    noexcept {
+    const LzssContextualBlockedHuffmanFrameValidationContext& context,
+    const bool decoder_admission) noexcept {
     using E = LzssContextualBlockedHuffmanFrameHeaderError;
     if (validate_lzss_contextual_blocked_huffman_stream_header(
             context.stream, context.limits)
@@ -369,7 +379,11 @@ validate_lzss_contextual_blocked_huffman_frame_header(
                < entropy::internal::
                    contextual_blocked_huffman_min_descriptor_size
         || header.descriptor_size
-               > maximum_descriptor_size(selected.layout.context_variant)) {
+               > (decoder_admission
+                      ? decoder_maximum_descriptor_size(
+                            selected.layout.context_variant)
+                      : maximum_descriptor_size(
+                            selected.layout.context_variant))) {
         return E::contradictory_counts;
     }
     std::uint64_t maximum_bits{};
@@ -398,6 +412,14 @@ validate_lzss_contextual_blocked_huffman_frame_header(
         return E::arithmetic_overflow;
     }
     return limit == core::LimitError::none ? E::none : E::limit_exceeded;
+}
+
+LzssContextualBlockedHuffmanFrameHeaderError
+validate_lzss_contextual_blocked_huffman_frame_header(
+    const LzssContextualBlockedHuffmanFrameHeader& header,
+    const LzssContextualBlockedHuffmanFrameValidationContext& context)
+    noexcept {
+    return validate_frame_header_with_admission(header, context, false);
 }
 
 LzssContextualBlockedHuffmanFrameHeaderError
@@ -467,8 +489,8 @@ parse_lzss_contextual_blocked_huffman_frame_header(
     }
     if (encoded_size != 64) return E::invalid_header_size;
     if (!all_zero(bytes.subspan(48, 16))) return E::nonzero_reserved;
-    const auto validation =
-        validate_lzss_contextual_blocked_huffman_frame_header(parsed, context);
+    const auto validation = validate_frame_header_with_admission(
+        parsed, context, true);
     if (validation == E::none) {
         header = parsed;
         bytes_consumed = lzss_contextual_blocked_huffman_frame_header_size;

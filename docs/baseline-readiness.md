@@ -2965,3 +2965,17 @@ under MSVC and ClangCL. Their complete 3,265-test suites pass in 246.61 and
 242.34 seconds, including all seven Python tooling entries and schema
 compatibility passes of 106.28 and 95.46 seconds. Complete-frame identity and
 later boundaries remain closed.
+
+### BR-0182
+
+The bounded 16-MiB Contextual Blocked Huffman frame decoder now admits exact
+identity `2/5 + 1/4 + 2/2` through a decode-only header-validation path. Header
+tests fix `7F`, `34T`, 2,597-byte descriptor, and fifteen-bit payload ceilings.
+A complete frame reconstructs distance 4,194,305 from overlap-built history,
+while the four-MiB identity rejects it without token or raw publication. The
+ordinary frame validator and serializer still reject variant 4, preserving a
+closed encoder boundary. Ten focused frame-format/decoder tests pass under
+MSVC and ClangCL. Their complete 3,267-test suites pass in 242.25 and 237.92
+seconds, including all seven Python tooling entries and schema compatibility
+passes of 103.31 and 92.93 seconds. Frame encoding and later boundaries remain
+closed.

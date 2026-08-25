@@ -26512,3 +26512,27 @@ both bounds.
   complete 3,265-test suites pass in 246.61 and 242.34 seconds, including all
   seven Python tooling entries and schema compatibility passes of 106.28 and
   95.46 seconds.
+
+## CR-1074: 2026-08-25 - Admit decoder-only 16-MiB Blocked Huffman frames
+
+- Authoring method: extended marc's bounded frame parser with an explicit
+  direction-local admission and constructed frame vectors solely from
+  repository-owned typed-token and entropy primitives.
+- References used: DD-992, IR-0754, TVG-0856, CR-1073, and marc's earlier
+  16-MiB contextual rANS/tANS bounded-decoder stages.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: separate parser admission from serializer validation,
+  test exact count/descriptor/payload ceilings independently, and use the
+  first distance beyond four MiB for a practical bounded frame vector.
+- Generated-code task description: add decoder-only frame validation for exact
+  identity `2/5 + 1/4 + 2/2`, reciprocal atomic rejection, and a complete
+  overlap-history reconstruction vector while keeping encoding closed.
+- Similarity review: the admission follows marc's own staged validation shape
+  and contains no external implementation expression.
+- Validation: ten focused frame-format/decoder tests pass under MSVC and
+  ClangCL. Their complete 3,267-test suites pass in 242.25 and 237.92 seconds,
+  including all seven Python tooling entries and schema compatibility passes
+  of 103.31 and 92.93 seconds.

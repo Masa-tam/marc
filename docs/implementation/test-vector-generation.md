@@ -12217,3 +12217,18 @@ length 258, one overlap Match of length 249, and a final length-5 Match at
 distance 16,777,216. Require 65,030 tokens, 260,118 events, 650,309 decisions,
 an active class-24 distance model, exact direct encode/decode without an
 operation array, and atomic rejection under context variant 3.
+
+### TVG-0856
+
+Construct an unchecked variant-4 frame header for raw extent five with two
+tokens, four events, 35 decisions, 66 payload bytes, and a 2,597-byte
+descriptor. Require decode-side parsing at equality, rejection at 36
+decisions, 67 payload bytes, or 2,598 descriptor bytes, and continued rejection
+by the ordinary serializer-side validator.
+
+Build a complete decoder vector from one literal, 16,256 overlap Matches of
+length 258, one overlap Match of length 256, and a final length-258 Match at
+distance 4,194,305. Encode only its already-admitted entropy descriptor and
+payload, assemble the frame header independently, and require bounded frame
+decode to produce 4,194,563 `A` bytes. Require the four-MiB identity to reject
+the same frame without changing sentinel tokens or raw bytes.

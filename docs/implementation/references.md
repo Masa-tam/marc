@@ -6812,3 +6812,13 @@ model/writer/decoder, and direct typed-token adapters. No external compressor,
 Huffman implementation, source code, archive, encoded vector, test suite,
 patent, pseudocode, benchmark result, optimization description, or malformed-
 stream corpus was consulted.
+
+### IR-0754
+
+The decode-only 16-MiB Contextual Blocked Huffman frame stage uses IR-0751
+through IR-0753, DD-989 through DD-991, TVG-0853 through TVG-0855, marc's
+bounded frame preflight, direct two-pass typed-token decoder, and the earlier
+16-MiB contextual rANS/tANS decoder admission pattern. No external compressor,
+Huffman implementation, source code, archive, encoded vector, test suite,
+patent, pseudocode, benchmark result, optimization description, or malformed-
+stream corpus was consulted.

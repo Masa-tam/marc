@@ -20572,3 +20572,16 @@ building, writing, decoding, and direct typed-token validation. Add no
 class 24 with alphabet 25 and exactly 24 LSB-first bypass bits; require crossed
 older layouts to fail without descriptor, table, or token publication. Keep
 complete-frame identity and every outward boundary closed.
+
+## DD-992: Admit 16-MiB Blocked Huffman frames for bounded decoding only
+
+- Date: 2026-08-25
+- Status: accepted
+
+Give the frame parser an explicit variant-4 descriptor ceiling of 2,597 bytes
+while leaving the ordinary frame validator and serializer at a zero ceiling
+for variant 4. Derive decoder bounds from the immutable selected layout:
+`7F`, `34T`, and `ceil(15*decision_count/8)`. Require exact identity
+`2/5 + 1/4 + 2/2`, reciprocal four-MiB rejection, and no token or raw
+publication on failure. Keep complete-frame encoding and every outward
+boundary closed.

@@ -346,8 +346,9 @@ foreach(required_blocked_huffman_window_16m_term IN ITEMS
         "aggregate                        505,940,581 bytes"
         "aggregate                        438,450,649 bytes"
         "explicit 512-MiB aggregate policy"
-        "descriptor and entropy-operation/direct typed-token stages implemented"
-        "Frame identity, public, tooling,"
+        "bounded complete-frame"
+        "encoding, public, tooling, fuzzing, and interoperability boundaries"
+        "Bounded decoding is complete; encoding remains closed."
         "(complete)"
         "schema-50 archive bytes and order")
     string(FIND "${lzss_contextual_blocked_huffman_window_16m_content}"

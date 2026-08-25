@@ -5818,3 +5818,12 @@ operation buffer is introduced: alphabet 25 and the 24-bit bypass ceiling are
 read from the held layout. Crossed older layouts fail before descriptor,
 table, or token publication. Complete-frame validation and every outward
 boundary remain separate closed stages.
+
+The bounded complete-frame parser now has an explicit decode-only admission
+path for Contextual Blocked Huffman variant 4. It reuses common stream and
+dictionary validation but supplies the 2,597-byte descriptor ceiling only
+while parsing untrusted frame headers. The ordinary internal frame validator
+used by serialization still resolves variant 4 to a zero descriptor ceiling;
+therefore no encoder can accidentally open through this decoder change.
+Preflight parses and validates the complete descriptor before the direct
+two-pass token decoder publishes token or raw output.
