@@ -2915,3 +2915,16 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the 16-MiB
 Contextual rANS profile.
+
+### BR-0178
+
+Interoperability schema 50 freezes all 59 schema-49 archives and appends only
+`lzss-contextual-tans-16m` as archive 60. Generation requires exact identity
+`2/5 + 1/4 + 5/2`, size, SHA-256, and round trip. Verification enforces exact
+manifest order, foreign decode, and byte-identical local re-encoding;
+reordered schema-50 manifests fail, while removing only entry 60 reconstructs
+schema 49 and preserves verification through schema 1. The complete suites
+pass 3,260/3,260 under MSVC in 226.00 seconds and 3,253/3,253 under ClangCL in
+219.00 seconds with compatibility passes of 104.65 and 92.30 seconds. External
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang four-direction
+schema-50 evidence remains pending.

@@ -10,9 +10,9 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-Each current schema-49 bundle contains the same generated `input.bin`, the
-frozen 42 stable-profile archives, seventeen experimental Format 2 archives,
-and `manifest.json`. The manifest declares codec set `marc-cli-v49` and records
+Each current schema-50 bundle contains the same generated `input.bin`, the
+frozen 42 stable-profile archives, eighteen experimental Format 2 archives,
+and `manifest.json`. The manifest declares codec set `marc-cli-v50` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -33,7 +33,7 @@ arguments. The verifier performs all of the following:
 
 1. validates the manifest version, exact codec set and profile order, leaf-only
    file names, sizes, and SHA-256 values;
-2. decodes all fifty-nine foreign archives and compares their output byte
+2. decodes all sixty foreign archives and compares their output byte
    for byte with `input.bin`;
 3. re-encodes `input.bin` with the local executable and compares every complete
    archive byte for byte with the foreign archive.
@@ -46,7 +46,7 @@ has this form:
 artifact: marc-interoperability-windows-msvc-x64
 local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
-result: Verified 59 archives from windows-msvc-x64 (...), revision <Git object ID>
+result: Verified 60 archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
 
 ## Schema compatibility
@@ -143,6 +143,10 @@ schema silently inherits this later profile or name.
 
 Schema 49 requires `marc-cli-v49` and all fifty-nine archives, appending
 `lzss-contextual-rans-16m` to the frozen schema-48 order. No earlier schema
+silently inherits this later profile or name.
+
+Schema 50 requires `marc-cli-v50` and all sixty archives, appending
+`lzss-contextual-tans-16m` to the frozen schema-49 order. No earlier schema
 silently inherits this later profile or name.
 
 ## Integrity and current evidence

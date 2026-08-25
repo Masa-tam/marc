@@ -369,7 +369,7 @@ foreach(required_window_16m_term IN ITEMS
         "decision_count <= 7F"
         "aggregate                      1,057,488,981 bytes"
         "A 64-MiB jump would require class 26"
-        "Dynamic Range and canonical contextual rANS lifecycles"
+        "Dynamic Range, canonical contextual rANS, and contextual tANS"
         "Match-finder strategy remains encoder-local and is not serialized")
     string(FIND "${lzss_contextual_window_16m_content}"
         "${required_window_16m_term}" required_window_16m_term_offset)
@@ -395,8 +395,9 @@ foreach(required_tans_window_16m_term IN ITEMS
         "aggregate                        462,169,095 bytes"
         "aggregate                        394,798,087 bytes"
         "payload limit 176,160,770"
-        "public C, CLI, benchmark, and bounded fuzzing lifecycles implemented"
-        "Interoperability remains closed")
+        "complete, including schema-50 interoperability admission"
+        "appends only `lzss-contextual-tans-16m` as archive 60"
+        "removes only archive 60")
     string(FIND "${lzss_contextual_tans_window_16m_content}"
         "${required_tans_window_16m_term}"
         required_tans_window_16m_term_offset)

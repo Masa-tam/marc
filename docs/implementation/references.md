@@ -6773,3 +6773,13 @@ Contextual rANS 16-MiB admission pattern. No external compressor, tANS or FSE
 implementation, source code, archive, encoded vector, test suite, patent,
 pseudocode, benchmark result, optimization description, or malformed-stream
 corpus was consulted.
+
+### IR-0750
+
+The 16-MiB Contextual tANS interoperability admission uses IR-0741 through
+IR-0749, DD-979 through DD-987, TVG-0843 through TVG-0851, marc's append-only
+interoperability manifest, and its schema-reduction compatibility harness. No
+external compressor, tANS or FSE implementation, interoperability suite,
+archive, source code, encoded vector, test suite, patent, pseudocode,
+benchmark result, optimization description, or malformed-stream corpus was
+consulted.

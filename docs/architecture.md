@@ -5795,4 +5795,9 @@ policy rather than serialized format. The dual-path decoder fuzz harness also
 admits profile 3 while retaining a 32-KiB input cap, 4-KiB total output,
 one-KiB frame/token storage, fixed 131,072-entry tables, byte-derived chunks,
 and a finite call ceiling. Raising distance validation to 16 MiB allocates no
-profile-sized history. Interoperability admission remains a separate stage.
+profile-sized history. Interoperability schema 50 freezes schema 49's exact
+59-archive order and appends only `lzss-contextual-tans-16m` as entry 60.
+Generation requires exact identity `2/5 + 1/4 + 5/2`, round trip, size, and
+SHA-256. Verification enforces exact order and byte-identical local re-
+encoding. Compatibility removes only entry 60 to reconstruct schema 49 before
+traversing the unchanged chain through schema 1.

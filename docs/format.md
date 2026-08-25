@@ -7209,7 +7209,13 @@ untimed byte-exact round trip, and reports all queried workspace regions.
 The fixed-memory decoder fuzz harness admits the same profile while retaining
 a 32-KiB input cap, 4-KiB total output, one-KiB frame/token storage, fixed
 131,072-entry tables, and a finite process-call ceiling. Its 16-MiB distance
-limit changes no allocation or stream rule. Interoperability remains closed.
+limit changes no allocation or stream rule. Interoperability schema 50 appends
+only `lzss-contextual-tans-16m` as archive 60 after the frozen 59-entry
+schema-49 inventory. Generation requires exact identity `2/5 + 1/4 + 5/2`;
+verification decodes and re-encodes the complete archive byte-identically.
+Compatibility removes only archive 60 to reconstruct schema 49 before
+traversing the unchanged legacy chain. This admission adds no serialized
+rule.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

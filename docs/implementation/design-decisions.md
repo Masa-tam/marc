@@ -20518,3 +20518,16 @@ Extend permanent truncation, malformed descriptor, and every distinct public
 profile rejection regression to selector value 3. Run one fixed-seed 1,000-
 input Clang 22 libFuzzer/ASan/UBSan campaign without retaining generated
 mutations. Keep interoperability admission closed.
+
+## DD-988: Admit 16-MiB Contextual tANS as interoperability schema 50
+
+- Date: 2026-08-25
+- Status: accepted
+
+Freeze schema 49's exact 59-profile order and append only
+`lzss-contextual-tans-16m` as archive 60. Require the generator to prove exact
+identity `2/5 + 1/4 + 5/2`, round trip, size, and SHA-256; require the verifier
+to enforce exact order, foreign decode, and byte-identical local re-encoding.
+Reconstruct schema 49 by removing only the appended profile before traversing
+the unchanged compatibility chain through schema 1. This changes no codec
+format, API, default, or earlier archive bytes.

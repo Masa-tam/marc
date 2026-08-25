@@ -1,7 +1,7 @@
 # LZSS contextual tANS 16 MiB window
 
-Status: public C, CLI, benchmark, and bounded fuzzing lifecycles implemented
-after project version 0.4.0. Interoperability remains closed.
+Status: complete, including schema-50 interoperability admission, after
+project version 0.4.0. External four-direction evidence remains pending.
 
 ## Purpose and identity
 
@@ -113,7 +113,14 @@ limits.
 7. Add the explicit CLI and dependency-free benchmark names (complete).
 8. Extend bounded decoder fuzzing without profile-sized allocation (complete).
 9. Append exactly one interoperability archive only after all preceding
-   boundaries pass.
+   boundaries pass (complete).
+
+Schema-50 interoperability admission freezes schema 49's exact 59-archive
+order and appends only `lzss-contextual-tans-16m` as archive 60. Generation
+requires exact identity `2/5 + 1/4 + 5/2`, round trip, size, and SHA-256.
+Verification enforces exact order and byte-identical local re-encoding;
+compatibility removes only archive 60 to reconstruct schema 49 before
+traversing the unchanged chain through schema 1.
 
 Every stage preserves existing stream bytes and keeps later public boundaries
 closed. HashChain Exact remains the production match finder; BinaryTree and

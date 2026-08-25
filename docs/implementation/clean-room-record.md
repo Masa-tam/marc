@@ -26383,3 +26383,30 @@ both bounds.
   suites passed 3,260/3,260 under MSVC and 3,253/3,253 under ClangCL with the
   600-second per-test limit, including the unchanged schema-49 compatibility
   chain; the count difference is the seven MSVC-only tooling tests.
+
+## CR-1069: 2026-08-25 - Admit 16-MiB Contextual tANS interoperability
+
+- Authoring method: extended marc's repository-owned append-only
+  interoperability manifest after the complete public, tool, benchmark, and
+  bounded fuzz lifecycles had passed.
+- References used: DD-988, IR-0750, TVG-0852, CR-1068, and the existing
+  schema-49 generator, verifier, and compatibility chain.
+- Known implementations intentionally not consulted: external compressors,
+  tANS or FSE implementations, interoperability suites, archives, source code,
+  encoded vectors, test suites, patents, pseudocode, benchmark results,
+  optimization descriptions, and malformed-stream corpora.
+- Independent decisions: freeze all 59 schema-49 archives; append the exact
+  profile as archive 60; validate identity `2/5 + 1/4 + 5/2`; and reconstruct
+  schema 49 by deleting only the new final archive.
+- Generated-code task description: add schema-50 generation and verification,
+  reject reordered manifests, preserve the complete schema-49-through-1
+  chain, and update completion and provenance documents.
+- Similarity review: the change extends only marc's repository-local manifest
+  and compatibility structure; no external implementation expression,
+  archive, vector, naming scheme, or test structure was used.
+- Validation: the focused MSVC schema-50-through-1 compatibility pass completed
+  in 107.78 seconds. Complete suites passed 3,260/3,260 under MSVC in 226.00
+  seconds and 3,253/3,253 under ClangCL in 219.00 seconds with compatibility
+  passes of 104.65 and 92.30 seconds. Documentation validation, exact 60-
+  archive generation and verification, reordered-manifest rejection, and the
+  restored schema-49-through-1 chain all passed.

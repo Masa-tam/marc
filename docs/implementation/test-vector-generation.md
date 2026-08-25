@@ -12169,3 +12169,13 @@ resource-directory `lib/windows` path for execution, and run with
 `-seed=20260825 -runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`.
 Require normal completion, no crash, hang, or sanitizer finding, and retain no
 generated corpus or failure artifact.
+
+### TVG-0852
+
+Generate schema 50 from the repository-owned interoperability fixture with
+the frozen schema-49 order followed by `lzss-contextual-tans-16m`. Require
+exact header identity `2/5 + 1/4 + 5/2`, context descriptor variant 4, exact
+round trip, recorded size, and SHA-256. Verify all 60 archives in order by
+decoding and byte-identical local re-encoding. Swap the first two manifest
+entries and require rejection, then remove only archive 60, rewrite the
+manifest as schema 49, and verify every schema through schema 1.

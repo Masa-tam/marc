@@ -268,7 +268,8 @@ publication. The selector and trailing reserved word reuse the former 64-bit
 reserved tail, preserving the 112-byte ABI-1 extent and the all-zero default.
 The explicit `lzss-contextual-tans-16m` CLI and dependency-free benchmark use
 this same helper/query/factory lifecycle without duplicating private layout
-arithmetic. The interoperability-schema stage remains closed.
+arithmetic. The schema-50 archive exercises the same public profile without
+changing the C ABI.
 
 The completion audit covers all required binary classes, deterministic mixed
 and one-byte chunk schedules, stable repeated terminal calls, and frame-atomic
