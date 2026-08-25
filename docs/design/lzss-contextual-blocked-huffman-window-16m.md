@@ -1,9 +1,7 @@
 # LZSS contextual Blocked Huffman 16 MiB window
 
-Status: descriptor, operation/direct typed-token, bounded complete-frame,
-checked profile/streaming, public C, application-tooling, and bounded-fuzzing
-stages implemented after schema-50 interoperability admission.
-Interoperability remains closed.
+Status: complete, including schema-51 interoperability admission, after
+schema-50. External four-direction evidence remains pending.
 
 ## Purpose and exact identity
 
@@ -136,7 +134,14 @@ enlarge local hard limits.
 7. Extend bounded dual-path decoder fuzzing without profile-sized allocation.
    (complete)
 8. Append exactly one interoperability archive after every earlier boundary
-   passes, preserving all schema-50 archive bytes and order.
+   passes, preserving all schema-50 archive bytes and order. (complete)
+
+Schema-51 interoperability admission freezes schema 50's exact 60-archive
+order and appends only `lzss-contextual-blocked-huffman-16m` as archive 61.
+Generation requires exact identity `2/5 + 1/4 + 2/2`, round trip, size, and
+SHA-256. Verification enforces exact order and byte-identical local re-
+encoding; compatibility removes only archive 61 to reconstruct schema 50
+before traversing the unchanged chain through schema 1.
 
 Every stage keeps later surfaces closed. Public exact-profile decoders must
 reject the 64-KiB, one-MiB, four-MiB, and sixteen-MiB identities reciprocally

@@ -20656,3 +20656,16 @@ payload bytes, 35 fixed tables, and finite process-call budget. Prove that a
 small 16-MiB-profile decoder query remains below two MiB of aggregate caller
 storage. Do not allocate a profile-sized history, retain generated mutations,
 or admit interoperability in this stage.
+
+## DD-998: Admit Blocked Huffman 16-MiB as interoperability schema 51
+
+- Date: 2026-08-26
+- Status: accepted
+
+Freeze schema 50's exact 60-profile order and append only
+`lzss-contextual-blocked-huffman-16m` as archive 61. Require the generator to
+prove exact identity `2/5 + 1/4 + 2/2`, round trip, size, and SHA-256; require
+the verifier to enforce exact order, foreign decode, and byte-identical local
+re-encoding. Reconstruct schema 50 by removing only the appended profile
+before traversing the unchanged compatibility chain through schema 1. This
+changes no codec format, API, default, or earlier archive bytes.

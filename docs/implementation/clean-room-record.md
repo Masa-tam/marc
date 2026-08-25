@@ -26671,3 +26671,31 @@ both bounds.
   3,270-test suites pass under MSVC and ClangCL in 232.56 and 239.33 seconds,
   including all seven Python tooling entries, documentation layout, and schema
   compatibility passes of 100.04 and 94.54 seconds.
+
+## CR-1080: 2026-08-26 - Admit 16-MiB Contextual Blocked Huffman interoperability
+
+- Authoring method: extended marc's repository-owned append-only
+  interoperability manifest after the complete public, tool, benchmark, and
+  bounded-fuzz lifecycles had passed.
+- References used: DD-998, IR-0760, TVG-0862, CR-1079, and the existing
+  schema-50 generator, verifier, and compatibility chain.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, interoperability suites, archives, source code,
+  encoded vectors, test suites, patents, pseudocode, benchmark results,
+  optimization descriptions, and malformed-stream corpora.
+- Independent decisions: freeze all 60 schema-50 archives; append the exact
+  profile as archive 61; validate identity `2/5 + 1/4 + 2/2`; and reconstruct
+  schema 50 by deleting only the new final archive.
+- Generated-code task description: add schema-51 generation and verification,
+  reject reordered manifests, preserve the complete schema-50-through-1
+  chain, and update completion and provenance documents.
+- Similarity review: the change extends only marc's repository-local manifest
+  and compatibility structure; no external implementation expression,
+  archive, vector, naming scheme, or test structure was used.
+- Validation: the focused MSVC schema-51-through-1 compatibility pass completed
+  in 104.34 seconds. Complete suites passed 3,270/3,270 under MSVC in 235.75
+  seconds and 3,270/3,270 under ClangCL in 235.77 seconds, including all seven
+  Python tooling entries, documentation validation, exact 61-archive
+  generation and verification, reordered-manifest rejection, and schema-50-
+  through-1 compatibility passes of 104.14 and 97.45 seconds. External four-
+  direction schema-51 evidence remains pending.

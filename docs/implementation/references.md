@@ -6872,3 +6872,13 @@ complete-frame decoder, and permanent malformed-stream regression patterns.
 No external compressor, Huffman implementation, source code, archive, encoded
 vector, test suite, patent, pseudocode, benchmark result, optimization
 description, or malformed-stream corpus was consulted.
+
+### IR-0760
+
+The 16-MiB Contextual Blocked Huffman interoperability admission uses IR-0751
+through IR-0759, DD-989 through DD-997, TVG-0853 through TVG-0861, marc's
+append-only interoperability manifest, and its schema-reduction compatibility
+harness. No external compressor, Huffman implementation, interoperability
+suite, archive, source code, encoded vector, test suite, patent, pseudocode,
+benchmark result, optimization description, or malformed-stream corpus was
+consulted.

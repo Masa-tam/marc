@@ -12312,3 +12312,14 @@ to remain below two MiB. Build the ordinary compile-smoke target warning-clean
 under MSVC and ClangCL, then run the sanitizer target with seed 20260826 for
 exactly 1,000 bounded inputs, a 32-KiB maximum input, five-second per-input
 timeout, and 512-MiB RSS limit.
+
+### TVG-0862
+
+Generate schema 51 from the repository-owned interoperability fixture with
+the frozen schema-50 order followed by
+`lzss-contextual-blocked-huffman-16m`. Require exact header identity
+`2/5 + 1/4 + 2/2`, context descriptor variant 4, exact round trip, recorded
+size, and SHA-256. Verify all 61 archives in order by decoding and byte-
+identical local re-encoding. Swap the first two manifest entries and require
+rejection, then remove only archive 61, rewrite the manifest as schema 50, and
+verify every schema through schema 1.

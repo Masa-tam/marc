@@ -346,10 +346,9 @@ foreach(required_blocked_huffman_window_16m_term IN ITEMS
         "aggregate                        505,940,581 bytes"
         "aggregate                        438,450,649 bytes"
         "explicit 512-MiB aggregate policy"
-        "bounded complete-frame"
-        "checked profile/streaming"
-        "public C, application-tooling, and bounded-fuzzing"
-        "Interoperability remains closed"
+        "complete, including schema-51 interoperability admission"
+        "appends only `lzss-contextual-blocked-huffman-16m` as archive 61"
+        "removes only archive 61"
         "common selector value 3"
         "17,885 entropy-table entries"
         "Bounded encoding and decoding are complete."
@@ -406,7 +405,8 @@ foreach(required_window_16m_term IN ITEMS
         "decision_count <= 7F"
         "aggregate                      1,057,488,981 bytes"
         "A 64-MiB jump would require class 26"
-        "Dynamic Range, canonical contextual rANS, and contextual tANS"
+        "Dynamic Range, canonical contextual rANS, contextual tANS, and"
+        "schema-48 through schema-51"
         "Match-finder strategy remains encoder-local and is not serialized")
     string(FIND "${lzss_contextual_window_16m_content}"
         "${required_window_16m_term}" required_window_16m_term_offset)

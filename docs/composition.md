@@ -1864,3 +1864,13 @@ only; fixed frame, token, model, table, payload, output, and process-call
 bounds remain independent of the selected window. Permanent regressions cover
 all reciprocal profile crossings and prove a small local sixteen-MiB decoder
 query stays below two MiB. No interoperability archive is introduced.
+
+### CP-0115
+
+Interoperability schema 51 appends
+`lzss-contextual-blocked-huffman-16m` once after the frozen 60-entry schema-50
+order. The generator requires identity `2/5 + 1/4 + 2/2` and an immediate
+round trip; the verifier requires exact 61-entry order, foreign decode
+equality, and byte-identical local re-encoding. Compatibility removes only
+entry 61 to reconstruct schema 50 before traversing its unchanged historical
+conversion chain. No codec byte, resource profile, or public ABI changes.

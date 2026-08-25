@@ -318,7 +318,8 @@ query returns primary/secondary/views extents 16,777,216 / 220,203,621 /
 succeeds and one byte short fails before requirements or a handle are
 published. Applying the helper twice is byte-identical, unknown selectors do
 not change the configuration, and a four-MiB decoder rejects the sixteen-MiB
-identity before publishing raw bytes.
+identity before publishing raw bytes. The schema-51 archive exercises this
+same public profile without adding a serialized selector or ABI field.
 The experimental LZSS Contextual Adaptive Huffman factory is another distinct
 Format 2 lifecycle. Initialize its size-tagged configuration with
 `marc_lzss_contextual_adaptive_huffman_config_init()`, then call

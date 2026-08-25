@@ -3052,3 +3052,17 @@ finding, retained mutation, or artifact. Interoperability remains closed
 pending its separate stage. The complete 3,270-test suites pass under MSVC and
 ClangCL in 232.56 and 239.33 seconds, including schema compatibility passes of
 100.04 and 94.54 seconds.
+
+### BR-0188
+
+Interoperability schema 51 freezes all 60 schema-50 archives and appends only
+`lzss-contextual-blocked-huffman-16m` as archive 61. Generation requires exact
+identity `2/5 + 1/4 + 2/2`, size, SHA-256, and round trip. Verification
+enforces exact manifest order, foreign decode, and byte-identical local re-
+encoding; reordered schema-51 manifests fail, while removing only entry 61
+reconstructs schema 50 and preserves verification through schema 1. The
+focused MSVC compatibility chain passes in 104.34 seconds. The complete suites
+pass 3,270/3,270 under MSVC and ClangCL in 235.75 and 235.77 seconds, including
+compatibility passes of 104.14 and 97.45 seconds. External Windows/MSVC,
+Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang four-direction schema-51 evidence
+remains pending.

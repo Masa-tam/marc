@@ -7508,3 +7508,12 @@ limits are local resource policy; serialized stream fields never raise them.
 Exact decoder admission rejects all crossed dictionary/context pairs before
 raw publication. CLI, benchmark, fuzz, and interoperability names remain
 unassigned at this stage.
+
+The completed application and bounded-fuzzing stages expose exact selector
+`lzss-contextual-blocked-huffman-16m` without adding a serialized field.
+Interoperability schema 51 appends only that selector as archive 61 after the
+frozen 60-entry schema-50 inventory. Generation requires exact identity
+`2/5 + 1/4 + 2/2`; verification decodes and re-encodes the complete archive
+byte-identically. Compatibility removes only archive 61 to reconstruct schema
+50 before traversing the unchanged legacy chain. This admission adds no
+serialized rule.

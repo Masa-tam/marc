@@ -5871,3 +5871,11 @@ fixed descriptor/table/payload banks, and a finite call budget. A separate
 workspace regression proves that selecting the profile for a five-byte local
 frame remains below two MiB rather than reserving a profile-sized history.
 Interoperability inventory remains unchanged.
+
+Interoperability schema 51 freezes schema 50's exact 60-archive order and
+appends only `lzss-contextual-blocked-huffman-16m` as entry 61. Generation
+requires exact identity `2/5 + 1/4 + 2/2`, round trip, size, and SHA-256.
+Verification enforces exact order and byte-identical local re-encoding.
+Compatibility removes only entry 61 to reconstruct schema 50 before
+traversing the unchanged chain through schema 1. This admission changes no
+codec format, public ABI, default, or earlier archive byte.
