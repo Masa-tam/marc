@@ -5810,3 +5810,11 @@ canonical parser/serializer used by older variants; it does not change the
 size validation, and failures publish neither a partial descriptor nor a
 crossed frame identity. Operation coding and all outward 16-MiB Contextual
 Blocked Huffman boundaries remain closed.
+
+The same immutable variant-4 layout now reaches the generic Contextual
+Blocked Huffman model builder, payload writer/reader, and direct LZSS
+typed-token adapters. No 16-MiB-specific coding branch or intermediate
+operation buffer is introduced: alphabet 25 and the 24-bit bypass ceiling are
+read from the held layout. Crossed older layouts fail before descriptor,
+table, or token publication. Complete-frame validation and every outward
+boundary remain separate closed stages.

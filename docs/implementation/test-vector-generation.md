@@ -12203,3 +12203,17 @@ Construct all 35 dense models with distance alphabet 25 and require an exact
 when the unused high nibble of a 25-symbol dense record is nonzero. For every
 proper prefix and one trailing byte, require atomic failure with an unchanged
 sentinel descriptor under both MSVC and ClangCL.
+
+### TVG-0855
+
+Model operations for a Match distance class 24 under context variant 4 using
+one token symbol, one literal, one length-class symbol, distance symbol 24 in
+alphabet 25, and bypass value `0xABCDEF` with width 24. Require 28 decisions,
+three payload bytes `EF CD AB`, exact decode, rejection under variant 3, and
+bypass width 25 rejection.
+
+Build a direct typed-token vector from one literal, 65,027 overlap Matches of
+length 258, one overlap Match of length 249, and a final length-5 Match at
+distance 16,777,216. Require 65,030 tokens, 260,118 events, 650,309 decisions,
+an active class-24 distance model, exact direct encode/decode without an
+operation array, and atomic rejection under context variant 3.

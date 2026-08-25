@@ -2952,3 +2952,16 @@ the seven Python tooling entries required a separate sandbox-external rerun
 because the sandbox denied execution of the registered Python 3.14 binary.
 Schema compatibility passes in 107.43 and 96.89 seconds. Operation coding and
 every later boundary remain closed.
+
+### BR-0181
+
+The 16-MiB Contextual Blocked Huffman entropy-operation and direct typed-token
+boundaries now reuse the generic immutable selected-layout path. A class-24
+hand vector fixes 24-bit LSB-first bypass bytes `EF CD AB`, and a 65,030-token
+vector constructs 16,777,216 bytes of overlap-built history before encoding
+and decoding an exact distance-16,777,216 Match. Four-MiB admission rejects
+both routes atomically. Fourteen focused model/operation/direct tests pass
+under MSVC and ClangCL. Their complete 3,265-test suites pass in 246.61 and
+242.34 seconds, including all seven Python tooling entries and schema
+compatibility passes of 106.28 and 95.46 seconds. Complete-frame identity and
+later boundaries remain closed.

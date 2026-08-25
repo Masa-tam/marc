@@ -1,8 +1,8 @@
 # LZSS contextual Blocked Huffman 16 MiB window
 
-Status: descriptor-format stage implemented after schema-50 interoperability
-admission. Operation coding, frame identity, public, tooling, fuzzing, and
-interoperability boundaries remain closed.
+Status: descriptor and entropy-operation/direct typed-token stages implemented
+after schema-50 interoperability admission. Frame identity, public, tooling,
+fuzzing, and interoperability boundaries remain closed.
 
 ## Purpose and exact identity
 
@@ -123,6 +123,7 @@ limits.
    (complete)
 2. Carry the immutable layout through model building, operation coding, and
    direct typed-token encode/decode with a class-24 hand vector.
+   (complete)
 3. Admit only exact complete-frame identity `2/5 + 1/4 + 2/2`, initially for
    bounded decoding and then encoding after exact preflight tests pass.
 4. Add checked profile/workspace calculation and one-byte streaming with exact

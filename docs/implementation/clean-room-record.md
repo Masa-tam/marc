@@ -26487,3 +26487,28 @@ both bounds.
   `BAD_COMMAND` because the sandbox denies the registered Python 3.14 binary;
   the same entries pass 7/7 in both configurations when rerun through the
   established sandbox-external test route.
+
+## CR-1073: 2026-08-25 - Admit 16-MiB Blocked Huffman operation paths
+
+- Authoring method: tested marc's existing generic immutable-layout operation
+  and direct typed-token implementation with independently derived class-24
+  vectors; no external implementation was consulted.
+- References used: DD-991, IR-0753, TVG-0855, CR-1072, and the repository-owned
+  four-MiB operation/direct-token tests.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: retain the generic coding path, freeze `0xABCDEF` as
+  a 24-bit LSB-first hand value, construct the required history only from
+  bounded overlap Matches, and leave frame/public admission closed.
+- Generated-code task description: add class-24 model/writer/decoder and
+  distance-16,777,216 direct typed-token round trips with reciprocal atomic
+  rejection by the four-MiB layout.
+- Similarity review: only repository-owned generic paths and independently
+  calculated vectors were used; no external implementation expression was
+  introduced.
+- Validation: fourteen focused tests pass under MSVC and ClangCL. Their
+  complete 3,265-test suites pass in 246.61 and 242.34 seconds, including all
+  seven Python tooling entries and schema compatibility passes of 106.28 and
+  95.46 seconds.

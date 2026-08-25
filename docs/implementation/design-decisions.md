@@ -20560,3 +20560,15 @@ maximum and byte representation, and reject crossed layouts, truncation,
 trailing data, and nonzero odd-alphabet padding without publishing output.
 Do not admit operation coding, complete-frame identity `2/5 + 1/4 + 2/2`, or
 any public surface in this stage.
+
+## DD-991: Reuse the generic operation path for 16-MiB Blocked Huffman
+
+- Date: 2026-08-25
+- Status: accepted
+
+Carry the already selected context-variant-4 layout unchanged through model
+building, writing, decoding, and direct typed-token validation. Add no
+16-MiB-specific coding branch and no intermediate operation workspace. Fix
+class 24 with alphabet 25 and exactly 24 LSB-first bypass bits; require crossed
+older layouts to fail without descriptor, table, or token publication. Keep
+complete-frame identity and every outward boundary closed.

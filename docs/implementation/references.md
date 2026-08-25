@@ -6802,3 +6802,13 @@ the repository-owned context-variant-4 field layout. No external compressor,
 Huffman implementation, source code, archive, encoded vector, test suite,
 patent, pseudocode, benchmark result, optimization description, or malformed-
 stream corpus was consulted.
+
+### IR-0753
+
+The 16-MiB Contextual Blocked Huffman operation/direct-token stage uses
+IR-0751 through IR-0752, DD-989 through DD-990, TVG-0853 through TVG-0854,
+marc's immutable selected field layout, generic Contextual Blocked Huffman
+model/writer/decoder, and direct typed-token adapters. No external compressor,
+Huffman implementation, source code, archive, encoded vector, test suite,
+patent, pseudocode, benchmark result, optimization description, or malformed-
+stream corpus was consulted.

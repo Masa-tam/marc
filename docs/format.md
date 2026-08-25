@@ -7465,3 +7465,13 @@ must be zero. Variants 1 through 3 retain their 2,561-, 2,579-, and
 2,588-byte maxima and canonical bytes. This format-stage recognition does not
 admit complete-frame identity `2/5 + 1/4 + 2/2`; operation coding, frame
 parsing, and every public name remain closed.
+
+The private Contextual Blocked Huffman operation and direct LZSS typed-token
+paths now retain context variant 4 for their entire model-build, write, table,
+read, and token-validation lifetimes. Distance class 24 uses alphabet 25 and
+is followed by exactly 24 LSB-first bypass bits. The hand value `0xABCDEF`
+therefore produces payload bytes `EF CD AB`. A direct vector builds
+16,777,216 bytes of prior history with bounded overlap Matches and then
+round-trips a Match at distance 16,777,216 without materializing an operation
+array. Older layouts reject the crossed class atomically. Complete-frame
+identity `2/5 + 1/4 + 2/2` and every public surface remain closed.

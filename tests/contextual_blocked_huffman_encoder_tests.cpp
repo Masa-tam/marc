@@ -221,6 +221,69 @@ TEST(ContextualBlockedHuffmanEncoder,
               ContextualBlockedHuffmanEncodeError::invalid_operation);
 }
 
+TEST(ContextualBlockedHuffmanEncoder,
+     SelectsSixteenMiBDistanceAndTwentyFourBitBypassLayout) {
+    constexpr std::array operations{
+        symbol(0, 2, 1), symbol(3, 256, 'A'), symbol(21, 8, 1),
+        symbol(23, 25, 24), bypass(24, 0xabcdef)};
+    constexpr auto sixteen_mib =
+        LzssFieldContextVariant::field_context_16m;
+    constexpr auto four_mib =
+        LzssFieldContextVariant::field_context_4m;
+
+    ContextualBlockedHuffmanDescriptor descriptor{};
+    descriptor.decision_count = 0xccccccccU;
+    const auto sentinel = descriptor;
+    EXPECT_EQ(plan_contextual_blocked_huffman_operations(
+                  operations, {}, descriptor, four_mib).error,
+              ContextualBlockedHuffmanEncodeError::invalid_operation);
+    EXPECT_EQ(descriptor.decision_count, sentinel.decision_count);
+
+    const auto plan = plan_contextual_blocked_huffman_operations(
+        operations, {}, descriptor, sixteen_mib);
+    ASSERT_EQ(plan.error, ContextualBlockedHuffmanEncodeError::none);
+    EXPECT_EQ(plan.decision_count, 28U);
+    EXPECT_EQ(plan.payload_size, 3U);
+    EXPECT_EQ(descriptor.field_active_mask, 0x0fU);
+    EXPECT_EQ(descriptor.field_models[3].single_symbol, 24U);
+    EXPECT_EQ(descriptor.final_valid_bits, 8U);
+
+    std::array output{
+        std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}};
+    ASSERT_EQ(encode_contextual_blocked_huffman_operations(
+                  operations, {}, output, descriptor, sixteen_mib).error,
+              ContextualBlockedHuffmanEncodeError::none);
+    constexpr std::array expected{
+        std::byte{0xef}, std::byte{0xcd}, std::byte{0xab}};
+    EXPECT_TRUE(std::ranges::equal(
+        expected, std::span<const std::byte>{output}.first(expected.size())));
+    EXPECT_EQ(output.back(), std::byte{0xcc});
+
+    ContextualBlockedHuffmanDecoder decoder;
+    ASSERT_EQ(decoder.begin(
+                  descriptor,
+                  std::span<const std::byte>{output}.first(expected.size()),
+                  {}, {}, sixteen_mib).error,
+              ContextualBlockedHuffmanDecodeError::none);
+    for (const auto& operation : operations) {
+        std::uint32_t value{0xccccccccU};
+        const auto decoded = operation.kind == ModeledOperationKind::symbol
+            ? decoder.decode_symbol(
+                  operation.context_id, operation.alphabet_size, value)
+            : decoder.decode_bypass(operation.bit_count, value);
+        ASSERT_EQ(decoded.error, ContextualBlockedHuffmanDecodeError::none);
+        EXPECT_EQ(value, operation.value);
+    }
+    EXPECT_EQ(decoder.finish(operations.size(), 28).error,
+              ContextualBlockedHuffmanDecodeError::none);
+
+    ContextualBlockedHuffmanModelBuilder builder{sixteen_mib};
+    EXPECT_EQ(builder.add_bypass(24, 0),
+              ContextualBlockedHuffmanEncodeError::none);
+    EXPECT_EQ(builder.add_bypass(25, 0),
+              ContextualBlockedHuffmanEncodeError::invalid_operation);
+}
+
 TEST(ContextualBlockedHuffmanEncoder, SelectsOnlyStrictlyProfitableOverrides) {
     std::array<ModeledOperation, 81> operations{};
     for (std::size_t index = 0; index < 40; ++index) {
