@@ -43,6 +43,8 @@ navigate chronological development records.
   the staged table, payload, and 512-MiB workspace proof.
 - [LZSS contextual Blocked Huffman 4 MiB window](design/lzss-contextual-blocked-huffman-window-4m.md):
   the fourth backend's descriptor, payload, and 128-MiB workspace proof.
+- [LZSS contextual Blocked Huffman 16 MiB window](design/lzss-contextual-blocked-huffman-window-16m.md):
+  the staged descriptor, payload, and 512-MiB workspace proof.
 - [LZSS contextual Adaptive Huffman 4 MiB window](design/lzss-contextual-adaptive-huffman-window-4m.md):
   the fifth backend's conservative payload proof and explicit 256-MiB policy.
 - [LZSS typed-token protocol](design/lzss-typed-token-protocol.md): bounded

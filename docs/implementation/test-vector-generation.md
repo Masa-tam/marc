@@ -12179,3 +12179,16 @@ round trip, recorded size, and SHA-256. Verify all 60 archives in order by
 decoding and byte-identical local re-encoding. Swap the first two manifest
 entries and require rejection, then remove only archive 60, rewrite the
 manifest as schema 49, and verify every schema through schema 1.
+
+### TVG-0853
+
+Recompute the Contextual Blocked Huffman variant-4 descriptor from one pooled
+distance model plus eight distance-context overrides: each 25-symbol dense
+record is thirteen bytes, so the variant-3 maximum 2,588 grows by nine to
+2,597. Require table count 35 and node capacity 17,885 to remain unchanged.
+
+For `F=16,777,216`, require `7F=117,440,512`, payload 220,200,960, and complete
+frame 220,203,621. On the supported 64-bit layout require encoder views
+268,959,744 and aggregate 505,940,581; require decoder views 201,469,812 and
+aggregate 438,450,649. Recompute both margins below 512 MiB and require future
+queries to succeed at equality and fail one byte short before publication.

@@ -317,6 +317,7 @@ foreach(experimental_design IN ITEMS
         "lzss-contextual-window-16m.md"
         "lzss-contextual-rans-window-16m.md"
         "lzss-contextual-tans-window-16m.md"
+        "lzss-contextual-blocked-huffman-window-16m.md"
         "lzss-typed-token-protocol.md"
         "context-model-contract.md"
         "entropy-backend-contract.md")
@@ -325,6 +326,35 @@ foreach(experimental_design IN ITEMS
     if(NOT EXISTS "${experimental_design_path}")
         message(FATAL_ERROR
             "Missing experimental design document: ${experimental_design}")
+    endif()
+endforeach()
+
+set(lzss_contextual_blocked_huffman_window_16m_design
+    "${source_dir}/docs/design/lzss-contextual-blocked-huffman-window-16m.md")
+file(READ "${lzss_contextual_blocked_huffman_window_16m_design}"
+    lzss_contextual_blocked_huffman_window_16m_content)
+foreach(required_blocked_huffman_window_16m_term IN ITEMS
+        "dictionary algorithm/variant 2/5"
+        "context-model algorithm/variant 1/4"
+        "entropy algorithm/variant 2/2"
+        "maximum  2,597 bytes"
+        "35 caller-owned `HuffmanDecodeTable`"
+        "17,885 bounded decode nodes"
+        "decision_count <= 34*token_count"
+        "complete_frame_size <= ceil(105F/8) + 2,661"
+        "payload ceiling is 220,200,960"
+        "aggregate                        505,940,581 bytes"
+        "aggregate                        438,450,649 bytes"
+        "explicit 512-MiB aggregate policy"
+        "implementation, public, tooling, fuzzing, and interoperability boundaries"
+        "schema-50 archive bytes and order")
+    string(FIND "${lzss_contextual_blocked_huffman_window_16m_content}"
+        "${required_blocked_huffman_window_16m_term}"
+        required_blocked_huffman_window_16m_term_offset)
+    if(required_blocked_huffman_window_16m_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 16 MiB contextual Blocked Huffman design: "
+            "${required_blocked_huffman_window_16m_term}")
     endif()
 endforeach()
 

@@ -6783,3 +6783,13 @@ external compressor, tANS or FSE implementation, interoperability suite,
 archive, source code, encoded vector, test suite, patent, pseudocode,
 benchmark result, optimization description, or malformed-stream corpus was
 consulted.
+
+### IR-0751
+
+The 16-MiB Contextual Blocked Huffman design uses the repository-owned
+four-MiB Contextual Blocked Huffman format, shared dictionary variant 5 and
+context variant 4, canonical Huffman primitives, HashChain Exact workspace
+query, and checked profile arithmetic. No external compressor, Huffman
+implementation, source code, archive, encoded vector, test suite, patent,
+pseudocode, benchmark result, optimization description, or malformed-stream
+corpus was consulted.

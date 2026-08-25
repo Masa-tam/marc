@@ -152,6 +152,13 @@ aggregate limits explicitly and validate every sum and conversion. rANS,
 tANS, Blocked Huffman, and Adaptive Huffman receive independent calculations;
 no estimate in this shared document admits them.
 
+The Contextual Blocked Huffman 16-MiB design now supplies its independent
+calculation: descriptor maximum 2,597 bytes, payload ceiling 220,200,960,
+complete-frame ceiling 220,203,621, and supported-layout encoder/decoder
+aggregates 505,940,581/438,450,649 bytes. Both directions therefore use an
+explicit 512-MiB profile. This design calculation admits no implementation
+boundary by itself.
+
 ## Required tests before any backend admission
 
 - hand-check distance classes 0, 22, 23, and 24;
@@ -247,7 +254,7 @@ traversing the unchanged schema-47-through-1 chain.
    (complete);
 5. canonical contextual rANS (complete);
 6. contextual tANS (complete, including schema-50 interoperability);
-7. Contextual Blocked Huffman;
+7. Contextual Blocked Huffman (design accepted; implementation closed);
 8. Contextual Adaptive Huffman;
 9. only then evaluate whether 16 MiB evidence justifies a later 64-MiB design.
 

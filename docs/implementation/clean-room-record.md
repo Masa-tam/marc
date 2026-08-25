@@ -26435,3 +26435,29 @@ both bounds.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1071: 2026-08-25 - Design 16-MiB Contextual Blocked Huffman profile
+
+- Authoring method: derived the proposed profile entirely from marc's
+  completed four-MiB Contextual Blocked Huffman representation, shared 16-MiB
+  typed-token layout, and checked HashChain workspace arithmetic.
+- References used: DD-989, IR-0751, TVG-0853, CR-1070, the completed four-MiB
+  backend design, and the shared 16-MiB design.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: retain entropy variant 2 and its table shape; grow
+  only the selected distance records; use exact 2,597-byte descriptor and
+  220,200,960-byte payload ceilings; and adopt a backend-specific 512-MiB
+  aggregate policy because both proven layouts fit.
+- Generated-code task description: specify exact identity, descriptor/table
+  bounds, payload and complete-frame ceilings, native workspace proofs,
+  public-profile contract, staged admissions, and executable documentation
+  terms without opening an implementation boundary.
+- Similarity review: the design follows only marc's repository-owned staged
+  profile structure and contains no external implementation expression.
+- Validation: arithmetic was independently recomputed from 25-symbol dense
+  records, `F=16,777,216`, twelve-byte typed tokens, the checked 67,633,152-
+  byte HashChain workspace, 35 current decode tables, and the fifteen-bit
+  decision ceiling. No codec identity was admitted by this change.

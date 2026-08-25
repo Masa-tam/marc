@@ -20531,3 +20531,19 @@ to enforce exact order, foreign decode, and byte-identical local re-encoding.
 Reconstruct schema 49 by removing only the appended profile before traversing
 the unchanged compatibility chain through schema 1. This changes no codec
 format, API, default, or earlier archive bytes.
+
+## DD-989: Design 16-MiB Contextual Blocked Huffman profile
+
+- Date: 2026-08-25
+- Status: accepted
+
+Reserve exact triple `2/5 + 1/4 + 2/2` without admitting it. Retain entropy
+variant 2, maximum code length 15, four pooled models, 31 overrides, 35 decode
+tables, and 17,885 decode nodes. Context variant 4 raises only the distance
+alphabet to 25 symbols and the maximum descriptor to 2,597 bytes.
+
+Use `ceil(105F/8)` payload and `ceil(105F/8)+2,661` complete-frame ceilings.
+At `F=16,777,216`, use 220,200,960 payload bytes and supported-layout exact
+encoder/decoder aggregates 505,940,581/438,450,649 under an explicit 512-MiB
+policy. Keep every implementation and outward boundary closed until its own
+tests pass.
