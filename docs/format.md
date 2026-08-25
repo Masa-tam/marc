@@ -7201,8 +7201,12 @@ workspace query, and the existing factory without changing any ABI structure
 extent or initializer default. The helper applies `F = 16,777,216`, `7F`,
 `ceil(21F/2) + 2`, 131,072 entropy-table entries, and a 512-MiB aggregate
 policy while preserving direction, original size, and the caller's total-
-output limit. CLI, benchmark, fuzzing, and interoperability boundaries remain
-closed.
+output limit. The explicit CLI name `lzss-contextual-tans-16m` selects only
+this public profile in both directions and adds no serialized field or profile
+inference. Its dependency-free benchmark uses the same helper/query/factory
+lifecycle, checks output capacity as `112 + ceil(21N/2) + 9,223K`, proves an
+untimed byte-exact round trip, and reports all queried workspace regions.
+Fuzzing and interoperability boundaries remain closed.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

@@ -1848,3 +1848,21 @@ bytes at ratio 0.580. Encoder primary/secondary/views workspaces were
 decoder aggregate of 109,722,064 bytes. These values establish public-C
 wiring, exact round trip, and bounded allocation, not a stable performance
 claim.
+
+### Contextual tANS 16-MiB profile
+
+The experimental `lzss-contextual-tans-16m` benchmark selects exact public
+profile `2/5 + 1/4 + 5/2`. It uses a 16,777,216-byte frame/window/distance,
+admits `7F = 117,440,512` decisions, reserves
+`ceil(21F/2) + 2 = 176,160,770` payload bytes, and applies the 512-MiB
+aggregate policy. Checked complete-stream capacity is
+`112 + ceil(21N/2) + 9,223K`, where `N` is input bytes and `K` is the number
+of nonempty frames. Configuration and all six reported workspace regions come
+from the public profile helper and direction-specific query.
+
+One MSVC Release smoke iteration over the 4,326-byte README emitted 3,005
+bytes at ratio 0.695. Encoder primary/secondary/views workspaces were
+4,326/54,646/396,896 bytes; decoder regions were
+176,169,991/16,777,216/201,850,880 bytes. Peak caller-owned workspace was the
+decoder aggregate of 394,798,087 bytes. These values establish wiring and
+bounded allocation, not a production-performance claim.

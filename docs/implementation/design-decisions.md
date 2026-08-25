@@ -20485,3 +20485,19 @@ aggregate. Preserve direction, original size, and total-output policy, so a
 caller may retain a stricter incompatible limit and receive a later query
 failure. Initializers remain 64 KiB and decoder limits never widen from stream
 fields. Keep CLI, benchmark, fuzz, and interoperability admission closed.
+
+## DD-986: Add explicit 16-MiB Contextual tANS application selectors
+
+- Date: 2026-08-25
+- Status: accepted
+
+Add the exact name `lzss-contextual-tans-16m` to the transactional CLI and
+dependency-free benchmark. Map it only to public profile value 3 and reuse the
+public helper, workspace query, factory, process, and destruction lifecycle;
+do not duplicate private token, table, match-finder, or frame-layout sizes.
+
+The benchmark uses checked capacity `112 + ceil(21N/2) + 9,223K`, verifies an
+untimed exact round trip, and reports the query-owned regions. The CLI requires
+the same explicit profile for decode and retains neither destination nor
+temporary output on crossed profile, malformed input, or trailing data. Keep
+fuzzing and interoperability admission closed.

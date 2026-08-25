@@ -5781,3 +5781,15 @@ identity `2/5 + 1/4 + 4/3`, round trip, size, and SHA-256. Verification
 enforces exact order and byte-identical local re-encoding. Compatibility
 removes only entry 59 to reconstruct schema 48 before traversing the unchanged
 chain through schema 1.
+
+The 16-MiB Contextual tANS application boundary adds exact selector
+`lzss-contextual-tans-16m` after its public C lifecycle is complete. Parser,
+help, configuration, workspace-query, and factory dispatch carry one explicit
+enum value and obtain resource policy solely through public profile value 3.
+The common transactional CLI regression proves identity `2/5 + 1/4 + 5/2`,
+round trip, trailing rejection, and reciprocal four-MiB rejection without
+retaining output. The dependency-free benchmark uses the same selector and
+direction-specific queries. Its checked
+`112 + ceil(21N/2) + 9,223K` capacity and reported measurements are application
+policy rather than serialized format. Fuzzing and interoperability admission
+remain separate later stages.

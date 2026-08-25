@@ -26327,3 +26327,31 @@ both bounds.
   on both. All 3,255 registered tests passed under each toolchain with the
   600-second per-test limit, including the unchanged complete schema-49
   interoperability compatibility chain.
+
+## CR-1067: 2026-08-25 - Add 16-MiB Contextual tANS CLI and benchmark
+
+- Authoring method: extended marc's existing explicit Contextual tANS profile
+  dispatch and application-owned capacity calculation after the public C
+  lifecycle was complete.
+- References used: DD-986, IR-0748, TVG-0850, CR-1066, and repository-owned
+  CLI round-trip and benchmark-report harnesses.
+- Known implementations intentionally not consulted: external compressors,
+  tANS or FSE implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: use one exact lowercase selector; reuse public
+  profile value 3; calculate application output capacity as
+  `112 + ceil(21N/2) + 9,223K`; and keep fuzzing and interoperability closed.
+- Generated-code task description: add the 16-MiB Contextual tANS CLI and
+  benchmark selectors, prove identity and crossed-profile transactional
+  rejection, and report authoritative query-owned workspace regions.
+- Similarity review: the change extends only marc's repository-local selector,
+  profile, transactional CLI, and benchmark patterns; no external
+  implementation expression, vector, naming structure, or test structure was
+  used.
+- Validation: official CMake 4.3.4 produced warning-clean Release builds under
+  MSVC and ClangCL. The focused CLI inventory, transactional round trip, and
+  all four Contextual tANS benchmark smoke tests passed on both. The complete
+  suites passed 3,257/3,257 under MSVC and 3,250/3,250 under ClangCL with the
+  600-second per-test limit, including the unchanged schema-49 compatibility
+  chain; the count difference is the seven MSVC-only tooling tests.

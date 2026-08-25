@@ -266,8 +266,9 @@ inferred from `window_size`: encoding validates the selected parameters and
 decoding rejects every other known identity before frame collection or raw
 publication. The selector and trailing reserved word reuse the former 64-bit
 reserved tail, preserving the 112-byte ABI-1 extent and the all-zero default.
-The 16-MiB profile is currently a public C helper/query/factory surface only;
-its CLI, benchmark, fuzzing, and interoperability-schema stages remain closed.
+The explicit `lzss-contextual-tans-16m` CLI and dependency-free benchmark use
+this same helper/query/factory lifecycle without duplicating private layout
+arithmetic. Fuzzing and interoperability-schema stages remain closed.
 
 The completion audit covers all required binary classes, deterministic mixed
 and one-byte chunk schedules, stable repeated terminal calls, and frame-atomic

@@ -6753,3 +6753,13 @@ factory, and earlier contextual rANS public admission pattern. No external
 compressor, tANS or FSE implementation, source code, archive, encoded vector,
 test suite, patent, pseudocode, benchmark result, optimization description, or
 malformed-stream corpus was consulted.
+
+### IR-0748
+
+The `lzss-contextual-tans-16m` CLI and benchmark admission uses IR-0741 through
+IR-0747, DD-979 through DD-985, TVG-0843 through TVG-0849, marc's existing
+transactional CLI harness, dependency-free benchmark reporter, and the public
+Contextual tANS profile/query/factory lifecycle. No external compressor, tANS
+or FSE implementation, source code, archive, encoded vector, test suite,
+patent, pseudocode, benchmark result, optimization description, or malformed-
+stream corpus was consulted.

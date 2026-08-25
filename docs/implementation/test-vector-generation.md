@@ -12139,3 +12139,18 @@ changing sentinel raw output. For a full 16-MiB query, require encoder extents
 16,777,216, 176,169,991, and 269,221,888 with aggregate exact/one-short
 462,169,095; require decoder extents 176,169,991, 16,777,216, and 201,850,880
 with aggregate exact/one-short 394,798,087.
+
+### TVG-0850
+
+Register `lzss-contextual-tans-16m` with the common transactional CLI harness.
+Require dictionary/context/entropy identity `2/5 + 1/4 + 5/2`, exact round
+trip, empty input, overwrite refusal, trailing rejection, and rejection under
+the four-MiB and 64-KiB names without retained destination or temporary output.
+Require parser help to list all four Contextual tANS names once and in order,
+and reject the near-miss `-16M` spelling.
+
+Run `marc_benchmark lzss-contextual-tans-16m README.md 1` under MSVC and
+ClangCL. Require an untimed exact round trip, finite measurements, all six
+positive workspace regions, and a reported peak equal to the larger queried
+directional aggregate. Verify the checked 16-MiB capacity path and keep the
+external Silesia corpus outside the default smoke test.
