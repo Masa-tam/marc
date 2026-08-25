@@ -1,7 +1,7 @@
 # LZSS contextual tANS 16 MiB window
 
-Status: public C, CLI, and benchmark lifecycles implemented after project
-version 0.4.0. Fuzzing and interoperability boundaries remain closed.
+Status: public C, CLI, benchmark, and bounded fuzzing lifecycles implemented
+after project version 0.4.0. Interoperability remains closed.
 
 ## Purpose and identity
 
@@ -111,7 +111,7 @@ limits.
    and one-short aggregate tests (complete).
 6. Admit public C profile value 3 only for contextual tANS (complete).
 7. Add the explicit CLI and dependency-free benchmark names (complete).
-8. Extend bounded decoder fuzzing without profile-sized allocation.
+8. Extend bounded decoder fuzzing without profile-sized allocation (complete).
 9. Append exactly one interoperability archive only after all preceding
    boundaries pass.
 

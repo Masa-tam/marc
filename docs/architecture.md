@@ -5791,5 +5791,8 @@ round trip, trailing rejection, and reciprocal four-MiB rejection without
 retaining output. The dependency-free benchmark uses the same selector and
 direction-specific queries. Its checked
 `112 + ceil(21N/2) + 9,223K` capacity and reported measurements are application
-policy rather than serialized format. Fuzzing and interoperability admission
-remain separate later stages.
+policy rather than serialized format. The dual-path decoder fuzz harness also
+admits profile 3 while retaining a 32-KiB input cap, 4-KiB total output,
+one-KiB frame/token storage, fixed 131,072-entry tables, byte-derived chunks,
+and a finite call ceiling. Raising distance validation to 16 MiB allocates no
+profile-sized history. Interoperability admission remains a separate stage.

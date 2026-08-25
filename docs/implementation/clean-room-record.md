@@ -26355,3 +26355,31 @@ both bounds.
   suites passed 3,257/3,257 under MSVC and 3,250/3,250 under ClangCL with the
   600-second per-test limit, including the unchanged schema-49 compatibility
   chain; the count difference is the seven MSVC-only tooling tests.
+
+## CR-1068: 2026-08-25 - Extend bounded Contextual tANS fuzzing to 16 MiB
+
+- Authoring method: extended marc's fixed-memory dual-path decoder harness and
+  permanent profile-parameterized regressions after public selector 3 was
+  complete.
+- References used: DD-987, IR-0749, TVG-0851, CR-1067, and repository-owned
+  Contextual tANS fuzz and Contextual rANS 16-MiB harnesses.
+- Known implementations intentionally not consulted: external compressors,
+  tANS or FSE implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: retain fixed one-KiB frame/token storage and table
+  bank; admit descriptor variant 4 and 16-MiB distance validation only; test
+  all crossed public profiles; and keep interoperability closed.
+- Generated-code task description: add selector 3 to bounded Contextual tANS
+  decoder fuzzing, expand permanent atomic regressions, compile under both
+  toolchains, and run a fixed-seed sanitizer campaign.
+- Similarity review: changes extend only marc's repository-local fuzz harness
+  and profile tests; no external implementation expression, vector, naming
+  structure, corpus, or test structure was used.
+- Validation: Clang 22 libFuzzer/ASan/UBSan completed 1,000 fixed-seed inputs
+  with coverage 243, features 406, peak RSS 45 MiB, and no crash, hang, or
+  sanitizer finding. Warning-clean focused targets and all 13 permanent
+  Contextual tANS fuzz regressions passed under MSVC and ClangCL. The complete
+  suites passed 3,260/3,260 under MSVC and 3,253/3,253 under ClangCL with the
+  600-second per-test limit, including the unchanged schema-49 compatibility
+  chain; the count difference is the seven MSVC-only tooling tests.

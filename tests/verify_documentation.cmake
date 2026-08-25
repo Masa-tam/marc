@@ -395,8 +395,8 @@ foreach(required_tans_window_16m_term IN ITEMS
         "aggregate                        462,169,095 bytes"
         "aggregate                        394,798,087 bytes"
         "payload limit 176,160,770"
-        "public C, CLI, and benchmark lifecycles implemented"
-        "Fuzzing and interoperability")
+        "public C, CLI, benchmark, and bounded fuzzing lifecycles implemented"
+        "Interoperability remains closed")
     string(FIND "${lzss_contextual_tans_window_16m_content}"
         "${required_tans_window_16m_term}"
         required_tans_window_16m_term_offset)

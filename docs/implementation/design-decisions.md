@@ -20501,3 +20501,20 @@ untimed exact round trip, and reports the query-owned regions. The CLI requires
 the same explicit profile for decode and retains neither destination nor
 temporary output on crossed profile, malformed input, or trailing data. Keep
 fuzzing and interoperability admission closed.
+
+## DD-987: Extend fixed-memory Contextual tANS fuzzing to 16 MiB
+
+- Date: 2026-08-25
+- Status: accepted
+
+Retain one `marc_fuzz_lzss_contextual_tans_stream` target and exercise all four
+public decoder profiles for every bounded input. Raise only descriptor capacity
+to 9,157 bytes and the LZ distance validation ceiling to 16,777,216. Retain the
+32-KiB input cap, 4-KiB total output, one-KiB frame and token storage,
+`7*1024` decisions, `ceil(21*1024/2)+2` payload bytes, fixed 131,072-entry
+tables, byte-derived chunking, and finite process calls.
+
+Extend permanent truncation, malformed descriptor, and every distinct public
+profile rejection regression to selector value 3. Run one fixed-seed 1,000-
+input Clang 22 libFuzzer/ASan/UBSan campaign without retaining generated
+mutations. Keep interoperability admission closed.

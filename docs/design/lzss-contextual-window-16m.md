@@ -2,8 +2,8 @@
 
 Status: Dynamic Range and canonical contextual rANS lifecycles, including
 schema-48 and schema-49 interoperability admission, implemented after project
-version 0.4.0. Contextual tANS has public C, CLI, and benchmark admission; its
-fuzzing and interoperability boundaries remain closed.
+version 0.4.0. Contextual tANS has public C, CLI, benchmark, and bounded
+fuzzing admission; its interoperability boundary remains closed.
 
 ## Purpose
 
@@ -198,8 +198,8 @@ aggregate on the supported 64-bit object layout. The decoder query returns
 452,984,917 bytes. Equality succeeds and one byte short fails before workspace
 publication. No full-size workspace is allocated by boundary tests. Canonical
 contextual rANS and tANS descriptor/model paths recognize context variant 4.
-The rANS lifecycle is complete; the tANS public C, CLI, and benchmark
-lifecycles are admitted while later boundaries remain independently staged.
+The rANS lifecycle is complete; the tANS public C, CLI, benchmark, and bounded
+fuzzing lifecycles are admitted while interoperability remains staged.
 
 The public C selector `MARC_LZSS_CONTEXTUAL_PROFILE_16M` has value 3 and is
 admitted by the Dynamic Range and contextual tANS configuration loaders and
@@ -246,7 +246,7 @@ traversing the unchanged schema-47-through-1 chain.
 4. Dynamic Range C helper, CLI, benchmark, bounded fuzzing, and schema entry
    (complete);
 5. canonical contextual rANS (complete);
-6. contextual tANS (public C, CLI, and benchmark complete; fuzzing and
+6. contextual tANS (public C, CLI, benchmark, and bounded fuzzing complete;
    interoperability closed);
 7. Contextual Blocked Huffman;
 8. Contextual Adaptive Huffman;

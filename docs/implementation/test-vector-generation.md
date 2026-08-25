@@ -12154,3 +12154,18 @@ ClangCL. Require an untimed exact round trip, finite measurements, all six
 positive workspace regions, and a reported peak equal to the larger queried
 directional aggregate. Verify the checked 16-MiB capacity path and keep the
 external Silesia corpus outside the default smoke test.
+
+### TVG-0851
+
+Parameterize the permanent Contextual tANS fuzz regressions over public
+profiles 64 KiB, 1 MiB, 4 MiB, and 16 MiB. For each, reject every canonical
+truncation, extreme frame lengths, and nonzero descriptor reserved bytes in
+both private and public decoder paths without changing sentinel raw output.
+Require every distinct pairing involving the 16-MiB stream or decoder to fail
+atomically and repeat the same terminal error position.
+
+Build the bounded Clang 22 fuzz target with ASan and UBSan, prepend only its
+resource-directory `lib/windows` path for execution, and run with
+`-seed=20260825 -runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`.
+Require normal completion, no crash, hang, or sanitizer finding, and retain no
+generated corpus or failure artifact.

@@ -7206,7 +7206,10 @@ this public profile in both directions and adds no serialized field or profile
 inference. Its dependency-free benchmark uses the same helper/query/factory
 lifecycle, checks output capacity as `112 + ceil(21N/2) + 9,223K`, proves an
 untimed byte-exact round trip, and reports all queried workspace regions.
-Fuzzing and interoperability boundaries remain closed.
+The fixed-memory decoder fuzz harness admits the same profile while retaining
+a 32-KiB input cap, 4-KiB total output, one-KiB frame/token storage, fixed
+131,072-entry tables, and a finite process-call ceiling. Its 16-MiB distance
+limit changes no allocation or stream rule. Interoperability remains closed.
 
 The standalone canonical contextual rANS descriptor/model boundary recognizes
 context variant 3 without admitting an outer rANS frame. Its frequency storage

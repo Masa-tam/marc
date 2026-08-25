@@ -6763,3 +6763,13 @@ Contextual tANS profile/query/factory lifecycle. No external compressor, tANS
 or FSE implementation, source code, archive, encoded vector, test suite,
 patent, pseudocode, benchmark result, optimization description, or malformed-
 stream corpus was consulted.
+
+### IR-0749
+
+The bounded 16-MiB Contextual tANS fuzzing admission uses IR-0741 through
+IR-0748, DD-979 through DD-986, TVG-0843 through TVG-0850, marc's existing
+dual-path Contextual tANS decoder harness, fixed workspace, and corresponding
+Contextual rANS 16-MiB admission pattern. No external compressor, tANS or FSE
+implementation, source code, archive, encoded vector, test suite, patent,
+pseudocode, benchmark result, optimization description, or malformed-stream
+corpus was consulted.
