@@ -84,12 +84,12 @@ ordinary-build compile smoke is evidence only; no sanitizer campaign is
 claimed until one is separately executed and recorded.
 The experimental Contextual Blocked Huffman Format 2 target caps supplied
 input at 32 KiB, published raw output at 4 KiB, one frame and typed-token
-staging at 1 KiB, modeled decisions at 6,144, payload at 11,520 bytes, and
-decode tables at 35 fixed entries. The selected 2,579-byte descriptor ceiling
-backs both valid layouts. The private complete-frame decoder accepts either
-layout, while the public C path separately drives strict 64 KiB and 1 MiB
-admissions using byte-derived chunks and a finite call budget. A 1 MiB safety
-distance limit changes no fixed frame/history allocation.
+staging at 1 KiB, modeled decisions at 7,168, payload at 13,440 bytes, and
+decode tables at 35 fixed entries. The selected 2,597-byte descriptor ceiling
+backs all four valid layouts. The private complete-frame decoder accepts every
+layout, while the public C path separately drives strict 64 KiB, 1 MiB, 4 MiB,
+and 16 MiB admissions using byte-derived chunks and a finite call budget. A
+16 MiB safety distance limit changes no fixed frame/history allocation.
 The experimental Contextual Adaptive Huffman target fixes the oracle with five
 ordinary dual-boundary regressions, then caps supplied input at 64 KiB,
 published raw output at 4 KiB, one frame at 1 KiB, and payload at 34,176 bytes.
@@ -813,6 +813,25 @@ with seed 20260824 completed exactly 1,000 inputs under a 32-KiB maximum input,
 five-second per-input timeout, and 512-MiB RSS limit without a crash, hang, or
 sanitizer finding. Peak RSS was 46 MiB; final coverage was 224 counters and
 336 features over a five-entry, 21-byte in-memory corpus. The matching runtime
+path applied only to the campaign process. No input corpus was supplied, no
+generated mutation was retained, and no artifact was produced. This bounded
+result is evidence for the exercised inputs, not an exhaustive safety claim.
+
+### FZ-0035: Four-profile Contextual Blocked Huffman smoke
+
+The Contextual Blocked Huffman private-frame/public-C decoder target now
+drives the 64-KiB, one-MiB, four-MiB, and 16-MiB strict admissions for every
+bounded input. It retains its 32-KiB input, four-KiB total output, one-KiB
+frame/token storage, 7,168 decisions, 13,440 payload bytes, 2,597-byte shared
+descriptor, 35 fixed decode tables, and finite call ceiling. The largest
+admitted distance is 16,777,216 bytes; the 16-MiB identity does not allocate a
+16-MiB fuzz frame or history buffer.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 20260826 completed exactly 1,000 inputs under a 32-KiB maximum input,
+five-second per-input timeout, and 512-MiB RSS limit without a crash, hang, or
+sanitizer finding. Peak RSS was 43 MiB; final coverage was 239 counters and
+402 features over a six-entry, 24-byte in-memory corpus. The matching runtime
 path applied only to the campaign process. No input corpus was supplied, no
 generated mutation was retained, and no artifact was produced. This bounded
 result is evidence for the exercised inputs, not an exhaustive safety claim.

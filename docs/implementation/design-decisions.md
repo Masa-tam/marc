@@ -20641,3 +20641,18 @@ both directional allocation layouts from the authoritative public query.
 Use checked benchmark capacity `112 + ceil(105N/8) + 2,661K`, require an
 untimed round trip before measurement, and reject crossed selectors and
 case-near names exactly. Keep fuzzing and interoperability closed.
+
+## DD-997: Admit Blocked Huffman 16-MiB bounded dual-path fuzzing
+
+- Date: 2026-08-26
+- Status: accepted
+
+Drive all four strict public Contextual Blocked Huffman profile admissions for
+every bounded fuzz input and retain the shared private complete-frame decoder
+after header validation. Raise only the local validation distance to
+16,777,216 and the shared descriptor ceiling to 2,597; retain the 32-KiB
+input, four-KiB output, one-KiB frame/token storage, 7,168 decisions, 13,440
+payload bytes, 35 fixed tables, and finite process-call budget. Prove that a
+small 16-MiB-profile decoder query remains below two MiB of aggregate caller
+storage. Do not allocate a profile-sized history, retain generated mutations,
+or admit interoperability in this stage.

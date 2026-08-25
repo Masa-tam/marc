@@ -12297,3 +12297,18 @@ untimed round trip, finite measurements, and internally consistent six-region
 workspace reporting. For sixteen MiB, use checked application capacity
 `112 + ceil(105N/8) + 2,661K`; do not infer allocation policy from stream
 fields.
+
+### TVG-0861
+
+Parameterize the Contextual Blocked Huffman fuzz oracle over the 64-KiB,
+one-MiB, four-MiB, and sixteen-MiB profiles. For every profile, require
+canonical decode, every strict truncation rejection, extreme declared-extent
+rejection, and descriptor reserved-flag rejection without raw publication.
+For every distinct profile pair, require reciprocal crossed-profile rejection.
+
+Query a five-byte sixteen-MiB-profile decoder and require primary storage,
+aligned views, and their combination with exact five-byte secondary storage
+to remain below two MiB. Build the ordinary compile-smoke target warning-clean
+under MSVC and ClangCL, then run the sanitizer target with seed 20260826 for
+exactly 1,000 bounded inputs, a 32-KiB maximum input, five-second per-input
+timeout, and 512-MiB RSS limit.

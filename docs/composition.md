@@ -1853,3 +1853,14 @@ matching 9,025- or 9,089-byte ceiling without inferring a profile from encoded
 sizes. Maximum fixed backing storage is allowed, but variant 1's unused tail
 must remain zero. No frame, streaming, public ABI, CLI, benchmark, fuzz, or
 schema surface is admitted by this design step.
+
+### CP-0114
+
+The fixed-memory Contextual Blocked Huffman fuzz boundary now drives the
+64-KiB, one-MiB, four-MiB, and sixteen-MiB public decoder admissions for every
+bounded input, plus the shared private complete-frame decoder after header
+validation. Profile selection changes validation identity and maximum distance
+only; fixed frame, token, model, table, payload, output, and process-call
+bounds remain independent of the selected window. Permanent regressions cover
+all reciprocal profile crossings and prove a small local sixteen-MiB decoder
+query stays below two MiB. No interoperability archive is introduced.

@@ -32,7 +32,10 @@ constexpr std::size_t table_count =
 [[nodiscard]] constexpr std::size_t maximum_encoded_frame(
     const marc_lzss_contextual_profile profile) noexcept {
     const auto descriptor_size = profile
-            == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+            == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+        ? marc::entropy::internal::
+              contextual_blocked_huffman_max_descriptor_size_v4
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
         ? marc::entropy::internal::
               contextual_blocked_huffman_max_descriptor_size_v3
         : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
@@ -67,8 +70,10 @@ struct Workspace {
               MARC_STATUS_OK);
     result.original_size = raw.size();
     result.frame_size = raw.size();
-    result.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
-        ? UINT32_C(1) << 22
+    result.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+        ? UINT32_C(1) << 24
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+            ? UINT32_C(1) << 22
         : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
             ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
     result.max_total_output_size = 32;
@@ -76,7 +81,7 @@ struct Workspace {
     result.max_block_size = maximum_decisions;
     result.max_compressed_payload_size = maximum_payload;
     result.max_internal_buffered_bytes = maximum_internal;
-    result.max_lz_distance = UINT64_C(1) << 22;
+    result.max_lz_distance = UINT64_C(1) << 24;
     result.max_lz_match_length = 258;
     result.max_entropy_table_entries = UINT64_C(1) << 20;
     result.profile = profile;
@@ -140,7 +145,7 @@ protected:
         limits.max_block_size = maximum_decisions;
         limits.max_compressed_payload_size = maximum_payload;
         limits.max_internal_buffered_bytes = maximum_internal;
-        limits.max_lz_distance = UINT64_C(1) << 22;
+        limits.max_lz_distance = UINT64_C(1) << 24;
         limits.max_lz_match_length = 258;
         limits.max_entropy_table_entries = UINT64_C(1) << 20;
         const auto bytes = std::as_bytes(input);
@@ -294,10 +299,34 @@ TEST(LzssContextualBlockedHuffmanFuzzRegression,
     expect_rejection(extended, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     const auto four_mib =
         canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_4M);
+    const auto sixteen_mib =
+        canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_16M);
     expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
     expect_rejection(frozen, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
     expect_rejection(extended, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
+    expect_rejection(sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
+    expect_rejection(sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    expect_rejection(sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
+    expect_rejection(frozen, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+    expect_rejection(extended, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+}
+
+TEST(LzssContextualBlockedHuffmanFuzzRegression,
+     SixteenMiBProfileKeepsSmallLocalDecoderWorkspace) {
+    const auto config = settings(
+        MARC_DIRECTION_DECODE, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+    marc_workspace_requirements requirements{};
+    ASSERT_EQ(marc_lzss_contextual_blocked_huffman_workspace_requirements(
+                  &config, &requirements),
+              MARC_STATUS_OK);
+    EXPECT_LT(requirements.primary_bytes, UINT64_C(1) << 20);
+    EXPECT_EQ(requirements.secondary_bytes, raw.size());
+    EXPECT_LT(requirements.views_bytes, UINT64_C(1) << 20);
+    EXPECT_LT(requirements.primary_bytes + requirements.secondary_bytes
+                  + requirements.views_bytes,
+              maximum_internal);
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -305,6 +334,7 @@ INSTANTIATE_TEST_SUITE_P(
     testing::Values(
         MARC_LZSS_CONTEXTUAL_PROFILE_64K,
         MARC_LZSS_CONTEXTUAL_PROFILE_1M,
-        MARC_LZSS_CONTEXTUAL_PROFILE_4M));
+        MARC_LZSS_CONTEXTUAL_PROFILE_4M,
+        MARC_LZSS_CONTEXTUAL_PROFILE_16M));
 
 } // namespace

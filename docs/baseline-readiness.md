@@ -3037,3 +3037,18 @@ README input. Fuzzing and interoperability remain closed pending their
 separate stages. Seven focused application/documentation tests and the
 complete 3,266-test suites pass under MSVC and ClangCL in 221.44 and 222.20
 seconds; schema compatibility is included in both runs.
+
+### BR-0187
+
+The fixed-memory Contextual Blocked Huffman fuzz boundary now exercises the
+private decoder and all four strict public admissions, including exact
+16-MiB identity `2/5 + 1/4 + 2/2`, without allocating a profile-sized frame or
+history. Permanent tests cover all canonical/truncated/oversized/descriptor
+cases, every reciprocal profile crossing, and a small local sixteen-MiB
+decoder workspace below two MiB. Fourteen focused tests pass under MSVC and
+ClangCL. A bounded Windows Clang 22 sanitizer campaign completed exactly 1,000
+inputs with seed 20260826 and 43-MiB peak RSS without a crash, hang, sanitizer
+finding, retained mutation, or artifact. Interoperability remains closed
+pending its separate stage. The complete 3,270-test suites pass under MSVC and
+ClangCL in 232.56 and 239.33 seconds, including schema compatibility passes of
+100.04 and 94.54 seconds.

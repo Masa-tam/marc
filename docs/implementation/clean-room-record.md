@@ -26642,3 +26642,32 @@ both bounds.
   and ClangCL. Their complete 3,266-test suites pass in 221.44 and 222.20
   seconds, including all seven Python tooling entries and schema compatibility
   passes of 101.27 and 97.21 seconds.
+
+## CR-1079: 2026-08-26 - Admit Blocked Huffman 16-MiB bounded fuzzing
+
+- Authoring method: extended marc's repository-owned fixed-memory Contextual
+  Blocked Huffman dual-path fuzz harness and permanent oracle; no external
+  implementation or malformed corpus was consulted.
+- References used: DD-997, IR-0759, TVG-0861, CR-1078, and marc's completed
+  four-profile Contextual Dynamic Range/rANS fuzz boundaries.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: admit all four strict public profiles per input,
+  retain the shared private decoder, enlarge only validation metadata, keep
+  every large object in fixed thread-local storage, and prove the local
+  sixteen-MiB decoder workspace remains small.
+- Generated-code task description: add sixteen-MiB profile selection,
+  reciprocal profile rejection, bounded workspace evidence, compile smoke,
+  and one fixed-seed sanitizer campaign without profile-sized allocation or
+  retained mutations.
+- Similarity review: only repository-owned fuzz and regression structures were
+  extended; no external implementation expression was introduced.
+- Validation: fourteen focused oracle tests pass under MSVC and ClangCL. A
+  Windows Clang 22 sanitizer campaign completed 1,000 inputs with seed
+  20260826, 43-MiB peak RSS, 239 coverage counters, and 402 features without a
+  crash, hang, sanitizer finding, retained mutation, or artifact. The complete
+  3,270-test suites pass under MSVC and ClangCL in 232.56 and 239.33 seconds,
+  including all seven Python tooling entries, documentation layout, and schema
+  compatibility passes of 100.04 and 94.54 seconds.

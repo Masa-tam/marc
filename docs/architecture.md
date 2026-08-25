@@ -5862,3 +5862,12 @@ queries. Its checked `112 + ceil(105N/8) + 2,661K` capacity is application
 policy rather than serialized format, and an untimed round trip gates every
 reported measurement. Fuzz admission and interoperability inventory remain
 unchanged.
+
+The 16-MiB Contextual Blocked Huffman fuzz boundary extends the existing
+fixed-memory dual-path decoder target to all four public profile admissions.
+The profile changes strict identity and permits a 16,777,216-byte distance,
+but the target retains bounded input/output, one-KiB frame/token storage,
+fixed descriptor/table/payload banks, and a finite call budget. A separate
+workspace regression proves that selecting the profile for a five-byte local
+frame remains below two MiB rather than reserving a profile-sized history.
+Interoperability inventory remains unchanged.

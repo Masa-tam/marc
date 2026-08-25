@@ -63,7 +63,7 @@ thread_local FuzzWorkspace workspace{};
     limits.max_block_size = maximum_decisions;
     limits.max_compressed_payload_size = maximum_payload;
     limits.max_internal_buffered_bytes = maximum_internal;
-    limits.max_lz_distance = UINT64_C(1) << 22;
+    limits.max_lz_distance = UINT64_C(1) << 24;
     limits.max_lz_match_length = 258;
     limits.max_entropy_table_entries = UINT64_C(1) << 20;
     return limits;
@@ -108,11 +108,13 @@ void exercise_public_streaming(
     config.max_block_size = maximum_decisions;
     config.max_compressed_payload_size = maximum_payload;
     config.max_internal_buffered_bytes = maximum_internal;
-    config.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
-        ? UINT32_C(1) << 22
+    config.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+        ? UINT32_C(1) << 24
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+            ? UINT32_C(1) << 22
         : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
             ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
-    config.max_lz_distance = UINT64_C(1) << 22;
+    config.max_lz_distance = UINT64_C(1) << 24;
     config.max_lz_match_length = 258;
     config.max_entropy_table_entries = UINT64_C(1) << 20;
     config.profile = profile;
@@ -213,5 +215,6 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data,
     exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
     exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
+    exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
     return 0;
 }

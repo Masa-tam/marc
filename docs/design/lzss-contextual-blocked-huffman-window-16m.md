@@ -1,9 +1,9 @@
 # LZSS contextual Blocked Huffman 16 MiB window
 
 Status: descriptor, operation/direct typed-token, bounded complete-frame,
-checked profile/streaming, public C, and application-tooling stages implemented
-after schema-50 interoperability admission. Fuzzing and interoperability
-boundaries remain closed.
+checked profile/streaming, public C, application-tooling, and bounded-fuzzing
+stages implemented after schema-50 interoperability admission.
+Interoperability remains closed.
 
 ## Purpose and exact identity
 
@@ -134,6 +134,7 @@ enlarge local hard limits.
    (complete)
 6. Add explicit CLI and dependency-free benchmark names. (complete)
 7. Extend bounded dual-path decoder fuzzing without profile-sized allocation.
+   (complete)
 8. Append exactly one interoperability archive after every earlier boundary
    passes, preserving all schema-50 archive bytes and order.
 

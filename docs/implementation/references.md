@@ -6862,3 +6862,13 @@ transactional CLI harness, and common benchmark report harness. No external
 compressor, Huffman implementation, source code, archive, encoded vector,
 test suite, patent, pseudocode, benchmark result, optimization description,
 or malformed-stream corpus was consulted.
+
+### IR-0759
+
+The 16-MiB Contextual Blocked Huffman bounded-fuzzing stage uses IR-0751
+through IR-0758, DD-989 through DD-996, TVG-0853 through TVG-0860, marc's
+existing fixed-memory dual-path fuzz harness, public profile helper, private
+complete-frame decoder, and permanent malformed-stream regression patterns.
+No external compressor, Huffman implementation, source code, archive, encoded
+vector, test suite, patent, pseudocode, benchmark result, optimization
+description, or malformed-stream corpus was consulted.
