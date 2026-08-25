@@ -5819,11 +5819,12 @@ read from the held layout. Crossed older layouts fail before descriptor,
 table, or token publication. Complete-frame validation and every outward
 boundary remain separate closed stages.
 
-The bounded complete-frame parser now has an explicit decode-only admission
-path for Contextual Blocked Huffman variant 4. It reuses common stream and
-dictionary validation but supplies the 2,597-byte descriptor ceiling only
-while parsing untrusted frame headers. The ordinary internal frame validator
-used by serialization still resolves variant 4 to a zero descriptor ceiling;
-therefore no encoder can accidentally open through this decoder change.
-Preflight parses and validates the complete descriptor before the direct
-two-pass token decoder publishes token or raw output.
+The bounded complete-frame parser, validator, serializer, and one-shot encoder
+now admit Contextual Blocked Huffman variant 4 through one shared 2,597-byte
+descriptor ceiling. The exact planning pass completes dictionary tokenization,
+entropy-model construction, count validation, serialized-size arithmetic, and
+aggregate-workspace validation before the encoder writes the caller's frame.
+The HashChain path uses its authoritative workspace query and can select a
+distance beyond four MiB. Preflight still parses and validates the complete
+descriptor before the direct two-pass token decoder publishes token or raw
+output. Streaming and outward boundaries remain separately closed.

@@ -7476,13 +7476,15 @@ round-trips a Match at distance 16,777,216 without materializing an operation
 array. Older layouts reject the crossed class atomically. Complete-frame
 identity `2/5 + 1/4 + 2/2` and every public surface remain closed.
 
-The bounded Contextual Blocked Huffman frame parser and decoder now admit the
-exact complete-frame identity `2/5 + 1/4 + 2/2`. Decoder admission selects the
+The bounded Contextual Blocked Huffman frame parser, validator, serializer,
+encoder, and decoder now admit the exact complete-frame identity
+`2/5 + 1/4 + 2/2`. Admission selects the
 variant-4 limits `decision_count <= 7F`, `decision_count <= 34T`, descriptor
 size at most 2,597 bytes, and payload size at most
 `ceil(15*decision_count/8)`. The first newly valid distance, 4,194,305, is
 decoded from overlap-built history before raw publication. A four-MiB context
-rejects the same frame and leaves token and raw outputs unchanged. The private
-frame validator and serializer deliberately retain a zero variant-4 descriptor
-ceiling, so frame encoding remains closed at this stage. This admission adds
-no serialized field and changes no older frame bytes.
+rejects the same frame and leaves token and raw outputs unchanged. Encoder
+planning fixes all counts and extents before output publication; its HashChain
+route demonstrably emits a Match beyond four MiB and round-trips through the
+same bounded decoder. This admission adds no serialized field and changes no
+older frame bytes. Streaming and every public name remain closed.

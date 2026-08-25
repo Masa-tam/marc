@@ -26536,3 +26536,29 @@ both bounds.
   ClangCL. Their complete 3,267-test suites pass in 242.25 and 237.92 seconds,
   including all seven Python tooling entries and schema compatibility passes
   of 103.31 and 92.93 seconds.
+
+## CR-1075: 2026-08-26 - Admit bounded 16-MiB Blocked Huffman frame encoding
+
+- Authoring method: extended marc's repository-owned exact frame planner and
+  serializer after independent failing tests proved the decoder-only closure;
+  no external implementation was consulted.
+- References used: DD-993, IR-0755, TVG-0857, CR-1074, and marc's earlier
+  four-MiB bounded frame encoder and HashChain tests.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: replace the temporary direction-local ceiling with a
+  shared selected-layout ceiling, retain exact preflight and publication
+  atomicity, and exercise the first practical distance beyond four MiB through
+  the production HashChain route.
+- Generated-code task description: admit only bounded complete-frame encoding
+  for exact identity `2/5 + 1/4 + 2/2`; add canonical Literal and greater-than-
+  four-MiB HashChain round trips while leaving streaming and outward boundaries
+  closed.
+- Similarity review: the change reuses only marc's own generic bounded frame
+  and match-finder paths and contains no external implementation expression.
+- Validation: 22 focused frame-format/encoder/decoder tests pass under MSVC and
+  ClangCL. Their complete 3,269-test suites pass in 223.84 and approximately
+  219 seconds, including all seven Python tooling entries and schema
+  compatibility passes of 93.84 and 83 seconds.

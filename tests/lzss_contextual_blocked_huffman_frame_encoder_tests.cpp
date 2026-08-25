@@ -58,6 +58,16 @@ struct AlignedWorkspace {
     return stream;
 }
 
+[[nodiscard]] LzssContextualBlockedHuffmanStreamHeader stream_for_16m(
+    const std::uint64_t original_size) {
+    auto stream = stream_for(original_size);
+    stream.frame_size = static_cast<std::uint32_t>(original_size);
+    stream.dictionary.window_size = UINT32_C(1) << 24;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    return stream;
+}
+
 [[nodiscard]] std::vector<std::byte> documented_literal_frame() {
     std::vector<std::byte> bytes(88);
     constexpr std::array header{
@@ -137,6 +147,33 @@ TEST(LzssContextualBlockedHuffmanFrameEncoder,
      FourMiBIdentityRoundTripsCanonicalLiteral) {
     constexpr std::array raw{std::byte{'A'}};
     const auto stream = stream_for_4m(raw.size());
+    std::array<LzssTypedToken, 1> tokens{};
+    const auto plan = plan_lzss_contextual_blocked_huffman_frame(
+        stream, {}, 0, 0, raw, tokens);
+    ASSERT_EQ(plan.error,
+              LzssContextualBlockedHuffmanFrameEncodeError::none);
+    EXPECT_EQ(plan.serialized_size, 88U);
+    EXPECT_EQ(plan.descriptor_size, 24U);
+    EXPECT_EQ(plan.decision_count, 2U);
+
+    std::array<std::byte, 88> frame{};
+    ASSERT_EQ(encode_lzss_contextual_blocked_huffman_frame(
+                  stream, {}, 0, 0, raw, tokens, frame).error,
+              LzssContextualBlockedHuffmanFrameEncodeError::none);
+    std::array<LzssTypedToken, 1> decoded_tokens{};
+    std::array<std::byte, 1> decoded{};
+    const auto result = decode_lzss_contextual_blocked_huffman_frame(
+        frame, {stream, {}, 0, 0}, {}, decoded_tokens, decoded);
+    ASSERT_EQ(result.error,
+              LzssContextualBlockedHuffmanFrameDecodeError::none);
+    EXPECT_EQ(result.serialized_consumed, frame.size());
+    EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzssContextualBlockedHuffmanFrameEncoder,
+     SixteenMiBIdentityRoundTripsCanonicalLiteral) {
+    constexpr std::array raw{std::byte{'A'}};
+    const auto stream = stream_for_16m(raw.size());
     std::array<LzssTypedToken, 1> tokens{};
     const auto plan = plan_lzss_contextual_blocked_huffman_frame(
         stream, {}, 0, 0, raw, tokens);
@@ -312,6 +349,68 @@ TEST(LzssContextualBlockedHuffmanFrameEncoder,
     EXPECT_EQ(rejected.error,
               LzssContextualBlockedHuffmanFrameDecodeError::
                   token_decode_error);
+    EXPECT_TRUE(std::ranges::all_of(decoded, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
+}
+
+TEST(LzssContextualBlockedHuffmanFrameEncoder,
+     SixteenMiBHashChainRoundTripExercisesDistanceBeyondFourMiB) {
+    constexpr std::size_t gap = UINT32_C(1) << 22;
+    std::vector<std::byte> raw(5 + gap + 5, std::byte{'Z'});
+    constexpr std::array marker{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}};
+    std::ranges::copy(marker, raw.begin());
+    std::ranges::copy(marker, raw.end() - marker.size());
+    const auto stream = stream_for_16m(raw.size());
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_block_size = limits.max_frame_size;
+    std::vector<LzssTypedToken> encode_tokens(raw.size());
+    const auto requirements = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(
+            raw.size(), stream.dictionary, limits);
+    ASSERT_EQ(requirements.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    AlignedWorkspace owner(requirements.workspace_size);
+    auto workspace = owner.bytes(requirements.workspace_size);
+
+    const auto plan =
+        plan_lzss_contextual_blocked_huffman_frame_hash_chain(
+            stream, limits, 0, 0, raw, encode_tokens, workspace);
+    ASSERT_EQ(plan.error,
+              LzssContextualBlockedHuffmanFrameEncodeError::none);
+    ASSERT_TRUE(std::ranges::any_of(
+        std::span<const LzssTypedToken>{encode_tokens}.first(plan.token_count),
+        [](const LzssTypedToken& token) {
+            return token.kind
+                    == marc::dictionary::internal::LzssTypedTokenKind::match
+                && token.distance > (UINT32_C(1) << 22);
+        }));
+
+    std::vector<std::byte> encoded(plan.serialized_size);
+    ASSERT_EQ(encode_lzss_contextual_blocked_huffman_frame_hash_chain(
+                  stream, limits, 0, 0, raw, encode_tokens, workspace,
+                  encoded).error,
+              LzssContextualBlockedHuffmanFrameEncodeError::none);
+    std::array<HuffmanDecodeTable, 35> tables{};
+    std::vector<LzssTypedToken> decode_tokens(plan.token_count);
+    std::vector<std::byte> decoded(raw.size());
+    const auto result = decode_lzss_contextual_blocked_huffman_frame(
+        encoded, {stream, limits, 0, 0}, tables, decode_tokens, decoded);
+    ASSERT_EQ(result.error,
+              LzssContextualBlockedHuffmanFrameDecodeError::none);
+    EXPECT_EQ(decoded, raw);
+
+    auto crossed = stream;
+    crossed.dictionary.window_size = UINT32_C(1) << 22;
+    crossed.dictionary_variant = 4;
+    crossed.context_variant = 3;
+    std::ranges::fill(decoded, std::byte{0xcc});
+    const auto rejected = decode_lzss_contextual_blocked_huffman_frame(
+        encoded, {crossed, limits, 0, 0}, tables, decode_tokens, decoded);
+    EXPECT_NE(rejected.error,
+              LzssContextualBlockedHuffmanFrameDecodeError::none);
     EXPECT_TRUE(std::ranges::all_of(decoded, [](const std::byte value) {
         return value == std::byte{0xcc};
     }));

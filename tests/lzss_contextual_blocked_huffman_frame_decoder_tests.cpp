@@ -280,7 +280,7 @@ TEST(LzssContextualBlockedHuffmanFrameFormat,
 }
 
 TEST(LzssContextualBlockedHuffmanFrameFormat,
-     DecoderOnlySixteenMiBAdmissionSelectsExactBounds) {
+     SixteenMiBAdmissionSelectsExactBounds) {
     const auto stream = stream_config_16m(5);
     LzssContextualBlockedHuffmanFrameHeader header{
         0, 0, 5, 2, 4, 35, 66,
@@ -290,8 +290,7 @@ TEST(LzssContextualBlockedHuffmanFrameFormat,
         0, 0};
     EXPECT_EQ(validate_lzss_contextual_blocked_huffman_frame_header(
                   header, {stream, {}, 0, 0}),
-              LzssContextualBlockedHuffmanFrameHeaderError::
-                  contradictory_counts);
+              LzssContextualBlockedHuffmanFrameHeaderError::none);
 
     auto encoded = unchecked_frame_header(header);
     LzssContextualBlockedHuffmanFrameHeader parsed{};

@@ -20585,3 +20585,17 @@ for variant 4. Derive decoder bounds from the immutable selected layout:
 `2/5 + 1/4 + 2/2`, reciprocal four-MiB rejection, and no token or raw
 publication on failure. Keep complete-frame encoding and every outward
 boundary closed.
+
+## DD-993: Admit bounded 16-MiB Blocked Huffman frame encoding
+
+- Date: 2026-08-26
+- Status: accepted
+
+Replace the direction-local descriptor ceiling with one shared variant-4
+maximum of 2,597 bytes only after exact validator and encoder tests fail at the
+closed boundary. Retain the existing two-pass planner: finish tokenization,
+model construction, count and extent validation, and aggregate-workspace
+validation before serializing the frame. Require canonical Literal identity,
+an actual HashChain Match beyond four MiB, bounded round trip, reciprocal older
+profile rejection, and unchanged older frame bytes. Keep streaming and every
+outward boundary closed.

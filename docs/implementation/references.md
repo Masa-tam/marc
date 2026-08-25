@@ -6822,3 +6822,13 @@ bounded frame preflight, direct two-pass typed-token decoder, and the earlier
 Huffman implementation, source code, archive, encoded vector, test suite,
 patent, pseudocode, benchmark result, optimization description, or malformed-
 stream corpus was consulted.
+
+### IR-0755
+
+The bounded-encoder 16-MiB Contextual Blocked Huffman frame stage uses IR-0751
+through IR-0754, DD-989 through DD-992, TVG-0853 through TVG-0856, marc's
+existing exact frame planner/serializer, authoritative HashChain workspace
+query, and earlier four-MiB bounded-encoder tests. No external compressor,
+Huffman implementation, source code, archive, encoded vector, test suite,
+patent, pseudocode, benchmark result, optimization description, or malformed-
+stream corpus was consulted.

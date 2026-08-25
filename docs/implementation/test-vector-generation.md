@@ -12232,3 +12232,18 @@ distance 4,194,305. Encode only its already-admitted entropy descriptor and
 payload, assemble the frame header independently, and require bounded frame
 decode to produce 4,194,563 `A` bytes. Require the four-MiB identity to reject
 the same frame without changing sentinel tokens or raw bytes.
+
+### TVG-0857
+
+First require the ordinary variant-4 frame validator, exact planner, and
+bounded encoder to reject while decoder-only admission remains open. Then give
+the shared validator the 2,597-byte variant-4 descriptor ceiling and require a
+single-Literal `2/5 + 1/4 + 2/2` frame to plan as 88 bytes, serialize, and
+round-trip canonically.
+
+Construct `ABCDE`, 4,194,304 `Z` bytes, and a final `ABCDE`. Use the production
+HashChain workspace query and require the planner to select at least one Match
+whose distance exceeds 4,194,304. Encode the complete frame, decode it under
+the 16-MiB identity, and require byte-exact raw recovery. Cross the same frame
+to dictionary/context variants 4/3 and require rejection without raw
+publication.

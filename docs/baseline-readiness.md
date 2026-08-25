@@ -2979,3 +2979,16 @@ MSVC and ClangCL. Their complete 3,267-test suites pass in 242.25 and 237.92
 seconds, including all seven Python tooling entries and schema compatibility
 passes of 103.31 and 92.93 seconds. Frame encoding and later boundaries remain
 closed.
+
+### BR-0183
+
+The bounded 16-MiB Contextual Blocked Huffman frame encoder now shares the
+variant-4 2,597-byte descriptor ceiling with the parser and decoder. Its exact
+planner completes token, model, count, extent, and aggregate-workspace checks
+before serialization. Canonical Literal encoding retains the 88-byte form, and
+the production HashChain route selects and round-trips a Match beyond four MiB;
+the crossed four-MiB identity rejects without raw publication. Twenty-two
+focused frame-format/encoder/decoder tests pass under MSVC and ClangCL. Their
+complete 3,269-test suites pass in 223.84 and approximately 219 seconds,
+including all seven Python tooling entries and schema compatibility passes of
+93.84 and 83 seconds. Streaming and every outward boundary remain closed.
