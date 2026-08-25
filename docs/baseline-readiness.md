@@ -2992,3 +2992,17 @@ focused frame-format/encoder/decoder tests pass under MSVC and ClangCL. Their
 complete 3,269-test suites pass in 223.84 and approximately 219 seconds,
 including all seven Python tooling entries and schema compatibility passes of
 93.84 and 83 seconds. Streaming and every outward boundary remain closed.
+
+### BR-0184
+
+The private 16-MiB Contextual Blocked Huffman profile and streaming boundaries
+now select exact identity `2/5 + 1/4 + 2/2`. Checked encoder and decoder
+workspace queries reproduce the designed 505,940,581- and 438,450,649-byte
+aggregates, succeed at equality, and fail one byte short without publishing
+requirements. One-byte streaming preserves canonical bytes, the explicit
+16-MiB decoder admission round-trips them, and four-MiB admission rejects
+without raw publication. Public, tooling, fuzzing, and interoperability
+boundaries remain closed. Twenty-six focused profile/streaming tests pass under
+MSVC and ClangCL. Their complete 3,271-test suites pass in 223.79 and
+approximately 218 seconds, including all seven Python tooling entries and
+schema compatibility passes of 93.60 and 82 seconds.

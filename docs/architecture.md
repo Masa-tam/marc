@@ -5828,3 +5828,12 @@ The HashChain path uses its authoritative workspace query and can select a
 distance beyond four MiB. Preflight still parses and validates the complete
 descriptor before the direct two-pass token decoder publishes token or raw
 output. Streaming and outward boundaries remain separately closed.
+
+The Contextual Blocked Huffman profile selector now carries variant 4 through
+the same checked layout and partition queries used by older profiles. On the
+supported 64-bit layout, its encoder query returns 268,959,744 bytes of views
+and a 505,940,581-byte aggregate; its decoder query returns 201,469,812 bytes
+of views and a 438,450,649-byte aggregate. Equality succeeds and one byte short
+fails without publishing requirements. The streaming encoder consumes the
+selected stream header unchanged, while the decoder adds an explicit 16-MiB
+admission value and rejects crossed selectors before frame publication.

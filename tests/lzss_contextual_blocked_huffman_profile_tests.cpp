@@ -346,6 +346,98 @@ TEST(LzssContextualBlockedHuffmanProfile,
 }
 
 TEST(LzssContextualBlockedHuffmanProfile,
+     SixteenMiBProfileRequiresExplicitAggregateWithExactBoundaries) {
+    constexpr std::uint64_t frame_size = UINT64_C(1) << 24;
+    constexpr std::uint64_t decision_limit = 7 * frame_size;
+    LzssContextualBlockedHuffmanProfileConfig config{};
+    config.original_size = frame_size;
+    config.frame_size = static_cast<std::uint32_t>(frame_size);
+    config.dictionary.window_size = static_cast<std::uint32_t>(frame_size);
+    config.variant =
+        LzssContextualBlockedHuffmanProfileVariant::field_context_16m;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = frame_size;
+    limits.max_block_size = decision_limit;
+    limits.max_compressed_payload_size = 220'200'960U;
+    LzssContextualBlockedHuffmanStreamHeader stream{};
+    LzssContextualBlockedHuffmanEncoderWorkspaceRequirements encoder{};
+
+    EXPECT_EQ(make_lzss_contextual_blocked_huffman_profile(
+                  config, limits, stream, encoder),
+              LzssContextualBlockedHuffmanProfileError::limit_exceeded);
+    EXPECT_EQ(encoder.views_bytes, 0U);
+
+    limits.max_internal_buffered_bytes = UINT64_C(512) << 20;
+    ASSERT_EQ(make_lzss_contextual_blocked_huffman_profile(
+                  config, limits, stream, encoder),
+              LzssContextualBlockedHuffmanProfileError::none);
+    EXPECT_EQ(stream.dictionary_variant, 5U);
+    EXPECT_EQ(stream.context_variant, 4U);
+    EXPECT_EQ(encoder.frame_input_bytes, 16'777'216U);
+    EXPECT_EQ(encoder.frame_encoded_bytes, 220'203'621U);
+    EXPECT_EQ(encoder.token_count, 16'777'216U);
+    const auto encoder_aggregate = encoder.frame_input_bytes
+        + encoder.views_bytes + encoder.frame_encoded_bytes;
+    if constexpr (sizeof(std::size_t) == 8) {
+        EXPECT_EQ(encoder.match_finder_offset, 201'326'592U);
+        EXPECT_EQ(encoder.match_finder_bytes, 67'633'152U);
+        EXPECT_EQ(encoder.views_bytes, 268'959'744U);
+        EXPECT_EQ(encoder_aggregate, 505'940'581U);
+    }
+    limits.max_internal_buffered_bytes = encoder_aggregate - 1;
+    EXPECT_EQ(make_lzss_contextual_blocked_huffman_profile(
+                  config, limits, stream, encoder),
+              LzssContextualBlockedHuffmanProfileError::limit_exceeded);
+    EXPECT_EQ(encoder.views_bytes, 0U);
+    limits.max_internal_buffered_bytes = encoder_aggregate;
+    ASSERT_EQ(make_lzss_contextual_blocked_huffman_profile(
+                  config, limits, stream, encoder),
+              LzssContextualBlockedHuffmanProfileError::none);
+
+    LzssContextualBlockedHuffmanDecoderWorkspaceRequirements decoder{};
+    limits.max_internal_buffered_bytes = UINT64_C(128) << 20;
+    EXPECT_EQ(calculate_lzss_contextual_blocked_huffman_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualBlockedHuffmanProfileVariant::
+                      field_context_16m),
+              LzssContextualBlockedHuffmanProfileError::limit_exceeded);
+    EXPECT_EQ(decoder.views_bytes, 0U);
+
+    limits.max_internal_buffered_bytes = UINT64_C(512) << 20;
+    ASSERT_EQ(calculate_lzss_contextual_blocked_huffman_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualBlockedHuffmanProfileVariant::
+                      field_context_16m),
+              LzssContextualBlockedHuffmanProfileError::none);
+    EXPECT_EQ(decoder.frame_encoded_bytes, 220'203'621U);
+    EXPECT_EQ(decoder.frame_decoded_bytes, 16'777'216U);
+    EXPECT_EQ(decoder.table_count, 35U);
+    EXPECT_EQ(decoder.token_count, 16'777'216U);
+    const auto decoder_aggregate = decoder.frame_encoded_bytes
+        + decoder.frame_decoded_bytes + decoder.views_bytes;
+    if constexpr (
+        sizeof(marc::entropy::internal::HuffmanDecodeTable) == 4092
+        && sizeof(marc::dictionary::internal::LzssTypedToken) == 12) {
+        EXPECT_EQ(decoder.token_offset, 143'220U);
+        EXPECT_EQ(decoder.views_bytes, 201'469'812U);
+        EXPECT_EQ(decoder_aggregate, 438'450'649U);
+    }
+    limits.max_internal_buffered_bytes = decoder_aggregate - 1;
+    EXPECT_EQ(calculate_lzss_contextual_blocked_huffman_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualBlockedHuffmanProfileVariant::
+                      field_context_16m),
+              LzssContextualBlockedHuffmanProfileError::limit_exceeded);
+    EXPECT_EQ(decoder.views_bytes, 0U);
+    limits.max_internal_buffered_bytes = decoder_aggregate;
+    ASSERT_EQ(calculate_lzss_contextual_blocked_huffman_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualBlockedHuffmanProfileVariant::
+                      field_context_16m),
+              LzssContextualBlockedHuffmanProfileError::none);
+}
+
+TEST(LzssContextualBlockedHuffmanProfile,
     FourMiBIdentityRoundTripsWithOneByteBuffers) {
     constexpr std::array input{std::byte{'A'}};
     LzssContextualBlockedHuffmanStreamHeader stream{};
@@ -380,6 +472,46 @@ TEST(LzssContextualBlockedHuffmanProfile,
     LzssContextualBlockedHuffmanFrameStreamingDecoder crossed{
         {}, serialized, tables, decode_tokens, decode_raw,
         LzssContextualBlockedHuffmanStreamAdmission::field_context_1m};
+    std::array<std::byte, 1> output{std::byte{0xcc}};
+    const auto rejected = crossed.process(encoded, output, end_flag());
+    EXPECT_EQ(rejected.status, marc::core::StreamStatus::error);
+    EXPECT_EQ(output[0], std::byte{0xcc});
+}
+
+TEST(LzssContextualBlockedHuffmanProfile,
+     SixteenMiBIdentityRoundTripsWithOneByteBuffers) {
+    constexpr std::array input{std::byte{'A'}};
+    LzssContextualBlockedHuffmanStreamHeader stream{};
+    stream.frame_size = 1;
+    stream.original_size = 1;
+    stream.dictionary.window_size = UINT32_C(1) << 24;
+    stream.dictionary_variant = 5;
+    stream.context_variant = 4;
+    std::array<std::byte, 1> raw{};
+    std::array<marc::dictionary::internal::LzssTypedToken, 1> tokens{};
+    std::array<std::byte, 128> frame{};
+    LzssContextualBlockedHuffmanFrameStreamingEncoder encoder{
+        stream, {}, raw, tokens, frame};
+    const auto encoded = encode_one_byte_chunks(encoder, input);
+    ASSERT_GT(encoded.size(),
+              lzss_contextual_blocked_huffman_stream_header_size);
+    EXPECT_EQ(encoded[14], std::byte{5});
+    EXPECT_EQ(encoded[98], std::byte{4});
+
+    std::array<std::byte, 128> serialized{};
+    std::array<marc::entropy::internal::HuffmanDecodeTable, 35> tables{};
+    std::array<marc::dictionary::internal::LzssTypedToken, 1>
+        decode_tokens{};
+    std::array<std::byte, 1> decode_raw{};
+    LzssContextualBlockedHuffmanFrameStreamingDecoder decoder{
+        {}, serialized, tables, decode_tokens, decode_raw,
+        LzssContextualBlockedHuffmanStreamAdmission::field_context_16m};
+    EXPECT_EQ(decode_one_byte_chunks(decoder, encoded),
+              std::vector<std::byte>(input.begin(), input.end()));
+
+    LzssContextualBlockedHuffmanFrameStreamingDecoder crossed{
+        {}, serialized, tables, decode_tokens, decode_raw,
+        LzssContextualBlockedHuffmanStreamAdmission::field_context_4m};
     std::array<std::byte, 1> output{std::byte{0xcc}};
     const auto rejected = crossed.process(encoded, output, end_flag());
     EXPECT_EQ(rejected.status, marc::core::StreamStatus::error);

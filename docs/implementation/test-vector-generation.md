@@ -12247,3 +12247,19 @@ whose distance exceeds 4,194,304. Encode the complete frame, decode it under
 the 16-MiB identity, and require byte-exact raw recovery. Cross the same frame
 to dictionary/context variants 4/3 and require rejection without raw
 publication.
+
+### TVG-0858
+
+Select the full 16,777,216-byte profile with window 16,777,216, decision/block
+limit 117,440,512, payload limit 220,200,960, and aggregate limit 512 MiB.
+Require encoder frame/input/token/view extents 220,203,621, 16,777,216,
+16,777,216, and 268,959,744 bytes, producing aggregate 505,940,581 on the
+supported 64-bit layout. Require the decoder's frame/raw/table/token/view
+extents 220,203,621, 16,777,216, 35, 16,777,216, and 201,469,812 bytes,
+producing aggregate 438,450,649. For both directions, fail with cleared output
+requirements at one byte short and succeed at equality.
+
+Encode one Literal through the 16-MiB streaming identity using one-byte input
+and output buffers. Require header selectors 5/4, exact decode under explicit
+16-MiB admission, and rejection under four-MiB admission without changing a
+sentinel raw byte.

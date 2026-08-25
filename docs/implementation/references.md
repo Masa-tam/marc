@@ -6832,3 +6832,13 @@ query, and earlier four-MiB bounded-encoder tests. No external compressor,
 Huffman implementation, source code, archive, encoded vector, test suite,
 patent, pseudocode, benchmark result, optimization description, or malformed-
 stream corpus was consulted.
+
+### IR-0756
+
+The 16-MiB Contextual Blocked Huffman checked-profile and streaming stage uses
+IR-0751 through IR-0755, DD-989 through DD-993, TVG-0853 through TVG-0857,
+marc's existing profile arithmetic, workspace partitioners, streaming state
+machines, and completed 16-MiB contextual rANS/tANS profile pattern. No
+external compressor, Huffman implementation, source code, archive, encoded
+vector, test suite, patent, pseudocode, benchmark result, optimization
+description, or malformed-stream corpus was consulted.

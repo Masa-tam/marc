@@ -7488,3 +7488,13 @@ planning fixes all counts and extents before output publication; its HashChain
 route demonstrably emits a Match beyond four MiB and round-trips through the
 same bounded decoder. This admission adds no serialized field and changes no
 older frame bytes. Streaming and every public name remain closed.
+
+The private checked profile and streaming transforms now admit the same exact
+identity. Profile variant 4 selects dictionary/context variants 5/4 before
+calculating descriptor, payload, HashChain, token, table, raw, and aggregate
+extents. It requires an explicit 512-MiB aggregate policy for the full 16-MiB
+frame; exact calculated capacities succeed and one-byte-short capacities fail
+before view publication. Streaming bytes are identical to the bounded encoder,
+including under one-byte input and output chunking. Decoder admission for
+variant 4 rejects 64-KiB, one-MiB, and four-MiB selectors reciprocally. No new
+serialized field or public algorithm name is introduced.

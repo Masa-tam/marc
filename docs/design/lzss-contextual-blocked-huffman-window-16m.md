@@ -1,8 +1,8 @@
 # LZSS contextual Blocked Huffman 16 MiB window
 
-Status: descriptor, operation/direct typed-token, and bounded complete-frame
-encoder/decoder stages implemented after schema-50 interoperability admission.
-Streaming, public, tooling, fuzzing, and interoperability boundaries remain
+Status: descriptor, operation/direct typed-token, bounded complete-frame, and
+checked profile/streaming stages implemented after schema-50 interoperability
+admission. Public, tooling, fuzzing, and interoperability boundaries remain
 closed.
 
 ## Purpose and exact identity
@@ -129,7 +129,7 @@ limits.
    bounded decoding and then encoding after exact preflight tests pass.
    Bounded encoding and decoding are complete.
 4. Add checked profile/workspace calculation and one-byte streaming with exact
-   and one-short aggregate tests.
+   and one-short aggregate tests. (complete)
 5. Admit common public C selector value 3 only for Contextual Blocked Huffman.
 6. Add explicit CLI and dependency-free benchmark names.
 7. Extend bounded dual-path decoder fuzzing without profile-sized allocation.

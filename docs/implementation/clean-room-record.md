@@ -26562,3 +26562,27 @@ both bounds.
   ClangCL. Their complete 3,269-test suites pass in 223.84 and approximately
   219 seconds, including all seven Python tooling entries and schema
   compatibility passes of 93.84 and 83 seconds.
+
+## CR-1076: 2026-08-26 - Admit Blocked Huffman 16-MiB profile and streaming
+
+- Authoring method: extended marc's repository-owned selected profile and
+  admission enums while retaining generic checked arithmetic, partitioning,
+  and streaming state machines; no external implementation was consulted.
+- References used: DD-994, IR-0756, TVG-0858, CR-1075, and marc's completed
+  16-MiB contextual rANS/tANS profile and streaming stages.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: require explicit aggregate uplift, retain exact query
+  publication, add no Blocked-Huffman-specific workspace formula, and expose
+  exact decoder admission rather than infer limits from stream bytes.
+- Generated-code task description: add variant-4 profile/workspace queries and
+  streaming admission with exact/one-short aggregates, one-byte round trip,
+  and crossed four-MiB rejection while keeping outward boundaries closed.
+- Similarity review: only repository-owned selectors and state machines were
+  extended; no external implementation expression was introduced.
+- Validation: 26 focused profile/streaming tests pass under MSVC and ClangCL.
+  Their complete 3,271-test suites pass in 223.79 and approximately 218
+  seconds, including all seven Python tooling entries and schema compatibility
+  passes of 93.60 and 82 seconds.

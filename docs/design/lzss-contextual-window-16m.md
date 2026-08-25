@@ -254,9 +254,9 @@ traversing the unchanged schema-47-through-1 chain.
    (complete);
 5. canonical contextual rANS (complete);
 6. contextual tANS (complete, including schema-50 interoperability);
-7. Contextual Blocked Huffman (descriptor, operation/direct typed-token, and
-   bounded frame encoder/decoder stages complete; streaming and all later
-   boundaries closed);
+7. Contextual Blocked Huffman (descriptor, operation/direct typed-token,
+   bounded frame, checked profile/workspace, and streaming stages complete;
+   public and all later boundaries closed);
 8. Contextual Adaptive Huffman;
 9. only then evaluate whether 16 MiB evidence justifies a later 64-MiB design.
 

@@ -347,7 +347,8 @@ foreach(required_blocked_huffman_window_16m_term IN ITEMS
         "aggregate                        438,450,649 bytes"
         "explicit 512-MiB aggregate policy"
         "bounded complete-frame"
-        "Streaming, public, tooling, fuzzing, and interoperability boundaries"
+        "checked profile/streaming"
+        "Public, tooling, fuzzing, and interoperability boundaries"
         "Bounded encoding and decoding are complete."
         "(complete)"
         "schema-50 archive bytes and order")

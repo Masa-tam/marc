@@ -20599,3 +20599,16 @@ validation before serializing the frame. Require canonical Literal identity,
 an actual HashChain Match beyond four MiB, bounded round trip, reciprocal older
 profile rejection, and unchanged older frame bytes. Keep streaming and every
 outward boundary closed.
+
+## DD-994: Admit checked profile and streaming Blocked Huffman 16-MiB paths
+
+- Date: 2026-08-26
+- Status: accepted
+
+Extend only the private profile variant and streaming decoder admission enums
+with context variant 4. Reuse checked generic arithmetic and partitioning;
+select descriptor maximum 2,597, `7F` decisions, fifteen-bit payload, 35
+tables, the authoritative HashChain workspace, and supported-layout exact
+aggregates 505,940,581/438,450,649 bytes. Require equality success, one-byte-
+short atomic failure, one-byte streaming, and reciprocal four-MiB selector
+rejection. Keep public, tooling, fuzzing, and interoperability closed.

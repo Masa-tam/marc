@@ -109,6 +109,9 @@ inline constexpr std::uint64_t bits_per_decision = 15;
     case LzssContextualBlockedHuffmanProfileVariant::field_context_4m:
         return context::internal::get_lzss_field_context_layout(
             context::internal::LzssFieldContextVariant::field_context_4m);
+    case LzssContextualBlockedHuffmanProfileVariant::field_context_16m:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_16m);
     }
     return {{}, context::internal::LzssFieldContextLayoutError::
                     unsupported_context_variant};
@@ -127,7 +130,8 @@ inline constexpr std::uint64_t bits_per_decision = 15;
         return entropy::internal::
             contextual_blocked_huffman_max_descriptor_size_v3;
     case context::internal::LzssFieldContextVariant::field_context_16m:
-        return 0;
+        return entropy::internal::
+            contextual_blocked_huffman_max_descriptor_size_v4;
     }
     return 0;
 }
