@@ -2928,3 +2928,12 @@ pass 3,260/3,260 under MSVC in 226.00 seconds and 3,253/3,253 under ClangCL in
 219.00 seconds with compatibility passes of 104.65 and 92.30 seconds. External
 Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang four-direction
 schema-50 evidence remains pending.
+
+### BR-0179
+
+Schema 50 now has complete four-direction external evidence at revision
+`21fa51568b5ab08ca37af0aa264ebbf39e9d7021`. All 60 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the 16-MiB
+Contextual tANS profile.
