@@ -350,8 +350,8 @@ foreach(required_adaptive_huffman_window_16m_term IN ITEMS
         "views total                      201,482,876 bytes"
         "aggregate                        778,199,756 bytes"
         "explicit one-GiB aggregate policy"
-        "model-bank and descriptor-limit stage implemented"
-        "Operation coding, frame identity, public, tooling,"
+        "operation and direct typed-token stage implemented"
+        "Frame identity, public, tooling, fuzzing, and"
         "(complete)"
         "preserving all schema-51 archive bytes and order")
     string(FIND "${lzss_contextual_adaptive_huffman_window_16m_content}"

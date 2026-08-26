@@ -26774,3 +26774,28 @@ both bounds.
   The complete 3,279-test suites pass in 253.54 and 253.48 seconds, including
   schema compatibility passes of 103.52 and 98.27 seconds. No frame identity
   or public selector was admitted.
+
+## CR-1084: 2026-08-27 - Admit 16-MiB Adaptive Huffman operation paths
+
+- Authoring method: exercised marc's existing selected-layout operation and
+  direct-token code with independently calculated variant-4 vectors; no
+  external implementation was consulted.
+- References used: DD-1001, IR-0763, TVG-0865, CR-1083, and the repository-
+  owned four-MiB operation/direct-token tests and overlap-history construction.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, archives, encoded vectors,
+  test suites, patents, pseudocode, benchmark results, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: retain the generic coding path, freeze
+  `0xABCDEF` as a 24-bit LSB-first hand value, construct exact maximum history
+  only from bounded overlap Matches, and leave frame/public admission closed.
+- Generated-code task description: add class-24 FGK operation and distance-
+  16,777,216 direct typed-token round trips with exact counts, payload bytes,
+  and reciprocal atomic rejection by the four-MiB layout.
+- Similarity review: only repository-owned generic paths and independently
+  calculated vectors were used; no external implementation expression was
+  introduced.
+- Validation: twenty-two focused tests pass under MSVC and ClangCL. The
+  complete 3,281-test suites pass in 250.17 and 250.77 seconds, including
+  schema compatibility passes of 103.52 and 98.65 seconds. No frame identity
+  or public selector was admitted.

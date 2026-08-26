@@ -12349,3 +12349,17 @@ Validate a fixed 16-byte descriptor at decision count 117,440,512 and reject
 117,440,513. Retain the established one-literal serialized vector exactly.
 Run the focused model/format set and every registered test, including schema
 compatibility, under both MSVC and ClangCL.
+
+### TVG-0865
+
+Under context variant 4, encode `Symbol(23,25,24)` followed by
+`Bypass(24,0xABCDEF)`. Require two operations, 25 decisions, 29 payload bits,
+four bytes `F8 BD 79 15`, and five final valid bits. Decode both values exactly
+and require variant 3 to reject alphabet 25 without changing the output value.
+
+Build a direct token sequence from one literal, 65,027 length-258 overlap
+Matches, one length-249 overlap Match, and a final length-five Match at distance
+16,777,216. Require 65,030 tokens, 260,118 events, 650,309 decisions, exact
+round trip, and atomic rejection by context variant 3. Run both focused suites
+and all registered tests, including schema compatibility, under MSVC and
+ClangCL.

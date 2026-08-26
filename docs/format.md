@@ -7525,3 +7525,13 @@ over the unchanged 31 reset-per-frame trees. The fixed 16-byte descriptor now
 accepts decision counts through exactly 117,440,512 and rejects the next value;
 this changes no field width, descriptor layout, or earlier serialized byte.
 Operation coding, frame parsing, and every public name remain closed.
+
+The private Contextual Adaptive Huffman operation coder and direct LZSS typed-
+token composition now select context variant 4 without admitting its complete-
+frame identity. A first new distance symbol 24 uses alphabet 25. As an empty
+FGK tree symbol it contributes five LSB-first raw bits; bypass value `0xABCDEF`
+then contributes 24 bits, producing the exact 29-bit payload
+`F8 BD 79 15` with five valid bits in the last byte. The direct path round-
+trips distance 16,777,216 after bounded overlap-built history. A four-MiB
+layout rejects the crossed parameters before token publication. No frame or
+public representation is added.

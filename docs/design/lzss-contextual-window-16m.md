@@ -265,8 +265,8 @@ traversing the unchanged schema-47-through-1 chain.
 6. contextual tANS (complete, including schema-50 interoperability);
 7. Contextual Blocked Huffman (complete, including schema-51
    interoperability);
-8. Contextual Adaptive Huffman (model-bank and descriptor-limit stage
-   complete; operation coding and all later boundaries closed);
+8. Contextual Adaptive Huffman (operation and direct typed-token stages
+   complete; frame identity and all later boundaries closed);
 9. only then evaluate whether 16 MiB evidence justifies a later 64-MiB design.
 
 Every stage preserves existing identities, bytes, defaults, and deterministic

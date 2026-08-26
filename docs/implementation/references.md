@@ -6901,3 +6901,13 @@ fixed 16-byte descriptor validator, and repository-owned context-variant-4
 layout. No external compressor, Adaptive Huffman implementation, source code,
 archive, encoded vector, test suite, patent, pseudocode, benchmark result,
 optimization description, or malformed-stream corpus was consulted.
+
+### IR-0763
+
+The 16-MiB Contextual Adaptive Huffman operation/direct-token stage uses
+IR-0761 through IR-0762, DD-999 through DD-1000, TVG-0863 through TVG-0864,
+marc's selected-layout FGK operation coder, direct two-pass typed-token
+adapter, and repository-owned overlap-built history pattern. No external
+compressor, Adaptive Huffman implementation, source code, archive, encoded
+vector, test suite, patent, pseudocode, benchmark result, optimization
+description, or malformed-stream corpus was consulted.

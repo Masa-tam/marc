@@ -20700,3 +20700,15 @@ from 100,663,296 to exact `7 * 2^24 = 117,440,512`; retain the 32-bit field,
 fixed 16-byte representation, earlier model extents, and earlier descriptor
 bytes. Do not admit operation coding, complete-frame identity
 `2/5 + 1/4 + 1/2`, or any public surface in this stage.
+
+## DD-1001: Reuse the generic operation path for 16-MiB Adaptive Huffman
+
+- Date: 2026-08-27
+- Status: accepted
+
+Carry the already selected context-variant-4 layout unchanged through FGK
+operation planning, forward encoding, decoding, and direct two-pass typed-token
+composition. Freeze `Symbol(23,25,24) + Bypass(24,0xABCDEF)` as exact payload
+`F8 BD 79 15`, and prove direct distance 16,777,216 using only bounded overlap
+Matches. Require atomic rejection by the four-MiB layout. Add no special-case
+coding branch and do not admit complete-frame identity or a public surface.

@@ -3088,3 +3088,16 @@ the existing one-literal vector remains byte-identical. Fourteen focused tests
 and the complete 3,279-test set pass under MSVC and ClangCL. The full runs take
 253.54 and 253.48 seconds, including schema compatibility passes of 103.52 and
 98.27 seconds. Operation coding and every later boundary remain closed.
+
+### BR-0191
+
+The private Contextual Adaptive Huffman operation coder and direct typed-token
+adapter now carry context variant 4 without admitting complete-frame identity
+`2/5 + 1/4 + 1/2`. The hand vector `Symbol(23,25,24)` followed by 24 bypass
+bits `0xABCDEF` encodes as exact bytes `F8 BD 79 15`, consumes 29 bits, and
+decodes in lockstep. A 65,030-token vector builds exactly 16,777,216 bytes of
+history and round-trips a final distance-16,777,216 Match with 260,118 events
+and 650,309 decisions. Four-MiB crossed decoding preserves every sentinel
+token. Twenty-two focused tests and all 3,281 registered tests pass under MSVC
+and ClangCL in 250.17 and 250.77 seconds, including schema compatibility passes
+of 103.52 and 98.65 seconds. Frame and every outward boundary remain closed.

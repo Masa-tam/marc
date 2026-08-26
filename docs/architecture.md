@@ -5888,3 +5888,13 @@ validator now accepts at most 117,440,512 decisions, the exact `7F` ceiling for
 a 16-MiB frame; its 32-bit field, fixed 16-byte representation, and all older
 descriptor bytes remain unchanged. Operation coding and every outward 16-MiB
 Contextual Adaptive Huffman boundary remain closed.
+
+The private Contextual Adaptive Huffman operation coder and direct LZSS typed-
+token adapter now retain context variant 4 for their complete plan, write,
+read, validation, and two-pass publication lifetimes. A new distance-class-24
+symbol uses alphabet 25 and is followed by 24 LSB-first bypass bits; direct
+tokens can represent and round-trip distance 16,777,216 after bounded overlap-
+built history. The implementation remains the shared selected-layout path
+rather than a backend-specific branch. Four-MiB selection rejects the crossed
+parameters and leaves caller tokens unchanged. Complete-frame and every
+outward boundary remain closed.
