@@ -3,7 +3,7 @@
 Status: Dynamic Range, canonical contextual rANS, contextual tANS, and
 Contextual Blocked Huffman lifecycles, including schema-48 through schema-51
 interoperability admission, implemented after project version 0.4.0. External
-schema-51 four-direction evidence remains pending.
+schema-51 four-direction evidence is complete.
 
 ## Purpose
 

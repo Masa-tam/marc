@@ -3066,3 +3066,12 @@ pass 3,270/3,270 under MSVC and ClangCL in 235.75 and 235.77 seconds, including
 compatibility passes of 104.14 and 97.45 seconds. External Windows/MSVC,
 Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang four-direction schema-51 evidence
 remains pending.
+
+### BR-0189
+
+Schema 51 now has complete four-direction external evidence at revision
+`f1d7517afdbd4b9f9bd8d5858390c868d1c4e5a9`. All 61 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the 16-MiB
+Contextual Blocked Huffman profile.

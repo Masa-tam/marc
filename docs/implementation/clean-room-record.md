@@ -26699,3 +26699,28 @@ both bounds.
   generation and verification, reordered-manifest rejection, and schema-50-
   through-1 compatibility passes of 104.14 and 97.45 seconds. External four-
   direction schema-51 evidence remains pending.
+
+## CR-1081: 2026-08-26 - Schema 51 four-direction external admission
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-998, IR-0760, TVG-0862, BR-0188, IX-0045, CR-1080, and
+  full revision `f1d7517afdbd4b9f9bd8d5858390c868d1c4e5a9`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: require one exact revision for all directions,
+  preserve work products outside the repository, and accept evidence only
+  when every verifier reports the complete 61-archive inventory.
+- Generated-code task description: record the completed schema-51
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks.
+- Similarity review: this change records project-generated artifact evidence
+  only and introduces no codec implementation expression.
+- External validation: all four passes reported `Verified 61 archives` at
+  revision `f1d7517afdbd4b9f9bd8d5858390c868d1c4e5a9`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.

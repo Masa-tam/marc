@@ -1,7 +1,7 @@
 # LZSS contextual Blocked Huffman 16 MiB window
 
-Status: complete, including schema-51 interoperability admission, after
-schema-50. External four-direction evidence remains pending.
+Status: complete, including schema-51 interoperability admission and its
+four-direction external evidence, after schema 50.
 
 ## Purpose and exact identity
 
