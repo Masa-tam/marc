@@ -7517,3 +7517,11 @@ frozen 60-entry schema-50 inventory. Generation requires exact identity
 byte-identically. Compatibility removes only archive 61 to reconstruct schema
 50 before traversing the unchanged legacy chain. This admission adds no
 serialized rule.
+
+The standalone Contextual Adaptive Huffman model-bank and descriptor validator
+now recognize explicitly selected context variant 4 without admitting its
+complete-frame identity. Variant 4 uses 4,582 symbol slots and 9,195 FGK nodes
+over the unchanged 31 reset-per-frame trees. The fixed 16-byte descriptor now
+accepts decision counts through exactly 117,440,512 and rejects the next value;
+this changes no field width, descriptor layout, or earlier serialized byte.
+Operation coding, frame parsing, and every public name remain closed.

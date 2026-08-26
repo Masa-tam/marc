@@ -119,7 +119,23 @@ TEST(ContextualAdaptiveHuffmanFormat, RejectsReservedAndLimitsAtomically) {
     EXPECT_EQ(output, before);
 }
 
-TEST(ContextualAdaptiveHuffmanFormat, EnforcesTheDecisionCeiling) {
+TEST(ContextualAdaptiveHuffmanFormat, AcceptsTheExactDecisionCeiling) {
+    static_assert(
+        marc::entropy::internal::
+            contextual_adaptive_huffman_max_decision_count
+        == UINT32_C(117440512));
+    const ContextualAdaptiveHuffmanDescriptor descriptor{
+        marc::entropy::internal::
+            contextual_adaptive_huffman_max_decision_count,
+        1, 31, 8, 0};
+    EXPECT_EQ(
+        marc::entropy::internal::
+            validate_contextual_adaptive_huffman_descriptor(
+                descriptor, descriptor.decision_count, 1, {}),
+        ContextualAdaptiveHuffmanFormatError::none);
+}
+
+TEST(ContextualAdaptiveHuffmanFormat, RejectsAboveTheDecisionCeiling) {
     ContextualAdaptiveHuffmanDescriptor descriptor{
         marc::entropy::internal::
                 contextual_adaptive_huffman_max_decision_count

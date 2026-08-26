@@ -6892,3 +6892,12 @@ query, and checked profile arithmetic. No external compressor, Adaptive
 Huffman implementation, source code, archive, encoded vector, test suite,
 patent, pseudocode, benchmark result, optimization description, or malformed-
 stream corpus was consulted.
+
+### IR-0762
+
+The 16-MiB Contextual Adaptive Huffman model-bank and descriptor-limit stage
+uses IR-0761, DD-999, TVG-0863, marc's existing selected-layout FGK model bank,
+fixed 16-byte descriptor validator, and repository-owned context-variant-4
+layout. No external compressor, Adaptive Huffman implementation, source code,
+archive, encoded vector, test suite, patent, pseudocode, benchmark result,
+optimization description, or malformed-stream corpus was consulted.

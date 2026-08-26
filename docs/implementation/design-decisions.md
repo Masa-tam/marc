@@ -20687,3 +20687,16 @@ Use `ceil(267F/8)` payload and `ceil(267F/8)+80` complete-frame ceilings. At
 encoder/decoder aggregates 845,832,912/778,199,756 under an explicit one-GiB
 policy. Keep every implementation and outward boundary closed until its own
 tests pass.
+
+## DD-1000: Implement only the 16-MiB Adaptive Huffman model and descriptor boundary
+
+- Date: 2026-08-27
+- Status: accepted
+
+Select context variant 4 through the existing immutable field layout and prove
+exactly 9,195 FGK nodes plus 4,582 symbol indices, including class 24 in all
+eight distance contexts. Raise the shared descriptor decision ceiling only
+from 100,663,296 to exact `7 * 2^24 = 117,440,512`; retain the 32-bit field,
+fixed 16-byte representation, earlier model extents, and earlier descriptor
+bytes. Do not admit operation coding, complete-frame identity
+`2/5 + 1/4 + 1/2`, or any public surface in this stage.

@@ -5879,3 +5879,12 @@ Verification enforces exact order and byte-identical local re-encoding.
 Compatibility removes only entry 61 to reconstruct schema 50 before
 traversing the unchanged chain through schema 1. This admission changes no
 codec format, public ABI, default, or earlier archive byte.
+
+The Contextual Adaptive Huffman model-bank boundary now selects all four typed
+field layouts independently of complete-frame admission. Context variant 4
+partitions exactly 9,195 caller-owned FGK nodes and 4,582 symbol indices across
+the unchanged 31 trees, including distance alphabet 25. The shared descriptor
+validator now accepts at most 117,440,512 decisions, the exact `7F` ceiling for
+a 16-MiB frame; its 32-bit field, fixed 16-byte representation, and all older
+descriptor bytes remain unchanged. Operation coding and every outward 16-MiB
+Contextual Adaptive Huffman boundary remain closed.

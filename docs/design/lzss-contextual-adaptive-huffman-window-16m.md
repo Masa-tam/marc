@@ -1,8 +1,8 @@
 # LZSS contextual Adaptive Huffman 16 MiB window
 
-Status: design accepted after schema-51 interoperability admission. All
-implementation, public, tooling, fuzzing, and interoperability boundaries
-remain closed.
+Status: model-bank and descriptor-limit stage implemented after schema-51
+interoperability admission. Operation coding, frame identity, public, tooling,
+fuzzing, and interoperability boundaries remain closed.
 
 ## Purpose and exact identity
 
@@ -129,6 +129,7 @@ and stream fields never enlarge local hard limits.
 1. Extend selected model-bank and descriptor/count validation to context
    variant 4; prove 9,195/4,582 model extents, the 117,440,512 decision ceiling,
    and unchanged older bytes.
+   (complete)
 2. Carry the immutable layout through FGK operation coding and direct typed-
    token encode/decode with a class-24 hand vector.
 3. Admit only exact complete-frame identity `2/5 + 1/4 + 1/2`, initially for

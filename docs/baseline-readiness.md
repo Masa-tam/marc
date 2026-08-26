@@ -3075,3 +3075,16 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
 re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the 16-MiB
 Contextual Blocked Huffman profile.
+
+### BR-0190
+
+The private Contextual Adaptive Huffman model-bank and descriptor boundary now
+recognizes context variant 4 without admitting complete-frame identity
+`2/5 + 1/4 + 1/2`. It partitions exactly 9,195 FGK nodes and 4,582 symbol
+indices, admits distance class 24 in each distance tree, succeeds at exact
+capacity, and fails one entry short before model publication. The descriptor
+accepts the exact 117,440,512-decision ceiling and rejects the next value while
+the existing one-literal vector remains byte-identical. Fourteen focused tests
+and the complete 3,279-test set pass under MSVC and ClangCL. The full runs take
+253.54 and 253.48 seconds, including schema compatibility passes of 103.52 and
+98.27 seconds. Operation coding and every later boundary remain closed.

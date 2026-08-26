@@ -26750,3 +26750,27 @@ both bounds.
   twelve-byte typed tokens, 16-byte FGK nodes, two-byte symbol indices, the
   checked 67,633,152-byte HashChain workspace, and the 267-bit conservative
   payload ceiling. No codec identity was admitted by this change.
+
+## CR-1083: 2026-08-27 - Implement 16-MiB Adaptive Huffman model boundary
+
+- Authoring method: extended marc's repository-owned selected-layout model
+  tests and descriptor ceiling without consulting an external implementation.
+- References used: DD-1000, IR-0762, TVG-0864, CR-1082, the existing context
+  variants 1 through 3, and the shared context-variant-4 field layout.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, archives, encoded vectors,
+  test suites, patents, pseudocode, benchmark results, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: reuse the generic 31-tree partitioner, freeze exact
+  9,195/4,582 extents, widen only the shared decision validation ceiling to
+  117,440,512, and keep operation/frame/public admission closed.
+- Generated-code task description: add variant-4 exact-capacity, class-24,
+  one-short, exact-ceiling, above-ceiling, and old-byte regression tests, then
+  record the bounded stage without opening a later surface.
+- Similarity review: the implementation is a constant-bound correction and a
+  mechanical extension of marc's existing test grammar; it contains no
+  external implementation expression.
+- Validation: fourteen focused model/format tests pass under MSVC and ClangCL.
+  The complete 3,279-test suites pass in 253.54 and 253.48 seconds, including
+  schema compatibility passes of 103.52 and 98.27 seconds. No frame identity
+  or public selector was admitted.

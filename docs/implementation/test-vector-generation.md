@@ -12336,3 +12336,16 @@ On the supported 64-bit layout require encoder views 269,116,032 and aggregate
 845,832,912; require decoder views 201,482,876 and aggregate 778,199,756.
 Recompute both margins below one GiB and require future queries to succeed at
 equality and fail one byte short before publication.
+
+### TVG-0864
+
+Initialize context variant 4 with exactly 9,195 `AdaptiveHuffmanNode` entries
+and 4,582 symbol indices. Require all 31 trees to match the selected alphabets,
+observe new symbol 24 independently in every distance tree, and validate the
+whole bank. Remove one node and then one symbol entry and require atomic
+workspace failure before publication.
+
+Validate a fixed 16-byte descriptor at decision count 117,440,512 and reject
+117,440,513. Retain the established one-literal serialized vector exactly.
+Run the focused model/format set and every registered test, including schema
+compatibility, under both MSVC and ClangCL.
