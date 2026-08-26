@@ -20669,3 +20669,21 @@ the verifier to enforce exact order, foreign decode, and byte-identical local
 re-encoding. Reconstruct schema 50 by removing only the appended profile
 before traversing the unchanged compatibility chain through schema 1. This
 changes no codec format, API, default, or earlier archive bytes.
+
+## DD-999: Design 16-MiB Contextual Adaptive Huffman profile
+
+- Date: 2026-08-26
+- Status: accepted
+
+Reserve exact triple `2/5 + 1/4 + 1/2` without admitting it. Retain entropy
+variant 2, the fixed 16-byte descriptor, 31 reset-per-frame FGK trees, forward
+LSB-first payload, and no-rescale policy. Context variant 4 selects 4,582
+symbol entries and 9,195 nodes. Raise the bounded descriptor decision ceiling
+from 100,663,296 to 117,440,512 before frame admission while retaining its
+32-bit field and every older byte.
+
+Use `ceil(267F/8)` payload and `ceil(267F/8)+80` complete-frame ceilings. At
+`F=16,777,216`, use 559,939,584 payload bytes and supported-layout exact
+encoder/decoder aggregates 845,832,912/778,199,756 under an explicit one-GiB
+policy. Keep every implementation and outward boundary closed until its own
+tests pass.

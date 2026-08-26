@@ -318,6 +318,7 @@ foreach(experimental_design IN ITEMS
         "lzss-contextual-rans-window-16m.md"
         "lzss-contextual-tans-window-16m.md"
         "lzss-contextual-blocked-huffman-window-16m.md"
+        "lzss-contextual-adaptive-huffman-window-16m.md"
         "lzss-typed-token-protocol.md"
         "context-model-contract.md"
         "entropy-backend-contract.md")
@@ -326,6 +327,38 @@ foreach(experimental_design IN ITEMS
     if(NOT EXISTS "${experimental_design_path}")
         message(FATAL_ERROR
             "Missing experimental design document: ${experimental_design}")
+    endif()
+endforeach()
+
+set(lzss_contextual_adaptive_huffman_window_16m_design
+    "${source_dir}/docs/design/lzss-contextual-adaptive-huffman-window-16m.md")
+file(READ "${lzss_contextual_adaptive_huffman_window_16m_design}"
+    lzss_contextual_adaptive_huffman_window_16m_content)
+foreach(required_adaptive_huffman_window_16m_term IN ITEMS
+        "dictionary algorithm/variant 2/5"
+        "context-model algorithm/variant 1/4"
+        "entropy algorithm/variant 1/2"
+        "exactly 4,582 symbol slots"
+        "2*4,582 + 31 = 9,195"
+        "entropy entries                     = 13,777"
+        "100,663,296"
+        "7F = 117,440,512"
+        "payload                              559,939,584 bytes"
+        "complete encoded frame              559,939,664 bytes"
+        "views total                      269,116,032 bytes"
+        "aggregate                        845,832,912 bytes"
+        "views total                      201,482,876 bytes"
+        "aggregate                        778,199,756 bytes"
+        "explicit one-GiB aggregate policy"
+        "implementation, public, tooling, fuzzing, and interoperability boundaries"
+        "preserving all schema-51 archive bytes and order")
+    string(FIND "${lzss_contextual_adaptive_huffman_window_16m_content}"
+        "${required_adaptive_huffman_window_16m_term}"
+        required_adaptive_huffman_window_16m_term_offset)
+    if(required_adaptive_huffman_window_16m_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 16 MiB contextual Adaptive Huffman design: "
+            "${required_adaptive_huffman_window_16m_term}")
     endif()
 endforeach()
 

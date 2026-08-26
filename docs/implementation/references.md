@@ -6882,3 +6882,13 @@ harness. No external compressor, Huffman implementation, interoperability
 suite, archive, source code, encoded vector, test suite, patent, pseudocode,
 benchmark result, optimization description, or malformed-stream corpus was
 consulted.
+
+### IR-0761
+
+The 16-MiB Contextual Adaptive Huffman design uses the repository-owned
+four-MiB Contextual Adaptive Huffman representation, shared dictionary variant
+5 and context variant 4, FGK model-bank primitives, HashChain Exact workspace
+query, and checked profile arithmetic. No external compressor, Adaptive
+Huffman implementation, source code, archive, encoded vector, test suite,
+patent, pseudocode, benchmark result, optimization description, or malformed-
+stream corpus was consulted.

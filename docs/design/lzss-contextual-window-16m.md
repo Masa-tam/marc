@@ -159,6 +159,15 @@ aggregates 505,940,581/438,450,649 bytes. Both directions therefore use an
 explicit 512-MiB profile. This design calculation admits no implementation
 boundary by itself.
 
+The Contextual Adaptive Huffman 16-MiB design supplies its independent
+calculation: 9,195 FGK nodes, 4,582 symbol indices, payload ceiling
+559,939,584, complete-frame ceiling 559,939,664, and supported-layout
+encoder/decoder aggregates 845,832,912/778,199,756 bytes. Both directions use
+an explicit one-GiB profile. The shared descriptor decision ceiling must grow
+to 117,440,512 before frame admission; this validation widening changes no
+serialized byte. This design calculation admits no implementation boundary by
+itself.
+
 ## Required tests before any backend admission
 
 - hand-check distance classes 0, 22, 23, and 24;
@@ -256,7 +265,7 @@ traversing the unchanged schema-47-through-1 chain.
 6. contextual tANS (complete, including schema-50 interoperability);
 7. Contextual Blocked Huffman (complete, including schema-51
    interoperability);
-8. Contextual Adaptive Huffman;
+8. Contextual Adaptive Huffman (design accepted; implementation closed);
 9. only then evaluate whether 16 MiB evidence justifies a later 64-MiB design.
 
 Every stage preserves existing identities, bytes, defaults, and deterministic

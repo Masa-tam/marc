@@ -47,6 +47,8 @@ navigate chronological development records.
   the staged descriptor, payload, and 512-MiB workspace proof.
 - [LZSS contextual Adaptive Huffman 4 MiB window](design/lzss-contextual-adaptive-huffman-window-4m.md):
   the fifth backend's conservative payload proof and explicit 256-MiB policy.
+- [LZSS contextual Adaptive Huffman 16 MiB window](design/lzss-contextual-adaptive-huffman-window-16m.md):
+  the staged model-bank, payload, and one-GiB workspace proof.
 - [LZSS typed-token protocol](design/lzss-typed-token-protocol.md): bounded
   dictionary-to-context value boundary.
 - [Context-model contract](design/context-model-contract.md): invertible field

@@ -12323,3 +12323,16 @@ size, and SHA-256. Verify all 61 archives in order by decoding and byte-
 identical local re-encoding. Swap the first two manifest entries and require
 rejection, then remove only archive 61, rewrite the manifest as schema 50, and
 verify every schema through schema 1.
+
+### TVG-0863
+
+For context variant 4, recompute 4,582 symbol entries and
+`2*4,582+31 = 9,195` FGK nodes. Require 13,777 total entropy entries and exact
+117,440,512 maximum decisions; prove the prior 100,663,296 ceiling is
+insufficient while all values remain representable in existing 32-bit fields.
+
+For `F=16,777,216`, require payload 559,939,584 and complete frame 559,939,664.
+On the supported 64-bit layout require encoder views 269,116,032 and aggregate
+845,832,912; require decoder views 201,482,876 and aggregate 778,199,756.
+Recompute both margins below one GiB and require future queries to succeed at
+equality and fail one byte short before publication.

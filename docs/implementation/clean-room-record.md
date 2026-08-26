@@ -26724,3 +26724,29 @@ both bounds.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1082: 2026-08-26 - Design 16-MiB Contextual Adaptive Huffman profile
+
+- Authoring method: derived the proposed profile entirely from marc's
+  completed four-MiB Contextual Adaptive Huffman representation, shared
+  16-MiB typed-token layout, and checked HashChain workspace arithmetic.
+- References used: DD-999, IR-0761, TVG-0863, CR-1081, the completed four-MiB
+  backend design, and the shared 16-MiB design.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, archives, encoded vectors,
+  test suites, patents, pseudocode, benchmark results, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: retain entropy variant 2 and its fixed descriptor;
+  select 9,195/4,582 model extents; widen only the descriptor validation ceiling
+  to 117,440,512; retain the conservative 267-bit payload proof; and use a
+  backend-specific one-GiB aggregate policy because both proven layouts fit.
+- Generated-code task description: specify exact identity, model and decision
+  bounds, payload and complete-frame ceilings, native workspace proofs, public-
+  profile contract, staged admissions, and executable documentation terms
+  without opening an implementation boundary.
+- Similarity review: the design follows only marc's repository-owned staged
+  profile structure and contains no external implementation expression.
+- Validation: arithmetic was independently recomputed from `F=16,777,216`,
+  twelve-byte typed tokens, 16-byte FGK nodes, two-byte symbol indices, the
+  checked 67,633,152-byte HashChain workspace, and the 267-bit conservative
+  payload ceiling. No codec identity was admitted by this change.
