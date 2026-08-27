@@ -26988,3 +26988,28 @@ both bounds.
   generation and verification, reordered-manifest rejection, and unchanged
   schema-51-through-1 compatibility. External four-direction schema-52
   evidence remains pending.
+
+## CR-1092: 2026-08-28 - Schema 52 four-direction external admission
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-1008, IR-0770, TVG-0872, BR-0198, IX-0046, CR-1091, and
+  full revision `9b4b7250518cf39f1c25fd6dd29b18768e3557e4`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, and optimization descriptions.
+- Independent decisions: require one exact revision for all directions,
+  preserve work products outside the repository, and accept evidence only
+  when every verifier reports the complete 62-archive inventory.
+- Generated-code task description: record the completed schema-52
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks.
+- Similarity review: this change records project-generated artifact evidence
+  only and introduces no codec implementation expression.
+- External validation: all four passes reported `Verified 62 archives` at
+  revision `9b4b7250518cf39f1c25fd6dd29b18768e3557e4`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.

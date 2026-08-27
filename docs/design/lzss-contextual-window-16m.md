@@ -2,8 +2,7 @@
 
 Status: all five contextual entropy lifecycles are complete, including
 schema-48 through schema-52 interoperability admission, after project version
-0.4.0. External schema-51 four-direction evidence is complete; schema-52
-external evidence is pending.
+0.4.0. External schema-52 four-direction evidence is complete.
 
 ## Purpose
 

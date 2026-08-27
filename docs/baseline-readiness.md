@@ -3199,3 +3199,13 @@ changing codec bytes, ABI, defaults, or earlier archives. External four-
 direction schema-52 evidence remains pending. Focused schema compatibility
 passes complete in 117.22 and 104.84 seconds under MSVC and ClangCL; their
 complete 3,295-test suites pass in 264.19 and 257.34 seconds.
+
+### BR-0199
+
+Schema 52 now has complete four-direction external evidence at revision
+`9b4b7250518cf39f1c25fd6dd29b18768e3557e4`. All 62 archives from the
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers decode and
+re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
+paths. This completes the cross-platform admission required for the 16-MiB
+Contextual Adaptive Huffman profile and the entire 16-MiB contextual entropy
+set.

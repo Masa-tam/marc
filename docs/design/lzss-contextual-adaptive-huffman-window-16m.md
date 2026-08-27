@@ -1,7 +1,7 @@
 # LZSS contextual Adaptive Huffman 16 MiB window
 
-Status: complete, including schema-52 interoperability admission, after
-schema-51 interoperability admission.
+Status: complete, including schema-52 interoperability admission and external
+four-direction evidence, after schema-51 interoperability admission.
 
 ## Purpose and exact identity
 
