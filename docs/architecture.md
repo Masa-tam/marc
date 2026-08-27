@@ -5899,13 +5899,14 @@ rather than a backend-specific branch. Four-MiB selection rejects the crossed
 parameters and leaves caller tokens unchanged. Complete-frame and every
 outward boundary remain closed.
 
-The bounded Contextual Adaptive Huffman frame encoder and decoder now admit
-only exact identity `2/5 + 1/4 + 1/2`. Both select context variant 4 before
-model partitioning or payload traversal and use the fixed
-9,195-node/4,582-symbol bank. Decoder evidence retains the independently
-assembled first distance 4,194,305. Encoder planning fixes every extent before
-publication; its HashChain route emits a Match beyond four MiB and round-trips
-through the same bounded decoder. Exact model and serialized capacities
-succeed, while one-short node, symbol, output, and match-finder workspaces fail
-without output mutation. Profile/workspace calculation, streaming, public
-API, tooling, fuzzing, and interoperability remain closed.
+The private Contextual Adaptive Huffman profile and streaming transforms now
+admit exact identity `2/5 + 1/4 + 1/2`. Profile variant 4 derives descriptor,
+payload, HashChain, token, node, symbol, raw, and aggregate extents through
+checked arithmetic. A full 16-MiB frame requires exact supported-layout
+encoder/decoder aggregates 845,832,912 and 778,199,756 under an explicit
+one-GiB policy; equality succeeds and one byte short fails before view
+publication. Smaller local frames return their actual bounded requirements
+rather than allocating the profile maximum. One-byte input/output streaming
+preserves exact bytes and terminal stability, while explicit 64-KiB, one-MiB,
+and four-MiB admissions reject the 16-MiB identity reciprocally. Public API,
+tooling, fuzzing, and interoperability remain closed.

@@ -12397,3 +12397,21 @@ workspace error without serialized mutation. Decode the completed frame under
 the crossed four-MiB identity and require raw sentinels to remain unchanged.
 Run all twelve frame-encoder tests and the complete registered suite under
 MSVC and ClangCL.
+
+### TVG-0868
+
+For profile variant 4 and `F=16,777,216`, require payload 559,939,584,
+complete frame 559,939,664, encoder views 269,116,032, and encoder aggregate
+845,832,912. Require node/symbol counts 9,195/4,582, offsets
+201,326,592/201,473,712/201,482,880, and HashChain extent 67,633,152.
+For decoding require symbol/token offsets 147,120/156,284, views 201,482,876,
+and aggregate 778,199,756. Accept exact one-GiB policy; independently reduce
+aggregate, payload, and entropy limits by one and require transactional
+failure.
+
+Stream one literal with identity `2/5 + 1/4 + 1/2` through one-byte input and
+output buffers. Require exact-profile and `any` decoders to finish stably;
+require explicit 64-KiB, one-MiB, and four-MiB admissions to reject before raw
+publication. Remove one node and one symbol from exact-profile decoder storage
+and require sticky construction errors. Run all 28 profile and streaming tests
+and the complete registered suite under MSVC and ClangCL.

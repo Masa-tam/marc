@@ -20740,3 +20740,17 @@ One-short node, symbol, serialized-output, and match-finder capacities must
 fail before serialized publication. Reuse the same decoder and crossed-profile
 rejection; add no representation branch. Keep profile calculation, streaming,
 public API, tooling, fuzzing, and interoperability closed.
+
+## DD-1004: Admit private 16-MiB Adaptive Huffman profile and streaming
+
+- Date: 2026-08-28
+- Status: accepted
+
+Add internal profile variant 4 and exact streaming admission for identity
+`2/5 + 1/4 + 1/2`. Derive all encoder and decoder storage through existing
+checked layout functions. Require exact full-profile aggregates 845,832,912
+and 778,199,756 under an explicit one-GiB local policy, with equality accepted
+and one byte short rejected before publication. Keep decoder workspace tied to
+the caller's smaller local limits. Require one-byte input/output round trip,
+terminal stability, and reciprocal rejection against all three older profile
+admissions. Do not add public selector value 3 in this stage.

@@ -1,8 +1,8 @@
 # LZSS contextual Adaptive Huffman 16 MiB window
 
-Status: bounded frame encoder and decoder implemented after schema-51
-interoperability admission. Profile/workspace, streaming, public, tooling,
-fuzzing, and interoperability boundaries remain closed.
+Status: private profile/workspace and streaming stages implemented after
+schema-51 interoperability admission. Public, tooling, fuzzing, and
+interoperability boundaries remain closed.
 
 ## Purpose and exact identity
 
@@ -138,6 +138,7 @@ and stream fields never enlarge local hard limits.
    (complete)
 4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests.
+   (complete)
 5. Admit common public C selector value 3 only for Contextual Adaptive Huffman.
 6. Add explicit CLI and dependency-free benchmark names.
 7. Extend bounded dual-path decoder fuzzing without profile-sized allocation.

@@ -26854,3 +26854,28 @@ both bounds.
   seconds, including seven Python tooling tests and schema compatibility
   passes of 103.19 and 98.38 seconds. Profile/workspace and every outward
   selector remain closed.
+
+## CR-1087: 2026-08-28 - Admit private 16-MiB Adaptive Huffman streaming
+
+- Authoring method: extended marc's internal profile enum, generic checked
+  layout selection, explicit stream admission, and repository-owned tests; no
+  external implementation was consulted.
+- References used: DD-1004, IR-0766, TVG-0868, CR-1086, the existing four-MiB
+  profile arithmetic and one-byte streaming lifecycle.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, archives, encoded vectors,
+  test suites, patents, pseudocode, benchmark results, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: add only private variant/admission values, retain the
+  one-GiB worst-case policy from the design proof, preserve local-limit-derived
+  decoder sizing, and leave public selector value 3 closed.
+- Generated-code task description: admit context variant 4 in checked profile
+  and streaming switches; add exact arithmetic, one-short, one-byte,
+  reciprocal-profile, and terminal-stability tests.
+- Similarity review: the implementation is a mechanical extension of marc's
+  repository-owned selected-layout pattern and contains no external
+  implementation expression.
+- Validation: 28 focused profile/streaming tests pass under MSVC and ClangCL.
+  All 3,287 registered tests pass in 235.82 and 235.27 seconds, including
+  seven Python tooling tests and schema compatibility passes of 103.55 and
+  98.44 seconds. Public and all later boundaries remain closed.

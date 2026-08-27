@@ -3127,3 +3127,16 @@ fail without serialized publication, and crossed four-MiB decoding preserves
 raw sentinels. Twelve focused tests pass under both compilers. All 3,285 tests,
 including tooling and schema compatibility, pass in single MSVC and ClangCL
 runs of 235.35 and 235.43 seconds; schema takes 103.19 and 98.38 seconds.
+
+### BR-0194
+
+Private profile variant 4 and exact streaming admission now carry Contextual
+Adaptive Huffman identity `2/5 + 1/4 + 1/2`. Checked full-profile encoder and
+decoder aggregates are exactly 845,832,912 and 778,199,756 bytes under a
+one-GiB policy; equality succeeds and one byte short fails before view
+publication. Smaller decoder limits return smaller workspaces. One-byte
+streaming round-trips and remains terminally stable; the three older explicit
+admissions reject it reciprocally without raw publication. Twenty-eight
+focused tests and all 3,287 registered tests pass under MSVC and ClangCL in
+235.82 and 235.27 seconds, including tooling and schema compatibility passes
+of 103.55 and 98.44 seconds.

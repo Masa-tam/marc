@@ -6931,3 +6931,13 @@ FGK model bank, and repository-owned marker-gap input pattern. No external
 compressor, Adaptive Huffman implementation, source code, archive, encoded
 vector, test suite, patent, pseudocode, benchmark result, optimization
 description, or malformed-stream corpus was consulted.
+
+### IR-0766
+
+The private 16-MiB Contextual Adaptive Huffman profile/streaming stage uses
+IR-0761 through IR-0765, DD-999 through DD-1003, TVG-0863 through TVG-0867,
+marc's checked profile arithmetic, typed workspace partitioners, bounded frame
+codec, and one-byte streaming harness. No external compressor, Adaptive
+Huffman implementation, source code, archive, encoded vector, test suite,
+patent, pseudocode, benchmark result, optimization description, or malformed-
+stream corpus was consulted.
