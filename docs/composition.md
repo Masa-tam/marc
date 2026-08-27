@@ -1885,3 +1885,14 @@ atomic for unknown selectors. Direction-specific workspace queries remain
 authoritative and may shrink with caller hard limits. The 64-KiB initializer,
 ABI-1 structure extent, CLI names, benchmark inventory, fuzz admission, and
 interoperability schema remain unchanged.
+
+### CP-0117
+
+The explicit application name `lzss-contextual-adaptive-huffman-16m` maps
+only to common profile selector value 3 and stream identity
+`2/5 + 1/4 + 1/2`. CLI and benchmark construction use the public atomic
+profile helper, authoritative directional workspace query, and factory. The
+benchmark's checked capacity `112 + 80K + ceil(267N/8)` changes no stream
+byte. Exact-name selection does not auto-detect or widen a profile; crossed
+four-MiB and 64-KiB decoders reject before raw publication. Fuzz admission
+and interoperability schema remain unchanged.

@@ -1,7 +1,7 @@
 # LZSS contextual Adaptive Huffman 16 MiB window
 
-Status: public C profile lifecycle implemented after schema-51
-interoperability admission. CLI, benchmark, fuzzing, and interoperability
+Status: public C, CLI, and dependency-free benchmark lifecycles implemented
+after schema-51 interoperability admission. Fuzzing and interoperability
 boundaries remain closed.
 
 ## Purpose and exact identity
@@ -142,6 +142,7 @@ and stream fields never enlarge local hard limits.
 5. Admit common public C selector value 3 only for Contextual Adaptive Huffman.
    (complete)
 6. Add explicit CLI and dependency-free benchmark names.
+   (complete)
 7. Extend bounded dual-path decoder fuzzing without profile-sized allocation.
 8. Append exactly one interoperability archive after every earlier boundary
    passes, preserving all schema-51 archive bytes and order.
@@ -165,6 +166,15 @@ frame vector because a Match beginning after 16 MiB of history cannot also fit
 inside a frame whose raw extent is at most 16 MiB. A complete-frame encoder
 test instead proves a semantically necessary distance strictly greater than
 four MiB, while the direct token test proves class 24 and distance 16,777,216.
+
+The application boundary exposes only the exact lower-case name
+`lzss-contextual-adaptive-huffman-16m`. Both CLI directions apply public
+profile value 3, then use the authoritative workspace query and factory. The
+dependency-free benchmark uses the same lifecycle, checked complete-stream
+capacity `112 + 80K + ceil(267N/8)`, and an exact pre-timing round trip. Near-
+miss names are rejected, and crossed four-MiB decoding fails before raw
+publication. Neither adapter reproduces private workspace layout arithmetic
+or adds fuzzing or interoperability admission.
 
 ## Deferred decisions
 

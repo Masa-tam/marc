@@ -26905,3 +26905,30 @@ both bounds.
   All 3,287 registered tests pass in 265.03 and 240.62 seconds, including
   seven Python tooling tests and schema compatibility passes of 108.52 and
   96.05 seconds. CLI, benchmark, fuzzing, and interoperability remain closed.
+
+## CR-1089: 2026-08-28 - Admit 16-MiB Adaptive Huffman application adapters
+
+- Authoring method: extended marc's existing exact-profile CLI and benchmark
+  adapter patterns over the admitted public C lifecycle; no external
+  implementation was consulted.
+- References used: DD-1006, IR-0768, TVG-0870, CR-1088, the repository-owned
+  public profile helper, workspace query, checked capacity function, and
+  crossed-profile CLI harness.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, archives, encoded vectors,
+  test suites, patents, pseudocode, benchmark results, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: expose one exact lower-case name, allocate only from
+  public query results, retain the one-GiB local policy, use the existing
+  267-bit bound for complete-stream capacity, and leave fuzzing and
+  interoperability closed.
+- Generated-code task description: add profile inventory, exact dispatch,
+  CLI round trip, dependency-free benchmark smoke, capacity, help, and
+  application documentation without changing codec bytes.
+- Similarity review: the changes mechanically extend repository-owned
+  application adapters and independently proven limits; no external
+  implementation expression was introduced.
+- Validation: focused MSVC and ClangCL builds and three application tests
+  pass. All 3,289 registered tests pass in 247.33 and 229.40 seconds,
+  including seven Python tooling tests and schema compatibility passes of
+  108.31 and 95.61 seconds. Fuzzing and interoperability remain closed.

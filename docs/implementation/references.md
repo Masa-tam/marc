@@ -6951,3 +6951,14 @@ workspace queries, and explicit streaming admission. No external compressor,
 Adaptive Huffman implementation, source code, archive, encoded vector, test
 suite, patent, pseudocode, benchmark result, optimization description, or
 malformed-stream corpus was consulted.
+
+### IR-0768
+
+The 16-MiB Contextual Adaptive Huffman application boundary uses IR-0761
+through IR-0767, DD-999 through DD-1005, TVG-0863 through TVG-0869, marc's
+existing explicit-profile CLI and dependency-free benchmark adapters, the
+public profile helper, authoritative workspace queries, and generic checked
+complete-stream capacity logic. No external compressor, Adaptive Huffman
+implementation, source code, archive, encoded vector, test suite, patent,
+pseudocode, benchmark result, optimization description, or malformed-stream
+corpus was consulted.

@@ -12433,3 +12433,17 @@ same stream under public four-MiB admission and require malformed-stream
 failure before changing the output sentinel. Run the focused C lifecycle and
 the complete registered suite, including schema compatibility, under MSVC and
 ClangCL.
+
+### TVG-0870
+
+List the exact CLI and benchmark name
+`lzss-contextual-adaptive-huffman-16m` once, immediately after the four-MiB
+name, and reject the case-near `-16M` spelling. Encode 128 repetitions of the
+repository CLI fixture and require exact stream identity `2/5 + 1/4 + 1/2`,
+successful decode with the same name, rejection by the four-MiB and 64-KiB
+names before destination publication, trailing-data rejection, and stable
+round trip. Run the dependency-free benchmark on README input with one
+iteration; require a pre-timing exact round trip, checked finite ratio and
+throughput, and reported peak workspace equal to the maximum directional
+public query total. Run focused application tests and the complete registered
+suite under MSVC and ClangCL.

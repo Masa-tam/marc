@@ -20771,3 +20771,18 @@ limits after application, and never infer or enlarge a local profile from
 stream fields. Prove exact directional full-profile workspaces and a small
 public round trip with reciprocal four-MiB rejection. Keep CLI, benchmark,
 fuzzing, and interoperability closed.
+
+## DD-1006: Admit explicit 16-MiB Adaptive Huffman application adapters
+
+- Date: 2026-08-28
+- Status: accepted
+
+Add the exact lower-case CLI and dependency-free benchmark name
+`lzss-contextual-adaptive-huffman-16m`. Both adapters must select public
+profile value 3 and use the authoritative public requirements query and
+factory without reproducing private workspace arithmetic. Capacity planning
+uses checked `112 + 80K + ceil(267N/8)`, and the benchmark must complete an
+exact round trip before timing. Require exact identity `2/5 + 1/4 + 1/2`,
+reciprocal rejection against the four-MiB name, strict near-miss rejection,
+and transactional malformed/trailing behavior. Keep fuzzing and
+interoperability closed.

@@ -3156,3 +3156,17 @@ MSVC and ClangCL. All 3,287 registered tests pass in 265.03 and 240.62
 seconds, including seven Python tooling tests and schema compatibility passes
 of 108.52 and 96.05 seconds. CLI, benchmark, fuzzing, and interoperability
 remain closed.
+
+### BR-0196
+
+The explicit `lzss-contextual-adaptive-huffman-16m` CLI and dependency-free
+benchmark adapters now select only public profile value 3 and exact identity
+`2/5 + 1/4 + 1/2`. They obtain every caller-owned extent from the public
+workspace query; checked complete-stream capacity is
+`112 + 80K + ceil(267N/8)`. The CLI round trip rejects four-MiB and 64-KiB
+crossings plus trailing data transactionally. The benchmark verifies an exact
+round trip before timing and reports the directional query totals. Both exact
+inventories reject case-near names. Focused builds and three tests pass under
+MSVC and ClangCL. All 3,289 registered tests pass in 247.33 and 229.40
+seconds, including seven Python tooling tests and schema compatibility passes
+of 108.31 and 95.61 seconds. Fuzzing and interoperability remain closed.

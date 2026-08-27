@@ -68,7 +68,8 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-blocked-huffman-16m corpus.bin 5`,
 `marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman-1m corpus.bin 5`, or
-`marc_benchmark lzss-contextual-adaptive-huffman-4m corpus.bin 5`.
+`marc_benchmark lzss-contextual-adaptive-huffman-4m corpus.bin 5`, or
+`marc_benchmark lzss-contextual-adaptive-huffman-16m corpus.bin 5`.
 
 The optional positive iteration count defaults to three. Use the same build,
 input, and count when comparing codecs or revisions. Release builds are required
@@ -423,6 +424,15 @@ same public atomic preset as the CLI: 4,194,304-byte frames and window,
 aggregate policy. Checked complete-stream capacity remains
 `112 + 80K + ceil(267N/8)`. The benchmark adds no private sizing rule and uses
 the public requirements query for every caller-owned workspace.
+
+The experimental `lzss-contextual-adaptive-huffman-16m` benchmark selects
+the same public profile value 3 as the CLI: 16,777,216-byte frames and window,
+9,195 nodes plus 4,582 symbol indices, `ceil(267F/8)` payload, and a one-GiB
+aggregate policy. Its checked complete-stream capacity is
+`112 + 80K + ceil(267N/8)`. An exact round trip precedes timing, and all
+reported workspace regions come from the public requirements query. This
+application adapter changes neither the stream representation nor the
+encoder-local match-finder strategy.
 
 ### LZ78 profiles
 

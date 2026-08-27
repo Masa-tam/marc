@@ -109,8 +109,9 @@ profile auto-detects or admits another. All four remain experimental.
 Huffman entropy variant 2 under the frozen 64 KiB profile. The additive
 `lzss-contextual-adaptive-huffman-1m` name selects exact
 `2/3 + 1/2 + 1/2`, and `lzss-contextual-adaptive-huffman-4m` selects exact
-`2/4 + 1/3 + 1/2`. Encode and decode require the same explicit name; no
-profile auto-detects or admits another. All three remain outside the stable
+`2/4 + 1/3 + 1/2`. `lzss-contextual-adaptive-huffman-16m` selects exact
+`2/5 + 1/4 + 1/2`. Encode and decode require the same explicit name; no
+profile auto-detects or admits another. All four remain outside the stable
 42-profile inventory.
 
 ### Common stream rules
@@ -342,6 +343,15 @@ window, exact 9,163-node plus 4,566-symbol model storage, the
 The helper is the sole canonical preset; the CLI changes only `original_size`
 afterward and obtains every workspace extent and alignment from the public
 requirements query.
+
+The experimental `lzss-contextual-adaptive-huffman-16m` adapter applies
+public profile value 3 to select 16,777,216-byte frames and window, exact
+9,195-node plus 4,582-symbol model storage, the
+`ceil(267F/8) = 559,939,584` payload ceiling, and a one-GiB aggregate limit.
+It uses only the public helper, requirements query, and lifecycle; it does not
+duplicate private layout arithmetic. Decode requires the same exact `-16m`
+name. Crossed-profile, malformed, and trailing input retain transactional
+destination behavior.
 
 ### LZ78 profile parameters
 

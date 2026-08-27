@@ -103,6 +103,10 @@ constexpr std::uint64_t lzss_contextual_adaptive_huffman_4m_frame_size =
     UINT64_C(1) << 22;
 constexpr std::uint64_t lzss_contextual_adaptive_huffman_4m_buffered_size =
     UINT64_C(256) << 20;
+constexpr std::uint64_t lzss_contextual_adaptive_huffman_16m_frame_size =
+    UINT64_C(1) << 24;
+constexpr std::uint64_t lzss_contextual_adaptive_huffman_16m_buffered_size =
+    UINT64_C(1) << 30;
 constexpr std::uint64_t lzss_rans_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_tans_frame_size = UINT64_C(1) << 16;
 constexpr std::uint64_t lz78_adaptive_frame_size = UINT64_C(1) << 16;
@@ -236,6 +240,7 @@ enum class Codec {
     lzss_contextual_adaptive_huffman,
     lzss_contextual_adaptive_huffman_1m,
     lzss_contextual_adaptive_huffman_4m,
+    lzss_contextual_adaptive_huffman_16m,
     lzss_rans,
     lzss_tans,
     lz78,
@@ -438,13 +443,16 @@ selected_lzss_contextual_blocked_huffman_profile(
     const Codec codec) noexcept {
     return codec == Codec::lzss_contextual_adaptive_huffman
         || codec == Codec::lzss_contextual_adaptive_huffman_1m
-        || codec == Codec::lzss_contextual_adaptive_huffman_4m;
+        || codec == Codec::lzss_contextual_adaptive_huffman_4m
+        || codec == Codec::lzss_contextual_adaptive_huffman_16m;
 }
 
 [[nodiscard]] constexpr std::uint64_t
 selected_lzss_contextual_adaptive_huffman_frame_size(
     const Codec codec) noexcept {
-    return codec == Codec::lzss_contextual_adaptive_huffman_4m
+    return codec == Codec::lzss_contextual_adaptive_huffman_16m
+        ? lzss_contextual_adaptive_huffman_16m_frame_size
+        : codec == Codec::lzss_contextual_adaptive_huffman_4m
         ? lzss_contextual_adaptive_huffman_4m_frame_size
         : codec == Codec::lzss_contextual_adaptive_huffman_1m
             ? lzss_contextual_adaptive_huffman_1m_frame_size
@@ -454,7 +462,9 @@ selected_lzss_contextual_adaptive_huffman_frame_size(
 [[nodiscard]] constexpr std::uint64_t
 selected_lzss_contextual_adaptive_huffman_buffered_size(
     const Codec codec) noexcept {
-    return codec == Codec::lzss_contextual_adaptive_huffman_4m
+    return codec == Codec::lzss_contextual_adaptive_huffman_16m
+        ? lzss_contextual_adaptive_huffman_16m_buffered_size
+        : codec == Codec::lzss_contextual_adaptive_huffman_4m
         ? lzss_contextual_adaptive_huffman_4m_buffered_size
         : codec == Codec::lzss_contextual_adaptive_huffman_1m
             ? lzss_contextual_adaptive_huffman_1m_buffered_size
@@ -464,7 +474,9 @@ selected_lzss_contextual_adaptive_huffman_buffered_size(
 [[nodiscard]] constexpr marc_lzss_contextual_profile
 selected_lzss_contextual_adaptive_huffman_profile(
     const Codec codec) noexcept {
-    return codec == Codec::lzss_contextual_adaptive_huffman_4m
+    return codec == Codec::lzss_contextual_adaptive_huffman_16m
+        ? MARC_LZSS_CONTEXTUAL_PROFILE_16M
+        : codec == Codec::lzss_contextual_adaptive_huffman_4m
         ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
         : codec == Codec::lzss_contextual_adaptive_huffman_1m
             ? MARC_LZSS_CONTEXTUAL_PROFILE_1M
@@ -607,6 +619,8 @@ struct Measurement {
         return "lzss-contextual-adaptive-huffman-1m";
     if (codec == Codec::lzss_contextual_adaptive_huffman_4m)
         return "lzss-contextual-adaptive-huffman-4m";
+    if (codec == Codec::lzss_contextual_adaptive_huffman_16m)
+        return "lzss-contextual-adaptive-huffman-16m";
     if (codec == Codec::lzss_rans) return "lzss-rans";
     if (codec == Codec::lzss_tans) return "lzss-tans";
     if (codec == Codec::lz78) return "lz78";
@@ -2521,6 +2535,7 @@ void print_usage() {
                  "lzss-contextual-adaptive-huffman, "
                  "lzss-contextual-adaptive-huffman-1m, "
                  "lzss-contextual-adaptive-huffman-4m, "
+                 "lzss-contextual-adaptive-huffman-16m, "
                  "lzss-rans, lzss-tans, lz78, "
                  "lz78-blocked-huffman, lz78-adaptive-huffman, "
                  "lz78-dynamic-range, lz78-rans, lz78-tans, "
@@ -2694,6 +2709,8 @@ int main(const int argc, const char* const argv[]) {
         codec = Codec::lzss_contextual_adaptive_huffman_1m;
     else if (name == "lzss-contextual-adaptive-huffman-4m")
         codec = Codec::lzss_contextual_adaptive_huffman_4m;
+    else if (name == "lzss-contextual-adaptive-huffman-16m")
+        codec = Codec::lzss_contextual_adaptive_huffman_16m;
     else if (name == "lzss-rans")
         codec = Codec::lzss_rans;
     else if (name == "lzss-tans")
