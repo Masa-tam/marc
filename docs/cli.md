@@ -351,7 +351,8 @@ public profile value 3 to select 16,777,216-byte frames and window, exact
 It uses only the public helper, requirements query, and lifecycle; it does not
 duplicate private layout arithmetic. Decode requires the same exact `-16m`
 name. Crossed-profile, malformed, and trailing input retain transactional
-destination behavior.
+destination behavior. Interoperability schema 52 appends this exact name as
+archive 62 without changing any earlier archive byte or order.
 
 ### LZ78 profile parameters
 

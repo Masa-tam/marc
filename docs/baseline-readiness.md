@@ -3185,3 +3185,17 @@ retained mutation, or artifact. All 3,295 registered tests pass under MSVC
 and ClangCL in 254.62 and 242.24 seconds, including seven Python tooling tests
 and schema compatibility passes of 107.89 and 96.01 seconds.
 Interoperability remains closed.
+
+### BR-0198
+
+Interoperability schema 52 freezes all 61 schema-51 archives and appends only
+`lzss-contextual-adaptive-huffman-16m` as archive 62. Generation validates
+exact identity `2/5 + 1/4 + 1/2`, immediate round trip, size, and SHA-256.
+Verification enforces exact order, foreign decode equality, and byte-identical
+local re-encoding; reordered manifests fail, while removing only entry 62
+reconstructs schema 51 before the unchanged compatibility chain reaches
+schema 1. This closes the 16-MiB Contextual Adaptive Huffman lifecycle without
+changing codec bytes, ABI, defaults, or earlier archives. External four-
+direction schema-52 evidence remains pending. Focused schema compatibility
+passes complete in 117.22 and 104.84 seconds under MSVC and ClangCL; their
+complete 3,295-test suites pass in 264.19 and 257.34 seconds.

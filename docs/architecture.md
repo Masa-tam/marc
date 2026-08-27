@@ -5921,3 +5921,11 @@ remain the sole authority for direction-specific caller storage and return
 actual requirements under tighter local limits. The initializer remains
 64 KiB, and encoded fields never select a larger local profile. CLI,
 benchmark, fuzzing, and interoperability remain closed.
+
+Interoperability schema 52 freezes schema 51's exact 61-archive order and
+appends only `lzss-contextual-adaptive-huffman-16m` as entry 62. Generation
+requires exact identity `2/5 + 1/4 + 1/2`, round trip, size, and SHA-256.
+Verification enforces exact order and byte-identical local re-encoding.
+Compatibility removes only entry 62 to reconstruct schema 51 before
+traversing the unchanged chain through schema 1. This admission changes no
+codec format, public ABI, default, or earlier archive byte.

@@ -350,8 +350,10 @@ foreach(required_adaptive_huffman_window_16m_term IN ITEMS
         "views total                      201,482,876 bytes"
         "aggregate                        778,199,756 bytes"
         "explicit one-GiB aggregate policy"
-        "public C, CLI, dependency-free benchmark, and bounded fuzz lifecycles"
-        "Interoperability"
+        "complete, including schema-52 interoperability admission"
+        "Interoperability schema 52 freezes schema 51's exact 61-archive order"
+        "appends only `lzss-contextual-adaptive-huffman-16m` as archive 62"
+        "removes only archive 62"
         "bounded decoding and then encoding after exact preflight tests pass."
         "one-byte streaming with exact"
         "only for Contextual Adaptive Huffman."
@@ -447,8 +449,8 @@ foreach(required_window_16m_term IN ITEMS
         "decision_count <= 7F"
         "aggregate                      1,057,488,981 bytes"
         "A 64-MiB jump would require class 26"
-        "Dynamic Range, canonical contextual rANS, contextual tANS, and"
-        "schema-48 through schema-51"
+        "all five contextual entropy lifecycles are complete"
+        "schema-48 through schema-52"
         "Match-finder strategy remains encoder-local and is not serialized")
     string(FIND "${lzss_contextual_window_16m_content}"
         "${required_window_16m_term}" required_window_16m_term_offset)

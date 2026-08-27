@@ -344,7 +344,13 @@ additive ABI-1 family emits only the explicitly selected identity; no typed
 C++ layout crosses the ABI.
 Its four-MiB identity is covered by the fixed-memory dual-path decoder harness
 and schema-47 interoperability bundle without adding an ABI or serialized
-selector.
+selector. `MARC_LZSS_CONTEXTUAL_PROFILE_16M` selects exact identity
+`2/5 + 1/4 + 1/2`, 16,777,216-byte frame/window/distance limits, the
+559,939,584-byte payload ceiling, 13,777 entropy entries, and a one-GiB
+aggregate policy. Its exact full-profile encoder and decoder workspace totals
+are 845,832,912 and 778,199,756 bytes on supported 64-bit layouts. The
+schema-52 archive exercises this same public profile without adding an ABI or
+serialized selector.
 Its public completion audit covers all required binary classes, deterministic
 whole, one-byte, and mixed chunk schedules, stable repeated terminal calls,
 and frame-atomic rejection of corrupted, truncated, or trailing final-frame

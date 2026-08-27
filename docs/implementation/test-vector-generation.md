@@ -12464,3 +12464,14 @@ profile pair to reject reciprocally. Query a five-byte sixteen-MiB decoder and
 require each region and total storage below two MiB. Build warning-clean under
 MSVC and ClangCL, then run seed 20260828 for exactly 1,000 bounded inputs with
 a 64-KiB maximum input, five-second timeout, and 512-MiB RSS limit.
+
+### TVG-0872
+
+Generate schema 52 from the repository-owned interoperability fixture with
+the frozen schema-51 order followed by
+`lzss-contextual-adaptive-huffman-16m`. Require exact header identity
+`2/5 + 1/4 + 1/2`, context descriptor variant 4, exact round trip, recorded
+size, and SHA-256. Verify all 62 archives in order by decoding and byte-
+identical local re-encoding. Swap the first two manifest entries and require
+rejection, then remove only archive 62, rewrite the manifest as schema 51, and
+verify every schema through schema 1.

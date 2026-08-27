@@ -26960,3 +26960,31 @@ both bounds.
   artifact. All 3,295 registered tests pass under MSVC and ClangCL in 254.62
   and 242.24 seconds, including seven Python tooling tests, documentation
   layout, and schema compatibility passes of 107.89 and 96.01 seconds.
+
+## CR-1091: 2026-08-28 - Admit 16-MiB Adaptive Huffman interoperability
+
+- Authoring method: extended marc's repository-owned append-only
+  interoperability manifest after the complete public, tool, benchmark, and
+  bounded-fuzz lifecycles had passed.
+- References used: DD-1008, IR-0770, TVG-0872, CR-1090, and the existing
+  schema-51 generator, verifier, and compatibility chain.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, interoperability suites, archives, source
+  code, encoded vectors, test suites, patents, pseudocode, benchmark results,
+  optimization descriptions, and malformed-stream corpora.
+- Independent decisions: freeze all 61 schema-51 archives; append the exact
+  profile as archive 62; validate identity `2/5 + 1/4 + 1/2`; and reconstruct
+  schema 51 by deleting only the new final archive.
+- Generated-code task description: add schema-52 generation and verification,
+  reject reordered manifests, preserve the complete schema-51-through-1
+  chain, and update completion and provenance documents.
+- Similarity review: the change extends only marc's repository-local manifest
+  and compatibility structure; no external implementation expression,
+  archive, vector, naming scheme, or test structure was used.
+- Validation: focused schema-52-through-1 compatibility passes completed in
+  117.22 seconds under MSVC and 104.84 seconds under ClangCL. All 3,295
+  registered tests pass in 264.19 and 257.34 seconds respectively, including
+  seven Python tooling tests, documentation validation, exact 62-archive
+  generation and verification, reordered-manifest rejection, and unchanged
+  schema-51-through-1 compatibility. External four-direction schema-52
+  evidence remains pending.

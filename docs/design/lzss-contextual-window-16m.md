@@ -1,9 +1,9 @@
 # LZSS contextual 16 MiB window
 
-Status: Dynamic Range, canonical contextual rANS, contextual tANS, and
-Contextual Blocked Huffman lifecycles, including schema-48 through schema-51
-interoperability admission, implemented after project version 0.4.0. External
-schema-51 four-direction evidence is complete.
+Status: all five contextual entropy lifecycles are complete, including
+schema-48 through schema-52 interoperability admission, after project version
+0.4.0. External schema-51 four-direction evidence is complete; schema-52
+external evidence is pending.
 
 ## Purpose
 
@@ -265,8 +265,8 @@ traversing the unchanged schema-47-through-1 chain.
 6. contextual tANS (complete, including schema-50 interoperability);
 7. Contextual Blocked Huffman (complete, including schema-51
    interoperability);
-8. Contextual Adaptive Huffman (public C, CLI, benchmark, and bounded fuzz
-   lifecycles complete; interoperability closed);
+8. Contextual Adaptive Huffman (complete, including schema-52
+   interoperability);
 9. only then evaluate whether 16 MiB evidence justifies a later 64-MiB design.
 
 Every stage preserves existing identities, bytes, defaults, and deterministic

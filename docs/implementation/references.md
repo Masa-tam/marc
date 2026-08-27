@@ -6972,3 +6972,13 @@ complete-frame decoder, and four-profile Blocked Huffman fuzz pattern. No
 external fuzzer harness, compressor, Adaptive Huffman implementation, source
 code, archive, encoded vector, test suite, patent, pseudocode, benchmark
 result, optimization description, or malformed-stream corpus was consulted.
+
+### IR-0770
+
+The 16-MiB Contextual Adaptive Huffman interoperability admission uses
+IR-0761 through IR-0769, DD-999 through DD-1007, TVG-0863 through TVG-0871,
+marc's append-only interoperability manifest, and its schema-reduction
+compatibility harness. No external compressor, Adaptive Huffman
+implementation, interoperability suite, archive, source code, encoded vector,
+test suite, patent, pseudocode, benchmark result, optimization description,
+or malformed-stream corpus was consulted.

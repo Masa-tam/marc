@@ -1,8 +1,7 @@
 # LZSS contextual Adaptive Huffman 16 MiB window
 
-Status: public C, CLI, dependency-free benchmark, and bounded fuzz lifecycles
-implemented after schema-51 interoperability admission. Interoperability
-remains closed.
+Status: complete, including schema-52 interoperability admission, after
+schema-51 interoperability admission.
 
 ## Purpose and exact identity
 
@@ -146,7 +145,7 @@ and stream fields never enlarge local hard limits.
 7. Extend bounded dual-path decoder fuzzing without profile-sized allocation.
    (complete)
 8. Append exactly one interoperability archive after every earlier boundary
-   passes, preserving all schema-51 archive bytes and order.
+   passes, preserving all schema-51 archive bytes and order. (complete)
 
 Every stage keeps later surfaces closed. Public exact-profile decoders must
 reject the 64-KiB, one-MiB, four-MiB, and sixteen-MiB identities reciprocally
@@ -186,6 +185,13 @@ decoder once and all four strict public admissions through deterministic
 chunking. A small 16-MiB-profile decoder query remains below two MiB, proving
 that profile identity does not request a profile-sized frame, history, or
 one-GiB workspace.
+
+Interoperability schema 52 freezes schema 51's exact 61-archive order and
+appends only `lzss-contextual-adaptive-huffman-16m` as archive 62. Generation
+requires exact identity `2/5 + 1/4 + 1/2`, immediate round trip, size, and
+SHA-256. Verification requires exact order, foreign decode equality, and
+byte-identical local re-encoding. Compatibility removes only archive 62 to
+reconstruct schema 51 before traversing its unchanged historical chain.
 
 ## Deferred decisions
 

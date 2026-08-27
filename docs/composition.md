@@ -1906,3 +1906,13 @@ fixed maximum model bank only; small local frame and payload limits remain
 authoritative for the workspace query. The private and public paths reject
 malformed data transactionally, and all distinct profile pairs reject before
 raw publication. Interoperability schema remains unchanged.
+
+### CP-0119
+
+Interoperability schema 52 appends
+`lzss-contextual-adaptive-huffman-16m` once after the frozen 61-entry schema-51
+order. The generator requires identity `2/5 + 1/4 + 1/2` and an immediate
+round trip; the verifier requires exact 62-entry order, foreign decode
+equality, and byte-identical local re-encoding. Compatibility removes only
+entry 62 to reconstruct schema 51 before traversing its unchanged historical
+conversion chain. No codec byte, resource profile, or public ABI changes.

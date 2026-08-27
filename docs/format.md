@@ -7556,3 +7556,12 @@ window, block, and distance limits, a 559,939,584-byte payload ceiling, 13,777
 entropy entries, and a one-GiB aggregate ceiling. Decoding never infers this
 profile or enlarges a hard limit from encoded fields. CLI, benchmark, fuzzing,
 and interoperability names remain unassigned.
+
+The completed application and bounded-fuzzing stages expose exact selector
+`lzss-contextual-adaptive-huffman-16m` without adding a serialized field.
+Interoperability schema 52 appends only that selector as archive 62 after the
+frozen 61-entry schema-51 inventory. Generation requires exact identity
+`2/5 + 1/4 + 1/2`; verification decodes and re-encodes the complete archive
+byte-identically. Compatibility removes only archive 62 to reconstruct schema
+51 before traversing the unchanged legacy chain. This admission adds no
+serialized rule.

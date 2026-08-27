@@ -20801,3 +20801,16 @@ entries, payload at 34,176 bytes, and the finite process-call budget. Prove a
 small 16-MiB-profile decoder query remains below two MiB. Run one fixed-seed,
 1,000-input sanitizer campaign without retained mutations or profile-sized
 allocation. Keep interoperability closed.
+
+## DD-1008: Admit Adaptive Huffman 16-MiB as interoperability schema 52
+
+- Date: 2026-08-28
+- Status: accepted
+
+Freeze schema 51's exact 61-profile order and append only
+`lzss-contextual-adaptive-huffman-16m` as archive 62. Require the generator to
+prove exact identity `2/5 + 1/4 + 1/2`, round trip, size, and SHA-256; require
+the verifier to enforce exact order, foreign decode, and byte-identical local
+re-encoding. Reconstruct schema 51 by removing only the appended profile
+before traversing the unchanged compatibility chain through schema 1. This
+changes no codec format, API, default, or earlier archive bytes.
