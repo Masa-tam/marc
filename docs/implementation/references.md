@@ -6911,3 +6911,13 @@ adapter, and repository-owned overlap-built history pattern. No external
 compressor, Adaptive Huffman implementation, source code, archive, encoded
 vector, test suite, patent, pseudocode, benchmark result, optimization
 description, or malformed-stream corpus was consulted.
+
+### IR-0764
+
+The bounded 16-MiB Contextual Adaptive Huffman frame-decoder admission uses
+IR-0761 through IR-0763, DD-999 through DD-1001, TVG-0863 through TVG-0865,
+marc's existing selected-layout frame validation, direct typed-token coder,
+and repository-owned overlap-history construction. No external compressor,
+Adaptive Huffman implementation, source code, archive, encoded vector, test
+suite, patent, pseudocode, benchmark result, optimization description, or
+malformed-stream corpus was consulted.

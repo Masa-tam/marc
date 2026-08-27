@@ -3101,3 +3101,17 @@ and 650,309 decisions. Four-MiB crossed decoding preserves every sentinel
 token. Twenty-two focused tests and all 3,281 registered tests pass under MSVC
 and ClangCL in 250.17 and 250.77 seconds, including schema compatibility passes
 of 103.52 and 98.65 seconds. Frame and every outward boundary remain closed.
+
+### BR-0192
+
+The bounded Contextual Adaptive Huffman frame decoder now admits exact
+identity `2/5 + 1/4 + 1/2` while the encoder and outward surfaces remain
+closed. The existing headers and descriptor are unchanged. A frame assembled
+below the closed encoder boundary builds 4,194,305 bytes of history and then
+decodes the first distance beyond four MiB; the crossed four-MiB identity
+preserves all token and raw sentinels. Sixteen focused tests pass under MSVC
+and ClangCL. Across the 3,283-test inventories, every non-Python test and
+schema compatibility check passes in 234.99 and 237.74 seconds, with schema
+times of 103.77 and 98.35 seconds. The seven Python tooling tests are also
+7/7 on both builds when rerun unchanged outside the sandbox that denied
+starting the configured interpreter.

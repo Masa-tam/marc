@@ -20712,3 +20712,17 @@ composition. Freeze `Symbol(23,25,24) + Bypass(24,0xABCDEF)` as exact payload
 `F8 BD 79 15`, and prove direct distance 16,777,216 using only bounded overlap
 Matches. Require atomic rejection by the four-MiB layout. Add no special-case
 coding branch and do not admit complete-frame identity or a public surface.
+
+## DD-1002: Admit only the bounded 16-MiB Adaptive Huffman frame decoder
+
+- Date: 2026-08-28
+- Status: accepted
+
+Admit exact complete-frame identity `2/5 + 1/4 + 1/2` only in the bounded
+decoder. Reuse the selected-layout frame parser and direct token decoder with
+context variant 4, 9,195 nodes, 4,582 symbol indices, `event_count <= 2F`,
+`decision_count <= 7F`, and `decision_count <= 34T`. Prove the first newly
+valid distance 4,194,305 using an independently assembled frame whose history
+is built from overlap Matches. Require the crossed four-MiB identity to fail
+before token or raw publication. Do not admit the bounded encoder, streaming,
+public API, tooling, fuzzing, or interoperability surface in this stage.

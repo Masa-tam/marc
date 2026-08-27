@@ -12363,3 +12363,20 @@ Matches, one length-249 overlap Match, and a final length-five Match at distance
 round trip, and atomic rejection by context variant 3. Run both focused suites
 and all registered tests, including schema compatibility, under MSVC and
 ClangCL.
+
+### TVG-0866
+
+Serialize and parse exact stream identity `2/5 + 1/4 + 1/2` with a
+16,777,216-byte window and require crossed dictionary variant 4 or context
+variant 3 to fail. At frame size five, accept event count four and decision
+count 35, then reject 36 to prove the selected `7F` bound.
+
+Independently assemble a complete frame from one literal, 16,256 length-258
+distance-one overlap Matches, one length-256 distance-one Match, and a final
+length-258 Match at distance 4,194,305. Generate its entropy descriptor and
+payload through the already admitted direct-token path, then serialize the
+existing frame header without invoking the closed complete-frame encoder.
+Require exact 16-MiB decoding to publish only `A` bytes and the final Match;
+require the crossed four-MiB identity to preserve every token and raw sentinel.
+Run both focused suites and all registered tests, including schema
+compatibility, under MSVC and ClangCL.

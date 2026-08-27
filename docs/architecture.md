@@ -5898,3 +5898,13 @@ built history. The implementation remains the shared selected-layout path
 rather than a backend-specific branch. Four-MiB selection rejects the crossed
 parameters and leaves caller tokens unchanged. Complete-frame and every
 outward boundary remain closed.
+
+The bounded Contextual Adaptive Huffman frame decoder now admits only exact
+identity `2/5 + 1/4 + 1/2`. It selects context variant 4 before descriptor and
+payload traversal, applies `decision_count <= 7F` and
+`decision_count <= 34T`, and uses the fixed 9,195-node/4,582-symbol model
+bank. An independently assembled frame proves the first distance beyond four
+MiB, 4,194,305, after overlap-built history. The crossed four-MiB identity is
+rejected before either token or raw output is published. The bounded frame
+encoder, streaming transforms, public API, tooling, fuzzing, and
+interoperability inventory remain closed.

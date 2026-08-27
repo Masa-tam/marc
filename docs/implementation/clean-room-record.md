@@ -26799,3 +26799,32 @@ both bounds.
   complete 3,281-test suites pass in 250.17 and 250.77 seconds, including
   schema compatibility passes of 103.52 and 98.65 seconds. No frame identity
   or public selector was admitted.
+
+## CR-1085: 2026-08-28 - Admit bounded 16-MiB Adaptive Huffman frame decoding
+
+- Authoring method: exercised marc's generic selected-layout frame decoder
+  with an independently assembled complete frame; no external implementation
+  was consulted.
+- References used: DD-1002, IR-0764, TVG-0866, CR-1084, the repository-owned
+  format validator, direct typed-token encoder, and overlap-history pattern.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, archives, encoded vectors,
+  test suites, patents, pseudocode, benchmark results, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: admit only exact identity `2/5 + 1/4 + 1/2`, use
+  distance 4,194,305 as the first newly valid complete-frame reference, build
+  the serialized payload below the closed frame-encoder boundary, and retain
+  atomic crossed-identity rejection.
+- Generated-code task description: add exact identity/count-bound tests and a
+  bounded decoder vector with overlap-built history, then leave every later
+  outward surface closed.
+- Similarity review: only repository-owned generic paths and independently
+  calculated vectors were used; no external implementation expression was
+  introduced.
+- Validation: sixteen focused tests pass under MSVC and ClangCL. The complete
+  3,283-test inventories complete their non-Python tests and schema checks in
+  234.99 and 237.74 seconds; schema compatibility takes 103.77 and 98.35
+  seconds. Seven Python tooling tests initially report `BAD_COMMAND` because
+  the sandbox denies starting the configured interpreter, then pass 7/7 under
+  both compilers when rerun unchanged with execution permission. Bounded
+  encoding and every outward selector remain closed.
