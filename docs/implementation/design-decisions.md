@@ -20786,3 +20786,18 @@ exact round trip before timing. Require exact identity `2/5 + 1/4 + 1/2`,
 reciprocal rejection against the four-MiB name, strict near-miss rejection,
 and transactional malformed/trailing behavior. Keep fuzzing and
 interoperability closed.
+
+## DD-1007: Extend Adaptive Huffman fixed-memory fuzzing to 16 MiB
+
+- Date: 2026-08-28
+- Status: accepted
+
+Drive all four strict public Contextual Adaptive Huffman profile admissions
+for every bounded fuzz input while retaining the private complete-frame
+decoder after header validation. Raise only fixed model backing to 9,195 nodes
+and 4,582 symbol indices and local distance validation to 16,777,216. Keep
+input at 65,536 bytes, output at 4,096 bytes, raw frame/token storage at 1,024
+entries, payload at 34,176 bytes, and the finite process-call budget. Prove a
+small 16-MiB-profile decoder query remains below two MiB. Run one fixed-seed,
+1,000-input sanitizer campaign without retained mutations or profile-sized
+allocation. Keep interoperability closed.

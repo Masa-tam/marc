@@ -1896,3 +1896,13 @@ benchmark's checked capacity `112 + 80K + ceil(267N/8)` changes no stream
 byte. Exact-name selection does not auto-detect or widen a profile; crossed
 four-MiB and 64-KiB decoders reject before raw publication. Fuzz admission
 and interoperability schema remain unchanged.
+
+### CP-0118
+
+The fixed-memory Contextual Adaptive Huffman decoder harness admits all four
+explicit public profiles without changing stream bytes or allocation policy.
+Profile selection changes validation identity, maximum distance, and the
+fixed maximum model bank only; small local frame and payload limits remain
+authoritative for the workspace query. The private and public paths reject
+malformed data transactionally, and all distinct profile pairs reject before
+raw publication. Interoperability schema remains unchanged.

@@ -12447,3 +12447,20 @@ iteration; require a pre-timing exact round trip, checked finite ratio and
 throughput, and reported peak workspace equal to the maximum directional
 public query total. Run focused application tests and the complete registered
 suite under MSVC and ClangCL.
+
+### TVG-0871
+
+Compile the fixed-memory Contextual Adaptive Huffman harness with 9,195 nodes
+and 4,582 symbol indices. Present every bounded input once to the private
+complete-frame decoder and to public 64-KiB, one-MiB, four-MiB, and sixteen-
+MiB streaming decoders. Retain the 65,536-byte input, 4,096-byte output,
+1,024-byte raw frame, 1,024-token, 34,176-byte payload, and finite
+`input + output + 32` call ceilings.
+
+For all four profiles, require every canonical truncation, stream identity or
+reserved-byte mutation, extreme frame extent, malformed descriptor, and
+nonzero padding to fail without raw publication. Require every distinct
+profile pair to reject reciprocally. Query a five-byte sixteen-MiB decoder and
+require each region and total storage below two MiB. Build warning-clean under
+MSVC and ClangCL, then run seed 20260828 for exactly 1,000 bounded inputs with
+a 64-KiB maximum input, five-second timeout, and 512-MiB RSS limit.

@@ -1,8 +1,8 @@
 # LZSS contextual Adaptive Huffman 16 MiB window
 
-Status: public C, CLI, and dependency-free benchmark lifecycles implemented
-after schema-51 interoperability admission. Fuzzing and interoperability
-boundaries remain closed.
+Status: public C, CLI, dependency-free benchmark, and bounded fuzz lifecycles
+implemented after schema-51 interoperability admission. Interoperability
+remains closed.
 
 ## Purpose and exact identity
 
@@ -144,6 +144,7 @@ and stream fields never enlarge local hard limits.
 6. Add explicit CLI and dependency-free benchmark names.
    (complete)
 7. Extend bounded dual-path decoder fuzzing without profile-sized allocation.
+   (complete)
 8. Append exactly one interoperability archive after every earlier boundary
    passes, preserving all schema-51 archive bytes and order.
 
@@ -175,6 +176,16 @@ capacity `112 + 80K + ceil(267N/8)`, and an exact pre-timing round trip. Near-
 miss names are rejected, and crossed four-MiB decoding fails before raw
 publication. Neither adapter reproduces private workspace layout arithmetic
 or adds fuzzing or interoperability admission.
+
+The bounded decoder fuzz boundary holds input at 65,536 bytes, output at
+4,096 bytes, raw frame and typed-token staging at 1,024 entries, payload at
+34,176 bytes, and process calls at `input + output + 32`. Only fixed model
+backing grows to 9,195 nodes plus 4,582 symbol indices, and the local distance
+ceiling grows to 16,777,216. Each input reaches the private complete-frame
+decoder once and all four strict public admissions through deterministic
+chunking. A small 16-MiB-profile decoder query remains below two MiB, proving
+that profile identity does not request a profile-sized frame, history, or
+one-GiB workspace.
 
 ## Deferred decisions
 

@@ -90,14 +90,16 @@ backs all four valid layouts. The private complete-frame decoder accepts every
 layout, while the public C path separately drives strict 64 KiB, 1 MiB, 4 MiB,
 and 16 MiB admissions using byte-derived chunks and a finite call budget. A
 16 MiB safety distance limit changes no fixed frame/history allocation.
-The experimental Contextual Adaptive Huffman target fixes the oracle with five
-ordinary dual-boundary regressions, then caps supplied input at 64 KiB,
-published raw output at 4 KiB, one frame at 1 KiB, and payload at 34,176 bytes.
-Its exact 9,067-node/4,518-symbol model bank, 1,024 private tokens, private raw
-storage, public primary/secondary/aligned views, and final output are one
-thread-local fixed workspace. Both decode paths use a finite call budget and
-the public path uses byte-derived chunks. Ordinary MSVC and ClangCL builds
-compile it warning-clean; no sanitizer campaign is yet claimed.
+The experimental Contextual Adaptive Huffman target caps supplied input at
+64 KiB, published raw output at 4 KiB, one frame at 1 KiB, token staging at
+1,024 entries, and payload at 34,176 bytes. Its maximum
+9,195-node/4,582-symbol model bank,
+private raw storage, public primary/secondary/aligned views, and final output
+form one thread-local fixed workspace. The private complete-frame decoder and
+all four strict public 64 KiB, 1 MiB, 4 MiB, and 16 MiB admissions use a
+finite call budget; the public paths use byte-derived chunks. Selecting the
+16 MiB identity changes only model and distance validation and does not
+allocate a profile-sized frame or history.
 The combined LZSS plus Adaptive Huffman target uses the same dual-decoder and
 call-ceiling structure with the exact LZSS `2F` token bound: 8 KiB supplied
 input, 4 KiB total output, 1 KiB raw frames, 2 KiB canonical token staging,
@@ -832,6 +834,25 @@ with seed 20260826 completed exactly 1,000 inputs under a 32-KiB maximum input,
 five-second per-input timeout, and 512-MiB RSS limit without a crash, hang, or
 sanitizer finding. Peak RSS was 43 MiB; final coverage was 239 counters and
 402 features over a six-entry, 24-byte in-memory corpus. The matching runtime
+path applied only to the campaign process. No input corpus was supplied, no
+generated mutation was retained, and no artifact was produced. This bounded
+result is evidence for the exercised inputs, not an exhaustive safety claim.
+
+### FZ-0036: Four-profile Contextual Adaptive Huffman smoke
+
+The Contextual Adaptive Huffman private-frame/public-C decoder target now
+drives the 64-KiB, one-MiB, four-MiB, and 16-MiB strict admissions for every
+bounded input. It retains its 64-KiB input, four-KiB total output, one-KiB
+frame/token storage, 34,176-byte payload, fixed 9,195-node/4,582-symbol model
+bank, and finite call ceiling. The largest admitted distance is 16,777,216
+bytes; the 16-MiB identity does not allocate a 16-MiB frame, history buffer,
+or full one-GiB profile workspace.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 20260828 completed exactly 1,000 inputs under a 64-KiB maximum input,
+five-second per-input timeout, and 512-MiB RSS limit without a crash, hang, or
+sanitizer finding. Peak RSS was 43 MiB; final coverage was 261 counters and
+436 features over a five-entry, 20-byte in-memory corpus. The matching runtime
 path applied only to the campaign process. No input corpus was supplied, no
 generated mutation was retained, and no artifact was produced. This bounded
 result is evidence for the exercised inputs, not an exhaustive safety claim.

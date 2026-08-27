@@ -6962,3 +6962,13 @@ complete-stream capacity logic. No external compressor, Adaptive Huffman
 implementation, source code, archive, encoded vector, test suite, patent,
 pseudocode, benchmark result, optimization description, or malformed-stream
 corpus was consulted.
+
+### IR-0769
+
+The 16-MiB Contextual Adaptive Huffman bounded-fuzz admission uses IR-0761
+through IR-0768, DD-999 through DD-1006, TVG-0863 through TVG-0870, marc's
+existing fixed-memory dual-path harness, public profile lifecycle, private
+complete-frame decoder, and four-profile Blocked Huffman fuzz pattern. No
+external fuzzer harness, compressor, Adaptive Huffman implementation, source
+code, archive, encoded vector, test suite, patent, pseudocode, benchmark
+result, optimization description, or malformed-stream corpus was consulted.

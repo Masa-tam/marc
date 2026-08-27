@@ -3170,3 +3170,18 @@ inventories reject case-near names. Focused builds and three tests pass under
 MSVC and ClangCL. All 3,289 registered tests pass in 247.33 and 229.40
 seconds, including seven Python tooling tests and schema compatibility passes
 of 108.31 and 95.61 seconds. Fuzzing and interoperability remain closed.
+
+### BR-0197
+
+The fixed-memory Contextual Adaptive Huffman fuzz boundary now drives all four
+strict public profile admissions plus the private complete-frame decoder for
+every bounded input. Fixed model backing is 9,195 nodes plus 4,582 symbol
+indices, while input, output, frame, token, payload, and process-call ceilings
+remain unchanged. A small 16-MiB-profile decoder query remains below two MiB;
+no profile-sized allocation occurs. Twenty-two focused tests pass under MSVC
+and ClangCL. A 1,000-input Windows Clang 22 sanitizer run with seed 20260828
+completed at 43-MiB peak RSS without a crash, hang, sanitizer finding,
+retained mutation, or artifact. All 3,295 registered tests pass under MSVC
+and ClangCL in 254.62 and 242.24 seconds, including seven Python tooling tests
+and schema compatibility passes of 107.89 and 96.01 seconds.
+Interoperability remains closed.

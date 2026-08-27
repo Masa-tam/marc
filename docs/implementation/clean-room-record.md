@@ -26932,3 +26932,31 @@ both bounds.
   pass. All 3,289 registered tests pass in 247.33 and 229.40 seconds,
   including seven Python tooling tests and schema compatibility passes of
   108.31 and 95.61 seconds. Fuzzing and interoperability remain closed.
+
+## CR-1090: 2026-08-28 - Admit 16-MiB Adaptive Huffman bounded fuzzing
+
+- Authoring method: extended marc's repository-owned fixed-memory Contextual
+  Adaptive Huffman dual-path harness and permanent malformed-stream oracle;
+  no external implementation or corpus was consulted.
+- References used: DD-1007, IR-0769, TVG-0871, CR-1089, the completed public
+  lifecycle, private complete-frame decoder, and four-profile Blocked Huffman
+  fuzz boundary.
+- Known implementations intentionally not consulted: external fuzzers,
+  compressors, Adaptive Huffman implementations, source code, archives,
+  encoded vectors, test suites, patents, pseudocode, benchmark results,
+  optimization descriptions, and malformed-stream corpora.
+- Independent decisions: enlarge only fixed model backing and local distance
+  validation; retain input, output, frame, token, payload, and call ceilings;
+  drive private plus all four public paths; and keep interoperability closed.
+- Generated-code task description: add 16-MiB profile selection, reciprocal
+  four-profile rejection, small-workspace evidence, compile smoke, and one
+  fixed-seed sanitizer campaign without retained mutations.
+- Similarity review: only repository-owned bounded harness and regression
+  patterns were reused; no external implementation expression was added.
+- Validation: 22 focused oracle tests and compile-smoke targets pass under
+  MSVC and ClangCL. A Windows Clang 22 sanitizer campaign completed 1,000
+  inputs with seed 20260828, 43-MiB peak RSS, 261 coverage counters, and 436
+  features without a crash, hang, sanitizer finding, retained mutation, or
+  artifact. All 3,295 registered tests pass under MSVC and ClangCL in 254.62
+  and 242.24 seconds, including seven Python tooling tests, documentation
+  layout, and schema compatibility passes of 107.89 and 96.01 seconds.
