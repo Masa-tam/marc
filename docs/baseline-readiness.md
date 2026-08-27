@@ -3115,3 +3115,15 @@ schema compatibility check passes in 234.99 and 237.74 seconds, with schema
 times of 103.77 and 98.35 seconds. The seven Python tooling tests are also
 7/7 on both builds when rerun unchanged outside the sandbox that denied
 starting the configured interpreter.
+
+### BR-0193
+
+The bounded Contextual Adaptive Huffman frame encoder now joins the decoder in
+admitting exact identity `2/5 + 1/4 + 1/2`. The canonical literal path uses
+exactly 9,195 nodes and 4,582 symbol indices. The HashChain path emits a Match
+beyond four MiB from a marker-gap input and round-trips through the bounded
+decoder. One-short node, symbol, serialized-output, and match-finder storage
+fail without serialized publication, and crossed four-MiB decoding preserves
+raw sentinels. Twelve focused tests pass under both compilers. All 3,285 tests,
+including tooling and schema compatibility, pass in single MSVC and ClangCL
+runs of 235.35 and 235.43 seconds; schema takes 103.19 and 98.38 seconds.

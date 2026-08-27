@@ -26828,3 +26828,29 @@ both bounds.
   the sandbox denies starting the configured interpreter, then pass 7/7 under
   both compilers when rerun unchanged with execution permission. Bounded
   encoding and every outward selector remain closed.
+
+## CR-1086: 2026-08-28 - Admit bounded 16-MiB Adaptive Huffman frame encoding
+
+- Authoring method: extended marc's generic bounded encoder tests with an
+  independently constructed marker-gap input; no external implementation was
+  consulted.
+- References used: DD-1003, IR-0765, TVG-0867, CR-1085, the repository-owned
+  four-MiB encoder test, HashChain workspace query, and selected FGK bank.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, archives, encoded vectors,
+  test suites, patents, pseudocode, benchmark results, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: reuse both generic encoder paths, require a real
+  encoder-selected distance beyond four MiB, and test every profile-specific
+  one-short caller workspace before opening profile calculation or streaming.
+- Generated-code task description: add 16-MiB canonical literal and large-gap
+  HashChain frame tests with exact extents, atomic one-short failures, bounded
+  decode, and crossed-profile rejection.
+- Similarity review: the change contains only repository-owned generic paths
+  and independently constructed tests; no external implementation expression
+  was introduced.
+- Validation: all twelve focused frame-encoder tests pass under MSVC and
+  ClangCL. All 3,285 registered tests pass in single runs of 235.35 and 235.43
+  seconds, including seven Python tooling tests and schema compatibility
+  passes of 103.19 and 98.38 seconds. Profile/workspace and every outward
+  selector remain closed.

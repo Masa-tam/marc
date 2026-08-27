@@ -12380,3 +12380,20 @@ Require exact 16-MiB decoding to publish only `A` bytes and the final Match;
 require the crossed four-MiB identity to preserve every token and raw sentinel.
 Run both focused suites and all registered tests, including schema
 compatibility, under MSVC and ClangCL.
+
+### TVG-0867
+
+For exact identity `2/5 + 1/4 + 1/2`, encode and decode one literal through
+the bounded exhaustive path. Require 82 serialized bytes, a 16-byte
+descriptor, two decisions, exactly 9,195 nodes and 4,582 symbol indices.
+Remove one node, one symbol, and one serialized byte independently; each must
+fail before changing the `0xCC` output sentinel.
+
+Construct `ABCDE`, a 4,194,304-byte `Z` gap, and terminal `ABCDE`. Use the
+HashChain path to require at least one emitted Match whose distance is greater
+than 4,194,304, then round-trip through the bounded 16-MiB decoder. Remove one
+byte from the calculated match-finder workspace and require its stable
+workspace error without serialized mutation. Decode the completed frame under
+the crossed four-MiB identity and require raw sentinels to remain unchanged.
+Run all twelve frame-encoder tests and the complete registered suite under
+MSVC and ClangCL.

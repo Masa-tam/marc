@@ -7536,13 +7536,14 @@ trips distance 16,777,216 after bounded overlap-built history. A four-MiB
 layout rejects the crossed parameters before token publication. No frame or
 public representation is added.
 
-The bounded Contextual Adaptive Huffman frame decoder now recognizes exact
-complete-frame identity `2/5 + 1/4 + 1/2`. The existing 112-byte stream
-header, 64-byte frame header, and 16-byte entropy descriptor are unchanged.
-For context variant 4, frame validation selects 4,582 symbol entries, 9,195
-nodes, `event_count <= 2F`, `decision_count <= 7F`, and
+The bounded Contextual Adaptive Huffman frame encoder and decoder now
+recognize exact complete-frame identity `2/5 + 1/4 + 1/2`. The existing
+112-byte stream header, 64-byte frame header, and 16-byte entropy descriptor
+are unchanged. For context variant 4, frame validation selects 4,582 symbol
+entries, 9,195 nodes, `event_count <= 2F`, `decision_count <= 7F`, and
 `decision_count <= 34T` before entropy traversal or output publication. The
-first newly representable distance beyond four MiB is 4,194,305. Substituting
+decoder proves the first newly representable distance 4,194,305; the
+HashChain encoder emits a Match strictly beyond four MiB. Substituting
 dictionary variant 4 or context variant 3 makes the identity contradictory
-and must leave token and raw destinations unchanged. Bounded encoding and all
-outward admissions remain outside this stage.
+and leaves destinations unchanged. Profile, streaming, and all outward
+admissions remain outside this stage.

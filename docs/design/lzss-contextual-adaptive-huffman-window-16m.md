@@ -1,7 +1,7 @@
 # LZSS contextual Adaptive Huffman 16 MiB window
 
-Status: bounded decoder frame admission implemented after schema-51
-interoperability admission. Bounded encoding, streaming, public, tooling,
+Status: bounded frame encoder and decoder implemented after schema-51
+interoperability admission. Profile/workspace, streaming, public, tooling,
 fuzzing, and interoperability boundaries remain closed.
 
 ## Purpose and exact identity
@@ -135,7 +135,7 @@ and stream fields never enlarge local hard limits.
    (complete)
 3. Admit only exact complete-frame identity `2/5 + 1/4 + 1/2`, initially for
    bounded decoding and then encoding after exact preflight tests pass.
-   Bounded decoder admission is complete; bounded encoding remains closed.
+   (complete)
 4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests.
 5. Admit common public C selector value 3 only for Contextual Adaptive Huffman.

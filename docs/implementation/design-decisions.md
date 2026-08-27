@@ -20726,3 +20726,17 @@ valid distance 4,194,305 using an independently assembled frame whose history
 is built from overlap Matches. Require the crossed four-MiB identity to fail
 before token or raw publication. Do not admit the bounded encoder, streaming,
 public API, tooling, fuzzing, or interoperability surface in this stage.
+
+## DD-1003: Admit the bounded 16-MiB Adaptive Huffman frame encoder
+
+- Date: 2026-08-28
+- Status: accepted
+
+Complete the bounded-frame stage by admitting exact identity
+`2/5 + 1/4 + 1/2` through the existing exhaustive and HashChain encoder paths.
+Require canonical literal round trip at the exact 9,195-node/4,582-symbol
+model extent and require a HashChain-produced Match strictly beyond four MiB.
+One-short node, symbol, serialized-output, and match-finder capacities must
+fail before serialized publication. Reuse the same decoder and crossed-profile
+rejection; add no representation branch. Keep profile calculation, streaming,
+public API, tooling, fuzzing, and interoperability closed.
