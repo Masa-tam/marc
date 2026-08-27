@@ -3140,3 +3140,19 @@ admissions reject it reciprocally without raw publication. Twenty-eight
 focused tests and all 3,287 registered tests pass under MSVC and ClangCL in
 235.82 and 235.27 seconds, including tooling and schema compatibility passes
 of 103.55 and 98.44 seconds.
+
+### BR-0195
+
+The public Contextual Adaptive Huffman C lifecycle now admits common profile
+value 3 as exact identity `2/5 + 1/4 + 1/2`. The helper applies the proven
+16-MiB limits while preserving caller-owned fields, remains idempotent, and
+rejects unknown values without mutation. The ABI-1 configuration extent and
+64-KiB initializer are unchanged. Full-profile workspace queries reproduce
+the private encoder/decoder aggregates 845,832,912 and 778,199,756 bytes;
+equality succeeds and one byte short fails without allocating those extents.
+A small public encode/decode lifecycle round-trips and crossed four-MiB
+admission preserves the output sentinel. The focused lifecycle passes under
+MSVC and ClangCL. All 3,287 registered tests pass in 265.03 and 240.62
+seconds, including seven Python tooling tests and schema compatibility passes
+of 108.52 and 96.05 seconds. CLI, benchmark, fuzzing, and interoperability
+remain closed.

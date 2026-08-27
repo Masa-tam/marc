@@ -26879,3 +26879,29 @@ both bounds.
   All 3,287 registered tests pass in 235.82 and 235.27 seconds, including
   seven Python tooling tests and schema compatibility passes of 103.55 and
   98.44 seconds. Public and all later boundaries remain closed.
+
+## CR-1088: 2026-08-28 - Admit public 16-MiB Adaptive Huffman C lifecycle
+
+- Authoring method: extended marc's existing common profile-helper and public
+  C lifecycle patterns over the already admitted private profile; no external
+  implementation was consulted.
+- References used: DD-1005, IR-0767, TVG-0869, CR-1087, the repository-owned
+  ABI-1 helper, workspace query, factory, and crossed-profile tests.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, archives, encoded vectors,
+  test suites, patents, pseudocode, benchmark results, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: preserve the existing structure extent and 64-KiB
+  default; make value 3 an explicit local opt-in; apply exact one-GiB limits
+  atomically; retain caller identity/output fields; and keep every application
+  and interoperability surface closed.
+- Generated-code task description: connect selector value 3 to private
+  variant/admission 4; add exact helper, full-workspace, small lifecycle, ABI,
+  atomicity, and reciprocal-rejection tests.
+- Similarity review: the implementation mechanically extends repository-owned
+  public patterns and independently calculated limits; no external
+  implementation expression was introduced.
+- Validation: the focused public C lifecycle passes under MSVC and ClangCL.
+  All 3,287 registered tests pass in 265.03 and 240.62 seconds, including
+  seven Python tooling tests and schema compatibility passes of 108.52 and
+  96.05 seconds. CLI, benchmark, fuzzing, and interoperability remain closed.

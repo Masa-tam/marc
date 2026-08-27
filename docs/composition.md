@@ -1874,3 +1874,14 @@ round trip; the verifier requires exact 61-entry order, foreign decode
 equality, and byte-identical local re-encoding. Compatibility removes only
 entry 61 to reconstruct schema 50 before traversing its unchanged historical
 conversion chain. No codec byte, resource profile, or public ABI changes.
+
+### CP-0116
+
+The public Contextual Adaptive Huffman C lifecycle admits common profile
+selector value 3 as exact identity `2/5 + 1/4 + 1/2`. The profile helper
+changes only local frame, window, block, distance, payload, entropy-entry, and
+aggregate limits; it preserves caller identity and output policy fields and is
+atomic for unknown selectors. Direction-specific workspace queries remain
+authoritative and may shrink with caller hard limits. The 64-KiB initializer,
+ABI-1 structure extent, CLI names, benchmark inventory, fuzz admission, and
+interoperability schema remain unchanged.

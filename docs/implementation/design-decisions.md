@@ -20754,3 +20754,20 @@ and one byte short rejected before publication. Keep decoder workspace tied to
 the caller's smaller local limits. Require one-byte input/output round trip,
 terminal stability, and reciprocal rejection against all three older profile
 admissions. Do not add public selector value 3 in this stage.
+
+## DD-1005: Admit the 16-MiB Adaptive Huffman public C lifecycle
+
+- Date: 2026-08-28
+- Status: accepted
+
+Map common selector value 3 to the already proven private profile variant 4
+and exact stream admission `2/5 + 1/4 + 1/2`. Extend only the existing ABI-1
+configuration loader, atomic `apply_profile` helper, workspace query, and
+factory dispatch. The helper applies frame/window/block/distance 16,777,216,
+payload 559,939,584, entropy entries 13,777, and one-GiB aggregate policy while
+preserving direction, original size, total-output policy, ABI metadata, and
+reserved zeros. Keep initialization at 64 KiB, permit callers to tighten hard
+limits after application, and never infer or enlarge a local profile from
+stream fields. Prove exact directional full-profile workspaces and a small
+public round trip with reciprocal four-MiB rejection. Keep CLI, benchmark,
+fuzzing, and interoperability closed.

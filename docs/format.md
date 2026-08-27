@@ -7545,4 +7545,14 @@ local policy; smaller limits produce smaller actual decoder workspaces and
 never inherit capacity from the stream. Streaming output is identical to the
 bounded encoder under one-byte input and output. Exact 16-MiB admission rejects
 all three older profile identities and is rejected by them before raw
-publication. No serialized field or public selector is added.
+publication. This private streaming stage added no serialized field or public
+selector.
+
+The public C profile selector value 3 now admits the existing Contextual
+Adaptive Huffman identity `2/5 + 1/4 + 1/2`. This changes no stream field,
+descriptor, frame, entropy payload, or canonical byte. The initializer still
+selects value 0. Applying value 3 establishes only caller-local 16-MiB frame,
+window, block, and distance limits, a 559,939,584-byte payload ceiling, 13,777
+entropy entries, and a one-GiB aggregate ceiling. Decoding never infers this
+profile or enlarges a hard limit from encoded fields. CLI, benchmark, fuzzing,
+and interoperability names remain unassigned.

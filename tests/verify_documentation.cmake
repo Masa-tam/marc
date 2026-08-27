@@ -350,10 +350,11 @@ foreach(required_adaptive_huffman_window_16m_term IN ITEMS
         "views total                      201,482,876 bytes"
         "aggregate                        778,199,756 bytes"
         "explicit one-GiB aggregate policy"
-        "private profile/workspace and streaming stages implemented"
-        "Public, tooling, fuzzing, and"
+        "public C profile lifecycle implemented"
+        "CLI, benchmark, fuzzing, and interoperability"
         "bounded decoding and then encoding after exact preflight tests pass."
         "one-byte streaming with exact"
+        "only for Contextual Adaptive Huffman."
         "(complete)"
         "preserving all schema-51 archive bytes and order")
     string(FIND "${lzss_contextual_adaptive_huffman_window_16m_content}"

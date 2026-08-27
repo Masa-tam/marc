@@ -6941,3 +6941,13 @@ codec, and one-byte streaming harness. No external compressor, Adaptive
 Huffman implementation, source code, archive, encoded vector, test suite,
 patent, pseudocode, benchmark result, optimization description, or malformed-
 stream corpus was consulted.
+
+### IR-0767
+
+The public 16-MiB Contextual Adaptive Huffman C lifecycle uses IR-0761 through
+IR-0766, DD-999 through DD-1004, TVG-0863 through TVG-0868, marc's existing
+common profile helper contract, ABI-1 configuration surface, authoritative
+workspace queries, and explicit streaming admission. No external compressor,
+Adaptive Huffman implementation, source code, archive, encoded vector, test
+suite, patent, pseudocode, benchmark result, optimization description, or
+malformed-stream corpus was consulted.

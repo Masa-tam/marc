@@ -12415,3 +12415,21 @@ require explicit 64-KiB, one-MiB, and four-MiB admissions to reject before raw
 publication. Remove one node and one symbol from exact-profile decoder storage
 and require sticky construction errors. Run all 28 profile and streaming tests
 and the complete registered suite under MSVC and ClangCL.
+
+### TVG-0869
+
+Apply common public profile value 3 in both directions and require exact local
+limits 16,777,216/559,939,584/13,777/one GiB while preserving direction,
+original size, total-output policy, ABI extent, and reserved fields. Reapply
+the value byte-identically; reject unknown value 4 without mutation; permit a
+caller to lower the aggregate limit to exact query total and reject one byte
+less. Require full-profile encoder workspace
+16,777,216 + 559,939,664 + 269,116,032 and decoder workspace
+559,939,664 + 16,777,216 + 201,482,876 without allocating those full extents.
+
+With locally tightened small frame limits, encode and decode one literal via
+the public factory and require exact identity `2/5 + 1/4 + 1/2`. Decode the
+same stream under public four-MiB admission and require malformed-stream
+failure before changing the output sentinel. Run the focused C lifecycle and
+the complete registered suite, including schema compatibility, under MSVC and
+ClangCL.

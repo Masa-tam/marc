@@ -745,6 +745,10 @@ contextual_blocked_huffman_stream_admission(
     LzssContextualAdaptiveHuffmanProfileVariant
 contextual_adaptive_huffman_profile_variant(
     const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
+        return marc::frame::internal::
+            LzssContextualAdaptiveHuffmanProfileVariant::field_context_16m;
+    }
     if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::
             LzssContextualAdaptiveHuffmanProfileVariant::field_context_4m;
@@ -760,6 +764,10 @@ contextual_adaptive_huffman_profile_variant(
     LzssContextualAdaptiveHuffmanStreamAdmission
 contextual_adaptive_huffman_stream_admission(
     const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
+        return marc::frame::internal::
+            LzssContextualAdaptiveHuffmanStreamAdmission::field_context_16m;
+    }
     if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
         return marc::frame::internal::
             LzssContextualAdaptiveHuffmanStreamAdmission::field_context_4m;
@@ -864,7 +872,8 @@ bool load_config(
         || config->reserved != 0 || config->reserved2 != 0
         || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
-            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -5206,16 +5215,20 @@ marc_lzss_contextual_adaptive_huffman_config_apply_profile(
         || config->reserved != 0 || config->reserved2 != 0
         || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
-            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M)) {
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M)) {
         return MARC_STATUS_INVALID_ARGUMENT;
     }
 
     auto applied = *config;
-    const std::uint32_t extent = profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
-        ? UINT32_C(1) << 22
-        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
-            ? UINT32_C(1) << 20
-            : UINT32_C(1) << 16;
+    std::uint32_t extent = UINT32_C(1) << 16;
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M) {
+        extent = UINT32_C(1) << 20;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M) {
+        extent = UINT32_C(1) << 22;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
+        extent = UINT32_C(1) << 24;
+    }
     const std::uint64_t payload =
         (static_cast<std::uint64_t>(extent) * UINT64_C(267)
          + UINT64_C(7)) / UINT64_C(8);
@@ -5227,19 +5240,23 @@ marc_lzss_contextual_adaptive_huffman_config_apply_profile(
     applied.max_block_size = extent;
     applied.max_compressed_payload_size = payload;
     applied.max_internal_buffered_bytes =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
-        ? UINT64_C(256) << 20
-        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
-            ? UINT64_C(128) << 20
-            : UINT64_C(8) << 20;
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+        ? UINT64_C(1) << 30
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+            ? UINT64_C(256) << 20
+            : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
+                ? UINT64_C(128) << 20
+                : UINT64_C(8) << 20;
     applied.max_lz_distance = extent;
     applied.max_lz_match_length = 258;
     applied.max_entropy_table_entries =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
-        ? UINT64_C(13729)
-        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
-            ? UINT64_C(13681)
-            : UINT64_C(13585);
+        profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+        ? UINT64_C(13777)
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+            ? UINT64_C(13729)
+            : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
+                ? UINT64_C(13681)
+                : UINT64_C(13585);
     applied.profile = profile;
     *config = applied;
     return MARC_STATUS_OK;

@@ -5908,5 +5908,16 @@ one-GiB policy; equality succeeds and one byte short fails before view
 publication. Smaller local frames return their actual bounded requirements
 rather than allocating the profile maximum. One-byte input/output streaming
 preserves exact bytes and terminal stability, while explicit 64-KiB, one-MiB,
-and four-MiB admissions reject the 16-MiB identity reciprocally. Public API,
-tooling, fuzzing, and interoperability remain closed.
+and four-MiB admissions reject the 16-MiB identity reciprocally. At that
+private stage the public API, tooling, fuzzing, and interoperability remained
+closed.
+
+The public C Contextual Adaptive Huffman lifecycle now maps common profile
+selector value 3 to that exact private variant and admission. Its atomic
+helper applies the 16-MiB frame, window, block, distance, payload, entropy-
+entry, and one-GiB aggregate policy while preserving direction, original
+size, total-output policy, ABI metadata, and reserved zeros. Workspace queries
+remain the sole authority for direction-specific caller storage and return
+actual requirements under tighter local limits. The initializer remains
+64 KiB, and encoded fields never select a larger local profile. CLI,
+benchmark, fuzzing, and interoperability remain closed.

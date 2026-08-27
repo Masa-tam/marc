@@ -1,8 +1,8 @@
 # LZSS contextual Adaptive Huffman 16 MiB window
 
-Status: private profile/workspace and streaming stages implemented after
-schema-51 interoperability admission. Public, tooling, fuzzing, and
-interoperability boundaries remain closed.
+Status: public C profile lifecycle implemented after schema-51
+interoperability admission. CLI, benchmark, fuzzing, and interoperability
+boundaries remain closed.
 
 ## Purpose and exact identity
 
@@ -117,7 +117,7 @@ frame, raw, token, node, and symbol extents from the caller's smaller local
 limits. Selecting the identity in a bounded fuzzer must not allocate a 16-MiB
 history or reserve the full profile workspace.
 
-The future additive public helper for common selector value 3 will apply
+The additive public helper for common selector value 3 applies
 frame, window, block, and distance 16,777,216; payload limit 559,939,584;
 entropy-entry limit 13,777; and a one-GiB aggregate policy. It must preserve
 direction, original size, total-output policy, ABI metadata, and reserved
@@ -140,6 +140,7 @@ and stream fields never enlarge local hard limits.
    and one-short aggregate tests.
    (complete)
 5. Admit common public C selector value 3 only for Contextual Adaptive Huffman.
+   (complete)
 6. Add explicit CLI and dependency-free benchmark names.
 7. Extend bounded dual-path decoder fuzzing without profile-sized allocation.
 8. Append exactly one interoperability archive after every earlier boundary
