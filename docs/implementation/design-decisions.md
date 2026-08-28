@@ -20845,3 +20845,18 @@ the existing `--frames` arguments and output unchanged. Preserve untimed
 summary/fingerprint generation and counter-free timed parsing; require their
 byte, frame, and token counts to agree. Fix exact 64-bit 16-MiB workspace
 values and one-short aggregate rejection without allocating those extents.
+
+## DD-1011: Admit the fixed checkpointed 16-MiB BinaryTree runner
+
+- Date: 2026-08-28
+- Status: accepted
+
+Implement one independent runner with no matrix override: require all twelve
+verified members, one 16-MiB frame extent, 1/4/16-MiB windows, HashChain then
+BinaryTree Exact, one iteration, and explicit 512-MiB policy. Validate every
+limited report, require all five token-summary fields to match before saving a
+BinaryTree point, and produce exactly 72 canonical records, six aggregates,
+and three descriptive comparisons. Bind checkpoint resume to full revision,
+benchmark and dependent-source hashes, Corpus identity, fixed configuration,
+and complete environment. Save atomically at each record boundary and permit
+zero or bounded new-point batches without changing identity.

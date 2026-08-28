@@ -3233,3 +3233,15 @@ timed path. Exact 64-bit 16-MiB HashChain and BinaryTree workspace/aggregate
 values and one-short rejection are fixed without large allocation. Focused
 workspace, executable, and documentation tests pass under MSVC and ClangCL;
 the checkpointed Corpus runner remains pending.
+
+### BR-0202
+
+The fixed 16-MiB BinaryTree Silesia runner is now complete. It admits no
+matrix overrides, requires all twelve verified members, plans 72 canonical
+limited-mode processes, and compares every token-summary field before saving
+BinaryTree evidence. Its atomic checkpoint is bound to revision, executable,
+dependent sources, Corpus, fixed configuration, and environment; bounded and
+zero-point resumes preserve that identity. Ten Corpus-independent tests cover
+strict reports, corruption, identity, order, all aggregates, and a full mocked
+72-point result under both CTest configurations. Actual measurement and the
+complete C++ suites remain pending.

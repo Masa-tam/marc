@@ -7003,3 +7003,13 @@ SHA-256 fingerprint implementation. No external compressor, match-finder
 implementation, source code, benchmark tool, archive, encoded vector, test
 suite, patent, pseudocode, optimization description, or external result was
 consulted.
+
+### IR-0773
+
+The fixed checkpointed 16-MiB BinaryTree runner uses IR-0771 through IR-0772,
+DD-1009 through DD-1010, TVG-0873 through TVG-0874, marc's existing local
+Silesia verifier, report parser/aggregate logic, SHA-256 file identity, and
+atomic checkpoint pattern. No external benchmark runner, compressor,
+match-finder implementation, source code, archive, encoded vector, test suite,
+patent, pseudocode, optimization description, or external result was
+consulted.

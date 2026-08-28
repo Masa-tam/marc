@@ -1835,6 +1835,33 @@ successfully only at a saved record boundary; after progress reaches the planned
 total, rerun without the limit and with `--output` to materialize the final v1
 report from the checkpoint.
 
+### Global BinaryTree 16 MiB comparison
+
+The fixed global AVL comparison is run in bounded batches, for example:
+
+```console
+py -3.14 tools/run_silesia_binary_tree_16m_experiment.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --corpus benchmarks/data/silesia/corpus --checkpoint benchmarks/data/silesia/results/binary-tree-16m-msvc.checkpoint.json --max-new-points 2 --compiler "MSVC 19.50" --generator "Visual Studio 18 2026" --architecture x64 --build-label windows-msvc-release
+```
+
+The runner has no matrix-size arguments. It always verifies all twelve local
+members, then measures a 16,777,216-byte frame with 1/4/16-MiB windows,
+HashChain followed by BinaryTree Exact, one iteration, and an explicit 512-MiB
+internal-buffer policy: 72 independent processes. It performs no download or
+network access.
+
+Each saved record passes the full limited-report validator. BinaryTree is
+saved only after all five token-summary fields match its HashChain baseline.
+The checkpoint identity includes the full revision, benchmark and dependent
+source SHA-256 values, Corpus path and manifest, fixed configuration, and the
+recorded build environment. `--max-new-points 0` validates a checkpoint
+without launching the benchmark.
+
+After progress reaches `72/72`, omit `--max-new-points` and add an `--output`
+path to rebuild the canonical
+`marc-silesia-binary-tree-16m-experiment-v1` report. It contains six
+strategy/window aggregates and three tree/chain comparisons. Neither ratio
+nor parse opportunity is a pass/fail gate or a production-selection rule.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

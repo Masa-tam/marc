@@ -27066,3 +27066,29 @@ both bounds.
   MSVC 19.50 and ClangCL 22.1.3. The focused workspace, frame executable, and
   documentation tests pass under both toolchains. The dedicated Corpus runner
   and complete suites remain pending.
+
+## CR-1095: 2026-08-28 - Admit fixed checkpointed BinaryTree runner
+
+- Authoring method: composed a dedicated fixed-matrix runner from marc's
+  repository-owned verifier, parser, aggregation, hashing, and atomic journal
+  contracts; all tests use generated fake reports and manifests.
+- References used: DD-1011, IR-0773, TVG-0875, CR-1094, and the established
+  sparse-matrix checkpoint safety properties.
+- Known implementations intentionally not consulted: external benchmark
+  runners, compressors, match-finder implementations, source code, archives,
+  encoded vectors, test suites, patents, pseudocode, optimization
+  descriptions, and external results.
+- Independent decisions: remove matrix overrides; require all twelve members;
+  use one canonical record list; save HashChain before BinaryTree; compare all
+  five summary fields before candidate persistence; and keep performance out
+  of success criteria.
+- Generated-code task description: implement strict limited-report validation,
+  source-bound checkpoint identity, atomic resume, bounded batches, canonical
+  final ordering, summary aggregates, throughput ratios, and Corpus-free fake
+  tests covering a complete 72-point run.
+- Similarity review: only repository-owned runner utilities and contracts were
+  reused; no external implementation expression, naming scheme, result, or
+  test structure was introduced.
+- Validation: ten direct Python tests pass. The registered runner test also
+  passes under MSVC and ClangCL configurations. No Silesia member was opened
+  and no benchmark process or network operation was performed.

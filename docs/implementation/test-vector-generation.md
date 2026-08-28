@@ -12510,3 +12510,20 @@ workspace/aggregate 486,539,264/503,316,480, 33,554,432 bytes of headroom
 under 512 MiB, and one-short aggregate rejection for each calculator. Build
 warning-clean and run the focused executable, workspace, and documentation
 tests under MSVC and ClangCL.
+
+### TVG-0875
+
+Construct complete fake limited reports for both strategies with four tokens,
+two literals, two matches, six matched bytes, and one shared lowercase SHA-256
+fingerprint over eight input bytes. Require strict mode, fixed policy,
+workspace agreement, summary reconstruction, finite time, diagnostics, and
+histogram totals. Mutate each summary field independently and require pair
+rejection.
+
+Create a twelve-member fake manifest and require a two-point bounded batch to
+save HashChain then BinaryTree atomically, followed by a zero-point resume with
+no launch. Reject changed revision/binary/source identity, orphan BinaryTree,
+duplicate records, and restored fingerprint mismatch. Complete all 72 mocked
+points and require exact member/window/strategy order, six aggregates, and
+three comparisons. Run all ten tooling tests directly and through CTest under
+both configured toolchains without reading the external Corpus.
