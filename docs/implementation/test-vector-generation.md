@@ -12494,3 +12494,19 @@ canonical 72-point planning, aggregate calculation, Exact mismatch rejection,
 atomic checkpoint resume, identity mismatch, duplicate/corrupt record
 rejection, `--max-new-points 0`, and bounded continuation without requiring
 the external Corpus.
+
+### TVG-0874
+
+Run `--frames-limited` over the repository README with a 1,024-byte frame,
+65,536-byte window, one iteration, and explicit 536,870,912-byte policy for
+HashChain and BinaryTree. Require mode, strategy, policy, positive generic
+workspace, and all five token-summary fields; require the two Exact reports to
+match. Reject HashTree selection, zero policy, uint64 overflow, and a policy
+too small for input plus workspace. Preserve the ordinary frame smoke.
+
+On 64-bit builds, query but do not allocate the 16,777,216-byte extent.
+Require HashChain workspace/aggregate 67,633,152/84,410,368, BinaryTree
+workspace/aggregate 486,539,264/503,316,480, 33,554,432 bytes of headroom
+under 512 MiB, and one-short aggregate rejection for each calculator. Build
+warning-clean and run the focused executable, workspace, and documentation
+tests under MSVC and ClangCL.

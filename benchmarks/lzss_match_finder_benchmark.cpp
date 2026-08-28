@@ -552,6 +552,14 @@ void print_hash_tree_depth_histograms(
     return true;
 }
 
+[[nodiscard]] bool parse_positive_u64(
+    const std::string_view text, std::uint64_t& value) noexcept {
+    const auto result = std::from_chars(
+        text.data(), text.data() + text.size(), value);
+    return result.ec == std::errc{}
+        && result.ptr == text.data() + text.size() && value != 0;
+}
+
 enum class SyntheticInputKind : std::uint8_t {
     zeros,
     periodic,
@@ -819,6 +827,7 @@ void print_frame_report(
     const std::string_view mode, const std::string_view synthetic_case,
     const std::size_t frame_size, const std::size_t window_size,
     const std::size_t iterations, const std::size_t workspace_size,
+    const std::uint64_t max_internal_buffered_bytes,
     const std::size_t pool_node_capacity,
     const std::uint64_t promotion_threshold,
     const FrameRunResult& verified, const double measured_seconds) {
@@ -841,6 +850,11 @@ void print_frame_report(
               << '\n'
               << "token_fingerprint_sha256=" << fingerprint.data() << '\n'
               << "iterations=" << iterations << '\n';
+    if (mode == "frames-limited") {
+        std::cout << "max_internal_buffered_bytes="
+                  << max_internal_buffered_bytes << '\n'
+                  << "workspace_bytes=" << workspace_size << '\n';
+    }
     if (strategy == BenchmarkStrategy::hash_chain_exact) {
         std::cout << "hash_workspace_bytes=" << workspace_size << '\n'
                   << "hash_chain_queries="
@@ -1013,6 +1027,10 @@ void print_usage() {
         << "       marc_lzss_match_finder_benchmark --frames "
            "sparse-hash-tree-exact <input-file> <iterations> <frame-bytes> "
            "<window-bytes> <pool-nodes> <promotion-candidates>\n"
+        << "       marc_lzss_match_finder_benchmark --frames-limited "
+           "<hash-chain-exact|binary-tree-exact> <input-file> "
+           "<iterations> <frame-bytes> <window-bytes> "
+           "<max-internal-buffered-bytes>\n"
         << "       marc_lzss_match_finder_benchmark --synthetic "
            "<hash-chain-exact|binary-tree-exact> <case> "
            "[input-bytes] [iterations] "
@@ -1027,15 +1045,20 @@ void print_usage() {
 }
 
 [[nodiscard]] int run_frame_benchmark(
-    const int argc, const char* const argv[]) {
+    const int argc, const char* const argv[], const bool explicit_limit) {
     BenchmarkStrategy strategy{};
-    if (argc < 4 || argc > 9 || !parse_strategy(argv[2], strategy)
+    if ((explicit_limit && argc != 8)
+        || (!explicit_limit && (argc < 4 || argc > 9))
+        || !parse_strategy(argv[2], strategy)
+        || (explicit_limit
+            && strategy != BenchmarkStrategy::hash_chain_exact
+            && strategy != BenchmarkStrategy::binary_tree_exact)
         || (strategy == BenchmarkStrategy::hash_tree_exact && argc != 8)
         || (strategy == BenchmarkStrategy::sparse_hash_tree_exact
             && argc != 9)
         || (strategy != BenchmarkStrategy::hash_tree_exact
             && strategy != BenchmarkStrategy::sparse_hash_tree_exact
-            && argc > 7)) {
+            && !explicit_limit && argc > 7)) {
         print_usage();
         return 2;
     }
@@ -1046,7 +1069,7 @@ void print_usage() {
     std::size_t pool_node_capacity{};
     std::uint64_t promotion_threshold{
         std::numeric_limits<std::uint64_t>::max()};
-    const marc::core::DecoderLimits limits{};
+    auto limits = marc::core::DecoderLimits{};
     if ((argc >= 5 && !parse_iterations(argv[4], iterations))
         || (argc >= 6 && !parse_size_argument(
                 argv[5], limits.max_frame_size, frame_size))
@@ -1060,6 +1083,9 @@ void print_usage() {
                     pool_node_capacity)
                 || !parse_promotion_threshold(
                     argv[8], promotion_threshold)))
+        || (explicit_limit
+            && !parse_positive_u64(
+                argv[7], limits.max_internal_buffered_bytes))
         || window_size > std::numeric_limits<std::uint32_t>::max()) {
         std::cerr << "invalid frame benchmark argument\n";
         return 2;
@@ -1143,9 +1169,10 @@ void print_usage() {
     }
 
     print_frame_report(
-        strategy, "frames", {}, frame_size, window_size, iterations,
-        workspace_size, pool_node_capacity, promotion_threshold, verified,
-        measured_seconds);
+        strategy, explicit_limit ? "frames-limited" : "frames", {},
+        frame_size, window_size, iterations, workspace_size,
+        limits.max_internal_buffered_bytes, pool_node_capacity,
+        promotion_threshold, verified, measured_seconds);
     return 0;
 }
 
@@ -1263,7 +1290,8 @@ void print_usage() {
 
     print_frame_report(
         strategy, "synthetic", synthetic_input_name(kind), frame_size,
-        window_size, iterations, workspace_size, pool_node_capacity,
+        window_size, iterations, workspace_size,
+        limits.max_internal_buffered_bytes, pool_node_capacity,
         promotion_threshold, verified, measured_seconds);
     return 0;
 }
@@ -1272,7 +1300,10 @@ void print_usage() {
 
 int main(const int argc, const char* const argv[]) {
     if (argc >= 2 && std::string_view{argv[1]} == "--frames") {
-        return run_frame_benchmark(argc, argv);
+        return run_frame_benchmark(argc, argv, false);
+    }
+    if (argc >= 2 && std::string_view{argv[1]} == "--frames-limited") {
+        return run_frame_benchmark(argc, argv, true);
     }
     if (argc >= 2 && std::string_view{argv[1]} == "--synthetic") {
         return run_synthetic_benchmark(argc, argv);

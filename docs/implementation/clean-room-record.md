@@ -27040,3 +27040,29 @@ both bounds.
   the matrix, memory proof, explicit executable route, independent schema,
   fingerprint gate, bounded-batch option, and unchanged public-selector
   boundary. Implementation and Corpus measurement remain pending.
+
+## CR-1094: 2026-08-28 - Admit explicit-limit global Exact benchmark
+
+- Authoring method: extended marc's repository-owned frame benchmark and
+  checked workspace tests under the pre-approved 16-MiB experiment contract.
+- References used: DD-1010, IR-0772, TVG-0874, CR-1093, and the existing
+  HashChain/BinaryTree Exact benchmark paths.
+- Known implementations intentionally not consulted: external compressors,
+  match-finder implementations, source code, benchmark tools, archives,
+  encoded vectors, test suites, patents, pseudocode, optimization
+  descriptions, and external results.
+- Independent decisions: create a distinct explicit-limit route; accept only
+  the two global Exact strategies; preserve ordinary frame output; keep
+  fingerprint work outside timed passes; and prove 16-MiB calculator bounds
+  without profile-sized allocation.
+- Generated-code task description: parse one positive uint64 policy, apply it
+  only to local DecoderLimits, publish policy and workspace, reject malformed
+  or insufficient limits, compare both Exact summaries, and freeze exact
+  64-bit workspace arithmetic.
+- Similarity review: only repository-owned CLI parsing, reporting, calculator,
+  summary, and CMake smoke patterns were reused; no external implementation
+  expression or test structure was introduced.
+- Validation: the benchmark and core-test targets build warning-clean under
+  MSVC 19.50 and ClangCL 22.1.3. The focused workspace, frame executable, and
+  documentation tests pass under both toolchains. The dedicated Corpus runner
+  and complete suites remain pending.

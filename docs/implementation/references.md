@@ -6993,3 +6993,13 @@ that the measured throughput gap narrows as window size grows. No external
 compressor, match-finder source code, benchmark suite, implementation,
 archive, encoded vector, test suite, patent, pseudocode, optimization
 description, or externally sourced result was consulted.
+
+### IR-0772
+
+The explicit-limit global Exact benchmark route uses IR-0771, DD-1009,
+TVG-0873, marc's existing frame benchmark parser/report, DecoderLimits,
+HashChain and BinaryTree checked workspace calculators, token summary, and
+SHA-256 fingerprint implementation. No external compressor, match-finder
+implementation, source code, benchmark tool, archive, encoded vector, test
+suite, patent, pseudocode, optimization description, or external result was
+consulted.

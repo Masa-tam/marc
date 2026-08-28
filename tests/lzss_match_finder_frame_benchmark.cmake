@@ -83,6 +83,93 @@ foreach(decimal_key IN ITEMS
     endif()
 endforeach()
 
+set(explicit_limit 536870912)
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames-limited hash-chain-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 ${explicit_limit}
+    RESULT_VARIABLE limited_hash_result
+    OUTPUT_VARIABLE limited_hash_report
+    ERROR_VARIABLE limited_hash_error)
+if(NOT limited_hash_result EQUAL 0)
+    message(FATAL_ERROR
+        "limited HashChain failed: ${limited_hash_result}: ${limited_hash_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=frames-limited"
+        "strategy=hash-chain-exact"
+        "max_internal_buffered_bytes=${explicit_limit}")
+    string(FIND "${limited_hash_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR "missing limited HashChain line: ${expected_line}")
+    endif()
+endforeach()
+string(REGEX MATCH "workspace_bytes=([0-9]+)" ignored
+    "${limited_hash_report}")
+if(ignored STREQUAL "" OR CMAKE_MATCH_1 EQUAL 0)
+    message(FATAL_ERROR "missing limited HashChain workspace")
+endif()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames-limited binary-tree-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 ${explicit_limit}
+    RESULT_VARIABLE limited_binary_result
+    OUTPUT_VARIABLE limited_binary_report
+    ERROR_VARIABLE limited_binary_error)
+if(NOT limited_binary_result EQUAL 0)
+    message(FATAL_ERROR
+        "limited BinaryTree failed: ${limited_binary_result}: ${limited_binary_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=frames-limited"
+        "strategy=binary-tree-exact"
+        "max_internal_buffered_bytes=${explicit_limit}")
+    string(FIND "${limited_binary_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR "missing limited BinaryTree line: ${expected_line}")
+    endif()
+endforeach()
+foreach(summary_key IN ITEMS
+        token_count literal_count match_count matched_bytes
+        token_fingerprint_sha256)
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${limited_hash_report}")
+    set(hash_summary "${CMAKE_MATCH_1}")
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${limited_binary_report}")
+    set(binary_summary "${CMAKE_MATCH_1}")
+    if(NOT hash_summary STREQUAL binary_summary)
+        message(FATAL_ERROR
+            "limited Exact ${summary_key} mismatch: "
+            "${hash_summary} != ${binary_summary}")
+    endif()
+endforeach()
+
+foreach(invalid_command IN ITEMS
+        "hash-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;${explicit_limit}"
+        "hash-chain-exact;${BENCHMARK_INPUT};1;${frame_size};65536;0"
+        "hash-chain-exact;${BENCHMARK_INPUT};1;${frame_size};65536;18446744073709551616")
+    execute_process(
+        COMMAND "${MARC_BENCHMARK}" --frames-limited ${invalid_command}
+        RESULT_VARIABLE invalid_limited_result
+        OUTPUT_QUIET
+        ERROR_QUIET)
+    if(NOT invalid_limited_result EQUAL 2)
+        message(FATAL_ERROR
+            "invalid limited command returned ${invalid_limited_result}")
+    endif()
+endforeach()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames-limited hash-chain-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 1024
+    RESULT_VARIABLE insufficient_limit_result
+    OUTPUT_QUIET
+    ERROR_QUIET)
+if(NOT insufficient_limit_result EQUAL 1)
+    message(FATAL_ERROR
+        "insufficient limited policy returned ${insufficient_limit_result}")
+endif()
+
 execute_process(
     COMMAND "${MARC_BENCHMARK}" --frames unknown "${BENCHMARK_INPUT}"
     RESULT_VARIABLE unknown_strategy_result

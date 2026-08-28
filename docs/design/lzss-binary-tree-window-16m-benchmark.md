@@ -97,8 +97,10 @@ token_fingerprint_sha256
 measured_seconds
 ```
 
-診断付きuntimed passと診断なしtimed passを分離し、両passの入力byte数、frame
-数、token summaryおよびfingerprintが一致した場合だけreportを公開する。
+診断付きuntimed passと診断なしtimed passを分離する。timed passへsummaryの
+hashing costを混ぜず、両passの入力byte数、frame数およびtoken数を一致させる。
+reportの完全なsummaryとfingerprintはuntimed passから公開し、二strategy間の
+全field一致は専用runnerが検証する。
 
 ## 5. runner、schemaおよびExact検証
 

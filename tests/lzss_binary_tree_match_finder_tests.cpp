@@ -245,6 +245,41 @@ TEST(LzssBinaryTreeMatchFinder, CalculatesSeparatedBoundedWorkspace) {
                      + 2U * sizeof(std::size_t)));
 }
 
+TEST(LzssBinaryTreeMatchFinder, CalculatesSixteenMiBComparisonWorkspace) {
+    if constexpr (sizeof(std::size_t) != 8U) GTEST_SKIP();
+
+    constexpr std::size_t extent = 16U << 20;
+    constexpr std::uint64_t policy = UINT64_C(512) << 20;
+    LzssParameters parameters{};
+    parameters.window_size = static_cast<std::uint32_t>(extent);
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_internal_buffered_bytes = policy;
+
+    const auto hash = calculate_lzss_hash_chain_workspace(
+        extent, parameters, limits);
+    ASSERT_EQ(hash.error, LzssHashChainError::none);
+    EXPECT_EQ(hash.workspace_size, 67'633'152U);
+    EXPECT_EQ(extent + hash.workspace_size, 84'410'368U);
+
+    const auto binary = calculate_lzss_binary_tree_workspace(
+        extent, parameters, limits);
+    ASSERT_EQ(binary.error, LzssBinaryTreeError::none);
+    EXPECT_EQ(binary.workspace_size, 486'539'264U);
+    EXPECT_EQ(extent + binary.workspace_size, 503'316'480U);
+    EXPECT_EQ(policy - (extent + binary.workspace_size), 33'554'432U);
+
+    limits.max_internal_buffered_bytes =
+        static_cast<std::uint64_t>(extent + binary.workspace_size - 1U);
+    EXPECT_EQ(calculate_lzss_binary_tree_workspace(
+                  extent, parameters, limits).error,
+              LzssBinaryTreeError::workspace_limit_exceeded);
+    limits.max_internal_buffered_bytes =
+        static_cast<std::uint64_t>(extent + hash.workspace_size - 1U);
+    EXPECT_EQ(calculate_lzss_hash_chain_workspace(
+                  extent, parameters, limits).error,
+              LzssHashChainError::workspace_limit_exceeded);
+}
+
 TEST(LzssBinaryTreeMatchFinder, InitializesEveryArrayAsEmpty) {
     const auto input = bytes("ABCDE1ABCDE2ABCDE3");
     const auto required = calculate_lzss_binary_tree_workspace(

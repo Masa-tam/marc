@@ -103,16 +103,32 @@ marc_lzss_match_finder_benchmark --frames hash-chain-exact input.bin 1 1048576 6
 
 Arguments after the input are optional positive iteration count, raw frame
 bytes, and window bytes. Their defaults are 1, 1,048,576, and 65,536. The
-current frame mode accepts only `hash-chain-exact`; the strategy position is
-reserved so a later exact BinaryTree implementation can use the same report
-contract.
+current frame mode accepts `hash-chain-exact`, `binary-tree-exact`,
+`hash-tree-exact`, and `sparse-hash-tree-exact`; the latter two require their
+documented promotion arguments. Its default `max_internal_buffered_bytes`
+remains 128 MiB.
+
+Large global-tree experiments that cannot fit the default use a distinct,
+explicitly bounded route:
+
+```console
+marc_lzss_match_finder_benchmark --frames-limited binary-tree-exact corpus.bin 1 16777216 16777216 536870912
+```
+
+`--frames-limited` accepts only `hash-chain-exact` and `binary-tree-exact`,
+requires every positional argument, and replaces only the local
+`max_internal_buffered_bytes`. It reports that limit and the calculator-derived
+workspace. It never infers a larger policy from the window and does not change
+codec configuration, stream bytes, or the ordinary `--frames` report.
 
 The tool allocates one frame and one maximum-frame HashChain workspace, reads
 the file sequentially, and resets the finder at every frame. File opening and
 reading are outside the measured intervals. Each interval includes finder
 initialization, workspace clearing, and parsing. One untimed pass collects
-work counts; timed passes disable counters and must reproduce its byte, frame,
-and token totals. This mode reports match-finder behavior only. It neither
+work counts and the canonical token fingerprint; timed passes disable counters
+and hashing and must reproduce its byte, frame, and token totals. Corpus runners
+compare the complete untimed summaries and fingerprints between Exact
+strategies. This mode reports match-finder behavior only. It neither
 emits nor decodes a marc stream, so it reports no compression ratio.
 
 The diagnostic report partitions every visited HashChain candidate into a

@@ -20830,3 +20830,18 @@ strategies. Require exact token summary and fingerprint equality for every
 pair, an independent v1 result schema, canonical 72-record order, atomic
 checkpoint resume, and bounded batches. Treat performance as descriptive and
 make no stream, ABI, codec-profile, selector, or interoperability change.
+
+## DD-1010: Admit the explicit-limit global Exact benchmark route
+
+- Date: 2026-08-28
+- Status: accepted
+
+Add `--frames-limited` for only `hash-chain-exact` and `binary-tree-exact`,
+requiring explicit iteration, frame, window, and positive uint64 internal-
+buffer policy arguments. Replace only the local
+`max_internal_buffered_bytes`, validate calculator aggregate bounds before
+allocation, and report both the explicit policy and derived workspace. Keep
+the existing `--frames` arguments and output unchanged. Preserve untimed
+summary/fingerprint generation and counter-free timed parsing; require their
+byte, frame, and token counts to agree. Fix exact 64-bit 16-MiB workspace
+values and one-short aggregate rejection without allocating those extents.

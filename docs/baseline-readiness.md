@@ -3221,3 +3221,15 @@ remain unchanged. Exact token summaries and fingerprints gate every pair,
 while performance remains descriptive. An independent schema, atomic
 checkpoint identity, bounded batches, and corpus-independent test plan are
 specified. Implementation and measurement remain pending.
+
+### BR-0201
+
+The match-finder benchmark now has an explicit `--frames-limited` route for
+HashChain and BinaryTree Exact. It changes only a local internal-buffer hard
+limit, reports that policy plus workspace, rejects unsupported strategies and
+malformed or insufficient limits before useful output, and leaves ordinary
+`--frames` output unchanged. Untimed canonical summaries remain outside the
+timed path. Exact 64-bit 16-MiB HashChain and BinaryTree workspace/aggregate
+values and one-short rejection are fixed without large allocation. Focused
+workspace, executable, and documentation tests pass under MSVC and ClangCL;
+the checkpointed Corpus runner remains pending.
