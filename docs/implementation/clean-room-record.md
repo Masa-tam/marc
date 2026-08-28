@@ -27089,6 +27089,9 @@ both bounds.
 - Similarity review: only repository-owned runner utilities and contracts were
   reused; no external implementation expression, naming scheme, result, or
   test structure was introduced.
-- Validation: ten direct Python tests pass. The registered runner test also
-  passes under MSVC and ClangCL configurations. No Silesia member was opened
-  and no benchmark process or network operation was performed.
+- Validation: ten direct Python tests pass. All 3,297 registered tests pass
+  under MSVC and ClangCL in 265.57 and 258.90 seconds, including eight Python
+  tooling tests, documentation validation, focused executable/workspace
+  coverage, and schema-52-through-1 compatibility passes of 115.99 and 103.03
+  seconds. No Silesia member was opened and no benchmark process or network
+  operation was performed.

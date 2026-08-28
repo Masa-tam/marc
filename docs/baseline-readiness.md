@@ -3243,5 +3243,7 @@ BinaryTree evidence. Its atomic checkpoint is bound to revision, executable,
 dependent sources, Corpus, fixed configuration, and environment; bounded and
 zero-point resumes preserve that identity. Ten Corpus-independent tests cover
 strict reports, corruption, identity, order, all aggregates, and a full mocked
-72-point result under both CTest configurations. Actual measurement and the
-complete C++ suites remain pending.
+72-point result under both CTest configurations. All 3,297 registered tests
+pass under MSVC and ClangCL in 265.57 and 258.90 seconds, including schema
+compatibility passes of 115.99 and 103.03 seconds. Actual Silesia measurement
+remains pending.
