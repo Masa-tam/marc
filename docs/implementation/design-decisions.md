@@ -20860,3 +20860,18 @@ and three descriptive comparisons. Bind checkpoint resume to full revision,
 benchmark and dependent-source hashes, Corpus identity, fixed configuration,
 and complete environment. Save atomically at each record boundary and permit
 zero or bounded new-point batches without changing identity.
+
+## DD-1012: Retain explicit strategy after the 16-MiB comparison
+
+- Date: 2026-08-29
+- Status: accepted
+
+Admit the 72-point MSVC Release result as evidence that global BinaryTree is a
+strong large-window, high-collision strategy, but do not make it a universal
+default or select it from window size alone. Aggregate BinaryTree throughput
+is 0.694925, 1.456408, and 3.371567 times HashChain at 1/4/16 MiB, while its
+member wins are 1/5/7 of twelve and its workspace is about 6.4 to 7.2 times
+larger. Preserve HashChain for small-window or low-collision input and preserve
+explicit hard memory policy. Defer any public default, automatic sampling
+selector, profile, stream, ABI, and interoperability change to a separate
+design with independent tests.

@@ -185,3 +185,41 @@ recordを除くbenchmark process数を数え、N件を保存したrecord境界�
 実測がBinaryTreeの優位を示しても、それだけでpublic selectorまたは既定戦略へ
 昇格しない。採用判断にはworkspace、Corpus内の分布、既存HashTree系との関係、
 より大きなwindowでの再利用性を別途設計する。
+
+## 9. 2026-08-29 MSVC Release実測
+
+revision `f8e9bc2b163708c0d33288108c1f3dde15f594d1`、MSVC
+19.51.36252.0、Visual Studio 18 2026、Windows 11 x64、AMD64 Family 25
+Model 97、Python 3.12.13で72点を完了した。全36 Exact pairで5 fieldの
+summaryとfingerprintが一致し、canonical最終JSONを生成できた。
+
+12 member、211,938,580 input bytes、19 frameのaggregateは次のとおり。
+
+| window | HashChain MiB/s | BinaryTree MiB/s | BinaryTree / HashChain | BinaryTree wins |
+| ---: | ---: | ---: | ---: | ---: |
+| 1 MiB | 1.542556 | 1.071961 | 0.694925 | 1 / 12 |
+| 4 MiB | 0.491163 | 0.715334 | 1.456408 | 5 / 12 |
+| 16 MiB | 0.271560 | 0.915582 | 3.371567 | 7 / 12 |
+
+HashChain candidate数は11,010,112,118、33,179,026,662、61,384,255,817と
+windowに従って増加した。BinaryTree key comparison数は5,431,259,004、
+5,792,021,261、5,952,256,606に留まり、最大query depthは66、71、75だった。
+16 MiB BinaryTreeはframeとwindowが等しいためretirementが0となり、4 MiB
+BinaryTreeよりaggregate throughputが1.28倍高かった。
+
+token数は37,561,576、34,116,898、33,137,395で、1から4 MiBで9.171%、
+4から16 MiBで2.871%、1から16 MiBで11.778%減少した。matched-byte coverageは
+0.888512、0.903132、0.906953だった。
+
+16 MiBでBinaryTreeが勝ったmemberと比率は`mr` 11.999、`nci` 4.814、
+`mozilla` 3.953、`reymont` 2.815、`samba` 2.544、`webster` 2.410、
+`dickens` 1.209である。HashChainが勝ったのは`sao`、`osdb`、`ooffice`、
+`x-ray`、`xml`である。従ってwindow sizeだけをselection ruleにしてはならない。
+BinaryTreeは大windowかつ深い/多数のHashChain候補に対する有力な明示戦略だが、
+低衝突入力ではHashChainを維持する。public既定値、自動selector、stream、ABI、
+profileおよびinteroperabilityは本実測では変更しない。
+
+workspaceはHashChain/BinaryTreeについて1 MiBで4.5/29 MiB、4 MiBで
+16.5/116 MiB、16 MiBで64.5/464 MiBである。速度優位だけでこの約7.2倍の
+workspaceを暗黙に選択せず、将来のselection設計でもhard limitと明示的な
+memory policyを維持する。

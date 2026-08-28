@@ -27115,3 +27115,28 @@ both bounds.
   under MSVC and ClangCL. All 3,297 registered tests then complete with exit
   code zero under both toolchains. No Silesia member was opened and no
   benchmark process or network operation was performed.
+
+## CR-1097: 2026-08-29 - Record global BinaryTree Silesia evidence
+
+- Authoring method: ran marc's fixed checkpointed experiment over the
+  user-provided, locally verified Silesia Corpus and summarized only the
+  runner-generated reports.
+- References used: IR-0774, DD-1012, TVG-0877, CR-1093 through CR-1096, and
+  the local v1 result at revision `f8e9bc2b163708c0d33288108c1f3dde15f594d1`.
+- Known implementations intentionally not consulted: external compressors,
+  match finders, source code, benchmark reports, archives, encoded vectors,
+  test suites, patents, pseudocode, and optimization descriptions.
+- Independent decisions: preserve all Exact gates; aggregate total bytes over
+  total timed seconds; report member wins as well as weighted throughput; and
+  reject a window-only production selection because five of twelve 16-MiB
+  members still favor HashChain.
+- Generated-code task description: resume 36 Exact pairs atomically, produce
+  the canonical 72-record result, calculate throughput, token opportunity,
+  candidate depth, retirement, and workspace comparisons, and document the
+  resulting strategy boundary without changing production behavior.
+- Similarity review: only repository-owned benchmark output and arithmetic
+  were used; no external implementation expression or result was introduced.
+- Validation: all 72 records and 36 Exact pairs validate. The final report has
+  six aggregates and three comparisons over 211,938,580 bytes and 19 frames.
+  The worktree remains clean; no network operation occurred and no Corpus,
+  checkpoint, or generated result is admitted to version control.

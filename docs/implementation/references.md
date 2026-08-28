@@ -7013,3 +7013,13 @@ atomic checkpoint pattern. No external benchmark runner, compressor,
 match-finder implementation, source code, archive, encoded vector, test suite,
 patent, pseudocode, optimization description, or external result was
 consulted.
+
+### IR-0774
+
+The completed 16-MiB global BinaryTree measurement uses IR-0771 through
+IR-0773, DD-1009 through DD-1011, TVG-0873 through TVG-0876, the verified
+local Silesia members, marc's fixed runner, and its generated checkpoint and
+v1 aggregate report. The user supplied the hypothesis that BinaryTree becomes
+more competitive as the window grows. No external compressor, match-finder
+implementation, source code, benchmark result, archive, encoded vector, test
+suite, patent, pseudocode, or optimization description was consulted.

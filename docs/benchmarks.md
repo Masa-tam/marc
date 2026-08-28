@@ -1862,6 +1862,24 @@ path to rebuild the canonical
 strategy/window aggregates and three tree/chain comparisons. Neither ratio
 nor parse opportunity is a pass/fail gate or a production-selection rule.
 
+The completed MSVC Release run at revision
+`f8e9bc2b163708c0d33288108c1f3dde15f594d1` validated all 72 records and all
+36 five-field Exact pairs. Across 211,938,580 bytes and 19 frames, aggregate
+BinaryTree-to-HashChain throughput was 0.694925 at 1 MiB, 1.456408 at 4 MiB,
+and 3.371567 at 16 MiB. BinaryTree won 1, 5, and 7 of the twelve members at
+those windows. Aggregate token counts were 37,561,576, 34,116,898, and
+33,137,395, a 9.171% reduction from 1 to 4 MiB and a further 2.871% from 4 to
+16 MiB.
+
+The result does not justify selecting by window alone: at 16 MiB, BinaryTree
+won on `mr`, `nci`, `mozilla`, `reymont`, `samba`, `webster`, and `dickens`,
+while HashChain won on `sao`, `osdb`, `ooffice`, `x-ray`, and `xml`.
+Maximum workspaces were 4.5/29 MiB, 16.5/116 MiB, and 64.5/464 MiB for
+HashChain/BinaryTree. The 16-MiB BinaryTree aggregate was also 1.28 times its
+4-MiB throughput because frame and window extents were equal and the measured
+tree retirement count was zero. These are descriptive results for this exact
+machine, build, frame policy, and Corpus, not a new default or selector.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

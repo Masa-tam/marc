@@ -12538,3 +12538,18 @@ zero-point batch and launch no new process. Keep the production checkpoint
 identity and exact command comparison unchanged. Run the ten direct Python
 tests, the focused CTest entry, and all 3,297 registered tests under MSVC and
 ClangCL without reading the external Corpus.
+
+### TVG-0877
+
+Verify all twelve local Silesia members, then resume the fixed runner in
+two-record batches until 72/72. Require HashChain followed by BinaryTree for
+every member/window pair, five-field Exact equality before each pair is
+accepted, and atomic progress after every record. Reload the completed
+checkpoint without a point limit, launch no missing point, and generate one
+canonical v1 report with 72 records, six aggregates, and three comparisons.
+
+Require 211,938,580 aggregate input bytes and 19 frames in every group.
+Record BinaryTree/HashChain throughput ratios 0.6949250668, 1.4564077372, and
+3.3715667222; token counts 37,561,576, 34,116,898, and 33,137,395; and maximum
+workspaces 4.5/29, 16.5/116, and 64.5/464 MiB. Confirm that the repository
+worktree remains clean because Corpus, checkpoint, and result are ignored.

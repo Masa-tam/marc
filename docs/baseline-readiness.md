@@ -3257,3 +3257,15 @@ boundary. Both fake callbacks now serialize their supplied arguments. Strict
 checkpoint command identity remains unchanged. The ten direct runner tests,
 the focused CTest entry, and all 3,297 registered tests pass under MSVC and
 ClangCL; actual Silesia measurement remains pending.
+
+### BR-0204
+
+The fixed global BinaryTree experiment is complete at 72/72 records. All 36
+Exact pairs match in token count, literal count, match count, matched bytes,
+and fingerprint. Aggregate BinaryTree/HashChain throughput is 0.694925,
+1.456408, and 3.371567 for 1/4/16-MiB windows; BinaryTree wins 1/5/7 of twelve
+members. Tokens fall 9.171% from 1 to 4 MiB and another 2.871% from 4 to
+16 MiB. The evidence admits BinaryTree as a strong explicit large-window,
+high-collision strategy, not a universal or window-only default. The public
+selector, defaults, stream, ABI, profiles, and interoperability remain
+unchanged pending a separate adoption design.
