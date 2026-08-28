@@ -20814,3 +20814,19 @@ the verifier to enforce exact order, foreign decode, and byte-identical local
 re-encoding. Reconstruct schema 51 by removing only the appended profile
 before traversing the unchanged compatibility chain through schema 1. This
 changes no codec format, API, default, or earlier archive bytes.
+
+## DD-1009: Design a bounded 16-MiB BinaryTree comparison
+
+- Date: 2026-08-28
+- Status: accepted
+
+Compare global AVL `BinaryTree Exact` against `HashChain Exact` on all twelve
+verified Silesia members with one 16,777,216-byte frame extent, windows
+1,048,576/4,194,304/16,777,216, and one timed iteration. Use a new explicit
+benchmark-only 536,870,912-byte internal-buffer policy; do not infer it from
+the window or change the 128-MiB default. Preserve the existing `--frames`
+contract and add a distinct `--frames-limited` route for only these two
+strategies. Require exact token summary and fingerprint equality for every
+pair, an independent v1 result schema, canonical 72-record order, atomic
+checkpoint resume, and bounded batches. Treat performance as descriptive and
+make no stream, ABI, codec-profile, selector, or interoperability change.

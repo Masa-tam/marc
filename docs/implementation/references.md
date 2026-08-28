@@ -6982,3 +6982,14 @@ compatibility harness. No external compressor, Adaptive Huffman
 implementation, interoperability suite, archive, source code, encoded vector,
 test suite, patent, pseudocode, benchmark result, optimization description,
 or malformed-stream corpus was consulted.
+
+### IR-0771
+
+The 16-MiB global BinaryTree comparison design uses DD-1009, TVG-0873,
+BM-0056, BM-0057, marc's existing BinaryTree/HashChain Exact implementations,
+checked workspace calculators, local Silesia manifest verifier, and
+checkpointed sparse-matrix runner structure. The user supplied the hypothesis
+that the measured throughput gap narrows as window size grows. No external
+compressor, match-finder source code, benchmark suite, implementation,
+archive, encoded vector, test suite, patent, pseudocode, optimization
+description, or externally sourced result was consulted.

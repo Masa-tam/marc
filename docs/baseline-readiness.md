@@ -3209,3 +3209,15 @@ re-encode byte-identically across the tested Windows and WSL2 Linux x86-64
 paths. This completes the cross-platform admission required for the 16-MiB
 Contextual Adaptive Huffman profile and the entire 16-MiB contextual entropy
 set.
+
+### BR-0200
+
+The 16-MiB global BinaryTree comparison now has a bounded pre-implementation
+contract. It fixes a 16-MiB frame, 1/4/16-MiB windows, both global Exact
+strategies, all twelve verified Silesia members, and 72 canonical records.
+The 512-MiB internal-buffer policy is explicit and benchmark-only; the public
+128-MiB default, stream, ABI, codec profiles, selectors, and interoperability
+remain unchanged. Exact token summaries and fingerprints gate every pair,
+while performance remains descriptive. An independent schema, atomic
+checkpoint identity, bounded batches, and corpus-independent test plan are
+specified. Implementation and measurement remain pending.

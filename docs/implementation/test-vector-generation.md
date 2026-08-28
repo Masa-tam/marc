@@ -12475,3 +12475,22 @@ size, and SHA-256. Verify all 62 archives in order by decoding and byte-
 identical local re-encoding. Swap the first two manifest entries and require
 rejection, then remove only archive 62, rewrite the manifest as schema 51, and
 verify every schema through schema 1.
+
+### TVG-0873
+
+Fix the BinaryTree comparison at all twelve verified Silesia members, one
+16,777,216-byte frame extent, windows 1,048,576/4,194,304/16,777,216,
+HashChain then BinaryTree Exact, one timed iteration, and an explicit
+536,870,912-byte internal-buffer limit: exactly 72 canonical records. For the
+16-MiB extent require HashChain workspace/aggregate 67,633,152/84,410,368 and
+BinaryTree workspace/aggregate 486,539,264/503,316,480; accept 512 MiB and
+reject one byte below each required aggregate before allocation.
+
+For every member/window pair require identical token count, literal count,
+match count, matched bytes, and lowercase SHA-256 token fingerprint. Exercise
+the new executable route with a small local fixture and preserve the old
+`--frames` report. Use a fake benchmark to prove strict report parsing,
+canonical 72-point planning, aggregate calculation, Exact mismatch rejection,
+atomic checkpoint resume, identity mismatch, duplicate/corrupt record
+rejection, `--max-new-points 0`, and bounded continuation without requiring
+the external Corpus.

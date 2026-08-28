@@ -27013,3 +27013,30 @@ both bounds.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1093: 2026-08-28 - Design 16-MiB global BinaryTree comparison
+
+- Authoring method: derived a bounded experiment from marc's repository-owned
+  exact match finders, workspace calculators, Silesia manifest, prior local
+  measurements, and checkpoint runner contracts.
+- References used: DD-1009, IR-0771, TVG-0873, BM-0056, BM-0057, CR-1092,
+  and the user's proposal to test the observed narrowing gap at 16 MiB.
+- Known implementations intentionally not consulted: external compressors,
+  match-finder implementations, source code, benchmark suites, archives,
+  encoded vectors, test suites, patents, pseudocode, optimization
+  descriptions, and externally sourced results.
+- Independent decisions: compare only global AVL BinaryTree and HashChain
+  Exact; hold frame size at 16 MiB across 1/4/16-MiB windows; require 72 exact
+  pairs; expose 512 MiB only through a new benchmark route; and preserve every
+  codec, stream, ABI, selector, and default boundary.
+- Generated-code task description: specify the explicit-limit executable
+  boundary, independent report schema, exact token/fingerprint gates, atomic
+  checkpoint identity, bounded batches, aggregate comparisons, and staged
+  verification before implementation.
+- Similarity review: the design reuses only repository-owned contracts and
+  measurements; no external implementation expression, data structure,
+  naming scheme, code, vector, or test structure was added.
+- Validation: the MSVC documentation-layout test passes with exact checks for
+  the matrix, memory proof, explicit executable route, independent schema,
+  fingerprint gate, bounded-batch option, and unchanged public-selector
+  boundary. Implementation and Corpus measurement remain pending.

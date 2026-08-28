@@ -253,3 +253,15 @@ benchmark絶対path/SHA-256、runner依存source SHA-256、Corpus絶対path/mani
 候補processの起動数を数え、指定数を保存した直後の境界で成功終了する。0は検証専用とする。この値は測定設定
 ではないためcheckpoint identityに含めず、再開ごとに変更できる。表示するprogressは検証済みbaseline数と
 候補数の和を、`members * windows * (1 + pools * thresholds)`で割った値とする。
+
+## 13. Global BinaryTree 16 MiB comparison
+
+global AVLの`BinaryTree Exact`と`HashChain Exact`の大窓での収束傾向は、
+[専用の16 MiB比較契約](lzss-binary-tree-window-16m-benchmark.md)で測る。
+16 MiB frame、1/4/16 MiB window、全12 member、両strategyの72 recordを固定し、
+512 MiBのinternal-buffer policyをbenchmark呼び出しで明示する。これは既定の
+128 MiB limit、public codec profileまたはstreamへ伝播しない。
+
+専用runnerは独立schema、Exact token summary/fingerprint比較、原子的checkpoint、
+bounded batchおよびcanonical record順を持つ。HashTree系の結果や既存v1 matrixへ
+混ぜず、性能値を合否条件または自動選択閾値にしない。

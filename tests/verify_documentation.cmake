@@ -313,6 +313,7 @@ foreach(required_format_section IN ITEMS
 endforeach()
 
 foreach(experimental_design IN ITEMS
+        "lzss-binary-tree-window-16m-benchmark.md"
         "lzss-contextual-window-1m.md"
         "lzss-contextual-window-16m.md"
         "lzss-contextual-rans-window-16m.md"
@@ -327,6 +328,34 @@ foreach(experimental_design IN ITEMS
     if(NOT EXISTS "${experimental_design_path}")
         message(FATAL_ERROR
             "Missing experimental design document: ${experimental_design}")
+    endif()
+endforeach()
+
+set(lzss_binary_tree_window_16m_benchmark_design
+    "${source_dir}/docs/design/lzss-binary-tree-window-16m-benchmark.md")
+file(READ "${lzss_binary_tree_window_16m_benchmark_design}"
+    lzss_binary_tree_window_16m_benchmark_content)
+foreach(required_binary_tree_window_16m_benchmark_term IN ITEMS
+        "BinaryTree Exact"
+        "HashChain Exact"
+        "frame bytes                    16,777,216"
+        "window bytes                   1,048,576; 4,194,304; 16,777,216"
+        "planned records                12 * 3 * 2 = 72"
+        "BinaryTree workspace = 29 * 16,777,216"
+        "BinaryTree aggregate = 16,777,216 + 486,539,264"
+        "explicit policy      = 536,870,912 bytes (512 MiB)"
+        "--frames-limited"
+        "marc-silesia-binary-tree-16m-experiment-v1"
+        "token_fingerprint_sha256"
+        "--max-new-points N"
+        "public selector")
+    string(FIND "${lzss_binary_tree_window_16m_benchmark_content}"
+        "${required_binary_tree_window_16m_benchmark_term}"
+        required_binary_tree_window_16m_benchmark_term_offset)
+    if(required_binary_tree_window_16m_benchmark_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 16 MiB BinaryTree comparison design: "
+            "${required_binary_tree_window_16m_benchmark_term}")
     endif()
 endforeach()
 

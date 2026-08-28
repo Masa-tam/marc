@@ -24,6 +24,8 @@ navigate chronological development records.
   encoder-side acceleration without changing the LZSS stream format.
 - [LZSS HashTree Exact design](design/lzss-hash-tree-match-finder.md):
   deterministic hot-bucket promotion and LCP-aware ordered search.
+- [LZSS BinaryTree Exact 16 MiB benchmark](design/lzss-binary-tree-window-16m-benchmark.md):
+  bounded Silesia comparison of the global AVL and HashChain strategies.
 - [Silesia external benchmark profile](design/silesia-benchmark-profile.md):
   non-redistributed corpus handling and large-window match-finder measurement.
 - [LZSS contextual 1 MiB window](design/lzss-contextual-window-1m.md): additive
