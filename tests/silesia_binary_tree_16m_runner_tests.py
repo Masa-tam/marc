@@ -236,9 +236,9 @@ class SilesiaBinaryTree16MiBRunnerTests(unittest.TestCase):
             benchmark.write_bytes(b"fixture")
             checkpoint = root / "checkpoint.json"
 
-            def fake_run(_benchmark, _member, strategy, window):
+            def fake_run(benchmark_arg, member_arg, strategy, window):
                 return _report(strategy, window), runner._command(
-                    benchmark, _member, strategy, window)
+                    benchmark_arg, member_arg, strategy, window)
 
             arguments = [
                 str(benchmark), "--corpus", str(corpus), "--checkpoint",
@@ -281,9 +281,9 @@ class SilesiaBinaryTree16MiBRunnerTests(unittest.TestCase):
             benchmark.write_bytes(b"fixture")
             output = root / "result.json"
 
-            def fake_run(_benchmark, member, strategy, window):
+            def fake_run(benchmark_arg, member, strategy, window):
                 return _report(strategy, window), runner._command(
-                    benchmark, member, strategy, window)
+                    benchmark_arg, member, strategy, window)
 
             with mock.patch.object(runner, "verify_directory",
                                    return_value=manifest), \

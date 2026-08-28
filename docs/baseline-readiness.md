@@ -3247,3 +3247,13 @@ strict reports, corruption, identity, order, all aggregates, and a full mocked
 pass under MSVC and ClangCL in 265.57 and 258.90 seconds, including schema
 compatibility passes of 115.99 and 103.03 seconds. Actual Silesia measurement
 remains pending.
+
+### BR-0203
+
+Windows CI exposed a test-only path-normalization mismatch in the new
+checkpoint resume fixture: the fake process captured the caller's benchmark
+path while production records use the resolved path passed into the process
+boundary. Both fake callbacks now serialize their supplied arguments. Strict
+checkpoint command identity remains unchanged. The ten direct runner tests,
+the focused CTest entry, and all 3,297 registered tests pass under MSVC and
+ClangCL; actual Silesia measurement remains pending.

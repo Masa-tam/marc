@@ -12527,3 +12527,14 @@ duplicate records, and restored fingerprint mismatch. Complete all 72 mocked
 points and require exact member/window/strategy order, six aggregates, and
 three comparisons. Run all ten tooling tests directly and through CTest under
 both configured toolchains without reading the external Corpus.
+
+### TVG-0876
+
+Exercise the bounded checkpoint-and-resume test with a fake benchmark path
+whose caller spelling may differ from its resolved Windows spelling. Require
+the fake process boundary to serialize the resolved benchmark and member paths
+actually supplied by the runner, then reload the two saved records with a
+zero-point batch and launch no new process. Keep the production checkpoint
+identity and exact command comparison unchanged. Run the ten direct Python
+tests, the focused CTest entry, and all 3,297 registered tests under MSVC and
+ClangCL without reading the external Corpus.

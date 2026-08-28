@@ -27095,3 +27095,23 @@ both bounds.
   coverage, and schema-52-through-1 compatibility passes of 115.99 and 103.03
   seconds. No Silesia member was opened and no benchmark process or network
   operation was performed.
+
+## CR-1096: 2026-08-28 - Correct Windows runner-test path identity
+
+- Authoring method: diagnosed the failing Windows CI traceback against the
+  repository-owned runner and fake-process test boundary.
+- References used: TVG-0876, CR-1095, and the attached Windows CI failure for
+  `marc_silesia_binary_tree_16m_runner_tests`.
+- Known implementations intentionally not consulted: external benchmark
+  runners, compressors, match finders, source code, tests, and results.
+- Independent decision: retain strict production checkpoint identity and make
+  each fake process serialize the resolved path arguments passed by the
+  runner, rather than paths captured before `Path.resolve()`.
+- Generated-code task description: correct both fake process callbacks, prove
+  bounded save plus zero-launch resume, and rerun both configured suites.
+- Similarity review: the change is confined to repository-owned test fixture
+  plumbing and records; no external implementation expression was introduced.
+- Validation: all ten direct Python tests and the focused CTest entry pass
+  under MSVC and ClangCL. All 3,297 registered tests then complete with exit
+  code zero under both toolchains. No Silesia member was opened and no
+  benchmark process or network operation was performed.
