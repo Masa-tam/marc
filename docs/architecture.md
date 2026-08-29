@@ -97,9 +97,15 @@ workspace calculator that delegates to the existing HashChain or BinaryTree
 calculator. The foundational typed Contextual Dynamic Range profile now carries
 the selected strategy, exact finder alignment, extent, offsets, and aggregate
 through its opaque encoder requirements and rejects forged strategy/alignment
-pairs transactionally. This stage does not yet dispatch frame encoding through
-BinaryTree or alter the public C header. Decoder workspace, stream bytes,
-profiles, CLI, ABI, and interoperability remain unchanged.
+pairs transactionally. The second adoption stage routes the Contextual Dynamic
+Range one-shot and streaming frame encoders through the selected Exact finder.
+The streaming transform fixes that choice at construction, while the existing
+HashChain entry points remain compatibility wrappers over the shared dispatch.
+BinaryTree and HashChain must materialize identical typed tokens and completed
+frame bytes. Unknown strategies, short finder storage, and overlapping regions
+fail before serialized output is published. The public C header is not changed
+yet; decoder workspace, stream bytes, profiles, CLI, ABI, and interoperability
+remain unchanged.
 The internal finder contract has a const match query plus an `advance` notice
 for every consumed half-open raw range. Exhaustive implements the query with
 the original complete scan and treats `advance` as a no-op. Both canonical

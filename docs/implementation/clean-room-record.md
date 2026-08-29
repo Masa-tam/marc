@@ -27190,3 +27190,29 @@ both bounds.
   `marc_interoperability_schema_compatibility` in 104.07 and 91.29 seconds.
   No public header, frame encoder dispatch, stream byte, CLI, archive, local
   Corpus, generated benchmark result, or network state is changed.
+
+## CR-1100: 2026-08-29 - Execute BinaryTree in Contextual Dynamic Range
+
+- Authoring method: implemented the second stage of the repository-owned
+  BinaryTree adoption design over existing independent typed-token encoders and
+  the Contextual Dynamic Range frame state machine.
+- References used: IR-0775 through IR-0777, DD-1013 through DD-1015, TVG-0878
+  through TVG-0880, CR-1098 through CR-1099, and marc's existing checked Exact
+  finder and frame contracts.
+- Known implementations intentionally not consulted: external compressors,
+  match-finder dispatch code, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, and optimization descriptions.
+- Independent decisions: compile-time-share three internal finder paths;
+  runtime-admit only HashChain/BinaryTree; retain HashChain wrappers/default;
+  fix streaming strategy at construction; and normalize both error families.
+- Generated-code task description: add failure-first token/byte equivalence and
+  streaming lifecycle tests, route BinaryTree through one-shot and streaming
+  Contextual Dynamic Range, preserve output atomicity and all old bytes, and
+  stop before public C selector work.
+- Similarity review: the change composes repository-owned interfaces and names
+  and introduces no external implementation expression or format identity.
+- Validation: 23 focused tests pass under MSVC and ClangCL. All 3,302 CTest
+  entries pass in 265.09 and 257.75 seconds, including
+  `marc_interoperability_schema_compatibility` in 104.58 and 91.22 seconds.
+  No public header, decoder, stream byte, profile identity, CLI, archive, local
+  Corpus, generated benchmark result, or network state is changed.

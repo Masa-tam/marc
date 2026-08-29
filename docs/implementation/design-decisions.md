@@ -20908,3 +20908,18 @@ default. Reject unknown strategies, invalid limits, insufficient finder policy,
 and forged strategy/alignment requirements before partition publication. Do
 not expose the C selector or route frame encoding through BinaryTree until this
 workspace boundary passes both complete suites.
+
+## DD-1015: Fix Contextual Dynamic Range finder policy at construction
+
+- Date: 2026-08-29
+- Status: accepted
+
+Make Contextual Dynamic Range the first executing BinaryTree adoption route.
+Share one compile-time frame implementation across Exhaustive reference,
+HashChain Exact, and BinaryTree Exact, but expose runtime selection only for
+the two accepted Exact policies. Retain the old HashChain functions as wrappers
+and the constructor's default as HashChain. Store the streaming selection once
+at construction and never infer or change it per frame. Normalize aggregate
+workspace calculation through the selected finder calculator, reject selector
+255 before work, and map both finders' short/limited storage to the same stream
+error categories. Do not yet alter the public C ABI or any serialized identity.

@@ -3282,3 +3282,16 @@ transactionally. HashChain remains the default. Public C ABI and actual frame
 dispatch remain unchanged for the next stage. Thirteen focused tests and all
 3,300 registered tests pass under MSVC and ClangCL in 256.47 and 247.67
 seconds, including schema compatibility in 104.07 and 91.29 seconds.
+
+### BR-0206
+
+Contextual Dynamic Range is the first typed Contextual LZSS route to execute
+BinaryTree Exact through the shared strategy boundary. One-shot planning and
+encoding dispatch to HashChain or BinaryTree while retaining the exhaustive
+reference route and old HashChain wrappers. Streaming fixes the strategy at
+construction and maps both finders' workspace failures to the same stable core
+categories. A mixed literal/match fixture proves field-identical tokens and
+byte-identical frames, while short BinaryTree storage and selector 255 fail
+atomically. Twenty-three focused tests and all 3,302 registered tests pass
+under MSVC and ClangCL in 265.09 and 257.75 seconds, including schema
+compatibility in 104.58 and 91.22 seconds. Public C ABI remains deferred.

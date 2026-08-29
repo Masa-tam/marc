@@ -21,6 +21,7 @@ enum class LzssTypedContextFrameEncodeError : std::uint8_t {
     serialized_output_too_small,
     overlapping_workspaces,
     workspace_limit,
+    unsupported_match_finder_strategy,
     token_encode_error,
     context_encode_error,
     entropy_encode_error,
@@ -69,6 +70,35 @@ encode_lzss_typed_context_frame(
     std::span<dictionary::internal::LzssTypedToken> private_tokens,
     std::span<context::internal::ModeledOperation> private_operations,
     std::span<std::byte> serialized_output) noexcept;
+
+[[nodiscard]] LzssTypedContextFrameEncodeResult
+plan_lzss_typed_context_frame_with_match_finder(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    std::span<context::internal::ModeledOperation> private_operations,
+    dictionary::internal::LzssMatchFinderStrategy strategy,
+    std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
+
+[[nodiscard]] LzssTypedContextFrameEncodeResult
+encode_lzss_typed_context_frame_with_match_finder(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    std::span<context::internal::ModeledOperation> private_operations,
+    dictionary::internal::LzssMatchFinderStrategy strategy,
+    std::span<std::byte> match_finder_workspace,
+    std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
 
 [[nodiscard]] LzssTypedContextFrameEncodeResult
 plan_lzss_typed_context_frame_hash_chain(

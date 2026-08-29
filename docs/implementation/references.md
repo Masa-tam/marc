@@ -7045,3 +7045,12 @@ checked view partitioner, and stable core error mapping. No external
 compressor, match-finder implementation, workspace API, source code, archive,
 encoded vector, test suite, patent, pseudocode, or optimization description
 was consulted.
+
+### IR-0777
+
+The first executing selector route uses IR-0775 through IR-0776, DD-1013
+through DD-1014, TVG-0878 through TVG-0879, marc's repository-owned typed-token
+single-pass HashChain and BinaryTree encoders, Contextual Dynamic Range frame
+encoder, and streaming state machine. No external compressor, match-finder
+dispatch, source code, archive, encoded vector, test suite, patent, pseudocode,
+or optimization description was consulted.

@@ -1,5 +1,6 @@
 #include "frame/lzss_typed_context_frame_encoder.hpp"
 
+#include "dictionary/lzss_binary_tree_match_finder.hpp"
 #include "frame/lzss_typed_context_frame_decoder.hpp"
 
 #include <gtest/gtest.h>
@@ -388,6 +389,117 @@ TEST(LzssTypedContextFrameEncoder, HashChainFrameMatchesExhaustiveBytes) {
         encoded, {stream, {}, 0, 0}, decoded_tokens, reconstructed);
     ASSERT_EQ(decoded.error, LzssTypedContextFrameDecodeError::none);
     EXPECT_EQ(reconstructed, input);
+}
+
+TEST(LzssTypedContextFrameEncoder,
+     BinaryTreeMatchesHashChainTokensBytesAndFailuresAreAtomic) {
+    auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    for (std::uint32_t value = 0; value < 256; ++value)
+        input.push_back(static_cast<std::byte>(value));
+    input.insert(input.end(), input.begin(), input.end());
+    const auto stream = stream_config(
+        static_cast<std::uint32_t>(input.size()), input.size());
+    std::vector<marc::dictionary::internal::LzssTypedToken> tokens(
+        input.size());
+    std::vector<marc::context::internal::ModeledOperation> operations(
+        input.size() * 5);
+    const auto hash_required = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            marc::dictionary::internal::LzssMatchFinderStrategy::
+                hash_chain_exact,
+            input.size(), stream.dictionary, {});
+    const auto tree_required = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            marc::dictionary::internal::LzssMatchFinderStrategy::
+                binary_tree_exact,
+            input.size(), stream.dictionary, {});
+    ASSERT_EQ(hash_required.error,
+              marc::dictionary::internal::
+                  LzssMatchFinderWorkspaceError::none);
+    ASSERT_EQ(tree_required.error,
+              marc::dictionary::internal::
+                  LzssMatchFinderWorkspaceError::none);
+    AlignedWorkspace hash_owner(hash_required.workspace_size);
+    AlignedWorkspace tree_owner(tree_required.workspace_size);
+    auto hash_workspace = hash_owner.bytes(hash_required.workspace_size);
+    auto tree_workspace = tree_owner.bytes(tree_required.workspace_size);
+
+    marc::dictionary::internal::LzssMatchFinderStatistics hash_statistics{};
+    const auto hash_plan = plan_lzss_typed_context_frame_with_match_finder(
+        stream, {}, 0, 0, input, tokens, operations,
+        marc::dictionary::internal::LzssMatchFinderStrategy::
+            hash_chain_exact,
+        hash_workspace, &hash_statistics);
+    ASSERT_EQ(hash_plan.error, LzssTypedContextFrameEncodeError::none);
+    const std::vector hash_tokens(
+        tokens.begin(), tokens.begin() + hash_plan.token_count);
+    std::vector<std::byte> hash_encoded(hash_plan.serialized_size);
+    ASSERT_EQ(encode_lzss_typed_context_frame_with_match_finder(
+                  stream, {}, 0, 0, input, tokens, operations,
+                  marc::dictionary::internal::LzssMatchFinderStrategy::
+                      hash_chain_exact,
+                  hash_workspace, hash_encoded).error,
+              LzssTypedContextFrameEncodeError::none);
+
+    marc::dictionary::internal::LzssMatchFinderStatistics tree_statistics{};
+    const auto tree_plan = plan_lzss_typed_context_frame_with_match_finder(
+        stream, {}, 0, 0, input, tokens, operations,
+        marc::dictionary::internal::LzssMatchFinderStrategy::
+            binary_tree_exact,
+        tree_workspace, &tree_statistics);
+    ASSERT_EQ(tree_plan.error, LzssTypedContextFrameEncodeError::none);
+    EXPECT_EQ(tree_plan.token_count, hash_plan.token_count);
+    EXPECT_EQ(tree_plan.operation_count, hash_plan.operation_count);
+    for (std::size_t index = 0; index < tree_plan.token_count; ++index) {
+        EXPECT_EQ(tokens[index].kind, hash_tokens[index].kind);
+        EXPECT_EQ(tokens[index].literal, hash_tokens[index].literal);
+        EXPECT_EQ(tokens[index].distance, hash_tokens[index].distance);
+        EXPECT_EQ(tokens[index].length, hash_tokens[index].length);
+    }
+    EXPECT_EQ(tree_statistics.query_count, tree_plan.token_count);
+    EXPECT_EQ(hash_statistics.query_count, hash_plan.token_count);
+    std::vector<std::byte> tree_encoded(tree_plan.serialized_size);
+    ASSERT_EQ(encode_lzss_typed_context_frame_with_match_finder(
+                  stream, {}, 0, 0, input, tokens, operations,
+                  marc::dictionary::internal::LzssMatchFinderStrategy::
+                      binary_tree_exact,
+                  tree_workspace, tree_encoded).error,
+              LzssTypedContextFrameEncodeError::none);
+    EXPECT_EQ(tree_encoded, hash_encoded);
+    std::vector<marc::dictionary::internal::LzssTypedToken> decoded_tokens(
+        tree_plan.token_count);
+    std::vector<std::byte> reconstructed(input.size());
+    const auto decoded = decode_lzss_typed_context_frame(
+        tree_encoded, {stream, {}, 0, 0}, decoded_tokens, reconstructed);
+    ASSERT_EQ(decoded.error, LzssTypedContextFrameDecodeError::none);
+    EXPECT_EQ(reconstructed, input);
+
+    std::array<std::byte, 1'024> untouched{};
+    untouched.fill(std::byte{0xCC});
+    auto failed = encode_lzss_typed_context_frame_with_match_finder(
+        stream, {}, 0, 0, input, tokens, operations,
+        marc::dictionary::internal::LzssMatchFinderStrategy::
+            binary_tree_exact,
+        tree_workspace.first(tree_workspace.size() - 1), untouched);
+    EXPECT_EQ(failed.error,
+              LzssTypedContextFrameEncodeError::token_encode_error);
+    EXPECT_EQ(failed.token_encode.binary_tree_match_finder_error,
+              marc::dictionary::internal::LzssBinaryTreeError::
+                  workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(untouched, [](const std::byte value) {
+        return value == std::byte{0xCC};
+    }));
+
+    failed = encode_lzss_typed_context_frame_with_match_finder(
+        stream, {}, 0, 0, input, tokens, operations,
+        static_cast<marc::dictionary::internal::LzssMatchFinderStrategy>(255),
+        tree_workspace, untouched);
+    EXPECT_EQ(failed.error,
+              LzssTypedContextFrameEncodeError::
+                  unsupported_match_finder_strategy);
+    EXPECT_TRUE(std::ranges::all_of(untouched, [](const std::byte value) {
+        return value == std::byte{0xCC};
+    }));
 }
 
 TEST(LzssTypedContextFrameEncoder,

@@ -60,6 +60,9 @@ enum class OverlapCheck : std::uint8_t {
                         token_storage_limit_exceeded
                 || result.token_encode.match_finder_error
                     == dictionary::internal::LzssHashChainError::
+                        workspace_limit_exceeded
+                || result.token_encode.binary_tree_match_finder_error
+                    == dictionary::internal::LzssBinaryTreeError::
                         workspace_limit_exceeded))
         || (result.error
                 == LzssTypedContextFrameEncodeError::context_encode_error
@@ -91,7 +94,12 @@ enum class OverlapCheck : std::uint8_t {
                 == LzssTypedContextFrameEncodeError::token_encode_error
             && result.token_encode.match_finder_error
                 == dictionary::internal::
-                    LzssHashChainError::workspace_too_small);
+                    LzssHashChainError::workspace_too_small)
+        || (result.error
+                == LzssTypedContextFrameEncodeError::token_encode_error
+            && result.token_encode.binary_tree_match_finder_error
+                == dictionary::internal::
+                    LzssBinaryTreeError::workspace_too_small);
 }
 
 } // namespace
@@ -104,13 +112,16 @@ LzssTypedContextFrameStreamingEncoder(
     const std::span<dictionary::internal::LzssTypedToken> token_workspace,
     const std::span<context::internal::ModeledOperation> operation_workspace,
     const std::span<std::byte> match_finder_workspace,
-    const std::span<std::byte> serialized_frame_workspace) noexcept
+    const std::span<std::byte> serialized_frame_workspace,
+    const dictionary::internal::LzssMatchFinderStrategy
+        match_finder_strategy) noexcept
     : stream_(stream), limits_(limits),
       raw_frame_workspace_(raw_frame_workspace),
       token_workspace_(token_workspace),
       operation_workspace_(operation_workspace),
       match_finder_workspace_(match_finder_workspace),
-      serialized_frame_workspace_(serialized_frame_workspace) {
+      serialized_frame_workspace_(serialized_frame_workspace),
+      match_finder_strategy_(match_finder_strategy) {
     std::size_t token_bytes{};
     std::size_t operation_bytes{};
     const bool valid_extents = native_extent(
@@ -167,6 +178,8 @@ LzssTypedContextFrameStreamingEncoder(
     const auto required_raw = std::min<std::uint64_t>(
         stream_.original_size, stream_.frame_size);
     if (!valid_extents
+        || !dictionary::internal::is_supported_lzss_match_finder_strategy(
+            match_finder_strategy_)
         || validate_typed_context_stream_header(stream_, limits_)
             != TypedContextStreamHeaderError::none
         || raw_frame_workspace_.size() < required_raw
@@ -232,10 +245,10 @@ bool LzssTypedContextFrameStreamingEncoder::output_is_disjoint(
 bool LzssTypedContextFrameStreamingEncoder::prepare_frame() noexcept {
     preparation_error_ = core::ErrorCode::internal_error;
     const auto raw = raw_frame_workspace_.first(raw_frame_size_);
-    const auto encoded = encode_lzss_typed_context_frame_hash_chain(
+    const auto encoded = encode_lzss_typed_context_frame_with_match_finder(
         stream_, limits_, frame_sequence_, input_committed_, raw,
-        token_workspace_, operation_workspace_, match_finder_workspace_,
-        serialized_frame_workspace_);
+        token_workspace_, operation_workspace_, match_finder_strategy_,
+        match_finder_workspace_, serialized_frame_workspace_);
     if (encoded.error != LzssTypedContextFrameEncodeError::none) {
         if (is_limit_failure(encoded)) {
             preparation_error_ = core::ErrorCode::limit_exceeded;

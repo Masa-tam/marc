@@ -12593,3 +12593,20 @@ alignment even when the aggregate view alignment is internally consistent.
 Retain all existing HashChain exact-size and round-trip expectations. Run the
 13 focused tests and all 3,300 registered tests under both MSVC and ClangCL,
 including complete schema compatibility.
+
+### TVG-0880
+
+Build a mixed literal/match fixture containing repeated ASCII fields, every
+byte value, and a repeated whole suffix. Plan and encode it through HashChain
+Exact and BinaryTree Exact with independently checked, aligned workspaces.
+Require identical token count, operation count, every token field, completed
+frame extent, completed frame bytes, and query statistics. Decode the retained
+canonical bytes through the existing decoder.
+
+Run the same fixture through a streaming BinaryTree transform whose strategy is
+fixed at construction and require the canonical exhaustive stream prefix plus
+frame. Supply a one-byte-short BinaryTree workspace and require `out_of_memory`
+without publishing a frame. Reject selector 255 at construction and in the
+one-shot encoder without changing serialized output. Retain every existing
+HashChain/exhaustive oracle and run the 23 focused tests plus all 3,302 CTest
+entries under MSVC and ClangCL, including complete schema compatibility.
