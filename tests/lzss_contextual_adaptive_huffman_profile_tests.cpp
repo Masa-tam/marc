@@ -124,6 +124,11 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
     EXPECT_EQ(workspace.match_finder_offset,
               align_size(symbol_end, finder.workspace_alignment));
     EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment,
+              finder.workspace_alignment);
+    EXPECT_EQ(workspace.match_finder_strategy,
+              marc::dictionary::internal::
+                  LzssMatchFinderStrategy::hash_chain_exact);
     EXPECT_EQ(workspace.views_bytes,
               workspace.match_finder_offset
                   + workspace.match_finder_bytes);
@@ -156,6 +161,25 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
     EXPECT_TRUE(views.nodes.empty());
     EXPECT_TRUE(views.symbols.empty());
     EXPECT_TRUE(views.match_finder.empty());
+
+    LzssContextualAdaptiveHuffmanProfileConfig binary_tree{};
+    binary_tree.original_size = 65'536;
+    binary_tree.match_finder_strategy = marc::dictionary::internal::
+        LzssMatchFinderStrategy::binary_tree_exact;
+    ASSERT_EQ(make_lzss_contextual_adaptive_huffman_profile(
+                  binary_tree, {}, stream, workspace),
+              LzssContextualAdaptiveHuffmanProfileError::none);
+    const auto tree = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            binary_tree.match_finder_strategy, 65'536,
+            binary_tree.dictionary, {});
+    ASSERT_EQ(tree.error, marc::dictionary::internal::
+                              LzssMatchFinderWorkspaceError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, tree.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment,
+              tree.workspace_alignment);
+    EXPECT_EQ(workspace.match_finder_strategy,
+              binary_tree.match_finder_strategy);
 }
 
 TEST(LzssContextualAdaptiveHuffmanProfile,
@@ -246,6 +270,12 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
      RejectsUnsupportedAndBoundedConfigurations) {
     LzssContextualAdaptiveHuffmanStreamHeader stream{};
     LzssContextualAdaptiveHuffmanEncoderWorkspaceRequirements workspace{};
+    LzssContextualAdaptiveHuffmanProfileConfig unsupported_finder{};
+    unsupported_finder.match_finder_strategy = static_cast<
+        marc::dictionary::internal::LzssMatchFinderStrategy>(255);
+    EXPECT_EQ(make_lzss_contextual_adaptive_huffman_profile(
+                  unsupported_finder, {}, stream, workspace),
+              LzssContextualAdaptiveHuffmanProfileError::unsupported);
     LzssContextualAdaptiveHuffmanProfileConfig unsupported{};
     unsupported.dictionary.max_match_length = 259;
     EXPECT_EQ(make_lzss_contextual_adaptive_huffman_profile(
@@ -557,6 +587,13 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
                   invalid_requirements);
     EXPECT_TRUE(views.tokens.empty());
     EXPECT_TRUE(views.match_finder.empty());
+    forged = requirements;
+    forged.match_finder_strategy = static_cast<
+        marc::dictionary::internal::LzssMatchFinderStrategy>(255);
+    EXPECT_EQ(partition_lzss_contextual_adaptive_huffman_encoder_views(
+                  forged, storage, views),
+              LzssContextualAdaptiveHuffmanWorkspaceError::
+                  invalid_requirements);
     EXPECT_EQ(partition_lzss_contextual_adaptive_huffman_encoder_views(
                   requirements, storage.first(storage.size() - 1), views),
               LzssContextualAdaptiveHuffmanWorkspaceError::too_small);

@@ -61,9 +61,13 @@ static void test_profile_helper(void) {
     assert(memcmp(&config, &applied, sizeof(config)) == 0);
 
     marc_workspace_requirements needed;
+    config.max_internal_buffered_bytes = UINT64_C(1) << 30;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
-               &config, &needed) == MARC_STATUS_UNSUPPORTED);
+               &config, &needed) == MARC_STATUS_OK);
+    const size_t binary_tree_views_bytes = needed.views_bytes;
+    assert(binary_tree_views_bytes != 0);
     config.match_finder_strategy = MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT;
+    config.max_internal_buffered_bytes = UINT64_C(256) << 20;
     --config.max_compressed_payload_size;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
@@ -479,6 +483,7 @@ int main(void) {
     test_sixteen_mib_public_boundary();
     static const uint8_t input[] = {0x41, 0x42, 0x41, 0x42, 0x58};
     uint8_t encoded[40000];
+    uint8_t baseline_encoded[40000];
     uint8_t decoded[sizeof(input)];
     marc_lzss_contextual_adaptive_huffman_config config;
     marc_workspace_requirements needed;
@@ -523,6 +528,28 @@ int main(void) {
     assert(encoded[16] == 1 && encoded[17] == 0);
     assert(encoded[18] == 2 && encoded[19] == 0);
     const size_t encoded_size = result.output_produced;
+    memcpy(baseline_encoded, encoded, encoded_size);
+    marc_transform_destroy(transform);
+    release(primary);
+    release(secondary);
+    release(views);
+
+    config.match_finder_strategy =
+        MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
+    assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_OK);
+    primary = allocate(needed.primary_bytes);
+    secondary = allocate(needed.secondary_bytes);
+    views = allocate(needed.views_bytes);
+    assert(marc_lzss_contextual_adaptive_huffman_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    result = marc_transform_process(
+        transform, (marc_const_buffer){input, sizeof(input)},
+        (marc_buffer){encoded, sizeof(encoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_END_OF_STREAM);
+    assert(result.output_produced == encoded_size);
+    assert(memcmp(encoded, baseline_encoded, encoded_size) == 0);
     marc_transform_destroy(transform);
     release(primary);
     release(secondary);

@@ -2,6 +2,7 @@
 #define MARC_FRAME_LZSS_CONTEXTUAL_ADAPTIVE_HUFFMAN_PROFILE_HPP
 
 #include "core/status.hpp"
+#include "dictionary/lzss_match_finder.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 #include "entropy/contextual_adaptive_huffman_model.hpp"
 #include "frame/lzss_contextual_adaptive_huffman_format.hpp"
@@ -25,6 +26,8 @@ struct LzssContextualAdaptiveHuffmanProfileConfig {
     dictionary::internal::LzssParameters dictionary{};
     LzssContextualAdaptiveHuffmanProfileVariant variant{
         LzssContextualAdaptiveHuffmanProfileVariant::field_context_64k};
+    dictionary::internal::LzssMatchFinderStrategy match_finder_strategy{
+        dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact};
 };
 
 struct LzssContextualAdaptiveHuffmanEncoderWorkspaceRequirements {
@@ -37,6 +40,9 @@ struct LzssContextualAdaptiveHuffmanEncoderWorkspaceRequirements {
     std::size_t symbol_offset{};
     std::size_t match_finder_offset{};
     std::size_t match_finder_bytes{};
+    std::size_t match_finder_alignment{1};
+    dictionary::internal::LzssMatchFinderStrategy match_finder_strategy{
+        dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact};
     std::size_t views_bytes{};
     std::size_t views_alignment{1};
 };

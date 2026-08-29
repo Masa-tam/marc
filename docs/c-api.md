@@ -179,10 +179,10 @@ layouts. Its decoder also receives the required `max_block_size` of
 native layout, the authoritative workspace query returns exactly
 1,057,488,981 bytes for encoding and 452,984,917 bytes for decoding; one byte
 less fails. A caller may tighten any returned hard limit and must then re-query
-before allocation. Contextual rANS, Contextual tANS, and Contextual Blocked
-Huffman now also admit this selector through their own independently bounded
-profiles; Contextual Adaptive Huffman continues to reject it. The field and
-its trailing 32-bit reserved word occupy
+before allocation. Contextual rANS, Contextual tANS, Contextual Blocked
+Huffman, and Contextual Adaptive Huffman also admit this selector through
+their own independently bounded profiles. The field and its trailing 32-bit
+reserved word occupy
 the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
 all-zero meaning used by earlier callers. The explicit Dynamic Range CLI name
 and benchmark names, bounded decoder-fuzz admission, and schema-48 archive are
@@ -657,9 +657,5 @@ Unknown selector values are invalid in both directions and never fall back.
 
 The selector is encoder policy only: it is not serialized, and decode accepts
 either known value while returning the same requirements and constructing the
-same decoder. At the current staged implementation boundary, Contextual
-Dynamic Range, Contextual rANS, Contextual tANS, and Contextual Blocked Huffman
-execute both exact strategies. Adaptive Huffman preserves the known selector
-but returns `MARC_STATUS_UNSUPPORTED` when BinaryTree is requested for encode
-until its frame route is connected. This explicit result prevents a requested
-strategy from being silently replaced by HashChain.
+same decoder. All five Contextual LZSS encoders execute both exact strategies.
+No route silently replaces a requested BinaryTree strategy with HashChain.

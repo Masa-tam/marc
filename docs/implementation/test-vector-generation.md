@@ -12690,3 +12690,25 @@ Validation: 29 focused internal tests and the public C lifecycle pass under
 MSVC and ClangCL. All 3,304 registered tests pass in 289.78 and 264.05
 seconds, including complete schema compatibility in 115.39 and 104.14
 seconds.
+
+### TVG-0885
+
+For Contextual Adaptive Huffman, calculate independently aligned HashChain and
+BinaryTree workspaces after the fixed typed-token, FGK-node, and symbol-map
+extents. Encode a mixed literal/match fixture through the common runtime
+dispatch and require equal plan extents plus byte-identical completed
+descriptors and payloads. Require the profile to publish the selected strategy,
+canonical alignment, and calculator-owned finder extent; reject strategy 255
+without residual requirements.
+
+Through the public C lifecycle, preserve BinaryTree across profile application,
+query and create it, encode a bounded multi-frame fixture, and require exact
+identity with retained HashChain bytes. Keep decode selector-independent and
+retain all existing Adaptive Huffman golden, malformed-transition, NYT,
+rescaling, extended-distance, workspace, completion, ABI, Static/Dynamic,
+schema-compatibility, and fuzz compile-smoke tests under MSVC and ClangCL.
+
+Validation: 31 focused internal tests and the public C lifecycle pass under
+MSVC and ClangCL. All 3,304 registered tests pass in 262.74 and 266.38
+seconds, including complete schema compatibility in 109.07 and 104.56
+seconds.

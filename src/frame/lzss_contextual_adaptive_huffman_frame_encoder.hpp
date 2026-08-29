@@ -21,6 +21,7 @@ enum class LzssContextualAdaptiveHuffmanFrameEncodeError : std::uint8_t {
     serialized_output_too_small,
     overlapping_workspaces,
     workspace_limit,
+    unsupported_match_finder_strategy,
     token_encode_error,
     entropy_encode_error,
     header_error,
@@ -71,6 +72,35 @@ encode_lzss_contextual_adaptive_huffman_frame(
     std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
     std::span<std::uint16_t> private_symbols,
     std::span<std::byte> serialized_output) noexcept;
+
+[[nodiscard]] LzssContextualAdaptiveHuffmanFrameEncodeResult
+plan_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+    const LzssContextualAdaptiveHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
+    std::span<std::uint16_t> private_symbols,
+    dictionary::internal::LzssMatchFinderStrategy strategy,
+    std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
+
+[[nodiscard]] LzssContextualAdaptiveHuffmanFrameEncodeResult
+encode_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+    const LzssContextualAdaptiveHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    std::span<entropy::internal::AdaptiveHuffmanNode> private_nodes,
+    std::span<std::uint16_t> private_symbols,
+    dictionary::internal::LzssMatchFinderStrategy strategy,
+    std::span<std::byte> match_finder_workspace,
+    std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
 
 [[nodiscard]] LzssContextualAdaptiveHuffmanFrameEncodeResult
 plan_lzss_contextual_adaptive_huffman_frame_hash_chain(

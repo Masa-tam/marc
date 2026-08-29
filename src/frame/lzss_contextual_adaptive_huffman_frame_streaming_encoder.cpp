@@ -80,6 +80,9 @@ struct RegionSizes {
                         token_storage_limit_exceeded
                 || result.token_encode.match_finder_error
                     == dictionary::internal::LzssHashChainError::
+                        workspace_limit_exceeded
+                || result.token_encode.binary_tree_match_finder_error
+                    == dictionary::internal::LzssBinaryTreeError::
                         workspace_limit_exceeded))
         || (result.error
                 == LzssContextualAdaptiveHuffmanFrameEncodeError::
@@ -119,6 +122,12 @@ struct RegionSizes {
                     token_encode_error
             && result.token_encode.match_finder_error
                 == dictionary::internal::LzssHashChainError::
+                    workspace_too_small)
+        || (result.error
+                == LzssContextualAdaptiveHuffmanFrameEncodeError::
+                    token_encode_error
+            && result.token_encode.binary_tree_match_finder_error
+                == dictionary::internal::LzssBinaryTreeError::
                     workspace_too_small);
 }
 
@@ -164,13 +173,16 @@ LzssContextualAdaptiveHuffmanFrameStreamingEncoder(
     const std::span<entropy::internal::AdaptiveHuffmanNode> node_workspace,
     const std::span<std::uint16_t> symbol_workspace,
     const std::span<std::byte> match_finder_workspace,
-    const std::span<std::byte> serialized_frame_workspace) noexcept
+    const std::span<std::byte> serialized_frame_workspace,
+    const dictionary::internal::LzssMatchFinderStrategy
+        match_finder_strategy) noexcept
     : stream_(stream), limits_(limits),
       raw_frame_workspace_(raw_frame_workspace),
       token_workspace_(token_workspace), node_workspace_(node_workspace),
       symbol_workspace_(symbol_workspace),
       match_finder_workspace_(match_finder_workspace),
-      serialized_frame_workspace_(serialized_frame_workspace) {
+      serialized_frame_workspace_(serialized_frame_workspace),
+      match_finder_strategy_(match_finder_strategy) {
     RegionSizes sizes{};
     const bool valid_extents = region_sizes(
         token_workspace_, node_workspace_, symbol_workspace_, sizes);
@@ -253,6 +265,8 @@ LzssContextualAdaptiveHuffmanFrameStreamingEncoder(
         serialize_lzss_contextual_adaptive_huffman_stream_header(
             stream_, limits_, stream_header_);
     if (!valid_extents
+        || !dictionary::internal::is_supported_lzss_match_finder_strategy(
+            match_finder_strategy_)
         || stream_error
             != LzssContextualAdaptiveHuffmanStreamHeaderError::none
         || raw_frame_workspace_.size() < required_raw
@@ -308,11 +322,11 @@ bool LzssContextualAdaptiveHuffmanFrameStreamingEncoder::prepare_frame()
     noexcept {
     preparation_error_ = core::ErrorCode::internal_error;
     const auto encoded =
-        encode_lzss_contextual_adaptive_huffman_frame_hash_chain(
+        encode_lzss_contextual_adaptive_huffman_frame_with_match_finder(
         stream_, limits_, frame_sequence_, input_committed_,
         raw_frame_workspace_.first(raw_frame_size_), token_workspace_,
-        node_workspace_, symbol_workspace_, match_finder_workspace_,
-        serialized_frame_workspace_);
+        node_workspace_, symbol_workspace_, match_finder_strategy_,
+        match_finder_workspace_, serialized_frame_workspace_);
     preparation_error_ = preparation_error(encoded);
     if (preparation_error_ != core::ErrorCode::none) return false;
     pending_size_ = encoded.serialized_size;

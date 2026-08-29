@@ -7094,3 +7094,13 @@ Blocked Huffman primitives, profile, frame encoder, and streaming lifecycle.
 No external compressor, match-finder dispatch, Huffman implementation, source
 code, archive, encoded vector, test suite, patent, pseudocode, or optimization
 description was consulted.
+
+### IR-0782
+
+The Contextual Adaptive Huffman selector route uses IR-0775 through IR-0781,
+DD-1013 through DD-1019, TVG-0878 through TVG-0884, marc's repository-owned
+checked Exact finder calculators, typed-token single-pass encoders, FGK model,
+profile, frame encoder, and streaming lifecycle. No external compressor,
+match-finder dispatch, Adaptive Huffman implementation, source code, archive,
+encoded vector, test suite, patent, pseudocode, or optimization description
+was consulted.

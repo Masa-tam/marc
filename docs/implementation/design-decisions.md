@@ -20983,3 +20983,17 @@ producer, fix that strategy at transform construction, and retain HashChain
 wrappers and defaults. BinaryTree changes neither Blocked Huffman modeling,
 completed frame bytes, stream identity, decoder table sizing, nor profile
 limits.
+
+## DD-1020: Preserve FGK state while selecting the exact finder
+
+- Date: 2026-08-29
+- Status: accepted
+
+Carry the public selector through the Contextual Adaptive Huffman profile,
+opaque-view partition, frame encoder, streaming encoder, workspace query, and
+factory. Preserve the existing tokens, FGK nodes, symbol map, then finder view
+order; vary only the final finder extent and canonical alignment. Select only
+the single-pass typed-token producer, fix that strategy at transform
+construction, and retain HashChain wrappers and defaults. BinaryTree changes
+neither synchronized FGK updates, NYT handling, descriptor and payload bytes,
+stream identity, decoder model sizing, nor profile limits.

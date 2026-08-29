@@ -673,6 +673,41 @@ TEST(LzssContextualAdaptiveHuffmanFrameEncoder,
     EXPECT_EQ(hash, exhaustive);
     EXPECT_EQ(statistics.query_count, hash_plan.token_count);
 
+    const auto tree_requirements = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            marc::dictionary::internal::
+                LzssMatchFinderStrategy::binary_tree_exact,
+            raw.size(), stream.dictionary, {});
+    ASSERT_EQ(tree_requirements.error, marc::dictionary::internal::
+                                           LzssMatchFinderWorkspaceError::none);
+    std::vector<std::max_align_t> tree_backing(
+        (tree_requirements.workspace_size + sizeof(std::max_align_t) - 1)
+        / sizeof(std::max_align_t));
+    auto tree_finder = std::as_writable_bytes(std::span{tree_backing}).first(
+        tree_requirements.workspace_size);
+    std::array<LzssTypedToken, raw.size()> tree_tokens{};
+    Workspace tree_workspace{};
+    const auto tree_plan =
+        plan_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+            stream, {}, 0, 0, raw, tree_tokens, tree_workspace.nodes,
+            tree_workspace.symbols, marc::dictionary::internal::
+                LzssMatchFinderStrategy::binary_tree_exact,
+            tree_finder);
+    ASSERT_EQ(tree_plan.error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::none);
+    ASSERT_EQ(tree_plan.serialized_size, hash_plan.serialized_size);
+    ASSERT_EQ(tree_plan.descriptor_size, hash_plan.descriptor_size);
+    ASSERT_EQ(tree_plan.payload_size, hash_plan.payload_size);
+    std::vector<std::byte> tree(tree_plan.serialized_size);
+    ASSERT_EQ(encode_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+                  stream, {}, 0, 0, raw, tree_tokens,
+                  tree_workspace.nodes, tree_workspace.symbols,
+                  marc::dictionary::internal::
+                      LzssMatchFinderStrategy::binary_tree_exact,
+                  tree_finder, tree).error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::none);
+    EXPECT_EQ(tree, hash);
+
     Workspace decoder_workspace{};
     std::array<LzssTypedToken, raw.size()> decode_tokens{};
     std::array<std::byte, raw.size()> decoded{};

@@ -3357,3 +3357,17 @@ profile limits, and interoperability archive inventory are unchanged.
 Twenty-nine focused internal tests and the public C lifecycle pass under both
 toolchains. All 3,304 CTest entries pass under MSVC and ClangCL in 289.78 and
 264.05 seconds, including schema compatibility in 115.39 and 104.14 seconds.
+
+### BR-0211
+
+Contextual Adaptive Huffman completes BinaryTree Exact adoption across all five
+public Contextual LZSS routes. Its opaque encoder view preserves typed tokens,
+FGK nodes, and the symbol map before selected finder storage. Frame and
+streaming dispatch select only the typed-token producer, so synchronized FGK
+updates, NYT handling, descriptors, payloads, and completed streams remain
+byte-identical. The C factory creates BinaryTree encoders while decode remains
+selector-independent. Format, ABI, defaults, CLI, decoder, profile limits, and
+interoperability archive inventory are unchanged.
+Thirty-one focused internal tests and the public C lifecycle pass under both
+toolchains. All 3,304 CTest entries pass under MSVC and ClangCL in 262.74 and
+266.38 seconds, including schema compatibility in 109.07 and 104.56 seconds.

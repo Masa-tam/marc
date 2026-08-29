@@ -1,7 +1,6 @@
 #include "frame/lzss_contextual_adaptive_huffman_profile.hpp"
 
 #include "core/checked_math.hpp"
-#include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -101,15 +100,6 @@ inline constexpr std::uint64_t bits_per_raw_byte = 267;
                     alignof(dictionary::internal::LzssTypedToken),
                     token_offset)
         && core::checked_add(token_offset, token_bytes, views_bytes);
-}
-
-[[nodiscard]] constexpr std::size_t encoder_alignment() noexcept {
-    return std::max({
-        alignof(dictionary::internal::LzssTypedToken),
-        alignof(entropy::internal::AdaptiveHuffmanNode),
-        alignof(std::uint16_t),
-        dictionary::internal::LzssHashChainWorkspaceRequirements{}
-            .workspace_alignment});
 }
 
 [[nodiscard]] constexpr std::size_t decoder_alignment() noexcept {
@@ -226,7 +216,14 @@ make_lzss_contextual_adaptive_huffman_profile(
 
     const auto largest_frame = std::min<std::uint64_t>(
         config.original_size, config.frame_size);
-    if (largest_frame == 0) return E::none;
+    if (!dictionary::internal::is_supported_lzss_match_finder_strategy(
+            config.match_finder_strategy)) {
+        return E::unsupported;
+    }
+    if (largest_frame == 0) {
+        workspace.match_finder_strategy = config.match_finder_strategy;
+        return E::none;
+    }
     const std::uint64_t node_count{
         2 * selected.layout.frequency_entries
         + context::internal::lzss_field_context_count};
@@ -249,13 +246,30 @@ make_lzss_contextual_adaptive_huffman_profile(
         return E::arithmetic_overflow;
     }
     const auto finder = dictionary::internal::
-        calculate_lzss_hash_chain_workspace(
-            largest_frame_size, config.dictionary, limits);
-    if (finder.error != dictionary::internal::LzssHashChainError::none) {
-        return finder.error == dictionary::internal::LzssHashChainError::
-                                   workspace_limit_exceeded
-            ? E::limit_exceeded
-            : E::arithmetic_overflow;
+        calculate_lzss_match_finder_workspace(
+            config.match_finder_strategy, largest_frame_size,
+            config.dictionary, limits);
+    if (finder.error
+        != dictionary::internal::LzssMatchFinderWorkspaceError::none) {
+        switch (finder.error) {
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                workspace_limit_exceeded:
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                input_limit_exceeded:
+            return E::limit_exceeded;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                unsupported_strategy:
+            return E::unsupported;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                invalid_configuration:
+            return E::invalid_configuration;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                arithmetic_overflow:
+            return E::arithmetic_overflow;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::none:
+            break;
+        }
+        return E::arithmetic_overflow;
     }
     if (!payload_ceiling(largest_frame, payload_bytes)
         || !core::checked_add(
@@ -295,7 +309,12 @@ make_lzss_contextual_adaptive_huffman_profile(
         workspace = {};
         return E::arithmetic_overflow;
     }
-    workspace.views_alignment = encoder_alignment();
+    workspace.match_finder_alignment = finder.workspace_alignment;
+    workspace.match_finder_strategy = config.match_finder_strategy;
+    workspace.views_alignment = std::max({
+        alignof(dictionary::internal::LzssTypedToken),
+        alignof(entropy::internal::AdaptiveHuffmanNode),
+        alignof(std::uint16_t), finder.workspace_alignment});
     return E::none;
 }
 
@@ -385,8 +404,7 @@ partition_lzss_contextual_adaptive_huffman_encoder_views(
             requirements.token_count, requirements.node_count,
             requirements.symbol_count, expected_node_offset,
             expected_symbol_offset, requirements.match_finder_bytes,
-            dictionary::internal::LzssHashChainWorkspaceRequirements{}
-                .workspace_alignment,
+            requirements.match_finder_alignment,
             expected_finder_offset, expected_bytes)) {
         return E::arithmetic_overflow;
     }
@@ -395,18 +413,32 @@ partition_lzss_contextual_adaptive_huffman_encoder_views(
                 && requirements.symbol_offset == 0
                 && requirements.match_finder_offset == 0
                 && requirements.match_finder_bytes == 0
+                && requirements.match_finder_alignment == 1
+                && dictionary::internal::
+                    is_supported_lzss_match_finder_strategy(
+                        requirements.match_finder_strategy)
                 && requirements.views_bytes == 0
                 && requirements.views_alignment == 1
             ? E::none
             : E::invalid_requirements;
     }
+    const auto expected_alignment = std::max({
+        alignof(dictionary::internal::LzssTypedToken),
+        alignof(entropy::internal::AdaptiveHuffmanNode),
+        alignof(std::uint16_t), requirements.match_finder_alignment});
+    const auto canonical_match_finder_alignment =
+        dictionary::internal::lzss_match_finder_workspace_alignment(
+            requirements.match_finder_strategy);
     if (!canonical_model_counts(
             requirements.node_count, requirements.symbol_count)
         || expected_node_offset != requirements.node_offset
         || expected_symbol_offset != requirements.symbol_offset
         || expected_finder_offset != requirements.match_finder_offset
         || expected_bytes != requirements.views_bytes
-        || requirements.views_alignment != encoder_alignment()) {
+        || canonical_match_finder_alignment == 0
+        || requirements.match_finder_alignment
+            != canonical_match_finder_alignment
+        || requirements.views_alignment != expected_alignment) {
         return E::invalid_requirements;
     }
     if (storage.size() < requirements.views_bytes) return E::too_small;

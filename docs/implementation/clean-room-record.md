@@ -27330,3 +27330,32 @@ both bounds.
   including complete schema compatibility in 115.39 and 104.14 seconds.
   Static and Dynamic libraries, C/C++ consumers, existing fuzz compile-smoke,
   CLI profiles, archive inventory, and canonical bytes remain valid.
+
+## CR-1105: 2026-08-29 - Execute BinaryTree through Contextual Adaptive Huffman
+
+- Authoring method: completed the repository-owned staged selector design over
+  marc's existing Contextual Adaptive Huffman typed-token, FGK model, profile,
+  frame, streaming, and public C lifecycle boundaries.
+- References used: IR-0775 through IR-0782, DD-1013 through DD-1020,
+  TVG-0878 through TVG-0885, CR-1098 through CR-1104, and marc's existing
+  checked Exact finder and Adaptive Huffman contracts.
+- Known implementations intentionally not consulted: external compressors,
+  match-finder or Adaptive Huffman source code, archives, encoded vectors, test
+  suites, patents, pseudocode, and optimization descriptions.
+- Independent decisions: preserve the tokens, FGK nodes, symbol map, then
+  finder layout; vary only the finder extent and typed-token producer; retain
+  the exhaustive oracle and HashChain wrapper; and store strategy once per
+  streaming transform.
+- Generated-code task description: make Adaptive Huffman workspace/profile/
+  frame/streaming and C factory selector-aware, prove BinaryTree/HashChain
+  completed-frame byte identity and public creation, reject unknown or
+  inadequate resources atomically, and do not change format, FGK behavior,
+  decoder identity, CLI, or archive inventory.
+- Similarity review: the change composes only repository-owned interfaces,
+  state machines, FGK implementation, and naming, and introduces no external
+  implementation expression or stream representation.
+- Validation: 31 focused internal tests and the public C lifecycle pass under
+  MSVC and ClangCL. All 3,304 CTest entries pass in 262.74 and 266.38 seconds,
+  including complete schema compatibility in 109.07 and 104.56 seconds.
+  Static and Dynamic libraries, C/C++ consumers, existing fuzz compile-smoke,
+  CLI profiles, archive inventory, and canonical bytes remain valid.
