@@ -7114,3 +7114,14 @@ query, changelog, current readiness baseline, schema-52 compatibility chain,
 and first-party 16-MiB BinaryTree measurements. No external compressor,
 release automation, changelog generator, package policy, binary distribution,
 third-party release note, or implementation source was consulted.
+
+### IR-0784
+
+The 64-MiB Contextual LZSS candidate design uses AGENTS.md's bounded-memory,
+explicit-serialization, typed-token, malformed-input, and staged-documentation
+requirements; DD-1021; TVG-0886; the completed 16-MiB profile designs; marc's
+repository-owned field-context layout and checked HashChain/BinaryTree
+workspace calculators; and first-party 16-MiB Silesia measurements. No
+external compressor, match-finder or entropy implementation, source code,
+archive, encoded vector, test suite, patent, pseudocode, format, or memory
+policy was consulted.

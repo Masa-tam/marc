@@ -21014,3 +21014,21 @@ defaults, all released stream representations, and schema-52 archive order.
 BinaryTree remains encoder-local and produces the same canonical stream as
 HashChain; it is neither serialized nor inferred while decoding. Keep the
 GitHub release marked pre-release.
+
+## DD-1022: Treat 64 MiB as an evidence-gated Contextual LZSS candidate
+
+- Date: 2026-08-30
+- Status: accepted
+
+Use 67,108,864 bytes as the next fourfold Contextual LZSS frame/window
+candidate, retaining maximum match length 258 and both explicit Exact finders.
+Do not reserve or admit dictionary variant 6 and context variant 5 until a
+fixed 64-MiB Silesia comparison and the shared checked layout contract are
+complete. The new distance class 26 requires candidate-only `8F` and `36T`
+decision bounds and 4,598 context entries; all earlier identities remain
+frozen. Treat this as the largest common fourfold profile under current
+32-bit payload fields because the next fourfold Adaptive Huffman ceiling would
+exceed them. Require backend-specific 64-bit workspace proofs, explicit
+strategy-neutral profile limits, fixed-memory fuzzing, and staged public
+admission. Initializers, older helpers, the 128-MiB library default, stream-
+driven limit policy, and automatic strategy selection remain unchanged.

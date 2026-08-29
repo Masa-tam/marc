@@ -12743,3 +12743,27 @@ CI artifacts verify on Ubuntu 26.04; the Ubuntu 26.04/Clang bundle verifies
 locally and with the Windows/MSVC executable. Every direction validates exact
 manifest order, sizes, SHA-256 values, foreign decoding, and byte-identical
 local re-encoding.
+
+### TVG-0887
+
+Before admitting a 64-MiB Contextual LZSS identity, hand-check dictionary
+distance classes 24, 25, and 26; the 27-symbol distance alphabets; 4,598
+flattened model entries; maximum-distance bypass bits; and reciprocal rejection
+by every published profile. Require `token_count <= F`, `event_count <= 2F`,
+`decision_count <= 8F`, and `decision_count <= 36T` at equality and one above,
+including checked 32-bit count conversion.
+
+Independently prove each backend descriptor, payload, and complete-frame
+ceiling from the selected context. On the supported 64-bit layout, require
+HashChain encode, BinaryTree encode, and decode workspace calculations to equal
+the values in the shared design, accept the exact aggregate, and reject one
+byte less without publishing requirements or handles. Reject a full profile
+where `size_t` cannot represent every region. Preserve all existing golden
+streams, ABI extents, profile helpers, schema-52 archives, and decoder atomicity.
+
+Before format reservation, run a separate fixed and checkpointed Silesia
+comparison at a 64-MiB frame/window with both Exact strategies. Require equal
+token summaries and fingerprints, canonical record order, verified external
+Corpus identity, bounded-batch resume, and no output publication from a partial
+or contradictory result. Record time and token reduction descriptively; do not
+make either a correctness pass condition.

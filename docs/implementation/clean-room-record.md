@@ -27453,3 +27453,34 @@ both bounds.
   `1cdd37f91535eeb06416d193deb12d6f3153b278`; the maintainer confirmed its
   remote publication, successful final CI, and publication of marc 0.5.0 as a
   GitHub pre-release.
+
+## CR-1109: 2026-08-30 - Design the 64-MiB Contextual LZSS candidate
+
+- Authoring method: derived the next fourfold window boundary, context
+  dimensions, count ceilings, serialized-size limits, and supported-layout
+  workspace totals from marc's completed 16-MiB contracts and repository-owned
+  data structures before reserving a format identity or changing code.
+- References used: IR-0784; DD-1022; TVG-0887; the five completed 16-MiB
+  Contextual designs; BinaryTree public-adoption and 16-MiB benchmark records;
+  and the current first-party type extents and checked workspace formulas.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder or entropy source, large-window format, memory policy, archive,
+  encoded vector, test suite, patent, pseudocode, and benchmark runner.
+- Independent decisions: select 64 MiB as an evidence-gated candidate rather
+  than a public profile; widen only the candidate's distance alphabet and
+  decision bounds; retain both explicit Exact strategies; require 64-bit full-
+  profile proofs and strategy-neutral explicit profile policies; and preserve
+  every published identity, byte, default, and hard-limit rule.
+- Generated-code task description: write a pre-implementation design that
+  distinguishes mathematical feasibility from format admission, calculates
+  all five backend ceilings and both finder aggregates, defines a bounded
+  Silesia evidence gate, and supplies malformed, boundary, workspace, fuzzing,
+  and interoperability requirements.
+- Similarity review: all formulas, names, structure, and staged decisions were
+  derived from marc's first-party specifications and implementation records.
+  No external implementation expression or distinctive control flow was used.
+- Validation: the documentation-layout test passes under the existing MSVC
+  and ClangCL Release trees. The 64-MiB arithmetic was independently expanded
+  from the recorded native extents and checked against every value in the
+  design. No source, ABI, format, stream byte, profile selector, CLI name, or
+  archive inventory is changed.
