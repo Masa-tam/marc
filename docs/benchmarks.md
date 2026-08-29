@@ -1880,6 +1880,21 @@ HashChain/BinaryTree. The 16-MiB BinaryTree aggregate was also 1.28 times its
 tree retirement count was zero. These are descriptive results for this exact
 machine, build, frame policy, and Corpus, not a new default or selector.
 
+### Global BinaryTree 64 MiB preflight
+
+The explicit `--frames-limited` path admits caller-supplied frame and window
+sizes through the 32-bit LZ representation range, then subjects them to the
+supplied aggregate hard limit and the selected checked finder calculator. The
+ordinary `--frames` path and all codec defaults retain their existing 16-MiB
+frame/distance and 128-MiB aggregate ceilings.
+
+For the fixed future 64-MiB experiment, calculator-only tests require a
+67,108,864-byte frame and window to report HashChain workspace 268,959,744 and
+aggregate 336,068,608 bytes, and BinaryTree workspace 1,946,157,056 and
+aggregate 2,013,265,920 bytes. Both fit the explicit 2-GiB policy; reducing
+either exact aggregate by one byte fails without allocating the workspace.
+The dedicated runner and real Corpus matrix remain separate later stages.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

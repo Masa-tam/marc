@@ -7135,3 +7135,12 @@ manifest verification, and current checked HashChain/BinaryTree workspace
 calculators. No external benchmark runner, compressor, match-finder source,
 Corpus tooling, checkpoint schema, test suite, patent, pseudocode, or
 performance methodology was consulted.
+
+### IR-0786
+
+The 64-MiB Exact-finder benchmark preflight uses IR-0785, DD-1023, TVG-0888,
+the repository-owned explicit-limit benchmark parser, `DecoderLimits`, checked
+HashChain and BinaryTree calculators, and the existing 16-MiB calculator-only
+boundary test. No external benchmark, allocator, compressor, match-finder
+source, test suite, patent, pseudocode, or large-window implementation was
+consulted.

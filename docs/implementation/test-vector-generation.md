@@ -12791,3 +12791,14 @@ configuration, workspace expectations, and environment; normal validation of
 restored records; zero-point validation; and `--max-new-points` resume without
 placing the batch size in identity. Preserve the 16-MiB runner and schemas and
 keep real Corpus execution opt-in and outside CTest.
+
+### TVG-0889
+
+For the explicit-limit benchmark preflight, set both local frame and LZ
+distance limits to 67,108,864 and the aggregate policy to 2,147,483,648. On a
+64-bit `size_t`, require the checked HashChain calculator to return workspace
+268,959,744 and aggregate 336,068,608, and BinaryTree to return workspace
+1,946,157,056 and aggregate 2,013,265,920. Require 134,217,728 bytes of
+BinaryTree headroom and reject each exact aggregate reduced by one byte. Skip
+the fixed-value proof on a non-64-bit layout and perform no workspace
+allocation. Retain the existing 16-MiB boundary test unchanged.

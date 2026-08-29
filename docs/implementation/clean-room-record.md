@@ -27514,3 +27514,33 @@ both bounds.
   agrees with the repository calculators' recorded formulas. This design-only
   stage changes no executable, test registration, format, ABI, profile, stream
   byte, or interoperability archive.
+
+## CR-1111: 2026-08-30 - Admit the 64-MiB benchmark preflight boundary
+
+- Authoring method: followed the failing calculator-first test to the ordinary
+  16-MiB frame/distance defaults, then widened only the explicit-limit
+  benchmark's local parsing envelope and supplied the intended limits directly
+  to the existing checked calculators.
+- References used: IR-0786; DD-1024; TVG-0889; the repository-owned benchmark
+  argument parser, `DecoderLimits`, both public Exact finder calculators, and
+  the adjacent 16-MiB boundary test.
+- Known implementations intentionally not consulted: external benchmark,
+  allocator, compressor, match-finder source, large-window implementation,
+  test suite, patent, and pseudocode.
+- Independent decisions: keep ordinary and codec defaults unchanged; use the
+  existing 32-bit LZ representation as the explicit parser ceiling; require
+  caller aggregate authorization and calculator validation before allocation;
+  and test 64-MiB workspace arithmetic without constructing a large finder.
+- Generated-code task description: add one 64-MiB calculator boundary test,
+  observe and diagnose its initial limit rejection, make explicit benchmark
+  limits admit the planned frame/window, and prove exact and one-short results
+  under MSVC and ClangCL.
+- Similarity review: the change reuses only marc's first-party limit and
+  calculator contracts and introduces no external implementation expression or
+  control-flow structure.
+- Validation: the focused 64-MiB calculator test passes under MSVC and ClangCL
+  Release builds without allocating its reported workspace. The initial
+  failure was `invalid_parameters` under the unchanged 16-MiB default and is
+  preserved as the reason explicit local limits are required. Full suites and
+  the dedicated runner remain later stages. No codec, format, ABI, profile,
+  stream byte, or archive inventory changes.

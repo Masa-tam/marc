@@ -3406,3 +3406,14 @@ published boundary therefore contains the completed sixteen-MiB Contextual
 LZSS family, public HashChain Exact and BinaryTree Exact selection, all 62
 interoperability archives, and the dated release documentation without an
 unverified source change between validation and tagging.
+
+### BR-0215
+
+The 64-MiB Exact-finder experiment now has a calculator-only executable
+preflight. Explicit-limit benchmark mode can parse the planned frame/window
+through the 32-bit LZ representation while ordinary benchmark and codec
+defaults remain unchanged. On supported 64-bit layouts, HashChain requires
+268,959,744 workspace and 336,068,608 aggregate bytes; BinaryTree requires
+1,946,157,056 workspace and 2,013,265,920 aggregate bytes. Exact capacities
+succeed and one byte short fails under both MSVC and ClangCL without a large
+allocation. The dedicated 48-point runner and Corpus execution remain pending.

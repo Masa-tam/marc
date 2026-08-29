@@ -1070,6 +1070,10 @@ void print_usage() {
     std::uint64_t promotion_threshold{
         std::numeric_limits<std::uint64_t>::max()};
     auto limits = marc::core::DecoderLimits{};
+    if (explicit_limit) {
+        limits.max_frame_size = std::numeric_limits<std::uint32_t>::max();
+        limits.max_lz_distance = std::numeric_limits<std::uint32_t>::max();
+    }
     if ((argc >= 5 && !parse_iterations(argv[4], iterations))
         || (argc >= 6 && !parse_size_argument(
                 argv[5], limits.max_frame_size, frame_size))

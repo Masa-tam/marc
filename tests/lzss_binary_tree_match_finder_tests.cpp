@@ -280,6 +280,43 @@ TEST(LzssBinaryTreeMatchFinder, CalculatesSixteenMiBComparisonWorkspace) {
               LzssHashChainError::workspace_limit_exceeded);
 }
 
+TEST(LzssBinaryTreeMatchFinder, CalculatesSixtyFourMiBComparisonWorkspace) {
+    if constexpr (sizeof(std::size_t) != 8U) GTEST_SKIP();
+
+    constexpr std::size_t extent = 64U << 20;
+    constexpr std::uint64_t policy = UINT64_C(2) << 30;
+    LzssParameters parameters{};
+    parameters.window_size = static_cast<std::uint32_t>(extent);
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = extent;
+    limits.max_lz_distance = extent;
+    limits.max_internal_buffered_bytes = policy;
+
+    const auto hash = calculate_lzss_hash_chain_workspace(
+        extent, parameters, limits);
+    ASSERT_EQ(hash.error, LzssHashChainError::none);
+    EXPECT_EQ(hash.workspace_size, 268'959'744U);
+    EXPECT_EQ(extent + hash.workspace_size, 336'068'608U);
+
+    const auto binary = calculate_lzss_binary_tree_workspace(
+        extent, parameters, limits);
+    ASSERT_EQ(binary.error, LzssBinaryTreeError::none);
+    EXPECT_EQ(binary.workspace_size, 1'946'157'056U);
+    EXPECT_EQ(extent + binary.workspace_size, 2'013'265'920U);
+    EXPECT_EQ(policy - (extent + binary.workspace_size), 134'217'728U);
+
+    limits.max_internal_buffered_bytes =
+        static_cast<std::uint64_t>(extent + binary.workspace_size - 1U);
+    EXPECT_EQ(calculate_lzss_binary_tree_workspace(
+                  extent, parameters, limits).error,
+              LzssBinaryTreeError::workspace_limit_exceeded);
+    limits.max_internal_buffered_bytes =
+        static_cast<std::uint64_t>(extent + hash.workspace_size - 1U);
+    EXPECT_EQ(calculate_lzss_hash_chain_workspace(
+                  extent, parameters, limits).error,
+              LzssHashChainError::workspace_limit_exceeded);
+}
+
 TEST(LzssBinaryTreeMatchFinder, InitializesEveryArrayAsEmpty) {
     const auto input = bytes("ABCDE1ABCDE2ABCDE3");
     const auto required = calculate_lzss_binary_tree_workspace(

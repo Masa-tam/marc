@@ -21048,3 +21048,17 @@ and fingerprint equality, one-record atomic checkpoints, and bounded batches.
 Keep the previous result schema frozen and add a dedicated v1 result and
 checkpoint schema. Treat speed and token reduction as descriptive evidence;
 change no format, ABI, profile, default, strategy policy, or archive inventory.
+
+## DD-1024: Widen only the explicit-limit benchmark argument envelope
+
+- Date: 2026-08-30
+- Status: accepted
+
+Allow `marc_lzss_match_finder_benchmark --frames-limited` to parse frame and
+window sizes through the existing 32-bit LZ representation range instead of
+the ordinary 16-MiB `DecoderLimits` defaults. Continue to validate the selected
+parameters and require the caller's explicit aggregate policy through the
+checked finder calculator before allocation. Do not change ordinary benchmark
+mode, codec defaults, public C configuration, stream format, or match-finder
+semantics. Freeze the 64-MiB HashChain/BinaryTree workspace and exact/one-short
+aggregate boundaries with calculator-only tests that allocate no large buffer.
