@@ -27140,3 +27140,29 @@ both bounds.
   six aggregates and three comparisons over 211,938,580 bytes and 19 frames.
   The worktree remains clean; no network operation occurred and no Corpus,
   checkpoint, or generated result is admitted to version control.
+
+## CR-1098: 2026-08-29 - Design explicit BinaryTree public adoption
+
+- Authoring method: derived a public encoder-policy boundary from marc's
+  completed Exact implementations, fixed Silesia result, existing contextual
+  profile helpers, and size-tagged caller-owned-workspace C lifecycle.
+- References used: IR-0775, DD-1013, TVG-0878, CR-1093 through CR-1097, and
+  repository-owned ABI/profile/workspace documentation.
+- Known implementations intentionally not consulted: external compressors,
+  match finders, source code, public APIs, ABI layouts, benchmark reports,
+  archives, encoded vectors, test suites, patents, pseudocode, and optimization
+  descriptions.
+- Independent decisions: limit first adoption to five shared typed-token
+  contextual encoders; retain HashChain as value zero and default; reuse the
+  existing reserved width; keep decoder behavior independent; require explicit
+  BinaryTree and hard-memory opt-ins; and defer CLI and automatic selection.
+- Generated-code task description: specify the selector constants, unchanged
+  ABI layout, encode/decode semantics, profile-helper preservation, selected
+  workspace accounting, atomic failure, Exact byte identity, and phased tests
+  before implementation.
+- Similarity review: all names and contracts follow marc's existing terminology
+  and repository-owned lifecycle; no external implementation expression or API
+  structure was introduced.
+- Validation: documentation structure and required-term validation are added in
+  the same design change; no codec source, public header, format, archive, local
+  Corpus, generated benchmark result, or network state is changed.

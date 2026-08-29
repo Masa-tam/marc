@@ -7023,3 +7023,15 @@ v1 aggregate report. The user supplied the hypothesis that BinaryTree becomes
 more competitive as the window grows. No external compressor, match-finder
 implementation, source code, benchmark result, archive, encoded vector, test
 suite, patent, pseudocode, or optimization description was consulted.
+
+### IR-0775
+
+The BinaryTree public-adoption design uses IR-0771 through IR-0774,
+DD-1009 through DD-1012, TVG-0873 through TVG-0877, marc's existing checked
+HashChain/BinaryTree workspace calculators, typed-token Exact producers,
+size-tagged contextual C configurations, profile-application contract, and
+schema-52-through-1 compatibility harness. The user approved retaining
+HashChain as the default while making BinaryTree an explicit large-workspace
+choice. No external compressor, match-finder implementation, source code,
+public API, ABI layout, benchmark result, archive, encoded vector, test suite,
+patent, pseudocode, or optimization description was consulted.

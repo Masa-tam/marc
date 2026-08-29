@@ -7,13 +7,12 @@
 デコード規則やストリーム表現ではない。
 
 最初の実装対象は、現在の完全探索を正解オラクルとして維持した上での
-`HashChain Exact`である。global `BinaryTree Exact`はExact性を満たしたが、
-Silesiaおよび合成測定で常時AVL維持の高い費用が確認され、private参照実装に
-留まる。次のprivate実験候補は、深いbucketだけを昇格する`HashTree Exact`で
-ある。`WindowAdaptiveV1`および`Bounded`は、HashTreeの測定と検証を終えるまで
-将来候補として扱う。
-この段階ではストリーム仕様、アルゴリズムID、variant ID、公開C ABI、
-CLI設定を変更しない。
+`HashChain Exact`である。global `BinaryTree Exact`はExact性を満たし、後続の
+16 MiB Silesia測定で大窓かつ深い候補列に対する有効性が確認されたため、
+Contextual LZSS encoderだけを対象とする明示的な公開採用段階へ進む。既定値は
+HashChainのまま維持し、window sizeだけによる自動選択は行わない。詳細は
+[`lzss-binary-tree-public-adoption.md`](lzss-binary-tree-public-adoption.md)で
+定める。`WindowAdaptiveV1`および`Bounded`は将来候補として扱う。
 
 ## 2. 背景
 
@@ -98,8 +97,11 @@ LZSS match finder strategy
 固定配列上のAVL木、期限切れnodeの構造的削除、辞書順近傍による最長一致、
 部分木の最新位置を使うprefix区間集約によってExact性を保証する。詳細は
 [`lzss-binary-tree-match-finder.md`](lzss-binary-tree-match-finder.md)で定める。
-Silesiaと合成matrixの結果、global AVLは既定化しない。privateな正確性oracle
-および構造比較対象として保持する。
+初期のSilesiaと合成matrixではglobal AVLを既定化しなかった。後続の固定
+16 MiB比較では4/16 MiB aggregateでHashChainを上回った一方、memberごとの
+勝敗と約7.2倍のworkspaceにばらつきが残った。このため既定化やwindow-only
+selectionはせず、5つのContextual LZSS encoderに限って明示選択を公開する。
+privateな正確性oracleおよび構造比較対象としても保持する。
 
 ### 4.4 実験候補: HashTree Exact
 

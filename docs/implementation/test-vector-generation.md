@@ -12553,3 +12553,24 @@ Record BinaryTree/HashChain throughput ratios 0.6949250668, 1.4564077372, and
 3.3715667222; token counts 37,561,576, 34,116,898, and 33,137,395; and maximum
 workspaces 4.5/29, 16.5/116, and 64.5/464 MiB. Confirm that the repository
 worktree remains clean because Corpus, checkpoint, and result are ignored.
+
+### TVG-0878
+
+Freeze `marc_lzss_match_finder_strategy` as uint32 with HashChain Exact zero
+and BinaryTree Exact one. For all five contextual configs, prove the renamed
+field retains the former reserved offset and full ABI-1 extent; initializers
+select zero; profile helpers preserve both known values idempotently; and an
+unknown value leaves configurations and output handles unchanged. Require
+decode workspace results to be identical for both known selectors.
+
+For encode, compare the public requirements with each repository-owned finder
+calculator and require BinaryTree to report its complete typed-token,
+operation, model, frame, alignment, and aggregate extents. Accept the exact
+aggregate limit and reject one byte less without allocation. On bounded
+fixtures for each contextual entropy backend, require both selectors to emit
+identical token summaries, SHA-256 fingerprints, complete stream bytes, and
+decoded raw bytes. Cover empty, one-byte, all-byte, repetitive, random-like,
+boundary, and extended-distance inputs. Query 4/16-MiB extents without large
+allocation. Preserve existing golden bytes, schema-52-through-1 compatibility,
+header compilation, Static/Dynamic linking, malformed tests, and fixed-memory
+fuzz smoke under MSVC and ClangCL.

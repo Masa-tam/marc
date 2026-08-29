@@ -20875,3 +20875,20 @@ larger. Preserve HashChain for small-window or low-collision input and preserve
 explicit hard memory policy. Defer any public default, automatic sampling
 selector, profile, stream, ABI, and interoperability change to a separate
 design with independent tests.
+
+## DD-1013: Publicly adopt BinaryTree as an explicit contextual encoder policy
+
+- Date: 2026-08-29
+- Status: accepted
+
+Expose `HashChain Exact = 0` and `BinaryTree Exact = 1` only to the five
+Contextual LZSS C configurations, reusing each structure's 32-bit reserved
+field without changing ABI-1 size, alignment, later offsets, or all-zero
+meaning. Keep HashChain as the initializer and profile-helper default. Preserve
+the selector across profile application; accept but ignore either known value
+for decode and reject unknown values atomically in both directions. Select the
+checked finder calculator and typed-token producer only for encode. Do not
+serialize the strategy, append an interoperability archive, infer it from the
+window, add `Auto`, or raise `max_internal_buffered_bytes` implicitly. Require
+the caller to opt into both BinaryTree and a sufficient hard memory policy,
+then return the actual selected workspace through the existing query.

@@ -331,6 +331,38 @@ foreach(experimental_design IN ITEMS
     endif()
 endforeach()
 
+set(lzss_binary_tree_public_adoption_design
+    "${source_dir}/docs/design/lzss-binary-tree-public-adoption.md")
+file(READ "${lzss_binary_tree_public_adoption_design}"
+    lzss_binary_tree_public_adoption_content)
+foreach(required_binary_tree_public_adoption_term IN ITEMS
+        "LZSS BinaryTree Exact公開採用設計"
+        "LZSS Contextual Dynamic Range"
+        "LZSS Contextual rANS"
+        "LZSS Contextual tANS"
+        "LZSS Contextual Blocked Huffman"
+        "LZSS Contextual Adaptive Huffman"
+        "MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT"
+        "MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT"
+        "match_finder_strategy"
+        "MARC_ABI_VERSION == 1"
+        "`HashChain Exact`を全profileの既定値として維持"
+        "window sizeだけからBinaryTreeを自動選択しない"
+        "max_internal_buffered_bytes"
+        "MARC_STATUS_LIMIT_EXCEEDED"
+        "interoperability archiveを追加せず"
+        "CLI selectorの追加はC lifecycleが完成した後"
+        "一byte短いlimit")
+    string(FIND "${lzss_binary_tree_public_adoption_content}"
+        "${required_binary_tree_public_adoption_term}"
+        required_binary_tree_public_adoption_term_offset)
+    if(required_binary_tree_public_adoption_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete BinaryTree public-adoption design: "
+            "${required_binary_tree_public_adoption_term}")
+    endif()
+endforeach()
+
 set(lzss_binary_tree_window_16m_benchmark_design
     "${source_dir}/docs/design/lzss-binary-tree-window-16m-benchmark.md")
 file(READ "${lzss_binary_tree_window_16m_benchmark_design}"
