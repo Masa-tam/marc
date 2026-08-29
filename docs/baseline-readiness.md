@@ -181,11 +181,14 @@ the selected maximum window. The Exact-finder differential tests retain the
 exhaustive parser as oracle and require HashChain and BinaryTree to choose the
 same longest match and nearest-distance tie break.
 
-The 0.5.0 release candidate completed a four-direction schema-52 exchange at
-revision `42783b435976777c40259ab5e90b616146535854`, verifying all sixty-two
-archives across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
-producers. BinaryTree adoption changes no archive byte or inventory. The
-remaining general evidence gaps are listed below.
+The 0.5.0 pre-release is published from annotated tag `v0.5.0` at revision
+`1cdd37f91535eeb06416d193deb12d6f3153b278`. Its release candidate completed a
+four-direction schema-52 exchange at revision
+`42783b435976777c40259ab5e90b616146535854`, verifying all sixty-two archives
+across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
+producers. The intervening documentation-only commit records that evidence,
+and final CI passed before tagging. BinaryTree adoption changes no archive byte
+or inventory. The remaining general evidence gaps are listed below.
 
 ## Remaining release evidence
 
@@ -3392,3 +3395,14 @@ pass identifies revision `42783b435976777c40259ab5e90b616146535854` and
 validates exact manifest order, sizes, SHA-256 values, foreign decoding, and
 byte-identical local re-encoding. The evidence commit requires final pushed CI
 before the annotated `v0.5.0` tag is created.
+
+### BR-0214
+
+Project version 0.5.0 was published as a GitHub pre-release from annotated tag
+`v0.5.0`, targeting evidence commit
+`1cdd37f91535eeb06416d193deb12d6f3153b278`. Final pushed CI passed for that
+commit after the exact four-direction schema-52 evidence was recorded. The
+published boundary therefore contains the completed sixteen-MiB Contextual
+LZSS family, public HashChain Exact and BinaryTree Exact selection, all 62
+interoperability archives, and the dated release documentation without an
+unverified source change between validation and tagging.

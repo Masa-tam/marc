@@ -27425,3 +27425,31 @@ both bounds.
   validated manifest order, sizes, SHA-256 values, foreign decoding, and
   byte-identical local re-encoding. The resulting documentation-only evidence
   commit requires final pushed CI before the annotated `v0.5.0` tag.
+
+## CR-1108: 2026-08-29 - Publish project version 0.5.0 pre-release
+
+- Authoring method: recorded the completed release boundary after the
+  interoperability-evidence commit passed pushed CI, its annotated tag was
+  pushed, and the corresponding GitHub pre-release was published.
+- References used: DD-1021; TVG-0886; CR-1106 and CR-1107; BR-0212 and
+  BR-0213; the local annotated `v0.5.0` tag; and the maintainer's confirmation
+  of successful tag push and GitHub pre-release publication.
+- Known implementations intentionally not consulted: external compressor or
+  match-finder source, release automation, release scripts, binary packages,
+  and third-party release notes.
+- Independent decisions: close the release at evidence commit
+  `1cdd37f91535eeb06416d193deb12d6f3153b278`; retain pre-release status; and
+  distinguish the tagged evidence boundary from release-candidate revision
+  `42783b435976777c40259ab5e90b616146535854`, whose stream bytes supplied the
+  exact four-direction exchange.
+- Generated-code task description: update the authoritative readiness status
+  and append immutable provenance for successful final CI, annotated tag
+  publication, and GitHub 0.5.0 pre-release publication without changing code,
+  format, ABI, archive inventory, or release bytes.
+- Similarity review: this record contains only first-party release state and
+  observed validation history. No external implementation expression,
+  automation structure, or release prose was used.
+- Publication result: annotated tag `v0.5.0` resolves to
+  `1cdd37f91535eeb06416d193deb12d6f3153b278`; the maintainer confirmed its
+  remote publication, successful final CI, and publication of marc 0.5.0 as a
+  GitHub pre-release.
