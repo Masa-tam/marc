@@ -2,6 +2,7 @@
 #include "frame/lzss_typed_context_frame_streaming_encoder.hpp"
 #include "frame/lzss_typed_context_profile.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
+#include "dictionary/lzss_binary_tree_match_finder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -47,6 +48,11 @@ TEST(LzssTypedContextProfile, BuildsCanonicalDefaultAndWorstCaseWorkspace) {
                   + 131'072U
                       * sizeof(marc::context::internal::ModeledOperation));
     EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_strategy,
+              marc::dictionary::internal::LzssMatchFinderStrategy::
+                  hash_chain_exact);
+    EXPECT_EQ(workspace.match_finder_alignment,
+              finder.workspace_alignment);
     EXPECT_EQ(workspace.views_bytes,
               workspace.match_finder_offset + finder.workspace_size);
     EXPECT_EQ(workspace.views_alignment,
@@ -55,6 +61,55 @@ TEST(LzssTypedContextProfile, BuildsCanonicalDefaultAndWorstCaseWorkspace) {
                       alignof(marc::dictionary::internal::LzssTypedToken),
                       alignof(marc::context::internal::ModeledOperation)),
                   finder.workspace_alignment));
+}
+
+TEST(LzssTypedContextProfile, SelectsBinaryTreeWorkspaceTransactionally) {
+    LzssTypedContextProfileConfig config{};
+    config.original_size = 4'096;
+    config.frame_size = 4'096;
+    config.dictionary.window_size = 4'096;
+    config.match_finder_strategy =
+        marc::dictionary::internal::LzssMatchFinderStrategy::
+            binary_tree_exact;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_internal_buffered_bytes = UINT64_C(16) << 20;
+    TypedContextStreamHeader stream{};
+    LzssTypedContextEncoderWorkspaceRequirements workspace{};
+
+    ASSERT_EQ(make_lzss_typed_context_profile(
+                  config, limits, stream, workspace),
+              LzssTypedContextProfileError::none);
+    const auto finder = marc::dictionary::internal::
+        calculate_lzss_binary_tree_workspace(
+            4'096, config.dictionary, limits);
+    ASSERT_EQ(finder.error,
+              marc::dictionary::internal::LzssBinaryTreeError::none);
+    EXPECT_EQ(workspace.match_finder_strategy,
+              config.match_finder_strategy);
+    EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment,
+              finder.workspace_alignment);
+    EXPECT_EQ(workspace.views_bytes,
+              workspace.match_finder_offset + finder.workspace_size);
+
+    std::vector<std::max_align_t> backing;
+    auto storage = aligned_storage(backing, workspace.views_bytes);
+    LzssTypedContextEncoderViews views{};
+    ASSERT_EQ(partition_lzss_typed_context_encoder_views(
+                  workspace, storage, views),
+              LzssTypedContextWorkspaceError::none);
+    EXPECT_EQ(views.match_finder.size(), finder.workspace_size);
+
+    config.match_finder_strategy =
+        static_cast<marc::dictionary::internal::LzssMatchFinderStrategy>(255);
+    workspace.views_bytes = 1;
+    EXPECT_EQ(make_lzss_typed_context_profile(
+                  config, limits, stream, workspace),
+              LzssTypedContextProfileError::unsupported);
+    EXPECT_EQ(workspace.views_bytes, 0U);
+    EXPECT_EQ(workspace.match_finder_strategy,
+              marc::dictionary::internal::LzssMatchFinderStrategy::
+                  hash_chain_exact);
 }
 
 TEST(LzssTypedContextProfile, BuildsExtendedOneMiBProfileAndWorkspace) {
@@ -377,6 +432,16 @@ TEST(LzssTypedContextProfile, PartitionsTypedViewsTransactionally) {
               LzssTypedContextWorkspaceError::invalid_requirements);
     EXPECT_TRUE(views.tokens.empty());
     EXPECT_TRUE(views.operations.empty());
+    EXPECT_TRUE(views.match_finder.empty());
+    forged = requirements;
+    forged.match_finder_alignment *= 2;
+    forged.views_alignment = std::max(
+        std::max(alignof(marc::dictionary::internal::LzssTypedToken),
+                 alignof(marc::context::internal::ModeledOperation)),
+        forged.match_finder_alignment);
+    EXPECT_EQ(partition_lzss_typed_context_encoder_views(
+                  forged, storage, views),
+              LzssTypedContextWorkspaceError::invalid_requirements);
     EXPECT_TRUE(views.match_finder.empty());
     forged = requirements;
     ++forged.match_finder_offset;

@@ -3,6 +3,7 @@
 
 #include "context/lzss_field_context.hpp"
 #include "core/status.hpp"
+#include "dictionary/lzss_match_finder.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 #include "frame/typed_context_format.hpp"
 
@@ -25,6 +26,8 @@ struct LzssTypedContextProfileConfig {
     dictionary::internal::LzssParameters dictionary{};
     LzssTypedContextProfileVariant variant{
         LzssTypedContextProfileVariant::field_context_64k};
+    dictionary::internal::LzssMatchFinderStrategy match_finder_strategy{
+        dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact};
 };
 
 struct LzssTypedContextEncoderWorkspaceRequirements {
@@ -35,6 +38,9 @@ struct LzssTypedContextEncoderWorkspaceRequirements {
     std::size_t operation_offset{};
     std::size_t match_finder_offset{};
     std::size_t match_finder_bytes{};
+    std::size_t match_finder_alignment{1};
+    dictionary::internal::LzssMatchFinderStrategy match_finder_strategy{
+        dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact};
     std::size_t views_bytes{};
     std::size_t views_alignment{1};
 };

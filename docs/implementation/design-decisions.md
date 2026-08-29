@@ -20892,3 +20892,19 @@ serialize the strategy, append an interoperability archive, infer it from the
 window, add `Auto`, or raise `max_internal_buffered_bytes` implicitly. Require
 the caller to opt into both BinaryTree and a sufficient hard memory policy,
 then return the actual selected workspace through the existing query.
+
+## DD-1014: Normalize Exact finder workspace before public dispatch
+
+- Date: 2026-08-29
+- Status: accepted
+
+Introduce one internal uint8 strategy with only HashChain Exact and BinaryTree
+Exact, plus a normalized requirements result containing selected strategy,
+workspace size, canonical alignment, and stable error category. Delegate all
+size arithmetic to the existing checked strategy calculators. First carry this
+contract through the foundational typed Contextual Dynamic Range profile and
+its opaque-view partitioner, retaining HashChain as the aggregate-initialized
+default. Reject unknown strategies, invalid limits, insufficient finder policy,
+and forged strategy/alignment requirements before partition publication. Do
+not expose the C selector or route frame encoding through BinaryTree until this
+workspace boundary passes both complete suites.

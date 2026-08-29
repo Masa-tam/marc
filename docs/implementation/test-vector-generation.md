@@ -12574,3 +12574,22 @@ boundary, and extended-distance inputs. Query 4/16-MiB extents without large
 allocation. Preserve existing golden bytes, schema-52-through-1 compatibility,
 header compilation, Static/Dynamic linking, malformed tests, and fixed-memory
 fuzz smoke under MSVC and ClangCL.
+
+### TVG-0879
+
+For 65,536 bytes, require the normalized HashChain and BinaryTree requirements
+to equal their authoritative strategy-specific calculator in selected strategy,
+size, and alignment, with BinaryTree larger. Reject strategy 255 with zero
+extent and unit alignment. Under a valid 8-MiB aggregate policy, require both
+4-MiB finder calculations to report workspace-limit failure rather than an
+invalid-limits error.
+
+Build a 4,096-byte typed Contextual Dynamic Range profile with BinaryTree and
+16-MiB policy. Require the profile's finder size/alignment to equal the checked
+BinaryTree calculator, its views extent to end at that finder, and its
+partitioner to publish exactly that span. Reject an unknown profile strategy
+without residual requirements and reject a known strategy paired with a forged
+alignment even when the aggregate view alignment is internally consistent.
+Retain all existing HashChain exact-size and round-trip expectations. Run the
+13 focused tests and all 3,300 registered tests under both MSVC and ClangCL,
+including complete schema compatibility.

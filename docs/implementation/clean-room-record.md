@@ -27166,3 +27166,27 @@ both bounds.
 - Validation: documentation structure and required-term validation are added in
   the same design change; no codec source, public header, format, archive, local
   Corpus, generated benchmark result, or network state is changed.
+
+## CR-1099: 2026-08-29 - Admit shared Exact finder workspace selection
+
+- Authoring method: implemented the first stage of the repository-owned public
+  adoption design against existing checked finder calculators and the typed
+  Contextual Dynamic Range workspace profile.
+- References used: IR-0776, DD-1014, TVG-0879, CR-1098, and marc's existing
+  HashChain/BinaryTree Exact calculators and opaque-view partitioning contract.
+- Known implementations intentionally not consulted: external compressors,
+  match finders, workspace APIs, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, and optimization descriptions.
+- Independent decisions: normalize only size/alignment/error selection; retain
+  underlying arithmetic; store strategy and canonical alignment in internal
+  requirements; reject forged pairs; and stop before frame dispatch or C ABI.
+- Generated-code task description: add test-first common strategy requirements,
+  delegate both calculators, map stable errors, carry BinaryTree requirements
+  through one profile and partitioner, and preserve all default HashChain tests.
+- Similarity review: the change composes repository-owned types and naming and
+  introduces no external implementation expression or public API structure.
+- Validation: 13 focused tests pass under MSVC and ClangCL. All 3,300 CTest
+  entries pass in 256.47 and 247.67 seconds, including
+  `marc_interoperability_schema_compatibility` in 104.07 and 91.29 seconds.
+  No public header, frame encoder dispatch, stream byte, CLI, archive, local
+  Corpus, generated benchmark result, or network state is changed.

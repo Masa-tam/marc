@@ -89,6 +89,17 @@ gap and workspace premium both narrow monotonically as the window grows, so
 the private route remains available for a separately measured larger-window
 experiment rather than being removed. Automatic public selection and bounded
 effort remain deferred.
+The completed 16-MiB comparison subsequently admits BinaryTree Exact as an
+explicit future policy for the five typed-token Contextual LZSS encoders while
+retaining HashChain as value zero and the default. The first adoption stage
+adds one internal `LzssMatchFinderStrategy` and a checked strategy-aware
+workspace calculator that delegates to the existing HashChain or BinaryTree
+calculator. The foundational typed Contextual Dynamic Range profile now carries
+the selected strategy, exact finder alignment, extent, offsets, and aggregate
+through its opaque encoder requirements and rejects forged strategy/alignment
+pairs transactionally. This stage does not yet dispatch frame encoding through
+BinaryTree or alter the public C header. Decoder workspace, stream bytes,
+profiles, CLI, ABI, and interoperability remain unchanged.
 The internal finder contract has a const match query plus an `advance` notice
 for every consumed half-open raw range. Exhaustive implements the query with
 the original complete scan and treats `advance` as a no-op. Both canonical

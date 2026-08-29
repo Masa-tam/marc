@@ -3269,3 +3269,16 @@ members. Tokens fall 9.171% from 1 to 4 MiB and another 2.871% from 4 to
 high-collision strategy, not a universal or window-only default. The public
 selector, defaults, stream, ABI, profiles, and interoperability remain
 unchanged pending a separate adoption design.
+
+### BR-0205
+
+The explicit BinaryTree adoption now has its first implementation boundary.
+One internal strategy-aware calculator normalizes the selected HashChain or
+BinaryTree Exact workspace size, canonical alignment, and stable failure while
+retaining the original checked arithmetic. The typed Contextual Dynamic Range
+profile carries BinaryTree requirements through exact aggregate calculation
+and opaque-view partitioning; unknown strategies and forged alignments fail
+transactionally. HashChain remains the default. Public C ABI and actual frame
+dispatch remain unchanged for the next stage. Thirteen focused tests and all
+3,300 registered tests pass under MSVC and ClangCL in 256.47 and 247.67
+seconds, including schema compatibility in 104.07 and 91.29 seconds.

@@ -7035,3 +7035,13 @@ HashChain as the default while making BinaryTree an explicit large-workspace
 choice. No external compressor, match-finder implementation, source code,
 public API, ABI layout, benchmark result, archive, encoded vector, test suite,
 patent, pseudocode, or optimization description was consulted.
+
+### IR-0776
+
+The shared selector-aware workspace boundary uses IR-0775, DD-1013,
+TVG-0878, marc's existing `LzssHashChainWorkspaceRequirements`,
+`LzssBinaryTreeWorkspaceRequirements`, typed Contextual Dynamic Range profile,
+checked view partitioner, and stable core error mapping. No external
+compressor, match-finder implementation, workspace API, source code, archive,
+encoded vector, test suite, patent, pseudocode, or optimization description
+was consulted.

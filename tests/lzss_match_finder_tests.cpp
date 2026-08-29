@@ -1,4 +1,5 @@
 #include "dictionary/lzss_match_finder.hpp"
+#include "dictionary/lzss_binary_tree_match_finder.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
 
 #include <gtest/gtest.h>
@@ -12,6 +13,70 @@
 
 namespace {
 using namespace marc::dictionary::internal;
+
+TEST(LzssMatchFinderStrategy, SelectsCheckedWorkspaceCalculator) {
+    auto limits = marc::core::DecoderLimits{};
+    constexpr std::size_t input_size = 65'536;
+    const LzssParameters parameters{};
+
+    const auto hash = calculate_lzss_match_finder_workspace(
+        LzssMatchFinderStrategy::hash_chain_exact, input_size, parameters,
+        limits);
+    const auto expected_hash = calculate_lzss_hash_chain_workspace(
+        input_size, parameters, limits);
+    ASSERT_EQ(hash.error, LzssMatchFinderWorkspaceError::none);
+    ASSERT_EQ(expected_hash.error, LzssHashChainError::none);
+    EXPECT_EQ(hash.strategy, LzssMatchFinderStrategy::hash_chain_exact);
+    EXPECT_EQ(hash.workspace_size, expected_hash.workspace_size);
+    EXPECT_EQ(hash.workspace_alignment, expected_hash.workspace_alignment);
+    EXPECT_EQ(lzss_match_finder_workspace_alignment(hash.strategy),
+              expected_hash.workspace_alignment);
+
+    const auto tree = calculate_lzss_match_finder_workspace(
+        LzssMatchFinderStrategy::binary_tree_exact, input_size, parameters,
+        limits);
+    const auto expected_tree = calculate_lzss_binary_tree_workspace(
+        input_size, parameters, limits);
+    ASSERT_EQ(tree.error, LzssMatchFinderWorkspaceError::none);
+    ASSERT_EQ(expected_tree.error, LzssBinaryTreeError::none);
+    EXPECT_EQ(tree.strategy, LzssMatchFinderStrategy::binary_tree_exact);
+    EXPECT_EQ(tree.workspace_size, expected_tree.workspace_size);
+    EXPECT_EQ(tree.workspace_alignment, expected_tree.workspace_alignment);
+    EXPECT_EQ(lzss_match_finder_workspace_alignment(tree.strategy),
+              expected_tree.workspace_alignment);
+    EXPECT_GT(tree.workspace_size, hash.workspace_size);
+}
+
+TEST(LzssMatchFinderStrategy, RejectsUnknownAndPreservesBoundedFailure) {
+    const auto unknown = calculate_lzss_match_finder_workspace(
+        static_cast<LzssMatchFinderStrategy>(255), 17, {}, {});
+    EXPECT_EQ(unknown.error,
+              LzssMatchFinderWorkspaceError::unsupported_strategy);
+    EXPECT_EQ(unknown.workspace_size, 0U);
+    EXPECT_EQ(unknown.workspace_alignment, 1U);
+    EXPECT_FALSE(is_supported_lzss_match_finder_strategy(
+        static_cast<LzssMatchFinderStrategy>(255)));
+    EXPECT_EQ(lzss_match_finder_workspace_alignment(
+                  static_cast<LzssMatchFinderStrategy>(255)),
+              0U);
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = 4'194'304;
+    limits.max_block_size = 4'194'304;
+    limits.max_lz_distance = 4'194'304;
+    limits.max_internal_buffered_bytes = UINT64_C(8) << 20;
+    for (const auto strategy : {
+             LzssMatchFinderStrategy::hash_chain_exact,
+             LzssMatchFinderStrategy::binary_tree_exact}) {
+        const auto limited = calculate_lzss_match_finder_workspace(
+            strategy, 4'194'304,
+            {4'194'304, 5, 258, 0}, limits);
+        EXPECT_EQ(limited.error,
+                  LzssMatchFinderWorkspaceError::workspace_limit_exceeded);
+        EXPECT_EQ(limited.workspace_size, 0U);
+        EXPECT_EQ(limited.strategy, strategy);
+    }
+}
 
 [[nodiscard]] std::vector<std::byte> bytes(const std::string_view text) {
     std::vector<std::byte> result;

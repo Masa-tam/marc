@@ -1,6 +1,7 @@
 #ifndef MARC_DICTIONARY_LZSS_MATCH_FINDER_HPP
 #define MARC_DICTIONARY_LZSS_MATCH_FINDER_HPP
 
+#include "core/limits.hpp"
 #include "dictionary/lzss_format.hpp"
 
 #include <array>
@@ -12,6 +13,42 @@
 namespace marc::dictionary::internal {
 
 inline constexpr std::size_t lzss_match_finder_depth_histogram_size = 65;
+
+enum class LzssMatchFinderStrategy : std::uint8_t {
+    hash_chain_exact = 0,
+    binary_tree_exact = 1,
+};
+
+enum class LzssMatchFinderWorkspaceError : std::uint8_t {
+    none,
+    unsupported_strategy,
+    invalid_configuration,
+    input_limit_exceeded,
+    arithmetic_overflow,
+    workspace_limit_exceeded,
+};
+
+struct LzssMatchFinderWorkspaceRequirements {
+    std::size_t workspace_size{};
+    std::size_t workspace_alignment{1};
+    LzssMatchFinderStrategy strategy{
+        LzssMatchFinderStrategy::hash_chain_exact};
+    LzssMatchFinderWorkspaceError error{
+        LzssMatchFinderWorkspaceError::none};
+};
+
+[[nodiscard]] bool is_supported_lzss_match_finder_strategy(
+    LzssMatchFinderStrategy strategy) noexcept;
+
+[[nodiscard]] std::size_t lzss_match_finder_workspace_alignment(
+    LzssMatchFinderStrategy strategy) noexcept;
+
+[[nodiscard]] LzssMatchFinderWorkspaceRequirements
+calculate_lzss_match_finder_workspace(
+    LzssMatchFinderStrategy strategy,
+    std::size_t input_size,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits) noexcept;
 
 struct LzssMatch {
     std::uint32_t distance{};
