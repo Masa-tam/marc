@@ -181,12 +181,11 @@ the selected maximum window. The Exact-finder differential tests retain the
 exhaustive parser as oracle and require HashChain and BinaryTree to choose the
 same longest match and nearest-distance tie break.
 
-The completed four-direction schema-52 exchange at revision
-`9b4b7250518cf39f1c25fd6dd29b18768e3557e4` verifies all sixty-two archives
-across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
-producers. BinaryTree adoption changes no archive byte or inventory. An exact
-0.5.0 release-candidate repeat remains required after its preparation commit
-is pushed; the remaining general evidence gaps are listed below.
+The 0.5.0 release candidate completed a four-direction schema-52 exchange at
+revision `42783b435976777c40259ab5e90b616146535854`, verifying all sixty-two
+archives across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
+producers. BinaryTree adoption changes no archive byte or inventory. The
+remaining general evidence gaps are listed below.
 
 ## Remaining release evidence
 
@@ -3382,3 +3381,14 @@ and ClangCL in 264.16 and 278.36 seconds, including complete schema
 compatibility in 108.96 and 104.77 seconds. The release-preparation revision
 still requires pushed CI and a four-direction 62-archive repeat before the
 annotated `v0.5.0` tag is admitted.
+
+### BR-0213
+
+The pushed 0.5.0 release-preparation revision completed its four-direction
+schema-52 repeat. All 62 archives from the Windows/MSVC and Ubuntu 24.04 CI
+artifacts verify on Ubuntu 26.04; the independently generated Ubuntu
+26.04/Clang bundle verifies there and with the Windows/MSVC executable. Every
+pass identifies revision `42783b435976777c40259ab5e90b616146535854` and
+validates exact manifest order, sizes, SHA-256 values, foreign decoding, and
+byte-identical local re-encoding. The evidence commit requires final pushed CI
+before the annotated `v0.5.0` tag is created.

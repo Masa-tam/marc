@@ -12736,3 +12736,10 @@ package version `0.5.0`, 26 experimental and 42 public benchmark smokes, eight
 tooling tests, documentation layout, C/C++ Static and Dynamic consumers,
 fixed-memory fuzz compile-smokes, and complete schema compatibility in 108.96
 and 104.77 seconds.
+
+External validation: all four verifier passes report 62 archives and revision
+`42783b435976777c40259ab5e90b616146535854`. The Windows/MSVC and Ubuntu 24.04
+CI artifacts verify on Ubuntu 26.04; the Ubuntu 26.04/Clang bundle verifies
+locally and with the Windows/MSVC executable. Every direction validates exact
+manifest order, sizes, SHA-256 values, foreign decoding, and byte-identical
+local re-encoding.

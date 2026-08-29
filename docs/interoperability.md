@@ -936,3 +936,21 @@ manifest order, size, SHA-256, fixture decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-52
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+#### Project version 0.5.0 release-candidate repeat
+
+Revision `42783b435976777c40259ab5e90b616146535854` received the project-version
+0.5.0 release-candidate cross-check after its pushed CI completed
+successfully. The Ubuntu 26.04 WSL2 x86-64 environment, using Ubuntu Clang
+21.1.8 via Ninja, verified all 62 archives from both the Windows/MSVC via
+Visual Studio 2026 and Ubuntu 24.04 default-compiler/Ninja artifacts. It then
+generated and self-verified an `ubuntu-26.04-ninja-x64` 62-archive bundle. The
+Windows/MSVC executable verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest order, size, SHA-256, fixture decode, and byte-identical local
+re-encoding checks for every archive. This reconfirms canonical schema-52
+bytes after public BinaryTree Exact adoption and establishes bidirectional
+decoding between the recorded Windows and WSL2 Linux x86-64 environments for
+the 0.5.0 release candidate. BinaryTree remains encoder-local, so this repeat
+changes no archive inventory or serialized identity.
