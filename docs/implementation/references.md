@@ -7104,3 +7104,13 @@ profile, frame encoder, and streaming lifecycle. No external compressor,
 match-finder dispatch, Adaptive Huffman implementation, source code, archive,
 encoded vector, test suite, patent, pseudocode, or optimization description
 was consulted.
+
+### IR-0783
+
+The project-version 0.5.0 release preparation uses DD-959 through DD-1020,
+TVG-0788 through TVG-0885, CR-1039 through CR-1105, marc's repository release
+procedure, CMake project/package version contract, public runtime-version
+query, changelog, current readiness baseline, schema-52 compatibility chain,
+and first-party 16-MiB BinaryTree measurements. No external compressor,
+release automation, changelog generator, package policy, binary distribution,
+third-party release note, or implementation source was consulted.

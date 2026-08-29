@@ -12712,3 +12712,27 @@ Validation: 31 focused internal tests and the public C lifecycle pass under
 MSVC and ClangCL. All 3,304 registered tests pass in 262.74 and 266.38
 seconds, including complete schema compatibility in 109.07 and 104.56
 seconds.
+
+### TVG-0886
+
+For project version 0.5.0, require the CMake package version, public runtime
+version string, dated changelog, current readiness baseline, public C API,
+Format 2 profile identities, and schema-52 inventory to agree. Preserve
+`MARC_ABI_VERSION == 1`, all existing stream bytes, the 62-archive order,
+HashChain initializer defaults, and selector-independent decoding. Require
+documentation layout, Static and Dynamic library consumers, installed-package
+tests, all public and experimental benchmark smokes, fixed-memory fuzz compile
+smokes, and complete schema-52-through-1 compatibility under MSVC and ClangCL.
+
+After the release-preparation revision is pushed and CI succeeds, repeat the
+62-archive exchange in four directions using the Windows/MSVC and Ubuntu 24.04
+artifacts plus an independently generated Ubuntu 26.04/Clang bundle. The tag
+may be created only after all reports identify the same full release-candidate
+revision and byte-identical re-encoding succeeds.
+
+Validation: all 3,304 registered tests pass under MSVC and ClangCL in 264.16
+and 278.36 seconds. Both runs include runtime version `0.5.0`, generated CMake
+package version `0.5.0`, 26 experimental and 42 public benchmark smokes, eight
+tooling tests, documentation layout, C/C++ Static and Dynamic consumers,
+fixed-memory fuzz compile-smokes, and complete schema compatibility in 108.96
+and 104.77 seconds.

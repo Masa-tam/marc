@@ -27359,3 +27359,40 @@ both bounds.
   including complete schema compatibility in 109.07 and 104.56 seconds.
   Static and Dynamic libraries, C/C++ consumers, existing fuzz compile-smoke,
   CLI profiles, archive inventory, and canonical bytes remain valid.
+
+## CR-1106: 2026-08-29 - Project version 0.5.0 release preparation
+
+- Authoring method: advanced marc's project/package version after completing
+  all five sixteen-MiB LZSS Contextual profiles and public BinaryTree Exact
+  adoption across the same five entropy routes, then reconciled the observable
+  format, ABI, workspace, tooling, benchmark, and interoperability boundaries.
+- References used: IR-0783; DD-1021; TVG-0886; CR-1039 through CR-1105; the
+  repository release procedure; public runtime-version query; CMake package
+  version generation; changelog history; current readiness baseline; and the
+  complete schema-52 compatibility chain.
+- Known implementations intentionally not consulted: external compressor or
+  match-finder source code, profile APIs, release scripts, changelog
+  generators, package policies, binary distributions, and third-party release
+  notes.
+- Independent decisions: use project version `0.5.0` for the completed
+  sixteen-MiB contextual generation and explicit Exact-finder selector; retain
+  C ABI lifecycle version 1, every existing structure extent and later offset,
+  HashChain defaults, all released stream representations, and the 62-archive
+  schema-52 inventory; and keep the GitHub release marked pre-release.
+- Generated-code task description: synchronize CMake and runtime versions,
+  metadata tests, dated changelog, current readiness baseline, release
+  decision, validation design, and provenance without changing codec bytes.
+- Similarity review: release metadata and prose were derived exclusively from
+  marc's first-party implementation, benchmark, and validation records. No
+  external implementation expression, release automation, or prose was copied
+  or structurally reproduced.
+- Local validation: official CMake 4.3.4 generated optimized Release builds
+  with MSVC through Visual Studio 2026 18.8.2 and ClangCL 22.1.3 on Windows
+  x64. All 3,304 registered tests passed in 264.16 and 278.36 seconds. Both
+  runs included runtime and generated package version `0.5.0`, documentation
+  validation, 26 experimental and 42 public benchmark smokes, eight tooling
+  tests, C/C++ Static and Dynamic consumers, fuzz compile-smokes, and complete
+  schema compatibility in 108.96 and 104.77 seconds. The checked-out
+  GoogleTest commit `52eb8108c5bdec04579160ae17225d66034bd723` matches the
+  recorded gitlink. The exact release-preparation commit still requires pushed
+  CI and a schema-52 four-direction exchange before tagging.

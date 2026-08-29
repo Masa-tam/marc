@@ -3,7 +3,40 @@
 This file records user-visible marc changes. Project release versions, stream
 format versions, and C ABI versions are independent namespaces.
 
-## Unreleased
+## 0.5.0 - 2026-08-29
+
+### Added
+
+- Added explicit 16-MiB LZSS Contextual profiles for Dynamic Range, rANS,
+  tANS, Blocked Huffman, and Adaptive Huffman. The public C ABI, CLI,
+  dependency-free benchmark, bounded decoder fuzz targets, and exact profile
+  helpers now expose twenty contextual dictionary/entropy combinations across
+  the 64-KiB, 1-MiB, 4-MiB, and 16-MiB resource envelopes.
+- Added distinct Format 2 dictionary and context identities for the 16-MiB
+  family. Existing profile bytes remain frozen, while schema 48 through 52
+  append the five wider profiles to produce a 62-archive interoperability
+  inventory with complete four-direction Windows/Linux x86-64 evidence.
+- Added the public encoder-only `marc_lzss_match_finder_strategy` selector with
+  HashChain Exact and BinaryTree Exact choices across all five Contextual LZSS
+  entropy backends. BinaryTree is an explicit large-window, high-collision
+  option; HashChain remains the initializer default.
+- Added fixed, checkpointed Silesia Corpus tooling for the 16-MiB Exact-finder
+  comparison. All 36 HashChain/BinaryTree pairs produced identical token
+  summaries and fingerprints; the measurements remain descriptive and the
+  Corpus remains external to the repository.
+
+### Changed
+
+- Changed Contextual LZSS encoder workspace queries to report the selected
+  Exact match finder's checked extent and alignment. Applications must query
+  after choosing a strategy; no factory silently substitutes HashChain for a
+  requested BinaryTree strategy.
+- Reused the former 32-bit reserved configuration slot for the match-finder
+  selector without changing ABI-1 structure extents or later offsets. Decode
+  remains selector-independent because the strategy is not serialized.
+- Preserved deterministic output across the two Exact strategies. Differential
+  tests require identical longest-match and nearest-distance token selection,
+  and all five Contextual LZSS routes require byte-identical completed streams.
 
 ## 0.4.0 - 2026-08-23
 

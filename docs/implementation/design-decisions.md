@@ -20997,3 +20997,20 @@ the single-pass typed-token producer, fix that strategy at transform
 construction, and retain HashChain wrappers and defaults. BinaryTree changes
 neither synchronized FGK updates, NYT handling, descriptor and payload bytes,
 stream identity, decoder model sizing, nor profile limits.
+
+## DD-1021: Project version 0.5.0 publishes 16-MiB profiles and BinaryTree
+
+- Date: 2026-08-29
+- Status: accepted
+
+Release the completed 64-KiB, one-MiB, four-MiB, and sixteen-MiB LZSS
+Contextual profile set across Dynamic Range, rANS, tANS, Blocked Huffman, and
+Adaptive Huffman together with the public Exact match-finder selector as
+project version `0.5.0`. The minor-version boundary communicates five new
+format/profile identities, materially larger caller-owned workspace policies,
+and a new encoder strategy choice. Retain C ABI lifecycle version 1, every
+existing structure extent and later offset, HashChain Exact initializer
+defaults, all released stream representations, and schema-52 archive order.
+BinaryTree remains encoder-local and produces the same canonical stream as
+HashChain; it is neither serialized nor inferred while decoding. Keep the
+GitHub release marked pre-release.

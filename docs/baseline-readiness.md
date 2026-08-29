@@ -15,7 +15,7 @@ determinism, chunking, terminal behavior, and malformed final-frame handling.
 `In progress` means a public profile exists but one or more of those local
 readiness boundaries remain pending.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 31 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 52 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -36,7 +36,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 31 |
+| Profile | Purpose | Local status | Interoperability schema 52 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -104,14 +104,11 @@ now passed in all four directions at revision
 `827ddf085efb40c7d8f9bc27628977053179d84c` for all 41 archives across the
 recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
-Schema 31 contains forty-two archives: the frozen forty-one-entry schema-30 set
-followed by the LZMW tANS profile. Schemas 1 through 30
-remain frozen at seven, eight, thirteen, fifteen, sixteen, seventeen, eighteen,
-nineteen, twenty, twenty-one, twenty-two, twenty-three, twenty-four,
-twenty-five, twenty-six, twenty-seven, twenty-eight, twenty-nine, thirty,
-thirty-one, thirty-two, thirty-three, thirty-four, thirty-five, thirty-six,
-thirty-seven, thirty-eight, thirty-nine, forty, and forty-one profiles;
-their meanings are fixed by their version and codec-set rules.
+Schema 52 contains sixty-two archives: the frozen forty-two baseline profiles
+followed by twenty typed-token LZSS Contextual profiles spanning five entropy
+backends and the 64-KiB, one-MiB, four-MiB, and sixteen-MiB resource profiles.
+Schemas 1 through 51 retain their exact archive order and meaning; schema 52
+appends only the 16-MiB Contextual Adaptive Huffman profile.
 
 ## Public-profile evidence matrix
 
@@ -121,7 +118,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 31 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 52 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -169,26 +166,27 @@ kept separate because it requires artifacts produced outside the local build.
 ## Current validation baseline
 
 All forty-two baseline profiles in the composition matrix satisfy the local
-`Ready` definition and remain present in interoperability schema 47 alongside
-the fifteen typed-token LZSS contextual profiles spanning five entropy
-backends and three resource profiles. The internal canonical Huffman
-primitives remain support components rather than a separate public profile.
+`Ready` definition and remain present in interoperability schema 52 alongside
+the twenty typed-token LZSS Contextual profiles spanning five entropy backends
+and four resource profiles. The internal canonical Huffman primitives remain
+support components rather than a separate public profile.
 
-The optimized Release configurations each enumerate 3,218 tests under
+The optimized Release configurations each enumerate 3,304 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
-structure, and interoperability schema compatibility. Contextual rANS
-additionally completed a bounded 1,000-input Clang 22
-ASan/UBSan/libFuzzer smoke after canonicalization. The LZSS HashChain phase
-additionally rebuilt all eleven affected ClangCL 22 ASan/UBSan/libFuzzer
-targets and completed 100 bounded inputs per target at maximum input length
-8,192 without a finding.
+structure, and interoperability schema compatibility. The five fixed-memory
+Contextual LZSS fuzz targets admit every resource profile without allocating
+the selected maximum window. The Exact-finder differential tests retain the
+exhaustive parser as oracle and require HashChain and BinaryTree to choose the
+same longest match and nearest-distance tie break.
 
-The 0.4.0 release candidate completed a four-direction schema-47 exchange at
-revision `b030c0a63f4d8195c9904546e95e2122e3cac487`, verifying all fifty-seven
-archives across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
-producers. The remaining general evidence gaps are listed below.
+The completed four-direction schema-52 exchange at revision
+`9b4b7250518cf39f1c25fd6dd29b18768e3557e4` verifies all sixty-two archives
+across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
+producers. BinaryTree adoption changes no archive byte or inventory. An exact
+0.5.0 release-candidate repeat remains required after its preparation commit
+is pushed; the remaining general evidence gaps are listed below.
 
 ## Remaining release evidence
 
@@ -3371,3 +3369,16 @@ interoperability archive inventory are unchanged.
 Thirty-one focused internal tests and the public C lifecycle pass under both
 toolchains. All 3,304 CTest entries pass under MSVC and ClangCL in 262.74 and
 266.38 seconds, including schema compatibility in 109.07 and 104.56 seconds.
+
+### BR-0212
+
+Project version 0.5.0 is locally prepared for the completed sixteen-MiB LZSS
+Contextual family and public BinaryTree Exact selector. CMake, the runtime
+version, dated changelog, current readiness baseline, ABI-1 contract, and
+schema-52 inventory agree. Existing stream representations, 62-archive order,
+structure extents, HashChain defaults, and selector-independent decode remain
+unchanged. Official CMake 4.3.4 Release builds pass all 3,304 tests under MSVC
+and ClangCL in 264.16 and 278.36 seconds, including complete schema
+compatibility in 108.96 and 104.77 seconds. The release-preparation revision
+still requires pushed CI and a four-direction 62-archive repeat before the
+annotated `v0.5.0` tag is admitted.
