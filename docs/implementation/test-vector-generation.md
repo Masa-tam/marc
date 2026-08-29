@@ -12647,3 +12647,24 @@ tests under MSVC and ClangCL.
 Validation: all 3,303 registered tests pass under MSVC and ClangCL in 266.88
 and 262.86 seconds, including complete schema compatibility in 114.47 and
 103.38 seconds.
+
+### TVG-0883
+
+For Contextual tANS, calculate independently aligned HashChain and BinaryTree
+workspaces while preserving the fixed inverse encode-table extent between
+typed tokens and finder storage. Encode a mixed repeated-field fixture through
+the common runtime dispatch and require equal plan extents plus byte-identical
+completed descriptors and payloads. Require the profile to publish the
+selected strategy, canonical alignment, and calculator-owned finder extent;
+reject strategy 255 without residual requirements.
+
+Through the public C lifecycle, preserve BinaryTree across profile application,
+query and create it, encode a bounded multi-frame fixture, and require exact
+identity with retained HashChain bytes. Keep decode selector-independent and
+retain all existing tANS golden, malformed, extended-distance, inverse-table,
+workspace, completion, ABI, Static/Dynamic, schema-compatibility, and fuzz
+compile-smoke tests under MSVC and ClangCL.
+
+Validation: all 3,304 registered tests pass under MSVC and ClangCL in 265.83
+and 275.29 seconds, including complete schema compatibility in 113.52 and
+102.59 seconds.

@@ -1696,11 +1696,6 @@ marc_status contextual_tans_workspace_requirements(
     requirements->views_alignment = 1;
     marc::core::DecoderLimits limits{};
     if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
-    if (config->direction == MARC_DIRECTION_ENCODE
-        && config->match_finder_strategy
-            == MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT) {
-        return MARC_STATUS_UNSUPPORTED;
-    }
     if (config->direction == MARC_DIRECTION_ENCODE) {
         const marc::dictionary::internal::LzssParameters dictionary{
             config->window_size, config->min_match_length,
@@ -1711,7 +1706,9 @@ marc_status contextual_tans_workspace_requirements(
         const auto error =
             marc::frame::internal::make_lzss_contextual_tans_profile(
                 {config->original_size, config->frame_size, dictionary,
-                 contextual_tans_profile_variant(config->profile)},
+                 contextual_tans_profile_variant(config->profile),
+                 internal_lzss_match_finder_strategy(
+                     config->match_finder_strategy)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualTansProfileError::none) {
@@ -1801,7 +1798,9 @@ marc_status create_contextual_tans(
         const auto error =
             marc::frame::internal::make_lzss_contextual_tans_profile(
                 {config->original_size, config->frame_size, dictionary,
-                 contextual_tans_profile_variant(config->profile)},
+                 contextual_tans_profile_variant(config->profile),
+                 internal_lzss_match_finder_strategy(
+                     config->match_finder_strategy)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssContextualTansProfileError::none) {
@@ -1818,7 +1817,8 @@ marc_status create_contextual_tans(
         implementation = new (std::nothrow) marc::frame::internal::
             LzssContextualTansFrameStreamingEncoder(
                 stream, limits, primary, views.tokens, views.tables,
-                views.match_finder, secondary);
+                views.match_finder, secondary,
+                needed.match_finder_strategy);
     } else {
         marc::frame::internal::
             LzssContextualTansDecoderWorkspaceRequirements needed{};

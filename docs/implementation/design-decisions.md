@@ -20953,3 +20953,17 @@ Fix the strategy at transform construction, retain HashChain wrappers and
 defaults, and normalize both finder error families to the existing stream
 status categories. BinaryTree remains encoder-local, requires an explicit
 aggregate hard limit, and changes neither stream identity nor decoder sizing.
+
+## DD-1018: Preserve tANS inverse tables while selecting the exact finder
+
+- Date: 2026-08-29
+- Status: accepted
+
+Carry the public selector through the Contextual tANS profile, opaque-view
+partition, frame encoder, streaming encoder, workspace query, and factory.
+Keep the existing typed-token, inverse encode-table, then match-finder view
+order; only the final finder extent and canonical alignment vary by strategy.
+Use the common checked finder calculator and existing single-pass typed-token
+producers, fix strategy at transform construction, and retain HashChain
+wrappers and defaults. BinaryTree changes neither tANS modeling, descriptor,
+payload, stream identity, decoder sizing, nor profile limits.

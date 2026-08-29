@@ -3325,3 +3325,19 @@ and interoperability archive inventory are unchanged.
 Thirty-one focused internal tests and the public C lifecycle pass under both
 toolchains. All 3,303 CTest entries pass under MSVC and ClangCL in 266.88 and
 262.86 seconds, including schema compatibility in 114.47 and 103.38 seconds.
+
+### BR-0209
+
+Contextual tANS is the third public Contextual LZSS route to execute both
+HashChain Exact and BinaryTree Exact. Its opaque encoder view retains typed
+tokens followed by fixed inverse encode tables and selected finder storage;
+the query and partitioner now validate finder identity, extent, and alignment.
+Frame and streaming dispatch select only the typed-token producer, so the tANS
+descriptor, payload, and completed stream remain byte-identical. The C factory
+creates BinaryTree encoders while decode remains selector-independent. Both
+Huffman routes continue to reject BinaryTree encode explicitly. Format, ABI,
+defaults, CLI, decoder, profile limits, and interoperability archive inventory
+are unchanged.
+Thirty-two focused internal tests and the public C lifecycle pass under both
+toolchains. All 3,304 CTest entries pass under MSVC and ClangCL in 265.83 and
+275.29 seconds, including schema compatibility in 113.52 and 102.59 seconds.

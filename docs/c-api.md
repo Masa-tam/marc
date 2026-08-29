@@ -179,9 +179,9 @@ layouts. Its decoder also receives the required `max_block_size` of
 native layout, the authoritative workspace query returns exactly
 1,057,488,981 bytes for encoding and 452,984,917 bytes for decoding; one byte
 less fails. A caller may tighten any returned hard limit and must then re-query
-before allocation. Contextual rANS now also admits this selector through its
-own independently bounded profile; contextual tANS and both Huffman factories
-continue to reject it. The field and its
+before allocation. Contextual rANS and Contextual tANS now also admit this
+selector through their own independently bounded profiles; both Huffman
+factories continue to reject it. The field and its
 trailing 32-bit reserved word occupy
 the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
 all-zero meaning used by earlier callers. The explicit Dynamic Range CLI name
@@ -658,8 +658,8 @@ Unknown selector values are invalid in both directions and never fall back.
 The selector is encoder policy only: it is not serialized, and decode accepts
 either known value while returning the same requirements and constructing the
 same decoder. At the current staged implementation boundary, Contextual
-Dynamic Range and Contextual rANS execute both exact strategies. Contextual
-tANS, Adaptive Huffman, and Blocked Huffman preserve the known selector but
+Dynamic Range, Contextual rANS, and Contextual tANS execute both exact
+strategies. Adaptive Huffman and Blocked Huffman preserve the known selector but
 return `MARC_STATUS_UNSUPPORTED` when BinaryTree is requested for encode until
 their individual frame routes are connected. This explicit result prevents a
 requested strategy from being silently replaced by HashChain.

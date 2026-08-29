@@ -2,6 +2,7 @@
 #define MARC_FRAME_LZSS_CONTEXTUAL_TANS_PROFILE_HPP
 
 #include "core/status.hpp"
+#include "dictionary/lzss_match_finder.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 #include "entropy/contextual_tans_decode_tables.hpp"
 #include "frame/lzss_contextual_tans_format.hpp"
@@ -25,6 +26,8 @@ struct LzssContextualTansProfileConfig {
     dictionary::internal::LzssParameters dictionary{};
     LzssContextualTansProfileVariant variant{
         LzssContextualTansProfileVariant::field_context_64k};
+    dictionary::internal::LzssMatchFinderStrategy match_finder_strategy{
+        dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact};
 };
 
 struct LzssContextualTansEncoderWorkspaceRequirements {
@@ -35,6 +38,9 @@ struct LzssContextualTansEncoderWorkspaceRequirements {
     std::size_t table_offset{};
     std::size_t match_finder_offset{};
     std::size_t match_finder_bytes{};
+    std::size_t match_finder_alignment{1};
+    dictionary::internal::LzssMatchFinderStrategy match_finder_strategy{
+        dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact};
     std::size_t views_bytes{};
     std::size_t views_alignment{1};
 };

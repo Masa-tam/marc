@@ -27273,3 +27273,31 @@ both bounds.
   including complete schema compatibility in 114.47 and 103.38 seconds.
   Static and Dynamic libraries, C/C++ consumers, existing fuzz compile-smoke,
   CLI profiles, archive inventory, and canonical bytes remain valid.
+
+## CR-1103: 2026-08-29 - Execute BinaryTree through Contextual tANS
+
+- Authoring method: extended the repository-owned staged selector design over
+  marc's existing Contextual tANS typed-token, inverse-table, profile, frame,
+  streaming, and public C lifecycle boundaries.
+- References used: IR-0775 through IR-0780, DD-1013 through DD-1018,
+  TVG-0878 through TVG-0883, CR-1098 through CR-1102, and marc's existing
+  checked Exact finder and Contextual tANS contracts.
+- Known implementations intentionally not consulted: external compressors,
+  match-finder or tANS source code, archives, encoded vectors, test suites,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: retain the inverse encode-table view between tokens
+  and finder storage; vary only the selected finder extent/alignment; retain
+  the exhaustive oracle and HashChain wrapper; store strategy once per
+  streaming transform; and leave both Huffman routes explicitly unsupported.
+- Generated-code task description: make tANS workspace/profile/frame/streaming
+  and C factory selector-aware, prove BinaryTree/HashChain byte identity and
+  public creation, reject unknown or inadequate resources atomically, and do
+  not change format, decoder identity, CLI, or archive inventory.
+- Similarity review: the change composes only repository-owned interfaces,
+  state machines, and naming, and introduces no external implementation
+  expression or stream representation.
+- Validation: 32 focused internal tests and the public C lifecycle pass under
+  MSVC and ClangCL. All 3,304 CTest entries pass in 265.83 and 275.29 seconds,
+  including complete schema compatibility in 113.52 and 102.59 seconds.
+  Static and Dynamic libraries, C/C++ consumers, existing fuzz compile-smoke,
+  CLI profiles, archive inventory, and canonical bytes remain valid.

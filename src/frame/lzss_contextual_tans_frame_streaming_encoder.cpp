@@ -62,6 +62,9 @@ enum class OverlapCheck : std::uint8_t {
                         token_storage_limit_exceeded
                 || result.token_encode.match_finder_error
                     == dictionary::internal::LzssHashChainError::
+                        workspace_limit_exceeded
+                || result.token_encode.binary_tree_match_finder_error
+                    == dictionary::internal::LzssBinaryTreeError::
                         workspace_limit_exceeded))
         || (result.error
                 == LzssContextualTansFrameEncodeError::entropy_encode_error
@@ -90,7 +93,12 @@ enum class OverlapCheck : std::uint8_t {
                 serialized_output_too_small
         || (result.error == LzssContextualTansFrameEncodeError::token_encode_error
             && result.token_encode.match_finder_error
-                == dictionary::internal::LzssHashChainError::workspace_too_small);
+                == dictionary::internal::LzssHashChainError::workspace_too_small)
+        || (result.error
+                == LzssContextualTansFrameEncodeError::token_encode_error
+            && result.token_encode.binary_tree_match_finder_error
+                == dictionary::internal::LzssBinaryTreeError::
+                    workspace_too_small);
 }
 
 [[nodiscard]] core::ErrorCode preparation_error(
@@ -131,12 +139,15 @@ LzssContextualTansFrameStreamingEncoder(
     const std::span<dictionary::internal::LzssTypedToken> token_workspace,
     const std::span<std::uint16_t> table_workspace,
     const std::span<std::byte> match_finder_workspace,
-    const std::span<std::byte> serialized_frame_workspace) noexcept
+    const std::span<std::byte> serialized_frame_workspace,
+    const dictionary::internal::LzssMatchFinderStrategy
+        match_finder_strategy) noexcept
     : stream_(stream), limits_(limits),
       raw_frame_workspace_(raw_frame_workspace),
       token_workspace_(token_workspace), table_workspace_(table_workspace),
       match_finder_workspace_(match_finder_workspace),
-      serialized_frame_workspace_(serialized_frame_workspace) {
+      serialized_frame_workspace_(serialized_frame_workspace),
+      match_finder_strategy_(match_finder_strategy) {
     std::size_t token_bytes{};
     std::size_t table_bytes{};
     const bool valid_extents = extent(
@@ -194,6 +205,8 @@ LzssContextualTansFrameStreamingEncoder(
         serialize_lzss_contextual_tans_stream_header(
             stream_, limits_, stream_header_);
     if (!valid_extents
+        || !dictionary::internal::is_supported_lzss_match_finder_strategy(
+            match_finder_strategy_)
         || stream_error != LzssContextualTansStreamHeaderError::none
         || raw_frame_workspace_.size() < required_raw
         || std::ranges::find_if(overlaps, [](const auto value) {
@@ -249,10 +262,11 @@ bool LzssContextualTansFrameStreamingEncoder::output_is_disjoint(
 
 bool LzssContextualTansFrameStreamingEncoder::prepare_frame() noexcept {
     preparation_error_ = core::ErrorCode::internal_error;
-    const auto encoded = encode_lzss_contextual_tans_frame_hash_chain(
+    const auto encoded = encode_lzss_contextual_tans_frame_with_match_finder(
         stream_, limits_, frame_sequence_, input_committed_,
         raw_frame_workspace_.first(raw_frame_size_), token_workspace_,
-        table_workspace_, match_finder_workspace_, serialized_frame_workspace_);
+        table_workspace_, match_finder_strategy_, match_finder_workspace_,
+        serialized_frame_workspace_);
     preparation_error_ = preparation_error(encoded);
     if (preparation_error_ != core::ErrorCode::none) return false;
     pending_size_ = encoded.serialized_size;
