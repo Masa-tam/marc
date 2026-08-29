@@ -1,7 +1,6 @@
 #include "frame/lzss_contextual_rans_profile.hpp"
 
 #include "core/checked_math.hpp"
-#include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "entropy/contextual_rans_format.hpp"
 
 #include <algorithm>
@@ -183,7 +182,14 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
 
     const auto largest_frame = std::min<std::uint64_t>(
         config.original_size, config.frame_size);
-    if (largest_frame == 0) return LzssContextualRansProfileError::none;
+    if (!dictionary::internal::is_supported_lzss_match_finder_strategy(
+            config.match_finder_strategy)) {
+        return LzssContextualRansProfileError::unsupported;
+    }
+    if (largest_frame == 0) {
+        workspace.match_finder_strategy = config.match_finder_strategy;
+        return LzssContextualRansProfileError::none;
+    }
     std::uint64_t maximum_decisions{};
     if (!core::checked_multiply(
             largest_frame,
@@ -210,15 +216,30 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
         return LzssContextualRansProfileError::arithmetic_overflow;
     }
     const auto match_finder = dictionary::internal::
-        calculate_lzss_hash_chain_workspace(
-            largest_frame_size, config.dictionary, limits);
+        calculate_lzss_match_finder_workspace(
+            config.match_finder_strategy, largest_frame_size,
+            config.dictionary, limits);
     if (match_finder.error
-        != dictionary::internal::LzssHashChainError::none) {
-        return match_finder.error
-                == dictionary::internal::
-                    LzssHashChainError::workspace_limit_exceeded
-            ? LzssContextualRansProfileError::limit_exceeded
-            : LzssContextualRansProfileError::arithmetic_overflow;
+        != dictionary::internal::LzssMatchFinderWorkspaceError::none) {
+        switch (match_finder.error) {
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                workspace_limit_exceeded:
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                input_limit_exceeded:
+            return LzssContextualRansProfileError::limit_exceeded;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                unsupported_strategy:
+            return LzssContextualRansProfileError::unsupported;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                invalid_configuration:
+            return LzssContextualRansProfileError::invalid_configuration;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                arithmetic_overflow:
+            return LzssContextualRansProfileError::arithmetic_overflow;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::none:
+            break;
+        }
+        return LzssContextualRansProfileError::arithmetic_overflow;
     }
     if (!payload_ceiling(
             largest_frame,
@@ -261,6 +282,8 @@ LzssContextualRansProfileError make_lzss_contextual_rans_profile(
     workspace.views_alignment = std::max(
         alignof(dictionary::internal::LzssTypedToken),
         match_finder.workspace_alignment);
+    workspace.match_finder_alignment = match_finder.workspace_alignment;
+    workspace.match_finder_strategy = config.match_finder_strategy;
     return LzssContextualRansProfileError::none;
 }
 
@@ -345,23 +368,33 @@ partition_lzss_contextual_rans_encoder_views(
     views = {};
     std::uint64_t expected_offset{};
     std::uint64_t expected_bytes{};
-    const auto finder_alignment = dictionary::internal::
-        LzssHashChainWorkspaceRequirements{}.workspace_alignment;
+    const auto finder_alignment = requirements.match_finder_alignment;
     if (!encoder_view_layout(
             requirements.token_count, requirements.match_finder_bytes,
             finder_alignment, expected_offset, expected_bytes)) {
         return LzssContextualRansWorkspaceError::arithmetic_overflow;
     }
     if (expected_bytes == 0) {
-        return requirements.views_bytes == 0
+        return requirements.match_finder_offset == 0
+                && requirements.match_finder_bytes == 0
+                && requirements.match_finder_alignment == 1
+                && dictionary::internal::
+                    is_supported_lzss_match_finder_strategy(
+                        requirements.match_finder_strategy)
+                && requirements.views_bytes == 0
                 && requirements.views_alignment == 1
             ? LzssContextualRansWorkspaceError::none
             : LzssContextualRansWorkspaceError::invalid_requirements;
     }
     const auto expected_alignment = std::max(
         alignof(dictionary::internal::LzssTypedToken), finder_alignment);
+    const auto canonical_match_finder_alignment =
+        dictionary::internal::lzss_match_finder_workspace_alignment(
+            requirements.match_finder_strategy);
     if (expected_offset != requirements.match_finder_offset
         || expected_bytes != requirements.views_bytes
+        || canonical_match_finder_alignment == 0
+        || finder_alignment != canonical_match_finder_alignment
         || requirements.views_alignment != expected_alignment) {
         return LzssContextualRansWorkspaceError::invalid_requirements;
     }

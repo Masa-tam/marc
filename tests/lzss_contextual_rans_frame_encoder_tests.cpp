@@ -440,6 +440,68 @@ TEST(LzssContextualRansFrameEncoder,
 }
 
 TEST(LzssContextualRansFrameEncoder,
+     BinaryTreeFrameMatchesHashChainBytes) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'1'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'C'}, std::byte{'D'}, std::byte{'E'}, std::byte{'2'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'3'}};
+    const auto stream = stream_for(raw.size());
+    std::array<LzssTypedToken, raw.size()> tokens{};
+
+    const auto chain_requirements = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            marc::dictionary::internal::
+                LzssMatchFinderStrategy::hash_chain_exact,
+            raw.size(), {}, {});
+    const auto tree_requirements = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            marc::dictionary::internal::
+                LzssMatchFinderStrategy::binary_tree_exact,
+            raw.size(), {}, {});
+    ASSERT_EQ(chain_requirements.error, marc::dictionary::internal::
+                                            LzssMatchFinderWorkspaceError::none);
+    ASSERT_EQ(tree_requirements.error, marc::dictionary::internal::
+                                           LzssMatchFinderWorkspaceError::none);
+    AlignedWorkspace chain_owner(chain_requirements.workspace_size);
+    AlignedWorkspace tree_owner(tree_requirements.workspace_size);
+    auto chain_workspace = chain_owner.bytes(
+        chain_requirements.workspace_size);
+    auto tree_workspace = tree_owner.bytes(tree_requirements.workspace_size);
+
+    const auto chain_plan = plan_lzss_contextual_rans_frame_with_match_finder(
+        stream, {}, 0, 0, raw, tokens,
+        marc::dictionary::internal::
+            LzssMatchFinderStrategy::hash_chain_exact,
+        chain_workspace);
+    const auto tree_plan = plan_lzss_contextual_rans_frame_with_match_finder(
+        stream, {}, 0, 0, raw, tokens,
+        marc::dictionary::internal::
+            LzssMatchFinderStrategy::binary_tree_exact,
+        tree_workspace);
+    ASSERT_EQ(chain_plan.error, LzssContextualRansFrameEncodeError::none);
+    ASSERT_EQ(tree_plan.error, LzssContextualRansFrameEncodeError::none);
+    ASSERT_EQ(tree_plan.serialized_size, chain_plan.serialized_size);
+
+    std::vector<std::byte> chain(chain_plan.serialized_size);
+    std::vector<std::byte> tree(tree_plan.serialized_size);
+    ASSERT_EQ(encode_lzss_contextual_rans_frame_with_match_finder(
+                  stream, {}, 0, 0, raw, tokens,
+                  marc::dictionary::internal::
+                      LzssMatchFinderStrategy::hash_chain_exact,
+                  chain_workspace, chain).error,
+              LzssContextualRansFrameEncodeError::none);
+    ASSERT_EQ(encode_lzss_contextual_rans_frame_with_match_finder(
+                  stream, {}, 0, 0, raw, tokens,
+                  marc::dictionary::internal::
+                      LzssMatchFinderStrategy::binary_tree_exact,
+                  tree_workspace, tree).error,
+              LzssContextualRansFrameEncodeError::none);
+    EXPECT_EQ(tree, chain);
+}
+
+TEST(LzssContextualRansFrameEncoder,
      OneMiBHashChainRoundTripExercisesExtendedDistance) {
     constexpr std::size_t gap = 65536;
     std::vector<std::byte> raw(5 + gap + 5, std::byte{'Z'});

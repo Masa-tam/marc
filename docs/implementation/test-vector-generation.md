@@ -12627,3 +12627,23 @@ workspace requirements to be field-identical to HashChain plus a complete
 round trip. Preserve all existing malformed, boundary, profile-limit, Static/
 Dynamic linking, schema compatibility, and C/C++ header tests under MSVC and
 ClangCL.
+
+### TVG-0882
+
+For Contextual rANS, calculate independently aligned HashChain and BinaryTree
+workspaces and encode a mixed repeated-field fixture through the common
+runtime dispatch. Require equal plan extents and byte-identical completed
+frames. Require the profile to publish the selected strategy, canonical
+alignment, and calculator-owned finder extent; reject strategy 255 without
+residual requirements.
+
+Through the public C lifecycle, preserve BinaryTree across profile application,
+query and create it, encode a bounded multi-frame fixture, and require exact
+identity with the retained HashChain bytes. Keep decode selector-independent.
+Retain all existing rANS golden, malformed, extended-distance, workspace,
+completion, ABI, Static/Dynamic, schema-compatibility, and fuzz compile-smoke
+tests under MSVC and ClangCL.
+
+Validation: all 3,303 registered tests pass under MSVC and ClangCL in 266.88
+and 262.86 seconds, including complete schema compatibility in 114.47 and
+103.38 seconds.

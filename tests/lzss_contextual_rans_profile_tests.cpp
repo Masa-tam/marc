@@ -48,6 +48,11 @@ TEST(LzssContextualRansProfile, BuildsCanonicalWorkspaceBounds) {
               65'536U
                   * sizeof(marc::dictionary::internal::LzssTypedToken));
     EXPECT_EQ(workspace.match_finder_bytes, finder.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment,
+              finder.workspace_alignment);
+    EXPECT_EQ(workspace.match_finder_strategy,
+              marc::dictionary::internal::
+                  LzssMatchFinderStrategy::hash_chain_exact);
     EXPECT_EQ(workspace.views_bytes,
               workspace.match_finder_offset + finder.workspace_size);
     EXPECT_EQ(workspace.views_alignment,
@@ -77,6 +82,25 @@ TEST(LzssContextualRansProfile, BuildsCanonicalWorkspaceBounds) {
     EXPECT_EQ(workspace.match_finder_bytes, 0U);
     EXPECT_EQ(workspace.views_bytes, 0U);
     EXPECT_EQ(workspace.views_alignment, 1U);
+
+    LzssContextualRansProfileConfig binary_tree{};
+    binary_tree.original_size = 65'536;
+    binary_tree.match_finder_strategy = marc::dictionary::internal::
+        LzssMatchFinderStrategy::binary_tree_exact;
+    ASSERT_EQ(make_lzss_contextual_rans_profile(
+                  binary_tree, {}, stream, workspace),
+              LzssContextualRansProfileError::none);
+    const auto tree = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            binary_tree.match_finder_strategy, 65'536,
+            binary_tree.dictionary, {});
+    ASSERT_EQ(tree.error, marc::dictionary::internal::
+                              LzssMatchFinderWorkspaceError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, tree.workspace_size);
+    EXPECT_EQ(workspace.match_finder_alignment,
+              tree.workspace_alignment);
+    EXPECT_EQ(workspace.match_finder_strategy,
+              binary_tree.match_finder_strategy);
 
     LzssContextualRansProfileConfig extended{};
     extended.original_size = 17;
@@ -300,6 +324,12 @@ TEST(LzssContextualRansProfile,
     LzssContextualRansEncoderWorkspaceRequirements workspace{};
     LzssContextualRansProfileConfig unsupported{};
     unsupported.dictionary.max_match_length = 259;
+    EXPECT_EQ(make_lzss_contextual_rans_profile(
+                  unsupported, {}, stream, workspace),
+              LzssContextualRansProfileError::unsupported);
+    unsupported = {};
+    unsupported.match_finder_strategy = static_cast<
+        marc::dictionary::internal::LzssMatchFinderStrategy>(255);
     EXPECT_EQ(make_lzss_contextual_rans_profile(
                   unsupported, {}, stream, workspace),
               LzssContextualRansProfileError::unsupported);

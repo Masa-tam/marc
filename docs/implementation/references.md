@@ -7064,3 +7064,13 @@ workspace contract, and Contextual Dynamic Range streaming dispatch. No
 external compressor, match-finder API, ABI layout, source code, archive,
 encoded vector, test suite, patent, pseudocode, or optimization description
 was consulted.
+
+### IR-0779
+
+The Contextual rANS selector route uses IR-0775 through IR-0778, DD-1013
+through DD-1016, TVG-0878 through TVG-0881, marc's repository-owned checked
+Exact finder calculators, typed-token single-pass encoders, Contextual rANS
+profile, frame encoder, and streaming lifecycle. No external compressor,
+match-finder dispatch, rANS implementation, source code, archive, encoded
+vector, test suite, patent, pseudocode, or optimization description was
+consulted.

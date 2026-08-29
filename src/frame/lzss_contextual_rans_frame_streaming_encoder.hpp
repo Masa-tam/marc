@@ -20,7 +20,10 @@ public:
         std::span<std::byte> raw_frame_workspace,
         std::span<dictionary::internal::LzssTypedToken> token_workspace,
         std::span<std::byte> match_finder_workspace,
-        std::span<std::byte> serialized_frame_workspace) noexcept;
+        std::span<std::byte> serialized_frame_workspace,
+        dictionary::internal::LzssMatchFinderStrategy match_finder_strategy =
+            dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact)
+        noexcept;
 
     [[nodiscard]] core::ProcessResult process(
         std::span<const std::byte> input,
@@ -51,6 +54,8 @@ private:
     std::span<dictionary::internal::LzssTypedToken> token_workspace_{};
     std::span<std::byte> match_finder_workspace_{};
     std::span<std::byte> serialized_frame_workspace_{};
+    dictionary::internal::LzssMatchFinderStrategy match_finder_strategy_{
+        dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact};
     std::array<std::byte, lzss_contextual_rans_stream_header_size>
         stream_header_{};
     std::size_t raw_frame_size_{};

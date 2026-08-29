@@ -3310,3 +3310,18 @@ profiles, CLI, decoder identity, archive inventory, and ABI version are
 unchanged. Five focused C API tests pass under both toolchains; all 3,302 CTest
 entries pass under MSVC and ClangCL in 260.58 and 265.56 seconds, including
 schema compatibility in 109.55 and 101.41 seconds.
+
+### BR-0208
+
+Contextual rANS is the second public Contextual LZSS route to execute both
+HashChain Exact and BinaryTree Exact. Its profile query now reports the
+selected checked finder extent and alignment, its opaque view partition
+validates that identity, and its frame/streaming encoders fix the selected
+single-pass typed-token producer without changing rANS modeling. The C factory
+creates BinaryTree encoders and retains byte identity with HashChain; decode
+remains selector-independent. Contextual tANS and both Huffman routes continue
+to reject BinaryTree encode explicitly. Format, ABI, defaults, CLI, decoder,
+and interoperability archive inventory are unchanged.
+Thirty-one focused internal tests and the public C lifecycle pass under both
+toolchains. All 3,303 CTest entries pass under MSVC and ClangCL in 266.88 and
+262.86 seconds, including schema compatibility in 114.47 and 103.38 seconds.

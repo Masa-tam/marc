@@ -27245,3 +27245,31 @@ both bounds.
   compatibility in 109.55 and 101.41 seconds. Static and Dynamic libraries,
   C/C++ header consumers, existing fuzz compile-smoke targets, CLI profiles,
   archive inventory, and canonical bytes remain valid.
+
+## CR-1102: 2026-08-29 - Execute BinaryTree through Contextual rANS
+
+- Authoring method: extended the repository-owned staged selector design over
+  marc's existing Contextual rANS typed-token, profile, frame, streaming, and
+  public C lifecycle boundaries.
+- References used: IR-0775 through IR-0779, DD-1013 through DD-1017,
+  TVG-0878 through TVG-0882, CR-1098 through CR-1101, and marc's existing
+  checked Exact finder and Contextual rANS contracts.
+- Known implementations intentionally not consulted: external compressors,
+  match-finder or rANS source code, archives, encoded vectors, test suites,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: reuse the common two-strategy runtime dispatch;
+  retain the exhaustive oracle and HashChain wrapper; store strategy once per
+  streaming transform; keep decoder requirements independent; and leave the
+  remaining three entropy routes explicitly unsupported.
+- Generated-code task description: make rANS workspace/profile/frame/streaming
+  and C factory selector-aware, prove BinaryTree/HashChain byte identity and
+  public creation, reject unknown or inadequate resources atomically, and do
+  not change format, decoder identity, CLI, or archive inventory.
+- Similarity review: the change composes only repository-owned interfaces,
+  state machines, and naming, and introduces no external implementation
+  expression or stream representation.
+- Validation: 31 focused internal tests and the public C lifecycle pass under
+  MSVC and ClangCL. All 3,303 CTest entries pass in 266.88 and 262.86 seconds,
+  including complete schema compatibility in 114.47 and 103.38 seconds.
+  Static and Dynamic libraries, C/C++ consumers, existing fuzz compile-smoke,
+  CLI profiles, archive inventory, and canonical bytes remain valid.

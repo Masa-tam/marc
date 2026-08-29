@@ -152,7 +152,7 @@ lifecycle, not an alias for the preceding byte-oriented profile. Call
 `marc_lzss_contextual_dynamic_range_workspace_requirements()` for the selected
 immutable direction. Encoding uses primary for raw-frame input, secondary for
 the complete serialized frame, and aligned opaque views for typed tokens,
-modeled operations, and the exact HashChain match-finder workspace. Decoding
+modeled operations, and the selected exact match-finder workspace. Decoding
 uses primary for serialized input, secondary for
 atomic raw-frame output, and views for typed tokens. The factory validates
 capacity, alignment, and pairwise non-overlap before publishing a handle.
@@ -192,7 +192,8 @@ lifecycle. Call `marc_lzss_contextual_rans_workspace_requirements()` after
 changing direction, known size, frame/LZSS parameters, `profile`, or
 hard limits.
 Encoding uses primary for raw-frame input, secondary for the complete
-serialized frame, and aligned opaque views for typed tokens. Decoding uses
+serialized frame, and aligned opaque views for typed tokens followed by the
+selected exact match-finder workspace. Decoding uses
 primary for serialized input, secondary for atomic raw output, and views for
 the contextual-rANS tables followed by typed tokens. The factory checks
 capacity, alignment, pairwise non-overlap, and the private partition before
@@ -657,8 +658,8 @@ Unknown selector values are invalid in both directions and never fall back.
 The selector is encoder policy only: it is not serialized, and decode accepts
 either known value while returning the same requirements and constructing the
 same decoder. At the current staged implementation boundary, Contextual
-Dynamic Range executes both exact strategies. Contextual rANS, tANS, Adaptive
-Huffman, and Blocked Huffman preserve the known selector but return
-`MARC_STATUS_UNSUPPORTED` when BinaryTree is requested for encode until their
-individual frame routes are connected. This explicit result prevents a
+Dynamic Range and Contextual rANS execute both exact strategies. Contextual
+tANS, Adaptive Huffman, and Blocked Huffman preserve the known selector but
+return `MARC_STATUS_UNSUPPORTED` when BinaryTree is requested for encode until
+their individual frame routes are connected. This explicit result prevents a
 requested strategy from being silently replaced by HashChain.

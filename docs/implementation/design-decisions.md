@@ -20939,3 +20939,17 @@ already executing BinaryTree route. Until each remaining entropy-specific
 frame route is connected, return `unsupported` for its BinaryTree encode query
 rather than silently running HashChain. Do not alter stream bytes, decoder
 identity, CLI, profile limits, or the ABI version.
+
+## DD-1017: Execute the second exact-finder route through Contextual rANS
+
+- Date: 2026-08-29
+- Status: accepted
+
+Carry the public selector through the Contextual rANS profile, opaque-view
+partition, frame encoder, streaming encoder, workspace query, and factory.
+Use the shared checked finder calculator and the existing single-pass typed-
+token producers, while leaving rANS modeling and serialization untouched.
+Fix the strategy at transform construction, retain HashChain wrappers and
+defaults, and normalize both finder error families to the existing stream
+status categories. BinaryTree remains encoder-local, requires an explicit
+aggregate hard limit, and changes neither stream identity nor decoder sizing.
