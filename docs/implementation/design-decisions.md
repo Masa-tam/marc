@@ -20923,3 +20923,19 @@ at construction and never infer or change it per frame. Normalize aggregate
 workspace calculation through the selected finder calculator, reject selector
 255 before work, and map both finders' short/limited storage to the same stream
 error categories. Do not yet alter the public C ABI or any serialized identity.
+
+## DD-1016: Publish the ABI-1 selector without silent fallback
+
+- Date: 2026-08-29
+- Status: accepted
+
+Rename the 32-bit reserved slot after `direction` in all five Contextual LZSS
+configurations to `match_finder_strategy`, retaining every ABI-1 extent and
+offset. Define HashChain Exact as zero and BinaryTree Exact as one; initialize
+zero explicitly, preserve either known value across profile application, and
+reject unknown values without modifying the configuration. Decode accepts and
+ignores both known values. Connect Contextual Dynamic Range query/create to the
+already executing BinaryTree route. Until each remaining entropy-specific
+frame route is connected, return `unsupported` for its BinaryTree encode query
+rather than silently running HashChain. Do not alter stream bytes, decoder
+identity, CLI, profile limits, or the ABI version.

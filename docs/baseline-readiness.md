@@ -3295,3 +3295,18 @@ byte-identical frames, while short BinaryTree storage and selector 255 fail
 atomically. Twenty-three focused tests and all 3,302 registered tests pass
 under MSVC and ClangCL in 265.09 and 257.75 seconds, including schema
 compatibility in 104.58 and 91.22 seconds. Public C ABI remains deferred.
+
+### BR-0207
+
+The ABI-1 public selector now occupies the former 32-bit reserved slot in all
+five Contextual LZSS configurations without changing any structure extent or
+later offset. Initializers retain HashChain Exact, profile helpers preserve
+both known selectors, unknown values fail atomically, and decode remains
+selector-independent. Contextual Dynamic Range query/create now executes
+BinaryTree and produces the same canonical bytes as HashChain. The remaining
+four encode queries report `unsupported` for BinaryTree until their individual
+frame routes are connected, preventing silent fallback. Stream format,
+profiles, CLI, decoder identity, archive inventory, and ABI version are
+unchanged. Five focused C API tests pass under both toolchains; all 3,302 CTest
+entries pass under MSVC and ClangCL in 260.58 and 265.56 seconds, including
+schema compatibility in 109.55 and 101.41 seconds.

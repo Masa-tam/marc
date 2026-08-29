@@ -39,6 +39,11 @@ typedef uint32_t marc_lzss_contextual_profile;
 #define MARC_LZSS_CONTEXTUAL_PROFILE_4M UINT32_C(2)
 #define MARC_LZSS_CONTEXTUAL_PROFILE_16M UINT32_C(3)
 
+/* Selects an encoder-only exact LZSS match-finding strategy. */
+typedef uint32_t marc_lzss_match_finder_strategy;
+#define MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT UINT32_C(0)
+#define MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT UINT32_C(1)
+
 typedef uint32_t marc_process_flags;
 #define MARC_PROCESS_NONE UINT32_C(0)
 #define MARC_PROCESS_FLUSH (UINT32_C(1) << 0)
@@ -378,7 +383,7 @@ typedef struct marc_lzss_contextual_dynamic_range_config {
     uint32_t struct_size;
     uint32_t abi_version;
     marc_direction direction;
-    uint32_t reserved;
+    marc_lzss_match_finder_strategy match_finder_strategy;
     uint64_t original_size;
     uint32_t frame_size;
     uint32_t window_size;
@@ -401,7 +406,7 @@ typedef struct marc_lzss_contextual_rans_config {
     uint32_t struct_size;
     uint32_t abi_version;
     marc_direction direction;
-    uint32_t reserved;
+    marc_lzss_match_finder_strategy match_finder_strategy;
     uint64_t original_size;
     uint32_t frame_size;
     uint32_t window_size;
@@ -423,7 +428,7 @@ typedef struct marc_lzss_contextual_tans_config {
     uint32_t struct_size;
     uint32_t abi_version;
     marc_direction direction;
-    uint32_t reserved;
+    marc_lzss_match_finder_strategy match_finder_strategy;
     uint64_t original_size;
     uint32_t frame_size;
     uint32_t window_size;
@@ -445,7 +450,7 @@ typedef struct marc_lzss_contextual_adaptive_huffman_config {
     uint32_t struct_size;
     uint32_t abi_version;
     marc_direction direction;
-    uint32_t reserved;
+    marc_lzss_match_finder_strategy match_finder_strategy;
     uint64_t original_size;
     uint32_t frame_size;
     uint32_t window_size;
@@ -467,7 +472,7 @@ typedef struct marc_lzss_contextual_blocked_huffman_config {
     uint32_t struct_size;
     uint32_t abi_version;
     marc_direction direction;
-    uint32_t reserved;
+    marc_lzss_match_finder_strategy match_finder_strategy;
     uint64_t original_size;
     uint32_t frame_size;
     uint32_t window_size;

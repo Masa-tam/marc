@@ -2,9 +2,18 @@
 
 #include "test_assert.h"
 
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+
+_Static_assert(
+    sizeof(marc_lzss_contextual_dynamic_range_config) == 120,
+    "contextual Dynamic Range ABI-1 configuration extent changed");
+_Static_assert(
+    offsetof(marc_lzss_contextual_dynamic_range_config,
+             match_finder_strategy) == 12,
+    "match-finder selector must reuse the ABI v1 reserved slot");
 
 static marc_buffer allocate(size_t size) {
     marc_buffer result = {size == 0 ? NULL : (uint8_t*)malloc(size), size};
@@ -54,6 +63,10 @@ static void test_apply_profile(void) {
         marc_lzss_contextual_dynamic_range_config config;
         assert(marc_lzss_contextual_dynamic_range_config_init(
                    directions[direction_index], &config) == MARC_STATUS_OK);
+        assert(config.match_finder_strategy
+               == MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT);
+        config.match_finder_strategy =
+            MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
         config.original_size = UINT64_C(1234567);
         config.max_total_output_size = UINT64_C(7654321);
         for (size_t index = 0;
@@ -61,6 +74,8 @@ static void test_apply_profile(void) {
             assert(marc_lzss_contextual_dynamic_range_config_apply_profile(
                        &config, profiles[index]) == MARC_STATUS_OK);
             assert(config.direction == directions[direction_index]);
+            assert(config.match_finder_strategy
+                   == MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT);
             assert(config.original_size == UINT64_C(1234567));
             assert(config.max_total_output_size == UINT64_C(7654321));
             assert(config.frame_size == extents[index]);
@@ -108,7 +123,7 @@ static void test_apply_profile(void) {
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&invalid, &snapshot, sizeof(invalid)) == 0);
     invalid = config;
-    invalid.reserved = 1;
+    invalid.match_finder_strategy = UINT32_C(255);
     snapshot = invalid;
     assert(marc_lzss_contextual_dynamic_range_config_apply_profile(
                &invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
@@ -135,6 +150,7 @@ int main(void) {
     test_apply_profile();
     static const uint8_t input[] = {0x41, 0x42, 0x41, 0x42, 0x58};
     uint8_t encoded[1024];
+    uint8_t hash_chain_encoded[1024];
     uint8_t decoded[sizeof(input)];
     marc_lzss_contextual_dynamic_range_config config;
     marc_workspace_requirements needed;
@@ -150,6 +166,18 @@ int main(void) {
     assert(config.profile == MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     assert(config.min_match_length == 5);
     assert(config.max_match_length == 258);
+    config.original_size = UINT32_C(1) << 16;
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+    const size_t default_hash_chain_views_bytes = needed.views_bytes;
+    config.match_finder_strategy =
+        MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+    assert(needed.views_bytes != default_hash_chain_views_bytes);
+    config.match_finder_strategy = MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT;
     config.original_size = sizeof(input);
     config.frame_size = 2;
     set_small_limits(&config);
@@ -176,6 +204,35 @@ int main(void) {
            && encoded[2] == 0x52 && encoded[3] == 0x43);
     assert(encoded[4] == 2 && encoded[5] == 0);
     const size_t encoded_size = result.output_produced;
+    memcpy(hash_chain_encoded, encoded, encoded_size);
+    marc_transform_destroy(transform);
+    release(primary);
+    release(secondary);
+    release(views);
+
+    assert(marc_lzss_contextual_dynamic_range_config_init(
+               MARC_DIRECTION_ENCODE, &config)
+           == MARC_STATUS_OK);
+    config.match_finder_strategy =
+        MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
+    config.original_size = sizeof(input);
+    config.frame_size = 2;
+    set_small_limits(&config);
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+    primary = allocate(needed.primary_bytes);
+    secondary = allocate(needed.secondary_bytes);
+    views = allocate(needed.views_bytes);
+    assert(marc_lzss_contextual_dynamic_range_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    result = marc_transform_process(
+        transform, (marc_const_buffer){input, sizeof(input)},
+        (marc_buffer){encoded, sizeof(encoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_END_OF_STREAM);
+    assert(result.output_produced == encoded_size);
+    assert(memcmp(encoded, hash_chain_encoded, encoded_size) == 0);
     marc_transform_destroy(transform);
     release(primary);
     release(secondary);
@@ -191,6 +248,13 @@ int main(void) {
     assert(needed.primary_bytes == 144);
     assert(needed.secondary_bytes == 2);
     assert(needed.views_bytes != 0 && needed.views_alignment != 0);
+    const marc_workspace_requirements hash_chain_decode_needed = needed;
+    config.match_finder_strategy =
+        MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+    assert(memcmp(&needed, &hash_chain_decode_needed, sizeof(needed)) == 0);
     primary = allocate(needed.primary_bytes);
     secondary = allocate(needed.secondary_bytes);
     views = allocate(needed.views_bytes);
@@ -431,6 +495,22 @@ int main(void) {
     assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
                &config, &needed)
            == MARC_STATUS_INVALID_ARGUMENT);
+    config.reserved2 = 0;
+    config.match_finder_strategy = UINT32_C(255);
+    needed.primary_bytes = 1;
+    needed.secondary_bytes = 1;
+    needed.views_bytes = 1;
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_INVALID_ARGUMENT);
+    assert(needed.primary_bytes == 0 && needed.secondary_bytes == 0
+           && needed.views_bytes == 0);
+    transform = (marc_transform*)(uintptr_t)1;
+    assert(marc_lzss_contextual_dynamic_range_create(
+               &config, (marc_buffer){0}, (marc_buffer){0},
+               (marc_buffer){0}, &transform)
+           == MARC_STATUS_INVALID_ARGUMENT);
+    assert(transform == NULL);
     assert(marc_lzss_contextual_dynamic_range_config_init(0, &config)
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(marc_lzss_contextual_dynamic_range_config_init(

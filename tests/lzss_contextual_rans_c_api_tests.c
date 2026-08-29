@@ -2,12 +2,16 @@
 
 #include "test_assert.h"
 
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 _Static_assert(sizeof(marc_lzss_contextual_rans_config) == 112,
                "contextual rANS ABI-1 configuration extent changed");
+_Static_assert(offsetof(marc_lzss_contextual_rans_config,
+                        match_finder_strategy) == 12,
+               "match-finder selector must reuse the ABI v1 reserved slot");
 
 static marc_buffer allocate(size_t size) {
     marc_buffer result = {size == 0 ? NULL : (uint8_t*)malloc(size), size};
@@ -89,6 +93,19 @@ static void test_apply_profile(void) {
     marc_lzss_contextual_rans_config config;
     assert(marc_lzss_contextual_rans_config_init(
                MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
+    assert(config.match_finder_strategy
+           == MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT);
+    config.match_finder_strategy =
+        MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
+    assert(marc_lzss_contextual_rans_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
+           == MARC_STATUS_OK);
+    assert(config.match_finder_strategy
+           == MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT);
+    assert(marc_lzss_contextual_rans_workspace_requirements(
+               &config, &(marc_workspace_requirements){0})
+           == MARC_STATUS_UNSUPPORTED);
+    config.match_finder_strategy = MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT;
     marc_lzss_contextual_rans_config invalid = config;
     --invalid.struct_size;
     marc_lzss_contextual_rans_config snapshot = invalid;
@@ -111,7 +128,7 @@ static void test_apply_profile(void) {
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&invalid, &snapshot, sizeof(invalid)) == 0);
     invalid = config;
-    invalid.reserved = 1;
+    invalid.match_finder_strategy = UINT32_C(255);
     snapshot = invalid;
     assert(marc_lzss_contextual_rans_config_apply_profile(
                &invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
@@ -385,10 +402,10 @@ int main(void) {
                &config, primary, secondary, views, NULL)
            == MARC_STATUS_INVALID_ARGUMENT);
 
-    config.reserved = 1;
+    config.match_finder_strategy = UINT32_C(255);
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
-    config.reserved = 0;
+    config.match_finder_strategy = MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT;
     config.reserved2 = 1;
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);

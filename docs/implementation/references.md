@@ -7054,3 +7054,13 @@ single-pass HashChain and BinaryTree encoders, Contextual Dynamic Range frame
 encoder, and streaming state machine. No external compressor, match-finder
 dispatch, source code, archive, encoded vector, test suite, patent, pseudocode,
 or optimization description was consulted.
+
+### IR-0778
+
+The first public selector boundary uses IR-0775 through IR-0777, DD-1013
+through DD-1015, TVG-0878 through TVG-0880, marc's size-tagged ABI-1
+configuration convention, existing profile helpers, normalized exact-finder
+workspace contract, and Contextual Dynamic Range streaming dispatch. No
+external compressor, match-finder API, ABI layout, source code, archive,
+encoded vector, test suite, patent, pseudocode, or optimization description
+was consulted.

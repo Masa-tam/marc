@@ -27216,3 +27216,32 @@ both bounds.
   `marc_interoperability_schema_compatibility` in 104.58 and 91.22 seconds.
   No public header, decoder, stream byte, profile identity, CLI, archive, local
   Corpus, generated benchmark result, or network state is changed.
+
+## CR-1101: 2026-08-29 - Publish the first exact-finder C selector route
+
+- Authoring method: applied the repository-owned ABI-preserving adoption
+  design to marc's existing size-tagged Contextual LZSS configurations and the
+  proven Contextual Dynamic Range internal dispatch.
+- References used: IR-0775 through IR-0778, DD-1013 through DD-1016,
+  TVG-0878 through TVG-0881, CR-1098 through CR-1100, and marc's existing C
+  lifecycle, profile-helper, checked-workspace, and Exact-token contracts.
+- Known implementations intentionally not consulted: external compressors,
+  match-finder APIs, ABI layouts, source code, archives, encoded vectors, test
+  suites, patents, pseudocode, and optimization descriptions.
+- Independent decisions: reuse the existing 32-bit ABI slot; retain zero as
+  HashChain; preserve known selectors through resource profiles; keep decode
+  independent; execute BinaryTree first in Dynamic Range; and make incomplete
+  codec adoption explicitly unsupported rather than silently substituting a
+  strategy.
+- Generated-code task description: add public constants and renamed fields,
+  enforce atomic selector validation, connect selected Dynamic Range workspace
+  and streaming construction, prove identical bytes and decode requirements,
+  and retain honest staged behavior for the remaining four codecs.
+- Similarity review: the change is composed entirely from repository-owned
+  terminology, ABI slots, helpers, and dispatch; no external implementation
+  expression or API structure was introduced.
+- Validation: five focused C API tests pass under MSVC and ClangCL. All 3,302
+  CTest entries pass in 260.58 and 265.56 seconds, including complete schema
+  compatibility in 109.55 and 101.41 seconds. Static and Dynamic libraries,
+  C/C++ header consumers, existing fuzz compile-smoke targets, CLI profiles,
+  archive inventory, and canonical bytes remain valid.

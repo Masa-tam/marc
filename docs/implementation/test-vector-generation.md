@@ -12610,3 +12610,20 @@ without publishing a frame. Reject selector 255 at construction and in the
 one-shot encoder without changing serialized output. Retain every existing
 HashChain/exhaustive oracle and run the 23 focused tests plus all 3,302 CTest
 entries under MSVC and ClangCL, including complete schema compatibility.
+
+### TVG-0881
+
+Compile the public selector as uint32 values zero and one and require the five
+renamed fields to remain at offset 12 with unchanged ABI-1 structure extents.
+Require every initializer to choose HashChain, every profile helper to preserve
+BinaryTree, and selector 255 to fail transactionally. For the four not-yet-
+connected entropy frame routes, require BinaryTree encode queries to report
+`unsupported` instead of falling back.
+
+For Contextual Dynamic Range, query and create both exact strategies, encode a
+bounded multi-frame literal/match fixture, and require byte-identical streams.
+Decode that stream with BinaryTree left in the configuration and require its
+workspace requirements to be field-identical to HashChain plus a complete
+round trip. Preserve all existing malformed, boundary, profile-limit, Static/
+Dynamic linking, schema compatibility, and C/C++ header tests under MSVC and
+ClangCL.

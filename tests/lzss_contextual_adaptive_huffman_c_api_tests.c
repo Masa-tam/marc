@@ -2,12 +2,16 @@
 
 #include "test_assert.h"
 
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 _Static_assert(sizeof(marc_lzss_contextual_adaptive_huffman_config) == 112,
                "contextual Adaptive Huffman ABI-1 configuration extent changed");
+_Static_assert(offsetof(marc_lzss_contextual_adaptive_huffman_config,
+                        match_finder_strategy) == 12,
+               "match-finder selector must reuse the ABI v1 reserved slot");
 
 static marc_buffer allocate(size_t size) {
     marc_buffer result = {size == 0 ? NULL : (uint8_t*)malloc(size), size};
@@ -26,11 +30,17 @@ static void test_profile_helper(void) {
     marc_lzss_contextual_adaptive_huffman_config config;
     assert(marc_lzss_contextual_adaptive_huffman_config_init(
                MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
+    assert(config.match_finder_strategy
+           == MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT);
+    config.match_finder_strategy =
+        MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
     config.original_size = UINT64_C(1) << 22;
     config.max_total_output_size = UINT64_C(99) << 20;
     assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
                &config, MARC_LZSS_CONTEXTUAL_PROFILE_4M) == MARC_STATUS_OK);
     assert(config.direction == MARC_DIRECTION_ENCODE);
+    assert(config.match_finder_strategy
+           == MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT);
     assert(config.original_size == (UINT64_C(1) << 22));
     assert(config.max_total_output_size == (UINT64_C(99) << 20));
     assert(config.frame_size == (UINT32_C(1) << 22));
@@ -51,6 +61,9 @@ static void test_profile_helper(void) {
     assert(memcmp(&config, &applied, sizeof(config)) == 0);
 
     marc_workspace_requirements needed;
+    assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_UNSUPPORTED);
+    config.match_finder_strategy = MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT;
     --config.max_compressed_payload_size;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
@@ -121,7 +134,9 @@ static void test_profile_helper(void) {
     assert(config.profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M);
     assert(config.struct_size == sizeof(config));
     assert(config.abi_version == MARC_ABI_VERSION);
-    assert(config.reserved == 0 && config.reserved2 == 0);
+    assert(config.match_finder_strategy
+           == MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT);
+    assert(config.reserved2 == 0);
     const marc_lzss_contextual_adaptive_huffman_config sixteen_mib = config;
     assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
                &config, MARC_LZSS_CONTEXTUAL_PROFILE_16M) == MARC_STATUS_OK);
@@ -181,12 +196,12 @@ static void test_profile_helper(void) {
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&config, &wrong_direction, sizeof(config)) == 0);
     config = snapshot;
-    config.reserved = 1;
-    const marc_lzss_contextual_adaptive_huffman_config wrong_reserved = config;
+    config.match_finder_strategy = UINT32_C(255);
+    const marc_lzss_contextual_adaptive_huffman_config wrong_strategy = config;
     assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
                &config, MARC_LZSS_CONTEXTUAL_PROFILE_4M)
            == MARC_STATUS_INVALID_ARGUMENT);
-    assert(memcmp(&config, &wrong_reserved, sizeof(config)) == 0);
+    assert(memcmp(&config, &wrong_strategy, sizeof(config)) == 0);
     config = snapshot;
     config.reserved2 = 1;
     const marc_lzss_contextual_adaptive_huffman_config wrong_reserved2 =
@@ -588,10 +603,10 @@ int main(void) {
                &config, primary, secondary, views, NULL)
            == MARC_STATUS_INVALID_ARGUMENT);
 
-    config.reserved = 1;
+    config.match_finder_strategy = UINT32_C(255);
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
-    config.reserved = 0;
+    config.match_finder_strategy = MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT;
     config.reserved2 = 1;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);

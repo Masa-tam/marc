@@ -586,8 +586,10 @@ malformed. The malformed frame itself produces no output.
 
 Do not initialize configuration structures manually. The initializer fills
 `struct_size`, `abi_version`, defaults, and reserved fields. Changing tags or
-reserved fields is invalid. Encoder `original_size` is mandatory format input;
-unknown-size encoding is outside the baseline profile.
+reserved fields is invalid. The five Contextual LZSS configurations are the
+exception: their former 32-bit field after `direction` is the documented
+`match_finder_strategy` selector. Encoder `original_size` is mandatory format
+input; unknown-size encoding is outside the baseline profile.
 
 Decoder limits are local policy, not values accepted from the stream. Smaller
 limits reduce workspace requirements and the accepted attack surface. The
@@ -609,28 +611,54 @@ rename does not renumber `MARC_ABI_VERSION`; callers must compile against the
 matching 0.2.0 header and library.
 
 The canonical Contextual rANS encoder's opaque views requirement includes its
-caller-owned HashChain Exact workspace after typed-token staging. Callers must
-use the current `marc_lzss_contextual_rans_workspace_requirements()` result
-rather than cache an earlier extent. The finder layout and strategy do not
-cross the ABI or stream; the decoder and serialized identity remain unchanged.
+caller-owned exact match-finder workspace after typed-token staging. Callers
+must use the current
+`marc_lzss_contextual_rans_workspace_requirements()` result rather than cache
+an earlier extent. The finder layout does not cross the ABI or stream; the
+decoder and serialized identity remain unchanged.
 
 The Contextual tANS encoder follows the same opaque-workspace rule. Its current
-views requirement contains typed-token staging, fixed encode tables, and the
-aligned HashChain Exact finder workspace. Callers must obtain the extent from
+views requirement contains typed-token staging, fixed encode tables, and an
+aligned exact-finder workspace. Callers must obtain the extent from
 `marc_lzss_contextual_tans_workspace_requirements()` and must not infer or
-cache the private partition. Finder selection does not add a configuration
-field, ABI revision, stream variant, or decoder requirement.
+cache the private partition. Finder selection changes no ABI revision, stream
+variant, or decoder requirement.
 
 The Contextual Blocked Huffman encoder's opaque views requirement likewise
-contains its caller-owned HashChain Exact workspace after typed-token staging.
-Callers must use the current
+contains its caller-owned exact match-finder workspace after typed-token
+staging. Callers must use the current
 `marc_lzss_contextual_blocked_huffman_workspace_requirements()` result and must
-not infer or cache the private partition. Finder selection does not cross the
-ABI or stream, and decoder table workspace remains unchanged.
+not infer or cache the private partition. Finder selection changes no ABI
+version or stream identity, and decoder table workspace remains unchanged.
 
 The Contextual Adaptive Huffman encoder's opaque views requirement retains its
-typed-token, node, and symbol regions and appends an aligned HashChain Exact
-finder workspace. Callers must use the current
+typed-token, node, and symbol regions and appends an aligned exact-finder
+workspace. Callers must use the current
 `marc_lzss_contextual_adaptive_huffman_workspace_requirements()` result and
-must not infer or cache the private partition. Finder selection does not add a
-configuration field, ABI revision, stream variant, or decoder requirement.
+must not infer or cache the private partition. Finder selection changes no ABI
+revision, stream variant, or decoder requirement.
+
+## Contextual LZSS match-finder selection
+
+The five Contextual LZSS configurations expose an encoder-local selector in
+the ABI-1 slot immediately after `direction`:
+
+```c
+config.match_finder_strategy = MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT;
+config.match_finder_strategy = MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
+```
+
+Every initializer selects HashChain Exact. `config_apply_profile()` preserves
+either known selector, including repeated application, and never raises the
+internal-buffer hard limit for BinaryTree. A caller selecting BinaryTree must
+set a sufficient `max_internal_buffered_bytes` and then query workspace again.
+Unknown selector values are invalid in both directions and never fall back.
+
+The selector is encoder policy only: it is not serialized, and decode accepts
+either known value while returning the same requirements and constructing the
+same decoder. At the current staged implementation boundary, Contextual
+Dynamic Range executes both exact strategies. Contextual rANS, tANS, Adaptive
+Huffman, and Blocked Huffman preserve the known selector but return
+`MARC_STATUS_UNSUPPORTED` when BinaryTree is requested for encode until their
+individual frame routes are connected. This explicit result prevents a
+requested strategy from being silently replaced by HashChain.

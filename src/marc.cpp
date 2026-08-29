@@ -779,6 +779,20 @@ contextual_adaptive_huffman_stream_admission(
               LzssContextualAdaptiveHuffmanStreamAdmission::field_context_64k;
 }
 
+[[nodiscard]] bool known_lzss_match_finder_strategy(
+    const marc_lzss_match_finder_strategy strategy) noexcept {
+    return strategy == MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT
+        || strategy == MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
+}
+
+[[nodiscard]] marc::dictionary::internal::LzssMatchFinderStrategy
+internal_lzss_match_finder_strategy(
+    const marc_lzss_match_finder_strategy strategy) noexcept {
+    return strategy == MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT
+        ? marc::dictionary::internal::LzssMatchFinderStrategy::binary_tree_exact
+        : marc::dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact;
+}
+
 bool load_config(
     const marc_lzss_contextual_dynamic_range_config* config,
     marc::core::DecoderLimits& limits) noexcept {
@@ -786,7 +800,9 @@ bool load_config(
         || config->struct_size
             != sizeof(marc_lzss_contextual_dynamic_range_config)
         || config->abi_version != MARC_ABI_VERSION
-        || config->reserved != 0 || config->reserved2 != 0
+        || !known_lzss_match_finder_strategy(
+            config->match_finder_strategy)
+        || config->reserved2 != 0
         || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -814,7 +830,9 @@ bool load_config(
     if (config == nullptr
         || config->struct_size != sizeof(marc_lzss_contextual_rans_config)
         || config->abi_version != MARC_ABI_VERSION
-        || config->reserved != 0 || config->reserved2 != 0
+        || !known_lzss_match_finder_strategy(
+            config->match_finder_strategy)
+        || config->reserved2 != 0
         || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -841,7 +859,9 @@ bool load_config(
     if (config == nullptr
         || config->struct_size != sizeof(marc_lzss_contextual_tans_config)
         || config->abi_version != MARC_ABI_VERSION
-        || config->reserved != 0 || config->reserved2 != 0
+        || !known_lzss_match_finder_strategy(
+            config->match_finder_strategy)
+        || config->reserved2 != 0
         || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -869,7 +889,9 @@ bool load_config(
         || config->struct_size
             != sizeof(marc_lzss_contextual_adaptive_huffman_config)
         || config->abi_version != MARC_ABI_VERSION
-        || config->reserved != 0 || config->reserved2 != 0
+        || !known_lzss_match_finder_strategy(
+            config->match_finder_strategy)
+        || config->reserved2 != 0
         || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -897,7 +919,9 @@ bool load_config(
         || config->struct_size
             != sizeof(marc_lzss_contextual_blocked_huffman_config)
         || config->abi_version != MARC_ABI_VERSION
-        || config->reserved != 0 || config->reserved2 != 0
+        || !known_lzss_match_finder_strategy(
+            config->match_finder_strategy)
+        || config->reserved2 != 0
         || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -1476,6 +1500,8 @@ marc_status initialize_contextual_rans_config(
     config->struct_size = sizeof(*config);
     config->abi_version = MARC_ABI_VERSION;
     config->direction = direction;
+    config->match_finder_strategy =
+        MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT;
     config->frame_size = UINT32_C(1) << 16;
     config->window_size = UINT32_C(1) << 16;
     config->min_match_length = 5;
@@ -1506,6 +1532,11 @@ marc_status contextual_rans_workspace_requirements(
     requirements->views_alignment = 1;
     marc::core::DecoderLimits limits{};
     if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    if (config->direction == MARC_DIRECTION_ENCODE
+        && config->match_finder_strategy
+            == MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT) {
+        return MARC_STATUS_UNSUPPORTED;
+    }
     if (config->direction == MARC_DIRECTION_ENCODE) {
         const marc::dictionary::internal::LzssParameters dictionary{
             config->window_size, config->min_match_length,
@@ -1665,6 +1696,11 @@ marc_status contextual_tans_workspace_requirements(
     requirements->views_alignment = 1;
     marc::core::DecoderLimits limits{};
     if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    if (config->direction == MARC_DIRECTION_ENCODE
+        && config->match_finder_strategy
+            == MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT) {
+        return MARC_STATUS_UNSUPPORTED;
+    }
     if (config->direction == MARC_DIRECTION_ENCODE) {
         const marc::dictionary::internal::LzssParameters dictionary{
             config->window_size, config->min_match_length,
@@ -1820,6 +1856,11 @@ marc_status contextual_adaptive_huffman_workspace_requirements(
     requirements->views_alignment = 1;
     marc::core::DecoderLimits limits{};
     if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    if (config->direction == MARC_DIRECTION_ENCODE
+        && config->match_finder_strategy
+            == MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT) {
+        return MARC_STATUS_UNSUPPORTED;
+    }
     if (config->direction == MARC_DIRECTION_ENCODE) {
         const marc::dictionary::internal::LzssParameters dictionary{
             config->window_size, config->min_match_length,
@@ -1986,6 +2027,11 @@ marc_status contextual_blocked_huffman_workspace_requirements(
     requirements->views_alignment = 1;
     marc::core::DecoderLimits limits{};
     if (!load_config(config, limits)) return MARC_STATUS_INVALID_ARGUMENT;
+    if (config->direction == MARC_DIRECTION_ENCODE
+        && config->match_finder_strategy
+            == MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT) {
+        return MARC_STATUS_UNSUPPORTED;
+    }
     if (config->direction == MARC_DIRECTION_ENCODE) {
         const marc::dictionary::internal::LzssParameters dictionary{
             config->window_size, config->min_match_length,
@@ -4785,6 +4831,8 @@ marc_status marc_lzss_contextual_dynamic_range_config_init(
     config->struct_size = sizeof(*config);
     config->abi_version = MARC_ABI_VERSION;
     config->direction = direction;
+    config->match_finder_strategy =
+        MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT;
     config->frame_size = UINT32_C(1) << 16;
     config->window_size = UINT32_C(1) << 16;
     config->min_match_length = 5;
@@ -4815,7 +4863,9 @@ marc_status marc_lzss_contextual_dynamic_range_config_apply_profile(
         || config->abi_version != MARC_ABI_VERSION
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE)
-        || config->reserved != 0 || config->reserved2 != 0
+        || !known_lzss_match_finder_strategy(
+            config->match_finder_strategy)
+        || config->reserved2 != 0
         || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -4890,7 +4940,9 @@ marc_status marc_lzss_contextual_dynamic_range_workspace_requirements(
         const auto error =
             marc::frame::internal::make_lzss_typed_context_profile(
                 {config->original_size, config->frame_size, dictionary,
-                 typed_context_profile_variant(config->profile)},
+                 typed_context_profile_variant(config->profile),
+                 internal_lzss_match_finder_strategy(
+                     config->match_finder_strategy)},
                 limits, stream, needed);
         if (error != marc::frame::internal::
                          LzssTypedContextProfileError::none) {
@@ -4980,7 +5032,9 @@ marc_status marc_lzss_contextual_dynamic_range_create(
             LzssTypedContextEncoderWorkspaceRequirements needed{};
         if (marc::frame::internal::make_lzss_typed_context_profile(
                 {config->original_size, config->frame_size, dictionary,
-                 typed_context_profile_variant(config->profile)},
+                 typed_context_profile_variant(config->profile),
+                 internal_lzss_match_finder_strategy(
+                     config->match_finder_strategy)},
                 limits, stream, needed)
             != marc::frame::internal::
                    LzssTypedContextProfileError::none) {
@@ -4996,7 +5050,8 @@ marc_status marc_lzss_contextual_dynamic_range_create(
         implementation = new (std::nothrow)
             marc::frame::internal::LzssTypedContextFrameStreamingEncoder(
                 stream, limits, primary, views.tokens, views.operations,
-                views.match_finder, secondary);
+                views.match_finder, secondary,
+                needed.match_finder_strategy);
     } else {
         marc::frame::internal::
             LzssTypedContextDecoderWorkspaceRequirements needed{};
@@ -5041,7 +5096,9 @@ marc_status marc_lzss_contextual_rans_config_apply_profile(
         || config->abi_version != MARC_ABI_VERSION
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE)
-        || config->reserved != 0 || config->reserved2 != 0
+        || !known_lzss_match_finder_strategy(
+            config->match_finder_strategy)
+        || config->reserved2 != 0
         || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -5127,7 +5184,9 @@ marc_status marc_lzss_contextual_tans_config_apply_profile(
         || config->abi_version != MARC_ABI_VERSION
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE)
-        || config->reserved != 0 || config->reserved2 != 0
+        || !known_lzss_match_finder_strategy(
+            config->match_finder_strategy)
+        || config->reserved2 != 0
         || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -5212,7 +5271,9 @@ marc_lzss_contextual_adaptive_huffman_config_apply_profile(
         || config->abi_version != MARC_ABI_VERSION
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE)
-        || config->reserved != 0 || config->reserved2 != 0
+        || !known_lzss_match_finder_strategy(
+            config->match_finder_strategy)
+        || config->reserved2 != 0
         || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -5300,7 +5361,9 @@ marc_status marc_lzss_contextual_blocked_huffman_config_apply_profile(
         || config->abi_version != MARC_ABI_VERSION
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE)
-        || config->reserved != 0 || config->reserved2 != 0
+        || !known_lzss_match_finder_strategy(
+            config->match_finder_strategy)
+        || config->reserved2 != 0
         || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
