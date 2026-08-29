@@ -27301,3 +27301,32 @@ both bounds.
   including complete schema compatibility in 113.52 and 102.59 seconds.
   Static and Dynamic libraries, C/C++ consumers, existing fuzz compile-smoke,
   CLI profiles, archive inventory, and canonical bytes remain valid.
+
+## CR-1104: 2026-08-29 - Execute BinaryTree through Contextual Blocked Huffman
+
+- Authoring method: extended the repository-owned staged selector design over
+  marc's existing Contextual Blocked Huffman typed-token, bounded canonical
+  model, profile, frame, streaming, and public C lifecycle boundaries.
+- References used: IR-0775 through IR-0781, DD-1013 through DD-1019,
+  TVG-0878 through TVG-0884, CR-1098 through CR-1103, and marc's existing
+  checked Exact finder and bounded Blocked Huffman contracts.
+- Known implementations intentionally not consulted: external compressors,
+  match-finder or Huffman source code, archives, encoded vectors, test suites,
+  patents, pseudocode, and optimization descriptions.
+- Independent decisions: vary only the finder extent and typed-token producer;
+  retain frame-local frequency, length, descriptor, table, and payload logic;
+  retain the exhaustive oracle and HashChain wrapper; store strategy once per
+  streaming transform; and leave Adaptive Huffman explicitly unsupported.
+- Generated-code task description: make Blocked Huffman workspace/profile/
+  frame/streaming and C factory selector-aware, prove BinaryTree/HashChain
+  completed-frame byte identity and public creation, reject unknown or
+  inadequate resources atomically, and do not change format, decoder identity,
+  CLI, or archive inventory.
+- Similarity review: the change composes only repository-owned interfaces,
+  state machines, canonical Huffman primitives, and naming, and introduces no
+  external implementation expression or stream representation.
+- Validation: 29 focused internal tests and the public C lifecycle pass under
+  MSVC and ClangCL. All 3,304 CTest entries pass in 289.78 and 264.05 seconds,
+  including complete schema compatibility in 115.39 and 104.14 seconds.
+  Static and Dynamic libraries, C/C++ consumers, existing fuzz compile-smoke,
+  CLI profiles, archive inventory, and canonical bytes remain valid.

@@ -12668,3 +12668,25 @@ compile-smoke tests under MSVC and ClangCL.
 Validation: all 3,304 registered tests pass under MSVC and ClangCL in 265.83
 and 275.29 seconds, including complete schema compatibility in 113.52 and
 102.59 seconds.
+
+### TVG-0884
+
+For Contextual Blocked Huffman, calculate independently aligned HashChain and
+BinaryTree workspaces after the common typed-token extent. Encode a mixed
+literal/match fixture through the common runtime dispatch and require equal
+plan extents plus byte-identical completed model descriptors and payloads.
+Require the profile to publish the selected strategy, canonical alignment,
+and calculator-owned finder extent; reject strategy 255 without residual
+requirements.
+
+Through the public C lifecycle, preserve BinaryTree across profile application,
+query and create it, encode a bounded fixture, and require exact identity with
+retained HashChain bytes. Keep decode selector-independent and retain all
+existing Blocked Huffman golden, malformed-table, extended-distance, workspace,
+completion, ABI, Static/Dynamic, schema-compatibility, and fuzz compile-smoke
+tests under MSVC and ClangCL.
+
+Validation: 29 focused internal tests and the public C lifecycle pass under
+MSVC and ClangCL. All 3,304 registered tests pass in 289.78 and 264.05
+seconds, including complete schema compatibility in 115.39 and 104.14
+seconds.

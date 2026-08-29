@@ -20967,3 +20967,19 @@ Use the common checked finder calculator and existing single-pass typed-token
 producers, fix strategy at transform construction, and retain HashChain
 wrappers and defaults. BinaryTree changes neither tANS modeling, descriptor,
 payload, stream identity, decoder sizing, nor profile limits.
+
+## DD-1019: Preserve bounded Huffman modeling while selecting the exact finder
+
+- Date: 2026-08-29
+- Status: accepted
+
+Carry the public selector through the Contextual Blocked Huffman profile,
+opaque-view partition, frame encoder, streaming encoder, workspace query, and
+factory. Keep typed-token storage followed immediately by the selected finder
+workspace; retain frequency counting, length-limited canonical construction,
+descriptor generation, decode-table policy, and payload serialization as
+bounded frame-local operations. Select only the single-pass typed-token
+producer, fix that strategy at transform construction, and retain HashChain
+wrappers and defaults. BinaryTree changes neither Blocked Huffman modeling,
+completed frame bytes, stream identity, decoder table sizing, nor profile
+limits.

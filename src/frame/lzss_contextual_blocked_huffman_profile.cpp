@@ -1,7 +1,6 @@
 #include "frame/lzss_contextual_blocked_huffman_profile.hpp"
 
 #include "core/checked_math.hpp"
-#include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "entropy/contextual_blocked_huffman_format.hpp"
 
 #include <algorithm>
@@ -88,13 +87,6 @@ inline constexpr std::uint64_t bits_per_decision = 15;
     return std::max(
         alignof(entropy::internal::HuffmanDecodeTable),
         alignof(dictionary::internal::LzssTypedToken));
-}
-
-[[nodiscard]] constexpr std::size_t encoder_alignment() noexcept {
-    return std::max(
-        alignof(dictionary::internal::LzssTypedToken),
-        dictionary::internal::LzssHashChainWorkspaceRequirements{}
-            .workspace_alignment);
 }
 
 [[nodiscard]] context::internal::LzssFieldContextLayoutResult profile_layout(
@@ -193,7 +185,12 @@ make_lzss_contextual_blocked_huffman_profile(
 
     const auto largest_frame = std::min<std::uint64_t>(
         config.original_size, config.frame_size);
+    if (!dictionary::internal::is_supported_lzss_match_finder_strategy(
+            config.match_finder_strategy)) {
+        return LzssContextualBlockedHuffmanProfileError::unsupported;
+    }
     if (largest_frame == 0) {
+        workspace.match_finder_strategy = config.match_finder_strategy;
         return LzssContextualBlockedHuffmanProfileError::none;
     }
     if (largest_frame > limits.max_block_size
@@ -215,13 +212,32 @@ make_lzss_contextual_blocked_huffman_profile(
         return LzssContextualBlockedHuffmanProfileError::arithmetic_overflow;
     }
     const auto finder = dictionary::internal::
-        calculate_lzss_hash_chain_workspace(
-            largest_frame_size, config.dictionary, limits);
-    if (finder.error != dictionary::internal::LzssHashChainError::none) {
-        return finder.error == dictionary::internal::LzssHashChainError::
-                                   workspace_limit_exceeded
-            ? LzssContextualBlockedHuffmanProfileError::limit_exceeded
-            : LzssContextualBlockedHuffmanProfileError::arithmetic_overflow;
+        calculate_lzss_match_finder_workspace(
+            config.match_finder_strategy, largest_frame_size,
+            config.dictionary, limits);
+    if (finder.error
+        != dictionary::internal::LzssMatchFinderWorkspaceError::none) {
+        switch (finder.error) {
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                workspace_limit_exceeded:
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                input_limit_exceeded:
+            return LzssContextualBlockedHuffmanProfileError::limit_exceeded;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                unsupported_strategy:
+            return LzssContextualBlockedHuffmanProfileError::unsupported;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                invalid_configuration:
+            return LzssContextualBlockedHuffmanProfileError::
+                invalid_configuration;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::
+                arithmetic_overflow:
+            return LzssContextualBlockedHuffmanProfileError::
+                arithmetic_overflow;
+        case dictionary::internal::LzssMatchFinderWorkspaceError::none:
+            break;
+        }
+        return LzssContextualBlockedHuffmanProfileError::arithmetic_overflow;
     }
     if (!payload_ceiling(
             largest_frame,
@@ -257,7 +273,11 @@ make_lzss_contextual_blocked_huffman_profile(
         workspace = {};
         return LzssContextualBlockedHuffmanProfileError::arithmetic_overflow;
     }
-    workspace.views_alignment = encoder_alignment();
+    workspace.views_alignment = std::max(
+        alignof(dictionary::internal::LzssTypedToken),
+        finder.workspace_alignment);
+    workspace.match_finder_alignment = finder.workspace_alignment;
+    workspace.match_finder_strategy = config.match_finder_strategy;
     return LzssContextualBlockedHuffmanProfileError::none;
 }
 
@@ -347,22 +367,35 @@ partition_lzss_contextual_blocked_huffman_encoder_views(
     std::uint64_t expected_bytes{};
     if (!encoder_view_layout(
             requirements.token_count, requirements.match_finder_bytes,
-            dictionary::internal::LzssHashChainWorkspaceRequirements{}
-                .workspace_alignment,
+            requirements.match_finder_alignment,
             expected_offset, expected_bytes)) {
         return LzssContextualBlockedHuffmanWorkspaceError::
             arithmetic_overflow;
     }
     if (expected_bytes == 0) {
-        return requirements.views_bytes == 0
+        return requirements.match_finder_offset == 0
+                && requirements.match_finder_bytes == 0
+                && requirements.match_finder_alignment == 1
+                && dictionary::internal::
+                    is_supported_lzss_match_finder_strategy(
+                        requirements.match_finder_strategy)
+                && requirements.views_bytes == 0
                 && requirements.views_alignment == 1
             ? LzssContextualBlockedHuffmanWorkspaceError::none
             : LzssContextualBlockedHuffmanWorkspaceError::
                 invalid_requirements;
     }
-    const auto expected_alignment = encoder_alignment();
+    const auto expected_alignment = std::max(
+        alignof(dictionary::internal::LzssTypedToken),
+        requirements.match_finder_alignment);
+    const auto canonical_match_finder_alignment =
+        dictionary::internal::lzss_match_finder_workspace_alignment(
+            requirements.match_finder_strategy);
     if (expected_offset != requirements.match_finder_offset
         || expected_bytes != requirements.views_bytes
+        || canonical_match_finder_alignment == 0
+        || requirements.match_finder_alignment
+            != canonical_match_finder_alignment
         || requirements.views_alignment != expected_alignment) {
         return LzssContextualBlockedHuffmanWorkspaceError::
             invalid_requirements;

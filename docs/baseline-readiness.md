@@ -3341,3 +3341,19 @@ are unchanged.
 Thirty-two focused internal tests and the public C lifecycle pass under both
 toolchains. All 3,304 CTest entries pass under MSVC and ClangCL in 265.83 and
 275.29 seconds, including schema compatibility in 113.52 and 102.59 seconds.
+
+### BR-0210
+
+Contextual Blocked Huffman is the fourth public Contextual LZSS route to
+execute both HashChain Exact and BinaryTree Exact. Its opaque encoder view
+retains typed tokens followed by selected finder storage; frequency counting,
+length-limited canonical construction, descriptor generation, and payload
+serialization remain bounded frame-local operations. Frame and streaming
+dispatch select only the typed-token producer, so completed model descriptors,
+payloads, and streams remain byte-identical. The C factory creates BinaryTree
+encoders while decode remains selector-independent. Adaptive Huffman continues
+to reject BinaryTree encode explicitly. Format, ABI, defaults, CLI, decoder,
+profile limits, and interoperability archive inventory are unchanged.
+Twenty-nine focused internal tests and the public C lifecycle pass under both
+toolchains. All 3,304 CTest entries pass under MSVC and ClangCL in 289.78 and
+264.05 seconds, including schema compatibility in 115.39 and 104.14 seconds.

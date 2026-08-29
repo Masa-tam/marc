@@ -7084,3 +7084,13 @@ profile, inverse encode-table workspace, frame encoder, and streaming
 lifecycle. No external compressor, match-finder dispatch, tANS implementation,
 source code, archive, encoded vector, test suite, patent, pseudocode, or
 optimization description was consulted.
+
+### IR-0781
+
+The Contextual Blocked Huffman selector route uses IR-0775 through IR-0780,
+DD-1013 through DD-1018, TVG-0878 through TVG-0883, marc's repository-owned
+checked Exact finder calculators, typed-token single-pass encoders, bounded
+Blocked Huffman primitives, profile, frame encoder, and streaming lifecycle.
+No external compressor, match-finder dispatch, Huffman implementation, source
+code, archive, encoded vector, test suite, patent, pseudocode, or optimization
+description was consulted.

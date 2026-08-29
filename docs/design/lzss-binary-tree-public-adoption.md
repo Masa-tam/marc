@@ -168,10 +168,11 @@ encoder revision、strategy、profile、hard limitおよび環境を保存でき
 6. full suite、sanitizer/fuzz smokeおよびinteroperability compatibilityを通す。
 7. 公開CLI selectorまたは自動samplingを別設計として評価する。
 
-2026-08-29時点でContextual Dynamic Range、Contextual rANS、Contextual tANSの
-段階5を完了した。各routeは選択したfinderのchecked workspaceを返し、transform
-生成時に戦略を固定し、同一Exact token列から同一stream bytesを生成する。残る
-Blocked Huffman、Adaptive HuffmanはBinaryTree encodeを明示的にunsupportedとする。
+2026-08-29時点でContextual Dynamic Range、Contextual rANS、Contextual tANS、
+Contextual Blocked Huffmanの段階5を完了した。各routeは選択したfinderのchecked
+workspaceを返し、transform生成時に戦略を固定し、同一Exact token列から同一
+stream bytesを生成する。残るAdaptive HuffmanはBinaryTree encodeを明示的に
+unsupportedとする。
 
 最初の実装完了条件は「BinaryTreeを選べる」だけではない。選択した資源量が
 queryへ正確に反映され、全5 codecでHashChainとbyte-identical、失敗が原子的、

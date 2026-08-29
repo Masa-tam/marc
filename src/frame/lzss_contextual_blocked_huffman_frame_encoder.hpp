@@ -19,6 +19,7 @@ enum class LzssContextualBlockedHuffmanFrameEncodeError : std::uint8_t {
     serialized_output_too_small,
     overlapping_workspaces,
     workspace_limit,
+    unsupported_match_finder_strategy,
     token_encode_error,
     entropy_encode_error,
     header_error,
@@ -60,6 +61,31 @@ encode_lzss_contextual_blocked_huffman_frame(
     std::span<const std::byte> raw_input,
     std::span<dictionary::internal::LzssTypedToken> private_tokens,
     std::span<std::byte> serialized_output) noexcept;
+
+[[nodiscard]] LzssContextualBlockedHuffmanFrameEncodeResult
+plan_lzss_contextual_blocked_huffman_frame_with_match_finder(
+    const LzssContextualBlockedHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    dictionary::internal::LzssMatchFinderStrategy strategy,
+    std::span<std::byte> match_finder_workspace,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
+
+[[nodiscard]] LzssContextualBlockedHuffmanFrameEncodeResult
+encode_lzss_contextual_blocked_huffman_frame_with_match_finder(
+    const LzssContextualBlockedHuffmanStreamHeader& stream,
+    const core::DecoderLimits& limits, std::uint64_t sequence,
+    std::uint64_t output_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    dictionary::internal::LzssMatchFinderStrategy strategy,
+    std::span<std::byte> match_finder_workspace,
+    std::span<std::byte> serialized_output,
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    noexcept;
 
 [[nodiscard]] LzssContextualBlockedHuffmanFrameEncodeResult
 plan_lzss_contextual_blocked_huffman_frame_hash_chain(

@@ -115,9 +115,21 @@ static void test_apply_profile(void) {
            == MARC_STATUS_OK);
     assert(invalid.match_finder_strategy
            == MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT);
+    invalid.original_size = 4096;
+    marc_workspace_requirements binary_tree_requirements;
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
-               &invalid, &(marc_workspace_requirements){0})
-           == MARC_STATUS_UNSUPPORTED);
+               &invalid, &binary_tree_requirements) == MARC_STATUS_OK);
+    invalid.match_finder_strategy =
+        MARC_LZSS_MATCH_FINDER_HASH_CHAIN_EXACT;
+    marc_workspace_requirements hash_chain_requirements;
+    assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
+               &invalid, &hash_chain_requirements) == MARC_STATUS_OK);
+    assert(binary_tree_requirements.primary_bytes
+           == hash_chain_requirements.primary_bytes);
+    assert(binary_tree_requirements.secondary_bytes
+           == hash_chain_requirements.secondary_bytes);
+    assert(binary_tree_requirements.views_bytes != 0);
+    assert(hash_chain_requirements.views_bytes != 0);
     assert(marc_lzss_contextual_blocked_huffman_config_init(
                MARC_DIRECTION_ENCODE, &invalid) == MARC_STATUS_OK);
     --invalid.struct_size;
@@ -149,6 +161,7 @@ static void test_apply_profile(void) {
 static void test_sixteen_mib_public_boundary(void) {
     static const uint8_t input[] = {0x41, 0x42, 0x41, 0x42, 0x58};
     uint8_t encoded[20000];
+    uint8_t baseline_encoded[20000];
     uint8_t decoded[sizeof(input)];
     marc_lzss_contextual_blocked_huffman_config config;
     marc_workspace_requirements needed;
@@ -179,6 +192,28 @@ static void test_sixteen_mib_public_boundary(void) {
     assert(encoded[14] == 5 && encoded[15] == 0);
     assert(encoded[98] == 4 && encoded[99] == 0);
     const size_t encoded_size = result.output_produced;
+    memcpy(baseline_encoded, encoded, encoded_size);
+    marc_transform_destroy(transform);
+    release(primary);
+    release(secondary);
+    release(views);
+
+    config.match_finder_strategy =
+        MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
+    assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_OK);
+    primary = allocate(needed.primary_bytes);
+    secondary = allocate(needed.secondary_bytes);
+    views = allocate(needed.views_bytes);
+    assert(marc_lzss_contextual_blocked_huffman_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    result = marc_transform_process(
+        transform, (marc_const_buffer){input, sizeof(input)},
+        (marc_buffer){encoded, sizeof(encoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_END_OF_STREAM);
+    assert(result.output_produced == encoded_size);
+    assert(memcmp(encoded, baseline_encoded, encoded_size) == 0);
     marc_transform_destroy(transform);
     release(primary);
     release(secondary);
