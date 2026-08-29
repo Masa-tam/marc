@@ -7125,3 +7125,13 @@ workspace calculators; and first-party 16-MiB Silesia measurements. No
 external compressor, match-finder or entropy implementation, source code,
 archive, encoded vector, test suite, patent, pseudocode, format, or memory
 policy was consulted.
+
+### IR-0785
+
+The fixed 64-MiB BinaryTree/HashChain Silesia experiment design uses IR-0784,
+DD-1022, TVG-0887, the repository-owned 16-MiB experiment contract and runner,
+the public Exact finder benchmark's explicit-limit mode, fixed Silesia
+manifest verification, and current checked HashChain/BinaryTree workspace
+calculators. No external benchmark runner, compressor, match-finder source,
+Corpus tooling, checkpoint schema, test suite, patent, pseudocode, or
+performance methodology was consulted.

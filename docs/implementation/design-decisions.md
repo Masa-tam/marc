@@ -21032,3 +21032,19 @@ exceed them. Require backend-specific 64-bit workspace proofs, explicit
 strategy-neutral profile limits, fixed-memory fuzzing, and staged public
 admission. Initializers, older helpers, the 128-MiB library default, stream-
 driven limit policy, and automatic strategy selection remain unchanged.
+
+## DD-1023: Remeasure 16 and 64 MiB under one 64-MiB frame boundary
+
+- Date: 2026-08-30
+- Status: accepted
+
+Before reserving the 64-MiB dictionary/context identity, compare HashChain
+Exact and BinaryTree Exact across every verified Silesia member using one
+64-MiB frame, sixteen- and sixty-four-MiB windows, one timed iteration, and an
+explicit two-GiB internal-buffer policy. Do not reuse the earlier 16-MiB-frame
+result as the baseline because its reset boundaries differ. Use 48 independent
+process records in canonical member/window/strategy order, exact token-summary
+and fingerprint equality, one-record atomic checkpoints, and bounded batches.
+Keep the previous result schema frozen and add a dedicated v1 result and
+checkpoint schema. Treat speed and token reduction as descriptive evidence;
+change no format, ABI, profile, default, strategy policy, or archive inventory.

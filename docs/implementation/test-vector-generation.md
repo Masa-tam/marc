@@ -12767,3 +12767,27 @@ token summaries and fingerprints, canonical record order, verified external
 Corpus identity, bounded-batch resume, and no output publication from a partial
 or contradictory result. Record time and token reduction descriptively; do not
 make either a correctness pass condition.
+
+### TVG-0888
+
+Freeze the 64-MiB comparison at frame 67,108,864, windows 16,777,216 and
+67,108,864, HashChain then BinaryTree Exact, one timed iteration, twelve
+canonical Silesia members, explicit limit 2,147,483,648, and 48 total records.
+Require checked workspace 268,959,744 and aggregate 336,068,608 for HashChain;
+workspace 1,946,157,056 and aggregate 2,013,265,920 for BinaryTree. Focused
+executable tests admit each exact aggregate and reject one byte less without
+performing a Corpus-sized allocation.
+
+Using a fake benchmark and manifest, require the dedicated runner to validate
+all report identities, token reconstruction, lowercase SHA-256 fingerprints,
+diagnostic histograms, finite time, exact workspace and policy, expected frame
+count, canonical command order, and all five Exact-pair fields. Reject partial,
+duplicate, reordered, foreign-grid, corrupt, nonfinite, and contradictory
+records before final JSON publication.
+
+Require atomic checkpoint replacement after each record; immutable identity
+over revision, executable and source hashes, Corpus path and manifest, fixed
+configuration, workspace expectations, and environment; normal validation of
+restored records; zero-point validation; and `--max-new-points` resume without
+placing the batch size in identity. Preserve the 16-MiB runner and schemas and
+keep real Corpus execution opt-in and outside CTest.

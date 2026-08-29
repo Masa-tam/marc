@@ -27484,3 +27484,33 @@ both bounds.
   from the recorded native extents and checked against every value in the
   design. No source, ABI, format, stream byte, profile selector, CLI name, or
   archive inventory is changed.
+
+## CR-1110: 2026-08-30 - Design the 64-MiB Exact-finder Silesia experiment
+
+- Authoring method: derived a fixed pre-format experiment from marc's
+  completed 16-MiB measurement procedure, reestablishing a common 64-MiB frame
+  boundary and independently calculating both Exact finder workspaces and the
+  explicit two-GiB aggregate policy.
+- References used: IR-0785; DD-1023; TVG-0888; the repository-owned 16-MiB
+  BinaryTree experiment design, runner, fake-runner tests, explicit-limit
+  benchmark mode, fixed Silesia verifier, and checked finder calculators.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder or benchmark source, Corpus runner, checkpoint format,
+  performance suite, archive, encoded vector, patent, and pseudocode.
+- Independent decisions: measure sixteen and sixty-four MiB under the same
+  sixty-four-MiB frame; use one process per canonical point, two GiB, 48 total
+  records, and one-record checkpoints; preserve the earlier schemas; and make
+  Exact equality and complete evidence mandatory while keeping performance
+  descriptive.
+- Generated-code task description: specify the exact matrix, memory proof,
+  unchanged executable boundary, dedicated schemas, strict report and resume
+  validation, bounded execution, fake-runner coverage, and evidence review
+  without implementing or executing the experiment.
+- Similarity review: the experiment structure and prose were derived only from
+  marc's first-party runner and validation contracts. No external methodology,
+  source expression, or result was used.
+- Validation: the documentation-layout test passes under the existing MSVC
+  and ClangCL Release trees, and the fixed workspace and aggregate arithmetic
+  agrees with the repository calculators' recorded formulas. This design-only
+  stage changes no executable, test registration, format, ABI, profile, stream
+  byte, or interoperability archive.
