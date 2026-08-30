@@ -7144,3 +7144,12 @@ HashChain and BinaryTree calculators, and the existing 16-MiB calculator-only
 boundary test. No external benchmark, allocator, compressor, match-finder
 source, test suite, patent, pseudocode, or large-window implementation was
 consulted.
+
+### IR-0787
+
+The dedicated 64-MiB Exact-finder experiment runner uses IR-0785 and IR-0786,
+DD-1023 and DD-1024, TVG-0888 and TVG-0889, the repository-owned 16-MiB
+runner, fixed Silesia verifier, explicit-limit report parser, and atomic local
+checkpoint convention. No external benchmark runner, compressor, match-finder
+source, Corpus tool, checkpoint format, test suite, archive, patent,
+pseudocode, or performance implementation was consulted.

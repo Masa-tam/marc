@@ -27544,3 +27544,33 @@ both bounds.
   preserved as the reason explicit local limits are required. Full suites and
   the dedicated runner remain later stages. No codec, format, ABI, profile,
   stream byte, or archive inventory changes.
+
+## CR-1112: 2026-08-31 - Implement the fixed 64-MiB experiment runner
+
+- Authoring method: derived the dedicated runner from marc's documented
+  64-MiB matrix and first-party runner contracts, then drove strict report,
+  Exact-pair, canonical-prefix, bounded-resume, and final-output behavior with
+  dependency-free fake benchmark records.
+- References used: IR-0787; DD-1025; TVG-0890; the repository-owned 16-MiB
+  runner, Silesia verifier, explicit-limit parser, atomic JSON helper pattern,
+  and fixed 64-MiB benchmark design.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder or benchmark runner source, Corpus tooling, checkpoint schema,
+  performance test suite, archive, encoded vector, patent, and pseudocode.
+- Independent decisions: retain independent schemas; require an exact
+  canonical prefix rather than a set of completed points; bind expected
+  workspace values into identity and report validation; save one validated
+  process record atomically; and keep the real 48-point run outside CTest.
+- Generated-code task description: implement the fixed sequential runner and
+  fake-runner tests, preserve the earlier runner, document bounded execution,
+  and reject reordered, duplicated, contradictory, foreign, or partial
+  evidence before publication.
+- Similarity review: implementation structure and terminology came only from
+  marc's first-party experiment and validation contracts. No external code or
+  distinctive control flow was used.
+- Validation: Python dependency-free tests pass for both the new 64-MiB and
+  unchanged 16-MiB runners. Focused documentation and both runner tests pass
+  under MSVC and ClangCL. All 3,306 CTest entries pass in 264.62 and 263.12
+  seconds, including complete schema compatibility in 109.34 and 104.26
+  seconds. No real Corpus process, large workspace allocation, codec, format,
+  ABI, profile, stream byte, or archive inventory changes in this stage.

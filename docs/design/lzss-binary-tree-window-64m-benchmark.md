@@ -186,6 +186,13 @@ process at a time and provides no automatic retry or strategy substitution.
 6. Record the result and review whether the measured benefit justifies format
    reservation and shared primitive implementation.
 
+Steps one through four are complete. The dedicated runner implements the two
+independent v1 schemas, canonical-prefix checkpoint recovery, exact workspace
+and paired-token validation, bounded batches, and final 48-record publication.
+Dependency-free fake-runner tests cover the full grid and resume path without
+allocating the planned workspace or requiring the external Corpus. Real Corpus
+execution remains the next explicit, opt-in evidence stage.
+
 Even a strong BinaryTree result does not change the HashChain initializer
 default or select a strategy automatically. Even a weak compression gain does
 not invalidate the candidate mathematically; it informs whether its large

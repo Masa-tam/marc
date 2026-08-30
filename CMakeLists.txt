@@ -1721,6 +1721,11 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_binary_tree_16m_runner_tests.py)
         set_tests_properties(marc_silesia_binary_tree_16m_runner_tests
             PROPERTIES LABELS tooling)
+        add_test(NAME marc_silesia_binary_tree_64m_runner_tests
+            COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_binary_tree_64m_runner_tests.py)
+        set_tests_properties(marc_silesia_binary_tree_64m_runner_tests
+            PROPERTIES LABELS tooling)
     endif()
     if(TARGET marc_c_roundtrip_example)
         add_test(NAME marc_c_roundtrip_example COMMAND marc_c_roundtrip_example)

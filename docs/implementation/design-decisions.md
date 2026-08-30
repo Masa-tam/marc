@@ -21062,3 +21062,17 @@ checked finder calculator before allocation. Do not change ordinary benchmark
 mode, codec defaults, public C configuration, stream format, or match-finder
 semantics. Freeze the 64-MiB HashChain/BinaryTree workspace and exact/one-short
 aggregate boundaries with calculator-only tests that allocate no large buffer.
+
+## DD-1025: Make the 64-MiB experiment a strict canonical-prefix runner
+
+- Date: 2026-08-31
+- Status: accepted
+
+Implement a dedicated runner without changing the 16-MiB runner or either of
+its schemas. Fix all 48 member/window/strategy points and accept checkpoint
+records only as a validated prefix of that canonical order. Bind resume to the
+full revision, benchmark and dependent-tool hashes, verified Corpus manifest,
+fixed build description, two-GiB policy, and exact finder workspaces. Require
+the five-field Exact pair contract before accepting BinaryTree and prohibit
+partial final output. Keep real Corpus execution opt-in, sequential, and local;
+the fake-runner test matrix performs no large allocation or network access.

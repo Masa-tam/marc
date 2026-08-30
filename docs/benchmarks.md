@@ -1895,6 +1895,41 @@ aggregate 2,013,265,920 bytes. Both fit the explicit 2-GiB policy; reducing
 either exact aggregate by one byte fails without allocating the workspace.
 The dedicated runner and real Corpus matrix remain separate later stages.
 
+### Global BinaryTree 64 MiB comparison runner
+
+Run the fixed comparison in bounded batches, for example:
+
+```console
+py -3.14 tools/run_silesia_binary_tree_64m_experiment.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --corpus benchmarks/data/silesia/corpus --checkpoint benchmarks/data/silesia/results/binary-tree-64m-msvc.checkpoint.json --max-new-points 1 --compiler "MSVC 19.51" --generator "Visual Studio 18 2026" --architecture x64 --build-label windows-msvc-release
+```
+
+The dedicated runner always verifies the complete local twelve-member Corpus
+before launching a benchmark. It fixes the frame at 67,108,864 bytes, measures
+16- and 64-MiB windows, launches HashChain before BinaryTree Exact for every
+member, uses one timed iteration, and supplies the explicit 2-GiB internal-
+buffer policy. The 48 records are separate processes and run sequentially.
+The runner performs no download or network access.
+
+Each report must reconstruct its input and token count, contain complete
+diagnostics and finite timing, and report the exact planned workspace:
+268,959,744 bytes for HashChain or 1,946,157,056 bytes for BinaryTree. Every
+BinaryTree record must match its paired HashChain record in token, literal,
+match, and matched-byte counts plus the lowercase SHA-256 token fingerprint.
+
+The checkpoint accepts only a canonical record prefix and binds the revision,
+benchmark and tool hashes, Corpus manifest, complete fixed matrix, workspace
+expectations, and recorded environment. Repeat bounded runs with the same
+checkpoint until progress is `48/48`. Then omit `--max-new-points` and add:
+
+```console
+--output benchmarks/data/silesia/results/binary-tree-64m-msvc.json
+```
+
+This publishes `marc-silesia-binary-tree-64m-experiment-v1` from the validated
+checkpoint without relaunching completed points. A zero-point bounded run
+validates identity and progress only. The result is descriptive local evidence
+and does not change a codec, format, default strategy, or public profile.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

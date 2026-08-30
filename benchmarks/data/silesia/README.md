@@ -167,6 +167,22 @@ HashTree threshold-1,024 candidate. A four-MiB Exact fingerprint mismatch is
 fatal; failed performance or parse-opportunity gates remain recorded as valid
 negative evidence. Output remains ignored under `results/`.
 
+The fixed 64-MiB global BinaryTree experiment also uses a separate runner and
+independent checkpoint/result schemas. Run a small bounded batch on a 64-bit
+host with sufficient virtual-memory and commit headroom:
+
+```console
+py -3.14 tools/run_silesia_binary_tree_64m_experiment.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --corpus benchmarks/data/silesia/corpus --checkpoint benchmarks/data/silesia/results/binary-tree-64m-msvc.checkpoint.json --max-new-points 1 --compiler "MSVC 19.51" --generator "Visual Studio 18 2026" --architecture x64 --build-label windows-msvc-release
+```
+
+The runner verifies all twelve members before starting, executes only one
+record at a time, and may require about 1.9 GiB of BinaryTree workspace plus
+the 64-MiB input. Repeat the same command until it reports `48/48`; then remove
+`--max-new-points` and add `--output` under the ignored `results/` directory.
+Do not edit, combine, reorder, or move a checkpoint between builds. Allocation
+failure is a failed point and must not be worked around by silently changing
+the fixed frame, window, strategy, or memory policy.
+
 ## Usage policy
 
 - Corpus measurements are opt-in developer benchmarks, not CTest pass gates.

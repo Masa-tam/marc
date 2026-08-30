@@ -12802,3 +12802,15 @@ distance limits to 67,108,864 and the aggregate policy to 2,147,483,648. On a
 BinaryTree headroom and reject each exact aggregate reduced by one byte. Skip
 the fixed-value proof on a non-64-bit layout and perform no workspace
 allocation. Retain the existing 16-MiB boundary test unchanged.
+
+### TVG-0890
+
+Use dependency-free Python fixtures to freeze the dedicated 64-MiB runner's
+frame, windows, strategies, two-GiB limit, two exact workspace values, command
+line, 48-point canonical order, reconstruction identities, lowercase token
+fingerprint, finite timing, complete histogram, and five-field Exact pair.
+Require strict checkpoint keys and identity, canonical-prefix resume,
+zero-point validation without launch, a two-point bounded batch, and final
+48-record aggregation and window progression. Run the unchanged 16-MiB runner
+tests as a non-regression gate. Do not access or allocate the real Corpus in
+CTest.

@@ -3417,3 +3417,17 @@ defaults remain unchanged. On supported 64-bit layouts, HashChain requires
 1,946,157,056 workspace and 2,013,265,920 aggregate bytes. Exact capacities
 succeed and one byte short fails under both MSVC and ClangCL without a large
 allocation. The dedicated 48-point runner and Corpus execution remain pending.
+
+### BR-0216
+
+The dedicated 64-MiB Exact-finder Silesia runner is implemented without
+changing the earlier 16-MiB runner or schemas. It freezes 48 sequential
+HashChain/BinaryTree records, exact 2-GiB policy and workspace values,
+five-field Exact pairing, canonical-prefix checkpoint recovery, immutable
+revision/tool/Corpus/build identity, bounded batches, and complete-only final
+publication. Ten dependency-free fake-runner tests cover the full matrix and
+resume behavior without external Corpus access or large allocation; the ten
+existing 16-MiB runner tests remain green. Focused documentation and runner
+tests pass under MSVC and ClangCL. All 3,306 CTest entries pass in 264.62 and
+263.12 seconds, including complete schema compatibility in 109.34 and 104.26
+seconds. The real 48-point Corpus experiment remains an explicit local step.
