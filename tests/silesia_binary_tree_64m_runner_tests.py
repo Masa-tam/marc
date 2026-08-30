@@ -24,7 +24,7 @@ FINGERPRINT = "0123456789abcdef" * 4
 
 def _report(strategy: str, window: int = runner.WINDOWS[0],
             fingerprint: str = FINGERPRINT) -> dict:
-    workspace = runner.EXPECTED_WORKSPACE_BYTES[strategy]
+    workspace = runner.EXPECTED_WORKSPACE_BYTES[str(window)][strategy]
     common = {
         "mode": "frames-limited",
         "strategy": strategy,
@@ -89,8 +89,14 @@ class SilesiaBinaryTree64MiBRunnerTests(unittest.TestCase):
         self.assertEqual(runner.WINDOWS, (16_777_216, 67_108_864))
         self.assertEqual(runner.MAX_INTERNAL_BUFFERED_BYTES, 2_147_483_648)
         self.assertEqual(runner.EXPECTED_WORKSPACE_BYTES, {
-            runner.STRATEGIES[0]: 268_959_744,
-            runner.STRATEGIES[1]: 1_946_157_056,
+            str(runner.WINDOWS[0]): {
+                runner.STRATEGIES[0]: 67_633_152,
+                runner.STRATEGIES[1]: 486_539_264,
+            },
+            str(runner.WINDOWS[1]): {
+                runner.STRATEGIES[0]: 268_959_744,
+                runner.STRATEGIES[1]: 1_946_157_056,
+            },
         })
         self.assertEqual(runner.EXPECTED_RECORD_COUNT, 48)
 

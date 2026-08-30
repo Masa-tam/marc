@@ -27574,3 +27574,27 @@ both bounds.
   seconds, including complete schema compatibility in 109.34 and 104.26
   seconds. No real Corpus process, large workspace allocation, codec, format,
   ABI, profile, stream byte, or archive inventory changes in this stage.
+
+## CR-1113: 2026-08-31 - Correct runner workspace identity by window
+
+- Authoring method: ran one bounded real point, retained the runner's strict
+  rejection, and compared its 67,633,152-byte report with marc's checked
+  HashChain formula and earlier multi-window evidence.
+- References used: IR-0788; DD-1026; TVG-0891; the repository-owned finder
+  calculators, dedicated runner, fake fixtures, and rejected bounded report.
+- Known implementations intentionally not consulted: external allocator,
+  compressor, match-finder or benchmark source, test suite, patent,
+  pseudocode, and workspace policy.
+- Independent decisions: key workspace expectations by selected window and
+  strategy; retain the 64-MiB frame for both comparisons; preserve exact
+  report rejection; and restart only from the empty unpublished checkpoint.
+- Generated-code task description: reproduce the first bounded point, diagnose
+  the mismatch without weakening validation, correct all four fixed values,
+  update tests and documentation, and rerun the bounded point.
+- Similarity review: the correction follows marc's own `524,288 + 4W` and
+  `29W` formulas and introduces no external source expression.
+- Validation: the initial real `dickens` HashChain report was rejected before
+  record publication because its 16-MiB-window workspace was 67,633,152 bytes.
+  The corrected ten-test fake matrix passes; focused toolchain and repeated
+  real-point results are recorded after execution. No stream, format, ABI,
+  profile, finder, or benchmark executable changes.

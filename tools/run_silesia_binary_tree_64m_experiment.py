@@ -42,8 +42,14 @@ WINDOWS = (16_777_216, 67_108_864)
 ITERATIONS = 1
 MAX_INTERNAL_BUFFERED_BYTES = 2_147_483_648
 EXPECTED_WORKSPACE_BYTES = {
-    STRATEGIES[0]: 268_959_744,
-    STRATEGIES[1]: 1_946_157_056,
+    str(WINDOWS[0]): {
+        STRATEGIES[0]: 67_633_152,
+        STRATEGIES[1]: 486_539_264,
+    },
+    str(WINDOWS[1]): {
+        STRATEGIES[0]: 268_959_744,
+        STRATEGIES[1]: 1_946_157_056,
+    },
 }
 EXPECTED_MEMBER_COUNT = 12
 EXPECTED_RECORD_COUNT = EXPECTED_MEMBER_COUNT * len(WINDOWS) * len(STRATEGIES)
@@ -107,7 +113,7 @@ def _validate_report(
     ) != MAX_INTERNAL_BUFFERED_BYTES:
         raise RunnerError("benchmark internal-buffer policy changed")
     workspace = _require_integer(report, "workspace_bytes")
-    if workspace != EXPECTED_WORKSPACE_BYTES[strategy]:
+    if workspace != EXPECTED_WORKSPACE_BYTES[str(window_size)][strategy]:
         raise RunnerError("benchmark workspace changed")
     if workspace != _require_integer(report, WORKSPACE_KEYS[strategy]):
         raise RunnerError("generic and strategy workspace fields disagree")

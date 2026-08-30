@@ -12806,11 +12806,21 @@ allocation. Retain the existing 16-MiB boundary test unchanged.
 ### TVG-0890
 
 Use dependency-free Python fixtures to freeze the dedicated 64-MiB runner's
-frame, windows, strategies, two-GiB limit, two exact workspace values, command
-line, 48-point canonical order, reconstruction identities, lowercase token
+frame, windows, strategies, two-GiB limit, four window/strategy workspace
+values, command line, 48-point canonical order, reconstruction identities,
+lowercase token
 fingerprint, finite timing, complete histogram, and five-field Exact pair.
 Require strict checkpoint keys and identity, canonical-prefix resume,
 zero-point validation without launch, a two-point bounded batch, and final
 48-record aggregation and window progression. Run the unchanged 16-MiB runner
 tests as a non-regression gate. Do not access or allocate the real Corpus in
 CTest.
+
+### TVG-0891
+
+Freeze all four strategy/window workspace values in the fake-runner fixture:
+67,633,152 and 486,539,264 bytes at 16 MiB, then 268,959,744 and 1,946,157,056
+bytes at 64 MiB. Validate every synthetic report against its selected window
+and preserve the complete 48-point, checkpoint, and Exact-pair tests. Use the
+first bounded real report only as diagnostic evidence; it must not enter the
+checkpoint until normal validation succeeds.

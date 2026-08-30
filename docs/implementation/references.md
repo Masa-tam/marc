@@ -7153,3 +7153,11 @@ runner, fixed Silesia verifier, explicit-limit report parser, and atomic local
 checkpoint convention. No external benchmark runner, compressor, match-finder
 source, Corpus tool, checkpoint format, test suite, archive, patent,
 pseudocode, or performance implementation was consulted.
+
+### IR-0788
+
+The window-specific runner-workspace correction uses IR-0787, DD-1025,
+TVG-0890, the repository-owned checked HashChain and BinaryTree formulas, the
+first bounded Silesia report, and existing multi-window 16-MiB experiment
+evidence. No external benchmark, allocator, compressor, match-finder source,
+test suite, patent, pseudocode, or workspace convention was consulted.

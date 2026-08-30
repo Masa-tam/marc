@@ -21076,3 +21076,17 @@ fixed build description, two-GiB policy, and exact finder workspaces. Require
 the five-field Exact pair contract before accepting BinaryTree and prohibit
 partial final output. Keep real Corpus execution opt-in, sequential, and local;
 the fake-runner test matrix performs no large allocation or network access.
+
+## DD-1026: Validate Exact workspace by window rather than frame
+
+- Date: 2026-08-31
+- Status: accepted
+
+Correct the dedicated experiment contract so expected finder workspace is a
+function of both strategy and selected window. With the unchanged 64-MiB frame,
+the 16-MiB window requires 67,633,152 HashChain bytes or 486,539,264 BinaryTree
+bytes; the 64-MiB window retains 268,959,744 or 1,946,157,056 bytes. Keep all
+four values in checkpoint identity and require the corresponding report value
+exactly. The first real point correctly failed before checkpoint publication,
+so discard only its empty checkpoint and restart after the correction. Change
+no benchmark, finder, format, ABI, profile, or memory limit.

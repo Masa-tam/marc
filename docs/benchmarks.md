@@ -1911,10 +1911,12 @@ buffer policy. The 48 records are separate processes and run sequentially.
 The runner performs no download or network access.
 
 Each report must reconstruct its input and token count, contain complete
-diagnostics and finite timing, and report the exact planned workspace:
-268,959,744 bytes for HashChain or 1,946,157,056 bytes for BinaryTree. Every
-BinaryTree record must match its paired HashChain record in token, literal,
-match, and matched-byte counts plus the lowercase SHA-256 token fingerprint.
+diagnostics and finite timing, and report the exact planned workspace. At a
+16-MiB window this is 67,633,152 bytes for HashChain and 486,539,264 bytes for
+BinaryTree; at a 64-MiB window it is 268,959,744 and 1,946,157,056 bytes.
+Every BinaryTree record must match its paired HashChain record in token,
+literal, match, and matched-byte counts plus the lowercase SHA-256 token
+fingerprint.
 
 The checkpoint accepts only a canonical record prefix and binds the revision,
 benchmark and tool hashes, Corpus manifest, complete fixed matrix, workspace

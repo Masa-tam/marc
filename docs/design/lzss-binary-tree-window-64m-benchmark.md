@@ -41,18 +41,21 @@ and SHA-256 manifest.
 
 ## 3. Exact memory policy
 
-For `F = 67,108,864`, the current checked 64-bit calculators require:
+For frame `F = 67,108,864` and window `W`, the current checked 64-bit
+calculators require:
 
 ```text
-HashChain workspace  = 524,288 + 4F
-                     = 268,959,744 bytes
-HashChain aggregate  = F + workspace
-                     = 336,068,608 bytes
+W = 16,777,216:
+HashChain workspace  = 524,288 + 4W = 67,633,152 bytes
+HashChain aggregate  = F + workspace = 134,742,016 bytes
+BinaryTree workspace = 29W = 486,539,264 bytes
+BinaryTree aggregate = F + workspace = 553,648,128 bytes
 
-BinaryTree workspace = 29F
-                     = 1,946,157,056 bytes
-BinaryTree aggregate = F + workspace
-                     = 2,013,265,920 bytes
+W = 67,108,864:
+HashChain workspace  = 524,288 + 4W = 268,959,744 bytes
+HashChain aggregate  = F + workspace = 336,068,608 bytes
+BinaryTree workspace = 29W = 1,946,157,056 bytes
+BinaryTree aggregate = F + workspace = 2,013,265,920 bytes
 
 explicit policy      = 2,147,483,648 bytes (2 GiB)
 BinaryTree headroom  = 134,217,728 bytes
@@ -61,9 +64,10 @@ BinaryTree headroom  = 134,217,728 bytes
 The executable remains authoritative: it calculates the selected workspace,
 checks input plus workspace against the explicit policy, and rejects overflow,
 unsupported native extents, short or misaligned storage, and aggregate excess
-before processing. The runner requires the report to contain the exact
-workspace above and the common 2-GiB policy. One byte below each aggregate is
-covered by executable tests without attempting the full Corpus run.
+before processing. The runner requires the report to contain the exact window-
+specific workspace above and the common 2-GiB policy. One byte below each
+64-MiB-window aggregate is covered by executable tests without attempting the
+full Corpus run.
 
 The experiment requires a 64-bit process. It does not lower operating-system
 memory safety, request parallel records, or promise that every host can commit
