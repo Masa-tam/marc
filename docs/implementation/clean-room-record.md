@@ -27598,3 +27598,35 @@ both bounds.
   The corrected ten-test fake matrix passes; focused toolchain and repeated
   real-point results are recorded after execution. No stream, format, ABI,
   profile, finder, or benchmark executable changes.
+
+## CR-1114: 2026-09-01 - Complete the fixed 64-MiB Silesia evidence
+
+- Authoring method: resumed marc's revision-bound canonical checkpoint one
+  record at a time, inspected each completed report, then used the unrestricted
+  first-party runner path to revalidate all records and generate the final
+  aggregate JSON without relaunching a benchmark.
+- References used: IR-0789; DD-1027; TVG-0892; the repository-owned fixed
+  runner, checked finder reports, verified local Silesia manifest, atomic
+  checkpoint, and final-result schema.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder or benchmark source, published performance result, runner,
+  Corpus tool, test suite, patent, pseudocode, and optimization description.
+- Independent decisions: treat aggregate speed and token reduction as
+  descriptive; require all Exact pairs to agree before analysis; retain the
+  large workspace cost explicitly; and advance only an opt-in candidate rather
+  than a default, automatic selector, or public profile.
+- Generated-code task description: execute each remaining canonical point,
+  preserve checkpoint identity, report per-point diagnostics, publish the
+  completed result, verify the full grid and pair identities, and record the
+  evidence boundary without changing code or format.
+- Similarity review: the execution, aggregation, and conclusions use only
+  marc's independently designed benchmark, runner, and documentation
+  contracts. No external implementation expression or benchmark conclusion
+  was imported.
+- Validation: 48/48 records completed at revision
+  `e0c6dece9ea1395b9640355845fc279c589208af`; 24/24 Exact pairs matched;
+  no canonical key was missing or duplicated; and the generated 97,712-byte
+  result has SHA-256
+  `a1d0cc3566ada16da64f6f8f4239e1899db0586eb5ac08bec1cec6c30a7adad9`.
+  The worktree remained clean before documentation was added. No codec,
+  format, ABI, profile, stream byte, default, or archive inventory changed.

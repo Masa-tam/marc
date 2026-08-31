@@ -1932,6 +1932,40 @@ checkpoint without relaunching completed points. A zero-point bounded run
 validates identity and progress only. The result is descriptive local evidence
 and does not change a codec, format, default strategy, or public profile.
 
+### Recorded global BinaryTree 64 MiB result
+
+The fixed matrix completed on 2026-09-01 at revision
+`e0c6dece9ea1395b9640355845fc279c589208af` using MSVC 19.51.36252.0,
+Visual Studio 18 2026, x64 Release, Windows 11 build 26200, and an AMD64 Family
+25 Model 97 processor. The validated final JSON contains all 48 canonical
+records and has SHA-256
+`a1d0cc3566ada16da64f6f8f4239e1899db0586eb5ac08bec1cec6c30a7adad9`.
+
+Across 211,938,580 input bytes, the aggregates were:
+
+| Window | Strategy | Time (s) | MiB/s | Tokens | Maximum workspace |
+|---:|---|---:|---:|---:|---:|
+| 16 MiB | HashChain Exact | 1,243.214 | 0.162579 | 32,084,817 | 67,633,152 |
+| 16 MiB | BinaryTree Exact | 327.042 | 0.618026 | 32,084,817 | 486,539,264 |
+| 64 MiB | HashChain Exact | 2,178.390 | 0.092784 | 31,670,034 | 268,959,744 |
+| 64 MiB | BinaryTree Exact | 270.492 | 0.747233 | 31,670,034 | 1,946,157,056 |
+
+BinaryTree produced the exact paired token summary and fingerprint for every
+member and won seven of twelve members at each window. Its aggregate
+throughput was 3.801 times HashChain at 16 MiB and 8.053 times HashChain at
+64 MiB. Increasing the window reduced total tokens by 414,783, or 1.293%, and
+increased matched-byte coverage by 0.166 percentage points. The gain was not
+uniform: members smaller than 16 MiB had no new match opportunity, while the
+large `mozilla`, `nci`, and `webster` members reduced token count by about
+2.70%, 2.85%, and 2.98% respectively.
+
+These one-iteration measurements justify continued investigation of an
+explicit high-memory 64-MiB profile and BinaryTree implementation. They do not
+justify changing the HashChain default, automatic strategy selection, or
+raising limits without caller authorization. BinaryTree's approximately
+1.81-GiB finder workspace remains a material cost and must stay visible in
+workspace queries and profile policy.
+
 ## Reporting results
 
 Measurements are descriptive, not stable tests. Record compiler, build type,

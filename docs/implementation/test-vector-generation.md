@@ -12824,3 +12824,27 @@ bytes at 64 MiB. Validate every synthetic report against its selected window
 and preserve the complete 48-point, checkpoint, and Exact-pair tests. Use the
 first bounded real report only as diagnostic evidence; it must not enter the
 checkpoint until normal validation succeeds.
+
+### TVG-0892
+
+Execute the fixed real Silesia matrix as 48 independent processes in canonical
+member, window, and strategy order, saving only completely validated records
+to the revision-bound checkpoint. After progress reaches 48/48, invoke the
+same runner without a point limit and with final output; require it to launch
+no missing benchmark, revalidate the full manifest and checkpoint, and publish
+exactly 48 records under
+`marc-silesia-binary-tree-64m-experiment-v1`.
+
+Require twelve members, two windows, two strategies, 24 complete Exact pairs,
+no duplicate key, and equality of token, literal, match, matched-byte counts
+and token fingerprint within every pair. Record aggregate throughput, member
+wins, matched-byte coverage, token reduction, and maximum workspace as
+descriptive evidence only. Preserve a clean worktree because the external
+Corpus, checkpoint, and final JSON remain ignored local artifacts.
+
+Validation: all 48 records completed at revision
+`e0c6dece9ea1395b9640355845fc279c589208af`; all 24 Exact pairs matched;
+the final JSON contains 12 members, two windows, two strategies, no duplicate
+or bad pair, and SHA-256
+`a1d0cc3566ada16da64f6f8f4239e1899db0586eb5ac08bec1cec6c30a7adad9`.
+The unrestricted publication completed without launching a new benchmark.

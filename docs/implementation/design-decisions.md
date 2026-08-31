@@ -21090,3 +21090,24 @@ four values in checkpoint identity and require the corresponding report value
 exactly. The first real point correctly failed before checkpoint publication,
 so discard only its empty checkpoint and restart after the correction. Change
 no benchmark, finder, format, ABI, profile, or memory limit.
+
+## DD-1027: Continue the 64-MiB candidate as an explicit high-memory profile
+
+- Date: 2026-09-01
+- Status: accepted
+
+Accept the completed fixed Silesia matrix as sufficient descriptive evidence
+to proceed from candidate review to format reservation and shared checked
+layout implementation. The 64-MiB window reduced aggregate token count by
+414,783, or 1.293%, under the same 64-MiB frame. BinaryTree preserved every
+paired Exact summary and fingerprint, won seven of twelve members at both
+windows, and measured 8.053 times aggregate HashChain throughput at 64 MiB.
+Retain the material memory tradeoff: the 64-MiB finder workspaces are
+268,959,744 bytes for HashChain and 1,946,157,056 bytes for BinaryTree.
+
+Treat the result as evidence for an explicit opt-in profile only. Do not
+change HashChain defaults, choose a strategy automatically, infer limits from
+stream metadata, or claim public codec completion. Reserve the new identities
+before implementation, preserve all released pairs, and continue through
+shared constants, checked layouts, reciprocal rejection, hand vectors,
+fixed-memory fuzzing, and backend-by-backend lifecycle admission.

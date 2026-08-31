@@ -190,3 +190,12 @@ by every older context.
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
 one-shot round trip.
+
+Stages one through three completed on 2026-09-01. The fixed 48-point Silesia
+matrix validated every Exact strategy pair and measured a 414,783-token
+aggregate reduction, or 1.293%, when moving from a 16-MiB to a 64-MiB window
+under the same 64-MiB frame. BinaryTree won seven of twelve members at each
+window and was 8.053 times HashChain in aggregate throughput at 64 MiB, at the
+cost of 1,946,157,056 bytes of finder workspace. The evidence is sufficient to
+retain the candidate and proceed to stage four as an explicit high-memory
+profile; it is not evidence for a new default or automatic strategy selector.

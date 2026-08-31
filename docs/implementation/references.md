@@ -7161,3 +7161,13 @@ TVG-0890, the repository-owned checked HashChain and BinaryTree formulas, the
 first bounded Silesia report, and existing multi-window 16-MiB experiment
 evidence. No external benchmark, allocator, compressor, match-finder source,
 test suite, patent, pseudocode, or workspace convention was consulted.
+
+### IR-0789
+
+The completed 64-MiB candidate review uses IR-0784 through IR-0788,
+DD-1022 through DD-1026, TVG-0887 through TVG-0891, the repository-owned
+fixed runner, verified external Silesia files, immutable local checkpoint,
+canonical final-result generator, and first-party Exact match-finder reports.
+No external compressor, match-finder implementation, benchmark result,
+performance methodology, source code, archive, test suite, patent,
+pseudocode, or optimization description was consulted.

@@ -3431,3 +3431,20 @@ existing 16-MiB runner tests remain green. Focused documentation and runner
 tests pass under MSVC and ClangCL. All 3,306 CTest entries pass in 264.62 and
 263.12 seconds, including complete schema compatibility in 109.34 and 104.26
 seconds. The real 48-point Corpus experiment remains an explicit local step.
+
+### BR-0217
+
+The fixed 64-MiB Exact-finder Silesia experiment completed all 48 canonical
+records at revision `e0c6dece9ea1395b9640355845fc279c589208af`. Every one
+of the 24 member/window BinaryTree records matched its HashChain baseline in
+token, literal, match, matched-byte counts, and token SHA-256 fingerprint.
+Across 211,938,580 bytes, BinaryTree won seven of twelve members at each
+window and measured 3.801 and 8.053 times aggregate HashChain throughput at
+16 and 64 MiB. The larger window reduced total token count by 414,783, or
+1.293%, while maximum finder workspace rose to 268,959,744 HashChain bytes or
+1,946,157,056 BinaryTree bytes. The validated result schema is
+`marc-silesia-binary-tree-64m-experiment-v1`; its local JSON SHA-256 is
+`a1d0cc3566ada16da64f6f8f4239e1899db0586eb5ac08bec1cec6c30a7adad9`.
+This descriptive evidence admits the candidate to format-reservation design,
+not to a public profile, changed default, automatic selector, or relaxed
+caller memory authorization.

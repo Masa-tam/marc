@@ -190,12 +190,23 @@ process at a time and provides no automatic retry or strategy substitution.
 6. Record the result and review whether the measured benefit justifies format
    reservation and shared primitive implementation.
 
-Steps one through four are complete. The dedicated runner implements the two
+All six stages are complete. The dedicated runner implemented the two
 independent v1 schemas, canonical-prefix checkpoint recovery, exact workspace
 and paired-token validation, bounded batches, and final 48-record publication.
-Dependency-free fake-runner tests cover the full grid and resume path without
-allocating the planned workspace or requiring the external Corpus. Real Corpus
-execution remains the next explicit, opt-in evidence stage.
+Dependency-free fake-runner tests covered the full grid and resume path without
+allocating the planned workspace or requiring the external Corpus. The real
+matrix completed at revision `e0c6dece9ea1395b9640355845fc279c589208af`;
+all 24 HashChain/BinaryTree pairs had identical summaries and fingerprints.
+BinaryTree won seven of twelve members at both windows and delivered aggregate
+throughput ratios of 3.801 at 16 MiB and 8.053 at 64 MiB. The larger window
+reduced total token count by 414,783, or 1.293%, while requiring finder
+workspace of 268,959,744 bytes for HashChain or 1,946,157,056 bytes for
+BinaryTree.
+
+This evidence supports continuing the explicitly selected, high-memory
+64-MiB candidate through format reservation and shared checked-layout work. It
+does not select BinaryTree automatically, change HashChain defaults, or admit
+a public profile by itself.
 
 Even a strong BinaryTree result does not change the HashChain initializer
 default or select a strategy automatically. Even a weak compression gain does
