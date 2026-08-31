@@ -21111,3 +21111,24 @@ stream metadata, or claim public codec completion. Reserve the new identities
 before implementation, preserve all released pairs, and continue through
 shared constants, checked layouts, reciprocal rejection, hand vectors,
 fixed-memory fuzzing, and backend-by-backend lifecycle admission.
+
+## DD-1028: Reserve the inseparable 64 MiB typed-token identity
+
+- Date: 2026-09-01
+- Status: accepted
+
+Reserve dictionary variant 6 and context variant 5 as the inseparable Format
+2 pair `2/6 + 1/5`. Variant 6 preserves the 16-byte LZSS parameter layout and
+extends only the permitted window and distance ceiling to 67,108,864 bytes.
+Variant 5 preserves the 31 context-selection rules and expands only the eight
+distance alphabets through class 26, producing 4,598 flattened model entries
+and checked common `8F` and `36T` decision bounds. Freeze every earlier pair
+and reject reciprocal crossings before allocation or publication.
+
+This reservation assigns decoder-visible meaning but admits no complete
+entropy triple. Dynamic Range `3/2`, rANS `4/3`, tANS `5/2`, Blocked Huffman
+`2/2`, and Adaptive Huffman `1/2` remain unsupported with the new pair until
+each backend completes its independent checked-layout and lifecycle stages.
+Assign no public profile, C ABI value, CLI or benchmark name, fuzz selector,
+default, resource helper, or interoperability archive. Retain explicit local
+memory authorization and encoder-local HashChain/BinaryTree selection.

@@ -12848,3 +12848,20 @@ the final JSON contains 12 members, two windows, two strategies, no duplicate
 or bad pair, and SHA-256
 `a1d0cc3566ada16da64f6f8f4239e1899db0586eb5ac08bec1cec6c30a7adad9`.
 The unrestricted publication completed without launching a new benchmark.
+
+### TVG-0893
+
+Freeze dictionary/context pairing so only `2/6 + 1/5` can describe the
+reserved 64-MiB family. Before backend admission, require every crossing with
+variants 2 through 5 and contexts 1 through 4 to fail before allocation or
+output publication, and require the exact reserved pair to remain unsupported
+when combined with each current entropy identity.
+
+Hand-check distances 16,777,217, 33,554,432, and 67,108,864 as class/bypass
+pairs `24/1`, `25/0`, and `26/0`. Use bounded overlap-built history rather
+than a checked-in giant literal fixture for the inclusive maximum. Exercise
+the 4,598-entry layout, `8F`, `36T`, every backend descriptor and payload
+ceiling, and every 64-bit workspace aggregate at equality and one byte short.
+Preserve all schema-52 archives and earlier canonical bytes. Add no archive
+until one backend's complete private, public, tool, fuzz, and interoperability
+lifecycle is admitted.

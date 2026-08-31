@@ -1,8 +1,8 @@
 # LZSS contextual 64 MiB window candidate
 
-Status: pre-implementation design. No Format 2 identity, public profile,
-decoder admission, CLI name, or interoperability archive is assigned by this
-document.
+Status: Format 2 dictionary/context identity reserved. No backend triple,
+public profile, decoder admission, CLI name, or interoperability archive is
+assigned by this document.
 
 ## Purpose
 
@@ -27,16 +27,16 @@ HashChain Exact and BinaryTree Exact remain encoder-local and byte-identical.
 
 ## Candidate decoder-visible identity
 
-Subject to implementation and validation, the next exact Format 2 pair would
-be:
+Format 2 reserves the next exact pair as:
 
 ```text
 dictionary algorithm ID 2, dictionary variant 6
 context-model algorithm ID 1, context variant 5
 ```
 
-Variants 6 and 5 must occur together. The pair is reserved only after the
-format document is updated; this design alone admits no serialized value. Each
+Variants 6 and 5 must occur together. Every crossed pair is contradictory and
+must be rejected before allocation or publication. The reservation assigns
+the pair's decoder-visible meaning but admits no complete entropy triple. Each
 entropy backend retains its existing algorithm and variant identity and needs
 an independent validator, payload, workspace, lifecycle, fuzz, and
 interoperability proof before publication.
@@ -67,7 +67,7 @@ alphabets grow from 25 to 27 symbols:
 | 20..22 | 3 | 8 | match-length class |
 | 23..30 | 8 | 27 | match-distance class |
 
-The flattened model contains 4,598 entries:
+The flattened model contains exactly 4,598 entries:
 
 ```text
 3*2 + 17*256 + 3*8 + 8*27 = 4,598
@@ -191,11 +191,13 @@ No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
 one-shot round trip.
 
-Stages one through three completed on 2026-09-01. The fixed 48-point Silesia
+Stages one through four completed on 2026-09-01. The fixed 48-point Silesia
 matrix validated every Exact strategy pair and measured a 414,783-token
 aggregate reduction, or 1.293%, when moving from a 16-MiB to a 64-MiB window
 under the same 64-MiB frame. BinaryTree won seven of twelve members at each
 window and was 8.053 times HashChain in aggregate throughput at 64 MiB, at the
 cost of 1,946,157,056 bytes of finder workspace. The evidence is sufficient to
-retain the candidate and proceed to stage four as an explicit high-memory
-profile; it is not evidence for a new default or automatic strategy selector.
+retain the candidate as an explicit high-memory profile. Format 2 now reserves
+only the inseparable `2/6 + 1/5` pair; every backend triple and public surface
+remains unavailable until its later stage. The evidence is not a basis for a
+new default or automatic strategy selector.

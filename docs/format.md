@@ -7565,3 +7565,80 @@ frozen 61-entry schema-51 inventory. Generation requires exact identity
 byte-identically. Compatibility removes only archive 62 to reconstruct schema
 51 before traversing the unchanged legacy chain. This admission adds no
 serialized rule.
+
+### Reserved 64 MiB LZSS field-context family
+
+Format 2.0 reserves dictionary algorithm/variant `2/6`.
+It reserves context-model algorithm/variant `1/5` with it. They MUST occur
+together. Dictionary variant 6
+with context variants 1 through 4, context variant 5 with dictionary variants
+2 through 5, and every other crossing are contradictory. A decoder MUST reject
+such a crossing before allocating token, model, payload, finder, or raw-output
+storage and before publishing output.
+
+Dictionary variant 6 retains the 16-byte parameter layout, minimum match
+length 5, maximum match length 258, overlap-copy semantics, longest-match
+selection, nearest-distance tie breaking, and per-frame reset. It permits a
+window no larger than 67,108,864 bytes. The reference profile uses a
+67,108,864-byte frame and window; because history resets at the frame boundary,
+its greatest reachable distance is `frame_size - minimum_match_length`. A
+larger independently bounded primitive frame may exercise the inclusive
+67,108,864 distance ceiling. This never permits cross-frame history.
+
+Context variant 5 retains 31 contexts and every context-selection rule. Only
+contexts 23 through 30 expand to distance alphabet 27. It admits distance
+classes 0 through 26 and at most 26 LSB-first bypass bits. The layout has
+exactly 4,598 flattened model entries:
+
+```text
+3*2 + 17*256 + 3*8 + 8*27 = 4,598
+```
+
+For positive distance `D`, the distance class remains `floor(log2(D))` and
+the bypass value remains `D - 2^distance_class`. The first distance beyond the
+16-MiB family, 16,777,217, uses class 24 with bypass value 1. Distances
+33,554,432 and 67,108,864 use classes 25 and 26 respectively, each with an
+all-zero bypass value of the corresponding width. An older context variant
+MUST reject classes outside its own frozen alphabet.
+
+One Match has at most three modeled symbols, seven length-extra bits, and 26
+distance-extra bits, or 36 entropy decisions for at least five raw bytes. A raw
+frame of `F` bytes therefore uses checked common bounds:
+
+```text
+token_count    <= F
+event_count    <= 2F
+decision_count <= 8F
+decision_count <= 36*token_count
+```
+
+The selected entropy backend MUST additionally enforce its own tighter model,
+descriptor, payload, and complete-frame limits. At reference
+`F = 67,108,864`, the reserved ceilings are:
+
+| Entropy identity | Model or table ceiling | Payload ceiling | Complete-frame ceiling |
+|---|---:|---:|---:|
+| Dynamic Range `3/2` | 4,598 entries | `16F+5 = 1,073,741,829` | `16F+85 = 1,073,741,909` |
+| rANS `4/3` | 9,185 descriptor bytes; 126,976 decode entries | `16F+8 = 1,073,741,832` | `16F+9,257 = 1,073,751,081` |
+| tANS `5/2` | 9,189 descriptor bytes; 131,072 table entries | `12F+2 = 805,306,370` | `12F+9,255 = 805,315,623` |
+| Blocked Huffman `2/2` | 2,606 descriptor bytes; 35 decode tables | `15F = 1,006,632,960` | `15F+2,670 = 1,006,635,630` |
+| Adaptive Huffman `1/2` | 9,227 nodes; 4,598 symbol indices | `267F/8 = 2,239,758,336` | `267F/8+80 = 2,239,758,416` |
+
+These values define format validation ceilings, not permission to allocate.
+Every addition and multiplication MUST be checked in the implementation, and
+a platform that cannot represent every required region MUST fail before
+publishing a workspace requirement.
+
+No complete entropy triple is admitted by this reservation. Current encoders,
+decoders, factories, and stream-header validators must reject the pair as
+unsupported even when it is combined with one of the five listed entropy
+identities. Backend admission is additive and requires its own exact identity,
+checked layouts, malformed-input tests, streaming lifecycle, fixed-memory fuzz
+boundary, public API and tool lifecycle, and interoperability archive.
+
+No public selector, C ABI profile value, CLI or benchmark name, fuzz selector,
+resource helper, default, or interoperability schema entry is assigned here.
+Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
+BinaryTree Exact remain encoder-local choices and are not serialized or
+selected automatically. All earlier dictionary/context pairs, backend triples,
+canonical archives, default limits, and bytes retain their frozen meanings.

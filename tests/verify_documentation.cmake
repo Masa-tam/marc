@@ -316,6 +316,7 @@ foreach(experimental_design IN ITEMS
         "lzss-binary-tree-window-16m-benchmark.md"
         "lzss-contextual-window-1m.md"
         "lzss-contextual-window-16m.md"
+        "lzss-contextual-window-64m.md"
         "lzss-contextual-rans-window-16m.md"
         "lzss-contextual-tans-window-16m.md"
         "lzss-contextual-blocked-huffman-window-16m.md"
@@ -328,6 +329,31 @@ foreach(experimental_design IN ITEMS
     if(NOT EXISTS "${experimental_design_path}")
         message(FATAL_ERROR
             "Missing experimental design document: ${experimental_design}")
+    endif()
+endforeach()
+
+set(lzss_contextual_window_64m_design
+    "${source_dir}/docs/design/lzss-contextual-window-64m.md")
+file(READ "${lzss_contextual_window_64m_design}"
+    lzss_contextual_window_64m_content)
+foreach(required_window_64m_term IN ITEMS
+        "dictionary algorithm ID 2, dictionary variant 6"
+        "context-model algorithm ID 1, context variant 5"
+        "67,108,864-byte frame and window"
+        "exactly 4,598 entries"
+        "or 36 decisions for at least"
+        "decision_count <= 8F"
+        "2,239,758,416"
+        "Variants 6 and 5 must occur together"
+        "Every crossed pair is contradictory"
+        "No backend triple,"
+        "HashChain Exact and BinaryTree Exact remain encoder-local")
+    string(FIND "${lzss_contextual_window_64m_content}"
+        "${required_window_64m_term}" required_window_64m_term_offset)
+    if(required_window_64m_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 64 MiB contextual LZSS design: "
+            "${required_window_64m_term}")
     endif()
 endforeach()
 
@@ -604,6 +630,26 @@ foreach(required_16m_format_term IN ITEMS
         message(FATAL_ERROR
             "Incomplete 16 MiB typed format reservation: "
             "${required_16m_format_term}")
+    endif()
+endforeach()
+foreach(required_64m_format_term IN ITEMS
+        "### Reserved 64 MiB LZSS field-context family"
+        "dictionary algorithm/variant `2/6`"
+        "context-model algorithm/variant `1/5`"
+        "exactly 4,598 flattened"
+        "decision_count <= 8F"
+        "decision_count <= 36*token_count"
+        "16F+85 = 1,073,741,909"
+        "No complete entropy triple is admitted"
+        "must reject the pair as"
+        "unsupported even when"
+        "No public selector")
+    string(FIND "${format_content}" "${required_64m_format_term}"
+        required_64m_format_term_offset)
+    if(required_64m_format_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 64 MiB typed format reservation: "
+            "${required_64m_format_term}")
     endif()
 endforeach()
 

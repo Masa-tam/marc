@@ -3448,3 +3448,14 @@ window and measured 3.801 and 8.053 times aggregate HashChain throughput at
 This descriptive evidence admits the candidate to format-reservation design,
 not to a public profile, changed default, automatic selector, or relaxed
 caller memory authorization.
+
+### BR-0218
+
+Format 2 now reserves the inseparable 64-MiB Contextual LZSS pair `2/6 + 1/5`.
+The reservation fixes a 67,108,864-byte window ceiling, distance classes
+through 26, exactly 4,598 flattened model entries, and common checked `8F` and
+`36T` decision bounds. All crossings with earlier dictionary or context
+variants are contradictory. No complete entropy triple, runtime selector,
+public ABI value, CLI or benchmark name, fuzz selector, default, helper, or
+interoperability archive is admitted; current implementations must continue
+to reject the pair as unsupported until a backend completes its staged proof.

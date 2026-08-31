@@ -27630,3 +27630,31 @@ both bounds.
   `a1d0cc3566ada16da64f6f8f4239e1899db0586eb5ac08bec1cec6c30a7adad9`.
   The worktree remained clean before documentation was added. No codec,
   format, ABI, profile, stream byte, default, or archive inventory changed.
+
+## CR-1115: 2026-09-01 - Reserve the 64-MiB Contextual LZSS identity
+
+- Authoring method: derived the next additive Format 2 dictionary/context pair
+  from marc's completed candidate design, released typed-token families,
+  checked decision and backend ceilings, and completed first-party Silesia
+  evidence before implementation.
+- References used: IR-0790; DD-1028; TVG-0893; the repository-owned 64-MiB
+  candidate design, existing Format 2 family sections, backend resource
+  formulas, and documentation-layout validator.
+- Known implementations intentionally not consulted: external compressor,
+  entropy coder or stream-format source, archive, test vector, test suite,
+  patent, pseudocode, memory policy, and optimization description.
+- Independent decisions: reserve only inseparable pair `2/6 + 1/5`; retain the
+  16-byte dictionary layout and 31 contexts; freeze `8F`, `36T`, 4,598 entries,
+  and backend ceilings; reject every crossing; and keep all backend triples and
+  public surfaces unavailable pending independent admission.
+- Generated-code task description: synchronize the design index, normative
+  format reservation, decision, test-vector, provenance, readiness, and
+  documentation-validator contracts without implementing or admitting a
+  runtime selector.
+- Similarity review: all prose and arithmetic were synthesized from marc's
+  first-party specifications, checked formulas, and recorded measurements. No
+  external implementation expression or distinctive test structure was used.
+- Validation: `marc_documentation_layout` passes under both supported Windows
+  Release build trees with the 600-second per-test limit, and the final diff is
+  whitespace-clean. Codec and interoperability tests are unchanged because
+  this stage reserves documentation and validator contracts only.

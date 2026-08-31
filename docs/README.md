@@ -35,6 +35,9 @@ navigate chronological development records.
 - [LZSS contextual 16 MiB window](design/lzss-contextual-window-16m.md): the
   reserved post-0.4.0 identity, retained `7F` boundary, and explicit one-GiB
   aggregate-policy gate.
+- [LZSS contextual 64 MiB window](design/lzss-contextual-window-64m.md): the
+  reserved high-memory identity, expanded `8F` boundary, and staged backend
+  admission contract.
 - [LZSS contextual rANS 4 MiB window](design/lzss-contextual-rans-window-4m.md):
   the second backend's descriptor, payload, and 128-MiB workspace proof.
 - [LZSS contextual rANS 16 MiB window](design/lzss-contextual-rans-window-16m.md):

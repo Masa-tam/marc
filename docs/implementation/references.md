@@ -7171,3 +7171,13 @@ canonical final-result generator, and first-party Exact match-finder reports.
 No external compressor, match-finder implementation, benchmark result,
 performance methodology, source code, archive, test suite, patent,
 pseudocode, or optimization description was consulted.
+
+### IR-0790
+
+The 64-MiB Format 2 identity reservation uses IR-0784 through IR-0789,
+DD-1022 through DD-1027, TVG-0887 through TVG-0892, the completed candidate
+design, marc's released 64-KiB through 16-MiB typed-token representations,
+current backend ceiling formulas, and the repository documentation validator.
+No external compressor, entropy coder, stream format, source code, archive,
+test vector, patent, pseudocode, memory policy, or optimization description
+was consulted.
