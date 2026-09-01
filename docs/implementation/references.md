@@ -7218,3 +7218,12 @@ workspace query, public streaming factory, and common profile-application
 contract. No external compressor, range coder, allocator, C API, source,
 tests, vectors, patent, pseudocode, memory policy, or optimization description
 was consulted.
+
+### IR-0795
+
+The 64-MiB Contextual Dynamic Range CLI and benchmark admission uses IR-0794,
+DD-1032, TVG-0897, the repository-owned exact-name dispatchers, C profile
+helper, workspace allocator, CLI round-trip harness, and benchmark-report
+validator. No external compressor, range coder, command-line tool, benchmark,
+source, tests, vectors, patent, pseudocode, or optimization description was
+consulted.

@@ -80,7 +80,8 @@ dictionary/context identity `2/2 + 1/1`.
 `lzss-contextual-dynamic-range-1m` selects its additive 1 MiB identity
 `2/3 + 1/2`. `lzss-contextual-dynamic-range-4m` selects exact identity
 `2/4 + 1/3`, and `lzss-contextual-dynamic-range-16m` selects exact identity
-`2/5 + 1/4`. Decode requires the same selector used for encode; none of these
+`2/5 + 1/4`. `lzss-contextual-dynamic-range-64m` selects exact identity
+`2/6 + 1/5`. Decode requires the same selector used for encode; none of these
 names auto-detects or admits another profile. All are intentionally outside
 the stable 42-profile Format 1 inventory above. `lzss-contextual-rans` selects
 the corresponding Format 2 typed-token and field-context pipeline with the
@@ -211,6 +212,16 @@ known input, while the decoder conservatively reserves its 452,984,917-byte
 full-profile requirement before inspecting an untrusted stream. Decode
 requires the same explicit `-16m` name, and profile mismatch remains
 transactional.
+
+The experimental `lzss-contextual-dynamic-range-64m` adapter uses the public
+profile-value-4 helper: 67,108,864-byte raw frames and window, the `16F + 5`
+payload ceiling of 1,073,741,829 bytes, 4,598 model entries, and the explicit
+eight-GiB aggregate policy. Directional workspace sizes and alignment come
+only from the public query. HashChain encoding requires at most 4,362,600,533
+bytes for a full frame, while decoding conservatively reserves
+1,946,157,141 bytes before inspecting an untrusted stream. Decode requires the
+same explicit `-64m` name. No fuzz selector or interoperability archive is
+assigned by this tool stage.
 
 The experimental `lzss-contextual-rans` adapter also fixes raw frames at
 65,536 bytes. Its public Format 2 decision ceiling is `6F = 393,216`, its

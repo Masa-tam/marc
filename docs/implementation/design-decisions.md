@@ -21212,3 +21212,20 @@ decode on supported 64-bit layouts, with atomic failure one byte short. Keep
 rANS, tANS, Blocked Huffman, and Adaptive Huffman helpers closed to selector 4.
 Assign no CLI, benchmark, fuzz, resource-helper, default, or interoperability
 surface in this stage.
+
+## DD-1033: Publish one exact 64 MiB range tool name
+
+- Date: 2026-09-01
+- Status: accepted
+
+Add `lzss-contextual-dynamic-range-64m` to the CLI and benchmark only. Both
+dispatchers must call the public profile-value-4 helper and authoritative
+workspace query; they must not reproduce model, payload, aggregate, or native
+partition values as configuration policy. Decode requires the same exact name
+and does not auto-detect or enlarge limits from stream metadata.
+
+Require a canonical CLI round trip with dictionary/context/backend identity
+`2/6 + 1/5 + 3/2`, mismatch rejection by older names, strict trailing-data
+failure, and a finite benchmark report whose peak equals the larger directional
+workspace sum. Keep bounded fuzzing, defaults, resource helpers, and schema 52
+unchanged.

@@ -3499,3 +3499,11 @@ preserving caller-specific fields and finder choice; queries publish only the
 selected strategy's actual requirement and fail atomically one byte short.
 All other contextual backends, tools, fuzz selectors, defaults, and schema 52
 remain closed.
+
+### BR-0223
+
+Exact name `lzss-contextual-dynamic-range-64m` now exposes the public profile
+through CLI and benchmark adapters that reuse the C helper and authoritative
+workspace query. Canonical identity, mismatch/trailing rejection, finite
+reporting, peak-workspace accounting, usage adjacency, and near-miss rejection
+are covered without changing defaults, fuzz selectors, or schema 52.

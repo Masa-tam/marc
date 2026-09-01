@@ -12931,3 +12931,16 @@ On supported 64-bit layouts, query exact HashChain, BinaryTree, and decoder
 workspace components and totals, and reject each aggregate at one byte short
 without publishing partial extents. Keep the four other contextual C helpers,
 all CLI/benchmark/fuzz selectors, and schema-52 archives unchanged.
+
+### TVG-0898
+
+Run the exact CLI name `lzss-contextual-dynamic-range-64m` over the repository
+binary fixture, require dictionary variant 6, context variant 5, Dynamic Range
+identity `3/2`, byte-identical round trip, rejection by the 16-MiB and 64-KiB
+names, and strict rejection of trailing data. The test input remains bounded;
+the decoder workspace follows the full public profile contract.
+
+Run one benchmark iteration over README.md and require finite ratio/timing,
+positive directional workspace regions, reported peak equal to the larger
+directional sum, exact usage adjacency through `-64m`, and rejection of the
+case-mismatched `-64M` name. Preserve every fuzz selector and schema-52 archive.

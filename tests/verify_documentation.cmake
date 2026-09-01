@@ -357,6 +357,7 @@ foreach(required_window_64m_term IN ITEMS
         "4,362,600,533 bytes"
         "6,039,797,845 bytes"
         "1,946,157,141 bytes"
+        "lzss-contextual-dynamic-range-64m"
         "HashChain Exact and BinaryTree Exact remain encoder-local")
     string(FIND "${lzss_contextual_window_64m_content}"
         "${required_window_64m_term}" required_window_64m_term_offset)
@@ -655,6 +656,7 @@ foreach(required_64m_format_term IN ITEMS
         "complete-frame encoding"
         "MARC_LZSS_CONTEXTUAL_PROFILE_64M"
         "8-GiB aggregate policy"
+        "lzss-contextual-dynamic-range-64m"
         "value 4 remains unsupported by rANS")
     string(FIND "${format_content}" "${required_64m_format_term}"
         required_64m_format_term_offset)
@@ -956,6 +958,7 @@ if(NOT cli_profile_count EQUAL 42)
 endif()
 foreach(required_experimental_cli IN ITEMS
         "`lzss-contextual-dynamic-range`"
+        "`lzss-contextual-dynamic-range-64m`"
         "`lzss-contextual-rans`"
         "`lzss-contextual-tans`"
         "`lzss-contextual-tans-1m`"
@@ -1164,6 +1167,7 @@ foreach(required_benchmark_section IN ITEMS
 endforeach()
 foreach(required_experimental_benchmark IN ITEMS
         "`lzss-contextual-dynamic-range`"
+        "`lzss-contextual-dynamic-range-64m`"
         "`lzss-contextual-rans`"
         "`lzss-contextual-tans`"
         "`lzss-contextual-tans-1m`"
@@ -1179,6 +1183,12 @@ foreach(required_experimental_benchmark IN ITEMS
             "${required_experimental_benchmark}")
     endif()
 endforeach()
+string(FIND "${benchmark_content}" "produced 2,399 bytes from 4,326 bytes"
+    contextual_range_64m_smoke_offset)
+if(contextual_range_64m_smoke_offset EQUAL -1)
+    message(FATAL_ERROR
+        "Contextual Dynamic Range 64 MiB smoke record is stale")
+endif()
 file(STRINGS "${benchmark_document}" benchmark_commands
     REGEX "^marc_benchmark ")
 list(LENGTH benchmark_commands benchmark_command_count)

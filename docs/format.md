@@ -7640,7 +7640,9 @@ and admits this triple only through the Contextual Dynamic Range factory. Its
 explicit profile helper applies a 64-MiB frame/window, 1,073,741,829-byte
 payload ceiling, 4,598 model entries, and an 8-GiB aggregate policy without
 changing the initializer default or inferring limits from stream metadata.
-CLI/benchmark/fuzz selectors and interoperability remain unsupported.
+The exact CLI and benchmark name is `lzss-contextual-dynamic-range-64m`; it
+selects the public helper and does not add a serialized field. Fuzz selectors
+and interoperability remain unsupported.
 
 No other complete entropy triple is admitted. Backend admission is additive
 and requires its own exact identity, checked layouts, malformed-input tests,
@@ -7654,10 +7656,10 @@ crossing remains contradictory before publication. Other backend-specific
 descriptor and complete-frame validators remain closed until their individual
 admission stages.
 
-No CLI or benchmark name, fuzz selector, resource helper, default, or
-interoperability schema entry is assigned here. The common public selector
-value 4 remains unsupported by rANS, tANS, Blocked Huffman, and Adaptive
-Huffman until each backend completes its own admission.
+No fuzz selector, resource helper, default, or interoperability schema entry is
+assigned here. The common public selector value 4 remains unsupported by rANS,
+tANS, Blocked Huffman, and Adaptive Huffman until each backend completes its
+own admission.
 Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
 BinaryTree Exact remain encoder-local choices and are not serialized or
 selected automatically. All earlier dictionary/context pairs, backend triples,

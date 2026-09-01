@@ -27770,3 +27770,31 @@ both bounds.
   the 600-second per-test limit. The unchanged schema-52 compatibility
   traversal passes in 113.74 and 102.02 seconds respectively. The final diff
   is whitespace-clean.
+
+## CR-1120: 2026-09-01 - Publish 64-MiB range CLI and benchmark
+
+- Authoring method: extended marc's exact 16-MiB Dynamic Range tool dispatch
+  through the public profile-value-4 helper and existing caller-owned workspace
+  adapters without changing serialized bytes or private layouts.
+- References used: IR-0795; DD-1033; TVG-0898; CR-1119; the repository-owned
+  CLI parser, benchmark dispatcher, C helper/query, round-trip harness, and
+  finite-report validator.
+- Known implementations intentionally not consulted: external compressor,
+  range coder, command-line tool, benchmark, source, tests, vectors, patent,
+  pseudocode, memory policy, or optimization description.
+- Independent decisions: publish one exact lowercase name in two tools; reuse
+  the C helper as policy; require explicit decode identity; preserve fuzz,
+  default, resource-helper, and schema-52 gates.
+- Generated-code task description: add exact 64-MiB CLI and benchmark names,
+  canonical identity/mismatch/trailing tests, finite workspace reporting,
+  usage adjacency, near-miss rejection, documentation, and provenance.
+- Similarity review: dispatch and tests mechanically extend marc's first-party
+  tool lifecycle and public profile contract. No external implementation
+  expression or distinctive test structure was used.
+- Validation: focused CLI, benchmark-report, usage, near-miss, and documentation
+  tests pass under warning-clean MSVC and ClangCL builds. All 3,319 registered
+  tests pass under MSVC and ClangCL with the 600-second per-test limit. The
+  unchanged schema-52 compatibility traversal passes in 112.53 and 101.36
+  seconds respectively. The 4,326-byte deterministic smoke encodes to 2,399
+  bytes and reports the same 1,946,157,141-byte peak workspace under both
+  toolchains. The final diff is whitespace-clean.
