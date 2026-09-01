@@ -75,6 +75,21 @@ using marc::entropy::internal::contextual_rans_decode_table_entries;
     return bytes;
 }
 
+[[nodiscard]] std::array<
+    std::byte, lzss_contextual_rans_stream_header_size>
+sixty_four_mib_stream_header() {
+    auto bytes = stream_header(1, 1);
+    bytes[14] = std::byte{0x06};
+    bytes[64] = std::byte{0x00};
+    bytes[65] = std::byte{0x00};
+    bytes[66] = std::byte{0x00};
+    bytes[67] = std::byte{0x04};
+    bytes[84] = std::byte{0xf6};
+    bytes[85] = std::byte{0x11};
+    bytes[98] = std::byte{0x05};
+    return bytes;
+}
+
 [[nodiscard]] std::vector<RansDecodeEntry> tables() {
     return std::vector<RansDecodeEntry>(contextual_rans_decode_table_entries);
 }
@@ -117,6 +132,28 @@ TEST(LzssContextualRansFrameStreamingDecoder,
     EXPECT_EQ(input_offset, encoded.size());
     EXPECT_EQ(actual, (std::vector{std::byte{'A'}, std::byte{'A'}}));
     EXPECT_EQ(decoder.process({}, {}, 0).status, StreamStatus::end_of_stream);
+}
+
+TEST(LzssContextualRansFrameStreamingDecoder,
+     SixtyFourMiBVariantRemainsClosedAfterPrivateHeaderParsing) {
+    const auto encoded = sixty_four_mib_stream_header();
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = UINT64_C(1) << 26;
+    limits.max_block_size = UINT64_C(1) << 26;
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    std::array<std::byte, 98> frame{};
+    auto table_storage = tables();
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<std::byte, 1> raw{};
+    LzssContextualRansFrameStreamingDecoder decoder{
+        limits, frame, table_storage, tokens, raw};
+    std::array<std::byte, 1> output{};
+
+    const auto result = decoder.process(encoded, output, 0);
+    EXPECT_EQ(result.status, StreamStatus::error);
+    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+    EXPECT_EQ(result.input_consumed, encoded.size());
+    EXPECT_EQ(result.output_produced, 0U);
 }
 
 TEST(LzssContextualRansFrameStreamingDecoder,

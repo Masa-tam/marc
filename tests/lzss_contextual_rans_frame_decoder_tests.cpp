@@ -80,6 +80,26 @@ using marc::entropy::internal::contextual_rans_decode_table_entries;
     return stream;
 }
 
+[[nodiscard]] LzssContextualRansStreamHeader sixty_four_mib_stream_config(
+    const std::uint32_t raw_size) {
+    auto stream = stream_config();
+    stream.frame_size = raw_size;
+    stream.original_size = raw_size;
+    stream.dictionary.window_size = UINT32_C(1) << 26;
+    stream.dictionary_variant = 6;
+    stream.context_variant = 5;
+    stream.frequency_entry_count = 4598;
+    return stream;
+}
+
+[[nodiscard]] marc::core::DecoderLimits sixty_four_mib_limits() {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = UINT64_C(1) << 26;
+    limits.max_block_size = UINT64_C(1) << 26;
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    return limits;
+}
+
 [[nodiscard]] std::vector<RansDecodeEntry> tables() {
     return std::vector<RansDecodeEntry>(contextual_rans_decode_table_entries);
 }
@@ -317,6 +337,115 @@ TEST(LzssContextualRansFrameDecoder,
     EXPECT_EQ(decoded.serialized_consumed, frame.size());
     EXPECT_EQ(decoded_tokens.back().distance, distance);
     EXPECT_EQ(decoded_tokens.back().length, 258U);
+    EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
+        return value == std::byte{'A'};
+    }));
+}
+
+TEST(LzssContextualRansFrameDecoder,
+     SixtyFourMiBIdentityDecodesFirstNewDistanceExactly) {
+    constexpr std::uint32_t distance = 16'777'217;
+    constexpr std::size_t full_matches = 65'027;
+    constexpr std::uint32_t tail_length = 250;
+    constexpr std::uint32_t final_match_length = 258;
+    constexpr std::uint32_t raw_size = distance + final_match_length;
+
+    std::vector<LzssTypedToken> source_tokens;
+    source_tokens.reserve(full_matches + 3);
+    source_tokens.push_back({LzssTypedTokenKind::literal, 'A', 0, 0});
+    for (std::size_t index = 0; index < full_matches; ++index) {
+        source_tokens.push_back({LzssTypedTokenKind::match, 0, 1, 258});
+    }
+    source_tokens.push_back(
+        {LzssTypedTokenKind::match, 0, 1, tail_length});
+    source_tokens.push_back(
+        {LzssTypedTokenKind::match, 0, distance, final_match_length});
+
+    const auto stream = sixty_four_mib_stream_config(raw_size);
+    const auto limits = sixty_four_mib_limits();
+    const marc::dictionary::internal::LzssTypedFrameValidationContext
+        token_context{static_cast<std::uint32_t>(source_tokens.size()),
+                      raw_size, 0};
+    constexpr auto variant = marc::context::internal::
+        LzssFieldContextVariant::field_context_64m;
+    marc::entropy::internal::ContextualRansDescriptor descriptor{};
+    const auto entropy_plan = marc::context::internal::
+        plan_lzss_contextual_rans_tokens(
+            source_tokens, stream.dictionary, token_context, limits,
+            descriptor, variant);
+    ASSERT_EQ(entropy_plan.error,
+              marc::context::internal::
+                  LzssContextualRansEncodeError::none);
+    std::vector<std::byte> payload(entropy_plan.payload_size);
+    ASSERT_EQ(marc::context::internal::encode_lzss_contextual_rans_tokens(
+                  source_tokens, stream.dictionary, token_context, limits,
+                  payload, descriptor, variant).error,
+              marc::context::internal::
+                  LzssContextualRansEncodeError::none);
+    std::vector<std::byte> serialized_descriptor(
+        entropy_plan.descriptor_size);
+    std::size_t descriptor_written{};
+    ASSERT_EQ(marc::entropy::internal::serialize_contextual_rans_descriptor(
+                  descriptor, entropy_plan.decision_count,
+                  static_cast<std::uint32_t>(payload.size()), limits,
+                  serialized_descriptor, descriptor_written, variant),
+              ContextualRansFormatError::none);
+    ASSERT_EQ(descriptor_written, serialized_descriptor.size());
+
+    const LzssContextualRansFrameHeader header{
+        0,
+        0,
+        raw_size,
+        static_cast<std::uint32_t>(source_tokens.size()),
+        static_cast<std::uint32_t>(entropy_plan.event_count),
+        entropy_plan.decision_count,
+        static_cast<std::uint32_t>(payload.size()),
+        static_cast<std::uint32_t>(serialized_descriptor.size()),
+        0,
+        0};
+    std::vector<std::byte> frame(
+        lzss_contextual_rans_frame_header_size
+        + serialized_descriptor.size() + payload.size());
+    ASSERT_EQ(serialize_lzss_contextual_rans_frame_header(
+                  header, {stream, limits, 0, 0},
+                  std::span<std::byte,
+                            lzss_contextual_rans_frame_header_size>{
+                      frame.data(), lzss_contextual_rans_frame_header_size}),
+              LzssContextualRansFrameHeaderError::none);
+    std::ranges::copy(
+        serialized_descriptor,
+        frame.begin() + lzss_contextual_rans_frame_header_size);
+    std::ranges::copy(
+        payload,
+        frame.begin() + lzss_contextual_rans_frame_header_size
+            + serialized_descriptor.size());
+
+    auto table_storage = tables();
+    std::vector<LzssTypedToken> decoded_tokens(source_tokens.size());
+    std::vector<std::byte> raw(raw_size, std::byte{0xcc});
+    auto failed = decode_lzss_contextual_rans_frame(
+        frame, {stream, limits, 0, 0}, table_storage,
+        std::span{decoded_tokens}.first(decoded_tokens.size() - 1), raw);
+    EXPECT_EQ(failed.error,
+              LzssContextualRansFrameDecodeError::token_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
+    failed = decode_lzss_contextual_rans_frame(
+        frame, {stream, limits, 0, 0}, table_storage, decoded_tokens,
+        std::span{raw}.first(raw.size() - 1));
+    EXPECT_EQ(failed.error,
+              LzssContextualRansFrameDecodeError::raw_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
+
+    const auto decoded = decode_lzss_contextual_rans_frame(
+        frame, {stream, limits, 0, 0}, table_storage, decoded_tokens, raw);
+    ASSERT_EQ(decoded.error, LzssContextualRansFrameDecodeError::none);
+    EXPECT_EQ(decoded.serialized_consumed, frame.size());
+    EXPECT_EQ(decoded_tokens.back().distance, distance);
+    EXPECT_EQ(decoded_tokens.back().length, final_match_length);
     EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
         return value == std::byte{'A'};
     }));

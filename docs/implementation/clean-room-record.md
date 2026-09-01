@@ -27935,3 +27935,30 @@ both bounds.
   105.60 seconds. The final diff is whitespace-clean. Outer frame admission,
   public API, CLI, fuzzing, schema, and external exchange remain deliberately
   unchanged and therefore closed for this internal descriptor stage.
+
+## CR-1126: 2026-09-02 - Admit private 64-MiB contextual rANS decoding
+
+- Authoring method: extended marc's immediately preceding 16-MiB private rANS
+  decoder path through the independently specified variant-5 descriptor and
+  shared 64-MiB dictionary/context layout.
+- References used: IR-0800; DD-1038; TVG-0903; CR-1125; the local stream and
+  frame validators, scalar rANS primitive, context inversion, typed-token
+  reconstruction, and staged 64-MiB memory proof.
+- Known implementations intentionally not consulted: external rANS codecs,
+  compressors, stream formats, source, tests, vectors, patents, pseudocode,
+  allocation policies, or optimization descriptions.
+- Independent decisions: open only private parsing, preflight, and complete
+  decode; add explicit serializer, encoder, and streaming gates; prove the
+  first new distance with bounded overlap-built history; preserve public and
+  interoperability boundaries.
+- Generated-code task description: admit exact `2/6 + 1/5 + 4/3` private
+  decoding with `8F`, `36T`, descriptor and table bounds; require atomic
+  crossing and short-workspace failure; retain all outward gates.
+- Similarity review: code and tests extend marc's own staged 16-MiB rANS path
+  and the already reviewed 64-MiB Dynamic Range admission shape. No external
+  implementation expression or distinctive test structure was used.
+- Validation: all five focused 64-MiB parser, preflight, complete-decoder,
+  encoder-gate, and streaming-gate tests pass under MSVC and ClangCL, as does
+  documentation layout. All 3,328 registered tests pass without exclusions in
+  239.49 and 235.18 seconds respectively; schema compatibility remains included
+  and passes in 115.33 and 103.64 seconds. The final diff is whitespace-clean.

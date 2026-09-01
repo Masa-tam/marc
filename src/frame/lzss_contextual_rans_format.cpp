@@ -44,7 +44,7 @@ constexpr std::array frame_magic{
     case context::internal::LzssFieldContextVariant::field_context_16m:
         return entropy::internal::contextual_rans_max_descriptor_size_v4;
     case context::internal::LzssFieldContextVariant::field_context_64m:
-        return 0;
+        return entropy::internal::contextual_rans_max_descriptor_size_v5;
     }
     return 0;
 }
@@ -165,7 +165,8 @@ parse_lzss_contextual_rans_stream_header_impl(
             unknown_dictionary_algorithm;
     }
     if (dictionary_variant != 2 && dictionary_variant != 3
-        && dictionary_variant != 4 && dictionary_variant != 5) {
+        && dictionary_variant != 4 && dictionary_variant != 5
+        && dictionary_variant != 6) {
         return LzssContextualRansStreamHeaderError::
             unsupported_dictionary_variant;
     }
@@ -229,7 +230,8 @@ parse_lzss_contextual_rans_stream_header_impl(
         return LzssContextualRansStreamHeaderError::unknown_context_model;
     }
     if (context_variant != 1 && context_variant != 2
-        && context_variant != 3 && context_variant != 4) {
+        && context_variant != 3 && context_variant != 4
+        && context_variant != 5) {
         return LzssContextualRansStreamHeaderError::unsupported_context_variant;
     }
     if (context_flags != 0 || !all_zero(bytes.subspan(104, 8))) {
@@ -259,6 +261,10 @@ serialize_lzss_contextual_rans_stream_header_impl(
     const auto error = validate_lzss_contextual_rans_stream_header(
         header, limits);
     if (error != LzssContextualRansStreamHeaderError::none) return error;
+    if (header.dictionary_variant == 6 && header.context_variant == 5) {
+        return LzssContextualRansStreamHeaderError::
+            unsupported_dictionary_variant;
+    }
     std::array<std::byte, lzss_contextual_rans_stream_header_size> encoded{};
     std::ranges::copy(stream_magic, encoded.begin());
     const std::span<std::byte> bytes{encoded};

@@ -244,7 +244,7 @@ default surfaces remain closed.
    fuzzing and schema-53 interoperability complete).
 7. Admit rANS, tANS, Blocked Huffman, and Adaptive Huffman separately, each
    with its own memory proof and one schema append (rANS compact descriptor
-   substage complete).
+   and private decoder substages complete).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
@@ -260,8 +260,11 @@ cost of 1,946,157,056 bytes of finder workspace. The evidence is sufficient to
 retain the candidate as an explicit high-memory profile. Format 2 admits the
 Dynamic Range triple, its explicit public C selector, exact CLI/benchmark
 names, bounded decoder-fuzz admission, and schema-53 archive 63; every other
-backend triple remains unavailable until its later stages. The evidence is not
-a basis for a new default or automatic strategy selector. Schema 53's 63
+backend triple remains unavailable publicly until its later stages. The rANS
+triple additionally admits private stream-header parsing, frame preflight, and
+complete-frame decoding while retaining serializer, encoder, streaming,
+profile, and tool gates. The evidence is not a basis for a new default or
+automatic strategy selector. Schema 53's 63
 archives passed the complete Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
 26.04/Clang exchange at revision
 `1de3df622106db7674bcf691201a601dae680294`.

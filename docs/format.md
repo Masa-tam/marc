@@ -7666,10 +7666,14 @@ No resource helper or default is assigned here. The common public selector
 value 4 remains unsupported by rANS, tANS, Blocked Huffman, and Adaptive
 Huffman until each backend completes its own admission. The internal compact
 rANS descriptor grammar accepts context variant 5 with 4,598 entries and an
-exact all-dense maximum of 9,185 bytes, but the outer
-`2/6 + 1/5 + 4/3` frame/header triple remains unsupported. Descriptor storage
-support alone does not admit decoding, encoding, streaming, or public profile
-selection.
+exact all-dense maximum of 9,185 bytes. The private stream-header parser,
+frame preflight, and complete-frame decoder also admit exact triple
+`2/6 + 1/5 + 4/3`, using checked `8F`, `36T`, 126,976-table-entry, descriptor,
+payload, and caller-workspace bounds before publication. The first newly
+reachable distance 16,777,217 is reconstructed from bounded overlap-built
+history. Stream-header serialization, complete-frame encoding, streaming,
+profile selection, C ABI, CLI, benchmark, fuzzing, and interoperability remain
+unsupported for this triple.
 Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
 BinaryTree Exact remain encoder-local choices and are not serialized or
 selected automatically. All earlier dictionary/context pairs, backend triples,

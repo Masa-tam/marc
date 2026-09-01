@@ -13000,3 +13000,19 @@ internal-buffer limit of descriptor plus eight-byte payload, reject one byte
 less atomically, and require variant 4's former 9,153-byte maximum to remain
 below the enlarged storage capacity. Run focused format tests and the complete
 registered suite under MSVC and ClangCL.
+
+### TVG-0903
+
+Construct a valid private stream header for exact identity
+`2/6 + 1/5 + 4/3` and require parsing to publish variant 6, variant 5, and
+4,598 entries. Require stream-header serialization, complete-frame planning,
+and streaming decode to remain closed; require reciprocal crossings to remain
+atomic. For a five-byte raw frame, accept exactly 36 decisions and reject 37.
+
+Build exactly 16,777,217 bytes of history from one Literal, 65,027 overlapping
+length-258 Matches, and one length-250 Match. Append a distance-16,777,217,
+length-258 Match, encode its modeled decisions with marc's scalar rANS
+primitive, assemble one complete frame, and require private decoding to
+reproduce every token and raw byte. Reject one-short token and raw workspaces
+before publication. Run the five focused boundaries and the complete registered
+suite under MSVC and ClangCL.

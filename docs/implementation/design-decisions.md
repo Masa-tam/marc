@@ -21298,3 +21298,21 @@ descriptor bytes and keep frame validation, complete-frame coding, streaming,
 public selector value 4, tools, fuzzing, and interoperability closed. Record
 the future `16F+8` payload and four-GiB aggregate proofs without authorizing
 allocation in this stage.
+
+## DD-1038: Admit only private 64 MiB contextual rANS decoding
+
+- Date: 2026-09-02
+- Status: accepted
+
+Admit exact identity `2/6 + 1/5 + 4/3` in the internal stream-header parser,
+frame-header validation, descriptor preflight, and complete-frame decoder.
+Select 4,598 frequency entries, the 9,185-byte descriptor maximum, checked
+`8F` and `36T` decision bounds, and the unchanged 126,976-entry scalar rANS
+decode-table bank before publishing caller-owned storage.
+
+Keep stream-header serialization, all complete-frame encoder routes, streaming
+decode and encode, workspace profiles, public C selector value 4, CLI,
+benchmark, fuzzing, resource helpers, and interoperability closed. Require the
+first newly reachable distance 16,777,217 to decode exactly and require crossed
+variants and short token/raw workspaces to fail atomically. Preserve every
+earlier identity, byte stream, default, ABI, and schema-53 archive.

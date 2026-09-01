@@ -350,8 +350,11 @@ foreach(required_rans_window_64m_term IN ITEMS
         "3,892,323,369 bytes"
         "1,946,928,169 bytes"
         "four-GiB aggregate policy"
-        "Format 2 frame/header admission continues to reject"
-        "without admitting an outer frame (complete)")
+        "stream-header parser, frame preflight"
+        "16,777,217 decodes exactly"
+        "complete-frame encoding, streaming, profiles"
+        "without admitting an outer frame (complete)"
+        "complete-frame decoding (complete)")
     string(FIND "${lzss_contextual_rans_window_64m_content}"
         "${required_rans_window_64m_term}"
         required_rans_window_64m_term_offset)
@@ -695,6 +698,9 @@ foreach(required_64m_format_term IN ITEMS
         "Interoperability schema 53 appends only"
         "archive 63"
         "Compatibility removes only archive 63"
+        "stream-header parser,"
+        "reachable distance 16,777,217"
+        "Stream-header serialization, complete-frame encoding"
         "value 4 remains unsupported by rANS")
     string(FIND "${format_content}" "${required_64m_format_term}"
         required_64m_format_term_offset)

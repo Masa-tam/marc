@@ -129,6 +129,11 @@ template <FrameMatchFinder MatchFinder>
         result.error = LzssContextualRansFrameEncodeError::invalid_stream;
         return result;
     }
+    if (selected.layout.context_variant
+        == context::internal::LzssFieldContextVariant::field_context_64m) {
+        result.error = LzssContextualRansFrameEncodeError::invalid_stream;
+        return result;
+    }
     if (!exact_input_size(stream, output_already_committed,
                           raw_input.size())) {
         result.error = LzssContextualRansFrameEncodeError::input_size_mismatch;

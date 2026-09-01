@@ -7255,8 +7255,17 @@ was consulted.
 
 ### IR-0799
 
-The 64-MiB Contextual rANS compact-descriptor stage uses IR-0798, DD-1028,
-TVG-0901, CR-1124, marc's repository-owned field-context variant 5, compact
+The 64-MiB Contextual rANS compact-descriptor stage uses IR-0798, DD-1037,
+TVG-0902, CR-1124, marc's repository-owned field-context variant 5, compact
 model grammar, scalar rANS descriptor, and checked limit policy. No external
 rANS implementation, compressor, source, test, vector, patent, pseudocode,
 memory policy, or optimization description was consulted.
+
+### IR-0800
+
+The private 64-MiB Contextual rANS decoder admission uses IR-0799, DD-1037,
+TVG-0902, CR-1125, marc's repository-owned stream/header validator, compact
+descriptor parser, scalar rANS decoder, field-context inversion, typed-token
+reconstruction, and preceding 16-MiB decoder-admission pattern. No external
+rANS implementation, compressor, stream format, source, test, vector, patent,
+pseudocode, allocation policy, or optimization description was consulted.

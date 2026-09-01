@@ -3555,3 +3555,14 @@ records and descriptor maxima are 9,165 and 9,185 bytes; variant-5 canonical
 round trip, variant-4 reciprocal rejection, exact capacity, and one-short
 buffer policy are covered. The future `2/6 + 1/5 + 4/3` frame, public profile,
 tools, fuzzing, and schema remain closed.
+
+### BR-0229
+
+Exact 64-MiB Contextual rANS identity `2/6 + 1/5 + 4/3` now reaches private
+stream-header parsing, checked frame preflight, and complete-frame decoding.
+The decoder selects 4,598 model entries, the 9,185-byte descriptor ceiling,
+`8F`, `36T`, and the unchanged scalar decode tables before publication. A
+bounded overlap-history vector reconstructs the first new distance 16,777,217;
+short workspaces and reciprocal crossings fail atomically. Stream-header
+serialization, frame encoding, streaming, profiles, public/tool/fuzz surfaces,
+and schema 53 remain closed and unchanged.
