@@ -9,10 +9,13 @@ input bytes, expected output bytes, and whether the vector is normative or only
 a regression fixture. Random fixtures must record their deterministic seed and
 generator algorithm.
 
-Starting 2026-08-14, local full-suite CTest validation uses a 300-second
-per-test timeout. This replaces the former 240-second operational ceiling as
-the schema-compatibility chain and registered inventory approach 200 seconds;
-it is scheduling margin, not permission to ignore a test-time regression.
+Current local full-suite CTest validation uses a 600-second per-test timeout.
+This replaces the former 240- and 300-second operational
+ceilings as the schema-compatibility chain and registered inventory grow. The
+same 600-second value is assigned directly to the registered interoperability
+schema-compatibility test so preset-driven CI cannot fall back to an older
+per-test ceiling. It is scheduling margin, not permission to ignore a
+test-time regression.
 
 The version 1 stream and frame prefixes are assigned, but complete codec
 payload vectors are added independently before each encoder is implemented.
@@ -12975,3 +12978,11 @@ Swap the first two manifest entries and require rejection. Remove only archive
 63, rewrite the manifest as schema 52 with codec set `marc-cli-v52`, and verify
 every schema through schema 1. Run the complete chain under MSVC and ClangCL;
 leave external four-direction bundle exchange as post-push evidence.
+
+### TVG-0901
+
+Configure both local build trees after changing the registered schema test
+timeout. Require CTest metadata to report 600 seconds rather than the obsolete
+180 seconds, then run documentation layout and the complete schema-53-through-1
+compatibility test under MSVC and ClangCL without a command-line timeout
+override. Preserve the 3,321-test inventory and all archive bytes.

@@ -4196,7 +4196,7 @@ if(MARC_BUILD_TESTS)
                     -File ${CMAKE_CURRENT_SOURCE_DIR}/tests/interoperability_schema_compatibility.ps1
                     -MarcCli $<TARGET_FILE:marc_cli>)
             set_tests_properties(marc_interoperability_schema_compatibility
-                PROPERTIES TIMEOUT 180)
+                PROPERTIES TIMEOUT 600)
         endif()
     endif()
 endif()

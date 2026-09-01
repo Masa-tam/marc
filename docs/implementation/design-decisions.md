@@ -21263,3 +21263,19 @@ Reject a reordered schema-53 manifest. Compatibility must remove only archive
 63 and rewrite the manifest as schema 52 before traversing the unchanged chain
 through schema 1. Do not change an earlier archive byte, ABI, default, profile
 helper, or match-finder policy.
+
+## DD-1036: Register schema compatibility with the full-suite timeout
+
+- Date: 2026-09-01
+- Status: accepted
+
+Assign `marc_interoperability_schema_compatibility` a 600-second CTest timeout,
+matching the established full-suite operational ceiling. The former 180-second
+target property is obsolete now that schema 53 traverses all 63 archives and
+every downgrade through schema 1; command-line `ctest --timeout 600` must not
+be required to override it.
+
+Keep the timeout finite and verify the registered value from repository
+documentation validation. This is scheduling margin only: retain elapsed-time
+records and investigate material regressions instead of treating 600 seconds
+as a performance target.

@@ -3525,3 +3525,12 @@ identity `2/6 + 1/5 + 3/2`, round trip, size, and SHA-256; verification enforces
 exact order and byte-identical local re-encoding. Reordered manifests fail,
 and removing only archive 63 reconstructs schema 52 before the unchanged chain
 through schema 1. External four-direction evidence remains pending.
+
+### BR-0226
+
+The registered `marc_interoperability_schema_compatibility` CTest timeout now
+matches the established 600-second full-suite ceiling. This removes the stale
+180-second target property that timed out schema 53 in Linux CI after 181.61
+seconds even though local command-line overrides passed. Documentation
+validation fixes the registered value to prevent the two execution routes from
+diverging again; codec bytes, archive order, and test inventory are unchanged.

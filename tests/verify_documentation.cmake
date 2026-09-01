@@ -1142,6 +1142,15 @@ foreach(required_release_instruction IN ITEMS
 endforeach()
 
 file(READ "${source_dir}/CMakeLists.txt" root_cmake_content)
+string(REPLACE "\r\n" "\n" root_cmake_content "${root_cmake_content}")
+string(FIND "${root_cmake_content}"
+    "set_tests_properties(marc_interoperability_schema_compatibility\n                PROPERTIES TIMEOUT 600)"
+    interoperability_timeout_offset)
+if(interoperability_timeout_offset EQUAL -1)
+    message(FATAL_ERROR
+        "Interoperability schema compatibility must retain its 600-second "
+        "registered CTest timeout")
+endif()
 if(NOT root_cmake_content MATCHES
    "project\\(marc VERSION ([0-9]+\\.[0-9]+\\.[0-9]+)")
     message(FATAL_ERROR "Could not read the marc project version")

@@ -7244,3 +7244,11 @@ DD-1034, TVG-0899, CR-1121, the repository-owned append-only bundle generator,
 exact-order verifier, byte-identical re-encoder, and schema downgrade harness.
 No external archive, compressor, manifest, interoperability suite, source,
 test, patent, pseudocode, or optimization description was consulted.
+
+### IR-0798
+
+The schema-compatibility timeout correction uses IR-0797, DD-1035, TVG-0900,
+CR-1122, the repository-owned CTest registration, CI presets, and recorded
+600-second full-suite policy. No external build system, test runner, CI
+configuration, source, test, patent, pseudocode, or optimization description
+was consulted.

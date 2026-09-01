@@ -27856,3 +27856,28 @@ both bounds.
   104.25 seconds respectively. Documentation layout passes under both local
   toolchains and the final diff is whitespace-clean. External four-direction
   evidence remains pending.
+
+## CR-1123: 2026-09-01 - Align schema compatibility CTest timeout
+
+- Authoring method: corrected marc's repository-owned CTest registration to
+  match its established full-suite timeout policy.
+- References used: IR-0798; DD-1036; TVG-0901; CR-1122; the local CMake test
+  declaration, presets, documentation validator, and reported Linux CI log.
+- Known implementations intentionally not consulted: external build systems,
+  test runners, CI configurations, source, tests, patents, pseudocode, or
+  optimizations.
+- Independent decisions: replace only the obsolete 180-second target property
+  with 600 seconds; retain a finite bound; verify the declaration structurally;
+  change no codec, archive, schema, or test inventory.
+- Generated-code task description: align preset-driven CI and explicit local
+  CTest runs on one 600-second schema-compatibility ceiling and prove the
+  registered metadata plus focused execution under both toolchains.
+- Similarity review: the correction follows marc's existing first-party
+  full-suite policy and the observed timeout boundary. No external
+  implementation expression or test structure was used.
+- Validation: reconfigured MSVC and ClangCL build trees both report a
+  registered `TIMEOUT` value of 600 seconds. Without any command-line timeout
+  override, documentation layout and the complete schema-53-through-1 test
+  pass in 116.25 and 105.60 seconds total; the schema test itself takes 115.75
+  and 105.08 seconds respectively. The 3,321-test inventory is unchanged and
+  the final diff is whitespace-clean.
