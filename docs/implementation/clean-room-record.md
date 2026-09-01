@@ -27881,3 +27881,29 @@ both bounds.
   pass in 116.25 and 105.60 seconds total; the schema test itself takes 115.75
   and 105.08 seconds respectively. The 3,321-test inventory is unchanged and
   the final diff is whitespace-clean.
+
+## CR-1124: 2026-09-02 - Record schema 53 four-direction exchange
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-1035; IR-0797; TVG-0900; BR-0225 through BR-0227;
+  IX-0047; CR-1122; CR-1123; and full revision
+  `1de3df622106db7674bcf691201a601dae680294`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, or optimization descriptions.
+- Independent decisions: require one exact revision for all four directions,
+  preserve generated work products outside the repository, and accept evidence
+  only when every verifier reports the complete 63-archive inventory.
+- Generated-code task description: record the completed schema-53
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks.
+- Similarity review: this change records project-generated artifact evidence
+  only and introduces no codec implementation expression.
+- External validation: all four passes reported `Verified 63 archives` at
+  revision `1de3df622106db7674bcf691201a601dae680294`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.

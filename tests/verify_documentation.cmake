@@ -903,7 +903,9 @@ foreach(required_current_interoperability_term IN ITEMS
         "sixty-three foreign archives"
         "Schema 53 requires"
         "schemas 1 through 52"
-        "four-direction evidence remains pending")
+        "four-direction evidence is complete"
+        "1de3df622106db7674bcf691201a601dae680294"
+        "### IX-0047: Schema 53")
     string(FIND "${interoperability_content}"
         "${required_current_interoperability_term}"
         current_interoperability_term_offset)

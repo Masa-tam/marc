@@ -187,7 +187,9 @@ four-direction schema-52 exchange at revision
 across Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang x86-64
 producers. The intervening documentation-only commit records that evidence,
 and final CI passed before tagging. BinaryTree adoption changes no archive byte
-or inventory. The remaining general evidence gaps are listed below.
+or inventory. Schema 53 subsequently completed its 63-archive four-direction
+exchange at revision `1de3df622106db7674bcf691201a601dae680294` across the
+same three producers. The remaining general evidence gaps are listed below.
 
 ## Remaining release evidence
 
@@ -3534,3 +3536,13 @@ matches the established 600-second full-suite ceiling. This removes the stale
 seconds even though local command-line overrides passed. Documentation
 validation fixes the registered value to prevent the two execution routes from
 diverging again; codec bytes, archive order, and test inventory are unchanged.
+
+### BR-0227
+
+Schema 53 now has complete four-direction external evidence at revision
+`1de3df622106db7674bcf691201a601dae680294`. Ubuntu 26.04/Clang 21.1.8
+verified all 63 archives from the Windows/MSVC and Ubuntu 24.04/Ninja CI
+artifacts, generated and self-verified its own 63-archive bundle, and supplied
+that bundle for reverse verification under Windows/MSVC. Every pass reported
+the same full revision and exact manifest, digest, decode, and byte-identical
+re-encode checks.

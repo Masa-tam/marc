@@ -1,7 +1,7 @@
 # LZSS contextual 64 MiB window candidate
 
 Status: the Dynamic Range lifecycle is complete through schema-53
-interoperability admission. External four-direction evidence remains pending.
+interoperability admission and four-direction external verification.
 
 ## Purpose
 
@@ -260,4 +260,7 @@ retain the candidate as an explicit high-memory profile. Format 2 admits the
 Dynamic Range triple, its explicit public C selector, exact CLI/benchmark
 names, bounded decoder-fuzz admission, and schema-53 archive 63; every other
 backend triple remains unavailable until its later stages. The evidence is not
-a basis for a new default or automatic strategy selector.
+a basis for a new default or automatic strategy selector. Schema 53's 63
+archives passed the complete Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
+26.04/Clang exchange at revision
+`1de3df622106db7674bcf691201a601dae680294`.
