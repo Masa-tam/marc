@@ -317,6 +317,7 @@ foreach(experimental_design IN ITEMS
         "lzss-contextual-window-1m.md"
         "lzss-contextual-window-16m.md"
         "lzss-contextual-window-64m.md"
+        "lzss-contextual-rans-window-64m.md"
         "lzss-contextual-rans-window-16m.md"
         "lzss-contextual-tans-window-16m.md"
         "lzss-contextual-blocked-huffman-window-16m.md"
@@ -329,6 +330,35 @@ foreach(experimental_design IN ITEMS
     if(NOT EXISTS "${experimental_design_path}")
         message(FATAL_ERROR
             "Missing experimental design document: ${experimental_design}")
+    endif()
+endforeach()
+
+set(lzss_contextual_rans_window_64m_design
+    "${source_dir}/docs/design/lzss-contextual-rans-window-64m.md")
+file(READ "${lzss_contextual_rans_window_64m_design}"
+    lzss_contextual_rans_window_64m_content)
+foreach(required_rans_window_64m_term IN ITEMS
+        "dictionary algorithm/variant 2/6"
+        "context-model algorithm/variant 1/5"
+        "entropy algorithm/variant 4/3"
+        "4,598 flattened frequency entries"
+        "9,165 bytes"
+        "9,185 bytes"
+        "payload_size <= 16F + 8"
+        "complete_frame_size <= 16F + 9,257"
+        "2,215,126,057 bytes"
+        "3,892,323,369 bytes"
+        "1,946,928,169 bytes"
+        "four-GiB aggregate policy"
+        "Format 2 frame/header admission continues to reject"
+        "without admitting an outer frame (complete)")
+    string(FIND "${lzss_contextual_rans_window_64m_content}"
+        "${required_rans_window_64m_term}"
+        required_rans_window_64m_term_offset)
+    if(required_rans_window_64m_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 64 MiB contextual rANS design: "
+            "${required_rans_window_64m_term}")
     endif()
 endforeach()
 
@@ -838,7 +868,7 @@ foreach(required_readiness_section IN ITEMS
 endforeach()
 foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
-        "each enumerate 3,321 tests under"
+        "each enumerate 3,323 tests under"
         "four-direction schema-52 exchange")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)

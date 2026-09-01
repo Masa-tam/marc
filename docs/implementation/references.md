@@ -7252,3 +7252,11 @@ CR-1122, the repository-owned CTest registration, CI presets, and recorded
 600-second full-suite policy. No external build system, test runner, CI
 configuration, source, test, patent, pseudocode, or optimization description
 was consulted.
+
+### IR-0799
+
+The 64-MiB Contextual rANS compact-descriptor stage uses IR-0798, DD-1028,
+TVG-0901, CR-1124, marc's repository-owned field-context variant 5, compact
+model grammar, scalar rANS descriptor, and checked limit policy. No external
+rANS implementation, compressor, source, test, vector, patent, pseudocode,
+memory policy, or optimization description was consulted.

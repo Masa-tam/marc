@@ -170,7 +170,7 @@ the twenty-one typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,321 tests under
+The optimized Release configurations each enumerate 3,323 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3546,3 +3546,12 @@ artifacts, generated and self-verified its own 63-archive bundle, and supplied
 that bundle for reverse verification under Windows/MSVC. Every pass reported
 the same full revision and exact manifest, digest, decode, and byte-identical
 re-encode checks.
+
+### BR-0228
+
+The internal scalar rANS compact descriptor now supports the 64-MiB context
+variant's 4,598 entries without admitting an outer codec. The exact all-dense
+records and descriptor maxima are 9,165 and 9,185 bytes; variant-5 canonical
+round trip, variant-4 reciprocal rejection, exact capacity, and one-short
+buffer policy are covered. The future `2/6 + 1/5 + 4/3` frame, public profile,
+tools, fuzzing, and schema remain closed.

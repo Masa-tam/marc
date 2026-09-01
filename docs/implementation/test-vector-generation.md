@@ -12986,3 +12986,17 @@ timeout. Require CTest metadata to report 600 seconds rather than the obsolete
 180 seconds, then run documentation layout and the complete schema-53-through-1
 compatibility test under MSVC and ClangCL without a command-line timeout
 override. Preserve the 3,321-test inventory and all archive bytes.
+
+### TVG-0902
+
+Serialize the two-active-context literal descriptor under field-context
+variant 5 and require byte identity with the frozen 64-KiB descriptor except
+for little-endian frequency-entry count 4,598. Parse it back exactly and reject
+it under variant 4 without changing the destination sentinel.
+
+Populate every one of the 31 models densely with positive normalized
+frequencies and require the exact 9,185-byte maximum descriptor. Accept an
+internal-buffer limit of descriptor plus eight-byte payload, reject one byte
+less atomically, and require variant 4's former 9,153-byte maximum to remain
+below the enlarged storage capacity. Run focused format tests and the complete
+registered suite under MSVC and ClangCL.

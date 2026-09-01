@@ -243,7 +243,8 @@ default surfaces remain closed.
    preflight, private lifecycle, public C profile, CLI, benchmark, and bounded
    fuzzing and schema-53 interoperability complete).
 7. Admit rANS, tANS, Blocked Huffman, and Adaptive Huffman separately, each
-   with its own memory proof and one schema append.
+   with its own memory proof and one schema append (rANS compact descriptor
+   substage complete).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a

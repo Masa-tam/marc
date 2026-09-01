@@ -33,8 +33,9 @@ inline constexpr std::size_t contextual_rans_max_descriptor_size_v1 =
 inline constexpr std::size_t contextual_rans_max_descriptor_size_v2 = 9089;
 inline constexpr std::size_t contextual_rans_max_descriptor_size_v3 = 9121;
 inline constexpr std::size_t contextual_rans_max_descriptor_size_v4 = 9153;
+inline constexpr std::size_t contextual_rans_max_descriptor_size_v5 = 9185;
 inline constexpr std::size_t contextual_rans_descriptor_capacity =
-    contextual_rans_max_descriptor_size_v4;
+    contextual_rans_max_descriptor_size_v5;
 
 using ContextualRansFrequencies = std::array<
     std::uint16_t, contextual_rans_frequency_capacity>;

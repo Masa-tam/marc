@@ -27907,3 +27907,31 @@ both bounds.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1125: 2026-09-02 - Expand 64-MiB compact rANS descriptor
+
+- Authoring method: extended marc's repository-owned compact model grammar and
+  scalar contextual rANS descriptor by one already reserved field-context
+  layout while retaining all outer admissions.
+- References used: IR-0799; DD-1037; TVG-0902; CR-1124; the local variant-5
+  context tables, compact canonical grammar, checked limit helpers, and prior
+  variant-4 tests.
+- Known implementations intentionally not consulted: external rANS
+  implementations, compressors, source, tests, vectors, patents, pseudocode,
+  memory policies, or optimization descriptions.
+- Independent decisions: add exactly 32 dense-record bytes; enlarge only
+  internal descriptor storage; retain scalar rANS arithmetic and table bank;
+  keep the outer `2/6 + 1/5 + 4/3` identity unsupported.
+- Generated-code task description: implement variant-5 compact descriptor
+  parse/serialize analysis, exact and one-short tests, frozen older bounds, and
+  the staged 64-MiB rANS design and memory proof.
+- Similarity review: constants and tests derive directly from marc's variant-5
+  alphabet tables and prior compact grammar. No external implementation
+  expression or distinctive test structure was used.
+- Validation: the five focused contextual-rANS grammar and boundary tests and
+  documentation layout pass under both MSVC and ClangCL. The complete 3,323-test
+  inventories pass without exclusions in 246.10 and 237.92 seconds
+  respectively; schema compatibility is included and passes in 117.75 and
+  105.60 seconds. The final diff is whitespace-clean. Outer frame admission,
+  public API, CLI, fuzzing, schema, and external exchange remain deliberately
+  unchanged and therefore closed for this internal descriptor stage.

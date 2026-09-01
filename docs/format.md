@@ -7663,9 +7663,13 @@ descriptor and complete-frame validators remain closed until their individual
 admission stages.
 
 No resource helper or default is assigned here. The common public selector
-value 4 remains unsupported by rANS,
-tANS, Blocked Huffman, and Adaptive Huffman until each backend completes its
-own admission.
+value 4 remains unsupported by rANS, tANS, Blocked Huffman, and Adaptive
+Huffman until each backend completes its own admission. The internal compact
+rANS descriptor grammar accepts context variant 5 with 4,598 entries and an
+exact all-dense maximum of 9,185 bytes, but the outer
+`2/6 + 1/5 + 4/3` frame/header triple remains unsupported. Descriptor storage
+support alone does not admit decoding, encoding, streaming, or public profile
+selection.
 Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
 BinaryTree Exact remain encoder-local choices and are not serialized or
 selected automatically. All earlier dictionary/context pairs, backend triples,

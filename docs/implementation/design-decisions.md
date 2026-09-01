@@ -21279,3 +21279,22 @@ Keep the timeout finite and verify the registered value from repository
 documentation validation. This is scheduling margin only: retain elapsed-time
 records and investigate material regressions instead of treating 600 seconds
 as a performance target.
+
+## DD-1037: Expand only the 64 MiB compact rANS descriptor
+
+- Date: 2026-09-02
+- Status: accepted
+
+Admit field-context variant 5 in the internal compact model and scalar rANS
+descriptor grammar without admitting the outer Format 2 triple. Freeze the
+all-dense record maximum at 9,165 bytes and the 20-byte-prefixed descriptor at
+9,185 bytes. Retain table log 12, total frequency 4,096, one scalar state,
+byte renormalization, reverse symbol order, and the 126,976-entry decoder table
+bank.
+
+Require exact variant-5 parse/serialize inversion, capacity and one-short
+limit behavior, and reciprocal rejection under variant 4. Preserve all earlier
+descriptor bytes and keep frame validation, complete-frame coding, streaming,
+public selector value 4, tools, fuzzing, and interoperability closed. Record
+the future `16F+8` payload and four-GiB aggregate proofs without authorizing
+allocation in this stage.
