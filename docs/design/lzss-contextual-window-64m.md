@@ -1,9 +1,8 @@
 # LZSS contextual 64 MiB window candidate
 
-Status: private Dynamic Range complete-frame encoding/decoding, exact workspace
-queries, stream-header serialization/parsing, and streaming lifecycle
-implemented. Public C profiles, CLI and benchmark names, fuzz selectors, and
-interoperability remain unadmitted.
+Status: private Dynamic Range lifecycle and its explicit public C profile are
+implemented. CLI and benchmark names, fuzz selectors, and interoperability
+remain unadmitted.
 
 ## Purpose
 
@@ -194,7 +193,7 @@ entries and 9,227 nodes. This capacity alone is not backend admission. Compact
 rANS and tANS and the Blocked Huffman descriptor retain their stable
 unsupported-context errors for variant 5.
 
-## Dynamic Range private lifecycle
+## Dynamic Range C lifecycle
 
 The generic Format 2 header validator and private Dynamic Range complete-frame
 decoder now admit
@@ -215,9 +214,16 @@ accepting the new identity.
 The exact full-frame HashChain encoder requirement is 4,362,600,533 bytes,
 the BinaryTree encoder requirement is 6,039,797,845 bytes, and the decoder
 requirement is 1,946,157,141 bytes. Queries return the selected strategy's
-actual finder allocation and reject each aggregate at one byte short. These
-private calculations do not apply a public profile or raise a caller limit.
-Every public, tool, fuzz, and interoperability surface remains closed.
+actual finder allocation and reject each aggregate at one byte short.
+The public C selector `MARC_LZSS_CONTEXTUAL_PROFILE_64M` has value 4 and is
+admitted only by Contextual Dynamic Range. Applying it preserves direction,
+original size, total-output limit, and selected Exact finder while establishing
+the 64-MiB frame/window, 1,073,741,829-byte payload, 4,598-entry model, and
+8-GiB aggregate policies. Workspace queries return the same exact
+strategy-aware requirements above; stream metadata never raises these limits.
+The other four contextual backends reject selector 4 atomically. CLI,
+benchmark, fuzz, helper-resource, default, and interoperability surfaces remain
+closed.
 
 ## Staged work
 
@@ -230,8 +236,7 @@ Every public, tool, fuzz, and interoperability surface remains closed.
    and hand vectors (complete).
 6. Admit Dynamic Range from private decoder validation through public C, CLI,
    benchmark, bounded fuzzing, and one new interoperability archive (decoder
-   preflight, private complete-frame encoding/decoding, workspace queries, and
-   streaming lifecycle complete).
+   preflight, private lifecycle, and public C profile complete).
 7. Admit rANS, tANS, Blocked Huffman, and Adaptive Huffman separately, each
    with its own memory proof and one schema append.
 
@@ -239,14 +244,14 @@ No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
 one-shot round trip.
 
-Stages one through five and the first Dynamic Range substage completed on
+Stages one through five and the Dynamic Range public C substage completed on
 2026-09-01. The fixed 48-point Silesia
 matrix validated every Exact strategy pair and measured a 414,783-token
 aggregate reduction, or 1.293%, when moving from a 16-MiB to a 64-MiB window
 under the same 64-MiB frame. BinaryTree won seven of twelve members at each
 window and was 8.053 times HashChain in aggregate throughput at 64 MiB, at the
 cost of 1,946,157,056 bytes of finder workspace. The evidence is sufficient to
-retain the candidate as an explicit high-memory profile. Format 2 now reserves
-only the inseparable `2/6 + 1/5` pair; every backend triple and public surface
-remains unavailable until its later stage. The evidence is not a basis for a
-new default or automatic strategy selector.
+retain the candidate as an explicit high-memory profile. Format 2 admits the
+Dynamic Range triple and its explicit public C selector; every other backend
+triple and all tool surfaces remain unavailable until their later stages. The
+evidence is not a basis for a new default or automatic strategy selector.

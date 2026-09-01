@@ -7209,3 +7209,12 @@ match-finder workspace query, view partitioner, and preceding 16-MiB lifecycle
 proof. No external compressor, range coder, allocator, streaming framework,
 source, tests, vectors, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0794
+
+The public 64-MiB Contextual Dynamic Range profile uses IR-0793, DD-1031,
+TVG-0896, the repository-owned C configuration helper, exact strategy-aware
+workspace query, public streaming factory, and common profile-application
+contract. No external compressor, range coder, allocator, C API, source,
+tests, vectors, patent, pseudocode, memory policy, or optimization description
+was consulted.

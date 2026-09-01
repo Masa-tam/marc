@@ -176,7 +176,7 @@ static void test_profile_helper(void) {
 
     const marc_lzss_contextual_adaptive_huffman_config snapshot = config;
     assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
-               &config, UINT32_C(4)) == MARC_STATUS_INVALID_ARGUMENT);
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M) == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&config, &snapshot, sizeof(config)) == 0);
     --config.struct_size;
     const marc_lzss_contextual_adaptive_huffman_config invalid = config;
@@ -448,7 +448,7 @@ static void run_extended_profile(
     config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_16M;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
-    config.profile = UINT32_C(4);
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_64M;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     assert(marc_lzss_contextual_adaptive_huffman_config_init(

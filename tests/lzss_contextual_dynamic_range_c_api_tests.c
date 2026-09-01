@@ -43,17 +43,18 @@ static void test_apply_profile(void) {
         MARC_LZSS_CONTEXTUAL_PROFILE_64K,
         MARC_LZSS_CONTEXTUAL_PROFILE_1M,
         MARC_LZSS_CONTEXTUAL_PROFILE_4M,
-        MARC_LZSS_CONTEXTUAL_PROFILE_16M};
+        MARC_LZSS_CONTEXTUAL_PROFILE_16M,
+        MARC_LZSS_CONTEXTUAL_PROFILE_64M};
     static const uint32_t extents[] = {
         UINT32_C(1) << 16, UINT32_C(1) << 20, UINT32_C(1) << 22,
-        UINT32_C(1) << 24};
+        UINT32_C(1) << 24, UINT32_C(1) << 26};
     static const uint64_t payloads[] = {
         UINT64_C(786437), UINT64_C(12582917), UINT64_C(58720261),
-        UINT64_C(234881029)};
+        UINT64_C(234881029), UINT64_C(1073741829)};
     static const uint64_t aggregates[] = {
         UINT64_C(8) << 20, UINT64_C(128) << 20, UINT64_C(256) << 20,
-        UINT64_C(1) << 30};
-    static const uint64_t model_entries[] = {4518, 4550, 4566, 4582};
+        UINT64_C(1) << 30, UINT64_C(8) << 30};
+    static const uint64_t model_entries[] = {4518, 4550, 4566, 4582, 4598};
     static const marc_direction directions[] = {
         MARC_DIRECTION_ENCODE, MARC_DIRECTION_DECODE};
 
@@ -138,7 +139,7 @@ static void test_apply_profile(void) {
     assert(memcmp(&invalid, &snapshot, sizeof(invalid)) == 0);
     snapshot = config;
     assert(marc_lzss_contextual_dynamic_range_config_apply_profile(
-               &config, (marc_lzss_contextual_profile)4)
+               &config, (marc_lzss_contextual_profile)5)
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&config, &snapshot, sizeof(config)) == 0);
     assert(marc_lzss_contextual_dynamic_range_config_apply_profile(
@@ -486,7 +487,66 @@ int main(void) {
     assert(needed.views_bytes == 201326592);
 #endif
 
-    config.profile = UINT32_C(4);
+    assert(marc_lzss_contextual_dynamic_range_config_init(
+               MARC_DIRECTION_ENCODE, &config)
+           == MARC_STATUS_OK);
+    config.original_size = UINT32_C(1) << 26;
+    assert(marc_lzss_contextual_dynamic_range_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M)
+           == MARC_STATUS_OK);
+#if SIZE_MAX > UINT32_MAX
+    config.max_internal_buffered_bytes = UINT64_C(4362600532);
+    needed.primary_bytes = 1;
+    needed.secondary_bytes = 1;
+    needed.views_bytes = 1;
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_LIMIT_EXCEEDED);
+    assert(needed.primary_bytes == 0);
+    assert(needed.secondary_bytes == 0);
+    assert(needed.views_bytes == 0);
+    config.max_internal_buffered_bytes = UINT64_C(4362600533);
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+    assert(needed.primary_bytes == UINT64_C(67108864));
+    assert(needed.secondary_bytes == UINT64_C(1073741909));
+    assert(needed.views_bytes == UINT64_C(3221749760));
+
+    config.match_finder_strategy =
+        MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
+    config.max_internal_buffered_bytes = UINT64_C(6039797844);
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_LIMIT_EXCEEDED);
+    config.max_internal_buffered_bytes = UINT64_C(6039797845);
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+    assert(needed.primary_bytes == UINT64_C(67108864));
+    assert(needed.secondary_bytes == UINT64_C(1073741909));
+    assert(needed.views_bytes == UINT64_C(4898947072));
+
+    assert(marc_lzss_contextual_dynamic_range_config_init(
+               MARC_DIRECTION_DECODE, &config)
+           == MARC_STATUS_OK);
+    assert(marc_lzss_contextual_dynamic_range_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M)
+           == MARC_STATUS_OK);
+    config.max_internal_buffered_bytes = UINT64_C(1946157140);
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_LIMIT_EXCEEDED);
+    config.max_internal_buffered_bytes = UINT64_C(1946157141);
+    assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
+               &config, &needed)
+           == MARC_STATUS_OK);
+    assert(needed.primary_bytes == UINT64_C(1073741909));
+    assert(needed.secondary_bytes == UINT64_C(67108864));
+    assert(needed.views_bytes == UINT64_C(805306368));
+#endif
+
+    config.profile = UINT32_C(5);
     assert(marc_lzss_contextual_dynamic_range_workspace_requirements(
                &config, &needed)
            == MARC_STATUS_INVALID_ARGUMENT);

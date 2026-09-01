@@ -38,6 +38,7 @@ typedef uint32_t marc_lzss_contextual_profile;
 #define MARC_LZSS_CONTEXTUAL_PROFILE_1M UINT32_C(1)
 #define MARC_LZSS_CONTEXTUAL_PROFILE_4M UINT32_C(2)
 #define MARC_LZSS_CONTEXTUAL_PROFILE_16M UINT32_C(3)
+#define MARC_LZSS_CONTEXTUAL_PROFILE_64M UINT32_C(4)
 
 /* Selects an encoder-only exact LZSS match-finding strategy. */
 typedef uint32_t marc_lzss_match_finder_strategy;

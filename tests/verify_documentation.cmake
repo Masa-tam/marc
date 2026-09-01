@@ -350,7 +350,7 @@ foreach(required_window_64m_term IN ITEMS
         "## Shared primitive implementation"
         "260,111 overlapping length-258 Matches"
         "generic Format 2 header validator"
-        "## Dynamic Range private lifecycle"
+        "## Dynamic Range C lifecycle"
         "65,027 overlapping length-258 Matches"
         "first distance unavailable to"
         "private stream parser, serializer, complete-frame encoder, and streaming"
@@ -653,7 +653,9 @@ foreach(required_64m_format_term IN ITEMS
         "`2/6 + 1/5 + 3/2`: header validation"
         "Stream-header"
         "complete-frame encoding"
-        "No public selector")
+        "MARC_LZSS_CONTEXTUAL_PROFILE_64M"
+        "8-GiB aggregate policy"
+        "value 4 remains unsupported by rANS")
     string(FIND "${format_content}" "${required_64m_format_term}"
         required_64m_format_term_offset)
     if(required_64m_format_term_offset EQUAL -1)
@@ -1005,6 +1007,13 @@ string(FIND "${c_api_content}"
     c_api_experimental_profile_offset)
 if(c_api_experimental_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API experimental profile inventory is stale")
+endif()
+string(FIND "${c_api_content}"
+    "MARC_LZSS_CONTEXTUAL_PROFILE_64M` has value 4"
+    c_api_contextual_dynamic_range_64m_profile_offset)
+if(c_api_contextual_dynamic_range_64m_profile_offset EQUAL -1)
+    message(FATAL_ERROR
+        "C API contextual Dynamic Range 64 MiB profile is stale")
 endif()
 string(FIND "${c_api_content}"
     "canonical lifecycle emits only variable-length entropy variant 3"

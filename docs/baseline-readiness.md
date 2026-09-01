@@ -3489,3 +3489,13 @@ and exact strategy-aware workspace queries. Full-frame HashChain, BinaryTree,
 and decoder requirements are respectively 4,362,600,533, 6,039,797,845, and
 1,946,157,141 bytes, each checked at equality and one byte short. Public C,
 tool, fuzz, helper, default, and schema-52 surfaces remain unchanged.
+
+### BR-0222
+
+Public selector value 4 now exposes the reserved 64-MiB Contextual Dynamic
+Range identity through its atomic C profile helper, exact workspace query, and
+factory. The opt-in preset applies an eight-GiB aggregate policy while
+preserving caller-specific fields and finder choice; queries publish only the
+selected strategy's actual requirement and fail atomically one byte short.
+All other contextual backends, tools, fuzz selectors, defaults, and schema 52
+remain closed.

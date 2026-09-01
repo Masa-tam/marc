@@ -155,7 +155,7 @@ static void test_apply_profile(void) {
     expect_apply_failure(invalid, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
     assert(marc_lzss_contextual_tans_config_init(
                MARC_DIRECTION_ENCODE, &invalid) == MARC_STATUS_OK);
-    expect_apply_failure(invalid, (marc_lzss_contextual_profile)4);
+    expect_apply_failure(invalid, MARC_LZSS_CONTEXTUAL_PROFILE_64M);
     assert(marc_lzss_contextual_tans_config_apply_profile(
                NULL, MARC_LZSS_CONTEXTUAL_PROFILE_1M)
            == MARC_STATUS_INVALID_ARGUMENT);
@@ -690,7 +690,7 @@ int main(void) {
                &config, &needed) == MARC_STATUS_OK);
 #endif
 
-    config.profile = UINT32_C(4);
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_64M;
     assert(marc_lzss_contextual_tans_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;

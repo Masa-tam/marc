@@ -21192,3 +21192,23 @@ Require exact aggregate success and one-byte-short failure. These are private
 queries, not automatic allocation or public profile application. Keep the C
 selector, CLI/benchmark/fuzz names, defaults, helpers, and interoperability
 schema closed until their later stages.
+
+## DD-1032: Publish selector 4 only for 64 MiB Contextual Dynamic Range
+
+- Date: 2026-09-01
+- Status: accepted
+
+Define `MARC_LZSS_CONTEXTUAL_PROFILE_64M` as common public selector value 4,
+but admit it initially only in Contextual Dynamic Range. Its atomic
+`config_apply_profile()` helper preserves direction, original size,
+total-output limit, and the selected Exact finder while applying the 64-MiB
+frame/window, 1,073,741,829-byte payload, 4,598-entry model, and 8-GiB
+aggregate policies. The initializer remains 64 KiB and stream metadata never
+raises a local limit.
+
+Require the authoritative workspace query to report 4,362,600,533 bytes for
+HashChain encode, 6,039,797,845 for BinaryTree encode, and 1,946,157,141 for
+decode on supported 64-bit layouts, with atomic failure one byte short. Keep
+rANS, tANS, Blocked Huffman, and Adaptive Huffman helpers closed to selector 4.
+Assign no CLI, benchmark, fuzz, resource-helper, default, or interoperability
+surface in this stage.

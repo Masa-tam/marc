@@ -163,7 +163,9 @@ parameters later. `profile` selects one exact dictionary/context pair:
 initializer default, while `MARC_LZSS_CONTEXTUAL_PROFILE_1M` selects
 `2/3 + 1/2`. `MARC_LZSS_CONTEXTUAL_PROFILE_4M` selects `2/4 + 1/3`, and
 `MARC_LZSS_CONTEXTUAL_PROFILE_16M` selects `2/5 + 1/4`, only for this Dynamic
-Range factory. The selector is not inferred from `window_size`;
+Range factory. `MARC_LZSS_CONTEXTUAL_PROFILE_64M` has value 4 and selects
+`2/6 + 1/5`, also only for this factory. The selector is not inferred from
+`window_size`;
 encoding rejects parameters outside the selected profile and decoding rejects
 a stream whose
 identity does not match it. Re-query all three workspace regions after
@@ -178,15 +180,19 @@ layouts. Its decoder also receives the required `max_block_size` of
 4,582 model entries, and a one-GiB aggregate policy. On the supported 64-bit
 native layout, the authoritative workspace query returns exactly
 1,057,488,981 bytes for encoding and 452,984,917 bytes for decoding; one byte
-less fails. A caller may tighten any returned hard limit and must then re-query
+less fails. The 64-MiB preset applies a 1,073,741,829-byte payload ceiling,
+4,598 model entries, and an eight-GiB aggregate policy. Its exact HashChain,
+BinaryTree, and decoder workspace requirements are 4,362,600,533,
+6,039,797,845, and 1,946,157,141 bytes respectively on supported 64-bit
+layouts. A caller may tighten any returned hard limit and must then re-query
 before allocation. Contextual rANS, Contextual tANS, Contextual Blocked
-Huffman, and Contextual Adaptive Huffman also admit this selector through
-their own independently bounded profiles. The field and its trailing 32-bit
-reserved word occupy
+Huffman, and Contextual Adaptive Huffman admit common selectors only through
+16 MiB; their helpers reject the 64-MiB selector. The field and its trailing
+32-bit reserved word occupy
 the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
-all-zero meaning used by earlier callers. The explicit Dynamic Range CLI name
-and benchmark names, bounded decoder-fuzz admission, and schema-48 archive are
-now present.
+all-zero meaning used by earlier callers. The existing Dynamic Range CLI,
+benchmark, bounded decoder-fuzz, and schema-48 surfaces cover only profiles
+through 16 MiB; no 64-MiB tool or archive selector is assigned in this stage.
 The experimental LZSS contextual rANS factory is a distinct Format 2
 lifecycle. Call `marc_lzss_contextual_rans_workspace_requirements()` after
 changing direction, known size, frame/LZSS parameters, `profile`, or

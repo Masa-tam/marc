@@ -27743,3 +27743,30 @@ both bounds.
   258.15 seconds with the 600-second per-test limit. The unchanged schema-52
   compatibility traversal passes in 113.67 and 101.28 seconds respectively.
   The final diff is whitespace-clean.
+
+## CR-1119: 2026-09-01 - Publish 64-MiB range C profile
+
+- Authoring method: extended marc's common contextual profile selector and
+  existing Dynamic Range C lifecycle over the independently frozen private
+  64-MiB implementation without changing serialized bytes.
+- References used: IR-0794; DD-1032; TVG-0897; CR-1118; the repository-owned
+  profile helper, public factory, strategy-aware workspace query, and
+  family-specific selector validation.
+- Known implementations intentionally not consulted: external compressor,
+  range coder, allocator, C API, source, tests, vectors, patent, pseudocode,
+  memory policy, or optimization description.
+- Independent decisions: assign common selector value 4; admit it only for
+  Contextual Dynamic Range; apply an explicit 8-GiB local policy; preserve the
+  initializer, caller fields, Exact finder choice, and all tool/schema gates.
+- Generated-code task description: publish the 64-MiB Dynamic Range C profile,
+  freeze its helper values and exact workspace totals, prove one-short atomic
+  failures, and prove the other four contextual helpers remain closed.
+- Similarity review: implementation and tests mechanically extend marc's
+  first-party C profile contract and private 64-MiB formulas. No external
+  implementation expression or distinctive test structure was used.
+- Validation: focused helper, workspace, family-rejection, and documentation
+  tests pass under warning-clean MSVC and ClangCL builds. All 3,317 registered
+  tests pass under MSVC in 264.73 seconds and ClangCL in 260.62 seconds with
+  the 600-second per-test limit. The unchanged schema-52 compatibility
+  traversal passes in 113.74 and 102.02 seconds respectively. The final diff
+  is whitespace-clean.

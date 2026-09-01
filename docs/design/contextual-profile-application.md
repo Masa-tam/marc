@@ -35,11 +35,15 @@ typedef uint32_t marc_lzss_contextual_profile;
 #define MARC_LZSS_CONTEXTUAL_PROFILE_1M  ((marc_lzss_contextual_profile)1u)
 #define MARC_LZSS_CONTEXTUAL_PROFILE_4M  ((marc_lzss_contextual_profile)2u)
 #define MARC_LZSS_CONTEXTUAL_PROFILE_16M ((marc_lzss_contextual_profile)3u)
+#define MARC_LZSS_CONTEXTUAL_PROFILE_64M ((marc_lzss_contextual_profile)4u)
 ```
 
 The selector namespace is shared, but support is family-specific. A helper
 accepts only the profiles documented for that codec and leaves the
 configuration unchanged when given another known or unknown selector value.
+The 64-MiB selector is initially supported only by Contextual Dynamic Range;
+the other four helpers reject it atomically until their backend-specific
+admission stages complete.
 
 Each profile-bearing configuration stores the selector in `profile`, and each
 family exposes this shape:

@@ -12918,3 +12918,16 @@ For a full 67,108,864-byte frame, require HashChain encode workspace
 success, and one-byte-short atomic failure. On a host whose `size_t` cannot
 represent the layout, require arithmetic overflow before publishing a partial
 workspace. Preserve every public selector and schema-52 archive.
+
+### TVG-0897
+
+Extend the C profile-helper table with selector value 4 and require both
+directions to receive the exact 64-MiB frame/window, 1,073,741,829-byte
+payload, 4,598-entry model, and 8-GiB aggregate policy while preserving caller
+fields and selected BinaryTree Exact strategy. Reapplication must be
+byte-identical; unknown value 5 must fail without changing the configuration.
+
+On supported 64-bit layouts, query exact HashChain, BinaryTree, and decoder
+workspace components and totals, and reject each aggregate at one byte short
+without publishing partial extents. Keep the four other contextual C helpers,
+all CLI/benchmark/fuzz selectors, and schema-52 archives unchanged.

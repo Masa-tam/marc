@@ -153,7 +153,7 @@ static void test_apply_profile(void) {
     assert(memcmp(&invalid, &snapshot, sizeof(invalid)) == 0);
     snapshot = config;
     assert(marc_lzss_contextual_rans_config_apply_profile(
-               &config, (marc_lzss_contextual_profile)4)
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M)
            == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&config, &snapshot, sizeof(config)) == 0);
     assert(marc_lzss_contextual_rans_config_apply_profile(
@@ -691,7 +691,7 @@ int main(void) {
                &config, &needed) == MARC_STATUS_OK);
 #endif
 
-    config.profile = UINT32_C(4);
+    config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_64M;
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
     config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_1M;

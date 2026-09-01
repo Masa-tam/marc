@@ -592,6 +592,10 @@ bool load_config(const marc_lzss_dynamic_range_config* config,
 [[nodiscard]] marc::frame::internal::LzssTypedContextProfileVariant
 typed_context_profile_variant(
     const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M) {
+        return marc::frame::internal::LzssTypedContextProfileVariant::
+            field_context_64m;
+    }
     if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
         return marc::frame::internal::LzssTypedContextProfileVariant::
             field_context_16m;
@@ -611,6 +615,10 @@ typed_context_profile_variant(
 [[nodiscard]] marc::frame::internal::LzssTypedContextStreamAdmission
 typed_context_stream_admission(
     const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M) {
+        return marc::frame::internal::LzssTypedContextStreamAdmission::
+            field_context_64m;
+    }
     if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
         return marc::frame::internal::LzssTypedContextStreamAdmission::
             field_context_16m;
@@ -806,7 +814,8 @@ bool load_config(
         || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
-            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M)) {
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -4868,7 +4877,8 @@ marc_status marc_lzss_contextual_dynamic_range_config_apply_profile(
         || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
-            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M)) {
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_64M)) {
         return MARC_STATUS_INVALID_ARGUMENT;
     }
 
@@ -4880,12 +4890,16 @@ marc_status marc_lzss_contextual_dynamic_range_config_apply_profile(
         extent = UINT32_C(1) << 22;
     } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
         extent = UINT32_C(1) << 24;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M) {
+        extent = UINT32_C(1) << 26;
     }
-    const std::uint64_t decisions_per_byte =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
-                || profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
-            ? 14
-            : 12;
+    std::uint64_t decisions_per_byte = 12;
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+        || profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
+        decisions_per_byte = 14;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M) {
+        decisions_per_byte = 16;
+    }
     const std::uint64_t payload =
         static_cast<std::uint64_t>(extent) * decisions_per_byte + 5;
     applied.frame_size = extent;
@@ -4902,6 +4916,8 @@ marc_status marc_lzss_contextual_dynamic_range_config_apply_profile(
         applied.max_internal_buffered_bytes = UINT64_C(256) << 20;
     } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
         applied.max_internal_buffered_bytes = UINT64_C(1) << 30;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M) {
+        applied.max_internal_buffered_bytes = UINT64_C(8) << 30;
     }
     applied.max_lz_distance = extent;
     applied.max_lz_match_length = 258;
@@ -4912,6 +4928,8 @@ marc_status marc_lzss_contextual_dynamic_range_config_apply_profile(
         applied.max_entropy_table_entries = 4566;
     } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
         applied.max_entropy_table_entries = 4582;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M) {
+        applied.max_entropy_table_entries = 4598;
     }
     applied.max_range_model_total = UINT64_C(1) << 15;
     applied.profile = profile;
