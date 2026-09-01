@@ -352,8 +352,10 @@ profile value 4 through the same configuration helper as the CLI. It uses
 entries, and the helper's eight-GiB aggregate policy. The benchmark obtains
 directional extents only from the public workspace query; it does not reproduce
 the 4,362,600,533-byte full-frame HashChain encoder or 1,946,157,141-byte
-decoder layout. The selector is descriptive and does not add a fuzz selector,
-default, or interoperability archive. The initial one-iteration README smoke
+decoder layout. The selector is descriptive and does not add a default or
+interoperability archive. A separate bounded decoder-fuzz harness admits the
+same public profile without benchmark-sized workspace. The initial
+one-iteration README smoke
 produced 2,399 bytes from 4,326 bytes (ratio 0.555) under both local compilers
 and reported the 1,946,157,141-byte decoder requirement as peak caller-owned
 workspace. Throughput from this short smoke is descriptive only.

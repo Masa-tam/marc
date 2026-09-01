@@ -192,8 +192,9 @@ Huffman, and Contextual Adaptive Huffman admit common selectors only through
 the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
 all-zero meaning used by earlier callers. Exact CLI and benchmark name
 `lzss-contextual-dynamic-range-64m` now selects the same helper. Bounded fuzz
-and interoperability surfaces still cover only profiles through 16 MiB; no
-64-MiB fuzz or archive selector is assigned in this stage.
+now exercises the same public selector under fixed one-KiB frame storage;
+interoperability still covers only profiles through 16 MiB, and no 64-MiB
+archive selector is assigned in this stage.
 The experimental LZSS contextual rANS factory is a distinct Format 2
 lifecycle. Call `marc_lzss_contextual_rans_workspace_requirements()` after
 changing direction, known size, frame/LZSS parameters, `profile`, or

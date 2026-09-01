@@ -54,14 +54,14 @@ I/O and a fixed call ceiling make stalls reproducible without accepting
 input-controlled workspace sizes.
 In addition to the forty-two baseline targets, the experimental Format 2 LZSS
 contextual Dynamic Range target bounds supplied input at 8 KiB, published raw
-output at 4 KiB, one raw frame at 1 KiB, contextual payload at 12,293 bytes,
+output at 4 KiB, one raw frame at 1 KiB, contextual payload at 16,389 bytes,
 and native typed-token views at 1,024 fixed records. It exercises the private
 complete-frame decoder only after the 112-byte header is accepted and always
-exercises the 64 KiB, 1 MiB, 4 MiB, and 16 MiB public C decoder admissions with
-byte-derived chunks and a finite call budget. The largest profile permits the
-16 MiB identity, distance, and 4,582-entry model bound but cannot allocate a
-16 MiB frame: fuzz storage and raw history remain capped at 1 KiB. Ordinary
-builds compile this target warning-clean.
+exercises the 64 KiB, 1 MiB, 4 MiB, 16 MiB, and 64 MiB public C decoder
+admissions with byte-derived chunks and a finite call budget. The largest
+profile permits the 64 MiB identity and distance plus the 4,598-entry model
+bound but cannot allocate a 64 MiB frame: fuzz storage and raw history remain
+capped at 1 KiB. Ordinary builds compile this target warning-clean.
 The experimental contextual-rANS Format 2 target caps supplied input at
 32 KiB so the selected 9,089-byte maximum descriptor and a complete bounded
 frame are reachable. It caps public output at 4 KiB and one raw frame at 1 KiB,
@@ -856,6 +856,26 @@ sanitizer finding. Peak RSS was 43 MiB; final coverage was 261 counters and
 path applied only to the campaign process. No input corpus was supplied, no
 generated mutation was retained, and no artifact was produced. This bounded
 result is evidence for the exercised inputs, not an exhaustive safety claim.
+
+### FZ-0037: Five-profile Contextual Dynamic Range smoke
+
+The Contextual Dynamic Range private-frame/public-C decoder target now drives
+the 64-KiB, one-MiB, four-MiB, 16-MiB, and 64-MiB strict admissions for every
+bounded input. It retains its eight-KiB input, four-KiB total output, one-KiB
+frame/token storage, fixed arrays, and finite call ceiling. The largest
+admitted limits are `16*1024 + 5` payload bytes, 4,598 flattened model entries,
+and a 67,108,864-byte distance; the 64-MiB identity does not allocate a
+64-MiB fuzz frame, history, or profile-sized decoder workspace.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 20260901 completed exactly 1,000 inputs under an eight-KiB maximum
+input, five-second per-input timeout, and 512-MiB RSS limit without a crash,
+hang, or sanitizer finding. Peak RSS was 43 MiB; final coverage was 226
+counters and 346 features over a seven-entry, 30-byte in-memory corpus. The
+matching runtime path applied only to the campaign process. No input corpus
+was supplied, no generated mutation was retained, and no artifact was
+produced. This bounded result is evidence for the exercised inputs, not an
+exhaustive safety claim.
 
 ## Finding retention policy
 

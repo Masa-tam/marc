@@ -3507,3 +3507,13 @@ through CLI and benchmark adapters that reuse the C helper and authoritative
 workspace query. Canonical identity, mismatch/trailing rejection, finite
 reporting, peak-workspace accounting, usage adjacency, and near-miss rejection
 are covered without changing defaults, fuzz selectors, or schema 52.
+
+### BR-0224
+
+The fixed-array Contextual Dynamic Range decoder-fuzz boundary now admits the
+64-MiB public profile as its fifth strict identity. Input, output, frame, token,
+and call-count bounds remain unchanged; only payload, model, and distance
+validation ceilings rise to the new format. Canonical truncation, reserved-byte,
+and all eight new cross-profile directions fail atomically. A 1,000-input
+Clang 22 ASan/UBSan smoke completed without a finding, generated corpus, or
+artifact; schema 52 remains unchanged.

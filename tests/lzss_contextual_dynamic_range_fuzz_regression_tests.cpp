@@ -21,7 +21,7 @@ using Token = marc::dictionary::internal::LzssTypedToken;
 constexpr std::array raw{
     std::uint8_t{'A'}, std::uint8_t{'B'}, std::uint8_t{'A'},
     std::uint8_t{'B'}, std::uint8_t{'X'}};
-constexpr std::size_t maximum_payload = raw.size() * 14 + 5;
+constexpr std::size_t maximum_payload = raw.size() * 16 + 5;
 constexpr std::size_t maximum_encoded_frame = 64 + 16 + maximum_payload;
 constexpr std::size_t maximum_internal = 8192;
 
@@ -47,7 +47,9 @@ struct Workspace {
               MARC_STATUS_OK);
     result.original_size = raw.size();
     result.frame_size = raw.size();
-    result.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+    result.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M
+        ? UINT32_C(1) << 26
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
         ? UINT32_C(1) << 24
         : profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
             ? UINT32_C(1) << 22
@@ -58,10 +60,10 @@ struct Workspace {
     result.max_block_size = raw.size();
     result.max_compressed_payload_size = maximum_payload;
     result.max_internal_buffered_bytes = maximum_internal;
-    result.max_lz_distance = UINT64_C(1) << 24;
+    result.max_lz_distance = UINT64_C(1) << 26;
     result.max_lz_match_length = 258;
     result.max_entropy_table_entries =
-        marc::context::internal::lzss_field_context_frequency_entries_v4;
+        marc::context::internal::lzss_field_context_frequency_entries_v5;
     result.max_range_model_total = UINT64_C(1) << 24;
     result.profile = profile;
     return result;
@@ -229,6 +231,16 @@ TEST(LzssContextualDynamicRangeFuzzRegression,
 }
 
 TEST(LzssContextualDynamicRangeFuzzRegression,
+     EverySixtyFourMiBCanonicalTruncationIsAtomic) {
+    const auto encoded = canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_64M);
+    for (std::size_t size = 0; size < encoded.size(); ++size) {
+        expect_dual_atomic_failure(
+            std::span<const std::uint8_t>{encoded}.first(size),
+            MARC_LZSS_CONTEXTUAL_PROFILE_64M);
+    }
+}
+
+TEST(LzssContextualDynamicRangeFuzzRegression,
      CrossProfilePublicDecodersRejectAtomically) {
     const auto frozen = canonical_stream();
     expect_public_atomic_failure(
@@ -259,6 +271,24 @@ TEST(LzssContextualDynamicRangeFuzzRegression,
         sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
     expect_public_atomic_failure(
         sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
+    const auto sixty_four_mib =
+        canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_64M);
+    expect_public_atomic_failure(
+        frozen, MARC_LZSS_CONTEXTUAL_PROFILE_64M);
+    expect_public_atomic_failure(
+        extended, MARC_LZSS_CONTEXTUAL_PROFILE_64M);
+    expect_public_atomic_failure(
+        four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_64M);
+    expect_public_atomic_failure(
+        sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_64M);
+    expect_public_atomic_failure(
+        sixty_four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
+    expect_public_atomic_failure(
+        sixty_four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    expect_public_atomic_failure(
+        sixty_four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
+    expect_public_atomic_failure(
+        sixty_four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
 }
 
 TEST(LzssContextualDynamicRangeFuzzRegression,
@@ -317,6 +347,18 @@ TEST(LzssContextualDynamicRangeFuzzRegression,
     encoded[descriptor_reserved] = 1;
     expect_dual_atomic_failure(
         encoded, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+}
+
+TEST(LzssContextualDynamicRangeFuzzRegression,
+     SixtyFourMiBNonzeroDescriptorReservedByteIsAtomic) {
+    auto encoded = canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_64M);
+    constexpr auto descriptor_reserved =
+        marc::frame::internal::typed_context_stream_header_size
+        + marc::frame::internal::typed_context_frame_header_size
+        + marc::frame::internal::typed_context_range_descriptor_size - 1;
+    encoded[descriptor_reserved] = 1;
+    expect_dual_atomic_failure(
+        encoded, MARC_LZSS_CONTEXTUAL_PROFILE_64M);
 }
 
 } // namespace

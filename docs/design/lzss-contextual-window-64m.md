@@ -1,7 +1,7 @@
 # LZSS contextual 64 MiB window candidate
 
-Status: Dynamic Range C, CLI, and benchmark lifecycles are implemented. Fuzz
-selectors and interoperability remain unadmitted.
+Status: Dynamic Range C, CLI, benchmark, and bounded decoder-fuzz lifecycles
+are implemented. Interoperability remains unadmitted.
 
 ## Purpose
 
@@ -223,8 +223,10 @@ strategy-aware requirements above; stream metadata never raises these limits.
 The other four contextual backends reject selector 4 atomically. CLI and
 benchmark select the same helper through exact name
 `lzss-contextual-dynamic-range-64m`; neither duplicates the numeric policy or
-auto-detects the identity. Fuzz, helper-resource, default, and interoperability
-surfaces remain closed.
+auto-detects the identity. The bounded decoder-fuzz harness admits the same
+exact profile while retaining an eight-KiB input, four-KiB output, and one-KiB
+frame; it does not allocate a profile-sized history or decoder workspace.
+Helper-resource, default, and interoperability surfaces remain closed.
 
 ## Staged work
 
@@ -237,7 +239,8 @@ surfaces remain closed.
    and hand vectors (complete).
 6. Admit Dynamic Range from private decoder validation through public C, CLI,
    benchmark, bounded fuzzing, and one new interoperability archive (decoder
-   preflight, private lifecycle, public C profile, CLI, and benchmark complete).
+   preflight, private lifecycle, public C profile, CLI, benchmark, and bounded
+   fuzzing complete).
 7. Admit rANS, tANS, Blocked Huffman, and Adaptive Huffman separately, each
    with its own memory proof and one schema append.
 
@@ -245,7 +248,7 @@ No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
 one-shot round trip.
 
-Stages one through five and the Dynamic Range tool substage completed on
+Stages one through five and the Dynamic Range bounded-fuzz substage completed on
 2026-09-01. The fixed 48-point Silesia
 matrix validated every Exact strategy pair and measured a 414,783-token
 aggregate reduction, or 1.293%, when moving from a 16-MiB to a 64-MiB window
@@ -253,7 +256,7 @@ under the same 64-MiB frame. BinaryTree won seven of twelve members at each
 window and was 8.053 times HashChain in aggregate throughput at 64 MiB, at the
 cost of 1,946,157,056 bytes of finder workspace. The evidence is sufficient to
 retain the candidate as an explicit high-memory profile. Format 2 admits the
-Dynamic Range triple, its explicit public C selector, and exact CLI/benchmark
-names; every other backend triple and all fuzz/interoperability surfaces remain
-unavailable until their later stages. The evidence is not a basis for a new
-default or automatic strategy selector.
+Dynamic Range triple, its explicit public C selector, exact CLI/benchmark
+names, and bounded decoder-fuzz admission; every other backend triple and
+interoperability remain unavailable until their later stages. The evidence is
+not a basis for a new default or automatic strategy selector.

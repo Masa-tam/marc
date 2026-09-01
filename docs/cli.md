@@ -220,8 +220,9 @@ eight-GiB aggregate policy. Directional workspace sizes and alignment come
 only from the public query. HashChain encoding requires at most 4,362,600,533
 bytes for a full frame, while decoding conservatively reserves
 1,946,157,141 bytes before inspecting an untrusted stream. Decode requires the
-same explicit `-64m` name. No fuzz selector or interoperability archive is
-assigned by this tool stage.
+same explicit `-64m` name. A separate bounded decoder-fuzz harness admits the
+same public profile under fixed one-KiB frame storage; no interoperability
+archive is assigned by this tool stage.
 
 The experimental `lzss-contextual-rans` adapter also fixes raw frames at
 65,536 bytes. Its public Format 2 decision ceiling is `6F = 393,216`, its

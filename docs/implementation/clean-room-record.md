@@ -27798,3 +27798,35 @@ both bounds.
   seconds respectively. The 4,326-byte deterministic smoke encodes to 2,399
   bytes and reports the same 1,946,157,141-byte peak workspace under both
   toolchains. The final diff is whitespace-clean.
+
+## CR-1121: 2026-09-01 - Admit 64-MiB range bounded fuzzing
+
+- Authoring method: extended marc's existing fixed-array Contextual Dynamic
+  Range private/public decoder harness and permanent regression generator from
+  four exact public window profiles to five.
+- References used: IR-0796; DD-1034; TVG-0899; CR-1120; the repository-owned
+  decoder, public workspace query, sanitizer route, and atomic malformed-stream
+  tests.
+- Known implementations intentionally not consulted: external compressors,
+  fuzz harnesses, corpora, large-window implementations, vulnerability reports,
+  source code, tests, patents, pseudocode, or optimizations.
+- Independent decisions: retain a one-KiB frame under the 64-MiB identity;
+  raise only shared payload, model, and distance validation ceilings; avoid the
+  encoder and full profile workspace; retain mutations only after a finding.
+- Generated-code task description: admit selector 4 in the bounded Dynamic
+  Range decoder fuzzer, add complete truncation/reserved-byte and eight ordered
+  mismatch regressions, compile warning-clean, and run a bounded sanitizer
+  smoke.
+- Similarity review: limits, selector calls, canonical seeds, and failure
+  expectations follow directly from marc's public profile and prior
+  four-profile harness. No external implementation expression was used.
+- Validation: twelve focused permanent regressions pass under warning-clean
+  MSVC and ClangCL builds. Windows Clang 22 libFuzzer with ASan/UBSan, seed
+  20260901, 1,000 inputs, eight-KiB maximum input, five-second timeout, and
+  512-MiB RSS limit completed without a finding; peak RSS was 43 MiB and final
+  coverage was 226 counters/346 features over a seven-entry, 30-byte in-memory
+  corpus. No generated mutation or artifact was retained. All 3,321 registered
+  tests pass under MSVC in 278.31 seconds and ClangCL in 271.52 seconds with
+  the 600-second per-test limit. The unchanged schema-52 compatibility
+  traversal passes in 115.02 and 103.90 seconds respectively. The final diff
+  is whitespace-clean.

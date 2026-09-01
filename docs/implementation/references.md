@@ -7227,3 +7227,12 @@ helper, workspace allocator, CLI round-trip harness, and benchmark-report
 validator. No external compressor, range coder, command-line tool, benchmark,
 source, tests, vectors, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0796
+
+The 64-MiB Contextual Dynamic Range bounded decoder-fuzz admission uses
+IR-0795, DD-1033, TVG-0898, CR-1120, the repository-owned fixed-array
+private/public harness, public profile selector, permanent malformed-stream
+regressions, and matching-runtime sanitizer route. No external fuzzer harness,
+compressor, corpus, vulnerability report, source, test, patent, pseudocode, or
+optimization description was consulted.

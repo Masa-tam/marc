@@ -21229,3 +21229,21 @@ Require a canonical CLI round trip with dictionary/context/backend identity
 failure, and a finite benchmark report whose peak equals the larger directional
 workspace sum. Keep bounded fuzzing, defaults, resource helpers, and schema 52
 unchanged.
+
+## DD-1034: Extend bounded range fuzzing to the 64 MiB profile
+
+- Date: 2026-09-01
+- Status: accepted
+
+Drive public profile values 0 through 4 for every bounded input through the
+existing Contextual Dynamic Range decoder target. Retain the eight-KiB input,
+four-KiB total output, one-KiB frame/block, fixed-array, and finite-call policy.
+Raise only the shared validation bounds to `16F + 5` payload, 4,598 model
+entries, and 64-MiB distance. The 64-MiB identity must not allocate a 64-MiB
+fuzz frame, history buffer, or full-profile decoder workspace.
+
+Add permanent canonical truncation and descriptor-reserved regressions plus
+all eight ordered cross-profile mismatches involving value 4. Compile the
+ordinary object warning-clean under both local compilers, then run one bounded
+sanitizer smoke without retaining generated mutations when no finding occurs.
+Do not fuzz the encoder workspace or change schema 52 in this stage.

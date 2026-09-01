@@ -358,6 +358,7 @@ foreach(required_window_64m_term IN ITEMS
         "6,039,797,845 bytes"
         "1,946,157,141 bytes"
         "lzss-contextual-dynamic-range-64m"
+        "bounded decoder-fuzz"
         "HashChain Exact and BinaryTree Exact remain encoder-local")
     string(FIND "${lzss_contextual_window_64m_content}"
         "${required_window_64m_term}" required_window_64m_term_offset)
@@ -657,6 +658,7 @@ foreach(required_64m_format_term IN ITEMS
         "MARC_LZSS_CONTEXTUAL_PROFILE_64M"
         "8-GiB aggregate policy"
         "lzss-contextual-dynamic-range-64m"
+        "decoder-fuzz harness also admits"
         "value 4 remains unsupported by rANS")
     string(FIND "${format_content}" "${required_64m_format_term}"
         required_64m_format_term_offset)
@@ -1248,6 +1250,19 @@ string(FIND "${fuzzing_content}" "The forty-two bounded targets"
 if(fuzzing_target_count_offset EQUAL -1)
     message(FATAL_ERROR "Fuzzing target count is stale")
 endif()
+foreach(required_64m_fuzzing_term IN ITEMS
+        "Five-profile Contextual Dynamic Range smoke"
+        "`16*1024 + 5` payload bytes"
+        "67,108,864-byte distance"
+        "seed 20260901"
+        "counters and 346 features")
+    string(FIND "${fuzzing_content}" "${required_64m_fuzzing_term}"
+        required_64m_fuzzing_term_offset)
+    if(required_64m_fuzzing_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing 64-MiB fuzzing record: ${required_64m_fuzzing_term}")
+    endif()
+endforeach()
 file(STRINGS "${fuzzing_document}" fuzzing_campaign_headings
     REGEX "^### FZ-[0-9]+: .+$")
 if(NOT fuzzing_campaign_headings)

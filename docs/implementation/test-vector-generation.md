@@ -12944,3 +12944,21 @@ Run one benchmark iteration over README.md and require finite ratio/timing,
 positive directional workspace regions, reported peak equal to the larger
 directional sum, exact usage adjacency through `-64m`, and rejection of the
 case-mismatched `-64M` name. Preserve every fuzz selector and schema-52 archive.
+
+### TVG-0899
+
+Generate the five-byte canonical stream independently through all five public
+Dynamic Range window selectors. For selector 4 require exact identity
+`2/6 + 1/5 + 3/2`, reject every proper truncation and a nonzero descriptor
+reserved byte atomically through both decoder paths, and require all eight new
+ordered cross-profile mismatches to publish no raw byte or change the repeated
+terminal error.
+
+For the live harness retain fixed one-KiB token/raw staging and set its largest
+payload bound to `16*1024 + 5`, flattened model limit to 4,598, and distance
+limit to 67,108,864. Exercise all five strict public admissions under the
+existing finite call bound. Require warning-clean MSVC and ClangCL compile
+smoke, then run Clang 22 with the matching sanitizer runtime, seed 20260901,
+1,000 inputs, eight-KiB maximum input, five-second timeout, and 512-MiB RSS
+limit. Retain no generated corpus or artifact without a finding, and keep
+schema 52 unchanged.
