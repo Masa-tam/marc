@@ -54,6 +54,20 @@ extended_stream_vector() {
     return bytes;
 }
 
+[[nodiscard]] std::array<std::byte, typed_context_stream_header_size>
+sixty_four_mib_stream_vector() {
+    auto bytes = stream_vector();
+    bytes[14] = std::byte{0x06};
+    bytes[20] = std::byte{0x00};
+    bytes[21] = std::byte{0x00};
+    bytes[22] = std::byte{0x00};
+    bytes[23] = std::byte{0x04};
+    bytes[66] = std::byte{0x00};
+    bytes[67] = std::byte{0x04};
+    bytes[98] = std::byte{0x05};
+    return bytes;
+}
+
 [[nodiscard]] std::array<std::byte, 86> frame_vector() {
     std::array<std::byte, 86> bytes{};
     bytes[0] = std::byte{0x4d};
@@ -112,6 +126,15 @@ extended_stream_vector() {
     stream.dictionary.window_size = 16777216;
     stream.dictionary_variant = 5;
     stream.context_variant = 4;
+    return stream;
+}
+
+[[nodiscard]] TypedContextStreamHeader sixty_four_mib_stream_config() {
+    auto stream = stream_config();
+    stream.frame_size = 67108864;
+    stream.dictionary.window_size = 67108864;
+    stream.dictionary_variant = 6;
+    stream.context_variant = 5;
     return stream;
 }
 
@@ -215,6 +238,8 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
                  TypedContextStreamHeaderError::unsupported_dictionary_variant},
         Mutation{14, std::byte{5},
                  TypedContextStreamHeaderError::contradictory_parameters},
+        Mutation{14, std::byte{6},
+                 TypedContextStreamHeaderError::contradictory_parameters},
         Mutation{16, std::byte{4},
                  TypedContextStreamHeaderError::unknown_entropy_algorithm},
         Mutation{18, std::byte{1},
@@ -224,6 +249,8 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
         Mutation{98, std::byte{2},
                  TypedContextStreamHeaderError::contradictory_parameters},
         Mutation{98, std::byte{4},
+                 TypedContextStreamHeaderError::contradictory_parameters},
+        Mutation{98, std::byte{5},
                  TypedContextStreamHeaderError::contradictory_parameters},
     };
     for (const auto& mutation : mutations) {
@@ -272,6 +299,35 @@ TEST(TypedContextStreamFormat,
     EXPECT_EQ(parsed.dictionary.window_size, 16777216U);
 }
 
+TEST(TypedContextStreamFormat, KeepsReservedSixtyFourMibPairUnadmitted) {
+    const auto stream = sixty_four_mib_stream_config();
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = stream.frame_size;
+    limits.max_block_size = stream.frame_size;
+    limits.max_lz_distance = stream.dictionary.window_size;
+    limits.max_entropy_table_entries = 4598;
+    limits.max_internal_buffered_bytes = UINT64_C(8) * 1024 * 1024 * 1024;
+
+    EXPECT_EQ(validate_typed_context_stream_header(stream, limits),
+              TypedContextStreamHeaderError::unsupported_dictionary_variant);
+    std::array<std::byte, typed_context_stream_header_size> output{};
+    output.fill(std::byte{0xa5});
+    EXPECT_EQ(serialize_typed_context_stream_header(stream, limits, output),
+              TypedContextStreamHeaderError::unsupported_dictionary_variant);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xa5};
+    }));
+
+    TypedContextStreamHeader parsed{};
+    parsed.original_size = 0xa5a5;
+    std::size_t consumed = 0xa5a5;
+    EXPECT_EQ(parse_typed_context_stream_header(
+                  sixty_four_mib_stream_vector(), limits, parsed, consumed),
+              TypedContextStreamHeaderError::unsupported_dictionary_variant);
+    EXPECT_EQ(parsed.original_size, 0xa5a5U);
+    EXPECT_EQ(consumed, 0xa5a5U);
+}
+
 TEST(TypedContextStreamFormat, RejectsCrossedKnownVariantPairsAtomically) {
     for (const auto& bytes : {[] {
              auto value = stream_vector();
@@ -280,6 +336,16 @@ TEST(TypedContextStreamFormat, RejectsCrossedKnownVariantPairsAtomically) {
          }(), [] {
              auto value = extended_stream_vector();
              value[14] = std::byte{2};
+             return value;
+         }(), [] {
+             auto value = stream_vector();
+             value[14] = std::byte{6};
+             value[98] = std::byte{4};
+             return value;
+         }(), [] {
+             auto value = stream_vector();
+             value[14] = std::byte{5};
+             value[98] = std::byte{5};
              return value;
          }()}) {
         TypedContextStreamHeader output{};

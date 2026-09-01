@@ -52,6 +52,16 @@ using dictionary::internal::LzssTypedTokenKind;
                 24,
                 34,
                 7};
+    case LzssFieldContextVariant::field_context_64m:
+        return {variant,
+                dictionary::internal::LzssTypedTokenVariant::
+                    field_context_64m,
+                &lzss_field_context_alphabets_v5,
+                &lzss_field_context_offsets_v5,
+                lzss_field_context_frequency_entries_v5,
+                26,
+                36,
+                8};
     }
     return {};
 }
@@ -544,14 +554,14 @@ LzssFieldContextLayoutResult select_lzss_field_context_layout(
     const std::uint16_t dictionary_variant,
     const std::uint16_t context_algorithm,
     const std::uint16_t context_variant) noexcept {
-    if (dictionary_variant < 2 || dictionary_variant > 5) {
+    if (dictionary_variant < 2 || dictionary_variant > 6) {
         return {{},
                 LzssFieldContextLayoutError::unknown_dictionary_variant};
     }
     if (context_algorithm != 1) {
         return {{}, LzssFieldContextLayoutError::unknown_context_algorithm};
     }
-    if (context_variant < 1 || context_variant > 4) {
+    if (context_variant < 1 || context_variant > 5) {
         return {{},
                 LzssFieldContextLayoutError::unsupported_context_variant};
     }
@@ -564,7 +574,9 @@ LzssFieldContextLayoutResult select_lzss_field_context_layout(
         ? LzssFieldContextVariant::field_context_1m
         : context_variant == 3
         ? LzssFieldContextVariant::field_context_4m
-        : LzssFieldContextVariant::field_context_16m;
+        : context_variant == 4
+        ? LzssFieldContextVariant::field_context_16m
+        : LzssFieldContextVariant::field_context_64m;
     return {layout_for_variant(variant), LzssFieldContextLayoutError::none};
 }
 

@@ -7181,3 +7181,12 @@ current backend ceiling formulas, and the repository documentation validator.
 No external compressor, entropy coder, stream format, source code, archive,
 test vector, patent, pseudocode, memory policy, or optimization description
 was consulted.
+
+### IR-0791
+
+The shared 64-MiB dictionary/context primitive implementation uses IR-0790,
+DD-1028, TVG-0893, the repository-owned typed-token validator, field-context
+state machine, checked count validation, earlier four variant boundaries,
+backend admission gates, and current dual-toolchain tests. No external
+compression library, source code, tests, vectors, patents, pseudocode, model
+layout, or optimization description was consulted.

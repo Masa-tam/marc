@@ -3459,3 +3459,14 @@ variants are contradictory. No complete entropy triple, runtime selector,
 public ABI value, CLI or benchmark name, fuzz selector, default, helper, or
 interoperability archive is admitted; current implementations must continue
 to reject the pair as unsupported until a backend completes its staged proof.
+
+### BR-0219
+
+Shared typed-token variant 6 and field-context variant 5 now implement the
+reserved `2/6 + 1/5` pair without admitting a backend. Warning-clean MSVC and
+ClangCL builds prove the 67,108,864-byte window, distance class 26, 26 bypass
+bits, 4,598 entries, `8F`, `36T`, exact inversion, reciprocal crossing errors,
+and atomic non-admission by current Format 2 and backend descriptor paths.
+Internal frequency and FGK storage safely covers the shared layout. No public
+ABI, stream triple, selector, default, CLI/benchmark/fuzz name, or schema-52
+inventory entry changed.

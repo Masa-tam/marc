@@ -1,6 +1,6 @@
 # LZSS contextual 64 MiB window candidate
 
-Status: Format 2 dictionary/context identity reserved. No backend triple,
+Status: shared dictionary/context primitives implemented. No backend triple,
 public profile, decoder admission, CLI name, or interoperability archive is
 assigned by this document.
 
@@ -173,6 +173,28 @@ by every older context.
 - append an interoperability archive only after one backend's complete public
   lifecycle is admitted.
 
+## Shared primitive implementation
+
+The repository now owns typed-token variant 6, field-context variant 5, the
+27-symbol distance alphabets, 4,598-entry offsets, and the exact `2/6 + 1/5`
+selector. The checked layout records 26 bypass bits, 36 decisions per token,
+and eight decisions per raw byte. Typed-token validation admits a window no
+larger than 67,108,864 bytes and rejects the next value.
+
+The maximum-distance vector builds exactly 67,108,864 bytes of prior history
+from one Literal, 260,111 overlapping length-258 Matches, and one length-225
+Match. A final distance-67,108,864 Match adds five operations and 36 decisions,
+uses class 26 with 26 zero bypass bits, inverts to the original token, and is
+rejected by context variant 4. Boundary tests also freeze class/bypass pairs
+`24/1`, `25/0`, and `26/0`.
+
+Internal frequency and Adaptive Huffman model storage can represent all 4,598
+entries and 9,227 nodes. This capacity is not backend admission. The generic Format 2 header validator
+recognizes crossed known variants as contradictory but rejects the exact
+reserved pair atomically. Compact rANS and tANS and the
+Blocked Huffman descriptor retain their stable unsupported-context errors for
+variant 5. No complete frame, stream, profile, or public surface is opened.
+
 ## Staged work
 
 1. Fix this shared design, provenance, and test contract.
@@ -181,7 +203,7 @@ by every older context.
    a correctness gate.
 4. Reserve dictionary variant 6 and context variant 5 in `docs/format.md`.
 5. Implement shared dictionary/context constants, checked layouts, validators,
-   and hand vectors.
+   and hand vectors (complete).
 6. Admit Dynamic Range from private decoder validation through public C, CLI,
    benchmark, bounded fuzzing, and one new interoperability archive.
 7. Admit rANS, tANS, Blocked Huffman, and Adaptive Huffman separately, each
@@ -191,7 +213,7 @@ No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
 one-shot round trip.
 
-Stages one through four completed on 2026-09-01. The fixed 48-point Silesia
+Stages one through five completed on 2026-09-01. The fixed 48-point Silesia
 matrix validated every Exact strategy pair and measured a 414,783-token
 aggregate reduction, or 1.293%, when moving from a 16-MiB to a 64-MiB window
 under the same 64-MiB frame. BinaryTree won seven of twelve members at each

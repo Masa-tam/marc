@@ -43,6 +43,10 @@ namespace {
     const std::uint32_t expected_decision_count,
     const std::uint32_t expected_payload_size,
     const context::internal::LzssFieldContextVariant variant) noexcept {
+    if (variant
+        == context::internal::LzssFieldContextVariant::field_context_64m) {
+        return ContextualTansFormatError::unsupported_context_variant;
+    }
     const auto selected = context::internal::get_lzss_field_context_layout(
         variant);
     if (selected.error
@@ -131,6 +135,8 @@ namespace {
         return contextual_tans_max_descriptor_size_v3;
     case context::internal::LzssFieldContextVariant::field_context_16m:
         return contextual_tans_max_descriptor_size_v4;
+    case context::internal::LzssFieldContextVariant::field_context_64m:
+        return 0;
     }
     return 0;
 }

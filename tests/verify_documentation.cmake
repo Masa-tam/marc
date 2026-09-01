@@ -347,6 +347,9 @@ foreach(required_window_64m_term IN ITEMS
         "Variants 6 and 5 must occur together"
         "Every crossed pair is contradictory"
         "No backend triple,"
+        "## Shared primitive implementation"
+        "260,111 overlapping length-258 Matches"
+        "generic Format 2 header validator"
         "HashChain Exact and BinaryTree Exact remain encoder-local")
     string(FIND "${lzss_contextual_window_64m_content}"
         "${required_window_64m_term}" required_window_64m_term_offset)

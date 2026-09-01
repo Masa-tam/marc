@@ -402,6 +402,11 @@ TEST(ContextualRansFormat, RejectsUnsupportedSelectedLayoutAtomically) {
                   descriptor, 2, 8, {}, size, invalid),
               ContextualRansFormatError::unsupported_context_variant);
     EXPECT_EQ(size, 0xa5a5U);
+    EXPECT_EQ(marc::entropy::internal::validate_contextual_rans_descriptor(
+                  descriptor, 2, 8, {}, size,
+                  LzssFieldContextVariant::field_context_64m),
+              ContextualRansFormatError::unsupported_context_variant);
+    EXPECT_EQ(size, 0xa5a5U);
 }
 
 TEST(ContextualRansFormat, RejectsEveryStrictPrefixAndTrailingData) {

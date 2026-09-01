@@ -17,6 +17,7 @@ enum class LzssFieldContextVariant : std::uint16_t {
     field_context_1m = 2,
     field_context_4m = 3,
     field_context_16m = 4,
+    field_context_64m = 5,
 };
 
 struct LzssFieldContextLayout {

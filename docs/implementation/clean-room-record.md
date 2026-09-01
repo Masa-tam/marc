@@ -27658,3 +27658,34 @@ both bounds.
   Release build trees with the 600-second per-test limit, and the final diff is
   whitespace-clean. Codec and interoperability tests are unchanged because
   this stage reserves documentation and validator contracts only.
+
+## CR-1116: 2026-09-01 - Implement shared 64-MiB contextual primitives
+
+- Authoring method: extended marc's five reserved typed-token/context layouts
+  mechanically from the accepted 64-MiB format contract, then proved the
+  inclusive window capability separately from an equal-sized reset frame.
+- References used: IR-0791; DD-1029; TVG-0894; CR-1115; the repository-owned
+  typed-token validator, field-context model and inversion, shared entropy
+  storage, Format 2 header validator, and backend non-admission paths.
+- Known implementations intentionally not consulted: external compressor,
+  token or context model, entropy coder, tests, vectors, match finder, patent,
+  pseudocode, memory policy, and optimization description.
+- Independent decisions: add only shared `2/6 + 1/5`; construct the inclusive
+  history with overlap Matches; enlarge safe internal capacity; distinguish
+  crossed from exact-unadmitted headers; and keep every complete entropy
+  triple, public name, default, and archive closed.
+- Generated-code task description: implement 64-MiB token/context constants,
+  exact selector, checked limits, class-26 hand vector, reciprocal rejection,
+  backend non-admission, provenance, and warning-clean dual-toolchain tests.
+- Similarity review: code and tests extend marc's immediately preceding
+  first-party variants and checked contracts. No external implementation
+  expression or distinctive test structure was used.
+- Validation: official CMake 4.3.4 produces warning-clean Release builds under
+  MSVC and ClangCL. Focused shared-layout, maximum-distance, header admission,
+  entropy rejection, and Adaptive-model tests pass in both trees. In the first
+  complete 3,310-test run, all codec, CLI, and interoperability-schema tests
+  passed; the documentation-layout test alone exposed and localized a wrapped
+  required phrase before final validation. The schema test passed in 112.76
+  seconds under MSVC and 101.25 seconds under ClangCL. After correcting the
+  prose wrap, that final test passes in both trees, completing all 3,310 tests
+  under each compiler. The final diff is whitespace-clean.

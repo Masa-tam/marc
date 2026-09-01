@@ -388,6 +388,11 @@ TEST(ContextualTansFormat, RejectsCrossedAndUnsupportedSelectedLayouts) {
                   static_cast<LzssFieldContextVariant>(0xff)),
               ContextualTansFormatError::unsupported_context_variant);
     EXPECT_EQ(size, 0xa5a5U);
+    EXPECT_EQ(marc::entropy::internal::validate_contextual_tans_descriptor(
+                  frozen, 2, 2, {}, size,
+                  LzssFieldContextVariant::field_context_64m),
+              ContextualTansFormatError::unsupported_context_variant);
+    EXPECT_EQ(size, 0xa5a5U);
     auto nonzero_tail = frozen;
     nonzero_tail.frequencies[
         marc::context::internal::lzss_field_context_frequency_entries_v1] = 1;

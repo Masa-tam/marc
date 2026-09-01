@@ -64,6 +64,10 @@ TypedContextStreamHeaderError validate_typed_context_stream_header(
         incompatible_variants:
         return TypedContextStreamHeaderError::contradictory_parameters;
     }
+    if (layout.layout.context_variant
+        == context::internal::LzssFieldContextVariant::field_context_64m) {
+        return TypedContextStreamHeaderError::unsupported_dictionary_variant;
+    }
     const auto dictionary_error =
         dictionary::internal::validate_lzss_typed_parameters(
             header.dictionary, limits, layout.layout.dictionary_variant);
@@ -142,7 +146,8 @@ TypedContextStreamHeaderError parse_typed_context_stream_header(
         return TypedContextStreamHeaderError::unknown_dictionary_algorithm;
     }
     if (dictionary_variant != 2 && dictionary_variant != 3
-        && dictionary_variant != 4 && dictionary_variant != 5) {
+        && dictionary_variant != 4 && dictionary_variant != 5
+        && dictionary_variant != 6) {
         return TypedContextStreamHeaderError::unsupported_dictionary_variant;
     }
     if (entropy_algorithm != 3) {
@@ -200,7 +205,8 @@ TypedContextStreamHeaderError parse_typed_context_stream_header(
         return TypedContextStreamHeaderError::unknown_context_model;
     }
     if (context_variant != 1 && context_variant != 2
-        && context_variant != 3 && context_variant != 4) {
+        && context_variant != 3 && context_variant != 4
+        && context_variant != 5) {
         return TypedContextStreamHeaderError::unsupported_context_variant;
     }
     if (context_flags != 0 || !all_zero(bytes.subspan(104, 8))) {

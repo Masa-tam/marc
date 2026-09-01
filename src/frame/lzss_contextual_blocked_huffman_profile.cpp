@@ -124,6 +124,8 @@ inline constexpr std::uint64_t bits_per_decision = 15;
     case context::internal::LzssFieldContextVariant::field_context_16m:
         return entropy::internal::
             contextual_blocked_huffman_max_descriptor_size_v4;
+    case context::internal::LzssFieldContextVariant::field_context_64m:
+        return 0;
     }
     return 0;
 }

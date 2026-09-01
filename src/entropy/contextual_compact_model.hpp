@@ -28,7 +28,7 @@ inline constexpr std::uint32_t contextual_compact_model_total_frequency =
 
 using ContextualCompactFrequencies = std::array<
     std::uint16_t,
-    context::internal::lzss_field_context_frequency_entries_v4>;
+    context::internal::lzss_field_context_frequency_entries_v5>;
 
 enum class ContextualCompactModelError : std::uint8_t {
     none,

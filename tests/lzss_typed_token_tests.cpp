@@ -204,7 +204,7 @@ TEST(LzssTypedToken, VariantThreeExtendsOnlyTheWindowLimit) {
                   LzssTypedTokenVariant::field_context_1m),
               LzssTypedTokenError::invalid_parameters);
     EXPECT_EQ(validate_lzss_typed_parameters(
-                  {}, limits, static_cast<LzssTypedTokenVariant>(6)),
+                  {}, limits, static_cast<LzssTypedTokenVariant>(7)),
               LzssTypedTokenError::invalid_parameters);
 }
 
@@ -280,7 +280,50 @@ TEST(LzssTypedToken, VariantFiveExtendsOnlyTheWindowLimit) {
                   LzssTypedTokenVariant::field_context_16m),
               LzssTypedTokenError::invalid_parameters);
     EXPECT_EQ(validate_lzss_typed_parameters(
-                  {}, limits, static_cast<LzssTypedTokenVariant>(6)),
+                  {}, limits, static_cast<LzssTypedTokenVariant>(7)),
+              LzssTypedTokenError::invalid_parameters);
+}
+
+TEST(LzssTypedToken, VariantSixExtendsOnlyTheWindowLimit) {
+    auto parameters = LzssParameters{};
+    parameters.window_size = 67108864;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = UINT64_C(67108864) + 5;
+    limits.max_block_size = limits.max_frame_size;
+    limits.max_lz_distance = parameters.window_size;
+
+    EXPECT_EQ(validate_lzss_typed_parameters(
+                  parameters, limits,
+                  LzssTypedTokenVariant::field_context_16m),
+              LzssTypedTokenError::invalid_parameters);
+    EXPECT_EQ(validate_lzss_typed_parameters(
+                  parameters, limits,
+                  LzssTypedTokenVariant::field_context_64m),
+              LzssTypedTokenError::none);
+
+    std::uint64_t next_size = 0;
+    for (const auto distance : {16777216U, 16777217U, 33554431U,
+                                33554432U, 33554433U, 67108863U,
+                                67108864U}) {
+        EXPECT_EQ(validate_lzss_typed_token(
+                      match(distance, 5), parameters,
+                      {distance, static_cast<std::uint64_t>(distance) + 5},
+                      limits, next_size,
+                      LzssTypedTokenVariant::field_context_64m),
+                  LzssTypedTokenError::none)
+            << "distance=" << distance;
+        EXPECT_EQ(next_size, static_cast<std::uint64_t>(distance) + 5)
+            << "distance=" << distance;
+    }
+
+    parameters.window_size = 67108865;
+    limits.max_lz_distance = parameters.window_size;
+    EXPECT_EQ(validate_lzss_typed_parameters(
+                  parameters, limits,
+                  LzssTypedTokenVariant::field_context_64m),
+              LzssTypedTokenError::invalid_parameters);
+    EXPECT_EQ(validate_lzss_typed_parameters(
+                  {}, limits, static_cast<LzssTypedTokenVariant>(7)),
               LzssTypedTokenError::invalid_parameters);
 }
 

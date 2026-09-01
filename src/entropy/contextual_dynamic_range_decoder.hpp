@@ -75,7 +75,7 @@ private:
     std::span<const std::byte> payload_{};
     std::array<std::uint16_t,
                marc::context::internal::
-                   lzss_field_context_frequency_entries_v4>
+                   lzss_field_context_frequency_entries_v5>
         frequencies_{};
     std::array<std::uint32_t,
                marc::context::internal::lzss_field_context_count> totals_{};

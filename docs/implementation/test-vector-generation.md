@@ -12865,3 +12865,25 @@ ceiling, and every 64-bit workspace aggregate at equality and one byte short.
 Preserve all schema-52 archives and earlier canonical bytes. Add no archive
 until one backend's complete private, public, tool, fuzz, and interoperability
 lifecycle is admitted.
+
+### TVG-0894
+
+Validate typed-token variant 6 at distances immediately around 16 MiB,
+32 MiB, and 64 MiB. Admit exactly 67,108,864 under explicit frame, block,
+distance, and aggregate limits; reject the next window byte and an unknown
+enum. Select only `2/6 + 1/5` and require 27-symbol distance alphabets, 4,598
+offset entries, 26 bypass bits, 36 decisions per token, and eight per raw byte.
+
+Build the inclusive history from one Literal, 260,111 overlapping length-258
+Matches, and one length-225 Match. Append a distance-67,108,864, length-258
+Match and require five added operations, 36 added decisions, class 26, zero
+extra value, 26 bypass bits, and exact token inversion. Require variant 4 to
+reject the same operations. Freeze the first new distance as class 24/extra 1
+and the power-of-two boundaries as class 25/extra 0 and class 26/extra 0.
+
+Require generic Format 2 parsing and serialization to leave outputs unchanged
+while rejecting the exact reserved pair, and report all reciprocal crossings
+as contradictory. Require compact rANS/tANS and Blocked Huffman descriptors to
+reject context variant 5 atomically. Verify the 9,227-node/4,598-symbol FGK
+layout at exact capacity and one entry short. Preserve every older vector and
+schema-52 archive.

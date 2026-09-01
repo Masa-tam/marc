@@ -13,6 +13,7 @@ inline constexpr std::size_t lzss_field_context_frequency_entries_v1 = 4518;
 inline constexpr std::size_t lzss_field_context_frequency_entries_v2 = 4550;
 inline constexpr std::size_t lzss_field_context_frequency_entries_v3 = 4566;
 inline constexpr std::size_t lzss_field_context_frequency_entries_v4 = 4582;
+inline constexpr std::size_t lzss_field_context_frequency_entries_v5 = 4598;
 inline constexpr std::size_t lzss_field_context_frequency_entries =
     lzss_field_context_frequency_entries_v1;
 
@@ -43,6 +44,8 @@ inline constexpr auto lzss_field_context_alphabets_v3 =
     make_lzss_field_context_alphabets(23);
 inline constexpr auto lzss_field_context_alphabets_v4 =
     make_lzss_field_context_alphabets(25);
+inline constexpr auto lzss_field_context_alphabets_v5 =
+    make_lzss_field_context_alphabets(27);
 inline constexpr auto lzss_field_context_alphabets =
     lzss_field_context_alphabets_v1;
 
@@ -64,6 +67,8 @@ inline constexpr auto lzss_field_context_offsets_v3 =
     make_lzss_field_context_offsets(lzss_field_context_alphabets_v3);
 inline constexpr auto lzss_field_context_offsets_v4 =
     make_lzss_field_context_offsets(lzss_field_context_alphabets_v4);
+inline constexpr auto lzss_field_context_offsets_v5 =
+    make_lzss_field_context_offsets(lzss_field_context_alphabets_v5);
 inline constexpr auto lzss_field_context_offsets =
     lzss_field_context_offsets_v1;
 
@@ -75,6 +80,8 @@ static_assert(lzss_field_context_offsets_v3.back()
               == lzss_field_context_frequency_entries_v3);
 static_assert(lzss_field_context_offsets_v4.back()
               == lzss_field_context_frequency_entries_v4);
+static_assert(lzss_field_context_offsets_v5.back()
+              == lzss_field_context_frequency_entries_v5);
 
 } // namespace marc::context::internal
 

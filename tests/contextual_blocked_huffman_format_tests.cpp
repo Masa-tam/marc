@@ -288,6 +288,12 @@ TEST(ContextualBlockedHuffmanFormat, SerializesSelectedExtendedDistance) {
                   LzssFieldContextVariant::field_context_64k),
               ContextualBlockedHuffmanFormatError::invalid_model_symbol);
     EXPECT_EQ(size, 0xa5a5U);
+    EXPECT_EQ(validate_contextual_blocked_huffman_descriptor(
+                  descriptor, 4, 0, {}, size,
+                  LzssFieldContextVariant::field_context_64m),
+              ContextualBlockedHuffmanFormatError::
+                  unsupported_context_variant);
+    EXPECT_EQ(size, 0xa5a5U);
 }
 
 TEST(ContextualBlockedHuffmanFormat, SelectedDenseModelsReachExactMaximum) {

@@ -21132,3 +21132,28 @@ each backend completes its independent checked-layout and lifecycle stages.
 Assign no public profile, C ABI value, CLI or benchmark name, fuzz selector,
 default, resource helper, or interoperability archive. Retain explicit local
 memory authorization and encoder-local HashChain/BinaryTree selection.
+
+## DD-1029: Implement shared 64 MiB primitives without backend admission
+
+- Date: 2026-09-01
+- Status: accepted
+
+Add typed-token variant 6 and field-context variant 5 to the shared internal
+model. Bound the window at 67,108,864 bytes; use distance alphabet 27, 4,598
+flattened entries, maximum bypass width 26, maximum 36 decisions per token,
+and maximum eight decisions per raw byte. Select only the exact `2/6 + 1/5`
+pair and preserve stable error categories for unknown and crossed variants.
+
+Prove the inclusive distance in a bounded primitive-test frame larger than the
+reference reset frame. Construct exactly 67,108,864 bytes of history from one
+Literal, 260,111 overlapping length-258 Matches, and one length-225 Match.
+Require the final Match to add five operations and 36 decisions, expose class
+26 with 26 zero bypass bits, invert exactly, and fail under context variant 4.
+
+Increase internal shared storage capacity to 4,598 frequencies and 9,227 FGK
+nodes where the layout can reach it. Do not define a new backend descriptor or
+admit a complete stream. The generic Format 2 header path recognizes the new
+IDs only to distinguish reciprocal crossings from the exact unsupported pair;
+compact rANS/tANS and Blocked Huffman descriptor paths remain closed. Existing
+bytes, public ABI, selectors, defaults, CLI inventory, and schema 52 remain
+unchanged.

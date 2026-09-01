@@ -125,6 +125,8 @@ inline constexpr std::uint64_t rans_state_bytes = 8;
         return entropy::internal::contextual_rans_max_descriptor_size_v3;
     case context::internal::LzssFieldContextVariant::field_context_16m:
         return entropy::internal::contextual_rans_max_descriptor_size_v4;
+    case context::internal::LzssFieldContextVariant::field_context_64m:
+        return 0;
     }
     return 0;
 }

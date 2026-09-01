@@ -7636,6 +7636,13 @@ identities. Backend admission is additive and requires its own exact identity,
 checked layouts, malformed-input tests, streaming lifecycle, fixed-memory fuzz
 boundary, public API and tool lifecycle, and interoperability archive.
 
+The shared typed-token and field-context primitives recognize the inseparable
+pair and its checked `8F`, `36T`, and 4,598-entry layout. This does not admit a
+stream. The generic Format 2 header validator rejects the exact pair as
+unsupported and reports every reciprocal crossing as contradictory before
+publication. Backend-specific descriptor and complete-frame validators remain
+closed until their individual admission stages.
+
 No public selector, C ABI profile value, CLI or benchmark name, fuzz selector,
 resource helper, default, or interoperability schema entry is assigned here.
 Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and

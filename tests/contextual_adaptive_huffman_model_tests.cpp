@@ -47,6 +47,15 @@ struct SixteenMiBModelWorkspace {
         symbols{};
 };
 
+struct SixtyFourMiBModelWorkspace {
+    std::array<AdaptiveHuffmanNode,
+               contextual_adaptive_huffman_node_entries_v5>
+        nodes{};
+    std::array<std::uint16_t,
+               contextual_adaptive_huffman_symbol_entries_v5>
+        symbols{};
+};
+
 static_assert(contextual_adaptive_huffman_node_entries == 9067);
 static_assert(contextual_adaptive_huffman_symbol_entries == 4518);
 static_assert(contextual_adaptive_huffman_node_entries_v2 == 9131);
@@ -58,6 +67,11 @@ static_assert(contextual_adaptive_huffman_symbol_entries_v4 == 4582);
 static_assert(contextual_adaptive_huffman_node_entries_v4
                   + contextual_adaptive_huffman_symbol_entries_v4
               == 13777);
+static_assert(contextual_adaptive_huffman_node_entries_v5 == 9227);
+static_assert(contextual_adaptive_huffman_symbol_entries_v5 == 4598);
+static_assert(contextual_adaptive_huffman_node_entries_v5
+                  + contextual_adaptive_huffman_symbol_entries_v5
+              == 13825);
 
 TEST(ContextualAdaptiveHuffmanModel, PartitionsEveryFixedContextExactly) {
     ModelWorkspace workspace{};
@@ -275,6 +289,49 @@ TEST(ContextualAdaptiveHuffmanModel,
     EXPECT_EQ(models.initialize(
                   marc::context::internal::LzssFieldContextVariant::
                       field_context_16m,
+                  workspace.nodes,
+                  std::span{workspace.symbols}.first(
+                      workspace.symbols.size() - 1)),
+              ContextualAdaptiveHuffmanModelError::symbol_workspace_too_small);
+    EXPECT_FALSE(models.initialized());
+}
+
+TEST(ContextualAdaptiveHuffmanModel,
+     SixtyFourMiBLayoutAdmitsClassTwentySixAndRejectsShortStorage) {
+    SixtyFourMiBModelWorkspace workspace{};
+    ContextualAdaptiveHuffmanModelBank models;
+    ASSERT_EQ(models.initialize(
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_64m,
+                  workspace.nodes, workspace.symbols),
+              ContextualAdaptiveHuffmanModelError::none);
+    ASSERT_TRUE(models.validate());
+    for (std::uint16_t context_id = 0;
+         context_id < marc::context::internal::lzss_field_context_count;
+         ++context_id) {
+        auto* tree = models.tree(context_id);
+        ASSERT_NE(tree, nullptr);
+        EXPECT_EQ(tree->alphabet_size(),
+                  marc::context::internal::lzss_field_context_alphabets_v5[
+                      context_id]);
+        if (context_id >= 23) {
+            ASSERT_EQ(tree->observe_new(26),
+                      ContextualAdaptiveHuffmanTreeError::none);
+            EXPECT_TRUE(tree->contains(26));
+        }
+    }
+    ASSERT_TRUE(models.validate());
+
+    EXPECT_EQ(models.initialize(
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_64m,
+                  std::span{workspace.nodes}.first(workspace.nodes.size() - 1),
+                  workspace.symbols),
+              ContextualAdaptiveHuffmanModelError::node_workspace_too_small);
+    EXPECT_FALSE(models.initialized());
+    EXPECT_EQ(models.initialize(
+                  marc::context::internal::LzssFieldContextVariant::
+                      field_context_64m,
                   workspace.nodes,
                   std::span{workspace.symbols}.first(
                       workspace.symbols.size() - 1)),
