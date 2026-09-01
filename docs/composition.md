@@ -1916,3 +1916,13 @@ round trip; the verifier requires exact 62-entry order, foreign decode
 equality, and byte-identical local re-encoding. Compatibility removes only
 entry 62 to reconstruct schema 51 before traversing its unchanged historical
 conversion chain. No codec byte, resource profile, or public ABI changes.
+
+### CP-0120
+
+Interoperability schema 53 appends `lzss-contextual-dynamic-range-64m` once
+after the frozen 62-entry schema-52 order. The generator requires identity
+`2/6 + 1/5 + 3/2` and an immediate round trip; the verifier requires exact
+63-entry order, foreign decode equality, and byte-identical local re-encoding.
+Compatibility removes only entry 63 to reconstruct schema 52 before traversing
+its unchanged historical conversion chain. No codec byte, resource profile,
+public ABI, default, or match-finder selection changes.

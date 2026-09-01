@@ -1,7 +1,7 @@
 # LZSS contextual 64 MiB window candidate
 
-Status: Dynamic Range C, CLI, benchmark, and bounded decoder-fuzz lifecycles
-are implemented. Interoperability remains unadmitted.
+Status: the Dynamic Range lifecycle is complete through schema-53
+interoperability admission. External four-direction evidence remains pending.
 
 ## Purpose
 
@@ -226,7 +226,8 @@ benchmark select the same helper through exact name
 auto-detects the identity. The bounded decoder-fuzz harness admits the same
 exact profile while retaining an eight-KiB input, four-KiB output, and one-KiB
 frame; it does not allocate a profile-sized history or decoder workspace.
-Helper-resource, default, and interoperability surfaces remain closed.
+Schema 53 appends the exact CLI profile as archive 63 while helper-resource and
+default surfaces remain closed.
 
 ## Staged work
 
@@ -240,7 +241,7 @@ Helper-resource, default, and interoperability surfaces remain closed.
 6. Admit Dynamic Range from private decoder validation through public C, CLI,
    benchmark, bounded fuzzing, and one new interoperability archive (decoder
    preflight, private lifecycle, public C profile, CLI, benchmark, and bounded
-   fuzzing complete).
+   fuzzing and schema-53 interoperability complete).
 7. Admit rANS, tANS, Blocked Huffman, and Adaptive Huffman separately, each
    with its own memory proof and one schema append.
 
@@ -248,7 +249,7 @@ No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
 one-shot round trip.
 
-Stages one through five and the Dynamic Range bounded-fuzz substage completed on
+Stages one through six completed on
 2026-09-01. The fixed 48-point Silesia
 matrix validated every Exact strategy pair and measured a 414,783-token
 aggregate reduction, or 1.293%, when moving from a 16-MiB to a 64-MiB window
@@ -257,6 +258,6 @@ window and was 8.053 times HashChain in aggregate throughput at 64 MiB, at the
 cost of 1,946,157,056 bytes of finder workspace. The evidence is sufficient to
 retain the candidate as an explicit high-memory profile. Format 2 admits the
 Dynamic Range triple, its explicit public C selector, exact CLI/benchmark
-names, and bounded decoder-fuzz admission; every other backend triple and
-interoperability remain unavailable until their later stages. The evidence is
-not a basis for a new default or automatic strategy selector.
+names, bounded decoder-fuzz admission, and schema-53 archive 63; every other
+backend triple remains unavailable until its later stages. The evidence is not
+a basis for a new default or automatic strategy selector.

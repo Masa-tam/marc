@@ -27830,3 +27830,29 @@ both bounds.
   the 600-second per-test limit. The unchanged schema-52 compatibility
   traversal passes in 115.02 and 103.90 seconds respectively. The final diff
   is whitespace-clean.
+
+## CR-1122: 2026-09-01 - Append 64-MiB range interoperability archive
+
+- Authoring method: extended marc's append-only interoperability manifest by
+  one exact public CLI profile and advanced the compatibility chain from schema
+  52 to schema 53.
+- References used: IR-0797; DD-1035; TVG-0900; CR-1121; the repository-owned
+  bundle generator, verifier, downgrade harness, and deterministic fixture.
+- Known implementations intentionally not consulted: external compressors,
+  archives, manifests, interoperability suites, source, tests, patents,
+  pseudocode, or optimizations.
+- Independent decisions: append only archive 63; validate exact identity bytes;
+  reject reordered manifests; remove only the new tail when reconstructing
+  schema 52; preserve all earlier archive bytes and order.
+- Generated-code task description: generate and verify schema 53 with exact
+  64-MiB Dynamic Range identity, preserve schema 52, reject reordering, and
+  prove the complete downgrade chain through schema 1.
+- Similarity review: manifest extension, byte checks, and downgrade sequencing
+  follow marc's repository-authored append-only process. No external
+  implementation expression or test structure was used.
+- Validation: all 3,321 registered tests pass under MSVC in 261.50 seconds
+  and ClangCL in 257.13 seconds with the 600-second per-test limit. The
+  schema-53-through-1 generation and verification passes in 115.79 and
+  104.25 seconds respectively. Documentation layout passes under both local
+  toolchains and the final diff is whitespace-clean. External four-direction
+  evidence remains pending.

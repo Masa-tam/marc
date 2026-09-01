@@ -5946,3 +5946,11 @@ Verification enforces exact order and byte-identical local re-encoding.
 Compatibility removes only entry 62 to reconstruct schema 51 before
 traversing the unchanged chain through schema 1. This admission changes no
 codec format, public ABI, default, or earlier archive byte.
+
+Interoperability schema 53 freezes schema 52's exact 62-archive order and
+appends only `lzss-contextual-dynamic-range-64m` as entry 63. Generation
+requires exact identity `2/6 + 1/5 + 3/2`, round trip, size, and SHA-256.
+Verification enforces exact order and byte-identical local re-encoding.
+Compatibility removes only entry 63 to reconstruct schema 52 before traversing
+the unchanged chain through schema 1. This admission changes no codec format,
+public ABI, default, or earlier archive byte.

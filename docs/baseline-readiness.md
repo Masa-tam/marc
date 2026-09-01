@@ -15,7 +15,7 @@ determinism, chunking, terminal behavior, and malformed final-frame handling.
 `In progress` means a public profile exists but one or more of those local
 readiness boundaries remain pending.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 52 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 53 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -36,7 +36,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 52 |
+| Profile | Purpose | Local status | Interoperability schema 53 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -104,11 +104,10 @@ now passed in all four directions at revision
 `827ddf085efb40c7d8f9bc27628977053179d84c` for all 41 archives across the
 recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
-Schema 52 contains sixty-two archives: the frozen forty-two baseline profiles
-followed by twenty typed-token LZSS Contextual profiles spanning five entropy
-backends and the 64-KiB, one-MiB, four-MiB, and sixteen-MiB resource profiles.
-Schemas 1 through 51 retain their exact archive order and meaning; schema 52
-appends only the 16-MiB Contextual Adaptive Huffman profile.
+Schema 53 contains sixty-three archives: the frozen forty-two baseline profiles
+followed by twenty-one typed-token LZSS Contextual profiles. Schema 52 retains
+its exact archive order and meaning; schema 53 appends only the 64-MiB
+Contextual Dynamic Range profile.
 
 ## Public-profile evidence matrix
 
@@ -118,7 +117,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 52 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 53 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -166,12 +165,12 @@ kept separate because it requires artifacts produced outside the local build.
 ## Current validation baseline
 
 All forty-two baseline profiles in the composition matrix satisfy the local
-`Ready` definition and remain present in interoperability schema 52 alongside
-the twenty typed-token LZSS Contextual profiles spanning five entropy backends
-and four resource profiles. The internal canonical Huffman primitives remain
-support components rather than a separate public profile.
+`Ready` definition and remain present in interoperability schema 53 alongside
+the twenty-one typed-token LZSS Contextual profiles. The internal canonical
+Huffman primitives remain support components rather than a separate public
+profile.
 
-The optimized Release configurations each enumerate 3,304 tests under
+The optimized Release configurations each enumerate 3,321 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3517,3 +3516,12 @@ validation ceilings rise to the new format. Canonical truncation, reserved-byte,
 and all eight new cross-profile directions fail atomically. A 1,000-input
 Clang 22 ASan/UBSan smoke completed without a finding, generated corpus, or
 artifact; schema 52 remains unchanged.
+
+### BR-0225
+
+Interoperability schema 53 freezes all 62 schema-52 archives and appends only
+`lzss-contextual-dynamic-range-64m` as archive 63. Generation validates exact
+identity `2/6 + 1/5 + 3/2`, round trip, size, and SHA-256; verification enforces
+exact order and byte-identical local re-encoding. Reordered manifests fail,
+and removing only archive 63 reconstructs schema 52 before the unchanged chain
+through schema 1. External four-direction evidence remains pending.

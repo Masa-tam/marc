@@ -21247,3 +21247,19 @@ all eight ordered cross-profile mismatches involving value 4. Compile the
 ordinary object warning-clean under both local compilers, then run one bounded
 sanitizer smoke without retaining generated mutations when no finding occurs.
 Do not fuzz the encoder workspace or change schema 52 in this stage.
+
+## DD-1035: Append 64 MiB Dynamic Range as schema 53 archive 63
+
+- Date: 2026-09-01
+- Status: accepted
+
+Freeze schema 52's exact 62-archive order and append only
+`lzss-contextual-dynamic-range-64m` as archive 63. Require generation to prove
+exact identity `2/6 + 1/5 + 3/2`, round trip, size, and SHA-256. Verification
+must require codec set `marc-cli-v53`, exact order, foreign decode equality,
+and byte-identical local re-encoding.
+
+Reject a reordered schema-53 manifest. Compatibility must remove only archive
+63 and rewrite the manifest as schema 52 before traversing the unchanged chain
+through schema 1. Do not change an earlier archive byte, ABI, default, profile
+helper, or match-finder policy.

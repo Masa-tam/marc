@@ -12962,3 +12962,16 @@ smoke, then run Clang 22 with the matching sanitizer runtime, seed 20260901,
 1,000 inputs, eight-KiB maximum input, five-second timeout, and 512-MiB RSS
 limit. Retain no generated corpus or artifact without a finding, and keep
 schema 52 unchanged.
+
+### TVG-0900
+
+Generate schema 53 from the repository-owned 8,193-byte fixture with the
+frozen schema-52 order followed only by
+`lzss-contextual-dynamic-range-64m`. Require exact header identity
+`2/6 + 1/5 + 3/2`, immediate round trip, recorded size, and SHA-256. Verify all
+63 archives in order by decoding and byte-identical local re-encoding.
+
+Swap the first two manifest entries and require rejection. Remove only archive
+63, rewrite the manifest as schema 52 with codec set `marc-cli-v52`, and verify
+every schema through schema 1. Run the complete chain under MSVC and ClangCL;
+leave external four-direction bundle exchange as post-push evidence.

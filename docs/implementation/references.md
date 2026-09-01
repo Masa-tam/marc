@@ -7236,3 +7236,11 @@ private/public harness, public profile selector, permanent malformed-stream
 regressions, and matching-runtime sanitizer route. No external fuzzer harness,
 compressor, corpus, vulnerability report, source, test, patent, pseudocode, or
 optimization description was consulted.
+
+### IR-0797
+
+The 64-MiB Contextual Dynamic Range interoperability admission uses IR-0796,
+DD-1034, TVG-0899, CR-1121, the repository-owned append-only bundle generator,
+exact-order verifier, byte-identical re-encoder, and schema downgrade harness.
+No external archive, compressor, manifest, interoperability suite, source,
+test, patent, pseudocode, or optimization description was consulted.

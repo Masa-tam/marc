@@ -359,6 +359,9 @@ foreach(required_window_64m_term IN ITEMS
         "1,946,157,141 bytes"
         "lzss-contextual-dynamic-range-64m"
         "bounded decoder-fuzz"
+        "schema-53"
+        "interoperability admission"
+        "archive 63"
         "HashChain Exact and BinaryTree Exact remain encoder-local")
     string(FIND "${lzss_contextual_window_64m_content}"
         "${required_window_64m_term}" required_window_64m_term_offset)
@@ -659,6 +662,9 @@ foreach(required_64m_format_term IN ITEMS
         "8-GiB aggregate policy"
         "lzss-contextual-dynamic-range-64m"
         "decoder-fuzz harness also admits"
+        "Interoperability schema 53 appends only"
+        "archive 63"
+        "Compatibility removes only archive 63"
         "value 4 remains unsupported by rANS")
     string(FIND "${format_content}" "${required_64m_format_term}"
         required_64m_format_term_offset)
@@ -832,7 +838,7 @@ foreach(required_readiness_section IN ITEMS
 endforeach()
 foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
-        "each enumerate 3,304 tests under"
+        "each enumerate 3,321 tests under"
         "four-direction schema-52 exchange")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)
@@ -890,6 +896,22 @@ foreach(required_interoperability_section IN ITEMS
     endif()
     set(previous_interoperability_section_offset
         "${interoperability_section_offset}")
+endforeach()
+foreach(required_current_interoperability_term IN ITEMS
+        "Each current schema-53 bundle"
+        "marc-cli-v53"
+        "sixty-three foreign archives"
+        "Schema 53 requires"
+        "schemas 1 through 52"
+        "four-direction evidence remains pending")
+    string(FIND "${interoperability_content}"
+        "${required_current_interoperability_term}"
+        current_interoperability_term_offset)
+    if(current_interoperability_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Current interoperability documentation is stale: "
+            "${required_current_interoperability_term}")
+    endif()
 endforeach()
 file(STRINGS "${interoperability_document}" interoperability_headings
     REGEX "^### IX-[0-9]+: Schema [0-9]+$")

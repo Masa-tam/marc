@@ -7643,7 +7643,12 @@ changing the initializer default or inferring limits from stream metadata.
 The exact CLI and benchmark name is `lzss-contextual-dynamic-range-64m`; it
 selects the public helper and does not add a serialized field. The bounded
 decoder-fuzz harness also admits selector value 4 under fixed one-KiB frame
-storage. Interoperability remains unsupported.
+storage. Interoperability schema 53 appends only
+`lzss-contextual-dynamic-range-64m` as archive 63 after the frozen 62-entry
+schema-52 order. Generation requires exact identity `2/6 + 1/5 + 3/2`, round
+trip, size, and SHA-256; verification requires exact order and byte-identical
+local re-encoding. Compatibility removes only archive 63 to reconstruct
+schema 52 before traversing the unchanged chain through schema 1.
 
 No other complete entropy triple is admitted. Backend admission is additive
 and requires its own exact identity, checked layouts, malformed-input tests,
@@ -7657,8 +7662,8 @@ crossing remains contradictory before publication. Other backend-specific
 descriptor and complete-frame validators remain closed until their individual
 admission stages.
 
-No resource helper, default, or interoperability schema entry is assigned
-here. The common public selector value 4 remains unsupported by rANS,
+No resource helper or default is assigned here. The common public selector
+value 4 remains unsupported by rANS,
 tANS, Blocked Huffman, and Adaptive Huffman until each backend completes its
 own admission.
 Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
