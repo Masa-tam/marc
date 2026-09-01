@@ -13046,3 +13046,20 @@ through explicit 64-MiB admission, and require an older admission to reject the
 same stream before raw publication. Preserve the Exhaustive, public C, CLI,
 benchmark, fuzzing, and schema gates. Run focused boundaries and the complete
 registered suite under MSVC and ClangCL.
+
+### TVG-0906
+
+Apply public Contextual rANS profile value 4 in both directions and require the
+helper to preserve direction, original size, total-output policy, and selected
+Exact finder. Require repeated application to be byte-idempotent and unknown
+value 5 to leave the complete configuration unchanged. At full 67,108,864-byte
+extent require HashChain aggregate 2,215,126,057, BinaryTree aggregate
+3,892,323,369, and decoder aggregate 1,946,928,169 bytes; accept each exact
+limit and reject one byte less.
+
+Encode a five-byte input through each public Exact finder under profile value
+4 and require byte-identical identity `2/6 + 1/5 + 4/3`. Decode it through the
+same public profile and require round trip. Decode through profile value 3 and
+require malformed-stream failure with no raw publication. Keep CLI, benchmark,
+fuzzing, resource-helper, and schema surfaces closed, then run documentation
+validation and the complete suite under MSVC and ClangCL.

@@ -7650,10 +7650,11 @@ trip, size, and SHA-256; verification requires exact order and byte-identical
 local re-encoding. Compatibility removes only archive 63 to reconstruct
 schema 52 before traversing the unchanged chain through schema 1.
 
-No other complete entropy triple is admitted. Backend admission is additive
-and requires its own exact identity, checked layouts, malformed-input tests,
-streaming lifecycle, fixed-memory fuzz boundary, public API and tool lifecycle,
-and interoperability archive.
+Contextual rANS identity `4/3` also admits the complete private lifecycle and
+the common public selector value 4 for exact triple `2/6 + 1/5 + 4/3`.
+Remaining backend admission is additive and requires its own exact identity,
+checked layouts, malformed-input tests, streaming lifecycle, fixed-memory fuzz
+boundary, public API and tool lifecycle, and interoperability archive.
 
 The shared typed-token and field-context primitives recognize the inseparable
 pair and its checked `8F`, `36T`, and 4,598-entry layout. Generic validation
@@ -7663,8 +7664,8 @@ descriptor and complete-frame validators remain closed until their individual
 admission stages.
 
 No resource helper or default is assigned here. The common public selector
-value 4 remains unsupported by rANS, tANS, Blocked Huffman, and Adaptive
-Huffman until each backend completes its own admission. The internal compact
+value 4 remains unsupported by tANS, Blocked Huffman, and Adaptive Huffman
+until each backend completes its own admission. The internal compact
 rANS descriptor grammar accepts context variant 5 with 4,598 entries and an
 exact all-dense maximum of 9,185 bytes. The private stream-header parser,
 frame preflight, and complete-frame decoder also admit exact triple
@@ -7680,9 +7681,14 @@ profile/workspace calculation and one-byte streaming admit the same identity.
 Exact full-frame aggregate
 requirements are 2,215,126,057 bytes for HashChain, 3,892,323,369 bytes for
 BinaryTree, and 1,946,928,169 bytes for decoding; each requirement succeeds at
-the exact local limit and fails one byte below it. Public profile selection,
-C ABI admission, CLI, benchmark, fuzzing, and interoperability remain
-unsupported for this triple.
+the exact local limit and fails one byte below it. The public C selector
+`MARC_LZSS_CONTEXTUAL_PROFILE_64M` admits this exact triple through the
+Contextual rANS factory. Its explicit helper applies a 64-MiB frame/window,
+536,870,912-decision block limit, 1,073,741,832-byte payload ceiling, 126,976
+entropy entries, and four-GiB aggregate policy while preserving direction,
+original size, total-output policy, and the selected Exact finder. Unknown
+profiles do not mutate the configuration. CLI, benchmark, fuzzing, and
+interoperability remain unsupported for this triple.
 Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
 BinaryTree Exact remain encoder-local choices and are not serialized or
 selected automatically. All earlier dictionary/context pairs, backend triples,

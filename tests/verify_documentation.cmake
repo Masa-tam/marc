@@ -713,7 +713,9 @@ foreach(required_64m_format_term IN ITEMS
         "Internal stream-header serialization"
         "profile/workspace calculation"
         "one-byte streaming admit the same identity"
-        "value 4 remains unsupported by rANS")
+        "value 4 remains unsupported by tANS"
+        "public C selector"
+        "four-GiB aggregate policy")
     string(FIND "${format_content}" "${required_64m_format_term}"
         required_64m_format_term_offset)
     if(required_64m_format_term_offset EQUAL -1)
@@ -1097,6 +1099,12 @@ string(FIND "${c_api_content}"
     c_api_contextual_rans_profile_offset)
 if(c_api_contextual_rans_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API contextual rANS inventory is stale")
+endif()
+string(FIND "${c_api_content}"
+    "3,892,323,369, and 1,946,928,169 bytes"
+    c_api_contextual_rans_64m_profile_offset)
+if(c_api_contextual_rans_64m_profile_offset EQUAL -1)
+    message(FATAL_ERROR "C API contextual rANS 64 MiB profile is stale")
 endif()
 string(FIND "${c_api_content}"
     "`marc_lzss_contextual_tans_workspace_requirements()`"

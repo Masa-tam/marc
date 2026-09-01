@@ -3583,3 +3583,12 @@ checked profiles, exact and one-short aggregate enforcement, stream-header
 serialization, and one-byte streaming. Full HashChain, BinaryTree, and decoder
 aggregates are 2,215,126,057, 3,892,323,369, and 1,946,928,169 bytes. Public
 profile value 4, C factories, tools, fuzzing, and schema 53 remain closed.
+
+### BR-0232
+
+The 64-MiB Contextual rANS lifecycle now admits common public profile value 4
+through its atomic C helper, exact strategy-aware workspace query, and
+streaming factory. The initializer remains 64 KiB, both Exact finders emit the
+same canonical identity, older profiles reject it without raw publication,
+and full workspace aggregates retain exact and one-short coverage. Exhaustive,
+CLI, benchmark, fuzzing, resource-helper, and schema surfaces remain closed.

@@ -28017,3 +28017,32 @@ both bounds.
   239.48 and 233.70 seconds respectively; schema compatibility remains included
   and passes in 114.33 and 103.27 seconds. The final diff is whitespace-clean,
   and public C, CLI, benchmark, fuzz, and schema gates remain closed.
+
+## CR-1129: 2026-09-02 - Admit public 64-MiB contextual rANS C profile
+
+- Authoring method: extended marc's completed private 64-MiB Contextual rANS
+  lifecycle through the repository-owned common profile helper, C workspace
+  query, and streaming factory using the preceding public Dynamic Range
+  admission as an interface-contract pattern only.
+- References used: IR-0803; DD-1041; TVG-0906; BR-0232; CR-1128; the local C
+  ABI configuration, strategy-aware workspace calculator, private frame
+  streaming transforms, and four-GiB memory proof.
+- Known implementations intentionally not consulted: external rANS codecs,
+  compressors, allocators, C APIs, source, tests, vectors, patents, pseudocode,
+  memory policies, or optimization descriptions.
+- Independent decisions: admit only common profile value 4 through Contextual
+  rANS; preserve initialization, ABI, caller-specific fields, explicit finder,
+  and hard-limit authority; retain Exhaustive and every tool, fuzz, resource,
+  and interoperability boundary.
+- Generated-code task description: connect identity `2/6 + 1/5 + 4/3` to the
+  public C helper, exact workspace query, and factory; prove idempotent and
+  atomic configuration, strategy byte identity, reciprocal profile rejection,
+  and exact/one-short full aggregates without profile-sized allocation.
+- Similarity review: implementation and tests extend marc's repository-owned
+  private lifecycle and established C profile contract. No external
+  implementation expression or distinctive test structure was used.
+- Validation: focused C API and documentation tests pass under MSVC and
+  ClangCL. All 3,331 registered tests pass without exclusions in 272.90 and
+  267.63 seconds respectively; schema compatibility remains included and
+  passes in 115.31 and 105.86 seconds. The final diff is whitespace-clean, and
+  CLI, benchmark, fuzzing, resource-helper, and schema gates remain closed.

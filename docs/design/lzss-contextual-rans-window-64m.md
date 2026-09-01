@@ -1,8 +1,8 @@
 # LZSS contextual rANS 64 MiB window
 
 Status: private stream serialization/parsing, complete-frame coding, checked
-profile/workspace calculation, and streaming implemented for both explicit
-Exact finders; Exhaustive encoding, public, tooling, fuzzing, and
+profile/workspace calculation, streaming, and public C profile implemented for
+both explicit Exact finders; Exhaustive encoding, tooling, fuzzing, and
 interoperability boundaries remain closed.
 
 ## Purpose and identity
@@ -40,8 +40,9 @@ exact triple `2/6 + 1/5 + 4/3`. The first newly reachable distance
 encoding admits only explicit HashChain Exact and BinaryTree
 Exact finders, which produce identical canonical bytes. Stream-header
 serialization and one-byte streaming now admit the same exact identity through
-checked local profiles. Exhaustive encoding, public profile value 4, and every
-tooling, fuzzing, and interoperability surface remain closed.
+checked local profiles. Common public profile value 4 admits the same lifecycle
+through the C helper, workspace query, and factory. Exhaustive encoding and
+every tooling, fuzzing, and interoperability surface remain closed.
 
 ## Count and payload bounds
 
@@ -96,7 +97,7 @@ raw frame                            67,108,864 bytes
 aggregate                          1,946,928,169 bytes
 ```
 
-The future public helper may apply frame/window/distance 67,108,864,
+The public helper applies frame/window/distance 67,108,864,
 `8F = 536,870,912` decisions, payload 1,073,741,832, 4,598 model entries,
 126,976 entropy table entries, and a four-GiB aggregate policy. Initialization
 must remain 64 KiB, application must be explicit, and stream metadata must
@@ -112,7 +113,7 @@ never enlarge local limits.
    HashChain Exact and BinaryTree Exact only; Exhaustive remains closed).
 4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests (complete).
-5. Admit common public profile value 4 for contextual rANS.
+5. Admit common public profile value 4 for contextual rANS (complete).
 6. Add exact CLI and benchmark names.
 7. Extend bounded decoder fuzzing without profile-sized allocation.
 8. Append one interoperability archive after every preceding boundary passes.

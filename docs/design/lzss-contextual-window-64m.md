@@ -215,13 +215,14 @@ the BinaryTree encoder requirement is 6,039,797,845 bytes, and the decoder
 requirement is 1,946,157,141 bytes. Queries return the selected strategy's
 actual finder allocation and reject each aggregate at one byte short.
 The public C selector `MARC_LZSS_CONTEXTUAL_PROFILE_64M` has value 4 and is
-admitted only by Contextual Dynamic Range. Applying it preserves direction,
+admitted by Contextual Dynamic Range and Contextual rANS through their separate
+helpers and factories. Applying either helper preserves direction,
 original size, total-output limit, and selected Exact finder while establishing
 the 64-MiB frame/window, 1,073,741,829-byte payload, 4,598-entry model, and
 8-GiB aggregate policies. Workspace queries return the same exact
 strategy-aware requirements above; stream metadata never raises these limits.
-The other four contextual backends reject selector 4 atomically. CLI and
-benchmark select the same helper through exact name
+The other three contextual backends reject selector 4 atomically. Dynamic
+Range CLI and benchmark select its helper through exact name
 `lzss-contextual-dynamic-range-64m`; neither duplicates the numeric policy or
 auto-detects the identity. The bounded decoder-fuzz harness admits the same
 exact profile while retaining an eight-KiB input, four-KiB output, and one-KiB
@@ -245,7 +246,7 @@ default surfaces remain closed.
 7. Admit rANS, tANS, Blocked Huffman, and Adaptive Huffman separately, each
    with its own memory proof and one schema append (rANS compact descriptor,
    private decoder, explicit-Exact complete-frame encoder, checked profile,
-   and streaming substages complete).
+   streaming, and public C substages complete).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a

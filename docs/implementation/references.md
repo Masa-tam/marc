@@ -7287,3 +7287,12 @@ calculator, frame-streaming transforms, and preceding 16-MiB lifecycle
 admission pattern. No external rANS implementation, compressor, allocator,
 streaming framework, source, test, vector, patent, pseudocode, memory policy,
 or optimization description was consulted.
+
+### IR-0803
+
+The public 64-MiB Contextual rANS profile uses IR-0802, DD-1040, TVG-0905,
+CR-1128, marc's repository-owned C profile helper, strategy-aware workspace
+query, streaming factory, and the preceding 64-MiB Contextual Dynamic Range C
+admission pattern. No external rANS implementation, compressor, allocator,
+C API, source, test, vector, patent, pseudocode, memory policy, or optimization
+description was consulted.

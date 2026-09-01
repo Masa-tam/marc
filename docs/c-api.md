@@ -185,9 +185,10 @@ less fails. The 64-MiB preset applies a 1,073,741,829-byte payload ceiling,
 BinaryTree, and decoder workspace requirements are 4,362,600,533,
 6,039,797,845, and 1,946,157,141 bytes respectively on supported 64-bit
 layouts. A caller may tighten any returned hard limit and must then re-query
-before allocation. Contextual rANS, Contextual tANS, Contextual Blocked
-Huffman, and Contextual Adaptive Huffman admit common selectors only through
-16 MiB; their helpers reject the 64-MiB selector. The field and its trailing
+before allocation. Contextual rANS also admits the 64-MiB selector through its
+own completed lifecycle. Contextual tANS, Contextual Blocked Huffman, and
+Contextual Adaptive Huffman admit common selectors only through 16 MiB; their
+helpers reject the 64-MiB selector. The field and its trailing
 32-bit reserved word occupy
 the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
 all-zero meaning used by earlier callers. Exact CLI and benchmark name
@@ -238,6 +239,17 @@ factory; the matching dependency-free benchmark uses the same public
 lifecycle and reports the query-owned allocations. Neither tool alters ABI 1
 nor infers the profile from stream fields. Bounded decoder fuzzing and the
 schema-49 archive exercise the same public profile without changing the C ABI.
+`MARC_LZSS_CONTEXTUAL_PROFILE_64M` selects `2/6 + 1/5`, uses the 9,185-byte
+descriptor ceiling, `8F = 536,870,912`, `16F + 8 = 1,073,741,832`, and a
+four-GiB aggregate policy. On supported 64-bit layouts, the authoritative
+HashChain, BinaryTree, and decoder aggregate requirements are 2,215,126,057,
+3,892,323,369, and 1,946,928,169 bytes. The helper preserves direction,
+original size, total-output policy, and the selected Exact finder; the query
+returns the selected finder's actual allocation and rejects each aggregate at
+one byte short. The initializer remains 64 KiB, unknown profiles leave the
+configuration unchanged, and encoded stream fields never enlarge caller-local
+limits. CLI, benchmark, fuzzing, resource-helper, and interoperability names
+remain unassigned at this stage.
 The experimental LZSS contextual tANS factory is a third distinct Format 2
 lifecycle. Call `marc_lzss_contextual_tans_workspace_requirements()` whenever
 the immutable direction, known size, frame/LZSS parameters, `profile`,

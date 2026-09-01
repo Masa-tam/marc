@@ -21354,3 +21354,23 @@ identity and older explicit admissions to reject it. Keep Exhaustive encoding,
 public C selector value 4, CLI, benchmark, fuzzing, resource helpers, and
 interoperability closed. Stream metadata never raises local limits, and this
 stage adds no serialized field or public ABI value.
+
+## DD-1041: Admit the public 64 MiB Contextual rANS C profile
+
+- Date: 2026-09-02
+- Status: accepted
+
+Admit common selector value 4 through only the Contextual rANS C helper,
+workspace query, and factory after the private lifecycle has completed. The
+helper applies 67,108,864-byte frame/window/distance limits, `8F` decisions,
+`16F+8` payload bytes, 126,976 entropy table entries, and a four-GiB aggregate
+policy while preserving direction, original size, total-output policy, and the
+caller's explicit Exact finder. Unknown profiles MUST leave the configuration
+unchanged and stream metadata MUST NOT enlarge local limits.
+
+Require both Exact finders to produce identical bytes on the public path,
+require older profiles to reject the new identity before raw publication, and
+require full HashChain, BinaryTree, and decoder workspace queries to accept
+their exact aggregates and reject one byte less. Keep initialization at 64 KiB
+and keep Exhaustive, CLI, benchmark, fuzzing, resource helpers, and
+interoperability closed. This stage adds no ABI field or serialized selector.
