@@ -13030,3 +13030,19 @@ Reject each selected finder workspace at exactly one byte short and retain the
 Exhaustive encoder's unsupported result. Run the focused boundaries and the
 complete registered suite under MSVC and ClangCL while keeping stream-header
 serialization, streaming, public, tooling, fuzzing, and schema gates closed.
+
+### TVG-0905
+
+Calculate the full 67,108,864-byte private Contextual rANS profile with an
+explicit four-GiB local limit. Require exact HashChain encoder aggregate
+2,215,126,057, BinaryTree encoder aggregate 3,892,323,369, and decoder
+aggregate 1,946,928,169 bytes; accept each exact aggregate and reject one byte
+less before publishing views. Require identity `2/6 + 1/5 + 4/3`, 4,598 model
+entries, 9,185 descriptor bytes, `8F` decisions, and the selected finder's
+actual workspace.
+
+Serialize one literal through one-byte input and output buffers, decode it
+through explicit 64-MiB admission, and require an older admission to reject the
+same stream before raw publication. Preserve the Exhaustive, public C, CLI,
+benchmark, fuzzing, and schema gates. Run focused boundaries and the complete
+registered suite under MSVC and ClangCL.

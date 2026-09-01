@@ -261,10 +261,6 @@ serialize_lzss_contextual_rans_stream_header_impl(
     const auto error = validate_lzss_contextual_rans_stream_header(
         header, limits);
     if (error != LzssContextualRansStreamHeaderError::none) return error;
-    if (header.dictionary_variant == 6 && header.context_variant == 5) {
-        return LzssContextualRansStreamHeaderError::
-            unsupported_dictionary_variant;
-    }
     std::array<std::byte, lzss_contextual_rans_stream_header_size> encoded{};
     std::ranges::copy(stream_magic, encoded.begin());
     const std::span<std::byte> bytes{encoded};

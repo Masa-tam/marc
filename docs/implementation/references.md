@@ -7278,3 +7278,12 @@ canonical scalar rANS encoder, checked frame planner, and preceding 16-MiB
 explicit-finder admission pattern. No external rANS implementation,
 compressor, match finder, source, test, vector, patent, pseudocode, allocation
 policy, or optimization description was consulted.
+
+### IR-0802
+
+The private 64-MiB Contextual rANS profile and streaming admission uses
+IR-0801, DD-1039, TVG-0904, CR-1127, marc's repository-owned checked profile
+calculator, frame-streaming transforms, and preceding 16-MiB lifecycle
+admission pattern. No external rANS implementation, compressor, allocator,
+streaming framework, source, test, vector, patent, pseudocode, memory policy,
+or optimization description was consulted.

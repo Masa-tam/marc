@@ -354,9 +354,15 @@ foreach(required_rans_window_64m_term IN ITEMS
         "16,777,217 decodes exactly"
         "HashChain Exact and BinaryTree Exact"
         "Exhaustive encoding"
+        "2,215,126,057 bytes"
+        "3,892,323,369 bytes"
+        "1,946,928,169 bytes"
+        "one-byte streaming"
+        "public profile value 4"
         "without admitting an outer frame (complete)"
         "complete-frame decoding (complete)"
-        "explicit Exact finders (complete")
+        "explicit Exact finders (complete"
+        "aggregate tests (complete)")
     string(FIND "${lzss_contextual_rans_window_64m_content}"
         "${required_rans_window_64m_term}"
         required_rans_window_64m_term_offset)
@@ -704,6 +710,9 @@ foreach(required_64m_format_term IN ITEMS
         "reachable distance 16,777,217"
         "Private complete-frame encoding admits HashChain Exact and BinaryTree"
         "Exhaustive encoding remains unsupported"
+        "Internal stream-header serialization"
+        "profile/workspace calculation"
+        "one-byte streaming admit the same identity"
         "value 4 remains unsupported by rANS")
     string(FIND "${format_content}" "${required_64m_format_term}"
         required_64m_format_term_offset)

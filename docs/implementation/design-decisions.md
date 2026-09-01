@@ -21335,3 +21335,22 @@ viable reference operation. Keep stream-header serialization, streaming,
 workspace profiles, public C selector value 4, CLI, benchmark, fuzzing,
 resource helpers, and interoperability closed. This internal stage adds no
 serialized field and changes no earlier byte, default, ABI, or schema archive.
+
+## DD-1040: Admit the private 64 MiB rANS profile and streaming lifecycle
+
+- Date: 2026-09-02
+- Status: accepted
+
+Extend the private Contextual rANS profile enum, checked encoder and decoder
+workspace calculators, stream-header serializer, and frame-streaming
+transforms to exact identity `2/6 + 1/5 + 4/3`. Encoder requirements MUST use
+the caller-selected Exact finder's authoritative allocation: 2,215,126,057
+aggregate bytes for HashChain Exact and 3,892,323,369 for BinaryTree Exact at
+the full profile. Decoder aggregate is 1,946,928,169 bytes. Each succeeds at
+its exact local limit and fails one byte below it before view publication.
+
+Require one-byte input/output streaming to emit and consume the canonical
+identity and older explicit admissions to reject it. Keep Exhaustive encoding,
+public C selector value 4, CLI, benchmark, fuzzing, resource helpers, and
+interoperability closed. Stream metadata never raises local limits, and this
+stage adds no serialized field or public ABI value.

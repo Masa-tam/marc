@@ -319,6 +319,97 @@ TEST(LzssContextualRansProfile,
 }
 
 TEST(LzssContextualRansProfile,
+     SixtyFourMiBProfileCalculatesBothExactFindersAndDecoder) {
+    LzssContextualRansProfileConfig config{};
+    config.original_size = UINT32_C(1) << 26;
+    config.frame_size = UINT32_C(1) << 26;
+    config.dictionary.window_size = UINT32_C(1) << 26;
+    config.variant = LzssContextualRansProfileVariant::field_context_64m;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = UINT32_C(1) << 26;
+    limits.max_block_size = UINT32_C(8) << 26;
+    limits.max_compressed_payload_size = 1'073'741'832U;
+    limits.max_internal_buffered_bytes = UINT64_C(4) << 30;
+    limits.max_lz_distance = UINT32_C(1) << 26;
+    LzssContextualRansStreamHeader stream{};
+    LzssContextualRansEncoderWorkspaceRequirements encoder{};
+
+    ASSERT_EQ(make_lzss_contextual_rans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualRansProfileError::none);
+    EXPECT_EQ(stream.dictionary_variant, 6U);
+    EXPECT_EQ(stream.context_variant, 5U);
+    EXPECT_EQ(stream.frequency_entry_count, 4598U);
+    EXPECT_EQ(encoder.frame_input_bytes, 67'108'864U);
+    EXPECT_EQ(encoder.frame_encoded_bytes, 1'073'751'081U);
+    EXPECT_EQ(encoder.token_count, 67'108'864U);
+    EXPECT_EQ(encoder.match_finder_offset, 805'306'368U);
+    EXPECT_EQ(encoder.match_finder_bytes, 268'959'744U);
+    EXPECT_EQ(encoder.views_bytes, 1'074'266'112U);
+    const auto chain_aggregate = encoder.frame_input_bytes
+        + encoder.views_bytes + encoder.frame_encoded_bytes;
+    EXPECT_EQ(chain_aggregate, 2'215'126'057U);
+    limits.max_internal_buffered_bytes = chain_aggregate - 1;
+    EXPECT_EQ(make_lzss_contextual_rans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualRansProfileError::limit_exceeded);
+    EXPECT_EQ(encoder.views_bytes, 0U);
+    limits.max_internal_buffered_bytes = chain_aggregate;
+    ASSERT_EQ(make_lzss_contextual_rans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualRansProfileError::none);
+
+    config.match_finder_strategy = marc::dictionary::internal::
+        LzssMatchFinderStrategy::binary_tree_exact;
+    limits.max_internal_buffered_bytes = UINT64_C(4) << 30;
+    ASSERT_EQ(make_lzss_contextual_rans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualRansProfileError::none);
+    EXPECT_EQ(encoder.match_finder_offset, 805'306'368U);
+    EXPECT_EQ(encoder.match_finder_bytes, 1'946'157'056U);
+    EXPECT_EQ(encoder.views_bytes, 2'751'463'424U);
+    const auto tree_aggregate = encoder.frame_input_bytes
+        + encoder.views_bytes + encoder.frame_encoded_bytes;
+    EXPECT_EQ(tree_aggregate, 3'892'323'369U);
+    limits.max_internal_buffered_bytes = tree_aggregate - 1;
+    EXPECT_EQ(make_lzss_contextual_rans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualRansProfileError::limit_exceeded);
+    EXPECT_EQ(encoder.views_bytes, 0U);
+    limits.max_internal_buffered_bytes = tree_aggregate;
+    ASSERT_EQ(make_lzss_contextual_rans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualRansProfileError::none);
+
+    LzssContextualRansDecoderWorkspaceRequirements decoder{};
+    limits.max_internal_buffered_bytes = UINT64_C(4) << 30;
+    ASSERT_EQ(calculate_lzss_contextual_rans_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualRansProfileVariant::field_context_64m),
+              LzssContextualRansProfileError::none);
+    EXPECT_EQ(decoder.frame_encoded_bytes, 1'073'751'081U);
+    EXPECT_EQ(decoder.frame_decoded_bytes, 67'108'864U);
+    EXPECT_EQ(decoder.table_count, 126'976U);
+    EXPECT_EQ(decoder.token_count, 67'108'864U);
+    EXPECT_EQ(decoder.token_offset, 761'856U);
+    EXPECT_EQ(decoder.views_bytes, 806'068'224U);
+    const auto decoder_aggregate = decoder.frame_encoded_bytes
+        + decoder.frame_decoded_bytes + decoder.views_bytes;
+    EXPECT_EQ(decoder_aggregate, 1'946'928'169U);
+    limits.max_internal_buffered_bytes = decoder_aggregate - 1;
+    EXPECT_EQ(calculate_lzss_contextual_rans_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualRansProfileVariant::field_context_64m),
+              LzssContextualRansProfileError::limit_exceeded);
+    EXPECT_EQ(decoder.views_bytes, 0U);
+    limits.max_internal_buffered_bytes = decoder_aggregate;
+    ASSERT_EQ(calculate_lzss_contextual_rans_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualRansProfileVariant::field_context_64m),
+              LzssContextualRansProfileError::none);
+}
+
+TEST(LzssContextualRansProfile,
      RejectsUnsupportedAndBoundedConfigurations) {
     LzssContextualRansStreamHeader stream{};
     LzssContextualRansEncoderWorkspaceRequirements workspace{};

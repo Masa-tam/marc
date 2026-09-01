@@ -128,9 +128,6 @@ parse_collected_stream_header() noexcept {
         || consumed != lzss_contextual_rans_stream_header_size) {
         return false;
     }
-    if (stream_.dictionary_variant == 6 && stream_.context_variant == 5) {
-        return false;
-    }
     switch (admission_) {
     case LzssContextualRansStreamAdmission::any:
         return true;
@@ -146,6 +143,9 @@ parse_collected_stream_header() noexcept {
     case LzssContextualRansStreamAdmission::field_context_16m:
         return stream_.dictionary_variant == 5
             && stream_.context_variant == 4;
+    case LzssContextualRansStreamAdmission::field_context_64m:
+        return stream_.dictionary_variant == 6
+            && stream_.context_variant == 5;
     }
     return false;
 }

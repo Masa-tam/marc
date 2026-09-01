@@ -7674,9 +7674,15 @@ reachable distance 16,777,217 is reconstructed from bounded overlap-built
 history. Private complete-frame encoding admits HashChain Exact and BinaryTree
 Exact only; both routes MUST emit identical canonical bytes for an identical
 input and configuration. Exhaustive encoding remains unsupported because a
-64-MiB exhaustive search is not a viable reference route. Stream-header
-serialization, streaming, profile selection, C ABI, CLI, benchmark, fuzzing,
-and interoperability remain unsupported for this triple.
+64-MiB exhaustive search is not a viable reference route.
+Internal stream-header serialization is admitted. The checked
+profile/workspace calculation and one-byte streaming admit the same identity.
+Exact full-frame aggregate
+requirements are 2,215,126,057 bytes for HashChain, 3,892,323,369 bytes for
+BinaryTree, and 1,946,928,169 bytes for decoding; each requirement succeeds at
+the exact local limit and fails one byte below it. Public profile selection,
+C ABI admission, CLI, benchmark, fuzzing, and interoperability remain
+unsupported for this triple.
 Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
 BinaryTree Exact remain encoder-local choices and are not serialized or
 selected automatically. All earlier dictionary/context pairs, backend triples,

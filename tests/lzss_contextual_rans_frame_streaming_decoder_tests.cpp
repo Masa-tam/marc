@@ -135,7 +135,7 @@ TEST(LzssContextualRansFrameStreamingDecoder,
 }
 
 TEST(LzssContextualRansFrameStreamingDecoder,
-     SixtyFourMiBVariantRemainsClosedAfterPrivateHeaderParsing) {
+     SixtyFourMiBVariantIsAdmittedAfterPrivateHeaderParsing) {
     const auto encoded = sixty_four_mib_stream_header();
     auto limits = marc::core::DecoderLimits{};
     limits.max_frame_size = UINT64_C(1) << 26;
@@ -150,8 +150,8 @@ TEST(LzssContextualRansFrameStreamingDecoder,
     std::array<std::byte, 1> output{};
 
     const auto result = decoder.process(encoded, output, 0);
-    EXPECT_EQ(result.status, StreamStatus::error);
-    EXPECT_EQ(result.error.code, ErrorCode::malformed_stream);
+    EXPECT_EQ(result.status, StreamStatus::progress);
+    EXPECT_EQ(result.error.code, ErrorCode::none);
     EXPECT_EQ(result.input_consumed, encoded.size());
     EXPECT_EQ(result.output_produced, 0U);
 }

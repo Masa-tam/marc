@@ -3575,3 +3575,11 @@ reject one-byte-short storage, their plans agree on every serialized extent,
 and both emit one canonical frame that decodes to the source. The Exhaustive
 route remains closed, as do stream-header serialization, streaming, profiles,
 public/tool/fuzz surfaces, and schema 53.
+
+### BR-0231
+
+The private 64-MiB Contextual rANS lifecycle now includes strategy-aware
+checked profiles, exact and one-short aggregate enforcement, stream-header
+serialization, and one-byte streaming. Full HashChain, BinaryTree, and decoder
+aggregates are 2,215,126,057, 3,892,323,369, and 1,946,928,169 bytes. Public
+profile value 4, C factories, tools, fuzzing, and schema 53 remain closed.

@@ -281,7 +281,7 @@ TEST(LzssContextualRansStreamFormat,
 }
 
 TEST(LzssContextualRansStreamFormat,
-     ParsesPrivateSixtyFourMiBIdentityButKeepsSerializationClosed) {
+     SerializesAndParsesPrivateSixtyFourMiBIdentity) {
     const auto limits = limits_64m();
     const auto stream = stream_config_64m();
     EXPECT_EQ(validate_lzss_contextual_rans_stream_header(stream, limits),
@@ -314,14 +314,10 @@ TEST(LzssContextualRansStreamFormat,
     EXPECT_EQ(parsed.frequency_entry_count, 4598U);
 
     std::array<std::byte, lzss_contextual_rans_stream_header_size> output{};
-    output.fill(std::byte{0xa5});
-    EXPECT_EQ(serialize_lzss_contextual_rans_stream_header(
+    ASSERT_EQ(serialize_lzss_contextual_rans_stream_header(
                   stream, limits, output),
-              LzssContextualRansStreamHeaderError::
-                  unsupported_dictionary_variant);
-    EXPECT_TRUE(std::ranges::all_of(output, [](const auto value) {
-        return value == std::byte{0xa5};
-    }));
+              LzssContextualRansStreamHeaderError::none);
+    EXPECT_EQ(output, encoded);
 
     auto crossed = stream;
     crossed.context_variant = 4;

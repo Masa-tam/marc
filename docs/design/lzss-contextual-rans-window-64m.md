@@ -1,9 +1,9 @@
 # LZSS contextual rANS 64 MiB window
 
-Status: private stream-header parsing, frame preflight, complete-frame
-decoding, and explicit-Exact complete-frame encoding implemented;
-stream-header serialization, Exhaustive encoding, streaming, public, tooling,
-fuzzing, and interoperability boundaries remain closed.
+Status: private stream serialization/parsing, complete-frame coding, checked
+profile/workspace calculation, and streaming implemented for both explicit
+Exact finders; Exhaustive encoding, public, tooling, fuzzing, and
+interoperability boundaries remain closed.
 
 ## Purpose and identity
 
@@ -39,8 +39,9 @@ exact triple `2/6 + 1/5 + 4/3`. The first newly reachable distance
 16,777,217 decodes exactly after bounded overlap-built history. Complete-frame
 encoding admits only explicit HashChain Exact and BinaryTree
 Exact finders, which produce identical canonical bytes. Stream-header
-serialization, Exhaustive encoding, streaming, profiles, and every public
-surface remain closed.
+serialization and one-byte streaming now admit the same exact identity through
+checked local profiles. Exhaustive encoding, public profile value 4, and every
+tooling, fuzzing, and interoperability surface remain closed.
 
 ## Count and payload bounds
 
@@ -110,7 +111,7 @@ never enlarge local limits.
 3. Admit complete-frame encoding with both explicit Exact finders (complete:
    HashChain Exact and BinaryTree Exact only; Exhaustive remains closed).
 4. Add checked profile/workspace calculation and one-byte streaming with exact
-   and one-short aggregate tests.
+   and one-short aggregate tests (complete).
 5. Admit common public profile value 4 for contextual rANS.
 6. Add exact CLI and benchmark names.
 7. Extend bounded decoder fuzzing without profile-sized allocation.

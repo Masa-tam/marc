@@ -27990,3 +27990,30 @@ both bounds.
   included and passes in 114.35 and 102.77 seconds. The final diff is
   whitespace-clean, and serializer, streaming, public, tool, fuzz, and schema
   gates remain closed.
+
+## CR-1128: 2026-09-02 - Admit private 64-MiB contextual rANS streaming
+
+- Authoring method: extended marc's own checked 16-MiB Contextual rANS profile
+  and frame-streaming lifecycle through the completed private 64-MiB frame
+  codec, without exposing the common public selector.
+- References used: IR-0802; DD-1040; TVG-0905; BR-0231; CR-1127; the local
+  strategy-aware workspace calculators, stream serializer, streaming state
+  machines, and four-GiB memory proof.
+- Known implementations intentionally not consulted: external rANS codecs,
+  compressors, allocators, streaming frameworks, source, tests, vectors,
+  patents, pseudocode, memory policies, or optimization descriptions.
+- Independent decisions: calculate actual HashChain and BinaryTree storage;
+  enforce exact and one-short aggregates; admit canonical one-byte streaming;
+  retain every public, tool, fuzz, and schema gate.
+- Generated-code task description: add private profile value 64 MiB, exact
+  encoder/decoder workspace queries, internal stream serialization, and
+  streaming admission for identity `2/6 + 1/5 + 4/3` while keeping public
+  profile value 4 unsupported.
+- Similarity review: implementation and tests extend marc's repository-owned
+  16-MiB lifecycle and independently calculated 64-MiB extents. No external
+  implementation expression or distinctive test structure was used.
+- Validation: all 21 focused 64-MiB tests and documentation layout pass under
+  MSVC and ClangCL. All 3,331 registered tests pass without exclusions in
+  239.48 and 233.70 seconds respectively; schema compatibility remains included
+  and passes in 114.33 and 103.27 seconds. The final diff is whitespace-clean,
+  and public C, CLI, benchmark, fuzz, and schema gates remain closed.

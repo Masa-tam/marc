@@ -244,8 +244,8 @@ default surfaces remain closed.
    fuzzing and schema-53 interoperability complete).
 7. Admit rANS, tANS, Blocked Huffman, and Adaptive Huffman separately, each
    with its own memory proof and one schema append (rANS compact descriptor,
-   private decoder, and explicit-Exact complete-frame encoder substages
-   complete).
+   private decoder, explicit-Exact complete-frame encoder, checked profile,
+   and streaming substages complete).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
@@ -263,10 +263,11 @@ Dynamic Range triple, its explicit public C selector, exact CLI/benchmark
 names, bounded decoder-fuzz admission, and schema-53 archive 63; every other
 backend triple remains unavailable publicly until its later stages. The rANS
 triple additionally admits private stream-header parsing, frame preflight,
-complete-frame decoding, and complete-frame encoding through both explicit
-Exact finders. HashChain Exact and BinaryTree Exact produce identical
-canonical bytes; Exhaustive, serializer, streaming, profile, and tool gates
-remain closed. The evidence is not a basis for a new default or
+complete-frame decoding, complete-frame encoding through both explicit Exact
+finders, checked strategy-aware workspace profiles, and one-byte streaming.
+HashChain Exact and BinaryTree Exact produce identical canonical bytes;
+Exhaustive and public profile/tool gates remain closed. The evidence is not a
+basis for a new default or
 automatic strategy selector. Schema 53's 63
 archives passed the complete Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
 26.04/Clang exchange at revision
