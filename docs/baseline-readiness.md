@@ -3566,3 +3566,12 @@ bounded overlap-history vector reconstructs the first new distance 16,777,217;
 short workspaces and reciprocal crossings fail atomically. Stream-header
 serialization, frame encoding, streaming, profiles, public/tool/fuzz surfaces,
 and schema 53 remain closed and unchanged.
+
+### BR-0230
+
+Private 64-MiB Contextual rANS complete-frame encoding now admits only
+HashChain Exact and BinaryTree Exact. Their authoritative workspace queries
+reject one-byte-short storage, their plans agree on every serialized extent,
+and both emit one canonical frame that decodes to the source. The Exhaustive
+route remains closed, as do stream-header serialization, streaming, profiles,
+public/tool/fuzz surfaces, and schema 53.

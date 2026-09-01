@@ -7269,3 +7269,12 @@ descriptor parser, scalar rANS decoder, field-context inversion, typed-token
 reconstruction, and preceding 16-MiB decoder-admission pattern. No external
 rANS implementation, compressor, stream format, source, test, vector, patent,
 pseudocode, allocation policy, or optimization description was consulted.
+
+### IR-0801
+
+The private 64-MiB Contextual rANS exact-encoder admission uses IR-0800,
+DD-1038, TVG-0903, CR-1126, marc's repository-owned typed-token producers,
+canonical scalar rANS encoder, checked frame planner, and preceding 16-MiB
+explicit-finder admission pattern. No external rANS implementation,
+compressor, match finder, source, test, vector, patent, pseudocode, allocation
+policy, or optimization description was consulted.

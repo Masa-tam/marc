@@ -13016,3 +13016,17 @@ primitive, assemble one complete frame, and require private decoding to
 reproduce every token and raw byte. Reject one-short token and raw workspaces
 before publication. Run the five focused boundaries and the complete registered
 suite under MSVC and ClangCL.
+
+### TVG-0904
+
+Encode the 18-byte sequence `ABCDE1ABCDE2ABCDE3` under exact identity
+`2/6 + 1/5 + 4/3` with separately calculated HashChain Exact and BinaryTree
+Exact workspaces. Require both plans to report identical token, event,
+decision, descriptor, payload, and complete-frame sizes; require both encoders
+to emit byte-identical frames; require the descriptor's little-endian
+frequency-entry count to be 4,598; and decode the result back to the source.
+
+Reject each selected finder workspace at exactly one byte short and retain the
+Exhaustive encoder's unsupported result. Run the focused boundaries and the
+complete registered suite under MSVC and ClangCL while keeping stream-header
+serialization, streaming, public, tooling, fuzzing, and schema gates closed.

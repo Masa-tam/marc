@@ -351,7 +351,7 @@ TEST(LzssContextualRansFrameEncoder,
 }
 
 TEST(LzssContextualRansFrameEncoder,
-     SixtyFourMiBVariantRemainsClosedDuringDecoderAdmission) {
+     SixtyFourMiBExhaustiveVariantRemainsClosed) {
     constexpr std::array raw{std::byte{'A'}};
     const auto stream = stream_for_64m(raw.size());
     const auto limits = limits_64m();
@@ -360,6 +360,89 @@ TEST(LzssContextualRansFrameEncoder,
     EXPECT_EQ(plan_lzss_contextual_rans_frame(
                   stream, limits, 0, 0, raw, tokens).error,
               LzssContextualRansFrameEncodeError::invalid_stream);
+}
+
+TEST(LzssContextualRansFrameEncoder,
+     SixtyFourMiBExactFindersEmitIdenticalDecodableFrame) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'1'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'C'}, std::byte{'D'}, std::byte{'E'}, std::byte{'2'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'3'}};
+    const auto stream = stream_for_64m(raw.size());
+    const auto limits = limits_64m();
+    std::array<LzssTypedToken, raw.size()> tokens{};
+    constexpr auto chain_strategy = marc::dictionary::internal::
+        LzssMatchFinderStrategy::hash_chain_exact;
+    constexpr auto tree_strategy = marc::dictionary::internal::
+        LzssMatchFinderStrategy::binary_tree_exact;
+    const auto chain_requirements = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            chain_strategy, raw.size(), stream.dictionary, limits);
+    const auto tree_requirements = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            tree_strategy, raw.size(), stream.dictionary, limits);
+    ASSERT_EQ(chain_requirements.error,
+              marc::dictionary::internal::LzssMatchFinderWorkspaceError::none);
+    ASSERT_EQ(tree_requirements.error,
+              marc::dictionary::internal::LzssMatchFinderWorkspaceError::none);
+    ASSERT_GT(chain_requirements.workspace_size, 0U);
+    ASSERT_GT(tree_requirements.workspace_size, 0U);
+    AlignedWorkspace chain_owner(chain_requirements.workspace_size);
+    AlignedWorkspace tree_owner(tree_requirements.workspace_size);
+    auto chain_workspace = chain_owner.bytes(
+        chain_requirements.workspace_size);
+    auto tree_workspace = tree_owner.bytes(tree_requirements.workspace_size);
+
+    const auto short_chain = plan_lzss_contextual_rans_frame_with_match_finder(
+        stream, limits, 0, 0, raw, tokens, chain_strategy,
+        chain_workspace.first(chain_workspace.size() - 1));
+    EXPECT_EQ(short_chain.error,
+              LzssContextualRansFrameEncodeError::token_encode_error);
+    const auto short_tree = plan_lzss_contextual_rans_frame_with_match_finder(
+        stream, limits, 0, 0, raw, tokens, tree_strategy,
+        tree_workspace.first(tree_workspace.size() - 1));
+    EXPECT_EQ(short_tree.error,
+              LzssContextualRansFrameEncodeError::token_encode_error);
+
+    const auto chain_plan = plan_lzss_contextual_rans_frame_with_match_finder(
+        stream, limits, 0, 0, raw, tokens, chain_strategy, chain_workspace);
+    const auto tree_plan = plan_lzss_contextual_rans_frame_with_match_finder(
+        stream, limits, 0, 0, raw, tokens, tree_strategy, tree_workspace);
+    ASSERT_EQ(chain_plan.error, LzssContextualRansFrameEncodeError::none);
+    ASSERT_EQ(tree_plan.error, LzssContextualRansFrameEncodeError::none);
+    EXPECT_EQ(tree_plan.serialized_size, chain_plan.serialized_size);
+    EXPECT_EQ(tree_plan.token_count, chain_plan.token_count);
+    EXPECT_EQ(tree_plan.event_count, chain_plan.event_count);
+    EXPECT_EQ(tree_plan.decision_count, chain_plan.decision_count);
+    EXPECT_EQ(tree_plan.payload_size, chain_plan.payload_size);
+    EXPECT_EQ(tree_plan.descriptor_size, chain_plan.descriptor_size);
+
+    std::vector<std::byte> chain(chain_plan.serialized_size);
+    std::vector<std::byte> tree(tree_plan.serialized_size);
+    ASSERT_EQ(encode_lzss_contextual_rans_frame_with_match_finder(
+                  stream, limits, 0, 0, raw, tokens, chain_strategy,
+                  chain_workspace, chain).error,
+              LzssContextualRansFrameEncodeError::none);
+    ASSERT_EQ(encode_lzss_contextual_rans_frame_with_match_finder(
+                  stream, limits, 0, 0, raw, tokens, tree_strategy,
+                  tree_workspace, tree).error,
+              LzssContextualRansFrameEncodeError::none);
+    EXPECT_EQ(tree, chain);
+    ASSERT_GT(chain_plan.descriptor_size, 13U);
+    EXPECT_EQ(chain[lzss_contextual_rans_frame_header_size + 12],
+              std::byte{0xf6});
+    EXPECT_EQ(chain[lzss_contextual_rans_frame_header_size + 13],
+              std::byte{0x11});
+
+    auto table_storage = tables();
+    std::array<LzssTypedToken, raw.size()> decoded_tokens{};
+    std::array<std::byte, raw.size()> decoded{};
+    const auto result = decode_lzss_contextual_rans_frame(
+        chain, {stream, limits, 0, 0}, table_storage, decoded_tokens, decoded);
+    ASSERT_EQ(result.error, LzssContextualRansFrameDecodeError::none);
+    EXPECT_EQ(decoded, raw);
 }
 
 TEST(LzssContextualRansFrameEncoder,

@@ -1,7 +1,8 @@
 # LZSS contextual rANS 64 MiB window
 
-Status: private stream-header parsing, frame preflight, and complete-frame
-decoding implemented; serialization, encoding, streaming, public, tooling,
+Status: private stream-header parsing, frame preflight, complete-frame
+decoding, and explicit-Exact complete-frame encoding implemented;
+stream-header serialization, Exhaustive encoding, streaming, public, tooling,
 fuzzing, and interoperability boundaries remain closed.
 
 ## Purpose and identity
@@ -35,8 +36,10 @@ Variant 5 descriptor analysis, serialization, parsing, exact-limit handling,
 and reciprocal variant-4 rejection are implemented independently. The private
 stream-header parser, frame preflight, and complete-frame decoder now admit
 exact triple `2/6 + 1/5 + 4/3`. The first newly reachable distance
-16,777,217 decodes exactly after bounded overlap-built history. Stream-header
-serialization, complete-frame encoding, streaming, profiles, and every public
+16,777,217 decodes exactly after bounded overlap-built history. Complete-frame
+encoding admits only explicit HashChain Exact and BinaryTree
+Exact finders, which produce identical canonical bytes. Stream-header
+serialization, Exhaustive encoding, streaming, profiles, and every public
 surface remain closed.
 
 ## Count and payload bounds
@@ -104,7 +107,8 @@ never enlarge local limits.
    variant-5 bounds without admitting an outer frame (complete).
 2. Admit exact triple `2/6 + 1/5 + 4/3` in private stream/header parsing,
    frame preflight, and complete-frame decoding (complete).
-3. Admit complete-frame encoding with both explicit Exact finders.
+3. Admit complete-frame encoding with both explicit Exact finders (complete:
+   HashChain Exact and BinaryTree Exact only; Exhaustive remains closed).
 4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests.
 5. Admit common public profile value 4 for contextual rANS.

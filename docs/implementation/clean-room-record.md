@@ -27962,3 +27962,31 @@ both bounds.
   documentation layout. All 3,328 registered tests pass without exclusions in
   239.49 and 235.18 seconds respectively; schema compatibility remains included
   and passes in 115.33 and 103.64 seconds. The final diff is whitespace-clean.
+
+## CR-1127: 2026-09-02 - Admit private exact 64-MiB contextual rANS encoding
+
+- Authoring method: extended marc's own staged 16-MiB explicit-finder frame
+  encoder through the immediately preceding private 64-MiB rANS layout while
+  retaining every outward lifecycle gate.
+- References used: IR-0801; DD-1039; TVG-0904; BR-0230; CR-1126; the local
+  typed-token finders, compact descriptor writer, scalar rANS encoder, checked
+  frame planner, and 64-MiB workspace proof.
+- Known implementations intentionally not consulted: external rANS codecs,
+  compressors, match finders, source, tests, vectors, patents, pseudocode,
+  allocation policies, or optimization descriptions.
+- Independent decisions: admit only HashChain Exact and BinaryTree Exact;
+  require their canonical frames to match; reject each one-byte-short finder
+  workspace; leave Exhaustive and all outward surfaces closed.
+- Generated-code task description: open private complete-frame planning and
+  encoding for both explicit Exact finders under identity `2/6 + 1/5 + 4/3`,
+  prove deterministic equality and decode inversion, and preserve every
+  serializer, streaming, public, tool, fuzz, and schema gate.
+- Similarity review: implementation and tests reuse marc's repository-owned
+  compile-time finder dispatch and canonical rANS path. No external
+  implementation expression or distinctive test structure was used.
+- Validation: both focused 64-MiB encoder tests and documentation layout pass
+  under MSVC and ClangCL. All 3,329 registered tests pass without exclusions
+  in 244.55 and 235.66 seconds respectively; schema compatibility remains
+  included and passes in 114.35 and 102.77 seconds. The final diff is
+  whitespace-clean, and serializer, streaming, public, tool, fuzz, and schema
+  gates remain closed.

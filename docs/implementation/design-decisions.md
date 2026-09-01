@@ -21316,3 +21316,22 @@ benchmark, fuzzing, resource helpers, and interoperability closed. Require the
 first newly reachable distance 16,777,217 to decode exactly and require crossed
 variants and short token/raw workspaces to fail atomically. Preserve every
 earlier identity, byte stream, default, ABI, and schema-53 archive.
+
+## DD-1039: Admit only explicit Exact 64 MiB contextual rANS encoding
+
+- Date: 2026-09-02
+- Status: accepted
+
+Admit exact identity `2/6 + 1/5 + 4/3` through the private complete-frame
+planner and encoder only when the caller explicitly supplies HashChain Exact
+or BinaryTree Exact. Reuse the selected typed-token layout, compact descriptor,
+canonical scalar rANS payload, checked frame bounds, and the selected finder's
+authoritative workspace calculator. Require both finders to produce identical
+canonical bytes for identical input and configuration and reject one-byte-
+short finder storage before output publication.
+
+Keep the Exhaustive route closed because an exhaustive 64-MiB search is not a
+viable reference operation. Keep stream-header serialization, streaming,
+workspace profiles, public C selector value 4, CLI, benchmark, fuzzing,
+resource helpers, and interoperability closed. This internal stage adds no
+serialized field and changes no earlier byte, default, ABI, or schema archive.

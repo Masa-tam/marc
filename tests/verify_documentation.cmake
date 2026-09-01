@@ -352,9 +352,11 @@ foreach(required_rans_window_64m_term IN ITEMS
         "four-GiB aggregate policy"
         "stream-header parser, frame preflight"
         "16,777,217 decodes exactly"
-        "complete-frame encoding, streaming, profiles"
+        "HashChain Exact and BinaryTree Exact"
+        "Exhaustive encoding"
         "without admitting an outer frame (complete)"
-        "complete-frame decoding (complete)")
+        "complete-frame decoding (complete)"
+        "explicit Exact finders (complete")
     string(FIND "${lzss_contextual_rans_window_64m_content}"
         "${required_rans_window_64m_term}"
         required_rans_window_64m_term_offset)
@@ -700,7 +702,8 @@ foreach(required_64m_format_term IN ITEMS
         "Compatibility removes only archive 63"
         "stream-header parser,"
         "reachable distance 16,777,217"
-        "Stream-header serialization, complete-frame encoding"
+        "Private complete-frame encoding admits HashChain Exact and BinaryTree"
+        "Exhaustive encoding remains unsupported"
         "value 4 remains unsupported by rANS")
     string(FIND "${format_content}" "${required_64m_format_term}"
         required_64m_format_term_offset)

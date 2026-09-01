@@ -7671,9 +7671,12 @@ frame preflight, and complete-frame decoder also admit exact triple
 `2/6 + 1/5 + 4/3`, using checked `8F`, `36T`, 126,976-table-entry, descriptor,
 payload, and caller-workspace bounds before publication. The first newly
 reachable distance 16,777,217 is reconstructed from bounded overlap-built
-history. Stream-header serialization, complete-frame encoding, streaming,
-profile selection, C ABI, CLI, benchmark, fuzzing, and interoperability remain
-unsupported for this triple.
+history. Private complete-frame encoding admits HashChain Exact and BinaryTree
+Exact only; both routes MUST emit identical canonical bytes for an identical
+input and configuration. Exhaustive encoding remains unsupported because a
+64-MiB exhaustive search is not a viable reference route. Stream-header
+serialization, streaming, profile selection, C ABI, CLI, benchmark, fuzzing,
+and interoperability remain unsupported for this triple.
 Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
 BinaryTree Exact remain encoder-local choices and are not serialized or
 selected automatically. All earlier dictionary/context pairs, backend triples,
