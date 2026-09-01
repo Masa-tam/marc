@@ -7200,3 +7200,12 @@ reconstruction, and the preceding 16-MiB decoder-admission pattern. No
 external compressor, range coder implementation, stream parser, source code,
 test vector, test suite, patent, pseudocode, or optimization description was
 consulted.
+
+### IR-0793
+
+The private 64-MiB Dynamic Range lifecycle completion uses IR-0792, DD-1030,
+TVG-0895, marc's checked frame encoder, streaming transforms, strategy-aware
+match-finder workspace query, view partitioner, and preceding 16-MiB lifecycle
+proof. No external compressor, range coder, allocator, streaming framework,
+source, tests, vectors, patent, pseudocode, or optimization description was
+consulted.

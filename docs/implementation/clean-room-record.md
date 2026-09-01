@@ -27716,3 +27716,30 @@ both bounds.
   600-second per-test limit. The unchanged schema-52 compatibility traversal
   passes in 104.09 and 101.76 seconds respectively. The final diff is
   whitespace-clean.
+
+## CR-1118: 2026-09-01 - Complete private 64-MiB range lifecycle
+
+- Authoring method: extended marc's staged 16-MiB Dynamic Range lifecycle
+  through the independently frozen 64-MiB layout and strategy-aware workspace
+  formulas, keeping all public dispatch closed.
+- References used: IR-0793; DD-1031; TVG-0896; CR-1117; the repository-owned
+  frame encoder, stream parser/serializer, streaming transforms, match-finder
+  workspace calculators, and view partitioner.
+- Known implementations intentionally not consulted: external compressor,
+  range coder, streaming or allocator implementation, source, tests, vectors,
+  patent, pseudocode, memory policy, or optimization description.
+- Independent decisions: admit the complete private lifecycle together; retain
+  explicit finder selection; publish only actual workspace requirements; test
+  64-bit equality and one-byte-short aggregates; preserve all public gates.
+- Generated-code task description: enable private 64-MiB range encoding,
+  stream headers, streaming, both Exact finder workspace queries, decoder
+  workspace query, atomic limits, documentation, and provenance.
+- Similarity review: implementation and tests extend marc's first-party staged
+  architecture and checked formulas. No external implementation expression or
+  distinctive test structure was used.
+- Validation: focused frame, stream-header, streaming, strategy-workspace, and
+  older-admission tests pass under warning-clean MSVC and ClangCL builds. All
+  3,317 registered tests pass under MSVC in 262.66 seconds and ClangCL in
+  258.15 seconds with the 600-second per-test limit. The unchanged schema-52
+  compatibility traversal passes in 113.67 and 101.28 seconds respectively.
+  The final diff is whitespace-clean.

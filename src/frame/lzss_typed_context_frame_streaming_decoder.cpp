@@ -118,6 +118,9 @@ parse_collected_stream_header() noexcept {
     case LzssTypedContextStreamAdmission::field_context_16m:
         return stream_.dictionary_variant == 5
             && stream_.context_variant == 4;
+    case LzssTypedContextStreamAdmission::field_context_64m:
+        return stream_.dictionary_variant == 6
+            && stream_.context_variant == 5;
     }
     return false;
 }

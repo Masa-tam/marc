@@ -12903,3 +12903,18 @@ Dynamic Range primitive, assemble the complete frame explicitly, and require
 private decoding to reproduce every token and raw byte. Keep stream parsing,
 serialization, complete-frame encoding, streaming, public surfaces, and
 schema-52 inventory unchanged.
+
+### TVG-0896
+
+Require the private 64-MiB Dynamic Range frame encoder to preserve the
+canonical one-Literal payload while selecting dictionary/context bytes `6/5`.
+Serialize and parse that exact stream header transactionally. Exercise
+one-byte input and output through both streaming directions and require older
+explicit admissions to reject the new header after consuming only the header.
+
+For a full 67,108,864-byte frame, require HashChain encode workspace
+4,362,600,533, BinaryTree encode workspace 6,039,797,845, and decode workspace
+1,946,157,141 bytes. Check component extents, selected finder identity, equality
+success, and one-byte-short atomic failure. On a host whose `size_t` cannot
+represent the layout, require arithmetic overflow before publishing a partial
+workspace. Preserve every public selector and schema-52 archive.

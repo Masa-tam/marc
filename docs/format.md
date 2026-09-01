@@ -7629,13 +7629,14 @@ Every addition and multiplication MUST be checked in the implementation, and
 a platform that cannot represent every required region MUST fail before
 publishing a workspace requirement.
 
-Dynamic Range identity `3/2` now admits private header validation and
-complete-frame decoding for exact triple `2/6 + 1/5 + 3/2`. Its preflight uses
-the 4,598-entry layout and checked `8F` and `36T` bounds before inspecting the
-payload or publishing caller storage. The first backend vector reconstructs a
-distance-16,777,217 Match from bounded overlap-built history. Stream-header
-parsing and serialization, complete-frame encoding, streaming, factories,
-public API and tools remain unsupported for this triple.
+Dynamic Range identity `3/2` now admits the private lifecycle for exact triple
+`2/6 + 1/5 + 3/2`: header validation, stream-header parsing and serialization,
+complete-frame encoding and decoding, exact workspace queries, and streaming.
+Its preflight uses the 4,598-entry layout and checked `8F` and `36T` bounds
+before inspecting the payload or publishing caller storage. The first backend
+vector reconstructs a distance-16,777,217 Match from bounded overlap-built
+history. Factories, public API, CLI/benchmark/fuzz selectors, and
+interoperability remain unsupported for this triple.
 
 No other complete entropy triple is admitted. Backend admission is additive
 and requires its own exact identity, checked layouts, malformed-input tests,
@@ -7644,11 +7645,10 @@ and interoperability archive.
 
 The shared typed-token and field-context primitives recognize the inseparable
 pair and its checked `8F`, `36T`, and 4,598-entry layout. Generic validation
-admits the exact pair only for the private Dynamic Range decoder path. The
-stream parser and serializer still reject it atomically, while every reciprocal
-crossing remains contradictory before publication. Backend-specific
+admits the exact pair for the private Dynamic Range lifecycle. Every reciprocal
+crossing remains contradictory before publication. Other backend-specific
 descriptor and complete-frame validators remain closed until their individual
-admission stages, except for the Dynamic Range decoder admission above.
+admission stages.
 
 No public selector, C ABI profile value, CLI or benchmark name, fuzz selector,
 resource helper, default, or interoperability schema entry is assigned here.

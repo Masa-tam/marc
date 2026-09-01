@@ -297,6 +297,85 @@ TEST(LzssTypedContextProfile,
     EXPECT_EQ(decoder.views_bytes, 0U);
 }
 
+TEST(LzssTypedContextProfile,
+     SixtyFourMiBProfileUsesExactStrategyAndDecoderAggregates) {
+    LzssTypedContextProfileConfig config{};
+    config.original_size = 67'108'864;
+    config.frame_size = 67'108'864;
+    config.dictionary.window_size = 67'108'864;
+    config.variant = LzssTypedContextProfileVariant::field_context_64m;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = 67'108'864;
+    limits.max_block_size = 67'108'864;
+    limits.max_compressed_payload_size = 1'073'741'829;
+    limits.max_lz_distance = 67'108'864;
+    limits.max_entropy_table_entries = 4'598;
+    limits.max_internal_buffered_bytes = 4'362'600'533;
+    TypedContextStreamHeader stream{};
+    LzssTypedContextEncoderWorkspaceRequirements workspace{};
+
+    if constexpr (sizeof(std::size_t) < 8) {
+        EXPECT_EQ(make_lzss_typed_context_profile(
+                      config, limits, stream, workspace),
+                  LzssTypedContextProfileError::arithmetic_overflow);
+        return;
+    }
+
+    ASSERT_EQ(make_lzss_typed_context_profile(
+                  config, limits, stream, workspace),
+              LzssTypedContextProfileError::none);
+    EXPECT_EQ(stream.dictionary_variant, 6U);
+    EXPECT_EQ(stream.context_variant, 5U);
+    EXPECT_EQ(workspace.frame_input_bytes, 67'108'864U);
+    EXPECT_EQ(workspace.frame_encoded_bytes, 1'073'741'909U);
+    EXPECT_EQ(workspace.token_count, 67'108'864U);
+    EXPECT_EQ(workspace.operation_count, 134'217'728U);
+    EXPECT_EQ(workspace.match_finder_bytes, 268'959'744U);
+    EXPECT_EQ(workspace.views_bytes, 3'221'749'760U);
+    EXPECT_EQ(workspace.frame_input_bytes + workspace.views_bytes
+                  + workspace.frame_encoded_bytes,
+              4'362'600'533U);
+
+    limits.max_internal_buffered_bytes = 4'362'600'532;
+    EXPECT_EQ(make_lzss_typed_context_profile(
+                  config, limits, stream, workspace),
+              LzssTypedContextProfileError::limit_exceeded);
+    EXPECT_EQ(workspace.views_bytes, 0U);
+
+    config.match_finder_strategy = marc::dictionary::internal::
+        LzssMatchFinderStrategy::binary_tree_exact;
+    limits.max_internal_buffered_bytes = 6'039'797'845;
+    ASSERT_EQ(make_lzss_typed_context_profile(
+                  config, limits, stream, workspace),
+              LzssTypedContextProfileError::none);
+    EXPECT_EQ(workspace.match_finder_bytes, 1'946'157'056U);
+    EXPECT_EQ(workspace.views_bytes, 4'898'947'072U);
+    EXPECT_EQ(workspace.frame_input_bytes + workspace.views_bytes
+                  + workspace.frame_encoded_bytes,
+              6'039'797'845U);
+
+    limits.max_internal_buffered_bytes = 1'946'157'141;
+    LzssTypedContextDecoderWorkspaceRequirements decoder{};
+    ASSERT_EQ(calculate_lzss_typed_context_decoder_workspace(
+                  limits, decoder,
+                  LzssTypedContextProfileVariant::field_context_64m),
+              LzssTypedContextProfileError::none);
+    EXPECT_EQ(decoder.frame_encoded_bytes, 1'073'741'909U);
+    EXPECT_EQ(decoder.frame_decoded_bytes, 67'108'864U);
+    EXPECT_EQ(decoder.token_count, 67'108'864U);
+    EXPECT_EQ(decoder.views_bytes, 805'306'368U);
+    EXPECT_EQ(decoder.frame_encoded_bytes + decoder.frame_decoded_bytes
+                  + decoder.views_bytes,
+              1'946'157'141U);
+
+    limits.max_internal_buffered_bytes = 1'946'157'140;
+    EXPECT_EQ(calculate_lzss_typed_context_decoder_workspace(
+                  limits, decoder,
+                  LzssTypedContextProfileVariant::field_context_64m),
+              LzssTypedContextProfileError::limit_exceeded);
+    EXPECT_EQ(decoder.views_bytes, 0U);
+}
+
 TEST(LzssTypedContextProfile, UsesActualShortFrameAndEmptyExtent) {
     TypedContextStreamHeader stream{};
     LzssTypedContextEncoderWorkspaceRequirements workspace{};

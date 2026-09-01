@@ -1,9 +1,9 @@
 # LZSS contextual 64 MiB window candidate
 
-Status: Dynamic Range decoder preflight and private complete-frame decoding
-implemented. Stream-header parsing and serialization, frame encoding,
-streaming, public profiles, tools, fuzz selectors, and interoperability remain
-unadmitted.
+Status: private Dynamic Range complete-frame encoding/decoding, exact workspace
+queries, stream-header serialization/parsing, and streaming lifecycle
+implemented. Public C profiles, CLI and benchmark names, fuzz selectors, and
+interoperability remain unadmitted.
 
 ## Purpose
 
@@ -194,7 +194,7 @@ entries and 9,227 nodes. This capacity alone is not backend admission. Compact
 rANS and tANS and the Blocked Huffman descriptor retain their stable
 unsupported-context errors for variant 5.
 
-## Dynamic Range decoder admission
+## Dynamic Range private lifecycle
 
 The generic Format 2 header validator and private Dynamic Range complete-frame
 decoder now admit
@@ -206,11 +206,18 @@ workspaces. A bounded vector builds the required history from one Literal,
 distance-16,777,217, length-258 Match is the first distance unavailable to
 variant 5 and decodes exactly under variant 6.
 
-The stream parser, serializer, and complete-frame encoder remain closed for
-the new triple. Crossed dictionary/context variants remain contradictory, and
-short token or raw output remains atomic. Streaming and every public surface
-therefore remain closed until encoder workspace and lifecycle policy are
-implemented together.
+The private stream parser, serializer, complete-frame encoder, and streaming
+lifecycle now admit the exact triple. One-byte input/output streaming produces
+and consumes the canonical `2/6 + 1/5 + 3/2` header without changing earlier
+bytes. Explicit admission modes prevent older streaming decoders from
+accepting the new identity.
+
+The exact full-frame HashChain encoder requirement is 4,362,600,533 bytes,
+the BinaryTree encoder requirement is 6,039,797,845 bytes, and the decoder
+requirement is 1,946,157,141 bytes. Queries return the selected strategy's
+actual finder allocation and reject each aggregate at one byte short. These
+private calculations do not apply a public profile or raise a caller limit.
+Every public, tool, fuzz, and interoperability surface remains closed.
 
 ## Staged work
 
@@ -223,7 +230,8 @@ implemented together.
    and hand vectors (complete).
 6. Admit Dynamic Range from private decoder validation through public C, CLI,
    benchmark, bounded fuzzing, and one new interoperability archive (decoder
-   preflight and private complete-frame decoding complete).
+   preflight, private complete-frame encoding/decoding, workspace queries, and
+   streaming lifecycle complete).
 7. Admit rANS, tANS, Blocked Huffman, and Adaptive Huffman separately, each
    with its own memory proof and one schema append.
 

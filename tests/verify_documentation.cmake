@@ -350,10 +350,13 @@ foreach(required_window_64m_term IN ITEMS
         "## Shared primitive implementation"
         "260,111 overlapping length-258 Matches"
         "generic Format 2 header validator"
-        "## Dynamic Range decoder admission"
+        "## Dynamic Range private lifecycle"
         "65,027 overlapping length-258 Matches"
         "first distance unavailable to"
-        "stream parser, serializer, and complete-frame encoder remain closed"
+        "private stream parser, serializer, complete-frame encoder, and streaming"
+        "4,362,600,533 bytes"
+        "6,039,797,845 bytes"
+        "1,946,157,141 bytes"
         "HashChain Exact and BinaryTree Exact remain encoder-local")
     string(FIND "${lzss_contextual_window_64m_content}"
         "${required_window_64m_term}" required_window_64m_term_offset)
@@ -647,7 +650,7 @@ foreach(required_64m_format_term IN ITEMS
         "decision_count <= 8F"
         "decision_count <= 36*token_count"
         "16F+85 = 1,073,741,909"
-        "exact triple `2/6 + 1/5 + 3/2`"
+        "`2/6 + 1/5 + 3/2`: header validation"
         "Stream-header"
         "complete-frame encoding"
         "No public selector")

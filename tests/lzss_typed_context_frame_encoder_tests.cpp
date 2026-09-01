@@ -208,7 +208,7 @@ TEST(LzssTypedContextFrameEncoder,
 }
 
 TEST(LzssTypedContextFrameEncoder,
-     SixtyFourMiBVariantRemainsClosedDuringDecoderAdmission) {
+     SixtyFourMiBVariantEmitsAndDecodesOneLiteralFrame) {
     constexpr std::array input{std::byte{'A'}};
     const auto stream = sixty_four_mib_stream_config(67108864, 1);
     auto limits = marc::core::DecoderLimits{};
@@ -219,10 +219,24 @@ TEST(LzssTypedContextFrameEncoder,
     limits.max_internal_buffered_bytes = UINT64_C(8) * 1024 * 1024 * 1024;
     std::array<marc::dictionary::internal::LzssTypedToken, 1> tokens{};
     std::array<marc::context::internal::ModeledOperation, 2> operations{};
+    std::array<std::byte, 86> output{};
 
-    EXPECT_EQ(plan_lzss_typed_context_frame(
+    ASSERT_EQ(plan_lzss_typed_context_frame(
                   stream, limits, 0, 0, input, tokens, operations).error,
-              LzssTypedContextFrameEncodeError::invalid_stream);
+              LzssTypedContextFrameEncodeError::none);
+    ASSERT_EQ(encode_lzss_typed_context_frame(
+                  stream, limits, 0, 0, input, tokens, operations, output)
+                  .error,
+              LzssTypedContextFrameEncodeError::none);
+    EXPECT_EQ(output, one_literal_frame());
+
+    std::array<marc::dictionary::internal::LzssTypedToken, 1>
+        decoded_tokens{};
+    std::array<std::byte, 1> reconstructed{};
+    const auto decoded = decode_lzss_typed_context_frame(
+        output, {stream, limits, 0, 0}, decoded_tokens, reconstructed);
+    ASSERT_EQ(decoded.error, LzssTypedContextFrameDecodeError::none);
+    EXPECT_EQ(reconstructed, input);
 }
 
 TEST(LzssTypedContextFrameEncoder, RoundTripsMatchBearingFrame) {

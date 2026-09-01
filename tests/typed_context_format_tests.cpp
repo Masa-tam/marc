@@ -300,7 +300,7 @@ TEST(TypedContextStreamFormat,
 }
 
 TEST(TypedContextStreamFormat,
-     AdmitsPrivateSixtyFourMibPreflightButNotStreamHeaders) {
+     SerializesAndParsesPrivateSixtyFourMibStreamHeader) {
     const auto stream = sixty_four_mib_stream_config();
     auto limits = marc::core::DecoderLimits{};
     limits.max_frame_size = stream.frame_size;
@@ -312,21 +312,20 @@ TEST(TypedContextStreamFormat,
     EXPECT_EQ(validate_typed_context_stream_header(stream, limits),
               TypedContextStreamHeaderError::none);
     std::array<std::byte, typed_context_stream_header_size> output{};
-    output.fill(std::byte{0xa5});
-    EXPECT_EQ(serialize_typed_context_stream_header(stream, limits, output),
-              TypedContextStreamHeaderError::unsupported_dictionary_variant);
-    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
-        return value == std::byte{0xa5};
-    }));
+    ASSERT_EQ(serialize_typed_context_stream_header(stream, limits, output),
+              TypedContextStreamHeaderError::none);
+    EXPECT_EQ(output, sixty_four_mib_stream_vector());
 
     TypedContextStreamHeader parsed{};
-    parsed.original_size = 0xa5a5;
-    std::size_t consumed = 0xa5a5;
-    EXPECT_EQ(parse_typed_context_stream_header(
-                  sixty_four_mib_stream_vector(), limits, parsed, consumed),
-              TypedContextStreamHeaderError::unsupported_dictionary_variant);
-    EXPECT_EQ(parsed.original_size, 0xa5a5U);
-    EXPECT_EQ(consumed, 0xa5a5U);
+    std::size_t consumed{};
+    ASSERT_EQ(parse_typed_context_stream_header(
+                  output, limits, parsed, consumed),
+              TypedContextStreamHeaderError::none);
+    EXPECT_EQ(consumed, output.size());
+    EXPECT_EQ(parsed.dictionary_variant, 6U);
+    EXPECT_EQ(parsed.context_variant, 5U);
+    EXPECT_EQ(parsed.frame_size, 67108864U);
+    EXPECT_EQ(parsed.dictionary.window_size, 67108864U);
 }
 
 TEST(TypedContextStreamFormat, RejectsCrossedKnownVariantPairsAtomically) {

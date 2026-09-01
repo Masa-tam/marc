@@ -21175,3 +21175,20 @@ fuzz selectors, defaults, resource helpers, and interoperability schema closed.
 The decoder substage proves no encoder allocation policy and therefore cannot
 authorize the 8-GiB full-profile aggregate. Preserve all earlier bytes and
 schema-52 archives.
+
+## DD-1031: Complete the private 64 MiB Dynamic Range lifecycle
+
+- Date: 2026-09-01
+- Status: accepted
+
+Admit exact triple `2/6 + 1/5 + 3/2` in the private frame encoder, stream-header
+parser/serializer, streaming encoder/decoder, and strategy-aware workspace
+profile. Preserve caller-selected HashChain Exact or BinaryTree Exact and
+report its actual allocation without serializing the strategy.
+
+Freeze full-frame requirements at 4,362,600,533 bytes for HashChain encode,
+6,039,797,845 bytes for BinaryTree encode, and 1,946,157,141 bytes for decode.
+Require exact aggregate success and one-byte-short failure. These are private
+queries, not automatic allocation or public profile application. Keep the C
+selector, CLI/benchmark/fuzz names, defaults, helpers, and interoperability
+schema closed until their later stages.

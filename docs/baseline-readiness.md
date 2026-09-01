@@ -3480,3 +3480,12 @@ short or crossed inputs remain atomic. Stream-header parsing/serialization,
 frame encoding, streaming, workspace profiles, every public/tool surface, and
 schema 52 remain closed, so this is a decoder substage rather than public codec
 completion.
+
+### BR-0221
+
+The private 64-MiB Dynamic Range lifecycle now includes complete-frame encode
+and decode, canonical stream-header parsing/serialization, one-byte streaming,
+and exact strategy-aware workspace queries. Full-frame HashChain, BinaryTree,
+and decoder requirements are respectively 4,362,600,533, 6,039,797,845, and
+1,946,157,141 bytes, each checked at equality and one byte short. Public C,
+tool, fuzz, helper, default, and schema-52 surfaces remain unchanged.
