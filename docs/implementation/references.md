@@ -7190,3 +7190,13 @@ state machine, checked count validation, earlier four variant boundaries,
 backend admission gates, and current dual-toolchain tests. No external
 compression library, source code, tests, vectors, patents, pseudocode, model
 layout, or optimization description was consulted.
+
+### IR-0792
+
+The first 64-MiB Dynamic Range decoder admission uses IR-0791, DD-1029,
+TVG-0894, marc's repository-owned typed-context frame preflight, byte-oriented
+integer range decoder, checked field-context inversion, typed-token
+reconstruction, and the preceding 16-MiB decoder-admission pattern. No
+external compressor, range coder implementation, stream parser, source code,
+test vector, test suite, patent, pseudocode, or optimization description was
+consulted.

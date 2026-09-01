@@ -1,8 +1,9 @@
 # LZSS contextual 64 MiB window candidate
 
-Status: shared dictionary/context primitives implemented. No backend triple,
-public profile, decoder admission, CLI name, or interoperability archive is
-assigned by this document.
+Status: Dynamic Range decoder preflight and private complete-frame decoding
+implemented. Stream-header parsing and serialization, frame encoding,
+streaming, public profiles, tools, fuzz selectors, and interoperability remain
+unadmitted.
 
 ## Purpose
 
@@ -189,11 +190,27 @@ rejected by context variant 4. Boundary tests also freeze class/bypass pairs
 `24/1`, `25/0`, and `26/0`.
 
 Internal frequency and Adaptive Huffman model storage can represent all 4,598
-entries and 9,227 nodes. This capacity is not backend admission. The generic Format 2 header validator
-recognizes crossed known variants as contradictory but rejects the exact
-reserved pair atomically. Compact rANS and tANS and the
-Blocked Huffman descriptor retain their stable unsupported-context errors for
-variant 5. No complete frame, stream, profile, or public surface is opened.
+entries and 9,227 nodes. This capacity alone is not backend admission. Compact
+rANS and tANS and the Blocked Huffman descriptor retain their stable
+unsupported-context errors for variant 5.
+
+## Dynamic Range decoder admission
+
+The generic Format 2 header validator and private Dynamic Range complete-frame
+decoder now admit
+the exact `2/6 + 1/5 + 3/2` triple. Preflight selects 4,598 model entries,
+`8F`, and `36T`; complete decoding validates the range payload, reconstructs
+typed tokens, and then reconstructs raw bytes in caller-owned disjoint
+workspaces. A bounded vector builds the required history from one Literal,
+65,027 overlapping length-258 Matches, and one length-250 Match. Its final
+distance-16,777,217, length-258 Match is the first distance unavailable to
+variant 5 and decodes exactly under variant 6.
+
+The stream parser, serializer, and complete-frame encoder remain closed for
+the new triple. Crossed dictionary/context variants remain contradictory, and
+short token or raw output remains atomic. Streaming and every public surface
+therefore remain closed until encoder workspace and lifecycle policy are
+implemented together.
 
 ## Staged work
 
@@ -205,7 +222,8 @@ variant 5. No complete frame, stream, profile, or public surface is opened.
 5. Implement shared dictionary/context constants, checked layouts, validators,
    and hand vectors (complete).
 6. Admit Dynamic Range from private decoder validation through public C, CLI,
-   benchmark, bounded fuzzing, and one new interoperability archive.
+   benchmark, bounded fuzzing, and one new interoperability archive (decoder
+   preflight and private complete-frame decoding complete).
 7. Admit rANS, tANS, Blocked Huffman, and Adaptive Huffman separately, each
    with its own memory proof and one schema append.
 
@@ -213,7 +231,8 @@ No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
 one-shot round trip.
 
-Stages one through five completed on 2026-09-01. The fixed 48-point Silesia
+Stages one through five and the first Dynamic Range substage completed on
+2026-09-01. The fixed 48-point Silesia
 matrix validated every Exact strategy pair and measured a 414,783-token
 aggregate reduction, or 1.293%, when moving from a 16-MiB to a 64-MiB window
 under the same 64-MiB frame. BinaryTree won seven of twelve members at each

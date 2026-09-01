@@ -346,10 +346,14 @@ foreach(required_window_64m_term IN ITEMS
         "2,239,758,416"
         "Variants 6 and 5 must occur together"
         "Every crossed pair is contradictory"
-        "No backend triple,"
+        "exact `2/6 + 1/5 + 3/2` triple"
         "## Shared primitive implementation"
         "260,111 overlapping length-258 Matches"
         "generic Format 2 header validator"
+        "## Dynamic Range decoder admission"
+        "65,027 overlapping length-258 Matches"
+        "first distance unavailable to"
+        "stream parser, serializer, and complete-frame encoder remain closed"
         "HashChain Exact and BinaryTree Exact remain encoder-local")
     string(FIND "${lzss_contextual_window_64m_content}"
         "${required_window_64m_term}" required_window_64m_term_offset)
@@ -643,9 +647,9 @@ foreach(required_64m_format_term IN ITEMS
         "decision_count <= 8F"
         "decision_count <= 36*token_count"
         "16F+85 = 1,073,741,909"
-        "No complete entropy triple is admitted"
-        "must reject the pair as"
-        "unsupported even when"
+        "exact triple `2/6 + 1/5 + 3/2`"
+        "Stream-header"
+        "complete-frame encoding"
         "No public selector")
     string(FIND "${format_content}" "${required_64m_format_term}"
         required_64m_format_term_offset)

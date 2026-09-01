@@ -21157,3 +21157,21 @@ IDs only to distinguish reciprocal crossings from the exact unsupported pair;
 compact rANS/tANS and Blocked Huffman descriptor paths remain closed. Existing
 bytes, public ABI, selectors, defaults, CLI inventory, and schema 52 remain
 unchanged.
+
+## DD-1030: Admit only the private 64 MiB Dynamic Range decoder
+
+- Date: 2026-09-01
+- Status: accepted
+
+Permit generic header validation and private complete-frame decoding for exact
+identity `2/6 + 1/5 + 3/2`. Select the 4,598-entry model and checked `8F` and
+`36T` frame bounds before payload decoding. Decode into caller-owned token and
+raw workspaces only after preflight, and retain transactional failures for
+crossed variants and short output.
+
+Keep serialized stream parsing and serialization, complete-frame encoding,
+streaming, workspace profiles, public C selectors, CLI and benchmark names,
+fuzz selectors, defaults, resource helpers, and interoperability schema closed.
+The decoder substage proves no encoder allocation policy and therefore cannot
+authorize the 8-GiB full-profile aggregate. Preserve all earlier bytes and
+schema-52 archives.

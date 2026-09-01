@@ -64,10 +64,6 @@ TypedContextStreamHeaderError validate_typed_context_stream_header(
         incompatible_variants:
         return TypedContextStreamHeaderError::contradictory_parameters;
     }
-    if (layout.layout.context_variant
-        == context::internal::LzssFieldContextVariant::field_context_64m) {
-        return TypedContextStreamHeaderError::unsupported_dictionary_variant;
-    }
     const auto dictionary_error =
         dictionary::internal::validate_lzss_typed_parameters(
             header.dictionary, limits, layout.layout.dictionary_variant);
@@ -219,6 +215,10 @@ TypedContextStreamHeaderError parse_typed_context_stream_header(
     parsed.context_algorithm = context_algorithm;
     parsed.context_variant = context_variant;
 
+    if (dictionary_variant == 6 && context_variant == 5) {
+        return TypedContextStreamHeaderError::unsupported_dictionary_variant;
+    }
+
     const auto error = validate_typed_context_stream_header(parsed, limits);
     if (error == TypedContextStreamHeaderError::none) {
         header = parsed;
@@ -234,6 +234,9 @@ TypedContextStreamHeaderError serialize_typed_context_stream_header(
     noexcept {
     const auto error = validate_typed_context_stream_header(header, limits);
     if (error != TypedContextStreamHeaderError::none) return error;
+    if (header.dictionary_variant == 6 && header.context_variant == 5) {
+        return TypedContextStreamHeaderError::unsupported_dictionary_variant;
+    }
     std::array<std::byte, typed_context_stream_header_size> encoded{};
     std::ranges::copy(stream_magic, encoded.begin());
     const std::span<std::byte> bytes{encoded};

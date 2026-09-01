@@ -3470,3 +3470,13 @@ and atomic non-admission by current Format 2 and backend descriptor paths.
 Internal frequency and FGK storage safely covers the shared layout. No public
 ABI, stream triple, selector, default, CLI/benchmark/fuzz name, or schema-52
 inventory entry changed.
+
+### BR-0220
+
+The exact 64-MiB Dynamic Range identity now reaches private complete-frame
+decoding. Checked preflight selects 4,598 entries, `8F`, and `36T`; a bounded
+overlap-history vector reconstructs the first new distance 16,777,217, and
+short or crossed inputs remain atomic. Stream-header parsing/serialization,
+frame encoding, streaming, workspace profiles, every public/tool surface, and
+schema 52 remain closed, so this is a decoder substage rather than public codec
+completion.

@@ -67,6 +67,16 @@ using namespace marc::frame::internal;
     return stream;
 }
 
+[[nodiscard]] TypedContextStreamHeader sixty_four_mib_stream_config(
+    const std::uint32_t frame_size,
+    const std::uint64_t original_size) noexcept {
+    auto stream = stream_config(frame_size, original_size);
+    stream.dictionary.window_size = 67108864;
+    stream.dictionary_variant = 6;
+    stream.context_variant = 5;
+    return stream;
+}
+
 [[nodiscard]] constexpr std::array<std::byte, 86> one_literal_frame() {
     std::array<std::byte, 86> encoded{};
     encoded[0] = std::byte{0x4D};
@@ -195,6 +205,24 @@ TEST(LzssTypedContextFrameEncoder,
         output, {stream, limits, 0, 0}, decoded_tokens, reconstructed);
     ASSERT_EQ(decoded.error, LzssTypedContextFrameDecodeError::none);
     EXPECT_EQ(reconstructed, input);
+}
+
+TEST(LzssTypedContextFrameEncoder,
+     SixtyFourMiBVariantRemainsClosedDuringDecoderAdmission) {
+    constexpr std::array input{std::byte{'A'}};
+    const auto stream = sixty_four_mib_stream_config(67108864, 1);
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = 67108864;
+    limits.max_block_size = 67108864;
+    limits.max_lz_distance = 67108864;
+    limits.max_entropy_table_entries = 4598;
+    limits.max_internal_buffered_bytes = UINT64_C(8) * 1024 * 1024 * 1024;
+    std::array<marc::dictionary::internal::LzssTypedToken, 1> tokens{};
+    std::array<marc::context::internal::ModeledOperation, 2> operations{};
+
+    EXPECT_EQ(plan_lzss_typed_context_frame(
+                  stream, limits, 0, 0, input, tokens, operations).error,
+              LzssTypedContextFrameEncodeError::invalid_stream);
 }
 
 TEST(LzssTypedContextFrameEncoder, RoundTripsMatchBearingFrame) {

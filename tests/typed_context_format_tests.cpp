@@ -299,7 +299,8 @@ TEST(TypedContextStreamFormat,
     EXPECT_EQ(parsed.dictionary.window_size, 16777216U);
 }
 
-TEST(TypedContextStreamFormat, KeepsReservedSixtyFourMibPairUnadmitted) {
+TEST(TypedContextStreamFormat,
+     AdmitsPrivateSixtyFourMibPreflightButNotStreamHeaders) {
     const auto stream = sixty_four_mib_stream_config();
     auto limits = marc::core::DecoderLimits{};
     limits.max_frame_size = stream.frame_size;
@@ -309,7 +310,7 @@ TEST(TypedContextStreamFormat, KeepsReservedSixtyFourMibPairUnadmitted) {
     limits.max_internal_buffered_bytes = UINT64_C(8) * 1024 * 1024 * 1024;
 
     EXPECT_EQ(validate_typed_context_stream_header(stream, limits),
-              TypedContextStreamHeaderError::unsupported_dictionary_variant);
+              TypedContextStreamHeaderError::none);
     std::array<std::byte, typed_context_stream_header_size> output{};
     output.fill(std::byte{0xa5});
     EXPECT_EQ(serialize_typed_context_stream_header(stream, limits, output),
@@ -392,6 +393,21 @@ TEST(TypedContextStreamFormat, SelectsVariantSpecificTableLimit) {
     sixteen_mib_limits.max_entropy_table_entries = 4582;
     EXPECT_EQ(validate_typed_context_stream_header(
                   sixteen_mib_stream_config(), sixteen_mib_limits),
+              TypedContextStreamHeaderError::none);
+
+    auto sixty_four_mib_limits = marc::core::DecoderLimits{};
+    sixty_four_mib_limits.max_frame_size = 67108864;
+    sixty_four_mib_limits.max_block_size = 67108864;
+    sixty_four_mib_limits.max_lz_distance = 67108864;
+    sixty_four_mib_limits.max_internal_buffered_bytes =
+        UINT64_C(8) * 1024 * 1024 * 1024;
+    sixty_four_mib_limits.max_entropy_table_entries = 4597;
+    EXPECT_EQ(validate_typed_context_stream_header(
+                  sixty_four_mib_stream_config(), sixty_four_mib_limits),
+              TypedContextStreamHeaderError::limit_exceeded);
+    sixty_four_mib_limits.max_entropy_table_entries = 4598;
+    EXPECT_EQ(validate_typed_context_stream_header(
+                  sixty_four_mib_stream_config(), sixty_four_mib_limits),
               TypedContextStreamHeaderError::none);
 }
 
@@ -513,6 +529,34 @@ TEST(TypedContextFrameFormat, SelectsVariantSpecificDecisionCeiling) {
     EXPECT_EQ(validate_typed_context_frame_header(
                   sixteen_mib_header,
                   frame_context(four_mib_stream, sixteen_mib_limits)),
+              TypedContextFrameHeaderError::contradictory_counts);
+
+    auto sixty_four_mib_stream = sixty_four_mib_stream_config();
+    sixty_four_mib_stream.frame_size = 5;
+    sixty_four_mib_stream.original_size = 5;
+    auto sixty_four_mib_limits = limits;
+    sixty_four_mib_limits.max_lz_distance = 67108864;
+    sixty_four_mib_limits.max_entropy_table_entries = 4598;
+    sixty_four_mib_limits.max_internal_buffered_bytes =
+        UINT64_C(8) * 1024 * 1024 * 1024;
+    const TypedContextFrameHeader sixty_four_mib_header{
+        0, 0, 5, 1, 5, 36, 5, 16, 0, 0};
+    EXPECT_EQ(validate_typed_context_frame_header(
+                  sixty_four_mib_header,
+                  frame_context(sixty_four_mib_stream,
+                                sixty_four_mib_limits)),
+              TypedContextFrameHeaderError::none);
+    excessive = sixty_four_mib_header;
+    excessive.decision_count = 37;
+    EXPECT_EQ(validate_typed_context_frame_header(
+                  excessive,
+                  frame_context(sixty_four_mib_stream,
+                                sixty_four_mib_limits)),
+              TypedContextFrameHeaderError::contradictory_counts);
+    EXPECT_EQ(validate_typed_context_frame_header(
+                  sixty_four_mib_header,
+                  frame_context(sixteen_mib_stream,
+                                sixty_four_mib_limits)),
               TypedContextFrameHeaderError::contradictory_counts);
 }
 

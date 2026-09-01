@@ -12887,3 +12887,19 @@ as contradictory. Require compact rANS/tANS and Blocked Huffman descriptors to
 reject context variant 5 atomically. Verify the 9,227-node/4,598-symbol FGK
 layout at exact capacity and one entry short. Preserve every older vector and
 schema-52 archive.
+
+### TVG-0895
+
+For the private Dynamic Range decoder, require the exact `2/6 + 1/5 + 3/2`
+identity to preflight with 4,598 model entries, 36 decisions per token, and
+eight decisions per raw byte. Reject 4,597 entries, 37 decisions for one
+five-byte Match, every reciprocal crossing, short token output, and short raw
+output before publication.
+
+Build exactly 16,777,217 bytes of history from one Literal, 65,027 overlapping
+length-258 Matches, and one length-250 Match. Append a distance-16,777,217,
+length-258 Match, encode its modeled operations with the repository-owned
+Dynamic Range primitive, assemble the complete frame explicitly, and require
+private decoding to reproduce every token and raw byte. Keep stream parsing,
+serialization, complete-frame encoding, streaming, public surfaces, and
+schema-52 inventory unchanged.

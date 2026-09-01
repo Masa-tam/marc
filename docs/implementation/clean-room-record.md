@@ -27689,3 +27689,30 @@ both bounds.
   seconds under MSVC and 101.25 seconds under ClangCL. After correcting the
   prose wrap, that final test passes in both trees, completing all 3,310 tests
   under each compiler. The final diff is whitespace-clean.
+
+## CR-1117: 2026-09-01 - Admit private 64-MiB Dynamic Range decoding
+
+- Authoring method: extended marc's immediately preceding private 16-MiB
+  Dynamic Range decoder admission through the already reserved 64-MiB checked
+  layout, without opening an encoder or serialized stream path.
+- References used: IR-0792; DD-1030; TVG-0895; CR-1116; the repository-owned
+  Format 2 preflight, Dynamic Range operation coder, typed-token inversion, and
+  complete-frame decoder.
+- Known implementations intentionally not consulted: external compressor,
+  range coder, large-window stream, source, tests, vectors, patent, pseudocode,
+  allocation policy, or optimization description.
+- Independent decisions: admit validation and private frame decoding only;
+  prove the first newly reachable distance with overlap-built history; retain
+  parser, serializer, encoder, streaming, public, tool, fuzz, and archive gates.
+- Generated-code task description: select the 4,598-entry layout in private
+  Dynamic Range preflight, prove `8F`/`36T`, decode distance 16,777,217, verify
+  atomic short/crossed failures, and preserve every public surface.
+- Similarity review: code and tests mechanically extend marc's first-party
+  staged decoder architecture and independently recorded formulas. No external
+  implementation expression or distinctive test structure was used.
+- Validation: focused decoder, limit, crossing, atomicity, and encoder-gate
+  tests pass under warning-clean MSVC and ClangCL builds. All 3,313 registered
+  tests pass under MSVC in 255.69 seconds and ClangCL in 257.56 seconds with the
+  600-second per-test limit. The unchanged schema-52 compatibility traversal
+  passes in 104.09 and 101.76 seconds respectively. The final diff is
+  whitespace-clean.
