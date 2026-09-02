@@ -5821,6 +5821,15 @@ all twenty ordered cross-profile mismatches preserve zero raw publication and
 sticky errors. The encoder, 64-MiB history, full-profile workspace, and
 interoperability schema remain outside this boundary.
 
+Interoperability schema 54 freezes schema 53's exact 63-archive order and
+appends only `lzss-contextual-rans-64m` as entry 64. Generation requires exact
+identity `2/6 + 1/5 + 4/3`, immediate round trip, size, and SHA-256;
+verification enforces exact order and byte-identical local re-encoding.
+Compatibility removes only entry 64 to reconstruct schema 53 before traversing
+the unchanged chain through schema 1. This admission changes no codec format,
+public ABI, resource profile, default, match-finder selection, or earlier
+archive byte.
+
 The 16-MiB Contextual tANS application boundary adds exact selector
 `lzss-contextual-tans-16m` after its public C lifecycle is complete. Parser,
 help, configuration, workspace-query, and factory dispatch carry one explicit

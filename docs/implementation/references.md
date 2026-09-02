@@ -7314,3 +7314,12 @@ private/public harness, five-profile public selector, permanent malformed
 regressions, and matching-runtime sanitizer route. No external fuzzer harness,
 compressor, corpus, vulnerability report, source, test, vector, patent,
 pseudocode, allocation policy, or optimization description was consulted.
+
+### IR-0806
+
+The 64-MiB Contextual rANS interoperability admission uses IR-0805, DD-1043,
+TVG-0908, BR-0234, CR-1131, marc's repository-owned bundle generator,
+strict-order verifier, historical schema converter, and exact CLI profile.
+No external compressor, rANS implementation, archive format, interoperability
+suite, source, test, vector, patent, pseudocode, allocation policy, or
+optimization description was consulted.

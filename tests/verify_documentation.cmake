@@ -361,6 +361,7 @@ foreach(required_rans_window_64m_term IN ITEMS
         "public profile value 4"
         "exact CLI and benchmark names (complete)"
         "bounded decoder fuzzing without profile-sized allocation (complete)"
+        "schema 54 archive 64"
         "lzss-contextual-rans-64m"
         "112 + 16N + 9,257K"
         "without admitting an outer frame (complete)"
@@ -892,7 +893,7 @@ foreach(required_readiness_section IN ITEMS
 endforeach()
 foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
-        "each enumerate 3,323 tests under"
+        "each enumerate 3,336 tests under"
         "four-direction schema-52 exchange")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)
@@ -952,12 +953,14 @@ foreach(required_interoperability_section IN ITEMS
         "${interoperability_section_offset}")
 endforeach()
 foreach(required_current_interoperability_term IN ITEMS
-        "Each current schema-53 bundle"
-        "marc-cli-v53"
-        "sixty-three foreign archives"
+        "Each current schema-54 bundle"
+        "marc-cli-v54"
+        "sixty-four foreign archives"
+        "Schema 54 requires"
+        "schemas 1 through 53"
+        "External cross-platform exchange remains pending"
         "Schema 53 requires"
-        "schemas 1 through 52"
-        "four-direction evidence is complete"
+        "four-direction evidence remains complete"
         "1de3df622106db7674bcf691201a601dae680294"
         "### IX-0047: Schema 53")
     string(FIND "${interoperability_content}"

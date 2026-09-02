@@ -2,8 +2,8 @@
 
 Status: private stream serialization/parsing, complete-frame coding, checked
 profile/workspace calculation, streaming, public C profile, CLI, benchmark,
-and bounded decoder fuzzing implemented for both explicit Exact finders;
-Exhaustive encoding and interoperability boundaries remain closed.
+bounded decoder fuzzing, and interoperability implemented for both explicit
+Exact finders; Exhaustive encoding remains closed.
 
 ## Purpose and identity
 
@@ -44,8 +44,8 @@ checked local profiles. Common public profile value 4 admits the same lifecycle
 through the C helper, workspace query, and factory. Exact CLI and benchmark
 names use that same public lifecycle. Bounded decoder fuzzing admits all five
 strict profile identities with fixed one-KiB frame/token/raw staging and no
-profile-sized allocation. Exhaustive encoding and interoperability surfaces
-remain closed.
+profile-sized allocation. Exhaustive encoding remains closed. Interoperability
+schema 54 admits the exact public profile as archive 64.
 
 ## Count and payload bounds
 
@@ -121,7 +121,8 @@ never enlarge local limits.
    `lzss-contextual-rans-64m`, with checked benchmark capacity
    `112 + 16N + 9,257K`.
 7. Extend bounded decoder fuzzing without profile-sized allocation (complete).
-8. Append one interoperability archive after every preceding boundary passes.
+8. Append one interoperability archive after every preceding boundary passes
+   (complete: schema 54 archive 64).
 
 Each stage must retain old bytes, prove malformed-input atomicity, and keep
 incomplete outward boundaries closed.

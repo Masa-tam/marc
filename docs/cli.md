@@ -281,6 +281,8 @@ profiles, malformed input, and trailing data retain no output.
 The matching benchmark uses the same public lifecycle. Its checked output
 allocation is `112 + 16N + 9,257K` for input size `N` and nonempty frame count
 `K`; a byte-exact round trip precedes timing and all workspace reporting.
+Interoperability schema 54 appends this exact CLI profile as archive 64 after
+the frozen 63-entry schema-53 order without changing earlier bytes or order.
 
 The experimental `lzss-contextual-tans` adapter uses 65,536-byte raw frames,
 a `6F = 393,216` decision ceiling, and a `9F + 2 = 589,826` payload ceiling.

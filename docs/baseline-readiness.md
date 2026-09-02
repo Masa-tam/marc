@@ -15,7 +15,7 @@ determinism, chunking, terminal behavior, and malformed final-frame handling.
 `In progress` means a public profile exists but one or more of those local
 readiness boundaries remain pending.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 53 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 54 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -36,7 +36,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 53 |
+| Profile | Purpose | Local status | Interoperability schema 54 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -104,10 +104,10 @@ now passed in all four directions at revision
 `827ddf085efb40c7d8f9bc27628977053179d84c` for all 41 archives across the
 recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
-Schema 53 contains sixty-three archives: the frozen forty-two baseline profiles
-followed by twenty-one typed-token LZSS Contextual profiles. Schema 52 retains
-its exact archive order and meaning; schema 53 appends only the 64-MiB
-Contextual Dynamic Range profile.
+Schema 54 contains sixty-four archives: the frozen forty-two baseline profiles
+followed by twenty-two typed-token LZSS Contextual profiles. Schema 53 retains
+its exact archive order and meaning; schema 54 appends only the 64-MiB
+Contextual rANS profile.
 
 ## Public-profile evidence matrix
 
@@ -117,7 +117,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 53 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 54 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -165,12 +165,12 @@ kept separate because it requires artifacts produced outside the local build.
 ## Current validation baseline
 
 All forty-two baseline profiles in the composition matrix satisfy the local
-`Ready` definition and remain present in interoperability schema 53 alongside
-the twenty-one typed-token LZSS Contextual profiles. The internal canonical
+`Ready` definition and remain present in interoperability schema 54 alongside
+the twenty-two typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,323 tests under
+The optimized Release configurations each enumerate 3,336 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3612,3 +3612,13 @@ extreme-length, descriptor-flag, and all twenty ordered cross-profile
 mismatches fail atomically. A 1,000-input Clang 22 ASan/UBSan smoke completed
 without a finding, generated corpus, or artifact; resource-helper and schema
 53 remain unchanged.
+
+### BR-0235
+
+Interoperability schema 54 freezes all 63 schema-53 archives and appends only
+`lzss-contextual-rans-64m` as archive 64. Generation validates exact identity
+`2/6 + 1/5 + 4/3` and immediate round trip. Verification enforces exact order,
+size, SHA-256, foreign decode equality, and byte-identical local re-encoding;
+removing only archive 64 reconstructs schema 53 before the unchanged chain
+through schema 1. No codec byte, ABI, resource profile, default, or finder
+selection changes. External cross-platform exchange remains pending.

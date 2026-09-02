@@ -1926,3 +1926,13 @@ after the frozen 62-entry schema-52 order. The generator requires identity
 Compatibility removes only entry 63 to reconstruct schema 52 before traversing
 its unchanged historical conversion chain. No codec byte, resource profile,
 public ABI, default, or match-finder selection changes.
+
+### CP-0121
+
+Interoperability schema 54 appends `lzss-contextual-rans-64m` once after the
+frozen 63-entry schema-53 order. The generator requires identity
+`2/6 + 1/5 + 4/3` and an immediate round trip; the verifier requires exact
+64-entry order, foreign decode equality, and byte-identical local re-encoding.
+Compatibility removes only entry 64 to reconstruct schema 53 before traversing
+its unchanged historical conversion chain. No codec byte, resource profile,
+public ABI, default, or match-finder selection changes.

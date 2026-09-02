@@ -28108,3 +28108,34 @@ both bounds.
   and 247.66 seconds respectively; schema compatibility remains included and
   passes in 114.85 and 104.82 seconds. The final diff is whitespace-clean, and
   resource-helper and schema 53 remain closed.
+
+## CR-1132: 2026-09-02 - Append 64-MiB contextual rANS interoperability
+
+- Authoring method: extended marc's repository-owned append-only
+  interoperability scripts from schema 53 to schema 54 using the completed
+  exact-name Contextual rANS 64-MiB CLI lifecycle.
+- References used: IR-0806; DD-1044; TVG-0909; BR-0235; CR-1131; the local
+  bundle generator, strict-order verifier, historical schema converter, and
+  exact CLI profile.
+- Known implementations intentionally not consulted: external compressors,
+  rANS implementations, archive formats, interoperability suites, source,
+  tests, vectors, patents, pseudocode, allocation policies, or optimizations.
+- Independent decisions: freeze all 63 schema-53 entries; append only
+  `lzss-contextual-rans-64m` as archive 64; validate identity
+  `2/6 + 1/5 + 4/3` before round trip; reconstruct schema 53 by removing only
+  the new entry; leave resource helpers and external evidence separate.
+- Generated-code task description: create and verify `marc-cli-v54`, reject a
+  reordered manifest, prove foreign decode equality and byte-identical local
+  re-encoding, traverse schemas 53 through 1, and update exact current-state
+  documentation without rewriting historical evidence.
+- Similarity review: scripts and documentation extend marc's own append-only
+  schema pattern and exact public CLI profile. No external implementation
+  expression or distinctive test structure was used.
+- Validation: the focused MSVC schema-compatibility test passes in 118.05
+  seconds. All 3,336 registered tests pass without exclusions under MSVC and
+  ClangCL in 270.60 and 265.71 seconds respectively; schema compatibility is
+  included and passes in 117.19 and 107.15 seconds. Documentation verifies 101
+  links and every ordered ledger, and the final diff is whitespace-clean. The
+  schema conversion changes no codec byte, ABI, profile resource value,
+  default, or match-finder selection; external four-direction exchange remains
+  pending.

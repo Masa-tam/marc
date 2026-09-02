@@ -21414,3 +21414,22 @@ warning-clean under both local compilers and run one fixed-seed 1,000-input
 Clang 22 libFuzzer/ASan/UBSan campaign through its matching runtime. Retain no
 generated mutation or artifact without a finding. Keep the resource helper
 and interoperability schema unchanged.
+
+## DD-1044: Append 64 MiB Contextual rANS as schema 54 archive 64
+
+- Date: 2026-09-02
+- Status: accepted
+
+Freeze schema 53's exact 63-profile order and append only exact CLI profile
+`lzss-contextual-rans-64m` as archive 64. Set `schema_version=54` and
+`codec_set=marc-cli-v54`. Generation MUST prove stream identity
+`2/6 + 1/5 + 4/3` before immediate round trip; verification MUST enforce the
+exact profile order, leaf names, sizes, SHA-256 values, foreign decode equality,
+and byte-identical local re-encoding.
+
+The compatibility test MUST reject reordered schema-54 manifests, remove only
+archive 64 to reconstruct an exact schema-53 bundle, and then traverse the
+unchanged conversion chain through schema 1. This admission MUST NOT alter a
+codec byte, public ABI, profile resource value, default, or encoder-local
+match-finder selection. External cross-platform exchange remains separate
+release evidence.

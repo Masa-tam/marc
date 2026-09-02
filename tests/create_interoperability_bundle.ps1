@@ -144,7 +144,8 @@ $profiles = @(
     'lzss-contextual-tans-16m',
     'lzss-contextual-blocked-huffman-16m',
     'lzss-contextual-adaptive-huffman-16m',
-    'lzss-contextual-dynamic-range-64m'
+    'lzss-contextual-dynamic-range-64m',
+    'lzss-contextual-rans-64m'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -341,6 +342,20 @@ foreach ($profile in $profiles) {
             throw "$profile archive does not carry exact identity 2/6 + 1/5 + 3/2"
         }
     }
+    if ($profile -eq 'lzss-contextual-rans-64m') {
+        $archiveBytes = [System.IO.File]::ReadAllBytes($archivePath)
+        if ($archiveBytes.Length -le 98 -or
+                $archiveBytes[14] -ne 6 -or
+                $archiveBytes[15] -ne 0 -or
+                $archiveBytes[16] -ne 4 -or
+                $archiveBytes[17] -ne 0 -or
+                $archiveBytes[18] -ne 3 -or
+                $archiveBytes[19] -ne 0 -or
+                $archiveBytes[98] -ne 5 -or
+                $archiveBytes[99] -ne 0) {
+            throw "$profile archive does not carry exact identity 2/6 + 1/5 + 4/3"
+        }
+    }
     Invoke-Marc @('decode', '--codec', $profile, $archivePath, $decodedPath)
     if (-not (Test-FileBytesEqual $inputPath $decodedPath)) {
         throw "Generated archive did not round trip: $profile"
@@ -356,8 +371,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 53
-    codec_set = 'marc-cli-v53'
+    schema_version = 54
+    codec_set = 'marc-cli-v54'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

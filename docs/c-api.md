@@ -252,7 +252,8 @@ limits. Exact CLI and benchmark name `lzss-contextual-rans-64m` selects this
 same helper and query without duplicating the numeric policy. The bounded
 decoder fuzzer admits the same profile identity while retaining one-KiB local
 frame/token/raw storage; it does not invoke a full-profile allocation.
-Resource-helper and interoperability names remain unassigned at this stage.
+The interoperability schema 54 exercises the same public profile as archive 64
+without changing this ABI. Resource-helper names remain unassigned.
 The experimental LZSS contextual tANS factory is a third distinct Format 2
 lifecycle. Call `marc_lzss_contextual_tans_workspace_requirements()` whenever
 the immutable direction, known size, frame/LZSS parameters, `profile`,

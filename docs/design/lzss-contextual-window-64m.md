@@ -228,7 +228,8 @@ auto-detects the identity. The bounded decoder-fuzz harness admits the same
 exact profile while retaining an eight-KiB input, four-KiB output, and one-KiB
 frame; it does not allocate a profile-sized history or decoder workspace.
 Schema 53 appends the exact CLI profile as archive 63 while helper-resource and
-default surfaces remain closed.
+default surfaces remain closed. Schema 54 then appends the exact Contextual
+rANS CLI profile as archive 64 without changing the frozen first 63 entries.
 
 ## Staged work
 
@@ -247,7 +248,7 @@ default surfaces remain closed.
    with its own memory proof and one schema append (rANS compact descriptor,
    private decoder, explicit-Exact complete-frame encoder, checked profile,
    streaming, public C, CLI, benchmark, and bounded decoder-fuzz substages
-   complete).
+   complete; schema-54 interoperability complete).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
@@ -269,9 +270,9 @@ complete-frame decoding, complete-frame encoding through both explicit Exact
 finders, checked strategy-aware workspace profiles, and one-byte streaming.
 HashChain Exact and BinaryTree Exact produce identical canonical bytes;
 Exhaustive remains closed; the public profile, CLI, benchmark, and bounded
-decoder-fuzz gates are complete while interoperability remains closed. The
-evidence is not a basis for a new default or
-automatic strategy selector. Schema 53's 63
+decoder-fuzz gates are complete, and schema 54 appends the rANS profile as
+archive 64. The evidence is not a basis for a new default or
+automatic strategy selector. Schema 54 awaits external exchange; schema 53's 63
 archives passed the complete Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
 26.04/Clang exchange at revision
 `1de3df622106db7674bcf691201a601dae680294`.

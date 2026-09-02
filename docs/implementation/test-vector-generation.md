@@ -13097,3 +13097,19 @@ MSVC and ClangCL compile smoke, then run Clang 22 with the matching sanitizer
 runtime, seed 20260902, 1,000 inputs, 32-KiB maximum input, five-second
 timeout, and 512-MiB RSS limit. Retain no generated corpus or artifact without
 a finding, and keep schema 53 unchanged.
+
+### TVG-0909
+
+Generate schema 54 from the repository-owned interoperability fixture with the
+frozen schema-53 profile order followed only by `lzss-contextual-rans-64m` as
+archive 64. Before accepting the archive require header identity
+`2/6 + 1/5 + 4/3`, then require an immediate CLI round trip, recorded size,
+and SHA-256.
+
+Verify all 64 archives in exact order by foreign decode equality and
+byte-identical local re-encoding. Swap the first two manifest entries and
+require rejection. Remove only archive 64, rewrite the manifest as
+`schema_version=53` and `codec_set=marc-cli-v53`, verify it, then traverse the
+unchanged historical conversions through schema 1. Run the focused schema
+test and complete suite under MSVC and ClangCL; leave external four-direction
+exchange for the pushed revision.

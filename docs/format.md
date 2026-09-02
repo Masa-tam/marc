@@ -7697,8 +7697,11 @@ reproduces private workspace layout. Bounded decoder fuzzing admits all five
 strict public identities while retaining one-KiB frame/token/raw storage,
 `8*1024` decisions, `16*1024+8` payload bytes, a 67,108,864-byte distance
 ceiling, and a finite call bound. It never allocates the 64-MiB frame,
-history, or full-profile workspace. Interoperability remains unsupported for
-this triple.
+history, or full-profile workspace. Interoperability schema 54 appends this
+exact triple as archive 64 after the frozen 63-entry schema-53 order.
+Generation validates the identity before round trip; verification requires
+exact order and byte-identical local re-encoding. Compatibility removes only
+archive 64 to reconstruct schema 53 before traversing the unchanged chain.
 Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
 BinaryTree Exact remain encoder-local choices and are not serialized or
 selected automatically. All earlier dictionary/context pairs, backend triples,
