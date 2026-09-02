@@ -272,7 +272,8 @@ HashChain Exact and BinaryTree Exact produce identical canonical bytes;
 Exhaustive remains closed; the public profile, CLI, benchmark, and bounded
 decoder-fuzz gates are complete, and schema 54 appends the rANS profile as
 archive 64. The evidence is not a basis for a new default or
-automatic strategy selector. Schema 54 awaits external exchange; schema 53's 63
-archives passed the complete Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
-26.04/Clang exchange at revision
+automatic strategy selector. Schema 54's 64 archives passed the complete
+Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang exchange at revision
+`8ecc7a104c7b5def57737d9c8f9c40a63e6a8c30`; schema 53's preceding 63-archive
+evidence remains frozen at revision
 `1de3df622106db7674bcf691201a601dae680294`.

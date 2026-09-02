@@ -28139,3 +28139,29 @@ both bounds.
   schema conversion changes no codec byte, ABI, profile resource value,
   default, or match-finder selection; external four-direction exchange remains
   pending.
+
+## CR-1133: 2026-09-03 - Record schema 54 four-direction exchange
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-1044; IR-0806; TVG-0909; BR-0235 through BR-0236;
+  IX-0048; CR-1132; and full revision
+  `8ecc7a104c7b5def57737d9c8f9c40a63e6a8c30`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, or optimization descriptions.
+- Independent decisions: require one exact revision for all four directions,
+  preserve generated work products outside the repository, and accept evidence
+  only when every verifier reports the complete 64-archive inventory.
+- Generated-code task description: record the completed schema-54
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks.
+- Similarity review: this change records project-generated artifact evidence
+  only and introduces no codec implementation expression.
+- External validation: all four passes reported `Verified 64 archives` at
+  revision `8ecc7a104c7b5def57737d9c8f9c40a63e6a8c30`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.

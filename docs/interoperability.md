@@ -174,7 +174,9 @@ retention settings; regenerate them by running CI for the required commit.
 
 Schema 54 has local generation, exact-order verification, byte-identical
 re-encoding, reordered-manifest rejection, and schemas 1 through 53
-compatibility evidence. External cross-platform exchange remains pending.
+compatibility evidence. Its Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
+26.04/Clang four-direction evidence is complete at revision
+`8ecc7a104c7b5def57737d9c8f9c40a63e6a8c30`.
 Schema 53's Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang
 four-direction evidence remains complete at revision
 `1de3df622106db7674bcf691201a601dae680294`.
@@ -978,5 +980,21 @@ verified that bundle in the reverse direction.
 Each of the four verifier passes reported the exact full revision and required
 manifest order, size, SHA-256, fixture decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-53
+bytes across the three producers and bidirectional decoding between the
+recorded Windows and WSL2 Linux x86-64 environments.
+
+### IX-0048: Schema 54
+
+Revision `8ecc7a104c7b5def57737d9c8f9c40a63e6a8c30` received the schema-54
+cross-check after its pushed CI completed successfully. The Ubuntu 26.04 WSL2
+x86-64 environment, using Ubuntu Clang 21.1.8 via Ninja, verified all 64
+archives from both the Windows/MSVC via Visual Studio 2026 and Ubuntu 24.04
+default-compiler/Ninja artifacts. It then generated and self-verified an
+`ubuntu-26.04-ninja-x64` 64-archive bundle. The Windows/MSVC executable
+verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest order, size, SHA-256, fixture decode, and byte-identical local
+re-encoding checks for every archive. This establishes canonical schema-54
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.

@@ -189,6 +189,8 @@ producers. The intervening documentation-only commit records that evidence,
 and final CI passed before tagging. BinaryTree adoption changes no archive byte
 or inventory. Schema 53 subsequently completed its 63-archive four-direction
 exchange at revision `1de3df622106db7674bcf691201a601dae680294` across the
+same three producers. Schema 54 then completed its 64-archive four-direction
+exchange at revision `8ecc7a104c7b5def57737d9c8f9c40a63e6a8c30` across the
 same three producers. The remaining general evidence gaps are listed below.
 
 ## Remaining release evidence
@@ -3622,3 +3624,13 @@ size, SHA-256, foreign decode equality, and byte-identical local re-encoding;
 removing only archive 64 reconstructs schema 53 before the unchanged chain
 through schema 1. No codec byte, ABI, resource profile, default, or finder
 selection changes. External cross-platform exchange remains pending.
+
+### BR-0236
+
+Schema 54 now has complete four-direction external evidence at revision
+`8ecc7a104c7b5def57737d9c8f9c40a63e6a8c30`. Ubuntu 26.04/Clang 21.1.8
+verified all 64 archives from the Windows/MSVC and Ubuntu 24.04/Ninja CI
+artifacts, generated and self-verified its own 64-archive bundle, and supplied
+that bundle for reverse verification under Windows/MSVC. Every pass reported
+the same full revision and exact manifest, digest, decode, and byte-identical
+re-encode checks.
