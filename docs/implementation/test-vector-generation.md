@@ -13079,3 +13079,21 @@ directional-maximum peak equality, exact profile-name inventory, and a
 pre-timing byte-exact round trip. Record size and ratio only as descriptive
 wiring evidence. Run both focused application tests and the complete suite
 under MSVC and ClangCL while keeping fuzzing and schema 53 unchanged.
+
+### TVG-0908
+
+Generate the five-byte canonical stream independently through all five public
+Contextual rANS window selectors. For selector 4 require exact identity
+`2/6 + 1/5 + 4/3`; reject every proper truncation, extreme frame lengths, and
+a nonzero descriptor flag atomically through both decoder paths. Require all
+twenty ordered cross-profile mismatches to publish no raw byte and preserve
+the repeated terminal error.
+
+For the live harness retain 32-KiB input, four-KiB output, one-KiB
+frame/token/raw staging, fixed 126,976-entry table storage, and the existing
+finite call bound. Set validation ceilings to `8*1024` decisions,
+`16*1024+8` payload bytes, and 67,108,864-byte distance. Require warning-clean
+MSVC and ClangCL compile smoke, then run Clang 22 with the matching sanitizer
+runtime, seed 20260902, 1,000 inputs, 32-KiB maximum input, five-second
+timeout, and 512-MiB RSS limit. Retain no generated corpus or artifact without
+a finding, and keep schema 53 unchanged.

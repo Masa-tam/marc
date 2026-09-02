@@ -360,6 +360,7 @@ foreach(required_rans_window_64m_term IN ITEMS
         "one-byte streaming"
         "public profile value 4"
         "exact CLI and benchmark names (complete)"
+        "bounded decoder fuzzing without profile-sized allocation (complete)"
         "lzss-contextual-rans-64m"
         "112 + 16N + 9,257K"
         "without admitting an outer frame (complete)"

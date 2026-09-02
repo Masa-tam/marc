@@ -7305,3 +7305,12 @@ public C helper/query/factory lifecycle, transactional CLI harness, and
 benchmark report validator. No external compressor, rANS implementation,
 command-line tool, benchmark, source, test, vector, patent, pseudocode,
 allocation policy, or optimization description was consulted.
+
+### IR-0805
+
+The 64-MiB Contextual rANS bounded decoder-fuzz admission uses IR-0804,
+DD-1042, TVG-0907, BR-0233, CR-1130, the repository-owned fixed-array
+private/public harness, five-profile public selector, permanent malformed
+regressions, and matching-runtime sanitizer route. No external fuzzer harness,
+compressor, corpus, vulnerability report, source, test, vector, patent,
+pseudocode, allocation policy, or optimization description was consulted.

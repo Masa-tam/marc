@@ -3601,3 +3601,14 @@ identity, transactional round trip, trailing rejection, and reciprocal older-
 profile rejection. Benchmark smoke uses the same helper/query/factory path,
 checks `112 + 16N + 9,257K`, and reports the query-owned peak after an untimed
 round trip. Fuzzing, resource-helper, and schema 53 remain closed.
+
+### BR-0234
+
+The fixed-memory Contextual rANS decoder-fuzz boundary now admits the 64-MiB
+public profile as its fifth strict identity. Input, output, frame, token, raw,
+and call-count bounds remain fixed; only decision, payload, descriptor/table,
+and distance validation ceilings rise to variant 5. Canonical truncation,
+extreme-length, descriptor-flag, and all twenty ordered cross-profile
+mismatches fail atomically. A 1,000-input Clang 22 ASan/UBSan smoke completed
+without a finding, generated corpus, or artifact; resource-helper and schema
+53 remain unchanged.

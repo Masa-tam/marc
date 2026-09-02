@@ -7693,8 +7693,12 @@ the CLI and dependency-free benchmark. CLI decoding requires the same name and
 rejects crossed profiles before retaining output. Benchmark output capacity is
 checked as `112 + 16N + 9,257K`; an untimed byte-exact round trip precedes
 measurement. Neither application adds a stream field, infers a profile, or
-reproduces private workspace layout. Fuzzing and interoperability remain
-unsupported for this triple.
+reproduces private workspace layout. Bounded decoder fuzzing admits all five
+strict public identities while retaining one-KiB frame/token/raw storage,
+`8*1024` decisions, `16*1024+8` payload bytes, a 67,108,864-byte distance
+ceiling, and a finite call bound. It never allocates the 64-MiB frame,
+history, or full-profile workspace. Interoperability remains unsupported for
+this triple.
 Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
 BinaryTree Exact remain encoder-local choices and are not serialized or
 selected automatically. All earlier dictionary/context pairs, backend triples,

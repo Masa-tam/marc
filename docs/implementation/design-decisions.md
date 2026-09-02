@@ -21393,3 +21393,24 @@ timing and report all six query-owned regions plus the directional peak. Keep
 the selector outside stable defaults and keep Exhaustive, fuzzing,
 resource-helper, and interoperability boundaries closed. No stream field, ABI
 value, or existing canonical byte changes.
+
+## DD-1043: Extend bounded rANS fuzzing to the 64 MiB profile
+
+- Date: 2026-09-02
+- Status: accepted
+
+Drive public profile values 0 through 4 for every bounded input through the
+existing Contextual rANS decoder target. Retain the 32-KiB input, four-KiB
+total output, one-KiB frame/token/raw staging, fixed table storage, and finite
+call policy. Raise only shared validation bounds to `8F` decisions, `16F+8`
+payload bytes, the variant-5 descriptor/table limits, and 67,108,864-byte LZ
+distance. The new identity MUST NOT allocate a 64-MiB frame, history buffer,
+or full-profile decoder workspace.
+
+Add permanent profile-4 truncation, extreme-length, and descriptor-flag
+regressions, and require every one of the twenty ordered mismatches among five
+profiles to fail without raw publication. Compile the ordinary harness
+warning-clean under both local compilers and run one fixed-seed 1,000-input
+Clang 22 libFuzzer/ASan/UBSan campaign through its matching runtime. Retain no
+generated mutation or artifact without a finding. Keep the resource helper
+and interoperability schema unchanged.

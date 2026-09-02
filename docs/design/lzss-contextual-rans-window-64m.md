@@ -1,9 +1,9 @@
 # LZSS contextual rANS 64 MiB window
 
 Status: private stream serialization/parsing, complete-frame coding, checked
-profile/workspace calculation, streaming, public C profile, CLI, and benchmark
-implemented for both explicit Exact finders; Exhaustive encoding, fuzzing, and
-interoperability boundaries remain closed.
+profile/workspace calculation, streaming, public C profile, CLI, benchmark,
+and bounded decoder fuzzing implemented for both explicit Exact finders;
+Exhaustive encoding and interoperability boundaries remain closed.
 
 ## Purpose and identity
 
@@ -42,8 +42,10 @@ Exact finders, which produce identical canonical bytes. Stream-header
 serialization and one-byte streaming now admit the same exact identity through
 checked local profiles. Common public profile value 4 admits the same lifecycle
 through the C helper, workspace query, and factory. Exact CLI and benchmark
-names use that same public lifecycle. Exhaustive encoding, fuzzing, and
-interoperability surfaces remain closed.
+names use that same public lifecycle. Bounded decoder fuzzing admits all five
+strict profile identities with fixed one-KiB frame/token/raw staging and no
+profile-sized allocation. Exhaustive encoding and interoperability surfaces
+remain closed.
 
 ## Count and payload bounds
 
@@ -118,7 +120,7 @@ never enlarge local limits.
 6. Add exact CLI and benchmark names (complete):
    `lzss-contextual-rans-64m`, with checked benchmark capacity
    `112 + 16N + 9,257K`.
-7. Extend bounded decoder fuzzing without profile-sized allocation.
+7. Extend bounded decoder fuzzing without profile-sized allocation (complete).
 8. Append one interoperability archive after every preceding boundary passes.
 
 Each stage must retain old bytes, prove malformed-input atomicity, and keep

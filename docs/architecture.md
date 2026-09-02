@@ -5811,6 +5811,16 @@ reporting ratio, throughput, six workspace regions, and directional peak.
 Neither application infers the profile or changes serialized bytes. Fuzzing
 and interoperability remain separate later admission stages.
 
+The 64-MiB Contextual rANS bounded-fuzz boundary extends the existing
+private-frame/public-C decoder harness from four strict profiles to five.
+Every input is still capped at 32 KiB, output at four KiB, and frame/token/raw
+staging at one KiB. Only validation ceilings rise to `8F` decisions,
+`16F+8` payload bytes, the variant-5 descriptor/table bank, and a 64-MiB LZ
+distance. Canonical truncation, extreme frame lengths, descriptor flags, and
+all twenty ordered cross-profile mismatches preserve zero raw publication and
+sticky errors. The encoder, 64-MiB history, full-profile workspace, and
+interoperability schema remain outside this boundary.
+
 The 16-MiB Contextual tANS application boundary adds exact selector
 `lzss-contextual-tans-16m` after its public C lifecycle is complete. Parser,
 help, configuration, workspace-query, and factory dispatch carry one explicit

@@ -877,6 +877,25 @@ was supplied, no generated mutation was retained, and no artifact was
 produced. This bounded result is evidence for the exercised inputs, not an
 exhaustive safety claim.
 
+### FZ-0038: Five-profile Contextual rANS smoke
+
+The Contextual rANS private-frame/public-C decoder target now drives the
+64-KiB, one-MiB, four-MiB, 16-MiB, and 64-MiB strict admissions for every
+bounded input. It retains its 32-KiB input, four-KiB total output, one-KiB
+frame/token/raw storage, fixed 126,976-entry decode-table bank, and finite
+call ceiling. The largest admitted limits are 8,192 decisions, 16,392 payload
+bytes, a 9,185-byte descriptor, and a 67,108,864-byte distance; the 64-MiB
+identity does not allocate a 64-MiB frame, history, or full-profile workspace.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 20260902 completed exactly 1,000 inputs under a 32-KiB maximum input,
+five-second per-input timeout, and 512-MiB RSS limit without a crash, hang, or
+sanitizer finding. Peak RSS was 48 MiB; final coverage was 236 counters and
+356 features over a six-entry, 23-byte in-memory corpus. The matching runtime
+path applied only to the campaign process. No input corpus was supplied, no
+generated mutation was retained, and no artifact was produced. This bounded
+result is evidence for the exercised inputs, not an exhaustive safety claim.
+
 ## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
