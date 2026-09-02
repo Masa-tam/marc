@@ -248,8 +248,9 @@ original size, total-output policy, and the selected Exact finder; the query
 returns the selected finder's actual allocation and rejects each aggregate at
 one byte short. The initializer remains 64 KiB, unknown profiles leave the
 configuration unchanged, and encoded stream fields never enlarge caller-local
-limits. CLI, benchmark, fuzzing, resource-helper, and interoperability names
-remain unassigned at this stage.
+limits. Exact CLI and benchmark name `lzss-contextual-rans-64m` selects this
+same helper and query without duplicating the numeric policy. Fuzzing,
+resource-helper, and interoperability names remain unassigned at this stage.
 The experimental LZSS contextual tANS factory is a third distinct Format 2
 lifecycle. Call `marc_lzss_contextual_tans_workspace_requirements()` whenever
 the immutable direction, known size, frame/LZSS parameters, `profile`,

@@ -7296,3 +7296,12 @@ query, streaming factory, and the preceding 64-MiB Contextual Dynamic Range C
 admission pattern. No external rANS implementation, compressor, allocator,
 C API, source, test, vector, patent, pseudocode, memory policy, or optimization
 description was consulted.
+
+### IR-0804
+
+The 64-MiB Contextual rANS CLI and benchmark admission uses IR-0803, DD-1041,
+TVG-0906, BR-0232, CR-1129, marc's repository-owned exact-name dispatchers,
+public C helper/query/factory lifecycle, transactional CLI harness, and
+benchmark report validator. No external compressor, rANS implementation,
+command-line tool, benchmark, source, test, vector, patent, pseudocode,
+allocation policy, or optimization description was consulted.

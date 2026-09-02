@@ -28046,3 +28046,32 @@ both bounds.
   267.63 seconds respectively; schema compatibility remains included and
   passes in 115.31 and 105.86 seconds. The final diff is whitespace-clean, and
   CLI, benchmark, fuzzing, resource-helper, and schema gates remain closed.
+
+## CR-1130: 2026-09-02 - Publish 64-MiB contextual rANS applications
+
+- Authoring method: extended marc's repository-owned exact-name CLI and
+  dependency-free benchmark dispatchers through the completed public
+  Contextual rANS profile-4 helper, workspace query, and streaming factory.
+- References used: IR-0804; DD-1042; TVG-0907; BR-0233; CR-1129; the local
+  transactional CLI harness and benchmark-report validator.
+- Known implementations intentionally not consulted: external compressors,
+  rANS implementations, command-line tools, benchmarks, source, tests,
+  vectors, patents, pseudocode, allocation policies, or optimizations.
+- Independent decisions: publish only exact lowercase selector
+  `lzss-contextual-rans-64m`; require reciprocal older-profile rejection and
+  atomic malformed/trailing handling; derive all workspace extents from the
+  public query; use checked benchmark capacity `112 + 16N + 9,257K`; keep
+  fuzzing, resource-helper, and schema 53 closed.
+- Generated-code task description: add the exact CLI and benchmark selector,
+  public profile-4 dispatch, strict name-inventory and transactional round-trip
+  regressions, six-region benchmark reporting, documentation, and provenance
+  without changing serialized bytes or ABI.
+- Similarity review: implementation and tests reuse marc's own application
+  adapters and public C lifecycle. No external implementation expression or
+  distinctive test structure was used.
+- Validation: both new application tests and the strict five-name benchmark
+  inventory pass under MSVC and ClangCL. All 3,333 registered tests pass
+  without exclusions in 265.74 and 260.23 seconds respectively; schema
+  compatibility remains included and passes in 118.73 and 108.86 seconds. The
+  final diff is whitespace-clean, and rANS fuzzing, resource-helper, and schema
+  gates remain closed.

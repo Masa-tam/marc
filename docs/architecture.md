@@ -5799,6 +5799,18 @@ enforces exact order and byte-identical local re-encoding. Compatibility
 removes only entry 59 to reconstruct schema 48 before traversing the unchanged
 chain through schema 1.
 
+The 64-MiB Contextual rANS application boundary adds exact selector
+`lzss-contextual-rans-64m` after the public C lifecycle is complete. Parser,
+help, configuration, workspace-query, and factory dispatch carry public
+profile value 4 without duplicating its numeric resource policy. CLI
+regression proves identity `2/6 + 1/5 + 4/3`, exact round trip, overwrite and
+trailing protection, and reciprocal 16-MiB rejection without retained output.
+The dependency-free benchmark uses the same helper/query path, checks capacity
+as `112 + 16N + 9,257K`, and completes an untimed byte-exact round trip before
+reporting ratio, throughput, six workspace regions, and directional peak.
+Neither application infers the profile or changes serialized bytes. Fuzzing
+and interoperability remain separate later admission stages.
+
 The 16-MiB Contextual tANS application boundary adds exact selector
 `lzss-contextual-tans-16m` after its public C lifecycle is complete. Parser,
 help, configuration, workspace-query, and factory dispatch carry one explicit

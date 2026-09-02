@@ -7687,8 +7687,14 @@ Contextual rANS factory. Its explicit helper applies a 64-MiB frame/window,
 536,870,912-decision block limit, 1,073,741,832-byte payload ceiling, 126,976
 entropy entries, and four-GiB aggregate policy while preserving direction,
 original size, total-output policy, and the selected Exact finder. Unknown
-profiles do not mutate the configuration. CLI, benchmark, fuzzing, and
-interoperability remain unsupported for this triple.
+profiles do not mutate the configuration. Exact application name
+`lzss-contextual-rans-64m` admits the same helper/query/factory lifecycle in
+the CLI and dependency-free benchmark. CLI decoding requires the same name and
+rejects crossed profiles before retaining output. Benchmark output capacity is
+checked as `112 + 16N + 9,257K`; an untimed byte-exact round trip precedes
+measurement. Neither application adds a stream field, infers a profile, or
+reproduces private workspace layout. Fuzzing and interoperability remain
+unsupported for this triple.
 Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
 BinaryTree Exact remain encoder-local choices and are not serialized or
 selected automatically. All earlier dictionary/context pairs, backend triples,

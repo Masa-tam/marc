@@ -246,7 +246,7 @@ default surfaces remain closed.
 7. Admit rANS, tANS, Blocked Huffman, and Adaptive Huffman separately, each
    with its own memory proof and one schema append (rANS compact descriptor,
    private decoder, explicit-Exact complete-frame encoder, checked profile,
-   streaming, and public C substages complete).
+   streaming, public C, CLI, and benchmark substages complete).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a

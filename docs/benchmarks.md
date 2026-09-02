@@ -59,7 +59,9 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-dynamic-range-64m corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans corpus.bin 5`,
 `marc_benchmark lzss-contextual-rans-1m corpus.bin 5`,
-`marc_benchmark lzss-contextual-rans-4m corpus.bin 5`, or
+`marc_benchmark lzss-contextual-rans-4m corpus.bin 5`,
+`marc_benchmark lzss-contextual-rans-16m corpus.bin 5`, or
+`marc_benchmark lzss-contextual-rans-64m corpus.bin 5`,
 `marc_benchmark lzss-contextual-tans corpus.bin 5`,
 `marc_benchmark lzss-contextual-tans-1m corpus.bin 5`,
 `marc_benchmark lzss-contextual-tans-4m corpus.bin 5`,
@@ -396,6 +398,25 @@ The initial one-iteration README smoke produced 3,006 bytes from 4,326 bytes
 workspace of 114,017,257 bytes. Throughput from this short smoke is descriptive
 only; compare all three rANS window profiles on the same larger external input
 before drawing performance conclusions.
+
+The experimental `lzss-contextual-rans-16m` benchmark selects public profile
+3, uses 16,777,216-byte frames/windows, admits `7F` decisions and `14F + 8`
+payload bytes, and applies the 512-MiB aggregate policy. Its checked capacity
+is `112 + 14N + 9,225K`. The public helper and direction-specific query remain
+the sole resource-policy and allocation authorities.
+
+The experimental `lzss-contextual-rans-64m` benchmark selects public profile
+4 through the same helper as the CLI. It uses 67,108,864-byte frames/windows,
+admits `8F` decisions, reserves `16F + 8` payload bytes, and applies the
+four-GiB aggregate policy. Checked complete-stream capacity is
+`112 + 16N + 9,257K`, where `N` is input bytes and `K` is nonempty frames.
+The benchmark obtains all six workspace regions from public queries and
+performs an untimed byte-exact round trip before measurement.
+
+One README smoke iteration under both local compilers emitted 3,006 bytes from
+4,326 bytes at ratio 0.695 and reported the exact decoder aggregate
+1,946,928,169 bytes as peak caller-owned workspace. Short-input throughput is
+descriptive only and is not a production-performance claim.
 
 The experimental `lzss-contextual-tans` benchmark uses 65,536-byte raw
 frames, admits at most `6F` modeled decisions, reserves `9F + 2` payload
@@ -2058,3 +2079,19 @@ bytes at ratio 0.580. Encoder primary/secondary/views workspaces were
 220,203,621/16,777,216/201,469,812 bytes. Peak caller-owned workspace was the
 decoder aggregate of 438,450,649 bytes. These values establish wiring and
 bounded allocation, not a production-performance claim.
+
+### BM-0058: 64 MiB Contextual rANS application admission
+
+Revision under test added exact application selector
+`lzss-contextual-rans-64m` to the CLI and dependency-free benchmark. One
+Release README iteration under both MSVC and ClangCL encoded 4,326 bytes to
+3,006 bytes at ratio 0.695. Encoder primary/secondary/views workspaces were
+4,326/78,473/134,752 bytes; decoder primary/secondary/views workspaces were
+1,073,751,081/67,108,864/806,068,224 bytes. The reported peak caller-owned
+workspace was therefore the decoder aggregate of 1,946,928,169 bytes.
+
+The benchmark used the public profile helper, direction-specific workspace
+query, and streaming factory, with checked complete-stream capacity
+`112 + 16N + 9,257K`. An untimed byte-exact round trip preceded measurement.
+The short-input timings are descriptive wiring evidence only and establish no
+performance threshold.

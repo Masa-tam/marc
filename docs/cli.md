@@ -90,7 +90,8 @@ Entropy variant 2 is retired and reserved; no diagnostic selector or alias
 remains. `lzss-contextual-rans-1m` selects the additive `2/3 + 1/2` window
 profile. `lzss-contextual-rans-4m` selects exact identity
 `2/4 + 1/3 + 4/3`, and `lzss-contextual-rans-16m` selects exact identity
-`2/5 + 1/4 + 4/3`. Encode and decode use the same explicit selector; no rANS
+`2/5 + 1/4 + 4/3`. `lzss-contextual-rans-64m` selects exact identity
+`2/6 + 1/5 + 4/3`. Encode and decode use the same explicit selector; no rANS
 name auto-detects or admits another profile.
 `lzss-contextual-tans` selects the same typed LZSS contexts with contextual
 tANS entropy variant 2 under the frozen 64 KiB identity. The additive
@@ -267,6 +268,19 @@ is `112 + 14N + 9,225K` for input size `N` and nonempty frame count `K`. It
 verifies a byte-exact round trip before measuring either direction, reports
 all six workspace regions and their directional maximum, and does not include
 the external Silesia corpus in the default test suite.
+
+The experimental `lzss-contextual-rans-64m` adapter fixes raw frames and the
+LZSS window at 67,108,864 bytes. Its decision/block ceiling is
+`8F = 536,870,912`, its scalar rANS payload ceiling is
+`16F + 8 = 1,073,741,832` bytes, and its aggregate policy is four GiB. The CLI
+selects public profile value 4, obtains every direction-specific extent from
+the public workspace query, and duplicates no private descriptor, table,
+finder, or frame arithmetic. Decode requires the same `-64m` name; crossed
+profiles, malformed input, and trailing data retain no output.
+
+The matching benchmark uses the same public lifecycle. Its checked output
+allocation is `112 + 16N + 9,257K` for input size `N` and nonempty frame count
+`K`; a byte-exact round trip precedes timing and all workspace reporting.
 
 The experimental `lzss-contextual-tans` adapter uses 65,536-byte raw frames,
 a `6F = 393,216` decision ceiling, and a `9F + 2 = 589,826` payload ceiling.

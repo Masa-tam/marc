@@ -63,6 +63,10 @@ constexpr std::uint64_t lzss_contextual_rans_16m_frame_size =
     UINT64_C(1) << 24;
 constexpr std::uint64_t lzss_contextual_rans_16m_buffered_size =
     UINT64_C(512) << 20;
+constexpr std::uint64_t lzss_contextual_rans_64m_frame_size =
+    UINT64_C(1) << 26;
+constexpr std::uint64_t lzss_contextual_rans_64m_buffered_size =
+    UINT64_C(4) << 30;
 constexpr std::uint64_t lzss_contextual_tans_frame_size =
     UINT64_C(1) << 16;
 constexpr std::uint64_t lzss_contextual_tans_buffered_size =
@@ -234,6 +238,7 @@ enum class Codec {
     lzss_contextual_rans_1m,
     lzss_contextual_rans_4m,
     lzss_contextual_rans_16m,
+    lzss_contextual_rans_64m,
     lzss_contextual_tans,
     lzss_contextual_tans_1m,
     lzss_contextual_tans_4m,
@@ -330,12 +335,15 @@ selected_lzss_contextual_dynamic_range_profile(
     return codec == Codec::lzss_contextual_rans
         || codec == Codec::lzss_contextual_rans_1m
         || codec == Codec::lzss_contextual_rans_4m
-        || codec == Codec::lzss_contextual_rans_16m;
+        || codec == Codec::lzss_contextual_rans_16m
+        || codec == Codec::lzss_contextual_rans_64m;
 }
 
 [[nodiscard]] constexpr std::uint64_t
 selected_lzss_contextual_rans_frame_size(const Codec codec) noexcept {
-    return codec == Codec::lzss_contextual_rans_16m
+    return codec == Codec::lzss_contextual_rans_64m
+        ? lzss_contextual_rans_64m_frame_size
+        : codec == Codec::lzss_contextual_rans_16m
         ? lzss_contextual_rans_16m_frame_size
         : codec == Codec::lzss_contextual_rans_4m
             ? lzss_contextual_rans_4m_frame_size
@@ -346,7 +354,9 @@ selected_lzss_contextual_rans_frame_size(const Codec codec) noexcept {
 
 [[nodiscard]] constexpr std::uint64_t
 selected_lzss_contextual_rans_buffered_size(const Codec codec) noexcept {
-    return codec == Codec::lzss_contextual_rans_16m
+    return codec == Codec::lzss_contextual_rans_64m
+        ? lzss_contextual_rans_64m_buffered_size
+        : codec == Codec::lzss_contextual_rans_16m
         ? lzss_contextual_rans_16m_buffered_size
         : codec == Codec::lzss_contextual_rans_4m
             ? lzss_contextual_rans_4m_buffered_size
@@ -357,7 +367,9 @@ selected_lzss_contextual_rans_buffered_size(const Codec codec) noexcept {
 
 [[nodiscard]] constexpr marc_lzss_contextual_profile
 selected_lzss_contextual_rans_profile(const Codec codec) noexcept {
-    return codec == Codec::lzss_contextual_rans_16m
+    return codec == Codec::lzss_contextual_rans_64m
+        ? MARC_LZSS_CONTEXTUAL_PROFILE_64M
+        : codec == Codec::lzss_contextual_rans_16m
         ? MARC_LZSS_CONTEXTUAL_PROFILE_16M
         : codec == Codec::lzss_contextual_rans_4m
             ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -611,6 +623,8 @@ struct Measurement {
         return "lzss-contextual-rans-4m";
     if (codec == Codec::lzss_contextual_rans_16m)
         return "lzss-contextual-rans-16m";
+    if (codec == Codec::lzss_contextual_rans_64m)
+        return "lzss-contextual-rans-64m";
     if (codec == Codec::lzss_contextual_tans)
         return "lzss-contextual-tans";
     if (codec == Codec::lzss_contextual_tans_1m)
@@ -705,9 +719,11 @@ struct Measurement {
                 || codec == Codec::lzss_contextual_dynamic_range_16m
             ? UINT64_C(14) : UINT64_C(12);
     if (is_lzss_contextual_rans(codec))
-        return (codec == Codec::lzss_contextual_rans_4m
-                || codec == Codec::lzss_contextual_rans_16m)
-            ? UINT64_C(14) : UINT64_C(12);
+        return codec == Codec::lzss_contextual_rans_64m
+            ? UINT64_C(16)
+            : (codec == Codec::lzss_contextual_rans_4m
+               || codec == Codec::lzss_contextual_rans_16m)
+                ? UINT64_C(14) : UINT64_C(12);
     if (is_lzss_contextual_tans(codec))
         return codec == Codec::lzss_contextual_tans_4m
                 || codec == Codec::lzss_contextual_tans_16m
@@ -2184,10 +2200,14 @@ struct Measurement {
     if (is_lzss_contextual_rans(codec)) {
         constexpr auto prefix_size = std::size_t{112};
         const auto capacity_factor =
-            (codec == Codec::lzss_contextual_rans_4m
-             || codec == Codec::lzss_contextual_rans_16m)
-            ? std::size_t{14} : std::size_t{12};
-        const auto per_frame = codec == Codec::lzss_contextual_rans_16m
+            codec == Codec::lzss_contextual_rans_64m
+            ? std::size_t{16}
+            : (codec == Codec::lzss_contextual_rans_4m
+               || codec == Codec::lzss_contextual_rans_16m)
+                ? std::size_t{14} : std::size_t{12};
+        const auto per_frame = codec == Codec::lzss_contextual_rans_64m
+            ? std::size_t{9257}
+            : codec == Codec::lzss_contextual_rans_16m
             ? std::size_t{9225}
             : codec == Codec::lzss_contextual_rans_4m
                 ? std::size_t{9193}
@@ -2543,6 +2563,7 @@ void print_usage() {
                  "lzss-contextual-dynamic-range-64m, "
                  "lzss-contextual-rans, lzss-contextual-rans-1m, "
                  "lzss-contextual-rans-4m, lzss-contextual-rans-16m, "
+                 "lzss-contextual-rans-64m, "
                  "lzss-contextual-tans, lzss-contextual-tans-1m, "
                  "lzss-contextual-tans-4m, lzss-contextual-tans-16m, "
                  "lzss-contextual-blocked-huffman, "
@@ -2706,6 +2727,8 @@ int main(const int argc, const char* const argv[]) {
         codec = Codec::lzss_contextual_rans_4m;
     else if (name == "lzss-contextual-rans-16m")
         codec = Codec::lzss_contextual_rans_16m;
+    else if (name == "lzss-contextual-rans-64m")
+        codec = Codec::lzss_contextual_rans_64m;
     else if (name == "lzss-contextual-tans")
         codec = Codec::lzss_contextual_tans;
     else if (name == "lzss-contextual-tans-1m")

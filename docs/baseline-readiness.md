@@ -3592,3 +3592,12 @@ streaming factory. The initializer remains 64 KiB, both Exact finders emit the
 same canonical identity, older profiles reject it without raw publication,
 and full workspace aggregates retain exact and one-short coverage. Exhaustive,
 CLI, benchmark, fuzzing, resource-helper, and schema surfaces remain closed.
+
+### BR-0233
+
+Exact application name `lzss-contextual-rans-64m` now exposes public profile
+value 4 through the CLI and dependency-free benchmark. CLI regression proves
+identity, transactional round trip, trailing rejection, and reciprocal older-
+profile rejection. Benchmark smoke uses the same helper/query/factory path,
+checks `112 + 16N + 9,257K`, and reports the query-owned peak after an untimed
+round trip. Fuzzing, resource-helper, and schema 53 remain closed.

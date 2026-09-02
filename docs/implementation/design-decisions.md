@@ -21374,3 +21374,22 @@ require full HashChain, BinaryTree, and decoder workspace queries to accept
 their exact aggregates and reject one byte less. Keep initialization at 64 KiB
 and keep Exhaustive, CLI, benchmark, fuzzing, resource helpers, and
 interoperability closed. This stage adds no ABI field or serialized selector.
+
+## DD-1042: Publish exact 64 MiB Contextual rANS application names
+
+- Date: 2026-09-02
+- Status: accepted
+
+Publish only exact name `lzss-contextual-rans-64m` in the CLI and
+dependency-free benchmark. Both applications MUST select public profile value
+4 through the C helper, query direction-specific workspace requirements, and
+construct the existing factory without reproducing profile resource values or
+private layouts. CLI encode/decode requires an exact matching profile and
+retains no output on crossed-profile, malformed, or trailing input.
+
+Use checked benchmark capacity `112 + 16N + 9,257K`, where `N` is source bytes
+and `K` is nonempty frames. Require an untimed byte-exact round trip before
+timing and report all six query-owned regions plus the directional peak. Keep
+the selector outside stable defaults and keep Exhaustive, fuzzing,
+resource-helper, and interoperability boundaries closed. No stream field, ABI
+value, or existing canonical byte changes.

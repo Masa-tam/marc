@@ -13063,3 +13063,19 @@ same public profile and require round trip. Decode through profile value 3 and
 require malformed-stream failure with no raw publication. Keep CLI, benchmark,
 fuzzing, resource-helper, and schema surfaces closed, then run documentation
 validation and the complete suite under MSVC and ClangCL.
+
+### TVG-0907
+
+Encode and decode the repository-owned CLI fixture with exact selector
+`lzss-contextual-rans-64m`. Require identity `2/6 + 1/5 + 4/3`, exact round
+trip, empty input, overwrite refusal, malformed and trailing rejection, and
+reciprocal rejection by the 16-MiB and 64-KiB selectors without retained
+destination or temporary output. Require usage text to list the exact lowercase
+name once and reject the near-miss `-64M` spelling.
+
+Run one dependency-free README benchmark iteration through the same public C
+lifecycle. Require checked report fields, six positive workspace regions,
+directional-maximum peak equality, exact profile-name inventory, and a
+pre-timing byte-exact round trip. Record size and ratio only as descriptive
+wiring evidence. Run both focused application tests and the complete suite
+under MSVC and ClangCL while keeping fuzzing and schema 53 unchanged.
