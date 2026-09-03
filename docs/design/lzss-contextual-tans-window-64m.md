@@ -1,6 +1,6 @@
 # LZSS contextual tANS 64 MiB window
 
-Status: design and checked bounds fixed; implementation remains closed.
+Status: descriptor stage complete; outer implementation remains closed.
 
 ## Purpose and identity
 
@@ -32,9 +32,11 @@ and one implicit bypass context. It contains exactly 131,072 entries in both
 directions. Encoder entries remain `uint16_t`; supported-layout decoder entries
 remain four bytes. No context, table, state, or serialized selector is added.
 
-Descriptor capacity may be enlarged before the outer frame is admitted, but
-variant-5 parsing and serialization must remain explicitly gated until their
-canonical bounds and reciprocal variant-4 rejection are tested.
+Descriptor capacity is now 9,189 bytes and the internal descriptor parser and
+serializer admit variant 5. Tests require its canonical 4,598-entry grammar,
+the exact all-dense maximum, one-byte-short aggregate rejection, and reciprocal
+variant-4 rejection. The outer stream/header gate remains explicit: exact
+triple `2/6 + 1/5 + 5/2` is rejected until stage 3.
 
 ## Count and payload bounds
 
@@ -102,8 +104,8 @@ limits, and stream fields never enlarge local policy.
 
 ## Staged implementation
 
-1. Expand compact descriptor analysis, parse/serialize storage, and exact
-   variant-5 bounds without admitting an outer frame.
+1. **Complete:** expand compact descriptor analysis, parse/serialize storage,
+   and exact variant-5 bounds without admitting an outer frame.
 2. Carry the selected layout through contextual tANS table construction and
    direct typed-token encode/decode tests.
 3. Admit exact triple `2/6 + 1/5 + 5/2` in private stream/header parsing,

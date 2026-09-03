@@ -21468,3 +21468,20 @@ require exact HashChain, BinaryTree, and decoder aggregate limits
 nine independently reviewed stages from descriptor capacity through one
 append-only interoperability archive. Every incomplete stage MUST keep later
 boundaries closed and MUST NOT alter schema 54 or any earlier stream byte.
+
+## DD-1047: Expand only the 64 MiB compact tANS descriptor
+
+- Date: 2026-09-03
+- Status: accepted
+
+Admit field-context variant 5 in the internal Contextual tANS descriptor
+grammar. Set its exact maximum to the unchanged 24-byte prefix plus the
+9,165-byte compact records, or 9,189 bytes, and enlarge only descriptor-local
+storage. Retain table log 12, one state, the 131,072-entry table bank, and every
+earlier descriptor byte.
+
+Require canonical 4,598-entry parse/serialize inversion, exact all-dense and
+one-byte-short limit tests, and reciprocal rejection under variant 4. Keep the
+outer `2/6 + 1/5 + 5/2` stream/header identity explicitly unsupported until
+the decoder-side admission stage; profile, complete-frame coding, streaming,
+public API, CLI, fuzzing, and interoperability schema 54 remain closed.

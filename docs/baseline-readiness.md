@@ -170,7 +170,7 @@ the twenty-two typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,336 tests under
+The optimized Release configurations each enumerate 3,339 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3652,3 +3652,13 @@ The dedicated 64-MiB Contextual tANS design fixes exact identity
 Exact finders and decoding under an explicit four-GiB aggregate policy. No
 implementation gate, public selector, tool name, fuzz profile, or schema-54
 archive is opened by this design-only step.
+
+### BR-0239
+
+The internal Contextual tANS descriptor now admits field-context variant 5
+with 4,598 frequencies and an exact 9,189-byte maximum. Canonical sparse and
+all-dense tests prove variant-5 inversion, reciprocal variant-4 rejection,
+older-capacity preservation, and descriptor-plus-payload equality and
+one-short limits. The exact outer stream identity remains explicitly rejected;
+no profile, frame coder, public API, tool, fuzz target, or schema-54 archive is
+opened.

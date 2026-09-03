@@ -28220,3 +28220,31 @@ both bounds.
   ledgers; arithmetic agrees with the shared 64-MiB workspace table. The diff
   is whitespace-clean and changes no source, ABI, stream byte, test inventory,
   or interoperability schema.
+
+## CR-1136: 2026-09-03 - Expand 64-MiB compact tANS descriptor
+
+- Authoring method: extended marc's repository-owned Contextual tANS
+  descriptor by one already fixed field-context layout while retaining all
+  later outward gates.
+- References used: IR-0809; DD-1047; TVG-0912; BR-0239; CR-1135; the local
+  variant-5 compact grammar, tANS prefix, checked limits, and 64-MiB rANS
+  descriptor precedent.
+- Known implementations intentionally not consulted: external tANS/FSE
+  implementations, compressors, source, tests, vectors, patents, pseudocode,
+  allocation policies, or optimization descriptions.
+- Independent decisions: add exactly 32 descriptor bytes, preserve the table
+  bank and all earlier bytes, and add an explicit tANS outer-header rejection
+  because the shared layout selector already recognizes variant 5.
+- Generated-code task description: add variant-5 descriptor parse/serialize,
+  exact dense-capacity and one-short tests, reciprocal variant-4 rejection,
+  and permanent atomic validator, serializer, and parser outer-gate
+  regressions.
+- Similarity review: constants and tests derive from marc's variant-5 alphabet
+  tables and existing compact grammar. No external implementation expression
+  or distinctive test structure was used.
+- Validation: the five focused descriptor and outer-gate tests pass under
+  MSVC and ClangCL. All 3,339 registered tests pass without exclusions in
+  248.68 and 250.65 seconds respectively; schema compatibility is included and
+  passes in 103.83 and 95.13 seconds. Documentation and whitespace validation
+  pass. Public ABI, profile, complete-frame coding, tools, fuzzing, schema 54,
+  and archive bytes remain unchanged.

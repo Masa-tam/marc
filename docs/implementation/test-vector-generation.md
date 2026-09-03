@@ -13139,3 +13139,21 @@ BinaryTree encode, and decode aggregates 1,946,952,743, 3,624,150,055, and
 one-short tests for the boundary it opens, reciprocal rejection by all older
 tANS profiles, and both Exact finders where encoding is admitted. Keep schema
 54 unchanged until public C, applications, and bounded fuzzing all pass.
+
+### TVG-0912
+
+Serialize the two-active-context literal descriptor under field-context
+variant 5 and require byte identity with the frozen 64-KiB descriptor except
+for little-endian frequency-entry count 4,598. Parse it back exactly and reject
+it under variant 4 without changing the destination sentinel.
+
+Populate every one of the 31 models densely with positive normalized
+frequencies and require the exact 9,189-byte maximum descriptor. Accept an
+internal-buffer limit of descriptor plus the two-byte tANS initial state,
+reject one byte less atomically, and require variant 4's former 9,157-byte
+maximum to remain below the enlarged capacity. Independently require the outer
+stream validator and serializer to reject `2/6 + 1/5 + 5/2` without modifying
+the caller's output. Mutate a valid older header to the reserved exact triple
+and require parser rejection without publishing the header or consumed count.
+Run focused descriptor and gate tests and the complete registered suite under
+MSVC and ClangCL.

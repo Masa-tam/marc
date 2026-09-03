@@ -50,6 +50,24 @@ using marc::entropy::internal::ContextualTansFormatError;
     return stream;
 }
 
+[[nodiscard]] LzssContextualTansStreamHeader stream_config_64m() {
+    auto stream = stream_config();
+    stream.frame_size = UINT32_C(1) << 26;
+    stream.dictionary.window_size = UINT32_C(1) << 26;
+    stream.dictionary_variant = 6;
+    stream.context_variant = 5;
+    stream.frequency_entry_count = 4598;
+    return stream;
+}
+
+[[nodiscard]] marc::core::DecoderLimits limits_64m() {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = UINT64_C(1) << 26;
+    limits.max_block_size = UINT64_C(1) << 26;
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    return limits;
+}
+
 [[nodiscard]] std::vector<std::byte> frame_vector() {
     std::vector<std::byte> bytes(96);
     bytes[0] = std::byte{0x4d};
@@ -228,6 +246,48 @@ TEST(LzssContextualTansFormat,
     crossed.dictionary_variant = 4;
     EXPECT_EQ(validate_lzss_contextual_tans_stream_header(crossed, {}),
               LzssContextualTansStreamHeaderError::contradictory_parameters);
+}
+
+TEST(LzssContextualTansFormat,
+     KeepsSixtyFourMiBOuterStreamIdentityClosed) {
+    const auto stream = stream_config_64m();
+    const auto limits = limits_64m();
+    EXPECT_EQ(validate_lzss_contextual_tans_stream_header(stream, limits),
+              LzssContextualTansStreamHeaderError::
+                  unsupported_context_variant);
+
+    std::array<std::byte, lzss_contextual_tans_stream_header_size> output{};
+    std::ranges::fill(output, std::byte{0xa5});
+    EXPECT_EQ(serialize_lzss_contextual_tans_stream_header(
+                  stream, limits, output),
+              LzssContextualTansStreamHeaderError::
+                  unsupported_context_variant);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [](const auto value) { return value == std::byte{0xa5}; }));
+
+    auto base = stream_config_16m();
+    base.frame_size = UINT32_C(1) << 26;
+    ASSERT_EQ(serialize_lzss_contextual_tans_stream_header(
+                  base, limits, output),
+              LzssContextualTansStreamHeaderError::none);
+    output[14] = std::byte{0x06};
+    output[64] = std::byte{0x00};
+    output[65] = std::byte{0x00};
+    output[66] = std::byte{0x00};
+    output[67] = std::byte{0x04};
+    output[84] = std::byte{0xf6};
+    output[85] = std::byte{0x11};
+    output[98] = std::byte{0x05};
+    auto parsed = stream_config();
+    parsed.original_size = 0xa5a5;
+    const auto before = parsed;
+    std::size_t consumed = 0xa5a5;
+    EXPECT_EQ(parse_lzss_contextual_tans_stream_header(
+                  output, limits, parsed, consumed),
+              LzssContextualTansStreamHeaderError::
+                  unsupported_context_variant);
+    EXPECT_EQ(parsed.original_size, before.original_size);
+    EXPECT_EQ(consumed, 0xa5a5U);
 }
 
 TEST(LzssContextualTansFormat, PreflightsDocumentedOneLiteralFrame) {

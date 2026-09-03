@@ -7339,3 +7339,12 @@ and table types, exact-finder workspace calculators, and completed 64-MiB rANS
 admission sequence. No external tANS/FSE implementation, compressor, source,
 test, vector, patent, pseudocode, allocation policy, or optimization
 description was consulted.
+
+### IR-0809
+
+The 64-MiB Contextual tANS descriptor stage uses IR-0808, DD-1046,
+TVG-0911, CR-1135, marc's repository-owned compact-model variant-5 grammar,
+24-byte Contextual tANS prefix, checked decoder limits, and the preceding
+64-MiB Contextual rANS descriptor stage. No external tANS/FSE implementation,
+compressor, source, test, vector, patent, pseudocode, allocation policy, or
+optimization description was consulted.
