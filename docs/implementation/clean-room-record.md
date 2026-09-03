@@ -28569,3 +28569,20 @@ both bounds.
   (110.76 and 110.71 seconds). Document ordering, links, and whitespace checks
   passed. The MSVC build used approved execution for the established
   FileTracker environment restriction; no build directory was added.
+
+## CR-1149: 2026-09-04 - Admit Exact finder 64-MiB contextual Blocked Huffman encoding
+
+- Authoring method: narrow the local shared planner gate and extend local tests.
+- References used: IR-0822; DD-1060; TVG-0925; BR-0252.
+- Known implementations intentionally not consulted: external compression
+  source, tests, pseudocode, tables, and optimization structures.
+- Independent decisions: admit only the two Exact finders and test complete
+  frame identity and native aggregate storage without profile-sized allocation.
+- Generated-code task description: prove finder equality, round trip, one-short
+  finder/output/aggregate behavior, and continued Exhaustive rejection.
+- Similarity review: comparison structure reuses only marc's own tests.
+- Validation: complete Release suites passed 3,364/3,364 under MSVC
+  (251.61 seconds) and ClangCL (254.03 seconds), including schema compatibility
+  (114.55 and 109.97 seconds). Documentation and whitespace checks passed.
+  The exact-aggregate fixture uses the modeled decision count as its block
+  limit; production limits were not relaxed.

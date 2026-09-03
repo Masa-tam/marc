@@ -1,7 +1,7 @@
 # LZSS contextual Blocked Huffman 64 MiB window
 
 Status: descriptor admission complete; operation and typed-token paths verified;
-bounded frame decoding admitted; frame encoding remains closed.
+bounded frame decoding admitted; Exact finder frame encoding admitted.
 
 ## Purpose and exact identity
 
@@ -53,7 +53,8 @@ Descriptor capacity is now 2,606 bytes and variant-5 parsing and serialization
 are admitted. Tests fix the exact maximum, canonical record choice, unchanged
 older Single bytes, reciprocal variant-4 rejection, strict padding, and
 exact/one-short table and aggregate limits. Bounded frame decoding is now
-admitted; frame encoding remains closed.
+admitted; Exact finder frame encoding is admitted with equal-byte and capacity
+proofs. Long-distance encoder coverage and profile/streaming remain pending.
 
 ## Decision and payload bounds
 
@@ -128,7 +129,8 @@ in a bounded fuzzer must not allocate a 64-MiB frame or history.
 2. **Complete:** carry the immutable layout through model building, operation coding, and
    direct typed-token encode/decode with a class-26 hand vector.
 3. **Decoder complete:** admit exact complete-frame identity `2/6 + 1/5 + 2/2`
-   for bounded decoding. Encoding remains pending its exact preflight tests.
+   for bounded decoding. Exact finder encoding and capacity proofs are complete;
+   long-distance encoder coverage remains pending. Exhaustive stays closed.
 4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests for both Exact finders. Exhaustive remains
    closed.

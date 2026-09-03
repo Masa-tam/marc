@@ -170,7 +170,7 @@ the twenty-three typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,363 tests under
+The optimized Release configurations each enumerate 3,364 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3781,3 +3781,11 @@ Bounded Contextual Blocked Huffman frame validation and decoding now admit
 64 MiB. Exact descriptor, decision, and payload ceilings and first-new-distance
 decoding are covered. Frame encoding remains explicitly closed pending its
 separate tests; no public profile or schema-55 archive has been added.
+
+### BR-0252
+
+64-MiB Contextual Blocked Huffman Exact finder frame encoding is admitted.
+HashChain and BinaryTree yield identical decodable bytes, and exact/one-short
+workspace and output checks pass. Exhaustive remains closed. Long-distance
+encoder coverage and profile/streaming admission remain subsequent work;
+public APIs, applications, and schema 55 are unchanged.

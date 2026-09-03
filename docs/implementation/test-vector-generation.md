@@ -13341,3 +13341,13 @@ Build a finite frame with distance 16,777,217 from independently assembled
 header, descriptor, and token-coded payload; decode to repeated A bytes and
 reject the older selection without raw/token publication. Keep frame encoding
 closed before either token or output mutation.
+
+### TVG-0925
+
+Use the local eighteen-byte repeated ABCDE marker vector under variant 5.
+Compare both Exact finder plans and encoded bytes, then decode the result.
+Reject one-short finder storage and serialized output; preserve the latter's
+sentinel bytes. For both finders, set aggregate storage to raw plus private
+token capacity plus exact frame bytes plus finder storage; accept equality
+and reject one below. The block limit uses decision_count, not raw byte count.
+Retain the Exhaustive rejection test before token/output mutation.

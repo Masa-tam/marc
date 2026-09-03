@@ -363,6 +363,7 @@ foreach(required_contextual_blocked_huffman_window_64m_term IN ITEMS
         "schema 55 unchanged"
         "descriptor admission complete"
         "bounded frame decoding admitted"
+        "Exact finder frame encoding admitted"
         "1. **Complete:** expand descriptor selection"
         "2. **Complete:** carry the immutable layout")
     string(FIND "${lzss_contextual_blocked_huffman_window_64m_content}"
@@ -991,7 +992,7 @@ foreach(required_readiness_section IN ITEMS
 endforeach()
 foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
-        "each enumerate 3,363 tests under"
+        "each enumerate 3,364 tests under"
         "four-direction schema-52 exchange")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)

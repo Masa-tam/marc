@@ -7452,3 +7452,9 @@ DD-1057 descriptor grammar. No external implementation was consulted.
 64-MiB Contextual Blocked Huffman frame admission derives from the local
 variant-5 design, DD-1058 token proof, frame validator, and canonical vectors.
 No external implementation source or test material was consulted.
+
+### IR-0822
+
+64-MiB Contextual Blocked Huffman frame encoding uses the repository-owned
+Exact finder frame planners, DD-1059 decoder proof, and existing tANS finder
+comparison test structure. No external implementation material was consulted.

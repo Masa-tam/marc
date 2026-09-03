@@ -6033,3 +6033,10 @@ descriptor ceiling before payload parsing. The existing decoder receives the
 immutable stream layout and preserves raw output on failed preflight.
 A separate shared-planner gate keeps 64-MiB frame encoding closed pending
 encoder proofs. Public/streaming profiles and schema 55 are unchanged.
+
+The 64-MiB Contextual Blocked Huffman frame encoder now admits HashChain Exact
+and BinaryTree Exact through its shared planner. Both produce identical
+complete frames; exact aggregate capacity succeeds and one byte short fails.
+Planning uses private token staging, while insufficient serialized output
+leaves the public frame buffer untouched. Exhaustive, public profiles, and
+streaming admission remain closed; schema 55 is unchanged.

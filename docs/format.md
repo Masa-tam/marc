@@ -7767,3 +7767,10 @@ the exact 64-MiB identity 2/6 + 1/5 + 2/2. Descriptor size is at most 2,606;
 decision counts satisfy both 8F and 36T; payload size is at most
 ceil(15*decision_count/8). Crossed identities and local-limit violations fail
 before publication. Frame encoding remains gated pending its separate proofs.
+
+The 64-MiB Contextual Blocked Huffman frame encoder now admits HashChain Exact
+and BinaryTree Exact through its shared planner. Both produce identical
+complete frames; exact aggregate capacity succeeds and one byte short fails.
+Planning uses private token staging, while insufficient serialized output
+leaves the public frame buffer untouched. Exhaustive, public profiles, and
+streaming admission remain closed; schema 55 is unchanged.

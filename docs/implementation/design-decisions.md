@@ -21684,3 +21684,13 @@ Select the 2,606-byte descriptor ceiling for context variant 5. Preserve
 only compatible stream identities and local policies. Keep frame encoding
 explicitly closed in its shared planner until its own preflight proofs pass;
 public profiles, streaming, applications, and schema 55 remain unchanged.
+
+## DD-1060: Admit Exact finder 64-MiB Contextual Blocked Huffman frames
+
+Open HashChain Exact and BinaryTree Exact through the existing shared frame
+planner. Keep Exhaustive closed for variant 5. Both finders must produce the
+same complete frame and round trip. Exact aggregate storage includes raw,
+private token capacity, selected finder storage, and complete frame bytes.
+A one-short aggregate must fail; planning may use private token staging, but
+insufficient serialized output must not publish a partial frame. Public and
+streaming profiles remain separate gates.
