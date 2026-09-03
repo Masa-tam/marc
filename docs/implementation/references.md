@@ -7458,3 +7458,9 @@ No external implementation source or test material was consulted.
 64-MiB Contextual Blocked Huffman frame encoding uses the repository-owned
 Exact finder frame planners, DD-1059 decoder proof, and existing tANS finder
 comparison test structure. No external implementation material was consulted.
+
+### IR-0823
+
+64-MiB Contextual Blocked Huffman long-distance encoding uses marc's local
+marker-gap frame tests, shared Exact finders, and DD-1060 admission. No
+external source, corpus, or implementation material was consulted.

@@ -254,8 +254,8 @@ changing the frozen first 64 entries.
    implementation, public lifecycle, bounded fuzzing, and schema-55
    interoperability are complete. The dedicated Contextual Blocked Huffman
    descriptor, operation, typed-token, and bounded frame decoder paths are
-   verified; Exact finder frame encoding is admitted, with long-distance
-   encoder and profile/streaming coverage pending).
+   verified; Exact finder frame encoding includes long-distance coverage,
+   with profile/streaming coverage pending).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a

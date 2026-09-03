@@ -54,7 +54,7 @@ are admitted. Tests fix the exact maximum, canonical record choice, unchanged
 older Single bytes, reciprocal variant-4 rejection, strict padding, and
 exact/one-short table and aggregate limits. Bounded frame decoding is now
 admitted; Exact finder frame encoding is admitted with equal-byte and capacity
-proofs. Long-distance encoder coverage and profile/streaming remain pending.
+proofs. Long-distance encoder coverage is complete; profile/streaming remains pending.
 
 ## Decision and payload bounds
 
@@ -128,9 +128,10 @@ in a bounded fuzzer must not allocate a 64-MiB frame or history.
    context variant 5; prove the 2,606-byte maximum and unchanged older bytes.
 2. **Complete:** carry the immutable layout through model building, operation coding, and
    direct typed-token encode/decode with a class-26 hand vector.
-3. **Decoder complete:** admit exact complete-frame identity `2/6 + 1/5 + 2/2`
+3. **Complete:** admit exact complete-frame identity `2/6 + 1/5 + 2/2`
    for bounded decoding. Exact finder encoding and capacity proofs are complete;
-   long-distance encoder coverage remains pending. Exhaustive stays closed.
+   both Exact finders also prove distance 16,777,221 and equal complete frames.
+   Exhaustive stays closed.
 4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests for both Exact finders. Exhaustive remains
    closed.

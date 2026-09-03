@@ -21694,3 +21694,11 @@ private token capacity, selected finder storage, and complete frame bytes.
 A one-short aggregate must fail; planning may use private token staging, but
 insufficient serialized output must not publish a partial frame. Public and
 streaming profiles remain separate gates.
+
+## DD-1061: Prove long-distance Exact finder Blocked Huffman frame identity
+
+Use a 16-MiB gap between five-byte markers to force distance 16,777,221.
+Run HashChain Exact and BinaryTree Exact sequentially, compare complete
+frames, and decode each. Explicit test-local memory and distance limits do
+not alter defaults. Reject the older 16-MiB selection without raw publication.
+This closes the long-distance frame proof; profile/streaming remains separate.

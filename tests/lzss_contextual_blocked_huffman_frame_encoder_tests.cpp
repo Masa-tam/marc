@@ -551,6 +551,80 @@ TEST(LzssContextualBlockedHuffmanFrameEncoder,
 }
 
 TEST(LzssContextualBlockedHuffmanFrameEncoder,
+     SixtyFourMiBExactFindersExerciseDistanceBeyondSixteenMiB) {
+    constexpr std::size_t gap = UINT32_C(1) << 24;
+    std::vector<std::byte> raw(5 + gap + 5, std::byte{'Z'});
+    constexpr std::array marker{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}};
+    std::ranges::copy(marker, raw.begin());
+    std::ranges::copy(marker, raw.end() - marker.size());
+    auto stream = stream_for_16m(raw.size());
+    stream.dictionary.window_size = UINT32_C(1) << 26;
+    stream.dictionary_variant = 6;
+    stream.context_variant = 5;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = raw.size();
+    limits.max_block_size = raw.size();
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    limits.max_internal_buffered_bytes = UINT64_C(1) << 30;
+    std::vector<std::byte> reference_frame;
+    using Strategy = marc::dictionary::internal::LzssMatchFinderStrategy;
+    for (const auto strategy : {Strategy::hash_chain_exact, Strategy::binary_tree_exact}) {
+        std::vector<LzssTypedToken> encode_tokens(raw.size());
+        const auto requirements = marc::dictionary::internal::
+            calculate_lzss_match_finder_workspace(
+                strategy, raw.size(), stream.dictionary, limits);
+        ASSERT_EQ(requirements.error,
+                  marc::dictionary::internal::LzssMatchFinderWorkspaceError::none);
+        AlignedWorkspace owner(requirements.workspace_size);
+        auto workspace = owner.bytes(requirements.workspace_size);
+
+        const auto plan =
+            plan_lzss_contextual_blocked_huffman_frame_with_match_finder(
+                stream, limits, 0, 0, raw, encode_tokens, strategy, workspace);
+        ASSERT_EQ(plan.error,
+                  LzssContextualBlockedHuffmanFrameEncodeError::none);
+        ASSERT_TRUE(std::ranges::any_of(
+            std::span<const LzssTypedToken>{encode_tokens}.first(plan.token_count),
+            [](const LzssTypedToken& token) {
+                return token.kind
+                        == marc::dictionary::internal::LzssTypedTokenKind::match
+                    && token.distance == (UINT32_C(1) << 24) + 5U;
+            }));
+
+        std::vector<std::byte> encoded(plan.serialized_size);
+        ASSERT_EQ(encode_lzss_contextual_blocked_huffman_frame_with_match_finder(
+                      stream, limits, 0, 0, raw, encode_tokens, strategy, workspace,
+                      encoded).error,
+                  LzssContextualBlockedHuffmanFrameEncodeError::none);
+        if (reference_frame.empty()) reference_frame = encoded;
+        else EXPECT_EQ(encoded, reference_frame);
+        std::array<HuffmanDecodeTable, 35> tables{};
+        std::vector<LzssTypedToken> decode_tokens(plan.token_count);
+        std::vector<std::byte> decoded(raw.size());
+        const auto result = decode_lzss_contextual_blocked_huffman_frame(
+            encoded, {stream, limits, 0, 0}, tables, decode_tokens, decoded);
+        ASSERT_EQ(result.error,
+                  LzssContextualBlockedHuffmanFrameDecodeError::none);
+        EXPECT_EQ(decoded, raw);
+
+        auto crossed = stream;
+        crossed.dictionary.window_size = UINT32_C(1) << 24;
+        crossed.dictionary_variant = 5;
+        crossed.context_variant = 4;
+        std::ranges::fill(decoded, std::byte{0xcc});
+        const auto rejected = decode_lzss_contextual_blocked_huffman_frame(
+            encoded, {crossed, limits, 0, 0}, tables, decode_tokens, decoded);
+        EXPECT_NE(rejected.error,
+                  LzssContextualBlockedHuffmanFrameDecodeError::none);
+        EXPECT_TRUE(std::ranges::all_of(decoded, [](const std::byte value) {
+            return value == std::byte{0xcc};
+        }));
+    }
+}
+
+TEST(LzssContextualBlockedHuffmanFrameEncoder,
      HashChainMatchesExhaustiveAndRejectsWorkspaceFailuresAtomically) {
     constexpr std::array raw{
         std::byte{'A'}, std::byte{'B'}, std::byte{'A'}, std::byte{'B'},

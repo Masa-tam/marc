@@ -28586,3 +28586,20 @@ both bounds.
   (114.55 and 109.97 seconds). Documentation and whitespace checks passed.
   The exact-aggregate fixture uses the modeled decision count as its block
   limit; production limits were not relaxed.
+
+## CR-1150: 2026-09-04 - Prove long-distance contextual Blocked Huffman encoding
+
+- Authoring method: extend marc-owned marker-gap frame tests to both finders.
+- References used: IR-0823; DD-1061; TVG-0926; BR-0253.
+- Known implementations intentionally not consulted: external compressor
+  source, tests, corpus data, tables, pseudocode, and optimizations.
+- Independent decisions: force an exact new distance and compare complete
+  frames with sequential finder workspace lifetimes.
+- Generated-code task description: exercise a 16-MiB gap, check distance,
+  byte equality, round trip, and old-profile rejection before raw publication.
+- Similarity review: only repository-owned structure and vectors were reused.
+- Validation: full Release suites passed 3,365/3,365 under MSVC
+  (390.64 seconds) and ClangCL (329.65 seconds), including schema compatibility
+  (115.01 and 110.94 seconds). The new long-distance case took 136.94 and
+  78.36 seconds respectively. Documentation ordering and whitespace checks
+  passed. Production code, defaults, public API, and schema 55 are unchanged.

@@ -13351,3 +13351,11 @@ sentinel bytes. For both finders, set aggregate storage to raw plus private
 token capacity plus exact frame bytes plus finder storage; accept equality
 and reject one below. The block limit uses decision_count, not raw byte count.
 Retain the Exhaustive rejection test before token/output mutation.
+
+### TVG-0926
+
+Construct ABCDE, then 16,777,216 Z bytes, then ABCDE. Require a planned match
+at distance 16,777,221 from each Exact finder. Encode both under variant 5,
+compare complete frame bytes, and recover the entire input. Retrying each
+frame under the 16-MiB identity must fail and leave the raw sentinel intact.
+Finder workspaces are allocated one at a time under a one-GiB local limit.

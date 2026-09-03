@@ -992,7 +992,7 @@ foreach(required_readiness_section IN ITEMS
 endforeach()
 foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
-        "each enumerate 3,364 tests under"
+        "each enumerate 3,365 tests under"
         "four-direction schema-52 exchange")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)
