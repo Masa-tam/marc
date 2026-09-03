@@ -33,22 +33,33 @@ if(NOT sixteen_mib_count EQUAL 1)
     message(FATAL_ERROR
         "CLI usage must list lzss-contextual-tans-16m exactly once")
 endif()
+string(REGEX MATCHALL "lzss-contextual-tans-64m" sixty_four_mib_matches
+    "${usage_text}")
+list(LENGTH sixty_four_mib_matches sixty_four_mib_count)
+if(NOT sixty_four_mib_count EQUAL 1)
+    message(FATAL_ERROR
+        "CLI usage must list lzss-contextual-tans-64m exactly once")
+endif()
 string(FIND "${usage_text}" "lzss-contextual-tans," baseline_offset)
 string(FIND "${usage_text}" "lzss-contextual-tans-1m," selected_offset)
 string(FIND "${usage_text}" "lzss-contextual-tans-4m," four_mib_offset)
 string(FIND "${usage_text}" "lzss-contextual-tans-16m,"
     sixteen_mib_offset)
+string(FIND "${usage_text}" "lzss-contextual-tans-64m,"
+    sixty_four_mib_offset)
 if(baseline_offset EQUAL -1 OR selected_offset EQUAL -1
     OR four_mib_offset EQUAL -1
     OR sixteen_mib_offset EQUAL -1
+    OR sixty_four_mib_offset EQUAL -1
     OR selected_offset LESS_EQUAL baseline_offset
     OR four_mib_offset LESS_EQUAL selected_offset
-    OR sixteen_mib_offset LESS_EQUAL four_mib_offset)
+    OR sixteen_mib_offset LESS_EQUAL four_mib_offset
+    OR sixty_four_mib_offset LESS_EQUAL sixteen_mib_offset)
     message(FATAL_ERROR "Contextual tANS CLI profiles are missing or unordered")
 endif()
 
 execute_process(
-    COMMAND "${MARC_CLI}" encode --codec lzss-contextual-tans-16M
+    COMMAND "${MARC_CLI}" encode --codec lzss-contextual-tans-64M
         missing-input ignored-output
     RESULT_VARIABLE near_miss_result
     OUTPUT_QUIET

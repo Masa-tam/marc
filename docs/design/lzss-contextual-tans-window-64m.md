@@ -1,6 +1,6 @@
 # LZSS contextual tANS 64 MiB window
 
-Status: public C lifecycle complete; applications remain closed.
+Status: public C and application lifecycles complete; fuzzing remains closed.
 
 ## Purpose and identity
 
@@ -126,7 +126,7 @@ limits, and stream fields never enlarge local policy.
 5. **Complete:** add checked profile/workspace calculation and one-byte
    streaming with exact and one-short aggregate tests.
 6. **Complete:** admit common public profile value 4 only for Contextual tANS.
-7. Add exact CLI and dependency-free benchmark name
+7. **Complete:** add exact CLI and dependency-free benchmark name
    `lzss-contextual-tans-64m` through the public lifecycle.
 8. Extend bounded decoder fuzzing without profile-sized allocation.
 9. Append one interoperability archive only after all preceding boundaries
@@ -134,6 +134,18 @@ limits, and stream fields never enlarge local policy.
 
 Each stage must retain all earlier bytes, reject crossed profiles before token
 or raw publication, and keep every incomplete outward boundary closed.
+
+The stage-7 dependency-free benchmark reserves complete-stream output for
+input extent `N` and nonempty-frame count `K` with checked integer arithmetic:
+
+```text
+112 + ceil(21N/2) + 9,255K
+```
+
+This is application allocation policy derived from the existing frame bound;
+it is not a serialized field. Both tools apply public profile value 4 and use
+the direction-specific workspace query and factory without reproducing private
+layout arithmetic or inferring the profile from stream metadata.
 
 ## Required validation
 

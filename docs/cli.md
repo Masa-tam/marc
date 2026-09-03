@@ -97,9 +97,10 @@ name auto-detects or admits another profile.
 tANS entropy variant 2 under the frozen 64 KiB identity. The additive
 `lzss-contextual-tans-1m` name selects `2/3 + 1/2 + 5/2`, and
 `lzss-contextual-tans-4m` selects exact identity `2/4 + 1/3 + 5/2`.
-`lzss-contextual-tans-16m` selects exact identity `2/5 + 1/4 + 5/2`. Encode
+`lzss-contextual-tans-16m` selects exact identity `2/5 + 1/4 + 5/2`, and
+`lzss-contextual-tans-64m` selects exact identity `2/6 + 1/5 + 5/2`. Encode
 and decode require the same explicit name; no profile auto-detects or admits
-another. All four remain outside the stable 42-profile inventory.
+another. All five remain outside the stable 42-profile inventory.
 `lzss-contextual-blocked-huffman` selects typed LZSS plus the selective
 Contextual Blocked Huffman entropy variant 2 under the frozen 64 KiB profile.
 `lzss-contextual-blocked-huffman-1m` selects exact
@@ -316,6 +317,15 @@ uses the `ceil(21F/2) + 2 = 176,160,770` payload ceiling, and selects the
 obtain every allocation extent and opaque alignment from the public workspace
 query. Decode requires the same `-16m` name; crossed-profile, malformed, and
 trailing input retain no destination or temporary output.
+
+The experimental `lzss-contextual-tans-64m` adapter fixes raw frames, window,
+and maximum distance at 67,108,864 bytes. Public profile value 4 supplies the
+`8F = 536,870,912` decision/block ceiling, 805,306,370-byte payload ceiling,
+fixed 131,072-entry table bank, and four-GiB aggregate policy. Both directions
+obtain every storage extent and opaque alignment from the public workspace
+query after applying that profile; the CLI duplicates no private descriptor,
+table, finder, frame, or allocation arithmetic. Decode requires the exact
+`-64m` name and rejects crossed profiles before retaining output.
 
 The experimental `lzss-contextual-blocked-huffman` adapter uses 65,536-byte
 raw frames, a `6F = 393,216` decision ceiling, and a

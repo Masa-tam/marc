@@ -406,7 +406,7 @@ foreach(required_tans_window_64m_term IN ITEMS
         "BinaryTree Exact"
         "first newly reachable distance 16,777,217"
         "schema 54 unchanged"
-        "public C lifecycle complete; applications remain closed"
+        "public C and application lifecycles complete; fuzzing remains closed"
         "Internal stream-header validation, serialization, and"
         "exact all-dense maximum"
         "maximum distance symbol 26"
@@ -417,6 +417,9 @@ foreach(required_tans_window_64m_term IN ITEMS
         "4. **Complete:** admit complete-frame encoding"
         "5. **Complete:** add checked profile/workspace calculation"
         "6. **Complete:** admit common public profile value 4"
+        "7. **Complete:** add exact CLI and dependency-free benchmark name"
+        "lzss-contextual-tans-64m"
+        "112 + ceil(21N/2) + 9,255K"
         "Exhaustive remains closed")
     string(FIND "${lzss_contextual_tans_window_64m_content}"
         "${required_tans_window_64m_term}"
@@ -945,7 +948,7 @@ foreach(required_readiness_section IN ITEMS
 endforeach()
 foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
-        "each enumerate 3,348 tests under"
+        "each enumerate 3,350 tests under"
         "four-direction schema-52 exchange")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)

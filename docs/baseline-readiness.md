@@ -170,7 +170,7 @@ the twenty-two typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,348 tests under
+The optimized Release configurations each enumerate 3,350 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3712,3 +3712,14 @@ Small public encode/decode and reciprocal 16-MiB rejection are atomic. Full
 HashChain, BinaryTree, and decoder requirements succeed at 1,946,952,743,
 3,624,150,055, and 1,678,255,143 bytes and fail one byte below. CLI, benchmark,
 bounded fuzzing, schema 54, and archive bytes remain closed.
+
+### BR-0245
+
+Exact application name `lzss-contextual-tans-64m` now exposes public profile
+value 4 through the CLI and dependency-free benchmark. CLI tests prove exact
+identity `2/6 + 1/5 + 5/2`, transactional round trip, trailing rejection,
+ordered inventory, near-miss rejection, and reciprocal 16-MiB rejection. The
+benchmark uses the same helper/query/factory lifecycle, checks
+`112 + ceil(21N/2) + 9,255K`, and reports all query-owned regions after an
+untimed byte-exact round trip. Fuzzing, resource helpers, schema 54, and
+archive bytes remain closed.

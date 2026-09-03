@@ -302,10 +302,12 @@ HashChain, BinaryTree, and decoder aggregate requirements are 1,946,952,743,
 allocation and rejects each limit one byte short. Initializers remain 64 KiB,
 unknown profiles do not mutate the configuration, callers may tighten limits
 after applying the helper, and stream fields never enlarge local policy.
-The explicit `lzss-contextual-tans-16m` CLI and dependency-free benchmark use
-this same helper/query/factory lifecycle without duplicating private layout
-arithmetic. The schema-50 archive exercises the same public profile without
-changing the C ABI.
+The explicit `lzss-contextual-tans-16m` and `lzss-contextual-tans-64m` CLI and
+dependency-free benchmark names use this same helper/query/factory lifecycle
+without duplicating private layout arithmetic. The 64-MiB applications select
+only public profile value 4 and never infer it from stream fields. The
+schema-50 archive exercises the 16-MiB profile without changing the C ABI;
+64-MiB interoperability remains closed.
 
 The completion audit covers all required binary classes, deterministic mixed
 and one-byte chunk schedules, stable repeated terminal calls, and frame-atomic

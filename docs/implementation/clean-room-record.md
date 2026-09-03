@@ -28390,3 +28390,31 @@ both bounds.
   schema compatibility is included and passes in 101.90 and 113.63 seconds.
   Documentation and whitespace validation pass. CLI, benchmark, fuzzing,
   schema 54, and archive bytes remain unchanged.
+
+## CR-1142: 2026-09-03 - Expose 64-MiB Contextual tANS applications
+
+- Authoring method: extended marc's existing explicit-profile CLI and
+  dependency-free benchmark dispatch through the completed public 64-MiB
+  Contextual tANS lifecycle.
+- References used: IR-0815; DD-1053; TVG-0918; BR-0245; CR-1141; the local
+  16-MiB Contextual tANS and 64-MiB Contextual rANS application patterns.
+- Known implementations intentionally not consulted: external tANS/FSE
+  implementations, compressors, CLIs, benchmarks, source, tests, vectors,
+  patents, pseudocode, allocation policies, or optimization descriptions.
+- Independent decisions: give encode and decode one exact explicit name; use
+  only the public preset/query/factory lifecycle; retain transactional output;
+  and derive checked benchmark capacity from the already documented frame
+  bound without adding a serialized field.
+- Generated-code task description: add `lzss-contextual-tans-64m` to parser,
+  help, dispatch, CLI regression, inventory, benchmark capacity and smoke;
+  synchronize public, architecture, format, readiness, and provenance text;
+  preserve fuzz and schema gates.
+- Similarity review: production changes repeat marc's own enum dispatch and
+  public lifecycle. Tests and documentation extend repository-owned adjacent
+  profile patterns; no external implementation expression or distinctive
+  test structure was used.
+- Validation: all 3,350 registered tests pass without exclusions under MSVC
+  and ClangCL in 277.79 and 282.79 seconds respectively; schema compatibility
+  is included and passes in 118.17 and 116.57 seconds. Focused CLI, inventory,
+  benchmark, documentation, and whitespace checks pass under both compilers.
+  Fuzzing, schema 54, and archive bytes remain unchanged.

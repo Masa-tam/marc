@@ -2095,3 +2095,21 @@ query, and streaming factory, with checked complete-stream capacity
 `112 + 16N + 9,257K`. An untimed byte-exact round trip preceded measurement.
 The short-input timings are descriptive wiring evidence only and establish no
 performance threshold.
+
+### BM-0059: 64 MiB Contextual tANS application admission
+
+The dependency-free `lzss-contextual-tans-64m` benchmark selects exact public
+profile `2/6 + 1/5 + 5/2`. It applies 67,108,864-byte frames, window, and
+distance, the `8F` decision bound, 805,306,370-byte payload ceiling, fixed
+131,072-entry table bank, and four-GiB aggregate policy through the public
+profile helper. Direction-specific storage comes exclusively from the public
+workspace query and factory. Checked complete-stream capacity is
+`112 + ceil(21N/2) + 9,255K`, and an untimed byte-exact round trip precedes
+every measurement.
+
+One MSVC Release smoke iteration over the 4,589-byte README emitted 3,142
+bytes at ratio 0.685. Encoder primary/secondary/views workspaces were
+4,589/64,323/401,108 bytes; decoder regions were
+805,315,623/67,108,864/805,830,656 bytes. Peak caller-owned workspace was the
+1,678,255,143-byte decoder aggregate. These short-input measurements prove
+application wiring and bounded allocation; they are not a performance target.

@@ -13240,3 +13240,19 @@ regions, query HashChain, BinaryTree, and decoder requirements at their exact
 reject one byte below each. Run the focused C lifecycle and all registered
 tests under MSVC and ClangCL while retaining application, fuzz, and schema
 gates.
+
+### TVG-0918
+
+Invoke CLI name `lzss-contextual-tans-64m` in both directions over a repeated
+binary fixture. Require exact stream identity `2/6 + 1/5 + 5/2`, raw equality,
+transactional overwrite protection, trailing rejection, and rejection by the
+explicit 16-MiB name without retained output. Require help to list all five
+tANS names once, in ascending profile order, and reject a case-changed near
+miss.
+
+Run one dependency-free README iteration through the same public helper,
+workspace query, and factory. Check `112 + ceil(21N/2) + 9,255K`, require an
+untimed byte-exact round trip, and report all six workspace extents plus their
+directional maximum. Run focused application tests and the full registered
+suite under MSVC and ClangCL with schema compatibility included. Keep fuzzing
+and schema 54 unchanged.

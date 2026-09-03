@@ -5858,6 +5858,17 @@ SHA-256. Verification enforces exact order and byte-identical local re-
 encoding. Compatibility removes only entry 60 to reconstruct schema 49 before
 traversing the unchanged chain through schema 1.
 
+The 64-MiB Contextual tANS application boundary adds exact selector
+`lzss-contextual-tans-64m` after its public C lifecycle is complete. Parser,
+help, configuration, workspace-query, and factory dispatch apply public
+profile value 4 without reproducing its numeric policy. CLI regression proves
+identity `2/6 + 1/5 + 5/2`, transactional round trip, trailing rejection, and
+reciprocal 16-MiB rejection. The dependency-free benchmark checks capacity as
+`112 + ceil(21N/2) + 9,255K` and requires an untimed byte-exact round trip
+before reporting ratio, throughput, all six workspace regions, and their
+directional maximum. Neither application adds a stream field or profile
+inference; bounded fuzzing and interoperability schema 54 remain closed.
+
 The Contextual Blocked Huffman descriptor boundary now selects all four typed
 field layouts independently of complete-frame admission. Variant 4 supplies
 the 25-symbol distance alphabet and 2,597-byte maximum to the same atomic

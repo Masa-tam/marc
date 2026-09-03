@@ -7733,4 +7733,11 @@ direction, original size, total-output policy, and the selected Exact finder.
 Unknown profiles leave the configuration unchanged; callers may tighten hard
 limits after application, and stream metadata never enlarges them. The
 112-byte ABI-1 configuration extent and 64-KiB initializer default remain
-unchanged. Applications, fuzzing, schema 54, and archive bytes remain closed.
+unchanged. Exact application name `lzss-contextual-tans-64m` now carries the
+same public helper/query/factory lifecycle through the CLI and dependency-free
+benchmark. CLI decoding requires that explicit name and rejects older
+profiles before retaining output. Benchmark capacity is checked as
+`112 + ceil(21N/2) + 9,255K`, and an untimed byte-exact round trip precedes
+measurement. Neither application adds a stream field, infers a profile, or
+duplicates private workspace layout. Fuzzing, schema 54, and archive bytes
+remain closed.

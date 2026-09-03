@@ -7395,3 +7395,12 @@ factory, and preceding public 64-MiB Contextual rANS admission pattern. No
 external tANS/FSE implementation, compressor, allocator, source, test,
 vector, patent, pseudocode, memory policy, or optimization description was
 consulted.
+
+### IR-0815
+
+The 64-MiB Contextual tANS application admission uses IR-0814, DD-1053,
+TVG-0918, BR-0245, CR-1142, marc's repository-owned public tANS lifecycle,
+transactional CLI adapter, checked dependency-free benchmark harness, and the
+preceding 64-MiB Contextual rANS application pattern. No external tANS/FSE
+implementation, compressor, CLI, benchmark, source, test, vector, patent,
+pseudocode, allocation policy, or optimization description was consulted.

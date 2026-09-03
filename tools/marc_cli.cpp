@@ -202,6 +202,7 @@ enum class Codec {
     lzss_contextual_tans_1m,
     lzss_contextual_tans_4m,
     lzss_contextual_tans_16m,
+    lzss_contextual_tans_64m,
     lzss_contextual_blocked_huffman,
     lzss_contextual_blocked_huffman_1m,
     lzss_contextual_blocked_huffman_4m,
@@ -1695,10 +1696,13 @@ bool process_file(const marc_direction direction,
     } else if (codec == Codec::lzss_contextual_tans
                || codec == Codec::lzss_contextual_tans_1m
                || codec == Codec::lzss_contextual_tans_4m
-               || codec == Codec::lzss_contextual_tans_16m) {
+               || codec == Codec::lzss_contextual_tans_16m
+               || codec == Codec::lzss_contextual_tans_64m) {
         if (!configure(
                 direction, source_size, lzss_contextual_tans_settings,
-                codec == Codec::lzss_contextual_tans_16m
+                codec == Codec::lzss_contextual_tans_64m
+                    ? MARC_LZSS_CONTEXTUAL_PROFILE_64M
+                    : codec == Codec::lzss_contextual_tans_16m
                     ? MARC_LZSS_CONTEXTUAL_PROFILE_16M
                     : codec == Codec::lzss_contextual_tans_4m
                     ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -1877,7 +1881,8 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::lzss_contextual_tans
              || codec == Codec::lzss_contextual_tans_1m
              || codec == Codec::lzss_contextual_tans_4m
-             || codec == Codec::lzss_contextual_tans_16m)
+             || codec == Codec::lzss_contextual_tans_16m
+             || codec == Codec::lzss_contextual_tans_64m)
         status = marc_lzss_contextual_tans_workspace_requirements(
             &lzss_contextual_tans_settings, &needed);
     else if (codec == Codec::lzss_contextual_blocked_huffman
@@ -2072,7 +2077,8 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::lzss_contextual_tans
              || codec == Codec::lzss_contextual_tans_1m
              || codec == Codec::lzss_contextual_tans_4m
-             || codec == Codec::lzss_contextual_tans_16m)
+             || codec == Codec::lzss_contextual_tans_16m
+             || codec == Codec::lzss_contextual_tans_64m)
         status = marc_lzss_contextual_tans_create(
             &lzss_contextual_tans_settings, primary_buffer, secondary_buffer,
             views_buffer, &raw_transform);
@@ -2347,6 +2353,7 @@ void usage() {
                  "lzss-contextual-rans-64m, "
                  "lzss-contextual-tans, lzss-contextual-tans-1m, "
                  "lzss-contextual-tans-4m, lzss-contextual-tans-16m, "
+                 "lzss-contextual-tans-64m, "
                  "lzss-contextual-blocked-huffman, "
                  "lzss-contextual-blocked-huffman-1m, "
                  "lzss-contextual-blocked-huffman-4m, "
@@ -2441,6 +2448,8 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzss_contextual_tans_4m;
         else if (name == "lzss-contextual-tans-16m")
             codec = Codec::lzss_contextual_tans_16m;
+        else if (name == "lzss-contextual-tans-64m")
+            codec = Codec::lzss_contextual_tans_64m;
         else if (name == "lzss-contextual-blocked-huffman")
             codec = Codec::lzss_contextual_blocked_huffman;
         else if (name == "lzss-contextual-blocked-huffman-1m")

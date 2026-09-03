@@ -21575,3 +21575,21 @@ Exact finder. Unknown selectors MUST leave the configuration unchanged. Keep
 the ABI-1 structure extent and initializer default unchanged, permit callers
 to tighten returned limits, and leave CLI, benchmark, fuzzing, resource
 helpers, and schema 54 closed.
+
+## DD-1053: Expose the exact 64 MiB Contextual tANS application name
+
+- Date: 2026-09-03
+- Status: accepted
+
+Add exact CLI and dependency-free benchmark name
+`lzss-contextual-tans-64m`. Both directions MUST use the existing public
+`config_init`, `config_apply_profile(64M)`, direction-specific workspace
+query, and factory lifecycle. They MUST NOT duplicate private workspace
+layout, infer a profile from stream fields, or accept another profile through
+this name.
+
+The CLI MUST retain transactional destination and trailing-input behavior and
+prove reciprocal 16-MiB rejection. The benchmark MUST check output capacity
+as `112 + ceil(21N/2) + 9,255K`, perform an untimed byte-exact round trip, and
+report all queried regions and the directional peak. Keep fuzzing, resource
+helpers, interoperability schema 54, and archive bytes unchanged.
