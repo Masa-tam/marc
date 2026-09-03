@@ -3746,3 +3746,13 @@ size, SHA-256, foreign decode equality, and byte-identical local re-encoding;
 removing only archive 65 reconstructs schema 54 before the unchanged chain
 through schema 1. No codec byte, ABI, resource profile, default, or finder
 selection changes. External cross-platform exchange remains pending.
+
+### BR-0248
+
+The dedicated 64-MiB Contextual Blocked Huffman design fixes exact identity
+`2/6 + 1/5 + 2/2`, the 2,606-byte descriptor, 35-table/17,885-node decoder
+bank, `8F`/`36T` decisions, `15F` payload, and `15F+2,670` complete-frame
+bound. Supported-layout workspace proofs admit both Exact finders and decoding
+under an explicit four-GiB aggregate policy. No implementation gate, public
+selector, tool name, fuzz profile, or schema-55 archive is opened by this
+design-only step.

@@ -13290,3 +13290,20 @@ require rejection. Remove only archive 65, rewrite the manifest as
 unchanged historical conversions through schema 1. Run the focused schema
 test and complete suite under MSVC and ClangCL; leave external four-direction
 exchange for the pushed revision.
+
+### TVG-0921
+
+Before implementing the 64-MiB Contextual Blocked Huffman triple,
+independently check that each of the nine possible distance records grows from
+thirteen to fourteen bytes and therefore raises descriptor maximum 2,597 to
+2,606. For `F=67,108,864`, require `8F=536,870,912`, payload
+`15F=1,006,632,960`, and complete frame
+`15F+2,670=1,006,635,630`.
+
+Using supported native object extents, require exact HashChain encode,
+BinaryTree encode, and decode aggregates 2,148,010,606, 3,825,207,918, and
+1,879,194,082 bytes. Each future implementation stage must add equality and
+one-short tests for the boundary it opens, reciprocal rejection by all older
+Contextual Blocked Huffman profiles, and both Exact finders where encoding is
+admitted. Keep schema 55 unchanged until public C, applications, and bounded
+fuzzing all pass.

@@ -7423,3 +7423,12 @@ strict-order verifier, historical schema converter, and exact CLI profile.
 No external compressor, tANS/FSE implementation, archive format,
 interoperability suite, source, test, vector, patent, pseudocode, allocation
 policy, or optimization description was consulted.
+
+### IR-0818
+
+The 64-MiB Contextual Blocked Huffman design uses the repository-owned 16-MiB
+Contextual Blocked Huffman contract, shared dictionary/context variant-5
+layout, canonical Huffman primitives and table types, exact-finder workspace
+calculators, and completed 64-MiB tANS admission sequence. No external Huffman
+implementation, compressor, source, test, vector, patent, pseudocode,
+allocation policy, or optimization description was consulted.

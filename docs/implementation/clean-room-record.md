@@ -28482,3 +28482,29 @@ both bounds.
   whitespace validation pass. The schema conversion changes no codec byte,
   ABI, profile resource value, default, or match-finder selection; external
   four-direction exchange remains pending.
+
+## CR-1145: 2026-09-04 - Fix the 64-MiB contextual Blocked Huffman design
+
+- Authoring method: derived a dedicated backend contract from marc's completed
+  16-MiB Contextual Blocked Huffman representation and independently
+  implemented shared 64-MiB typed-token/context primitives.
+- References used: IR-0818; DD-1056; TVG-0921; BR-0248; CR-1144; the local
+  Contextual Blocked Huffman descriptor, table, profile, exact-finder, and
+  shared variant-5 design.
+- Known implementations intentionally not consulted: external Huffman codecs,
+  compressors, source, tests, vectors, patents, pseudocode, allocation
+  policies, or optimization descriptions.
+- Independent decisions: retain entropy identity 2/2 and its grammar; enlarge
+  only context-dependent descriptor/count bounds; select four GiB so both
+  Exact finders fit; divide admission into eight closed-boundary stages.
+- Generated-code task description: document identity `2/6 + 1/5 + 2/2`, exact
+  descriptor, payload, complete-frame, table, and workspace ceilings; define
+  equality, one-short, reciprocal-profile, fixed-memory fuzz, and append-only
+  interoperability gates before implementation.
+- Similarity review: all formulas and lifecycle stages derive from marc's own
+  checked layouts and preceding backend admissions. No external implementation
+  expression or distinctive test structure was used.
+- Validation: documentation verification covers the new design and all ordered
+  ledgers; arithmetic agrees with the shared 64-MiB workspace table. The diff
+  is whitespace-clean and changes no source, ABI, stream byte, test inventory,
+  or interoperability schema.

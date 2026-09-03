@@ -21633,3 +21633,22 @@ unchanged conversion chain through schema 1. This admission MUST NOT alter a
 codec byte, public ABI, profile resource value, default, or encoder-local
 match-finder selection. External cross-platform exchange remains separate
 release evidence.
+
+## DD-1056: Stage 64 MiB Contextual Blocked Huffman as exact triple 2/6 + 1/5 + 2/2
+
+- Date: 2026-09-04
+- Status: accepted
+
+Extend the existing Contextual Blocked Huffman grammar only through reserved
+dictionary/context pair `2/6 + 1/5`; retain entropy identity `2/2`, four pooled
+models, 31 optional overrides, canonical maximum code length 15, LSB-first
+payload, and strict zero padding. Context variant 5 has a 2,606-byte maximum
+descriptor, 35 decode tables containing 17,885 nodes, decision bounds `8F`
+and `36T`, payload bound `15F`, and complete-frame bound `15F+2,670`.
+
+Use an explicit four-GiB aggregate policy. On the supported 64-bit layout,
+require exact HashChain, BinaryTree, and decoder aggregate limits
+2,148,010,606, 3,825,207,918, and 1,879,194,082 bytes. Admit the backend in
+eight independently reviewed stages from descriptor capacity through one
+append-only interoperability archive. Every incomplete stage MUST keep later
+boundaries closed and MUST NOT alter schema 55 or any earlier stream byte.
