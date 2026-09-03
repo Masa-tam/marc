@@ -13330,3 +13330,14 @@ one literal and distance-one matches of length 258, then a final remainder
 match; append distance 16,777,217 or 67,108,864 with length five.
 Compare all decoded token fields, reject the tighter local distance policy,
 and preserve token/table sentinels on crossed 16-MiB selection.
+
+### TVG-0924
+
+For variant 5, use F=5, T=2, 40 decisions, 75 payload bytes, and 2,606
+descriptor bytes to isolate exact frame ceilings. Reject 41 decisions, 76
+payload bytes, and 2,607 descriptor bytes atomically. Isolate the 36T bound
+with T=1 and reject 37 decisions. Check crossed dictionary/context identities.
+Build a finite frame with distance 16,777,217 from independently assembled
+header, descriptor, and token-coded payload; decode to repeated A bytes and
+reject the older selection without raw/token publication. Keep frame encoding
+closed before either token or output mutation.

@@ -138,6 +138,13 @@ template <FrameMatchFinder MatchFinder>
             LzssContextualBlockedHuffmanFrameEncodeError::invalid_stream;
         return result;
     }
+    // Frame encoding is admitted separately from bounded decoding.
+    if (selected.layout.context_variant
+        == context::internal::LzssFieldContextVariant::field_context_64m) {
+        result.error =
+            LzssContextualBlockedHuffmanFrameEncodeError::invalid_stream;
+        return result;
+    }
     if (!exact_input_size(stream, output_already_committed, raw_input.size())) {
         result.error =
             LzssContextualBlockedHuffmanFrameEncodeError::input_size_mismatch;

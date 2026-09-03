@@ -7761,3 +7761,9 @@ bits 0x3abcdef: the exact LSB-first payload is ef cd ab 03 with two valid bits
 in its last byte. Direct token coding accepts distances through 67,108,864
 only under compatible local limits. This does not open a complete-frame
 identity or change any prior format.
+
+Bounded decoding now admits complete Contextual Blocked Huffman frames under
+the exact 64-MiB identity 2/6 + 1/5 + 2/2. Descriptor size is at most 2,606;
+decision counts satisfy both 8F and 36T; payload size is at most
+ceil(15*decision_count/8). Crossed identities and local-limit violations fail
+before publication. Frame encoding remains gated pending its separate proofs.

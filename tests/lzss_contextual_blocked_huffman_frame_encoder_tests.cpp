@@ -171,6 +171,28 @@ TEST(LzssContextualBlockedHuffmanFrameEncoder,
 }
 
 TEST(LzssContextualBlockedHuffmanFrameEncoder,
+     SixtyFourMiBEncodingRemainsClosedBeforePublication) {
+    constexpr std::array raw{std::byte{'A'}};
+    auto stream = stream_for_16m(raw.size());
+    stream.dictionary_variant = 6;
+    stream.context_variant = 5;
+    stream.dictionary.window_size = UINT32_C(1) << 26;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    std::array<LzssTypedToken, 1> tokens{};
+    tokens[0].distance = 0xccccccccU;
+    std::array<std::byte, 88> output{};
+    std::ranges::fill(output, std::byte{0xcc});
+    EXPECT_EQ(encode_lzss_contextual_blocked_huffman_frame(
+                  stream, limits, 0, 0, raw, tokens, output).error,
+              LzssContextualBlockedHuffmanFrameEncodeError::invalid_stream);
+    EXPECT_EQ(tokens[0].distance, 0xccccccccU);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const auto byte) {
+        return byte == std::byte{0xcc};
+    }));
+}
+
+TEST(LzssContextualBlockedHuffmanFrameEncoder,
      SixteenMiBIdentityRoundTripsCanonicalLiteral) {
     constexpr std::array raw{std::byte{'A'}};
     const auto stream = stream_for_16m(raw.size());

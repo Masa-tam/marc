@@ -28552,3 +28552,20 @@ both bounds.
   109.95 seconds). Documentation ordering and whitespace checks passed.
   A sandboxed MSVC attempt stopped in FileTracker with E_ACCESSDENIED;
   the same build succeeded with approved execution outside the sandbox.
+
+## CR-1148: 2026-09-04 - Admit bounded 64-MiB contextual Blocked Huffman frames
+
+- Authoring method: extend marc-owned frame bounds and independent vectors.
+- References used: IR-0821; DD-1059; TVG-0924; BR-0251.
+- Known implementations intentionally not consulted: external compressor
+  source, tests, tables, pseudocode, and optimization structures.
+- Independent decisions: select the variant-5 descriptor ceiling and separate
+  decoder admission from the frame encoder's shared planner gate.
+- Generated-code task description: prove exact/one-over frame bounds,
+  crossed identities, first-new-distance decode, and closed encoder mutation.
+- Similarity review: only repository-owned structures and tests were reused.
+- Validation: complete Release suites passed 3,363/3,363 under MSVC
+  (246.19 seconds) and ClangCL (255.66 seconds), including schema compatibility
+  (110.76 and 110.71 seconds). Document ordering, links, and whitespace checks
+  passed. The MSVC build used approved execution for the established
+  FileTracker environment restriction; no build directory was added.

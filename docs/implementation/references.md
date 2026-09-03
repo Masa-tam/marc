@@ -7446,3 +7446,9 @@ patents, pseudocode, or optimization description was consulted.
 64-MiB Contextual Blocked Huffman operation/token validation uses only marc's
 selected-layout model builder, writer, decoder, typed-token contract, and
 DD-1057 descriptor grammar. No external implementation was consulted.
+
+### IR-0821
+
+64-MiB Contextual Blocked Huffman frame admission derives from the local
+variant-5 design, DD-1058 token proof, frame validator, and canonical vectors.
+No external implementation source or test material was consulted.

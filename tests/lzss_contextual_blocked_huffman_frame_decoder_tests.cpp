@@ -338,6 +338,100 @@ TEST(LzssContextualBlockedHuffmanFrameFormat,
 }
 
 TEST(LzssContextualBlockedHuffmanFrameFormat,
+     SixtyFourMiBAdmissionSelectsExactBounds) {
+    auto stream = stream_config_16m(5);
+    stream.dictionary_variant = 6;
+    stream.context_variant = 5;
+    stream.dictionary.window_size = UINT32_C(1) << 26;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    std::array<std::byte, 112> stream_bytes{};
+    ASSERT_EQ(serialize_lzss_contextual_blocked_huffman_stream_header(
+                  stream, limits, stream_bytes),
+              LzssContextualBlockedHuffmanStreamHeaderError::none);
+    EXPECT_EQ(stream_bytes[14], std::byte{6});
+    EXPECT_EQ(stream_bytes[18], std::byte{2});
+    EXPECT_EQ(stream_bytes[98], std::byte{5});
+    for (const auto offset : {14U, 98U}) {
+        auto crossed = stream_bytes;
+        crossed[offset] = offset == 14U ? std::byte{5} : std::byte{4};
+        LzssContextualBlockedHuffmanStreamHeader sentinel{};
+        sentinel.frame_size = 0xccccccccU;
+        std::size_t extent = 0xcccc;
+        EXPECT_NE(parse_lzss_contextual_blocked_huffman_stream_header(
+                      crossed, limits, sentinel, extent),
+                  LzssContextualBlockedHuffmanStreamHeaderError::none);
+        EXPECT_EQ(sentinel.frame_size, 0xccccccccU);
+        EXPECT_EQ(extent, 0xccccU);
+    }
+    LzssContextualBlockedHuffmanFrameHeader header{
+        0, 0, 5, 2, 4, 40, 75,
+        static_cast<std::uint32_t>(
+            marc::entropy::internal::
+                contextual_blocked_huffman_max_descriptor_size_v5),
+        0, 0};
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_frame_header(
+                  header, {stream, limits, 0, 0}),
+              LzssContextualBlockedHuffmanFrameHeaderError::none);
+
+    auto encoded = unchecked_frame_header(header);
+    LzssContextualBlockedHuffmanFrameHeader parsed{};
+    std::size_t consumed{};
+    ASSERT_EQ(parse_lzss_contextual_blocked_huffman_frame_header(
+                  encoded, {stream, limits, 0, 0}, parsed, consumed),
+              LzssContextualBlockedHuffmanFrameHeaderError::none);
+    EXPECT_EQ(consumed, encoded.size());
+    EXPECT_EQ(parsed.decision_count, 40U);
+    EXPECT_EQ(parsed.descriptor_size, 2606U);
+    auto token_ceiling = header;
+    token_ceiling.token_count = 1;
+    token_ceiling.event_count = 2;
+    token_ceiling.decision_count = 36;
+    token_ceiling.payload_size = 68;
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_frame_header(
+                  token_ceiling, {stream, limits, 0, 0}),
+              LzssContextualBlockedHuffmanFrameHeaderError::none);
+    ++token_ceiling.decision_count;
+    EXPECT_EQ(validate_lzss_contextual_blocked_huffman_frame_header(
+                  token_ceiling, {stream, limits, 0, 0}),
+              LzssContextualBlockedHuffmanFrameHeaderError::contradictory_counts);
+
+    auto invalid = header;
+    invalid.decision_count = 41;
+    encoded = unchecked_frame_header(invalid);
+    parsed.sequence = UINT64_C(0xcccccccccccccccc);
+    consumed = 0xcccc;
+    EXPECT_EQ(parse_lzss_contextual_blocked_huffman_frame_header(
+                  encoded, {stream, limits, 0, 0}, parsed, consumed),
+              LzssContextualBlockedHuffmanFrameHeaderError::
+                  contradictory_counts);
+    EXPECT_EQ(parsed.sequence, UINT64_C(0xcccccccccccccccc));
+    EXPECT_EQ(consumed, 0xccccU);
+    invalid = header;
+    invalid.payload_size = 76;
+    encoded = unchecked_frame_header(invalid);
+    parsed.sequence = UINT64_C(0xcccccccccccccccc);
+    consumed = 0xcccc;
+    EXPECT_EQ(parse_lzss_contextual_blocked_huffman_frame_header(
+                  encoded, {stream, limits, 0, 0}, parsed, consumed),
+              LzssContextualBlockedHuffmanFrameHeaderError::
+                  contradictory_counts);
+    EXPECT_EQ(parsed.sequence, UINT64_C(0xcccccccccccccccc));
+    EXPECT_EQ(consumed, 0xccccU);
+    invalid = header;
+    invalid.descriptor_size = 2607;
+    encoded = unchecked_frame_header(invalid);
+    parsed.sequence = UINT64_C(0xcccccccccccccccc);
+    consumed = 0xcccc;
+    EXPECT_EQ(parse_lzss_contextual_blocked_huffman_frame_header(
+                  encoded, {stream, limits, 0, 0}, parsed, consumed),
+              LzssContextualBlockedHuffmanFrameHeaderError::
+                  contradictory_counts);
+    EXPECT_EQ(parsed.sequence, UINT64_C(0xcccccccccccccccc));
+    EXPECT_EQ(consumed, 0xccccU);
+}
+
+TEST(LzssContextualBlockedHuffmanFrameFormat,
      RejectsStreamIdentityAndParametersAtomically) {
     std::array<std::byte, 112> encoded{};
     ASSERT_EQ(serialize_lzss_contextual_blocked_huffman_stream_header(
@@ -494,6 +588,116 @@ TEST(LzssContextualBlockedHuffmanFrameDecoder,
     crossed_stream.dictionary.window_size = UINT32_C(1) << 22;
     crossed_stream.dictionary_variant = 4;
     crossed_stream.context_variant = 3;
+    const auto crossed = decode_lzss_contextual_blocked_huffman_frame(
+        frame, {crossed_stream, limits, 0, 0}, tables, decoded_tokens, raw);
+    EXPECT_NE(crossed.error,
+              LzssContextualBlockedHuffmanFrameDecodeError::none);
+    EXPECT_TRUE(std::ranges::all_of(
+        decoded_tokens, [](const auto& token) {
+            return token.literal == 0xcc && token.distance == 0xccccccccU;
+        }));
+    EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
+
+    const auto decoded = decode_lzss_contextual_blocked_huffman_frame(
+        frame, {stream, limits, 0, 0}, tables, decoded_tokens, raw);
+    ASSERT_EQ(decoded.error,
+              LzssContextualBlockedHuffmanFrameDecodeError::none);
+    EXPECT_EQ(decoded.serialized_consumed, frame.size());
+    EXPECT_EQ(decoded_tokens.back().distance, distance);
+    EXPECT_EQ(decoded_tokens.back().length, 258U);
+    EXPECT_TRUE(std::ranges::all_of(raw, [](const std::byte value) {
+        return value == std::byte{'A'};
+    }));
+}
+
+TEST(LzssContextualBlockedHuffmanFrameDecoder,
+     SixtyFourMiBIdentityDecodesFirstNewDistanceAtomically) {
+    constexpr std::uint32_t distance = 16'777'217;
+    constexpr std::size_t repeated_matches = 65'027;
+    std::vector<LzssTypedToken> source_tokens;
+    source_tokens.reserve(repeated_matches + 3);
+    source_tokens.push_back({LzssTypedTokenKind::literal, 'A', 0, 0});
+    for (std::size_t index = 0; index < repeated_matches; ++index) {
+        source_tokens.push_back({LzssTypedTokenKind::match, 0, 1, 258});
+    }
+    source_tokens.push_back({LzssTypedTokenKind::match, 0, 1, 250});
+    source_tokens.push_back(
+        {LzssTypedTokenKind::match, 0, distance, 258});
+    constexpr std::uint32_t raw_size = distance + 258;
+    auto stream = stream_config_16m(raw_size);
+    stream.dictionary_variant = 6;
+    stream.context_variant = 5;
+    stream.dictionary.window_size = UINT32_C(1) << 26;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = raw_size;
+    limits.max_block_size = raw_size;
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    const marc::dictionary::internal::LzssTypedFrameValidationContext
+        token_context{static_cast<std::uint32_t>(source_tokens.size()),
+                      raw_size, 0};
+    constexpr auto variant = marc::context::internal::
+        LzssFieldContextVariant::field_context_64m;
+    marc::entropy::internal::ContextualBlockedHuffmanDescriptor descriptor{};
+    const auto entropy_plan = marc::context::internal::
+        plan_lzss_contextual_blocked_huffman_tokens(
+            source_tokens, stream.dictionary, token_context, limits,
+            descriptor, variant);
+    ASSERT_EQ(entropy_plan.error,
+              marc::context::internal::
+                  LzssContextualBlockedHuffmanEncodeError::none);
+    std::vector<std::byte> payload(entropy_plan.payload_size);
+    ASSERT_EQ(marc::context::internal::
+                  encode_lzss_contextual_blocked_huffman_tokens(
+                      source_tokens, stream.dictionary, token_context, limits,
+                      payload, descriptor, variant).error,
+              marc::context::internal::
+                  LzssContextualBlockedHuffmanEncodeError::none);
+    std::vector<std::byte> serialized_descriptor(
+        entropy_plan.descriptor_size);
+    std::size_t descriptor_written{};
+    ASSERT_EQ(marc::entropy::internal::
+                  serialize_contextual_blocked_huffman_descriptor(
+                      descriptor, entropy_plan.decision_count,
+                      static_cast<std::uint32_t>(payload.size()), limits,
+                      serialized_descriptor, descriptor_written, variant),
+              ContextualBlockedHuffmanFormatError::none);
+    ASSERT_EQ(descriptor_written, serialized_descriptor.size());
+
+    const LzssContextualBlockedHuffmanFrameHeader header{
+        0,
+        0,
+        raw_size,
+        static_cast<std::uint32_t>(source_tokens.size()),
+        static_cast<std::uint32_t>(entropy_plan.event_count),
+        entropy_plan.decision_count,
+        static_cast<std::uint32_t>(payload.size()),
+        static_cast<std::uint32_t>(serialized_descriptor.size()),
+        0,
+        0};
+    const auto encoded_header = unchecked_frame_header(header);
+    std::vector<std::byte> frame(
+        encoded_header.size() + serialized_descriptor.size()
+        + payload.size());
+    std::ranges::copy(encoded_header, frame.begin());
+    std::ranges::copy(
+        serialized_descriptor, frame.begin() + encoded_header.size());
+    std::ranges::copy(
+        payload,
+        frame.begin() + encoded_header.size() + serialized_descriptor.size());
+
+    std::array<HuffmanDecodeTable,
+               marc::entropy::internal::
+                   contextual_blocked_huffman_max_table_count>
+        tables{};
+    std::vector<LzssTypedToken> decoded_tokens(
+        source_tokens.size(), token_marker());
+    std::vector<std::byte> raw(raw_size, std::byte{0xcc});
+    auto crossed_stream = stream;
+    crossed_stream.dictionary.window_size = UINT32_C(1) << 24;
+    crossed_stream.dictionary_variant = 5;
+    crossed_stream.context_variant = 4;
     const auto crossed = decode_lzss_contextual_blocked_huffman_frame(
         frame, {crossed_stream, limits, 0, 0}, tables, decoded_tokens, raw);
     EXPECT_NE(crossed.error,

@@ -21676,3 +21676,11 @@ Prove class 26 with a 26-bit bypass hand vector, and direct token distances
 16,777,217 and 67,108,864 without raw-history allocation. Local distance
 limits remain mandatory; crossed 16-MiB selection must not publish tokens
 or decode tables. Outer frames and schema 55 remain closed and unchanged.
+
+## DD-1059: Admit bounded 64-MiB Contextual Blocked Huffman frame decoding
+
+Select the 2,606-byte descriptor ceiling for context variant 5. Preserve
+8F and 36T decision limits and the ceiling of 15 bits per decision. Decode
+only compatible stream identities and local policies. Keep frame encoding
+explicitly closed in its shared planner until its own preflight proofs pass;
+public profiles, streaming, applications, and schema 55 remain unchanged.

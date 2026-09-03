@@ -6027,3 +6027,9 @@ The variant-5 model builder, operation writer/decoder, and direct typed-token
 paths now have dedicated boundary proofs. They reuse the existing immutable
 layout rather than duplicate the backend. No raw-history buffer is needed
 for the token-level distance tests; outer-frame and public gates remain closed.
+
+Bounded Contextual Blocked Huffman frame decoding now selects the variant-5
+descriptor ceiling before payload parsing. The existing decoder receives the
+immutable stream layout and preserves raw output on failed preflight.
+A separate shared-planner gate keeps 64-MiB frame encoding closed pending
+encoder proofs. Public/streaming profiles and schema 55 are unchanged.
