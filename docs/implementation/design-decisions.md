@@ -21614,3 +21614,22 @@ retain a sticky terminal error. Compile the harness warning-clean under MSVC
 and ClangCL and run one bounded matching-runtime sanitizer smoke without
 retaining generated mutations. Keep resource helpers and interoperability
 schema 54 closed.
+
+## DD-1055: Append 64 MiB Contextual tANS as schema 55 archive 65
+
+- Date: 2026-09-04
+- Status: accepted
+
+Freeze schema 54's exact 64-profile order and append only exact CLI profile
+`lzss-contextual-tans-64m` as archive 65. Set `schema_version=55` and
+`codec_set=marc-cli-v55`. Generation MUST prove stream identity
+`2/6 + 1/5 + 5/2` before immediate round trip; verification MUST enforce the
+exact profile order, leaf names, sizes, SHA-256 values, foreign decode equality,
+and byte-identical local re-encoding.
+
+The compatibility test MUST reject reordered schema-55 manifests, remove only
+archive 65 to reconstruct an exact schema-54 bundle, and then traverse the
+unchanged conversion chain through schema 1. This admission MUST NOT alter a
+codec byte, public ABI, profile resource value, default, or encoder-local
+match-finder selection. External cross-platform exchange remains separate
+release evidence.

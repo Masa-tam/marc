@@ -1,6 +1,6 @@
 # LZSS contextual tANS 64 MiB window
 
-Status: bounded decoder fuzzing complete; interoperability remains closed.
+Status: complete through interoperability schema 55.
 
 ## Purpose and identity
 
@@ -130,8 +130,8 @@ limits, and stream fields never enlarge local policy.
    `lzss-contextual-tans-64m` through the public lifecycle.
 8. **Complete:** extend bounded decoder fuzzing without profile-sized
    allocation.
-9. Append one interoperability archive only after all preceding boundaries
-   pass.
+9. **Complete:** append one interoperability archive only after all preceding
+   boundaries pass (schema 55 archive 65).
 
 Each stage must retain all earlier bytes, reject crossed profiles before token
 or raw publication, and keep every incomplete outward boundary closed.
@@ -160,7 +160,7 @@ layout arithmetic or inferring the profile from stream metadata.
 - reject every reciprocal crossing with the four published tANS profiles;
 - keep bounded fuzz frame, token, raw, output, and call storage independent of
   the selected 64-MiB maximum; and
-- retain schema 54 unchanged until the complete public lifecycle passes.
+- freeze schema 54 and append only this exact profile as schema 55 archive 65.
 
 ## Deferred decisions
 

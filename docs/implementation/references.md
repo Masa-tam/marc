@@ -7414,3 +7414,12 @@ regressions, and matching-runtime sanitizer route. No external fuzzer harness,
 tANS/FSE implementation, compressor, corpus, vulnerability report, source,
 test, vector, patent, pseudocode, allocation policy, or optimization
 description was consulted.
+
+### IR-0817
+
+The 64-MiB Contextual tANS interoperability admission uses IR-0816, DD-1054,
+TVG-0919, BR-0246, CR-1143, marc's repository-owned bundle generator,
+strict-order verifier, historical schema converter, and exact CLI profile.
+No external compressor, tANS/FSE implementation, archive format,
+interoperability suite, source, test, vector, patent, pseudocode, allocation
+policy, or optimization description was consulted.

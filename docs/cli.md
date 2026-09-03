@@ -326,6 +326,8 @@ obtain every storage extent and opaque alignment from the public workspace
 query after applying that profile; the CLI duplicates no private descriptor,
 table, finder, frame, or allocation arithmetic. Decode requires the exact
 `-64m` name and rejects crossed profiles before retaining output.
+Interoperability schema 55 appends this exact CLI profile as archive 65 after
+the frozen 64-entry schema-54 order without changing earlier bytes or order.
 
 The experimental `lzss-contextual-blocked-huffman` adapter uses 65,536-byte
 raw frames, a `6F = 393,216` decision ceiling, and a

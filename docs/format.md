@@ -7741,4 +7741,8 @@ profiles before retaining output. Benchmark capacity is checked as
 measurement. Neither application adds a stream field, infers a profile, or
 duplicates private workspace layout. The bounded decoder fuzz boundary admits
 all five strict identities with fixed storage and raises only variant-selected
-validation ceilings. Schema 54 and archive bytes remain closed.
+validation ceilings. Interoperability schema 55 appends exact triple
+`2/6 + 1/5 + 5/2` as archive 65 after the frozen schema-54 order. Generation
+validates the identity before round trip; verification requires exact order and
+byte-identical local re-encoding. Removing only archive 65 reconstructs schema
+54 before the unchanged compatibility chain. No earlier archive byte changes.

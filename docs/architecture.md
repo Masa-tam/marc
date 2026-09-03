@@ -5870,7 +5870,14 @@ directional maximum. Neither application adds a stream field or profile
 inference. The fixed-memory dual-path decoder fuzz boundary now also admits
 all five profiles, exercises every ordered crossed identity atomically, and
 raises only local validation ceilings without allocating profile-sized
-history. Interoperability schema 54 remains closed.
+history. Interoperability schema 55 freezes schema 54's exact 64-archive order
+and appends only `lzss-contextual-tans-64m` as entry 65. Generation requires
+exact identity `2/6 + 1/5 + 5/2`, immediate round trip, size, and SHA-256;
+verification enforces exact order and byte-identical local re-encoding.
+Compatibility removes only entry 65 to reconstruct schema 54 before traversing
+the unchanged chain through schema 1. This admission changes no codec format,
+public ABI, resource profile, default, match-finder selection, or earlier
+archive byte.
 
 The Contextual Blocked Huffman descriptor boundary now selects all four typed
 field layouts independently of complete-frame admission. Variant 4 supplies

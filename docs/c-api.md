@@ -307,7 +307,8 @@ dependency-free benchmark names use this same helper/query/factory lifecycle
 without duplicating private layout arithmetic. The 64-MiB applications select
 only public profile value 4 and never infer it from stream fields. The
 schema-50 archive exercises the 16-MiB profile without changing the C ABI;
-64-MiB interoperability remains closed.
+schema 55 exercises the 64-MiB profile as archive 65 without changing the C
+ABI.
 
 The completion audit covers all required binary classes, deterministic mixed
 and one-byte chunk schedules, stable repeated terminal calls, and frame-atomic

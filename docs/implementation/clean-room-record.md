@@ -28452,3 +28452,33 @@ both bounds.
   schema compatibility remains included and passes in 114.38 and 113.91
   seconds. Documentation and whitespace validation pass; resource helpers and
   schema 54 remain closed.
+
+## CR-1144: 2026-09-04 - Append 64-MiB contextual tANS interoperability
+
+- Authoring method: extended marc's repository-owned append-only
+  interoperability scripts from schema 54 to schema 55 using the completed
+  exact-name Contextual tANS 64-MiB CLI lifecycle.
+- References used: IR-0817; DD-1055; TVG-0920; BR-0247; CR-1143; the local
+  bundle generator, strict-order verifier, historical schema converter, and
+  exact CLI profile.
+- Known implementations intentionally not consulted: external compressors,
+  tANS/FSE implementations, archive formats, interoperability suites, source,
+  tests, vectors, patents, pseudocode, allocation policies, or optimizations.
+- Independent decisions: freeze all 64 schema-54 entries; append only
+  `lzss-contextual-tans-64m` as archive 65; validate identity
+  `2/6 + 1/5 + 5/2` before round trip; reconstruct schema 54 by removing only
+  the new entry; leave resource helpers and external evidence separate.
+- Generated-code task description: create and verify `marc-cli-v55`, reject a
+  reordered manifest, prove foreign decode equality and byte-identical local
+  re-encoding, traverse schemas 54 through 1, and update exact current-state
+  documentation without rewriting historical evidence.
+- Similarity review: scripts and documentation extend marc's own append-only
+  schema pattern and exact public CLI profile. No external implementation
+  expression or distinctive test structure was used.
+- Validation: the focused MSVC schema-compatibility test passes in 117.30
+  seconds. All 3,354 registered tests pass without exclusions under MSVC and
+  ClangCL in 261.10 and 264.18 seconds respectively; schema compatibility is
+  included and passes in 117.13 and 115.56 seconds. Documentation and
+  whitespace validation pass. The schema conversion changes no codec byte,
+  ABI, profile resource value, default, or match-finder selection; external
+  four-direction exchange remains pending.

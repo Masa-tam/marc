@@ -405,8 +405,8 @@ foreach(required_tans_window_64m_term IN ITEMS
         "HashChain Exact and"
         "BinaryTree Exact"
         "first newly reachable distance 16,777,217"
-        "schema 54 unchanged"
-        "bounded decoder fuzzing complete; interoperability remains closed"
+        "schema 55 archive 65"
+        "complete through interoperability schema 55"
         "Internal stream-header validation, serialization, and"
         "exact all-dense maximum"
         "maximum distance symbol 26"
@@ -419,6 +419,7 @@ foreach(required_tans_window_64m_term IN ITEMS
         "6. **Complete:** admit common public profile value 4"
         "7. **Complete:** add exact CLI and dependency-free benchmark name"
         "8. **Complete:** extend bounded decoder fuzzing"
+        "9. **Complete:** append one interoperability archive"
         "lzss-contextual-tans-64m"
         "112 + ceil(21N/2) + 9,255K"
         "Exhaustive remains closed")
@@ -1009,12 +1010,14 @@ foreach(required_interoperability_section IN ITEMS
         "${interoperability_section_offset}")
 endforeach()
 foreach(required_current_interoperability_term IN ITEMS
-        "Each current schema-54 bundle"
-        "marc-cli-v54"
-        "sixty-four foreign archives"
+        "Each current schema-55 bundle"
+        "marc-cli-v55"
+        "sixty-five foreign archives"
+        "Schema 55 requires"
+        "schemas 1 through 54"
+        "External cross-platform exchange remains pending"
         "Schema 54 requires"
-        "schemas 1 through 53"
-        "four-direction evidence is complete"
+        "four-direction evidence remains complete"
         "8ecc7a104c7b5def57737d9c8f9c40a63e6a8c30"
         "### IX-0048: Schema 54"
         "Schema 53 requires"

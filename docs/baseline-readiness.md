@@ -15,7 +15,7 @@ determinism, chunking, terminal behavior, and malformed final-frame handling.
 `In progress` means a public profile exists but one or more of those local
 readiness boundaries remain pending.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 54 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 55 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -36,7 +36,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 54 |
+| Profile | Purpose | Local status | Interoperability schema 55 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -104,10 +104,10 @@ now passed in all four directions at revision
 `827ddf085efb40c7d8f9bc27628977053179d84c` for all 41 archives across the
 recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
-Schema 54 contains sixty-four archives: the frozen forty-two baseline profiles
-followed by twenty-two typed-token LZSS Contextual profiles. Schema 53 retains
-its exact archive order and meaning; schema 54 appends only the 64-MiB
-Contextual rANS profile.
+Schema 55 contains sixty-five archives: the frozen forty-two baseline profiles
+followed by twenty-three typed-token LZSS Contextual profiles. Schema 54 retains
+its exact archive order and meaning; schema 55 appends only the 64-MiB
+Contextual tANS profile.
 
 ## Public-profile evidence matrix
 
@@ -117,7 +117,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 54 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 55 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -165,8 +165,8 @@ kept separate because it requires artifacts produced outside the local build.
 ## Current validation baseline
 
 All forty-two baseline profiles in the composition matrix satisfy the local
-`Ready` definition and remain present in interoperability schema 54 alongside
-the twenty-two typed-token LZSS Contextual profiles. The internal canonical
+`Ready` definition and remain present in interoperability schema 55 alongside
+the twenty-three typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
@@ -3736,3 +3736,13 @@ without a finding, generated corpus, or artifact; resource-helper and schema
 54 surfaces remain unchanged. All 3,354 registered tests pass without
 exclusions under MSVC and ClangCL in 255.54 and 270.66 seconds respectively;
 schema compatibility is included and passes in 114.38 and 113.91 seconds.
+
+### BR-0247
+
+Interoperability schema 55 freezes all 64 schema-54 archives and appends only
+`lzss-contextual-tans-64m` as archive 65. Generation validates exact identity
+`2/6 + 1/5 + 5/2` and immediate round trip. Verification enforces exact order,
+size, SHA-256, foreign decode equality, and byte-identical local re-encoding;
+removing only archive 65 reconstructs schema 54 before the unchanged chain
+through schema 1. No codec byte, ABI, resource profile, default, or finder
+selection changes. External cross-platform exchange remains pending.

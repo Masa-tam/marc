@@ -230,6 +230,8 @@ frame; it does not allocate a profile-sized history or decoder workspace.
 Schema 53 appends the exact CLI profile as archive 63 while helper-resource and
 default surfaces remain closed. Schema 54 then appends the exact Contextual
 rANS CLI profile as archive 64 without changing the frozen first 63 entries.
+Schema 55 appends the exact Contextual tANS CLI profile as archive 65 without
+changing the frozen first 64 entries.
 
 ## Staged work
 
@@ -248,8 +250,9 @@ rANS CLI profile as archive 64 without changing the frozen first 63 entries.
    with its own memory proof and one schema append (rANS compact descriptor,
    private decoder, explicit-Exact complete-frame encoder, checked profile,
    streaming, public C, CLI, benchmark, and bounded decoder-fuzz substages
-   complete; schema-54 interoperability complete. The dedicated tANS design
-   and checked bounds are fixed; implementation remains closed).
+   complete; schema-54 interoperability complete. The dedicated tANS design,
+   implementation, public lifecycle, bounded fuzzing, and schema-55
+   interoperability are complete).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
@@ -278,3 +281,6 @@ Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang exchange at revision
 `8ecc7a104c7b5def57737d9c8f9c40a63e6a8c30`; schema 53's preceding 63-archive
 evidence remains frozen at revision
 `1de3df622106db7674bcf691201a601dae680294`.
+The corresponding tANS lifecycle is complete through bounded fuzzing, and
+schema 55 appends it as archive 65; external four-direction schema-55 exchange
+remains pending.
