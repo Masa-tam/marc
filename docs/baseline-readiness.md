@@ -3634,3 +3634,11 @@ artifacts, generated and self-verified its own 64-archive bundle, and supplied
 that bundle for reverse verification under Windows/MSVC. Every pass reported
 the same full revision and exact manifest, digest, decode, and byte-identical
 re-encode checks.
+
+### BR-0237
+
+GoogleTest enumeration now uses an explicit configurable 60-second timeout
+instead of the upstream five-second default observed in the generated CTest
+include. The positive-integer cache contract rejects invalid configuration,
+while ordinary test execution retains its existing independent limits. This
+changes no test inventory, codec byte, public ABI, or interoperability archive.

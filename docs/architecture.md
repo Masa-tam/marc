@@ -470,6 +470,14 @@ non-preset and non-MSVC configurations unless selected explicitly, and may be
 disabled on memory-constrained builders. This complements build-tool target
 parallelism; it does not alter source, ABI, or generated stream bytes.
 
+GoogleTest registration uses `DISCOVERY_MODE PRE_TEST` and an explicit
+`MARC_GTEST_DISCOVERY_TIMEOUT`, which defaults to 60 seconds. This limit covers
+only execution of `marc_core_tests --gtest_list_tests` before CTest loads the
+generated inventory; it is independent of per-test and whole-suite timeouts.
+The cache value must be a positive integer. The explicit allowance prevents a
+cold Windows runner or host security scan from making the upstream five-second
+default an intermittent test-infrastructure failure.
+
 Canonical commands are:
 
 ```text

@@ -28165,3 +28165,33 @@ both bounds.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1134: 2026-09-03 - Stabilize GoogleTest discovery on Windows CI
+
+- Authoring method: traced the supplied GitHub Actions failure through marc's
+  generated CTest include and changed only the repository-owned GoogleTest
+  registration and its build documentation.
+- References used: IR-0807; DD-1045; TVG-0910; BR-0237; CR-1133; the supplied
+  CI log; the generated `marc_core_tests` discovery include; and the local
+  `gtest_discover_tests` call.
+- Known implementations intentionally not consulted: external project source,
+  test harnesses, CI workarounds, issue discussions, or implementation
+  expression.
+- Independent decisions: preserve pre-test discovery; expose one positive-
+  integer cache value with a 60-second default; keep discovery, individual
+  test, and whole-suite timeouts distinct; change no test selection.
+- Generated-code task description: replace the implicit five-second discovery
+  limit, prove the generated value is 60, reject zero and non-numeric values,
+  measure direct enumeration, and run every test under both Windows compilers.
+- Similarity review: the CMake change is a minimal use of the existing
+  repository integration and introduces no codec or external implementation
+  structure.
+- Validation: both generated Windows includes contain
+  `TEST_DISCOVERY_TIMEOUT [==[60]==]`; direct MSVC enumeration completes in
+  0.099 seconds. Configured-cache checks reject `0` and `abc` with the stable
+  positive-integer error, after which the canonical cache is restored to 60.
+  All 3,336 tests pass without exclusions under MSVC and ClangCL in 254.91 and
+  249.75 seconds respectively; schema compatibility remains included and
+  passes in 107.64 and 97.42 seconds. Documentation and whitespace validation
+  pass, and no production source, test inventory, ABI, stream byte, or archive
+  changes.

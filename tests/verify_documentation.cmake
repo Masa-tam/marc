@@ -769,7 +769,9 @@ set(readme_document "${source_dir}/README.md")
 file(READ "${readme_document}" readme_content)
 foreach(required_readme_status IN ITEMS
         "All forty-two profiles are exposed"
-        "all forty-two benchmark-admitted")
+        "all forty-two benchmark-admitted"
+        "MARC_GTEST_DISCOVERY_TIMEOUT"
+        "defaults to 60 seconds")
     string(FIND "${readme_content}" "${required_readme_status}"
         readme_status_offset)
     if(readme_status_offset EQUAL -1)
@@ -1210,6 +1212,20 @@ endforeach()
 
 file(READ "${source_dir}/CMakeLists.txt" root_cmake_content)
 string(REPLACE "\r\n" "\n" root_cmake_content "${root_cmake_content}")
+foreach(required_gtest_discovery_contract IN ITEMS
+        "set(MARC_GTEST_DISCOVERY_TIMEOUT \"60\" CACHE STRING"
+        "MARC_GTEST_DISCOVERY_TIMEOUT must be a positive integer"
+        "DISCOVERY_MODE PRE_TEST"
+        "DISCOVERY_TIMEOUT \"\${MARC_GTEST_DISCOVERY_TIMEOUT}\"")
+    string(FIND "${root_cmake_content}"
+        "${required_gtest_discovery_contract}"
+        gtest_discovery_contract_offset)
+    if(gtest_discovery_contract_offset EQUAL -1)
+        message(FATAL_ERROR
+            "GoogleTest discovery-timeout contract is stale: "
+            "${required_gtest_discovery_contract}")
+    endif()
+endforeach()
 string(FIND "${root_cmake_content}"
     "set_tests_properties(marc_interoperability_schema_compatibility\n                PROPERTIES TIMEOUT 600)"
     interoperability_timeout_offset)

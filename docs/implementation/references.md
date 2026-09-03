@@ -7323,3 +7323,10 @@ strict-order verifier, historical schema converter, and exact CLI profile.
 No external compressor, rANS implementation, archive format, interoperability
 suite, source, test, vector, patent, pseudocode, allocation policy, or
 optimization description was consulted.
+
+### IR-0807
+
+The GoogleTest discovery-timeout correction uses the repository's generated
+`marc_core_tests` include file, the observed GitHub Actions failure log, and
+the existing CMake `gtest_discover_tests` integration. No external project
+source, test harness, workaround, or implementation expression was consulted.

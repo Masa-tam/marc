@@ -20,6 +20,13 @@ option(MARC_BUILD_FUZZERS "Build marc Clang/libFuzzer targets" OFF)
 option(MARC_MSVC_MULTIPROCESS_COMPILE
     "Compile independent C/C++ translation units concurrently with MSVC /MP"
     OFF)
+set(MARC_GTEST_DISCOVERY_TIMEOUT "60" CACHE STRING
+    "Seconds allowed for GoogleTest test enumeration")
+
+if(MARC_BUILD_TESTS AND NOT MARC_GTEST_DISCOVERY_TIMEOUT MATCHES "^[1-9][0-9]*$")
+    message(FATAL_ERROR
+        "MARC_GTEST_DISCOVERY_TIMEOUT must be a positive integer")
+endif()
 
 if(MARC_MSVC_MULTIPROCESS_COMPILE AND MSVC)
     add_compile_options(
@@ -2219,7 +2226,9 @@ if(MARC_BUILD_TESTS)
     else()
         target_link_libraries(marc_core_tests PRIVATE marc::shared GTest::gtest_main)
     endif()
-    gtest_discover_tests(marc_core_tests DISCOVERY_MODE PRE_TEST)
+    gtest_discover_tests(marc_core_tests
+        DISCOVERY_MODE PRE_TEST
+        DISCOVERY_TIMEOUT "${MARC_GTEST_DISCOVERY_TIMEOUT}")
 
     add_library(marc_lz77_fuzz_compile_smoke OBJECT
         fuzz/lz77_stream_fuzz.cpp)

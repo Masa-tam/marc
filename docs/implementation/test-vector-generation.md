@@ -13113,3 +13113,14 @@ require rejection. Remove only archive 64, rewrite the manifest as
 unchanged historical conversions through schema 1. Run the focused schema
 test and complete suite under MSVC and ClangCL; leave external four-direction
 exchange for the pushed revision.
+
+### TVG-0910
+
+Configure the Windows/MSVC test build with the default
+`MARC_GTEST_DISCOVERY_TIMEOUT` and inspect the generated GoogleTest include to
+require `TEST_DISCOVERY_TIMEOUT [==[60]==]`. Time a direct
+`marc_core_tests --gtest_list_tests` execution, then run the complete 3,336-test
+inventory under MSVC and ClangCL without exclusions, retaining the
+interoperability schema-compatibility test. Configure once with zero and with a
+non-numeric value and require each invalid cache value to fail before build
+generation. Verify documentation and a whitespace-clean diff.

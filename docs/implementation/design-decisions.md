@@ -21433,3 +21433,19 @@ unchanged conversion chain through schema 1. This admission MUST NOT alter a
 codec byte, public ABI, profile resource value, default, or encoder-local
 match-finder selection. External cross-platform exchange remains separate
 release evidence.
+
+## DD-1045: Give GoogleTest enumeration an explicit timeout
+
+- Date: 2026-09-03
+- Status: accepted
+
+Define cache string `MARC_GTEST_DISCOVERY_TIMEOUT` with a 60-second default,
+validate it as a positive integer whenever tests are enabled, and pass it as
+the `DISCOVERY_TIMEOUT` of the single `gtest_discover_tests` registration.
+Retain `DISCOVERY_MODE PRE_TEST` so configuration and builds do not execute the
+test binary.
+
+This timeout governs only the pre-CTest `--gtest_list_tests` process. It MUST
+NOT replace or reduce the independent per-test and complete-suite ceilings.
+The correction changes no test selection, production source, ABI, stream byte,
+or interoperability archive.

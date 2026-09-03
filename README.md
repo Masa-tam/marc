@@ -43,6 +43,11 @@ The canonical Windows preset enables MSVC `/MP` within each C/C++ target.
 Set `MARC_MSVC_MULTIPROCESS_COMPILE=OFF` when a constrained machine requires
 serial translation-unit compilation.
 
+GoogleTest enumeration has its own timeout, separate from each CTest case.
+`MARC_GTEST_DISCOVERY_TIMEOUT` defaults to 60 seconds so cold Windows runners
+can list the complete test inventory; maintainers may override it with a
+positive integer at configure time.
+
 ## Command-line tool
 
 Top-level builds produce a small `marc` executable that exercises the public C
