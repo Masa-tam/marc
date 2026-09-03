@@ -1,6 +1,6 @@
 # LZSS contextual tANS 64 MiB window
 
-Status: direct typed-token coding stage complete; outer implementation remains closed.
+Status: complete-frame decoding stage complete; complete-frame encoding remains closed.
 
 ## Purpose and identity
 
@@ -35,8 +35,10 @@ remain four bytes. No context, table, state, or serialized selector is added.
 Descriptor capacity is now 9,189 bytes and the internal descriptor parser and
 serializer admit variant 5. Tests require its canonical 4,598-entry grammar,
 the exact all-dense maximum, one-byte-short aggregate rejection, and reciprocal
-variant-4 rejection. The outer stream/header gate remains explicit: exact
-triple `2/6 + 1/5 + 5/2` is rejected until stage 3.
+variant-4 rejection. Internal stream-header validation, serialization, and
+parsing now admit exact triple `2/6 + 1/5 + 5/2`. Frame preflight selects the
+9,189-byte descriptor ceiling and the variant-5 `8F`/`36T` count bounds before
+descriptor, table, token, or raw publication.
 
 The existing selected-layout table builder and single-state coding core now
 carry variant 5 without a separate production branch. Direct tests construct
@@ -116,8 +118,9 @@ limits, and stream fields never enlarge local policy.
    and exact variant-5 bounds without admitting an outer frame.
 2. **Complete:** carry the selected layout through contextual tANS table
    construction and direct typed-token encode/decode tests.
-3. Admit exact triple `2/6 + 1/5 + 5/2` in private stream/header parsing,
-   frame preflight, and complete-frame decoding while encoding remains closed.
+3. **Complete:** admit exact triple `2/6 + 1/5 + 5/2` in private stream/header
+   parsing, frame preflight, and complete-frame decoding while encoding remains
+   closed.
 4. Admit complete-frame encoding with HashChain Exact and BinaryTree Exact;
    require their canonical frames to match. Exhaustive remains closed.
 5. Add checked profile/workspace calculation and one-byte streaming with exact

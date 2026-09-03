@@ -44,7 +44,7 @@ constexpr std::array frame_magic{
     case context::internal::LzssFieldContextVariant::field_context_16m:
         return entropy::internal::contextual_tans_max_descriptor_size_v4;
     case context::internal::LzssFieldContextVariant::field_context_64m:
-        return 0;
+        return entropy::internal::contextual_tans_max_descriptor_size_v5;
     }
     return 0;
 }
@@ -154,11 +154,6 @@ validate_lzss_contextual_tans_stream_header(
             return LzssContextualTansStreamHeaderError::
                 contradictory_parameters;
         }
-    }
-    if (selected.layout.context_variant
-        == context::internal::LzssFieldContextVariant::field_context_64m) {
-        return LzssContextualTansStreamHeaderError::
-            unsupported_context_variant;
     }
     const auto dictionary_error =
         dictionary::internal::validate_lzss_typed_parameters(

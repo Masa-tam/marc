@@ -28276,3 +28276,32 @@ both bounds.
   109.00 seconds. Documentation and whitespace validation pass. Production
   source, public ABI, outer stream admission, tools, fuzzing, schema 54, and
   archive bytes remain unchanged.
+
+## CR-1138: 2026-09-03 - Admit 64-MiB contextual tANS frame decoding
+
+- Authoring method: opened only marc's repository-owned Contextual tANS
+  stream/header and decoder-side frame path for the already specified exact
+  variant triple, then added an explicit encoder gate to preserve staging.
+- References used: IR-0811; DD-1049; TVG-0914; BR-0241; CR-1137; the local
+  Contextual tANS format, preflight, complete-frame decoder, and preceding
+  Contextual rANS decoder-side pattern.
+- Known implementations intentionally not consulted: external tANS/FSE
+  implementations, compressors, source, tests, vectors, patents, pseudocode,
+  allocation policies, or optimization descriptions.
+- Independent decisions: select the variant-5 descriptor bound through the
+  common layout; admit header serialization for deterministic private vectors;
+  keep every complete-frame encoding route closed at one central gate.
+- Generated-code task description: round-trip exact private identity
+  `2/6 + 1/5 + 5/2`, prove `36T` equality and one-above rejection, construct
+  and decode a complete frame containing distance 16,777,217, require atomic
+  one-short outputs, and prove the complete-frame encoder remains closed.
+- Similarity review: the minimal production changes select an existing marc
+  constant and remove the prior explicit decoder-side rejection. Tests derive
+  from marc's own preceding variant boundary patterns; no external expression
+  or distinctive structure was used.
+- Validation: all four focused admission and closed-gate tests pass under
+  MSVC and ClangCL. All 3,345 registered tests pass without exclusions in
+  265.64 and 272.42 seconds respectively; schema compatibility is included
+  and passes in 108.73 and 108.65 seconds. Documentation and whitespace
+  validation pass. Streaming, public API, tools, fuzzing, schema 54, and
+  archive bytes remain unchanged.

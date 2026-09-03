@@ -7706,3 +7706,16 @@ Stream metadata MUST NOT enlarge a local hard limit. HashChain Exact and
 BinaryTree Exact remain encoder-local choices and are not serialized or
 selected automatically. All earlier dictionary/context pairs, backend triples,
 canonical archives, default limits, and bytes retain their frozen meanings.
+
+The internal Contextual tANS descriptor, stream-header parser/serializer,
+frame preflight, and complete-frame decoder now also admit exact triple
+`2/6 + 1/5 + 5/2`. The stream retains entropy table log 12, one state,
+31 symbol contexts plus the implicit bypass table, 4,598 serialized
+frequencies, and the 131,072-entry decoder table bank. Preflight enforces
+`8F`, `36T`, the 9,189-byte descriptor ceiling, `12F+2` payload ceiling, and
+caller-supplied frame, block, payload, distance, table, and aggregate limits
+before publication. Complete-frame decoding reconstructs the first new
+distance 16,777,217 and crossed older layouts publish neither tokens nor raw
+bytes. Private complete-frame encoding remains explicitly unsupported for
+this triple; streaming, public profile value 4, applications, fuzzing, and
+schema 54 remain unchanged.

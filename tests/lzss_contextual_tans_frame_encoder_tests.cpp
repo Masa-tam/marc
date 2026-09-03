@@ -72,6 +72,17 @@ struct AlignedWorkspace {
     return stream;
 }
 
+[[nodiscard]] LzssContextualTansStreamHeader stream_for_64m(
+    const std::uint64_t original_size) {
+    auto stream = stream_for(original_size);
+    stream.frame_size = static_cast<std::uint32_t>(original_size);
+    stream.dictionary.window_size = UINT32_C(1) << 26;
+    stream.dictionary_variant = 6;
+    stream.context_variant = 5;
+    stream.frequency_entry_count = 4598;
+    return stream;
+}
+
 [[nodiscard]] std::vector<std::byte> documented_literal_frame() {
     std::vector<std::byte> bytes(96);
     bytes[0] = std::byte{0x4d}; bytes[1] = std::byte{0x52};
@@ -201,6 +212,24 @@ TEST(LzssContextualTansFrameEncoder,
         decoded);
     ASSERT_EQ(result.error, LzssContextualTansFrameDecodeError::none);
     EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzssContextualTansFrameEncoder,
+     SixtyFourMiBCompleteFrameEncodingRemainsClosed) {
+    constexpr std::array raw{std::byte{'A'}};
+    const auto stream = stream_for_64m(raw.size());
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    std::array<LzssTypedToken, 1> tokens{};
+    auto encode_table_storage = encode_tables();
+
+    const auto plan = plan_lzss_contextual_tans_frame(
+        stream, limits, 0, 0, raw, tokens, encode_table_storage);
+    EXPECT_EQ(plan.error, LzssContextualTansFrameEncodeError::invalid_stream);
+    EXPECT_EQ(tokens[0].literal, 0U);
+    EXPECT_TRUE(std::ranges::all_of(
+        encode_table_storage,
+        [](const auto value) { return value == 0; }));
 }
 
 TEST(LzssContextualTansFrameEncoder,

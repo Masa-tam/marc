@@ -170,7 +170,7 @@ the twenty-two typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,342 tests under
+The optimized Release configurations each enumerate 3,345 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3672,3 +3672,13 @@ payload are byte-identical to the generic modeled-operation path, while
 variant 4 rejects the crossing without modifying token output. No production
 branch was necessary; the exact outer triple, frame/stream/public/tool/fuzz
 surfaces, and schema 54 remain closed.
+
+### BR-0241
+
+Internal stream/header handling, frame preflight, and complete-frame decoding
+now admit exact Contextual tANS identity `2/6 + 1/5 + 5/2`. Tests prove its
+4,598-frequency header, variant-selected `8F`/`36T` bounds, 9,189-byte
+descriptor ceiling, and exact reconstruction of distance 16,777,217 with
+atomic short-workspace failures. Complete-frame encoding has a dedicated
+closed gate; streaming, public API, tools, fuzzing, and schema 54 remain
+unchanged.

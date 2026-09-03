@@ -21503,3 +21503,21 @@ MUST match the generic modeled-operation descriptor and payload byte for byte.
 Reciprocal variant-4 use MUST fail atomically. Keep the outer stream/header
 triple, complete-frame path, streaming, public profile, tools, fuzzing, and
 schema 54 closed.
+
+## DD-1049: Admit only the 64 MiB Contextual tANS decoder-side frame path
+
+- Date: 2026-09-03
+- Status: accepted
+
+Admit exact triple `2/6 + 1/5 + 5/2` in internal stream-header validation,
+serialization, parsing, frame-header validation, frame preflight, and complete-
+frame decoding. Select the variant-5 9,189-byte descriptor ceiling and its
+existing `8F`, `36T`, 131,072-entry table, payload, and caller-limit checks
+before publishing tokens or raw bytes.
+
+Require exact private header round trip, equality and one-above decision-bound
+coverage, reciprocal pair rejection, and complete reconstruction of distance
+16,777,217 after bounded overlap-built history. Add an explicit complete-frame
+encoder rejection after layout selection so opening header validation cannot
+open encoding accidentally. Streaming, public profile, tools, fuzzing, and
+schema 54 remain closed.

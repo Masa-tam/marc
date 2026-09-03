@@ -13174,3 +13174,20 @@ descriptor and payload, then decode the original tokens exactly. Decode under
 variant 4 and require rejection without changing caller-owned output. Use the
 explicit four-GiB internal-buffer policy and run all registered tests under
 MSVC and ClangCL while retaining the outer triple and schema 54 gates.
+
+### TVG-0914
+
+Serialize and parse the private 64-MiB stream identity and require exact
+dictionary/context/entropy variants `2/6 + 1/5 + 5/2`, frame/window
+67,108,864, and 4,598 frequencies. Cross either dictionary or context variant
+and require contradiction before publishing a parsed header.
+
+For a five-byte frame accept decision count 36 at the `36T` boundary and
+reject 37; retain the `8F` raw-byte boundary through the selected layout.
+Build a complete frame from repository-owned typed tokens that establish
+16,777,217 history bytes and then reference distance 16,777,217. Require
+preflight and complete decoding to publish the exact tokens and all-'A' raw
+output; one-short token and raw buffers remain unchanged. Finally require the
+complete-frame encoder to reject the same variant before mutating token or
+table workspace. Run all registered tests under MSVC and ClangCL without
+opening streaming, public, application, fuzz, or schema surfaces.

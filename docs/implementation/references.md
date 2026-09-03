@@ -7357,3 +7357,12 @@ builder, single-state coding core, typed-token adapter, and variant-5 field
 context primitives. No external tANS/FSE implementation, compressor, source,
 test, vector, patent, pseudocode, allocation policy, or optimization
 description was consulted.
+
+### IR-0811
+
+The 64-MiB Contextual tANS decoder-side admission uses IR-0810, DD-1049,
+TVG-0914, BR-0241, CR-1138, marc's repository-owned stream/header grammar,
+checked frame preflight, complete-frame decoder, and preceding Contextual rANS
+decoder-side admission pattern. No external tANS/FSE implementation,
+compressor, source, test, vector, patent, pseudocode, allocation policy, or
+optimization description was consulted.
