@@ -7746,3 +7746,12 @@ validation ceilings. Interoperability schema 55 appends exact triple
 validates the identity before round trip; verification requires exact order and
 byte-identical local re-encoding. Removing only archive 65 reconstructs schema
 54 before the unchanged compatibility chain. No earlier archive byte changes.
+
+The standalone Contextual Blocked Huffman descriptor boundary now admits
+context variant 5 with distance symbols 0..26 and a 2,606-byte maximum.
+The 16-byte prefix, record version, canonical Single/sparse/dense selection,
+four pooled models, 31 overrides, code-length limit 15, and strict high-padding
+rules are unchanged. Each of the nine possible dense distance records grows
+by one byte relative to variant 4. Older selected maxima remain frozen. This
+descriptor-only admission does not admit outer triple `2/6 + 1/5 + 2/2`,
+frame coding, streaming, public profiles, applications, or new archives.

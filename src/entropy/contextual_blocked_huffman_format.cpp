@@ -58,6 +58,12 @@ struct SelectedLayout {
         selected.maximum_descriptor_size =
             contextual_blocked_huffman_max_descriptor_size_v4;
         break;
+    case V::field_context_64m:
+        selected.context_alphabets =
+            &context::internal::lzss_field_context_alphabets_v5;
+        selected.maximum_descriptor_size =
+            contextual_blocked_huffman_max_descriptor_size_v5;
+        break;
     default: return false;
     }
     selected.field_alphabets = {
@@ -585,5 +591,10 @@ static_assert(contextual_blocked_huffman_max_descriptor_size_v2
               == contextual_blocked_huffman_prefix_size
                   + 5 + 132 + 8 + 15
                   + 3 * 5 + 17 * 132 + 3 * 8 + 8 * 15);
+
+static_assert(contextual_blocked_huffman_max_descriptor_size_v5
+              == contextual_blocked_huffman_prefix_size
+                  + 5 + 132 + 8 + 18
+                  + 3 * 5 + 17 * 132 + 3 * 8 + 8 * 18);
 
 } // namespace marc::entropy::internal

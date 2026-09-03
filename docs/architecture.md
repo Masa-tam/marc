@@ -6014,3 +6014,11 @@ Verification enforces exact order and byte-identical local re-encoding.
 Compatibility removes only entry 63 to reconstruct schema 52 before traversing
 the unchanged chain through schema 1. This admission changes no codec format,
 public ABI, default, or earlier archive byte.
+
+The 64-MiB Contextual Blocked Huffman descriptor boundary selects context
+variant 5's 27-symbol distance alphabet before any model work. Shared scratch
+capacity grows to 2,606 bytes while each older selected wire bound remains
+unchanged. Canonical Single/dense vectors and exact/one-short limit checks
+preserve transactional publication. This is descriptor-only admission; the
+outer-frame, profile, public, application, fuzz-profile, and interoperability
+boundaries remain closed to `2/6 + 1/5 + 2/2`.

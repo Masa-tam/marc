@@ -13307,3 +13307,16 @@ one-short tests for the boundary it opens, reciprocal rejection by all older
 Contextual Blocked Huffman profiles, and both Exact finders where encoding is
 admitted. Keep schema 55 unchanged until public C, applications, and bounded
 fuzzing all pass.
+
+### TVG-0922
+
+Construct variant-5 pooled Single distance symbol 26 and require serialized
+byte 30 to be `0x1a`; reject it under variant 4 and reject symbol 27 under
+variant 5 without mutation. Retain variant-4 Single bytes under the wider
+layout. Build complete canonical dense models for all four fields and all 31
+overrides; require exactly 2,606 bytes and nonzero length for symbol 26.
+Reject nonzero high padding at byte 178, every truncation of the 32-byte
+Single vector, and trailing data atomically. Require 17,885 table nodes and
+2,606 aggregate bytes at equality, and reject one below each. Keep old dense
+vectors at their format-specific lengths and run all registered tests under
+MSVC and ClangCL with schema compatibility included.

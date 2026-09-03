@@ -170,7 +170,7 @@ the twenty-three typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,350 tests under
+The optimized Release configurations each enumerate 3,358 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3756,3 +3756,13 @@ bound. Supported-layout workspace proofs admit both Exact finders and decoding
 under an explicit four-GiB aggregate policy. No implementation gate, public
 selector, tool name, fuzz profile, or schema-55 archive is opened by this
 design-only step.
+
+### BR-0249
+
+The internal Contextual Blocked Huffman descriptor now admits context variant
+5 with a 27-symbol distance alphabet and exact 2,606-byte bound. Single and
+dense vectors prove canonical bytes, reciprocal older-layout rejection,
+padding, truncation, trailing data, invalid symbols, and exact/one-short
+limits without publication on failure. The older 16-MiB dense vector keeps
+its 2,597-byte wire extent. No outer frame, public profile, application, fuzz
+profile, or schema-55 archive is admitted by this step.

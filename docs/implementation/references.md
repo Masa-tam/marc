@@ -7432,3 +7432,11 @@ layout, canonical Huffman primitives and table types, exact-finder workspace
 calculators, and completed 64-MiB tANS admission sequence. No external Huffman
 implementation, compressor, source, test, vector, patent, pseudocode,
 allocation policy, or optimization description was consulted.
+
+### IR-0819
+
+The 64-MiB Contextual Blocked Huffman descriptor admission uses IR-0818,
+DD-1056, TVG-0921, and the repository-owned selected descriptor grammar,
+variant-5 field alphabets, canonical Huffman validator, and earlier descriptor
+regressions. No external implementation, source, tests, tables, vectors,
+patents, pseudocode, or optimization description was consulted.

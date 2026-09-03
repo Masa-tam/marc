@@ -1,6 +1,6 @@
 # LZSS contextual Blocked Huffman 64 MiB window
 
-Status: design and checked bounds fixed; implementation remains closed.
+Status: descriptor admission complete; outer-frame implementation remains closed.
 
 ## Purpose and exact identity
 
@@ -48,10 +48,11 @@ distance field, odd dense-record high padding, noncanonical sparse choice,
 invalid tables, truncation, trailing descriptor bytes, and every crossed
 selection without publishing a descriptor or table.
 
-Descriptor capacity may be enlarged before outer-frame admission, but
-variant-5 parsing and serialization remain explicitly gated until their exact
-maximum, canonical record choice, unchanged older bytes, and reciprocal
-variant-4 rejection are tested.
+Descriptor capacity is now 2,606 bytes and variant-5 parsing and serialization
+are admitted. Tests fix the exact maximum, canonical record choice, unchanged
+older Single bytes, reciprocal variant-4 rejection, strict padding, and
+exact/one-short table and aggregate limits. Outer-frame admission remains
+closed.
 
 ## Decision and payload bounds
 
@@ -121,7 +122,7 @@ in a bounded fuzzer must not allocate a 64-MiB frame or history.
 
 ## Staged implementation
 
-1. Expand descriptor selection, canonical parsing, and serialization to
+1. **Complete:** expand descriptor selection, canonical parsing, and serialization to
    context variant 5; prove the 2,606-byte maximum and unchanged older bytes.
 2. Carry the immutable layout through model building, operation coding, and
    direct typed-token encode/decode with a class-26 hand vector.

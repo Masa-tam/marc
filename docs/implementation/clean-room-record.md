@@ -28508,3 +28508,28 @@ both bounds.
   ledgers; arithmetic agrees with the shared 64-MiB workspace table. The diff
   is whitespace-clean and changes no source, ABI, stream byte, test inventory,
   or interoperability schema.
+
+## CR-1146: 2026-09-04 - Admit the 64-MiB contextual Blocked Huffman descriptor
+
+- Authoring method: extended the repository-owned selected descriptor parser,
+  validator, serializer, and fixed scratch capacity to field-context variant 5.
+- References used: IR-0819; DD-1057; TVG-0922; BR-0249; CR-1145; the local
+  descriptor grammar, canonical Huffman tables, and shared field alphabets.
+- Known implementations intentionally not consulted: external compressors,
+  Huffman implementations, source, tests, tables, vectors, patents,
+  pseudocode, allocation policies, or optimizations.
+- Independent decisions: use the existing switch-selected grammar with 27
+  distance symbols and a 2,606-byte bound; preserve all older bounds; pin the
+  old dense vector to its wire size rather than implementation capacity.
+- Generated-code task description: add exact Single/dense vectors, invalid
+  symbol and padding cases, truncation/trailing checks, exact/one-short
+  aggregate and table limits, and unchanged older bytes; retain later gates.
+- Similarity review: implementation and tests extend only marc's own selected
+  grammar and hand-generated canonical model construction. No external
+  implementation expression or distinctive test structure was used.
+- Validation: complete Release suites passed 3,358/3,358 under MSVC
+  (245.84 seconds) and ClangCL (255.71 seconds), including schema compatibility
+  (110.30 and 109.80 seconds). Documentation ordering and whitespace checks
+  passed. The exact-limit fixture sets a compatible one-decision block limit
+  before tightening aggregate storage; production limits are unchanged.
+  Public ABI, outer-frame admission, and schema 55 remain unchanged.

@@ -253,7 +253,8 @@ changing the frozen first 64 entries.
    complete; schema-54 interoperability complete. The dedicated tANS design,
    implementation, public lifecycle, bounded fuzzing, and schema-55
    interoperability are complete. The dedicated Contextual Blocked Huffman
-   design and checked bounds are fixed; implementation remains closed).
+   design and descriptor admission are complete; outer-frame implementation
+   remains closed).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a

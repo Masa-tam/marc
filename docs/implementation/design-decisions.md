@@ -21652,3 +21652,17 @@ require exact HashChain, BinaryTree, and decoder aggregate limits
 eight independently reviewed stages from descriptor capacity through one
 append-only interoperability archive. Every incomplete stage MUST keep later
 boundaries closed and MUST NOT alter schema 55 or any earlier stream byte.
+
+## DD-1057: Admit only the variant-5 Contextual Blocked Huffman descriptor
+
+- Date: 2026-09-04
+- Status: accepted
+
+Select the 27-symbol distance alphabet and exact 2,606-byte descriptor ceiling
+for field-context variant 5. Increase internal serialized scratch capacity,
+but retain each older variant's exact bound and canonical bytes. Prove symbol
+26 acceptance, symbol 27 rejection, dense padding, all short descriptors,
+trailing data, exact table/aggregate limits, and one-short atomic failures.
+The older 16-MiB dense-vector buffer MUST retain its 2,597-byte wire extent,
+not track the implementation's growing scratch capacity. Keep outer-frame,
+profile, public API, application, fuzz-profile, and schema-55 gates closed.
