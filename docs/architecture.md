@@ -6022,3 +6022,8 @@ unchanged. Canonical Single/dense vectors and exact/one-short limit checks
 preserve transactional publication. This is descriptor-only admission; the
 outer-frame, profile, public, application, fuzz-profile, and interoperability
 boundaries remain closed to `2/6 + 1/5 + 2/2`.
+
+The variant-5 model builder, operation writer/decoder, and direct typed-token
+paths now have dedicated boundary proofs. They reuse the existing immutable
+layout rather than duplicate the backend. No raw-history buffer is needed
+for the token-level distance tests; outer-frame and public gates remain closed.

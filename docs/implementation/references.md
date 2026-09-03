@@ -7440,3 +7440,9 @@ DD-1056, TVG-0921, and the repository-owned selected descriptor grammar,
 variant-5 field alphabets, canonical Huffman validator, and earlier descriptor
 regressions. No external implementation, source, tests, tables, vectors,
 patents, pseudocode, or optimization description was consulted.
+
+### IR-0820
+
+64-MiB Contextual Blocked Huffman operation/token validation uses only marc's
+selected-layout model builder, writer, decoder, typed-token contract, and
+DD-1057 descriptor grammar. No external implementation was consulted.

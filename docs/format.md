@@ -7755,3 +7755,9 @@ rules are unchanged. Each of the nine possible dense distance records grows
 by one byte relative to variant 4. Older selected maxima remain frozen. This
 descriptor-only admission does not admit outer triple `2/6 + 1/5 + 2/2`,
 frame coding, streaming, public profiles, applications, or new archives.
+
+Variant-5 operation coding is verified with Single field models and 26 bypass
+bits 0x3abcdef: the exact LSB-first payload is ef cd ab 03 with two valid bits
+in its last byte. Direct token coding accepts distances through 67,108,864
+only under compatible local limits. This does not open a complete-frame
+identity or change any prior format.

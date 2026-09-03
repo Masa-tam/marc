@@ -1,6 +1,7 @@
 # LZSS contextual Blocked Huffman 64 MiB window
 
-Status: descriptor admission complete; outer-frame implementation remains closed.
+Status: descriptor admission complete; operation and typed-token paths verified;
+outer-frame implementation remains closed.
 
 ## Purpose and exact identity
 
@@ -124,7 +125,7 @@ in a bounded fuzzer must not allocate a 64-MiB frame or history.
 
 1. **Complete:** expand descriptor selection, canonical parsing, and serialization to
    context variant 5; prove the 2,606-byte maximum and unchanged older bytes.
-2. Carry the immutable layout through model building, operation coding, and
+2. **Complete:** carry the immutable layout through model building, operation coding, and
    direct typed-token encode/decode with a class-26 hand vector.
 3. Admit only exact complete-frame identity `2/6 + 1/5 + 2/2`, initially for
    bounded decoding and then encoding after exact preflight tests pass.

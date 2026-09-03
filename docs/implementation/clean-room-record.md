@@ -28533,3 +28533,22 @@ both bounds.
   passed. The exact-limit fixture sets a compatible one-decision block limit
   before tightening aggregate storage; production limits are unchanged.
   Public ABI, outer-frame admission, and schema 55 remain unchanged.
+
+## CR-1147: 2026-09-04 - Prove 64-MiB contextual Blocked Huffman token paths
+
+- Authoring method: repository-owned selected-layout paths and independent
+  hand vectors; no production algorithm change was needed.
+- References used: IR-0820; DD-1058; TVG-0923; BR-0250.
+- Known implementations intentionally not consulted: external compression
+  source, tests, tables, pseudocode, and optimizations.
+- Independent decisions: retain generic plumbing and prove 26-bit bypass,
+  first-new and maximum distance, local policy, and atomic rejection.
+- Generated-code task description: extend local operation and token tests,
+  preserving older vectors and keeping outer-frame admission closed.
+- Similarity review: only marc-owned tests were extended; no external
+  implementation expression was used.
+- Validation: all 3,360 Release tests passed under MSVC (247.19 seconds) and
+  ClangCL (252.90 seconds), including schema compatibility (110.44 and
+  109.95 seconds). Documentation ordering and whitespace checks passed.
+  A sandboxed MSVC attempt stopped in FileTracker with E_ACCESSDENIED;
+  the same build succeeded with approved execution outside the sandbox.

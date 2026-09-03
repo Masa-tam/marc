@@ -13320,3 +13320,13 @@ Single vector, and trailing data atomically. Require 17,885 table nodes and
 2,606 aggregate bytes at equality, and reject one below each. Keep old dense
 vectors at their format-specific lengths and run all registered tests under
 MSVC and ClangCL with schema compatibility included.
+
+### TVG-0923
+
+Use four Single-mode field symbols followed by 26 bypass bits of 0x3abcdef.
+The exact payload is ef cd ab 03, with two final valid bits and 30 decisions.
+Decode every operation and reject bypass width 27. Construct history from
+one literal and distance-one matches of length 258, then a final remainder
+match; append distance 16,777,217 or 67,108,864 with length five.
+Compare all decoded token fields, reject the tighter local distance policy,
+and preserve token/table sentinels on crossed 16-MiB selection.

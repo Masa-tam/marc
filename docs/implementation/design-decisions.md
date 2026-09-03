@@ -21666,3 +21666,13 @@ trailing data, exact table/aggregate limits, and one-short atomic failures.
 The older 16-MiB dense-vector buffer MUST retain its 2,597-byte wire extent,
 not track the implementation's growing scratch capacity. Keep outer-frame,
 profile, public API, application, fuzz-profile, and schema-55 gates closed.
+
+## DD-1058: Prove 64-MiB Contextual Blocked Huffman operation and token paths
+
+Retain the existing immutable selected-layout plumbing rather than add a
+parallel codec implementation. Descriptor admission is sufficient for the
+generic model builder, operation writer/decoder, and direct token paths.
+Prove class 26 with a 26-bit bypass hand vector, and direct token distances
+16,777,217 and 67,108,864 without raw-history allocation. Local distance
+limits remain mandatory; crossed 16-MiB selection must not publish tokens
+or decode tables. Outer frames and schema 55 remain closed and unchanged.
