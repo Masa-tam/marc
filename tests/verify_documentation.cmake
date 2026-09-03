@@ -404,9 +404,13 @@ foreach(required_tans_window_64m_term IN ITEMS
         "HashChain Exact and BinaryTree Exact"
         "first newly reachable distance 16,777,217"
         "schema 54 unchanged"
-        "descriptor stage complete"
+        "direct typed-token coding stage complete"
         "outer stream/header gate remains explicit"
         "exact all-dense maximum"
+        "maximum distance symbol 26"
+        "26-bit"
+        "direct typed-token output is byte-identical"
+        "2. **Complete:** carry the selected layout"
         "implementation remains closed")
     string(FIND "${lzss_contextual_tans_window_64m_content}"
         "${required_tans_window_64m_term}"
@@ -935,7 +939,7 @@ foreach(required_readiness_section IN ITEMS
 endforeach()
 foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
-        "each enumerate 3,339 tests under"
+        "each enumerate 3,342 tests under"
         "four-direction schema-52 exchange")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)

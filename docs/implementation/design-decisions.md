@@ -21485,3 +21485,21 @@ one-byte-short limit tests, and reciprocal rejection under variant 4. Keep the
 outer `2/6 + 1/5 + 5/2` stream/header identity explicitly unsupported until
 the decoder-side admission stage; profile, complete-frame coding, streaming,
 public API, CLI, fuzzing, and interoperability schema 54 remain closed.
+
+## DD-1048: Admit 64 MiB Contextual tANS table and direct-token coding
+
+- Date: 2026-09-03
+- Status: accepted
+
+Carry field-context variant 5 through the existing selected-layout decode-
+table builder, model builder, single-state encoder/decoder, and direct LZSS
+typed-token adapter. Do not introduce a variant-specific production branch:
+the already generic layout selection is the normative implementation path.
+
+Require context 23 to admit distance symbol 26 with alphabet 27, admit exactly
+26 bypass bits and reject 27, and encode the first newly reachable distance
+16,777,217 after establishing that much history. Direct typed-token encoding
+MUST match the generic modeled-operation descriptor and payload byte for byte.
+Reciprocal variant-4 use MUST fail atomically. Keep the outer stream/header
+triple, complete-frame path, streaming, public profile, tools, fuzzing, and
+schema 54 closed.

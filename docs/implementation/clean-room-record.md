@@ -28248,3 +28248,31 @@ both bounds.
   passes in 103.83 and 95.13 seconds. Documentation and whitespace validation
   pass. Public ABI, profile, complete-frame coding, tools, fuzzing, schema 54,
   and archive bytes remain unchanged.
+
+## CR-1137: 2026-09-03 - Admit 64-MiB contextual tANS direct-token coding
+
+- Authoring method: exercised marc's existing layout-selected tANS table and
+  coding implementation with the already defined variant-5 field-context
+  layout, adding no variant-specific production branch.
+- References used: IR-0810; DD-1048; TVG-0913; BR-0240; CR-1136; the local
+  Contextual tANS table builder, single-state coder, typed-token adapter, and
+  shared 64-MiB context primitives.
+- Known implementations intentionally not consulted: external tANS/FSE
+  implementations, compressors, source, tests, vectors, patents, pseudocode,
+  allocation policies, or optimization descriptions.
+- Independent decisions: prove the generic implementation at its maximum new
+  symbol and bypass widths; require direct/generic byte identity; construct
+  exactly enough history for distance 16,777,217; retain the outer gate.
+- Generated-code task description: build and decode distance symbol 26,
+  round-trip a 26-bit bypass value, encode and decode the first new distance
+  through direct typed tokens, and require atomic reciprocal variant-4
+  rejection under an explicit four-GiB internal-buffer policy.
+- Similarity review: the tests follow marc's preceding 16-MiB boundary pattern
+  and use repository-owned APIs and constants. No external implementation
+  expression or distinctive test structure was used.
+- Validation: all three focused tests pass under MSVC and ClangCL. All 3,342
+  registered tests pass without exclusions in 263.65 and 270.82 seconds
+  respectively; schema compatibility is included and passes in 109.29 and
+  109.00 seconds. Documentation and whitespace validation pass. Production
+  source, public ABI, outer stream admission, tools, fuzzing, schema 54, and
+  archive bytes remain unchanged.

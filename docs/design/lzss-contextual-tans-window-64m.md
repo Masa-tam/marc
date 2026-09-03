@@ -1,6 +1,6 @@
 # LZSS contextual tANS 64 MiB window
 
-Status: descriptor stage complete; outer implementation remains closed.
+Status: direct typed-token coding stage complete; outer implementation remains closed.
 
 ## Purpose and identity
 
@@ -37,6 +37,14 @@ serializer admit variant 5. Tests require its canonical 4,598-entry grammar,
 the exact all-dense maximum, one-byte-short aggregate rejection, and reciprocal
 variant-4 rejection. The outer stream/header gate remains explicit: exact
 triple `2/6 + 1/5 + 5/2` is rejected until stage 3.
+
+The existing selected-layout table builder and single-state coding core now
+carry variant 5 without a separate production branch. Direct tests construct
+the maximum distance symbol 26 in context 23, encode and decode a 26-bit
+bypass value, and prove direct typed-token output is byte-identical to the
+generic modeled-operation path. A boundary stream first establishes exactly
+16,777,217 bytes of history and then codes distance 16,777,217; reciprocal
+variant-4 decoding rejects it before changing caller-owned token output.
 
 ## Count and payload bounds
 
@@ -106,8 +114,8 @@ limits, and stream fields never enlarge local policy.
 
 1. **Complete:** expand compact descriptor analysis, parse/serialize storage,
    and exact variant-5 bounds without admitting an outer frame.
-2. Carry the selected layout through contextual tANS table construction and
-   direct typed-token encode/decode tests.
+2. **Complete:** carry the selected layout through contextual tANS table
+   construction and direct typed-token encode/decode tests.
 3. Admit exact triple `2/6 + 1/5 + 5/2` in private stream/header parsing,
    frame preflight, and complete-frame decoding while encoding remains closed.
 4. Admit complete-frame encoding with HashChain Exact and BinaryTree Exact;

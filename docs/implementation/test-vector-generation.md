@@ -13157,3 +13157,20 @@ the caller's output. Mutate a valid older header to the reserved exact triple
 and require parser rejection without publishing the header or consumed count.
 Run focused descriptor and gate tests and the complete registered suite under
 MSVC and ClangCL.
+
+### TVG-0913
+
+Build a variant-5 tANS table whose only active distance-class symbol is 26 in
+context 23 and require the decoder table to return 26. Encode one modeled
+symbol with alphabet 27 followed by a 26-bit bypass value; require exact
+round trip, the unchanged 131,072-entry table bank, rejection of bypass width
+27, and atomic reciprocal rejection under variant 4.
+
+Construct typed tokens that produce exactly 16,777,217 history bytes before a
+length-258 match at distance 16,777,217. Require its final modeled operations
+to contain distance class 24 and 24-bit extra value 1. Encode through both the
+generic operation path and direct typed-token path and require identical
+descriptor and payload, then decode the original tokens exactly. Decode under
+variant 4 and require rejection without changing caller-owned output. Use the
+explicit four-GiB internal-buffer policy and run all registered tests under
+MSVC and ClangCL while retaining the outer triple and schema 54 gates.

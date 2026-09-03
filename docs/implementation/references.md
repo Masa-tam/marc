@@ -7348,3 +7348,12 @@ TVG-0911, CR-1135, marc's repository-owned compact-model variant-5 grammar,
 64-MiB Contextual rANS descriptor stage. No external tANS/FSE implementation,
 compressor, source, test, vector, patent, pseudocode, allocation policy, or
 optimization description was consulted.
+
+### IR-0810
+
+The 64-MiB Contextual tANS direct-token stage uses IR-0809, DD-1048,
+TVG-0913, BR-0240, CR-1137, marc's repository-owned selected-layout table
+builder, single-state coding core, typed-token adapter, and variant-5 field
+context primitives. No external tANS/FSE implementation, compressor, source,
+test, vector, patent, pseudocode, allocation policy, or optimization
+description was consulted.

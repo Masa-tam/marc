@@ -20,6 +20,7 @@ using marc::entropy::internal::TansTables;
 using marc::entropy::internal::contextual_tans_bypass_table_index;
 using marc::entropy::internal::contextual_tans_decode_table_entries;
 using marc::entropy::internal::contextual_tans_total_frequency;
+using marc::context::internal::LzssFieldContextVariant;
 
 [[nodiscard]] ContextualTansDescriptor literal_a_descriptor() {
     ContextualTansDescriptor descriptor{};
@@ -116,6 +117,48 @@ TEST(ContextualTansDecodeTables, ReusesCanonicalStandaloneTransitions) {
         tables.entries.begin(),
         tables.entries.begin() + contextual_tans_total_frequency,
         expected.decode.begin()));
+}
+
+TEST(ContextualTansDecodeTables, BuildsSixtyFourMiBMaximumDistanceClass) {
+    ContextualTansDescriptor descriptor{};
+    descriptor.decision_count = 1;
+    descriptor.payload_size = 2;
+    descriptor.frequency_entry_count =
+        marc::context::internal::lzss_field_context_frequency_entries_v5;
+    const auto offset =
+        marc::context::internal::lzss_field_context_offsets_v5[23];
+    descriptor.frequencies[offset + 26] = 4096;
+    constexpr auto variant = LzssFieldContextVariant::field_context_64m;
+
+    std::vector<TansDecodeEntry> storage(
+        contextual_tans_decode_table_entries);
+    ContextualTansDecodeTables tables{};
+    const auto result =
+        marc::entropy::internal::build_contextual_tans_decode_tables(
+            descriptor, {}, storage, tables, variant);
+    ASSERT_EQ(result.error, ContextualTansDecodeTableError::none);
+    ASSERT_TRUE(tables.active_contexts[23]);
+    const auto distance = tables.entries.subspan(
+        23 * contextual_tans_total_frequency,
+        contextual_tans_total_frequency);
+    EXPECT_TRUE(std::ranges::all_of(distance, [](const auto& entry) {
+        return entry.symbol == 26 && entry.state_base >= 4096
+            && entry.state_base < 8192 && entry.bit_count == 0;
+    }));
+
+    const TansDecodeEntry sentinel{0xa5a5, 0xa5, 0xa5};
+    std::ranges::fill(storage, sentinel);
+    tables = {};
+    const auto crossed =
+        marc::entropy::internal::build_contextual_tans_decode_tables(
+            descriptor, {}, storage, tables,
+            LzssFieldContextVariant::field_context_16m);
+    EXPECT_EQ(crossed.error,
+              ContextualTansDecodeTableError::invalid_descriptor);
+    EXPECT_EQ(crossed.format_error,
+              ContextualTansFormatError::invalid_frequency_entry_count);
+    EXPECT_TRUE(std::ranges::all_of(storage, marker));
+    EXPECT_TRUE(tables.entries.empty());
 }
 
 TEST(ContextualTansDecodeTables, PrewriteFailuresPreserveStorageAndView) {

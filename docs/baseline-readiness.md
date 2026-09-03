@@ -170,7 +170,7 @@ the twenty-two typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,339 tests under
+The optimized Release configurations each enumerate 3,342 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3662,3 +3662,13 @@ older-capacity preservation, and descriptor-plus-payload equality and
 one-short limits. The exact outer stream identity remains explicitly rejected;
 no profile, frame coder, public API, tool, fuzz target, or schema-54 archive is
 opened.
+
+### BR-0240
+
+The existing generic Contextual tANS table and coding core now has direct
+variant-5 proof: distance symbol 26, 26-bit bypass coding, and the first new
+distance 16,777,217 all round trip. The direct typed-token descriptor and
+payload are byte-identical to the generic modeled-operation path, while
+variant 4 rejects the crossing without modifying token output. No production
+branch was necessary; the exact outer triple, frame/stream/public/tool/fuzz
+surfaces, and schema 54 remain closed.
