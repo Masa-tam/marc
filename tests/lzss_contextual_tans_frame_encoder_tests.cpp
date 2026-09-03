@@ -83,6 +83,14 @@ struct AlignedWorkspace {
     return stream;
 }
 
+[[nodiscard]] marc::core::DecoderLimits limits_64m() {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = UINT64_C(1) << 26;
+    limits.max_block_size = UINT64_C(1) << 26;
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    return limits;
+}
+
 [[nodiscard]] std::vector<std::byte> documented_literal_frame() {
     std::vector<std::byte> bytes(96);
     bytes[0] = std::byte{0x4d}; bytes[1] = std::byte{0x52};
@@ -215,11 +223,10 @@ TEST(LzssContextualTansFrameEncoder,
 }
 
 TEST(LzssContextualTansFrameEncoder,
-     SixtyFourMiBCompleteFrameEncodingRemainsClosed) {
+     SixtyFourMiBExhaustiveVariantRemainsClosed) {
     constexpr std::array raw{std::byte{'A'}};
     const auto stream = stream_for_64m(raw.size());
-    auto limits = marc::core::DecoderLimits{};
-    limits.max_lz_distance = UINT64_C(1) << 26;
+    const auto limits = limits_64m();
     std::array<LzssTypedToken, 1> tokens{};
     auto encode_table_storage = encode_tables();
 
@@ -230,6 +237,95 @@ TEST(LzssContextualTansFrameEncoder,
     EXPECT_TRUE(std::ranges::all_of(
         encode_table_storage,
         [](const auto value) { return value == 0; }));
+}
+
+TEST(LzssContextualTansFrameEncoder,
+     SixtyFourMiBExactFindersEmitIdenticalDecodableFrame) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'1'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'C'}, std::byte{'D'}, std::byte{'E'}, std::byte{'2'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'3'}};
+    const auto stream = stream_for_64m(raw.size());
+    const auto limits = limits_64m();
+    constexpr auto chain_strategy = marc::dictionary::internal::
+        LzssMatchFinderStrategy::hash_chain_exact;
+    constexpr auto tree_strategy = marc::dictionary::internal::
+        LzssMatchFinderStrategy::binary_tree_exact;
+    const auto chain_requirements = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            chain_strategy, raw.size(), stream.dictionary, limits);
+    const auto tree_requirements = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            tree_strategy, raw.size(), stream.dictionary, limits);
+    ASSERT_EQ(chain_requirements.error,
+              marc::dictionary::internal::LzssMatchFinderWorkspaceError::none);
+    ASSERT_EQ(tree_requirements.error,
+              marc::dictionary::internal::LzssMatchFinderWorkspaceError::none);
+    ASSERT_GT(chain_requirements.workspace_size, 0U);
+    ASSERT_GT(tree_requirements.workspace_size, 0U);
+    AlignedWorkspace chain_owner(chain_requirements.workspace_size);
+    AlignedWorkspace tree_owner(tree_requirements.workspace_size);
+    auto chain_workspace = chain_owner.bytes(
+        chain_requirements.workspace_size);
+    auto tree_workspace = tree_owner.bytes(tree_requirements.workspace_size);
+    std::array<LzssTypedToken, raw.size()> chain_tokens{};
+    std::array<LzssTypedToken, raw.size()> tree_tokens{};
+    auto chain_tables = encode_tables();
+    auto tree_tables = encode_tables();
+
+    const auto short_chain = plan_lzss_contextual_tans_frame_with_match_finder(
+        stream, limits, 0, 0, raw, chain_tokens, chain_tables,
+        chain_strategy, chain_workspace.first(chain_workspace.size() - 1));
+    EXPECT_EQ(short_chain.error,
+              LzssContextualTansFrameEncodeError::token_encode_error);
+    const auto short_tree = plan_lzss_contextual_tans_frame_with_match_finder(
+        stream, limits, 0, 0, raw, tree_tokens, tree_tables,
+        tree_strategy, tree_workspace.first(tree_workspace.size() - 1));
+    EXPECT_EQ(short_tree.error,
+              LzssContextualTansFrameEncodeError::token_encode_error);
+
+    const auto chain_plan = plan_lzss_contextual_tans_frame_with_match_finder(
+        stream, limits, 0, 0, raw, chain_tokens, chain_tables,
+        chain_strategy, chain_workspace);
+    const auto tree_plan = plan_lzss_contextual_tans_frame_with_match_finder(
+        stream, limits, 0, 0, raw, tree_tokens, tree_tables,
+        tree_strategy, tree_workspace);
+    ASSERT_EQ(chain_plan.error, LzssContextualTansFrameEncodeError::none);
+    ASSERT_EQ(tree_plan.error, LzssContextualTansFrameEncodeError::none);
+    EXPECT_EQ(tree_plan.serialized_size, chain_plan.serialized_size);
+    EXPECT_EQ(tree_plan.token_count, chain_plan.token_count);
+    EXPECT_EQ(tree_plan.event_count, chain_plan.event_count);
+    EXPECT_EQ(tree_plan.decision_count, chain_plan.decision_count);
+    EXPECT_EQ(tree_plan.payload_size, chain_plan.payload_size);
+    EXPECT_EQ(tree_plan.descriptor_size, chain_plan.descriptor_size);
+
+    std::vector<std::byte> chain(chain_plan.serialized_size);
+    std::vector<std::byte> tree(tree_plan.serialized_size);
+    ASSERT_EQ(encode_lzss_contextual_tans_frame_with_match_finder(
+                  stream, limits, 0, 0, raw, chain_tokens, chain_tables,
+                  chain_strategy, chain_workspace, chain).error,
+              LzssContextualTansFrameEncodeError::none);
+    ASSERT_EQ(encode_lzss_contextual_tans_frame_with_match_finder(
+                  stream, limits, 0, 0, raw, tree_tokens, tree_tables,
+                  tree_strategy, tree_workspace, tree).error,
+              LzssContextualTansFrameEncodeError::none);
+    EXPECT_EQ(tree, chain);
+    ASSERT_GT(chain_plan.descriptor_size, 17U);
+    EXPECT_EQ(chain[lzss_contextual_tans_frame_header_size + 16],
+              std::byte{0xf6});
+    EXPECT_EQ(chain[lzss_contextual_tans_frame_header_size + 17],
+              std::byte{0x11});
+
+    auto decode_table_storage = decode_tables();
+    std::array<LzssTypedToken, raw.size()> decoded_tokens{};
+    std::array<std::byte, raw.size()> decoded{};
+    const auto result = decode_lzss_contextual_tans_frame(
+        chain, {stream, limits, 0, 0}, decode_table_storage, decoded_tokens,
+        decoded);
+    ASSERT_EQ(result.error, LzssContextualTansFrameDecodeError::none);
+    EXPECT_EQ(decoded, raw);
 }
 
 TEST(LzssContextualTansFrameEncoder,

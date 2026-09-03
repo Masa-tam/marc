@@ -21521,3 +21521,18 @@ coverage, reciprocal pair rejection, and complete reconstruction of distance
 encoder rejection after layout selection so opening header validation cannot
 open encoding accidentally. Streaming, public profile, tools, fuzzing, and
 schema 54 remain closed.
+
+## DD-1050: Admit exact-finder 64 MiB Contextual tANS frame encoding
+
+- Date: 2026-09-03
+- Status: accepted
+
+Admit exact triple `2/6 + 1/5 + 5/2` through private complete-frame planning
+and encoding only when HashChain Exact or BinaryTree Exact is selected. Both
+finders MUST produce identical typed tokens, descriptor, payload, and complete
+canonical frame for identical input and configuration. Preserve one-byte-short
+finder-workspace rejection before output publication.
+
+Keep the Exhaustive route closed: its asymptotic cost is unsuitable for a
+64-MiB reference path and match-finder choice is not serialized. Streaming,
+public profile selection, tools, fuzzing, and schema 54 remain closed.

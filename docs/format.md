@@ -7716,6 +7716,8 @@ frequencies, and the 131,072-entry decoder table bank. Preflight enforces
 caller-supplied frame, block, payload, distance, table, and aggregate limits
 before publication. Complete-frame decoding reconstructs the first new
 distance 16,777,217 and crossed older layouts publish neither tokens nor raw
-bytes. Private complete-frame encoding remains explicitly unsupported for
-this triple; streaming, public profile value 4, applications, fuzzing, and
-schema 54 remain unchanged.
+bytes. Private complete-frame encoding admits HashChain Exact and BinaryTree
+Exact only; both routes MUST emit identical canonical bytes for identical
+input and configuration. Exhaustive encoding remains unsupported because a
+64-MiB exhaustive search is not a viable reference route. Streaming, public
+profile value 4, applications, fuzzing, and schema 54 remain unchanged.

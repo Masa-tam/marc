@@ -7366,3 +7366,12 @@ checked frame preflight, complete-frame decoder, and preceding Contextual rANS
 decoder-side admission pattern. No external tANS/FSE implementation,
 compressor, source, test, vector, patent, pseudocode, allocation policy, or
 optimization description was consulted.
+
+### IR-0812
+
+The 64-MiB Contextual tANS complete-frame encoder admission uses IR-0811,
+DD-1050, TVG-0915, BR-0242, CR-1139, marc's repository-owned exact match-
+finder dispatch, transactional frame encoder, and preceding 64-MiB Contextual
+rANS admission pattern. No external tANS/FSE implementation, compressor,
+source, test, vector, patent, pseudocode, allocation policy, or optimization
+description was consulted.

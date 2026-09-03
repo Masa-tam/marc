@@ -13191,3 +13191,17 @@ output; one-short token and raw buffers remain unchanged. Finally require the
 complete-frame encoder to reject the same variant before mutating token or
 table workspace. Run all registered tests under MSVC and ClangCL without
 opening streaming, public, application, fuzz, or schema surfaces.
+
+### TVG-0915
+
+Encode repository-owned repeated bytes under exact private identity
+`2/6 + 1/5 + 5/2` with HashChain Exact and BinaryTree Exact. Require both
+plans to report identical token, event, decision, descriptor, payload, and
+complete-frame sizes; require both emitted frames to be byte-identical and
+decode one frame to the original input. Check the variant-5 descriptor marker
+and require each finder to reject a one-byte-short workspace.
+
+Call the Exhaustive complete-frame planner for the same identity and require
+the existing invalid-stream rejection without changing token or encode-table
+storage. Run all registered tests under MSVC and ClangCL while streaming,
+public, application, fuzz, and schema surfaces remain closed.

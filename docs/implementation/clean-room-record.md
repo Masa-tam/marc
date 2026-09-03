@@ -28305,3 +28305,32 @@ both bounds.
   and passes in 108.73 and 108.65 seconds. Documentation and whitespace
   validation pass. Streaming, public API, tools, fuzzing, schema 54, and
   archive bytes remain unchanged.
+
+## CR-1139: 2026-09-03 - Admit exact-finder 64-MiB contextual tANS frame encoding
+
+- Authoring method: narrowed the repository-owned central 64-MiB encoder gate
+  to the Exhaustive template instantiation, allowing the existing checked
+  HashChain Exact and BinaryTree Exact paths to carry the admitted layout.
+- References used: IR-0812; DD-1050; TVG-0915; BR-0242; CR-1138; the local
+  Contextual tANS frame encoder and preceding Contextual rANS exact-finder
+  admission pattern.
+- Known implementations intentionally not consulted: external tANS/FSE
+  implementations, compressors, source, tests, vectors, patents, pseudocode,
+  allocation policies, or optimization descriptions.
+- Independent decisions: retain Exhaustive rejection; require both practical
+  Exact finders to produce identical frame accounting and canonical bytes;
+  retain one-byte-short workspace failure before frame publication; and leave
+  match-finder choice outside the stream.
+- Generated-code task description: admit private 64-MiB Contextual tANS
+  complete-frame encoding only for HashChain Exact and BinaryTree Exact, prove
+  byte identity and decoding, preserve Exhaustive closure and workspace
+  bounds, and synchronize design, format, reference, decision, vector,
+  readiness, and provenance records.
+- Similarity review: the production change specializes one repository-local
+  gate and the tests extend marc's own rANS invariant pattern; no external
+  implementation expression or distinctive structure was used.
+- Validation: both focused tests and all 3,346 registered tests pass without
+  exclusions under MSVC and ClangCL in 255.05 and 259.70 seconds respectively;
+  schema compatibility is included and passes in 107.28 and 106.61 seconds.
+  Documentation and whitespace validation pass. Streaming, public API, tools,
+  fuzzing, schema 54, and archive bytes remain unchanged.
