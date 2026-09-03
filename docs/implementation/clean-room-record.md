@@ -28334,3 +28334,30 @@ both bounds.
   schema compatibility is included and passes in 107.28 and 106.61 seconds.
   Documentation and whitespace validation pass. Streaming, public API, tools,
   fuzzing, schema 54, and archive bytes remain unchanged.
+
+## CR-1140: 2026-09-03 - Admit private 64-MiB contextual tANS streaming
+
+- Authoring method: extended marc's checked 16-MiB Contextual tANS profile and
+  frame-streaming lifecycle through the completed private 64-MiB frame codec,
+  without exposing the common public selector.
+- References used: IR-0813; DD-1051; TVG-0916; BR-0243; CR-1139; the local
+  strategy-aware workspace calculators, streaming state machines, and four-
+  GiB memory proof.
+- Known implementations intentionally not consulted: external tANS/FSE
+  implementations, compressors, allocators, streaming frameworks, source,
+  tests, vectors, patents, pseudocode, memory policies, or optimization
+  descriptions.
+- Independent decisions: calculate actual HashChain and BinaryTree storage;
+  enforce exact and one-short aggregate and `8F` block limits; admit canonical
+  one-byte streaming; retain every public, tool, fuzz, and schema gate.
+- Generated-code task description: add private profile value 64 MiB, exact
+  encoder/decoder workspace queries, and streaming admission for identity
+  `2/6 + 1/5 + 5/2` while keeping public profile value 4 unsupported.
+- Similarity review: implementation and tests extend marc's repository-owned
+  16-MiB lifecycle and independently calculated 64-MiB extents. No external
+  implementation expression or distinctive test structure was used.
+- Validation: focused boundaries and all 3,348 registered tests pass without
+  exclusions under MSVC and ClangCL in 255.13 and 259.21 seconds respectively;
+  schema compatibility is included and passes in 107.21 and 107.67 seconds.
+  Documentation and whitespace validation pass. Public C, CLI, benchmark,
+  fuzz, schema 54, and archive bytes remain closed.

@@ -170,7 +170,7 @@ the twenty-two typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,346 tests under
+The optimized Release configurations each enumerate 3,348 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3691,3 +3691,12 @@ two routes produce one byte-identical canonical frame which decodes to the
 original bytes, and one-byte-short finder workspaces fail before publication.
 Exhaustive encoding remains unsupported; streaming, public API, tools,
 fuzzing, schema 54, and archive bytes remain unchanged.
+
+### BR-0243
+
+The private 64-MiB Contextual tANS lifecycle now includes strategy-aware
+checked profiles, exact and one-short aggregate enforcement, the exact `8F`
+block boundary, and one-byte streaming. Full HashChain, BinaryTree, and
+decoder aggregates are 1,946,952,743, 3,624,150,055, and 1,678,255,143 bytes.
+Public profile value 4, C factories, tools, fuzzing, schema 54, and archive
+bytes remain closed.

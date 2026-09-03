@@ -13205,3 +13205,20 @@ Call the Exhaustive complete-frame planner for the same identity and require
 the existing invalid-stream rejection without changing token or encode-table
 storage. Run all registered tests under MSVC and ClangCL while streaming,
 public, application, fuzz, and schema surfaces remain closed.
+
+### TVG-0916
+
+Calculate the full 67,108,864-byte private Contextual tANS profile with an
+explicit four-GiB local limit. Require exact HashChain encoder aggregate
+1,946,952,743, BinaryTree encoder aggregate 3,624,150,055, and decoder
+aggregate 1,678,255,143 bytes; accept each exact aggregate and reject one byte
+less before publishing views. Require identity `2/6 + 1/5 + 5/2`, 4,598
+frequency entries, 9,189 descriptor bytes, 131,072 table entries, `8F`
+decisions, and the selected finder's actual workspace. Accept the exact `8F`
+block limit and reject one less.
+
+Serialize one literal through one-byte input and output buffers, decode it
+through explicit 64-MiB admission, and require 16-MiB admission to reject the
+same stream before raw publication. Preserve public C, CLI, benchmark,
+fuzzing, and schema gates. Run focused boundaries and the complete registered
+suite under MSVC and ClangCL.

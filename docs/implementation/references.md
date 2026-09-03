@@ -7375,3 +7375,13 @@ finder dispatch, transactional frame encoder, and preceding 64-MiB Contextual
 rANS admission pattern. No external tANS/FSE implementation, compressor,
 source, test, vector, patent, pseudocode, allocation policy, or optimization
 description was consulted.
+
+### IR-0813
+
+The private 64-MiB Contextual tANS profile and streaming admission uses
+IR-0812, DD-1051, TVG-0916, BR-0243, CR-1140, marc's repository-owned checked
+profile calculator, tANS workspace partition, frame-streaming transforms, and
+preceding 64-MiB Contextual rANS lifecycle pattern. No external tANS/FSE
+implementation, compressor, allocator, streaming framework, source, test,
+vector, patent, pseudocode, memory policy, or optimization description was
+consulted.

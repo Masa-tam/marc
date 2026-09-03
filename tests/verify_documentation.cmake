@@ -353,7 +353,8 @@ foreach(required_rans_window_64m_term IN ITEMS
         "four-GiB aggregate policy"
         "stream-header parser, frame preflight"
         "16,777,217 decodes exactly"
-        "HashChain Exact and BinaryTree Exact"
+        "HashChain Exact and"
+        "BinaryTree Exact"
         "Exhaustive encoding"
         "2,215,126,057 bytes"
         "3,892,323,369 bytes"
@@ -401,10 +402,11 @@ foreach(required_tans_window_64m_term IN ITEMS
         "3,624,150,055 bytes"
         "1,678,255,143 bytes"
         "four-GiB aggregate policy"
-        "HashChain Exact and BinaryTree Exact"
+        "HashChain Exact and"
+        "BinaryTree Exact"
         "first newly reachable distance 16,777,217"
         "schema 54 unchanged"
-        "complete-frame encoding and decoding stages complete"
+        "private profile and streaming stages complete"
         "Internal stream-header validation, serialization, and"
         "exact all-dense maximum"
         "maximum distance symbol 26"
@@ -413,6 +415,7 @@ foreach(required_tans_window_64m_term IN ITEMS
         "2. **Complete:** carry the selected layout"
         "3. **Complete:** admit exact triple"
         "4. **Complete:** admit complete-frame encoding"
+        "5. **Complete:** add checked profile/workspace calculation"
         "Exhaustive remains closed")
     string(FIND "${lzss_contextual_tans_window_64m_content}"
         "${required_tans_window_64m_term}"
@@ -941,7 +944,7 @@ foreach(required_readiness_section IN ITEMS
 endforeach()
 foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
-        "each enumerate 3,346 tests under"
+        "each enumerate 3,348 tests under"
         "four-direction schema-52 exchange")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)

@@ -1,6 +1,6 @@
 # LZSS contextual tANS 64 MiB window
 
-Status: complete-frame encoding and decoding stages complete; streaming remains closed.
+Status: private profile and streaming stages complete; public lifecycle remains closed.
 
 ## Purpose and identity
 
@@ -121,10 +121,11 @@ limits, and stream fields never enlarge local policy.
 3. **Complete:** admit exact triple `2/6 + 1/5 + 5/2` in private stream/header
    parsing, frame preflight, and complete-frame decoding while encoding remains
    closed.
-4. **Complete:** admit complete-frame encoding with HashChain Exact and BinaryTree Exact;
-   require their canonical frames to match. Exhaustive remains closed.
-5. Add checked profile/workspace calculation and one-byte streaming with exact
-   and one-short aggregate tests.
+4. **Complete:** admit complete-frame encoding with HashChain Exact and
+   BinaryTree Exact; require their canonical frames to match.
+   Exhaustive remains closed.
+5. **Complete:** add checked profile/workspace calculation and one-byte
+   streaming with exact and one-short aggregate tests.
 6. Admit common public profile value 4 only for Contextual tANS.
 7. Add exact CLI and dependency-free benchmark name
    `lzss-contextual-tans-64m` through the public lifecycle.

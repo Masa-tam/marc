@@ -113,6 +113,9 @@ inline constexpr std::uint64_t initial_state_bytes = 2;
     case LzssContextualTansProfileVariant::field_context_16m:
         return context::internal::get_lzss_field_context_layout(
             context::internal::LzssFieldContextVariant::field_context_16m);
+    case LzssContextualTansProfileVariant::field_context_64m:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_64m);
     }
     return {{}, context::internal::LzssFieldContextLayoutError::
                     unsupported_context_variant};
@@ -130,7 +133,7 @@ inline constexpr std::uint64_t initial_state_bytes = 2;
     case context::internal::LzssFieldContextVariant::field_context_16m:
         return entropy::internal::contextual_tans_max_descriptor_size_v4;
     case context::internal::LzssFieldContextVariant::field_context_64m:
-        return 0;
+        return entropy::internal::contextual_tans_max_descriptor_size_v5;
     }
     return 0;
 }
@@ -196,7 +199,16 @@ LzssContextualTansProfileError make_lzss_contextual_tans_profile(
         workspace.match_finder_strategy = config.match_finder_strategy;
         return LzssContextualTansProfileError::none;
     }
+    std::uint64_t maximum_decisions{};
+    if (!core::checked_multiply(
+            largest_frame,
+            static_cast<std::uint64_t>(
+                selected.layout.maximum_decisions_per_raw_byte),
+            maximum_decisions)) {
+        return LzssContextualTansProfileError::arithmetic_overflow;
+    }
     if (largest_frame > limits.max_block_size
+        || maximum_decisions > limits.max_block_size
         || entropy::internal::contextual_tans_encode_table_entries
             > limits.max_entropy_table_entries) {
         return LzssContextualTansProfileError::limit_exceeded;

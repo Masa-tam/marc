@@ -7719,5 +7719,10 @@ distance 16,777,217 and crossed older layouts publish neither tokens nor raw
 bytes. Private complete-frame encoding admits HashChain Exact and BinaryTree
 Exact only; both routes MUST emit identical canonical bytes for identical
 input and configuration. Exhaustive encoding remains unsupported because a
-64-MiB exhaustive search is not a viable reference route. Streaming, public
-profile value 4, applications, fuzzing, and schema 54 remain unchanged.
+64-MiB exhaustive search is not a viable reference route. The private checked
+profile and one-byte streaming lifecycle admit the same identity. Full
+HashChain, BinaryTree, and decoder aggregates are 1,946,952,743,
+3,624,150,055, and 1,678,255,143 bytes; each exact local limit succeeds and
+one byte less fails before view or output publication. Profile construction
+also requires the exact `8F` block limit. Public profile value 4,
+applications, fuzzing, and schema 54 remain unchanged.

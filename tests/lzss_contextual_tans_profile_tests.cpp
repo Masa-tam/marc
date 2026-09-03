@@ -397,6 +397,116 @@ TEST(LzssContextualTansProfile,
               LzssContextualTansProfileError::limit_exceeded);
 }
 
+TEST(LzssContextualTansProfile,
+     SixtyFourMiBProfileCalculatesBothExactFindersAndDecoder) {
+    constexpr std::uint64_t frame_size = UINT64_C(1) << 26;
+    constexpr std::uint64_t decision_limit = 8 * frame_size;
+    LzssContextualTansProfileConfig config{};
+    config.original_size = frame_size;
+    config.frame_size = static_cast<std::uint32_t>(frame_size);
+    config.dictionary.window_size = static_cast<std::uint32_t>(frame_size);
+    config.variant = LzssContextualTansProfileVariant::field_context_64m;
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = frame_size;
+    limits.max_block_size = decision_limit;
+    limits.max_compressed_payload_size = 805'306'370U;
+    limits.max_internal_buffered_bytes = UINT64_C(4) << 30;
+    limits.max_lz_distance = frame_size;
+    LzssContextualTansStreamHeader stream{};
+    LzssContextualTansEncoderWorkspaceRequirements encoder{};
+
+    ASSERT_EQ(make_lzss_contextual_tans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualTansProfileError::none);
+    EXPECT_EQ(stream.dictionary_variant, 6U);
+    EXPECT_EQ(stream.context_variant, 5U);
+    EXPECT_EQ(stream.frequency_entry_count, 4598U);
+    EXPECT_EQ(encoder.frame_input_bytes, 67'108'864U);
+    EXPECT_EQ(encoder.frame_encoded_bytes, 805'315'623U);
+    EXPECT_EQ(encoder.token_count, 67'108'864U);
+    EXPECT_EQ(encoder.table_count, 131'072U);
+    if constexpr (sizeof(std::size_t) == 8) {
+        EXPECT_EQ(encoder.table_offset, 805'306'368U);
+        EXPECT_EQ(encoder.match_finder_offset, 805'568'512U);
+        EXPECT_EQ(encoder.match_finder_bytes, 268'959'744U);
+        EXPECT_EQ(encoder.views_bytes, 1'074'528'256U);
+    }
+    const auto chain_aggregate = encoder.frame_input_bytes
+        + encoder.views_bytes + encoder.frame_encoded_bytes;
+    EXPECT_EQ(chain_aggregate, 1'946'952'743U);
+    limits.max_internal_buffered_bytes = chain_aggregate - 1;
+    EXPECT_EQ(make_lzss_contextual_tans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualTansProfileError::limit_exceeded);
+    EXPECT_EQ(encoder.views_bytes, 0U);
+    limits.max_internal_buffered_bytes = chain_aggregate;
+    ASSERT_EQ(make_lzss_contextual_tans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualTansProfileError::none);
+
+    config.match_finder_strategy = marc::dictionary::internal::
+        LzssMatchFinderStrategy::binary_tree_exact;
+    limits.max_internal_buffered_bytes = UINT64_C(4) << 30;
+    ASSERT_EQ(make_lzss_contextual_tans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualTansProfileError::none);
+    if constexpr (sizeof(std::size_t) == 8) {
+        EXPECT_EQ(encoder.match_finder_offset, 805'568'512U);
+        EXPECT_EQ(encoder.match_finder_bytes, 1'946'157'056U);
+        EXPECT_EQ(encoder.views_bytes, 2'751'725'568U);
+    }
+    const auto tree_aggregate = encoder.frame_input_bytes
+        + encoder.views_bytes + encoder.frame_encoded_bytes;
+    EXPECT_EQ(tree_aggregate, 3'624'150'055U);
+    limits.max_internal_buffered_bytes = tree_aggregate - 1;
+    EXPECT_EQ(make_lzss_contextual_tans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualTansProfileError::limit_exceeded);
+    EXPECT_EQ(encoder.views_bytes, 0U);
+    limits.max_internal_buffered_bytes = tree_aggregate;
+    ASSERT_EQ(make_lzss_contextual_tans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualTansProfileError::none);
+
+    limits.max_block_size = decision_limit - 1;
+    EXPECT_EQ(make_lzss_contextual_tans_profile(
+                  config, limits, stream, encoder),
+              LzssContextualTansProfileError::limit_exceeded);
+    EXPECT_EQ(encoder.views_bytes, 0U);
+    limits.max_block_size = decision_limit;
+
+    LzssContextualTansDecoderWorkspaceRequirements decoder{};
+    limits.max_internal_buffered_bytes = UINT64_C(4) << 30;
+    ASSERT_EQ(calculate_lzss_contextual_tans_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualTansProfileVariant::field_context_64m),
+              LzssContextualTansProfileError::none);
+    EXPECT_EQ(decoder.frame_encoded_bytes, 805'315'623U);
+    EXPECT_EQ(decoder.frame_decoded_bytes, 67'108'864U);
+    EXPECT_EQ(decoder.table_count, 131'072U);
+    EXPECT_EQ(decoder.token_count, 67'108'864U);
+    if constexpr (sizeof(marc::entropy::internal::TansDecodeEntry) == 4
+                  && sizeof(marc::dictionary::internal::LzssTypedToken)
+                         == 12) {
+        EXPECT_EQ(decoder.token_offset, 524'288U);
+        EXPECT_EQ(decoder.views_bytes, 805'830'656U);
+    }
+    const auto decoder_aggregate = decoder.frame_encoded_bytes
+        + decoder.frame_decoded_bytes + decoder.views_bytes;
+    EXPECT_EQ(decoder_aggregate, 1'678'255'143U);
+    limits.max_internal_buffered_bytes = decoder_aggregate - 1;
+    EXPECT_EQ(calculate_lzss_contextual_tans_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualTansProfileVariant::field_context_64m),
+              LzssContextualTansProfileError::limit_exceeded);
+    EXPECT_EQ(decoder.views_bytes, 0U);
+    limits.max_internal_buffered_bytes = decoder_aggregate;
+    ASSERT_EQ(calculate_lzss_contextual_tans_decoder_workspace(
+                  limits, decoder,
+                  LzssContextualTansProfileVariant::field_context_64m),
+              LzssContextualTansProfileError::none);
+}
+
 TEST(LzssContextualTansProfile, PartitionsTypedViewsTransactionally) {
     LzssContextualTansStreamHeader stream{};
     LzssContextualTansEncoderWorkspaceRequirements requirements{};

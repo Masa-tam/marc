@@ -21536,3 +21536,24 @@ finder-workspace rejection before output publication.
 Keep the Exhaustive route closed: its asymptotic cost is unsuitable for a
 64-MiB reference path and match-finder choice is not serialized. Streaming,
 public profile selection, tools, fuzzing, and schema 54 remain closed.
+
+## DD-1051: Admit the private 64 MiB tANS profile and streaming lifecycle
+
+- Date: 2026-09-03
+- Status: accepted
+
+Extend the private Contextual tANS profile enum, checked encoder and decoder
+workspace calculators, and frame-streaming decoder admission to exact identity
+`2/6 + 1/5 + 5/2`. Encoder requirements MUST use the selected Exact finder's
+authoritative allocation: 1,946,952,743 aggregate bytes for HashChain Exact
+and 3,624,150,055 for BinaryTree Exact at the full profile. Decoder aggregate
+is 1,678,255,143 bytes. Each succeeds at its exact local limit and fails one
+byte below it before view publication.
+
+Profile construction MUST require the worst-case `8F` decision count within
+the caller's block limit. Require one-byte input/output streaming to emit and
+consume the canonical identity and an older explicit admission to reject it
+without raw publication. Keep public C selector value 4, CLI, benchmark,
+fuzzing, resource helpers, and interoperability closed. Stream metadata never
+raises local limits, and this stage adds no serialized field or public ABI
+value.
