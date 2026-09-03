@@ -21593,3 +21593,24 @@ prove reciprocal 16-MiB rejection. The benchmark MUST check output capacity
 as `112 + ceil(21N/2) + 9,255K`, perform an untimed byte-exact round trip, and
 report all queried regions and the directional peak. Keep fuzzing, resource
 helpers, interoperability schema 54, and archive bytes unchanged.
+
+## DD-1054: Extend bounded tANS fuzzing to the 64 MiB profile
+
+- Date: 2026-09-04
+- Status: accepted
+
+Drive public profile values 0 through 4 for every bounded input through the
+existing Contextual tANS decoder target. Retain the 32-KiB input, four-KiB
+total output, one-KiB frame/token/raw staging, fixed 131,072-entry table bank,
+and finite call policy. Raise only shared validation bounds to `8F` decisions,
+`12F+2` payload bytes, the variant-5 descriptor limit, and 67,108,864-byte LZ
+distance. The new identity MUST NOT allocate a 64-MiB frame, history buffer,
+or full-profile decoder workspace.
+
+Add permanent profile-4 truncation, extreme-length, and descriptor-reserved
+regressions through both decoder boundaries. Require every one of the twenty
+ordered mismatches among five profiles to fail before raw publication and to
+retain a sticky terminal error. Compile the harness warning-clean under MSVC
+and ClangCL and run one bounded matching-runtime sanitizer smoke without
+retaining generated mutations. Keep resource helpers and interoperability
+schema 54 closed.

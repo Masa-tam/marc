@@ -406,7 +406,7 @@ foreach(required_tans_window_64m_term IN ITEMS
         "BinaryTree Exact"
         "first newly reachable distance 16,777,217"
         "schema 54 unchanged"
-        "public C and application lifecycles complete; fuzzing remains closed"
+        "bounded decoder fuzzing complete; interoperability remains closed"
         "Internal stream-header validation, serialization, and"
         "exact all-dense maximum"
         "maximum distance symbol 26"
@@ -418,6 +418,7 @@ foreach(required_tans_window_64m_term IN ITEMS
         "5. **Complete:** add checked profile/workspace calculation"
         "6. **Complete:** admit common public profile value 4"
         "7. **Complete:** add exact CLI and dependency-free benchmark name"
+        "8. **Complete:** extend bounded decoder fuzzing"
         "lzss-contextual-tans-64m"
         "112 + ceil(21N/2) + 9,255K"
         "Exhaustive remains closed")
@@ -1428,7 +1429,12 @@ foreach(required_64m_fuzzing_term IN ITEMS
         "`16*1024 + 5` payload bytes"
         "67,108,864-byte distance"
         "seed 20260901"
-        "counters and 346 features")
+        "counters and 346 features"
+        "Five-profile Contextual tANS smoke"
+        "12,290 payload"
+        "seed 20260904"
+        "255 counters and"
+        "427 features")
     string(FIND "${fuzzing_content}" "${required_64m_fuzzing_term}"
         required_64m_fuzzing_term_offset)
     if(required_64m_fuzzing_term_offset EQUAL -1)

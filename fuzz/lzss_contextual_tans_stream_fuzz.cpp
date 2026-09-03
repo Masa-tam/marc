@@ -22,11 +22,11 @@ using Token = marc::dictionary::internal::LzssTypedToken;
 constexpr std::size_t maximum_fuzz_input = 32768;
 constexpr std::size_t maximum_total_output = 4096;
 constexpr std::size_t maximum_frame = 1024;
-constexpr std::size_t maximum_decisions = maximum_frame * 7;
-constexpr std::size_t maximum_payload = maximum_frame / 2 * 21 + 2;
+constexpr std::size_t maximum_decisions = maximum_frame * 8;
+constexpr std::size_t maximum_payload = maximum_frame * 12 + 2;
 constexpr std::size_t maximum_encoded_frame =
     marc::frame::internal::lzss_contextual_tans_frame_header_size
-    + marc::entropy::internal::contextual_tans_max_descriptor_size_v4
+    + marc::entropy::internal::contextual_tans_max_descriptor_size_v5
     + maximum_payload;
 constexpr std::size_t table_entries =
     marc::entropy::internal::contextual_tans_decode_table_entries;
@@ -36,7 +36,7 @@ constexpr std::size_t maximum_views = table_entries * sizeof(TansDecodeEntry)
     + maximum_views_alignment - 1 + maximum_frame * sizeof(Token);
 constexpr std::size_t maximum_internal =
     maximum_encoded_frame + maximum_views + maximum_frame;
-constexpr std::uint64_t maximum_lz_distance = UINT64_C(1) << 24;
+constexpr std::uint64_t maximum_lz_distance = UINT64_C(1) << 26;
 constexpr std::size_t maximum_view_words =
     (maximum_views + sizeof(std::max_align_t) - 1)
     / sizeof(std::max_align_t);
@@ -105,7 +105,9 @@ void exercise_public_streaming(
     config.max_block_size = maximum_decisions;
     config.max_compressed_payload_size = maximum_payload;
     config.max_internal_buffered_bytes = maximum_internal;
-    config.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+    config.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M
+        ? UINT32_C(1) << 26
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
         ? UINT32_C(1) << 24
         : profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
             ? UINT32_C(1) << 22
@@ -215,5 +217,6 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data,
     exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
     exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
     exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+    exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_64M);
     return 0;
 }

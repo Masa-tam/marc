@@ -23,15 +23,16 @@ using Token = marc::dictionary::internal::LzssTypedToken;
 constexpr std::array raw{
     std::uint8_t{'A'}, std::uint8_t{'B'}, std::uint8_t{'A'},
     std::uint8_t{'B'}, std::uint8_t{'X'}};
-constexpr std::size_t maximum_decisions = raw.size() * 7;
-constexpr std::size_t maximum_payload = raw.size() / 2 * 21
-    + raw.size() % 2 * 11 + 2;
+constexpr std::size_t maximum_decisions = raw.size() * 8;
+constexpr std::size_t maximum_payload = raw.size() * 12 + 2;
 constexpr std::size_t maximum_internal = 2U << 20;
 
 [[nodiscard]] constexpr std::size_t maximum_encoded_frame(
     const marc_lzss_contextual_profile profile) noexcept {
     const auto descriptor_size = profile
-            == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+            == MARC_LZSS_CONTEXTUAL_PROFILE_64M
+        ? marc::entropy::internal::contextual_tans_max_descriptor_size_v5
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
         ? marc::entropy::internal::contextual_tans_max_descriptor_size_v4
         : profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
             ? marc::entropy::internal::contextual_tans_max_descriptor_size_v3
@@ -63,7 +64,9 @@ struct Workspace {
               MARC_STATUS_OK);
     result.original_size = raw.size();
     result.frame_size = raw.size();
-    result.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+    result.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M
+        ? UINT32_C(1) << 26
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
         ? UINT32_C(1) << 24
         : profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
             ? UINT32_C(1) << 22
@@ -74,7 +77,7 @@ struct Workspace {
     result.max_block_size = maximum_decisions;
     result.max_compressed_payload_size = maximum_payload;
     result.max_internal_buffered_bytes = maximum_internal;
-    result.max_lz_distance = UINT64_C(1) << 24;
+    result.max_lz_distance = UINT64_C(1) << 26;
     result.max_lz_match_length = 258;
     result.max_entropy_table_entries =
         marc::entropy::internal::contextual_tans_decode_table_entries;
@@ -122,6 +125,41 @@ struct Workspace {
     return encoded;
 }
 
+void expect_public_profile_rejection(
+    const std::span<const std::uint8_t> input,
+    const marc_lzss_contextual_profile decoder_profile) {
+    auto config = settings(MARC_DIRECTION_DECODE, decoder_profile);
+    auto decoder_workspace = workspace_for(config);
+    marc_transform* decoder{};
+    ASSERT_EQ(marc_lzss_contextual_tans_create(
+                  &config,
+                  {decoder_workspace.primary.data(),
+                   decoder_workspace.primary.size()},
+                  {decoder_workspace.secondary.data(),
+                   decoder_workspace.secondary.size()},
+                  decoder_workspace.views_buffer(), &decoder),
+              MARC_STATUS_OK);
+    std::array<std::uint8_t, raw.size()> output{};
+    output.fill(UINT8_C(0xa5));
+    const auto result = marc_transform_process(
+        decoder, {input.data(), input.size()},
+        {output.data(), output.size()}, MARC_PROCESS_END_INPUT);
+    EXPECT_EQ(result.status, MARC_STATUS_MALFORMED_STREAM);
+    EXPECT_EQ(result.output_produced, 0U);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [](const std::uint8_t value) {
+            return value == UINT8_C(0xa5);
+        }));
+    const auto repeated = marc_transform_process(
+        decoder, {nullptr, 0}, {nullptr, 0}, MARC_PROCESS_NONE);
+    EXPECT_EQ(repeated.status, result.status);
+    EXPECT_EQ(repeated.error_byte_position, result.error_byte_position);
+    EXPECT_EQ(repeated.error_bit_position, result.error_bit_position);
+    EXPECT_EQ(repeated.input_consumed, 0U);
+    EXPECT_EQ(repeated.output_produced, 0U);
+    marc_transform_destroy(decoder);
+}
+
 class LzssContextualTansFuzzRegression
     : public testing::TestWithParam<
           marc_lzss_contextual_profile> {
@@ -140,7 +178,7 @@ protected:
         limits.max_block_size = maximum_decisions;
         limits.max_compressed_payload_size = maximum_payload;
         limits.max_internal_buffered_bytes = maximum_internal;
-        limits.max_lz_distance = UINT64_C(1) << 24;
+        limits.max_lz_distance = UINT64_C(1) << 26;
         limits.max_lz_match_length = 258;
         limits.max_entropy_table_entries =
             marc::entropy::internal::contextual_tans_decode_table_entries;
@@ -244,60 +282,57 @@ TEST_P(LzssContextualTansFuzzRegression,
 
 TEST(LzssContextualTansFuzzRegression,
      CrossProfilePublicDecodersRejectAtomically) {
-    const auto expect_rejection = [](
-        const std::span<const std::uint8_t> input,
-        const marc_lzss_contextual_profile decoder_profile) {
-        auto config = settings(MARC_DIRECTION_DECODE, decoder_profile);
-        auto decoder_workspace = workspace_for(config);
-        marc_transform* decoder{};
-        ASSERT_EQ(marc_lzss_contextual_tans_create(
-                      &config,
-                      {decoder_workspace.primary.data(),
-                       decoder_workspace.primary.size()},
-                      {decoder_workspace.secondary.data(),
-                       decoder_workspace.secondary.size()},
-                      decoder_workspace.views_buffer(), &decoder),
-                  MARC_STATUS_OK);
-        std::array<std::uint8_t, raw.size()> output{};
-        output.fill(UINT8_C(0xa5));
-        const auto result = marc_transform_process(
-            decoder, {input.data(), input.size()},
-            {output.data(), output.size()}, MARC_PROCESS_END_INPUT);
-        EXPECT_EQ(result.status, MARC_STATUS_MALFORMED_STREAM);
-        EXPECT_EQ(result.output_produced, 0U);
-        EXPECT_TRUE(std::ranges::all_of(
-            output, [](const std::uint8_t value) {
-                return value == UINT8_C(0xa5);
-            }));
-        const auto repeated = marc_transform_process(
-            decoder, {nullptr, 0}, {nullptr, 0}, MARC_PROCESS_NONE);
-        EXPECT_EQ(repeated.status, result.status);
-        EXPECT_EQ(repeated.error_byte_position,
-                  result.error_byte_position);
-        EXPECT_EQ(repeated.error_bit_position,
-                  result.error_bit_position);
-        EXPECT_EQ(repeated.input_consumed, 0U);
-        EXPECT_EQ(repeated.output_produced, 0U);
-        marc_transform_destroy(decoder);
-    };
-
     const auto frozen = canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_64K);
-    expect_rejection(frozen, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    expect_public_profile_rejection(
+        frozen, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
     const auto extended = canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_1M);
-    expect_rejection(extended, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
+    expect_public_profile_rejection(
+        extended, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
     const auto four_mib = canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_4M);
     const auto sixteen_mib =
         canonical_stream(MARC_LZSS_CONTEXTUAL_PROFILE_16M);
-    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
-    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
-    expect_rejection(frozen, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
-    expect_rejection(extended, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
-    expect_rejection(sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
-    expect_rejection(sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
-    expect_rejection(sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
-    expect_rejection(frozen, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
-    expect_rejection(extended, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
-    expect_rejection(four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+    expect_public_profile_rejection(
+        four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
+    expect_public_profile_rejection(
+        four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    expect_public_profile_rejection(
+        frozen, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
+    expect_public_profile_rejection(
+        extended, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
+    expect_public_profile_rejection(
+        sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_64K);
+    expect_public_profile_rejection(
+        sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
+    expect_public_profile_rejection(
+        sixteen_mib, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
+    expect_public_profile_rejection(
+        frozen, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+    expect_public_profile_rejection(
+        extended, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+    expect_public_profile_rejection(
+        four_mib, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+}
+
+TEST(LzssContextualTansFuzzRegression,
+     EveryDistinctPublicProfilePairRejectsAtomically) {
+    constexpr std::array profiles{
+        MARC_LZSS_CONTEXTUAL_PROFILE_64K,
+        MARC_LZSS_CONTEXTUAL_PROFILE_1M,
+        MARC_LZSS_CONTEXTUAL_PROFILE_4M,
+        MARC_LZSS_CONTEXTUAL_PROFILE_16M,
+        MARC_LZSS_CONTEXTUAL_PROFILE_64M};
+    std::array<std::vector<std::uint8_t>, profiles.size()> streams{};
+    for (std::size_t index = 0; index < profiles.size(); ++index) {
+        streams[index] = canonical_stream(profiles[index]);
+    }
+    for (std::size_t encoded = 0; encoded < profiles.size(); ++encoded) {
+        for (std::size_t decoder = 0; decoder < profiles.size(); ++decoder) {
+            if (encoded != decoder) {
+                expect_public_profile_rejection(
+                    streams[encoded], profiles[decoder]);
+            }
+        }
+    }
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -306,6 +341,7 @@ INSTANTIATE_TEST_SUITE_P(
         MARC_LZSS_CONTEXTUAL_PROFILE_64K,
         MARC_LZSS_CONTEXTUAL_PROFILE_1M,
         MARC_LZSS_CONTEXTUAL_PROFILE_4M,
-        MARC_LZSS_CONTEXTUAL_PROFILE_16M));
+        MARC_LZSS_CONTEXTUAL_PROFILE_16M,
+        MARC_LZSS_CONTEXTUAL_PROFILE_64M));
 
 } // namespace

@@ -7404,3 +7404,13 @@ transactional CLI adapter, checked dependency-free benchmark harness, and the
 preceding 64-MiB Contextual rANS application pattern. No external tANS/FSE
 implementation, compressor, CLI, benchmark, source, test, vector, patent,
 pseudocode, allocation policy, or optimization description was consulted.
+
+### IR-0816
+
+The 64-MiB Contextual tANS bounded decoder-fuzz admission uses IR-0815,
+DD-1054, TVG-0919, BR-0246, CR-1143, the repository-owned fixed-array
+private/public harness, five-profile public selector, permanent malformed
+regressions, and matching-runtime sanitizer route. No external fuzzer harness,
+tANS/FSE implementation, compressor, corpus, vulnerability report, source,
+test, vector, patent, pseudocode, allocation policy, or optimization
+description was consulted.

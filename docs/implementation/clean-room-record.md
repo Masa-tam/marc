@@ -28418,3 +28418,37 @@ both bounds.
   is included and passes in 118.17 and 116.57 seconds. Focused CLI, inventory,
   benchmark, documentation, and whitespace checks pass under both compilers.
   Fuzzing, schema 54, and archive bytes remain unchanged.
+
+## CR-1143: 2026-09-04 - Admit 64-MiB contextual tANS bounded fuzzing
+
+- Authoring method: extended marc's repository-owned fixed-memory Contextual
+  tANS decoder harness from four strict public profiles to five, following the
+  already reviewed 64-MiB Contextual rANS admission shape while retaining the
+  tANS-specific descriptor, payload, and table limits.
+- References used: IR-0816; DD-1054; TVG-0919; BR-0246; CR-1142; the local
+  Contextual tANS frame parser, public streaming factory, regression harness,
+  and fixed-storage table decoder.
+- Known implementations intentionally not consulted: external compressors,
+  tANS/FSE implementations, fuzzers, fuzz harnesses, source, tests, corpora,
+  vectors, patents, pseudocode, allocation policies, or optimizations.
+- Independent decisions: keep frame, token, and raw staging at one KiB and
+  the decode-table bank at 131,072 entries; admit profile 64 MiB only by
+  raising checked decision, payload, descriptor, and distance ceilings;
+  exercise all twenty ordered distinct-profile mismatches; do not allocate a
+  window-sized buffer or open resource-helper/schema support.
+- Generated-code task description: add public profile value 4 to the bounded
+  decoder harness and permanent regression tests, prove atomic rejection for
+  every unequal five-profile pair, compile under both Windows toolchains, and
+  run a bounded sanitizer smoke campaign.
+- Similarity review: implementation and tests extend marc's own four-profile
+  harness and established fixed-memory profile admission pattern. No external
+  implementation expression or distinctive test structure was used.
+- Validation: all 17 focused fuzz-regression tests pass under MSVC and ClangCL.
+  The ClangCL AddressSanitizer/libFuzzer target completes 1,000 deterministic
+  runs with a 32-KiB maximum input, five-second per-input timeout, 512-MiB RSS
+  limit, 46-MiB peak RSS, 255 coverage counters, 427 features, and no crash,
+  hang, sanitizer finding, or retained artifact. All 3,354 registered tests
+  pass without exclusions under MSVC and ClangCL in 255.54 and 270.66 seconds;
+  schema compatibility remains included and passes in 114.38 and 113.91
+  seconds. Documentation and whitespace validation pass; resource helpers and
+  schema 54 remain closed.

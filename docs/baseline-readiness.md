@@ -3723,3 +3723,16 @@ benchmark uses the same helper/query/factory lifecycle, checks
 `112 + ceil(21N/2) + 9,255K`, and reports all query-owned regions after an
 untimed byte-exact round trip. Fuzzing, resource helpers, schema 54, and
 archive bytes remain closed.
+
+### BR-0246
+
+The fixed-memory Contextual tANS decoder-fuzz boundary now admits the 64-MiB
+public profile as its fifth strict identity. Input, output, frame, token, raw,
+table, and call-count storage remain fixed; only decision, payload, descriptor,
+and distance validation ceilings rise to variant 5. Canonical truncation,
+extreme-length, descriptor-reserved, and all twenty ordered cross-profile
+mismatches fail atomically. A 1,000-input Clang 22 ASan/UBSan smoke completed
+without a finding, generated corpus, or artifact; resource-helper and schema
+54 surfaces remain unchanged. All 3,354 registered tests pass without
+exclusions under MSVC and ClangCL in 255.54 and 270.66 seconds respectively;
+schema compatibility is included and passes in 114.38 and 113.91 seconds.

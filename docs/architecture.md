@@ -5867,7 +5867,10 @@ reciprocal 16-MiB rejection. The dependency-free benchmark checks capacity as
 `112 + ceil(21N/2) + 9,255K` and requires an untimed byte-exact round trip
 before reporting ratio, throughput, all six workspace regions, and their
 directional maximum. Neither application adds a stream field or profile
-inference; bounded fuzzing and interoperability schema 54 remain closed.
+inference. The fixed-memory dual-path decoder fuzz boundary now also admits
+all five profiles, exercises every ordered crossed identity atomically, and
+raises only local validation ceilings without allocating profile-sized
+history. Interoperability schema 54 remains closed.
 
 The Contextual Blocked Huffman descriptor boundary now selects all four typed
 field layouts independently of complete-frame admission. Variant 4 supplies

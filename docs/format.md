@@ -7739,5 +7739,6 @@ benchmark. CLI decoding requires that explicit name and rejects older
 profiles before retaining output. Benchmark capacity is checked as
 `112 + ceil(21N/2) + 9,255K`, and an untimed byte-exact round trip precedes
 measurement. Neither application adds a stream field, infers a profile, or
-duplicates private workspace layout. Fuzzing, schema 54, and archive bytes
-remain closed.
+duplicates private workspace layout. The bounded decoder fuzz boundary admits
+all five strict identities with fixed storage and raises only variant-selected
+validation ceilings. Schema 54 and archive bytes remain closed.

@@ -1,6 +1,6 @@
 # LZSS contextual tANS 64 MiB window
 
-Status: public C and application lifecycles complete; fuzzing remains closed.
+Status: bounded decoder fuzzing complete; interoperability remains closed.
 
 ## Purpose and identity
 
@@ -128,7 +128,8 @@ limits, and stream fields never enlarge local policy.
 6. **Complete:** admit common public profile value 4 only for Contextual tANS.
 7. **Complete:** add exact CLI and dependency-free benchmark name
    `lzss-contextual-tans-64m` through the public lifecycle.
-8. Extend bounded decoder fuzzing without profile-sized allocation.
+8. **Complete:** extend bounded decoder fuzzing without profile-sized
+   allocation.
 9. Append one interoperability archive only after all preceding boundaries
    pass.
 
