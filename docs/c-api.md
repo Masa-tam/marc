@@ -291,6 +291,17 @@ inferred from `window_size`: encoding validates the selected parameters and
 decoding rejects every other known identity before frame collection or raw
 publication. The selector and trailing reserved word reuse the former 64-bit
 reserved tail, preserving the 112-byte ABI-1 extent and the all-zero default.
+`MARC_LZSS_CONTEXTUAL_PROFILE_64M` now admits exact identity
+`2/6 + 1/5 + 5/2` through this Contextual tANS factory only. Its helper applies
+a 67,108,864-byte frame/window/distance, `8F = 536,870,912` decision limit,
+805,306,370-byte payload ceiling, 131,072 table entries, and four-GiB
+aggregate policy while preserving direction, original size, total-output
+policy, and the selected Exact finder. On supported 64-bit layouts the exact
+HashChain, BinaryTree, and decoder aggregate requirements are 1,946,952,743,
+3,624,150,055, and 1,678,255,143 bytes; the query reports the selected
+allocation and rejects each limit one byte short. Initializers remain 64 KiB,
+unknown profiles do not mutate the configuration, callers may tighten limits
+after applying the helper, and stream fields never enlarge local policy.
 The explicit `lzss-contextual-tans-16m` CLI and dependency-free benchmark use
 this same helper/query/factory lifecycle without duplicating private layout
 arithmetic. The schema-50 archive exercises the same public profile without

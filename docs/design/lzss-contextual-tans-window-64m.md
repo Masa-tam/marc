@@ -1,12 +1,11 @@
 # LZSS contextual tANS 64 MiB window
 
-Status: private profile and streaming stages complete; public lifecycle remains closed.
+Status: public C lifecycle complete; applications remain closed.
 
 ## Purpose and identity
 
 This design applies the existing single-state contextual tANS representation
-to the reserved 64-MiB typed-token family. Its eventual exact Format 2 identity
-is:
+to the reserved 64-MiB typed-token family. Its exact Format 2 identity is:
 
 ```text
 dictionary algorithm/variant 2/6
@@ -105,7 +104,7 @@ raw frame                         67,108,864 bytes
 aggregate                      1,678,255,143 bytes
 ```
 
-The future public helper applies frame, window, and distance 67,108,864;
+The public helper applies frame, window, and distance 67,108,864;
 block limit `8F = 536,870,912`; payload limit 805,306,370; 4,598 flattened
 model entries; 131,072 entropy-table entries; and a four-GiB aggregate policy.
 It preserves direction, original size, total-output policy, and the selected
@@ -126,7 +125,7 @@ limits, and stream fields never enlarge local policy.
    Exhaustive remains closed.
 5. **Complete:** add checked profile/workspace calculation and one-byte
    streaming with exact and one-short aggregate tests.
-6. Admit common public profile value 4 only for Contextual tANS.
+6. **Complete:** admit common public profile value 4 only for Contextual tANS.
 7. Add exact CLI and dependency-free benchmark name
    `lzss-contextual-tans-64m` through the public lifecycle.
 8. Extend bounded decoder fuzzing without profile-sized allocation.

@@ -406,7 +406,7 @@ foreach(required_tans_window_64m_term IN ITEMS
         "BinaryTree Exact"
         "first newly reachable distance 16,777,217"
         "schema 54 unchanged"
-        "private profile and streaming stages complete"
+        "public C lifecycle complete; applications remain closed"
         "Internal stream-header validation, serialization, and"
         "exact all-dense maximum"
         "maximum distance symbol 26"
@@ -416,6 +416,7 @@ foreach(required_tans_window_64m_term IN ITEMS
         "3. **Complete:** admit exact triple"
         "4. **Complete:** admit complete-frame encoding"
         "5. **Complete:** add checked profile/workspace calculation"
+        "6. **Complete:** admit common public profile value 4"
         "Exhaustive remains closed")
     string(FIND "${lzss_contextual_tans_window_64m_content}"
         "${required_tans_window_64m_term}"
@@ -767,7 +768,7 @@ foreach(required_64m_format_term IN ITEMS
         "Internal stream-header serialization"
         "profile/workspace calculation"
         "one-byte streaming admit the same identity"
-        "value 4 remains unsupported by tANS"
+        "value 4 remains unsupported by Blocked Huffman"
         "public C selector"
         "four-GiB aggregate policy")
     string(FIND "${format_content}" "${required_64m_format_term}"
@@ -1165,6 +1166,12 @@ string(FIND "${c_api_content}"
     c_api_contextual_rans_64m_profile_offset)
 if(c_api_contextual_rans_64m_profile_offset EQUAL -1)
     message(FATAL_ERROR "C API contextual rANS 64 MiB profile is stale")
+endif()
+string(FIND "${c_api_content}"
+    "HashChain, BinaryTree, and decoder aggregate requirements"
+    c_api_contextual_tans_64m_profile_offset)
+if(c_api_contextual_tans_64m_profile_offset EQUAL -1)
+    message(FATAL_ERROR "C API contextual tANS 64 MiB profile is stale")
 endif()
 string(FIND "${c_api_content}"
     "`marc_lzss_contextual_tans_workspace_requirements()`"

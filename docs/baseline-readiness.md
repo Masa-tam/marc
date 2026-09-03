@@ -3700,3 +3700,15 @@ block boundary, and one-byte streaming. Full HashChain, BinaryTree, and
 decoder aggregates are 1,946,952,743, 3,624,150,055, and 1,678,255,143 bytes.
 Public profile value 4, C factories, tools, fuzzing, schema 54, and archive
 bytes remain closed.
+
+### BR-0244
+
+The common public selector value 4 now admits exact Contextual tANS identity
+`2/6 + 1/5 + 5/2` through its C helper, checked workspace query, and factory.
+The helper applies the 64-MiB frame/window/distance, exact `8F` block and
+805,306,370-byte payload limits, 131,072 table entries, and four-GiB aggregate
+policy without changing the 112-byte ABI-1 configuration or 64-KiB default.
+Small public encode/decode and reciprocal 16-MiB rejection are atomic. Full
+HashChain, BinaryTree, and decoder requirements succeed at 1,946,952,743,
+3,624,150,055, and 1,678,255,143 bytes and fail one byte below. CLI, benchmark,
+bounded fuzzing, schema 54, and archive bytes remain closed.

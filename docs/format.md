@@ -7664,8 +7664,8 @@ descriptor and complete-frame validators remain closed until their individual
 admission stages.
 
 No resource helper or default is assigned here. The common public selector
-value 4 remains unsupported by tANS, Blocked Huffman, and Adaptive Huffman
-until each backend completes its own admission. The internal compact
+value 4 remains unsupported by Blocked Huffman and Adaptive Huffman until each
+backend completes its own admission. The internal compact
 rANS descriptor grammar accepts context variant 5 with 4,598 entries and an
 exact all-dense maximum of 9,185 bytes. The private stream-header parser,
 frame preflight, and complete-frame decoder also admit exact triple
@@ -7724,5 +7724,13 @@ profile and one-byte streaming lifecycle admit the same identity. Full
 HashChain, BinaryTree, and decoder aggregates are 1,946,952,743,
 3,624,150,055, and 1,678,255,143 bytes; each exact local limit succeeds and
 one byte less fails before view or output publication. Profile construction
-also requires the exact `8F` block limit. Public profile value 4,
-applications, fuzzing, and schema 54 remain unchanged.
+also requires the exact `8F` block limit. The public C selector
+`MARC_LZSS_CONTEXTUAL_PROFILE_64M` admits this exact triple through the
+Contextual tANS helper, workspace query, and factory only. The helper applies
+the 64-MiB frame/window/distance, `8F` block, 805,306,370-byte payload,
+131,072-entry table, and four-GiB aggregate limits atomically while preserving
+direction, original size, total-output policy, and the selected Exact finder.
+Unknown profiles leave the configuration unchanged; callers may tighten hard
+limits after application, and stream metadata never enlarges them. The
+112-byte ABI-1 configuration extent and 64-KiB initializer default remain
+unchanged. Applications, fuzzing, schema 54, and archive bytes remain closed.

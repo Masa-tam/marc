@@ -13222,3 +13222,21 @@ through explicit 64-MiB admission, and require 16-MiB admission to reject the
 same stream before raw publication. Preserve public C, CLI, benchmark,
 fuzzing, and schema gates. Run focused boundaries and the complete registered
 suite under MSVC and ClangCL.
+
+### TVG-0917
+
+Apply public Contextual tANS profile value 4 in both directions. Require the
+helper to preserve direction, original size, total-output policy, and Exact
+finder; apply frame/window/distance 67,108,864, block 536,870,912, payload
+805,306,370, 131,072 table entries, and four-GiB aggregate limits; require
+idempotence; and reject an unknown selector without configuration mutation.
+
+Encode a small stream through the public query and factory and require exact
+identity `2/6 + 1/5 + 5/2`; decode it through profile value 4 and require raw
+equality. Decode the same stream through profile 16 MiB and require malformed-
+stream failure without output mutation. Without allocating full-profile
+regions, query HashChain, BinaryTree, and decoder requirements at their exact
+1,946,952,743, 3,624,150,055, and 1,678,255,143-byte aggregate limits and
+reject one byte below each. Run the focused C lifecycle and all registered
+tests under MSVC and ClangCL while retaining application, fuzz, and schema
+gates.

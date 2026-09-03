@@ -7385,3 +7385,13 @@ preceding 64-MiB Contextual rANS lifecycle pattern. No external tANS/FSE
 implementation, compressor, allocator, streaming framework, source, test,
 vector, patent, pseudocode, memory policy, or optimization description was
 consulted.
+
+### IR-0814
+
+The 64-MiB Contextual tANS public C admission uses IR-0813, DD-1052,
+TVG-0917, BR-0244, CR-1141, marc's repository-owned ABI-1 contextual tANS
+configuration, atomic profile-helper contract, checked workspace query,
+factory, and preceding public 64-MiB Contextual rANS admission pattern. No
+external tANS/FSE implementation, compressor, allocator, source, test,
+vector, patent, pseudocode, memory policy, or optimization description was
+consulted.

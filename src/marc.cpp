@@ -684,6 +684,10 @@ contextual_rans_stream_admission(
 [[nodiscard]] marc::frame::internal::LzssContextualTansProfileVariant
 contextual_tans_profile_variant(
     const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M) {
+        return marc::frame::internal::LzssContextualTansProfileVariant::
+            field_context_64m;
+    }
     if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
         return marc::frame::internal::LzssContextualTansProfileVariant::
             field_context_16m;
@@ -703,6 +707,10 @@ contextual_tans_profile_variant(
 [[nodiscard]] marc::frame::internal::LzssContextualTansStreamAdmission
 contextual_tans_stream_admission(
     const marc_lzss_contextual_profile profile) noexcept {
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M) {
+        return marc::frame::internal::LzssContextualTansStreamAdmission::
+            field_context_64m;
+    }
     if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
         return marc::frame::internal::LzssContextualTansStreamAdmission::
             field_context_16m;
@@ -883,7 +891,8 @@ bool load_config(
         || (config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
-            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M)) {
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M
+            && config->profile != MARC_LZSS_CONTEXTUAL_PROFILE_64M)) {
         return false;
     }
     limits.max_total_output_size = config->max_total_output_size;
@@ -5219,7 +5228,8 @@ marc_status marc_lzss_contextual_tans_config_apply_profile(
         || (profile != MARC_LZSS_CONTEXTUAL_PROFILE_64K
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_1M
             && profile != MARC_LZSS_CONTEXTUAL_PROFILE_4M
-            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M)) {
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_16M
+            && profile != MARC_LZSS_CONTEXTUAL_PROFILE_64M)) {
         return MARC_STATUS_INVALID_ARGUMENT;
     }
 
@@ -5231,15 +5241,18 @@ marc_status marc_lzss_contextual_tans_config_apply_profile(
         extent = UINT32_C(1) << 22;
     } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
         extent = UINT32_C(1) << 24;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M) {
+        extent = UINT32_C(1) << 26;
     }
-    const bool uses_extended_distance =
-        profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
-        || profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M;
-    const std::uint64_t decisions_per_byte =
-        uses_extended_distance ? 7 : 6;
-    const std::uint64_t payload = uses_extended_distance
-        ? static_cast<std::uint64_t>(extent) * 21 / 2 + 2
-        : static_cast<std::uint64_t>(extent) * 9 + 2;
+    std::uint64_t decisions_per_byte = 6;
+    if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
+        || profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
+        decisions_per_byte = 7;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M) {
+        decisions_per_byte = 8;
+    }
+    const std::uint64_t payload =
+        static_cast<std::uint64_t>(extent) * decisions_per_byte * 3 / 2 + 2;
     applied.frame_size = extent;
     applied.window_size = extent;
     applied.min_match_length = 5;
@@ -5250,6 +5263,8 @@ marc_status marc_lzss_contextual_tans_config_apply_profile(
     applied.max_compressed_payload_size = payload;
     if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64K) {
         applied.max_internal_buffered_bytes = UINT64_C(8) << 20;
+    } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M) {
+        applied.max_internal_buffered_bytes = UINT64_C(4) << 30;
     } else if (profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M) {
         applied.max_internal_buffered_bytes = UINT64_C(512) << 20;
     } else {

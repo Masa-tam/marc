@@ -21557,3 +21557,21 @@ without raw publication. Keep public C selector value 4, CLI, benchmark,
 fuzzing, resource helpers, and interoperability closed. Stream metadata never
 raises local limits, and this stage adds no serialized field or public ABI
 value.
+
+## DD-1052: Admit 64 MiB Contextual tANS through the existing C ABI
+
+- Date: 2026-09-03
+- Status: accepted
+
+Admit common selector value `MARC_LZSS_CONTEXTUAL_PROFILE_64M` only in the
+Contextual tANS helper, configuration validator, workspace query, and factory.
+Map it to exact identity `2/6 + 1/5 + 5/2` and explicit streaming admission;
+do not infer it from window size or stream metadata.
+
+The atomic helper MUST apply frame/window/distance 67,108,864, `8F` block,
+805,306,370-byte payload, 131,072 entropy-table, and four-GiB aggregate limits
+while preserving direction, original size, total-output policy, and selected
+Exact finder. Unknown selectors MUST leave the configuration unchanged. Keep
+the ABI-1 structure extent and initializer default unchanged, permit callers
+to tighten returned limits, and leave CLI, benchmark, fuzzing, resource
+helpers, and schema 54 closed.

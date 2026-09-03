@@ -28361,3 +28361,32 @@ both bounds.
   schema compatibility is included and passes in 107.21 and 107.67 seconds.
   Documentation and whitespace validation pass. Public C, CLI, benchmark,
   fuzz, schema 54, and archive bytes remain closed.
+
+## CR-1141: 2026-09-03 - Admit public 64-MiB Contextual tANS C lifecycle
+
+- Authoring method: extended marc's existing ABI-1 Contextual tANS profile
+  mapping, atomic preset helper, checked workspace query, and factory through
+  the completed private 64-MiB lifecycle.
+- References used: IR-0814; DD-1052; TVG-0917; BR-0244; CR-1140; the local
+  public 16-MiB Contextual tANS and 64-MiB Contextual rANS lifecycle patterns.
+- Known implementations intentionally not consulted: external tANS/FSE
+  implementations, compressors, allocators, source, tests, vectors, patents,
+  pseudocode, memory policies, or optimization descriptions.
+- Independent decisions: reuse common selector value 4 without changing ABI;
+  apply the exact four-GiB profile atomically; preserve caller-specific fields
+  and finder choice; prove both finder allocations by query rather than full
+  allocation; and retain application, fuzz, and schema gates.
+- Generated-code task description: admit exact public identity
+  `2/6 + 1/5 + 5/2`, prove small encode/decode and reciprocal rejection,
+  require exact and one-short HashChain, BinaryTree, and decoder aggregate
+  limits, preserve unknown-profile atomicity, and synchronize public and
+  provenance documentation.
+- Similarity review: production changes only extend repository-owned selector
+  mappings and the existing atomic helper policy. Tests extend marc's own
+  16-MiB tANS and 64-MiB rANS C-boundary patterns; no external expression or
+  distinctive structure was used.
+- Validation: the focused C lifecycle passes under MSVC and ClangCL. All 3,348
+  registered tests pass without exclusions in 259.64 and 283.41 seconds;
+  schema compatibility is included and passes in 101.90 and 113.63 seconds.
+  Documentation and whitespace validation pass. CLI, benchmark, fuzzing,
+  schema 54, and archive bytes remain unchanged.
