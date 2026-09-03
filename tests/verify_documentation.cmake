@@ -319,6 +319,7 @@ foreach(experimental_design IN ITEMS
         "lzss-contextual-window-64m.md"
         "lzss-contextual-rans-window-64m.md"
         "lzss-contextual-rans-window-16m.md"
+        "lzss-contextual-tans-window-64m.md"
         "lzss-contextual-tans-window-16m.md"
         "lzss-contextual-blocked-huffman-window-16m.md"
         "lzss-contextual-adaptive-huffman-window-16m.md"
@@ -375,6 +376,42 @@ foreach(required_rans_window_64m_term IN ITEMS
         message(FATAL_ERROR
             "Incomplete 64 MiB contextual rANS design: "
             "${required_rans_window_64m_term}")
+    endif()
+endforeach()
+
+set(lzss_contextual_tans_window_64m_design
+    "${source_dir}/docs/design/lzss-contextual-tans-window-64m.md")
+file(READ "${lzss_contextual_tans_window_64m_design}"
+    lzss_contextual_tans_window_64m_content)
+foreach(required_tans_window_64m_term IN ITEMS
+        "dictionary algorithm/variant 2/6"
+        "context-model algorithm/variant 1/5"
+        "entropy algorithm/variant 5/2"
+        "4,598 flattened frequency entries"
+        "9,165 bytes"
+        "9,189 bytes"
+        "131,072 entries"
+        "decision_count <= 8F"
+        "decision_count <= 36*token_count"
+        "payload_size <= ceil(8F*12/8) + 2"
+        "complete_frame_size <= 12F + 9,255"
+        "805,306,370 bytes"
+        "805,315,623 bytes"
+        "1,946,952,743 bytes"
+        "3,624,150,055 bytes"
+        "1,678,255,143 bytes"
+        "four-GiB aggregate policy"
+        "HashChain Exact and BinaryTree Exact"
+        "first newly reachable distance 16,777,217"
+        "schema 54 unchanged"
+        "implementation remains closed")
+    string(FIND "${lzss_contextual_tans_window_64m_content}"
+        "${required_tans_window_64m_term}"
+        required_tans_window_64m_term_offset)
+    if(required_tans_window_64m_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 64 MiB contextual tANS design: "
+            "${required_tans_window_64m_term}")
     endif()
 endforeach()
 

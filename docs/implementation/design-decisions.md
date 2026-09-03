@@ -21449,3 +21449,22 @@ This timeout governs only the pre-CTest `--gtest_list_tests` process. It MUST
 NOT replace or reduce the independent per-test and complete-suite ceilings.
 The correction changes no test selection, production source, ABI, stream byte,
 or interoperability archive.
+
+## DD-1046: Stage 64 MiB Contextual tANS as exact triple 2/6 + 1/5 + 5/2
+
+- Date: 2026-09-03
+- Status: accepted
+
+Extend the existing single-state Contextual tANS grammar only through the
+reserved dictionary/context pair `2/6 + 1/5`; retain entropy identity `5/2`,
+table log 12, deterministic spreading, one state, implicit bypass table, and
+LSB-first additional bits. Context variant 5 has 4,598 frequencies, a
+9,189-byte maximum descriptor, 131,072 table entries, decision bounds `8F`
+and `36T`, payload bound `12F+2`, and complete-frame bound `12F+9,255`.
+
+Use an explicit four-GiB aggregate policy. On the supported 64-bit layout,
+require exact HashChain, BinaryTree, and decoder aggregate limits
+1,946,952,743, 3,624,150,055, and 1,678,255,143 bytes. Admit the backend in
+nine independently reviewed stages from descriptor capacity through one
+append-only interoperability archive. Every incomplete stage MUST keep later
+boundaries closed and MUST NOT alter schema 54 or any earlier stream byte.

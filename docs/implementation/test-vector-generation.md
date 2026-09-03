@@ -13124,3 +13124,18 @@ inventory under MSVC and ClangCL without exclusions, retaining the
 interoperability schema-compatibility test. Configure once with zero and with a
 non-numeric value and require each invalid cache value to fail before build
 generation. Verify documentation and a whitespace-clean diff.
+
+### TVG-0911
+
+Before implementing the 64-MiB Contextual tANS triple, independently check the
+variant-5 dense compact-record extent 9,165 and add the unchanged 24-byte
+prefix to obtain descriptor ceiling 9,189. For `F=67,108,864`, require
+`8F=536,870,912`, payload `12F+2=805,306,370`, and complete frame
+`12F+9,255=805,315,623`.
+
+Using supported native object extents, require exact HashChain encode,
+BinaryTree encode, and decode aggregates 1,946,952,743, 3,624,150,055, and
+1,678,255,143 bytes. Each future implementation stage must add equality and
+one-short tests for the boundary it opens, reciprocal rejection by all older
+tANS profiles, and both Exact finders where encoding is admitted. Keep schema
+54 unchanged until public C, applications, and bounded fuzzing all pass.

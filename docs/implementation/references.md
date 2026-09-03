@@ -7330,3 +7330,12 @@ The GoogleTest discovery-timeout correction uses the repository's generated
 `marc_core_tests` include file, the observed GitHub Actions failure log, and
 the existing CMake `gtest_discover_tests` integration. No external project
 source, test harness, workaround, or implementation expression was consulted.
+
+### IR-0808
+
+The 64-MiB Contextual tANS design uses the repository-owned 16-MiB Contextual
+tANS contract, shared dictionary/context variant-5 layout, scalar tANS format
+and table types, exact-finder workspace calculators, and completed 64-MiB rANS
+admission sequence. No external tANS/FSE implementation, compressor, source,
+test, vector, patent, pseudocode, allocation policy, or optimization
+description was consulted.

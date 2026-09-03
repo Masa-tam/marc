@@ -46,6 +46,8 @@ navigate chronological development records.
   the third backend's table, payload, and 128-MiB workspace proof.
 - [LZSS contextual tANS 16 MiB window](design/lzss-contextual-tans-window-16m.md):
   the staged table, payload, and 512-MiB workspace proof.
+- [LZSS contextual tANS 64 MiB window](design/lzss-contextual-tans-window-64m.md):
+  the staged variant-5 table, payload, and four-GiB workspace proof.
 - [LZSS contextual Blocked Huffman 4 MiB window](design/lzss-contextual-blocked-huffman-window-4m.md):
   the fourth backend's descriptor, payload, and 128-MiB workspace proof.
 - [LZSS contextual Blocked Huffman 16 MiB window](design/lzss-contextual-blocked-huffman-window-16m.md):

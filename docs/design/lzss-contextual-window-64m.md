@@ -248,7 +248,8 @@ rANS CLI profile as archive 64 without changing the frozen first 63 entries.
    with its own memory proof and one schema append (rANS compact descriptor,
    private decoder, explicit-Exact complete-frame encoder, checked profile,
    streaming, public C, CLI, benchmark, and bounded decoder-fuzz substages
-   complete; schema-54 interoperability complete).
+   complete; schema-54 interoperability complete. The dedicated tANS design
+   and checked bounds are fixed; implementation remains closed).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a

@@ -3642,3 +3642,13 @@ instead of the upstream five-second default observed in the generated CTest
 include. The positive-integer cache contract rejects invalid configuration,
 while ordinary test execution retains its existing independent limits. This
 changes no test inventory, codec byte, public ABI, or interoperability archive.
+
+### BR-0238
+
+The dedicated 64-MiB Contextual tANS design fixes exact identity
+`2/6 + 1/5 + 5/2`, the 4,598-entry compact model, 9,189-byte descriptor,
+131,072-entry table bank, `8F`/`36T` decisions, `12F+2` payload, and
+`12F+9,255` complete-frame bound. Supported-layout workspace proofs admit both
+Exact finders and decoding under an explicit four-GiB aggregate policy. No
+implementation gate, public selector, tool name, fuzz profile, or schema-54
+archive is opened by this design-only step.
