@@ -7774,3 +7774,10 @@ complete frames; exact aggregate capacity succeeds and one byte short fails.
 Planning uses private token staging, while insufficient serialized output
 leaves the public frame buffer untouched. Exhaustive, public profiles, and
 streaming admission remain closed; schema 55 is unchanged.
+
+Internal 64-MiB Contextual Blocked Huffman profile/workspace and streaming
+admission are now available. The selected layout retains 8F decisions, 15F
+payload, and a 2,606-byte descriptor. Native checked queries cover both Exact
+finders and decoding; local hard limits remain authoritative. Exact decoder
+admission accepts only 2/6 + 1/5 + 2/2. One-byte I/O is verified without
+profile-sized allocations. Public C admission and schema 55 remain unchanged.

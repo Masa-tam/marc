@@ -28603,3 +28603,20 @@ both bounds.
   (115.01 and 110.94 seconds). The new long-distance case took 136.94 and
   78.36 seconds respectively. Documentation ordering and whitespace checks
   passed. Production code, defaults, public API, and schema 55 are unchanged.
+
+## CR-1151: 2026-09-04 - Admit internal 64-MiB Blocked Huffman profile and streaming
+
+- Authoring method: extend marc-owned layout selectors and checked calculators.
+- References used: IR-0824; DD-1062; TVG-0927; BR-0254.
+- Known implementations intentionally not consulted: external source, tests,
+  tables, pseudocode, and optimization structures.
+- Independent decisions: preserve local limits and distinguish invalid limit
+  combinations from valid-but-insufficient aggregate storage.
+- Generated-code task description: prove exact native workspace extents,
+  one-short rejection, and one-byte streaming with both Exact finders.
+- Similarity review: only repository-owned code and test structure were reused.
+- Validation: full Release suites passed 3,367/3,367 under MSVC
+  (361.95 seconds) and ClangCL (350.66 seconds), including schema compatibility
+  (115.28 and 111.13 seconds). Documentation ordering, links, and whitespace
+  checks passed. Public C selectors, initializer defaults, and schema 55
+  remain unchanged.

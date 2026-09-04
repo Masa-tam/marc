@@ -21702,3 +21702,13 @@ Run HashChain Exact and BinaryTree Exact sequentially, compare complete
 frames, and decode each. Explicit test-local memory and distance limits do
 not alter defaults. Reject the older 16-MiB selection without raw publication.
 This closes the long-distance frame proof; profile/streaming remains separate.
+
+## DD-1062: Admit internal 64-MiB Blocked Huffman profile and streaming
+
+Add an internal profile selector and exact streaming decoder admission for
+2/6 + 1/5 + 2/2. Use the variant-5 descriptor ceiling and existing checked
+native-layout calculators. Retain explicit caller limits and unchanged
+initializers/public C selectors. Both Exact finders must pass one-byte stream
+round trips and exact/one-short aggregate calculation without allocating the
+full profile. A block limit larger than aggregate storage remains invalid
+configuration rather than a capacity error.

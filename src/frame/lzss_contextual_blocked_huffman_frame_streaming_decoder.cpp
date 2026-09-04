@@ -69,6 +69,7 @@ enum class OverlapCheck : std::uint8_t {
     case LzssContextualBlockedHuffmanStreamAdmission::field_context_1m:
     case LzssContextualBlockedHuffmanStreamAdmission::field_context_4m:
     case LzssContextualBlockedHuffmanStreamAdmission::field_context_16m:
+    case LzssContextualBlockedHuffmanStreamAdmission::field_context_64m:
         return true;
     }
     return false;
@@ -178,6 +179,9 @@ parse_collected_stream_header() noexcept {
     case LzssContextualBlockedHuffmanStreamAdmission::field_context_16m:
         return stream_.dictionary_variant == 5
             && stream_.context_variant == 4;
+    case LzssContextualBlockedHuffmanStreamAdmission::field_context_64m:
+        return stream_.dictionary_variant == 6
+            && stream_.context_variant == 5;
     }
     return false;
 }

@@ -7464,3 +7464,9 @@ comparison test structure. No external implementation material was consulted.
 64-MiB Contextual Blocked Huffman long-distance encoding uses marc's local
 marker-gap frame tests, shared Exact finders, and DD-1060 admission. No
 external source, corpus, or implementation material was consulted.
+
+### IR-0824
+
+64-MiB Contextual Blocked Huffman profile/streaming admission derives from
+marc's checked profile calculator, selected layout, DD-1061 frame proof, and
+shared Exact finder requirements. No external implementation was consulted.

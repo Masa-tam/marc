@@ -54,7 +54,7 @@ are admitted. Tests fix the exact maximum, canonical record choice, unchanged
 older Single bytes, reciprocal variant-4 rejection, strict padding, and
 exact/one-short table and aggregate limits. Bounded frame decoding is now
 admitted; Exact finder frame encoding is admitted with equal-byte and capacity
-proofs. Long-distance encoder coverage is complete; profile/streaming remains pending.
+proofs. Long-distance encoder coverage and internal profile/streaming are complete.
 
 ## Decision and payload bounds
 
@@ -132,7 +132,7 @@ in a bounded fuzzer must not allocate a 64-MiB frame or history.
    for bounded decoding. Exact finder encoding and capacity proofs are complete;
    both Exact finders also prove distance 16,777,221 and equal complete frames.
    Exhaustive stays closed.
-4. Add checked profile/workspace calculation and one-byte streaming with exact
+4. **Complete:** add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests for both Exact finders. Exhaustive remains
    closed.
 5. Admit common public C selector value 4 only for Contextual Blocked Huffman.

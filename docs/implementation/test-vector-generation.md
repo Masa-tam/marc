@@ -13359,3 +13359,13 @@ at distance 16,777,221 from each Exact finder. Encode both under variant 5,
 compare complete frame bytes, and recover the entire input. Retrying each
 frame under the 16-MiB identity must fail and leave the raw sentinel intact.
 Finder workspaces are allocated one at a time under a one-GiB local limit.
+
+### TVG-0927
+
+Query the 64-MiB frame profile with 8F decisions and 15F payload. On the
+supported layout require HashChain aggregate 2,148,010,606, BinaryTree
+3,825,207,918, and decoder 1,879,194,082 bytes. Accept exact aggregate values
+and reject one byte below with cleared requirements. A 128-MiB aggregate
+with a 512-MiB block limit is invalid configuration. Separately use a one-byte
+frame with the 64-MiB identity and both Exact finders; require one-byte I/O
+round trips and reject the 16-MiB admission without output mutation.
