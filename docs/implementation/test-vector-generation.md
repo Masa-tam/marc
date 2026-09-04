@@ -13388,3 +13388,15 @@ rejection. Add a benchmark smoke test over the repository README, checking
 finite measurements, codec name, directional workspace totals, peak equality,
 and an untimed byte-exact round trip. Extend all four earlier benchmark
 inventory expectations to the five-name family without removing coverage.
+
+### TVG-0930
+
+Add profile 64M to the Contextual Blocked Huffman public streaming fuzz path
+and deterministic malformed suite. Use the v5 descriptor ceiling and `8F`
+decision limit, but retain 1-KiB frame/token/raw and fixed aggregate storage.
+For 64M, require every canonical truncation, extreme length, nonzero descriptor
+flag, and all reciprocal crossings with 64K/1M/4M/16M to fail without raw or
+public output mutation and with sticky repeated errors. Verify 16M and 64M
+both keep decoder workspace below the two-MiB harness limit. Compile warning
+clean under MSVC and ClangCL, then run the bounded Clang sanitizer target with
+`-seed=20260905 -runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`.

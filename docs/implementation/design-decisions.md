@@ -21731,3 +21731,16 @@ crossed profiles. Benchmark output capacity is checked as
 `112 + 15N + 2,670K`, where N is input bytes and K is frame count.
 Keep existing names and bytes, default finder, fuzz admission, and schema 55
 unchanged. The four-GiB limit is a policy ceiling, not a reported allocation.
+
+## DD-1065: Bound 64-MiB Contextual Blocked Huffman fuzz admission independently
+
+Add public profile 4 to the existing dual-path decoder harness while retaining
+fixed 32-KiB input, 4-KiB output, 1-KiB frame/token/raw storage, and a finite
+call ceiling. Raise only the local decision bound from `7F` to `8F` and its
+15-bit payload backing. Select v5 descriptor grammar and a 67,108,864-byte
+safety-distance limit without allocating profile-sized frame, history, or
+workspace storage. Parameterize permanent malformed regressions over all five
+profiles and test every reciprocal crossing involving 64M atomically. Run one
+corpus-free sanitizer campaign with
+`-seed=20260905 -runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`.
+Keep schema 55 and application bytes unchanged.

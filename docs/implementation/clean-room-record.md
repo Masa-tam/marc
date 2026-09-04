@@ -28652,3 +28652,22 @@ both bounds.
   394.52 and 348.99 seconds respectively, with no exclusions. Schema
   compatibility passed in 115.74 and 111.59 seconds. Documentation ordering,
   relative-link validation, and diff whitespace checks passed.
+
+## CR-1154: 2026-09-05 - Admit bounded 64-MiB Contextual Blocked Huffman fuzzing
+
+- Authoring method: extend repository-owned fixed-storage decoder harness and
+  parameterized malformed regressions.
+- References used: IR-0827; DD-1065; TVG-0930; BR-0257; FZ-0040.
+- Known implementations intentionally not consulted: external source, tests,
+  fuzz harnesses, corpora, tables, pseudocode, and optimization structures.
+- Independent decisions: raise only local decisions to `8F`, select v5 grammar,
+  and keep all frame/token/raw/output storage independent of 64-MiB capacity.
+- Generated-code task description: add 64M public streaming, truncation,
+  malformed-field, crossed-profile, workspace, and sanitizer coverage.
+- Similarity review: only local fuzz and regression structures were reused.
+- Validation: targeted MSVC and ClangCL regression suites passed 17 tests each;
+  the Clang 22 ASan/UBSan campaign completed 1,000 runs at 77 MiB peak RSS
+  without a finding. Complete MSVC and ClangCL suites passed all 3,372 tests
+  in 408.52 and 383.19 seconds respectively, with no exclusions. Schema
+  compatibility passed in 116.22 and 111.68 seconds. Documentation ordering,
+  relative-link validation, and diff whitespace checks passed.

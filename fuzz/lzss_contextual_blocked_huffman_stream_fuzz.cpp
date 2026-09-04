@@ -22,7 +22,7 @@ using Token = marc::dictionary::internal::LzssTypedToken;
 constexpr std::size_t maximum_fuzz_input = 32768;
 constexpr std::size_t maximum_total_output = 4096;
 constexpr std::size_t maximum_frame = 1024;
-constexpr std::size_t maximum_decisions = maximum_frame * 7;
+constexpr std::size_t maximum_decisions = maximum_frame * 8;
 constexpr std::size_t maximum_payload =
     (maximum_decisions * 15 + 7) / 8;
 constexpr std::size_t maximum_encoded_frame =
@@ -108,13 +108,15 @@ void exercise_public_streaming(
     config.max_block_size = maximum_decisions;
     config.max_compressed_payload_size = maximum_payload;
     config.max_internal_buffered_bytes = maximum_internal;
-    config.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
+    config.window_size = profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M
+        ? UINT32_C(1) << 26
+        : profile == MARC_LZSS_CONTEXTUAL_PROFILE_16M
         ? UINT32_C(1) << 24
         : profile == MARC_LZSS_CONTEXTUAL_PROFILE_4M
             ? UINT32_C(1) << 22
         : profile == MARC_LZSS_CONTEXTUAL_PROFILE_1M
             ? UINT32_C(1) << 20 : UINT32_C(1) << 16;
-    config.max_lz_distance = UINT64_C(1) << 24;
+    config.max_lz_distance = UINT64_C(1) << 26;
     config.max_lz_match_length = 258;
     config.max_entropy_table_entries = UINT64_C(1) << 20;
     config.profile = profile;
@@ -216,5 +218,6 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data,
     exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_1M);
     exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_4M);
     exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_16M);
+    exercise_public_streaming(input, MARC_LZSS_CONTEXTUAL_PROFILE_64M);
     return 0;
 }

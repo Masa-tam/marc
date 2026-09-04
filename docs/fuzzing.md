@@ -916,6 +916,28 @@ was supplied, no generated mutation was retained, and no artifact was
 produced. This bounded result is evidence for the exercised inputs, not an
 exhaustive safety claim.
 
+### FZ-0040: 64-MiB Contextual Blocked Huffman bounded dual-path campaign
+
+The Contextual Blocked Huffman harness now exercises public profiles 64 KiB,
+1 MiB, 4 MiB, 16 MiB, and 64 MiB while retaining fixed caller-owned storage.
+Input is capped at 32 KiB, published output at 4 KiB, frame/token/raw storage
+at 1 KiB, decisions at 8,192, payload at 15,360 bytes, and the process-call
+ceiling remains finite. Profile 64M selects the exact v5 descriptor and
+67,108,864-byte safety distance without allocating a 64-MiB frame, history,
+or full-profile workspace. Permanent regressions cover every truncation,
+extreme frame sizes, nonzero descriptor flags, all reciprocal crossings with
+the four earlier profiles, sticky errors, and sentinel output atomicity.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 20260905 completed exactly 1,000 inputs under a 32-KiB maximum input,
+five-second per-input timeout, and 512-MiB RSS limit without a crash, hang, or
+sanitizer finding. Peak RSS was 77 MiB; final coverage was 251 counters and
+423 features over an eight-entry, 40-byte in-memory corpus. The matching
+sanitizer runtime path applied only to the campaign process. No input corpus
+was supplied, no generated mutation was retained, and no artifact was
+produced. This bounded result is evidence for the exercised inputs, not an
+exhaustive safety claim.
+
 ## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the

@@ -7482,3 +7482,10 @@ No external implementation source or test material was consulted.
 64-MiB Contextual Blocked Huffman application admission uses marc's public
 profile helper, DD-1063 C lifecycle, and repository-owned CLI/benchmark
 adapters and capacity calculations. No external implementation was consulted.
+
+### IR-0827
+
+64-MiB Contextual Blocked Huffman fuzz admission uses the repository-owned
+bounded dual-path harness, public C lifecycle, internal frame validator, and
+established matching-runtime Clang sanitizer procedure. No external harness,
+corpus, implementation source, or test material was consulted.

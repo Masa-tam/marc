@@ -138,7 +138,7 @@ in a bounded fuzzer must not allocate a 64-MiB frame or history.
 5. **Complete:** admit common public C selector value 4 for Contextual Blocked Huffman.
 6. **Complete:** add exact CLI and dependency-free benchmark name
    `lzss-contextual-blocked-huffman-64m` through the public lifecycle.
-7. Extend bounded dual-path decoder fuzzing without profile-sized allocation.
+7. **Complete:** extend bounded dual-path decoder fuzzing without profile-sized allocation.
 8. Append exactly one interoperability archive after every earlier boundary
    passes, preserving all schema-55 archive bytes and order.
 

@@ -170,7 +170,7 @@ the twenty-three typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,369 tests under
+The optimized Release configurations each enumerate 3,372 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3820,3 +3820,11 @@ benchmark routes now use the public C lifecycle. Identity, round trip,
 profile rejection, usage inventory, and reported workspace accounting are
 tested. Bounded fuzz admission and interoperability schema extension remain
 pending; schema 55 is unchanged.
+
+### BR-0257
+
+The bounded dual-path Contextual Blocked Huffman decoder fuzzer admits 64M
+without profile-sized allocation. Fixed-storage public streaming and private
+frame decode paths, deterministic malformed regressions, all reciprocal
+profile crossings, and a 1,000-run ASan/UBSan campaign passed. Interoperability
+schema admission remains pending; schema 55 is unchanged.
