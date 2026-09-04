@@ -6047,3 +6047,8 @@ payload, and a 2,606-byte descriptor. Native checked queries cover both Exact
 finders and decoding; local hard limits remain authoritative. Exact decoder
 admission accepts only 2/6 + 1/5 + 2/2. One-byte I/O is verified without
 profile-sized allocations. Public C admission and schema 55 remain unchanged.
+
+After all local boundaries passed, interoperability schema 56 appended the
+exact 64-MiB Contextual Blocked Huffman application stream as archive 66.
+Schema selection remains an artifact-manifest concern; it does not alter the
+codec pipeline or infer resource limits from input.

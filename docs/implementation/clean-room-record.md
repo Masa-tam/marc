@@ -28671,3 +28671,22 @@ both bounds.
   in 408.52 and 383.19 seconds respectively, with no exclusions. Schema
   compatibility passed in 116.22 and 111.68 seconds. Documentation ordering,
   relative-link validation, and diff whitespace checks passed.
+
+## CR-1155: 2026-09-05 - Append schema-56 Contextual Blocked Huffman archive
+
+- Authoring method: extend repository-owned interoperability scripts by one
+  exact terminal profile.
+- References used: IR-0828; DD-1066; TVG-0931; BR-0258.
+- Known implementations intentionally not consulted: external source, tests,
+  archives, corpora, tables, pseudocode, and optimization structures.
+- Independent decisions: freeze schema 55 and append only exact identity
+  `2/6 + 1/5 + 2/2` as archive 66 under `56` / `marc-cli-v56`.
+- Generated-code task description: generate, identify, round trip, verify,
+  reorder-reject, remove-one, and traverse all historical schemas.
+- Similarity review: only local schema scripts and manifest conventions reused.
+- Validation: local schema 56 generation and all 66 archive checks passed;
+  reordered schema 56 was rejected and conversions through schema 1 passed.
+  Complete MSVC and ClangCL suites passed all 3,372 tests in 413.94 and
+  387.13 seconds respectively, with no exclusions. Schema compatibility
+  passed in 120.26 and 115.45 seconds. Documentation ordering, relative-link
+  validation, and diff whitespace checks passed.

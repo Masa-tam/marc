@@ -7790,3 +7790,12 @@ policy, and Exact finder are preserved. Callers may tighten limits and must
 query workspace again after changes. The ABI-1 layout and 64K initializer
 default are unchanged; the exact identity is 2/6 + 1/5 + 2/2. Tool names,
 bounded fuzz profile, and schema 55 are not extended by this admission.
+
+Interoperability schema 56 freezes the complete schema-55 order and appends
+only `lzss-contextual-blocked-huffman-64m` as archive 66. Its stream identity
+is exact `2/6 + 1/5 + 2/2`. Generation checks that identity before immediate
+round trip. Verification enforces all sixty-six names in order, leaf-only
+paths, recorded sizes and SHA-256 values, decoded fixture equality, and
+byte-identical local re-encoding. Removing only archive 66 and rewriting the
+manifest as `55` / `marc-cli-v55` reconstructs the previous schema. This
+schema admission changes no codec representation.

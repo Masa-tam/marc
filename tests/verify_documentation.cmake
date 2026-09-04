@@ -361,9 +361,9 @@ foreach(required_contextual_blocked_huffman_window_64m_term IN ITEMS
         "BinaryTree Exact"
         "first newly reachable distance 16,777,217"
         "schema 55 unchanged"
-        "descriptor admission complete"
-        "bounded frame decoding admitted"
-        "Exact finder frame encoding admitted"
+        "complete through interoperability schema 56"
+        "7. **Complete:** extend bounded dual-path decoder fuzzing"
+        "8. **Complete:** append exactly one interoperability archive"
         "1. **Complete:** expand descriptor selection"
         "2. **Complete:** carry the immutable layout")
     string(FIND "${lzss_contextual_blocked_huffman_window_64m_content}"
@@ -1052,11 +1052,11 @@ foreach(required_interoperability_section IN ITEMS
         "${interoperability_section_offset}")
 endforeach()
 foreach(required_current_interoperability_term IN ITEMS
-        "Each current schema-55 bundle"
-        "marc-cli-v55"
-        "sixty-five foreign archives"
-        "Schema 55 requires"
-        "schemas 1 through 54"
+        "Each current schema-56 bundle"
+        "marc-cli-v56"
+        "sixty-six foreign archives"
+        "Schema 56 requires"
+        "schemas 1 through 55"
         "External cross-platform exchange remains pending"
         "Schema 54 requires"
         "four-direction evidence remains complete"

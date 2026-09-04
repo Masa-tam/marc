@@ -1,7 +1,6 @@
 # LZSS contextual Blocked Huffman 64 MiB window
 
-Status: descriptor admission complete; operation and typed-token paths verified;
-bounded frame decoding admitted; Exact finder frame encoding admitted.
+Status: complete through interoperability schema 56.
 
 ## Purpose and exact identity
 
@@ -139,7 +138,7 @@ in a bounded fuzzer must not allocate a 64-MiB frame or history.
 6. **Complete:** add exact CLI and dependency-free benchmark name
    `lzss-contextual-blocked-huffman-64m` through the public lifecycle.
 7. **Complete:** extend bounded dual-path decoder fuzzing without profile-sized allocation.
-8. Append exactly one interoperability archive after every earlier boundary
+8. **Complete:** append exactly one interoperability archive after every earlier boundary
    passes, preserving all schema-55 archive bytes and order.
 
 Each stage must retain all earlier bytes, reject crossed profiles before token

@@ -580,3 +580,9 @@ is required even for a short file; use a smaller profile when appropriate.
 No input field automatically raises the selected local limits. Existing names
 and initializer defaults are unchanged. Encode and decode require the same
 explicit codec name; an uppercase `64M` suffix is invalid usage.
+
+Interoperability schema 56 appends the exact
+`lzss-contextual-blocked-huffman-64m` CLI profile as archive 66 after the
+frozen schema-55 order. The bundle generator checks identity
+`2/6 + 1/5 + 2/2` before recording the archive and immediately decodes it back
+to the common fixture.

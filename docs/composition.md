@@ -1946,3 +1946,9 @@ frozen 64-entry schema-54 order. The generator requires identity
 Compatibility removes only entry 65 to reconstruct schema 54 before traversing
 its unchanged historical conversion chain. No codec byte, resource profile,
 public ABI, default, or match-finder selection changes.
+
+Interoperability schema 56 freezes the sixty-five schema-55 archives and
+appends only `lzss-contextual-blocked-huffman-64m` as archive 66. The exact
+composition is dictionary `2/6`, field context `1/5`, and Blocked Huffman
+`2/2`. Generation and verification use the public CLI lifecycle and retain
+every earlier archive byte and position.

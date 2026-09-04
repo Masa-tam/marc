@@ -21744,3 +21744,18 @@ profiles and test every reciprocal crossing involving 64M atomically. Run one
 corpus-free sanitizer campaign with
 `-seed=20260905 -runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`.
 Keep schema 55 and application bytes unchanged.
+
+## DD-1066: Append 64-MiB Contextual Blocked Huffman as schema 56 archive 66
+
+Freeze schema 55's exact 65-profile order and append only exact CLI profile
+`lzss-contextual-blocked-huffman-64m` as archive 66. Set
+`schema_version=56` and `codec_set=marc-cli-v56`. Generation MUST prove stream
+identity `2/6 + 1/5 + 2/2` before immediate round trip. Verification MUST
+enforce exact profile order, leaf names, sizes, SHA-256 values, foreign decode
+equality, and byte-identical local re-encoding.
+
+The compatibility test MUST reject reordered schema-56 manifests, remove only
+archive 66 to reconstruct exact schema 55, and traverse the unchanged chain
+through schema 1. No codec byte, ABI, resource limit, default, or encoder-local
+finder selection changes. External four-direction exchange remains separate
+release evidence.

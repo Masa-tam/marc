@@ -13400,3 +13400,17 @@ public output mutation and with sticky repeated errors. Verify 16M and 64M
 both keep decoder workspace below the two-MiB harness limit. Compile warning
 clean under MSVC and ClangCL, then run the bounded Clang sanitizer target with
 `-seed=20260905 -runs=1000 -max_len=32768 -timeout=5 -rss_limit_mb=512`.
+
+### TVG-0931
+
+Generate schema 56 from the repository-owned fixture with the frozen schema-55
+profile order followed only by `lzss-contextual-blocked-huffman-64m` as archive
+66. Before acceptance require exact header identity `2/6 + 1/5 + 2/2`, an
+immediate CLI round trip, recorded size, and SHA-256.
+
+Verify all 66 archives in exact order by fixture decode and byte-identical local
+re-encoding. Swap the first two manifest entries and require rejection. Remove
+only archive 66, rewrite the manifest as `schema_version=55` and
+`codec_set=marc-cli-v55`, verify it, and traverse all unchanged conversions
+through schema 1. Run focused compatibility and complete MSVC/ClangCL suites;
+leave external four-direction exchange for the pushed revision.

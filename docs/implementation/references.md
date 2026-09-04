@@ -7489,3 +7489,10 @@ adapters and capacity calculations. No external implementation was consulted.
 bounded dual-path harness, public C lifecycle, internal frame validator, and
 established matching-runtime Clang sanitizer procedure. No external harness,
 corpus, implementation source, or test material was consulted.
+
+### IR-0828
+
+Schema-56 admission uses only marc's repository-owned fixture generator,
+manifest verifier, schema-conversion test, exact CLI identity, and frozen
+schema-55 archive order. No external implementation, archive, corpus, test
+suite, or source material was consulted.
