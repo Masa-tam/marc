@@ -7470,3 +7470,9 @@ external source, corpus, or implementation material was consulted.
 64-MiB Contextual Blocked Huffman profile/streaming admission derives from
 marc's checked profile calculator, selected layout, DD-1061 frame proof, and
 shared Exact finder requirements. No external implementation was consulted.
+
+### IR-0825
+
+64-MiB Contextual Blocked Huffman public C admission uses marc's established
+apply-profile contract, DD-1062 workspace proof, and local C lifecycle tests.
+No external implementation source or test material was consulted.

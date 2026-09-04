@@ -7781,3 +7781,12 @@ payload, and a 2,606-byte descriptor. Native checked queries cover both Exact
 finders and decoding; local hard limits remain authoritative. Exact decoder
 admission accepts only 2/6 + 1/5 + 2/2. One-byte I/O is verified without
 profile-sized allocations. Public C admission and schema 55 remain unchanged.
+
+Contextual Blocked Huffman now accepts MARC_LZSS_CONTEXTUAL_PROFILE_64M
+(selector 4) through its public C lifecycle. apply_profile selects 64-MiB
+frame/window, 536,870,912 decisions, 1,006,632,960 payload bytes, 17,885 table
+entries, and four-GiB aggregate storage. Direction, original size, total-output
+policy, and Exact finder are preserved. Callers may tighten limits and must
+query workspace again after changes. The ABI-1 layout and 64K initializer
+default are unchanged; the exact identity is 2/6 + 1/5 + 2/2. Tool names,
+bounded fuzz profile, and schema 55 are not extended by this admission.

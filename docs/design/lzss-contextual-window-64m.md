@@ -255,7 +255,7 @@ changing the frozen first 64 entries.
    interoperability are complete. The dedicated Contextual Blocked Huffman
    descriptor, operation, typed-token, and bounded frame decoder paths are
    verified; Exact finder frame encoding includes long-distance coverage,
-   with internal profile/streaming verified and public admission pending).
+   with internal profile/streaming and public C admission verified).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a

@@ -13369,3 +13369,12 @@ and reject one byte below with cleared requirements. A 128-MiB aggregate
 with a 512-MiB block limit is invalid configuration. Separately use a one-byte
 frame with the 64-MiB identity and both Exact finders; require one-byte I/O
 round trips and reject the 16-MiB admission without output mutation.
+
+### TVG-0928
+
+Extend the C helper matrix to 64M in both directions; assert every applied
+limit, preserved caller value, and byte-for-byte idempotence. Retain 16M tests
+and add a 64M lifecycle with both Exact finders, identical encoded bytes,
+round trip, and crossed-profile rejection. Query full-profile capacities
+without allocating them; require exact HashChain and decoder aggregates and
+one-short rejection. Keep the ABI-1 configuration size assertion at 112.

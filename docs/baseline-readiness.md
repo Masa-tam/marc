@@ -3804,3 +3804,11 @@ are available. Checked workspace queries cover both Exact finders and decode
 at exact/one-short aggregate limits without large allocations. Small one-byte
 streams round trip under both finders. Public C admission, applications,
 fuzz profile, and interoperability schema remain unchanged.
+
+### BR-0255
+
+The public Contextual Blocked Huffman C lifecycle accepts 64M. Helper semantics,
+full-profile workspace boundaries, both Exact finders, byte identity, round
+trip, and exact decoder admission are covered. The 64K default and ABI-1
+layout remain unchanged. CLI/benchmark, bounded fuzzing, and interoperability
+admission remain pending.

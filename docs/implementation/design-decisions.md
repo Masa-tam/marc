@@ -21712,3 +21712,12 @@ initializers/public C selectors. Both Exact finders must pass one-byte stream
 round trips and exact/one-short aggregate calculation without allocating the
 full profile. A block limit larger than aggregate storage remains invalid
 configuration rather than a capacity error.
+
+## DD-1063: Admit the public 64-MiB Contextual Blocked Huffman profile
+
+Accept common selector 4 through apply-profile, configuration loading, internal
+profile mapping, and exact decoder admission. Set 64-MiB frame/window, 8F
+block, 15F payload, 17,885 table entries, and four-GiB aggregate limits.
+Preserve ABI layout, initializer defaults, caller direction/original size/
+total-output policy and Exact finder. Unknown selectors remain atomic errors.
+CLI, benchmark names, fuzz profile, and schema admission remain separate.

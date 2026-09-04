@@ -28620,3 +28620,19 @@ both bounds.
   (115.28 and 111.13 seconds). Documentation ordering, links, and whitespace
   checks passed. Public C selectors, initializer defaults, and schema 55
   remain unchanged.
+
+## CR-1152: 2026-09-04 - Admit public 64-MiB Contextual Blocked Huffman C lifecycle
+
+- Authoring method: extend repository-owned C profile mappings and helper.
+- References used: IR-0825; DD-1063; TVG-0928; BR-0255.
+- Known implementations intentionally not consulted: external source, tests,
+  tables, pseudocode, and optimization structures.
+- Independent decisions: reuse common selector 4 while preserving the ABI,
+  default profile, caller-owned policy, and explicit resource selection.
+- Generated-code task description: extend helper matrix, preserve 16M coverage,
+  and add 64M C lifecycle and exact/one-short workspace queries.
+- Similarity review: only local API and test structures were reused.
+- Validation: complete MSVC and ClangCL suites passed all 3,367 tests in
+  389.93 and 354.59 seconds respectively, with no exclusions. Schema
+  compatibility passed in 115.79 and 111.38 seconds. Documentation ordering,
+  relative-link validation, and diff whitespace checks passed.

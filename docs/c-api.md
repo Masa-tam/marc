@@ -697,3 +697,12 @@ The selector is encoder policy only: it is not serialized, and decode accepts
 either known value while returning the same requirements and constructing the
 same decoder. All five Contextual LZSS encoders execute both exact strategies.
 No route silently replaces a requested BinaryTree strategy with HashChain.
+
+Contextual Blocked Huffman now accepts MARC_LZSS_CONTEXTUAL_PROFILE_64M
+(selector 4) through its public C lifecycle. apply_profile selects 64-MiB
+frame/window, 536,870,912 decisions, 1,006,632,960 payload bytes, 17,885 table
+entries, and four-GiB aggregate storage. Direction, original size, total-output
+policy, and Exact finder are preserved. Callers may tighten limits and must
+query workspace again after changes. The ABI-1 layout and 64K initializer
+default are unchanged; the exact identity is 2/6 + 1/5 + 2/2. Tool names,
+bounded fuzz profile, and schema 55 are not extended by this admission.

@@ -1309,7 +1309,7 @@ MARC_API marc_status marc_lzss_contextual_blocked_huffman_config_init(
     marc_direction direction,
     marc_lzss_contextual_blocked_huffman_config* config) MARC_NOEXCEPT;
 /*
- * Contextual Blocked Huffman accepts the 64K, 1M, 4M, and 16M profiles.
+ * Contextual Blocked Huffman accepts the 64K, 1M, 4M, 16M, and 64M profiles.
  * Initialization remains 64K; applying a profile changes local limits but
  * never infers one from input stream fields.
  */
