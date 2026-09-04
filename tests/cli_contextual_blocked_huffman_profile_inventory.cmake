@@ -12,6 +12,12 @@ if(NOT usage_result EQUAL 2)
 endif()
 
 set(usage_text "${usage_stdout}${usage_stderr}")
+string(REGEX MATCHALL "lzss-contextual-blocked-huffman-64m" sixty_four_mib_matches
+    "${usage_text}")
+list(LENGTH sixty_four_mib_matches sixty_four_mib_count)
+if(NOT sixty_four_mib_count EQUAL 1)
+    message(FATAL_ERROR "CLI must list the 64-MiB profile exactly once")
+endif()
 string(REGEX MATCHALL "lzss-contextual-blocked-huffman-1m" selected_matches
     "${usage_text}")
 list(LENGTH selected_matches selected_count)
@@ -40,13 +46,27 @@ string(FIND "${usage_text}" "lzss-contextual-blocked-huffman-4m,"
     four_mib_offset)
 string(FIND "${usage_text}" "lzss-contextual-blocked-huffman-16m,"
     sixteen_mib_offset)
+string(FIND "${usage_text}" "lzss-contextual-blocked-huffman-64m,"
+    sixty_four_mib_offset)
 if(baseline_offset EQUAL -1 OR selected_offset EQUAL -1
     OR four_mib_offset EQUAL -1 OR sixteen_mib_offset EQUAL -1
     OR selected_offset LESS_EQUAL baseline_offset
     OR four_mib_offset LESS_EQUAL selected_offset
-    OR sixteen_mib_offset LESS_EQUAL four_mib_offset)
+    OR sixteen_mib_offset LESS_EQUAL four_mib_offset
+    OR sixty_four_mib_offset LESS_EQUAL sixteen_mib_offset)
     message(FATAL_ERROR
         "Contextual Blocked Huffman CLI profiles are missing or unordered")
+endif()
+
+execute_process(
+    COMMAND "${MARC_CLI}" encode
+        --codec lzss-contextual-blocked-huffman-64M
+        missing-input ignored-output
+    RESULT_VARIABLE sixty_four_mib_near_miss_result
+    OUTPUT_QUIET
+    ERROR_QUIET)
+if(NOT sixty_four_mib_near_miss_result EQUAL 2)
+    message(FATAL_ERROR "CLI accepted a near-miss 64-MiB profile")
 endif()
 
 execute_process(

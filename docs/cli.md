@@ -106,8 +106,9 @@ Contextual Blocked Huffman entropy variant 2 under the frozen 64 KiB profile.
 `lzss-contextual-blocked-huffman-1m` selects exact
 `2/3 + 1/2 + 2/2`, and `lzss-contextual-blocked-huffman-4m` selects exact
 `2/4 + 1/3 + 2/2`. `lzss-contextual-blocked-huffman-16m` selects exact
-`2/5 + 1/4 + 2/2`. Encode and decode require the same explicit name; no
-profile auto-detects or admits another. All four remain experimental.
+`2/5 + 1/4 + 2/2`. `lzss-contextual-blocked-huffman-64m` selects exact
+`2/6 + 1/5 + 2/2`. Encode and decode require the same explicit name; no
+profile auto-detects or admits another. All five remain experimental.
 `lzss-contextual-adaptive-huffman` selects typed LZSS plus Contextual Adaptive
 Huffman entropy variant 2 under the frozen 64 KiB profile. The additive
 `lzss-contextual-adaptive-huffman-1m` name selects exact
@@ -567,3 +568,15 @@ entropy variant 3's canonical variable descriptor. The fixed variant-2 path
 and the `lzss-contextual-rans-compact` selector are removed without aliases.
 Historical schema-33-through-36 manifest names are translated only inside the
 interoperability verifier and are not accepted as general CLI input.
+
+## 64-MiB Contextual Blocked Huffman application profile
+
+`lzss-contextual-blocked-huffman-64m` explicitly selects `2/6 + 1/5 + 2/2`.
+The public profile helper supplies 67,108,864-byte frame/window limits,
+536,870,912 decisions, 1,006,632,960 payload bytes, 17,885 table entries,
+and a four-GiB aggregate ceiling. The decoder's full-profile caller-owned
+workspace is 1,879,194,082 bytes on the validated x64 builds. This allocation
+is required even for a short file; use a smaller profile when appropriate.
+No input field automatically raises the selected local limits. Existing names
+and initializer defaults are unchanged. Encode and decode require the same
+explicit codec name; an uppercase `64M` suffix is invalid usage.

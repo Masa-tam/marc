@@ -21721,3 +21721,13 @@ block, 15F payload, 17,885 table entries, and four-GiB aggregate limits.
 Preserve ABI layout, initializer defaults, caller direction/original size/
 total-output policy and Exact finder. Unknown selectors remain atomic errors.
 CLI, benchmark names, fuzz profile, and schema admission remain separate.
+
+## DD-1064: Expose the exact 64-MiB Contextual Blocked Huffman application name
+
+Admit only `lzss-contextual-blocked-huffman-64m` in the CLI and dependency-free
+benchmark. Apply public profile 4 and obtain directional storage from the
+public workspace query. Preserve exact identity `2/6 + 1/5 + 2/2` and reject
+crossed profiles. Benchmark output capacity is checked as
+`112 + 15N + 2,670K`, where N is input bytes and K is frame count.
+Keep existing names and bytes, default finder, fuzz admission, and schema 55
+unchanged. The four-GiB limit is a policy ceiling, not a reported allocation.

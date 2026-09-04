@@ -28636,3 +28636,19 @@ both bounds.
   389.93 and 354.59 seconds respectively, with no exclusions. Schema
   compatibility passed in 115.79 and 111.38 seconds. Documentation ordering,
   relative-link validation, and diff whitespace checks passed.
+
+## CR-1153: 2026-09-04 - Admit 64-MiB Contextual Blocked Huffman applications
+
+- Authoring method: extend repository-owned CLI and benchmark dispatch.
+- References used: IR-0826; DD-1064; TVG-0929; BR-0256.
+- Known implementations intentionally not consulted: external source, tests,
+  tables, pseudocode, and optimization structures.
+- Independent decisions: exact name selection through the public helper and
+  workspace query; checked `112 + 15N + 2,670K` output capacity.
+- Generated-code task description: preserve existing routes and extend the
+  CLI identity/crossing checks, inventory, and benchmark report validation.
+- Similarity review: only local application patterns were reused.
+- Validation: complete MSVC and ClangCL suites passed all 3,369 tests in
+  394.52 and 348.99 seconds respectively, with no exclusions. Schema
+  compatibility passed in 115.74 and 111.59 seconds. Documentation ordering,
+  relative-link validation, and diff whitespace checks passed.

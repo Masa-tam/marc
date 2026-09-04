@@ -13378,3 +13378,13 @@ and add a 64M lifecycle with both Exact finders, identical encoded bytes,
 round trip, and crossed-profile rejection. Query full-profile capacities
 without allocating them; require exact HashChain and decoder aggregates and
 one-short rejection. Keep the ABI-1 configuration size assertion at 112.
+
+### TVG-0929
+
+Add a 64M CLI round trip that checks dictionary/context/entropy identity,
+rejects 16M and 64K profile crossings, rejects trailing input, and retains
+all existing profile tests. Extend usage ordering/uniqueness and near-miss
+rejection. Add a benchmark smoke test over the repository README, checking
+finite measurements, codec name, directional workspace totals, peak equality,
+and an untimed byte-exact round trip. Extend all four earlier benchmark
+inventory expectations to the five-name family without removing coverage.

@@ -7476,3 +7476,9 @@ shared Exact finder requirements. No external implementation was consulted.
 64-MiB Contextual Blocked Huffman public C admission uses marc's established
 apply-profile contract, DD-1062 workspace proof, and local C lifecycle tests.
 No external implementation source or test material was consulted.
+
+### IR-0826
+
+64-MiB Contextual Blocked Huffman application admission uses marc's public
+profile helper, DD-1063 C lifecycle, and repository-owned CLI/benchmark
+adapters and capacity calculations. No external implementation was consulted.

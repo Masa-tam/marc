@@ -207,6 +207,7 @@ enum class Codec {
     lzss_contextual_blocked_huffman_1m,
     lzss_contextual_blocked_huffman_4m,
     lzss_contextual_blocked_huffman_16m,
+    lzss_contextual_blocked_huffman_64m,
     lzss_contextual_adaptive_huffman,
     lzss_contextual_adaptive_huffman_1m,
     lzss_contextual_adaptive_huffman_4m,
@@ -1714,11 +1715,14 @@ bool process_file(const marc_direction direction,
     } else if (codec == Codec::lzss_contextual_blocked_huffman
                || codec == Codec::lzss_contextual_blocked_huffman_1m
                || codec == Codec::lzss_contextual_blocked_huffman_4m
+               || codec == Codec::lzss_contextual_blocked_huffman_64m
                || codec == Codec::lzss_contextual_blocked_huffman_16m) {
         if (!configure(
                 direction, source_size,
                 lzss_contextual_blocked_huffman_settings,
-                codec == Codec::lzss_contextual_blocked_huffman_16m
+                codec == Codec::lzss_contextual_blocked_huffman_64m
+                    ? MARC_LZSS_CONTEXTUAL_PROFILE_64M
+                    : codec == Codec::lzss_contextual_blocked_huffman_16m
                     ? MARC_LZSS_CONTEXTUAL_PROFILE_16M
                     : codec == Codec::lzss_contextual_blocked_huffman_4m
                     ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -1888,6 +1892,7 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::lzss_contextual_blocked_huffman
              || codec == Codec::lzss_contextual_blocked_huffman_1m
              || codec == Codec::lzss_contextual_blocked_huffman_4m
+             || codec == Codec::lzss_contextual_blocked_huffman_64m
              || codec == Codec::lzss_contextual_blocked_huffman_16m)
         status = marc_lzss_contextual_blocked_huffman_workspace_requirements(
             &lzss_contextual_blocked_huffman_settings, &needed);
@@ -2085,6 +2090,7 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::lzss_contextual_blocked_huffman
              || codec == Codec::lzss_contextual_blocked_huffman_1m
              || codec == Codec::lzss_contextual_blocked_huffman_4m
+             || codec == Codec::lzss_contextual_blocked_huffman_64m
              || codec == Codec::lzss_contextual_blocked_huffman_16m)
         status = marc_lzss_contextual_blocked_huffman_create(
             &lzss_contextual_blocked_huffman_settings, primary_buffer,
@@ -2358,6 +2364,7 @@ void usage() {
                  "lzss-contextual-blocked-huffman-1m, "
                  "lzss-contextual-blocked-huffman-4m, "
                  "lzss-contextual-blocked-huffman-16m, "
+                 "lzss-contextual-blocked-huffman-64m, "
                  "lzss-contextual-adaptive-huffman, "
                  "lzss-contextual-adaptive-huffman-1m, "
                  "lzss-contextual-adaptive-huffman-4m, "
@@ -2458,6 +2465,8 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzss_contextual_blocked_huffman_4m;
         else if (name == "lzss-contextual-blocked-huffman-16m")
             codec = Codec::lzss_contextual_blocked_huffman_16m;
+        else if (name == "lzss-contextual-blocked-huffman-64m")
+            codec = Codec::lzss_contextual_blocked_huffman_64m;
         else if (name == "lzss-contextual-adaptive-huffman")
             codec = Codec::lzss_contextual_adaptive_huffman;
         else if (name == "lzss-contextual-adaptive-huffman-1m")

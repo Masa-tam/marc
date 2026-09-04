@@ -136,7 +136,7 @@ in a bounded fuzzer must not allocate a 64-MiB frame or history.
    and one-short aggregate tests for both Exact finders. Exhaustive remains
    closed.
 5. **Complete:** admit common public C selector value 4 for Contextual Blocked Huffman.
-6. Add exact CLI and dependency-free benchmark name
+6. **Complete:** add exact CLI and dependency-free benchmark name
    `lzss-contextual-blocked-huffman-64m` through the public lifecycle.
 7. Extend bounded dual-path decoder fuzzing without profile-sized allocation.
 8. Append exactly one interoperability archive after every earlier boundary

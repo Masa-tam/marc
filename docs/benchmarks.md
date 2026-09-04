@@ -69,6 +69,7 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-blocked-huffman-1m corpus.bin 5`,
 `marc_benchmark lzss-contextual-blocked-huffman-4m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-blocked-huffman-16m corpus.bin 5`,
+`marc_benchmark lzss-contextual-blocked-huffman-64m corpus.bin 5`,
 `marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman-1m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman-4m corpus.bin 5`, or
@@ -2113,3 +2114,18 @@ bytes at ratio 0.685. Encoder primary/secondary/views workspaces were
 805,315,623/67,108,864/805,830,656 bytes. Peak caller-owned workspace was the
 1,678,255,143-byte decoder aggregate. These short-input measurements prove
 application wiring and bounded allocation; they are not a performance target.
+
+## 64-MiB Contextual Blocked Huffman application profile
+
+The dependency-free `lzss-contextual-blocked-huffman-64m` benchmark selects
+exact `2/6 + 1/5 + 2/2` through the public profile helper, workspace query,
+and factory. Checked output capacity is `112 + 15N + 2,670K`. An untimed
+byte-exact round trip precedes measurement, and peak caller-owned workspace
+is the maximum of encoder and decoder directional totals.
+
+One MSVC Release smoke iteration over the 4,589-byte README emitted 2,657
+bytes at ratio 0.579. Encoder primary/secondary/views regions were
+4,589/71,505/138,964 bytes; decoder regions were
+1,006,635,630/67,108,864/805,449,588 bytes. Peak caller-owned workspace was
+1,879,194,082 bytes. These short-input measurements validate application
+wiring and accounting, not representative throughput or memory efficiency.
