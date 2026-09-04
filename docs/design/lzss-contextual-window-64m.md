@@ -253,9 +253,9 @@ changing the frozen first 64 entries.
    complete; schema-54 interoperability complete. The dedicated tANS design,
    implementation, public lifecycle, bounded fuzzing, and schema-55
    interoperability are complete. The dedicated Contextual Blocked Huffman
-   descriptor, operation, typed-token, and bounded frame decoder paths are
-   verified; Exact finder frame encoding includes long-distance coverage,
-   with internal profile/streaming and public C admission verified).
+   descriptor, operation, typed-token, frame, streaming, public C,
+   application, bounded fuzzing, and schema-56 interoperability stages are
+   complete).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a
@@ -286,4 +286,10 @@ evidence remains frozen at revision
 `1de3df622106db7674bcf691201a601dae680294`.
 The corresponding tANS lifecycle is complete through bounded fuzzing, and
 schema 55 appends it as archive 65; external four-direction schema-55 exchange
-remains pending.
+was not performed separately. The Contextual Blocked Huffman lifecycle is also
+complete through bounded fuzzing, and schema 56 appends it as archive 66. All
+66 schema-56 archives passed the four-direction Windows/MSVC, Ubuntu
+24.04/Ninja, and Ubuntu 26.04/Clang exchange at revision
+`c6bb7a62c7bfdcf6eef157ae1642f5de9576c182`; the frozen first 65 archives give
+cross-platform evidence for the schema-55 prefix without constituting a
+standalone schema-55 bundle exchange.

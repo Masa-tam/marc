@@ -1057,7 +1057,10 @@ foreach(required_current_interoperability_term IN ITEMS
         "sixty-six foreign archives"
         "Schema 56 requires"
         "schemas 1 through 55"
-        "External cross-platform exchange remains pending"
+        "four-direction evidence is complete"
+        "c6bb7a62c7bfdcf6eef157ae1642f5de9576c182"
+        "### IX-0049: Schema 56"
+        "standalone external bundle exchange"
         "Schema 54 requires"
         "four-direction evidence remains complete"
         "8ecc7a104c7b5def57737d9c8f9c40a63e6a8c30"
@@ -1081,7 +1084,7 @@ if(NOT interoperability_headings)
     message(FATAL_ERROR "No interoperability evidence records were found")
 endif()
 set(expected_interoperability_record 1)
-set(expected_interoperability_schema 7)
+set(previous_interoperability_schema 0)
 foreach(heading IN LISTS interoperability_headings)
     if(NOT heading MATCHES "^### IX-([0-9]+): Schema ([0-9]+)$")
         message(FATAL_ERROR "Invalid interoperability heading: ${heading}")
@@ -1094,17 +1097,21 @@ foreach(heading IN LISTS interoperability_headings)
         set(interoperability_record_number 0)
     endif()
     if(NOT interoperability_record_number EQUAL
-       expected_interoperability_record OR
-       NOT interoperability_schema_number EQUAL
-       expected_interoperability_schema)
+       expected_interoperability_record)
         message(FATAL_ERROR
-            "Interoperability records must be contiguous from schema 7: "
+            "Interoperability record numbers must be contiguous: "
+            "${heading}")
+    endif()
+    if(interoperability_schema_number LESS_EQUAL
+       previous_interoperability_schema)
+        message(FATAL_ERROR
+            "Interoperability schema records must be strictly increasing: "
             "${heading}")
     endif()
     math(EXPR expected_interoperability_record
         "${expected_interoperability_record} + 1")
-    math(EXPR expected_interoperability_schema
-        "${expected_interoperability_schema} + 1")
+    set(previous_interoperability_schema
+        "${interoperability_schema_number}")
 endforeach()
 list(LENGTH interoperability_headings interoperability_record_count)
 

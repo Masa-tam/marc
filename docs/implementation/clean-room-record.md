@@ -28690,3 +28690,32 @@ both bounds.
   387.13 seconds respectively, with no exclusions. Schema compatibility
   passed in 120.26 and 115.45 seconds. Documentation ordering, relative-link
   validation, and diff whitespace checks passed.
+
+## CR-1156: 2026-09-05 - Record schema 56 four-direction exchange
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-1066; IR-0828; TVG-0931; BR-0258 through BR-0259;
+  IX-0049; CR-1155; and full revision
+  `c6bb7a62c7bfdcf6eef157ae1642f5de9576c182`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, or optimization descriptions.
+- Independent decisions: require one exact revision and the complete
+  66-archive inventory in all four directions; record the skipped standalone
+  schema-55 exchange honestly while recognizing its frozen prefix inside
+  schema 56; keep generated work products outside the repository.
+- Generated-code task description: record the completed schema-56
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks, and permit
+  strictly increasing rather than artificially contiguous schema evidence.
+- Similarity review: this change records project-generated artifact evidence
+  and documentation validation policy only; it introduces no codec
+  implementation expression.
+- External validation: all four passes reported `Verified 66 archives` at
+  revision `c6bb7a62c7bfdcf6eef157ae1642f5de9576c182`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.
