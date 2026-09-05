@@ -21875,3 +21875,17 @@ usage inventory ordering, case-sensitive near-miss rejection, exact stream
 identity, crossed-profile rejection, pre-timing round trip, finite metrics,
 and internally consistent peak-workspace reporting. Add no private layout
 arithmetic, fuzz profile, or schema-56 archive.
+
+## DD-1075: Bound 64-MiB Contextual Adaptive Huffman fuzzing locally
+
+- Date: 2026-09-06
+- Status: accepted
+
+Extend the existing dual-path decoder harness to public profile value 4 while
+retaining its fixed 64-KiB input, four-KiB output, one-KiB frame/token/raw, and
+finite process-call bounds. Size only the fixed model bank for variant 5 and
+raise the validation distance to 67,108,864; never allocate a profile-sized
+frame, history, or full public workspace. Require all reciprocal profile
+crossings and malformed descriptor/padding paths to fail atomically with
+sticky public errors. Run one empty-corpus fixed-seed Clang 22 sanitizer
+campaign without retaining generated units. Keep schema 56 closed.

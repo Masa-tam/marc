@@ -13538,3 +13538,19 @@ six positive query-owned workspace extents, and peak workspace equal to the
 larger directional aggregate. Require all five benchmark profile names to be
 adjacent and the `-64M` near miss to fail. Run focused and complete MSVC/
 ClangCL suites, including schema compatibility.
+
+### TVG-0940
+
+Instantiate the existing Contextual Adaptive Huffman malformed-stream
+regressions for all five public profiles. Generate each canonical stream with
+the public helper/query/factory lifecycle, require every truncation and each
+reserved-header, extreme-length, descriptor, and padding mutation to leave
+private and public output sentinels unchanged, and require all twenty ordered
+cross-profile decode directions to reject. Verify that both 16-MiB and 64-MiB
+profiles retain fuzz-local decoder workspace below the fixed aggregate bound.
+
+Compile the same harness warning-clean in ordinary MSVC and ClangCL builds,
+then run the Clang 22 sanitizer target without an input corpus using
+`-seed=20260906 -runs=1000 -max_len=65536 -timeout=5 -rss_limit_mb=512`.
+Apply the matching sanitizer runtime path only to that process, retain no
+generated unit absent a finding, and record exact coverage and peak RSS.

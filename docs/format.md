@@ -7854,3 +7854,8 @@ identity for both encoding and decoding. It is not serialized and does not
 enable auto-detection: a differently named profile retains its own immutable
 admission policy and rejects the crossed stream. The CLI and benchmark add no
 format variant; fuzzing and interoperability schema 56 remain unchanged.
+
+Bounded fuzzing now admits this identity under local one-KiB frame and
+four-KiB total-output ceilings while validating the full 67,108,864-byte
+distance limit and variant-5 model shape. This changes no encoded byte,
+descriptor field, application selection rule, or schema-56 archive.

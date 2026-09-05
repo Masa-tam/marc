@@ -399,7 +399,7 @@ byte-identical; an unknown selector leaves the configuration unchanged, and
 a 16-MiB decoder rejects the 64-MiB identity before publishing raw bytes.
 The initializer remains on the 64-KiB profile and stream metadata never raises
 local limits. The separately admitted CLI and benchmark use this same public
-lifecycle; fuzz and interoperability-schema surfaces remain closed.
+lifecycle; no additional C API surface is implied.
 Its public completion audit covers all required binary classes, deterministic
 whole, one-byte, and mixed chunk schedules, stable repeated terminal calls,
 and frame-atomic rejection of corrupted, truncated, or trailing final-frame

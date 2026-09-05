@@ -6109,3 +6109,10 @@ those exact partitions to the factory; neither reproduces private node,
 symbol, token, or match-finder layout arithmetic. Exact command names are the
 application-level profile contract. Fuzzing and interoperability schema 56
 remain separate and unchanged.
+
+The bounded Contextual Adaptive Huffman decoder harness now applies the same
+fixed private-frame and public-streaming paths to profile value 4. Its model
+bank is sized for variant 5, but frame, token, raw-output, and process-call
+storage remain fixed at fuzz-specific local bounds; choosing a 64-MiB safety
+distance never allocates profile-sized history. Interoperability schema 56
+remains a separate admission boundary.

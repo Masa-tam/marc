@@ -403,8 +403,8 @@ public profile value 4 to select 67,108,864-byte frames and window, exact
 `ceil(267F/8) = 2,239,758,336` payload ceiling, and an eight-GiB aggregate
 policy. It uses only the public helper, requirements query, and factory;
 decode requires the same exact `-64m` name and a 16-MiB decoder rejects the
-identity before output publication. This application admission does not add
-an interoperability archive or enable the bounded fuzz profile.
+identity before output publication. The separately admitted bounded fuzz
+profile changes no command behavior; no interoperability archive is added.
 
 ### LZ78 profile parameters
 

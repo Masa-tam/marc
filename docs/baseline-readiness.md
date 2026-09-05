@@ -3954,3 +3954,17 @@ query-owned directional storage with a consistent peak. Fuzzing and schema 56
 remain closed pending their own stages. All 3,382 tests pass under MSVC and
 ClangCL in 376.29 and 376.83 seconds, including schema compatibility in 120.23
 and 113.59 seconds.
+
+### BR-0268
+
+The bounded Contextual Adaptive Huffman harness now exercises all five public
+profiles, including exact 64-MiB selector 4, through both the private complete-
+frame decoder and public C streaming decoder. Fixed storage uses the variant-5
+9,227-node/4,598-symbol model bank while retaining one-KiB frame/token/raw and
+four-KiB published-output limits. Twenty-seven permanent regression tests pass
+under MSVC and ClangCL, including every reciprocal profile crossing, truncation,
+descriptor, padding, sticky-error, and output-atomicity boundary. A fixed-seed
+1,000-input Clang 22 sanitizer campaign completed with no finding and 44-MiB
+peak RSS. All 3,387 tests pass under MSVC and ClangCL in 390.16 and 362.05
+seconds, including unchanged schema compatibility in 119.81 and 113.37
+seconds. Interoperability schema 56 admission remains closed.

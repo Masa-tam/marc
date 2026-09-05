@@ -28928,3 +28928,31 @@ both bounds.
   ClangCL in 376.29 and 376.83 seconds, including schema compatibility in
   120.23 and 113.59 seconds. Documentation ordering, relative-link, and
   whitespace checks pass.
+
+## CR-1165: 2026-09-06 - Bound 64-MiB Adaptive Huffman fuzzing
+
+- Authoring method: extended marc's repository-owned fixed-storage dual-path
+  decoder harness and permanent malformed-stream regressions; no external
+  implementation or corpus was consulted.
+- References used: DD-1075; IR-0837; TVG-0940; BR-0268; FZ-0041; CR-1164; the
+  existing 64-MiB Contextual Blocked Huffman fuzz-admission pattern.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, fuzz harnesses, allocators, source code,
+  archives, test suites, patents, pseudocode, optimization descriptions, and
+  malformed-stream corpora.
+- Independent decisions: retain fuzz-local frame, token, raw, output, and call
+  bounds; size the model bank for variant 5; exercise five strict public
+  admissions; and leave interoperability schema 56 closed.
+- Generated-code task description: add the 64-MiB profile to both decoder
+  paths, cover all reciprocal profile crossings and local-workspace bounds,
+  run ordinary compiler checks and one fixed-seed sanitizer campaign, and
+  record exact evidence without retaining generated corpus entries.
+- Similarity review: the change extends marc's own harness and regression
+  patterns and introduces no external implementation expression.
+- Validation: the 27 focused malformed-stream regressions pass under MSVC and
+  ClangCL. A Clang 22 AddressSanitizer/UndefinedBehaviorSanitizer/libFuzzer
+  campaign completed 1,000 inputs with seed 20260906, final coverage 274,
+  457 features, and 44-MiB peak RSS without a finding. Complete Release suites
+  pass all 3,387 tests under MSVC and ClangCL in 390.16 and 362.05 seconds,
+  including unchanged schema compatibility in 119.81 and 113.37 seconds.
+  Documentation ordering, relative-link, and whitespace checks pass.

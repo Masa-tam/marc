@@ -7576,3 +7576,12 @@ adapters. No external compressor, Adaptive Huffman implementation, command-
 line adapter, benchmark harness, allocator, source code, test suite, archive,
 patent, pseudocode, optimization description, or malformed-stream corpus was
 consulted.
+
+### IR-0837
+
+The 64-MiB Contextual Adaptive Huffman fuzz admission uses IR-0836, DD-1074,
+TVG-0939, marc's existing dual-path harness, and the repository-owned 64-MiB
+Contextual Blocked Huffman fuzz-admission pattern. No external compressor,
+Adaptive Huffman implementation, fuzz harness, allocator, source code, test
+suite, archive, patent, pseudocode, optimization description, or malformed-
+stream corpus was consulted.

@@ -93,12 +93,12 @@ and 16 MiB admissions using byte-derived chunks and a finite call budget. A
 The experimental Contextual Adaptive Huffman target caps supplied input at
 64 KiB, published raw output at 4 KiB, one frame at 1 KiB, token staging at
 1,024 entries, and payload at 34,176 bytes. Its maximum
-9,195-node/4,582-symbol model bank,
+9,227-node/4,598-symbol model bank,
 private raw storage, public primary/secondary/aligned views, and final output
 form one thread-local fixed workspace. The private complete-frame decoder and
-all four strict public 64 KiB, 1 MiB, 4 MiB, and 16 MiB admissions use a
-finite call budget; the public paths use byte-derived chunks. Selecting the
-16 MiB identity changes only model and distance validation and does not
+all five strict public 64 KiB, 1 MiB, 4 MiB, 16 MiB, and 64 MiB admissions use
+a finite call budget; the public paths use byte-derived chunks. Selecting the
+64 MiB identity changes only model and distance validation and does not
 allocate a profile-sized frame or history.
 The combined LZSS plus Adaptive Huffman target uses the same dual-decoder and
 call-ceiling structure with the exact LZSS `2F` token bound: 8 KiB supplied
@@ -933,6 +933,30 @@ with seed 20260905 completed exactly 1,000 inputs under a 32-KiB maximum input,
 five-second per-input timeout, and 512-MiB RSS limit without a crash, hang, or
 sanitizer finding. Peak RSS was 77 MiB; final coverage was 251 counters and
 423 features over an eight-entry, 40-byte in-memory corpus. The matching
+sanitizer runtime path applied only to the campaign process. No input corpus
+was supplied, no generated mutation was retained, and no artifact was
+produced. This bounded result is evidence for the exercised inputs, not an
+exhaustive safety claim.
+
+### FZ-0041: Five-profile Contextual Adaptive Huffman bounded campaign
+
+The Contextual Adaptive Huffman private-frame/public-C decoder target now
+drives the 64-KiB, one-MiB, four-MiB, 16-MiB, and 64-MiB strict admissions for
+every bounded input. It retains its 64-KiB input, four-KiB total output,
+one-KiB frame/token/raw storage, 34,176-byte payload, fixed
+9,227-node/4,598-symbol model bank, and finite call ceiling. The largest
+admitted distance is 67,108,864 bytes; selecting the 64-MiB identity does not
+allocate a 64-MiB frame, history, or full-profile workspace. Permanent
+regressions cover every truncation, reserved identity bytes, extreme frame
+lengths, invalid descriptor fields, nonzero payload padding, all reciprocal
+crossings with the four earlier profiles, sticky errors, and sentinel output
+atomicity.
+
+A Windows Clang 22 libFuzzer/AddressSanitizer/UndefinedBehaviorSanitizer run
+with seed 20260906 completed exactly 1,000 inputs under a 64-KiB maximum input,
+five-second per-input timeout, and 512-MiB RSS limit without a crash, hang, or
+sanitizer finding. Peak RSS was 44 MiB; final coverage was 274 counters and
+457 features over a seven-entry, 31-byte in-memory corpus. The matching
 sanitizer runtime path applied only to the campaign process. No input corpus
 was supplied, no generated mutation was retained, and no artifact was
 produced. This bounded result is evidence for the exercised inputs, not an
