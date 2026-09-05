@@ -255,7 +255,8 @@ changing the frozen first 64 entries.
    interoperability are complete. The dedicated Contextual Blocked Huffman
    descriptor, operation, typed-token, frame, streaming, public C,
    application, bounded fuzzing, and schema-56 interoperability stages are
-   complete).
+   complete. The dedicated Contextual Adaptive Huffman design and checked
+   bounds are fixed; its implementation gates remain closed).
 
 No stage may reinterpret an existing identity, infer limits from an untrusted
 stream, select a match finder automatically, or claim completion from a

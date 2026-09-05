@@ -3854,3 +3854,13 @@ that bundle for reverse verification under Windows/MSVC. Every pass reported
 the same full revision and exact manifest, digest, decode, and byte-identical
 re-encode checks. The frozen first 65 archives provide schema-55-prefix
 evidence, but no standalone schema-55 exchange is claimed.
+
+### BR-0260
+
+The dedicated 64-MiB Contextual Adaptive Huffman design fixes exact identity
+`2/6 + 1/5 + 1/2`, the 4,598-symbol/9,227-node FGK bank, `8F`/`36T`
+decisions, `ceil(267F/8)` payload, and `ceil(267F/8)+80` complete-frame bound.
+Supported-layout workspace proofs admit both Exact finders and decoding under
+an explicit eight-GiB aggregate policy. No implementation gate, public
+selector, tool name, fuzz profile, or schema-56 archive is opened by this
+design-only step.

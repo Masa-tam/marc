@@ -324,6 +324,7 @@ foreach(experimental_design IN ITEMS
         "lzss-contextual-blocked-huffman-window-16m.md"
         "lzss-contextual-blocked-huffman-window-64m.md"
         "lzss-contextual-adaptive-huffman-window-16m.md"
+        "lzss-contextual-adaptive-huffman-window-64m.md"
         "lzss-typed-token-protocol.md"
         "context-model-contract.md"
         "entropy-backend-contract.md")
@@ -332,6 +333,41 @@ foreach(experimental_design IN ITEMS
     if(NOT EXISTS "${experimental_design_path}")
         message(FATAL_ERROR
             "Missing experimental design document: ${experimental_design}")
+    endif()
+endforeach()
+
+set(lzss_contextual_adaptive_huffman_window_64m_design
+    "${source_dir}/docs/design/lzss-contextual-adaptive-huffman-window-64m.md")
+file(READ "${lzss_contextual_adaptive_huffman_window_64m_design}"
+    lzss_contextual_adaptive_huffman_window_64m_content)
+foreach(required_contextual_adaptive_huffman_window_64m_term IN ITEMS
+        "dictionary algorithm/variant 2/6"
+        "context-model algorithm/variant 1/5"
+        "entropy algorithm/variant 1/2"
+        "fixed 16-byte descriptor"
+        "exactly 4,598 symbol slots"
+        "2*4,598 + 31 = 9,227"
+        "decision_count <= 8F"
+        "decision_count <= 36*token_count"
+        "payload_size <= ceil(267F/8)"
+        "2,239,758,336 bytes"
+        "2,239,758,416 bytes"
+        "3,381,290,224 bytes"
+        "5,058,487,536-byte aggregate"
+        "3,112,330,476 bytes"
+        "eight-GiB aggregate policy"
+        "HashChain Exact"
+        "BinaryTree Exact"
+        "first newly reachable distance 16,777,217"
+        "schema 56 unchanged"
+        "implementation remains closed")
+    string(FIND "${lzss_contextual_adaptive_huffman_window_64m_content}"
+        "${required_contextual_adaptive_huffman_window_64m_term}"
+        required_contextual_adaptive_huffman_window_64m_term_offset)
+    if(required_contextual_adaptive_huffman_window_64m_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete 64 MiB contextual Adaptive Huffman design: "
+            "${required_contextual_adaptive_huffman_window_64m_term}")
     endif()
 endforeach()
 

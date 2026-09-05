@@ -13414,3 +13414,19 @@ only archive 66, rewrite the manifest as `schema_version=55` and
 `codec_set=marc-cli-v55`, verify it, and traverse all unchanged conversions
 through schema 1. Run focused compatibility and complete MSVC/ClangCL suites;
 leave external four-direction exchange for the pushed revision.
+
+### TVG-0932
+
+Before implementing the 64-MiB Contextual Adaptive Huffman triple, require
+exact model-bank selection of 4,598 symbol indices and 9,227 nodes. At
+`F=67,108,864`, require events 134,217,728, decisions 536,870,912, payload
+2,239,758,336, and complete frame 2,239,758,416. Verify these checked bounds at
+equality and one above without allocating the full profile.
+
+Using supported native object extents, require exact HashChain encode,
+BinaryTree encode, and decode aggregates 3,381,290,224, 5,058,487,536, and
+3,112,330,476 bytes. Each future implementation stage must add equality and
+one-short tests for the boundary it opens, reciprocal rejection by all older
+Contextual Adaptive Huffman profiles, and both Exact finders where encoding is
+admitted. Keep schema 56 unchanged until public C, applications, and bounded
+fuzzing all pass.

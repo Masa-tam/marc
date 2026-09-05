@@ -28719,3 +28719,29 @@ both bounds.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1157: 2026-09-05 - Fix the 64-MiB Contextual Adaptive Huffman design
+
+- Authoring method: derived a dedicated backend contract from marc's completed
+  16-MiB Contextual Adaptive Huffman representation and independently
+  implemented shared 64-MiB typed-token/context design.
+- References used: IR-0829; DD-1067; TVG-0932; BR-0260; CR-1156; the local
+  Contextual Adaptive Huffman model bank, profile, exact-finder, and shared
+  variant-5 format design.
+- Known implementations intentionally not consulted: external Adaptive
+  Huffman codecs, compressors, source, tests, vectors, patents, pseudocode,
+  allocation policies, or optimization descriptions.
+- Independent decisions: retain entropy identity 1/2 and fixed descriptor;
+  enlarge only selected model/count bounds; select eight GiB so both Exact
+  finders fit; divide admission into eight closed-boundary stages.
+- Generated-code task description: document identity `2/6 + 1/5 + 1/2`, exact
+  model, payload, complete-frame, and workspace ceilings; define equality,
+  one-short, reciprocal-profile, fixed-memory fuzz, and append-only
+  interoperability gates before implementation.
+- Similarity review: all formulas and lifecycle stages derive from marc's own
+  checked layouts and preceding backend admissions. No external implementation
+  expression or distinctive test structure was used.
+- Validation: documentation verification covers the new design and all ordered
+  ledgers; arithmetic agrees with the shared 64-MiB workspace table. This
+  design changes no source, ABI, stream byte, test inventory, or
+  interoperability schema.

@@ -7496,3 +7496,13 @@ Schema-56 admission uses only marc's repository-owned fixture generator,
 manifest verifier, schema-conversion test, exact CLI identity, and frozen
 schema-55 archive order. No external implementation, archive, corpus, test
 suite, or source material was consulted.
+
+### IR-0829
+
+The 64-MiB Contextual Adaptive Huffman design uses the repository-owned
+16-MiB Contextual Adaptive Huffman contract, shared dictionary/context
+variant-5 layout and format ceilings, caller-owned FGK model-bank types,
+exact-finder workspace calculators, and completed 64-MiB Blocked Huffman
+admission sequence. No external Adaptive Huffman implementation, compressor,
+source, test, vector, patent, pseudocode, allocation policy, or optimization
+description was consulted.

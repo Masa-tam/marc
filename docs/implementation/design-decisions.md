@@ -21759,3 +21759,23 @@ archive 66 to reconstruct exact schema 55, and traverse the unchanged chain
 through schema 1. No codec byte, ABI, resource limit, default, or encoder-local
 finder selection changes. External four-direction exchange remains separate
 release evidence.
+
+## DD-1067: Stage 64 MiB Contextual Adaptive Huffman as exact triple 2/6 + 1/5 + 1/2
+
+- Date: 2026-09-05
+- Status: accepted
+
+Extend the existing Contextual Adaptive Huffman representation only through
+reserved dictionary/context pair `2/6 + 1/5`; retain entropy identity `1/2`,
+the fixed 16-byte descriptor, 31 reset-per-frame FGK trees, NYT and sibling-
+property rules, forward LSB-first coding, and the no-rescale frame policy.
+Context variant 5 requires 4,598 symbol indices, 9,227 nodes, decision bounds
+`8F` and `36T`, payload bound `ceil(267F/8)`, and complete-frame bound
+`ceil(267F/8)+80`.
+
+Use an explicit eight-GiB aggregate policy. On the supported 64-bit layout,
+require exact HashChain, BinaryTree, and decoder aggregate limits
+3,381,290,224, 5,058,487,536, and 3,112,330,476 bytes. Admit the backend in
+eight independently reviewed stages from model selection through one
+append-only interoperability archive. Every incomplete stage MUST keep later
+boundaries closed and MUST NOT alter schema 56 or any earlier stream byte.
