@@ -15,7 +15,7 @@ determinism, chunking, terminal behavior, and malformed final-frame handling.
 `In progress` means a public profile exists but one or more of those local
 readiness boundaries remain pending.
 
-| Required codec | Public CLI profile | Local status | Interoperability schema 56 |
+| Required codec | Public CLI profile | Local status | Interoperability schema 57 |
 |---|---|---|---|
 | LZ77 | `lz77` | Ready | Included |
 | LZSS | `lzss` | Ready | Included |
@@ -36,7 +36,7 @@ by component tests and exercised through Blocked Huffman.
 
 ## Additional public profiles
 
-| Profile | Purpose | Local status | Interoperability schema 56 |
+| Profile | Purpose | Local status | Interoperability schema 57 |
 |---|---|---|---|
 | `lz77-blocked-huffman` | First composed dictionary/entropy pipeline | Ready | Included |
 | `lzss-blocked-huffman` | Second composed dictionary/entropy pipeline | Ready | Included |
@@ -104,10 +104,10 @@ now passed in all four directions at revision
 `827ddf085efb40c7d8f9bc27628977053179d84c` for all 41 archives across the
 recorded Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu 26.04/Clang producers.
 
-Schema 56 contains sixty-six archives: the frozen forty-two baseline profiles
-followed by twenty-four typed-token LZSS Contextual profiles. Schema 55 retains
-its exact archive order and meaning; schema 56 appends only the 64-MiB
-Contextual Blocked Huffman profile.
+Schema 57 contains sixty-seven archives: the frozen forty-two baseline profiles
+followed by twenty-five typed-token LZSS Contextual profiles. Schema 56 retains
+its exact archive order and meaning; schema 57 appends only the 64-MiB
+Contextual Adaptive Huffman profile.
 
 ## Public-profile evidence matrix
 
@@ -117,7 +117,7 @@ deterministic output, one-byte and mixed chunking, repeated terminal calls,
 and transactional rejection of a malformed final frame. Interoperability is
 kept separate because it requires artifacts produced outside the local build.
 
-| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 56 |
+| Public profile | Format + validator | Streaming | C ABI | CLI | Benchmark | Bounded fuzz | Completion | Schema 57 |
 |---|---|---|---|---|---|---|---|---|
 | `lz77` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
 | `lzss` | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Included |
@@ -165,12 +165,12 @@ kept separate because it requires artifacts produced outside the local build.
 ## Current validation baseline
 
 All forty-two baseline profiles in the composition matrix satisfy the local
-`Ready` definition and remain present in interoperability schema 56 alongside
-the twenty-four typed-token LZSS Contextual profiles. The internal canonical
+`Ready` definition and remain present in interoperability schema 57 alongside
+the twenty-five typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,372 tests under
+The optimized Release configurations each enumerate 3,387 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -3968,3 +3968,16 @@ descriptor, padding, sticky-error, and output-atomicity boundary. A fixed-seed
 peak RSS. All 3,387 tests pass under MSVC and ClangCL in 390.16 and 362.05
 seconds, including unchanged schema compatibility in 119.81 and 113.37
 seconds. Interoperability schema 56 admission remains closed.
+
+### BR-0269
+
+Interoperability schema 57 freezes all sixty-six schema-56 archives and
+appends only exact profile `lzss-contextual-adaptive-huffman-64m` as archive
+67. Generation proves identity `2/6 + 1/5 + 1/2` before immediate round trip.
+Verification requires exact order, leaf-only names, hashes, foreign decode
+equality, and byte-identical re-encoding. Compatibility rejects a reordered
+schema-57 manifest, removes only archive 67 to reconstruct schema 56, and
+traverses the unchanged chain through schema 1. Local complete-suite evidence
+comprises all 3,387 tests under MSVC and ClangCL in 382.70 and 359.25 seconds,
+including schema compatibility in 123.71 and 116.44 seconds. External four-
+direction exchange remains pending.

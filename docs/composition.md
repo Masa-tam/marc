@@ -1952,3 +1952,9 @@ appends only `lzss-contextual-blocked-huffman-64m` as archive 66. The exact
 composition is dictionary `2/6`, field context `1/5`, and Blocked Huffman
 `2/2`. Generation and verification use the public CLI lifecycle and retain
 every earlier archive byte and position.
+
+Interoperability schema 57 freezes all sixty-six schema-56 archives and
+appends only `lzss-contextual-adaptive-huffman-64m` as archive 67. Its exact
+composition is dictionary `2/6`, field context `1/5`, and Adaptive Huffman
+`1/2`. Generation and verification use the public CLI lifecycle and retain
+every earlier archive byte and position.

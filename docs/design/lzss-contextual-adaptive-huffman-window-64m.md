@@ -1,7 +1,7 @@
 # LZSS contextual Adaptive Huffman 64 MiB window
 
-Status: public lifecycle, tooling, and bounded dual-path fuzzing implemented.
-Exhaustive encoding and interoperability remain closed.
+Status: complete through interoperability schema 57. Exhaustive encoding
+remains closed.
 
 ## Purpose and exact identity
 
@@ -151,6 +151,7 @@ fuzzer must not allocate a 64-MiB frame or history.
    (complete)
 8. Append exactly one interoperability archive after every earlier boundary
    passes, preserving all schema-56 archive bytes and order.
+   (complete)
 
 Each stage keeps later surfaces closed, preserves all earlier bytes, and
 rejects crossed profiles before token or raw publication.
@@ -171,7 +172,8 @@ rejects crossed profiles before token or raw publication.
   Adaptive Huffman profiles;
 - keep bounded fuzz model, frame, token, raw, output, and call storage
   independent of the selected 64-MiB maximum; and
-- retain schema 56 unchanged until the complete public lifecycle passes.
+- retain every schema-56 archive byte and position while appending only this
+  profile as schema-57 archive 67.
 
 ## Deferred decisions
 

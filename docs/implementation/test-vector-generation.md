@@ -13554,3 +13554,20 @@ then run the Clang 22 sanitizer target without an input corpus using
 `-seed=20260906 -runs=1000 -max_len=65536 -timeout=5 -rss_limit_mb=512`.
 Apply the matching sanitizer runtime path only to that process, retain no
 generated unit absent a finding, and record exact coverage and peak RSS.
+
+### TVG-0941
+
+Generate schema 57 from the repository-owned deterministic fixture with the
+complete frozen schema-56 archive sequence followed only by
+`lzss-contextual-adaptive-huffman-64m`. Before its immediate round trip,
+inspect archive 67 for dictionary variant 6, context variant 5, context
+algorithm 1, Adaptive Huffman algorithm 1, and entropy variant 2.
+
+Verify the exact 67-entry manifest order, leaf-only names, declared sizes and
+SHA-256 values, fixture decode equality, and byte-identical local re-encoding.
+Swap the first two entries and require rejection. Remove only archive 67,
+rewrite the manifest as `56` / `marc-cli-v56`, verify the reconstructed schema,
+then traverse every unchanged historical conversion through schema 1. Run the
+documentation verifier and complete MSVC/ClangCL suites, including schema
+compatibility; retain external four-direction exchange as a later evidence
+stage.

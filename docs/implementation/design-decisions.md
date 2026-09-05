@@ -21889,3 +21889,21 @@ frame, history, or full public workspace. Require all reciprocal profile
 crossings and malformed descriptor/padding paths to fail atomically with
 sticky public errors. Run one empty-corpus fixed-seed Clang 22 sanitizer
 campaign without retaining generated units. Keep schema 56 closed.
+
+## DD-1076: Append 64-MiB Contextual Adaptive Huffman as schema 57 archive 67
+
+- Date: 2026-09-06
+- Status: accepted
+
+Freeze every schema-56 archive byte, name, and position. Append only exact CLI
+profile `lzss-contextual-adaptive-huffman-64m` as archive 67 under
+`schema_version=57` and `codec_set=marc-cli-v57`. Generation MUST prove stream
+identity `2/6 + 1/5 + 1/2` before immediate decode equality. Verification MUST
+require all 67 names in exact order, leaf-only paths, sizes and SHA-256 values,
+foreign decode equality, and byte-identical local re-encoding.
+
+The compatibility test MUST reject a reordered schema-57 manifest, remove only
+archive 67 to reconstruct schema 56, verify that frozen result, and then follow
+the complete existing conversion chain through schema 1. Schema selection
+MUST remain artifact metadata and MUST NOT change codec bytes, public ABI,
+resource limits, defaults, or match-finder policy.

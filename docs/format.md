@@ -7859,3 +7859,12 @@ Bounded fuzzing now admits this identity under local one-KiB frame and
 four-KiB total-output ceilings while validating the full 67,108,864-byte
 distance limit and variant-5 model shape. This changes no encoded byte,
 descriptor field, application selection rule, or schema-56 archive.
+
+Interoperability schema 57 freezes all sixty-six schema-56 archives in their
+existing byte order and appends only `lzss-contextual-adaptive-huffman-64m` as
+archive 67. Generation verifies exact identity `2/6 + 1/5 + 1/2` before an
+immediate round trip. Verification requires the exact 67-name order,
+leaf-only paths, recorded sizes and SHA-256 values, decoded fixture equality,
+and byte-identical local re-encoding. Removing only archive 67 and changing
+the manifest to `56` / `marc-cli-v56` reconstructs schema 56 exactly. This
+artifact admission changes no codec byte or resource policy.

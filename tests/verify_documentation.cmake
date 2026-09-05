@@ -359,14 +359,15 @@ foreach(required_contextual_adaptive_huffman_window_64m_term IN ITEMS
         "HashChain Exact"
         "BinaryTree Exact"
         "first newly reachable distance 16,777,217"
-        "schema 56 unchanged"
-        "public lifecycle, tooling, and bounded dual-path fuzzing implemented"
+        "schema-57 archive 67"
+        "complete through interoperability schema 57"
         "Bounded Exact-finder encoding and decoding are complete"
         "byte-identical decodable frames"
         "one-short aggregate tests for both Exact finders"
         "without profile-sized allocation"
         "Exhaustive remains"
-        "remain closed")
+        "Exhaustive encoding"
+        "remains closed")
     string(FIND "${lzss_contextual_adaptive_huffman_window_64m_content}"
         "${required_contextual_adaptive_huffman_window_64m_term}"
         required_contextual_adaptive_huffman_window_64m_term_offset)
@@ -1034,8 +1035,9 @@ foreach(required_readiness_section IN ITEMS
 endforeach()
 foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
-        "each enumerate 3,372 tests under"
-        "four-direction schema-52 exchange")
+        "each enumerate 3,387 tests under"
+        "interoperability schema 57 alongside"
+        "Schema 56 completed its 66-archive four-direction")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)
     if(current_baseline_offset EQUAL -1)
@@ -1094,11 +1096,13 @@ foreach(required_interoperability_section IN ITEMS
         "${interoperability_section_offset}")
 endforeach()
 foreach(required_current_interoperability_term IN ITEMS
-        "Each current schema-56 bundle"
-        "marc-cli-v56"
-        "sixty-six foreign archives"
+        "Each current schema-57 bundle"
+        "marc-cli-v57"
+        "sixty-seven foreign archives"
+        "Schema 57 requires"
+        "schemas 1 through 56"
+        "standalone external bundle exchange remains"
         "Schema 56 requires"
-        "schemas 1 through 55"
         "four-direction evidence is complete"
         "c6bb7a62c7bfdcf6eef157ae1642f5de9576c182"
         "### IX-0049: Schema 56"

@@ -7585,3 +7585,12 @@ Contextual Blocked Huffman fuzz-admission pattern. No external compressor,
 Adaptive Huffman implementation, fuzz harness, allocator, source code, test
 suite, archive, patent, pseudocode, optimization description, or malformed-
 stream corpus was consulted.
+
+### IR-0838
+
+The schema-57 Contextual Adaptive Huffman archive admission uses IR-0837,
+DD-1076, TVG-0941, marc's repository-owned schema-56 generator, verifier, and
+compatibility-conversion chain, plus the already admitted public CLI profile.
+No external compressor, Adaptive Huffman implementation, interoperability
+suite, archive, source code, patent, pseudocode, optimization description, or
+malformed-stream corpus was consulted.

@@ -6116,3 +6116,8 @@ bank is sized for variant 5, but frame, token, raw-output, and process-call
 storage remain fixed at fuzz-specific local bounds; choosing a 64-MiB safety
 distance never allocates profile-sized history. Interoperability schema 56
 remains a separate admission boundary.
+
+Interoperability schema 57 freezes schema 56 byte for byte and appends only
+the exact `lzss-contextual-adaptive-huffman-64m` application stream as archive
+67. The manifest schema selects the inventory; it neither changes the codec
+pipeline nor derives resource limits from stream metadata.

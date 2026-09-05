@@ -167,6 +167,8 @@ $schema55Profiles = $schema54Profiles + @(
     'lzss-contextual-tans-64m')
 $schema56Profiles = $schema55Profiles + @(
     'lzss-contextual-blocked-huffman-64m')
+$schema57Profiles = $schema56Profiles + @(
+    'lzss-contextual-adaptive-huffman-64m')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -447,6 +449,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema56Profiles
+} elseif ($manifest.schema_version -eq 57) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v57') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema57Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }

@@ -596,3 +596,8 @@ Interoperability schema 56 appends the exact
 frozen schema-55 order. The bundle generator checks identity
 `2/6 + 1/5 + 2/2` before recording the archive and immediately decodes it back
 to the common fixture.
+
+Interoperability schema 57 retains that complete schema-56 prefix and appends
+the exact `lzss-contextual-adaptive-huffman-64m` CLI profile as archive 67.
+The generator checks identity `2/6 + 1/5 + 1/2` before recording it and
+immediately decodes it back to the common fixture.

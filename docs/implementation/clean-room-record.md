@@ -28956,3 +28956,28 @@ both bounds.
   pass all 3,387 tests under MSVC and ClangCL in 390.16 and 362.05 seconds,
   including unchanged schema compatibility in 119.81 and 113.37 seconds.
   Documentation ordering, relative-link, and whitespace checks pass.
+
+## CR-1166: 2026-09-06 - Append schema-57 Contextual Adaptive Huffman archive
+
+- Authoring method: extended marc's repository-owned interoperability bundle
+  generation, strict verification, and compatibility-conversion chain; no
+  external implementation or archive was consulted.
+- References used: DD-1076; IR-0838; TVG-0941; BR-0269; CR-1165; the frozen
+  schema-56 archive order and repository-owned public CLI profile.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, interoperability suites, allocators,
+  source code, archives, test suites, patents, pseudocode, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: append only the exact 64-MiB application as archive
+  67; prove its identity during generation; reject reordered manifests; and
+  reconstruct schema 56 by deleting only that final entry.
+- Generated-code task description: create schema 57, extend exact-order
+  verification, traverse schema 57 through every historical schema, update
+  normative and user documentation, and run both complete suites.
+- Similarity review: the change extends marc's own artifact and validation
+  patterns and introduces no external implementation expression.
+- Validation: complete Release suites pass all 3,387 tests under MSVC and
+  ClangCL in 382.70 and 359.25 seconds, including schema compatibility in
+  123.71 and 116.44 seconds. Documentation ordering, relative-link, and
+  whitespace checks pass. External four-direction exchange remains pending
+  and will receive a separate evidence record.
