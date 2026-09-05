@@ -28879,3 +28879,29 @@ both bounds.
   compatibility in 121.97 and 118.19 seconds. Documentation ordering,
   relative-link, and whitespace checks pass. Public and later surfaces remain
   closed.
+
+## CR-1163: 2026-09-06 - Admit public 64-MiB Contextual Adaptive Huffman selector
+
+- Authoring method: extended marc's repository-owned size-tagged C profile
+  helper, mapper, validator, query, and factory lifecycle; no external
+  implementation was consulted.
+- References used: DD-1073; IR-0835; TVG-0938; BR-0266; CR-1162; the existing
+  public 64-MiB Contextual Blocked Huffman admission pattern.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, allocators, source code, archives, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: retain ABI-1 and the 64-KiB initializer; map selector
+  4 to the already proven private profile; use an eight-GiB default aggregate;
+  preserve caller-specific fields; and leave application, fuzz, and schema
+  boundaries closed.
+- Generated-code task description: add failing public helper/query/factory
+  tests, open only selector validation and the two immutable profile mappers,
+  prove both Exact-finder and decoder workspace boundaries plus atomic crossed
+  rejection, and run both complete suites.
+- Similarity review: the change extends marc's own staged profile pattern and
+  introduces no external implementation expression.
+- Validation: focused C API and documentation tests pass under MSVC and
+  ClangCL. Complete Release suites pass all 3,380 tests in 391.42 and 372.40
+  seconds, including schema compatibility in 119.14 and 112.03 seconds.
+  Documentation ordering, relative-link, and whitespace checks pass.

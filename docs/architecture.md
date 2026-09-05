@@ -6092,3 +6092,12 @@ capacity succeeds and one byte short fails before requirements publication.
 The returned partitions directly construct one-byte-I/O streaming round trips
 for both Exact finders. Decoder admission accepts only `2/6 + 1/5 + 1/2`;
 Exhaustive, public, application, fuzz, and schema boundaries remain closed.
+
+The public Contextual Adaptive Huffman C lifecycle now accepts profile selector
+4 without changing ABI-1 storage or the 64-KiB initializer default. Its helper
+atomically applies the 64-MiB frame/window/distance extent, payload and model
+ceilings, and eight-GiB aggregate policy while retaining caller direction,
+original size, total-output policy, and Exact finder. Workspace queries remain
+the sole authority for direction- and finder-specific allocation; stream
+metadata cannot enlarge local policy. Applications, fuzzing, and schema 56
+remain separate admission boundaries.

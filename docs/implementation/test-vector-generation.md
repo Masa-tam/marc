@@ -13504,3 +13504,20 @@ both Exact finders and require exact recovery. Require 16-MiB admission, a
 9,226-node bank, and a 4,597-symbol bank to fail without changing the output
 sentinel. Run focused and complete MSVC/ClangCL suites, including schema
 compatibility.
+
+### TVG-0938
+
+Apply public selector 4 to initialized Contextual Adaptive Huffman encode and
+decode configurations. Require exact 64-MiB frame/window/distance, payload
+2,239,758,336, entropy entries 13,825, and eight-GiB aggregate policy while
+preserving direction, original size, total-output limit, and Exact finder.
+Require byte-identical repeated application and non-mutating rejection of an
+unknown selector.
+
+Without allocating profile-sized buffers, query full-frame HashChain Exact,
+BinaryTree Exact, and decoder workspaces and require aggregate totals
+3,381,290,224, 5,058,487,536, and 3,112,330,476 bytes; each one-byte-short
+aggregate must fail. Encode raw byte `A` with both identity bytes `2/6` and
+`1/5`, decode it under selector 4, and require selector 3 to reject the crossed
+stream before publishing output. Run focused and complete MSVC/ClangCL suites,
+including schema compatibility.

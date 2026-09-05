@@ -7840,3 +7840,11 @@ Each exact capacity succeeds and one byte short fails without publishing
 requirements. Profile-derived partitions construct byte-identical one-byte-I/O
 streams for both Exact finders. Local limits remain authoritative and stream
 metadata never raises them. Public selectors and schema 56 remain unchanged.
+
+Public C profile selector 4 now admits the already frozen Contextual Adaptive
+Huffman identity `2/6 + 1/5 + 1/2`. It adds no serialized selector, field, or
+representation change. The helper installs a 67,108,864-byte frame/window/
+distance extent, payload ceiling 2,239,758,336, entropy-entry ceiling 13,825,
+and eight-GiB aggregate policy; decoder validation still requires the exact
+dictionary/context pair and caller-supplied hard limits. Earlier streams and
+schema 56 are unchanged.

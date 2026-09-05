@@ -21845,3 +21845,19 @@ one-byte-short full-frame aggregate policies for HashChain Exact, BinaryTree
 Exact, and decode. Construct one-byte-I/O streaming instances only from the
 queried and partitioned storage. Keep local limits authoritative and retain
 Exhaustive, public, tooling, fuzz, and schema gates.
+
+## DD-1073: Admit the public 64-MiB Contextual Adaptive Huffman selector
+
+- Date: 2026-09-06
+- Status: accepted
+
+Accept shared C profile selector 4 only in the Contextual Adaptive Huffman
+helper, configuration validator, profile mapper, and streaming-admission
+mapper. Preserve the ABI-1 structure, 64-KiB initializer default, direction,
+original size, total-output policy, and selected Exact finder. Apply the exact
+67,108,864-byte extent, `ceil(267F/8)` payload bound, 13,825-entry model bound,
+and eight-GiB aggregate policy atomically and idempotently. Require public
+workspace queries to reproduce both Exact-finder and decoder full-profile
+boundaries, and require a 16-MiB decoder to reject identity
+`2/6 + 1/5 + 1/2` without output. Keep CLI, benchmark, fuzz, and schema 56
+closed for later independent review.

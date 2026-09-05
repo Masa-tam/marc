@@ -102,6 +102,41 @@ static void test_profile_helper(void) {
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
 
+    config.original_size = UINT64_C(1) << 26;
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M) == MARC_STATUS_OK);
+    assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_OK);
+#if SIZE_MAX > UINT32_MAX
+    assert(needed.primary_bytes == UINT64_C(67108864));
+    assert(needed.secondary_bytes == UINT64_C(2239758416));
+    assert(needed.views_bytes == UINT64_C(1074422944));
+#endif
+    const uint64_t sixty_four_mib_chain_aggregate =
+        (uint64_t)needed.primary_bytes + (uint64_t)needed.secondary_bytes
+        + (uint64_t)needed.views_bytes;
+    assert(sixty_four_mib_chain_aggregate == UINT64_C(3381290224));
+    config.max_internal_buffered_bytes = sixty_four_mib_chain_aggregate - 1;
+    assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
+    config.max_internal_buffered_bytes = UINT64_C(8) << 30;
+    config.match_finder_strategy = MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
+    assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_OK);
+#if SIZE_MAX > UINT32_MAX
+    assert(needed.primary_bytes == UINT64_C(67108864));
+    assert(needed.secondary_bytes == UINT64_C(2239758416));
+    assert(needed.views_bytes == UINT64_C(2751620256));
+#endif
+    const uint64_t sixty_four_mib_tree_aggregate =
+        (uint64_t)needed.primary_bytes + (uint64_t)needed.secondary_bytes
+        + (uint64_t)needed.views_bytes;
+    assert(sixty_four_mib_tree_aggregate == UINT64_C(5058487536));
+    config.max_internal_buffered_bytes = sixty_four_mib_tree_aggregate - 1;
+    assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
+    config.max_internal_buffered_bytes = UINT64_C(8) << 30;
+
     assert(marc_lzss_contextual_adaptive_huffman_config_init(
                MARC_DIRECTION_DECODE, &config) == MARC_STATUS_OK);
     config.original_size = UINT64_C(1) << 22;
@@ -161,6 +196,46 @@ static void test_profile_helper(void) {
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
 
+    config.original_size = UINT64_C(1) << 26;
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M) == MARC_STATUS_OK);
+    assert(config.direction == MARC_DIRECTION_DECODE);
+    assert(config.original_size == (UINT64_C(1) << 26));
+    assert(config.max_total_output_size == (UINT64_C(99) << 20));
+    assert(config.frame_size == (UINT32_C(1) << 26));
+    assert(config.window_size == (UINT32_C(1) << 26));
+    assert(config.min_match_length == 5 && config.max_match_length == 258);
+    assert(config.max_frame_size == (UINT64_C(1) << 26));
+    assert(config.max_block_size == (UINT64_C(1) << 26));
+    assert(config.max_compressed_payload_size == UINT64_C(2239758336));
+    assert(config.max_internal_buffered_bytes == (UINT64_C(8) << 30));
+    assert(config.max_lz_distance == (UINT64_C(1) << 26));
+    assert(config.max_lz_match_length == 258);
+    assert(config.max_entropy_table_entries == UINT64_C(13825));
+    assert(config.profile == MARC_LZSS_CONTEXTUAL_PROFILE_64M);
+    const marc_lzss_contextual_adaptive_huffman_config sixty_four_mib =
+        config;
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M) == MARC_STATUS_OK);
+    assert(memcmp(&config, &sixty_four_mib, sizeof(config)) == 0);
+    assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_OK);
+#if SIZE_MAX > UINT32_MAX
+    assert(needed.primary_bytes == UINT64_C(2239758416));
+    assert(needed.secondary_bytes == UINT64_C(67108864));
+    assert(needed.views_bytes == UINT64_C(805463196));
+#endif
+    const uint64_t sixty_four_mib_decode_aggregate =
+        (uint64_t)needed.primary_bytes + (uint64_t)needed.secondary_bytes
+        + (uint64_t)needed.views_bytes;
+    assert(sixty_four_mib_decode_aggregate == UINT64_C(3112330476));
+    config.max_internal_buffered_bytes = sixty_four_mib_decode_aggregate - 1;
+    assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
+    config.max_internal_buffered_bytes = sixty_four_mib_decode_aggregate;
+    assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_OK);
+
     assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
                &config, MARC_LZSS_CONTEXTUAL_PROFILE_1M) == MARC_STATUS_OK);
     assert(config.frame_size == (UINT32_C(1) << 20));
@@ -176,7 +251,8 @@ static void test_profile_helper(void) {
 
     const marc_lzss_contextual_adaptive_huffman_config snapshot = config;
     assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
-               &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M) == MARC_STATUS_INVALID_ARGUMENT);
+               &config, (marc_lzss_contextual_profile)99)
+           == MARC_STATUS_INVALID_ARGUMENT);
     assert(memcmp(&config, &snapshot, sizeof(config)) == 0);
     --config.struct_size;
     const marc_lzss_contextual_adaptive_huffman_config invalid = config;
@@ -294,6 +370,96 @@ static void test_sixteen_mib_public_boundary(void) {
     config.max_internal_buffered_bytes = UINT64_C(128) << 20;
     config.max_lz_distance = UINT32_C(1) << 24;
     config.max_entropy_table_entries = UINT64_C(13777);
+    assert(marc_lzss_contextual_adaptive_huffman_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    decoded[0] = 0xcc;
+    result = marc_transform_process(
+        transform, (marc_const_buffer){encoded, encoded_size},
+        (marc_buffer){decoded, sizeof(decoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_MALFORMED_STREAM);
+    assert(result.output_produced == 0 && decoded[0] == 0xcc);
+    marc_transform_destroy(transform);
+    release(primary);
+    release(secondary);
+    release(views);
+}
+
+static void test_sixty_four_mib_public_boundary(void) {
+    static const uint8_t input[] = {0x41};
+    uint8_t encoded[1024];
+    uint8_t decoded[sizeof(input)];
+    marc_lzss_contextual_adaptive_huffman_config config;
+    marc_workspace_requirements needed;
+    marc_transform* transform = NULL;
+
+    assert(marc_lzss_contextual_adaptive_huffman_config_init(
+               MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M) == MARC_STATUS_OK);
+    config.original_size = sizeof(input);
+    config.frame_size = 1;
+    set_small_limits(&config);
+    config.max_internal_buffered_bytes = UINT64_C(128) << 20;
+    config.max_lz_distance = UINT32_C(1) << 26;
+    config.max_entropy_table_entries = UINT64_C(13825);
+    assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_OK);
+    marc_buffer primary = allocate(needed.primary_bytes);
+    marc_buffer secondary = allocate(needed.secondary_bytes);
+    marc_buffer views = allocate(needed.views_bytes);
+    assert(marc_lzss_contextual_adaptive_huffman_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    marc_process_result result = marc_transform_process(
+        transform, (marc_const_buffer){input, sizeof(input)},
+        (marc_buffer){encoded, sizeof(encoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_END_OF_STREAM);
+    assert(result.input_consumed == sizeof(input));
+    assert(result.output_produced > 100);
+    assert(encoded[14] == 6 && encoded[15] == 0);
+    assert(encoded[16] == 1 && encoded[17] == 0);
+    assert(encoded[18] == 2 && encoded[19] == 0);
+    assert(encoded[96] == 1 && encoded[97] == 0);
+    assert(encoded[98] == 5 && encoded[99] == 0);
+    const size_t encoded_size = result.output_produced;
+    marc_transform_destroy(transform);
+    release(primary);
+    release(secondary);
+    release(views);
+
+    assert(marc_lzss_contextual_adaptive_huffman_config_init(
+               MARC_DIRECTION_DECODE, &config) == MARC_STATUS_OK);
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M) == MARC_STATUS_OK);
+    set_small_limits(&config);
+    config.max_internal_buffered_bytes = UINT64_C(128) << 20;
+    config.max_lz_distance = UINT32_C(1) << 26;
+    config.max_entropy_table_entries = UINT64_C(13825);
+    assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
+               &config, &needed) == MARC_STATUS_OK);
+    primary = allocate(needed.primary_bytes);
+    secondary = allocate(needed.secondary_bytes);
+    views = allocate(needed.views_bytes);
+    assert(marc_lzss_contextual_adaptive_huffman_create(
+               &config, primary, secondary, views, &transform)
+           == MARC_STATUS_OK);
+    result = marc_transform_process(
+        transform, (marc_const_buffer){encoded, encoded_size},
+        (marc_buffer){decoded, sizeof(decoded)}, MARC_PROCESS_END_INPUT);
+    assert(result.status == MARC_STATUS_END_OF_STREAM);
+    assert(result.output_produced == sizeof(decoded));
+    assert(memcmp(decoded, input, sizeof(input)) == 0);
+    marc_transform_destroy(transform);
+
+    assert(marc_lzss_contextual_adaptive_huffman_config_init(
+               MARC_DIRECTION_DECODE, &config) == MARC_STATUS_OK);
+    assert(marc_lzss_contextual_adaptive_huffman_config_apply_profile(
+               &config, MARC_LZSS_CONTEXTUAL_PROFILE_16M) == MARC_STATUS_OK);
+    set_small_limits(&config);
+    config.max_internal_buffered_bytes = UINT64_C(128) << 20;
+    config.max_lz_distance = UINT32_C(1) << 26;
+    config.max_entropy_table_entries = UINT64_C(13825);
     assert(marc_lzss_contextual_adaptive_huffman_create(
                &config, primary, secondary, views, &transform)
            == MARC_STATUS_OK);
@@ -450,7 +616,7 @@ static void run_extended_profile(
                &config, &needed) == MARC_STATUS_OK);
     config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_64M;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
-               &config, &needed) == MARC_STATUS_INVALID_ARGUMENT);
+               &config, &needed) == MARC_STATUS_OK);
     assert(marc_lzss_contextual_adaptive_huffman_config_init(
                MARC_DIRECTION_ENCODE, &config) == MARC_STATUS_OK);
     config.original_size = 1;
@@ -481,6 +647,7 @@ static size_t maximum3(size_t first, size_t second, size_t third) {
 int main(void) {
     test_profile_helper();
     test_sixteen_mib_public_boundary();
+    test_sixty_four_mib_public_boundary();
     static const uint8_t input[] = {0x41, 0x42, 0x41, 0x42, 0x58};
     uint8_t encoded[40000];
     uint8_t baseline_encoded[40000];

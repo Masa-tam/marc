@@ -7556,3 +7556,13 @@ and strict streaming-decoder admission. No external compressor, Adaptive
 Huffman implementation, allocator, source code, test suite, archive, patent,
 pseudocode, benchmark result, optimization description, or malformed-stream
 corpus was consulted.
+
+### IR-0835
+
+The public 64-MiB Contextual Adaptive Huffman selector admission uses IR-0834,
+DD-1072, TVG-0937, marc's existing size-tagged C configuration/helper/query/
+factory lifecycle, and the repository-owned 64-MiB Contextual Blocked Huffman
+public-admission pattern. No external compressor, Adaptive Huffman
+implementation, allocator, source code, test suite, archive, patent,
+pseudocode, benchmark result, optimization description, or malformed-stream
+corpus was consulted.

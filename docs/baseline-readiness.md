@@ -3929,3 +3929,16 @@ short model banks fail without raw publication. The two focused tests and all
 3,380 registered tests pass under MSVC and ClangCL. Complete runs take 478.28
 and 433.36 seconds, including schema compatibility passes of 121.97 and 118.19
 seconds. Public and later boundaries remain closed.
+
+### BR-0266
+
+Contextual Adaptive Huffman now accepts public profile selector 4 through its
+existing ABI-1 helper/query/factory lifecycle. The helper preserves caller-
+specific fields, is idempotent, rejects unknown selectors atomically, and
+installs the exact 64-MiB payload, model, distance, and eight-GiB aggregate
+limits. Public queries reproduce both Exact-finder and decoder full-profile
+workspace totals and reject one-byte-short policies. A small exact-identity
+round trip succeeds while a 16-MiB decoder rejects it atomically. Application,
+fuzz, and interoperability-schema admission remain closed. All 3,380 tests
+pass under MSVC and ClangCL in 391.42 and 372.40 seconds, including schema
+compatibility in 119.14 and 112.03 seconds.

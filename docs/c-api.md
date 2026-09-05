@@ -185,10 +185,9 @@ less fails. The 64-MiB preset applies a 1,073,741,829-byte payload ceiling,
 BinaryTree, and decoder workspace requirements are 4,362,600,533,
 6,039,797,845, and 1,946,157,141 bytes respectively on supported 64-bit
 layouts. A caller may tighten any returned hard limit and must then re-query
-before allocation. Contextual rANS also admits the 64-MiB selector through its
-own completed lifecycle. Contextual tANS, Contextual Blocked Huffman, and
-Contextual Adaptive Huffman admit common selectors only through 16 MiB; their
-helpers reject the 64-MiB selector. The field and its trailing
+before allocation. All five contextual entropy factories admit the 64-MiB
+selector through their independently completed lifecycles. The field and its
+trailing
 32-bit reserved word occupy
 the former 64-bit reserved tail, preserving the ABI-1 structure extent and the
 all-zero meaning used by earlier callers. Exact CLI and benchmark name
@@ -390,6 +389,17 @@ aggregate policy. Its exact full-profile encoder and decoder workspace totals
 are 845,832,912 and 778,199,756 bytes on supported 64-bit layouts. The
 schema-52 archive exercises this same public profile without adding an ABI or
 serialized selector.
+`MARC_LZSS_CONTEXTUAL_PROFILE_64M` selects exact identity
+`2/6 + 1/5 + 1/2`, 67,108,864-byte frame/window/distance limits, the
+2,239,758,336-byte payload ceiling, 13,825 entropy entries, and an eight-GiB
+aggregate policy. On supported 64-bit layouts, its HashChain Exact,
+BinaryTree Exact, and decoder workspace totals are 3,381,290,224,
+5,058,487,536, and 3,112,330,476 bytes. Applying the helper twice is
+byte-identical; an unknown selector leaves the configuration unchanged, and
+a 16-MiB decoder rejects the 64-MiB identity before publishing raw bytes.
+The initializer remains on the 64-KiB profile, stream metadata never raises
+local limits, and no CLI, benchmark, fuzz, or interoperability-schema surface
+is implied by this C API admission.
 Its public completion audit covers all required binary classes, deterministic
 whole, one-byte, and mixed chunk schedules, stable repeated terminal calls,
 and frame-atomic rejection of corrupted, truncated, or trailing final-frame
