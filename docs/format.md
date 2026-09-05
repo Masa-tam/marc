@@ -7808,3 +7808,13 @@ accepts decision counts through exactly 536,870,912 and rejects the next
 value; this changes no field width, descriptor layout, serialized symbol-event
 value, or earlier byte. Operation coding, frame parsing, public profiles, and
 schema 56 remain closed.
+
+The private Contextual Adaptive Huffman operation coder and direct LZSS typed-
+token composition now select context variant 5 without admitting complete-
+frame identity. Maximum distance symbol 26 uses alphabet 27. In an empty FGK
+tree it contributes five LSB-first raw bits; bypass value `0x3ABCDEF` then
+contributes 26 bits, producing exact 31-bit payload `FA BD 79 75` with seven
+valid bits in the last byte. The direct path round-trips the first newly
+reachable distance 16,777,217 after bounded overlap-built history. A 16-MiB
+layout rejects the crossed parameters before token publication. No frame or
+public representation is added.

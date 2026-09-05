@@ -1,8 +1,7 @@
 # LZSS contextual Adaptive Huffman 64 MiB window
 
-Status: model-bank and descriptor-limit stage implemented. Operation coding,
-frame identity, public, tooling, fuzzing, and interoperability boundaries
-remain closed.
+Status: operation and direct typed-token stage implemented. Frame identity,
+public, tooling, fuzzing, and interoperability boundaries remain closed.
 
 ## Purpose and exact identity
 
@@ -135,6 +134,7 @@ fuzzer must not allocate a 64-MiB frame or history.
    (complete)
 2. Carry the immutable layout through FGK operation coding and direct typed-
    token encode/decode with class-26 and first-new-distance hand vectors.
+   (complete)
 3. Admit only exact complete-frame identity `2/6 + 1/5 + 1/2`, initially for
    bounded decoding and then encoding after exact preflight tests pass.
 4. Add checked profile/workspace calculation and one-byte streaming with exact

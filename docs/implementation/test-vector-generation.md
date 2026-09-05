@@ -13444,3 +13444,17 @@ require its little-endian prefix `00 00 00 20`; reject 536,870,913. Retain the
 established one-literal 16-byte vector exactly. Run focused model/format tests
 and every registered test, including schema compatibility, under both MSVC
 and ClangCL.
+
+### TVG-0934
+
+Under context variant 5, encode `Symbol(23,27,26)` followed by
+`Bypass(26,0x3ABCDEF)`. Require two operations, 27 decisions, 31 payload bits,
+four bytes `FA BD 79 75`, and seven final valid bits. Decode both values exactly
+and require variant 4 to reject alphabet 27 without changing the output value.
+
+Build a direct token sequence whose overlap Matches establish exactly
+16,777,217 bytes of history, followed by a length-five Match at distance
+16,777,217. Require exact event and decision formulas, rejection under a
+16,777,216 distance hard limit, exact round trip under variant 5, and atomic
+crossed rejection by variant 4. Run both focused suites and all registered
+tests, including schema compatibility, under MSVC and ClangCL.

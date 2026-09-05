@@ -21792,3 +21792,16 @@ from 117,440,512 to exact `8 * 67,108,864 = 536,870,912`; retain the 32-bit
 field, fixed 16-byte representation, serialized symbol-event limit, earlier
 model extents, and earlier descriptor bytes. Do not admit operation coding,
 complete-frame identity `2/6 + 1/5 + 1/2`, or any public surface in this stage.
+
+## DD-1069: Reuse the generic operation path for 64-MiB Adaptive Huffman
+
+- Date: 2026-09-05
+- Status: accepted
+
+Carry the already selected context-variant-5 layout unchanged through FGK
+operation planning, forward encoding, decoding, and direct two-pass typed-token
+composition. Freeze `Symbol(23,27,26) + Bypass(26,0x3ABCDEF)` as exact payload
+`FA BD 79 75`, and prove direct distance 16,777,217 using only bounded overlap
+Matches. Require hard-limit rejection and atomic crossed rejection by the
+16-MiB layout. Add no special-case coding branch and do not admit complete-
+frame identity or a public surface.

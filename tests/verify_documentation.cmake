@@ -360,8 +360,8 @@ foreach(required_contextual_adaptive_huffman_window_64m_term IN ITEMS
         "BinaryTree Exact"
         "first newly reachable distance 16,777,217"
         "schema 56 unchanged"
-        "model-bank and descriptor-limit stage implemented"
-        "Operation coding,"
+        "operation and direct typed-token stage implemented"
+        "Frame identity,"
         "remain closed")
     string(FIND "${lzss_contextual_adaptive_huffman_window_64m_content}"
         "${required_contextual_adaptive_huffman_window_64m_term}"

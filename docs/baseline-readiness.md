@@ -3877,3 +3877,16 @@ the existing one-literal vector remains byte-identical. Operation coding and
 every later boundary remain closed. Fifteen focused model/format tests and all
 3,372 registered tests pass under MSVC and ClangCL; schema compatibility is
 included in both complete runs.
+
+### BR-0262
+
+The private Contextual Adaptive Huffman operation coder and direct typed-token
+adapter now carry context variant 5 without admitting complete-frame identity
+`2/6 + 1/5 + 1/2`. Hand vector `Symbol(23,27,26)` followed by 26 bypass bits
+`0x3ABCDEF` encodes as exact bytes `FA BD 79 75`, consumes 31 bits, and decodes
+in lockstep. An overlap-history vector round-trips the first newly reachable
+distance 16,777,217 and is rejected under the old distance limit. Variant 4
+crossed decoding preserves every sentinel token. The two new focused tests
+and all 3,374 registered tests pass under MSVC and ClangCL. Complete runs take
+376.02 and 353.29 seconds, including schema compatibility passes of 117.80 and
+113.69 seconds. Frame and every outward boundary remain closed.

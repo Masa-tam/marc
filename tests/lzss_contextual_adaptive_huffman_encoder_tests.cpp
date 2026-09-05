@@ -23,10 +23,12 @@ using marc::entropy::internal::contextual_adaptive_huffman_node_entries;
 using marc::entropy::internal::contextual_adaptive_huffman_node_entries_v2;
 using marc::entropy::internal::contextual_adaptive_huffman_node_entries_v3;
 using marc::entropy::internal::contextual_adaptive_huffman_node_entries_v4;
+using marc::entropy::internal::contextual_adaptive_huffman_node_entries_v5;
 using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries;
 using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries_v2;
 using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries_v3;
 using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries_v4;
+using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries_v5;
 
 struct Workspace {
     std::vector<AdaptiveHuffmanNode> nodes =
@@ -58,6 +60,14 @@ struct SixteenMiBWorkspace {
             contextual_adaptive_huffman_node_entries_v4);
     std::vector<std::uint16_t> symbols = std::vector<std::uint16_t>(
         contextual_adaptive_huffman_symbol_entries_v4);
+};
+
+struct SixtyFourMiBWorkspace {
+    std::vector<AdaptiveHuffmanNode> nodes =
+        std::vector<AdaptiveHuffmanNode>(
+            contextual_adaptive_huffman_node_entries_v5);
+    std::vector<std::uint16_t> symbols = std::vector<std::uint16_t>(
+        contextual_adaptive_huffman_symbol_entries_v5);
 };
 
 [[nodiscard]] std::vector<LzssTypedToken> maximum_distance_tokens() {
@@ -96,6 +106,24 @@ struct SixteenMiBWorkspace {
     tokens.push_back({LzssTypedTokenKind::match, 0, 1, 249});
     tokens.push_back(
         {LzssTypedTokenKind::match, 0, UINT32_C(16777216), 5});
+    return tokens;
+}
+
+[[nodiscard]] std::vector<LzssTypedToken>
+sixty_four_mib_first_new_distance_tokens() {
+    constexpr std::uint32_t distance = UINT32_C(16777217);
+    std::vector<LzssTypedToken> tokens;
+    tokens.reserve(65'030);
+    tokens.push_back({LzssTypedTokenKind::literal, 'A', 0, 0});
+    std::uint32_t history = 1;
+    while (distance - history > 258) {
+        tokens.push_back({LzssTypedTokenKind::match, 0, 1, 258});
+        history += 258;
+    }
+    tokens.push_back(
+        {LzssTypedTokenKind::match, 0, 1, distance - history});
+    tokens.push_back(
+        {LzssTypedTokenKind::match, 0, distance, 5});
     return tokens;
 }
 
@@ -717,6 +745,90 @@ TEST(LzssContextualAdaptiveHuffmanEncoder,
         descriptor, payload, parameters, decode_context, limits,
         workspace.nodes, workspace.symbols, decoded,
         LzssFieldContextVariant::field_context_4m);
+    EXPECT_EQ(crossed.error,
+              LzssContextualAdaptiveHuffmanDecodeError::invalid_parameters);
+    EXPECT_TRUE(std::ranges::equal(
+        decoded, before, [](const auto& left, const auto& right) {
+            return left.kind == right.kind && left.literal == right.literal
+                && left.distance == right.distance
+                && left.length == right.length;
+        }));
+}
+
+TEST(LzssContextualAdaptiveHuffmanEncoder,
+     SixtyFourMiBFirstNewDistanceRoundTripsDirectTypedTokensAtomically) {
+    const auto expected = sixty_four_mib_first_new_distance_tokens();
+    constexpr std::uint32_t distance = UINT32_C(16777217);
+    constexpr std::uint32_t raw_size = distance + 5U;
+    constexpr auto variant = LzssFieldContextVariant::field_context_64m;
+    auto parameters = marc::dictionary::internal::LzssParameters{};
+    parameters.window_size = UINT32_C(67108864);
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = raw_size;
+    limits.max_block_size = raw_size;
+    limits.max_lz_distance = parameters.window_size;
+    limits.max_entropy_table_entries =
+        contextual_adaptive_huffman_node_entries_v5
+        + contextual_adaptive_huffman_symbol_entries_v5;
+    const LzssTypedFrameValidationContext frame_context{
+        static_cast<std::uint32_t>(expected.size()), raw_size, 0};
+
+    SixtyFourMiBWorkspace workspace{};
+    ContextualAdaptiveHuffmanDescriptor descriptor{
+        UINT32_C(0xcccccccc), UINT32_C(0xcccccccc), UINT16_C(0xcccc),
+        UINT8_C(0xcc), UINT8_C(0xcc)};
+    const auto descriptor_before = descriptor;
+    auto restricted_limits = limits;
+    restricted_limits.max_lz_distance = UINT64_C(16777216);
+    EXPECT_EQ(plan_lzss_contextual_adaptive_huffman_tokens(
+                  expected, parameters, frame_context, restricted_limits,
+                  workspace.nodes, workspace.symbols, descriptor,
+                  variant).error,
+              LzssContextualAdaptiveHuffmanEncodeError::limit_exceeded);
+    expect_descriptor_eq(descriptor, descriptor_before);
+
+    const auto plan = plan_lzss_contextual_adaptive_huffman_tokens(
+        expected, parameters, frame_context, limits, workspace.nodes,
+        workspace.symbols, descriptor, variant);
+    ASSERT_EQ(plan.error, LzssContextualAdaptiveHuffmanEncodeError::none);
+    EXPECT_EQ(plan.token_count, expected.size());
+    EXPECT_EQ(plan.event_count, 2U + (expected.size() - 1U) * 4U);
+    EXPECT_EQ(plan.decision_count,
+              2U + (expected.size() - 2U) * 10U + 3U + 24U);
+
+    std::vector<std::byte> payload(plan.payload_size);
+    ASSERT_EQ(encode_lzss_contextual_adaptive_huffman_tokens(
+                  expected, parameters, frame_context, limits,
+                  workspace.nodes, workspace.symbols, payload, descriptor,
+                  variant).error,
+              LzssContextualAdaptiveHuffmanEncodeError::none);
+
+    std::vector<LzssTypedToken> decoded(expected.size());
+    const LzssFieldContextValidationContext decode_context{
+        static_cast<std::uint32_t>(expected.size()),
+        static_cast<std::uint32_t>(plan.event_count), plan.decision_count,
+        raw_size, 0};
+    const auto decoded_result =
+        decode_lzss_contextual_adaptive_huffman_tokens(
+            descriptor, payload, parameters, decode_context, limits,
+            workspace.nodes, workspace.symbols, decoded, variant);
+    ASSERT_EQ(decoded_result.error,
+              LzssContextualAdaptiveHuffmanDecodeError::none);
+    EXPECT_TRUE(std::ranges::equal(
+        expected, decoded, [](const auto& left, const auto& right) {
+            return left.kind == right.kind && left.literal == right.literal
+                && left.distance == right.distance
+                && left.length == right.length;
+        }));
+
+    std::ranges::fill(decoded, LzssTypedToken{
+        LzssTypedTokenKind::match, 0xcc, UINT32_C(0xcccccccc),
+        UINT32_C(0xcccccccc)});
+    const auto before = decoded;
+    const auto crossed = decode_lzss_contextual_adaptive_huffman_tokens(
+        descriptor, payload, parameters, decode_context, limits,
+        workspace.nodes, workspace.symbols, decoded,
+        LzssFieldContextVariant::field_context_16m);
     EXPECT_EQ(crossed.error,
               LzssContextualAdaptiveHuffmanDecodeError::invalid_parameters);
     EXPECT_TRUE(std::ranges::equal(

@@ -6061,3 +6061,12 @@ exact `8F` ceiling for a 64-MiB frame. The serialized symbol-event value,
 descriptor layout, no-rescale policy, and every earlier descriptor byte remain
 unchanged. Operation coding and every outward 64-MiB Contextual Adaptive
 Huffman boundary remain closed.
+
+The private Contextual Adaptive Huffman operation coder and direct LZSS typed-
+token adapter now retain context variant 5 throughout planning, forward FGK
+encoding, decoding, validation, and two-pass publication. Distance class 26
+uses alphabet 27 and 26 LSB-first bypass bits. Direct tokens can cross the old
+16-MiB boundary at distance 16,777,217 using bounded overlap-built history;
+variant 4 rejects that crossed selection before caller token publication. The
+shared selected-layout path needs no backend-specific branch. Complete-frame
+identity and every outward 64-MiB boundary remain closed.
