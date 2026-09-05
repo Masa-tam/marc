@@ -166,11 +166,12 @@ template <FrameMatchFinder MatchFinder>
         result.error = E::invalid_stream;
         return result;
     }
-    // Frame encoding is admitted separately from bounded decoding.
-    if (selected.layout.context_variant
-        == context::internal::LzssFieldContextVariant::field_context_64m) {
-        result.error = E::invalid_stream;
-        return result;
+    if constexpr (MatchFinder == FrameMatchFinder::exhaustive) {
+        if (selected.layout.context_variant
+            == context::internal::LzssFieldContextVariant::field_context_64m) {
+            result.error = E::invalid_stream;
+            return result;
+        }
     }
     result.required_node_entries =
         2 * selected.layout.frequency_entries
@@ -380,11 +381,12 @@ template <FrameMatchFinder MatchFinder>
         result.error = E::invalid_stream;
         return result;
     }
-    // Frame encoding is admitted separately from bounded decoding.
-    if (selected.layout.context_variant
-        == context::internal::LzssFieldContextVariant::field_context_64m) {
-        result.error = E::invalid_stream;
-        return result;
+    if constexpr (MatchFinder == FrameMatchFinder::exhaustive) {
+        if (selected.layout.context_variant
+            == context::internal::LzssFieldContextVariant::field_context_64m) {
+            result.error = E::invalid_stream;
+            return result;
+        }
     }
     result.required_node_entries =
         2 * selected.layout.frequency_entries

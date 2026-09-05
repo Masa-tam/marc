@@ -3904,3 +3904,15 @@ focused tests and all 3,377 registered tests pass under MSVC and ClangCL.
 Complete runs take 425.86 and 425.04 seconds, including schema compatibility
 passes of 122.20 and 117.84 seconds. Streaming and every outward boundary
 remain closed.
+
+### BR-0264
+
+Bounded 64-MiB Contextual Adaptive Huffman frame encoding now admits only
+HashChain Exact and BinaryTree Exact. Both strategies produce identical plans
+and byte-identical decodable frames for the repository-owned mixed literal and
+Match vector. One-byte-short finder storage is rejected during token planning;
+one-byte-short serialized output remains untouched. Exhaustive encoding still
+rejects variant 5 atomically. The two focused tests and all 3,378 registered
+tests pass under MSVC and ClangCL. Complete runs take 485.10 and 428.09
+seconds, including schema compatibility passes of 126.38 and 116.83 seconds.
+Streaming and every outward boundary remain closed.

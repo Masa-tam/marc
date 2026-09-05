@@ -333,7 +333,7 @@ TEST(LzssContextualAdaptiveHuffmanFrameEncoder,
 }
 
 TEST(LzssContextualAdaptiveHuffmanFrameEncoder,
-     SixtyFourMiBFrameEncodingRemainsClosed) {
+     SixtyFourMiBExhaustiveRemainsClosedBeforePublication) {
     constexpr std::array raw{std::byte{'A'}};
     const auto stream = stream_for_64m(raw.size());
     auto limits = marc::core::DecoderLimits{};
@@ -355,6 +355,130 @@ TEST(LzssContextualAdaptiveHuffmanFrameEncoder,
     EXPECT_TRUE(std::ranges::all_of(frame, [](const std::byte value) {
         return value == std::byte{0xcc};
     }));
+}
+
+TEST(LzssContextualAdaptiveHuffmanFrameEncoder,
+     SixtyFourMiBExactFindersEmitIdenticalDecodableFrame) {
+    constexpr std::array raw{
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'1'}, std::byte{'A'}, std::byte{'B'},
+        std::byte{'C'}, std::byte{'D'}, std::byte{'E'}, std::byte{'2'},
+        std::byte{'A'}, std::byte{'B'}, std::byte{'C'}, std::byte{'D'},
+        std::byte{'E'}, std::byte{'3'}};
+    const auto stream = stream_for_64m(raw.size());
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    constexpr auto chain_strategy = marc::dictionary::internal::
+        LzssMatchFinderStrategy::hash_chain_exact;
+    constexpr auto tree_strategy = marc::dictionary::internal::
+        LzssMatchFinderStrategy::binary_tree_exact;
+    const auto chain_requirements = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            chain_strategy, raw.size(), stream.dictionary, limits);
+    const auto tree_requirements = marc::dictionary::internal::
+        calculate_lzss_match_finder_workspace(
+            tree_strategy, raw.size(), stream.dictionary, limits);
+    ASSERT_EQ(chain_requirements.error, marc::dictionary::internal::
+                                            LzssMatchFinderWorkspaceError::none);
+    ASSERT_EQ(tree_requirements.error, marc::dictionary::internal::
+                                           LzssMatchFinderWorkspaceError::none);
+    std::vector<std::max_align_t> chain_backing(
+        (chain_requirements.workspace_size + sizeof(std::max_align_t) - 1)
+        / sizeof(std::max_align_t));
+    std::vector<std::max_align_t> tree_backing(
+        (tree_requirements.workspace_size + sizeof(std::max_align_t) - 1)
+        / sizeof(std::max_align_t));
+    auto chain_finder = std::as_writable_bytes(std::span{chain_backing}).first(
+        chain_requirements.workspace_size);
+    auto tree_finder = std::as_writable_bytes(std::span{tree_backing}).first(
+        tree_requirements.workspace_size);
+    std::array<LzssTypedToken, raw.size()> chain_tokens{};
+    std::array<LzssTypedToken, raw.size()> tree_tokens{};
+    SixtyFourMiBWorkspace chain_workspace{};
+    SixtyFourMiBWorkspace tree_workspace{};
+
+    ASSERT_GT(chain_finder.size(), 0U);
+    ASSERT_GT(tree_finder.size(), 0U);
+    EXPECT_EQ(plan_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+                  stream, limits, 0, 0, raw, chain_tokens,
+                  chain_workspace.nodes, chain_workspace.symbols,
+                  chain_strategy,
+                  chain_finder.first(chain_finder.size() - 1)).error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::
+                  token_encode_error);
+    EXPECT_EQ(plan_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+                  stream, limits, 0, 0, raw, tree_tokens,
+                  tree_workspace.nodes, tree_workspace.symbols,
+                  tree_strategy,
+                  tree_finder.first(tree_finder.size() - 1)).error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::
+                  token_encode_error);
+
+    const auto chain_plan =
+        plan_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+            stream, limits, 0, 0, raw, chain_tokens,
+            chain_workspace.nodes, chain_workspace.symbols,
+            chain_strategy, chain_finder);
+    const auto tree_plan =
+        plan_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+            stream, limits, 0, 0, raw, tree_tokens,
+            tree_workspace.nodes, tree_workspace.symbols,
+            tree_strategy, tree_finder);
+    ASSERT_EQ(chain_plan.error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::none);
+    ASSERT_EQ(tree_plan.error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::none);
+    EXPECT_EQ(tree_plan.serialized_size, chain_plan.serialized_size);
+    EXPECT_EQ(tree_plan.token_count, chain_plan.token_count);
+    EXPECT_EQ(tree_plan.event_count, chain_plan.event_count);
+    EXPECT_EQ(tree_plan.decision_count, chain_plan.decision_count);
+    EXPECT_EQ(tree_plan.payload_size, chain_plan.payload_size);
+    EXPECT_EQ(tree_plan.descriptor_size, chain_plan.descriptor_size);
+
+    std::vector<std::byte> chain(chain_plan.serialized_size);
+    std::vector<std::byte> tree(tree_plan.serialized_size);
+    std::vector<std::byte> short_output(chain_plan.serialized_size - 1,
+                                        std::byte{0xcc});
+    EXPECT_EQ(encode_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+                  stream, limits, 0, 0, raw, chain_tokens,
+                  chain_workspace.nodes, chain_workspace.symbols,
+                  chain_strategy, chain_finder, short_output).error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::
+                  serialized_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(short_output, [](const auto value) {
+        return value == std::byte{0xcc};
+    }));
+    EXPECT_EQ(encode_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+                  stream, limits, 0, 0, raw, tree_tokens,
+                  tree_workspace.nodes, tree_workspace.symbols,
+                  tree_strategy, tree_finder, short_output).error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::
+                  serialized_output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(short_output, [](const auto value) {
+        return value == std::byte{0xcc};
+    }));
+    ASSERT_EQ(encode_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+                  stream, limits, 0, 0, raw, chain_tokens,
+                  chain_workspace.nodes, chain_workspace.symbols,
+                  chain_strategy, chain_finder, chain).error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::none);
+    ASSERT_EQ(encode_lzss_contextual_adaptive_huffman_frame_with_match_finder(
+                  stream, limits, 0, 0, raw, tree_tokens,
+                  tree_workspace.nodes, tree_workspace.symbols,
+                  tree_strategy, tree_finder, tree).error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::none);
+    EXPECT_EQ(tree, chain);
+
+    SixtyFourMiBWorkspace decoder_workspace{};
+    std::array<LzssTypedToken, raw.size()> decoded_tokens{};
+    std::array<std::byte, raw.size()> decoded{};
+    const auto decoded_result = decode_lzss_contextual_adaptive_huffman_frame(
+        chain, {stream, limits, 0, 0}, decoder_workspace.nodes,
+        decoder_workspace.symbols, decoded_tokens, decoded);
+    ASSERT_EQ(decoded_result.error,
+              LzssContextualAdaptiveHuffmanFrameDecodeError::none);
+    EXPECT_EQ(decoded_result.serialized_consumed, chain.size());
+    EXPECT_EQ(decoded, raw);
 }
 
 TEST(LzssContextualAdaptiveHuffmanFrameEncoder,

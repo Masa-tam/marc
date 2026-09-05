@@ -7536,3 +7536,13 @@ overlap-history vector. No external compressor, Adaptive Huffman
 implementation, source code, archive, encoded frame, test suite, patent,
 pseudocode, benchmark result, optimization description, or malformed-stream
 corpus was consulted.
+
+### IR-0833
+
+The bounded Exact-finder 64-MiB Contextual Adaptive Huffman encoder admission
+uses IR-0832, DD-1070, TVG-0935, marc's repository-owned generic two-pass frame
+encoder, exact HashChain and BinaryTree interfaces, and the corresponding
+64-MiB Contextual Blocked Huffman admission pattern. No external compressor,
+Adaptive Huffman implementation, match finder, source code, archive, encoded
+frame, test suite, patent, pseudocode, benchmark result, optimization
+description, or malformed-stream corpus was consulted.

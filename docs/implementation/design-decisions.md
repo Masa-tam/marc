@@ -21819,3 +21819,16 @@ atomic reciprocal rejection, and a first-new-distance complete frame. Add an
 explicit variant-5 rejection to both bounded encoder passes so this stage does
 not implicitly admit encoding, streaming, public, tooling, fuzz, or schema
 surfaces.
+
+## DD-1071: Admit only Exact bounded encoding for 64-MiB Adaptive Huffman
+
+- Date: 2026-09-05
+- Status: accepted
+
+Replace the common variant-5 encoder rejection with a compile-time rejection
+limited to the Exhaustive path. Admit HashChain Exact and BinaryTree Exact
+through the existing two-pass planner and encoder because both implement the
+same deterministic longest-match and nearest-distance rules. Require identical
+plans and frame bytes, successful bounded decoding, short-finder rejection,
+and non-mutating short-output rejection. Keep Exhaustive, streaming, public,
+tooling, fuzz, and schema surfaces closed.

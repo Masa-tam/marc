@@ -7826,6 +7826,8 @@ The bounded decoder now recognizes exact complete-frame identity
 16 bytes and the payload remains forward LSB-first FGK coding. A complete
 frame can carry the first distance beyond the 16-MiB profile, 16,777,217.
 Crossed dictionary/context identities fail before token or raw publication.
-The bounded encoder explicitly rejects context variant 5 until its separate
-preflight and workspace proof is admitted. No public stream profile or schema
-archive is added.
+The bounded encoder admits context variant 5 only with HashChain Exact or
+BinaryTree Exact. Both strategies use the same deterministic longest-match and
+nearest-distance rules and therefore emit byte-identical frames. Exhaustive
+encoding remains rejected; short finder and serialized-output capacities fail
+before publication. No public stream profile or schema archive is added.

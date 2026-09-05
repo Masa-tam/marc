@@ -13474,3 +13474,16 @@ recovery, and crossed variant-4 rejection without token or raw mutation.
 Require bounded plan and encode calls to reject variant 5 while preserving
 serialized output. Run focused and complete MSVC/ClangCL suites, including
 schema compatibility.
+
+### TVG-0936
+
+Use raw bytes `ABCDE1ABCDE2ABCDE3` under exact identity
+`2/6 + 1/5 + 1/2`. Query separate HashChain Exact and BinaryTree Exact
+workspaces. Require each one-byte-short finder to fail during token planning,
+then require exact storage to produce equal serialized size, token, event,
+decision, payload, and descriptor counts. Encode both paths and require
+byte-identical frames. Require one-byte-short serialized output to retain its
+sentinel bytes, decode the complete HashChain frame through the variant-5
+bounded decoder, and recover the raw input exactly. Separately require the
+Exhaustive entry point to keep rejecting variant 5 without changing output.
+Run focused and complete MSVC/ClangCL suites, including schema compatibility.

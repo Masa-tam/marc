@@ -28825,3 +28825,30 @@ both bounds.
   seconds, including schema compatibility in 122.20 and 117.84 seconds.
   Documentation ordering, relative-link, and whitespace checks pass.
   Streaming and all outward surfaces remain closed.
+
+## CR-1161: 2026-09-05 - Admit bounded Exact 64-MiB Adaptive Huffman encoding
+
+- Authoring method: extended marc's repository-owned generic frame-encoder
+  admission and Exact-finder tests; no external implementation was consulted.
+- References used: DD-1071; IR-0833; TVG-0936; BR-0264; CR-1160; the existing
+  64-MiB Contextual Blocked Huffman Exact-finder admission test.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, match finders, source code, archives,
+  encoded frames, test suites, patents, pseudocode, benchmark results,
+  optimization descriptions, and malformed-stream corpora.
+- Independent decisions: admit only the two deterministic Exact strategies;
+  preserve the Exhaustive rejection; prove strategy identity with a mixed
+  repository-owned vector; and require finder and output preflight failures to
+  publish nothing.
+- Generated-code task description: add a failing Exact-finder frame test,
+  narrow both variant-5 gates to Exhaustive at compile time, prove identical
+  HashChain/BinaryTree planning and bytes, decode the result, retain atomic
+  capacity failures, and run both complete suites.
+- Similarity review: the source change specializes marc's own staged gate and
+  the test follows an existing repository-owned admission pattern; no external
+  implementation expression was introduced.
+- Validation: both focused tests pass under MSVC and ClangCL. Complete Release
+  suites pass all 3,378 tests in 485.10 and 428.09 seconds, including schema
+  compatibility in 126.38 and 116.83 seconds. Documentation ordering,
+  relative-link, and whitespace checks pass. Streaming and all outward
+  surfaces remain closed.

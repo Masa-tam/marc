@@ -6078,5 +6078,8 @@ same immutable layout to the private token decoder and variant-6 raw
 reconstructor. A frame whose overlap-built history reaches distance
 16,777,217 decodes atomically; a crossed 16-MiB identity leaves token and raw
 staging unchanged. The 64-MiB frame ceiling is available only under explicit
-caller hard limits. Bounded encoding has an explicit variant-5 rejection gate,
-and streaming, public, application, fuzz, and schema boundaries remain closed.
+caller hard limits. Bounded encoding now admits only HashChain Exact and
+BinaryTree Exact; their preflight plans and encoded frames are identical, and
+short finder or output storage cannot publish partial bytes. The Exhaustive
+path retains its variant-5 rejection. Streaming, public, application, fuzz,
+and schema boundaries remain closed.
