@@ -54,6 +54,17 @@ sixteen_mib_stream_config(const std::uint64_t size) {
     return stream;
 }
 
+[[nodiscard]] LzssContextualAdaptiveHuffmanStreamHeader
+sixty_four_mib_stream_config(const std::uint64_t size) {
+    auto stream = stream_config();
+    stream.frame_size = static_cast<std::uint32_t>(size);
+    stream.original_size = size;
+    stream.dictionary.window_size = UINT32_C(1) << 26;
+    stream.dictionary_variant = 6;
+    stream.context_variant = 5;
+    return stream;
+}
+
 [[nodiscard]] std::vector<std::byte> frame_vector() {
     std::vector<std::byte> frame(82);
     const auto stream = stream_config();
@@ -326,6 +337,68 @@ TEST(LzssContextualAdaptiveHuffmanFormat,
     ++header.decision_count;
     EXPECT_EQ(validate_lzss_contextual_adaptive_huffman_frame_header(
                   header, {stream, {}, 0, 0}),
+              LzssContextualAdaptiveHuffmanFrameHeaderError::
+                  contradictory_counts);
+}
+
+TEST(LzssContextualAdaptiveHuffmanFormat,
+     SixtyFourMiBIdentityRoundTripsAndSelectsEightFBound) {
+    const auto stream = sixty_four_mib_stream_config(5);
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    std::array<std::byte,
+               lzss_contextual_adaptive_huffman_stream_header_size>
+        bytes{};
+    ASSERT_EQ(serialize_lzss_contextual_adaptive_huffman_stream_header(
+                  stream, limits, bytes),
+              LzssContextualAdaptiveHuffmanStreamHeaderError::none);
+    EXPECT_EQ(bytes[14], std::byte{6});
+    EXPECT_EQ(bytes[16], std::byte{1});
+    EXPECT_EQ(bytes[18], std::byte{2});
+    EXPECT_EQ(bytes[96], std::byte{1});
+    EXPECT_EQ(bytes[98], std::byte{5});
+
+    LzssContextualAdaptiveHuffmanStreamHeader parsed{};
+    std::size_t consumed{};
+    ASSERT_EQ(parse_lzss_contextual_adaptive_huffman_stream_header(
+                  bytes, limits, parsed, consumed),
+              LzssContextualAdaptiveHuffmanStreamHeaderError::none);
+    EXPECT_EQ(consumed, bytes.size());
+    EXPECT_EQ(parsed.dictionary.window_size, UINT32_C(1) << 26);
+    EXPECT_EQ(parsed.dictionary_variant, 6U);
+    EXPECT_EQ(parsed.context_variant, 5U);
+
+    auto maximum_limits = limits;
+    maximum_limits.max_frame_size = UINT64_C(1) << 26;
+    maximum_limits.max_block_size = UINT64_C(1) << 26;
+    maximum_limits.max_internal_buffered_bytes = UINT64_C(1) << 26;
+    const auto maximum_stream = sixty_four_mib_stream_config(
+        UINT64_C(1) << 26);
+    EXPECT_EQ(serialize_lzss_contextual_adaptive_huffman_stream_header(
+                  maximum_stream, maximum_limits, bytes),
+              LzssContextualAdaptiveHuffmanStreamHeaderError::none);
+
+    for (const auto offset : {14U, 98U}) {
+        auto crossed = bytes;
+        crossed[offset] = offset == 14U ? std::byte{5} : std::byte{4};
+        LzssContextualAdaptiveHuffmanStreamHeader sentinel{};
+        sentinel.frame_size = UINT32_C(0xcccccccc);
+        std::size_t crossed_consumed = 0xcccc;
+        EXPECT_NE(parse_lzss_contextual_adaptive_huffman_stream_header(
+                      crossed, maximum_limits, sentinel, crossed_consumed),
+                  LzssContextualAdaptiveHuffmanStreamHeaderError::none);
+        EXPECT_EQ(sentinel.frame_size, UINT32_C(0xcccccccc));
+        EXPECT_EQ(crossed_consumed, 0xccccU);
+    }
+
+    LzssContextualAdaptiveHuffmanFrameHeader header{
+        0, 0, 5, 2, 4, 40, 1, 16, 0, 0};
+    EXPECT_EQ(validate_lzss_contextual_adaptive_huffman_frame_header(
+                  header, {stream, limits, 0, 0}),
+              LzssContextualAdaptiveHuffmanFrameHeaderError::none);
+    ++header.decision_count;
+    EXPECT_EQ(validate_lzss_contextual_adaptive_huffman_frame_header(
+                  header, {stream, limits, 0, 0}),
               LzssContextualAdaptiveHuffmanFrameHeaderError::
                   contradictory_counts);
 }

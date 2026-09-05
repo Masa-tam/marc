@@ -21805,3 +21805,17 @@ composition. Freeze `Symbol(23,27,26) + Bypass(26,0x3ABCDEF)` as exact payload
 Matches. Require hard-limit rejection and atomic crossed rejection by the
 16-MiB layout. Add no special-case coding branch and do not admit complete-
 frame identity or a public surface.
+
+## DD-1070: Admit only bounded decoding for 64-MiB Adaptive Huffman frames
+
+- Date: 2026-09-05
+- Status: accepted
+
+Raise the private frame-size ceiling to 67,108,864 and admit exact identity
+`2/6 + 1/5 + 1/2` through stream/frame validation, preflight, token decoding,
+and raw reconstruction under caller-supplied hard limits. Require immutable
+variant selection before descriptor work, exact `8F` and `36T` count bounds,
+atomic reciprocal rejection, and a first-new-distance complete frame. Add an
+explicit variant-5 rejection to both bounded encoder passes so this stage does
+not implicitly admit encoding, streaming, public, tooling, fuzz, or schema
+surfaces.

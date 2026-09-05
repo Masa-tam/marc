@@ -7526,3 +7526,13 @@ adapter, and repository-owned overlap-built history pattern. No external
 compressor, Adaptive Huffman implementation, source code, archive, encoded
 vector, test suite, patent, pseudocode, benchmark result, optimization
 description, or malformed-stream corpus was consulted.
+
+### IR-0832
+
+The bounded 64-MiB Contextual Adaptive Huffman decoder admission uses IR-0831,
+DD-1069, TVG-0934, marc's repository-owned frame validator/decoder, variant-5
+typed-token path, variant-6 raw reconstructor, and the independently built
+overlap-history vector. No external compressor, Adaptive Huffman
+implementation, source code, archive, encoded frame, test suite, patent,
+pseudocode, benchmark result, optimization description, or malformed-stream
+corpus was consulted.

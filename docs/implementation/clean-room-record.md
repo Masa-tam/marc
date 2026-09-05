@@ -28797,3 +28797,31 @@ both bounds.
   schema compatibility in 117.80 and 113.69 seconds. Documentation ordering,
   relative-link, and whitespace checks pass. No frame identity or public
   selector is admitted.
+
+## CR-1160: 2026-09-05 - Admit bounded 64-MiB Adaptive Huffman decoding
+
+- Authoring method: extended marc's repository-owned complete-frame validator
+  and decoder with independently constructed variant-5 boundary vectors; no
+  external implementation was consulted.
+- References used: DD-1070; IR-0832; TVG-0935; BR-0263; CR-1159; the existing
+  16-MiB Adaptive Huffman and 64-MiB Blocked Huffman decoder admission tests.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, archives, encoded frames,
+  test suites, patents, pseudocode, benchmark results, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: raise only the private frame ceiling, carry the
+  immutable selected layout through decode, build the first-new-distance frame
+  from overlap Matches, and install explicit encoder gates so later surfaces
+  remain closed.
+- Generated-code task description: prove exact identity and maximum frame
+  header admission, `8F` rejection, first-new-distance reconstruction,
+  reciprocal atomic failure, exact workspace reporting, and continued encoder
+  rejection before running both full suites.
+- Similarity review: the source change is a constant-bound extension plus an
+  admission gate following marc's own staged patterns; no external
+  implementation expression was introduced.
+- Validation: three focused format/decoder/encoder tests pass under MSVC and
+  ClangCL. Complete Release suites pass all 3,377 tests in 425.86 and 425.04
+  seconds, including schema compatibility in 122.20 and 117.84 seconds.
+  Documentation ordering, relative-link, and whitespace checks pass.
+  Streaming and all outward surfaces remain closed.

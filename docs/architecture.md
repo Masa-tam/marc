@@ -6070,3 +6070,13 @@ uses alphabet 27 and 26 LSB-first bypass bits. Direct tokens can cross the old
 variant 4 rejects that crossed selection before caller token publication. The
 shared selected-layout path needs no backend-specific branch. Complete-frame
 identity and every outward 64-MiB boundary remain closed.
+
+Bounded Contextual Adaptive Huffman frame validation and decoding now admit
+only exact identity `2/6 + 1/5 + 1/2`. The selected variant-5 layout fixes the
+`8F` and `36T` decision ceilings before descriptor parsing, then supplies the
+same immutable layout to the private token decoder and variant-6 raw
+reconstructor. A frame whose overlap-built history reaches distance
+16,777,217 decodes atomically; a crossed 16-MiB identity leaves token and raw
+staging unchanged. The 64-MiB frame ceiling is available only under explicit
+caller hard limits. Bounded encoding has an explicit variant-5 rejection gate,
+and streaming, public, application, fuzz, and schema boundaries remain closed.

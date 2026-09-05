@@ -20,10 +20,12 @@ using marc::entropy::internal::contextual_adaptive_huffman_node_entries;
 using marc::entropy::internal::contextual_adaptive_huffman_node_entries_v2;
 using marc::entropy::internal::contextual_adaptive_huffman_node_entries_v3;
 using marc::entropy::internal::contextual_adaptive_huffman_node_entries_v4;
+using marc::entropy::internal::contextual_adaptive_huffman_node_entries_v5;
 using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries;
 using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries_v2;
 using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries_v3;
 using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries_v4;
+using marc::entropy::internal::contextual_adaptive_huffman_symbol_entries_v5;
 
 struct Workspace {
     std::vector<AdaptiveHuffmanNode> nodes =
@@ -55,6 +57,14 @@ struct SixteenMiBWorkspace {
             contextual_adaptive_huffman_node_entries_v4);
     std::vector<std::uint16_t> symbols = std::vector<std::uint16_t>(
         contextual_adaptive_huffman_symbol_entries_v4);
+};
+
+struct SixtyFourMiBWorkspace {
+    std::vector<AdaptiveHuffmanNode> nodes =
+        std::vector<AdaptiveHuffmanNode>(
+            contextual_adaptive_huffman_node_entries_v5);
+    std::vector<std::uint16_t> symbols = std::vector<std::uint16_t>(
+        contextual_adaptive_huffman_symbol_entries_v5);
 };
 
 [[nodiscard]] LzssContextualAdaptiveHuffmanStreamHeader stream_for(
@@ -92,6 +102,16 @@ struct SixteenMiBWorkspace {
     stream.dictionary.window_size = UINT32_C(1) << 24;
     stream.dictionary_variant = 5;
     stream.context_variant = 4;
+    return stream;
+}
+
+[[nodiscard]] LzssContextualAdaptiveHuffmanStreamHeader stream_for_64m(
+    const std::uint64_t original_size) {
+    auto stream = stream_for(original_size);
+    stream.frame_size = static_cast<std::uint32_t>(original_size);
+    stream.dictionary.window_size = UINT32_C(1) << 26;
+    stream.dictionary_variant = 6;
+    stream.context_variant = 5;
     return stream;
 }
 
@@ -310,6 +330,31 @@ TEST(LzssContextualAdaptiveHuffmanFrameEncoder,
               LzssContextualAdaptiveHuffmanFrameDecodeError::none);
     EXPECT_EQ(result.serialized_consumed, frame.size());
     EXPECT_EQ(decoded, raw);
+}
+
+TEST(LzssContextualAdaptiveHuffmanFrameEncoder,
+     SixtyFourMiBFrameEncodingRemainsClosed) {
+    constexpr std::array raw{std::byte{'A'}};
+    const auto stream = stream_for_64m(raw.size());
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_lz_distance = UINT64_C(1) << 26;
+    std::array<LzssTypedToken, 1> tokens{};
+    SixtyFourMiBWorkspace workspace{};
+    const auto plan = plan_lzss_contextual_adaptive_huffman_frame(
+        stream, limits, 0, 0, raw, tokens, workspace.nodes,
+        workspace.symbols);
+    EXPECT_EQ(plan.error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::invalid_stream);
+
+    std::array<std::byte, 82> frame{};
+    frame.fill(std::byte{0xcc});
+    EXPECT_EQ(encode_lzss_contextual_adaptive_huffman_frame(
+                  stream, limits, 0, 0, raw, tokens, workspace.nodes,
+                  workspace.symbols, frame).error,
+              LzssContextualAdaptiveHuffmanFrameEncodeError::invalid_stream);
+    EXPECT_TRUE(std::ranges::all_of(frame, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
 }
 
 TEST(LzssContextualAdaptiveHuffmanFrameEncoder,

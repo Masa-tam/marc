@@ -3890,3 +3890,17 @@ crossed decoding preserves every sentinel token. The two new focused tests
 and all 3,374 registered tests pass under MSVC and ClangCL. Complete runs take
 376.02 and 353.29 seconds, including schema compatibility passes of 117.80 and
 113.69 seconds. Frame and every outward boundary remain closed.
+
+### BR-0263
+
+Exact identity `2/6 + 1/5 + 1/2` is now admitted through bounded frame
+validation and decoding under explicit caller hard limits. The stream accepts
+the 67,108,864-byte frame ceiling; variant 5 enforces `8F` and `36T`. A complete
+overlap-built frame reconstructs a final length-258 Match at distance
+16,777,217 while reporting exactly 9,227 nodes and 4,598 symbol indices.
+Crossed 16-MiB decoding preserves token and raw sentinels. Both bounded encoder
+passes explicitly reject variant 5 and preserve serialized output. Three
+focused tests and all 3,377 registered tests pass under MSVC and ClangCL.
+Complete runs take 425.86 and 425.04 seconds, including schema compatibility
+passes of 122.20 and 117.84 seconds. Streaming and every outward boundary
+remain closed.

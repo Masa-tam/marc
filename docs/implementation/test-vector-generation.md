@@ -13458,3 +13458,19 @@ Build a direct token sequence whose overlap Matches establish exactly
 16,777,216 distance hard limit, exact round trip under variant 5, and atomic
 crossed rejection by variant 4. Run both focused suites and all registered
 tests, including schema compatibility, under MSVC and ClangCL.
+
+### TVG-0935
+
+Serialize and parse exact stream identity `2/6 + 1/5 + 1/2`, including a
+67,108,864-byte frame ceiling under explicit local limits. Require variant 5
+to accept 40 decisions for `F=5` and reject 41, and require each reciprocal
+dictionary/context crossing to preserve the destination header and consumed
+extent.
+
+Construct a complete frame from bounded overlap Matches that establishes
+16,777,217 bytes of history and ends with a length-258 Match at that distance.
+Require exact variant-5 node/symbol workspace reporting, complete token and raw
+recovery, and crossed variant-4 rejection without token or raw mutation.
+Require bounded plan and encode calls to reject variant 5 while preserving
+serialized output. Run focused and complete MSVC/ClangCL suites, including
+schema compatibility.

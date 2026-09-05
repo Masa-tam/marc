@@ -16,7 +16,7 @@ inline constexpr std::size_t
 inline constexpr std::size_t
     lzss_contextual_adaptive_huffman_frame_header_size = 64;
 inline constexpr std::uint32_t
-    lzss_contextual_adaptive_huffman_max_frame_size = UINT32_C(1) << 24;
+    lzss_contextual_adaptive_huffman_max_frame_size = UINT32_C(1) << 26;
 
 struct LzssContextualAdaptiveHuffmanStreamHeader {
     std::uint32_t frame_size{};

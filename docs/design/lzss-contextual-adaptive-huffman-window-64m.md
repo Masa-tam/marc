@@ -1,7 +1,8 @@
 # LZSS contextual Adaptive Huffman 64 MiB window
 
-Status: operation and direct typed-token stage implemented. Frame identity,
-public, tooling, fuzzing, and interoperability boundaries remain closed.
+Status: bounded decoder frame admission implemented. Bounded encoding and
+streaming remain closed. Public, tooling, fuzzing, and interoperability
+boundaries remain closed.
 
 ## Purpose and exact identity
 
@@ -137,6 +138,7 @@ fuzzer must not allocate a 64-MiB frame or history.
    (complete)
 3. Admit only exact complete-frame identity `2/6 + 1/5 + 1/2`, initially for
    bounded decoding and then encoding after exact preflight tests pass.
+   Bounded decoder admission is complete; bounded encoding remains closed.
 4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests for both Exact finders. Exhaustive remains
    closed.
