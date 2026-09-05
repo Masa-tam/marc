@@ -69,6 +69,7 @@ enum class OverlapCheck : std::uint8_t {
     case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_1m:
     case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_4m:
     case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_16m:
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_64m:
         return true;
     }
     return false;
@@ -183,6 +184,12 @@ LzssContextualAdaptiveHuffmanFrameStreamingDecoder(
         minimum_symbol_count =
             entropy::internal::contextual_adaptive_huffman_symbol_entries_v4;
         break;
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_64m:
+        minimum_node_count =
+            entropy::internal::contextual_adaptive_huffman_node_entries_v5;
+        minimum_symbol_count =
+            entropy::internal::contextual_adaptive_huffman_symbol_entries_v5;
+        break;
     }
     if (!valid_extents || !valid_admission(admission_)
         || node_workspace_.size()
@@ -248,6 +255,13 @@ parse_collected_stream_header() noexcept {
         if (stream_.dictionary_variant != 5
             || stream_.context_algorithm != 1
             || stream_.context_variant != 4) {
+            return false;
+        }
+        break;
+    case LzssContextualAdaptiveHuffmanStreamAdmission::field_context_64m:
+        if (stream_.dictionary_variant != 6
+            || stream_.context_algorithm != 1
+            || stream_.context_variant != 5) {
             return false;
         }
         break;

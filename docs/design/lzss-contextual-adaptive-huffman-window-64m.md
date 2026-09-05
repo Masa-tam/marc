@@ -1,8 +1,8 @@
 # LZSS contextual Adaptive Huffman 64 MiB window
 
-Status: bounded Exact-finder frame encoding and decoding implemented.
-Exhaustive and streaming encoding remain closed. Public, tooling, fuzzing,
-and interoperability boundaries remain closed.
+Status: internal profile/workspace and Exact-finder streaming implemented.
+Exhaustive encoding remains closed. Public, tooling, fuzzing, and
+interoperability boundaries remain closed.
 
 ## Purpose and exact identity
 
@@ -142,7 +142,7 @@ fuzzer must not allocate a 64-MiB frame or history.
    closed. Both Exact finders emit byte-identical decodable frames. (complete)
 4. Add checked profile/workspace calculation and one-byte streaming with exact
    and one-short aggregate tests for both Exact finders. Exhaustive remains
-   closed.
+   closed. (complete)
 5. Admit common public C selector value 4 only for Contextual Adaptive Huffman.
 6. Add exact CLI and dependency-free benchmark name
    `lzss-contextual-adaptive-huffman-64m` through the public lifecycle.

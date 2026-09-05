@@ -28852,3 +28852,30 @@ both bounds.
   compatibility in 126.38 and 116.83 seconds. Documentation ordering,
   relative-link, and whitespace checks pass. Streaming and all outward
   surfaces remain closed.
+
+## CR-1162: 2026-09-05 - Admit internal 64-MiB Adaptive Huffman profile and streaming
+
+- Authoring method: extended marc's repository-owned checked profile,
+  partition, and streaming admission paths; no external implementation was
+  consulted.
+- References used: DD-1072; IR-0834; TVG-0937; BR-0265; CR-1161; the existing
+  64-MiB Contextual Blocked Huffman internal-profile admission pattern.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, allocators, source code, archives, test
+  suites, patents, pseudocode, benchmark results, optimization descriptions,
+  and malformed-stream corpora.
+- Independent decisions: expose only private variant and admission values;
+  derive both Exact-finder and decoder storage from caller limits; require
+  exact/one-short full-frame aggregate proofs; and construct one-byte streaming
+  solely from returned partitions.
+- Generated-code task description: extend the selected profile layout and
+  canonical model counts, add exact streaming-decoder identity and workspace
+  selection, prove full-frame native extents, partition small queried storage,
+  and run both complete suites without opening later surfaces.
+- Similarity review: changes reuse marc's generic calculators and staged
+  admission structure; no external implementation expression was introduced.
+- Validation: both focused tests pass under MSVC and ClangCL. Complete Release
+  suites pass all 3,380 tests in 478.28 and 433.36 seconds, including schema
+  compatibility in 121.97 and 118.19 seconds. Documentation ordering,
+  relative-link, and whitespace checks pass. Public and later surfaces remain
+  closed.

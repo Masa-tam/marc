@@ -7831,3 +7831,12 @@ BinaryTree Exact. Both strategies use the same deterministic longest-match and
 nearest-distance rules and therefore emit byte-identical frames. Exhaustive
 encoding remains rejected; short finder and serialized-output capacities fail
 before publication. No public stream profile or schema archive is added.
+
+Internal profile/workspace and streaming support now admits the same exact
+identity without adding a serialized field. The checked full-frame aggregates
+on the supported 64-bit layout are 3,381,290,224 bytes for HashChain Exact,
+5,058,487,536 bytes for BinaryTree Exact, and 3,112,330,476 bytes for decode.
+Each exact capacity succeeds and one byte short fails without publishing
+requirements. Profile-derived partitions construct byte-identical one-byte-I/O
+streams for both Exact finders. Local limits remain authoritative and stream
+metadata never raises them. Public selectors and schema 56 remain unchanged.

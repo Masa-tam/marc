@@ -13487,3 +13487,20 @@ sentinel bytes, decode the complete HashChain frame through the variant-5
 bounded decoder, and recover the raw input exactly. Separately require the
 Exhaustive entry point to keep rejecting variant 5 without changing output.
 Run focused and complete MSVC/ClangCL suites, including schema compatibility.
+
+### TVG-0937
+
+For a 67,108,864-byte raw frame, apply payload limit 2,239,758,336, entropy
+entry limit 13,825, distance limit 67,108,864, and an explicit eight-GiB
+aggregate policy. On the supported 64-bit layout require HashChain Exact
+aggregate 3,381,290,224, BinaryTree Exact aggregate 5,058,487,536, and decoder
+aggregate 3,112,330,476 bytes. Accept each exact aggregate and reject one byte
+below with cleared requirements; also reject one-short payload and entropy
+limits.
+
+Separately query and partition encoder and decoder storage for raw byte `A`
+under identity `2/6 + 1/5 + 1/2`. Feed one input and output byte per call for
+both Exact finders and require exact recovery. Require 16-MiB admission, a
+9,226-node bank, and a 4,597-symbol bank to fail without changing the output
+sentinel. Run focused and complete MSVC/ClangCL suites, including schema
+compatibility.

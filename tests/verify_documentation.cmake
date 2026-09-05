@@ -360,9 +360,10 @@ foreach(required_contextual_adaptive_huffman_window_64m_term IN ITEMS
         "BinaryTree Exact"
         "first newly reachable distance 16,777,217"
         "schema 56 unchanged"
-        "bounded Exact-finder frame encoding and decoding implemented"
+        "internal profile/workspace and Exact-finder streaming implemented"
         "Bounded Exact-finder encoding and decoding are complete"
         "byte-identical decodable frames"
+        "one-short aggregate tests for both Exact finders"
         "Exhaustive remains"
         "remain closed")
     string(FIND "${lzss_contextual_adaptive_huffman_window_64m_content}"

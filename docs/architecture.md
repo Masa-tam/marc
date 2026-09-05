@@ -6083,3 +6083,12 @@ BinaryTree Exact; their preflight plans and encoded frames are identical, and
 short finder or output storage cannot publish partial bytes. The Exhaustive
 path retains its variant-5 rejection. Streaming, public, application, fuzz,
 and schema boundaries remain closed.
+
+The internal 64-MiB Contextual Adaptive Huffman profile now derives complete
+encoder and decoder storage from validated local limits. On the supported
+64-bit layout, the full-frame HashChain Exact, BinaryTree Exact, and decoder
+aggregates are 3,381,290,224, 5,058,487,536, and 3,112,330,476 bytes. Exact
+capacity succeeds and one byte short fails before requirements publication.
+The returned partitions directly construct one-byte-I/O streaming round trips
+for both Exact finders. Decoder admission accepts only `2/6 + 1/5 + 1/2`;
+Exhaustive, public, application, fuzz, and schema boundaries remain closed.

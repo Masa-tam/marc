@@ -7546,3 +7546,13 @@ encoder, exact HashChain and BinaryTree interfaces, and the corresponding
 Adaptive Huffman implementation, match finder, source code, archive, encoded
 frame, test suite, patent, pseudocode, benchmark result, optimization
 description, or malformed-stream corpus was consulted.
+
+### IR-0834
+
+The internal 64-MiB Contextual Adaptive Huffman profile/workspace and streaming
+admission uses IR-0833, DD-1071, TVG-0936, marc's checked native-layout
+calculator, caller-owned view partitioners, Exact-finder streaming encoder,
+and strict streaming-decoder admission. No external compressor, Adaptive
+Huffman implementation, allocator, source code, test suite, archive, patent,
+pseudocode, benchmark result, optimization description, or malformed-stream
+corpus was consulted.

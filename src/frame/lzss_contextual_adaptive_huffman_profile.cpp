@@ -124,6 +124,9 @@ inline constexpr std::uint64_t bits_per_raw_byte = 267;
     case LzssContextualAdaptiveHuffmanProfileVariant::field_context_16m:
         return context::internal::get_lzss_field_context_layout(
             context::internal::LzssFieldContextVariant::field_context_16m);
+    case LzssContextualAdaptiveHuffmanProfileVariant::field_context_64m:
+        return context::internal::get_lzss_field_context_layout(
+            context::internal::LzssFieldContextVariant::field_context_64m);
     }
     return {{}, context::internal::LzssFieldContextLayoutError::
                     unsupported_context_variant};
@@ -155,7 +158,13 @@ inline constexpr std::uint64_t bits_per_raw_byte = 267;
                     contextual_adaptive_huffman_node_entries_v4
             && symbol_count
                 == entropy::internal::
-                    contextual_adaptive_huffman_symbol_entries_v4);
+                    contextual_adaptive_huffman_symbol_entries_v4)
+        || (node_count
+                == entropy::internal::
+                    contextual_adaptive_huffman_node_entries_v5
+            && symbol_count
+                == entropy::internal::
+                    contextual_adaptive_huffman_symbol_entries_v5);
 }
 
 } // namespace

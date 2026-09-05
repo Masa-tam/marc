@@ -21832,3 +21832,16 @@ same deterministic longest-match and nearest-distance rules. Require identical
 plans and frame bytes, successful bounded decoding, short-finder rejection,
 and non-mutating short-output rejection. Keep Exhaustive, streaming, public,
 tooling, fuzz, and schema surfaces closed.
+
+## DD-1072: Admit internal 64-MiB Adaptive Huffman profile and streaming
+
+- Date: 2026-09-05
+- Status: accepted
+
+Add private profile and streaming-admission values for exact identity
+`2/6 + 1/5 + 1/2`. Reuse selected-layout and checked native workspace
+calculation for the 9,227-node and 4,598-symbol model bank. Require exact and
+one-byte-short full-frame aggregate policies for HashChain Exact, BinaryTree
+Exact, and decode. Construct one-byte-I/O streaming instances only from the
+queried and partitioned storage. Keep local limits authoritative and retain
+Exhaustive, public, tooling, fuzz, and schema gates.

@@ -3916,3 +3916,16 @@ rejects variant 5 atomically. The two focused tests and all 3,378 registered
 tests pass under MSVC and ClangCL. Complete runs take 485.10 and 428.09
 seconds, including schema compatibility passes of 126.38 and 116.83 seconds.
 Streaming and every outward boundary remain closed.
+
+### BR-0265
+
+The internal 64-MiB Contextual Adaptive Huffman profile and streaming path are
+now admitted. Checked queries report exact full-frame aggregates of
+3,381,290,224 bytes for HashChain Exact, 5,058,487,536 bytes for BinaryTree
+Exact, and 3,112,330,476 bytes for decode; each one-byte-short policy clears
+the unpublished requirements. Profile-partitioned storage constructs one-byte
+input/output round trips under both Exact finders. Crossed 16-MiB admission and
+short model banks fail without raw publication. The two focused tests and all
+3,380 registered tests pass under MSVC and ClangCL. Complete runs take 478.28
+and 433.36 seconds, including schema compatibility passes of 121.97 and 118.19
+seconds. Public and later boundaries remain closed.
