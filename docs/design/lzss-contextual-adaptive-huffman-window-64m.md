@@ -1,6 +1,8 @@
 # LZSS contextual Adaptive Huffman 64 MiB window
 
-Status: design and checked bounds fixed; implementation remains closed.
+Status: model-bank and descriptor-limit stage implemented. Operation coding,
+frame identity, public, tooling, fuzzing, and interoperability boundaries
+remain closed.
 
 ## Purpose and exact identity
 
@@ -52,9 +54,10 @@ decision_count <= 36*token_count
 At `F = 67,108,864`, the exact event and common decision ceilings are
 134,217,728 and 536,870,912. All counts and every per-tree weight remain below
 `UINT32_MAX`; the no-rescale policy therefore remains safe for one bounded
-frame. Before complete-frame admission, descriptor and operation validation
-must select these limits with checked arithmetic. That validation change does
-not alter the fixed descriptor or any earlier serialized byte.
+frame. The fixed descriptor validator now admits the common decision ceiling
+with checked arithmetic. The serialized symbol-event value and operation-
+specific selection remain unchanged until exact outer-frame admission. This
+validation change does not alter the fixed descriptor or any earlier byte.
 
 ## Payload and complete-frame bounds
 
@@ -129,6 +132,7 @@ fuzzer must not allocate a 64-MiB frame or history.
 1. Extend selected model-bank and descriptor/count validation to context
    variant 5; prove 9,227/4,598 model extents, exact count ceilings, and
    unchanged older bytes.
+   (complete)
 2. Carry the immutable layout through FGK operation coding and direct typed-
    token encode/decode with class-26 and first-new-distance hand vectors.
 3. Admit only exact complete-frame identity `2/6 + 1/5 + 1/2`, initially for

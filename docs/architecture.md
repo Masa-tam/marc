@@ -6052,3 +6052,12 @@ After all local boundaries passed, interoperability schema 56 appended the
 exact 64-MiB Contextual Blocked Huffman application stream as archive 66.
 Schema selection remains an artifact-manifest concern; it does not alter the
 codec pipeline or infer resource limits from input.
+
+The standalone Contextual Adaptive Huffman model-bank already selects shared
+context variant 5 as 9,227 caller-owned FGK nodes and 4,598 symbol indices
+across the unchanged 31 trees, including distance alphabet 27. Its fixed
+16-byte descriptor validator now accepts at most 536,870,912 decisions, the
+exact `8F` ceiling for a 64-MiB frame. The serialized symbol-event value,
+descriptor layout, no-rescale policy, and every earlier descriptor byte remain
+unchanged. Operation coding and every outward 64-MiB Contextual Adaptive
+Huffman boundary remain closed.

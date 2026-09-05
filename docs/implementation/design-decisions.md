@@ -21779,3 +21779,16 @@ require exact HashChain, BinaryTree, and decoder aggregate limits
 eight independently reviewed stages from model selection through one
 append-only interoperability archive. Every incomplete stage MUST keep later
 boundaries closed and MUST NOT alter schema 56 or any earlier stream byte.
+
+## DD-1068: Implement only the 64-MiB Adaptive Huffman model and descriptor boundary
+
+- Date: 2026-09-05
+- Status: accepted
+
+Select context variant 5 through the existing immutable field layout and prove
+exactly 9,227 FGK nodes plus 4,598 symbol indices, including class 26 in all
+eight distance contexts. Raise only the shared descriptor decision ceiling
+from 117,440,512 to exact `8 * 67,108,864 = 536,870,912`; retain the 32-bit
+field, fixed 16-byte representation, serialized symbol-event limit, earlier
+model extents, and earlier descriptor bytes. Do not admit operation coding,
+complete-frame identity `2/6 + 1/5 + 1/2`, or any public surface in this stage.

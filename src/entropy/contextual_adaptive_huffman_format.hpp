@@ -15,9 +15,9 @@ inline constexpr std::uint32_t
     contextual_adaptive_huffman_max_symbol_events = UINT32_C(1) << 25;
 inline constexpr std::uint32_t
     contextual_adaptive_huffman_max_decision_count =
-        7U * (contextual_adaptive_huffman_max_symbol_events / 2U);
+        UINT32_C(1) << 29;
 static_assert(contextual_adaptive_huffman_max_decision_count
-              == UINT32_C(117440512));
+              == UINT32_C(536870912));
 inline constexpr std::uint16_t contextual_adaptive_huffman_context_count =
     context::internal::lzss_field_context_count;
 

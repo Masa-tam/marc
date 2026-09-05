@@ -13430,3 +13430,17 @@ one-short tests for the boundary it opens, reciprocal rejection by all older
 Contextual Adaptive Huffman profiles, and both Exact finders where encoding is
 admitted. Keep schema 56 unchanged until public C, applications, and bounded
 fuzzing all pass.
+
+### TVG-0933
+
+Initialize context variant 5 with exactly 9,227 `AdaptiveHuffmanNode` entries
+and 4,598 symbol indices. Require all 31 trees to match the selected alphabets,
+observe new symbol 26 independently in every distance tree, and validate the
+whole bank. Remove one node and then one symbol entry and require atomic
+workspace failure before publication.
+
+Serialize and parse the fixed descriptor at decision count 536,870,912 and
+require its little-endian prefix `00 00 00 20`; reject 536,870,913. Retain the
+established one-literal 16-byte vector exactly. Run focused model/format tests
+and every registered test, including schema compatibility, under both MSVC
+and ClangCL.

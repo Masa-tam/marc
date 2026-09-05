@@ -7799,3 +7799,12 @@ paths, recorded sizes and SHA-256 values, decoded fixture equality, and
 byte-identical local re-encoding. Removing only archive 66 and rewriting the
 manifest as `55` / `marc-cli-v55` reconstructs the previous schema. This
 schema admission changes no codec representation.
+
+The standalone Contextual Adaptive Huffman model-bank and descriptor validator
+now recognize explicitly selected context variant 5 without admitting its
+complete-frame identity. Variant 5 uses 4,598 symbol slots and 9,227 FGK nodes
+over the unchanged 31 reset-per-frame trees. The fixed 16-byte descriptor now
+accepts decision counts through exactly 536,870,912 and rejects the next
+value; this changes no field width, descriptor layout, serialized symbol-event
+value, or earlier byte. Operation coding, frame parsing, public profiles, and
+schema 56 remain closed.

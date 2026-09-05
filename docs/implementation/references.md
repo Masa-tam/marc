@@ -7506,3 +7506,13 @@ exact-finder workspace calculators, and completed 64-MiB Blocked Huffman
 admission sequence. No external Adaptive Huffman implementation, compressor,
 source, test, vector, patent, pseudocode, allocation policy, or optimization
 description was consulted.
+
+### IR-0830
+
+The 64-MiB Contextual Adaptive Huffman model-bank and descriptor-limit stage
+uses IR-0829, DD-1067, TVG-0932, marc's existing selected-layout FGK model
+bank, fixed 16-byte descriptor validator, and repository-owned context-
+variant-5 layout. No external compressor, Adaptive Huffman implementation,
+source code, archive, encoded vector, test suite, patent, pseudocode,
+benchmark result, optimization description, or malformed-stream corpus was
+consulted.

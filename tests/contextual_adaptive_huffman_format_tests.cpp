@@ -123,16 +123,29 @@ TEST(ContextualAdaptiveHuffmanFormat, AcceptsTheExactDecisionCeiling) {
     static_assert(
         marc::entropy::internal::
             contextual_adaptive_huffman_max_decision_count
-        == UINT32_C(117440512));
+        == UINT32_C(536870912));
     const ContextualAdaptiveHuffmanDescriptor descriptor{
         marc::entropy::internal::
             contextual_adaptive_huffman_max_decision_count,
         1, 31, 8, 0};
-    EXPECT_EQ(
+    std::array<std::byte, 16> bytes{};
+    ASSERT_EQ(
         marc::entropy::internal::
-            validate_contextual_adaptive_huffman_descriptor(
-                descriptor, descriptor.decision_count, 1, {}),
+            serialize_contextual_adaptive_huffman_descriptor(
+                descriptor, descriptor.decision_count, 1, {}, bytes),
         ContextualAdaptiveHuffmanFormatError::none);
+    EXPECT_EQ(bytes[0], std::byte{0x00});
+    EXPECT_EQ(bytes[1], std::byte{0x00});
+    EXPECT_EQ(bytes[2], std::byte{0x00});
+    EXPECT_EQ(bytes[3], std::byte{0x20});
+
+    ContextualAdaptiveHuffmanDescriptor parsed{};
+    ASSERT_EQ(
+        marc::entropy::internal::parse_contextual_adaptive_huffman_descriptor(
+            bytes, descriptor.decision_count, 1, {}, parsed),
+        ContextualAdaptiveHuffmanFormatError::none);
+    EXPECT_EQ(parsed.decision_count, descriptor.decision_count);
+    EXPECT_EQ(parsed.payload_size, 1U);
 }
 
 TEST(ContextualAdaptiveHuffmanFormat, RejectsAboveTheDecisionCeiling) {

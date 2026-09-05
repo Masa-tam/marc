@@ -28745,3 +28745,29 @@ both bounds.
   ledgers; arithmetic agrees with the shared 64-MiB workspace table. This
   design changes no source, ABI, stream byte, test inventory, or
   interoperability schema.
+
+## CR-1158: 2026-09-05 - Implement 64-MiB Adaptive Huffman model boundary
+
+- Authoring method: extended marc's repository-owned selected-layout model
+  proof and descriptor ceiling without consulting an external implementation.
+- References used: DD-1068; IR-0830; TVG-0933; BR-0261; CR-1157; the existing
+  context variants 1 through 4 and shared context-variant-5 field layout.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, source code, archives, encoded vectors,
+  test suites, patents, pseudocode, benchmark results, optimization
+  descriptions, and malformed-stream corpora.
+- Independent decisions: reuse the generic 31-tree partitioner and its
+  existing exact 9,227/4,598 proof; widen only the shared decision validation
+  ceiling to 536,870,912; preserve the serialized symbol-event value; and keep
+  operation, frame, and public admission closed.
+- Generated-code task description: require variant-5 exact-capacity,
+  class-26, one-short, exact-ceiling, above-ceiling, canonical little-endian,
+  and old-byte regression tests before recording the bounded stage.
+- Similarity review: the implementation is a constant-bound extension of
+  marc's existing test grammar and contains no external implementation
+  expression.
+- Validation: fifteen focused model/format tests passed under MSVC and
+  ClangCL. Complete Release suites passed all 3,372 tests in 414.56 and 369.69
+  seconds respectively, including schema compatibility in 116.75 and 112.83
+  seconds. Documentation ordering, relative-link, and whitespace checks
+  passed. No frame identity or public selector is admitted.

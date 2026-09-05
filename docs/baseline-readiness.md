@@ -3864,3 +3864,16 @@ Supported-layout workspace proofs admit both Exact finders and decoding under
 an explicit eight-GiB aggregate policy. No implementation gate, public
 selector, tool name, fuzz profile, or schema-56 archive is opened by this
 design-only step.
+
+### BR-0261
+
+The private Contextual Adaptive Huffman model-bank and descriptor boundary now
+recognizes context variant 5 without admitting complete-frame identity
+`2/6 + 1/5 + 1/2`. It partitions exactly 9,227 FGK nodes and 4,598 symbol
+indices, admits distance class 26 in each distance tree, succeeds at exact
+capacity, and fails one entry short before model publication. The descriptor
+accepts the exact 536,870,912-decision ceiling and rejects the next value while
+the existing one-literal vector remains byte-identical. Operation coding and
+every later boundary remain closed. Fifteen focused model/format tests and all
+3,372 registered tests pass under MSVC and ClangCL; schema compatibility is
+included in both complete runs.
