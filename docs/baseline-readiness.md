@@ -3942,3 +3942,15 @@ round trip succeeds while a 16-MiB decoder rejects it atomically. Application,
 fuzz, and interoperability-schema admission remain closed. All 3,380 tests
 pass under MSVC and ClangCL in 391.42 and 372.40 seconds, including schema
 compatibility in 119.14 and 112.03 seconds.
+
+### BR-0267
+
+The CLI and dependency-free benchmark now expose exact name
+`lzss-contextual-adaptive-huffman-64m` through public profile helper value 4,
+direction-specific workspace queries, and the existing factory. CLI inventory,
+identity, round-trip, crossed-profile, trailing-data, and case-sensitive near-
+miss checks pass. The benchmark verifies an untimed round trip and reports
+query-owned directional storage with a consistent peak. Fuzzing and schema 56
+remain closed pending their own stages. All 3,382 tests pass under MSVC and
+ClangCL in 376.29 and 376.83 seconds, including schema compatibility in 120.23
+and 113.59 seconds.

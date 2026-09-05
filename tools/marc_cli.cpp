@@ -212,6 +212,7 @@ enum class Codec {
     lzss_contextual_adaptive_huffman_1m,
     lzss_contextual_adaptive_huffman_4m,
     lzss_contextual_adaptive_huffman_16m,
+    lzss_contextual_adaptive_huffman_64m,
     lzss_rans,
     lzss_tans,
     lz78,
@@ -1734,11 +1735,14 @@ bool process_file(const marc_direction direction,
     } else if (codec == Codec::lzss_contextual_adaptive_huffman
                || codec == Codec::lzss_contextual_adaptive_huffman_1m
                || codec == Codec::lzss_contextual_adaptive_huffman_4m
-               || codec == Codec::lzss_contextual_adaptive_huffman_16m) {
+               || codec == Codec::lzss_contextual_adaptive_huffman_16m
+               || codec == Codec::lzss_contextual_adaptive_huffman_64m) {
         if (!configure(
                 direction, source_size,
                 lzss_contextual_adaptive_huffman_settings,
-                codec == Codec::lzss_contextual_adaptive_huffman_16m
+                codec == Codec::lzss_contextual_adaptive_huffman_64m
+                    ? MARC_LZSS_CONTEXTUAL_PROFILE_64M
+                    : codec == Codec::lzss_contextual_adaptive_huffman_16m
                     ? MARC_LZSS_CONTEXTUAL_PROFILE_16M
                     : codec == Codec::lzss_contextual_adaptive_huffman_4m
                     ? MARC_LZSS_CONTEXTUAL_PROFILE_4M
@@ -1899,7 +1903,8 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::lzss_contextual_adaptive_huffman
              || codec == Codec::lzss_contextual_adaptive_huffman_1m
              || codec == Codec::lzss_contextual_adaptive_huffman_4m
-             || codec == Codec::lzss_contextual_adaptive_huffman_16m)
+             || codec == Codec::lzss_contextual_adaptive_huffman_16m
+             || codec == Codec::lzss_contextual_adaptive_huffman_64m)
         status = marc_lzss_contextual_adaptive_huffman_workspace_requirements(
             &lzss_contextual_adaptive_huffman_settings, &needed);
     else if (codec == Codec::lzss_rans)
@@ -2098,7 +2103,8 @@ bool process_file(const marc_direction direction,
     else if (codec == Codec::lzss_contextual_adaptive_huffman
              || codec == Codec::lzss_contextual_adaptive_huffman_1m
              || codec == Codec::lzss_contextual_adaptive_huffman_4m
-             || codec == Codec::lzss_contextual_adaptive_huffman_16m)
+             || codec == Codec::lzss_contextual_adaptive_huffman_16m
+             || codec == Codec::lzss_contextual_adaptive_huffman_64m)
         status = marc_lzss_contextual_adaptive_huffman_create(
             &lzss_contextual_adaptive_huffman_settings, primary_buffer,
             secondary_buffer, views_buffer, &raw_transform);
@@ -2369,6 +2375,7 @@ void usage() {
                  "lzss-contextual-adaptive-huffman-1m, "
                  "lzss-contextual-adaptive-huffman-4m, "
                  "lzss-contextual-adaptive-huffman-16m, "
+                 "lzss-contextual-adaptive-huffman-64m, "
                  "lzss-rans, lzss-tans, lz78, "
                  "lz78-blocked-huffman, lz78-adaptive-huffman, "
                  "lz78-dynamic-range, lz78-rans, lz78-tans, "
@@ -2475,6 +2482,8 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzss_contextual_adaptive_huffman_4m;
         else if (name == "lzss-contextual-adaptive-huffman-16m")
             codec = Codec::lzss_contextual_adaptive_huffman_16m;
+        else if (name == "lzss-contextual-adaptive-huffman-64m")
+            codec = Codec::lzss_contextual_adaptive_huffman_64m;
         else if (name == "lzss-rans")
             codec = Codec::lzss_rans;
         else if (name == "lzss-tans")

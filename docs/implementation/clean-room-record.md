@@ -28905,3 +28905,26 @@ both bounds.
   ClangCL. Complete Release suites pass all 3,380 tests in 391.42 and 372.40
   seconds, including schema compatibility in 119.14 and 112.03 seconds.
   Documentation ordering, relative-link, and whitespace checks pass.
+
+## CR-1164: 2026-09-06 - Publish 64-MiB Adaptive Huffman applications
+
+- Authoring method: extended marc's repository-owned CLI and dependency-free
+  benchmark profile-family dispatch; no external implementation was consulted.
+- References used: DD-1074; IR-0836; TVG-0939; BR-0267; BM-0060; CR-1163; the
+  existing 64-MiB Contextual Blocked Huffman application pattern.
+- Known implementations intentionally not consulted: external compressors,
+  Adaptive Huffman implementations, command-line adapters, benchmark harnesses,
+  allocators, source code, archives, test suites, patents, pseudocode,
+  optimization descriptions, and malformed-stream corpora.
+- Independent decisions: expose one exact case-sensitive name; use only the
+  public helper/query/factory lifecycle; report query-owned storage; retain the
+  existing Exact finder; and leave fuzz and schema boundaries closed.
+- Generated-code task description: extend CLI and benchmark inventories to the
+  64-MiB selector, add exact-identity round-trip and report tests, record one
+  descriptive README smoke measurement, and run both complete suites.
+- Similarity review: the change extends marc's own application dispatch and
+  testing patterns and introduces no external implementation expression.
+- Validation: complete Release suites pass all 3,382 tests under MSVC and
+  ClangCL in 376.29 and 376.83 seconds, including schema compatibility in
+  120.23 and 113.59 seconds. Documentation ordering, relative-link, and
+  whitespace checks pass.

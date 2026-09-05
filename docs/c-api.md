@@ -397,9 +397,9 @@ BinaryTree Exact, and decoder workspace totals are 3,381,290,224,
 5,058,487,536, and 3,112,330,476 bytes. Applying the helper twice is
 byte-identical; an unknown selector leaves the configuration unchanged, and
 a 16-MiB decoder rejects the 64-MiB identity before publishing raw bytes.
-The initializer remains on the 64-KiB profile, stream metadata never raises
-local limits, and no CLI, benchmark, fuzz, or interoperability-schema surface
-is implied by this C API admission.
+The initializer remains on the 64-KiB profile and stream metadata never raises
+local limits. The separately admitted CLI and benchmark use this same public
+lifecycle; fuzz and interoperability-schema surfaces remain closed.
 Its public completion audit covers all required binary classes, deterministic
 whole, one-byte, and mixed chunk schedules, stable repeated terminal calls,
 and frame-atomic rejection of corrupted, truncated, or trailing final-frame

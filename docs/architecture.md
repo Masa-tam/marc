@@ -6101,3 +6101,11 @@ original size, total-output policy, and Exact finder. Workspace queries remain
 the sole authority for direction- and finder-specific allocation; stream
 metadata cannot enlarge local policy. Applications, fuzzing, and schema 56
 remain separate admission boundaries.
+
+The CLI and dependency-free benchmark now select the 64-MiB Contextual
+Adaptive Huffman lifecycle exclusively through public profile value 4. Both
+tools request their direction-specific storage from the public query and pass
+those exact partitions to the factory; neither reproduces private node,
+symbol, token, or match-finder layout arithmetic. Exact command names are the
+application-level profile contract. Fuzzing and interoperability schema 56
+remain separate and unchanged.

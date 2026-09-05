@@ -7848,3 +7848,9 @@ distance extent, payload ceiling 2,239,758,336, entropy-entry ceiling 13,825,
 and eight-GiB aggregate policy; decoder validation still requires the exact
 dictionary/context pair and caller-supplied hard limits. Earlier streams and
 schema 56 are unchanged.
+
+The application name `lzss-contextual-adaptive-huffman-64m` selects this exact
+identity for both encoding and decoding. It is not serialized and does not
+enable auto-detection: a differently named profile retains its own immutable
+admission policy and rejects the crossed stream. The CLI and benchmark add no
+format variant; fuzzing and interoperability schema 56 remain unchanged.

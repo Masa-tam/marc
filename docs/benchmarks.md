@@ -73,7 +73,8 @@ The experimental Format 2 profile is deliberately outside that stable
 `marc_benchmark lzss-contextual-adaptive-huffman corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman-1m corpus.bin 5`, or
 `marc_benchmark lzss-contextual-adaptive-huffman-4m corpus.bin 5`, or
-`marc_benchmark lzss-contextual-adaptive-huffman-16m corpus.bin 5`.
+`marc_benchmark lzss-contextual-adaptive-huffman-16m corpus.bin 5`, or
+`marc_benchmark lzss-contextual-adaptive-huffman-64m corpus.bin 5`.
 
 The optional positive iteration count defaults to three. Use the same build,
 input, and count when comparing codecs or revisions. Release builds are required
@@ -486,6 +487,14 @@ aggregate policy. Its checked complete-stream capacity is
 reported workspace regions come from the public requirements query. This
 application adapter changes neither the stream representation nor the
 encoder-local match-finder strategy.
+
+The experimental `lzss-contextual-adaptive-huffman-64m` benchmark selects
+the same public profile value 4 as the CLI: 67,108,864-byte frames and window,
+9,227 nodes plus 4,598 symbol indices, `ceil(267F/8)` payload, and an
+eight-GiB aggregate policy. Checked complete-stream capacity remains
+`112 + 80K + ceil(267N/8)`. An exact round trip precedes timing, and all
+reported workspace regions come from the public requirements query. The
+application adds no private sizing rule or alternate match-finder behavior.
 
 ### LZ78 profiles
 
@@ -2129,3 +2138,19 @@ bytes at ratio 0.579. Encoder primary/secondary/views regions were
 1,006,635,630/67,108,864/805,449,588 bytes. Peak caller-owned workspace was
 1,879,194,082 bytes. These short-input measurements validate application
 wiring and accounting, not representative throughput or memory efficiency.
+
+### BM-0060: 64 MiB Contextual Adaptive Huffman application admission
+
+The dependency-free `lzss-contextual-adaptive-huffman-64m` benchmark selects
+exact public profile `2/6 + 1/5 + 1/2` through the profile helper, workspace
+query, and factory. Checked output capacity is
+`112 + 80K + ceil(267N/8)`, and an untimed byte-exact round trip precedes
+measurement.
+
+One MSVC Release smoke iteration over the 4,624-byte README emitted 2,690
+bytes at ratio 0.582. Encoder primary/secondary/views regions were
+4,624/154,406/296,352 bytes; decoder regions were
+2,239,758,416/67,108,864/805,463,196 bytes. Peak caller-owned workspace was
+the exact 3,112,330,476-byte decoder aggregate. These short-input measurements
+validate application wiring and accounting; they are not a performance
+target.

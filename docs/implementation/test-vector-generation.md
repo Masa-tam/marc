@@ -13521,3 +13521,20 @@ aggregate must fail. Encode raw byte `A` with both identity bytes `2/6` and
 `1/5`, decode it under selector 4, and require selector 3 to reject the crossed
 stream before publishing output. Run focused and complete MSVC/ClangCL suites,
 including schema compatibility.
+
+### TVG-0939
+
+Require CLI usage to list the five Contextual Adaptive Huffman profiles once
+and in ascending order, reject the case-changing `-64M` near miss, and encode
+then decode a repeated repository-owned fixture through exact name
+`lzss-contextual-adaptive-huffman-64m`. Inspect the stream header for
+dictionary variant 6, context variant 5, context algorithm 1, and entropy
+variant 2. Require the 16-MiB and baseline names to reject that stream and
+retain transactional output behavior.
+
+Run one dependency-free benchmark iteration over README.md. Require an untimed
+exact round trip, the exact codec name, finite ratio and throughput fields,
+six positive query-owned workspace extents, and peak workspace equal to the
+larger directional aggregate. Require all five benchmark profile names to be
+adjacent and the `-64M` near miss to fail. Run focused and complete MSVC/
+ClangCL suites, including schema compatibility.

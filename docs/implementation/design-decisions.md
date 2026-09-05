@@ -21861,3 +21861,17 @@ workspace queries to reproduce both Exact-finder and decoder full-profile
 boundaries, and require a 16-MiB decoder to reject identity
 `2/6 + 1/5 + 1/2` without output. Keep CLI, benchmark, fuzz, and schema 56
 closed for later independent review.
+
+## DD-1074: Publish the 64-MiB Adaptive Huffman application adapters
+
+- Date: 2026-09-06
+- Status: accepted
+
+Add exact name `lzss-contextual-adaptive-huffman-64m` to the CLI and
+dependency-free benchmark. Configure both directions only through public
+profile helper value 4, query all caller-owned regions after setting the known
+input extent, and create transforms only from those returned regions. Require
+usage inventory ordering, case-sensitive near-miss rejection, exact stream
+identity, crossed-profile rejection, pre-timing round trip, finite metrics,
+and internally consistent peak-workspace reporting. Add no private layout
+arithmetic, fuzz profile, or schema-56 archive.

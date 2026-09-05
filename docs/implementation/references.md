@@ -7566,3 +7566,13 @@ public-admission pattern. No external compressor, Adaptive Huffman
 implementation, allocator, source code, test suite, archive, patent,
 pseudocode, benchmark result, optimization description, or malformed-stream
 corpus was consulted.
+
+### IR-0836
+
+The 64-MiB Contextual Adaptive Huffman application admission uses IR-0835,
+DD-1073, TVG-0938, marc's repository-owned CLI and dependency-free benchmark
+profile-family dispatch, and their existing public-helper/query/factory
+adapters. No external compressor, Adaptive Huffman implementation, command-
+line adapter, benchmark harness, allocator, source code, test suite, archive,
+patent, pseudocode, optimization description, or malformed-stream corpus was
+consulted.
