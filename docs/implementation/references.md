@@ -7654,3 +7654,12 @@ subtree-maximum invariant, and marc's independently tested AVL predecessor,
 successor, and prefix-interval proof. No external match finder, Red-Black
 implementation, compressor, source code, test suite, query implementation,
 pseudocode, suffix-tree code, or optimization description was consulted.
+
+### IR-0845
+
+The Red-Black advancement stage uses DD-1078 through DD-1083, TVG-0943
+through TVG-0948, the repository-owned Red-Black insert, retirement, query,
+and validator stages, plus marc's common `LzssMatchFinder` protocol and
+stateless Exhaustive oracle. No external match finder, Red-Black
+implementation, compressor, source code, test suite, advancement code,
+pseudocode, or optimization description was consulted.

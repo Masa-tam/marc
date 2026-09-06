@@ -29252,3 +29252,31 @@ both bounds.
   in both configurations. All 3,410 registered tests pass in 414.64 and
   349.99 seconds respectively, including complete schema compatibility in
   123.39 and 116.19 seconds.
+
+## CR-1176: 2026-09-07 - Red-Black advancement protocol
+
+- Authoring method: integrated the completed private Red-Black operations
+  through marc's repository-owned stateful match-finder protocol.
+- References used: DD-1078 through DD-1083; IR-0840 through IR-0845;
+  TVG-0943 through TVG-0948; the first-party Red-Black stages, common
+  `LzssMatchFinder` concept, and Exhaustive oracle.
+- Known implementations intentionally not consulted: external Red-Black or
+  match-finder implementation, compressor, source code, test suite,
+  advancement code, pseudocode, and optimization description.
+- Independent decisions: query only at `next_position`, process skipped
+  positions sequentially, retire before modulo-slot reuse, continue retirement
+  through the non-indexable tail, and make every protocol failure sticky.
+- Generated-code task description: add common-concept advancement; prove
+  exact window membership, tail behavior, bulk/bytewise state identity,
+  skipped-position indexing, query-position enforcement, and atomic sticky
+  rejection of invalid order and extent.
+- Similarity review: integration and tests follow marc-owned protocol and
+  invariant conventions. No external implementation expression, pseudocode,
+  test vector, or advancement control flow was copied or structurally
+  reproduced.
+- Local validation: official CMake 4.3.4 produced warning-clean optimized
+  Release builds with MSVC through Visual Studio 2026/MSBuild 18.9.1 and
+  ClangCL 22.1.3 on Windows x64. All twenty-eight focused Red-Black tests pass
+  in both configurations. All 3,415 registered tests pass in 458.54 and
+  387.05 seconds respectively, including complete schema compatibility in
+  123.90 and 117.79 seconds.

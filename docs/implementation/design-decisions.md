@@ -22026,3 +22026,23 @@ invalid state. This stage deliberately does not bind query position to
 `next_position`; automatic advancement will establish that protocol in the
 next stage. It adds no production dispatch, public selector, statistics, ABI,
 or stream change.
+
+## DD-1083: Red-Black advancement owns the exact active-window protocol
+
+- Date: 2026-09-07
+- Status: accepted
+
+Bind every query to the finder's immutable current `next_position`. Advance
+only from that position to a nondecreasing position within the input extent.
+For each skipped raw position in order, first physically retire the position
+that has reached `window_size` distance, then insert the current position when
+at least the five-byte index prefix remains. This ordering guarantees slot
+availability when a modulo slot is reused and makes bulk and one-byte
+advancement produce identical complete tree state.
+
+An invalid starting position, backward endpoint, oversized endpoint, or any
+internal retirement/insertion failure makes protocol state sticky-invalid and
+moves `next_position` to the input end. A preflight protocol failure does not
+modify caller workspace. The completed private class now satisfies the common
+`LzssMatchFinder` shape, but this stage adds no production dispatch, public
+selector, statistics, ABI, or stream change.

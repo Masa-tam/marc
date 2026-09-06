@@ -13701,3 +13701,20 @@ and physical-retirement operations. At every indexable position compare the
 Red-Black exact match against an independent linear enumeration, then validate
 all tree invariants after preparing the next position. Require at least one
 qualifying match so the candidate path cannot pass vacuously.
+
+### TVG-0948
+
+Advance an eight-slot finder first to position eight and then to nine. Require
+exact active counts, protocol positions, physical retirement of position zero,
+and reuse of slot zero by position eight. Advance through a non-indexable tail
+and require only the still-live indexable positions to remain. Advance the
+same fixed-seed 128-byte input to completion in one call and one byte at a
+time; require identical root, count, protocol position, and every fixed-slot
+snapshot.
+
+Reject a noncurrent start without changing workspace, and make the resulting
+protocol error sticky. Separately reject a backward endpoint after valid
+progress and an endpoint beyond input. Finally use nonadjacent landing
+positions over a repetitive fixture and compare each Red-Black match to the
+stateless Exhaustive oracle, proving that every skipped raw position was
+indexed rather than only caller-visible landing positions.

@@ -131,6 +131,7 @@ public:
     [[nodiscard]] LzssRedBlackTreeCandidateQueryResult find_candidate(
         std::size_t position) const noexcept;
     [[nodiscard]] LzssMatch find_match(std::size_t position) const noexcept;
+    void advance(std::size_t position, std::size_t next_position) noexcept;
 
 private:
     friend LzssRedBlackTreeError initialize_lzss_red_black_tree_match_finder(
@@ -203,6 +204,7 @@ initialize_lzss_red_black_tree_match_finder(
     const LzssRedBlackTreeMatchFinder& finder, std::uint32_t node) noexcept;
 
 static_assert(sizeof(LzssRedBlackTreeNodeColor) == sizeof(std::uint8_t));
+static_assert(LzssMatchFinder<LzssRedBlackTreeMatchFinder>);
 
 } // namespace marc::dictionary::internal
 

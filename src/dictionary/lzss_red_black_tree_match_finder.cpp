@@ -599,6 +599,10 @@ LzssRedBlackTreeMatchFinder::find_neighbors(
         result.error = LzssRedBlackTreeError::invalid_position;
         return result;
     }
+    if (position != next_position_) {
+        result.error = LzssRedBlackTreeError::invalid_state;
+        return result;
+    }
     if (input_.size() - position < lzss_red_black_tree_prefix_size
         || root_ == lzss_red_black_tree_null_node) {
         return result;
@@ -744,6 +748,38 @@ LzssMatch LzssRedBlackTreeMatchFinder::find_match(
     const auto distance = position - candidate.candidate_position;
     if (distance > std::numeric_limits<std::uint32_t>::max()) return {};
     return {static_cast<std::uint32_t>(distance), candidate.length};
+}
+
+void LzssRedBlackTreeMatchFinder::advance(
+    const std::size_t position,
+    const std::size_t next_position) noexcept {
+    if (!initialized_ || !state_valid_ || position != next_position_
+        || next_position < position || next_position > input_.size()) {
+        state_valid_ = false;
+        next_position_ = input_.size();
+        return;
+    }
+    for (auto current = position; current < next_position; ++current) {
+        if (current >= parameters_.window_size) {
+            const auto expired = current - parameters_.window_size;
+            if (input_.size() - expired
+                    >= lzss_red_black_tree_prefix_size
+                && remove_lzss_red_black_tree_position(*this, expired)
+                    != LzssRedBlackTreeError::none) {
+                state_valid_ = false;
+                next_position_ = input_.size();
+                return;
+            }
+        }
+        if (input_.size() - current >= lzss_red_black_tree_prefix_size
+            && insert_lzss_red_black_tree_position(*this, current)
+                != LzssRedBlackTreeError::none) {
+            state_valid_ = false;
+            next_position_ = input_.size();
+            return;
+        }
+    }
+    next_position_ = next_position;
 }
 
 LzssRedBlackTreeValidationError validate_lzss_red_black_tree(

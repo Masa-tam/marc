@@ -123,24 +123,6 @@ void expect_three_node_tree(
     return {static_cast<std::uint32_t>(position - best_position), best_length};
 }
 
-void prepare_next_red_black_position(
-    LzssRedBlackTreeMatchFinder& finder,
-    const std::span<const std::byte> input,
-    const LzssParameters& parameters,
-    const std::size_t position) {
-    if (position >= parameters.window_size) {
-        const auto expired = position - parameters.window_size;
-        if (input.size() - expired >= lzss_red_black_tree_prefix_size) {
-            ASSERT_EQ(remove_lzss_red_black_tree_position(finder, expired),
-                      LzssRedBlackTreeError::none) << position;
-        }
-    }
-    if (input.size() - position >= lzss_red_black_tree_prefix_size) {
-        ASSERT_EQ(insert_lzss_red_black_tree_position(finder, position),
-                  LzssRedBlackTreeError::none) << position;
-    }
-}
-
 TEST(LzssRedBlackTreeMatchFinder, CalculatesSeparatedBoundedWorkspace) {
     auto required = calculate_lzss_red_black_tree_workspace(4, {}, {});
     EXPECT_EQ(required.error, LzssRedBlackTreeError::none);
@@ -794,10 +776,8 @@ TEST(LzssRedBlackTreeMatchFinder, FindsBothNeighborsAndTheirLcp) {
     ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
                   input, parameters, {}, storage.bytes, finder),
               LzssRedBlackTreeError::none);
-    for (std::size_t position = 0; position < 16; ++position) {
-        ASSERT_EQ(insert_lzss_red_black_tree_position(finder, position),
-                  LzssRedBlackTreeError::none);
-    }
+    finder.advance(0, 16);
+    ASSERT_TRUE(finder.state_valid());
 
     const auto result = finder.find_neighbors(16);
     EXPECT_EQ(result.error, LzssRedBlackTreeError::none);
@@ -826,10 +806,8 @@ TEST(LzssRedBlackTreeMatchFinder,
     ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
                   input, parameters, {}, storage.bytes, finder),
               LzssRedBlackTreeError::none);
-    for (std::size_t position = 0; position < 32; ++position) {
-        ASSERT_EQ(insert_lzss_red_black_tree_position(finder, position),
-                  LzssRedBlackTreeError::none);
-    }
+    finder.advance(0, 32);
+    ASSERT_TRUE(finder.state_valid());
 
     const auto neighbors = finder.find_neighbors(32);
     ASSERT_EQ(neighbors.error, LzssRedBlackTreeError::none);
@@ -864,14 +842,16 @@ TEST(LzssRedBlackTreeMatchFinder, QueryRejectsInvalidPreparedState) {
               LzssRedBlackTreeError::none);
     EXPECT_EQ(finder.find_neighbors(0),
               LzssRedBlackTreeNeighborQueryResult{});
+    EXPECT_EQ(finder.find_neighbors(1).error,
+              LzssRedBlackTreeError::invalid_state);
     EXPECT_EQ(finder.find_neighbors(input.size() + 1U).error,
               LzssRedBlackTreeError::invalid_position);
+    EXPECT_EQ(finder.find_neighbors(input.size() - 4U).error,
+              LzssRedBlackTreeError::invalid_state);
+    finder.advance(0, input.size() - 4U);
+    ASSERT_TRUE(finder.state_valid());
     EXPECT_EQ(finder.find_neighbors(input.size() - 4U),
               LzssRedBlackTreeNeighborQueryResult{});
-    ASSERT_EQ(insert_lzss_red_black_tree_position(finder, 0),
-              LzssRedBlackTreeError::none);
-    EXPECT_EQ(finder.find_neighbors(0).error,
-              LzssRedBlackTreeError::invalid_state);
 }
 
 TEST(LzssRedBlackTreeMatchFinder,
@@ -901,11 +881,191 @@ TEST(LzssRedBlackTreeMatchFinder,
         const auto actual = finder.find_match(position);
         EXPECT_EQ(actual, expected) << position;
         if (actual.length != 0) ++matching_queries;
-        prepare_next_red_black_position(finder, input, parameters, position);
+        finder.advance(position, position + 1U);
+        ASSERT_TRUE(finder.state_valid()) << position;
         ASSERT_EQ(validate_lzss_red_black_tree(finder),
                   LzssRedBlackTreeValidationError::none) << position;
     }
     EXPECT_GT(matching_queries, 0U);
+}
+
+TEST(LzssRedBlackTreeMatchFinder,
+     AdvancesSequentiallyAndRetainsExactWindow) {
+    const auto input = bytes("A0000000B0000000C0000000");
+    LzssParameters parameters{};
+    parameters.window_size = 8;
+    const auto required = calculate_lzss_red_black_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssRedBlackTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, parameters, {}, storage.bytes, finder),
+              LzssRedBlackTreeError::none);
+
+    finder.advance(0, 8);
+    ASSERT_TRUE(finder.state_valid());
+    EXPECT_EQ(finder.next_position(), 8U);
+    EXPECT_EQ(finder.active_node_count(), 8U);
+    EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, 0).position, 0U);
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::none);
+
+    finder.advance(8, 9);
+    ASSERT_TRUE(finder.state_valid());
+    EXPECT_EQ(finder.next_position(), 9U);
+    EXPECT_EQ(finder.active_node_count(), 8U);
+    EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, 0).position, 8U);
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::none);
+}
+
+TEST(LzssRedBlackTreeMatchFinder, AdvancesThroughNonindexableTail) {
+    const auto input = bytes("ABCDEFGHIJKL");
+    LzssParameters parameters{};
+    parameters.window_size = 8;
+    const auto required = calculate_lzss_red_black_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssRedBlackTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, parameters, {}, storage.bytes, finder),
+              LzssRedBlackTreeError::none);
+
+    finder.advance(0, input.size());
+    ASSERT_TRUE(finder.state_valid());
+    EXPECT_EQ(finder.next_position(), input.size());
+    EXPECT_EQ(finder.active_node_count(), 4U);
+    for (std::uint32_t slot = 0; slot < 4; ++slot) {
+        EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, slot).color,
+                  LzssRedBlackTreeNodeColor::inactive);
+    }
+    for (std::uint32_t slot = 4; slot < 8; ++slot) {
+        EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, slot).position,
+                  slot);
+    }
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::none);
+}
+
+TEST(LzssRedBlackTreeMatchFinder, AdvanceIsIndependentOfCallerChunking) {
+    std::vector<std::byte> input(128);
+    std::uint32_t state = UINT32_C(0x5a17c3e9);
+    for (auto& value : input) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        value = static_cast<std::byte>(state >> 24U);
+    }
+    LzssParameters parameters{};
+    parameters.window_size = 16;
+    const auto required = calculate_lzss_red_black_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
+    auto bulk_storage = make_storage(required.workspace_size);
+    auto byte_storage = make_storage(required.workspace_size);
+    LzssRedBlackTreeMatchFinder bulk{};
+    LzssRedBlackTreeMatchFinder bytewise{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, parameters, {}, bulk_storage.bytes, bulk),
+              LzssRedBlackTreeError::none);
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, parameters, {}, byte_storage.bytes, bytewise),
+              LzssRedBlackTreeError::none);
+
+    bulk.advance(0, input.size());
+    for (std::size_t position = 0; position < input.size(); ++position) {
+        bytewise.advance(position, position + 1U);
+    }
+
+    ASSERT_TRUE(bulk.state_valid());
+    ASSERT_TRUE(bytewise.state_valid());
+    EXPECT_EQ(validate_lzss_red_black_tree(bulk),
+              LzssRedBlackTreeValidationError::none);
+    EXPECT_EQ(validate_lzss_red_black_tree(bytewise),
+              LzssRedBlackTreeValidationError::none);
+    EXPECT_EQ(bulk.next_position(), bytewise.next_position());
+    EXPECT_EQ(bulk.active_node_count(), bytewise.active_node_count());
+    EXPECT_EQ(bulk.root_index(), bytewise.root_index());
+    for (std::uint32_t node = 0; node < required.node_count; ++node) {
+        EXPECT_EQ(inspect_lzss_red_black_tree_node(bulk, node),
+                  inspect_lzss_red_black_tree_node(bytewise, node)) << node;
+    }
+}
+
+TEST(LzssRedBlackTreeMatchFinder, InvalidAdvanceOrderIsSticky) {
+    const auto input = bytes("A0000000B0000000C0000000");
+    LzssParameters parameters{};
+    parameters.window_size = 8;
+    const auto required = calculate_lzss_red_black_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
+
+    auto wrong_storage = make_storage(required.workspace_size);
+    std::ranges::fill(wrong_storage.bytes, std::byte{0xa5});
+    LzssRedBlackTreeMatchFinder wrong{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, parameters, {}, wrong_storage.bytes, wrong),
+              LzssRedBlackTreeError::none);
+    const auto original_storage = std::vector<std::byte>(
+        wrong_storage.bytes.begin(), wrong_storage.bytes.end());
+    wrong.advance(1, 2);
+    EXPECT_FALSE(wrong.state_valid());
+    EXPECT_EQ(wrong.next_position(), input.size());
+    EXPECT_TRUE(std::ranges::equal(wrong_storage.bytes, original_storage));
+    EXPECT_EQ(validate_lzss_red_black_tree(wrong),
+              LzssRedBlackTreeValidationError::invalid_protocol_state);
+    wrong.advance(input.size(), input.size());
+    EXPECT_FALSE(wrong.state_valid());
+
+    auto backward_storage = make_storage(required.workspace_size);
+    LzssRedBlackTreeMatchFinder backward{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, parameters, {}, backward_storage.bytes, backward),
+              LzssRedBlackTreeError::none);
+    backward.advance(0, 4);
+    ASSERT_TRUE(backward.state_valid());
+    backward.advance(4, 3);
+    EXPECT_FALSE(backward.state_valid());
+    EXPECT_EQ(validate_lzss_red_black_tree(backward),
+              LzssRedBlackTreeValidationError::invalid_protocol_state);
+
+    auto oversized_storage = make_storage(required.workspace_size);
+    LzssRedBlackTreeMatchFinder oversized{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, parameters, {}, oversized_storage.bytes, oversized),
+              LzssRedBlackTreeError::none);
+    oversized.advance(0, input.size() + 1U);
+    EXPECT_FALSE(oversized.state_valid());
+    EXPECT_EQ(validate_lzss_red_black_tree(oversized),
+              LzssRedBlackTreeValidationError::invalid_protocol_state);
+}
+
+TEST(LzssRedBlackTreeMatchFinder, AdvanceIndexesEverySkippedPosition) {
+    const auto input = bytes("ABABABABABABABABXYZABABABAB");
+    const auto required = calculate_lzss_red_black_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssRedBlackTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssRedBlackTreeError::none);
+    LzssExhaustiveMatchFinder exhaustive{input, {}};
+
+    const std::array<std::size_t, 4> landings{0, 2, 16, input.size()};
+    for (std::size_t index = 0; index < landings.size(); ++index) {
+        const auto position = landings[index];
+        EXPECT_EQ(finder.find_match(position),
+                  exhaustive.find_match(position)) << position;
+        if (index + 1U != landings.size()) {
+            const auto next = landings[index + 1U];
+            finder.advance(position, next);
+            exhaustive.advance(position, next);
+            ASSERT_TRUE(finder.state_valid());
+            ASSERT_EQ(validate_lzss_red_black_tree(finder),
+                      LzssRedBlackTreeValidationError::none);
+        }
+    }
 }
 
 } // namespace
