@@ -2,7 +2,7 @@
 #define MARC_DICTIONARY_LZSS_RED_BLACK_TREE_MATCH_FINDER_HPP
 
 #include "core/limits.hpp"
-#include "dictionary/lzss_format.hpp"
+#include "dictionary/lzss_match_finder.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -13,6 +13,8 @@ namespace marc::dictionary::internal {
 
 inline constexpr std::size_t lzss_red_black_tree_prefix_size = 5;
 inline constexpr std::uint32_t lzss_red_black_tree_null_node = UINT32_MAX;
+inline constexpr std::size_t lzss_red_black_tree_no_position =
+    std::numeric_limits<std::size_t>::max();
 
 enum class LzssRedBlackTreeNodeColor : std::uint8_t {
     black,
@@ -64,6 +66,25 @@ struct LzssRedBlackTreeNodeSnapshot {
     bool operator==(const LzssRedBlackTreeNodeSnapshot&) const = default;
 };
 
+struct LzssRedBlackTreeNeighborQueryResult {
+    std::size_t predecessor_position{lzss_red_black_tree_no_position};
+    std::size_t successor_position{lzss_red_black_tree_no_position};
+    std::uint32_t predecessor_lcp{};
+    std::uint32_t successor_lcp{};
+    std::uint32_t maximum_lcp{};
+    LzssRedBlackTreeError error{LzssRedBlackTreeError::none};
+
+    bool operator==(const LzssRedBlackTreeNeighborQueryResult&) const = default;
+};
+
+struct LzssRedBlackTreeCandidateQueryResult {
+    std::size_t candidate_position{lzss_red_black_tree_no_position};
+    std::uint32_t length{};
+    LzssRedBlackTreeError error{LzssRedBlackTreeError::none};
+
+    bool operator==(const LzssRedBlackTreeCandidateQueryResult&) const = default;
+};
+
 struct LzssRedBlackTreeWorkspaceRequirements {
     std::size_t workspace_size{};
     std::size_t workspace_alignment{
@@ -105,6 +126,11 @@ public:
     [[nodiscard]] std::size_t next_position() const noexcept {
         return next_position_;
     }
+    [[nodiscard]] LzssRedBlackTreeNeighborQueryResult find_neighbors(
+        std::size_t position) const noexcept;
+    [[nodiscard]] LzssRedBlackTreeCandidateQueryResult find_candidate(
+        std::size_t position) const noexcept;
+    [[nodiscard]] LzssMatch find_match(std::size_t position) const noexcept;
 
 private:
     friend LzssRedBlackTreeError initialize_lzss_red_black_tree_match_finder(
@@ -124,6 +150,11 @@ private:
         std::uint32_t node) const noexcept;
     [[nodiscard]] int compare_positions(
         std::size_t left, std::size_t right) const noexcept;
+    [[nodiscard]] std::uint32_t common_prefix_length(
+        std::size_t left, std::size_t right) const noexcept;
+    [[nodiscard]] int compare_prefix(
+        std::size_t position, std::size_t query_position,
+        std::uint32_t length) const noexcept;
     void update_metadata(std::uint32_t node) noexcept;
     void update_metadata_upward(std::uint32_t node) noexcept;
     void replace_parent_child(

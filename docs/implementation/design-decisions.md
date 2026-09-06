@@ -22006,3 +22006,23 @@ on rotation-local recomputation thereafter. Reject uninitialized,
 non-indexable, absent, or stale-position requests before mutation. This stage
 adds no advancement, Exact query, production dispatch, public selector,
 statistics, ABI, or stream change.
+
+## DD-1082: Red-Black Exact query uses a bounded prefix interval
+
+- Date: 2026-09-07
+- Status: accepted
+
+Against an explicitly prepared active set, locate the virtual query key's
+immediate predecessor and successor under the capped finite-suffix order. The
+larger of their LCP lengths is the exact maximum match length. If that length
+is below `min_match_length`, return no candidate.
+
+Otherwise locate one node with the matching prefix and walk toward both
+prefix-interval boundaries. Use `subtree_maximum_position` only for subtrees
+proven to lie wholly inside the interval, selecting the greatest absolute
+position and therefore nearest distance among all equal-length matches. Bound
+each traversal by the active count and report malformed traversal as private
+invalid state. This stage deliberately does not bind query position to
+`next_position`; automatic advancement will establish that protocol in the
+next stage. It adds no production dispatch, public selector, statistics, ABI,
+or stream change.

@@ -13683,3 +13683,21 @@ validating and comparing roots after every mutation. Repeat complete removal
 over eight independently seeded 96-byte inputs with deterministic shuffled
 orders, validating all Red-Black, ordering, connectivity, slot, and metadata
 invariants after every retirement.
+
+### TVG-0947
+
+Prepare all earlier positions for `ABCDF` after distinct `ABCDE` and `ABCDG`
+prefixes and require the exact predecessor, successor, and their four-byte
+LCPs. Use a second fixture whose two adjacent neighbors establish a five-byte
+maximum while a nonadjacent later position shares that prefix; require the
+prefix interval to select the nonadjacent greatest position and nearest
+distance.
+
+Require empty and non-indexable queries to remain empty, oversized positions
+to fail, uninitialized state to fail, and querying an already inserted exact
+key to reject the invalid prepared set. For a fixed-seed 512-byte four-symbol
+input, maintain a 64-byte active window through the separately tested insert
+and physical-retirement operations. At every indexable position compare the
+Red-Black exact match against an independent linear enumeration, then validate
+all tree invariants after preparing the next position. Require at least one
+qualifying match so the candidate path cannot pass vacuously.

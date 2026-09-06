@@ -7645,3 +7645,12 @@ deletion invariants are applied from the independently recorded mathematical
 model. No external Red-Black implementation, match finder, compressor, source
 code, test suite, pseudocode, deletion sequence, validator, or optimization
 description was consulted.
+
+### IR-0844
+
+The Red-Black Exact-query stage uses DD-1078 through DD-1082, TVG-0943
+through TVG-0947, the repository-owned finite-suffix order and Red-Black
+subtree-maximum invariant, and marc's independently tested AVL predecessor,
+successor, and prefix-interval proof. No external match finder, Red-Black
+implementation, compressor, source code, test suite, query implementation,
+pseudocode, suffix-tree code, or optimization description was consulted.

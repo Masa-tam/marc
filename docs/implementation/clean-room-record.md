@@ -29223,3 +29223,32 @@ both bounds.
   both configurations. All 3,406 registered tests pass in 421.82 and 350.83
   seconds respectively, including complete schema compatibility in 123.18
   and 116.59 seconds.
+
+## CR-1175: 2026-09-07 - Red-Black Exact query
+
+- Authoring method: derived virtual-key neighbor lookup and bounded prefix-
+  interval selection from the repository's recorded finite-order proof and
+  independently tested subtree-maximum contract.
+- References used: DD-1078 through DD-1082; IR-0840 through IR-0844;
+  TVG-0943 through TVG-0947; marc's Red-Black mutation validator and
+  first-party AVL query proof and tests.
+- Known implementations intentionally not consulted: external Red-Black or
+  suffix-tree match finder, compressor, source code, test suite, query code,
+  pseudocode, and optimization description.
+- Independent decisions: separate neighbor and candidate results, cap every
+  key and LCP comparison, bound all traversals by active count, admit subtree
+  maxima only inside proven prefix intervals, and leave protocol advancement
+  to the next stage.
+- Generated-code task description: implement predecessor/successor LCP,
+  prefix-interval maximum selection, nearest-distance conversion, stable
+  invalid-state reporting, hand-checkable nonadjacent tie breaking, and an
+  every-position differential oracle over a manually maintained window.
+- Similarity review: implementation and tests use marc-owned proof structure,
+  naming, and fixtures. No external implementation expression, pseudocode,
+  test vector, or query control flow was copied or structurally reproduced.
+- Local validation: official CMake 4.3.4 produced warning-clean optimized
+  Release builds with MSVC through Visual Studio 2026/MSBuild 18.9.1 and
+  ClangCL 22.1.3 on Windows x64. All twenty-three focused Red-Black tests pass
+  in both configurations. All 3,410 registered tests pass in 414.64 and
+  349.99 seconds respectively, including complete schema compatibility in
+  123.39 and 116.19 seconds.
