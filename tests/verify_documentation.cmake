@@ -21,6 +21,7 @@ set(required_documents
     docs/fuzzing.md
     docs/interoperability.md
     docs/releasing.md
+    docs/design/lzss-balanced-tree-strategy-evaluation.md
     docs/implementation/README.md
     docs/implementation/clean-room-record.md
     docs/implementation/design-decisions.md
@@ -30,6 +31,26 @@ set(required_documents
 foreach(relative_path IN LISTS required_documents)
     if(NOT EXISTS "${source_dir}/${relative_path}")
         message(FATAL_ERROR "Required document is missing: ${relative_path}")
+    endif()
+endforeach()
+
+set(balanced_tree_design
+    "${source_dir}/docs/design/lzss-balanced-tree-strategy-evaluation.md")
+file(READ "${balanced_tree_design}" balanced_tree_design_content)
+foreach(required_balanced_tree_term IN ITEMS
+        "RedBlack Exact"
+        "Scapegoat Exact"
+        "alpha = 2/3"
+        "subtree_maximum_position"
+        "WAVL is not implemented in the first cycle"
+        "maximum rebuilt nodes"
+        "`HashChain Exact` remains"
+        "MUST NOT change")
+    string(FIND "${balanced_tree_design_content}"
+        "${required_balanced_tree_term}" balanced_tree_term_offset)
+    if(balanced_tree_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing ordered-tree design term: ${required_balanced_tree_term}")
     endif()
 endforeach()
 

@@ -29103,3 +29103,33 @@ both bounds.
   `6c9af53d4135b49b946df6bd2a9bca1f95819a3a`; the maintainer confirmed its
   remote publication, successful final CI, and publication of marc 0.6.0 as a
   GitHub pre-release.
+
+## CR-1171: 2026-09-07 - Design ordered-tree Exact strategy evaluation
+
+- Authoring method: derived an encoder-local comparison boundary from marc's
+  existing Exact match-finder contract, first-party large-window measurements,
+  and original balanced-tree descriptions before implementation.
+- References used: IR-0840; DD-1078; TVG-0943; Galperin and Rivest's
+  *Scapegoat Trees* paper; Haeupler, Sen, and Tarjan's *Rank-Balanced Trees*;
+  Tarjan's red-black technical report; marc's repository-owned AVL finder,
+  validators, deterministic diagnostics, and Silesia records.
+- Known implementations intentionally not consulted: external compressor or
+  match-finder source, balanced-tree library implementation, source-derived
+  pseudocode, test suite, benchmark harness, optimization code, archive, and
+  malformed-stream corpus.
+- Independent decisions: implement private Red-Black first; evaluate a
+  private fixed-`2/3` Scapegoat strategy second with explicit subtree size and
+  rebuild-spike diagnostics; defer WAVL until deletion-heavy work exists; and
+  retain HashChain and AVL public behavior throughout the experiment.
+- Generated-code task description: specify fixed caller-owned layouts,
+  deterministic finite-suffix ordering and tie breaks, physical retirement,
+  iterative mutation and rebuild, independent invariants, differential
+  oracles, bounded fuzzing, and same-revision corpus measurements without
+  changing codec bytes or public interfaces.
+- Similarity review: the design uses mathematical data-structure properties
+  and marc's first-party contracts only. No external implementation
+  expression, control flow, naming scheme, tests, or benchmark code was copied
+  or structurally reproduced.
+- Local validation: documentation layout and record-order validation are
+  required before the design boundary is committed; implementation and
+  performance validation remain pending.

@@ -21923,3 +21923,24 @@ initializer defaults, all released stream representations, and the exact
 67-archive schema-57 order. Profile selection remains explicit; neither input
 metadata nor decoding infers or raises local resource policy. Keep the GitHub
 release marked pre-release.
+
+## DD-1078: Evaluate ordered-tree Exact alternatives without format changes
+
+- Date: 2026-09-07
+- Status: accepted
+
+Retain `HashChain Exact` as the public default and the existing AVL
+`BinaryTree Exact` as the only public ordered-tree selector. Implement a
+private Red-Black candidate first, followed by a private fixed-alpha Scapegoat
+candidate for batch-oriented measurement. Defer WAVL until a supported
+deletion-heavy workload exists because insertion-only WAVL specializes to AVL.
+
+Every candidate MUST preserve the finite-suffix key order, longest-match then
+nearest-distance tie break, `subtree_maximum_position`, deterministic token
+fingerprint, caller-owned bounded workspace, fixed-slot identity, iterative
+processing, and no steady-state allocation. Scapegoat uses checked `alpha =
+2/3`, stores subtree size explicitly, and reports both aggregate rebuilding
+and worst single-update work. This evaluation MUST NOT change stream bytes,
+algorithm or variant identifiers, decoder behavior, public ABI, initializer
+defaults, interoperability schema, or automatic match-finder selection. Any
+public admission requires a later evidence-backed design decision.

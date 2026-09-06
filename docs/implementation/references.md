@@ -7604,3 +7604,14 @@ query, changelog, current readiness baseline, schema-57 compatibility chain,
 and first-party 64-MiB measurements. No external compressor, release
 automation, changelog generator, package policy, binary distribution,
 third-party release note, or implementation source was consulted.
+
+### IR-0840
+
+The ordered-tree Exact strategy evaluation uses Galperin and Rivest's 1993
+*Scapegoat Trees* paper, Haeupler, Sen, and Tarjan's *Rank-Balanced Trees*,
+Tarjan's *Efficient Top-Down Updating of Red-Black Trees* technical report,
+DD-1078, TVG-0943, marc's existing AVL `BinaryTree Exact` design and source,
+and first-party Silesia measurements. The papers supply data-structure
+definitions and complexity results only. No external compressor, match
+finder, balanced-tree implementation, library source, test suite, benchmark
+harness, optimization code, or malformed-stream corpus was consulted.

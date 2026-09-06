@@ -22,6 +22,9 @@ navigate chronological development records.
   the complete-default rule for codecs without such helpers.
 - [LZSS match-finder strategy](design/lzss-match-finder-strategy.md): exact
   encoder-side acceleration without changing the LZSS stream format.
+- [LZSS ordered-tree Exact strategy evaluation](design/lzss-balanced-tree-strategy-evaluation.md):
+  Red-Black and Scapegoat experiments under the existing Exact contract, with
+  WAVL explicitly deferred.
 - [LZSS HashTree Exact design](design/lzss-hash-tree-match-finder.md):
   deterministic hot-bucket promotion and LCP-aware ordered search.
 - [LZSS BinaryTree Exact 16 MiB benchmark](design/lzss-binary-tree-window-16m-benchmark.md):

@@ -13603,3 +13603,29 @@ CI artifacts verify on Ubuntu 26.04; the Ubuntu 26.04/Clang bundle verifies
 locally and with the Windows/MSVC executable. Every direction validates exact
 manifest order, sizes, SHA-256 values, foreign decoding, and byte-identical
 local re-encoding.
+
+### TVG-0943
+
+For each ordered-tree Exact candidate, validate workspace equality and one-
+short rejection, alignment, overlap, platform-width arithmetic, and empty
+initialization before allocating a profile-sized region. After every small
+mutation, independently verify total finite-suffix order, active-slot identity,
+parent links, connectivity, absence of cycles, tree-specific balance rules,
+subtree maxima, and protocol position.
+
+At every query position, compare exact match length and distance against
+Exhaustive, HashChain Exact, and AVL BinaryTree Exact over empty, short, all-
+byte, zero, periodic, random-like, long-common-prefix, monotone-key, and
+retirement-heavy fixtures. Require identical typed tokens, summaries,
+lowercase SHA-256 fingerprints, serialized streams, and round trips. Add
+targeted Red-Black recoloring/rotation and successor-transplant fixtures.
+For fixed-alpha Scapegoat, require a deterministic rebuilt shape and exact
+rebuild count, total rebuilt nodes, maximum rebuilt nodes, and maximum nodes
+touched by one update.
+
+Compile warning-clean with MSVC and ClangCL and run bounded sanitizer fuzzing,
+retaining every finding as a permanent regression. Measure the same-revision
+strategies in separate processes on the external Silesia Corpus with equal
+frame/window profiles and at least one deletion-heavy larger-frame profile.
+No benchmark result may change a public selector, default, ABI, or stream
+identity without a later admission decision.
