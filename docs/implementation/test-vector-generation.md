@@ -13629,3 +13629,21 @@ strategies in separate processes on the external Silesia Corpus with equal
 frame/window profiles and at least one deletion-heavy larger-frame profile.
 No benchmark result may change a public selector, default, ABI, or stream
 identity without a later admission decision.
+
+### TVG-0944
+
+Derive the Red-Black six-array layout for five nodes as link offsets 0, 20,
+and 40, color offset 60, then independently aligned position arrays. Require
+the final extent and alignment to equal the existing AVL calculator for the
+same bounded input, while a window smaller than the input caps the node count.
+Require four-byte input to produce a zero-workspace plan.
+
+Initialize a nonempty caller-owned region prefilled with a sentinel and verify
+all links are `UINT32_MAX`, every color is inactive, both position arrays are
+`SIZE_MAX`, public observations describe an empty valid state, and bytes past
+the planned extent remain untouched. Verify zero-workspace short input.
+After seeding an existing finder, reject a one-byte-short span, misaligned
+base, and input overlap while preserving both the finder observations and all
+supplied bytes. Reject invalid limits and parameters, oversized input,
+aggregate workspace excess, and `size_t` arithmetic overflow with stable
+private error categories.

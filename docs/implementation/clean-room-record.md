@@ -29133,3 +29133,33 @@ both bounds.
 - Local validation: documentation layout and record-order validation are
   required before the design boundary is committed; implementation and
   performance validation remain pending.
+
+## CR-1172: 2026-09-07 - Red-Black workspace and empty state
+
+- Authoring method: implemented the first Red-Black stage directly from the
+  repository-owned ordered-tree design and bounded AVL workspace contract.
+- References used: DD-1078 and DD-1079; IR-0840 and IR-0841; TVG-0943 and
+  TVG-0944; marc's checked arithmetic, overlap detection, LZSS parameter
+  validation, and existing atomic workspace-initialization tests.
+- Known implementations intentionally not consulted: external Red-Black tree
+  or match-finder implementation, compressor, allocator, source code, test
+  suite, layout description, patent, pseudocode, and optimization code.
+- Independent decisions: use separate fixed-slot arrays, explicit black/red/
+  inactive color values, the existing 32-bit null sentinel, `SIZE_MAX`
+  inactive position metadata, checked independent alignment, and no match-
+  finder operations in this foundation stage.
+- Generated-code task description: add a private calculator and atomic empty
+  initializer; validate every bound before storage mutation; initialize only
+  the exact active extent; and test offsets, AVL extent equality, sentinels,
+  short input, overflow, overlap, alignment, limits, and failure preservation.
+- Similarity review: implementation and tests follow marc's local workspace
+  conventions and the independently recorded design. No external
+  implementation expression, control flow, test vector, or naming scheme was
+  copied or structurally reproduced.
+- Local validation: official CMake 4.3.4 generated warning-clean optimized
+  Release builds with MSVC through Visual Studio 2026/MSBuild 18.9.1 and
+  ClangCL 22.1.3 on Windows x64. All five focused Red-Black foundation tests
+  pass in both configurations. All 3,392 registered tests pass in 422.47 and
+  348.35 seconds respectively, including documentation layout, Static and
+  Dynamic consumers, benchmark and fuzz compile-smokes, and complete schema
+  compatibility in 122.88 and 115.48 seconds.

@@ -7615,3 +7615,13 @@ and first-party Silesia measurements. The papers supply data-structure
 definitions and complexity results only. No external compressor, match
 finder, balanced-tree implementation, library source, test suite, benchmark
 harness, optimization code, or malformed-stream corpus was consulted.
+
+### IR-0841
+
+The Red-Black workspace and empty-state foundation uses DD-1078 and DD-1079,
+TVG-0943 and TVG-0944, marc's repository-owned AVL workspace contract,
+checked arithmetic, overlap detector, and LZSS parameter validator. Elementary
+Red-Black color states are used only as independently recorded mathematical
+metadata. No external Red-Black implementation, match finder, compressor,
+allocator, source code, test suite, layout description, pseudocode, or
+optimization description was consulted.

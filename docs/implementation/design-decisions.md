@@ -21944,3 +21944,23 @@ and worst single-update work. This evaluation MUST NOT change stream bytes,
 algorithm or variant identifiers, decoder behavior, public ABI, initializer
 defaults, interoperability schema, or automatic match-finder selection. Any
 public admission requires a later evidence-backed design decision.
+
+## DD-1079: Red-Black foundation mirrors the proven bounded AVL layout
+
+- Date: 2026-09-07
+- Status: accepted
+
+Represent the private Red-Black workspace as three `uint32_t` link arrays, one
+one-byte color array, and two `size_t` position arrays. Define black, red, and
+inactive as explicit color values and initialize every unused slot as inactive.
+The color array replaces the AVL height array, making workspace size and
+alignment exactly equal to AVL for the same input, parameters, limits, and
+supported host layout.
+
+Validate limits, parameters, frame extent, checked per-array arithmetic,
+aggregate input-plus-workspace policy, supplied capacity, base alignment, and
+input overlap before modifying caller storage or publishing finder state.
+Short inputs with no indexable five-byte prefix require no workspace and still
+produce a valid empty state. This foundation exposes no insertion, deletion,
+query, advancement, validator, production dispatch, public selector, or stream
+change.
