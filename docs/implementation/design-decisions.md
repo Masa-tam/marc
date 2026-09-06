@@ -21964,3 +21964,23 @@ Short inputs with no indexable five-byte prefix require no workspace and still
 produce a valid empty state. This foundation exposes no insertion, deletion,
 query, advancement, validator, production dispatch, public selector, or stream
 change.
+
+## DD-1080: Red-Black insertion is guarded by an independent validator
+
+- Date: 2026-09-07
+- Status: accepted
+
+Insert one fixed-slot node by the existing capped finite-suffix order, color it
+red, update subtree maxima toward the root, and restore Red-Black invariants
+with deterministic bottom-up recoloring and rotations. The root is always
+black and the null sentinel is treated as black. Rotations move links and
+metadata only; they never exchange positions or slot payloads.
+
+Add a nonrecursive validator independent of insertion control flow. It rejects
+invalid root color or parent, active counts, inactive sentinels, color values,
+indices, slot mappings, parent reciprocity, disconnected or cyclic ancestry,
+local key order, red-parent violations, unequal root-to-null black height, and
+subtree maxima. Bound insertion traversal before workspace mutation and reject
+invalid, duplicate, occupied-slot, or capacity-exhausted requests atomically.
+This stage adds no deletion, advancement, Exact query, production dispatch,
+public selector, statistics, ABI, or stream change.

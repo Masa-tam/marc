@@ -51,6 +51,47 @@ template<typename T>
     return {reinterpret_cast<const T*>(workspace.data() + offset), count};
 }
 
+template<typename T>
+[[nodiscard]] std::span<T> mutable_array_at(
+    const std::span<std::byte> workspace, const std::size_t offset,
+    const std::size_t count) {
+    return {reinterpret_cast<T*>(workspace.data() + offset), count};
+}
+
+void expect_three_node_tree(
+    const std::string_view text, const std::array<std::size_t, 3>& order,
+    const std::uint32_t expected_root, const std::uint32_t expected_left,
+    const std::uint32_t expected_right,
+    const LzssParameters& parameters = {}) {
+    const auto input = bytes(text);
+    const auto required = calculate_lzss_red_black_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssRedBlackTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, parameters, {}, storage.bytes, finder),
+              LzssRedBlackTreeError::none);
+    for (const auto position : order) {
+        ASSERT_EQ(insert_lzss_red_black_tree_position(finder, position),
+                  LzssRedBlackTreeError::none);
+        ASSERT_EQ(validate_lzss_red_black_tree(finder),
+                  LzssRedBlackTreeValidationError::none);
+    }
+
+    ASSERT_EQ(finder.root_index(), expected_root);
+    const auto root = inspect_lzss_red_black_tree_node(finder, expected_root);
+    EXPECT_EQ(root.left, expected_left);
+    EXPECT_EQ(root.right, expected_right);
+    EXPECT_EQ(root.parent, lzss_red_black_tree_null_node);
+    EXPECT_EQ(root.color, LzssRedBlackTreeNodeColor::black);
+    EXPECT_EQ(root.subtree_maximum_position, 16U);
+    EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, expected_left).color,
+              LzssRedBlackTreeNodeColor::red);
+    EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, expected_right).color,
+              LzssRedBlackTreeNodeColor::red);
+}
+
 TEST(LzssRedBlackTreeMatchFinder, CalculatesSeparatedBoundedWorkspace) {
     auto required = calculate_lzss_red_black_tree_workspace(4, {}, {});
     EXPECT_EQ(required.error, LzssRedBlackTreeError::none);
@@ -232,6 +273,224 @@ TEST(LzssRedBlackTreeMatchFinder, RejectsInvalidAndUnboundedRequirements) {
                   std::numeric_limits<std::size_t>::max(), parameters,
                   limits).error,
               LzssRedBlackTreeError::arithmetic_overflow);
+}
+
+TEST(LzssRedBlackTreeMatchFinder, InsertsWithDeterministicSingleRotations) {
+    expect_three_node_tree(
+        "C0000000B0000000A0000000", {0, 8, 16}, 8, 16, 0);
+    expect_three_node_tree(
+        "A0000000B0000000C0000000", {0, 8, 16}, 8, 0, 16);
+}
+
+TEST(LzssRedBlackTreeMatchFinder, InsertsWithDeterministicDoubleRotations) {
+    expect_three_node_tree(
+        "C0000000A0000000B0000000", {0, 8, 16}, 16, 8, 0);
+    expect_three_node_tree(
+        "A0000000C0000000B0000000", {0, 8, 16}, 16, 0, 8);
+}
+
+TEST(LzssRedBlackTreeMatchFinder, RecolorsWithoutChangingSlotIdentity) {
+    const auto input = bytes("A0000000B0000000C0000000D0000000");
+    const auto required = calculate_lzss_red_black_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssRedBlackTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssRedBlackTreeError::none);
+    for (const auto position : {0U, 8U, 16U, 24U}) {
+        ASSERT_EQ(insert_lzss_red_black_tree_position(finder, position),
+                  LzssRedBlackTreeError::none);
+        ASSERT_EQ(validate_lzss_red_black_tree(finder),
+                  LzssRedBlackTreeValidationError::none);
+    }
+
+    EXPECT_EQ(finder.root_index(), 8U);
+    EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, 0).color,
+              LzssRedBlackTreeNodeColor::black);
+    const auto right = inspect_lzss_red_black_tree_node(finder, 16);
+    EXPECT_EQ(right.color, LzssRedBlackTreeNodeColor::black);
+    EXPECT_EQ(right.right, 24U);
+    EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, 24).color,
+              LzssRedBlackTreeNodeColor::red);
+    EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, 24).position, 24U);
+    EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, 8)
+                  .subtree_maximum_position,
+              24U);
+}
+
+TEST(LzssRedBlackTreeMatchFinder, OrdersEqualCappedSuffixByPosition) {
+    LzssParameters parameters{};
+    parameters.max_match_length = 5;
+    expect_three_node_tree(
+        "ABCDE___ABCDE___ABCDE___", {0, 8, 16}, 8, 0, 16,
+        parameters);
+}
+
+TEST(LzssRedBlackTreeMatchFinder, RejectsInvalidInsertionAtomically) {
+    LzssRedBlackTreeMatchFinder uninitialized{};
+    EXPECT_EQ(insert_lzss_red_black_tree_position(uninitialized, 0),
+              LzssRedBlackTreeError::invalid_state);
+    EXPECT_EQ(validate_lzss_red_black_tree(uninitialized),
+              LzssRedBlackTreeValidationError::uninitialized);
+
+    const auto input = bytes("ABCDE___FGHIJ___KLMNO___");
+    LzssParameters parameters{};
+    parameters.window_size = 8;
+    const auto required = calculate_lzss_red_black_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssRedBlackTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, parameters, {}, storage.bytes, finder),
+              LzssRedBlackTreeError::none);
+    ASSERT_EQ(insert_lzss_red_black_tree_position(finder, 0),
+              LzssRedBlackTreeError::none);
+    const auto root_before = inspect_lzss_red_black_tree_node(
+        finder, finder.root_index());
+
+    EXPECT_EQ(insert_lzss_red_black_tree_position(
+                  finder, input.size() - 4U),
+              LzssRedBlackTreeError::invalid_position);
+    EXPECT_EQ(insert_lzss_red_black_tree_position(finder, 0),
+              LzssRedBlackTreeError::invalid_state);
+    EXPECT_EQ(insert_lzss_red_black_tree_position(finder, 8),
+              LzssRedBlackTreeError::invalid_state);
+    EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, finder.root_index()),
+              root_before);
+    EXPECT_EQ(finder.active_node_count(), 1U);
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::none);
+}
+
+TEST(LzssRedBlackTreeMatchFinder, ValidatorDetectsIndependentCorruption) {
+    const auto input = bytes("A0000000B0000000C0000000D0000000");
+    const auto required = calculate_lzss_red_black_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssRedBlackTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssRedBlackTreeError::none);
+    for (const auto position : {0U, 8U, 16U, 24U}) {
+        ASSERT_EQ(insert_lzss_red_black_tree_position(finder, position),
+                  LzssRedBlackTreeError::none);
+    }
+    ASSERT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::none);
+
+    auto left = mutable_array_at<std::uint32_t>(
+        storage.bytes, required.left_offset, required.node_count);
+    auto parent = mutable_array_at<std::uint32_t>(
+        storage.bytes, required.parent_offset, required.node_count);
+    auto color = mutable_array_at<LzssRedBlackTreeNodeColor>(
+        storage.bytes, required.color_offset, required.node_count);
+    auto position = mutable_array_at<std::size_t>(
+        storage.bytes, required.position_offset, required.node_count);
+    auto maximum = mutable_array_at<std::size_t>(
+        storage.bytes, required.subtree_maximum_position_offset,
+        required.node_count);
+    const auto root = finder.root_index();
+    const auto root_left = left[root];
+
+    color[root] = LzssRedBlackTreeNodeColor::red;
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::invalid_root);
+    color[root] = LzssRedBlackTreeNodeColor::black;
+
+    color[0] = LzssRedBlackTreeNodeColor::red;
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::invalid_black_height);
+    color[0] = LzssRedBlackTreeNodeColor::black;
+
+    color[24] = LzssRedBlackTreeNodeColor::black;
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::invalid_black_height);
+    color[24] = LzssRedBlackTreeNodeColor::red;
+
+    color[16] = LzssRedBlackTreeNodeColor::red;
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::red_parent_violation);
+    color[16] = LzssRedBlackTreeNodeColor::black;
+
+    maximum[root] = 16;
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::invalid_subtree_maximum);
+    maximum[root] = 24;
+
+    const auto saved_position = position[root_left];
+    position[root_left] = std::numeric_limits<std::size_t>::max();
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::invalid_slot_position);
+    position[root_left] = saved_position;
+
+    parent[root_left] = 16;
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::invalid_parent);
+    parent[root_left] = root;
+
+    left[root] = static_cast<std::uint32_t>(required.node_count);
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::invalid_index);
+    left[root] = root_left;
+
+    left[root] = 16;
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::invalid_order);
+    left[root] = root_left;
+
+    left[7] = 0;
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::invalid_inactive_node);
+    left[7] = lzss_red_black_tree_null_node;
+
+    color[7] = static_cast<LzssRedBlackTreeNodeColor>(17);
+    EXPECT_EQ(validate_lzss_red_black_tree(finder),
+              LzssRedBlackTreeValidationError::invalid_color);
+    color[7] = LzssRedBlackTreeNodeColor::inactive;
+}
+
+TEST(LzssRedBlackTreeMatchFinder, DeterministicallyInsertsFixedSeedInput) {
+    std::vector<std::byte> input(512);
+    std::uint32_t state = UINT32_C(0x13579bdf);
+    for (auto& value : input) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        value = static_cast<std::byte>(state >> 24U);
+    }
+    const auto required = calculate_lzss_red_black_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
+    auto first_storage = make_storage(required.workspace_size);
+    auto second_storage = make_storage(required.workspace_size);
+    LzssRedBlackTreeMatchFinder first{};
+    LzssRedBlackTreeMatchFinder second{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, {}, {}, first_storage.bytes, first),
+              LzssRedBlackTreeError::none);
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, {}, {}, second_storage.bytes, second),
+              LzssRedBlackTreeError::none);
+
+    const auto count = input.size() - lzss_red_black_tree_prefix_size + 1U;
+    for (std::size_t position = 0; position < count; ++position) {
+        ASSERT_EQ(insert_lzss_red_black_tree_position(first, position),
+                  LzssRedBlackTreeError::none) << position;
+        ASSERT_EQ(insert_lzss_red_black_tree_position(second, position),
+                  LzssRedBlackTreeError::none) << position;
+        ASSERT_EQ(validate_lzss_red_black_tree(first),
+                  LzssRedBlackTreeValidationError::none) << position;
+        ASSERT_EQ(validate_lzss_red_black_tree(second),
+                  LzssRedBlackTreeValidationError::none) << position;
+    }
+    EXPECT_EQ(first.root_index(), second.root_index());
+    EXPECT_EQ(first.active_node_count(), count);
+    for (std::uint32_t node = 0; node < required.node_count; ++node) {
+        EXPECT_EQ(inspect_lzss_red_black_tree_node(first, node),
+                  inspect_lzss_red_black_tree_node(second, node)) << node;
+    }
 }
 
 } // namespace

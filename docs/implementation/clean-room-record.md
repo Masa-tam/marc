@@ -29163,3 +29163,33 @@ both bounds.
   348.35 seconds respectively, including documentation layout, Static and
   Dynamic consumers, benchmark and fuzz compile-smokes, and complete schema
   compatibility in 122.88 and 115.48 seconds.
+
+## CR-1173: 2026-09-07 - Red-Black insertion and structural validation
+
+- Authoring method: derived bottom-up insertion and a separately structured
+  validator from the repository's recorded finite-key contract and elementary
+  Red-Black invariants.
+- References used: DD-1078 through DD-1080; IR-0840 through IR-0842;
+  TVG-0943 through TVG-0945; marc's fixed-slot Red-Black foundation and
+  repository-owned finite-suffix ordering and metadata contracts.
+- Known implementations intentionally not consulted: external Red-Black tree
+  or match-finder implementation, compressor, source code, test suite,
+  pseudocode, rotation sequence, validator, and optimization description.
+- Independent decisions: use a black null sentinel, red new nodes,
+  deterministic bottom-up symmetric cases, structural link rotation without
+  payload exchange, local subtree-maximum repair, bounded pre-mutation search,
+  and a nonrecursive root-to-null black-height validator.
+- Generated-code task description: implement insertion, recoloring, single and
+  double rotations, fixed-slot snapshots, and an independent validator; cover
+  hand-checkable shapes, equal capped keys, recoloring, malformed states,
+  failure atomicity, and fixed-seed deterministic construction.
+- Similarity review: implementation control flow and test fixtures were
+  derived from the recorded invariants and marc-owned conventions. No external
+  implementation expression, pseudocode, tests, or naming scheme was copied
+  or structurally reproduced.
+- Local validation: official CMake 4.3.4 produced warning-clean optimized
+  Release builds with MSVC through Visual Studio 2026/MSBuild 18.9.1 and
+  ClangCL 22.1.3 on Windows x64. All twelve focused Red-Black tests pass in
+  both configurations. All 3,399 registered tests pass in 418.62 seconds
+  with MSVC and approximately 368 seconds with ClangCL, including complete
+  schema compatibility in 123.67 and 116.34 seconds respectively.

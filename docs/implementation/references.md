@@ -7625,3 +7625,12 @@ Red-Black color states are used only as independently recorded mathematical
 metadata. No external Red-Black implementation, match finder, compressor,
 allocator, source code, test suite, layout description, pseudocode, or
 optimization description was consulted.
+
+### IR-0842
+
+The Red-Black insertion and structural-validation stage uses DD-1078 through
+DD-1080, TVG-0943 through TVG-0945, the repository-owned finite-suffix order,
+fixed-slot workspace foundation, checked metadata rules, and elementary Red-
+Black invariants. No external Red-Black implementation, match finder,
+compressor, source code, test suite, pseudocode, rotation sequence, validator,
+or optimization description was consulted.

@@ -6,6 +6,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <span>
 
 namespace marc::dictionary::internal {
@@ -29,6 +30,38 @@ enum class LzssRedBlackTreeError : std::uint8_t {
     workspace_too_small,
     misaligned_workspace,
     overlapping_buffers,
+    invalid_position,
+    invalid_state,
+};
+
+enum class LzssRedBlackTreeValidationError : std::uint8_t {
+    none,
+    uninitialized,
+    invalid_root,
+    invalid_active_count,
+    invalid_inactive_node,
+    invalid_color,
+    invalid_index,
+    invalid_parent,
+    cycle_or_disconnected,
+    invalid_order,
+    red_parent_violation,
+    invalid_black_height,
+    invalid_subtree_maximum,
+    invalid_slot_position,
+    invalid_protocol_state,
+};
+
+struct LzssRedBlackTreeNodeSnapshot {
+    std::uint32_t left{lzss_red_black_tree_null_node};
+    std::uint32_t right{lzss_red_black_tree_null_node};
+    std::uint32_t parent{lzss_red_black_tree_null_node};
+    LzssRedBlackTreeNodeColor color{LzssRedBlackTreeNodeColor::inactive};
+    std::size_t position{std::numeric_limits<std::size_t>::max()};
+    std::size_t subtree_maximum_position{
+        std::numeric_limits<std::size_t>::max()};
+
+    bool operator==(const LzssRedBlackTreeNodeSnapshot&) const = default;
 };
 
 struct LzssRedBlackTreeWorkspaceRequirements {
@@ -78,6 +111,25 @@ private:
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
         LzssRedBlackTreeMatchFinder&) noexcept;
+    friend LzssRedBlackTreeError insert_lzss_red_black_tree_position(
+        LzssRedBlackTreeMatchFinder&, std::size_t) noexcept;
+    friend LzssRedBlackTreeValidationError validate_lzss_red_black_tree(
+        const LzssRedBlackTreeMatchFinder&) noexcept;
+    friend LzssRedBlackTreeNodeSnapshot inspect_lzss_red_black_tree_node(
+        const LzssRedBlackTreeMatchFinder&, std::uint32_t) noexcept;
+
+    [[nodiscard]] LzssRedBlackTreeNodeColor node_color(
+        std::uint32_t node) const noexcept;
+    [[nodiscard]] int compare_positions(
+        std::size_t left, std::size_t right) const noexcept;
+    void update_metadata(std::uint32_t node) noexcept;
+    void update_metadata_upward(std::uint32_t node) noexcept;
+    void replace_parent_child(
+        std::uint32_t parent, std::uint32_t previous_child,
+        std::uint32_t replacement) noexcept;
+    [[nodiscard]] std::uint32_t rotate_left(std::uint32_t node) noexcept;
+    [[nodiscard]] std::uint32_t rotate_right(std::uint32_t node) noexcept;
+    void repair_after_insertion(std::uint32_t node) noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
@@ -99,6 +151,15 @@ initialize_lzss_red_black_tree_match_finder(
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::span<std::byte> workspace,
     LzssRedBlackTreeMatchFinder& finder) noexcept;
+
+[[nodiscard]] LzssRedBlackTreeError insert_lzss_red_black_tree_position(
+    LzssRedBlackTreeMatchFinder& finder, std::size_t position) noexcept;
+
+[[nodiscard]] LzssRedBlackTreeValidationError validate_lzss_red_black_tree(
+    const LzssRedBlackTreeMatchFinder& finder) noexcept;
+
+[[nodiscard]] LzssRedBlackTreeNodeSnapshot inspect_lzss_red_black_tree_node(
+    const LzssRedBlackTreeMatchFinder& finder, std::uint32_t node) noexcept;
 
 static_assert(sizeof(LzssRedBlackTreeNodeColor) == sizeof(std::uint8_t));
 

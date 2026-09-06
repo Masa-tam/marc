@@ -13647,3 +13647,21 @@ base, and input overlap while preserving both the finder observations and all
 supplied bytes. Reject invalid limits and parameters, oversized input,
 aggregate workspace excess, and `size_t` arithmetic overflow with stable
 private error categories.
+
+### TVG-0945
+
+Insert three separated finite suffixes in ascending, descending, left-right,
+and right-left key orders. Require the independently derived root and child
+slot identities after single and double rotations, a black root, red children,
+and exact subtree maximum. Insert a fourth ascending key to exercise uncle-red
+recoloring without moving any absolute position between fixed slots. Repeat
+with equal five-byte prefixes to prove the absolute-position tie break.
+
+Reject uninitialized, non-indexable, duplicate, occupied-slot, and full-
+capacity insertions without changing the valid tree. Corrupt root color,
+black height, a red parent, subtree maximum, slot position, parent link, child
+index, child order, inactive sentinel, and color representation separately;
+require the intended stable validator category. Finally insert every indexable
+position of a 512-byte fixed-seed LCG input into two independent workspaces,
+validate after every mutation, and require identical roots and complete node
+snapshots.
