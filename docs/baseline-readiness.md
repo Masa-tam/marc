@@ -194,8 +194,10 @@ exchange at revision `8ecc7a104c7b5def57737d9c8f9c40a63e6a8c30` across the
 same three producers. Schema 56 completed its 66-archive four-direction
 exchange at revision `c6bb7a62c7bfdcf6eef157ae1642f5de9576c182` across the
 same three producers; this also verifies the frozen 65-archive schema-55
-prefix without claiming a standalone schema-55 exchange. The remaining
-general evidence gaps are listed below.
+prefix without claiming a standalone schema-55 exchange. Schema 57 then
+completed its 67-archive four-direction exchange at revision
+`a93b93e180d34fc3eda1be53f4dd03ae97336e39` across the same three producers.
+The remaining general evidence gaps are listed below.
 
 ## Remaining release evidence
 
@@ -3981,3 +3983,13 @@ traverses the unchanged chain through schema 1. Local complete-suite evidence
 comprises all 3,387 tests under MSVC and ClangCL in 382.70 and 359.25 seconds,
 including schema compatibility in 123.71 and 116.44 seconds. External four-
 direction exchange remains pending.
+
+### BR-0270
+
+Schema 57 now has complete four-direction external evidence at revision
+`a93b93e180d34fc3eda1be53f4dd03ae97336e39`. Ubuntu 26.04/Clang 21.1.8
+verified all 67 archives from the Windows/MSVC and Ubuntu 24.04/Ninja CI
+artifacts, generated and self-verified its own 67-archive bundle, and supplied
+that bundle for reverse verification under Windows/MSVC. Every pass reported
+the same full revision and exact manifest, digest, decode, and byte-identical
+re-encode checks.

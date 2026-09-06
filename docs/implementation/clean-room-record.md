@@ -28981,3 +28981,31 @@ both bounds.
   123.71 and 116.44 seconds. Documentation ordering, relative-link, and
   whitespace checks pass. External four-direction exchange remains pending
   and will receive a separate evidence record.
+
+## CR-1167: 2026-09-06 - Record schema 57 four-direction exchange
+
+- Authoring method: recorded user-executed verification of both CI artifacts
+  and one Ubuntu 26.04 locally generated bundle across the established four
+  producer/consumer directions; no external bundle was copied into the source
+  repository.
+- References used: DD-1076; IR-0838; TVG-0941; BR-0269 through BR-0270;
+  IX-0050; CR-1166; and full revision
+  `a93b93e180d34fc3eda1be53f4dd03ae97336e39`.
+- Known implementations intentionally not consulted: unrelated compressors,
+  external source code, test suites, compatibility tables, patents,
+  pseudocode, or optimization descriptions.
+- Independent decisions: require one exact revision and the complete
+  67-archive inventory in all four directions; keep generated work products
+  outside the repository; and record only the reported producer and verifier
+  evidence.
+- Generated-code task description: record the completed schema-57
+  Windows/MSVC-artifact to Ubuntu, Ubuntu-24.04-artifact to Ubuntu,
+  Ubuntu-26.04 self-verification, and Ubuntu-to-Windows checks.
+- Similarity review: this change records project-generated artifact evidence
+  and documentation validation policy only; it introduces no codec
+  implementation expression.
+- External validation: all four passes reported `Verified 67 archives` at
+  revision `a93b93e180d34fc3eda1be53f4dd03ae97336e39`. Producers were
+  Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
+  and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
+  verified under Windows/MSVC.
