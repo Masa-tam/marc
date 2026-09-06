@@ -29075,3 +29075,31 @@ both bounds.
   validated manifest order, sizes, SHA-256 values, foreign decoding, and
   byte-identical local re-encoding. The resulting documentation-only evidence
   commit requires final pushed CI before the annotated `v0.6.0` tag.
+
+## CR-1170: 2026-09-07 - Publish project version 0.6.0 pre-release
+
+- Authoring method: recorded the completed release boundary after the
+  interoperability-evidence commit passed pushed CI, its annotated tag was
+  pushed, and the corresponding GitHub pre-release was published.
+- References used: DD-1077; TVG-0942; CR-1168 and CR-1169; BR-0271 and
+  BR-0272; the local annotated `v0.6.0` tag; and the maintainer's confirmation
+  of successful tag push and GitHub pre-release publication.
+- Known implementations intentionally not consulted: external compressor or
+  match-finder source, release automation, release scripts, binary packages,
+  and third-party release notes.
+- Independent decisions: close the release at evidence commit
+  `6c9af53d4135b49b946df6bd2a9bca1f95819a3a`; retain pre-release status; and
+  distinguish the tagged evidence boundary from release-candidate revision
+  `cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9`, whose stream bytes supplied the
+  exact four-direction exchange.
+- Generated-code task description: update the authoritative readiness status
+  and append immutable provenance for successful final CI, annotated tag
+  publication, and GitHub 0.6.0 pre-release publication without changing code,
+  format, ABI, archive inventory, or release bytes.
+- Similarity review: this record contains only first-party release state and
+  observed validation history. No external implementation expression,
+  automation structure, or release prose was used.
+- Publication result: annotated tag `v0.6.0` resolves to
+  `6c9af53d4135b49b946df6bd2a9bca1f95819a3a`; the maintainer confirmed its
+  remote publication, successful final CI, and publication of marc 0.6.0 as a
+  GitHub pre-release.

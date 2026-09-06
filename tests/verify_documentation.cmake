@@ -1038,7 +1038,7 @@ foreach(required_current_baseline IN ITEMS
         "each enumerate 3,387 tests under"
         "interoperability schema 57 alongside"
         "Schema 56 completed its 66-archive four-direction"
-        "Project version 0.6.0 is prepared"
+        "Project version 0.6.0 is published as a GitHub pre-release"
         "cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)

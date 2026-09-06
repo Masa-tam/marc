@@ -201,10 +201,11 @@ The 0.6.0 release candidate repeated that exchange at revision
 `cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9`. The remaining general evidence
 gaps are listed below.
 
-Project version 0.6.0 is prepared to publish the complete five-level
-Contextual LZSS resource family. Its release-candidate revision passed CI and
-the required schema-57 exchange; only final CI for the evidence commit remains
-before annotated tag `v0.6.0` is admitted.
+Project version 0.6.0 is published as a GitHub pre-release from annotated tag
+`v0.6.0` at evidence commit
+`6c9af53d4135b49b946df6bd2a9bca1f95819a3a`. Final CI passed after the
+release-candidate schema-57 exchange was recorded, so the published boundary
+contains no unverified source change.
 
 ## Remaining release evidence
 
@@ -4023,3 +4024,14 @@ pass identifies revision `cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9` and
 validates exact manifest order, sizes, SHA-256 values, foreign decoding, and
 byte-identical local re-encoding. The evidence commit requires final pushed CI
 before the annotated `v0.6.0` tag is created.
+
+### BR-0273
+
+Project version 0.6.0 was published as a GitHub pre-release from annotated tag
+`v0.6.0`, targeting evidence commit
+`6c9af53d4135b49b946df6bd2a9bca1f95819a3a`. Final pushed CI passed for that
+commit after the exact four-direction schema-57 evidence was recorded. The
+published boundary therefore contains all five 64-MiB LZSS Contextual entropy
+routes, the complete five-level resource family, all 67 interoperability
+archives, C ABI lifecycle version 1, and the dated release documentation
+without an unverified source change between validation and tagging.
