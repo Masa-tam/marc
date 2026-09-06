@@ -29009,3 +29009,41 @@ both bounds.
   Windows/MSVC via Visual Studio 2026, Ubuntu 24.04 default compiler via Ninja,
   and Ubuntu 26.04 Clang 21.1.8 via Ninja; the Ubuntu 26.04 bundle also
   verified under Windows/MSVC.
+
+## CR-1168: 2026-09-06 - Project version 0.6.0 release preparation
+
+- Authoring method: advanced marc's project/package version after completing
+  all five 64-MiB LZSS Contextual profiles across the five entropy routes,
+  then reconciled observable format, ABI, workspace, tooling, benchmark, and
+  interoperability boundaries.
+- References used: IR-0839; DD-1077; TVG-0942; CR-1109 through CR-1167; the
+  repository release procedure; public runtime-version query; CMake package
+  version generation; changelog history; current readiness baseline; and the
+  complete schema-57 compatibility chain.
+- Known implementations intentionally not consulted: external compressor or
+  match-finder source code, profile APIs, release scripts, changelog
+  generators, package policies, binary distributions, and third-party release
+  notes.
+- Independent decisions: use project version `0.6.0` for the complete 64-MiB
+  Contextual family; retain C ABI lifecycle version 1, every existing structure
+  extent and later offset, HashChain defaults, all released stream
+  representations, explicit profile selection, and the 67-archive schema-57
+  inventory; and keep the GitHub release marked pre-release.
+- Generated-code task description: synchronize CMake and runtime versions,
+  metadata tests, dated changelog, current readiness baseline, release
+  decision, validation design, and provenance without changing codec bytes.
+- Similarity review: release metadata and prose were derived exclusively from
+  marc's first-party implementation, benchmark, and validation records. No
+  external implementation expression, release automation, or prose was copied
+  or structurally reproduced.
+- Local validation: official CMake 4.3.4 generated optimized Release builds
+  with MSVC through Visual Studio 2026/MSBuild 18.9.1 and ClangCL 22.1.3 on
+  Windows x64. All 3,387 registered tests passed in 399.17 and 357.56 seconds.
+  Both runs included runtime and generated package version `0.6.0`,
+  documentation validation, 31 experimental and 42 public benchmark smokes,
+  nine tooling tests, C/C++ Static and Dynamic consumers, fixed-memory fuzz
+  compile-smokes, and complete schema compatibility in 126.41 and 117.54
+  seconds. The checked-out GoogleTest commit
+  `52eb8108c5bdec04579160ae17225d66034bd723` matches the recorded gitlink. The
+  exact release-preparation commit still requires pushed CI and a schema-57
+  four-direction exchange before tagging.

@@ -1037,7 +1037,8 @@ foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
         "each enumerate 3,387 tests under"
         "interoperability schema 57 alongside"
-        "Schema 56 completed its 66-archive four-direction")
+        "Schema 56 completed its 66-archive four-direction"
+        "Project version 0.6.0 is locally prepared")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)
     if(current_baseline_offset EQUAL -1)

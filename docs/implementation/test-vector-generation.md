@@ -13571,3 +13571,28 @@ then traverse every unchanged historical conversion through schema 1. Run the
 documentation verifier and complete MSVC/ClangCL suites, including schema
 compatibility; retain external four-direction exchange as a later evidence
 stage.
+
+### TVG-0942
+
+For project version 0.6.0, require the CMake package version, public runtime
+version string, dated changelog, current readiness baseline, public C API,
+Format 2 profile identities, and schema-57 inventory to agree. Preserve
+`MARC_ABI_VERSION == 1`, all existing stream bytes, the 67-archive order,
+HashChain initializer defaults, explicit profile selection, and selector-
+independent decoding. Require documentation layout, Static and Dynamic library
+consumers, installed-package tests, all public and experimental benchmark
+smokes, fixed-memory fuzz compile smokes, and complete schema-57-through-1
+compatibility under MSVC and ClangCL.
+
+After the release-preparation revision is pushed and CI succeeds, repeat the
+67-archive exchange in four directions using the Windows/MSVC and Ubuntu 24.04
+artifacts plus an independently generated Ubuntu 26.04/Clang bundle. The tag
+may be created only after all reports identify the same full release-candidate
+revision and byte-identical re-encoding succeeds.
+
+Validation: all 3,387 registered tests pass under MSVC and ClangCL in 399.17
+and 357.56 seconds. Both runs include runtime version `0.6.0`, generated CMake
+package version `0.6.0`, 31 experimental and 42 public benchmark smokes, nine
+tooling tests, documentation layout, C/C++ Static and Dynamic consumers,
+fixed-memory fuzz compile-smokes, and complete schema compatibility in 126.41
+and 117.54 seconds.

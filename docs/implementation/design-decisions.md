@@ -21907,3 +21907,19 @@ archive 67 to reconstruct schema 56, verify that frozen result, and then follow
 the complete existing conversion chain through schema 1. Schema selection
 MUST remain artifact metadata and MUST NOT change codec bytes, public ABI,
 resource limits, defaults, or match-finder policy.
+
+## DD-1077: Project version 0.6.0 publishes complete 64-MiB profiles
+
+- Date: 2026-09-06
+- Status: accepted
+
+Release the completed 64-KiB, one-MiB, four-MiB, sixteen-MiB, and sixty-four-
+MiB LZSS Contextual profile set across Dynamic Range, rANS, tANS, Blocked
+Huffman, and Adaptive Huffman as project version `0.6.0`. The minor-version
+boundary communicates five new exact format/profile identities and their
+materially larger caller-owned workspace policies. Retain C ABI lifecycle
+version 1, every existing structure extent and later offset, HashChain Exact
+initializer defaults, all released stream representations, and the exact
+67-archive schema-57 order. Profile selection remains explicit; neither input
+metadata nor decoding infers or raises local resource policy. Keep the GitHub
+release marked pre-release.

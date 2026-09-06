@@ -7594,3 +7594,13 @@ compatibility-conversion chain, plus the already admitted public CLI profile.
 No external compressor, Adaptive Huffman implementation, interoperability
 suite, archive, source code, patent, pseudocode, optimization description, or
 malformed-stream corpus was consulted.
+
+### IR-0839
+
+The project-version 0.6.0 release preparation uses DD-1022 through DD-1077,
+TVG-0887 through TVG-0942, CR-1109 through CR-1167, marc's repository release
+procedure, CMake project/package version contract, public runtime-version
+query, changelog, current readiness baseline, schema-57 compatibility chain,
+and first-party 64-MiB measurements. No external compressor, release
+automation, changelog generator, package policy, binary distribution,
+third-party release note, or implementation source was consulted.

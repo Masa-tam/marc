@@ -199,6 +199,11 @@ completed its 67-archive four-direction exchange at revision
 `a93b93e180d34fc3eda1be53f4dd03ae97336e39` across the same three producers.
 The remaining general evidence gaps are listed below.
 
+Project version 0.6.0 is locally prepared to publish the complete five-level
+Contextual LZSS resource family. Its release-candidate revision must pass CI
+and a fresh four-direction schema-57 exchange before annotated tag `v0.6.0`
+is admitted.
+
 ## Remaining release evidence
 
 The following items remain open even though local codec implementation is
@@ -3993,3 +3998,15 @@ artifacts, generated and self-verified its own 67-archive bundle, and supplied
 that bundle for reverse verification under Windows/MSVC. Every pass reported
 the same full revision and exact manifest, digest, decode, and byte-identical
 re-encode checks.
+
+### BR-0271
+
+Project version 0.6.0 is locally prepared for all five 64-MiB LZSS Contextual
+entropy routes. CMake, the runtime version, dated changelog, current readiness
+baseline, ABI-1 contract, and schema-57 inventory agree. Existing stream
+representations, 67-archive order, structure extents, HashChain defaults, and
+explicit profile policy remain unchanged. Official CMake 4.3.4 Release builds
+pass all 3,387 tests under MSVC and ClangCL in 399.17 and 357.56 seconds,
+including complete schema compatibility in 126.41 and 117.54 seconds. The
+release-preparation revision still requires pushed CI and a four-direction
+67-archive repeat before annotated tag `v0.6.0` is admitted.

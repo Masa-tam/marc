@@ -3,6 +3,41 @@
 This file records user-visible marc changes. Project release versions, stream
 format versions, and C ABI versions are independent namespaces.
 
+## 0.6.0 - 2026-09-06
+
+### Added
+
+- Added explicit 64-MiB LZSS Contextual profiles for Dynamic Range, rANS,
+  tANS, Blocked Huffman, and Adaptive Huffman. The public C ABI, CLI,
+  dependency-free benchmark, bounded decoder fuzz targets, and exact profile
+  helpers now expose twenty-five contextual dictionary/entropy combinations
+  across the 64-KiB, 1-MiB, 4-MiB, 16-MiB, and 64-MiB resource envelopes.
+- Added distinct Format 2 dictionary variant 6 and context variant 5 for the
+  64-MiB family. Existing profile bytes remain frozen, while schemas 53 through
+  57 append the five wider profiles to produce a 67-archive interoperability
+  inventory with complete four-direction Windows/Linux x86-64 evidence.
+- Added fixed, checkpointed Silesia Corpus tooling for comparing 16-MiB and
+  64-MiB Exact match finders under one 64-MiB frame. The measured larger window
+  reduced aggregate token count by 414,783, or 1.293%; the measurements remain
+  descriptive and the Corpus remains external to the repository.
+
+### Changed
+
+- Extended all five atomic `config_apply_profile()` helpers with explicit
+  64-MiB selector value 4. Each helper installs the profile's coupled frame,
+  window, payload, model, distance, and aggregate limits while preserving
+  caller-specific fields; stream metadata never raises local policy.
+- Retained HashChain Exact as the initializer default and BinaryTree Exact as
+  an explicit encoder choice. The 64-MiB comparison found BinaryTree faster
+  under the tested collision-heavy corpus at the cost of substantially larger
+  caller-owned workspace; both strategies continue to emit identical streams.
+
+### Fixed
+
+- Stabilized Windows GoogleTest discovery with an explicit discovery timeout
+  and aligned the long interoperability-schema compatibility timeout with the
+  complete validation budget.
+
 ## 0.5.0 - 2026-08-29
 
 ### Added
