@@ -188,6 +188,121 @@ void LzssRedBlackTreeMatchFinder::repair_after_insertion(
     color_[root_] = LzssRedBlackTreeNodeColor::black;
 }
 
+void LzssRedBlackTreeMatchFinder::repair_after_removal(
+    std::uint32_t node, std::uint32_t parent) noexcept {
+    while (node != root_
+           && node_color(node) == LzssRedBlackTreeNodeColor::black) {
+        if (parent == lzss_red_black_tree_null_node) break;
+        if (node == left_[parent]) {
+            auto sibling = right_[parent];
+            if (node_color(sibling) == LzssRedBlackTreeNodeColor::red) {
+                color_[sibling] = LzssRedBlackTreeNodeColor::black;
+                color_[parent] = LzssRedBlackTreeNodeColor::red;
+                static_cast<void>(rotate_left(parent));
+                sibling = right_[parent];
+            }
+            if (sibling == lzss_red_black_tree_null_node) {
+                node = parent;
+                parent = parent_[node];
+                continue;
+            }
+            if (node_color(left_[sibling])
+                    == LzssRedBlackTreeNodeColor::black
+                && node_color(right_[sibling])
+                    == LzssRedBlackTreeNodeColor::black) {
+                color_[sibling] = LzssRedBlackTreeNodeColor::red;
+                node = parent;
+                parent = parent_[node];
+            } else {
+                if (node_color(right_[sibling])
+                    == LzssRedBlackTreeNodeColor::black) {
+                    const auto near_child = left_[sibling];
+                    if (near_child != lzss_red_black_tree_null_node) {
+                        color_[near_child] =
+                            LzssRedBlackTreeNodeColor::black;
+                    }
+                    color_[sibling] = LzssRedBlackTreeNodeColor::red;
+                    static_cast<void>(rotate_right(sibling));
+                    sibling = right_[parent];
+                }
+                color_[sibling] = color_[parent];
+                color_[parent] = LzssRedBlackTreeNodeColor::black;
+                const auto far_child = right_[sibling];
+                if (far_child != lzss_red_black_tree_null_node) {
+                    color_[far_child] = LzssRedBlackTreeNodeColor::black;
+                }
+                static_cast<void>(rotate_left(parent));
+                node = root_;
+                parent = lzss_red_black_tree_null_node;
+            }
+        } else {
+            auto sibling = left_[parent];
+            if (node_color(sibling) == LzssRedBlackTreeNodeColor::red) {
+                color_[sibling] = LzssRedBlackTreeNodeColor::black;
+                color_[parent] = LzssRedBlackTreeNodeColor::red;
+                static_cast<void>(rotate_right(parent));
+                sibling = left_[parent];
+            }
+            if (sibling == lzss_red_black_tree_null_node) {
+                node = parent;
+                parent = parent_[node];
+                continue;
+            }
+            if (node_color(right_[sibling])
+                    == LzssRedBlackTreeNodeColor::black
+                && node_color(left_[sibling])
+                    == LzssRedBlackTreeNodeColor::black) {
+                color_[sibling] = LzssRedBlackTreeNodeColor::red;
+                node = parent;
+                parent = parent_[node];
+            } else {
+                if (node_color(left_[sibling])
+                    == LzssRedBlackTreeNodeColor::black) {
+                    const auto near_child = right_[sibling];
+                    if (near_child != lzss_red_black_tree_null_node) {
+                        color_[near_child] =
+                            LzssRedBlackTreeNodeColor::black;
+                    }
+                    color_[sibling] = LzssRedBlackTreeNodeColor::red;
+                    static_cast<void>(rotate_left(sibling));
+                    sibling = left_[parent];
+                }
+                color_[sibling] = color_[parent];
+                color_[parent] = LzssRedBlackTreeNodeColor::black;
+                const auto far_child = left_[sibling];
+                if (far_child != lzss_red_black_tree_null_node) {
+                    color_[far_child] = LzssRedBlackTreeNodeColor::black;
+                }
+                static_cast<void>(rotate_right(parent));
+                node = root_;
+                parent = lzss_red_black_tree_null_node;
+            }
+        }
+    }
+    if (node != lzss_red_black_tree_null_node) {
+        color_[node] = LzssRedBlackTreeNodeColor::black;
+    }
+}
+
+std::uint32_t LzssRedBlackTreeMatchFinder::minimum_node(
+    std::uint32_t node) const noexcept {
+    while (left_[node] != lzss_red_black_tree_null_node) {
+        node = left_[node];
+    }
+    return node;
+}
+
+void LzssRedBlackTreeMatchFinder::clear_node(
+    const std::uint32_t node) noexcept {
+    left_[node] = lzss_red_black_tree_null_node;
+    right_[node] = lzss_red_black_tree_null_node;
+    parent_[node] = lzss_red_black_tree_null_node;
+    color_[node] = LzssRedBlackTreeNodeColor::inactive;
+    position_[node] = std::numeric_limits<std::size_t>::max();
+    subtree_maximum_position_[node] =
+        std::numeric_limits<std::size_t>::max();
+}
+
 LzssRedBlackTreeWorkspaceRequirements
 calculate_lzss_red_black_tree_workspace(
     const std::size_t input_size, const LzssParameters& parameters,
@@ -366,6 +481,82 @@ LzssRedBlackTreeError insert_lzss_red_black_tree_position(
     ++finder.active_node_count_;
     finder.update_metadata_upward(parent);
     finder.repair_after_insertion(slot);
+    return LzssRedBlackTreeError::none;
+}
+
+LzssRedBlackTreeError remove_lzss_red_black_tree_position(
+    LzssRedBlackTreeMatchFinder& finder,
+    const std::size_t position) noexcept {
+    if (!finder.initialized_ || !finder.state_valid_
+        || finder.left_.empty()) {
+        return LzssRedBlackTreeError::invalid_state;
+    }
+    if (position >= finder.input_.size()
+        || finder.input_.size() - position
+            < lzss_red_black_tree_prefix_size) {
+        return LzssRedBlackTreeError::invalid_position;
+    }
+    const auto removed = static_cast<std::uint32_t>(
+        position % finder.left_.size());
+    if (finder.color_[removed] == LzssRedBlackTreeNodeColor::inactive
+        || finder.position_[removed] != position) {
+        return LzssRedBlackTreeError::invalid_state;
+    }
+
+    auto replacement_source = removed;
+    auto removed_color = finder.color_[replacement_source];
+    auto replacement = lzss_red_black_tree_null_node;
+    auto replacement_parent = lzss_red_black_tree_null_node;
+    auto metadata_start = lzss_red_black_tree_null_node;
+
+    if (finder.left_[removed] == lzss_red_black_tree_null_node) {
+        replacement = finder.right_[removed];
+        replacement_parent = finder.parent_[removed];
+        metadata_start = replacement_parent;
+        finder.replace_parent_child(
+            finder.parent_[removed], removed, replacement);
+    } else if (finder.right_[removed]
+               == lzss_red_black_tree_null_node) {
+        replacement = finder.left_[removed];
+        replacement_parent = finder.parent_[removed];
+        metadata_start = replacement_parent;
+        finder.replace_parent_child(
+            finder.parent_[removed], removed, replacement);
+    } else {
+        replacement_source = finder.minimum_node(finder.right_[removed]);
+        removed_color = finder.color_[replacement_source];
+        replacement = finder.right_[replacement_source];
+        if (finder.parent_[replacement_source] == removed) {
+            replacement_parent = replacement_source;
+            metadata_start = replacement_source;
+            if (replacement != lzss_red_black_tree_null_node) {
+                finder.parent_[replacement] = replacement_source;
+            }
+        } else {
+            replacement_parent = finder.parent_[replacement_source];
+            metadata_start = replacement_parent;
+            finder.replace_parent_child(
+                replacement_parent, replacement_source, replacement);
+            finder.right_[replacement_source] = finder.right_[removed];
+            finder.parent_[finder.right_[replacement_source]] =
+                replacement_source;
+        }
+        finder.replace_parent_child(
+            finder.parent_[removed], removed, replacement_source);
+        finder.left_[replacement_source] = finder.left_[removed];
+        finder.parent_[finder.left_[replacement_source]] =
+            replacement_source;
+        finder.color_[replacement_source] = finder.color_[removed];
+    }
+
+    if (metadata_start != lzss_red_black_tree_null_node) {
+        finder.update_metadata_upward(metadata_start);
+    }
+    if (removed_color == LzssRedBlackTreeNodeColor::black) {
+        finder.repair_after_removal(replacement, replacement_parent);
+    }
+    finder.clear_node(removed);
+    --finder.active_node_count_;
     return LzssRedBlackTreeError::none;
 }
 

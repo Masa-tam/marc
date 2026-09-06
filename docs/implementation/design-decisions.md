@@ -21984,3 +21984,25 @@ subtree maxima. Bound insertion traversal before workspace mutation and reject
 invalid, duplicate, occupied-slot, or capacity-exhausted requests atomically.
 This stage adds no deletion, advancement, Exact query, production dispatch,
 public selector, statistics, ABI, or stream change.
+
+## DD-1081: Red-Black retirement is physical and preserves fixed-slot identity
+
+- Date: 2026-09-07
+- Status: accepted
+
+Retire the exact slot selected by absolute position modulo capacity. A leaf or
+one-child node is structurally replaced by its child. A two-child node is
+structurally replaced by its in-order successor; positions and other payload
+fields are never copied or exchanged between slots. The successor inherits
+the removed node's color, while repair is determined by the color and child
+of the successor's former position.
+
+Represent a missing replacement child by the existing black null sentinel and
+carry its parent explicitly during bottom-up repair. Apply deterministic
+left/right-symmetric sibling cases, rotations, and recolorings; then clear the
+retired slot to every inactive sentinel and make it reusable. Repair subtree
+maxima from the successor's former ancestry through its new ancestry and rely
+on rotation-local recomputation thereafter. Reject uninitialized,
+non-indexable, absent, or stale-position requests before mutation. This stage
+adds no advancement, Exact query, production dispatch, public selector,
+statistics, ABI, or stream change.

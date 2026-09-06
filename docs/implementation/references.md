@@ -7634,3 +7634,14 @@ fixed-slot workspace foundation, checked metadata rules, and elementary Red-
 Black invariants. No external Red-Black implementation, match finder,
 compressor, source code, test suite, pseudocode, rotation sequence, validator,
 or optimization description was consulted.
+
+### IR-0843
+
+The Red-Black physical-retirement stage uses DD-1078 through DD-1081,
+TVG-0943 through TVG-0946, the repository-owned fixed-slot Red-Black
+foundation and validator, and the already proven AVL physical-retirement
+contract for slot identity and failure atomicity. Elementary Red-Black
+deletion invariants are applied from the independently recorded mathematical
+model. No external Red-Black implementation, match finder, compressor, source
+code, test suite, pseudocode, deletion sequence, validator, or optimization
+description was consulted.

@@ -29193,3 +29193,33 @@ both bounds.
   both configurations. All 3,399 registered tests pass in 418.62 seconds
   with MSVC and approximately 368 seconds with ClangCL, including complete
   schema compatibility in 123.67 and 116.34 seconds respectively.
+
+## CR-1174: 2026-09-07 - Red-Black physical retirement
+
+- Authoring method: implemented structural retirement and bottom-up color
+  repair directly from the repository-owned fixed-slot contract and recorded
+  Red-Black invariants.
+- References used: DD-1078 through DD-1081; IR-0840 through IR-0843;
+  TVG-0943 through TVG-0946; marc's Red-Black insertion validator and its
+  first-party AVL tests for payload-preserving physical retirement.
+- Known implementations intentionally not consulted: external Red-Black tree
+  or match-finder implementation, compressor, source code, test suite,
+  pseudocode, deletion sequence, validator, and optimization description.
+- Independent decisions: carry the parent separately for a null replacement,
+  structurally transplant the successor without payload exchange, repair
+  metadata from the successor's former path, use explicit symmetric sibling
+  cases, and reset all six retired-slot fields to inactive sentinels.
+- Generated-code task description: implement leaf, one-child, direct-
+  successor, and non-direct-successor retirement; deterministic double-black
+  repair; reusable fixed slots; failure atomicity; hand-derived shapes; and
+  invariant validation after fixed and shuffled complete deletion orders.
+- Similarity review: implementation control flow and tests were derived from
+  recorded invariants and marc-owned contracts. No external implementation
+  expression, pseudocode, tests, deletion fixture, or naming scheme was copied
+  or structurally reproduced.
+- Local validation: official CMake 4.3.4 produced warning-clean optimized
+  Release builds with MSVC through Visual Studio 2026/MSBuild 18.9.1 and
+  ClangCL 22.1.3 on Windows x64. All nineteen focused Red-Black tests pass in
+  both configurations. All 3,406 registered tests pass in 421.82 and 350.83
+  seconds respectively, including complete schema compatibility in 123.18
+  and 116.59 seconds.

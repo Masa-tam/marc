@@ -113,6 +113,8 @@ private:
         LzssRedBlackTreeMatchFinder&) noexcept;
     friend LzssRedBlackTreeError insert_lzss_red_black_tree_position(
         LzssRedBlackTreeMatchFinder&, std::size_t) noexcept;
+    friend LzssRedBlackTreeError remove_lzss_red_black_tree_position(
+        LzssRedBlackTreeMatchFinder&, std::size_t) noexcept;
     friend LzssRedBlackTreeValidationError validate_lzss_red_black_tree(
         const LzssRedBlackTreeMatchFinder&) noexcept;
     friend LzssRedBlackTreeNodeSnapshot inspect_lzss_red_black_tree_node(
@@ -130,6 +132,11 @@ private:
     [[nodiscard]] std::uint32_t rotate_left(std::uint32_t node) noexcept;
     [[nodiscard]] std::uint32_t rotate_right(std::uint32_t node) noexcept;
     void repair_after_insertion(std::uint32_t node) noexcept;
+    void repair_after_removal(
+        std::uint32_t node, std::uint32_t parent) noexcept;
+    [[nodiscard]] std::uint32_t minimum_node(
+        std::uint32_t node) const noexcept;
+    void clear_node(std::uint32_t node) noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
@@ -153,6 +160,9 @@ initialize_lzss_red_black_tree_match_finder(
     LzssRedBlackTreeMatchFinder& finder) noexcept;
 
 [[nodiscard]] LzssRedBlackTreeError insert_lzss_red_black_tree_position(
+    LzssRedBlackTreeMatchFinder& finder, std::size_t position) noexcept;
+
+[[nodiscard]] LzssRedBlackTreeError remove_lzss_red_black_tree_position(
     LzssRedBlackTreeMatchFinder& finder, std::size_t position) noexcept;
 
 [[nodiscard]] LzssRedBlackTreeValidationError validate_lzss_red_black_tree(

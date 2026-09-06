@@ -13665,3 +13665,21 @@ require the intended stable validator category. Finally insert every indexable
 position of a 512-byte fixed-seed LCG input into two independent workspaces,
 validate after every mutation, and require identical roots and complete node
 snapshots.
+
+### TVG-0946
+
+Delete the black leaf from the four-key ascending fixture and require the
+independently derived repaired root, children, inactive retired slot, and
+subtree maximum. Delete a three-key root whose successor is its direct right
+child. Separately delete a two-child root whose successor is below that right
+child; require structural successor movement, unchanged successor payload,
+and an inactive original root slot.
+
+Remove a node and reuse its modulo slot for a later absolute position. Reject
+uninitialized, non-indexable, absent, and stale-position requests without
+changing the tree or caller workspace. Delete every indexable node of a
+fixed-seed 256-byte input in even/odd order from two independent trees,
+validating and comparing roots after every mutation. Repeat complete removal
+over eight independently seeded 96-byte inputs with deterministic shuffled
+orders, validating all Red-Black, ordering, connectivity, slot, and metadata
+invariants after every retirement.
