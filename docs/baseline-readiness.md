@@ -197,12 +197,14 @@ same three producers; this also verifies the frozen 65-archive schema-55
 prefix without claiming a standalone schema-55 exchange. Schema 57 then
 completed its 67-archive four-direction exchange at revision
 `a93b93e180d34fc3eda1be53f4dd03ae97336e39` across the same three producers.
-The remaining general evidence gaps are listed below.
+The 0.6.0 release candidate repeated that exchange at revision
+`cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9`. The remaining general evidence
+gaps are listed below.
 
-Project version 0.6.0 is locally prepared to publish the complete five-level
-Contextual LZSS resource family. Its release-candidate revision must pass CI
-and a fresh four-direction schema-57 exchange before annotated tag `v0.6.0`
-is admitted.
+Project version 0.6.0 is prepared to publish the complete five-level
+Contextual LZSS resource family. Its release-candidate revision passed CI and
+the required schema-57 exchange; only final CI for the evidence commit remains
+before annotated tag `v0.6.0` is admitted.
 
 ## Remaining release evidence
 
@@ -4010,3 +4012,14 @@ pass all 3,387 tests under MSVC and ClangCL in 399.17 and 357.56 seconds,
 including complete schema compatibility in 126.41 and 117.54 seconds. The
 release-preparation revision still requires pushed CI and a four-direction
 67-archive repeat before annotated tag `v0.6.0` is admitted.
+
+### BR-0272
+
+The pushed 0.6.0 release-preparation revision completed its four-direction
+schema-57 repeat. All 67 archives from the Windows/MSVC and Ubuntu 24.04 CI
+artifacts verify on Ubuntu 26.04; the independently generated Ubuntu
+26.04/Clang bundle verifies there and with the Windows/MSVC executable. Every
+pass identifies revision `cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9` and
+validates exact manifest order, sizes, SHA-256 values, foreign decoding, and
+byte-identical local re-encoding. The evidence commit requires final pushed CI
+before the annotated `v0.6.0` tag is created.

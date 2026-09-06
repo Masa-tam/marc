@@ -1038,7 +1038,8 @@ foreach(required_current_baseline IN ITEMS
         "each enumerate 3,387 tests under"
         "interoperability schema 57 alongside"
         "Schema 56 completed its 66-archive four-direction"
-        "Project version 0.6.0 is locally prepared")
+        "Project version 0.6.0 is prepared"
+        "cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)
     if(current_baseline_offset EQUAL -1)
@@ -1102,8 +1103,9 @@ foreach(required_current_interoperability_term IN ITEMS
         "sixty-seven foreign archives"
         "Schema 57 requires"
         "schemas 1 through 56"
-        "a93b93e180d34fc3eda1be53f4dd03ae97336e39"
+        "cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9"
         "### IX-0050: Schema 57"
+        "Project version 0.6.0 release-candidate repeat"
         "67-archive bundle"
         "Schema 56 requires"
         "four-direction evidence is complete"

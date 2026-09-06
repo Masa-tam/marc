@@ -188,7 +188,7 @@ Schema 57 has local generation, exact-order verification, byte-identical
 re-encoding, reordered-manifest rejection, and schemas 1 through 56
 compatibility evidence. Its Windows/MSVC, Ubuntu 24.04/Ninja, and Ubuntu
 26.04/Clang four-direction evidence is complete at revision
-`a93b93e180d34fc3eda1be53f4dd03ae97336e39`. Schema 56's Windows/MSVC,
+`cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9`. Schema 56's Windows/MSVC,
 Ubuntu 24.04/Ninja, and Ubuntu
 26.04/Clang four-direction evidence is complete at revision
 `c6bb7a62c7bfdcf6eef157ae1642f5de9576c182`. Schema 55 did not receive a
@@ -1052,3 +1052,21 @@ manifest order, size, SHA-256, fixture decode, and byte-identical local
 re-encoding checks for every archive. This establishes canonical schema-57
 bytes across the three producers and bidirectional decoding between the
 recorded Windows and WSL2 Linux x86-64 environments.
+
+#### Project version 0.6.0 release-candidate repeat
+
+Revision `cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9` received the project-version
+0.6.0 release-candidate cross-check after its pushed CI completed
+successfully. The Ubuntu 26.04 WSL2 x86-64 environment, using Ubuntu Clang
+21.1.8 via Ninja, verified all 67 archives from both the Windows/MSVC via
+Visual Studio 2026 and Ubuntu 24.04 default-compiler/Ninja artifacts. It then
+generated and self-verified an `ubuntu-26.04-ninja-x64` 67-archive bundle. The
+Windows/MSVC executable verified that bundle in the reverse direction.
+
+Each of the four verifier passes reported the exact full revision and required
+manifest order, size, SHA-256, fixture decode, and byte-identical local
+re-encoding checks for every archive. This reconfirms canonical schema-57
+bytes for the complete 64-MiB Contextual family and establishes bidirectional
+decoding between the recorded Windows and WSL2 Linux x86-64 environments for
+the 0.6.0 release candidate. The repeat changes no archive inventory or
+serialized identity.

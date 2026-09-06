@@ -1,7 +1,8 @@
 # LZSS contextual 64 MiB window candidate
 
-Status: the Dynamic Range lifecycle is complete through schema-53
-interoperability admission and four-direction external verification.
+Status: all five entropy-route lifecycles are complete through schema-57
+interoperability admission and four-direction external verification. The
+project-version 0.6.0 release candidate repeated the complete exchange.
 
 ## Purpose
 
@@ -297,4 +298,7 @@ cross-platform evidence for the schema-55 prefix without constituting a
 standalone schema-55 bundle exchange. The Contextual Adaptive Huffman
 lifecycle is complete through bounded fuzzing, and schema 57 appends it as
 archive 67. All 67 schema-57 archives passed the same four-direction exchange
-at revision `a93b93e180d34fc3eda1be53f4dd03ae97336e39`.
+at revision `a93b93e180d34fc3eda1be53f4dd03ae97336e39`. The project-version 0.6.0
+release candidate repeated all four directions at revision
+`cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9` without changing the inventory or
+serialized identities.
