@@ -13888,3 +13888,20 @@ subtree maximum, modulo-slot position, and reachability. Require the matching
 stable error category for each corruption, restore the original field, and
 require the tree to validate again. Run all twenty-two staged tests under MSVC
 and ClangCL.
+
+### TVG-0960
+
+Prepare four hand-checkable five-byte-prefix records whose immediate query
+neighbors both establish a five-byte LCP while a nonadjacent newer record lies
+inside the same prefix interval. Require the exact predecessor, successor,
+both LCPs, interval-selected candidate, and nearest-distance match. Reject an
+uninitialized query, an oversized position, an already inserted query key,
+and an out-of-range traversal link without an unbounded walk.
+
+For empty, short, repeated all-byte, all-zero, periodic, fixed-seed four-symbol,
+long-common-prefix, and monotone-record inputs, maintain the Scapegoat active
+window with the separately tested physical mutators. At every position through
+the exact input end, require distance and length to equal Exhaustive,
+HashChain Exact, AVL BinaryTree Exact, and Red-Black Exact. Independently
+validate Scapegoat state after every mutation and require representative
+nonempty matches. Run all twenty-five staged tests under MSVC and ClangCL.

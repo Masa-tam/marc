@@ -22285,3 +22285,23 @@ interval to enforce; once protocol progress is nonzero, require the exact
 finite suffix `[max(0, next_position - window_size), next_position)`. Do not
 inspect reconstruction scratch contents because scratch is temporary workspace,
 not persistent tree state.
+
+## DD-1096: Scapegoat Exact query uses the shared bounded prefix interval
+
+- Date: 2026-09-08
+- Status: accepted
+
+Against an explicitly prepared active set, locate the virtual query key's
+immediate predecessor and successor in the capped finite-suffix order. Their
+larger LCP is the exact maximum match length. When it reaches
+`min_match_length`, locate one node in that prefix interval and walk toward
+both boundaries, using `subtree_maximum_position` only for a subtree proven
+entirely inside the interval. Select the greatest absolute candidate position
+to preserve the nearest-distance tie break.
+
+Bound each walk by the active population and reject an invalid index, inactive
+node, non-earlier candidate, duplicate query key, impossible interval, or
+invalid aggregate maximum as private invalid state. Keep the query read-only
+and deliberately do not bind it to `next_position`; skipped-position protocol
+advancement remains the following stage. This adds no statistics, production
+dispatch, public selector, ABI, or stream change.

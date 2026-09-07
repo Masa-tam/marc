@@ -77,6 +77,42 @@ int LzssScapegoatTreeMatchFinder::compare_positions(
     return 0;
 }
 
+std::uint32_t LzssScapegoatTreeMatchFinder::common_prefix_length(
+    const std::size_t left, const std::size_t right) const noexcept {
+    const auto maximum = std::min({
+        input_.size() - left,
+        input_.size() - right,
+        static_cast<std::size_t>(parameters_.max_match_length)});
+    std::size_t length{};
+    while (length < maximum
+           && input_[left + length] == input_[right + length]) {
+        ++length;
+    }
+    return static_cast<std::uint32_t>(length);
+}
+
+int LzssScapegoatTreeMatchFinder::compare_prefix(
+    const std::size_t position, const std::size_t query_position,
+    const std::uint32_t length) const noexcept {
+    for (std::size_t index = 0; index < length; ++index) {
+        const auto byte = std::to_integer<std::uint8_t>(
+            input_[position + index]);
+        const auto query_byte = std::to_integer<std::uint8_t>(
+            input_[query_position + index]);
+        if (byte < query_byte) return -1;
+        if (byte > query_byte) return 1;
+    }
+    return 0;
+}
+
+bool LzssScapegoatTreeMatchFinder::valid_query_node(
+    const std::uint32_t node,
+    const std::size_t query_position) const noexcept {
+    return node < left_.size()
+        && position_[node] != lzss_scapegoat_tree_no_position
+        && position_[node] < query_position;
+}
+
 void LzssScapegoatTreeMatchFinder::update_metadata(
     const std::uint32_t node) noexcept {
     std::uint32_t size{1};
@@ -706,6 +742,181 @@ LzssScapegoatTreeError remove_lzss_scapegoat_tree_position(
     }
     finder.maximum_active_node_count_ = finder.active_node_count_;
     return LzssScapegoatTreeError::none;
+}
+
+LzssScapegoatTreeNeighborQueryResult
+LzssScapegoatTreeMatchFinder::find_neighbors(
+    const std::size_t position) const noexcept {
+    LzssScapegoatTreeNeighborQueryResult result{};
+    if (!initialized_ || !state_valid_) {
+        result.error = LzssScapegoatTreeError::invalid_state;
+        return result;
+    }
+    if (position > input_.size()) {
+        result.error = LzssScapegoatTreeError::invalid_position;
+        return result;
+    }
+    if (input_.size() - position < lzss_scapegoat_tree_prefix_size
+        || root_ == lzss_scapegoat_tree_null_node) {
+        return result;
+    }
+
+    auto predecessor = lzss_scapegoat_tree_null_node;
+    auto successor = lzss_scapegoat_tree_null_node;
+    auto current = root_;
+    std::size_t steps{};
+    while (current != lzss_scapegoat_tree_null_node) {
+        if (steps++ >= active_node_count_
+            || !valid_query_node(current, position)) {
+            result.error = LzssScapegoatTreeError::invalid_state;
+            return result;
+        }
+        const auto comparison = compare_positions(position, position_[current]);
+        if (comparison == 0) {
+            result.error = LzssScapegoatTreeError::invalid_state;
+            return result;
+        }
+        if (comparison < 0) {
+            successor = current;
+            current = left_[current];
+        } else {
+            predecessor = current;
+            current = right_[current];
+        }
+    }
+
+    if (predecessor != lzss_scapegoat_tree_null_node) {
+        result.predecessor_position = position_[predecessor];
+        result.predecessor_lcp = common_prefix_length(
+            position, result.predecessor_position);
+    }
+    if (successor != lzss_scapegoat_tree_null_node) {
+        result.successor_position = position_[successor];
+        result.successor_lcp = common_prefix_length(
+            position, result.successor_position);
+    }
+    result.maximum_lcp = std::max(
+        result.predecessor_lcp, result.successor_lcp);
+    return result;
+}
+
+LzssScapegoatTreeCandidateQueryResult
+LzssScapegoatTreeMatchFinder::find_candidate(
+    const std::size_t position) const noexcept {
+    LzssScapegoatTreeCandidateQueryResult result{};
+    const auto neighbors = find_neighbors(position);
+    if (neighbors.error != LzssScapegoatTreeError::none) {
+        result.error = neighbors.error;
+        return result;
+    }
+    if (neighbors.maximum_lcp < parameters_.min_match_length) return result;
+
+    auto split = lzss_scapegoat_tree_null_node;
+    auto current = root_;
+    std::size_t steps{};
+    while (current != lzss_scapegoat_tree_null_node) {
+        if (steps++ >= active_node_count_
+            || !valid_query_node(current, position)) {
+            result.error = LzssScapegoatTreeError::invalid_state;
+            return result;
+        }
+        const auto comparison = compare_prefix(
+            position_[current], position, neighbors.maximum_lcp);
+        if (comparison < 0) {
+            current = right_[current];
+        } else if (comparison > 0) {
+            current = left_[current];
+        } else {
+            split = current;
+            break;
+        }
+    }
+    if (split == lzss_scapegoat_tree_null_node) {
+        result.error = LzssScapegoatTreeError::invalid_state;
+        return result;
+    }
+
+    auto maximum_position = position_[split];
+    current = left_[split];
+    steps = 0;
+    while (current != lzss_scapegoat_tree_null_node) {
+        if (steps++ >= active_node_count_
+            || !valid_query_node(current, position)) {
+            result.error = LzssScapegoatTreeError::invalid_state;
+            return result;
+        }
+        const auto comparison = compare_prefix(
+            position_[current], position, neighbors.maximum_lcp);
+        if (comparison < 0) {
+            current = right_[current];
+        } else if (comparison > 0) {
+            current = left_[current];
+        } else {
+            maximum_position = std::max(maximum_position, position_[current]);
+            const auto inside = right_[current];
+            if (inside != lzss_scapegoat_tree_null_node) {
+                if (!valid_query_node(inside, position)
+                    || subtree_maximum_position_[inside]
+                        == lzss_scapegoat_tree_no_position
+                    || subtree_maximum_position_[inside] >= position) {
+                    result.error = LzssScapegoatTreeError::invalid_state;
+                    return result;
+                }
+                maximum_position = std::max(
+                    maximum_position, subtree_maximum_position_[inside]);
+            }
+            current = left_[current];
+        }
+    }
+
+    current = right_[split];
+    steps = 0;
+    while (current != lzss_scapegoat_tree_null_node) {
+        if (steps++ >= active_node_count_
+            || !valid_query_node(current, position)) {
+            result.error = LzssScapegoatTreeError::invalid_state;
+            return result;
+        }
+        const auto comparison = compare_prefix(
+            position_[current], position, neighbors.maximum_lcp);
+        if (comparison < 0) {
+            current = right_[current];
+        } else if (comparison > 0) {
+            current = left_[current];
+        } else {
+            maximum_position = std::max(maximum_position, position_[current]);
+            const auto inside = left_[current];
+            if (inside != lzss_scapegoat_tree_null_node) {
+                if (!valid_query_node(inside, position)
+                    || subtree_maximum_position_[inside]
+                        == lzss_scapegoat_tree_no_position
+                    || subtree_maximum_position_[inside] >= position) {
+                    result.error = LzssScapegoatTreeError::invalid_state;
+                    return result;
+                }
+                maximum_position = std::max(
+                    maximum_position, subtree_maximum_position_[inside]);
+            }
+            current = right_[current];
+        }
+    }
+
+    result.candidate_position = maximum_position;
+    result.length = neighbors.maximum_lcp;
+    return result;
+}
+
+LzssMatch LzssScapegoatTreeMatchFinder::find_match(
+    const std::size_t position) const noexcept {
+    const auto candidate = find_candidate(position);
+    if (candidate.error != LzssScapegoatTreeError::none
+        || candidate.candidate_position == lzss_scapegoat_tree_no_position
+        || candidate.candidate_position >= position) {
+        return {};
+    }
+    const auto distance = position - candidate.candidate_position;
+    if (distance > std::numeric_limits<std::uint32_t>::max()) return {};
+    return {static_cast<std::uint32_t>(distance), candidate.length};
 }
 
 LzssScapegoatTreeValidationError validate_lzss_scapegoat_tree(

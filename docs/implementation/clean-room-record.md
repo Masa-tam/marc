@@ -29592,3 +29592,26 @@ both bounds.
   flow was copied or reproduced.
 - Local validation: all twenty-two Scapegoat tests build without warnings and
   pass under MSVC and ClangCL; documentation validation is run before commit.
+
+## CR-1189: 2026-09-08 - Scapegoat Exact bounded prefix query
+
+- Authoring method: implemented the sixth reviewable stage from the frozen
+  finite-suffix neighbor, LCP, and prefix-interval maximum contract.
+- References used: DD-1090 through DD-1096, IR-0852 through IR-0858,
+  TVG-0954 through TVG-0960, and marc's existing independent Exact oracles.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, query routine, source code,
+  pseudocode, test suite, or optimization description.
+- Independent decisions: reject non-earlier prepared nodes, bound each search
+  separately by active population, validate a subtree aggregate before using
+  it, and keep query independent of protocol position until advancement.
+- Generated-code task description: add read-only neighbor, candidate, and
+  match queries plus hand-checkable and every-position four-oracle differential
+  tests without adding advancement, statistics, typed integration, production
+  dispatch, or public selection.
+- Similarity review: the implementation directly applies marc's established
+  independently documented prefix-interval proof to Scapegoat storage. No
+  external implementation expression, pseudocode, test sequence, or control
+  flow was copied or reproduced.
+- Local validation: all twenty-five Scapegoat tests build without warnings and
+  pass under MSVC and ClangCL; documentation validation is run before commit.

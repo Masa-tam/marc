@@ -63,6 +63,27 @@ struct LzssScapegoatTreeNodeSnapshot {
     bool operator==(const LzssScapegoatTreeNodeSnapshot&) const = default;
 };
 
+struct LzssScapegoatTreeNeighborQueryResult {
+    std::size_t predecessor_position{lzss_scapegoat_tree_no_position};
+    std::size_t successor_position{lzss_scapegoat_tree_no_position};
+    std::uint32_t predecessor_lcp{};
+    std::uint32_t successor_lcp{};
+    std::uint32_t maximum_lcp{};
+    LzssScapegoatTreeError error{LzssScapegoatTreeError::none};
+
+    bool operator==(
+        const LzssScapegoatTreeNeighborQueryResult&) const = default;
+};
+
+struct LzssScapegoatTreeCandidateQueryResult {
+    std::size_t candidate_position{lzss_scapegoat_tree_no_position};
+    std::uint32_t length{};
+    LzssScapegoatTreeError error{LzssScapegoatTreeError::none};
+
+    bool operator==(
+        const LzssScapegoatTreeCandidateQueryResult&) const = default;
+};
+
 struct LzssScapegoatTreeWorkspaceRequirements {
     std::size_t workspace_size{};
     std::size_t workspace_alignment{
@@ -108,6 +129,11 @@ public:
     [[nodiscard]] std::size_t next_position() const noexcept {
         return next_position_;
     }
+    [[nodiscard]] LzssScapegoatTreeNeighborQueryResult find_neighbors(
+        std::size_t position) const noexcept;
+    [[nodiscard]] LzssScapegoatTreeCandidateQueryResult find_candidate(
+        std::size_t position) const noexcept;
+    [[nodiscard]] LzssMatch find_match(std::size_t position) const noexcept;
 
 private:
     friend LzssScapegoatTreeError
@@ -128,6 +154,13 @@ private:
 
     [[nodiscard]] int compare_positions(
         std::size_t left, std::size_t right) const noexcept;
+    [[nodiscard]] std::uint32_t common_prefix_length(
+        std::size_t left, std::size_t right) const noexcept;
+    [[nodiscard]] int compare_prefix(
+        std::size_t position, std::size_t query_position,
+        std::uint32_t length) const noexcept;
+    [[nodiscard]] bool valid_query_node(
+        std::uint32_t node, std::size_t query_position) const noexcept;
     void update_metadata(std::uint32_t node) noexcept;
     [[nodiscard]] bool update_metadata_upward(std::uint32_t node) noexcept;
     void replace_parent_child(

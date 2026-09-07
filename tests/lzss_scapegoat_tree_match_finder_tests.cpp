@@ -1,3 +1,6 @@
+#include "dictionary/lzss_binary_tree_match_finder.hpp"
+#include "dictionary/lzss_hash_chain_match_finder.hpp"
+#include "dictionary/lzss_red_black_tree_match_finder.hpp"
 #include "dictionary/lzss_scapegoat_tree_match_finder.hpp"
 
 #include <gtest/gtest.h>
@@ -852,6 +855,219 @@ TEST(LzssScapegoatTreeMatchFinder,
 
     EXPECT_EQ(validate_lzss_scapegoat_tree(finder),
               LzssScapegoatTreeValidationError::none);
+}
+
+TEST(LzssScapegoatTreeMatchFinder,
+     FindsNeighborsAndNewestCandidateAcrossPrefixInterval) {
+    const auto input = bytes(
+        "ABCDEA__ABCDEL__ABCDEN__ABCDEB__ABCDEM__");
+    LzssParameters parameters{};
+    parameters.window_size = 32;
+    const auto required = calculate_lzss_scapegoat_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssScapegoatTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssScapegoatTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_scapegoat_tree_match_finder(
+                  input, parameters, {}, storage.bytes, finder),
+              LzssScapegoatTreeError::none);
+    for (const auto position : {0U, 8U, 16U, 24U}) {
+        ASSERT_EQ(insert_lzss_scapegoat_tree_position(finder, position),
+                  LzssScapegoatTreeError::none);
+    }
+
+    const auto neighbors = finder.find_neighbors(32);
+    ASSERT_EQ(neighbors.error, LzssScapegoatTreeError::none);
+    EXPECT_EQ(neighbors.predecessor_position, 8U);
+    EXPECT_EQ(neighbors.successor_position, 16U);
+    EXPECT_EQ(neighbors.predecessor_lcp, 5U);
+    EXPECT_EQ(neighbors.successor_lcp, 5U);
+    EXPECT_EQ(neighbors.maximum_lcp, 5U);
+
+    const auto candidate = finder.find_candidate(32);
+    EXPECT_EQ(candidate.error, LzssScapegoatTreeError::none);
+    EXPECT_EQ(candidate.candidate_position, 24U);
+    EXPECT_EQ(candidate.length, 5U);
+    EXPECT_EQ(finder.find_match(32), (LzssMatch{8, 5}));
+
+    auto maxima = mutable_array_at<std::size_t>(
+        storage.bytes, required.subtree_maximum_position_offset,
+        required.node_count);
+    const auto saved_maximum = maxima[24];
+    maxima[24] = lzss_scapegoat_tree_no_position;
+    EXPECT_EQ(finder.find_candidate(32).error,
+              LzssScapegoatTreeError::invalid_state);
+    maxima[24] = saved_maximum;
+    EXPECT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::none);
+}
+
+TEST(LzssScapegoatTreeMatchFinder,
+     QueryRejectsInvalidPreparedStateWithBoundedTraversal) {
+    const LzssScapegoatTreeMatchFinder uninitialized{};
+    EXPECT_EQ(uninitialized.find_neighbors(0).error,
+              LzssScapegoatTreeError::invalid_state);
+    EXPECT_EQ(uninitialized.find_candidate(0).error,
+              LzssScapegoatTreeError::invalid_state);
+    EXPECT_EQ(uninitialized.find_match(0), LzssMatch{});
+
+    const auto input = bytes("Z0000000A0000000");
+    const auto required = calculate_lzss_scapegoat_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssScapegoatTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssScapegoatTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_scapegoat_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssScapegoatTreeError::none);
+    EXPECT_EQ(finder.find_neighbors(0),
+              LzssScapegoatTreeNeighborQueryResult{});
+    EXPECT_EQ(finder.find_neighbors(input.size() + 1U).error,
+              LzssScapegoatTreeError::invalid_position);
+    ASSERT_EQ(insert_lzss_scapegoat_tree_position(finder, 0),
+              LzssScapegoatTreeError::none);
+    EXPECT_EQ(finder.find_neighbors(0).error,
+              LzssScapegoatTreeError::invalid_state);
+
+    auto left = mutable_array_at<std::uint32_t>(
+        storage.bytes, required.left_offset, required.node_count);
+    left[0] = static_cast<std::uint32_t>(required.node_count);
+    EXPECT_EQ(finder.find_neighbors(8).error,
+              LzssScapegoatTreeError::invalid_state);
+    left[0] = lzss_scapegoat_tree_null_node;
+    EXPECT_EQ(finder.find_neighbors(8).error,
+              LzssScapegoatTreeError::none);
+}
+
+TEST(LzssScapegoatTreeMatchFinder,
+     ExactQueryMatchesAllEstablishedFindersAtEveryPosition) {
+    std::vector<std::vector<std::byte>> cases{};
+    cases.push_back({});
+    cases.push_back(bytes("ABCD"));
+
+    std::vector<std::byte> all_bytes{};
+    all_bytes.reserve(512);
+    for (std::size_t repeat = 0; repeat < 2; ++repeat) {
+        for (std::size_t value = 0; value < 256; ++value) {
+            all_bytes.push_back(static_cast<std::byte>(value));
+        }
+    }
+    cases.push_back(std::move(all_bytes));
+    cases.emplace_back(256, std::byte{0});
+
+    std::vector<std::byte> periodic(384);
+    for (std::size_t index = 0; index < periodic.size(); ++index) {
+        periodic[index] = static_cast<std::byte>(index % 13U);
+    }
+    cases.push_back(std::move(periodic));
+
+    std::vector<std::byte> random_like(512);
+    std::uint32_t state = UINT32_C(0xc31d7a59);
+    for (auto& value : random_like) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        value = static_cast<std::byte>(state >> 30U);
+    }
+    cases.push_back(std::move(random_like));
+    cases.push_back(bytes(
+        "ABCDEA__ABCDEL__ABCDEN__ABCDEB__ABCDEM__"
+        "ABCDEA__ABCDEL__ABCDEN__ABCDEB__ABCDEM__"));
+
+    std::vector<std::byte> monotone(320);
+    for (std::size_t index = 0; index < monotone.size(); ++index) {
+        monotone[index] = static_cast<std::byte>((index / 8U) & 0xffU);
+    }
+    cases.push_back(std::move(monotone));
+
+    for (std::size_t case_index = 0; case_index < cases.size(); ++case_index) {
+        const auto input = std::span<const std::byte>{cases[case_index]};
+        LzssParameters parameters{};
+        parameters.window_size = 64;
+        parameters.max_match_length = 64;
+
+        const auto scapegoat_required =
+            calculate_lzss_scapegoat_tree_workspace(
+                input.size(), parameters, {});
+        const auto hash_required = calculate_lzss_hash_chain_workspace(
+            input.size(), parameters, {});
+        const auto binary_required = calculate_lzss_binary_tree_workspace(
+            input.size(), parameters, {});
+        const auto red_black_required =
+            calculate_lzss_red_black_tree_workspace(
+                input.size(), parameters, {});
+        ASSERT_EQ(scapegoat_required.error, LzssScapegoatTreeError::none);
+        ASSERT_EQ(hash_required.error, LzssHashChainError::none);
+        ASSERT_EQ(binary_required.error, LzssBinaryTreeError::none);
+        ASSERT_EQ(red_black_required.error, LzssRedBlackTreeError::none);
+
+        auto scapegoat_storage = make_storage(
+            scapegoat_required.workspace_size);
+        auto hash_storage = make_storage(hash_required.workspace_size);
+        auto binary_storage = make_storage(binary_required.workspace_size);
+        auto red_black_storage = make_storage(
+            red_black_required.workspace_size);
+        LzssScapegoatTreeMatchFinder scapegoat{};
+        LzssHashChainMatchFinder hash{};
+        LzssBinaryTreeMatchFinder binary{};
+        LzssRedBlackTreeMatchFinder red_black{};
+        LzssExhaustiveMatchFinder exhaustive{input, parameters};
+        ASSERT_EQ(initialize_lzss_scapegoat_tree_match_finder(
+                      input, parameters, {}, scapegoat_storage.bytes,
+                      scapegoat),
+                  LzssScapegoatTreeError::none);
+        ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+                      input, parameters, {}, hash_storage.bytes, hash),
+                  LzssHashChainError::none);
+        ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                      input, parameters, {}, binary_storage.bytes, binary),
+                  LzssBinaryTreeError::none);
+        ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                      input, parameters, {}, red_black_storage.bytes,
+                      red_black),
+                  LzssRedBlackTreeError::none);
+
+        std::size_t matching_queries{};
+        for (std::size_t position = 0; position <= input.size(); ++position) {
+            const auto expected = exhaustive.find_match(position);
+            const auto actual = scapegoat.find_match(position);
+            EXPECT_EQ(actual, expected) << case_index << ':' << position;
+            EXPECT_EQ(actual, hash.find_match(position))
+                << case_index << ':' << position;
+            EXPECT_EQ(actual, binary.find_match(position))
+                << case_index << ':' << position;
+            EXPECT_EQ(actual, red_black.find_match(position))
+                << case_index << ':' << position;
+            if (actual.length != 0) ++matching_queries;
+            if (position == input.size()) break;
+
+            exhaustive.advance(position, position + 1U);
+            hash.advance(position, position + 1U);
+            binary.advance(position, position + 1U);
+            red_black.advance(position, position + 1U);
+            if (position >= parameters.window_size) {
+                const auto expired = position - parameters.window_size;
+                if (input.size() - expired
+                    >= lzss_scapegoat_tree_prefix_size) {
+                    ASSERT_EQ(remove_lzss_scapegoat_tree_position(
+                                  scapegoat, expired),
+                              LzssScapegoatTreeError::none)
+                        << case_index << ':' << position;
+                }
+            }
+            if (input.size() - position
+                >= lzss_scapegoat_tree_prefix_size) {
+                ASSERT_EQ(insert_lzss_scapegoat_tree_position(
+                              scapegoat, position),
+                          LzssScapegoatTreeError::none)
+                    << case_index << ':' << position;
+            }
+            ASSERT_EQ(validate_lzss_scapegoat_tree(scapegoat),
+                      LzssScapegoatTreeValidationError::none)
+                << case_index << ':' << position;
+        }
+        if (input.size() >= 64U && case_index != 2U) {
+            EXPECT_GT(matching_queries, 0U) << case_index;
+        }
+    }
 }
 
 } // namespace

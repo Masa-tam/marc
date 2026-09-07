@@ -7778,3 +7778,12 @@ own sentinel, finite-suffix, parent-link, strict-order, subtree-metadata, and
 checked-traversal contracts. No external compressor, match finder, Scapegoat
 implementation, structural validator, source code, pseudocode, test suite, or
 optimization description was consulted.
+
+### IR-0858
+
+The Scapegoat Exact query stage uses DD-1090 through DD-1096, TVG-0954 through
+TVG-0960, the accepted prefix-interval proof already implemented independently
+for marc's AVL and Red-Black candidates, and marc's finite-suffix, LCP,
+subtree-maximum, and nearest-distance contracts. No external compressor, match
+finder, Scapegoat implementation, query routine, source code, pseudocode, test
+suite, or optimization description was consulted.
