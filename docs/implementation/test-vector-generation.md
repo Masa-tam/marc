@@ -13815,3 +13815,17 @@ child physical transplant identity, the strict `3n < 2q` whole-rebuild
 boundary, and bulk/one-byte state equivalence. Record maximum single-update
 work separately from aggregate throughput and include a deletion-heavy
 frame-greater-than-window benchmark before any promotion decision.
+
+### TVG-0955
+
+For the first Scapegoat implementation stage, check the zero-workspace short
+input case, a hand-computable seven-region layout, input/window capacity
+clamping, exact-size acceptance, one-byte-short rejection, base alignment,
+input/workspace overlap, invalid limits, invalid parameters, input limits,
+aggregate workspace limits, and size arithmetic overflow.
+
+Fill all permanent structural arrays and rebuild scratch with distinct empty
+sentinels and verify every element. Seed the destination finder before each
+failure case and fill writable storage with a marker so the tests prove that
+preflight failure changes neither object nor buffer. Run the same seven cases
+under MSVC and ClangCL.

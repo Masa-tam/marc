@@ -29479,3 +29479,27 @@ both bounds.
   copied or structurally reproduced.
 - Local validation: documentation layout, chronology, links, and required
   record sections pass under both MSVC and ClangCL CTest configurations.
+
+## CR-1184: 2026-09-08 - Scapegoat workspace and empty initialization
+
+- Authoring method: implemented the first reviewable stage directly from the
+  frozen Scapegoat contract and repository-owned bounded-workspace rules.
+- References used: DD-1090, DD-1091, IR-0852, IR-0853, TVG-0954, TVG-0955,
+  the accepted Scapegoat design, and marc's checked arithmetic, overlap, LZSS
+  validation, and fixed-slot conventions.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, source code, test suite, workspace
+  layout, initializer, or optimization description.
+- Independent decisions: expose all seven checked offsets, initialize rebuild
+  scratch as explicitly inactive, preserve the destination object and storage
+  on every preflight failure, and withhold tree operations and selection
+  surfaces from this stage.
+- Generated-code task description: add the private Scapegoat types, bounded
+  workspace calculator, empty finder initialization, and atomic boundary tests
+  without adding insertion, rebuilding, matching, or public dispatch.
+- Similarity review: the implementation is a direct expression of marc-owned
+  data shapes and safety contracts. No external implementation expression,
+  pseudocode, test sequence, or control flow was copied or reproduced.
+- Local validation: the new seven-test suite builds without warnings and
+  passes under both MSVC and ClangCL; documentation validation is run before
+  committing the stage.

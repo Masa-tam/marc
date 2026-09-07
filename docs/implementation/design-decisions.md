@@ -22191,3 +22191,21 @@ integer bound avoids floating point and still implies the standard
 state. After physical deletion, rebuild the whole tree exactly when
 `3 * active_count < 2 * q` and reset `q`. Keep the candidate private and do
 not raise resource limits, add a selector, or change a default implicitly.
+
+## DD-1091: Scapegoat Exact workspace precedes structural mutation
+
+- Date: 2026-09-08
+- Status: accepted
+
+Implement the private Scapegoat finder first as a checked workspace calculator
+and empty initialized state. Allocate separate caller-owned arrays for left,
+right, parent, subtree size, position, subtree maximum position, and rebuild
+scratch. Derive every region from the admitted node capacity and reject limit,
+arithmetic, size, alignment, and overlap failures before constructing any
+workspace object or replacing the caller's existing finder.
+
+Initialize structural links and scratch to the null-node sentinel, subtree
+sizes to zero, positions and subtree maxima to the no-position sentinel, and
+`root`, active count, `q`, and protocol position to their empty values. Keep
+the type private and deliberately omit query, advancement, strategy dispatch,
+and public selection until later stages establish their invariants.

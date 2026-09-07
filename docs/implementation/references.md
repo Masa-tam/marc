@@ -7733,3 +7733,12 @@ The conservative `2 * bit_width(q)` depth budget, lower-median rebuild shape,
 scratch layout, and visit metrics are independent marc decisions. No external
 compressor, match finder, Scapegoat implementation, source code, test suite,
 pseudocode, rebuild routine, or optimization description was consulted.
+
+### IR-0853
+
+The Scapegoat workspace and empty-state implementation uses DD-1090,
+DD-1091, TVG-0954, TVG-0955, the accepted Scapegoat design document, and
+marc's existing checked arithmetic, buffer-overlap, LZSS parameter, and
+caller-owned workspace contracts. No external compressor, match finder,
+Scapegoat implementation, source code, test suite, workspace layout, or
+initialization routine was consulted.
