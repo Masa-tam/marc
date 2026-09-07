@@ -22046,3 +22046,29 @@ moves `next_position` to the input end. A preflight protocol failure does not
 modify caller workspace. The completed private class now satisfies the common
 `LzssMatchFinder` shape, but this stage adds no production dispatch, public
 selector, statistics, ABI, or stream change.
+
+## DD-1084: Red-Black typed production remains a private single-pass route
+
+- Date: 2026-09-07
+- Status: accepted
+
+Connect the completed Red-Black finder only to a private typed-token
+single-pass entry. Apply the same parameter, input, output, overlap, workspace,
+checked aggregate, and no-partial-output validation contract as the private AVL
+entry. Return a Red-Black-specific finder error without reusing the AVL or
+HashChain error field. The parser, beneficial-match rule, typed-token variant,
+and canonical serialization remain shared, so Exhaustive, HashChain, AVL, and
+Red-Black Exact MUST emit identical tokens for identical input and parameters.
+
+An optional statistics pointer records saturating Red-Black key, byte, LCP,
+prefix-range, query-depth, rotation, recoloring, fix-up, insertion, and
+retirement counters. A null pointer performs no counter writes. Do not claim an
+exact maximum tree height in this stage: the one-byte color layout has no
+cached height, and a whole-tree scan after every mutation would invalidate the
+measurement. Define that metric with the focused benchmark design instead of
+substituting insertion depth or another non-equivalent value.
+
+This private route is implementation evidence, not public admission. Do not
+add Red-Black to `LzssMatchFinderStrategy`, the C ABI, profile helpers, CLI,
+frame encoders, interoperability schema, or stream metadata, and do not change
+the default matcher or any encoded representation.

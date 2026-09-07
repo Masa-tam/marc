@@ -4,6 +4,7 @@
 #include "dictionary/lzss_typed_token.hpp"
 #include "dictionary/lzss_binary_tree_match_finder.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
+#include "dictionary/lzss_red_black_tree_match_finder.hpp"
 #include "dictionary/lzss_sparse_hash_tree_match_finder.hpp"
 
 #include <cstddef>
@@ -33,6 +34,8 @@ struct LzssTypedEncodeResult {
     LzssHashChainError match_finder_error{LzssHashChainError::none};
     LzssBinaryTreeError binary_tree_match_finder_error{
         LzssBinaryTreeError::none};
+    LzssRedBlackTreeError red_black_tree_match_finder_error{
+        LzssRedBlackTreeError::none};
     LzssSparseHashTreeMatchFinderError sparse_hash_tree_match_finder_error{
         LzssSparseHashTreeMatchFinderError::none};
 };
@@ -79,6 +82,16 @@ encode_lzss_typed_tokens_hash_chain_single_pass(
 
 [[nodiscard]] LzssTypedEncodeResult
 encode_lzss_typed_tokens_binary_tree_single_pass(
+    std::span<const std::byte> input, const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::span<LzssTypedToken> private_tokens,
+    std::span<std::byte> match_finder_workspace,
+    LzssMatchFinderStatistics* statistics = nullptr,
+    LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) noexcept;
+
+[[nodiscard]] LzssTypedEncodeResult
+encode_lzss_typed_tokens_red_black_tree_single_pass(
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits,
     std::span<LzssTypedToken> private_tokens,

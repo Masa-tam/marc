@@ -530,9 +530,10 @@ TEST(LzssRedBlackTreeMatchFinder, RemovesBlackLeafWithDeterministicRepair) {
         input.size(), {}, {});
     ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
     auto storage = make_storage(required.workspace_size);
+    LzssMatchFinderStatistics statistics{};
     LzssRedBlackTreeMatchFinder finder{};
     ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
-                  input, {}, {}, storage.bytes, finder),
+                  input, {}, {}, storage.bytes, finder, &statistics),
               LzssRedBlackTreeError::none);
     for (const auto position : {0U, 8U, 16U, 24U}) {
         ASSERT_EQ(insert_lzss_red_black_tree_position(finder, position),
@@ -552,6 +553,8 @@ TEST(LzssRedBlackTreeMatchFinder, RemovesBlackLeafWithDeterministicRepair) {
     EXPECT_EQ(root.subtree_maximum_position, 24U);
     EXPECT_EQ(inspect_lzss_red_black_tree_node(finder, 0).color,
               LzssRedBlackTreeNodeColor::inactive);
+    EXPECT_GT(statistics.red_black_tree_removal_fixup_step_count, 0U);
+    EXPECT_GT(statistics.red_black_tree_maximum_fixup_steps, 0U);
 }
 
 TEST(LzssRedBlackTreeMatchFinder, TransplantsDirectRootSuccessor) {
@@ -1066,6 +1069,88 @@ TEST(LzssRedBlackTreeMatchFinder, AdvanceIndexesEverySkippedPosition) {
                       LzssRedBlackTreeValidationError::none);
         }
     }
+}
+
+TEST(LzssRedBlackTreeMatchFinder, ReportsOptionalBoundedWorkStatistics) {
+    const auto input = bytes(
+        "ABCDE1ABCDE2ABCDE3ABCDE4ABCDE5ABCDE6ABCDE7ABCDE8");
+    LzssParameters parameters{};
+    parameters.window_size = 16;
+    const auto required = calculate_lzss_red_black_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssRedBlackTreeError::none);
+    auto measured_storage = make_storage(required.workspace_size);
+    auto plain_storage = make_storage(required.workspace_size);
+    LzssMatchFinderStatistics statistics{};
+    LzssRedBlackTreeMatchFinder measured{};
+    LzssRedBlackTreeMatchFinder plain{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, parameters, {}, measured_storage.bytes, measured,
+                  &statistics),
+              LzssRedBlackTreeError::none);
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, parameters, {}, plain_storage.bytes, plain),
+              LzssRedBlackTreeError::none);
+
+    for (std::size_t position = 0; position <= input.size(); ++position) {
+        EXPECT_EQ(measured.find_match(position), plain.find_match(position))
+            << position;
+        if (position != input.size()) {
+            measured.advance(position, position + 1U);
+            plain.advance(position, position + 1U);
+            ASSERT_TRUE(measured.state_valid()) << position;
+            ASSERT_TRUE(plain.state_valid()) << position;
+        }
+    }
+
+    EXPECT_EQ(statistics.query_count, input.size() + 1U);
+    EXPECT_EQ(statistics.red_black_tree_insertion_count, input.size() - 4U);
+    EXPECT_EQ(statistics.red_black_tree_retirement_count,
+              input.size() - parameters.window_size);
+    EXPECT_GT(statistics.red_black_tree_key_comparison_count, 0U);
+    EXPECT_GT(statistics.red_black_tree_key_byte_comparison_count, 0U);
+    EXPECT_GT(statistics.red_black_tree_lcp_byte_comparison_count, 0U);
+    EXPECT_GT(statistics.red_black_tree_prefix_range_comparison_count, 0U);
+    EXPECT_GT(statistics.red_black_tree_rotation_count, 0U);
+    EXPECT_GT(statistics.red_black_tree_recoloring_count, 0U);
+    EXPECT_GT(statistics.red_black_tree_insertion_fixup_step_count, 0U);
+    EXPECT_GT(statistics.red_black_tree_maximum_fixup_steps, 0U);
+    EXPECT_GT(statistics.red_black_tree_maximum_nodes_per_query, 0U);
+    std::uint64_t histogram_queries{};
+    for (const auto count : statistics.red_black_tree_query_depth_histogram) {
+        histogram_queries += count;
+    }
+    EXPECT_EQ(histogram_queries, statistics.query_count);
+    EXPECT_FALSE(statistics.overflowed);
+    ASSERT_EQ(validate_lzss_red_black_tree(measured),
+              LzssRedBlackTreeValidationError::none);
+    ASSERT_EQ(validate_lzss_red_black_tree(plain),
+              LzssRedBlackTreeValidationError::none);
+    EXPECT_EQ(measured.root_index(), plain.root_index());
+    EXPECT_EQ(measured.active_node_count(), plain.active_node_count());
+    for (std::uint32_t node = 0; node < required.node_count; ++node) {
+        EXPECT_EQ(inspect_lzss_red_black_tree_node(measured, node),
+                  inspect_lzss_red_black_tree_node(plain, node)) << node;
+    }
+}
+
+TEST(LzssRedBlackTreeMatchFinder, ReportsStatisticsCounterOverflow) {
+    const std::span<const std::byte> input{};
+    LzssMatchFinderStatistics statistics{};
+    statistics.query_count = std::numeric_limits<std::uint64_t>::max();
+    statistics.red_black_tree_query_depth_histogram[0] =
+        std::numeric_limits<std::uint64_t>::max();
+    LzssRedBlackTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_red_black_tree_match_finder(
+                  input, {}, {}, {}, finder, &statistics),
+              LzssRedBlackTreeError::none);
+
+    EXPECT_EQ(finder.find_match(0), LzssMatch{});
+    EXPECT_TRUE(statistics.overflowed);
+    EXPECT_EQ(statistics.query_count,
+              std::numeric_limits<std::uint64_t>::max());
+    EXPECT_EQ(statistics.red_black_tree_query_depth_histogram[0],
+              std::numeric_limits<std::uint64_t>::max());
 }
 
 } // namespace

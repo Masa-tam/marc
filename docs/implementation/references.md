@@ -7663,3 +7663,14 @@ and validator stages, plus marc's common `LzssMatchFinder` protocol and
 stateless Exhaustive oracle. No external match finder, Red-Black
 implementation, compressor, source code, test suite, advancement code,
 pseudocode, or optimization description was consulted.
+
+### IR-0846
+
+The private Red-Black typed-token integration uses DD-1078 through DD-1084,
+TVG-0943 through TVG-0949, the repository-owned typed parser and buffer
+validation contract, the completed Red-Black finder, and Exhaustive,
+HashChain, and AVL as independent Exact-result oracles. Statistics follow
+marc's existing saturating internal diagnostic convention. No external match
+finder, Red-Black implementation, compressor, source code, test suite,
+adapter, benchmark harness, pseudocode, or optimization description was
+consulted.

@@ -29280,3 +29280,33 @@ both bounds.
   in both configurations. All 3,415 registered tests pass in 458.54 and
   387.05 seconds respectively, including complete schema compatibility in
   123.90 and 117.79 seconds.
+
+## CR-1177: 2026-09-07 - Private Red-Black typed-token integration
+
+- Authoring method: connected the completed first-party Red-Black finder to
+  marc's existing private single-pass typed parser after freezing parity and
+  failure tests.
+- References used: DD-1078 through DD-1084; IR-0840 through IR-0846;
+  TVG-0943 through TVG-0949; the repository-owned typed parser, validation
+  policy, statistics convention, and Exact oracle implementations.
+- Known implementations intentionally not consulted: external Red-Black or
+  match-finder implementation, compressor, source code, test suite, adapter,
+  benchmark harness, diagnostics code, pseudocode, and optimization
+  description.
+- Independent decisions: retain a private single-pass entry, use a distinct
+  result error field, share canonical parser policy, saturate optional counters,
+  and defer exact maximum-height measurement rather than report a proxy.
+- Generated-code task description: prove token and canonical-byte equality,
+  sentinel preservation, bounded aggregate admission, stable finder failures,
+  and optional diagnostics before implementing the private adapter.
+- Similarity review: the adapter, counters, and tests follow marc-owned APIs,
+  naming, fixtures, and proof structure. No external implementation
+  expression, pseudocode, test vector, or adapter control flow was copied or
+  structurally reproduced.
+- Local validation: official CMake 4.3.4 produced warning-clean optimized
+  Release builds with MSVC through Visual Studio 2026/MSBuild 18.9.1 and
+  ClangCL 22.1.3 on Windows x64. All forty-five focused Red-Black and typed-
+  encoder tests pass in both configurations. After the null-statistics guard
+  correction, all 3,418 registered tests pass in 466.30 and 384.05 seconds
+  respectively, including complete schema compatibility in 124.45 and 118.30
+  seconds.

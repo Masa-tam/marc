@@ -13718,3 +13718,20 @@ progress and an endpoint beyond input. Finally use nonadjacent landing
 positions over a repetitive fixture and compare each Red-Black match to the
 stateless Exhaustive oracle, proving that every skipped raw position was
 indexed rather than only caller-visible landing positions.
+
+### TVG-0949
+
+Extend the existing private Exact typed-token comparison over empty, short,
+repetitive, separated-prefix, all-byte, fixed-seed random-like, mixed, and
+one-MiB-variant inputs. Allocate the Red-Black workspace from its checked
+calculator, prefill unused token slots with a sentinel, and require exact
+token count, token storage, every token field, unchanged suffix sentinels, and
+canonical serialized bytes against Exhaustive, HashChain, and AVL.
+
+Require the optional Red-Black statistics to report one query per emitted
+token, every indexable insertion, representative nonzero comparison and
+balancing work, and no overflow without changing tokens. Separately reject
+one-token-short output, one-byte-short workspace, overlap, and one-byte-short
+aggregate limits before modifying output. Require the stable Red-Black error
+field for finder failures. No fixture may select Red-Black through a public
+strategy or create an interoperability archive.
