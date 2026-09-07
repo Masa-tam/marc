@@ -29570,3 +29570,25 @@ both bounds.
   pseudocode, test sequence, or control flow was copied or reproduced.
 - Local validation: all twenty Scapegoat tests build without warnings and pass
   under MSVC and ClangCL; documentation validation is run before commit.
+
+## CR-1188: 2026-09-08 - Independent Scapegoat structural validation
+
+- Authoring method: implemented the fifth reviewable stage from the frozen
+  complete-state invariant and bounded iterative-validation rules.
+- References used: DD-1090 through DD-1095, IR-0852 through IR-0857,
+  TVG-0954 through TVG-0959, and marc's fixed-slot and finite-suffix contracts.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, structural validator, source code,
+  pseudocode, test suite, or optimization description.
+- Independent decisions: validate mutation results through a separate read-only
+  path, distinguish structural error categories, prove root reachability with
+  bounded parent walks, verify global order iteratively, and leave temporary
+  reconstruction scratch outside persistent-state validation.
+- Generated-code task description: add a bounded independent complete-state
+  validator and corruption-isolation tests without adding exact-match query,
+  protocol advancement, statistics, integration, or public selection.
+- Similarity review: the validator directly expresses marc's frozen invariants.
+  No external implementation expression, pseudocode, test sequence, or control
+  flow was copied or reproduced.
+- Local validation: all twenty-two Scapegoat tests build without warnings and
+  pass under MSVC and ClangCL; documentation validation is run before commit.

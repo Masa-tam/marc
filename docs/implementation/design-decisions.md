@@ -22266,3 +22266,22 @@ Keep `q` unchanged while `3 * active_count >= 2 * q`. On the first strict
 the active count. Emptying the tree sets root and `q` to zero. Impossible
 links or bounded ancestor traversal make the private finder sticky-invalid;
 ordinary absent-position failures remain atomic and reusable.
+
+## DD-1095: Scapegoat validation independently checks complete fixed-slot state
+
+- Date: 2026-09-08
+- Status: accepted
+
+Provide a read-only validator whose result is independent of mutation return
+values. Check workspace layout, root and population relations, `q`, inactive
+sentinels, modulo-slot identity, parent/child reciprocity, bounded reachability,
+strict global key order, exact subtree sizes, subtree maxima, and the active
+absolute-position interval implied by protocol progress. Report stable,
+distinct internal error categories without changing finder state.
+
+Use only bounded iterative walks through existing parent links. A direct
+low-level mutation fixture with `next_position == 0` has no progressed active
+interval to enforce; once protocol progress is nonzero, require the exact
+finite suffix `[max(0, next_position - window_size), next_position)`. Do not
+inspect reconstruction scratch contents because scratch is temporary workspace,
+not persistent tree state.

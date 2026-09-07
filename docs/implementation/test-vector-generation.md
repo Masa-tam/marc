@@ -13873,3 +13873,18 @@ whole-tree shape and `q=3`. Empty a one-node tree, reuse its modulo slot for a
 later position, and reject absent, short, and out-of-range removals without
 mutation. Corrupt both child links to the same slot and require bounded sticky-
 invalid rejection. Run all twenty staged tests under MSVC and ClangCL.
+
+### TVG-0959
+
+Validate the initialized empty tree, then validate after every one of ten
+monotone insertions, including automatic subtree reconstruction, and after
+every reverse physical removal, including strict whole-tree reconstruction and
+the final empty reset. This exercises the independent validator across every
+implemented mutation stage rather than only at the final shape.
+
+Starting from the same three-node tree, independently contaminate an inactive
+slot and corrupt a child index, parent link, strict key order, subtree size,
+subtree maximum, modulo-slot position, and reachability. Require the matching
+stable error category for each corruption, restore the original field, and
+require the tree to validate again. Run all twenty-two staged tests under MSVC
+and ClangCL.

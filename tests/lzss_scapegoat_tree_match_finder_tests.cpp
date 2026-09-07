@@ -735,4 +735,123 @@ TEST(LzssScapegoatTreeMatchFinder, ImpossibleRemovalLinksAreSticky) {
               LzssScapegoatTreeError::invalid_state);
 }
 
+TEST(LzssScapegoatTreeMatchFinder, ValidatorAcceptsEverySmallMutation) {
+    EXPECT_EQ(validate_lzss_scapegoat_tree(
+                  LzssScapegoatTreeMatchFinder{}),
+              LzssScapegoatTreeValidationError::uninitialized);
+
+    const auto input = bytes(
+        "A0000000B0000000C0000000D0000000E0000000"
+        "F0000000G0000000H0000000I0000000J0000000");
+    const auto required = calculate_lzss_scapegoat_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssScapegoatTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssScapegoatTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_scapegoat_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssScapegoatTreeError::none);
+    ASSERT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::none);
+
+    for (std::size_t position = 0; position < 80U; position += 8U) {
+        ASSERT_EQ(insert_lzss_scapegoat_tree_position(finder, position),
+                  LzssScapegoatTreeError::none) << position;
+        ASSERT_EQ(validate_lzss_scapegoat_tree(finder),
+                  LzssScapegoatTreeValidationError::none) << position;
+    }
+    for (std::size_t position = 80U; position != 0;) {
+        position -= 8U;
+        ASSERT_EQ(remove_lzss_scapegoat_tree_position(finder, position),
+                  LzssScapegoatTreeError::none) << position;
+        ASSERT_EQ(validate_lzss_scapegoat_tree(finder),
+                  LzssScapegoatTreeValidationError::none) << position;
+    }
+    EXPECT_TRUE(finder.empty());
+}
+
+TEST(LzssScapegoatTreeMatchFinder,
+     ValidatorDistinguishesIndependentWorkspaceCorruption) {
+    const auto input = bytes("B0000000A0000000C0000000D0000000");
+    const auto required = calculate_lzss_scapegoat_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssScapegoatTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssScapegoatTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_scapegoat_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssScapegoatTreeError::none);
+    for (const auto position : {0U, 8U, 16U}) {
+        ASSERT_EQ(insert_lzss_scapegoat_tree_position(finder, position),
+                  LzssScapegoatTreeError::none);
+    }
+    ASSERT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::none);
+
+    auto left = mutable_array_at<std::uint32_t>(
+        storage.bytes, required.left_offset, required.node_count);
+    auto right = mutable_array_at<std::uint32_t>(
+        storage.bytes, required.right_offset, required.node_count);
+    auto parent = mutable_array_at<std::uint32_t>(
+        storage.bytes, required.parent_offset, required.node_count);
+    auto sizes = mutable_array_at<std::uint32_t>(
+        storage.bytes, required.subtree_size_offset, required.node_count);
+    auto positions = mutable_array_at<std::size_t>(
+        storage.bytes, required.position_offset, required.node_count);
+    auto maxima = mutable_array_at<std::size_t>(
+        storage.bytes, required.subtree_maximum_position_offset,
+        required.node_count);
+
+    left[1] = 0;
+    EXPECT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::invalid_inactive_node);
+    left[1] = lzss_scapegoat_tree_null_node;
+
+    left[0] = static_cast<std::uint32_t>(required.node_count);
+    EXPECT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::invalid_index);
+    left[0] = 8;
+
+    parent[8] = lzss_scapegoat_tree_null_node;
+    EXPECT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::invalid_parent);
+    parent[8] = 0;
+
+    std::swap(left[0], right[0]);
+    EXPECT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::invalid_order);
+    std::swap(left[0], right[0]);
+
+    ++sizes[0];
+    EXPECT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::invalid_subtree_size);
+    --sizes[0];
+
+    const auto saved_maximum = maxima[0];
+    maxima[0] = 8;
+    EXPECT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::invalid_subtree_maximum);
+    maxima[0] = saved_maximum;
+
+    const auto saved_position = positions[8];
+    positions[8] = 9;
+    EXPECT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::invalid_slot_position);
+    positions[8] = saved_position;
+
+    left[0] = lzss_scapegoat_tree_null_node;
+    sizes[0] = 2;
+    parent[8] = 8;
+    left[8] = 8;
+    EXPECT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::cycle_or_disconnected);
+    left[8] = lzss_scapegoat_tree_null_node;
+    parent[8] = 0;
+    left[0] = 8;
+    sizes[0] = 3;
+
+    EXPECT_EQ(validate_lzss_scapegoat_tree(finder),
+              LzssScapegoatTreeValidationError::none);
+}
+
 } // namespace

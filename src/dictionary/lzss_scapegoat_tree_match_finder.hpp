@@ -33,6 +33,25 @@ enum class LzssScapegoatTreeError : std::uint8_t {
     invalid_state,
 };
 
+enum class LzssScapegoatTreeValidationError : std::uint8_t {
+    none,
+    uninitialized,
+    invalid_protocol_state,
+    invalid_layout,
+    invalid_root,
+    invalid_active_count,
+    invalid_q,
+    invalid_inactive_node,
+    invalid_index,
+    invalid_parent,
+    cycle_or_disconnected,
+    invalid_order,
+    invalid_subtree_size,
+    invalid_subtree_maximum,
+    invalid_slot_position,
+    invalid_active_interval,
+};
+
 struct LzssScapegoatTreeNodeSnapshot {
     std::uint32_t left{lzss_scapegoat_tree_null_node};
     std::uint32_t right{lzss_scapegoat_tree_null_node};
@@ -104,6 +123,8 @@ private:
         LzssScapegoatTreeMatchFinder&, std::size_t) noexcept;
     friend LzssScapegoatTreeNodeSnapshot inspect_lzss_scapegoat_tree_node(
         const LzssScapegoatTreeMatchFinder&, std::uint32_t) noexcept;
+    friend LzssScapegoatTreeValidationError validate_lzss_scapegoat_tree(
+        const LzssScapegoatTreeMatchFinder&) noexcept;
 
     [[nodiscard]] int compare_positions(
         std::size_t left, std::size_t right) const noexcept;
@@ -150,6 +171,9 @@ initialize_lzss_scapegoat_tree_match_finder(
 [[nodiscard]] LzssScapegoatTreeNodeSnapshot inspect_lzss_scapegoat_tree_node(
     const LzssScapegoatTreeMatchFinder& finder,
     std::uint32_t node) noexcept;
+
+[[nodiscard]] LzssScapegoatTreeValidationError validate_lzss_scapegoat_tree(
+    const LzssScapegoatTreeMatchFinder& finder) noexcept;
 
 static_assert(lzss_scapegoat_tree_rebuild_task_capacity == 65U);
 

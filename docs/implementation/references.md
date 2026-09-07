@@ -7769,3 +7769,12 @@ parent-link, subtree-metadata, checked-loop, sentinel, and atomic-failure
 contracts. No external compressor, match finder, Scapegoat implementation,
 deletion or transplant routine, source code, pseudocode, test suite, or
 optimization description was consulted.
+
+### IR-0857
+
+The independent Scapegoat validation stage uses DD-1090 through DD-1095,
+TVG-0954 through TVG-0959, the accepted fixed-slot Scapegoat design, and marc's
+own sentinel, finite-suffix, parent-link, strict-order, subtree-metadata, and
+checked-traversal contracts. No external compressor, match finder, Scapegoat
+implementation, structural validator, source code, pseudocode, test suite, or
+optimization description was consulted.
