@@ -7685,3 +7685,12 @@ diagnostic walk over the already validated private tree. No external
 compressor, match finder, Red-Black implementation, benchmark harness, source
 code, test suite, traversal code, pseudocode, or optimization description was
 consulted.
+
+### IR-0848
+
+The private Red-Black file-frame benchmark route uses DD-1078 through DD-1086,
+TVG-0943 through TVG-0951, marc's repository-owned frame reader, checked
+workspace calculators, Exact token summary and fingerprint, and the completed
+private Red-Black synthetic dispatch. No external compressor, match finder,
+Red-Black implementation, Corpus runner, source code, test suite, benchmark
+harness, pseudocode, or optimization description was consulted.

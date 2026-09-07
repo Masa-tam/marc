@@ -29341,3 +29341,31 @@ both bounds.
 - Benchmark validation: the full ClangCL synthetic matrix completed all 45
   case/window/strategy processes. Every three-way token count and fingerprint
   comparison passed, and all nine strategy/window aggregates were present.
+
+## CR-1179: 2026-09-07 - Private Red-Black file-frame benchmark access
+
+- Authoring method: opened the existing bounded internal file-frame harness to
+  the already completed private Red-Black finder after fixing three-way Exact
+  identity and equal-workspace tests.
+- References used: DD-1078 through DD-1086; IR-0840 through IR-0848;
+  TVG-0943 through TVG-0951; marc's repository-owned frame benchmark,
+  workspace calculators, and diagnostic report contract.
+- Known implementations intentionally not consulted: external Red-Black or
+  match-finder implementation, compressor, source code, test suite, Corpus
+  runner, benchmark harness, pseudocode, and optimization description.
+- Independent decisions: expose only the internal `--frames` spelling, retain
+  the 128-MiB limit and ordinary Silesia strategy tuple, and prove HashChain,
+  AVL, and Red-Black summary identity plus AVL/Red-Black workspace equality.
+- Generated-code task description: create the bounded private file-input seam
+  needed for a later process-isolated Silesia experiment without changing a
+  codec selector, ABI, schema, stream representation, or default.
+- Similarity review: the dispatch branch and smoke assertions reuse marc-owned
+  APIs and report names. No external implementation expression, pseudocode,
+  test vector, runner structure, or benchmark control flow was copied or
+  structurally reproduced.
+- Local validation: official CMake 4.3.4 produced warning-clean optimized
+  benchmark builds with MSVC through Visual Studio 2026/MSBuild 18.9.1 and
+  ClangCL 22.1.3 on Windows x64. The focused file-frame and documentation
+  tests pass in both configurations. The immediately preceding committed
+  parent passed all 3,418 registered tests under both compilers; this stage
+  changes only the internal benchmark dispatch and its focused smoke.

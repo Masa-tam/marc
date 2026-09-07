@@ -13753,3 +13753,17 @@ report identical input, token summary, fingerprint, and calculator workspace;
 their structural counts and throughput are observations, not conformance
 constants. Do not add Red-Black to an archive, public selector, or the ordinary
 Silesia strategy list.
+
+### TVG-0951
+
+Run the repository README through HashChain, AVL BinaryTree, and private
+Red-Black `--frames` processing with 1,024-byte frames and a 65,536-byte
+configured window. Require identical input/frame totals, literal count, match
+count, matched bytes, token count, and lowercase SHA-256 token fingerprint.
+Require AVL and Red-Black calculators to return exactly the same workspace
+extent, and require Red-Black comparison, balancing, query-depth, final-height,
+and finite timing fields to be present.
+
+Continue to reject Red-Black through `--frames-limited` and every public codec
+selection surface. The file-frame route emits no archive and establishes only
+the bounded diagnostic input required by the later Silesia experiment.

@@ -83,6 +83,102 @@ foreach(decimal_key IN ITEMS
     endif()
 endforeach()
 
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames binary-tree-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536
+    RESULT_VARIABLE binary_result
+    OUTPUT_VARIABLE binary_report
+    ERROR_VARIABLE binary_error)
+if(NOT binary_result EQUAL 0)
+    message(FATAL_ERROR
+        "BinaryTree frame benchmark failed: ${binary_result}: "
+        "${binary_error}")
+endif()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames red-black-tree-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536
+    RESULT_VARIABLE red_black_result
+    OUTPUT_VARIABLE red_black_report
+    ERROR_VARIABLE red_black_error)
+if(NOT red_black_result EQUAL 0)
+    message(FATAL_ERROR
+        "Red-Black frame benchmark failed: ${red_black_result}: "
+        "${red_black_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=frames"
+        "strategy=red-black-tree-exact"
+        "input_bytes=${input_size}"
+        "frame_bytes=${frame_size}"
+        "window_bytes=65536"
+        "frame_count=${expected_frames}"
+        "iterations=1")
+    string(FIND "${red_black_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR
+            "missing Red-Black frame report line: ${expected_line}")
+    endif()
+endforeach()
+foreach(summary_key IN ITEMS
+        token_count literal_count match_count matched_bytes
+        token_fingerprint_sha256)
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored "${report}")
+    set(hash_summary "${CMAKE_MATCH_1}")
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${binary_report}")
+    set(binary_summary "${CMAKE_MATCH_1}")
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${red_black_report}")
+    set(red_black_summary "${CMAKE_MATCH_1}")
+    if(NOT hash_summary STREQUAL binary_summary
+            OR NOT hash_summary STREQUAL red_black_summary)
+        message(FATAL_ERROR
+            "file-frame Exact ${summary_key} mismatch: "
+            "${hash_summary}, ${binary_summary}, ${red_black_summary}")
+    endif()
+endforeach()
+string(REGEX MATCH "binary_tree_workspace_bytes=([0-9]+)" ignored
+    "${binary_report}")
+set(binary_workspace "${CMAKE_MATCH_1}")
+string(REGEX MATCH "red_black_tree_workspace_bytes=([0-9]+)" ignored
+    "${red_black_report}")
+set(red_black_workspace "${CMAKE_MATCH_1}")
+if(binary_workspace STREQUAL ""
+        OR NOT binary_workspace STREQUAL red_black_workspace)
+    message(FATAL_ERROR
+        "AVL/Red-Black workspace mismatch: "
+        "${binary_workspace} != ${red_black_workspace}")
+endif()
+foreach(positive_key IN ITEMS
+        red_black_tree_workspace_bytes red_black_tree_queries
+        red_black_tree_key_comparisons red_black_tree_key_byte_comparisons
+        red_black_tree_lcp_byte_comparisons red_black_tree_rotations
+        red_black_tree_recolorings red_black_tree_insertion_fixup_steps
+        red_black_tree_insertions red_black_tree_maximum_fixup_steps
+        red_black_tree_maximum_final_height
+        red_black_tree_max_nodes_per_query)
+    string(REGEX MATCH "${positive_key}=([0-9]+)" value_match
+        "${red_black_report}")
+    if(value_match STREQUAL "" OR CMAKE_MATCH_1 EQUAL 0)
+        message(FATAL_ERROR "missing positive Red-Black ${positive_key}")
+    endif()
+endforeach()
+string(REGEX MATCH
+    "red_black_tree_query_depth_histogram=[0-9]+(,[0-9]+)*"
+    red_black_histogram_match "${red_black_report}")
+if(red_black_histogram_match STREQUAL "")
+    message(FATAL_ERROR "missing file-frame Red-Black histogram")
+endif()
+foreach(decimal_key IN ITEMS
+        red_black_tree_frame_seconds red_black_tree_frame_mib_per_second)
+    string(REGEX MATCH "${decimal_key}=[0-9]+\\.[0-9]+" decimal_match
+        "${red_black_report}")
+    if(decimal_match STREQUAL "")
+        message(FATAL_ERROR "missing finite Red-Black ${decimal_key}")
+    endif()
+endforeach()
+
 set(explicit_limit 536870912)
 execute_process(
     COMMAND "${MARC_BENCHMARK}" --frames-limited hash-chain-exact

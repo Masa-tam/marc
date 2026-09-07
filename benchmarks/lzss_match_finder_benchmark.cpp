@@ -1205,7 +1205,8 @@ void print_usage() {
         << "usage: marc_lzss_match_finder_benchmark "
            "<input-file> [iterations]\n"
         << "       marc_lzss_match_finder_benchmark --frames "
-           "<hash-chain-exact|binary-tree-exact> <input-file> [iterations] "
+           "<hash-chain-exact|binary-tree-exact|red-black-tree-exact> "
+           "<input-file> [iterations] "
            "[frame-bytes] [window-bytes]\n"
         << "       marc_lzss_match_finder_benchmark --frames "
            "hash-tree-exact <input-file> <iterations> <frame-bytes> "
@@ -1237,7 +1238,6 @@ void print_usage() {
     if ((explicit_limit && argc != 8)
         || (!explicit_limit && (argc < 4 || argc > 9))
         || !parse_strategy(argv[2], strategy)
-        || strategy == BenchmarkStrategy::red_black_tree_exact
         || (explicit_limit
             && strategy != BenchmarkStrategy::hash_chain_exact
             && strategy != BenchmarkStrategy::binary_tree_exact)
@@ -1308,6 +1308,14 @@ void print_usage() {
             frame_size, parameters, limits);
         if (requirements.error != LzssBinaryTreeError::none) {
             std::cerr << "cannot calculate frame BinaryTree workspace\n";
+            return 1;
+        }
+        workspace_size = requirements.workspace_size;
+    } else if (strategy == BenchmarkStrategy::red_black_tree_exact) {
+        const auto requirements = calculate_lzss_red_black_tree_workspace(
+            frame_size, parameters, limits);
+        if (requirements.error != LzssRedBlackTreeError::none) {
+            std::cerr << "cannot calculate frame RedBlack workspace\n";
             return 1;
         }
         workspace_size = requirements.workspace_size;

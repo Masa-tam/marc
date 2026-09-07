@@ -22094,3 +22094,22 @@ validation. Do not call it lifetime maximum height: caching that value would
 change workspace and mutation cost, while scanning after every mutation would
 make the diagnostic route quadratic. The timed route performs neither
 validation nor height traversal and receives a null statistics pointer.
+
+## DD-1086: Red-Black file-frame access remains diagnostic-only
+
+- Date: 2026-09-07
+- Status: accepted
+
+Permit `red-black-tree-exact` through the internal benchmark's ordinary
+`--frames` route so independently verified local Corpus members can be read in
+bounded frames and compared under process isolation. Reuse the same frame
+reader, parameter validation, checked workspace calculator, Exact parser,
+token summary, fingerprint, untimed diagnostics, and counter-free timed pass as
+the synthetic route. The default 128-MiB aggregate policy remains unchanged.
+
+Keep the ordinary Silesia runner's public HashChain/AVL strategy tuple
+unchanged. This diagnostic command does not admit Red-Black to the public
+strategy enum, C ABI, codec CLI, frame encoders, interoperability schema, or
+stream metadata. A smoke fixture MUST make HashChain, AVL, and Red-Black agree
+on the complete token summary and fingerprint, and MUST make AVL and Red-Black
+report identical calculator workspace for the same frame and window.
