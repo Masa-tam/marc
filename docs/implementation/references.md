@@ -7742,3 +7742,12 @@ marc's existing checked arithmetic, buffer-overlap, LZSS parameter, and
 caller-owned workspace contracts. No external compressor, match finder,
 Scapegoat implementation, source code, test suite, workspace layout, or
 initialization routine was consulted.
+
+### IR-0854
+
+The fixed-slot Scapegoat insertion stage uses DD-1090 through DD-1092,
+TVG-0954 through TVG-0956, the accepted Scapegoat design, and marc's own
+finite-suffix ordering, modulo-slot, atomic-failure, subtree-maximum, and
+workspace conventions. No external compressor, match finder, Scapegoat
+implementation, source code, insertion routine, pseudocode, test suite, or
+optimization description was consulted.

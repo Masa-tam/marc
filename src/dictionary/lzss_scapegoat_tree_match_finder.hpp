@@ -27,6 +27,19 @@ enum class LzssScapegoatTreeError : std::uint8_t {
     workspace_too_small,
     misaligned_workspace,
     overlapping_buffers,
+    invalid_position,
+    invalid_state,
+};
+
+struct LzssScapegoatTreeNodeSnapshot {
+    std::uint32_t left{lzss_scapegoat_tree_null_node};
+    std::uint32_t right{lzss_scapegoat_tree_null_node};
+    std::uint32_t parent{lzss_scapegoat_tree_null_node};
+    std::uint32_t subtree_size{};
+    std::size_t position{lzss_scapegoat_tree_no_position};
+    std::size_t subtree_maximum_position{lzss_scapegoat_tree_no_position};
+
+    bool operator==(const LzssScapegoatTreeNodeSnapshot&) const = default;
 };
 
 struct LzssScapegoatTreeWorkspaceRequirements {
@@ -81,6 +94,15 @@ private:
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
         LzssScapegoatTreeMatchFinder&) noexcept;
+    friend LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
+        LzssScapegoatTreeMatchFinder&, std::size_t) noexcept;
+    friend LzssScapegoatTreeNodeSnapshot inspect_lzss_scapegoat_tree_node(
+        const LzssScapegoatTreeMatchFinder&, std::uint32_t) noexcept;
+
+    [[nodiscard]] int compare_positions(
+        std::size_t left, std::size_t right) const noexcept;
+    void update_metadata(std::uint32_t node) noexcept;
+    void update_metadata_upward(std::uint32_t node) noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
@@ -104,6 +126,13 @@ initialize_lzss_scapegoat_tree_match_finder(
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::span<std::byte> workspace,
     LzssScapegoatTreeMatchFinder& finder) noexcept;
+
+[[nodiscard]] LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
+    LzssScapegoatTreeMatchFinder& finder, std::size_t position) noexcept;
+
+[[nodiscard]] LzssScapegoatTreeNodeSnapshot inspect_lzss_scapegoat_tree_node(
+    const LzssScapegoatTreeMatchFinder& finder,
+    std::uint32_t node) noexcept;
 
 } // namespace marc::dictionary::internal
 

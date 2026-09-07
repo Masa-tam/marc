@@ -29503,3 +29503,24 @@ both bounds.
 - Local validation: the new seven-test suite builds without warnings and
   passes under both MSVC and ClangCL; documentation validation is run before
   committing the stage.
+
+## CR-1185: 2026-09-08 - Scapegoat fixed-slot insertion metadata
+
+- Authoring method: implemented the second reviewable stage from the frozen
+  key order, fixed-slot identity, metadata, and preflight-failure contract.
+- References used: DD-1090 through DD-1092, IR-0852 through IR-0854,
+  TVG-0954 through TVG-0956, and marc's finite-suffix and fixed-slot rules.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, source code, insertion routine,
+  pseudocode, test suite, or optimization description.
+- Independent decisions: introduce an inspection snapshot before the full
+  validator, keep rebuild scratch untouched, raise `q` at successful insert,
+  and defer the depth trigger until rebuilding can be tested atomically.
+- Generated-code task description: add deterministic fixed-slot BST insertion
+  and ancestor size/maximum repair, with exact shape and rejection tests, but
+  no reconstruction, retirement, query, advancement, or selection surface.
+- Similarity review: the code directly implements marc's documented ordering
+  and storage contracts. No external implementation expression, pseudocode,
+  test sequence, or control flow was copied or reproduced.
+- Local validation: the ten Scapegoat tests build without warnings and pass
+  under both MSVC and ClangCL; documentation validation is run before commit.

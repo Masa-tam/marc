@@ -22209,3 +22209,21 @@ sizes to zero, positions and subtree maxima to the no-position sentinel, and
 `root`, active count, `q`, and protocol position to their empty values. Keep
 the type private and deliberately omit query, advancement, strategy dispatch,
 and public selection until later stages establish their invariants.
+
+## DD-1092: Scapegoat insertion preserves fixed-slot identity
+
+- Date: 2026-09-08
+- Status: accepted
+
+Add the private insertion primitive before subtree rebuilding. Select the node
+slot by absolute position modulo capacity, traverse by the frozen finite-
+suffix order, and attach the new node without copying or swapping payloads.
+Initialize its subtree size and maximum, repair both metadata fields through
+every ancestor, increment the active population, and raise `q` to the new
+maximum population.
+
+Reject uninitialized or sticky-invalid state, an absent workspace, a position
+with fewer than five remaining bytes, an occupied modulo slot, a full active
+set, or an impossible traversal before changing the tree. This stage does not
+apply the insertion-depth trigger: deterministic rebuilding remains the next
+separately tested primitive, and no caller can select the incomplete finder.

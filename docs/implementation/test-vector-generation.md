@@ -13829,3 +13829,17 @@ sentinels and verify every element. Seed the destination finder before each
 failure case and fill writable storage with a marker so the tests prove that
 preflight failure changes neither object nor buffer. Run the same seven cases
 under MSVC and ClangCL.
+
+### TVG-0956
+
+Insert four distinct eight-byte records in an order that yields a
+hand-checkable unbalanced tree. Verify fixed slot identity, every parent and
+child link, every exact subtree size and subtree maximum, the root, active
+count, `q`, and that rebuild scratch remains untouched.
+
+Separately cap comparison at five bytes and insert three equal capped suffixes
+out of position order to prove the absolute-position tie break. For an
+uninitialized finder, a short suffix, an out-of-range position, a duplicate,
+and an occupied modulo slot, compare all node snapshots and population fields
+before and after rejection. Run the resulting ten-test suite under MSVC and
+ClangCL.
