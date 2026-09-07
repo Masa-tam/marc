@@ -134,6 +134,7 @@ public:
     [[nodiscard]] LzssScapegoatTreeCandidateQueryResult find_candidate(
         std::size_t position) const noexcept;
     [[nodiscard]] LzssMatch find_match(std::size_t position) const noexcept;
+    void advance(std::size_t position, std::size_t next_position) noexcept;
 
 private:
     friend LzssScapegoatTreeError
@@ -208,6 +209,7 @@ initialize_lzss_scapegoat_tree_match_finder(
 [[nodiscard]] LzssScapegoatTreeValidationError validate_lzss_scapegoat_tree(
     const LzssScapegoatTreeMatchFinder& finder) noexcept;
 
+static_assert(LzssMatchFinder<LzssScapegoatTreeMatchFinder>);
 static_assert(lzss_scapegoat_tree_rebuild_task_capacity == 65U);
 
 } // namespace marc::dictionary::internal

@@ -13905,3 +13905,21 @@ the exact input end, require distance and length to equal Exhaustive,
 HashChain Exact, AVL BinaryTree Exact, and Red-Black Exact. Independently
 validate Scapegoat state after every mutation and require representative
 nonempty matches. Run all twenty-five staged tests under MSVC and ClangCL.
+
+### TVG-0961
+
+Advance an eight-slot finder to positions eight and nine. Require exact
+protocol positions and populations, unchanged `q`, physical retirement of
+position zero, and reuse of slot zero by position eight. Advance a twelve-byte
+input through its nonindexable tail and require only indexable positions four
+through seven to remain, with the independent active-interval validator
+accepting the result.
+
+Advance the same fixed-seed 128-byte input to completion once in bulk and once
+one byte at a time. Require identical root, active count, `q`, protocol
+position, every node snapshot, and every byte of planned workspace including
+rebuild scratch. Reject a noncurrent start without changing workspace, and
+make it, a backward endpoint, and an oversized endpoint sticky-invalid. Use
+four nonadjacent landing positions on repetitive input and require each Exact
+result to match Exhaustive, proving every skipped raw position was indexed.
+Run all thirty staged tests under MSVC and ClangCL.

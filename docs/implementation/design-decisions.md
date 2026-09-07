@@ -22305,3 +22305,24 @@ invalid aggregate maximum as private invalid state. Keep the query read-only
 and deliberately do not bind it to `next_position`; skipped-position protocol
 advancement remains the following stage. This adds no statistics, production
 dispatch, public selector, ABI, or stream change.
+
+## DD-1097: Scapegoat advancement owns every skipped raw position
+
+- Date: 2026-09-08
+- Status: accepted
+
+Bind every Scapegoat query to the immutable current `next_position`. Advance
+only from that position to a nondecreasing endpoint within the input. For each
+raw position in the half-open skipped interval, first physically retire the
+position that has reached `window_size` distance, then insert the current
+position when its five-byte index prefix remains. This ordering frees a modulo
+slot before reuse and processes bulk and one-byte calls through the identical
+mutation sequence.
+
+Reject an uninitialized or sticky-invalid finder, noncurrent start, backward
+endpoint, or oversized endpoint by making protocol state sticky-invalid and
+moving `next_position` to input end. Preflight protocol rejection leaves caller
+workspace unchanged. An internal retirement or insertion failure also becomes
+sticky-invalid. The private class now satisfies the common match-finder shape,
+but this stage adds no statistics, typed integration, production dispatch,
+public selector, ABI, or stream change.

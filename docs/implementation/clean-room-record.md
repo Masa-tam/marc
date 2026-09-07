@@ -29615,3 +29615,27 @@ both bounds.
   flow was copied or reproduced.
 - Local validation: all twenty-five Scapegoat tests build without warnings and
   pass under MSVC and ClangCL; documentation validation is run before commit.
+
+## CR-1190: 2026-09-08 - Scapegoat skipped-position advancement
+
+- Authoring method: implemented the seventh reviewable stage from the frozen
+  protocol-position and retire-before-insert rules.
+- References used: DD-1090 through DD-1097, IR-0852 through IR-0859,
+  TVG-0954 through TVG-0961, and marc's existing match-finder protocol.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, advancement routine, source code,
+  pseudocode, test suite, or optimization description.
+- Independent decisions: bind queries only after the query algorithm had an
+  independent prepared-set test stage, execute identical per-position mutation
+  order for all caller chunking, compare temporary scratch as persistent
+  workspace evidence, and preserve caller bytes on protocol preflight failure.
+- Generated-code task description: add skipped-position advancement, query-
+  position binding, common-finder conformance, and bulk/bytewise complete-state
+  tests without adding statistics, typed integration, production dispatch, or
+  public selection.
+- Similarity review: the implementation directly composes marc's already
+  documented physical mutators and protocol. No external implementation
+  expression, pseudocode, test sequence, or control flow was copied or
+  reproduced.
+- Local validation: all thirty Scapegoat tests build without warnings and pass
+  under MSVC and ClangCL; documentation validation is run before commit.

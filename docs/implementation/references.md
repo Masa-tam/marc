@@ -7787,3 +7787,12 @@ for marc's AVL and Red-Black candidates, and marc's finite-suffix, LCP,
 subtree-maximum, and nearest-distance contracts. No external compressor, match
 finder, Scapegoat implementation, query routine, source code, pseudocode, test
 suite, or optimization description was consulted.
+
+### IR-0859
+
+The Scapegoat advancement stage uses DD-1090 through DD-1097, TVG-0954 through
+TVG-0961, the accepted Scapegoat design, and marc's independently established
+retire-before-insert, fixed-slot, skipped-position, sticky-state, and query-
+position contracts. No external compressor, match finder, Scapegoat
+implementation, advancement routine, source code, pseudocode, test suite, or
+optimization description was consulted.
