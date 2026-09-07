@@ -7760,3 +7760,12 @@ definition already recorded for this experiment, and marc's own parent-link,
 fixed-slot, finite-order, and metadata contracts. No external compressor,
 match finder, Scapegoat implementation, reconstruction routine, source code,
 pseudocode, test suite, or optimization description was consulted.
+
+### IR-0856
+
+The physical Scapegoat deletion stage uses DD-1090 through DD-1094, TVG-0954
+through TVG-0958, the accepted Scapegoat design, and marc's own fixed-slot,
+parent-link, subtree-metadata, checked-loop, sentinel, and atomic-failure
+contracts. No external compressor, match finder, Scapegoat implementation,
+deletion or transplant routine, source code, pseudocode, test suite, or
+optimization description was consulted.

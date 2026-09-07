@@ -22247,3 +22247,22 @@ whose path child satisfies `3 * child_size > 2 * parent_size`. An impossible
 link, count, order, task bound, traversal bound, or absent qualifying ancestor
 makes the private finder sticky-invalid. Manual private rebuilding does not
 change the active count or `q`.
+
+## DD-1094: Scapegoat deletion physically transplants node slots
+
+- Date: 2026-09-08
+- Status: accepted
+
+Retire an exact absolute-position slot with ordinary structural BST deletion.
+For a two-child node, detach its in-order successor slot and transplant that
+slot into the removed node's structural position; never copy or exchange
+positions or payload identity. Validate the removal boundary, direct children,
+successor path, replacement child, and active/`q` relation before mutation.
+Repair size and maximum metadata along the affected parent chain with bounded
+link validation, then clear every field in the retired slot.
+
+Keep `q` unchanged while `3 * active_count >= 2 * q`. On the first strict
+`3 * active_count < 2 * q`, rebuild the whole surviving tree and set `q` to
+the active count. Emptying the tree sets root and `q` to zero. Impossible
+links or bounded ancestor traversal make the private finder sticky-invalid;
+ordinary absent-position failures remain atomic and reusable.

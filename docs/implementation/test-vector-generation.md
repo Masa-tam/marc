@@ -13858,3 +13858,18 @@ median shape. Also reject an uninitialized root, an inactive root, and an
 impossible stored subtree count; the last case must make subsequent mutation
 fail through sticky-invalid state. Run all fourteen staged tests under MSVC
 and ClangCL.
+
+### TVG-0958
+
+Remove a leaf and a one-child node from separate four-node trees without
+crossing the whole-rebuild threshold. Verify cleared slots, replacement links,
+active counts, unchanged `q`, and repaired root metadata. Remove a two-child
+root from a five-node tree and require the in-order successor's original slot
+and absolute position to become the root without moving any payload.
+
+From a six-node increasing tree, delete down to `n=4, q=6` and prove equality
+does not rebuild; delete once more and require the three-node lower-median
+whole-tree shape and `q=3`. Empty a one-node tree, reuse its modulo slot for a
+later position, and reject absent, short, and out-of-range removals without
+mutation. Corrupt both child links to the same slot and require bounded sticky-
+invalid rejection. Run all twenty staged tests under MSVC and ClangCL.

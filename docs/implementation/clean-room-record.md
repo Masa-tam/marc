@@ -29547,3 +29547,26 @@ both bounds.
   pseudocode, test sequence, or control flow was copied or reproduced.
 - Local validation: all fourteen Scapegoat tests build without warnings and
   pass under MSVC and ClangCL; documentation validation is run before commit.
+
+## CR-1187: 2026-09-08 - Scapegoat physical retirement and whole rebuild
+
+- Authoring method: implemented the fourth reviewable stage from the frozen
+  fixed-slot transplant, strict deletion threshold, and bounded-failure rules.
+- References used: DD-1090 through DD-1094, IR-0852 through IR-0856,
+  TVG-0954 through TVG-0958, and marc's parent-link and metadata contracts.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, deletion or transplant routine,
+  source code, pseudocode, test suite, or optimization description.
+- Independent decisions: preflight the complete successor path, structurally
+  move the successor slot, bound metadata ancestor repair by active count,
+  preserve `q` at equality, reset it only after strict whole rebuild, and make
+  impossible child aliasing sticky-invalid.
+- Generated-code task description: add leaf, one-child, and two-child physical
+  retirement, strict whole-tree rebuilding, empty reset and slot reuse, plus
+  bounded corruption tests without adding the independent validator, query,
+  advancement, statistics, integration, or public selection.
+- Similarity review: the implementation directly expresses marc's frozen
+  storage and threshold decisions. No external implementation expression,
+  pseudocode, test sequence, or control flow was copied or reproduced.
+- Local validation: all twenty Scapegoat tests build without warnings and pass
+  under MSVC and ClangCL; documentation validation is run before commit.

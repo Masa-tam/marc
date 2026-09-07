@@ -100,13 +100,19 @@ private:
         LzssScapegoatTreeMatchFinder&, std::size_t) noexcept;
     friend LzssScapegoatTreeError rebuild_lzss_scapegoat_tree_subtree(
         LzssScapegoatTreeMatchFinder&, std::uint32_t) noexcept;
+    friend LzssScapegoatTreeError remove_lzss_scapegoat_tree_position(
+        LzssScapegoatTreeMatchFinder&, std::size_t) noexcept;
     friend LzssScapegoatTreeNodeSnapshot inspect_lzss_scapegoat_tree_node(
         const LzssScapegoatTreeMatchFinder&, std::uint32_t) noexcept;
 
     [[nodiscard]] int compare_positions(
         std::size_t left, std::size_t right) const noexcept;
     void update_metadata(std::uint32_t node) noexcept;
-    void update_metadata_upward(std::uint32_t node) noexcept;
+    [[nodiscard]] bool update_metadata_upward(std::uint32_t node) noexcept;
+    void replace_parent_child(
+        std::uint32_t parent, std::uint32_t previous_child,
+        std::uint32_t replacement) noexcept;
+    void clear_node(std::uint32_t node) noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
@@ -137,6 +143,9 @@ initialize_lzss_scapegoat_tree_match_finder(
 [[nodiscard]] LzssScapegoatTreeError rebuild_lzss_scapegoat_tree_subtree(
     LzssScapegoatTreeMatchFinder& finder,
     std::uint32_t subtree_root) noexcept;
+
+[[nodiscard]] LzssScapegoatTreeError remove_lzss_scapegoat_tree_position(
+    LzssScapegoatTreeMatchFinder& finder, std::size_t position) noexcept;
 
 [[nodiscard]] LzssScapegoatTreeNodeSnapshot inspect_lzss_scapegoat_tree_node(
     const LzssScapegoatTreeMatchFinder& finder,
