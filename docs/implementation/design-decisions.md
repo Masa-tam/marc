@@ -22170,3 +22170,24 @@ contain the field; a checkpoint without it was never complete under the
 current benchmark report contract and is rejected. Update synthetic fixtures
 rather than weakening shared validation. This correction changes no codec,
 public API, ABI, stream representation, or measured strategy behavior.
+
+## DD-1090: Scapegoat Exact uses a fixed integral rebuilding policy
+
+- Date: 2026-09-08
+- Status: accepted
+
+Define the second private ordered-tree candidate with `alpha = 2/3`, checked
+`uint64_t` balance products, physical fixed-slot deletion, stored `uint32_t`
+subtree sizes, and one caller-owned `uint32_t[node_capacity]` in-order rebuild
+scratch region. Rebuild into the deterministic lower-median shape with bounded
+iterative traversals and a fixed 65-entry local task stack. Preserve the
+finite-suffix order, subtree maximum, nearest-distance tie break, and every
+existing Exact token byte.
+
+Use `depth > 2 * bit_width(q)` as the insertion trigger, where `q` is the
+greatest active population since the last whole rebuild. This conservative
+integer bound avoids floating point and still implies the standard
+`log_(3/2)(q)` violation; failure to find an alpha-heavy ancestor is invalid
+state. After physical deletion, rebuild the whole tree exactly when
+`3 * active_count < 2 * q` and reset `q`. Keep the candidate private and do
+not raise resource limits, add a selector, or change a default implicitly.

@@ -29454,3 +29454,28 @@ both bounds.
   candidate-only resume, two complete resumes without relaunch, malformed
   fingerprint rejection, and valid-but-different fingerprint rejection. All
   ten registered tooling tests also pass in both configurations.
+
+## CR-1183: 2026-09-08 - Scapegoat Exact implementation contract
+
+- Authoring method: refined the already accepted second-candidate hypothesis
+  into an exact bounded state, workspace, rebuild, failure, diagnostic, and
+  verification contract before writing implementation code.
+- References used: DD-1090, IR-0852, TVG-0954, the original Scapegoat Tree
+  paper already recorded by the ordered-tree evaluation, and marc's own AVL,
+  Red-Black, finite-suffix, workspace, and Exact-result contracts.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, source code, test suite, pseudocode,
+  rebuild routine, or optimization description.
+- Independent decisions: retain per-node subtree size, use a conservative
+  `2 * bit_width(q)` trigger, allocate one node-index scratch array, rebuild a
+  lower-median shape iteratively, count repeated structural visits, and keep
+  every selection surface private.
+- Generated-code task description: freeze a deterministic no-allocation
+  Scapegoat Exact variant suitable for staged differential implementation and
+  later batch/deletion-heavy comparison without changing stream bytes.
+- Similarity review: terminology, storage, formulas, failure rules, and tests
+  are expressed through marc-owned types and requirements. No external
+  implementation expression, pseudocode, test sequence, or control flow was
+  copied or structurally reproduced.
+- Local validation: documentation layout, chronology, links, and required
+  record sections pass under both MSVC and ClangCL CTest configurations.

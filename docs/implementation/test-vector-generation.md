@@ -13797,3 +13797,21 @@ sequence twice without relaunching completed processes. The final JSON values
 must remain identical. This specifically covers the Linux CI regression in
 which the shared baseline validator rejected the fixture only when the saved
 baseline was re-read from checkpoint.
+
+### TVG-0954
+
+Stage Scapegoat Exact tests from checked workspace and empty initialization
+through insertion metadata, deterministic lower-median subtree rebuilding,
+physical retirement, whole-tree rebuilding, independent validation, Exact
+query, skipped-position advancement, typed-token integration, and focused
+benchmarks. Require exact-size and one-short workspace cases, alignment,
+overlap, occupied-slot, invalid-position, arithmetic, and aggregate failures
+before writable output changes.
+
+For small trees validate every mutation and compare every query position with
+Exhaustive, HashChain, AVL, and Red-Black. Include monotone finite keys that
+force depth violations, a hand-checkable even-node lower-median shape, two-
+child physical transplant identity, the strict `3n < 2q` whole-rebuild
+boundary, and bulk/one-byte state equivalence. Record maximum single-update
+work separately from aggregate throughput and include a deletion-heavy
+frame-greater-than-window benchmark before any promotion decision.

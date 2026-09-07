@@ -100,6 +100,10 @@ fixed rational balance parameter of `alpha = 2/3`; integer checked comparisons
 replace floating-point arithmetic. Parameter sweeps are a later benchmark
 question and MUST NOT alter one named strategy silently.
 
+The implementation-level policy, including the conservative integral depth
+budget, scratch layout, deterministic lower-median shape, failure boundary,
+and staged tests, is frozen in `lzss-scapegoat-tree-exact.md`.
+
 The first performance-oriented layout retains left, right, parent, absolute
 position, and subtree maximum position, and adds a checked `uint32_t` subtree-
 size entry. This intentionally gives up the textbook no-per-node-balance-field

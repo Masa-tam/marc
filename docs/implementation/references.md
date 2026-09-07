@@ -7722,3 +7722,14 @@ frame route, the shared Silesia validator, and the existing Sparse checkpoint
 resume test. No external compressor, match finder, checkpoint implementation,
 source code, test suite, failure workaround, or compatibility design was
 consulted.
+
+### IR-0852
+
+The frozen Scapegoat Exact design uses DD-1090, TVG-0954, the mathematical
+Scapegoat Tree definition recorded in the ordered-tree evaluation, marc's
+repository-owned finite-suffix order, fixed-slot AVL/Red-Black storage,
+subtree-maximum query proof, checked workspace conventions, and Exact oracles.
+The conservative `2 * bit_width(q)` depth budget, lower-median rebuild shape,
+scratch layout, and visit metrics are independent marc decisions. No external
+compressor, match finder, Scapegoat implementation, source code, test suite,
+pseudocode, rebuild routine, or optimization description was consulted.

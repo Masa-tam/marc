@@ -25,6 +25,9 @@ navigate chronological development records.
 - [LZSS ordered-tree Exact strategy evaluation](design/lzss-balanced-tree-strategy-evaluation.md):
   Red-Black and Scapegoat experiments under the existing Exact contract, with
   WAVL explicitly deferred.
+- [LZSS Scapegoat Tree Exact](design/lzss-scapegoat-tree-exact.md): fixed
+  two-thirds balance, bounded iterative rebuilding, workspace, diagnostics,
+  and private staged verification.
 - [LZSS HashTree Exact design](design/lzss-hash-tree-match-finder.md):
   deterministic hot-bucket promotion and LCP-aware ordered search.
 - [LZSS BinaryTree Exact 16 MiB benchmark](design/lzss-binary-tree-window-16m-benchmark.md):
