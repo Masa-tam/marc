@@ -141,6 +141,24 @@ void expect_private_match_finders_typed_equal_exact(
                   ? 0U : input.size() - 4U);
     EXPECT_FALSE(red_black_statistics.overflowed);
 
+    const auto scapegoat_required = calculate_lzss_scapegoat_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(scapegoat_required.error, LzssScapegoatTreeError::none);
+    AlignedWorkspace scapegoat_owner(scapegoat_required.workspace_size);
+    auto scapegoat_workspace = scapegoat_owner.bytes(
+        scapegoat_required.workspace_size);
+    std::vector<LzssTypedToken> scapegoat_tokens(input.size(), sentinel);
+    const auto scapegoat_result =
+        encode_lzss_typed_tokens_scapegoat_tree_single_pass(
+            input, parameters, {}, scapegoat_tokens, scapegoat_workspace,
+            variant);
+    ASSERT_EQ(scapegoat_result.error, LzssTypedEncodeError::none);
+    EXPECT_EQ(scapegoat_result.scapegoat_tree_match_finder_error,
+              LzssScapegoatTreeError::none);
+    EXPECT_EQ(scapegoat_result.token_count, reference.size());
+    EXPECT_EQ(scapegoat_result.token_storage_size,
+              reference.size() * sizeof(LzssTypedToken));
+
     const auto sparse_capacity =
         input.size() < lzss_match_finder_prefix_size
         ? 0U
@@ -171,12 +189,14 @@ void expect_private_match_finders_typed_equal_exact(
         EXPECT_TRUE(equal_token(hash_tokens[index], reference[index]));
         EXPECT_TRUE(equal_token(binary_tokens[index], reference[index]));
         EXPECT_TRUE(equal_token(red_black_tokens[index], reference[index]));
+        EXPECT_TRUE(equal_token(scapegoat_tokens[index], reference[index]));
         EXPECT_TRUE(equal_token(sparse_tokens[index], reference[index]));
     }
     for (std::size_t index = reference.size(); index < binary_tokens.size();
          ++index) {
         EXPECT_TRUE(equal_token(binary_tokens[index], sentinel));
         EXPECT_TRUE(equal_token(red_black_tokens[index], sentinel));
+        EXPECT_TRUE(equal_token(scapegoat_tokens[index], sentinel));
         EXPECT_TRUE(equal_token(sparse_tokens[index], sentinel));
     }
 
@@ -192,6 +212,10 @@ void expect_private_match_finders_typed_equal_exact(
     EXPECT_EQ(serialize_typed_tokens(
                   std::span{red_black_tokens}.first(
                       red_black_result.token_count)),
+              canonical);
+    EXPECT_EQ(serialize_typed_tokens(
+                  std::span{scapegoat_tokens}.first(
+                      scapegoat_result.token_count)),
               canonical);
     EXPECT_EQ(serialize_typed_tokens(
                   std::span{sparse_tokens}.first(sparse_result.token_count)),
@@ -755,6 +779,98 @@ TEST(LzssTypedEncoder,
         + required.workspace_size
         + input.size() * sizeof(LzssTypedToken) - 1U;
     result = encode_lzss_typed_tokens_red_black_tree_single_pass(
+        input, {}, limits, output, workspace);
+    EXPECT_EQ(result.error,
+              LzssTypedEncodeError::token_storage_limit_exceeded);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [&sentinel](const auto& token) {
+            return equal_token(token, sentinel);
+        }));
+}
+
+TEST(LzssTypedEncoder,
+     ScapegoatTreePrivateEntryFailuresAreAtomicAndBounded) {
+    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    const auto required = calculate_lzss_scapegoat_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssScapegoatTreeError::none);
+    ASSERT_GT(required.workspace_size, 0U);
+    AlignedWorkspace owner(required.workspace_size);
+    auto workspace = owner.bytes(required.workspace_size);
+    const LzssTypedToken sentinel{
+        LzssTypedTokenKind::match, 0, 123, 456};
+
+    std::vector<LzssTypedToken> short_output(input.size() - 1U, sentinel);
+    auto result = encode_lzss_typed_tokens_scapegoat_tree_single_pass(
+        input, {}, {}, short_output, workspace);
+    EXPECT_EQ(result.error, LzssTypedEncodeError::output_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        short_output, [&sentinel](const auto& token) {
+            return equal_token(token, sentinel);
+        }));
+
+    std::vector<LzssTypedToken> output(input.size(), sentinel);
+    result = encode_lzss_typed_tokens_scapegoat_tree_single_pass(
+        input, {}, {}, output, workspace.first(required.workspace_size - 1U));
+    EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
+    EXPECT_EQ(result.scapegoat_tree_match_finder_error,
+              LzssScapegoatTreeError::workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [&sentinel](const auto& token) {
+            return equal_token(token, sentinel);
+        }));
+
+    std::vector<LzssTypedToken> input_alias(input.size(), sentinel);
+    auto input_alias_bytes = std::as_writable_bytes(std::span{input_alias});
+    std::ranges::copy(input, input_alias_bytes.begin());
+    const auto input_alias_snapshot = input_alias;
+    result = encode_lzss_typed_tokens_scapegoat_tree_single_pass(
+        std::span<const std::byte>{input_alias_bytes}.first(input.size()),
+        {}, {}, input_alias, workspace);
+    EXPECT_EQ(result.error, LzssTypedEncodeError::overlapping_buffers);
+    EXPECT_TRUE(std::ranges::equal(
+        input_alias, input_alias_snapshot, equal_token));
+
+    AlignedWorkspace input_workspace_owner(
+        required.workspace_size + input.size());
+    auto input_workspace = input_workspace_owner.bytes(
+        required.workspace_size + input.size());
+    std::ranges::copy(input, input_workspace.begin());
+    std::ranges::fill(output, sentinel);
+    result = encode_lzss_typed_tokens_scapegoat_tree_single_pass(
+        std::span<const std::byte>{input_workspace}.first(input.size()),
+        {}, {}, output, input_workspace.first(required.workspace_size));
+    EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
+    EXPECT_EQ(result.scapegoat_tree_match_finder_error,
+              LzssScapegoatTreeError::overlapping_buffers);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [&sentinel](const auto& token) {
+            return equal_token(token, sentinel);
+        }));
+
+    const auto aliased_token_count = std::max(
+        input.size(),
+        (required.workspace_size + sizeof(LzssTypedToken) - 1U)
+            / sizeof(LzssTypedToken));
+    std::vector<LzssTypedToken> output_workspace(
+        aliased_token_count, sentinel);
+    const auto output_workspace_snapshot = output_workspace;
+    result = encode_lzss_typed_tokens_scapegoat_tree_single_pass(
+        input, {}, {}, std::span{output_workspace}.first(input.size()),
+        std::as_writable_bytes(std::span{output_workspace})
+            .first(required.workspace_size));
+    EXPECT_EQ(result.error, LzssTypedEncodeError::overlapping_buffers);
+    EXPECT_TRUE(std::ranges::equal(
+        output_workspace, output_workspace_snapshot, equal_token));
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = input.size();
+    limits.max_block_size = input.size();
+    limits.max_internal_buffered_bytes = input.size()
+        + required.workspace_size
+        + input.size() * sizeof(LzssTypedToken) - 1U;
+    std::ranges::fill(output, sentinel);
+    result = encode_lzss_typed_tokens_scapegoat_tree_single_pass(
         input, {}, limits, output, workspace);
     EXPECT_EQ(result.error,
               LzssTypedEncodeError::token_storage_limit_exceeded);

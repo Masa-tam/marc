@@ -7796,3 +7796,13 @@ retire-before-insert, fixed-slot, skipped-position, sticky-state, and query-
 position contracts. No external compressor, match finder, Scapegoat
 implementation, advancement routine, source code, pseudocode, test suite, or
 optimization description was consulted.
+
+### IR-0860
+
+The private Scapegoat typed-token integration uses DD-1090 through DD-1098,
+TVG-0954 through TVG-0962, the accepted Scapegoat design, and marc's existing
+independently implemented common typed-token parser, Exact oracles, checked
+workspace arithmetic, overlap checks, sentinel convention, and atomic-failure
+contracts. No external compressor, match finder, Scapegoat implementation,
+typed-token adapter, source code, pseudocode, test suite, or optimization
+description was consulted.

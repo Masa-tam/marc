@@ -22326,3 +22326,21 @@ workspace unchanged. An internal retirement or insertion failure also becomes
 sticky-invalid. The private class now satisfies the common match-finder shape,
 but this stage adds no statistics, typed integration, production dispatch,
 public selector, ABI, or stream change.
+
+## DD-1098: Scapegoat typed-token integration remains private and single-pass
+
+- Date: 2026-09-08
+- Status: accepted
+
+Add a separately named internal typed-token entry that owns one initialized
+Scapegoat Exact finder and drives the established common parser exactly once.
+Before the first token write, require capacity for the worst-case one-token-
+per-input-byte extent, exact finder workspace, pairwise non-overlap, and the
+aggregate of raw input, token storage, and finder workspace. Report finder
+calculation, initialization, and sticky-state failures through a dedicated
+Scapegoat result field.
+
+The route must emit exactly the Exhaustive canonical token sequence and leave
+every unused caller token unchanged. It adds no statistics yet and does not
+alter production dispatch, public strategy values, C ABI, CLI, frames,
+interoperability schema, or stream bytes.

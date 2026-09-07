@@ -29639,3 +29639,29 @@ both bounds.
   reproduced.
 - Local validation: all thirty Scapegoat tests build without warnings and pass
   under MSVC and ClangCL; documentation validation is run before commit.
+
+## CR-1191: 2026-09-08 - Private Scapegoat typed-token integration
+
+- Authoring method: implemented the eighth reviewable stage from the frozen
+  private-integration and prewrite-boundary contract.
+- References used: DD-1090 through DD-1098, IR-0852 through IR-0860,
+  TVG-0954 through TVG-0962, and marc's existing private Exact typed-token
+  routes and canonical Exhaustive oracle.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, typed-token adapter, source code,
+  pseudocode, test suite, or optimization description.
+- Independent decisions: reuse the common single-pass parser, expose a
+  Scapegoat-specific internal error field, reserve worst-case token storage,
+  include the exact finder extent in the aggregate check, and defer statistics
+  and every production/public surface to later review stages.
+- Generated-code task description: add a private Scapegoat typed-token entry,
+  canonical differential coverage, unused-token sentinel checks, and atomic
+  short-buffer, alias, and aggregate-limit failures without changing dispatch,
+  ABI, CLI, frames, schema, or stream bytes.
+- Similarity review: the implementation composes only marc's independently
+  documented finder and typed-token structures. No external implementation
+  expression, pseudocode, test sequence, or control flow was copied or
+  reproduced.
+- Local validation: all forty-six focused Scapegoat and typed-encoder tests
+  build without warnings and pass under MSVC and ClangCL; documentation
+  validation is run before commit.

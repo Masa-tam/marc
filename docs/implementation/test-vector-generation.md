@@ -13923,3 +13923,17 @@ make it, a backward endpoint, and an oversized endpoint sticky-invalid. Use
 four nonadjacent landing positions on repetitive input and require each Exact
 result to match Exhaustive, proving every skipped raw position was indexed.
 Run all thirty staged tests under MSVC and ClangCL.
+
+### TVG-0962
+
+Extend the existing private Exact typed-token comparison over empty, one-byte,
+repetitive, mixed, all-byte, fixed-seed pseudorandom, and extended-window
+inputs. Require Scapegoat token count, token storage, every token, and canonical
+serialized bytes to equal Exhaustive while every unused output slot retains a
+distinct sentinel.
+
+Independently require one-token-short output, one-byte-short workspace,
+input/output alias, input/workspace alias, output/workspace alias, and an
+aggregate limit one byte below the complete raw-plus-token-plus-finder extent
+to fail before modifying any caller token. Run all forty-six focused
+Scapegoat and typed-encoder tests under MSVC and ClangCL.
