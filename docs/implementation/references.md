@@ -7694,3 +7694,13 @@ workspace calculators, Exact token summary and fingerprint, and the completed
 private Red-Black synthetic dispatch. No external compressor, match finder,
 Red-Black implementation, Corpus runner, source code, test suite, benchmark
 harness, pseudocode, or optimization description was consulted.
+
+### IR-0849
+
+The fixed Red-Black Corpus experiment uses DD-1078 through DD-1087,
+TVG-0943 through TVG-0952, marc's repository-owned local Silesia verifier,
+process-isolated fixed-matrix runner pattern, Exact token fingerprint,
+workspace calculators, AVL baseline, and private Red-Black frame route. No
+external compressor, match finder, Red-Black implementation, Corpus runner,
+benchmark result, source code, test suite, checkpoint design, pseudocode, or
+optimization description was consulted.

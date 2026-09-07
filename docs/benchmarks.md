@@ -2170,3 +2170,25 @@ bytes at ratio 0.582. Encoder primary/secondary/views regions were
 the exact 3,112,330,476-byte decoder aggregate. These short-input measurements
 validate application wiring and accounting; they are not a performance
 target.
+
+### BM-0061: Fixed AVL/Red-Black Silesia experiment
+
+The private Red-Black match finder is compared with AVL through a dedicated,
+network-free runner:
+
+```console
+py -3.14 tools/run_silesia_red_black_tree_experiment.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --corpus benchmarks/data/silesia/corpus --checkpoint benchmarks/data/silesia/results/red-black-tree-msvc.checkpoint.json --max-new-points 2 --compiler "MSVC 19.50" --generator "Visual Studio 18 2026" --architecture x64 --build-label windows-msvc-release
+```
+
+The runner fixes one-MiB frames, 64-KiB/256-KiB/one-MiB windows, one measured
+iteration, and AVL followed by Red-Black for every one of the twelve verified
+Corpus members. Thus the complete matrix contains 72 independent processes.
+Repeated invocations resume the identity-bound checkpoint; omit
+`--max-new-points` and add `--output` only for a complete uninterrupted run.
+
+Each pair must have identical token-kind counts, matched-byte count, and token
+fingerprint. Results aggregate throughput, workspace, tree work, query depth,
+and the differently defined AVL lifetime-maximum and Red-Black final-height
+fields. The experiment is descriptive and does not make Red-Black a public
+strategy or default. The complete frozen contract is in
+`docs/design/lzss-red-black-tree-silesia-experiment.md`.

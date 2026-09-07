@@ -1810,6 +1810,11 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_binary_tree_16m_runner_tests.py)
         set_tests_properties(marc_silesia_binary_tree_16m_runner_tests
             PROPERTIES LABELS tooling)
+        add_test(NAME marc_silesia_red_black_tree_runner_tests
+            COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_red_black_tree_runner_tests.py)
+        set_tests_properties(marc_silesia_red_black_tree_runner_tests
+            PROPERTIES LABELS tooling)
         add_test(NAME marc_silesia_binary_tree_64m_runner_tests
             COMMAND ${Python3_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_binary_tree_64m_runner_tests.py)

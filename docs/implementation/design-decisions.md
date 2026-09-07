@@ -22113,3 +22113,24 @@ strategy enum, C ABI, codec CLI, frame encoders, interoperability schema, or
 stream metadata. A smoke fixture MUST make HashChain, AVL, and Red-Black agree
 on the complete token summary and fingerprint, and MUST make AVL and Red-Black
 report identical calculator workspace for the same frame and window.
+
+## DD-1087: The first Red-Black Corpus experiment is a fixed AVL comparison
+
+- Date: 2026-09-07
+- Status: accepted
+
+Add an independent runner that compares private Red-Black Exact only with AVL
+BinaryTree Exact over all twelve locally verified Silesia members. Freeze
+1,048,576-byte frames, 65,536/262,144/1,048,576-byte windows, one measured
+iteration, and one member/window/strategy per process. Run AVL before
+Red-Black and reject the pair unless token count, literal count, match count,
+matched bytes, and canonical token SHA-256 all agree.
+
+Permit bounded checkpoint batches, but bind the checkpoint to schema, Git
+revision, benchmark path and hash, complete Corpus manifest, runner-source
+hashes, fixed configuration, and environment labels. Require records to form
+the canonical member/window/AVL-then-Red-Black prefix and save every new point
+atomically. Report throughput and workspace ratios while preserving the
+different meanings of AVL lifetime maximum height and Red-Black final height.
+No outcome of this experiment alone changes a public selector, ABI, profile,
+default, interoperability schema, or stream representation.

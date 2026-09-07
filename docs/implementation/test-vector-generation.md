@@ -13767,3 +13767,19 @@ and finite timing fields to be present.
 Continue to reject Red-Black through `--frames-limited` and every public codec
 selection surface. The file-frame route emits no archive and establishes only
 the bounded diagnostic input required by the later Silesia experiment.
+
+### TVG-0952
+
+Fix the private AVL/Red-Black Silesia experiment at twelve verified members,
+one-MiB frames, 64-KiB/256-KiB/one-MiB windows, one measured iteration, and 72
+separate processes. Unit fixtures synthesize complete reports for both
+strategies and require mode, dimensions, valid strategy workspace, finite time,
+token reconstruction, lowercase fingerprint, nonnegative counters, and
+complete query histograms.
+
+For every member/window pair require all five token summary fields to match.
+Exercise atomic checkpoint creation, exact identity rejection after revision
+or executable changes, canonical-prefix order, orphan Red-Black rejection,
+duplicate rejection, mismatch rejection, bounded two-point progress, zero-new-
+point resume without relaunch, complete 72-record ordering, six aggregates,
+and three window comparisons. No unit test downloads or embeds Corpus data.

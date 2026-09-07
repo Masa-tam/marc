@@ -29369,3 +29369,35 @@ both bounds.
   tests pass in both configurations. The immediately preceding committed
   parent passed all 3,418 registered tests under both compilers; this stage
   changes only the internal benchmark dispatch and its focused smoke.
+
+## CR-1180: 2026-09-07 - Fixed AVL/Red-Black Silesia experiment runner
+
+- Authoring method: specialized marc's existing identity-bound fixed Corpus
+  experiment pattern after freezing the private comparison matrix and Exact
+  result gate in a repository design document.
+- References used: DD-1078 through DD-1087; IR-0840 through IR-0849;
+  TVG-0943 through TVG-0952; marc's repository-owned Corpus verifier,
+  process-isolation, checkpoint, aggregation, AVL, and Red-Black report
+  contracts.
+- Known implementations intentionally not consulted: external Red-Black or
+  match-finder implementation, compressor, Corpus runner, benchmark result,
+  source code, test suite, checkpoint design, pseudocode, and optimization
+  description.
+- Independent decisions: use one-MiB frames and the established 64-KiB to
+  one-MiB window ladder, pair AVL before Red-Black, require complete token
+  identity, freeze all reproducibility inputs in the checkpoint, and keep the
+  public strategy surfaces unchanged.
+- Generated-code task description: create a restartable local Silesia runner
+  that measures AVL and private Red-Black under identical bounded conditions
+  and refuses mixed binaries, data, tools, environments, order, or parses.
+- Similarity review: runner, schema, validation, aggregation, checkpoint, and
+  tests follow marc-owned fixed-experiment conventions. No external
+  implementation expression, pseudocode, benchmark result, test vector, or
+  runner control flow was copied or structurally reproduced.
+- Local validation: official CMake 4.3.4 regenerated both supported Windows
+  configurations. The runner unit contract and documentation layout pass
+  under MSVC and ClangCL CTest registration. A bounded ClangCL real-process
+  batch wrote and reloaded the first two canonical points (`dickens`, 65,536-
+  byte window, AVL then Red-Black); all five token summary fields and the
+  canonical SHA-256 fingerprint agreed. The experiment checkpoint is ignored
+  build output and is not committed.
