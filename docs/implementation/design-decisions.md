@@ -22227,3 +22227,23 @@ with fewer than five remaining bytes, an occupied modulo slot, a full active
 set, or an impossible traversal before changing the tree. This stage does not
 apply the insertion-depth trigger: deterministic rebuilding remains the next
 separately tested primitive, and no caller can select the incomplete finder.
+
+## DD-1093: Scapegoat reconstruction is iterative and lower-median fixed
+
+- Date: 2026-09-08
+- Status: accepted
+
+Implement subtree reconstruction as three bounded iterative phases: flatten
+the original subtree in strict key order through parent links, reconnect
+scratch intervals using the lower median, then recompute metadata bottom-up
+through rebuilt parent links. Use the fixed 65-entry local interval stack and
+perform no recursion or dynamic allocation. Preserve every node's modulo slot
+and absolute position and repair metadata from an interior rebuilt root through
+its unchanged boundary ancestors.
+
+After insertion metadata is complete, apply `depth > 2 * bit_width(q)` and
+walk from the inserted node toward the root. Rebuild exactly the first parent
+whose path child satisfies `3 * child_size > 2 * parent_size`. An impossible
+link, count, order, task bound, traversal bound, or absent qualifying ancestor
+makes the private finder sticky-invalid. Manual private rebuilding does not
+change the active count or `q`.

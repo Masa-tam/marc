@@ -13843,3 +13843,18 @@ uninitialized finder, a short suffix, an out-of-range position, a duplicate,
 and an occupied modulo slot, compare all node snapshots and population fields
 before and after rejection. Run the resulting ten-test suite under MSVC and
 ClangCL.
+
+### TVG-0957
+
+Build a four-node increasing chain and reconstruct the whole tree. Require the
+lower of the two middle keys as root, the exact balanced links, unchanged slot
+payloads, exact subtree sizes and maxima, and the in-order scratch sequence.
+Build a six-node chain, reconstruct only its four-node interior suffix, and
+verify the boundary attachment and every affected ancestor metadata value.
+
+Insert ten increasing keys to cross the integral depth budget and require the
+first strict alpha-heavy ancestor's four-node subtree to take the same lower-
+median shape. Also reject an uninitialized root, an inactive root, and an
+impossible stored subtree count; the last case must make subsequent mutation
+fail through sticky-invalid state. Run all fourteen staged tests under MSVC
+and ClangCL.

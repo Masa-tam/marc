@@ -15,6 +15,8 @@ inline constexpr std::size_t lzss_scapegoat_tree_prefix_size = 5;
 inline constexpr std::uint32_t lzss_scapegoat_tree_null_node = UINT32_MAX;
 inline constexpr std::size_t lzss_scapegoat_tree_no_position =
     std::numeric_limits<std::size_t>::max();
+inline constexpr std::size_t lzss_scapegoat_tree_rebuild_task_capacity =
+    2U * std::numeric_limits<std::uint32_t>::digits + 1U;
 
 enum class LzssScapegoatTreeError : std::uint8_t {
     none,
@@ -96,6 +98,8 @@ private:
         LzssScapegoatTreeMatchFinder&) noexcept;
     friend LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
         LzssScapegoatTreeMatchFinder&, std::size_t) noexcept;
+    friend LzssScapegoatTreeError rebuild_lzss_scapegoat_tree_subtree(
+        LzssScapegoatTreeMatchFinder&, std::uint32_t) noexcept;
     friend LzssScapegoatTreeNodeSnapshot inspect_lzss_scapegoat_tree_node(
         const LzssScapegoatTreeMatchFinder&, std::uint32_t) noexcept;
 
@@ -130,9 +134,15 @@ initialize_lzss_scapegoat_tree_match_finder(
 [[nodiscard]] LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
     LzssScapegoatTreeMatchFinder& finder, std::size_t position) noexcept;
 
+[[nodiscard]] LzssScapegoatTreeError rebuild_lzss_scapegoat_tree_subtree(
+    LzssScapegoatTreeMatchFinder& finder,
+    std::uint32_t subtree_root) noexcept;
+
 [[nodiscard]] LzssScapegoatTreeNodeSnapshot inspect_lzss_scapegoat_tree_node(
     const LzssScapegoatTreeMatchFinder& finder,
     std::uint32_t node) noexcept;
+
+static_assert(lzss_scapegoat_tree_rebuild_task_capacity == 65U);
 
 } // namespace marc::dictionary::internal
 

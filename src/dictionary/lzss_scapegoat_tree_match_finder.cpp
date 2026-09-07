@@ -4,6 +4,8 @@
 #include "core/checked_math.hpp"
 
 #include <algorithm>
+#include <array>
+#include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -11,6 +13,19 @@
 
 namespace marc::dictionary::internal {
 namespace {
+
+enum class RebuildAttachment : std::uint8_t {
+    root,
+    left,
+    right,
+};
+
+struct RebuildTask {
+    std::size_t begin{};
+    std::size_t end{};
+    std::uint32_t parent{lzss_scapegoat_tree_null_node};
+    RebuildAttachment attachment{RebuildAttachment::root};
+};
 
 [[nodiscard]] bool append_array(
     const std::size_t count, const std::size_t element_size,
@@ -246,6 +261,7 @@ LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
     auto current = finder.root_;
     int comparison{};
     std::size_t steps{};
+    std::size_t depth{};
     while (current != lzss_scapegoat_tree_null_node) {
         if (current >= finder.left_.size()
             || finder.position_[current]
@@ -262,6 +278,7 @@ LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
             position, finder.position_[current]);
         current = comparison < 0 ? finder.left_[current]
                                  : finder.right_[current];
+        ++depth;
     }
 
     finder.left_[slot] = lzss_scapegoat_tree_null_node;
@@ -281,6 +298,222 @@ LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
     finder.maximum_active_node_count_ = std::max(
         finder.maximum_active_node_count_, finder.active_node_count_);
     finder.update_metadata_upward(parent);
+
+    const auto depth_limit = 2U * std::bit_width(
+        finder.maximum_active_node_count_);
+    if (depth <= depth_limit) return LzssScapegoatTreeError::none;
+
+    auto path_child = slot;
+    auto ancestor = finder.parent_[path_child];
+    while (ancestor != lzss_scapegoat_tree_null_node) {
+        const auto child_size = static_cast<std::uint64_t>(
+            finder.subtree_size_[path_child]);
+        const auto ancestor_size = static_cast<std::uint64_t>(
+            finder.subtree_size_[ancestor]);
+        if (UINT64_C(3) * child_size > UINT64_C(2) * ancestor_size) {
+            const auto error = rebuild_lzss_scapegoat_tree_subtree(
+                finder, ancestor);
+            if (error != LzssScapegoatTreeError::none) {
+                finder.state_valid_ = false;
+            }
+            return error;
+        }
+        path_child = ancestor;
+        ancestor = finder.parent_[ancestor];
+    }
+    finder.state_valid_ = false;
+    return LzssScapegoatTreeError::invalid_state;
+}
+
+LzssScapegoatTreeError rebuild_lzss_scapegoat_tree_subtree(
+    LzssScapegoatTreeMatchFinder& finder,
+    const std::uint32_t subtree_root) noexcept {
+    if (!finder.initialized_ || !finder.state_valid_
+        || subtree_root >= finder.left_.size()
+        || finder.position_[subtree_root]
+            == lzss_scapegoat_tree_no_position) {
+        return LzssScapegoatTreeError::invalid_state;
+    }
+    const auto expected_count = static_cast<std::size_t>(
+        finder.subtree_size_[subtree_root]);
+    if (expected_count == 0 || expected_count > finder.active_node_count_
+        || expected_count > finder.rebuild_scratch_.size()) {
+        finder.state_valid_ = false;
+        return LzssScapegoatTreeError::invalid_state;
+    }
+
+    const auto boundary_parent = finder.parent_[subtree_root];
+    auto root_attachment = RebuildAttachment::root;
+    if (boundary_parent != lzss_scapegoat_tree_null_node) {
+        if (boundary_parent >= finder.left_.size()
+            || finder.position_[boundary_parent]
+                == lzss_scapegoat_tree_no_position) {
+            finder.state_valid_ = false;
+            return LzssScapegoatTreeError::invalid_state;
+        }
+        if (finder.left_[boundary_parent] == subtree_root) {
+            root_attachment = RebuildAttachment::left;
+        } else if (finder.right_[boundary_parent] == subtree_root) {
+            root_attachment = RebuildAttachment::right;
+        } else {
+            finder.state_valid_ = false;
+            return LzssScapegoatTreeError::invalid_state;
+        }
+    } else if (finder.root_ != subtree_root) {
+        finder.state_valid_ = false;
+        return LzssScapegoatTreeError::invalid_state;
+    }
+
+    auto previous = boundary_parent;
+    auto current = subtree_root;
+    std::size_t count{};
+    std::uint64_t transitions{};
+    const auto transition_limit = UINT64_C(2) * expected_count + 1U;
+    while (current != boundary_parent) {
+        if (current == lzss_scapegoat_tree_null_node
+            || current >= finder.left_.size()
+            || finder.position_[current]
+                == lzss_scapegoat_tree_no_position
+            || finder.position_[current] >= finder.input_.size()
+            || finder.position_[current] % finder.left_.size() != current
+            || transitions++ >= transition_limit) {
+            finder.state_valid_ = false;
+            return LzssScapegoatTreeError::invalid_state;
+        }
+        const auto left = finder.left_[current];
+        const auto right = finder.right_[current];
+        if ((left != lzss_scapegoat_tree_null_node
+             && (left >= finder.left_.size()
+                 || finder.parent_[left] != current))
+            || (right != lzss_scapegoat_tree_null_node
+                && (right >= finder.left_.size()
+                    || finder.parent_[right] != current))) {
+            finder.state_valid_ = false;
+            return LzssScapegoatTreeError::invalid_state;
+        }
+
+        auto next = lzss_scapegoat_tree_null_node;
+        bool emit{};
+        if (previous == finder.parent_[current]) {
+            if (left != lzss_scapegoat_tree_null_node) {
+                next = left;
+            } else {
+                emit = true;
+                next = right != lzss_scapegoat_tree_null_node
+                    ? right : finder.parent_[current];
+            }
+        } else if (previous == left) {
+            emit = true;
+            next = right != lzss_scapegoat_tree_null_node
+                ? right : finder.parent_[current];
+        } else if (previous == right) {
+            next = finder.parent_[current];
+        } else {
+            finder.state_valid_ = false;
+            return LzssScapegoatTreeError::invalid_state;
+        }
+
+        if (emit) {
+            if (count >= expected_count
+                || (count != 0
+                    && finder.compare_positions(
+                        finder.position_[finder.rebuild_scratch_[count - 1U]],
+                        finder.position_[current]) >= 0)) {
+                finder.state_valid_ = false;
+                return LzssScapegoatTreeError::invalid_state;
+            }
+            finder.rebuild_scratch_[count++] = current;
+        }
+        previous = current;
+        current = next;
+    }
+    if (count != expected_count) {
+        finder.state_valid_ = false;
+        return LzssScapegoatTreeError::invalid_state;
+    }
+
+    std::array<RebuildTask, lzss_scapegoat_tree_rebuild_task_capacity>
+        tasks{};
+    std::size_t task_count{1};
+    tasks[0] = {0, expected_count, boundary_parent, root_attachment};
+    auto rebuilt_root = lzss_scapegoat_tree_null_node;
+    while (task_count != 0) {
+        const auto task = tasks[--task_count];
+        const auto middle = task.begin
+            + (task.end - task.begin - 1U) / 2U;
+        const auto node = finder.rebuild_scratch_[middle];
+        finder.left_[node] = lzss_scapegoat_tree_null_node;
+        finder.right_[node] = lzss_scapegoat_tree_null_node;
+        finder.parent_[node] = task.parent;
+        finder.subtree_size_[node] = 1;
+        finder.subtree_maximum_position_[node] = finder.position_[node];
+        if (task.attachment == RebuildAttachment::root) {
+            finder.root_ = node;
+            rebuilt_root = node;
+        } else if (task.attachment == RebuildAttachment::left) {
+            finder.left_[task.parent] = node;
+            if (task.parent == boundary_parent) rebuilt_root = node;
+        } else {
+            finder.right_[task.parent] = node;
+            if (task.parent == boundary_parent) rebuilt_root = node;
+        }
+
+        if (middle + 1U < task.end) {
+            if (task_count == tasks.size()) {
+                finder.state_valid_ = false;
+                return LzssScapegoatTreeError::invalid_state;
+            }
+            tasks[task_count++] = {
+                middle + 1U, task.end, node, RebuildAttachment::right};
+        }
+        if (task.begin < middle) {
+            if (task_count == tasks.size()) {
+                finder.state_valid_ = false;
+                return LzssScapegoatTreeError::invalid_state;
+            }
+            tasks[task_count++] = {
+                task.begin, middle, node, RebuildAttachment::left};
+        }
+    }
+
+    previous = boundary_parent;
+    current = rebuilt_root;
+    transitions = 0;
+    while (current != boundary_parent) {
+        if (current == lzss_scapegoat_tree_null_node
+            || transitions++ >= transition_limit) {
+            finder.state_valid_ = false;
+            return LzssScapegoatTreeError::invalid_state;
+        }
+        auto next = lzss_scapegoat_tree_null_node;
+        if (previous == finder.parent_[current]) {
+            if (finder.left_[current] != lzss_scapegoat_tree_null_node) {
+                next = finder.left_[current];
+            } else if (finder.right_[current]
+                       != lzss_scapegoat_tree_null_node) {
+                next = finder.right_[current];
+            } else {
+                finder.update_metadata(current);
+                next = finder.parent_[current];
+            }
+        } else if (previous == finder.left_[current]) {
+            if (finder.right_[current] != lzss_scapegoat_tree_null_node) {
+                next = finder.right_[current];
+            } else {
+                finder.update_metadata(current);
+                next = finder.parent_[current];
+            }
+        } else if (previous == finder.right_[current]) {
+            finder.update_metadata(current);
+            next = finder.parent_[current];
+        } else {
+            finder.state_valid_ = false;
+            return LzssScapegoatTreeError::invalid_state;
+        }
+        previous = current;
+        current = next;
+    }
+    finder.update_metadata_upward(boundary_parent);
     return LzssScapegoatTreeError::none;
 }
 

@@ -29524,3 +29524,26 @@ both bounds.
   test sequence, or control flow was copied or reproduced.
 - Local validation: the ten Scapegoat tests build without warnings and pass
   under both MSVC and ClangCL; documentation validation is run before commit.
+
+## CR-1186: 2026-09-08 - Scapegoat deterministic subtree reconstruction
+
+- Authoring method: implemented the third reviewable stage from the frozen
+  alpha, depth, lower-median, scratch, and bounded-iteration contract.
+- References used: DD-1090 through DD-1093, IR-0852 through IR-0855,
+  TVG-0954 through TVG-0957, and marc's fixed-slot and metadata rules.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, reconstruction routine, source code,
+  pseudocode, test suite, or optimization description.
+- Independent decisions: traverse both old and rebuilt trees through parent
+  links, isolate interval state in the fixed 65-entry local stack, retain the
+  scratch sequence after rebuilding for inspection, and make impossible
+  internal reconstruction state sticky-invalid.
+- Generated-code task description: add deterministic whole and interior
+  subtree reconstruction, connect the integral insertion-depth trigger and
+  first-heavy-ancestor rule, and test hand-computable shapes without adding
+  retirement, query, advancement, statistics, or public selection.
+- Similarity review: the implementation follows marc's frozen formulas and
+  storage constraints directly. No external implementation expression,
+  pseudocode, test sequence, or control flow was copied or reproduced.
+- Local validation: all fourteen Scapegoat tests build without warnings and
+  pass under MSVC and ClangCL; documentation validation is run before commit.

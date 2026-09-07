@@ -44,6 +44,13 @@ template<typename T>
     return {reinterpret_cast<const T*>(workspace.data() + offset), count};
 }
 
+template<typename T>
+[[nodiscard]] std::span<T> mutable_array_at(
+    const std::span<std::byte> workspace, const std::size_t offset,
+    const std::size_t count) {
+    return {reinterpret_cast<T*>(workspace.data() + offset), count};
+}
+
 TEST(LzssScapegoatTreeMatchFinder, DefaultConstructedFinderIsInert) {
     const LzssScapegoatTreeMatchFinder finder{};
     EXPECT_FALSE(finder.initialized());
@@ -377,6 +384,145 @@ TEST(LzssScapegoatTreeMatchFinder, RejectsInvalidInsertionAtomically) {
         EXPECT_EQ(inspect_lzss_scapegoat_tree_node(finder, node),
                   before[node]) << node;
     }
+}
+
+TEST(LzssScapegoatTreeMatchFinder, RebuildsEvenTreeWithLowerMedian) {
+    const auto input = bytes("A0000000B0000000C0000000D0000000");
+    const auto required = calculate_lzss_scapegoat_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssScapegoatTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssScapegoatTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_scapegoat_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssScapegoatTreeError::none);
+    for (const auto position : {0U, 8U, 16U, 24U}) {
+        ASSERT_EQ(insert_lzss_scapegoat_tree_position(finder, position),
+                  LzssScapegoatTreeError::none);
+    }
+
+    ASSERT_EQ(rebuild_lzss_scapegoat_tree_subtree(
+                  finder, finder.root_index()),
+              LzssScapegoatTreeError::none);
+    EXPECT_EQ(finder.root_index(), 8U);
+    EXPECT_EQ(finder.active_node_count(), 4U);
+    EXPECT_EQ(finder.maximum_active_node_count(), 4U);
+
+    const auto root = inspect_lzss_scapegoat_tree_node(finder, 8);
+    EXPECT_EQ(root.left, 0U);
+    EXPECT_EQ(root.right, 16U);
+    EXPECT_EQ(root.parent, lzss_scapegoat_tree_null_node);
+    EXPECT_EQ(root.subtree_size, 4U);
+    EXPECT_EQ(root.subtree_maximum_position, 24U);
+    EXPECT_EQ(inspect_lzss_scapegoat_tree_node(finder, 0).parent, 8U);
+    const auto right = inspect_lzss_scapegoat_tree_node(finder, 16);
+    EXPECT_EQ(right.parent, 8U);
+    EXPECT_EQ(right.right, 24U);
+    EXPECT_EQ(right.subtree_size, 2U);
+    EXPECT_EQ(right.subtree_maximum_position, 24U);
+    EXPECT_EQ(inspect_lzss_scapegoat_tree_node(finder, 24).parent, 16U);
+
+    const auto scratch = array_at<std::uint32_t>(
+        std::span<const std::byte>{storage.bytes},
+        required.rebuild_scratch_offset, required.node_count);
+    ASSERT_GE(scratch.size(), 4U);
+    EXPECT_EQ(scratch[0], 0U);
+    EXPECT_EQ(scratch[1], 8U);
+    EXPECT_EQ(scratch[2], 16U);
+    EXPECT_EQ(scratch[3], 24U);
+}
+
+TEST(LzssScapegoatTreeMatchFinder, RebuildsInteriorAndRepairsAncestors) {
+    const auto input = bytes(
+        "A0000000B0000000C0000000D0000000E0000000F0000000");
+    const auto required = calculate_lzss_scapegoat_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssScapegoatTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssScapegoatTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_scapegoat_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssScapegoatTreeError::none);
+    for (const auto position : {0U, 8U, 16U, 24U, 32U, 40U}) {
+        ASSERT_EQ(insert_lzss_scapegoat_tree_position(finder, position),
+                  LzssScapegoatTreeError::none);
+    }
+
+    ASSERT_EQ(rebuild_lzss_scapegoat_tree_subtree(finder, 16),
+              LzssScapegoatTreeError::none);
+    EXPECT_EQ(finder.root_index(), 0U);
+    EXPECT_EQ(inspect_lzss_scapegoat_tree_node(finder, 8).right, 24U);
+    const auto rebuilt = inspect_lzss_scapegoat_tree_node(finder, 24);
+    EXPECT_EQ(rebuilt.parent, 8U);
+    EXPECT_EQ(rebuilt.left, 16U);
+    EXPECT_EQ(rebuilt.right, 32U);
+    EXPECT_EQ(rebuilt.subtree_size, 4U);
+    EXPECT_EQ(rebuilt.subtree_maximum_position, 40U);
+    EXPECT_EQ(inspect_lzss_scapegoat_tree_node(finder, 32).right, 40U);
+    const auto root = inspect_lzss_scapegoat_tree_node(finder, 0);
+    EXPECT_EQ(root.subtree_size, 6U);
+    EXPECT_EQ(root.subtree_maximum_position, 40U);
+}
+
+TEST(LzssScapegoatTreeMatchFinder, InsertionTriggersFirstHeavyAncestor) {
+    const auto input = bytes(
+        "A0000000B0000000C0000000D0000000E0000000"
+        "F0000000G0000000H0000000I0000000J0000000");
+    const auto required = calculate_lzss_scapegoat_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssScapegoatTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssScapegoatTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_scapegoat_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssScapegoatTreeError::none);
+    for (std::size_t position = 0; position < 80U; position += 8U) {
+        ASSERT_EQ(insert_lzss_scapegoat_tree_position(finder, position),
+                  LzssScapegoatTreeError::none) << position;
+    }
+
+    EXPECT_TRUE(finder.state_valid());
+    EXPECT_EQ(finder.root_index(), 0U);
+    EXPECT_EQ(finder.active_node_count(), 10U);
+    EXPECT_EQ(finder.maximum_active_node_count(), 10U);
+    EXPECT_EQ(inspect_lzss_scapegoat_tree_node(finder, 40).right, 56U);
+    const auto rebuilt = inspect_lzss_scapegoat_tree_node(finder, 56);
+    EXPECT_EQ(rebuilt.left, 48U);
+    EXPECT_EQ(rebuilt.right, 64U);
+    EXPECT_EQ(rebuilt.subtree_size, 4U);
+    EXPECT_EQ(rebuilt.subtree_maximum_position, 72U);
+    EXPECT_EQ(inspect_lzss_scapegoat_tree_node(finder, 64).right, 72U);
+    EXPECT_EQ(inspect_lzss_scapegoat_tree_node(finder, 0).subtree_size, 10U);
+}
+
+TEST(LzssScapegoatTreeMatchFinder, ImpossibleRebuildIsSticky) {
+    LzssScapegoatTreeMatchFinder uninitialized{};
+    EXPECT_EQ(rebuild_lzss_scapegoat_tree_subtree(uninitialized, 0),
+              LzssScapegoatTreeError::invalid_state);
+
+    const auto input = bytes("A0000000B0000000");
+    const auto required = calculate_lzss_scapegoat_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssScapegoatTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssScapegoatTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_scapegoat_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssScapegoatTreeError::none);
+    ASSERT_EQ(insert_lzss_scapegoat_tree_position(finder, 0),
+              LzssScapegoatTreeError::none);
+    EXPECT_EQ(rebuild_lzss_scapegoat_tree_subtree(finder, 8),
+              LzssScapegoatTreeError::invalid_state);
+    EXPECT_TRUE(finder.state_valid());
+
+    auto sizes = mutable_array_at<std::uint32_t>(
+        storage.bytes, required.subtree_size_offset, required.node_count);
+    sizes[0] = static_cast<std::uint32_t>(required.node_count + 1U);
+    EXPECT_EQ(rebuild_lzss_scapegoat_tree_subtree(finder, 0),
+              LzssScapegoatTreeError::invalid_state);
+    EXPECT_FALSE(finder.state_valid());
+    EXPECT_EQ(insert_lzss_scapegoat_tree_position(finder, 8),
+              LzssScapegoatTreeError::invalid_state);
 }
 
 } // namespace

@@ -7751,3 +7751,12 @@ finite-suffix ordering, modulo-slot, atomic-failure, subtree-maximum, and
 workspace conventions. No external compressor, match finder, Scapegoat
 implementation, source code, insertion routine, pseudocode, test suite, or
 optimization description was consulted.
+
+### IR-0855
+
+The Scapegoat reconstruction stage uses DD-1090 through DD-1093, TVG-0954
+through TVG-0957, the accepted Scapegoat design, the mathematical balance
+definition already recorded for this experiment, and marc's own parent-link,
+fixed-slot, finite-order, and metadata contracts. No external compressor,
+match finder, Scapegoat implementation, reconstruction routine, source code,
+pseudocode, test suite, or optimization description was consulted.
