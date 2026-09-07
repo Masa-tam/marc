@@ -138,9 +138,13 @@ own rank-difference validator and differential deletion matrix.
 Untimed diagnostic passes and timed passes remain separate. All strategies
 report the existing input, frame, token summary, lowercase SHA-256 token
 fingerprint, query count, key comparisons, key bytes, LCP bytes, range-boundary
-comparisons, maximum height, maximum query nodes, insertions, and retirements.
+comparisons, maximum query nodes, insertions, and retirements. AVL retains its
+incrementally maintained maximum height. Red-Black instead reports the exact
+final height of every frame and their maximum: a lifetime maximum would require
+extra metadata writes, while a full scan after every mutation would make the
+diagnostic pass quadratic and cease to be a practical one-MiB comparison.
 
-Red-Black adds promotions/recolorings, rotations, and maximum upward fix-up
+Red-Black adds recolorings, rotations, and maximum upward fix-up
 steps. Scapegoat adds depth violations, scapegoat searches, subtree rebuilds,
 total rebuilt nodes, maximum rebuilt nodes, whole-tree rebuilds, and maximum
 nodes touched by one update. Counters are saturating `uint64_t` values with an
@@ -201,3 +205,30 @@ exceeds its hard limit, or has an undocumented unbounded operation.
 These references supply data-structure definitions and complexity results only.
 No external compressor, match finder, library implementation, source code, or
 test suite is an implementation reference.
+
+## 11. Initial focused Red-Black checkpoint
+
+On 2026-09-07, the completed private candidate ran the full deterministic
+synthetic matrix under ClangCL 22.1.3 Release: five one-MiB generated inputs,
+one iteration, one-MiB frames, and 65,536-, 262,144-, and 1,048,576-byte
+windows. All 45 independent processes completed. At each window, HashChain,
+AVL, and Red-Black produced identical aggregate token counts and every
+case-specific token fingerprint agreed.
+
+| window bytes | strategy | aggregate MiB/s | maximum workspace bytes | height diagnostic |
+| ---: | --- | ---: | ---: | ---: |
+| 65,536 | HashChain | 22.72 | 786,432 | n/a |
+| 65,536 | AVL | 1.10 | 1,900,544 | max 19 |
+| 65,536 | Red-Black | 0.69 | 1,900,544 | max final 29 |
+| 262,144 | HashChain | 14.27 | 1,572,864 | n/a |
+| 262,144 | AVL | 0.94 | 7,602,176 | max 22 |
+| 262,144 | Red-Black | 0.56 | 7,602,176 | max final 33 |
+| 1,048,576 | HashChain | 10.02 | 4,718,592 | n/a |
+| 1,048,576 | AVL | 1.02 | 30,408,704 | max 24 |
+| 1,048,576 | Red-Black | 0.58 | 30,408,704 | max final 37 |
+
+These one-iteration synthetic rates are an admission checkpoint, not a general
+performance conclusion. They show that the intended equal-workspace comparison
+is functioning and that Red-Black is slower and taller than AVL on this
+particular aggregate. Member-level Silesia and deletion-heavy evidence remain
+required before any admission decision.

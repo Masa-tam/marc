@@ -30,6 +30,7 @@ SYNTHETIC_CASES = (
     "hash-collision",
     "pseudorandom",
 )
+SYNTHETIC_STRATEGIES = STRATEGIES + ("red-black-tree-exact",)
 
 
 def _run_case(
@@ -57,22 +58,27 @@ def _run_case(
     return report, command
 
 
-def _require_exact_pair(
+def _require_exact_set(
     pair: dict[str, dict[str, Any]], case_name: str, window_size: int,
 ) -> None:
-    if set(pair) != set(STRATEGIES):
+    if set(pair) != set(SYNTHETIC_STRATEGIES):
         raise RunnerError(
-            f"incomplete strategy pair for {case_name} at window {window_size}"
+            f"incomplete strategy set for {case_name} at window {window_size}"
         )
-    if pair[STRATEGIES[0]]["token_count"] \
-            != pair[STRATEGIES[1]]["token_count"]:
+    token_counts = {
+        report["token_count"] for report in pair.values()
+    }
+    fingerprints = {
+        report["token_fingerprint_sha256"] for report in pair.values()
+    }
+    if len(token_counts) != 1 or len(fingerprints) != 1:
         raise RunnerError(
             f"Exact token mismatch for {case_name} at window {window_size}"
         )
 
 
 def _aggregate_cases(records: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
-    aggregates = _aggregate(records)
+    aggregates = _aggregate(records, SYNTHETIC_STRATEGIES)
     for aggregate in aggregates:
         aggregate["case_count"] = aggregate.pop("member_count")
     return aggregates
@@ -111,7 +117,7 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
         for case_name in SYNTHETIC_CASES:
             for window_size in parsed.windows:
                 pair: dict[str, dict[str, Any]] = {}
-                for strategy in STRATEGIES:
+                for strategy in SYNTHETIC_STRATEGIES:
                     report, command = _run_case(
                         benchmark, case_name, strategy, parsed.input_size,
                         parsed.iterations, parsed.frame_size, window_size,
@@ -126,7 +132,7 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
                         f"completed {case_name} window={window_size} "
                         f"strategy={strategy}", file=sys.stderr, flush=True,
                     )
-                _require_exact_pair(pair, case_name, window_size)
+                _require_exact_set(pair, case_name, window_size)
         result = {
             "schema": "marc-lzss-match-finder-synthetic-v1",
             "created_utc": datetime.now(timezone.utc).isoformat(),
@@ -146,7 +152,7 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
                 "warmup_diagnostic_passes": 1,
                 "frame_bytes": parsed.frame_size,
                 "window_bytes": parsed.windows,
-                "strategies": STRATEGIES,
+                "strategies": SYNTHETIC_STRATEGIES,
                 "synthetic_cases": SYNTHETIC_CASES,
             },
             "records": records,

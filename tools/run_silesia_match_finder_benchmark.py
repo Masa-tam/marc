@@ -37,6 +37,19 @@ SUM_KEYS = {
         "binary_tree_insertions",
         "binary_tree_retirements",
     ),
+    "red-black-tree-exact": (
+        "red_black_tree_queries",
+        "red_black_tree_key_comparisons",
+        "red_black_tree_key_byte_comparisons",
+        "red_black_tree_lcp_byte_comparisons",
+        "red_black_tree_prefix_range_comparisons",
+        "red_black_tree_rotations",
+        "red_black_tree_recolorings",
+        "red_black_tree_insertion_fixup_steps",
+        "red_black_tree_removal_fixup_steps",
+        "red_black_tree_insertions",
+        "red_black_tree_retirements",
+    ),
 }
 MAX_KEYS = {
     "hash-chain-exact": ("hash_chain_max_candidates_per_query",),
@@ -44,18 +57,26 @@ MAX_KEYS = {
         "binary_tree_maximum_height",
         "binary_tree_max_nodes_per_query",
     ),
+    "red-black-tree-exact": (
+        "red_black_tree_maximum_fixup_steps",
+        "red_black_tree_maximum_final_height",
+        "red_black_tree_max_nodes_per_query",
+    ),
 }
 WORKSPACE_KEYS = {
     "hash-chain-exact": "hash_workspace_bytes",
     "binary-tree-exact": "binary_tree_workspace_bytes",
+    "red-black-tree-exact": "red_black_tree_workspace_bytes",
 }
 TIME_KEYS = {
     "hash-chain-exact": "hash_chain_frame_seconds",
     "binary-tree-exact": "binary_tree_frame_seconds",
+    "red-black-tree-exact": "red_black_tree_frame_seconds",
 }
 HISTOGRAM_KEYS = {
     "hash-chain-exact": "hash_chain_query_depth_histogram",
     "binary-tree-exact": "binary_tree_query_depth_histogram",
+    "red-black-tree-exact": "red_black_tree_query_depth_histogram",
 }
 
 
@@ -133,6 +154,11 @@ def _validate_report(
     if _require_integer(report, "frame_count") != expected_frames:
         raise RunnerError(f"unexpected frame_count for {strategy}")
     _require_integer(report, "token_count")
+    fingerprint = report.get("token_fingerprint_sha256")
+    if not isinstance(fingerprint, str) or len(fingerprint) != 64 \
+            or any(character not in "0123456789abcdef"
+                   for character in fingerprint):
+        raise RunnerError(f"invalid token fingerprint for {strategy}")
     _require_integer(report, WORKSPACE_KEYS[strategy])
     _require_float(report, TIME_KEYS[strategy])
     for key in SUM_KEYS[strategy] + MAX_KEYS[strategy]:
@@ -181,14 +207,17 @@ def _sum_histograms(histograms: Iterable[list[int]]) -> list[int]:
     return result
 
 
-def _aggregate(records: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
+def _aggregate(
+    records: Sequence[dict[str, Any]],
+    strategies: Sequence[str] = STRATEGIES,
+) -> list[dict[str, Any]]:
     groups: dict[tuple[str, int], list[dict[str, Any]]] = defaultdict(list)
     for record in records:
         report = record["report"]
         groups[(report["strategy"], report["window_bytes"])].append(report)
 
     aggregates: list[dict[str, Any]] = []
-    for strategy in STRATEGIES:
+    for strategy in strategies:
         for window_size in sorted(
             window for candidate, window in groups if candidate == strategy
         ):

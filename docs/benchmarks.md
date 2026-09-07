@@ -169,18 +169,32 @@ The collision prefixes independently produce the same low 16 hash bits under
 marc's documented five-byte HashChain hash. The suffix counter prevents the
 fixture from degenerating into only two indefinitely repeated records.
 
-The complete five-case, three-window, two-strategy matrix can be generated as
+The complete five-case, three-window, three-strategy matrix can be generated as
 one versioned local JSON document with:
 
 ```console
 py -3.14 tools/run_lzss_match_finder_synthetic_matrix.py out/build/windows-clang/marc_lzss_match_finder_benchmark.exe --output out/benchmarks/lzss-match-finder-synthetic-clangcl.json --compiler "ClangCL 22.1.3" --generator Ninja --build-type Release
 ```
 
-The runner generates no persistent fixture, performs no network or external
-data access, validates every strategy-specific report, and rejects unequal
-Exact token counts for any case/window pair. It stores the exact commands,
-environment, per-run reports, and strategy/window aggregates. The output under
-`out/` is an ignored local experiment artifact, not a conformance vector.
+The strategies are public `hash-chain-exact`, public AVL
+`binary-tree-exact`, and private experimental `red-black-tree-exact`.
+Red-Black is accepted only by this synthetic route; it is not a public codec
+selector or a Silesia-runner strategy. The runner generates no persistent
+fixture, performs no network or external data access, validates every
+strategy-specific report, and rejects unequal Exact token counts or lowercase
+SHA-256 token fingerprints for any case/window set. It stores the exact
+commands, environment, per-run reports, and strategy/window aggregates. The
+output under `out/` is an ignored local experiment artifact, not a conformance
+vector.
+
+The Red-Black diagnostic pass reports rotations, recolorings, insertion and
+removal fix-up work, and `red_black_tree_maximum_final_height`. The latter is
+the greatest exact final tree height among frames, measured by an untimed
+parent-link traversal after parsing. It is deliberately not named maximum
+lifetime height: maintaining that value would add metadata and writes to the
+timed candidate, while rescanning after every mutation would make diagnostics
+quadratic. Timed passes disable all counters, validation, fingerprinting, and
+height traversal.
 
 ## Profile configurations
 

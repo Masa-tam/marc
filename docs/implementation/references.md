@@ -7674,3 +7674,14 @@ marc's existing saturating internal diagnostic convention. No external match
 finder, Red-Black implementation, compressor, source code, test suite,
 adapter, benchmark harness, pseudocode, or optimization description was
 consulted.
+
+### IR-0847
+
+The focused Red-Black synthetic benchmark uses DD-1078 through DD-1085,
+TVG-0943 through TVG-0950, marc's repository-owned deterministic synthetic
+generator, token fingerprint, benchmark aggregation, Red-Black validator, and
+parent links. The exact final-height traversal is an independently written
+diagnostic walk over the already validated private tree. No external
+compressor, match finder, Red-Black implementation, benchmark harness, source
+code, test suite, traversal code, pseudocode, or optimization description was
+consulted.

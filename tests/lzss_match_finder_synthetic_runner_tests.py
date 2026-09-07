@@ -13,8 +13,9 @@ sys.path.insert(0, str(TOOLS))
 
 from run_lzss_match_finder_synthetic_matrix import (  # noqa: E402
     RunnerError,
+    SYNTHETIC_STRATEGIES,
     _aggregate_cases,
-    _require_exact_pair,
+    _require_exact_set,
 )
 from run_silesia_match_finder_benchmark import (  # noqa: E402
     STRATEGIES,
@@ -28,6 +29,7 @@ def _binary_report() -> str:
         "mode=synthetic\nstrategy=binary-tree-exact\n"
         "synthetic_case=equal-prefix\ninput_bytes=8\nframe_bytes=8\n"
         "window_bytes=8\nframe_count=1\ntoken_count=4\niterations=1\n"
+        f"token_fingerprint_sha256={'a' * 64}\n"
         "binary_tree_workspace_bytes=80\nbinary_tree_queries=4\n"
         "binary_tree_key_comparisons=9\n"
         "binary_tree_key_byte_comparisons=12\n"
@@ -39,6 +41,37 @@ def _binary_report() -> str:
         "binary_tree_frame_seconds=0.25\n"
         "binary_tree_frame_mib_per_second=0.000031\n"
         "binary_tree_query_depth_histogram=0,1,3\n"
+    )
+
+
+def _identity_report(token_count: int = 7) -> dict[str, object]:
+    return {
+        "token_count": token_count,
+        "token_fingerprint_sha256": "a" * 64,
+    }
+
+
+def _red_black_report() -> str:
+    return (
+        "mode=synthetic\nstrategy=red-black-tree-exact\n"
+        "synthetic_case=equal-prefix\ninput_bytes=8\nframe_bytes=8\n"
+        "window_bytes=8\nframe_count=1\ntoken_count=4\niterations=1\n"
+        f"token_fingerprint_sha256={'a' * 64}\n"
+        "red_black_tree_workspace_bytes=80\nred_black_tree_queries=4\n"
+        "red_black_tree_key_comparisons=9\n"
+        "red_black_tree_key_byte_comparisons=12\n"
+        "red_black_tree_lcp_byte_comparisons=3\n"
+        "red_black_tree_prefix_range_comparisons=2\n"
+        "red_black_tree_rotations=1\nred_black_tree_recolorings=3\n"
+        "red_black_tree_insertion_fixup_steps=2\n"
+        "red_black_tree_removal_fixup_steps=0\n"
+        "red_black_tree_maximum_fixup_steps=2\n"
+        "red_black_tree_insertions=4\nred_black_tree_retirements=0\n"
+        "red_black_tree_maximum_final_height=3\n"
+        "red_black_tree_max_nodes_per_query=5\n"
+        "red_black_tree_frame_seconds=0.25\n"
+        "red_black_tree_frame_mib_per_second=0.000031\n"
+        "red_black_tree_query_depth_histogram=0,1,3\n"
     )
 
 
@@ -54,18 +87,33 @@ class SyntheticMatchFinderRunnerTests(unittest.TestCase):
                 report, "binary-tree-exact", 8, 8, 8, 1,
                 mode="synthetic", synthetic_case="hash-collision",
             )
+        report["token_fingerprint_sha256"] = "A" * 64
+        with self.assertRaises(RunnerError):
+            _validate_report(
+                report, "binary-tree-exact", 8, 8, 8, 1,
+                mode="synthetic", synthetic_case="equal-prefix",
+            )
 
-    def test_requires_complete_equal_token_pair(self) -> None:
+    def test_requires_complete_equal_token_set(self) -> None:
         pair = {
-            STRATEGIES[0]: {"token_count": 7},
-            STRATEGIES[1]: {"token_count": 7},
+            strategy: _identity_report() for strategy in SYNTHETIC_STRATEGIES
         }
-        _require_exact_pair(pair, "zeros", 8)
+        _require_exact_set(pair, "zeros", 8)
         pair[STRATEGIES[1]]["token_count"] = 8
         with self.assertRaises(RunnerError):
-            _require_exact_pair(pair, "zeros", 8)
+            _require_exact_set(pair, "zeros", 8)
         with self.assertRaises(RunnerError):
-            _require_exact_pair({STRATEGIES[0]: pair[STRATEGIES[0]]}, "zeros", 8)
+            _require_exact_set(
+                {STRATEGIES[0]: pair[STRATEGIES[0]]}, "zeros", 8,
+            )
+
+    def test_requires_equal_token_fingerprints(self) -> None:
+        pair = {
+            strategy: _identity_report() for strategy in SYNTHETIC_STRATEGIES
+        }
+        pair[SYNTHETIC_STRATEGIES[-1]]["token_fingerprint_sha256"] = "b" * 64
+        with self.assertRaises(RunnerError):
+            _require_exact_set(pair, "zeros", 8)
 
     def test_renames_aggregate_group_count_to_cases(self) -> None:
         report = _parse_report(_binary_report())
@@ -73,6 +121,21 @@ class SyntheticMatchFinderRunnerTests(unittest.TestCase):
         self.assertEqual(aggregate["case_count"], 1)
         self.assertNotIn("member_count", aggregate)
         self.assertEqual(aggregate["binary_tree_rotations"], 1)
+
+    def test_validates_and_aggregates_private_red_black_report(self) -> None:
+        report = _parse_report(_red_black_report())
+        _validate_report(
+            report, "red-black-tree-exact", 8, 8, 8, 1,
+            mode="synthetic", synthetic_case="equal-prefix",
+        )
+        aggregates = _aggregate_cases([{"report": report}])
+        red_black = next(
+            aggregate for aggregate in aggregates
+            if aggregate["strategy"] == "red-black-tree-exact"
+        )
+        self.assertEqual(red_black["case_count"], 1)
+        self.assertEqual(red_black["red_black_tree_recolorings"], 3)
+        self.assertEqual(red_black["red_black_tree_maximum_final_height"], 3)
 
 
 if __name__ == "__main__":

@@ -24,7 +24,9 @@ class SilesiaMatchFinderRunnerTests(unittest.TestCase):
         report = _parse_report(
             "mode=frames\nstrategy=binary-tree-exact\ninput_bytes=8\n"
             "frame_bytes=8\nwindow_bytes=8\nframe_count=1\n"
-            "token_count=4\niterations=1\nbinary_tree_workspace_bytes=80\n"
+            f"token_count=4\niterations=1\n"
+            f"token_fingerprint_sha256={'a' * 64}\n"
+            "binary_tree_workspace_bytes=80\n"
             "binary_tree_queries=4\nbinary_tree_key_comparisons=9\n"
             "binary_tree_key_byte_comparisons=12\n"
             "binary_tree_lcp_byte_comparisons=3\n"

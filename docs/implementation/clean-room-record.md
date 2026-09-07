@@ -29310,3 +29310,34 @@ both bounds.
   correction, all 3,418 registered tests pass in 466.30 and 384.05 seconds
   respectively, including complete schema compatibility in 124.45 and 118.30
   seconds.
+
+## CR-1178: 2026-09-07 - Focused Red-Black synthetic benchmark
+
+- Authoring method: extended marc's existing deterministic synthetic harness
+  only after freezing its private admission boundary and exact-result checks.
+- References used: DD-1078 through DD-1085; IR-0840 through IR-0847;
+  TVG-0943 through TVG-0950; the repository-owned Red-Black validator,
+  statistics convention, token fingerprint, and synthetic fixtures.
+- Known implementations intentionally not consulted: external Red-Black or
+  match-finder implementation, compressor, source code, test suite, benchmark
+  harness, tree-height traversal, pseudocode, and optimization description.
+- Independent decisions: retain the ordinary two-strategy Silesia runner,
+  admit Red-Black only to synthetic mode, require three-way fingerprint
+  equality, aggregate all three reports, and measure exact final rather than
+  proxy lifetime height outside timed intervals.
+- Generated-code task description: compare private Red-Black and AVL under
+  identical generated input, token identity, workspace, timing, and structural
+  reporting conditions without changing any public selection or stream bytes.
+- Similarity review: benchmark dispatch, report fields, parent-link traversal,
+  runner validation, and tests follow marc-owned APIs and fixture conventions.
+  No external implementation expression, pseudocode, test vector, traversal,
+  or benchmark control flow was copied or structurally reproduced.
+- Local validation: official CMake 4.3.4 produced warning-clean optimized
+  Release builds with MSVC through Visual Studio 2026/MSBuild 18.9.1 and
+  ClangCL 22.1.3 on Windows x64. The focused smoke and runner tests pass in
+  both configurations. All 3,418 registered tests pass in 390.84 and 324.31
+  seconds respectively, including complete schema compatibility in 127.46 and
+  116.48 seconds.
+- Benchmark validation: the full ClangCL synthetic matrix completed all 45
+  case/window/strategy processes. Every three-way token count and fingerprint
+  comparison passed, and all nine strategy/window aggregates were present.

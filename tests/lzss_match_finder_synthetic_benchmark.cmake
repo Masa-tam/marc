@@ -89,6 +89,60 @@ foreach(case_name IN ITEMS
 endforeach()
 
 execute_process(
+    COMMAND "${MARC_BENCHMARK}" --synthetic red-black-tree-exact
+        equal-prefix 8192 1 4096 4096
+    RESULT_VARIABLE red_black_result
+    OUTPUT_VARIABLE red_black_report
+    ERROR_VARIABLE red_black_error)
+if(NOT red_black_result EQUAL 0)
+    message(FATAL_ERROR
+        "Red-Black synthetic benchmark failed: ${red_black_result}: "
+        "${red_black_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=synthetic"
+        "strategy=red-black-tree-exact"
+        "synthetic_case=equal-prefix"
+        "input_bytes=8192"
+        "frame_bytes=4096"
+        "window_bytes=4096"
+        "frame_count=2"
+        "token_fingerprint_sha256=799fd32a675f3cb2e09d8f3acf553ef21cf06586eb7bd4fd07718c3669137b41")
+    string(FIND "${red_black_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR "missing Red-Black synthetic line: ${expected_line}")
+    endif()
+endforeach()
+foreach(positive_key IN ITEMS
+        red_black_tree_workspace_bytes red_black_tree_queries
+        red_black_tree_key_comparisons red_black_tree_key_byte_comparisons
+        red_black_tree_lcp_byte_comparisons red_black_tree_rotations
+        red_black_tree_recolorings red_black_tree_insertion_fixup_steps
+        red_black_tree_insertions red_black_tree_maximum_fixup_steps
+        red_black_tree_maximum_final_height
+        red_black_tree_max_nodes_per_query)
+    string(REGEX MATCH "${positive_key}=([0-9]+)" value_match
+        "${red_black_report}")
+    if(value_match STREQUAL "" OR CMAKE_MATCH_1 EQUAL 0)
+        message(FATAL_ERROR "missing positive Red-Black ${positive_key}")
+    endif()
+endforeach()
+foreach(decimal_key IN ITEMS
+        red_black_tree_frame_seconds red_black_tree_frame_mib_per_second)
+    string(REGEX MATCH "${decimal_key}=[0-9]+\\.[0-9]+" decimal_match
+        "${red_black_report}")
+    if(decimal_match STREQUAL "")
+        message(FATAL_ERROR "missing finite Red-Black ${decimal_key}")
+    endif()
+endforeach()
+string(REGEX MATCH
+    "red_black_tree_query_depth_histogram=[0-9]+(,[0-9]+)*"
+    red_black_histogram_match "${red_black_report}")
+if(red_black_histogram_match STREQUAL "")
+    message(FATAL_ERROR "missing Red-Black query-depth histogram")
+endif()
+
+execute_process(
     COMMAND "${MARC_BENCHMARK}" --synthetic sparse-hash-tree-exact
         equal-prefix 8192 1 4096 4096 512 4
     RESULT_VARIABLE sparse_result

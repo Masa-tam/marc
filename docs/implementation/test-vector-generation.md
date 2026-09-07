@@ -13735,3 +13735,21 @@ one-token-short output, one-byte-short workspace, overlap, and one-byte-short
 aggregate limits before modifying output. Require the stable Red-Black error
 field for finder failures. No fixture may select Red-Black through a public
 strategy or create an interoperability archive.
+
+### TVG-0950
+
+Extend the deterministic five-case synthetic runner from the public
+HashChain/AVL pair to a private three-strategy set containing Red-Black Exact.
+Require every Red-Black report field, a finite timed rate, a nonempty query
+histogram, positive balancing activity on the equal-prefix fixture, exact
+final-height measurement, and the established hand-checkable token
+fingerprint. Require all three strategies to agree on token count and
+fingerprint for every case/window set, and prove that Red-Black records enter
+the strategy/window aggregate rather than being silently omitted.
+
+Keep timing separate from the diagnostic pass. On a one-MiB equal-prefix
+fixture with equal frame and window, additionally require AVL and Red-Black to
+report identical input, token summary, fingerprint, and calculator workspace;
+their structural counts and throughput are observations, not conformance
+constants. Do not add Red-Black to an archive, public selector, or the ordinary
+Silesia strategy list.
