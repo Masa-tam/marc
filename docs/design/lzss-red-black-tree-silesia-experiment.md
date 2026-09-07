@@ -92,3 +92,30 @@ planning a separate promotion decision. It does not add Red-Black to
 encoders, interoperability archives, or stream metadata. Any such admission
 requires its own design decision, public-contract tests, and compatibility
 review.
+
+## 7. Completed result and decision
+
+The fixed MSVC Release experiment completed all 72 records at revision
+`5c0055d02547d295ed49e293e619d6270a085468`. Every AVL/Red-Black pair passed
+the complete Exact-result gate. Across 211,938,580 input bytes, the aggregate
+results were:
+
+| Window | AVL MiB/s | Red-Black MiB/s | Red-Black/AVL | Red-Black/AVL key bytes |
+| ---: | ---: | ---: | ---: | ---: |
+| 65,536 | 1.845927 | 1.831877 | 0.992388 | 1.113131 |
+| 262,144 | 1.486238 | 1.442765 | 0.970750 | 1.146198 |
+| 1,048,576 | 1.774668 | 1.671922 | 0.942104 | 1.243356 |
+
+Both strategies used identical calculator workspace at every window. The
+individual members confirmed data dependence: Red-Black sometimes won by a
+few percent, but those wins did not overcome its aggregate slowdown, which
+increased with window size alongside additional key-byte comparisons.
+Red-Black performed fewer rotations (0.881088, 0.878953, and 0.849448 times
+AVL respectively), but recoloring and fix-up work did not produce an overall
+throughput advantage.
+
+Therefore Red-Black remains a private experimental strategy. It is useful as
+an independent Exact oracle and balancing comparison, but this experiment
+does not justify public admission or replacing AVL. A materially different
+frame/window regime or implementation change requires a new frozen experiment
+rather than reinterpretation of this result.

@@ -7704,3 +7704,12 @@ workspace calculators, AVL baseline, and private Red-Black frame route. No
 external compressor, match finder, Red-Black implementation, Corpus runner,
 benchmark result, source code, test suite, checkpoint design, pseudocode, or
 optimization description was consulted.
+
+### IR-0850
+
+The completed Red-Black Corpus interpretation uses DD-1087 and DD-1088,
+TVG-0952, IR-0849, the identity-bound 72-record local result, and marc's
+repository-owned aggregation fields. No external benchmark result,
+compressor, match finder, Red-Black implementation, performance claim, source
+code, test suite, statistical model, or optimization description was
+consulted. The promotion decision is limited to the frozen measured regime.

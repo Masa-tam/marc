@@ -22134,3 +22134,22 @@ atomically. Report throughput and workspace ratios while preserving the
 different meanings of AVL lifetime maximum height and Red-Black final height.
 No outcome of this experiment alone changes a public selector, ABI, profile,
 default, interoperability schema, or stream representation.
+
+## DD-1088: Red-Black remains private after the fixed Corpus comparison
+
+- Date: 2026-09-08
+- Status: accepted
+
+Accept the completed 72-record experiment because all 36 AVL/Red-Black pairs
+produce identical token counts, token-kind counts, matched extents, and
+canonical token fingerprints. Treat the measured variation between members as
+evidence that balancing cost is data dependent, not as noise to be removed
+from the record.
+
+Do not promote Red-Black: aggregate throughput is 0.992388, 0.970750, and
+0.942104 times AVL at 65,536/262,144/1,048,576-byte windows, with identical
+workspace and increasing excess key-byte comparisons. Retain the private
+implementation as an Exact oracle and experimental baseline. A future
+reconsideration MUST freeze a new regime or identify a substantive
+implementation change; it MUST NOT silently replace these conditions or
+change the public AVL default.

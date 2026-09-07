@@ -2192,3 +2192,20 @@ and the differently defined AVL lifetime-maximum and Red-Black final-height
 fields. The experiment is descriptive and does not make Red-Black a public
 strategy or default. The complete frozen contract is in
 `docs/design/lzss-red-black-tree-silesia-experiment.md`.
+
+The complete MSVC Release run at revision
+`5c0055d02547d295ed49e293e619d6270a085468` processed 211,938,580 bytes per
+strategy/window aggregate and passed all 36 AVL/Red-Black Exact comparisons.
+
+| Window | AVL seconds | Red-Black seconds | AVL MiB/s | Red-Black MiB/s | RB/AVL |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 65,536 | 109.495318 | 110.335153 | 1.845927 | 1.831877 | 0.992388 |
+| 262,144 | 135.994612 | 140.092370 | 1.486238 | 1.442765 | 0.970750 |
+| 1,048,576 | 113.891956 | 120.891013 | 1.774668 | 1.671922 | 0.942104 |
+
+Workspace was equal at 1,900,544, 7,602,176, and 30,408,704 bytes. Red-Black
+used 1.113131, 1.146198, and 1.243356 times AVL's key-byte comparisons as the
+window grew. Member-level wins demonstrate data dependence, but the aggregate
+result does not support public promotion. The checkpoint and complete JSON
+remain ignored local measurement artifacts; the fixed conditions and
+aggregate evidence are recorded here.

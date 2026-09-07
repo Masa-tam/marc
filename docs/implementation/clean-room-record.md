@@ -29401,3 +29401,30 @@ both bounds.
   byte window, AVL then Red-Black); all five token summary fields and the
   canonical SHA-256 fingerprint agreed. The experiment checkpoint is ignored
   build output and is not committed.
+
+## CR-1181: 2026-09-08 - Completed AVL/Red-Black Silesia comparison
+
+- Authoring method: completed the frozen process-isolated matrix in canonical
+  checkpoint order, regenerated the aggregate JSON from the validated complete
+  checkpoint, and recorded only reproducibility metadata and aggregate facts.
+- References used: DD-1087 and DD-1088; IR-0849 and IR-0850; TVG-0952; the
+  repository-owned runner and ignored local result for revision
+  `5c0055d02547d295ed49e293e619d6270a085468`.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Red-Black implementation, Corpus benchmark result, source
+  code, test suite, statistical model, pseudocode, and optimization claim.
+- Independent decisions: preserve all member-level variation, use aggregate
+  throughput only within the frozen regime, record equal workspace and
+  structural work, and retain Red-Black privately because no aggregate window
+  beats AVL.
+- Generated-code task description: finish all 72 fixed measurements, require
+  36 Exact pairs, derive six strategy/window aggregates and three ratios, and
+  make a bounded promotion decision without committing Corpus or result data.
+- Similarity review: measurement, aggregation, interpretation, and record
+  structure use only marc-owned fields and experiment rules. No external
+  implementation expression, benchmark result, test vector, or analysis
+  structure was copied or reproduced.
+- Local validation: the final result contains the expected schema, 12-member
+  verified manifest, 72 canonical records, six aggregates, and three
+  comparisons. Every pair has identical token summary and lowercase SHA-256;
+  final checkpoint and result JSON remain ignored local artifacts.
