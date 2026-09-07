@@ -7713,3 +7713,12 @@ repository-owned aggregation fields. No external benchmark result,
 compressor, match finder, Red-Black implementation, performance claim, source
 code, test suite, statistical model, or optimization description was
 consulted. The promotion decision is limited to the frozen measured regime.
+
+### IR-0851
+
+The Sparse HashTree checkpoint correction uses DD-1089, TVG-0953, the
+repository-owned canonical token fingerprint emitted by every match-finder
+frame route, the shared Silesia validator, and the existing Sparse checkpoint
+resume test. No external compressor, match finder, checkpoint implementation,
+source code, test suite, failure workaround, or compatibility design was
+consulted.

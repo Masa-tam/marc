@@ -22153,3 +22153,20 @@ implementation as an Exact oracle and experimental baseline. A future
 reconsideration MUST freeze a new regime or identify a substantive
 implementation change; it MUST NOT silently replace these conditions or
 change the public AVL default.
+
+## DD-1089: Sparse HashTree checkpoints enforce full Exact identity
+
+- Date: 2026-09-08
+- Status: accepted
+
+Require every Sparse HashTree report and resumed checkpoint record to contain
+a lowercase 64-character canonical token SHA-256. Compare both token count and
+fingerprint with the HashChain baseline before accepting a grid point. This
+matches the strengthened shared Silesia baseline validator and prevents two
+different token streams with equal counts from being called Exact.
+
+Keep the checkpoint schema unchanged because real benchmark reports already
+contain the field; a checkpoint without it was never complete under the
+current benchmark report contract and is rejected. Update synthetic fixtures
+rather than weakening shared validation. This correction changes no codec,
+public API, ABI, stream representation, or measured strategy behavior.

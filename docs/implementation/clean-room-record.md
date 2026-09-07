@@ -29428,3 +29428,29 @@ both bounds.
   verified manifest, 72 canonical records, six aggregates, and three
   comparisons. Every pair has identical token summary and lowercase SHA-256;
   final checkpoint and result JSON remain ignored local artifacts.
+
+## CR-1182: 2026-09-08 - Sparse checkpoint fingerprint regression correction
+
+- Authoring method: traced the reported Linux CI failure through the staged
+  checkpoint test to the shared validator change, then made Sparse report and
+  Exact-pair validation symmetrical rather than weakening the baseline gate.
+- References used: DD-1089, IR-0851, TVG-0953, the repository-owned shared and
+  Sparse Silesia runners, and the user-supplied Linux CI traceback.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, checkpoint runner, source code, test suite, workaround, or
+  compatibility implementation.
+- Independent decisions: preserve the existing checkpoint schema, reject
+  missing or malformed fingerprints, compare count and digest, and update the
+  stale fixtures to represent actual benchmark output.
+- Generated-code task description: repair complete Sparse checkpoint resume
+  after baseline fingerprint validation became mandatory, while strengthening
+  rather than bypassing Exact identity.
+- Similarity review: validation and fixture changes follow marc-owned report
+  fields and checkpoint tests. No external implementation expression,
+  pseudocode, test vector, or control flow was copied or reproduced.
+- Local validation: all ten Sparse runner unit tests pass directly. The
+  focused Sparse runner and documentation-layout CTest entries pass under
+  both MSVC and ClangCL configurations, including baseline-only save,
+  candidate-only resume, two complete resumes without relaunch, malformed
+  fingerprint rejection, and valid-but-different fingerprint rejection. All
+  ten registered tooling tests also pass in both configurations.

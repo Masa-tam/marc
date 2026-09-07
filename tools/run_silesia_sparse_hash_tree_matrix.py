@@ -282,6 +282,11 @@ def _validate_sparse_report(
     if _require_integer(report, "frame_count") != expected_frames:
         raise RunnerError("unexpected sparse HashTree frame_count")
     _require_integer(report, "token_count")
+    fingerprint = report.get("token_fingerprint_sha256")
+    if not isinstance(fingerprint, str) or len(fingerprint) != 64 \
+            or any(character not in "0123456789abcdef"
+                   for character in fingerprint):
+        raise RunnerError("invalid sparse HashTree token fingerprint")
     workspace = _require_integer(report, "sparse_hash_tree_workspace_bytes")
     if workspace != _require_integer(report, "hash_tree_workspace_bytes"):
         raise RunnerError("sparse and common workspace fields disagree")
@@ -348,9 +353,17 @@ def _require_exact_tokens(
     baseline: dict[str, Any], candidates: Sequence[dict[str, Any]],
     member_name: str, window_size: int,
 ) -> None:
-    expected = _require_integer(baseline, "token_count")
+    expected_count = _require_integer(baseline, "token_count")
+    expected_fingerprint = baseline.get("token_fingerprint_sha256")
+    if not isinstance(expected_fingerprint, str) \
+            or len(expected_fingerprint) != 64 \
+            or any(character not in "0123456789abcdef"
+                   for character in expected_fingerprint):
+        raise RunnerError("invalid baseline token fingerprint")
     for candidate in candidates:
-        if _require_integer(candidate, "token_count") != expected:
+        if _require_integer(candidate, "token_count") != expected_count \
+                or candidate.get("token_fingerprint_sha256") \
+                != expected_fingerprint:
             raise RunnerError(
                 f"Exact token mismatch for {member_name} at window "
                 f"{window_size}, pool "

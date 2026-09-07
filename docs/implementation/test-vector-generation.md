@@ -13783,3 +13783,17 @@ or executable changes, canonical-prefix order, orphan Red-Black rejection,
 duplicate rejection, mismatch rejection, bounded two-point progress, zero-new-
 point resume without relaunch, complete 72-record ordering, six aggregates,
 and three window comparisons. No unit test downloads or embeds Corpus data.
+
+### TVG-0953
+
+Give the Sparse HashTree baseline and candidate fixtures the same hand-
+checkable lowercase 64-character token fingerprint. Require the report
+validator to reject uppercase or otherwise malformed fingerprints, and
+require the Exact-pair gate to reject a valid but different fingerprint even
+when token counts agree.
+
+Run the staged baseline-only, candidate-only, and complete-checkpoint resume
+sequence twice without relaunching completed processes. The final JSON values
+must remain identical. This specifically covers the Linux CI regression in
+which the shared baseline validator rejected the fixture only when the saved
+baseline was re-read from checkpoint.

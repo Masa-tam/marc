@@ -36,11 +36,15 @@ from run_silesia_sparse_hash_tree_matrix import (  # noqa: E402
 )
 
 
+FINGERPRINT = "0123456789abcdef" * 4
+
+
 def _baseline_report(token_count: int = 4) -> dict:
     text = (
         "mode=frames\nstrategy=hash-chain-exact\ninput_bytes=8\n"
         "frame_bytes=8\nwindow_bytes=8\nframe_count=1\n"
-        f"token_count={token_count}\niterations=1\n"
+        f"token_count={token_count}\n"
+        f"token_fingerprint_sha256={FINGERPRINT}\niterations=1\n"
         "hash_workspace_bytes=64\nhash_chain_queries=4\n"
         "hash_chain_candidates=5\nhash_chain_byte_comparisons=6\n"
         "hash_chain_prefix_matches=2\nhash_chain_prefix_mismatches=2\n"
@@ -59,7 +63,8 @@ def _sparse_report(
     text = (
         "mode=frames\nstrategy=sparse-hash-tree-exact\ninput_bytes=8\n"
         "frame_bytes=8\nwindow_bytes=8\nframe_count=1\n"
-        f"token_count={token_count}\niterations=1\n"
+        f"token_count={token_count}\n"
+        f"token_fingerprint_sha256={FINGERPRINT}\niterations=1\n"
         f"sparse_hash_tree_pool_node_capacity={pool_capacity}\n"
         f"sparse_hash_tree_promotion_candidate_threshold={threshold}\n"
         "sparse_hash_tree_workspace_bytes=128\n"
@@ -111,6 +116,7 @@ class SilesiaSparseHashTreeRunnerTests(unittest.TestCase):
             ("hash_tree_promotions", 3),
             ("hash_tree_max_promoted_nodes", 5),
             ("hash_tree_chain_query_depth_histogram", [0, 2]),
+            ("token_fingerprint_sha256", "A" * 64),
         ):
             changed = _sparse_report()
             changed[key] = value
@@ -128,7 +134,10 @@ class SilesiaSparseHashTreeRunnerTests(unittest.TestCase):
                 _validate_sparse_report(report, 8, 8, 8, 1, 4, 4)
 
     def test_requires_every_grid_point_to_match_baseline_tokens(self) -> None:
-        baseline = {"token_count": 4}
+        baseline = {
+            "token_count": 4,
+            "token_fingerprint_sha256": FINGERPRINT,
+        }
         _require_exact_tokens(
             baseline, [_sparse_report(0, 4), _sparse_report(4, 16)],
             "dickens", 8,
@@ -137,6 +146,10 @@ class SilesiaSparseHashTreeRunnerTests(unittest.TestCase):
             _require_exact_tokens(
                 baseline, [_sparse_report(4, 4, 5)], "dickens", 8,
             )
+        changed = _sparse_report(4, 4)
+        changed["token_fingerprint_sha256"] = "f" * 64
+        with self.assertRaises(RunnerError):
+            _require_exact_tokens(baseline, [changed], "dickens", 8)
 
     def test_aggregates_each_pool_threshold_window_independently(self) -> None:
         records = [
