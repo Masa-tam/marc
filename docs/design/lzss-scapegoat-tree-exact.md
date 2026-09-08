@@ -181,3 +181,27 @@ Sanitizer fuzzing is added only after the deterministic state-machine tests.
 Every finding requires a permanent regression. No benchmark result can admit
 the strategy if Exact identity, a hard limit, or the single-update work report
 fails.
+
+## 9. Synthetic comparison contract
+
+The ninth stage keeps Scapegoat private and exposes it only through the
+synthetic match-finder benchmark. The network-free matrix launches each
+strategy/case/window point in a separate process and compares HashChain Exact,
+AVL Exact, Red-Black Exact, and Scapegoat Exact token counts and SHA-256 token
+fingerprints. It includes zeros, periodic, equal-prefix, hash-collision,
+pseudorandom, and deletion-heavy inputs.
+
+The deletion-heavy generator is random-access and frame-split deterministic.
+It combines the existing fixed LCG byte with low absolute-position bits so the
+parse advances predominantly one byte at a time after the active population
+reaches the window. A completed deletion-heavy Scapegoat point must report at
+least one physical retirement. This is a structural workload fixture, not a
+claim that its bytes model a real corpus.
+
+Each case/window/strategy point runs in a fresh process. Within that process,
+the diagnostic pass supplies the optional statistics pointer and validates the
+final tree; the following timed pass supplies null and performs no counter
+writes, validation scan, or final-height traversal. The report distinguishes
+query work from insertion/retirement/rebuild work and rejects counter overflow
+or inconsistent histogram totals. Stage 9 cannot admit the strategy; the fixed
+local Silesia experiment remains Stage 10.

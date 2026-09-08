@@ -29665,3 +29665,31 @@ both bounds.
 - Local validation: all forty-six focused Scapegoat and typed-encoder tests
   build without warnings and pass under MSVC and ClangCL; documentation
   validation is run before commit.
+
+## CR-1192: 2026-09-08 - Private Scapegoat synthetic comparison
+
+- Authoring method: implemented the ninth reviewable stage from the frozen
+  diagnostic and process-isolation contract.
+- References used: DD-1090 through DD-1099, IR-0852 through IR-0861,
+  TVG-0954 through TVG-0963, and marc's existing independent match-finder
+  benchmark and synthetic runner.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, benchmark harness, workload
+  generator, source code, pseudocode, test suite, or optimization description.
+- Independent decisions: keep selection synthetic-only, count query and
+  mutation work separately, use saturating counters, make the deletion-heavy
+  input random-access and frame-stable, require real retirement, and compare
+  canonical token fingerprints across fresh strategy processes.
+- Generated-code task description: add optional bounded Scapegoat diagnostics,
+  a deletion-heavy synthetic fixture, four-strategy process isolation,
+  report validation, aggregation, identity checks, and focused smoke coverage
+  without changing public dispatch, ABI, CLI codecs, frames, schema, or stream
+  bytes.
+- Similarity review: the change composes only marc's independently documented
+  tree, statistics, token fingerprint, and runner structures. No external
+  implementation expression, pseudocode, test sequence, or control flow was
+  copied or reproduced.
+- Local validation: thirty-two Scapegoat tests, the private typed-entry test,
+  the synthetic benchmark smoke, the Python runner tests, and the 48-process
+  six-case/two-window/four-strategy MSVC Release matrix pass; documentation
+  validation is run before commit.

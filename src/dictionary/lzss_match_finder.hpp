@@ -112,6 +112,23 @@ struct LzssMatchFinderStatistics {
     std::array<std::uint64_t,
                lzss_match_finder_depth_histogram_size>
         red_black_tree_query_depth_histogram{};
+    std::uint64_t scapegoat_tree_key_comparison_count{};
+    std::uint64_t scapegoat_tree_key_byte_comparison_count{};
+    std::uint64_t scapegoat_tree_lcp_byte_comparison_count{};
+    std::uint64_t scapegoat_tree_prefix_range_comparison_count{};
+    std::uint64_t scapegoat_tree_insertion_count{};
+    std::uint64_t scapegoat_tree_retirement_count{};
+    std::uint64_t scapegoat_tree_depth_violation_count{};
+    std::uint64_t scapegoat_tree_ancestor_step_count{};
+    std::uint64_t scapegoat_tree_subtree_rebuild_count{};
+    std::uint64_t scapegoat_tree_whole_tree_rebuild_count{};
+    std::uint64_t scapegoat_tree_rebuilt_node_count{};
+    std::uint64_t scapegoat_tree_maximum_rebuilt_nodes{};
+    std::uint64_t scapegoat_tree_maximum_structural_nodes_per_update{};
+    std::uint64_t scapegoat_tree_maximum_nodes_per_query{};
+    std::array<std::uint64_t,
+               lzss_match_finder_depth_histogram_size>
+        scapegoat_tree_query_depth_histogram{};
     std::uint64_t hash_tree_chain_query_count{};
     std::uint64_t hash_tree_chain_candidate_count{};
     std::uint64_t hash_tree_trigger_query_count{};

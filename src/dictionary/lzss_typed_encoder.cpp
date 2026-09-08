@@ -568,6 +568,7 @@ LzssTypedEncodeResult encode_lzss_typed_tokens_scapegoat_tree_single_pass(
     const LzssParameters& parameters, const core::DecoderLimits& limits,
     const std::span<LzssTypedToken> private_tokens,
     const std::span<std::byte> match_finder_workspace,
+    LzssMatchFinderStatistics* const statistics,
     const LzssTypedTokenVariant variant) noexcept {
     auto validation = validate_hash_chain_encode_buffers(
         input, parameters, limits, private_tokens,
@@ -612,7 +613,7 @@ LzssTypedEncodeResult encode_lzss_typed_tokens_scapegoat_tree_single_pass(
         match_finder_workspace.first(required.workspace_size);
     LzssScapegoatTreeMatchFinder finder{};
     const auto finder_error = initialize_lzss_scapegoat_tree_match_finder(
-        input, parameters, limits, active_workspace, finder);
+        input, parameters, limits, active_workspace, finder, statistics);
     if (finder_error != LzssScapegoatTreeError::none) {
         return typed_scapegoat_tree_failure(input.size(), finder_error);
     }

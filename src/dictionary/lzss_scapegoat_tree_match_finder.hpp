@@ -141,7 +141,8 @@ private:
     initialize_lzss_scapegoat_tree_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
-        LzssScapegoatTreeMatchFinder&) noexcept;
+        LzssScapegoatTreeMatchFinder&,
+        LzssMatchFinderStatistics*) noexcept;
     friend LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
         LzssScapegoatTreeMatchFinder&, std::size_t) noexcept;
     friend LzssScapegoatTreeError rebuild_lzss_scapegoat_tree_subtree(
@@ -160,6 +161,8 @@ private:
     [[nodiscard]] int compare_prefix(
         std::size_t position, std::size_t query_position,
         std::uint32_t length) const noexcept;
+    [[nodiscard]] LzssScapegoatTreeNeighborQueryResult find_neighbors_impl(
+        std::size_t position, std::uint64_t* nodes_visited) const noexcept;
     [[nodiscard]] bool valid_query_node(
         std::uint32_t node, std::size_t query_position) const noexcept;
     void update_metadata(std::uint32_t node) noexcept;
@@ -168,6 +171,8 @@ private:
         std::uint32_t parent, std::uint32_t previous_child,
         std::uint32_t replacement) noexcept;
     void clear_node(std::uint32_t node) noexcept;
+    void record_structural_visit(std::uint64_t count = 1) noexcept;
+    void finish_structural_update() noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
@@ -182,6 +187,8 @@ private:
     std::size_t active_node_count_{};
     std::size_t maximum_active_node_count_{};
     std::size_t next_position_{};
+    LzssMatchFinderStatistics* statistics_{};
+    std::uint64_t current_structural_node_visits_{};
     bool initialized_{};
     bool state_valid_{};
 };
@@ -190,7 +197,8 @@ private:
 initialize_lzss_scapegoat_tree_match_finder(
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::span<std::byte> workspace,
-    LzssScapegoatTreeMatchFinder& finder) noexcept;
+    LzssScapegoatTreeMatchFinder& finder,
+    LzssMatchFinderStatistics* statistics = nullptr) noexcept;
 
 [[nodiscard]] LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
     LzssScapegoatTreeMatchFinder& finder, std::size_t position) noexcept;

@@ -29,8 +29,11 @@ SYNTHETIC_CASES = (
     "equal-prefix",
     "hash-collision",
     "pseudorandom",
+    "deletion-heavy",
 )
-SYNTHETIC_STRATEGIES = STRATEGIES + ("red-black-tree-exact",)
+SYNTHETIC_STRATEGIES = STRATEGIES + (
+    "red-black-tree-exact", "scapegoat-tree-exact",
+)
 
 
 def _run_case(
@@ -75,6 +78,13 @@ def _require_exact_set(
         raise RunnerError(
             f"Exact token mismatch for {case_name} at window {window_size}"
         )
+    if case_name == "deletion-heavy":
+        scapegoat = pair["scapegoat-tree-exact"]
+        if scapegoat.get("scapegoat_tree_retirements", 0) <= 0:
+            raise RunnerError(
+                f"deletion-heavy did not retire Scapegoat nodes at window "
+                f"{window_size}"
+            )
 
 
 def _aggregate_cases(records: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -87,8 +97,9 @@ def _aggregate_cases(records: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
 def main(arguments: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Run marc's five deterministic synthetic inputs with both Exact "
-            "match finders; performs no network or external-data access."
+            "Run marc's deterministic synthetic inputs with the private "
+            "Exact match finders; performs no network or external-data "
+            "access."
         )
     )
     parser.add_argument("benchmark", type=Path)

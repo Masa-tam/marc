@@ -4,6 +4,7 @@
 #include "dictionary/lzss_hash_tree_match_finder.hpp"
 #include "dictionary/lzss_match_finder.hpp"
 #include "dictionary/lzss_red_black_tree_match_finder.hpp"
+#include "dictionary/lzss_scapegoat_tree_match_finder.hpp"
 #include "dictionary/lzss_sparse_hash_tree_match_finder.hpp"
 #include "dictionary/lzss_typed_encoder.hpp"
 #include "core/checked_math.hpp"
@@ -42,6 +43,7 @@ enum class BenchmarkStrategy : std::uint8_t {
     hash_chain_exact,
     binary_tree_exact,
     red_black_tree_exact,
+    scapegoat_tree_exact,
     hash_tree_exact,
     sparse_hash_tree_exact,
 };
@@ -54,6 +56,8 @@ enum class BenchmarkStrategy : std::uint8_t {
         strategy = BenchmarkStrategy::binary_tree_exact;
     } else if (text == "red-black-tree-exact") {
         strategy = BenchmarkStrategy::red_black_tree_exact;
+    } else if (text == "scapegoat-tree-exact") {
+        strategy = BenchmarkStrategy::scapegoat_tree_exact;
     } else if (text == "hash-tree-exact") {
         strategy = BenchmarkStrategy::hash_tree_exact;
     } else if (text == "sparse-hash-tree-exact") {
@@ -71,6 +75,8 @@ enum class BenchmarkStrategy : std::uint8_t {
     case BenchmarkStrategy::binary_tree_exact: return "binary-tree-exact";
     case BenchmarkStrategy::red_black_tree_exact:
         return "red-black-tree-exact";
+    case BenchmarkStrategy::scapegoat_tree_exact:
+        return "scapegoat-tree-exact";
     case BenchmarkStrategy::hash_tree_exact: return "hash-tree-exact";
     case BenchmarkStrategy::sparse_hash_tree_exact:
         return "sparse-hash-tree-exact";
@@ -249,6 +255,7 @@ struct FrameRunResult {
     TokenSummary token_summary{};
     LzssMatchFinderStatistics statistics{};
     std::uint64_t red_black_tree_maximum_final_height{};
+    std::uint64_t scapegoat_tree_maximum_final_height{};
     double seconds{};
 };
 
@@ -362,6 +369,46 @@ struct FrameRunResult {
          bin < total.red_black_tree_query_depth_histogram.size(); ++bin) {
         if (!add_count(total.red_black_tree_query_depth_histogram[bin],
                        frame.red_black_tree_query_depth_histogram[bin])) {
+            return false;
+        }
+    }
+    if (!add_count(total.scapegoat_tree_key_comparison_count,
+                   frame.scapegoat_tree_key_comparison_count)
+        || !add_count(total.scapegoat_tree_key_byte_comparison_count,
+                      frame.scapegoat_tree_key_byte_comparison_count)
+        || !add_count(total.scapegoat_tree_lcp_byte_comparison_count,
+                      frame.scapegoat_tree_lcp_byte_comparison_count)
+        || !add_count(total.scapegoat_tree_prefix_range_comparison_count,
+                      frame.scapegoat_tree_prefix_range_comparison_count)
+        || !add_count(total.scapegoat_tree_insertion_count,
+                      frame.scapegoat_tree_insertion_count)
+        || !add_count(total.scapegoat_tree_retirement_count,
+                      frame.scapegoat_tree_retirement_count)
+        || !add_count(total.scapegoat_tree_depth_violation_count,
+                      frame.scapegoat_tree_depth_violation_count)
+        || !add_count(total.scapegoat_tree_ancestor_step_count,
+                      frame.scapegoat_tree_ancestor_step_count)
+        || !add_count(total.scapegoat_tree_subtree_rebuild_count,
+                      frame.scapegoat_tree_subtree_rebuild_count)
+        || !add_count(total.scapegoat_tree_whole_tree_rebuild_count,
+                      frame.scapegoat_tree_whole_tree_rebuild_count)
+        || !add_count(total.scapegoat_tree_rebuilt_node_count,
+                      frame.scapegoat_tree_rebuilt_node_count)) {
+        return false;
+    }
+    total.scapegoat_tree_maximum_rebuilt_nodes = std::max(
+        total.scapegoat_tree_maximum_rebuilt_nodes,
+        frame.scapegoat_tree_maximum_rebuilt_nodes);
+    total.scapegoat_tree_maximum_structural_nodes_per_update = std::max(
+        total.scapegoat_tree_maximum_structural_nodes_per_update,
+        frame.scapegoat_tree_maximum_structural_nodes_per_update);
+    total.scapegoat_tree_maximum_nodes_per_query = std::max(
+        total.scapegoat_tree_maximum_nodes_per_query,
+        frame.scapegoat_tree_maximum_nodes_per_query);
+    for (std::size_t bin = 0;
+         bin < total.scapegoat_tree_query_depth_histogram.size(); ++bin) {
+        if (!add_count(total.scapegoat_tree_query_depth_histogram[bin],
+                       frame.scapegoat_tree_query_depth_histogram[bin])) {
             return false;
         }
     }
@@ -483,6 +530,20 @@ void print_red_black_tree_depth_histogram(
     std::cout << '\n';
 }
 
+void print_scapegoat_tree_depth_histogram(
+    const LzssMatchFinderStatistics& statistics) {
+    const auto last_bin = statistics.scapegoat_tree_maximum_nodes_per_query
+        == 0 ? 0U
+        : std::bit_width(
+            statistics.scapegoat_tree_maximum_nodes_per_query);
+    std::cout << "scapegoat_tree_query_depth_histogram=";
+    for (std::size_t bin = 0; bin <= last_bin; ++bin) {
+        if (bin != 0) std::cout << ',';
+        std::cout << statistics.scapegoat_tree_query_depth_histogram[bin];
+    }
+    std::cout << '\n';
+}
+
 void print_hash_tree_depth_histograms(
     const LzssMatchFinderStatistics& statistics) {
     const auto print = [](const std::string_view name,
@@ -554,6 +615,24 @@ void print_hash_tree_depth_histograms(
     return histogram_queries == statistics.query_count;
 }
 
+[[nodiscard]] bool valid_scapegoat_tree_statistics(
+    const LzssMatchFinderStatistics& statistics) noexcept {
+    if (statistics.overflowed
+        || statistics.scapegoat_tree_prefix_range_comparison_count
+            > statistics.scapegoat_tree_key_comparison_count
+        || statistics.scapegoat_tree_whole_tree_rebuild_count
+            > statistics.scapegoat_tree_subtree_rebuild_count
+        || statistics.scapegoat_tree_maximum_rebuilt_nodes
+            > statistics.scapegoat_tree_rebuilt_node_count) {
+        return false;
+    }
+    std::uint64_t histogram_queries{};
+    for (const auto count : statistics.scapegoat_tree_query_depth_histogram) {
+        if (!add_count(histogram_queries, count)) return false;
+    }
+    return histogram_queries == statistics.query_count;
+}
+
 [[nodiscard]] bool valid_hash_tree_statistics(
     const LzssMatchFinderStatistics& statistics,
     const bool require_every_trigger_promoted = true) noexcept {
@@ -600,6 +679,8 @@ void print_hash_tree_depth_histograms(
         return valid_binary_tree_statistics(statistics);
     case BenchmarkStrategy::red_black_tree_exact:
         return valid_red_black_tree_statistics(statistics);
+    case BenchmarkStrategy::scapegoat_tree_exact:
+        return valid_scapegoat_tree_statistics(statistics);
     case BenchmarkStrategy::hash_tree_exact:
         return valid_hash_tree_statistics(statistics);
     case BenchmarkStrategy::sparse_hash_tree_exact:
@@ -658,6 +739,56 @@ void print_hash_tree_depth_histograms(
     return depth == 0;
 }
 
+[[nodiscard]] bool measure_scapegoat_tree_final_height(
+    const LzssScapegoatTreeMatchFinder& finder,
+    std::uint64_t& height) noexcept {
+    height = 0;
+    if (finder.empty()) return true;
+    auto current = finder.root_index();
+    auto previous = lzss_scapegoat_tree_null_node;
+    std::uint64_t depth{1};
+    std::uint64_t traversed{};
+    height = 1;
+    const auto traversal_limit =
+        static_cast<std::uint64_t>(finder.active_node_count()) * 2U + 1U;
+    while (current != lzss_scapegoat_tree_null_node) {
+        if (++traversed > traversal_limit) return false;
+        const auto node = inspect_lzss_scapegoat_tree_node(finder, current);
+        std::uint32_t next{};
+        if (previous == node.parent) {
+            if (node.left != lzss_scapegoat_tree_null_node) {
+                next = node.left;
+                ++depth;
+                height = std::max(height, depth);
+            } else if (node.right != lzss_scapegoat_tree_null_node) {
+                next = node.right;
+                ++depth;
+                height = std::max(height, depth);
+            } else {
+                next = node.parent;
+                --depth;
+            }
+        } else if (previous == node.left) {
+            if (node.right != lzss_scapegoat_tree_null_node) {
+                next = node.right;
+                ++depth;
+                height = std::max(height, depth);
+            } else {
+                next = node.parent;
+                --depth;
+            }
+        } else if (previous == node.right) {
+            next = node.parent;
+            --depth;
+        } else {
+            return false;
+        }
+        previous = current;
+        current = next;
+    }
+    return depth == 0;
+}
+
 [[nodiscard]] bool parse_size_argument(
     const std::string_view text, const std::uint64_t maximum,
     std::size_t& value) noexcept {
@@ -688,6 +819,7 @@ enum class SyntheticInputKind : std::uint8_t {
     equal_prefix,
     hash_collision,
     pseudorandom,
+    deletion_heavy,
 };
 
 [[nodiscard]] bool parse_synthetic_input_kind(
@@ -699,6 +831,8 @@ enum class SyntheticInputKind : std::uint8_t {
         kind = SyntheticInputKind::hash_collision;
     } else if (text == "pseudorandom") {
         kind = SyntheticInputKind::pseudorandom;
+    } else if (text == "deletion-heavy") {
+        kind = SyntheticInputKind::deletion_heavy;
     } else {
         return false;
     }
@@ -713,6 +847,7 @@ enum class SyntheticInputKind : std::uint8_t {
     case SyntheticInputKind::equal_prefix: return "equal-prefix";
     case SyntheticInputKind::hash_collision: return "hash-collision";
     case SyntheticInputKind::pseudorandom: return "pseudorandom";
+    case SyntheticInputKind::deletion_heavy: return "deletion-heavy";
     }
     return "unknown";
 }
@@ -751,11 +886,18 @@ void fill_synthetic_input(
     constexpr std::array<std::byte, 5> collision_b{
         std::byte{0x00}, std::byte{0x20}, std::byte{0x00},
         std::byte{0x58}, std::byte{0x59}};
-    if (kind == SyntheticInputKind::pseudorandom) {
+    if (kind == SyntheticInputKind::pseudorandom
+        || kind == SyntheticInputKind::deletion_heavy) {
         auto state = advance_synthetic_lcg(absolute_offset);
-        for (auto& value : output) {
+        for (std::size_t index = 0; index < output.size(); ++index) {
             state = state * UINT32_C(1664525) + UINT32_C(1013904223);
-            value = static_cast<std::byte>(state >> 24U);
+            auto value = static_cast<std::uint8_t>(state >> 24U);
+            if (kind == SyntheticInputKind::deletion_heavy) {
+                const auto position = absolute_offset + index;
+                value ^= static_cast<std::uint8_t>(position);
+                value ^= static_cast<std::uint8_t>(position >> 11U);
+            }
+            output[index] = static_cast<std::byte>(value);
         }
         return;
     }
@@ -784,7 +926,8 @@ void fill_synthetic_input(
             }
             break;
         }
-        case SyntheticInputKind::pseudorandom: break;
+        case SyntheticInputKind::pseudorandom:
+        case SyntheticInputKind::deletion_heavy: break;
         }
     }
 }
@@ -845,6 +988,28 @@ void fill_synthetic_input(
             }
             result.red_black_tree_maximum_final_height = std::max(
                 result.red_black_tree_maximum_final_height, final_height);
+        }
+    } else if (strategy == BenchmarkStrategy::scapegoat_tree_exact) {
+        LzssScapegoatTreeMatchFinder finder{};
+        if (initialize_lzss_scapegoat_tree_match_finder(
+                frame, parameters, limits, workspace, finder,
+                collect_statistics ? &frame_statistics : nullptr)
+            != LzssScapegoatTreeError::none) {
+            return false;
+        }
+        frame_tokens = parse_with_finder(frame, finder, token_summary);
+        if (!finder.state_valid()) return false;
+        if (collect_statistics) {
+            if (validate_lzss_scapegoat_tree(finder)
+                != LzssScapegoatTreeValidationError::none) {
+                return false;
+            }
+            std::uint64_t final_height{};
+            if (!measure_scapegoat_tree_final_height(finder, final_height)) {
+                return false;
+            }
+            result.scapegoat_tree_maximum_final_height = std::max(
+                result.scapegoat_tree_maximum_final_height, final_height);
         }
     } else if (strategy == BenchmarkStrategy::hash_tree_exact) {
         LzssHashTreeMatchFinder finder{};
@@ -1104,6 +1269,52 @@ void print_frame_report(
         print_red_black_tree_depth_histogram(statistics);
         return;
     }
+    if (strategy == BenchmarkStrategy::scapegoat_tree_exact) {
+        const auto& statistics = verified.statistics;
+        std::cout << "scapegoat_tree_workspace_bytes=" << workspace_size
+              << '\n'
+              << "scapegoat_tree_queries=" << statistics.query_count << '\n'
+              << "scapegoat_tree_key_comparisons="
+              << statistics.scapegoat_tree_key_comparison_count << '\n'
+              << "scapegoat_tree_key_byte_comparisons="
+              << statistics.scapegoat_tree_key_byte_comparison_count << '\n'
+              << "scapegoat_tree_lcp_byte_comparisons="
+              << statistics.scapegoat_tree_lcp_byte_comparison_count << '\n'
+              << "scapegoat_tree_prefix_range_comparisons="
+              << statistics.scapegoat_tree_prefix_range_comparison_count
+              << '\n'
+              << "scapegoat_tree_insertions="
+              << statistics.scapegoat_tree_insertion_count << '\n'
+              << "scapegoat_tree_retirements="
+              << statistics.scapegoat_tree_retirement_count << '\n'
+              << "scapegoat_tree_depth_violations="
+              << statistics.scapegoat_tree_depth_violation_count << '\n'
+              << "scapegoat_tree_ancestor_steps="
+              << statistics.scapegoat_tree_ancestor_step_count << '\n'
+              << "scapegoat_tree_subtree_rebuilds="
+              << statistics.scapegoat_tree_subtree_rebuild_count << '\n'
+              << "scapegoat_tree_whole_tree_rebuilds="
+              << statistics.scapegoat_tree_whole_tree_rebuild_count << '\n'
+              << "scapegoat_tree_rebuilt_nodes="
+              << statistics.scapegoat_tree_rebuilt_node_count << '\n'
+              << "scapegoat_tree_maximum_rebuilt_nodes="
+              << statistics.scapegoat_tree_maximum_rebuilt_nodes << '\n'
+              << "scapegoat_tree_maximum_structural_nodes_per_update="
+              << statistics
+                     .scapegoat_tree_maximum_structural_nodes_per_update
+              << '\n'
+              << "scapegoat_tree_maximum_final_height="
+              << verified.scapegoat_tree_maximum_final_height << '\n'
+              << "scapegoat_tree_max_nodes_per_query="
+              << statistics.scapegoat_tree_maximum_nodes_per_query << '\n'
+              << "scapegoat_tree_frame_seconds=" << measured_seconds << '\n'
+              << "scapegoat_tree_frame_mib_per_second="
+              << throughput(
+                     verified.input_bytes, iterations, measured_seconds)
+              << '\n';
+        print_scapegoat_tree_depth_histogram(statistics);
+        return;
+    }
     const auto& statistics = verified.statistics;
     if (strategy == BenchmarkStrategy::sparse_hash_tree_exact) {
         std::cout << "sparse_hash_tree_pool_node_capacity="
@@ -1219,7 +1430,8 @@ void print_usage() {
            "<iterations> <frame-bytes> <window-bytes> "
            "<max-internal-buffered-bytes>\n"
         << "       marc_lzss_match_finder_benchmark --synthetic "
-           "<hash-chain-exact|binary-tree-exact|red-black-tree-exact> "
+           "<hash-chain-exact|binary-tree-exact|red-black-tree-exact|"
+           "scapegoat-tree-exact> "
            "<case> "
            "[input-bytes] [iterations] "
            "[frame-bytes] [window-bytes]\n"
@@ -1241,6 +1453,8 @@ void print_usage() {
         || (explicit_limit
             && strategy != BenchmarkStrategy::hash_chain_exact
             && strategy != BenchmarkStrategy::binary_tree_exact)
+        || (!explicit_limit
+            && strategy == BenchmarkStrategy::scapegoat_tree_exact)
         || (strategy == BenchmarkStrategy::hash_tree_exact && argc != 8)
         || (strategy == BenchmarkStrategy::sparse_hash_tree_exact
             && argc != 9)
@@ -1443,6 +1657,14 @@ void print_usage() {
             frame_size, parameters, limits);
         if (requirements.error != LzssRedBlackTreeError::none) {
             std::cerr << "cannot calculate synthetic RedBlack workspace\n";
+            return 1;
+        }
+        workspace_size = requirements.workspace_size;
+    } else if (strategy == BenchmarkStrategy::scapegoat_tree_exact) {
+        const auto requirements = calculate_lzss_scapegoat_tree_workspace(
+            frame_size, parameters, limits);
+        if (requirements.error != LzssScapegoatTreeError::none) {
+            std::cerr << "cannot calculate synthetic Scapegoat workspace\n";
             return 1;
         }
         workspace_size = requirements.workspace_size;

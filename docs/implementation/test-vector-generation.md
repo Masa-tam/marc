@@ -13937,3 +13937,20 @@ input/output alias, input/workspace alias, output/workspace alias, and an
 aggregate limit one byte below the complete raw-plus-token-plus-finder extent
 to fail before modifying any caller token. Run all forty-six focused
 Scapegoat and typed-encoder tests under MSVC and ClangCL.
+
+### TVG-0963
+
+Attach optional statistics to focused insertion-rebuild, deletion-rebuild,
+query, advancement, and saturation fixtures. Require diagnostic counters and
+maxima to become positive only on the paths exercised, histogram totals to
+equal queries, saturation to set the common overflow flag, and statistics to
+leave the complete structural result unchanged.
+
+Extend the deterministic synthetic generator with a random-access,
+frame-split-stable deletion-heavy case. Run HashChain Exact, AVL Exact,
+Red-Black Exact, and Scapegoat Exact in separate processes for each case and
+window. Require equal token counts and SHA-256 token fingerprints, and require
+positive Scapegoat retirement on deletion-heavy points. The CMake smoke uses
+an 8,192-byte two-frame deletion-heavy vector with a 1,024-byte window; the
+local comparison uses all six cases, 65,536 input bytes, two 32,768-byte
+frames, and 1,024/4,096-byte windows.

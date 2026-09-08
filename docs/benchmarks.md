@@ -2209,3 +2209,28 @@ window grew. Member-level wins demonstrate data dependence, but the aggregate
 result does not support public promotion. The checkpoint and complete JSON
 remain ignored local measurement artifacts; the fixed conditions and
 aggregate evidence are recorded here.
+
+### BM-0062: Private Scapegoat synthetic comparison
+
+Stage 9 adds Scapegoat Exact only to the network-free synthetic runner. Each
+case/window/strategy point is a fresh process, and every HashChain, AVL,
+Red-Black, and Scapegoat result must have identical token count and canonical
+token fingerprint. The matrix now includes a deletion-heavy case that must
+produce physical Scapegoat retirement.
+
+A local MSVC Release evidence run used all six cases, 65,536 bytes per case,
+32,768-byte frames, one iteration, and 1,024/4,096-byte windows: 48 processes
+in total. Every Exact identity comparison passed. The deletion-heavy case
+reported 63,488 retirements at 1,024 bytes and 57,344 at 4,096 bytes.
+
+| Window | HashChain MiB/s | AVL MiB/s | Red-Black MiB/s | Scapegoat MiB/s | Scapegoat workspace |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 1,024 | 28.937418 | 2.099300 | 1.716766 | 0.742282 | 36,864 |
+| 4,096 | 23.250047 | 1.635348 | 1.236656 | 0.536947 | 147,456 |
+
+Across the six cases Scapegoat performed 102,029 and 55,554 subtree rebuilds,
+reached final heights 23 and 27, and observed maximum single-update structural
+work of 3,259 and 14,989 node visits respectively. These deliberately small
+synthetic measurements show substantial rebuild cost and do not support
+promotion. They are diagnostic baseline evidence only; the fixed local
+Silesia comparison remains required before an admission decision.

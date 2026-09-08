@@ -3,7 +3,7 @@ if(NOT DEFINED MARC_BENCHMARK)
 endif()
 
 foreach(case_name IN ITEMS
-        zeros periodic equal-prefix hash-collision pseudorandom)
+        zeros periodic equal-prefix hash-collision pseudorandom deletion-heavy)
     execute_process(
         COMMAND "${MARC_BENCHMARK}" --synthetic hash-chain-exact
             "${case_name}" 8192 1 4096 4096
@@ -84,6 +84,67 @@ foreach(case_name IN ITEMS
         if(NOT prefix_matches EQUAL 0 OR NOT prefix_mismatches GREATER 0)
             message(FATAL_ERROR
                 "pseudorandom control classification changed: ${report}")
+        endif()
+    endif()
+endforeach()
+
+set(deletion_fingerprint "")
+foreach(tree_strategy IN ITEMS
+        binary-tree-exact red-black-tree-exact scapegoat-tree-exact)
+    execute_process(
+        COMMAND "${MARC_BENCHMARK}" --synthetic "${tree_strategy}"
+            deletion-heavy 8192 1 4096 1024
+        RESULT_VARIABLE tree_result
+        OUTPUT_VARIABLE tree_report
+        ERROR_VARIABLE tree_error)
+    if(NOT tree_result EQUAL 0)
+        message(FATAL_ERROR
+            "${tree_strategy} deletion-heavy failed: ${tree_result}: "
+            "${tree_error}")
+    endif()
+    string(REGEX MATCH "token_fingerprint_sha256=([0-9a-f]+)"
+        tree_fingerprint_match "${tree_report}")
+    if(tree_fingerprint_match STREQUAL "")
+        message(FATAL_ERROR "${tree_strategy} missing token fingerprint")
+    endif()
+    if(deletion_fingerprint STREQUAL "")
+        set(deletion_fingerprint "${CMAKE_MATCH_1}")
+    elseif(NOT deletion_fingerprint STREQUAL "${CMAKE_MATCH_1}")
+        message(FATAL_ERROR
+            "deletion-heavy Exact token mismatch for ${tree_strategy}")
+    endif()
+    if(tree_strategy STREQUAL "scapegoat-tree-exact")
+        foreach(positive_key IN ITEMS
+                scapegoat_tree_workspace_bytes scapegoat_tree_queries
+                scapegoat_tree_key_comparisons
+                scapegoat_tree_key_byte_comparisons
+                scapegoat_tree_insertions scapegoat_tree_retirements
+                scapegoat_tree_maximum_structural_nodes_per_update
+                scapegoat_tree_maximum_final_height
+                scapegoat_tree_max_nodes_per_query)
+            string(REGEX MATCH "${positive_key}=([0-9]+)" value_match
+                "${tree_report}")
+            if(value_match STREQUAL "" OR CMAKE_MATCH_1 EQUAL 0)
+                message(FATAL_ERROR
+                    "missing positive Scapegoat ${positive_key}")
+            endif()
+        endforeach()
+        foreach(decimal_key IN ITEMS
+                scapegoat_tree_frame_seconds
+                scapegoat_tree_frame_mib_per_second)
+            string(REGEX MATCH "${decimal_key}=[0-9]+\\.[0-9]+"
+                decimal_match "${tree_report}")
+            if(decimal_match STREQUAL "")
+                message(FATAL_ERROR
+                    "missing finite Scapegoat ${decimal_key}")
+            endif()
+        endforeach()
+        string(REGEX MATCH
+            "scapegoat_tree_query_depth_histogram=[0-9]+(,[0-9]+)*"
+            scapegoat_histogram_match "${tree_report}")
+        if(scapegoat_histogram_match STREQUAL "")
+            message(FATAL_ERROR
+                "missing Scapegoat query-depth histogram")
         endif()
     endif()
 endforeach()

@@ -7806,3 +7806,13 @@ workspace arithmetic, overlap checks, sentinel convention, and atomic-failure
 contracts. No external compressor, match finder, Scapegoat implementation,
 typed-token adapter, source code, pseudocode, test suite, or optimization
 description was consulted.
+
+### IR-0861
+
+The private Scapegoat diagnostic and synthetic-comparison stage uses DD-1090
+through DD-1099, TVG-0954 through TVG-0963, the frozen Scapegoat design, and
+marc's independently implemented statistics, synthetic generator,
+process-isolated runner, canonical token fingerprint, and Exact comparison
+contracts. No external compressor, match finder, Scapegoat implementation,
+benchmark harness, workload generator, source code, pseudocode, test suite, or
+optimization description was consulted.

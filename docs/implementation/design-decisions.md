@@ -22344,3 +22344,23 @@ The route must emit exactly the Exhaustive canonical token sequence and leave
 every unused caller token unchanged. It adds no statistics yet and does not
 alter production dispatch, public strategy values, C ABI, CLI, frames,
 interoperability schema, or stream bytes.
+
+## DD-1099: Scapegoat diagnostics and synthetic comparison remain private
+
+- Date: 2026-09-08
+- Status: accepted
+
+Instrument the private Scapegoat finder through the existing optional
+statistics pointer. Count saturating query, key-byte, LCP, prefix-range,
+insertion, retirement, depth-violation, ancestor-step, subtree-rebuild,
+whole-tree-rebuild, rebuilt-node, and bounded maximum-work fields. Define one
+structural visit as one node read or written during mutation or rebuild work;
+exclude query work. A null pointer performs no counter writes. Validation and
+final-height traversal remain diagnostic-only.
+
+Expose Scapegoat only to the synthetic benchmark and its process-isolated
+runner. Add a frame-split deterministic deletion-heavy fixture and require it
+to exercise physical retirement. Compare all four Exact strategies by token
+count and canonical token fingerprint. Do not add Scapegoat to file/Silesia
+benchmark selection, public dispatch, ABI, CLI, frames, schema, or defaults in
+this stage.

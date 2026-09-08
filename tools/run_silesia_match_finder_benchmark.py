@@ -50,6 +50,20 @@ SUM_KEYS = {
         "red_black_tree_insertions",
         "red_black_tree_retirements",
     ),
+    "scapegoat-tree-exact": (
+        "scapegoat_tree_queries",
+        "scapegoat_tree_key_comparisons",
+        "scapegoat_tree_key_byte_comparisons",
+        "scapegoat_tree_lcp_byte_comparisons",
+        "scapegoat_tree_prefix_range_comparisons",
+        "scapegoat_tree_insertions",
+        "scapegoat_tree_retirements",
+        "scapegoat_tree_depth_violations",
+        "scapegoat_tree_ancestor_steps",
+        "scapegoat_tree_subtree_rebuilds",
+        "scapegoat_tree_whole_tree_rebuilds",
+        "scapegoat_tree_rebuilt_nodes",
+    ),
 }
 MAX_KEYS = {
     "hash-chain-exact": ("hash_chain_max_candidates_per_query",),
@@ -62,21 +76,30 @@ MAX_KEYS = {
         "red_black_tree_maximum_final_height",
         "red_black_tree_max_nodes_per_query",
     ),
+    "scapegoat-tree-exact": (
+        "scapegoat_tree_maximum_rebuilt_nodes",
+        "scapegoat_tree_maximum_structural_nodes_per_update",
+        "scapegoat_tree_maximum_final_height",
+        "scapegoat_tree_max_nodes_per_query",
+    ),
 }
 WORKSPACE_KEYS = {
     "hash-chain-exact": "hash_workspace_bytes",
     "binary-tree-exact": "binary_tree_workspace_bytes",
     "red-black-tree-exact": "red_black_tree_workspace_bytes",
+    "scapegoat-tree-exact": "scapegoat_tree_workspace_bytes",
 }
 TIME_KEYS = {
     "hash-chain-exact": "hash_chain_frame_seconds",
     "binary-tree-exact": "binary_tree_frame_seconds",
     "red-black-tree-exact": "red_black_tree_frame_seconds",
+    "scapegoat-tree-exact": "scapegoat_tree_frame_seconds",
 }
 HISTOGRAM_KEYS = {
     "hash-chain-exact": "hash_chain_query_depth_histogram",
     "binary-tree-exact": "binary_tree_query_depth_histogram",
     "red-black-tree-exact": "red_black_tree_query_depth_histogram",
+    "scapegoat-tree-exact": "scapegoat_tree_query_depth_histogram",
 }
 
 

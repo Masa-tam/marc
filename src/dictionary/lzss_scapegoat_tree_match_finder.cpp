@@ -53,16 +53,64 @@ void construct_array(const std::span<T> values, const T initial) noexcept {
     }
 }
 
+void increment_statistic(
+    LzssMatchFinderStatistics* const statistics,
+    std::uint64_t& value) noexcept {
+    if (statistics == nullptr) return;
+    if (value == std::numeric_limits<std::uint64_t>::max()) {
+        statistics->overflowed = true;
+        return;
+    }
+    ++value;
+}
+
+void add_statistic(
+    LzssMatchFinderStatistics* const statistics, std::uint64_t& value,
+    const std::uint64_t increment) noexcept {
+    if (statistics == nullptr) return;
+    if (increment > std::numeric_limits<std::uint64_t>::max() - value) {
+        value = std::numeric_limits<std::uint64_t>::max();
+        statistics->overflowed = true;
+        return;
+    }
+    value += increment;
+}
+
+void record_scapegoat_tree_query(
+    LzssMatchFinderStatistics* const statistics,
+    const std::uint64_t nodes_visited) noexcept {
+    if (statistics == nullptr) return;
+    increment_statistic(statistics, statistics->query_count);
+    statistics->scapegoat_tree_maximum_nodes_per_query = std::max(
+        statistics->scapegoat_tree_maximum_nodes_per_query, nodes_visited);
+    const auto raw_bin = nodes_visited == 0 ? 0U
+        : std::bit_width(nodes_visited);
+    const auto bin = std::min<std::size_t>(
+        raw_bin,
+        statistics->scapegoat_tree_query_depth_histogram.size() - 1U);
+    increment_statistic(
+        statistics, statistics->scapegoat_tree_query_depth_histogram[bin]);
+}
+
 } // namespace
 
 int LzssScapegoatTreeMatchFinder::compare_positions(
     const std::size_t left, const std::size_t right) const noexcept {
+    if (statistics_ != nullptr) {
+        increment_statistic(
+            statistics_, statistics_->scapegoat_tree_key_comparison_count);
+    }
     const auto left_size = std::min<std::size_t>(
         input_.size() - left, parameters_.max_match_length);
     const auto right_size = std::min<std::size_t>(
         input_.size() - right, parameters_.max_match_length);
     const auto common_size = std::min(left_size, right_size);
     for (std::size_t index = 0; index < common_size; ++index) {
+        if (statistics_ != nullptr) {
+            increment_statistic(
+                statistics_,
+                statistics_->scapegoat_tree_key_byte_comparison_count);
+        }
         const auto left_byte = std::to_integer<std::uint8_t>(
             input_[left + index]);
         const auto right_byte = std::to_integer<std::uint8_t>(
@@ -84,8 +132,13 @@ std::uint32_t LzssScapegoatTreeMatchFinder::common_prefix_length(
         input_.size() - right,
         static_cast<std::size_t>(parameters_.max_match_length)});
     std::size_t length{};
-    while (length < maximum
-           && input_[left + length] == input_[right + length]) {
+    while (length < maximum) {
+        if (statistics_ != nullptr) {
+            increment_statistic(
+                statistics_,
+                statistics_->scapegoat_tree_lcp_byte_comparison_count);
+        }
+        if (input_[left + length] != input_[right + length]) break;
         ++length;
     }
     return static_cast<std::uint32_t>(length);
@@ -94,7 +147,19 @@ std::uint32_t LzssScapegoatTreeMatchFinder::common_prefix_length(
 int LzssScapegoatTreeMatchFinder::compare_prefix(
     const std::size_t position, const std::size_t query_position,
     const std::uint32_t length) const noexcept {
+    if (statistics_ != nullptr) {
+        increment_statistic(
+            statistics_, statistics_->scapegoat_tree_key_comparison_count);
+        increment_statistic(
+            statistics_,
+            statistics_->scapegoat_tree_prefix_range_comparison_count);
+    }
     for (std::size_t index = 0; index < length; ++index) {
+        if (statistics_ != nullptr) {
+            increment_statistic(
+                statistics_,
+                statistics_->scapegoat_tree_key_byte_comparison_count);
+        }
         const auto byte = std::to_integer<std::uint8_t>(
             input_[position + index]);
         const auto query_byte = std::to_integer<std::uint8_t>(
@@ -115,6 +180,7 @@ bool LzssScapegoatTreeMatchFinder::valid_query_node(
 
 void LzssScapegoatTreeMatchFinder::update_metadata(
     const std::uint32_t node) noexcept {
+    record_structural_visit();
     std::uint32_t size{1};
     auto maximum = position_[node];
     if (left_[node] != lzss_scapegoat_tree_null_node) {
@@ -159,6 +225,7 @@ bool LzssScapegoatTreeMatchFinder::update_metadata_upward(
 void LzssScapegoatTreeMatchFinder::replace_parent_child(
     const std::uint32_t parent, const std::uint32_t previous_child,
     const std::uint32_t replacement) noexcept {
+    record_structural_visit();
     if (parent == lzss_scapegoat_tree_null_node) {
         root_ = replacement;
     } else if (left_[parent] == previous_child) {
@@ -173,12 +240,30 @@ void LzssScapegoatTreeMatchFinder::replace_parent_child(
 
 void LzssScapegoatTreeMatchFinder::clear_node(
     const std::uint32_t node) noexcept {
+    record_structural_visit();
     left_[node] = lzss_scapegoat_tree_null_node;
     right_[node] = lzss_scapegoat_tree_null_node;
     parent_[node] = lzss_scapegoat_tree_null_node;
     subtree_size_[node] = 0;
     position_[node] = lzss_scapegoat_tree_no_position;
     subtree_maximum_position_[node] = lzss_scapegoat_tree_no_position;
+}
+
+void LzssScapegoatTreeMatchFinder::record_structural_visit(
+    const std::uint64_t count) noexcept {
+    add_statistic(
+        statistics_, current_structural_node_visits_, count);
+}
+
+void LzssScapegoatTreeMatchFinder::finish_structural_update() noexcept {
+    if (statistics_ != nullptr) {
+        statistics_->scapegoat_tree_maximum_structural_nodes_per_update =
+            std::max(
+                statistics_->
+                    scapegoat_tree_maximum_structural_nodes_per_update,
+                current_structural_node_visits_);
+    }
+    current_structural_node_visits_ = 0;
 }
 
 LzssScapegoatTreeWorkspaceRequirements
@@ -249,7 +334,8 @@ LzssScapegoatTreeError initialize_lzss_scapegoat_tree_match_finder(
     const std::span<const std::byte> input,
     const LzssParameters& parameters, const core::DecoderLimits& limits,
     const std::span<std::byte> workspace,
-    LzssScapegoatTreeMatchFinder& finder) noexcept {
+    LzssScapegoatTreeMatchFinder& finder,
+    LzssMatchFinderStatistics* const statistics) noexcept {
     const auto required = calculate_lzss_scapegoat_tree_workspace(
         input.size(), parameters, limits);
     if (required.error != LzssScapegoatTreeError::none) {
@@ -277,6 +363,7 @@ LzssScapegoatTreeError initialize_lzss_scapegoat_tree_match_finder(
     LzssScapegoatTreeMatchFinder initialized{};
     initialized.input_ = input;
     initialized.parameters_ = parameters;
+    initialized.statistics_ = statistics;
     initialized.initialized_ = true;
     initialized.state_valid_ = true;
     if (required.workspace_size == 0) {
@@ -335,12 +422,15 @@ LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
         return LzssScapegoatTreeError::invalid_state;
     }
 
+    finder.current_structural_node_visits_ = 0;
+
     auto parent = lzss_scapegoat_tree_null_node;
     auto current = finder.root_;
     int comparison{};
     std::size_t steps{};
     std::size_t depth{};
     while (current != lzss_scapegoat_tree_null_node) {
+        finder.record_structural_visit();
         if (current >= finder.left_.size()
             || finder.position_[current]
                 == lzss_scapegoat_tree_no_position
@@ -379,14 +469,33 @@ LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
         finder.state_valid_ = false;
         return LzssScapegoatTreeError::invalid_state;
     }
+    if (finder.statistics_ != nullptr) {
+        increment_statistic(
+            finder.statistics_,
+            finder.statistics_->scapegoat_tree_insertion_count);
+    }
 
     const auto depth_limit = 2U * std::bit_width(
         finder.maximum_active_node_count_);
-    if (depth <= depth_limit) return LzssScapegoatTreeError::none;
+    if (depth <= depth_limit) {
+        finder.finish_structural_update();
+        return LzssScapegoatTreeError::none;
+    }
+    if (finder.statistics_ != nullptr) {
+        increment_statistic(
+            finder.statistics_,
+            finder.statistics_->scapegoat_tree_depth_violation_count);
+    }
 
     auto path_child = slot;
     auto ancestor = finder.parent_[path_child];
     while (ancestor != lzss_scapegoat_tree_null_node) {
+        finder.record_structural_visit();
+        if (finder.statistics_ != nullptr) {
+            increment_statistic(
+                finder.statistics_,
+                finder.statistics_->scapegoat_tree_ancestor_step_count);
+        }
         const auto child_size = static_cast<std::uint64_t>(
             finder.subtree_size_[path_child]);
         const auto ancestor_size = static_cast<std::uint64_t>(
@@ -397,12 +506,14 @@ LzssScapegoatTreeError insert_lzss_scapegoat_tree_position(
             if (error != LzssScapegoatTreeError::none) {
                 finder.state_valid_ = false;
             }
+            finder.finish_structural_update();
             return error;
         }
         path_child = ancestor;
         ancestor = finder.parent_[ancestor];
     }
     finder.state_valid_ = false;
+    finder.finish_structural_update();
     return LzssScapegoatTreeError::invalid_state;
 }
 
@@ -451,6 +562,7 @@ LzssScapegoatTreeError rebuild_lzss_scapegoat_tree_subtree(
     std::uint64_t transitions{};
     const auto transition_limit = UINT64_C(2) * expected_count + 1U;
     while (current != boundary_parent) {
+        finder.record_structural_visit();
         if (current == lzss_scapegoat_tree_null_node
             || current >= finder.left_.size()
             || finder.position_[current]
@@ -520,6 +632,7 @@ LzssScapegoatTreeError rebuild_lzss_scapegoat_tree_subtree(
     auto rebuilt_root = lzss_scapegoat_tree_null_node;
     while (task_count != 0) {
         const auto task = tasks[--task_count];
+        finder.record_structural_visit();
         const auto middle = task.begin
             + (task.end - task.begin - 1U) / 2U;
         const auto node = finder.rebuild_scratch_[middle];
@@ -561,6 +674,7 @@ LzssScapegoatTreeError rebuild_lzss_scapegoat_tree_subtree(
     current = rebuilt_root;
     transitions = 0;
     while (current != boundary_parent) {
+        finder.record_structural_visit();
         if (current == lzss_scapegoat_tree_null_node
             || transitions++ >= transition_limit) {
             finder.state_valid_ = false;
@@ -598,6 +712,18 @@ LzssScapegoatTreeError rebuild_lzss_scapegoat_tree_subtree(
         finder.state_valid_ = false;
         return LzssScapegoatTreeError::invalid_state;
     }
+    if (finder.statistics_ != nullptr) {
+        increment_statistic(
+            finder.statistics_,
+            finder.statistics_->scapegoat_tree_subtree_rebuild_count);
+        add_statistic(
+            finder.statistics_,
+            finder.statistics_->scapegoat_tree_rebuilt_node_count,
+            expected_count);
+        finder.statistics_->scapegoat_tree_maximum_rebuilt_nodes = std::max(
+            finder.statistics_->scapegoat_tree_maximum_rebuilt_nodes,
+            static_cast<std::uint64_t>(expected_count));
+    }
     return LzssScapegoatTreeError::none;
 }
 
@@ -620,6 +746,9 @@ LzssScapegoatTreeError remove_lzss_scapegoat_tree_position(
         || finder.maximum_active_node_count_ < finder.active_node_count_) {
         return LzssScapegoatTreeError::invalid_state;
     }
+
+    finder.current_structural_node_visits_ = 0;
+    finder.record_structural_visit();
 
     const auto removed_parent = finder.parent_[removed];
     const auto removed_left = finder.left_[removed];
@@ -656,6 +785,7 @@ LzssScapegoatTreeError remove_lzss_scapegoat_tree_position(
         successor = removed_right;
         std::size_t steps{};
         while (true) {
+            finder.record_structural_visit();
             if (successor >= finder.left_.size()
                 || finder.position_[successor]
                     == lzss_scapegoat_tree_no_position
@@ -717,9 +847,15 @@ LzssScapegoatTreeError remove_lzss_scapegoat_tree_position(
 
     finder.clear_node(removed);
     --finder.active_node_count_;
+    if (finder.statistics_ != nullptr) {
+        increment_statistic(
+            finder.statistics_,
+            finder.statistics_->scapegoat_tree_retirement_count);
+    }
     if (finder.active_node_count_ == 0) {
         finder.root_ = lzss_scapegoat_tree_null_node;
         finder.maximum_active_node_count_ = 0;
+        finder.finish_structural_update();
         return LzssScapegoatTreeError::none;
     }
 
@@ -732,6 +868,7 @@ LzssScapegoatTreeError remove_lzss_scapegoat_tree_position(
     const auto maximum = static_cast<std::uint64_t>(
         finder.maximum_active_node_count_);
     if (UINT64_C(3) * active >= UINT64_C(2) * maximum) {
+        finder.finish_structural_update();
         return LzssScapegoatTreeError::none;
     }
     const auto error = rebuild_lzss_scapegoat_tree_subtree(
@@ -741,12 +878,25 @@ LzssScapegoatTreeError remove_lzss_scapegoat_tree_position(
         return error;
     }
     finder.maximum_active_node_count_ = finder.active_node_count_;
+    if (finder.statistics_ != nullptr) {
+        increment_statistic(
+            finder.statistics_,
+            finder.statistics_->scapegoat_tree_whole_tree_rebuild_count);
+    }
+    finder.finish_structural_update();
     return LzssScapegoatTreeError::none;
 }
 
 LzssScapegoatTreeNeighborQueryResult
 LzssScapegoatTreeMatchFinder::find_neighbors(
     const std::size_t position) const noexcept {
+    return find_neighbors_impl(position, nullptr);
+}
+
+LzssScapegoatTreeNeighborQueryResult
+LzssScapegoatTreeMatchFinder::find_neighbors_impl(
+    const std::size_t position,
+    std::uint64_t* const nodes_visited) const noexcept {
     LzssScapegoatTreeNeighborQueryResult result{};
     if (!initialized_ || !state_valid_) {
         result.error = LzssScapegoatTreeError::invalid_state;
@@ -770,6 +920,7 @@ LzssScapegoatTreeMatchFinder::find_neighbors(
     auto current = root_;
     std::size_t steps{};
     while (current != lzss_scapegoat_tree_null_node) {
+        if (nodes_visited != nullptr) ++*nodes_visited;
         if (steps++ >= active_node_count_
             || !valid_query_node(current, position)) {
             result.error = LzssScapegoatTreeError::invalid_state;
@@ -808,20 +959,30 @@ LzssScapegoatTreeCandidateQueryResult
 LzssScapegoatTreeMatchFinder::find_candidate(
     const std::size_t position) const noexcept {
     LzssScapegoatTreeCandidateQueryResult result{};
-    const auto neighbors = find_neighbors(position);
+    std::uint64_t nodes_visited{};
+    const auto finish = [this, &nodes_visited]() noexcept {
+        record_scapegoat_tree_query(statistics_, nodes_visited);
+    };
+    const auto neighbors = find_neighbors_impl(position, &nodes_visited);
     if (neighbors.error != LzssScapegoatTreeError::none) {
         result.error = neighbors.error;
+        finish();
         return result;
     }
-    if (neighbors.maximum_lcp < parameters_.min_match_length) return result;
+    if (neighbors.maximum_lcp < parameters_.min_match_length) {
+        finish();
+        return result;
+    }
 
     auto split = lzss_scapegoat_tree_null_node;
     auto current = root_;
     std::size_t steps{};
     while (current != lzss_scapegoat_tree_null_node) {
+        ++nodes_visited;
         if (steps++ >= active_node_count_
             || !valid_query_node(current, position)) {
             result.error = LzssScapegoatTreeError::invalid_state;
+            finish();
             return result;
         }
         const auto comparison = compare_prefix(
@@ -837,6 +998,7 @@ LzssScapegoatTreeMatchFinder::find_candidate(
     }
     if (split == lzss_scapegoat_tree_null_node) {
         result.error = LzssScapegoatTreeError::invalid_state;
+        finish();
         return result;
     }
 
@@ -844,9 +1006,11 @@ LzssScapegoatTreeMatchFinder::find_candidate(
     current = left_[split];
     steps = 0;
     while (current != lzss_scapegoat_tree_null_node) {
+        ++nodes_visited;
         if (steps++ >= active_node_count_
             || !valid_query_node(current, position)) {
             result.error = LzssScapegoatTreeError::invalid_state;
+            finish();
             return result;
         }
         const auto comparison = compare_prefix(
@@ -864,6 +1028,7 @@ LzssScapegoatTreeMatchFinder::find_candidate(
                         == lzss_scapegoat_tree_no_position
                     || subtree_maximum_position_[inside] >= position) {
                     result.error = LzssScapegoatTreeError::invalid_state;
+                    finish();
                     return result;
                 }
                 maximum_position = std::max(
@@ -876,9 +1041,11 @@ LzssScapegoatTreeMatchFinder::find_candidate(
     current = right_[split];
     steps = 0;
     while (current != lzss_scapegoat_tree_null_node) {
+        ++nodes_visited;
         if (steps++ >= active_node_count_
             || !valid_query_node(current, position)) {
             result.error = LzssScapegoatTreeError::invalid_state;
+            finish();
             return result;
         }
         const auto comparison = compare_prefix(
@@ -896,6 +1063,7 @@ LzssScapegoatTreeMatchFinder::find_candidate(
                         == lzss_scapegoat_tree_no_position
                     || subtree_maximum_position_[inside] >= position) {
                     result.error = LzssScapegoatTreeError::invalid_state;
+                    finish();
                     return result;
                 }
                 maximum_position = std::max(
@@ -907,6 +1075,7 @@ LzssScapegoatTreeMatchFinder::find_candidate(
 
     result.candidate_position = maximum_position;
     result.length = neighbors.maximum_lcp;
+    finish();
     return result;
 }
 

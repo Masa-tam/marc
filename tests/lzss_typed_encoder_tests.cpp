@@ -151,7 +151,7 @@ void expect_private_match_finders_typed_equal_exact(
     const auto scapegoat_result =
         encode_lzss_typed_tokens_scapegoat_tree_single_pass(
             input, parameters, {}, scapegoat_tokens, scapegoat_workspace,
-            variant);
+            nullptr, variant);
     ASSERT_EQ(scapegoat_result.error, LzssTypedEncodeError::none);
     EXPECT_EQ(scapegoat_result.scapegoat_tree_match_finder_error,
               LzssScapegoatTreeError::none);
