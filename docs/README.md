@@ -23,11 +23,14 @@ navigate chronological development records.
 - [LZSS match-finder strategy](design/lzss-match-finder-strategy.md): exact
   encoder-side acceleration without changing the LZSS stream format.
 - [LZSS ordered-tree Exact strategy evaluation](design/lzss-balanced-tree-strategy-evaluation.md):
-  Red-Black and Scapegoat experiments under the existing Exact contract, with
-  WAVL explicitly deferred.
+  Red-Black and Scapegoat experiments under the existing Exact contract, plus
+  the boundary for deletion-focused WAVL research.
 - [LZSS Scapegoat Tree Exact](design/lzss-scapegoat-tree-exact.md): fixed
   two-thirds balance, bounded iterative rebuilding, workspace, diagnostics,
   and private staged verification.
+- [LZSS WAVL Tree Exact feasibility](design/lzss-wavl-tree-exact.md): private
+  deletion-heavy hypothesis, equal-workspace contract, mutation-specification
+  gate, and early-stop criteria.
 - [LZSS HashTree Exact design](design/lzss-hash-tree-match-finder.md):
   deterministic hot-bucket promotion and LCP-aware ordered search.
 - [LZSS BinaryTree Exact 16 MiB benchmark](design/lzss-binary-tree-window-16m-benchmark.md):

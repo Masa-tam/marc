@@ -14009,3 +14009,18 @@ Resume in nine-record member-aligned batches, then reload the complete
 checkpoint without a point bound and produce the aggregate result. Require
 the final result to contain nine aggregates and three window comparisons while
 launching no additional benchmark process.
+
+### TVG-0968
+
+Before WAVL mutation code, require repository-owned before/after vectors for
+every insertion and deletion rank-repair case and its mirror. Each vector must
+state rank differences, promotions, demotions, rotations, propagation, root
+and null handling, successor-transplant origin, and metadata repair order.
+
+Subsequent private tests must cover equal/one-short workspace, inactive rank
+sentinel, `1,1` and `2,2` leaves, invalid zero/three rank differences,
+rank overflow, parent and cycle failures, subtree maxima, every-position Exact
+differentials, one-byte/bulk advancement, and deletion-heavy physical
+retirement. The first benchmark gate compares member/case/window fingerprints
+in separate processes and distinguishes insertion repair from retirement
+repair; it does not run ordinary Silesia.

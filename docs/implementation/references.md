@@ -7854,3 +7854,12 @@ DD-1103, TVG-0964 through TVG-0967, the repository-owned runner at commit
 `29054552`, and the locally verified Silesia Corpus. No external compressor,
 match finder, Scapegoat implementation, benchmark result, source code,
 pseudocode, test suite, or optimization description was consulted.
+
+### IR-0866
+
+The WAVL feasibility contract uses DD-1104, TVG-0968, Haeupler, Sen, and
+Tarjan's *Rank-Balanced Trees* paper already recorded for the ordered-tree
+evaluation, marc's finite-suffix Exact contract, and the repository-owned AVL,
+Red-Black, Scapegoat, and deletion-heavy benchmark evidence. No external WAVL
+implementation, compressor, match finder, source code, implementation
+pseudocode, test suite, or benchmark result was consulted.

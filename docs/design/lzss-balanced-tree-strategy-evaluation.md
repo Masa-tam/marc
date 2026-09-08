@@ -125,17 +125,20 @@ streaming recommendation without a separate latency decision. An aggregate
 amortized result is insufficient: diagnostics MUST report the largest rebuild,
 total rebuilt nodes, rebuild count, and maximum nodes touched by one update.
 
-## 6. Deferred WAVL candidate
+## 6. Deletion-focused WAVL candidate
 
-WAVL is not implemented in the first cycle. With insertion only, the published
-rank-balanced-tree result specializes to AVL behavior. Current public LZSS
-Contextual profiles reset at a frame boundary equal to their window boundary,
-so the deletion-side advantage is normally absent.
+WAVL is not implemented in the first cycle. With insertion only, the
+published rank-balanced-tree result specializes to AVL behavior. Current
+public LZSS Contextual profiles reset at a frame boundary equal to their window
+boundary, so the deletion-side advantage is normally absent.
 
-A WAVL implementation becomes justified when marc has a supported workload
-with `frame_size > window_size`, a persistent dictionary across frames, or
-measurements showing retirement rebalance to be material. It then requires its
-own rank-difference validator and differential deletion matrix.
+The repository now has a deterministic private workload with
+`frame_size > window_size` and physical retirement diagnostics. This satisfies
+only the experimental half of the deferral condition: no public persistent-
+window workload has been admitted. WAVL may therefore proceed as a private,
+deletion-focused candidate under `lzss-wavl-tree-exact.md`. It must retain AVL
+workspace, receive its own rank-difference validator and differential deletion
+matrix, and pass an early synthetic gate before any Corpus or public work.
 
 ## 7. Diagnostic contract
 

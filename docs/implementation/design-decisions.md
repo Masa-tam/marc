@@ -22438,3 +22438,22 @@ runner as private research infrastructure. This preserves the independently
 implemented negative result and permits later experiments with different
 window scales or balance policies without adding an unsupported public API,
 ABI, CLI selector, profile, archive variant, or default.
+
+## DD-1104: WAVL exploration is deletion-focused and privately gated
+
+- Date: 2026-09-09
+- Status: accepted
+
+Permit WAVL Exact to advance from deferred idea to private design because the
+repository now has a deterministic `frame_size > window_size` retirement
+workload. Do not treat current public profiles or ordinary Silesia as evidence
+for the hypothesis: their equal frame/window boundary performs no ordinary
+within-frame retirement, and insertion-only WAVL has no expected advantage
+over AVL.
+
+Require AVL-equal workspace, one-byte rank metadata, exact rank-difference
+validation, operation-separated repair diagnostics, and a committed
+hand-checkable mutation transition table before implementation. Stop after the
+private synthetic gate unless WAVL preserves Exact identity, bounds per-update
+repair, and improves deletion-heavy behavior without materially regressing the
+paired non-deleting controls. Add no public or stream-visible surface.

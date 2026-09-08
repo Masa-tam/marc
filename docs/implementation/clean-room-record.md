@@ -29786,3 +29786,27 @@ both bounds.
 - Local validation: all 108 records passed complete report validation and both
   Exact identity gates. The result JSON SHA-256 is
   `754333796855d7a7fa9e01e569fa64e8d1c1cd2b391e3c230aa8ff137af72214`.
+
+## CR-1197: 2026-09-09 - WAVL Exact feasibility boundary
+
+- Authoring method: narrowed the deferred WAVL idea to a private
+  deletion-heavy hypothesis after reviewing marc's completed ordered-tree
+  evidence and current frame/window behavior.
+- References used: DD-1104, IR-0866, TVG-0968, Haeupler, Sen, and Tarjan's
+  *Rank-Balanced Trees*, and marc's repository-owned Exact and benchmark
+  contracts.
+- Known implementations intentionally not consulted: external WAVL
+  implementation, compressor, match finder, source code, implementation
+  pseudocode, test suite, or benchmark result.
+- Independent decisions: require AVL-equal storage, a separate exact mutation
+  table before code, operation-specific repair diagnostics, deletion-heavy
+  early stopping, and no initial ordinary Silesia run.
+- Generated-code task description: define whether and how WAVL can be tested
+  for LZSS retirement cost without presuming public value or implementation
+  success.
+- Similarity review: the feasibility document combines the cited mathematical
+  model only with marc-owned storage, validation, Exact, and measurement
+  contracts. No external implementation expression, pseudocode, test sequence,
+  or control flow was copied or reproduced.
+- Local validation: documentation layout and identifier chronology pass before
+  commit; no WAVL mutation code exists at this stage.
