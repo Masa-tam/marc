@@ -13996,3 +13996,16 @@ As a real connection smoke, run the first canonical triplet against the
 verified local `dickens` member with a 65,536-byte window. Require all three
 processes to complete and the checkpoint to reach `3/108`; this is connection
 evidence only and is not the fixed experiment result.
+
+### TVG-0967
+
+Run the committed fixed runner over all twelve verified Silesia members at
+64-KiB, 256-KiB, and one-MiB windows. Execute AVL, Red-Black, and Scapegoat in
+that order and in separate processes for each member/window pair. Require all
+108 reports to pass complete validation and both candidates to match the AVL
+token-kind counts, matched-byte count, and canonical token fingerprint.
+
+Resume in nine-record member-aligned batches, then reload the complete
+checkpoint without a point bound and produce the aggregate result. Require
+the final result to contain nine aggregates and three window comparisons while
+launching no additional benchmark process.

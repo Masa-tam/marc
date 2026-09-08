@@ -135,3 +135,23 @@ matrix. A three-process local connection smoke completed the first canonical
 AVL/Red-Black/Scapegoat triplet for `dickens` at 65,536 bytes and saved
 `3/108`. The full 108-process experiment remains intentionally unclaimed until
 the completed result has been produced and reviewed.
+
+## 9. Completed result and decision
+
+The MSVC Release experiment at commit `29054552` completed all 108 records.
+Every Red-Black and Scapegoat report matched its AVL baseline in token-kind
+counts, matched bytes, and canonical token fingerprint. The aggregate result
+contains 211,938,580 input bytes and 207 frames per strategy/window pair.
+
+| Window | AVL MiB/s | Red-Black MiB/s | Scapegoat MiB/s | Scapegoat/AVL | Scapegoat workspace | Maximum single-update work |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 65,536 | 1.751106 | 1.744737 | 1.062158 | 0.606564 | 2,359,296 | 197,017 |
+| 262,144 | 1.423704 | 1.388077 | 0.839236 | 0.589474 | 9,437,184 | 471,595 |
+| 1,048,576 | 1.700025 | 1.581188 | 0.950363 | 0.559029 | 37,748,736 | 872,473 |
+
+AVL workspace was 1,900,544, 7,602,176, and 30,408,704 bytes respectively;
+Scapegoat therefore required 1.241379 times as much at every window. Its
+maximum final heights were 35, 39, and 41, compared with AVL's 20, 22, and 25.
+The throughput deficit, extra workspace, and increasing single-update spike do
+not support public admission. Scapegoat Exact remains private research
+infrastructure; no public or stream-visible surface changes.

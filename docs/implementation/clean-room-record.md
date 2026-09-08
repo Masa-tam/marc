@@ -29763,3 +29763,26 @@ both bounds.
 - Local validation: ten runner unit tests pass under MSVC CTest, and the first
   real three-strategy `dickens`/65,536-byte-window triplet completes with Exact
   identity and an atomic `3/108` checkpoint before commit.
+
+## CR-1196: 2026-09-08 - Fixed Scapegoat Silesia result
+
+- Authoring method: resumed the committed fixed runner in twelve
+  member-aligned batches, then regenerated the result from the complete
+  checkpoint without launching another benchmark process.
+- References used: DD-1100 through DD-1103, IR-0862 through IR-0865,
+  TVG-0964 through TVG-0967, commit `29054552`, and the locally verified
+  Silesia Corpus.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, benchmark result, source code,
+  pseudocode, test suite, or optimization description.
+- Independent decisions: preserve the unfavorable result, decline public
+  admission, retain the private research surface, and separate Exact
+  correctness from throughput, workspace, and latency suitability.
+- Generated-code task description: execute and interpret the frozen 108-point
+  comparison without tuning the tree or changing the accepted matrix.
+- Similarity review: measurement used only marc-owned executables, tools, and
+  diagnostics. No external implementation expression, pseudocode, test
+  sequence, or control flow was copied or reproduced.
+- Local validation: all 108 records passed complete report validation and both
+  Exact identity gates. The result JSON SHA-256 is
+  `754333796855d7a7fa9e01e569fa64e8d1c1cd2b391e3c230aa8ff137af72214`.

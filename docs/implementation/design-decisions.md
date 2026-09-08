@@ -22420,3 +22420,21 @@ baseline before accepting the record. Save an identity-bound canonical-prefix
 checkpoint atomically after every process. Report timing, workspace, tree
 height, and Scapegoat single-update structural work as observations; do not
 make an admission decision in the runner.
+
+## DD-1103: Scapegoat Exact remains private after the fixed comparison
+
+- Date: 2026-09-08
+- Status: accepted
+
+Do not admit Scapegoat Exact to the public match-finder strategy set. The
+completed fixed Silesia comparison preserved Exact token identity at all 108
+points, but Scapegoat delivered only 60.66%, 58.95%, and 55.90% of AVL
+throughput at 64-KiB, 256-KiB, and one-MiB windows while requiring 1.2414 times
+AVL workspace. Its maximum single-update structural work also grew from
+197,017 to 872,473 visited or rebuilt nodes as the window increased.
+
+Retain the implementation, diagnostics, synthetic runner, and fixed Silesia
+runner as private research infrastructure. This preserves the independently
+implemented negative result and permits later experiments with different
+window scales or balance policies without adding an unsupported public API,
+ABI, CLI selector, profile, archive variant, or default.

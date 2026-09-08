@@ -2253,3 +2253,27 @@ Run bounded batches by retaining `--checkpoint` and choosing a suitable
 `--max-new-points`. Once all 108 records exist, rerun without that bound and
 add `--output` to write the final aggregate JSON. Checkpoint and result files
 belong under the ignored local Corpus results area and must not be committed.
+
+### BM-0064: Fixed Scapegoat Silesia result
+
+The fixed MSVC Release run at commit `29054552` completed twelve verified
+Silesia members, three windows, and three process-isolated strategies: 108
+records. All Red-Black and Scapegoat candidates matched their immediately
+preceding AVL baseline in token counts, matched bytes, and canonical token
+fingerprint. Each aggregate processed 211,938,580 bytes in 207 one-MiB frames.
+
+| Window | AVL MiB/s | Red-Black MiB/s | Scapegoat MiB/s | RB/AVL | Scapegoat/AVL | AVL workspace | Scapegoat workspace | Scapegoat max update |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 65,536 | 1.751106 | 1.744737 | 1.062158 | 0.996363 | 0.606564 | 1,900,544 | 2,359,296 | 197,017 |
+| 262,144 | 1.423704 | 1.388077 | 0.839236 | 0.974976 | 0.589474 | 7,602,176 | 9,437,184 | 471,595 |
+| 1,048,576 | 1.700025 | 1.581188 | 0.950363 | 0.930097 | 0.559029 | 30,408,704 | 37,748,736 | 872,473 |
+
+Scapegoat used 1.241379 times AVL workspace at every size while falling from
+60.66% to 55.90% of AVL throughput as the window increased. Its maximum final
+height rose from 35 to 41 and maximum single-update structural work rose from
+197,017 to 872,473 nodes. The fixed result therefore rejects public promotion
+for the tested balance policy. The private implementation and runners remain
+available for research; neither correctness nor experiment completion is
+treated as evidence of a useful public trade-off. The ignored result JSON has
+SHA-256
+`754333796855d7a7fa9e01e569fa64e8d1c1cd2b391e3c230aa8ff137af72214`.

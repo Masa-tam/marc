@@ -7846,3 +7846,11 @@ aggregation helpers, process isolation, canonical token fingerprint, and
 atomic checkpoint conventions. No external compressor, match finder,
 Scapegoat implementation, benchmark harness, source code, pseudocode, test
 suite, result, or optimization description was consulted.
+
+### IR-0865
+
+The fixed Scapegoat result and non-admission decision use DD-1100 through
+DD-1103, TVG-0964 through TVG-0967, the repository-owned runner at commit
+`29054552`, and the locally verified Silesia Corpus. No external compressor,
+match finder, Scapegoat implementation, benchmark result, source code,
+pseudocode, test suite, or optimization description was consulted.
