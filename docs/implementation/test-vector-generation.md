@@ -13954,3 +13954,18 @@ positive Scapegoat retirement on deletion-heavy points. The CMake smoke uses
 an 8,192-byte two-frame deletion-heavy vector with a 1,024-byte window; the
 local comparison uses all six cases, 65,536 input bytes, two 32,768-byte
 frames, and 1,024/4,096-byte windows.
+
+### TVG-0964
+
+Freeze the Scapegoat Silesia runner at twelve verified members, one-MiB
+frames, 64-KiB/256-KiB/one-MiB windows, one measured iteration, and canonical
+AVL/Red-Black/Scapegoat order. Unit fixtures must require the 108-point grid,
+complete report validation for all three strategies, both candidate-to-AVL
+identity gates, canonical-prefix checkpoint recovery, rejection of orphaned
+candidate and altered-identity records, atomic bounded progress, complete
+aggregation, and both candidate-to-AVL comparison fields.
+
+The real experiment runs every point in its own process and requires token
+kind counts, matched bytes, and canonical token fingerprints to match before
+timing is interpreted. Checkpoint and final-result files remain ignored local
+artifacts.

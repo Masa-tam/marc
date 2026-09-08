@@ -29693,3 +29693,26 @@ both bounds.
   the synthetic benchmark smoke, the Python runner tests, and the 48-process
   six-case/two-window/four-strategy MSVC Release matrix pass; documentation
   validation is run before commit.
+
+## CR-1193: 2026-09-08 - Fixed Scapegoat Silesia experiment contract
+
+- Authoring method: froze the tenth-stage measurement and checkpoint contract
+  before exposing the private finder to file-backed benchmark input.
+- References used: DD-1100, IR-0862, TVG-0964, the accepted Scapegoat design,
+  and marc's independently authored AVL/Red-Black Silesia experiment contract.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, benchmark harness, source code,
+  pseudocode, test suite, result, or optimization description.
+- Independent decisions: rerun all three trees under one binary rather than
+  reuse historical timing, retain the earlier fixed frame/window regime,
+  require both candidates to match AVL, save 108 points in canonical order,
+  and make admission depend on bounded single-update work as well as aggregate
+  throughput and workspace.
+- Generated-code task description: define a fixed, resumable, process-isolated
+  three-tree Silesia experiment without implementing the runner or changing
+  any public or stream-visible surface.
+- Similarity review: the document generalizes only marc's own prior experiment
+  and private-tree contracts. No external implementation expression,
+  pseudocode, test sequence, or control flow was copied or reproduced.
+- Local validation: documentation layout and identifier chronology pass before
+  commit.

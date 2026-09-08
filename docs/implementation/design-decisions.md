@@ -22364,3 +22364,23 @@ to exercise physical retirement. Compare all four Exact strategies by token
 count and canonical token fingerprint. Do not add Scapegoat to file/Silesia
 benchmark selection, public dispatch, ABI, CLI, frames, schema, or defaults in
 this stage.
+
+## DD-1100: Freeze a three-tree fixed Silesia comparison
+
+- Date: 2026-09-08
+- Status: accepted
+
+Before any Scapegoat admission decision, rerun AVL Exact, Red-Black Exact, and
+Scapegoat Exact from one revision and executable over all twelve locally
+verified Silesia members. Fix one-MiB frames, 64-KiB/256-KiB/one-MiB windows,
+one measured iteration, and member/window/AVL/Red-Black/Scapegoat process
+order, yielding 108 records. Do not compare new Scapegoat timing against the
+historical Red-Black run.
+
+Require both candidates to equal the immediately preceding AVL baseline in
+all token-kind counts, matched bytes, and canonical token fingerprint. Bind a
+resumable checkpoint to revision, executable, Corpus manifest, tool sources,
+fixed configuration, and environment, and save each point atomically. Treat
+timing and structural counters as observations. Completion permits a separate
+admission decision but changes no public strategy, ABI, CLI codec, frame,
+schema, stream representation, or default.

@@ -7816,3 +7816,13 @@ process-isolated runner, canonical token fingerprint, and Exact comparison
 contracts. No external compressor, match finder, Scapegoat implementation,
 benchmark harness, workload generator, source code, pseudocode, test suite, or
 optimization description was consulted.
+
+### IR-0862
+
+The fixed Scapegoat Silesia experiment design uses DD-1100, TVG-0964, the
+accepted private Scapegoat contracts, marc's completed AVL/Red-Black Silesia
+experiment contract, and the repository's independently implemented Corpus
+verification, process isolation, checkpoint identity, report validation, and
+canonical token fingerprint facilities. No external compressor, match finder,
+Scapegoat implementation, benchmark harness, source code, pseudocode, test
+suite, result, or optimization description was consulted.
