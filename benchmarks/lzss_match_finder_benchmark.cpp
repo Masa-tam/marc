@@ -1416,7 +1416,8 @@ void print_usage() {
         << "usage: marc_lzss_match_finder_benchmark "
            "<input-file> [iterations]\n"
         << "       marc_lzss_match_finder_benchmark --frames "
-           "<hash-chain-exact|binary-tree-exact|red-black-tree-exact> "
+           "<hash-chain-exact|binary-tree-exact|red-black-tree-exact|"
+           "scapegoat-tree-exact> "
            "<input-file> [iterations] "
            "[frame-bytes] [window-bytes]\n"
         << "       marc_lzss_match_finder_benchmark --frames "
@@ -1453,8 +1454,6 @@ void print_usage() {
         || (explicit_limit
             && strategy != BenchmarkStrategy::hash_chain_exact
             && strategy != BenchmarkStrategy::binary_tree_exact)
-        || (!explicit_limit
-            && strategy == BenchmarkStrategy::scapegoat_tree_exact)
         || (strategy == BenchmarkStrategy::hash_tree_exact && argc != 8)
         || (strategy == BenchmarkStrategy::sparse_hash_tree_exact
             && argc != 9)
@@ -1530,6 +1529,14 @@ void print_usage() {
             frame_size, parameters, limits);
         if (requirements.error != LzssRedBlackTreeError::none) {
             std::cerr << "cannot calculate frame RedBlack workspace\n";
+            return 1;
+        }
+        workspace_size = requirements.workspace_size;
+    } else if (strategy == BenchmarkStrategy::scapegoat_tree_exact) {
+        const auto requirements = calculate_lzss_scapegoat_tree_workspace(
+            frame_size, parameters, limits);
+        if (requirements.error != LzssScapegoatTreeError::none) {
+            std::cerr << "cannot calculate frame Scapegoat workspace\n";
             return 1;
         }
         workspace_size = requirements.workspace_size;

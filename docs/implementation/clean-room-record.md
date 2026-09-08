@@ -29716,3 +29716,27 @@ both bounds.
   pseudocode, test sequence, or control flow was copied or reproduced.
 - Local validation: documentation layout and identifier chronology pass before
   commit.
+
+## CR-1194: 2026-09-08 - Private Scapegoat file-frame benchmark access
+
+- Authoring method: opened the existing bounded internal file-frame harness to
+  the completed private Scapegoat finder after freezing the Stage 10 matrix.
+- References used: DD-1090 through DD-1101, IR-0852 through IR-0863,
+  TVG-0954 through TVG-0965, and marc's repository-owned frame benchmark and
+  diagnostic report contract.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, Corpus runner, benchmark harness,
+  source code, pseudocode, test suite, result, or optimization description.
+- Independent decisions: expose only internal ordinary `--frames`, retain the
+  default bounded policy, reject the configurable limited route, preserve the
+  ordinary Silesia strategy tuple, and require four-way token identity plus
+  Scapegoat rebuilding and bounded-work evidence on the README fixture.
+- Generated-code task description: add the private file-input seam required by
+  the later 108-process runner without changing any public selector, ABI,
+  archive, schema, stream representation, or default.
+- Similarity review: the small dispatch and smoke extension compose only
+  marc-owned APIs and report fields. No external implementation expression,
+  pseudocode, test sequence, or control flow was copied or reproduced.
+- Local validation: optimized match-finder benchmark builds are warning-clean
+  under MSVC and ClangCL; focused file-frame and documentation tests pass under
+  both configurations before commit.

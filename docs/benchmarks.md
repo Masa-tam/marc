@@ -109,11 +109,11 @@ marc_lzss_match_finder_benchmark --frames hash-chain-exact input.bin 1 1048576 6
 Arguments after the input are optional positive iteration count, raw frame
 bytes, and window bytes. Their defaults are 1, 1,048,576, and 65,536. The
 current frame mode accepts `hash-chain-exact`, `binary-tree-exact`, private
-experimental `red-black-tree-exact`, `hash-tree-exact`, and
-`sparse-hash-tree-exact`; the latter two require their documented promotion
-arguments. Red-Black availability here is diagnostic only and does not add a
-public codec selector. Its default `max_internal_buffered_bytes` remains
-128 MiB.
+experimental `red-black-tree-exact` and `scapegoat-tree-exact`,
+`hash-tree-exact`, and `sparse-hash-tree-exact`; the latter two require their
+documented promotion arguments. Private tree availability here is diagnostic
+only and does not add a public codec selector. Its default
+`max_internal_buffered_bytes` remains 128 MiB.
 
 Large global-tree experiments that cannot fit the default use a distinct,
 explicitly bounded route:

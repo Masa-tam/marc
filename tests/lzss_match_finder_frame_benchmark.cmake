@@ -106,6 +106,32 @@ if(NOT red_black_result EQUAL 0)
         "Red-Black frame benchmark failed: ${red_black_result}: "
         "${red_black_error}")
 endif()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames scapegoat-tree-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536
+    RESULT_VARIABLE scapegoat_result
+    OUTPUT_VARIABLE scapegoat_report
+    ERROR_VARIABLE scapegoat_error)
+if(NOT scapegoat_result EQUAL 0)
+    message(FATAL_ERROR
+        "Scapegoat frame benchmark failed: ${scapegoat_result}: "
+        "${scapegoat_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=frames"
+        "strategy=scapegoat-tree-exact"
+        "input_bytes=${input_size}"
+        "frame_bytes=${frame_size}"
+        "window_bytes=65536"
+        "frame_count=${expected_frames}"
+        "iterations=1")
+    string(FIND "${scapegoat_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR
+            "missing Scapegoat frame report line: ${expected_line}")
+    endif()
+endforeach()
 foreach(expected_line IN ITEMS
         "mode=frames"
         "strategy=red-black-tree-exact"
@@ -131,11 +157,16 @@ foreach(summary_key IN ITEMS
     string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
         "${red_black_report}")
     set(red_black_summary "${CMAKE_MATCH_1}")
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${scapegoat_report}")
+    set(scapegoat_summary "${CMAKE_MATCH_1}")
     if(NOT hash_summary STREQUAL binary_summary
-            OR NOT hash_summary STREQUAL red_black_summary)
+            OR NOT hash_summary STREQUAL red_black_summary
+            OR NOT hash_summary STREQUAL scapegoat_summary)
         message(FATAL_ERROR
             "file-frame Exact ${summary_key} mismatch: "
-            "${hash_summary}, ${binary_summary}, ${red_black_summary}")
+            "${hash_summary}, ${binary_summary}, ${red_black_summary}, "
+            "${scapegoat_summary}")
     endif()
 endforeach()
 string(REGEX MATCH "binary_tree_workspace_bytes=([0-9]+)" ignored
@@ -176,6 +207,38 @@ foreach(decimal_key IN ITEMS
         "${red_black_report}")
     if(decimal_match STREQUAL "")
         message(FATAL_ERROR "missing finite Red-Black ${decimal_key}")
+    endif()
+endforeach()
+foreach(positive_key IN ITEMS
+        scapegoat_tree_workspace_bytes scapegoat_tree_queries
+        scapegoat_tree_key_comparisons
+        scapegoat_tree_key_byte_comparisons
+        scapegoat_tree_lcp_byte_comparisons
+        scapegoat_tree_insertions scapegoat_tree_depth_violations
+        scapegoat_tree_ancestor_steps scapegoat_tree_subtree_rebuilds
+        scapegoat_tree_rebuilt_nodes
+        scapegoat_tree_maximum_rebuilt_nodes
+        scapegoat_tree_maximum_structural_nodes_per_update
+        scapegoat_tree_maximum_final_height
+        scapegoat_tree_max_nodes_per_query)
+    string(REGEX MATCH "${positive_key}=([0-9]+)" value_match
+        "${scapegoat_report}")
+    if(value_match STREQUAL "" OR CMAKE_MATCH_1 EQUAL 0)
+        message(FATAL_ERROR "missing positive Scapegoat ${positive_key}")
+    endif()
+endforeach()
+string(REGEX MATCH
+    "scapegoat_tree_query_depth_histogram=[0-9]+(,[0-9]+)*"
+    scapegoat_histogram_match "${scapegoat_report}")
+if(scapegoat_histogram_match STREQUAL "")
+    message(FATAL_ERROR "missing file-frame Scapegoat histogram")
+endif()
+foreach(decimal_key IN ITEMS
+        scapegoat_tree_frame_seconds scapegoat_tree_frame_mib_per_second)
+    string(REGEX MATCH "${decimal_key}=[0-9]+\\.[0-9]+" decimal_match
+        "${scapegoat_report}")
+    if(decimal_match STREQUAL "")
+        message(FATAL_ERROR "missing finite Scapegoat ${decimal_key}")
     endif()
 endforeach()
 
@@ -242,6 +305,7 @@ endforeach()
 
 foreach(invalid_command IN ITEMS
         "hash-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;${explicit_limit}"
+        "scapegoat-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;${explicit_limit}"
         "hash-chain-exact;${BENCHMARK_INPUT};1;${frame_size};65536;0"
         "hash-chain-exact;${BENCHMARK_INPUT};1;${frame_size};65536;18446744073709551616")
     execute_process(

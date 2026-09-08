@@ -13969,3 +13969,16 @@ The real experiment runs every point in its own process and requires token
 kind counts, matched bytes, and canonical token fingerprints to match before
 timing is interpreted. Checkpoint and final-result files remain ignored local
 artifacts.
+
+### TVG-0965
+
+Run the repository README through HashChain, AVL, Red-Black, and private
+Scapegoat `--frames` processing with 1,024-byte frames and a 65,536-byte
+configured window. Require identical input/frame totals, token-kind counts,
+matched bytes, token count, and lowercase SHA-256 canonical token fingerprint.
+
+Require the Scapegoat workspace, queries, key and LCP comparisons, insertions,
+depth violations, ancestor steps, subtree rebuilds, rebuilt-node totals and
+maxima, single-update maximum, final height, maximum query nodes, histogram,
+and finite timing fields. Continue to reject Scapegoat through
+`--frames-limited` and every public codec selection surface.

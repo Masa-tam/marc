@@ -103,3 +103,18 @@ observed throughput, workspace, and latency trade-off benefits a defined use
 case. Aggregate speed alone cannot hide a pathological single-update spike.
 An inconclusive or unfavorable result leaves Scapegoat private without making
 the experiment a failure.
+
+## 7. Private file-frame seam
+
+The internal match-finder benchmark accepts `scapegoat-tree-exact` through
+ordinary `--frames` processing. It reuses the bounded frame reader, checked
+Scapegoat workspace calculator, Exact parser, diagnostic validation, token
+summary and fingerprint, and counter-free timed pass already exercised by the
+synthetic route. It remains rejected by `--frames-limited`; the dedicated
+experiment uses only the fixed default limit and matrix above.
+
+The repository README smoke fixture makes HashChain, AVL, Red-Black, and
+Scapegoat agree on the complete token summary and fingerprint. It also checks
+the Scapegoat report's comparison, rebuilding, bounded single-update,
+final-height, query-depth, and finite timing fields. This seam produces no
+archive and is not a public codec selector.

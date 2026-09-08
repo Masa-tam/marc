@@ -7826,3 +7826,13 @@ verification, process isolation, checkpoint identity, report validation, and
 canonical token fingerprint facilities. No external compressor, match finder,
 Scapegoat implementation, benchmark harness, source code, pseudocode, test
 suite, result, or optimization description was consulted.
+
+### IR-0863
+
+The private Scapegoat file-frame seam uses DD-1101, TVG-0965, marc's
+repository-owned bounded frame reader and report validation, and the completed
+private Scapegoat synthetic dispatch, workspace calculator, Exact token
+fingerprint, statistics, and structural validator. No external compressor,
+match finder, Scapegoat implementation, Corpus runner, benchmark harness,
+source code, pseudocode, test suite, result, or optimization description was
+consulted.

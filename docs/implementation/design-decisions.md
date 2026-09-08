@@ -22384,3 +22384,21 @@ fixed configuration, and environment, and save each point atomically. Treat
 timing and structural counters as observations. Completion permits a separate
 admission decision but changes no public strategy, ABI, CLI codec, frame,
 schema, stream representation, or default.
+
+## DD-1101: Scapegoat file-frame access is diagnostic-only
+
+- Date: 2026-09-08
+- Status: accepted
+
+Permit `scapegoat-tree-exact` through the internal benchmark's ordinary
+`--frames` route so verified local Corpus members can be read in bounded
+frames. Reuse the frame reader, parameter validation, checked Scapegoat
+workspace calculator, Exact parser, token summary and fingerprint, untimed
+statistics and structural validation, and null-statistics timed pass already
+used by the synthetic route. Keep the 128-MiB default aggregate policy.
+
+Require a file-backed smoke fixture to prove four-way Exact token identity and
+the complete Scapegoat diagnostic report. Continue to reject Scapegoat through
+`--frames-limited`, leave the ordinary Silesia runner strategy tuple unchanged,
+and add no public strategy, ABI, CLI codec, frame, schema, stream
+representation, or default.
