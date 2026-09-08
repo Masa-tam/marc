@@ -7836,3 +7836,13 @@ fingerprint, statistics, and structural validator. No external compressor,
 match finder, Scapegoat implementation, Corpus runner, benchmark harness,
 source code, pseudocode, test suite, result, or optimization description was
 consulted.
+
+### IR-0864
+
+The fixed Scapegoat Silesia runner uses DD-1100 through DD-1102, TVG-0964
+through TVG-0966, the frozen experiment document, and marc's independently
+implemented Corpus verifier, ordinary Silesia runner validation and
+aggregation helpers, process isolation, canonical token fingerprint, and
+atomic checkpoint conventions. No external compressor, match finder,
+Scapegoat implementation, benchmark harness, source code, pseudocode, test
+suite, result, or optimization description was consulted.

@@ -13982,3 +13982,17 @@ depth violations, ancestor steps, subtree rebuilds, rebuilt-node totals and
 maxima, single-update maximum, final height, maximum query nodes, histogram,
 and finite timing fields. Continue to reject Scapegoat through
 `--frames-limited` and every public codec selection surface.
+
+### TVG-0966
+
+Exercise the dedicated Scapegoat Silesia runner with synthetic complete
+reports for all three strategies. Cover the fixed 108-record grid, strict
+field and finite-number validation, both candidate-to-AVL Exact gates, atomic
+checkpoint writes, identity changes, canonical-prefix recovery, orphaned and
+altered records, aggregate comparison fields, bounded three-point resumption,
+and a complete mocked run in canonical order.
+
+As a real connection smoke, run the first canonical triplet against the
+verified local `dickens` member with a 65,536-byte window. Require all three
+processes to complete and the checkpoint to reach `3/108`; this is connection
+evidence only and is not the fixed experiment result.

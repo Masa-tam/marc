@@ -118,3 +118,20 @@ Scapegoat agree on the complete token summary and fingerprint. It also checks
 the Scapegoat report's comparison, rebuilding, bounded single-update,
 final-height, query-depth, and finite timing fields. This seam produces no
 archive and is not a public codec selector.
+
+## 8. Runner implementation
+
+`tools/run_silesia_scapegoat_tree_experiment.py` implements this contract with
+distinct result and checkpoint schemas. It verifies the local Corpus before
+launch, fixes the complete 108-record order, runs one benchmark process per
+record, validates the complete strategy-specific report, applies both Exact
+identity gates, and atomically saves every accepted canonical-prefix record.
+Its checkpoint identity covers the revision, benchmark executable and digest,
+Corpus manifest and path, runner/helper sources, environment, and fixed
+configuration.
+
+`--max-new-points` permits bounded resumable batches without weakening the
+matrix. A three-process local connection smoke completed the first canonical
+AVL/Red-Black/Scapegoat triplet for `dickens` at 65,536 bytes and saved
+`3/108`. The full 108-process experiment remains intentionally unclaimed until
+the completed result has been produced and reviewed.

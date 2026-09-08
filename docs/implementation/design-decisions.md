@@ -22402,3 +22402,21 @@ the complete Scapegoat diagnostic report. Continue to reject Scapegoat through
 `--frames-limited`, leave the ordinary Silesia runner strategy tuple unchanged,
 and add no public strategy, ABI, CLI codec, frame, schema, stream
 representation, or default.
+
+## DD-1102: The Scapegoat Silesia runner owns a distinct fixed schema
+
+- Date: 2026-09-08
+- Status: accepted
+
+Implement the frozen three-tree experiment as a dedicated runner rather than
+extending the ordinary two-tree Silesia result schema. Fix its matrix at the
+verified twelve members, 64-KiB/256-KiB/one-MiB windows, and canonical
+AVL/Red-Black/Scapegoat process order. Use one process and one measured
+iteration per record, yielding exactly 108 records.
+
+Validate every complete benchmark report and require each candidate's token
+counts, matched bytes, and canonical token fingerprint to equal its AVL
+baseline before accepting the record. Save an identity-bound canonical-prefix
+checkpoint atomically after every process. Report timing, workspace, tree
+height, and Scapegoat single-update structural work as observations; do not
+make an admission decision in the runner.

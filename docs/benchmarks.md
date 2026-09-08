@@ -2234,3 +2234,22 @@ work of 3,259 and 14,989 node visits respectively. These deliberately small
 synthetic measurements show substantial rebuild cost and do not support
 promotion. They are diagnostic baseline evidence only; the fixed local
 Silesia comparison remains required before an admission decision.
+
+### BM-0063: Fixed Scapegoat Silesia runner
+
+The dedicated runner executes the frozen 108-record matrix in canonical
+member/window/AVL/Red-Black/Scapegoat order. It verifies the local Corpus,
+validates complete reports, requires both candidate strategies to match AVL's
+Exact token summary and fingerprint, and saves every accepted process to an
+identity-bound atomic checkpoint. It does not download data and does not make
+an admission decision.
+
+The initial MSVC Release connection smoke completed the first three records:
+`dickens`, 65,536-byte window, and all three strategies. Exact identity passed
+and the checkpoint reached `3/108`. This confirms the real executable, Corpus,
+validator, identity gates, and resume path; it is not a performance result.
+
+Run bounded batches by retaining `--checkpoint` and choosing a suitable
+`--max-new-points`. Once all 108 records exist, rerun without that bound and
+add `--output` to write the final aggregate JSON. Checkpoint and result files
+belong under the ignored local Corpus results area and must not be committed.

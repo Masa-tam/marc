@@ -29740,3 +29740,26 @@ both bounds.
 - Local validation: optimized match-finder benchmark builds are warning-clean
   under MSVC and ClangCL; focused file-frame and documentation tests pass under
   both configurations before commit.
+
+## CR-1195: 2026-09-08 - Fixed Scapegoat Silesia experiment runner
+
+- Authoring method: implemented the previously frozen 108-process experiment
+  as a dedicated, resumable, network-free Python runner.
+- References used: DD-1100 through DD-1102, IR-0862 through IR-0864,
+  TVG-0964 through TVG-0966, and marc's repository-owned Silesia verification,
+  report validation, aggregation, checkpoint, and Exact identity contracts.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, Scapegoat implementation, benchmark harness, source code,
+  pseudocode, test suite, result, or optimization description.
+- Independent decisions: retain a distinct result schema, fix canonical
+  AVL/Red-Black/Scapegoat order, bind checkpoints to all reproducibility
+  inputs, reject non-prefix or altered records, and keep measurement separate
+  from admission.
+- Generated-code task description: implement and test the frozen local
+  Scapegoat Silesia experiment without changing a public API or stream format.
+- Similarity review: the runner composes only repository-owned tools and
+  contracts. No external implementation expression, pseudocode, test sequence,
+  or control flow was copied or reproduced.
+- Local validation: ten runner unit tests pass under MSVC CTest, and the first
+  real three-strategy `dickens`/65,536-byte-window triplet completes with Exact
+  identity and an atomic `3/108` checkpoint before commit.
