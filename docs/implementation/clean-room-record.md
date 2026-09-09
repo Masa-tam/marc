@@ -29810,3 +29810,32 @@ both bounds.
   or control flow was copied or reproduced.
 - Local validation: documentation layout and identifier chronology pass before
   commit; no WAVL mutation code exists at this stage.
+
+## CR-1198: 2026-09-10 - WAVL Exact mutation transition table
+
+- Authoring method: independently restated the paper's bottom-up rank cases as
+  explicit marc-owned preconditions, rank operations, links, continuation
+  origins, mirrored hand vectors, and before/after diagrams. Cross-checked the
+  extracted text against rendered paper pages 4 through 7 before adapting the
+  deletion normalization to fixed physical slots.
+- References used: DD-1104 and DD-1105, IR-0866 and IR-0867, TVG-0968 and
+  TVG-0969, Section 3 and Figures 2 and 3 of Haeupler, Sen, and Tarjan's
+  *Rank-Balanced Trees*, and marc's repository-owned AVL, transplant,
+  subtree-maximum, and Exact contracts.
+- Known implementations intentionally not consulted: external WAVL source
+  code, implementation pseudocode, compressor, match finder, test suite,
+  mutation fixture, or benchmark result.
+- Independent decisions: preserve physical successor identity rather than
+  swapping payloads; copy the target rank to the moved successor; distinguish
+  direct and non-direct splice repair origins; require checked byte-stable
+  failure; and prescribe iterative local-to-root metadata repair separately
+  from rank changes.
+- Generated-code task description: create the complete reviewable WAVL
+  mutation specification and hand-vector obligations without adding mutation
+  code or a public surface.
+- Similarity review: the mathematical case conditions and rank changes are
+  attributed to the paper; prose, tables, diagrams, transplant adaptation,
+  metadata order, and test organization were independently authored for marc.
+  No external implementation expression was copied or translated.
+- Local validation: documentation layout, links, and identifier chronology
+  pass; no WAVL mutation code exists at this stage.

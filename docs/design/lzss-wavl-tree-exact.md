@@ -56,8 +56,10 @@ height byte with a one-byte WAVL rank. The null child has mathematical rank
 nonnegative and must remain below that sentinel.
 
 For every active parent-child edge, the rank difference MUST be exactly one or
-two. A leaf may be a `1,1` or deletion-created `2,2` node. The root has no
-special rank beyond the same invariant. Checked workspace arithmetic,
+two. Every settled leaf is a rank-zero `1,1` node; a rank-one `2,2` leaf is
+permitted only as the transient deletion violation immediately before repair.
+Settled `2,2` nodes are non-leaves. The root has no special rank beyond the
+same invariant. Checked workspace arithmetic,
 alignment, overlap rejection, equality/one-short limits, platform-width
 limits, initialization, and aggregate accounting must match the existing AVL
 contract. The intended workspace is byte-for-byte equal in extent to AVL for
@@ -70,8 +72,9 @@ can be queried again.
 
 ## 5. Mutation specification gate
 
-No WAVL mutation implementation may begin until a separate hand-checkable
-transition table is committed. The table must derive insertion and deletion
+No WAVL mutation implementation may begin until the separate hand-checkable
+[mutation transition table](lzss-wavl-tree-exact-transitions.md) is committed.
+The table must derive insertion and deletion
 only from the recorded rank-balanced-tree paper and must specify, for every
 case and its mirror:
 

@@ -22,6 +22,8 @@ set(required_documents
     docs/interoperability.md
     docs/releasing.md
     docs/design/lzss-balanced-tree-strategy-evaluation.md
+    docs/design/lzss-wavl-tree-exact.md
+    docs/design/lzss-wavl-tree-exact-transitions.md
     docs/implementation/README.md
     docs/implementation/clean-room-record.md
     docs/implementation/design-decisions.md
@@ -51,6 +53,25 @@ foreach(required_balanced_tree_term IN ITEMS
     if(balanced_tree_term_offset EQUAL -1)
         message(FATAL_ERROR
             "Missing ordered-tree design term: ${required_balanced_tree_term}")
+    endif()
+endforeach()
+
+set(wavl_transition_design
+    "${source_dir}/docs/design/lzss-wavl-tree-exact-transitions.md")
+file(READ "${wavl_transition_design}" wavl_transition_design_content)
+foreach(required_wavl_transition_term IN ITEMS
+        "settled leaf is a rank-zero `1,1` node"
+        "transient rank-one `2,2` leaf"
+        "| I3R | Mirror of I3L |"
+        "| D5R | Mirror of D5L |"
+        "choose `p = yp` as the deletion-repair parent"
+        "After a double rotation, recompute the two demoted side nodes first"
+        "no query may observe an intermediate state")
+    string(FIND "${wavl_transition_design_content}"
+        "${required_wavl_transition_term}" wavl_transition_term_offset)
+    if(wavl_transition_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing WAVL transition term: ${required_wavl_transition_term}")
     endif()
 endforeach()
 

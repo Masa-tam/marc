@@ -14018,9 +14018,28 @@ state rank differences, promotions, demotions, rotations, propagation, root
 and null handling, successor-transplant origin, and metadata repair order.
 
 Subsequent private tests must cover equal/one-short workspace, inactive rank
-sentinel, `1,1` and `2,2` leaves, invalid zero/three rank differences,
+sentinel, settled `1,1` leaves, transient rank-one `2,2` leaf repair, invalid
+settled `2,2` leaves, invalid zero/three rank differences,
 rank overflow, parent and cycle failures, subtree maxima, every-position Exact
 differentials, one-byte/bulk advancement, and deletion-heavy physical
 retirement. The first benchmark gate compares member/case/window fingerprints
 in separate processes and distinguishes insertion repair from retirement
 repair; it does not run ordinary Silesia.
+
+### TVG-0969
+
+Instantiate the repository-owned WAVL transition table as direct structural
+fixtures before any match-finder integration. Cover insertion stop, promotion,
+both single rotations, and both double rotations. Cover deletion stop,
+rank-one-leaf demotion, ordinary demotion, mirrored double demotions, mirrored
+single rotations with present and missing inner children, and mirrored double
+rotations. Assert exact links, root, parent reciprocity, ranks, counters,
+continuation origin, and termination after every individual step.
+
+For physical two-child retirement, separately cover a direct-right successor
+and a deeper successor. Require the successor slot to retain its payload and
+position while adopting the target rank, the retired slot to become inactive,
+and repair to start at the moved successor or old successor parent exactly as
+specified. Recompute subtree maxima independently after every vector and
+reject impossible rank differences, overflow, bad links, and incorrect
+transition claims without mutation.

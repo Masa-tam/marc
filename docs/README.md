@@ -31,6 +31,9 @@ navigate chronological development records.
 - [LZSS WAVL Tree Exact feasibility](design/lzss-wavl-tree-exact.md): private
   deletion-heavy hypothesis, equal-workspace contract, mutation-specification
   gate, and early-stop criteria.
+- [LZSS WAVL Tree Exact transitions](design/lzss-wavl-tree-exact-transitions.md):
+  hand-checkable insertion, deletion, successor-transplant, rank-repair, and
+  metadata-repair rules for the private candidate.
 - [LZSS HashTree Exact design](design/lzss-hash-tree-match-finder.md):
   deterministic hot-bucket promotion and LCP-aware ordered search.
 - [LZSS BinaryTree Exact 16 MiB benchmark](design/lzss-binary-tree-window-16m-benchmark.md):

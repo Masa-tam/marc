@@ -22457,3 +22457,24 @@ hand-checkable mutation transition table before implementation. Stop after the
 private synthetic gate unless WAVL preserves Exact identity, bounds per-update
 repair, and improves deletion-heavy behavior without materially regressing the
 paired non-deleting controls. Add no public or stream-visible surface.
+
+## DD-1105: WAVL mutation follows an explicit bottom-up rank table
+
+- Date: 2026-09-10
+- Status: accepted
+
+Define the private WAVL candidate from the bottom-up insertion and deletion
+cases in Section 3 and Figures 2 and 3 of Haeupler, Sen, and Tarjan's
+*Rank-Balanced Trees*. Treat null children as rank minus one, store active ranks
+in one byte with 255 reserved for inactive slots, and permit settled rank
+differences one and two. Require settled leaves to be rank-zero `1,1` nodes,
+and include every mirrored single and double rotation plus the deletion-only
+transient rank-one `2,2` leaf case.
+
+Adapt the paper's logical item-swap deletion to marc's physical successor
+transplant: the successor slot adopts the retired target's rank, while repair
+starts at the successor's old splice parent, or at the moved successor when it
+was the target's direct right child. Keep subtree-maximum repair independent of
+rank repair, recompute lower rotated nodes before their new local root, and
+walk at most one current parent chain to the root. Require byte-stable checked
+failure and hand vectors before implementing the mutation engine.

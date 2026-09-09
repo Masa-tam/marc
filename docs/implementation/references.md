@@ -7863,3 +7863,14 @@ evaluation, marc's finite-suffix Exact contract, and the repository-owned AVL,
 Red-Black, Scapegoat, and deletion-heavy benchmark evidence. No external WAVL
 implementation, compressor, match finder, source code, implementation
 pseudocode, test suite, or benchmark result was consulted.
+
+### IR-0867
+
+The WAVL mutation table uses only Section 3 and Figures 2 and 3 of Haeupler,
+Sen, and Tarjan's *Rank-Balanced Trees*, DD-1104 and DD-1105, TVG-0968 and
+TVG-0969, and marc's repository-owned AVL slot, physical successor transplant,
+checked mutation, subtree-maximum, and Exact contracts. The source PDF was
+reviewed as both extracted text and rendered pages so that case prose and rank
+diagrams were cross-checked. No external WAVL implementation, source code,
+implementation pseudocode, compressor, match finder, test suite, or benchmark
+result was consulted.
