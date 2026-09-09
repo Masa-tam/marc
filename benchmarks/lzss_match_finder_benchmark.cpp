@@ -7,6 +7,7 @@
 #include "dictionary/lzss_scapegoat_tree_match_finder.hpp"
 #include "dictionary/lzss_sparse_hash_tree_match_finder.hpp"
 #include "dictionary/lzss_typed_encoder.hpp"
+#include "dictionary/lzss_wavl_tree_match_finder.hpp"
 #include "core/checked_math.hpp"
 #include "core/sha256.hpp"
 #include "frame/lzss_typed_context_frame_encoder.hpp"
@@ -42,6 +43,7 @@ using namespace marc::dictionary::internal;
 enum class BenchmarkStrategy : std::uint8_t {
     hash_chain_exact,
     binary_tree_exact,
+    wavl_tree_exact,
     red_black_tree_exact,
     scapegoat_tree_exact,
     hash_tree_exact,
@@ -54,6 +56,8 @@ enum class BenchmarkStrategy : std::uint8_t {
         strategy = BenchmarkStrategy::hash_chain_exact;
     } else if (text == "binary-tree-exact") {
         strategy = BenchmarkStrategy::binary_tree_exact;
+    } else if (text == "wavl-tree-exact") {
+        strategy = BenchmarkStrategy::wavl_tree_exact;
     } else if (text == "red-black-tree-exact") {
         strategy = BenchmarkStrategy::red_black_tree_exact;
     } else if (text == "scapegoat-tree-exact") {
@@ -73,6 +77,7 @@ enum class BenchmarkStrategy : std::uint8_t {
     switch (strategy) {
     case BenchmarkStrategy::hash_chain_exact: return "hash-chain-exact";
     case BenchmarkStrategy::binary_tree_exact: return "binary-tree-exact";
+    case BenchmarkStrategy::wavl_tree_exact: return "wavl-tree-exact";
     case BenchmarkStrategy::red_black_tree_exact:
         return "red-black-tree-exact";
     case BenchmarkStrategy::scapegoat_tree_exact:
@@ -254,6 +259,7 @@ struct FrameRunResult {
     std::uint64_t token_count{};
     TokenSummary token_summary{};
     LzssMatchFinderStatistics statistics{};
+    std::uint64_t wavl_tree_maximum_final_height{};
     std::uint64_t red_black_tree_maximum_final_height{};
     std::uint64_t scapegoat_tree_maximum_final_height{};
     double seconds{};
@@ -334,6 +340,57 @@ struct FrameRunResult {
          bin < total.binary_tree_query_depth_histogram.size(); ++bin) {
         if (!add_count(total.binary_tree_query_depth_histogram[bin],
                        frame.binary_tree_query_depth_histogram[bin])) {
+            return false;
+        }
+    }
+    if (!add_count(total.wavl_tree_key_comparison_count,
+                   frame.wavl_tree_key_comparison_count)
+        || !add_count(total.wavl_tree_key_byte_comparison_count,
+                      frame.wavl_tree_key_byte_comparison_count)
+        || !add_count(total.wavl_tree_lcp_byte_comparison_count,
+                      frame.wavl_tree_lcp_byte_comparison_count)
+        || !add_count(total.wavl_tree_prefix_range_comparison_count,
+                      frame.wavl_tree_prefix_range_comparison_count)
+        || !add_count(total.wavl_tree_insertion_promotion_count,
+                      frame.wavl_tree_insertion_promotion_count)
+        || !add_count(total.wavl_tree_insertion_single_rotation_count,
+                      frame.wavl_tree_insertion_single_rotation_count)
+        || !add_count(total.wavl_tree_insertion_double_rotation_count,
+                      frame.wavl_tree_insertion_double_rotation_count)
+        || !add_count(total.wavl_tree_insertion_fixup_step_count,
+                      frame.wavl_tree_insertion_fixup_step_count)
+        || !add_count(total.wavl_tree_insertion_count,
+                      frame.wavl_tree_insertion_count)
+        || !add_count(total.wavl_tree_removal_demotion_count,
+                      frame.wavl_tree_removal_demotion_count)
+        || !add_count(total.wavl_tree_removal_single_rotation_count,
+                      frame.wavl_tree_removal_single_rotation_count)
+        || !add_count(total.wavl_tree_removal_double_rotation_count,
+                      frame.wavl_tree_removal_double_rotation_count)
+        || !add_count(total.wavl_tree_removal_fixup_step_count,
+                      frame.wavl_tree_removal_fixup_step_count)
+        || !add_count(total.wavl_tree_removal_preflight_node_count,
+                      frame.wavl_tree_removal_preflight_node_count)
+        || !add_count(total.wavl_tree_retirement_count,
+                      frame.wavl_tree_retirement_count)) {
+        return false;
+    }
+    total.wavl_tree_maximum_nodes_per_query = std::max(
+        total.wavl_tree_maximum_nodes_per_query,
+        frame.wavl_tree_maximum_nodes_per_query);
+    total.wavl_tree_maximum_insertion_fixup_steps = std::max(
+        total.wavl_tree_maximum_insertion_fixup_steps,
+        frame.wavl_tree_maximum_insertion_fixup_steps);
+    total.wavl_tree_maximum_removal_fixup_steps = std::max(
+        total.wavl_tree_maximum_removal_fixup_steps,
+        frame.wavl_tree_maximum_removal_fixup_steps);
+    total.wavl_tree_maximum_removal_preflight_nodes = std::max(
+        total.wavl_tree_maximum_removal_preflight_nodes,
+        frame.wavl_tree_maximum_removal_preflight_nodes);
+    for (std::size_t bin = 0;
+         bin < total.wavl_tree_query_depth_histogram.size(); ++bin) {
+        if (!add_count(total.wavl_tree_query_depth_histogram[bin],
+                       frame.wavl_tree_query_depth_histogram[bin])) {
             return false;
         }
     }
@@ -516,6 +573,19 @@ void print_binary_tree_depth_histogram(
     std::cout << '\n';
 }
 
+void print_wavl_tree_depth_histogram(
+    const LzssMatchFinderStatistics& statistics) {
+    const auto last_bin = statistics.wavl_tree_maximum_nodes_per_query
+        == 0 ? 0U
+        : std::bit_width(statistics.wavl_tree_maximum_nodes_per_query);
+    std::cout << "wavl_tree_query_depth_histogram=";
+    for (std::size_t bin = 0; bin <= last_bin; ++bin) {
+        if (bin != 0) std::cout << ',';
+        std::cout << statistics.wavl_tree_query_depth_histogram[bin];
+    }
+    std::cout << '\n';
+}
+
 void print_red_black_tree_depth_histogram(
     const LzssMatchFinderStatistics& statistics) {
     const auto last_bin = statistics.red_black_tree_maximum_nodes_per_query
@@ -615,6 +685,20 @@ void print_hash_tree_depth_histograms(
     return histogram_queries == statistics.query_count;
 }
 
+[[nodiscard]] bool valid_wavl_tree_statistics(
+    const LzssMatchFinderStatistics& statistics) noexcept {
+    if (statistics.overflowed
+        || statistics.wavl_tree_prefix_range_comparison_count
+            > statistics.wavl_tree_key_comparison_count) {
+        return false;
+    }
+    std::uint64_t histogram_queries{};
+    for (const auto count : statistics.wavl_tree_query_depth_histogram) {
+        if (!add_count(histogram_queries, count)) return false;
+    }
+    return histogram_queries == statistics.query_count;
+}
+
 [[nodiscard]] bool valid_scapegoat_tree_statistics(
     const LzssMatchFinderStatistics& statistics) noexcept {
     if (statistics.overflowed
@@ -677,6 +761,8 @@ void print_hash_tree_depth_histograms(
         return valid_hash_chain_statistics(statistics);
     case BenchmarkStrategy::binary_tree_exact:
         return valid_binary_tree_statistics(statistics);
+    case BenchmarkStrategy::wavl_tree_exact:
+        return valid_wavl_tree_statistics(statistics);
     case BenchmarkStrategy::red_black_tree_exact:
         return valid_red_black_tree_statistics(statistics);
     case BenchmarkStrategy::scapegoat_tree_exact:
@@ -687,6 +773,56 @@ void print_hash_tree_depth_histograms(
         return valid_hash_tree_statistics(statistics, false);
     }
     return false;
+}
+
+[[nodiscard]] bool measure_wavl_tree_final_height(
+    const LzssWavlTreeMatchFinder& finder,
+    std::uint64_t& height) noexcept {
+    height = 0;
+    if (finder.empty()) return true;
+    auto current = finder.root_index();
+    auto previous = lzss_wavl_tree_null_node;
+    std::uint64_t depth{1};
+    std::uint64_t traversed{};
+    height = 1;
+    const auto traversal_limit =
+        static_cast<std::uint64_t>(finder.active_node_count()) * 2U + 1U;
+    while (current != lzss_wavl_tree_null_node) {
+        if (++traversed > traversal_limit) return false;
+        const auto node = inspect_lzss_wavl_tree_node(finder, current);
+        std::uint32_t next{};
+        if (previous == node.parent) {
+            if (node.left != lzss_wavl_tree_null_node) {
+                next = node.left;
+                ++depth;
+                height = std::max(height, depth);
+            } else if (node.right != lzss_wavl_tree_null_node) {
+                next = node.right;
+                ++depth;
+                height = std::max(height, depth);
+            } else {
+                next = node.parent;
+                --depth;
+            }
+        } else if (previous == node.left) {
+            if (node.right != lzss_wavl_tree_null_node) {
+                next = node.right;
+                ++depth;
+                height = std::max(height, depth);
+            } else {
+                next = node.parent;
+                --depth;
+            }
+        } else if (previous == node.right) {
+            next = node.parent;
+            --depth;
+        } else {
+            return false;
+        }
+        previous = current;
+        current = next;
+    }
+    return depth == 0;
 }
 
 [[nodiscard]] bool measure_red_black_tree_final_height(
@@ -965,6 +1101,28 @@ void fill_synthetic_input(
             return false;
         }
         frame_tokens = parse_with_finder(frame, finder, token_summary);
+    } else if (strategy == BenchmarkStrategy::wavl_tree_exact) {
+        LzssWavlTreeMatchFinder finder{};
+        if (initialize_lzss_wavl_tree_match_finder(
+                frame, parameters, limits, workspace, finder,
+                collect_statistics ? &frame_statistics : nullptr)
+            != LzssWavlTreeError::none) {
+            return false;
+        }
+        frame_tokens = parse_with_finder(frame, finder, token_summary);
+        if (!finder.state_valid()) return false;
+        if (collect_statistics) {
+            if (validate_lzss_wavl_tree(finder)
+                != LzssWavlTreeValidationError::none) {
+                return false;
+            }
+            std::uint64_t final_height{};
+            if (!measure_wavl_tree_final_height(finder, final_height)) {
+                return false;
+            }
+            result.wavl_tree_maximum_final_height = std::max(
+                result.wavl_tree_maximum_final_height, final_height);
+        }
     } else if (strategy == BenchmarkStrategy::red_black_tree_exact) {
         LzssRedBlackTreeMatchFinder finder{};
         if (initialize_lzss_red_black_tree_match_finder(
@@ -1229,6 +1387,58 @@ void print_frame_report(
         print_binary_tree_depth_histogram(verified.statistics);
         return;
     }
+    if (strategy == BenchmarkStrategy::wavl_tree_exact) {
+        const auto& statistics = verified.statistics;
+        std::cout << "wavl_tree_workspace_bytes=" << workspace_size << '\n'
+              << "wavl_tree_queries=" << statistics.query_count << '\n'
+              << "wavl_tree_key_comparisons="
+              << statistics.wavl_tree_key_comparison_count << '\n'
+              << "wavl_tree_key_byte_comparisons="
+              << statistics.wavl_tree_key_byte_comparison_count << '\n'
+              << "wavl_tree_lcp_byte_comparisons="
+              << statistics.wavl_tree_lcp_byte_comparison_count << '\n'
+              << "wavl_tree_prefix_range_comparisons="
+              << statistics.wavl_tree_prefix_range_comparison_count << '\n'
+              << "wavl_tree_insertion_promotions="
+              << statistics.wavl_tree_insertion_promotion_count << '\n'
+              << "wavl_tree_insertion_single_rotations="
+              << statistics.wavl_tree_insertion_single_rotation_count << '\n'
+              << "wavl_tree_insertion_double_rotations="
+              << statistics.wavl_tree_insertion_double_rotation_count << '\n'
+              << "wavl_tree_insertion_fixup_steps="
+              << statistics.wavl_tree_insertion_fixup_step_count << '\n'
+              << "wavl_tree_maximum_insertion_fixup_steps="
+              << statistics.wavl_tree_maximum_insertion_fixup_steps << '\n'
+              << "wavl_tree_insertions="
+              << statistics.wavl_tree_insertion_count << '\n'
+              << "wavl_tree_removal_demotions="
+              << statistics.wavl_tree_removal_demotion_count << '\n'
+              << "wavl_tree_removal_single_rotations="
+              << statistics.wavl_tree_removal_single_rotation_count << '\n'
+              << "wavl_tree_removal_double_rotations="
+              << statistics.wavl_tree_removal_double_rotation_count << '\n'
+              << "wavl_tree_removal_fixup_steps="
+              << statistics.wavl_tree_removal_fixup_step_count << '\n'
+              << "wavl_tree_maximum_removal_fixup_steps="
+              << statistics.wavl_tree_maximum_removal_fixup_steps << '\n'
+              << "wavl_tree_removal_preflight_nodes="
+              << statistics.wavl_tree_removal_preflight_node_count << '\n'
+              << "wavl_tree_maximum_removal_preflight_nodes="
+              << statistics.wavl_tree_maximum_removal_preflight_nodes << '\n'
+              << "wavl_tree_retirements="
+              << statistics.wavl_tree_retirement_count << '\n'
+              << "wavl_tree_maximum_final_height="
+              << verified.wavl_tree_maximum_final_height << '\n'
+              << "wavl_tree_max_nodes_per_query="
+              << statistics.wavl_tree_maximum_nodes_per_query << '\n'
+              << "wavl_tree_frame_seconds=" << measured_seconds << '\n'
+              << "wavl_tree_frame_mib_per_second="
+              << throughput(
+                     verified.input_bytes, iterations, measured_seconds)
+              << '\n';
+        print_wavl_tree_depth_histogram(statistics);
+        return;
+    }
     if (strategy == BenchmarkStrategy::red_black_tree_exact) {
         const auto& statistics = verified.statistics;
         std::cout << "red_black_tree_workspace_bytes=" << workspace_size
@@ -1416,7 +1626,8 @@ void print_usage() {
         << "usage: marc_lzss_match_finder_benchmark "
            "<input-file> [iterations]\n"
         << "       marc_lzss_match_finder_benchmark --frames "
-           "<hash-chain-exact|binary-tree-exact|red-black-tree-exact|"
+           "<hash-chain-exact|binary-tree-exact|wavl-tree-exact|"
+           "red-black-tree-exact|"
            "scapegoat-tree-exact> "
            "<input-file> [iterations] "
            "[frame-bytes] [window-bytes]\n"
@@ -1431,7 +1642,8 @@ void print_usage() {
            "<iterations> <frame-bytes> <window-bytes> "
            "<max-internal-buffered-bytes>\n"
         << "       marc_lzss_match_finder_benchmark --synthetic "
-           "<hash-chain-exact|binary-tree-exact|red-black-tree-exact|"
+           "<hash-chain-exact|binary-tree-exact|wavl-tree-exact|"
+           "red-black-tree-exact|"
            "scapegoat-tree-exact> "
            "<case> "
            "[input-bytes] [iterations] "
@@ -1521,6 +1733,14 @@ void print_usage() {
             frame_size, parameters, limits);
         if (requirements.error != LzssBinaryTreeError::none) {
             std::cerr << "cannot calculate frame BinaryTree workspace\n";
+            return 1;
+        }
+        workspace_size = requirements.workspace_size;
+    } else if (strategy == BenchmarkStrategy::wavl_tree_exact) {
+        const auto requirements = calculate_lzss_wavl_tree_workspace(
+            frame_size, parameters, limits);
+        if (requirements.error != LzssWavlTreeError::none) {
+            std::cerr << "cannot calculate frame WAVL workspace\n";
             return 1;
         }
         workspace_size = requirements.workspace_size;
@@ -1656,6 +1876,14 @@ void print_usage() {
             frame_size, parameters, limits);
         if (requirements.error != LzssBinaryTreeError::none) {
             std::cerr << "cannot calculate synthetic BinaryTree workspace\n";
+            return 1;
+        }
+        workspace_size = requirements.workspace_size;
+    } else if (strategy == BenchmarkStrategy::wavl_tree_exact) {
+        const auto requirements = calculate_lzss_wavl_tree_workspace(
+            frame_size, parameters, limits);
+        if (requirements.error != LzssWavlTreeError::none) {
+            std::cerr << "cannot calculate synthetic WAVL workspace\n";
             return 1;
         }
         workspace_size = requirements.workspace_size;

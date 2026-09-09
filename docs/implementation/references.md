@@ -7941,3 +7941,14 @@ aggregate preflight, alias rejection, token differential, and publication
 boundary were independently applied to the existing local typed parser. No
 external WAVL implementation, source code, implementation pseudocode,
 compressor integration, test suite, or benchmark result was consulted.
+
+### IR-0874
+
+The private WAVL benchmark adapter uses DD-1112, TVG-0976, the already
+committed private WAVL finder and typed-token gate, and marc's repository-owned
+AVL, Red-Black, Scapegoat, token-fingerprint, statistics-aggregation, and
+process-isolated measurement contracts. The WAVL report vocabulary and
+three-strategy Exact comparison were derived solely from those local
+interfaces. No external WAVL implementation, benchmark harness, compressor,
+source code, test suite, performance result, or optimization description was
+consulted.

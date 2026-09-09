@@ -30011,3 +30011,32 @@ both bounds.
   ClangCL. The complete 3,479-test suite, including documentation and
   interoperability schema compatibility, passes under MSVC in 350.81 seconds
   and ClangCL in 317.18 seconds.
+
+## CR-1205: 2026-09-10 - Private WAVL Exact benchmark adapter
+
+- Authoring method: connected the committed private WAVL finder directly to
+  marc's repository-owned experimental match-finder measurement loop and
+  three-strategy Exact identity gate.
+- References used: DD-1112, IR-0874, TVG-0976, the committed WAVL finder and
+  typed-token contracts, and the local AVL, Red-Black, statistics, bounded
+  workspace, final-height, and canonical token-fingerprint infrastructure.
+- Known implementations intentionally not consulted: external WAVL source
+  code, implementation pseudocode, compressor, benchmark harness, test suite,
+  performance result, or optimization description.
+- Independent decisions: keep the spelling benchmark-private; calculate each
+  strategy's exact workspace; validate and fingerprint only outside timing;
+  report operation-separated WAVL rank repair and bounded deletion-preflight
+  diagnostics; and require file plus deletion-heavy token identity without a
+  throughput assertion.
+- Generated-code task description: add a private `wavl-tree-exact` benchmark
+  route, checked statistics aggregation and reporting, final-tree validation,
+  AVL/Red-Black/WAVL identity smoke coverage, and documentation without adding
+  any production strategy or stream-visible surface.
+- Similarity review: the adapter follows existing repository-owned benchmark
+  structure and independently authored WAVL interfaces. No external
+  implementation expression or benchmark design was copied or translated.
+- Local validation: the three focused match-finder benchmark smoke tests pass
+  under MSVC and ClangCL. The complete 3,480-test suite, including
+  documentation and interoperability schema compatibility, passes under MSVC
+  in 364.52 seconds and also passes under ClangCL; the ClangCL CTest log records
+  the final schema test passing in 100.38 seconds.

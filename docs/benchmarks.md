@@ -2277,3 +2277,29 @@ available for research; neither correctness nor experiment completion is
 treated as evidence of a useful public trade-off. The ignored result JSON has
 SHA-256
 `754333796855d7a7fa9e01e569fa64e8d1c1cd2b391e3c230aa8ff137af72214`.
+
+### BM-0065: Private WAVL Exact benchmark adapter
+
+The dependency-free match-finder benchmark accepts `wavl-tree-exact` only in
+its experimental frame and synthetic routes. WAVL remains absent from the
+production match-finder strategy, codec CLI, C ABI, profiles, format, and
+interoperability schema.
+
+The adapter performs an untimed diagnostic pass that validates the final WAVL
+tree and hashes the canonical typed-token sequence. Only finder initialization,
+Exact parsing, and advancement are timed; allocation, input generation or file
+I/O, validation, height traversal, diagnostics, and hashing are excluded.
+Every comparison fixes the same input, frame bytes, window bytes, maximum match
+length, beneficial-match policy, and iteration count. AVL, Red-Black, and WAVL
+must agree on token count, literal and match totals, matched bytes, and token
+fingerprint before a measurement is usable. Each strategy receives its own
+exact checked workspace rather than an artificially equal allocation.
+
+WAVL reports workspace and throughput together with query comparisons, LCP
+work, promotions, demotions, insertion/removal rotations, fix-up steps,
+bounded removal-preflight visits, final height, and query-depth distribution.
+The repository smoke test covers both a file-frame case and the
+`deletion-heavy` case with a 4,096-byte frame and 1,024-byte window. It asserts
+identity and retirement activity, but intentionally asserts no speed winner.
+A fixed process-isolated synthetic measurement is the next admission gate;
+ordinary Silesia measurement remains deferred until WAVL passes that gate.

@@ -14143,3 +14143,18 @@ overlap, and a one-byte-short aggregate limit. Check the dedicated WAVL error
 for workspace failures and require every caller token to retain its sentinel
 value. Run the focused typed-encoder suite with MSVC and ClangCL, while keeping
 all public strategy and interoperability inventories unchanged.
+
+### TVG-0976
+
+Invoke the experimental benchmark with `wavl-tree-exact` over a repository
+file and the deletion-heavy synthetic fixture. Require the WAVL route to use
+its independently calculated bounded workspace, emit a complete finite report
+and query-depth histogram, validate the settled final tree outside timing,
+and exercise both query/insertion work and physical retirement/preflight work.
+
+For both inputs, invoke AVL, Red-Black, and WAVL in separate processes while
+holding input, frame size, window size, match parameters, parsing policy, and
+iteration count constant. Require equal token count, literal count, match
+count, matched-byte count, and canonical token fingerprint across all three
+Exact strategies. Assert no throughput winner and add no production strategy
+or interoperability artifact at this gate.

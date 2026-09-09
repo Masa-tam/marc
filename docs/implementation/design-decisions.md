@@ -22596,3 +22596,27 @@ Exhaustive and AVL Exact oracles across input classes and the extended-window
 variant. Do not add WAVL to `LzssMatchFinderStrategy`, frame dispatch, profile
 configuration, C ABI, CLI, interoperability inventory, or stream identity in
 this gate.
+
+## DD-1112: WAVL benchmark admission preserves the Exact comparison contract
+
+- Date: 2026-09-10
+- Status: accepted
+
+Add `wavl-tree-exact` only to the experimental match-finder benchmark. The
+adapter uses the private WAVL workspace calculator and finder directly; it
+does not add WAVL to the production strategy enum, codec CLI, C ABI, profile
+set, archive identity, or interoperability inventory.
+
+Compare AVL, Red-Black, and WAVL with identical input bytes, frame size,
+window size, maximum match length, beneficial-match rule, verification pass,
+and measured iteration count. Give each finder exactly its checked workspace
+requirement and exclude allocation, file input, full-tree validation,
+final-height traversal, token hashing, and diagnostics from timing. Require
+identical token counts, literal/match totals, matched bytes, and canonical
+token fingerprint before accepting timing output.
+
+Report WAVL query comparisons, LCP work, promotions, demotions, insertion and
+removal rotations, bounded fix-up and deletion-preflight work, final height,
+query-depth histogram, workspace, and throughput. First evaluate the existing
+deletion-heavy synthetic fixture with `frame_size > window_size`; ordinary
+Silesia admission remains a separate decision after that result.

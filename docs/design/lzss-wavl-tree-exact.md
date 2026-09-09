@@ -132,6 +132,15 @@ Ordinary Silesia frames are intentionally excluded from the first WAVL gate:
 their equal frame and window sizes exercise insertion but not the hypothesized
 retirement advantage.
 
+The stage-6 benchmark adapter is available under the experimental spelling
+`wavl-tree-exact`. It validates and fingerprints one untimed pass before
+measuring, calculates WAVL workspace independently, and reports insertion,
+retirement, rank repair, preflight, query, height, and depth diagnostics. Its
+smoke contract compares AVL, Red-Black, and WAVL token identity under identical
+input, frame, window, parsing, and iteration settings. This is measurement
+infrastructure only; the deletion-heavy performance gate has not yet been
+decided.
+
 ## 8. Interpretation
 
 A correct WAVL implementation is not automatically useful. Failure to beat
