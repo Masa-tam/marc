@@ -7908,3 +7908,13 @@ saturating operation-separated diagnostics, and invalid-state fixtures are
 repository-owned contracts. No external WAVL implementation, source code,
 implementation pseudocode, compressor, match finder, deletion routine,
 fixture, test suite, or benchmark result was consulted.
+
+### IR-0871
+
+The bounded WAVL deletion preflight uses DD-1109, TVG-0973, the already
+committed marc-owned successor normalization and D0 through D5 table, and the
+repository's checked path-validation patterns. The virtual child, parent, and
+rank views, success-only visit diagnostics, and logarithmic work assertions
+were independently designed for marc. No external WAVL implementation,
+source code, implementation pseudocode, deletion preflight, compressor, match
+finder, test, or benchmark result was consulted.

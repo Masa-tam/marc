@@ -29926,3 +29926,32 @@ both bounds.
   expression was copied or translated.
 - Local validation: all 20 focused WAVL tests pass under MSVC and ClangCL;
   full repository and documentation validation follow before commit.
+
+## CR-1202: 2026-09-10 - Bounded WAVL deletion preflight
+
+- Authoring method: replaced the temporary full-validator call in each WAVL
+  retirement with an independently written read-only simulation of the
+  structural splice and rank-repair path.
+- References used: DD-1104 through DD-1109, IR-0866 through IR-0871,
+  TVG-0968 through TVG-0973, and the committed repository-owned WAVL
+  transition and physical successor contracts.
+- Known implementations intentionally not consulted: external WAVL source
+  code, implementation pseudocode, deletion preflight, compressor, match
+  finder, fixture, test suite, or benchmark result.
+- Independent decisions: represent post-splice children, parents, and the
+  successor rank through constant-storage read-only views; simulate only D1
+  and D2 propagation because all rotations terminate; validate terminal
+  neighborhoods before writes; and publish saturating visit diagnostics only
+  after successful mutation.
+- Generated-code task description: make normal WAVL deletion preflight
+  O(height) without weakening byte-stable failure, retain the full validator
+  as a post-success test oracle, and prove bounded visits on deterministic
+  continuous retirement.
+- Similarity review: the D-case mathematics remain those documented earlier;
+  the virtual topology, bounded traversal, diagnostics, and tests were
+  independently authored for marc. No external implementation expression was
+  copied or translated.
+- Local validation: all 20 focused WAVL tests pass under MSVC and ClangCL.
+  The complete 3,473-test suite, including documentation and interoperability
+  schema compatibility, passes under MSVC in 407.83 seconds and ClangCL in
+  365.49 seconds.

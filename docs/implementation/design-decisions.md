@@ -22537,3 +22537,22 @@ subtree maxima along the resulting current-parent chain. Reset all six fields
 of the unreachable retired slot and keep demotion, rotation, repair-step, and
 retirement diagnostics separate from insertion. Add no query, advancement,
 public strategy, ABI, or stream-format surface in this stage.
+
+## DD-1109: WAVL deletion preflight follows only affected paths
+
+- Date: 2026-09-10
+- Status: accepted
+
+Replace DD-1108's temporary complete-tree prevalidation in the normal removal
+path with a read-only virtual-splice preflight. Model the replacement child,
+the direct or non-direct successor transplant, the successor's copied rank,
+and the changed parent chain without writing caller workspace. Follow only the
+successor descent and the D1/D2 propagation path; validate each reached node,
+sibling, and terminal rotation neighborhood before mutation.
+
+Retain the complete validator as an explicit diagnostic and test oracle, not
+as per-retirement work. A successful preflight must therefore be O(tree
+height), use constant auxiliary storage, and publish its visited-node count
+only after the deletion succeeds. A failed preflight must leave workspace and
+all diagnostics unchanged. This changes no workspace extent, public strategy,
+ABI, or stream representation.

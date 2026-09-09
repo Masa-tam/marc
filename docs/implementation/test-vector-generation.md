@@ -14097,3 +14097,17 @@ single and double deletion rotations and bound the maximum repair walk by a
 rank-tree logarithmic envelope. Corrupt a reciprocal link before retirement
 and require byte-stable rejection with unchanged diagnostics. Run all focused
 cases with MSVC and ClangCL.
+
+### TVG-0973
+
+Repeat the deterministic every-position retirement vector after replacing
+complete-tree prevalidation with virtual-splice preflight. Require the same
+settled tree validation after every mutation and the same exercise of single
+and double deletion rotations. Record successful preflight visits separately
+and bound both the maximum for one retirement and the aggregate across the
+sequence by a conservative multiple of the WAVL logarithmic-height envelope.
+
+Use the corrupted reciprocal-link vector to require that a rejected preflight
+changes neither workspace nor preflight diagnostics. Run the focused suite
+with MSVC and ClangCL, and retain the complete validator after every successful
+deletion as an independent oracle rather than part of the mutation path.

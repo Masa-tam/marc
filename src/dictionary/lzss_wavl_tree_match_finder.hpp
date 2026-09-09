@@ -128,6 +128,8 @@ private:
     [[nodiscard]] std::uint32_t rotate_right(std::uint32_t node) noexcept;
     [[nodiscard]] LzssWavlTreeError preflight_insertion_repair(
         std::uint32_t parent, bool insert_left) const noexcept;
+    [[nodiscard]] LzssWavlTreeError preflight_removal(
+        std::uint32_t removed, std::uint64_t& nodes_visited) const noexcept;
     void repair_after_insertion(std::uint32_t node) noexcept;
     void repair_after_removal(
         std::uint32_t parent, std::uint32_t replacement,

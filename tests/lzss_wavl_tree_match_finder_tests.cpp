@@ -662,6 +662,11 @@ TEST(LzssWavlTreeMatchFinder, EveryRemovalStaysValidAndBounded) {
     EXPECT_EQ(statistics.wavl_tree_retirement_count, count);
     EXPECT_LE(statistics.wavl_tree_maximum_removal_fixup_steps,
               2U * std::bit_width(count));
+    const auto preflight_bound = 8U * std::bit_width(count) + 4U;
+    EXPECT_LE(statistics.wavl_tree_maximum_removal_preflight_nodes,
+              preflight_bound);
+    EXPECT_LE(statistics.wavl_tree_removal_preflight_node_count,
+              count * preflight_bound);
     EXPECT_GT(statistics.wavl_tree_removal_demotion_count, 0U);
     EXPECT_GT(statistics.wavl_tree_removal_single_rotation_count, 0U);
     EXPECT_GT(statistics.wavl_tree_removal_double_rotation_count, 0U);
@@ -685,6 +690,8 @@ TEST(LzssWavlTreeMatchFinder, RejectsInvalidRemovalWithoutMutation) {
     EXPECT_EQ(remove_lzss_wavl_tree_position(fixture.finder, 2),
               LzssWavlTreeError::invalid_state);
     EXPECT_TRUE(std::ranges::equal(fixture.storage.bytes, corrupted));
+    EXPECT_EQ(
+        fixture.statistics->wavl_tree_removal_preflight_node_count, 0U);
     EXPECT_EQ(fixture.statistics->wavl_tree_retirement_count, 0U);
 }
 
