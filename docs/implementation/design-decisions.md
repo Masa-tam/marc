@@ -22556,3 +22556,23 @@ height), use constant auxiliary storage, and publish its visited-node count
 only after the deletion succeeds. A failed preflight must leave workspace and
 all diagnostics unchanged. This changes no workspace extent, public strategy,
 ABI, or stream representation.
+
+## DD-1110: WAVL Exact query reuses the established suffix contract
+
+- Date: 2026-09-10
+- Status: accepted
+
+Give the private WAVL component the same one-way match-finder protocol as the
+AVL Exact oracle. A query is valid only at the announced next position;
+advancement indexes every consumed position, retires the position exactly one
+window behind before reusing its modulo slot, and makes protocol failure
+sticky. Positions with fewer than five remaining bytes are never indexed.
+
+Find predecessor and successor in WAVL suffix order, calculate their bounded
+LCP values, and use the greater LCP as the longest-match length. Locate the
+equal-prefix interval and use subtree-maximum metadata to select its greatest
+absolute position, preserving the nearest-distance tie break independently of
+tree shape. Bound every query walk by the active-node count and reject a
+broken or cyclic private topology. Record WAVL query work separately while
+sharing the common query count. Keep the finder private: this stage adds no
+strategy enum, encoder dispatch, C ABI, or stream-format variant.

@@ -97,6 +97,14 @@ struct LzssMatchFinderStatistics {
     std::array<std::uint64_t,
                lzss_match_finder_depth_histogram_size>
         binary_tree_query_depth_histogram{};
+    std::uint64_t wavl_tree_key_comparison_count{};
+    std::uint64_t wavl_tree_key_byte_comparison_count{};
+    std::uint64_t wavl_tree_lcp_byte_comparison_count{};
+    std::uint64_t wavl_tree_prefix_range_comparison_count{};
+    std::uint64_t wavl_tree_maximum_nodes_per_query{};
+    std::array<std::uint64_t,
+               lzss_match_finder_depth_histogram_size>
+        wavl_tree_query_depth_histogram{};
     std::uint64_t wavl_tree_insertion_promotion_count{};
     std::uint64_t wavl_tree_insertion_single_rotation_count{};
     std::uint64_t wavl_tree_insertion_double_rotation_count{};

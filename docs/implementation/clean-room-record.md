@@ -29955,3 +29955,32 @@ both bounds.
   The complete 3,473-test suite, including documentation and interoperability
   schema compatibility, passes under MSVC in 407.83 seconds and ClangCL in
   365.49 seconds.
+
+## CR-1203: 2026-09-10 - Private WAVL Exact query and advancement
+
+- Authoring method: added query and one-way index advancement directly to the
+  independently authored WAVL structure, using marc's committed Exact result
+  contract and AVL component only as a repository-owned behavior oracle.
+- References used: DD-1104 through DD-1110, IR-0866 through IR-0872,
+  TVG-0968 through TVG-0974, and marc's established suffix ordering,
+  bounded-LCP, subtree-maximum, nearest-distance, fixed-slot, and sticky
+  advancement contracts.
+- Known implementations intentionally not consulted: external WAVL source
+  code, implementation pseudocode, compressor, match finder, query routine,
+  test suite, or benchmark result.
+- Independent decisions: bound each traversal by active-node count; validate
+  reached nodes before dereference; retire before modulo-slot reuse; keep
+  query diagnostics distinct from insertion and removal; and compare every
+  intermediate query field against AVL rather than testing only round trips.
+- Generated-code task description: add private WAVL neighbor and candidate
+  queries, Exact match selection, one-way advancement, bounded diagnostics,
+  small-window differential coverage, bulk advancement, and sticky protocol
+  rejection without exposing a strategy or changing a stream representation.
+- Similarity review: query semantics intentionally match marc's published
+  Exact contract; the WAVL integration, bounded state checks, diagnostics,
+  and tests were independently authored in this repository. No external
+  implementation expression was copied or translated.
+- Local validation: all 25 focused WAVL tests pass under MSVC and ClangCL.
+  The complete 3,478-test suite, including documentation and interoperability
+  schema compatibility, passes under MSVC in 385.85 seconds and ClangCL in
+  334.09 seconds.

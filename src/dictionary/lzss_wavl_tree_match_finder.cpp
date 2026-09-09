@@ -4,6 +4,7 @@
 #include "core/checked_math.hpp"
 
 #include <algorithm>
+#include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -33,6 +34,21 @@ void add_statistic(
         return;
     }
     value += addend;
+}
+
+void record_wavl_tree_query(
+    LzssMatchFinderStatistics* const statistics,
+    const std::uint64_t nodes_visited) noexcept {
+    if (statistics == nullptr) return;
+    increment_statistic(statistics, statistics->query_count);
+    statistics->wavl_tree_maximum_nodes_per_query = std::max(
+        statistics->wavl_tree_maximum_nodes_per_query, nodes_visited);
+    const auto raw_bin = nodes_visited == 0 ? 0U
+        : std::bit_width(nodes_visited);
+    const auto bin = std::min<std::size_t>(
+        raw_bin, statistics->wavl_tree_query_depth_histogram.size() - 1U);
+    increment_statistic(
+        statistics, statistics->wavl_tree_query_depth_histogram[bin]);
 }
 
 [[nodiscard]] bool append_array(
@@ -83,12 +99,20 @@ int LzssWavlTreeMatchFinder::node_rank(
 
 int LzssWavlTreeMatchFinder::compare_positions(
     const std::size_t left, const std::size_t right) const noexcept {
+    if (statistics_ != nullptr) {
+        increment_statistic(
+            statistics_, statistics_->wavl_tree_key_comparison_count);
+    }
     const auto left_size = std::min<std::size_t>(
         input_.size() - left, parameters_.max_match_length);
     const auto right_size = std::min<std::size_t>(
         input_.size() - right, parameters_.max_match_length);
     const auto common_size = std::min(left_size, right_size);
     for (std::size_t index = 0; index < common_size; ++index) {
+        if (statistics_ != nullptr) {
+            increment_statistic(
+                statistics_, statistics_->wavl_tree_key_byte_comparison_count);
+        }
         const auto left_byte = std::to_integer<std::uint8_t>(
             input_[left + index]);
         const auto right_byte = std::to_integer<std::uint8_t>(
@@ -100,6 +124,47 @@ int LzssWavlTreeMatchFinder::compare_positions(
     if (left_size > right_size) return 1;
     if (left < right) return -1;
     if (left > right) return 1;
+    return 0;
+}
+
+std::uint32_t LzssWavlTreeMatchFinder::common_prefix_length(
+    const std::size_t left, const std::size_t right) const noexcept {
+    const auto maximum = std::min({
+        input_.size() - left, input_.size() - right,
+        static_cast<std::size_t>(parameters_.max_match_length)});
+    std::size_t length{};
+    while (length < maximum) {
+        if (statistics_ != nullptr) {
+            increment_statistic(
+                statistics_, statistics_->wavl_tree_lcp_byte_comparison_count);
+        }
+        if (input_[left + length] != input_[right + length]) break;
+        ++length;
+    }
+    return static_cast<std::uint32_t>(length);
+}
+
+int LzssWavlTreeMatchFinder::compare_prefix(
+    const std::size_t position, const std::size_t query_position,
+    const std::uint32_t length) const noexcept {
+    if (statistics_ != nullptr) {
+        increment_statistic(
+            statistics_, statistics_->wavl_tree_key_comparison_count);
+        increment_statistic(
+            statistics_, statistics_->wavl_tree_prefix_range_comparison_count);
+    }
+    for (std::size_t index = 0; index < length; ++index) {
+        if (statistics_ != nullptr) {
+            increment_statistic(
+                statistics_, statistics_->wavl_tree_key_byte_comparison_count);
+        }
+        const auto byte = std::to_integer<std::uint8_t>(
+            input_[position + index]);
+        const auto query_byte = std::to_integer<std::uint8_t>(
+            input_[query_position + index]);
+        if (byte < query_byte) return -1;
+        if (byte > query_byte) return 1;
+    }
     return 0;
 }
 
@@ -958,6 +1023,249 @@ LzssWavlTreeError remove_lzss_wavl_tree_position(
             finder.statistics_, finder.statistics_->wavl_tree_retirement_count);
     }
     return LzssWavlTreeError::none;
+}
+
+LzssWavlTreeNeighborQueryResult
+LzssWavlTreeMatchFinder::find_neighbors(
+    const std::size_t position) const noexcept {
+    return find_neighbors_impl(position, nullptr);
+}
+
+LzssWavlTreeNeighborQueryResult
+LzssWavlTreeMatchFinder::find_neighbors_impl(
+    const std::size_t position,
+    std::uint64_t* const nodes_visited) const noexcept {
+    LzssWavlTreeNeighborQueryResult result{};
+    if (!initialized_ || !state_valid_) {
+        result.error = LzssWavlTreeError::invalid_state;
+        return result;
+    }
+    if (position > input_.size()) {
+        result.error = LzssWavlTreeError::invalid_position;
+        return result;
+    }
+    if (position != next_position_) {
+        result.error = LzssWavlTreeError::invalid_state;
+        return result;
+    }
+    if (input_.size() - position < lzss_wavl_tree_prefix_size
+        || root_ == lzss_wavl_tree_null_node) {
+        return result;
+    }
+
+    auto predecessor = lzss_wavl_tree_null_node;
+    auto successor = lzss_wavl_tree_null_node;
+    auto current = root_;
+    std::size_t steps{};
+    while (current != lzss_wavl_tree_null_node) {
+        if (current >= left_.size()
+            || rank_[current] == lzss_wavl_tree_inactive_rank
+            || position_[current] >= input_.size()
+            || input_.size() - position_[current]
+                < lzss_wavl_tree_prefix_size
+            || steps++ >= active_node_count_) {
+            result.error = LzssWavlTreeError::invalid_state;
+            return result;
+        }
+        if (nodes_visited != nullptr) ++*nodes_visited;
+        const auto comparison = compare_positions(position, position_[current]);
+        if (comparison == 0) {
+            result.error = LzssWavlTreeError::invalid_state;
+            return result;
+        }
+        if (comparison < 0) {
+            successor = current;
+            current = left_[current];
+        } else {
+            predecessor = current;
+            current = right_[current];
+        }
+    }
+
+    if (predecessor != lzss_wavl_tree_null_node) {
+        result.predecessor_position = position_[predecessor];
+        result.predecessor_lcp = common_prefix_length(
+            position, result.predecessor_position);
+    }
+    if (successor != lzss_wavl_tree_null_node) {
+        result.successor_position = position_[successor];
+        result.successor_lcp = common_prefix_length(
+            position, result.successor_position);
+    }
+    result.maximum_lcp = std::max(
+        result.predecessor_lcp, result.successor_lcp);
+    return result;
+}
+
+LzssWavlTreeCandidateQueryResult
+LzssWavlTreeMatchFinder::find_candidate(
+    const std::size_t position) const noexcept {
+    LzssWavlTreeCandidateQueryResult result{};
+    std::uint64_t nodes_visited{};
+    const auto finish = [this, &nodes_visited]() noexcept {
+        record_wavl_tree_query(statistics_, nodes_visited);
+    };
+    const auto neighbors = find_neighbors_impl(position, &nodes_visited);
+    if (neighbors.error != LzssWavlTreeError::none) {
+        result.error = neighbors.error;
+        finish();
+        return result;
+    }
+    if (neighbors.maximum_lcp < parameters_.min_match_length) {
+        finish();
+        return result;
+    }
+
+    const auto valid_node = [this](const std::uint32_t node) noexcept {
+        return node < left_.size()
+            && rank_[node] != lzss_wavl_tree_inactive_rank
+            && position_[node] < input_.size()
+            && input_.size() - position_[node]
+                >= lzss_wavl_tree_prefix_size;
+    };
+    auto split = lzss_wavl_tree_null_node;
+    auto current = root_;
+    std::size_t steps{};
+    while (current != lzss_wavl_tree_null_node) {
+        if (!valid_node(current) || steps++ >= active_node_count_) {
+            result.error = LzssWavlTreeError::invalid_state;
+            finish();
+            return result;
+        }
+        ++nodes_visited;
+        const auto comparison = compare_prefix(
+            position_[current], position, neighbors.maximum_lcp);
+        if (comparison < 0) {
+            current = right_[current];
+        } else if (comparison > 0) {
+            current = left_[current];
+        } else {
+            split = current;
+            break;
+        }
+    }
+    if (split == lzss_wavl_tree_null_node) {
+        result.error = LzssWavlTreeError::invalid_state;
+        finish();
+        return result;
+    }
+
+    auto maximum_position = position_[split];
+    current = left_[split];
+    steps = 0;
+    while (current != lzss_wavl_tree_null_node) {
+        if (!valid_node(current) || steps++ >= active_node_count_) {
+            result.error = LzssWavlTreeError::invalid_state;
+            finish();
+            return result;
+        }
+        ++nodes_visited;
+        const auto comparison = compare_prefix(
+            position_[current], position, neighbors.maximum_lcp);
+        if (comparison < 0) {
+            current = right_[current];
+        } else if (comparison > 0) {
+            current = left_[current];
+        } else {
+            maximum_position = std::max(maximum_position, position_[current]);
+            const auto right = right_[current];
+            if (right != lzss_wavl_tree_null_node) {
+                if (!valid_node(right)) {
+                    result.error = LzssWavlTreeError::invalid_state;
+                    finish();
+                    return result;
+                }
+                maximum_position = std::max(
+                    maximum_position, subtree_maximum_position_[right]);
+            }
+            current = left_[current];
+        }
+    }
+
+    current = right_[split];
+    steps = 0;
+    while (current != lzss_wavl_tree_null_node) {
+        if (!valid_node(current) || steps++ >= active_node_count_) {
+            result.error = LzssWavlTreeError::invalid_state;
+            finish();
+            return result;
+        }
+        ++nodes_visited;
+        const auto comparison = compare_prefix(
+            position_[current], position, neighbors.maximum_lcp);
+        if (comparison < 0) {
+            current = right_[current];
+        } else if (comparison > 0) {
+            current = left_[current];
+        } else {
+            maximum_position = std::max(maximum_position, position_[current]);
+            const auto left = left_[current];
+            if (left != lzss_wavl_tree_null_node) {
+                if (!valid_node(left)) {
+                    result.error = LzssWavlTreeError::invalid_state;
+                    finish();
+                    return result;
+                }
+                maximum_position = std::max(
+                    maximum_position, subtree_maximum_position_[left]);
+            }
+            current = right_[current];
+        }
+    }
+
+    if (maximum_position >= position) {
+        result.error = LzssWavlTreeError::invalid_state;
+        finish();
+        return result;
+    }
+    result.candidate_position = maximum_position;
+    result.length = neighbors.maximum_lcp;
+    finish();
+    return result;
+}
+
+LzssMatch LzssWavlTreeMatchFinder::find_match(
+    const std::size_t position) const noexcept {
+    const auto candidate = find_candidate(position);
+    if (candidate.error != LzssWavlTreeError::none
+        || candidate.candidate_position == lzss_wavl_tree_no_position
+        || candidate.candidate_position >= position) {
+        return {};
+    }
+    const auto distance = position - candidate.candidate_position;
+    if (distance > std::numeric_limits<std::uint32_t>::max()) return {};
+    return {static_cast<std::uint32_t>(distance), candidate.length};
+}
+
+void LzssWavlTreeMatchFinder::advance(
+    const std::size_t position,
+    const std::size_t next_position) noexcept {
+    if (!initialized_ || !state_valid_ || position != next_position_
+        || next_position < position || next_position > input_.size()) {
+        state_valid_ = false;
+        next_position_ = input_.size();
+        return;
+    }
+    for (auto current = position; current < next_position; ++current) {
+        if (current >= parameters_.window_size) {
+            const auto expired = current - parameters_.window_size;
+            if (input_.size() - expired >= lzss_wavl_tree_prefix_size
+                && remove_lzss_wavl_tree_position(*this, expired)
+                    != LzssWavlTreeError::none) {
+                state_valid_ = false;
+                next_position_ = input_.size();
+                return;
+            }
+        }
+        if (input_.size() - current >= lzss_wavl_tree_prefix_size
+            && insert_lzss_wavl_tree_position(*this, current)
+                != LzssWavlTreeError::none) {
+            state_valid_ = false;
+            next_position_ = input_.size();
+            return;
+        }
+    }
+    next_position_ = next_position;
 }
 
 LzssWavlTreeValidationError validate_lzss_wavl_tree(

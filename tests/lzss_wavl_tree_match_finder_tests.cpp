@@ -99,6 +99,66 @@ void expect_equal_extent(
               avl.subtree_maximum_position_offset);
 }
 
+void expect_wavl_queries_equal_avl(
+    const std::vector<std::byte>& input,
+    const LzssParameters& parameters) {
+    const auto wavl_required = calculate_lzss_wavl_tree_workspace(
+        input.size(), parameters, {});
+    const auto avl_required = calculate_lzss_binary_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(wavl_required.error, LzssWavlTreeError::none);
+    ASSERT_EQ(avl_required.error, LzssBinaryTreeError::none);
+    auto wavl_storage = make_storage(wavl_required.workspace_size);
+    auto avl_storage = make_storage(avl_required.workspace_size);
+    LzssWavlTreeMatchFinder wavl{};
+    LzssBinaryTreeMatchFinder avl{};
+    ASSERT_EQ(initialize_lzss_wavl_tree_match_finder(
+                  input, parameters, {}, wavl_storage.bytes, wavl),
+              LzssWavlTreeError::none);
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, parameters, {}, avl_storage.bytes, avl),
+              LzssBinaryTreeError::none);
+
+    for (std::size_t position = 0; position <= input.size(); ++position) {
+        SCOPED_TRACE(position);
+        const auto wavl_neighbors = wavl.find_neighbors(position);
+        const auto avl_neighbors = avl.find_neighbors(position);
+        EXPECT_EQ(wavl_neighbors.error, LzssWavlTreeError::none);
+        EXPECT_EQ(avl_neighbors.error, LzssBinaryTreeError::none);
+        EXPECT_EQ(wavl_neighbors.predecessor_position,
+                  avl_neighbors.predecessor_position);
+        EXPECT_EQ(wavl_neighbors.successor_position,
+                  avl_neighbors.successor_position);
+        EXPECT_EQ(wavl_neighbors.predecessor_lcp,
+                  avl_neighbors.predecessor_lcp);
+        EXPECT_EQ(wavl_neighbors.successor_lcp,
+                  avl_neighbors.successor_lcp);
+        EXPECT_EQ(wavl_neighbors.maximum_lcp,
+                  avl_neighbors.maximum_lcp);
+
+        const auto wavl_candidate = wavl.find_candidate(position);
+        const auto avl_candidate = avl.find_candidate(position);
+        EXPECT_EQ(wavl_candidate.error, LzssWavlTreeError::none);
+        EXPECT_EQ(avl_candidate.error, LzssBinaryTreeError::none);
+        EXPECT_EQ(wavl_candidate.candidate_position,
+                  avl_candidate.candidate_position);
+        EXPECT_EQ(wavl_candidate.length, avl_candidate.length);
+        EXPECT_EQ(wavl.find_match(position), avl.find_match(position));
+
+        if (position == input.size()) continue;
+        wavl.advance(position, position + 1U);
+        avl.advance(position, position + 1U);
+        ASSERT_TRUE(wavl.state_valid());
+        ASSERT_TRUE(avl.state_valid());
+        ASSERT_EQ(validate_lzss_wavl_tree(wavl),
+                  LzssWavlTreeValidationError::none);
+        ASSERT_EQ(validate_lzss_binary_tree(avl),
+                  LzssBinaryTreeValidationError::none);
+        EXPECT_EQ(wavl.active_node_count(), avl.active_node_count());
+        EXPECT_EQ(wavl.next_position(), avl.next_position());
+    }
+}
+
 TEST(LzssWavlTreeMatchFinder, CalculatesExactlyAvlSizedWorkspace) {
     for (const auto input_size : std::array<std::size_t, 6>{
              0U, 4U, 5U, 17U, 65'536U, 1U << 20}) {
@@ -693,6 +753,127 @@ TEST(LzssWavlTreeMatchFinder, RejectsInvalidRemovalWithoutMutation) {
     EXPECT_EQ(
         fixture.statistics->wavl_tree_removal_preflight_node_count, 0U);
     EXPECT_EQ(fixture.statistics->wavl_tree_retirement_count, 0U);
+}
+
+TEST(LzssWavlTreeMatchFinder, ExactQueriesEqualAvlAcrossInputClasses) {
+    LzssParameters parameters{};
+    parameters.window_size = 17;
+    parameters.max_match_length = 31;
+    expect_wavl_queries_equal_avl(bytes(""), parameters);
+    expect_wavl_queries_equal_avl(bytes("A"), parameters);
+    expect_wavl_queries_equal_avl(
+        bytes("ABABABABABABABABABABABABABABABAB"), parameters);
+    expect_wavl_queries_equal_avl(
+        bytes("ABCDE1ABCDE2ABCDE3ABCDE4ABCDE5ABCDE6"), parameters);
+    expect_wavl_queries_equal_avl(
+        bytes("AAAAABAAAACAAAAADAAAAEAAAAAFAAAAAGAAAAAH"), parameters);
+
+    std::vector<std::byte> pseudorandom(512);
+    std::uint32_t state = UINT32_C(0x6a09e667);
+    for (auto& value : pseudorandom) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        value = static_cast<std::byte>(state >> 24U);
+    }
+    expect_wavl_queries_equal_avl(pseudorandom, parameters);
+}
+
+TEST(LzssWavlTreeMatchFinder, BulkAdvancementMatchesAvl) {
+    const auto input = bytes(
+        "ABABABABABABABABXYZABABABABABCDE1ABCDE2ABCDE3");
+    LzssParameters parameters{};
+    parameters.window_size = 16;
+    const auto wavl_required = calculate_lzss_wavl_tree_workspace(
+        input.size(), parameters, {});
+    const auto avl_required = calculate_lzss_binary_tree_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(wavl_required.error, LzssWavlTreeError::none);
+    ASSERT_EQ(avl_required.error, LzssBinaryTreeError::none);
+    auto wavl_storage = make_storage(wavl_required.workspace_size);
+    auto avl_storage = make_storage(avl_required.workspace_size);
+    LzssWavlTreeMatchFinder wavl{};
+    LzssBinaryTreeMatchFinder avl{};
+    ASSERT_EQ(initialize_lzss_wavl_tree_match_finder(
+                  input, parameters, {}, wavl_storage.bytes, wavl),
+              LzssWavlTreeError::none);
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, parameters, {}, avl_storage.bytes, avl),
+              LzssBinaryTreeError::none);
+
+    const std::array<std::size_t, 6> landings{
+        0U, 2U, 16U, 19U, 41U, input.size()};
+    for (std::size_t index = 0; index < landings.size(); ++index) {
+        const auto position = landings[index];
+        EXPECT_EQ(wavl.find_match(position), avl.find_match(position));
+        if (index + 1U == landings.size()) continue;
+        const auto next = landings[index + 1U];
+        wavl.advance(position, next);
+        avl.advance(position, next);
+        ASSERT_EQ(validate_lzss_wavl_tree(wavl),
+                  LzssWavlTreeValidationError::none);
+        ASSERT_EQ(validate_lzss_binary_tree(avl),
+                  LzssBinaryTreeValidationError::none);
+    }
+}
+
+TEST(LzssWavlTreeMatchFinder, InvalidProtocolStateIsSticky) {
+    auto fixture = initialize_wavl("ABCDE1ABCDE2ABCDE3");
+    EXPECT_EQ(fixture.finder.find_neighbors(1).error,
+              LzssWavlTreeError::invalid_state);
+    fixture.finder.advance(1, 2);
+    EXPECT_FALSE(fixture.finder.state_valid());
+    EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::invalid_protocol_state);
+    EXPECT_EQ(fixture.finder.find_candidate(fixture.input.size()).error,
+              LzssWavlTreeError::invalid_state);
+    fixture.finder.advance(fixture.input.size(), fixture.input.size());
+    EXPECT_FALSE(fixture.finder.state_valid());
+}
+
+TEST(LzssWavlTreeMatchFinder, BoundedQueryRejectsCyclicTopology) {
+    auto fixture = initialize_wavl("ABCDE1ABCDE2ABCDE3ABCDE4");
+    fixture.finder.advance(0, 16);
+    ASSERT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::none);
+    const auto root = fixture.finder.root_index();
+    auto left = mutable_array_at<std::uint32_t>(
+        fixture.storage.bytes, fixture.required.left_offset,
+        fixture.required.node_count);
+    auto right = mutable_array_at<std::uint32_t>(
+        fixture.storage.bytes, fixture.required.right_offset,
+        fixture.required.node_count);
+    left[root] = root;
+    right[root] = root;
+
+    EXPECT_EQ(fixture.finder.find_candidate(16).error,
+              LzssWavlTreeError::invalid_state);
+}
+
+TEST(LzssWavlTreeMatchFinder, ReportsBoundedQueryStatistics) {
+    auto fixture = initialize_wavl(
+        "ABCDE1ABCDE2ABCDE3ABCDE4ABCDE5ABCDE6ABCDE7");
+    for (std::size_t position = 0; position <= fixture.input.size();
+         ++position) {
+        static_cast<void>(fixture.finder.find_match(position));
+        if (position != fixture.input.size()) {
+            fixture.finder.advance(position, position + 1U);
+            ASSERT_TRUE(fixture.finder.state_valid()) << position;
+        }
+    }
+    EXPECT_EQ(fixture.statistics->query_count,
+              fixture.input.size() + 1U);
+    EXPECT_GT(fixture.statistics->wavl_tree_key_comparison_count, 0U);
+    EXPECT_GT(fixture.statistics->wavl_tree_key_byte_comparison_count, 0U);
+    EXPECT_GT(fixture.statistics->wavl_tree_lcp_byte_comparison_count, 0U);
+    EXPECT_GT(
+        fixture.statistics->wavl_tree_prefix_range_comparison_count, 0U);
+    EXPECT_GT(fixture.statistics->wavl_tree_maximum_nodes_per_query, 0U);
+    std::uint64_t histogram_queries{};
+    for (const auto count :
+         fixture.statistics->wavl_tree_query_depth_histogram) {
+        histogram_queries += count;
+    }
+    EXPECT_EQ(histogram_queries, fixture.statistics->query_count);
+    EXPECT_FALSE(fixture.statistics->overflowed);
 }
 
 } // namespace

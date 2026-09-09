@@ -76,6 +76,25 @@ struct LzssWavlTreeNodeSnapshot {
     bool operator==(const LzssWavlTreeNodeSnapshot&) const = default;
 };
 
+struct LzssWavlTreeNeighborQueryResult {
+    std::size_t predecessor_position{lzss_wavl_tree_no_position};
+    std::size_t successor_position{lzss_wavl_tree_no_position};
+    std::uint32_t predecessor_lcp{};
+    std::uint32_t successor_lcp{};
+    std::uint32_t maximum_lcp{};
+    LzssWavlTreeError error{LzssWavlTreeError::none};
+
+    bool operator==(const LzssWavlTreeNeighborQueryResult&) const = default;
+};
+
+struct LzssWavlTreeCandidateQueryResult {
+    std::size_t candidate_position{lzss_wavl_tree_no_position};
+    std::uint32_t length{};
+    LzssWavlTreeError error{LzssWavlTreeError::none};
+
+    bool operator==(const LzssWavlTreeCandidateQueryResult&) const = default;
+};
+
 [[nodiscard]] LzssWavlTreeError calculate_lzss_wavl_promoted_rank(
     std::uint8_t rank, std::uint8_t& promoted_rank) noexcept;
 
@@ -101,6 +120,17 @@ public:
     }
     [[nodiscard]] std::uint32_t root_index() const noexcept { return root_; }
     [[nodiscard]] bool state_valid() const noexcept { return state_valid_; }
+    [[nodiscard]] std::size_t next_position() const noexcept {
+        return next_position_;
+    }
+
+    [[nodiscard]] LzssWavlTreeNeighborQueryResult find_neighbors(
+        std::size_t position) const noexcept;
+    [[nodiscard]] LzssWavlTreeCandidateQueryResult find_candidate(
+        std::size_t position) const noexcept;
+    [[nodiscard]] LzssMatch find_match(
+        std::size_t position) const noexcept;
+    void advance(std::size_t position, std::size_t next_position) noexcept;
 
 private:
     friend LzssWavlTreeError initialize_lzss_wavl_tree_match_finder(
@@ -119,6 +149,13 @@ private:
     [[nodiscard]] int node_rank(std::uint32_t node) const noexcept;
     [[nodiscard]] int compare_positions(
         std::size_t left, std::size_t right) const noexcept;
+    [[nodiscard]] std::uint32_t common_prefix_length(
+        std::size_t left, std::size_t right) const noexcept;
+    [[nodiscard]] int compare_prefix(
+        std::size_t position, std::size_t query_position,
+        std::uint32_t length) const noexcept;
+    [[nodiscard]] LzssWavlTreeNeighborQueryResult find_neighbors_impl(
+        std::size_t position, std::uint64_t* nodes_visited) const noexcept;
     void update_metadata(std::uint32_t node) noexcept;
     void update_metadata_upward(std::uint32_t node) noexcept;
     void replace_parent_child(
@@ -146,10 +183,13 @@ private:
     std::span<std::size_t> subtree_maximum_position_{};
     std::uint32_t root_{lzss_wavl_tree_null_node};
     std::size_t active_node_count_{};
+    std::size_t next_position_{};
     LzssMatchFinderStatistics* statistics_{};
     bool initialized_{};
     bool state_valid_{};
 };
+
+static_assert(LzssMatchFinder<LzssWavlTreeMatchFinder>);
 
 [[nodiscard]] LzssWavlTreeError initialize_lzss_wavl_tree_match_finder(
     std::span<const std::byte> input, const LzssParameters& parameters,

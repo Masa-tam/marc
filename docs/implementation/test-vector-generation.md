@@ -14111,3 +14111,19 @@ Use the corrupted reciprocal-link vector to require that a rejected preflight
 changes neither workspace nor preflight diagnostics. Run the focused suite
 with MSVC and ClangCL, and retain the complete validator after every successful
 deletion as an independent oracle rather than part of the mutation path.
+
+### TVG-0974
+
+At every position of empty, one-byte, repetitive, patterned, tie-heavy, and
+fixed pseudorandom inputs, compare private WAVL predecessor, successor, both
+LCPs, maximum LCP, selected candidate position and length, and final match
+against the established AVL Exact oracle. Use a small window so retirement and
+modulo-slot reuse occur continuously, validate both trees after every
+one-byte advancement, and require equal active counts and announced positions.
+
+Repeat selected positions with multi-byte advancement to prove that skipped
+raw positions are still indexed. Require a position mismatch to create the
+documented sticky invalid protocol state. Verify WAVL query comparison, LCP,
+prefix-range, maximum-work, and histogram diagnostics, with histogram mass
+equal to the common query count. Run the focused suite with MSVC and ClangCL
+before full repository validation.

@@ -7918,3 +7918,15 @@ rank views, success-only visit diagnostics, and logarithmic work assertions
 were independently designed for marc. No external WAVL implementation,
 source code, implementation pseudocode, deletion preflight, compressor, match
 finder, test, or benchmark result was consulted.
+
+### IR-0872
+
+The private WAVL Exact query and one-way advancement use DD-1110, TVG-0974,
+the already committed WAVL ordering, mutation, validation, and
+subtree-maximum contracts, and marc's repository-owned AVL Exact result as a
+differential oracle. The predecessor/successor LCP method, equal-prefix
+interval selection, nearest-position tie break, bounded corruption checks,
+sticky protocol state, and WAVL-specific diagnostics were implemented from
+those local contracts. No external WAVL implementation, source code,
+implementation pseudocode, compressor, match finder, query routine, test, or
+benchmark result was consulted.
