@@ -120,6 +120,7 @@ set(MARC_SOURCES
     src/dictionary/lzss_match_finder.cpp
     src/dictionary/lzss_hash_chain_match_finder.cpp
     src/dictionary/lzss_binary_tree_match_finder.cpp
+    src/dictionary/lzss_wavl_tree_match_finder.cpp
     src/dictionary/lzss_red_black_tree_match_finder.cpp
     src/dictionary/lzss_scapegoat_tree_match_finder.cpp
     src/dictionary/lzss_hash_tree_promotion.cpp
@@ -1924,6 +1925,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_match_finder_tests.cpp
         tests/lzss_prefix_hash_tests.cpp
         tests/lzss_binary_tree_match_finder_tests.cpp
+        tests/lzss_wavl_tree_match_finder_tests.cpp
         tests/lzss_red_black_tree_match_finder_tests.cpp
         tests/lzss_scapegoat_tree_match_finder_tests.cpp
         tests/lzss_hash_tree_promotion_tests.cpp

@@ -7874,3 +7874,13 @@ reviewed as both extracted text and rendered pages so that case prose and rank
 diagrams were cross-checked. No external WAVL implementation, source code,
 implementation pseudocode, compressor, match finder, test suite, or benchmark
 result was consulted.
+
+### IR-0868
+
+The private WAVL workspace and empty-state component uses DD-1104 through
+DD-1106, TVG-0968 through TVG-0970, the committed WAVL transition contract,
+and marc's repository-owned AVL workspace shape, checked arithmetic, limits,
+buffer-overlap, and transactional initialization primitives. The AVL extent is
+an explicit test oracle; WAVL calculates and binds its own layout. No external
+WAVL implementation, source code, implementation pseudocode, compressor,
+match finder, workspace test, or benchmark result was consulted.

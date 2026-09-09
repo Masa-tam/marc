@@ -22478,3 +22478,21 @@ was the target's direct right child. Keep subtree-maximum repair independent of
 rank repair, recompute lower rotated nodes before their new local root, and
 walk at most one current parent chain to the root. Require byte-stable checked
 failure and hand vectors before implementing the mutation engine.
+
+## DD-1106: WAVL reserves exactly the AVL six-array workspace
+
+- Date: 2026-09-10
+- Status: accepted
+
+Implement the first private WAVL component as workspace calculation, binding,
+and canonical empty-state initialization only. Use the AVL array order and
+element widths exactly: three `uint32_t` link arrays, one `uint8_t` metadata
+array, and two `size_t` position arrays. Interpret the one-byte array as WAVL
+rank and initialize inactive entries to 255 rather than AVL height zero.
+
+Perform independent checked layout and aggregate-limit arithmetic, parameter
+and input-limit validation, alignment validation, and input/workspace overlap
+rejection before writing any caller storage or replacing an existing finder.
+Require all offsets, alignment, node count, and total extent to equal AVL for
+the same input, parameters, and limits. Add no mutation, query, public
+strategy, stream representation, or ABI surface in this stage.

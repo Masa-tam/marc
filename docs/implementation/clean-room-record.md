@@ -29839,3 +29839,30 @@ both bounds.
   No external implementation expression was copied or translated.
 - Local validation: documentation layout, links, and identifier chronology
   pass; no WAVL mutation code exists at this stage.
+
+## CR-1199: 2026-09-10 - WAVL equal workspace and empty state
+
+- Authoring method: implemented the private WAVL workspace calculator and
+  initializer from marc's committed storage contract, with a distinct rank
+  meaning and inactive sentinel over the established six-array shape.
+- References used: DD-1104 through DD-1106, IR-0866 through IR-0868,
+  TVG-0968 through TVG-0970, the WAVL feasibility and mutation-transition
+  documents, and repository-owned checked arithmetic, limit, overlap, AVL
+  extent, and transactional initialization contracts.
+- Known implementations intentionally not consulted: external WAVL source
+  code, implementation pseudocode, compressor, match finder, workspace
+  layout, initialization routine, test suite, or benchmark result.
+- Independent decisions: keep the component private and non-operational;
+  calculate its layout independently; use rank 255 for every inactive slot;
+  compare the complete result to AVL in tests; and reject every preflight
+  failure before modifying caller storage or the destination finder.
+- Generated-code task description: add only the checked AVL-equal workspace,
+  binding, empty initialization, and focused cross-compiler boundary tests
+  required by stage two of the WAVL feasibility contract.
+- Similarity review: source structure follows marc's existing bounded
+  workspace conventions, while names, rank semantics, tests, and records are
+  specific to this independently designed candidate. No external
+  implementation expression was copied or translated.
+- Local validation: the seven focused WAVL tests pass under MSVC and ClangCL;
+  full repository validation and documentation chronology are run before
+  commit.

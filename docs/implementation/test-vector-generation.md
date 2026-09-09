@@ -14043,3 +14043,18 @@ and repair to start at the moved successor or old successor parent exactly as
 specified. Recompute subtree maxima independently after every vector and
 reject impossible rank differences, overflow, bad links, and incorrect
 transition claims without mutation.
+
+### TVG-0970
+
+Compare private WAVL and AVL workspace results at empty, below-prefix,
+prefix-boundary, ordinary, 64-KiB, and one-MiB extents. Require identical
+node count, alignment, all six array offsets, and total workspace size. Test
+aggregate limit equality and one-byte-short rejection independently.
+
+Initialize patterned storage and require null links, rank 255, absent
+positions and subtree maxima, null root, zero active count, and an untouched
+trailing guard. Cover below-prefix initialization without workspace. Seed an
+existing finder, then require short, misaligned, and overlapping workspaces to
+leave both finder and caller storage unchanged. Reject invalid limits,
+parameters, input bounds, and arithmetic overflow before mutation. Run the
+same focused suite with MSVC and ClangCL.
