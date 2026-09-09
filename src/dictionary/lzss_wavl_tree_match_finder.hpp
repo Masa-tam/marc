@@ -27,6 +27,26 @@ enum class LzssWavlTreeError : std::uint8_t {
     workspace_too_small,
     misaligned_workspace,
     overlapping_buffers,
+    invalid_position,
+    invalid_state,
+    rank_overflow,
+};
+
+enum class LzssWavlTreeValidationError : std::uint8_t {
+    none,
+    uninitialized,
+    invalid_root,
+    invalid_active_count,
+    invalid_inactive_node,
+    invalid_index,
+    invalid_parent,
+    cycle_or_disconnected,
+    invalid_order,
+    invalid_rank_difference,
+    invalid_leaf_rank,
+    invalid_subtree_maximum,
+    invalid_slot_position,
+    invalid_protocol_state,
 };
 
 struct LzssWavlTreeWorkspaceRequirements {
@@ -56,6 +76,9 @@ struct LzssWavlTreeNodeSnapshot {
     bool operator==(const LzssWavlTreeNodeSnapshot&) const = default;
 };
 
+[[nodiscard]] LzssWavlTreeError calculate_lzss_wavl_promoted_rank(
+    std::uint8_t rank, std::uint8_t& promoted_rank) noexcept;
+
 [[nodiscard]] LzssWavlTreeWorkspaceRequirements
 calculate_lzss_wavl_tree_workspace(
     std::size_t input_size, const LzssParameters& parameters,
@@ -83,9 +106,27 @@ private:
     friend LzssWavlTreeError initialize_lzss_wavl_tree_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
-        LzssWavlTreeMatchFinder&) noexcept;
+        LzssWavlTreeMatchFinder&, LzssMatchFinderStatistics*) noexcept;
+    friend LzssWavlTreeError insert_lzss_wavl_tree_position(
+        LzssWavlTreeMatchFinder&, std::size_t) noexcept;
+    friend LzssWavlTreeValidationError validate_lzss_wavl_tree(
+        const LzssWavlTreeMatchFinder&) noexcept;
     friend LzssWavlTreeNodeSnapshot inspect_lzss_wavl_tree_node(
         const LzssWavlTreeMatchFinder&, std::uint32_t) noexcept;
+
+    [[nodiscard]] int node_rank(std::uint32_t node) const noexcept;
+    [[nodiscard]] int compare_positions(
+        std::size_t left, std::size_t right) const noexcept;
+    void update_metadata(std::uint32_t node) noexcept;
+    void update_metadata_upward(std::uint32_t node) noexcept;
+    void replace_parent_child(
+        std::uint32_t parent, std::uint32_t previous_child,
+        std::uint32_t replacement) noexcept;
+    [[nodiscard]] std::uint32_t rotate_left(std::uint32_t node) noexcept;
+    [[nodiscard]] std::uint32_t rotate_right(std::uint32_t node) noexcept;
+    [[nodiscard]] LzssWavlTreeError preflight_insertion_repair(
+        std::uint32_t parent, bool insert_left) const noexcept;
+    void repair_after_insertion(std::uint32_t node) noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
@@ -97,6 +138,7 @@ private:
     std::span<std::size_t> subtree_maximum_position_{};
     std::uint32_t root_{lzss_wavl_tree_null_node};
     std::size_t active_node_count_{};
+    LzssMatchFinderStatistics* statistics_{};
     bool initialized_{};
     bool state_valid_{};
 };
@@ -104,7 +146,14 @@ private:
 [[nodiscard]] LzssWavlTreeError initialize_lzss_wavl_tree_match_finder(
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::span<std::byte> workspace,
-    LzssWavlTreeMatchFinder& finder) noexcept;
+    LzssWavlTreeMatchFinder& finder,
+    LzssMatchFinderStatistics* statistics = nullptr) noexcept;
+
+[[nodiscard]] LzssWavlTreeError insert_lzss_wavl_tree_position(
+    LzssWavlTreeMatchFinder& finder, std::size_t position) noexcept;
+
+[[nodiscard]] LzssWavlTreeValidationError validate_lzss_wavl_tree(
+    const LzssWavlTreeMatchFinder& finder) noexcept;
 
 [[nodiscard]] LzssWavlTreeNodeSnapshot inspect_lzss_wavl_tree_node(
     const LzssWavlTreeMatchFinder& finder, std::uint32_t node) noexcept;

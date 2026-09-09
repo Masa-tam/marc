@@ -14058,3 +14058,23 @@ existing finder, then require short, misaligned, and overlapping workspaces to
 leave both finder and caller storage unchanged. Reject invalid limits,
 parameters, input bounds, and arithmetic overflow before mutation. Run the
 same focused suite with MSVC and ClangCL.
+
+### TVG-0971
+
+Exercise private WAVL insertion with hand-checkable suffix orders that select
+I0, I1, both I2 single-rotation mirrors, and both I3 double-rotation mirrors.
+After every completed insertion, validate root and parent links, settled rank
+differences, rank-zero leaves, subtree maxima, slot identity, and active-node
+count. Assert exact final links, ranks, root, promotion count, single/double
+rotation count, total repair steps, and maximum repair steps for each mirrored
+case.
+
+Reject duplicate and non-indexable positions without changing storage or
+diagnostics. Corrupt a reciprocal parent link and require the subsequent
+insertion to reject the already-invalid path byte-for-byte. For a fixed
+pseudorandom input, insert every indexable position into two WAVL instances
+and the established AVL oracle; validate all three after every position,
+require equal accepted counts, and require the two WAVL workspaces and node
+snapshots to remain identical. Independently check rank 253 promotion and
+require rank 254 and the inactive sentinel to reject without changing the
+destination rank. Run the focused cases with MSVC and ClangCL.

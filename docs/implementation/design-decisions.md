@@ -22496,3 +22496,23 @@ rejection before writing any caller storage or replacing an existing finder.
 Require all offsets, alignment, node count, and total extent to equal AVL for
 the same input, parameters, and limits. Add no mutation, query, public
 strategy, stream representation, or ABI surface in this stage.
+
+## DD-1107: WAVL insertion is preflighted before rank mutation
+
+- Date: 2026-09-10
+- Status: accepted
+
+Implement private WAVL insertion with the frozen I0 through I3 transition
+table. Insert a rank-zero leaf, propagate only zero-edge violations, promote
+on a one-child sibling, and terminate with the prescribed mirrored single or
+double rotation on a two-child sibling. Update subtree-maximum metadata
+independently from rank repair and retain the established suffix ordering and
+position tie break.
+
+Before writing the new slot, walk the prospective repair chain without
+mutation. Reject an invalid local rank difference, inactive or out-of-range
+node, broken reciprocal link, cycle, or promotion into the reserved rank-255
+sentinel. Thus every reported insertion failure leaves caller workspace,
+root, active count, and diagnostics unchanged. Keep insertion and its
+operation-specific counters private; do not yet add retirement, query,
+advancement, a public strategy, or a stream-visible variant.

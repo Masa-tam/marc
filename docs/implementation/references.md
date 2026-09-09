@@ -7884,3 +7884,15 @@ buffer-overlap, and transactional initialization primitives. The AVL extent is
 an explicit test oracle; WAVL calculates and binds its own layout. No external
 WAVL implementation, source code, implementation pseudocode, compressor,
 match finder, workspace test, or benchmark result was consulted.
+
+### IR-0869
+
+The private WAVL insertion and validator use DD-1104 through DD-1107,
+TVG-0968 through TVG-0971, the committed marc-owned transition table, and the
+rank cases attributed there to Section 3 and Figure 2 of Haeupler, Sen, and
+Tarjan's *Rank-Balanced Trees*. Suffix comparison, fixed-slot identity,
+subtree-maximum metadata, checked preflight, saturating diagnostics, and the
+AVL differential are repository-owned contracts. No external WAVL
+implementation, source code, implementation pseudocode, compressor, match
+finder, mutation fixture, validator, test suite, or benchmark result was
+consulted.

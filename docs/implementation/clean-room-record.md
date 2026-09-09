@@ -29866,3 +29866,35 @@ both bounds.
 - Local validation: the seven focused WAVL tests pass under MSVC and ClangCL;
   full repository validation and documentation chronology are run before
   commit.
+
+## CR-1200: 2026-09-10 - WAVL insertion and settled-state validator
+
+- Authoring method: implemented the previously committed I0 through I3 rank
+  transitions directly against marc's private six-array workspace, with a
+  separate read-only repair-path preflight and iterative structural
+  validator.
+- References used: DD-1104 through DD-1107, IR-0866 through IR-0869,
+  TVG-0968 through TVG-0971, the repository-owned WAVL transition document,
+  and marc's existing suffix ordering, slot identity, checked mutation,
+  metadata, statistics, and AVL differential contracts.
+- Known implementations intentionally not consulted: external WAVL source
+  code, implementation pseudocode, compressor, match finder, mutation
+  routine, validator, fixture, test suite, or benchmark result.
+- Independent decisions: preflight the prospective propagation path before
+  slot mutation; reserve rank 255 exclusively for inactivity; reject local
+  structural damage without changing bytes or diagnostics; count promotions,
+  single rotations, double rotations, and repair steps independently; and
+  validate the completed tree after every differential insertion.
+- Generated-code task description: add only private WAVL insertion, settled
+  rank validation, hand-checkable mirrored transition cases, deterministic
+  every-position insertion, and operation-specific insertion diagnostics.
+- Similarity review: the rank-case mathematics follow the cited paper and
+  committed transition specification; implementation structure, checked
+  preflight, fixed-slot adaptation, metadata handling, diagnostics, and tests
+  were independently authored for marc. No external implementation
+  expression was copied or translated.
+- Local validation: all 16 focused WAVL tests pass under MSVC and ClangCL.
+  The complete 3,469-test suite, including documentation and interoperability
+  schema compatibility, passes after the final change; both compiler builds
+  and the final ClangCL run completed from the official CMake route, with the
+  corresponding MSVC full run and post-change focused suite also passing.

@@ -5,9 +5,11 @@
 
 #include <algorithm>
 #include <array>
+#include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <memory>
 #include <span>
 #include <string_view>
 #include <vector>
@@ -44,6 +46,36 @@ template<typename T>
     const std::span<const std::byte> workspace, const std::size_t offset,
     const std::size_t count) {
     return {reinterpret_cast<const T*>(workspace.data() + offset), count};
+}
+
+template<typename T>
+[[nodiscard]] std::span<T> mutable_array_at(
+    const std::span<std::byte> workspace, const std::size_t offset,
+    const std::size_t count) {
+    return {reinterpret_cast<T*>(workspace.data() + offset), count};
+}
+
+struct InitializedWavl {
+    std::vector<std::byte> input{};
+    LzssWavlTreeWorkspaceRequirements required{};
+    AlignedStorage storage{};
+    std::unique_ptr<LzssMatchFinderStatistics> statistics{
+        std::make_unique<LzssMatchFinderStatistics>()};
+    LzssWavlTreeMatchFinder finder{};
+};
+
+[[nodiscard]] InitializedWavl initialize_wavl(const std::string_view text) {
+    InitializedWavl result{};
+    result.input = bytes(text);
+    result.required = calculate_lzss_wavl_tree_workspace(
+        result.input.size(), {}, {});
+    EXPECT_EQ(result.required.error, LzssWavlTreeError::none);
+    result.storage = make_storage(result.required.workspace_size);
+    EXPECT_EQ(initialize_lzss_wavl_tree_match_finder(
+                  result.input, {}, {}, result.storage.bytes,
+                  result.finder, result.statistics.get()),
+              LzssWavlTreeError::none);
+    return result;
 }
 
 void expect_equal_extent(
@@ -257,6 +289,288 @@ TEST(LzssWavlTreeMatchFinder, RejectsInvalidAndUnboundedRequirements) {
     EXPECT_EQ(calculate_lzss_wavl_tree_workspace(
                   std::numeric_limits<std::size_t>::max(), {}, limits).error,
               LzssWavlTreeError::arithmetic_overflow);
+}
+
+TEST(LzssWavlTreeMatchFinder, CheckedRankPromotionPreservesFailureOutput) {
+    std::uint8_t promoted = 0xa5;
+    EXPECT_EQ(calculate_lzss_wavl_promoted_rank(253, promoted),
+              LzssWavlTreeError::none);
+    EXPECT_EQ(promoted, 254U);
+
+    promoted = 0xa5;
+    EXPECT_EQ(calculate_lzss_wavl_promoted_rank(254, promoted),
+              LzssWavlTreeError::rank_overflow);
+    EXPECT_EQ(promoted, 0xa5U);
+
+    EXPECT_EQ(calculate_lzss_wavl_promoted_rank(
+                  lzss_wavl_tree_inactive_rank, promoted),
+              LzssWavlTreeError::invalid_state);
+    EXPECT_EQ(promoted, 0xa5U);
+}
+
+TEST(LzssWavlTreeMatchFinder, InsertsWithI0AndI1Promotions) {
+    auto fixture = initialize_wavl("CADxxxxx");
+    ASSERT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::none);
+
+    ASSERT_EQ(insert_lzss_wavl_tree_position(fixture.finder, 0),
+              LzssWavlTreeError::none);
+    EXPECT_EQ(fixture.finder.root_index(), 0U);
+    EXPECT_EQ(inspect_lzss_wavl_tree_node(fixture.finder, 0).rank, 0U);
+
+    ASSERT_EQ(insert_lzss_wavl_tree_position(fixture.finder, 1),
+              LzssWavlTreeError::none);
+    EXPECT_EQ(inspect_lzss_wavl_tree_node(fixture.finder, 0).rank, 1U);
+    EXPECT_EQ(fixture.statistics->wavl_tree_insertion_promotion_count, 1U);
+
+    // D attaches to the root's absent right edge. Its rank difference is
+    // already one, so I0 performs no rank change or rotation.
+    ASSERT_EQ(insert_lzss_wavl_tree_position(fixture.finder, 2),
+              LzssWavlTreeError::none);
+    EXPECT_EQ(fixture.finder.root_index(), 0U);
+    EXPECT_EQ(inspect_lzss_wavl_tree_node(fixture.finder, 0).rank, 1U);
+    EXPECT_EQ(fixture.statistics->wavl_tree_insertion_promotion_count, 1U);
+    EXPECT_EQ(fixture.statistics->wavl_tree_insertion_single_rotation_count,
+              0U);
+    EXPECT_EQ(fixture.statistics->wavl_tree_insertion_double_rotation_count,
+              0U);
+    EXPECT_EQ(fixture.statistics->wavl_tree_insertion_fixup_step_count, 1U);
+    EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::none);
+}
+
+TEST(LzssWavlTreeMatchFinder, AppliesMirroredI2SingleRotations) {
+    for (const auto text : {"CBAxxxxx", "ABCxxxxx"}) {
+        auto fixture = initialize_wavl(text);
+        for (const auto position : {0U, 1U, 2U}) {
+            ASSERT_EQ(insert_lzss_wavl_tree_position(
+                          fixture.finder, position),
+                      LzssWavlTreeError::none) << text;
+            ASSERT_EQ(validate_lzss_wavl_tree(fixture.finder),
+                      LzssWavlTreeValidationError::none) << text;
+        }
+        ASSERT_EQ(fixture.finder.root_index(), 1U) << text;
+        const auto root = inspect_lzss_wavl_tree_node(fixture.finder, 1);
+        EXPECT_EQ(root.rank, 1U) << text;
+        EXPECT_EQ(root.left, text[0] == 'C' ? 2U : 0U) << text;
+        EXPECT_EQ(root.right, text[0] == 'C' ? 0U : 2U) << text;
+        EXPECT_EQ(root.subtree_maximum_position, 2U) << text;
+        EXPECT_EQ(fixture.statistics->wavl_tree_insertion_promotion_count, 2U);
+        EXPECT_EQ(
+            fixture.statistics->wavl_tree_insertion_single_rotation_count,
+            1U);
+        EXPECT_EQ(
+            fixture.statistics->wavl_tree_insertion_double_rotation_count,
+            0U);
+        EXPECT_EQ(fixture.statistics->wavl_tree_insertion_fixup_step_count, 3U);
+        EXPECT_EQ(fixture.statistics->wavl_tree_maximum_insertion_fixup_steps,
+                  2U);
+        EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+                  LzssWavlTreeValidationError::none) << text;
+    }
+}
+
+TEST(LzssWavlTreeMatchFinder, AppliesMirroredI3DoubleRotations) {
+    for (const auto text : {"CABxxxxx", "ACBxxxxx"}) {
+        auto fixture = initialize_wavl(text);
+        for (const auto position : {0U, 1U, 2U}) {
+            ASSERT_EQ(insert_lzss_wavl_tree_position(
+                          fixture.finder, position),
+                      LzssWavlTreeError::none) << text;
+            ASSERT_EQ(validate_lzss_wavl_tree(fixture.finder),
+                      LzssWavlTreeValidationError::none) << text;
+        }
+        ASSERT_EQ(fixture.finder.root_index(), 2U) << text;
+        const auto root = inspect_lzss_wavl_tree_node(fixture.finder, 2);
+        EXPECT_EQ(root.rank, 1U) << text;
+        EXPECT_EQ(root.left, text[0] == 'C' ? 1U : 0U) << text;
+        EXPECT_EQ(root.right, text[0] == 'C' ? 0U : 1U) << text;
+        EXPECT_EQ(root.subtree_maximum_position, 2U) << text;
+        EXPECT_EQ(fixture.statistics->wavl_tree_insertion_promotion_count, 2U);
+        EXPECT_EQ(
+            fixture.statistics->wavl_tree_insertion_single_rotation_count,
+            0U);
+        EXPECT_EQ(
+            fixture.statistics->wavl_tree_insertion_double_rotation_count,
+            1U);
+        EXPECT_EQ(fixture.statistics->wavl_tree_insertion_fixup_step_count, 3U);
+        EXPECT_EQ(fixture.statistics->wavl_tree_maximum_insertion_fixup_steps,
+                  2U);
+        EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+                  LzssWavlTreeValidationError::none) << text;
+    }
+}
+
+TEST(LzssWavlTreeMatchFinder, RejectsInvalidInsertionWithoutMutation) {
+    auto fixture = initialize_wavl("ABCDE___FGHIJ___");
+    ASSERT_EQ(insert_lzss_wavl_tree_position(fixture.finder, 0),
+              LzssWavlTreeError::none);
+    const auto original = std::vector<std::byte>(
+        fixture.storage.bytes.begin(), fixture.storage.bytes.end());
+    const auto original_insertion_count =
+        fixture.statistics->wavl_tree_insertion_count;
+
+    EXPECT_EQ(insert_lzss_wavl_tree_position(fixture.finder, 0),
+              LzssWavlTreeError::invalid_state);
+    EXPECT_EQ(insert_lzss_wavl_tree_position(
+                  fixture.finder, fixture.input.size() - 4U),
+              LzssWavlTreeError::invalid_position);
+    EXPECT_TRUE(std::ranges::equal(fixture.storage.bytes, original));
+    EXPECT_EQ(fixture.statistics->wavl_tree_insertion_count,
+              original_insertion_count);
+    EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::none);
+}
+
+TEST(LzssWavlTreeMatchFinder, ValidatorDetectsRankLinkAndMetadataDamage) {
+    auto fixture = initialize_wavl("ABCxxxxx");
+    for (const auto position : {0U, 1U, 2U}) {
+        ASSERT_EQ(insert_lzss_wavl_tree_position(fixture.finder, position),
+                  LzssWavlTreeError::none);
+    }
+    ASSERT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::none);
+
+    auto ranks = mutable_array_at<std::uint8_t>(
+        fixture.storage.bytes, fixture.required.rank_offset,
+        fixture.required.node_count);
+    auto parents = mutable_array_at<std::uint32_t>(
+        fixture.storage.bytes, fixture.required.parent_offset,
+        fixture.required.node_count);
+    auto maximums = mutable_array_at<std::size_t>(
+        fixture.storage.bytes,
+        fixture.required.subtree_maximum_position_offset,
+        fixture.required.node_count);
+    const auto root = fixture.finder.root_index();
+
+    ranks[root] = 3;
+    EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::invalid_rank_difference);
+    ranks[root] = 1;
+
+    const auto left = inspect_lzss_wavl_tree_node(fixture.finder, root).left;
+    ranks[left] = 1;
+    EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::invalid_leaf_rank);
+    ranks[left] = 0;
+
+    parents[left] = lzss_wavl_tree_null_node;
+    EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::cycle_or_disconnected);
+    parents[left] = root;
+
+    maximums[root] = 1;
+    EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::invalid_subtree_maximum);
+    maximums[root] = 2;
+    EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::none);
+}
+
+TEST(LzssWavlTreeMatchFinder, RejectsBrokenReciprocalLinkWithoutMutation) {
+    auto fixture = initialize_wavl("ABCDxxxxx");
+    for (const auto position : {0U, 1U, 2U}) {
+        ASSERT_EQ(insert_lzss_wavl_tree_position(fixture.finder, position),
+                  LzssWavlTreeError::none);
+    }
+    const auto root = fixture.finder.root_index();
+    const auto left = inspect_lzss_wavl_tree_node(fixture.finder, root).left;
+    auto parents = mutable_array_at<std::uint32_t>(
+        fixture.storage.bytes, fixture.required.parent_offset,
+        fixture.required.node_count);
+    parents[left] = left;
+    const auto corrupted = std::vector<std::byte>(
+        fixture.storage.bytes.begin(), fixture.storage.bytes.end());
+    const auto insertion_count =
+        fixture.statistics->wavl_tree_insertion_count;
+
+    EXPECT_EQ(insert_lzss_wavl_tree_position(fixture.finder, 3),
+              LzssWavlTreeError::invalid_state);
+    EXPECT_TRUE(std::ranges::equal(fixture.storage.bytes, corrupted));
+    EXPECT_EQ(fixture.statistics->wavl_tree_insertion_count,
+              insertion_count);
+}
+
+TEST(LzssWavlTreeMatchFinder, EveryInsertionStaysValidAndDeterministic) {
+    std::vector<std::byte> input(256);
+    std::uint32_t state = UINT32_C(0x9e3779b9);
+    for (auto& value : input) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        value = static_cast<std::byte>(state >> 24U);
+    }
+    const auto wavl_required = calculate_lzss_wavl_tree_workspace(
+        input.size(), {}, {});
+    const auto avl_required = calculate_lzss_binary_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(wavl_required.error, LzssWavlTreeError::none);
+    ASSERT_EQ(avl_required.error, LzssBinaryTreeError::none);
+    auto first_storage = make_storage(wavl_required.workspace_size);
+    auto second_storage = make_storage(wavl_required.workspace_size);
+    auto avl_storage = make_storage(avl_required.workspace_size);
+    LzssWavlTreeMatchFinder first{};
+    LzssWavlTreeMatchFinder second{};
+    LzssBinaryTreeMatchFinder avl{};
+    ASSERT_EQ(initialize_lzss_wavl_tree_match_finder(
+                  input, {}, {}, first_storage.bytes, first),
+              LzssWavlTreeError::none);
+    ASSERT_EQ(initialize_lzss_wavl_tree_match_finder(
+                  input, {}, {}, second_storage.bytes, second),
+              LzssWavlTreeError::none);
+    ASSERT_EQ(initialize_lzss_binary_tree_match_finder(
+                  input, {}, {}, avl_storage.bytes, avl),
+              LzssBinaryTreeError::none);
+
+    const auto count = input.size() - lzss_wavl_tree_prefix_size + 1U;
+    for (std::size_t position = 0; position < count; ++position) {
+        ASSERT_EQ(insert_lzss_wavl_tree_position(first, position),
+                  LzssWavlTreeError::none) << position;
+        ASSERT_EQ(insert_lzss_wavl_tree_position(second, position),
+                  LzssWavlTreeError::none) << position;
+        ASSERT_EQ(insert_lzss_binary_tree_position(avl, position),
+                  LzssBinaryTreeError::none) << position;
+        ASSERT_EQ(validate_lzss_wavl_tree(first),
+                  LzssWavlTreeValidationError::none) << position;
+        ASSERT_EQ(validate_lzss_wavl_tree(second),
+                  LzssWavlTreeValidationError::none) << position;
+        ASSERT_EQ(validate_lzss_binary_tree(avl),
+                  LzssBinaryTreeValidationError::none) << position;
+        EXPECT_EQ(first.active_node_count(), avl.active_node_count());
+        EXPECT_EQ(first.root_index(), second.root_index());
+    }
+    for (std::uint32_t node = 0; node < input.size(); ++node) {
+        EXPECT_EQ(inspect_lzss_wavl_tree_node(first, node),
+                  inspect_lzss_wavl_tree_node(second, node));
+    }
+    EXPECT_TRUE(std::ranges::equal(first_storage.bytes, second_storage.bytes));
+}
+
+TEST(LzssWavlTreeMatchFinder, LongOrderedInsertionPropagatesSafelyToRoot) {
+    std::vector<std::byte> input(1'024, std::byte{'A'});
+    const auto required = calculate_lzss_wavl_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssWavlTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssMatchFinderStatistics statistics{};
+    LzssWavlTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_wavl_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder, &statistics),
+              LzssWavlTreeError::none);
+
+    const auto count = input.size() - lzss_wavl_tree_prefix_size + 1U;
+    for (std::size_t position = 0; position < count; ++position) {
+        ASSERT_EQ(insert_lzss_wavl_tree_position(finder, position),
+                  LzssWavlTreeError::none) << position;
+        ASSERT_EQ(validate_lzss_wavl_tree(finder),
+                  LzssWavlTreeValidationError::none) << position;
+    }
+
+    ASSERT_NE(finder.root_index(), lzss_wavl_tree_null_node);
+    const auto root = inspect_lzss_wavl_tree_node(
+        finder, finder.root_index());
+    EXPECT_LE(root.rank, 2U * std::bit_width(count));
+    EXPECT_EQ(root.subtree_maximum_position, count - 1U);
+    EXPECT_EQ(statistics.wavl_tree_insertion_count, count);
+    EXPECT_GT(statistics.wavl_tree_maximum_insertion_fixup_steps, 2U);
 }
 
 } // namespace
