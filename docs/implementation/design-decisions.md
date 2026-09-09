@@ -22516,3 +22516,24 @@ sentinel. Thus every reported insertion failure leaves caller workspace,
 root, active count, and diagnostics unchanged. Keep insertion and its
 operation-specific counters private; do not yet add retirement, query,
 advancement, a public strategy, or a stream-visible variant.
+
+## DD-1108: WAVL deletion preserves physical slot identity
+
+- Date: 2026-09-10
+- Status: accepted
+
+Implement private WAVL retirement with the frozen D0 through D5 transition
+table. Normalize a two-child retirement by moving the physical in-order
+successor slot rather than exchanging payloads: copy the retired node's rank
+to the successor, preserve the successor's position, and begin repair at the
+old splice edge. Distinguish the direct-right-child and deeper-successor
+origins explicitly.
+
+Validate the complete settled tree before structural mutation so malformed
+private state is rejected byte-for-byte. After the splice, permit only the
+specified transient rank-one `2,2` leaf or a rank-difference-three edge;
+apply iterative demotions and mirrored terminal rotations, then repair
+subtree maxima along the resulting current-parent chain. Reset all six fields
+of the unreachable retired slot and keep demotion, rotation, repair-step, and
+retirement diagnostics separate from insertion. Add no query, advancement,
+public strategy, ABI, or stream-format surface in this stage.

@@ -310,6 +310,133 @@ void LzssWavlTreeMatchFinder::repair_after_insertion(
     }
 }
 
+void LzssWavlTreeMatchFinder::clear_node(
+    const std::uint32_t node) noexcept {
+    left_[node] = lzss_wavl_tree_null_node;
+    right_[node] = lzss_wavl_tree_null_node;
+    parent_[node] = lzss_wavl_tree_null_node;
+    rank_[node] = lzss_wavl_tree_inactive_rank;
+    position_[node] = lzss_wavl_tree_no_position;
+    subtree_maximum_position_[node] = lzss_wavl_tree_no_position;
+}
+
+void LzssWavlTreeMatchFinder::repair_after_removal(
+    std::uint32_t parent, std::uint32_t replacement,
+    bool replacement_is_left) noexcept {
+    std::uint64_t steps{};
+    const auto record_demotions = [this](const std::uint64_t count) noexcept {
+        if (statistics_ != nullptr) {
+            add_statistic(
+                statistics_, statistics_->wavl_tree_removal_demotion_count,
+                count);
+        }
+    };
+
+    while (parent != lzss_wavl_tree_null_node) {
+        const auto parent_rank = node_rank(parent);
+        const auto transient_leaf = parent_rank == 1
+            && left_[parent] == lzss_wavl_tree_null_node
+            && right_[parent] == lzss_wavl_tree_null_node;
+        const auto replacement_difference =
+            parent_rank - node_rank(replacement);
+
+        if (transient_leaf) {
+            ++steps;
+            --rank_[parent];
+            record_demotions(1);
+            replacement = parent;
+            parent = parent_[replacement];
+            if (parent != lzss_wavl_tree_null_node) {
+                replacement_is_left = left_[parent] == replacement;
+            }
+            continue;
+        }
+        if (replacement_difference != 3) break;
+
+        ++steps;
+        const auto sibling = replacement_is_left
+            ? right_[parent] : left_[parent];
+        const auto sibling_difference = parent_rank - node_rank(sibling);
+        if (sibling_difference == 2) {
+            --rank_[parent];
+            record_demotions(1);
+            replacement = parent;
+            parent = parent_[replacement];
+            if (parent != lzss_wavl_tree_null_node) {
+                replacement_is_left = left_[parent] == replacement;
+            }
+            continue;
+        }
+
+        const auto outer = replacement_is_left
+            ? right_[sibling] : left_[sibling];
+        const auto inner = replacement_is_left
+            ? left_[sibling] : right_[sibling];
+        const auto outer_difference = node_rank(sibling) - node_rank(outer);
+        const auto inner_difference = node_rank(sibling) - node_rank(inner);
+        if (outer_difference == 2 && inner_difference == 2) {
+            --rank_[parent];
+            --rank_[sibling];
+            record_demotions(2);
+            replacement = parent;
+            parent = parent_[replacement];
+            if (parent != lzss_wavl_tree_null_node) {
+                replacement_is_left = left_[parent] == replacement;
+            }
+            continue;
+        }
+
+        if (outer_difference == 1) {
+            if (inner == lzss_wavl_tree_null_node) {
+                rank_[parent] = static_cast<std::uint8_t>(rank_[parent] - 2U);
+                rank_[sibling] = static_cast<std::uint8_t>(rank_[sibling] + 1U);
+                record_demotions(2);
+            } else {
+                --rank_[parent];
+                ++rank_[sibling];
+                record_demotions(1);
+            }
+            const auto repaired = replacement_is_left
+                ? rotate_left(parent) : rotate_right(parent);
+            update_metadata_upward(parent_[repaired]);
+            if (statistics_ != nullptr) {
+                increment_statistic(
+                    statistics_,
+                    statistics_->wavl_tree_removal_single_rotation_count);
+            }
+            break;
+        }
+
+        const auto middle = inner;
+        rank_[middle] = static_cast<std::uint8_t>(rank_[middle] + 2U);
+        --rank_[sibling];
+        rank_[parent] = static_cast<std::uint8_t>(rank_[parent] - 2U);
+        record_demotions(3);
+        if (replacement_is_left) {
+            static_cast<void>(rotate_right(sibling));
+            static_cast<void>(rotate_left(parent));
+        } else {
+            static_cast<void>(rotate_left(sibling));
+            static_cast<void>(rotate_right(parent));
+        }
+        update_metadata_upward(parent_[middle]);
+        if (statistics_ != nullptr) {
+            increment_statistic(
+                statistics_,
+                statistics_->wavl_tree_removal_double_rotation_count);
+        }
+        break;
+    }
+
+    if (statistics_ != nullptr) {
+        add_statistic(
+            statistics_, statistics_->wavl_tree_removal_fixup_step_count,
+            steps);
+        statistics_->wavl_tree_maximum_removal_fixup_steps = std::max(
+            statistics_->wavl_tree_maximum_removal_fixup_steps, steps);
+    }
+}
+
 LzssWavlTreeWorkspaceRequirements calculate_lzss_wavl_tree_workspace(
     const std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits) noexcept {
@@ -515,6 +642,82 @@ LzssWavlTreeError insert_lzss_wavl_tree_position(
     if (finder.statistics_ != nullptr) {
         increment_statistic(
             finder.statistics_, finder.statistics_->wavl_tree_insertion_count);
+    }
+    return LzssWavlTreeError::none;
+}
+
+LzssWavlTreeError remove_lzss_wavl_tree_position(
+    LzssWavlTreeMatchFinder& finder,
+    const std::size_t position) noexcept {
+    if (!finder.initialized_ || !finder.state_valid_
+        || finder.left_.empty()) {
+        return LzssWavlTreeError::invalid_state;
+    }
+    if (position >= finder.input_.size()
+        || finder.input_.size() - position < lzss_wavl_tree_prefix_size) {
+        return LzssWavlTreeError::invalid_position;
+    }
+    const auto removed = static_cast<std::uint32_t>(
+        position % finder.left_.size());
+    if (finder.rank_[removed] == lzss_wavl_tree_inactive_rank
+        || finder.position_[removed] != position) {
+        return LzssWavlTreeError::invalid_state;
+    }
+
+    // Deletion has several rank-changing steps. Validate the complete settled
+    // input first so every rejected mutation remains byte-stable.
+    if (validate_lzss_wavl_tree(finder)
+        != LzssWavlTreeValidationError::none) {
+        return LzssWavlTreeError::invalid_state;
+    }
+
+    auto repair_parent = lzss_wavl_tree_null_node;
+    auto replacement = lzss_wavl_tree_null_node;
+    auto replacement_is_left = false;
+
+    if (finder.left_[removed] == lzss_wavl_tree_null_node
+        || finder.right_[removed] == lzss_wavl_tree_null_node) {
+        replacement = finder.left_[removed] != lzss_wavl_tree_null_node
+            ? finder.left_[removed] : finder.right_[removed];
+        repair_parent = finder.parent_[removed];
+        replacement_is_left = repair_parent != lzss_wavl_tree_null_node
+            && finder.left_[repair_parent] == removed;
+        finder.replace_parent_child(repair_parent, removed, replacement);
+    } else {
+        auto successor = finder.right_[removed];
+        while (finder.left_[successor] != lzss_wavl_tree_null_node) {
+            successor = finder.left_[successor];
+        }
+        const auto successor_parent = finder.parent_[successor];
+        replacement = finder.right_[successor];
+        if (successor_parent != removed) {
+            repair_parent = successor_parent;
+            replacement_is_left = true;
+            finder.replace_parent_child(
+                successor_parent, successor, replacement);
+            finder.right_[successor] = finder.right_[removed];
+            finder.parent_[finder.right_[successor]] = successor;
+        } else {
+            repair_parent = successor;
+            replacement_is_left = false;
+        }
+        finder.replace_parent_child(
+            finder.parent_[removed], removed, successor);
+        finder.left_[successor] = finder.left_[removed];
+        finder.parent_[finder.left_[successor]] = successor;
+        finder.rank_[successor] = finder.rank_[removed];
+    }
+
+    finder.clear_node(removed);
+    --finder.active_node_count_;
+    finder.repair_after_removal(
+        repair_parent, replacement, replacement_is_left);
+    if (repair_parent != lzss_wavl_tree_null_node) {
+        finder.update_metadata_upward(repair_parent);
+    }
+    if (finder.statistics_ != nullptr) {
+        increment_statistic(
+            finder.statistics_, finder.statistics_->wavl_tree_retirement_count);
     }
     return LzssWavlTreeError::none;
 }

@@ -573,4 +573,119 @@ TEST(LzssWavlTreeMatchFinder, LongOrderedInsertionPropagatesSafelyToRoot) {
     EXPECT_GT(statistics.wavl_tree_maximum_insertion_fixup_steps, 2U);
 }
 
+TEST(LzssWavlTreeMatchFinder, RemovalHandlesD0AndRankOneLeafD1) {
+    auto fixture = initialize_wavl("ABxxxxxx");
+    ASSERT_EQ(insert_lzss_wavl_tree_position(fixture.finder, 0),
+              LzssWavlTreeError::none);
+    ASSERT_EQ(remove_lzss_wavl_tree_position(fixture.finder, 0),
+              LzssWavlTreeError::none);
+    EXPECT_TRUE(fixture.finder.empty());
+    EXPECT_EQ(fixture.finder.root_index(), lzss_wavl_tree_null_node);
+    EXPECT_EQ(fixture.statistics->wavl_tree_removal_fixup_step_count, 0U);
+
+    ASSERT_EQ(insert_lzss_wavl_tree_position(fixture.finder, 0),
+              LzssWavlTreeError::none);
+    ASSERT_EQ(insert_lzss_wavl_tree_position(fixture.finder, 1),
+              LzssWavlTreeError::none);
+    ASSERT_EQ(remove_lzss_wavl_tree_position(fixture.finder, 1),
+              LzssWavlTreeError::none);
+    const auto root = inspect_lzss_wavl_tree_node(
+        fixture.finder, fixture.finder.root_index());
+    EXPECT_EQ(root.rank, 0U);
+    EXPECT_EQ(fixture.statistics->wavl_tree_removal_demotion_count, 1U);
+    EXPECT_EQ(fixture.statistics->wavl_tree_removal_fixup_step_count, 1U);
+    EXPECT_EQ(fixture.statistics->wavl_tree_retirement_count, 2U);
+    EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+              LzssWavlTreeValidationError::none);
+}
+
+TEST(LzssWavlTreeMatchFinder, RemovalUsesPhysicalSuccessorSlots) {
+    for (const auto text : {"BCAxxxxxx", "DBFEGxxxxxx"}) {
+        auto fixture = initialize_wavl(text);
+        const auto count = std::string_view{text}.size()
+            - lzss_wavl_tree_prefix_size + 1U;
+        for (std::size_t position = 0; position < count; ++position) {
+            ASSERT_EQ(insert_lzss_wavl_tree_position(
+                          fixture.finder, position),
+                      LzssWavlTreeError::none) << text << position;
+        }
+        const auto removed = fixture.finder.root_index();
+        const auto removed_position = inspect_lzss_wavl_tree_node(
+            fixture.finder, removed).position;
+        ASSERT_NE(inspect_lzss_wavl_tree_node(
+                      fixture.finder, removed).left,
+                  lzss_wavl_tree_null_node) << text;
+        ASSERT_NE(inspect_lzss_wavl_tree_node(
+                      fixture.finder, removed).right,
+                  lzss_wavl_tree_null_node) << text;
+
+        ASSERT_EQ(remove_lzss_wavl_tree_position(
+                      fixture.finder, removed_position),
+                  LzssWavlTreeError::none) << text;
+        EXPECT_EQ(inspect_lzss_wavl_tree_node(fixture.finder, removed),
+                  LzssWavlTreeNodeSnapshot{}) << text;
+        EXPECT_EQ(validate_lzss_wavl_tree(fixture.finder),
+                  LzssWavlTreeValidationError::none) << text;
+    }
+}
+
+TEST(LzssWavlTreeMatchFinder, EveryRemovalStaysValidAndBounded) {
+    std::vector<std::byte> input(256);
+    std::uint32_t state = UINT32_C(0x243f6a88);
+    for (auto& value : input) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        value = static_cast<std::byte>(state >> 24U);
+    }
+    const auto required = calculate_lzss_wavl_tree_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssWavlTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssMatchFinderStatistics statistics{};
+    LzssWavlTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_wavl_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder, &statistics),
+              LzssWavlTreeError::none);
+
+    const auto count = input.size() - lzss_wavl_tree_prefix_size + 1U;
+    for (std::size_t position = 0; position < count; ++position) {
+        ASSERT_EQ(insert_lzss_wavl_tree_position(finder, position),
+                  LzssWavlTreeError::none) << position;
+    }
+    for (std::size_t position = 0; position < count; ++position) {
+        ASSERT_EQ(remove_lzss_wavl_tree_position(finder, position),
+                  LzssWavlTreeError::none) << position;
+        ASSERT_EQ(validate_lzss_wavl_tree(finder),
+                  LzssWavlTreeValidationError::none) << position;
+        EXPECT_EQ(finder.active_node_count(), count - position - 1U);
+    }
+    EXPECT_TRUE(finder.empty());
+    EXPECT_EQ(statistics.wavl_tree_retirement_count, count);
+    EXPECT_LE(statistics.wavl_tree_maximum_removal_fixup_steps,
+              2U * std::bit_width(count));
+    EXPECT_GT(statistics.wavl_tree_removal_demotion_count, 0U);
+    EXPECT_GT(statistics.wavl_tree_removal_single_rotation_count, 0U);
+    EXPECT_GT(statistics.wavl_tree_removal_double_rotation_count, 0U);
+}
+
+TEST(LzssWavlTreeMatchFinder, RejectsInvalidRemovalWithoutMutation) {
+    auto fixture = initialize_wavl("ABCxxxxx");
+    for (const auto position : {0U, 1U, 2U}) {
+        ASSERT_EQ(insert_lzss_wavl_tree_position(fixture.finder, position),
+                  LzssWavlTreeError::none);
+    }
+    auto parents = mutable_array_at<std::uint32_t>(
+        fixture.storage.bytes, fixture.required.parent_offset,
+        fixture.required.node_count);
+    const auto root = fixture.finder.root_index();
+    const auto left = inspect_lzss_wavl_tree_node(fixture.finder, root).left;
+    parents[left] = left;
+    const auto corrupted = std::vector<std::byte>(
+        fixture.storage.bytes.begin(), fixture.storage.bytes.end());
+
+    EXPECT_EQ(remove_lzss_wavl_tree_position(fixture.finder, 2),
+              LzssWavlTreeError::invalid_state);
+    EXPECT_TRUE(std::ranges::equal(fixture.storage.bytes, corrupted));
+    EXPECT_EQ(fixture.statistics->wavl_tree_retirement_count, 0U);
+}
+
 } // namespace

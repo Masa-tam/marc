@@ -109,6 +109,8 @@ private:
         LzssWavlTreeMatchFinder&, LzssMatchFinderStatistics*) noexcept;
     friend LzssWavlTreeError insert_lzss_wavl_tree_position(
         LzssWavlTreeMatchFinder&, std::size_t) noexcept;
+    friend LzssWavlTreeError remove_lzss_wavl_tree_position(
+        LzssWavlTreeMatchFinder&, std::size_t) noexcept;
     friend LzssWavlTreeValidationError validate_lzss_wavl_tree(
         const LzssWavlTreeMatchFinder&) noexcept;
     friend LzssWavlTreeNodeSnapshot inspect_lzss_wavl_tree_node(
@@ -127,6 +129,10 @@ private:
     [[nodiscard]] LzssWavlTreeError preflight_insertion_repair(
         std::uint32_t parent, bool insert_left) const noexcept;
     void repair_after_insertion(std::uint32_t node) noexcept;
+    void repair_after_removal(
+        std::uint32_t parent, std::uint32_t replacement,
+        bool replacement_is_left) noexcept;
+    void clear_node(std::uint32_t node) noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
@@ -150,6 +156,9 @@ private:
     LzssMatchFinderStatistics* statistics = nullptr) noexcept;
 
 [[nodiscard]] LzssWavlTreeError insert_lzss_wavl_tree_position(
+    LzssWavlTreeMatchFinder& finder, std::size_t position) noexcept;
+
+[[nodiscard]] LzssWavlTreeError remove_lzss_wavl_tree_position(
     LzssWavlTreeMatchFinder& finder, std::size_t position) noexcept;
 
 [[nodiscard]] LzssWavlTreeValidationError validate_lzss_wavl_tree(

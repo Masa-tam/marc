@@ -29898,3 +29898,31 @@ both bounds.
   schema compatibility, passes after the final change; both compiler builds
   and the final ClangCL run completed from the official CMake route, with the
   corresponding MSVC full run and post-change focused suite also passing.
+
+## CR-1201: 2026-09-10 - WAVL deletion and physical successor transplant
+
+- Authoring method: implemented the previously committed D0 through D5 rank
+  transitions directly against marc's private six-array workspace and
+  normalized two-child removal with a physical successor-slot transplant.
+- References used: DD-1104 through DD-1108, IR-0866 through IR-0870,
+  TVG-0968 through TVG-0972, the repository-owned WAVL transition document,
+  and marc's established fixed-slot, metadata, checked-state, and saturating
+  statistics contracts.
+- Known implementations intentionally not consulted: external WAVL source
+  code, implementation pseudocode, compressor, match finder, deletion
+  routine, validator, fixture, test suite, or benchmark result.
+- Independent decisions: validate the settled tree before any deletion
+  write; preserve successor payload and slot identity; carry the deficient
+  edge orientation explicitly when its replacement is null; reset every
+  retired field; and keep removal demotions, rotations, propagation work,
+  maximum work, and retirement count separate from insertion diagnostics.
+- Generated-code task description: add only private WAVL physical removal,
+  D0-through-D5 repair, successor-origin coverage, continuous post-removal
+  validation, invalid-state atomicity, and deletion-specific diagnostics.
+- Similarity review: deletion rank mathematics follow the cited paper and
+  committed transition specification; the successor normalization, array
+  mutation structure, state prevalidation, metadata flow, diagnostics, and
+  tests were independently authored for marc. No external implementation
+  expression was copied or translated.
+- Local validation: all 20 focused WAVL tests pass under MSVC and ClangCL;
+  full repository and documentation validation follow before commit.

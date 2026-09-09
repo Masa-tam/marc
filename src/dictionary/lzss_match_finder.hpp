@@ -103,6 +103,12 @@ struct LzssMatchFinderStatistics {
     std::uint64_t wavl_tree_insertion_fixup_step_count{};
     std::uint64_t wavl_tree_maximum_insertion_fixup_steps{};
     std::uint64_t wavl_tree_insertion_count{};
+    std::uint64_t wavl_tree_removal_demotion_count{};
+    std::uint64_t wavl_tree_removal_single_rotation_count{};
+    std::uint64_t wavl_tree_removal_double_rotation_count{};
+    std::uint64_t wavl_tree_removal_fixup_step_count{};
+    std::uint64_t wavl_tree_maximum_removal_fixup_steps{};
+    std::uint64_t wavl_tree_retirement_count{};
     std::uint64_t red_black_tree_key_comparison_count{};
     std::uint64_t red_black_tree_key_byte_comparison_count{};
     std::uint64_t red_black_tree_lcp_byte_comparison_count{};

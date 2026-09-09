@@ -7896,3 +7896,15 @@ AVL differential are repository-owned contracts. No external WAVL
 implementation, source code, implementation pseudocode, compressor, match
 finder, mutation fixture, validator, test suite, or benchmark result was
 consulted.
+
+### IR-0870
+
+The private WAVL deletion engine uses DD-1104 through DD-1108, TVG-0968
+through TVG-0972, the committed marc-owned D0 through D5 table, and the rank
+cases attributed there to Section 3 and Figure 3 of Haeupler, Sen, and
+Tarjan's *Rank-Balanced Trees*. Physical successor movement, fixed-slot
+identity, complete pre-mutation validation, subtree-maximum repair,
+saturating operation-separated diagnostics, and invalid-state fixtures are
+repository-owned contracts. No external WAVL implementation, source code,
+implementation pseudocode, compressor, match finder, deletion routine,
+fixture, test suite, or benchmark result was consulted.

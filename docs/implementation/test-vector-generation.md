@@ -14078,3 +14078,22 @@ require equal accepted counts, and require the two WAVL workspaces and node
 snapshots to remain identical. Independently check rank 253 promotion and
 require rank 254 and the inactive sentinel to reject without changing the
 destination rank. Run the focused cases with MSVC and ClangCL.
+
+### TVG-0972
+
+Exercise WAVL retirement from a one-node root for D0 and from a two-node tree
+for the deletion-only rank-one `2,2` leaf form of D1. Require the remaining
+leaf to settle at rank zero and assert exact demotion, repair-step, and
+retirement counters. Retire roots with two children from separate fixtures
+covering direct and non-direct physical successor origins; require the
+requested slot to become the canonical inactive representation without
+changing the successor slot's identity.
+
+For a fixed pseudorandom input, insert every indexable position and retire
+them all in deterministic order. Validate ordering, connectivity, reciprocal
+parents, rank differences, leaf ranks, slot positions, active count, and
+subtree maxima after every deletion. Require this path to exercise both
+single and double deletion rotations and bound the maximum repair walk by a
+rank-tree logarithmic envelope. Corrupt a reciprocal link before retirement
+and require byte-stable rejection with unchanged diagnostics. Run all focused
+cases with MSVC and ClangCL.
