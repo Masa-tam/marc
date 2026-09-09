@@ -29984,3 +29984,30 @@ both bounds.
   The complete 3,478-test suite, including documentation and interoperability
   schema compatibility, passes under MSVC in 385.85 seconds and ClangCL in
   334.09 seconds.
+
+## CR-1204: 2026-09-10 - Private WAVL typed-token integration gate
+
+- Authoring method: connected the committed private WAVL finder to marc's
+  repository-owned typed-token single-pass parser without exposing a public
+  strategy or changing any encoded identity.
+- References used: DD-1104 through DD-1111, IR-0866 through IR-0873,
+  TVG-0968 through TVG-0975, and the existing local private-tree integration,
+  worst-case reservation, alias, aggregate-limit, and Exact token contracts.
+- Known implementations intentionally not consulted: external WAVL source
+  code, implementation pseudocode, compressor integration, test suite, or
+  benchmark result.
+- Independent decisions: preserve a WAVL-specific error field; reserve the
+  maximum token array transactionally; check all three buffer pairs; detect a
+  sticky finder failure after parsing; and compare both typed fields and their
+  canonical byte serialization before considering public dispatch.
+- Generated-code task description: add only a private WAVL typed single-pass
+  entry, bounded workspace and aggregate checks, distinct error reporting,
+  atomic failure vectors, and Exact differential coverage; do not add a public
+  strategy, ABI, CLI spelling, profile, or stream representation.
+- Similarity review: the integration follows marc's established internal
+  parser architecture and independently authored WAVL contracts. No external
+  implementation expression was copied or translated.
+- Local validation: all 17 focused typed-encoder tests pass under MSVC and
+  ClangCL. The complete 3,479-test suite, including documentation and
+  interoperability schema compatibility, passes under MSVC in 350.81 seconds
+  and ClangCL in 317.18 seconds.

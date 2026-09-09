@@ -7930,3 +7930,14 @@ sticky protocol state, and WAVL-specific diagnostics were implemented from
 those local contracts. No external WAVL implementation, source code,
 implementation pseudocode, compressor, match finder, query routine, test, or
 benchmark result was consulted.
+
+### IR-0873
+
+The private WAVL typed-token integration uses DD-1111, TVG-0975, the committed
+WAVL workspace and Exact contracts, and marc's repository-owned private
+single-pass entries for AVL, Red-Black, Scapegoat, and sparse hash-tree
+experiments as architectural context. The WAVL-specific error channel,
+aggregate preflight, alias rejection, token differential, and publication
+boundary were independently applied to the existing local typed parser. No
+external WAVL implementation, source code, implementation pseudocode,
+compressor integration, test suite, or benchmark result was consulted.

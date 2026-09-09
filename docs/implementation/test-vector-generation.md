@@ -14127,3 +14127,19 @@ documented sticky invalid protocol state. Verify WAVL query comparison, LCP,
 prefix-range, maximum-work, and histogram diagnostics, with histogram mass
 equal to the common query count. Run the focused suite with MSVC and ClangCL
 before full repository validation.
+
+### TVG-0975
+
+Run the private WAVL typed-token single-pass entry over empty, one-byte,
+single-symbol, patterned, all-byte, fixed pseudorandom, mixed, and extended
+one-MiB-profile inputs already used for alternative Exact finder comparison.
+Require token count, token storage extent, every token field, untouched output
+tail, and canonical reserialization to equal the Exhaustive and AVL oracles.
+Require one query per emitted token and non-overflowing WAVL diagnostics.
+
+Before any output write, reject a one-token-short destination, a one-byte-short
+workspace, input/output overlap, input/workspace overlap, output/workspace
+overlap, and a one-byte-short aggregate limit. Check the dedicated WAVL error
+for workspace failures and require every caller token to retain its sentinel
+value. Run the focused typed-encoder suite with MSVC and ClangCL, while keeping
+all public strategy and interoperability inventories unchanged.

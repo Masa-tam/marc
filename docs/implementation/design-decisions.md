@@ -22576,3 +22576,23 @@ tree shape. Bound every query walk by the active-node count and reject a
 broken or cyclic private topology. Record WAVL query work separately while
 sharing the common query count. Keep the finder private: this stage adds no
 strategy enum, encoder dispatch, C ABI, or stream-format variant.
+
+## DD-1111: WAVL enters only the private typed single-pass gate
+
+- Date: 2026-09-10
+- Status: accepted
+
+Integrate WAVL first through the private typed-token single-pass entry used to
+qualify alternative Exact match finders. Reserve one token slot per input byte
+before mutation, calculate the WAVL workspace independently, and enforce the
+same checked aggregate bound over input, active workspace, and maximum token
+storage as the other private tree entries. Reject input/output,
+input/workspace, and output/workspace overlap before emitting tokens.
+
+Report initialization or sticky advancement failure through a dedicated WAVL
+error field rather than translating it into AVL or hash-chain errors. Require
+the emitted typed tokens and their canonical byte serialization to equal the
+Exhaustive and AVL Exact oracles across input classes and the extended-window
+variant. Do not add WAVL to `LzssMatchFinderStrategy`, frame dispatch, profile
+configuration, C ABI, CLI, interoperability inventory, or stream identity in
+this gate.
