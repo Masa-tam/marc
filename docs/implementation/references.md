@@ -7963,3 +7963,13 @@ three-way summary gate, and comparative output were independently assembled
 from those local contracts. No external WAVL implementation, benchmark
 harness, compressor, source code, test suite, performance result, or
 optimization description was consulted.
+
+### IR-0876
+
+The ordered-tree Exact evaluation closeout uses only DD-1114, BM-0067,
+TVG-0978, the
+completed repository-owned Red-Black and Scapegoat experiment records, and
+the already committed WAVL design and result. It introduces no new algorithm
+reference or implementation technique. No external compressor, match finder,
+balanced-tree implementation, benchmark result, or tuning advice was
+consulted.

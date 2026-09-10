@@ -30096,3 +30096,30 @@ both bounds.
   strict runner validation. The result is bound to full revision
   `ac253b512dad5b27ec060219e8566372c2ce6aea`; its SHA-256 is
   `8294204b2cdd3b82c63f36ed132d4f77aa0278dbdd8fb3700cc502dd388ec4ea`.
+
+## CR-1208: 2026-09-10 - Alternative ordered-tree evaluation closeout
+
+- Authoring method: consolidated the already reviewed Red-Black, Scapegoat,
+  and WAVL experiment decisions into the umbrella design without changing any
+  implementation, benchmark result, or public surface.
+- References used: DD-1114, DD-1115, IR-0876, TVG-0978, BM-0067, and the
+  committed
+  repository-owned Red-Black and Scapegoat result documents.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder, balanced-tree implementation, benchmark result, performance
+  analysis, tuning advice, source code, or test suite.
+- Independent decisions: close the balancing-rule comparison cycle; retain
+  all three candidates privately as reproducible evidence and Exact oracles;
+  require a new workload-specific cost hypothesis before testing another
+  balanced tree; and direct the next investigation toward existing hash-based
+  paths or typed-token reuse rather than choosing a tree by name.
+- Generated-code task description: reconcile the umbrella design with all
+  completed ordered-tree experiments, record their measured rejection reasons,
+  preserve public defaults and selectors, and identify only separately gated
+  future hypotheses.
+- Similarity review: this documentation summarizes marc-owned designs,
+  measurements, and decisions. No external implementation expression or
+  performance analysis was copied or translated.
+- Local validation: the strengthened documentation-layout test passes under
+  both MSVC and ClangCL and now requires the completed WAVL early-stop and
+  ordered-tree-cycle closure instead of the superseded pre-WAVL wording.

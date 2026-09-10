@@ -4,9 +4,9 @@
 
 This document defines the implementation and measurement boundary for ordered-
 tree alternatives to the existing LZSS `BinaryTree Exact` AVL match finder.
-The first implementation candidate is `RedBlack Exact`; `Scapegoat Exact` is
-a later batch-oriented experiment; WAVL remains deferred until a deletion-
-heavy production workload exists.
+The completed candidates are `RedBlack Exact`, batch-oriented `Scapegoat
+Exact`, and deletion-focused `WAVL Tree Exact`. Each remains a private
+experiment after its precommitted admission gate rejected public promotion.
 
 All candidates are encoder-local match-finder policies. They MUST NOT change
 the LZSS token representation, Format 1 or Format 2 stream bytes, algorithm or
@@ -127,18 +127,20 @@ total rebuilt nodes, rebuild count, and maximum nodes touched by one update.
 
 ## 6. Deletion-focused WAVL candidate
 
-WAVL is not implemented in the first cycle. With insertion only, the
-published rank-balanced-tree result specializes to AVL behavior. Current
-public LZSS Contextual profiles reset at a frame boundary equal to their window
-boundary, so the deletion-side advantage is normally absent.
+WAVL entered only after a deterministic private deletion-heavy workload was
+available. With insertion only, the published rank-balanced-tree result
+specializes to AVL behavior. Current public LZSS Contextual profiles reset at
+a frame boundary equal to their window boundary, so the deletion-side
+advantage is normally absent.
 
-The repository now has a deterministic private workload with
+The repository has a deterministic private workload with
 `frame_size > window_size` and physical retirement diagnostics. This satisfies
 only the experimental half of the deferral condition: no public persistent-
-window workload has been admitted. WAVL may therefore proceed as a private,
-deletion-focused candidate under `lzss-wavl-tree-exact.md`. It must retain AVL
-workspace, receive its own rank-difference validator and differential deletion
-matrix, and pass an early synthetic gate before any Corpus or public work.
+window workload has been admitted. WAVL proceeded as a private,
+deletion-focused candidate under `lzss-wavl-tree-exact.md`, retained AVL
+workspace, received its own rank-difference validator and differential
+deletion matrix, and then failed its early synthetic performance gate before
+any Corpus or public work.
 
 ## 7. Diagnostic contract
 
@@ -184,7 +186,7 @@ end throughput and workspace separately from deterministic structural counts.
 No strategy wins merely by aggregate throughput if it changes an Exact result,
 exceeds its hard limit, or has an undocumented unbounded operation.
 
-## 9. Admission sequence
+## 9. Completed admission sequence
 
 1. Freeze this design, provenance, and test contract.
 2. Add a private Red-Black workspace calculator and empty finder.
@@ -197,6 +199,10 @@ exceeds its hard limit, or has an undocumented unbounded operation.
    input, frame/window, compiler, and process-isolation rules.
 8. Make any public selector, default, or automatic-policy change only through a
    separate design decision after the complete evidence is recorded.
+
+The sequence subsequently added the separately specified WAVL deletion gate.
+No public selector, default, or automatic-policy change resulted from any of
+the three candidates.
 
 ## 10. Independent references
 
@@ -237,5 +243,36 @@ case-specific token fingerprint agreed.
 These one-iteration synthetic rates are an admission checkpoint, not a general
 performance conclusion. They show that the intended equal-workspace comparison
 is functioning and that Red-Black is slower and taller than AVL on this
-particular aggregate. Member-level Silesia and deletion-heavy evidence remain
-required before any admission decision.
+particular aggregate. At that checkpoint, member-level Silesia and deletion-
+heavy evidence remained required before any admission decision; Section 12
+records the completed cycle.
+
+## 12. Completed cycle and decision
+
+The later fixed experiments complete the hypotheses introduced in Section 2:
+
+- Red-Black preserved every Exact result but reached 99.2%, 97.1%, and 94.2%
+  of AVL aggregate Silesia throughput as the window increased from 64 KiB to
+  one MiB. Equal workspace and fewer rotations did not offset additional key-
+  byte comparison and fix-up work.
+- Scapegoat preserved every Exact result but reached only 60.7%, 58.9%, and
+  55.9% of AVL throughput over the same windows, required 1.241379 times AVL
+  workspace, and touched as many as 872,473 nodes in one update.
+- WAVL preserved every Exact result, retained AVL workspace, and bounded its
+  repair. It nevertheless reached only 52.3% and 55.1% of AVL aggregate
+  throughput at the two fixed deletion-capable windows; the deletion-heavy
+  case itself also lost at both windows.
+
+These are successful negative experiments: correctness, determinism, bounds,
+and the intended structural behavior were established before performance was
+allowed to decide admission. Red-Black, Scapegoat, and WAVL therefore remain
+private research components and independent Exact oracles. HashChain Exact
+remains the public default, and AVL BinaryTree Exact remains the only public
+ordered-tree selector.
+
+This closes the balancing-rule comparison cycle. Another balanced tree is not
+the automatic next candidate. New work must instead state a workload-specific
+reason that addresses a measured cost absent from these experiments. The
+current productive hypotheses are improvements within the HashChain/HashTree
+path and eliminating repeated LZSS parsing by retaining caller-owned typed
+tokens; each requires its own frozen design and benchmark gate.

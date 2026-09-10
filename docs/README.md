@@ -23,8 +23,8 @@ navigate chronological development records.
 - [LZSS match-finder strategy](design/lzss-match-finder-strategy.md): exact
   encoder-side acceleration without changing the LZSS stream format.
 - [LZSS ordered-tree Exact strategy evaluation](design/lzss-balanced-tree-strategy-evaluation.md):
-  Red-Black and Scapegoat experiments under the existing Exact contract, plus
-  the boundary for deletion-focused WAVL research.
+  completed Red-Black, Scapegoat, and deletion-focused WAVL experiments under
+  the existing Exact contract, including their negative admission decisions.
 - [LZSS Scapegoat Tree Exact](design/lzss-scapegoat-tree-exact.md): fixed
   two-thirds balance, bounded iterative rebuilding, workspace, diagnostics,
   and private staged verification.

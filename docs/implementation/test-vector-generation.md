@@ -14175,3 +14175,12 @@ prefix, changed command, or mismatched candidate. Stop after three mocked
 points, resume without relaunching that prefix, and require a final 36-record
 result with six aggregates and two AVL/Red-Black/WAVL comparisons. Run the
 focused runner tests under both supported Windows toolchains.
+
+### TVG-0978
+
+Require the ordered-tree umbrella design to preserve the completed private
+candidate names, common Exact and format boundaries, Scapegoat balance and
+rebuild diagnostics, WAVL early-stop result, unchanged HashChain public
+default, and explicit closure of the balancing-rule comparison cycle. This
+replaces the historical assertion that WAVL had not yet been implemented; it
+does not weaken document coverage or assert a performance winner.

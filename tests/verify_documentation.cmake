@@ -44,7 +44,8 @@ foreach(required_balanced_tree_term IN ITEMS
         "Scapegoat Exact"
         "alpha = 2/3"
         "subtree_maximum_position"
-        "WAVL is not implemented in the first cycle"
+        "failed its early synthetic performance gate before"
+        "This closes the balancing-rule comparison cycle"
         "maximum rebuilt nodes"
         "`HashChain Exact` remains"
         "MUST NOT change")

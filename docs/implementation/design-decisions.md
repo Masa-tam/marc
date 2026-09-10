@@ -22664,3 +22664,25 @@ rotation count does not overcome those measured costs. Stop before Silesia,
 production dispatch, public strategy, ABI, CLI, profile, or format work.
 Retain the private implementation and reproducible runner as negative-result
 research evidence.
+
+## DD-1115: The alternative ordered-tree cycle closes without promotion
+
+- Date: 2026-09-10
+- Status: accepted
+
+Treat the Red-Black, Scapegoat, and WAVL experiments as one completed
+ordered-tree evaluation cycle. All three preserve the Exact token contract,
+but none establishes a production advantage over the existing AVL finder.
+Red-Black loses aggregate Silesia throughput as the window grows; Scapegoat
+also adds workspace and large single-update rebuild work; WAVL loses both the
+aggregate and the deletion-heavy synthetic comparisons despite equal AVL
+workspace and bounded repair.
+
+Keep these implementations and their reproducible runners private as
+independent oracles and negative-result evidence. Do not add another balanced
+binary-search-tree candidate merely because it has a different balancing
+rule. A future candidate requires a new, workload-specific cost hypothesis
+that addresses the measured suffix-comparison, metadata, preflight, memory,
+or latency costs. Direct subsequent optimization work toward the existing
+HashChain/HashTree path or removal of repeated LZSS parsing, under a separate
+design and measurement decision.
