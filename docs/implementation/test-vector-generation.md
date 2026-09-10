@@ -14235,3 +14235,21 @@ only when each trigger is accounted for by exactly one promotion or pool
 rejection. A normal limited Sparse smoke may report zero but must include the
 field. This is private measurement state and must not alter token identity or
 the public ABI.
+
+### TVG-0982
+
+Exercise the dedicated large-window Sparse runner with a fake benchmark and
+no external Corpus. Require the fixed 4/16/64-MiB windows, three pools, three
+thresholds, HashChain-first ordering, 512-MiB limit, and exactly 360 records.
+Validate workspace endpoints, finite and equal Sparse timing aliases, full
+token extents and fingerprint, query routes, histogram mass, promotion plus
+pool-rejection accounting, and Exact equality with each baseline.
+
+Stop after three new records, persist an atomic canonical prefix, resume the
+remaining 357 without relaunching the prefix, and then perform a zero-work
+validation that launches nothing. Reject a changed identity, missing
+timestamps, noncanonical records, corrupt diagnostics, or a mismatched Exact
+summary. Require the final fake result to contain three baseline aggregates,
+27 Sparse aggregates, 27 comparisons, and independently computed gain,
+breadth, workspace-premium, and pool-pressure classifications without making
+performance a test pass condition.

@@ -22767,3 +22767,22 @@ pool rejections using checked addition. Aggregate the counter across frames,
 print it with the existing private HashTree diagnostics, and test both a
 forced rejection and a non-rejecting frame report. This changes no finder
 choice, workspace, ABI, token, or encoded representation.
+
+## DD-1120: The large-window Sparse experiment uses one strict runner
+
+- Date: 2026-09-11
+- Status: accepted
+
+Implement the frozen 360-point experiment as a dedicated runner rather than
+adding tuning switches to the earlier Sparse matrix runner. Keep one canonical
+record sequence and require checkpoints to be its exact prefix. Bind restart
+identity to the revision, benchmark bytes, runner and dependency sources,
+Corpus manifest, environment, and every fixed configuration value.
+
+Validate HashChain and Sparse reports before persistence, including exact
+workspace, finite timing aliases, token extents, lowercase fingerprint,
+histogram mass, route totals, promotion accounting, and pool bounds. Require
+all five token-summary fields to equal the immediately preceding HashChain
+baseline. Support bounded batches and zero-work validation; emit the final
+schema only after all 360 records exist. Classifications describe the fixed
+result but never change the runner exit status or public strategy.

@@ -30224,3 +30224,31 @@ both bounds.
 - Local validation: the forced-rejection controller test, large-window
   workspace boundary test, and complete frame-benchmark smoke pass under
   MSVC. ClangCL and full-suite validation follow before experiment execution.
+
+## CR-1213: 2026-09-11 - Fixed Sparse HashTree large-window runner
+
+- Authoring method: implemented the already frozen experiment as a dedicated
+  process-isolated runner and proved its full lifecycle with fake reports
+  before starting a Corpus measurement.
+- References used: DD-1117 through DD-1120, IR-0881, TVG-0980 through
+  TVG-0982, BM-0068, and marc's committed Silesia verifier, fixed runners,
+  report validators, workspace tables, and Exact fingerprint contract.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, source code, benchmark harness, checkpoint
+  design, performance result, analysis, tuning advice, or test suite.
+- Independent decisions: keep a distinct schema; store one canonical prefix;
+  bind identity to executable and source content; validate the complete report
+  before each atomic save; permit bounded and zero-work runs; and calculate
+  four descriptive classifications only after all 360 records exist.
+- Generated-code task description: implement a network-free, restart-safe
+  runner for the fixed Sparse HashTree large-window matrix, with strict Exact,
+  memory, diagnostic, and corruption gates and no public strategy change.
+- Similarity review: the runner composes only marc-owned tools, schemas, and
+  validation conventions. No external implementation expression or benchmark
+  logic was copied or translated.
+- Local validation: Python compilation and four fake-runner tests pass. They
+  cover complete 360-point execution, a three-point interruption and 357-point
+  resume, zero-work validation, identity rejection, canonical checkpoint
+  enforcement, diagnostics, aggregation, and classifications. The new runner,
+  earlier Sparse runner, and documentation-layout tests pass through CTest
+  under both MSVC and ClangCL before any real measurement.

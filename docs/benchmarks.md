@@ -2371,3 +2371,27 @@ This fixed early gate therefore rejects public promotion and stops before an
 ordinary Silesia run. The private component and runner remain as bounded,
 reproducible negative-result evidence. The ignored result JSON has SHA-256
 `8294204b2cdd3b82c63f36ed132d4f77aa0278dbdd8fb3700cc502dd388ec4ea`.
+
+### BM-0068: Fixed Sparse HashTree large-window runner
+
+The dedicated network-free runner executes the predeclared 360-process
+Silesia matrix in canonical member, window, HashChain-first, pool, and
+threshold order. It validates the complete five-field Exact token identity,
+all fixed workspace values, finite timing aliases, query and histogram mass,
+and the invariant that each promotion trigger ends in exactly one promotion
+or pool rejection. Every accepted record is saved to an atomic,
+content-bound checkpoint before the next process starts.
+
+Run bounded batches with an ignored checkpoint:
+
+```console
+py -3.14 tools/run_silesia_sparse_hash_tree_large_window_experiment.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --corpus benchmarks/data/silesia/corpus --checkpoint benchmarks/data/silesia/results/sparse-hash-tree-large-window-msvc.checkpoint.json --max-new-points 3 --compiler "MSVC 19.50" --generator "Visual Studio 18 2026" --architecture x64 --build-label windows-msvc-release
+```
+
+Reusing `--max-new-points 0` validates the existing checkpoint without
+launching a benchmark. After all 360 records exist, omit the bound and add
+`--output` to write the final aggregate JSON. The result reports aggregate,
+breadth, workspace-premium, and pool-pressure classifications but does not
+promote a public strategy automatically. This entry records the runner and
+its validation contract only; no Silesia performance result has yet been
+observed.

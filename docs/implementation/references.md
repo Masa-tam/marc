@@ -8013,3 +8013,14 @@ The success-only increment point and trigger-accounting invariant were
 independently derived from those local contracts. No external compressor,
 hash-tree implementation, diagnostic design, source code, benchmark harness,
 or test suite was consulted.
+
+### IR-0881
+
+The fixed large-window Sparse runner uses DD-1117 through DD-1120,
+TVG-0980 through TVG-0982, BM-0068, marc's repository-owned Silesia verifier,
+earlier fixed experiment runners, benchmark report contracts, checked
+workspace calculators, and token fingerprint. The independent schema,
+canonical order, strict restart identity, trigger accounting, and result
+classifications were specified locally before measurement. No external
+compressor, hash-tree implementation, benchmark harness, source code,
+performance result, tuning advice, or test suite was consulted.
