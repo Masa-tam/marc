@@ -30251,4 +30251,8 @@ both bounds.
   resume, zero-work validation, identity rejection, canonical checkpoint
   enforcement, diagnostics, aggregation, and classifications. The new runner,
   earlier Sparse runner, and documentation-layout tests pass through CTest
-  under both MSVC and ClangCL before any real measurement.
+  under both MSVC and ClangCL before any real measurement. The subsequent
+  MSVC Release connection smoke accepted the first three canonical records at
+  commit `08e84ec5`, preserved full Exact identity, observed pool rejection,
+  and passed zero-work checkpoint validation. No conclusion was drawn from
+  this partial result.

@@ -2395,3 +2395,16 @@ breadth, workspace-premium, and pool-pressure classifications but does not
 promote a public strategy automatically. This entry records the runner and
 its validation contract only; no Silesia performance result has yet been
 observed.
+
+The initial MSVC Release connection smoke at commit `08e84ec5` accepted the
+canonical first three records: `dickens`, the 4-MiB window, HashChain, and the
+4,096-node Sparse pool at thresholds 64 and 256. All five Exact identity
+fields matched fingerprint
+`2ffb93bda7d19e3469a2c2a7878ea20948a6e507bc4cf6f9d60be1023e064e1a`.
+HashChain measured 0.962187 MiB/s; the two Sparse points measured 0.887574 and
+0.886887 MiB/s. They recorded 605 promotions plus 15,872 pool rejections and
+126 promotions plus 3,909 rejections respectively, exactly accounting for
+their trigger totals. A zero-work rerun revalidated progress `3/360` without
+launching a process. These values prove the executable, strict validator,
+pool-pressure diagnostic, atomic checkpoint, and resume identity are connected;
+they are not a performance conclusion.
