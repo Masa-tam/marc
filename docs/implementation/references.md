@@ -7982,3 +7982,14 @@ streaming encoders, and their repository-owned query-count tests. No new
 algorithm source or implementation technique is introduced. No external
 compressor, match finder, optimization description, source code, benchmark,
 or test suite was consulted.
+
+### IR-0878
+
+The Sparse HashTree large-window reevaluation design uses DD-1117, TVG-0980,
+the repository-owned private Sparse HashTree implementation and calculators,
+the complete 2026-08-21 through 2026-08-22 Silesia matrix, and the committed
+four-MiB complete-HashTree and 16-MiB BinaryTree evidence. The fixed matrix,
+new bounded pool scale, explicit memory policy, restart identity, and result
+classifications were independently selected before new measurements. No
+external compressor, hash-tree implementation, source code, benchmark,
+performance analysis, tuning advice, or test suite was consulted.

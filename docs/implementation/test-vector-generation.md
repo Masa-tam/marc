@@ -14194,3 +14194,28 @@ two-pass internal option. Also require the design to distinguish one streaming
 encode operation from a caller explicitly invoking plan and encode as two
 operations. This is a documentation-regression test of already implemented
 behavior, not a new throughput assertion.
+
+### TVG-0980
+
+Require the Sparse HashTree large-window design to freeze the 64-MiB frame,
+4/16/64-MiB windows, three pool capacities, three thresholds, all twelve
+Silesia members, HashChain-first order, 512-MiB explicit limit, and exactly
+360 process records before implementation. Fix the checked workspace and
+aggregate endpoints, dedicated schema, five-field Exact identity gate,
+Sparse diagnostic validation, atomic content-bound checkpoint, bounded batch,
+and the four result classifications without asserting a throughput winner.
+
+When the executable slice is implemented, preserve every existing `--frames`
+and `--frames-limited` command. Accept the longer Sparse limited form only
+with valid finite pool, threshold, and limit; reject missing or surplus
+arguments, zero values, overflow, impossible pool/window combinations, and a
+one-byte-short aggregate limit before measurement. Compare a small fixture
+against HashChain for all five summary fields and require the reported
+workspace to equal the calculator.
+
+When the runner slice is implemented, use a fake benchmark to require the
+canonical 360-point grid, strict report validation, HashChain/Sparse Exact
+equality, all aggregate classifications, a bounded prefix save, zero-work
+validation, resume without relaunch, and rejection of changed identity,
+noncanonical or corrupt checkpoints, invalid diagnostics, and mismatched
+fingerprints. Do not require the external Corpus for unit tests.

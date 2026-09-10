@@ -680,6 +680,34 @@ foreach(required_binary_tree_window_16m_benchmark_term IN ITEMS
     endif()
 endforeach()
 
+set(lzss_sparse_hash_tree_large_window_design
+    "${source_dir}/docs/design/lzss-sparse-hash-tree-large-window-experiment.md")
+file(READ "${lzss_sparse_hash_tree_large_window_design}"
+    lzss_sparse_hash_tree_large_window_content)
+foreach(required_sparse_hash_tree_large_window_term IN ITEMS
+        "Sparse HashTree 大window再評価"
+        "frame bytes                     67,108,864"
+        "window bytes                    4,194,304; 16,777,216; 67,108,864"
+        "sparse pool-node capacities     4,096; 65,536; 262,144"
+        "sparse promotion thresholds     64; 256; 1,024"
+        "planned records                 12 * 3 * (1 + 3 * 3) = 360"
+        "maximum internal buffered bytes 536,870,912"
+        "Sparse workspace    = 851,968 + 4W + 21P"
+        "marc-silesia-sparse-hash-tree-large-window-v1"
+        "token_fingerprint_sha256"
+        "--max-new-points N"
+        "aggregate_gain"
+        "public selector")
+    string(FIND "${lzss_sparse_hash_tree_large_window_content}"
+        "${required_sparse_hash_tree_large_window_term}"
+        required_sparse_hash_tree_large_window_term_offset)
+    if(required_sparse_hash_tree_large_window_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete Sparse HashTree large-window design: "
+            "${required_sparse_hash_tree_large_window_term}")
+    endif()
+endforeach()
+
 set(lzss_contextual_adaptive_huffman_window_16m_design
     "${source_dir}/docs/design/lzss-contextual-adaptive-huffman-window-16m.md")
 file(READ "${lzss_contextual_adaptive_huffman_window_16m_design}"

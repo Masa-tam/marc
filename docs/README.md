@@ -36,6 +36,8 @@ navigate chronological development records.
   metadata-repair rules for the private candidate.
 - [LZSS HashTree Exact design](design/lzss-hash-tree-match-finder.md):
   deterministic hot-bucket promotion and LCP-aware ordered search.
+- [LZSS Sparse HashTree large-window experiment](design/lzss-sparse-hash-tree-large-window-experiment.md):
+  fixed 4/16/64-MiB Silesia matrix for bounded hot-bucket-tree reevaluation.
 - [LZSS BinaryTree Exact 16 MiB benchmark](design/lzss-binary-tree-window-16m-benchmark.md):
   bounded Silesia comparison of the global AVL and HashChain strategies.
 - [Silesia external benchmark profile](design/silesia-benchmark-profile.md):

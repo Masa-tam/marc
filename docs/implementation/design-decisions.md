@@ -22708,3 +22708,24 @@ public streaming lifecycle does not do so. Do not add another cache, ABI field,
 format variant, or workspace merely to reimplement the existing single-pass
 route. Correct the stale match-finder design text and require documentation
 tests to preserve this distinction.
+
+## DD-1117: Sparse HashTree large-window reevaluation is fixed before measurement
+
+- Date: 2026-09-11
+- Status: accepted
+
+Reevaluate the existing private Sparse HashTree Exact hypothesis rather than
+introducing another tree. Freeze one 64-MiB frame, 4/16/64-MiB windows, all
+twelve verified Silesia members, one HashChain baseline, Sparse pools 4,096,
+65,536, and 262,144, thresholds 64, 256, and 1,024, one timed iteration, and a
+512-MiB explicit internal-buffer limit: 360 independent processes.
+
+The earlier 64-KiB through 1-MiB matrix improved from 0.465 to 0.821 of
+HashChain throughput without winning; the complete tree later won at 4 MiB
+but used much more memory. Test whether a bounded pool crosses that large-
+window boundary. Omit the previously non-winning 16,384-node and threshold-16
+series, and add 262,144 nodes before observing new results. Preserve complete
+Exact token-summary and fingerprint equality, strict Sparse diagnostics,
+process isolation, content-bound atomic restart, and descriptive performance.
+Do not alter the public selector, default, ABI, stream, profile, or
+interoperability inventory, and do not promote Sparse automatically.

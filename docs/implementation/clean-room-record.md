@@ -30151,3 +30151,30 @@ both bounds.
 - Local validation: the strengthened documentation-layout test passes under
   MSVC and ClangCL and now fixes both the public one-pass contract and the
   separate precise-capacity two-pass option.
+
+## CR-1210: 2026-09-11 - Sparse HashTree large-window reevaluation design
+
+- Authoring method: reconciled the earlier private Sparse HashTree matrix with
+  the later repository-owned large-window evidence and froze a new experiment
+  before changing the benchmark or observing new performance.
+- References used: DD-1117, IR-0878, TVG-0980, the committed Sparse HashTree
+  implementation and calculators, and marc's earlier Silesia HashTree,
+  Sparse HashTree, and BinaryTree result records.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, source code, benchmark harness, performance
+  result, analysis, tuning advice, pseudocode, or test suite.
+- Independent decisions: use one 64-MiB frame; compare 4/16/64-MiB windows;
+  retain 4,096 and 65,536 nodes, add 262,144 nodes, retain thresholds 64,
+  256, and 1,024; measure 360 isolated points; and classify aggregate,
+  breadth, workspace premium, and pool pressure without automatic promotion.
+- Generated-code task description: define a private, resumable, memory-bounded
+  large-window Sparse HashTree experiment with complete Exact identity and
+  diagnostic gates while leaving every public and stream-visible surface
+  unchanged.
+- Similarity review: the design combines only marc-owned algorithms,
+  measurements, schemas, and validation patterns. No external implementation
+  expression or performance analysis was copied or translated.
+- Local validation: the documentation verifier passes with 1,117 ordered
+  decisions, 1,210 chronological clean-room records, 878 implementation
+  references, and 980 test-vector records. No benchmark or new performance
+  measurement was run while fixing this design.
