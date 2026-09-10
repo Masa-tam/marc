@@ -30069,3 +30069,30 @@ both bounds.
   The complete 3,481-test suite, including interoperability schema
   compatibility, passes under MSVC in 360.86 seconds and ClangCL in 315.20
   seconds.
+
+## CR-1207: 2026-09-10 - Fixed WAVL synthetic result
+
+- Authoring method: executed the committed fixed runner once to completion,
+  inspected its accepted aggregates and case records, and applied the
+  previously committed early-stop rule without changing the implementation or
+  measurement conditions.
+- References used: DD-1113, DD-1114, BM-0066, BM-0067, commit `ac253b51`, and
+  the locally generated content-bound result and checkpoint.
+- Known implementations intentionally not consulted: external WAVL source
+  code, compressor, benchmark result, analysis, tuning advice, test suite,
+  pseudocode, or optimization description.
+- Independent decisions: preserve the unfavorable measurement; distinguish
+  Exact correctness, equal workspace, and bounded repair from throughput;
+  compare both aggregate and deletion-heavy timing; and stop before Silesia or
+  public exposure rather than tuning against the same fixtures.
+- Generated-code task description: complete the frozen 36-process experiment,
+  verify all Exact and retirement gates, quantify throughput and structural
+  work, record the negative admission decision, and retain ignored raw result
+  data outside version control.
+- Similarity review: measurement and interpretation use only marc-owned
+  executables, tools, schemas, diagnostics, and precommitted decision rules.
+  No external implementation or analysis expression was copied or reproduced.
+- Local validation: all 36 records, six aggregates, and two comparisons pass
+  strict runner validation. The result is bound to full revision
+  `ac253b512dad5b27ec060219e8566372c2ce6aea`; its SHA-256 is
+  `8294204b2cdd3b82c63f36ed132d4f77aa0278dbdd8fb3700cc502dd388ec4ea`.

@@ -22637,7 +22637,30 @@ Write accepted points atomically as a canonical-prefix checkpoint bound to
 the revision, benchmark digest, runner-source digests, environment labels,
 and complete fixed configuration. Resume only that exact identity and never
 rerun an accepted prefix. Require physical retirement from all three finders
-in the deletion-heavy case, positive finite timing, reconstructible token extents, and
-a histogram whose mass equals the query count. Aggregate and report WAVL
-against both AVL and Red-Black, but make no automatic promotion decision.
+in the deletion-heavy case, positive finite timing, reconstructible token
+extents, and a histogram whose mass equals the query count. Aggregate and
+report WAVL against both AVL and Red-Black, but make no automatic promotion
+decision.
 Keep ordinary Silesia and public strategy admission outside this experiment.
+
+## DD-1114: WAVL stops after the fixed synthetic gate
+
+- Date: 2026-09-10
+- Status: accepted
+
+The complete MSVC Release experiment at commit `ac253b51` preserves every
+Exact token summary and fingerprint and keeps WAVL workspace equal to AVL,
+but WAVL reaches only 0.522911 and 0.550822 times AVL aggregate throughput at
+1,024- and 4,096-byte windows. It reaches only 0.676273 and 0.745832 times
+Red-Black throughput. The deletion-heavy case also loses to AVL at both
+windows, reaching approximately 0.685 and 0.740 times its throughput.
+
+Treat bounded rank repair as a correctness success but not an admission
+reason. WAVL maximum removal repair is five or six steps and deletion
+preflight is at most 18 or 19 nodes, yet aggregate key comparisons are 1.689
+and 1.444 times AVL, key-byte comparisons are 1.883 and 1.797 times AVL, and
+preflight visits add 2,566,585 and 1,992,092 nodes. The reduced aggregate
+rotation count does not overcome those measured costs. Stop before Silesia,
+production dispatch, public strategy, ABI, CLI, profile, or format work.
+Retain the private implementation and reproducible runner as negative-result
+research evidence.

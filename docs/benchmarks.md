@@ -2331,3 +2331,29 @@ records: `zeros`, 1,024-byte window, and AVL/Red-Black/WAVL order. Exact token
 identity passed and the checkpoint reached `3/36`. This validates the real
 executable, parser, checkpoint, and comparison gate; it is not a performance
 result.
+
+### BM-0067: Fixed WAVL synthetic result
+
+The complete MSVC Release run at commit `ac253b51` finished all 36
+process-isolated records. Every Red-Black and WAVL candidate matched its AVL
+baseline in token, literal, match, and matched-byte counts and canonical token
+fingerprint. Each strategy/window aggregate processed 393,216 bytes across
+the six fixed cases, and all deletion-heavy reports exercised retirement.
+
+| Window | AVL MiB/s | Red-Black MiB/s | WAVL MiB/s | RB/AVL | WAVL/AVL | WAVL/RB | Workspace |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1,024 | 1.771534 | 1.369793 | 0.926354 | 0.773224 | 0.522911 | 0.676273 | 29,696 |
+| 4,096 | 1.361517 | 1.005526 | 0.749954 | 0.738534 | 0.550822 | 0.745832 | 118,784 |
+
+WAVL and AVL workspace are equal and both reach maximum final heights 13 and
+15; Red-Black reaches 17 and 21. WAVL removal repair remains bounded at five
+or six steps and preflight at 18 or 19 nodes. However, WAVL performs
+10,278,461 and 10,152,161 key comparisons, 1.689 and 1.444 times AVL, plus
+2,566,585 and 1,992,092 deletion-preflight visits. Its key-byte comparison
+ratios against AVL are 1.883 and 1.797. Even the deletion-heavy case reaches
+only approximately 68.5% and 74.0% of AVL throughput.
+
+This fixed early gate therefore rejects public promotion and stops before an
+ordinary Silesia run. The private component and runner remain as bounded,
+reproducible negative-result evidence. The ignored result JSON has SHA-256
+`8294204b2cdd3b82c63f36ed132d4f77aa0278dbdd8fb3700cc502dd388ec4ea`.

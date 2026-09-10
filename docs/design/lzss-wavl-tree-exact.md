@@ -158,6 +158,13 @@ it does not select a public strategy or change a default. Public consideration
 would additionally require a supported persistent-window use case and a
 separate latency, memory, API, and compatibility decision.
 
+The fixed stage-6 experiment has now completed at commit `ac253b51`. Exact
+identity, equal AVL workspace, and bounded repair all passed, but WAVL reached
+only 52.3% and 55.1% of AVL aggregate throughput; deletion-heavy alone also
+lost at both windows. Under the stage-7 rule, the candidate therefore stops
+before Silesia and public admission. The implementation and measurement tools
+remain private research evidence rather than a production strategy.
+
 ## 9. Independent reference
 
 - Bernhard Haeupler, Siddhartha Sen, and Robert E. Tarjan,
