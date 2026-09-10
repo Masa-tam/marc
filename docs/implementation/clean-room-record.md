@@ -30178,3 +30178,26 @@ both bounds.
   decisions, 1,210 chronological clean-room records, 878 implementation
   references, and 980 test-vector records. No benchmark or new performance
   measurement was run while fixing this design.
+
+## CR-1211: 2026-09-11 - Explicit-limit Sparse HashTree benchmark route
+
+- Authoring method: extended marc's existing private frame benchmark parser
+  and calculator gate with the longer Sparse-specific explicit-policy form.
+- References used: DD-1118, IR-0879, TVG-0980, the committed Sparse finder,
+  workspace calculator, token-summary report, and limited HashChain/BinaryTree
+  smoke tests.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, benchmark harness, source code, test suite,
+  performance result, analysis, or tuning advice.
+- Independent decisions: keep old arities unchanged; place pool and threshold
+  before the final explicit limit; fix all large-window workspace endpoints;
+  and compare the complete five-field Exact identity with HashChain.
+- Generated-code task description: add only the bounded Sparse measurement
+  entry and pre-measurement boundary tests needed by the frozen experiment,
+  without exposing a public strategy or running the Silesia matrix.
+- Similarity review: the adapter and tests reuse only marc-owned parser,
+  calculator, report, and validation patterns. No external implementation
+  expression was copied or translated.
+- Local validation: the new large-window calculator boundary and complete
+  frame-benchmark smoke pass under MSVC and ClangCL; the documentation
+  verifier passes. No Silesia performance point was measured in this slice.

@@ -181,6 +181,52 @@ TEST(LzssSparseHashTreePool, AcceptsExactAggregateLimitAndRejectsOneLess) {
               LzssSparseHashTreeError::workspace_limit_exceeded);
 }
 
+TEST(LzssSparseHashTreePool, FixesLargeWindowExperimentEndpoints) {
+    constexpr std::size_t frame = 64U * 1024U * 1024U;
+    constexpr std::array windows{
+        4U * 1024U * 1024U,
+        16U * 1024U * 1024U,
+        64U * 1024U * 1024U,
+    };
+    constexpr std::array pools{4'096U, 65'536U, 262'144U};
+    constexpr std::array expected_workspaces{
+        std::array{17'715'200U, 19'005'440U, 23'134'208U},
+        std::array{68'046'848U, 69'337'088U, 73'465'856U},
+        std::array{269'373'440U, 270'663'680U, 274'792'448U},
+    };
+
+    marc::core::DecoderLimits limits{};
+    limits.max_frame_size = frame;
+    limits.max_lz_distance = frame;
+    limits.max_internal_buffered_bytes = 512U * 1024U * 1024U;
+    for (std::size_t window_index = 0; window_index < windows.size();
+         ++window_index) {
+        LzssParameters parameters{};
+        parameters.window_size = static_cast<std::uint32_t>(
+            windows[window_index]);
+        for (std::size_t pool_index = 0; pool_index < pools.size();
+             ++pool_index) {
+            const auto required = calculate_lzss_sparse_hash_tree_workspace(
+                frame, parameters, limits, pools[pool_index]);
+            ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
+            EXPECT_EQ(required.workspace_size,
+                      expected_workspaces[window_index][pool_index]);
+        }
+    }
+
+    LzssParameters parameters{};
+    parameters.window_size = static_cast<std::uint32_t>(windows.back());
+    constexpr std::size_t maximum_workspace = 274'792'448U;
+    limits.max_internal_buffered_bytes = frame + maximum_workspace;
+    EXPECT_EQ(calculate_lzss_sparse_hash_tree_workspace(
+                  frame, parameters, limits, pools.back()).error,
+              LzssSparseHashTreeError::none);
+    --limits.max_internal_buffered_bytes;
+    EXPECT_EQ(calculate_lzss_sparse_hash_tree_workspace(
+                  frame, parameters, limits, pools.back()).error,
+              LzssSparseHashTreeError::workspace_limit_exceeded);
+}
+
 TEST(LzssSparseHashTreePool, AllocatesExhaustsReleasesAndReusesLifo) {
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
         8, {}, {}, 3);

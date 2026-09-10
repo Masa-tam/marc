@@ -7993,3 +7993,13 @@ new bounded pool scale, explicit memory policy, restart identity, and result
 classifications were independently selected before new measurements. No
 external compressor, hash-tree implementation, source code, benchmark,
 performance analysis, tuning advice, or test suite was consulted.
+
+### IR-0879
+
+The explicit-limit Sparse HashTree benchmark route uses DD-1118, TVG-0980,
+the committed private Sparse finder and checked workspace calculator, and the
+existing repository-owned frame benchmark, Exact token fingerprint, and
+HashChain/BinaryTree limited-route contracts. Argument separation, boundary
+fixtures, and failure classification were independently applied to those
+local interfaces. No external compressor, hash-tree implementation, benchmark
+harness, source code, test suite, or performance result was consulted.

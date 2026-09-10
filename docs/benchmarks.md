@@ -1889,6 +1889,20 @@ or Exact-token-inconsistent records abort the run. The final report is rebuilt
 in canonical grid order, and both checkpoint and final JSON remain ignored
 local artifacts.
 
+For experiments above the default 16-MiB frame/distance and 128-MiB internal
+buffer limits, use the separate explicit-policy form:
+
+```console
+marc_lzss_match_finder_benchmark --frames-limited sparse-hash-tree-exact INPUT 1 67108864 4194304 4096 64 536870912
+```
+
+The final three numeric arguments are pool nodes, promotion-candidate
+threshold, and maximum internal buffered bytes. This form does not change the
+ordinary `--frames` defaults or infer a memory policy from the input stream.
+Invalid capacities and limits are rejected before measurement. The fixed
+4/16/64-MiB reevaluation is specified independently in
+[`docs/design/lzss-sparse-hash-tree-large-window-experiment.md`](design/lzss-sparse-hash-tree-large-window-experiment.md).
+
 Use `--max-new-points N` with `--checkpoint` and without `--output` to execute
 at most N new baseline/candidate processes. The control is deliberately absent
 from checkpoint identity because batch sizes may vary between resumptions. Zero

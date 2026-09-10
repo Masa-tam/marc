@@ -22729,3 +22729,23 @@ Exact token-summary and fingerprint equality, strict Sparse diagnostics,
 process isolation, content-bound atomic restart, and descriptive performance.
 Do not alter the public selector, default, ABI, stream, profile, or
 interoperability inventory, and do not promote Sparse automatically.
+
+## DD-1118: Sparse HashTree gains only an explicit-limit benchmark route
+
+- Date: 2026-09-11
+- Status: accepted
+
+Extend `--frames-limited` with one longer, unambiguous
+`sparse-hash-tree-exact` form carrying pool capacity, promotion threshold, and
+maximum internal buffered bytes. Retain the existing six-argument HashChain
+and BinaryTree limited forms and every ordinary `--frames` spelling. Set only
+the benchmark's frame, LZ-distance, and internal-buffer limits explicitly;
+continue to use the checked Sparse workspace calculator before allocation.
+
+Freeze all nine 4/16/64-MiB matrix workspace values and the maximum aggregate
+boundary in calculator tests. Require the exact limit to pass and one byte
+less to fail. In the executable smoke, compare all four token counts and the
+canonical fingerprint with HashChain, require the Sparse options and explicit
+limit in the report, and reject malformed arity, capacity, zero/overflow
+limit, and insufficient policy. This remains a private measurement adapter,
+not a public match-finder strategy.

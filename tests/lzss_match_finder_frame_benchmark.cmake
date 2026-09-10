@@ -169,6 +169,7 @@ foreach(summary_key IN ITEMS
             "${scapegoat_summary}")
     endif()
 endforeach()
+
 string(REGEX MATCH "binary_tree_workspace_bytes=([0-9]+)" ignored
     "${binary_report}")
 set(binary_workspace "${CMAKE_MATCH_1}")
@@ -303,9 +304,51 @@ foreach(summary_key IN ITEMS
     endif()
 endforeach()
 
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames-limited sparse-hash-tree-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 256 4 ${explicit_limit}
+    RESULT_VARIABLE limited_sparse_result
+    OUTPUT_VARIABLE limited_sparse_report
+    ERROR_VARIABLE limited_sparse_error)
+if(NOT limited_sparse_result EQUAL 0)
+    message(FATAL_ERROR
+        "limited Sparse HashTree failed: ${limited_sparse_result}: "
+        "${limited_sparse_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=frames-limited"
+        "strategy=sparse-hash-tree-exact"
+        "max_internal_buffered_bytes=${explicit_limit}"
+        "sparse_hash_tree_pool_node_capacity=256"
+        "sparse_hash_tree_promotion_candidate_threshold=4")
+    string(FIND "${limited_sparse_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR
+            "missing limited Sparse HashTree line: ${expected_line}")
+    endif()
+endforeach()
+foreach(summary_key IN ITEMS
+        token_count literal_count match_count matched_bytes
+        token_fingerprint_sha256)
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${limited_hash_report}")
+    set(hash_summary "${CMAKE_MATCH_1}")
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${limited_sparse_report}")
+    set(sparse_summary "${CMAKE_MATCH_1}")
+    if(NOT hash_summary STREQUAL sparse_summary)
+        message(FATAL_ERROR
+            "limited Sparse Exact ${summary_key} mismatch: "
+            "${hash_summary} != ${sparse_summary}")
+    endif()
+endforeach()
+
 foreach(invalid_command IN ITEMS
         "hash-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;${explicit_limit}"
         "scapegoat-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;${explicit_limit}"
+        "sparse-hash-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;0"
+        "sparse-hash-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;1025;4;${explicit_limit}"
+        "sparse-hash-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;${explicit_limit};1"
         "hash-chain-exact;${BENCHMARK_INPUT};1;${frame_size};65536;0"
         "hash-chain-exact;${BENCHMARK_INPUT};1;${frame_size};65536;18446744073709551616")
     execute_process(
@@ -328,6 +371,18 @@ execute_process(
 if(NOT insufficient_limit_result EQUAL 1)
     message(FATAL_ERROR
         "insufficient limited policy returned ${insufficient_limit_result}")
+endif()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames-limited sparse-hash-tree-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 256 4 1024
+    RESULT_VARIABLE insufficient_sparse_limit_result
+    OUTPUT_QUIET
+    ERROR_QUIET)
+if(NOT insufficient_sparse_limit_result EQUAL 1)
+    message(FATAL_ERROR
+        "insufficient Sparse limited policy returned "
+        "${insufficient_sparse_limit_result}")
 endif()
 
 execute_process(

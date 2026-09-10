@@ -1641,6 +1641,10 @@ void print_usage() {
            "<hash-chain-exact|binary-tree-exact> <input-file> "
            "<iterations> <frame-bytes> <window-bytes> "
            "<max-internal-buffered-bytes>\n"
+        << "       marc_lzss_match_finder_benchmark --frames-limited "
+           "sparse-hash-tree-exact <input-file> <iterations> "
+           "<frame-bytes> <window-bytes> <pool-nodes> "
+           "<promotion-candidates> <max-internal-buffered-bytes>\n"
         << "       marc_lzss_match_finder_benchmark --synthetic "
            "<hash-chain-exact|binary-tree-exact|wavl-tree-exact|"
            "red-black-tree-exact|"
@@ -1660,15 +1664,22 @@ void print_usage() {
 [[nodiscard]] int run_frame_benchmark(
     const int argc, const char* const argv[], const bool explicit_limit) {
     BenchmarkStrategy strategy{};
-    if ((explicit_limit && argc != 8)
+    if (argc < 3
         || (!explicit_limit && (argc < 4 || argc > 9))
         || !parse_strategy(argv[2], strategy)
         || (explicit_limit
-            && strategy != BenchmarkStrategy::hash_chain_exact
-            && strategy != BenchmarkStrategy::binary_tree_exact)
-        || (strategy == BenchmarkStrategy::hash_tree_exact && argc != 8)
+            && ((strategy == BenchmarkStrategy::sparse_hash_tree_exact
+                    && argc != 10)
+                || ((strategy == BenchmarkStrategy::hash_chain_exact
+                         || strategy == BenchmarkStrategy::binary_tree_exact)
+                    && argc != 8)
+                || (strategy != BenchmarkStrategy::sparse_hash_tree_exact
+                    && strategy != BenchmarkStrategy::hash_chain_exact
+                    && strategy != BenchmarkStrategy::binary_tree_exact)))
+        || (!explicit_limit
+            && strategy == BenchmarkStrategy::hash_tree_exact && argc != 8)
         || (strategy == BenchmarkStrategy::sparse_hash_tree_exact
-            && argc != 9)
+            && !explicit_limit && argc != 9)
         || (strategy != BenchmarkStrategy::hash_tree_exact
             && strategy != BenchmarkStrategy::sparse_hash_tree_exact
             && !explicit_limit && argc > 7)) {
@@ -1702,7 +1713,10 @@ void print_usage() {
                     argv[8], promotion_threshold)))
         || (explicit_limit
             && !parse_positive_u64(
-                argv[7], limits.max_internal_buffered_bytes))
+                argv[strategy == BenchmarkStrategy::sparse_hash_tree_exact
+                        ? 9
+                        : 7],
+                limits.max_internal_buffered_bytes))
         || window_size > std::numeric_limits<std::uint32_t>::max()) {
         std::cerr << "invalid frame benchmark argument\n";
         return 2;
