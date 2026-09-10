@@ -30040,3 +30040,32 @@ both bounds.
   documentation and interoperability schema compatibility, passes under MSVC
   in 364.52 seconds and also passes under ClangCL; the ClangCL CTest log records
   the final schema test passing in 100.38 seconds.
+
+## CR-1206: 2026-09-10 - Fixed WAVL synthetic experiment runner
+
+- Authoring method: composed a dedicated process-isolated, resumable runner
+  from marc's committed WAVL benchmark adapter and repository-owned runner
+  validation patterns.
+- References used: DD-1113, IR-0875, TVG-0977, the existing local synthetic
+  fixtures, and marc's atomic checkpoint, content-identity, Exact-token, and
+  aggregate-report contracts.
+- Known implementations intentionally not consulted: external WAVL source
+  code, compressor, benchmark runner, checkpoint format, test suite,
+  performance result, or optimization description.
+- Independent decisions: freeze a 36-process grid; place AVL first for every
+  pair; validate all token summary fields rather than only the fingerprint;
+  require retirement from every tree in the deletion-heavy case; and compare
+  WAVL separately with AVL and Red-Black without encoding a winner policy.
+- Generated-code task description: add a fixed WAVL synthetic experiment with
+  canonical-prefix restart, atomic content-bound checkpointing, strict report
+  validation, three-way Exact identity, comparative aggregation, and mocked
+  resume tests while retaining the private publication boundary.
+- Similarity review: the runner follows existing repository-owned tooling and
+  independently authored WAVL contracts. No external implementation or
+  benchmark expression was copied or translated.
+- Local validation: the two focused synthetic-runner tests and documentation
+  layout pass under MSVC and ClangCL. A real MSVC Release connection smoke
+  accepted the canonical first three AVL/Red-Black/WAVL records at `3/36`.
+  The complete 3,481-test suite, including interoperability schema
+  compatibility, passes under MSVC in 360.86 seconds and ClangCL in 315.20
+  seconds.

@@ -1794,6 +1794,11 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_match_finder_synthetic_runner_tests.py)
         set_tests_properties(marc_lzss_match_finder_synthetic_runner_tests
             PROPERTIES LABELS tooling)
+        add_test(NAME marc_lzss_wavl_tree_synthetic_runner_tests
+            COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_wavl_tree_synthetic_runner_tests.py)
+        set_tests_properties(marc_lzss_wavl_tree_synthetic_runner_tests
+            PROPERTIES LABELS tooling)
         add_test(NAME marc_lzss_hash_tree_threshold_runner_tests
             COMMAND ${Python3_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_hash_tree_threshold_runner_tests.py)

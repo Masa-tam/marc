@@ -32,7 +32,7 @@ SYNTHETIC_CASES = (
     "deletion-heavy",
 )
 SYNTHETIC_STRATEGIES = STRATEGIES + (
-    "red-black-tree-exact", "scapegoat-tree-exact",
+    "red-black-tree-exact", "scapegoat-tree-exact", "wavl-tree-exact",
 )
 
 
@@ -80,9 +80,15 @@ def _require_exact_set(
         )
     if case_name == "deletion-heavy":
         scapegoat = pair["scapegoat-tree-exact"]
+        wavl = pair["wavl-tree-exact"]
         if scapegoat.get("scapegoat_tree_retirements", 0) <= 0:
             raise RunnerError(
                 f"deletion-heavy did not retire Scapegoat nodes at window "
+                f"{window_size}"
+            )
+        if wavl.get("wavl_tree_retirements", 0) <= 0:
+            raise RunnerError(
+                f"deletion-heavy did not retire WAVL nodes at window "
                 f"{window_size}"
             )
 

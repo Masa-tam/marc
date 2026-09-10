@@ -14158,3 +14158,20 @@ iteration count constant. Require equal token count, literal count, match
 count, matched-byte count, and canonical token fingerprint across all three
 Exact strategies. Assert no throughput winner and add no production strategy
 or interoperability artifact at this gate.
+
+### TVG-0977
+
+Exercise the fixed WAVL synthetic runner without launching a real benchmark.
+Require the canonical grid to contain six cases, two windows, three ordered
+strategies, and exactly 36 process records. Validate complete diagnostic
+reports for AVL, Red-Black, and WAVL; reject inconsistent token extents,
+non-positive or non-finite timing, histogram mass disagreement, and missing deletion-heavy
+retirement for each strategy.
+
+Require Exact equality over token, literal, match, and matched-byte counts and
+the canonical fingerprint. Bind checkpoints to revision, executable content,
+runner-source content, environment, and configuration; reject a noncanonical
+prefix, changed command, or mismatched candidate. Stop after three mocked
+points, resume without relaunching that prefix, and require a final 36-record
+result with six aggregates and two AVL/Red-Black/WAVL comparisons. Run the
+focused runner tests under both supported Windows toolchains.

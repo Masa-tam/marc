@@ -141,6 +141,14 @@ input, frame, window, parsing, and iteration settings. This is measurement
 infrastructure only; the deletion-heavy performance gate has not yet been
 decided.
 
+The fixed stage-6 runner is
+`tools/run_lzss_wavl_tree_synthetic_experiment.py`. It freezes six inputs,
+two retirement-capable windows, and AVL/Red-Black/WAVL ordering into 36
+processes. Its atomic checkpoint is a canonical prefix bound to code,
+executable, environment labels, revision, and configuration. Completion
+reports both WAVL/AVL and WAVL/Red-Black ratios; interpretation remains a
+separate reviewed step, and no result can expose WAVL publicly by itself.
+
 ## 8. Interpretation
 
 A correct WAVL implementation is not automatically useful. Failure to beat

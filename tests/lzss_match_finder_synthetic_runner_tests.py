@@ -103,6 +103,39 @@ def _scapegoat_report(case_name: str = "equal-prefix") -> str:
     )
 
 
+def _wavl_report() -> str:
+    return (
+        "mode=synthetic\nstrategy=wavl-tree-exact\n"
+        "synthetic_case=equal-prefix\ninput_bytes=8\nframe_bytes=8\n"
+        "window_bytes=8\nframe_count=1\ntoken_count=4\niterations=1\n"
+        f"token_fingerprint_sha256={'a' * 64}\n"
+        "wavl_tree_workspace_bytes=96\nwavl_tree_queries=4\n"
+        "wavl_tree_key_comparisons=9\n"
+        "wavl_tree_key_byte_comparisons=12\n"
+        "wavl_tree_lcp_byte_comparisons=3\n"
+        "wavl_tree_prefix_range_comparisons=2\n"
+        "wavl_tree_insertion_promotions=3\n"
+        "wavl_tree_insertion_single_rotations=1\n"
+        "wavl_tree_insertion_double_rotations=0\n"
+        "wavl_tree_insertion_fixup_steps=4\n"
+        "wavl_tree_maximum_insertion_fixup_steps=2\n"
+        "wavl_tree_insertions=4\n"
+        "wavl_tree_removal_demotions=2\n"
+        "wavl_tree_removal_single_rotations=1\n"
+        "wavl_tree_removal_double_rotations=0\n"
+        "wavl_tree_removal_fixup_steps=3\n"
+        "wavl_tree_maximum_removal_fixup_steps=2\n"
+        "wavl_tree_removal_preflight_nodes=5\n"
+        "wavl_tree_maximum_removal_preflight_nodes=3\n"
+        "wavl_tree_retirements=1\n"
+        "wavl_tree_maximum_final_height=3\n"
+        "wavl_tree_max_nodes_per_query=5\n"
+        "wavl_tree_frame_seconds=0.25\n"
+        "wavl_tree_frame_mib_per_second=0.000031\n"
+        "wavl_tree_query_depth_histogram=0,1,3\n"
+    )
+
+
 class SyntheticMatchFinderRunnerTests(unittest.TestCase):
     def test_validates_synthetic_identity_and_configuration(self) -> None:
         report = _parse_report(_binary_report())
@@ -183,7 +216,22 @@ class SyntheticMatchFinderRunnerTests(unittest.TestCase):
             9,
         )
 
-    def test_deletion_heavy_requires_scapegoat_retirement(self) -> None:
+    def test_validates_and_aggregates_private_wavl_report(self) -> None:
+        report = _parse_report(_wavl_report())
+        _validate_report(
+            report, "wavl-tree-exact", 8, 8, 8, 1,
+            mode="synthetic", synthetic_case="equal-prefix",
+        )
+        aggregates = _aggregate_cases([{"report": report}])
+        wavl = next(
+            aggregate for aggregate in aggregates
+            if aggregate["strategy"] == "wavl-tree-exact"
+        )
+        self.assertEqual(wavl["case_count"], 1)
+        self.assertEqual(wavl["wavl_tree_removal_demotions"], 2)
+        self.assertEqual(wavl["wavl_tree_maximum_final_height"], 3)
+
+    def test_deletion_heavy_requires_tree_retirements(self) -> None:
         self.assertIn("deletion-heavy", SYNTHETIC_CASES)
         pair = {
             strategy: _identity_report() for strategy in SYNTHETIC_STRATEGIES
@@ -191,10 +239,16 @@ class SyntheticMatchFinderRunnerTests(unittest.TestCase):
         pair["scapegoat-tree-exact"].update(
             {"scapegoat_tree_retirements": 1}
         )
+        pair["wavl-tree-exact"].update({"wavl_tree_retirements": 1})
         _require_exact_set(pair, "deletion-heavy", 8)
-        pair["scapegoat-tree-exact"]["scapegoat_tree_retirements"] = 0
-        with self.assertRaises(RunnerError):
-            _require_exact_set(pair, "deletion-heavy", 8)
+        for strategy, key in (
+            ("scapegoat-tree-exact", "scapegoat_tree_retirements"),
+            ("wavl-tree-exact", "wavl_tree_retirements"),
+        ):
+            pair[strategy][key] = 0
+            with self.assertRaises(RunnerError):
+                _require_exact_set(pair, "deletion-heavy", 8)
+            pair[strategy][key] = 1
 
 
 if __name__ == "__main__":

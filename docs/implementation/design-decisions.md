@@ -22620,3 +22620,24 @@ removal rotations, bounded fix-up and deletion-preflight work, final height,
 query-depth histogram, workspace, and throughput. First evaluate the existing
 deletion-heavy synthetic fixture with `frame_size > window_size`; ordinary
 Silesia admission remains a separate decision after that result.
+
+## DD-1113: WAVL admission uses a fixed resumable synthetic experiment
+
+- Date: 2026-09-10
+- Status: accepted
+
+Evaluate WAVL first with exactly six deterministic synthetic inputs, 65,536
+input bytes, 32,768-byte frames, 1,024- and 4,096-byte windows, one measured
+iteration, and AVL/Red-Black/WAVL process order. Every one of the 36 points
+runs in a separate process. AVL is the immediate Exact baseline for each
+case/window pair; both candidates must match all four token-summary counts
+and the canonical token fingerprint before their timing is accepted.
+
+Write accepted points atomically as a canonical-prefix checkpoint bound to
+the revision, benchmark digest, runner-source digests, environment labels,
+and complete fixed configuration. Resume only that exact identity and never
+rerun an accepted prefix. Require physical retirement from all three finders
+in the deletion-heavy case, positive finite timing, reconstructible token extents, and
+a histogram whose mass equals the query count. Aggregate and report WAVL
+against both AVL and Red-Black, but make no automatic promotion decision.
+Keep ordinary Silesia and public strategy admission outside this experiment.

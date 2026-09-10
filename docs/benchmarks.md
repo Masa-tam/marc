@@ -2303,3 +2303,31 @@ The repository smoke test covers both a file-frame case and the
 identity and retirement activity, but intentionally asserts no speed winner.
 A fixed process-isolated synthetic measurement is the next admission gate;
 ordinary Silesia measurement remains deferred until WAVL passes that gate.
+
+### BM-0066: Fixed WAVL synthetic experiment runner
+
+The dedicated network-free runner freezes the first WAVL admission gate at
+six deterministic cases, 65,536 input bytes, 32,768-byte frames, 1,024- and
+4,096-byte windows, one iteration, and AVL/Red-Black/WAVL order. The complete
+matrix is 36 independent processes. Each candidate must match its preceding
+AVL baseline in token, literal, match, and matched-byte counts and canonical
+token fingerprint; deletion-heavy records must also prove physical retirement.
+
+Use an ignored checkpoint for bounded batches:
+
+```console
+py -3.14 tools/run_lzss_wavl_tree_synthetic_experiment.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --checkpoint benchmarks/data/silesia/results/wavl-tree-synthetic-msvc.checkpoint.json --max-new-points 3 --compiler "MSVC 19.50" --generator "Visual Studio 18 2026" --architecture x64 --build-label windows-msvc-release
+```
+
+After all points exist, omit `--max-new-points` and add `--output` to emit the
+complete aggregate. The checkpoint is content-bound and accepts only a
+canonical prefix, so interruption cannot silently mix revisions, binaries,
+runner sources, environments, or configurations. This entry records the
+measurement contract and runner only; it contains no performance result and
+makes no public-admission decision.
+
+The initial MSVC Release connection smoke accepted the canonical first three
+records: `zeros`, 1,024-byte window, and AVL/Red-Black/WAVL order. Exact token
+identity passed and the checkpoint reached `3/36`. This validates the real
+executable, parser, checkpoint, and comparison gate; it is not a performance
+result.

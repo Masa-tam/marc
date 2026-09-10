@@ -37,6 +37,24 @@ SUM_KEYS = {
         "binary_tree_insertions",
         "binary_tree_retirements",
     ),
+    "wavl-tree-exact": (
+        "wavl_tree_queries",
+        "wavl_tree_key_comparisons",
+        "wavl_tree_key_byte_comparisons",
+        "wavl_tree_lcp_byte_comparisons",
+        "wavl_tree_prefix_range_comparisons",
+        "wavl_tree_insertion_promotions",
+        "wavl_tree_insertion_single_rotations",
+        "wavl_tree_insertion_double_rotations",
+        "wavl_tree_insertion_fixup_steps",
+        "wavl_tree_insertions",
+        "wavl_tree_removal_demotions",
+        "wavl_tree_removal_single_rotations",
+        "wavl_tree_removal_double_rotations",
+        "wavl_tree_removal_fixup_steps",
+        "wavl_tree_removal_preflight_nodes",
+        "wavl_tree_retirements",
+    ),
     "red-black-tree-exact": (
         "red_black_tree_queries",
         "red_black_tree_key_comparisons",
@@ -71,6 +89,13 @@ MAX_KEYS = {
         "binary_tree_maximum_height",
         "binary_tree_max_nodes_per_query",
     ),
+    "wavl-tree-exact": (
+        "wavl_tree_maximum_insertion_fixup_steps",
+        "wavl_tree_maximum_removal_fixup_steps",
+        "wavl_tree_maximum_removal_preflight_nodes",
+        "wavl_tree_maximum_final_height",
+        "wavl_tree_max_nodes_per_query",
+    ),
     "red-black-tree-exact": (
         "red_black_tree_maximum_fixup_steps",
         "red_black_tree_maximum_final_height",
@@ -86,18 +111,21 @@ MAX_KEYS = {
 WORKSPACE_KEYS = {
     "hash-chain-exact": "hash_workspace_bytes",
     "binary-tree-exact": "binary_tree_workspace_bytes",
+    "wavl-tree-exact": "wavl_tree_workspace_bytes",
     "red-black-tree-exact": "red_black_tree_workspace_bytes",
     "scapegoat-tree-exact": "scapegoat_tree_workspace_bytes",
 }
 TIME_KEYS = {
     "hash-chain-exact": "hash_chain_frame_seconds",
     "binary-tree-exact": "binary_tree_frame_seconds",
+    "wavl-tree-exact": "wavl_tree_frame_seconds",
     "red-black-tree-exact": "red_black_tree_frame_seconds",
     "scapegoat-tree-exact": "scapegoat_tree_frame_seconds",
 }
 HISTOGRAM_KEYS = {
     "hash-chain-exact": "hash_chain_query_depth_histogram",
     "binary-tree-exact": "binary_tree_query_depth_histogram",
+    "wavl-tree-exact": "wavl_tree_query_depth_histogram",
     "red-black-tree-exact": "red_black_tree_query_depth_histogram",
     "scapegoat-tree-exact": "scapegoat_tree_query_depth_histogram",
 }

@@ -7952,3 +7952,14 @@ three-strategy Exact comparison were derived solely from those local
 interfaces. No external WAVL implementation, benchmark harness, compressor,
 source code, test suite, performance result, or optimization description was
 consulted.
+
+### IR-0875
+
+The fixed WAVL synthetic experiment uses DD-1113, TVG-0977, the committed
+private WAVL benchmark report, and marc's repository-owned process isolation,
+atomic checkpoint, identity binding, Exact fingerprint, and deterministic
+synthetic-input infrastructure. The fixed grid, canonical resume order,
+three-way summary gate, and comparative output were independently assembled
+from those local contracts. No external WAVL implementation, benchmark
+harness, compressor, source code, test suite, performance result, or
+optimization description was consulted.
