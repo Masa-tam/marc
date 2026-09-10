@@ -21,6 +21,7 @@ set(required_documents
     docs/fuzzing.md
     docs/interoperability.md
     docs/releasing.md
+    docs/design/lzss-match-finder-strategy.md
     docs/design/lzss-balanced-tree-strategy-evaluation.md
     docs/design/lzss-wavl-tree-exact.md
     docs/design/lzss-wavl-tree-exact-transitions.md
@@ -33,6 +34,24 @@ set(required_documents
 foreach(relative_path IN LISTS required_documents)
     if(NOT EXISTS "${source_dir}/${relative_path}")
         message(FATAL_ERROR "Required document is missing: ${relative_path}")
+    endif()
+endforeach()
+
+set(match_finder_design
+    "${source_dir}/docs/design/lzss-match-finder-strategy.md")
+file(READ "${match_finder_design}" match_finder_design_content)
+foreach(required_match_finder_term IN ITEMS
+        "## 9. 一回解析と型付きトークン保持"
+        "入力1 byteあたり最大1個"
+        "match finderとparserを一度だけ実行"
+        "Contextual Dynamic Range、rANS、tANS、Blocked Huffman"
+        "正確なtoken countだけを先に求めてworkspaceを小さくするprivateな二回解析API"
+        "公開streaming encoderの未解決高速化項目とは")
+    string(FIND "${match_finder_design_content}"
+        "${required_match_finder_term}" match_finder_term_offset)
+    if(match_finder_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Missing match-finder design term: ${required_match_finder_term}")
     endif()
 endforeach()
 

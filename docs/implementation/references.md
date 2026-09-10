@@ -7967,9 +7967,18 @@ optimization description was consulted.
 ### IR-0876
 
 The ordered-tree Exact evaluation closeout uses only DD-1114, BM-0067,
-TVG-0978, the
-completed repository-owned Red-Black and Scapegoat experiment records, and
-the already committed WAVL design and result. It introduces no new algorithm
+TVG-0978, the completed repository-owned Red-Black and Scapegoat experiment
+records, and the already committed WAVL design and result. It introduces no
+new algorithm
 reference or implementation technique. No external compressor, match finder,
 balanced-tree implementation, benchmark result, or tuning advice was
 consulted.
+
+### IR-0877
+
+The LZSS typed-token reuse audit uses only the repository history at commit
+`cc3acae1`, DD-765 through DD-775, BM-0025, the current contextual frame and
+streaming encoders, and their repository-owned query-count tests. No new
+algorithm source or implementation technique is introduced. No external
+compressor, match finder, optimization description, source code, benchmark,
+or test suite was consulted.

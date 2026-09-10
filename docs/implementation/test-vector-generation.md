@@ -14184,3 +14184,13 @@ rebuild diagnostics, WAVL early-stop result, unchanged HashChain public
 default, and explicit closure of the balancing-rule comparison cycle. This
 replaces the historical assertion that WAVL had not yet been implemented; it
 does not weaken document coverage or assert a performance winner.
+
+### TVG-0979
+
+Require the main LZSS match-finder design to state that the public contextual
+HashChain streaming route parses once into caller-owned typed-token workspace,
+preflights one token per raw byte, and retains a separate precise-capacity
+two-pass internal option. Also require the design to distinguish one streaming
+encode operation from a caller explicitly invoking plan and encode as two
+operations. This is a documentation-regression test of already implemented
+behavior, not a new throughput assertion.

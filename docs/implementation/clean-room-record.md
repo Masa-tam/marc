@@ -30123,3 +30123,31 @@ both bounds.
 - Local validation: the strengthened documentation-layout test passes under
   both MSVC and ClangCL and now requires the completed WAVL early-stop and
   ordered-tree-cycle closure instead of the superseded pre-WAVL wording.
+
+## CR-1209: 2026-09-10 - LZSS typed-token reuse audit
+
+- Authoring method: traced the public contextual streaming constructors into
+  each frame encoder, inspected the single-pass typed producer and its
+  historical integration commits, and compared the current design text with
+  existing query-count tests and benchmark evidence.
+- References used: DD-765 through DD-775, DD-1116, IR-0877, TVG-0979,
+  BM-0025, commit `cc3acae1`, and the current repository-owned contextual
+  frame and streaming encoder sources.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, typed-token pipeline, optimization description, source code,
+  benchmark result, or test suite.
+- Independent decisions: recognize that all five public contextual HashChain
+  encoders already parse once; distinguish one streaming encode from two
+  explicit plan/encode calls; preserve the precise-capacity private two-pass
+  option; and correct the stale future-work text instead of duplicating the
+  existing implementation or changing ABI and format.
+- Generated-code task description: audit every public contextual backend for
+  retained typed-token reuse, reconcile the primary match-finder design with
+  implemented behavior and measured evidence, and strengthen documentation
+  regression coverage without changing codec code.
+- Similarity review: the audit and documentation use only marc-owned history,
+  implementation, tests, and benchmarks. No external implementation
+  expression or optimization analysis was copied or translated.
+- Local validation: the strengthened documentation-layout test passes under
+  MSVC and ClangCL and now fixes both the public one-pass contract and the
+  separate precise-capacity two-pass option.

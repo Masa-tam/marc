@@ -22683,6 +22683,28 @@ independent oracles and negative-result evidence. Do not add another balanced
 binary-search-tree candidate merely because it has a different balancing
 rule. A future candidate requires a new, workload-specific cost hypothesis
 that addresses the measured suffix-comparison, metadata, preflight, memory,
-or latency costs. Direct subsequent optimization work toward the existing
-HashChain/HashTree path or removal of repeated LZSS parsing, under a separate
-design and measurement decision.
+or latency costs. Direct subsequent work toward the existing hash-based paths
+or an audit of costs after typed-token production, under a
+separate design and measurement decision.
+
+## DD-1116: Public contextual HashChain already retains typed tokens
+
+- Date: 2026-09-10
+- Status: accepted
+
+Close repeated LZSS parsing as a current public-contextual optimization item.
+The private single-pass typed producer was added at commit `cc3acae1` and the
+public streaming encoders for Contextual Dynamic Range, rANS, tANS, Blocked
+Huffman, and Adaptive Huffman subsequently adopted it. Each frame reserves
+one caller-owned token slot per raw byte, validates the complete aggregate and
+all aliases before parsing, runs HashChain and the parser once, and reuses the
+actual token prefix for entropy planning and writing.
+
+Retain the precise-capacity two-pass internal API for callers that explicitly
+trade parsing time for smaller token storage, and retain Exhaustive as a
+private correctness oracle. A caller that separately invokes a planning API
+and then an encoding API performs two independent requested operations; the
+public streaming lifecycle does not do so. Do not add another cache, ABI field,
+format variant, or workspace merely to reimplement the existing single-pass
+route. Correct the stale match-finder design text and require documentation
+tests to preserve this distinction.

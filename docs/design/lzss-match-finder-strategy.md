@@ -244,14 +244,13 @@ LzssMatch find_match(
 - 入力、トークン出力、探索ワークスペース間の重複
 - `max_internal_buffered_bytes`などのaggregate limit
 
-## 9. 計画処理と書き込み処理
+## 9. 一回解析と型付きトークン保持
 
-現在の計画パスと書き込みパスでLZSS解析を二回行う構造は、高速な一致探索
-を導入しても無視できないコストになり得る。
-
-将来の選択肢として、最初の解析で生成した型付きトークンを caller-owned
-workspace に保持し、容量計画と後段のコンテキスト／エントロピー符号化で
-再利用する方法を検討する。
+公開 contextual streaming encoder の HashChain Exact 経路は、LZSS解析を
+一回だけ行う。frameごとに caller-owned workspace へ入力1 byteあたり最大1個の
+型付きトークンを事前予約し、limits、aggregate、alignmentおよびaliasを解析前に
+検証する。検証後にmatch finderとparserを一度だけ実行し、実際に生成された
+token prefixをcontext modelとentropy encoderの計画・書き込みで再利用する。
 
 ```text
 raw frame
@@ -261,8 +260,17 @@ raw frame
   -> entropy encoder
 ```
 
-ただし、トークン保持によるメモリ増加と二重解析削減による速度改善を個別に
-測定し、参照実装の明快さを失わないようにする。
+この経路は Contextual Dynamic Range、rANS、tANS、Blocked Huffmanおよび
+Adaptive Huffmanで実装済みである。公開streaming lifecycleはframe encodeを
+一度だけ呼び出す。呼び出し側がplan APIとencode APIを個別に呼ぶ場合は二つの
+独立した要求であり、同じ一回のstreaming encodeとは扱わない。
+
+正確なtoken countだけを先に求めてworkspaceを小さくするprivateな二回解析API
+と、Exhaustive参照経路は維持する。一回解析経路は最大token容量分のメモリを
+使うため、容量節約と解析速度のtrade-offは明示的であり、自動選択しない。
+BM-0025では同一token列とquery countを確認した上で、既存の一回解析経路が
+小さいREADME入力で二回解析経路のおよそ2倍のthroughputを示した。この値は
+説明的な測定であり、恒久的な性能閾値ではない。
 
 ## 10. テスト要件
 
@@ -374,7 +382,7 @@ Silesia Corpusを使用する。Corpusを自動downloadまたは再配布せず�
 - HashTreeのprivate promotion閾値とproduction昇格可否
 - WindowAdaptiveV1を将来も必要とするか
 - 内部strategy設定をどの段階で公開エンコーダー設定へ昇格するか
-- 計画／書き込み間で型付きトークンを保持する標準経路
+- 一回解析で予約するworst-case token容量を縮小できるか
 - 探索ワークスペースを公開ABIのopaque viewへどう割り当てるか
 
 ## 14. 暫定結論
@@ -395,3 +403,8 @@ ExactはHashChainを安い基底として残し、実際に深いbucketだけを
 
 `WindowAdaptiveV1`に現在有効な規則はない。HashTreeの合成・Silesia証拠後に
 production昇格を別decisionで判断し、BoundedもExact経路と分離して検討する。
+
+公開contextual HashChain経路では、caller-owned typed-token workspaceへの
+一回解析と後段での再利用が標準である。二回解析は正確な容量を優先する
+private経路としてのみ残し、公開streaming encoderの未解決高速化項目とは
+扱わない。

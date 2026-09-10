@@ -274,5 +274,5 @@ This closes the balancing-rule comparison cycle. Another balanced tree is not
 the automatic next candidate. New work must instead state a workload-specific
 reason that addresses a measured cost absent from these experiments. The
 current productive hypotheses are improvements within the HashChain/HashTree
-path and eliminating repeated LZSS parsing by retaining caller-owned typed
-tokens; each requires its own frozen design and benchmark gate.
+path and costs after the already single-pass typed-token boundary; each
+requires its own frozen design and benchmark gate.
