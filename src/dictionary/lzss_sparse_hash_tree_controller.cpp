@@ -520,6 +520,10 @@ promote_pending_lzss_sparse_hash_tree_bucket(
         == LzssSparseHashTreeBucketTransitionStatus::promoted;
     result.pool_rejected = transition.status
         == LzssSparseHashTreeBucketTransitionStatus::pool_rejected_chain;
+    if (result.pool_rejected && context.statistics != nullptr) {
+        increment_statistic(context.statistics,
+            context.statistics->hash_tree_pool_rejection_count);
+    }
     if (result.promoted && context.statistics != nullptr) {
         aggregate_builder_statistics(context.statistics, component);
         increment_statistic(context.statistics,

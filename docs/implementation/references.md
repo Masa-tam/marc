@@ -8003,3 +8003,13 @@ HashChain/BinaryTree limited-route contracts. Argument separation, boundary
 fixtures, and failure classification were independently applied to those
 local interfaces. No external compressor, hash-tree implementation, benchmark
 harness, source code, test suite, or performance result was consulted.
+
+### IR-0880
+
+The Sparse pool-rejection diagnostic uses DD-1119, TVG-0981, the committed
+repository-owned `pool_rejected_chain` transition and promotion transaction,
+and marc's existing saturating match-finder statistic/report conventions.
+The success-only increment point and trigger-accounting invariant were
+independently derived from those local contracts. No external compressor,
+hash-tree implementation, diagnostic design, source code, benchmark harness,
+or test suite was consulted.

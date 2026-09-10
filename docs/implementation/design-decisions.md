@@ -22749,3 +22749,21 @@ canonical fingerprint with HashChain, require the Sparse options and explicit
 limit in the report, and reject malformed arity, capacity, zero/overflow
 limit, and insufficient policy. This remains a private measurement adapter,
 not a public match-finder strategy.
+
+## DD-1119: Sparse pool rejection is an explicit benchmark diagnostic
+
+- Date: 2026-09-11
+- Status: accepted
+
+Expose the already defined private `pool_rejected_chain` transition as the
+saturating `hash_tree_pool_rejections` benchmark counter. Increment it exactly
+once after the transactional promotion transition is committed and the
+promotion state returns to idle. A rejected bucket remains terminal Chain, so
+later queries must not increment the counter again.
+
+For full HashTree require every trigger to become a promotion and keep the new
+counter zero. For Sparse HashTree require triggers to equal promotions plus
+pool rejections using checked addition. Aggregate the counter across frames,
+print it with the existing private HashTree diagnostics, and test both a
+forced rejection and a non-rejecting frame report. This changes no finder
+choice, workspace, ABI, token, or encoded representation.

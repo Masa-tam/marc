@@ -14219,3 +14219,19 @@ equality, all aggregate classifications, a bounded prefix save, zero-work
 validation, resume without relaunch, and rejection of changed identity,
 noncanonical or corrupt checkpoints, invalid diagnostics, and mismatched
 fingerprints. Do not require the external Corpus for unit tests.
+
+### TVG-0981
+
+Construct a Sparse bucket whose completed Chain promotion needs more nodes
+than the configured pool. Require the transition to commit
+`pool_rejected_chain`, leave the pool empty, return promotion state to idle,
+and increment `hash_tree_pool_rejection_count` exactly once. Query the same
+terminal bucket again and require no retry or second increment.
+
+Require benchmark aggregation to add this counter without wraparound and the
+report to emit `hash_tree_pool_rejections`. Full HashTree statistics remain
+valid only when every trigger is promoted; Sparse statistics remain valid
+only when each trigger is accounted for by exactly one promotion or pool
+rejection. A normal limited Sparse smoke may report zero but must include the
+field. This is private measurement state and must not alter token identity or
+the public ABI.

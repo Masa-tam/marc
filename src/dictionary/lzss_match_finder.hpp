@@ -156,6 +156,7 @@ struct LzssMatchFinderStatistics {
     std::uint64_t hash_tree_trigger_query_count{};
     std::uint64_t hash_tree_tree_query_count{};
     std::uint64_t hash_tree_promotion_count{};
+    std::uint64_t hash_tree_pool_rejection_count{};
     std::uint64_t hash_tree_promotion_trigger_candidate_count{};
     std::uint64_t hash_tree_promotion_maximum_trigger_candidates{};
     std::uint64_t hash_tree_promotion_build_node_count{};

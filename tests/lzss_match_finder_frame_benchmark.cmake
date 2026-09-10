@@ -320,7 +320,8 @@ foreach(expected_line IN ITEMS
         "strategy=sparse-hash-tree-exact"
         "max_internal_buffered_bytes=${explicit_limit}"
         "sparse_hash_tree_pool_node_capacity=256"
-        "sparse_hash_tree_promotion_candidate_threshold=4")
+        "sparse_hash_tree_promotion_candidate_threshold=4"
+        "hash_tree_pool_rejections=0")
     string(FIND "${limited_sparse_report}" "${expected_line}\n" line_offset)
     if(line_offset EQUAL -1)
         message(FATAL_ERROR

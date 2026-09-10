@@ -479,6 +479,8 @@ struct FrameRunResult {
                       frame.hash_tree_tree_query_count)
         || !add_count(total.hash_tree_promotion_count,
                       frame.hash_tree_promotion_count)
+        || !add_count(total.hash_tree_pool_rejection_count,
+                      frame.hash_tree_pool_rejection_count)
         || !add_count(total.hash_tree_promotion_trigger_candidate_count,
                       frame.hash_tree_promotion_trigger_candidate_count)
         || !add_count(total.hash_tree_promotion_build_node_count,
@@ -720,12 +722,24 @@ void print_hash_tree_depth_histograms(
 [[nodiscard]] bool valid_hash_tree_statistics(
     const LzssMatchFinderStatistics& statistics,
     const bool require_every_trigger_promoted = true) noexcept {
+    std::uint64_t accounted_triggers{};
+    if (!marc::core::checked_add(
+            statistics.hash_tree_promotion_count,
+            statistics.hash_tree_pool_rejection_count,
+            accounted_triggers)) {
+        return false;
+    }
     if (statistics.overflowed
         || statistics.hash_tree_promotion_count
             > statistics.hash_tree_trigger_query_count
+        || statistics.hash_tree_pool_rejection_count
+            > statistics.hash_tree_trigger_query_count
         || (require_every_trigger_promoted
             && statistics.hash_tree_trigger_query_count
-                != statistics.hash_tree_promotion_count)) {
+                != statistics.hash_tree_promotion_count)
+        || (!require_every_trigger_promoted
+            && statistics.hash_tree_trigger_query_count
+                != accounted_triggers)) {
         return false;
     }
     std::uint64_t route_queries{};
@@ -1548,6 +1562,8 @@ void print_frame_report(
               << statistics.hash_tree_tree_query_count << '\n'
               << "hash_tree_promotions="
               << statistics.hash_tree_promotion_count << '\n'
+              << "hash_tree_pool_rejections="
+              << statistics.hash_tree_pool_rejection_count << '\n'
               << "hash_tree_promotion_trigger_candidates="
               << statistics.hash_tree_promotion_trigger_candidate_count
               << '\n'

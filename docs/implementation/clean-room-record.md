@@ -30201,3 +30201,26 @@ both bounds.
 - Local validation: the new large-window calculator boundary and complete
   frame-benchmark smoke pass under MSVC and ClangCL; the documentation
   verifier passes. No Silesia performance point was measured in this slice.
+
+## CR-1212: 2026-09-11 - Sparse pool-rejection diagnostic
+
+- Authoring method: surfaced an existing committed Sparse transition outcome
+  through marc's optional saturating diagnostics and private benchmark report.
+- References used: DD-1119, IR-0880, TVG-0981, the local Sparse controller,
+  promotion-state transaction, match-finder statistics, and benchmark
+  aggregation contracts.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, source code, diagnostic scheme, benchmark harness,
+  test suite, performance result, or analysis.
+- Independent decisions: count only a successfully committed terminal-Chain
+  rejection; never retry or recount it; and require checked trigger accounting
+  separately for full and Sparse HashTree.
+- Generated-code task description: expose the minimum private diagnostic
+  needed to distinguish insufficient Sparse pool capacity during the frozen
+  large-window experiment, with focused transition and report tests.
+- Similarity review: the counter follows only marc-owned state transitions and
+  statistic conventions. No external implementation expression was copied or
+  translated.
+- Local validation: the forced-rejection controller test, large-window
+  workspace boundary test, and complete frame-benchmark smoke pass under
+  MSVC. ClangCL and full-suite validation follow before experiment execution.
