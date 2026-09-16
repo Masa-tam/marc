@@ -30540,3 +30540,25 @@ both bounds.
   216-point order, report and workspace corruption, Exact mismatch, 3-plus-213
   resume, complete zero-child regeneration, failure atomicity, and stale-output
   refusal. No real benchmark child or Corpus measurement was run.
+
+## CR-1224: 2026-09-17 - Manifest-driven reuse-gate complete local gate
+
+- Authoring method: ran the repository's complete generated CTest inventory on
+  both supported local Windows toolchains after the manifest-driven runner and
+  its fake-benchmark tests were committed.
+- References used: DD-1124, IR-0887, TVG-0986, BM-0070, CR-1223, and the
+  repository-owned MSVC and ClangCL CTest presets.
+- Known implementations intentionally not consulted: external compressor,
+  benchmark result, tuning guide, workflow engine, source code, pseudocode, or
+  test suite.
+- Independent decisions: require both full toolchain inventories, retain the
+  600-second per-test ceiling, include interoperability schemas 1 through 57,
+  and keep real Silesia measurement outside this pre-measurement gate.
+- Generated-code task description: establish the complete local correctness
+  baseline before one-command execution of the fixed Sparse reuse experiment.
+- Similarity review: this step changed only marc-owned status and provenance
+  records. No external implementation expression was used.
+- Local validation: MSVC and ClangCL each pass 3491 of 3491 CTests. The final
+  `marc_interoperability_schema_compatibility` test passes in 111.73 seconds on
+  MSVC and 102.43 seconds on ClangCL, verifying schemas 1 through 57. No real
+  benchmark child or Corpus measurement was run.

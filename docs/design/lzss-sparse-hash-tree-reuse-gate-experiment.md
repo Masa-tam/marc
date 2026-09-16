@@ -184,7 +184,9 @@ reuse 2、4、8、16の各候補/windowを次で分類する。
 回帰試験は旧routeに新fieldが現れないこと、値1の旧route identity、値2の
 HashChain identityとworkspace差、`UINT8_MAX`受理、zeroと`UINT8_MAX + 1`、
 引数不足・過剰および
-不十分なhard limitの拒否をMSVCとClangCLで検証する。Corpus測定、runner実装、
-実Corpus checkpoint作成および性能上の採否判断はまだ行っていない。手順4と5の
+不十分なhard limitの拒否をMSVCとClangCLで検証する。実Corpus checkpoint作成、
+実Corpus測定および性能上の採否判断はまだ行っていない。手順4と5の
 versioned JSON正本、strict runner、一回起動、point単位atomic checkpoint、再開、
 完全checkpointからの無測定再生成およびfake 216点gridは実装・検証済みである。
+手順6の事前品質ゲートとして、MSVCとClangCLの完全CTestはそれぞれ
+3491件を通過した。これにはschema 1から57の相互運用互換性検証も含まれる。
