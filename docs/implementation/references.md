@@ -8045,3 +8045,15 @@ legacy-equivalent value one, and staged correctness gates were independently
 derived from those local contracts. No external compressor, hash-tree
 implementation, cache policy, admission algorithm, source code, performance
 analysis, pseudocode, tuning advice, or test suite was consulted.
+
+### IR-0884
+
+The fixed Sparse HashTree reuse-gate experiment uses DD-1121, DD-1122,
+TVG-0984, BM-0069, CR-1215 through CR-1219, the repository-owned checked
+workspace calculator, Exact token fingerprint, Silesia manifest, strict
+runner conventions, and the completed large-window result bound to commit
+`5c3106e6`. The single fixed pool and candidate threshold, independent reuse
+series, 216-point order, memory endpoints, dual baselines, and classifications
+were selected before new performance measurement. No external compressor,
+hash-tree implementation, admission algorithm, benchmark harness, source code,
+performance result, tuning advice, pseudocode, or test suite was consulted.

@@ -30424,3 +30424,31 @@ both bounds.
   final `marc_interoperability_schema_compatibility` test passes in 112.91 and
   103.07 seconds respectively; total real times are 458.89 and 388.60 seconds.
   No Corpus performance measurement was performed.
+
+## CR-1220: 2026-09-16 - Fixed Sparse reuse-gate experiment design
+
+- Authoring method: derived one single-variable matrix from the completed
+  large-window result only after the repeated-use implementation passed its
+  bounded-state, Exact identity, and complete local gates.
+- References used: DD-1121 through DD-1123, IR-0883, IR-0884, TVG-0984,
+  TVG-0985, BM-0069, CR-1215 through CR-1219, commit `5c3106e6`, and marc's
+  repository-owned Silesia, workspace, fingerprint, diagnostic, and restart
+  contracts.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, cache or admission algorithm, benchmark harness,
+  source code, performance result, tuning advice, pseudocode, or test suite.
+- Independent decisions: fix the prior common best pool 4,096 and candidate
+  threshold 64; vary only reuse values 1, 2, 4, 8, and 16; retain HashChain and
+  reuse one as separate controls; freeze 216 process-isolated records; require
+  exact checked memory endpoints; and classify gains against both controls
+  before measurement.
+- Generated-code task description: specify a network-free, content-bound,
+  restart-safe Silesia experiment that isolates repeated-use admission without
+  changing any public strategy, format, ABI, profile, or decoder behavior.
+- Similarity review: the design combines only marc-owned prior evidence and
+  validation conventions. No external implementation or benchmark expression
+  was copied or translated.
+- Local validation: documentation layout must retain the fixed matrix, memory
+  endpoints, private route, independent schema, five-field Exact gate, bounded
+  checkpoint behavior, and all six predeclared classifications. No Corpus
+  performance measurement was performed.

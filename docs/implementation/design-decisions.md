@@ -22833,3 +22833,24 @@ HashChain identity before defining a new fixed Silesia matrix. This is a
 mechanism-level hot-bucket-selection experiment, not another post-result pool
 or candidate-threshold tuning pass, and remains private regardless of unit-test
 success.
+
+## DD-1123: Reuse-gate measurement isolates one admission variable
+
+- Date: 2026-09-16
+- Status: accepted
+
+Freeze the first repeated-use measurement to the prior common best 4,096-node
+pool and candidate threshold 64 at 4, 16, and 64 MiB. Compare one HashChain
+baseline with Sparse reuse thresholds 1, 2, 4, 8, and 16 for every verified
+Silesia member, yielding 216 process-isolated records. Reuse value one is the
+legacy Sparse internal control; only the remaining four points exercise the
+new gate. Do not add a pool, candidate threshold, reuse value, or member after
+observing results.
+
+Keep a distinct private benchmark spelling and result schema so the previous
+route, checkpoint, and evidence remain stable. Require five-field Exact
+identity, fixed checked workspace values, content-bound atomic restart, and
+strict diagnostic accounting. Evaluate gated candidates independently against
+both HashChain and reuse one. Only a candidate with aggregate and broad gains
+against both controls plus at most 10% workspace premium may proceed to a
+public-admission design; measurement alone never publishes it.

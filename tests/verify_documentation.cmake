@@ -741,6 +741,39 @@ foreach(required_sparse_hash_tree_reuse_gate_term IN ITEMS
     endif()
 endforeach()
 
+set(lzss_sparse_hash_tree_reuse_gate_experiment_design
+    "${source_dir}/docs/design/lzss-sparse-hash-tree-reuse-gate-experiment.md")
+file(READ "${lzss_sparse_hash_tree_reuse_gate_experiment_design}"
+    lzss_sparse_hash_tree_reuse_gate_experiment_content)
+foreach(required_sparse_hash_tree_reuse_gate_experiment_term IN ITEMS
+        "Sparse HashTree 反復利用ゲート固定実験"
+        "sparse pool-node capacity            4,096"
+        "sparse promotion candidate threshold 64"
+        "sparse promotion reuse thresholds   1; 2; 4; 8; 16"
+        "planned records                      12 * 3 * (1 + 5) = 216"
+        "Sparse reuse 2..16 | 269,438,976 | 336,547,840"
+        "sparse-hash-tree-reuse-gated-exact"
+        "sparse_hash_tree_promotion_reuse_threshold"
+        "marc-silesia-sparse-hash-tree-reuse-gate-v1"
+        "token_fingerprint_sha256"
+        "--max-new-points N"
+        "aggregate_hash_chain_gain"
+        "aggregate_legacy_gain"
+        "broad_hash_chain_gain"
+        "broad_legacy_gain"
+        "low_workspace_premium"
+        "pool_pressure_reduced"
+        "public selector")
+    string(FIND "${lzss_sparse_hash_tree_reuse_gate_experiment_content}"
+        "${required_sparse_hash_tree_reuse_gate_experiment_term}"
+        required_sparse_hash_tree_reuse_gate_experiment_term_offset)
+    if(required_sparse_hash_tree_reuse_gate_experiment_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete Sparse HashTree reuse-gate experiment design: "
+            "${required_sparse_hash_tree_reuse_gate_experiment_term}")
+    endif()
+endforeach()
+
 set(lzss_contextual_adaptive_huffman_window_16m_design
     "${source_dir}/docs/design/lzss-contextual-adaptive-huffman-window-16m.md")
 file(READ "${lzss_contextual_adaptive_huffman_window_16m_design}"

@@ -40,6 +40,8 @@ navigate chronological development records.
   fixed 4/16/64-MiB Silesia matrix for bounded hot-bucket-tree reevaluation.
 - [LZSS Sparse HashTree reuse gate](design/lzss-sparse-hash-tree-reuse-gate.md):
   bounded repeated-query admission hypothesis for private hot-bucket selection.
+- [LZSS Sparse HashTree reuse-gate experiment](design/lzss-sparse-hash-tree-reuse-gate-experiment.md):
+  fixed 216-point Silesia matrix isolating repeated-query admission.
 - [LZSS BinaryTree Exact 16 MiB benchmark](design/lzss-binary-tree-window-16m-benchmark.md):
   bounded Silesia comparison of the global AVL and HashChain strategies.
 - [Silesia external benchmark profile](design/silesia-benchmark-profile.md):

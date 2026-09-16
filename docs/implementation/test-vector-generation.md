@@ -14289,3 +14289,24 @@ repetitive, transient-hot, and boundary inputs, compare Exhaustive, HashChain,
 legacy Sparse, and reuse-gated Sparse in all five Exact identity fields. Do not
 use external Corpus timing as a unit-test success condition and do not define
 the performance matrix until these gates pass.
+
+### TVG-0985
+
+Freeze a 216-record canonical grid ordered by Silesia manifest member, 4/16/64
+MiB window, HashChain, and Sparse reuse thresholds 1, 2, 4, 8, and 16. Hold the
+Sparse pool at 4,096 nodes and candidate threshold at 64. For threshold one,
+require the historical workspace and empty count view; for every gated value,
+require exactly 65,536 additional bytes at these windows. Test all documented
+workspace and aggregate endpoints, exact-limit success, one-byte-short refusal,
+zero and `UINT8_MAX` argument boundaries, and preservation of the old benchmark
+route.
+
+Use a fake benchmark to exercise the full grid, bounded interruption and
+resume, zero-work validation, non-prefix and identity corruption rejection,
+and final aggregation without launching real measurements. Require every
+Sparse report to equal its HashChain baseline and all sibling reuse reports in
+token count, literal count, match count, matched bytes, and lowercase SHA-256
+fingerprint. Validate query/histogram mass, promotion accounting, pool bounds,
+finite timing, and all option echoes before checkpoint persistence. Compute
+the six predeclared classifications descriptively; performance must not alter
+runner success or add a new matrix point.
