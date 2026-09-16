@@ -2408,3 +2408,29 @@ their trigger totals. A zero-work rerun revalidated progress `3/360` without
 launching a process. These values prove the executable, strict validator,
 pool-pressure diagnostic, atomic checkpoint, and resume identity are connected;
 they are not a performance conclusion.
+
+### BM-0069: Fixed Sparse HashTree large-window result
+
+The complete MSVC Release experiment at commit `5c3106e6` finished all 360
+process-isolated records: twelve verified Silesia members, three windows, one
+HashChain baseline per member/window, and nine Sparse pool/threshold
+conditions. Every candidate matched its baseline in token, literal, match,
+and matched-byte counts and canonical token fingerprint. Zero-work resume
+validation accepted the complete canonical checkpoint without launching a
+process.
+
+The best aggregate Sparse condition at every window was pool 4,096 and
+threshold 64:
+
+| Window | HashChain MiB/s | Sparse MiB/s | Sparse / HashChain | Sparse wins | Workspace ratio | Pool rejections |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 MiB | 0.435927 | 0.393705 | 0.903146 | 1 / 12 | 1.023911 | 213,754 |
+| 16 MiB | 0.155423 | 0.146837 | 0.944754 | 1 / 12 | 1.006117 | 391,200 |
+| 64 MiB | 0.094125 | 0.086622 | 0.920290 | 1 / 12 | 1.001538 | 406,314 |
+
+None of the 27 candidates achieved aggregate or broad gain; 24 met the
+predeclared low-workspace-premium threshold, but every candidate observed pool
+pressure. The tested policy therefore remains private and is not added to the
+selector, ABI, CLI, profile, or format. The ignored canonical result JSON has
+SHA-256
+`cdd526d40ef81406ec2cd87bb91799e3dc30ab400290a9152f5dfa2869ab8e95`.

@@ -697,6 +697,11 @@ foreach(required_sparse_hash_tree_large_window_term IN ITEMS
         "token_fingerprint_sha256"
         "--max-new-points N"
         "aggregate_gain"
+        "## 9. 確定結果と採否判断"
+        "0.944754"
+        "pool_pressure_observed`は27候補すべてでtrue"
+        "測定したSparse HashTree policyをpublic strategy"
+        "cdd526d40ef81406ec2cd87bb91799e3dc30ab400290a9152f5dfa2869ab8e95"
         "public selector")
     string(FIND "${lzss_sparse_hash_tree_large_window_content}"
         "${required_sparse_hash_tree_large_window_term}"
@@ -1590,6 +1595,21 @@ foreach(heading IN LISTS benchmark_record_headings)
     math(EXPR expected_benchmark_record "${expected_benchmark_record} + 1")
 endforeach()
 list(LENGTH benchmark_record_headings benchmark_record_count)
+foreach(required_sparse_result_term IN ITEMS
+        "### BM-0069: Fixed Sparse HashTree large-window result"
+        "0.903146"
+        "0.944754"
+        "0.920290"
+        "None of the 27 candidates achieved aggregate or broad gain"
+        "cdd526d40ef81406ec2cd87bb91799e3dc30ab400290a9152f5dfa2869ab8e95")
+    string(FIND "${benchmark_content}" "${required_sparse_result_term}"
+        required_sparse_result_term_offset)
+    if(required_sparse_result_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete Sparse HashTree large-window result: "
+            "${required_sparse_result_term}")
+    endif()
+endforeach()
 
 set(fuzzing_document "${source_dir}/docs/fuzzing.md")
 file(READ "${fuzzing_document}" fuzzing_content)

@@ -22786,3 +22786,28 @@ all five token-summary fields to equal the immediately preceding HashChain
 baseline. Support bounded batches and zero-work validation; emit the final
 schema only after all 360 records exist. Classifications describe the fixed
 result but never change the runner exit status or public strategy.
+
+## DD-1121: Sparse HashTree remains private after the large-window matrix
+
+- Date: 2026-09-16
+- Status: accepted
+
+Do not promote the tested Sparse HashTree policy to a public strategy,
+automatic selector, default, or codec profile. The complete MSVC Release
+matrix at commit `5c3106e6` preserved the five-field Exact identity at all
+360 points, but no one of the 27 Sparse candidates achieved aggregate gain or
+broad gain. Every candidate also observed pool pressure.
+
+The best aggregate condition at every window was the 4,096-node pool with
+threshold 64. It reached only 0.903146, 0.944754, and 0.920290 times HashChain
+throughput at 4, 16, and 64 MiB and won only one of twelve members at each
+window. The relative improvement through 16 MiB did not continue at 64 MiB.
+Larger pools reduced more chain candidates in selected members but did not
+recover their promotion, maintenance, and memory costs.
+
+Retain the private implementation, explicit-limit benchmark route,
+diagnostics, strict runner, and ignored result as reproducible negative-result
+research infrastructure. Do not tune another pool or threshold against this
+same result. A later reevaluation requires a separately frozen hypothesis
+that directly changes promotion construction, terminal rejection, or hot-
+bucket selection while preserving the Exact and bounded-memory gates.

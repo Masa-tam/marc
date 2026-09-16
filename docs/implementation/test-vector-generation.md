@@ -14253,3 +14253,20 @@ summary. Require the final fake result to contain three baseline aggregates,
 27 Sparse aggregates, 27 comparisons, and independently computed gain,
 breadth, workspace-premium, and pool-pressure classifications without making
 performance a test pass condition.
+
+### TVG-0983
+
+Run the committed fixed runner over all twelve verified Silesia members at
+4-, 16-, and 64-MiB windows. Require all 360 canonical process records to pass
+the complete HashChain or Sparse report validator and every Sparse record to
+match its immediately preceding baseline in all five Exact identity fields.
+After every bounded point, require zero-work resume validation to launch no
+process and preserve the canonical prefix.
+
+Generate the final result from the complete checkpoint without relaunching a
+benchmark. Require three baseline aggregates, 27 Sparse aggregates, 27
+comparisons, and 360 unique condition keys. Apply the four classifications
+fixed before measurement and preserve an unfavorable result without tuning.
+The documentation regression test must retain the completed-result heading,
+best measured ratio, canonical result digest, and explicit non-admission
+decision.

@@ -154,3 +154,39 @@ validatorへ戻し、canonical prefixでなければ拒否する。
 6. MSVC、ClangCLと完全CTestを通した後、実Corpusをbounded batchで測る。
 7. 最終結果と採否判断を別commitで記録する。
 
+## 9. 確定結果と採否判断
+
+MSVC Release、commit
+`5c3106e68c679b9268a13c75f96033a98f523063`で固定matrixの全360点を
+完了した。全candidateは直前のHashChain baselineと`token_count`、
+`literal_count`、`match_count`、`matched_bytes`および
+`token_fingerprint_sha256`が一致した。checkpointのzero-work再検証は
+`360/360`を保ち、canonical最終JSONには3 baseline aggregate、27 Sparse
+aggregateおよび27 comparisonが存在する。
+
+各windowでaggregate throughput比が最大だった条件は、いずれも
+4,096-node pool、promotion threshold 64であった。
+
+| window | HashChain MiB/s | Sparse MiB/s | Sparse / HashChain | member勝数 | workspace比 | pool rejection |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 MiB | 0.435927 | 0.393705 | 0.903146 | 1 / 12 | 1.023911 | 213,754 |
+| 16 MiB | 0.155423 | 0.146837 | 0.944754 | 1 / 12 | 1.006117 | 391,200 |
+| 64 MiB | 0.094125 | 0.086622 | 0.920290 | 1 / 12 | 1.001538 | 406,314 |
+
+`aggregate_gain`と`broad_gain`は全27候補でfalseであり、事前に定めた
+有力候補条件を満たすものはない。`low_workspace_premium`は24候補でtrue
+だったが、`pool_pressure_observed`は27候補すべてでtrueだった。16 MiBまで
+見えた相対改善も64 MiBでは継続せず、poolを増やした候補はpromotionの構築・
+維持費を探索候補削減で回収できなかった。
+
+従って、測定したSparse HashTree policyをpublic strategy、自動selector、
+既定値またはprofileへ採用しない。private実装、明示limit付きbenchmark経路、
+診断、strict runnerおよびcheckpoint形式は、Exact oracle、負の結果、ならびに
+将来の別仮説を事前設計して検証する基盤として保持する。同じCorpus結果を見た
+後にpoolまたはthresholdだけを追加調整しない。再評価には、promotion構築費、
+terminal rejectionまたはhot-bucket選択のいずれかを直接変える新しい仮説と、
+独立した固定実験が必要である。
+
+管理対象外のcanonical結果JSONのSHA-256は
+`cdd526d40ef81406ec2cd87bb91799e3dc30ab400290a9152f5dfa2869ab8e95`
+である。

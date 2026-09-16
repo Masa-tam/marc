@@ -30256,3 +30256,33 @@ both bounds.
   commit `08e84ec5`, preserved full Exact identity, observed pool rejection,
   and passed zero-work checkpoint validation. No conclusion was drawn from
   this partial result.
+
+## CR-1214: 2026-09-16 - Sparse HashTree large-window result
+
+- Authoring method: resumed the committed canonical checkpoint one validated
+  point at a time, performed zero-work validation after every point, and
+  generated the final aggregate from the completed checkpoint without
+  relaunching a benchmark process.
+- References used: DD-1117 through DD-1121, IR-0878 through IR-0882,
+  TVG-0980 through TVG-0983, BM-0068, BM-0069, commit `5c3106e6`, and the
+  locally verified Silesia Corpus.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, source code, benchmark result, performance
+  analysis, tuning advice, pseudocode, or test suite.
+- Independent decisions: apply the four predeclared classifications without
+  changing their thresholds; preserve the unfavorable aggregate result;
+  decline public admission; retain the private reproducibility surface; and
+  require a new mechanism-level hypothesis before another evaluation.
+- Generated-code task description: complete and validate the frozen 360-point
+  matrix, emit the canonical aggregate, report the predeclared classifications,
+  and record the non-admission decision without tuning against the result.
+- Similarity review: measurement and interpretation use only marc-owned
+  executables, tools, schemas, diagnostics, and precommitted decision rules.
+  No external implementation or performance-analysis expression was copied
+  or translated.
+- Local validation: all 360 records, three baseline aggregates, 27 Sparse
+  aggregates, and 27 comparisons pass strict runner validation; every Exact
+  fingerprint matches; zero-work resume reports `360/360`; and all 360
+  condition keys are unique. The result is bound to full revision
+  `5c3106e68c679b9268a13c75f96033a98f523063`; its SHA-256 is
+  `cdd526d40ef81406ec2cd87bb91799e3dc30ab400290a9152f5dfa2869ab8e95`.

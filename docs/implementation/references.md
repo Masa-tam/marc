@@ -8024,3 +8024,13 @@ canonical order, strict restart identity, trigger accounting, and result
 classifications were specified locally before measurement. No external
 compressor, hash-tree implementation, benchmark harness, source code,
 performance result, tuning advice, or test suite was consulted.
+
+### IR-0882
+
+The completed Sparse HashTree large-window result and non-admission decision
+use DD-1117 through DD-1121, TVG-0980 through TVG-0983, BM-0068 and BM-0069,
+the repository-owned runner and benchmark at commit `5c3106e6`, and the
+locally verified Silesia Corpus. The result interpretation applies only the
+four classifications fixed before measurement. No external compressor,
+hash-tree implementation, source code, benchmark result, performance
+analysis, tuning advice, pseudocode, or test suite was consulted.
