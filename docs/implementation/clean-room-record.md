@@ -30373,3 +30373,30 @@ both bounds.
   threshold and view rejection, controller-level commit reset, and Exact
   agreement across promotion and retirement. No Corpus performance measurement
   was performed in this implementation stage.
+
+## CR-1218: 2026-09-16 - Sparse reuse-gate Exact identity gate
+
+- Authoring method: extended the existing repository-owned typed-token Exact
+  comparison helper with a reuse-threshold input, then applied identical input
+  and LZSS parameters to the legacy and gated Sparse paths.
+- References used: DD-1122, IR-0883, TVG-0984, CR-1217, and marc's existing
+  Exhaustive, HashChain, private tree-finder, typed-token, and canonical token
+  serialization tests.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, test vectors, source code, pseudocode, benchmark,
+  or tuning advice.
+- Independent decisions: compare binary coverage, a 257-byte one-symbol run,
+  and repetitions spanning a 32-byte window boundary; exercise reuse values
+  one, two, and `UINT8_MAX`; and require equality both as typed tokens and as
+  canonical serialized bytes.
+- Generated-code task description: prove that delayed or absent Sparse
+  promotion changes only private search work and never the selected LZSS token
+  sequence or its canonical byte representation.
+- Similarity review: all inputs are generated locally from simple deterministic
+  rules, and the comparison reuses only marc-owned Exact oracles and
+  serializers. No external test expression was copied or translated.
+- Local validation: warning-clean MSVC and ClangCL builds both pass the new
+  typed-token identity test together with all eight Sparse match-finder tests.
+  The threshold-two bytewise fixture also crosses promotion and retirement,
+  while the typed-token fixture covers legacy, gated, and saturation-limit
+  behavior. No Corpus performance measurement was performed.

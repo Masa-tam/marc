@@ -104,4 +104,8 @@ viewを要求する。値0、長さ不一致および未初期化stateはquery�
 同一bucketのqualifying queryだけを飽和加算し、non-qualifying queryはそのbucketだけを
 resetする。他bucketは独立し、pending中の再通知は冪等である。promotion commitが
 成功した場合だけ対象bucketをresetし、失敗したtransactionはcountを保持する。
-Corpus性能測定はまだ開始しておらず、次段階はSection 4のExact identity拡張である。
+Section 4の段階5では、binary、単一値反復およびwindow境界入力を、従来値1、
+ゲート有効値2および飽和上限値`UINT8_MAX`でtyped-token列とcanonical byte列まで
+Exhaustive、HashChain、既存tree finderおよび従来Sparseと比較し、Exact identityを
+確認した。Corpus性能測定はまだ開始しておらず、次段階は両toolchainの完全CTestで
+ある。

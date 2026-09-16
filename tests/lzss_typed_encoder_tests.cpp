@@ -9,6 +9,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <span>
 #include <string_view>
 #include <vector>
@@ -72,7 +73,8 @@ void expect_private_match_finders_typed_equal_exact(
     const std::span<const std::byte> input,
     const LzssParameters& parameters = {},
     const LzssTypedTokenVariant variant =
-        LzssTypedTokenVariant::field_context_64k) {
+        LzssTypedTokenVariant::field_context_64k,
+    const std::uint8_t sparse_reuse_threshold = 1) {
     const auto reference_plan = plan_lzss_typed_tokens(
         input, parameters, {}, variant);
     ASSERT_EQ(reference_plan.error, LzssTypedEncodeError::none);
@@ -187,9 +189,10 @@ void expect_private_match_finders_typed_equal_exact(
         ? 0U
         : std::min<std::size_t>(input.size(), parameters.window_size);
     const LzssSparseHashTreeMatchFinderOptions sparse_options{
-        sparse_capacity, 0};
+        sparse_capacity, 0, sparse_reuse_threshold};
     const auto sparse_required = calculate_lzss_sparse_hash_tree_workspace(
-        input.size(), parameters, {}, sparse_capacity);
+        input.size(), parameters, {}, sparse_capacity,
+        sparse_reuse_threshold);
     ASSERT_EQ(sparse_required.error, LzssSparseHashTreeError::none);
     AlignedWorkspace sparse_owner(sparse_required.workspace_size);
     auto sparse_workspace = sparse_owner.bytes(sparse_required.workspace_size);
@@ -631,6 +634,47 @@ TEST(LzssTypedEncoder, PrivateMatchFinderEntriesMatchExactTokensAndBytes) {
     extended.window_size = 1U << 20;
     expect_private_match_finders_typed_equal_exact(
         all_values, extended, LzssTypedTokenVariant::field_context_1m);
+}
+
+TEST(LzssTypedEncoder,
+     SparseReuseGateMatchesExactTokensAcrossInputClasses) {
+    LzssParameters parameters{};
+    parameters.window_size = 32;
+    parameters.max_match_length = 15;
+
+    std::vector<std::byte> binary_unit{};
+    binary_unit.reserve(128);
+    for (std::uint32_t value = 0; value < 128; ++value) {
+        binary_unit.push_back(static_cast<std::byte>(value));
+    }
+    std::vector<std::byte> binary{binary_unit};
+    binary.insert(binary.end(), binary_unit.begin(), binary_unit.end());
+
+    std::vector<std::byte> repeated(257, std::byte{0xa5});
+
+    std::vector<std::byte> boundary_unit{};
+    boundary_unit.reserve(33);
+    for (std::size_t index = 0; index < 33; ++index) {
+        boundary_unit.push_back(
+            static_cast<std::byte>((index * 37U) & 0xffU));
+    }
+    std::vector<std::byte> boundary{};
+    boundary.reserve(boundary_unit.size() * 4U);
+    for (std::size_t repetition = 0; repetition < 4; ++repetition) {
+        boundary.insert(
+            boundary.end(), boundary_unit.begin(), boundary_unit.end());
+    }
+
+    for (const auto& input : {binary, repeated, boundary}) {
+        expect_private_match_finders_typed_equal_exact(
+            input, parameters, LzssTypedTokenVariant::field_context_64k, 1);
+        expect_private_match_finders_typed_equal_exact(
+            input, parameters, LzssTypedTokenVariant::field_context_64k, 2);
+    }
+
+    expect_private_match_finders_typed_equal_exact(
+        boundary, parameters, LzssTypedTokenVariant::field_context_64k,
+        std::numeric_limits<std::uint8_t>::max());
 }
 
 TEST(LzssTypedEncoder, BinaryTreePrivateEntryFailuresAreAtomicAndBounded) {
