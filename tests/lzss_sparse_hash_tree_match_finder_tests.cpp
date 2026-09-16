@@ -74,9 +74,11 @@ TEST(LzssSparseHashTreeMatchFinder,
     LzssParameters parameters{};
     parameters.window_size = 32;
     parameters.max_match_length = 12;
-    const auto options = full_pool_options(input.size(), parameters);
+    auto options = full_pool_options(input.size(), parameters);
+    options.promotion_reuse_threshold = 2;
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
-        input.size(), parameters, {}, options.pool_node_capacity);
+        input.size(), parameters, {}, options.pool_node_capacity,
+        options.promotion_reuse_threshold);
     ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
     auto storage = make_storage(required.workspace_size);
     LzssMatchFinderStatistics statistics{};
@@ -172,8 +174,15 @@ TEST(LzssSparseHashTreeMatchFinder,
     LzssParameters parameters{};
     parameters.window_size = 10;
     auto options = full_pool_options(input.size(), parameters);
-    options.pool_node_capacity = 11;
+    options.promotion_reuse_threshold = 0;
     LzssSparseHashTreeMatchFinder finder{};
+    EXPECT_EQ(initialize_lzss_sparse_hash_tree_match_finder(
+                  input, parameters, {}, {}, finder, nullptr, options),
+              LzssSparseHashTreeMatchFinderError::invalid_parameters);
+    EXPECT_FALSE(finder.initialized());
+
+    options.promotion_reuse_threshold = 1;
+    options.pool_node_capacity = 11;
     EXPECT_EQ(initialize_lzss_sparse_hash_tree_match_finder(
                   input, parameters, {}, {}, finder, nullptr, options),
               LzssSparseHashTreeMatchFinderError::invalid_pool_capacity);

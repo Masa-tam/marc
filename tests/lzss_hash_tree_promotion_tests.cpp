@@ -2,9 +2,12 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <span>
+#include <vector>
 
 namespace {
 using namespace marc::dictionary::internal;
@@ -56,6 +59,62 @@ TEST(LzssHashTreePromotion, RepeatedCompletedQueryIsIdempotent) {
     EXPECT_EQ(state.phase(), LzssHashTreePromotionPhase::pending);
     EXPECT_EQ(state.active_bucket(), 4U);
     EXPECT_EQ(state.trigger_candidate_count(), 11U);
+}
+
+TEST(LzssHashTreePromotion, RequiresRepeatedExpensiveBucketQueries) {
+    LzssHashTreePromotionState state{};
+    initialize_lzss_hash_tree_promotion_state(4, 10, state, 3);
+    std::vector<std::uint8_t> counts(4);
+
+    EXPECT_FALSE(state.record_completed_chain_query(2, 11, counts).pending);
+    EXPECT_EQ(counts, (std::vector<std::uint8_t>{0, 0, 1, 0}));
+    EXPECT_FALSE(state.record_completed_chain_query(1, 11, counts).pending);
+    EXPECT_EQ(counts, (std::vector<std::uint8_t>{0, 1, 1, 0}));
+    EXPECT_FALSE(state.record_completed_chain_query(2, 10, counts).pending);
+    EXPECT_EQ(counts, (std::vector<std::uint8_t>{0, 1, 0, 0}));
+    EXPECT_FALSE(state.record_completed_chain_query(2, 12, counts).pending);
+    EXPECT_FALSE(state.record_completed_chain_query(2, 13, counts).pending);
+    EXPECT_TRUE(state.record_completed_chain_query(2, 14, counts).pending);
+    EXPECT_EQ(counts, (std::vector<std::uint8_t>{0, 1, 3, 0}));
+    ASSERT_TRUE(state.begin_advance().required);
+    EXPECT_EQ(state.commit(2, counts), LzssHashTreePromotionError::none);
+    EXPECT_EQ(counts, (std::vector<std::uint8_t>{0, 1, 0, 0}));
+    EXPECT_EQ(state.phase(), LzssHashTreePromotionPhase::idle);
+}
+
+TEST(LzssHashTreePromotion, MaximumReuseThresholdCannotWrap) {
+    LzssHashTreePromotionState state{};
+    initialize_lzss_hash_tree_promotion_state(
+        1, 0, state, std::numeric_limits<std::uint8_t>::max());
+    std::array<std::uint8_t, 1> counts{};
+    for (std::size_t query = 1;
+         query < std::numeric_limits<std::uint8_t>::max(); ++query) {
+        EXPECT_FALSE(state.record_completed_chain_query(0, 1, counts).pending);
+    }
+    EXPECT_EQ(counts[0], UINT8_MAX - 1U);
+    EXPECT_TRUE(state.record_completed_chain_query(0, 1, counts).pending);
+    EXPECT_EQ(counts[0], UINT8_MAX);
+    EXPECT_TRUE(state.record_completed_chain_query(0, 1, counts).pending);
+    EXPECT_EQ(counts[0], UINT8_MAX);
+}
+
+TEST(LzssHashTreePromotion, InvalidReuseStateIsStickyAndAtomic) {
+    LzssHashTreePromotionState invalid_threshold{};
+    initialize_lzss_hash_tree_promotion_state(
+        4, 10, invalid_threshold, 0);
+    EXPECT_FALSE(invalid_threshold.state_valid());
+    EXPECT_EQ(invalid_threshold.last_error(),
+              LzssHashTreePromotionError::invalid_reuse_threshold);
+
+    LzssHashTreePromotionState state{};
+    initialize_lzss_hash_tree_promotion_state(4, 10, state, 2);
+    std::array<std::uint8_t, 3> short_counts{1, 2, 3};
+    const auto record = state.record_completed_chain_query(
+        1, 11, short_counts);
+    EXPECT_EQ(record.error,
+              LzssHashTreePromotionError::invalid_reuse_counts);
+    EXPECT_EQ(short_counts, (std::array<std::uint8_t, 3>{1, 2, 3}));
+    EXPECT_FALSE(state.state_valid());
 }
 
 TEST(LzssHashTreePromotion, AdvanceBeginsAndMatchingCommitCompletes) {

@@ -34,17 +34,20 @@ struct AlignedStorage {
 }
 
 struct ControllerFixture {
-    explicit ControllerFixture(const std::size_t capacity = 4)
+    explicit ControllerFixture(
+        const std::size_t capacity = 4,
+        const std::uint8_t reuse_threshold = 1)
         : input(bytes("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
         parameters.window_size = 20;
         parameters.max_match_length = 5;
         const auto required = calculate_lzss_sparse_hash_tree_workspace(
-            input.size(), parameters, {}, capacity);
+            input.size(), parameters, {}, capacity, reuse_threshold);
         EXPECT_EQ(required.error, LzssSparseHashTreeError::none);
         storage = make_storage(required.workspace_size);
         EXPECT_EQ(initialize_lzss_sparse_hash_tree_workspace(
                       input.size(), parameters, {}, capacity,
-                      storage.bytes.first(required.workspace_size), workspace),
+                      storage.bytes.first(required.workspace_size), workspace,
+                      reuse_threshold),
                   LzssSparseHashTreeError::none);
         const auto hash = calculate_lzss_prefix_hash(input, 0);
         EXPECT_TRUE(hash.valid);
@@ -65,9 +68,11 @@ struct ControllerFixture {
         return {input, parameters, &workspace, &statistics, &promotion};
     }
 
-    void initialize_promotion(const std::uint64_t threshold) {
+    void initialize_promotion(
+        const std::uint64_t threshold,
+        const std::uint8_t reuse_threshold = 1) {
         initialize_lzss_hash_tree_promotion_state(
-            workspace.heads().size(), threshold, promotion);
+            workspace.heads().size(), threshold, promotion, reuse_threshold);
     }
 
     [[nodiscard]] LzssSparseHashTreeBucketBuildContext build_context(
@@ -84,6 +89,39 @@ struct ControllerFixture {
     LzssHashTreePromotionState promotion{};
     std::size_t bucket{};
 };
+
+TEST(LzssSparseHashTreeController,
+     RepeatedQueriesAloneUnlockPromotionAndCommitResetsCount) {
+    ControllerFixture fixture{8, 2};
+    fixture.initialize_promotion(0, 2);
+    for (const auto position : {0U, 5U, 10U}) {
+        ASSERT_EQ(insert_lzss_sparse_hash_tree_position(
+                      fixture.promotion_context(), position).error,
+                  LzssSparseHashTreeControllerError::none);
+    }
+
+    const auto first = query_lzss_sparse_hash_tree_exact(
+        fixture.promotion_context(), 15);
+    ASSERT_EQ(first.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(first.source, LzssSparseHashTreeQuerySource::chain);
+    EXPECT_EQ(fixture.promotion.phase(), LzssHashTreePromotionPhase::idle);
+    EXPECT_EQ(fixture.workspace.promotion_reuse_counts()[fixture.bucket], 1U);
+    ASSERT_EQ(insert_lzss_sparse_hash_tree_position(
+                  fixture.promotion_context(), 15).error,
+              LzssSparseHashTreeControllerError::none);
+
+    const auto second = query_lzss_sparse_hash_tree_exact(
+        fixture.promotion_context(), 20);
+    ASSERT_EQ(second.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(fixture.promotion.phase(), LzssHashTreePromotionPhase::pending);
+    EXPECT_EQ(fixture.workspace.promotion_reuse_counts()[fixture.bucket], 2U);
+    const auto inserted = insert_lzss_sparse_hash_tree_position(
+        fixture.promotion_context(), 20);
+    ASSERT_EQ(inserted.error, LzssSparseHashTreeControllerError::none);
+    EXPECT_EQ(fixture.workspace.modes()[fixture.bucket],
+              LzssSparseHashTreeBucketMode::promoted_tree);
+    EXPECT_EQ(fixture.workspace.promotion_reuse_counts()[fixture.bucket], 0U);
+}
 
 TEST(LzssSparseHashTreeController, InsertsCompleteChainDeterministically) {
     ControllerFixture fixture{};
@@ -374,6 +412,19 @@ TEST(LzssSparseHashTreeController,
         fixture.promotion_context(), 5);
     EXPECT_EQ(query.error,
               LzssSparseHashTreeControllerError::invalid_context);
+}
+
+TEST(LzssSparseHashTreeController,
+     MismatchedReuseViewRejectsContextBeforeQuery) {
+    ControllerFixture fixture{};
+    fixture.initialize_promotion(0, 2);
+    LzssMatchFinderStatistics statistics{};
+    const auto query = query_lzss_sparse_hash_tree_exact(
+        fixture.statistics_context(statistics), 5);
+    EXPECT_EQ(query.error,
+              LzssSparseHashTreeControllerError::invalid_context);
+    EXPECT_EQ(statistics.query_count, 0U);
+    EXPECT_EQ(fixture.promotion.phase(), LzssHashTreePromotionPhase::idle);
 }
 
 TEST(LzssSparseHashTreeController,

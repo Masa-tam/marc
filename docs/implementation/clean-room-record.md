@@ -30340,3 +30340,36 @@ both bounds.
   delta, legacy zero delta, exact aggregate success, one-byte-short limit and
   storage refusal, initialization, frame reset, and failed-publication checks.
   Documentation layout also passes under both toolchains.
+
+## CR-1217: 2026-09-16 - Sparse reuse-gate promotion connection
+
+- Authoring method: connected the repository-owned caller workspace to the
+  existing private promotion state, controller, match finder, and typed LZSS
+  entry only after fixing the per-bucket transitions and failure boundaries in
+  hand-checkable tests.
+- References used: DD-1122, IR-0883, TVG-0984, CR-1215, CR-1216, and marc's
+  existing Sparse promotion, controller, Exact match-finder, and checked
+  workspace contracts.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, cache or admission algorithm, source code,
+  promotion policy, pseudocode, or test suite.
+- Independent decisions: carry one reuse threshold through all private layers;
+  preserve the historical empty view and immediate promotion at value one;
+  reject value zero; reset only the observed bucket after a nonqualifying query
+  or successful commit; saturate at `UINT8_MAX`; make pending notifications
+  idempotent; and validate view identity before query statistics or state are
+  mutated.
+- Generated-code task description: connect the bounded repeated-use counter to
+  Sparse promotion timing without changing Exact selection, public API, stream
+  format, or the legacy threshold-one workspace and transition sequence.
+- Similarity review: the implementation extends only marc-owned state machines,
+  checked spans, sticky errors, and transactional commit rules. No external
+  implementation expression or admission-policy structure was copied or
+  translated.
+- Local validation: MSVC and ClangCL builds are warning-clean. Both run all 57
+  targeted promotion, controller, match-finder, pool, workspace, and private
+  typed-encoder tests successfully. The tests cover repeated same-bucket
+  admission, independent buckets, reset, saturation, idempotency, invalid
+  threshold and view rejection, controller-level commit reset, and Exact
+  agreement across promotion and retirement. No Corpus performance measurement
+  was performed in this implementation stage.

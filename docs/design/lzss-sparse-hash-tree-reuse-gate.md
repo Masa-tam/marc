@@ -91,3 +91,17 @@ promotion、tree-query再利用、build/maintenance費、pool rejectionを報告
 Exact不一致、非bounded state、workspace契約違反または失敗原子性違反は性能に
 かかわらず棄却する。正しさを満たしても構築・維持費を回収できなければ、負の
 結果として機構と証拠を保持し公開しない。
+
+## 6. 実装状況
+
+2026-09-16時点で、Section 4の段階1から4までをprivate実装へ接続した。
+`promotion_reuse_threshold`はmatch-finder option、checked workspace calculator、
+promotion stateおよびcontrollerで同じ値を共有する。threshold 1は空のcount viewを
+要求して従来遷移を維持し、threshold 2以上はbucket数と同じ長さのcaller-owned
+viewを要求する。値0、長さ不一致および未初期化stateはquery統計やcountを変更する
+前にsticky errorとして拒否する。
+
+同一bucketのqualifying queryだけを飽和加算し、non-qualifying queryはそのbucketだけを
+resetする。他bucketは独立し、pending中の再通知は冪等である。promotion commitが
+成功した場合だけ対象bucketをresetし、失敗したtransactionはcountを保持する。
+Corpus性能測定はまだ開始しておらず、次段階はSection 4のExact identity拡張である。

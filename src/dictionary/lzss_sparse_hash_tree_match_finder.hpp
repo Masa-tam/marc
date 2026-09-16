@@ -32,6 +32,7 @@ struct LzssSparseHashTreeMatchFinderOptions {
     std::size_t pool_node_capacity{};
     std::uint64_t promotion_candidate_threshold{
         std::numeric_limits<std::uint64_t>::max()};
+    std::uint8_t promotion_reuse_threshold{1};
 };
 
 class LzssSparseHashTreeMatchFinder {

@@ -2,6 +2,8 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <limits>
+#include <span>
 
 namespace marc::dictionary::internal {
 
@@ -20,7 +22,8 @@ void LzssHashTreePromotionState::clear_active() noexcept {
 LzssHashTreePromotionRecordResult
 LzssHashTreePromotionState::record_completed_chain_query(
     const std::size_t bucket,
-    const std::uint64_t candidate_count) noexcept {
+    const std::uint64_t candidate_count,
+    const std::span<std::uint8_t> reuse_counts) noexcept {
     if (!initialized_) {
         mark_error(LzssHashTreePromotionError::invalid_transition);
         return {false, last_error_};
@@ -28,6 +31,12 @@ LzssHashTreePromotionState::record_completed_chain_query(
     if (!state_valid_) return {false, last_error_};
     if (bucket >= bucket_count_) {
         mark_error(LzssHashTreePromotionError::invalid_bucket);
+        return {false, last_error_};
+    }
+    const auto expected_reuse_count = reuse_threshold_ == 1
+        ? std::size_t{0} : bucket_count_;
+    if (reuse_counts.size() != expected_reuse_count) {
+        mark_error(LzssHashTreePromotionError::invalid_reuse_counts);
         return {false, last_error_};
     }
     if (phase_ == LzssHashTreePromotionPhase::pending) {
@@ -44,7 +53,18 @@ LzssHashTreePromotionState::record_completed_chain_query(
     }
     if (candidate_count == 0
         || candidate_count <= candidate_threshold_) {
+        if (reuse_threshold_ > 1) reuse_counts[bucket] = 0;
         return {false, LzssHashTreePromotionError::none};
+    }
+
+    if (reuse_threshold_ > 1) {
+        auto& reuse_count = reuse_counts[bucket];
+        if (reuse_count != std::numeric_limits<std::uint8_t>::max()) {
+            ++reuse_count;
+        }
+        if (reuse_count < reuse_threshold_) {
+            return {false, LzssHashTreePromotionError::none};
+        }
     }
 
     phase_ = LzssHashTreePromotionPhase::pending;
@@ -74,7 +94,8 @@ LzssHashTreePromotionState::begin_advance() noexcept {
 }
 
 LzssHashTreePromotionError LzssHashTreePromotionState::commit(
-    const std::size_t bucket) noexcept {
+    const std::size_t bucket,
+    const std::span<std::uint8_t> reuse_counts) noexcept {
     if (!initialized_) {
         mark_error(LzssHashTreePromotionError::invalid_transition);
         return last_error_;
@@ -84,11 +105,18 @@ LzssHashTreePromotionError LzssHashTreePromotionState::commit(
         mark_error(LzssHashTreePromotionError::invalid_bucket);
         return last_error_;
     }
+    const auto expected_reuse_count = reuse_threshold_ == 1
+        ? std::size_t{0} : bucket_count_;
+    if (reuse_counts.size() != expected_reuse_count) {
+        mark_error(LzssHashTreePromotionError::invalid_reuse_counts);
+        return last_error_;
+    }
     if (phase_ != LzssHashTreePromotionPhase::building
         || bucket != active_bucket_) {
         mark_error(LzssHashTreePromotionError::invalid_transition);
         return last_error_;
     }
+    if (reuse_threshold_ > 1) reuse_counts[bucket] = 0;
     clear_active();
     return LzssHashTreePromotionError::none;
 }
@@ -96,12 +124,18 @@ LzssHashTreePromotionError LzssHashTreePromotionState::commit(
 void initialize_lzss_hash_tree_promotion_state(
     const std::size_t bucket_count,
     const std::uint64_t candidate_threshold,
-    LzssHashTreePromotionState& state) noexcept {
+    LzssHashTreePromotionState& state,
+    const std::uint8_t reuse_threshold) noexcept {
     LzssHashTreePromotionState initialized{};
     initialized.bucket_count_ = bucket_count;
     initialized.candidate_threshold_ = candidate_threshold;
+    initialized.reuse_threshold_ = reuse_threshold;
     initialized.initialized_ = true;
-    initialized.state_valid_ = true;
+    initialized.state_valid_ = reuse_threshold != 0;
+    if (!initialized.state_valid_) {
+        initialized.last_error_ =
+            LzssHashTreePromotionError::invalid_reuse_threshold;
+    }
     state = initialized;
 }
 

@@ -205,11 +205,18 @@ void record_population(
         || (context.workspace->heads().empty() && expected_links != 0)) {
         return false;
     }
-    return context.promotion_state == nullptr
-        || (context.promotion_state->initialized()
-            && context.promotion_state->state_valid()
-            && context.promotion_state->bucket_count()
-                == context.workspace->heads().size());
+    if (context.promotion_state == nullptr) return true;
+    if (!context.promotion_state->initialized()
+        || !context.promotion_state->state_valid()
+        || context.promotion_state->bucket_count()
+            != context.workspace->heads().size()) {
+        return false;
+    }
+    const auto expected_reuse_count =
+        context.promotion_state->reuse_threshold() == 1
+        ? std::size_t{0} : context.workspace->heads().size();
+    return context.workspace->promotion_reuse_counts().size()
+        == expected_reuse_count;
 }
 
 [[nodiscard]] LzssHashTreeBucketMutationContext mutation_context(
@@ -443,7 +450,8 @@ LzssSparseHashTreeQueryResult query_lzss_sparse_hash_tree_exact(
         && context.promotion_state != nullptr) {
         const auto recorded =
             context.promotion_state->record_completed_chain_query(
-                result.bucket, result.candidate_count);
+                result.bucket, result.candidate_count,
+                context.workspace->promotion_reuse_counts());
         result.promotion_error = recorded.error;
         if (recorded.error != LzssHashTreePromotionError::none) {
             result.error = LzssSparseHashTreeControllerError::promotion_failure;
@@ -511,7 +519,8 @@ promote_pending_lzss_sparse_hash_tree_bucket(
         result.error = LzssSparseHashTreeControllerError::commit_failure;
         return result;
     }
-    result.promotion_error = context.promotion_state->commit(begin.bucket);
+    result.promotion_error = context.promotion_state->commit(
+        begin.bucket, context.workspace->promotion_reuse_counts());
     if (result.promotion_error != LzssHashTreePromotionError::none) {
         result.error = LzssSparseHashTreeControllerError::promotion_failure;
         return result;

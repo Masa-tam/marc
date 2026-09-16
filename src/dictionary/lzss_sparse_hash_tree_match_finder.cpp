@@ -106,7 +106,8 @@ initialize_lzss_sparse_hash_tree_match_finder(
     LzssMatchFinderStatistics* const statistics,
     const LzssSparseHashTreeMatchFinderOptions& options) noexcept {
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
-        input.size(), parameters, limits, options.pool_node_capacity);
+        input.size(), parameters, limits, options.pool_node_capacity,
+        options.promotion_reuse_threshold);
     if (required.error != LzssSparseHashTreeError::none) {
         return map_lzss_sparse_hash_tree_match_finder_error(required.error);
     }
@@ -135,13 +136,14 @@ initialize_lzss_sparse_hash_tree_match_finder(
     initialized.statistics_ = statistics;
     const auto workspace_error = initialize_lzss_sparse_hash_tree_workspace(
         input.size(), parameters, limits, options.pool_node_capacity,
-        active_workspace, initialized.workspace_);
+        active_workspace, initialized.workspace_,
+        options.promotion_reuse_threshold);
     if (workspace_error != LzssSparseHashTreeError::none) {
         return map_lzss_sparse_hash_tree_match_finder_error(workspace_error);
     }
     initialize_lzss_hash_tree_promotion_state(
         required.bucket_count, options.promotion_candidate_threshold,
-        initialized.promotion_);
+        initialized.promotion_, options.promotion_reuse_threshold);
     initialize_lzss_sparse_hash_tree_advance_state(
         input.size(), initialized.advance_state_);
     initialized.initialized_ = true;

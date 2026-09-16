@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <span>
 
 namespace marc::dictionary::internal {
 
@@ -20,6 +21,8 @@ enum class LzssHashTreePromotionError : std::uint8_t {
     none,
     invalid_bucket,
     invalid_transition,
+    invalid_reuse_threshold,
+    invalid_reuse_counts,
 };
 
 struct LzssHashTreePromotionRecordResult {
@@ -46,6 +49,9 @@ public:
     [[nodiscard]] std::uint64_t candidate_threshold() const noexcept {
         return candidate_threshold_;
     }
+    [[nodiscard]] std::uint8_t reuse_threshold() const noexcept {
+        return reuse_threshold_;
+    }
     [[nodiscard]] LzssHashTreePromotionPhase phase() const noexcept {
         return phase_;
     }
@@ -61,21 +67,24 @@ public:
 
     [[nodiscard]] LzssHashTreePromotionRecordResult
     record_completed_chain_query(
-        std::size_t bucket, std::uint64_t candidate_count) noexcept;
+        std::size_t bucket, std::uint64_t candidate_count,
+        std::span<std::uint8_t> reuse_counts = {}) noexcept;
     [[nodiscard]] LzssHashTreePromotionBeginResult begin_advance() noexcept;
     [[nodiscard]] LzssHashTreePromotionError commit(
-        std::size_t bucket) noexcept;
+        std::size_t bucket,
+        std::span<std::uint8_t> reuse_counts = {}) noexcept;
 
 private:
     friend void initialize_lzss_hash_tree_promotion_state(
-        std::size_t, std::uint64_t,
-        LzssHashTreePromotionState&) noexcept;
+        std::size_t, std::uint64_t, LzssHashTreePromotionState&,
+        std::uint8_t) noexcept;
 
     void mark_error(LzssHashTreePromotionError error) noexcept;
     void clear_active() noexcept;
 
     std::size_t bucket_count_{};
     std::uint64_t candidate_threshold_{};
+    std::uint8_t reuse_threshold_{1};
     LzssHashTreePromotionPhase phase_{LzssHashTreePromotionPhase::idle};
     std::size_t active_bucket_{lzss_hash_tree_no_promotion_bucket};
     std::uint64_t trigger_candidate_count_{};
@@ -87,7 +96,8 @@ private:
 
 void initialize_lzss_hash_tree_promotion_state(
     std::size_t bucket_count, std::uint64_t candidate_threshold,
-    LzssHashTreePromotionState& state) noexcept;
+    LzssHashTreePromotionState& state,
+    std::uint8_t reuse_threshold = 1) noexcept;
 
 } // namespace marc::dictionary::internal
 

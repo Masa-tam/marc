@@ -736,7 +736,8 @@ LzssTypedEncodeResult encode_lzss_typed_tokens_sparse_hash_tree_single_pass(
     }
 
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
-        input.size(), parameters, limits, options.pool_node_capacity);
+        input.size(), parameters, limits, options.pool_node_capacity,
+        options.promotion_reuse_threshold);
     if (required.error != LzssSparseHashTreeError::none) {
         return typed_sparse_hash_tree_failure(
             input.size(),
