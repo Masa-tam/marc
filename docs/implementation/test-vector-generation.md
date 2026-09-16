@@ -14310,3 +14310,21 @@ fingerprint. Validate query/histogram mass, promotion accounting, pool bounds,
 finite timing, and all option echoes before checkpoint persistence. Compute
 the six predeclared classifications descriptively; performance must not alter
 runner success or add a new matrix point.
+
+### TVG-0986
+
+Parse the committed reuse-gate JSON manifest with an exact-key validator.
+Reject malformed JSON, unknown or missing keys, wrong types, changed schema,
+reordered or duplicate matrix values, an unapproved strategy, altered
+workspace endpoint, changed record count, changed Exact field order, and any
+classification operator or threshold drift. Prove that command strings and
+machine-local paths are absent from the manifest surface.
+
+Using a fake benchmark, start one runner invocation with both checkpoint and
+output paths. Interrupt after a validated prefix, then rerun the identical
+command and require only the missing canonical suffix to launch. Require an
+atomic checkpoint after every accepted record, rejection of manifest content
+or path drift, no final output before 216 records, final output after exactly
+216 records, and zero benchmark launches when regenerating from a complete
+checkpoint. A child failure or malformed report must leave the prior
+checkpoint valid and must not append a partial record.

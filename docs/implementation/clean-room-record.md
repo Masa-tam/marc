@@ -30483,3 +30483,32 @@ both bounds.
   and one-byte-per-bucket workspace delta, 255 acceptance, zero and 256
   rejection, argument cardinality, and hard-limit refusal. No Corpus
   performance measurement was performed.
+
+## CR-1222: 2026-09-16 - Manifest-driven reuse-gate execution design
+
+- Authoring method: separated the fixed experiment's portable conditions from
+  machine-local executable, Corpus, checkpoint, output, and environment inputs,
+  then applied marc's existing strict checkpoint identity and atomic-write
+  conventions to a one-command execution model.
+- References used: DD-1123, DD-1124, IR-0884 through IR-0886, TVG-0985,
+  TVG-0986, CR-1220, CR-1221, and repository-owned Silesia runner and restart
+  contracts.
+- Known implementations intentionally not consulted: external benchmark
+  orchestrator, workflow engine, compressor, admission algorithm, source code,
+  performance result, tuning advice, pseudocode, or test suite.
+- Independent decisions: commit one inert versioned JSON manifest; prohibit
+  commands, paths, environment mutation, and network locations in it; require
+  strict exact-value parsing; retain child-process isolation behind one
+  top-level invocation; atomically save every validated point; and bind both
+  raw manifest bytes and parsed value into restart identity.
+- Generated-code task description: design a single-approval experiment launch
+  that completes all remaining reuse-gate measurements while recovering from
+  interruption without mixing conditions or repeating committed points.
+- Similarity review: the design composes only marc-owned schemas, validation
+  gates, content hashes, and checkpoint rules. No external workflow or
+  benchmark expression was copied or translated.
+- Local validation: the committed JSON is parseable and the documentation
+  regression gate fixes its schema, 216-point count, strategies, reuse series,
+  largest gated workspace, Exact fingerprint field, classification set, and
+  same-command resume contract. No benchmark process or Corpus measurement was
+  run.

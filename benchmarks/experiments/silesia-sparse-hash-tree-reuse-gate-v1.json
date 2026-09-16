@@ -1,0 +1,83 @@
+{
+  "schema": "marc-benchmark-experiment-manifest-v1",
+  "experiment": "silesia-sparse-hash-tree-reuse-gate-v1",
+  "result_schema": "marc-silesia-sparse-hash-tree-reuse-gate-v1",
+  "checkpoint_schema": "marc-silesia-sparse-hash-tree-reuse-gate-checkpoint-v1",
+  "corpus": {
+    "profile": "silesia-manifest-v1",
+    "expected_member_count": 12
+  },
+  "execution": {
+    "iterations": 1,
+    "frame_bytes": 67108864,
+    "max_internal_buffered_bytes": 536870912,
+    "process_isolation": "one-record-per-child",
+    "checkpoint_after_records": 1
+  },
+  "matrix": {
+    "window_bytes": [4194304, 16777216, 67108864],
+    "baseline_strategy": "hash-chain-exact",
+    "candidate_strategy": "sparse-hash-tree-reuse-gated-exact",
+    "pool_node_capacity": 4096,
+    "promotion_candidate_threshold": 64,
+    "promotion_reuse_thresholds": [1, 2, 4, 8, 16],
+    "canonical_order": ["member", "window", "baseline", "reuse"],
+    "expected_record_count": 216
+  },
+  "expected_workspace_bytes": {
+    "hash-chain-exact": {
+      "4194304": 17301504,
+      "16777216": 67633152,
+      "67108864": 268959744
+    },
+    "sparse-reuse-1": {
+      "4194304": 17715200,
+      "16777216": 68046848,
+      "67108864": 269373440
+    },
+    "sparse-reuse-2-to-16": {
+      "4194304": 17780736,
+      "16777216": 68112384,
+      "67108864": 269438976
+    }
+  },
+  "exact_identity_fields": [
+    "token_count",
+    "literal_count",
+    "match_count",
+    "matched_bytes",
+    "token_fingerprint_sha256"
+  ],
+  "classifications": {
+    "aggregate_hash_chain_gain": {
+      "metric": "candidate_to_hash_chain_throughput_ratio",
+      "operator": ">",
+      "value": 1.0
+    },
+    "aggregate_legacy_gain": {
+      "metric": "candidate_to_reuse_1_throughput_ratio",
+      "operator": ">",
+      "value": 1.0
+    },
+    "broad_hash_chain_gain": {
+      "metric": "hash_chain_member_wins",
+      "operator": ">=",
+      "value": 6
+    },
+    "broad_legacy_gain": {
+      "metric": "reuse_1_member_wins",
+      "operator": ">=",
+      "value": 6
+    },
+    "low_workspace_premium": {
+      "metric": "workspace_to_hash_chain_ratio",
+      "operator": "<=",
+      "value": 1.1
+    },
+    "pool_pressure_reduced": {
+      "metric": "pool_rejections_delta_from_reuse_1",
+      "operator": "<",
+      "value": 0
+    }
+  }
+}

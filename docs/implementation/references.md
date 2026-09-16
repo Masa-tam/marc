@@ -8069,3 +8069,15 @@ field, workspace-delta check, and failure cases were derived only from those
 local interfaces. No external compressor, hash-tree implementation, admission
 algorithm, benchmark harness, source code, performance result, tuning advice,
 pseudocode, or test suite was consulted.
+
+### IR-0886
+
+The manifest-driven single-launch experiment design uses DD-1123 and DD-1124,
+TVG-0985 and TVG-0986, IR-0884 and IR-0885, the repository-owned atomic
+checkpoint writers, canonical-prefix validators, Silesia manifest verifier,
+and the committed reuse-gate experiment contract. The separation of inert
+conditions from machine-local paths, raw-manifest identity binding, per-record
+child isolation, and same-command resume behavior were independently derived
+from those local components. No external benchmark orchestrator, workflow
+engine, compressor, source code, performance result, tuning advice,
+pseudocode, or test suite was consulted.

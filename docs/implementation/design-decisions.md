@@ -22854,3 +22854,25 @@ strict diagnostic accounting. Evaluate gated candidates independently against
 both HashChain and reuse one. Only a candidate with aggregate and broad gains
 against both controls plus at most 10% workspace premium may proceed to a
 public-admission design; measurement alone never publishes it.
+
+## DD-1124: One manifest-driven launch owns the complete reuse-gate run
+
+- Date: 2026-09-16
+- Status: accepted
+
+Store the already frozen 216-point experiment in one committed, versioned JSON
+manifest. The manifest contains only allowlisted strategies, numeric matrix
+conditions, expected workspace endpoints, Exact identity fields, canonical
+order, schemas, and predeclared classifications. It must not contain an
+executable command, machine-local path, environment mutation, or network
+location. Reject unknown keys and any value that differs from the fixed v1
+contract.
+
+Run all remaining records from one top-level runner invocation while retaining
+one child benchmark process per record for measurement and crash isolation.
+After each fully validated record, atomically replace a checkpoint bound to
+the raw manifest digest and parsed value as well as code, benchmark, Corpus,
+revision, and environment identity. Restarting the identical command validates
+the complete canonical prefix and resumes after it; a complete checkpoint
+regenerates output without launching a benchmark. Keep bounded execution only
+as test or diagnostic control, not as the normal measurement workflow.

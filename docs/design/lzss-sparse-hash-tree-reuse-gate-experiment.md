@@ -105,13 +105,46 @@ promotion、tree-query再利用、build/maintenance費およびpool rejectionを
 
 canonical順はmember、window、HashChain、reuse 1、2、4、8、16とする。checkpointは
 完全検証済みrecordの後だけ同一directoryで原子的に置換し、canonical prefix以外を
-拒否する。identityはschema、full Git revision、benchmarkとrunnerのabsolute pathと
-SHA-256、依存source、Corpus pathとmanifest、固定matrix、platform、compiler、
-generator、architectureおよびbuild labelを含む。
+拒否する。固定条件の正本は
+`benchmarks/experiments/silesia-sparse-hash-tree-reuse-gate-v1.json`とする。
+runnerはJSONの完全なkey集合、型、値、配列順および相互関係をstrictに検証する。
+未知key、未知strategy、重複値、非canonical順、異なるworkspaceまたは分類条件を
+拒否し、JSONからcommand、path、environment variableまたはnetwork locationを
+解釈しない。
 
-`--max-new-points N`、zero-work検証および最終`--output`は前回runnerと同じbounded
-契約を用いる。216点完了後にだけcanonical aggregateを生成する。runnerはnetwork
-access、downloadまたはCorpus生成を行わない。
+identityはschema、full Git revision、experiment manifestのabsolute path、
+raw SHA-256およびcanonical parsed value、benchmarkとrunnerのabsolute pathとSHA-256、
+依存source、Corpus pathとmanifest、platform、compiler、generator、architecture
+およびbuild labelを含む。manifestの一文字でも変わった場合、既存checkpointを
+再開してはならない。
+
+通常の実測は次の一回のtop-level runner起動で未完了の全recordを処理する。runner
+内部では故障分離と計測契約を保つため一record一child processを維持するが、利用者が
+承認・起動するcommandは一つだけである。
+
+```console
+py -3.14 tools/run_silesia_sparse_hash_tree_reuse_gate_experiment.py \
+  out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe \
+  --experiment benchmarks/experiments/silesia-sparse-hash-tree-reuse-gate-v1.json \
+  --corpus benchmarks/data/silesia/corpus \
+  --checkpoint benchmarks/data/silesia/results/sparse-reuse-gate-msvc.checkpoint.json \
+  --output benchmarks/data/silesia/results/sparse-reuse-gate-msvc.json \
+  --compiler "MSVC 19.51" --generator "Visual Studio 18 2026" \
+  --architecture x64 --build-label windows-msvc-release
+```
+
+checkpointとoutputは通常実測で必須とし、別pathでなければならない。各childの終了後、
+reportを完全検証し、HashChainおよび同一member/windowの先行reuseとのExact identity
+を確認した後だけrecordを追加する。temporary fileをflushし、同一directoryでatomic
+replaceしてから次のchildを起動する。child実行中の停止ではその未保存pointだけを
+再実行し、保存済みrecordを再測定しない。同じcommandを再起動すればcheckpointを
+最初から再検証し、canonical prefixの直後から続行する。完全checkpointではchildを
+起動せずfinal aggregateを再生成できる。
+
+`--max-new-points N`とzero-work検証はfake benchmark、runner回帰試験および明示的な
+診断用に保持するが、通常実測では指定しない。execution-control値はidentityに含めず、
+固定測定条件を変更できない。216点完了後にだけcanonical aggregateを生成する。
+runnerはnetwork access、downloadまたはCorpus生成を行わない。
 
 ## 7. 事前固定する分類
 
@@ -134,7 +167,8 @@ reuse 2、4、8、16の各候補/windowを次で分類する。
 1. 本設計、reference、decision、test-vectorおよびclean-room記録を確定する。
 2. 既存routeを保ったprivate benchmark routeとreport fieldを追加する。
 3. 引数、reuse境界、workspace端点、Exact identityおよび失敗原子性を試す。
-4. 独立schema、strict validator、checkpointとbounded batchを持つrunnerを追加する。
+4. JSON正本、独立schema、strict validator、point単位checkpointおよび一回起動を
+   持つrunnerを追加する。
 5. fake benchmarkで216点grid、resume、zero-work、破損拒否およびaggregateを試す。
 6. MSVC、ClangCLおよび完全CTest後に、実Corpusをbounded batchで測る。
 7. 最終結果と採否判断を別commitで記録する。
@@ -151,4 +185,5 @@ reuse 2、4、8、16の各候補/windowを次で分類する。
 HashChain identityとworkspace差、`UINT8_MAX`受理、zeroと`UINT8_MAX + 1`、
 引数不足・過剰および
 不十分なhard limitの拒否をMSVCとClangCLで検証する。Corpus測定、runner実装、
-checkpoint作成および性能上の採否判断はまだ行っていない。
+checkpoint作成および性能上の採否判断はまだ行っていない。手順4のversioned JSON
+正本と一回起動・再開契約は確定済みである。

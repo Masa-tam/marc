@@ -763,6 +763,10 @@ foreach(required_sparse_hash_tree_reuse_gate_experiment_term IN ITEMS
         "broad_legacy_gain"
         "low_workspace_premium"
         "pool_pressure_reduced"
+        "silesia-sparse-hash-tree-reuse-gate-v1.json"
+        "一回のtop-level runner起動"
+        "同じcommandを再起動"
+        "raw SHA-256"
         "public selector")
     string(FIND "${lzss_sparse_hash_tree_reuse_gate_experiment_content}"
         "${required_sparse_hash_tree_reuse_gate_experiment_term}"
@@ -771,6 +775,64 @@ foreach(required_sparse_hash_tree_reuse_gate_experiment_term IN ITEMS
         message(FATAL_ERROR
             "Incomplete Sparse HashTree reuse-gate experiment design: "
             "${required_sparse_hash_tree_reuse_gate_experiment_term}")
+    endif()
+endforeach()
+
+set(lzss_sparse_hash_tree_reuse_gate_manifest
+    "${source_dir}/benchmarks/experiments/silesia-sparse-hash-tree-reuse-gate-v1.json")
+file(READ "${lzss_sparse_hash_tree_reuse_gate_manifest}"
+    lzss_sparse_hash_tree_reuse_gate_manifest_content)
+string(JSON reuse_manifest_schema GET
+    "${lzss_sparse_hash_tree_reuse_gate_manifest_content}" schema)
+if(NOT reuse_manifest_schema STREQUAL
+        "marc-benchmark-experiment-manifest-v1")
+    message(FATAL_ERROR "Unexpected reuse-gate manifest schema")
+endif()
+string(JSON reuse_manifest_top_level_count LENGTH
+    "${lzss_sparse_hash_tree_reuse_gate_manifest_content}")
+if(NOT reuse_manifest_top_level_count EQUAL 10)
+    message(FATAL_ERROR "Unexpected reuse-gate manifest key count")
+endif()
+string(JSON reuse_manifest_record_count GET
+    "${lzss_sparse_hash_tree_reuse_gate_manifest_content}"
+    matrix expected_record_count)
+string(JSON reuse_manifest_candidate GET
+    "${lzss_sparse_hash_tree_reuse_gate_manifest_content}"
+    matrix candidate_strategy)
+string(JSON reuse_manifest_reuse_count LENGTH
+    "${lzss_sparse_hash_tree_reuse_gate_manifest_content}"
+    matrix promotion_reuse_thresholds)
+string(JSON reuse_manifest_reuse_max GET
+    "${lzss_sparse_hash_tree_reuse_gate_manifest_content}"
+    matrix promotion_reuse_thresholds 4)
+string(JSON reuse_manifest_largest_workspace GET
+    "${lzss_sparse_hash_tree_reuse_gate_manifest_content}"
+    expected_workspace_bytes sparse-reuse-2-to-16 67108864)
+string(JSON reuse_manifest_exact_fingerprint GET
+    "${lzss_sparse_hash_tree_reuse_gate_manifest_content}"
+    exact_identity_fields 4)
+string(JSON reuse_manifest_classification_count LENGTH
+    "${lzss_sparse_hash_tree_reuse_gate_manifest_content}"
+    classifications)
+if(NOT reuse_manifest_record_count EQUAL 216
+        OR NOT reuse_manifest_candidate STREQUAL
+            "sparse-hash-tree-reuse-gated-exact"
+        OR NOT reuse_manifest_reuse_count EQUAL 5
+        OR NOT reuse_manifest_reuse_max EQUAL 16
+        OR NOT reuse_manifest_largest_workspace EQUAL 269438976
+        OR NOT reuse_manifest_exact_fingerprint STREQUAL
+            "token_fingerprint_sha256"
+        OR NOT reuse_manifest_classification_count EQUAL 6)
+    message(FATAL_ERROR "Incomplete reuse-gate experiment manifest")
+endif()
+foreach(forbidden_reuse_manifest_term IN ITEMS
+        "\"command\"" "\"benchmark_path\"" "\"corpus_path\""
+        "\"checkpoint_path\"" "\"output_path\"" "http://" "https://")
+    string(FIND "${lzss_sparse_hash_tree_reuse_gate_manifest_content}"
+        "${forbidden_reuse_manifest_term}" forbidden_reuse_manifest_offset)
+    if(NOT forbidden_reuse_manifest_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Unsafe reuse-gate manifest term: ${forbidden_reuse_manifest_term}")
     endif()
 endforeach()
 
