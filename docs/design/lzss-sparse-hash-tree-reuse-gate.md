@@ -25,7 +25,8 @@ threshold 1,024では155.99回まで増えたがthroughput比は0.874557に留�
 workspaceへbucketごとの飽和`uint8_t` qualifying-query countを追加する。最大
 bucket数65,536に対する追加量は最大65,536 bytesであり、checked workspace
 calculatorとaggregate limitへ含める。global mutable stateや動的な追加確保は
-用いない。
+用いない。reuse threshold 1ではcountを参照しないため領域を確保せず、従来の
+workspaceサイズと再現済みbenchmark契約を維持する。
 
 Chain modeで完了した各queryを次のように処理する。
 

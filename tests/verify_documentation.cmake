@@ -728,6 +728,7 @@ foreach(required_sparse_hash_tree_reuse_gate_term IN ITEMS
         "1は現在の即時promotionと同じ遷移"
         "token_fingerprint_sha256"
         "最大65,536 bytes"
+        "reuse threshold 1ではcountを参照しないため領域を確保せず"
         "最初の実装段階ではCorpus性能を測らない"
         "public strategy")
     string(FIND "${lzss_sparse_hash_tree_reuse_gate_content}"

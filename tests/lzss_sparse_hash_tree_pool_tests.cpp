@@ -116,6 +116,45 @@ TEST(LzssSparseHashTreePool, FixesFourMiBBaseAndPoolFormula) {
               no_pool.workspace_size + 21U * frame);
 }
 
+TEST(LzssSparseHashTreePool, AddsOneReuseBytePerBucketOnlyWhenGated) {
+    constexpr std::size_t frame = 4U * 1024U * 1024U;
+    LzssParameters parameters{};
+    parameters.window_size = static_cast<std::uint32_t>(frame);
+
+    const auto legacy = calculate_lzss_sparse_hash_tree_workspace(
+        frame, parameters, {}, 4'096, 1);
+    const auto gated = calculate_lzss_sparse_hash_tree_workspace(
+        frame, parameters, {}, 4'096, 2);
+    ASSERT_EQ(legacy.error, LzssSparseHashTreeError::none);
+    ASSERT_EQ(gated.error, LzssSparseHashTreeError::none);
+    ASSERT_EQ(gated.bucket_count, 65'536U);
+    EXPECT_EQ(legacy.promotion_reuse_count, 0U);
+    EXPECT_EQ(gated.promotion_reuse_count, gated.bucket_count);
+    EXPECT_EQ(gated.workspace_size,
+              legacy.workspace_size + gated.bucket_count);
+    EXPECT_EQ(gated.promotion_reuse_count_offset,
+              legacy.left_offset);
+    EXPECT_EQ(gated.left_offset,
+              legacy.left_offset + gated.bucket_count);
+
+    EXPECT_EQ(calculate_lzss_sparse_hash_tree_workspace(
+                  frame, parameters, {}, 4'096, 0).error,
+              LzssSparseHashTreeError::invalid_reuse_threshold);
+
+    marc::core::DecoderLimits limits{};
+    limits.max_frame_size = frame;
+    limits.max_block_size = frame;
+    limits.max_lz_distance = frame;
+    limits.max_internal_buffered_bytes = frame + gated.workspace_size;
+    EXPECT_EQ(calculate_lzss_sparse_hash_tree_workspace(
+                  frame, parameters, limits, 4'096, 2).error,
+              LzssSparseHashTreeError::none);
+    --limits.max_internal_buffered_bytes;
+    EXPECT_EQ(calculate_lzss_sparse_hash_tree_workspace(
+                  frame, parameters, limits, 4'096, 2).error,
+              LzssSparseHashTreeError::workspace_limit_exceeded);
+}
+
 TEST(LzssSparseHashTreePool, RejectsInvalidCapacityLimitsAndExtent) {
     marc::core::DecoderLimits limits{};
     limits.max_frame_size = 0;
@@ -344,13 +383,13 @@ TEST(LzssSparseHashTreePool, RejectsShortAndMisalignedWorkspace) {
 
 TEST(LzssSparseHashTreeWorkspace, InitializesEveryMetadataArray) {
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
-        8, {}, {}, 3);
+        8, {}, {}, 3, 2);
     ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
     auto storage = make_storage(required.workspace_size);
     LzssSparseHashTreeWorkspace workspace{};
     ASSERT_EQ(initialize_lzss_sparse_hash_tree_workspace(
                   8, {}, {}, 3,
-                  storage.bytes.first(required.workspace_size), workspace),
+                  storage.bytes.first(required.workspace_size), workspace, 2),
               LzssSparseHashTreeError::none);
     EXPECT_TRUE(workspace.initialized());
     EXPECT_EQ(workspace.heads().size(), required.bucket_count);
@@ -358,6 +397,8 @@ TEST(LzssSparseHashTreeWorkspace, InitializesEveryMetadataArray) {
     EXPECT_EQ(workspace.roots().size(), required.bucket_count);
     EXPECT_EQ(workspace.modes().size(), required.bucket_count);
     EXPECT_EQ(workspace.bucket_node_counts().size(), required.bucket_count);
+    EXPECT_EQ(workspace.promotion_reuse_counts().size(),
+              required.bucket_count);
     EXPECT_TRUE(std::ranges::all_of(workspace.heads(), [](const auto value) {
         return value == lzss_hash_tree_no_stored_position;
     }));
@@ -374,6 +415,10 @@ TEST(LzssSparseHashTreeWorkspace, InitializesEveryMetadataArray) {
         workspace.bucket_node_counts(), [](const auto value) {
             return value == 0;
         }));
+    EXPECT_TRUE(std::ranges::all_of(
+        workspace.promotion_reuse_counts(), [](const auto value) {
+            return value == 0;
+        }));
     EXPECT_EQ(workspace.node_pool().free_count(), 3U);
 }
 
@@ -388,18 +433,19 @@ TEST(LzssSparseHashTreeWorkspace, InitializesAndResetsEmptyLayout) {
     EXPECT_TRUE(workspace.roots().empty());
     EXPECT_TRUE(workspace.modes().empty());
     EXPECT_TRUE(workspace.bucket_node_counts().empty());
+    EXPECT_TRUE(workspace.promotion_reuse_counts().empty());
     EXPECT_TRUE(workspace.node_pool().initialized());
     EXPECT_EQ(workspace.reset_frame(), LzssSparseHashTreeError::none);
 }
 
 TEST(LzssSparseHashTreeWorkspace, FrameResetClearsMetadataAndPool) {
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
-        8, {}, {}, 3);
+        8, {}, {}, 3, 2);
     auto storage = make_storage(required.workspace_size);
     LzssSparseHashTreeWorkspace workspace{};
     ASSERT_EQ(initialize_lzss_sparse_hash_tree_workspace(
                   8, {}, {}, 3,
-                  storage.bytes.first(required.workspace_size), workspace),
+                  storage.bytes.first(required.workspace_size), workspace, 2),
               LzssSparseHashTreeError::none);
     workspace.heads()[0] = 7;
     workspace.links()[0] = 6;
@@ -407,6 +453,7 @@ TEST(LzssSparseHashTreeWorkspace, FrameResetClearsMetadataAndPool) {
     workspace.modes()[0] =
         LzssSparseHashTreeBucketMode::pool_rejected_chain;
     workspace.bucket_node_counts()[0] = 2;
+    workspace.promotion_reuse_counts()[0] = UINT8_MAX;
     ASSERT_TRUE(workspace.node_pool().allocate().allocated);
     ASSERT_TRUE(workspace.node_pool().allocate().allocated);
 
@@ -416,6 +463,7 @@ TEST(LzssSparseHashTreeWorkspace, FrameResetClearsMetadataAndPool) {
     EXPECT_EQ(workspace.roots()[0], lzss_hash_tree_null_node);
     EXPECT_EQ(workspace.modes()[0], LzssSparseHashTreeBucketMode::chain);
     EXPECT_EQ(workspace.bucket_node_counts()[0], 0U);
+    EXPECT_EQ(workspace.promotion_reuse_counts()[0], 0U);
     EXPECT_EQ(workspace.node_pool().free_count(), 3U);
     EXPECT_EQ(workspace.node_pool().active_count(), 0U);
     EXPECT_EQ(workspace.node_pool().allocate().node, 0U);
@@ -443,20 +491,20 @@ TEST(LzssSparseHashTreeWorkspace, RejectsResetAfterStickyPoolFailure) {
 TEST(LzssSparseHashTreeWorkspace,
      FailedInitializationDoesNotPublishWorkspace) {
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
-        8, {}, {}, 1);
+        8, {}, {}, 1, 2);
     ASSERT_GT(required.workspace_size, 1U);
     auto storage = make_storage(required.workspace_size + 1U);
     LzssSparseHashTreeWorkspace workspace{};
     EXPECT_EQ(initialize_lzss_sparse_hash_tree_workspace(
                   8, {}, {}, 1,
                   storage.bytes.first(required.workspace_size - 1U),
-                  workspace),
+                  workspace, 2),
               LzssSparseHashTreeError::workspace_too_small);
     EXPECT_FALSE(workspace.initialized());
     EXPECT_EQ(initialize_lzss_sparse_hash_tree_workspace(
                   8, {}, {}, 1,
                   storage.bytes.subspan(1, required.workspace_size),
-                  workspace),
+                  workspace, 2),
               LzssSparseHashTreeError::misaligned_workspace);
     EXPECT_FALSE(workspace.initialized());
 }

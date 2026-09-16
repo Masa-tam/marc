@@ -38,7 +38,8 @@ LzssSparseHashTreeWorkspaceRequirements
 calculate_lzss_sparse_hash_tree_workspace(
     const std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits,
-    const std::size_t pool_node_capacity) noexcept {
+    const std::size_t pool_node_capacity,
+    const std::uint8_t promotion_reuse_threshold) noexcept {
     LzssSparseHashTreeWorkspaceRequirements result{};
     if (core::validate_limits(limits) != core::LimitError::none) {
         result.error = LzssSparseHashTreeError::invalid_limits;
@@ -69,7 +70,13 @@ calculate_lzss_sparse_hash_tree_workspace(
         result.error = LzssSparseHashTreeError::invalid_pool_capacity;
         return result;
     }
+    if (promotion_reuse_threshold == 0) {
+        result.error = LzssSparseHashTreeError::invalid_reuse_threshold;
+        return result;
+    }
     result.pool_node_capacity = pool_node_capacity;
+    result.promotion_reuse_count = promotion_reuse_threshold == 1
+        ? 0 : result.bucket_count;
 
     std::size_t cursor{};
     if (!append_array(result.bucket_count,
@@ -87,6 +94,9 @@ calculate_lzss_sparse_hash_tree_workspace(
         || !append_array(result.bucket_count, sizeof(std::uint32_t),
                          alignof(std::uint32_t), cursor,
                          result.bucket_node_count_offset)
+        || !append_array(result.promotion_reuse_count, sizeof(std::uint8_t),
+                         alignof(std::uint8_t), cursor,
+                         result.promotion_reuse_count_offset)
         || !append_array(pool_node_capacity, sizeof(std::uint32_t),
                          alignof(std::uint32_t), cursor, result.left_offset)
         || !append_array(pool_node_capacity, sizeof(std::uint32_t),
@@ -220,9 +230,11 @@ LzssSparseHashTreeError initialize_lzss_sparse_hash_tree_node_pool(
     const core::DecoderLimits& limits,
     const std::size_t pool_node_capacity,
     const std::span<std::byte> workspace,
-    LzssSparseHashTreeNodePool& pool) noexcept {
+    LzssSparseHashTreeNodePool& pool,
+    const std::uint8_t promotion_reuse_threshold) noexcept {
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
-        input_size, parameters, limits, pool_node_capacity);
+        input_size, parameters, limits, pool_node_capacity,
+        promotion_reuse_threshold);
     if (required.error != LzssSparseHashTreeError::none) {
         return required.error;
     }
@@ -291,6 +303,8 @@ LzssSparseHashTreeError LzssSparseHashTreeWorkspace::reset_frame() noexcept {
               LzssSparseHashTreeBucketMode::chain);
     std::fill(bucket_node_counts_.begin(), bucket_node_counts_.end(),
               UINT32_C(0));
+    std::fill(promotion_reuse_counts_.begin(),
+              promotion_reuse_counts_.end(), std::uint8_t{0});
     node_pool_.reset_valid_storage();
     return LzssSparseHashTreeError::none;
 }
@@ -300,9 +314,11 @@ LzssSparseHashTreeError initialize_lzss_sparse_hash_tree_workspace(
     const core::DecoderLimits& limits,
     const std::size_t pool_node_capacity,
     const std::span<std::byte> storage,
-    LzssSparseHashTreeWorkspace& workspace) noexcept {
+    LzssSparseHashTreeWorkspace& workspace,
+    const std::uint8_t promotion_reuse_threshold) noexcept {
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
-        input_size, parameters, limits, pool_node_capacity);
+        input_size, parameters, limits, pool_node_capacity,
+        promotion_reuse_threshold);
     if (required.error != LzssSparseHashTreeError::none) {
         return required.error;
     }
@@ -319,7 +335,7 @@ LzssSparseHashTreeError initialize_lzss_sparse_hash_tree_workspace(
     LzssSparseHashTreeWorkspace initialized{};
     const auto pool_error = initialize_lzss_sparse_hash_tree_node_pool(
         input_size, parameters, limits, pool_node_capacity,
-        active_storage, initialized.node_pool_);
+        active_storage, initialized.node_pool_, promotion_reuse_threshold);
     if (pool_error != LzssSparseHashTreeError::none) return pool_error;
 
     initialized.heads_ = array_at<LzssHashTreeStoredPosition>(
@@ -333,6 +349,9 @@ LzssSparseHashTreeError initialize_lzss_sparse_hash_tree_workspace(
     initialized.bucket_node_counts_ = array_at<std::uint32_t>(
         active_storage, required.bucket_node_count_offset,
         required.bucket_count);
+    initialized.promotion_reuse_counts_ = array_at<std::uint8_t>(
+        active_storage, required.promotion_reuse_count_offset,
+        required.promotion_reuse_count);
     for (std::size_t index = 0; index < required.bucket_count; ++index) {
         std::construct_at(initialized.heads_.data() + index,
                           lzss_hash_tree_no_stored_position);
@@ -346,6 +365,11 @@ LzssSparseHashTreeError initialize_lzss_sparse_hash_tree_workspace(
     for (std::size_t index = 0;
          index < required.chain_node_count; ++index) {
         std::construct_at(initialized.links_.data() + index, UINT32_C(0));
+    }
+    for (std::size_t index = 0;
+         index < required.promotion_reuse_count; ++index) {
+        std::construct_at(initialized.promotion_reuse_counts_.data() + index,
+                          std::uint8_t{0});
     }
     initialized.initialized_ = true;
     workspace = initialized;

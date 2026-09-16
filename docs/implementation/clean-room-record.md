@@ -30314,3 +30314,29 @@ both bounds.
 - Local validation: documentation-layout validation must retain the new design,
   ordered records, bounded state, legacy-equivalent value one, and explicit
   no-Corpus-before-correctness boundary.
+
+## CR-1216: 2026-09-16 - Sparse reuse-gate checked workspace
+
+- Authoring method: extended the repository-owned Sparse workspace calculator
+  and caller-owned views only after fixing the repeated-use memory boundaries
+  in tests.
+- References used: DD-1122, IR-0883, TVG-0984, CR-1215, and marc's existing
+  Sparse layout, node-pool initialization, frame reset, and aggregate-limit
+  contracts.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, cache or admission algorithm, source code,
+  workspace layout, pseudocode, or test suite.
+- Independent decisions: allocate one zero-initialized saturating-byte slot per
+  bucket only when reuse threshold exceeds one; retain a zero-byte view and the
+  exact historical layout at threshold one; place the view before pool arrays;
+  reject zero threshold before allocation; and clear the view on frame reset.
+- Generated-code task description: add the bounded caller-owned observation
+  view and checked calculator boundary without yet changing promotion timing.
+- Similarity review: the implementation follows marc's existing explicit
+  offset calculation, span publication, construction, reset, and error-mapping
+  patterns. No external implementation expression was copied or translated.
+- Local validation: MSVC and ClangCL builds are warning-clean. Both run all 16
+  Sparse pool/workspace tests successfully, including 65,536-byte maximum
+  delta, legacy zero delta, exact aggregate success, one-byte-short limit and
+  storage refusal, initialization, frame reset, and failed-publication checks.
+  Documentation layout also passes under both toolchains.

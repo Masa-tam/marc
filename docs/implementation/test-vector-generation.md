@@ -14280,7 +14280,8 @@ isolation, reset after a nonqualifying query, saturation without wraparound,
 and reset only after committed promotion. Keep terminal rejected buckets
 inert and require invalid transitions to leave every count unchanged.
 
-Freeze the checked workspace delta at one byte per bucket, including the
+Freeze the gated checked workspace delta at one byte per bucket and the
+legacy-equivalent threshold-one delta at zero bytes, including the
 65,536-bucket maximum, exact-capacity success, one-byte-short refusal, limit
 failure, and arithmetic boundaries. Require reuse threshold one to reproduce
 the existing trigger, promotion, and rejection sequence. Across binary,

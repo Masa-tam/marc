@@ -21,6 +21,8 @@ map_lzss_sparse_hash_tree_match_finder_error(
         return LzssSparseHashTreeMatchFinderError::input_limit_exceeded;
     case LzssSparseHashTreeError::invalid_pool_capacity:
         return LzssSparseHashTreeMatchFinderError::invalid_pool_capacity;
+    case LzssSparseHashTreeError::invalid_reuse_threshold:
+        return LzssSparseHashTreeMatchFinderError::invalid_parameters;
     case LzssSparseHashTreeError::arithmetic_overflow:
         return LzssSparseHashTreeMatchFinderError::arithmetic_overflow;
     case LzssSparseHashTreeError::workspace_limit_exceeded:

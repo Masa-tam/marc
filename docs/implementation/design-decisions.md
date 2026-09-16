@@ -22823,7 +22823,8 @@ per bucket in caller-owned checked workspace. A Chain query above the existing
 candidate threshold increments its bucket; a query at or below the threshold
 resets that bucket; other buckets do not affect it. Pend promotion only when
 the count reaches a separately bounded reuse threshold. Value one must
-reproduce the current immediate-promotion transition.
+reproduce the current immediate-promotion transition without allocating the
+new count view, preserving prior workspace and benchmark contracts.
 
 Keep build, transactional commit, terminal pool rejection, Exact matching,
 format, decoder, public ABI, defaults, and profiles unchanged. Prove bounded

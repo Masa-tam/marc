@@ -16,6 +16,7 @@ enum class LzssSparseHashTreeError : std::uint8_t {
     invalid_parameters,
     input_limit_exceeded,
     invalid_pool_capacity,
+    invalid_reuse_threshold,
     arithmetic_overflow,
     workspace_limit_exceeded,
     workspace_too_small,
@@ -42,6 +43,8 @@ struct LzssSparseHashTreeWorkspaceRequirements {
     std::size_t root_offset{};
     std::size_t mode_offset{};
     std::size_t bucket_node_count_offset{};
+    std::size_t promotion_reuse_count_offset{};
+    std::size_t promotion_reuse_count{};
     std::size_t left_offset{};
     std::size_t right_offset{};
     std::size_t parent_offset{};
@@ -56,7 +59,8 @@ struct LzssSparseHashTreeWorkspaceRequirements {
 calculate_lzss_sparse_hash_tree_workspace(
     std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits,
-    std::size_t pool_node_capacity) noexcept;
+    std::size_t pool_node_capacity,
+    std::uint8_t promotion_reuse_threshold = 1) noexcept;
 
 struct LzssSparseHashTreeNodeAllocation {
     std::uint32_t node{lzss_hash_tree_null_node};
@@ -106,7 +110,7 @@ private:
     initialize_lzss_sparse_hash_tree_node_pool(
         std::size_t, const LzssParameters&, const core::DecoderLimits&,
         std::size_t, std::span<std::byte>,
-        LzssSparseHashTreeNodePool&) noexcept;
+        LzssSparseHashTreeNodePool&, std::uint8_t) noexcept;
 
     void mark_error(LzssSparseHashTreeError error) noexcept;
     void reset_valid_storage() noexcept;
@@ -153,6 +157,12 @@ public:
     }
     [[nodiscard]] std::span<const std::uint32_t>
     bucket_node_counts() const noexcept { return bucket_node_counts_; }
+    [[nodiscard]] std::span<std::uint8_t>
+    promotion_reuse_counts() noexcept { return promotion_reuse_counts_; }
+    [[nodiscard]] std::span<const std::uint8_t>
+    promotion_reuse_counts() const noexcept {
+        return promotion_reuse_counts_;
+    }
     [[nodiscard]] LzssSparseHashTreeNodePool& node_pool() noexcept {
         return node_pool_;
     }
@@ -166,13 +176,14 @@ private:
     friend LzssSparseHashTreeError initialize_lzss_sparse_hash_tree_workspace(
         std::size_t, const LzssParameters&, const core::DecoderLimits&,
         std::size_t, std::span<std::byte>,
-        LzssSparseHashTreeWorkspace&) noexcept;
+        LzssSparseHashTreeWorkspace&, std::uint8_t) noexcept;
 
     std::span<LzssHashTreeStoredPosition> heads_{};
     std::span<std::uint32_t> links_{};
     std::span<std::uint32_t> roots_{};
     std::span<LzssSparseHashTreeBucketMode> modes_{};
     std::span<std::uint32_t> bucket_node_counts_{};
+    std::span<std::uint8_t> promotion_reuse_counts_{};
     LzssSparseHashTreeNodePool node_pool_{};
     bool initialized_{};
 };
@@ -182,14 +193,16 @@ initialize_lzss_sparse_hash_tree_node_pool(
     std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::size_t pool_node_capacity,
     std::span<std::byte> workspace,
-    LzssSparseHashTreeNodePool& pool) noexcept;
+    LzssSparseHashTreeNodePool& pool,
+    std::uint8_t promotion_reuse_threshold = 1) noexcept;
 
 [[nodiscard]] LzssSparseHashTreeError
 initialize_lzss_sparse_hash_tree_workspace(
     std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::size_t pool_node_capacity,
     std::span<std::byte> storage,
-    LzssSparseHashTreeWorkspace& workspace) noexcept;
+    LzssSparseHashTreeWorkspace& workspace,
+    std::uint8_t promotion_reuse_threshold = 1) noexcept;
 
 } // namespace marc::dictionary::internal
 
