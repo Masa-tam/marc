@@ -30400,3 +30400,27 @@ both bounds.
   The threshold-two bytewise fixture also crosses promotion and retirement,
   while the typed-token fixture covers legacy, gated, and saturation-limit
   behavior. No Corpus performance measurement was performed.
+
+## CR-1219: 2026-09-16 - Sparse reuse-gate complete local gate
+
+- Authoring method: ran both complete configured CTest inventories without
+  filtering after the bounded-state, transition, failure-atomicity, and Exact
+  identity gates had passed.
+- References used: DD-1122, IR-0883, TVG-0984, CR-1216 through CR-1218, and
+  the repository-owned MSVC and ClangCL Release configurations.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, benchmark result, source code, tuning advice,
+  pseudocode, or test suite.
+- Independent decisions: retain the 600-second per-test ceiling; include every
+  large-window, fuzz-regression, benchmark-smoke, CLI, documentation, tooling,
+  and interoperability-schema test; and perform no Corpus measurement or
+  threshold selection during this gate.
+- Generated-code task description: establish the final local correctness and
+  integration boundary before defining a Sparse reuse-gate performance matrix.
+- Similarity review: validation uses only marc-owned builds, tests, tools, and
+  fixtures. No external implementation or benchmark expression was copied or
+  translated.
+- Local validation: MSVC and ClangCL each pass all 3,490 configured tests. The
+  final `marc_interoperability_schema_compatibility` test passes in 112.91 and
+  103.07 seconds respectively; total real times are 458.89 and 388.60 seconds.
+  No Corpus performance measurement was performed.

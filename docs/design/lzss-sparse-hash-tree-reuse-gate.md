@@ -108,4 +108,7 @@ Section 4の段階5では、binary、単一値反復およびwindow境界入力�
 ゲート有効値2および飽和上限値`UINT8_MAX`でtyped-token列とcanonical byte列まで
 Exhaustive、HashChain、既存tree finderおよび従来Sparseと比較し、Exact identityを
 確認した。Corpus性能測定はまだ開始しておらず、次段階は両toolchainの完全CTestで
-ある。
+ある。MSVCおよびClangCLで3,490件の完全CTestを実行し、長時間の64 MiB試験と
+`marc_interoperability_schema_compatibility`を含め全件成功した。これによりSection 4の
+段階1から6までが完了した。次段階では測定値を見る前に、独立した固定Corpus matrix、
+診断項目および採否規則を文書化する。
