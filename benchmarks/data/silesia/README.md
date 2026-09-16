@@ -183,6 +183,29 @@ Do not edit, combine, reorder, or move a checkpoint between builds. Allocation
 failure is a failed point and must not be worked around by silently changing
 the fixed frame, window, strategy, or memory policy.
 
+## Manifest-driven Sparse reuse-gate experiment
+
+The fixed repeated-use admission experiment is run with one top-level command.
+It validates the committed inert JSON manifest, all twelve Corpus members, the
+benchmark and source identities, then runs every missing record in canonical
+order. On Windows/MSVC use:
+
+```console
+py -3.14 tools/run_silesia_sparse_hash_tree_reuse_gate_experiment.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --experiment benchmarks/experiments/silesia-sparse-hash-tree-reuse-gate-v1.json --corpus benchmarks/data/silesia/corpus --checkpoint benchmarks/data/silesia/results/sparse-reuse-gate-msvc.checkpoint.json --output benchmarks/data/silesia/results/sparse-reuse-gate-msvc.json --compiler "MSVC 19.51" --generator "Visual Studio 18 2026" --architecture x64 --build-label windows-msvc-release
+```
+
+Use `python3` instead of `py -3.14` on other platforms. The runner starts one
+child process per record but needs only this one user invocation. It atomically
+checkpoints every fully validated point. If execution is interrupted, rerun
+the identical command: the complete checkpoint identity and canonical prefix
+are revalidated before only the missing suffix is launched. A complete
+checkpoint regenerates the result without launching the benchmark.
+
+Do not edit the experiment manifest, checkpoint, or result. An unfinished
+checkpoint rejects a pre-existing output file rather than leaving stale output
+that could be mistaken for the current run. `--max-new-points` exists for
+runner tests and explicit diagnostics; omit it for the normal complete run.
+
 ## Usage policy
 
 - Corpus measurements are opt-in developer benchmarks, not CTest pass gates.

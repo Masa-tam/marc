@@ -2434,3 +2434,24 @@ pressure. The tested policy therefore remains private and is not added to the
 selector, ABI, CLI, profile, or format. The ignored canonical result JSON has
 SHA-256
 `cdd526d40ef81406ec2cd87bb91799e3dc30ab400290a9152f5dfa2869ab8e95`.
+
+### BM-0070: Manifest-driven Sparse reuse-gate runner
+
+The dedicated runner consumes the committed
+`silesia-sparse-hash-tree-reuse-gate-v1.json` manifest and executes the fixed
+216-record grid from one top-level invocation. It retains one child benchmark
+per record, validates all report, workspace, diagnostic, and five-field Exact
+contracts before persistence, and atomically replaces its checkpoint after
+each accepted point.
+
+The checkpoint identity binds the raw manifest path and SHA-256, its strictly
+parsed value, full revision, benchmark and runner-source paths and digests,
+verified Corpus manifest, and platform/build environment. Only a canonical
+prefix is accepted. Restarting the same command resumes the missing suffix;
+a complete checkpoint rewrites the final aggregate without launching a child.
+The fake benchmark gate covers all 216 points, a 3-plus-213 resume, complete
+zero-work regeneration, manifest type/order/duplicate rejection, corrupt
+prefix rejection, child failure atomicity, stale-output refusal, three
+baseline aggregates, fifteen reuse aggregates, and twelve gated comparisons.
+This entry records infrastructure only; no Silesia performance result or
+public-admission decision has been made.

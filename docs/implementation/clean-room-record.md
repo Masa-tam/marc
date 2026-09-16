@@ -30512,3 +30512,31 @@ both bounds.
   largest gated workspace, Exact fingerprint field, classification set, and
   same-command resume contract. No benchmark process or Corpus measurement was
   run.
+
+## CR-1223: 2026-09-17 - Manifest-driven reuse-gate runner
+
+- Authoring method: adapted only repository-owned parsing, report validation,
+  Exact comparison, atomic checkpoint, and aggregation conventions to the
+  committed reuse-gate JSON contract.
+- References used: DD-1124, IR-0886, IR-0887, TVG-0986, BM-0070, CR-1222,
+  and marc's existing large-window Sparse and Silesia runner infrastructure.
+- Known implementations intentionally not consulted: external workflow
+  engine, benchmark orchestrator, compressor, admission algorithm, source
+  code, performance result, tuning advice, pseudocode, or test suite.
+- Independent decisions: require checkpoint and output paths for every launch;
+  reject JSON duplicate keys and Python bool/integer equivalence; preserve one
+  child per record behind one approved runner command; compare every candidate
+  to HashChain and prior reuse controls; reject a stale final output while the
+  checkpoint is incomplete; and aggregate only after exactly 216 records.
+- Generated-code task description: implement the fixed manifest reader,
+  strict runner, atomic same-command resume, dual-control classifications, and
+  fake full-grid regression without running the external Corpus.
+- Similarity review: the implementation composes only marc-owned Python tools,
+  schemas, field names, and validation patterns. No external implementation or
+  workflow expression was copied or translated.
+- Local validation: Python 3.14 passes six fake-runner tests. MSVC and ClangCL
+  CTest inventories each pass the registered runner and documentation tests.
+  Coverage includes exact manifest typing and duplicate rejection, canonical
+  216-point order, report and workspace corruption, Exact mismatch, 3-plus-213
+  resume, complete zero-child regeneration, failure atomicity, and stale-output
+  refusal. No real benchmark child or Corpus measurement was run.

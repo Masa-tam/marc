@@ -8081,3 +8081,15 @@ child isolation, and same-command resume behavior were independently derived
 from those local components. No external benchmark orchestrator, workflow
 engine, compressor, source code, performance result, tuning advice,
 pseudocode, or test suite was consulted.
+
+### IR-0887
+
+The implemented manifest-driven reuse-gate runner uses DD-1124, TVG-0986,
+IR-0886, the committed v1 experiment manifest, and repository-owned report
+parsers, checked workspace endpoints, Exact fingerprint, Silesia verifier,
+atomic JSON writer, and canonical-prefix checkpoint patterns. Strict typed
+manifest equality, dual baseline/reuse-one comparison, stale-output refusal,
+and one-launch suffix recovery were independently applied to those local
+interfaces. No external workflow engine, benchmark runner, compressor, source
+code, performance result, tuning advice, pseudocode, or test suite was
+consulted.
