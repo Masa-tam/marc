@@ -14270,3 +14270,21 @@ fixed before measurement and preserve an unfavorable result without tuning.
 The documentation regression test must retain the completed-result heading,
 best measured ratio, canonical result digest, and explicit non-admission
 decision.
+
+### TVG-0984
+
+Construct deterministic Chain buckets whose completed query candidate counts
+fall below, equal, and one above the existing candidate threshold. For reuse
+thresholds one and greater than one, require exact pending timing, per-bucket
+isolation, reset after a nonqualifying query, saturation without wraparound,
+and reset only after committed promotion. Keep terminal rejected buckets
+inert and require invalid transitions to leave every count unchanged.
+
+Freeze the checked workspace delta at one byte per bucket, including the
+65,536-bucket maximum, exact-capacity success, one-byte-short refusal, limit
+failure, and arithmetic boundaries. Require reuse threshold one to reproduce
+the existing trigger, promotion, and rejection sequence. Across binary,
+repetitive, transient-hot, and boundary inputs, compare Exhaustive, HashChain,
+legacy Sparse, and reuse-gated Sparse in all five Exact identity fields. Do not
+use external Corpus timing as a unit-test success condition and do not define
+the performance matrix until these gates pass.

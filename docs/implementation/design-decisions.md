@@ -22811,3 +22811,24 @@ research infrastructure. Do not tune another pool or threshold against this
 same result. A later reevaluation requires a separately frozen hypothesis
 that directly changes promotion construction, terminal rejection, or hot-
 bucket selection while preserving the Exact and bounded-memory gates.
+
+## DD-1122: Gate Sparse promotion on repeated expensive queries
+
+- Date: 2026-09-16
+- Status: accepted
+
+Change the private Sparse HashTree hot-bucket selection mechanism before any
+new Corpus measurement. Store one saturating `uint8_t` qualifying-query count
+per bucket in caller-owned checked workspace. A Chain query above the existing
+candidate threshold increments its bucket; a query at or below the threshold
+resets that bucket; other buckets do not affect it. Pend promotion only when
+the count reaches a separately bounded reuse threshold. Value one must
+reproduce the current immediate-promotion transition.
+
+Keep build, transactional commit, terminal pool rejection, Exact matching,
+format, decoder, public ABI, defaults, and profiles unchanged. Prove bounded
+workspace, saturation, reset semantics, failure atomicity, and five-field
+HashChain identity before defining a new fixed Silesia matrix. This is a
+mechanism-level hot-bucket-selection experiment, not another post-result pool
+or candidate-threshold tuning pass, and remains private regardless of unit-test
+success.

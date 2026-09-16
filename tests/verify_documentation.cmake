@@ -713,6 +713,33 @@ foreach(required_sparse_hash_tree_large_window_term IN ITEMS
     endif()
 endforeach()
 
+set(lzss_sparse_hash_tree_reuse_gate_design
+    "${source_dir}/docs/design/lzss-sparse-hash-tree-reuse-gate.md")
+file(READ "${lzss_sparse_hash_tree_reuse_gate_design}"
+    lzss_sparse_hash_tree_reuse_gate_content)
+foreach(required_sparse_hash_tree_reuse_gate_term IN ITEMS
+        "Sparse HashTree 反復利用ゲート"
+        "単発の高コストな"
+        "promotion 1回当たりの後続tree query"
+        "0.874557"
+        "uint8_t"
+        "promotion_reuse_threshold"
+        "1から`UINT8_MAX`"
+        "1は現在の即時promotionと同じ遷移"
+        "token_fingerprint_sha256"
+        "最大65,536 bytes"
+        "最初の実装段階ではCorpus性能を測らない"
+        "public strategy")
+    string(FIND "${lzss_sparse_hash_tree_reuse_gate_content}"
+        "${required_sparse_hash_tree_reuse_gate_term}"
+        required_sparse_hash_tree_reuse_gate_term_offset)
+    if(required_sparse_hash_tree_reuse_gate_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete Sparse HashTree reuse-gate design: "
+            "${required_sparse_hash_tree_reuse_gate_term}")
+    endif()
+endforeach()
+
 set(lzss_contextual_adaptive_huffman_window_16m_design
     "${source_dir}/docs/design/lzss-contextual-adaptive-huffman-window-16m.md")
 file(READ "${lzss_contextual_adaptive_huffman_window_16m_design}"

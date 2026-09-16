@@ -30286,3 +30286,31 @@ both bounds.
   condition keys are unique. The result is bound to full revision
   `5c3106e68c679b9268a13c75f96033a98f523063`; its SHA-256 is
   `cdd526d40ef81406ec2cd87bb91799e3dc30ab400290a9152f5dfa2869ab8e95`.
+
+## CR-1215: 2026-09-16 - Sparse HashTree repeated-use gate design
+
+- Authoring method: inspected the committed private promotion/controller state
+  and calculated promotion reuse from the completed canonical aggregate before
+  freezing one mechanism-level hot-bucket-selection hypothesis.
+- References used: DD-1121, DD-1122, IR-0883, TVG-0984, BM-0069, commit
+  `5c3106e6`, the repository-owned Sparse implementation, and the ignored local
+  result whose recorded SHA-256 is
+  `cdd526d40ef81406ec2cd87bb91799e3dc30ab400290a9152f5dfa2869ab8e95`.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, cache or admission algorithm, source code,
+  performance analysis, pseudocode, tuning advice, or test suite.
+- Independent decisions: require repeated expensive observations per bucket;
+  reset only that bucket on a nonqualifying query; bound state to one saturating
+  byte per bucket; preserve legacy behavior at reuse threshold one; defer the
+  Corpus matrix until correctness and memory gates pass; and retain private
+  status throughout the experiment.
+- Generated-code task description: document a bounded repeated-use promotion
+  gate that changes hot-bucket selection without changing Exact output or any
+  public format/API, and freeze its staged validation before implementation.
+- Similarity review: the design is expressed only in marc terminology and is
+  derived from repository-owned state transitions and measurements. No
+  external implementation expression or admission-policy structure was copied
+  or translated.
+- Local validation: documentation-layout validation must retain the new design,
+  ordered records, bounded state, legacy-equivalent value one, and explicit
+  no-Corpus-before-correctness boundary.

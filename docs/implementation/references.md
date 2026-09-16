@@ -8034,3 +8034,14 @@ locally verified Silesia Corpus. The result interpretation applies only the
 four classifications fixed before measurement. No external compressor,
 hash-tree implementation, source code, benchmark result, performance
 analysis, tuning advice, pseudocode, or test suite was consulted.
+
+### IR-0883
+
+The Sparse HashTree repeated-use gate design uses DD-1121 and DD-1122,
+TVG-0984, BM-0069, the repository-owned promotion state, bucket controller,
+checked workspace calculator, and the completed large-window aggregate bound
+to commit `5c3106e6`. The per-bucket saturating observation, reset rule,
+legacy-equivalent value one, and staged correctness gates were independently
+derived from those local contracts. No external compressor, hash-tree
+implementation, cache policy, admission algorithm, source code, performance
+analysis, pseudocode, tuning advice, or test suite was consulted.
