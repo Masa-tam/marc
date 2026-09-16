@@ -138,3 +138,17 @@ reuse 2、4、8、16の各候補/windowを次で分類する。
 5. fake benchmarkで216点grid、resume、zero-work、破損拒否およびaggregateを試す。
 6. MSVC、ClangCLおよび完全CTest後に、実Corpusをbounded batchで測る。
 7. 最終結果と採否判断を別commitで記録する。
+
+## 9. 実装状態
+
+手順2と3は完了した。privateな
+`--frames-limited sparse-hash-tree-reuse-gated-exact` routeはreuse thresholdを
+明示的に受け取り、reportへ同じ値を出力する。値1は旧
+`sparse-hash-tree-exact`とworkspaceおよび五つのExact identity fieldが一致し、
+値2以上はbucketごとのbounded count viewをchecked workspaceへ加える。
+
+回帰試験は旧routeに新fieldが現れないこと、値1の旧route identity、値2の
+HashChain identityとworkspace差、`UINT8_MAX`受理、zeroと`UINT8_MAX + 1`、
+引数不足・過剰および
+不十分なhard limitの拒否をMSVCとClangCLで検証する。Corpus測定、runner実装、
+checkpoint作成および性能上の採否判断はまだ行っていない。

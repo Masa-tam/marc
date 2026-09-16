@@ -48,6 +48,7 @@ enum class BenchmarkStrategy : std::uint8_t {
     scapegoat_tree_exact,
     hash_tree_exact,
     sparse_hash_tree_exact,
+    sparse_hash_tree_reuse_gated_exact,
 };
 
 [[nodiscard]] bool parse_strategy(
@@ -66,6 +67,8 @@ enum class BenchmarkStrategy : std::uint8_t {
         strategy = BenchmarkStrategy::hash_tree_exact;
     } else if (text == "sparse-hash-tree-exact") {
         strategy = BenchmarkStrategy::sparse_hash_tree_exact;
+    } else if (text == "sparse-hash-tree-reuse-gated-exact") {
+        strategy = BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact;
     } else {
         return false;
     }
@@ -85,8 +88,16 @@ enum class BenchmarkStrategy : std::uint8_t {
     case BenchmarkStrategy::hash_tree_exact: return "hash-tree-exact";
     case BenchmarkStrategy::sparse_hash_tree_exact:
         return "sparse-hash-tree-exact";
+    case BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact:
+        return "sparse-hash-tree-reuse-gated-exact";
     }
     return "unknown";
+}
+
+[[nodiscard]] bool is_sparse_hash_tree_strategy(
+    const BenchmarkStrategy strategy) noexcept {
+    return strategy == BenchmarkStrategy::sparse_hash_tree_exact
+        || strategy == BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact;
 }
 
 struct AlignedWorkspace {
@@ -134,6 +145,21 @@ struct AlignedWorkspace {
     return result.ec == std::errc{}
         && result.ptr == text.data() + text.size()
         && threshold != std::numeric_limits<std::uint64_t>::max();
+}
+
+[[nodiscard]] bool parse_promotion_reuse_threshold(
+    const std::string_view text, std::uint8_t& threshold) noexcept {
+    std::uint64_t parsed{};
+    const auto result = std::from_chars(
+        text.data(), text.data() + text.size(), parsed);
+    if (result.ec != std::errc{}
+        || result.ptr != text.data() + text.size()
+        || parsed == 0
+        || parsed > std::numeric_limits<std::uint8_t>::max()) {
+        return false;
+    }
+    threshold = static_cast<std::uint8_t>(parsed);
+    return true;
 }
 
 [[nodiscard]] bool parse_pool_node_capacity(
@@ -784,6 +810,7 @@ void print_hash_tree_depth_histograms(
     case BenchmarkStrategy::hash_tree_exact:
         return valid_hash_tree_statistics(statistics);
     case BenchmarkStrategy::sparse_hash_tree_exact:
+    case BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact:
         return valid_hash_tree_statistics(statistics, false);
     }
     return false;
@@ -1090,6 +1117,7 @@ void fill_synthetic_input(
     const std::span<std::byte> workspace, const bool collect_statistics,
     const bool measure, const std::size_t pool_node_capacity,
     const std::uint64_t promotion_threshold,
+    const std::uint8_t promotion_reuse_threshold,
     FrameRunResult& result) noexcept {
     LzssMatchFinderStatistics frame_statistics{};
     auto* const token_summary = collect_statistics
@@ -1204,7 +1232,8 @@ void fill_synthetic_input(
         if (initialize_lzss_sparse_hash_tree_match_finder(
                 frame, parameters, limits, workspace, finder,
                 collect_statistics ? &frame_statistics : nullptr,
-                {effective_pool_capacity, promotion_threshold})
+                {effective_pool_capacity, promotion_threshold,
+                 promotion_reuse_threshold})
             != LzssSparseHashTreeMatchFinderError::none) {
             return false;
         }
@@ -1249,6 +1278,7 @@ token_fingerprint_hex(const TokenSummary& summary) noexcept {
     const std::span<std::byte> workspace, const bool collect_statistics,
     const bool measure, const std::size_t pool_node_capacity,
     const std::uint64_t promotion_threshold,
+    const std::uint8_t promotion_reuse_threshold,
     FrameRunResult& result) {
     std::ifstream stream(path, std::ios::binary);
     if (!stream) return false;
@@ -1267,7 +1297,7 @@ token_fingerprint_hex(const TokenSummary& summary) noexcept {
         if (!process_frame(
                 strategy, frame, parameters, limits, workspace,
                 collect_statistics, measure, pool_node_capacity,
-                promotion_threshold, result)) {
+                promotion_threshold, promotion_reuse_threshold, result)) {
             return false;
         }
         remaining -= current_size;
@@ -1286,6 +1316,7 @@ token_fingerprint_hex(const TokenSummary& summary) noexcept {
     const std::span<std::byte> workspace, const bool collect_statistics,
     const bool measure, const std::size_t pool_node_capacity,
     const std::uint64_t promotion_threshold,
+    const std::uint8_t promotion_reuse_threshold,
     FrameRunResult& result) {
     std::vector<std::byte> input(frame_size);
     std::uint64_t offset{};
@@ -1297,7 +1328,7 @@ token_fingerprint_hex(const TokenSummary& summary) noexcept {
         if (!process_frame(
                 strategy, frame, parameters, limits, workspace,
                 collect_statistics, measure, pool_node_capacity,
-                promotion_threshold, result)) {
+                promotion_threshold, promotion_reuse_threshold, result)) {
             return false;
         }
         offset += current_size;
@@ -1313,6 +1344,7 @@ void print_frame_report(
     const std::uint64_t max_internal_buffered_bytes,
     const std::size_t pool_node_capacity,
     const std::uint64_t promotion_threshold,
+    const std::uint8_t promotion_reuse_threshold,
     const FrameRunResult& verified, const double measured_seconds) {
     const auto fingerprint = token_fingerprint_hex(verified.token_summary);
     std::cout << std::fixed << std::setprecision(6)
@@ -1540,13 +1572,19 @@ void print_frame_report(
         return;
     }
     const auto& statistics = verified.statistics;
-    if (strategy == BenchmarkStrategy::sparse_hash_tree_exact) {
+    if (is_sparse_hash_tree_strategy(strategy)) {
         std::cout << "sparse_hash_tree_pool_node_capacity="
                   << pool_node_capacity << '\n'
                   << "sparse_hash_tree_promotion_candidate_threshold="
                   << promotion_threshold << '\n'
                   << "sparse_hash_tree_workspace_bytes=" << workspace_size
                   << '\n';
+        if (strategy
+            == BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact) {
+            std::cout << "sparse_hash_tree_promotion_reuse_threshold="
+                      << static_cast<unsigned>(promotion_reuse_threshold)
+                      << '\n';
+        }
     }
     std::cout << "hash_tree_promotion_candidate_threshold="
               << promotion_threshold << '\n'
@@ -1626,7 +1664,7 @@ void print_frame_report(
               << throughput(
                      verified.input_bytes, iterations, measured_seconds)
               << '\n';
-    if (strategy == BenchmarkStrategy::sparse_hash_tree_exact) {
+    if (is_sparse_hash_tree_strategy(strategy)) {
         std::cout << "sparse_hash_tree_frame_seconds=" << measured_seconds
                   << '\n'
                   << "sparse_hash_tree_frame_mib_per_second="
@@ -1661,6 +1699,11 @@ void print_usage() {
            "sparse-hash-tree-exact <input-file> <iterations> "
            "<frame-bytes> <window-bytes> <pool-nodes> "
            "<promotion-candidates> <max-internal-buffered-bytes>\n"
+        << "       marc_lzss_match_finder_benchmark --frames-limited "
+           "sparse-hash-tree-reuse-gated-exact <input-file> <iterations> "
+           "<frame-bytes> <window-bytes> <pool-nodes> "
+           "<promotion-candidates> <promotion-reuse-threshold> "
+           "<max-internal-buffered-bytes>\n"
         << "       marc_lzss_match_finder_benchmark --synthetic "
            "<hash-chain-exact|binary-tree-exact|wavl-tree-exact|"
            "red-black-tree-exact|"
@@ -1686,18 +1729,24 @@ void print_usage() {
         || (explicit_limit
             && ((strategy == BenchmarkStrategy::sparse_hash_tree_exact
                     && argc != 10)
+                || (strategy
+                        == BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact
+                    && argc != 11)
                 || ((strategy == BenchmarkStrategy::hash_chain_exact
                          || strategy == BenchmarkStrategy::binary_tree_exact)
                     && argc != 8)
-                || (strategy != BenchmarkStrategy::sparse_hash_tree_exact
+                || (!is_sparse_hash_tree_strategy(strategy)
                     && strategy != BenchmarkStrategy::hash_chain_exact
                     && strategy != BenchmarkStrategy::binary_tree_exact)))
         || (!explicit_limit
             && strategy == BenchmarkStrategy::hash_tree_exact && argc != 8)
         || (strategy == BenchmarkStrategy::sparse_hash_tree_exact
             && !explicit_limit && argc != 9)
+        || (strategy
+                == BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact
+            && !explicit_limit)
         || (strategy != BenchmarkStrategy::hash_tree_exact
-            && strategy != BenchmarkStrategy::sparse_hash_tree_exact
+            && !is_sparse_hash_tree_strategy(strategy)
             && !explicit_limit && argc > 7)) {
         print_usage();
         return 2;
@@ -1709,6 +1758,7 @@ void print_usage() {
     std::size_t pool_node_capacity{};
     std::uint64_t promotion_threshold{
         std::numeric_limits<std::uint64_t>::max()};
+    std::uint8_t promotion_reuse_threshold{1};
     auto limits = marc::core::DecoderLimits{};
     if (explicit_limit) {
         limits.max_frame_size = std::numeric_limits<std::uint32_t>::max();
@@ -1721,17 +1771,24 @@ void print_usage() {
                 argv[6], limits.max_lz_distance, window_size))
         || (strategy == BenchmarkStrategy::hash_tree_exact
             && !parse_promotion_threshold(argv[7], promotion_threshold))
-        || (strategy == BenchmarkStrategy::sparse_hash_tree_exact
+        || (is_sparse_hash_tree_strategy(strategy)
             && (!parse_pool_node_capacity(
                     argv[7], std::min(frame_size, window_size),
                     pool_node_capacity)
                 || !parse_promotion_threshold(
                     argv[8], promotion_threshold)))
+        || (strategy
+                == BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact
+            && !parse_promotion_reuse_threshold(
+                argv[9], promotion_reuse_threshold))
         || (explicit_limit
             && !parse_positive_u64(
-                argv[strategy == BenchmarkStrategy::sparse_hash_tree_exact
-                        ? 9
-                        : 7],
+                argv[strategy
+                            == BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact
+                        ? 10
+                        : (strategy == BenchmarkStrategy::sparse_hash_tree_exact
+                               ? 9
+                               : 7)],
                 limits.max_internal_buffered_bytes))
         || window_size > std::numeric_limits<std::uint32_t>::max()) {
         std::cerr << "invalid frame benchmark argument\n";
@@ -1800,7 +1857,8 @@ void print_usage() {
         workspace_size = requirements.workspace_size;
     } else {
         const auto requirements = calculate_lzss_sparse_hash_tree_workspace(
-            frame_size, parameters, limits, pool_node_capacity);
+            frame_size, parameters, limits, pool_node_capacity,
+            promotion_reuse_threshold);
         if (requirements.error != LzssSparseHashTreeError::none) {
             std::cerr << "cannot calculate frame sparse HashTree workspace\n";
             return 1;
@@ -1814,7 +1872,7 @@ void print_usage() {
     if (!process_frames(
             strategy, argv[3], file_size, frame_size, parameters, limits,
             workspace, true, false, pool_node_capacity,
-            promotion_threshold, verified)
+            promotion_threshold, promotion_reuse_threshold, verified)
         || verified.input_bytes != file_size
         || verified.statistics.query_count != verified.token_count
         || !valid_token_summary(verified)
@@ -1829,7 +1887,7 @@ void print_usage() {
         if (!process_frames(
                 strategy, argv[3], file_size, frame_size, parameters, limits,
                 workspace, false, true, pool_node_capacity,
-                promotion_threshold, measured)
+                promotion_threshold, promotion_reuse_threshold, measured)
             || measured.input_bytes != verified.input_bytes
             || measured.frame_count != verified.frame_count
             || measured.token_count != verified.token_count) {
@@ -1843,7 +1901,8 @@ void print_usage() {
         strategy, explicit_limit ? "frames-limited" : "frames", {},
         frame_size, window_size, iterations, workspace_size,
         limits.max_internal_buffered_bytes, pool_node_capacity,
-        promotion_threshold, verified, measured_seconds);
+        promotion_threshold, promotion_reuse_threshold, verified,
+        measured_seconds);
     return 0;
 }
 
@@ -1851,6 +1910,8 @@ void print_usage() {
     const int argc, const char* const argv[]) {
     BenchmarkStrategy strategy{};
     if (argc < 4 || argc > 10 || !parse_strategy(argv[2], strategy)
+        || strategy
+            == BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact
         || (strategy == BenchmarkStrategy::hash_tree_exact && argc != 9)
         || (strategy == BenchmarkStrategy::sparse_hash_tree_exact
             && argc != 10)
@@ -1868,6 +1929,7 @@ void print_usage() {
     std::size_t pool_node_capacity{};
     std::uint64_t promotion_threshold{
         std::numeric_limits<std::uint64_t>::max()};
+    constexpr std::uint8_t promotion_reuse_threshold{1};
     const marc::core::DecoderLimits limits{};
     if (!parse_synthetic_input_kind(argv[3], kind)
         || (argc >= 5 && !parse_size_argument(
@@ -1958,7 +2020,7 @@ void print_usage() {
     if (!process_synthetic_frames(
             strategy, kind, input_size, frame_size, parameters, limits,
             workspace, true, false, pool_node_capacity,
-            promotion_threshold, verified)
+            promotion_threshold, promotion_reuse_threshold, verified)
         || verified.input_bytes != input_size
         || verified.statistics.query_count != verified.token_count
         || !valid_token_summary(verified)
@@ -1973,7 +2035,7 @@ void print_usage() {
         if (!process_synthetic_frames(
                 strategy, kind, input_size, frame_size, parameters, limits,
                 workspace, false, true, pool_node_capacity,
-                promotion_threshold, measured)
+                promotion_threshold, promotion_reuse_threshold, measured)
             || measured.input_bytes != verified.input_bytes
             || measured.frame_count != verified.frame_count
             || measured.token_count != verified.token_count) {
@@ -1987,7 +2049,8 @@ void print_usage() {
         strategy, "synthetic", synthetic_input_name(kind), frame_size,
         window_size, iterations, workspace_size,
         limits.max_internal_buffered_bytes, pool_node_capacity,
-        promotion_threshold, verified, measured_seconds);
+        promotion_threshold, promotion_reuse_threshold, verified,
+        measured_seconds);
     return 0;
 }
 

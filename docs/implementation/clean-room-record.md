@@ -30452,3 +30452,34 @@ both bounds.
   endpoints, private route, independent schema, five-field Exact gate, bounded
   checkpoint behavior, and all six predeclared classifications. No Corpus
   performance measurement was performed.
+
+## CR-1221: 2026-09-16 - Sparse reuse-gated benchmark route
+
+- Authoring method: extended the repository-owned explicit-limit frame
+  benchmark with one distinct private strategy spelling and carried the
+  already bounded reuse threshold through the existing Sparse calculator,
+  initializer, processor, and report path.
+- References used: DD-1122, DD-1123, IR-0883 through IR-0885, TVG-0984,
+  TVG-0985, CR-1217 through CR-1220, and marc's existing limited HashChain,
+  BinaryTree, and legacy Sparse smoke contracts.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, admission algorithm, benchmark harness, source
+  code, performance result, tuning advice, pseudocode, or test suite.
+- Independent decisions: accept only reuse values 1 through `UINT8_MAX`;
+  require the new route to be explicit-limit only; expose the chosen value in
+  one new report field; leave the old route and report unchanged; prove value
+  one workspace and Exact equivalence with the old route; and prove gated
+  Exact identity against HashChain before any Corpus measurement.
+- Generated-code task description: add a private, bounded benchmark surface
+  for the already implemented Sparse repeated-use gate without changing the
+  public selector, ABI, format, decoder, profile, or historical benchmark
+  evidence.
+- Similarity review: the change composes only marc-owned enums, parsers,
+  checked workspace APIs, report fields, and CMake smoke-test conventions. No
+  external implementation or benchmark expression was copied or translated.
+- Local validation: warning-clean MSVC and ClangCL builds both pass the frame
+  benchmark smoke. The test fixes old-report absence of the new field,
+  threshold-one legacy identity, threshold-two five-field HashChain identity
+  and one-byte-per-bucket workspace delta, 255 acceptance, zero and 256
+  rejection, argument cardinality, and hard-limit refusal. No Corpus
+  performance measurement was performed.

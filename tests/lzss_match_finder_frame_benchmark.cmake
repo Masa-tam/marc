@@ -344,12 +344,154 @@ foreach(summary_key IN ITEMS
     endif()
 endforeach()
 
+string(FIND "${limited_sparse_report}"
+    "sparse_hash_tree_promotion_reuse_threshold=" legacy_reuse_offset)
+if(NOT legacy_reuse_offset EQUAL -1)
+    message(FATAL_ERROR
+        "legacy Sparse HashTree report exposed reuse-gate field")
+endif()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames-limited
+        sparse-hash-tree-reuse-gated-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 256 4 1
+        ${explicit_limit}
+    RESULT_VARIABLE reuse_one_result
+    OUTPUT_VARIABLE reuse_one_report
+    ERROR_VARIABLE reuse_one_error)
+if(NOT reuse_one_result EQUAL 0)
+    message(FATAL_ERROR
+        "reuse-one Sparse HashTree failed: ${reuse_one_result}: "
+        "${reuse_one_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=frames-limited"
+        "strategy=sparse-hash-tree-reuse-gated-exact"
+        "max_internal_buffered_bytes=${explicit_limit}"
+        "sparse_hash_tree_pool_node_capacity=256"
+        "sparse_hash_tree_promotion_candidate_threshold=4"
+        "sparse_hash_tree_promotion_reuse_threshold=1")
+    string(FIND "${reuse_one_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR
+            "missing reuse-one Sparse HashTree line: ${expected_line}")
+    endif()
+endforeach()
+foreach(identity_key IN ITEMS
+        workspace_bytes token_count literal_count match_count matched_bytes
+        token_fingerprint_sha256)
+    string(REGEX MATCH "${identity_key}=([^\n]+)" ignored
+        "${limited_sparse_report}")
+    set(legacy_value "${CMAKE_MATCH_1}")
+    string(REGEX MATCH "${identity_key}=([^\n]+)" ignored
+        "${reuse_one_report}")
+    set(reuse_one_value "${CMAKE_MATCH_1}")
+    if(NOT legacy_value STREQUAL reuse_one_value)
+        message(FATAL_ERROR
+            "reuse-one legacy ${identity_key} mismatch: "
+            "${legacy_value} != ${reuse_one_value}")
+    endif()
+endforeach()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames-limited
+        sparse-hash-tree-reuse-gated-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 256 4 2
+        ${explicit_limit}
+    RESULT_VARIABLE reuse_two_result
+    OUTPUT_VARIABLE reuse_two_report
+    ERROR_VARIABLE reuse_two_error)
+if(NOT reuse_two_result EQUAL 0)
+    message(FATAL_ERROR
+        "reuse-two Sparse HashTree failed: ${reuse_two_result}: "
+        "${reuse_two_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=frames-limited"
+        "strategy=sparse-hash-tree-reuse-gated-exact"
+        "sparse_hash_tree_pool_node_capacity=256"
+        "sparse_hash_tree_promotion_candidate_threshold=4"
+        "sparse_hash_tree_promotion_reuse_threshold=2"
+        "hash_tree_pool_rejections=0")
+    string(FIND "${reuse_two_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR
+            "missing reuse-two Sparse HashTree line: ${expected_line}")
+    endif()
+endforeach()
+foreach(summary_key IN ITEMS
+        token_count literal_count match_count matched_bytes
+        token_fingerprint_sha256)
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${limited_hash_report}")
+    set(hash_summary "${CMAKE_MATCH_1}")
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${reuse_two_report}")
+    set(reuse_two_summary "${CMAKE_MATCH_1}")
+    if(NOT hash_summary STREQUAL reuse_two_summary)
+        message(FATAL_ERROR
+            "reuse-two Sparse Exact ${summary_key} mismatch: "
+            "${hash_summary} != ${reuse_two_summary}")
+    endif()
+endforeach()
+string(REGEX MATCH "workspace_bytes=([0-9]+)" ignored
+    "${limited_sparse_report}")
+set(legacy_sparse_workspace "${CMAKE_MATCH_1}")
+string(REGEX MATCH "workspace_bytes=([0-9]+)" ignored
+    "${reuse_two_report}")
+set(reuse_two_workspace "${CMAKE_MATCH_1}")
+math(EXPR expected_reuse_two_workspace
+    "${legacy_sparse_workspace} + ${frame_size}")
+if(NOT reuse_two_workspace EQUAL expected_reuse_two_workspace)
+    message(FATAL_ERROR
+        "reuse-gate workspace mismatch: ${reuse_two_workspace} != "
+        "${expected_reuse_two_workspace}")
+endif()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames-limited
+        sparse-hash-tree-reuse-gated-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 256 4 255
+        ${explicit_limit}
+    RESULT_VARIABLE reuse_max_result
+    OUTPUT_VARIABLE reuse_max_report
+    ERROR_VARIABLE reuse_max_error)
+if(NOT reuse_max_result EQUAL 0)
+    message(FATAL_ERROR
+        "maximum-reuse Sparse HashTree failed: ${reuse_max_result}: "
+        "${reuse_max_error}")
+endif()
+string(FIND "${reuse_max_report}"
+    "sparse_hash_tree_promotion_reuse_threshold=255\n" reuse_max_offset)
+if(reuse_max_offset EQUAL -1)
+    message(FATAL_ERROR "maximum reuse threshold was not reported")
+endif()
+foreach(summary_key IN ITEMS
+        token_count literal_count match_count matched_bytes
+        token_fingerprint_sha256)
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${limited_hash_report}")
+    set(hash_summary "${CMAKE_MATCH_1}")
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${reuse_max_report}")
+    set(reuse_max_summary "${CMAKE_MATCH_1}")
+    if(NOT hash_summary STREQUAL reuse_max_summary)
+        message(FATAL_ERROR
+            "maximum-reuse Sparse Exact ${summary_key} mismatch: "
+            "${hash_summary} != ${reuse_max_summary}")
+    endif()
+endforeach()
+
 foreach(invalid_command IN ITEMS
         "hash-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;${explicit_limit}"
         "scapegoat-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;${explicit_limit}"
         "sparse-hash-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;0"
         "sparse-hash-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;1025;4;${explicit_limit}"
         "sparse-hash-tree-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;${explicit_limit};1"
+        "sparse-hash-tree-reuse-gated-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;0;${explicit_limit}"
+        "sparse-hash-tree-reuse-gated-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;256;${explicit_limit}"
+        "sparse-hash-tree-reuse-gated-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;2"
+        "sparse-hash-tree-reuse-gated-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;2;${explicit_limit};1"
         "hash-chain-exact;${BENCHMARK_INPUT};1;${frame_size};65536;0"
         "hash-chain-exact;${BENCHMARK_INPUT};1;${frame_size};65536;18446744073709551616")
     execute_process(
@@ -372,6 +514,19 @@ execute_process(
 if(NOT insufficient_limit_result EQUAL 1)
     message(FATAL_ERROR
         "insufficient limited policy returned ${insufficient_limit_result}")
+endif()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames-limited
+        sparse-hash-tree-reuse-gated-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 256 4 2 1024
+    RESULT_VARIABLE insufficient_reuse_gate_limit_result
+    OUTPUT_QUIET
+    ERROR_QUIET)
+if(NOT insufficient_reuse_gate_limit_result EQUAL 1)
+    message(FATAL_ERROR
+        "insufficient reuse-gated Sparse limited policy returned "
+        "${insufficient_reuse_gate_limit_result}")
 endif()
 
 execute_process(

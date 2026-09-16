@@ -8057,3 +8057,15 @@ series, 216-point order, memory endpoints, dual baselines, and classifications
 were selected before new performance measurement. No external compressor,
 hash-tree implementation, admission algorithm, benchmark harness, source code,
 performance result, tuning advice, pseudocode, or test suite was consulted.
+
+### IR-0885
+
+The private Sparse HashTree reuse-gated benchmark route uses DD-1122 and
+DD-1123, TVG-0984 and TVG-0985, IR-0883 and IR-0884, the repository-owned
+checked Sparse workspace calculator, Exact token summary and fingerprint,
+existing explicit-limit frame benchmark, and legacy Sparse report contract.
+The distinct spelling, threshold parser, legacy-value-one equivalence, report
+field, workspace-delta check, and failure cases were derived only from those
+local interfaces. No external compressor, hash-tree implementation, admission
+algorithm, benchmark harness, source code, performance result, tuning advice,
+pseudocode, or test suite was consulted.
