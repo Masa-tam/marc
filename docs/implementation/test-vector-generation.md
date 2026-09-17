@@ -14536,3 +14536,22 @@ SHA-256, exact parsed value, tool-source digests, executable digest, revision,
 corpus manifest, and environment. This gate freezes only the inert contract;
 runner execution, interruption/resume, report validation, and final aggregation
 remain a later test-vector gate.
+
+### TVG-0998
+
+Construct twelve fake eight-byte corpus members and deterministic reports for
+HashChain, mutable reuse-sixteen Sparse, and immutable-snapshot Sparse. Require
+the runner to complete the fixed grid as four records plus the remaining 104,
+emit three baseline, three mutable, three candidate aggregates and three
+window comparisons, then relaunch zero children when invoked again with a
+complete checkpoint.
+
+Reject changed manifest keys, booleans, canonical order and duplicate JSON
+keys; changed workspace, lifecycle marker, delta-query accounting, tree
+mutation and histogram mass; a Sparse record without its baseline; a candidate
+without its mutable control; a duplicate or out-of-order prefix; and changed
+checkpoint identity. Inject a failure in the second child and require exactly
+one persisted record. Then add a stale final output beside the incomplete
+checkpoint and require failure before another child launch or output mutation.
+Run the Python suite through CTest without accessing the network or real
+Silesia files.

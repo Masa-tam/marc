@@ -2483,3 +2483,25 @@ predeclared aggregate and broad HashChain gain requirements, so the policy
 remains private and is not added to the selector, ABI, CLI, profile, or
 format. The ignored canonical result JSON has SHA-256
 `d42929616c853362ce17411be986c761065472367e9fb1224e8db9cd5dcdc17d`.
+
+### BM-0072: Manifest-driven immutable Sparse snapshot runner
+
+The dedicated network-free runner consumes
+`silesia-sparse-hash-tree-immutable-snapshot-v1.json` and owns the fixed
+108-record comparison from one top-level invocation. For each Silesia member
+and 4/16/64-MiB window it runs HashChain, mutable reuse-sixteen Sparse, and
+immutable-snapshot Sparse in canonical order, one child process per record.
+
+Before atomically appending a record it validates the fixed workspace and hard
+limit, finite timings, query and trigger accounting, histograms, immutable
+lifecycle marker and diagnostics, zero tree insertion/retirement, and all five
+Exact identity fields against both prior controls. Checkpoint identity binds
+the strict manifest bytes and value, revision, executable, runner dependencies,
+verified corpus, and environment. A complete checkpoint regenerates the final
+three aggregates and three comparisons without launching a child.
+
+The fake-report gate covers strict manifest rejection, fixed command/grid,
+snapshot diagnostic rejection, canonical-prefix and identity rejection,
+4-plus-104 resume, complete zero-work rerun, child-failure atomicity, and stale
+output refusal. This entry records infrastructure only. No Silesia result has
+been observed and no strategy-admission decision has been made.

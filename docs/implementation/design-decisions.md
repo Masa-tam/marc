@@ -23012,3 +23012,23 @@ aggregate and broad throughput gains against both HashChain and mutable Sparse,
 workspace premium, zero steady-state tree mutation, and observed snapshot
 lifecycle activity. Keep adoption as a separate decision after the complete
 fixed result is recorded.
+
+## DD-1131: One content-bound runner owns the immutable snapshot matrix
+
+- Date: 2026-09-18
+- Status: accepted
+
+Execute the fixed 108-record manifest through one top-level, network-free
+runner while retaining one child benchmark per record. Persist only a fully
+validated record and atomically replace the checkpoint after every accepted
+point. Accept only the canonical member/window/baseline/mutable/candidate
+prefix and require Exact identity first against HashChain and then against the
+mutable control.
+
+Bind checkpoint identity to the strict manifest path, bytes, parsed value,
+revision, executable digest, all imported runner-source digests, verified
+corpus manifest, and build environment. Permit an optional maximum number of
+new points for bounded operation; zero performs validation only. Refuse a
+pre-existing final output while the checkpoint is incomplete, and regenerate
+the final result without child launches once complete. Keep measurement as a
+later explicit action.

@@ -30880,3 +30880,29 @@ both bounds.
   implementation expression was copied or translated.
 - Local validation: JSON parsing confirms the manifest is syntactically valid;
   the repository documentation-layout test accepts the new indexed design.
+
+## CR-1237: 2026-09-18 - Immutable Sparse manifest runner
+
+- Authoring method: composed a new fixed-grid runner from marc's existing
+  strict manifest, corpus verifier, report parser, digest, atomic JSON, and
+  checkpoint primitives while defining snapshot validation independently.
+- References used: DD-1130 and DD-1131, IR-0899 and IR-0900, TVG-0997 and
+  TVG-0998, CR-1236, and repository-owned reuse-gate runner and benchmark
+  diagnostic contracts.
+- Known implementations intentionally not consulted: external runner,
+  benchmark framework, compressor, result, source code, pseudocode, tuning
+  advice, or test suite.
+- Independent decisions: keep a three-record canonical group; compare Exact
+  identity twice; bind every imported tool digest; aggregate snapshot sums and
+  maxima separately; classify both controls; checkpoint every record; and
+  reject stale final output beside incomplete state.
+- Generated-code task description: implement and test the fixed immutable
+  snapshot experiment runner without starting a corpus measurement or changing
+  any existing experiment schema.
+- Similarity review: orchestration reuses only marc-owned Python contracts and
+  adds lifecycle-specific validation directly from committed diagnostics. No
+  external implementation expression was copied or translated.
+- Local validation: six Python tests pass through CTest. They cover strict
+  manifest and report validation, fixed grid and commands, canonical and
+  content-bound checkpoints, 4-plus-104 resume, complete zero-work rerun,
+  child-failure atomicity, and stale-output refusal.

@@ -84,5 +84,17 @@ manifestは不活性JSONであり、command、実行ファイルpath、corpus pa
 corpus manifest、環境をcheckpoint identityへ含める。未知field、順序違反record、Exact不一致、
 既存未完了checkpointとfinal outputの競合を拒否する。
 
-runnerとその単体テストが完成し、manifest validation、途中再開、改竄拒否、complete-grid
-再実行抑止を確認するまで実コーパス測定を開始しない。
+runnerは`tools/run_silesia_sparse_hash_tree_snapshot_experiment.py`である。例えばMSVC
+Release測定は次の一回のtop-level起動で開始または再開する。
+
+```console
+py -3.14 tools/run_silesia_sparse_hash_tree_snapshot_experiment.py out/build/windows-msvc/Release/marc_lzss_match_finder_benchmark.exe --experiment benchmarks/experiments/silesia-sparse-hash-tree-immutable-snapshot-v1.json --corpus benchmarks/data/silesia/corpus --checkpoint benchmarks/data/silesia/results/sparse-immutable-snapshot-msvc.checkpoint.json --output benchmarks/data/silesia/results/sparse-immutable-snapshot-msvc.json --compiler "MSVC 19.50" --generator "Visual Studio 18 2026" --architecture x64 --build-label windows-msvc-release
+```
+
+`--max-new-points N`を指定すれば新規recordを最大N件に制限でき、0なら既存checkpointだけを
+再検証する。未完了checkpointがあるときにfinal outputが存在する場合は上書きせず失敗する。
+complete checkpointはchild processを再起動せずfinal aggregateを再生成する。
+
+単体テストはmanifest validation、三者report契約、canonical prefix、4+104件の途中再開、
+complete-grid再実行抑止、child failure後のatomic record境界、stale-output拒否をfake reportで
+固定した。実コーパス測定は別の明示的な実行段階まで開始しない。

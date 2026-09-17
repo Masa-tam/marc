@@ -8229,3 +8229,14 @@ three-way control order, 108-point count, Exact fields, workspace values, and
 classification boundaries were fixed only from those local records. No new
 corpus result, external compressor, benchmark design, tuning advice, source
 code, pseudocode, or test suite was consulted.
+
+### IR-0900
+
+The immutable-snapshot manifest runner uses DD-1130 and DD-1131, IR-0899,
+TVG-0997, CR-1236, and marc's repository-owned reuse-gate JSON, checkpoint,
+report parser, corpus verifier, aggregation, and failure-atomicity contracts.
+The three-record canonical group, dual Exact comparison, snapshot diagnostic
+validation, content-bound identity, 4-plus-104 resume gate, and zero-work
+complete rerun were derived only from those local interfaces. No external
+runner, benchmark framework, compressor, result, source code, pseudocode,
+tuning advice, or test suite was consulted.
