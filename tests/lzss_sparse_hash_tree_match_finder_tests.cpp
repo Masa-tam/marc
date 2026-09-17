@@ -42,6 +42,18 @@ struct AlignedStorage {
             threshold};
 }
 
+[[nodiscard]] LzssSparseHashTreeMatchFinderOptions snapshot_options(
+    const std::size_t input_size, const LzssParameters& parameters,
+    const std::uint64_t threshold = 0) {
+    auto options = full_pool_options(input_size, parameters, threshold);
+    if (input_size < lzss_match_finder_prefix_size) {
+        options.pool_node_capacity = 0;
+    }
+    options.lifecycle_mode =
+        LzssSparseHashTreeLifecycleMode::immutable_snapshot;
+    return options;
+}
+
 TEST(LzssSparseHashTreeMatchFinder, SatisfiesEmptyAndShortProtocol) {
     for (const auto input : {bytes(""), bytes("abcd")}) {
         const LzssSparseHashTreeMatchFinderOptions options{};
@@ -64,6 +76,130 @@ TEST(LzssSparseHashTreeMatchFinder, SatisfiesEmptyAndShortProtocol) {
         EXPECT_EQ(finder.find_match(input.size()), LzssMatch{});
         EXPECT_EQ(finder.next_position(), input.size());
     }
+}
+
+TEST(LzssSparseHashTreeMatchFinder,
+     ImmutableSnapshotSatisfiesEmptyAndShortProtocol) {
+    for (const auto input : {bytes(""), bytes("a"), bytes("abc"),
+                             bytes("abcd")}) {
+        const auto options = snapshot_options(input.size(), {});
+        const auto required = calculate_lzss_sparse_hash_tree_workspace(
+            input.size(), {}, {}, options.pool_node_capacity);
+        ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
+        auto storage = make_storage(required.workspace_size);
+        LzssSparseHashTreeMatchFinder finder{};
+        ASSERT_EQ(initialize_lzss_sparse_hash_tree_match_finder(
+                      input, {}, {}, storage.bytes, finder, nullptr, options),
+                  LzssSparseHashTreeMatchFinderError::none);
+        EXPECT_EQ(finder.lifecycle_mode(),
+                  LzssSparseHashTreeLifecycleMode::immutable_snapshot);
+        for (std::size_t position = 0; position < input.size(); ++position) {
+            EXPECT_EQ(finder.find_match(position), LzssMatch{});
+            finder.advance(position, position + 1U);
+            ASSERT_TRUE(finder.state_valid()) << position;
+        }
+        EXPECT_EQ(finder.find_match(input.size()), LzssMatch{});
+        EXPECT_EQ(finder.next_position(), input.size());
+        EXPECT_EQ(finder.snapshot_controller_error(),
+                  LzssSparseHashTreeSnapshotControllerError::none);
+    }
+}
+
+TEST(LzssSparseHashTreeMatchFinder,
+     ImmutableSnapshotTokenTraceMatchesExhaustiveAndUsesLifecycle) {
+    const std::vector<std::byte> input(320, std::byte{'A'});
+    LzssParameters parameters{};
+    parameters.window_size = 20;
+    parameters.max_match_length = 5;
+    const auto options = snapshot_options(input.size(), parameters);
+    const auto required = calculate_lzss_sparse_hash_tree_workspace(
+        input.size(), parameters, {}, options.pool_node_capacity);
+    ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssMatchFinderStatistics statistics{};
+    LzssSparseHashTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_sparse_hash_tree_match_finder(
+                  input, parameters, {},
+                  storage.bytes.first(required.workspace_size), finder,
+                  &statistics, options),
+              LzssSparseHashTreeMatchFinderError::none);
+    LzssExhaustiveMatchFinder exhaustive{input, parameters};
+
+    std::size_t position{};
+    while (position < input.size()) {
+        const auto actual = finder.find_match(position);
+        const auto expected = exhaustive.find_match(position);
+        ASSERT_EQ(actual, expected) << position;
+        const auto advance = lzss_match_is_beneficial(actual)
+            ? static_cast<std::size_t>(actual.length) : 1U;
+        finder.advance(position, position + advance);
+        exhaustive.advance(position, position + advance);
+        ASSERT_TRUE(finder.state_valid()) << position;
+        position += advance;
+    }
+    EXPECT_EQ(finder.next_position(), input.size());
+    EXPECT_GT(statistics.hash_tree_snapshot_promotion_count, 1U);
+    EXPECT_GT(statistics.hash_tree_snapshot_query_count, 0U);
+    EXPECT_GT(statistics.hash_tree_snapshot_delta_query_count, 0U);
+    EXPECT_GT(statistics.hash_tree_snapshot_expiration_count, 0U);
+    EXPECT_EQ(statistics.hash_tree_snapshot_expiration_count,
+              statistics.hash_tree_snapshot_bulk_release_count);
+    EXPECT_EQ(statistics.hash_tree_insertion_count, 0U);
+    EXPECT_EQ(statistics.hash_tree_retirement_count, 0U);
+}
+
+TEST(LzssSparseHashTreeMatchFinder,
+     RejectsUnknownLifecycleWithoutReplacingFinder) {
+    const auto input = bytes("abcdefghabcdefgh");
+    const auto valid_required = calculate_lzss_sparse_hash_tree_workspace(
+        input.size(), {}, {}, 0);
+    ASSERT_EQ(valid_required.error, LzssSparseHashTreeError::none);
+    auto valid_storage = make_storage(valid_required.workspace_size);
+    LzssSparseHashTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_sparse_hash_tree_match_finder(
+                  input, {}, {}, valid_storage.bytes, finder),
+              LzssSparseHashTreeMatchFinderError::none);
+    ASSERT_TRUE(finder.initialized());
+    ASSERT_EQ(finder.lifecycle_mode(),
+              LzssSparseHashTreeLifecycleMode::mutable_tree);
+
+    auto options = snapshot_options(input.size(), {});
+    options.lifecycle_mode =
+        static_cast<LzssSparseHashTreeLifecycleMode>(UINT8_C(0xff));
+    EXPECT_EQ(initialize_lzss_sparse_hash_tree_match_finder(
+                  input, {}, {}, {}, finder, nullptr, options),
+              LzssSparseHashTreeMatchFinderError::invalid_parameters);
+    EXPECT_TRUE(finder.initialized());
+    EXPECT_TRUE(finder.state_valid());
+    EXPECT_EQ(finder.input_size(), input.size());
+    EXPECT_EQ(finder.lifecycle_mode(),
+              LzssSparseHashTreeLifecycleMode::mutable_tree);
+}
+
+TEST(LzssSparseHashTreeMatchFinder,
+     ImmutableSnapshotProtocolFailureIsStickyAndObservable) {
+    const auto input = bytes("abcdefghabcdefgh");
+    const auto options = snapshot_options(input.size(), {});
+    const auto required = calculate_lzss_sparse_hash_tree_workspace(
+        input.size(), {}, {}, options.pool_node_capacity);
+    ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssSparseHashTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_sparse_hash_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder, nullptr, options),
+              LzssSparseHashTreeMatchFinderError::none);
+
+    finder.advance(1, 2);
+    EXPECT_FALSE(finder.state_valid());
+    EXPECT_EQ(finder.last_error(),
+              LzssSparseHashTreeMatchFinderError::invalid_protocol);
+    EXPECT_EQ(finder.snapshot_controller_error(),
+              LzssSparseHashTreeSnapshotControllerError::invalid_protocol);
+    EXPECT_EQ(finder.controller_error(),
+              LzssSparseHashTreeControllerError::none);
+    finder.advance(0, 1);
+    EXPECT_EQ(finder.last_error(),
+              LzssSparseHashTreeMatchFinderError::invalid_protocol);
 }
 
 TEST(LzssSparseHashTreeMatchFinder,

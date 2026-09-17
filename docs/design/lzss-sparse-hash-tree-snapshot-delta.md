@@ -244,3 +244,16 @@ poisonし、呼び出し時点のworkspaceを追加変更しないことを要�
 OS乱数、無制限反復、network入力は使わない。この限定gateはMSVCとClangCLで固定した。
 sanitizer campaign、public match finder接続とbenchmark出力は後続gateである。
 テストsuite名は`LzssSparseHashTreeSnapshotFuzzRegression`である。
+
+public match finder内部への接続は既存options末尾の明示的な
+`LzssSparseHashTreeLifecycleMode`で行う。値`mutable_tree`を従来動作かつ既定値とし、
+`immutable_snapshot`をopt-inとする。pool capacity、
+promotion candidate threshold、promotion reuse threshold、workspace query、既存aggregate
+初期化の先頭3項目は変更しない。snapshot variantも同一workspace layoutを使い、追加の
+動的確保やserialized format変更を導入しない。
+
+prefix hashを構成できない短いinputではsnapshot controllerを初期化または呼び出さず、
+public match finderが空matchを返して既存の短入力advance stateだけを進める。通常inputでは
+find/advanceを専用snapshot controllerへdispatchし、snapshot固有errorを保持した上で既存の
+match-finder error categoryへ写像する。typed encoderは渡されたoptionsをそのまま尊重するが、
+既定codec、C ABI、CLI、profile、benchmark selectorはこのgateでは変更しない。

@@ -49,6 +49,18 @@ void LzssSparseHashTreeMatchFinder::mark_error(
     state_valid_ = false;
 }
 
+void LzssSparseHashTreeMatchFinder::mark_snapshot_error(
+    const LzssSparseHashTreeSnapshotControllerError error) noexcept {
+    if (last_error_ == LzssSparseHashTreeMatchFinderError::none) {
+        last_error_ = error
+                == LzssSparseHashTreeSnapshotControllerError::invalid_protocol
+            ? LzssSparseHashTreeMatchFinderError::invalid_protocol
+            : LzssSparseHashTreeMatchFinderError::controller_failure;
+        snapshot_controller_error_ = error;
+    }
+    state_valid_ = false;
+}
+
 LzssSparseHashTreePositionContext
 LzssSparseHashTreeMatchFinder::context() noexcept {
     return {input_, parameters_, &workspace_, statistics_, &promotion_};
@@ -61,12 +73,24 @@ LzssMatch LzssSparseHashTreeMatchFinder::find_match(
         return {};
     }
     if (!state_valid_) return {};
-    if (position != advance_state_.next_position()
+    if (position != next_position()
         || position > input_.size()) {
         mark_error(LzssSparseHashTreeMatchFinderError::invalid_protocol);
         return {};
     }
     if (position == input_.size()) return {};
+    if (uses_snapshot_controller()) {
+        const auto result =
+            query_lzss_sparse_hash_tree_snapshot_controller_exact(
+                context(), snapshot_state_, position);
+        if (result.error
+            != LzssSparseHashTreeSnapshotControllerError::none) {
+            mark_snapshot_error(result.error);
+            return {};
+        }
+        return result.match;
+    }
+    if (workspace_.heads().empty()) return {};
     const auto result = query_lzss_sparse_hash_tree_exact(context(), position);
     if (result.error != LzssSparseHashTreeControllerError::none) {
         mark_error(LzssSparseHashTreeMatchFinderError::controller_failure,
@@ -84,6 +108,16 @@ void LzssSparseHashTreeMatchFinder::advance(
         return;
     }
     if (!state_valid_) return;
+    if (uses_snapshot_controller()) {
+        const auto result =
+            advance_lzss_sparse_hash_tree_snapshot_controller(
+                context(), snapshot_state_, position, next_position);
+        if (result.error
+            != LzssSparseHashTreeSnapshotControllerError::none) {
+            mark_snapshot_error(result.error);
+        }
+        return;
+    }
     const auto result = advance_lzss_sparse_hash_tree_positions(
         context(), advance_state_, position, next_position);
     if (result.error == LzssSparseHashTreeControllerError::none) return;
@@ -105,6 +139,12 @@ initialize_lzss_sparse_hash_tree_match_finder(
     LzssSparseHashTreeMatchFinder& finder,
     LzssMatchFinderStatistics* const statistics,
     const LzssSparseHashTreeMatchFinderOptions& options) noexcept {
+    if (options.lifecycle_mode
+            != LzssSparseHashTreeLifecycleMode::mutable_tree
+        && options.lifecycle_mode
+            != LzssSparseHashTreeLifecycleMode::immutable_snapshot) {
+        return LzssSparseHashTreeMatchFinderError::invalid_parameters;
+    }
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
         input.size(), parameters, limits, options.pool_node_capacity,
         options.promotion_reuse_threshold);
@@ -134,6 +174,7 @@ initialize_lzss_sparse_hash_tree_match_finder(
     initialized.input_ = input;
     initialized.parameters_ = parameters;
     initialized.statistics_ = statistics;
+    initialized.lifecycle_mode_ = options.lifecycle_mode;
     const auto workspace_error = initialize_lzss_sparse_hash_tree_workspace(
         input.size(), parameters, limits, options.pool_node_capacity,
         active_workspace, initialized.workspace_,
@@ -146,6 +187,12 @@ initialize_lzss_sparse_hash_tree_match_finder(
         initialized.promotion_, options.promotion_reuse_threshold);
     initialize_lzss_sparse_hash_tree_advance_state(
         input.size(), initialized.advance_state_);
+    if (initialized.lifecycle_mode_
+            == LzssSparseHashTreeLifecycleMode::immutable_snapshot
+        && required.bucket_count != 0) {
+        initialize_lzss_sparse_hash_tree_snapshot_controller_state(
+            input.size(), required.bucket_count, initialized.snapshot_state_);
+    }
     initialized.initialized_ = true;
     initialized.state_valid_ = true;
     finder = initialized;

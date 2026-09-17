@@ -1079,3 +1079,48 @@ TEST(LzssTypedEncoder,
             return equal_token(token, sentinel);
         }));
 }
+
+TEST(LzssTypedEncoder,
+     SparseHashTreeImmutableSnapshotOptionMatchesReference) {
+    const std::vector<std::byte> input(320, std::byte{'A'});
+    LzssParameters parameters{};
+    parameters.window_size = 20;
+    parameters.max_match_length = 5;
+    const auto reference_plan = plan_lzss_typed_tokens(
+        input, parameters, {});
+    ASSERT_EQ(reference_plan.error, LzssTypedEncodeError::none);
+    std::vector<LzssTypedToken> reference(reference_plan.token_count);
+    ASSERT_EQ(encode_lzss_typed_tokens(
+                  input, parameters, {}, reference).error,
+              LzssTypedEncodeError::none);
+
+    LzssSparseHashTreeMatchFinderOptions options{
+        std::min<std::size_t>(input.size(), parameters.window_size), 0};
+    options.lifecycle_mode =
+        LzssSparseHashTreeLifecycleMode::immutable_snapshot;
+    const auto required = calculate_lzss_sparse_hash_tree_workspace(
+        input.size(), parameters, {}, options.pool_node_capacity);
+    ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
+    AlignedWorkspace owner(required.workspace_size);
+    std::vector<LzssTypedToken> actual(input.size());
+    LzssMatchFinderStatistics statistics{};
+    const auto result =
+        encode_lzss_typed_tokens_sparse_hash_tree_single_pass(
+            input, parameters, {}, actual,
+            owner.bytes(required.workspace_size), options, &statistics);
+    ASSERT_EQ(result.error, LzssTypedEncodeError::none);
+    ASSERT_EQ(result.sparse_hash_tree_match_finder_error,
+              LzssSparseHashTreeMatchFinderError::none);
+    actual.resize(result.token_count);
+    ASSERT_EQ(actual.size(), reference.size());
+    for (std::size_t index = 0; index < reference.size(); ++index) {
+        EXPECT_TRUE(equal_token(actual[index], reference[index])) << index;
+    }
+    EXPECT_GT(statistics.hash_tree_snapshot_promotion_count, 1U);
+    EXPECT_GT(statistics.hash_tree_snapshot_query_count, 0U);
+    EXPECT_GT(statistics.hash_tree_snapshot_expiration_count, 0U);
+    EXPECT_EQ(statistics.hash_tree_snapshot_expiration_count,
+              statistics.hash_tree_snapshot_bulk_release_count);
+    EXPECT_EQ(statistics.hash_tree_insertion_count, 0U);
+    EXPECT_EQ(statistics.hash_tree_retirement_count, 0U);
+}

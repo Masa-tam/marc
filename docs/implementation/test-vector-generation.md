@@ -14476,3 +14476,25 @@ controller state with the same stable last error, and byte-identical workspace
 after the call. Run both tests under MSVC and ClangCL. Sanitizer campaigning,
 public match-finder integration, short-input bypass, and benchmark
 serialization remain later gates.
+
+### TVG-0995
+
+Append `LzssSparseHashTreeLifecycleMode` to the existing options and require
+the default to retain mutable-tree behavior. Initialize immutable mode for
+empty, one-byte, three-byte, and four-byte inputs. Require empty matches,
+strict sequential advancement, terminal position, valid state, and no
+snapshot-controller error; inputs below the four-byte prefix extent must use
+the public short-input bypass.
+
+Run a 320-byte repeated input through the immutable public match finder at a
+20-byte window and five-byte maximum match. Compare every token-boundary match
+with Exhaustive Exact and require multiple snapshot promotions, query and
+delta work, expiration paired with bulk release, and zero tree insertion or
+retirement. Reject an unknown lifecycle before replacing an already valid
+finder. Trigger an out-of-order immutable advance and require sticky public
+`invalid_protocol`, subordinate snapshot `invalid_protocol`, and no mutable
+controller error. Finally pass immutable options through the typed single-pass
+entry, require token-for-token identity with the reference encoder, and observe
+the same lifecycle diagnostics. Run the new tests and all existing Sparse
+match-finder tests under MSVC and ClangCL. C ABI, CLI, profiles, benchmark
+selection, and sanitizer campaigning remain later gates.

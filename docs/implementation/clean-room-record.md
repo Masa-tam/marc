@@ -30800,3 +30800,29 @@ both bounds.
   gate covers 192 traces with three-way Exact agreement; the invalid gate
   covers 96 stable failures with poisoned state and no post-injection workspace
   writes.
+
+## CR-1234: 2026-09-18 - Immutable Sparse public match-finder integration
+
+- Authoring method: added one defaulted lifecycle field to the existing private
+  Sparse match-finder options and dispatched its established find/advance
+  boundary to either the existing mutable controller or the already tested
+  immutable controller.
+- References used: DD-1126 through DD-1128, IR-0889 through IR-0897, TVG-0987
+  through TVG-0995, CR-1226 through CR-1233, and marc-owned Sparse match finder,
+  controllers, typed parser, workspace, error, and test code.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder API, lifecycle selector, source code, result, pseudocode, tuning
+  advice, or test suite.
+- Independent decisions: append the mode after all existing aggregate fields;
+  keep mutable mode as zero and default; keep both controller states inside the
+  finder; bypass snapshots below prefix extent; preserve a snapshot subordinate
+  error; and leave every codec-level selection surface unchanged.
+- Generated-code task description: connect the tested immutable controller to
+  the Sparse match finder and typed single-pass entry without changing format,
+  workspace, ABI, defaults, profiles, CLI, or benchmark selection.
+- Similarity review: integration is a local dispatch over repository-owned
+  interfaces. No external implementation expression was copied or translated.
+- Local validation: five new match-finder tests, seven existing match-finder
+  tests, and one typed-encoder test pass under MSVC and ClangCL. They prove
+  short-input bypass, Exact identity, lifecycle activity, stable errors,
+  unchanged mutable defaults, and typed-token identity.

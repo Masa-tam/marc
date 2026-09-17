@@ -8194,3 +8194,15 @@ families and parameter ranges, explicit prefix-length scope, and separate
 metadata/protocol mutation trials were derived only from those local
 contracts. No external compressor, fuzzer, corpus, seed, generated result,
 source code, pseudocode, tuning advice, or test suite was consulted.
+
+### IR-0897
+
+The opt-in public match-finder lifecycle integration uses DD-1126 through
+DD-1128, IR-0889 through IR-0896, TVG-0987 through TVG-0994, CR-1226 through
+CR-1233, and marc's existing Sparse match-finder options, mutable controller,
+typed parser, workspace, and stable error contracts. Appending a defaulted
+mode, retaining both controller states, bypassing snapshots below prefix
+extent, and preserving a subordinate snapshot error were derived only from
+those local interfaces. No external compressor, match-finder API, lifecycle
+selector, source code, result, pseudocode, tuning advice, or test suite was
+consulted.

@@ -22945,3 +22945,24 @@ source, network input, or unbounded campaign in this gate. The private
 controller requires enough input for its prefix hash; the later public match
 finder integration must bypass it for shorter inputs and preserve literal
 behavior.
+
+## DD-1128: Expose immutable snapshots as an opt-in match-finder lifecycle
+
+- Date: 2026-09-18
+- Status: accepted
+
+Append a lifecycle mode to the existing Sparse HashTree match-finder options.
+Keep mutable per-position tree maintenance as value zero and the default;
+select immutable snapshot plus HashChain delta only through an explicit mode.
+Preserve the first three aggregate fields, workspace query and layout,
+promotion thresholds, existing initialization entry point, and every current
+caller's behavior.
+
+Store both controller state types inside the private match finder and dispatch
+find/advance according to the immutable construction-time mode. For inputs too
+short to form a prefix hash, do not initialize or call the snapshot controller;
+retain the existing empty-match and sequential-advance behavior. Preserve a
+snapshot-specific subordinate error while mapping protocol failures and other
+controller failures to the existing stable match-finder categories. Do not
+change the stream format, codec IDs, C ABI, CLI, profiles, default strategy, or
+benchmark selection in this integration gate.

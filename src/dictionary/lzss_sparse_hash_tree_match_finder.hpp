@@ -3,7 +3,7 @@
 
 #include "core/limits.hpp"
 #include "dictionary/lzss_match_finder.hpp"
-#include "dictionary/lzss_sparse_hash_tree_controller.hpp"
+#include "dictionary/lzss_sparse_hash_tree_snapshot_controller.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -28,11 +28,18 @@ enum class LzssSparseHashTreeMatchFinderError : std::uint8_t {
     controller_failure,
 };
 
+enum class LzssSparseHashTreeLifecycleMode : std::uint8_t {
+    mutable_tree = 0,
+    immutable_snapshot = 1,
+};
+
 struct LzssSparseHashTreeMatchFinderOptions {
     std::size_t pool_node_capacity{};
     std::uint64_t promotion_candidate_threshold{
         std::numeric_limits<std::uint64_t>::max()};
     std::uint8_t promotion_reuse_threshold{1};
+    LzssSparseHashTreeLifecycleMode lifecycle_mode{
+        LzssSparseHashTreeLifecycleMode::mutable_tree};
 };
 
 class LzssSparseHashTreeMatchFinder {
@@ -54,7 +61,14 @@ public:
         return workspace_.node_pool().active_count();
     }
     [[nodiscard]] std::size_t next_position() const noexcept {
-        return advance_state_.next_position();
+        return uses_snapshot_controller()
+            ? snapshot_state_.next_position() : advance_state_.next_position();
+    }
+    [[nodiscard]] LzssSparseHashTreeLifecycleMode lifecycle_mode()
+        const noexcept { return lifecycle_mode_; }
+    [[nodiscard]] LzssSparseHashTreeSnapshotControllerError
+    snapshot_controller_error() const noexcept {
+        return snapshot_controller_error_;
     }
     [[nodiscard]] LzssSparseHashTreeMatchFinderError last_error()
         const noexcept { return last_error_; }
@@ -76,6 +90,13 @@ private:
     void mark_error(LzssSparseHashTreeMatchFinderError error,
                     LzssSparseHashTreeControllerError controller_error =
                         LzssSparseHashTreeControllerError::none) noexcept;
+    void mark_snapshot_error(
+        LzssSparseHashTreeSnapshotControllerError error) noexcept;
+    [[nodiscard]] bool uses_snapshot_controller() const noexcept {
+        return lifecycle_mode_
+                == LzssSparseHashTreeLifecycleMode::immutable_snapshot
+            && !workspace_.heads().empty();
+    }
     [[nodiscard]] LzssSparseHashTreePositionContext context() noexcept;
 
     std::span<const std::byte> input_{};
@@ -83,9 +104,14 @@ private:
     LzssSparseHashTreeWorkspace workspace_{};
     LzssHashTreePromotionState promotion_{};
     LzssSparseHashTreeAdvanceState advance_state_{};
+    LzssSparseHashTreeSnapshotControllerState snapshot_state_{};
     LzssMatchFinderStatistics* statistics_{};
+    LzssSparseHashTreeLifecycleMode lifecycle_mode_{
+        LzssSparseHashTreeLifecycleMode::mutable_tree};
     LzssSparseHashTreeControllerError controller_error_{
         LzssSparseHashTreeControllerError::none};
+    LzssSparseHashTreeSnapshotControllerError snapshot_controller_error_{
+        LzssSparseHashTreeSnapshotControllerError::none};
     LzssSparseHashTreeMatchFinderError last_error_{
         LzssSparseHashTreeMatchFinderError::none};
     bool initialized_{};
