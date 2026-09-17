@@ -23032,3 +23032,24 @@ new points for bounded operation; zero performs validation only. Refuse a
 pre-existing final output while the checkpoint is incomplete, and regenerate
 the final result without child launches once complete. Keep measurement as a
 later explicit action.
+
+## DD-1132: A canonical triple is sufficient before the full snapshot run
+
+- Date: 2026-09-18
+- Status: accepted
+
+Before committing to all 108 records, execute exactly the first canonical
+HashChain, mutable reuse-sixteen Sparse, and immutable-snapshot Sparse group
+on `dickens` at a 4-MiB window. Require the runner to validate five-field Exact
+identity twice, persist all three records atomically, and accept a zero-new-
+point rerun without launching a benchmark.
+
+The smoke at commit `9ea8cca0` satisfies those conditions. The immutable
+candidate is 0.905855 times HashChain throughput and 1.029779 times the mutable
+control for this one member/window, uses 1.027699 times HashChain workspace,
+routes 21,252 queries through snapshots, observes 90 promotions and 52 whole-
+snapshot releases, and reports zero insertion and retirement. Treat these
+values only as proof that the real-data measurement, lifecycle diagnostics,
+Exact oracle, atomic checkpoint, and restart identity are connected. Do not
+infer an aggregate gain, tune the frozen manifest, or make an admission
+decision before the remaining 105 records complete.

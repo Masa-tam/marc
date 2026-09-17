@@ -30906,3 +30906,32 @@ both bounds.
   manifest and report validation, fixed grid and commands, canonical and
   content-bound checkpoints, 4-plus-104 resume, complete zero-work rerun,
   child-failure atomicity, and stale-output refusal.
+
+## CR-1238: 2026-09-18 - Immutable Sparse connection smoke
+
+- Authoring method: ran only the first three records of the previously fixed
+  v1 manifest through the committed strict runner, then performed a zero-new-
+  point restart validation before reading the ignored checkpoint.
+- References used: DD-1130 through DD-1132, IR-0899 through IR-0901,
+  TVG-0997 and TVG-0998, BM-0072 and BM-0073, CR-1236 and CR-1237, commit
+  `9ea8cca0`, and the locally verified Silesia Corpus.
+- Known implementations intentionally not consulted: external compressor,
+  snapshot tree, benchmark result, performance analysis, tuning advice,
+  source code, pseudocode, or test suite.
+- Independent decisions: stop at one complete canonical triple; preserve the
+  frozen manifest; interpret the measured ratios only as connection evidence;
+  and require all remaining 105 records before any aggregate or admission
+  conclusion.
+- Generated-code task description: record the bounded real-data connection
+  smoke and restart evidence without committing Corpus data, checkpoint data,
+  or a partial result as a final experiment.
+- Similarity review: documentation reports only values produced by marc-owned
+  code under the precommitted marc manifest and strict validator. No external
+  implementation expression was used.
+- Local validation: all three reports have 1,081,737 tokens and fingerprint
+  `2ffb93bda7d19e3469a2c2a7878ea20948a6e507bc4cf6f9d60be1023e064e1a`.
+  Immutable snapshot throughput is 0.905855 of HashChain and 1.029779 of the
+  mutable control; it records 21,252 snapshot queries, 90 promotions, 52
+  releases, and zero insertions/retirements. A zero-new-point rerun accepts
+  progress 3/108 without a child launch. The ignored checkpoint SHA-256 is
+  `f56a7a085f9b9cad60373e9459df1890434c2921122e290bc84b2d23927ebb71`.

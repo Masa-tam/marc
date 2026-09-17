@@ -8240,3 +8240,13 @@ validation, content-bound identity, 4-plus-104 resume gate, and zero-work
 complete rerun were derived only from those local interfaces. No external
 runner, benchmark framework, compressor, result, source code, pseudocode,
 tuning advice, or test suite was consulted.
+
+### IR-0901
+
+The immutable-snapshot connection smoke uses DD-1130 through DD-1132,
+IR-0899 and IR-0900, TVG-0997 and TVG-0998, BM-0072 and BM-0073, CR-1236 and
+CR-1237, the committed v1 manifest and strict runner, and the locally verified
+Silesia Corpus. Interpretation is limited to connection, Exact identity,
+immutable lifecycle, atomic persistence, and zero-work restart evidence. No
+external compressor, snapshot tree, benchmark result, performance analysis,
+tuning advice, source code, pseudocode, or test suite was consulted.

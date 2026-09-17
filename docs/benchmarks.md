@@ -2503,5 +2503,30 @@ three aggregates and three comparisons without launching a child.
 The fake-report gate covers strict manifest rejection, fixed command/grid,
 snapshot diagnostic rejection, canonical-prefix and identity rejection,
 4-plus-104 resume, complete zero-work rerun, child-failure atomicity, and stale
-output refusal. This entry records infrastructure only. No Silesia result has
-been observed and no strategy-admission decision has been made.
+output refusal. At this infrastructure stage no Silesia result had been
+observed and no strategy-admission decision was made.
+
+### BM-0073: Immutable Sparse three-point connection smoke
+
+The MSVC Release runner at commit `9ea8cca0` completed the first canonical
+group only: `dickens`, a 4-MiB window, and HashChain, mutable reuse-sixteen
+Sparse, then immutable-snapshot Sparse. All three produced 1,081,737 tokens
+and fingerprint
+`2ffb93bda7d19e3469a2c2a7878ea20948a6e507bc4cf6f9d60be1023e064e1a`.
+A zero-new-point rerun revalidated the checkpoint at 3/108 without launching
+another child.
+
+| Strategy | Seconds | MiB/s | Relative to HashChain |
+| --- | ---: | ---: | ---: |
+| HashChain | 9.744228 | 0.997542 | 1.000000 |
+| Mutable Sparse reuse 16 | 11.077267 | 0.877498 | 0.879661 |
+| Immutable snapshot Sparse | 10.756939 | 0.903628 | 0.905855 |
+
+The immutable candidate was 1.029779 times the mutable control on this one
+member/window. It routed 21,252 of 1,081,737 queries through immutable
+snapshots, observed 90 promotions and 52 expiration/bulk-release events, and
+reported zero tree insertions and retirements. Workspace was 1.027699 times
+HashChain. The ignored three-record checkpoint has SHA-256
+`f56a7a085f9b9cad60373e9459df1890434c2921122e290bc84b2d23927ebb71`.
+This is a connection and restart smoke only, not an aggregate performance or
+strategy-admission result; the remaining 105 records were not started.
