@@ -30748,3 +30748,28 @@ both bounds.
   pass under MSVC and ClangCL. They cover query work, stale pruning, delta
   depth, promotion construction, expiration, bulk release, zero tree mutation,
   and saturating overflow without match changes.
+
+## CR-1232: 2026-09-18 - Immutable Sparse snapshot Exact differential gate
+
+- Authoring method: drove the private snapshot controller and marc's two Exact
+  oracles through identical query/advance traces, then independently summarized
+  their token decisions with marc's canonical benchmark fingerprint records.
+- References used: DD-1126, IR-0889 through IR-0895, TVG-0987 through
+  TVG-0993, CR-1226 through CR-1231, and marc-owned Exhaustive, HashChain,
+  SHA-256, benchmark token-record, snapshot controller, and diagnostic code.
+- Known implementations intentionally not consulted: external compressor,
+  differential harness, corpus, result, source code, pseudocode, tuning advice,
+  or test suite.
+- Independent decisions: compare every bytewise query; repeat with parser token
+  boundaries; use repeated, structured, fixed-seed binary, and exact window
+  boundary inputs; compute three independent token summaries; and require
+  multiple complete snapshot lifecycle cycles in the focused trace.
+- Generated-code task description: complete the private Exact differential
+  gate without connecting the strategy to the public match finder or benchmark.
+- Similarity review: the harness composes only repository-owned match-finder
+  and canonical token-record contracts. No external implementation expression
+  was copied or translated.
+- Local validation: three differential tests pass under MSVC and ClangCL.
+  Every match and all five token-summary fields agree across snapshot,
+  Exhaustive Exact, and HashChain Exact while promotion, expiration, release,
+  and zero steady-state tree mutation are observed.

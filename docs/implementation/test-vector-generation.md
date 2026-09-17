@@ -14436,3 +14436,22 @@ the counter to remain saturated, `overflowed` to become true, and the match to
 remain unchanged. Run these vectors and the lower snapshot query suite under
 MSVC and ClangCL. Benchmark serialization, Exact differential testing,
 fuzzing, and match-finder integration remain later gates.
+
+### TVG-0993
+
+Drive the immutable-snapshot controller, Exhaustive Exact, and HashChain Exact
+from position zero with identical query and advance boundaries. Under bytewise
+advance, compare every match on repeated bytes, structured repeated text, a
+513-byte fixed-seed binary sequence, and repeated seven-byte patterns whose
+total lengths are immediately below, equal to, and above one and two 32-byte
+windows.
+
+Repeat each input family with LZSS token boundaries. Independently feed each
+finder's literal or match into the repository canonical token fingerprint and
+require equal `token_count`, `literal_count`, `match_count`, `matched_bytes`,
+and `token_fingerprint_sha256`. Use a 320-byte repeated input with a 20-byte
+window to require multiple promotion cycles, snapshot queries, delta queries,
+stale-subtree pruning, expiration, and matching bulk releases while tree
+insertion and retirement remain zero. Run all three differential tests under
+MSVC and ClangCL. Fuzzing, public match-finder integration, and benchmark
+serialization remain later gates.

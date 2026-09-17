@@ -8172,3 +8172,14 @@ prune, delta, promotion, expiration, and release counters was derived from the
 locally documented observability gate. No external compressor, diagnostic
 schema, benchmark result, tuning advice, source code, pseudocode, or test
 suite was consulted.
+
+### IR-0895
+
+The immutable-snapshot Exact differential harness uses DD-1126, IR-0889
+through IR-0894, TVG-0987 through TVG-0992, CR-1226 through CR-1231, marc's
+Exhaustive and HashChain Exact match finders, and the repository-owned token
+fingerprint record already used by its benchmark. The shared query/advance
+trace, independent three-way token summaries, fixed-seed binary family, and
+window-boundary cases were derived only from these local contracts. No
+external compressor, differential harness, corpus, result, source code,
+pseudocode, tuning advice, or test suite was consulted.

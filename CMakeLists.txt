@@ -1965,6 +1965,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_sparse_hash_tree_bucket_state_tests.cpp
         tests/lzss_sparse_hash_tree_controller_tests.cpp
         tests/lzss_sparse_hash_tree_snapshot_controller_tests.cpp
+        tests/lzss_sparse_hash_tree_snapshot_differential_tests.cpp
         tests/lzss_sparse_hash_tree_snapshot_lifecycle_tests.cpp
         tests/lzss_sparse_hash_tree_snapshot_query_tests.cpp
         tests/lzss_sparse_hash_tree_match_finder_tests.cpp

@@ -213,3 +213,19 @@ ClangCLで固定した。benchmark出力への接続、Exact differential、fuzz
 finderへの接続は引き続き独立した後続gateである。
 専用controller経路では`hash_tree_insertion_count`と
 `hash_tree_retirement_count`は0である。
+
+Exact differential gateをprivate controllerに追加した。同一input、parameters、positionで
+immutable snapshot controller、Exhaustive Exact、HashChain Exactをqueryし、同じ
+`[position, next_position)`を三者へadvanceする。bytewise traceでは反復、構造化binary、
+seed固定の疑似乱数binary、およびwindow直前・同値・直後の長さで全positionのmatchを
+比較する。token-boundary traceではbeneficial matchの長さだけ一度にadvanceし、skipped
+positionを含むindex更新を検証する。
+
+token traceはbenchmarkと同じcanonical recordをSHA-256へ投入する。frameはtag `0xf0`と
+little-endian 64-bit size、literalはtag `0`とbyte、matchはtag `1`とlittle-endian
+32-bit lengthおよびdistanceである。三者の`token_count`、`literal_count`、
+`match_count`、`matched_bytes`、`token_fingerprint_sha256`が一致し、反復traceでは複数の
+promotion、expiration、bulk releaseを通過する。MSVCとClangCLで固定した。これにより
+初期正しさgateのExact differentialは完了した。fuzzing、public match finder接続と
+benchmark出力は後続gateである。
+このgateのテストsuite名は`LzssSparseHashTreeSnapshotDifferential`である。
