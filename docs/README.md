@@ -44,6 +44,8 @@ navigate chronological development records.
   fixed 216-point Silesia matrix isolating repeated-query admission.
 - [LZSS Sparse HashTree snapshot + delta](design/lzss-sparse-hash-tree-snapshot-delta.md):
   immutable promoted snapshots with the existing chain as a bounded delta.
+- [LZSS Sparse HashTree immutable snapshot experiment](design/lzss-sparse-hash-tree-snapshot-experiment.md):
+  fixed comparison against HashChain and mutable Sparse at reuse sixteen.
 - [LZSS BinaryTree Exact 16 MiB benchmark](design/lzss-binary-tree-window-16m-benchmark.md):
   bounded Silesia comparison of the global AVL and HashChain strategies.
 - [Silesia external benchmark profile](design/silesia-benchmark-profile.md):

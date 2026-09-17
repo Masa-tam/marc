@@ -22990,3 +22990,25 @@ path even though they cannot inspect a bucket. Tree insertion and retirement
 must remain zero. This gate validates benchmark observability only; do not run
 Silesia or make a selection decision until a separate experiment manifest and
 runner have been reviewed and frozen.
+
+## DD-1130: Compare immutable snapshots without retuning Sparse thresholds
+
+- Date: 2026-09-18
+- Status: accepted
+
+Freeze the immutable-snapshot performance experiment before implementing its
+runner or observing Silesia results. At each 4, 16, and 64 MiB window, compare
+HashChain Exact, mutable reuse-gated Sparse, and immutable-snapshot Sparse in
+that canonical order for all twelve members. Use a 64 MiB frame, one iteration,
+512 MiB internal-buffer hard limit, 4,096 pool nodes, promotion threshold 64,
+and reuse threshold 16, for 108 isolated child processes in total.
+
+Reuse sixteen is not a new tuned choice: it was the strongest measured mutable
+control in the completed reuse-gate experiment and won all twelve members
+against reuse one. Do not search another pool, promotion, reuse, frame, or
+window condition in this experiment. Require five-field Exact identity across
+all three strategies and equal workspace for both Sparse variants. Classify
+aggregate and broad throughput gains against both HashChain and mutable Sparse,
+workspace premium, zero steady-state tree mutation, and observed snapshot
+lifecycle activity. Keep adoption as a separate decision after the complete
+fixed result is recorded.

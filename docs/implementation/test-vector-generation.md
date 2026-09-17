@@ -14518,3 +14518,21 @@ At controller level, require an active snapshot query to increment both the
 common query total and the dedicated snapshot route. Run the controller and
 frame benchmark smoke tests under MSVC and ClangCL. Do not run an external
 corpus in this gate.
+
+### TVG-0997
+
+Parse the committed immutable-snapshot experiment manifest as strict JSON and
+require exact keys, types, values, array order, and no booleans in numeric
+positions. Require twelve members, windows 4/16/64 MiB, HashChain then mutable
+reuse-gated Sparse then immutable-snapshot Sparse, pool 4,096, promotion 64,
+reuse 16, one iteration, 64 MiB frames, 512 MiB hard limit, and exactly 108
+records. Require the three known HashChain and Sparse workspace values and the
+five Exact identity fields.
+
+Reject unknown or missing keys, reordered canonical labels, changed thresholds,
+changed record count, changed workspace, executable or corpus paths, commands,
+and network locations. Bind the later checkpoint to the manifest path, raw
+SHA-256, exact parsed value, tool-source digests, executable digest, revision,
+corpus manifest, and environment. This gate freezes only the inert contract;
+runner execution, interruption/resume, report validation, and final aggregation
+remain a later test-vector gate.

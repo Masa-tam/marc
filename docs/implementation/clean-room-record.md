@@ -30854,3 +30854,29 @@ both bounds.
   identity, workspace identity, positive lifecycle work, zero steady-state
   tree mutation, stable argument rejection, and unchanged existing strategy
   behavior.
+
+## CR-1236: 2026-09-18 - Immutable Sparse fixed experiment contract
+
+- Authoring method: reduced the completed reuse-gate matrix to its strongest
+  already measured mutable control, then added the immutable lifecycle as the
+  only changed mechanism and froze the comparison before runner work.
+- References used: DD-1125 through DD-1130, IR-0897 through IR-0899,
+  TVG-0995 through TVG-0997, CR-1234 and CR-1235, the repository-owned
+  reuse-gate result, benchmark route, Silesia profile, and inert-manifest
+  contract.
+- Known implementations intentionally not consulted: external compressor,
+  new corpus result, benchmark design, tuning advice, source code, pseudocode,
+  or test suite.
+- Independent decisions: compare three strategies in canonical order; retain
+  reuse sixteen rather than retune; use three established large windows;
+  require 108 isolated records, three-way Exact identity, equal Sparse
+  workspace, dual throughput comparisons, zero tree mutation, and observed
+  lifecycle activity.
+- Generated-code task description: freeze an inert immutable-snapshot Silesia
+  manifest and human-readable experiment contract without implementing or
+  launching the runner.
+- Similarity review: all constants and classifications derive from marc's
+  prior committed experiments and current private diagnostics. No external
+  implementation expression was copied or translated.
+- Local validation: JSON parsing confirms the manifest is syntactically valid;
+  the repository documentation-layout test accepts the new indexed design.

@@ -8218,3 +8218,14 @@ arguments, explicit lifecycle field, and dedicated diagnostic serialization
 were derived only from those repository-owned interfaces. No external
 compressor, benchmark schema, result, tuning advice, source code, pseudocode,
 or test suite was consulted.
+
+### IR-0899
+
+The immutable-snapshot fixed experiment contract uses DD-1125 through DD-1130,
+IR-0897 and IR-0898, TVG-0995 and TVG-0996, CR-1234 and CR-1235, the completed
+repository-owned reuse-gate result, and marc's established inert-manifest and
+Silesia process-isolation contracts. Reuse sixteen, the three windows, the
+three-way control order, 108-point count, Exact fields, workspace values, and
+classification boundaries were fixed only from those local records. No new
+corpus result, external compressor, benchmark design, tuning advice, source
+code, pseudocode, or test suite was consulted.
