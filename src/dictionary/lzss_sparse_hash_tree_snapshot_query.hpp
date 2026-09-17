@@ -28,6 +28,7 @@ struct LzssSparseHashTreeSnapshotQueryResult {
     std::size_t candidate_position{lzss_hash_tree_no_position};
     std::size_t snapshot_watermark{lzss_hash_tree_no_position};
     std::uint64_t snapshot_nodes_visited{};
+    std::uint64_t snapshot_stale_subtrees_pruned{};
     std::uint64_t delta_candidates_visited{};
     LzssSparseHashTreeSnapshotQueryError error{
         LzssSparseHashTreeSnapshotQueryError::none};

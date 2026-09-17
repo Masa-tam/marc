@@ -60,6 +60,8 @@ query_lzss_sparse_hash_tree_snapshot_delta_exact(
         return result;
     }
     result.snapshot_nodes_visited = snapshot.nodes_visited;
+    result.snapshot_stale_subtrees_pruned =
+        snapshot.stale_subtrees_pruned;
     result.snapshot_watermark = static_cast<std::size_t>(
         context.snapshot.subtree_maximum_position[context.snapshot.root]);
     result.match = snapshot.match;

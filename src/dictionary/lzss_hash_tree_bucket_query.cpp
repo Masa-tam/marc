@@ -504,6 +504,10 @@ LzssHashTreeBucketQueryResult query_lzss_hash_tree_snapshot_exact(
             ++result.nodes_visited;
 
             if (context.subtree_maximum_position[current] < window_begin) {
+                if (result.stale_subtrees_pruned
+                    != std::numeric_limits<std::uint64_t>::max()) {
+                    ++result.stale_subtrees_pruned;
+                }
                 next = parent;
             } else {
                 const auto candidate = static_cast<std::size_t>(

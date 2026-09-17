@@ -66,6 +66,7 @@ struct LzssSparseHashTreeSnapshotControllerQueryResult {
     LzssMatch match{};
     std::size_t bucket{};
     std::uint64_t snapshot_nodes_visited{};
+    std::uint64_t snapshot_stale_subtrees_pruned{};
     std::uint64_t delta_candidates_visited{};
     bool snapshot_expired{};
     LzssSparseHashTreeSnapshotControllerError error{

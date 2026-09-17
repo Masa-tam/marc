@@ -14417,3 +14417,22 @@ Issue an out-of-order advance and require zero workspace mutation. Run these
 four controller vectors with the sixteen lower snapshot lifecycle and query
 tests under MSVC and ClangCL. Diagnostic aggregation, Exact differential
 testing, fuzzing, and match-finder integration remain later gates.
+
+### TVG-0992
+
+Run an active immutable-snapshot query and require one snapshot query, one
+delta query, a non-zero visited-node total, and unchanged tree insertion and
+retirement counters. Move the snapshot wholly outside the window and require
+one stale-subtree prune and exactly one expiration transition. Advance once
+and require one successful bulk release; do not count release before its
+metadata commit.
+
+Initialize promotion state before seeding a chain, trigger promotion through
+the dedicated controller, and require one snapshot promotion together with
+the existing exact build-node, non-zero key-comparison, and non-zero rotation
+counters. Require tree insertion and retirement to remain zero. Finally set a
+snapshot query counter to `UINT64_MAX`, repeat a successful query, and require
+the counter to remain saturated, `overflowed` to become true, and the match to
+remain unchanged. Run these vectors and the lower snapshot query suite under
+MSVC and ClangCL. Benchmark serialization, Exact differential testing,
+fuzzing, and match-finder integration remain later gates.

@@ -9,6 +9,29 @@
 namespace marc::dictionary::internal {
 namespace {
 
+void increment_statistic(
+    LzssMatchFinderStatistics* const statistics,
+    std::uint64_t& value) noexcept {
+    if (statistics == nullptr) return;
+    if (value == std::numeric_limits<std::uint64_t>::max()) {
+        statistics->overflowed = true;
+        return;
+    }
+    ++value;
+}
+
+void add_statistic(
+    LzssMatchFinderStatistics* const statistics,
+    std::uint64_t& value, const std::uint64_t increment) noexcept {
+    if (statistics == nullptr || increment == 0) return;
+    if (value > std::numeric_limits<std::uint64_t>::max() - increment) {
+        value = std::numeric_limits<std::uint64_t>::max();
+        statistics->overflowed = true;
+        return;
+    }
+    value += increment;
+}
+
 [[nodiscard]] bool valid_context(
     const LzssSparseHashTreePositionContext& context,
     const LzssSparseHashTreeSnapshotControllerState& state) noexcept {
@@ -223,6 +246,30 @@ query_lzss_sparse_hash_tree_snapshot_controller_exact(
         snapshot_context(context, position, result.bucket),
         context.workspace->heads()[result.bucket],
         context.workspace->links()});
+    if (context.statistics != nullptr) {
+        increment_statistic(context.statistics,
+            context.statistics->hash_tree_snapshot_query_count);
+        add_statistic(context.statistics,
+            context.statistics->hash_tree_snapshot_query_node_count,
+            merged.snapshot_nodes_visited);
+        add_statistic(context.statistics,
+            context.statistics->hash_tree_snapshot_stale_subtree_prune_count,
+            merged.snapshot_stale_subtrees_pruned);
+        if (merged.error
+            != LzssSparseHashTreeSnapshotQueryError::snapshot_failure) {
+            increment_statistic(context.statistics,
+                context.statistics->hash_tree_snapshot_delta_query_count);
+            add_statistic(context.statistics,
+                context.statistics->hash_tree_snapshot_delta_candidate_count,
+                merged.delta_candidates_visited);
+            context.statistics
+                ->hash_tree_snapshot_delta_maximum_candidates_per_query =
+                std::max(
+                    context.statistics
+                        ->hash_tree_snapshot_delta_maximum_candidates_per_query,
+                    merged.delta_candidates_visited);
+        }
+    }
     result.snapshot_error = merged.error;
     if (merged.error != LzssSparseHashTreeSnapshotQueryError::none) {
         result.error =
@@ -233,6 +280,8 @@ query_lzss_sparse_hash_tree_snapshot_controller_exact(
     }
     result.match = merged.match;
     result.snapshot_nodes_visited = merged.snapshot_nodes_visited;
+    result.snapshot_stale_subtrees_pruned =
+        merged.snapshot_stale_subtrees_pruned;
     result.delta_candidates_visited = merged.delta_candidates_visited;
     const auto window_begin = position > context.parameters.window_size
         ? position - context.parameters.window_size : 0U;
@@ -247,8 +296,14 @@ query_lzss_sparse_hash_tree_snapshot_controller_exact(
                 state, result.error);
             return result;
         }
-        LzssSparseHashTreeSnapshotControllerAccess::set_pending(
-            state, result.bucket);
+        if (pending == lzss_sparse_hash_tree_no_pending_snapshot_bucket) {
+            LzssSparseHashTreeSnapshotControllerAccess::set_pending(
+                state, result.bucket);
+            if (context.statistics != nullptr) {
+                increment_statistic(context.statistics,
+                    context.statistics->hash_tree_snapshot_expiration_count);
+            }
+        }
     }
     return result;
 }
@@ -307,6 +362,10 @@ advance_lzss_sparse_hash_tree_snapshot_controller(
         context.workspace->modes()[pending] =
             LzssSparseHashTreeBucketMode::chain;
         LzssSparseHashTreeSnapshotControllerAccess::clear_pending(state);
+        if (context.statistics != nullptr) {
+            increment_statistic(context.statistics,
+                context.statistics->hash_tree_snapshot_bulk_release_count);
+        }
     }
 
     if (context.promotion_state != nullptr) {
@@ -319,6 +378,10 @@ advance_lzss_sparse_hash_tree_snapshot_controller(
             LzssSparseHashTreeSnapshotControllerAccess::mark_error(
                 state, result.error);
             return result;
+        }
+        if (promotion.promoted && context.statistics != nullptr) {
+            increment_statistic(context.statistics,
+                context.statistics->hash_tree_snapshot_promotion_count);
         }
     }
 

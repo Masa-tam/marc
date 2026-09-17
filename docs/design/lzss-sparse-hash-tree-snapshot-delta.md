@@ -186,3 +186,30 @@ promotionとchain挿入を行わない。一つのpending bucketだけを許す�
 MSVCとClangCLで固定した。この段階でも公開API、format、workspace queryは変更していない。
 private診断counterの集約、Exact differential、fuzzingおよびmatch finderへの接続は後続の
 独立したgateとする。
+
+private controllerの診断集約を実装した。`LzssMatchFinderStatistics`の既存promotion
+構築node、key比較、rotation、tree insertionおよびretirement counterを再利用し、
+snapshot固有にはquery count、visited node count、stale subtree prune count、delta
+query count、candidate count、maximum candidates per query、promotion count、expiration
+count、bulk release countを追加した。counter加算は既存診断と同じくcheckedで飽和し、
+`overflowed`を設定する。最大値は単調なmaxで集約する。
+
+実フィールドは`hash_tree_snapshot_query_count`、
+`hash_tree_snapshot_query_node_count`、
+`hash_tree_snapshot_stale_subtree_prune_count`、
+`hash_tree_snapshot_delta_query_count`、
+`hash_tree_snapshot_delta_candidate_count`、
+`hash_tree_snapshot_delta_maximum_candidates_per_query`、
+`hash_tree_snapshot_promotion_count`、
+`hash_tree_snapshot_expiration_count`、
+`hash_tree_snapshot_bulk_release_count`である。
+
+expirationは同じpending bucketの再queryでは重複計上せず、最初にpendingへ遷移した時だけ
+記録する。bulk releaseは検証と全node解放およびbucket metadata commitの成功後にだけ
+計上する。失敗したqueryであっても実際に行ったbounded探索量は診断へ反映する。tree
+insertion countとretirement countは専用controller経路では0のままでなければならない。
+通常query、全期限切れprune、delta深さ、promotion、release、counter飽和をMSVCと
+ClangCLで固定した。benchmark出力への接続、Exact differential、fuzzingおよびmatch
+finderへの接続は引き続き独立した後続gateである。
+専用controller経路では`hash_tree_insertion_count`と
+`hash_tree_retirement_count`は0である。

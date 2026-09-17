@@ -44,6 +44,7 @@ struct LzssHashTreeBucketQueryResult {
     std::size_t candidate_position{lzss_hash_tree_no_position};
     std::uint32_t maximum_lcp{};
     std::uint64_t nodes_visited{};
+    std::uint64_t stale_subtrees_pruned{};
     LzssHashTreeBucketQueryError error{
         LzssHashTreeBucketQueryError::none};
 };

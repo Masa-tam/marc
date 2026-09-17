@@ -30721,3 +30721,30 @@ both bounds.
   query tests pass under MSVC and ClangCL. They cover tree immutability,
   chain-only delta updates, scheduled release, committed chain-mode return,
   atomic release failure, and invalid advancement order.
+
+## CR-1231: 2026-09-18 - Immutable Sparse snapshot diagnostics
+
+- Authoring method: extended marc's existing checked match-finder diagnostic
+  record with snapshot-specific lifecycle counters and aggregated them at the
+  dedicated controller boundary.
+- References used: DD-1126, IR-0889 through IR-0894, TVG-0987 through
+  TVG-0992, CR-1226 through CR-1230, and marc-owned match-finder statistics,
+  snapshot query, lifecycle controller, promotion, and release code and tests.
+- Known implementations intentionally not consulted: external compressor,
+  diagnostic schema, benchmark result, tuning advice, source code,
+  pseudocode, or test suite.
+- Independent decisions: reuse existing promotion-build and tree-mutation
+  fields; add only snapshot-specific query and lifecycle fields; count real
+  bounded work even on query failure; count expiration once per pending
+  transition; count release only after successful metadata commit; saturate
+  sums and preserve matches on overflow.
+- Generated-code task description: complete private immutable-snapshot
+  diagnostics without exposing the strategy, changing the stream format, or
+  connecting benchmark serialization and the public match finder.
+- Similarity review: field selection and update points follow only marc's
+  design and transactional boundaries. No external implementation expression
+  was copied or translated.
+- Local validation: six controller tests and twelve lower snapshot-query tests
+  pass under MSVC and ClangCL. They cover query work, stale pruning, delta
+  depth, promotion construction, expiration, bulk release, zero tree mutation,
+  and saturating overflow without match changes.

@@ -123,6 +123,7 @@ TEST(LzssSparseHashTreeSnapshotQuery,
     ASSERT_EQ(result.error,
               LzssSparseHashTreeSnapshotQueryError::none);
     EXPECT_EQ(result.snapshot_nodes_visited, 1U);
+    EXPECT_EQ(result.snapshot_stale_subtrees_pruned, 1U);
     EXPECT_EQ(result.delta_candidates_visited, 1U);
     EXPECT_EQ(result.candidate_position, 18U);
     EXPECT_EQ(result.match, (LzssMatch{1, 5}));

@@ -179,6 +179,15 @@ struct LzssMatchFinderStatistics {
     std::uint64_t hash_tree_maintenance_key_byte_comparison_count{};
     std::uint64_t hash_tree_rotation_count{};
     std::uint64_t hash_tree_maximum_height{};
+    std::uint64_t hash_tree_snapshot_query_count{};
+    std::uint64_t hash_tree_snapshot_query_node_count{};
+    std::uint64_t hash_tree_snapshot_stale_subtree_prune_count{};
+    std::uint64_t hash_tree_snapshot_delta_query_count{};
+    std::uint64_t hash_tree_snapshot_delta_candidate_count{};
+    std::uint64_t hash_tree_snapshot_delta_maximum_candidates_per_query{};
+    std::uint64_t hash_tree_snapshot_promotion_count{};
+    std::uint64_t hash_tree_snapshot_expiration_count{};
+    std::uint64_t hash_tree_snapshot_bulk_release_count{};
     std::array<std::uint64_t,
                lzss_match_finder_depth_histogram_size>
         hash_tree_chain_query_depth_histogram{};

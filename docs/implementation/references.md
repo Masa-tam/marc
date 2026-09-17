@@ -8161,3 +8161,14 @@ path, validate-before-metadata-commit boundary, and poisoned failure state
 were derived solely from those local contracts. No external compressor,
 snapshot lifecycle controller, tree retirement scheme, source code,
 performance result, tuning advice, pseudocode, or test suite was consulted.
+
+### IR-0894
+
+The immutable-snapshot diagnostic aggregation uses DD-1126, IR-0889 through
+IR-0893, TVG-0987 through TVG-0991, CR-1226 through CR-1230, and marc's
+existing saturating match-finder statistics contract. Reusing the existing
+promotion-build and tree-mutation counters while adding only snapshot query,
+prune, delta, promotion, expiration, and release counters was derived from the
+locally documented observability gate. No external compressor, diagnostic
+schema, benchmark result, tuning advice, source code, pseudocode, or test
+suite was consulted.
