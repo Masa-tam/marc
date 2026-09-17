@@ -372,4 +372,130 @@ TEST(LzssHashTreeBucketQuery, StatisticsSaturate) {
     EXPECT_EQ(statistics.prefix_range_byte_comparison_count, maximum);
 }
 
+TEST(LzssHashTreeSnapshotQuery, UsesActiveChildBelowStaleRoot) {
+    const auto input = bytes("AAAAAAAAAAAAAAAAAAAA");
+    LzssParameters parameters{};
+    parameters.window_size = 6;
+    parameters.max_match_length = 5;
+
+    constexpr std::uint32_t root = 0;
+    constexpr std::uint32_t older = 1;
+    constexpr std::uint32_t active = 2;
+    std::array<std::uint32_t, 4> left{
+        older, lzss_hash_tree_null_node, lzss_hash_tree_null_node,
+        lzss_hash_tree_null_node};
+    std::array<std::uint32_t, 4> right{
+        active, lzss_hash_tree_null_node, lzss_hash_tree_null_node,
+        lzss_hash_tree_null_node};
+    std::array<std::uint32_t, 4> parent{
+        lzss_hash_tree_null_node, root, root, lzss_hash_tree_null_node};
+    std::array<std::uint8_t, 4> height{2, 1, 1, 0};
+    std::array<LzssHashTreeStoredPosition, 4> position{
+        2, 1, 5, lzss_hash_tree_no_stored_position};
+    std::array<LzssHashTreeStoredPosition, 4> subtree_maximum{
+        5, 1, 5, lzss_hash_tree_no_stored_position};
+
+    const LzssHashTreeBucketQueryContext context{
+        input, parameters, 10, 0, 1, root,
+        left, right, parent, height, position, subtree_maximum,
+        nullptr, LzssHashTreeNodeIdentity::pool_local};
+    const auto snapshot = query_lzss_hash_tree_snapshot_exact(context);
+    ASSERT_EQ(snapshot.error, LzssHashTreeBucketQueryError::none);
+    EXPECT_EQ(snapshot.candidate_position, 5U);
+    EXPECT_EQ(snapshot.match, (LzssMatch{5, 5}));
+    EXPECT_EQ(snapshot.nodes_visited, 3U);
+
+    EXPECT_EQ(query_lzss_hash_tree_bucket_exact(context).error,
+              LzssHashTreeBucketQueryError::invalid_root);
+}
+
+TEST(LzssHashTreeSnapshotQuery, PrunesWhollyExpiredSnapshot) {
+    const auto input = bytes("AAAAAAAAAAAAAAAAAAAA");
+    LzssParameters parameters{};
+    parameters.window_size = 4;
+    parameters.max_match_length = 5;
+
+    constexpr std::uint32_t root = 0;
+    constexpr std::uint32_t older = 1;
+    constexpr std::uint32_t newer = 2;
+    std::array<std::uint32_t, 3> left{
+        older, lzss_hash_tree_null_node, lzss_hash_tree_null_node};
+    std::array<std::uint32_t, 3> right{
+        newer, lzss_hash_tree_null_node, lzss_hash_tree_null_node};
+    std::array<std::uint32_t, 3> parent{
+        lzss_hash_tree_null_node, root, root};
+    std::array<std::uint8_t, 3> height{2, 1, 1};
+    std::array<LzssHashTreeStoredPosition, 3> position{2, 1, 5};
+    std::array<LzssHashTreeStoredPosition, 3> subtree_maximum{5, 1, 5};
+
+    const LzssHashTreeBucketQueryContext context{
+        input, parameters, 10, 0, 1, root,
+        left, right, parent, height, position, subtree_maximum,
+        nullptr, LzssHashTreeNodeIdentity::pool_local};
+    const auto result = query_lzss_hash_tree_snapshot_exact(context);
+    ASSERT_EQ(result.error, LzssHashTreeBucketQueryError::none);
+    EXPECT_EQ(result.match, LzssMatch{});
+    EXPECT_EQ(result.candidate_position, lzss_hash_tree_no_position);
+    EXPECT_EQ(result.nodes_visited, 1U);
+}
+
+TEST(LzssHashTreeSnapshotQuery, SelectsNewestEqualLengthActiveNode) {
+    const auto input = bytes("AAAAAAAAAAAAAAAAAAAA");
+    LzssParameters parameters{};
+    parameters.window_size = 6;
+    parameters.max_match_length = 5;
+
+    constexpr std::uint32_t root = 0;
+    constexpr std::uint32_t older = 1;
+    constexpr std::uint32_t newer = 2;
+    std::array<std::uint32_t, 3> left{
+        older, lzss_hash_tree_null_node, lzss_hash_tree_null_node};
+    std::array<std::uint32_t, 3> right{
+        newer, lzss_hash_tree_null_node, lzss_hash_tree_null_node};
+    std::array<std::uint32_t, 3> parent{
+        lzss_hash_tree_null_node, root, root};
+    std::array<std::uint8_t, 3> height{2, 1, 1};
+    std::array<LzssHashTreeStoredPosition, 3> position{5, 4, 7};
+    std::array<LzssHashTreeStoredPosition, 3> subtree_maximum{7, 4, 7};
+
+    const LzssHashTreeBucketQueryContext context{
+        input, parameters, 10, 0, 1, root,
+        left, right, parent, height, position, subtree_maximum,
+        nullptr, LzssHashTreeNodeIdentity::pool_local};
+    const auto result = query_lzss_hash_tree_snapshot_exact(context);
+    ASSERT_EQ(result.error, LzssHashTreeBucketQueryError::none);
+    EXPECT_EQ(result.maximum_lcp, 5U);
+    EXPECT_EQ(result.candidate_position, 7U);
+    EXPECT_EQ(result.match, (LzssMatch{3, 5}));
+}
+
+TEST(LzssHashTreeSnapshotQuery, RejectsCorruptMetadataAndRingIdentity) {
+    const auto input = bytes("AAAAAAAAAAAAAAAAAAAA");
+    LzssParameters parameters{};
+    parameters.window_size = 6;
+    parameters.max_match_length = 5;
+
+    std::array<std::uint32_t, 3> left{
+        1, lzss_hash_tree_null_node, lzss_hash_tree_null_node};
+    std::array<std::uint32_t, 3> right{
+        2, lzss_hash_tree_null_node, lzss_hash_tree_null_node};
+    std::array<std::uint32_t, 3> parent{
+        lzss_hash_tree_null_node, 0, 0};
+    std::array<std::uint8_t, 3> height{2, 1, 1};
+    std::array<LzssHashTreeStoredPosition, 3> position{5, 4, 7};
+    std::array<LzssHashTreeStoredPosition, 3> subtree_maximum{6, 4, 7};
+
+    LzssHashTreeBucketQueryContext context{
+        input, parameters, 10, 0, 1, 0,
+        left, right, parent, height, position, subtree_maximum,
+        nullptr, LzssHashTreeNodeIdentity::pool_local};
+    EXPECT_EQ(query_lzss_hash_tree_snapshot_exact(context).error,
+              LzssHashTreeBucketQueryError::invalid_root);
+
+    subtree_maximum[0] = 7;
+    context.node_identity = LzssHashTreeNodeIdentity::ring_position;
+    EXPECT_EQ(query_lzss_hash_tree_snapshot_exact(context).error,
+              LzssHashTreeBucketQueryError::invalid_node_arrays);
+}
+
 } // namespace

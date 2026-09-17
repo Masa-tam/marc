@@ -8115,3 +8115,14 @@ zero-mutation lifetime, and whole-snapshot expiration were independently
 derived from those local structures and measurements. No external compressor,
 snapshot tree, delta index, hash-tree implementation, source code, performance
 analysis, tuning advice, pseudocode, or test suite was consulted.
+
+### IR-0890
+
+The active-aware immutable-snapshot query implementation uses DD-1126,
+IR-0889, TVG-0987, CR-1226, the repository-owned pool-local bucket builder,
+mutable exact query, prefix hash, subtree-maximum metadata, and Exact tie-break
+contract. Its bounded parent-pointer traversal, stale routing-node acceptance,
+active-candidate filtering, and whole-subtree expiration pruning were derived
+only from those local contracts. No external compressor, snapshot tree, tree
+query, hash-tree implementation, source code, performance result, tuning
+advice, pseudocode, or test suite was consulted.

@@ -52,6 +52,10 @@ struct LzssHashTreeBucketQueryResult {
 query_lzss_hash_tree_bucket_exact(
     const LzssHashTreeBucketQueryContext& context) noexcept;
 
+[[nodiscard]] LzssHashTreeBucketQueryResult
+query_lzss_hash_tree_snapshot_exact(
+    const LzssHashTreeBucketQueryContext& context) noexcept;
+
 } // namespace marc::dictionary::internal
 
 #endif

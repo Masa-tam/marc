@@ -118,3 +118,22 @@ public APIとformat変更を行わない。これらを追加して初期ゲー�
 有界性、0-byte workspace delta、zero steady-state tree mutationが一つでも崩れれば即時棄却する。
 それらを満たしても、事前固定した性能ゲートを通るまでpublic strategyへ
 昇格しない。負の結果も実装と診断の証拠として保持する。
+
+## 8. 実装状態
+
+最初の正しさゲートとして、privateな
+`query_lzss_hash_tree_snapshot_exact`を実装した。既存の
+`query_lzss_hash_tree_bucket_exact`は変更せず、pool-local identityだけを受ける
+別契約としている。親pointerを用いた反復走査で再帰と追加workspaceを避け、
+edge走査をpool capacityの3倍以内に制限する。
+
+この参照queryはstale nodeをrouting pivotとして検証しつつmatch候補から除外し、
+`subtree_maximum_position`で完全に期限切れた部分木をpruneする。active候補では
+最大LCP、同長なら最新positionを選ぶ。index、親子関係、height、BST ordering、
+bucket hash、subtree maximumまたはidentityが不正ならbounded errorを返す。
+
+手計算可能な小treeで、stale rootの下にあるactive child、snapshot全期限切れ、
+同長候補の最新position選択、metadata破損およびring identity拒否を固定した。
+MSVCとClangCLで新規4件と既存mutable-query 9件が通過している。現時点では
+controller、chain delta、lifecycle、診断には接続しておらず、公開API、format、
+workspace queryにも変更はない。

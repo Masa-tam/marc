@@ -199,6 +199,74 @@ void increment_statistic(
     return lzss_hash_tree_null_node;
 }
 
+[[nodiscard]] bool validate_snapshot_node(
+    const LzssHashTreeBucketQueryContext& context,
+    const std::uint32_t node) noexcept {
+    if (node >= context.left.size()) return false;
+    const auto position = context.position[node];
+    if (position >= context.query_position
+        || position >= context.input.size()
+        || context.input.size() - position
+            < lzss_match_finder_prefix_size
+        || context.height[node] == 0) {
+        return false;
+    }
+    const auto hash = calculate_lzss_prefix_hash(context.input, position);
+    if (!hash.valid
+        || (static_cast<std::size_t>(hash.value)
+                & (context.bucket_count - 1U)) != context.bucket) {
+        return false;
+    }
+
+    const auto left = context.left[node];
+    const auto right = context.right[node];
+    const auto child_valid = [&](const std::uint32_t child) noexcept {
+        return child == lzss_hash_tree_null_node
+            || (child < context.left.size()
+                && context.parent[child] == node
+                && context.height[child] != 0
+                && context.subtree_maximum_position[child]
+                    < context.query_position);
+    };
+    if (!child_valid(left) || !child_valid(right)) return false;
+
+    const auto child_height = [&](const std::uint32_t child) noexcept {
+        return child == lzss_hash_tree_null_node
+            ? std::uint8_t{0} : context.height[child];
+    };
+    const auto maximum_height = std::max(
+        child_height(left), child_height(right));
+    if (maximum_height == std::numeric_limits<std::uint8_t>::max()
+        || context.height[node]
+            != static_cast<std::uint8_t>(maximum_height + 1U)) {
+        return false;
+    }
+
+    auto maximum_position = position;
+    if (left != lzss_hash_tree_null_node) {
+        maximum_position = std::max(
+            maximum_position,
+            context.subtree_maximum_position[left]);
+    }
+    if (right != lzss_hash_tree_null_node) {
+        maximum_position = std::max(
+            maximum_position,
+            context.subtree_maximum_position[right]);
+    }
+    if (context.subtree_maximum_position[node] != maximum_position) {
+        return false;
+    }
+
+    auto ordering_context = context;
+    ordering_context.statistics = nullptr;
+    return (left == lzss_hash_tree_null_node
+            || compare_positions(
+                   ordering_context, context.position[left], position) < 0)
+        && (right == lzss_hash_tree_null_node
+            || compare_positions(
+                   ordering_context, position, context.position[right]) < 0);
+}
+
 } // namespace
 
 LzssHashTreeBucketQueryResult query_lzss_hash_tree_bucket_exact(
@@ -382,6 +450,107 @@ LzssHashTreeBucketQueryResult query_lzss_hash_tree_bucket_exact(
         return result;
     }
     result.candidate_position = maximum_position;
+    result.match = {
+        static_cast<std::uint32_t>(distance), result.maximum_lcp};
+    return result;
+}
+
+LzssHashTreeBucketQueryResult query_lzss_hash_tree_snapshot_exact(
+    const LzssHashTreeBucketQueryContext& context) noexcept {
+    LzssHashTreeBucketQueryResult result{};
+    result.error = validate_context(context);
+    if (result.error != LzssHashTreeBucketQueryError::none) return result;
+    if (context.node_identity != LzssHashTreeNodeIdentity::pool_local) {
+        result.error = LzssHashTreeBucketQueryError::invalid_node_arrays;
+        return result;
+    }
+    if (context.root == lzss_hash_tree_null_node
+        || context.input.size() - context.query_position
+            < lzss_match_finder_prefix_size) {
+        return result;
+    }
+    if (context.parent[context.root] != lzss_hash_tree_null_node
+        || context.left.size()
+            > std::numeric_limits<std::size_t>::max() / 3U) {
+        result.error = LzssHashTreeBucketQueryError::invalid_root;
+        return result;
+    }
+
+    const auto window_begin = context.query_position
+            > context.parameters.window_size
+        ? context.query_position - context.parameters.window_size : 0U;
+    const auto maximum_steps = context.left.size() * 3U;
+    auto previous = lzss_hash_tree_null_node;
+    auto current = context.root;
+    std::size_t traversal_steps{};
+
+    while (current != lzss_hash_tree_null_node) {
+        if (traversal_steps == maximum_steps
+            || current >= context.left.size()) {
+            result.error = LzssHashTreeBucketQueryError::invalid_tree;
+            return result;
+        }
+        ++traversal_steps;
+
+        const auto parent = context.parent[current];
+        std::uint32_t next{lzss_hash_tree_null_node};
+        if (previous == parent) {
+            if (!validate_snapshot_node(context, current)) {
+                result.error = current == context.root
+                    ? LzssHashTreeBucketQueryError::invalid_root
+                    : LzssHashTreeBucketQueryError::invalid_tree;
+                return result;
+            }
+            ++result.nodes_visited;
+
+            if (context.subtree_maximum_position[current] < window_begin) {
+                next = parent;
+            } else {
+                const auto candidate = static_cast<std::size_t>(
+                    context.position[current]);
+                if (candidate >= window_begin) {
+                    const auto length = common_prefix_length(
+                        context, context.query_position, candidate);
+                    if (length >= context.parameters.min_match_length
+                        && (length > result.maximum_lcp
+                            || (length == result.maximum_lcp
+                                && (result.candidate_position
+                                        == lzss_hash_tree_no_position
+                                    || candidate
+                                        > result.candidate_position)))) {
+                        result.maximum_lcp = length;
+                        result.candidate_position = candidate;
+                    }
+                }
+                next = context.left[current] != lzss_hash_tree_null_node
+                    ? context.left[current]
+                    : (context.right[current] != lzss_hash_tree_null_node
+                        ? context.right[current] : parent);
+            }
+        } else if (previous == context.left[current]) {
+            next = context.right[current] != lzss_hash_tree_null_node
+                ? context.right[current] : parent;
+        } else if (previous == context.right[current]) {
+            next = parent;
+        } else {
+            result.error = LzssHashTreeBucketQueryError::invalid_tree;
+            return result;
+        }
+        previous = current;
+        current = next;
+    }
+
+    if (result.candidate_position == lzss_hash_tree_no_position) {
+        return result;
+    }
+    const auto distance = context.query_position - result.candidate_position;
+    if (distance > std::numeric_limits<std::uint32_t>::max()) {
+        result.error = LzssHashTreeBucketQueryError::invalid_tree;
+        result.match = {};
+        result.candidate_position = lzss_hash_tree_no_position;
+        result.maximum_lcp = 0;
+        return result;
+    }
     result.match = {
         static_cast<std::uint32_t>(distance), result.maximum_lcp};
     return result;

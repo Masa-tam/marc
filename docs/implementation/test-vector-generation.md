@@ -14347,3 +14347,20 @@ release, and re-promotion. Require zero tree insertions and retirements during
 snapshot life, unchanged workspace, no double release, and no partial state
 change after every injected failure. Compare all five Exact identity fields
 against Exhaustive and HashChain before any performance test.
+
+### TVG-0988
+
+Build hand-checkable pool-local snapshot trees over repeated bytes so every
+candidate has a known capped LCP. Place an expired root above an active child
+and require the child to remain discoverable while the mutable query rejects
+the same stale structure. Move the window beyond the snapshot maximum and
+require root-only visitation with no match. Place multiple active equal-length
+candidates in distinct branches and require the newest position.
+
+Corrupt the root subtree maximum and require a bounded invalid-root result;
+then restore the metadata, select ring-position identity, and require rejection
+without traversal. Run the pre-existing mutable bucket-query suite unchanged
+beside these vectors on MSVC and ClangCL. These vectors cover only the
+read-only snapshot primitive; delta merge, controller lifecycle, transactional
+bulk release, diagnostics, Exact differential testing, and fuzzing remain
+separate later gates.

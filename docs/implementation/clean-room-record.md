@@ -30619,3 +30619,27 @@ both bounds.
   0-byte workspace delta, stale-node safety contract, fixed lifecycle, Exact
   gate, and explicit exclusions. No implementation or new performance
   measurement was performed.
+
+## CR-1227: 2026-09-17 - Active-aware Sparse snapshot query
+
+- Authoring method: implemented the first correctness gate directly from the
+  committed immutable-snapshot design and marc's existing pool-local builder,
+  query context, prefix hash, metadata validation, and Exact tie-break rules.
+- References used: DD-1126, IR-0889 and IR-0890, TVG-0987 and TVG-0988,
+  CR-1226, and marc-owned hash-tree query code and tests.
+- Known implementations intentionally not consulted: external compressor,
+  snapshot tree, tree query, hash-tree implementation, source code,
+  performance result, tuning advice, pseudocode, or test suite.
+- Independent decisions: retain the mutable query unchanged; require
+  pool-local identity; use a bounded parent-pointer traversal; accept expired
+  nodes only as validated routing pivots; prune a subtree only when its stored
+  maximum proves it wholly expired; and choose the newest equal-length active
+  candidate.
+- Generated-code task description: add a private read-only active-aware query
+  and focused tests without connecting controller state, delta merge,
+  lifecycle, diagnostics, public API, stream format, or workspace accounting.
+- Similarity review: the implementation reuses only marc-owned types,
+  validation concepts, and deterministic match rules. No external
+  implementation expression was copied or translated.
+- Local validation: the four snapshot-query tests and all nine unchanged
+  mutable bucket-query tests pass under MSVC and ClangCL.
