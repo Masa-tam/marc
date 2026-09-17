@@ -2455,3 +2455,31 @@ prefix rejection, child failure atomicity, stale-output refusal, three
 baseline aggregates, fifteen reuse aggregates, and twelve gated comparisons.
 This entry records infrastructure only; no Silesia performance result or
 public-admission decision has been made.
+
+### BM-0071: Fixed Sparse reuse-gate result
+
+The complete MSVC Release experiment at commit `b7d0d547` finished all 216
+process-isolated records from one top-level runner invocation: twelve verified
+Silesia members, three windows, one HashChain baseline, and Sparse reuse
+thresholds 1, 2, 4, 8, and 16 per member/window. Every Sparse record matched
+its HashChain baseline in token, literal, match, and matched-byte counts and
+canonical token fingerprint. The checkpoint and final result each contain the
+complete canonical 216-record sequence.
+
+The best gated threshold at each window was:
+
+| Window | Reuse | Sparse / HashChain | Sparse / reuse 1 | HashChain wins | Reuse-1 wins | Workspace ratio | Pool-rejection delta |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 MiB | 4 | 0.848201 | 1.000882 | 0 / 12 | 8 / 12 | 1.027699 | -36,260 |
+| 16 MiB | 8 | 0.847121 | 1.003037 | 0 / 12 | 9 / 12 | 1.007086 | -98,222 |
+| 64 MiB | 16 | 0.872959 | 1.021011 | 0 / 12 | 12 / 12 | 1.001782 | -191,491 |
+
+Repeated-use gating reduces pool rejection and improves the legacy reuse-one
+Sparse policy most clearly at 64 MiB. It does not recover the Sparse
+promotion, maintenance, and tree-query cost relative to HashChain: no gated
+candidate wins any member against HashChain, and every aggregate remains at
+most 0.872959 of HashChain throughput. No candidate satisfies the
+predeclared aggregate and broad HashChain gain requirements, so the policy
+remains private and is not added to the selector, ABI, CLI, profile, or
+format. The ignored canonical result JSON has SHA-256
+`d42929616c853362ce17411be986c761065472367e9fb1224e8db9cd5dcdc17d`.

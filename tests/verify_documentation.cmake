@@ -767,6 +767,9 @@ foreach(required_sparse_hash_tree_reuse_gate_experiment_term IN ITEMS
         "一回のtop-level runner起動"
         "同じcommandを再起動"
         "raw SHA-256"
+        "0.872959"
+        "BM-0071"
+        "DD-1125"
         "public selector")
     string(FIND "${lzss_sparse_hash_tree_reuse_gate_experiment_content}"
         "${required_sparse_hash_tree_reuse_gate_experiment_term}"
@@ -1731,6 +1734,23 @@ foreach(required_sparse_result_term IN ITEMS
         message(FATAL_ERROR
             "Incomplete Sparse HashTree large-window result: "
             "${required_sparse_result_term}")
+    endif()
+endforeach()
+
+foreach(required_sparse_reuse_result_term IN ITEMS
+        "### BM-0071: Fixed Sparse reuse-gate result"
+        "0.848201"
+        "0.847121"
+        "0.872959"
+        "1.021011"
+        "candidate wins any member against HashChain"
+        "d42929616c853362ce17411be986c761065472367e9fb1224e8db9cd5dcdc17d")
+    string(FIND "${benchmark_content}" "${required_sparse_reuse_result_term}"
+        required_sparse_reuse_result_term_offset)
+    if(required_sparse_reuse_result_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete Sparse reuse-gate result: "
+            "${required_sparse_reuse_result_term}")
     endif()
 endforeach()
 

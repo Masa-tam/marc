@@ -22876,3 +22876,27 @@ revision, and environment identity. Restarting the identical command validates
 the complete canonical prefix and resumes after it; a complete checkpoint
 regenerates output without launching a benchmark. Keep bounded execution only
 as test or diagnostic control, not as the normal measurement workflow.
+
+## DD-1125: Reuse gating does not promote Sparse HashTree
+
+- Date: 2026-09-17
+- Status: accepted
+
+Do not promote the tested reuse-gated Sparse HashTree policy to a public
+strategy, automatic selector, default, or codec profile. The fixed 216-point
+MSVC Release experiment at commit `b7d0d547` preserved five-field Exact
+identity everywhere, but no candidate achieved aggregate or broad gain over
+HashChain and no candidate won a single Silesia member against HashChain.
+
+Retain the mechanism and runner as private negative-result research
+infrastructure. Reuse gating is nevertheless a valid mechanism improvement:
+the 64-MiB reuse-16 condition reached 1.021011 times reuse-one throughput,
+won all twelve members against reuse one, reduced aggregate pool rejections by
+191,491, and required only 1.001782 times HashChain workspace. Its throughput
+was still only 0.872959 of HashChain.
+
+Do not select another reuse threshold from this result or add another point to
+the completed matrix. A future Sparse reevaluation must freeze a distinct
+structural hypothesis aimed at promotion construction, maintenance, or tree-
+query cost before observing new performance data. Keep HashChain as the
+preferred measured strategy for these windows.

@@ -190,3 +190,10 @@ versioned JSON正本、strict runner、一回起動、point単位atomic checkpoi
 完全checkpointからの無測定再生成およびfake 216点gridは実装・検証済みである。
 手順6の事前品質ゲートとして、MSVCとClangCLの完全CTestはそれぞれ
 3491件を通過した。これにはschema 1から57の相互運用互換性検証も含まれる。
+
+手順6の実Corpus測定はcommit `b7d0d547`で216点すべてを完了した。
+最良の対HashChain比は64 MiB、reuse 16の0.872959であり、HashChainに対する
+member勝利は全候補で0件だった。同条件はreuse 1に対して1.021011倍、
+12 member全勝となったが、事前に定めたHashChainのaggregateおよびbroad gainを
+満たさない。手順7の採否判断は非採用とし、Sparse HashTreeはprivateのまま
+保持する。結果と判断はBM-0071とDD-1125に固定した。

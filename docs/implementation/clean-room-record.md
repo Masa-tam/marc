@@ -30562,3 +30562,34 @@ both bounds.
   `marc_interoperability_schema_compatibility` test passes in 111.73 seconds on
   MSVC and 102.43 seconds on ClangCL, verifying schemas 1 through 57. No real
   benchmark child or Corpus measurement was run.
+
+## CR-1225: 2026-09-17 - Sparse reuse-gate result and non-admission
+
+- Authoring method: executed only the previously committed v1 manifest through
+  the strict one-launch runner, accepted each record only after all report,
+  workspace, diagnostic, and Exact gates, and interpreted only the
+  classifications frozen before measurement.
+- References used: DD-1123 through DD-1125, IR-0888, TVG-0985 and TVG-0986,
+  BM-0070 and BM-0071, CR-1222 through CR-1224, commit `b7d0d547`, and the
+  locally verified Silesia Corpus.
+- Known implementations intentionally not consulted: external compressor,
+  hash-tree implementation, admission algorithm, benchmark result,
+  performance analysis, tuning advice, source code, pseudocode, or test suite.
+- Independent decisions: preserve the fixed 216-point result without adding a
+  condition; reject public admission because every candidate loses aggregate,
+  breadth, and every individual member to HashChain; record the reuse-one
+  improvement as mechanism evidence rather than a promotion rationale; and
+  require a separately frozen structural hypothesis before reevaluation.
+- Generated-code task description: record the completed reuse-gate experiment,
+  canonical digest, predeclared classification outcome, and non-admission
+  decision without committing external Corpus data or local result files.
+- Similarity review: the documentation reports only measurements produced by
+  marc-owned code under a marc-owned manifest and classification contract. No
+  external implementation expression was used.
+- Local validation: all 216 records completed with five-field Exact identity.
+  The best HashChain-relative point is 64 MiB reuse 16 at 0.872959 throughput;
+  it is 1.021011 times reuse one, wins all twelve members against reuse one,
+  reduces pool rejections by 191,491, and uses 1.001782 times HashChain
+  workspace. It wins zero members against HashChain. The ignored canonical
+  result JSON SHA-256 is
+  `d42929616c853362ce17411be986c761065472367e9fb1224e8db9cd5dcdc17d`.

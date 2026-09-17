@@ -8093,3 +8093,14 @@ and one-launch suffix recovery were independently applied to those local
 interfaces. No external workflow engine, benchmark runner, compressor, source
 code, performance result, tuning advice, pseudocode, or test suite was
 consulted.
+
+### IR-0888
+
+The completed Sparse reuse-gate result and non-admission decision use DD-1123
+through DD-1125, TVG-0985 and TVG-0986, BM-0070 and BM-0071, CR-1222 through
+CR-1224, the committed v1 manifest, the repository-owned strict runner, and
+the locally verified Silesia Corpus. Interpretation applies only the six
+classifications and thresholds fixed before measurement. No external
+compressor, hash-tree implementation, admission algorithm, benchmark result,
+performance analysis, tuning advice, source code, pseudocode, or test suite
+was consulted.
