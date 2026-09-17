@@ -30695,3 +30695,29 @@ both bounds.
   delta-query tests pass under MSVC and ClangCL. A wholly stale snapshot is
   released after its chain is erased, while corrupt metadata and alien array
   views produce zero releases.
+
+## CR-1230: 2026-09-18 - Immutable Sparse snapshot lifecycle controller
+
+- Authoring method: composed the repository-owned promotion, snapshot-delta
+  query, bulk-release, and HashChain update boundaries behind a new private
+  state machine while leaving the mutable controller unchanged.
+- References used: DD-1126, IR-0889 through IR-0893, TVG-0987 through
+  TVG-0991, CR-1226 through CR-1229, and marc-owned Sparse HashTree controller,
+  snapshot query, lifecycle, prefix-hash, builder, and pool code and tests.
+- Known implementations intentionally not consulted: external compressor,
+  snapshot lifecycle controller, tree retirement scheme, source code,
+  performance result, tuning advice, pseudocode, or test suite.
+- Independent decisions: insert new positions only into the chain after
+  promotion; allow one pending expired bucket; release it before the next
+  ordinary advance; commit bucket mode, root, and count only after complete
+  validation and release; and poison state on protocol or hard failure.
+- Generated-code task description: connect the private immutable snapshot
+  lifecycle without changing the existing mutable controller, public API,
+  stream format, workspace query, or serialized representation.
+- Similarity review: the controller is a composition of marc-owned state and
+  transactional primitives. No external implementation expression was copied
+  or translated.
+- Local validation: four controller tests plus sixteen lower lifecycle and
+  query tests pass under MSVC and ClangCL. They cover tree immutability,
+  chain-only delta updates, scheduled release, committed chain-mode return,
+  atomic release failure, and invalid advancement order.

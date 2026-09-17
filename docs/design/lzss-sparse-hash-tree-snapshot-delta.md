@@ -165,3 +165,24 @@ metadata破損、node count不一致または別poolのarray viewは解放開始
 全期限切れtreeの全node検証、現chain非依存の全解放、破損時のzero release、pool view
 不一致をMSVCとClangCLで固定した。既存controllerへの接続とbucket metadata commitは
 まだ行っていない。
+
+専用のprivate lifecycle境界として
+`LzssSparseHashTreeSnapshotControllerState`、
+`query_lzss_sparse_hash_tree_snapshot_controller_exact`および
+`advance_lzss_sparse_hash_tree_snapshot_controller`を追加した。既存のmutable controllerは
+変更せず、非promotion bucketのqueryは既存chain queryへ委譲する。promotion後のqueryは
+immutable snapshotとchain deltaを統合し、advanceは新しいpositionをchainへだけ挿入する。
+したがってsnapshot生存中のtree insertion countとretirement countは常に0である。
+
+snapshot全体の期限切れをqueryが検出すると、stateの`pending_release_bucket`へ同じbucketを
+記録する。次のadvanceは通常更新より先にsnapshotを完全検証して一括解放し、成功後にだけ
+rootをnull、node countを0、modeをchainへcommitする。検証または解放失敗時はこれらの
+bucket metadataとpool countを維持してstateをpoisonする。同一advanceではその後の
+promotionとchain挿入を行わない。一つのpending bucketだけを許すことで追加workspaceを
+一定量に保ち、二つ目の期限切れ通知はprotocol errorとする。
+
+小fixtureでpromotion後のtree metadata不変、deltaだけの更新、期限切れ通知から次advance
+でのchain mode復帰、解放失敗時のmetadata非破壊性、順序違反advanceのzero mutationを
+MSVCとClangCLで固定した。この段階でも公開API、format、workspace queryは変更していない。
+private診断counterの集約、Exact differential、fuzzingおよびmatch finderへの接続は後続の
+独立したgateとする。

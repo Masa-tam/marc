@@ -8149,3 +8149,15 @@ in-order global ordering check, validate-before-release boundary, and stale
 snapshot acceptance were derived only from those local structures. No external
 compressor, tree validator, bulk-release algorithm, source code, performance
 result, tuning advice, pseudocode, or test suite was consulted.
+
+### IR-0893
+
+The dedicated immutable-snapshot lifecycle controller uses DD-1126, IR-0889
+through IR-0892, TVG-0987 through TVG-0990, CR-1226 through CR-1229, and the
+repository-owned mutable controller, snapshot-delta query, promotion helper,
+bulk-release primitive, and HashChain update representation. Its single
+pending-release slot, query-scheduled next-advance release, chain-only update
+path, validate-before-metadata-commit boundary, and poisoned failure state
+were derived solely from those local contracts. No external compressor,
+snapshot lifecycle controller, tree retirement scheme, source code,
+performance result, tuning advice, pseudocode, or test suite was consulted.

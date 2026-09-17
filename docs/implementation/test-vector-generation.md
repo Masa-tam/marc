@@ -14398,3 +14398,22 @@ Run these lifecycle vectors with the lower-level snapshot and delta-query
 suites under MSVC and ClangCL. Bucket metadata commit, pending-release state,
 controller advancement, diagnostics, differential testing, and fuzzing remain
 later gates.
+
+### TVG-0991
+
+Seed one repeated-prefix bucket through the dedicated snapshot controller,
+promote its first fifteen chain positions with the repository-owned builder,
+and advance twenty more positions. Require every post-promotion update to
+touch only the HashChain while the immutable root, node count, pool active
+count, and all tree insertion and retirement diagnostics remain unchanged.
+
+Query after the snapshot watermark leaves the active window and require that
+the bucket be recorded in `pending_release_bucket`. On the next advance,
+require complete validation and bulk release before ordinary update, followed
+by a committed null root, zero node count, and chain mode. Corrupt the root
+metadata after scheduling and require release failure to preserve bucket
+metadata, pool counts, and chain head while poisoning the controller state.
+Issue an out-of-order advance and require zero workspace mutation. Run these
+four controller vectors with the sixteen lower snapshot lifecycle and query
+tests under MSVC and ClangCL. Diagnostic aggregation, Exact differential
+testing, fuzzing, and match-finder integration remain later gates.
