@@ -112,6 +112,7 @@ TEST(LzssSparseHashTreeSnapshotController,
               LzssSparseHashTreeSnapshotControllerError::none);
     EXPECT_EQ(query.match, (LzssMatch{1, 5}));
     EXPECT_FALSE(query.snapshot_expired);
+    EXPECT_EQ(fixture.statistics.query_count, 1U);
     EXPECT_EQ(fixture.statistics.hash_tree_snapshot_query_count, 1U);
     EXPECT_GT(fixture.statistics.hash_tree_snapshot_query_node_count, 0U);
     EXPECT_EQ(fixture.statistics.hash_tree_snapshot_delta_query_count, 1U);

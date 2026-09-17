@@ -210,6 +210,16 @@ query_lzss_sparse_hash_tree_snapshot_controller_exact(
     }
     if (context.input.size() - position
         < lzss_match_finder_prefix_size) {
+        const auto chain = query_lzss_sparse_hash_tree_exact(
+            context, position);
+        result.match = chain.match;
+        result.chain_error = chain.error;
+        if (chain.error != LzssSparseHashTreeControllerError::none) {
+            result.error =
+                LzssSparseHashTreeSnapshotControllerError::query_failure;
+            LzssSparseHashTreeSnapshotControllerAccess::mark_error(
+                state, result.error);
+        }
         return result;
     }
     const auto hash = calculate_lzss_prefix_hash(context.input, position);
@@ -247,6 +257,8 @@ query_lzss_sparse_hash_tree_snapshot_controller_exact(
         context.workspace->heads()[result.bucket],
         context.workspace->links()});
     if (context.statistics != nullptr) {
+        increment_statistic(
+            context.statistics, context.statistics->query_count);
         increment_statistic(context.statistics,
             context.statistics->hash_tree_snapshot_query_count);
         add_statistic(context.statistics,

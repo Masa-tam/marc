@@ -22966,3 +22966,27 @@ snapshot-specific subordinate error while mapping protocol failures and other
 controller failures to the existing stable match-finder categories. Do not
 change the stream format, codec IDs, C ABI, CLI, profiles, default strategy, or
 benchmark selection in this integration gate.
+
+## DD-1129: Benchmark immutable snapshots under a distinct private strategy
+
+- Date: 2026-09-18
+- Status: accepted
+
+Add `sparse-hash-tree-immutable-snapshot-exact` only to the private
+`--frames-limited` match-finder benchmark. Do not reinterpret either existing
+Sparse strategy, alter a completed experiment schema or checkpoint, or expose
+the lifecycle through a codec, C ABI, profile, automatic selector, or stream
+format. Give the new strategy the same pool, promotion-candidate,
+promotion-reuse, frame, window, and hard-limit arguments as the reuse-gated
+mutable strategy so a later frozen experiment can compare them directly.
+
+Serialize the immutable lifecycle name and all nine snapshot-specific
+diagnostics. Require the shared token summary and SHA-256 fingerprint to match
+HashChain Exact, require the workspace to match the equivalent reuse-gated
+mutable configuration, and validate query routing as chain plus immutable
+snapshot queries. The common query counter includes every successful query;
+therefore prefix-short frame tails use the existing chain-query diagnostic
+path even though they cannot inspect a bucket. Tree insertion and retirement
+must remain zero. This gate validates benchmark observability only; do not run
+Silesia or make a selection decision until a separate experiment manifest and
+runner have been reviewed and frozen.

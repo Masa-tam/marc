@@ -450,6 +450,83 @@ endif()
 
 execute_process(
     COMMAND "${MARC_BENCHMARK}" --frames-limited
+        sparse-hash-tree-immutable-snapshot-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 256 4 2
+        ${explicit_limit}
+    RESULT_VARIABLE snapshot_result
+    OUTPUT_VARIABLE snapshot_report
+    ERROR_VARIABLE snapshot_error)
+if(NOT snapshot_result EQUAL 0)
+    message(FATAL_ERROR
+        "immutable-snapshot Sparse HashTree failed: ${snapshot_result}: "
+        "${snapshot_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=frames-limited"
+        "strategy=sparse-hash-tree-immutable-snapshot-exact"
+        "sparse_hash_tree_lifecycle=immutable-snapshot"
+        "sparse_hash_tree_pool_node_capacity=256"
+        "sparse_hash_tree_promotion_candidate_threshold=4"
+        "sparse_hash_tree_promotion_reuse_threshold=2"
+        "hash_tree_tree_queries=0"
+        "hash_tree_insertions=0"
+        "hash_tree_retirements=0")
+    string(FIND "${snapshot_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR
+            "missing immutable-snapshot line: ${expected_line}")
+    endif()
+endforeach()
+foreach(summary_key IN ITEMS
+        token_count literal_count match_count matched_bytes
+        token_fingerprint_sha256)
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${limited_hash_report}")
+    set(hash_summary "${CMAKE_MATCH_1}")
+    string(REGEX MATCH "${summary_key}=([^\n]+)" ignored
+        "${snapshot_report}")
+    set(snapshot_summary "${CMAKE_MATCH_1}")
+    if(NOT hash_summary STREQUAL snapshot_summary)
+        message(FATAL_ERROR
+            "immutable-snapshot Exact ${summary_key} mismatch: "
+            "${hash_summary} != ${snapshot_summary}")
+    endif()
+endforeach()
+foreach(positive_key IN ITEMS
+        hash_tree_snapshot_queries hash_tree_snapshot_query_nodes
+        hash_tree_snapshot_delta_queries
+        hash_tree_snapshot_delta_candidates
+        hash_tree_snapshot_delta_max_candidates_per_query
+        hash_tree_snapshot_promotions)
+    string(REGEX MATCH "${positive_key}=([0-9]+)" value_match
+        "${snapshot_report}")
+    if(value_match STREQUAL "" OR CMAKE_MATCH_1 EQUAL 0)
+        message(FATAL_ERROR
+            "missing positive immutable-snapshot ${positive_key}")
+    endif()
+endforeach()
+foreach(nonnegative_key IN ITEMS
+        hash_tree_snapshot_stale_subtree_prunes
+        hash_tree_snapshot_expirations
+        hash_tree_snapshot_bulk_releases)
+    string(REGEX MATCH "${nonnegative_key}=([0-9]+)" value_match
+        "${snapshot_report}")
+    if(value_match STREQUAL "")
+        message(FATAL_ERROR
+            "missing immutable-snapshot ${nonnegative_key}")
+    endif()
+endforeach()
+string(REGEX MATCH "workspace_bytes=([0-9]+)" ignored
+    "${snapshot_report}")
+set(snapshot_workspace "${CMAKE_MATCH_1}")
+if(NOT snapshot_workspace EQUAL reuse_two_workspace)
+    message(FATAL_ERROR
+        "immutable-snapshot workspace mismatch: ${snapshot_workspace} != "
+        "${reuse_two_workspace}")
+endif()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames-limited
         sparse-hash-tree-reuse-gated-exact
         "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 256 4 255
         ${explicit_limit}
@@ -492,6 +569,10 @@ foreach(invalid_command IN ITEMS
         "sparse-hash-tree-reuse-gated-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;256;${explicit_limit}"
         "sparse-hash-tree-reuse-gated-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;2"
         "sparse-hash-tree-reuse-gated-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;2;${explicit_limit};1"
+        "sparse-hash-tree-immutable-snapshot-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;0;${explicit_limit}"
+        "sparse-hash-tree-immutable-snapshot-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;256;${explicit_limit}"
+        "sparse-hash-tree-immutable-snapshot-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;2"
+        "sparse-hash-tree-immutable-snapshot-exact;${BENCHMARK_INPUT};1;${frame_size};65536;256;4;2;${explicit_limit};1"
         "hash-chain-exact;${BENCHMARK_INPUT};1;${frame_size};65536;0"
         "hash-chain-exact;${BENCHMARK_INPUT};1;${frame_size};65536;18446744073709551616")
     execute_process(
@@ -527,6 +608,19 @@ if(NOT insufficient_reuse_gate_limit_result EQUAL 1)
     message(FATAL_ERROR
         "insufficient reuse-gated Sparse limited policy returned "
         "${insufficient_reuse_gate_limit_result}")
+endif()
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames-limited
+        sparse-hash-tree-immutable-snapshot-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536 256 4 2 1024
+    RESULT_VARIABLE insufficient_snapshot_limit_result
+    OUTPUT_QUIET
+    ERROR_QUIET)
+if(NOT insufficient_snapshot_limit_result EQUAL 1)
+    message(FATAL_ERROR
+        "insufficient immutable-snapshot Sparse limited policy returned "
+        "${insufficient_snapshot_limit_result}")
 endif()
 
 execute_process(

@@ -257,3 +257,16 @@ public match finderが空matchを返して既存の短入力advance stateだけ�
 find/advanceを専用snapshot controllerへdispatchし、snapshot固有errorを保持した上で既存の
 match-finder error categoryへ写像する。typed encoderは渡されたoptionsをそのまま尊重するが、
 既定codec、C ABI、CLI、profile、benchmark selectorはこのgateでは変更しない。
+
+private benchmark観測gateとして
+`sparse-hash-tree-immutable-snapshot-exact`を`--frames-limited`専用で追加した。
+既存の二つのSparse strategy名と動作、完成済みrunnerのschema/checkpointは変更しない。
+新strategyはreuse-gated mutable variantと同じpool、promotion candidate、promotion reuse、
+frame、window、hard limit引数を受け、同一workspace layoutを使う。
+
+出力にはimmutable lifecycle名とsnapshot query/node/prune、delta query/candidate/max、
+promotion、expiration、bulk releaseを明示する。共通query総数はchain routeとsnapshot
+routeの和として検証し、prefix未満のframe末尾は既存chain queryの短入力診断経路を使う。
+HashChain Exactとのcanonical token summaryおよびSHA-256 fingerprint一致、対応する
+reuse-two mutable Sparseとのworkspace一致、tree query/insertion/retirementが0であることを
+MSVCとClangCLで固定した。Silesia測定と採否判断は別の固定manifest/runner gateまで行わない。

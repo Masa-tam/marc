@@ -14498,3 +14498,23 @@ entry, require token-for-token identity with the reference encoder, and observe
 the same lifecycle diagnostics. Run the new tests and all existing Sparse
 match-finder tests under MSVC and ClangCL. C ABI, CLI, profiles, benchmark
 selection, and sanitizer campaigning remain later gates.
+
+### TVG-0996
+
+Run the file-frame smoke input through `--frames-limited` HashChain Exact,
+reuse-two mutable Sparse, and immutable-snapshot Sparse with identical frame,
+window, pool, promotion, reuse, and hard-limit values. Require the immutable
+strategy's `token_count`, `literal_count`, `match_count`, `matched_bytes`, and
+`token_fingerprint_sha256` to equal HashChain. Require its workspace to equal
+reuse-two mutable Sparse and its reported lifecycle to be
+`immutable-snapshot`.
+
+Require positive snapshot query, visited-node, delta-query, delta-candidate,
+maximum-delta-depth, and promotion diagnostics; require stale-prune,
+expiration, and bulk-release fields to be present even when zero. Require
+legacy tree-query, tree-insertion, and tree-retirement counts to be zero.
+Reject missing, zero, out-of-range, and surplus immutable-strategy arguments.
+At controller level, require an active snapshot query to increment both the
+common query total and the dedicated snapshot route. Run the controller and
+frame benchmark smoke tests under MSVC and ClangCL. Do not run an external
+corpus in this gate.

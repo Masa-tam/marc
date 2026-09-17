@@ -30826,3 +30826,31 @@ both bounds.
   tests, and one typed-encoder test pass under MSVC and ClangCL. They prove
   short-input bypass, Exact identity, lifecycle activity, stable errors,
   unchanged mutable defaults, and typed-token identity.
+
+## CR-1235: 2026-09-18 - Immutable Sparse benchmark observability gate
+
+- Authoring method: connected the already tested lifecycle option to a new
+  private limited-mode benchmark strategy, aggregated its existing diagnostic
+  fields, and compared its canonical token summary with HashChain Exact.
+- References used: DD-1126 through DD-1129, IR-0889 through IR-0898,
+  TVG-0987 through TVG-0996, CR-1226 through CR-1234, and marc-owned
+  benchmark, match-finder, controller, statistics, workspace, SHA-256, and
+  smoke-test code.
+- Known implementations intentionally not consulted: external compressor,
+  benchmark schema, corpus result, tuning advice, source code, pseudocode, or
+  test suite.
+- Independent decisions: add a distinct strategy without changing old names;
+  retain the reuse-gated argument shape; serialize lifecycle and nine existing
+  snapshot counters; preserve old runner/checkpoint schemas; and defer Silesia
+  until a separate fixed experiment is reviewed.
+- Generated-code task description: expose immutable-snapshot behavior only in
+  the private benchmark with Exact identity, workspace, argument, diagnostic,
+  and cross-compiler tests.
+- Similarity review: the strategy and output fields directly compose existing
+  repository-owned interfaces. No external implementation expression was
+  copied or translated.
+- Local validation: six controller tests plus the file-frame benchmark smoke
+  test pass under MSVC and ClangCL. The smoke vector proves five-field Exact
+  identity, workspace identity, positive lifecycle work, zero steady-state
+  tree mutation, stable argument rejection, and unchanged existing strategy
+  behavior.

@@ -8206,3 +8206,15 @@ extent, and preserving a subordinate snapshot error were derived only from
 those local interfaces. No external compressor, match-finder API, lifecycle
 selector, source code, result, pseudocode, tuning advice, or test suite was
 consulted.
+
+### IR-0898
+
+The immutable-snapshot benchmark connection uses DD-1126 through DD-1129,
+IR-0889 through IR-0897, TVG-0987 through TVG-0995, CR-1226 through CR-1234,
+and marc's existing private match-finder benchmark, Exact token fingerprint,
+limited-mode argument, statistics aggregation, and smoke-test contracts. The
+distinct strategy name, unchanged mutable strategies, shared workspace
+arguments, explicit lifecycle field, and dedicated diagnostic serialization
+were derived only from those repository-owned interfaces. No external
+compressor, benchmark schema, result, tuning advice, source code, pseudocode,
+or test suite was consulted.
