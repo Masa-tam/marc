@@ -556,4 +556,101 @@ LzssHashTreeBucketQueryResult query_lzss_hash_tree_snapshot_exact(
     return result;
 }
 
+LzssHashTreeSnapshotValidationResult validate_lzss_hash_tree_snapshot(
+    const LzssHashTreeBucketQueryContext& context,
+    const std::size_t expected_node_count) noexcept {
+    LzssHashTreeSnapshotValidationResult result{};
+    result.error = validate_context(context);
+    if (result.error != LzssHashTreeBucketQueryError::none) return result;
+    if (context.node_identity != LzssHashTreeNodeIdentity::pool_local) {
+        result.error = LzssHashTreeBucketQueryError::invalid_node_arrays;
+        return result;
+    }
+    if (context.root == lzss_hash_tree_null_node) {
+        if (expected_node_count != 0) {
+            result.error = LzssHashTreeBucketQueryError::invalid_root;
+        }
+        return result;
+    }
+    if (expected_node_count == 0
+        || expected_node_count > context.left.size()
+        || context.parent[context.root] != lzss_hash_tree_null_node
+        || context.left.size()
+            > std::numeric_limits<std::size_t>::max() / 3U) {
+        result.error = LzssHashTreeBucketQueryError::invalid_root;
+        return result;
+    }
+
+    auto ordering_context = context;
+    ordering_context.statistics = nullptr;
+    const auto maximum_steps = context.left.size() * 3U;
+    auto previous = lzss_hash_tree_null_node;
+    auto current = context.root;
+    auto previous_in_order = lzss_hash_tree_null_node;
+    std::size_t entered_nodes{};
+    std::size_t traversal_steps{};
+
+    const auto visit_in_order = [&](const std::uint32_t node) noexcept {
+        if (previous_in_order != lzss_hash_tree_null_node
+            && compare_positions(
+                   ordering_context,
+                   context.position[previous_in_order],
+                   context.position[node]) >= 0) {
+            return false;
+        }
+        previous_in_order = node;
+        return true;
+    };
+
+    while (current != lzss_hash_tree_null_node) {
+        if (traversal_steps++ == maximum_steps
+            || current >= context.left.size()) {
+            result.error = LzssHashTreeBucketQueryError::invalid_tree;
+            return result;
+        }
+        const auto parent = context.parent[current];
+        std::uint32_t next{lzss_hash_tree_null_node};
+        if (previous == parent) {
+            if (!validate_snapshot_node(context, current)
+                || ++entered_nodes > expected_node_count) {
+                result.error = current == context.root
+                    ? LzssHashTreeBucketQueryError::invalid_root
+                    : LzssHashTreeBucketQueryError::invalid_tree;
+                return result;
+            }
+            if (context.left[current] != lzss_hash_tree_null_node) {
+                next = context.left[current];
+            } else {
+                if (!visit_in_order(current)) {
+                    result.error = LzssHashTreeBucketQueryError::invalid_tree;
+                    return result;
+                }
+                ++result.nodes_visited;
+                next = context.right[current] != lzss_hash_tree_null_node
+                    ? context.right[current] : parent;
+            }
+        } else if (previous == context.left[current]) {
+            if (!visit_in_order(current)) {
+                result.error = LzssHashTreeBucketQueryError::invalid_tree;
+                return result;
+            }
+            ++result.nodes_visited;
+            next = context.right[current] != lzss_hash_tree_null_node
+                ? context.right[current] : parent;
+        } else if (previous == context.right[current]) {
+            next = parent;
+        } else {
+            result.error = LzssHashTreeBucketQueryError::invalid_tree;
+            return result;
+        }
+        previous = current;
+        current = next;
+    }
+    if (entered_nodes != expected_node_count
+        || result.nodes_visited != expected_node_count) {
+        result.error = LzssHashTreeBucketQueryError::invalid_tree;
+    }
+    return result;
+}
+
 } // namespace marc::dictionary::internal

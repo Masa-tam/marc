@@ -48,6 +48,12 @@ struct LzssHashTreeBucketQueryResult {
         LzssHashTreeBucketQueryError::none};
 };
 
+struct LzssHashTreeSnapshotValidationResult {
+    std::uint64_t nodes_visited{};
+    LzssHashTreeBucketQueryError error{
+        LzssHashTreeBucketQueryError::none};
+};
+
 [[nodiscard]] LzssHashTreeBucketQueryResult
 query_lzss_hash_tree_bucket_exact(
     const LzssHashTreeBucketQueryContext& context) noexcept;
@@ -55,6 +61,11 @@ query_lzss_hash_tree_bucket_exact(
 [[nodiscard]] LzssHashTreeBucketQueryResult
 query_lzss_hash_tree_snapshot_exact(
     const LzssHashTreeBucketQueryContext& context) noexcept;
+
+[[nodiscard]] LzssHashTreeSnapshotValidationResult
+validate_lzss_hash_tree_snapshot(
+    const LzssHashTreeBucketQueryContext& context,
+    std::size_t expected_node_count) noexcept;
 
 } // namespace marc::dictionary::internal
 

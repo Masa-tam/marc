@@ -8138,3 +8138,14 @@ and merging by longest match then newest position were derived solely from
 those local interfaces. No external compressor, snapshot/delta index, chain
 query, source code, performance result, tuning advice, pseudocode, or test
 suite was consulted.
+
+### IR-0892
+
+The immutable-snapshot full validator and bulk release use DD-1126, IR-0889
+through IR-0891, TVG-0987 through TVG-0989, CR-1226 through CR-1228, and the
+repository-owned pool-local node arrays, parent-pointer traversal, builder
+metadata, and pool release contract. The chain-independent validation,
+in-order global ordering check, validate-before-release boundary, and stale
+snapshot acceptance were derived only from those local structures. No external
+compressor, tree validator, bulk-release algorithm, source code, performance
+result, tuning advice, pseudocode, or test suite was consulted.

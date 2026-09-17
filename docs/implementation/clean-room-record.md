@@ -30669,3 +30669,29 @@ both bounds.
 - Local validation: eight merge tests and four lower-level snapshot tests pass
   under MSVC and ClangCL, including both length-order directions, equal-length
   recency, full expiration, corrupt links, and snapshot-error precedence.
+
+## CR-1229: 2026-09-18 - Immutable Sparse snapshot bulk release
+
+- Authoring method: separated immutable-tree validation from the existing
+  mutable bucket builder's current-chain identity check, then reused marc's
+  pool-local metadata and release contract behind a validate-before-mutate
+  boundary.
+- References used: DD-1126, IR-0889 through IR-0892, TVG-0987 through
+  TVG-0990, CR-1226 through CR-1228, and marc-owned snapshot-query, bucket
+  builder, and node-pool code and tests.
+- Known implementations intentionally not consulted: external compressor,
+  tree validator, bulk-release algorithm, source code, performance result,
+  tuning advice, pseudocode, or test suite.
+- Independent decisions: validate every reachable stale node without current
+  chain identity; add a global in-order ordering check; require exact node
+  count and pool-array ownership; and release only after complete validation.
+- Generated-code task description: add private immutable-snapshot validation
+  and bulk release without yet connecting bucket metadata, pending lifecycle
+  state, controller advancement, diagnostics, public API, format, or workspace.
+- Similarity review: the implementation uses only marc-owned node layout,
+  ordering, traversal, and pool semantics. No external implementation
+  expression was copied or translated.
+- Local validation: four lifecycle tests plus twelve lower-level snapshot and
+  delta-query tests pass under MSVC and ClangCL. A wholly stale snapshot is
+  released after its chain is erased, while corrupt metadata and alien array
+  views produce zero releases.

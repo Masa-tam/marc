@@ -14381,3 +14381,20 @@ error. Corrupt snapshot metadata and require snapshot failure before any delta
 candidate is visited. Run these vectors with the lower-level snapshot-query
 suite under MSVC and ClangCL. Controller lifecycle, transactional bulk release,
 diagnostics, Exact differential testing, and fuzzing remain later gates.
+
+### TVG-0990
+
+Build a three-node pool-local snapshot from a valid promotion chain, then move
+the query window beyond every snapshot position. Require full validation to
+visit exactly all three nodes despite their being stale, and reject an expected
+node count that is one too small. Erase the current chain representation and
+require bulk release to return every snapshot node to the pool, proving the
+release no longer depends on mutable chain identity.
+
+Corrupt the root subtree maximum and require validation failure with unchanged
+active/free pool counts and zero released nodes. Substitute an equal-sized
+array view not owned by the pool and require invalid context with no mutation.
+Run these lifecycle vectors with the lower-level snapshot and delta-query
+suites under MSVC and ClangCL. Bucket metadata commit, pending-release state,
+controller advancement, diagnostics, differential testing, and fuzzing remain
+later gates.

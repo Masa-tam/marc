@@ -51,6 +51,8 @@ foreach(required_sparse_snapshot_delta_term IN ITEMS
         "token_fingerprint_sha256"
         "query_lzss_hash_tree_snapshot_exact"
         "query_lzss_sparse_hash_tree_snapshot_delta_exact"
+        "validate_lzss_hash_tree_snapshot"
+        "release_lzss_sparse_hash_tree_snapshot"
         "watermark到達前で途切れる"
         "`query_lzss_hash_tree_bucket_exact`は変更せず"
         "途中rebuild"

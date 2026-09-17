@@ -151,3 +151,17 @@ watermark直結、同長delta優先、snapshot長優先、delta長優先、snaps
 不正link、active watermark飛び越し、snapshot error先行を小fixtureで固定した。
 MSVCとClangCLで合成query 8件と下位snapshot query 4件が通過している。この段階でも
 既存controller、更新lifecycle、診断、workspace、公開APIとformatは変更していない。
+
+期限切れsnapshotの一括解放に先立ち、privateな
+`validate_lzss_hash_tree_snapshot`と
+`release_lzss_sparse_hash_tree_snapshot`を追加した。validatorは現在windowやchainに
+依存せず、pool-local treeの全nodeを親pointerで反復走査する。index、親子関係、
+height、bucket hash、局所subtree maximum、全体のin-order ordering、reachable node
+countをmutation前に検証する。
+
+releaseはvalidator成功後にだけleafからpoolへ返却する。snapshot構築後にchainが
+delta更新やring overwriteで変化していても、immutable tree自身が完全なら解放できる。
+metadata破損、node count不一致または別poolのarray viewは解放開始前に拒否する。
+全期限切れtreeの全node検証、現chain非依存の全解放、破損時のzero release、pool view
+不一致をMSVCとClangCLで固定した。既存controllerへの接続とbucket metadata commitは
+まだ行っていない。
