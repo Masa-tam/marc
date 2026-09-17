@@ -50,6 +50,8 @@ foreach(required_sparse_snapshot_delta_term IN ITEMS
         "tree insertion countとretirement countは常に0"
         "token_fingerprint_sha256"
         "query_lzss_hash_tree_snapshot_exact"
+        "query_lzss_sparse_hash_tree_snapshot_delta_exact"
+        "watermark到達前で途切れる"
         "`query_lzss_hash_tree_bucket_exact`は変更せず"
         "途中rebuild"
         "public strategy")

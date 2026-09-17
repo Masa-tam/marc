@@ -8126,3 +8126,15 @@ active-candidate filtering, and whole-subtree expiration pruning were derived
 only from those local contracts. No external compressor, snapshot tree, tree
 query, hash-tree implementation, source code, performance result, tuning
 advice, pseudocode, or test suite was consulted.
+
+### IR-0891
+
+The read-only snapshot-plus-chain-delta query uses DD-1126, IR-0889 and
+IR-0890, TVG-0987 and TVG-0988, CR-1226 and CR-1227, the repository-owned
+active-aware snapshot query, HashChain link representation, prefix hash, and
+Exact tie-break contract. Deriving the watermark from the immutable root,
+walking only newer chain positions, validating an active watermark connection,
+and merging by longest match then newest position were derived solely from
+those local interfaces. No external compressor, snapshot/delta index, chain
+query, source code, performance result, tuning advice, pseudocode, or test
+suite was consulted.

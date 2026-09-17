@@ -131,6 +131,7 @@ set(MARC_SOURCES
     src/dictionary/lzss_sparse_hash_tree_bucket_builder.cpp
     src/dictionary/lzss_sparse_hash_tree_bucket_state.cpp
     src/dictionary/lzss_sparse_hash_tree_controller.cpp
+    src/dictionary/lzss_sparse_hash_tree_snapshot_query.cpp
     src/dictionary/lzss_sparse_hash_tree_match_finder.cpp
     src/dictionary/lzss_sparse_hash_tree_pool.cpp
     src/dictionary/lzss_typed_encoder.cpp
@@ -1961,6 +1962,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_sparse_hash_tree_bucket_mutation_tests.cpp
         tests/lzss_sparse_hash_tree_bucket_state_tests.cpp
         tests/lzss_sparse_hash_tree_controller_tests.cpp
+        tests/lzss_sparse_hash_tree_snapshot_query_tests.cpp
         tests/lzss_sparse_hash_tree_match_finder_tests.cpp
         tests/lzss_sparse_hash_tree_pool_tests.cpp
         tests/lzss_streaming_decoder_tests.cpp

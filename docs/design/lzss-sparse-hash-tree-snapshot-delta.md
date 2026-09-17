@@ -137,3 +137,17 @@ bucket hash、subtree maximumまたはidentityが不正ならbounded errorを返
 MSVCとClangCLで新規4件と既存mutable-query 9件が通過している。現時点では
 controller、chain delta、lifecycle、診断には接続しておらず、公開API、format、
 workspace queryにも変更はない。
+
+次の正しさゲートとして、privateな
+`query_lzss_sparse_hash_tree_snapshot_delta_exact`を追加した。この合成queryは
+snapshot rootの`subtree_maximum_position`をwatermarkとして読み、既存chain headから
+watermarkより新しいpositionだけをdeltaとして走査する。snapshotとdeltaの結果は
+長いmatch、同長なら新しいpositionの順で統合する。watermarkがactiveな間の
+探索継続中にchainがwatermark到達前で途切れる、またはwatermarkを飛び越える状態は
+metadata破損として拒否する。最大長の最新候補を得た場合は、それより古いlinkを
+読まずに確定できる。snapshot全体が期限切れた場合はwindow内のdeltaだけで結果を得る。
+
+watermark直結、同長delta優先、snapshot長優先、delta長優先、snapshot全期限切れ、
+不正link、active watermark飛び越し、snapshot error先行を小fixtureで固定した。
+MSVCとClangCLで合成query 8件と下位snapshot query 4件が通過している。この段階でも
+既存controller、更新lifecycle、診断、workspace、公開APIとformatは変更していない。

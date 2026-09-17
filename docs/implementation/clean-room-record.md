@@ -30643,3 +30643,29 @@ both bounds.
   implementation expression was copied or translated.
 - Local validation: the four snapshot-query tests and all nine unchanged
   mutable bucket-query tests pass under MSVC and ClangCL.
+
+## CR-1228: 2026-09-17 - Sparse snapshot and chain-delta query merge
+
+- Authoring method: composed the committed active-aware snapshot query with
+  marc's existing ring HashChain representation under the root-derived
+  watermark and Exact tie-break rules from the design.
+- References used: DD-1126, IR-0889 through IR-0891, TVG-0987 through
+  TVG-0989, CR-1226 and CR-1227, and marc-owned prefix-hash, snapshot-query,
+  and chain-link code and tests.
+- Known implementations intentionally not consulted: external compressor,
+  snapshot/delta index, chain query, source code, performance result, tuning
+  advice, pseudocode, or test suite.
+- Independent decisions: keep the merge in a private read-only primitive;
+  derive rather than store the watermark; traverse only positions newer than
+  it; reject a skipped active watermark during continued traversal; preserve
+  the safe maximum-match short circuit and bounded ring traversal; and merge
+  by longest match then newest position.
+- Generated-code task description: implement and test the snapshot-plus-delta
+  query without connecting the mutable controller, lifecycle, diagnostics,
+  public API, stream format, or workspace layout.
+- Similarity review: the code composes only marc-owned state representations,
+  validators, and deterministic match rules. No external implementation
+  expression was copied or translated.
+- Local validation: eight merge tests and four lower-level snapshot tests pass
+  under MSVC and ClangCL, including both length-order directions, equal-length
+  recency, full expiration, corrupt links, and snapshot-error precedence.

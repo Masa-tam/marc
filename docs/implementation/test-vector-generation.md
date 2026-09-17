@@ -14364,3 +14364,20 @@ beside these vectors on MSVC and ClangCL. These vectors cover only the
 read-only snapshot primitive; delta merge, controller lifecycle, transactional
 bulk release, diagnostics, Exact differential testing, and fuzzing remain
 separate later gates.
+
+### TVG-0989
+
+Combine the hand-checkable immutable snapshot with a ring-sized chain whose
+head is equal to, newer than, or corrupt relative to the root-derived
+watermark. Require an equal-length newer delta candidate to win, a longer
+snapshot candidate to beat a newer shorter delta, and a longer delta candidate
+to beat the snapshot. Move the entire snapshot outside the window and require
+the active delta alone to produce the match.
+
+Use a non-maximum delta match to force link traversal, then provide an
+underflowing distance and require a read-only invalid-delta result. Make the
+next chain position skip below an active watermark and require the same stable
+error. Corrupt snapshot metadata and require snapshot failure before any delta
+candidate is visited. Run these vectors with the lower-level snapshot-query
+suite under MSVC and ClangCL. Controller lifecycle, transactional bulk release,
+diagnostics, Exact differential testing, and fuzzing remain later gates.
