@@ -30593,3 +30593,29 @@ both bounds.
   workspace. It wins zero members against HashChain. The ignored canonical
   result JSON SHA-256 is
   `d42929616c853362ce17411be986c761065472367e9fb1224e8db9cd5dcdc17d`.
+
+## CR-1226: 2026-09-17 - Sparse immutable snapshot and chain delta design
+
+- Authoring method: decomposed the completed reuse-one aggregate into tree
+  query, insertion, retirement, build, and maintenance counts, then traced the
+  repository-owned Sparse controller, pool, builder, mutable query, chain, and
+  subtree-maximum contracts before defining a distinct zero-mutation variant.
+- References used: DD-1121 through DD-1126, IR-0889, TVG-0987, BM-0069 and
+  BM-0071, CR-1225, and marc's existing Sparse implementation and tests.
+- Known implementations intentionally not consulted: external compressor,
+  snapshot tree, delta index, hash-tree implementation, source code,
+  performance analysis, tuning advice, pseudocode, or test suite.
+- Independent decisions: reuse the existing full HashChain as an implicit
+  bounded delta; derive the cutoff from the snapshot root; tolerate stale
+  routing nodes through a new active-aware query rather than changing the
+  existing query; prohibit steady-state tree mutation and periodic rebuild in
+  v1; and bulk-release only after the whole snapshot expires.
+- Generated-code task description: specify a private immutable promoted tree
+  plus chain-prefix delta that targets measured maintenance cost while
+  preserving Exact output, checked workspace, and public compatibility.
+- Similarity review: the design combines only marc-owned state, counters, and
+  invariants. No external implementation expression was copied or translated.
+- Local validation: documentation records the 4/16/64-MiB reuse-one evidence,
+  0-byte workspace delta, stale-node safety contract, fixed lifecycle, Exact
+  gate, and explicit exclusions. No implementation or new performance
+  measurement was performed.

@@ -42,6 +42,8 @@ navigate chronological development records.
   bounded repeated-query admission hypothesis for private hot-bucket selection.
 - [LZSS Sparse HashTree reuse-gate experiment](design/lzss-sparse-hash-tree-reuse-gate-experiment.md):
   fixed 216-point Silesia matrix isolating repeated-query admission.
+- [LZSS Sparse HashTree snapshot + delta](design/lzss-sparse-hash-tree-snapshot-delta.md):
+  immutable promoted snapshots with the existing chain as a bounded delta.
 - [LZSS BinaryTree Exact 16 MiB benchmark](design/lzss-binary-tree-window-16m-benchmark.md):
   bounded Silesia comparison of the global AVL and HashChain strategies.
 - [Silesia external benchmark profile](design/silesia-benchmark-profile.md):

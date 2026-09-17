@@ -14328,3 +14328,22 @@ or path drift, no final output before 216 records, final output after exactly
 216 records, and zero benchmark launches when regenerating from a complete
 checkpoint. A child failure or malformed report must leave the prior
 checkpoint valid and must not append a partial record.
+
+### TVG-0987
+
+Construct small immutable bucket trees with active and stale nodes at the root,
+predecessor, successor, prefix-range boundaries, and entire subtrees. Require
+stale nodes to remain valid routing pivots, wholly stale subtrees to be pruned
+by `subtree_maximum_position`, and only active positions to contribute an LCP
+or final candidate. Corrupt each index, parent relation, ordering relation,
+height, subtree maximum, bucket hash, and cycle independently and require a
+stable bounded error.
+
+Generate delta chains with zero, one, cutoff-equal, cutoff-newer, window-edge,
+and overwritten-ring candidates. Compare snapshot-only, delta-only, and merged
+results using longest match then nearest distance. Advance through promotion,
+new inserts, partial expiration, complete expiration, transactional bulk
+release, and re-promotion. Require zero tree insertions and retirements during
+snapshot life, unchanged workspace, no double release, and no partial state
+change after every injected failure. Compare all five Exact identity fields
+against Exhaustive and HashChain before any performance test.

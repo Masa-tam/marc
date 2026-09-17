@@ -8104,3 +8104,14 @@ classifications and thresholds fixed before measurement. No external
 compressor, hash-tree implementation, admission algorithm, benchmark result,
 performance analysis, tuning advice, source code, pseudocode, or test suite
 was consulted.
+
+### IR-0889
+
+The Sparse immutable-snapshot and chain-delta design uses DD-1121 through
+DD-1126, TVG-0987, BM-0069 and BM-0071, CR-1225, and repository-owned Sparse
+pool, bucket builder, subtree-maximum query, chain, transactional release, and
+Exact fingerprint contracts. The watermark derivation, active-subtree rule,
+zero-mutation lifetime, and whole-snapshot expiration were independently
+derived from those local structures and measurements. No external compressor,
+snapshot tree, delta index, hash-tree implementation, source code, performance
+analysis, tuning advice, pseudocode, or test suite was consulted.

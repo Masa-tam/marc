@@ -25,6 +25,7 @@ set(required_documents
     docs/design/lzss-balanced-tree-strategy-evaluation.md
     docs/design/lzss-wavl-tree-exact.md
     docs/design/lzss-wavl-tree-exact-transitions.md
+    docs/design/lzss-sparse-hash-tree-snapshot-delta.md
     docs/implementation/README.md
     docs/implementation/clean-room-record.md
     docs/implementation/design-decisions.md
@@ -34,6 +35,29 @@ set(required_documents
 foreach(relative_path IN LISTS required_documents)
     if(NOT EXISTS "${source_dir}/${relative_path}")
         message(FATAL_ERROR "Required document is missing: ${relative_path}")
+    endif()
+endforeach()
+
+set(lzss_sparse_hash_tree_snapshot_delta_design
+    "${source_dir}/docs/design/lzss-sparse-hash-tree-snapshot-delta.md")
+file(READ "${lzss_sparse_hash_tree_snapshot_delta_design}"
+    lzss_sparse_hash_tree_snapshot_delta_content)
+foreach(required_sparse_snapshot_delta_term IN ITEMS
+        "immutable snapshot"
+        "chain delta"
+        "subtree_maximum_position < window_begin"
+        "追加workspaceは0 bytes"
+        "tree insertion countとretirement countは常に0"
+        "token_fingerprint_sha256"
+        "途中rebuild"
+        "public strategy")
+    string(FIND "${lzss_sparse_hash_tree_snapshot_delta_content}"
+        "${required_sparse_snapshot_delta_term}"
+        required_sparse_snapshot_delta_term_offset)
+    if(required_sparse_snapshot_delta_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete Sparse snapshot-delta design: "
+            "${required_sparse_snapshot_delta_term}")
     endif()
 endforeach()
 

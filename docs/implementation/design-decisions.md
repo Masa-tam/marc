@@ -22900,3 +22900,27 @@ the completed matrix. A future Sparse reevaluation must freeze a distinct
 structural hypothesis aimed at promotion construction, maintenance, or tree-
 query cost before observing new performance data. Keep HashChain as the
 preferred measured strategy for these windows.
+
+## DD-1126: Freeze immutable Sparse snapshots before implementation
+
+- Date: 2026-09-17
+- Status: accepted
+
+Evaluate a private Sparse HashTree variant that builds one immutable tree at
+promotion, leaves all later positions in the already maintained HashChain, and
+queries only the chain prefix newer than the snapshot watermark as its delta.
+Derive the watermark from the root subtree maximum; do not add a per-bucket
+array or dynamically allocated delta structure.
+
+Permit stale snapshot nodes as structural search pivots but never as match
+candidates. Use subtree maximum positions to prove and prune wholly stale
+subtrees. Merge active snapshot and delta results by the existing longest-
+match, nearest-distance rule. Do not mutate the tree for insertion or
+retirement. Once its maximum position leaves the window, validate and release
+the complete snapshot transactionally and return the bucket to chain mode.
+
+Preserve the current mutable Sparse implementation and every public surface.
+The first variant must not add periodic rebuild, multiple snapshots, adaptive
+thresholds, selector behavior, workspace, ABI, format, or profile changes.
+Prove Exact identity, bounded traversal, zero steady-state tree mutation, and
+failure atomicity before freezing any performance gate or measuring Silesia.
