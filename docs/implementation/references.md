@@ -8183,3 +8183,14 @@ trace, independent three-way token summaries, fixed-seed binary family, and
 window-boundary cases were derived only from these local contracts. No
 external compressor, differential harness, corpus, result, source code,
 pseudocode, tuning advice, or test suite was consulted.
+
+### IR-0896
+
+The immutable-snapshot deterministic fuzz-regression gate uses DD-1126 and
+DD-1127, IR-0889 through IR-0895, TVG-0987 through TVG-0993, CR-1226 through
+CR-1232, and marc's controller, Exact oracle, workspace, protocol-error, and
+canonical token-summary contracts. The fixed xorshift generator, bounded input
+families and parameter ranges, explicit prefix-length scope, and separate
+metadata/protocol mutation trials were derived only from those local
+contracts. No external compressor, fuzzer, corpus, seed, generated result,
+source code, pseudocode, tuning advice, or test suite was consulted.

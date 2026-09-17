@@ -22924,3 +22924,24 @@ The first variant must not add periodic rebuild, multiple snapshots, adaptive
 thresholds, selector behavior, workspace, ABI, format, or profile changes.
 Prove Exact identity, bounded traversal, zero steady-state tree mutation, and
 failure atomicity before freezing any performance gate or measuring Silesia.
+
+## DD-1127: Bound snapshot fuzz regression before public integration
+
+- Date: 2026-09-18
+- Status: accepted
+
+Complete a deterministic, bounded generative regression gate for the private
+immutable-snapshot controller before connecting it to the public match finder.
+Use repository-local Exact oracles, fixed integer seeds, fixed trial counts,
+small bounded inputs and parameters, and both bytewise and token-boundary
+advancement. Vary promotion timing but retain the existing format, tie break,
+workspace, and lifecycle contracts.
+
+Generate invalid bucket metadata and invalid query/advance ordering separately.
+Each case must terminate with the documented stable error, poison protocol or
+metadata failures consistently, and leave the workspace unchanged after the
+injected pre-call state. Do not use an external corpus, clock seed, OS random
+source, network input, or unbounded campaign in this gate. The private
+controller requires enough input for its prefix hash; the later public match
+finder integration must bypass it for shorter inputs and preserve literal
+behavior.

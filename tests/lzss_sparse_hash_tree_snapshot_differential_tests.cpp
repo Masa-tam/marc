@@ -1,4 +1,5 @@
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
+#include "dictionary/lzss_prefix_hash.hpp"
 #include "dictionary/lzss_sparse_hash_tree_snapshot_controller.hpp"
 #include "core/sha256.hpp"
 
@@ -46,6 +47,60 @@ struct AlignedStorage {
     for (auto& value : result) {
         state = state * 1'664'525U + 1'013'904'223U;
         value = static_cast<std::byte>(state >> 24U);
+    }
+    return result;
+}
+
+class DeterministicGenerator {
+public:
+    explicit DeterministicGenerator(const std::uint64_t seed) noexcept
+        : state_{seed} {}
+
+    [[nodiscard]] std::uint32_t next() noexcept {
+        state_ ^= state_ << 13U;
+        state_ ^= state_ >> 7U;
+        state_ ^= state_ << 17U;
+        return static_cast<std::uint32_t>(state_ >> 16U);
+    }
+
+    [[nodiscard]] std::size_t bounded(const std::size_t limit) noexcept {
+        return limit == 0 ? 0 : static_cast<std::size_t>(next()) % limit;
+    }
+
+private:
+    std::uint64_t state_;
+};
+
+[[nodiscard]] std::vector<std::byte> generated_input(
+    DeterministicGenerator& generator, const std::size_t size,
+    const std::size_t family) {
+    std::vector<std::byte> result(size);
+    if (family == 0) {
+        for (auto& value : result) {
+            value = static_cast<std::byte>(generator.next() & 0xffU);
+        }
+    } else if (family == 1) {
+        for (auto& value : result) {
+            value = static_cast<std::byte>(generator.bounded(4));
+        }
+    } else if (family == 2) {
+        const auto run_length = 1U + generator.bounded(17);
+        std::byte value{};
+        for (std::size_t index = 0; index < result.size(); ++index) {
+            if (index % run_length == 0) {
+                value = static_cast<std::byte>(generator.next() & 0xffU);
+            }
+            result[index] = value;
+        }
+    } else {
+        const auto period = 1U + generator.bounded(19);
+        std::vector<std::byte> pattern(period);
+        for (auto& value : pattern) {
+            value = static_cast<std::byte>(generator.next() & 0xffU);
+        }
+        for (std::size_t index = 0; index < result.size(); ++index) {
+            result[index] = pattern[index % pattern.size()];
+        }
     }
     return result;
 }
@@ -109,7 +164,8 @@ void run_differential_trace(
     const std::span<const std::byte> input,
     const LzssParameters& parameters,
     const bool token_boundaries,
-    DifferentialResult& result) {
+    DifferentialResult& result,
+    const std::uint64_t promotion_threshold = 0) {
     const auto pool_capacity = std::min<std::size_t>(
         input.size(), parameters.window_size);
     const auto sparse_required =
@@ -130,7 +186,7 @@ void run_differential_trace(
         input.size(), sparse_workspace.heads().size(), controller);
     LzssHashTreePromotionState promotion{};
     initialize_lzss_hash_tree_promotion_state(
-        sparse_workspace.heads().size(), 0, promotion);
+        sparse_workspace.heads().size(), promotion_threshold, promotion);
     const LzssSparseHashTreePositionContext context{
         input, parameters, &sparse_workspace, &result.statistics,
         &promotion};
@@ -288,6 +344,129 @@ TEST(LzssSparseHashTreeSnapshotDifferential,
     EXPECT_GT(
         result.statistics.hash_tree_snapshot_stale_subtree_prune_count,
         0U);
+}
+
+TEST(LzssSparseHashTreeSnapshotFuzzRegression,
+     FixedSeedGeneratedTracesMatchExactOracles) {
+    DeterministicGenerator generator{UINT64_C(0x8e6f4a3b2c1d9075)};
+    std::array<std::size_t, 4> family_counts{};
+    std::array<std::size_t, 2> boundary_counts{};
+    for (std::size_t trial = 0; trial < 192; ++trial) {
+        LzssParameters parameters{};
+        parameters.window_size = static_cast<std::uint32_t>(
+            1U + generator.bounded(96));
+        parameters.min_match_length = static_cast<std::uint32_t>(
+            5U + generator.bounded(4));
+        parameters.max_match_length = parameters.min_match_length
+            + static_cast<std::uint32_t>(generator.bounded(28));
+        const auto input_size = lzss_match_finder_prefix_size
+            + generator.bounded(382);
+        const auto family = generator.bounded(family_counts.size());
+        ++family_counts[family];
+        const auto input = generated_input(generator, input_size, family);
+        const auto token_boundaries = generator.bounded(2) != 0;
+        ++boundary_counts[token_boundaries ? 1U : 0U];
+        const auto promotion_threshold = generator.bounded(17);
+
+        DifferentialResult result{};
+        SCOPED_TRACE(trial);
+        run_differential_trace(input, parameters, token_boundaries, result,
+                               promotion_threshold);
+        if (token_boundaries) {
+            EXPECT_EQ(result.token_count,
+                      result.literal_count + result.match_count);
+            EXPECT_EQ(input.size(),
+                      result.literal_count + result.matched_bytes);
+        } else {
+            EXPECT_EQ(result.query_count, input.size());
+        }
+    }
+    for (const auto count : family_counts) EXPECT_GT(count, 0U);
+    for (const auto count : boundary_counts) EXPECT_GT(count, 0U);
+}
+
+TEST(LzssSparseHashTreeSnapshotFuzzRegression,
+     GeneratedMetadataAndProtocolMutationsFailWithoutWorkspaceWrites) {
+    DeterministicGenerator generator{UINT64_C(0x1f2e3d4c5b6a7988)};
+    std::array<std::size_t, 4> mutation_counts{};
+    for (std::size_t trial = 0; trial < 96; ++trial) {
+        LzssParameters parameters{};
+        parameters.window_size = static_cast<std::uint32_t>(
+            8U + generator.bounded(57));
+        parameters.min_match_length = 5;
+        parameters.max_match_length = static_cast<std::uint32_t>(
+            5U + generator.bounded(24));
+        const auto input = generated_input(
+            generator, 8U + generator.bounded(121),
+            generator.bounded(4));
+        const auto pool_capacity = std::min<std::size_t>(
+            input.size(), parameters.window_size);
+        const auto required = calculate_lzss_sparse_hash_tree_workspace(
+            input.size(), parameters, {}, pool_capacity);
+        ASSERT_EQ(required.error, LzssSparseHashTreeError::none) << trial;
+        auto storage = make_storage(required.workspace_size);
+        LzssSparseHashTreeWorkspace workspace{};
+        ASSERT_EQ(initialize_lzss_sparse_hash_tree_workspace(
+                      input.size(), parameters, {}, pool_capacity,
+                      storage.bytes.first(required.workspace_size), workspace),
+                  LzssSparseHashTreeError::none)
+            << trial;
+        LzssSparseHashTreeSnapshotControllerState state{};
+        initialize_lzss_sparse_hash_tree_snapshot_controller_state(
+            input.size(), workspace.heads().size(), state);
+        LzssMatchFinderStatistics statistics{};
+        const LzssSparseHashTreePositionContext context{
+            input, parameters, &workspace, &statistics, nullptr};
+
+        const auto mutation = generator.bounded(4);
+        ++mutation_counts[mutation];
+        if (mutation == 0) {
+            const auto hash = calculate_lzss_prefix_hash(input, 0);
+            ASSERT_TRUE(hash.valid) << trial;
+            const auto bucket = static_cast<std::size_t>(hash.value)
+                & (workspace.heads().size() - 1U);
+            workspace.modes()[bucket] =
+                LzssSparseHashTreeBucketMode::promoted_tree;
+            workspace.roots()[bucket] = lzss_hash_tree_null_node;
+            workspace.bucket_node_counts()[bucket] = 1;
+        }
+        const std::vector<std::byte> before{
+            storage.bytes.begin(),
+            storage.bytes.begin()
+                + static_cast<std::ptrdiff_t>(required.workspace_size)};
+
+        LzssSparseHashTreeSnapshotControllerError error{};
+        if (mutation == 0) {
+            error = query_lzss_sparse_hash_tree_snapshot_controller_exact(
+                context, state, 0).error;
+            EXPECT_EQ(error,
+                      LzssSparseHashTreeSnapshotControllerError::invalid_metadata)
+                << trial;
+        } else if (mutation == 1) {
+            error = query_lzss_sparse_hash_tree_snapshot_controller_exact(
+                context, state, 1).error;
+            EXPECT_EQ(error,
+                      LzssSparseHashTreeSnapshotControllerError::invalid_protocol)
+                << trial;
+        } else if (mutation == 2) {
+            error = advance_lzss_sparse_hash_tree_snapshot_controller(
+                context, state, 1, 2).error;
+            EXPECT_EQ(error,
+                      LzssSparseHashTreeSnapshotControllerError::invalid_protocol)
+                << trial;
+        } else {
+            error = advance_lzss_sparse_hash_tree_snapshot_controller(
+                context, state, 0, input.size() + 1U).error;
+            EXPECT_EQ(error,
+                      LzssSparseHashTreeSnapshotControllerError::invalid_protocol)
+                << trial;
+        }
+        EXPECT_FALSE(state.state_valid()) << trial;
+        EXPECT_EQ(state.last_error(), error) << trial;
+        EXPECT_TRUE(std::equal(
+            before.begin(), before.end(), storage.bytes.begin())) << trial;
+    }
+    for (const auto count : mutation_counts) EXPECT_GT(count, 0U);
 }
 
 } // namespace

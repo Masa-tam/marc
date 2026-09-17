@@ -14455,3 +14455,24 @@ stale-subtree pruning, expiration, and matching bulk releases while tree
 insertion and retirement remain zero. Run all three differential tests under
 MSVC and ClangCL. Fuzzing, public match-finder integration, and benchmark
 serialization remain later gates.
+
+### TVG-0994
+
+Starting from fixed seed `0x8e6f4a3b2c1d9075`, generate 192 controller-valid
+traces. Select full-byte, four-symbol, fixed-run, or periodic input; length from
+the four-byte prefix-hash extent through 385 bytes; window 1 through 96;
+minimum match 5 through 8; maximum match up to 27 bytes above the minimum;
+promotion candidate threshold 0 through 16; and bytewise or LZSS token
+boundaries. Require every snapshot match to equal Exhaustive Exact and
+HashChain Exact. For token traces also require the five canonical summary
+fields and SHA-256 fingerprint to agree.
+
+Starting independently from seed `0x1f2e3d4c5b6a7988`, generate 96 inputs and
+select one of four invalid calls: inconsistent promoted mode/root/count for the
+current bucket, query at a future position, advance from a future position, or
+advance beyond input. Capture the workspace after any deliberate corruption
+and before the call. Require `invalid_metadata` or `invalid_protocol`, poisoned
+controller state with the same stable last error, and byte-identical workspace
+after the call. Run both tests under MSVC and ClangCL. Sanitizer campaigning,
+public match-finder integration, short-input bypass, and benchmark
+serialization remain later gates.

@@ -30773,3 +30773,30 @@ both bounds.
   Every match and all five token-summary fields agree across snapshot,
   Exhaustive Exact, and HashChain Exact while promotion, expiration, release,
   and zero steady-state tree mutation are observed.
+
+## CR-1233: 2026-09-18 - Immutable Sparse snapshot bounded fuzz regression
+
+- Authoring method: expanded the repository-owned Exact differential harness
+  with two fixed-seed, fixed-count generators: one for valid traces and one for
+  targeted metadata and protocol mutations.
+- References used: DD-1126, DD-1127, IR-0889 through IR-0896, TVG-0987 through
+  TVG-0994, CR-1226 through CR-1232, and marc-owned controller, workspace,
+  Exact oracle, token-summary, and error-state code and tests.
+- Known implementations intentionally not consulted: external compressor,
+  fuzzer, corpus, seed, generated result, source code, pseudocode, tuning
+  advice, or test suite.
+- Independent decisions: use explicit xorshift arithmetic rather than a
+  library distribution; keep inputs and trials bounded; cover four input
+  families and generated valid parameters; separate valid Exact comparison
+  from invalid-state mutation; and reserve prefix-short bypass for public
+  integration.
+- Generated-code task description: add a reproducible private-controller fuzz
+  regression without launching an open-ended campaign or changing production
+  code, public API, format, ABI, workspace, or strategy selection.
+- Similarity review: generation, mutation, and oracle composition use only
+  repository-owned contracts. No external implementation expression was
+  copied or translated.
+- Local validation: two generated tests pass under MSVC and ClangCL. The valid
+  gate covers 192 traces with three-way Exact agreement; the invalid gate
+  covers 96 stable failures with poisoned state and no post-injection workspace
+  writes.

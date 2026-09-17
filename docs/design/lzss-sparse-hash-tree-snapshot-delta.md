@@ -229,3 +229,18 @@ promotion、expiration、bulk releaseを通過する。MSVCとClangCLで固定�
 初期正しさgateのExact differentialは完了した。fuzzing、public match finder接続と
 benchmark出力は後続gateである。
 このgateのテストsuite名は`LzssSparseHashTreeSnapshotDifferential`である。
+
+private controllerの限定的なdeterministic fuzz-regression gateを追加した。
+固定seedの整数生成器だけを使い、192 traceについてinput family、input size、window、
+minimum/maximum match、promotion threshold、bytewise/token-boundary advanceを生成する。
+各queryはimmutable snapshot、Exhaustive Exact、HashChain Exactで一致しなければならず、
+token traceは同じcanonical token summaryとSHA-256 fingerprintを要求する。controllerが
+直接担当する入力はprefix hashを構成できる長さ以上に限定する。prefix未満の入力を
+controllerへ渡さずliteralとして処理する責務はpublic match finder接続gateで固定する。
+
+別の96 traceはcurrent bucketの矛盾したmode/root/count、out-of-order query、
+out-of-order advance、input終端を越えるadvanceを生成する。すべて安定したerrorでstateを
+poisonし、呼び出し時点のworkspaceを追加変更しないことを要求する。外部corpus、時刻、
+OS乱数、無制限反復、network入力は使わない。この限定gateはMSVCとClangCLで固定した。
+sanitizer campaign、public match finder接続とbenchmark出力は後続gateである。
+テストsuite名は`LzssSparseHashTreeSnapshotFuzzRegression`である。
