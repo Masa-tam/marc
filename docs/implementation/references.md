@@ -8250,3 +8250,14 @@ Silesia Corpus. Interpretation is limited to connection, Exact identity,
 immutable lifecycle, atomic persistence, and zero-work restart evidence. No
 external compressor, snapshot tree, benchmark result, performance analysis,
 tuning advice, source code, pseudocode, or test suite was consulted.
+
+### IR-0902
+
+The completed immutable-snapshot result and non-admission decision use
+DD-1130 through DD-1133, IR-0899 through IR-0901, TVG-0997 and TVG-0998,
+BM-0072 through BM-0074, CR-1236 through CR-1238, commit `e92a4162`, the
+committed v1 manifest and strict runner, and the locally verified Silesia
+Corpus. Interpretation applies only the classifications fixed before
+measurement. No external compressor, snapshot tree, benchmark result,
+performance analysis, tuning advice, source code, pseudocode, or test suite
+was consulted.

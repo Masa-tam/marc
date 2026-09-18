@@ -2530,3 +2530,33 @@ HashChain. The ignored three-record checkpoint has SHA-256
 `f56a7a085f9b9cad60373e9459df1890434c2921122e290bc84b2d23927ebb71`.
 This is a connection and restart smoke only, not an aggregate performance or
 strategy-admission result; the remaining 105 records were not started.
+
+### BM-0074: Fixed immutable Sparse snapshot result
+
+The complete MSVC Release experiment at commit `e92a4162` finished all 108
+process-isolated records: twelve verified Silesia members, 4/16/64-MiB
+windows, and HashChain, mutable reuse-sixteen Sparse, and immutable-snapshot
+Sparse for every member/window. Every Sparse record matched both applicable
+controls in token, literal, match, and matched-byte counts and canonical token
+fingerprint. A zero-new-point rerun regenerated the same final result without
+launching a benchmark process.
+
+| Window | HashChain MiB/s | Mutable MiB/s | Snapshot MiB/s | Snapshot / HashChain | Snapshot / mutable | Wins vs HashChain | Wins vs mutable | Workspace ratio |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 MiB | 0.499422 | 0.345457 | 0.362942 | 0.726724 | 1.050614 | 0 / 12 | 12 / 12 | 1.027699 |
+| 16 MiB | 0.177926 | 0.128251 | 0.144318 | 0.811116 | 1.125283 | 1 / 12 | 12 / 12 | 1.007086 |
+| 64 MiB | 0.097312 | 0.074360 | 0.090966 | 0.934788 | 1.223315 | 3 / 12 | 12 / 12 | 1.001782 |
+
+The immutable lifecycle removes all steady-state tree insertion and retirement
+and beats the mutable control for every member/window. Its advantage over the
+mutable control grows with the window, but it does not achieve aggregate or
+broad gain over HashChain at any tested window. It therefore remains private
+and is not added to the selector, ABI, CLI, profile, or format. Snapshot query
+counts are 142,510, 255,981, and 362,770; snapshot promotions are 1,800, 471,
+and 267. Delta candidates grow to 92,199,351,781 at 64 MiB and remain a likely
+cost boundary for any separately designed future hypothesis.
+
+The ignored canonical result JSON has SHA-256
+`1fb44c4d9a921302adc9ef851cd8859d3fb18db9d3c8ef5d90ad90351d930be2`.
+The completed checkpoint SHA-256 is
+`3401aff0f24f0cbb36954b8de9ca44df095505899992452e7c94c0b88636af5f`.

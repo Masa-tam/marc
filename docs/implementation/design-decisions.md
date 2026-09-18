@@ -23053,3 +23053,31 @@ values only as proof that the real-data measurement, lifecycle diagnostics,
 Exact oracle, atomic checkpoint, and restart identity are connected. Do not
 infer an aggregate gain, tune the frozen manifest, or make an admission
 decision before the remaining 105 records complete.
+
+## DD-1133: Immutable Sparse snapshots remain private after the fixed matrix
+
+- Date: 2026-09-18
+- Status: accepted
+
+Do not promote immutable-snapshot Sparse to a public strategy, automatic
+selector, default, or codec profile. The fixed 108-point MSVC Release result
+at commit `e92a4162` preserves five-field Exact identity everywhere and
+confirms zero steady-state tree insertion and retirement, but fails both
+predeclared HashChain admission conditions at every window.
+
+Retain the implementation and runner as private research infrastructure and
+record the structural improvement separately: immutable snapshots beat the
+mutable reuse-sixteen control on all 36 member/window comparisons and reach
+1.050614, 1.125283, and 1.223315 times mutable throughput as the window grows.
+Against HashChain they reach only 0.726724, 0.811116, and 0.934788 aggregate
+throughput and win 0, 1, and 3 of twelve members. Low workspace premium,
+snapshot lifecycle activity, and zero mutation all pass, but they cannot
+override failed aggregate and broad HashChain gain.
+
+Do not tune the completed manifest or infer a threshold from it. A future
+Sparse reevaluation requires a separately frozen structural hypothesis. The
+candidate's aggregate delta work grows from 2,954,626,135 candidates at 4 MiB
+to 92,199,351,781 at 64 MiB, so any such hypothesis should address the delta
+search cost without sacrificing bounded memory, Exact output, or immutable
+snapshot release semantics. Keep HashChain as the preferred measured strategy
+for the tested windows.

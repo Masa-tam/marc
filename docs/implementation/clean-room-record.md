@@ -30935,3 +30935,38 @@ both bounds.
   releases, and zero insertions/retirements. A zero-new-point rerun accepts
   progress 3/108 without a child launch. The ignored checkpoint SHA-256 is
   `f56a7a085f9b9cad60373e9459df1890434c2921122e290bc84b2d23927ebb71`.
+
+## CR-1239: 2026-09-18 - Immutable Sparse result and non-admission
+
+- Authoring method: executed the previously committed 108-point v1 manifest
+  through one strict runner invocation, accepted each process-isolated record
+  only after report, workspace, lifecycle, and dual Exact validation, then
+  performed a zero-new-point complete-checkpoint rerun.
+- References used: DD-1130 through DD-1133, IR-0899 through IR-0902,
+  TVG-0997 and TVG-0998, BM-0072 through BM-0074, CR-1236 through CR-1238,
+  commit `e92a4162`, and the locally verified Silesia Corpus.
+- Known implementations intentionally not consulted: external compressor,
+  snapshot tree, benchmark result, performance analysis, tuning advice,
+  source code, pseudocode, or test suite.
+- Independent decisions: preserve the frozen result without adding or
+  removing a condition; reject public admission because every window fails
+  aggregate and broad HashChain gain; record all-member gain over the mutable
+  control as structural evidence; and require a distinct hypothesis before
+  any delta-search reevaluation.
+- Generated-code task description: record the completed immutable-snapshot
+  experiment, canonical digests, predeclared classification outcome, and
+  non-admission decision without committing external Corpus or local result
+  files.
+- Similarity review: documentation reports only measurements produced by
+  marc-owned code under a marc-owned manifest and classification contract. No
+  external implementation expression was used.
+- Local validation: all 108 records completed with dual five-field Exact
+  identity. Snapshot throughput is 0.726724, 0.811116, and 0.934788 of
+  HashChain, while it is 1.050614, 1.125283, and 1.223315 of the mutable
+  control and wins all 36 such comparisons. All windows retain low workspace
+  premium, zero tree insertion/retirement, and observed lifecycle activity.
+  A zero-new-point rerun produces no benchmark process and regenerates result
+  SHA-256
+  `1fb44c4d9a921302adc9ef851cd8859d3fb18db9d3c8ef5d90ad90351d930be2`;
+  checkpoint SHA-256 is
+  `3401aff0f24f0cbb36954b8de9ca44df095505899992452e7c94c0b88636af5f`.
