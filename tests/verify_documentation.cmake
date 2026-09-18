@@ -26,6 +26,7 @@ set(required_documents
     docs/design/lzss-wavl-tree-exact.md
     docs/design/lzss-wavl-tree-exact-transitions.md
     docs/design/lzss-sparse-hash-tree-snapshot-delta.md
+    docs/design/lzss-sparse-hash-tree-snapshot-delta-budget.md
     docs/implementation/README.md
     docs/implementation/clean-room-record.md
     docs/implementation/design-decisions.md
@@ -35,6 +36,30 @@ set(required_documents
 foreach(relative_path IN LISTS required_documents)
     if(NOT EXISTS "${source_dir}/${relative_path}")
         message(FATAL_ERROR "Required document is missing: ${relative_path}")
+    endif()
+endforeach()
+
+set(lzss_sparse_hash_tree_snapshot_delta_budget_design
+    "${source_dir}/docs/design/lzss-sparse-hash-tree-snapshot-delta-budget.md")
+file(READ "${lzss_sparse_hash_tree_snapshot_delta_budget_design}"
+    lzss_sparse_hash_tree_snapshot_delta_budget_content)
+foreach(required_sparse_snapshot_delta_budget_term IN ITEMS
+        "delta_candidate_budget"
+        "query途中での候補打ち切り"
+        "delta_candidates_visited > B"
+        "pool_rejected_chain"
+        "追加workspaceは0 bytes"
+        "budget無効時は全fieldが0"
+        "B-1"
+        "token_fingerprint_sha256"
+        "12 member中6以上")
+    string(FIND "${lzss_sparse_hash_tree_snapshot_delta_budget_content}"
+        "${required_sparse_snapshot_delta_budget_term}"
+        required_sparse_snapshot_delta_budget_term_offset)
+    if(required_sparse_snapshot_delta_budget_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete Sparse snapshot delta-budget design: "
+            "${required_sparse_snapshot_delta_budget_term}")
     endif()
 endforeach()
 

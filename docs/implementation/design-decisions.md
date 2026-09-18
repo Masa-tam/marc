@@ -23099,3 +23099,22 @@ workspace size, format, ABI, or snapshot state. The full integration suite
 exposed the missing accounting after lifecycle dispatch was added; repair the
 implementation and retain a one-byte immutable-lifecycle regression rather
 than weakening the older cross-strategy test.
+
+## DD-1135: Bound repeated snapshot-delta harm by post-query demotion
+
+- Date: 2026-09-18
+- Status: accepted
+
+Evaluate a private immutable-snapshot circuit breaker before adding a second
+delta index. A successful Exact query whose visited delta candidates strictly
+exceed an explicit non-zero budget marks its bucket for release. The following
+valid advance releases the immutable tree and commits the existing
+`pool_rejected_chain` state, preventing re-promotion for the rest of the frame.
+
+Never use the budget as a search cutoff. The triggering query must evaluate
+all candidates and preserve Exact output. Budget zero retains the completed
+immutable-snapshot behavior. Reuse the current workspace and chain, add no
+dynamic allocation, and keep format, ABI, CLI, profiles, defaults, and public
+strategy selection unchanged. This first hypothesis addresses repeated
+92-billion-candidate delta work by converging to the measured HashChain
+baseline without introducing another maintenance structure.

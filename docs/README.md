@@ -46,6 +46,9 @@ navigate chronological development records.
   immutable promoted snapshots with the existing chain as a bounded delta.
 - [LZSS Sparse HashTree immutable snapshot experiment](design/lzss-sparse-hash-tree-snapshot-experiment.md):
   fixed comparison against HashChain and mutable Sparse at reuse sixteen.
+- [LZSS Sparse HashTree snapshot delta budget](design/lzss-sparse-hash-tree-snapshot-delta-budget.md):
+  exact post-query circuit breaker that demotes an over-budget immutable
+  snapshot bucket to the existing HashChain path.
 - [LZSS BinaryTree Exact 16 MiB benchmark](design/lzss-binary-tree-window-16m-benchmark.md):
   bounded Silesia comparison of the global AVL and HashChain strategies.
 - [Silesia external benchmark profile](design/silesia-benchmark-profile.md):

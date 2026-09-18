@@ -8271,3 +8271,14 @@ finder entries. Removing the public early return and retaining the common
 query path were derived only from those repository-owned contracts. No
 external compressor, match finder, source code, pseudocode, tuning advice, or
 test suite was consulted.
+
+### IR-0904
+
+The snapshot delta-budget design uses DD-1133 through DD-1135, IR-0902 and
+IR-0903, BM-0071 through BM-0074, CR-1239 and CR-1240, the repository-owned
+immutable snapshot controller, pending-release protocol, `pool_rejected_chain`
+terminal mode, and Exact differential contracts. Post-query breach detection,
+budget-over-expiration priority, next-advance release, and frame-local
+re-promotion suppression were derived only from those local interfaces and
+measurements. No external compressor, circuit-breaker implementation, match
+finder, source code, pseudocode, tuning advice, or test suite was consulted.

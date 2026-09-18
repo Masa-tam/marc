@@ -30994,3 +30994,27 @@ both bounds.
 - Local validation: both the pre-existing cross-strategy regression and the
   new one-byte immutable-lifecycle regression pass ten consecutive times under
   MSVC and ClangCL.
+
+## CR-1241: 2026-09-18 - Snapshot delta-budget circuit-breaker design
+
+- Authoring method: interpreted the completed immutable-snapshot result,
+  inspected only marc's snapshot query, lifecycle, workspace, bucket-state,
+  and promotion contracts, and selected the smallest bounded follow-up that
+  addresses repeated delta harm.
+- References used: DD-1133 through DD-1135, IR-0902 through IR-0904,
+  TVG-0998 through TVG-1000, BM-0071 through BM-0074, CR-1239 and CR-1240,
+  and the marc-owned Sparse implementation.
+- Known implementations intentionally not consulted: external compressor,
+  circuit breaker, tree or hash index, source code, pseudocode, tuning advice,
+  benchmark result, or test suite.
+- Independent decisions: complete the triggering query; use strict
+  greater-than budget comparison; release on the next advance; make budget
+  dominate simultaneous expiration; reuse `pool_rejected_chain`; disable
+  re-promotion for the frame; and add no workspace.
+- Generated-code task description: document a private Exact snapshot-delta
+  budget experiment without implementing it, choosing a numeric threshold, or
+  starting a Corpus measurement.
+- Similarity review: the design composes only existing marc-owned states and
+  diagnostics. No external implementation expression was copied or translated.
+- Local validation: documentation layout and required-term validation are the
+  only executable gates at this design stage.

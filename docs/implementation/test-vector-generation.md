@@ -14567,3 +14567,15 @@ Run this regression together with the existing private-match-finder entry
 comparison ten consecutive times under MSVC and ClangCL. The test closes only
 the empty-prefix-workspace accounting gap; it must not alter the token stream,
 workspace requirement, serialized format, ABI, or completed Silesia result.
+
+### TVG-1000
+
+Treat the snapshot delta-budget document as an inert contract. Require its
+strict-greater-than `B-1`/`B`/`B+1` boundary, full-query Exact rule,
+`pool_rejected_chain` terminal transition, zero additional workspace, disabled
+zero-budget behavior, diagnostic accounting, staged differential/fuzz gates,
+and separate fixed-experiment admission criteria to remain present.
+
+This documentation gate starts no benchmark and fixes no numeric budget. A
+later implementation gate must derive candidate values from deterministic
+synthetic evidence before any new Silesia result is observed.
