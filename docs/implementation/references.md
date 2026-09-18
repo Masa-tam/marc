@@ -8261,3 +8261,13 @@ Corpus. Interpretation applies only the classifications fixed before
 measurement. No external compressor, snapshot tree, benchmark result,
 performance analysis, tuning advice, source code, pseudocode, or test suite
 was consulted.
+
+### IR-0903
+
+The short-input Sparse accounting correction uses DD-1134, IR-0897,
+TVG-0994 through TVG-0996, CR-1233 through CR-1235, marc's existing common
+exact-query diagnostics, and the integration test that compares private match
+finder entries. Removing the public early return and retaining the common
+query path were derived only from those repository-owned contracts. No
+external compressor, match finder, source code, pseudocode, tuning advice, or
+test suite was consulted.

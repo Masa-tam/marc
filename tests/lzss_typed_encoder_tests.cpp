@@ -1124,3 +1124,33 @@ TEST(LzssTypedEncoder,
     EXPECT_EQ(statistics.hash_tree_insertion_count, 0U);
     EXPECT_EQ(statistics.hash_tree_retirement_count, 0U);
 }
+
+TEST(LzssTypedEncoder,
+     SparseHashTreeImmutableSnapshotShortInputUsesCommonQueryPath) {
+    const auto input = bytes("A");
+    LzssSparseHashTreeMatchFinderOptions options{};
+    options.lifecycle_mode =
+        LzssSparseHashTreeLifecycleMode::immutable_snapshot;
+    const auto required = calculate_lzss_sparse_hash_tree_workspace(
+        input.size(), {}, {}, options.pool_node_capacity);
+    ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
+    AlignedWorkspace owner(required.workspace_size);
+    std::vector<LzssTypedToken> tokens(input.size());
+    LzssMatchFinderStatistics statistics{};
+
+    const auto result =
+        encode_lzss_typed_tokens_sparse_hash_tree_single_pass(
+            input, {}, {}, tokens, owner.bytes(required.workspace_size),
+            options, &statistics);
+
+    ASSERT_EQ(result.error, LzssTypedEncodeError::none);
+    ASSERT_EQ(result.sparse_hash_tree_match_finder_error,
+              LzssSparseHashTreeMatchFinderError::none);
+    ASSERT_EQ(result.token_count, 1U);
+    EXPECT_EQ(tokens[0].kind, LzssTypedTokenKind::literal);
+    EXPECT_EQ(tokens[0].literal, static_cast<std::uint8_t>('A'));
+    EXPECT_EQ(statistics.query_count, 1U);
+    EXPECT_EQ(statistics.hash_tree_chain_query_count, 1U);
+    EXPECT_EQ(statistics.hash_tree_snapshot_query_count, 0U);
+    EXPECT_FALSE(statistics.overflowed);
+}

@@ -90,7 +90,6 @@ LzssMatch LzssSparseHashTreeMatchFinder::find_match(
         }
         return result.match;
     }
-    if (workspace_.heads().empty()) return {};
     const auto result = query_lzss_sparse_hash_tree_exact(context(), position);
     if (result.error != LzssSparseHashTreeControllerError::none) {
         mark_error(LzssSparseHashTreeMatchFinderError::controller_failure,

@@ -23081,3 +23081,21 @@ to 92,199,351,781 at 64 MiB, so any such hypothesis should address the delta
 search cost without sacrificing bounded memory, Exact output, or immutable
 snapshot release semantics. Keep HashChain as the preferred measured strategy
 for the tested windows.
+
+## DD-1134: Short Sparse inputs retain common query accounting
+
+- Date: 2026-09-18
+- Status: accepted
+
+When the input is shorter than the Sparse prefix extent, do not initialize or
+call the immutable snapshot controller. Still call the common exact-query path
+instead of returning early from the public match finder. It safely yields an
+empty match for an empty bucket workspace while recording one query, one chain
+route, and the zero-depth histogram entry.
+
+This preserves the pre-existing public statistics contract for both mutable
+and immutable lifecycle selections without changing tokens, encoded bytes,
+workspace size, format, ABI, or snapshot state. The full integration suite
+exposed the missing accounting after lifecycle dispatch was added; repair the
+implementation and retain a one-byte immutable-lifecycle regression rather
+than weakening the older cross-strategy test.

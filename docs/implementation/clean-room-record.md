@@ -30970,3 +30970,27 @@ both bounds.
   `1fb44c4d9a921302adc9ef851cd8859d3fb18db9d3c8ef5d90ad90351d930be2`;
   checkpoint SHA-256 is
   `3401aff0f24f0cbb36954b8de9ca44df095505899992452e7c94c0b88636af5f`.
+
+## CR-1240: 2026-09-18 - Short Sparse query-accounting correction
+
+- Authoring method: investigated the single failure exposed by the full MSVC
+  integration suite, traced it to a public match-finder early return for an
+  empty prefix workspace, and restored the repository's common exact-query
+  diagnostics path.
+- References used: DD-1134, IR-0903, TVG-0999, marc's existing Sparse
+  statistics contracts, and the failing
+  `PrivateMatchFinderEntriesMatchExactTokensAndBytes` regression.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, source code, pseudocode, tuning advice, or test suite.
+- Independent decisions: preserve the older statistics expectation; avoid
+  snapshot-controller initialization for short input; record the empty query
+  through the safe common path; and add a one-byte immutable-lifecycle test.
+- Generated-code task description: correct short-input Sparse query accounting
+  without changing tokens, encoded bytes, workspace, format, ABI, or the
+  completed immutable-snapshot experiment.
+- Similarity review: the change removes one marc-owned early return and uses an
+  existing marc-owned query path. No external implementation expression was
+  copied or translated.
+- Local validation: both the pre-existing cross-strategy regression and the
+  new one-byte immutable-lifecycle regression pass ten consecutive times under
+  MSVC and ClangCL.

@@ -14555,3 +14555,15 @@ one persisted record. Then add a stale final output beside the incomplete
 checkpoint and require failure before another child launch or output mutation.
 Run the Python suite through CTest without accessing the network or real
 Silesia files.
+
+### TVG-0999
+
+Encode one literal byte through the private Sparse typed-token entry with the
+immutable-snapshot lifecycle selected. Require one literal token and no
+snapshot-controller activity, but also require the common statistics contract:
+one total query, one chain-route query, no overflow, and successful completion.
+
+Run this regression together with the existing private-match-finder entry
+comparison ten consecutive times under MSVC and ClangCL. The test closes only
+the empty-prefix-workspace accounting gap; it must not alter the token stream,
+workspace requirement, serialized format, ABI, or completed Silesia result.

@@ -253,7 +253,9 @@ promotion candidate threshold、promotion reuse threshold、workspace query、�
 動的確保やserialized format変更を導入しない。
 
 prefix hashを構成できない短いinputではsnapshot controllerを初期化または呼び出さず、
-public match finderが空matchを返して既存の短入力advance stateだけを進める。通常inputでは
+public match finderは共通Exact query経路から空matchを返す。これによりquery count、chain
+route countおよびzero-depth histogramも通常の問い合わせと同じ契約で記録し、その後は既存の
+短入力advance stateだけを進める。通常inputでは
 find/advanceを専用snapshot controllerへdispatchし、snapshot固有errorを保持した上で既存の
 match-finder error categoryへ写像する。typed encoderは渡されたoptionsをそのまま尊重するが、
 既定codec、C ABI、CLI、profile、benchmark selectorはこのgateでは変更しない。
