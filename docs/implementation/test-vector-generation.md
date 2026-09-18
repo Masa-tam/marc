@@ -14597,3 +14597,21 @@ snapshot release validation is corrupted, disabled-budget zero diagnostics,
 and checked counter saturation without changing the match. Run the controller
 suite and the wider Sparse Hash Tree regression family under both MSVC and
 ClangCL. This gate starts no Silesia benchmark and exposes no public option.
+
+### TVG-1002
+
+Run the deterministic prefix-collision sequence through four independent
+typed-token paths: Exhaustive reference, HashChain Exact, immutable snapshot
+with budget zero, and immutable snapshot with budget one. Require equal token
+counts, field-by-field token identity, and identical canonical LZSS byte
+serialization. The low private budget is selected only to force the already
+specified controller transition; it is not a production threshold.
+
+Require the budget-disabled path to report no budget query, and the budgeted
+path to report positive budget-query and breach counts with breach equal to
+successful demotion. Also advance a budgeted match finder one byte at a time
+against Exhaustive to cover every position and require Exact matches before
+demotion. Reject a non-zero budget with mutable lifecycle atomically, leaving
+an already initialized finder unchanged. Run the Sparse Hash Tree and typed
+encoder regression families under both MSVC and ClangCL. Start no fuzzing or
+Corpus benchmark in this gate.

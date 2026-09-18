@@ -44,13 +44,15 @@ struct AlignedStorage {
 
 [[nodiscard]] LzssSparseHashTreeMatchFinderOptions snapshot_options(
     const std::size_t input_size, const LzssParameters& parameters,
-    const std::uint64_t threshold = 0) {
+    const std::uint64_t threshold = 0,
+    const std::size_t delta_candidate_budget = 0) {
     auto options = full_pool_options(input_size, parameters, threshold);
     if (input_size < lzss_match_finder_prefix_size) {
         options.pool_node_capacity = 0;
     }
     options.lifecycle_mode =
         LzssSparseHashTreeLifecycleMode::immutable_snapshot;
+    options.snapshot_delta_candidate_budget = delta_candidate_budget;
     return options;
 }
 
@@ -174,6 +176,71 @@ TEST(LzssSparseHashTreeMatchFinder,
     EXPECT_EQ(finder.input_size(), input.size());
     EXPECT_EQ(finder.lifecycle_mode(),
               LzssSparseHashTreeLifecycleMode::mutable_tree);
+}
+
+TEST(LzssSparseHashTreeMatchFinder,
+     RejectsSnapshotDeltaBudgetForMutableLifecycle) {
+    const auto input = bytes("abcdefghabcdefgh");
+    const auto required = calculate_lzss_sparse_hash_tree_workspace(
+        input.size(), {}, {}, 0);
+    ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssSparseHashTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_sparse_hash_tree_match_finder(
+                  input, {}, {}, storage.bytes, finder),
+              LzssSparseHashTreeMatchFinderError::none);
+    auto options = full_pool_options(input.size(), {});
+    options.snapshot_delta_candidate_budget = 1;
+    EXPECT_EQ(initialize_lzss_sparse_hash_tree_match_finder(
+                  input, {}, {}, {}, finder, nullptr, options),
+              LzssSparseHashTreeMatchFinderError::invalid_parameters);
+    EXPECT_TRUE(finder.initialized());
+    EXPECT_TRUE(finder.state_valid());
+    EXPECT_EQ(finder.lifecycle_mode(),
+              LzssSparseHashTreeLifecycleMode::mutable_tree);
+    EXPECT_EQ(finder.input_size(), input.size());
+}
+
+TEST(LzssSparseHashTreeMatchFinder,
+     SnapshotDeltaBudgetMatchesExhaustiveAndDemotes) {
+    const auto input = bytes(
+        "AAAAAaAAAAAbAAAAAcAAAAAdAAAAAeAAAAAfAAAAAgAAAAAh"
+        "AAAAAaAAAAAbAAAAAcAAAAAdAAAAAeAAAAAfAAAAAgAAAAAh");
+    LzssParameters parameters{};
+    parameters.window_size = 40;
+    parameters.max_match_length = 6;
+    const auto options = snapshot_options(input.size(), parameters, 0, 1);
+    const auto required = calculate_lzss_sparse_hash_tree_workspace(
+        input.size(), parameters, {}, options.pool_node_capacity);
+    ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
+    auto storage = make_storage(required.workspace_size);
+    LzssMatchFinderStatistics statistics{};
+    LzssSparseHashTreeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_sparse_hash_tree_match_finder(
+                  input, parameters, {}, storage.bytes, finder,
+                  &statistics, options),
+              LzssSparseHashTreeMatchFinderError::none);
+    LzssExhaustiveMatchFinder exhaustive{input, parameters};
+
+    for (std::size_t position = 0; position <= input.size(); ++position) {
+        EXPECT_EQ(finder.find_match(position),
+                  exhaustive.find_match(position)) << position;
+        ASSERT_TRUE(finder.state_valid()) << position;
+        if (position != input.size()) {
+            finder.advance(position, position + 1U);
+            exhaustive.advance(position, position + 1U);
+            ASSERT_TRUE(finder.state_valid()) << position;
+        }
+    }
+    EXPECT_GT(
+        statistics.hash_tree_snapshot_delta_budget_query_count, 0U);
+    EXPECT_GT(
+        statistics.hash_tree_snapshot_delta_budget_breach_count, 0U);
+    EXPECT_EQ(
+        statistics.hash_tree_snapshot_delta_budget_breach_count,
+        statistics.hash_tree_snapshot_delta_budget_demotion_count);
+    EXPECT_GT(statistics.hash_tree_chain_query_count, 0U);
+    EXPECT_FALSE(statistics.overflowed);
 }
 
 TEST(LzssSparseHashTreeMatchFinder,

@@ -126,5 +126,8 @@ controller単体ゲートは2026-09-18に完了した。budget値はprivate cont
 `pool_rejected_chain`遷移、再昇格抑止、expirationとの優先順位、release failure atomicity、
 統計飽和をMSVCおよびClangCLで検証した。
 
-match finderからbudgetを選択する接続、differential、fuzz、benchmark、閾値固定および
-Silesia実験は未実施であり、後続の独立commit gateとする。
+private match finderからbudgetを選択する接続と、Exhaustive、HashChain、budget無効
+snapshot、budget有効snapshotのtyped-tokenおよびcanonical byte differentialは
+2026-09-18に完了した。mutable lifecycleでの非ゼロbudgetは初期化を置換せず拒否する。
+
+fuzz、benchmark、閾値固定およびSilesia実験は未実施であり、後続の独立commit gateとする。

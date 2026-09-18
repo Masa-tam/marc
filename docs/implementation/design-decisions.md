@@ -23139,3 +23139,23 @@ statistic and poisons the controller. Budget zero preserves the previous
 controller behavior. All added counters use the existing saturating-statistic
 contract, and the controller adds no workspace, allocation, format, ABI,
 profile, CLI, or public strategy change.
+
+## DD-1137: Snapshot delta budget is an explicit private lifecycle option
+
+- Date: 2026-09-18
+- Status: accepted
+
+Connect the controller budget through a trailing field in
+`LzssSparseHashTreeMatchFinderOptions`. Zero remains the default and preserves
+the previous immutable-snapshot behavior. A non-zero budget is valid only
+with the explicit `immutable_snapshot` lifecycle; reject it for the mutable
+lifecycle before replacing an existing finder. This prevents a silently
+ignored private experiment setting while preserving existing aggregate
+initializers.
+
+The typed parser must produce identical tokens and canonical serialized bytes
+for Exhaustive, HashChain, budget-disabled immutable snapshot, and budgeted
+immutable snapshot. Demotion diagnostics must be observable only for the
+budgeted path and must not change parsing decisions. This connection remains
+private and adds no workspace, format, ABI, CLI, profile, default, or public
+strategy change.

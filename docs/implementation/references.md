@@ -8293,3 +8293,14 @@ release protocol, node-pool release transaction, and
 derived only from those local contracts. No external compressor,
 circuit-breaker implementation, match finder, source code, pseudocode, tuning
 advice, benchmark result, or test suite was consulted.
+
+### IR-0906
+
+The private match-finder connection and differential gate use DD-1135 through
+DD-1137, IR-0904 and IR-0905, TVG-1000 and TVG-1001, CR-1241 and CR-1242,
+marc's repository-owned Sparse options and initializer, typed parser,
+Exhaustive reference parser, HashChain Exact parser, and canonical LZSS token
+serializer. The trailing option, lifecycle validation, and four-way identity
+checks were derived only from those local contracts. No external compressor,
+match finder, circuit breaker, source code, pseudocode, tuning advice,
+benchmark result, or test suite was consulted.

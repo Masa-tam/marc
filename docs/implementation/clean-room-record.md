@@ -31044,3 +31044,28 @@ both bounds.
   identity, terminal demotion, precedence, atomic failure, and saturation,
   pass under MSVC and ClangCL; the wider Sparse Hash Tree test family also
   passes under both compilers.
+
+## CR-1243: 2026-09-18 - Snapshot delta-budget differential connection
+
+- Authoring method: connected the completed controller only through marc's
+  private Sparse match-finder options and exercised the existing typed parser
+  and canonical serializer without changing their parsing rules.
+- References used: DD-1135 through DD-1137, IR-0904 through IR-0906,
+  TVG-1000 through TVG-1002, CR-1241 and CR-1242, and repository-owned
+  Exhaustive, HashChain, Sparse snapshot, typed-token, and serialization code.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, circuit breaker, source code, pseudocode, tuning advice,
+  benchmark result, or test suite.
+- Independent decisions: add the option as a trailing private field; reject a
+  non-zero budget outside immutable lifecycle; preserve failed-initialization
+  atomicity; and require four independent Exact representations to agree.
+- Generated-code task description: connect the private snapshot delta budget
+  to the match finder and prove Exact token and byte identity without adding a
+  public option, selecting a production threshold, fuzzing, or benchmarking.
+- Similarity review: the connection is one repository-owned initializer value
+  and the tests compose existing marc-owned parsers and serializer. No
+  external implementation expression was copied or translated.
+- Local validation: Sparse Hash Tree and typed encoder regression families,
+  including the four-way token/byte differential and lifecycle rejection,
+  pass under MSVC and ClangCL. The complete CTest suite also passes under both
+  compilers.

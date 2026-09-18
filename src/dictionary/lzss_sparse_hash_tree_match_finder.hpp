@@ -40,6 +40,7 @@ struct LzssSparseHashTreeMatchFinderOptions {
     std::uint8_t promotion_reuse_threshold{1};
     LzssSparseHashTreeLifecycleMode lifecycle_mode{
         LzssSparseHashTreeLifecycleMode::mutable_tree};
+    std::size_t snapshot_delta_candidate_budget{};
 };
 
 class LzssSparseHashTreeMatchFinder {

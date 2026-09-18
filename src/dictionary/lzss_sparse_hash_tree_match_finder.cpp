@@ -144,6 +144,11 @@ initialize_lzss_sparse_hash_tree_match_finder(
             != LzssSparseHashTreeLifecycleMode::immutable_snapshot) {
         return LzssSparseHashTreeMatchFinderError::invalid_parameters;
     }
+    if (options.snapshot_delta_candidate_budget != 0
+        && options.lifecycle_mode
+            != LzssSparseHashTreeLifecycleMode::immutable_snapshot) {
+        return LzssSparseHashTreeMatchFinderError::invalid_parameters;
+    }
     const auto required = calculate_lzss_sparse_hash_tree_workspace(
         input.size(), parameters, limits, options.pool_node_capacity,
         options.promotion_reuse_threshold);
@@ -190,7 +195,8 @@ initialize_lzss_sparse_hash_tree_match_finder(
             == LzssSparseHashTreeLifecycleMode::immutable_snapshot
         && required.bucket_count != 0) {
         initialize_lzss_sparse_hash_tree_snapshot_controller_state(
-            input.size(), required.bucket_count, initialized.snapshot_state_);
+            input.size(), required.bucket_count, initialized.snapshot_state_,
+            options.snapshot_delta_candidate_budget);
     }
     initialized.initialized_ = true;
     initialized.state_valid_ = true;

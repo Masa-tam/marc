@@ -1126,6 +1126,91 @@ TEST(LzssTypedEncoder,
 }
 
 TEST(LzssTypedEncoder,
+     SparseSnapshotDeltaBudgetMatchesExactTokensAndBytes) {
+    const auto input = bytes(
+        "AAAAAaAAAAAbAAAAAcAAAAAdAAAAAeAAAAAfAAAAAgAAAAAh"
+        "AAAAAaAAAAAbAAAAAcAAAAAdAAAAAeAAAAAfAAAAAgAAAAAh");
+    LzssParameters parameters{};
+    parameters.window_size = 40;
+    parameters.max_match_length = 6;
+    const auto plan = plan_lzss_typed_tokens(input, parameters, {});
+    ASSERT_EQ(plan.error, LzssTypedEncodeError::none);
+    std::vector<LzssTypedToken> reference(plan.token_count);
+    ASSERT_EQ(encode_lzss_typed_tokens(
+                  input, parameters, {}, reference).error,
+              LzssTypedEncodeError::none);
+
+    const auto hash_required = calculate_lzss_hash_chain_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(hash_required.error, LzssHashChainError::none);
+    AlignedWorkspace hash_owner(hash_required.workspace_size);
+    std::vector<LzssTypedToken> hash_tokens(input.size());
+    const auto hash_result =
+        encode_lzss_typed_tokens_hash_chain_single_pass(
+            input, parameters, {}, hash_tokens,
+            hash_owner.bytes(hash_required.workspace_size));
+    ASSERT_EQ(hash_result.error, LzssTypedEncodeError::none);
+    hash_tokens.resize(hash_result.token_count);
+
+    const auto capacity =
+        std::min<std::size_t>(input.size(), parameters.window_size);
+    const auto required = calculate_lzss_sparse_hash_tree_workspace(
+        input.size(), parameters, {}, capacity);
+    ASSERT_EQ(required.error, LzssSparseHashTreeError::none);
+
+    auto encode_snapshot = [&](const std::size_t budget,
+                               LzssMatchFinderStatistics& statistics) {
+        AlignedWorkspace owner(required.workspace_size);
+        std::vector<LzssTypedToken> tokens(input.size());
+        LzssSparseHashTreeMatchFinderOptions options{capacity, 0};
+        options.lifecycle_mode =
+            LzssSparseHashTreeLifecycleMode::immutable_snapshot;
+        options.snapshot_delta_candidate_budget = budget;
+        const auto result =
+            encode_lzss_typed_tokens_sparse_hash_tree_single_pass(
+                input, parameters, {}, tokens,
+                owner.bytes(required.workspace_size), options, &statistics);
+        EXPECT_EQ(result.error, LzssTypedEncodeError::none);
+        EXPECT_EQ(result.sparse_hash_tree_match_finder_error,
+                  LzssSparseHashTreeMatchFinderError::none);
+        tokens.resize(result.token_count);
+        return tokens;
+    };
+
+    LzssMatchFinderStatistics disabled_statistics{};
+    const auto disabled = encode_snapshot(0, disabled_statistics);
+    LzssMatchFinderStatistics budgeted_statistics{};
+    const auto budgeted = encode_snapshot(1, budgeted_statistics);
+
+    ASSERT_EQ(disabled.size(), reference.size());
+    ASSERT_EQ(budgeted.size(), reference.size());
+    ASSERT_EQ(hash_tokens.size(), reference.size());
+    for (std::size_t index = 0; index < reference.size(); ++index) {
+        EXPECT_TRUE(equal_token(hash_tokens[index], reference[index]))
+            << index;
+        EXPECT_TRUE(equal_token(disabled[index], reference[index])) << index;
+        EXPECT_TRUE(equal_token(budgeted[index], reference[index])) << index;
+    }
+    const auto reference_bytes = serialize_typed_tokens(reference);
+    EXPECT_EQ(serialize_typed_tokens(hash_tokens), reference_bytes);
+    EXPECT_EQ(serialize_typed_tokens(disabled), reference_bytes);
+    EXPECT_EQ(serialize_typed_tokens(budgeted), reference_bytes);
+    EXPECT_EQ(
+        disabled_statistics.hash_tree_snapshot_delta_budget_query_count,
+        0U);
+    EXPECT_GT(
+        budgeted_statistics.hash_tree_snapshot_delta_budget_query_count,
+        0U);
+    EXPECT_GT(
+        budgeted_statistics.hash_tree_snapshot_delta_budget_breach_count,
+        0U);
+    EXPECT_EQ(
+        budgeted_statistics.hash_tree_snapshot_delta_budget_breach_count,
+        budgeted_statistics.hash_tree_snapshot_delta_budget_demotion_count);
+    EXPECT_FALSE(budgeted_statistics.overflowed);
+}
+
+TEST(LzssTypedEncoder,
      SparseHashTreeImmutableSnapshotShortInputUsesCommonQueryPath) {
     const auto input = bytes("A");
     LzssSparseHashTreeMatchFinderOptions options{};
