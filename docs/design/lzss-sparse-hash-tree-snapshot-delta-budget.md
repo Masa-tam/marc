@@ -119,3 +119,12 @@ HashChain、予算なしimmutable snapshot、budgeted snapshotを同一member/wi
 HashChain採用条件を満たさない場合は引き続きprivateとする。改善がsnapshot比だけに留まる
 場合も、circuit breakerの構造的証拠として記録するに留める。
 
+## 9. 実装ゲートの状態
+
+controller単体ゲートは2026-09-18に完了した。budget値はprivate controller初期化引数にのみ
+存在し、0を既定としている。strict境界、trigger queryのExact一致、次advanceでの
+`pool_rejected_chain`遷移、再昇格抑止、expirationとの優先順位、release failure atomicity、
+統計飽和をMSVCおよびClangCLで検証した。
+
+match finderからbudgetを選択する接続、differential、fuzz、benchmark、閾値固定および
+Silesia実験は未実施であり、後続の独立commit gateとする。

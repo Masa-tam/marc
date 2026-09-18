@@ -50,6 +50,16 @@ void add_statistic(
             != context.workspace->bucket_node_counts().size()) {
         return false;
     }
+    const auto no_pending = state.pending_release_bucket()
+        == lzss_sparse_hash_tree_no_pending_snapshot_bucket;
+    if (no_pending
+            != (state.pending_release_reason()
+                == LzssSparseHashTreeSnapshotReleaseReason::none)
+        || (state.pending_release_reason()
+                == LzssSparseHashTreeSnapshotReleaseReason::delta_budget
+            && state.delta_candidate_budget() == 0)) {
+        return false;
+    }
     const auto expected_links = context.input.size()
             < lzss_match_finder_prefix_size
         ? 0U : std::min<std::size_t>(
@@ -139,13 +149,17 @@ struct LzssSparseHashTreeSnapshotControllerAccess {
     }
     static void set_pending(
         LzssSparseHashTreeSnapshotControllerState& state,
-        const std::size_t bucket) noexcept {
+        const std::size_t bucket,
+        const LzssSparseHashTreeSnapshotReleaseReason reason) noexcept {
         state.pending_release_bucket_ = bucket;
+        state.pending_release_reason_ = reason;
     }
     static void clear_pending(
         LzssSparseHashTreeSnapshotControllerState& state) noexcept {
         state.pending_release_bucket_ =
             lzss_sparse_hash_tree_no_pending_snapshot_bucket;
+        state.pending_release_reason_ =
+            LzssSparseHashTreeSnapshotReleaseReason::none;
     }
     static void set_next(
         LzssSparseHashTreeSnapshotControllerState& state,
@@ -172,10 +186,12 @@ void LzssSparseHashTreeSnapshotControllerState::mark_error(
 
 void initialize_lzss_sparse_hash_tree_snapshot_controller_state(
     const std::size_t input_size, const std::size_t bucket_count,
-    LzssSparseHashTreeSnapshotControllerState& state) noexcept {
+    LzssSparseHashTreeSnapshotControllerState& state,
+    const std::size_t delta_candidate_budget) noexcept {
     LzssSparseHashTreeSnapshotControllerState initialized{};
     initialized.input_size_ = input_size;
     initialized.bucket_count_ = bucket_count;
+    initialized.delta_candidate_budget_ = delta_candidate_budget;
     initialized.initialized_ = true;
     initialized.state_valid_ = bucket_count != 0
         && std::has_single_bit(bucket_count);
@@ -295,10 +311,28 @@ query_lzss_sparse_hash_tree_snapshot_controller_exact(
     result.snapshot_stale_subtrees_pruned =
         merged.snapshot_stale_subtrees_pruned;
     result.delta_candidates_visited = merged.delta_candidates_visited;
+    if (state.delta_candidate_budget() != 0) {
+        if (context.statistics != nullptr) {
+            increment_statistic(
+                context.statistics,
+                context.statistics
+                    ->hash_tree_snapshot_delta_budget_query_count);
+        }
+        result.delta_budget_exceeded = merged.delta_candidates_visited
+            > state.delta_candidate_budget();
+        if (result.delta_budget_exceeded && context.statistics != nullptr) {
+            context.statistics
+                ->hash_tree_snapshot_delta_budget_maximum_candidates_at_breach =
+                std::max(
+                    context.statistics
+                        ->hash_tree_snapshot_delta_budget_maximum_candidates_at_breach,
+                    merged.delta_candidates_visited);
+        }
+    }
     const auto window_begin = position > context.parameters.window_size
         ? position - context.parameters.window_size : 0U;
     result.snapshot_expired = merged.snapshot_watermark < window_begin;
-    if (result.snapshot_expired) {
+    if (result.snapshot_expired || result.delta_budget_exceeded) {
         const auto pending = state.pending_release_bucket();
         if (pending != lzss_sparse_hash_tree_no_pending_snapshot_bucket
             && pending != result.bucket) {
@@ -309,11 +343,24 @@ query_lzss_sparse_hash_tree_snapshot_controller_exact(
             return result;
         }
         if (pending == lzss_sparse_hash_tree_no_pending_snapshot_bucket) {
+            const auto reason = result.delta_budget_exceeded
+                ? LzssSparseHashTreeSnapshotReleaseReason::delta_budget
+                : LzssSparseHashTreeSnapshotReleaseReason::expiration;
             LzssSparseHashTreeSnapshotControllerAccess::set_pending(
-                state, result.bucket);
+                state, result.bucket, reason);
             if (context.statistics != nullptr) {
-                increment_statistic(context.statistics,
-                    context.statistics->hash_tree_snapshot_expiration_count);
+                if (reason
+                    == LzssSparseHashTreeSnapshotReleaseReason::delta_budget) {
+                    increment_statistic(
+                        context.statistics,
+                        context.statistics
+                            ->hash_tree_snapshot_delta_budget_breach_count);
+                } else {
+                    increment_statistic(
+                        context.statistics,
+                        context.statistics
+                            ->hash_tree_snapshot_expiration_count);
+                }
             }
         }
     }
@@ -346,6 +393,7 @@ advance_lzss_sparse_hash_tree_snapshot_controller(
 
     const auto pending = state.pending_release_bucket();
     if (pending != lzss_sparse_hash_tree_no_pending_snapshot_bucket) {
+        const auto release_reason = state.pending_release_reason();
         if (!valid_bucket_metadata(*context.workspace, pending)
             || context.workspace->modes()[pending]
                 != LzssSparseHashTreeBucketMode::promoted_tree) {
@@ -369,14 +417,24 @@ advance_lzss_sparse_hash_tree_snapshot_controller(
         }
         result.released_bucket = pending;
         result.released_node_count = released.released_node_count;
+        result.release_reason = release_reason;
         context.workspace->roots()[pending] = lzss_hash_tree_null_node;
         context.workspace->bucket_node_counts()[pending] = 0;
-        context.workspace->modes()[pending] =
-            LzssSparseHashTreeBucketMode::chain;
+        context.workspace->modes()[pending] = release_reason
+                == LzssSparseHashTreeSnapshotReleaseReason::delta_budget
+            ? LzssSparseHashTreeBucketMode::pool_rejected_chain
+            : LzssSparseHashTreeBucketMode::chain;
         LzssSparseHashTreeSnapshotControllerAccess::clear_pending(state);
         if (context.statistics != nullptr) {
             increment_statistic(context.statistics,
                 context.statistics->hash_tree_snapshot_bulk_release_count);
+            if (release_reason
+                == LzssSparseHashTreeSnapshotReleaseReason::delta_budget) {
+                increment_statistic(
+                    context.statistics,
+                    context.statistics
+                        ->hash_tree_snapshot_delta_budget_demotion_count);
+            }
         }
     }
 

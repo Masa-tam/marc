@@ -14579,3 +14579,21 @@ and separate fixed-experiment admission criteria to remain present.
 This documentation gate starts no benchmark and fixes no numeric budget. A
 later implementation gate must derive candidate values from deterministic
 synthetic evidence before any new Silesia result is observed.
+
+### TVG-1001
+
+Use a deterministic synthetic prefix-collision sequence to exercise the
+private immutable-snapshot controller with a non-empty delta interval. First
+measure the completed delta candidate count with budget zero. Recreate fresh
+fixtures with `count - 1`, `count`, and `count + 1` to prove strict breach
+semantics without choosing a production threshold.
+
+Require the breach fixture to return the same Exact match as the disabled
+fixture, schedule only one budget release across a repeated query, release all
+snapshot nodes on the next advance, enter `pool_rejected_chain`, and route the
+following query through the chain without re-promotion. Separately require
+budget precedence over simultaneous expiration, failure atomicity when
+snapshot release validation is corrupted, disabled-budget zero diagnostics,
+and checked counter saturation without changing the match. Run the controller
+suite and the wider Sparse Hash Tree regression family under both MSVC and
+ClangCL. This gate starts no Silesia benchmark and exposes no public option.

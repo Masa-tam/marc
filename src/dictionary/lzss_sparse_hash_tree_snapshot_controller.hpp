@@ -15,6 +15,12 @@ inline constexpr std::size_t
 lzss_sparse_hash_tree_no_pending_snapshot_bucket =
     std::numeric_limits<std::size_t>::max();
 
+enum class LzssSparseHashTreeSnapshotReleaseReason : std::uint8_t {
+    none,
+    expiration,
+    delta_budget,
+};
+
 enum class LzssSparseHashTreeSnapshotControllerError : std::uint8_t {
     none,
     invalid_context,
@@ -39,13 +45,20 @@ public:
     [[nodiscard]] std::size_t pending_release_bucket() const noexcept {
         return pending_release_bucket_;
     }
+    [[nodiscard]] LzssSparseHashTreeSnapshotReleaseReason
+    pending_release_reason() const noexcept {
+        return pending_release_reason_;
+    }
+    [[nodiscard]] std::size_t delta_candidate_budget() const noexcept {
+        return delta_candidate_budget_;
+    }
     [[nodiscard]] LzssSparseHashTreeSnapshotControllerError last_error()
         const noexcept { return last_error_; }
 
 private:
     friend void initialize_lzss_sparse_hash_tree_snapshot_controller_state(
         std::size_t, std::size_t,
-        LzssSparseHashTreeSnapshotControllerState&) noexcept;
+        LzssSparseHashTreeSnapshotControllerState&, std::size_t) noexcept;
     friend struct LzssSparseHashTreeSnapshotControllerAccess;
 
     void mark_error(
@@ -53,9 +66,12 @@ private:
 
     std::size_t input_size_{};
     std::size_t bucket_count_{};
+    std::size_t delta_candidate_budget_{};
     std::size_t next_position_{};
     std::size_t pending_release_bucket_{
         lzss_sparse_hash_tree_no_pending_snapshot_bucket};
+    LzssSparseHashTreeSnapshotReleaseReason pending_release_reason_{
+        LzssSparseHashTreeSnapshotReleaseReason::none};
     LzssSparseHashTreeSnapshotControllerError last_error_{
         LzssSparseHashTreeSnapshotControllerError::none};
     bool initialized_{};
@@ -69,6 +85,7 @@ struct LzssSparseHashTreeSnapshotControllerQueryResult {
     std::uint64_t snapshot_stale_subtrees_pruned{};
     std::uint64_t delta_candidates_visited{};
     bool snapshot_expired{};
+    bool delta_budget_exceeded{};
     LzssSparseHashTreeSnapshotControllerError error{
         LzssSparseHashTreeSnapshotControllerError::none};
     LzssSparseHashTreeControllerError chain_error{
@@ -83,6 +100,8 @@ struct LzssSparseHashTreeSnapshotControllerAdvanceResult {
     std::size_t released_bucket{
         lzss_sparse_hash_tree_no_pending_snapshot_bucket};
     std::size_t released_node_count{};
+    LzssSparseHashTreeSnapshotReleaseReason release_reason{
+        LzssSparseHashTreeSnapshotReleaseReason::none};
     LzssSparseHashTreeSnapshotControllerError error{
         LzssSparseHashTreeSnapshotControllerError::none};
     LzssSparseHashTreeControllerError promotion_error{
@@ -93,7 +112,8 @@ struct LzssSparseHashTreeSnapshotControllerAdvanceResult {
 
 void initialize_lzss_sparse_hash_tree_snapshot_controller_state(
     std::size_t input_size, std::size_t bucket_count,
-    LzssSparseHashTreeSnapshotControllerState& state) noexcept;
+    LzssSparseHashTreeSnapshotControllerState& state,
+    std::size_t delta_candidate_budget = 0) noexcept;
 
 [[nodiscard]] LzssSparseHashTreeSnapshotControllerQueryResult
 query_lzss_sparse_hash_tree_snapshot_controller_exact(

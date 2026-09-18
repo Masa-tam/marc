@@ -185,6 +185,11 @@ struct LzssMatchFinderStatistics {
     std::uint64_t hash_tree_snapshot_delta_query_count{};
     std::uint64_t hash_tree_snapshot_delta_candidate_count{};
     std::uint64_t hash_tree_snapshot_delta_maximum_candidates_per_query{};
+    std::uint64_t hash_tree_snapshot_delta_budget_query_count{};
+    std::uint64_t hash_tree_snapshot_delta_budget_breach_count{};
+    std::uint64_t hash_tree_snapshot_delta_budget_demotion_count{};
+    std::uint64_t
+        hash_tree_snapshot_delta_budget_maximum_candidates_at_breach{};
     std::uint64_t hash_tree_snapshot_promotion_count{};
     std::uint64_t hash_tree_snapshot_expiration_count{};
     std::uint64_t hash_tree_snapshot_bulk_release_count{};

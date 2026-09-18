@@ -31018,3 +31018,29 @@ both bounds.
   diagnostics. No external implementation expression was copied or translated.
 - Local validation: documentation layout and required-term validation are the
   only executable gates at this design stage.
+
+## CR-1242: 2026-09-18 - Snapshot delta-budget controller implementation
+
+- Authoring method: implemented the previously frozen controller contract by
+  extending marc's own pending-release state, exact merged-query diagnostics,
+  node-release transaction, and terminal chain mode.
+- References used: DD-1135 and DD-1136, IR-0904 and IR-0905, TVG-1000 and
+  TVG-1001, CR-1241, and the repository-owned Sparse immutable-snapshot code.
+- Known implementations intentionally not consulted: external compressor,
+  circuit breaker, match finder, source code, pseudocode, tuning advice,
+  benchmark result, or test suite.
+- Independent decisions: preserve full Exact evaluation on the triggering
+  query; represent release reason explicitly; count only the first pending
+  breach; make budget dominate simultaneous expiration; commit demotion only
+  after successful node release; and reuse `pool_rejected_chain` to prevent
+  frame-local re-promotion.
+- Generated-code task description: implement and test the private snapshot
+  delta-budget controller gate without connecting a public match-finder
+  option, selecting a numeric production budget, or starting a Corpus run.
+- Similarity review: all state transitions and tests compose marc-owned types,
+  helpers, and deterministic synthetic fixtures. No external implementation
+  expression was copied or translated.
+- Local validation: the controller tests, including strict boundaries, Exact
+  identity, terminal demotion, precedence, atomic failure, and saturation,
+  pass under MSVC and ClangCL; the wider Sparse Hash Tree test family also
+  passes under both compilers.

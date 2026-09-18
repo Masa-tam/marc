@@ -8282,3 +8282,14 @@ budget-over-expiration priority, next-advance release, and frame-local
 re-promotion suppression were derived only from those local interfaces and
 measurements. No external compressor, circuit-breaker implementation, match
 finder, source code, pseudocode, tuning advice, or test suite was consulted.
+
+### IR-0905
+
+The snapshot delta-budget controller implementation uses DD-1135 and DD-1136,
+IR-0904, TVG-1000, CR-1241, and marc's repository-owned immutable snapshot
+controller, Exact merged-query result, checked statistic helpers, pending
+release protocol, node-pool release transaction, and
+`pool_rejected_chain` terminal mode. The implementation and its tests were
+derived only from those local contracts. No external compressor,
+circuit-breaker implementation, match finder, source code, pseudocode, tuning
+advice, benchmark result, or test suite was consulted.

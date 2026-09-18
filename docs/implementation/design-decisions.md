@@ -23118,3 +23118,24 @@ dynamic allocation, and keep format, ABI, CLI, profiles, defaults, and public
 strategy selection unchanged. This first hypothesis addresses repeated
 92-billion-candidate delta work by converging to the measured HashChain
 baseline without introducing another maintenance structure.
+
+## DD-1136: Snapshot delta-budget controller preserves Exact query completion
+
+- Date: 2026-09-18
+- Status: accepted
+
+Implement the private circuit breaker entirely inside the immutable-snapshot
+controller. A non-zero budget counts every completed snapshot query that
+evaluates the policy. A strict budget breach records one pending
+`delta_budget` release reason only after the merged immutable-tree and delta
+query has returned its Exact match. Repeated queries of the same pending
+bucket remain valid but do not duplicate the breach event.
+
+The next valid advance releases all snapshot nodes before committing the
+existing `pool_rejected_chain` mode. Expiration-only release continues to
+commit `chain`; a simultaneous breach and expiration records only the budget
+reason. Validation or release failure commits neither demotion nor its
+statistic and poisons the controller. Budget zero preserves the previous
+controller behavior. All added counters use the existing saturating-statistic
+contract, and the controller adds no workspace, allocation, format, ABI,
+profile, CLI, or public strategy change.
