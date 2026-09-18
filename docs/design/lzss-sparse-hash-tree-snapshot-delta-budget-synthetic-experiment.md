@@ -43,10 +43,17 @@ runnerはnetwork、Corpusおよび乱数deviceを使用せず、profile
 5. `phase-shifted-periodic`: 4,096-byte blockごとに251-byte周期の位相を1進める。
 6. `fixed-seed-pseudorandom`: 固定seedの明記された64-bit generatorで生成する。
 
-正確なbyte生成式、seed、各fixtureのSHA-256はrunner実装ゲートでテストベクトルとして固定
-する。生成済みfixtureはrepositoryへ追加せず、ignoredなbuild/data領域へ一つずつ生成して
-検証する。checkpoint identityはgenerator source、profile、fixture名、sizeおよびdigestを
-含み、再開時に再生成byteと一致しなければならない。
+生成式は次のように固定する。`shared-prefix-records`のprefix byte `i`は
+`(i * 29 + 17) mod 251`、末尾は0始まりrecord番号のlittle-endian `uint64`とする。
+`prefix-collision-runs`はASCII unit
+`AAAAAaAAAAAbAAAAAcAAAAAdAAAAAeAAAAAfAAAAAgAAAAAh`を反復する。
+`phase-shifted-periodic`のblock `b`内position `i`は`(i + b) mod 251`とする。
+疑似乱数はseed `0x74d13a8e59c620bf`からxorshift64*のshift `12, 25, 27`と
+multiplier `2685821657736338717`を用い、各64-bit結果をlittle-endianで連結する。
+
+64 MiB fixtureのSHA-256はmanifestへ固定する。生成済みfixtureはrepositoryへ追加せず、
+ignoredなbuild/data領域へ一つずつ生成して検証する。checkpoint identityはgenerator source、
+profile、fixture名、sizeおよびdigestを含み、再開時に再生成byteと一致しなければならない。
 
 ## 4. 比較strategyとcanonical順序
 
@@ -109,3 +116,11 @@ final outputの競合を拒否する。
 runnerと単体テストが完成し、manifest validation、fixture identity、途中再開、改竄拒否、
 complete-grid再実行抑止およびshortlist規則を確認するまで実測を開始しない。合成resultのreview
 とcommitが完了するまでSilesia用manifestを作成しない。
+
+## 8. 実装ゲートの状態
+
+2026-09-19に決定的fixture generatorを実装した。6系列はcaller指定chunkへ分割して生成しても
+同一byte列となり、64 MiB全体のSHA-256をmanifestへ固定した。generatorは一つのfixtureを
+bounded chunkで生成し、一時fileのflushと同期後にatomic replaceする。network、Corpus、乱数
+deviceおよびfixture全体のmemory保持を使用しない。runner、checkpointおよびshortlist実装は
+後続の独立ゲートである。

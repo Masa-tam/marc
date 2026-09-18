@@ -8337,3 +8337,13 @@ diagnostics. Fixture classes, geometric budget candidates, canonical grid,
 and shortlist rule were derived independently from those local contracts. No
 external Corpus result, compressor, match finder, benchmark harness, tuning
 advice, source code, pseudocode, or test suite was consulted.
+
+### IR-0910
+
+The deterministic synthetic fixture generator uses DD-1140 and DD-1141,
+IR-0909, TVG-1005, CR-1246, the repository-owned benchmark smoke fixture,
+little-endian serialization rule, bounded chunk convention, and atomic JSON
+writer pattern. Stream formulas, seed, multiplier, output ordering, and fixed
+digests were selected and derived locally. No external Corpus, pseudorandom
+library, compressor, match finder, generator source code, pseudocode, tuning
+advice, benchmark result, or test suite was consulted.

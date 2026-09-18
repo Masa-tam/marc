@@ -31142,3 +31142,24 @@ both bounds.
   translated.
 - Local validation: JSON syntax and repository documentation layout are
   checked; execution remains a later independent gate.
+
+## CR-1247: 2026-09-19 - Snapshot delta synthetic fixture generator
+
+- Authoring method: translated the repository-owned fixture definitions into
+  bounded Python byte generators, streaming SHA-256, and atomic file output.
+- References used: DD-1140 and DD-1141, IR-0909 and IR-0910, TVG-1005 and
+  TVG-1006, CR-1246, plus marc's little-endian, bounded-memory, synthetic
+  smoke, and atomic-write conventions.
+- Known implementations intentionally not consulted: external Corpus,
+  pseudorandom library, compressor, match finder, generator source code,
+  pseudocode, tuning advice, benchmark result, or test suite.
+- Independent decisions: use arithmetic patterns and an explicitly specified
+  xorshift64* stream; preserve pending word bytes across arbitrary chunks;
+  atomically replace one bounded fixture; and fix six full-size digests.
+- Generated-code task description: implement and test deterministic fixture
+  identity without launching benchmark measurements or reading Silesia.
+- Similarity review: formulas and control flow were written from the local
+  design and ordinary arithmetic definitions. No external implementation
+  expression was copied or translated.
+- Local validation: hand-checkable prefixes, invalid requests, atomic output,
+  arbitrary chunking, and all six 64-MiB SHA-256 values pass.

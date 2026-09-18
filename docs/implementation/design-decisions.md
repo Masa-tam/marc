@@ -23232,3 +23232,23 @@ then smaller budget. Record HashChain performance but reserve its admission
 test for the later fixed Silesia experiment. This decision fixes the matrix
 and selection rule only; it neither executes the matrix nor selects a public
 budget.
+
+## DD-1141: Synthetic delta fixtures have streaming canonical generation
+
+- Date: 2026-09-19
+- Status: accepted
+
+Define six fixture byte streams independently of chunking and generate them in
+bounded caller-selected chunks. Fix arithmetic periodic, shared-prefix record,
+prefix-collision unit, phase-shifted periodic, and xorshift64* rules explicitly;
+the pseudorandom stream begins at seed `0x74d13a8e59c620bf`, applies shifts 12,
+25, and 27, multiplies by `2685821657736338717` modulo 2^64, and emits each
+word little-endian. No random device, network, external Corpus, or full-fixture
+memory buffer participates.
+
+Write a requested fixture through a sibling temporary file, flush and sync it,
+then atomically replace the destination. Fix the SHA-256 of every 64-MiB stream
+in both generator code and the inert manifest. Test hand-checkable prefixes,
+arbitrary chunk sizes including one byte, atomic file identity, invalid
+requests, and full-size digests. This gate establishes fixture identity only;
+it does not implement the experiment runner or perform timing.
