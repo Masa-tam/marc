@@ -31163,3 +31163,25 @@ both bounds.
   expression was copied or translated.
 - Local validation: hand-checkable prefixes, invalid requests, atomic output,
   arbitrary chunking, and all six 64-MiB SHA-256 values pass.
+
+## CR-1248: 2026-09-19 - Snapshot delta-budget synthetic runner
+
+- Authoring method: composed marc's strict manifest reader, deterministic
+  fixtures, benchmark report validators, Exact summaries, canonical-prefix
+  checkpoints, and fixed shortlist rule into one bounded orchestration tool.
+- References used: DD-1140 through DD-1142, IR-0909 through IR-0911,
+  TVG-1005 through TVG-1007, CR-1246 and CR-1247, and repository-owned
+  immutable snapshot and fixed experiment runner contracts.
+- Known implementations intentionally not consulted: external Corpus,
+  compressor, match finder, orchestration tool, tuning advice, source code,
+  pseudocode, benchmark result, or test suite.
+- Independent decisions: validate common snapshot fields through the existing
+  local validator; add demotion release conservation; key records by budget;
+  resume only canonical prefixes; and derive shortlist output mechanically.
+- Generated-code task description: implement and test the complete synthetic
+  runner without executing a timed point or accessing Silesia.
+- Similarity review: the runner composes only marc-owned helpers and contracts.
+  No external implementation expression was copied or translated.
+- Local validation: strict manifest, report mutation, checkpoint tamper,
+  interrupted child, resume, no-relaunch, shortlist, and real-fixture
+  zero-point smoke checks pass.

@@ -8347,3 +8347,14 @@ writer pattern. Stream formulas, seed, multiplier, output ordering, and fixed
 digests were selected and derived locally. No external Corpus, pseudorandom
 library, compressor, match finder, generator source code, pseudocode, tuning
 advice, benchmark result, or test suite was consulted.
+
+### IR-0911
+
+The synthetic delta-budget runner uses DD-1140 through DD-1142, IR-0909 and
+IR-0910, TVG-1005 and TVG-1006, CR-1246 and CR-1247, marc's repository-owned
+immutable snapshot validator, strict experiment runners, atomic checkpoint
+helpers, report parser, Exact summary, and deterministic fixture generator.
+Canonical indexing, release accounting, aggregation, and shortlist evaluation
+were derived only from those local contracts. No external Corpus, compressor,
+match finder, orchestration tool, tuning advice, source code, pseudocode,
+benchmark result, or test suite was consulted.

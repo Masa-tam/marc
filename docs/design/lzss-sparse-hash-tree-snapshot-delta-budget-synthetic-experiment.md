@@ -124,3 +124,10 @@ complete-grid再実行抑止およびshortlist規則を確認するまで実測�
 bounded chunkで生成し、一時fileのflushと同期後にatomic replaceする。network、Corpus、乱数
 deviceおよびfixture全体のmemory保持を使用しない。runner、checkpointおよびshortlist実装は
 後続の独立ゲートである。
+
+manifest-driven runnerも2026-09-19に実装した。manifestの完全一致、fixtureとtool identity、
+126点のcanonical prefix、Exact identity、budget/release会計、途中再開、失敗時の未append、
+既存final outputとの競合拒否およびcomplete-grid再起動抑止を固定した。最終resultはwindowごと
+に15 candidate比較を生成し、Section 6の規則だけで最大2 budgetをshortlistする。実fixtureと
+MSVC benchmarkを接続した0-point smokeは`progress=0/126`で完了し、benchmark測定を開始せず
+checkpoint identityを確定できることを確認した。完全126点の実測はまだ開始していない。

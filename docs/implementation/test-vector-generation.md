@@ -14688,3 +14688,19 @@ at periodic wrap, shared-record boundaries, collision-unit wrap, phase-block
 transition, and the first three pseudorandom words. Recompute all six full-size
 digests in the tooling test and compare the atomically written file with the
 streaming digest.
+
+### TVG-1007
+
+Build a six-fixture, three-window, seven-strategy canonical grid and require
+exactly 126 records. Unit reports use the same five Exact summary fields and
+valid immutable-snapshot accounting while assigning distinct deterministic
+times to all five budgets; this makes budget 256 rank first and 1,024 second
+for every window under the fixed shortlist rule.
+
+Stop a first invocation after four points, resume exactly 122 points, and then
+rerun the completed checkpoint while requiring zero child launches. Reject
+reordered, missing-control, duplicate, overlong, or identity-changed checkpoint
+records. A child failure must leave the canonical prefix unchanged, and a
+premature final output must prevent any launch. Connect all six full-size
+fixtures and the real benchmark in zero-new-point mode to validate manifest,
+digests, tool identity, and `progress=0/126` without performing timing.

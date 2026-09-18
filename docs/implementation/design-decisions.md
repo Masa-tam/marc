@@ -23252,3 +23252,24 @@ in both generator code and the inert manifest. Test hand-checkable prefixes,
 arbitrary chunk sizes including one byte, atomic file identity, invalid
 requests, and full-size digests. This gate establishes fixture identity only;
 it does not implement the experiment runner or perform timing.
+
+## DD-1142: Synthetic delta-budget execution is canonical and resumable
+
+- Date: 2026-09-19
+- Status: accepted
+
+Implement one manifest-driven runner whose canonical key is fixture, window,
+strategy, and budget. Execute HashChain, unbudgeted immutable snapshot, then
+five ascending budgets for each of six fixtures and three windows. Validate
+each child report and Exact identity before atomically appending it to the
+checkpoint; a failed child contributes no record. Resume only a completely
+validated canonical prefix and never relaunch a completed point.
+
+Reuse the completed immutable-snapshot report validator for common fields.
+For budgeted reports additionally require configured budget identity, budget
+queries equal snapshot queries, breaches equal successful demotions, bulk
+releases equal expiration plus demotion, and a strict-above-budget maximum for
+positive breaches. Produce aggregate comparisons and a per-window shortlist
+only after all 126 records exist. The runner performs no network or Silesia
+access and a zero-new-point mode must validate identity without launching the
+benchmark.
