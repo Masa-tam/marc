@@ -165,7 +165,8 @@ void run_differential_trace(
     const LzssParameters& parameters,
     const bool token_boundaries,
     DifferentialResult& result,
-    const std::uint64_t promotion_threshold = 0) {
+    const std::uint64_t promotion_threshold = 0,
+    const std::size_t delta_candidate_budget = 0) {
     const auto pool_capacity = std::min<std::size_t>(
         input.size(), parameters.window_size);
     const auto sparse_required =
@@ -183,7 +184,8 @@ void run_differential_trace(
 
     LzssSparseHashTreeSnapshotControllerState controller{};
     initialize_lzss_sparse_hash_tree_snapshot_controller_state(
-        input.size(), sparse_workspace.heads().size(), controller);
+        input.size(), sparse_workspace.heads().size(), controller,
+        delta_candidate_budget);
     LzssHashTreePromotionState promotion{};
     initialize_lzss_hash_tree_promotion_state(
         sparse_workspace.heads().size(), promotion_threshold, promotion);
@@ -386,6 +388,65 @@ TEST(LzssSparseHashTreeSnapshotFuzzRegression,
 }
 
 TEST(LzssSparseHashTreeSnapshotFuzzRegression,
+     FixedSeedBudgetedTracesRemainExactAndTerminate) {
+    DeterministicGenerator generator{UINT64_C(0x74d13a8e59c620bf)};
+    std::array<std::size_t, 4> family_counts{};
+    std::array<std::size_t, 2> boundary_counts{};
+    std::uint64_t total_budget_queries{};
+    std::uint64_t total_breaches{};
+    for (std::size_t trial = 0; trial < 192; ++trial) {
+        LzssParameters parameters{};
+        parameters.window_size = static_cast<std::uint32_t>(
+            8U + generator.bounded(89));
+        parameters.min_match_length = static_cast<std::uint32_t>(
+            5U + generator.bounded(4));
+        parameters.max_match_length = parameters.min_match_length
+            + static_cast<std::uint32_t>(generator.bounded(28));
+        const auto input_size = lzss_match_finder_prefix_size
+            + generator.bounded(382);
+        const auto family = generator.bounded(family_counts.size());
+        ++family_counts[family];
+        const auto input = generated_input(generator, input_size, family);
+        const auto token_boundaries = generator.bounded(2) != 0;
+        ++boundary_counts[token_boundaries ? 1U : 0U];
+        const auto promotion_threshold = generator.bounded(17);
+        const auto budget = 1U + generator.bounded(32);
+
+        DifferentialResult result{};
+        SCOPED_TRACE(trial);
+        run_differential_trace(
+            input, parameters, token_boundaries, result,
+            promotion_threshold, budget);
+        if (token_boundaries) {
+            EXPECT_EQ(result.token_count,
+                      result.literal_count + result.match_count);
+            EXPECT_EQ(input.size(),
+                      result.literal_count + result.matched_bytes);
+        } else {
+            EXPECT_EQ(result.query_count, input.size());
+        }
+        EXPECT_EQ(
+            result.statistics.hash_tree_snapshot_delta_budget_breach_count,
+            result.statistics.hash_tree_snapshot_delta_budget_demotion_count);
+        if (result.statistics
+                .hash_tree_snapshot_delta_budget_breach_count != 0) {
+            EXPECT_GT(
+                result.statistics
+                    .hash_tree_snapshot_delta_budget_maximum_candidates_at_breach,
+                budget);
+        }
+        total_budget_queries += result.statistics
+            .hash_tree_snapshot_delta_budget_query_count;
+        total_breaches += result.statistics
+            .hash_tree_snapshot_delta_budget_breach_count;
+    }
+    for (const auto count : family_counts) EXPECT_GT(count, 0U);
+    for (const auto count : boundary_counts) EXPECT_GT(count, 0U);
+    EXPECT_GT(total_budget_queries, 0U);
+    EXPECT_GT(total_breaches, 0U);
+}
+
+TEST(LzssSparseHashTreeSnapshotFuzzRegression,
      GeneratedMetadataAndProtocolMutationsFailWithoutWorkspaceWrites) {
     DeterministicGenerator generator{UINT64_C(0x1f2e3d4c5b6a7988)};
     std::array<std::size_t, 4> mutation_counts{};
@@ -413,7 +474,8 @@ TEST(LzssSparseHashTreeSnapshotFuzzRegression,
             << trial;
         LzssSparseHashTreeSnapshotControllerState state{};
         initialize_lzss_sparse_hash_tree_snapshot_controller_state(
-            input.size(), workspace.heads().size(), state);
+            input.size(), workspace.heads().size(), state,
+            1U + generator.bounded(32));
         LzssMatchFinderStatistics statistics{};
         const LzssSparseHashTreePositionContext context{
             input, parameters, &workspace, &statistics, nullptr};

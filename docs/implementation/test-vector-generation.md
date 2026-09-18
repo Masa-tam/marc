@@ -14615,3 +14615,22 @@ demotion. Reject a non-zero budget with mutable lifecycle atomically, leaving
 an already initialized finder unchanged. Run the Sparse Hash Tree and typed
 encoder regression families under both MSVC and ClangCL. Start no fuzzing or
 Corpus benchmark in this gate.
+
+### TVG-1003
+
+Use fixed generator seed `0x74d13a8e59c620bf` for 192 bounded budgeted
+snapshot differential trials. Generate four input families, both one-byte and
+token-boundary advancement, input extents below 386 bytes, windows from 8
+through 96 bytes, bounded match lengths, promotion thresholds from 0 through
+16, and positive delta budgets from 1 through 32 candidates.
+
+For every query require equality with Exhaustive and HashChain Exact oracles,
+valid controller completion, no mutable-tree insertion or retirement, no
+counter overflow, and consistent token accounting when token boundaries are
+selected. At the end of each trial require breach count to equal successful
+demotion count; a positive breach must record a maximum candidate count above
+that trial's budget. Require all input and boundary families to occur and at
+least one budget query and breach globally. Also rerun the existing 96 fixed
+metadata/protocol mutations with positive budgets and retain sticky failure
+without workspace writes. Execute all three deterministic fuzz regressions ten
+consecutive times under MSVC and ClangCL.

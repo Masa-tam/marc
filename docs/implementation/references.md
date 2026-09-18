@@ -8304,3 +8304,14 @@ serializer. The trailing option, lifecycle validation, and four-way identity
 checks were derived only from those local contracts. No external compressor,
 match finder, circuit breaker, source code, pseudocode, tuning advice,
 benchmark result, or test suite was consulted.
+
+### IR-0907
+
+The snapshot delta-budget deterministic fuzz gate uses DD-1135 through
+DD-1138, IR-0904 through IR-0906, TVG-1000 through TVG-1002, CR-1241 through
+CR-1243, and marc's repository-owned fixed-seed snapshot differential and
+mutation harness. Budget generation, termination checks, dual Exact-oracle
+comparison, and diagnostic invariants were derived only from those local
+contracts. No external compressor, fuzzer corpus, fuzz harness, match finder,
+source code, pseudocode, tuning advice, benchmark result, or test suite was
+consulted.

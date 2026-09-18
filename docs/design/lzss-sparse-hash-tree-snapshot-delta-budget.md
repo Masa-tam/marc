@@ -130,4 +130,8 @@ private match finderからbudgetを選択する接続と、Exhaustive、HashChai
 snapshot、budget有効snapshotのtyped-tokenおよびcanonical byte differentialは
 2026-09-18に完了した。mutable lifecycleでの非ゼロbudgetは初期化を置換せず拒否する。
 
-fuzz、benchmark、閾値固定およびSilesia実験は未実施であり、後続の独立commit gateとする。
+固定seed、有限反復、bounded inputによるdifferential fuzz regressionは2026-09-18に
+完了した。全queryをExhaustiveおよびHashChain Exactと比較し、完了時のbreach/demotion
+保存、停止性、metadata/protocol error時のworkspace非変更をMSVCおよびClangCLで検証した。
+
+benchmark、閾値固定およびSilesia実験は未実施であり、後続の独立commit gateとする。

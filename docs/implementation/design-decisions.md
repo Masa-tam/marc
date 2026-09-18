@@ -23159,3 +23159,22 @@ immutable snapshot. Demotion diagnostics must be observable only for the
 budgeted path and must not change parsing decisions. This connection remains
 private and adds no workspace, format, ABI, CLI, profile, default, or public
 strategy change.
+
+## DD-1138: Snapshot delta-budget fuzzing is fixed-seed and bounded
+
+- Date: 2026-09-18
+- Status: accepted
+
+Extend the existing deterministic immutable-snapshot differential harness
+rather than introducing an unbounded fuzz process. For each fixed-seed trial,
+choose a bounded positive delta budget together with bounded input length,
+window, match lengths, promotion threshold, input family, and advancement
+mode. Every query must complete and agree with both Exhaustive and HashChain
+Exact oracles before any maintenance transition is committed.
+
+At completed input, require each first breach to have a matching successful
+demotion and require any recorded breach maximum to be strictly above that
+trial's budget. Reuse the fixed metadata/protocol mutation suite with positive
+budgets and preserve its no-workspace-write failure contract. Keep all loops,
+sizes, seeds, and counters deterministic and bounded; this gate performs no
+Corpus access, threshold tuning, random-device use, or public API change.

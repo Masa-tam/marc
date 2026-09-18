@@ -31069,3 +31069,27 @@ both bounds.
   including the four-way token/byte differential and lifecycle rejection,
   pass under MSVC and ClangCL. The complete CTest suite also passes under both
   compilers.
+
+## CR-1244: 2026-09-18 - Snapshot delta-budget deterministic fuzz regression
+
+- Authoring method: parameterized marc's existing bounded snapshot
+  differential harness with a private budget and added a separate fixed-seed
+  trial set plus positive-budget protocol mutations.
+- References used: DD-1135 through DD-1138, IR-0904 through IR-0907,
+  TVG-1000 through TVG-1003, CR-1241 through CR-1243, and the repository-owned
+  deterministic generator, Exact oracles, and mutation assertions.
+- Known implementations intentionally not consulted: external compressor,
+  fuzzer corpus, fuzz harness, match finder, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: retain fixed seeds and finite loops; vary bounded
+  budgets independently per trial; compare every query before maintenance;
+  require breach/demotion conservation at completion; and reuse the existing
+  failure-without-write mutation contract.
+- Generated-code task description: add deterministic budget state-transition
+  fuzz regression without running an unbounded fuzzer, accessing Silesia,
+  selecting a production threshold, or changing a public interface.
+- Similarity review: the changes parameterize only marc-owned generators,
+  controller calls, oracle comparisons, and diagnostics. No external
+  implementation expression was copied or translated.
+- Local validation: all three snapshot fuzz regressions pass ten consecutive
+  times under MSVC and ClangCL.
