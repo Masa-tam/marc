@@ -49,6 +49,8 @@ navigate chronological development records.
 - [LZSS Sparse HashTree snapshot delta budget](design/lzss-sparse-hash-tree-snapshot-delta-budget.md):
   exact post-query circuit breaker that demotes an over-budget immutable
   snapshot bucket to the existing HashChain path.
+- [LZSS Sparse HashTree snapshot delta budget synthetic experiment](design/lzss-sparse-hash-tree-snapshot-delta-budget-synthetic-experiment.md):
+  fixed 126-point synthetic matrix and mechanical pre-Silesia shortlist rule.
 - [LZSS BinaryTree Exact 16 MiB benchmark](design/lzss-binary-tree-window-16m-benchmark.md):
   bounded Silesia comparison of the global AVL and HashChain strategies.
 - [Silesia external benchmark profile](design/silesia-benchmark-profile.md):

@@ -1,0 +1,73 @@
+{
+  "schema": "marc-benchmark-experiment-manifest-v1",
+  "experiment": "lzss-sparse-snapshot-delta-budget-synthetic-v1",
+  "result_schema": "marc-lzss-sparse-snapshot-delta-budget-synthetic-v1",
+  "checkpoint_schema": "marc-lzss-sparse-snapshot-delta-budget-synthetic-checkpoint-v1",
+  "fixtures": {
+    "profile": "marc-lzss-snapshot-delta-synthetic-v1",
+    "bytes_per_fixture": 67108864,
+    "names": [
+      "zeros",
+      "periodic-251",
+      "shared-prefix-records",
+      "prefix-collision-runs",
+      "phase-shifted-periodic",
+      "fixed-seed-pseudorandom"
+    ]
+  },
+  "execution": {
+    "iterations": 1,
+    "frame_bytes": 67108864,
+    "max_internal_buffered_bytes": 536870912,
+    "process_isolation": "one-record-per-child",
+    "checkpoint_after_records": 1
+  },
+  "matrix": {
+    "window_bytes": [4194304, 16777216, 67108864],
+    "baseline_strategy": "hash-chain-exact",
+    "unbudgeted_strategy": "sparse-hash-tree-immutable-snapshot-exact",
+    "candidate_strategy": "sparse-hash-tree-snapshot-delta-budget-exact",
+    "pool_node_capacity": 4096,
+    "promotion_candidate_threshold": 64,
+    "promotion_reuse_threshold": 16,
+    "delta_candidate_budgets": [16, 64, 256, 1024, 4096],
+    "canonical_order": ["fixture", "window", "baseline", "unbudgeted", "budget"],
+    "expected_record_count": 126
+  },
+  "expected_workspace_bytes": {
+    "hash-chain-exact": {
+      "4194304": 17301504,
+      "16777216": 67633152,
+      "67108864": 268959744
+    },
+    "immutable-snapshot": {
+      "4194304": 17780736,
+      "16777216": 68112384,
+      "67108864": 269438976
+    }
+  },
+  "exact_identity_fields": [
+    "token_count",
+    "literal_count",
+    "match_count",
+    "matched_bytes",
+    "token_fingerprint_sha256"
+  ],
+  "shortlist": {
+    "exclude_from_breach_coverage": "fixed-seed-pseudorandom",
+    "minimum_breaching_structured_fixtures": 2,
+    "candidate_to_unbudgeted_aggregate_ratio": {
+      "operator": ">",
+      "value": 1.0
+    },
+    "workspace_to_hash_chain_ratio": {
+      "operator": "<=",
+      "value": 1.1
+    },
+    "maximum_candidates_per_window": 2,
+    "ranking": [
+      "candidate_to_unbudgeted_aggregate_ratio_descending",
+      "delta_candidate_budget_ascending"
+    ]
+  }
+}

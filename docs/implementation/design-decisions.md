@@ -23205,3 +23205,30 @@ also require equal immutable-snapshot workspace and reject zero budget,
 missing limits, and budget arguments supplied to the old strategy. This gate
 fixes observability and CLI validation only; it does not access Silesia,
 select a production threshold, change a public strategy, or alter the format.
+
+## DD-1140: Delta-budget candidates are narrowed by a fixed synthetic matrix
+
+- Date: 2026-09-19
+- Status: accepted
+
+Before any Silesia access, freeze a manifest-driven 126-record experiment over
+six deterministic 64-MiB fixtures, 4-, 16-, and 64-MiB windows, HashChain,
+budget-disabled immutable snapshot, and candidate budgets 16, 64, 256, 1,024,
+and 4,096. Retain pool 4,096, promotion threshold 64, reuse threshold 16, one
+measured iteration after an untimed validation pass, and a 512-MiB aggregate
+limit from the completed immutable-snapshot evidence.
+
+Run one record per child process from a single runner invocation and save each
+validated canonical-prefix record atomically. Bind deterministic fixture
+identity, manifest bytes and digest, executable and tool digests, revision, and
+environment into the checkpoint. Do not redistribute generated fixtures or
+accept a checkpoint whose identity changed.
+
+Require Exact identity and controller-accounting validity at every point.
+For each window, shortlist at most two budgets that breach on at least two of
+five structured fixtures, beat the budget-disabled snapshot in aggregate, and
+retain workspace no greater than 1.10 times HashChain. Rank by aggregate gain
+then smaller budget. Record HashChain performance but reserve its admission
+test for the later fixed Silesia experiment. This decision fixes the matrix
+and selection rule only; it neither executes the matrix nor selects a public
+budget.

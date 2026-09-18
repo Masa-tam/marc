@@ -14651,3 +14651,20 @@ report identical workspace. In separate negative invocations, reject a zero
 budget, a missing aggregate workspace limit, and a budget supplied to the
 budget-disabled snapshot strategy. The fixture is synthetic and bounded; do
 not read Silesia or derive a production threshold from this smoke test.
+
+### TVG-1005
+
+Freeze the inert synthetic experiment manifest with six repository-generated
+64-MiB fixture identities, windows 4, 16, and 64 MiB, HashChain and unbudgeted
+snapshot controls, and budgets 16, 64, 256, 1,024, and 4,096. The resulting
+canonical grid contains 126 records ordered by fixture, window, control, and
+ascending budget. No fixture bytes are committed.
+
+The later runner must freeze exact generation formulas, a fixed pseudorandom
+seed, and SHA-256 for every fixture before timing. It must require the five
+Exact identity fields across each seven-record group, equal workspace for both
+snapshot forms, complete query/release diagnostics, and one-record atomic
+checkpointing. Unit tests must cover strict manifest equality, deterministic
+fixture digests, canonical-prefix resume, tamper rejection, completed-grid
+no-relaunch behavior, and mechanical per-window shortlist ordering without
+accessing Silesia.

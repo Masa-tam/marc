@@ -13,3 +13,8 @@ are errors. Editing a manifest therefore cannot resume an earlier checkpoint.
 
 Corpus files, checkpoints, and results remain under the ignored
 `benchmarks/data/silesia/` directories and are not redistributed.
+
+Synthetic experiment manifests use the same inert contract but replace the
+external Corpus profile with a repository-defined deterministic generator
+profile. Generated fixture bytes, checkpoints, and results remain ignored and
+are not distributed.

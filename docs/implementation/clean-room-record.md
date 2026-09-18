@@ -31118,3 +31118,27 @@ both bounds.
   implementation expression was copied or translated.
 - Local validation: the deterministic benchmark smoke passes under MSVC and
   ClangCL with breach/demotion conservation and exact control fingerprints.
+
+## CR-1246: 2026-09-19 - Snapshot delta-budget synthetic experiment design
+
+- Authoring method: composed marc's inert experiment-manifest, process
+  isolation, atomic checkpoint, synthetic-input, Exact fingerprint, and
+  private delta-budget report contracts into a pre-Silesia experiment.
+- References used: DD-1135 through DD-1140, IR-0904 through IR-0909,
+  TVG-1000 through TVG-1005, CR-1241 through CR-1245, and repository-owned
+  immutable-snapshot experiment parameters and runner conventions.
+- Known implementations intentionally not consulted: external Corpus result,
+  compressor, match finder, benchmark harness, tuning advice, source code,
+  pseudocode, or test suite.
+- Independent decisions: freeze five geometric positive budgets; use six
+  deterministic local fixture classes and three large windows; checkpoint
+  every isolated record; and mechanically shortlist at most two candidates
+  per window before defining any Silesia manifest.
+- Generated-code task description: specify the bounded synthetic matrix and
+  inert manifest without executing benchmarks, reading Silesia, choosing a
+  threshold, or changing a public interface.
+- Similarity review: the design composes only marc-owned experiment and
+  benchmark vocabulary. No external implementation expression was copied or
+  translated.
+- Local validation: JSON syntax and repository documentation layout are
+  checked; execution remains a later independent gate.

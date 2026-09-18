@@ -8326,3 +8326,14 @@ smoke conventions. The strategy syntax, diagnostics, control comparisons, and
 invalid-argument checks were derived only from those local contracts. No
 external compressor, match finder, benchmark harness, Corpus measurement,
 threshold advice, source code, pseudocode, or test suite was consulted.
+
+### IR-0909
+
+The snapshot delta-budget synthetic experiment design uses DD-1135 through
+DD-1140, IR-0904 through IR-0908, TVG-1000 through TVG-1004, CR-1241 through
+CR-1245, marc's repository-owned manifest/checkpoint conventions, prior fixed
+immutable-snapshot parameters, Exact token fingerprint, and benchmark report
+diagnostics. Fixture classes, geometric budget candidates, canonical grid,
+and shortlist rule were derived independently from those local contracts. No
+external Corpus result, compressor, match finder, benchmark harness, tuning
+advice, source code, pseudocode, or test suite was consulted.
