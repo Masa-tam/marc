@@ -23178,3 +23178,30 @@ trial's budget. Reuse the fixed metadata/protocol mutation suite with positive
 budgets and preserve its no-workspace-write failure contract. Keep all loops,
 sizes, seeds, and counters deterministic and bounded; this gate performs no
 Corpus access, threshold tuning, random-device use, or public API change.
+
+## DD-1139: Snapshot delta-budget benchmark selection is explicit and private
+
+- Date: 2026-09-19
+- Status: accepted
+
+Expose the snapshot delta-budget controller to the repository-owned match
+finder benchmark under the private strategy name
+`sparse-hash-tree-snapshot-delta-budget-exact`. Permit it only in the bounded
+frames-limited mode and require an explicit positive candidate budget before
+the existing aggregate workspace limit. Do not assign a default or infer a
+budget from input, window, Corpus member, or prior measurements.
+
+Report the configured budget, budget-query count, breach count, successful
+demotion count, and maximum candidates observed at a breach. A valid completed
+run requires one budget evaluation for each snapshot query, breach and
+demotion conservation, zero mutable-tree insertion and retirement, correct
+bulk-release accounting, and a recorded breach maximum strictly above the
+budget whenever a breach occurred.
+
+The deterministic smoke fixture must force at least one breach and demotion,
+then require identical token count and canonical token fingerprint against
+both HashChain Exact and budget-disabled immutable snapshot controls. It must
+also require equal immutable-snapshot workspace and reject zero budget,
+missing limits, and budget arguments supplied to the old strategy. This gate
+fixes observability and CLI validation only; it does not access Silesia,
+select a production threshold, change a public strategy, or alter the format.

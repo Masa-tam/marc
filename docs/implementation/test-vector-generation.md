@@ -14634,3 +14634,20 @@ least one budget query and breach globally. Also rerun the existing 96 fixed
 metadata/protocol mutations with positive budgets and retain sticky failure
 without workspace writes. Execute all three deterministic fuzz regressions ten
 consecutive times under MSVC and ClangCL.
+
+### TVG-1004
+
+Generate a deterministic repeated prefix-collision fixture locally in the
+build tree and run the private delta-budget strategy in frames-limited mode
+with one 1,024-byte frame, window 40, maximum match length 40, promotion
+threshold 0, reuse limit 1, and delta candidate budget 1. Require positive
+budget-query, breach, and successful-demotion counts; breach must equal
+demotion and the maximum candidates at breach must exceed one.
+
+Run budget-disabled immutable snapshot and HashChain Exact controls over the
+same bytes and limits. Require all three runs to report identical token count
+and SHA-256 canonical token fingerprint, and require the two snapshot runs to
+report identical workspace. In separate negative invocations, reject a zero
+budget, a missing aggregate workspace limit, and a budget supplied to the
+budget-disabled snapshot strategy. The fixture is synthetic and bounded; do
+not read Silesia or derive a production threshold from this smoke test.

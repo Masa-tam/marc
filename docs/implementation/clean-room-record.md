@@ -31093,3 +31093,28 @@ both bounds.
   implementation expression was copied or translated.
 - Local validation: all three snapshot fuzz regressions pass ten consecutive
   times under MSVC and ClangCL.
+
+## CR-1245: 2026-09-19 - Snapshot delta-budget private benchmark contract
+
+- Authoring method: extended marc's existing frames-limited match-finder
+  benchmark with an explicit private strategy, a positive budget argument,
+  controller diagnostics, and a deterministic synthetic smoke fixture.
+- References used: DD-1135 through DD-1139, IR-0904 through IR-0908,
+  TVG-1000 through TVG-1004, CR-1241 through CR-1244, and the
+  repository-owned benchmark, Exact fingerprint, workspace, and CMake smoke
+  contracts.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, benchmark harness, Corpus measurement, threshold advice,
+  source code, pseudocode, or test suite.
+- Independent decisions: keep the strategy frames-limited and private;
+  require an explicit positive budget; report transition diagnostics; force a
+  breach with synthetic data; and compare identity and workspace with both
+  HashChain and budget-disabled snapshot controls.
+- Generated-code task description: add and validate the private benchmark
+  observation boundary without measuring Silesia, selecting a production
+  threshold, changing a public strategy, or altering the stream format.
+- Similarity review: the changes compose only marc-owned CLI parsing,
+  statistics, fingerprint, workspace, and CMake test patterns. No external
+  implementation expression was copied or translated.
+- Local validation: the deterministic benchmark smoke passes under MSVC and
+  ClangCL with breach/demotion conservation and exact control fingerprints.

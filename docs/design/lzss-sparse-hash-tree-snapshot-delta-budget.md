@@ -134,4 +134,12 @@ snapshot、budget有効snapshotのtyped-tokenおよびcanonical byte differentia
 完了した。全queryをExhaustiveおよびHashChain Exactと比較し、完了時のbreach/demotion
 保存、停止性、metadata/protocol error時のworkspace非変更をMSVCおよびClangCLで検証した。
 
-benchmark、閾値固定およびSilesia実験は未実施であり、後続の独立commit gateとする。
+private benchmark接続は2026-09-19に完了した。frames-limited modeだけで使用できる明示的な
+`sparse-hash-tree-snapshot-delta-budget-exact` strategyと正のbudget引数を追加し、budget値、
+query、breach、demotionおよびbreach時最大候補数をreportする。固定合成fixtureのsmokeは、
+breachとdemotionを必ず発生させ、HashChainおよびbudget無効snapshotとのtoken count、
+canonical token fingerprint、workspace一致を要求する。0 budget、引数欠落、および従来の
+budget無効strategyへの余分なbudget指定はCorpusへ触れる前に拒否する。
+
+このbenchmark gateはcontroller遷移の観測契約だけを固定する。production budget、合成入力の
+閾値候補、およびSilesia実験は未決定・未実施であり、後続の独立commit gateとする。

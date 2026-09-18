@@ -50,6 +50,7 @@ enum class BenchmarkStrategy : std::uint8_t {
     sparse_hash_tree_exact,
     sparse_hash_tree_reuse_gated_exact,
     sparse_hash_tree_immutable_snapshot_exact,
+    sparse_hash_tree_snapshot_delta_budget_exact,
 };
 
 [[nodiscard]] bool parse_strategy(
@@ -73,6 +74,9 @@ enum class BenchmarkStrategy : std::uint8_t {
     } else if (text == "sparse-hash-tree-immutable-snapshot-exact") {
         strategy =
             BenchmarkStrategy::sparse_hash_tree_immutable_snapshot_exact;
+    } else if (text == "sparse-hash-tree-snapshot-delta-budget-exact") {
+        strategy =
+            BenchmarkStrategy::sparse_hash_tree_snapshot_delta_budget_exact;
     } else {
         return false;
     }
@@ -96,6 +100,8 @@ enum class BenchmarkStrategy : std::uint8_t {
         return "sparse-hash-tree-reuse-gated-exact";
     case BenchmarkStrategy::sparse_hash_tree_immutable_snapshot_exact:
         return "sparse-hash-tree-immutable-snapshot-exact";
+    case BenchmarkStrategy::sparse_hash_tree_snapshot_delta_budget_exact:
+        return "sparse-hash-tree-snapshot-delta-budget-exact";
     }
     return "unknown";
 }
@@ -105,14 +111,32 @@ enum class BenchmarkStrategy : std::uint8_t {
     return strategy == BenchmarkStrategy::sparse_hash_tree_exact
         || strategy == BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact
         || strategy
-            == BenchmarkStrategy::sparse_hash_tree_immutable_snapshot_exact;
+            == BenchmarkStrategy::sparse_hash_tree_immutable_snapshot_exact
+        || strategy
+            == BenchmarkStrategy::sparse_hash_tree_snapshot_delta_budget_exact;
 }
 
 [[nodiscard]] bool uses_sparse_reuse_argument(
     const BenchmarkStrategy strategy) noexcept {
     return strategy == BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact
         || strategy
-            == BenchmarkStrategy::sparse_hash_tree_immutable_snapshot_exact;
+            == BenchmarkStrategy::sparse_hash_tree_immutable_snapshot_exact
+        || strategy
+            == BenchmarkStrategy::sparse_hash_tree_snapshot_delta_budget_exact;
+}
+
+[[nodiscard]] bool uses_immutable_snapshot_lifecycle(
+    const BenchmarkStrategy strategy) noexcept {
+    return strategy
+            == BenchmarkStrategy::sparse_hash_tree_immutable_snapshot_exact
+        || strategy
+            == BenchmarkStrategy::sparse_hash_tree_snapshot_delta_budget_exact;
+}
+
+[[nodiscard]] bool uses_snapshot_delta_budget_argument(
+    const BenchmarkStrategy strategy) noexcept {
+    return strategy
+        == BenchmarkStrategy::sparse_hash_tree_snapshot_delta_budget_exact;
 }
 
 struct AlignedWorkspace {
@@ -190,6 +214,21 @@ struct AlignedWorkspace {
         return false;
     }
     capacity = static_cast<std::size_t>(parsed);
+    return true;
+}
+
+[[nodiscard]] bool parse_delta_candidate_budget(
+    const std::string_view text, std::size_t& budget) noexcept {
+    std::uint64_t parsed{};
+    const auto result = std::from_chars(
+        text.data(), text.data() + text.size(), parsed);
+    if (result.ec != std::errc{}
+        || result.ptr != text.data() + text.size()
+        || parsed == 0
+        || parsed > std::numeric_limits<std::size_t>::max()) {
+        return false;
+    }
+    budget = static_cast<std::size_t>(parsed);
     return true;
 }
 
@@ -571,6 +610,15 @@ struct FrameRunResult {
                       frame.hash_tree_snapshot_delta_query_count)
         || !add_count(total.hash_tree_snapshot_delta_candidate_count,
                       frame.hash_tree_snapshot_delta_candidate_count)
+        || !add_count(
+            total.hash_tree_snapshot_delta_budget_query_count,
+            frame.hash_tree_snapshot_delta_budget_query_count)
+        || !add_count(
+            total.hash_tree_snapshot_delta_budget_breach_count,
+            frame.hash_tree_snapshot_delta_budget_breach_count)
+        || !add_count(
+            total.hash_tree_snapshot_delta_budget_demotion_count,
+            frame.hash_tree_snapshot_delta_budget_demotion_count)
         || !add_count(total.hash_tree_snapshot_promotion_count,
                       frame.hash_tree_snapshot_promotion_count)
         || !add_count(total.hash_tree_snapshot_expiration_count,
@@ -596,6 +644,10 @@ struct FrameRunResult {
     total.hash_tree_snapshot_delta_maximum_candidates_per_query = std::max(
         total.hash_tree_snapshot_delta_maximum_candidates_per_query,
         frame.hash_tree_snapshot_delta_maximum_candidates_per_query);
+    total.hash_tree_snapshot_delta_budget_maximum_candidates_at_breach =
+        std::max(
+            total.hash_tree_snapshot_delta_budget_maximum_candidates_at_breach,
+            frame.hash_tree_snapshot_delta_budget_maximum_candidates_at_breach);
     for (std::size_t bin = 0;
          bin < total.hash_tree_chain_query_depth_histogram.size(); ++bin) {
         if (!add_count(total.hash_tree_chain_query_depth_histogram[bin],
@@ -830,7 +882,8 @@ void print_hash_tree_depth_histograms(
 
 [[nodiscard]] bool valid_statistics(
     const BenchmarkStrategy strategy,
-    const LzssMatchFinderStatistics& statistics) noexcept {
+    const LzssMatchFinderStatistics& statistics,
+    const std::size_t delta_candidate_budget = 0) noexcept {
     switch (strategy) {
     case BenchmarkStrategy::hash_chain_exact:
         return valid_hash_chain_statistics(statistics);
@@ -863,6 +916,50 @@ void print_hash_tree_depth_histograms(
                 == statistics.hash_tree_promotion_count
             && statistics.hash_tree_snapshot_bulk_release_count
                 <= statistics.hash_tree_snapshot_expiration_count
+            && statistics.hash_tree_snapshot_delta_budget_query_count == 0
+            && statistics.hash_tree_snapshot_delta_budget_breach_count == 0
+            && statistics.hash_tree_snapshot_delta_budget_demotion_count == 0
+            && statistics
+                    .hash_tree_snapshot_delta_budget_maximum_candidates_at_breach
+                == 0
+            && !statistics.overflowed;
+    }
+    case BenchmarkStrategy::sparse_hash_tree_snapshot_delta_budget_exact: {
+        std::uint64_t routed_queries{};
+        std::uint64_t accounted_releases{};
+        const auto breaches =
+            statistics.hash_tree_snapshot_delta_budget_breach_count;
+        return delta_candidate_budget != 0
+            && marc::core::checked_add(
+                statistics.hash_tree_chain_query_count,
+                statistics.hash_tree_snapshot_query_count,
+                routed_queries)
+            && routed_queries == statistics.query_count
+            && statistics.hash_tree_tree_query_count == 0
+            && statistics.hash_tree_insertion_count == 0
+            && statistics.hash_tree_retirement_count == 0
+            && statistics.hash_tree_snapshot_delta_query_count
+                == statistics.hash_tree_snapshot_query_count
+            && statistics.hash_tree_snapshot_delta_budget_query_count
+                == statistics.hash_tree_snapshot_query_count
+            && statistics.hash_tree_snapshot_promotion_count
+                == statistics.hash_tree_promotion_count
+            && breaches
+                == statistics.hash_tree_snapshot_delta_budget_demotion_count
+            && marc::core::checked_add(
+                statistics.hash_tree_snapshot_expiration_count,
+                statistics.hash_tree_snapshot_delta_budget_demotion_count,
+                accounted_releases)
+            && accounted_releases
+                == statistics.hash_tree_snapshot_bulk_release_count
+            && ((breaches == 0
+                    && statistics
+                           .hash_tree_snapshot_delta_budget_maximum_candidates_at_breach
+                        == 0)
+                || (breaches != 0
+                    && statistics
+                           .hash_tree_snapshot_delta_budget_maximum_candidates_at_breach
+                        > delta_candidate_budget))
             && !statistics.overflowed;
     }
     }
@@ -1171,6 +1268,7 @@ void fill_synthetic_input(
     const bool measure, const std::size_t pool_node_capacity,
     const std::uint64_t promotion_threshold,
     const std::uint8_t promotion_reuse_threshold,
+    const std::size_t delta_candidate_budget,
     FrameRunResult& result) noexcept {
     LzssMatchFinderStatistics frame_statistics{};
     auto* const token_summary = collect_statistics
@@ -1287,10 +1385,10 @@ void fill_synthetic_input(
                 collect_statistics ? &frame_statistics : nullptr,
                 {effective_pool_capacity, promotion_threshold,
                  promotion_reuse_threshold,
-                 strategy == BenchmarkStrategy::
-                         sparse_hash_tree_immutable_snapshot_exact
+                 uses_immutable_snapshot_lifecycle(strategy)
                      ? LzssSparseHashTreeLifecycleMode::immutable_snapshot
-                     : LzssSparseHashTreeLifecycleMode::mutable_tree})
+                     : LzssSparseHashTreeLifecycleMode::mutable_tree,
+                 delta_candidate_budget})
             != LzssSparseHashTreeMatchFinderError::none) {
             return false;
         }
@@ -1336,6 +1434,7 @@ token_fingerprint_hex(const TokenSummary& summary) noexcept {
     const bool measure, const std::size_t pool_node_capacity,
     const std::uint64_t promotion_threshold,
     const std::uint8_t promotion_reuse_threshold,
+    const std::size_t delta_candidate_budget,
     FrameRunResult& result) {
     std::ifstream stream(path, std::ios::binary);
     if (!stream) return false;
@@ -1354,7 +1453,8 @@ token_fingerprint_hex(const TokenSummary& summary) noexcept {
         if (!process_frame(
                 strategy, frame, parameters, limits, workspace,
                 collect_statistics, measure, pool_node_capacity,
-                promotion_threshold, promotion_reuse_threshold, result)) {
+                promotion_threshold, promotion_reuse_threshold,
+                delta_candidate_budget, result)) {
             return false;
         }
         remaining -= current_size;
@@ -1374,6 +1474,7 @@ token_fingerprint_hex(const TokenSummary& summary) noexcept {
     const bool measure, const std::size_t pool_node_capacity,
     const std::uint64_t promotion_threshold,
     const std::uint8_t promotion_reuse_threshold,
+    const std::size_t delta_candidate_budget,
     FrameRunResult& result) {
     std::vector<std::byte> input(frame_size);
     std::uint64_t offset{};
@@ -1385,7 +1486,8 @@ token_fingerprint_hex(const TokenSummary& summary) noexcept {
         if (!process_frame(
                 strategy, frame, parameters, limits, workspace,
                 collect_statistics, measure, pool_node_capacity,
-                promotion_threshold, promotion_reuse_threshold, result)) {
+                promotion_threshold, promotion_reuse_threshold,
+                delta_candidate_budget, result)) {
             return false;
         }
         offset += current_size;
@@ -1402,6 +1504,7 @@ void print_frame_report(
     const std::size_t pool_node_capacity,
     const std::uint64_t promotion_threshold,
     const std::uint8_t promotion_reuse_threshold,
+    const std::size_t delta_candidate_budget,
     const FrameRunResult& verified, const double measured_seconds) {
     const auto fingerprint = token_fingerprint_hex(verified.token_summary);
     std::cout << std::fixed << std::setprecision(6)
@@ -1641,8 +1744,7 @@ void print_frame_report(
                       << static_cast<unsigned>(promotion_reuse_threshold)
                       << '\n';
         }
-        if (strategy
-            == BenchmarkStrategy::sparse_hash_tree_immutable_snapshot_exact) {
+        if (uses_immutable_snapshot_lifecycle(strategy)) {
             std::cout
                 << "sparse_hash_tree_lifecycle=immutable-snapshot\n"
                 << "hash_tree_snapshot_queries="
@@ -1667,6 +1769,27 @@ void print_frame_report(
                 << statistics.hash_tree_snapshot_expiration_count << '\n'
                 << "hash_tree_snapshot_bulk_releases="
                 << statistics.hash_tree_snapshot_bulk_release_count << '\n';
+            if (uses_snapshot_delta_budget_argument(strategy)) {
+                std::cout
+                    << "hash_tree_snapshot_delta_candidate_budget="
+                    << delta_candidate_budget << '\n'
+                    << "hash_tree_snapshot_delta_budget_queries="
+                    << statistics
+                           .hash_tree_snapshot_delta_budget_query_count
+                    << '\n'
+                    << "hash_tree_snapshot_delta_budget_breaches="
+                    << statistics
+                           .hash_tree_snapshot_delta_budget_breach_count
+                    << '\n'
+                    << "hash_tree_snapshot_delta_budget_demotions="
+                    << statistics
+                           .hash_tree_snapshot_delta_budget_demotion_count
+                    << '\n'
+                    << "hash_tree_snapshot_delta_budget_max_candidates_at_breach="
+                    << statistics
+                           .hash_tree_snapshot_delta_budget_maximum_candidates_at_breach
+                    << '\n';
+            }
         }
     }
     std::cout << "hash_tree_promotion_candidate_threshold="
@@ -1792,6 +1915,11 @@ void print_usage() {
            "<iterations> <frame-bytes> <window-bytes> <pool-nodes> "
            "<promotion-candidates> <promotion-reuse-threshold> "
            "<max-internal-buffered-bytes>\n"
+        << "       marc_lzss_match_finder_benchmark --frames-limited "
+           "sparse-hash-tree-snapshot-delta-budget-exact <input-file> "
+           "<iterations> <frame-bytes> <window-bytes> <pool-nodes> "
+           "<promotion-candidates> <promotion-reuse-threshold> "
+           "<delta-candidate-budget> <max-internal-buffered-bytes>\n"
         << "       marc_lzss_match_finder_benchmark --synthetic "
            "<hash-chain-exact|binary-tree-exact|wavl-tree-exact|"
            "red-black-tree-exact|"
@@ -1823,6 +1951,9 @@ void print_usage() {
                 || (strategy == BenchmarkStrategy::
                         sparse_hash_tree_immutable_snapshot_exact
                     && argc != 11)
+                || (strategy == BenchmarkStrategy::
+                        sparse_hash_tree_snapshot_delta_budget_exact
+                    && argc != 12)
                 || ((strategy == BenchmarkStrategy::hash_chain_exact
                          || strategy == BenchmarkStrategy::binary_tree_exact)
                     && argc != 8)
@@ -1839,6 +1970,9 @@ void print_usage() {
         || (strategy == BenchmarkStrategy::
                 sparse_hash_tree_immutable_snapshot_exact
             && !explicit_limit)
+        || (strategy == BenchmarkStrategy::
+                sparse_hash_tree_snapshot_delta_budget_exact
+            && !explicit_limit)
         || (strategy != BenchmarkStrategy::hash_tree_exact
             && !is_sparse_hash_tree_strategy(strategy)
             && !explicit_limit && argc > 7)) {
@@ -1853,6 +1987,7 @@ void print_usage() {
     std::uint64_t promotion_threshold{
         std::numeric_limits<std::uint64_t>::max()};
     std::uint8_t promotion_reuse_threshold{1};
+    std::size_t delta_candidate_budget{};
     auto limits = marc::core::DecoderLimits{};
     if (explicit_limit) {
         limits.max_frame_size = std::numeric_limits<std::uint32_t>::max();
@@ -1874,13 +2009,18 @@ void print_usage() {
         || (uses_sparse_reuse_argument(strategy)
             && !parse_promotion_reuse_threshold(
                 argv[9], promotion_reuse_threshold))
+        || (uses_snapshot_delta_budget_argument(strategy)
+            && !parse_delta_candidate_budget(
+                argv[10], delta_candidate_budget))
         || (explicit_limit
             && !parse_positive_u64(
-                argv[uses_sparse_reuse_argument(strategy)
-                        ? 10
+                argv[uses_snapshot_delta_budget_argument(strategy)
+                        ? 11
+                        : (uses_sparse_reuse_argument(strategy)
+                               ? 10
                         : (strategy == BenchmarkStrategy::sparse_hash_tree_exact
                                ? 9
-                               : 7)],
+                               : 7))],
                 limits.max_internal_buffered_bytes))
         || window_size > std::numeric_limits<std::uint32_t>::max()) {
         std::cerr << "invalid frame benchmark argument\n";
@@ -1964,11 +2104,13 @@ void print_usage() {
     if (!process_frames(
             strategy, argv[3], file_size, frame_size, parameters, limits,
             workspace, true, false, pool_node_capacity,
-            promotion_threshold, promotion_reuse_threshold, verified)
+            promotion_threshold, promotion_reuse_threshold,
+            delta_candidate_budget, verified)
         || verified.input_bytes != file_size
         || verified.statistics.query_count != verified.token_count
         || !valid_token_summary(verified)
-        || !valid_statistics(strategy, verified.statistics)) {
+        || !valid_statistics(
+            strategy, verified.statistics, delta_candidate_budget)) {
         std::cerr << "match-finder frame verification failed\n";
         return 1;
     }
@@ -1979,7 +2121,8 @@ void print_usage() {
         if (!process_frames(
                 strategy, argv[3], file_size, frame_size, parameters, limits,
                 workspace, false, true, pool_node_capacity,
-                promotion_threshold, promotion_reuse_threshold, measured)
+                promotion_threshold, promotion_reuse_threshold,
+                delta_candidate_budget, measured)
             || measured.input_bytes != verified.input_bytes
             || measured.frame_count != verified.frame_count
             || measured.token_count != verified.token_count) {
@@ -1993,7 +2136,8 @@ void print_usage() {
         strategy, explicit_limit ? "frames-limited" : "frames", {},
         frame_size, window_size, iterations, workspace_size,
         limits.max_internal_buffered_bytes, pool_node_capacity,
-        promotion_threshold, promotion_reuse_threshold, verified,
+        promotion_threshold, promotion_reuse_threshold,
+        delta_candidate_budget, verified,
         measured_seconds);
     return 0;
 }
@@ -2006,6 +2150,8 @@ void print_usage() {
             == BenchmarkStrategy::sparse_hash_tree_reuse_gated_exact
         || strategy
             == BenchmarkStrategy::sparse_hash_tree_immutable_snapshot_exact
+        || strategy
+            == BenchmarkStrategy::sparse_hash_tree_snapshot_delta_budget_exact
         || (strategy == BenchmarkStrategy::hash_tree_exact && argc != 9)
         || (strategy == BenchmarkStrategy::sparse_hash_tree_exact
             && argc != 10)
@@ -2114,11 +2260,11 @@ void print_usage() {
     if (!process_synthetic_frames(
             strategy, kind, input_size, frame_size, parameters, limits,
             workspace, true, false, pool_node_capacity,
-            promotion_threshold, promotion_reuse_threshold, verified)
+            promotion_threshold, promotion_reuse_threshold, 0, verified)
         || verified.input_bytes != input_size
         || verified.statistics.query_count != verified.token_count
         || !valid_token_summary(verified)
-        || !valid_statistics(strategy, verified.statistics)) {
+        || !valid_statistics(strategy, verified.statistics, 0)) {
         std::cerr << "synthetic match-finder verification failed\n";
         return 1;
     }
@@ -2129,7 +2275,7 @@ void print_usage() {
         if (!process_synthetic_frames(
                 strategy, kind, input_size, frame_size, parameters, limits,
                 workspace, false, true, pool_node_capacity,
-                promotion_threshold, promotion_reuse_threshold, measured)
+                promotion_threshold, promotion_reuse_threshold, 0, measured)
             || measured.input_bytes != verified.input_bytes
             || measured.frame_count != verified.frame_count
             || measured.token_count != verified.token_count) {
@@ -2143,7 +2289,7 @@ void print_usage() {
         strategy, "synthetic", synthetic_input_name(kind), frame_size,
         window_size, iterations, workspace_size,
         limits.max_internal_buffered_bytes, pool_node_capacity,
-        promotion_threshold, promotion_reuse_threshold, verified,
+        promotion_threshold, promotion_reuse_threshold, 0, verified,
         measured_seconds);
     return 0;
 }

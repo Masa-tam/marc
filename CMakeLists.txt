@@ -518,6 +518,13 @@ if(MARC_BUILD_BENCHMARKS)
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_hash_tree_benchmark.cmake)
         set_tests_properties(marc_lzss_hash_tree_benchmark_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
+        add_test(NAME marc_lzss_sparse_snapshot_delta_budget_benchmark_smoke
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_match_finder_benchmark>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_sparse_snapshot_delta_budget_benchmark.cmake)
+        set_tests_properties(
+            marc_lzss_sparse_snapshot_delta_budget_benchmark_smoke
+            PROPERTIES LABELS benchmark-experimental-smoke)
     endif()
 
     add_executable(marc_contextual_huffman_estimator

@@ -8315,3 +8315,14 @@ comparison, and diagnostic invariants were derived only from those local
 contracts. No external compressor, fuzzer corpus, fuzz harness, match finder,
 source code, pseudocode, tuning advice, benchmark result, or test suite was
 consulted.
+
+### IR-0908
+
+The private snapshot delta-budget benchmark contract uses DD-1135 through
+DD-1139, IR-0904 through IR-0907, TVG-1000 through TVG-1003, CR-1241 through
+CR-1244, and marc's repository-owned frames-limited match-finder benchmark,
+canonical token fingerprint, checked workspace calculator, and synthetic
+smoke conventions. The strategy syntax, diagnostics, control comparisons, and
+invalid-argument checks were derived only from those local contracts. No
+external compressor, match finder, benchmark harness, Corpus measurement,
+threshold advice, source code, pseudocode, or test suite was consulted.
