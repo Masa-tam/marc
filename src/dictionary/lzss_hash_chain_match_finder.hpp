@@ -21,6 +21,7 @@ enum class LzssHashChainError : std::uint8_t {
     workspace_too_small,
     misaligned_workspace,
     overlapping_buffers,
+    invalid_bucket_cap,
 };
 
 struct LzssHashChainWorkspaceRequirements {
@@ -40,6 +41,18 @@ calculate_lzss_hash_chain_workspace(
     std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits) noexcept;
 
+inline constexpr std::size_t lzss_hash_chain_bucket_cap_262144 = 262'144;
+inline constexpr std::size_t lzss_hash_chain_bucket_cap_1048576 = 1'048'576;
+inline constexpr std::size_t lzss_hash_chain_bucket_cap_4194304 = 4'194'304;
+
+[[nodiscard]] bool is_supported_lzss_hash_chain_private_bucket_cap(
+    std::size_t bucket_cap) noexcept;
+
+[[nodiscard]] LzssHashChainWorkspaceRequirements
+calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+    std::size_t input_size, const LzssParameters& parameters,
+    const core::DecoderLimits& limits, std::size_t bucket_cap) noexcept;
+
 class LzssHashChainMnemonicMixerV1MatchFinder;
 
 class LzssHashChainMatchFinder {
@@ -55,6 +68,11 @@ private:
     friend LzssHashChainError initialize_lzss_hash_chain_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
+        LzssHashChainMatchFinder&, LzssMatchFinderStatistics*) noexcept;
+    friend LzssHashChainError
+    initialize_lzss_hash_chain_match_finder_with_private_bucket_cap(
+        std::span<const std::byte>, const LzssParameters&,
+        const core::DecoderLimits&, std::span<std::byte>, std::size_t,
         LzssHashChainMatchFinder&, LzssMatchFinderStatistics*) noexcept;
 
     template <auto CalculatePrefixHash>
@@ -78,6 +96,13 @@ static_assert(LzssMatchFinder<LzssHashChainMatchFinder>);
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::span<std::byte> workspace,
     LzssHashChainMatchFinder& finder,
+    LzssMatchFinderStatistics* statistics = nullptr) noexcept;
+
+[[nodiscard]] LzssHashChainError
+initialize_lzss_hash_chain_match_finder_with_private_bucket_cap(
+    std::span<const std::byte> input, const LzssParameters& parameters,
+    const core::DecoderLimits& limits, std::span<std::byte> workspace,
+    std::size_t bucket_cap, LzssHashChainMatchFinder& finder,
     LzssMatchFinderStatistics* statistics = nullptr) noexcept;
 
 class LzssHashChainMnemonicMixerV1MatchFinder {

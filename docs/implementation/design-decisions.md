@@ -23444,3 +23444,21 @@ HashChain. Then connect explicit benchmark-only strategies and commit a strict
 restartable synthetic manifest with Pareto elimination and admission rules.
 Silesia requires a later manifest and may be reached only by a synthetic
 survivor. A negative result preserves the existing production path.
+
+## DD-1152: The bucket-scaling foundation keeps legacy dispatch static
+
+- Date: 2026-09-20
+- Status: accepted
+
+Refactor the workspace formula into compile-time cap specializations and keep
+the existing production calculator bound directly to 65,536. Add one
+separately named internal experimental calculator and initializer that accept
+only the three fixed private caps and reject every other value before changing
+finder state. Do not route a private finder type or typed encoder yet.
+
+Preserve existing error numeric values by appending the new internal
+invalid-cap category. Verify the exact x64 workspace table, cap and input
+boundaries, checked caller limits, successful private initialization,
+insufficient workspace, and atomic invalid-cap failure under MSVC and ClangCL.
+This gate changes no public selector, API, ABI, CLI, profile, frame, format,
+decoder, default, or other match-finder bucket policy.

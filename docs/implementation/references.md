@@ -8452,3 +8452,14 @@ operation already used by the repository. Candidate caps, workspace table,
 staging, Pareto rule, and admission boundary were derived locally. No external
 compressor, match finder, hash table implementation, source code, pseudocode,
 tuning advice, benchmark result, or test suite was consulted.
+
+### IR-0921
+
+The bucket-scaling workspace and initializer foundation uses DD-1151 and
+DD-1152, IR-0920, TVG-1016 and TVG-1017, CR-1257, marc's repository-owned
+legacy HashChain calculator, initializer, limits, overlap checks, alignment,
+and failure-atomicity tests, and the fixed private cap table. The compile-time
+production specialization and separate validated experimental dispatch were
+derived locally. No external compressor, match finder, hash table
+implementation, source code, pseudocode, tuning advice, benchmark result, or
+test suite was consulted.

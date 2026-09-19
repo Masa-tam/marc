@@ -141,3 +141,20 @@ quality, introduce a public memory profile, infer resource limits from input,
 change the decoder, or promise that the largest table is the fastest. It also
 does not alter the bucket policy of BinaryTree, HashTree, Sparse HashTree, or
 any other match finder that currently shares the legacy cap constant.
+
+## 8. Implementation state
+
+The workspace and initializer foundation was completed on 2026-09-20. The
+production functions call a compile-time 65,536-cap calculation directly.
+A separately named internal experimental entry validates and dispatches only
+the three fixed private caps, so the production route gains no runtime cap
+policy branch. The existing error values retain their numeric order and the
+new internal invalid-cap error is appended.
+
+MSVC and ClangCL verify the complete x64 workspace table, private-cap
+membership and boundaries, short input, successful private initialization,
+insufficient workspace, and atomic rejection of an unsupported cap. The
+legacy HashChain regression set remains unchanged and passes; both complete
+3,552-test suites also pass. No separately named private finder type,
+typed-token route, benchmark selector, public API,
+format change, or measurement exists yet; those remain later gates.

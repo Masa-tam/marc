@@ -15,6 +15,7 @@ namespace {
     switch (error) {
     case LzssHashChainError::none:
         return LzssMatchFinderWorkspaceError::none;
+    case LzssHashChainError::invalid_bucket_cap:
     case LzssHashChainError::invalid_limits:
     case LzssHashChainError::invalid_parameters:
     case LzssHashChainError::workspace_too_small:

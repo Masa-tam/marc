@@ -14851,3 +14851,18 @@ matches, typed tokens, canonical bytes, and five Exact summaries. Candidate
 and prefix-mismatch counters may decrease but must remain internally valid.
 Use deterministic bounded generated cases before exposing any benchmark route;
 no performance threshold or Silesia data participates in this test gate.
+
+### TVG-1017
+
+Run the legacy workspace regression and the complete DD-1151 x64 workspace
+table for 64-MiB input, all three windows, and all three private caps under
+MSVC and ClangCL. Require exact bucket and link counts. Check cap membership;
+reject zero, the legacy cap, a non-power-of-two value, and an unselected power
+of two through the experimental entry. At each selected cap, verify input one
+below, at, and above the cap plus input shorter than the five-byte prefix.
+
+Initialize a private-cap finder over a hand-checkable repeated-prefix input,
+advance it to an exact match, and retain that match after both unsupported-cap
+and insufficient-workspace calls. Run the unchanged legacy HashChain test
+group as part of the same focused test invocation. This gate performs no
+typed-token connection, benchmark timing, fuzzing, or Silesia access.

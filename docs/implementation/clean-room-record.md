@@ -31389,3 +31389,27 @@ both bounds.
   expression was copied or translated.
 - Local validation: documentation verification and arithmetic review only;
   implementation and measurement have not started.
+
+## CR-1258: 2026-09-20 - HashChain bucket-scaling foundation
+
+- Authoring method: refactored marc's existing checked workspace formula into
+  compile-time cap specializations and added a separate validated private-cap
+  calculator and initializer without routing a new finder type.
+- References used: DD-1151 and DD-1152, IR-0920 and IR-0921, TVG-1016 and
+  TVG-1017, CR-1257, and the repository-owned legacy HashChain implementation
+  and test conventions.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: preserve static production dispatch; accept exactly
+  three private caps; append the internal error value; reuse all existing
+  safety checks; and keep finder-type and typed-token routing for later gates.
+- Generated-code task description: add and test only the private-cap sizing
+  and initializer foundation while keeping public and production behavior
+  unchanged.
+- Similarity review: the implementation parameterizes marc's own calculator
+  and duplicates its already documented initialization safety contract. No
+  external implementation expression was copied or translated.
+- Local validation: MSVC and ClangCL build warning-free and pass all ten
+  focused legacy/private HashChain tests, including workspace and atomicity,
+  followed by all 3,552 tests in each complete suite.

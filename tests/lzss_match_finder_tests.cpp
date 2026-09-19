@@ -247,6 +247,139 @@ TEST(LzssHashChainMatchFinder, CalculatesBoundedWorkspace) {
     EXPECT_EQ(required.link_count, 1U << 20);
 }
 
+TEST(LzssHashChainMatchFinder, CalculatesFixedPrivateBucketCapWorkspaces) {
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_total_output_size = UINT64_C(64) << 20;
+    limits.max_frame_size = UINT64_C(64) << 20;
+    limits.max_lz_distance = UINT64_C(64) << 20;
+    limits.max_internal_buffered_bytes = UINT64_C(512) << 20;
+
+    constexpr std::size_t input_size = std::size_t{64} << 20;
+    constexpr std::size_t windows[] = {
+        std::size_t{4} << 20,
+        std::size_t{16} << 20,
+        std::size_t{64} << 20,
+    };
+    constexpr std::size_t caps[] = {
+        lzss_match_finder_max_bucket_count,
+        lzss_hash_chain_bucket_cap_262144,
+        lzss_hash_chain_bucket_cap_1048576,
+        lzss_hash_chain_bucket_cap_4194304,
+    };
+    constexpr std::size_t expected_x64[][4] = {
+        {17'301'504, 18'874'368, 25'165'824, 50'331'648},
+        {67'633'152, 69'206'016, 75'497'472, 100'663'296},
+        {268'959'744, 270'532'608, 276'824'064, 301'989'888},
+    };
+
+    for (std::size_t window_index = 0; window_index < std::size(windows);
+         ++window_index) {
+        LzssParameters parameters{};
+        parameters.window_size = static_cast<std::uint32_t>(
+            windows[window_index]);
+        for (std::size_t cap_index = 0; cap_index < std::size(caps);
+             ++cap_index) {
+            const auto required = cap_index == 0
+                ? calculate_lzss_hash_chain_workspace(
+                    input_size, parameters, limits)
+                : calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+                    input_size, parameters, limits, caps[cap_index]);
+            ASSERT_EQ(required.error, LzssHashChainError::none)
+                << window_index << ' ' << cap_index;
+            EXPECT_EQ(required.bucket_count,
+                      std::min(windows[window_index], caps[cap_index]));
+            EXPECT_EQ(required.link_count, windows[window_index]);
+            if constexpr (sizeof(std::size_t) == 8) {
+                EXPECT_EQ(required.workspace_size,
+                          expected_x64[window_index][cap_index]);
+            } else {
+                EXPECT_EQ(required.workspace_size,
+                          required.bucket_count * sizeof(std::size_t)
+                              + required.link_count * sizeof(std::uint32_t));
+            }
+        }
+    }
+}
+
+TEST(LzssHashChainMatchFinder, ValidatesPrivateBucketCapsAndBoundaries) {
+    EXPECT_TRUE(is_supported_lzss_hash_chain_private_bucket_cap(
+        lzss_hash_chain_bucket_cap_262144));
+    EXPECT_TRUE(is_supported_lzss_hash_chain_private_bucket_cap(
+        lzss_hash_chain_bucket_cap_1048576));
+    EXPECT_TRUE(is_supported_lzss_hash_chain_private_bucket_cap(
+        lzss_hash_chain_bucket_cap_4194304));
+    for (const std::size_t invalid : {0U, 65'536U, 262'143U, 524'288U}) {
+        EXPECT_FALSE(is_supported_lzss_hash_chain_private_bucket_cap(invalid));
+        EXPECT_EQ(calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+                      16, {}, {}, invalid).error,
+                  LzssHashChainError::invalid_bucket_cap);
+    }
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_total_output_size = UINT64_C(8) << 20;
+    limits.max_frame_size = UINT64_C(8) << 20;
+    limits.max_lz_distance = UINT64_C(8) << 20;
+    limits.max_internal_buffered_bytes = UINT64_C(64) << 20;
+    for (const std::size_t cap : {
+             lzss_hash_chain_bucket_cap_262144,
+             lzss_hash_chain_bucket_cap_1048576,
+             lzss_hash_chain_bucket_cap_4194304}) {
+        LzssParameters parameters{};
+        parameters.window_size = static_cast<std::uint32_t>(cap + 1U);
+        for (const auto input_size : {cap - 1U, cap, cap + 1U}) {
+            const auto required =
+                calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+                    input_size, parameters, limits, cap);
+            ASSERT_EQ(required.error, LzssHashChainError::none) << cap;
+            EXPECT_EQ(required.bucket_count, cap) << input_size;
+            EXPECT_EQ(required.link_count, input_size);
+        }
+    }
+
+    for (const std::size_t cap : {
+             lzss_hash_chain_bucket_cap_262144,
+             lzss_hash_chain_bucket_cap_1048576,
+             lzss_hash_chain_bucket_cap_4194304}) {
+        const auto short_input =
+            calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+                4, {}, {}, cap);
+        ASSERT_EQ(short_input.error, LzssHashChainError::none);
+        EXPECT_EQ(short_input.workspace_size, 0U);
+        EXPECT_EQ(short_input.bucket_count, 0U);
+        EXPECT_EQ(short_input.link_count, 0U);
+    }
+}
+
+TEST(LzssHashChainMatchFinder,
+     PrivateBucketCapInitializationIsCheckedAndAtomic) {
+    const auto input = bytes("ABCDEABCDE");
+    const auto required =
+        calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+            input.size(), {}, {}, lzss_hash_chain_bucket_cap_262144);
+    ASSERT_EQ(required.error, LzssHashChainError::none);
+    auto storage = make_hash_chain_storage(required.workspace_size);
+    LzssHashChainMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_hash_chain_match_finder_with_private_bucket_cap(
+                  input, {}, {}, storage.bytes.first(required.workspace_size),
+                  lzss_hash_chain_bucket_cap_262144, finder),
+              LzssHashChainError::none);
+    finder.advance(0, 5);
+    const auto before = finder.find_match(5);
+    EXPECT_EQ(before, (LzssMatch{5, 5}));
+
+    EXPECT_EQ(initialize_lzss_hash_chain_match_finder_with_private_bucket_cap(
+                  input, {}, {}, storage.bytes, 524'288, finder),
+              LzssHashChainError::invalid_bucket_cap);
+    EXPECT_EQ(finder.find_match(5), before);
+
+    EXPECT_EQ(initialize_lzss_hash_chain_match_finder_with_private_bucket_cap(
+                  input, {}, {},
+                  storage.bytes.first(required.workspace_size - 1U),
+                  lzss_hash_chain_bucket_cap_262144, finder),
+              LzssHashChainError::workspace_too_small);
+    EXPECT_EQ(finder.find_match(5), before);
+}
+
 TEST(LzssHashChainMatchFinder, RejectsInvalidWorkspaceAtomically) {
     const auto input = bytes("ABCDE1ABCDE2ABCDE3");
     const auto required = calculate_lzss_hash_chain_workspace(
