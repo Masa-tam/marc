@@ -1,7 +1,8 @@
 # LZSS HashChain prefix mixer experiment
 
-Status: design, pure mixer, private finder, private typed-token/fuzz, and
-measurement-harness gates fixed; frozen 36-record matrix not started.
+Status: design, pure mixer, private finder, private typed-token/fuzz,
+measurement-harness, and restartable experiment-runner gates fixed; frozen
+36-record matrix not started.
 
 ## 1. Motivation and boundary
 
@@ -189,3 +190,22 @@ workspace and reduced candidate and prefix-mismatch counts on the frozen
 collision input. This connection smoke does not count as any of the 36 frozen
 records and makes no admission decision. The next gate is the exact fixed
 matrix; Silesia and tuning remain prohibited.
+
+The fixed experiment manifest and restartable runner were completed on
+2026-09-19 without starting a measurement record. The manifest freezes the
+six existing 64-MiB synthetic fixtures, 4-/16-/64-MiB windows, legacy then v1
+process order, one iteration, frame and aggregate limits, expected workspace,
+five Exact identity fields, and the pre-Silesia thresholds. This produces 36
+process-isolated records in one canonical order.
+
+The runner creates or verifies the ignored deterministic fixtures, binds its
+checkpoint to the revision, benchmark executable and digest, manifest and
+digest, tool-source digests, fixture identities, environment labels, and full
+configuration, and atomically saves after every record. Resume accepts only a
+fully validated canonical prefix and never relaunches accepted records. A
+zero-new-point invocation validates a checkpoint without measurement. Runner
+self-tests cover strict manifest rejection, report accounting, Exact and
+workspace identity, gate evaluation, checkpoint binding, and a three-record
+interruption followed by completion. The next gate may start the fixed matrix;
+Silesia and parameter changes remain prohibited until its recorded result is
+evaluated.

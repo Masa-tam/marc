@@ -1859,6 +1859,12 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(
             marc_lzss_snapshot_delta_budget_synthetic_runner_tests
             PROPERTIES LABELS tooling)
+        add_test(NAME marc_lzss_hash_chain_prefix_mixer_runner_tests
+            COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_hash_chain_prefix_mixer_runner_tests.py)
+        set_tests_properties(
+            marc_lzss_hash_chain_prefix_mixer_runner_tests
+            PROPERTIES LABELS tooling)
         add_test(NAME marc_silesia_binary_tree_16m_runner_tests
             COMMAND ${Python3_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_binary_tree_16m_runner_tests.py)

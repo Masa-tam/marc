@@ -14800,3 +14800,20 @@ the same canonical token SHA-256 and workspace size, and strictly fewer v1
 candidate visits and prefix mismatches. Run the complete synthetic benchmark
 smoke under MSVC and ClangCL. This is a wiring regression only; exclude its
 timing from the frozen matrix and every admission decision.
+
+### TVG-1014
+
+Load the versioned prefix-mixer manifest with duplicate-key, non-finite-value,
+boolean, unknown-field, and value changes rejected by exact comparison to the
+fixed contract. Require exactly 36 canonical points: six named 64-MiB
+fixtures, three windows, and legacy immediately followed by v1 for every
+fixture/window pair. Verify each fixture size and SHA-256 before use.
+
+Validate every benchmark report for strategy, sizes, limits, workspace,
+token accounting, positive finite time, query histogram, and all five Exact
+identity fields. Bind an atomic checkpoint to every executable, source,
+manifest, fixture, environment, and configuration identity. Simulate an
+interruption after three records, resume the remaining 33 without relaunching
+the prefix, and regenerate the final 36-record result. Also test zero-point
+validation and the fixed pre-Silesia thresholds. These runner tests launch no
+benchmark, read no Silesia data, and contribute no performance evidence.

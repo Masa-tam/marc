@@ -31321,3 +31321,26 @@ both bounds.
   expression was copied or translated.
 - Local validation: both MSVC and ClangCL build the benchmark and pass the full
   synthetic smoke including fingerprint, workspace, and collision-work checks.
+
+## CR-1255: 2026-09-19 - Restartable prefix-mixer experiment runner
+
+- Authoring method: composed a strict versioned manifest and restartable
+  process-isolated runner from marc's existing deterministic fixture,
+  benchmark-validation, JSON, and checkpoint infrastructure.
+- References used: DD-1144 through DD-1149, IR-0913 through IR-0918,
+  TVG-1009 through TVG-1014, CR-1250 through CR-1254, and the repository-owned
+  six-fixture generator and runner conventions.
+- Known implementations intentionally not consulted: external Corpus, hash
+  implementation, compressor, match finder, orchestration tool, source code,
+  pseudocode, tuning advice, benchmark result, or test suite.
+- Independent decisions: freeze a 36-record baseline/candidate order; save
+  after each record; bind every relevant identity; reject noncanonical resume;
+  and keep Silesia inaccessible until the predeclared gate succeeds.
+- Generated-code task description: add only the manifest, restartable runner,
+  and self-tests needed to execute the already designed synthetic gate without
+  starting measurement or changing library behavior.
+- Similarity review: the implementation composes repository-owned patterns
+  and experiment rules. No external implementation expression was copied or
+  translated.
+- Local validation: six runner self-tests pass strict-manifest, accounting,
+  Exactness, gate, identity, and three-plus-thirty-three resume checks.

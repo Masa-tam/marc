@@ -1,0 +1,60 @@
+{
+  "schema": "marc-benchmark-experiment-manifest-v1",
+  "experiment": "lzss-hash-chain-prefix-mixer-synthetic-v1",
+  "result_schema": "marc-lzss-hash-chain-prefix-mixer-synthetic-v1",
+  "checkpoint_schema": "marc-lzss-hash-chain-prefix-mixer-synthetic-checkpoint-v1",
+  "fixtures": {
+    "profile": "marc-lzss-snapshot-delta-synthetic-v1",
+    "bytes_per_fixture": 67108864,
+    "names": [
+      "zeros",
+      "periodic-251",
+      "shared-prefix-records",
+      "prefix-collision-runs",
+      "phase-shifted-periodic",
+      "fixed-seed-pseudorandom"
+    ],
+    "sha256": {
+      "zeros": "3b6a07d0d404fab4e23b6d34bc6696a6a312dd92821332385e5af7c01c421351",
+      "periodic-251": "98dc891b284e4d84ac25b0c0a24fdbe39a7f0dbd643ad5e8aa06e02fc6258254",
+      "shared-prefix-records": "4b5fabcab9e6f2990300e76a7f1ce88517e6e1d0ceef0be488de2f1a0d97f351",
+      "prefix-collision-runs": "482e02b39e59e67c193b2946d3d4263db28b41a73b76dea1a1829709a725086e",
+      "phase-shifted-periodic": "4e7aff6549651523e3f399c53dda706dac328c0a76cac7a472effe83f2004ac8",
+      "fixed-seed-pseudorandom": "ee9b03a4842b059719865ac8b591a9546c5a326e22c89a7d078e817b2ff5163f"
+    }
+  },
+  "execution": {
+    "iterations": 1,
+    "frame_bytes": 67108864,
+    "max_internal_buffered_bytes": 536870912,
+    "process_isolation": "one-record-per-child",
+    "checkpoint_after_records": 1
+  },
+  "matrix": {
+    "window_bytes": [4194304, 16777216, 67108864],
+    "baseline_strategy": "hash-chain-exact",
+    "candidate_strategy": "hash-chain-mnemonic-mixer-v1-exact",
+    "canonical_order": ["fixture", "window", "baseline", "candidate"],
+    "expected_record_count": 36
+  },
+  "expected_workspace_bytes": {
+    "4194304": 17301504,
+    "16777216": 67633152,
+    "67108864": 268959744
+  },
+  "exact_identity_fields": [
+    "token_count",
+    "literal_count",
+    "match_count",
+    "matched_bytes",
+    "token_fingerprint_sha256"
+  ],
+  "pre_silesia_gate": {
+    "candidate_prefix_mismatch_to_baseline_maximum": 0.5,
+    "candidate_to_baseline_aggregate_minimum": 0.98,
+    "minimum_faster_windows": 2,
+    "workspace_policy": "equal",
+    "fixed_collision_vector_policy": "required",
+    "parameter_tuning_after_observation": "forbidden"
+  }
+}

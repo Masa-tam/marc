@@ -23389,3 +23389,22 @@ on the frozen collision input under MSVC and ClangCL. Require equal canonical
 token fingerprints and workspace with strictly fewer candidates and prefix
 mismatches. Treat timing from this small connection smoke as non-evidence.
 Only the separately fixed 36-record matrix may decide pre-Silesia admission.
+
+## DD-1149: Freeze the mnemonic-mixer synthetic run before measurement
+
+- Date: 2026-09-19
+- Status: accepted
+
+Represent the pre-Silesia experiment by one strict versioned JSON manifest
+and one restartable repository runner. Freeze six existing deterministic
+64-MiB fixtures, 4-/16-/64-MiB windows, baseline-then-candidate order, one
+process per record, frame and aggregate limits, expected equal workspace,
+five Exact identity fields, and all admission thresholds before launching any
+of the resulting 36 records.
+
+Atomically checkpoint after every record and bind resume to the revision,
+benchmark executable digest, manifest digest, runner dependency digests,
+fixture identities, environment labels, and full configuration. Accept only
+a validated canonical record prefix, never relaunch accepted records, and
+support a zero-new-point validation pass. Do not access Silesia, retune the
+mixer, or reinterpret a partial run under this experiment identity.

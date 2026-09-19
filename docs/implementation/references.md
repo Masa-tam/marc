@@ -8418,3 +8418,15 @@ marc's existing HashChain benchmark parser, workspace, token-fingerprint,
 statistics, reporting, and synthetic-smoke contracts. No external benchmark,
 hash implementation, compressor, match finder, source code, pseudocode,
 tuning advice, or test suite was consulted.
+
+### IR-0918
+
+The fixed prefix-mixer experiment runner uses DD-1144 through DD-1149,
+IR-0913 through IR-0917, TVG-1009 through TVG-1014, CR-1250 through CR-1254,
+marc's existing deterministic synthetic fixture generator, strict JSON and
+atomic-checkpoint helpers, benchmark report validator, and canonical-grid
+conventions. The manifest fields, checkpoint identity, process ordering, and
+summary calculation were derived only from these repository-owned contracts.
+No external Corpus, hash implementation, compressor, match finder,
+orchestration tool, source code, pseudocode, tuning advice, benchmark result,
+or test suite was consulted.

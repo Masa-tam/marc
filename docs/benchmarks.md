@@ -2618,3 +2618,22 @@ mismatches; v1 visited 652,059 candidates with 5,017 prefix mismatches. This
 small check validates wiring and diagnostics only. Its timings are discarded,
 it is not one of the frozen 36 records, and it does not authorize Silesia or
 parameter tuning.
+
+### BM-0077: Fixed prefix-mixer synthetic experiment infrastructure
+
+The versioned manifest
+`benchmarks/experiments/lzss-hash-chain-prefix-mixer-synthetic-v1.json` and
+repository runner freeze the pre-Silesia comparison before measurement. The
+grid contains 36 process-isolated records: six existing deterministic 64-MiB
+fixtures, 4-/16-/64-MiB windows, and legacy then mnemonic-v1 HashChain Exact.
+It fixes one iteration, a 64-MiB frame, a 512-MiB aggregate limit, expected
+workspace at every window, all five Exact identity fields, and the admission
+thresholds from DD-1144.
+
+The runner atomically checkpoints each record and resumes only a validated
+canonical prefix bound to revision, executable and tool digests, manifest,
+fixtures, environment, and full configuration. Its self-tests simulate a
+three-record interruption and complete the remaining 33 without relaunching
+the accepted prefix. At this infrastructure gate no record has been measured,
+no result artifact exists, and Silesia remains unread. BM-0077 therefore
+reports reproducible experiment readiness, not performance.
