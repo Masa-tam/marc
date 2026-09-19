@@ -14740,3 +14740,17 @@ wraparound, deterministic binary trials, every small split, and bounded fuzz
 traces. Require identical matches, typed tokens, canonical bytes, and five
 Exact summary fields; equal workspace; bounded progress; and valid saturated
 statistics. No performance result participates until these checks pass.
+
+### TVG-1010
+
+Invoke the unrouted pure v1 function for the six TVG-1009 prefixes and require
+the exact 32-bit results. Place the ascending vector inside leading and
+trailing sentinels to prove position selection. Reject every input shorter
+than five bytes and every requested position with fewer than five remaining
+bytes without a nonzero result.
+
+For the legacy collision pair, mask the fixed hashes with every power-of-two
+bucket count from one through 65,536. Require equality for counts one and two
+and inequality for every count from four upward. For each of five prefix
+positions and all 256 byte values, repeat the calculation and require a valid,
+identical result. This gate exercises no finder, Corpus, timing, or fuzzing.

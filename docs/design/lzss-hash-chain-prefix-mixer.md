@@ -1,6 +1,7 @@
 # LZSS HashChain prefix mixer experiment
 
-Status: design fixed; implementation and measurement not started.
+Status: design and pure mixer fixed; finder integration and measurement not
+started.
 
 ## 1. Motivation and boundary
 
@@ -140,3 +141,13 @@ selection to callers, serialize a mixer ID, alter decoder interoperability,
 increase bucket count, store per-position fingerprints, add hardware CRC or
 SIMD, tune against Silesia before the synthetic gate, or revisit the rejected
 balanced-tree and Sparse admission decisions.
+
+## 8. Implementation state
+
+The pure internal v1 function and its fixed-vector boundary were implemented
+on 2026-09-19 without a finder dispatch. Tests cover all six vectors, offset
+and short-input validation, deterministic single-byte variations in every
+prefix position, and every power-of-two bucket count from one through 65,536.
+The production legacy function and every caller remain unchanged. The next
+independent gate is a separately named private HashChain finder route and
+three-way Exact differential testing; no benchmark timing is yet permitted.

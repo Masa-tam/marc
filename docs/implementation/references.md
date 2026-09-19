@@ -8379,3 +8379,12 @@ mnemonic constants, vectors, zero-workspace boundary, and staged gates were
 derived locally. No external hash implementation, compressor, match finder,
 hash constants, tuning advice, source code, pseudocode, benchmark result, or
 test suite was consulted.
+
+### IR-0914
+
+The pure mnemonic prefix mixer uses DD-1144, IR-0913, TVG-1009, CR-1250,
+the fixed local formula and six vectors, and marc's existing bounded prefix
+result and invalid-range contract. The implementation is a direct expression
+of those repository-owned rules. No external hash implementation, hash
+constant, source code, pseudocode, benchmark result, tuning advice, or test
+suite was consulted.

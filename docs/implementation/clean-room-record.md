@@ -31232,3 +31232,23 @@ both bounds.
   translated.
 - Local validation: fixed vector arithmetic was independently evaluated; the
   implementation and benchmark remain later commit gates.
+
+## CR-1251: 2026-09-19 - Pure HashChain prefix mixer
+
+- Authoring method: translated the already fixed mnemonic v1 arithmetic and
+  vector contract into one bounded internal function and focused unit tests.
+- References used: DD-1144 and DD-1145, IR-0913 and IR-0914, TVG-1009 and
+  TVG-1010, CR-1250, and marc's repository-owned prefix result contract.
+- Known implementations intentionally not consulted: external hash
+  implementation, hash constants, source code, pseudocode, benchmark result,
+  tuning advice, or test suite.
+- Independent decisions: keep the function unrouted; use explicit byte
+  packing; retain the existing invalid-range shape; and test all supported
+  bucket mask widths without changing the legacy function.
+- Generated-code task description: implement only the fixed pure mixer and
+  vectors, with no match-finder connection, measurement, or public change.
+- Similarity review: the code directly expresses the local formula with
+  ordinary unsigned arithmetic. No external implementation expression was
+  copied or translated.
+- Local validation: fixed vectors, range handling, byte variation, and bucket
+  separation pass under the repository test executable.

@@ -23314,3 +23314,20 @@ below 0.98 of legacy before defining a Silesia experiment. Public replacement
 then additionally requires an aggregate win and at least 6 of 12 member wins
 at every window with equal workspace and non-increasing mismatch and candidate
 counts. Do not tune the fixed formula or weaken criteria after observation.
+
+## DD-1145: The mnemonic mixer begins as an unrouted pure function
+
+- Date: 2026-09-19
+- Status: accepted
+
+Implement the fixed v1 arithmetic as one internal bounded prefix function
+beside, not in place of, the legacy function. Return the existing value/valid
+shape, preserve the same five-byte and range checks, pack bytes explicitly,
+and rely only on defined unsigned 64-bit shifts and modular multiplication.
+Add no dispatch, workspace, mutable state, allocation, caller, benchmark
+strategy, public API, or format identity in this gate.
+
+Freeze the six design vectors and the degenerate one-/two-bucket collision
+versus four-through-65,536 separation rule in unit tests. Keep every legacy
+test and caller untouched. Finder integration and Exact differential proof
+remain a later independent decision.
