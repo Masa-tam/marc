@@ -23371,3 +23371,21 @@ Also require a deterministic bounded generated regression with an explicit
 seed, case count, maximum input length, data modes, windows, and match lengths.
 This gate admits the frozen synthetic measurement matrix but does not admit
 Silesia or parameter tuning.
+
+## DD-1148: The mnemonic mixer receives one internal benchmark selector
+
+- Date: 2026-09-19
+- Status: accepted
+
+Add `hash-chain-mnemonic-mixer-v1-exact` only to the repository benchmark
+executable. Give it the same workspace calculation, parser, token summary,
+statistics validator, report keys, and argument rules as legacy
+`hash-chain-exact`; select only the private finder initializer differently.
+Do not add it to the library API, ABI, CLI, format, profiles, or normal codec
+dispatch.
+
+Extend the existing synthetic smoke to compare the two HashChain strategies
+on the frozen collision input under MSVC and ClangCL. Require equal canonical
+token fingerprints and workspace with strictly fewer candidates and prefix
+mismatches. Treat timing from this small connection smoke as non-evidence.
+Only the separately fixed 36-record matrix may decide pre-Silesia admission.

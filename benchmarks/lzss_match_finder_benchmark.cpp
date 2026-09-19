@@ -42,6 +42,7 @@ using namespace marc::dictionary::internal;
 
 enum class BenchmarkStrategy : std::uint8_t {
     hash_chain_exact,
+    hash_chain_mnemonic_mixer_v1_exact,
     binary_tree_exact,
     wavl_tree_exact,
     red_black_tree_exact,
@@ -57,6 +58,8 @@ enum class BenchmarkStrategy : std::uint8_t {
     const std::string_view text, BenchmarkStrategy& strategy) noexcept {
     if (text == "hash-chain-exact") {
         strategy = BenchmarkStrategy::hash_chain_exact;
+    } else if (text == "hash-chain-mnemonic-mixer-v1-exact") {
+        strategy = BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact;
     } else if (text == "binary-tree-exact") {
         strategy = BenchmarkStrategy::binary_tree_exact;
     } else if (text == "wavl-tree-exact") {
@@ -87,6 +90,8 @@ enum class BenchmarkStrategy : std::uint8_t {
     const BenchmarkStrategy strategy) noexcept {
     switch (strategy) {
     case BenchmarkStrategy::hash_chain_exact: return "hash-chain-exact";
+    case BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact:
+        return "hash-chain-mnemonic-mixer-v1-exact";
     case BenchmarkStrategy::binary_tree_exact: return "binary-tree-exact";
     case BenchmarkStrategy::wavl_tree_exact: return "wavl-tree-exact";
     case BenchmarkStrategy::red_black_tree_exact:
@@ -104,6 +109,13 @@ enum class BenchmarkStrategy : std::uint8_t {
         return "sparse-hash-tree-snapshot-delta-budget-exact";
     }
     return "unknown";
+}
+
+[[nodiscard]] bool is_hash_chain_strategy(
+    const BenchmarkStrategy strategy) noexcept {
+    return strategy == BenchmarkStrategy::hash_chain_exact
+        || strategy
+            == BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact;
 }
 
 [[nodiscard]] bool is_sparse_hash_tree_strategy(
@@ -886,6 +898,7 @@ void print_hash_tree_depth_histograms(
     const std::size_t delta_candidate_budget = 0) noexcept {
     switch (strategy) {
     case BenchmarkStrategy::hash_chain_exact:
+    case BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact:
         return valid_hash_chain_statistics(statistics);
     case BenchmarkStrategy::binary_tree_exact:
         return valid_binary_tree_statistics(statistics);
@@ -1285,6 +1298,16 @@ void fill_synthetic_input(
             return false;
         }
         frame_tokens = parse_with_finder(frame, finder, token_summary);
+    } else if (strategy
+               == BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact) {
+        LzssHashChainMnemonicMixerV1MatchFinder finder{};
+        if (initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
+                frame, parameters, limits, workspace, finder,
+                collect_statistics ? &frame_statistics : nullptr)
+            != LzssHashChainError::none) {
+            return false;
+        }
+        frame_tokens = parse_with_finder(frame, finder, token_summary);
     } else if (strategy == BenchmarkStrategy::binary_tree_exact) {
         LzssBinaryTreeMatchFinder finder{};
         if (initialize_lzss_binary_tree_match_finder(
@@ -1530,7 +1553,7 @@ void print_frame_report(
                   << max_internal_buffered_bytes << '\n'
                   << "workspace_bytes=" << workspace_size << '\n';
     }
-    if (strategy == BenchmarkStrategy::hash_chain_exact) {
+    if (is_hash_chain_strategy(strategy)) {
         std::cout << "hash_workspace_bytes=" << workspace_size << '\n'
                   << "hash_chain_queries="
                   << verified.statistics.query_count << '\n'
@@ -1886,7 +1909,8 @@ void print_usage() {
         << "usage: marc_lzss_match_finder_benchmark "
            "<input-file> [iterations]\n"
         << "       marc_lzss_match_finder_benchmark --frames "
-           "<hash-chain-exact|binary-tree-exact|wavl-tree-exact|"
+           "<hash-chain-exact|hash-chain-mnemonic-mixer-v1-exact|"
+           "binary-tree-exact|wavl-tree-exact|"
            "red-black-tree-exact|"
            "scapegoat-tree-exact> "
            "<input-file> [iterations] "
@@ -1898,7 +1922,8 @@ void print_usage() {
            "sparse-hash-tree-exact <input-file> <iterations> <frame-bytes> "
            "<window-bytes> <pool-nodes> <promotion-candidates>\n"
         << "       marc_lzss_match_finder_benchmark --frames-limited "
-           "<hash-chain-exact|binary-tree-exact> <input-file> "
+           "<hash-chain-exact|hash-chain-mnemonic-mixer-v1-exact|"
+           "binary-tree-exact> <input-file> "
            "<iterations> <frame-bytes> <window-bytes> "
            "<max-internal-buffered-bytes>\n"
         << "       marc_lzss_match_finder_benchmark --frames-limited "
@@ -1921,7 +1946,8 @@ void print_usage() {
            "<promotion-candidates> <promotion-reuse-threshold> "
            "<delta-candidate-budget> <max-internal-buffered-bytes>\n"
         << "       marc_lzss_match_finder_benchmark --synthetic "
-           "<hash-chain-exact|binary-tree-exact|wavl-tree-exact|"
+           "<hash-chain-exact|hash-chain-mnemonic-mixer-v1-exact|"
+           "binary-tree-exact|wavl-tree-exact|"
            "red-black-tree-exact|"
            "scapegoat-tree-exact> "
            "<case> "
@@ -1954,11 +1980,11 @@ void print_usage() {
                 || (strategy == BenchmarkStrategy::
                         sparse_hash_tree_snapshot_delta_budget_exact
                     && argc != 12)
-                || ((strategy == BenchmarkStrategy::hash_chain_exact
+                || ((is_hash_chain_strategy(strategy)
                          || strategy == BenchmarkStrategy::binary_tree_exact)
                     && argc != 8)
                 || (!is_sparse_hash_tree_strategy(strategy)
-                    && strategy != BenchmarkStrategy::hash_chain_exact
+                    && !is_hash_chain_strategy(strategy)
                     && strategy != BenchmarkStrategy::binary_tree_exact)))
         || (!explicit_limit
             && strategy == BenchmarkStrategy::hash_tree_exact && argc != 8)
@@ -2039,7 +2065,7 @@ void print_usage() {
     LzssParameters parameters{};
     parameters.window_size = static_cast<std::uint32_t>(window_size);
     std::size_t workspace_size{};
-    if (strategy == BenchmarkStrategy::hash_chain_exact) {
+    if (is_hash_chain_strategy(strategy)) {
         const auto requirements = calculate_lzss_hash_chain_workspace(
             frame_size, parameters, limits);
         if (requirements.error != LzssHashChainError::none) {
@@ -2195,7 +2221,7 @@ void print_usage() {
     LzssParameters parameters{};
     parameters.window_size = static_cast<std::uint32_t>(window_size);
     std::size_t workspace_size{};
-    if (strategy == BenchmarkStrategy::hash_chain_exact) {
+    if (is_hash_chain_strategy(strategy)) {
         const auto requirements = calculate_lzss_hash_chain_workspace(
             frame_size, parameters, limits);
         if (requirements.error != LzssHashChainError::none) {

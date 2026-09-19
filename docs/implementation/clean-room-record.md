@@ -31298,3 +31298,26 @@ both bounds.
   implementation expression was copied or translated.
 - Local validation: MSVC and ClangCL both pass the three focused fixed,
   failure-atomicity, and deterministic bounded generated regressions.
+
+## CR-1254: 2026-09-19 - Internal mnemonic-mixer benchmark route
+
+- Authoring method: added one repository-benchmark-only strategy that selects
+  the already tested private finder and otherwise reuses legacy HashChain
+  measurement contracts.
+- References used: DD-1144 through DD-1148, IR-0913 through IR-0917,
+  TVG-1009 through TVG-1013, CR-1250 through CR-1253, and marc's existing
+  benchmark and synthetic-smoke infrastructure.
+- Known implementations intentionally not consulted: external benchmark,
+  hash implementation, compressor, match finder, source code, pseudocode,
+  tuning advice, or test suite.
+- Independent decisions: expose the route only in the development benchmark,
+  retain common report names, and make Exact identity/work reduction—not a
+  small-input timing—the smoke criterion.
+- Generated-code task description: connect and validate the private finder in
+  the benchmark without changing the library, format, profiles, or frozen
+  experiment conditions.
+- Similarity review: the new branch follows marc's existing benchmark strategy
+  structure and calls repository-owned code. No external implementation
+  expression was copied or translated.
+- Local validation: both MSVC and ClangCL build the benchmark and pass the full
+  synthetic smoke including fingerprint, workspace, and collision-work checks.

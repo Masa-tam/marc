@@ -1,7 +1,7 @@
 # LZSS HashChain prefix mixer experiment
 
-Status: design, pure mixer, private finder, and private typed-token/fuzz gates
-fixed; measurement gate not started.
+Status: design, pure mixer, private finder, private typed-token/fuzz, and
+measurement-harness gates fixed; frozen 36-record matrix not started.
 
 ## 1. Motivation and boundary
 
@@ -180,3 +180,12 @@ Failure regressions preserve output for insufficient token storage, workspace,
 and aggregate limits. The next gate may add only the frozen 36-record synthetic
 measurement matrix and its result artifact; Silesia remains forbidden until
 the pre-Silesia gate is evaluated without tuning.
+
+The measurement harness was connected on 2026-09-19 with the internal-only
+`hash-chain-mnemonic-mixer-v1-exact` benchmark strategy. It shares legacy
+workspace calculation, parser, token fingerprint, statistics validation, and
+report fields. MSVC and ClangCL smoke tests require identical fingerprints and
+workspace and reduced candidate and prefix-mismatch counts on the frozen
+collision input. This connection smoke does not count as any of the 36 frozen
+records and makes no admission decision. The next gate is the exact fixed
+matrix; Silesia and tuning remain prohibited.

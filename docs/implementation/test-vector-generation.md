@@ -14790,3 +14790,13 @@ position pattern, and five-byte-run/PRNG-bit mixture. Cycle windows 1, 5, 17,
 typed-token and canonical-byte identity for every case. This deterministic
 unit regression is bounded and does not invoke a mutation fuzzer, Corpus, or
 timing.
+
+### TVG-1013
+
+Run legacy and mnemonic-v1 HashChain benchmark strategies over the existing
+8,192-byte `hash-collision` synthetic input using two 4,096-byte frames, one
+iteration, and a 4,096-byte window. Require successful structured reports,
+the same canonical token SHA-256 and workspace size, and strictly fewer v1
+candidate visits and prefix mismatches. Run the complete synthetic benchmark
+smoke under MSVC and ClangCL. This is a wiring regression only; exclude its
+timing from the frozen matrix and every admission decision.

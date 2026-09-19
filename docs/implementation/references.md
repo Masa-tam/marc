@@ -8409,3 +8409,12 @@ serializer, buffer-overlap checks, aggregate limits, and fixed-seed test
 conventions. No external hash implementation, compressor, match finder,
 source code, pseudocode, corpus result, tuning advice, or test suite was
 consulted.
+
+### IR-0917
+
+The internal benchmark-selector gate uses DD-1144 through DD-1148, IR-0913
+through IR-0916, TVG-1009 through TVG-1012, CR-1250 through CR-1253, and
+marc's existing HashChain benchmark parser, workspace, token-fingerprint,
+statistics, reporting, and synthetic-smoke contracts. No external benchmark,
+hash implementation, compressor, match finder, source code, pseudocode,
+tuning advice, or test suite was consulted.

@@ -2600,3 +2600,21 @@ The ignored canonical result JSON has SHA-256
 `67d3156a6c458e2de5abcf4f39be349c36e937952c26c5c4a84306c4d004fd2d`.
 The completed checkpoint SHA-256 is
 `37e3b4e8f01f8d554b1c47dee2a52b9af86991a6e60cbaa5ad19add3a6444a3c`.
+
+### BM-0076: HashChain mnemonic-mixer measurement connection
+
+The private `hash-chain-mnemonic-mixer-v1-exact` route is connected only to
+the development match-finder benchmark. It shares the legacy HashChain
+workspace, parser, statistics validator, token fingerprint, and report schema.
+The synthetic benchmark smoke runs both routes on the fixed collision case and
+requires equal canonical token identity and workspace plus strictly fewer v1
+candidates and prefix mismatches. The complete smoke passes under MSVC and
+ClangCL.
+
+A separate 65,536-byte connection check produced 16,398 tokens and fingerprint
+`4d20eda6e7c34bbd66e8bfe3c4ec0568c5a62d784bc84d60f127f3a61e9aa160`
+for both routes. Legacy visited 1,301,551 candidates with 654,509 prefix
+mismatches; v1 visited 652,059 candidates with 5,017 prefix mismatches. This
+small check validates wiring and diagnostics only. Its timings are discarded,
+it is not one of the frozen 36 records, and it does not authorize Silesia or
+parameter tuning.

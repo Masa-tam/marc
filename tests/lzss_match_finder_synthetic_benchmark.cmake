@@ -88,6 +88,81 @@ foreach(case_name IN ITEMS
     endif()
 endforeach()
 
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --synthetic
+        hash-chain-mnemonic-mixer-v1-exact
+        hash-collision 8192 1 4096 4096
+    RESULT_VARIABLE mnemonic_result
+    OUTPUT_VARIABLE mnemonic_report
+    ERROR_VARIABLE mnemonic_error)
+if(NOT mnemonic_result EQUAL 0)
+    message(FATAL_ERROR
+        "mnemonic mixer synthetic benchmark failed: ${mnemonic_result}: "
+        "${mnemonic_error}")
+endif()
+foreach(expected_line IN ITEMS
+        "mode=synthetic"
+        "strategy=hash-chain-mnemonic-mixer-v1-exact"
+        "synthetic_case=hash-collision"
+        "input_bytes=8192"
+        "frame_bytes=4096"
+        "window_bytes=4096"
+        "frame_count=2"
+        "iterations=1")
+    string(FIND "${mnemonic_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR
+            "mnemonic mixer missing report line: ${expected_line}")
+    endif()
+endforeach()
+string(REGEX MATCH "token_fingerprint_sha256=([0-9a-f]+)"
+    mnemonic_fingerprint_match "${mnemonic_report}")
+set(mnemonic_fingerprint "${CMAKE_MATCH_1}")
+string(REGEX MATCH "hash_workspace_bytes=([0-9]+)"
+    ignored "${mnemonic_report}")
+set(mnemonic_workspace "${CMAKE_MATCH_1}")
+string(REGEX MATCH "hash_chain_candidates=([0-9]+)"
+    ignored "${mnemonic_report}")
+set(mnemonic_candidates "${CMAKE_MATCH_1}")
+string(REGEX MATCH "hash_chain_prefix_mismatches=([0-9]+)"
+    ignored "${mnemonic_report}")
+set(mnemonic_mismatches "${CMAKE_MATCH_1}")
+
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --synthetic hash-chain-exact
+        hash-collision 8192 1 4096 4096
+    RESULT_VARIABLE legacy_collision_result
+    OUTPUT_VARIABLE legacy_collision_report
+    ERROR_VARIABLE legacy_collision_error)
+if(NOT legacy_collision_result EQUAL 0)
+    message(FATAL_ERROR
+        "legacy collision control failed: ${legacy_collision_result}: "
+        "${legacy_collision_error}")
+endif()
+string(REGEX MATCH "token_fingerprint_sha256=([0-9a-f]+)"
+    legacy_fingerprint_match "${legacy_collision_report}")
+set(legacy_fingerprint "${CMAKE_MATCH_1}")
+string(REGEX MATCH "hash_workspace_bytes=([0-9]+)"
+    ignored "${legacy_collision_report}")
+set(legacy_workspace "${CMAKE_MATCH_1}")
+string(REGEX MATCH "hash_chain_candidates=([0-9]+)"
+    ignored "${legacy_collision_report}")
+set(legacy_candidates "${CMAKE_MATCH_1}")
+string(REGEX MATCH "hash_chain_prefix_mismatches=([0-9]+)"
+    ignored "${legacy_collision_report}")
+set(legacy_mismatches "${CMAKE_MATCH_1}")
+if(NOT mnemonic_fingerprint STREQUAL legacy_fingerprint)
+    message(FATAL_ERROR "mnemonic mixer token fingerprint changed")
+endif()
+if(NOT mnemonic_workspace EQUAL legacy_workspace)
+    message(FATAL_ERROR "mnemonic mixer workspace changed")
+endif()
+if(NOT mnemonic_candidates LESS legacy_candidates
+        OR NOT mnemonic_mismatches LESS legacy_mismatches)
+    message(FATAL_ERROR
+        "mnemonic mixer did not reduce collision work")
+endif()
+
 set(deletion_fingerprint "")
 foreach(tree_strategy IN ITEMS
         binary-tree-exact red-black-tree-exact scapegoat-tree-exact)
