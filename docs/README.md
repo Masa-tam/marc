@@ -22,6 +22,9 @@ navigate chronological development records.
   the complete-default rule for codecs without such helpers.
 - [LZSS match-finder strategy](design/lzss-match-finder-strategy.md): exact
   encoder-side acceleration without changing the LZSS stream format.
+- [LZSS HashChain prefix mixer experiment](design/lzss-hash-chain-prefix-mixer.md):
+  private zero-workspace low-bit-distribution candidate with fixed Exact,
+  synthetic, and Silesia admission gates.
 - [LZSS ordered-tree Exact strategy evaluation](design/lzss-balanced-tree-strategy-evaluation.md):
   completed Red-Black, Scapegoat, and deletion-focused WAVL experiments under
   the existing Exact contract, including their negative admission decisions.

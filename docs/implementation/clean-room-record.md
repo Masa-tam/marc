@@ -31209,3 +31209,26 @@ both bounds.
   expression was copied or translated.
 - Local validation: all 126 records pass Exact and accounting checks; every
   shortlist is empty; and a completed rerun launches no benchmark child.
+
+## CR-1250: 2026-09-19 - HashChain prefix-mixer experiment design
+
+- Authoring method: inspected marc's legacy five-byte prefix hash, HashChain
+  chain order, diagnostics, and completed local benchmark evidence, then
+  specified one portable private candidate and immutable staged gates.
+- References used: DD-1144, IR-0913, TVG-1009, BM-0074, BM-0075, and marc's
+  repository-owned HashChain, Exhaustive, fixture, checkpoint, and Exact
+  fingerprint contracts.
+- Known implementations intentionally not consulted: external hash
+  implementation, compressor, match finder, hash constants, tuning advice,
+  source code, pseudocode, benchmark result, or test suite.
+- Independent decisions: pack five bytes explicitly; derive odd constants
+  from mnemonic local tags; add no workspace; freeze six vectors; retain the
+  legacy path; and require synthetic eligibility before Silesia access.
+- Generated-code task description: design a private portable prefix mixer and
+  strict negative-result-capable evaluation without implementing, timing, or
+  changing a public path.
+- Similarity review: the formula and gates were written from local contracts
+  and measurements. No external implementation expression was copied or
+  translated.
+- Local validation: fixed vector arithmetic was independently evaluated; the
+  implementation and benchmark remain later commit gates.

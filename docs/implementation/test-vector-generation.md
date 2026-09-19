@@ -14722,3 +14722,21 @@ Fix the ignored result SHA-256 to
 `67d3156a6c458e2de5abcf4f39be349c36e937952c26c5c4a84306c4d004fd2d`
 and completed checkpoint SHA-256 to
 `37e3b4e8f01f8d554b1c47dee2a52b9af86991a6e60cbaa5ad19add3a6444a3c`.
+
+### TVG-1009
+
+Fix six mnemonic-mixer vectors: zero, ascending bytes, ASCII `ABCDE`, all
+`ff`, and the legacy low-16 collision pair. Require hashes `00000000`,
+`4d6ccd81`, `892c8ac2`, `200c8d40`, `8e1546d4`, and `57938f46` respectively,
+with distinct low-16 buckets for the final pair. Verify identical results
+under MSVC and ClangCL. Across power-of-two bucket counts, require the final
+pair to collide at one and two buckets and to remain distinct from four
+through 65,536 buckets.
+
+For the later private finder gate, compare Exhaustive, legacy HashChain Exact,
+and v1 HashChain Exact over empty and short input, all bytes, repeated and
+periodic data, forced legacy and v1 collisions, window boundaries, link
+wraparound, deterministic binary trials, every small split, and bounded fuzz
+traces. Require identical matches, typed tokens, canonical bytes, and five
+Exact summary fields; equal workspace; bounded progress; and valid saturated
+statistics. No performance result participates until these checks pass.

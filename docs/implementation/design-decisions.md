@@ -23292,3 +23292,25 @@ reusable observation boundary. Do not expose a selector value, ABI, CLI,
 profile, format variant, inferred budget, or default. A future materially
 different hypothesis requires a new decision, manifest, and versioned result;
 it must not reinterpret this completed experiment.
+
+## DD-1144: Evaluate one private mnemonic HashChain prefix mixer
+
+- Date: 2026-09-19
+- Status: accepted
+
+Address the measured HashChain prefix-collision cost without another tree or
+additional workspace. Freeze one private v1 candidate that explicitly packs
+five bytes, applies two unsigned 64-bit XOR/multiply rounds using locally
+mnemonic odd constants, and selects the existing power-of-two bucket from its
+low bits. Retain byte comparison as authoritative and preserve chain order,
+Exact longest-match and nearest-distance semantics, links, workspace, public
+legacy initializer, selector, ABI, CLI, profile, frame, and format.
+
+Prove fixed vectors and three-way Exact identity before measurement. Use the
+six existing deterministic 64-MiB fixtures and three windows for a frozen
+36-record pre-Silesia gate. Require at least 50% aggregate prefix-mismatch
+reduction at every window, aggregate speed gain at two windows, and no window
+below 0.98 of legacy before defining a Silesia experiment. Public replacement
+then additionally requires an aggregate win and at least 6 of 12 member wins
+at every window with equal workspace and non-increasing mismatch and candidate
+counts. Do not tune the fixed formula or weaken criteria after observation.

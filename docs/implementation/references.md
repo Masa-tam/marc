@@ -8368,3 +8368,14 @@ checkpoint and result produced locally at commit `97937ec0`. Eligibility was
 read mechanically from the predeclared shortlist rule. No external Corpus,
 compressor, match finder, tuning advice, source code, pseudocode, benchmark
 result, or test suite was consulted, and no Silesia member was read.
+
+### IR-0913
+
+The HashChain prefix-mixer experiment uses DD-1144, TVG-1009, CR-1250,
+marc's repository-owned five-byte prefix contract, legacy HashChain Exact
+implementation and diagnostics, Exhaustive oracle, deterministic fixtures,
+and completed BM-0074/BM-0075 measurements. The packed-prefix formula,
+mnemonic constants, vectors, zero-workspace boundary, and staged gates were
+derived locally. No external hash implementation, compressor, match finder,
+hash constants, tuning advice, source code, pseudocode, benchmark result, or
+test suite was consulted.

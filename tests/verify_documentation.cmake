@@ -22,6 +22,7 @@ set(required_documents
     docs/interoperability.md
     docs/releasing.md
     docs/design/lzss-match-finder-strategy.md
+    docs/design/lzss-hash-chain-prefix-mixer.md
     docs/design/lzss-balanced-tree-strategy-evaluation.md
     docs/design/lzss-wavl-tree-exact.md
     docs/design/lzss-wavl-tree-exact-transitions.md
@@ -36,6 +37,31 @@ set(required_documents
 foreach(relative_path IN LISTS required_documents)
     if(NOT EXISTS "${source_dir}/${relative_path}")
         message(FATAL_ERROR "Required document is missing: ${relative_path}")
+    endif()
+endforeach()
+
+set(lzss_hash_chain_prefix_mixer_design
+    "${source_dir}/docs/design/lzss-hash-chain-prefix-mixer.md")
+file(READ "${lzss_hash_chain_prefix_mixer_design}"
+    lzss_hash_chain_prefix_mixer_content)
+foreach(required_hash_chain_prefix_mixer_term IN ITEMS
+        "0x4d4152434c5a5353"
+        "0x455841435450524f"
+        "4d6ccd81"
+        "8e1546d4"
+        "57938f46"
+        "adds no persistent workspace"
+        "36 process-isolated records"
+        "at most 50% of legacy"
+        "at least 6 of 12"
+        "legacy mixer unchanged")
+    string(FIND "${lzss_hash_chain_prefix_mixer_content}"
+        "${required_hash_chain_prefix_mixer_term}"
+        required_hash_chain_prefix_mixer_term_offset)
+    if(required_hash_chain_prefix_mixer_term_offset EQUAL -1)
+        message(FATAL_ERROR
+            "Incomplete HashChain prefix-mixer design: "
+            "${required_hash_chain_prefix_mixer_term}")
     endif()
 endforeach()
 
