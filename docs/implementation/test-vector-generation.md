@@ -14771,3 +14771,22 @@ candidates. After valid initialization, attempt an undersized reinitialization
 and require the prior position-zero result to remain unchanged. Execute the
 four focused regressions under MSVC and ClangCL. Typed-token serialization,
 fuzzing, Corpus access, and timing remain outside this gate.
+
+### TVG-1012
+
+Compare Exhaustive, legacy HashChain, and mnemonic-v1 HashChain single-pass
+typed output for empty, one-byte, repeated, structured, all-byte, frozen
+collision-record, and 1 MiB-profile inputs. Serialize every produced typed
+sequence through the canonical LZSS token serializer and require byte identity
+with the reference byte-stream encoder. Check insufficient token storage,
+one-byte-short workspace, and one-byte-short aggregate limits without changing
+caller token storage.
+
+For the bounded generated regression, initialize a 32-bit linear congruential
+state to `0x9e3779b9`, generate 192 cases of length `0..257`, and alternate
+four byte distributions: high PRNG byte, seven-symbol alphabet, nineteen-byte
+position pattern, and five-byte-run/PRNG-bit mixture. Cycle windows 1, 5, 17,
+64, 257, and 65,536 and maximum lengths 5, 17, 67, and 258. Require the same
+typed-token and canonical-byte identity for every case. This deterministic
+unit regression is bounded and does not invoke a mutation fuzzer, Corpus, or
+timing.

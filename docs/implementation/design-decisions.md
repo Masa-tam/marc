@@ -23351,3 +23351,23 @@ the collision fixture reduces both mismatch and total candidates without
 making those work-count reductions an Exactness assumption. Do not yet add a
 typed-token entry, benchmark selector, fuzz target, public setting, or format
 change.
+
+## DD-1147: The mnemonic mixer typed route shares one single-pass contract
+
+- Date: 2026-09-19
+- Status: accepted
+
+Refactor the legacy HashChain single-pass typed encoder into an internal
+compile-time finder/initializer specialization and add one separately named
+mnemonic-v1 specialization. Both routes must share preflight, overlap
+validation, worst-case token reservation, aggregate-limit enforcement,
+parser decisions, statistics, error mapping, and canonical serialization.
+Keep the new entry internal and omit every frame, format, ABI, public selector,
+and benchmark selector change.
+
+Require typed-token and canonical-byte equality against Exhaustive and legacy
+HashChain on fixed inputs, the frozen collision fixture, and the 1 MiB profile.
+Also require a deterministic bounded generated regression with an explicit
+seed, case count, maximum input length, data modes, windows, and match lengths.
+This gate admits the frozen synthetic measurement matrix but does not admit
+Silesia or parameter tuning.

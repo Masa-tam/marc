@@ -31275,3 +31275,26 @@ both bounds.
   external implementation expression was copied or translated.
 - Local validation: both compiler routes pass four focused three-way
   differential, collision-work, skipped-position, and atomic-failure tests.
+
+## CR-1253: 2026-09-19 - Private mnemonic-mixer typed-token gate
+
+- Authoring method: parameterized marc's repository-owned single-pass typed
+  encoder by finder and initializer at compile time, then added an internal v1
+  entry and bounded differential regressions.
+- References used: DD-1144 through DD-1147, IR-0913 through IR-0916,
+  TVG-1009 through TVG-1012, CR-1250 through CR-1252, and marc's existing
+  typed parser, canonical serializer, validation, and fixed-seed conventions.
+- Known implementations intentionally not consulted: external hash
+  implementation, compressor, match finder, source code, pseudocode,
+  benchmark result, tuning advice, or test suite.
+- Independent decisions: share all non-finder single-pass behavior, keep the
+  entry private, use the frozen collision fixture, and bound deterministic
+  generated coverage to 192 inputs of at most 257 bytes.
+- Generated-code task description: prove mnemonic-v1 typed tokens and their
+  canonical bytes equal Exhaustive and legacy output without public or format
+  changes, measurement, Corpus access, or mutable fuzzing.
+- Similarity review: the refactor preserves marc's existing control flow and
+  substitutes only the locally specified finder initializer. No external
+  implementation expression was copied or translated.
+- Local validation: MSVC and ClangCL both pass the three focused fixed,
+  failure-atomicity, and deterministic bounded generated regressions.

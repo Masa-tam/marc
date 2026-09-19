@@ -1,7 +1,7 @@
 # LZSS HashChain prefix mixer experiment
 
-Status: design, pure mixer, and private finder integration fixed; typed-token,
-fuzz, and measurement gates not started.
+Status: design, pure mixer, private finder, and private typed-token/fuzz gates
+fixed; measurement gate not started.
 
 ## 1. Motivation and boundary
 
@@ -166,3 +166,17 @@ collision fixture reduces both prefix-mismatch and total candidate counts with
 v1 while retaining every match. The next independent gate is private
 single-pass typed-token production, canonical token-byte identity, and bounded
 deterministic fuzzing. Benchmark timing remains prohibited until that gate.
+
+That typed-token gate was completed on 2026-09-19. The legacy and v1 routes
+share one compile-time-parameterized single-pass implementation, including
+preflight, overlap checks, worst-case token reservation, aggregate-limit
+accounting, parser, and failure mapping. The v1 entry remains internal and has
+no frame, format, C ABI, public C++ API, or benchmark selector.
+
+Exhaustive, legacy, and v1 produce identical typed tokens and identical
+canonical LZSS token bytes for fixed structured inputs, the frozen collision
+fixture, the 1 MiB profile, and 192 deterministic bounded generated cases.
+Failure regressions preserve output for insufficient token storage, workspace,
+and aggregate limits. The next gate may add only the frozen 36-record synthetic
+measurement matrix and its result artifact; Silesia remains forbidden until
+the pre-Silesia gate is evaluated without tuning.

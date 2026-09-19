@@ -253,6 +253,69 @@ void expect_private_match_finders_typed_equal_exact(
               canonical);
 }
 
+void expect_mnemonic_mixer_typed_equal_exact(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters = {},
+    const LzssTypedTokenVariant variant =
+        LzssTypedTokenVariant::field_context_64k) {
+    const auto reference_plan = plan_lzss_typed_tokens(
+        input, parameters, {}, variant);
+    ASSERT_EQ(reference_plan.error, LzssTypedEncodeError::none);
+    std::vector<LzssTypedToken> reference(reference_plan.token_count);
+    ASSERT_EQ(encode_lzss_typed_tokens(
+                  input, parameters, {}, reference, variant).error,
+              LzssTypedEncodeError::none);
+
+    const auto required = calculate_lzss_hash_chain_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssHashChainError::none);
+    AlignedWorkspace legacy_owner(required.workspace_size);
+    AlignedWorkspace mnemonic_owner(required.workspace_size);
+    std::vector<LzssTypedToken> legacy(input.size());
+    std::vector<LzssTypedToken> mnemonic(input.size());
+    LzssMatchFinderStatistics legacy_statistics{};
+    LzssMatchFinderStatistics mnemonic_statistics{};
+    const auto legacy_result =
+        encode_lzss_typed_tokens_hash_chain_single_pass(
+            input, parameters, {}, legacy,
+            legacy_owner.bytes(required.workspace_size),
+            &legacy_statistics, variant);
+    const auto mnemonic_result =
+        encode_lzss_typed_tokens_hash_chain_mnemonic_mixer_v1_single_pass(
+            input, parameters, {}, mnemonic,
+            mnemonic_owner.bytes(required.workspace_size),
+            &mnemonic_statistics, variant);
+    ASSERT_EQ(legacy_result.error, LzssTypedEncodeError::none);
+    ASSERT_EQ(mnemonic_result.error, LzssTypedEncodeError::none);
+    ASSERT_EQ(legacy_result.token_count, reference.size());
+    ASSERT_EQ(mnemonic_result.token_count, reference.size());
+    EXPECT_EQ(legacy_result.token_storage_size,
+              reference.size() * sizeof(LzssTypedToken));
+    EXPECT_EQ(mnemonic_result.token_storage_size,
+              reference.size() * sizeof(LzssTypedToken));
+    EXPECT_EQ(legacy_statistics.query_count, reference.size());
+    EXPECT_EQ(mnemonic_statistics.query_count, reference.size());
+    EXPECT_FALSE(legacy_statistics.overflowed);
+    EXPECT_FALSE(mnemonic_statistics.overflowed);
+
+    legacy.resize(legacy_result.token_count);
+    mnemonic.resize(mnemonic_result.token_count);
+    for (std::size_t index = 0; index < reference.size(); ++index) {
+        EXPECT_TRUE(equal_token(legacy[index], reference[index])) << index;
+        EXPECT_TRUE(equal_token(mnemonic[index], reference[index])) << index;
+    }
+
+    const auto byte_plan = plan_lzss_token_stream(input, parameters, {});
+    ASSERT_EQ(byte_plan.error, LzssEncodeError::none);
+    std::vector<std::byte> canonical(byte_plan.output_size);
+    ASSERT_EQ(encode_lzss_token_stream(
+                  input, parameters, {}, canonical).error,
+              LzssEncodeError::none);
+    EXPECT_EQ(serialize_typed_tokens(reference), canonical);
+    EXPECT_EQ(serialize_typed_tokens(legacy), canonical);
+    EXPECT_EQ(serialize_typed_tokens(mnemonic), canonical);
+}
+
 } // namespace
 
 TEST(LzssTypedEncoder, PlansEmptyAndOneLiteralExactly) {
@@ -634,6 +697,124 @@ TEST(LzssTypedEncoder, PrivateMatchFinderEntriesMatchExactTokensAndBytes) {
     extended.window_size = 1U << 20;
     expect_private_match_finders_typed_equal_exact(
         all_values, extended, LzssTypedTokenVariant::field_context_1m);
+}
+
+TEST(LzssTypedEncoder,
+     MnemonicMixerSinglePassMatchesExactTokensAndBytes) {
+    expect_mnemonic_mixer_typed_equal_exact(bytes(""));
+    expect_mnemonic_mixer_typed_equal_exact(bytes("A"));
+    expect_mnemonic_mixer_typed_equal_exact(
+        bytes("AAAAAAAAAAAAAAAA"));
+    expect_mnemonic_mixer_typed_equal_exact(
+        bytes("ABCDE1ABCDE2ABCDE3"));
+
+    std::vector<std::byte> all_values{};
+    for (std::uint32_t value = 0; value < 256; ++value) {
+        all_values.push_back(static_cast<std::byte>(value));
+    }
+    all_values.insert(all_values.end(), all_values.begin(), all_values.end());
+    expect_mnemonic_mixer_typed_equal_exact(all_values);
+
+    std::vector<std::byte> collision_records{};
+    for (std::uint32_t record = 0; record < 256; ++record) {
+        const auto first = (record & 1U) == 0U
+            ? std::array{std::byte{1}, std::byte{0}, std::byte{0},
+                         std::byte{0x58}, std::byte{0x59}}
+            : std::array{std::byte{0}, std::byte{0x20}, std::byte{0},
+                         std::byte{0x58}, std::byte{0x59}};
+        collision_records.insert(
+            collision_records.end(), first.begin(), first.end());
+        collision_records.push_back(static_cast<std::byte>(record));
+    }
+    expect_mnemonic_mixer_typed_equal_exact(collision_records);
+
+    LzssParameters extended{};
+    extended.window_size = 1U << 20;
+    expect_mnemonic_mixer_typed_equal_exact(
+        all_values, extended, LzssTypedTokenVariant::field_context_1m);
+}
+
+TEST(LzssTypedEncoder,
+     MnemonicMixerSinglePassFailuresAreAtomicAndBounded) {
+    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    const auto required = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssHashChainError::none);
+    ASSERT_GT(required.workspace_size, 0U);
+    AlignedWorkspace owner(required.workspace_size);
+    const LzssTypedToken sentinel{
+        LzssTypedTokenKind::match, 0, 123, 456};
+
+    std::vector<LzssTypedToken> short_output(input.size() - 1U, sentinel);
+    auto result =
+        encode_lzss_typed_tokens_hash_chain_mnemonic_mixer_v1_single_pass(
+            input, {}, {}, short_output,
+            owner.bytes(required.workspace_size));
+    EXPECT_EQ(result.error, LzssTypedEncodeError::output_too_small);
+    EXPECT_EQ(result.token_count, input.size());
+    EXPECT_TRUE(std::ranges::all_of(
+        short_output, [&sentinel](const LzssTypedToken& token) {
+            return equal_token(token, sentinel);
+        }));
+
+    std::vector<LzssTypedToken> output(input.size(), sentinel);
+    result =
+        encode_lzss_typed_tokens_hash_chain_mnemonic_mixer_v1_single_pass(
+            input, {}, {}, output,
+            owner.bytes(required.workspace_size - 1U));
+    EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
+    EXPECT_EQ(result.match_finder_error,
+              LzssHashChainError::workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [&sentinel](const LzssTypedToken& token) {
+            return equal_token(token, sentinel);
+        }));
+
+    auto limits = marc::core::DecoderLimits{};
+    limits.max_frame_size = input.size();
+    limits.max_block_size = input.size();
+    limits.max_internal_buffered_bytes = input.size()
+        + required.workspace_size
+        + input.size() * sizeof(LzssTypedToken) - 1U;
+    result =
+        encode_lzss_typed_tokens_hash_chain_mnemonic_mixer_v1_single_pass(
+            input, {}, limits, output,
+            owner.bytes(required.workspace_size));
+    EXPECT_EQ(result.error,
+              LzssTypedEncodeError::token_storage_limit_exceeded);
+    EXPECT_TRUE(std::ranges::all_of(
+        output, [&sentinel](const LzssTypedToken& token) {
+            return equal_token(token, sentinel);
+        }));
+}
+
+TEST(LzssTypedEncoder,
+     MnemonicMixerDeterministicBoundedFuzzMatchesExactBytes) {
+    std::uint32_t state = UINT32_C(0x9e3779b9);
+    constexpr std::array<std::uint32_t, 6> windows{
+        1U, 5U, 17U, 64U, 257U, 65'536U};
+    constexpr std::array<std::uint32_t, 4> maximum_lengths{
+        5U, 17U, 67U, 258U};
+    for (std::size_t case_index = 0; case_index < 192; ++case_index) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        const auto size = static_cast<std::size_t>((state >> 16U) % 258U);
+        std::vector<std::byte> input(size);
+        for (std::size_t index = 0; index < size; ++index) {
+            state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+            const auto mode = case_index % 4U;
+            const auto value = mode == 0U ? state >> 24U
+                : mode == 1U ? state % 7U
+                : mode == 2U ? (index + case_index) % 19U
+                             : ((index / 5U) ^ (state >> 29U)) & 0xffU;
+            input[index] = static_cast<std::byte>(value);
+        }
+        LzssParameters parameters{};
+        parameters.window_size = windows[case_index % windows.size()];
+        parameters.max_match_length =
+            maximum_lengths[(case_index / windows.size())
+                            % maximum_lengths.size()];
+        expect_mnemonic_mixer_typed_equal_exact(input, parameters);
+    }
 }
 
 TEST(LzssTypedEncoder,

@@ -8399,3 +8399,13 @@ policy split, adapter, atomic initialization, and differential classes were
 derived only from those local contracts. No external hash implementation,
 compressor, match finder, source code, pseudocode, benchmark result, tuning
 advice, or test suite was consulted.
+
+### IR-0916
+
+The private typed-token and bounded generated-test gate uses DD-1144 through
+DD-1147, IR-0913 through IR-0915, TVG-1009 through TVG-1011, CR-1250 through
+CR-1252, marc's existing single-pass typed parser, canonical LZSS token
+serializer, buffer-overlap checks, aggregate limits, and fixed-seed test
+conventions. No external hash implementation, compressor, match finder,
+source code, pseudocode, corpus result, tuning advice, or test suite was
+consulted.
