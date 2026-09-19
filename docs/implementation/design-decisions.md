@@ -23408,3 +23408,21 @@ fixture identities, environment labels, and full configuration. Accept only
 a validated canonical record prefix, never relaunch accepted records, and
 support a zero-new-point validation pass. Do not access Silesia, retune the
 mixer, or reinterpret a partial run under this experiment identity.
+
+## DD-1150: Close mnemonic mixer v1 as a negative synthetic experiment
+
+- Date: 2026-09-20
+- Status: accepted
+
+Evaluate the complete frozen 36-record result without changing the formula,
+fixtures, thresholds, or aggregation. Although v1 wins five of six fixture
+timings at every window and slightly improves aggregate throughput at 4 and
+64 MiB, reject it from Silesia admission because aggregate prefix mismatches
+remain above `0.99` of legacy at every window and 16-MiB aggregate throughput
+falls below the fixed `0.98` floor.
+
+Treat this as a successful negative experiment. Retain the private function,
+finder, typed-token oracle, tests, benchmark selector, manifest, runner, and
+recorded evidence, but do not replace the legacy production mixer, expose a
+public selector, create a Silesia follow-up, retune v1, or change the API, ABI,
+CLI, profiles, frame, format, or defaults.

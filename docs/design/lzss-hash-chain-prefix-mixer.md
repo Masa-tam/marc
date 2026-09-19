@@ -1,8 +1,7 @@
 # LZSS HashChain prefix mixer experiment
 
-Status: design, pure mixer, private finder, private typed-token/fuzz,
-measurement-harness, and restartable experiment-runner gates fixed; frozen
-36-record matrix not started.
+Status: completed negative experiment; private oracle retained, legacy
+HashChain remains production, and no Silesia follow-up is admitted.
 
 ## 1. Motivation and boundary
 
@@ -209,3 +208,20 @@ workspace identity, gate evaluation, checkpoint binding, and a three-record
 interruption followed by completion. The next gate may start the fixed matrix;
 Silesia and parameter changes remain prohibited until its recorded result is
 evaluated.
+
+The complete fixed matrix finished on 2026-09-20 at commit `bc14a52e`.
+All 36 records preserved the five Exact identity fields and equal expected
+workspace. V1 was faster on five of six fixtures at every window and its
+aggregate throughput ratios were `1.002339`, `0.941926`, and `1.007384` at
+4, 16, and 64 MiB. The corresponding aggregate prefix-mismatch ratios were
+`0.995721`, `0.996272`, and `0.993780`, and candidate ratios were `0.996040`,
+`0.996417`, and `0.994516`.
+
+The fixed pre-Silesia gate therefore fails: the mismatch ratios are nowhere
+near the required `0.5`, and the 16-MiB throughput ratio is below the required
+`0.98`. The fixed-seed pseudorandom control dominates aggregate candidate
+work and remains effectively unchanged, despite useful reductions on several
+structured fixtures. No threshold is relaxed, no constant is retuned, and no
+Silesia manifest or measurement is created. The v1 route remains private test
+and benchmark evidence; the legacy production path, API, ABI, CLI, profiles,
+format, and defaults remain unchanged.

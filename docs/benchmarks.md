@@ -2637,3 +2637,32 @@ three-record interruption and complete the remaining 33 without relaunching
 the accepted prefix. At this infrastructure gate no record has been measured,
 no result artifact exists, and Silesia remains unread. BM-0077 therefore
 reports reproducible experiment readiness, not performance.
+
+### BM-0078: Fixed HashChain prefix-mixer synthetic result
+
+The complete MSVC Release experiment at commit `bc14a52e` finished all 36
+process-isolated records: six deterministic 64-MiB fixtures, 4-/16-/64-MiB
+windows, and legacy plus mnemonic-v1 HashChain Exact for every fixture/window.
+Every pair matched in all five Exact identity fields and used the fixed equal
+workspace. A zero-new-point rerun validated `progress=36/36` without launching
+another benchmark child.
+
+| Window | V1 / legacy throughput | V1 / legacy prefix mismatches | V1 / legacy candidates | V1 fixture wins | Workspace |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 MiB | 1.002339 | 0.995721 | 0.996040 | 5 / 6 | 17,301,504 |
+| 16 MiB | 0.941926 | 0.996272 | 0.996417 | 5 / 6 | 67,633,152 |
+| 64 MiB | 1.007384 | 0.993780 | 0.994516 | 5 / 6 | 268,959,744 |
+
+The structured fixtures show local gains, including approximately one-quarter
+of legacy mismatch work for both periodic fixtures. The fixed-seed
+pseudorandom control remains effectively unchanged and dominates aggregate
+candidate work. Consequently, every aggregate mismatch ratio misses the
+required `0.5`, and the 16-MiB throughput ratio also misses the `0.98` floor.
+The pre-Silesia gate is false despite two faster aggregate windows and five
+fixture wins per window. No threshold is relaxed and no Silesia follow-up is
+created; v1 remains private and legacy remains production.
+
+The ignored canonical result JSON has SHA-256
+`8eb314beb176ed48a0ae72d4eb2294bfd053165a8c0cf8f371e1280faa938f28`.
+The completed checkpoint SHA-256 is
+`f5fc5973c6de89c535aa1ddce0189a494006aa9d920a9111515353167a56f57a`.

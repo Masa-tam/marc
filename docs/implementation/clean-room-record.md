@@ -31344,3 +31344,25 @@ both bounds.
   translated.
 - Local validation: six runner self-tests pass strict-manifest, accounting,
   Exactness, gate, identity, and three-plus-thirty-three resume checks.
+
+## CR-1256: 2026-09-20 - Prefix-mixer synthetic result closeout
+
+- Authoring method: ran the already committed fixed matrix once, resumed no
+  completed point, mechanically read its gate, and documented the negative
+  outcome without changing the candidate or criteria.
+- References used: DD-1144 through DD-1150, IR-0913 through IR-0919,
+  TVG-1009 through TVG-1015, CR-1250 through CR-1255, and the repository-owned
+  manifest, runner, checkpoint, and result at commit `bc14a52e`.
+- Known implementations intentionally not consulted: external Corpus, hash
+  implementation, compressor, match finder, source code, pseudocode, tuning
+  advice, benchmark result, or test suite. Silesia was not read.
+- Independent decisions: preserve every fixed threshold; count the
+  pseudorandom control in aggregate results; reject Silesia admission; and
+  retain v1 only as private evidence and an Exact oracle.
+- Generated-code task description: record and close the completed synthetic
+  experiment without implementation, public, format, or parameter changes.
+- Similarity review: this record reports locally produced measurements and
+  applies repository-owned rules. No external implementation expression was
+  copied or translated.
+- Local validation: all 36 records pass Exact and workspace checks; a
+  zero-new-point rerun reports `progress=36/36`; the fixed gate reports false.

@@ -14817,3 +14817,18 @@ interruption after three records, resume the remaining 33 without relaunching
 the prefix, and regenerate the final 36-record result. Also test zero-point
 validation and the fixed pre-Silesia thresholds. These runner tests launch no
 benchmark, read no Silesia data, and contribute no performance evidence.
+
+### TVG-1015
+
+Run all 36 canonical records at commit `bc14a52e`, atomically saving after
+each record. Require every legacy/v1 pair to match in token, literal, match,
+and matched-byte counts and canonical token SHA-256, and require the fixed
+workspace for its window. After completion, rerun with a zero-new-point limit
+and require `progress=36/36` without launching a benchmark child.
+
+Evaluate only the frozen aggregate gate. Record per-window throughput,
+prefix-mismatch, candidate, fixture-win, and workspace values. Require no
+Silesia access or follow-up when any mismatch ratio exceeds `0.5` or any
+throughput ratio is below `0.98`, irrespective of individual fixture wins.
+Hash the completed ignored result and checkpoint and retain those digests in
+the benchmark record.

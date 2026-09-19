@@ -8430,3 +8430,14 @@ summary calculation were derived only from these repository-owned contracts.
 No external Corpus, hash implementation, compressor, match finder,
 orchestration tool, source code, pseudocode, tuning advice, benchmark result,
 or test suite was consulted.
+
+### IR-0919
+
+The prefix-mixer result closeout uses DD-1144 through DD-1150, IR-0913
+through IR-0918, TVG-1009 through TVG-1015, CR-1250 through CR-1255, the
+repository-owned fixed manifest and runner, and the ignored canonical
+checkpoint and result produced locally at commit `bc14a52e`. Eligibility was
+read mechanically from the predeclared gate. No external Corpus, hash
+implementation, compressor, match finder, tuning advice, source code,
+pseudocode, benchmark result, or test suite was consulted, and no Silesia
+member was read.
