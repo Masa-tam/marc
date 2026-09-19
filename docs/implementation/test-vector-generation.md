@@ -14754,3 +14754,20 @@ bucket count from one through 65,536. Require equality for counts one and two
 and inequality for every count from four upward. For each of five prefix
 positions and all 256 byte values, repeat the calculation and require a valid,
 identical result. This gate exercises no finder, Corpus, timing, or fuzzing.
+
+### TVG-1011
+
+Initialize Exhaustive, legacy HashChain, and private mnemonic-v1 HashChain
+over separate equal-size workspaces. At every raw-byte position compare all
+three matches before one-byte advancement for empty, one-byte, repeated,
+periodic, all-byte, 4,096-byte fixed-seed, and 1,024-byte mixed inputs. Sweep
+windows 1, 5, 17, 256, and 65,536 and maximum lengths 5, 17, and 258.
+
+Repeat with advancement by each beneficial match length to exercise indexing
+of skipped positions. Build 2,048 alternating eight-byte records from the
+legacy collision pair and a three-byte record number; require every match to
+remain equal while v1 reports fewer prefix mismatches and fewer total
+candidates. After valid initialization, attempt an undersized reinitialization
+and require the prior position-zero result to remain unchanged. Execute the
+four focused regressions under MSVC and ClangCL. Typed-token serialization,
+fuzzing, Corpus access, and timing remain outside this gate.

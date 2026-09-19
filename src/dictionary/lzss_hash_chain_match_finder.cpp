@@ -150,7 +150,8 @@ LzssHashChainError initialize_lzss_hash_chain_match_finder(
     return LzssHashChainError::none;
 }
 
-LzssMatch LzssHashChainMatchFinder::find_match(
+template <auto CalculatePrefixHash>
+LzssMatch LzssHashChainMatchFinder::find_match_with(
     const std::size_t position) const noexcept {
     LzssMatch best{};
     if (position != next_position_ || position >= input_.size()) {
@@ -167,7 +168,7 @@ LzssMatch LzssHashChainMatchFinder::find_match(
     const auto maximum_length = std::min<std::size_t>(
         input_.size() - position,
         static_cast<std::size_t>(parameters_.max_match_length));
-    const auto prefix_hash = calculate_lzss_prefix_hash(input_, position);
+    const auto prefix_hash = CalculatePrefixHash(input_, position);
     if (!prefix_hash.valid) {
         if (statistics_ != nullptr) record_query_depth(*statistics_, 0);
         return best;
@@ -220,7 +221,13 @@ LzssMatch LzssHashChainMatchFinder::find_match(
     return best;
 }
 
-void LzssHashChainMatchFinder::advance(
+LzssMatch LzssHashChainMatchFinder::find_match(
+    const std::size_t position) const noexcept {
+    return find_match_with<calculate_lzss_prefix_hash>(position);
+}
+
+template <auto CalculatePrefixHash>
+void LzssHashChainMatchFinder::advance_with(
     const std::size_t position,
     const std::size_t next_position) noexcept {
     if (position != next_position_ || next_position < position
@@ -232,8 +239,7 @@ void LzssHashChainMatchFinder::advance(
         for (auto current = position; current < next_position; ++current) {
             if (input_.size() - current < lzss_match_finder_prefix_size)
                 continue;
-            const auto prefix_hash = calculate_lzss_prefix_hash(
-                input_, current);
+            const auto prefix_hash = CalculatePrefixHash(input_, current);
             if (!prefix_hash.valid) {
                 next_position_ = input_.size();
                 return;
@@ -253,6 +259,42 @@ void LzssHashChainMatchFinder::advance(
         }
     }
     next_position_ = next_position;
+}
+
+void LzssHashChainMatchFinder::advance(
+    const std::size_t position,
+    const std::size_t next_position) noexcept {
+    advance_with<calculate_lzss_prefix_hash>(position, next_position);
+}
+
+LzssMatch LzssHashChainMnemonicMixerV1MatchFinder::find_match(
+    const std::size_t position) const noexcept {
+    return implementation_.find_match_with<
+        calculate_lzss_prefix_hash_mnemonic_mixer_v1>(position);
+}
+
+void LzssHashChainMnemonicMixerV1MatchFinder::advance(
+    const std::size_t position,
+    const std::size_t next_position) noexcept {
+    implementation_.advance_with<
+        calculate_lzss_prefix_hash_mnemonic_mixer_v1>(
+            position, next_position);
+}
+
+LzssHashChainError
+initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters, const core::DecoderLimits& limits,
+    const std::span<std::byte> workspace,
+    LzssHashChainMnemonicMixerV1MatchFinder& finder,
+    LzssMatchFinderStatistics* const statistics) noexcept {
+    LzssHashChainMnemonicMixerV1MatchFinder initialized{};
+    const auto error = initialize_lzss_hash_chain_match_finder(
+        input, parameters, limits, workspace, initialized.implementation_,
+        statistics);
+    if (error != LzssHashChainError::none) return error;
+    finder = initialized;
+    return LzssHashChainError::none;
 }
 
 } // namespace marc::dictionary::internal

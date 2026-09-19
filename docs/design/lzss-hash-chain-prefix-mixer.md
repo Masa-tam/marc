@@ -1,7 +1,7 @@
 # LZSS HashChain prefix mixer experiment
 
-Status: design and pure mixer fixed; finder integration and measurement not
-started.
+Status: design, pure mixer, and private finder integration fixed; typed-token,
+fuzz, and measurement gates not started.
 
 ## 1. Motivation and boundary
 
@@ -149,5 +149,20 @@ on 2026-09-19 without a finder dispatch. Tests cover all six vectors, offset
 and short-input validation, deterministic single-byte variations in every
 prefix position, and every power-of-two bucket count from one through 65,536.
 The production legacy function and every caller remain unchanged. The next
-independent gate is a separately named private HashChain finder route and
-three-way Exact differential testing; no benchmark timing is yet permitted.
+independent gate was a separately named private HashChain finder route and
+three-way Exact differential testing; no benchmark timing was permitted.
+
+That private finder gate was also completed on 2026-09-19. A thin internal
+adapter owns the unchanged legacy state layout and selects the v1 function at
+compile time; the legacy method selects its original function at compile time,
+so neither route adds a per-query runtime policy branch. Both use the same
+calculator, initializer validation, workspace, links, chain order, statistics,
+and atomic failure contract.
+
+Exhaustive, legacy, and v1 return identical matches across empty, short,
+repeated, periodic, all-byte, fixed-seed binary, mixed, window/max-length, and
+token-boundary advancement cases under MSVC and ClangCL. The fixed legacy
+collision fixture reduces both prefix-mismatch and total candidate counts with
+v1 while retaining every match. The next independent gate is private
+single-pass typed-token production, canonical token-byte identity, and bounded
+deterministic fuzzing. Benchmark timing remains prohibited until that gate.

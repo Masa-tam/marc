@@ -23331,3 +23331,23 @@ Freeze the six design vectors and the degenerate one-/two-bucket collision
 versus four-through-65,536 separation rule in unit tests. Keep every legacy
 test and caller untouched. Finder integration and Exact differential proof
 remain a later independent decision.
+
+## DD-1146: The private mixer finder shares state without runtime policy
+
+- Date: 2026-09-19
+- Status: accepted
+
+Add one private match-finder adapter that owns the existing HashChain state
+and selects mnemonic mixer v1 through a compile-time member specialization.
+Keep the legacy `find_match` and `advance` entry points specialized on the
+legacy function so production performs no runtime policy branch. Reuse the
+same workspace calculator and validation, but initialize through a temporary
+adapter so failure cannot replace an existing valid finder.
+
+Require match equality against both Exhaustive and legacy HashChain under
+one-byte and token-boundary advancement, varied windows and maximum lengths,
+binary and structured inputs, and the fixed collision fixture. Confirm that
+the collision fixture reduces both mismatch and total candidates without
+making those work-count reductions an Exactness assumption. Do not yet add a
+typed-token entry, benchmark selector, fuzz target, public setting, or format
+change.

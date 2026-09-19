@@ -135,6 +135,46 @@ void expect_hash_chain_matches_exhaustive(
     }
 }
 
+void expect_mnemonic_hash_chain_matches_exact(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters = {},
+    const bool token_boundaries = false) {
+    const auto required = calculate_lzss_hash_chain_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssHashChainError::none);
+    auto legacy_storage = make_hash_chain_storage(required.workspace_size);
+    auto mnemonic_storage = make_hash_chain_storage(required.workspace_size);
+    LzssHashChainMatchFinder legacy{};
+    LzssHashChainMnemonicMixerV1MatchFinder mnemonic{};
+    ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+                  input, parameters, {}, legacy_storage.bytes.first(
+                      required.workspace_size), legacy),
+              LzssHashChainError::none);
+    ASSERT_EQ(initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
+                  input, parameters, {}, mnemonic_storage.bytes.first(
+                      required.workspace_size), mnemonic),
+              LzssHashChainError::none);
+    LzssExhaustiveMatchFinder exhaustive{input, parameters};
+
+    std::size_t position{};
+    while (position <= input.size()) {
+        const auto expected = exhaustive.find_match(position);
+        const auto legacy_match = legacy.find_match(position);
+        const auto mnemonic_match = mnemonic.find_match(position);
+        EXPECT_EQ(legacy_match, expected) << position;
+        EXPECT_EQ(mnemonic_match, expected) << position;
+        if (position == input.size()) break;
+
+        const auto advance = token_boundaries
+            && lzss_match_is_beneficial(expected)
+            ? static_cast<std::size_t>(expected.length) : 1U;
+        exhaustive.advance(position, position + advance);
+        legacy.advance(position, position + advance);
+        mnemonic.advance(position, position + advance);
+        position += advance;
+    }
+}
+
 TEST(LzssExhaustiveMatchFinder, ReturnsNoMatchAtEmptyAndExactEnd) {
     const auto empty = bytes("");
     const LzssExhaustiveMatchFinder empty_finder{empty, {}};
@@ -303,6 +343,140 @@ TEST(LzssHashChainMatchFinder, MatchesExhaustiveAcrossInputClasses) {
             expect_hash_chain_matches_exhaustive(mixed, parameters);
         }
     }
+}
+
+TEST(LzssHashChainMnemonicMixerV1MatchFinder,
+     MatchesExhaustiveAndLegacyAcrossInputClasses) {
+    expect_mnemonic_hash_chain_matches_exact(bytes(""));
+    expect_mnemonic_hash_chain_matches_exact(bytes("A"));
+    expect_mnemonic_hash_chain_matches_exact(
+        bytes("ABABABABABABABAB"));
+    expect_mnemonic_hash_chain_matches_exact(
+        bytes("ABCDE1ABCDE2ABCDE3"));
+    expect_mnemonic_hash_chain_matches_exact(bytes(
+        "AAAAABAAAACAAAAADAAAAEAAAAAFAAAAAGAAAAAHAAAAAI"));
+
+    std::vector<std::byte> all_values;
+    for (std::uint32_t value = 0; value < 256; ++value) {
+        all_values.push_back(static_cast<std::byte>(value));
+    }
+    all_values.insert(all_values.end(), all_values.begin(), all_values.end());
+    expect_mnemonic_hash_chain_matches_exact(all_values);
+
+    std::vector<std::byte> pseudorandom(4096);
+    std::uint32_t state = UINT32_C(0x7cb941e5);
+    for (auto& value : pseudorandom) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        value = static_cast<std::byte>(state >> 24U);
+    }
+    expect_mnemonic_hash_chain_matches_exact(pseudorandom);
+
+    std::vector<std::byte> mixed;
+    for (std::size_t index = 0; index < 1024; ++index) {
+        mixed.push_back(static_cast<std::byte>(
+            index % 31 == 0 ? index & 0xffU : index % 11));
+    }
+    for (const std::uint32_t window : {1U, 5U, 17U, 256U, 65'536U}) {
+        for (const std::uint32_t maximum : {5U, 17U, 258U}) {
+            LzssParameters parameters{};
+            parameters.window_size = window;
+            parameters.max_match_length = maximum;
+            expect_mnemonic_hash_chain_matches_exact(mixed, parameters);
+        }
+    }
+}
+
+TEST(LzssHashChainMnemonicMixerV1MatchFinder,
+     MatchesExactWhenAdvanceSkipsMatchedPositions) {
+    std::vector<std::byte> input{};
+    const auto unit = bytes("ABCDE1ABCDE2ABCDE3");
+    for (std::size_t repetition = 0; repetition < 64; ++repetition) {
+        input.insert(input.end(), unit.begin(), unit.end());
+        input.push_back(static_cast<std::byte>(repetition));
+    }
+    LzssParameters parameters{};
+    parameters.window_size = 257;
+    parameters.max_match_length = 67;
+    expect_mnemonic_hash_chain_matches_exact(input, parameters, true);
+}
+
+TEST(LzssHashChainMnemonicMixerV1MatchFinder,
+     ReducesTheFixedLegacyCollisionWithoutChangingMatches) {
+    std::vector<std::byte> input{};
+    input.reserve(16'384);
+    for (std::uint32_t record = 0; record < 2'048; ++record) {
+        if ((record & 1U) == 0U) {
+            input.insert(input.end(), {
+                std::byte{1}, std::byte{0}, std::byte{0},
+                std::byte{0x58}, std::byte{0x59}});
+        } else {
+            input.insert(input.end(), {
+                std::byte{0}, std::byte{0x20}, std::byte{0},
+                std::byte{0x58}, std::byte{0x59}});
+        }
+        input.push_back(static_cast<std::byte>(record));
+        input.push_back(static_cast<std::byte>(record >> 8U));
+        input.push_back(static_cast<std::byte>(record >> 16U));
+    }
+
+    const auto required = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssHashChainError::none);
+    auto legacy_storage = make_hash_chain_storage(required.workspace_size);
+    auto mnemonic_storage = make_hash_chain_storage(required.workspace_size);
+    LzssMatchFinderStatistics legacy_statistics{};
+    LzssMatchFinderStatistics mnemonic_statistics{};
+    LzssHashChainMatchFinder legacy{};
+    LzssHashChainMnemonicMixerV1MatchFinder mnemonic{};
+    ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+                  input, {}, {}, legacy_storage.bytes.first(
+                      required.workspace_size), legacy, &legacy_statistics),
+              LzssHashChainError::none);
+    ASSERT_EQ(initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
+                  input, {}, {}, mnemonic_storage.bytes.first(
+                      required.workspace_size), mnemonic,
+                  &mnemonic_statistics),
+              LzssHashChainError::none);
+    LzssExhaustiveMatchFinder exhaustive{input, {}};
+
+    for (std::size_t position = 0; position <= input.size(); ++position) {
+        const auto expected = exhaustive.find_match(position);
+        EXPECT_EQ(legacy.find_match(position), expected) << position;
+        EXPECT_EQ(mnemonic.find_match(position), expected) << position;
+        if (position != input.size()) {
+            legacy.advance(position, position + 1U);
+            mnemonic.advance(position, position + 1U);
+            exhaustive.advance(position, position + 1U);
+        }
+    }
+
+    EXPECT_GT(legacy_statistics.hash_chain_prefix_mismatch_count, 0U);
+    EXPECT_LT(mnemonic_statistics.hash_chain_prefix_mismatch_count,
+              legacy_statistics.hash_chain_prefix_mismatch_count);
+    EXPECT_LT(mnemonic_statistics.candidate_count,
+              legacy_statistics.candidate_count);
+}
+
+TEST(LzssHashChainMnemonicMixerV1MatchFinder,
+     InitializationFailurePreservesPriorState) {
+    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    const auto required = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssHashChainError::none);
+    ASSERT_GT(required.workspace_size, 0U);
+    auto storage = make_hash_chain_storage(required.workspace_size);
+    LzssHashChainMnemonicMixerV1MatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
+                  input, {}, {}, storage.bytes.first(required.workspace_size),
+                  finder),
+              LzssHashChainError::none);
+    const auto before = finder.find_match(0);
+
+    EXPECT_EQ(initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
+                  input, {}, {},
+                  storage.bytes.first(required.workspace_size - 1U), finder),
+              LzssHashChainError::workspace_too_small);
+    EXPECT_EQ(finder.find_match(0), before);
 }
 
 TEST(LzssHashChainMatchFinder, IndexesPositionsSkippedByMatch) {

@@ -31252,3 +31252,26 @@ both bounds.
   copied or translated.
 - Local validation: fixed vectors, range handling, byte variation, and bucket
   separation pass under the repository test executable.
+
+## CR-1252: 2026-09-19 - Private mnemonic-mixer HashChain finder
+
+- Authoring method: refactored the repository-owned HashChain operations into
+  compile-time mixer specializations, retained the legacy specialization, and
+  wrapped the v1 specialization in a private concept-compatible adapter.
+- References used: DD-1144 through DD-1146, IR-0913 through IR-0915,
+  TVG-1009 through TVG-1011, CR-1250 and CR-1251, and marc's existing
+  workspace, statistics, Exhaustive, and atomic-initialization contracts.
+- Known implementations intentionally not consulted: external hash
+  implementation, compressor, match finder, source code, pseudocode,
+  benchmark result, tuning advice, or test suite.
+- Independent decisions: statically select both routes; reuse exactly one
+  state layout and calculator; initialize the adapter through a temporary;
+  and compare at both byte and parser-like token boundaries.
+- Generated-code task description: connect the private v1 mixer to a bounded
+  finder and prove match-level Exactness without typed output, fuzzing,
+  benchmark timing, or public changes.
+- Similarity review: the adapter and specialization preserve marc's existing
+  control flow and substitute only the locally specified function. No
+  external implementation expression was copied or translated.
+- Local validation: both compiler routes pass four focused three-way
+  differential, collision-work, skipped-position, and atomic-failure tests.

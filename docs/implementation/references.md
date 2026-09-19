@@ -8388,3 +8388,14 @@ result and invalid-range contract. The implementation is a direct expression
 of those repository-owned rules. No external hash implementation, hash
 constant, source code, pseudocode, benchmark result, tuning advice, or test
 suite was consulted.
+
+### IR-0915
+
+The private mnemonic-mixer finder route uses DD-1144 through DD-1146,
+IR-0913 and IR-0914, TVG-1009 through TVG-1011, CR-1250 and CR-1251, marc's
+repository-owned legacy HashChain state, initializer, workspace calculator,
+statistics, Exhaustive oracle, and match-finder concept. The compile-time
+policy split, adapter, atomic initialization, and differential classes were
+derived only from those local contracts. No external hash implementation,
+compressor, match finder, source code, pseudocode, benchmark result, tuning
+advice, or test suite was consulted.

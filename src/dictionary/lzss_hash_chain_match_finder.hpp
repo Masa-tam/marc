@@ -40,6 +40,8 @@ calculate_lzss_hash_chain_workspace(
     std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits) noexcept;
 
+class LzssHashChainMnemonicMixerV1MatchFinder;
+
 class LzssHashChainMatchFinder {
 public:
     LzssHashChainMatchFinder() noexcept = default;
@@ -49,10 +51,18 @@ public:
     void advance(std::size_t position, std::size_t next_position) noexcept;
 
 private:
+    friend class LzssHashChainMnemonicMixerV1MatchFinder;
     friend LzssHashChainError initialize_lzss_hash_chain_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
         LzssHashChainMatchFinder&, LzssMatchFinderStatistics*) noexcept;
+
+    template <auto CalculatePrefixHash>
+    [[nodiscard]] LzssMatch find_match_with(
+        std::size_t position) const noexcept;
+    template <auto CalculatePrefixHash>
+    void advance_with(
+        std::size_t position, std::size_t next_position) noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
@@ -68,6 +78,34 @@ static_assert(LzssMatchFinder<LzssHashChainMatchFinder>);
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::span<std::byte> workspace,
     LzssHashChainMatchFinder& finder,
+    LzssMatchFinderStatistics* statistics = nullptr) noexcept;
+
+class LzssHashChainMnemonicMixerV1MatchFinder {
+public:
+    LzssHashChainMnemonicMixerV1MatchFinder() noexcept = default;
+
+    [[nodiscard]] LzssMatch find_match(
+        std::size_t position) const noexcept;
+    void advance(std::size_t position, std::size_t next_position) noexcept;
+
+private:
+    friend LzssHashChainError
+    initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
+        std::span<const std::byte>, const LzssParameters&,
+        const core::DecoderLimits&, std::span<std::byte>,
+        LzssHashChainMnemonicMixerV1MatchFinder&,
+        LzssMatchFinderStatistics*) noexcept;
+
+    LzssHashChainMatchFinder implementation_{};
+};
+
+static_assert(LzssMatchFinder<LzssHashChainMnemonicMixerV1MatchFinder>);
+
+[[nodiscard]] LzssHashChainError
+initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
+    std::span<const std::byte> input, const LzssParameters& parameters,
+    const core::DecoderLimits& limits, std::span<std::byte> workspace,
+    LzssHashChainMnemonicMixerV1MatchFinder& finder,
     LzssMatchFinderStatistics* statistics = nullptr) noexcept;
 
 } // namespace marc::dictionary::internal
