@@ -31366,3 +31366,26 @@ both bounds.
   copied or translated.
 - Local validation: all 36 records pass Exact and workspace checks; a
   zero-new-point rerun reports `progress=36/36`; the fixed gate reports false.
+
+## CR-1257: 2026-09-20 - HashChain bucket-scaling experiment design
+
+- Authoring method: derived a private larger-table experiment from marc's
+  existing checked workspace formula and completed local HashChain evidence.
+- References used: DD-1151, IR-0920, TVG-1016, BM-0054, BM-0055, BM-0078,
+  the repository-owned legacy HashChain implementation, Exact contracts, and
+  bounded experiment conventions.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: retain 65,536 as production; fix private caps at
+  262,144, 1,048,576, and 4,194,304; isolate other tree strategies; require
+  checked workspace and Exact proof; and defer timing to a later immutable
+  manifest with predeclared elimination and admission rules.
+- Generated-code task description: document only the candidate identities,
+  sizing, safety, staged verification, and measurement boundary; do not yet
+  implement a route or run a benchmark.
+- Similarity review: the proposal parameterizes marc's own existing formula
+  and ordinary power-of-two table sizing. No external implementation
+  expression was copied or translated.
+- Local validation: documentation verification and arithmetic review only;
+  implementation and measurement have not started.

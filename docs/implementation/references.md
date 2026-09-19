@@ -8441,3 +8441,14 @@ read mechanically from the predeclared gate. No external Corpus, hash
 implementation, compressor, match finder, tuning advice, source code,
 pseudocode, benchmark result, or test suite was consulted, and no Silesia
 member was read.
+
+### IR-0920
+
+The HashChain bucket-scaling design uses DD-1151, TVG-1016, CR-1257,
+BM-0054, BM-0055, and BM-0078; marc's repository-owned legacy HashChain
+workspace calculator, five-byte prefix hash, Exact parser, diagnostics, and
+bounded experiment conventions; and the standard C++20 `std::bit_ceil`
+operation already used by the repository. Candidate caps, workspace table,
+staging, Pareto rule, and admission boundary were derived locally. No external
+compressor, match finder, hash table implementation, source code, pseudocode,
+tuning advice, benchmark result, or test suite was consulted.

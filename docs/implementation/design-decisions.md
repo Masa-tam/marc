@@ -23426,3 +23426,21 @@ finder, typed-token oracle, tests, benchmark selector, manifest, runner, and
 recorded evidence, but do not replace the legacy production mixer, expose a
 public selector, create a Silesia follow-up, retune v1, or change the API, ABI,
 CLI, profiles, frame, format, or defaults.
+
+## DD-1151: Isolate HashChain bucket scaling behind private Exact routes
+
+- Date: 2026-09-20
+- Status: accepted
+
+Keep the production 65,536-bucket cap unchanged and evaluate three separately
+named private caps of 262,144, 1,048,576, and 4,194,304. Parameterize only the
+internal calculator and initializer at compile time, retain the legacy entry
+as the 65,536 specialization, and do not alter the prefix hash, chain order,
+parser, typed tokens, format, decoder, API, ABI, CLI, profiles, or defaults.
+
+Before timing, prove checked workspace and aggregate calculations, atomic
+initialization failure, and Exact identity against Exhaustive and legacy
+HashChain. Then connect explicit benchmark-only strategies and commit a strict
+restartable synthetic manifest with Pareto elimination and admission rules.
+Silesia requires a later manifest and may be reached only by a synthetic
+survivor. A negative result preserves the existing production path.

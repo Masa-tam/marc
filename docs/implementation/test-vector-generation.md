@@ -14832,3 +14832,22 @@ Silesia access or follow-up when any mismatch ratio exceeds `0.5` or any
 throughput ratio is below `0.98`, irrespective of individual fixture wins.
 Hash the completed ignored result and checkpoint and retain those digests in
 the benchmark record.
+
+### TVG-1016
+
+For 64-MiB input and 4-, 16-, and 64-MiB windows, verify the exact x64
+workspace table in the bucket-scaling design for the legacy cap and fixed
+private caps 262,144, 1,048,576, and 4,194,304. Also verify zero workspace for
+input shorter than five bytes; the `bit_ceil(min(link_count, cap))` boundary
+immediately below, at, and above each cap; checked arithmetic; alignment;
+insufficient workspace; overlap; aggregate-limit rejection; and failure
+atomicity. Invalid private caps must not initialize a finder.
+
+At every raw-byte and parser advancement point, compare Exhaustive, legacy
+HashChain, and every private cap on empty, short, repeated, periodic,
+equal-prefix, forced-collision, all-byte, fixed-seed pseudorandom, and mixed
+inputs. Sweep window and maximum-match boundaries and require identical
+matches, typed tokens, canonical bytes, and five Exact summaries. Candidate
+and prefix-mismatch counters may decrease but must remain internally valid.
+Use deterministic bounded generated cases before exposing any benchmark route;
+no performance threshold or Silesia data participates in this test gate.

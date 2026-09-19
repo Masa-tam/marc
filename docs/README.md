@@ -25,6 +25,9 @@ navigate chronological development records.
 - [LZSS HashChain prefix mixer experiment](design/lzss-hash-chain-prefix-mixer.md):
   private zero-workspace low-bit-distribution candidate with fixed Exact,
   synthetic, and Silesia admission gates.
+- [LZSS HashChain bucket-scaling experiment](design/lzss-hash-chain-bucket-scaling.md):
+  private larger-table candidates with checked workspace, Exact identity, and
+  staged synthetic-to-Silesia admission gates.
 - [LZSS ordered-tree Exact strategy evaluation](design/lzss-balanced-tree-strategy-evaluation.md):
   completed Red-Black, Scapegoat, and deletion-focused WAVL experiments under
   the existing Exact contract, including their negative admission decisions.
