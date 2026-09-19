@@ -31413,3 +31413,26 @@ both bounds.
 - Local validation: MSVC and ClangCL build warning-free and pass all ten
   focused legacy/private HashChain tests, including workspace and atomicity,
   followed by all 3,552 tests in each complete suite.
+
+## CR-1259: 2026-09-20 - Private bucket-scaled HashChain finders
+
+- Authoring method: wrapped marc's unchanged HashChain finder in one
+  compile-time-cap internal template and provided three separately named type
+  aliases plus an atomic initializer.
+- References used: DD-1151 through DD-1153, IR-0920 through IR-0922,
+  TVG-1016 through TVG-1018, CR-1257 and CR-1258, and the repository-owned
+  HashChain, Exhaustive, concept, statistics, and deterministic-test contracts.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: bind caps in types; delegate the unchanged search
+  loop; publish wrappers only after successful initialization; and cross the
+  first bucket boundary with one fixed local generated stream.
+- Generated-code task description: add concept-compatible private finder
+  routes and prove match-level Exact identity without typed-token, benchmark,
+  public, format, or measurement changes.
+- Similarity review: the wrapper composes marc's existing internal finder and
+  initializer without reproducing an external implementation expression.
+- Local validation: MSVC and ClangCL build warning-free and pass all thirteen
+  focused legacy and bucket-scaled HashChain tests, followed by all 3,555
+  tests in each complete suite.

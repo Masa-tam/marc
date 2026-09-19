@@ -14866,3 +14866,21 @@ advance it to an exact match, and retain that match after both unsupported-cap
 and insufficient-workspace calls. Run the unchanged legacy HashChain test
 group as part of the same focused test invocation. This gate performs no
 typed-token connection, benchmark timing, fuzzing, or Silesia access.
+
+### TVG-1018
+
+Instantiate all three fixed bucket-scaled finder types and require the match-
+finder concept for each. Compare their match results with Exhaustive and
+legacy HashChain on empty, one-byte, repeated, periodic, equal-prefix,
+all-byte, fixed-seed pseudorandom, and mixed inputs. Sweep windows 1, 5, 17,
+256, and 65,536 and maximum lengths 5, 17, and 258; exercise both one-byte and
+beneficial-match advancement.
+
+Generate 131,329 deterministic bytes with 32-bit state seed `0x6d2b79f5`,
+multiplier `1664525`, increment `1013904223`, and the high state byte as
+output. Use a 131,329-byte window, require 65,536 legacy buckets and 262,144
+actual buckets for every private type, and compare every private result with
+legacy at every position. Require private candidate accounting to be valid
+and no greater than legacy. Finally, initialize a valid 1,048,576-cap wrapper,
+force insufficient-workspace reinitialization, and require its prior match to
+remain unchanged. This gate emits no typed tokens and performs no timing.

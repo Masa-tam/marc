@@ -158,3 +158,14 @@ legacy HashChain regression set remains unchanged and passes; both complete
 3,552-test suites also pass. No separately named private finder type,
 typed-token route, benchmark selector, public API,
 format change, or measurement exists yet; those remain later gates.
+
+The three separately named private finder types were completed on 2026-09-20.
+Each owns the unchanged legacy HashChain implementation and binds one fixed
+cap during failure-atomic initialization; `find_match` and `advance` delegate
+directly to that implementation and contain no cap-selection branch. Small
+fixed and generated inputs compare all three routes with both Exhaustive and
+legacy HashChain at raw-byte and token-like advancement boundaries. A
+131,329-byte fixed-seed input crosses the legacy cap and compares all positions
+with a 262,144-entry actual table. Wrapper reinitialization failure preserves
+the prior valid match state. Both complete 3,555-test MSVC and ClangCL suites
+pass. Typed-token and benchmark connections remain absent.

@@ -105,6 +105,78 @@ initialize_lzss_hash_chain_match_finder_with_private_bucket_cap(
     std::size_t bucket_cap, LzssHashChainMatchFinder& finder,
     LzssMatchFinderStatistics* statistics = nullptr) noexcept;
 
+template <std::size_t BucketCap>
+class LzssHashChainBucketScaledMatchFinder {
+    static_assert(
+        BucketCap == lzss_hash_chain_bucket_cap_262144
+        || BucketCap == lzss_hash_chain_bucket_cap_1048576
+        || BucketCap == lzss_hash_chain_bucket_cap_4194304);
+
+public:
+    LzssHashChainBucketScaledMatchFinder() noexcept = default;
+
+    [[nodiscard]] LzssMatch find_match(
+        const std::size_t position) const noexcept {
+        return implementation_.find_match(position);
+    }
+
+    void advance(
+        const std::size_t position,
+        const std::size_t next_position) noexcept {
+        implementation_.advance(position, next_position);
+    }
+
+    [[nodiscard]] LzssHashChainError initialize(
+        const std::span<const std::byte> input,
+        const LzssParameters& parameters,
+        const core::DecoderLimits& limits,
+        const std::span<std::byte> workspace,
+        LzssMatchFinderStatistics* const statistics) noexcept {
+        LzssHashChainMatchFinder implementation{};
+        const auto error =
+            initialize_lzss_hash_chain_match_finder_with_private_bucket_cap(
+                input, parameters, limits, workspace, BucketCap,
+                implementation, statistics);
+        if (error != LzssHashChainError::none) return error;
+        implementation_ = implementation;
+        return LzssHashChainError::none;
+    }
+
+private:
+    LzssHashChainMatchFinder implementation_{};
+};
+
+using LzssHashChainBuckets262144MatchFinder =
+    LzssHashChainBucketScaledMatchFinder<
+        lzss_hash_chain_bucket_cap_262144>;
+using LzssHashChainBuckets1048576MatchFinder =
+    LzssHashChainBucketScaledMatchFinder<
+        lzss_hash_chain_bucket_cap_1048576>;
+using LzssHashChainBuckets4194304MatchFinder =
+    LzssHashChainBucketScaledMatchFinder<
+        lzss_hash_chain_bucket_cap_4194304>;
+
+static_assert(LzssMatchFinder<LzssHashChainBuckets262144MatchFinder>);
+static_assert(LzssMatchFinder<LzssHashChainBuckets1048576MatchFinder>);
+static_assert(LzssMatchFinder<LzssHashChainBuckets4194304MatchFinder>);
+
+template <std::size_t BucketCap>
+[[nodiscard]] LzssHashChainError
+initialize_lzss_hash_chain_bucket_scaled_match_finder(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte> workspace,
+    LzssHashChainBucketScaledMatchFinder<BucketCap>& finder,
+    LzssMatchFinderStatistics* const statistics = nullptr) noexcept {
+    LzssHashChainBucketScaledMatchFinder<BucketCap> initialized{};
+    const auto error = initialized.initialize(
+        input, parameters, limits, workspace, statistics);
+    if (error != LzssHashChainError::none) return error;
+    finder = initialized;
+    return LzssHashChainError::none;
+}
+
 class LzssHashChainMnemonicMixerV1MatchFinder {
 public:
     LzssHashChainMnemonicMixerV1MatchFinder() noexcept = default;

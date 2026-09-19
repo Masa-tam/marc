@@ -23462,3 +23462,22 @@ boundaries, checked caller limits, successful private initialization,
 insufficient workspace, and atomic invalid-cap failure under MSVC and ClangCL.
 This gate changes no public selector, API, ABI, CLI, profile, frame, format,
 decoder, default, or other match-finder bucket policy.
+
+## DD-1153: Bind each private bucket cap in a concept-compatible finder type
+
+- Date: 2026-09-20
+- Status: accepted
+
+Add three separately named internal finder types backed by one compile-time
+template for caps 262,144, 1,048,576, and 4,194,304. Each type owns the
+unchanged legacy HashChain state, selects its cap only during initialization,
+and delegates query and advancement without a runtime policy branch. Build a
+temporary complete wrapper and publish it only after successful initialization
+so a failed reinitialization preserves prior state.
+
+Compare every candidate against Exhaustive and legacy HashChain on fixed,
+generated, window, length, raw-position, and token-like advancement cases.
+Also cross the legacy 65,536-bucket boundary with a fixed-seed 131,329-byte
+input and require match equality at every position with valid diagnostic
+accounting. Do not yet connect typed-token production, serialization,
+benchmark selectors, public APIs, formats, or measurements.

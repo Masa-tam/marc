@@ -8463,3 +8463,14 @@ production specialization and separate validated experimental dispatch were
 derived locally. No external compressor, match finder, hash table
 implementation, source code, pseudocode, tuning advice, benchmark result, or
 test suite was consulted.
+
+### IR-0922
+
+The private bucket-scaled finder types use DD-1151 through DD-1153, IR-0920
+and IR-0921, TVG-1016 through TVG-1018, CR-1257 and CR-1258, marc's
+repository-owned match-finder concept, legacy HashChain state and methods,
+private-cap initializer, Exhaustive oracle, statistics, and deterministic
+test conventions. The compile-time wrapper and atomic publication boundary
+were derived locally. No external compressor, match finder, hash table
+implementation, source code, pseudocode, tuning advice, benchmark result, or
+test suite was consulted.
