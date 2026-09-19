@@ -31185,3 +31185,27 @@ both bounds.
 - Local validation: strict manifest, report mutation, checkpoint tamper,
   interrupted child, resume, no-relaunch, shortlist, and real-fixture
   zero-point smoke checks pass.
+
+## CR-1249: 2026-09-19 - Snapshot delta-budget synthetic result closeout
+
+- Authoring method: executed the committed inert manifest through the
+  repository-owned runner, reviewed its mechanically generated comparisons
+  and shortlist, reran the completed checkpoint without child work, and
+  recorded the resulting negative selection decision.
+- References used: DD-1140 through DD-1143, IR-0909 through IR-0912,
+  TVG-1005 through TVG-1008, CR-1246 through CR-1248, and the locally produced
+  ignored checkpoint and result at commit `97937ec0`.
+- Known implementations intentionally not consulted: external Corpus,
+  compressor, match finder, tuning advice, source code, pseudocode, benchmark
+  result, or test suite. Silesia was not accessed.
+- Independent decisions: retain the frozen two-structured-fixture gate;
+  reject all candidates when each reaches only one; create no Silesia
+  manifest; and preserve the private machinery as reproducible evidence.
+- Generated-code task description: close the completed synthetic experiment,
+  report all ratios and hashes, and prohibit public admission or post-result
+  threshold relaxation.
+- Similarity review: the closeout contains only marc-owned result fields,
+  arithmetic comparisons, and documentation. No external implementation
+  expression was copied or translated.
+- Local validation: all 126 records pass Exact and accounting checks; every
+  shortlist is empty; and a completed rerun launches no benchmark child.

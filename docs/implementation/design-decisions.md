@@ -23273,3 +23273,22 @@ positive breaches. Produce aggregate comparisons and a per-window shortlist
 only after all 126 records exist. The runner performs no network or Silesia
 access and a zero-new-point mode must validate identity without launching the
 benchmark.
+
+## DD-1143: Synthetic delta-budget evidence closes without a shortlist
+
+- Date: 2026-09-19
+- Status: accepted
+
+Accept the completed 126-record synthetic result without weakening the frozen
+selection rule after observing it. All candidates pass Exact identity,
+controller accounting, and workspace limits, but each breaches on only one of
+the five structured fixtures. Breaches on the pseudorandom control do not
+count. Therefore no budget is eligible at 4, 16, or 64 MiB, and no Silesia
+follow-up manifest or measurement is created.
+
+Keep the bounded controller, private benchmark strategy, deterministic
+fixtures, runner, and regression tests as negative-result evidence and a
+reusable observation boundary. Do not expose a selector value, ABI, CLI,
+profile, format variant, inferred budget, or default. A future materially
+different hypothesis requires a new decision, manifest, and versioned result;
+it must not reinterpret this completed experiment.

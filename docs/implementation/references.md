@@ -8358,3 +8358,13 @@ Canonical indexing, release accounting, aggregation, and shortlist evaluation
 were derived only from those local contracts. No external Corpus, compressor,
 match finder, orchestration tool, tuning advice, source code, pseudocode,
 benchmark result, or test suite was consulted.
+
+### IR-0912
+
+The synthetic delta-budget result closeout uses DD-1140 through DD-1143,
+IR-0909 through IR-0911, TVG-1005 through TVG-1007, CR-1246 through CR-1248,
+the repository-owned fixed manifest and runner, and the ignored canonical
+checkpoint and result produced locally at commit `97937ec0`. Eligibility was
+read mechanically from the predeclared shortlist rule. No external Corpus,
+compressor, match finder, tuning advice, source code, pseudocode, benchmark
+result, or test suite was consulted, and no Silesia member was read.

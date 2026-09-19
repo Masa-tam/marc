@@ -2560,3 +2560,43 @@ The ignored canonical result JSON has SHA-256
 `1fb44c4d9a921302adc9ef851cd8859d3fb18db9d3c8ef5d90ad90351d930be2`.
 The completed checkpoint SHA-256 is
 `3401aff0f24f0cbb36954b8de9ca44df095505899992452e7c94c0b88636af5f`.
+
+### BM-0075: Snapshot delta-budget synthetic result
+
+The fixed MSVC Release experiment at commit `97937ec0` completed all 126
+process-isolated records: six deterministic 64-MiB fixtures, 4/16/64-MiB
+windows, HashChain, unbudgeted immutable snapshot, and five budgeted snapshot
+candidates. Every candidate matched both controls in all five Exact identity
+fields and passed budget, release, immutable-lifecycle, and workspace
+accounting. A completed-checkpoint rerun regenerated the final result without
+launching another benchmark child.
+
+| Window | Budget | Candidate / unbudgeted | Candidate / HashChain | Workspace / HashChain | Structured breach fixtures | Eligible |
+| ---: | ---: | ---: | ---: | ---: | ---: | :---: |
+| 4 MiB | 16 | 0.989174 | 0.862395 | 1.027699 | 1 / 5 | no |
+| 4 MiB | 64 | 0.989617 | 0.862782 | 1.027699 | 1 / 5 | no |
+| 4 MiB | 256 | 0.990254 | 0.863337 | 1.027699 | 1 / 5 | no |
+| 4 MiB | 1,024 | 0.993219 | 0.865922 | 1.027699 | 1 / 5 | no |
+| 4 MiB | 4,096 | 0.994903 | 0.867391 | 1.027699 | 1 / 5 | no |
+| 16 MiB | 16 | 1.038192 | 0.977873 | 1.007086 | 1 / 5 | no |
+| 16 MiB | 64 | 1.040940 | 0.980462 | 1.007086 | 1 / 5 | no |
+| 16 MiB | 256 | 1.037470 | 0.977193 | 1.007086 | 1 / 5 | no |
+| 16 MiB | 1,024 | 0.910025 | 0.857153 | 1.007086 | 1 / 5 | no |
+| 16 MiB | 4,096 | 0.769982 | 0.725246 | 1.007086 | 1 / 5 | no |
+| 64 MiB | 16 | 0.946023 | 0.972098 | 1.001782 | 1 / 5 | no |
+| 64 MiB | 64 | 0.943359 | 0.969361 | 1.001782 | 1 / 5 | no |
+| 64 MiB | 256 | 0.932675 | 0.958383 | 1.001782 | 1 / 5 | no |
+| 64 MiB | 1,024 | 0.975109 | 1.001986 | 1.001782 | 1 / 5 | no |
+| 64 MiB | 4,096 | 0.982317 | 1.009393 | 1.001782 | 1 / 5 | no |
+
+Only `shared-prefix-records` breached among the five structured fixtures for
+every candidate. Breaches on `fixed-seed-pseudorandom` are intentionally
+excluded by the frozen rule. Thus no candidate reaches the required two
+structured fixtures, every per-window shortlist is empty, and no Silesia
+follow-up manifest is created. The rule is not relaxed after observing the
+timings. The private controller remains test and benchmark evidence only.
+
+The ignored canonical result JSON has SHA-256
+`67d3156a6c458e2de5abcf4f39be349c36e937952c26c5c4a84306c4d004fd2d`.
+The completed checkpoint SHA-256 is
+`37e3b4e8f01f8d554b1c47dee2a52b9af86991a6e60cbaa5ad19add3a6444a3c`.

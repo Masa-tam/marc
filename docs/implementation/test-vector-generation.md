@@ -14704,3 +14704,21 @@ records. A child failure must leave the canonical prefix unchanged, and a
 premature final output must prevent any launch. Connect all six full-size
 fixtures and the real benchmark in zero-new-point mode to validate manifest,
 digests, tool identity, and `progress=0/126` without performing timing.
+
+### TVG-1008
+
+Run the fixed synthetic matrix to all 126 canonical records under MSVC
+Release at commit `97937ec0c4959276453ff21eed126b4903eadae3`. Require all
+five Exact identity fields to agree within every seven-record group and all
+budget, release, lifecycle, and workspace validators to pass. Reopen the
+completed checkpoint and require final-result regeneration without launching
+a benchmark child.
+
+For each of 15 candidate/window pairs, require the recorded structured breach
+count to equal one: only `shared-prefix-records` breaches, while any
+`fixed-seed-pseudorandom` breach remains excluded from the five-fixture gate.
+Require all three shortlist arrays to be empty and create no Silesia manifest.
+Fix the ignored result SHA-256 to
+`67d3156a6c458e2de5abcf4f39be349c36e937952c26c5c4a84306c4d004fd2d`
+and completed checkpoint SHA-256 to
+`37e3b4e8f01f8d554b1c47dee2a52b9af86991a6e60cbaa5ad19add3a6444a3c`.

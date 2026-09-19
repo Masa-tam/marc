@@ -130,4 +130,24 @@ manifest-driven runnerも2026-09-19に実装した。manifestの完全一致、f
 既存final outputとの競合拒否およびcomplete-grid再起動抑止を固定した。最終resultはwindowごと
 に15 candidate比較を生成し、Section 6の規則だけで最大2 budgetをshortlistする。実fixtureと
 MSVC benchmarkを接続した0-point smokeは`progress=0/126`で完了し、benchmark測定を開始せず
-checkpoint identityを確定できることを確認した。完全126点の実測はまだ開始していない。
+checkpoint identityを確定できることを確認した。この実装ゲート時点では完全126点の実測を
+開始していない。
+
+## 9. 完了結果
+
+2026-09-19にcommit `97937ec0c4959276453ff21eed126b4903eadae3`のMSVC Releaseで
+126点を完走した。全7 strategyは各fixture/window内で5個のExact identity fieldが一致し、
+budget、release、workspaceおよびimmutable lifecycleの全検証を通過した。完了checkpointからの
+再実行はbenchmark childを起動せず最終resultを再生成した。
+
+全15 candidateは構造化fixtureでは`shared-prefix-records`だけでbreachし、Section 6が要求する
+5 fixture中2件へ到達しなかった。`fixed-seed-pseudorandom`で観測したbreachは同節の母数から
+明示的に除外される。したがって3 windowすべてのshortlistは空であり、aggregate timingに
+かかわらずeligible candidateは存在しない。事後に選択規則を緩めず、Silesia用manifestと
+測定を作成しない。
+
+無視対象のcanonical result JSONのSHA-256は
+`67d3156a6c458e2de5abcf4f39be349c36e937952c26c5c4a84306c4d004fd2d`、完了checkpointは
+`37e3b4e8f01f8d554b1c47dee2a52b9af86991a6e60cbaa5ad19add3a6444a3c`である。
+controllerとprivate benchmark strategyは仕様・回帰試験・将来仮説の観測境界として保持するが、
+selector、ABI、CLI、profile、formatまたは既定値へ昇格しない。
