@@ -14902,3 +14902,19 @@ cases for insufficient workspace, aggregate limits, output capacity, and
 overlap, requiring no partial route exposure or public selector. This gate
 runs no benchmark, reads no Silesia member, and supplies no performance
 evidence.
+
+### TVG-1020
+
+Extend the synthetic benchmark smoke with the three fixed bucket-scaled
+strategy names. Use a deterministic 131,329-byte pseudorandom fixture in one
+frame with a 131,329-byte window so legacy reports configured/actual buckets
+65,536/65,536 while every private route reports its distinct configured cap
+and an actual count of 262,144. Require the exact checked workspace for each
+route.
+
+Parse and compare token count, literal count, match count, matched bytes, and
+canonical token SHA-256 against legacy. Require candidate count not to exceed
+legacy, prefix matches plus mismatches to equal candidates, a valid depth
+histogram, positive finite throughput fields, and successful process exit.
+Reject unknown strategy spellings through the existing argument contract.
+Discard smoke timing and do not read Silesia or create experiment results.

@@ -23502,3 +23502,24 @@ bounded fixed/generated cases, and compare with legacy across the first cap
 boundary without using Exhaustive. Do not expose a benchmark selector, public
 API, ABI, CLI option, profile, frame or format change, decoder path, default,
 or performance claim in this gate.
+
+## DD-1155: Expose bucket scaling only through explicit benchmark identities
+
+- Date: 2026-09-20
+- Status: accepted
+
+Add `hash-chain-buckets-262144-exact`,
+`hash-chain-buckets-1048576-exact`, and
+`hash-chain-buckets-4194304-exact` only to the repository development
+match-finder benchmark. Bind each identity to its corresponding private
+workspace calculation and finder type. Keep the legacy and mnemonic-mixer
+identities bound to the 65,536-cap production workspace.
+
+Every HashChain report must state the configured bucket cap, actual bucket
+count for the configured frame extent, workspace bytes, all five Exact token
+identity fields, and existing diagnostic counters. Smoke verification must
+cross the legacy cap, require every candidate to retain the legacy token
+identity, validate cap/count/workspace values, and require internally
+consistent candidate classification. Timing emitted by smoke is discarded.
+Do not add a manifest, long measurement, public selector, API, ABI, CLI codec
+option, format identity, profile, decoder change, or performance claim yet.

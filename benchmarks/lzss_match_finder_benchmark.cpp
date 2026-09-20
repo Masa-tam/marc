@@ -43,6 +43,9 @@ using namespace marc::dictionary::internal;
 enum class BenchmarkStrategy : std::uint8_t {
     hash_chain_exact,
     hash_chain_mnemonic_mixer_v1_exact,
+    hash_chain_buckets_262144_exact,
+    hash_chain_buckets_1048576_exact,
+    hash_chain_buckets_4194304_exact,
     binary_tree_exact,
     wavl_tree_exact,
     red_black_tree_exact,
@@ -60,6 +63,12 @@ enum class BenchmarkStrategy : std::uint8_t {
         strategy = BenchmarkStrategy::hash_chain_exact;
     } else if (text == "hash-chain-mnemonic-mixer-v1-exact") {
         strategy = BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact;
+    } else if (text == "hash-chain-buckets-262144-exact") {
+        strategy = BenchmarkStrategy::hash_chain_buckets_262144_exact;
+    } else if (text == "hash-chain-buckets-1048576-exact") {
+        strategy = BenchmarkStrategy::hash_chain_buckets_1048576_exact;
+    } else if (text == "hash-chain-buckets-4194304-exact") {
+        strategy = BenchmarkStrategy::hash_chain_buckets_4194304_exact;
     } else if (text == "binary-tree-exact") {
         strategy = BenchmarkStrategy::binary_tree_exact;
     } else if (text == "wavl-tree-exact") {
@@ -92,6 +101,12 @@ enum class BenchmarkStrategy : std::uint8_t {
     case BenchmarkStrategy::hash_chain_exact: return "hash-chain-exact";
     case BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact:
         return "hash-chain-mnemonic-mixer-v1-exact";
+    case BenchmarkStrategy::hash_chain_buckets_262144_exact:
+        return "hash-chain-buckets-262144-exact";
+    case BenchmarkStrategy::hash_chain_buckets_1048576_exact:
+        return "hash-chain-buckets-1048576-exact";
+    case BenchmarkStrategy::hash_chain_buckets_4194304_exact:
+        return "hash-chain-buckets-4194304-exact";
     case BenchmarkStrategy::binary_tree_exact: return "binary-tree-exact";
     case BenchmarkStrategy::wavl_tree_exact: return "wavl-tree-exact";
     case BenchmarkStrategy::red_black_tree_exact:
@@ -115,7 +130,42 @@ enum class BenchmarkStrategy : std::uint8_t {
     const BenchmarkStrategy strategy) noexcept {
     return strategy == BenchmarkStrategy::hash_chain_exact
         || strategy
-            == BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact;
+            == BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact
+        || strategy == BenchmarkStrategy::hash_chain_buckets_262144_exact
+        || strategy == BenchmarkStrategy::hash_chain_buckets_1048576_exact
+        || strategy == BenchmarkStrategy::hash_chain_buckets_4194304_exact;
+}
+
+inline constexpr std::size_t legacy_hash_chain_bucket_cap = 65'536;
+
+[[nodiscard]] std::size_t configured_hash_chain_bucket_cap(
+    const BenchmarkStrategy strategy) noexcept {
+    switch (strategy) {
+    case BenchmarkStrategy::hash_chain_exact:
+    case BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact:
+        return legacy_hash_chain_bucket_cap;
+    case BenchmarkStrategy::hash_chain_buckets_262144_exact:
+        return lzss_hash_chain_bucket_cap_262144;
+    case BenchmarkStrategy::hash_chain_buckets_1048576_exact:
+        return lzss_hash_chain_bucket_cap_1048576;
+    case BenchmarkStrategy::hash_chain_buckets_4194304_exact:
+        return lzss_hash_chain_bucket_cap_4194304;
+    default: return 0;
+    }
+}
+
+[[nodiscard]] LzssHashChainWorkspaceRequirements
+calculate_hash_chain_workspace_for_strategy(
+    const BenchmarkStrategy strategy, const std::size_t input_size,
+    const LzssParameters& parameters,
+    const marc::core::DecoderLimits& limits) noexcept {
+    const auto bucket_cap = configured_hash_chain_bucket_cap(strategy);
+    if (bucket_cap == legacy_hash_chain_bucket_cap) {
+        return calculate_lzss_hash_chain_workspace(
+            input_size, parameters, limits);
+    }
+    return calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+        input_size, parameters, limits, bucket_cap);
 }
 
 [[nodiscard]] bool is_sparse_hash_tree_strategy(
@@ -899,6 +949,9 @@ void print_hash_tree_depth_histograms(
     switch (strategy) {
     case BenchmarkStrategy::hash_chain_exact:
     case BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact:
+    case BenchmarkStrategy::hash_chain_buckets_262144_exact:
+    case BenchmarkStrategy::hash_chain_buckets_1048576_exact:
+    case BenchmarkStrategy::hash_chain_buckets_4194304_exact:
         return valid_hash_chain_statistics(statistics);
     case BenchmarkStrategy::binary_tree_exact:
         return valid_binary_tree_statistics(statistics);
@@ -1308,6 +1361,36 @@ void fill_synthetic_input(
             return false;
         }
         frame_tokens = parse_with_finder(frame, finder, token_summary);
+    } else if (strategy
+               == BenchmarkStrategy::hash_chain_buckets_262144_exact) {
+        LzssHashChainBuckets262144MatchFinder finder{};
+        if (initialize_lzss_hash_chain_bucket_scaled_match_finder(
+                frame, parameters, limits, workspace, finder,
+                collect_statistics ? &frame_statistics : nullptr)
+            != LzssHashChainError::none) {
+            return false;
+        }
+        frame_tokens = parse_with_finder(frame, finder, token_summary);
+    } else if (strategy
+               == BenchmarkStrategy::hash_chain_buckets_1048576_exact) {
+        LzssHashChainBuckets1048576MatchFinder finder{};
+        if (initialize_lzss_hash_chain_bucket_scaled_match_finder(
+                frame, parameters, limits, workspace, finder,
+                collect_statistics ? &frame_statistics : nullptr)
+            != LzssHashChainError::none) {
+            return false;
+        }
+        frame_tokens = parse_with_finder(frame, finder, token_summary);
+    } else if (strategy
+               == BenchmarkStrategy::hash_chain_buckets_4194304_exact) {
+        LzssHashChainBuckets4194304MatchFinder finder{};
+        if (initialize_lzss_hash_chain_bucket_scaled_match_finder(
+                frame, parameters, limits, workspace, finder,
+                collect_statistics ? &frame_statistics : nullptr)
+            != LzssHashChainError::none) {
+            return false;
+        }
+        frame_tokens = parse_with_finder(frame, finder, token_summary);
     } else if (strategy == BenchmarkStrategy::binary_tree_exact) {
         LzssBinaryTreeMatchFinder finder{};
         if (initialize_lzss_binary_tree_match_finder(
@@ -1523,6 +1606,7 @@ void print_frame_report(
     const std::string_view mode, const std::string_view synthetic_case,
     const std::size_t frame_size, const std::size_t window_size,
     const std::size_t iterations, const std::size_t workspace_size,
+    const std::size_t hash_chain_bucket_count,
     const std::uint64_t max_internal_buffered_bytes,
     const std::size_t pool_node_capacity,
     const std::uint64_t promotion_threshold,
@@ -1554,7 +1638,11 @@ void print_frame_report(
                   << "workspace_bytes=" << workspace_size << '\n';
     }
     if (is_hash_chain_strategy(strategy)) {
-        std::cout << "hash_workspace_bytes=" << workspace_size << '\n'
+        std::cout << "hash_chain_configured_bucket_cap="
+                  << configured_hash_chain_bucket_cap(strategy) << '\n'
+                  << "hash_chain_bucket_count=" << hash_chain_bucket_count
+                  << '\n'
+                  << "hash_workspace_bytes=" << workspace_size << '\n'
                   << "hash_chain_queries="
                   << verified.statistics.query_count << '\n'
                   << "hash_chain_candidates="
@@ -1910,6 +1998,9 @@ void print_usage() {
            "<input-file> [iterations]\n"
         << "       marc_lzss_match_finder_benchmark --frames "
            "<hash-chain-exact|hash-chain-mnemonic-mixer-v1-exact|"
+           "hash-chain-buckets-262144-exact|"
+           "hash-chain-buckets-1048576-exact|"
+           "hash-chain-buckets-4194304-exact|"
            "binary-tree-exact|wavl-tree-exact|"
            "red-black-tree-exact|"
            "scapegoat-tree-exact> "
@@ -1923,6 +2014,9 @@ void print_usage() {
            "<window-bytes> <pool-nodes> <promotion-candidates>\n"
         << "       marc_lzss_match_finder_benchmark --frames-limited "
            "<hash-chain-exact|hash-chain-mnemonic-mixer-v1-exact|"
+           "hash-chain-buckets-262144-exact|"
+           "hash-chain-buckets-1048576-exact|"
+           "hash-chain-buckets-4194304-exact|"
            "binary-tree-exact> <input-file> "
            "<iterations> <frame-bytes> <window-bytes> "
            "<max-internal-buffered-bytes>\n"
@@ -1947,6 +2041,9 @@ void print_usage() {
            "<delta-candidate-budget> <max-internal-buffered-bytes>\n"
         << "       marc_lzss_match_finder_benchmark --synthetic "
            "<hash-chain-exact|hash-chain-mnemonic-mixer-v1-exact|"
+           "hash-chain-buckets-262144-exact|"
+           "hash-chain-buckets-1048576-exact|"
+           "hash-chain-buckets-4194304-exact|"
            "binary-tree-exact|wavl-tree-exact|"
            "red-black-tree-exact|"
            "scapegoat-tree-exact> "
@@ -2065,14 +2162,16 @@ void print_usage() {
     LzssParameters parameters{};
     parameters.window_size = static_cast<std::uint32_t>(window_size);
     std::size_t workspace_size{};
+    std::size_t hash_chain_bucket_count{};
     if (is_hash_chain_strategy(strategy)) {
-        const auto requirements = calculate_lzss_hash_chain_workspace(
-            frame_size, parameters, limits);
+        const auto requirements = calculate_hash_chain_workspace_for_strategy(
+            strategy, frame_size, parameters, limits);
         if (requirements.error != LzssHashChainError::none) {
             std::cerr << "cannot calculate frame HashChain workspace\n";
             return 1;
         }
         workspace_size = requirements.workspace_size;
+        hash_chain_bucket_count = requirements.bucket_count;
     } else if (strategy == BenchmarkStrategy::binary_tree_exact) {
         const auto requirements = calculate_lzss_binary_tree_workspace(
             frame_size, parameters, limits);
@@ -2161,6 +2260,7 @@ void print_usage() {
     print_frame_report(
         strategy, explicit_limit ? "frames-limited" : "frames", {},
         frame_size, window_size, iterations, workspace_size,
+        hash_chain_bucket_count,
         limits.max_internal_buffered_bytes, pool_node_capacity,
         promotion_threshold, promotion_reuse_threshold,
         delta_candidate_budget, verified,
@@ -2221,14 +2321,16 @@ void print_usage() {
     LzssParameters parameters{};
     parameters.window_size = static_cast<std::uint32_t>(window_size);
     std::size_t workspace_size{};
+    std::size_t hash_chain_bucket_count{};
     if (is_hash_chain_strategy(strategy)) {
-        const auto requirements = calculate_lzss_hash_chain_workspace(
-            frame_size, parameters, limits);
+        const auto requirements = calculate_hash_chain_workspace_for_strategy(
+            strategy, frame_size, parameters, limits);
         if (requirements.error != LzssHashChainError::none) {
             std::cerr << "cannot calculate synthetic HashChain workspace\n";
             return 1;
         }
         workspace_size = requirements.workspace_size;
+        hash_chain_bucket_count = requirements.bucket_count;
     } else if (strategy == BenchmarkStrategy::binary_tree_exact) {
         const auto requirements = calculate_lzss_binary_tree_workspace(
             frame_size, parameters, limits);
@@ -2314,6 +2416,7 @@ void print_usage() {
     print_frame_report(
         strategy, "synthetic", synthetic_input_name(kind), frame_size,
         window_size, iterations, workspace_size,
+        hash_chain_bucket_count,
         limits.max_internal_buffered_bytes, pool_node_capacity,
         promotion_threshold, promotion_reuse_threshold, 0, verified,
         measured_seconds);

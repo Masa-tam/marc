@@ -1,5 +1,5 @@
-if(NOT DEFINED MARC_BENCHMARK)
-    message(FATAL_ERROR "MARC_BENCHMARK is required")
+if(NOT DEFINED MARC_BENCHMARK OR NOT DEFINED POINTER_SIZE)
+    message(FATAL_ERROR "MARC_BENCHMARK and POINTER_SIZE are required")
 endif()
 
 foreach(case_name IN ITEMS
@@ -22,6 +22,8 @@ foreach(case_name IN ITEMS
             "frame_bytes=4096"
             "window_bytes=4096"
             "frame_count=2"
+            "hash_chain_configured_bucket_cap=65536"
+            "hash_chain_bucket_count=4096"
             "iterations=1")
         string(FIND "${report}" "${expected_line}\n" line_offset)
         if(line_offset EQUAL -1)
@@ -86,6 +88,135 @@ foreach(case_name IN ITEMS
                 "pseudorandom control classification changed: ${report}")
         endif()
     endif()
+endforeach()
+
+set(bucket_scale_input_size 131329)
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --synthetic hash-chain-exact
+        pseudorandom ${bucket_scale_input_size} 1
+        ${bucket_scale_input_size} ${bucket_scale_input_size}
+    RESULT_VARIABLE bucket_legacy_result
+    OUTPUT_VARIABLE bucket_legacy_report
+    ERROR_VARIABLE bucket_legacy_error)
+if(NOT bucket_legacy_result EQUAL 0)
+    message(FATAL_ERROR
+        "bucket-scale legacy control failed: ${bucket_legacy_result}: "
+        "${bucket_legacy_error}")
+endif()
+
+foreach(identity_key IN ITEMS
+        token_count literal_count match_count matched_bytes
+        token_fingerprint_sha256)
+    string(REGEX MATCH "${identity_key}=([0-9a-f]+)" ignored
+        "${bucket_legacy_report}")
+    if(CMAKE_MATCH_1 STREQUAL "")
+        message(FATAL_ERROR
+            "bucket-scale legacy missing identity ${identity_key}")
+    endif()
+    set("bucket_legacy_${identity_key}" "${CMAKE_MATCH_1}")
+endforeach()
+string(REGEX MATCH "hash_chain_candidates=([0-9]+)" ignored
+    "${bucket_legacy_report}")
+set(bucket_legacy_candidates "${CMAKE_MATCH_1}")
+math(EXPR bucket_legacy_workspace
+    "65536 * ${POINTER_SIZE} + ${bucket_scale_input_size} * 4")
+foreach(expected_line IN ITEMS
+        "hash_chain_configured_bucket_cap=65536"
+        "hash_chain_bucket_count=65536"
+        "hash_workspace_bytes=${bucket_legacy_workspace}")
+    string(FIND "${bucket_legacy_report}" "${expected_line}\n" line_offset)
+    if(line_offset EQUAL -1)
+        message(FATAL_ERROR
+            "bucket-scale legacy missing report line: ${expected_line}")
+    endif()
+endforeach()
+
+set(bucket_scale_strategies
+    hash-chain-buckets-262144-exact
+    hash-chain-buckets-1048576-exact
+    hash-chain-buckets-4194304-exact)
+set(bucket_scale_caps 262144 1048576 4194304)
+math(EXPR bucket_scaled_workspace
+    "262144 * ${POINTER_SIZE} + ${bucket_scale_input_size} * 4")
+list(LENGTH bucket_scale_strategies bucket_scale_strategy_count)
+math(EXPR bucket_scale_last_index "${bucket_scale_strategy_count} - 1")
+foreach(index RANGE 0 ${bucket_scale_last_index})
+    list(GET bucket_scale_strategies ${index} strategy)
+    list(GET bucket_scale_caps ${index} configured_cap)
+    execute_process(
+        COMMAND "${MARC_BENCHMARK}" --synthetic "${strategy}"
+            pseudorandom ${bucket_scale_input_size} 1
+            ${bucket_scale_input_size} ${bucket_scale_input_size}
+        RESULT_VARIABLE bucket_result
+        OUTPUT_VARIABLE bucket_report
+        ERROR_VARIABLE bucket_error)
+    if(NOT bucket_result EQUAL 0)
+        message(FATAL_ERROR
+            "${strategy} smoke failed: ${bucket_result}: ${bucket_error}")
+    endif()
+    foreach(expected_line IN ITEMS
+            "mode=synthetic"
+            "strategy=${strategy}"
+            "synthetic_case=pseudorandom"
+            "input_bytes=${bucket_scale_input_size}"
+            "frame_bytes=${bucket_scale_input_size}"
+            "window_bytes=${bucket_scale_input_size}"
+            "frame_count=1"
+            "iterations=1"
+            "hash_chain_configured_bucket_cap=${configured_cap}"
+            "hash_chain_bucket_count=262144"
+            "hash_workspace_bytes=${bucket_scaled_workspace}")
+        string(FIND "${bucket_report}" "${expected_line}\n" line_offset)
+        if(line_offset EQUAL -1)
+            message(FATAL_ERROR
+                "${strategy} missing report line: ${expected_line}")
+        endif()
+    endforeach()
+    foreach(identity_key IN ITEMS
+            token_count literal_count match_count matched_bytes
+            token_fingerprint_sha256)
+        string(REGEX MATCH "${identity_key}=([0-9a-f]+)" ignored
+            "${bucket_report}")
+        if(NOT CMAKE_MATCH_1 STREQUAL
+                "${bucket_legacy_${identity_key}}")
+            message(FATAL_ERROR
+                "${strategy} changed ${identity_key}: ${bucket_report}")
+        endif()
+    endforeach()
+    string(REGEX MATCH "hash_chain_candidates=([0-9]+)" ignored
+        "${bucket_report}")
+    set(bucket_candidates "${CMAKE_MATCH_1}")
+    if(bucket_candidates GREATER bucket_legacy_candidates)
+        message(FATAL_ERROR
+            "${strategy} increased candidate count: ${bucket_report}")
+    endif()
+    string(REGEX MATCH "hash_chain_prefix_matches=([0-9]+)" ignored
+        "${bucket_report}")
+    set(bucket_prefix_matches "${CMAKE_MATCH_1}")
+    string(REGEX MATCH "hash_chain_prefix_mismatches=([0-9]+)" ignored
+        "${bucket_report}")
+    set(bucket_prefix_mismatches "${CMAKE_MATCH_1}")
+    math(EXPR bucket_classified
+        "${bucket_prefix_matches} + ${bucket_prefix_mismatches}")
+    if(NOT bucket_classified EQUAL bucket_candidates)
+        message(FATAL_ERROR
+            "${strategy} candidate classification mismatch: ${bucket_report}")
+    endif()
+    string(REGEX MATCH
+        "hash_chain_query_depth_histogram=[0-9]+(,[0-9]+)*"
+        bucket_histogram "${bucket_report}")
+    if(bucket_histogram STREQUAL "")
+        message(FATAL_ERROR "${strategy} missing query-depth histogram")
+    endif()
+    foreach(decimal_key IN ITEMS
+            hash_chain_frame_seconds hash_chain_frame_mib_per_second)
+        string(REGEX MATCH "${decimal_key}=([0-9]+\.[0-9]+)" ignored
+            "${bucket_report}")
+        if(CMAKE_MATCH_1 STREQUAL "" OR NOT CMAKE_MATCH_1 GREATER 0)
+            message(FATAL_ERROR
+                "${strategy} invalid ${decimal_key}: ${bucket_report}")
+        endif()
+    endforeach()
 endforeach()
 
 execute_process(

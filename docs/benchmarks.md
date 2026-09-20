@@ -2666,3 +2666,19 @@ The ignored canonical result JSON has SHA-256
 `8eb314beb176ed48a0ae72d4eb2294bfd053165a8c0cf8f371e1280faa938f28`.
 The completed checkpoint SHA-256 is
 `f5fc5973c6de89c535aa1ddce0189a494006aa9d920a9111515353167a56f57a`.
+
+### BM-0079: HashChain bucket-scaling benchmark connection contract
+
+The development match-finder benchmark admits three private strategy names:
+`hash-chain-buckets-262144-exact`,
+`hash-chain-buckets-1048576-exact`, and
+`hash-chain-buckets-4194304-exact`. Each identity is statically bound to the
+corresponding private finder and uses its checked workspace calculation. The
+legacy and mnemonic-mixer routes retain the production 65,536-cap workspace.
+
+Every HashChain report includes configured bucket cap, actual bucket count,
+workspace, the five Exact token identity fields, and the existing candidate,
+prefix, extension, maximum-depth, and histogram diagnostics. Synthetic smoke
+must cross the legacy cap and compare all identities with legacy before a
+long-run manifest may exist. Smoke timings are discarded; this connection is
+reproducibility and wiring evidence only and contains no performance result.

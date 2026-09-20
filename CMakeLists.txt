@@ -494,6 +494,7 @@ if(MARC_BUILD_BENCHMARKS)
         add_test(NAME marc_lzss_match_finder_synthetic_benchmark_smoke
             COMMAND ${CMAKE_COMMAND}
                 "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_match_finder_benchmark>"
+                "-DPOINTER_SIZE=${CMAKE_SIZEOF_VOID_P}"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_match_finder_synthetic_benchmark.cmake)
         set_tests_properties(marc_lzss_match_finder_synthetic_benchmark_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)

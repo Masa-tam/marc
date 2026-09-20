@@ -1,6 +1,6 @@
 # LZSS HashChain bucket-scaling experiment
 
-Status: design fixed; implementation and measurement not started.
+Status: benchmark connection complete; measurement not started.
 
 ## 1. Motivation and boundary
 
@@ -177,3 +177,15 @@ and initializer. Fixed, generated, variant-sweep, and first-cap-boundary tests
 prove typed-token and canonical-serialization identity. Negative tests retain
 the existing output-capacity, workspace, overlap, aggregate-limit, and failure-
 atomicity contracts. No benchmark selector or measurement exists yet.
+
+The private benchmark connection was completed on 2026-09-20. Three explicit
+strategy identities bind the fixed private finder types and checked workspace
+calculators without adding a public codec selector. Every HashChain report now
+states its configured cap, actual bucket count, workspace, five Exact identity
+fields, and existing search diagnostics. A one-frame 131,329-byte fixed-seed
+pseudorandom smoke crosses the legacy cap: legacy reports 65,536 actual
+buckets, all private routes report 262,144, their checked workspaces are exact,
+and all five token identities match legacy. MSVC and ClangCL pass the focused
+frame and synthetic smoke tests and all 3,559 tests. No long benchmark,
+manifest, Silesia read, performance result, public API, ABI, format, profile,
+or default change exists yet.

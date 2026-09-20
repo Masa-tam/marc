@@ -8485,3 +8485,14 @@ statistics, and deterministic test conventions. The calculator/initializer
 binding and separately named wrappers were derived locally. No external
 compressor, match finder, hash table implementation, source code, pseudocode,
 tuning advice, benchmark result, or test suite was consulted.
+
+### IR-0924
+
+The bucket-scaled benchmark connection uses DD-1151 through DD-1155,
+IR-0920 through IR-0923, TVG-1016 through TVG-1019, CR-1257 through CR-1260,
+BM-0079, and marc's repository-owned match-finder benchmark parser,
+HashChain report schema, token fingerprint, synthetic fixtures, private
+workspace calculators, finder types, and smoke-test conventions. Strategy
+names and cap/count reporting were derived from the fixed design identities.
+No external benchmark, compressor, match finder, hash table implementation,
+source code, pseudocode, tuning advice, result, or test suite was consulted.

@@ -25,6 +25,8 @@ foreach(expected_line IN ITEMS
         "frame_bytes=${frame_size}"
         "window_bytes=65536"
         "frame_count=${expected_frames}"
+        "hash_chain_configured_bucket_cap=65536"
+        "hash_chain_bucket_count=1024"
         "iterations=1")
     string(FIND "${report}" "${expected_line}\n" line_offset)
     if(line_offset EQUAL -1)

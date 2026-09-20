@@ -31460,3 +31460,31 @@ both bounds.
 - Local validation: MSVC and ClangCL build warning-free and pass all four new
   bucket-scaled typed-token tests plus all 44 focused typed-token and HashChain
   regression tests, followed by all 3,559 tests in each complete suite.
+
+## CR-1261: 2026-09-20 - Private bucket-scaled benchmark connection
+
+- Authoring method: extended marc's repository-owned match-finder benchmark
+  parser, fixed strategy dispatch, checked workspace selection, report schema,
+  and synthetic smoke with the three already implemented private finder types.
+- References used: DD-1151 through DD-1155, IR-0920 through IR-0924,
+  TVG-1016 through TVG-1020, CR-1257 through CR-1260, BM-0079, and marc's
+  existing benchmark and test conventions.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: expose only three explicit private benchmark names;
+  report configured and actual bucket counts; calculate each route's exact
+  workspace through its checked calculator; and cross the legacy cap with a
+  deterministic local pseudorandom smoke before any timing manifest exists.
+- Generated-code task description: connect the private bucket-scaled finders
+  to the development benchmark, prove five-field Exact identity and checked
+  workspace at the first cap boundary, and do not run a long measurement or
+  alter public API, ABI, format, profiles, selectors, or defaults.
+- Similarity review: the change composes marc's own private finder types,
+  benchmark machinery, and deterministic fixture. No external implementation
+  expression was copied or translated.
+- Local validation: MSVC and ClangCL build warning-free; both focused frame
+  and synthetic benchmark smoke tests pass; all three private routes match
+  legacy's five token identity fields at 131,329 bytes and report the expected
+  cap, bucket count, and workspace; both complete 3,559-test suites pass,
+  including interoperability schema compatibility.
