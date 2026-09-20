@@ -212,3 +212,12 @@ for further throughput and search-work improvements. Consequently all three,
 not a post-observation subset, advance to one separately specified fixed
 Silesia experiment. This result does not promote a strategy or alter any
 public selector, API, ABI, CLI, profile, frame, format, decoder, or default.
+
+The Silesia follow-up design is fixed before measurement. It retains all
+three admitted candidates at every window for a 144-record canonical grid.
+A candidate/window must beat legacy aggregate throughput, win at least half
+the members, keep its worst member at or above 0.90 of legacy, and reduce
+aggregate candidates. The per-window recommendation is the smallest cap
+within 0.95 of the fastest admissible candidate. A later production-policy
+proposal is possible only when all windows select a cap and those caps are
+nondecreasing. Infrastructure and mock tests precede any Corpus access.

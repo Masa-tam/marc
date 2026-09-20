@@ -31538,3 +31538,30 @@ both bounds.
 - Local validation: all 72 records completed, every candidate matched legacy
   in all five Exact fields, the final JSON was written, and a zero-new-point
   rerun revalidated `progress=72/72` without launching a benchmark child.
+
+## CR-1264: 2026-09-21 - Fixed HashChain bucket-scaling Silesia infrastructure
+
+- Authoring method: adapted marc's repository-owned verified-Corpus,
+  immutable-manifest, isolated-child, atomic-checkpoint, canonical-prefix
+  resume, and strict JSON conventions to the private bucket-scaled HashChains.
+- References used: DD-1151 through DD-1158, IR-0920 through IR-0926,
+  TVG-1016 through TVG-1022, CR-1257 through CR-1263, and BM-0079 through
+  BM-0082.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: freeze the 144-record member-major matrix; require
+  aggregate throughput improvement, at least six member wins, a 0.90
+  worst-member throughput floor, and aggregate candidate reduction; select
+  the smallest cap within 0.95 of the fastest eligible cap per window; and
+  require nondecreasing selections before a cross-window proposal exists.
+- Generated-code task description: add only the fixed Silesia manifest,
+  restartable runner, mock-only contract tests, and documentation without
+  reading or measuring the Corpus or changing production or public behavior.
+- Similarity review: the implementation composes marc's own experiment
+  orchestration, Corpus verification, and private finder reports. No external
+  implementation expression, measurements, or tuning results were copied or
+  translated.
+- Local validation: the bundled Python 3 interpreter passes all seven runner
+  tests; MSVC and ClangCL pass the focused tooling test; both complete
+  3,561-test suites pass, including interoperability schema compatibility.

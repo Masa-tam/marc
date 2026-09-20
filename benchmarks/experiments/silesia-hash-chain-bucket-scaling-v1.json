@@ -1,0 +1,95 @@
+{
+  "schema": "marc-benchmark-experiment-manifest-v1",
+  "experiment": "silesia-hash-chain-bucket-scaling-v1",
+  "result_schema": "marc-silesia-hash-chain-bucket-scaling-v1",
+  "checkpoint_schema": "marc-silesia-hash-chain-bucket-scaling-checkpoint-v1",
+  "corpus": {
+    "profile": "silesia-manifest-v1",
+    "expected_member_count": 12
+  },
+  "execution": {
+    "iterations": 1,
+    "frame_bytes": 67108864,
+    "max_internal_buffered_bytes": 536870912,
+    "process_isolation": "one-record-per-child",
+    "checkpoint_after_records": 1
+  },
+  "matrix": {
+    "window_bytes": [4194304, 16777216, 67108864],
+    "strategies": [
+      "hash-chain-exact",
+      "hash-chain-buckets-262144-exact",
+      "hash-chain-buckets-1048576-exact",
+      "hash-chain-buckets-4194304-exact"
+    ],
+    "canonical_order": ["member", "window", "strategy"],
+    "expected_record_count": 144
+  },
+  "expected_configured_bucket_cap": {
+    "hash-chain-exact": 65536,
+    "hash-chain-buckets-262144-exact": 262144,
+    "hash-chain-buckets-1048576-exact": 1048576,
+    "hash-chain-buckets-4194304-exact": 4194304
+  },
+  "expected_actual_bucket_count": {
+    "hash-chain-exact": {
+      "4194304": 65536,
+      "16777216": 65536,
+      "67108864": 65536
+    },
+    "hash-chain-buckets-262144-exact": {
+      "4194304": 262144,
+      "16777216": 262144,
+      "67108864": 262144
+    },
+    "hash-chain-buckets-1048576-exact": {
+      "4194304": 1048576,
+      "16777216": 1048576,
+      "67108864": 1048576
+    },
+    "hash-chain-buckets-4194304-exact": {
+      "4194304": 4194304,
+      "16777216": 4194304,
+      "67108864": 4194304
+    }
+  },
+  "expected_workspace_bytes": {
+    "hash-chain-exact": {
+      "4194304": 17301504,
+      "16777216": 67633152,
+      "67108864": 268959744
+    },
+    "hash-chain-buckets-262144-exact": {
+      "4194304": 18874368,
+      "16777216": 69206016,
+      "67108864": 270532608
+    },
+    "hash-chain-buckets-1048576-exact": {
+      "4194304": 25165824,
+      "16777216": 75497472,
+      "67108864": 276824064
+    },
+    "hash-chain-buckets-4194304-exact": {
+      "4194304": 50331648,
+      "16777216": 100663296,
+      "67108864": 301989888
+    }
+  },
+  "exact_identity_fields": [
+    "token_count",
+    "literal_count",
+    "match_count",
+    "matched_bytes",
+    "token_fingerprint_sha256"
+  ],
+  "selection": {
+    "aggregate_throughput_ratio": {"operator": ">", "value": 1.0},
+    "member_wins": {"operator": ">=", "value": 6},
+    "worst_member_throughput_ratio": {"operator": ">=", "value": 0.9},
+    "aggregate_candidate_ratio": {"operator": "<", "value": 1.0},
+    "near_fastest_throughput_ratio": {"operator": ">=", "value": 0.95},
+    "per_window_choice": "smallest-admissible-cap-within-near-fastest",
+    "cross_window_requirement": "all-selected-caps-nondecreasing",
+    "post_observation_tuning": "forbidden"
+  }
+}

@@ -14935,3 +14935,22 @@ canonical-prefix resume without relaunch, completed-grid resume, Pareto
 dominance, and pre-Silesia admission pass/fail behavior. The infrastructure
 test must not launch the benchmark, generate a 64-MiB fixture, read Silesia,
 write a result under the repository, or supply performance evidence.
+
+### TVG-1022
+
+Validate the fixed bucket-scaling Silesia manifest and its 144-point canonical
+grid without reading the real Corpus: twelve mocked verified members, three
+windows, and legacy followed by all three admitted private caps. Require exact
+configured caps, actual bucket counts, x64 workspaces, aggregate limit, token
+extents, candidate classification, query histogram, finite timing, and all
+five Exact identity fields against the member/window legacy record.
+
+Reject duplicate keys, non-finite values, Booleans, changed manifest values,
+wrong member count, identity, record shape/order/command, workspace,
+cap/count, Exact fields, accounting, and stale output. Mock child launch and
+Corpus verification to prove interruption after five records, canonical
+resume for the remaining 139, completed-grid zero-work validation, atomic
+child failure, aggregate/member-win/worst-member/candidate classification,
+smallest near-fastest cap selection, and monotonic cross-window proposal.
+Infrastructure tests must not read Silesia, launch the benchmark, or create a
+performance result.

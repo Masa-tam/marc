@@ -23571,3 +23571,30 @@ the cap/count/workspace contracts, isolate one record per child, checkpoint
 atomically, and predeclare its selection rule. Synthetic admission alone does
 not authorize production dispatch, a public selector, API, ABI, CLI, profile,
 frame, format, decoder, or default change.
+
+## DD-1158: Freeze a 144-record Silesia bucket-scaling gate
+
+- Date: 2026-09-21
+- Status: accepted
+
+Before reading any Silesia timing, commit one strict version-one manifest and
+restartable runner for twelve verified Silesia members, 4-/16-/64-MiB
+windows, and legacy followed by the 262,144-, 1,048,576-, and 4,194,304-cap
+private routes. The canonical grid therefore contains 144 process-isolated
+records. Bind every checkpoint to the manifest, verified Corpus identities,
+revision, benchmark and runner-source digests, build environment, and exact
+canonical prefix. Validate the same cap, actual-count, x64-workspace, token,
+candidate-classification, histogram, limit, finite-timing, and five-field
+Exact contracts as the synthetic gate.
+
+For each candidate/window, require strictly greater aggregate throughput than
+legacy, at least six wins among twelve members, a worst-member throughput
+ratio of at least 0.90, and strictly fewer aggregate candidates before it is
+admissible. Among admissible candidates at one window, define the fastest by
+aggregate throughput and select the smallest cap whose throughput is at least
+0.95 of that fastest candidate; break an equal-cap tie by smaller workspace.
+A cross-window production-policy proposal exists only when every window has a
+selection and selected caps are nondecreasing with window size. Even then,
+this gate supplies evidence only: a later decision must explicitly change
+production dispatch or public behavior. Do not alter these rules after any
+Silesia result is observed.

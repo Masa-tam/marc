@@ -2734,3 +2734,19 @@ The ignored canonical result JSON has SHA-256
 `7ee6ae123f7ba52c760db502ca8cfd32db4eb5e9a2448c408c73205c68d315f6`.
 The completed checkpoint SHA-256 is
 `7f0cc1ac1cdac7c075b35196b7ccbe50f265924200772e171f23a7f8fdd401be`.
+
+### BM-0082: Fixed bucket-scaling Silesia experiment contract
+
+The follow-up must use an inert immutable manifest and a repository runner for
+exactly 144 records: twelve verified Silesia members, 4-/16-/64-MiB windows,
+and legacy then the three private bucket caps in canonical order. One child
+process produces one record, every accepted record is checkpointed
+atomically, and a resume accepts only an identity-bound canonical prefix.
+
+The result must report per-window aggregate throughput and candidates,
+member wins, worst-member throughput, workspace, eligibility, the fastest
+eligible cap, the smallest eligible cap within 0.95 of the fastest, and the
+cross-window monotonic-policy classification fixed by DD-1158. Mock-only
+runner tests must cover the complete contract and restart behavior. At this
+infrastructure gate no real Silesia member is read, no long child is launched,
+no performance result is created, and no production or public policy changes.

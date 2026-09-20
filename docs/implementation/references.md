@@ -8508,3 +8508,16 @@ four-strategy ordering, cap/count/workspace tables, Pareto comparison, and
 admission summary were derived locally. No external benchmark, compressor,
 match finder, hash table implementation, source code, pseudocode, tuning
 advice, result, or test suite was consulted.
+
+### IR-0926
+
+The fixed bucket-scaling Silesia infrastructure uses DD-1151 through DD-1158,
+IR-0920 through IR-0925, TVG-1016 through TVG-1021, CR-1257 through CR-1263,
+BM-0079 through BM-0081, marc's repository-owned Silesia manifest verifier,
+immutable experiment-manifest conventions, restartable runners, and the
+already validated private HashChain reports. The 144-record ordering,
+per-member regression floor, broad-win rule, aggregate candidate reduction,
+near-fastest smallest-cap selection, and monotonic cross-window gate were
+derived locally before Silesia timing. No external benchmark, compressor,
+match finder, hash table implementation, source code, pseudocode, tuning
+advice, result, or test suite was consulted.
