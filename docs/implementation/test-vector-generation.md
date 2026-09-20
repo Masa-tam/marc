@@ -14918,3 +14918,20 @@ legacy, prefix matches plus mismatches to equal candidates, a valid depth
 histogram, positive finite throughput fields, and successful process exit.
 Reject unknown strategy spellings through the existing argument contract.
 Discard smoke timing and do not read Silesia or create experiment results.
+
+### TVG-1021
+
+Validate the fixed bucket-scaling manifest byte structure and its 72-point
+canonical grid: six 64-MiB deterministic fixtures, three windows, and four
+strategies with legacy first. Require exact fixture SHA-256 values, per-window
+configured caps, actual bucket counts, x64 workspace values, five-field Exact
+identity, token extents, candidate classification, query histogram totals,
+finite positive timing, and the fixed 512-MiB internal-buffer limit.
+
+Exercise duplicate-key, non-finite-value, Boolean, identity, record-shape,
+record-order, command, workspace, cap/count, Exact, and accounting rejection.
+Mock process launch to prove atomic one-record checkpointing, bounded batches,
+canonical-prefix resume without relaunch, completed-grid resume, Pareto
+dominance, and pre-Silesia admission pass/fail behavior. The infrastructure
+test must not launch the benchmark, generate a 64-MiB fixture, read Silesia,
+write a result under the repository, or supply performance evidence.

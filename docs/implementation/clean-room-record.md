@@ -31488,3 +31488,29 @@ both bounds.
   legacy's five token identity fields at 131,329 bytes and report the expected
   cap, bucket count, and workspace; both complete 3,559-test suites pass,
   including interoperability schema compatibility.
+
+## CR-1262: 2026-09-20 - Fixed HashChain bucket-scaling synthetic experiment
+
+- Authoring method: adapted marc's repository-owned immutable-manifest,
+  isolated-child, atomic-checkpoint, canonical-prefix resume, and strict JSON
+  conventions to the already implemented private bucket-scaled HashChains.
+- References used: DD-1151 through DD-1156, IR-0920 through IR-0925,
+  TVG-1016 through TVG-1021, CR-1257 through CR-1261, BM-0079, BM-0080,
+  and marc's existing prefix-mixer experiment infrastructure.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: freeze one 72-point matrix before measurement; bind
+  configured caps, actual bucket counts, x64 workspace, fixtures, tools,
+  revision, and environment in the manifest or checkpoint identity; require
+  five-field Exact identity; keep private Pareto selection separate from
+  legacy-baseline admission; and reject non-canonical resume records.
+- Generated-code task description: add only the fixed synthetic manifest,
+  restartable runner, mock-only contract tests, and documentation without
+  running the long benchmark, using Silesia, or changing public behavior.
+- Similarity review: the implementation specializes marc's own experiment
+  orchestration and private finder reports. No external implementation
+  expression, measurements, or tuning results were copied or translated.
+- Local validation: the bundled Python 3 interpreter passes all seven runner
+  tests; MSVC and ClangCL pass the focused tooling test; both complete
+  3,560-test suites pass, including interoperability schema compatibility.

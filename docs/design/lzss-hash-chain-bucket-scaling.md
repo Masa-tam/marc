@@ -1,6 +1,6 @@
 # LZSS HashChain bucket-scaling experiment
 
-Status: benchmark connection complete; measurement not started.
+Status: synthetic experiment infrastructure complete; measurement not started.
 
 ## 1. Motivation and boundary
 
@@ -189,3 +189,15 @@ and all five token identities match legacy. MSVC and ClangCL pass the focused
 frame and synthetic smoke tests and all 3,559 tests. No long benchmark,
 manifest, Silesia read, performance result, public API, ABI, format, profile,
 or default change exists yet.
+
+The fixed synthetic experiment infrastructure was completed on 2026-09-20.
+Its immutable v1 manifest contains six repository-generated 64-MiB fixtures,
+three windows, four ordered strategies, exact cap/count/workspace tables, five
+Exact fields, and predeclared Pareto and Silesia-admission rules. The runner
+uses one child process per record, atomically checkpoints every record, binds
+resume to code/data/binary/revision/environment identity, and accepts only a
+validated canonical prefix. Mock-only tests cover manifest rejection, report
+validation, Exact mismatch, ordering, checkpoint identity, bounded batches,
+completed-grid resume, dominance, and admission. No long child process,
+64-MiB fixture generation, result artifact, Silesia read, performance claim,
+or candidate decision has occurred.

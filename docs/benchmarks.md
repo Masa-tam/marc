@@ -2682,3 +2682,20 @@ prefix, extension, maximum-depth, and histogram diagnostics. Synthetic smoke
 must cross the legacy cap and compare all identities with legacy before a
 long-run manifest may exist. Smoke timings are discarded; this connection is
 reproducibility and wiring evidence only and contains no performance result.
+
+### BM-0080: Fixed bucket-scaling synthetic experiment infrastructure
+
+The immutable manifest is
+`benchmarks/experiments/lzss-hash-chain-bucket-scaling-synthetic-v1.json` and
+the runner is
+`tools/run_lzss_hash_chain_bucket_scaling_experiment.py`. The grid contains
+72 process-isolated records in fixture/window/strategy order, checkpoints
+after every record, and resumes only a validated canonical prefix bound to all
+code, data, binary, revision, configuration, and environment identities.
+
+The manifest fixes all six 64-MiB fixture SHA-256 values, three windows, four
+strategy identities, configured and actual bucket counts, exact x64
+workspaces, the five Exact fields, the private-candidate Pareto rule, and the
+pre-Silesia admission thresholds. Runner tests use mocked reports and process
+launch only. No long benchmark has run, no result artifact exists, Silesia is
+not read, and no performance or admission conclusion is supplied by BM-0080.

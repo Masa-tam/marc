@@ -23523,3 +23523,30 @@ identity, validate cap/count/workspace values, and require internally
 consistent candidate classification. Timing emitted by smoke is discarded.
 Do not add a manifest, long measurement, public selector, API, ABI, CLI codec
 option, format identity, profile, decoder change, or performance claim yet.
+
+## DD-1156: Freeze the bucket-scaling synthetic experiment before measurement
+
+- Date: 2026-09-20
+- Status: accepted
+
+Commit a strict version-one manifest, validator, and restartable runner before
+executing any long bucket-scaling measurement. The immutable matrix contains
+the six repository-generated 64-MiB synthetic fixtures, 4-, 16-, and 64-MiB
+windows, and exactly four strategies in this order for every fixture/window:
+legacy 65,536, private 262,144, private 1,048,576, and private 4,194,304.
+Run one record per child process and atomically checkpoint every completed
+record. Bind a checkpoint to revision, benchmark binary, manifest, runner
+sources, fixture identities, environment, and the canonical record prefix.
+
+Require the five Exact identity fields to equal legacy for every private
+record, and validate configured cap, actual bucket count, exact workspace,
+limits, token accounting, candidate classification, histogram accounting,
+and finite positive timing. Pareto elimination applies only among private
+candidates: one private candidate dominates another only when it has no lower
+aggregate throughput, no more aggregate candidates, and no larger workspace
+at every window, with at least one strict advantage. A non-dominated private
+candidate is eligible for a separately fixed Silesia follow-up only when its
+pseudorandom prefix mismatches are strictly below legacy at every window, its
+aggregate throughput is at least 0.98 of legacy at every window, and it is
+strictly faster than legacy at two or more windows. Do not alter these rules
+after observing results under the same experiment identity.

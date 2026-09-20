@@ -8496,3 +8496,15 @@ workspace calculators, finder types, and smoke-test conventions. Strategy
 names and cap/count reporting were derived from the fixed design identities.
 No external benchmark, compressor, match finder, hash table implementation,
 source code, pseudocode, tuning advice, result, or test suite was consulted.
+
+### IR-0925
+
+The fixed bucket-scaling synthetic infrastructure uses DD-1151 through
+DD-1156, IR-0920 through IR-0924, TVG-1016 through TVG-1020, CR-1257 through
+CR-1261, BM-0079, marc's repository-owned prefix-mixer manifest and
+restartable-runner conventions, the existing deterministic synthetic fixture
+generator, and the private bucket-scaled benchmark routes. The new manifest,
+four-strategy ordering, cap/count/workspace tables, Pareto comparison, and
+admission summary were derived locally. No external benchmark, compressor,
+match finder, hash table implementation, source code, pseudocode, tuning
+advice, result, or test suite was consulted.
