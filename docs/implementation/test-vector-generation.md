@@ -14884,3 +14884,21 @@ legacy at every position. Require private candidate accounting to be valid
 and no greater than legacy. Finally, initialize a valid 1,048,576-cap wrapper,
 force insufficient-workspace reinitialization, and require its prior match to
 remain unchanged. This gate emits no typed tokens and performs no timing.
+
+### TVG-1019
+
+Invoke the legacy single-pass typed-token route and all three separately named
+bucket-scaled routes on empty, short, repeated, periodic, all-byte, mixed, and
+fixed-seed generated inputs. Sweep supported typed-token variants where their
+window bounds apply. Require equal successful result metadata, field-by-field
+typed-token identity, canonical LZSS serialized bytes, valid Exact statistics,
+and untouched output storage beyond the reported token count.
+
+Reuse the fixed 131,329-byte TVG-1018 stream and window to cross the legacy
+65,536-bucket boundary. Compare the three private routes with legacy without
+an Exhaustive pass, require identical tokens and canonical bytes, and allow
+only candidate/prefix diagnostic counts to decrease. Add bounded negative
+cases for insufficient workspace, aggregate limits, output capacity, and
+overlap, requiring no partial route exposure or public selector. This gate
+runs no benchmark, reads no Silesia member, and supplies no performance
+evidence.

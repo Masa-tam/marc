@@ -31436,3 +31436,27 @@ both bounds.
 - Local validation: MSVC and ClangCL build warning-free and pass all thirteen
   focused legacy and bucket-scaled HashChain tests, followed by all 3,555
   tests in each complete suite.
+
+## CR-1260: 2026-09-20 - Private bucket-scaled typed-token routes
+
+- Authoring method: generalized marc's existing internal single-pass helper
+  to receive both its workspace calculator and initializer at compile time,
+  then added three separately named wrappers bound to the fixed private caps.
+- References used: DD-1151 through DD-1154, IR-0920 through IR-0923,
+  TVG-1016 through TVG-1019, CR-1257 through CR-1259, and the repository-owned
+  typed parser, canonical serializer, Exact statistics, and safety tests.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: keep production binding static; expose three private
+  named routes rather than a runtime cap; reserve worst-case token storage
+  before finder initialization; and defer all benchmark exposure.
+- Generated-code task description: connect the private finders through the
+  typed-token boundary and prove token, serialization, limits, overlap, and
+  failure identity without public or format changes.
+- Similarity review: the change generalizes and instantiates marc's existing
+  internal typed-token path without reproducing an external implementation
+  expression.
+- Local validation: MSVC and ClangCL build warning-free and pass all four new
+  bucket-scaled typed-token tests plus all 44 focused typed-token and HashChain
+  regression tests, followed by all 3,559 tests in each complete suite.

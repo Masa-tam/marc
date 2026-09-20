@@ -169,3 +169,11 @@ legacy HashChain at raw-byte and token-like advancement boundaries. A
 with a 262,144-entry actual table. Wrapper reinitialization failure preserves
 the prior valid match state. Both complete 3,555-test MSVC and ClangCL suites
 pass. Typed-token and benchmark connections remain absent.
+
+The typed-token connection was completed on 2026-09-20. The same three finder
+types are statically bound to separately named private single-pass wrappers,
+while the production wrapper remains directly bound to the legacy calculator
+and initializer. Fixed, generated, variant-sweep, and first-cap-boundary tests
+prove typed-token and canonical-serialization identity. Negative tests retain
+the existing output-capacity, workspace, overlap, aggregate-limit, and failure-
+atomicity contracts. No benchmark selector or measurement exists yet.

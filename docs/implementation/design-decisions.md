@@ -23481,3 +23481,24 @@ Also cross the legacy 65,536-bucket boundary with a fixed-seed 131,329-byte
 input and require match equality at every position with valid diagnostic
 accounting. Do not yet connect typed-token production, serialization,
 benchmark selectors, public APIs, formats, or measurements.
+
+## DD-1154: Route private bucket-scaled finders through typed tokens statically
+
+- Date: 2026-09-20
+- Status: accepted
+
+Generalize the existing internal single-pass typed-token helper so both its
+workspace calculator and finder initializer are selected by the calling
+wrapper at compile time. Keep the production HashChain wrapper bound directly
+to the legacy calculator and initializer. Add three separately named private
+wrappers, each bound to one fixed bucket-scaled finder type, private-cap
+calculator, and initializer; do not add a runtime bucket-cap parameter.
+
+Require every private wrapper to preserve the typed-token sequence, token
+count, token-storage size, canonical LZSS serialization, Exact statistics
+accounting, validation, overlap rejection, aggregate limits, and failure
+categories of the existing route. Compare with Exhaustive and legacy on
+bounded fixed/generated cases, and compare with legacy across the first cap
+boundary without using Exhaustive. Do not expose a benchmark selector, public
+API, ABI, CLI option, profile, frame or format change, decoder path, default,
+or performance claim in this gate.

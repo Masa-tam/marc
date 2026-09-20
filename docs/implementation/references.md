@@ -8474,3 +8474,14 @@ test conventions. The compile-time wrapper and atomic publication boundary
 were derived locally. No external compressor, match finder, hash table
 implementation, source code, pseudocode, tuning advice, benchmark result, or
 test suite was consulted.
+
+### IR-0923
+
+The private bucket-scaled typed-token routes use DD-1151 through DD-1154,
+IR-0920 through IR-0922, TVG-1016 through TVG-1018, CR-1257 through CR-1259,
+and marc's repository-owned single-pass typed parser, legacy HashChain route,
+private finder types, canonical token serializer, limits, overlap checks,
+statistics, and deterministic test conventions. The calculator/initializer
+binding and separately named wrappers were derived locally. No external
+compressor, match finder, hash table implementation, source code, pseudocode,
+tuning advice, benchmark result, or test suite was consulted.
