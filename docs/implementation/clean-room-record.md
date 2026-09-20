@@ -31514,3 +31514,27 @@ both bounds.
 - Local validation: the bundled Python 3 interpreter passes all seven runner
   tests; MSVC and ClangCL pass the focused tooling test; both complete
   3,560-test suites pass, including interoperability schema compatibility.
+
+## CR-1263: 2026-09-20 - HashChain bucket-scaling synthetic measurement
+
+- Authoring method: executed the already committed immutable 72-record
+  manifest with the repository runner and MSVC Release benchmark, then used
+  only its validated aggregate and predeclared selection result.
+- References used: DD-1151 through DD-1157, IR-0920 through IR-0925,
+  TVG-1016 through TVG-1021, CR-1257 through CR-1262, and BM-0079 through
+  BM-0081.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: preserve every frozen condition; accept all three
+  mutually non-dominated candidates that passed the baseline gate; and defer
+  both Silesia design and every public or production choice to later gates.
+- Generated-code task description: run and monitor the fixed synthetic
+  experiment, verify completed-checkpoint resume, record hashes and validated
+  ratios, and do not tune, promote, or read Silesia.
+- Similarity review: this gate produced measurements from marc's independently
+  implemented private finders and did not consult or reproduce an external
+  implementation expression or result.
+- Local validation: all 72 records completed, every candidate matched legacy
+  in all five Exact fields, the final JSON was written, and a zero-new-point
+  rerun revalidated `progress=72/72` without launching a benchmark child.

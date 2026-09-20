@@ -1,6 +1,6 @@
 # LZSS HashChain bucket-scaling experiment
 
-Status: synthetic experiment infrastructure complete; measurement not started.
+Status: synthetic measurement complete; fixed Silesia follow-up not started.
 
 ## 1. Motivation and boundary
 
@@ -201,3 +201,14 @@ validation, Exact mismatch, ordering, checkpoint identity, bounded batches,
 completed-grid resume, dominance, and admission. No long child process,
 64-MiB fixture generation, result artifact, Silesia read, performance claim,
 or candidate decision has occurred.
+
+The fixed synthetic experiment completed all 72 records on 2026-09-20. Every
+private route retained all five Exact identity fields. All three candidates
+were faster than legacy at every window, reduced aggregate candidate work and
+fixed-seed pseudorandom prefix mismatches at every window, and passed the
+predeclared baseline-admission rule. The candidates remain mutually
+non-dominated because increasing the bucket cap trades additional workspace
+for further throughput and search-work improvements. Consequently all three,
+not a post-observation subset, advance to one separately specified fixed
+Silesia experiment. This result does not promote a strategy or alter any
+public selector, API, ABI, CLI, profile, frame, format, decoder, or default.

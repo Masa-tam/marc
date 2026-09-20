@@ -2699,3 +2699,38 @@ workspaces, the five Exact fields, the private-candidate Pareto rule, and the
 pre-Silesia admission thresholds. Runner tests use mocked reports and process
 launch only. No long benchmark has run, no result artifact exists, Silesia is
 not read, and no performance or admission conclusion is supplied by BM-0080.
+
+### BM-0081: Fixed bucket-scaling synthetic result
+
+The complete MSVC 19.51 Release experiment at commit `f4264d87` finished all
+72 process-isolated records: six deterministic 64-MiB fixtures, 4-/16-/64-MiB
+windows, legacy HashChain, and the three fixed private bucket caps for every
+fixture/window. Every private record matched legacy in token, literal, match,
+and matched-byte counts and canonical token fingerprint. A zero-new-point
+rerun revalidated `progress=72/72` without launching another child.
+
+| Window | Bucket cap | Candidate / legacy throughput | Candidate / legacy candidates | Pseudorandom mismatches | Legacy pseudorandom mismatches | Workspace bytes |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 MiB | 262,144 | 2.219820 | 0.307451 | 1,040,218,924 | 4,160,758,678 | 18,874,368 |
+| 4 MiB | 1,048,576 | 3.247476 | 0.136901 | 260,048,915 | 4,160,758,678 | 25,165,824 |
+| 4 MiB | 4,194,304 | 3.754288 | 0.093443 | 65,013,143 | 4,160,758,678 | 50,331,648 |
+| 16 MiB | 262,144 | 3.285636 | 0.280740 | 3,757,919,024 | 15,031,625,820 | 69,206,016 |
+| 16 MiB | 1,048,576 | 7.553337 | 0.103556 | 939,464,205 | 15,031,625,820 | 75,497,472 |
+| 16 MiB | 4,194,304 | 10.970623 | 0.058322 | 234,871,268 | 15,031,625,820 | 100,663,296 |
+| 64 MiB | 262,144 | 3.361320 | 0.341874 | 8,588,617,986 | 34,354,578,077 | 270,532,608 |
+| 64 MiB | 1,048,576 | 8.309291 | 0.179569 | 2,147,137,702 | 34,354,578,077 | 276,824,064 |
+| 64 MiB | 4,194,304 | 13.133280 | 0.137930 | 536,785,402 | 34,354,578,077 | 301,989,888 |
+
+All three private candidates are faster than legacy at all three windows,
+retain at least 0.98 of legacy aggregate throughput at every window, and
+strictly reduce fixed-seed pseudorandom prefix mismatches at every window.
+None dominates another under the frozen throughput/candidate/workspace rule:
+each larger table improves speed and search work while consuming more
+workspace. Therefore all three candidates pass the predeclared gate for one
+separately frozen Silesia follow-up. No candidate is promoted, no public or
+production policy changes, and no Silesia record is read at this gate.
+
+The ignored canonical result JSON has SHA-256
+`7ee6ae123f7ba52c760db502ca8cfd32db4eb5e9a2448c408c73205c68d315f6`.
+The completed checkpoint SHA-256 is
+`7f0cc1ac1cdac7c075b35196b7ccbe50f265924200772e171f23a7f8fdd401be`.

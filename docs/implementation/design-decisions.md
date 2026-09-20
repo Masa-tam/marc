@@ -23550,3 +23550,24 @@ pseudorandom prefix mismatches are strictly below legacy at every window, its
 aggregate throughput is at least 0.98 of legacy at every window, and it is
 strictly faster than legacy at two or more windows. Do not alter these rules
 after observing results under the same experiment identity.
+
+## DD-1157: Advance every admitted bucket cap to one fixed Silesia gate
+
+- Date: 2026-09-20
+- Status: accepted
+
+The complete DD-1156 experiment admits all three private bucket caps. Each is
+faster than legacy at all three windows, stays above the fixed throughput
+floor, and strictly reduces the pseudorandom mismatch control at every
+window. The three remain mutually non-dominated because each additional
+workspace step buys lower candidate work and higher throughput.
+
+Do not choose one cap from the synthetic timings or modify any threshold.
+Instead, retain 262,144, 1,048,576, and 4,194,304 as distinct private
+candidates and define one immutable Silesia manifest before reading a Silesia
+result. That follow-up must compare legacy and all three candidates at the
+same 4-/16-/64-MiB windows, require all five Exact identity fields, preserve
+the cap/count/workspace contracts, isolate one record per child, checkpoint
+atomically, and predeclare its selection rule. Synthetic admission alone does
+not authorize production dispatch, a public selector, API, ABI, CLI, profile,
+frame, format, decoder, or default change.
