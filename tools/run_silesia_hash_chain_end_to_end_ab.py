@@ -33,6 +33,7 @@ CHECKPOINT_SCHEMA = "marc-silesia-hash-chain-end-to-end-ab-checkpoint-v1"
 BASELINE = "baseline"
 CANDIDATE = "candidate"
 CODEC = "lzss-contextual-rans-4m"
+DRY_RUN_MEMBERS = ("xml", "x-ray")
 REVISIONS = {
     BASELINE: "64f79321ec20169f2cc55787b0f637dc7075ea57",
     CANDIDATE: "fe11a20b0c5d3e79101f7567c97b70cf97ea28da",
@@ -131,6 +132,24 @@ def _release_flags(cache: dict[str, str]) -> str:
     return flags
 
 
+def _effective_build_flags(cache: dict[str, str]) -> dict[str, str]:
+    """Reject a partially initialized cache left by failed compiler detection."""
+    required = {
+        "CMAKE_CXX_FLAGS": ("/DWIN32", "/D_WINDOWS", "/EHsc"),
+        "CMAKE_C_FLAGS": ("/DWIN32", "/D_WINDOWS"),
+        "CMAKE_C_FLAGS_RELEASE": REQUIRED_FLAGS,
+        "CMAKE_EXE_LINKER_FLAGS_RELEASE": ("/INCREMENTAL:NO",),
+        "CMAKE_SHARED_LINKER_FLAGS_RELEASE": ("/INCREMENTAL:NO",),
+    }
+    values = {key: cache.get(key, "") for key in required}
+    for key, tokens in required.items():
+        actual = values[key].split()
+        if any(actual.count(token) != 1 for token in tokens):
+            raise RunnerError(f"incomplete or conflicting MSVC cache flags: {key}")
+    values["CMAKE_CXX_FLAGS_RELEASE"] = _release_flags(cache)
+    return values
+
+
 def _project_release(path: Path) -> None:
     try:
         root = ET.parse(path).getroot()
@@ -191,7 +210,7 @@ def _preflight_side(source: Path, build: Path, benchmark: Path, cli: Path,
             or cache.get("CMAKE_GENERATOR_PLATFORM") != "x64" \
             or Path(cache.get("CMAKE_HOME_DIRECTORY", "")).resolve() != source:
         raise RunnerError(f"{side} build tree does not match MSVC x64 source")
-    flags = _release_flags(cache)
+    flags = _effective_build_flags(cache)
     for project in ("marc_benchmark.vcxproj", "marc_cli.vcxproj"):
         _project_release(build / project)
     for executable in (benchmark, cli):
@@ -202,7 +221,7 @@ def _preflight_side(source: Path, build: Path, benchmark: Path, cli: Path,
             raise RunnerError(f"{side} executable predates its build configuration")
     return {
         "source": str(source), "revision": REVISIONS[side],
-        "build": str(build), "release_flags": flags,
+        "build": str(build), "effective_build_flags": flags,
         "compiler": _compiler_identity(build),
         "benchmark_source_sha256": _sha256_file(
             source / "benchmarks/marc_benchmark.cpp"),
@@ -352,7 +371,7 @@ def _load_checkpoint(path: Path, identity: dict[str, Any], members: Sequence[Any
             or value["schema"] != CHECKPOINT_SCHEMA \
             or not _same_json_value(value["identity"], identity) \
             or not isinstance(value["records"], list) \
-            or len(value["records"]) > 24:
+            or len(value["records"]) > 2 * len(members):
         raise RunnerError("checkpoint identity or shape differs")
     for key in ("started_utc", "updated_utc"):
         if not isinstance(value[key], str) or not value[key]:
@@ -427,6 +446,8 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--max-new-records", type=int)
+    parser.add_argument("--dry-run", action="store_true",
+                        help="run only the fixed xml and x-ray validation pair")
     parsed = parser.parse_args(arguments)
     if parsed.max_new_records is not None and parsed.max_new_records < 0:
         parser.error("max-new-records must be nonnegative")
@@ -444,6 +465,13 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
         members = verify_directory(corpus)
         if len(members) != 12:
             raise RunnerError("all twelve Silesia members are required")
+        selected = ([member for member in members
+                     if member.name in DRY_RUN_MEMBERS]
+                    if parsed.dry_run else list(members))
+        if parsed.dry_run and tuple(member.name for member in selected) \
+                != DRY_RUN_MEMBERS:
+            raise RunnerError("fixed dry-run members are missing")
+        grid = _grid(selected)
         binaries: dict[str, dict[str, Path]] = {}
         build_identity = {}
         for side in (BASELINE, CANDIDATE):
@@ -456,8 +484,8 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
             binaries[side] = {"benchmark": benchmark, "cli": cli}
         if build_identity[BASELINE]["compiler"] \
                 != build_identity[CANDIDATE]["compiler"] \
-                or build_identity[BASELINE]["release_flags"] \
-                != build_identity[CANDIDATE]["release_flags"] \
+                or build_identity[BASELINE]["effective_build_flags"] \
+                != build_identity[CANDIDATE]["effective_build_flags"] \
                 or any(build_identity[BASELINE][key]
                        != build_identity[CANDIDATE][key]
                        for key in ("benchmark_source_sha256",
@@ -478,6 +506,7 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
             },
             "corpus": str(corpus),
             "members": [vars(member) for member in members],
+            "run_mode": "dry-run-xml-x-ray" if parsed.dry_run else "full-12",
             "builds": build_identity,
             "environment": {"platform": platform.platform(),
                             "machine": platform.machine(),
@@ -485,18 +514,18 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
         }
         if checkpoint_path.exists():
             checkpoint = _load_checkpoint(
-                checkpoint_path, identity, members, corpus, binaries)
+                checkpoint_path, identity, selected, corpus, binaries)
         else:
             now = datetime.now(timezone.utc).isoformat()
             checkpoint = {"schema": CHECKPOINT_SCHEMA, "started_utc": now,
                           "updated_utc": now, "identity": identity, "records": []}
             _atomic_write_json(checkpoint_path, checkpoint)
         records = checkpoint["records"]
-        if len(records) < 24 and output_path.exists():
+        if len(records) < len(grid) and output_path.exists():
             raise RunnerError("final output exists before completion")
-        by_name = {member.name: member for member in members}
+        by_name = {member.name: member for member in selected}
         new_records = 0
-        for name, side in _grid(members)[len(records):]:
+        for name, side in grid[len(records):]:
             if parsed.max_new_records is not None \
                     and new_records >= parsed.max_new_records:
                 break
@@ -509,22 +538,24 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
             checkpoint["updated_utc"] = datetime.now(timezone.utc).isoformat()
             _atomic_write_json(checkpoint_path, checkpoint)
             new_records += 1
-            print(f"completed {name} {side}; progress={len(records)}/24",
+            print(f"completed {name} {side}; progress={len(records)}/{len(grid)}",
                   file=sys.stderr, flush=True)
-        if len(records) == 24 and parsed.max_new_records is None:
+        if len(records) == len(grid) and parsed.max_new_records is None:
             result = {"schema": RESULT_SCHEMA,
                       "created_utc": checkpoint["started_utc"],
                       "identity": identity, "records": records,
-                      "summary": _summary(records, members)}
+                      "summary": None if parsed.dry_run
+                      else _summary(records, selected)}
             if output_path.exists():
                 if not _same_json_value(_load_json(output_path), result):
                     raise RunnerError("existing result differs from checkpoint")
             else:
                 _atomic_write_json(output_path, result)
-            print(f"completed all 24 records: {output_path}", file=sys.stderr)
+            print(f"completed all {len(grid)} records: {output_path}",
+                  file=sys.stderr)
         else:
             print(f"checkpointed {new_records} new records; "
-                  f"progress={len(records)}/24", file=sys.stderr)
+                  f"progress={len(records)}/{len(grid)}", file=sys.stderr)
         return 0
     except (RunnerError, VerificationError, OSError, UnicodeError, ValueError,
             ET.ParseError) as error:

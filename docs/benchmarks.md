@@ -2859,3 +2859,36 @@ codec pipeline without changing archive bytes on these inputs. Decode-time
 samples varied and are not used to attribute a decoder improvement. The two
 members, few process runs, and local machine cannot establish a universal
 speedup or replace BM-0083's all-member selection experiment.
+
+### BM-0086: Resumable end-to-end A/B dry run
+
+On 2026-09-21 the fixed v1 runner compared the clean, isolated
+`64f79321ec20169f2cc55787b0f637dc7075ea57` and
+`fe11a20b0c5d3e79101f7567c97b70cf97ea28da` source trees. Both used
+MSVC 19.51 x64 Release with matching C/C++ defaults,
+`/O2 /Ob2 /DNDEBUG`, and nonincremental linker flags. An earlier baseline
+build from a partially initialized cache was rejected and completely
+rebuilt; no value from it appears below. Each public
+`lzss-contextual-rans-4m` benchmark used one measured iteration and verified
+its own round trip before timing. Each side also independently produced a
+complete CLI archive whose byte count matched the benchmark report.
+
+| Member | Baseline encode | Candidate encode | Baseline decode | Candidate decode | Archive bytes, both | Queried workspace, baseline / candidate |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `xml` | 0.852 s | 0.808 s | 0.041 s | 0.041 s | 549,164 | 130,556,905 / 132,129,769 B |
+| `x-ray` | 2.286 s | 1.205 s | 0.389 s | 0.373 s | 5,450,402 | 130,556,905 / 132,129,769 B |
+
+The A/B complete-archive SHA-256 values agreed per member:
+`xml` = `8a0d129c2cedf105ab9207e533182a6dcd1f9975cd607c74954f189e2e61760`;
+`x-ray` = `0adb83d0b113e1daa122ea9f06fecc2bd30eddce92266927b822b7de953ab08a`.
+The exact queried-workspace increase was 1,572,864 bytes in both cases.
+The ignored dry-run result SHA-256 is
+`882d6466b86be6e72c5840783c4a210dff3919fb817bde9d2a9d3a2c51455df4`;
+its completed checkpoint SHA-256 is
+`745016ce89a90d09d943e02d6ecf8318cd9516fcb987e6c13adf74bfd5e1b4a7`.
+
+The first invocation stopped at 2/4 records, the second resumed only the
+remaining pair, and a third completed without another measurement. These are
+dry-run observations on two selected inputs, not the all-twelve-member result,
+not a speed guarantee, and not a decoder-performance conclusion. The full
+campaign will use a separate checkpoint and exclude these timings.

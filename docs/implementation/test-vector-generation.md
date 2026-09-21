@@ -15028,3 +15028,10 @@ They exercise fixed manifest shape, alternating order, optimized-build
 preflight, report and archive validation, checkpoint identity/order, atomic
 replacement failure, byte-weighted aggregation, and timeout rejection.
 The external-Corpus dry run and 24-record campaign remain pending.
+
+Gate 2 additionally exposed a partially initialized CMake cache: after a
+failed compiler-detection attempt, `CMAKE_CXX_FLAGS_RELEASE` could be correct
+while common C/C++ and linker flags remained empty. The preflight now rejects
+each missing default flag group, and mock tests lock that behavior. The real
+`xml`/`x-ray` dry run verified the 2/4 checkpoint, 4/4 resume, and completed
+no-op replay; the 24-record campaign remains pending.

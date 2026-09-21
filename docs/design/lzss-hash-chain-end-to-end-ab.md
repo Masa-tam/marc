@@ -105,8 +105,10 @@ universal speedup claim. A repeat campaign would need a new fixed manifest.
    Tests cover flag mismatch, identity mismatch on resume, incomplete/duplicate
    records, archive mismatch, timeout, atomic checkpoint replacement, and
    aggregate arithmetic. No test should require the external Corpus.
-2. Run preflight and a bounded two-member dry run, then inspect the exact
-   record and resume behavior. Do not use dry-run timings in the final report.
+2. Run preflight and a bounded two-member dry run on `xml` and `x-ray`, using
+   its own mode-bound checkpoint and result. Interrupt after the first pair,
+   resume, then inspect all four records and archive identity. Do not use
+   dry-run timings in the final all-member report.
 3. Run the fixed 24-record matrix. Preserve the canonical ignored result and
    checkpoint hashes, report failures as failures, and document the result
    separately in `docs/benchmarks.md` and the clean-room record.
@@ -118,8 +120,29 @@ profile, or hard limits.
 
 The v1 manifest and runner implement strict revision and dirty-tree checks,
 matching compiler/version and Release flags, generated MSBuild Release-project
-checks, executable and source hashes, canonical alternating order, per-child
+checks, default C/C++ and linker-flag checks (including rejecting a cache
+left partly empty by failed compiler detection), executable and source hashes,
+canonical alternating order, per-child
 timeout, benchmark and CLI archive checks, atomic per-record checkpoints,
 resume identity validation, and byte-weighted summary arithmetic. Mock-only
 tests cover the failure and resume contracts without reading Silesia files.
 This stage has not produced performance observations; Gate 2 remains pending.
+
+### Gate 2 dry-run status
+
+On 2026-09-21, isolated source trees at the frozen A/B revisions were built
+with the same MSVC 19.51 x64 Release flags. The first baseline configure
+failed in MSBuild because the sandbox environment exposed both `Path` and
+`PATH`; its partially initialized cache had empty common C/C++ and linker
+flags even after a successful retry. That build's timings were never used.
+The runner preflight was strengthened to reject this state, and the baseline
+build directory alone was deleted and configured/built cleanly. Both trees
+then passed the complete flag and generated-project checks.
+
+The separate `--dry-run` mode verified all twelve Corpus identities but ran
+only `xml` and `x-ray`. It stopped after the `xml` pair at 2/4 records, then
+resumed to complete only the `x-ray` pair. A further invocation at 4/4 made
+no new measurement. Both members had equal A/B complete-archive SHA-256 and
+byte counts, and the expected 1,572,864-byte workspace increase. BM-0086
+records the exact ignored-result digests and observed values. These dry-run
+times are not inputs to Gate 3's all-member summary. Gate 3 remains pending.

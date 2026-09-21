@@ -63,6 +63,9 @@ class EndToEndAbRunnerTests(unittest.TestCase):
             ("m0", runner.BASELINE), ("m0", runner.CANDIDATE),
             ("m1", runner.CANDIDATE), ("m1", runner.BASELINE),
         ])
+        self.assertEqual(runner.DRY_RUN_MEMBERS, ("xml", "x-ray"))
+        self.assertEqual(len(runner._grid([
+            member(name) for name in runner.DRY_RUN_MEMBERS])), 4)
         with tempfile.TemporaryDirectory() as directory:
             altered = Path(directory) / "manifest.json"
             value = copy.deepcopy(runner.EXPECTED_MANIFEST)
@@ -84,6 +87,22 @@ class EndToEndAbRunnerTests(unittest.TestCase):
         for flags in ("", "/O2 /DNDEBUG", "/O2 /Ob2 /DNDEBUG /Od"):
             with self.assertRaises(runner.RunnerError):
                 runner._release_flags({"CMAKE_CXX_FLAGS_RELEASE": flags})
+        cache = {
+            "CMAKE_CXX_FLAGS": "/DWIN32 /D_WINDOWS /EHsc",
+            "CMAKE_C_FLAGS": "/DWIN32 /D_WINDOWS",
+            "CMAKE_C_FLAGS_RELEASE": "/O2 /Ob2 /DNDEBUG",
+            "CMAKE_CXX_FLAGS_RELEASE": "/O2 /Ob2 /DNDEBUG",
+            "CMAKE_EXE_LINKER_FLAGS_RELEASE": "/INCREMENTAL:NO",
+            "CMAKE_SHARED_LINKER_FLAGS_RELEASE": "/INCREMENTAL:NO",
+        }
+        self.assertEqual(len(runner._effective_build_flags(cache)), 6)
+        for missing in ("CMAKE_CXX_FLAGS", "CMAKE_C_FLAGS",
+                        "CMAKE_C_FLAGS_RELEASE",
+                        "CMAKE_EXE_LINKER_FLAGS_RELEASE",
+                        "CMAKE_SHARED_LINKER_FLAGS_RELEASE"):
+            changed = {**cache, missing: ""}
+            with self.assertRaisesRegex(runner.RunnerError, missing):
+                runner._effective_build_flags(changed)
         with tempfile.TemporaryDirectory() as directory:
             project = Path(directory) / "marc_benchmark.vcxproj"
             template = ("<Project><ItemDefinitionGroup "

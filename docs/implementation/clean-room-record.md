@@ -31747,3 +31747,25 @@ both bounds.
   experiment conditions were reused; no external implementation was copied.
 - Local validation: mock-only runner tests and documentation checks pass;
   no Corpus measurement has yet been performed.
+
+## CR-1273: 2026-09-21 - Isolated end-to-end A/B dry run
+
+- Authoring method: built the fixed pre/post revisions in separate local
+  worktrees, repaired a partially initialized baseline CMake cache through a
+  clean rebuild, then ran and resumed the fixed two-member dry-run mode.
+- References used: DD-1161, TVG-1026, CR-1271 and CR-1272, BM-0085 and
+  BM-0086, and the repository's own CMake, benchmark, CLI, and Corpus verifier.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, source code, pseudocode, tuning advice, or test suite.
+- Independent decisions: reject all measurements from the first baseline
+  build, extend preflight beyond `CMAKE_CXX_FLAGS_RELEASE`, and isolate dry-run
+  records from the future all-member result identity.
+- Generated-code task description: validate that the A/B runner detects
+  incomplete MSVC builds, resumes without repeating completed records, and
+  checks archive identity before attempting a full-Corpus campaign.
+- Similarity review: only marc-owned binaries, tooling, and the locally
+  supplied external Corpus were used; no implementation source was imported.
+- Local validation: mock tests and documentation checks passed; `xml` and
+  `x-ray` passed 2/4 interruption, 4/4 resume, no-op replay, benchmark
+  round-trip, archive SHA-256 identity, and workspace checks. The full
+  24-record campaign has not been run.
