@@ -8521,3 +8521,16 @@ near-fastest smallest-cap selection, and monotonic cross-window gate were
 derived locally before Silesia timing. No external benchmark, compressor,
 match finder, hash table implementation, source code, pseudocode, tuning
 advice, result, or test suite was consulted.
+
+### IR-0927
+
+The 262,144-bucket production-promotion design uses DD-1151 through DD-1160,
+IR-0920 through IR-0926, TVG-1016 through TVG-1022, CR-1257 through CR-1265,
+BM-0079 through BM-0083, marc's repository-owned HashChain workspace and
+initializer, static match-finder strategy dispatch, typed-token paths,
+profile calculators, C workspace-query contract, deterministic token tests,
+and completed fixed measurements. The separate production cap, retained
+65,536 rollback control, unchanged shared HashTree cap, and static rollback
+boundary were derived locally. No external compressor, match finder, hash
+table implementation, source code, pseudocode, tuning advice, benchmark
+result, or test suite was consulted.

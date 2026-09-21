@@ -23617,3 +23617,36 @@ decision must define production dispatch, workspace consequences, limits,
 tests, and rollback before changing the existing 65,536-cap route. Do not
 retroactively alter the fixed gate, promote a larger fastest-only cap, add a
 runtime selector, or infer a public format or decoder change from this result.
+
+## DD-1160: Promote a static 262,144-bucket production HashChain
+
+- Date: 2026-09-21
+- Status: accepted
+
+Bind the standard `hash_chain_exact` encoder route at compile time to a
+262,144-entry maximum bucket table. Do not change the existing shared
+65,536-entry constant used by HashTree and Sparse HashTree. Introduce an
+explicit HashChain production-cap identity instead, and retain a separately
+named internal 65,536-entry route as the rollback and benchmark control. The
+standard workspace calculator, initializer, typed-token encoder, frame
+profiles, streaming encoders, strategy workspace query, and C workspace
+queries must all observe the same production binding without a runtime cap
+branch.
+
+The actual bucket count remains `bit_ceil(min(link_count, 262144))`; inputs
+whose effective history does not exceed 65,536 retain their old workspace.
+On x64 the maximum additional head-table storage is 1,572,864 bytes. Existing
+caller hard limits remain authoritative: workspace queries report the larger
+requirement, and a tightened limit that no longer admits it fails atomically
+rather than being raised implicitly. Decoder behavior, stream bytes, public
+API and ABI, algorithm IDs, format variants, match semantics, and all other
+match-finder bucket policies remain unchanged.
+
+Before removing the rollback route, prove standard/legacy/262,144/Exhaustive
+token identity above the first two bucket boundaries, exact workspace and
+limit behavior, unchanged output across byte-stream and typed-context codec
+families, and cross-platform interoperability. The development benchmark must
+name the 65,536 control explicitly after `hash-chain-exact` becomes the new
+production route. Rollback consists only of rebinding the standard
+calculator and initializer to that tested control; it must not require a
+format or decoder change.

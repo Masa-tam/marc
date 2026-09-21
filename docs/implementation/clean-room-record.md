@@ -31591,3 +31591,29 @@ both bounds.
   legacy in all five Exact fields, all nine candidate/window pairs passed the
   frozen eligibility rules, and a zero-new-point rerun revalidated
   `progress=144/144` without launching a benchmark child.
+
+## CR-1266: 2026-09-21 - HashChain production-promotion design
+
+- Authoring method: traced marc's standard HashChain workspace, initializer,
+  typed-token, frame/profile, strategy-query, C API, and shared prefix-hash
+  call graph, then applied the already frozen Silesia selection.
+- References used: DD-1151 through DD-1160, IR-0920 through IR-0927,
+  TVG-1016 through TVG-1023, CR-1257 through CR-1265, and BM-0079 through
+  BM-0083.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: introduce a HashChain-only production cap; leave the
+  shared HashTree/Sparse HashTree cap unchanged; retain an explicit 65,536
+  rollback control; use one static standard binding; preserve caller hard
+  limits; and separate foundation, identity, rebinding, and full validation.
+- Generated-code task description: document the exact production-promotion
+  boundary, workspace delta, affected callers, rollback path, and test gate
+  before changing a source constant or executing another measurement.
+- Similarity review: the design reorganizes marc's independently implemented
+  internal bindings and uses its own fixed measurements. No external
+  implementation expression or result was copied or translated.
+- Local validation: repository inspection confirms the 65,536 constant is
+  shared with unmeasured HashTree families, all standard HashChain callers
+  converge on the existing calculator/initializer or strategy query, and the
+  decoder has no match-finder workspace dependency.

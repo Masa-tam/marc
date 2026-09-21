@@ -14954,3 +14954,26 @@ child failure, aggregate/member-win/worst-member/candidate classification,
 smallest near-fastest cap selection, and monotonic cross-window proposal.
 Infrastructure tests must not read Silesia, launch the benchmark, or create a
 performance result.
+
+### TVG-1023
+
+For the production HashChain promotion, test effective history sizes below
+the five-byte prefix, at 65,536/65,537, 131,072/131,073, and
+262,144/262,145 bytes. Require the standard route's actual bucket counts to
+remain 0 or 65,536 where applicable, then become 131,072 and 262,144 exactly;
+require the retained legacy control to remain capped at 65,536. Check exact
+x64 workspace sizes, alignment, arithmetic boundaries, the maximum
+1,572,864-byte delta, just-below/at-limit admission, and failure atomicity.
+
+Compare Exhaustive, retained legacy, standard production, and explicit
+262,144 routes on fixed, generated, repetitive, pseudorandom, and equal-prefix
+collision inputs. Require identical matches, typed tokens, canonical
+serialization, encoded frames, and all five Exact identity fields while
+allowing only search diagnostics and workspace to differ. Exercise the
+standard byte-stream LZSS path, every entropy-composed LZSS frame family,
+every contextual typed-token profile and match-finder workspace query, C API
+workspace query/create boundaries, one-byte input/output streaming, reset and
+finish, malformed-input regressions, and MSVC/ClangCL complete suites. Rename
+the benchmark's old control explicitly and require future smoke to compare it
+with the newly bound `hash-chain-exact`. The gate performs no format, decoder,
+public enum, ABI, profile-limit, or automatic hard-limit change.

@@ -233,3 +233,51 @@ which also satisfies the nondecreasing cross-window requirement. This closes
 the measurement gate and creates a later production-policy proposal only;
 the production 65,536-cap route remains unchanged pending a separate design,
 implementation, validation, and rollback decision.
+
+## 9. Production promotion design
+
+The selected 262,144 cap is promoted by changing only the standard HashChain
+compile-time binding. `hash_chain_exact` continues to identify the standard
+exact-search strategy and gains no runtime parameter. The generic
+`lzss_match_finder_max_bucket_count` remains 65,536 because HashTree and
+Sparse HashTree also consume it and were not measured by this experiment. A
+new HashChain-specific production constant supplies 262,144 to the standard
+workspace calculator and initializer. The existing explicit 262,144 finder
+remains an identity oracle during migration, and a separately named explicit
+65,536 finder becomes the rollback and benchmark control.
+
+The actual table remains bounded by effective history:
+
+```text
+actual_buckets = bit_ceil(min(link_count, 262144))
+```
+
+Thus short frames and 64-KiB profiles do not allocate a larger table. At the
+first boundary the standard route grows from 65,536 to 131,072 buckets; at
+131,073 effective positions it reaches 262,144. On x64 the largest increase
+over the old route is `(262144 - 65536) * sizeof(size_t) = 1,572,864` bytes.
+Link storage, prefix hashing, candidate ordering, nearest-distance tie break,
+match length, typed-token serialization, and stream format do not change.
+
+All workspace queries must report the selected production requirement. No
+profile helper or initializer silently raises `max_internal_buffered_bytes`;
+the existing profile limits already provide margin, while a caller's stricter
+override may intentionally reject the larger workspace. Such rejection must
+remain checked and failure-atomic. Decode paths allocate no HashChain and are
+unchanged.
+
+Implementation proceeds in four gates:
+
+1. add the production and explicit legacy constants/calculators/finders while
+   leaving the standard binding at 65,536;
+2. prove boundary workspace, limit, Exhaustive, legacy, and explicit-262,144
+   identity;
+3. rebind the standard calculator and initializer to 262,144, rename the
+   benchmark control, and run all codec/profile/C API regressions; and
+4. run complete MSVC and ClangCL suites plus interoperability while retaining
+   the rollback code.
+
+If any encoded byte changes, hard-limit behavior becomes inconsistent, a
+profile loses its documented admission unexpectedly, or either complete suite
+fails, rebind the standard route to the retained 65,536 control. Because the
+decoder and format are invariant, rollback requires no compatibility action.
