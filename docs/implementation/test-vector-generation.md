@@ -14996,3 +14996,17 @@ and leaving only workspace and search diagnostics variable. Run the focused
 HashChain tests and both complete 3,562-test MSVC and ClangCL suites. This
 foundation gate must not rebind the standard route or change encoded bytes,
 format, decoder behavior, public API, or ABI.
+
+### TVG-1025
+
+After the production rebind, require the standard HashChain calculator and
+finder to match the explicit 262,144 specialization at the first bucket
+boundary, while an explicitly invoked 65,536 finder remains the rollback
+control. Compare their deterministic match and typed-token outputs, retaining
+canonical serialization and decode compatibility. Require x64 encoder
+workspace queries for each 4/16/64 MiB contextual profile and its C API to
+increase by precisely 1,572,864 bytes; decoder queries must remain unchanged.
+Require benchmark smoke to report the standard cap as 262,144 and the named
+legacy control as 65,536. Validate both complete MSVC and ClangCL suites,
+including interoperability schema compatibility, without loosening hard
+limits or introducing a new format, selector, or ABI.

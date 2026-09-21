@@ -169,7 +169,7 @@ TEST(LzssTypedContextProfile,
     const auto required_aggregate = workspace.frame_input_bytes
         + workspace.views_bytes + workspace.frame_encoded_bytes;
     if constexpr (sizeof(std::size_t) == 8) {
-        EXPECT_EQ(required_aggregate, 264'765'525U);
+        EXPECT_EQ(required_aggregate, 266'338'389U);
     }
 
     limits.max_internal_buffered_bytes = required_aggregate - 1;
@@ -249,7 +249,7 @@ TEST(LzssTypedContextProfile,
     limits.max_compressed_payload_size = 234'881'029;
     limits.max_lz_distance = 16'777'216;
     limits.max_entropy_table_entries = 4'582;
-    limits.max_internal_buffered_bytes = 1'057'488'981;
+    limits.max_internal_buffered_bytes = 1'059'061'845;
     TypedContextStreamHeader stream{};
     LzssTypedContextEncoderWorkspaceRequirements workspace{};
 
@@ -262,13 +262,13 @@ TEST(LzssTypedContextProfile,
     EXPECT_EQ(workspace.frame_encoded_bytes, 234'881'109U);
     EXPECT_EQ(workspace.token_count, 16'777'216U);
     EXPECT_EQ(workspace.operation_count, 33'554'432U);
-    EXPECT_EQ(workspace.match_finder_bytes, 67'633'152U);
-    EXPECT_EQ(workspace.views_bytes, 805'830'656U);
+    EXPECT_EQ(workspace.match_finder_bytes, 69'206'016U);
+    EXPECT_EQ(workspace.views_bytes, 807'403'520U);
     EXPECT_EQ(workspace.frame_input_bytes + workspace.views_bytes
                   + workspace.frame_encoded_bytes,
-              1'057'488'981U);
+              1'059'061'845U);
 
-    limits.max_internal_buffered_bytes = 1'057'488'980;
+    limits.max_internal_buffered_bytes = 1'059'061'844;
     EXPECT_EQ(make_lzss_typed_context_profile(
                   config, limits, stream, workspace),
               LzssTypedContextProfileError::limit_exceeded);
@@ -310,7 +310,7 @@ TEST(LzssTypedContextProfile,
     limits.max_compressed_payload_size = 1'073'741'829;
     limits.max_lz_distance = 67'108'864;
     limits.max_entropy_table_entries = 4'598;
-    limits.max_internal_buffered_bytes = 4'362'600'533;
+    limits.max_internal_buffered_bytes = 4'364'173'397;
     TypedContextStreamHeader stream{};
     LzssTypedContextEncoderWorkspaceRequirements workspace{};
 
@@ -330,13 +330,13 @@ TEST(LzssTypedContextProfile,
     EXPECT_EQ(workspace.frame_encoded_bytes, 1'073'741'909U);
     EXPECT_EQ(workspace.token_count, 67'108'864U);
     EXPECT_EQ(workspace.operation_count, 134'217'728U);
-    EXPECT_EQ(workspace.match_finder_bytes, 268'959'744U);
-    EXPECT_EQ(workspace.views_bytes, 3'221'749'760U);
+    EXPECT_EQ(workspace.match_finder_bytes, 270'532'608U);
+    EXPECT_EQ(workspace.views_bytes, 3'223'322'624U);
     EXPECT_EQ(workspace.frame_input_bytes + workspace.views_bytes
                   + workspace.frame_encoded_bytes,
-              4'362'600'533U);
+              4'364'173'397U);
 
-    limits.max_internal_buffered_bytes = 4'362'600'532;
+    limits.max_internal_buffered_bytes = 4'364'173'396;
     EXPECT_EQ(make_lzss_typed_context_profile(
                   config, limits, stream, workspace),
               LzssTypedContextProfileError::limit_exceeded);

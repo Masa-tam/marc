@@ -31643,3 +31643,25 @@ both bounds.
   and all 3,562 complete-suite tests, including interoperability schema
   compatibility. The standard route remains identical to the explicit
   65,536 control throughout this gate.
+
+## CR-1268: 2026-09-21 - HashChain production-cap rebind
+
+- Authoring method: rebound marc's standard HashChain calculator and finder
+  to the selected production cap, retaining the explicit old finder as a
+  rollback and benchmark control.
+- References used: DD-1160, IR-0927 through IR-0929, TVG-1023 through
+  TVG-1025, CR-1266 and CR-1267, and BM-0083.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: preserve the shared HashTree bucket limit, give the
+  old benchmark control a descriptive name, and derive exact encoder-only
+  workspace deltas through the repository's checked layout and profile APIs.
+- Generated-code task description: select 262,144 buckets for standard
+  HashChain only; keep explicit 65,536 rollback, strict caller limits,
+  encoded-token identity, decoder, stream format, public API, and ABI intact.
+- Similarity review: this change reuses marc's own HashChain specializations
+  and tests; no external implementation expression was copied or translated.
+- Local validation: boundary and focused regression tests pass with MSVC and
+  ClangCL. Both complete 3,562-test suites pass, including interoperability
+  schema compatibility; documentation sequence and links also verify.

@@ -258,9 +258,9 @@ TEST(LzssContextualTansProfile,
     if constexpr (sizeof(std::size_t) == 8) {
         EXPECT_EQ(encoder.table_offset, 50'331'648U);
         EXPECT_EQ(encoder.match_finder_offset, 50'593'792U);
-        EXPECT_EQ(encoder.match_finder_bytes, 17'301'504U);
-        EXPECT_EQ(encoder.views_bytes, 67'895'296U);
-        EXPECT_EQ(encoder_aggregate, 116'138'983U);
+        EXPECT_EQ(encoder.match_finder_bytes, 18'874'368U);
+        EXPECT_EQ(encoder.views_bytes, 69'468'160U);
+        EXPECT_EQ(encoder_aggregate, 117'711'847U);
     }
     limits.max_internal_buffered_bytes = encoder_aggregate - 1;
     EXPECT_EQ(make_lzss_contextual_tans_profile(
@@ -340,9 +340,9 @@ TEST(LzssContextualTansProfile,
     if constexpr (sizeof(std::size_t) == 8) {
         EXPECT_EQ(encoder.table_offset, 201'326'592U);
         EXPECT_EQ(encoder.match_finder_offset, 201'588'736U);
-        EXPECT_EQ(encoder.match_finder_bytes, 67'633'152U);
-        EXPECT_EQ(encoder.views_bytes, 269'221'888U);
-        EXPECT_EQ(encoder_aggregate, 462'169'095U);
+        EXPECT_EQ(encoder.match_finder_bytes, 69'206'016U);
+        EXPECT_EQ(encoder.views_bytes, 270'794'752U);
+        EXPECT_EQ(encoder_aggregate, 463'741'959U);
     }
     limits.max_internal_buffered_bytes = encoder_aggregate - 1;
     EXPECT_EQ(make_lzss_contextual_tans_profile(
@@ -428,12 +428,12 @@ TEST(LzssContextualTansProfile,
     if constexpr (sizeof(std::size_t) == 8) {
         EXPECT_EQ(encoder.table_offset, 805'306'368U);
         EXPECT_EQ(encoder.match_finder_offset, 805'568'512U);
-        EXPECT_EQ(encoder.match_finder_bytes, 268'959'744U);
-        EXPECT_EQ(encoder.views_bytes, 1'074'528'256U);
+        EXPECT_EQ(encoder.match_finder_bytes, 270'532'608U);
+        EXPECT_EQ(encoder.views_bytes, 1'076'101'120U);
     }
     const auto chain_aggregate = encoder.frame_input_bytes
         + encoder.views_bytes + encoder.frame_encoded_bytes;
-    EXPECT_EQ(chain_aggregate, 1'946'952'743U);
+    EXPECT_EQ(chain_aggregate, 1'948'525'607U);
     limits.max_internal_buffered_bytes = chain_aggregate - 1;
     EXPECT_EQ(make_lzss_contextual_tans_profile(
                   config, limits, stream, encoder),

@@ -174,9 +174,9 @@ TEST(LzssContextualRansProfile,
         + encoder.views_bytes + encoder.frame_encoded_bytes;
     if constexpr (sizeof(std::size_t) == 8) {
         EXPECT_EQ(encoder.match_finder_offset, 50'331'648U);
-        EXPECT_EQ(encoder.match_finder_bytes, 17'301'504U);
-        EXPECT_EQ(encoder.views_bytes, 67'633'152U);
-        EXPECT_EQ(encoder_aggregate, 130'556'905U);
+        EXPECT_EQ(encoder.match_finder_bytes, 18'874'368U);
+        EXPECT_EQ(encoder.views_bytes, 69'206'016U);
+        EXPECT_EQ(encoder_aggregate, 132'129'769U);
     }
     limits.max_internal_buffered_bytes = encoder_aggregate - 1;
     EXPECT_EQ(make_lzss_contextual_rans_profile(
@@ -259,9 +259,9 @@ TEST(LzssContextualRansProfile,
         + encoder.views_bytes + encoder.frame_encoded_bytes;
     if constexpr (sizeof(std::size_t) == 8) {
         EXPECT_EQ(encoder.match_finder_offset, 201'326'592U);
-        EXPECT_EQ(encoder.match_finder_bytes, 67'633'152U);
-        EXPECT_EQ(encoder.views_bytes, 268'959'744U);
-        EXPECT_EQ(encoder_aggregate, 520'627'209U);
+        EXPECT_EQ(encoder.match_finder_bytes, 69'206'016U);
+        EXPECT_EQ(encoder.views_bytes, 270'532'608U);
+        EXPECT_EQ(encoder_aggregate, 522'200'073U);
     }
     limits.max_internal_buffered_bytes = encoder_aggregate - 1;
     EXPECT_EQ(make_lzss_contextual_rans_profile(
@@ -344,11 +344,11 @@ TEST(LzssContextualRansProfile,
     EXPECT_EQ(encoder.frame_encoded_bytes, 1'073'751'081U);
     EXPECT_EQ(encoder.token_count, 67'108'864U);
     EXPECT_EQ(encoder.match_finder_offset, 805'306'368U);
-    EXPECT_EQ(encoder.match_finder_bytes, 268'959'744U);
-    EXPECT_EQ(encoder.views_bytes, 1'074'266'112U);
+    EXPECT_EQ(encoder.match_finder_bytes, 270'532'608U);
+    EXPECT_EQ(encoder.views_bytes, 1'075'838'976U);
     const auto chain_aggregate = encoder.frame_input_bytes
         + encoder.views_bytes + encoder.frame_encoded_bytes;
-    EXPECT_EQ(chain_aggregate, 2'215'126'057U);
+    EXPECT_EQ(chain_aggregate, 2'216'698'921U);
     limits.max_internal_buffered_bytes = chain_aggregate - 1;
     EXPECT_EQ(make_lzss_contextual_rans_profile(
                   config, limits, stream, encoder),

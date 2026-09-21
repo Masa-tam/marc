@@ -243,7 +243,7 @@ TEST(LzssHashChainMatchFinder, CalculatesBoundedWorkspace) {
     required = calculate_lzss_hash_chain_workspace(
         1U << 20, large_window, {});
     EXPECT_EQ(required.error, LzssHashChainError::none);
-    EXPECT_EQ(required.bucket_count, lzss_match_finder_max_bucket_count);
+    EXPECT_EQ(required.bucket_count, lzss_hash_chain_production_bucket_cap);
     EXPECT_EQ(required.link_count, 1U << 20);
 }
 
@@ -279,10 +279,8 @@ TEST(LzssHashChainMatchFinder, CalculatesFixedPrivateBucketCapWorkspaces) {
             windows[window_index]);
         for (std::size_t cap_index = 0; cap_index < std::size(caps);
              ++cap_index) {
-            const auto required = cap_index == 0
-                ? calculate_lzss_hash_chain_workspace(
-                    input_size, parameters, limits)
-                : calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+            const auto required =
+                calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
                     input_size, parameters, limits, caps[cap_index]);
             ASSERT_EQ(required.error, LzssHashChainError::none)
                 << window_index << ' ' << cap_index;
@@ -305,17 +303,22 @@ void expect_bucket_scaled_hash_chains_match_exact(
     const std::span<const std::byte> input,
     const LzssParameters& parameters = {},
     const bool token_boundaries = false) {
-    const auto legacy_required = calculate_lzss_hash_chain_workspace(
+    const auto standard_required = calculate_lzss_hash_chain_workspace(
         input.size(), parameters, {});
+    const auto legacy_required =
+        calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+            input.size(), parameters, {},
+            lzss_hash_chain_legacy_bucket_cap);
     const auto scaled_required =
         calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
             input.size(), parameters, {},
             lzss_hash_chain_bucket_cap_4194304);
+    ASSERT_EQ(standard_required.error, LzssHashChainError::none);
     ASSERT_EQ(legacy_required.error, LzssHashChainError::none);
     ASSERT_EQ(scaled_required.error, LzssHashChainError::none);
 
-    auto legacy_storage = make_hash_chain_storage(
-        legacy_required.workspace_size);
+    auto standard_storage = make_hash_chain_storage(
+        standard_required.workspace_size);
     auto cap262144_storage = make_hash_chain_storage(
         scaled_required.workspace_size);
     auto cap65536_storage = make_hash_chain_storage(
@@ -324,14 +327,14 @@ void expect_bucket_scaled_hash_chains_match_exact(
         scaled_required.workspace_size);
     auto cap4194304_storage = make_hash_chain_storage(
         scaled_required.workspace_size);
-    LzssHashChainMatchFinder legacy{};
+    LzssHashChainMatchFinder standard{};
     LzssHashChainBuckets65536MatchFinder cap65536{};
     LzssHashChainBuckets262144MatchFinder cap262144{};
     LzssHashChainBuckets1048576MatchFinder cap1048576{};
     LzssHashChainBuckets4194304MatchFinder cap4194304{};
     ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
-                  input, parameters, {}, legacy_storage.bytes.first(
-                      legacy_required.workspace_size), legacy),
+                  input, parameters, {}, standard_storage.bytes.first(
+                      standard_required.workspace_size), standard),
               LzssHashChainError::none);
     ASSERT_EQ(initialize_lzss_hash_chain_bucket_scaled_match_finder(
                   input, parameters, {}, cap65536_storage.bytes.first(
@@ -354,7 +357,7 @@ void expect_bucket_scaled_hash_chains_match_exact(
     std::size_t position{};
     while (position <= input.size()) {
         const auto expected = exhaustive.find_match(position);
-        EXPECT_EQ(legacy.find_match(position), expected) << position;
+        EXPECT_EQ(standard.find_match(position), expected) << position;
         EXPECT_EQ(cap65536.find_match(position), expected) << position;
         EXPECT_EQ(cap262144.find_match(position), expected) << position;
         EXPECT_EQ(cap1048576.find_match(position), expected) << position;
@@ -365,7 +368,7 @@ void expect_bucket_scaled_hash_chains_match_exact(
             && lzss_match_is_beneficial(expected)
             ? static_cast<std::size_t>(expected.length) : 1U;
         exhaustive.advance(position, position + advance);
-        legacy.advance(position, position + advance);
+        standard.advance(position, position + advance);
         cap65536.advance(position, position + advance);
         cap262144.advance(position, position + advance);
         cap1048576.advance(position, position + advance);
@@ -431,7 +434,7 @@ TEST(LzssHashChainMatchFinder, ValidatesPrivateBucketCapsAndBoundaries) {
 }
 
 TEST(LzssHashChainMatchFinder,
-     ProductionCapFoundationKeepsStandardBoundToLegacy) {
+     ProductionCapRebindKeepsExplicitLegacyControl) {
     auto limits = marc::core::DecoderLimits{};
     limits.max_total_output_size = UINT64_C(1) << 20;
     limits.max_frame_size = UINT64_C(1) << 20;
@@ -471,10 +474,10 @@ TEST(LzssHashChainMatchFinder,
             << boundary.input_size;
         ASSERT_EQ(production.error, LzssHashChainError::none)
             << boundary.input_size;
-        EXPECT_EQ(standard.bucket_count, boundary.legacy_buckets);
+        EXPECT_EQ(standard.bucket_count, boundary.production_buckets);
         EXPECT_EQ(legacy.bucket_count, boundary.legacy_buckets);
         EXPECT_EQ(production.bucket_count, boundary.production_buckets);
-        EXPECT_EQ(standard.workspace_size, legacy.workspace_size);
+        EXPECT_EQ(standard.workspace_size, production.workspace_size);
         if constexpr (sizeof(std::size_t) == 8) {
             EXPECT_EQ(
                 production.workspace_size - legacy.workspace_size,
@@ -500,17 +503,16 @@ TEST(LzssHashChainMatchFinder,
     }
     const auto required_limit = input_size + production.workspace_size;
     limits.max_internal_buffered_bytes = required_limit - 1U;
-    EXPECT_EQ(calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
-                  input_size, parameters, limits,
-                  lzss_hash_chain_production_bucket_cap).error,
-              LzssHashChainError::workspace_limit_exceeded);
     EXPECT_EQ(calculate_lzss_hash_chain_workspace(
                   input_size, parameters, limits).error,
-              LzssHashChainError::none);
-    limits.max_internal_buffered_bytes = required_limit;
+              LzssHashChainError::workspace_limit_exceeded);
     EXPECT_EQ(calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
                   input_size, parameters, limits,
-                  lzss_hash_chain_production_bucket_cap).error,
+                  lzss_hash_chain_legacy_bucket_cap).error,
+              LzssHashChainError::none);
+    limits.max_internal_buffered_bytes = required_limit;
+    EXPECT_EQ(calculate_lzss_hash_chain_workspace(
+                  input_size, parameters, limits).error,
               LzssHashChainError::none);
 }
 
@@ -695,8 +697,10 @@ TEST(LzssHashChainBucketScaledMatchFinder,
     LzssParameters parameters{};
     parameters.window_size = 131'329;
 
-    const auto legacy_required = calculate_lzss_hash_chain_workspace(
-        input.size(), parameters, {});
+    const auto legacy_required =
+        calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+            input.size(), parameters, {},
+            lzss_hash_chain_legacy_bucket_cap);
     const auto scaled_required =
         calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
             input.size(), parameters, {},
@@ -718,11 +722,11 @@ TEST(LzssHashChainBucketScaledMatchFinder,
     LzssMatchFinderStatistics cap262144_statistics{};
     LzssMatchFinderStatistics cap1048576_statistics{};
     LzssMatchFinderStatistics cap4194304_statistics{};
-    LzssHashChainMatchFinder legacy{};
+    LzssHashChainBuckets65536MatchFinder legacy{};
     LzssHashChainBuckets262144MatchFinder cap262144{};
     LzssHashChainBuckets1048576MatchFinder cap1048576{};
     LzssHashChainBuckets4194304MatchFinder cap4194304{};
-    ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+    ASSERT_EQ(initialize_lzss_hash_chain_bucket_scaled_match_finder(
                   input, parameters, {}, legacy_storage.bytes.first(
                       legacy_required.workspace_size), legacy,
                   &legacy_statistics),

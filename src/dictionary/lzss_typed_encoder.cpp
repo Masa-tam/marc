@@ -487,6 +487,20 @@ LzssTypedEncodeResult encode_lzss_typed_tokens_hash_chain_single_pass(
 }
 
 LzssTypedEncodeResult
+encode_lzss_typed_tokens_hash_chain_legacy_65536_single_pass(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters, const core::DecoderLimits& limits,
+    const std::span<LzssTypedToken> private_tokens,
+    const std::span<std::byte> match_finder_workspace,
+    LzssMatchFinderStatistics* const statistics,
+    const LzssTypedTokenVariant variant) noexcept {
+    return encode_lzss_typed_tokens_hash_chain_bucket_scaled_single_pass<
+        lzss_hash_chain_legacy_bucket_cap>(
+            input, parameters, limits, private_tokens,
+            match_finder_workspace, statistics, variant);
+}
+
+LzssTypedEncodeResult
 encode_lzss_typed_tokens_hash_chain_buckets_262144_single_pass(
     const std::span<const std::byte> input,
     const LzssParameters& parameters, const core::DecoderLimits& limits,

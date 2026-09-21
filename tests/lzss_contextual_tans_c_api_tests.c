@@ -285,17 +285,17 @@ static void test_sixteen_mib_public_boundary(void) {
                &config, MARC_LZSS_CONTEXTUAL_PROFILE_16M)
            == MARC_STATUS_OK);
 #if SIZE_MAX > UINT32_MAX
-    config.max_internal_buffered_bytes = UINT64_C(462169094);
+    config.max_internal_buffered_bytes = UINT64_C(463741958);
     assert(marc_lzss_contextual_tans_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
-    config.max_internal_buffered_bytes = UINT64_C(462169095);
+    config.max_internal_buffered_bytes = UINT64_C(463741959);
 #endif
     assert(marc_lzss_contextual_tans_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
 #if SIZE_MAX > UINT32_MAX
     assert(needed.primary_bytes == UINT64_C(16777216));
     assert(needed.secondary_bytes == UINT64_C(176169991));
-    assert(needed.views_bytes == UINT64_C(269221888));
+    assert(needed.views_bytes == UINT64_C(270794752));
 #endif
 
     assert(marc_lzss_contextual_tans_config_init(
@@ -418,15 +418,15 @@ static void test_sixty_four_mib_public_boundary(void) {
     assert(marc_lzss_contextual_tans_config_apply_profile(
                &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M)
            == MARC_STATUS_OK);
-    config.max_internal_buffered_bytes = UINT64_C(1946952742);
+    config.max_internal_buffered_bytes = UINT64_C(1948525606);
     assert(marc_lzss_contextual_tans_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
-    config.max_internal_buffered_bytes = UINT64_C(1946952743);
+    config.max_internal_buffered_bytes = UINT64_C(1948525607);
     assert(marc_lzss_contextual_tans_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
     assert(needed.primary_bytes == UINT64_C(67108864));
     assert(needed.secondary_bytes == UINT64_C(805315623));
-    assert(needed.views_bytes == UINT64_C(1074528256));
+    assert(needed.views_bytes == UINT64_C(1076101120));
 
     config.match_finder_strategy = MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
     config.max_internal_buffered_bytes = UINT64_C(3624150054);
@@ -795,17 +795,17 @@ int main(void) {
     config.max_lz_distance = UINT32_C(1) << 22;
     config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_4M;
 #if SIZE_MAX > UINT32_MAX
-    config.max_internal_buffered_bytes = UINT64_C(116138982);
+    config.max_internal_buffered_bytes = UINT64_C(117711846);
     assert(marc_lzss_contextual_tans_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
-    config.max_internal_buffered_bytes = UINT64_C(116138983);
+    config.max_internal_buffered_bytes = UINT64_C(117711847);
 #endif
     assert(marc_lzss_contextual_tans_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
 #if SIZE_MAX > UINT32_MAX
     assert(needed.primary_bytes == 4194304);
     assert(needed.secondary_bytes == 44049383);
-    assert(needed.views_bytes == 67895296);
+    assert(needed.views_bytes == 69468160);
 #endif
 
     assert(marc_lzss_contextual_tans_config_init(

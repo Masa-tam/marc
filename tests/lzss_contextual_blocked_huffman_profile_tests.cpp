@@ -326,9 +326,9 @@ TEST(LzssContextualBlockedHuffmanProfile,
         + encoder.views_bytes + encoder.frame_encoded_bytes;
     if constexpr (sizeof(std::size_t) == 8) {
         EXPECT_EQ(encoder.match_finder_offset, 50'331'648U);
-        EXPECT_EQ(encoder.match_finder_bytes, 17'301'504U);
-        EXPECT_EQ(encoder.views_bytes, 67'633'152U);
-        EXPECT_EQ(encoder_aggregate, 126'880'348U);
+        EXPECT_EQ(encoder.match_finder_bytes, 18'874'368U);
+        EXPECT_EQ(encoder.views_bytes, 69'206'016U);
+        EXPECT_EQ(encoder_aggregate, 128'453'212U);
     }
     limits.max_internal_buffered_bytes = encoder_aggregate - 1;
     EXPECT_EQ(make_lzss_contextual_blocked_huffman_profile(
@@ -410,9 +410,9 @@ TEST(LzssContextualBlockedHuffmanProfile,
         + encoder.views_bytes + encoder.frame_encoded_bytes;
     if constexpr (sizeof(std::size_t) == 8) {
         EXPECT_EQ(encoder.match_finder_offset, 201'326'592U);
-        EXPECT_EQ(encoder.match_finder_bytes, 67'633'152U);
-        EXPECT_EQ(encoder.views_bytes, 268'959'744U);
-        EXPECT_EQ(encoder_aggregate, 505'940'581U);
+        EXPECT_EQ(encoder.match_finder_bytes, 69'206'016U);
+        EXPECT_EQ(encoder.views_bytes, 270'532'608U);
+        EXPECT_EQ(encoder_aggregate, 507'513'445U);
     }
     limits.max_internal_buffered_bytes = encoder_aggregate - 1;
     EXPECT_EQ(make_lzss_contextual_blocked_huffman_profile(
@@ -503,9 +503,9 @@ TEST(LzssContextualBlockedHuffmanProfile,
         + encoder.views_bytes + encoder.frame_encoded_bytes;
     if constexpr (sizeof(std::size_t) == 8) {
         EXPECT_EQ(encoder.match_finder_offset, 805'306'368U);
-        EXPECT_EQ(encoder.match_finder_bytes, 268'959'744U);
-        EXPECT_EQ(encoder.views_bytes, 1'074'266'112U);
-        EXPECT_EQ(encoder_aggregate, 2'148'010'606U);
+        EXPECT_EQ(encoder.match_finder_bytes, 270'532'608U);
+        EXPECT_EQ(encoder.views_bytes, 1'075'838'976U);
+        EXPECT_EQ(encoder_aggregate, 2'149'583'470U);
     }
     limits.max_internal_buffered_bytes = encoder_aggregate - 1;
     EXPECT_EQ(make_lzss_contextual_blocked_huffman_profile(

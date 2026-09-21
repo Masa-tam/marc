@@ -284,17 +284,17 @@ static void test_sixteen_mib_public_boundary(void) {
                &config, MARC_LZSS_CONTEXTUAL_PROFILE_16M)
            == MARC_STATUS_OK);
 #if SIZE_MAX > UINT32_MAX
-    config.max_internal_buffered_bytes = UINT64_C(520627208);
+    config.max_internal_buffered_bytes = UINT64_C(522200072);
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
-    config.max_internal_buffered_bytes = UINT64_C(520627209);
+    config.max_internal_buffered_bytes = UINT64_C(522200073);
 #endif
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
 #if SIZE_MAX > UINT32_MAX
     assert(needed.primary_bytes == UINT64_C(16777216));
     assert(needed.secondary_bytes == UINT64_C(234890249));
-    assert(needed.views_bytes == UINT64_C(268959744));
+    assert(needed.views_bytes == UINT64_C(270532608));
 #endif
 
     assert(marc_lzss_contextual_rans_config_init(
@@ -440,15 +440,15 @@ static void test_sixty_four_mib_public_boundary(void) {
     assert(marc_lzss_contextual_rans_config_apply_profile(
                &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M)
            == MARC_STATUS_OK);
-    config.max_internal_buffered_bytes = UINT64_C(2215126056);
+    config.max_internal_buffered_bytes = UINT64_C(2216698920);
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
-    config.max_internal_buffered_bytes = UINT64_C(2215126057);
+    config.max_internal_buffered_bytes = UINT64_C(2216698921);
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
     assert(needed.primary_bytes == UINT64_C(67108864));
     assert(needed.secondary_bytes == UINT64_C(1073751081));
-    assert(needed.views_bytes == UINT64_C(1074266112));
+    assert(needed.views_bytes == UINT64_C(1075838976));
 
     config.match_finder_strategy =
         MARC_LZSS_MATCH_FINDER_BINARY_TREE_EXACT;
@@ -821,17 +821,17 @@ int main(void) {
     config.max_lz_distance = UINT32_C(1) << 22;
     config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_4M;
 #if SIZE_MAX > UINT32_MAX
-    config.max_internal_buffered_bytes = UINT64_C(130556904);
+    config.max_internal_buffered_bytes = UINT64_C(132129768);
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
-    config.max_internal_buffered_bytes = UINT64_C(130556905);
+    config.max_internal_buffered_bytes = UINT64_C(132129769);
 #endif
     assert(marc_lzss_contextual_rans_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
 #if SIZE_MAX > UINT32_MAX
     assert(needed.primary_bytes == 4194304);
     assert(needed.secondary_bytes == 58729449);
-    assert(needed.views_bytes == 67633152);
+    assert(needed.views_bytes == 69206016);
 #endif
 
     assert(marc_lzss_contextual_rans_config_init(

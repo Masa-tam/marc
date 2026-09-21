@@ -91,7 +91,7 @@ static void test_profile_helper(void) {
 #if SIZE_MAX > UINT32_MAX
     assert(needed.primary_bytes == UINT64_C(16777216));
     assert(needed.secondary_bytes == UINT64_C(559939664));
-    assert(needed.views_bytes == UINT64_C(269116032));
+    assert(needed.views_bytes == UINT64_C(270688896));
 #endif
     const uint64_t sixteen_mib_encode_aggregate = needed.primary_bytes
         + needed.secondary_bytes + needed.views_bytes;
@@ -110,12 +110,12 @@ static void test_profile_helper(void) {
 #if SIZE_MAX > UINT32_MAX
     assert(needed.primary_bytes == UINT64_C(67108864));
     assert(needed.secondary_bytes == UINT64_C(2239758416));
-    assert(needed.views_bytes == UINT64_C(1074422944));
+    assert(needed.views_bytes == UINT64_C(1075995808));
 #endif
     const uint64_t sixty_four_mib_chain_aggregate =
         (uint64_t)needed.primary_bytes + (uint64_t)needed.secondary_bytes
         + (uint64_t)needed.views_bytes;
-    assert(sixty_four_mib_chain_aggregate == UINT64_C(3381290224));
+    assert(sixty_four_mib_chain_aggregate == UINT64_C(3382863088));
     config.max_internal_buffered_bytes = sixty_four_mib_chain_aggregate - 1;
     assert(marc_lzss_contextual_adaptive_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);

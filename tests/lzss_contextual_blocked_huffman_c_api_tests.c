@@ -281,17 +281,17 @@ static void test_sixteen_mib_public_boundary(void) {
                &config, MARC_LZSS_CONTEXTUAL_PROFILE_16M)
            == MARC_STATUS_OK);
 #if SIZE_MAX > UINT32_MAX
-    config.max_internal_buffered_bytes = UINT64_C(505940580);
+    config.max_internal_buffered_bytes = UINT64_C(507513444);
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
-    config.max_internal_buffered_bytes = UINT64_C(505940581);
+    config.max_internal_buffered_bytes = UINT64_C(507513445);
 #endif
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
 #if SIZE_MAX > UINT32_MAX
     assert(needed.primary_bytes == UINT64_C(16777216));
     assert(needed.secondary_bytes == UINT64_C(220203621));
-    assert(needed.views_bytes == UINT64_C(268959744));
+    assert(needed.views_bytes == UINT64_C(270532608));
 #endif
 
     assert(marc_lzss_contextual_blocked_huffman_config_init(
@@ -437,17 +437,17 @@ static void test_sixty_four_mib_public_boundary(void) {
                &config, MARC_LZSS_CONTEXTUAL_PROFILE_64M)
            == MARC_STATUS_OK);
 #if SIZE_MAX > UINT32_MAX
-    config.max_internal_buffered_bytes = UINT64_C(2148010605);
+    config.max_internal_buffered_bytes = UINT64_C(2149583469);
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
-    config.max_internal_buffered_bytes = UINT64_C(2148010606);
+    config.max_internal_buffered_bytes = UINT64_C(2149583470);
 #endif
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
 #if SIZE_MAX > UINT32_MAX
     assert(needed.primary_bytes == UINT64_C(67108864));
     assert(needed.secondary_bytes == UINT64_C(1006635630));
-    assert(needed.views_bytes == UINT64_C(1074266112));
+    assert(needed.views_bytes == UINT64_C(1075838976));
 #endif
 
     assert(marc_lzss_contextual_blocked_huffman_config_init(
@@ -721,17 +721,17 @@ static void run_four_mib_profile(void) {
     config.max_lz_distance = UINT32_C(1) << 22;
     config.profile = MARC_LZSS_CONTEXTUAL_PROFILE_4M;
 #if SIZE_MAX > UINT32_MAX
-    config.max_internal_buffered_bytes = UINT64_C(126880347);
+    config.max_internal_buffered_bytes = UINT64_C(128453211);
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_LIMIT_EXCEEDED);
-    config.max_internal_buffered_bytes = UINT64_C(126880348);
+    config.max_internal_buffered_bytes = UINT64_C(128453212);
 #endif
     assert(marc_lzss_contextual_blocked_huffman_workspace_requirements(
                &config, &needed) == MARC_STATUS_OK);
 #if SIZE_MAX > UINT32_MAX
     assert(needed.primary_bytes == UINT64_C(4194304));
     assert(needed.secondary_bytes == UINT64_C(55052892));
-    assert(needed.views_bytes == UINT64_C(67633152));
+    assert(needed.views_bytes == UINT64_C(69206016));
 #endif
 
     assert(marc_lzss_contextual_blocked_huffman_config_init(

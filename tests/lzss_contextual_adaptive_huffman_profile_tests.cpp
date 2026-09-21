@@ -321,8 +321,8 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
     constexpr std::uint64_t frame_size = UINT64_C(1) << 22;
     constexpr std::uint64_t payload_size = UINT64_C(139984896);
     constexpr std::uint64_t encoded_size = UINT64_C(139984976);
-    constexpr std::uint64_t encoder_views = UINT64_C(67788896);
-    constexpr std::uint64_t encoder_aggregate = UINT64_C(211968176);
+    constexpr std::uint64_t encoder_views = UINT64_C(69361760);
+    constexpr std::uint64_t encoder_aggregate = UINT64_C(213541040);
     constexpr std::uint64_t decoder_views = UINT64_C(50487388);
     constexpr std::uint64_t decoder_aggregate = UINT64_C(194666668);
     constexpr std::uint64_t entropy_entries = UINT64_C(13729);
@@ -357,7 +357,7 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
     EXPECT_EQ(encoder.node_offset, 50331648U);
     EXPECT_EQ(encoder.symbol_offset, 50478256U);
     EXPECT_EQ(encoder.match_finder_offset, 50487392U);
-    EXPECT_EQ(encoder.match_finder_bytes, 17301504U);
+    EXPECT_EQ(encoder.match_finder_bytes, 18874368U);
     EXPECT_EQ(encoder.views_bytes, encoder_views);
     EXPECT_EQ(encoder.frame_input_bytes + encoder.frame_encoded_bytes
                   + encoder.views_bytes,
@@ -413,8 +413,8 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
     constexpr std::uint64_t frame_size = UINT64_C(1) << 24;
     constexpr std::uint64_t payload_size = UINT64_C(559939584);
     constexpr std::uint64_t encoded_size = UINT64_C(559939664);
-    constexpr std::uint64_t encoder_views = UINT64_C(269116032);
-    constexpr std::uint64_t encoder_aggregate = UINT64_C(845832912);
+    constexpr std::uint64_t encoder_views = UINT64_C(270688896);
+    constexpr std::uint64_t encoder_aggregate = UINT64_C(847405776);
     constexpr std::uint64_t decoder_views = UINT64_C(201482876);
     constexpr std::uint64_t decoder_aggregate = UINT64_C(778199756);
     constexpr std::uint64_t entropy_entries = UINT64_C(13777);
@@ -449,7 +449,7 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
     EXPECT_EQ(encoder.node_offset, 201326592U);
     EXPECT_EQ(encoder.symbol_offset, 201473712U);
     EXPECT_EQ(encoder.match_finder_offset, 201482880U);
-    EXPECT_EQ(encoder.match_finder_bytes, 67633152U);
+    EXPECT_EQ(encoder.match_finder_bytes, 69206016U);
     EXPECT_EQ(encoder.views_bytes, encoder_views);
     EXPECT_EQ(encoder.frame_input_bytes + encoder.frame_encoded_bytes
                   + encoder.views_bytes,
@@ -537,9 +537,9 @@ TEST(LzssContextualAdaptiveHuffmanProfile,
     EXPECT_EQ(encoder.node_offset, 805'306'368U);
     EXPECT_EQ(encoder.symbol_offset, 805'454'000U);
     EXPECT_EQ(encoder.match_finder_offset, 805'463'200U);
-    EXPECT_EQ(encoder.match_finder_bytes, 268'959'744U);
-    EXPECT_EQ(encoder.views_bytes, 1'074'422'944U);
-    constexpr std::uint64_t chain_aggregate = UINT64_C(3381290224);
+    EXPECT_EQ(encoder.match_finder_bytes, 270'532'608U);
+    EXPECT_EQ(encoder.views_bytes, 1'075'995'808U);
+    constexpr std::uint64_t chain_aggregate = UINT64_C(3382863088);
     EXPECT_EQ(encoder.frame_input_bytes + encoder.frame_encoded_bytes
                   + encoder.views_bytes,
               chain_aggregate);

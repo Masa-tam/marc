@@ -352,13 +352,16 @@ void expect_bucket_scaled_typed_equal_exact(
                   input, parameters, {}, reference, variant).error,
               LzssTypedEncodeError::none);
 
-    const auto legacy_required = calculate_lzss_hash_chain_workspace(
-        input.size(), parameters, {});
+    const auto legacy_required =
+        calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+            input.size(), parameters, {},
+            lzss_hash_chain_legacy_bucket_cap);
     ASSERT_EQ(legacy_required.error, LzssHashChainError::none);
     AlignedWorkspace legacy_owner(legacy_required.workspace_size);
     std::vector<LzssTypedToken> legacy(input.size());
     LzssMatchFinderStatistics legacy_statistics{};
-    const auto legacy_result = encode_lzss_typed_tokens_hash_chain_single_pass(
+    const auto legacy_result =
+        encode_lzss_typed_tokens_hash_chain_legacy_65536_single_pass(
         input, parameters, {}, legacy,
         legacy_owner.bytes(legacy_required.workspace_size),
         &legacy_statistics, variant);
@@ -831,17 +834,20 @@ TEST(LzssTypedEncoder,
     parameters.window_size = 131'329;
     constexpr auto variant = LzssTypedTokenVariant::field_context_1m;
 
-    const auto legacy_required = calculate_lzss_hash_chain_workspace(
-        input.size(), parameters, {});
+    const auto legacy_required =
+        calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+            input.size(), parameters, {},
+            lzss_hash_chain_legacy_bucket_cap);
     ASSERT_EQ(legacy_required.error, LzssHashChainError::none);
     ASSERT_EQ(legacy_required.bucket_count, 65'536U);
     AlignedWorkspace legacy_owner(legacy_required.workspace_size);
     std::vector<LzssTypedToken> legacy(input.size());
     LzssMatchFinderStatistics legacy_statistics{};
-    const auto legacy_result = encode_lzss_typed_tokens_hash_chain_single_pass(
-        input, parameters, {}, legacy,
-        legacy_owner.bytes(legacy_required.workspace_size),
-        &legacy_statistics, variant);
+    const auto legacy_result =
+        encode_lzss_typed_tokens_hash_chain_legacy_65536_single_pass(
+            input, parameters, {}, legacy,
+            legacy_owner.bytes(legacy_required.workspace_size),
+            &legacy_statistics, variant);
     ASSERT_EQ(legacy_result.error, LzssTypedEncodeError::none);
     legacy.resize(legacy_result.token_count);
     const auto canonical = serialize_typed_tokens(legacy);

@@ -42,6 +42,7 @@ using namespace marc::dictionary::internal;
 
 enum class BenchmarkStrategy : std::uint8_t {
     hash_chain_exact,
+    hash_chain_legacy_65536_exact,
     hash_chain_mnemonic_mixer_v1_exact,
     hash_chain_buckets_262144_exact,
     hash_chain_buckets_1048576_exact,
@@ -61,6 +62,8 @@ enum class BenchmarkStrategy : std::uint8_t {
     const std::string_view text, BenchmarkStrategy& strategy) noexcept {
     if (text == "hash-chain-exact") {
         strategy = BenchmarkStrategy::hash_chain_exact;
+    } else if (text == "hash-chain-legacy-65536-exact") {
+        strategy = BenchmarkStrategy::hash_chain_legacy_65536_exact;
     } else if (text == "hash-chain-mnemonic-mixer-v1-exact") {
         strategy = BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact;
     } else if (text == "hash-chain-buckets-262144-exact") {
@@ -99,6 +102,8 @@ enum class BenchmarkStrategy : std::uint8_t {
     const BenchmarkStrategy strategy) noexcept {
     switch (strategy) {
     case BenchmarkStrategy::hash_chain_exact: return "hash-chain-exact";
+    case BenchmarkStrategy::hash_chain_legacy_65536_exact:
+        return "hash-chain-legacy-65536-exact";
     case BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact:
         return "hash-chain-mnemonic-mixer-v1-exact";
     case BenchmarkStrategy::hash_chain_buckets_262144_exact:
@@ -129,6 +134,7 @@ enum class BenchmarkStrategy : std::uint8_t {
 [[nodiscard]] bool is_hash_chain_strategy(
     const BenchmarkStrategy strategy) noexcept {
     return strategy == BenchmarkStrategy::hash_chain_exact
+        || strategy == BenchmarkStrategy::hash_chain_legacy_65536_exact
         || strategy
             == BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact
         || strategy == BenchmarkStrategy::hash_chain_buckets_262144_exact
@@ -136,14 +142,14 @@ enum class BenchmarkStrategy : std::uint8_t {
         || strategy == BenchmarkStrategy::hash_chain_buckets_4194304_exact;
 }
 
-inline constexpr std::size_t legacy_hash_chain_bucket_cap = 65'536;
-
 [[nodiscard]] std::size_t configured_hash_chain_bucket_cap(
     const BenchmarkStrategy strategy) noexcept {
     switch (strategy) {
     case BenchmarkStrategy::hash_chain_exact:
+        return lzss_hash_chain_production_bucket_cap;
+    case BenchmarkStrategy::hash_chain_legacy_65536_exact:
     case BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact:
-        return legacy_hash_chain_bucket_cap;
+        return lzss_hash_chain_legacy_bucket_cap;
     case BenchmarkStrategy::hash_chain_buckets_262144_exact:
         return lzss_hash_chain_bucket_cap_262144;
     case BenchmarkStrategy::hash_chain_buckets_1048576_exact:
@@ -159,11 +165,11 @@ calculate_hash_chain_workspace_for_strategy(
     const BenchmarkStrategy strategy, const std::size_t input_size,
     const LzssParameters& parameters,
     const marc::core::DecoderLimits& limits) noexcept {
-    const auto bucket_cap = configured_hash_chain_bucket_cap(strategy);
-    if (bucket_cap == legacy_hash_chain_bucket_cap) {
+    if (strategy == BenchmarkStrategy::hash_chain_exact) {
         return calculate_lzss_hash_chain_workspace(
             input_size, parameters, limits);
     }
+    const auto bucket_cap = configured_hash_chain_bucket_cap(strategy);
     return calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
         input_size, parameters, limits, bucket_cap);
 }
@@ -948,6 +954,7 @@ void print_hash_tree_depth_histograms(
     const std::size_t delta_candidate_budget = 0) noexcept {
     switch (strategy) {
     case BenchmarkStrategy::hash_chain_exact:
+    case BenchmarkStrategy::hash_chain_legacy_65536_exact:
     case BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact:
     case BenchmarkStrategy::hash_chain_buckets_262144_exact:
     case BenchmarkStrategy::hash_chain_buckets_1048576_exact:
@@ -1355,6 +1362,16 @@ void fill_synthetic_input(
                == BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact) {
         LzssHashChainMnemonicMixerV1MatchFinder finder{};
         if (initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
+                frame, parameters, limits, workspace, finder,
+                collect_statistics ? &frame_statistics : nullptr)
+            != LzssHashChainError::none) {
+            return false;
+        }
+        frame_tokens = parse_with_finder(frame, finder, token_summary);
+    } else if (strategy
+               == BenchmarkStrategy::hash_chain_legacy_65536_exact) {
+        LzssHashChainBuckets65536MatchFinder finder{};
+        if (initialize_lzss_hash_chain_bucket_scaled_match_finder(
                 frame, parameters, limits, workspace, finder,
                 collect_statistics ? &frame_statistics : nullptr)
             != LzssHashChainError::none) {
@@ -1997,7 +2014,8 @@ void print_usage() {
         << "usage: marc_lzss_match_finder_benchmark "
            "<input-file> [iterations]\n"
         << "       marc_lzss_match_finder_benchmark --frames "
-           "<hash-chain-exact|hash-chain-mnemonic-mixer-v1-exact|"
+           "<hash-chain-exact|hash-chain-legacy-65536-exact|"
+           "hash-chain-mnemonic-mixer-v1-exact|"
            "hash-chain-buckets-262144-exact|"
            "hash-chain-buckets-1048576-exact|"
            "hash-chain-buckets-4194304-exact|"
@@ -2013,7 +2031,8 @@ void print_usage() {
            "sparse-hash-tree-exact <input-file> <iterations> <frame-bytes> "
            "<window-bytes> <pool-nodes> <promotion-candidates>\n"
         << "       marc_lzss_match_finder_benchmark --frames-limited "
-           "<hash-chain-exact|hash-chain-mnemonic-mixer-v1-exact|"
+           "<hash-chain-exact|hash-chain-legacy-65536-exact|"
+           "hash-chain-mnemonic-mixer-v1-exact|"
            "hash-chain-buckets-262144-exact|"
            "hash-chain-buckets-1048576-exact|"
            "hash-chain-buckets-4194304-exact|"
@@ -2040,7 +2059,8 @@ void print_usage() {
            "<promotion-candidates> <promotion-reuse-threshold> "
            "<delta-candidate-budget> <max-internal-buffered-bytes>\n"
         << "       marc_lzss_match_finder_benchmark --synthetic "
-           "<hash-chain-exact|hash-chain-mnemonic-mixer-v1-exact|"
+           "<hash-chain-exact|hash-chain-legacy-65536-exact|"
+           "hash-chain-mnemonic-mixer-v1-exact|"
            "hash-chain-buckets-262144-exact|"
            "hash-chain-buckets-1048576-exact|"
            "hash-chain-buckets-4194304-exact|"

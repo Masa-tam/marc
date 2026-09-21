@@ -8545,3 +8545,13 @@ and deterministic identity tests. The separate 65,536 legacy-control and
 65,536 binding for this gate, were derived locally. No external compressor,
 match finder, hash table implementation, source code, pseudocode, tuning
 advice, benchmark result, or test suite was consulted.
+
+### IR-0929
+
+The HashChain production rebind uses DD-1160, IR-0927 and IR-0928,
+TVG-1023 and TVG-1024, CR-1266 and CR-1267, BM-0083, and marc's own
+workspace, typed-token, profile, benchmark, C API, and full-suite tests.
+The standard 262,144 cap and separately named 65,536 rollback control follow
+the frozen Silesia decision; exact encoder-workspace expectations follow the
+checked in-repository layout. No external compressor, match finder, source
+code, pseudocode, tuning advice, benchmark result, or test suite was consulted.

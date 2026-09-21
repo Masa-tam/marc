@@ -294,3 +294,26 @@ The standard HashChain calculator and finder remain deliberately bound to
 65,536 in this gate. MSVC and ClangCL each pass the 14 focused HashChain tests
 and the complete 3,562-test suite. No production rebind, encoded-byte change,
 format change, decoder change, public API change, or ABI change has occurred.
+
+### Production rebind status
+
+On 2026-09-21 the standard HashChain workspace calculator and finder were
+rebound to the selected 262,144 cap. The explicit 65,536 finder remains the
+rollback and benchmark control (`hash-chain-legacy-65536-exact`), while
+`hash-chain-exact` names the standard production path. The shared 65,536
+HashTree/Sparse HashTree limit and the prefix-mixer comparison remain
+unchanged. The standard and explicit 262,144 routes share the same checked
+workspace and match decisions; the legacy route is selected explicitly in
+typed-token comparisons rather than inferred from the standard name.
+
+For 4, 16, and 64 MiB profiles on x64, the HashChain encoder workspace and
+each corresponding aggregate requirement increase by 1,572,864 bytes over
+the former standard route. Existing hard-limit checks still decide admission:
+the profile initializer does not silently raise a caller's limits. Decoder
+workspace and stream parsing do not change. Exact workspace expectations in
+the C++ profiles, C API queries, and benchmark smoke tests now distinguish
+the production route from the retained legacy control. No frame, format,
+decoder, public selector, API, or ABI change is introduced.
+Both complete 3,562-test MSVC and ClangCL suites pass, including the
+interoperability schema compatibility test. The explicit 65,536 route remains
+available for rollback without a stream-format migration.

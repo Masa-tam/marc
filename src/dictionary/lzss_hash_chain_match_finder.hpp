@@ -48,6 +48,10 @@ inline constexpr std::size_t lzss_hash_chain_bucket_cap_262144 =
 inline constexpr std::size_t lzss_hash_chain_bucket_cap_1048576 = 1'048'576;
 inline constexpr std::size_t lzss_hash_chain_bucket_cap_4194304 = 4'194'304;
 
+static_assert(
+    lzss_match_finder_max_bucket_count
+    == lzss_hash_chain_legacy_bucket_cap);
+
 [[nodiscard]] bool is_supported_lzss_hash_chain_private_bucket_cap(
     std::size_t bucket_cap) noexcept;
 

@@ -100,12 +100,9 @@ LzssHashChainWorkspaceRequirements calculate_lzss_hash_chain_workspace(
     const std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits) noexcept {
     return calculate_lzss_hash_chain_workspace_impl<
-        lzss_match_finder_max_bucket_count>(input_size, parameters, limits);
+        lzss_hash_chain_production_bucket_cap>(
+            input_size, parameters, limits);
 }
-
-static_assert(
-    lzss_match_finder_max_bucket_count
-    == lzss_hash_chain_legacy_bucket_cap);
 
 bool is_supported_lzss_hash_chain_private_bucket_cap(
     const std::size_t bucket_cap) noexcept {

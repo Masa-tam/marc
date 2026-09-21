@@ -22,7 +22,7 @@ foreach(case_name IN ITEMS
             "frame_bytes=4096"
             "window_bytes=4096"
             "frame_count=2"
-            "hash_chain_configured_bucket_cap=65536"
+            "hash_chain_configured_bucket_cap=262144"
             "hash_chain_bucket_count=4096"
             "iterations=1")
         string(FIND "${report}" "${expected_line}\n" line_offset)
@@ -92,7 +92,8 @@ endforeach()
 
 set(bucket_scale_input_size 131329)
 execute_process(
-    COMMAND "${MARC_BENCHMARK}" --synthetic hash-chain-exact
+    COMMAND "${MARC_BENCHMARK}" --synthetic
+        hash-chain-legacy-65536-exact
         pseudorandom ${bucket_scale_input_size} 1
         ${bucket_scale_input_size} ${bucket_scale_input_size}
     RESULT_VARIABLE bucket_legacy_result
@@ -132,10 +133,11 @@ foreach(expected_line IN ITEMS
 endforeach()
 
 set(bucket_scale_strategies
+    hash-chain-exact
     hash-chain-buckets-262144-exact
     hash-chain-buckets-1048576-exact
     hash-chain-buckets-4194304-exact)
-set(bucket_scale_caps 262144 1048576 4194304)
+set(bucket_scale_caps 262144 262144 1048576 4194304)
 math(EXPR bucket_scaled_workspace
     "262144 * ${POINTER_SIZE} + ${bucket_scale_input_size} * 4")
 list(LENGTH bucket_scale_strategies bucket_scale_strategy_count)

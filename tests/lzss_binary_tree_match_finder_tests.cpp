@@ -258,8 +258,8 @@ TEST(LzssBinaryTreeMatchFinder, CalculatesSixteenMiBComparisonWorkspace) {
     const auto hash = calculate_lzss_hash_chain_workspace(
         extent, parameters, limits);
     ASSERT_EQ(hash.error, LzssHashChainError::none);
-    EXPECT_EQ(hash.workspace_size, 67'633'152U);
-    EXPECT_EQ(extent + hash.workspace_size, 84'410'368U);
+    EXPECT_EQ(hash.workspace_size, 69'206'016U);
+    EXPECT_EQ(extent + hash.workspace_size, 85'983'232U);
 
     const auto binary = calculate_lzss_binary_tree_workspace(
         extent, parameters, limits);
@@ -295,8 +295,8 @@ TEST(LzssBinaryTreeMatchFinder, CalculatesSixtyFourMiBComparisonWorkspace) {
     const auto hash = calculate_lzss_hash_chain_workspace(
         extent, parameters, limits);
     ASSERT_EQ(hash.error, LzssHashChainError::none);
-    EXPECT_EQ(hash.workspace_size, 268'959'744U);
-    EXPECT_EQ(extent + hash.workspace_size, 336'068'608U);
+    EXPECT_EQ(hash.workspace_size, 270'532'608U);
+    EXPECT_EQ(extent + hash.workspace_size, 337'641'472U);
 
     const auto binary = calculate_lzss_binary_tree_workspace(
         extent, parameters, limits);
