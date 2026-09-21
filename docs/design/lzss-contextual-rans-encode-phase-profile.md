@@ -2,7 +2,8 @@
 
 Status: measurement contract, checked accumulator, optional codec hooks,
 identity-gated diagnostic benchmark, and fixed pilot runner implemented;
-selected pilot completed; Corpus-wide measurements pending.
+selected pilot completed; full-member runner implemented and measurements
+pending.
 
 ## Question and scope
 
@@ -157,3 +158,30 @@ dominate on `xml` and `mr`, while both contextual plans are material on
 `x-ray`. These selected inputs cannot establish a Corpus-wide distribution
 or justify removing validation or the second plan yet. The next measurement
 stage remains a separately frozen all-member manifest and restartable runner.
+
+## Stage 6 all-member contract
+
+DD-1164 and `silesia-contextual-rans-phase-full-v1.json` freeze a distinct
+36-record campaign: twelve published Silesia members in their canonical
+order, each with three independent one-iteration child processes. Pilot
+records are excluded. The runner must verify the entire local Corpus and
+the MSVC x64 Release diagnostic build, then bind the manifest's exact bytes,
+source revision, executable and generated target project hashes, compiler
+and flags, Corpus metadata, and path identity before measuring. Save each
+validated record atomically. On resume, require a canonical prefix and
+revalidate each stored report, phase partition, input identity, and stable
+per-member complete-archive identity. A changed or malformed checkpoint
+must fail closed. An optional run quota may stop after a fixed number of new
+records for a dry run; an incomplete checkpoint is not a full result.
+Report raw attempts and per-member medians without a pass/fail speed gate.
+Only after all 36 records pass may the full result be interpreted. The
+instrumented clock and the fixed 4 MiB policy remain unchanged.
+
+## Stage 7 implementation status
+
+The separate full-member v1 manifest and runner implement the 36-record
+contract. Fixture-only tests cover strict manifest matching, canonical
+checkpoint prefixes, changed execution identity, malformed reports, archive
+drift, atomic checkpointing after each accepted record, quota/resume, and
+completed replay without a new child process. The runner has not yet
+accepted any external Corpus timing record; its results remain pending.

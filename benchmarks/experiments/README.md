@@ -41,3 +41,11 @@ It verifies the complete local Silesia Corpus, launches three separate
 one-iteration processes per member, and writes raw reports and medians only
 under the ignored `benchmarks/data/silesia/results/` directory. It is not
 the separate all-member manifest or a production performance gate.
+
+The separate `silesia-contextual-rans-phase-full-v1.json` manifest freezes
+all twelve members and three independent processes per member. Its runner is
+`tools/run_silesia_contextual_rans_phase_full.py`. The `--max-new-records N`
+option is a dry-run quota: it checkpoints at most N new records and does not
+publish a full result until all 36 are valid. Run the same command again to
+resume; changed build, source, manifest, or Corpus identity is an error.
+The checkpoint and final result remain in the ignored local results directory.

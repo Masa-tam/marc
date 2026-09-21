@@ -23714,3 +23714,23 @@ against the public codec, and treat the instrumented timing as diagnostic
 rather than a universal speed claim. The exact phase boundaries, identity
 gate, and staged pilot are fixed in
 `docs/design/lzss-contextual-rans-encode-phase-profile.md`.
+
+## DD-1164: Freeze a separate all-member contextual rANS phase campaign
+
+- Date: 2026-09-22
+- Status: accepted for experiment design; full measurement pending
+
+BM-0088 completed the selected three-member phase pilot with valid archive
+identity and time partitioning. Freeze a new, independent all-twelve-member
+Silesia campaign rather than pooling its raw records with the pilot. The
+fixed v1 manifest specifies three independently launched, one-iteration
+processes per member in published Corpus order, yielding 36 records. Verify
+the full local Corpus and optimized MSVC x64 Release build before execution.
+Bind source revision, executable/project hashes, compiler/options, manifest
+bytes, and Corpus identities into a checkpoint that is written after every
+validated record. Resume only a canonical prefix with identical identity;
+never silently skip a changed or malformed record. Keep raw phase times and
+per-member medians, with no CI timing threshold or immediate codec-policy
+change. The pilot remains a separate, selected observation. The exact
+execution and interpretation boundaries remain in
+`docs/design/lzss-contextual-rans-encode-phase-profile.md`.

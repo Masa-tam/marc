@@ -15085,3 +15085,19 @@ Fixed contextual rANS phase-pilot runner contracts (2026-09-22).
 - Expected behavior: malformed or inconsistent output rejects the pilot
   without publishing a complete result. Valid fixed-grid reports retain all
   nine raw samples and one median per member and phase.
+
+### TVG-1029
+
+All-member contextual rANS phase checkpoint vectors (2026-09-22).
+
+- Date: 2026-09-22
+- Source: DD-1164 and the fixed all-member phase-campaign manifest.
+- Scope: fixture-only manifest, synthetic reports, mocked child processes,
+  and temporary checkpoints; the tests do not require Silesia files.
+- Vectors: exact 12-by-3 grid and strict manifest, duplicate JSON keys,
+  changed executable identity, noncanonical prefix, invalid partition or
+  input hash, cross-process archive drift, two-record quota, one-record
+  resume, 36-record completion, and no-op replay.
+- Expected behavior: every accepted record is an atomically saved canonical
+  prefix; rejected data cannot advance the stored checkpoint; an incomplete
+  run has no full result, and completed replay launches no child process.

@@ -1,0 +1,32 @@
+{
+  "schema": "marc-benchmark-experiment-manifest-v1",
+  "experiment": "silesia-contextual-rans-phase-full-v1",
+  "result_schema": "marc-silesia-contextual-rans-phase-full-v1",
+  "checkpoint_schema": "marc-silesia-contextual-rans-phase-full-checkpoint-v1",
+  "corpus": {
+    "profile": "silesia-manifest-v1",
+    "members": ["dickens", "mozilla", "mr", "nci", "ooffice", "osdb", "reymont", "samba", "sao", "webster", "xml", "x-ray"]
+  },
+  "build": {
+    "generator": "Visual Studio 18 2026",
+    "platform": "x64",
+    "configuration": "Release",
+    "required_release_flags": ["/O2", "/Ob2", "/DNDEBUG"]
+  },
+  "execution": {
+    "codec": "lzss-contextual-rans-4m",
+    "frame_bytes": 4194304,
+    "iterations_per_process": 1,
+    "processes_per_member": 3,
+    "child_timeout_seconds": 1800,
+    "process_isolation": "one-measured-invocation-per-child",
+    "checkpoint_after_records": 1,
+    "expected_record_count": 36
+  },
+  "interpretation": {
+    "archive_identity": "complete-byte-count-and-sha256",
+    "phase_partition": "disjoint-nanoseconds-plus-residual",
+    "summary": "per-member-medians-and-raw-records",
+    "performance_gate": "none-descriptive-only"
+  }
+}

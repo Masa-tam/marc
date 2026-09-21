@@ -31923,3 +31923,21 @@ both bounds.
 - Local validation: nine complete identity and partition checks passed; the
   ignored result digest is recorded in BM-0088. The all-member experiment
   remains pending.
+
+## CR-1282: 2026-09-22 - Fixed all-member phase manifest and runner
+
+- Authoring method: specified a separate 36-record Silesia campaign and
+  implemented a restartable runner over marc's existing phase diagnostic.
+- References used: DD-1164, TVG-1029, BM-0088, the phase-profile design,
+  the repository's Silesia verifier, and existing local checkpoint rules.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: freeze the exact manifest, exclude pilot records,
+  bind build/source/Corpus identities, validate canonical prefixes on every
+  resume, save after each accepted child, and leave speed ungated.
+- Generated-code task description: create a fixed all-member phase campaign
+  with bounded child processes and fail-closed resumable checkpoints.
+- Similarity review: report fields and accounting are marc-specific; no
+  external implementation expression was used.
+- Local validation: fixture-only manifest and checkpoint tests passed;
+  no external Corpus timing result is claimed yet.
