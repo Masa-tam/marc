@@ -317,3 +317,10 @@ decoder, public selector, API, or ABI change is introduced.
 Both complete 3,562-test MSVC and ClangCL suites pass, including the
 interoperability schema compatibility test. The explicit 65,536 route remains
 available for rollback without a stream-format migration.
+
+The post-promotion audit in BM-0084 confirms that the standard strategy's
+reported cap, workspace, search work, and token identity follow the selected
+262,144 specialization. It also separates a small fresh throughput and
+sampled-working-set check from the earlier full-Corpus decision data. The
+immutable v1 Silesia manifest retains its original historical strategy
+meanings and is not reused under the promoted strategy name.

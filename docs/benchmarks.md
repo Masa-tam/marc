@@ -2785,3 +2785,42 @@ The ignored canonical result JSON has SHA-256
 `8c4f0c4cab1edb970250ecc5650e8e345cf9f77d3f845d35330be87c04f1527a`.
 The completed checkpoint SHA-256 is
 `a37276071d0cc85f4cefdea2a8f8c16ab5c66f66ef01204601f82281d2b4a72d`.
+
+### BM-0084: Post-promotion HashChain performance and memory audit
+
+On 2026-09-21, after the standard HashChain route was rebound to 262,144
+buckets, the MSVC Release benchmark built from `fe11a20b` was run at
+repository revision `778cbefa` against the locally held Silesia `xml` member
+(5,345,280 bytes). The intervening commit changed only a CMake smoke-test
+expression and did not rebuild this benchmark. Each route
+was measured in a separate, sequential process with `--frames-limited`,
+three iterations, a 64-MiB frame, a 512-MiB hard workspace limit, and the
+same window and input. These are match-finder throughput measurements, not
+whole-codec encode speed or compression-ratio measurements.
+
+| Window | Legacy 65,536 MiB/s | Standard 262,144 MiB/s | Standard / legacy | Legacy workspace | Standard workspace |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 MiB | 5.532556 | 6.227504 | 1.125611 | 17,301,504 B | 18,874,368 B |
+| 16 MiB | 5.426152 | 6.141876 | 1.131903 | 67,633,152 B | 69,206,016 B |
+| 64 MiB | 5.432875 | 6.158357 | 1.133536 | 268,959,744 B | 270,532,608 B |
+
+At each window the two routes emitted identical token, literal, match, and
+matched-byte counts and the same SHA-256 token fingerprint. At 4 MiB the
+standard route also matched the explicit 262,144 specialization in all
+reported identity and search-work fields. The exact workspace increase is
+1,572,864 bytes at each listed window. In separate single-process 64-MiB
+window runs, polling the process working set at 10-ms intervals observed
+sampled peaks of 341,446,656 bytes (legacy) and 343,019,520 bytes
+(standard), also a 1,572,864-byte difference. Sampled working set is an
+observation, not a guaranteed process peak or a substitute for workspace
+limits.
+
+The earlier all-12-member, 144-record fixed Silesia result in BM-0083 remains
+the selection evidence; its ignored result file was rechecked against the
+recorded SHA-256. That v1 manifest fixes the old name `hash-chain-exact` to
+65,536 and must not be rerun unchanged against the promoted binary. The
+current `xml` spot measurement confirms production wiring but is too small
+and timing-sensitive to replace the full-Corpus result or establish a new
+cross-platform speed guarantee. A three-iteration `mozilla` spot run was
+stopped when the existing result showed its single iteration would take
+roughly eight minutes; no partial timing from that run is used.

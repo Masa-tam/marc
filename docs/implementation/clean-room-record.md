@@ -31665,3 +31665,24 @@ both bounds.
 - Local validation: boundary and focused regression tests pass with MSVC and
   ClangCL. Both complete 3,562-test suites pass, including interoperability
   schema compatibility; documentation sequence and links also verify.
+
+## CR-1269: 2026-09-21 - HashChain production performance audit
+
+- Authoring method: compared marc's explicit 65,536 rollback route and
+  262,144 standard route on a locally supplied Silesia member, checked the
+  prior fixed-result digest, and separately sampled process working set.
+- References used: DD-1160, IR-0929, TVG-1025, CR-1268, BM-0083, and
+  BM-0084; no external implementation source was used.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, source code, pseudocode, tuning advice, or test suite.
+- Independent decisions: keep the historical v1 manifest immutable, avoid
+  treating a small fresh sample as a replacement for the all-member result,
+  and distinguish exact workspace allocation from sampled working set.
+- Generated-code task description: audit the post-promotion standard and
+  rollback paths under matched conditions; report speed, memory, and exact
+  token identity with explicit scope and uncertainty.
+- Similarity review: this audit records outputs of marc's own benchmark and
+  does not copy or translate any external implementation expression.
+- Local validation: three-iteration sequential `xml` comparisons passed at
+  all three windows; a fresh explicit-262,144 run agreed with standard
+  identity and work metrics at 4 MiB; prior result SHA-256 matched BM-0083.
