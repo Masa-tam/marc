@@ -31865,3 +31865,23 @@ both bounds.
 - Local validation: timed and untimed empty, multi-frame, and HashChain
   stream tests passed with exact archive identity; the 39 targeted encoder
   and timing tests passed. No real performance measurement is claimed.
+
+## CR-1279: 2026-09-22 - Identity-gated contextual rANS phase benchmark
+
+- Authoring method: added a private benchmark around marc's own public C API
+  oracle and the previously instrumented streaming encoder.
+- References used: DD-1163, TVG-1027, the encode-phase diagnostic design,
+  and marc's existing benchmark configuration and workspace API.
+- Known implementations intentionally not consulted: external compressors,
+  profilers, source code, pseudocode, or benchmark suites.
+- Independent decisions: use a static-only diagnostic target, complete
+  public decode verification, length/SHA-256 gates for every private archive,
+  and raw per-invocation stage output without speed assertions.
+- Generated-code task description: construct a bounded diagnostic executable
+  for `lzss-contextual-rans-4m` and validate its archive identity before
+  reporting any phase duration.
+- Similarity review: the tool follows marc's existing C API and private
+  streaming encoder; no external implementation expression was used.
+- Local validation: MSVC Release build, README smoke test, and one local
+  two-frame `xml` identity check passed. The selected independent-process
+  pilot and any bottleneck conclusion remain pending.

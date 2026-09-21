@@ -15062,3 +15062,10 @@ with one-byte output chunks, and a HashChain frame. They require the timed
 and untimed complete archives to match, every named phase to be observed on
 nonempty inputs, a valid same-invocation partition, and zero phase time for
 empty input. These are correctness smoke vectors, not performance thresholds.
+
+The Stage 3 diagnostic executable uses `README.md` as a repository-owned
+CTest smoke input. It requires a public C API encode/decode round trip, then
+compares the complete untimed and timed private archives against the public
+archive by length and SHA-256. Its measurements are not pass/fail thresholds.
+An optional local two-frame Silesia `xml` invocation checks the same identity
+gate without making a performance or Corpus-wide claim.

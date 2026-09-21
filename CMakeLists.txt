@@ -457,6 +457,34 @@ if(MARC_BUILD_TOOLS)
 endif()
 
 if(MARC_BUILD_BENCHMARKS)
+    if(TARGET marc_static)
+        add_executable(marc_lzss_contextual_rans_phase_benchmark
+            benchmarks/lzss_contextual_rans_phase_benchmark.cpp)
+        target_compile_features(marc_lzss_contextual_rans_phase_benchmark
+            PRIVATE cxx_std_20)
+        set_target_properties(marc_lzss_contextual_rans_phase_benchmark
+            PROPERTIES CXX_EXTENSIONS OFF)
+        target_include_directories(marc_lzss_contextual_rans_phase_benchmark
+            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        if(MSVC)
+            target_compile_options(marc_lzss_contextual_rans_phase_benchmark
+                PRIVATE /W4 /permissive- /Zc:__cplusplus)
+        else()
+            target_compile_options(marc_lzss_contextual_rans_phase_benchmark
+                PRIVATE -Wall -Wextra -Wpedantic)
+        endif()
+        target_link_libraries(marc_lzss_contextual_rans_phase_benchmark
+            PRIVATE marc::static)
+        if(MARC_BUILD_TESTS)
+            add_test(NAME marc_lzss_contextual_rans_phase_benchmark_smoke
+                COMMAND marc_lzss_contextual_rans_phase_benchmark
+                    ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+            set_tests_properties(
+                marc_lzss_contextual_rans_phase_benchmark_smoke
+                PROPERTIES LABELS benchmark-experimental-smoke)
+        endif()
+    endif()
+
     add_executable(marc_lzss_match_finder_benchmark
         benchmarks/lzss_match_finder_benchmark.cpp)
     target_compile_features(marc_lzss_match_finder_benchmark PRIVATE cxx_std_20)

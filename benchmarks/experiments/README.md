@@ -24,3 +24,12 @@ pre/post-promotion public-codec comparison. Its runner requires two clean,
 revision-pinned MSVC x64 Release build trees, verifies optimization settings,
 and checkpoints each validated member-side benchmark and archive identity.
 The original bucket-scaling v1 manifest retains its historical strategy names.
+
+The private `marc_lzss_contextual_rans_phase_benchmark` executable is a
+separate, static-only diagnostic for the current 4 MiB contextual rANS encoder.
+It takes an input path and optional positive iteration count, verifies a public
+C API round trip and archive SHA-256, then prints raw phase nanoseconds only
+after each private encode reproduces that archive. Its output is not a
+performance threshold. A future pilot runner must additionally capture the
+executable hash, revision, compiler/options, and local Corpus identity before
+making comparisons across independent processes.

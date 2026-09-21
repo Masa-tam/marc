@@ -1,7 +1,8 @@
 # LZSS contextual rANS encode-phase diagnostic
 
-Status: measurement contract, checked accumulator, and optional codec hooks
-implemented; diagnostic benchmark and Corpus measurements pending.
+Status: measurement contract, checked accumulator, optional codec hooks, and
+an identity-gated diagnostic benchmark implemented; selected pilot and
+Corpus-wide measurements pending.
 
 ## Question and scope
 
@@ -112,3 +113,19 @@ serialization in the same streaming encode call. The empty, two-frame
 one-byte-buffer, and HashChain single-frame tests compare timed output with
 the established untimed oracle and check the accounting partition. No
 benchmark timing or Corpus-wide claim has been produced yet.
+
+## Stage 3 status
+
+The private `marc_lzss_contextual_rans_phase_benchmark` executable runs a
+public C API encode/decode round trip and verifies a complete archive SHA-256
+before using the same streaming encoder with an untimed and then optional
+timed accumulator. It rejects a size or SHA-256 mismatch for each invocation
+and reports disjoint raw nanoseconds, the residual, input identity, frame
+count, and the queried encoder workspace. The tool is built only with the
+static library because its timing hook is deliberately not public ABI.
+Its README smoke test and a two-frame `xml` identity check passed locally.
+The `xml` run was a correctness check, not the predeclared three-member pilot:
+it had one measured invocation and no median. The pilot runner still needs
+to bind executable SHA-256, source revision, compiler/options, and Corpus
+identity to every report and launch independent measured processes. Neither
+a bottleneck conclusion nor a change to the encoder follows from this stage.
