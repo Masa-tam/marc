@@ -31790,3 +31790,21 @@ both bounds.
 - Local validation: 24/24 records completed, 12/12 A/B archives matched by
   size and SHA-256, all workspace deltas matched, completed replay did not
   measure again, and the ignored result/checkpoint hashes were recorded.
+
+## CR-1275: 2026-09-22 - Post-audit HashChain policy decision
+
+- Authoring method: compared the fixed match-finder selection and completed
+  whole-codec A/B evidence without changing the experiment or rerunning it.
+- References used: DD-1158 through DD-1161, BM-0083 and BM-0087, and the
+  completed result recorded in CR-1274.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, source code, pseudocode, or benchmark advice.
+- Independent decisions: retain the already promoted 262,144-bucket route,
+  preserve the explicit 65,536 rollback control and caller hard limits, and
+  require a separate investigation before another search-policy change.
+- Generated-code task description: close the fixed end-to-end HashChain
+  experiment with an evidence-bounded encoder policy decision.
+- Similarity review: the decision uses only marc's recorded measurements and
+  design history; no external implementation expression was used.
+- Local validation: document verifier and benchmark-runner mock tests pass;
+  this record makes no new performance claim or code change.

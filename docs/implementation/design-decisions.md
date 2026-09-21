@@ -23671,3 +23671,29 @@ an automatic CI performance gate. Preserve the historical bucket-scaling v1
 manifest under its original strategy meaning. The fixed conditions, report
 math, and staged execution are in
 `docs/design/lzss-hash-chain-end-to-end-ab.md`.
+
+## DD-1162: Retain the promoted HashChain cap after the full-Corpus audit
+
+- Date: 2026-09-22
+- Status: accepted for the current encoder policy
+
+BM-0087 completed the fixed 24-record end-to-end A/B comparison at the
+pre-promotion and promoted revisions. All twelve complete archives matched
+in size and SHA-256. The promoted 262,144-bucket route was
+faster on eleven of twelve Silesia members and had 1.022477 times the
+aggregate encode throughput in this one-iteration MSVC x64 Release run. The
+`mr` member was slightly slower. Queried codec workspace increased by exactly
+1,572,864 bytes wherever this route used the larger table. These observations
+are consistent with, but weaker than, the fixed match-finder selection
+evidence in BM-0083; they do not establish a cross-platform or universal
+speedup.
+
+Keep DD-1160's current static production binding and caller-controlled hard
+limits. Do not enlarge the bucket table again, relax workspace limits,
+introduce an automatic runtime cap selector, or remove the explicit 65,536
+rollback route based on this one end-to-end timing sample. The rollback route
+also remains useful for deterministic comparison. Any future cap change needs
+its own fixed experiment and decision. The next performance investigation
+should measure where whole-codec encode time is spent before selecting another
+search optimization; it must not turn this descriptive result into a CI speed
+threshold. No decoder, format, API, or ABI change follows from this decision.
