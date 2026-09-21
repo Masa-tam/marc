@@ -31808,3 +31808,22 @@ both bounds.
   design history; no external implementation expression was used.
 - Local validation: document verifier and benchmark-runner mock tests pass;
   this record makes no new performance claim or code change.
+
+## CR-1276: 2026-09-22 - Contextual rANS phase-profile design
+
+- Authoring method: read marc's streaming frame encoder, frame encoder,
+  contextual rANS encoder, public benchmark, and private benchmark build
+  setup to define observable, disjoint encode stages.
+- References used: DD-1162, BM-0087, the listed marc source files, and
+  `docs/design/lzss-contextual-rans-encode-phase-profile.md`.
+- Known implementations intentionally not consulted: external compressor,
+  profiler implementation, source code, pseudocode, or test suite.
+- Independent decisions: retain the exact production encode path and archive
+  identity gate; make clocks optional and per instance; measure both existing
+  contextual planning passes separately before changing either one.
+- Generated-code task description: design a bounded, private phase diagnostic
+  for the current `lzss-contextual-rans-4m` encoder.
+- Similarity review: the phase boundaries were derived from marc's own call
+  graph; no external implementation expression was used.
+- Local validation: document verifier must accept the design and records;
+  no performance measurement or encoder change is claimed by this record.

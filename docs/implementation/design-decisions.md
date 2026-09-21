@@ -23697,3 +23697,20 @@ its own fixed experiment and decision. The next performance investigation
 should measure where whole-codec encode time is spent before selecting another
 search optimization; it must not turn this descriptive result into a CI speed
 threshold. No decoder, format, API, or ABI change follows from this decision.
+
+## DD-1163: Profile the existing contextual rANS encode phases first
+
+- Date: 2026-09-22
+- Status: accepted for diagnostic design; implementation pending
+
+The `lzss-contextual-rans-4m` frame encoder plans contextual tokens once for
+frame sizing and again inside output encoding. The second path then performs
+the output-producing reverse rANS pass. Before changing this structure or
+choosing another match-finder optimization, measure typed-token production,
+both plans, the reverse write, frame serialization, and the remaining
+streaming work in one real encode invocation. Keep an optional timing sink
+private and inactive on the normal path. Validate complete archive identity
+against the public codec, and treat the instrumented timing as diagnostic
+rather than a universal speed claim. The exact phase boundaries, identity
+gate, and staged pilot are fixed in
+`docs/design/lzss-contextual-rans-encode-phase-profile.md`.
