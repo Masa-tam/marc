@@ -15056,3 +15056,9 @@ Contextual rANS encode-phase accounting vectors (2026-09-22).
   exactly. A failed update leaves counters unchanged; a failed summary leaves
   the caller's previous summary unchanged. These tests establish arithmetic
   and ownership only, not actual phase boundaries or benchmark accuracy.
+
+The Stage 2 hook tests additionally use an empty stream, a two-frame stream
+with one-byte output chunks, and a HashChain frame. They require the timed
+and untimed complete archives to match, every named phase to be observed on
+nonempty inputs, a valid same-invocation partition, and zero phase time for
+empty input. These are correctness smoke vectors, not performance thresholds.

@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstddef>
 #include <span>
 #include <vector>
@@ -111,6 +112,22 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     EXPECT_EQ(encoded, two_frame_oracle());
     EXPECT_EQ(encoder.process({}, {}, 0).status,
               StreamStatus::end_of_stream);
+
+    marc::context::internal::LzssContextualRansEncodePhaseTiming timing{};
+    LzssContextualRansFrameStreamingEncoder timed_encoder{
+        stream_config(1, input.size()), {}, raw, tokens, {}, frame,
+        marc::dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact,
+        &timing};
+    const auto start = std::chrono::steady_clock::now();
+    const auto timed_archive = encode_one_byte_chunks(timed_encoder, input);
+    const auto total = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now() - start);
+    EXPECT_EQ(timed_archive, encoded);
+    marc::context::internal::LzssContextualRansEncodePhaseSummary summary{};
+    ASSERT_TRUE(timing.summarize(total, summary));
+    for (const auto duration : summary.phase_nanoseconds) {
+        EXPECT_GT(duration, 0U);
+    }
 }
 
 TEST(LzssContextualRansFrameStreamingEncoder,
@@ -181,6 +198,29 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     EXPECT_EQ(result.output_produced, expected.size());
     EXPECT_EQ(actual, expected);
 
+    marc::context::internal::LzssContextualRansEncodePhaseTiming timing{};
+    LzssContextualRansFrameStreamingEncoder timed_encoder{
+        stream, {}, raw, tokens, finder, frame,
+        marc::dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact,
+        &timing};
+    std::vector<std::byte> timed_archive(expected.size());
+    const auto timing_start = std::chrono::steady_clock::now();
+    const auto timed_result = timed_encoder.process(
+        input, timed_archive, end_flag());
+    const auto total = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now() - timing_start);
+    ASSERT_EQ(timed_result.status, StreamStatus::end_of_stream);
+    EXPECT_EQ(timed_result.input_consumed, input.size());
+    EXPECT_EQ(timed_result.output_produced, expected.size());
+    EXPECT_EQ(timed_archive, actual);
+    marc::context::internal::LzssContextualRansEncodePhaseSummary summary{};
+    ASSERT_TRUE(timing.summarize(total, summary));
+    EXPECT_EQ(summary.total_nanoseconds,
+              static_cast<std::uint64_t>(total.count()));
+    for (const auto duration : summary.phase_nanoseconds) {
+        EXPECT_GT(duration, 0U);
+    }
+
     LzssContextualRansFrameStreamingEncoder short_finder{
         stream, {}, raw, tokens, finder.first(finder.size() - 1), frame};
     std::vector<std::byte> failure_output(expected.size());
@@ -228,8 +268,12 @@ TEST(LzssContextualRansFrameStreamingEncoder,
 
 TEST(LzssContextualRansFrameStreamingEncoder,
      EmptyInputEndsAfterHeaderDrain) {
+    marc::context::internal::LzssContextualRansEncodePhaseTiming timing{};
     LzssContextualRansFrameStreamingEncoder encoder{
-        stream_config(1, 0), {}, {}, {}, {}, {}};
+        stream_config(1, 0), {}, {}, {}, {}, {},
+        marc::dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact,
+        &timing};
+    const auto start = std::chrono::steady_clock::now();
     auto result = encoder.process({}, {}, end_flag());
     ASSERT_EQ(result.status, StreamStatus::need_output);
     std::array<std::byte, lzss_contextual_rans_stream_header_size> header{};
@@ -237,6 +281,13 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     EXPECT_EQ(result.status, StreamStatus::end_of_stream);
     EXPECT_EQ(result.output_produced, header.size());
     EXPECT_EQ(header[18], std::byte{0x03});
+    const auto total = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now() - start);
+    marc::context::internal::LzssContextualRansEncodePhaseSummary summary{};
+    ASSERT_TRUE(timing.summarize(total, summary));
+    for (const auto duration : summary.phase_nanoseconds) {
+        EXPECT_EQ(duration, 0U);
+    }
 }
 
 TEST(LzssContextualRansFrameStreamingEncoder,

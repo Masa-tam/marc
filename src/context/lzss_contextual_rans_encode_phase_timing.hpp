@@ -1,5 +1,5 @@
-#ifndef MARC_FRAME_LZSS_CONTEXTUAL_RANS_ENCODE_PHASE_TIMING_HPP
-#define MARC_FRAME_LZSS_CONTEXTUAL_RANS_ENCODE_PHASE_TIMING_HPP
+#ifndef MARC_CONTEXT_LZSS_CONTEXTUAL_RANS_ENCODE_PHASE_TIMING_HPP
+#define MARC_CONTEXT_LZSS_CONTEXTUAL_RANS_ENCODE_PHASE_TIMING_HPP
 
 #include "core/checked_math.hpp"
 
@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace marc::frame::internal {
+namespace marc::context::internal {
 
 enum class LzssContextualRansEncodePhase : std::uint8_t {
     tokenize,
@@ -49,6 +49,13 @@ public:
         return true;
     }
 
+    [[nodiscard]] bool record_since(
+        const LzssContextualRansEncodePhase phase,
+        const std::chrono::steady_clock::time_point start) noexcept {
+        return record(phase, std::chrono::duration_cast<std::chrono::nanoseconds>(
+                                 std::chrono::steady_clock::now() - start));
+    }
+
     [[nodiscard]] bool summarize(
         const std::chrono::nanoseconds total,
         LzssContextualRansEncodePhaseSummary& output) const noexcept {
@@ -72,6 +79,6 @@ private:
         phase_nanoseconds_{};
 };
 
-} // namespace marc::frame::internal
+} // namespace marc::context::internal
 
 #endif

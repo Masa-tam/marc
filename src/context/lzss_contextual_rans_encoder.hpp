@@ -2,6 +2,7 @@
 #define MARC_CONTEXT_LZSS_CONTEXTUAL_RANS_ENCODER_HPP
 
 #include "context/lzss_field_context.hpp"
+#include "context/lzss_contextual_rans_encode_phase_timing.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 #include "entropy/contextual_rans_encoder.hpp"
 
@@ -55,7 +56,8 @@ encode_lzss_contextual_rans_tokens(
     std::span<std::byte> payload_output,
     entropy::internal::ContextualRansDescriptor& descriptor,
     LzssFieldContextVariant variant =
-        LzssFieldContextVariant::field_context_64k) noexcept;
+        LzssFieldContextVariant::field_context_64k,
+    LzssContextualRansEncodePhaseTiming* timing = nullptr) noexcept;
 
 } // namespace marc::context::internal
 

@@ -1,7 +1,7 @@
 # LZSS contextual rANS encode-phase diagnostic
 
-Status: measurement contract and checked accumulator implemented; codec hooks
-and measurements pending.
+Status: measurement contract, checked accumulator, and optional codec hooks
+implemented; diagnostic benchmark and Corpus measurements pending.
 
 ## Question and scope
 
@@ -48,8 +48,11 @@ per-iteration values rather than only percentages.
 
 Add an optional private, per-instance timing accumulator at internal frame
 and context boundaries. A null accumulator is the normal production path:
-no clock reads, global mutable counters, changes to allocation, or changes
-to encoded bytes. Use `std::chrono::steady_clock` and checked accumulation.
+no clock reads, global mutable counters, additional scratch/workspace
+allocation, or changes to encoded bytes. The streaming encoder object itself
+may grow by one private pointer; its heap allocation is not part of the
+caller-supplied workspace query. Use `std::chrono::steady_clock` and checked
+accumulation.
 Keep the timing accumulator outside the public C ABI and public headers.
 The diagnostic benchmark must run the actual streaming encoder with the
 same configuration and buffer sizes as the existing public benchmark; it
@@ -96,3 +99,16 @@ that publishes `other` only when the disjoint stage sum fits inside the same
 invocation's total. Invalid phase IDs, negative durations, overflow, and an
 overfull partition leave caller-visible state unchanged. This stage does not
 read a clock, instrument the codec, or produce a performance result.
+
+## Stage 2 status
+
+The private timing type now lives in the context layer so both context and
+frame encoders can use it without a dependency from context back to frame.
+An optional pointer is passed from the streaming encoder through the frame
+encoder to the contextual rANS encoder. Null remains the normal production
+setting and does not read a clock. Non-null timing records token production,
+the two existing plans, the output-producing reverse pass, and frame
+serialization in the same streaming encode call. The empty, two-frame
+one-byte-buffer, and HashChain single-frame tests compare timed output with
+the established untimed oracle and check the accounting partition. No
+benchmark timing or Corpus-wide claim has been produced yet.

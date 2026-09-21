@@ -22,7 +22,9 @@ public:
         std::span<std::byte> match_finder_workspace,
         std::span<std::byte> serialized_frame_workspace,
         dictionary::internal::LzssMatchFinderStrategy match_finder_strategy =
-            dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact)
+            dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact,
+        context::internal::LzssContextualRansEncodePhaseTiming* timing =
+            nullptr)
         noexcept;
 
     [[nodiscard]] core::ProcessResult process(
@@ -56,6 +58,7 @@ private:
     std::span<std::byte> serialized_frame_workspace_{};
     dictionary::internal::LzssMatchFinderStrategy match_finder_strategy_{
         dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact};
+    context::internal::LzssContextualRansEncodePhaseTiming* timing_{};
     std::array<std::byte, lzss_contextual_rans_stream_header_size>
         stream_header_{};
     std::size_t raw_frame_size_{};

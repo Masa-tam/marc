@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -87,7 +88,8 @@ template <FrameMatchFinder MatchFinder>
     const std::span<const std::byte> raw_input,
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
     const std::span<std::byte> match_finder_workspace,
-    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    dictionary::internal::LzssMatchFinderStatistics* const statistics,
+    context::internal::LzssContextualRansEncodePhaseTiming* const timing)
     noexcept {
     LzssContextualRansFrameEncodeResult result{};
     std::size_t token_capacity_bytes{};
@@ -143,6 +145,9 @@ template <FrameMatchFinder MatchFinder>
         return result;
     }
 
+    const auto tokenize_start = timing != nullptr
+        ? std::chrono::steady_clock::now()
+        : std::chrono::steady_clock::time_point{};
     if constexpr (MatchFinder == FrameMatchFinder::hash_chain_exact) {
         result.token_encode = dictionary::internal::
             encode_lzss_typed_tokens_hash_chain_single_pass(
@@ -160,6 +165,12 @@ template <FrameMatchFinder MatchFinder>
         result.token_encode = dictionary::internal::encode_lzss_typed_tokens(
             raw_input, stream.dictionary, limits, private_tokens,
             selected.layout.dictionary_variant);
+    }
+    if (timing != nullptr && !timing->record_since(
+            context::internal::LzssContextualRansEncodePhase::tokenize,
+            tokenize_start)) {
+        result.error = LzssContextualRansFrameEncodeError::internal_error;
+        return result;
     }
     result.token_count = result.token_encode.token_count;
     if (result.token_encode.error
@@ -181,10 +192,19 @@ template <FrameMatchFinder MatchFinder>
         static_cast<std::uint32_t>(raw_input.size()),
         output_already_committed};
     entropy::internal::ContextualRansDescriptor descriptor{};
+    const auto first_plan_start = timing != nullptr
+        ? std::chrono::steady_clock::now()
+        : std::chrono::steady_clock::time_point{};
     result.entropy_encode =
         context::internal::plan_lzss_contextual_rans_tokens(
             tokens, stream.dictionary, token_context, limits, descriptor,
             selected.layout.context_variant);
+    if (timing != nullptr && !timing->record_since(
+            context::internal::LzssContextualRansEncodePhase::first_plan,
+            first_plan_start)) {
+        result.error = LzssContextualRansFrameEncodeError::internal_error;
+        return result;
+    }
     result.event_count = result.entropy_encode.event_count;
     result.decision_count = result.entropy_encode.decision_count;
     result.payload_size = result.entropy_encode.payload_size;
@@ -289,7 +309,8 @@ template <FrameMatchFinder MatchFinder>
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
     const std::span<std::byte> match_finder_workspace,
     const std::span<std::byte> serialized_output,
-    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    dictionary::internal::LzssMatchFinderStatistics* const statistics,
+    context::internal::LzssContextualRansEncodePhaseTiming* const timing)
     noexcept {
     LzssContextualRansFrameEncodeResult result{};
     std::size_t token_capacity_bytes{};
@@ -321,7 +342,7 @@ template <FrameMatchFinder MatchFinder>
 
     result = plan_frame<MatchFinder>(
         stream, limits, sequence, output_already_committed, raw_input,
-        private_tokens, match_finder_workspace, statistics);
+        private_tokens, match_finder_workspace, statistics, timing);
     if (result.error != LzssContextualRansFrameEncodeError::none) {
         return result;
     }
@@ -356,7 +377,7 @@ template <FrameMatchFinder MatchFinder>
         context::internal::encode_lzss_contextual_rans_tokens(
             tokens, stream.dictionary, token_context, limits,
             output.subspan(payload_offset, result.payload_size), descriptor,
-            selected.layout.context_variant);
+            selected.layout.context_variant, timing);
     if (result.entropy_encode.error
             != context::internal::LzssContextualRansEncodeError::none
         || result.entropy_encode.event_count != result.event_count
@@ -367,6 +388,9 @@ template <FrameMatchFinder MatchFinder>
         return result;
     }
 
+    const auto finish_start = timing != nullptr
+        ? std::chrono::steady_clock::now()
+        : std::chrono::steady_clock::time_point{};
     std::size_t descriptor_written{};
     result.descriptor_error =
         entropy::internal::serialize_contextual_rans_descriptor(
@@ -393,6 +417,11 @@ template <FrameMatchFinder MatchFinder>
     if (result.header_error != LzssContextualRansFrameHeaderError::none) {
         result.error = LzssContextualRansFrameEncodeError::internal_error;
     }
+    if (timing != nullptr && !timing->record_since(
+            context::internal::LzssContextualRansEncodePhase::frame_finish,
+            finish_start)) {
+        result.error = LzssContextualRansFrameEncodeError::internal_error;
+    }
     return result;
 }
 
@@ -405,7 +434,7 @@ LzssContextualRansFrameEncodeResult plan_lzss_contextual_rans_frame(
     noexcept {
     return plan_frame<FrameMatchFinder::exhaustive>(
         stream, limits, sequence, output_already_committed, raw_input,
-        private_tokens, {}, nullptr);
+        private_tokens, {}, nullptr, nullptr);
 }
 
 LzssContextualRansFrameEncodeResult encode_lzss_contextual_rans_frame(
@@ -417,7 +446,7 @@ LzssContextualRansFrameEncodeResult encode_lzss_contextual_rans_frame(
     const std::span<std::byte> serialized_output) noexcept {
     return encode_frame<FrameMatchFinder::exhaustive>(
         stream, limits, sequence, output_already_committed, raw_input,
-        private_tokens, {}, serialized_output, nullptr);
+        private_tokens, {}, serialized_output, nullptr, nullptr);
 }
 
 LzssContextualRansFrameEncodeResult
@@ -435,11 +464,11 @@ plan_lzss_contextual_rans_frame_with_match_finder(
     case dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact:
         return plan_frame<FrameMatchFinder::hash_chain_exact>(
             stream, limits, sequence, output_already_committed, raw_input,
-            private_tokens, match_finder_workspace, statistics);
+            private_tokens, match_finder_workspace, statistics, nullptr);
     case dictionary::internal::LzssMatchFinderStrategy::binary_tree_exact:
         return plan_frame<FrameMatchFinder::binary_tree_exact>(
             stream, limits, sequence, output_already_committed, raw_input,
-            private_tokens, match_finder_workspace, statistics);
+            private_tokens, match_finder_workspace, statistics, nullptr);
     }
     LzssContextualRansFrameEncodeResult result{};
     result.error = LzssContextualRansFrameEncodeError::
@@ -457,19 +486,20 @@ encode_lzss_contextual_rans_frame_with_match_finder(
     const dictionary::internal::LzssMatchFinderStrategy strategy,
     const std::span<std::byte> match_finder_workspace,
     const std::span<std::byte> serialized_output,
-    dictionary::internal::LzssMatchFinderStatistics* const statistics)
+    dictionary::internal::LzssMatchFinderStatistics* const statistics,
+    context::internal::LzssContextualRansEncodePhaseTiming* const timing)
     noexcept {
     switch (strategy) {
     case dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact:
         return encode_frame<FrameMatchFinder::hash_chain_exact>(
             stream, limits, sequence, output_already_committed, raw_input,
             private_tokens, match_finder_workspace, serialized_output,
-            statistics);
+            statistics, timing);
     case dictionary::internal::LzssMatchFinderStrategy::binary_tree_exact:
         return encode_frame<FrameMatchFinder::binary_tree_exact>(
             stream, limits, sequence, output_already_committed, raw_input,
             private_tokens, match_finder_workspace, serialized_output,
-            statistics);
+            statistics, timing);
     }
     LzssContextualRansFrameEncodeResult result{};
     result.error = LzssContextualRansFrameEncodeError::

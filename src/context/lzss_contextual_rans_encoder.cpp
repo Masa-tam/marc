@@ -6,6 +6,7 @@
 #include "core/checked_math.hpp"
 
 #include <bit>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -333,10 +334,20 @@ enum class OverlapCheck : std::uint8_t {
     const core::DecoderLimits& limits,
     const std::span<std::byte> payload_output,
     entropy::internal::ContextualRansDescriptor& descriptor,
-    const LzssFieldContextVariant variant) noexcept {
+    const LzssFieldContextVariant variant,
+    LzssContextualRansEncodePhaseTiming* const timing) noexcept {
     entropy::internal::ContextualRansDescriptor planned{};
+    const auto plan_start = timing != nullptr
+        ? std::chrono::steady_clock::now()
+        : std::chrono::steady_clock::time_point{};
     const auto plan = plan_tokens(
         tokens, parameters, context, limits, planned, variant);
+    if (timing != nullptr && !timing->record_since(
+            LzssContextualRansEncodePhase::second_plan, plan_start)) {
+        auto result = plan;
+        result.error = LzssContextualRansEncodeError::internal_error;
+        return result;
+    }
     if (plan.error != LzssContextualRansEncodeError::none) return plan;
     if (payload_output.size() < plan.payload_size) {
         auto result = plan;
@@ -353,8 +364,17 @@ enum class OverlapCheck : std::uint8_t {
         return result;
     }
     std::size_t encoded_size{};
+    const auto reverse_start = timing != nullptr
+        ? std::chrono::steady_clock::now()
+        : std::chrono::steady_clock::time_point{};
     const auto entropy_error = run_reverse(
         tokens, planned, output, encoded_size, variant);
+    if (timing != nullptr && !timing->record_since(
+            LzssContextualRansEncodePhase::reverse_write, reverse_start)) {
+        auto result = plan;
+        result.error = LzssContextualRansEncodeError::internal_error;
+        return result;
+    }
     if (entropy_error != ContextualRansEncodeError::none
         || encoded_size != plan.payload_size) {
         auto result = plan;
@@ -386,9 +406,10 @@ LzssContextualRansEncodeResult encode_lzss_contextual_rans_tokens(
     const core::DecoderLimits& limits,
     const std::span<std::byte> payload_output,
     entropy::internal::ContextualRansDescriptor& descriptor,
-    const LzssFieldContextVariant variant) noexcept {
+    const LzssFieldContextVariant variant,
+    LzssContextualRansEncodePhaseTiming* const timing) noexcept {
     return encode_tokens(tokens, parameters, context, limits, payload_output,
-                         descriptor, variant);
+                         descriptor, variant, timing);
 }
 
 } // namespace marc::context::internal

@@ -31846,3 +31846,22 @@ both bounds.
   was used.
 - Local validation: the timing tests and documentation verifier pass. No
   production codec call site, output bytes, or performance policy changed.
+
+## CR-1278: 2026-09-22 - Optional contextual rANS encode-phase hooks
+
+- Authoring method: threaded a nullable, per-instance timing pointer through
+  marc's existing streaming frame, frame, and contextual rANS encode calls.
+- References used: DD-1163, TVG-1027, CR-1276 and CR-1277, and the source
+  call path specified in the phase-profile design.
+- Known implementations intentionally not consulted: external profiler,
+  compressor, source code, pseudocode, or test suite.
+- Independent decisions: move the timing type into the context layer to keep
+  dependencies directional; read clocks only for a non-null timing pointer;
+  retain the existing double-plan and all validation logic unchanged.
+- Generated-code task description: instrument five disjoint stages of the
+  current contextual rANS streaming encoder without changing normal output.
+- Similarity review: timing boundaries follow marc's own encoder structure;
+  no external implementation expression was used.
+- Local validation: timed and untimed empty, multi-frame, and HashChain
+  stream tests passed with exact archive identity; the 39 targeted encoder
+  and timing tests passed. No real performance measurement is claimed.

@@ -1,4 +1,4 @@
-#include "frame/lzss_contextual_rans_encode_phase_timing.hpp"
+#include "context/lzss_contextual_rans_encode_phase_timing.hpp"
 
 #include <gtest/gtest.h>
 
@@ -7,9 +7,9 @@
 
 namespace {
 
-using marc::frame::internal::LzssContextualRansEncodePhase;
-using marc::frame::internal::LzssContextualRansEncodePhaseSummary;
-using marc::frame::internal::LzssContextualRansEncodePhaseTiming;
+using marc::context::internal::LzssContextualRansEncodePhase;
+using marc::context::internal::LzssContextualRansEncodePhaseSummary;
+using marc::context::internal::LzssContextualRansEncodePhaseTiming;
 
 TEST(LzssContextualRansEncodePhaseTimingTests, EmptyEncodeHasZeroPartition) {
     LzssContextualRansEncodePhaseTiming timing{};

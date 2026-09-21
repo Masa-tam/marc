@@ -90,7 +90,8 @@ encode_lzss_contextual_rans_frame_with_match_finder(
     dictionary::internal::LzssMatchFinderStrategy strategy,
     std::span<std::byte> match_finder_workspace,
     std::span<std::byte> serialized_output,
-    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr)
+    dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr,
+    context::internal::LzssContextualRansEncodePhaseTiming* timing = nullptr)
     noexcept;
 
 [[nodiscard]] LzssContextualRansFrameEncodeResult
