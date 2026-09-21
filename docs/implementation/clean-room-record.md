@@ -31565,3 +31565,29 @@ both bounds.
 - Local validation: the bundled Python 3 interpreter passes all seven runner
   tests; MSVC and ClangCL pass the focused tooling test; both complete
   3,561-test suites pass, including interoperability schema compatibility.
+
+## CR-1265: 2026-09-21 - HashChain bucket-scaling Silesia measurement
+
+- Authoring method: executed the committed immutable 144-record manifest with
+  the repository runner, verified the completed checkpoint with a zero-new-
+  point rerun, and recorded only the runner's predeclared classifications.
+- References used: DD-1151 through DD-1159, IR-0920 through IR-0926,
+  TVG-1016 through TVG-1022, CR-1257 through CR-1264, and BM-0079 through
+  BM-0083.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: preserve all frozen conditions; accept all nine
+  admissible candidate/window pairs; apply the smallest-near-fastest rule
+  without threshold changes; retain 262,144 at every window as a proposal;
+  and defer production dispatch and public behavior to a separate gate.
+- Generated-code task description: run and monitor the fixed Silesia matrix,
+  validate its completed restart state, record exact ratios and artifact
+  hashes, and do not tune, promote, or change production behavior.
+- Similarity review: the gate measured marc's independently implemented
+  private finders on the locally verified Corpus and did not consult or
+  reproduce an external implementation expression or result.
+- Local validation: all 144 records completed, every private record matched
+  legacy in all five Exact fields, all nine candidate/window pairs passed the
+  frozen eligibility rules, and a zero-new-point rerun revalidated
+  `progress=144/144` without launching a benchmark child.

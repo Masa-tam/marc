@@ -23598,3 +23598,22 @@ selection and selected caps are nondecreasing with window size. Even then,
 this gate supplies evidence only: a later decision must explicitly change
 production dispatch or public behavior. Do not alter these rules after any
 Silesia result is observed.
+
+## DD-1159: Accept the 262,144-bucket Silesia policy proposal
+
+- Date: 2026-09-21
+- Status: accepted
+
+The complete DD-1158 experiment validates all 144 records and all five Exact
+identity fields. Every private candidate is admissible at every window. The
+fastest admissible cap is 4,194,304 at 4 MiB, 1,048,576 at 16 MiB, and
+4,194,304 at 64 MiB. Under the predeclared rule, however, the 262,144 cap is
+within 0.95 of the fastest candidate at every window and is the smallest such
+cap. Select 262,144 for all three windows. The resulting cap sequence is
+nondecreasing and therefore qualifies as a later production-policy proposal.
+
+Treat this result as evidence and a proposal only. A separate committed
+decision must define production dispatch, workspace consequences, limits,
+tests, and rollback before changing the existing 65,536-cap route. Do not
+retroactively alter the fixed gate, promote a larger fastest-only cap, add a
+runtime selector, or infer a public format or decoder change from this result.

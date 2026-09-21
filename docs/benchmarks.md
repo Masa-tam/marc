@@ -2750,3 +2750,38 @@ cross-window monotonic-policy classification fixed by DD-1158. Mock-only
 runner tests must cover the complete contract and restart behavior. At this
 infrastructure gate no real Silesia member is read, no long child is launched,
 no performance result is created, and no production or public policy changes.
+
+### BM-0083: Fixed bucket-scaling Silesia result
+
+The complete MSVC 19.51 Release experiment at commit `882ee775` finished all
+144 process-isolated records: twelve verified Silesia members, 4-/16-/64-MiB
+windows, legacy HashChain, and all three private bucket caps for every
+member/window. Every private record matched legacy in token, literal, match,
+and matched-byte counts and canonical token fingerprint. A zero-new-point
+rerun revalidated `progress=144/144` without launching another child.
+
+| Window | Bucket cap | Throughput / legacy | Candidates / legacy | Member wins | Worst member | Admissible | Selected |
+| ---: | ---: | ---: | ---: | ---: | ---: | :---: | :---: |
+| 4 MiB | 262,144 | 1.032471 | 0.963770 | 11 / 12 | 0.971684 | yes | yes |
+| 4 MiB | 1,048,576 | 1.052754 | 0.955488 | 12 / 12 | 1.005930 | yes | no |
+| 4 MiB | 4,194,304 | 1.053588 | 0.952673 | 11 / 12 | 0.954829 | yes | no |
+| 16 MiB | 262,144 | 1.117845 | 0.970422 | 12 / 12 | 1.008900 | yes | yes |
+| 16 MiB | 1,048,576 | 1.122449 | 0.963446 | 12 / 12 | 1.010392 | yes | no |
+| 16 MiB | 4,194,304 | 1.093128 | 0.961048 | 11 / 12 | 0.906096 | yes | no |
+| 64 MiB | 262,144 | 1.125943 | 0.971620 | 12 / 12 | 1.010014 | yes | yes |
+| 64 MiB | 1,048,576 | 1.154690 | 0.964851 | 11 / 12 | 0.995098 | yes | no |
+| 64 MiB | 4,194,304 | 1.173593 | 0.962521 | 11 / 12 | 0.995162 | yes | no |
+
+All nine candidate/window pairs beat legacy aggregate throughput, win at
+least half the members, retain at least 0.90 of legacy on the worst member,
+and reduce aggregate candidate visits. The fastest cap varies by window, but
+262,144 remains within 0.95 of that fastest candidate at every window and is
+the smallest admissible cap in that near-fastest set. The selected sequence
+is therefore 262,144 at all three windows and satisfies the predeclared
+nondecreasing cross-window rule. This is a production-policy proposal, not a
+production, public API, ABI, CLI, format, profile, decoder, or default change.
+
+The ignored canonical result JSON has SHA-256
+`8c4f0c4cab1edb970250ecc5650e8e345cf9f77d3f845d35330be87c04f1527a`.
+The completed checkpoint SHA-256 is
+`a37276071d0cc85f4cefdea2a8f8c16ab5c66f66ef01204601f82281d2b4a72d`.

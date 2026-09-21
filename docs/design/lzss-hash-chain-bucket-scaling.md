@@ -221,3 +221,15 @@ aggregate candidates. The per-window recommendation is the smallest cap
 within 0.95 of the fastest admissible candidate. A later production-policy
 proposal is possible only when all windows select a cap and those caps are
 nondecreasing. Infrastructure and mock tests precede any Corpus access.
+
+The fixed Silesia experiment completed all 144 records on 2026-09-21 at
+commit `882ee775`. Every private route retained all five Exact identity
+fields, and all nine candidate/window pairs passed the predeclared aggregate
+throughput, member-win, worst-member, and candidate-reduction gates. Although
+the fastest cap was 4,194,304 at 4 and 64 MiB and 1,048,576 at 16 MiB, the
+262,144 cap stayed within 0.95 of the fastest at every window. The frozen
+smallest-near-fastest rule therefore selects 262,144 at all three windows,
+which also satisfies the nondecreasing cross-window requirement. This closes
+the measurement gate and creates a later production-policy proposal only;
+the production 65,536-cap route remains unchanged pending a separate design,
+implementation, validation, and rollback decision.
