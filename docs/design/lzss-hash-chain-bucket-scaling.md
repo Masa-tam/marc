@@ -1,6 +1,9 @@
 # LZSS HashChain bucket-scaling experiment
 
-Status: synthetic measurement complete; fixed Silesia follow-up not started.
+Status: fixed experiments complete; 262,144-cap production promotion and
+post-promotion audits complete. Sections 1–8 preserve the pre-promotion
+design, when the standard route still used 65,536 buckets; Section 9 records
+the current binding.
 
 ## 1. Motivation and boundary
 
@@ -324,3 +327,9 @@ reported cap, workspace, search work, and token identity follow the selected
 sampled-working-set check from the earlier full-Corpus decision data. The
 immutable v1 Silesia manifest retains its original historical strategy
 meanings and is not reused under the promoted strategy name.
+
+BM-0085 adds an end-to-end public-codec A/B check against the immediate
+pre-promotion commit. It compares real compression, decompression, archive
+bytes, queried workspace, and sampled working set under matched optimized
+MSVC builds. The two-member spot check supports the production decision but
+does not replace the fixed all-member match-finder experiment.

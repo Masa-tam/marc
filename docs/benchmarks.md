@@ -2824,3 +2824,38 @@ and timing-sensitive to replace the full-Corpus result or establish a new
 cross-platform speed guarantee. A three-iteration `mozilla` spot run was
 stopped when the existing result showed its single iteration would take
 roughly eight minutes; no partial timing from that run is used.
+
+### BM-0085: End-to-end HashChain promotion A/B spot check
+
+On 2026-09-21, the immediate pre-promotion commit `64f79321` and promoted
+commit `fe11a20b` were built as separate MSVC 19.51 x64 Release programs.
+Both used `/O2 /Ob2 /DNDEBUG`, the same compiler, and the same `marc_benchmark`
+source, public `lzss-contextual-rans-4m` codec, input, and iteration count.
+The old build's initial failed configuration had left Release optimization
+flags empty; an unoptimized exploratory run was discarded, the flags were
+matched explicitly, and the old library and benchmark were fully rebuilt
+before any value below was accepted. The benchmark verifies a round trip
+before timing encode and decode independently.
+
+| Silesia member | Input | Iterations per process | Old encode seconds (two runs) | New encode seconds (two runs) | Old/new median encode-time ratio | Encoded bytes, both |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `xml` | 5,345,280 B | 3 | 2.636, 2.536 | 2.412, 2.481 | 1.057 | 549,164 B |
+| `x-ray` | 8,474,240 B | 2 | 4.564, 4.585 | 2.435, 2.419 | 1.885 | 5,450,402 B |
+
+Separate old/new CLI encode runs produced byte-identical complete archives:
+the `xml` SHA-256 was
+`8a0d129c2cedf105ab9207e533182a6dcd1f9975cd607c74954f189e2e61760`,
+and `x-ray` was
+`0adb83d0b113e1daa122ea9f06fecc2bd30eddce92266927b822b7de953ab08a`.
+The C API benchmark reported the same decoder workspace and, for both
+inputs, a codec peak queried workspace of 130,556,905 bytes before and
+132,129,769 bytes after promotion: exactly 1,572,864 bytes more. Separate
+`xml` process runs sampled working set every 10 ms and observed peaks of
+335,638,528 and 337,211,392 bytes, respectively. Those sampled values are
+not guaranteed OS peak-memory measurements.
+
+This spot check shows that the selected HashChain change reaches a complete
+codec pipeline without changing archive bytes on these inputs. Decode-time
+samples varied and are not used to attribute a decoder improvement. The two
+members, few process runs, and local machine cannot establish a universal
+speedup or replace BM-0083's all-member selection experiment.

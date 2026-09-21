@@ -31686,3 +31686,26 @@ both bounds.
 - Local validation: three-iteration sequential `xml` comparisons passed at
   all three windows; a fresh explicit-262,144 run agreed with standard
   identity and work metrics at 4 MiB; prior result SHA-256 matched BM-0083.
+
+## CR-1270: 2026-09-21 - End-to-end HashChain A/B audit
+
+- Authoring method: built the immediate pre-promotion revision in an isolated
+  checkout, matched MSVC Release optimization with the promoted build, and
+  compared the same public contextual rANS pipeline on two local Corpus
+  members using the repository's benchmark and CLI.
+- References used: DD-1160, IR-0929, TVG-1025, CR-1268 and CR-1269,
+  BM-0083 through BM-0085, and marc's public codec benchmark contract.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, source code, pseudocode, tuning advice, or test suite.
+- Independent decisions: reject the first unoptimized baseline build,
+  compare separate processes in opposing orders, check complete-archive
+  digests, and keep queried workspace distinct from sampled working set.
+- Generated-code task description: verify that the HashChain promotion
+  improves real compression where measured, preserves byte-identical
+  archives and round trips, and reports memory cost without claiming that a
+  two-member spot check represents all inputs.
+- Similarity review: only marc-owned benchmark/CLI outputs and the locally
+  supplied Corpus were used; no implementation expression was imported.
+- Local validation: matched-build A/B runs and archive SHA-256 comparisons
+  passed for `xml` and `x-ray`; the measured workspace delta was exactly
+  1,572,864 bytes and decoder workspace was unchanged.
