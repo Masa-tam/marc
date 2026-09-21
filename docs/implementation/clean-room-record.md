@@ -31617,3 +31617,29 @@ both bounds.
   shared with unmeasured HashTree families, all standard HashChain callers
   converge on the existing calculator/initializer or strategy query, and the
   decoder has no match-finder workspace dependency.
+
+## CR-1267: 2026-09-21 - HashChain production-cap foundation
+
+- Authoring method: introduced separately named compile-time legacy and
+  selected production-cap identities around marc's existing checked HashChain
+  workspace and finder implementation, while deliberately retaining the
+  standard route's 65,536 binding for this first implementation gate.
+- References used: DD-1160, IR-0927 and IR-0928, TVG-1023 and TVG-1024,
+  CR-1266, and BM-0083.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, hash table implementation, source code, pseudocode, tuning
+  advice, benchmark result, or test suite.
+- Independent decisions: make the rollback identity explicit; permit the
+  legacy cap through the private checked dispatcher; test the selected cap's
+  exact allocation boundary and hard-limit behavior before rebinding; and
+  keep the standard route unchanged until the next gate.
+- Generated-code task description: add the production-cap constants and
+  explicit legacy finder, prove boundary workspace and identity behavior,
+  and do not change the standard binding, stream format, decoder, API, or ABI.
+- Similarity review: the change only specializes marc's independently
+  implemented HashChain and extends its repository-owned deterministic tests.
+  No external implementation expression or result was copied or translated.
+- Local validation: MSVC and ClangCL each pass all 14 focused HashChain tests
+  and all 3,562 complete-suite tests, including interoperability schema
+  compatibility. The standard route remains identical to the explicit
+  65,536 control throughout this gate.

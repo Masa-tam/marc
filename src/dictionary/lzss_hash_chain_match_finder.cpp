@@ -103,9 +103,14 @@ LzssHashChainWorkspaceRequirements calculate_lzss_hash_chain_workspace(
         lzss_match_finder_max_bucket_count>(input_size, parameters, limits);
 }
 
+static_assert(
+    lzss_match_finder_max_bucket_count
+    == lzss_hash_chain_legacy_bucket_cap);
+
 bool is_supported_lzss_hash_chain_private_bucket_cap(
     const std::size_t bucket_cap) noexcept {
-    return bucket_cap == lzss_hash_chain_bucket_cap_262144
+    return bucket_cap == lzss_hash_chain_legacy_bucket_cap
+        || bucket_cap == lzss_hash_chain_bucket_cap_262144
         || bucket_cap == lzss_hash_chain_bucket_cap_1048576
         || bucket_cap == lzss_hash_chain_bucket_cap_4194304;
 }
@@ -116,6 +121,10 @@ calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
     const core::DecoderLimits& limits,
     const std::size_t bucket_cap) noexcept {
     switch (bucket_cap) {
+    case lzss_hash_chain_legacy_bucket_cap:
+        return calculate_lzss_hash_chain_workspace_impl<
+            lzss_hash_chain_legacy_bucket_cap>(
+                input_size, parameters, limits);
     case lzss_hash_chain_bucket_cap_262144:
         return calculate_lzss_hash_chain_workspace_impl<
             lzss_hash_chain_bucket_cap_262144>(input_size, parameters, limits);

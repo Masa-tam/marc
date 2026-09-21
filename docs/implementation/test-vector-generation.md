@@ -14977,3 +14977,22 @@ finish, malformed-input regressions, and MSVC/ClangCL complete suites. Rename
 the benchmark's old control explicitly and require future smoke to compare it
 with the newly bound `hash-chain-exact`. The gate performs no format, decoder,
 public enum, ABI, profile-limit, or automatic hard-limit change.
+
+### TVG-1024
+
+Before rebinding production, instantiate the explicit 65,536 legacy control,
+the unchanged standard HashChain route, and the selected 262,144 production-
+cap specialization. At effective histories below five bytes and across
+65,536/65,537, 131,072/131,073, and 262,144/262,145 boundaries, require the
+standard and legacy workspace and bucket counts to remain identical while the
+selected specialization grows to 131,072 and then 262,144 buckets.
+
+Require the selected maximum x64 workspace delta to equal 1,572,864 bytes.
+A hard limit one byte below the selected requirement must reject it without
+mutation while still admitting the unchanged standard route; the exact limit
+must admit it. Compare Exhaustive, standard, legacy, and every private cap on
+the established deterministic inputs, requiring identical match decisions
+and leaving only workspace and search diagnostics variable. Run the focused
+HashChain tests and both complete 3,562-test MSVC and ClangCL suites. This
+foundation gate must not rebind the standard route or change encoded bytes,
+format, decoder behavior, public API, or ABI.

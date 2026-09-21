@@ -8534,3 +8534,14 @@ and completed fixed measurements. The separate production cap, retained
 boundary were derived locally. No external compressor, match finder, hash
 table implementation, source code, pseudocode, tuning advice, benchmark
 result, or test suite was consulted.
+
+### IR-0928
+
+The HashChain production-cap foundation uses DD-1160, IR-0927, TVG-1023,
+CR-1266, and marc's repository-owned compile-time HashChain specialization,
+workspace calculator, initializer, match-finder concept, Exhaustive oracle,
+and deterministic identity tests. The separate 65,536 legacy-control and
+262,144 production-cap identities, while deliberately retaining the standard
+65,536 binding for this gate, were derived locally. No external compressor,
+match finder, hash table implementation, source code, pseudocode, tuning
+advice, benchmark result, or test suite was consulted.

@@ -41,7 +41,10 @@ calculate_lzss_hash_chain_workspace(
     std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits) noexcept;
 
-inline constexpr std::size_t lzss_hash_chain_bucket_cap_262144 = 262'144;
+inline constexpr std::size_t lzss_hash_chain_legacy_bucket_cap = 65'536;
+inline constexpr std::size_t lzss_hash_chain_production_bucket_cap = 262'144;
+inline constexpr std::size_t lzss_hash_chain_bucket_cap_262144 =
+    lzss_hash_chain_production_bucket_cap;
 inline constexpr std::size_t lzss_hash_chain_bucket_cap_1048576 = 1'048'576;
 inline constexpr std::size_t lzss_hash_chain_bucket_cap_4194304 = 4'194'304;
 
@@ -108,7 +111,8 @@ initialize_lzss_hash_chain_match_finder_with_private_bucket_cap(
 template <std::size_t BucketCap>
 class LzssHashChainBucketScaledMatchFinder {
     static_assert(
-        BucketCap == lzss_hash_chain_bucket_cap_262144
+        BucketCap == lzss_hash_chain_legacy_bucket_cap
+        || BucketCap == lzss_hash_chain_bucket_cap_262144
         || BucketCap == lzss_hash_chain_bucket_cap_1048576
         || BucketCap == lzss_hash_chain_bucket_cap_4194304);
 
@@ -146,6 +150,9 @@ private:
     LzssHashChainMatchFinder implementation_{};
 };
 
+using LzssHashChainBuckets65536MatchFinder =
+    LzssHashChainBucketScaledMatchFinder<
+        lzss_hash_chain_legacy_bucket_cap>;
 using LzssHashChainBuckets262144MatchFinder =
     LzssHashChainBucketScaledMatchFinder<
         lzss_hash_chain_bucket_cap_262144>;
@@ -156,6 +163,7 @@ using LzssHashChainBuckets4194304MatchFinder =
     LzssHashChainBucketScaledMatchFinder<
         lzss_hash_chain_bucket_cap_4194304>;
 
+static_assert(LzssMatchFinder<LzssHashChainBuckets65536MatchFinder>);
 static_assert(LzssMatchFinder<LzssHashChainBuckets262144MatchFinder>);
 static_assert(LzssMatchFinder<LzssHashChainBuckets1048576MatchFinder>);
 static_assert(LzssMatchFinder<LzssHashChainBuckets4194304MatchFinder>);

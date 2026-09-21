@@ -281,3 +281,16 @@ If any encoded byte changes, hard-limit behavior becomes inconsistent, a
 profile loses its documented admission unexpectedly, or either complete suite
 fails, rebind the standard route to the retained 65,536 control. Because the
 decoder and format are invariant, rollback requires no compatibility action.
+
+### Gate 1 implementation status
+
+Gate 1 completed on 2026-09-21. The code now names the retained 65,536 legacy
+cap and the selected 262,144 production cap independently, exposes an explicit
+legacy finder for rollback and identity comparison, and accepts both caps in
+the checked internal dispatch. Boundary tests prove the selected cap's exact
+workspace growth, maximum x64 delta, hard-limit admission, and match identity.
+
+The standard HashChain calculator and finder remain deliberately bound to
+65,536 in this gate. MSVC and ClangCL each pass the 14 focused HashChain tests
+and the complete 3,562-test suite. No production rebind, encoded-byte change,
+format change, decoder change, public API change, or ABI change has occurred.
