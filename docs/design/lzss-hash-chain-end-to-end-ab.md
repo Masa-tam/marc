@@ -1,6 +1,7 @@
 # LZSS HashChain end-to-end A/B experiment
 
-Status: design fixed; runner and full-Corpus measurement not yet implemented.
+Status: design fixed; manifest, runner, and mock-only gate implemented;
+two-member dry run and full-Corpus measurement pending.
 
 ## Purpose and scope
 
@@ -112,3 +113,13 @@ universal speedup claim. A repeat campaign would need a new fixed manifest.
 
 No gate changes the encoder, decoder, public API, ABI, stream bytes, format,
 profile, or hard limits.
+
+### Gate 1 implementation status
+
+The v1 manifest and runner implement strict revision and dirty-tree checks,
+matching compiler/version and Release flags, generated MSBuild Release-project
+checks, executable and source hashes, canonical alternating order, per-child
+timeout, benchmark and CLI archive checks, atomic per-record checkpoints,
+resume identity validation, and byte-weighted summary arithmetic. Mock-only
+tests cover the failure and resume contracts without reading Silesia files.
+This stage has not produced performance observations; Gate 2 remains pending.

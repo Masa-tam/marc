@@ -31728,3 +31728,22 @@ both bounds.
   conditions and arithmetic; no external implementation expression was used.
 - Local validation: documentation checks only; runner, mock tests, dry run,
   and full-Corpus measurements remain pending.
+
+## CR-1272: 2026-09-21 - End-to-end A/B runner gate
+
+- Authoring method: implemented the fixed manifest, isolated-child runner,
+  checked MSVC Release preflight, archive identity, per-record checkpointing,
+  and mock-only contract tests from DD-1161 and TVG-1026.
+- References used: DD-1161, TVG-1026, CR-1271, BM-0085, marc's benchmark and
+  CLI output contracts, and the repository's existing checkpoint helpers.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, source code, pseudocode, tuning advice, or test suite.
+- Independent decisions: freeze both source revisions and harness-source
+  hashes, compare effective project optimization in addition to cache flags,
+  and reject incomplete or conflicting member-side records on resume.
+- Generated-code task description: implement a restartable, local-only,
+  all-Silesia public-codec A/B experiment without launching long measurements.
+- Similarity review: only marc-owned tooling conventions and documented
+  experiment conditions were reused; no external implementation was copied.
+- Local validation: mock-only runner tests and documentation checks pass;
+  no Corpus measurement has yet been performed.

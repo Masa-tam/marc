@@ -15022,3 +15022,9 @@ missing member-side record. Verify aggregate byte-weighted throughput and
 compression-ratio arithmetic without reading the external Corpus. A bounded
 two-member dry run must validate real benchmark/CLI report parsing before the
 fixed 24-record campaign; its timings are not all-member evidence.
+
+The Gate 1 mock-only runner tests are implemented and registered in CTest.
+They exercise fixed manifest shape, alternating order, optimized-build
+preflight, report and archive validation, checkpoint identity/order, atomic
+replacement failure, byte-weighted aggregation, and timeout rejection.
+The external-Corpus dry run and 24-record campaign remain pending.

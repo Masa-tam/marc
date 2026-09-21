@@ -18,3 +18,9 @@ Synthetic experiment manifests use the same inert contract but replace the
 external Corpus profile with a repository-defined deterministic generator
 profile. Generated fixture bytes, checkpoints, and results remain ignored and
 are not distributed.
+
+The `silesia-hash-chain-end-to-end-ab-v1.json` manifest fixes a separate
+pre/post-promotion public-codec comparison. Its runner requires two clean,
+revision-pinned MSVC x64 Release build trees, verifies optimization settings,
+and checkpoints each validated member-side benchmark and archive identity.
+The original bucket-scaling v1 manifest retains its historical strategy names.
