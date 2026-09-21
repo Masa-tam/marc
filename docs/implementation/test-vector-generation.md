@@ -15041,3 +15041,18 @@ checkpoint. Its completed replay launched no new measurements. Independent
 result inspection found twelve archive-identical A/B pairs and the expected
 workspace delta on every member; see BM-0087. These observations do not alter
 the fixed mock-test or malformed-input contracts.
+
+### TVG-1027
+
+Contextual rANS encode-phase accounting vectors (2026-09-22).
+
+- Date: 2026-09-22
+- Source: the independently specified private timing partition in DD-1163.
+- Scope: synthetic nanosecond durations only; no external Corpus or clocks.
+- Vectors: zero total; five nonzero stages with a repeated frame stage and
+  positive residual; negative duration and invalid phase IDs; per-stage and
+  cross-stage `uint64_t` overflow; total smaller than accounted stages; reset.
+- Expected behavior: successful summaries partition the supplied total
+  exactly. A failed update leaves counters unchanged; a failed summary leaves
+  the caller's previous summary unchanged. These tests establish arithmetic
+  and ownership only, not actual phase boundaries or benchmark accuracy.

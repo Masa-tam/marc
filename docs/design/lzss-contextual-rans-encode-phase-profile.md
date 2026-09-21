@@ -1,6 +1,7 @@
 # LZSS contextual rANS encode-phase diagnostic
 
-Status: measurement contract fixed; diagnostic implementation and measurements pending.
+Status: measurement contract and checked accumulator implemented; codec hooks
+and measurements pending.
 
 ## Question and scope
 
@@ -85,3 +86,13 @@ frame count, and exact queried workspace with each report.
 
 No stage timing may change decoder behavior, existing output, workspace hard
 limits, HashChain selection, or the fixed BM-0087 result.
+
+## Stage 1 status
+
+The private `LzssContextualRansEncodePhaseTiming` accumulator and synthetic
+duration tests are implemented. They define the five named stage counters,
+checked per-stage addition, checked cross-stage sum, reset, and a summary
+that publishes `other` only when the disjoint stage sum fits inside the same
+invocation's total. Invalid phase IDs, negative durations, overflow, and an
+overfull partition leave caller-visible state unchanged. This stage does not
+read a clock, instrument the codec, or produce a performance result.

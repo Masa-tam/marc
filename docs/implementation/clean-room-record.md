@@ -31827,3 +31827,22 @@ both bounds.
   graph; no external implementation expression was used.
 - Local validation: document verifier must accept the design and records;
   no performance measurement or encoder change is claimed by this record.
+
+## CR-1277: 2026-09-22 - Checked encode-phase timing accumulator
+
+- Authoring method: implemented the private per-encode accounting structure
+  from DD-1163 and tested it with explicitly supplied synthetic durations.
+- References used: DD-1163, TVG-1027, the phase-profile design, and marc's
+  existing checked arithmetic helper.
+- Known implementations intentionally not consulted: external profiler,
+  compressor, source code, pseudocode, or test suite.
+- Independent decisions: use unsigned nanosecond counters with checked
+  updates, reject invalid or negative samples, and publish a partition only
+  after its complete sum fits the supplied total.
+- Generated-code task description: add a private, bounded accumulator and
+  deterministic tests before timing the contextual rANS encode path.
+- Similarity review: the implementation uses marc's own checked arithmetic
+  convention and original test values; no external implementation expression
+  was used.
+- Local validation: the timing tests and documentation verifier pass. No
+  production codec call site, output bytes, or performance policy changed.
