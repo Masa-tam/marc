@@ -2892,3 +2892,48 @@ remaining pair, and a third completed without another measurement. These are
 dry-run observations on two selected inputs, not the all-twelve-member result,
 not a speed guarantee, and not a decoder-performance conclusion. The full
 campaign will use a separate checkpoint and exclude these timings.
+
+### BM-0087: Full-Corpus end-to-end HashChain A/B experiment
+
+On 2026-09-22, the fixed v1 runner completed 24 process-isolated benchmark
+records: one measured encode/decode iteration for each side of all twelve
+locally supplied Silesia members, with per-member CLI archive checks. The
+source revisions, MSVC 19.51 x64 Release build conditions, codec, and
+preflight are those fixed in the experiment design and BM-0086. The 2-member
+dry-run records were excluded. A completed-checkpoint replay launched no new
+measurement.
+
+| Member | Baseline encode | Candidate encode | Archive bytes, both |
+| --- | ---: | ---: | ---: |
+| `dickens` | 6.312 s | 5.855 s | 3,265,887 |
+| `mozilla` | 75.655 s | 74.849 s | 18,954,972 |
+| `mr` | 62.645 s | 63.912 s | 3,386,820 |
+| `nci` | 39.363 s | 39.280 s | 2,465,068 |
+| `ooffice` | 1.959 s | 1.403 s | 3,028,821 |
+| `osdb` | 2.361 s | 1.635 s | 3,286,689 |
+| `reymont` | 8.170 s | 8.074 s | 1,591,187 |
+| `samba` | 19.984 s | 19.478 s | 4,851,746 |
+| `sao` | 3.197 s | 1.831 s | 5,270,047 |
+| `webster` | 31.533 s | 30.407 s | 10,378,367 |
+| `xml` | 0.835 s | 0.792 s | 549,164 |
+| `x-ray` | 2.276 s | 1.184 s | 5,450,402 |
+
+Both sides processed 211,938,580 input bytes and produced 62,479,170
+archive bytes (aggregate encoded/input ratio 0.2947984742). Every member's
+complete-archive byte count and SHA-256 matched between sides. Summed encode
+times were 254.290 s baseline and 248.700 s candidate; byte-weighted
+throughputs were 0.794842 and 0.812708 MiB/s, respectively, a candidate to
+baseline ratio of 1.022477. The median per-member baseline/candidate
+encode-time ratio was 1.045662; the lowest was 0.980176 (`mr`). Queried peak
+codec workspace was 130,556,905 versus 132,129,769 bytes on every member,
+an exact increase of 1,572,864 bytes. Summed decode times were 4.315 versus
+4.318 s and do not establish a decoder difference.
+
+The ignored canonical full result SHA-256 is
+`cb2a84023e8d7c1bf7814db2f41421c40b97cb410fe304b37de88171717560d0`;
+the completed checkpoint SHA-256 is
+`e97469de30eaa17abbfa2321cb2919f4a138593dd35e8276394bc58aca7b1708`.
+The result retains each raw benchmark report, complete-archive digest,
+verified Corpus identity, executable hash, source revision, and build flags.
+The single iteration and local process scheduling make the modest aggregate
+speed difference descriptive, not a universal guarantee or CI threshold.

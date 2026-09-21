@@ -1,7 +1,6 @@
 # LZSS HashChain end-to-end A/B experiment
 
-Status: design fixed; manifest, runner, and mock-only gate implemented;
-two-member dry run and full-Corpus measurement pending.
+Status: fixed design, runner, dry run, and full-Corpus measurement complete.
 
 ## Purpose and scope
 
@@ -146,3 +145,14 @@ no new measurement. Both members had equal A/B complete-archive SHA-256 and
 byte counts, and the expected 1,572,864-byte workspace increase. BM-0086
 records the exact ignored-result digests and observed values. These dry-run
 times are not inputs to Gate 3's all-member summary. Gate 3 remains pending.
+
+### Gate 3 full-Corpus status
+
+On 2026-09-22, a separate full-mode checkpoint completed all 24 records in
+the fixed twelve-member order. A subsequent invocation read the completed
+checkpoint and result without launching another measurement. All twelve
+member pairs had equal complete-archive sizes and SHA-256 values; all reported
+the same 1,572,864-byte queried-workspace increase. BM-0087 records the
+aggregate and per-member values, plus the ignored result and checkpoint
+digests. The completed run is descriptive evidence under the one-iteration
+v1 contract, not a new speed guarantee or format/decoder change.

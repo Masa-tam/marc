@@ -31769,3 +31769,24 @@ both bounds.
   `x-ray` passed 2/4 interruption, 4/4 resume, no-op replay, benchmark
   round-trip, archive SHA-256 identity, and workspace checks. The full
   24-record campaign has not been run.
+
+## CR-1274: 2026-09-22 - Full-Corpus end-to-end HashChain A/B result
+
+- Authoring method: ran the fixed, previously tested all-member manifest with
+  separate ignored checkpoint/result files and inspected every A/B archive
+  pair and the aggregate arithmetic independently of the runner summary.
+- References used: DD-1161, TVG-1026, CR-1271 through CR-1273, BM-0083,
+  BM-0085 through BM-0087, and the repository's fixed experiment manifest.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, source code, pseudocode, tuning advice, or test suite.
+- Independent decisions: report all members, including the slightly slower
+  `mr` candidate, and keep one-iteration timing descriptive rather than
+  recasting the modest aggregate gain as a universal performance claim.
+- Generated-code task description: complete and audit the frozen 24-record
+  end-to-end A/B comparison while preserving archive identity and workspace
+  evidence for every locally supplied Silesia member.
+- Similarity review: only marc-owned binaries and records plus the user's
+  locally supplied external Corpus were used; no source expression was copied.
+- Local validation: 24/24 records completed, 12/12 A/B archives matched by
+  size and SHA-256, all workspace deltas matched, completed replay did not
+  measure again, and the ignored result/checkpoint hashes were recorded.

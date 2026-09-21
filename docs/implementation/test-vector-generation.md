@@ -15035,3 +15035,9 @@ while common C/C++ and linker flags remained empty. The preflight now rejects
 each missing default flag group, and mock tests lock that behavior. The real
 `xml`/`x-ray` dry run verified the 2/4 checkpoint, 4/4 resume, and completed
 no-op replay; the 24-record campaign remains pending.
+
+The full 24-record campaign later completed on 2026-09-22 with a separate
+checkpoint. Its completed replay launched no new measurements. Independent
+result inspection found twelve archive-identical A/B pairs and the expected
+workspace delta on every member; see BM-0087. These observations do not alter
+the fixed mock-test or malformed-input contracts.
