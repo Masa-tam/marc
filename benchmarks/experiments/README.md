@@ -33,3 +33,11 @@ after each private encode reproduces that archive. Its output is not a
 performance threshold. A future pilot runner must additionally capture the
 executable hash, revision, compiler/options, and local Corpus identity before
 making comparisons across independent processes.
+
+For the fixed, selected `xml`/`x-ray`/`mr` pilot, run
+`tools/run_silesia_contextual_rans_phase_pilot.py` after building the
+diagnostic target in MSVC x64 Release and committing a clean source tree.
+It verifies the complete local Silesia Corpus, launches three separate
+one-iteration processes per member, and writes raw reports and medians only
+under the ignored `benchmarks/data/silesia/results/` directory. It is not
+the separate all-member manifest or a production performance gate.

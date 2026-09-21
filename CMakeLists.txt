@@ -1912,6 +1912,12 @@ if(MARC_BUILD_TESTS)
         set_tests_properties(
             marc_silesia_hash_chain_end_to_end_ab_runner_tests
             PROPERTIES LABELS tooling)
+        add_test(NAME marc_silesia_contextual_rans_phase_pilot_tests
+            COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_contextual_rans_phase_pilot_tests.py)
+        set_tests_properties(
+            marc_silesia_contextual_rans_phase_pilot_tests
+            PROPERTIES LABELS tooling)
         add_test(NAME marc_silesia_binary_tree_16m_runner_tests
             COMMAND ${Python3_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_binary_tree_16m_runner_tests.py)

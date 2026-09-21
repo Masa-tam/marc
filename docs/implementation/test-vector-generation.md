@@ -15069,3 +15069,19 @@ compares the complete untimed and timed private archives against the public
 archive by length and SHA-256. Its measurements are not pass/fail thresholds.
 An optional local two-frame Silesia `xml` invocation checks the same identity
 gate without making a performance or Corpus-wide claim.
+
+### TVG-1028
+
+Fixed contextual rANS phase-pilot runner contracts (2026-09-22).
+
+- Date: 2026-09-22
+- Source: the Stage 2 pilot contract in DD-1163 and the phase-profile design.
+- Scope: fixture-only Python reports and mocked child processes; no external
+  Corpus file, benchmark executable, or timing threshold is required.
+- Vectors: exact report keys, valid phase partition and workspace sum;
+  missing/duplicate/unknown keys; incorrect input identity, frame count,
+  digest, workspace sum, and phase sum; nine isolated invocations and median;
+  archive identity drift on the second child.
+- Expected behavior: malformed or inconsistent output rejects the pilot
+  without publishing a complete result. Valid fixed-grid reports retain all
+  nine raw samples and one median per member and phase.

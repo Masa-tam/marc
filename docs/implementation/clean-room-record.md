@@ -31885,3 +31885,22 @@ both bounds.
 - Local validation: MSVC Release build, README smoke test, and one local
   two-frame `xml` identity check passed. The selected independent-process
   pilot and any bottleneck conclusion remain pending.
+
+## CR-1280: 2026-09-22 - Fixed independent-process phase pilot runner
+
+- Authoring method: implemented the three-member pilot contract using the
+  existing private benchmark output and local Silesia verifier.
+- References used: DD-1163, TVG-1028, the encode-phase diagnostic design,
+  marc's benchmark result conventions, and `verify_silesia_corpus.py`.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: fix the selected member order and three independent
+  child processes per member; validate complete reports and identities before
+  computing medians; require a clean source revision; save only in the
+  ignored local results directory.
+- Generated-code task description: create an identity-bound, non-gating
+  selected pilot runner and fixture-only tests for contextual rANS phases.
+- Similarity review: the process and report schema follow marc's own
+  diagnostic contract; no external implementation expression was used.
+- Local validation: fixture-only runner tests and documentation verifier;
+  the actual selected Corpus pilot is a subsequent, separate action.

@@ -1,8 +1,8 @@
 # LZSS contextual rANS encode-phase diagnostic
 
-Status: measurement contract, checked accumulator, optional codec hooks, and
-an identity-gated diagnostic benchmark implemented; selected pilot and
-Corpus-wide measurements pending.
+Status: measurement contract, checked accumulator, optional codec hooks,
+identity-gated diagnostic benchmark, and fixed pilot runner implemented;
+selected pilot and Corpus-wide measurements pending.
 
 ## Question and scope
 
@@ -129,3 +129,18 @@ it had one measured invocation and no median. The pilot runner still needs
 to bind executable SHA-256, source revision, compiler/options, and Corpus
 identity to every report and launch independent measured processes. Neither
 a bottleneck conclusion nor a change to the encoder follows from this stage.
+
+## Stage 4 status
+
+The pilot runner fixes `xml`, `x-ray`, `mr` and three one-iteration child
+processes per member. Each child performs its own untimed public round trip
+and untimed private archive identity check before its single measured encode.
+The runner independently verifies the complete local Silesia Corpus and each
+child's input SHA-256, frame count, workspace sum, stage partition, and
+cross-process archive identity. The ignored JSON report binds the source
+revision, diagnostic executable SHA-256, MSVC compiler/version, Release
+cache flags, generated target project SHA-256, member identities, raw
+per-process timings, and per-member medians. Fixture-only runner tests do not
+depend on the Corpus. The runner requires a clean source tree and does not
+interpret a median as a regression threshold. Pilot measurements remain
+pending until the committed runner is executed.
