@@ -212,7 +212,7 @@ foreach(index RANGE 0 ${bucket_scale_last_index})
     endif()
     foreach(decimal_key IN ITEMS
             hash_chain_frame_seconds hash_chain_frame_mib_per_second)
-        string(REGEX MATCH "${decimal_key}=([0-9]+\.[0-9]+)" ignored
+        string(REGEX MATCH "${decimal_key}=([0-9]+[.][0-9]+)" ignored
             "${bucket_report}")
         if(CMAKE_MATCH_1 STREQUAL "" OR NOT CMAKE_MATCH_1 GREATER 0)
             message(FATAL_ERROR
