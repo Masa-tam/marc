@@ -2937,3 +2937,42 @@ The result retains each raw benchmark report, complete-archive digest,
 verified Corpus identity, executable hash, source revision, and build flags.
 The single iteration and local process scheduling make the modest aggregate
 speed difference descriptive, not a universal guarantee or CI threshold.
+
+### BM-0088: Selected contextual rANS encode-phase pilot
+
+On 2026-09-22, the fixed `xml`/`x-ray`/`mr` pilot completed three independent
+one-iteration processes per member at clean revision
+`f4987173ec9e6812718dd6818be020cba8b83967`. It used MSVC
+19.51.36252.0, x64 Release, `/O2 /Ob2 /DNDEBUG`, and the private
+`lzss-contextual-rans-4m` diagnostic executable SHA-256
+`525b6f8bd04a482761e69412bda9ec23513ccc2ecae429443c6b441dfcd6eac8`.
+The generated target project SHA-256 was
+`68ef20fe8a17922c2cd24405cfcdef78b3e59bc28b55b48a2aa761c7e68bff4d`.
+The full local Silesia Corpus was verified before measurement; the ignored
+result records each selected member's published MD5 and local SHA-256.
+
+Each process performed an untimed public encode/decode round trip and
+checked both untimed and timed private complete archives against the public
+archive before reporting phase times. All nine attempts passed. Each
+member's archive byte count and SHA-256 remained identical across attempts;
+the queried encoder workspace was 132,129,769 bytes in each case.
+
+| Member | Raw total times, seconds | Median total | Tokenize | First plan | Second plan | Reverse write | Other phases |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `xml` | 0.799, 0.807, 0.792 | 0.799 s | 93.79% | 2.25% | 2.26% | 1.66% | 0.04% |
+| `x-ray` | 1.239, 1.209, 1.201 | 1.209 s | 51.22% | 17.83% | 17.91% | 12.97% | 0.06% |
+| `mr` | 67.392, 66.356, 66.426 | 66.426 s | 99.54% | 0.17% | 0.17% | 0.12% | 0.00% |
+
+The percentages come from the single attempt with each member's median
+total, so they describe one valid partition; the ignored result also retains
+all nine raw stage counters and separate per-stage medians. `Other phases`
+combines the small `frame_finish` and `other` counters, with displayed
+percentages rounded. The result SHA-256 is
+`f83cc3657efa48617f6e508baf18c1c2193a34f1a68fe75a014a6a3ad7e716dc`.
+
+On these selected inputs, tokenization (including match search) dominates
+`xml` and `mr`; the two existing contextual plans together account for about
+36% of `x-ray`. Instrumentation overhead and local scheduling are included.
+This is a diagnostic pilot, not a full-Corpus estimate, codec speed guarantee,
+or justification to remove the second plan or its validation. A separately
+frozen all-member measurement is required before selecting an optimization.

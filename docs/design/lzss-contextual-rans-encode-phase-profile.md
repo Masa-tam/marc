@@ -2,7 +2,7 @@
 
 Status: measurement contract, checked accumulator, optional codec hooks,
 identity-gated diagnostic benchmark, and fixed pilot runner implemented;
-selected pilot and Corpus-wide measurements pending.
+selected pilot completed; Corpus-wide measurements pending.
 
 ## Question and scope
 
@@ -144,3 +144,16 @@ per-process timings, and per-member medians. Fixture-only runner tests do not
 depend on the Corpus. The runner requires a clean source tree and does not
 interpret a median as a regression threshold. Pilot measurements remain
 pending until the committed runner is executed.
+
+## Stage 5 status
+
+The fixed selected pilot completed all nine independent processes at clean
+revision `f4987173ec9e6812718dd6818be020cba8b83967`; BM-0088 records
+the environment, raw-result digest, medians, and interpretation. Every child
+passed the public round trip, private archive identity, and stage partition
+checks; each member's archive identity was stable across three processes.
+The 3-member pilot suggests that typed-token production and match search
+dominate on `xml` and `mr`, while both contextual plans are material on
+`x-ray`. These selected inputs cannot establish a Corpus-wide distribution
+or justify removing validation or the second plan yet. The next measurement
+stage remains a separately frozen all-member manifest and restartable runner.

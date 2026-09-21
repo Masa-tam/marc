@@ -31904,3 +31904,22 @@ both bounds.
   diagnostic contract; no external implementation expression was used.
 - Local validation: fixture-only runner tests and documentation verifier;
   the actual selected Corpus pilot is a subsequent, separate action.
+
+## CR-1281: 2026-09-22 - Selected contextual rANS phase pilot result
+
+- Authoring method: executed the fixed three-member pilot from the clean
+  committed runner and summarized its ignored raw JSON in BM-0088.
+- References used: DD-1163, TVG-1028, CR-1279 and CR-1280, the phase-profile
+  design, and the locally verified Silesia Corpus.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: preserve every raw sample; calculate each displayed
+  phase share from the same median-total invocation; limit interpretation to
+  the three preselected members and retain the second plan unchanged.
+- Generated-code task description: validate the nine process-isolated pilot
+  results and document bounded observations without a performance gate.
+- Similarity review: no implementation code was changed; the recorded
+  measurements come from marc's own instrumented encoder.
+- Local validation: nine complete identity and partition checks passed; the
+  ignored result digest is recorded in BM-0088. The all-member experiment
+  remains pending.
