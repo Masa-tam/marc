@@ -28,6 +28,9 @@ navigate chronological development records.
 - [LZSS HashChain bucket-scaling experiment](design/lzss-hash-chain-bucket-scaling.md):
   private larger-table candidates with checked workspace, Exact identity, and
   staged synthetic-to-Silesia admission gates.
+- [LZSS HashChain end-to-end A/B experiment](design/lzss-hash-chain-end-to-end-ab.md):
+  fixed all-member codec comparison of the pre-promotion and promoted builds,
+  including archive identity, optimized-build preflight, and resumable records.
 - [LZSS ordered-tree Exact strategy evaluation](design/lzss-balanced-tree-strategy-evaluation.md):
   completed Red-Black, Scapegoat, and deletion-focused WAVL experiments under
   the existing Exact contract, including their negative admission decisions.

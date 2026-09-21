@@ -23650,3 +23650,24 @@ name the 65,536 control explicitly after `hash-chain-exact` becomes the new
 production route. Rollback consists only of rebinding the standard
 calculator and initializer to that tested control; it must not require a
 format or decoder change.
+
+## DD-1161: Fix the all-member end-to-end HashChain A/B contract
+
+- Date: 2026-09-21
+- Status: accepted for experiment design; runner and measurement pending
+
+Extend BM-0085's two-member spot check with a separate, resumable all-twelve-
+member Silesia experiment. Compare the immediate pre-promotion `64f79321`
+and promoted `fe11a20b` sources through the same optimized MSVC x64 Release
+`lzss-contextual-rans-4m` public pipeline. Require the exact compiler and
+effective `/O2 /Ob2 /DNDEBUG` flags to match before measurement; a CMake
+Release label without those flags is insufficient. Check complete CLI archive
+digests and sizes in addition to benchmark round trips, codec timing, and
+queried workspace. Alternate process order per member, checkpoint every
+validated member-side record, and reject changed execution identity on resume.
+
+This is descriptive post-promotion evidence, not a new admission threshold or
+an automatic CI performance gate. Preserve the historical bucket-scaling v1
+manifest under its original strategy meaning. The fixed conditions, report
+math, and staged execution are in
+`docs/design/lzss-hash-chain-end-to-end-ab.md`.

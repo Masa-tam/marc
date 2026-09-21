@@ -15010,3 +15010,15 @@ Require benchmark smoke to report the standard cap as 262,144 and the named
 legacy control as 65,536. Validate both complete MSVC and ClangCL suites,
 including interoperability schema compatibility, without loosening hard
 limits or introducing a new format, selector, or ABI.
+
+### TVG-1026
+
+Before a full-Corpus end-to-end A/B run, mock the new runner's preflight and
+checkpoint logic. Reject mismatched or empty effective Release optimization
+flags, changed source/binary/corpus/manifest identity, malformed or duplicate
+records, unsuccessful round trips, archive-size or SHA-256 mismatch, and child
+timeouts. Verify atomic checkpoint replacement and exact resume from the first
+missing member-side record. Verify aggregate byte-weighted throughput and
+compression-ratio arithmetic without reading the external Corpus. A bounded
+two-member dry run must validate real benchmark/CLI report parsing before the
+fixed 24-record campaign; its timings are not all-member evidence.

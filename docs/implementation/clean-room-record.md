@@ -31709,3 +31709,22 @@ both bounds.
 - Local validation: matched-build A/B runs and archive SHA-256 comparisons
   passed for `xml` and `x-ray`; the measured workspace delta was exactly
   1,572,864 bytes and decoder workspace was unchanged.
+
+## CR-1271: 2026-09-21 - All-member end-to-end A/B design
+
+- Authoring method: specified a separate, restartable experiment after the
+  two-member audit, without running a new benchmark campaign.
+- References used: DD-1160 and DD-1161, TVG-1025 and TVG-1026, BM-0083
+  through BM-0085, and marc's own benchmark, CLI, and Corpus verifier.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, source code, pseudocode, tuning advice, or test suite.
+- Independent decisions: freeze immediate pre/post source revisions and
+  effective optimized build flags; alternate process order; check full archive
+  identity; checkpoint validated records; retain the historical v1 manifest.
+- Generated-code task description: design a reproducible all-Silesia
+  end-to-end comparison of the promoted HashChain and its immediate predecessor
+  without treating a two-member spot check or an unoptimized build as proof.
+- Similarity review: the design contains only repository-specific experiment
+  conditions and arithmetic; no external implementation expression was used.
+- Local validation: documentation checks only; runner, mock tests, dry run,
+  and full-Corpus measurements remain pending.
