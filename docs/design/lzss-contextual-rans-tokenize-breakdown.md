@@ -1,6 +1,7 @@
 # LZSS contextual rANS token-production breakdown
 
-Status: diagnostic contract; no timing hook or Corpus result implemented.
+Status: diagnostic contract and checked accumulator implemented; no parser
+timing hook or Corpus result implemented.
 
 ## Question and fixed scope
 
@@ -90,3 +91,14 @@ old pilot/full runners do not misread the new fields.
 
 No result from this diagnostic alone authorizes changing the match finder,
 removing a contextual plan, weakening validation, or adding a CI timing gate.
+
+## Stage 1 status
+
+The private `LzssTypedTokenizeTiming` type now supplies checked durations
+for the three inner intervals, query/advance counts, advanced input bytes,
+reset, and a summary that computes `token_other` only when counts and both
+partitions are valid. Seven supplied-duration fixture tests cover empty and
+repeated-frame accumulation, invalid phase/duration, within-phase and
+cross-phase overflow, overfull inner sum, count/byte mismatch, atomic byte
+overflow rejection, and unchanged output after failure. No production
+encoder calls this type yet, so this stage makes no timing or speed claim.

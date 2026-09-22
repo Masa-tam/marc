@@ -31983,3 +31983,25 @@ both bounds.
   no external implementation expression was used.
 - Local validation: documentation verifier and diff validation; no new
   instrumentation or Corpus measurement is claimed in this record.
+
+## CR-1285: 2026-09-22 - Checked token-production timing accumulator
+
+- Authoring method: added failing supplied-duration tests first, then a
+  private header-only accumulator with checked updates and summaries.
+- References used: DD-1166, TVG-1030, the token-production breakdown design,
+  and marc's existing contextual rANS phase accumulator.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: keep inner durations separate from the existing
+  whole-encode phase array; validate query/advance counts and advanced bytes
+  before publishing a residual; leave output and state unchanged on failed
+  updates and summaries.
+- Generated-code task description: implement only the arithmetic and count
+  contract, with no parser timing hook or Corpus benchmark yet.
+- Similarity review: this follows marc's own checked accumulator idiom;
+  no external implementation expression was used.
+- Local validation: the missing-header test build failed as expected before
+  implementation; MSVC Release all-target build, twelve targeted old/new
+  timing tests, and all 3,578 CTest cases (including interoperability schema
+  compatibility) passed afterward. No codec path or encoded bytes were
+  changed.

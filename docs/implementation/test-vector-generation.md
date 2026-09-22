@@ -15121,3 +15121,5 @@ Private contextual rANS token-production breakdown vectors (2026-09-22).
   query and advance call per token and exactly input-size advanced bytes
   are recorded. No clock reads or extra allocations occur with a null
   diagnostic sink. Malformed reports cannot become benchmark evidence.
+- Stage 1 validation: seven supplied-duration accumulator tests pass on
+  MSVC Release. Parser and archive identity vectors remain pending.

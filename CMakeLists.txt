@@ -2015,6 +2015,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_contextual_rans_frame_streaming_decoder_tests.cpp
         tests/lzss_contextual_rans_frame_encoder_tests.cpp
         tests/lzss_contextual_rans_encode_phase_timing_tests.cpp
+        tests/lzss_contextual_rans_tokenize_timing_tests.cpp
         tests/lzss_contextual_rans_frame_streaming_encoder_tests.cpp
         tests/lzss_contextual_rans_profile_tests.cpp
         tests/lzss_contextual_rans_completion_tests.cpp
