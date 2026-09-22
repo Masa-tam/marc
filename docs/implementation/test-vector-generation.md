@@ -15126,8 +15126,12 @@ Private contextual rANS token-production breakdown vectors (2026-09-22).
   query and advance call per token and exactly input-size advanced bytes
   are recorded. No clock reads or extra allocations occur with a null
   diagnostic sink. Malformed reports cannot become benchmark evidence.
-- Stage 1 validation: seven supplied-duration accumulator tests pass on
+- Validation through frame hook: seven supplied-duration accumulator tests pass on
   MSVC Release. The dictionary-level HashChain hook also passes empty,
   single-byte, distinct, and repeated timed/untimed token equality and
   partition checks, plus a short-workspace no-record test. Frame-level
-  complete-archive identity vectors remain pending.
+  tests compare complete bytes for a beneficial match and a two-frame,
+  one-byte-output stream against untimed/public encodes; they check nested
+  counts and duration partitions and reject an inner sink without the outer
+  sink or with a non-HashChain strategy. The private benchmark identity gate
+  and Corpus vectors remain pending.

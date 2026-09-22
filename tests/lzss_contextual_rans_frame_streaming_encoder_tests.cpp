@@ -4,6 +4,7 @@
 #include "frame/lzss_contextual_rans_frame_streaming_decoder.hpp"
 #include "frame/lzss_contextual_rans_profile.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
+#include "dictionary/lzss_typed_tokenize_timing.hpp"
 
 #include <gtest/gtest.h>
 
@@ -128,6 +129,66 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     for (const auto count : summary.phase_record_counts) {
         EXPECT_GT(count, 0U);
     }
+}
+
+TEST(LzssContextualRansFrameStreamingEncoder,
+     NestedHashChainTimingPreservesTwoFrameArchive) {
+    constexpr std::array input{std::byte{'A'}, std::byte{'A'}};
+    const auto stream = stream_config(1, input.size());
+    const auto required = marc::dictionary::internal::
+        calculate_lzss_hash_chain_workspace(1, stream.dictionary, {});
+    ASSERT_EQ(required.error,
+              marc::dictionary::internal::LzssHashChainError::none);
+    AlignedWorkspace finder_owner{required.workspace_size};
+    std::array<std::byte, 1> raw{};
+    std::array<LzssTypedToken, 1> tokens{};
+    std::array<std::byte, 98> frame{};
+    marc::context::internal::LzssContextualRansEncodePhaseTiming outer{};
+    marc::dictionary::internal::LzssTypedTokenizeTiming inner{};
+    LzssContextualRansFrameStreamingEncoder encoder{
+        stream, {}, raw, tokens, finder_owner.bytes(required.workspace_size),
+        frame,
+        marc::dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact,
+        &outer, &inner};
+    const auto start = std::chrono::steady_clock::now();
+    const auto archive = encode_one_byte_chunks(encoder, input);
+    const auto total = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now() - start);
+    EXPECT_EQ(archive, two_frame_oracle());
+    marc::context::internal::LzssContextualRansEncodePhaseSummary phases{};
+    ASSERT_TRUE(outer.summarize(total, phases));
+    constexpr auto tokenize_index = static_cast<std::size_t>(
+        marc::context::internal::LzssContextualRansEncodePhase::tokenize);
+    EXPECT_EQ(phases.phase_record_counts[tokenize_index], 2U);
+    marc::dictionary::internal::LzssTypedTokenizeSummary breakdown{};
+    ASSERT_TRUE(inner.summarize(
+        std::chrono::nanoseconds{
+            static_cast<std::chrono::nanoseconds::rep>(
+                phases.phase_nanoseconds[tokenize_index])},
+        2, input.size(), breakdown));
+    EXPECT_EQ(breakdown.finder_query_count, 2U);
+    EXPECT_EQ(breakdown.finder_advance_count, 2U);
+    EXPECT_EQ(breakdown.advanced_input_bytes, input.size());
+}
+
+TEST(LzssContextualRansFrameStreamingEncoder,
+     NestedTimingRequiresOuterTimingAndHashChain) {
+    marc::dictionary::internal::LzssTypedTokenizeTiming inner{};
+    LzssContextualRansFrameStreamingEncoder without_outer{
+        stream_config(1, 0), {}, {}, {}, {}, {},
+        marc::dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact,
+        nullptr, &inner};
+    EXPECT_EQ(without_outer.process({}, {}, end_flag()).error.code,
+              ErrorCode::invalid_argument);
+
+    marc::context::internal::LzssContextualRansEncodePhaseTiming outer{};
+    LzssContextualRansFrameStreamingEncoder binary_tree{
+        stream_config(1, 0), {}, {}, {}, {}, {},
+        marc::dictionary::internal::LzssMatchFinderStrategy::
+            binary_tree_exact,
+        &outer, &inner};
+    EXPECT_EQ(binary_tree.process({}, {}, end_flag()).error.code,
+              ErrorCode::invalid_argument);
 }
 
 TEST(LzssContextualRansFrameStreamingEncoder,

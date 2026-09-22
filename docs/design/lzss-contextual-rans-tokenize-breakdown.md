@@ -1,7 +1,7 @@
 # LZSS contextual rANS token-production breakdown
 
-Status: diagnostic contract, checked accumulator, and HashChain typed-parser
-hook implemented; no frame/benchmark hook or Corpus result implemented.
+Status: diagnostic contract, checked accumulator, HashChain typed-parser and
+frame hooks implemented; no benchmark hook or Corpus result implemented.
 
 ## Question and fixed scope
 
@@ -105,13 +105,19 @@ encoder calls this type yet, so this stage makes no timing or speed claim.
 
 ## Stage 2 status
 
-The production HashChain one-pass typed encoder now accepts an optional
-private timing sink. A null sink selects the compile-time untimed parser;
-no clock call or diagnostic branch is added inside its token loop. A non-null
-sink records finder initialization once and query/advance intervals plus
+The production HashChain one-pass typed encoder accepts an optional private
+timing sink. A null sink selects the compile-time untimed parser; no clock
+call or diagnostic branch is added inside its token loop. A non-null sink
+records finder initialization once and query/advance intervals plus
 structural counts for each token. Invalid workspace is rejected before a
-phase is recorded. The dictionary-level tests compare timed and untimed
-typed tokens for empty, single-byte, distinct, and repeated input and check
-the nested partition and byte/count invariants. Other public codec paths
-still pass null. The contextual rANS frame encoder and benchmark do not yet
-pass the inner sink or report a Corpus measurement.
+phase is recorded. Dictionary-level tests compare timed and untimed tokens
+for empty, single-byte, distinct, and repeated input and check the nested
+partition and byte/count invariants.
+
+The private contextual rANS frame and streaming encoder paths now forward
+the inner sink only for HashChain exact matching and only with the outer
+phase sink. Other public codec paths still pass null. Frame tests compare
+complete archive bytes for a beneficial match and for two one-byte-output
+frames, verify the same-invocation inner/outer partition and structural
+counts, and reject unsupported diagnostic combinations. No benchmark hook
+or Corpus measurement is claimed yet.

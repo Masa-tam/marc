@@ -32050,3 +32050,25 @@ both bounds.
   and streaming tests pass with visit counts, and the original failing test
   passes 20 consecutive reruns. The final full CTest rerun passed all 3,581
   cases, including interoperability schema compatibility.
+
+## CR-1288: 2026-09-22 - HashChain frame-level nested timing hook
+
+- Authoring method: added complete-archive and nested-partition frame tests,
+  then forwarded the existing private inner sink through contextual rANS
+  frame encoding and one-byte-chunk streaming.
+- References used: DD-1166, TVG-1030, the token-production breakdown design,
+  CR-1286, and marc's existing contextual rANS frame phase hook.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: require the outer timing sink and production
+  HashChain strategy whenever the inner sink is supplied; leave the null
+  path and report schema unchanged. Compare full bytes against the public
+  oracle and untimed private frame, not timing thresholds.
+- Generated-code task description: connect private HashChain token timing
+  to the frame and streaming paths with bounded structural checks.
+- Similarity review: the connection follows marc's own frame and parser
+  call boundaries; no external implementation expression was used.
+- Local validation: MSVC Release all-target build, the three focused
+  frame/streaming tests, all 3,583 CTest cases including interoperability
+  schema compatibility, documentation verifier, and diff check passed.
+  No Corpus measurement or benchmark report is claimed.

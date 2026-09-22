@@ -1,11 +1,13 @@
 #include "frame/lzss_contextual_rans_frame_encoder.hpp"
 
 #include "frame/lzss_contextual_rans_frame_decoder.hpp"
+#include "dictionary/lzss_typed_tokenize_timing.hpp"
 
 #include <gtest/gtest.h>
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstddef>
 #include <ranges>
 #include <span>
@@ -489,6 +491,34 @@ TEST(LzssContextualRansFrameEncoder,
     ASSERT_EQ(result.error, LzssContextualRansFrameEncodeError::none);
     EXPECT_EQ(statistics.query_count, result.token_count);
     EXPECT_EQ(encoded, reference);
+    ASSERT_LT(result.token_count, raw.size());
+
+    marc::context::internal::LzssContextualRansEncodePhaseTiming outer{};
+    marc::dictionary::internal::LzssTypedTokenizeTiming inner{};
+    std::vector<std::byte> timed(encoded.size());
+    const auto start = std::chrono::steady_clock::now();
+    const auto timed_result = encode_lzss_contextual_rans_frame_with_match_finder(
+        stream, {}, 0, 0, raw, tokens,
+        marc::dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact,
+        workspace, timed, nullptr, &outer, &inner);
+    const auto total = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now() - start);
+    ASSERT_EQ(timed_result.error, LzssContextualRansFrameEncodeError::none);
+    EXPECT_EQ(timed, reference);
+    EXPECT_EQ(timed_result.token_count, result.token_count);
+    marc::context::internal::LzssContextualRansEncodePhaseSummary phases{};
+    ASSERT_TRUE(outer.summarize(total, phases));
+    constexpr auto tokenize_index = static_cast<std::size_t>(
+        marc::context::internal::LzssContextualRansEncodePhase::tokenize);
+    marc::dictionary::internal::LzssTypedTokenizeSummary breakdown{};
+    ASSERT_TRUE(inner.summarize(
+        std::chrono::nanoseconds{
+            static_cast<std::chrono::nanoseconds::rep>(
+                phases.phase_nanoseconds[tokenize_index])},
+        timed_result.token_count, raw.size(), breakdown));
+    EXPECT_EQ(breakdown.finder_query_count, timed_result.token_count);
+    EXPECT_EQ(breakdown.finder_advance_count, timed_result.token_count);
+    EXPECT_EQ(breakdown.advanced_input_bytes, raw.size());
 
     auto table_storage = tables();
     std::array<LzssTypedToken, raw.size()> decoded_tokens{};

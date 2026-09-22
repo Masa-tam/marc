@@ -128,14 +128,16 @@ LzssContextualRansFrameStreamingEncoder(
     const std::span<std::byte> serialized_frame_workspace,
     const dictionary::internal::LzssMatchFinderStrategy
         match_finder_strategy,
-    context::internal::LzssContextualRansEncodePhaseTiming* const timing)
+    context::internal::LzssContextualRansEncodePhaseTiming* const timing,
+    dictionary::internal::LzssTypedTokenizeTiming* const tokenize_timing)
     noexcept
     : stream_(stream), limits_(limits),
       raw_frame_workspace_(raw_frame_workspace),
       token_workspace_(token_workspace),
       match_finder_workspace_(match_finder_workspace),
       serialized_frame_workspace_(serialized_frame_workspace),
-      match_finder_strategy_(match_finder_strategy), timing_(timing) {
+      match_finder_strategy_(match_finder_strategy), timing_(timing),
+      tokenize_timing_(tokenize_timing) {
     std::size_t token_bytes{};
     const bool valid_extent = native_extent(
         token_workspace_.size(),
@@ -175,6 +177,11 @@ LzssContextualRansFrameStreamingEncoder(
         serialize_lzss_contextual_rans_stream_header(
             stream_, limits_, stream_header_);
     if (!valid_extent
+        || (tokenize_timing_ != nullptr
+            && (timing_ == nullptr
+                || match_finder_strategy_
+                    != dictionary::internal::LzssMatchFinderStrategy::
+                        hash_chain_exact))
         || !dictionary::internal::is_supported_lzss_match_finder_strategy(
             match_finder_strategy_)
         || stream_error != LzssContextualRansStreamHeaderError::none
@@ -232,7 +239,7 @@ bool LzssContextualRansFrameStreamingEncoder::prepare_frame() noexcept {
         encode_lzss_contextual_rans_frame_with_match_finder(
         stream_, limits_, frame_sequence_, input_committed_, raw,
         token_workspace_, match_finder_strategy_, match_finder_workspace_,
-        serialized_frame_workspace_, nullptr, timing_);
+        serialized_frame_workspace_, nullptr, timing_, tokenize_timing_);
     preparation_error_ = preparation_error(encoded);
     serialized_size = encoded.serialized_size;
     if (preparation_error_ != core::ErrorCode::none) return false;

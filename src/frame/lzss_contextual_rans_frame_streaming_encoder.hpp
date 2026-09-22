@@ -24,6 +24,8 @@ public:
         dictionary::internal::LzssMatchFinderStrategy match_finder_strategy =
             dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact,
         context::internal::LzssContextualRansEncodePhaseTiming* timing =
+            nullptr,
+        dictionary::internal::LzssTypedTokenizeTiming* tokenize_timing =
             nullptr)
         noexcept;
 
@@ -59,6 +61,7 @@ private:
     dictionary::internal::LzssMatchFinderStrategy match_finder_strategy_{
         dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact};
     context::internal::LzssContextualRansEncodePhaseTiming* timing_{};
+    dictionary::internal::LzssTypedTokenizeTiming* tokenize_timing_{};
     std::array<std::byte, lzss_contextual_rans_stream_header_size>
         stream_header_{};
     std::size_t raw_frame_size_{};
