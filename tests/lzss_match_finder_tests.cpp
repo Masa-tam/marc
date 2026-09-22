@@ -175,6 +175,66 @@ void expect_mnemonic_hash_chain_matches_exact(
     }
 }
 
+void expect_best_length_probe_matches_exact(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters = {},
+    const bool token_boundaries = false,
+    LzssMatchFinderStatistics* const probe_statistics = nullptr) {
+    const auto required = calculate_lzss_hash_chain_workspace(
+        input.size(), parameters, {});
+    ASSERT_EQ(required.error, LzssHashChainError::none);
+    auto baseline_storage = make_hash_chain_storage(required.workspace_size);
+    auto probe_storage = make_hash_chain_storage(required.workspace_size);
+    LzssMatchFinderStatistics baseline_statistics{};
+    LzssMatchFinderStatistics local_probe_statistics{};
+    LzssHashChainMatchFinder baseline{};
+    LzssHashChainBestLengthProbeMatchFinder probe{};
+    ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+                  input, parameters, {}, baseline_storage.bytes.first(
+                      required.workspace_size), baseline,
+                  &baseline_statistics),
+              LzssHashChainError::none);
+    ASSERT_EQ(initialize_lzss_hash_chain_best_length_probe_match_finder(
+                  input, parameters, {}, probe_storage.bytes.first(
+                      required.workspace_size), probe,
+                  &local_probe_statistics),
+              LzssHashChainError::none);
+    LzssExhaustiveMatchFinder exhaustive{input, parameters};
+
+    std::size_t position{};
+    while (position <= input.size()) {
+        const auto expected = exhaustive.find_match(position);
+        EXPECT_EQ(baseline.find_match(position), expected) << position;
+        EXPECT_EQ(probe.find_match(position), expected) << position;
+        if (position == input.size()) break;
+
+        const auto advance = token_boundaries
+            && lzss_match_is_beneficial(expected)
+            ? static_cast<std::size_t>(expected.length) : 1U;
+        exhaustive.advance(position, position + advance);
+        baseline.advance(position, position + advance);
+        probe.advance(position, position + advance);
+        position += advance;
+    }
+
+    EXPECT_EQ(baseline_statistics.candidate_count,
+              local_probe_statistics.candidate_count);
+    EXPECT_EQ(local_probe_statistics.hash_chain_prefix_match_count
+                  + local_probe_statistics.hash_chain_prefix_mismatch_count
+                  + local_probe_statistics.
+                      hash_chain_best_length_probe_pruned_candidate_count,
+              local_probe_statistics.candidate_count);
+    EXPECT_EQ(baseline_statistics.
+                  hash_chain_best_length_probe_comparison_count,
+              0U);
+    EXPECT_EQ(baseline_statistics.
+                  hash_chain_best_length_probe_pruned_candidate_count,
+              0U);
+    if (probe_statistics != nullptr) {
+        *probe_statistics = local_probe_statistics;
+    }
+}
+
 TEST(LzssExhaustiveMatchFinder, ReturnsNoMatchAtEmptyAndExactEnd) {
     const auto empty = bytes("");
     const LzssExhaustiveMatchFinder empty_finder{empty, {}};
@@ -835,6 +895,98 @@ TEST(LzssHashChainMnemonicMixerV1MatchFinder,
             expect_mnemonic_hash_chain_matches_exact(mixed, parameters);
         }
     }
+}
+
+TEST(LzssHashChainBestLengthProbeMatchFinder,
+     MatchesExactAcrossFixedInputClassesAndBoundaries) {
+    expect_best_length_probe_matches_exact(bytes(""));
+    expect_best_length_probe_matches_exact(bytes("A"));
+    expect_best_length_probe_matches_exact(bytes("ABABABABABABABAB"));
+    expect_best_length_probe_matches_exact(
+        bytes("ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ"));
+
+    std::vector<std::byte> all_values;
+    for (std::uint32_t value = 0; value < 256; ++value) {
+        all_values.push_back(static_cast<std::byte>(value));
+    }
+    all_values.insert(all_values.end(), all_values.begin(), all_values.end());
+    expect_best_length_probe_matches_exact(all_values);
+
+    std::vector<std::byte> pseudorandom(4096);
+    std::uint32_t state = UINT32_C(0x34bd28f1);
+    for (auto& value : pseudorandom) {
+        state = state * UINT32_C(1664525) + UINT32_C(1013904223);
+        value = static_cast<std::byte>(state >> 24U);
+    }
+    expect_best_length_probe_matches_exact(pseudorandom);
+
+    std::vector<std::byte> mixed;
+    for (std::size_t index = 0; index < 2048; ++index) {
+        mixed.push_back(static_cast<std::byte>(
+            index % 37 == 0 ? index & 0xffU : index % 13));
+    }
+    for (const std::uint32_t window : {5U, 17U, 257U, 65'536U}) {
+        for (const std::uint32_t maximum : {5U, 17U, 258U}) {
+            LzssParameters parameters{};
+            parameters.window_size = window;
+            parameters.max_match_length = maximum;
+            expect_best_length_probe_matches_exact(mixed, parameters);
+        }
+    }
+}
+
+TEST(LzssHashChainBestLengthProbeMatchFinder,
+     PrunesOlderCandidateWithoutChangingNearestTie) {
+    const auto input = bytes("ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ");
+    LzssMatchFinderStatistics statistics{};
+    expect_best_length_probe_matches_exact(input, {}, false, &statistics);
+
+    EXPECT_GT(statistics.hash_chain_best_length_probe_comparison_count, 0U);
+    EXPECT_GT(
+        statistics.hash_chain_best_length_probe_pruned_candidate_count, 0U);
+    EXPECT_GE(statistics.byte_comparison_count,
+              statistics.hash_chain_best_length_probe_comparison_count);
+}
+
+TEST(LzssHashChainBestLengthProbeMatchFinder,
+     MatchesExactWhenAdvanceSkipsMatchedPositions) {
+    std::vector<std::byte> input{};
+    const auto unit = bytes("ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ");
+    for (std::size_t repetition = 0; repetition < 64; ++repetition) {
+        input.insert(input.end(), unit.begin(), unit.end());
+        input.push_back(static_cast<std::byte>(repetition));
+    }
+    LzssParameters parameters{};
+    parameters.window_size = 257;
+    parameters.max_match_length = 67;
+    LzssMatchFinderStatistics statistics{};
+    expect_best_length_probe_matches_exact(
+        input, parameters, true, &statistics);
+    EXPECT_GT(
+        statistics.hash_chain_best_length_probe_pruned_candidate_count, 0U);
+}
+
+TEST(LzssHashChainBestLengthProbeMatchFinder,
+     InitializationFailurePreservesPriorState) {
+    const auto input = bytes("ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ");
+    const auto required = calculate_lzss_hash_chain_workspace(
+        input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssHashChainError::none);
+    ASSERT_GT(required.workspace_size, 0U);
+    auto storage = make_hash_chain_storage(required.workspace_size);
+    LzssHashChainBestLengthProbeMatchFinder finder{};
+    ASSERT_EQ(initialize_lzss_hash_chain_best_length_probe_match_finder(
+                  input, {}, {}, storage.bytes.first(required.workspace_size),
+                  finder),
+              LzssHashChainError::none);
+    finder.advance(0, 22);
+    const auto before = finder.find_match(22);
+
+    EXPECT_EQ(initialize_lzss_hash_chain_best_length_probe_match_finder(
+                  input, {}, {},
+                  storage.bytes.first(required.workspace_size - 1U), finder),
+              LzssHashChainError::workspace_too_small);
+    EXPECT_EQ(finder.find_match(22), before);
 }
 
 TEST(LzssHashChainMnemonicMixerV1MatchFinder,

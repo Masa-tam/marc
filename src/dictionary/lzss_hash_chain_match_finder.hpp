@@ -61,6 +61,7 @@ calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
     const core::DecoderLimits& limits, std::size_t bucket_cap) noexcept;
 
 class LzssHashChainMnemonicMixerV1MatchFinder;
+class LzssHashChainBestLengthProbeMatchFinder;
 
 class LzssHashChainMatchFinder {
 public:
@@ -72,6 +73,7 @@ public:
 
 private:
     friend class LzssHashChainMnemonicMixerV1MatchFinder;
+    friend class LzssHashChainBestLengthProbeMatchFinder;
     friend LzssHashChainError initialize_lzss_hash_chain_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
@@ -82,7 +84,7 @@ private:
         const core::DecoderLimits&, std::span<std::byte>, std::size_t,
         LzssHashChainMatchFinder&, LzssMatchFinderStatistics*) noexcept;
 
-    template <auto CalculatePrefixHash>
+    template <auto CalculatePrefixHash, bool UseBestLengthProbe = false>
     [[nodiscard]] LzssMatch find_match_with(
         std::size_t position) const noexcept;
     template <auto CalculatePrefixHash>
@@ -98,6 +100,34 @@ private:
 };
 
 static_assert(LzssMatchFinder<LzssHashChainMatchFinder>);
+
+class LzssHashChainBestLengthProbeMatchFinder {
+public:
+    LzssHashChainBestLengthProbeMatchFinder() noexcept = default;
+
+    [[nodiscard]] LzssMatch find_match(
+        std::size_t position) const noexcept;
+    void advance(std::size_t position, std::size_t next_position) noexcept;
+
+private:
+    friend LzssHashChainError
+    initialize_lzss_hash_chain_best_length_probe_match_finder(
+        std::span<const std::byte>, const LzssParameters&,
+        const core::DecoderLimits&, std::span<std::byte>,
+        LzssHashChainBestLengthProbeMatchFinder&,
+        LzssMatchFinderStatistics*) noexcept;
+
+    LzssHashChainMatchFinder implementation_{};
+};
+
+static_assert(LzssMatchFinder<LzssHashChainBestLengthProbeMatchFinder>);
+
+[[nodiscard]] LzssHashChainError
+initialize_lzss_hash_chain_best_length_probe_match_finder(
+    std::span<const std::byte> input, const LzssParameters& parameters,
+    const core::DecoderLimits& limits, std::span<std::byte> workspace,
+    LzssHashChainBestLengthProbeMatchFinder& finder,
+    LzssMatchFinderStatistics* statistics = nullptr) noexcept;
 
 [[nodiscard]] LzssHashChainError initialize_lzss_hash_chain_match_finder(
     std::span<const std::byte> input, const LzssParameters& parameters,

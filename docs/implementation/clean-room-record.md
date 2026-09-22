@@ -32219,3 +32219,27 @@ both bounds.
   tie-break, not an external implementation expression.
 - Local validation: documentation verifier and diff check passed; no
   codec source was changed.
+
+## CR-1295: 2026-09-23 - Private best-length-probe matcher
+
+- Authoring method: added a compile-time private HashChain wrapper around
+  marc's existing storage/traversal, introduced explicit probe comparison
+  and pruned-candidate counters, and wrote baseline/exhaustive equality
+  tests before connecting the variant to any benchmark.
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, TVG-1033, the best-length-probe design, and
+  marc's existing HashChain finder and test fixtures.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, source code, pseudocode, benchmark, or test suite.
+- Independent decisions: instantiate the production template with probing
+  disabled; expose the optimization only through an internal private type;
+  preserve workspace and traversal; classify probe-pruned candidates
+  separately and count their one-byte reads honestly.
+- Generated-code task description: implement the exact private probe and
+  prove match equality without changing public strategy or encoder wiring.
+- Similarity review: implementation follows the independently documented
+  proof over marc's own candidate loop; no external expression was used.
+- Local validation: MSVC Release all-target build, 19 concentrated
+  baseline/mnemonic/probe tests, and all 3,589 CTest cases passed,
+  including interoperability schema compatibility. Documentation verifier
+  and diff check passed.

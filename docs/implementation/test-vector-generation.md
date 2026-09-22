@@ -15192,3 +15192,10 @@ Private HashChain best-length-probe vectors (2026-09-23).
   read is counted honestly. The normal production matcher and its existing
   statistics remain unchanged. A benchmark result is invalid if token
   identity, arithmetic, workspace, or classification checks fail.
+- Validation through private matcher: MSVC Release concentrated tests pass
+  empty, one-byte, repetitive, all-byte, deterministic pseudorandom, mixed
+  window/maximum-length, skipped-token-position, explicit prune, nearest
+  tie, and atomic initialization-failure cases against both baseline
+  HashChain and exhaustive matching. The production matcher records zero
+  probe counters. Benchmark wiring and selected-input measurement remain
+  pending.

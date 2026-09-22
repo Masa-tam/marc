@@ -81,6 +81,8 @@ struct LzssMatchFinderStatistics {
     std::uint64_t hash_chain_prefix_match_count{};
     std::uint64_t hash_chain_prefix_mismatch_count{};
     std::uint64_t hash_chain_extension_byte_comparison_count{};
+    std::uint64_t hash_chain_best_length_probe_comparison_count{};
+    std::uint64_t hash_chain_best_length_probe_pruned_candidate_count{};
     std::uint64_t hash_chain_maximum_candidates_per_query{};
     std::array<std::uint64_t,
                lzss_match_finder_depth_histogram_size>

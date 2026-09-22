@@ -23839,7 +23839,8 @@ check alone.
 ## DD-1170: Evaluate an exact best-length probe as a private HashChain variant
 
 - Date: 2026-09-23
-- Status: private experiment proposed; production policy unchanged
+- Status: private matcher implemented; benchmark connection pending;
+  production policy unchanged
 
 Before designing a high-memory hybrid finder, test the local pruning rule
 defined in `docs/design/lzss-hash-chain-best-length-probe.md`. Once the

@@ -250,7 +250,7 @@ initialize_lzss_hash_chain_match_finder_with_private_bucket_cap(
     return LzssHashChainError::none;
 }
 
-template <auto CalculatePrefixHash>
+template <auto CalculatePrefixHash, bool UseBestLengthProbe>
 LzssMatch LzssHashChainMatchFinder::find_match_with(
     const std::size_t position) const noexcept {
     LzssMatch best{};
@@ -283,6 +283,33 @@ LzssMatch LzssHashChainMatchFinder::find_match_with(
         if (statistics_ != nullptr) {
             ++query_candidate_count;
             increment_statistic(*statistics_, statistics_->candidate_count);
+        }
+        if constexpr (UseBestLengthProbe) {
+            if (best.length > 0 && best.length < maximum_length) {
+                if (statistics_ != nullptr) {
+                    increment_statistic(
+                        *statistics_, statistics_->byte_comparison_count);
+                    increment_statistic(
+                        *statistics_, statistics_->
+                            hash_chain_best_length_probe_comparison_count);
+                }
+                if (input_[position + best.length]
+                    != input_[candidate + best.length]) {
+                    if (statistics_ != nullptr) {
+                        increment_statistic(
+                            *statistics_, statistics_->
+                                hash_chain_best_length_probe_pruned_candidate_count);
+                    }
+                    const auto previous_distance =
+                        links_[candidate % links_.size()];
+                    if (previous_distance == 0
+                        || previous_distance > candidate) {
+                        break;
+                    }
+                    candidate -= previous_distance;
+                    continue;
+                }
+            }
         }
         std::size_t length{};
         while (length < maximum_length) {
@@ -324,6 +351,18 @@ LzssMatch LzssHashChainMatchFinder::find_match_with(
 LzssMatch LzssHashChainMatchFinder::find_match(
     const std::size_t position) const noexcept {
     return find_match_with<calculate_lzss_prefix_hash>(position);
+}
+
+LzssMatch LzssHashChainBestLengthProbeMatchFinder::find_match(
+    const std::size_t position) const noexcept {
+    return implementation_.find_match_with<
+        calculate_lzss_prefix_hash, true>(position);
+}
+
+void LzssHashChainBestLengthProbeMatchFinder::advance(
+    const std::size_t position,
+    const std::size_t next_position) noexcept {
+    implementation_.advance(position, next_position);
 }
 
 template <auto CalculatePrefixHash>
@@ -389,6 +428,22 @@ initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
     LzssHashChainMnemonicMixerV1MatchFinder& finder,
     LzssMatchFinderStatistics* const statistics) noexcept {
     LzssHashChainMnemonicMixerV1MatchFinder initialized{};
+    const auto error = initialize_lzss_hash_chain_match_finder(
+        input, parameters, limits, workspace, initialized.implementation_,
+        statistics);
+    if (error != LzssHashChainError::none) return error;
+    finder = initialized;
+    return LzssHashChainError::none;
+}
+
+LzssHashChainError
+initialize_lzss_hash_chain_best_length_probe_match_finder(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters, const core::DecoderLimits& limits,
+    const std::span<std::byte> workspace,
+    LzssHashChainBestLengthProbeMatchFinder& finder,
+    LzssMatchFinderStatistics* const statistics) noexcept {
+    LzssHashChainBestLengthProbeMatchFinder initialized{};
     const auto error = initialize_lzss_hash_chain_match_finder(
         input, parameters, limits, workspace, initialized.implementation_,
         statistics);
