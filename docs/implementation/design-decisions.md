@@ -23835,3 +23835,20 @@ but must first specify its trigger, memory ceiling, tie-breaking and token
 identity, failure behavior, and uninstrumented full-codec evaluation.
 No trigger, hybrid strategy, or default change is approved by this spot
 check alone.
+
+## DD-1170: Evaluate an exact best-length probe as a private HashChain variant
+
+- Date: 2026-09-23
+- Status: private experiment proposed; production policy unchanged
+
+Before designing a high-memory hybrid finder, test the local pruning rule
+defined in `docs/design/lzss-hash-chain-best-length-probe.md`. Once the
+newest-to-oldest HashChain traversal has found a best match of length `L`,
+an older candidate whose byte at offset `L` differs from the query cannot
+produce a strictly longer match. Keep the production loop untouched and
+evaluate this as a separate compile-time private variant with the same
+workspace, exact token identity tests, truthful pruning statistics, and an
+identity-gated isolated benchmark. A positive selected pilot is not enough
+to change the default: require a fixed all-member and whole-codec audit
+before any such decision. A negative result must be recorded rather than
+hidden by selecting favorable inputs.

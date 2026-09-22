@@ -15171,3 +15171,24 @@ Fixed all-member token-production runner fixtures (2026-09-22).
   valid partitions; invalid records do not advance the on-disk checkpoint;
   no incomplete run writes a full result; completed replay launches no
   child benchmark and leaves the result bytes unchanged.
+
+### TVG-1033
+
+Private HashChain best-length-probe vectors (2026-09-23).
+
+- Date: 2026-09-23
+- Source: DD-1170, BM-0092, and the best-length-probe design.
+- Scope: independent private matcher and benchmark fixtures; no public
+  codec policy or stream representation change.
+- Vectors: no best match, a candidate rejected by its byte at `best.length`,
+  a probe hit but shorter full comparison, an older strictly longer match,
+  equal-length nearest-distance tie, overlapping match, maximum match
+  length, end-of-frame position, expired window candidate, and wrapped
+  chain-link slots. Add empty, one-byte, repetitive, binary, and varied
+  frame-split token streams.
+- Expected behavior: the private and baseline token sequences and SHA-256
+  fingerprints are identical. Each visited candidate is classified once
+  as full-prefix match, full-prefix mismatch, or probe-pruned; a probe byte
+  read is counted honestly. The normal production matcher and its existing
+  statistics remain unchanged. A benchmark result is invalid if token
+  identity, arithmetic, workspace, or classification checks fail.

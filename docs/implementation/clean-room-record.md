@@ -32198,3 +32198,24 @@ both bounds.
   and HashChain/Binary Tree token fingerprints and token counts matched
   on each member. Documentation verifier and diff check passed. No
   production codec or format files changed.
+
+## CR-1294: 2026-09-23 - Private best-length-probe design
+
+- Authoring method: derived a one-byte candidate rejection rule from
+  marc's current newest-to-oldest HashChain traversal and strict
+  longest-match update, then specified an isolated experiment and fixed
+  token-identity vectors before implementation.
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1169, DD-1170, TVG-1033, BM-0092, marc's existing
+  HashChain finder and benchmark, and the best-length-probe design.
+- Known implementations intentionally not consulted: external compressor,
+  match finder, profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: keep the public and production paths unchanged;
+  count probe-pruned candidates separately; require exact token identity
+  and selected negative-control inputs before considering a wider campaign.
+- Generated-code task description: specify an exact, bounded private
+  HashChain best-length-probe experiment without implementing it yet.
+- Similarity review: the pruning proof follows marc's own traversal and
+  tie-break, not an external implementation expression.
+- Local validation: documentation verifier and diff check passed; no
+  codec source was changed.
