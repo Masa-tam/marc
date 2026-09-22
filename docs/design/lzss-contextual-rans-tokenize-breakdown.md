@@ -1,7 +1,8 @@
 # LZSS contextual rANS token-production breakdown
 
 Status: diagnostic contract, checked accumulator, HashChain typed-parser,
-frame, and explicit benchmark hooks implemented; no Corpus result recorded.
+frame, and explicit benchmark hooks implemented; selected Silesia pilot
+recorded in BM-0090, all-member campaign not planned yet.
 
 ## Question and fixed scope
 
@@ -142,4 +143,5 @@ validate. The expected token count comes independently from completed
 frames, not from the inner counter being checked. The README smoke test
 compares the default and diagnostic archive identities and checks the new
 report's nested partition and counts. No Silesia pilot or all-member result
-has been run or accepted in this stage.
+had been run or accepted at the end of the report-hook stage. The subsequent
+fixed `mr`/`sao`/`x-ray` pilot and its limits are recorded in BM-0090.

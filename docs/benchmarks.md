@@ -3033,3 +3033,65 @@ their attempts are independent and not pooled. Instrumentation overhead and
 local scheduling are included. This is descriptive diagnostic evidence, not
 a cross-platform speed claim, a CI performance gate, or authority to remove
 either plan or its validation.
+
+### BM-0090: Selected contextual rANS token-production pilot
+
+On 2026-09-22, the fixed `mr`/`sao`/`x-ray` pilot completed three
+independent one-iteration processes per member at clean source revision
+`7d4731a21f75136b7e821793ae998d71e4abaceb`. It used the 4 MiB
+contextual rANS public profile, production HashChain exact matching,
+Visual Studio 18 2026 x64 Release, MSVC 19.51.36252.0, CMake 4.3.4,
+and `/O2 /Ob2 /DNDEBUG`. The static-only diagnostic executable SHA-256 was
+`1f60268e6d99a71798b329871e85b364974eccc676cbe784b63015910e7b6961`;
+its generated project SHA-256 was
+`68ef20fe8a17922c2cd24405cfcdef78b3e59bc28b55b48a2aa761c7e68bff4d`.
+All twelve local Silesia files matched the published sizes and MD5 values
+before measurement. The selected inputs and complete archive identities
+were stable across all three attempts per member:
+
+| Member | Input bytes | Input SHA-256 | Archive bytes | Archive SHA-256 | Tokens |
+| --- | ---: | --- | ---: | --- | ---: |
+| `mr` | 9,970,564 | `68637ed52e3e4860174ed2dc0840ac77d5f1a60abbcb13770d5754e3774d53e6` | 3,386,820 | `6e8525bdbdf6694563451b70c3e6de477a5a168969d5166cdfe2b8a7c35290f3` | 1,608,818 |
+| `sao` | 7,251,944 | `c2d0ea2cc59d4c21b7fe43a71499342a00cbe530a1d5548770e91ecd6214adcc` | 5,270,047 | `a4ff2578dfc960df69874a8078f55e04c992303716ca07b639a5d474ca127087` | 4,270,470 |
+| `x-ray` | 8,474,240 | `7de9fce1405dc44ae5e6813ed21cd5751e761bd4265655a005d39b9685d1c9ad` | 5,450,402 | `0adb83d0b113e1daa122ea9f06fecc2bd30eddce92266927b822b7de953ab08a` | 3,372,785 |
+
+Each process performed an untimed public encode/decode round trip, then
+verified untimed and timed private complete-archive byte count and SHA-256
+against the public output. The queried encoder workspace was 132,129,769
+bytes for each selected input. The old whole-encode phase partition and
+the new inner `tokenize` partition passed for every process; query and
+advance calls equaled token count, and advanced bytes equaled input size.
+Raw measured values below are nanoseconds from each actual process, not
+per-phase medians:
+
+| Member | Attempt | Total | Tokenize | Initialize | Query | Advance | Token-other |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `mr` | 1 | 72,066,697,300 | 71,722,308,100 | 736,900 | 71,513,864,400 | 144,551,500 | 63,155,300 |
+| `mr` | 2 | 71,286,624,200 | 70,956,053,300 | 742,500 | 70,754,862,200 | 137,180,900 | 63,267,700 |
+| `mr` | 3 | 71,482,710,700 | 71,140,598,000 | 725,400 | 70,946,539,800 | 130,116,200 | 63,216,600 |
+| `sao` | 1 | 2,955,580,700 | 2,051,859,600 | 500,100 | 1,765,123,400 | 123,857,400 | 162,378,700 |
+| `sao` | 2 | 2,638,041,600 | 1,728,690,300 | 522,000 | 1,444,633,700 | 120,542,000 | 162,992,600 |
+| `sao` | 3 | 2,443,288,000 | 1,531,429,900 | 567,800 | 1,248,428,300 | 120,306,000 | 162,127,800 |
+| `x-ray` | 1 | 1,713,586,400 | 1,042,070,100 | 586,900 | 796,791,600 | 116,447,000 | 128,244,600 |
+| `x-ray` | 2 | 1,679,724,500 | 1,015,507,200 | 616,100 | 757,335,800 | 129,524,400 | 128,030,900 |
+| `x-ray` | 3 | 1,898,820,700 | 1,110,864,100 | 632,200 | 855,437,500 | 124,191,000 | 130,603,400 |
+
+Selecting the actual invocation with each member's median total gives
+`mr` attempt 3, `sao` attempt 2, and `x-ray` attempt 1. In those same
+invocations, tokenization represented respectively 99.52%, 65.53%, and
+60.81% of measured total time. `find_match` represented respectively
+99.73%, 83.57%, and 76.46% of that invocation's tokenization time;
+`advance` represented 0.18%, 6.97%, and 11.17%; token-other represented
+0.09%, 9.43%, and 12.31%. Finder initialization was below 0.06% of
+tokenization in all three selected invocations. These are nested shares
+of one invocation, not additive shares of whole-encode time.
+
+Per-token clock calls and accumulation perturb the timed path, especially
+for short inputs. The residual also includes clock and accumulator overhead
+and is not an isolated token-write cost. This selected pilot supports
+investigating HashChain query cost next; it does not establish an
+uninstrumented speedup, justify changing match-finder policy, remove any
+contextual plan or validation, or set a CI timing threshold. Its source and
+instrumentation differ from BM-0089, so absolute times must not be treated
+as a before/after comparison. A separately frozen all-member campaign
+would be required for a Corpus-wide conclusion.

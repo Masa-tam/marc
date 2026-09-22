@@ -32096,3 +32096,29 @@ both bounds.
   smoke, all 3,584 CTest cases including interoperability schema
   compatibility, documentation verifier, and diff check passed. No Corpus
   measurement or performance conclusion is claimed.
+
+## CR-1290: 2026-09-22 - Selected token-production pilot
+
+- Authoring method: froze the clean source revision, MSVC Release build,
+  diagnostic executable identity, twelve-member Corpus identity, selected
+  files, and three independent one-iteration processes per member before
+  interpreting timings. Recorded all nine raw inner timings in BM-0090.
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1166, TVG-1031, the token-production breakdown
+  design, CR-1289, and the repository's published Silesia member manifest.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, external benchmark runner source, pseudocode, or test suite.
+- Independent decisions: select the actual median-total invocation for
+  nested shares, retain full archive identities and all nine raw inner
+  timing rows, and make no claim about uninstrumented gain or other match
+  finders. Keep this pilot separate from BM-0089 and any future all-member
+  campaign.
+- Generated-code task description: run and document an identity-gated
+  `mr`/`sao`/`x-ray` diagnostic pilot without changing production behavior.
+- Similarity review: this is measurement and documentation of marc's own
+  diagnostic path; no external implementation expression was used.
+- Local validation: all twelve local Corpus files matched published sizes
+  and MD5 values; source revision and executable SHA-256 were unchanged
+  after all nine processes; every process passed public round trip,
+  complete-archive identity, both timing partitions, and structural count
+  checks. Documentation verification and diff check remain pending.
