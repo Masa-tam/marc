@@ -3,6 +3,14 @@ if(NOT DEFINED MARC_BENCHMARK OR NOT DEFINED BENCHMARK_INPUT)
 endif()
 
 set(frame_size 1024)
+execute_process(
+    COMMAND "${MARC_BENCHMARK}" --frames hash-chain-best-length-probe-exact
+        "${BENCHMARK_INPUT}" 1 ${frame_size} 65536
+    RESULT_VARIABLE probe_result OUTPUT_VARIABLE probe_report
+    ERROR_VARIABLE probe_error)
+if(NOT probe_result EQUAL 0)
+    message(FATAL_ERROR "frame probe identity verification failed: ${probe_error}")
+endif()
 file(SIZE "${BENCHMARK_INPUT}" input_size)
 math(EXPR expected_frames
     "(${input_size} + ${frame_size} - 1) / ${frame_size}")

@@ -15197,5 +15197,11 @@ Private HashChain best-length-probe vectors (2026-09-23).
   window/maximum-length, skipped-token-position, explicit prune, nearest
   tie, and atomic initialization-failure cases against both baseline
   HashChain and exhaustive matching. The production matcher records zero
-  probe counters. Benchmark wiring and selected-input measurement remain
-  pending.
+  probe counters.
+- Benchmark validation: six deterministic synthetic input classes compare
+  baseline/probe fingerprints, token summaries, workspace, candidate count,
+  and query-depth distribution over two frames. The equal-prefix fixture
+  must prune candidates. Checked classification includes pruned candidates,
+  and baseline counters must remain zero. File-frame smoke also exercises
+  the baseline identity gate before statistics-disabled timing.
+  Selected-input performance measurement remains pending.

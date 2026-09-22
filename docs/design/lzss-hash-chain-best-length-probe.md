@@ -1,6 +1,7 @@
 # HashChain best-length probe experiment
 
-Status: proposed private experiment, 2026-09-23. This document does not
+Status: private matcher and benchmark connected, 2026-09-23; selected-input
+measurement pending. This document does not
 authorize a production matcher or format change.
 
 ## Motivation and boundary
@@ -70,6 +71,14 @@ every input, not merely round-trip output.
   a mismatch against the baseline before interpreting time.
 
 ## Test and measurement sequence
+
+The private benchmark accepts `hash-chain-best-length-probe-exact` in
+`--frames`, `--frames-limited`, and `--synthetic` modes. It verifies the
+baseline token fingerprint and candidate count before timing, reusing the
+same workspace. Both verification passes are outside the statistics-disabled
+timing pass. Reports add `hash_chain_best_length_probe_comparisons` and
+`hash_chain_best_length_probe_pruned_candidates`; baseline reports set both
+to zero. The verification overhead is not whole-codec throughput.
 
 1. Add hand-checkable candidate vectors and baseline/private token equality
    tests before activating the variant in the benchmark. Include no-best,

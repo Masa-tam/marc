@@ -88,6 +88,51 @@ foreach(case_name IN ITEMS
                 "pseudorandom control classification changed: ${report}")
         endif()
     endif()
+    execute_process(
+        COMMAND "${MARC_BENCHMARK}" --synthetic
+            hash-chain-best-length-probe-exact "${case_name}" 8192 1 4096 4096
+        RESULT_VARIABLE probe_result OUTPUT_VARIABLE probe_report
+        ERROR_VARIABLE probe_error)
+    if(NOT probe_result EQUAL 0)
+        message(FATAL_ERROR "${case_name} probe failed: ${probe_error}")
+    endif()
+    foreach(key IN ITEMS token_fingerprint_sha256 token_count literal_count
+            match_count matched_bytes frame_count hash_workspace_bytes
+            hash_chain_candidates hash_chain_queries
+            hash_chain_max_candidates_per_query hash_chain_query_depth_histogram)
+        string(REGEX MATCH "${key}=([^\n]+)" baseline_field "${report}")
+        string(REGEX MATCH "${key}=([^\n]+)" probe_field "${probe_report}")
+        if(baseline_field STREQUAL "" OR NOT baseline_field STREQUAL probe_field)
+            message(FATAL_ERROR "${case_name} probe changed ${key}")
+        endif()
+    endforeach()
+    foreach(key IN ITEMS best_length_probe_comparisons
+            best_length_probe_pruned_candidates prefix_matches prefix_mismatches
+            candidates byte_comparisons)
+        string(REGEX MATCH "hash_chain_${key}=([0-9]+)" field "${probe_report}")
+        if(field STREQUAL "")
+            message(FATAL_ERROR "${case_name} missing probe ${key}")
+        endif()
+        set(probe_${key} "${CMAKE_MATCH_1}")
+    endforeach()
+    math(EXPR probe_classified
+        "${probe_prefix_matches} + ${probe_prefix_mismatches} + ${probe_best_length_probe_pruned_candidates}")
+    if(NOT probe_classified EQUAL probe_candidates
+            OR probe_best_length_probe_pruned_candidates GREATER probe_best_length_probe_comparisons
+            OR probe_best_length_probe_comparisons GREATER probe_candidates
+            OR probe_best_length_probe_comparisons GREATER probe_byte_comparisons)
+        message(FATAL_ERROR "${case_name} invalid probe counters")
+    endif()
+    foreach(key IN ITEMS best_length_probe_comparisons best_length_probe_pruned_candidates)
+        string(FIND "${report}" "hash_chain_${key}=0\n" baseline_zero)
+        if(baseline_zero EQUAL -1)
+            message(FATAL_ERROR "${case_name} baseline unexpectedly probes")
+        endif()
+    endforeach()
+    if(case_name STREQUAL "equal-prefix"
+            AND NOT probe_best_length_probe_pruned_candidates GREATER 0)
+        message(FATAL_ERROR "equal-prefix fixture did not exercise pruning")
+    endif()
 endforeach()
 
 set(bucket_scale_input_size 131329)

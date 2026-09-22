@@ -44,6 +44,7 @@ enum class BenchmarkStrategy : std::uint8_t {
     hash_chain_exact,
     hash_chain_legacy_65536_exact,
     hash_chain_mnemonic_mixer_v1_exact,
+    hash_chain_best_length_probe_exact,
     hash_chain_buckets_262144_exact,
     hash_chain_buckets_1048576_exact,
     hash_chain_buckets_4194304_exact,
@@ -64,6 +65,8 @@ enum class BenchmarkStrategy : std::uint8_t {
         strategy = BenchmarkStrategy::hash_chain_exact;
     } else if (text == "hash-chain-legacy-65536-exact") {
         strategy = BenchmarkStrategy::hash_chain_legacy_65536_exact;
+    } else if (text == "hash-chain-best-length-probe-exact") {
+        strategy = BenchmarkStrategy::hash_chain_best_length_probe_exact;
     } else if (text == "hash-chain-mnemonic-mixer-v1-exact") {
         strategy = BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact;
     } else if (text == "hash-chain-buckets-262144-exact") {
@@ -102,6 +105,8 @@ enum class BenchmarkStrategy : std::uint8_t {
     const BenchmarkStrategy strategy) noexcept {
     switch (strategy) {
     case BenchmarkStrategy::hash_chain_exact: return "hash-chain-exact";
+    case BenchmarkStrategy::hash_chain_best_length_probe_exact:
+        return "hash-chain-best-length-probe-exact";
     case BenchmarkStrategy::hash_chain_legacy_65536_exact:
         return "hash-chain-legacy-65536-exact";
     case BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact:
@@ -134,6 +139,7 @@ enum class BenchmarkStrategy : std::uint8_t {
 [[nodiscard]] bool is_hash_chain_strategy(
     const BenchmarkStrategy strategy) noexcept {
     return strategy == BenchmarkStrategy::hash_chain_exact
+        || strategy == BenchmarkStrategy::hash_chain_best_length_probe_exact
         || strategy == BenchmarkStrategy::hash_chain_legacy_65536_exact
         || strategy
             == BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact
@@ -146,6 +152,8 @@ enum class BenchmarkStrategy : std::uint8_t {
     const BenchmarkStrategy strategy) noexcept {
     switch (strategy) {
     case BenchmarkStrategy::hash_chain_exact:
+        return lzss_hash_chain_production_bucket_cap;
+    case BenchmarkStrategy::hash_chain_best_length_probe_exact:
         return lzss_hash_chain_production_bucket_cap;
     case BenchmarkStrategy::hash_chain_legacy_65536_exact:
     case BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact:
@@ -165,7 +173,8 @@ calculate_hash_chain_workspace_for_strategy(
     const BenchmarkStrategy strategy, const std::size_t input_size,
     const LzssParameters& parameters,
     const marc::core::DecoderLimits& limits) noexcept {
-    if (strategy == BenchmarkStrategy::hash_chain_exact) {
+    if (strategy == BenchmarkStrategy::hash_chain_exact
+        || strategy == BenchmarkStrategy::hash_chain_best_length_probe_exact) {
         return calculate_lzss_hash_chain_workspace(
             input_size, parameters, limits);
     }
@@ -447,6 +456,10 @@ struct FrameRunResult {
                    frame.hash_chain_prefix_match_count)
         || !add_count(total.hash_chain_prefix_mismatch_count,
                       frame.hash_chain_prefix_mismatch_count)
+        || !add_count(total.hash_chain_best_length_probe_comparison_count,
+                      frame.hash_chain_best_length_probe_comparison_count)
+        || !add_count(total.hash_chain_best_length_probe_pruned_candidate_count,
+                      frame.hash_chain_best_length_probe_pruned_candidate_count)
         || !add_count(
             total.hash_chain_extension_byte_comparison_count,
             frame.hash_chain_extension_byte_comparison_count)) {
@@ -819,7 +832,13 @@ void print_hash_tree_depth_histograms(
 }
 
 [[nodiscard]] bool valid_hash_chain_statistics(
-    const LzssMatchFinderStatistics& statistics) noexcept {
+    const LzssMatchFinderStatistics& statistics,
+    const bool uses_best_length_probe = false) noexcept {
+    const auto probes = statistics.hash_chain_best_length_probe_comparison_count;
+    const auto pruned = statistics.hash_chain_best_length_probe_pruned_candidate_count;
+    if ((!uses_best_length_probe && (probes != 0 || pruned != 0))
+        || pruned > probes || probes > statistics.candidate_count
+        || probes > statistics.byte_comparison_count) return false;
     if (statistics.overflowed
         || statistics.hash_chain_extension_byte_comparison_count
             > statistics.byte_comparison_count) {
@@ -830,6 +849,7 @@ void print_hash_tree_depth_histograms(
             statistics.hash_chain_prefix_match_count,
             statistics.hash_chain_prefix_mismatch_count,
             classified_candidates)
+        || !add_count(classified_candidates, pruned)
         || classified_candidates != statistics.candidate_count) {
         return false;
     }
@@ -953,6 +973,8 @@ void print_hash_tree_depth_histograms(
     const LzssMatchFinderStatistics& statistics,
     const std::size_t delta_candidate_budget = 0) noexcept {
     switch (strategy) {
+    case BenchmarkStrategy::hash_chain_best_length_probe_exact:
+        return valid_hash_chain_statistics(statistics, true);
     case BenchmarkStrategy::hash_chain_exact:
     case BenchmarkStrategy::hash_chain_legacy_65536_exact:
     case BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact:
@@ -1359,6 +1381,16 @@ void fill_synthetic_input(
         }
         frame_tokens = parse_with_finder(frame, finder, token_summary);
     } else if (strategy
+               == BenchmarkStrategy::hash_chain_best_length_probe_exact) {
+        LzssHashChainBestLengthProbeMatchFinder finder{};
+        if (initialize_lzss_hash_chain_best_length_probe_match_finder(
+                frame, parameters, limits, workspace, finder,
+                collect_statistics ? &frame_statistics : nullptr)
+            != LzssHashChainError::none) {
+            return false;
+        }
+        frame_tokens = parse_with_finder(frame, finder, token_summary);
+    } else if (strategy
                == BenchmarkStrategy::hash_chain_mnemonic_mixer_v1_exact) {
         LzssHashChainMnemonicMixerV1MatchFinder finder{};
         if (initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder(
@@ -1683,6 +1715,12 @@ void print_frame_report(
                   << "hash_chain_frame_mib_per_second="
                   << throughput(
                          verified.input_bytes, iterations, measured_seconds)
+                  << '\n';
+        std::cout << "hash_chain_best_length_probe_comparisons="
+                  << verified.statistics.hash_chain_best_length_probe_comparison_count
+                  << '\n'
+                  << "hash_chain_best_length_probe_pruned_candidates="
+                  << verified.statistics.hash_chain_best_length_probe_pruned_candidate_count
                   << '\n';
         print_hash_chain_depth_histogram(verified.statistics);
         return;
@@ -2015,6 +2053,7 @@ void print_usage() {
            "<input-file> [iterations]\n"
         << "       marc_lzss_match_finder_benchmark --frames "
            "<hash-chain-exact|hash-chain-legacy-65536-exact|"
+           "hash-chain-best-length-probe-exact|"
            "hash-chain-mnemonic-mixer-v1-exact|"
            "hash-chain-buckets-262144-exact|"
            "hash-chain-buckets-1048576-exact|"
@@ -2032,6 +2071,7 @@ void print_usage() {
            "<window-bytes> <pool-nodes> <promotion-candidates>\n"
         << "       marc_lzss_match_finder_benchmark --frames-limited "
            "<hash-chain-exact|hash-chain-legacy-65536-exact|"
+           "hash-chain-best-length-probe-exact|"
            "hash-chain-mnemonic-mixer-v1-exact|"
            "hash-chain-buckets-262144-exact|"
            "hash-chain-buckets-1048576-exact|"
@@ -2060,6 +2100,7 @@ void print_usage() {
            "<delta-candidate-budget> <max-internal-buffered-bytes>\n"
         << "       marc_lzss_match_finder_benchmark --synthetic "
            "<hash-chain-exact|hash-chain-legacy-65536-exact|"
+           "hash-chain-best-length-probe-exact|"
            "hash-chain-mnemonic-mixer-v1-exact|"
            "hash-chain-buckets-262144-exact|"
            "hash-chain-buckets-1048576-exact|"
@@ -2260,6 +2301,24 @@ void print_usage() {
         return 1;
     }
 
+    if (strategy == BenchmarkStrategy::hash_chain_best_length_probe_exact) {
+        FrameRunResult baseline{};
+        if (!process_frames(
+                BenchmarkStrategy::hash_chain_exact, argv[3], file_size,
+                frame_size, parameters, limits, workspace, true, false,
+                pool_node_capacity, promotion_threshold,
+                promotion_reuse_threshold, delta_candidate_budget, baseline)
+            || !valid_token_summary(baseline)
+            || !valid_hash_chain_statistics(baseline.statistics)
+            || baseline.token_count != verified.token_count
+            || baseline.statistics.candidate_count != verified.statistics.candidate_count
+            || token_fingerprint_hex(baseline.token_summary)
+                != token_fingerprint_hex(verified.token_summary)) {
+            std::cerr << "best-length probe baseline identity check failed\n";
+            return 1;
+        }
+    }
+
     double measured_seconds{};
     for (std::size_t iteration = 0; iteration < iterations; ++iteration) {
         FrameRunResult measured{};
@@ -2415,6 +2474,24 @@ void print_usage() {
         || !valid_statistics(strategy, verified.statistics, 0)) {
         std::cerr << "synthetic match-finder verification failed\n";
         return 1;
+    }
+
+    if (strategy == BenchmarkStrategy::hash_chain_best_length_probe_exact) {
+        FrameRunResult baseline{};
+        if (!process_synthetic_frames(
+                BenchmarkStrategy::hash_chain_exact, kind, input_size,
+                frame_size, parameters, limits, workspace, true, false,
+                pool_node_capacity, promotion_threshold,
+                promotion_reuse_threshold, 0, baseline)
+            || !valid_token_summary(baseline)
+            || !valid_hash_chain_statistics(baseline.statistics)
+            || baseline.token_count != verified.token_count
+            || baseline.statistics.candidate_count != verified.statistics.candidate_count
+            || token_fingerprint_hex(baseline.token_summary)
+                != token_fingerprint_hex(verified.token_summary)) {
+            std::cerr << "synthetic best-length probe baseline identity check failed\n";
+            return 1;
+        }
     }
 
     double measured_seconds{};

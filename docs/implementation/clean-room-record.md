@@ -32243,3 +32243,23 @@ both bounds.
   baseline/mnemonic/probe tests, and all 3,589 CTest cases passed,
   including interoperability schema compatibility. Documentation verifier
   and diff check passed.
+
+## CR-1296: 2026-09-23 - Private best-length-probe benchmark connection
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, TVG-1033, the private probe design, and marc's
+  existing match-finder benchmark and synthetic fixtures.
+- Known implementations intentionally not consulted: external compressor
+  source, match-finder implementations, or external test suites.
+- Independent decisions: add a private strategy label, aggregate checked
+  probe counters, validate candidate classification, and gate timing on
+  baseline token fingerprint and candidate-count equality using reused
+  workspace. Collect diagnostics outside the statistics-disabled timer.
+- Generated-code task description: connect the private exact probe to
+  file-frame and synthetic benchmarks with identity and counter tests.
+- Similarity review: this change extends marc's own benchmark dispatch
+  and validation; no external implementation expression was consulted.
+- Local validation: MSVC Release benchmark build and all 3,589 CTest cases
+  passed (337.40 seconds), including interoperability schema compatibility
+  (102.23 seconds). Documentation ordering/link verification and diff check
+  passed. No Silesia performance conclusion is drawn from smoke tests.
