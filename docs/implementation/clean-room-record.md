@@ -31962,3 +31962,24 @@ both bounds.
 - Local validation: all 36 complete-archive and phase-partition checks
   passed; completed replay left the ignored full result unchanged. BM-0089
   records the result and checkpoint digests.
+
+## CR-1284: 2026-09-22 - Token-production breakdown contract
+
+- Authoring method: inspected marc's existing typed-token parser, HashChain
+  finder, and private contextual rANS phase hook; wrote a diagnostic-only
+  design before implementing a new timing path.
+- References used: BM-0089, DD-1165, the existing phase-profile design,
+  `src/dictionary/lzss_typed_encoder.cpp`, and
+  `src/frame/lzss_contextual_rans_frame_encoder.cpp`.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: separate finder initialization, query, and history
+  advance inside the existing token phase; preserve a checked residual and
+  distinct whole-encode partition; use complete-archive identity before
+  interpreting timing; keep the normal null path free of clock reads.
+- Generated-code task description: specify a bounded, private HashChain
+  token-production diagnostic and its correctness-first test vectors.
+- Similarity review: the design follows marc's own parser call boundaries;
+  no external implementation expression was used.
+- Local validation: documentation verifier and diff validation; no new
+  instrumentation or Corpus measurement is claimed in this record.

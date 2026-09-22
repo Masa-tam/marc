@@ -23758,3 +23758,27 @@ than blending it into match-search time. A new optimization experiment must
 freeze its own measurements and correctness criteria. This result sets no
 CI timing threshold and changes no format, decoder, API, ABI, workspace
 limit, or production codec policy.
+
+## DD-1166: Bound the HashChain token-production subphase diagnostic
+
+- Date: 2026-09-22
+- Status: accepted for diagnostic design; implementation pending
+
+The current `lzss-contextual-rans-4m` HashChain path has a clean boundary
+around finder initialization and, once per token, `find_match` and `advance`.
+Use those three disjoint inner intervals to subdivide the already measured
+outer `tokenize` interval. Keep the remaining token checks, decisions,
+storage, loop work, and clock overhead in a named residual rather than
+labelling it pure token-emission cost. Check nested and whole-encode
+partitions separately; never add nested time twice. Record structural
+query/advance counts and advanced input bytes. The normal null-sink path
+must have no clock reads or new allocation, and timed, untimed, and public
+complete archives must match by size and SHA-256.
+
+The first experiment is limited to the production HashChain exact route,
+with a selected `mr`/`sao`/`x-ray` pilot before any separate all-member
+campaign. Per-token clock calls may perturb short inputs, so these numbers
+are diagnostic and cannot be interpreted as an uninstrumented speedup or
+used as a CI timing gate. Preserve the old report schema and all production
+behavior. Exact intervals, error handling, and fixture vectors are fixed in
+`docs/design/lzss-contextual-rans-tokenize-breakdown.md`.

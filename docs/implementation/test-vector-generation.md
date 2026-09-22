@@ -15101,3 +15101,23 @@ All-member contextual rANS phase checkpoint vectors (2026-09-22).
 - Expected behavior: every accepted record is an atomically saved canonical
   prefix; rejected data cannot advance the stored checkpoint; an incomplete
   run has no full result, and completed replay launches no child process.
+
+### TVG-1030
+
+Private contextual rANS token-production breakdown vectors (2026-09-22).
+
+- Date: 2026-09-22
+- Source: DD-1166 and the token-production breakdown design.
+- Scope: supplied-duration accumulator tests and repository-owned encode
+  fixtures; no Silesia file or performance threshold is required.
+- Vectors: zero, valid nested partition, negative duration, arithmetic
+  overflow, inner sum exceeding outer `tokenize`, unchanged output after a
+  failed summary, and reset. Include empty, one-token, beneficial/rejected
+  match, skipped-byte history insertion, one-byte output chunks, and two
+  frames. Compare public, untimed private, and timed private complete
+  archive size and SHA-256.
+- Expected behavior: inner durations plus residual equal the existing
+  `tokenize` duration without altering the whole-encode partition; one
+  query and advance call per token and exactly input-size advanced bytes
+  are recorded. No clock reads or extra allocations occur with a null
+  diagnostic sink. Malformed reports cannot become benchmark evidence.

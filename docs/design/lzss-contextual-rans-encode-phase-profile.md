@@ -192,3 +192,10 @@ invocation in typed-token production, whereas the two contextual plans
 remained material for `x-ray`, `sao`, `ooffice`, and `osdb`. This stage does
 not separate match-search time from other token-production work and makes
 no production-code or runtime-policy change.
+
+## Stage 8 follow-up
+
+DD-1166 and the [token-production breakdown contract](lzss-contextual-rans-tokenize-breakdown.md)
+define the next diagnostic boundary inside the measured `tokenize` phase.
+This follow-up is a new measurement and must retain BM-0089 as a separate
+historical result.
