@@ -32174,3 +32174,27 @@ both bounds.
   benchmark child and left the result unchanged. All twelve members had
   stable archive size and SHA-256 across attempts; documentation verifier
   and diff check passed.
+
+## CR-1293: 2026-09-22 - Selected HashChain query-work spot check
+
+- Authoring method: inspected marc's own HashChain candidate loop and
+  existing isolated match-finder benchmark, then ran one statistics pass
+  and one timing iteration per strategy on three locally verified Silesia
+  members under identical 4 MiB frame/window limits.
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1168, DD-1169, BM-0091, marc's LZSS match-finder
+  implementation and benchmark, and the existing Silesia manifest.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: require exact token fingerprints before comparing
+  isolated time; report candidate counts, maximum depth, workspace, and
+  timing together; regard the selected one-process timings as exploratory
+  rather than a global policy or whole-codec speed claim.
+- Generated-code task description: inspect query cost and compare existing
+  exact finders on `mr`, `sao`, and `x-ray` without production changes.
+- Similarity review: only marc's own implementation and diagnostic output
+  were consulted; no external implementation expression was used.
+- Local validation: all six benchmark invocations completed successfully,
+  and HashChain/Binary Tree token fingerprints and token counts matched
+  on each member. Documentation verifier and diff check passed. No
+  production codec or format files changed.

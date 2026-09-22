@@ -23818,3 +23818,20 @@ with independent throughput, compression ratio, peak memory, and output
 equivalence measurements. Preserve the existing contextual plans,
 validation, format, API/ABI, and default match-finder policy until such
 evidence and an explicit design decision justify changing them.
+
+## DD-1169: Do not promote a single finder from a selected query spot check
+
+- Date: 2026-09-22
+- Status: accepted diagnostic boundary; no implementation change
+
+BM-0092 held the 4 MiB frame/window and exact token fingerprint constant
+for `mr`, `sao`, and `x-ray`. Binary Tree was much faster than HashChain on
+the pathological repeated-prefix `mr` input, but much slower on the other
+two and required substantially more workspace. A single global finder
+change would therefore trade away large known wins without a complete
+measurement. The next design may investigate a bounded, deterministic
+way to identify a high-candidate regime or reduce repeated-prefix work,
+but must first specify its trigger, memory ceiling, tie-breaking and token
+identity, failure behavior, and uninstrumented full-codec evaluation.
+No trigger, hybrid strategy, or default change is approved by this spot
+check alone.

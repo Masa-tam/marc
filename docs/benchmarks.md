@@ -3153,3 +3153,50 @@ members; they do not establish uninstrumented throughput gain, justify a
 particular alternative match finder, remove contextual plans or validation,
 or set a CI timing gate. BM-0089 and BM-0090 used different source revisions
 or attempts, so their absolute times are not before/after comparisons.
+
+### BM-0092: Selected 4 MiB match-finder query spot check
+
+After BM-0091, a local exploratory spot check used the existing private
+`marc_lzss_match_finder_benchmark` on `mr`, `sao`, and `x-ray`. The clean
+repository revision was `b122913bba8da30d795f384c938fc2c46d309e2c`,
+the MSVC x64 Release executable SHA-256 was
+`d67421f6c5ccaaa8db4eaa725630a0bf8e11c8f97c86f446fefd56aa8cba1b48`,
+and its generated project SHA-256 was
+`7a9b4b23a9966549958f8f8a580cf7d112c9c854ba624080c12c055f38e1640e`.
+For each member and strategy, the invocation was
+`--frames-limited <strategy> <member> 1 4194304 4194304 536870912`:
+one iteration, 4 MiB frame and window, and a 512 MiB hard internal-buffer
+limit. The benchmark first collects and validates structural statistics,
+then measures a separate statistics-disabled parse. These are isolated
+match-finder timings, not complete contextual rANS encode timings.
+
+| Member | HashChain time | Binary Tree time | Binary Tree / HashChain time | HashChain candidates/query | HashChain maximum candidates/query |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `mr` | 73.335263 s | 10.708430 s | 0.146 | 3,207.51 | 1,177,133 |
+| `sao` | 1.087293 s | 7.632505 s | 7.020 | 13.54 | 5,167 |
+| `x-ray` | 0.617753 s | 6.857630 s | 11.101 | 8.78 | 316 |
+
+On `mr`, HashChain visited 5,160,303,018 candidates over 1,608,818
+queries; 5,152,880,935 candidates (99.86%) matched its five-byte
+prefix. It performed 102,426,638,746 byte comparisons, including
+76,654,663,995 comparisons beyond that prefix. By contrast, `sao`
+visited 57,817,594 candidates over 4,270,470 queries and `x-ray`
+visited 29,610,716 over 3,372,785. The `mr` observation therefore points
+to many genuinely repeated prefixes, not merely distinct prefixes that
+collide in the hash bucket. The two strategies produced identical token
+counts, literal/match counts, matched-byte counts, and exact token SHA-256
+fingerprints for each member:
+
+| Member | Shared token fingerprint SHA-256 |
+| --- | --- |
+| `mr` | `2490709a4533ba44772937870104bf77c4cdc510c17362f1c676bc1392d428ce` |
+| `sao` | `de12729cd821085f8f029568706e1f7495bee4cb8a34af65725598ba4bd53c31` |
+| `x-ray` | `efbc28dd3424e2471170b401fe301704b345a9140d54dc30d19466dc55733b98` |
+
+HashChain required 18,874,368 bytes of finder workspace at this frame
+size; Binary Tree required 121,634,816 bytes (6.44 times as much). This is
+one process and one timed iteration per member/strategy, without a fixed
+all-member campaign or interleaved repetitions. The large `mr` improvement
+is a useful hypothesis, but the opposite `sao`/`x-ray` behavior and memory
+cost prohibit a blanket promotion. No whole-codec speedup, compression-ratio
+change, default-policy change, or CI timing threshold is claimed.
