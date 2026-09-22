@@ -160,3 +160,16 @@ advances after each accepted record, and no full result is written before all
 36 records pass. The representative attempt is selected by median total
 invocation time without combining separately timed phases. No all-member
 measurement or performance conclusion is claimed at the preparation stage.
+
+## All-member result
+
+BM-0091 records the completed 36-record campaign under the fixed manifest.
+Every report passed complete-archive identity, both duration partitions,
+and token/advance count checks; complete archives were stable across the
+three attempts for each member. The actual median-total invocation showed
+`find_match` above 90% of tokenization on eight members and above 80% on
+ten. This points to HashChain query work as the next diagnostic target,
+not to a proven uninstrumented speedup or a predetermined replacement
+strategy. The ignored local result retains all raw reports. DD-1168 keeps
+any future optimization subject to independent output, speed, ratio, and
+memory measurements.

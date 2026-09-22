@@ -23786,7 +23786,7 @@ behavior. Exact intervals, error handling, and fixture vectors are fixed in
 ## DD-1167: Freeze a separately resumable all-member token-production campaign
 
 - Date: 2026-09-22
-- Status: fixed campaign prepared; measurement pending
+- Status: fixed campaign completed as BM-0091
 
 After the selected BM-0090 pilot, define a separate 36-record diagnostic
 campaign for all twelve verified Silesia members and three independent
@@ -23800,3 +23800,21 @@ identity. Publish a complete result only after all 36 records validate;
 retain raw reports and select the actual median-total attempt for each
 member. Do not mix these measurements with BM-0089 or BM-0090 or treat them
 as a production speed claim, CI timing gate, or codec-policy change.
+
+## DD-1168: Investigate HashChain query cost without changing codec policy
+
+- Date: 2026-09-22
+- Status: diagnostic direction; no implementation change
+
+BM-0091 completed the separately fixed 36-record campaign. In the actual
+median-total invocation for each member, `find_match` exceeds 90% of the
+nested tokenization interval on eight of twelve members and 80% on ten.
+This supports treating HashChain query work as the next optimization
+hypothesis, not assuming a particular data structure will be faster.
+The per-token diagnostic clock perturbs timing, and `sao` and `x-ray`
+still have material non-tokenization work. Any optimization candidate
+must therefore be evaluated on an uninstrumented, identity-checked path
+with independent throughput, compression ratio, peak memory, and output
+equivalence measurements. Preserve the existing contextual plans,
+validation, format, API/ABI, and default match-finder policy until such
+evidence and an explicit design decision justify changing them.

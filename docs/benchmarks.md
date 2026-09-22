@@ -3095,3 +3095,61 @@ contextual plan or validation, or set a CI timing threshold. Its source and
 instrumentation differ from BM-0089, so absolute times must not be treated
 as a before/after comparison. A separately frozen all-member campaign
 would be required for a Corpus-wide conclusion.
+
+### BM-0091: Full-Corpus contextual rANS token-production breakdown
+
+On 2026-09-22, the separately frozen token-production campaign completed
+all 36 records: three independent one-iteration processes for each of the
+twelve verified Silesia members. The clean source revision was
+`2151d215597252fe8e08ed029b9181024314cac8`, with Visual Studio 18
+2026 x64 Release, MSVC 19.51.36252.0, `/O2 /Ob2 /DNDEBUG`, the private
+diagnostic executable SHA-256
+`1f60268e6d99a71798b329871e85b364974eccc676cbe784b63015910e7b6961`,
+and generated target project SHA-256
+`68ef20fe8a17922c2cd24405cfcdef78b3e59bc28b55b48a2aa761c7e68bff4d`.
+The fixed manifest SHA-256 was
+`5c55ac850e1b9d19fbc0369ad7771648e27304669f39b8cd92164e8cc4288105`.
+No BM-0089 or BM-0090 process was reused. Each process passed the public
+round trip, untimed and timed private complete-archive identity checks,
+whole-encode and nested tokenization partitions, and structural count
+checks. Archive size and SHA-256 were stable across all three processes
+for every member. The queried encoder workspace was 132,129,769 bytes.
+
+Each row uses the actual invocation with that member's median total time.
+`Tokenize` is a share of that invocation's whole-encode total; the inner
+columns are shares of its own `tokenize` interval, not additional shares
+of the total. Initialization, omitted from the table, was below 0.1% of
+tokenization for every selected invocation.
+
+| Member | Median total | Tokenize/total | Query/tokenize | Advance/tokenize | Token-other/tokenize |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `dickens` | 6.367 s | 95.92% | 97.53% | 1.67% | 0.79% |
+| `mozilla` | 81.483 s | 96.68% | 98.51% | 0.85% | 0.63% |
+| `mr` | 73.230 s | 99.55% | 99.72% | 0.20% | 0.09% |
+| `nci` | 42.442 s | 99.53% | 99.28% | 0.63% | 0.09% |
+| `ooffice` | 1.691 s | 73.84% | 87.36% | 6.25% | 6.35% |
+| `osdb` | 1.874 s | 77.64% | 86.79% | 7.20% | 5.96% |
+| `reymont` | 8.148 s | 98.43% | 98.83% | 0.88% | 0.28% |
+| `samba` | 21.655 s | 97.15% | 98.43% | 1.04% | 0.53% |
+| `sao` | 2.372 s | 59.60% | 79.87% | 8.68% | 11.41% |
+| `webster` | 34.036 s | 97.33% | 98.02% | 1.48% | 0.48% |
+| `xml` | 0.856 s | 93.80% | 93.81% | 4.90% | 1.25% |
+| `x-ray` | 1.546 s | 56.63% | 71.75% | 13.48% | 14.70% |
+
+`find_match` exceeds 90% of tokenization in eight members and 80% in ten.
+The remaining `sao` and `x-ray` members still spend 79.87% and 71.75%
+respectively in query, while their contextual plans remain important in
+the outer partition. The complete local result retains all 36 raw reports
+and identities under the ignored Silesia results directory. Its SHA-256 is
+`bee7edb0a4137116c1d1acc19dbe460bd7faa6abe01334579d8f868580813944`;
+the completed checkpoint SHA-256 is
+`c00dd604865c6f3cfd16525949d0ff6d15f8eeca7aecf99ea7eb0119608bc9aa`.
+A completed replay validated all records and left the result unchanged.
+
+Per-token clock calls and accumulation perturb this diagnostic path, and
+`token-other` includes clock/accumulator overhead. These data support
+investigating HashChain query work, especially on the eight query-heavy
+members; they do not establish uninstrumented throughput gain, justify a
+particular alternative match finder, remove contextual plans or validation,
+or set a CI timing gate. BM-0089 and BM-0090 used different source revisions
+or attempts, so their absolute times are not before/after comparisons.

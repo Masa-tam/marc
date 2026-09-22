@@ -32147,3 +32147,30 @@ both bounds.
   verification, and all 3,585 MSVC Release CTest cases passed, including
   interoperability schema compatibility. No all-member measurement or
   performance conclusion is claimed.
+
+## CR-1292: 2026-09-22 - Full-Corpus token-production measurement
+
+- Authoring method: ran the precommitted fixed 36-record campaign on a clean
+  source tree, preserved all validated raw reports in an ignored local
+  result, checked completed replay, and documented same-invocation median
+  shares and interpretive limits in BM-0091.
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1167, DD-1168, TVG-1032, BM-0089, BM-0090, the
+  token-production breakdown design, CR-1291, and marc's verified local
+  Silesia Corpus manifest.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: do not pool old campaign attempts or compare
+  absolute times across revisions; choose the actual median-total attempt
+  for each member; treat per-token instrumentation overhead explicitly;
+  investigate query cost without changing any production codec policy.
+- Generated-code task description: execute and interpret the fixed local
+  all-member diagnostic while preserving full archive and partition gates.
+- Similarity review: the result measures marc's own independently written
+  HashChain path; no external implementation expression was used.
+- Local validation: all 36 processes passed public round trip, untimed and
+  timed private complete-archive identity, both timing partitions, and
+  structural count checks. Replaying the completed checkpoint launched no
+  benchmark child and left the result unchanged. All twelve members had
+  stable archive size and SHA-256 across attempts; documentation verifier
+  and diff check passed.
