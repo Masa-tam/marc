@@ -23782,3 +23782,21 @@ are diagnostic and cannot be interpreted as an uninstrumented speedup or
 used as a CI timing gate. Preserve the old report schema and all production
 behavior. Exact intervals, error handling, and fixture vectors are fixed in
 `docs/design/lzss-contextual-rans-tokenize-breakdown.md`.
+
+## DD-1167: Freeze a separately resumable all-member token-production campaign
+
+- Date: 2026-09-22
+- Status: fixed campaign prepared; measurement pending
+
+After the selected BM-0090 pilot, define a separate 36-record diagnostic
+campaign for all twelve verified Silesia members and three independent
+one-iteration processes per member. Reuse the existing clean-source,
+MSVC Release build, executable, and Corpus identity gate, but require the
+explicit nested token-production report schema. Accept records only in fixed
+member/attempt order, validate both timing partitions and structural counts,
+and reject complete-archive drift between attempts. Atomically checkpoint
+each accepted record and permit bounded resumes only under identical
+identity. Publish a complete result only after all 36 records validate;
+retain raw reports and select the actual median-total attempt for each
+member. Do not mix these measurements with BM-0089 or BM-0090 or treat them
+as a production speed claim, CI timing gate, or codec-policy change.

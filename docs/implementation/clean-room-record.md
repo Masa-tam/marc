@@ -32122,3 +32122,28 @@ both bounds.
   after all nine processes; every process passed public round trip,
   complete-archive identity, both timing partitions, and structural count
   checks. Documentation verification and diff check remain pending.
+
+## CR-1291: 2026-09-22 - Fixed all-member token-production campaign preparation
+
+- Authoring method: defined a separate inert 36-record experiment manifest,
+  extended marc's own phase-campaign checkpoint pattern for the diagnostic
+  report, and added fixture-only tests before any all-member measurement.
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1167, TVG-1032, the token-production breakdown design,
+  CR-1290, and marc's existing phase-campaign runner and Silesia manifest.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: pin one clean source/build/Corpus/manifest identity,
+  require canonical member/attempt ordering, checkpoint only validated full
+  reports, preserve all raw records, and select an actual median-total
+  attempt per member. Treat timing as diagnostic and separate from BM-0089
+  and BM-0090.
+- Generated-code task description: prepare a resumable, identity-gated,
+  all-member token-production campaign without launching the expensive run.
+- Similarity review: the runner reuses marc's independently written local
+  phase-campaign and report validators; no external implementation expression
+  was used.
+- Local validation: fixture runner tests, CMake registration, documentation
+  verification, and all 3,585 MSVC Release CTest cases passed, including
+  interoperability schema compatibility. No all-member measurement or
+  performance conclusion is claimed.

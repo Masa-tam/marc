@@ -145,3 +145,18 @@ compares the default and diagnostic archive identities and checks the new
 report's nested partition and counts. No Silesia pilot or all-member result
 had been run or accepted at the end of the report-hook stage. The subsequent
 fixed `mr`/`sao`/`x-ray` pilot and its limits are recorded in BM-0090.
+
+## All-member campaign preparation
+
+The selected pilot did not establish a Corpus-wide distribution. A separate,
+fixed `silesia-contextual-rans-tokenize-full-v1.json` manifest and resumable
+runner now define twelve Silesia members by three independent one-iteration
+processes, in canonical member/attempt order. The runner pins clean source,
+MSVC Release executable and project, manifest bytes, and verified Corpus
+identity; it rejects changed identity on resume. Each accepted report must
+retain the diagnostic marker, whole-encode and nested tokenization partitions,
+structural counts, and a stable complete archive per member. The checkpoint
+advances after each accepted record, and no full result is written before all
+36 records pass. The representative attempt is selected by median total
+invocation time without combining separately timed phases. No all-member
+measurement or performance conclusion is claimed at the preparation stage.

@@ -15153,3 +15153,21 @@ Private contextual rANS token-production report smoke (2026-09-22).
   trip and private archive identity gates. The old mode's report fields
   remain unchanged, and malformed nested accounting cannot be reported as
   valid diagnostic evidence.
+
+### TVG-1032
+
+Fixed all-member token-production runner fixtures (2026-09-22).
+
+- Date: 2026-09-22
+- Source: DD-1167, TVG-1031, and marc's phase-campaign runner contract.
+- Scope: synthetic reports and temporary checkpoint/result files only; no
+  Silesia Corpus bytes, long benchmark, or performance threshold.
+- Vectors: fixed twelve-by-three manifest and canonical order; valid nested
+  and outer partitions; wrong schema, missing/duplicate fields, bad archive
+  identity, invalid counts/durations, altered manifest, changed build
+  identity, non-prefix checkpoint, and archive drift across attempts.
+  Exercise partial quota, resume, completion, and no-op replay.
+- Expected behavior: every accepted record has complete identity and both
+  valid partitions; invalid records do not advance the on-disk checkpoint;
+  no incomplete run writes a full result; completed replay launches no
+  child benchmark and leaves the result bytes unchanged.

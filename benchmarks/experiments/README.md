@@ -49,3 +49,17 @@ option is a dry-run quota: it checkpoints at most N new records and does not
 publish a full result until all 36 are valid. Run the same command again to
 resume; changed build, source, manifest, or Corpus identity is an error.
 The checkpoint and final result remain in the ignored local results directory.
+
+The separate `silesia-contextual-rans-tokenize-full-v1.json` manifest fixes
+the instrumented HashChain token-production breakdown for all twelve members,
+with three independent one-iteration processes per member. Run
+`tools/run_silesia_contextual_rans_tokenize_full.py` from a clean committed
+source revision after building the private phase benchmark in MSVC x64 Release.
+The runner requires `--tokenize-breakdown`, validates both timing partitions,
+token counts, complete archive identity, build identity, and Corpus identity,
+and checkpoints each accepted record. `--max-new-records N` bounds work in
+one invocation; reusing the same command and unchanged inputs resumes from
+the checkpoint. A complete result is written only after all 36 records pass.
+The checkpoint and result stay in the ignored local results directory. This
+campaign is independent of the earlier whole-encode phase campaign and
+selected token-production pilot; its timings are diagnostic, not CI gates.
