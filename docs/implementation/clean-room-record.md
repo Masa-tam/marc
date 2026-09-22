@@ -32072,3 +32072,27 @@ both bounds.
   frame/streaming tests, all 3,583 CTest cases including interoperability
   schema compatibility, documentation verifier, and diff check passed.
   No Corpus measurement or benchmark report is claimed.
+
+## CR-1289: 2026-09-22 - Identity-gated token-production report mode
+
+- Authoring method: extended marc's existing private contextual rANS phase
+  benchmark with an explicit diagnostic mode and added a README-only smoke
+  verifier comparing default and diagnostic complete-archive identity.
+- References used: DD-1166, TVG-1030, TVG-1031, the token-production
+  breakdown design, CR-1288, and marc's existing phase benchmark contract.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: keep the legacy CLI invocation and report schema
+  unchanged; mark the new loop as instrumented, derive the expected token
+  count independently from completed frames, and reject either partition
+  or archive identity mismatch before accepting a report.
+- Generated-code task description: add a distinct, identity-gated private
+  token-production report and deterministic non-Corpus smoke checks.
+- Similarity review: the mode reuses marc's own public/private identity
+  gate and checked timing summaries; no external implementation expression
+  was used.
+- Local validation: MSVC Release all-target build, targeted legacy/new
+  benchmark and nested-frame tests, README default/diagnostic identity
+  smoke, all 3,584 CTest cases including interoperability schema
+  compatibility, documentation verifier, and diff check passed. No Corpus
+  measurement or performance conclusion is claimed.

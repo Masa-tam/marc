@@ -3,6 +3,7 @@
 #include "context/lzss_contextual_rans_encode_phase_timing.hpp"
 #include "core/checked_math.hpp"
 #include "core/sha256.hpp"
+#include "dictionary/lzss_typed_tokenize_timing.hpp"
 #include "frame/lzss_contextual_rans_frame_streaming_encoder.hpp"
 #include "frame/lzss_contextual_rans_profile.hpp"
 
@@ -20,18 +21,26 @@
 #include <span>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 namespace {
 
 using marc::context::internal::LzssContextualRansEncodePhaseSummary;
 using marc::context::internal::LzssContextualRansEncodePhaseTiming;
+using marc::dictionary::internal::LzssTypedTokenizeSummary;
+using marc::dictionary::internal::LzssTypedTokenizeTiming;
 using marc::frame::internal::LzssContextualRansEncoderViews;
 using marc::frame::internal::LzssContextualRansEncoderWorkspaceRequirements;
 using marc::frame::internal::LzssContextualRansFrameStreamingEncoder;
 using marc::frame::internal::LzssContextualRansStreamHeader;
 
 constexpr std::size_t maximum_output_capacity = std::size_t{1} << 30;
+
+enum class ReportMode : std::uint8_t {
+    phases,
+    tokenize_breakdown,
+};
 
 struct TransformDeleter {
     void operator()(marc_transform* value) const noexcept {
@@ -217,7 +226,9 @@ struct AlignedStorage {
     const std::span<const std::byte> input,
     const std::span<std::byte> output,
     LzssContextualRansEncodePhaseTiming* const timing,
+    LzssTypedTokenizeTiming* const tokenize_timing,
     std::size_t& produced,
+    std::uint64_t& token_count,
     std::chrono::nanoseconds& elapsed) {
     std::vector<std::byte> primary(requirements.frame_input_bytes);
     std::vector<std::byte> secondary(requirements.frame_encoded_bytes);
@@ -234,13 +245,14 @@ struct AlignedStorage {
     }
     LzssContextualRansFrameStreamingEncoder encoder{
         stream, limits, primary, views.tokens, views.match_finder, secondary,
-        requirements.match_finder_strategy, timing};
+        requirements.match_finder_strategy, timing, tokenize_timing};
     const auto start = std::chrono::steady_clock::now();
     const auto result = encoder.process(
         input, output, marc::core::flag_value(marc::core::ProcessFlags::end_input));
     elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::steady_clock::now() - start);
     produced = result.output_produced;
+    token_count = encoder.diagnostic_token_count();
     return result.status == marc::core::StreamStatus::end_of_stream
         && result.input_consumed == input.size();
 }
@@ -255,7 +267,8 @@ struct AlignedStorage {
 }
 
 [[nodiscard]] int run(const std::filesystem::path& path,
-                      const std::uint32_t iterations) {
+                      const std::uint32_t iterations,
+                      const ReportMode mode) {
     std::vector<std::byte> input{};
     if (!read_file(path, input)) {
         std::cerr << "input read failed\n";
@@ -317,9 +330,10 @@ struct AlignedStorage {
     std::string input_digest{};
     if (!digest_hex(input, input_digest)) return 1;
     std::size_t actual_size{};
+    std::uint64_t token_count{};
     std::chrono::nanoseconds elapsed{};
     if (!run_private(stream, limits, private_requirements, input, archive,
-                     nullptr, actual_size, elapsed)
+                     nullptr, nullptr, actual_size, token_count, elapsed)
         || actual_size != public_size) {
         std::cerr << "untimed private encode mismatch\n";
         return 1;
@@ -332,6 +346,10 @@ struct AlignedStorage {
         return 1;
     }
 
+    if (mode == ReportMode::tokenize_breakdown) {
+        std::cout << "report_schema=lzss-contextual-rans-tokenize-breakdown-v1\n"
+                  << "instrumented_token_loop=1\n";
+    }
     std::cout << "codec=lzss-contextual-rans-4m\n"
               << "input_bytes=" << input.size() << '\n'
               << "input_sha256=" << input_digest << '\n'
@@ -354,8 +372,11 @@ struct AlignedStorage {
               << "iterations=" << iterations << '\n';
     for (std::uint32_t index = 0; index < iterations; ++index) {
         LzssContextualRansEncodePhaseTiming timing{};
+        LzssTypedTokenizeTiming tokenize_timing{};
+        auto* const inner = mode == ReportMode::tokenize_breakdown
+            ? &tokenize_timing : nullptr;
         if (!run_private(stream, limits, private_requirements, input, archive,
-                         &timing, actual_size, elapsed)
+                         &timing, inner, actual_size, token_count, elapsed)
             || actual_size != public_size
             || !digest_hex(std::span<const std::byte>{archive}.first(actual_size),
                            actual_digest)
@@ -368,6 +389,19 @@ struct AlignedStorage {
             std::cerr << "invalid phase partition\n";
             return 1;
         }
+        LzssTypedTokenizeSummary breakdown{};
+        if (inner != nullptr) {
+            const auto outer_tokenize = summary.phase_nanoseconds[0];
+            if (!std::in_range<std::chrono::nanoseconds::rep>(outer_tokenize)
+                || !inner->summarize(
+                    std::chrono::nanoseconds{
+                        static_cast<std::chrono::nanoseconds::rep>(
+                            outer_tokenize)},
+                    token_count, input.size(), breakdown)) {
+                std::cerr << "invalid token-production partition\n";
+                return 1;
+            }
+        }
         std::cout << "iteration=" << index + 1 << '\n'
                   << "total_nanoseconds=" << summary.total_nanoseconds << '\n'
                   << "tokenize_nanoseconds=" << summary.phase_nanoseconds[0] << '\n'
@@ -376,6 +410,23 @@ struct AlignedStorage {
                   << "reverse_write_nanoseconds=" << summary.phase_nanoseconds[3] << '\n'
                   << "frame_finish_nanoseconds=" << summary.phase_nanoseconds[4] << '\n'
                   << "other_nanoseconds=" << summary.other_nanoseconds << '\n';
+        if (inner != nullptr) {
+            std::cout << "token_count=" << token_count << '\n'
+                      << "finder_initialize_nanoseconds="
+                      << breakdown.phase_nanoseconds[0] << '\n'
+                      << "finder_query_nanoseconds="
+                      << breakdown.phase_nanoseconds[1] << '\n'
+                      << "finder_advance_nanoseconds="
+                      << breakdown.phase_nanoseconds[2] << '\n'
+                      << "token_other_nanoseconds="
+                      << breakdown.token_other_nanoseconds << '\n'
+                      << "finder_query_count="
+                      << breakdown.finder_query_count << '\n'
+                      << "finder_advance_count="
+                      << breakdown.finder_advance_count << '\n'
+                      << "advanced_input_bytes="
+                      << breakdown.advanced_input_bytes << '\n';
+        }
     }
     return 0;
 }
@@ -383,15 +434,21 @@ struct AlignedStorage {
 } // namespace
 
 int main(const int argc, char* argv[]) {
-    if (argc < 2 || argc > 3) {
+    const bool breakdown = argc > 1
+        && std::string_view{argv[1]} == "--tokenize-breakdown";
+    const int path_index = breakdown ? 2 : 1;
+    if (argc < path_index + 1 || argc > path_index + 2) {
         std::cerr << "usage: marc_lzss_contextual_rans_phase_benchmark "
-                     "<input> [iterations]\n";
+                     "[--tokenize-breakdown] <input> [iterations]\n";
         return 2;
     }
     std::uint32_t iterations{1};
-    if (argc == 3 && !parse_iterations(argv[2], iterations)) {
+    if (argc == path_index + 2
+        && !parse_iterations(argv[path_index + 1], iterations)) {
         std::cerr << "invalid iteration count\n";
         return 2;
     }
-    return run(argv[1], iterations);
+    return run(argv[path_index], iterations,
+               breakdown ? ReportMode::tokenize_breakdown
+                         : ReportMode::phases);
 }

@@ -152,6 +152,7 @@ TEST(LzssContextualRansFrameStreamingEncoder,
         &outer, &inner};
     const auto start = std::chrono::steady_clock::now();
     const auto archive = encode_one_byte_chunks(encoder, input);
+    EXPECT_EQ(encoder.diagnostic_token_count(), 2U);
     const auto total = std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::steady_clock::now() - start);
     EXPECT_EQ(archive, two_frame_oracle());
@@ -189,6 +190,7 @@ TEST(LzssContextualRansFrameStreamingEncoder,
         &outer, &inner};
     EXPECT_EQ(binary_tree.process({}, {}, end_flag()).error.code,
               ErrorCode::invalid_argument);
+    EXPECT_EQ(binary_tree.diagnostic_token_count(), 0U);
 }
 
 TEST(LzssContextualRansFrameStreamingEncoder,

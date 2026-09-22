@@ -243,6 +243,16 @@ bool LzssContextualRansFrameStreamingEncoder::prepare_frame() noexcept {
     preparation_error_ = preparation_error(encoded);
     serialized_size = encoded.serialized_size;
     if (preparation_error_ != core::ErrorCode::none) return false;
+    if (tokenize_timing_ != nullptr) {
+        std::uint64_t updated{};
+        if (!core::checked_add(
+                diagnostic_token_count_,
+                static_cast<std::uint64_t>(encoded.token_count), updated)) {
+            preparation_error_ = core::ErrorCode::internal_error;
+            return false;
+        }
+        diagnostic_token_count_ = updated;
+    }
     pending_size_ = serialized_size;
     pending_offset_ = 0;
     input_committed_ += raw_frame_size_;

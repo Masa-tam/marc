@@ -34,6 +34,11 @@ public:
         std::span<std::byte> output,
         std::uint32_t flags) noexcept override;
 
+    // Populated only for the private nested HashChain diagnostic.
+    [[nodiscard]] std::uint64_t diagnostic_token_count() const noexcept {
+        return diagnostic_token_count_;
+    }
+
 private:
     enum class State : std::uint8_t {
         draining_header,
@@ -70,6 +75,7 @@ private:
     std::uint64_t input_received_{};
     std::uint64_t input_committed_{};
     std::uint64_t frame_sequence_{};
+    std::uint64_t diagnostic_token_count_{};
     bool end_seen_{};
     State state_{State::draining_header};
     core::StreamError terminal_error_{};

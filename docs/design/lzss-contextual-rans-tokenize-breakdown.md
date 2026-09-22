@@ -1,7 +1,7 @@
 # LZSS contextual rANS token-production breakdown
 
-Status: diagnostic contract, checked accumulator, HashChain typed-parser and
-frame hooks implemented; no benchmark hook or Corpus result implemented.
+Status: diagnostic contract, checked accumulator, HashChain typed-parser,
+frame, and explicit benchmark hooks implemented; no Corpus result recorded.
 
 ## Question and fixed scope
 
@@ -119,5 +119,27 @@ the inner sink only for HashChain exact matching and only with the outer
 phase sink. Other public codec paths still pass null. Frame tests compare
 complete archive bytes for a beneficial match and for two one-byte-output
 frames, verify the same-invocation inner/outer partition and structural
-counts, and reject unsupported diagnostic combinations. No benchmark hook
-or Corpus measurement is claimed yet.
+counts, and reject unsupported diagnostic combinations. At the end of this
+stage, no benchmark hook or Corpus measurement was claimed.
+
+## Diagnostic report hook
+
+The existing static-library benchmark executable accepts an explicit
+`--tokenize-breakdown <input> [iterations]` mode. Its default invocation and
+output remain unchanged for the existing phase pilot/full runners. The new
+mode emits `report_schema=lzss-contextual-rans-tokenize-breakdown-v1` and
+`instrumented_token_loop=1`, followed by the existing complete-archive
+identity, workspace, and whole-encode phase fields plus `token_count`, the
+three inner durations, `token_other_nanoseconds`, and the three structural
+counts. The diagnostic reports raw instrumented time; it does not subtract
+clock overhead or estimate uninstrumented throughput.
+
+Before reporting, each invocation performs an untimed public encode/decode
+round trip, checks complete byte count and SHA-256 for an untimed private
+archive, and repeats the same checks for every timed private archive. Both
+the old whole-encode partition and new nested `tokenize` partition must
+validate. The expected token count comes independently from completed
+frames, not from the inner counter being checked. The README smoke test
+compares the default and diagnostic archive identities and checks the new
+report's nested partition and counts. No Silesia pilot or all-member result
+has been run or accepted in this stage.

@@ -15135,3 +15135,21 @@ Private contextual rANS token-production breakdown vectors (2026-09-22).
   counts and duration partitions and reject an inner sink without the outer
   sink or with a non-HashChain strategy. The private benchmark identity gate
   and Corpus vectors remain pending.
+
+### TVG-1031
+
+Private contextual rANS token-production report smoke (2026-09-22).
+
+- Date: 2026-09-22
+- Source: DD-1166, TVG-1030, and the token-production breakdown design.
+- Scope: repository README fixture only; no external Corpus or performance
+  threshold is required.
+- Vectors: invoke the unchanged default phase mode and the explicit
+  `--tokenize-breakdown` mode once each. Require the diagnostic schema and
+  instrumentation marker only in the new mode; compare complete archive
+  byte count and SHA-256 and input identity across modes; validate the
+  nested duration sum and token/query/advance/advanced-byte invariants.
+- Expected behavior: both modes independently enforce the public round
+  trip and private archive identity gates. The old mode's report fields
+  remain unchanged, and malformed nested accounting cannot be reported as
+  valid diagnostic evidence.
