@@ -199,3 +199,13 @@ DD-1166 and the [token-production breakdown contract](lzss-contextual-rans-token
 define the next diagnostic boundary inside the measured `tokenize` phase.
 This follow-up is a new measurement and must retain BM-0089 as a separate
 historical result.
+
+## Clock-resolution clarification
+
+The private phase accumulator also records a checked visit count per named
+phase. A real nonempty encode can visit a phase while `steady_clock` duration
+casts to zero nanoseconds, especially on one-byte frames. Tests therefore
+assert visits for hook coverage and separately assert the duration partition;
+they do not require every short phase to have positive elapsed nanoseconds.
+The count is not a performance metric and does not change the existing
+benchmark report fields or the normal null-hook path.

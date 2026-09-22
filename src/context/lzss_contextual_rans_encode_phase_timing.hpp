@@ -25,6 +25,8 @@ inline constexpr std::size_t lzss_contextual_rans_encode_phase_count =
 struct LzssContextualRansEncodePhaseSummary {
     std::array<std::uint64_t, lzss_contextual_rans_encode_phase_count>
         phase_nanoseconds{};
+    std::array<std::uint64_t, lzss_contextual_rans_encode_phase_count>
+        phase_record_counts{};
     std::uint64_t other_nanoseconds{};
     std::uint64_t total_nanoseconds{};
 };
@@ -40,12 +42,16 @@ public:
             return false;
         }
         std::uint64_t updated{};
+        std::uint64_t updated_count{};
         if (!core::checked_add(
                 phase_nanoseconds_[index],
-                static_cast<std::uint64_t>(elapsed.count()), updated)) {
+                static_cast<std::uint64_t>(elapsed.count()), updated)
+            || !core::checked_add(phase_record_counts_[index],
+                                  std::uint64_t{1}, updated_count)) {
             return false;
         }
         phase_nanoseconds_[index] = updated;
+        phase_record_counts_[index] = updated_count;
         return true;
     }
 
@@ -68,15 +74,21 @@ public:
         }
         const auto total_ns = static_cast<std::uint64_t>(total.count());
         if (accounted > total_ns) return false;
-        output = {phase_nanoseconds_, total_ns - accounted, total_ns};
+        output = {phase_nanoseconds_, phase_record_counts_,
+                  total_ns - accounted, total_ns};
         return true;
     }
 
-    void reset() noexcept { phase_nanoseconds_.fill(0); }
+    void reset() noexcept {
+        phase_nanoseconds_.fill(0);
+        phase_record_counts_.fill(0);
+    }
 
 private:
     std::array<std::uint64_t, lzss_contextual_rans_encode_phase_count>
         phase_nanoseconds_{};
+    std::array<std::uint64_t, lzss_contextual_rans_encode_phase_count>
+        phase_record_counts_{};
 };
 
 } // namespace marc::context::internal

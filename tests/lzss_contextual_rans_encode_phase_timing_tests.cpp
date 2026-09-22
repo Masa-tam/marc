@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include <chrono>
+#include <cstddef>
 #include <cstdint>
 
 namespace {
@@ -18,6 +19,18 @@ TEST(LzssContextualRansEncodePhaseTimingTests, EmptyEncodeHasZeroPartition) {
     EXPECT_EQ(summary.total_nanoseconds, 0);
     EXPECT_EQ(summary.other_nanoseconds, 0);
     for (const auto value : summary.phase_nanoseconds) EXPECT_EQ(value, 0);
+    for (const auto count : summary.phase_record_counts) EXPECT_EQ(count, 0);
+}
+
+TEST(LzssContextualRansEncodePhaseTimingTests,
+     ZeroElapsedTimeStillRecordsPhaseVisit) {
+    LzssContextualRansEncodePhaseTiming timing{};
+    ASSERT_TRUE(timing.record(LzssContextualRansEncodePhase::tokenize,
+                              std::chrono::nanoseconds{0}));
+    LzssContextualRansEncodePhaseSummary summary{};
+    ASSERT_TRUE(timing.summarize(std::chrono::nanoseconds{0}, summary));
+    EXPECT_EQ(summary.phase_nanoseconds[0], 0);
+    EXPECT_EQ(summary.phase_record_counts[0], 1);
 }
 
 TEST(LzssContextualRansEncodePhaseTimingTests,
@@ -38,6 +51,11 @@ TEST(LzssContextualRansEncodePhaseTimingTests,
     EXPECT_EQ(summary.phase_nanoseconds[2], 5);
     EXPECT_EQ(summary.phase_nanoseconds[3], 2);
     EXPECT_EQ(summary.phase_nanoseconds[4], 1);
+    EXPECT_EQ(summary.phase_record_counts[0], 2);
+    for (std::size_t index = 1; index < summary.phase_record_counts.size();
+         ++index) {
+        EXPECT_EQ(summary.phase_record_counts[index], 1);
+    }
     EXPECT_EQ(summary.other_nanoseconds, 11);
     EXPECT_EQ(summary.total_nanoseconds, 40);
 }
@@ -54,6 +72,7 @@ TEST(LzssContextualRansEncodePhaseTimingTests,
     LzssContextualRansEncodePhaseSummary summary{};
     ASSERT_TRUE(timing.summarize(4ns, summary));
     EXPECT_EQ(summary.phase_nanoseconds[0], 4);
+    EXPECT_EQ(summary.phase_record_counts[0], 1);
     EXPECT_EQ(summary.other_nanoseconds, 0);
 }
 
@@ -77,6 +96,7 @@ TEST(LzssContextualRansEncodePhaseTimingTests,
     ASSERT_TRUE(timing.summarize(std::chrono::nanoseconds{0}, summary));
     EXPECT_EQ(summary.total_nanoseconds, 0);
     EXPECT_EQ(summary.phase_nanoseconds[0], 0);
+    EXPECT_EQ(summary.phase_record_counts[0], 0);
 }
 
 TEST(LzssContextualRansEncodePhaseTimingTests,

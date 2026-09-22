@@ -1,7 +1,7 @@
 # LZSS contextual rANS token-production breakdown
 
-Status: diagnostic contract and checked accumulator implemented; no parser
-timing hook or Corpus result implemented.
+Status: diagnostic contract, checked accumulator, and HashChain typed-parser
+hook implemented; no frame/benchmark hook or Corpus result implemented.
 
 ## Question and fixed scope
 
@@ -102,3 +102,16 @@ repeated-frame accumulation, invalid phase/duration, within-phase and
 cross-phase overflow, overfull inner sum, count/byte mismatch, atomic byte
 overflow rejection, and unchanged output after failure. No production
 encoder calls this type yet, so this stage makes no timing or speed claim.
+
+## Stage 2 status
+
+The production HashChain one-pass typed encoder now accepts an optional
+private timing sink. A null sink selects the compile-time untimed parser;
+no clock call or diagnostic branch is added inside its token loop. A non-null
+sink records finder initialization once and query/advance intervals plus
+structural counts for each token. Invalid workspace is rejected before a
+phase is recorded. The dictionary-level tests compare timed and untimed
+typed tokens for empty, single-byte, distinct, and repeated input and check
+the nested partition and byte/count invariants. Other public codec paths
+still pass null. The contextual rANS frame encoder and benchmark do not yet
+pass the inner sink or report a Corpus measurement.

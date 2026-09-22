@@ -23762,7 +23762,7 @@ limit, or production codec policy.
 ## DD-1166: Bound the HashChain token-production subphase diagnostic
 
 - Date: 2026-09-22
-- Status: accepted for diagnostic design; implementation pending
+- Status: diagnostic design accepted; accumulator and dictionary hook complete
 
 The current `lzss-contextual-rans-4m` HashChain path has a clean boundary
 around finder initialization and, once per token, `find_match` and `advance`.

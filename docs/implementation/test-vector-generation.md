@@ -15062,6 +15062,11 @@ with one-byte output chunks, and a HashChain frame. They require the timed
 and untimed complete archives to match, every named phase to be observed on
 nonempty inputs, a valid same-invocation partition, and zero phase time for
 empty input. These are correctness smoke vectors, not performance thresholds.
+After a real two-byte test recorded a visited phase as zero nanoseconds,
+"observed" is checked by a per-phase record count, not a positive elapsed
+duration. A supplied zero-nanosecond record must increment its count;
+invalid updates leave both duration and count unchanged. Empty input has
+zero visits. The original duration partition remains unchanged.
 
 The Stage 3 diagnostic executable uses `README.md` as a repository-owned
 CTest smoke input. It requires a public C API encode/decode round trip, then
@@ -15122,4 +15127,7 @@ Private contextual rANS token-production breakdown vectors (2026-09-22).
   are recorded. No clock reads or extra allocations occur with a null
   diagnostic sink. Malformed reports cannot become benchmark evidence.
 - Stage 1 validation: seven supplied-duration accumulator tests pass on
-  MSVC Release. Parser and archive identity vectors remain pending.
+  MSVC Release. The dictionary-level HashChain hook also passes empty,
+  single-byte, distinct, and repeated timed/untimed token equality and
+  partition checks, plus a short-workspace no-record test. Frame-level
+  complete-archive identity vectors remain pending.

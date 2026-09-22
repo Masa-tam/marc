@@ -32005,3 +32005,48 @@ both bounds.
   timing tests, and all 3,578 CTest cases (including interoperability schema
   compatibility) passed afterward. No codec path or encoded bytes were
   changed.
+
+## CR-1286: 2026-09-22 - Optional HashChain typed-parser timing hook
+
+- Authoring method: added a failing timed/untimed dictionary test first,
+  then connected the private accumulator to the production HashChain
+  one-pass typed parser.
+- References used: DD-1166, TVG-1030, the token-production breakdown design,
+  and marc's own `run_typed_parser` and HashChain initialization path.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: select timed and untimed parser specializations
+  once per frame, outside the token loop; include initialization, query,
+  and advance only in their named intervals; reject incomplete diagnostics
+  without changing public behavior or format.
+- Generated-code task description: add a private optional HashChain timing
+  sink with typed-token identity and fail-closed workspace tests.
+- Similarity review: the hook follows marc's own parser call boundaries;
+  no external implementation expression was used.
+- Local validation: the test build initially rejected the absent timing
+  argument as expected; MSVC Release build and 37 targeted timing/typed-
+  encoder tests passed. The final MSVC Release all-target build and all
+  3,581 CTest cases, including interoperability schema compatibility, passed.
+  Frame-level timed/untimed complete-archive identity remains pending.
+
+## CR-1287: 2026-09-22 - Zero-duration phase visit regression
+
+- Authoring method: inspected the failing full-CTest log and the existing
+  two-byte contextual rANS streaming test before changing its assertion.
+- References used: TVG-1027, the existing private phase accumulator, the
+  failing test output, and `std::chrono::steady_clock` duration semantics.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: treat a zero-nanosecond measured interval as valid;
+  count phase visits atomically with durations and assert visits rather than
+  positive time for a tiny input. Preserve the original time partition and
+  benchmark report schema.
+- Generated-code task description: correct clock-resolution-sensitive test
+  evidence without weakening archive identity or phase accounting.
+- Similarity review: the change is limited to marc's private timing type
+  and its tests; no external implementation expression was used.
+- Local validation: the original full run passed 3,579 of 3,580 tests and
+  reported zero nanoseconds in one visited stage; targeted old/new timing
+  and streaming tests pass with visit counts, and the original failing test
+  passes 20 consecutive reruns. The final full CTest rerun passed all 3,581
+  cases, including interoperability schema compatibility.

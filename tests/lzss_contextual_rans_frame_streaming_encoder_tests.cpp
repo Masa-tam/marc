@@ -125,8 +125,8 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     EXPECT_EQ(timed_archive, encoded);
     marc::context::internal::LzssContextualRansEncodePhaseSummary summary{};
     ASSERT_TRUE(timing.summarize(total, summary));
-    for (const auto duration : summary.phase_nanoseconds) {
-        EXPECT_GT(duration, 0U);
+    for (const auto count : summary.phase_record_counts) {
+        EXPECT_GT(count, 0U);
     }
 }
 
@@ -217,8 +217,8 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     ASSERT_TRUE(timing.summarize(total, summary));
     EXPECT_EQ(summary.total_nanoseconds,
               static_cast<std::uint64_t>(total.count()));
-    for (const auto duration : summary.phase_nanoseconds) {
-        EXPECT_GT(duration, 0U);
+    for (const auto count : summary.phase_record_counts) {
+        EXPECT_GT(count, 0U);
     }
 
     LzssContextualRansFrameStreamingEncoder short_finder{
@@ -287,6 +287,9 @@ TEST(LzssContextualRansFrameStreamingEncoder,
     ASSERT_TRUE(timing.summarize(total, summary));
     for (const auto duration : summary.phase_nanoseconds) {
         EXPECT_EQ(duration, 0U);
+    }
+    for (const auto count : summary.phase_record_counts) {
+        EXPECT_EQ(count, 0U);
     }
 }
 

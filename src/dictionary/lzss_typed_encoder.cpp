@@ -3,22 +3,37 @@
 #include "core/checked_math.hpp"
 #include "core/buffer_overlap.hpp"
 #include "dictionary/lzss_match_finder.hpp"
+#include "dictionary/lzss_typed_tokenize_timing.hpp"
 
+#include <chrono>
 #include <cstddef>
 #include <limits>
 
 namespace marc::dictionary::internal {
 namespace {
 
-template <LzssMatchFinder Finder, typename Consumer>
+template <bool Timed = false, LzssMatchFinder Finder, typename Consumer>
 [[nodiscard]] LzssTypedEncodeResult run_typed_parser(
     const std::span<const std::byte> input, Finder& finder,
-    Consumer&& consume) noexcept {
+    Consumer&& consume,
+    LzssTypedTokenizeTiming* const timing = nullptr) noexcept {
     LzssTypedEncodeResult result{};
     result.input_size = input.size();
     std::size_t position{};
     while (position < input.size()) {
+        [[maybe_unused]] const auto query_start = [&]() noexcept {
+            if constexpr (Timed) return std::chrono::steady_clock::now();
+            return std::chrono::steady_clock::time_point{};
+        }();
         const auto match = finder.find_match(position);
+        if constexpr (Timed) {
+            if (!timing->record_since(LzssTypedTokenizePhase::finder_query,
+                                      query_start)
+                || !timing->record_query()) {
+                result.error = LzssTypedEncodeError::internal_error;
+                return result;
+            }
+        }
         LzssTypedToken token{};
         std::size_t advance{1};
         if (match.length != 0 && lzss_match_is_beneficial(match)) {
@@ -32,7 +47,19 @@ template <LzssMatchFinder Finder, typename Consumer>
             result.error = LzssTypedEncodeError::internal_error;
             return result;
         }
+        [[maybe_unused]] const auto advance_start = [&]() noexcept {
+            if constexpr (Timed) return std::chrono::steady_clock::now();
+            return std::chrono::steady_clock::time_point{};
+        }();
         finder.advance(position, position + advance);
+        if constexpr (Timed) {
+            if (!timing->record_since(LzssTypedTokenizePhase::finder_advance,
+                                      advance_start)
+                || !timing->record_advance(advance)) {
+                result.error = LzssTypedEncodeError::internal_error;
+                return result;
+            }
+        }
         if (result.token_count == std::numeric_limits<std::size_t>::max()) {
             result.error = LzssTypedEncodeError::arithmetic_overflow;
             return result;
@@ -292,7 +319,8 @@ encode_lzss_typed_tokens_hash_chain_single_pass_with(
     const std::span<LzssTypedToken> private_tokens,
     const std::span<std::byte> match_finder_workspace,
     LzssMatchFinderStatistics* const statistics,
-    const LzssTypedTokenVariant variant) noexcept {
+    const LzssTypedTokenVariant variant,
+    LzssTypedTokenizeTiming* const timing = nullptr) noexcept {
     auto validation = validate_hash_chain_encode_buffers(
         input, parameters, limits, private_tokens,
         match_finder_workspace, variant);
@@ -333,17 +361,28 @@ encode_lzss_typed_tokens_hash_chain_single_pass_with(
     const auto active_workspace =
         match_finder_workspace.first(required.workspace_size);
     Finder finder{};
+    const auto initialize_start = timing != nullptr
+        ? std::chrono::steady_clock::now()
+        : std::chrono::steady_clock::time_point{};
     const auto finder_error = InitializeFinder(
         input, parameters, limits, active_workspace, finder, statistics);
     if (finder_error != LzssHashChainError::none)
         return typed_finder_failure(input.size(), finder_error);
-    return run_typed_parser(
-        input, finder,
-        [private_tokens](const LzssTypedToken& token,
-                         const std::size_t index) noexcept {
-            private_tokens[index] = token;
-            return true;
-        });
+    if (timing != nullptr
+        && !timing->record_since(
+            LzssTypedTokenizePhase::finder_initialize, initialize_start)) {
+        validation.error = LzssTypedEncodeError::internal_error;
+        return validation;
+    }
+    const auto consume = [private_tokens](
+        const LzssTypedToken& token, const std::size_t index) noexcept {
+        private_tokens[index] = token;
+        return true;
+    };
+    if (timing != nullptr) {
+        return run_typed_parser<true>(input, finder, consume, timing);
+    }
+    return run_typed_parser(input, finder, consume);
 }
 
 template <std::size_t BucketCap>
@@ -477,13 +516,14 @@ LzssTypedEncodeResult encode_lzss_typed_tokens_hash_chain_single_pass(
     const std::span<LzssTypedToken> private_tokens,
     const std::span<std::byte> match_finder_workspace,
     LzssMatchFinderStatistics* const statistics,
-    const LzssTypedTokenVariant variant) noexcept {
+    const LzssTypedTokenVariant variant,
+    LzssTypedTokenizeTiming* const timing) noexcept {
     return encode_lzss_typed_tokens_hash_chain_single_pass_with<
         LzssHashChainMatchFinder,
         calculate_lzss_hash_chain_workspace,
         initialize_lzss_hash_chain_match_finder>(
             input, parameters, limits, private_tokens,
-            match_finder_workspace, statistics, variant);
+            match_finder_workspace, statistics, variant, timing);
 }
 
 LzssTypedEncodeResult

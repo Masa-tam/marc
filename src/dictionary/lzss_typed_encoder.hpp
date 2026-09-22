@@ -15,6 +15,8 @@
 
 namespace marc::dictionary::internal {
 
+class LzssTypedTokenizeTiming;
+
 enum class LzssTypedEncodeError : std::uint8_t {
     none,
     invalid_parameters,
@@ -84,7 +86,8 @@ encode_lzss_typed_tokens_hash_chain_single_pass(
     std::span<std::byte> match_finder_workspace,
     LzssMatchFinderStatistics* statistics = nullptr,
     LzssTypedTokenVariant variant =
-        LzssTypedTokenVariant::field_context_64k) noexcept;
+        LzssTypedTokenVariant::field_context_64k,
+    LzssTypedTokenizeTiming* timing = nullptr) noexcept;
 
 // Private experiment entries. They intentionally have no public C/C++ API or
 // frame/format selector while HashChain bucket scaling is being evaluated.
