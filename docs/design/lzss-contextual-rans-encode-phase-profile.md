@@ -1,9 +1,8 @@
 # LZSS contextual rANS encode-phase diagnostic
 
 Status: measurement contract, checked accumulator, optional codec hooks,
-identity-gated diagnostic benchmark, and fixed pilot runner implemented;
-selected pilot completed; full-member runner implemented and measurements
-pending.
+identity-gated diagnostic benchmark, and fixed pilot and full-member runners
+implemented; both campaigns completed.
 
 ## Question and scope
 
@@ -183,5 +182,13 @@ The separate full-member v1 manifest and runner implement the 36-record
 contract. Fixture-only tests cover strict manifest matching, canonical
 checkpoint prefixes, changed execution identity, malformed reports, archive
 drift, atomic checkpointing after each accepted record, quota/resume, and
-completed replay without a new child process. The runner has not yet
-accepted any external Corpus timing record; its results remain pending.
+completed replay without a new child process. The actual campaign completed
+all 36 Corpus records at clean revision `574cac57f62bb1675260d72ad45f458ac7116c67`.
+Every child passed archive and phase-partition checks; completed replay
+validated the stored result without launching a new child. BM-0089 records
+the identities, per-member median-total invocation shares, and limits of
+interpretation. Eight of twelve members spent over 90% of the median-total
+invocation in typed-token production, whereas the two contextual plans
+remained material for `x-ray`, `sao`, `ooffice`, and `osdb`. This stage does
+not separate match-search time from other token-production work and makes
+no production-code or runtime-policy change.

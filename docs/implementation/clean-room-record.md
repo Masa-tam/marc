@@ -31941,3 +31941,24 @@ both bounds.
   external implementation expression was used.
 - Local validation: fixture-only manifest and checkpoint tests passed;
   no external Corpus timing result is claimed yet.
+
+## CR-1283: 2026-09-22 - Full contextual rANS phase campaign result
+
+- Authoring method: executed the fixed all-member campaign from the clean
+  committed runner and summarized its ignored raw JSON in BM-0089.
+- References used: DD-1164, TVG-1029, CR-1282, the phase-profile design,
+  and the locally verified Silesia Corpus.
+- Known implementations intentionally not consulted: external compressor,
+  profiler, benchmark runner source, pseudocode, or test suite.
+- Independent decisions: retain all 36 process-isolated reports; derive
+  displayed phase shares only from each member's median-total invocation;
+  distinguish measured token production from unmeasured match-search cost;
+  leave both contextual plans and production behavior unchanged.
+- Generated-code task description: verify full-Corpus checkpoint completion,
+  completed replay, report identity, and phase accounting, then record only
+  bounded descriptive conclusions and the next diagnostic direction.
+- Similarity review: no implementation code was changed; the recorded
+  measurements come from marc's own instrumented encoder and local Corpus.
+- Local validation: all 36 complete-archive and phase-partition checks
+  passed; completed replay left the ignored full result unchanged. BM-0089
+  records the result and checkpoint digests.

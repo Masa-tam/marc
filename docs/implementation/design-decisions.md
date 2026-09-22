@@ -23734,3 +23734,27 @@ per-member medians, with no CI timing threshold or immediate codec-policy
 change. The pilot remains a separate, selected observation. The exact
 execution and interpretation boundaries remain in
 `docs/design/lzss-contextual-rans-encode-phase-profile.md`.
+
+## DD-1165: Use the full phase profile to bound the next investigation
+
+- Date: 2026-09-22
+- Status: accepted for diagnostic direction; no codec change
+
+BM-0089 completed DD-1164's fixed 36-record, twelve-member contextual rANS
+phase campaign. All attempts passed complete-archive identity and phase
+partition checks. Token production occupies over 90% of the median-total
+invocation on eight members, but the measurement includes match search,
+token emission, and their surrounding work. It does not establish that a
+particular match-finder operation is the dominant part of that phase. On
+`x-ray`, `sao`, `ooffice`, and `osdb`, the two contextual plans are also
+material. Their measured shares cannot justify deleting the second plan or
+its validation without a separate equivalence design and proof.
+
+Prioritize a bounded, private breakdown of typed-token production before
+selecting another search-tree or match-finder optimization. Preserve the
+existing public archive identity gate and normal null-timing path. Keep the
+plan-cost observation as a second, separate optimization hypothesis rather
+than blending it into match-search time. A new optimization experiment must
+freeze its own measurements and correctness criteria. This result sets no
+CI timing threshold and changes no format, decoder, API, ABI, workspace
+limit, or production codec policy.

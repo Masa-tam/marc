@@ -2976,3 +2976,60 @@ On these selected inputs, tokenization (including match search) dominates
 This is a diagnostic pilot, not a full-Corpus estimate, codec speed guarantee,
 or justification to remove the second plan or its validation. A separately
 frozen all-member measurement is required before selecting an optimization.
+
+### BM-0089: Full-Corpus contextual rANS encode-phase campaign
+
+On 2026-09-22, the separately frozen v1 campaign completed all 36 records:
+three independent one-iteration processes for each of the twelve verified
+Silesia members, in manifest order. It used clean source revision
+`574cac57f62bb1675260d72ad45f458ac7116c67`, MSVC 19.51.36252.0,
+x64 Release, `/O2 /Ob2 /DNDEBUG`, and the private
+`lzss-contextual-rans-4m` diagnostic executable SHA-256
+`525b6f8bd04a482761e69412bda9ec23513ccc2ecae429443c6b441dfcd6eac8`.
+The generated target project SHA-256 was
+`68ef20fe8a17922c2cd24405cfcdef78b3e59bc28b55b48a2aa761c7e68bff4d`;
+the fixed manifest SHA-256 was
+`109dec1508ea1efb85edc1b2e5cff1ff03cb780304fb33d4cf3287566e4892e7`.
+Pilot records were not reused. Each process passed the untimed public round
+trip, timed and untimed private complete-archive identity checks, workspace
+accounting, and same-invocation phase partition. Archive size and SHA-256
+were stable across the three processes for every member. The queried encoder
+workspace was 132,129,769 bytes throughout.
+
+| Member | Median total | Tokenize | Two plans | Reverse write |
+| --- | ---: | ---: | ---: | ---: |
+| `dickens` | 6.571 s | 96.07% | 2.88% | 1.04% |
+| `mozilla` | 73.155 s | 96.73% | 2.39% | 0.88% |
+| `mr` | 67.565 s | 99.54% | 0.34% | 0.12% |
+| `nci` | 41.252 s | 99.53% | 0.34% | 0.12% |
+| `ooffice` | 1.441 s | 71.73% | 19.84% | 8.40% |
+| `osdb` | 1.662 s | 77.06% | 16.81% | 6.09% |
+| `reymont` | 7.991 s | 97.94% | 1.55% | 0.50% |
+| `samba` | 19.743 s | 97.31% | 1.96% | 0.72% |
+| `sao` | 1.844 s | 58.61% | 29.88% | 11.48% |
+| `webster` | 32.310 s | 97.42% | 1.88% | 0.69% |
+| `xml` | 0.805 s | 93.88% | 4.52% | 1.57% |
+| `x-ray` | 1.209 s | 51.16% | 35.86% | 12.93% |
+
+Each row selects the invocation with that member's median total. Its phase
+shares therefore describe one actual, internally consistent partition;
+separate per-phase medians in the ignored result must not be summed as if
+they were one invocation. `Two plans` combines first and second plan only.
+The omitted frame-finish plus residual share is at most 0.05% after rounding
+in these rows. The ignored full result retains all 36 raw reports, member
+archive digests, verified Corpus identities, and execution metadata. Its
+SHA-256 is
+`b9b6a666b73c88cf1e15aa7a4a4c0adf366ab036d2207c0e446856f69208c748`;
+the completed checkpoint SHA-256 is
+`4b50e0d071f8604bae49f4f982b865c8a8f2d1e5e1f9d24e1ad88ab515f58ee9`.
+A completed replay validated all 36 records and left the result unchanged.
+
+Token production, which includes match search, exceeds 90% of median-total
+time on eight members. It does not isolate match-search time from other token
+work. The two existing contextual plans remain material on `x-ray` (35.86%),
+`sao` (29.88%), `ooffice` (19.84%), and `osdb` (16.81%). The pilot's selected
+`xml`, `x-ray`, and `mr` pattern is consistent with the full campaign, but
+their attempts are independent and not pooled. Instrumentation overhead and
+local scheduling are included. This is descriptive diagnostic evidence, not
+a cross-platform speed claim, a CI performance gate, or authority to remove
+either plan or its validation.
