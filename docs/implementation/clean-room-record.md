@@ -32823,3 +32823,21 @@ both bounds.
   512 MiB. No sanitizer finding in the corrected campaign. Windows string and
   vector annotation compatibility options remain enabled as in DD-1173.
   No full ordinary CTest run or large-window sanitizer coverage is claimed.
+
+## CR-1324: 2026-09-24 - Record pinned post-switch Silesia codec comparison
+
+- Author: Codex; reviewer: repository maintainer approved result recording.
+- References used: repository-owned manifest/runner, BM-0096 and BM-0097,
+  ignored local Silesia measurement artifacts.
+- Known implementations intentionally not consulted: external compression
+  source code or third-party benchmarks.
+- Generated-code task: document the completed full-Corpus production-probe
+  comparison and remaining external verification gates.
+- Independent decisions: retain the no-probe control, report every member
+  including `x-ray`, and distinguish process-time medians from workspace/RSS.
+- Similarity review: only marc reports and local Corpus measurements were used;
+  no external implementation structure was copied.
+- Validation: 72/72 accepted records and clean revision identity; completed
+  replay succeeded. All 12 archive identities match BM-0096. Raw result and
+  checkpoint SHA-256 values are recorded in BM-0097. No cross-platform CI or
+  interoperability completion is claimed in this record.

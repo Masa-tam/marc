@@ -3,8 +3,9 @@
 Status: private matcher pilot/full campaigns (BM-0093/BM-0094) and
 whole-codec pilot/full campaigns (BM-0095/BM-0096) completed, 2026-09-23.
 Production migration follows DD-1171. The local production query now enables
-the best-length probe; adoption remains open until post-switch validation,
-pinned whole-codec measurement, CI and interoperability gates pass. No format
+the best-length probe; BM-0097 records the completed pinned post-switch
+whole-codec comparison. Adoption remains open until external CI and
+interoperability gates pass. No format
 change is proposed. The audit below records the pre-switch state and staged
 preparation; its no-probe production labels describe that earlier state.
 
@@ -496,9 +497,9 @@ After the explicit control path and regression tests pass, activate the
 probe in the production compile-time HashChain route. Re-run MSVC Release
 build and the complete CTest suite with the agreed 600-second test timeout,
 including interoperability schema compatibility. Run relevant bounded
-decoder/round-trip fuzz smoke campaigns with the established ClangCL and
-ASan runtime environment; report an unavailable or interrupted check rather
-than claiming coverage. Keep corpus measurements separate from CI tests
+decoder/round-trip fuzz smoke campaigns with the established GNU-style Clang
+fuzz build and ASan runtime environment; report an unavailable or interrupted
+check rather than claiming coverage. Keep corpus measurements separate from CI tests
 and impose no speed threshold on correctness tests.
 
 Confirm archive/workspace identity and that the public route actually
@@ -514,5 +515,22 @@ verification before closing adoption. A wire-format change is neither
 expected nor permitted by this optimization; any token/archive discrepancy
 blocks promotion and must be diagnosed. Use local commits and fast-forward
 integration; remote pushes remain with the maintainer. If the integration
-gate fails, keep production unchanged or revert the isolated switch while
+gate fails, investigate the failing input or revert the isolated switch while
 retaining the experimental evidence and independent control path.
+
+### Remaining external validation after BM-0097
+
+The bounded encoder sanitizer campaign is FZ-0043 and the pinned post-switch
+whole-codec comparison is BM-0097. The next revision should be pushed to run
+both Windows/MSVC and Ubuntu 24.04/Ninja CI with the complete CTest suites,
+including interoperability schema compatibility. Both jobs must generate
+their revision-matched interoperability bundles. A passing CI result alone
+does not establish cross-platform archive agreement.
+
+For the same pushed revision, verify the Windows and Ubuntu 24.04 bundles on
+Ubuntu 26.04, then generate and self-verify an Ubuntu 26.04 bundle and verify
+it on Windows. Record the exact revision, producer platform, archive count and
+all four verifier results in `docs/interoperability.md` after completion.
+Check the archive count from the bundle manifest rather than assuming the
+previous 67-archive inventory is unchanged. Do not close adoption on a
+different source revision or on partially completed verification.

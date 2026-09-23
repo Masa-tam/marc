@@ -3464,3 +3464,58 @@ The full-Corpus audit supports considering production adoption: the encode
 gain survives complete entropy coding and framing without changing bytes,
 ratio or workspace. Adoption still requires a separate scope and regression
 review; this result does not change the public strategy, API or format.
+
+### BM-0097: Post-switch full contextual rANS probe comparison
+
+On 2026-09-24, the frozen BM-0096 manifest and runner completed a new 72-record
+campaign at clean revision `ef879a3b7625fc4ac6f6e98c58e55b508f712b21`,
+after the production HashChain route enabled best-length probing. This is twelve
+Silesia members, three independent processes per member and route, with a
+4 MiB frame/window and 5..258-byte matches. The explicit `hash-chain-exact`
+route remains the independent no-probe control; the explicit probe route and
+public encoder were checked against the same archive bytes on every invocation.
+The measurement uses the same whole-codec process boundaries as BM-0096.
+
+Build identity: MSVC 19.51.36252.0 x64 Release, `/O2 /Ob2 /DNDEBUG`, executable
+SHA-256 `2b53c060e41c94632ef5809c6ed728ceba980878ea211be3a5ab9757d12b2786`,
+project SHA-256 `68ef20fe8a17922c2cd24405cfcdef78b3e59bc28b55b48a2aa761c7e68bff4d`,
+manifest SHA-256 `53891532fec9e3c46804df942e398b281d054bbd48f4fa33001a1b9e0e8a1cd5`.
+The result and checkpoint use separate ignored `probe-post-switch-ef879a3b`
+paths; neither changes the historical BM-0096 result.
+
+| Member | No-probe encode median | Probe encode median | Speedup |
+| --- | ---: | ---: | ---: |
+| `dickens` | 5.802 s | 5.246 s | 1.106x |
+| `mozilla` | 82.510 s | 34.228 s | 2.411x |
+| `mr` | 73.862 s | 20.924 s | 3.530x |
+| `nci` | 43.566 s | 18.984 s | 2.295x |
+| `ooffice` | 1.486 s | 1.216 s | 1.222x |
+| `osdb` | 1.707 s | 1.371 s | 1.245x |
+| `reymont` | 8.130 s | 6.783 s | 1.199x |
+| `samba` | 22.089 s | 6.171 s | 3.580x |
+| `sao` | 1.870 s | 1.810 s | 1.033x |
+| `webster` | 34.276 s | 25.719 s | 1.333x |
+| `xml` | 0.857 s | 0.666 s | 1.288x |
+| `x-ray` | 1.335 s | 1.344 s | 0.993x |
+
+The sums of per-member encode medians are 277.4899617 seconds for no-probe
+and 124.4603120 seconds for probe, a 2.229546x ratio. Eleven members improved;
+`x-ray` slowed by about 0.66%. Decode sums are 4.5553300 and 4.5047356
+seconds, a 1.011231x ratio. Six decode medians were slower with the probe
+archive (`mr`, `nci`, `osdb`, `sao`, `webster`, `xml`), worst 0.919335x on
+`osdb`. The decoder and archive bytes are identical, so decode timing
+differences are measurement variation, not a claimed decoder optimization.
+
+All 72 records passed the runner's archive identity and round-trip checks.
+All twelve archive hashes and sizes also match the earlier BM-0096 campaign.
+Ratios and queried workspace are unchanged. Encoder workspace is 132,129,769
+bytes and decoder workspace 114,017,257 bytes for every member and route;
+the sequential peak is 132,129,769 bytes, excluding RSS and other allocations
+as described in BM-0096. Completed replay validated the saved records without
+running measurements again. The ignored result SHA-256 is
+`3132e87ab0e794762f0c640020a45b53d07aa01a3e98f481764235217ea48131`;
+the checkpoint SHA-256 is
+`375478088ea1498f7a75542c441f7676528b0354def34523cb87b2ec5ae3bbe2`.
+The source/build difference means BM-0096 timings are context rather than a
+controlled cross-revision speed comparison. External CI and cross-platform
+archive verification remain the final adoption gates.
