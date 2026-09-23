@@ -392,6 +392,49 @@ The no-probe route must retain zero probe counts and its old partition.
 Update affected validators and fixtures to assert those precise contracts,
 not simply relax expected counts until tests pass.
 
+### Migration route audit (2026-09-23)
+
+Source audit at `378537d7` distinguishes historical controls from production
+entry points. This is an inventory of remaining work, not evidence that
+production promotion has passed.
+
+| Route | Current binding | Required migration treatment |
+| --- | --- | --- |
+| Isolated campaign `hash-chain-exact` in `process_frame` | Explicit `LzssHashChainNoProbeMatchFinder` | Keep frozen no-probe semantics and zero probe counters. |
+| Whole-codec rANS baseline/candidate | Explicit `no_probe` / `best_length_probe` routes | Keep distinct from `production`; retain new source/build identity for every new campaign. |
+| Private bucket-cap finders (65,536 / 262,144 / 1,048,576 / 4,194,304) | `LzssHashChainBucketScaledMatchFinder::find_match` delegates to production `find_match` | Decouple before promotion: explicitly disable probing for historical bucket experiments and their typed-token routes. |
+| Private mnemonic mixer | Calls `find_match_with` with the default `false` template argument | Make the no-probe selection explicit; do not change the historical hash or comparison policy. |
+| Serialized encoder planning/encoding and typed two-pass/single-pass production | Instantiate `LzssHashChainMatchFinder` | Intentionally follow production promotion; verify size planning, canonical bytes and failure atomicity against independent controls. |
+| Default one-shot match-finder benchmark | Production finder, planners and complete-frame encoders | Remain a production measurement, not a historical no-probe control; distinguish the reported route when promotion occurs. |
+
+The private bucket-cap dependency affects both isolated measurements and
+`encode_lzss_typed_tokens_hash_chain_bucket_scaled_single_pass`. Pinning only
+the command-line benchmark dispatcher would therefore be insufficient.
+The shared `find_match_with` template also has an implicit probe default;
+remove that ambiguity or explicitly specify every instantiation so that a
+future default edit cannot silently alter experiment semantics.
+
+`valid_hash_chain_statistics` already distinguishes probe candidates from
+no-probe controls. Keep its checked partition and zero-probe assertions for
+historical bucket/mixer routes. Existing matcher tests also contain exact
+production prefix counters and a two-term candidate partition; review these
+against their input vectors at promotion rather than globally replacing
+their expected values. Candidate/query totals and output remain invariant,
+but prefix classifications and comparison totals need not remain identical.
+
+Next implementation order:
+
+1. Pin private bucket/mixer routes to no-probe with regression assertions
+   for zero probe reads/prunes on an input where the candidate does prune.
+2. Extend serialized and typed two-pass differential/atomic-failure coverage,
+   retaining the existing exhaustive reference and canonical golden bytes.
+3. Make production benchmark identity and production statistic expectations
+   explicit, then perform the isolated switch and Gate 3 validation.
+
+No public API, wire format, matcher policy or benchmark result was changed
+by this audit. Existing full-suite results establish the pre-switch baseline
+only; they do not certify the changes still listed above.
+
 ### Gate 3: production switch and integration validation
 
 After the explicit control path and regression tests pass, activate the

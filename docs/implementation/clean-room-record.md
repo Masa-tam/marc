@@ -32649,3 +32649,25 @@ both bounds.
   then passed. All 3,607 CTest cases passed in 390.86 seconds, including
   interoperability schema compatibility in 107.81 seconds. Documentation
   verification and diff check passed. Production matching policy is unchanged.
+
+## CR-1316: 2026-09-23 - Probe promotion route and control audit
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171 and repository-owned matcher, serialized/typed
+  encoders, benchmark dispatcher, statistic validators and regression tests
+  at commit `378537d7`.
+- Known implementations intentionally not consulted: external compression
+  or match-finder implementations and test suites.
+- Independent findings: private bucket-cap finders delegate queries to the
+  production finder and would inherit its probe policy; the mnemonic mixer
+  relies on the template's implicit no-probe default. Historical controls
+  must be pinned independently before promotion. Default one-shot benchmarks
+  intentionally measure production and must not be relabeled as controls.
+- Generated-code task description: record the route inventory, statistic
+  contract distinctions and remaining implementation order in the probe
+  design document without changing code or historical measurement records.
+- Similarity review: repository source inspection and independently written
+  documentation only; no external implementation expression introduced.
+- Validation: documentation verification and diff check; no executable code
+  changed, so no new build, CTest or corpus timing run is claimed. The prior
+  3,607-test run remains the pre-switch baseline, not a promotion result.
