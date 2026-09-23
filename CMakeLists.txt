@@ -1951,6 +1951,11 @@ if(MARC_BUILD_TESTS)
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_hash_chain_best_length_probe_runner_tests.py)
         set_tests_properties(marc_silesia_hash_chain_best_length_probe_runner_tests
             PROPERTIES LABELS tooling)
+        add_test(NAME marc_silesia_contextual_rans_best_length_probe_runner_tests
+            COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_contextual_rans_best_length_probe_runner_tests.py)
+        set_tests_properties(marc_silesia_contextual_rans_best_length_probe_runner_tests
+            PROPERTIES LABELS tooling)
         add_test(NAME marc_silesia_hash_chain_best_length_probe_full_runner_tests
             COMMAND ${Python3_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_hash_chain_best_length_probe_full_runner_tests.py)

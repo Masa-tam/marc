@@ -32401,3 +32401,24 @@ both bounds.
   seconds. New comparison and existing phase/nested report smoke tests,
   documentation verification and diff check passed. No Corpus performance
   claim or production promotion was made.
+
+## CR-1304: 2026-09-23 - Resumable whole-codec probe pilot contract
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, the private whole-codec report contract, and
+  marc's existing independent checkpoint/identity and Corpus-verification tools.
+- Known implementations intentionally not consulted: external compression
+  implementations, benchmark scripts and test suites.
+- Independent decisions: freeze eighteen paired trials on the same three
+  pilot members; pin source/build/Corpus identity, validate derived metrics
+  and cross-trial archive/workspace identity before atomic checkpointing,
+  and distinguish unchanged decoder timing from encode improvements.
+- Generated-code task description: add a fixed JSON experiment, restartable
+  runner and fixture-only tests for malformed reports, interruption, identity
+  changes, incomplete results and no-relaunch completed replay.
+- Similarity review: repository-owned helpers reused; no external expression
+  or implementation reference was introduced.
+- Local validation: seven fixture-only runner tests passed; MSVC Release
+  build and all 3,597 CTest cases passed in 377.38 seconds, including
+  interoperability schema compatibility in 101.71 seconds. Documentation
+  verification and diff check passed. The Corpus pilot has not started.

@@ -190,3 +190,37 @@ iterations, identical archive/config/workspace identities, uninstrumented
 report structure, and invalid iteration rejection. It imposes no speed gate.
 Existing phase and nested-timing report formats remain unchanged. A frozen
 checkpointed Corpus campaign and any production decision remain separate.
+
+### Frozen whole-codec pilot and restart contract
+
+`benchmarks/experiments/silesia-contextual-rans-best-length-probe-v1.json`
+freezes `mr`, `sao`, and `x-ray`, three attempts per member, baseline then
+probe in each attempt, and one iteration in each independent process.
+The eighteen-point grid uses the public 4 MiB profile (match range 5..258),
+MSVC x64 Release `/O2 /Ob2 /DNDEBUG`, and a 600-second child timeout.
+This is a selected-member pilot, not permission to promote the default.
+
+Run `tools/run_silesia_contextual_rans_best_length_probe.py` once to process
+the grid. `--max-new-records N` optionally bounds the number of new points;
+the same command resumes after interruption. The default manifest, build,
+Corpus and ignored results paths are derived from the repository root.
+The runner requires a clean source revision and verifies the supplied Corpus.
+Checkpoint identity includes the manifest hash, source revision, build path,
+compiler/project/executable identity and Corpus sizes/hashes.
+
+Only a validated canonical prefix is accepted on restart. Every successful
+point is checked for exact report fields, input identity, profile parameters,
+finite positive timing, consistent throughput/ratio and sequential workspace
+accounting. Archive hashes/sizes, ratio and workspace must agree between
+strategies and across attempts. Each point is atomically checkpointed;
+timeout, child failure or invalid report leaves the last checkpoint intact.
+No complete result is published before all eighteen points exist. Completed
+replay checks the result against the checkpoint without rerunning children
+or rewriting either file. An existing complete result beside an incomplete
+checkpoint is an error rather than a reason to overwrite it.
+
+The summary reports per-member encode/decode medians and paired speedups;
+all underlying reports remain available. Decode timing uses the unchanged
+decoder and identical archives, so differences there must not be attributed
+to a new decoding algorithm. Corpus measurements remain pending until this
+tooling is committed and the clean build identity is frozen.
