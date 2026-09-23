@@ -32800,3 +32800,26 @@ both bounds.
   verification and diff check passed. No new full ordinary CTest run is
   claimed for this fuzz-build-only change; decoder smoke does not validate
   the encoder optimization directly.
+
+## CR-1323: 2026-09-23 - Direct bounded encoder probe sanitizer comparison
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: repository typed encoder contracts, DD-1174 and existing
+  independently authored shared-prefix match-finder fixture.
+- Known implementations intentionally not consulted: external compression
+  sources and test suites.
+- Generated-code task: compare production, no-probe and exhaustive token
+  fields and reconstruct the bounded input under ASan/UBSan.
+- Independent decisions: fixed storage, 512-byte input cap, raw/four-symbol
+  inputs, token validation before overlap reconstruction and counter partition.
+- Similarity review: repository-owned implementation only; no external source
+  expression copied.
+- Trial correction: requiring the all-position fixture to prune during greedy
+  encoding failed the harness assertion, not a codec identity check. Keep the
+  positive-pruning assertion in an explicit all-position differential check;
+  preserve three-way token and reconstruction assertions for greedy encoding.
+- Final validation: target rebuilt and 10,000 inputs completed with seed
+  20260923, maximum length 512, len_control 0, timeout 5 seconds and RSS limit
+  512 MiB. No sanitizer finding in the corrected campaign. Windows string and
+  vector annotation compatibility options remain enabled as in DD-1173.
+  No full ordinary CTest run or large-window sanitizer coverage is claimed.

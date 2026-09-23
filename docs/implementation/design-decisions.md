@@ -23900,3 +23900,14 @@ default-OFF `MARC_FUZZ_DISABLE_VECTOR_ANNOTATION` option with the same guarded
 build-interface propagation. Do not disable optional annotations, all STL
 annotations, ASan, UBSan or linker mismatch checking. Document both missing
 container checks and distinguish decoder smoke from encoder/probe coverage.
+
+## DD-1174: Probe sanitizer checks compare bounded encoder routes directly
+
+Add a private libFuzzer target comparing production HashChain, explicit
+no-probe and exhaustive typed encoders on at most 512 bytes. Compare every
+token field and independently reconstruct overlap copies after token validation.
+Exercise raw bytes and a four-symbol projection with windows 5, 17, 257 and
+65536 and maximum matches 5, 6, 17 and 258. Fixed arrays and checked workspace
+requirements bound memory. A hand-authored all-position matcher fixture must
+actually prune candidates; greedy token parsing need not visit those same
+positions. This does not replace large-window, serialized or whole-codec gates.

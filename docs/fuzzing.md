@@ -1002,6 +1002,26 @@ This is bounded decoder smoke, not deep valid-stream exploration, direct
 encoder/probe fuzz coverage, or proof of safety. Encoder differential/round-trip
 sanitizer coverage and the post-switch measurement/CI gates remain separate.
 
+### FZ-0043: Bounded typed encoder probe differential campaign
+
+`marc_fuzz_lzss_encoder_probe` compares production HashChain with explicit
+no-probe and exhaustive typed encoders, validates token fields, independently
+reconstructs overlapping matches and checks statistics partitioning. Inputs
+larger than 512 bytes are rejected before work. Raw bytes and their four-symbol
+projection share the same bounded parameters and fixed arrays. An initial
+all-position shared-prefix fixture requires positive pruning and exhaustive
+match equality; greedy encoding is not required to query every position.
+
+On 2026-09-23, the Windows Clang 22.1.3 ASan/UBSan build completed 10,000
+runs with `-seed=20260923 -max_len=512 -len_control=0 -timeout=5
+-rss_limit_mb=512`. The corpus was generated locally from the repository's
+hand-authored shared-prefix fixture and retained under ignored `out/build/`.
+Both Windows annotation compatibility options were ON; matching ASan runtime
+PATH was process-local. The final run exited zero without a sanitizer finding.
+An earlier harness-only positive-pruning assumption was corrected as recorded
+in CR-1323. Large-distance, serialized, whole-codec and measurement gates remain
+separate; this finite campaign is not proof of safety.
+
 ## Finding retention policy
 
 Do not treat a disappearing crash as sufficient. Minimize each finding, add the
