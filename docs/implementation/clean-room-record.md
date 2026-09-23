@@ -32566,3 +32566,23 @@ both bounds.
   All 3,603 CTest cases passed in 388.14 seconds, including interoperability
   schema compatibility in 106.76 seconds. Documentation verification and
   diff check passed. No production switch or performance claim is made.
+
+## CR-1312: 2026-09-23 - Blocked Huffman probe/control frame integration
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171, TVG-1037 and marc's own typed-token, bounded
+  entropy, descriptor and frame serialization contracts.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder source or test suites.
+- Independent decisions: compare complete frames built from explicit control
+  and probe tokens without introducing a production dispatch hook; derive
+  headers independently from emitted counts and test sequential frame offsets.
+- Generated-code task description: exercise five window identities and three
+  input families over full/final-short frames, assert exact frame identity,
+  guard output bounds and round-trip with the ordinary frame decoder.
+- Similarity review: repository-owned interfaces and locally generated inputs
+  only; no external implementation expression was consulted.
+- Local validation: MSVC Release build and the focused frame comparison
+  passed. All 3,604 CTest cases passed in 390.19 seconds, including
+  interoperability schema compatibility in 107.10 seconds. Documentation
+  verification and diff check passed. No production switch was made.

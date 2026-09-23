@@ -15279,3 +15279,25 @@ Best-length probe window and parameter regression grid:
   the second strategy; never use the old finder after that storage is reused.
   Explicitly bound internal memory at 512 MiB and keep cases sequential.
   No exhaustive search on the large fixture or Corpus measurement is needed.
+
+### TVG-1037
+
+Blocked Huffman integration of explicit probe/control tokens:
+
+- Generate 1,039-byte inputs from repeated `A`, the fixed shared-prefix
+  pattern `ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ`, and deterministic binary
+  values `(i * 73 + i / 13) % 256`. Split into 513, 513 and 13 raw bytes.
+  Exercise each of the five contextual window identities, 64 KiB through
+  64 MiB, with its matching dictionary/context variants and explicit limits.
+- For each frame, obtain the current production HashChain frame as the
+  comparison oracle. Independently tokenize raw bytes with both explicit
+  no-probe and probe routes. Feed each result into the bounded contextual
+  Blocked Huffman encoder, serialize its descriptor, and derive the frame
+  header from its counts, lengths, sequence and committed raw offset.
+- Require all frame bytes equal to the oracle, including model description,
+  padding and header. Verify counts and serialization extents, an untouched
+  trailing sentinel, and ordinary frame decoding back to raw bytes. Require
+  no diagnostic overflow and zero probe reads/prunes on the no-probe path.
+- No header or payload bytes are copied from the oracle. Production dispatch
+  is unchanged. These bounded frame tests complement, rather than replace,
+  existing empty-stream, chunking, large-distance and malformed-input tests.

@@ -343,6 +343,16 @@ exhaustively scanning each large input. This establishes dictionary-layer
 coverage, not completion of the cross-codec archive gate below. Production
 behavior remains unchanged.
 
+The first cross-codec fixture covers Blocked Huffman without adding a
+production experiment switch. For each of the five profiles, it independently
+tokenizes through no-probe and probe, entropy-encodes those tokens, serializes
+the descriptor and frame header, and compares the entire frame to the current
+HashChain frame encoder. Repeated, shared-prefix and binary inputs span two
+full frames and one short final frame, with ordinary frame decoding afterward.
+The remaining Range, tANS and Adaptive Huffman integrations are still pending;
+rANS has its existing explicit three-route streaming comparison. This fixture
+does not replace whole-stream chunking, empty-stream or long-distance tests.
+
 Add tests while production is still unmodified, and compare complete tokens
 against both the no-probe finder and the exhaustive reference on bounded
 inputs. Cover no current best, probe rejection, probe hit followed by an
