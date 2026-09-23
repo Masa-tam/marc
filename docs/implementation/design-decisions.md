@@ -23839,7 +23839,8 @@ check alone.
 ## DD-1170: Evaluate an exact best-length probe as a private HashChain variant
 
 - Date: 2026-09-23
-- Status: selected pilot completed in BM-0093; broader evaluation pending;
+- Status: selected and all-member experiments completed in BM-0093/BM-0094;
+  whole-codec evaluation pending;
   production policy unchanged
 
 Before designing a high-memory hybrid finder, test the local pruning rule

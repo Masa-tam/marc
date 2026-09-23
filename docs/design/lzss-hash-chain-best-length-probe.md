@@ -1,7 +1,7 @@
 # HashChain best-length probe experiment
 
-Status: private selected pilot completed (BM-0093), 2026-09-23;
-all-member and whole-codec evaluation pending. This document does not
+Status: private selected pilot (BM-0093) and all-member campaign (BM-0094)
+completed, 2026-09-23; whole-codec evaluation pending. This document does not
 authorize a production matcher or format change.
 
 ## Motivation and boundary

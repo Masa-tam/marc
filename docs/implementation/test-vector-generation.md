@@ -15214,3 +15214,7 @@ Private HashChain best-length-probe vectors (2026-09-23).
   completed replay, aggregate ratios from sums of medians, and explicit
   retention of a deliberately slower member. Tests use synthetic reports
   and do not require the Corpus or enforce performance thresholds.
+- Full-Corpus execution: BM-0094 records 72 validated processes, identical
+  token/traversal results, stable diagnostics, unchanged finder workspace,
+  and completed replay without remeasurement. Whole-codec archive identity
+  and performance remain separate evaluation requirements.

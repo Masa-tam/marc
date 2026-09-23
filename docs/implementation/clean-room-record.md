@@ -32322,3 +32322,22 @@ both bounds.
   3,591 MSVC Release CTest cases passed in 339.47 seconds, including
   interoperability schema compatibility in 105.73 seconds. Documentation
   verification and diff check passed. Full-Corpus timing remains pending.
+
+## CR-1300: 2026-09-23 - All-member best-length-probe result
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, TVG-1033, the frozen full-Corpus manifest,
+  and the locally supplied Silesia Corpus verified by marc's own tool.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder, benchmark source, or test suites.
+- Independent decisions: execute all 72 predeclared records, retain every
+  member, compare summed per-member medians, and report isolated matcher
+  performance separately from untested whole-codec properties.
+- Generated-code task description: run the fixed resumable campaign,
+  validate completed replay, and record results and identities in BM-0094.
+- Similarity review: the record describes marc's own experiment and
+  independently designed private probe; no external expression was used.
+- Local validation: all 72 records passed without failures or timeouts;
+  all token, traversal, counter, and workspace invariants held. Completed
+  replay reused every record and preserved the full result. Documentation
+  ordering/link verification and diff check passed.

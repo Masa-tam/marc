@@ -3247,3 +3247,65 @@ The small `x-ray` difference may include timing noise; three selected
 members do not establish general non-regression. Whole-codec archive
 identity, encode/decode throughput, compression ratio, and memory still
 need their own audit before production adoption. The default is unchanged.
+
+### BM-0094: All-member 4 MiB HashChain best-length-probe experiment
+
+The frozen `silesia-hash-chain-best-length-probe-full-v1.json` campaign
+completed all 72 records at clean revision
+`f8580cc2c490ae419eb07fce799b083f68074d3a`. All twelve locally verified
+Silesia members received three independent baseline/probe pairs, in the
+predeclared member/attempt/strategy order. No child failed or timed out.
+The build used MSVC 19.51.36252.0 x64 Release with `/O2 /Ob2 /DNDEBUG`.
+Executable SHA-256 was
+`2b7c6328e276c6bbcf474305a80581ac3ee64375c4d366645148451cf36d47ca`,
+project SHA-256 was
+`7a9b4b23a9966549958f8f8a580cf7d112c9c854ba624080c12c055f38e1640e`,
+and full-manifest SHA-256 was
+`6e04e109ecf6356e4f7f614accb0b0b9d39279f5c875f2e4382ff1da9e8e27f7`.
+
+Conditions remain 4 MiB frame/window, 5..258-byte matches, 262,144 hash
+buckets, one timed iteration per child, and a 128 MiB hard internal-buffer
+limit. Both finders use 18,874,368 bytes of workspace. Diagnostic collection
+and the probe's baseline identity check precede the statistics-disabled
+timing pass. These timings cover the isolated matcher/parse, not complete
+codec processing or the verification-inclusive child wall time.
+
+| Member | Baseline median | Probe median | Baseline / probe speed | Probe / baseline byte comparisons |
+| --- | ---: | ---: | ---: | ---: |
+| `dickens` | 5.549236 s | 4.989700 s | 1.112x | 0.204497 |
+| `mozilla` | 74.730577 s | 31.505351 s | 2.372x | 0.120905 |
+| `mr` | 69.777218 s | 20.916999 s | 3.336x | 0.078185 |
+| `nci` | 40.668699 s | 18.573331 s | 2.190x | 0.153898 |
+| `ooffice` | 1.074852 s | 0.831079 s | 1.293x | 0.177277 |
+| `osdb` | 1.277413 s | 0.984592 s | 1.297x | 0.134975 |
+| `reymont` | 7.913199 s | 6.669169 s | 1.187x | 0.172137 |
+| `samba` | 20.263488 s | 5.629278 s | 3.600x | 0.052513 |
+| `sao` | 1.104467 s | 1.025720 s | 1.077x | 0.332405 |
+| `webster` | 29.870848 s | 23.716806 s | 1.259x | 0.130943 |
+| `xml` | 0.761991 s | 0.574397 s | 1.327x | 0.123986 |
+| `x-ray` | 0.618464 s | 0.594634 s | 1.040x | 0.539610 |
+
+Summed per-member median time is 253.610452 seconds for baseline and
+116.011056 seconds for probe: a 2.186x aggregate speedup, or a 54.256%
+time reduction. This is a ratio of summed times, not a mean of the member
+ratios. Every member's median improved; the smallest observed gain is
+1.040x on `x-ray`. Small differences remain sensitive to measurement noise,
+and this fixed-order, single-machine result does not establish a universal
+non-regression guarantee.
+
+All records passed exact token fingerprint, literal/match count,
+matched-byte count, candidate count, query-depth distribution, and workspace
+checks. Diagnostic counters were identical across attempts for each
+member/strategy. Byte-comparison ratios include probe reads. Raw records,
+all Corpus identities, and per-member medians remain in the ignored result
+file with SHA-256
+`a352184b9fbfbbd25972d02c1cd1be195b39ff2018dc560597cdd99713654eab`.
+The complete checkpoint SHA-256 is
+`4898ba791ec8eab768e5470cf2d84ad63a3215cb8236ea20a0a91738d84774ef`.
+Completed replay revalidated all 72 records without new measurements or
+result rewriting.
+
+The full-Corpus result supports the next whole-codec audit: exact archive
+bytes, encode/decode throughput, compression ratio, and peak/bounded working
+memory. It does not itself establish those properties or change the public
+strategy/default. Keep the probe private until that evaluation is complete.
