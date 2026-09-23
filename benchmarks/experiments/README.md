@@ -63,3 +63,19 @@ the checkpoint. A complete result is written only after all 36 records pass.
 The checkpoint and result stay in the ignored local results directory. This
 campaign is independent of the earlier whole-encode phase campaign and
 selected token-production pilot; its timings are diagnostic, not CI gates.
+
+The selected `silesia-hash-chain-best-length-probe-v1.json` pilot compares
+the current HashChain and private best-length probe on `mr`, `sao`, and
+`x-ray`, using 4 MiB frames/windows and three separate processes per
+strategy/member (18 records). Run
+`tools/run_silesia_hash_chain_best_length_probe.py` from a clean committed
+MSVC x64 Release build. The runner verifies the complete local Corpus,
+pins build/executable/source/manifest identity, and saves each accepted
+record under the ignored local results directory. Repeat the same command
+to resume; `--max-new-records N` bounds the new work in one invocation.
+Failed or interrupted children are retried on resume. A complete result
+requires all records, exact tokens/traversal across strategies, and stable
+diagnostic counters across attempts. Medians, comparison-work ratios and
+pruned fractions describe this selected pilot only, not a production gate
+or whole-codec throughput. Diagnostic and baseline verification passes
+precede, and are excluded from, each statistics-disabled measurement.

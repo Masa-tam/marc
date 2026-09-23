@@ -32263,3 +32263,23 @@ both bounds.
   passed (337.40 seconds), including interoperability schema compatibility
   (102.23 seconds). Documentation ordering/link verification and diff check
   passed. No Silesia performance conclusion is drawn from smoke tests.
+
+## CR-1297: 2026-09-23 - Resumable selected best-length-probe pilot
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, TVG-1033, the probe design, and marc's existing
+  local Corpus verification, build identity, and atomic checkpoint helpers.
+- Known implementations intentionally not consulted: external compressor
+  source, match-finder code, benchmark implementations, or test suites.
+- Independent decisions: freeze three independent attempts for each of
+  three selected members and two strategies; checkpoint each validated
+  record; reject changed experiment identity and token/candidate mismatch;
+  publish descriptive medians only after all 18 records pass.
+- Generated-code task description: provide one resumable local invocation
+  with fixed JSON conditions and fixture tests for rejection and recovery.
+- Similarity review: the runner composes in-repository validation helpers
+  with independently written report checks; no external expression used.
+- Local validation: five new fixture-only runner tests and the existing
+  phase-pilot tests passed. All 3,590 MSVC Release CTest cases passed in
+  338.90 seconds, including interoperability schema compatibility in
+  105.75 seconds. Documentation verification and diff check passed.

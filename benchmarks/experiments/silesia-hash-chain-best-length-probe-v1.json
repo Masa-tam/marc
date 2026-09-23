@@ -1,0 +1,22 @@
+{
+  "schema": "marc-benchmark-experiment-manifest-v1",
+  "experiment": "silesia-hash-chain-best-length-probe-v1",
+  "members": ["mr", "sao", "x-ray"],
+  "strategies": ["hash-chain-exact", "hash-chain-best-length-probe-exact"],
+  "frame_bytes": 4194304,
+  "window_bytes": 4194304,
+  "min_match_length": 5,
+  "max_match_length": 258,
+  "max_internal_buffered_bytes": 134217728,
+  "workspace_bytes": 18874368,
+  "bucket_count": 262144,
+  "iterations_per_process": 1,
+  "attempts": 3,
+  "expected_records": 18,
+  "order": ["member", "attempt", "strategy"],
+  "child_timeout_seconds": 600,
+  "checkpoint_after_records": 1,
+  "build": "MSVC-x64-Release-O2-Ob2-NDEBUG",
+  "summary": "median-per-member-and-strategy",
+  "interpretation": "selected-pilot-only-no-production-decision"
+}

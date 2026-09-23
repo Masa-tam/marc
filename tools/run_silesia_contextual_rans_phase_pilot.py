@@ -99,7 +99,9 @@ def parse_report(output: str, expected_name: str, expected_size: int,
     return result
 
 
-def read_build_identity(build_dir: Path) -> dict[str, str]:
+def read_build_identity(
+        build_dir: Path,
+        target: str = "marc_lzss_contextual_rans_phase_benchmark") -> dict[str, str]:
     cache_path = build_dir / "CMakeCache.txt"
     cache: dict[str, str] = {}
     for line in cache_path.read_text(encoding="utf-8").splitlines():
@@ -124,8 +126,8 @@ def read_build_identity(build_dir: Path) -> dict[str, str]:
     version = re.search(r'set\(CMAKE_CXX_COMPILER_VERSION "([^"]+)"\)', text)
     if version is None:
         raise PilotError("missing MSVC compiler version")
-    project = build_dir / "marc_lzss_contextual_rans_phase_benchmark.vcxproj"
-    binary = build_dir / "Release" / "marc_lzss_contextual_rans_phase_benchmark.exe"
+    project = build_dir / f"{target}.vcxproj"
+    binary = build_dir / "Release" / f"{target}.exe"
     if not project.is_file() or not binary.is_file():
         raise PilotError("diagnostic build output is missing")
     return {

@@ -72,6 +72,14 @@ every input, not merely round-trip output.
 
 ## Test and measurement sequence
 
+The selected pilot is frozen in
+`benchmarks/experiments/silesia-hash-chain-best-length-probe-v1.json`.
+It runs three independent attempts per member/strategy, ordered by member,
+attempt, then baseline/probe. It checkpoints every validated record and
+requires identical build/source/manifest/Corpus identity on resume.
+The output reports per-member medians and raw records; selected inputs
+cannot justify a production policy or an all-Corpus conclusion.
+
 The private benchmark accepts `hash-chain-best-length-probe-exact` in
 `--frames`, `--frames-limited`, and `--synthetic` modes. It verifies the
 baseline token fingerprint and candidate count before timing, reusing the

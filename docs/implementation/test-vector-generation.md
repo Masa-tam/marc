@@ -15205,3 +15205,7 @@ Private HashChain best-length-probe vectors (2026-09-23).
   and baseline counters must remain zero. File-frame smoke also exercises
   the baseline identity gate before statistics-disabled timing.
   Selected-input performance measurement remains pending.
+- Pilot tooling: fixture-only tests cover the frozen 18-point grid,
+  malformed reports, changed fingerprints/counters, noncanonical record
+  order, Boolean attempt numbers, changed run identity, interrupted-child
+  checkpoint preservation, quota/resume, and completed-run idempotence.
