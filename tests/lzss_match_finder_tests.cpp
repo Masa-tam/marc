@@ -992,6 +992,60 @@ TEST(LzssHashChainNoProbeMatchFinder, FailedInitializationPreservesControl) {
 }
 
 TEST(LzssHashChainBestLengthProbeMatchFinder,
+     FindsAndExpiresActualLongDistanceReferencesAcrossWindowProfiles) {
+    const auto original = bytes("ABCDEbbbbSZZ");
+    const auto nearer = bytes("ABCDEbbbbRZZ");
+    for (const std::uint32_t distance : {
+             65'536U, 1U << 20, 4U << 20, 16U << 20, 64U << 20}) {
+        SCOPED_TRACE(distance);
+        std::vector<std::byte> input(distance + original.size());
+        for (std::size_t i = 0; i < original.size(); ++i) {
+            input[i] = original[i];
+            input[distance - 32U + i] = nearer[i];
+            input[distance + i] = original[i];
+        }
+        auto limits = marc::core::DecoderLimits{};
+        limits.max_frame_size = input.size();
+        limits.max_total_output_size = input.size();
+        limits.max_lz_distance = distance;
+        limits.max_internal_buffered_bytes = UINT64_C(512) << 20;
+        for (const auto window : {distance, distance - 1U}) {
+            SCOPED_TRACE(window);
+            LzssParameters parameters{};
+            parameters.window_size = window;
+            const auto required = calculate_lzss_hash_chain_workspace(
+                input.size(), parameters, limits);
+            ASSERT_EQ(required.error, LzssHashChainError::none);
+            // Reuse one workspace so two large link arrays are never live.
+            auto storage = make_hash_chain_storage(required.workspace_size);
+            LzssHashChainNoProbeMatchFinder control{};
+            LzssMatchFinderStatistics control_stats{};
+            ASSERT_EQ(initialize_lzss_hash_chain_no_probe_match_finder(
+                          input, parameters, limits, storage.bytes, control,
+                          &control_stats), LzssHashChainError::none);
+            control.advance(0, distance);
+            const auto expected = control.find_match(distance);
+            EXPECT_EQ(expected.distance, window == distance ? distance : 32U);
+            EXPECT_EQ(expected.length, window == distance ? 12U : 9U);
+            EXPECT_EQ(control_stats.hash_chain_best_length_probe_comparison_count, 0U);
+
+            LzssHashChainBestLengthProbeMatchFinder probe{};
+            LzssMatchFinderStatistics probe_stats{};
+            ASSERT_EQ(initialize_lzss_hash_chain_best_length_probe_match_finder(
+                          input, parameters, limits, storage.bytes, probe,
+                          &probe_stats), LzssHashChainError::none);
+            probe.advance(0, distance);
+            EXPECT_EQ(probe.find_match(distance), expected);
+            EXPECT_EQ(probe_stats.candidate_count, control_stats.candidate_count);
+            EXPECT_FALSE(probe_stats.overflowed);
+            if (window == distance) {
+                EXPECT_GT(probe_stats.hash_chain_best_length_probe_comparison_count, 0U);
+            }
+        }
+    }
+}
+
+TEST(LzssHashChainBestLengthProbeMatchFinder,
      PrunesOlderCandidateWithoutChangingNearestTie) {
     const auto input = bytes("ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ");
     LzssMatchFinderStatistics statistics{};

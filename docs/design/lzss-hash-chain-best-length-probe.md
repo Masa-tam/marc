@@ -333,6 +333,16 @@ while retaining a genuine no-probe oracle for regression and measurement.
 
 ### Gate 2: regression evidence before switching
 
+The first regression expansion covers all five typed-token window variants
+with maximum match lengths 5, 6, 17, 256, 257 and 258 and bounded reference
+inputs at empty/prefix/match-tail boundaries. A separate matcher fixture
+uses actual distances of 64 KiB, 1 MiB, 4 MiB, 16 MiB and 64 MiB, checking
+both inclusion at the window limit and expiry one byte beyond it. It reuses
+one finder workspace and uses hand-checkable expected matches instead of
+exhaustively scanning each large input. This establishes dictionary-layer
+coverage, not completion of the cross-codec archive gate below. Production
+behavior remains unchanged.
+
 Add tests while production is still unmodified, and compare complete tokens
 against both the no-probe finder and the exhaustive reference on bounded
 inputs. Cover no current best, probe rejection, probe hit followed by an

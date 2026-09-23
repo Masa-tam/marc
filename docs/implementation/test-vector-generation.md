@@ -15254,3 +15254,28 @@ No-probe typed-token and whole-codec comparison routing:
   before output; unknown internal selector values fail as well. Existing
   benchmark smoke tests retain frozen report and archive equality checks.
 - No corpus-derived golden values or performance thresholds are introduced.
+
+### TVG-1036
+
+Best-length probe window and parameter regression grid:
+
+- For each typed-token variant (64 KiB, 1/4/16/64 MiB), compare complete
+  no-probe and probe token fields against the exhaustive reference on
+  deterministic mixed periodic inputs of lengths 0, 4, 5, 6, 257, 259 and
+  521. Test maximum match lengths 5, 6, 17, 256, 257 and 258; the typed
+  minimum remains its required value of five. Check storage sizes, candidate
+  equality, zero control probe counts, the probe prefix/pruned partition,
+  and absence of diagnostic overflow. These small inputs test configuration
+  and parsing boundaries, not actual large distances.
+- Separately place `ABCDEbbbbSZZ` at positions zero and D and
+  `ABCDEbbbbRZZ` at D-32 in an otherwise zero-filled input ending at D+12.
+  Use D = 64 KiB, 1 MiB, 4 MiB, 16 MiB and 64 MiB. At query D, a window
+  of D must select distance D, length 12, improving the nearer length-nine
+  candidate. A window of D-1 must instead select distance 32, length nine.
+  Both controls must agree with these independently derived values.
+- Advance directly to D to exercise insertion of skipped positions and
+  link-ring expiry. Require a probe read when the older improving candidate
+  is still in the window. Reinitialize in the same aligned workspace for
+  the second strategy; never use the old finder after that storage is reused.
+  Explicitly bound internal memory at 512 MiB and keep cases sequential.
+  No exhaustive search on the large fixture or Corpus measurement is needed.

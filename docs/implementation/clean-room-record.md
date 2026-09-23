@@ -32546,3 +32546,23 @@ both bounds.
   All 3,601 CTest cases passed in 396.26 seconds, including interoperability
   schema compatibility in 106.12 seconds. Documentation verification and
   diff check passed. No new Corpus performance result is claimed.
+
+## CR-1311: 2026-09-23 - Probe parameter and actual-distance regression coverage
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171, TVG-1036, marc's typed parameter validation,
+  exact match contract and existing workspace helpers.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder implementations and test suites.
+- Independent decisions: separate small exhaustive token comparisons from
+  actual long-distance fixtures; derive expected older/nearer matches from
+  fixed ASCII markers; reuse large workspace rather than holding two arrays.
+- Generated-code task description: cover every typed window variant and
+  match-length boundaries, plus real window-limit inclusion and expiry up to
+  64 MiB with candidate/probe counter checks. Leave production unchanged.
+- Similarity review: fixtures were derived from marc's match contract and
+  authored locally; no external implementation expression was consulted.
+- Local validation: MSVC Release build and both new focused fixtures passed.
+  All 3,603 CTest cases passed in 388.14 seconds, including interoperability
+  schema compatibility in 106.76 seconds. Documentation verification and
+  diff check passed. No production switch or performance claim is made.

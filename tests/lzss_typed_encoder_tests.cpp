@@ -1065,6 +1065,72 @@ TEST(LzssTypedEncoder, BestLengthProbeContextualLength256MatchesReference) {
     }
 }
 
+TEST(LzssTypedEncoder, ProbeAndControlMatchReferenceAcrossAllWindowProfiles) {
+    struct Profile {
+        LzssTypedTokenVariant variant;
+        std::uint32_t window;
+    };
+    constexpr Profile profiles[] = {
+        {LzssTypedTokenVariant::field_context_64k, 65'536},
+        {LzssTypedTokenVariant::field_context_1m, 1U << 20},
+        {LzssTypedTokenVariant::field_context_4m, 4U << 20},
+        {LzssTypedTokenVariant::field_context_16m, 16U << 20},
+        {LzssTypedTokenVariant::field_context_64m, 64U << 20},
+    };
+    for (const auto profile : profiles) {
+        for (const std::uint32_t maximum : {5U, 6U, 17U, 256U, 257U, 258U}) {
+            SCOPED_TRACE(profile.window);
+            SCOPED_TRACE(maximum);
+            LzssParameters parameters{};
+            parameters.window_size = profile.window;
+            parameters.max_match_length = maximum;
+            auto limits = marc::core::DecoderLimits{};
+            limits.max_lz_distance = profile.window;
+            for (const std::size_t size : {0U, 4U, 5U, 6U, 257U, 259U, 521U}) {
+                SCOPED_TRACE(size);
+                std::vector<std::byte> input(size);
+                for (std::size_t i = 0; i < size; ++i) {
+                    input[i] = static_cast<std::byte>(i % 31 == 0 ? i % 251 : i % 7);
+                }
+                const auto required = calculate_lzss_hash_chain_workspace(
+                    size, parameters, limits);
+                ASSERT_EQ(required.error, LzssHashChainError::none);
+                AlignedWorkspace owner(required.workspace_size);
+                std::vector<LzssTypedToken> reference(size), control(size), probe(size);
+                const auto expected = encode_lzss_typed_tokens(
+                    input, parameters, limits, reference, profile.variant);
+                ASSERT_EQ(expected.error, LzssTypedEncodeError::none);
+                LzssMatchFinderStatistics control_stats{}, probe_stats{};
+                const auto a = encode_lzss_typed_tokens_hash_chain_no_probe_single_pass(
+                    input, parameters, limits, control, owner.bytes(required.workspace_size),
+                    &control_stats, profile.variant);
+                const auto b = encode_lzss_typed_tokens_hash_chain_best_length_probe_single_pass(
+                    input, parameters, limits, probe, owner.bytes(required.workspace_size),
+                    &probe_stats, profile.variant);
+                ASSERT_EQ(a.error, LzssTypedEncodeError::none);
+                ASSERT_EQ(b.error, LzssTypedEncodeError::none);
+                ASSERT_EQ(a.token_count, expected.token_count);
+                ASSERT_EQ(b.token_count, expected.token_count);
+                EXPECT_EQ(a.token_storage_size, expected.token_storage_size);
+                EXPECT_EQ(b.token_storage_size, expected.token_storage_size);
+                for (std::size_t i = 0; i < expected.token_count; ++i) {
+                    EXPECT_TRUE(equal_token(control[i], reference[i])) << i;
+                    EXPECT_TRUE(equal_token(probe[i], reference[i])) << i;
+                }
+                EXPECT_EQ(control_stats.candidate_count, probe_stats.candidate_count);
+                EXPECT_EQ(control_stats.hash_chain_best_length_probe_comparison_count, 0U);
+                EXPECT_EQ(control_stats.hash_chain_best_length_probe_pruned_candidate_count, 0U);
+                EXPECT_EQ(probe_stats.candidate_count,
+                          probe_stats.hash_chain_prefix_match_count
+                              + probe_stats.hash_chain_prefix_mismatch_count
+                              + probe_stats.hash_chain_best_length_probe_pruned_candidate_count);
+                EXPECT_FALSE(control_stats.overflowed);
+                EXPECT_FALSE(probe_stats.overflowed);
+            }
+        }
+    }
+}
+
 TEST(LzssTypedEncoder, BestLengthProbeRejectsShortWorkspaceWithoutTokenWrites) {
     const auto input = bytes("ABCDE1ABCDE2ABCDE3");
     const auto required = calculate_lzss_hash_chain_workspace(input.size(), {}, {});
