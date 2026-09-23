@@ -62,8 +62,8 @@ IDENTICAL = (
 )
 
 
-def grid():
-    return [(name, attempt, strategy) for name in MEMBERS
+def grid(contract=EXPECTED):
+    return [(name, attempt, strategy) for name in contract["members"]
             for attempt in range(1, ATTEMPTS + 1) for strategy in STRATEGIES]
 
 
@@ -119,9 +119,9 @@ def parse_report(text: str, strategy: str, size: int) -> dict[str, str]:
     return report
 
 
-def make_identity(manifest: Path, build: Path, corpus: Path):
-    if not _same_json(_json(manifest), EXPECTED):
-        raise CampaignError("manifest differs from fixed pilot contract")
+def make_identity(manifest: Path, build: Path, corpus: Path, contract=EXPECTED):
+    if not _same_json(_json(manifest), contract):
+        raise CampaignError("manifest differs from fixed experiment contract")
     members = verify_directory(corpus)
     return {
         "manifest_sha256": sha256_file(manifest), "revision": source_revision(),
@@ -131,13 +131,13 @@ def make_identity(manifest: Path, build: Path, corpus: Path):
     }
 
 
-def validate_records(records: Any, identity: dict) -> None:
-    if not isinstance(records, list) or len(records) > len(grid()):
+def validate_records(records: Any, identity: dict, contract=EXPECTED) -> None:
+    if not isinstance(records, list) or len(records) > len(grid(contract)):
         raise CampaignError("invalid checkpoint record count")
     members = {m["name"]: m for m in identity["corpus"]}
     identities = {}
     counters = {}
-    for record, (name, attempt, strategy) in zip(records, grid()):
+    for record, (name, attempt, strategy) in zip(records, grid(contract)):
         if not isinstance(record, dict) or set(record) != {"member", "attempt", "strategy", "report"} \
                 or record["member"] != name or type(record["attempt"]) is not int \
                 or record["attempt"] != attempt or record["strategy"] != strategy:
@@ -157,9 +157,9 @@ def validate_records(records: Any, identity: dict) -> None:
         counters[name, strategy] = deterministic
 
 
-def summarize(records):
+def summarize(records, contract=EXPECTED):
     result = {}
-    for name in MEMBERS:
+    for name in contract["members"]:
         times = {s: statistics.median(float(r["report"]["hash_chain_frame_seconds"])
                  for r in records if r["member"] == name and r["strategy"] == s)
                  for s in STRATEGIES}
@@ -174,28 +174,31 @@ def summarize(records):
     return result
 
 
-def run_campaign(manifest, build, corpus, checkpoint_path, output_path, quota=None):
+def run_campaign(manifest, build, corpus, checkpoint_path, output_path, quota=None,
+                 contract=EXPECTED):
     if checkpoint_path == output_path or quota is not None and (type(quota) is not int or quota < 0):
         raise CampaignError("invalid output paths or quota")
-    identity = make_identity(manifest, build, corpus)
+    identity = make_identity(manifest, build, corpus, contract)
+    name_prefix = contract["experiment"]
+    points = grid(contract)
     if checkpoint_path.exists():
         checkpoint = _json(checkpoint_path)
         if not isinstance(checkpoint, dict) or set(checkpoint) != {"schema", "identity", "records"} \
-                or checkpoint["schema"] != NAME + "-checkpoint" \
+                or checkpoint["schema"] != name_prefix + "-checkpoint" \
                 or not _same_json(checkpoint["identity"], identity):
             raise CampaignError("checkpoint identity or schema changed")
     else:
-        checkpoint = {"schema": NAME + "-checkpoint", "identity": identity, "records": []}
+        checkpoint = {"schema": name_prefix + "-checkpoint", "identity": identity, "records": []}
     records = checkpoint["records"]
-    validate_records(records, identity)
-    if output_path.exists() and len(records) != len(grid()):
+    validate_records(records, identity, contract)
+    if output_path.exists() and len(records) != len(points):
         raise CampaignError("full result exists beside incomplete checkpoint")
     members = {m["name"]: m for m in identity["corpus"]}
     added = 0
-    for name, attempt, strategy in grid()[len(records):]:
+    for name, attempt, strategy in points[len(records):]:
         if quota is not None and added >= quota:
             break
-        print(f"starting {len(records)+1}/18: {name} attempt {attempt} {strategy}", flush=True)
+        print(f"starting {len(records)+1}/{len(points)}: {name} attempt {attempt} {strategy}", flush=True)
         completed = subprocess.run([
             str(build / "Release" / (TARGET + ".exe")), "--frames-limited",
             strategy, str(corpus / name), "1", str(FRAME), str(FRAME), str(LIMIT),
@@ -204,13 +207,23 @@ def run_campaign(manifest, build, corpus, checkpoint_path, output_path, quota=No
             raise CampaignError(f"benchmark failed: {completed.stderr.strip()}")
         report = parse_report(completed.stdout, strategy, members[name]["size"])
         records.append({"member": name, "attempt": attempt, "strategy": strategy, "report": report})
-        validate_records(records, identity)
+        validate_records(records, identity, contract)
         _write_json(checkpoint_path, checkpoint)
         added += 1
-        print(f"checkpointed {len(records)}/18", flush=True)
-    if len(records) == len(grid()):
-        result = {"schema": NAME + "-result", "identity": identity,
-                  "records": records, "summary": summarize(records)}
+        print(f"checkpointed {len(records)}/{len(points)}", flush=True)
+    if len(records) == len(points):
+        result = {"schema": name_prefix + "-result", "identity": identity,
+                  "records": records, "summary": summarize(records, contract)}
+        if contract["summary"] == "median-per-member-and-strategy-with-aggregate":
+            totals = {s: sum(row["median_seconds"][s] for row in result["summary"].values())
+                      for s in STRATEGIES}
+            result["aggregate"] = {
+                "sum_member_median_seconds": totals,
+                "speedup": totals[STRATEGIES[0]] / totals[STRATEGIES[1]],
+                "worst_member_speedup": min(row["speedup"] for row in result["summary"].values()),
+                "slower_members": [name for name, row in result["summary"].items()
+                                   if row["speedup"] < 1.0],
+            }
         if output_path.exists():
             if not _same_json(_json(output_path), result):
                 raise CampaignError("existing result differs from checkpoint")
@@ -220,21 +233,23 @@ def run_campaign(manifest, build, corpus, checkpoint_path, output_path, quota=No
     return len(records)
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", type=Path, default=ROOT / "benchmarks/experiments" / (NAME + ".json"))
+def main(contract=EXPECTED):
+    name = contract["experiment"]
+    parser = argparse.ArgumentParser(description=f"Run the fixed resumable {name} experiment.")
+    parser.add_argument("--manifest", type=Path, default=ROOT / "benchmarks/experiments" / (name + ".json"))
     parser.add_argument("--build-dir", type=Path, default=ROOT / "out/build/windows-msvc")
     parser.add_argument("--corpus", type=Path, default=ROOT / "benchmarks/data/silesia/corpus")
     results = ROOT / "benchmarks/data/silesia/results"
-    parser.add_argument("--checkpoint", type=Path, default=results / (NAME + ".checkpoint.json"))
-    parser.add_argument("--output", type=Path, default=results / (NAME + ".json"))
+    parser.add_argument("--checkpoint", type=Path, default=results / (name + ".checkpoint.json"))
+    parser.add_argument("--output", type=Path, default=results / (name + ".json"))
     parser.add_argument("--max-new-records", type=int)
     args = parser.parse_args()
     try:
         if args.checkpoint.resolve().parent != results.resolve() or args.output.resolve().parent != results.resolve():
             raise CampaignError("result paths must be inside the ignored results directory")
         run_campaign(args.manifest.resolve(), args.build_dir.resolve(), args.corpus.resolve(),
-                     args.checkpoint.resolve(), args.output.resolve(), args.max_new_records)
+                     args.checkpoint.resolve(), args.output.resolve(), args.max_new_records,
+                     contract)
         return 0
     except (CampaignError, PilotError, VerificationError, OSError, ValueError,
             subprocess.SubprocessError) as error:

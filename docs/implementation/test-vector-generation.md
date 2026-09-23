@@ -15209,3 +15209,8 @@ Private HashChain best-length-probe vectors (2026-09-23).
   malformed reports, changed fingerprints/counters, noncanonical record
   order, Boolean attempt numbers, changed run identity, interrupted-child
   checkpoint preservation, quota/resume, and completed-run idempotence.
+- All-member tooling: verify the distinct frozen 72-point grid and manifest,
+  pilot/full checkpoint isolation, partial-run resume without remeasurement,
+  completed replay, aggregate ratios from sums of medians, and explicit
+  retention of a deliberately slower member. Tests use synthetic reports
+  and do not require the Corpus or enforce performance thresholds.

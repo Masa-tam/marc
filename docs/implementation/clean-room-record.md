@@ -32302,3 +32302,23 @@ both bounds.
   deterministic-counter checks. Completed replay launched no new child
   measurements and preserved the result. BM-0093 records build, source,
   manifest, and result hashes. Production policy remains unchanged.
+
+## CR-1299: 2026-09-23 - Frozen all-member best-length-probe campaign
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, TVG-1033, BM-0093, the existing probe pilot,
+  and marc's local Silesia manifest and checkpoint helpers.
+- Known implementations intentionally not consulted: external compressor
+  or match-finder source, benchmark implementations, and test suites.
+- Independent decisions: freeze all twelve members and 72 records; share
+  report validation and resume logic while separating experiment identity;
+  retain per-member regressions and calculate aggregate speed from summed
+  median times. Keep whole-codec evaluation as a subsequent requirement.
+- Generated-code task description: prepare the separate all-member JSON
+  campaign and test its identity, complete coverage, recovery, and summary.
+- Similarity review: changes extend marc's independent pilot and local
+  test fixtures; no external implementation expression was consulted.
+- Local validation: pilot and full-campaign fixture tests passed; all
+  3,591 MSVC Release CTest cases passed in 339.47 seconds, including
+  interoperability schema compatibility in 105.73 seconds. Documentation
+  verification and diff check passed. Full-Corpus timing remains pending.

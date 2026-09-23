@@ -80,6 +80,16 @@ requires identical build/source/manifest/Corpus identity on resume.
 The output reports per-member medians and raw records; selected inputs
 cannot justify a production policy or an all-Corpus conclusion.
 
+After BM-0093, the separate
+`benchmarks/experiments/silesia-hash-chain-best-length-probe-full-v1.json`
+freezes all twelve members in Corpus order, with three baseline/probe pairs
+per member (72 independent processes). All other measurement and resource
+conditions match the pilot. It records each member's medians and slowdowns;
+aggregate speedup divides the sums of baseline/probe member median times.
+The full campaign cannot reuse the pilot checkpoint or authorize a default
+change. Any regression must be retained and considered before whole-codec
+evaluation; no post-observation input selection or threshold tuning is allowed.
+
 The private benchmark accepts `hash-chain-best-length-probe-exact` in
 `--frames`, `--frames-limited`, and `--synthetic` modes. It verifies the
 baseline token fingerprint and candidate count before timing, reusing the

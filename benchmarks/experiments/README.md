@@ -79,3 +79,19 @@ diagnostic counters across attempts. Medians, comparison-work ratios and
 pruned fractions describe this selected pilot only, not a production gate
 or whole-codec throughput. Diagnostic and baseline verification passes
 precede, and are excluded from, each statistics-disabled measurement.
+
+The separate `silesia-hash-chain-best-length-probe-full-v1.json` campaign
+freezes all twelve Corpus members with the same frame/window, bucket,
+match-length and memory conditions. Its entry point is
+`tools/run_silesia_hash_chain_best_length_probe_full.py`. One invocation
+runs all 72 records; `--max-new-records N` and restart use the same validated
+checkpoint mechanism as the pilot. The full campaign has distinct default
+result/checkpoint filenames and schemas, so pilot records cannot substitute
+for measurements under the new source/build identity.
+
+The summary retains every member, including slowdowns, and adds a speedup
+computed from the sums of per-member median times, the worst member speedup,
+and the list of slower members. Do not average individual speedup ratios or
+treat aggregate gain as permission to ignore a member regression. This
+campaign supports a later whole-codec audit; it does not promote the probe
+to production or establish a CI timing gate.
