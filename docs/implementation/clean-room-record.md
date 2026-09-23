@@ -32691,3 +32691,24 @@ both bounds.
   passed in 366.41 seconds, including the new policy test and interoperability
   schema compatibility in 109.00 seconds. Documentation verification and
   diff check passed. No new corpus timing or production promotion is claimed.
+
+## CR-1318: 2026-09-23 - HashChain planning and exact-capacity regression grids
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171, TVG-1042 and repository-owned serialized/typed
+  planning, encoding and failure-atomicity contracts.
+- Known implementations intentionally not consulted: external compression
+  implementations, match-finder code and test suites.
+- Independent decisions: extend the existing typed differential grid and add
+  a bounded serialized grid, using exhaustive output and ordinary decoding
+  rather than deriving expected bytes from the optimized route.
+- Generated-code task description: verify exact planning/capacity agreement,
+  reference identity and unchanged output on one-unit-short failures before
+  changing the production query policy; retain all existing golden vectors.
+- Similarity review: repository-owned interfaces and independently generated
+  inputs only; no external implementation expression introduced.
+- Local validation: MSVC Release build succeeded. All 3,609 CTest cases
+  passed in 399.61 seconds, including both expanded planning grids and
+  interoperability schema compatibility in 108.54 seconds. Documentation
+  verification and diff check passed. Production code and golden bytes
+  remain unchanged; no new corpus measurement is claimed.

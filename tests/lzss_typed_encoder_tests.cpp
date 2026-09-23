@@ -1100,6 +1100,34 @@ TEST(LzssTypedEncoder, ProbeAndControlMatchReferenceAcrossAllWindowProfiles) {
                 const auto expected = encode_lzss_typed_tokens(
                     input, parameters, limits, reference, profile.variant);
                 ASSERT_EQ(expected.error, LzssTypedEncodeError::none);
+                const auto plan = plan_lzss_typed_tokens_hash_chain(
+                    input, parameters, limits, owner.bytes(required.workspace_size),
+                    profile.variant);
+                ASSERT_EQ(plan.error, LzssTypedEncodeError::none);
+                EXPECT_EQ(plan.token_count, expected.token_count);
+                EXPECT_EQ(plan.token_storage_size, expected.token_storage_size);
+                const LzssTypedToken sentinel{LzssTypedTokenKind::match, 0, 123, 456};
+                std::vector<LzssTypedToken> two_pass(plan.token_count + 1, sentinel);
+                const auto planned_output = std::span{two_pass}.first(plan.token_count);
+                const auto encoded = encode_lzss_typed_tokens_hash_chain(
+                    input, parameters, limits, planned_output,
+                    owner.bytes(required.workspace_size), profile.variant);
+                ASSERT_EQ(encoded.error, LzssTypedEncodeError::none);
+                EXPECT_EQ(encoded.token_count, plan.token_count);
+                EXPECT_EQ(encoded.token_storage_size, plan.token_storage_size);
+                for (std::size_t i = 0; i < plan.token_count; ++i)
+                    EXPECT_TRUE(equal_token(two_pass[i], reference[i]));
+                EXPECT_TRUE(equal_token(two_pass.back(), sentinel));
+                if (plan.token_count != 0) {
+                    std::fill(two_pass.begin(), two_pass.end(), sentinel);
+                    const auto short_result = encode_lzss_typed_tokens_hash_chain(
+                        input, parameters, limits,
+                        planned_output.first(plan.token_count - 1),
+                        owner.bytes(required.workspace_size), profile.variant);
+                    EXPECT_EQ(short_result.error, LzssTypedEncodeError::output_too_small);
+                    for (const auto& token : two_pass)
+                        EXPECT_TRUE(equal_token(token, sentinel));
+                }
                 LzssMatchFinderStatistics control_stats{}, probe_stats{};
                 const auto a = encode_lzss_typed_tokens_hash_chain_no_probe_single_pass(
                     input, parameters, limits, control, owner.bytes(required.workspace_size),

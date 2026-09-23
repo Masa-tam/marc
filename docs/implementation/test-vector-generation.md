@@ -15378,3 +15378,22 @@ Historical private HashChain routes retain no-probe semantics:
   pruning, preventing a vacuous zero-probe control assertion.
 - The short vector tests query-policy selection, not actual bucket-cap
   saturation; existing large-input bucket-boundary tests remain required.
+
+### TVG-1042
+
+Production HashChain planning and exact-capacity regression coverage:
+
+- Extend the five-profile typed probe/control grid with the production
+  two-pass planner and encoder. Compare token count/storage and every token
+  with the exhaustive reference, preserve a trailing sentinel, and require
+  an output one token short to fail without changing any sentinel token.
+- For serialized tokens, repeat `ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ` to
+  lengths 0, 1, 4, 5, 6, 257, 259 and 521. Cross windows 5, 17 and 65,536
+  with maximum match lengths 5, 6, 17, 256 and 258. Keep minimum length 5.
+- Independently generate exhaustive bytes, compare exact planned byte/token
+  counts, encode with exactly the planned capacity and check a trailing byte
+  sentinel. Decode with the ordinary decoder and require raw identity.
+- For nonempty serialized output, supply one byte less and require
+  `output_too_small` without changing output or its trailing sentinel.
+- Existing golden vectors and workspace/overlap failure tests stay unchanged;
+  bounded grids are not long-distance coverage or performance measurements.

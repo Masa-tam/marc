@@ -430,6 +430,16 @@ exhaustive finder with zero probe reads/prunes; the probe candidate must
 actually prune on the same input. Production still explicitly selects
 no-probe. This pins query policy without changing workspace or insertion.
 
+Planning/capacity regression coverage now includes the production typed
+two-pass planner and encoder in the five-profile probe/control grid. Exact
+token capacity must suffice, one token less must fail without output writes,
+and a trailing sentinel must survive. A separate serialized grid uses windows
+5, 17 and 65,536, match maxima 5, 6, 17, 256 and 258, and empty/prefix/tail
+lengths through 521 bytes. It checks exhaustive byte identity, exact planning,
+ordinary decoding and atomic rejection of an output one byte too short.
+These additions do not replace workspace alignment/overlap tests or certify
+the still-unmodified production probe route.
+
 Remaining implementation order (item 1 implemented as described above):
 
 1. Pin private bucket/mixer routes to no-probe with regression assertions

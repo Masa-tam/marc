@@ -215,6 +215,60 @@ TEST(LzssEncoder, HashChainExactMatchesExhaustiveBytes) {
     EXPECT_EQ(encoded, reference);
 }
 
+TEST(LzssEncoder, HashChainPlansAndWritesExactCapacityAcrossBoundaries) {
+    for (const std::uint32_t window : {5U, 17U, 65'536U}) {
+        for (const std::uint32_t maximum : {5U, 6U, 17U, 256U, 258U}) {
+            for (const std::size_t size : {0U, 1U, 4U, 5U, 6U, 257U, 259U, 521U}) {
+                SCOPED_TRACE(window);
+                SCOPED_TRACE(maximum);
+                SCOPED_TRACE(size);
+                LzssParameters parameters{};
+                parameters.window_size = window;
+                parameters.max_match_length = maximum;
+                std::vector<std::byte> input(size);
+                constexpr std::string_view pattern = "ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ";
+                for (std::size_t i = 0; i < size; ++i)
+                    input[i] = static_cast<std::byte>(pattern[i % pattern.size()]);
+                const auto expected = plan_lzss_token_stream(input, parameters, {});
+                ASSERT_EQ(expected.error, LzssEncodeError::none);
+                std::vector<std::byte> reference(expected.output_size);
+                ASSERT_EQ(encode_lzss_token_stream(input, parameters, {}, reference).error,
+                          LzssEncodeError::none);
+                const auto required = calculate_lzss_hash_chain_workspace(size, parameters, {});
+                ASSERT_EQ(required.error, LzssHashChainError::none);
+                AlignedWorkspace owner(required.workspace_size);
+                const auto workspace = owner.bytes(required.workspace_size);
+                const auto plan = plan_lzss_token_stream_hash_chain(input, parameters, {}, workspace);
+                ASSERT_EQ(plan.error, LzssEncodeError::none);
+                EXPECT_EQ(plan.output_size, expected.output_size);
+                EXPECT_EQ(plan.token_count, expected.token_count);
+                std::vector<std::byte> output(plan.output_size + 1, std::byte{0xcc});
+                const auto destination = std::span{output}.first(plan.output_size);
+                const auto result = encode_lzss_token_stream_hash_chain(
+                    input, parameters, {}, destination, workspace);
+                ASSERT_EQ(result.error, LzssEncodeError::none);
+                EXPECT_EQ(result.output_size, plan.output_size);
+                EXPECT_EQ(result.token_count, plan.token_count);
+                EXPECT_TRUE(std::ranges::equal(destination, reference));
+                EXPECT_EQ(output.back(), std::byte{0xcc});
+                std::vector<std::byte> decoded(size);
+                ASSERT_EQ(decode_lzss_token_stream(destination, parameters, size, {}, decoded).error,
+                          LzssDecodeError::none);
+                EXPECT_EQ(decoded, input);
+                if (plan.output_size != 0) {
+                    std::fill(output.begin(), output.end(), std::byte{0xcc});
+                    EXPECT_EQ(encode_lzss_token_stream_hash_chain(
+                        input, parameters, {}, destination.first(plan.output_size - 1),
+                        workspace).error, LzssEncodeError::output_too_small);
+                    EXPECT_TRUE(std::ranges::all_of(output, [](std::byte value) {
+                        return value == std::byte{0xcc};
+                    }));
+                }
+            }
+        }
+    }
+}
+
 TEST(LzssEncoder, HashChainFailuresAreAtomicAndBounded) {
     const auto input = bytes("ABCDE1ABCDE2ABCDE3");
     const auto requirements = calculate_lzss_hash_chain_workspace(
