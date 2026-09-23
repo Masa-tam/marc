@@ -32380,3 +32380,24 @@ both bounds.
   seconds. Private archive/chunk/round-trip and invalid-combination tests,
   documentation verification, and diff check passed. Whole-Corpus archive
   comparison and whole-codec timing remain pending.
+
+## CR-1303: 2026-09-23 - Uninstrumented probe whole-codec benchmark
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, the private probe design, and marc's existing
+  phase benchmark, public profile query and streaming encoder/decoder.
+- Known implementations intentionally not consulted: external compressors,
+  match finders, benchmark implementations or test suites.
+- Independent decisions: preserve old reports and add distinct versioned
+  comparison modes; verify actual archive bytes against the public oracle,
+  time only process calls without inner observers, and report sequential
+  peak codec workspace separately from process RSS and validation buffers.
+- Generated-code task description: prepare private baseline/probe whole-codec
+  measurements and smoke coverage without starting a Corpus timing campaign.
+- Similarity review: repository-owned infrastructure reused; no external
+  implementation expression consulted.
+- Local validation: MSVC Release build and all 3,596 CTest cases passed in
+  383.84 seconds, including interoperability schema compatibility in 105.80
+  seconds. New comparison and existing phase/nested report smoke tests,
+  documentation verification and diff check passed. No Corpus performance
+  claim or production promotion was made.

@@ -490,6 +490,14 @@ if(MARC_BUILD_BENCHMARKS)
             set_tests_properties(
                 marc_lzss_contextual_rans_tokenize_breakdown_smoke
                 PROPERTIES LABELS benchmark-experimental-smoke)
+            add_test(NAME marc_lzss_contextual_rans_probe_benchmark_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DBENCHMARK_EXECUTABLE=$<TARGET_FILE:marc_lzss_contextual_rans_phase_benchmark>"
+                    "-DINPUT_FILE=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                    "-DTEST_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}/probe-benchmark-smoke"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_contextual_rans_probe_benchmark_smoke.cmake)
+            set_tests_properties(marc_lzss_contextual_rans_probe_benchmark_smoke
+                PROPERTIES LABELS benchmark-experimental-smoke)
         endif()
     endif()
 

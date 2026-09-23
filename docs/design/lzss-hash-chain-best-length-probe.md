@@ -152,3 +152,41 @@ and one-byte input/output buffers, then decode with the ordinary decoder.
 These bounded fixtures are not full-Corpus performance evidence. The next
 gate is an uninstrumented whole-codec benchmark with archive identity,
 round-trip, ratio, and workspace checks before timing is interpreted.
+
+### Uninstrumented whole-codec comparison modes
+
+`marc_lzss_contextual_rans_phase_benchmark` provides two private modes:
+
+```text
+--best-length-probe-baseline <input> [iterations]
+--best-length-probe-candidate <input> [iterations]
+```
+
+Both use the public 4 MiB contextual rANS profile, then independently check
+that internal stream configuration and workspace match the public query.
+Its current default match range is 5..258; the earlier 256 regression is a
+supported parameter boundary fixture, not the benchmark profile default.
+The public encoder supplies an untimed archive oracle and the ordinary
+public decoder verifies it. Each private trial must reproduce every archive
+byte; each timed decode must recover every source byte. Comparisons and
+hashes are outside the measured intervals. No phase or token-loop timing
+observer is enabled. Both sides time the same internal encoder process call;
+the decoder process call is measured separately through the public API.
+File I/O, allocation, partitioning, construction, destruction, and post-run
+comparisons are excluded from reported encode/decode durations. Required
+validation and frame/model work inside `process` remain included.
+
+The versioned report `lzss-contextual-rans-best-length-probe-v1` records input
+and archive hashes/sizes, encoded-to-input ratio (zero for empty input),
+actual frame/window/match parameters, per-iteration nanoseconds and MiB/s,
+and encoder/decoder queried workspace bytes. Peak workspace is the larger
+of the two sequential codec workspaces, not process RSS: input/archive oracle,
+decoded output, alignment slack, objects and allocator overhead are excluded.
+Zero-duration throughput is reported as zero rather than infinity. This
+metric must not be described as total benchmark process memory.
+
+The smoke test checks both modes on repository text and empty input, two
+iterations, identical archive/config/workspace identities, uninstrumented
+report structure, and invalid iteration rejection. It imposes no speed gate.
+Existing phase and nested-timing report formats remain unchanged. A frozen
+checkpointed Corpus campaign and any production decision remain separate.

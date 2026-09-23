@@ -16,6 +16,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <limits>
 #include <memory>
 #include <span>
@@ -40,6 +41,8 @@ constexpr std::size_t maximum_output_capacity = std::size_t{1} << 30;
 enum class ReportMode : std::uint8_t {
     phases,
     tokenize_breakdown,
+    probe_baseline,
+    probe_candidate,
 };
 
 struct TransformDeleter {
@@ -153,7 +156,8 @@ struct AlignedStorage {
     const marc_lzss_contextual_rans_config& config,
     const std::span<const std::byte> input,
     const std::span<std::byte> output, std::size_t& produced,
-    marc_workspace_requirements& requirements) {
+    marc_workspace_requirements& requirements,
+    std::chrono::nanoseconds* const elapsed = nullptr) {
     if (marc_lzss_contextual_rans_workspace_requirements(
             &config, &requirements) != MARC_STATUS_OK) {
         return false;
@@ -173,9 +177,14 @@ struct AlignedStorage {
         return false;
     }
     const std::unique_ptr<marc_transform, TransformDeleter> transform{raw};
+    const auto start = std::chrono::steady_clock::now();
     const auto processed = marc_transform_process(
         transform.get(), c_buffer(input), c_buffer(output),
         MARC_PROCESS_END_INPUT);
+    if (elapsed != nullptr) {
+        *elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::steady_clock::now() - start);
+    }
     produced = processed.output_produced;
     return processed.status == MARC_STATUS_END_OF_STREAM
         && processed.input_consumed == input.size();
@@ -229,7 +238,8 @@ struct AlignedStorage {
     LzssTypedTokenizeTiming* const tokenize_timing,
     std::size_t& produced,
     std::uint64_t& token_count,
-    std::chrono::nanoseconds& elapsed) {
+    std::chrono::nanoseconds& elapsed,
+    const bool private_best_length_probe = false) {
     std::vector<std::byte> primary(requirements.frame_input_bytes);
     std::vector<std::byte> secondary(requirements.frame_encoded_bytes);
     AlignedStorage views_storage{};
@@ -245,7 +255,8 @@ struct AlignedStorage {
     }
     LzssContextualRansFrameStreamingEncoder encoder{
         stream, limits, primary, views.tokens, views.match_finder, secondary,
-        requirements.match_finder_strategy, timing, tokenize_timing};
+        requirements.match_finder_strategy, timing, tokenize_timing,
+        private_best_length_probe};
     const auto start = std::chrono::steady_clock::now();
     const auto result = encoder.process(
         input, output, marc::core::flag_value(marc::core::ProcessFlags::end_input));
@@ -329,14 +340,91 @@ struct AlignedStorage {
     }
     std::string input_digest{};
     if (!digest_hex(input, input_digest)) return 1;
+    const bool probe_comparison = mode == ReportMode::probe_baseline
+        || mode == ReportMode::probe_candidate;
+    const bool use_probe = mode == ReportMode::probe_candidate;
+    std::vector<std::byte> expected_archive;
+    if (probe_comparison) {
+        expected_archive.assign(archive.begin(), archive.begin() + public_size);
+    }
     std::size_t actual_size{};
     std::uint64_t token_count{};
     std::chrono::nanoseconds elapsed{};
     if (!run_private(stream, limits, private_requirements, input, archive,
-                     nullptr, nullptr, actual_size, token_count, elapsed)
+                     nullptr, nullptr, actual_size, token_count, elapsed,
+                     use_probe)
         || actual_size != public_size) {
         std::cerr << "untimed private encode mismatch\n";
         return 1;
+    }
+
+    if (probe_comparison) {
+        const auto matches = [&]() {
+            return actual_size == expected_archive.size()
+                && std::equal(expected_archive.begin(), expected_archive.end(),
+                              archive.begin());
+        };
+        if (!matches()) {
+            std::cerr << "private archive byte mismatch\n";
+            return 1;
+        }
+        std::size_t decoder_workspace_bytes{};
+        if (!marc::core::checked_add(decoder_requirements.primary_bytes,
+                                    decoder_requirements.secondary_bytes,
+                                    decoder_workspace_bytes)
+            || !marc::core::checked_add(decoder_workspace_bytes,
+                                      decoder_requirements.views_bytes,
+                                      decoder_workspace_bytes)) return 1;
+        std::cout << std::setprecision(17)
+                  << "report_schema=lzss-contextual-rans-best-length-probe-v1\n"
+                  << "codec=lzss-contextual-rans-4m\n"
+                  << "strategy=" << (use_probe ? "hash-chain-best-length-probe-exact"
+                                               : "hash-chain-exact") << '\n'
+                  << "instrumented_token_loop=0\n"
+                  << "input_bytes=" << input.size() << '\n'
+                  << "input_sha256=" << input_digest << '\n'
+                  << "archive_bytes=" << public_size << '\n'
+                  << "archive_sha256=" << expected_digest << '\n'
+                  << "encoded_to_input_ratio=" << (input.empty() ? 0.0
+                      : static_cast<double>(public_size) / input.size()) << '\n'
+                  << "frame_size=" << encoder_config.frame_size << '\n'
+                  << "window_size=" << encoder_config.window_size << '\n'
+                  << "min_match_length=" << encoder_config.min_match_length << '\n'
+                  << "max_match_length=" << encoder_config.max_match_length << '\n'
+                  << "encoder_workspace_bytes=" << workspace_bytes << '\n'
+                  << "decoder_workspace_bytes=" << decoder_workspace_bytes << '\n'
+                  << "codec_peak_workspace_bytes="
+                  << std::max(workspace_bytes, decoder_workspace_bytes) << '\n'
+                  << "iterations=" << iterations << '\n';
+        for (std::uint32_t index = 0; index < iterations; ++index) {
+            if (!run_private(stream, limits, private_requirements, input, archive,
+                             nullptr, nullptr, actual_size, token_count, elapsed,
+                             use_probe) || !matches()) {
+                std::cerr << "timed private archive byte mismatch\n";
+                return 1;
+            }
+            std::chrono::nanoseconds decode_elapsed{};
+            if (!run_public(decoder_config,
+                            std::span<const std::byte>{archive}.first(actual_size),
+                            decoded, decoded_size, decoder_requirements,
+                            &decode_elapsed)
+                || decoded_size != input.size() || decoded != input) {
+                std::cerr << "timed public round trip failed\n";
+                return 1;
+            }
+            const auto throughput = [&](const std::chrono::nanoseconds duration) {
+                return duration.count() > 0
+                    ? static_cast<double>(input.size()) / (1024.0 * 1024.0)
+                        / std::chrono::duration<double>(duration).count()
+                    : 0.0;
+            };
+            std::cout << "iteration=" << index + 1 << '\n'
+                      << "encode_nanoseconds=" << elapsed.count() << '\n'
+                      << "decode_nanoseconds=" << decode_elapsed.count() << '\n'
+                      << "encode_mib_per_second=" << throughput(elapsed) << '\n'
+                      << "decode_mib_per_second=" << throughput(decode_elapsed) << '\n';
+        }
+        return 0;
     }
     std::string actual_digest{};
     if (!digest_hex(std::span<const std::byte>{archive}.first(actual_size),
@@ -436,10 +524,15 @@ struct AlignedStorage {
 int main(const int argc, char* argv[]) {
     const bool breakdown = argc > 1
         && std::string_view{argv[1]} == "--tokenize-breakdown";
-    const int path_index = breakdown ? 2 : 1;
+    const bool baseline = argc > 1
+        && std::string_view{argv[1]} == "--best-length-probe-baseline";
+    const bool candidate = argc > 1
+        && std::string_view{argv[1]} == "--best-length-probe-candidate";
+    const int path_index = breakdown || baseline || candidate ? 2 : 1;
     if (argc < path_index + 1 || argc > path_index + 2) {
         std::cerr << "usage: marc_lzss_contextual_rans_phase_benchmark "
-                     "[--tokenize-breakdown] <input> [iterations]\n";
+                     "[--tokenize-breakdown|--best-length-probe-baseline|"
+                     "--best-length-probe-candidate] <input> [iterations]\n";
         return 2;
     }
     std::uint32_t iterations{1};
@@ -449,6 +542,8 @@ int main(const int argc, char* argv[]) {
         return 2;
     }
     return run(argv[path_index], iterations,
-               breakdown ? ReportMode::tokenize_breakdown
+               baseline ? ReportMode::probe_baseline
+               : candidate ? ReportMode::probe_candidate
+               : breakdown ? ReportMode::tokenize_breakdown
                          : ReportMode::phases);
 }
