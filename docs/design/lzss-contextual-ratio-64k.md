@@ -1,6 +1,7 @@
 # 64-KiB LZSS Contextual compression-ratio study
 
-Status: measurement design, not a format or public-API change (2026-09-24).
+Status: short-match opportunity diagnostic complete; no format or public-API
+change (2026-09-24).
 
 ## Question and baseline
 
@@ -31,8 +32,9 @@ predates the release-publication documentation commit; there was no executable
 source change between the release tag and this observation.
 
 The maintainer reported these byte counts for the same named corpus member.
-External command flags, tool versions, and output-container details have not
-yet been frozen, so external numbers are provisional comparison targets:
+The external commands used `-9v` for gzip, bzip2, and lzma. Exact command
+lines, tool versions, and output-container details have not yet been frozen,
+so external numbers are provisional comparison targets:
 
 | Compressor/profile | Output bytes | Origin |
 | --- | ---: | --- |
@@ -62,7 +64,8 @@ Every existing Contextual profile additionally fixes minimum match length 5
 and maximum 258. The context backend instead codes token kind, literal,
 length and distance fields separately. Therefore 3- and 4-byte matches are
 not examined or emitted even when their actual encoded cost might be below
-the cost of their literals. Whether this matters on `mozilla` is unmeasured.
+the cost of their literals. The opportunity count below establishes that
+such matches exist, not that their encoding would be profitable.
 
 The maximum length 258 is also allowed by DEFLATE (RFC 1951), so it is not
 the first explanation for marc losing to the reported gzip output. A change
@@ -93,6 +96,39 @@ dictionary/context variants or alter frozen schema-57 archive bytes.
    needs its own documented selection and deterministic tests, even if the
    decoder representation is shared. Do not equate the nine-byte diagnostic
    token transcript with entropy cost.
+
+## Stage 2: exact short-prefix opportunity count
+
+The private `marc_lzss_short_match_diagnostic` executable reads one input file
+in independent 65,536-byte frames. Its fixed-capacity index records the nearest
+prior equal 3-byte and 4-byte prefix at every frame position. It then replays
+the production exact HashChain greedy parser with the current 5..258 match
+contract and reports both all-position and parser-visited counts. The index
+was checked against exhaustive search on bounded synthetic inputs. It does
+not change archive bytes, model state, public APIs, or the match finder.
+
+On the local `mozilla` input identified above:
+
+| Measure | Count |
+| --- | ---: |
+| Frames | 782 |
+| Baseline literal tokens | 14,711,301 |
+| Baseline match tokens | 3,065,042 |
+| Baseline matched bytes | 36,509,179 |
+| All positions with a 3-byte prefix match | 37,298,509 |
+| All positions with a 4-byte prefix match | 31,922,000 |
+| Parser-visited positions with a 3-byte prefix match | 6,710,314 |
+| Parser-visited positions with a 4-byte prefix match | 4,024,782 |
+| Baseline literal positions with a 4-byte prefix match | 959,740 |
+| Baseline literal positions with a 3-byte but no 4-byte prefix match | 2,685,532 |
+
+The two final rows are disjoint and together cover 3,645,272 baseline literal
+positions. They are opportunities under the existing parse, not independent
+replacement matches: accepting one would skip later positions and alter
+model history. Prefix equality alone does not establish an encoded-bit saving.
+In particular, the all-position counts include locations inside existing
+matches and must not be read as a candidate token count. See BM-0099 for
+distance and existing-match length distributions.
 
 Admission requires byte-exact round trips, split-buffer determinism, strict
 malformed-stream rejection, bounded workspace queries, sanitizer coverage,

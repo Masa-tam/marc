@@ -32954,3 +32954,24 @@ both bounds.
 - Local validation: the existing MSVC Release CLI reproduced 20,085,366
   bytes and decoded them back to the original SHA-256. External gzip, bzip2
   and lzma counts are maintainer-reported, not rerun or normalized here.
+
+## CR-1330: 2026-09-24 - Measure frame-local LZSS short prefixes
+
+- Author: Codex; reviewer: repository maintainer approved proceeding and
+  clarified that gzip, bzip2, and lzma each used `-9v`.
+- References used: IR-0931, DD-1176, TVG-1045, BM-0099, repository-owned
+  production HashChain and LZSS contracts, and locally held Silesia `mozilla`.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft match finders, tests, tables and optimization structures.
+- Generated-code task: build a bounded private exact 3/4-byte prefix counter,
+  distinguish all positions from greedy-parser visits and literal emissions,
+  and compare the index with an exhaustive small-input oracle.
+- Independent decisions: fixed-size open-addressed frame-local tables, nearest
+  prior equal prefix, checked aggregate counters, no codec or stream changes.
+- Similarity review: this is a first-party diagnostic of simple byte equality,
+  not a translation of external implementation expression. No legal
+  non-infringement guarantee is made.
+- Local validation: the diagnostic's exhaustive oracle and README smoke
+  passed in MSVC Release. On `mozilla`, 959,740 baseline literal positions
+  had an equal 4-byte prefix and 2,685,532 more had an equal 3-byte-only
+  prefix. Neither count proves a net encoded-size saving.

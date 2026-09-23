@@ -23927,3 +23927,15 @@ limits and malformed-input behavior before implementing it. Keep the 0.7.0
 profiles and schema-57 bytes frozen. Judge any candidate on all Silesia
 members, speed, memory and safety; surpassing the reported gzip size on
 `mozilla` is a stretch objective, not an adoption condition by itself.
+
+## DD-1176: Keep short-prefix measurement outside the codec
+
+The first ratio experiment is a private benchmark executable that scans exact
+3- and 4-byte equal prefixes within each 65,536-byte frame and replays the
+existing production HashChain greedy decisions. Its fixed-capacity tables,
+frame-local reset and checked counters bound diagnostic state. Report
+all-position, visited-position and literal-position opportunities separately.
+No codec API, bitstream, match threshold, or frozen archive bytes change.
+Treat the observed short prefixes as hypotheses for coded-cost measurement,
+not as evidence of net compression savings; a new minimum length requires a
+separate decoder-visible format variant and complete-payload comparison.

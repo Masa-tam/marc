@@ -8568,3 +8568,13 @@ profile helper, and the locally held Silesia `mozilla` input. RFC 1951
 external transform families and possible preset/format differences; they are
 not implementation references. No external compressor source, control flow,
 test code, lookup table, or optimization structure was consulted or copied.
+
+### IR-0931
+
+The private 64-KiB short-match diagnostic uses only marc's own production
+HashChain match finder, LZSS parameter and benefit contracts, Contextual
+profile defaults, BM-0098, DD-1175 and the locally held Silesia `mozilla`
+input. Prefix equality and nearest-distance lookup were independently
+implemented and checked against a direct exhaustive small-input oracle. No
+external compressor implementation, source, test, table, pseudocode, or
+match-finder optimization was consulted.

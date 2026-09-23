@@ -3542,9 +3542,49 @@ intervening executable source change. Generated input/output files remain in
 ignored local directories.
 
 The maintainer reported gzip 18,994,139, bzip2 17,914,392 and lzma
-13,365,111 bytes on the named member. Exact external command flags and tool
-versions are still to be frozen. Against that provisional gzip result, the
+13,365,111 bytes on the named member, each with `-9v`. Exact external command
+lines, tool versions and container details are still to be frozen. Against
+that provisional gzip result, the
 64-KiB marc deficit is 1,091,227 bytes. The first candidate is a bounded
 diagnostic of short-match opportunities and actual coded size, as specified
 in [the 64-KiB ratio study](design/lzss-contextual-ratio-64k.md). This is
 one-member motivation, not whole-corpus or new-variant performance evidence.
+
+### BM-0099: 64-KiB `mozilla` short-match opportunity diagnostic
+
+On 2026-09-24, the private MSVC Release diagnostic was run against the same
+51,220,480-byte external `mozilla` input and independent 65,536-byte frames:
+
+```text
+marc_lzss_short_match_diagnostic mozilla
+```
+
+It uses an exact fixed-capacity 3/4-byte prefix index and replays the
+production exact HashChain greedy parser at minimum length 5. The index
+matched an exhaustive small-input oracle; the README smoke test checked
+reported counter relationships. No corpus file or generated report is tracked.
+
+| Observation | Count |
+| --- | ---: |
+| Frames | 782 |
+| Baseline literals | 14,711,301 |
+| Baseline matches | 3,065,042 |
+| Baseline matched bytes | 36,509,179 |
+| All-position equal 3-byte prefixes | 37,298,509 |
+| All-position equal 4-byte prefixes | 31,922,000 |
+| Parser-visited equal 3-byte prefixes | 6,710,314 |
+| Parser-visited equal 4-byte prefixes | 4,024,782 |
+| Literal positions with equal 4-byte prefix | 959,740 |
+| Literal positions with equal 3-byte but no 4-byte prefix | 2,685,532 |
+
+The existing match-length histogram is: 5: 450,636; 6..7: 1,056,253;
+8..15: 1,127,439; 16..31: 313,475; 32..63: 86,724; 64..127: 17,103;
+128..258: 13,412. The nearest-distance buckets for literal 3-only
+opportunities (1..16, 17..256, 257..4096, 4097..65535) are 143,638,
+766,726, 953,607, 821,561. For literal 4-byte opportunities they are
+18,000, 211,328, 336,523, 393,889. These are counts under the existing
+parser, not independent hypothetical replacements. Accepted short matches
+would skip later positions and alter range-model history. The diagnostic
+therefore establishes available prefixes but neither a coded-bit saving nor
+gzip parity. Next measure modeled event costs and complete experimental
+payload sizes before judging a new format variant.

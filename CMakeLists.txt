@@ -505,6 +505,38 @@ if(MARC_BUILD_BENCHMARKS)
         endif()
     endif()
 
+    add_executable(marc_lzss_short_match_diagnostic
+        benchmarks/lzss_short_match_diagnostic.cpp
+        benchmarks/lzss_short_match_probe.cpp)
+    target_compile_features(marc_lzss_short_match_diagnostic
+        PRIVATE cxx_std_20)
+    set_target_properties(marc_lzss_short_match_diagnostic
+        PROPERTIES CXX_EXTENSIONS OFF)
+    target_include_directories(marc_lzss_short_match_diagnostic
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+                ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
+    if(MSVC)
+        target_compile_options(marc_lzss_short_match_diagnostic
+            PRIVATE /W4 /permissive- /Zc:__cplusplus)
+    else()
+        target_compile_options(marc_lzss_short_match_diagnostic
+            PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+    if(TARGET marc_static)
+        target_link_libraries(marc_lzss_short_match_diagnostic
+            PRIVATE marc::static)
+    else()
+        target_link_libraries(marc_lzss_short_match_diagnostic
+            PRIVATE marc::shared)
+    endif()
+    if(MARC_BUILD_TESTS)
+        add_test(NAME marc_lzss_short_match_diagnostic_smoke
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_DIAGNOSTIC=$<TARGET_FILE:marc_lzss_short_match_diagnostic>"
+                "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_short_match_diagnostic_smoke.cmake)
+    endif()
+
     add_executable(marc_lzss_match_finder_benchmark
         benchmarks/lzss_match_finder_benchmark.cpp)
     target_compile_features(marc_lzss_match_finder_benchmark PRIVATE cxx_std_20)
@@ -2109,6 +2141,8 @@ if(MARC_BUILD_TESTS)
         tests/lzss_decoder_tests.cpp
         tests/lzss_encoder_tests.cpp
         tests/lzss_match_finder_tests.cpp
+        benchmarks/lzss_short_match_probe.cpp
+        tests/lzss_short_match_probe_tests.cpp
         tests/lzss_prefix_hash_tests.cpp
         tests/lzss_binary_tree_match_finder_tests.cpp
         tests/lzss_wavl_tree_match_finder_tests.cpp
@@ -2479,7 +2513,9 @@ if(MARC_BUILD_TESTS)
         tests/typed_context_format_tests.cpp
     )
     target_compile_features(marc_core_tests PRIVATE cxx_std_20)
-    target_include_directories(marc_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_include_directories(marc_core_tests
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+                ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
     if(TARGET marc_static)
         target_link_libraries(marc_core_tests PRIVATE marc::static GTest::gtest_main)
     else()

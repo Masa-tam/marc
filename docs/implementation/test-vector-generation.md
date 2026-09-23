@@ -15432,3 +15432,19 @@ Production best-length probe activation:
   the generated fixture, not imposed on arbitrary README data.
 - Existing golden vectors, cross-codec frame identity and exact-capacity
   grids now run against production probing without regenerated expectations.
+
+### TVG-1045
+
+Private short-prefix diagnostic checks:
+
+- Generate deterministic inputs of every length 0..128 using alphabets of
+  size 1..8. A direct exhaustive earlier-position scan independently obtains
+  exact 3/4-byte equality and nearest distance for every position. Compare
+  all flags and distances with the fixed-capacity index.
+- Use distinct consecutive frames to prove the index does not carry matches
+  across a frame boundary. Reject oversized frames or wrong-sized output
+  without writing to the output span.
+- The benchmark smoke invokes the diagnostic on tracked README data and
+  checks input reconstruction from literal and matched bytes, subset
+  relations, and required counters. The external Silesia corpus is used
+  locally for BM-0099, not imported as a test fixture.
