@@ -2,9 +2,11 @@
 
 Status: private matcher pilot/full campaigns (BM-0093/BM-0094) and
 whole-codec pilot/full campaigns (BM-0095/BM-0096) completed, 2026-09-23.
-Production migration is planned by DD-1171, with the gates below. The
-production matcher remains unchanged until those gates pass; no format
-change is proposed.
+Production migration follows DD-1171. The local production query now enables
+the best-length probe; adoption remains open until post-switch validation,
+pinned whole-codec measurement, CI and interoperability gates pass. No format
+change is proposed. The audit below records the pre-switch state and staged
+preparation; its no-probe production labels describe that earlier state.
 
 ## Motivation and boundary
 
@@ -469,6 +471,24 @@ Remaining implementation order (item 1 implemented as described above):
 No public API, wire format, matcher policy or benchmark result was changed
 by this audit. Existing full-suite results establish the pre-switch baseline
 only; they do not certify the changes still listed above.
+
+### Local production switch (2026-09-23)
+
+Enable the probe through the internal compile-time production policy constant.
+The default one-shot report now requires `best-length-probe` and validates
+the three-term candidate partition plus probe-read/pruning bounds. Do not
+require positive pruning on arbitrary README contents; a dedicated generated
+matcher fixture requires positive production pruning on a known shared-prefix
+input while the independent control retains zero probe activity.
+
+The older candidate differential helper now explicitly instantiates the
+no-probe finder instead of using the production finder as its baseline.
+This preserves the historical counter assertions and a genuinely independent
+control after the switch. Private bucket/mixer routes remain pinned, and
+the existing complete-frame and planning grids exercise the promoted route.
+No buffers, public APIs, golden bytes or wire representations are changed.
+Sanitizer campaigns, pinned post-switch corpus timing and external CI/interop
+are separate remaining evidence; local regression success alone is not closure.
 
 ### Gate 3: production switch and integration validation
 

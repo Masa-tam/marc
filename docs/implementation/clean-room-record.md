@@ -32734,3 +32734,27 @@ both bounds.
   and interoperability schema compatibility (107.44 seconds). Documentation
   verification and diff check passed. Production remains no-probe; no new
   corpus timing or adoption result is claimed.
+
+## CR-1320: 2026-09-23 - Activate production best-length probe locally
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171, TVG-1044, the pre-switch migration audit and
+  repository-owned exact matcher/control, report and regression contracts.
+- Known implementations intentionally not consulted: external compression
+  implementations, matcher source or test suites.
+- Independent decisions: enable the existing compile-time production probe;
+  keep historical controls explicitly disabled. Bind the known pruning
+  fixture to production and move the older candidate helper's baseline to
+  the explicit no-probe finder so its counter assertions remain independent.
+- Generated-code task description: activate the verified exact optimization
+  without changing format, API, buffers or golden vectors, then run the
+  complete regression suite; retain later adoption gates as outstanding.
+- Similarity review: existing repository-owned algorithm and independently
+  authored regression changes only; no external expression introduced.
+- Local validation: MSVC Release build succeeded and all 3,609 CTest cases
+  passed in 381.91 seconds, including production positive-pruning/control
+  independence, report policy, unchanged golden/frame/workspace regressions
+  and interoperability schema compatibility in 106.79 seconds. Documentation
+  verification and diff check passed. Post-switch sanitizer smoke, pinned
+  corpus measurements and external CI/interoperability remain outstanding;
+  the local switch does not close the adoption gate.

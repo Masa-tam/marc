@@ -9,7 +9,7 @@ if(NOT result STREQUAL "0")
     message(FATAL_ERROR "production benchmark failed: ${result}: ${error}")
 endif()
 foreach(line IN ITEMS "mode=one-shot" "hash_chain_route=production"
-        "hash_chain_query_policy=no-probe")
+        "hash_chain_query_policy=best-length-probe")
     string(FIND "\n${report}" "\n${line}\n" found)
     if(found EQUAL -1)
         message(FATAL_ERROR "missing production identity: ${line}")
@@ -25,7 +25,8 @@ foreach(key IN ITEMS candidates prefix_matches prefix_mismatches
 endforeach()
 math(EXPR classified "${prefix_matches}+${prefix_mismatches}+${best_length_probe_pruned_candidates}")
 if(NOT classified EQUAL candidates
-        OR NOT best_length_probe_comparisons EQUAL 0
-        OR NOT best_length_probe_pruned_candidates EQUAL 0)
-    message(FATAL_ERROR "production no-probe statistic contract violated")
+        OR best_length_probe_pruned_candidates GREATER best_length_probe_comparisons
+        OR best_length_probe_comparisons GREATER candidates
+        OR best_length_probe_comparisons GREATER byte_comparisons)
+    message(FATAL_ERROR "production probe statistic contract violated")
 endif()

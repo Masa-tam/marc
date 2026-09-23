@@ -15413,3 +15413,22 @@ Production one-shot match-finder benchmark report contract:
 - Production promotion must update the explicit expected policy; the test
   must not accept both policy names simply to pass. Historical campaign
   report formats and stored measurements are unchanged.
+
+### TVG-1044
+
+Production best-length probe activation:
+
+- Switch the dedicated control-independence fixture's candidate to the
+  production finder. Keep windows 5, 17 and 65,536, exhaustive per-position
+  matches and identical queried workspace sizes. Require positive production
+  pruning for the shared-prefix vector at window 65,536, equal candidate
+  counts and zero control probe reads/prunes.
+- Pin the older private-candidate differential helper to the explicit
+  no-probe finder; retain its zero-probe assertions rather than comparing
+  two probe instances or weakening its expected counters.
+- Require the one-shot report's exact `best-length-probe` policy label and
+  three-term candidate partition, with prunes <= probe reads <= candidates
+  and probe reads <= all byte comparisons. Positive pruning is tested on
+  the generated fixture, not imposed on arbitrary README data.
+- Existing golden vectors, cross-codec frame identity and exact-capacity
+  grids now run against production probing without regenerated expectations.

@@ -187,9 +187,9 @@ void expect_best_length_probe_matches_exact(
     auto probe_storage = make_hash_chain_storage(required.workspace_size);
     LzssMatchFinderStatistics baseline_statistics{};
     LzssMatchFinderStatistics local_probe_statistics{};
-    LzssHashChainMatchFinder baseline{};
+    LzssHashChainNoProbeMatchFinder baseline{};
     LzssHashChainBestLengthProbeMatchFinder probe{};
-    ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
+    ASSERT_EQ(initialize_lzss_hash_chain_no_probe_match_finder(
                   input, parameters, {}, baseline_storage.bytes.first(
                       required.workspace_size), baseline,
                   &baseline_statistics),
@@ -935,7 +935,7 @@ TEST(LzssHashChainBestLengthProbeMatchFinder,
     }
 }
 
-TEST(LzssHashChainNoProbeMatchFinder, PreservesExactControlWithoutProbeReads) {
+TEST(LzssHashChainNoProbeMatchFinder, ProductionProbesWhileControlRemainsIndependent) {
     const auto input = bytes("ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ");
     for (const std::uint32_t window : {5U, 17U, 65'536U}) {
         LzssParameters parameters{};
@@ -946,12 +946,12 @@ TEST(LzssHashChainNoProbeMatchFinder, PreservesExactControlWithoutProbeReads) {
         auto control_storage = make_hash_chain_storage(required.workspace_size);
         auto probe_storage = make_hash_chain_storage(required.workspace_size);
         LzssHashChainNoProbeMatchFinder control{};
-        LzssHashChainBestLengthProbeMatchFinder probe{};
+        LzssHashChainMatchFinder probe{};
         LzssMatchFinderStatistics control_stats{}, probe_stats{};
         ASSERT_EQ(initialize_lzss_hash_chain_no_probe_match_finder(
                       input, parameters, {}, control_storage.bytes,
                       control, &control_stats), LzssHashChainError::none);
-        ASSERT_EQ(initialize_lzss_hash_chain_best_length_probe_match_finder(
+        ASSERT_EQ(initialize_lzss_hash_chain_match_finder(
                       input, parameters, {}, probe_storage.bytes,
                       probe, &probe_stats), LzssHashChainError::none);
         LzssExhaustiveMatchFinder reference{input, parameters};

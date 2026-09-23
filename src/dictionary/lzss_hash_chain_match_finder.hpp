@@ -43,7 +43,7 @@ calculate_lzss_hash_chain_workspace(
 
 inline constexpr std::size_t lzss_hash_chain_legacy_bucket_cap = 65'536;
 inline constexpr std::size_t lzss_hash_chain_production_bucket_cap = 262'144;
-inline constexpr bool lzss_hash_chain_production_uses_best_length_probe = false;
+inline constexpr bool lzss_hash_chain_production_uses_best_length_probe = true;
 inline constexpr std::size_t lzss_hash_chain_bucket_cap_262144 =
     lzss_hash_chain_production_bucket_cap;
 inline constexpr std::size_t lzss_hash_chain_bucket_cap_1048576 = 1'048'576;
