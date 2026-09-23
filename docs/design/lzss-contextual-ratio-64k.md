@@ -153,8 +153,11 @@ compressed-bit contribution. In particular, 25.9 million distance bypass
 decisions are coded with equal binary probabilities, but the count alone is
 not a measured 3.2-MiB opportunity: alternative parsing changes token kinds,
 lengths, distances, and subsequent model state together. The next comparison
-must use a separately specified short-match representation and its complete
-encoded payloads, including format overhead.
+must use the separately reserved
+[short-match representation](lzss-contextual-short-match-64k.md) and its
+complete encoded payloads, including format overhead. That reservation is
+decoder-visible documentation only: no parser, encoder, decoder, CLI selector,
+or public profile admits the candidate yet.
 
 Admission requires byte-exact round trips, split-buffer determinism, strict
 malformed-stream rejection, bounded workspace queries, sanitizer coverage,

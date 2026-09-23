@@ -8587,3 +8587,13 @@ typed-context frame-size constants. BM-0098 through BM-0099 and DD-1175
 through DD-1176 set the local comparison question. No external range coder,
 compressor source, operation-cost estimator, test suite, or implementation
 structure was consulted.
+
+### IR-0933
+
+The 64-KiB typed-LZSS short-match reservation uses first-party Format 2.0
+headers and frame rules, the `2/2 + 1/1 + 3/2` Contextual Dynamic Range
+identity, the field-context mapper, Range encoder arithmetic, DD-1175 through
+DD-1177, and BM-0099 through BM-0100. The new length transform and model
+layout were specified independently from those contracts. No external
+compressor implementation, source, test, table, pseudocode, or match-selection
+policy was consulted.

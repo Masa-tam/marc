@@ -7868,3 +7868,52 @@ leaf-only paths, recorded sizes and SHA-256 values, decoded fixture equality,
 and byte-identical local re-encoding. Removing only archive 67 and changing
 the manifest to `56` / `marc-cli-v56` reconstructs schema 56 exactly. This
 artifact admission changes no codec byte or resource policy.
+
+### Reserved 64-KiB LZSS short-match Contextual Dynamic Range identity
+
+Format 2.0 reserves exact stream identity `dictionary 2/7 + context 1/6 +
+entropy 3/2`. Dictionary variant 7 and context variant 6 MUST occur together,
+and this reservation admits no other entropy backend. Every crossed pair or
+backend MUST be rejected before frame/model allocation or raw publication.
+This reservation does not yet admit an encoder, decoder, C profile, CLI name,
+or interoperability archive. Existing identities and schema-57 bytes remain
+unchanged.
+
+The 112-byte stream header, 64-byte frame header, and 16-byte Dynamic Range
+descriptor keep their Format 2.0 offsets, little-endian fields, feature flag,
+zero reserved fields, frame-atomic publication and strict termination rules.
+Dictionary variant 7 uses the unchanged 16-byte LZSS parameter region but
+requires minimum match length exactly 3, maximum match length 3..258, window
+size 1..65,536, and stream frame size 1..65,536 raw bytes. The reference
+profile uses 65,536 for frame and window. History and all models reset per
+frame. Match distance must not exceed the configured window or already
+reconstructed bytes; bytewise overlap copying is valid. No Match may extend
+past the declared raw frame. Generic serialized-byte LZSS variant 1 and all
+older typed variants retain their minimum-five validation.
+
+Context variant 6 keeps the previous-kind and last-Literal state rules, token
+contexts 0..2, and Literal contexts 3..19. For Match length `L`, encode
+`V = L - 2`, `length_class = floor(log2(V))` in the selected context 20..22
+with alphabet 9, then `V - 2^length_class` in exactly `length_class` LSB-first
+bypass bits. For distance `D`, encode `distance_class = floor(log2(D))` in
+context `23 + length_class` with alphabet 17, then
+`D - 2^distance_class` in exactly `distance_class` LSB-first bypass bits.
+Zero-width bypass operations are omitted. The decoder performs checked
+inverse arithmetic and typed-token validation. Contexts 23..31 give one
+distance model for each length class 0..8. There are exactly 32 contexts and
+4,538 flattened frequency entries (`3*2 + 17*256 + 3*9 + 9*17`). The
+Dynamic Range variant-2 descriptor context-count field MUST equal 32 for
+this exact identity; all earlier identities retain their own frozen counts.
+
+For raw frame size `F` and token count `T`, preflight requires `1 <= T <= F`,
+`2T <= event_count <= min(2F,5T)`, and
+`event_count <= decision_count <= min(9F,27T)`. The conservative payload
+ceiling is `18F+5` bytes; the complete frame ceiling is `18F+85` bytes.
+Every multiplication, sum, table extent, payload extent and aggregate
+workspace is checked against caller hard limits before allocation. Malformed
+classes, bypass widths, distances, count disagreements, Range states,
+noncanonical termination, truncation, and forbidden trailing bytes are
+rejected without publishing a partial frame.
+
+The exact two-token decoder vector, Range payload, and staged admission gates
+are in [the short-match candidate](design/lzss-contextual-short-match-64k.md).

@@ -20,6 +20,9 @@ navigate chronological development records.
 - [64-KiB LZSS Contextual compression-ratio study](design/lzss-contextual-ratio-64k.md):
   frozen `mozilla` baseline, short-match hypothesis, and staged full-corpus
   admission gates without changing existing stream bytes.
+- [64-KiB LZSS Contextual short-match candidate](design/lzss-contextual-short-match-64k.md):
+  reserved decoder-visible identity for 3/4-byte matches, model bounds, and
+  staged admission gates; no public codec admission yet.
 - [Contextual profile application](design/contextual-profile-application.md):
   atomic resource-profile helpers for profile-bearing contextual codecs and
   the complete-default rule for codecs without such helpers.

@@ -23950,3 +23950,17 @@ bypass decisions without treating their individual counts as independently
 additive coded sizes. Calculate stream/frame/descriptor overhead explicitly
 and require the predicted archive to equal actual CLI output on one- and
 two-frame fixtures. Keep the current format and public encoder unchanged.
+
+## DD-1178: Reserve an isolated 64-KiB short-match identity
+
+Reserve dictionary `2/7` with context `1/6` and Dynamic Range `3/2` only.
+Require a variant-specific minimum match length of three without relaxing
+older LZSS variants. Map length as `V = L - 2`, giving classes 0..8. Add a
+ninth length-correlated distance context rather than folding class 8 into an
+older context: the resulting 32-context, 4,538-entry model has one explicit
+distance context per length class and cannot be confused with the frozen
+31-context format. Retain the established Range arithmetic and frame layout;
+change only the exact pair, class mapping, alphabet/model extents, descriptor
+context count and conservative resource bounds. This is decoder-visible
+documentation, not a public codec admission or a claim that 3/4-byte Matches
+save space. A measured deterministic encoder selection rule is a later gate.

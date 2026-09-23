@@ -15464,3 +15464,24 @@ Baseline modeled-event accounting checks:
 - Locally compare the diagnostic's multi-frame `mozilla` prediction with the
   independently measured BM-0098 archive size. This is baseline calibration,
   not a vector for a new short-match format.
+
+### TVG-1047
+
+Reserved short-match decoder vector and future implementation gates:
+
+- Use one 4-byte raw frame `61 61 61 61`, window 65,536, minimum length 3,
+  maximum length 258, and two hand-selected tokens: Literal `0x61`, then
+  Match `(distance 1, length 3)`. This vector establishes representation,
+  not the future encoder's choice of parse.
+- Model operations are `(context, alphabet, value)` = `(0,2,0)`, `(3,256,97)`,
+  `(1,2,1)`, `(21,9,0)`, `(23,17,0)`. Require five events, five decisions,
+  zero bypass bits, and Range payload `00 30 BF FF 9E 80 00`; a complete
+  no-hash stream would be 199 bytes including headers and descriptor.
+- Before encoder admission, test boundaries for lengths 3, 4, 5, and 258;
+  classes 0, 1, and 8; context count 31 versus 32; impossible distance
+  65,536 in an empty 65,536-byte frame; malformed/truncated bypass, count,
+  descriptor, Range termination, and crossed identity. Preserve old vectors
+  byte-for-byte. Empty input remains the 112-byte header alone.
+- Decode and validate the hand vector independently before using an encoder
+  for round trips. Later compare *complete* archive sizes across Silesia;
+  these specification vectors assert no compression-ratio improvement.

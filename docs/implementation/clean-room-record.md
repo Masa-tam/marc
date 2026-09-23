@@ -32996,3 +32996,23 @@ both bounds.
   with 62,672 bytes of framing, the predicted 20,085,366-byte archive matches
   BM-0098. Both tracked single-frame and generated two-frame CLI identity
   tests passed in MSVC Release.
+
+## CR-1332: 2026-09-24 - Reserve the 64-KiB short-match representation
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  specification step.
+- References used: IR-0933, DD-1178, TVG-1047, BM-0099 through BM-0100,
+  first-party Format 2.0, Contextual Range, and typed-token contracts.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations, match-selection code, tests, or tables.
+- Generated-code task: specify a decoder-visible 3/4-byte-match identity,
+  hand-checkable vector, model layout, and resource/malformed-stream bounds
+  before implementing the decoder or encoder.
+- Independent decisions: reserve exact `2/7 + 1/6 + 3/2`, use `L - 2`, and
+  keep a separate distance context for the new ninth length class. Existing
+  31-context variants and public profiles remain unchanged.
+- Similarity review: the new text is derived from repository-owned format
+  arithmetic and simple class partitioning, not translated external source.
+  No legal non-infringement guarantee is made.
+- Local validation: the documentation checker and format-vector arithmetic
+  were reviewed; the candidate is not yet decoded or encoded by marc.
