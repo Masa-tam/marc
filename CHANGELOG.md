@@ -3,6 +3,21 @@
 This file records user-visible marc changes. Project release versions, stream
 format versions, and C ABI versions are independent namespaces.
 
+## Unreleased
+
+### Changed
+
+- Enabled exact best-length probing in the default LZSS HashChain match finder.
+  It skips candidates that cannot improve the current match. The selected
+  tokens, archive bytes, decoder, C ABI, format IDs, and queried workspace are
+  unchanged. The independent no-probe route remains available internally for
+  regression and benchmark comparisons.
+- In the pinned 4-MiB-window contextual rANS Silesia comparison, the sum of
+  twelve per-file encode medians improved from 277.490 to 124.460 seconds
+  (2.23x). Eleven files improved; `x-ray` was about 0.66% slower. These are
+  descriptive measurements, not a promise for every input. The same 67
+  interoperability archives passed Windows/MSVC and Ubuntu cross-checks.
+
 ## 0.6.0 - 2026-09-06
 
 ### Added
