@@ -1070,3 +1070,22 @@ bytes for the complete 64-MiB Contextual family and establishes bidirectional
 decoding between the recorded Windows and WSL2 Linux x86-64 environments for
 the 0.6.0 release candidate. The repeat changes no archive inventory or
 serialized identity.
+
+#### HashChain best-length probe production adoption repeat
+
+Revision `a141c160074eb061145e1a8f3439fcc83e6d16e7` received the
+post-switch cross-check after the maintainer pushed it and reported successful
+CI completion. The maintainer reported four successful verifier passes, each
+with 67 archives and that exact full revision:
+
+1. Windows/MSVC Visual Studio 2026 CI bundle verified on Ubuntu 26.04.
+2. Ubuntu 24.04/Ninja CI bundle verified on Ubuntu 26.04.
+3. Ubuntu 26.04/Clang 21.1.8 bundle generated and self-verified there.
+4. The Ubuntu 26.04 bundle verified with Windows/MSVC in the reverse direction.
+
+The verifier checks manifest order, size and SHA-256, decodes every archive,
+and compares local re-encoding byte for byte. The four reported results confirm
+the existing 67-archive schema-57 inventory across the three producer builds
+and both consumer environments for this revision. This repeat completes the
+external interoperability gate for the production HashChain best-length probe;
+it introduces no new codec ID, archive variant or schema revision.

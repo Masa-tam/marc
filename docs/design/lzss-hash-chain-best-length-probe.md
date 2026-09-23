@@ -1,13 +1,13 @@
 # HashChain best-length probe experiment
 
-Status: private matcher pilot/full campaigns (BM-0093/BM-0094) and
-whole-codec pilot/full campaigns (BM-0095/BM-0096) completed, 2026-09-23.
-Production migration follows DD-1171. The local production query now enables
-the best-length probe; BM-0097 records the completed pinned post-switch
-whole-codec comparison. Adoption remains open until external CI and
-interoperability gates pass. No format
-change is proposed. The audit below records the pre-switch state and staged
-preparation; its no-probe production labels describe that earlier state.
+Status: production adoption gates completed, 2026-09-24. The local production
+HashChain query uses best-length probing under DD-1171. BM-0097 records the
+post-switch full-Corpus comparison; FZ-0043 records bounded direct encoder
+sanitizer checks. The maintainer reported passing Windows/MSVC and Ubuntu/Ninja
+CI and four same-revision 67-archive interoperability passes at
+`a141c160074eb061145e1a8f3439fcc83e6d16e7`, recorded in
+`docs/interoperability.md`. The wire format is unchanged. Historical sections
+below retain their pre-switch labels to describe the experimental stages.
 
 ## Motivation and boundary
 
@@ -518,7 +518,7 @@ integration; remote pushes remain with the maintainer. If the integration
 gate fails, investigate the failing input or revert the isolated switch while
 retaining the experimental evidence and independent control path.
 
-### Remaining external validation after BM-0097
+### External validation after BM-0097
 
 The bounded encoder sanitizer campaign is FZ-0043 and the pinned post-switch
 whole-codec comparison is BM-0097. The next revision should be pushed to run
@@ -534,3 +534,10 @@ all four verifier results in `docs/interoperability.md` after completion.
 Check the archive count from the bundle manifest rather than assuming the
 previous 67-archive inventory is unchanged. Do not close adoption on a
 different source revision or on partially completed verification.
+
+The maintainer reported successful CI and all four verifier passes at
+`a141c160074eb061145e1a8f3439fcc83e6d16e7`, each with 67 archives.
+The report is recorded in `docs/interoperability.md`. The production adoption
+gate is therefore complete for that revision. This does not claim that the
+optimization improves every input: BM-0097 retains the `x-ray` slowdown and
+the full decode-time distribution.

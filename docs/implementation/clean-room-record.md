@@ -32841,3 +32841,24 @@ both bounds.
   replay succeeded. All 12 archive identities match BM-0096. Raw result and
   checkpoint SHA-256 values are recorded in BM-0097. No cross-platform CI or
   interoperability completion is claimed in this record.
+
+## CR-1325: 2026-09-24 - Close best-length probe external adoption gate
+
+- Author: Codex; reviewer: repository maintainer reported the external CI and
+  all four interoperability results for the same pushed revision.
+- References used: DD-1171, BM-0097, FZ-0043, repository CI configuration,
+  repository interoperability verifier contract and the maintainer's four
+  reported verifier lines.
+- Known implementations intentionally not consulted: external compression
+  source code or third-party benchmark implementations.
+- Generated-code task: record the revision-matched Windows/Ubuntu results and
+  update the production adoption status.
+- Independent decisions: retain the no-probe control and preserve the `x-ray`
+  slowdown in BM-0097; change no wire format or public API.
+- Similarity review: repository records and maintainer-provided results only;
+  no external implementation expression copied.
+- Validation: the maintainer reported passing CI and four 67-archive verifier
+  passes at `a141c160074eb061145e1a8f3439fcc83e6d16e7`, recorded in
+  `docs/interoperability.md`. These complete the external adoption gates for
+  the production query. This record does not independently rerun those
+  external environments or assert a universal performance improvement.
