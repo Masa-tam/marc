@@ -32758,3 +32758,45 @@ both bounds.
   verification and diff check passed. Post-switch sanitizer smoke, pinned
   corpus measurements and external CI/interoperability remain outstanding;
   the local switch does not close the adoption gate.
+
+## CR-1321: 2026-09-23 - Windows libFuzzer string annotation compatibility
+
+- Author: Codex; reviewer: repository maintainer approved the workaround.
+- References used: local linker diagnostics, installed Microsoft STL annotation
+  configuration header and marc's own fuzz build configuration; DD-1172.
+- Known implementations intentionally not consulted: external compression
+  implementations and match-finder source code.
+- Independent decisions: use an opt-in Windows fuzz-only compile definition
+  shared by the static library and build consumers; retain sanitizer flags,
+  vector annotations and linker contract checking. Record reduced coverage.
+- Generated-code task description: restore compatibility with the installed
+  prebuilt libFuzzer without altering production code or normal build settings.
+- Similarity review: configuration interface inspected for diagnosis only;
+  no external algorithm implementation or source expression copied.
+- Validation remains blocked: recompiling the static library and five
+  contextual harnesses removed the string mismatch but exposed the same
+  `annotate_vector` mismatch (runtime 0, marc 1). No fuzz execution succeeded
+  and no vector annotation disablement was applied. Further scope requires
+  maintainer review; the string-only option is not a complete remedy here.
+
+## CR-1322: 2026-09-23 - Extend approved fuzz compatibility to vector annotations
+
+- Author: Codex; reviewer: repository maintainer explicitly approved vector
+  annotation disablement only for fuzz builds.
+- References used: DD-1173, local linker and libFuzzer object directives,
+  installed Microsoft STL configuration and repository-owned CMake targets.
+- Known implementations intentionally not consulted: external compression
+  implementations or test suites.
+- Independent decisions: separate opt-in for vector annotations, propagate
+  consistently to fuzz-library consumers and retain all sanitizer flags.
+- Generated-code task description: rebuild the five contextual decoder
+  harnesses and run bounded local smoke checks with matching ASan runtime.
+- Similarity review: diagnostic configuration only; no external algorithm
+  source expression copied.
+- Validation: all five targets linked after recompilation and completed
+  1,000 runs each under the FZ-0042 bounds without a reported sanitizer
+  finding. Normal MSVC configuration succeeded with both options OFF and
+  without either disable definition in generated project files. Documentation
+  verification and diff check passed. No new full ordinary CTest run is
+  claimed for this fuzz-build-only change; decoder smoke does not validate
+  the encoder optimization directly.

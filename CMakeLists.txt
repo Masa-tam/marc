@@ -17,6 +17,10 @@ option(MARC_BUILD_EXAMPLES "Build marc examples" ${PROJECT_IS_TOP_LEVEL})
 option(MARC_BUILD_TOOLS "Build marc command-line tools" ${PROJECT_IS_TOP_LEVEL})
 option(MARC_BUILD_BENCHMARKS "Build marc benchmark tools" OFF)
 option(MARC_BUILD_FUZZERS "Build marc Clang/libFuzzer targets" OFF)
+option(MARC_FUZZ_DISABLE_STRING_ANNOTATION
+    "Match Windows libFuzzer built without std::string ASan annotations" OFF)
+option(MARC_FUZZ_DISABLE_VECTOR_ANNOTATION
+    "Match Windows libFuzzer built without std::vector ASan annotations" OFF)
 option(MARC_MSVC_MULTIPROCESS_COMPILE
     "Compile independent C/C++ translation units concurrently with MSVC /MP"
     OFF)
@@ -1121,6 +1125,15 @@ endif()
 if(MARC_BUILD_FUZZERS)
     if(NOT TARGET marc_static)
         message(FATAL_ERROR "MARC_BUILD_FUZZERS requires MARC_BUILD_STATIC=ON")
+    endif()
+    if(MARC_FUZZ_DISABLE_STRING_ANNOTATION AND WIN32)
+        # Keep every translation unit linked with libFuzzer consistent.
+        target_compile_definitions(marc_static PUBLIC
+            $<BUILD_INTERFACE:_DISABLE_STRING_ANNOTATION>)
+    endif()
+    if(MARC_FUZZ_DISABLE_VECTOR_ANNOTATION AND WIN32)
+        target_compile_definitions(marc_static PUBLIC
+            $<BUILD_INTERFACE:_DISABLE_VECTOR_ANNOTATION>)
     endif()
     if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR MSVC)
         message(FATAL_ERROR

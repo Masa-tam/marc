@@ -404,6 +404,25 @@ MSVC remains the reference normal-build toolchain, but its native driver is not
 used for this libFuzzer target. Ordinary test builds compile the harness as an
 object target, catching portable C++ errors without requiring a fuzz runtime.
 
+If Windows linking reports `annotate_string` value 0 in the prebuilt libFuzzer
+and value 1 in marc, configure the separate fuzz build with
+`-DMARC_FUZZ_DISABLE_STRING_ANNOTATION=ON`. This opt-in compatibility setting
+applies `_DISABLE_STRING_ANNOTATION` consistently to the fuzz static library
+and its build-tree consumers on Windows. It defaults to OFF and has no effect
+on ordinary builds or installed interface definitions. Rebuilding recompiles
+affected objects; suppressing linker mismatch checks is not an alternative.
+
+For the corresponding `annotate_vector` mismatch, also configure
+`-DMARC_FUZZ_DISABLE_VECTOR_ANNOTATION=ON`. It has the same default-OFF,
+Windows fuzz-only and build-interface scope. The local 2026-09-23 toolchain
+requires both options: its prebuilt libFuzzer records zero for both contracts.
+
+These options retain libFuzzer, ASan and UBSan, but remove the selected
+`std::string`/`std::vector` container-boundary annotations. A campaign must
+not claim that additional coverage. General memory instrumentation remains
+enabled; optional annotations and linker mismatch checks are not disabled.
+Remove the opt-ins and rebuild when a matching runtime is available.
+
 ## Recorded bounded campaigns
 
 ### FZ-0001: Initial six-target Windows smoke
@@ -961,6 +980,27 @@ sanitizer runtime path applied only to the campaign process. No input corpus
 was supplied, no generated mutation was retained, and no artifact was
 produced. This bounded result is evidence for the exercised inputs, not an
 exhaustive safety claim.
+
+### FZ-0042: Post-probe-switch contextual decoder smoke with annotation compatibility
+
+On 2026-09-23, rebuild the static library and the five contextual Dynamic
+Range, rANS, tANS, Blocked Huffman and Adaptive Huffman decoder harnesses
+from the production-probe source at `811d5c4b` plus DD-1172/DD-1173 build
+configuration changes. Windows Clang 22.1.3 uses libFuzzer, ASan and UBSan,
+with both string/vector annotation compatibility options ON. Their extra
+container-boundary checks are therefore not covered. General sanitizer
+instrumentation and linker mismatch checking remain enabled.
+
+Each target completed 1,000 runs with seed 20260923, five-second per-input
+timeout and 512-MiB RSS ceiling. Maximum input lengths were 8 KiB for Dynamic
+Range, 64 KiB for Adaptive Huffman and 32 KiB for the other three. No input
+corpus was supplied; mutations stayed in memory and no finding artifact was
+produced. All five exited zero with no reported sanitizer finding. The matching
+ASan runtime directory was prepended only to the campaign process PATH.
+
+This is bounded decoder smoke, not deep valid-stream exploration, direct
+encoder/probe fuzz coverage, or proof of safety. Encoder differential/round-trip
+sanitizer coverage and the post-switch measurement/CI gates remain separate.
 
 ## Finding retention policy
 

@@ -23877,3 +23877,26 @@ the no-probe oracle genuinely independent of the production switch. Close
 the migration only after CI and cross-platform verification. The detailed
 gates are in `docs/design/lzss-hash-chain-best-length-probe.md`; this planning
 step itself changes no executable behavior.
+
+## DD-1172: Windows libFuzzer string annotations use an explicit compatibility option
+
+Visual Studio's installed Clang 22.1.3 libFuzzer reports `annotate_string=0`,
+while the installed MSVC headers emit `annotate_string=1` for ASan code.
+A fresh minimal translation unit reproduces this independently of old marc
+objects. Permit `MARC_FUZZ_DISABLE_STRING_ANNOTATION`, default OFF, only in
+the Windows fuzz build. Propagate the definition consistently through the
+static target's build interface to avoid mixed translation-unit contracts.
+Keep all sanitizer flags and linker mismatch checks. Document the missing
+string container-boundary coverage; do not treat this workaround as a toolchain
+repair or as disabling all ASan checks. Normal builds and exported usage
+requirements remain unaffected. Re-evaluate after toolchain updates.
+
+## DD-1173: Vector annotations use a separate Windows fuzz compatibility option
+
+After disabling string annotations, the same prebuilt libFuzzer exposes
+`annotate_vector=0` against marc's value 1. The maintainer approved extending
+the workaround to vector annotations in fuzz builds only. Add the independent
+default-OFF `MARC_FUZZ_DISABLE_VECTOR_ANNOTATION` option with the same guarded
+build-interface propagation. Do not disable optional annotations, all STL
+annotations, ASan, UBSan or linker mismatch checking. Document both missing
+container checks and distinguish decoder smoke from encoder/probe coverage.
