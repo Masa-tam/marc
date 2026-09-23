@@ -422,7 +422,15 @@ against their input vectors at promotion rather than globally replacing
 their expected values. Candidate/query totals and output remain invariant,
 but prefix classifications and comparison totals need not remain identical.
 
-Next implementation order:
+The first audit action is now implemented: private bucket-cap wrappers call
+an explicit no-probe query, the mnemonic mixer explicitly selects `false`,
+and the shared template no longer supplies a default probe policy. A bounded
+shared-prefix fixture checks all four bucket caps and the mixer against the
+exhaustive finder with zero probe reads/prunes; the probe candidate must
+actually prune on the same input. Production still explicitly selects
+no-probe. This pins query policy without changing workspace or insertion.
+
+Remaining implementation order (item 1 implemented as described above):
 
 1. Pin private bucket/mixer routes to no-probe with regression assertions
    for zero probe reads/prunes on an input where the candidate does prune.

@@ -73,6 +73,9 @@ public:
     void advance(std::size_t position, std::size_t next_position) noexcept;
 
 private:
+    template <std::size_t BucketCap>
+    friend class LzssHashChainBucketScaledMatchFinder;
+    [[nodiscard]] LzssMatch find_match_no_probe(std::size_t position) const noexcept;
     friend class LzssHashChainMnemonicMixerV1MatchFinder;
     friend class LzssHashChainBestLengthProbeMatchFinder;
     friend class LzssHashChainNoProbeMatchFinder;
@@ -86,7 +89,7 @@ private:
         const core::DecoderLimits&, std::span<std::byte>, std::size_t,
         LzssHashChainMatchFinder&, LzssMatchFinderStatistics*) noexcept;
 
-    template <auto CalculatePrefixHash, bool UseBestLengthProbe = false>
+    template <auto CalculatePrefixHash, bool UseBestLengthProbe>
     [[nodiscard]] LzssMatch find_match_with(
         std::size_t position) const noexcept;
     template <auto CalculatePrefixHash>
@@ -179,7 +182,7 @@ public:
 
     [[nodiscard]] LzssMatch find_match(
         const std::size_t position) const noexcept {
-        return implementation_.find_match(position);
+        return implementation_.find_match_no_probe(position);
     }
 
     void advance(

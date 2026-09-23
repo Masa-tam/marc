@@ -15363,3 +15363,18 @@ tANS integration of explicit probe/control tokens:
 - Production dispatch, existing golden vectors and all prior chunking,
   empty-stream and malformed-input tests remain unchanged. This is bounded
   integration evidence, not a new throughput measurement or format variant.
+
+### TVG-1041
+
+Historical private HashChain routes retain no-probe semantics:
+
+- Use the independently generated ASCII input
+  `ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ` at every query position, advancing
+  each finder by one byte and comparing matches with the exhaustive finder.
+- Exercise all four private bucket caps and the mnemonic mixer. Require
+  zero probe comparisons/prunes, no statistic overflow and the historical
+  two-term candidate partition. Use the queried aligned workspace.
+- Run the explicit probe candidate on the same input and require positive
+  pruning, preventing a vacuous zero-probe control assertion.
+- The short vector tests query-policy selection, not actual bucket-cap
+  saturation; existing large-input bucket-boundary tests remain required.

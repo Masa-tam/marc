@@ -32671,3 +32671,23 @@ both bounds.
 - Validation: documentation verification and diff check; no executable code
   changed, so no new build, CTest or corpus timing run is claimed. The prior
   3,607-test run remains the pre-switch baseline, not a promotion result.
+
+## CR-1317: 2026-09-23 - Pin historical private HashChain query policies
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171, CR-1316, TVG-1041 and repository-owned matcher
+  templates, bucket wrappers and counter contracts.
+- Known implementations intentionally not consulted: external compressor
+  implementations, matcher code and test suites.
+- Independent decisions: route bucket experiments through an explicit
+  no-probe member shared with the control finder; remove the shared query
+  template's default boolean and explicitly select the mnemonic policy.
+  Production remains no-probe, with unchanged insertion and workspace.
+- Generated-code task description: isolate historical experimental policy
+  from production promotion and add non-vacuous exhaustive/counter checks.
+- Similarity review: modifications of repository-owned code and independently
+  generated vectors only; no external implementation expression introduced.
+- Local validation: MSVC Release build succeeded. All 3,608 CTest cases
+  passed in 366.41 seconds, including the new policy test and interoperability
+  schema compatibility in 109.00 seconds. Documentation verification and
+  diff check passed. No new corpus timing or production promotion is claimed.

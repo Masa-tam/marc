@@ -974,6 +974,52 @@ TEST(LzssHashChainNoProbeMatchFinder, PreservesExactControlWithoutProbeReads) {
     }
 }
 
+TEST(LzssHashChainBucketScaledMatchFinder, HistoricalRoutesNeverProbe) {
+    const auto input = bytes("ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ");
+    const auto check = [&](auto& finder, const auto initialize,
+                           const std::size_t cap, const bool probes) {
+        const auto required = calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
+            input.size(), {}, {}, cap);
+        ASSERT_EQ(required.error, LzssHashChainError::none);
+        auto storage = make_hash_chain_storage(required.workspace_size);
+        LzssMatchFinderStatistics statistics{};
+        ASSERT_EQ(initialize(input, LzssParameters{}, marc::core::DecoderLimits{},
+                             storage.bytes, finder, &statistics),
+                  LzssHashChainError::none);
+        LzssExhaustiveMatchFinder reference{input, {}};
+        for (std::size_t position = 0; position < input.size(); ++position) {
+            EXPECT_EQ(finder.find_match(position), reference.find_match(position));
+            finder.advance(position, position + 1);
+            reference.advance(position, position + 1);
+        }
+        EXPECT_FALSE(statistics.overflowed);
+        if (probes) {
+            EXPECT_GT(statistics.hash_chain_best_length_probe_pruned_candidate_count, 0U);
+        } else {
+            EXPECT_EQ(statistics.hash_chain_best_length_probe_comparison_count, 0U);
+            EXPECT_EQ(statistics.hash_chain_best_length_probe_pruned_candidate_count, 0U);
+            EXPECT_EQ(statistics.candidate_count,
+                      statistics.hash_chain_prefix_match_count
+                          + statistics.hash_chain_prefix_mismatch_count);
+        }
+    };
+    const auto check_bucket = [&]<std::size_t Cap>() {
+        LzssHashChainBucketScaledMatchFinder<Cap> finder{};
+        check(finder, initialize_lzss_hash_chain_bucket_scaled_match_finder<Cap>,
+              Cap, false);
+    };
+    check_bucket.template operator()<65'536>();
+    check_bucket.template operator()<262'144>();
+    check_bucket.template operator()<1'048'576>();
+    check_bucket.template operator()<4'194'304>();
+    LzssHashChainMnemonicMixerV1MatchFinder mixer{};
+    check(mixer, initialize_lzss_hash_chain_mnemonic_mixer_v1_match_finder,
+          lzss_hash_chain_production_bucket_cap, false);
+    LzssHashChainBestLengthProbeMatchFinder probe{};
+    check(probe, initialize_lzss_hash_chain_best_length_probe_match_finder,
+          lzss_hash_chain_production_bucket_cap, true);
+}
+
 TEST(LzssHashChainNoProbeMatchFinder, FailedInitializationPreservesControl) {
     const auto input = bytes("ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ");
     const auto required = calculate_lzss_hash_chain_workspace(input.size(), {}, {});

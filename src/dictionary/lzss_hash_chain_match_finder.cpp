@@ -350,7 +350,12 @@ LzssMatch LzssHashChainMatchFinder::find_match_with(
 
 LzssMatch LzssHashChainMatchFinder::find_match(
     const std::size_t position) const noexcept {
-    return find_match_with<calculate_lzss_prefix_hash>(position);
+    return find_match_with<calculate_lzss_prefix_hash, false>(position);
+}
+
+LzssMatch LzssHashChainMatchFinder::find_match_no_probe(
+    const std::size_t position) const noexcept {
+    return find_match_with<calculate_lzss_prefix_hash, false>(position);
 }
 
 LzssMatch LzssHashChainBestLengthProbeMatchFinder::find_match(
@@ -361,8 +366,7 @@ LzssMatch LzssHashChainBestLengthProbeMatchFinder::find_match(
 
 LzssMatch LzssHashChainNoProbeMatchFinder::find_match(
     const std::size_t position) const noexcept {
-    return implementation_.find_match_with<
-        calculate_lzss_prefix_hash, false>(position);
+    return implementation_.find_match_no_probe(position);
 }
 
 void LzssHashChainNoProbeMatchFinder::advance(
@@ -434,7 +438,7 @@ void LzssHashChainMatchFinder::advance(
 LzssMatch LzssHashChainMnemonicMixerV1MatchFinder::find_match(
     const std::size_t position) const noexcept {
     return implementation_.find_match_with<
-        calculate_lzss_prefix_hash_mnemonic_mixer_v1>(position);
+        calculate_lzss_prefix_hash_mnemonic_mixer_v1, false>(position);
 }
 
 void LzssHashChainMnemonicMixerV1MatchFinder::advance(
