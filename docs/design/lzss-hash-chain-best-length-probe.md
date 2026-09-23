@@ -224,5 +224,30 @@ The summary reports per-member encode/decode medians and paired speedups;
 all underlying reports remain available. Decode timing uses the unchanged
 decoder and identical archives, so differences there must not be attributed
 to a new decoding algorithm. The selected campaign is completed in BM-0095;
-a full-Corpus whole-codec campaign still requires its own frozen contract
-before execution.
+the following separate contract defines the pending full-Corpus campaign.
+
+### Frozen all-member whole-codec campaign
+
+After BM-0095, the separate manifest
+`benchmarks/experiments/silesia-contextual-rans-best-length-probe-full-v1.json`
+fixes all twelve members in Corpus order, three baseline/probe pairs per
+member (72 independent child processes). Frame/window, match parameters,
+timing boundaries, compiler configuration, child timeout and checkpoint
+frequency remain identical to the selected pilot. No point is reused from
+the pilot. Corpus inputs and raw results remain outside version control.
+
+`tools/run_silesia_contextual_rans_best_length_probe_full.py` selects the
+full contract while reusing the pilot's parser, identity checks and atomic
+checkpoint machinery. Separate default paths and checkpoint/result schemas
+prevent either campaign from accepting the other's state. The original
+pilot's schema and summary remain unchanged. `--max-new-records N` can
+bound a run; completed replay must not launch any child or rewrite results.
+
+For encode and decode separately, the full result sums per-member medians
+for each strategy and divides baseline total by probe total. It also lists
+members with a ratio below one and the worst member ratio. This is not an
+arithmetic mean of speedup ratios. Individual records and all member
+summaries are retained, including regressions; no timing threshold is a
+test pass/fail criterion. Decoder differences still concern the unchanged
+decoder operating on identical bytes. The full measurement has not started,
+and completion alone will not automatically authorize production promotion.

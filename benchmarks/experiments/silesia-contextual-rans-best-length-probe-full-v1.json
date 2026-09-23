@@ -1,0 +1,22 @@
+{
+  "schema": "marc-benchmark-experiment-manifest-v1",
+  "experiment": "silesia-contextual-rans-best-length-probe-full-v1",
+  "members": ["dickens", "mozilla", "mr", "nci", "ooffice", "osdb", "reymont", "samba", "sao", "webster", "xml", "x-ray"],
+  "strategies": ["hash-chain-exact", "hash-chain-best-length-probe-exact"],
+  "codec": "lzss-contextual-rans-4m",
+  "frame_bytes": 4194304,
+  "window_bytes": 4194304,
+  "min_match_length": 5,
+  "max_match_length": 258,
+  "iterations_per_process": 1,
+  "attempts": 3,
+  "expected_records": 72,
+  "order": ["member", "attempt", "strategy"],
+  "child_timeout_seconds": 600,
+  "checkpoint_after_records": 1,
+  "build": "MSVC-x64-Release-O2-Ob2-NDEBUG",
+  "timing": "process-only-no-inner-observers",
+  "memory": "sequential-peak-queried-codec-workspace-not-RSS",
+  "summary": "median-per-member-and-strategy-with-aggregate",
+  "interpretation": "all-member-whole-codec-audit-no-automatic-production-promotion"
+}

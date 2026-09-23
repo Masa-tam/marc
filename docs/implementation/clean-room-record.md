@@ -32442,3 +32442,24 @@ both bounds.
   timeouts. Archive bytes, round trips, ratios and workspace checks passed.
   Completed replay preserved both result/checkpoint hashes without rerunning
   measurements. The implementation is unchanged; full-Corpus audit is pending.
+
+## CR-1306: 2026-09-23 - Frozen all-member whole-codec probe campaign
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, BM-0095, and marc's independent whole-codec
+  pilot manifest, strict report parser and checkpoint runner.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder, benchmark source or test suites.
+- Independent decisions: retain pilot conditions and add a distinct 72-point
+  contract covering every member, with separate schemas and no pilot reuse.
+  Report ratios of summed member medians, encode/decode worst ratios, and
+  slower-member lists without dropping regressions or adding a speed gate.
+- Generated-code task description: parameterize shared campaign plumbing,
+  freeze the full manifest, and test timeout/resume, campaign separation,
+  aggregate calculations and completed replay without real measurements.
+- Similarity review: repository-owned helpers reused; no external expression
+  or implementation reference was introduced.
+- Local validation: all ten pilot/full fixture tests passed. MSVC Release
+  build and all 3,598 CTest cases passed in 387.60 seconds, including
+  interoperability schema compatibility in 103.52 seconds. Documentation
+  verification and diff check passed. Full-Corpus measurement has not started.
