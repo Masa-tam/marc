@@ -32463,3 +32463,24 @@ both bounds.
   build and all 3,598 CTest cases passed in 387.60 seconds, including
   interoperability schema compatibility in 103.52 seconds. Documentation
   verification and diff check passed. Full-Corpus measurement has not started.
+
+## CR-1307: 2026-09-23 - All-member whole-codec probe results
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, the frozen full whole-codec campaign manifest,
+  and locally supplied Silesia Corpus verified by marc's own tool.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder, benchmark source and test suites.
+- Independent decisions: execute all 72 declared trials without selection
+  or order changes; report summed member medians, retain every decode
+  slowdown, and keep production adoption separate from measurement completion.
+- Generated-code task description: execute and replay the checkpointed full
+  campaign, record build/result identities, exact archive equality, ratios,
+  queried workspace, and separate encode/decode process times in BM-0096.
+- Similarity review: measurements use repository-owned implementations;
+  no external implementation expression was consulted or introduced.
+- Local validation: all 72 records succeeded without child failures or
+  timeouts. Exact archive, round-trip, ratio and workspace checks passed.
+  Completed replay launched no measurements and preserved result/checkpoint
+  hashes. Documentation verification and diff check passed. No implementation
+  or public default changed in this result-recording step.

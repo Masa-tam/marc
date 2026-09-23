@@ -3375,3 +3375,92 @@ without a ratio or workspace cost on these inputs. This supports a separately
 frozen all-member whole-codec campaign. It does not establish a universal
 non-regression guarantee or authorize production promotion. Keep the public
 default unchanged while the full-Corpus audit remains pending.
+
+### BM-0096: All-member whole-codec contextual rANS best-length-probe results
+
+On 2026-09-23, the frozen
+`silesia-contextual-rans-best-length-probe-full-v1.json` campaign completed
+all 72 records at clean revision
+`764aa44a9d26403f361fa77f93676a5d28145867`: twelve members, three independent
+baseline/probe pairs each, in declared order. No child failed or timed out.
+The build was MSVC 19.51.36252.0 x64 Release, `/O2 /Ob2 /DNDEBUG`, with
+executable SHA-256
+`95b462d4b269071442017bcad09625ab4a57627c7d83d1bdbaa0b2aafb612418`,
+project SHA-256
+`68ef20fe8a17922c2cd24405cfcdef78b3e59bc28b55b48a2aa761c7e68bff4d`,
+and manifest SHA-256
+`53891532fec9e3c46804df942e398b281d054bbd48f4fa33001a1b9e0e8a1cd5`.
+
+Both strategies used the public contextual rANS 4 MiB frame/window profile,
+5..258-byte matches, and unchanged HashChain buckets. Timing boundaries
+match BM-0095: uninstrumented encoder and ordinary decoder `process` calls,
+including validation, tokenization, model construction and framing inside
+those calls, but excluding allocation, construction/destruction, file I/O,
+oracle generation, digests and post-run comparisons. These are whole-codec
+process times, not isolated matcher times or child wall times.
+
+| Member | Baseline encode median | Probe encode median | Encode speedup | Baseline decode median | Probe decode median |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `dickens` | 5.891207 s | 5.460138 s | 1.079x | 0.249587 s | 0.254036 s |
+| `mozilla` | 70.065247 s | 35.007636 s | 2.001x | 1.334681 s | 1.327592 s |
+| `mr` | 59.520798 s | 21.084188 s | 2.823x | 0.242267 s | 0.243436 s |
+| `nci` | 35.976682 s | 18.854191 s | 1.908x | 0.188666 s | 0.184818 s |
+| `ooffice` | 1.413045 s | 1.189423 s | 1.188x | 0.211187 s | 0.211385 s |
+| `osdb` | 1.628375 s | 1.335878 s | 1.219x | 0.223298 s | 0.223713 s |
+| `reymont` | 7.847577 s | 6.690958 s | 1.173x | 0.111534 s | 0.112891 s |
+| `samba` | 17.337052 s | 6.345758 s | 2.732x | 0.327718 s | 0.330774 s |
+| `sao` | 1.829933 s | 1.769141 s | 1.034x | 0.323511 s | 0.323752 s |
+| `webster` | 38.318193 s | 24.317771 s | 1.576x | 0.755611 s | 0.759779 s |
+| `xml` | 0.787055 s | 0.616491 s | 1.277x | 0.040834 s | 0.041015 s |
+| `x-ray` | 1.196079 s | 1.175698 s | 1.017x | 0.370937 s | 0.368497 s |
+
+Summed per-member encode medians are 241.8112430 seconds for baseline and
+123.8472713 seconds for probe: a 1.952496x aggregate speedup. This divides
+summed times, rather than averaging speedup ratios. All twelve encode
+medians improved, with a smallest observed speedup of 1.017335x on `x-ray`.
+The corresponding decode sums are 4.3798314 and 4.3816869 seconds, a
+0.999577x ratio. Decode medians were slower on `dickens`, `mr`, `ooffice`,
+`osdb`, `reymont`, `samba`, `sao`, `webster`, and `xml`; the worst ratio was
+0.982488x on `dickens`. These observations are retained even though the
+decoder and its input bytes are unchanged. Small differences remain
+sensitive to noise; fixed-order measurements on one machine do not prove
+a universal non-regression guarantee.
+
+Every private archive matched the public baseline oracle byte for byte,
+and every ordinary decode recovered the original input. Archive hashes,
+sizes, ratios and workspace were stable across attempts and strategies.
+
+| Member | Archive bytes | Encoded/input ratio |
+| --- | ---: | ---: |
+| `dickens` | 3,265,887 | 0.320422301 |
+| `mozilla` | 18,954,972 | 0.370066270 |
+| `mr` | 3,386,820 | 0.339681888 |
+| `nci` | 2,465,068 | 0.073466912 |
+| `ooffice` | 3,028,821 | 0.492315747 |
+| `osdb` | 3,286,689 | 0.325876658 |
+| `reymont` | 1,591,187 | 0.240099366 |
+| `samba` | 4,851,746 | 0.224551337 |
+| `sao` | 5,270,047 | 0.726708176 |
+| `webster` | 10,378,367 | 0.250330238 |
+| `xml` | 549,164 | 0.102738117 |
+| `x-ray` | 5,450,402 | 0.643172957 |
+
+Every member required 132,129,769 bytes of encoder workspace and
+114,017,257 bytes of decoder workspace on both strategies. Sequential
+peak codec workspace was 132,129,769 bytes, within the 128 MiB internal
+limit. This is not RSS: input, oracle, output, alignment slack, objects and
+allocator overhead are excluded. The optimization adds no queried workspace.
+
+The ignored complete result
+`silesia-contextual-rans-best-length-probe-full-v1.json` retains all raw
+records, input/archive hashes and throughput fields; its SHA-256 is
+`d745954d937f90f084365f30f150bd2f67dd8d8daa31b542c09bdf91c8e8761b`.
+The complete checkpoint SHA-256 is
+`7483cea0c6315fe6c7b8c4621ebaddd5b28217a6f03dbb8ec54edf273eca6df4`.
+Completed replay revalidated all 72 records without launching measurements
+or changing either file hash.
+
+The full-Corpus audit supports considering production adoption: the encode
+gain survives complete entropy coding and framing without changing bytes,
+ratio or workspace. Adoption still requires a separate scope and regression
+review; this result does not change the public strategy, API or format.

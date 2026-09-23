@@ -1,9 +1,9 @@
 # HashChain best-length probe experiment
 
-Status: private matcher pilot/full campaigns (BM-0093/BM-0094) and selected
-whole-codec pilot (BM-0095) completed, 2026-09-23. All-member whole-codec
-evaluation remains pending. This document does not authorize a production
-matcher or format change.
+Status: private matcher pilot/full campaigns (BM-0093/BM-0094) and
+whole-codec pilot/full campaigns (BM-0095/BM-0096) completed, 2026-09-23.
+Production adoption remains a separate decision. This document does not
+authorize a production matcher or format change.
 
 ## Motivation and boundary
 
@@ -224,7 +224,7 @@ The summary reports per-member encode/decode medians and paired speedups;
 all underlying reports remain available. Decode timing uses the unchanged
 decoder and identical archives, so differences there must not be attributed
 to a new decoding algorithm. The selected campaign is completed in BM-0095;
-the following separate contract defines the pending full-Corpus campaign.
+the following separate contract defines the full-Corpus campaign.
 
 ### Frozen all-member whole-codec campaign
 
@@ -249,5 +249,6 @@ members with a ratio below one and the worst member ratio. This is not an
 arithmetic mean of speedup ratios. Individual records and all member
 summaries are retained, including regressions; no timing threshold is a
 test pass/fail criterion. Decoder differences still concern the unchanged
-decoder operating on identical bytes. The full measurement has not started,
-and completion alone will not automatically authorize production promotion.
+decoder operating on identical bytes. The full measurement completed in
+BM-0096 with all 72 records validated. Completion alone does not authorize
+production promotion.
