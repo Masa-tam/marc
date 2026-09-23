@@ -32888,3 +32888,26 @@ both bounds.
   compatibility in 115.52 seconds. Documentation verification and diff checks
   passed. A fresh pushed release-candidate CI run and matching four-direction
   exchange are still required before the tag.
+
+## CR-1327: 2026-09-24 - Record 0.7.0 external release-candidate evidence
+
+- Author: Codex; reviewer: repository maintainer supplied the pushed CI and
+  four-direction interoperability results.
+- References used: repository-owned schema-57 verifier contract, the
+  maintainer's four 67-archive results, and revision
+  `be2febf16eff3e71cac00368ed975bf904ee4aa9`.
+- Known implementations intentionally not consulted: external compression
+  sources, copyleft implementations, and third-party test suites.
+- Generated-code task: record the 0.7.0 release-candidate validation without
+  changing codec implementation or frozen archive representation.
+- Independent decisions: retain the 67-archive schema-57 inventory and report
+  the Windows/MSVC and Ubuntu 24.04 CI bundles verified on Ubuntu 26.04, plus
+  an Ubuntu 26.04/Clang bundle verified there and under Windows/MSVC. Keep
+  untested architectures, broader measurements, and longer fuzz campaigns
+  open rather than treating the four x86-64 passes as universal proof.
+- Similarity review: documentation-only evidence; no external implementation
+  expression, algorithm code, format bytes, or dependency was introduced.
+- Validation: the maintainer reported successful pushed CI and four verifier
+  passes with the same full revision and 67 archives each. These external
+  environments were not independently rerun in this documentation step.
+  The evidence commit still needs final pushed CI before `v0.7.0` tagging.

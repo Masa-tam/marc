@@ -208,7 +208,7 @@ Project version 0.6.0 is published as a GitHub pre-release from annotated tag
 release-candidate schema-57 exchange was recorded, so the published boundary
 contains no unverified source change.
 
-Project version 0.7.0 is in local release preparation. The public inventory
+Project version 0.7.0 has completed release-candidate validation. The public inventory
 remains forty-two baseline profiles and the same schema-57 set of 67 archives;
 C ABI lifecycle version 1 and the existing stream representations are unchanged.
 The default LZSS HashChain encoder now uses 262,144 buckets and exact
@@ -217,9 +217,11 @@ implementations remain private research candidates, with their measured
 larger-window trend and rejection boundaries summarized in
 `docs/design/lzss-match-finder-strategy.md`. The production probe completed
 four-direction schema-57 verification at revision
-`a141c160074eb061145e1a8f3439fcc83e6d16e7`. A new 0.7.0 release-candidate
-revision still needs its own pushed CI and cross-platform exchange before
-tagging; prior evidence does not substitute for that final revision.
+`a141c160074eb061145e1a8f3439fcc83e6d16e7`. The 0.7.0 release-candidate
+revision `be2febf16eff3e71cac00368ed975bf904ee4aa9` subsequently passed
+pushed CI and a separate four-direction exchange of all 67 archives, as
+reported by the maintainer. The evidence-only commit recording those results
+still needs final pushed CI before tagging.
 The local MSVC Release preparation passed all 3,609 tests in 387.62 seconds,
 including the interoperability schema compatibility test in 115.52 seconds.
 
@@ -4074,3 +4076,17 @@ installed-package matrix and four-direction schema-57 exchange before tagging.
 The general non-x86-64, broader representative benchmark and longer sanitizer
 campaign items in this document remain open and must be assessed explicitly
 for the 0.7.0 release claim.
+
+### BR-0275
+
+The maintainer reported successful pushed CI for 0.7.0 release-candidate
+revision `be2febf16eff3e71cac00368ed975bf904ee4aa9`, followed by four
+schema-57 verifier passes with that same full revision and 67 archives each.
+Windows/MSVC and Ubuntu 24.04/Ninja CI bundles verified on Ubuntu 26.04; an
+Ubuntu 26.04/Clang 21.1.8 bundle self-verified there and verified on Windows
+with MSVC. The verifier contract checks the exact manifest, digests, foreign
+decoding, and byte-identical local re-encoding. This records the maintainer's
+external results, not a local rerun of those environments. The evidence-only
+commit still requires successful pushed CI before annotated tag `v0.7.0`.
+The non-x86-64, broader measurement, and longer fuzz-campaign gaps remain
+open; the release must retain pre-release scope and make no broader claim.

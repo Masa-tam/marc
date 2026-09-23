@@ -1089,3 +1089,19 @@ the existing 67-archive schema-57 inventory across the three producer builds
 and both consumer environments for this revision. This repeat completes the
 external interoperability gate for the production HashChain best-length probe;
 it introduces no new codec ID, archive variant or schema revision.
+
+#### Project version 0.7.0 release-candidate repeat
+
+The maintainer reported successful pushed CI for revision
+`be2febf16eff3e71cac00368ed975bf904ee4aa9` and four successful
+schema-57 verifier passes, each reporting 67 archives and that same full
+revision. On Ubuntu 26.04, the Windows/MSVC Visual Studio 2026 and Ubuntu
+24.04/Ninja CI bundles both verified. A bundle generated with Ubuntu
+26.04/Clang 21.1.8 self-verified there and then verified in the reverse
+direction with Windows/MSVC.
+
+The verifier checks the exact manifest order, sizes, SHA-256 values, foreign
+decode output, and byte-identical local re-encoding. This repeats the
+three-producer, two-consumer x86-64 exchange for the 0.7.0 release candidate
+without changing the schema-57 archive inventory or representation. These
+are maintainer-reported external results, not independently rerun here.

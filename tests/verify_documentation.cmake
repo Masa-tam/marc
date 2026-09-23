@@ -1356,7 +1356,7 @@ foreach(required_current_baseline IN ITEMS
         "interoperability schema 57 alongside"
         "Schema 56 completed its 66-archive four-direction"
         "Project version 0.6.0 is published as a GitHub pre-release"
-        "Project version 0.7.0 is in local release preparation"
+        "Project version 0.7.0 has completed release-candidate validation"
         "cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)
@@ -1423,6 +1423,7 @@ foreach(required_current_interoperability_term IN ITEMS
         "schemas 1 through 56"
         "cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9"
         "### IX-0050: Schema 57"
+        "Project version 0.7.0 release-candidate repeat"
         "Project version 0.6.0 release-candidate repeat"
         "67-archive bundle"
         "Schema 56 requires"
