@@ -15321,3 +15321,22 @@ Adaptive Huffman integration of explicit probe/control tokens:
   control, and neither route may overflow its diagnostic counters.
 - No production selector, format change, new performance claim or external
   implementation reference is introduced by this fixture.
+
+### TVG-1039
+
+Dynamic Range integration of explicit probe/control tokens:
+
+- Use the TVG-1037 five window identities, three deterministic input families
+  and 513/513/13-byte frame split. Obtain the production HashChain frame as
+  an oracle, then independently tokenize each raw frame through no-probe
+  and probe and transform those tokens into bounded modeled operations.
+- Compare operation and decision counts with the production plan. Encode
+  the operations with the existing contextual Dynamic Range encoder and
+  serialize its descriptor and a header derived from actual output counts.
+  Compare all frame bytes, including final coder bytes, with the oracle.
+- Check untouched trailing output, zero control probe counters and absence
+  of statistic overflow. Decode every reconstructed frame with the ordinary
+  frame decoder, checking consumed extent and exact raw reconstruction.
+- No oracle header/payload bytes are copied. This bounded integration test
+  leaves production dispatch and existing empty/chunked/large-distance tests
+  unchanged and introduces no performance threshold or external vector.

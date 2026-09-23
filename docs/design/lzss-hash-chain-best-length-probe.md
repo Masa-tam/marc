@@ -352,9 +352,12 @@ full frames and one short final frame, with ordinary frame decoding afterward.
 Adaptive Huffman now has the corresponding five-profile, three-input-family
 frame fixture, including exact payload bit counts and profile-sized node and
 symbol workspace reused across calls and frames. Both comparison routes must
-reset model state through the ordinary encoder/decoder entry points. Range
-and tANS integrations remain pending; rANS has its existing explicit
-three-route streaming comparison. These fixtures do not replace whole-stream
+reset model state through the ordinary encoder/decoder entry points. Dynamic
+Range has the corresponding complete-frame comparison through independently
+generated modeled operations, checking operation/decision counts and its
+fixed-size descriptor as well as payload and header bytes. The tANS
+integration remains pending; rANS has its existing explicit three-route
+streaming comparison. These fixtures do not replace whole-stream
 chunking, empty-stream or long-distance tests.
 
 Add tests while production is still unmodified, and compare complete tokens

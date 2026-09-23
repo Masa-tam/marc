@@ -32606,3 +32606,23 @@ both bounds.
   All 3,605 CTest cases passed in 356.87 seconds, including interoperability
   schema compatibility in 107.24 seconds. Documentation verification and
   diff check passed. Production matching policy remains unchanged.
+
+## CR-1314: 2026-09-23 - Dynamic Range probe/control frame integration
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171, TVG-1037/TVG-1039 and marc's own field-context,
+  contextual Dynamic Range, descriptor and frame serialization contracts.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder implementations or test suites.
+- Independent decisions: regenerate modeled operations from explicit
+  probe/control tokens, compare full serialized frames and preserve the
+  production entry points without adding a new experiment selector.
+- Generated-code task description: extend cross-codec regression coverage
+  to Dynamic Range with five profiles, full/final-short frames, checked
+  counts, output sentinels and ordinary decoder reconstruction.
+- Similarity review: adapted marc's independent frame fixture using its own
+  public specifications and locally generated inputs; no external expression.
+- Local validation: MSVC Release build and focused frame comparison passed.
+  All 3,606 CTest cases passed in 355.75 seconds, including interoperability
+  schema compatibility. Documentation verification and diff check passed.
+  Production matching policy remains unchanged.
