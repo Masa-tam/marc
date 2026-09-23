@@ -3309,3 +3309,69 @@ The full-Corpus result supports the next whole-codec audit: exact archive
 bytes, encode/decode throughput, compression ratio, and peak/bounded working
 memory. It does not itself establish those properties or change the public
 strategy/default. Keep the probe private until that evaluation is complete.
+
+### BM-0095: Selected whole-codec contextual rANS best-length-probe pilot
+
+The frozen `silesia-contextual-rans-best-length-probe-v1.json` campaign
+completed all eighteen records at clean revision
+`97b777f0b82126da5beacbcf2ef50be2942cf233`. Each of `mr`, `sao`, and `x-ray`
+received three independent baseline/probe pairs in the declared order.
+No child failed or timed out. The build was MSVC 19.51.36252.0 x64 Release,
+`/O2 /Ob2 /DNDEBUG`, with executable SHA-256
+`95b462d4b269071442017bcad09625ab4a57627c7d83d1bdbaa0b2aafb612418`,
+project SHA-256
+`68ef20fe8a17922c2cd24405cfcdef78b3e59bc28b55b48a2aa761c7e68bff4d`,
+and manifest SHA-256
+`0492ed54dfefbdb77a9e657a7db2a4f4b2419be3218bb6dd8c18eb243c54ac8f`.
+
+Both sides used contextual rANS with 4 MiB frame/window and 5..258-byte
+matches. One uninstrumented encode and ordinary decode process call per
+child was timed; allocation, construction, file I/O, oracle generation,
+hashing and post-run comparison were outside those intervals. Validation,
+tokenization, model construction and framing inside `process` remain
+included. These are whole-codec process times, not child wall times or
+isolated matcher times. Source bytes were recovered on every trial.
+
+| Member | Baseline encode median | Probe encode median | Encode speedup | Baseline decode median | Probe decode median |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `mr` | 60.089460 s | 20.833385 s | 2.884x | 0.246595 s | 0.243066 s |
+| `sao` | 1.834228 s | 1.772736 s | 1.035x | 0.328597 s | 0.324320 s |
+| `x-ray` | 1.222464 s | 1.209357 s | 1.011x | 0.380113 s | 0.403836 s |
+
+Encode throughput calculated from those medians was respectively
+0.158242/0.456415 MiB/s (`mr`), 3.770520/3.901310 MiB/s (`sao`), and
+6.610965/6.682615 MiB/s (`x-ray`), baseline/probe. Decode throughput was
+38.559931/39.119724, 21.047042/21.324576, and 21.261223/20.012260 MiB/s.
+The decoder and its input archive are unchanged. In particular, the slower
+observed `x-ray` decode median is retained, not attributed to an algorithm
+change or removed from the result. Small encode gains and decode differences
+remain sensitive to timing noise and the fixed-order, single-machine setup.
+
+Every private archive was byte-for-byte identical to the public encoder's
+oracle. Hashes, lengths, ratio and queried workspace were stable across all
+attempts and both strategies:
+
+| Member | Archive bytes | Encoded/input ratio | Archive SHA-256 |
+| --- | ---: | ---: | --- |
+| `mr` | 3,386,820 | 0.339681888 | `6e8525bdbdf6694563451b70c3e6de477a5a168969d5166cdfe2b8a7c35290f3` |
+| `sao` | 5,270,047 | 0.726708176 | `a4ff2578dfc960df69874a8078f55e04c992303716ca07b639a5d474ca127087` |
+| `x-ray` | 5,450,402 | 0.643172957 | `0adb83d0b113e1daa122ea9f06fecc2bd30eddce92266927b822b7de953ab08a` |
+
+For all three inputs, encoder workspace was 132,129,769 bytes and decoder
+workspace 114,017,257 bytes on both sides. Sequential peak codec workspace
+was therefore 132,129,769 bytes, within the 128 MiB internal-buffer limit.
+This is queried codec workspace, not process RSS: benchmark input, oracle,
+output, alignment slack, objects and allocator overhead are not included.
+
+The ignored complete result has SHA-256
+`3c893ccfa20ead693a6d497ec630aa7c9aa235fad0b17d75df9bfefa0f09d4f4`;
+the checkpoint has SHA-256
+`da29215efa9fa9a080ce6f9b2eab8fbbaf50e23806c580f2cca5648e041416ea`.
+Completed replay validated all eighteen points without launching new
+measurements, and both file hashes remained unchanged.
+
+The large `mr` improvement survives complete entropy coding and framing,
+without a ratio or workspace cost on these inputs. This supports a separately
+frozen all-member whole-codec campaign. It does not establish a universal
+non-regression guarantee or authorize production promotion. Keep the public
+default unchanged while the full-Corpus audit remains pending.

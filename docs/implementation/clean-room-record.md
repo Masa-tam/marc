@@ -32422,3 +32422,23 @@ both bounds.
   build and all 3,597 CTest cases passed in 377.38 seconds, including
   interoperability schema compatibility in 101.71 seconds. Documentation
   verification and diff check passed. The Corpus pilot has not started.
+
+## CR-1305: 2026-09-23 - Selected whole-codec probe pilot results
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, the frozen whole-codec pilot manifest, and the
+  locally supplied Silesia Corpus verified by marc's own tool.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder, benchmark implementations and test suites.
+- Independent decisions: execute all eighteen declared trials without
+  changing selection or order; retain decode variability and small encode
+  gains alongside the large `mr` improvement; preserve the private status.
+- Generated-code task description: run the checkpointed whole-codec pilot,
+  validate completed replay, record build/result identities and report
+  process time, exact archive equality, ratio and queried workspace separately.
+- Similarity review: measurements and records concern repository-owned
+  implementations; no external implementation expression was consulted.
+- Local validation: all eighteen points succeeded without child failures or
+  timeouts. Archive bytes, round trips, ratios and workspace checks passed.
+  Completed replay preserved both result/checkpoint hashes without rerunning
+  measurements. The implementation is unchanged; full-Corpus audit is pending.

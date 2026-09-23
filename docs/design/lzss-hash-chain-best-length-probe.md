@@ -1,8 +1,9 @@
 # HashChain best-length probe experiment
 
-Status: private selected pilot (BM-0093) and all-member campaign (BM-0094)
-completed, 2026-09-23; whole-codec evaluation pending. This document does not
-authorize a production matcher or format change.
+Status: private matcher pilot/full campaigns (BM-0093/BM-0094) and selected
+whole-codec pilot (BM-0095) completed, 2026-09-23. All-member whole-codec
+evaluation remains pending. This document does not authorize a production
+matcher or format change.
 
 ## Motivation and boundary
 
@@ -222,5 +223,6 @@ checkpoint is an error rather than a reason to overwrite it.
 The summary reports per-member encode/decode medians and paired speedups;
 all underlying reports remain available. Decode timing uses the unchanged
 decoder and identical archives, so differences there must not be attributed
-to a new decoding algorithm. Corpus measurements remain pending until this
-tooling is committed and the clean build identity is frozen.
+to a new decoding algorithm. The selected campaign is completed in BM-0095;
+a full-Corpus whole-codec campaign still requires its own frozen contract
+before execution.
