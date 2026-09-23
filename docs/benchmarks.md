@@ -3200,3 +3200,50 @@ all-member campaign or interleaved repetitions. The large `mr` improvement
 is a useful hypothesis, but the opposite `sao`/`x-ray` behavior and memory
 cost prohibit a blanket promotion. No whole-codec speedup, compression-ratio
 change, default-policy change, or CI timing threshold is claimed.
+
+### BM-0093: Selected 4 MiB HashChain best-length-probe pilot
+
+The fixed `silesia-hash-chain-best-length-probe-v1.json` pilot completed
+all 18 records: `mr`, `sao`, and `x-ray`, each with three independent
+baseline/probe process pairs. The source revision was
+`bd9c066499265d927c0990b268198763ef7e826b`; MSVC 19.51.36252.0 x64 Release
+used `/O2 /Ob2 /DNDEBUG`. Executable SHA-256 was
+`2b7c6328e276c6bbcf474305a80581ac3ee64375c4d366645148451cf36d47ca`,
+generated project SHA-256 was
+`7a9b4b23a9966549958f8f8a580cf7d112c9c854ba624080c12c055f38e1640e`,
+and manifest SHA-256 was
+`fd1fc6bc4e087982ef9760638415e296b3a2bda9b825cd1a359a245768b9e5d4`.
+
+Each invocation used one timed iteration, 4 MiB frames and windows,
+5..258-byte matches, a 128 MiB hard internal-buffer limit, and 262,144
+hash buckets. Both strategies required 18,874,368 bytes of finder workspace.
+Diagnostics and the probe's baseline identity check ran before the separate
+statistics-disabled timed pass. These are isolated matcher/parse times,
+not complete codec encode times or process wall-clock durations.
+
+| Member | Baseline median | Probe median | Baseline / probe speed | Probe / baseline byte comparisons | Candidates pruned |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `mr` | 70.687884 s | 20.647723 s | 3.424x | 0.078185 | 97.975% |
+| `sao` | 1.123977 s | 1.031232 s | 1.090x | 0.332405 | 50.789% |
+| `x-ray` | 0.626893 s | 0.609399 s | 1.029x | 0.539610 | 42.921% |
+
+Every record retained identical token fingerprints, literal/match counts,
+matched bytes, candidate visitation counts, and query-depth distributions
+across strategies. Per-strategy diagnostic counters were stable across
+attempts. On `mr`, 5,055,791,397 candidates were pruned; total byte
+comparisons, including the extra probe reads, fell from 102,426,638,746 to
+8,008,243,802. Token fingerprints match those recorded in BM-0092, but
+BM-0092's absolute timings are not used as this pilot's baseline.
+
+The local complete result SHA-256 is
+`fd2894ec6cd658c4ae3b316647886a4d258698d89bf5fab6cb32154c97d6e526`;
+the checkpoint SHA-256 is
+`cedd7c6d924c7e5567fc9fb1531e4b20b47b7e89b66e5d6dfa3b9e62ba4b626f`.
+Both remain in the ignored Silesia results directory. Completed replay
+validated all records without launching measurements or rewriting results.
+
+The large `mr` gain supports a separately frozen all-member experiment.
+The small `x-ray` difference may include timing noise; three selected
+members do not establish general non-regression. Whole-codec archive
+identity, encode/decode throughput, compression ratio, and memory still
+need their own audit before production adoption. The default is unchanged.

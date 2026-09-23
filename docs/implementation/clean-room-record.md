@@ -32283,3 +32283,22 @@ both bounds.
   phase-pilot tests passed. All 3,590 MSVC Release CTest cases passed in
   338.90 seconds, including interoperability schema compatibility in
   105.75 seconds. Documentation verification and diff check passed.
+
+## CR-1298: 2026-09-23 - Selected best-length-probe pilot result
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, TVG-1033, the frozen selected pilot manifest,
+  and the locally supplied verified Silesia Corpus.
+- Known implementations intentionally not consulted: external compression
+  source, match finders, benchmark implementations, and test suites.
+- Independent decisions: run all 18 frozen records without changing inputs
+  or thresholds; retain raw timings, diagnostic counters, and identities;
+  interpret the selected result as support for a wider experiment only.
+- Generated-code task description: execute the resumable local pilot,
+  verify completed replay, and document median timing and comparison work.
+- Similarity review: results describe marc's independent private probe;
+  no external implementation expression was used.
+- Local validation: all 18 records passed token/traversal/workspace and
+  deterministic-counter checks. Completed replay launched no new child
+  measurements and preserved the result. BM-0093 records build, source,
+  manifest, and result hashes. Production policy remains unchanged.

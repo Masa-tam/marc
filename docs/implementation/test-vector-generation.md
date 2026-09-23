@@ -15204,7 +15204,7 @@ Private HashChain best-length-probe vectors (2026-09-23).
   must prune candidates. Checked classification includes pruned candidates,
   and baseline counters must remain zero. File-frame smoke also exercises
   the baseline identity gate before statistics-disabled timing.
-  Selected-input performance measurement remains pending.
+  Selected-input performance measurement completed in BM-0093.
 - Pilot tooling: fixture-only tests cover the frozen 18-point grid,
   malformed reports, changed fingerprints/counters, noncanonical record
   order, Boolean attempt numbers, changed run identity, interrupted-child
