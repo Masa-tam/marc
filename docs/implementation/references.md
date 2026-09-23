@@ -8555,3 +8555,16 @@ The standard 262,144 cap and separately named 65,536 rollback control follow
 the frozen Silesia decision; exact encoder-workspace expectations follow the
 checked in-repository layout. No external compressor, match finder, source
 code, pseudocode, tuning advice, benchmark result, or test suite was consulted.
+
+### IR-0930
+
+The 64-KiB Contextual LZSS ratio study uses marc's own typed-token protocol,
+`lzss_typed_encoder.cpp`, `lzss_match_finder.cpp`, Contextual model contract,
+profile helper, and the locally held Silesia `mozilla` input. RFC 1951
+(https://www.rfc-editor.org/rfc/rfc1951) was consulted only for the DEFLATE
+3..258 match-length comparison. The official bzip2 manual
+(https://sourceware.org/bzip2/manual/manual.pdf) and XZ Utils command manual
+(https://tukaani.org/xz/man/xz.1.html) were consulted only to distinguish
+external transform families and possible preset/format differences; they are
+not implementation references. No external compressor source, control flow,
+test code, lookup table, or optimization structure was consulted or copied.

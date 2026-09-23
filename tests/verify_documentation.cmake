@@ -21,6 +21,7 @@ set(required_documents
     docs/fuzzing.md
     docs/interoperability.md
     docs/releasing.md
+    docs/design/lzss-contextual-ratio-64k.md
     docs/design/lzss-match-finder-strategy.md
     docs/design/lzss-hash-chain-prefix-mixer.md
     docs/design/lzss-balanced-tree-strategy-evaluation.md

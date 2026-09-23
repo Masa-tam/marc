@@ -1,0 +1,102 @@
+# 64-KiB LZSS Contextual compression-ratio study
+
+Status: measurement design, not a format or public-API change (2026-09-24).
+
+## Question and baseline
+
+The near-term question is whether `lzss-contextual-dynamic-range` can improve
+compression on the external Silesia `mozilla` member while retaining its
+64-KiB frame/window resource profile. Beating the maintainer's reported gzip
+result is a stretch goal, not an assumed consequence of any one change.
+Selection must consider the complete Silesia corpus, encode/decode time and
+queried peak workspace, not just `mozilla` bytes.
+
+The locally held `mozilla` input has 51,220,480 bytes and SHA-256
+`657fc3764b0c75ac9de9623125705831ebbfbe08fed248df73bc2dc66e2a963b`.
+With the working tree at revision `be380bb8edfea819bb61286964429a508dd202a3`,
+the existing MSVC Release CLI with SHA-256
+`f1720f1f9f2c582f84e863b7272761ac3b2bd257c1267477d75c2a72d3629a26`
+reproduced 20,085,366 bytes with:
+
+```text
+marc encode --codec lzss-contextual-dynamic-range mozilla output.marc
+```
+
+The archive SHA-256 is
+`95eec4f4450a991c75af5dc805c3bde02cafb20d4f21197a55145f2338cd8317`.
+The matching `marc decode --codec lzss-contextual-dynamic-range` output had
+the original input SHA-256. These are local observations; generated archives
+and corpus files remain ignored and are not release fixtures. The executable
+predates the release-publication documentation commit; there was no executable
+source change between the release tag and this observation.
+
+The maintainer reported these byte counts for the same named corpus member.
+External command flags, tool versions, and output-container details have not
+yet been frozen, so external numbers are provisional comparison targets:
+
+| Compressor/profile | Output bytes | Origin |
+| --- | ---: | --- |
+| bzip2 | 17,914,392 | maintainer report |
+| gzip | 18,994,139 | maintainer report |
+| lzma | 13,365,111 | maintainer report |
+| marc Contextual Dynamic Range, 64 KiB | 20,085,366 | report and local repeat |
+| marc, 1 MiB | 19,068,790 | maintainer report |
+| marc, 4 MiB | 18,792,234 | maintainer report |
+| marc, 16 MiB | 18,576,393 | maintainer report |
+| marc, 64 MiB | 18,473,921 | maintainer report |
+
+The reported gzip gap at 64 KiB is 1,091,227 bytes; strictly beating that
+specific output would require reducing marc by at least 1,091,228 bytes.
+The 16-to-64-MiB window change saves only 102,472 bytes here, so a still
+wider window is not the first experiment. The 64-MiB profile holds this whole
+input in one frame. Different external transforms and default presets mean
+these figures do not establish that a short-match change alone can close the
+gap.
+
+## First hypothesis: parser cost does not match typed entropy cost
+
+The current typed-token parser calls `lzss_match_is_beneficial`, shared with
+the serialized-byte LZSS parser. That predicate accepts a match only when
+its length exceeds `9 / 2`, the canonical Match/Literal byte-size ratio.
+Every existing Contextual profile additionally fixes minimum match length 5
+and maximum 258. The context backend instead codes token kind, literal,
+length and distance fields separately. Therefore 3- and 4-byte matches are
+not examined or emitted even when their actual encoded cost might be below
+the cost of their literals. Whether this matters on `mozilla` is unmeasured.
+
+The maximum length 258 is also allowed by DEFLATE (RFC 1951), so it is not
+the first explanation for marc losing to the reported gzip output. A change
+to match length or benefit policy must not silently reinterpret existing
+dictionary/context variants or alter frozen schema-57 archive bytes.
+
+## Staged experiment
+
+1. Freeze the external comparison: record exact command lines, tool versions,
+   output formats, input SHA-256, output sizes and hashes. Preserve the
+   current marc archive as the 64-KiB control.
+2. Add a private, bounded diagnostic that reports baseline Literal/Match
+   counts, match-length distribution, matched bytes, and frame counts. Measure
+   exact 3- and 4-byte opportunities at positions visited by the current
+   greedy parser separately from all-position opportunities. Check a short
+   independent matcher against exhaustive search on small synthetic inputs.
+3. Count modeled symbol and bypass-bit categories. Do not present a sum of
+   independent per-field bit costs as the actual range-coded payload size:
+   arithmetic coding shares state across events. Use complete experimental
+   payload sizes for any compression claim.
+4. Only if diagnostics show a useful opportunity, prototype minimum lengths
+   3 and 4 behind a private new decoder-visible variant. Specify the new
+   length-value mapping, limits, model/descriptor validation, deterministic
+   parse, and malformed-input handling before implementing its encoder.
+   Existing profiles and schema-57 bytes remain untouched.
+5. Then compare greedy, limited lookahead, and cost-aware match selection as
+   separately named encoder policies. A policy that changes canonical output
+   needs its own documented selection and deterministic tests, even if the
+   decoder representation is shared. Do not equate the nine-byte diagnostic
+   token transcript with entropy cost.
+
+Admission requires byte-exact round trips, split-buffer determinism, strict
+malformed-stream rejection, bounded workspace queries, sanitizer coverage,
+and a measured size/speed/memory comparison across all twelve Silesia members.
+Report the aggregate and worst-member regressions; a `mozilla` win alone is
+insufficient. The reported gzip size is an aspirational reference, not a test
+assertion or a promise to match a different compressor architecture.

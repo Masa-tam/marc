@@ -17,6 +17,9 @@ navigate chronological development records.
 
 ## Experimental design
 
+- [64-KiB LZSS Contextual compression-ratio study](design/lzss-contextual-ratio-64k.md):
+  frozen `mozilla` baseline, short-match hypothesis, and staged full-corpus
+  admission gates without changing existing stream bytes.
 - [Contextual profile application](design/contextual-profile-application.md):
   atomic resource-profile helpers for profile-bearing contextual codecs and
   the complete-default rule for codecs without such helpers.

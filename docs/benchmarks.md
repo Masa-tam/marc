@@ -3519,3 +3519,32 @@ the checkpoint SHA-256 is
 The source/build difference means BM-0096 timings are context rather than a
 controlled cross-revision speed comparison. External CI and cross-platform
 archive verification remain the final adoption gates.
+
+### BM-0098: Contextual Dynamic Range 64-KiB `mozilla` ratio baseline
+
+On 2026-09-24, with the working tree at revision
+`be380bb8edfea819bb61286964429a508dd202a3`, the existing MSVC Release CLI
+reproduced the maintainer's `mozilla` output size:
+
+```text
+marc encode --codec lzss-contextual-dynamic-range mozilla output.marc
+```
+
+The external Silesia input has 51,220,480 bytes and SHA-256
+`657fc3764b0c75ac9de9623125705831ebbfbe08fed248df73bc2dc66e2a963b`.
+The 20,085,366-byte output has SHA-256
+`95eec4f4450a991c75af5dc805c3bde02cafb20d4f21197a55145f2338cd8317`.
+An ordinary CLI decode recovered the exact input SHA-256. The CLI executable
+SHA-256 was
+`f1720f1f9f2c582f84e863b7272761ac3b2bd257c1267477d75c2a72d3629a26`.
+The executable predates the release-publication documentation commit, with no
+intervening executable source change. Generated input/output files remain in
+ignored local directories.
+
+The maintainer reported gzip 18,994,139, bzip2 17,914,392 and lzma
+13,365,111 bytes on the named member. Exact external command flags and tool
+versions are still to be frozen. Against that provisional gzip result, the
+64-KiB marc deficit is 1,091,227 bytes. The first candidate is a bounded
+diagnostic of short-match opportunities and actual coded size, as specified
+in [the 64-KiB ratio study](design/lzss-contextual-ratio-64k.md). This is
+one-member motivation, not whole-corpus or new-variant performance evidence.

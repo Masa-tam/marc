@@ -23911,3 +23911,19 @@ Exercise raw bytes and a four-symbol projection with windows 5, 17, 257 and
 requirements bound memory. A hand-authored all-position matcher fixture must
 actually prune candidates; greedy token parsing need not visit those same
 positions. This does not replace large-window, serialized or whole-codec gates.
+
+## DD-1175: Study 64-KiB Contextual LZSS short matches before a format change
+
+Use the reproduced `mozilla` 64-KiB Contextual Dynamic Range output and the
+maintainer's external compressor sizes as a measurement question, not an
+immediate codec change. The typed parser currently inherits the canonical
+9-byte Match versus 2-byte Literal benefit rule and fixed minimum length 5,
+although its entropy backend codes fields separately. First distinguish
+greedy-visited from all-position 3/4-byte opportunities with a bounded private
+diagnostic and an exhaustive small-input oracle. Measure complete payloads,
+not a fictitious additive per-field range-coder cost. If useful, reserve a
+separate decoder-visible short-match variant and specify its length mapping,
+limits and malformed-input behavior before implementing it. Keep the 0.7.0
+profiles and schema-57 bytes frozen. Judge any candidate on all Silesia
+members, speed, memory and safety; surpassing the reported gzip size on
+`mozilla` is a stretch objective, not an adoption condition by itself.

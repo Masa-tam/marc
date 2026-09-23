@@ -32931,3 +32931,26 @@ both bounds.
 - Publication result: local annotated tag `v0.7.0` resolves to the evidence
   commit above. The maintainer reported that final CI passed, the tag was
   pushed and visible on GitHub, and marc 0.7.0 was published as a pre-release.
+
+## CR-1329: 2026-09-24 - Define 64-KiB Contextual LZSS ratio study
+
+- Author: Codex; reviewer: repository maintainer requested investigation of
+  the reported Silesia `mozilla` gap and a 64-KiB gzip-beating goal.
+- References used: IR-0930, DD-1175, BM-0098, repository-owned typed-token
+  encoder and match-benefit predicate, Silesia input metadata, and RFC 1951
+  for the comparative DEFLATE match-length range.
+- Known implementations intentionally not consulted: external compressor
+  source code, copyleft implementations, optimizer control flow, and test
+  suites. External compressor manuals were used only for comparison context.
+- Generated-code task: preserve the baseline measurement and stage a bounded
+  short-match diagnostic before any public API or format change.
+- Independent decisions: distinguish greedy-visited and all-position match
+  opportunities; require complete payload measurements, full-corpus checks,
+  and a new decoder-visible variant if minimum match length changes. Retain
+  existing profiles and archive bytes without claiming gzip parity.
+- Similarity review: the new material is first-party design and measured
+  output, not translated external compressor expression. It offers no legal
+  non-infringement guarantee.
+- Local validation: the existing MSVC Release CLI reproduced 20,085,366
+  bytes and decoded them back to the original SHA-256. External gzip, bzip2
+  and lzma counts are maintainer-reported, not rerun or normalized here.
