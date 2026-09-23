@@ -15301,3 +15301,23 @@ Blocked Huffman integration of explicit probe/control tokens:
 - No header or payload bytes are copied from the oracle. Production dispatch
   is unchanged. These bounded frame tests complement, rather than replace,
   existing empty-stream, chunking, large-distance and malformed-input tests.
+
+### TVG-1038
+
+Adaptive Huffman integration of explicit probe/control tokens:
+
+- Reuse the independently defined TVG-1037 input families, five profile
+  identities and 513/513/13-byte frame sequence. Allocate the documented
+  profile-specific node and symbol entry counts and reuse those buffers
+  across planning, encoding, decoding, strategies and consecutive frames.
+- Tokenize through explicit no-probe and probe entries, then encode with
+  contextual Adaptive Huffman. Require decision/event counts, payload bytes
+  and payload bit count to agree with the ordinary HashChain frame plan.
+  Serialize the fixed-size descriptor and derive the header from the actual
+  result without copying oracle bytes. Compare the entire emitted frame.
+- Check the trailing output sentinel and decode every reconstructed frame
+  through the ordinary decoder to recover the exact raw slice. Reusing model
+  storage exercises reset behavior; no probe diagnostics may appear on the
+  control, and neither route may overflow its diagnostic counters.
+- No production selector, format change, new performance claim or external
+  implementation reference is introduced by this fixture.

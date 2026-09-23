@@ -349,9 +349,13 @@ tokenizes through no-probe and probe, entropy-encodes those tokens, serializes
 the descriptor and frame header, and compares the entire frame to the current
 HashChain frame encoder. Repeated, shared-prefix and binary inputs span two
 full frames and one short final frame, with ordinary frame decoding afterward.
-The remaining Range, tANS and Adaptive Huffman integrations are still pending;
-rANS has its existing explicit three-route streaming comparison. This fixture
-does not replace whole-stream chunking, empty-stream or long-distance tests.
+Adaptive Huffman now has the corresponding five-profile, three-input-family
+frame fixture, including exact payload bit counts and profile-sized node and
+symbol workspace reused across calls and frames. Both comparison routes must
+reset model state through the ordinary encoder/decoder entry points. Range
+and tANS integrations remain pending; rANS has its existing explicit
+three-route streaming comparison. These fixtures do not replace whole-stream
+chunking, empty-stream or long-distance tests.
 
 Add tests while production is still unmodified, and compare complete tokens
 against both the no-probe finder and the exhaustive reference on bounded

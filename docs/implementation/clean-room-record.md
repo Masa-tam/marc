@@ -32586,3 +32586,23 @@ both bounds.
   passed. All 3,604 CTest cases passed in 390.19 seconds, including
   interoperability schema compatibility in 107.10 seconds. Documentation
   verification and diff check passed. No production switch was made.
+
+## CR-1313: 2026-09-23 - Adaptive Huffman probe/control frame integration
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171, TVG-1037/TVG-1038 and marc's own Adaptive
+  Huffman token, descriptor, frame and workspace contracts.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder implementations or test suites.
+- Independent decisions: apply the existing independent frame-comparison
+  fixture structure to Adaptive Huffman, checking exact bit counts and
+  reusing profile-sized model buffers to exercise reset between invocations.
+- Generated-code task description: compare complete frames from explicit
+  probe/control tokens across five profiles and three-frame input families,
+  verify output bounds and ordinary decoding, and leave production unchanged.
+- Similarity review: reused marc's own test structure and fixed inputs only;
+  no external implementation expression was consulted.
+- Local validation: MSVC Release build and focused frame comparison passed.
+  All 3,605 CTest cases passed in 356.87 seconds, including interoperability
+  schema compatibility in 107.24 seconds. Documentation verification and
+  diff check passed. Production matching policy remains unchanged.
