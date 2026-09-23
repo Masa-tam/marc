@@ -15340,3 +15340,26 @@ Dynamic Range integration of explicit probe/control tokens:
 - No oracle header/payload bytes are copied. This bounded integration test
   leaves production dispatch and existing empty/chunked/large-distance tests
   unchanged and introduces no performance threshold or external vector.
+
+### TVG-1040
+
+tANS integration of explicit probe/control tokens:
+
+- Reuse TVG-1037's five profile identities, three generated input families
+  and 513/513/13-byte frame split. Independently tokenize raw bytes through
+  explicit no-probe and probe encoders, then encode with contextual tANS.
+  Reuse bounded encode/decode tables across calls, routes and frames.
+- Construct stream headers with the existing profile-specific helpers,
+  including the required frequency entry count for each window identity.
+- Check token, event and decision counts and payload size against the
+  production HashChain frame plan. Serialize the generated tANS descriptor,
+  checking its actual written extent, then derive the header from those
+  results. Compare the entire frame with ordinary production output; model
+  descriptions, coder states and padding bytes are included in this equality.
+- Preserve a trailing output sentinel and verify exact raw recovery and
+  consumed frame length through the ordinary decoder. Assert no statistic
+  overflow and zero no-probe diagnostic reads/prunes. No oracle bytes are
+  copied into the reconstructed frame.
+- Production dispatch, existing golden vectors and all prior chunking,
+  empty-stream and malformed-input tests remain unchanged. This is bounded
+  integration evidence, not a new throughput measurement or format variant.

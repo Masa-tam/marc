@@ -355,9 +355,13 @@ symbol workspace reused across calls and frames. Both comparison routes must
 reset model state through the ordinary encoder/decoder entry points. Dynamic
 Range has the corresponding complete-frame comparison through independently
 generated modeled operations, checking operation/decision counts and its
-fixed-size descriptor as well as payload and header bytes. The tANS
-integration remains pending; rANS has its existing explicit three-route
-streaming comparison. These fixtures do not replace whole-stream
+fixed-size descriptor as well as payload and header bytes. tANS now has
+the corresponding complete-frame comparison with encode/decode tables reused
+across frames and both token routes, including serialized model descriptions
+and exact payload bytes. rANS has its existing explicit three-route
+streaming comparison. All five contextual entropy routes therefore have
+probe/control integration evidence, but this does not by itself close the
+remaining production migration gates. These fixtures do not replace whole-stream
 chunking, empty-stream or long-distance tests.
 
 Add tests while production is still unmodified, and compare complete tokens

@@ -32626,3 +32626,26 @@ both bounds.
   All 3,606 CTest cases passed in 355.75 seconds, including interoperability
   schema compatibility. Documentation verification and diff check passed.
   Production matching policy remains unchanged.
+
+## CR-1315: 2026-09-23 - tANS probe/control frame integration
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171, TVG-1037/TVG-1040 and marc's own contextual
+  tANS token encoder, descriptor, frame and bounded table contracts.
+- Known implementations intentionally not consulted: external compression,
+  match-finder implementations and test suites.
+- Independent decisions: reconstruct complete frames from both explicit
+  token routes, use actual descriptor extent for header construction and
+  reuse encode/decode tables to exercise independent frame initialization.
+- Generated-code task description: add five-profile tANS frame identity
+  coverage on full/final-short frames, guard output, and verify ordinary
+  decoder recovery without adding production experiment switches.
+- Similarity review: repository-owned fixture structure and independently
+  generated inputs only; no external implementation expression introduced.
+- Local validation: the first focused run rejected an incomplete test header
+  for an extended window. The fixture now uses the existing profile helpers
+  to set the profile-dependent frequency-entry count; production code and
+  format rules were not changed. MSVC Release build and focused comparison
+  then passed. All 3,607 CTest cases passed in 390.86 seconds, including
+  interoperability schema compatibility in 107.81 seconds. Documentation
+  verification and diff check passed. Production matching policy is unchanged.
