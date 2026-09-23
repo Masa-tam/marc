@@ -8578,3 +8578,12 @@ input. Prefix equality and nearest-distance lookup were independently
 implemented and checked against a direct exhaustive small-input oracle. No
 external compressor implementation, source, test, table, pseudocode, or
 match-finder optimization was consulted.
+
+### IR-0932
+
+The modeled-event diagnostic uses marc's own production typed-token encoder,
+`lzss_field_context` mapper, Contextual Dynamic Range payload planner, and
+typed-context frame-size constants. BM-0098 through BM-0099 and DD-1175
+through DD-1176 set the local comparison question. No external range coder,
+compressor source, operation-cost estimator, test suite, or implementation
+structure was consulted.

@@ -32975,3 +32975,24 @@ both bounds.
   passed in MSVC Release. On `mozilla`, 959,740 baseline literal positions
   had an equal 4-byte prefix and 2,685,532 more had an equal 3-byte-only
   prefix. Neither count proves a net encoded-size saving.
+
+## CR-1331: 2026-09-24 - Account for complete Contextual Range payloads
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  compression-ratio investigation.
+- References used: IR-0932, DD-1177, TVG-1046, BM-0100, first-party typed
+  token generation, field-context modeling, and Range payload planning.
+- Known implementations intentionally not consulted: external compressors,
+  range coder source, copyleft implementations, or third-party tests.
+- Generated-code task: measure actual baseline operation categories and
+  complete Range payload size without changing the published codec.
+- Independent decisions: reuse production token and modeling functions;
+  verify fixed framing overhead against CLI output on one- and two-frame
+  inputs; do not infer per-field compressed bytes from decision counts.
+- Similarity review: the change instruments repository-owned functions and
+  adds no external algorithm expression. No legal non-infringement guarantee
+  is made.
+- Local validation: the 64-KiB `mozilla` payload totaled 20,022,694 bytes;
+  with 62,672 bytes of framing, the predicted 20,085,366-byte archive matches
+  BM-0098. Both tracked single-frame and generated two-frame CLI identity
+  tests passed in MSVC Release.

@@ -23939,3 +23939,14 @@ No codec API, bitstream, match threshold, or frozen archive bytes change.
 Treat the observed short prefixes as hypotheses for coded-cost measurement,
 not as evidence of net compression savings; a new minimum length requires a
 separate decoder-visible format variant and complete-payload comparison.
+
+## DD-1177: Reuse production modeling for baseline payload accounting
+
+Replace the diagnostic's independent greedy replay with production HashChain
+typed-token generation, preserving its previously measured visited-position
+counts. Map those tokens through the existing 64-KiB field-context model and
+plan each complete Dynamic Range frame payload. Count symbol categories and
+bypass decisions without treating their individual counts as independently
+additive coded sizes. Calculate stream/frame/descriptor overhead explicitly
+and require the predicted archive to equal actual CLI output on one- and
+two-frame fixtures. Keep the current format and public encoder unchanged.

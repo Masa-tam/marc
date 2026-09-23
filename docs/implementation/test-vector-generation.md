@@ -15448,3 +15448,19 @@ Private short-prefix diagnostic checks:
   checks input reconstruction from literal and matched bytes, subset
   relations, and required counters. The external Silesia corpus is used
   locally for BM-0099, not imported as a test fixture.
+
+### TVG-1046
+
+Baseline modeled-event accounting checks:
+
+- Extend the private diagnostic smoke to require category totals to reconstruct
+  modeled operations and arithmetic decisions, and to require 112 bytes of
+  stream header plus 80 bytes per frame plus payload to reconstruct its
+  archive prediction.
+- Compare that prediction with the production CLI's complete Contextual
+  Dynamic Range archive on tracked README data and on a generated 65,600-byte
+  two-frame fixture. Repeated runs remove only the test-owned output archive
+  before invoking the CLI; no external corpus is needed in CI.
+- Locally compare the diagnostic's multi-frame `mozilla` prediction with the
+  independently measured BM-0098 archive size. This is baseline calibration,
+  not a vector for a new short-match format.

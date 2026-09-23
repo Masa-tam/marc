@@ -1,7 +1,7 @@
 # 64-KiB LZSS Contextual compression-ratio study
 
-Status: short-match opportunity diagnostic complete; no format or public-API
-change (2026-09-24).
+Status: baseline modeled-event and complete-payload diagnostic complete; no
+format or public-API change (2026-09-24).
 
 ## Question and baseline
 
@@ -101,8 +101,8 @@ dictionary/context variants or alter frozen schema-57 archive bytes.
 
 The private `marc_lzss_short_match_diagnostic` executable reads one input file
 in independent 65,536-byte frames. Its fixed-capacity index records the nearest
-prior equal 3-byte and 4-byte prefix at every frame position. It then replays
-the production exact HashChain greedy parser with the current 5..258 match
+prior equal 3-byte and 4-byte prefix at every frame position. It uses the
+production exact HashChain typed-token encoder with the current 5..258 match
 contract and reports both all-position and parser-visited counts. The index
 was checked against exhaustive search on bounded synthetic inputs. It does
 not change archive bytes, model state, public APIs, or the match finder.
@@ -129,6 +129,32 @@ model history. Prefix equality alone does not establish an encoded-bit saving.
 In particular, the all-position counts include locations inside existing
 matches and must not be read as a candidate token count. See BM-0099 for
 distance and existing-match length distributions.
+
+## Stage 3: modeled events and complete baseline payload
+
+The diagnostic now passes those production tokens through the real 64-KiB
+field-context mapper and Dynamic Range payload planner. It counts modeled
+symbols and bypass decisions separately, then sums *complete* frame payload
+sizes. The model resets per frame exactly as it does in the encoder; the
+reported payload is not a sum of independently estimated field costs.
+
+For the same `mozilla` input, the baseline comprises 17,776,343 token-kind,
+14,711,301 literal, 3,065,042 length-class, and 3,065,042 distance-class
+symbols. It also has 5,467,985 length and 25,892,152 distance bypass bits.
+The 44,284,147 modeled operations represent 69,977,865 arithmetic decisions.
+The complete Range payload is 20,022,694 bytes. Adding the 112-byte stream
+header and 782 frame-header-plus-descriptor pairs of 80 bytes yields
+20,085,366 bytes, exactly the measured baseline archive. A tracked single-
+frame and generated two-frame smoke test each independently compare this
+prediction with the CLI archive size.
+
+These counts identify which fields dominate *decision count*, not their
+compressed-bit contribution. In particular, 25.9 million distance bypass
+decisions are coded with equal binary probabilities, but the count alone is
+not a measured 3.2-MiB opportunity: alternative parsing changes token kinds,
+lengths, distances, and subsequent model state together. The next comparison
+must use a separately specified short-match representation and its complete
+encoded payloads, including format overhead.
 
 Admission requires byte-exact round trips, split-buffer determinism, strict
 malformed-stream rejection, bounded workspace queries, sanitizer coverage,

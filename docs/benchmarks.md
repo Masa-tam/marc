@@ -3544,8 +3544,8 @@ ignored local directories.
 The maintainer reported gzip 18,994,139, bzip2 17,914,392 and lzma
 13,365,111 bytes on the named member, each with `-9v`. Exact external command
 lines, tool versions and container details are still to be frozen. Against
-that provisional gzip result, the
-64-KiB marc deficit is 1,091,227 bytes. The first candidate is a bounded
+that provisional gzip result, the 64-KiB marc deficit is 1,091,227 bytes.
+The first candidate is a bounded
 diagnostic of short-match opportunities and actual coded size, as specified
 in [the 64-KiB ratio study](design/lzss-contextual-ratio-64k.md). This is
 one-member motivation, not whole-corpus or new-variant performance evidence.
@@ -3559,8 +3559,8 @@ On 2026-09-24, the private MSVC Release diagnostic was run against the same
 marc_lzss_short_match_diagnostic mozilla
 ```
 
-It uses an exact fixed-capacity 3/4-byte prefix index and replays the
-production exact HashChain greedy parser at minimum length 5. The index
+It uses an exact fixed-capacity 3/4-byte prefix index and the production
+exact HashChain typed-token parser at minimum length 5. The index
 matched an exhaustive small-input oracle; the README smoke test checked
 reported counter relationships. No corpus file or generated report is tracked.
 
@@ -3586,5 +3586,35 @@ opportunities (1..16, 17..256, 257..4096, 4097..65535) are 143,638,
 parser, not independent hypothetical replacements. Accepted short matches
 would skip later positions and alter range-model history. The diagnostic
 therefore establishes available prefixes but neither a coded-bit saving nor
-gzip parity. Next measure modeled event costs and complete experimental
-payload sizes before judging a new format variant.
+gzip parity. BM-0100 measures the baseline modeled events and complete
+payload size before judging a new format variant.
+
+### BM-0100: 64-KiB Contextual Dynamic Range modeled-event baseline
+
+On 2026-09-24, the private diagnostic was extended to obtain the exact
+production HashChain typed tokens for each 65,536-byte frame, feed them to
+marc's existing field-context mapper, and plan each complete Dynamic Range
+payload. On the external Silesia `mozilla` input used in BM-0098 and BM-0099:
+
+| Baseline measure | Count |
+| --- | ---: |
+| Token-kind symbols | 17,776,343 |
+| Literal symbols | 14,711,301 |
+| Length-class symbols | 3,065,042 |
+| Distance-class symbols | 3,065,042 |
+| Length bypass operations / bits | 2,614,406 / 5,467,985 |
+| Distance bypass operations / bits | 3,052,013 / 25,892,152 |
+| Total modeled operations | 44,284,147 |
+| Total arithmetic decisions | 69,977,865 |
+| Sum of complete Range frame payloads | 20,022,694 bytes |
+| Stream and frame overhead | 62,672 bytes |
+| Predicted archive | 20,085,366 bytes |
+
+The predicted archive exactly equals the independently measured CLI archive
+from BM-0098. Tracked README and generated two-frame tests separately compare
+the diagnostic prediction against CLI output, so the result is not supported
+only by the external corpus. The 112-byte stream header plus 782 pairs of
+64-byte frame header and 16-byte Range descriptor account for overhead.
+Symbol and bypass counts describe the current representation, not additive
+compressed-bit costs or a forecast for a shorter-match format. No new
+encoder policy, archive variant, or compression-ratio improvement is claimed.

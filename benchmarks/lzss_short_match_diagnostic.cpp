@@ -1,7 +1,10 @@
 #include "lzss_short_match_probe.hpp"
 
+#include "context/lzss_field_context.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
-#include "dictionary/lzss_match_finder.hpp"
+#include "dictionary/lzss_typed_encoder.hpp"
+#include "entropy/contextual_dynamic_range_encoder.hpp"
+#include "frame/typed_context_format.hpp"
 
 #include <array>
 #include <cstddef>
@@ -17,6 +20,8 @@ namespace {
 using marc::benchmark::internal::ShortMatchPrefixFlags;
 using marc::benchmark::internal::ShortMatchPrefixIndex;
 using namespace marc::dictionary::internal;
+using marc::context::internal::ModeledOperation;
+using marc::context::internal::ModeledOperationKind;
 
 [[nodiscard]] bool add(std::uint64_t& total,
                        const std::uint64_t increment = 1) noexcept {
@@ -58,6 +63,18 @@ struct Summary {
     std::uint64_t literal_count{};
     std::uint64_t match_count{};
     std::uint64_t matched_bytes{};
+    std::uint64_t token_kind_symbols{};
+    std::uint64_t literal_symbols{};
+    std::uint64_t length_symbols{};
+    std::uint64_t distance_symbols{};
+    std::uint64_t length_bypass_operations{};
+    std::uint64_t distance_bypass_operations{};
+    std::uint64_t length_bypass_bits{};
+    std::uint64_t distance_bypass_bits{};
+    std::uint64_t modeled_operation_count{};
+    std::uint64_t modeled_decision_count{};
+    std::uint64_t range_payload_bytes{};
+    std::uint64_t predicted_archive_bytes{};
     std::array<std::uint64_t, 4> three_distance{};
     std::array<std::uint64_t, 4> four_distance{};
     std::array<std::uint64_t, 7> match_lengths{};
@@ -68,6 +85,8 @@ struct Summary {
     ShortMatchPrefixIndex& prefix_index,
     const std::span<ShortMatchPrefixFlags> flags,
     const std::span<std::byte> workspace,
+    const std::span<LzssTypedToken> token_storage,
+    const std::span<ModeledOperation> operation_storage,
     Summary& total) noexcept {
     if (!prefix_index.analyze(frame, flags)
         || !add(total.input_bytes, frame.size())
@@ -81,27 +100,26 @@ struct Summary {
 
     const LzssParameters parameters{};
     const marc::core::DecoderLimits limits{};
-    LzssHashChainMatchFinder finder{};
-    if (initialize_lzss_hash_chain_match_finder(
-            frame, parameters, limits, workspace, finder)
-        != LzssHashChainError::none) {
+    const auto token_result = encode_lzss_typed_tokens_hash_chain_single_pass(
+        frame, parameters, limits, token_storage, workspace);
+    if (token_result.error != LzssTypedEncodeError::none) {
         return false;
     }
+    const auto tokens = token_storage.first(token_result.token_count);
     std::size_t position{};
-    while (position < frame.size()) {
+    for (const auto& token : tokens) {
+        if (position >= frame.size()) return false;
         const auto prefix = flags[position];
         if (prefix.has_three && !add(total.visited_three)) return false;
         if (prefix.has_four && !add(total.visited_four)) return false;
-        const auto match = finder.find_match(position);
-        const bool use_match = match.length != 0
-            && lzss_match_is_beneficial(match);
+        const bool use_match = token.kind == LzssTypedTokenKind::match;
         const auto advance = use_match
-            ? static_cast<std::size_t>(match.length) : 1U;
+            ? static_cast<std::size_t>(token.length) : 1U;
         if (advance > frame.size() - position) return false;
         if (use_match) {
             if (!add(total.match_count)
-                || !add(total.matched_bytes, match.length)
-                || !add(total.match_lengths[length_bucket(match.length)])) {
+                || !add(total.matched_bytes, token.length)
+                || !add(total.match_lengths[length_bucket(token.length)])) {
                 return false;
             }
         } else {
@@ -120,8 +138,58 @@ struct Summary {
                 }
             }
         }
-        finder.advance(position, position + advance);
         position += advance;
+    }
+    if (position != frame.size()) return false;
+
+    const LzssTypedFrameValidationContext token_context{
+        static_cast<std::uint32_t>(tokens.size()),
+        static_cast<std::uint32_t>(frame.size()),
+        total.input_bytes - frame.size()};
+    const auto modeled = marc::context::internal::
+        model_lzss_field_context_tokens(
+            tokens, parameters, token_context, limits, operation_storage);
+    if (modeled.error != marc::context::internal::LzssFieldContextError::none)
+        return false;
+    const auto operations = operation_storage.first(modeled.operation_count);
+    std::uint16_t previous_context{};
+    for (const auto& operation : operations) {
+        if (operation.kind == ModeledOperationKind::symbol) {
+            previous_context = operation.context_id;
+            auto* category = operation.context_id <= 2
+                ? &total.token_kind_symbols
+                : operation.context_id <= 19 ? &total.literal_symbols
+                : operation.context_id <= 22 ? &total.length_symbols
+                : operation.context_id <= 30 ? &total.distance_symbols
+                : nullptr;
+            if (category == nullptr || !add(*category)) return false;
+        } else if (operation.kind == ModeledOperationKind::bypass_bits) {
+            if (previous_context >= 20 && previous_context <= 22) {
+                if (!add(total.length_bypass_operations)
+                    || !add(total.length_bypass_bits,
+                            operation.bit_count)) return false;
+            } else if (previous_context >= 23 && previous_context <= 30) {
+                if (!add(total.distance_bypass_operations)
+                    || !add(total.distance_bypass_bits,
+                            operation.bit_count)) return false;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    marc::entropy::internal::ContextualDynamicRangeDescriptor descriptor{};
+    const auto ranged = marc::entropy::internal::
+        plan_contextual_dynamic_range_operations(
+            operations, limits, descriptor);
+    if (ranged.error
+            != marc::entropy::internal::ContextualDynamicRangeEncodeError::none
+        || ranged.decision_count != modeled.decision_count
+        || !add(total.modeled_operation_count, modeled.operation_count)
+        || !add(total.modeled_decision_count, modeled.decision_count)
+        || !add(total.range_payload_bytes, ranged.payload_size)) {
+        return false;
     }
     return true;
 }
@@ -142,7 +210,24 @@ void report(const Summary& value) {
               << "literal_prefix4=" << value.literal_four << '\n'
               << "baseline_literal_count=" << value.literal_count << '\n'
               << "baseline_match_count=" << value.match_count << '\n'
-              << "baseline_matched_bytes=" << value.matched_bytes << '\n';
+              << "baseline_matched_bytes=" << value.matched_bytes << '\n'
+              << "token_kind_symbols=" << value.token_kind_symbols << '\n'
+              << "literal_symbols=" << value.literal_symbols << '\n'
+              << "length_symbols=" << value.length_symbols << '\n'
+              << "distance_symbols=" << value.distance_symbols << '\n'
+              << "length_bypass_operations="
+              << value.length_bypass_operations << '\n'
+              << "distance_bypass_operations="
+              << value.distance_bypass_operations << '\n'
+              << "length_bypass_bits=" << value.length_bypass_bits << '\n'
+              << "distance_bypass_bits=" << value.distance_bypass_bits << '\n'
+              << "modeled_operation_count="
+              << value.modeled_operation_count << '\n'
+              << "modeled_decision_count="
+              << value.modeled_decision_count << '\n'
+              << "range_payload_bytes=" << value.range_payload_bytes << '\n'
+              << "predicted_archive_bytes="
+              << value.predicted_archive_bytes << '\n';
     for (std::size_t index = 0; index < value.three_distance.size(); ++index) {
         std::cout << "literal_prefix3_distance_bucket_" << index << '='
                   << value.three_distance[index] << '\n'
@@ -171,7 +256,14 @@ int main(const int argc, const char* const argv[]) {
     auto flags = std::unique_ptr<ShortMatchPrefixFlags[]>(
         new (std::nothrow)
             ShortMatchPrefixFlags[ShortMatchPrefixIndex::frame_limit]{});
-    if (!prefix_index.ready() || flags == nullptr) {
+    auto tokens = std::unique_ptr<LzssTypedToken[]>(
+        new (std::nothrow)
+            LzssTypedToken[ShortMatchPrefixIndex::frame_limit]{});
+    auto operations = std::unique_ptr<ModeledOperation[]>(
+        new (std::nothrow)
+            ModeledOperation[5 * ShortMatchPrefixIndex::frame_limit]{});
+    if (!prefix_index.ready() || flags == nullptr || tokens == nullptr
+        || operations == nullptr) {
         std::cerr << "diagnostic allocation failed\n";
         return 2;
     }
@@ -216,11 +308,53 @@ int main(const int argc, const char* const argv[]) {
                 std::span(frame.data(), static_cast<std::size_t>(count)),
                 prefix_index,
                 std::span(flags.get(), static_cast<std::size_t>(count)),
-                workspace, summary)) {
+                workspace,
+                std::span(tokens.get(),
+                          ShortMatchPrefixIndex::frame_limit),
+                std::span(operations.get(),
+                          5 * ShortMatchPrefixIndex::frame_limit),
+                summary)) {
             std::cerr << "diagnostic frame failed\n";
             return 2;
         }
         if (input.eof()) break;
+    }
+    const auto frame_overhead =
+        marc::frame::internal::typed_context_frame_header_size
+        + marc::frame::internal::typed_context_range_descriptor_size;
+    if (summary.frame_count
+            > (std::numeric_limits<std::uint64_t>::max()
+               - marc::frame::internal::typed_context_stream_header_size)
+                / frame_overhead) {
+        std::cerr << "archive size overflow\n";
+        return 2;
+    }
+    summary.predicted_archive_bytes =
+        marc::frame::internal::typed_context_stream_header_size
+        + summary.frame_count * frame_overhead;
+    if (!add(summary.predicted_archive_bytes, summary.range_payload_bytes)) {
+        std::cerr << "archive size overflow\n";
+        return 2;
+    }
+    std::uint64_t symbol_count{};
+    std::uint64_t operation_count{};
+    std::uint64_t decision_count{};
+    if (!add(symbol_count, summary.token_kind_symbols)
+        || !add(symbol_count, summary.literal_symbols)
+        || !add(symbol_count, summary.length_symbols)
+        || !add(symbol_count, summary.distance_symbols)) {
+        std::cerr << "symbol count overflow\n";
+        return 2;
+    }
+    operation_count = decision_count = symbol_count;
+    if (!add(operation_count, summary.length_bypass_operations)
+        || !add(operation_count, summary.distance_bypass_operations)
+        || !add(decision_count, summary.length_bypass_bits)
+        || !add(decision_count, summary.distance_bypass_bits)
+        || operation_count != summary.modeled_operation_count
+        || decision_count != summary.modeled_decision_count) {
+        std::cerr << "modeled decision mismatch\n";
+        return 2;
     }
     report(summary);
     return 0;

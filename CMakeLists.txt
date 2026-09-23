@@ -535,6 +535,23 @@ if(MARC_BUILD_BENCHMARKS)
                 "-DMARC_DIAGNOSTIC=$<TARGET_FILE:marc_lzss_short_match_diagnostic>"
                 "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_short_match_diagnostic_smoke.cmake)
+        if(TARGET marc_cli)
+            add_test(NAME marc_lzss_short_match_diagnostic_archive_identity
+                COMMAND ${CMAKE_COMMAND}
+                    "-DMARC_DIAGNOSTIC=$<TARGET_FILE:marc_lzss_short_match_diagnostic>"
+                    "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                    "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                    "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/short-match-diagnostic-$<CONFIG>"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_short_match_diagnostic_smoke.cmake)
+            add_test(NAME marc_lzss_short_match_diagnostic_multiframe_identity
+                COMMAND ${CMAKE_COMMAND}
+                    "-DMARC_DIAGNOSTIC=$<TARGET_FILE:marc_lzss_short_match_diagnostic>"
+                    "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                    "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                    "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/short-match-multiframe-$<CONFIG>"
+                    "-DSYNTHETIC_MULTIFRAME=ON"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_short_match_diagnostic_smoke.cmake)
+        endif()
     endif()
 
     add_executable(marc_lzss_match_finder_benchmark
