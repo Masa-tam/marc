@@ -32525,3 +32525,24 @@ both bounds.
   in 362.79 seconds, including the two new control fixtures and
   interoperability schema compatibility. Documentation verification and
   diff check passed. No new Corpus throughput measurement was performed.
+
+## CR-1310: 2026-09-23 - No-probe typed-token and contextual rANS routes
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171, TVG-1035, and repository-owned single-pass
+  tokenization, contextual rANS framing, streaming and benchmark code.
+- Known implementations intentionally not consulted: external compression,
+  match-finder, benchmark implementations and test suites.
+- Independent decisions: replace the internal Boolean with three explicit
+  routes, retain default production dispatch, and force both timed and
+  untimed frozen baseline measurements through no-probe tokenization.
+- Generated-code task description: share bounded parser/validation/workspace,
+  wire the explicit control through rANS, reject unsupported route values
+  and combinations, and verify token and chunk-independent archive identity.
+- Similarity review: repository-owned code and fixtures only; no external
+  implementation expression introduced. No public ABI or stream change.
+- Local validation: after correcting the benchmark's missing namespace
+  qualification for the new internal enum, MSVC Release build succeeded.
+  All 3,601 CTest cases passed in 396.26 seconds, including interoperability
+  schema compatibility in 106.12 seconds. Documentation verification and
+  diff check passed. No new Corpus performance result is claimed.

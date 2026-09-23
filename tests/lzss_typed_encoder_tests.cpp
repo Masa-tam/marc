@@ -330,6 +330,20 @@ void expect_mnemonic_mixer_typed_equal_exact(
     EXPECT_EQ(probe_statistics.query_count, legacy_statistics.query_count);
     legacy.resize(complete_probe.token_count);
     EXPECT_EQ(serialize_typed_tokens(legacy), canonical);
+
+    legacy.resize(input.size());
+    LzssMatchFinderStatistics control_statistics{};
+    const auto control = encode_lzss_typed_tokens_hash_chain_no_probe_single_pass(
+        input, parameters, {}, legacy,
+        legacy_owner.bytes(required.workspace_size), &control_statistics, variant);
+    ASSERT_EQ(control.error, LzssTypedEncodeError::none);
+    ASSERT_EQ(control.token_count, reference.size());
+    EXPECT_FALSE(control_statistics.overflowed);
+    EXPECT_EQ(control_statistics.candidate_count, probe_statistics.candidate_count);
+    EXPECT_EQ(control_statistics.hash_chain_best_length_probe_comparison_count, 0U);
+    EXPECT_EQ(control_statistics.hash_chain_best_length_probe_pruned_candidate_count, 0U);
+    legacy.resize(control.token_count);
+    EXPECT_EQ(serialize_typed_tokens(legacy), canonical);
 }
 
 using BucketScaledTypedEncoder = LzssTypedEncodeResult (*)(
@@ -1061,6 +1075,24 @@ TEST(LzssTypedEncoder, BestLengthProbeRejectsShortWorkspaceWithoutTokenWrites) {
     std::vector<LzssTypedToken> output(input.size(), sentinel);
     const auto result =
         encode_lzss_typed_tokens_hash_chain_best_length_probe_single_pass(
+            input, {}, {}, output, owner.bytes(required.workspace_size - 1U));
+    EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
+    EXPECT_EQ(result.match_finder_error, LzssHashChainError::workspace_too_small);
+    EXPECT_TRUE(std::ranges::all_of(output, [&sentinel](const auto& token) {
+        return equal_token(token, sentinel);
+    }));
+}
+
+TEST(LzssTypedEncoder, NoProbeRejectsShortWorkspaceWithoutTokenWrites) {
+    const auto input = bytes("ABCDE1ABCDE2ABCDE3");
+    const auto required = calculate_lzss_hash_chain_workspace(input.size(), {}, {});
+    ASSERT_EQ(required.error, LzssHashChainError::none);
+    ASSERT_GT(required.workspace_size, 0U);
+    AlignedWorkspace owner(required.workspace_size);
+    const LzssTypedToken sentinel{LzssTypedTokenKind::match, 0, 123, 456};
+    std::vector<LzssTypedToken> output(input.size(), sentinel);
+    const auto result =
+        encode_lzss_typed_tokens_hash_chain_no_probe_single_pass(
             input, {}, {}, output, owner.bytes(required.workspace_size - 1U));
     EXPECT_EQ(result.error, LzssTypedEncodeError::match_finder_error);
     EXPECT_EQ(result.match_finder_error, LzssHashChainError::workspace_too_small);

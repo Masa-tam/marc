@@ -140,13 +140,17 @@ remain a separate next gate; this entry alone does not establish either.
 
 ### Private contextual rANS stream route
 
-The internal frame encoder and streaming encoder accept a default-false
-`private_best_length_probe` experiment switch. It is not a public config,
+The initial experiment used a default-false `private_best_length_probe`
+switch. DD-1171 replaces it with the internal `LzssContextualRansHashChainRoute`
+selector: `production` (default), `no_probe`, and `best_length_probe`.
+Both comparison routes use separate compile-time typed-token parser
+instantiations, so promoting production cannot change the no-probe control.
+This is not a public config,
 strategy enum, profile, or serialized field. Only HashChain exact accepts it;
 BinaryTree and nested tokenization timing combinations are rejected. The
 probe uses a separate compile-time parser instantiation and the same frame
 validation, entropy coding, serialization, and workspace accounting as the
-baseline. Production callers omit the switch and retain their existing route.
+baseline. Production callers omit the selector and retain their existing route.
 
 Regression fixtures compare complete baseline/probe archives for empty,
 binary, repetitive, exact/partial/multiple-frame inputs with large buffers
@@ -290,8 +294,18 @@ The first implementation step adds `LzssHashChainNoProbeMatchFinder`, whose
 query explicitly instantiates probing as false, and connects the isolated
 benchmark's `hash-chain-exact` frame/synthetic route to that control. Its
 initialization and workspace are shared with production; failed initialization
-preserves the existing finder. Production dispatch is unchanged. Typed-token
-and whole-codec control routing remain pending, so Gate 1 is not yet complete.
+preserves the existing finder. Production dispatch is unchanged. The next
+implementation step adds the explicit no-probe single-pass typed-token entry
+and internal rANS route selector. Both timed and untimed whole-codec baseline
+calls now select `no_probe`; ordinary phase modes retain `production`.
+Report labels, frozen manifests and checkpoint schemas remain unchanged.
+Both comparison routes reject Binary Tree and nested tokenization timing;
+unknown route values are rejected rather than treated as production.
+Regression fixtures compare no-probe tokens with the exhaustive reference
+and probe candidate, require zero probe diagnostics on the control, and
+compare whole-stream archives with large and one-byte buffers. The shared
+production matcher still uses its original no-probe policy; promotion and
+the remaining cross-route regression gate are separate work.
 
 Before enabling pruning in production, create an explicitly named internal
 no-probe finder and the minimal typed-token/whole-codec comparison plumbing.

@@ -27,7 +27,8 @@ public:
             nullptr,
         dictionary::internal::LzssTypedTokenizeTiming* tokenize_timing =
             nullptr,
-        bool private_best_length_probe = false)
+        LzssContextualRansHashChainRoute hash_chain_route =
+            LzssContextualRansHashChainRoute::production)
         noexcept;
 
     [[nodiscard]] core::ProcessResult process(
@@ -69,7 +70,7 @@ private:
     context::internal::LzssContextualRansEncodePhaseTiming* timing_{};
     dictionary::internal::LzssTypedTokenizeTiming* tokenize_timing_{};
     // Internal experiment only; never serialized or selected by public config.
-    bool private_best_length_probe_{};
+    LzssContextualRansHashChainRoute hash_chain_route_{};
     std::array<std::byte, lzss_contextual_rans_stream_header_size>
         stream_header_{};
     std::size_t raw_frame_size_{};

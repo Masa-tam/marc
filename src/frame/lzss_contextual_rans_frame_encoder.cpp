@@ -81,7 +81,9 @@ enum class FrameMatchFinder : std::uint8_t {
 
 } // namespace
 
-template <FrameMatchFinder MatchFinder, bool BestLengthProbe = false>
+template <FrameMatchFinder MatchFinder,
+          LzssContextualRansHashChainRoute Route =
+              LzssContextualRansHashChainRoute::production>
 [[nodiscard]] LzssContextualRansFrameEncodeResult plan_frame(
     const LzssContextualRansStreamHeader& stream,
     const core::DecoderLimits& limits, const std::uint64_t sequence,
@@ -97,7 +99,7 @@ template <FrameMatchFinder MatchFinder, bool BestLengthProbe = false>
     if (tokenize_timing != nullptr
         && (timing == nullptr
             || MatchFinder != FrameMatchFinder::hash_chain_exact
-            || BestLengthProbe)) {
+            || Route != LzssContextualRansHashChainRoute::production)) {
         result.error = LzssContextualRansFrameEncodeError::
             unsupported_match_finder_strategy;
         return result;
@@ -158,10 +160,17 @@ template <FrameMatchFinder MatchFinder, bool BestLengthProbe = false>
     const auto tokenize_start = timing != nullptr
         ? std::chrono::steady_clock::now()
         : std::chrono::steady_clock::time_point{};
-    if constexpr (BestLengthProbe) {
+    if constexpr (Route == LzssContextualRansHashChainRoute::best_length_probe) {
         static_assert(MatchFinder == FrameMatchFinder::hash_chain_exact);
         result.token_encode = dictionary::internal::
             encode_lzss_typed_tokens_hash_chain_best_length_probe_single_pass(
+                raw_input, stream.dictionary, limits, private_tokens,
+                match_finder_workspace, statistics,
+                selected.layout.dictionary_variant);
+    } else if constexpr (Route == LzssContextualRansHashChainRoute::no_probe) {
+        static_assert(MatchFinder == FrameMatchFinder::hash_chain_exact);
+        result.token_encode = dictionary::internal::
+            encode_lzss_typed_tokens_hash_chain_no_probe_single_pass(
                 raw_input, stream.dictionary, limits, private_tokens,
                 match_finder_workspace, statistics,
                 selected.layout.dictionary_variant);
@@ -317,7 +326,9 @@ template <FrameMatchFinder MatchFinder, bool BestLengthProbe = false>
     return result;
 }
 
-template <FrameMatchFinder MatchFinder, bool BestLengthProbe = false>
+template <FrameMatchFinder MatchFinder,
+          LzssContextualRansHashChainRoute Route =
+              LzssContextualRansHashChainRoute::production>
 [[nodiscard]] LzssContextualRansFrameEncodeResult encode_frame(
     const LzssContextualRansStreamHeader& stream,
     const core::DecoderLimits& limits, const std::uint64_t sequence,
@@ -358,7 +369,7 @@ template <FrameMatchFinder MatchFinder, bool BestLengthProbe = false>
             return fail_overlap(result, overlap);
     }
 
-    result = plan_frame<MatchFinder, BestLengthProbe>(
+    result = plan_frame<MatchFinder, Route>(
         stream, limits, sequence, output_already_committed, raw_input,
         private_tokens, match_finder_workspace, statistics, timing,
         tokenize_timing);
@@ -510,16 +521,26 @@ encode_lzss_contextual_rans_frame_with_match_finder(
     dictionary::internal::LzssMatchFinderStatistics* const statistics,
     context::internal::LzssContextualRansEncodePhaseTiming* const timing,
     dictionary::internal::LzssTypedTokenizeTiming* const tokenize_timing,
-    const bool private_best_length_probe)
+    const LzssContextualRansHashChainRoute hash_chain_route)
     noexcept {
-    if (private_best_length_probe) {
+    if (hash_chain_route != LzssContextualRansHashChainRoute::production) {
         if (strategy != dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact
-            || tokenize_timing != nullptr) {
+            || tokenize_timing != nullptr
+            || (hash_chain_route != LzssContextualRansHashChainRoute::no_probe
+                && hash_chain_route != LzssContextualRansHashChainRoute::best_length_probe)) {
             LzssContextualRansFrameEncodeResult result{};
             result.error = LzssContextualRansFrameEncodeError::unsupported_match_finder_strategy;
             return result;
         }
-        return encode_frame<FrameMatchFinder::hash_chain_exact, true>(
+        if (hash_chain_route == LzssContextualRansHashChainRoute::no_probe) {
+            return encode_frame<FrameMatchFinder::hash_chain_exact,
+                LzssContextualRansHashChainRoute::no_probe>(
+                    stream, limits, sequence, output_already_committed, raw_input,
+                    private_tokens, match_finder_workspace, serialized_output,
+                    statistics, timing, nullptr);
+        }
+        return encode_frame<FrameMatchFinder::hash_chain_exact,
+            LzssContextualRansHashChainRoute::best_length_probe>(
             stream, limits, sequence, output_already_committed, raw_input,
             private_tokens, match_finder_workspace, serialized_output,
             statistics, timing, nullptr);

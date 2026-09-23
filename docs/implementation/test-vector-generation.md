@@ -15235,3 +15235,22 @@ Explicit no-probe HashChain control:
   the same subsequent query result, preserving atomic initialization failure.
 - These are correctness fixtures, not throughput measurements. No external
   implementation, corpus or imported test suite supplies the expected result.
+
+### TVG-1035
+
+No-probe typed-token and whole-codec comparison routing:
+
+- Extend the existing typed-token reference helper to exercise the explicit
+  no-probe single-pass encoder on its fixed binary, repeated, collision and
+  parameter-boundary inputs. Require canonical token bytes equal to the
+  exhaustive reference, candidate counts equal to the probe route, no
+  counter overflow, and zero probe reads/prunes on the control. A one-byte
+  workspace shortage must leave every sentinel output token untouched.
+- Extend contextual rANS streaming fixtures to compare production, no-probe
+  and probe archives for empty, binary/repetitive, exact/partial/multiple
+  frames, including one-byte input/output chunks. Decode the identical bytes
+  through the ordinary decoder. Preserve ended-state behavior.
+- Both private routes reject Binary Tree and nested tokenization timing
+  before output; unknown internal selector values fail as well. Existing
+  benchmark smoke tests retain frozen report and archive equality checks.
+- No corpus-derived golden values or performance thresholds are introduced.

@@ -34,6 +34,7 @@ using marc::dictionary::internal::LzssTypedTokenizeTiming;
 using marc::frame::internal::LzssContextualRansEncoderViews;
 using marc::frame::internal::LzssContextualRansEncoderWorkspaceRequirements;
 using marc::frame::internal::LzssContextualRansFrameStreamingEncoder;
+using marc::frame::internal::LzssContextualRansHashChainRoute;
 using marc::frame::internal::LzssContextualRansStreamHeader;
 
 constexpr std::size_t maximum_output_capacity = std::size_t{1} << 30;
@@ -239,7 +240,8 @@ struct AlignedStorage {
     std::size_t& produced,
     std::uint64_t& token_count,
     std::chrono::nanoseconds& elapsed,
-    const bool private_best_length_probe = false) {
+    const LzssContextualRansHashChainRoute hash_chain_route =
+        LzssContextualRansHashChainRoute::production) {
     std::vector<std::byte> primary(requirements.frame_input_bytes);
     std::vector<std::byte> secondary(requirements.frame_encoded_bytes);
     AlignedStorage views_storage{};
@@ -256,7 +258,7 @@ struct AlignedStorage {
     LzssContextualRansFrameStreamingEncoder encoder{
         stream, limits, primary, views.tokens, views.match_finder, secondary,
         requirements.match_finder_strategy, timing, tokenize_timing,
-        private_best_length_probe};
+        hash_chain_route};
     const auto start = std::chrono::steady_clock::now();
     const auto result = encoder.process(
         input, output, marc::core::flag_value(marc::core::ProcessFlags::end_input));
@@ -343,6 +345,10 @@ struct AlignedStorage {
     const bool probe_comparison = mode == ReportMode::probe_baseline
         || mode == ReportMode::probe_candidate;
     const bool use_probe = mode == ReportMode::probe_candidate;
+    const auto comparison_route = use_probe
+        ? LzssContextualRansHashChainRoute::best_length_probe
+        : probe_comparison ? LzssContextualRansHashChainRoute::no_probe
+                           : LzssContextualRansHashChainRoute::production;
     std::vector<std::byte> expected_archive;
     if (probe_comparison) {
         expected_archive.assign(archive.begin(), archive.begin() + public_size);
@@ -352,7 +358,7 @@ struct AlignedStorage {
     std::chrono::nanoseconds elapsed{};
     if (!run_private(stream, limits, private_requirements, input, archive,
                      nullptr, nullptr, actual_size, token_count, elapsed,
-                     use_probe)
+                     comparison_route)
         || actual_size != public_size) {
         std::cerr << "untimed private encode mismatch\n";
         return 1;
@@ -399,7 +405,7 @@ struct AlignedStorage {
         for (std::uint32_t index = 0; index < iterations; ++index) {
             if (!run_private(stream, limits, private_requirements, input, archive,
                              nullptr, nullptr, actual_size, token_count, elapsed,
-                             use_probe) || !matches()) {
+                             comparison_route) || !matches()) {
                 std::cerr << "timed private archive byte mismatch\n";
                 return 1;
             }

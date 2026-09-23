@@ -11,6 +11,12 @@
 
 namespace marc::frame::internal {
 
+enum class LzssContextualRansHashChainRoute : std::uint8_t {
+    production,
+    no_probe,
+    best_length_probe,
+};
+
 enum class LzssContextualRansFrameEncodeError : std::uint8_t {
     none,
     invalid_stream,
@@ -93,7 +99,8 @@ encode_lzss_contextual_rans_frame_with_match_finder(
     dictionary::internal::LzssMatchFinderStatistics* statistics = nullptr,
     context::internal::LzssContextualRansEncodePhaseTiming* timing = nullptr,
     dictionary::internal::LzssTypedTokenizeTiming* tokenize_timing = nullptr,
-    bool private_best_length_probe = false)
+    LzssContextualRansHashChainRoute hash_chain_route =
+            LzssContextualRansHashChainRoute::production)
     noexcept;
 
 [[nodiscard]] LzssContextualRansFrameEncodeResult
