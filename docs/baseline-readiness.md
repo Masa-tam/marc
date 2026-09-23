@@ -208,9 +208,11 @@ Project version 0.6.0 is published as a GitHub pre-release from annotated tag
 release-candidate schema-57 exchange was recorded, so the published boundary
 contains no unverified source change.
 
-Project version 0.7.0 has completed release-candidate validation. The public inventory
-remains forty-two baseline profiles and the same schema-57 set of 67 archives;
-C ABI lifecycle version 1 and the existing stream representations are unchanged.
+Project version 0.7.0 is published as a GitHub pre-release from annotated tag
+`v0.7.0` at evidence commit
+`433df8d4dee05c69cbc3d15a50195dd1c36bddf1`. The public inventory remains
+forty-two baseline profiles and the same schema-57 set of 67 archives; C ABI
+lifecycle version 1 and the existing stream representations are unchanged.
 The default LZSS HashChain encoder now uses 262,144 buckets and exact
 best-length probing. The alternative ordered-tree and Sparse HashTree
 implementations remain private research candidates, with their measured
@@ -221,7 +223,8 @@ four-direction schema-57 verification at revision
 revision `be2febf16eff3e71cac00368ed975bf904ee4aa9` subsequently passed
 pushed CI and a separate four-direction exchange of all 67 archives, as
 reported by the maintainer. The evidence-only commit recording those results
-still needs final pushed CI before tagging.
+passed final pushed CI before the tag was created and published. No codec or
+format change intervened between the release-candidate exchange and tag.
 The local MSVC Release preparation passed all 3,609 tests in 387.62 seconds,
 including the interoperability schema compatibility test in 115.52 seconds.
 
@@ -4090,3 +4093,15 @@ external results, not a local rerun of those environments. The evidence-only
 commit still requires successful pushed CI before annotated tag `v0.7.0`.
 The non-x86-64, broader measurement, and longer fuzz-campaign gaps remain
 open; the release must retain pre-release scope and make no broader claim.
+
+### BR-0276
+
+Project version 0.7.0 was published as a GitHub pre-release from annotated tag
+`v0.7.0`, which resolves locally to evidence commit
+`433df8d4dee05c69cbc3d15a50195dd1c36bddf1`. The maintainer confirmed
+successful final pushed CI for that documentation-only commit, remote tag
+publication, and GitHub pre-release publication. The four-direction 67-archive
+exchange belongs to earlier release-candidate revision
+`be2febf16eff3e71cac00368ed975bf904ee4aa9`; the intervening commit only
+records its evidence. This release does not close the outstanding non-x86-64,
+broader performance, or longer fuzz-campaign items.

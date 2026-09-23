@@ -32911,3 +32911,23 @@ both bounds.
   passes with the same full revision and 67 archives each. These external
   environments were not independently rerun in this documentation step.
   The evidence commit still needs final pushed CI before `v0.7.0` tagging.
+
+## CR-1328: 2026-09-24 - Publish project version 0.7.0 pre-release
+
+- Author: Codex; reviewer: repository maintainer confirmed final pushed CI,
+  tag publication, and GitHub pre-release publication.
+- References used: the local annotated `v0.7.0` tag, CR-1326 and CR-1327,
+  BR-0274 and BR-0275, and the maintainer's release confirmation.
+- Known implementations intentionally not consulted: external compressor or
+  match-finder source, release automation, and third-party release notes.
+- Generated-code task: update current readiness and preserve the publication
+  boundary as a provenance record without changing code, format, or archives.
+- Independent decisions: distinguish the tagged evidence commit
+  `433df8d4dee05c69cbc3d15a50195dd1c36bddf1` from the tested
+  release-candidate revision `be2febf16eff3e71cac00368ed975bf904ee4aa9`;
+  retain pre-release status and all explicitly open evidence gaps.
+- Similarity review: this is first-party release-state documentation only;
+  no external implementation expression was introduced.
+- Publication result: local annotated tag `v0.7.0` resolves to the evidence
+  commit above. The maintainer reported that final CI passed, the tag was
+  pushed and visible on GitHub, and marc 0.7.0 was published as a pre-release.
