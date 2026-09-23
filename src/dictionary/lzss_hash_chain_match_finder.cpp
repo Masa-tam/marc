@@ -359,6 +359,31 @@ LzssMatch LzssHashChainBestLengthProbeMatchFinder::find_match(
         calculate_lzss_prefix_hash, true>(position);
 }
 
+LzssMatch LzssHashChainNoProbeMatchFinder::find_match(
+    const std::size_t position) const noexcept {
+    return implementation_.find_match_with<
+        calculate_lzss_prefix_hash, false>(position);
+}
+
+void LzssHashChainNoProbeMatchFinder::advance(
+    const std::size_t position, const std::size_t next_position) noexcept {
+    implementation_.advance(position, next_position);
+}
+
+LzssHashChainError initialize_lzss_hash_chain_no_probe_match_finder(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters, const core::DecoderLimits& limits,
+    const std::span<std::byte> workspace, LzssHashChainNoProbeMatchFinder& finder,
+    LzssMatchFinderStatistics* const statistics) noexcept {
+    LzssHashChainNoProbeMatchFinder initialized{};
+    const auto error = initialize_lzss_hash_chain_match_finder(
+        input, parameters, limits, workspace, initialized.implementation_,
+        statistics);
+    if (error != LzssHashChainError::none) return error;
+    finder = initialized;
+    return LzssHashChainError::none;
+}
+
 void LzssHashChainBestLengthProbeMatchFinder::advance(
     const std::size_t position,
     const std::size_t next_position) noexcept {

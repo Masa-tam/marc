@@ -286,6 +286,13 @@ Do not generalize the 1.952496x observed speedup to those other routes.
 
 ### Gate 1: preserve the no-probe comparison route
 
+The first implementation step adds `LzssHashChainNoProbeMatchFinder`, whose
+query explicitly instantiates probing as false, and connects the isolated
+benchmark's `hash-chain-exact` frame/synthetic route to that control. Its
+initialization and workspace are shared with production; failed initialization
+preserves the existing finder. Production dispatch is unchanged. Typed-token
+and whole-codec control routing remain pending, so Gate 1 is not yet complete.
+
 Before enabling pruning in production, create an explicitly named internal
 no-probe finder and the minimal typed-token/whole-codec comparison plumbing.
 Keep the shared implementation compile-time selected, with no new runtime

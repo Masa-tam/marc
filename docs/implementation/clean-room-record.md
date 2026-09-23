@@ -32504,3 +32504,24 @@ both bounds.
 - Local validation: documentation verification and diff check passed.
   No source or test implementation changed, and no new performance run or
   full CTest execution is claimed by this documentation-only step.
+
+## CR-1309: 2026-09-23 - Explicit no-probe matcher control
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171, TVG-1034, and marc's own matcher, initialization
+  and isolated benchmark implementation.
+- Known implementations intentionally not consulted: external compression,
+  match-finder source and test suites.
+- Independent decisions: explicitly instantiate the shared query with probing
+  disabled, preserve workspace and atomic initialization, and bind the frozen
+  isolated benchmark baseline to this control before any production switch.
+- Generated-code task description: introduce the internal no-probe wrapper,
+  connect frame/synthetic baseline measurements, and test exhaustive equality,
+  diagnostic separation and failed reinitialization. Leave typed-token and
+  whole-codec route migration for the next step.
+- Similarity review: repository-owned algorithm and fixtures only; no external
+  implementation expression was introduced. Public behavior remains unchanged.
+- Local validation: MSVC Release build and all 3,600 CTest cases passed
+  in 362.79 seconds, including the two new control fixtures and
+  interoperability schema compatibility. Documentation verification and
+  diff check passed. No new Corpus throughput measurement was performed.

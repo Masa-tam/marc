@@ -1372,8 +1372,8 @@ void fill_synthetic_input(
     const auto begin = std::chrono::steady_clock::now();
     std::size_t frame_tokens{};
     if (strategy == BenchmarkStrategy::hash_chain_exact) {
-        LzssHashChainMatchFinder finder{};
-        if (initialize_lzss_hash_chain_match_finder(
+        LzssHashChainNoProbeMatchFinder finder{};
+        if (initialize_lzss_hash_chain_no_probe_match_finder(
                 frame, parameters, limits, workspace, finder,
                 collect_statistics ? &frame_statistics : nullptr)
             != LzssHashChainError::none) {

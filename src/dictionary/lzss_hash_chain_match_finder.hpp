@@ -62,6 +62,7 @@ calculate_lzss_hash_chain_workspace_with_private_bucket_cap(
 
 class LzssHashChainMnemonicMixerV1MatchFinder;
 class LzssHashChainBestLengthProbeMatchFinder;
+class LzssHashChainNoProbeMatchFinder;
 
 class LzssHashChainMatchFinder {
 public:
@@ -74,6 +75,7 @@ public:
 private:
     friend class LzssHashChainMnemonicMixerV1MatchFinder;
     friend class LzssHashChainBestLengthProbeMatchFinder;
+    friend class LzssHashChainNoProbeMatchFinder;
     friend LzssHashChainError initialize_lzss_hash_chain_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
@@ -100,6 +102,28 @@ private:
 };
 
 static_assert(LzssMatchFinder<LzssHashChainMatchFinder>);
+
+// Explicit historical control; independent of the production query policy.
+class LzssHashChainNoProbeMatchFinder {
+public:
+    [[nodiscard]] LzssMatch find_match(std::size_t position) const noexcept;
+    void advance(std::size_t position, std::size_t next_position) noexcept;
+
+private:
+    friend LzssHashChainError initialize_lzss_hash_chain_no_probe_match_finder(
+        std::span<const std::byte>, const LzssParameters&,
+        const core::DecoderLimits&, std::span<std::byte>,
+        LzssHashChainNoProbeMatchFinder&, LzssMatchFinderStatistics*) noexcept;
+    LzssHashChainMatchFinder implementation_{};
+};
+
+static_assert(LzssMatchFinder<LzssHashChainNoProbeMatchFinder>);
+
+[[nodiscard]] LzssHashChainError initialize_lzss_hash_chain_no_probe_match_finder(
+    std::span<const std::byte> input, const LzssParameters& parameters,
+    const core::DecoderLimits& limits, std::span<std::byte> workspace,
+    LzssHashChainNoProbeMatchFinder& finder,
+    LzssMatchFinderStatistics* statistics = nullptr) noexcept;
 
 class LzssHashChainBestLengthProbeMatchFinder {
 public:

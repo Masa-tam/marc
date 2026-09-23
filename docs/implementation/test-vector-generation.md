@@ -15218,3 +15218,20 @@ Private HashChain best-length-probe vectors (2026-09-23).
   token/traversal results, stable diagnostics, unchanged finder workspace,
   and completed replay without remeasurement. Whole-codec archive identity
   and performance remain separate evaluation requirements.
+
+### TVG-1034
+
+Explicit no-probe HashChain control:
+
+- Use the independently authored fixed byte string
+  `ABCDEaaaaQ|ABCDEbbbbR|ABCDEbbbbSZZ` with windows 5, 17 and 65,536.
+  Compare every query against the exhaustive matcher and the probe variant,
+  advancing one position at a time to exercise short tails and window expiry.
+- Require equal candidate counts, zero control probe reads/prunes, and the
+  original control prefix-count partition. The largest window must produce
+  nonzero pruning on the probe side so two inactive paths cannot pass.
+- After a successful initialization and advance to position 22, retry with
+  one byte less than required workspace. Require `workspace_too_small` and
+  the same subsequent query result, preserving atomic initialization failure.
+- These are correctness fixtures, not throughput measurements. No external
+  implementation, corpus or imported test suite supplies the expected result.
