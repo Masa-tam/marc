@@ -2999,7 +2999,9 @@ int main(const int argc, const char* const argv[]) {
     }
     const auto hash_tokens = parse_with_finder(input, hash_finder);
     if (exhaustive_tokens != hash_tokens
-        || hash_tokens != hash_plan.token_count) {
+        || hash_tokens != hash_plan.token_count
+        || !valid_hash_chain_statistics(
+            hash_statistics, lzss_hash_chain_production_uses_best_length_probe)) {
         std::cerr << "finder equivalence failed\n";
         return 1;
     }
@@ -3255,6 +3257,11 @@ int main(const int argc, const char* const argv[]) {
 
     std::cout << std::fixed << std::setprecision(6)
               << "input_bytes=" << input.size() << '\n'
+              << "mode=one-shot\n"
+              << "hash_chain_route=production\n"
+              << "hash_chain_query_policy="
+              << (lzss_hash_chain_production_uses_best_length_probe
+                      ? "best-length-probe" : "no-probe") << '\n'
               << "output_bytes=" << hash_output.size() << '\n'
               << "lzss_frame_bytes=" << lzss_frame_hash_chain.size() << '\n'
               << "lzss_blocked_huffman_frame_bytes="
@@ -3290,7 +3297,15 @@ int main(const int argc, const char* const argv[]) {
               << "hash_chain_candidates=" << hash_statistics.candidate_count
               << '\n'
               << "hash_chain_byte_comparisons="
-              << hash_statistics.byte_comparison_count << '\n';
+              << hash_statistics.byte_comparison_count << '\n'
+              << "hash_chain_prefix_matches="
+              << hash_statistics.hash_chain_prefix_match_count << '\n'
+              << "hash_chain_prefix_mismatches="
+              << hash_statistics.hash_chain_prefix_mismatch_count << '\n'
+              << "hash_chain_best_length_probe_comparisons="
+              << hash_statistics.hash_chain_best_length_probe_comparison_count << '\n'
+              << "hash_chain_best_length_probe_pruned_candidates="
+              << hash_statistics.hash_chain_best_length_probe_pruned_candidate_count << '\n';
     print_measurement("exhaustive_plan", exhaustive_plan_seconds,
                       input.size(), iterations);
     print_measurement("hash_chain_plan", hash_plan_seconds,

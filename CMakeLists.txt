@@ -524,8 +524,10 @@ if(MARC_BUILD_BENCHMARKS)
     endif()
     if(MARC_BUILD_TESTS)
         add_test(NAME marc_lzss_match_finder_benchmark_smoke
-            COMMAND marc_lzss_match_finder_benchmark
-                ${CMAKE_CURRENT_SOURCE_DIR}/README.md 1)
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_match_finder_benchmark>"
+                "-DBENCHMARK_INPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_match_finder_production_benchmark.cmake)
         set_tests_properties(marc_lzss_match_finder_benchmark_smoke
             PROPERTIES LABELS benchmark-experimental-smoke)
         add_test(NAME marc_lzss_match_finder_frame_benchmark_smoke

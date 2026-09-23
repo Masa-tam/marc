@@ -15397,3 +15397,19 @@ Production HashChain planning and exact-capacity regression coverage:
   `output_too_small` without changing output or its trailing sentinel.
 - Existing golden vectors and workspace/overlap failure tests stay unchanged;
   bounded grids are not long-distance coverage or performance measurements.
+
+### TVG-1043
+
+Production one-shot match-finder benchmark report contract:
+
+- Replace the exit-code-only smoke invocation with a CMake report verifier
+  running the same README input and one iteration. Require success plus
+  exact one-shot/production/no-probe identity lines.
+- Require integer candidate, prefix-match/mismatch, byte-comparison and
+  probe comparison/pruning counters. Check the three-term candidate
+  partition and require zero probe activity under the current policy.
+- The executable also validates checked counter arithmetic and query-depth
+  totals before reporting. Timings remain informational without thresholds.
+- Production promotion must update the explicit expected policy; the test
+  must not accept both policy names simply to pass. Historical campaign
+  report formats and stored measurements are unchanged.

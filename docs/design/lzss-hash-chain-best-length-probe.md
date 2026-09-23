@@ -440,6 +440,23 @@ ordinary decoding and atomic rejection of an output one byte too short.
 These additions do not replace workspace alignment/overlap tests or certify
 the still-unmodified production probe route.
 
+The default one-shot benchmark now reports `mode=one-shot`,
+`hash_chain_route=production` and `hash_chain_query_policy=no-probe`.
+The policy label and production query share one internal compile-time constant
+(currently false); historical controls do not use that constant. Untimed
+production statistics are validated using the corresponding policy, and the
+report includes prefix and probe counters. Its smoke test checks identity,
+the candidate partition and zero probe counters. At promotion, update the
+smoke contract deliberately to require the new policy, not either label.
+Frozen frame/synthetic campaign reports and checkpoints remain unchanged.
+
+The exact `ReportsOptionalComparableWorkStatistics` matcher fixture retains
+its current expected counts: `ABCDEABCDE` cannot prune a candidate using a
+previous partial best. Its three prefix mismatches and one full match remain
+meaningful checks, not values to relax preemptively. Private bucket/mixer
+fixtures retain no-probe partitions. Post-switch full tests must diagnose any
+other changed counts against their actual vectors before adjusting them.
+
 Remaining implementation order (item 1 implemented as described above):
 
 1. Pin private bucket/mixer routes to no-probe with regression assertions

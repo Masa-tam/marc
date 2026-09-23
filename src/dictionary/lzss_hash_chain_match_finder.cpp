@@ -350,7 +350,8 @@ LzssMatch LzssHashChainMatchFinder::find_match_with(
 
 LzssMatch LzssHashChainMatchFinder::find_match(
     const std::size_t position) const noexcept {
-    return find_match_with<calculate_lzss_prefix_hash, false>(position);
+    return find_match_with<calculate_lzss_prefix_hash,
+        lzss_hash_chain_production_uses_best_length_probe>(position);
 }
 
 LzssMatch LzssHashChainMatchFinder::find_match_no_probe(

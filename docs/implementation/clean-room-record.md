@@ -32712,3 +32712,25 @@ both bounds.
   interoperability schema compatibility in 108.54 seconds. Documentation
   verification and diff check passed. Production code and golden bytes
   remain unchanged; no new corpus measurement is claimed.
+
+## CR-1319: 2026-09-23 - Identify production benchmark policy and statistics
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1171, TVG-1043, the migration route audit and marc's
+  own query templates, statistics validator and benchmark smoke registration.
+- Known implementations intentionally not consulted: external compressor
+  or match-finder implementations and test suites.
+- Independent decisions: use one compile-time production policy constant
+  for dispatch and reporting, leaving independent historical controls pinned.
+  Expose untimed probe/prefix counters and validate the production report;
+  preserve exact existing fixture counts rather than relaxing expectations.
+- Generated-code task description: distinguish production measurements from
+  frozen controls and verify report identity/statistic contracts without
+  activating the production probe or changing old benchmark records.
+- Similarity review: repository-owned implementation and independently
+  authored report checks only; no external implementation expression used.
+- Local validation: MSVC Release build and all 3,609 CTest cases passed
+  (398.92 seconds), including the strengthened production benchmark smoke
+  and interoperability schema compatibility (107.44 seconds). Documentation
+  verification and diff check passed. Production remains no-probe; no new
+  corpus timing or adoption result is claimed.
