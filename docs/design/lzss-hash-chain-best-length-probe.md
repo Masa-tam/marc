@@ -2,8 +2,9 @@
 
 Status: private matcher pilot/full campaigns (BM-0093/BM-0094) and
 whole-codec pilot/full campaigns (BM-0095/BM-0096) completed, 2026-09-23.
-Production adoption remains a separate decision. This document does not
-authorize a production matcher or format change.
+Production migration is planned by DD-1171, with the gates below. The
+production matcher remains unchanged until those gates pass; no format
+change is proposed.
 
 ## Motivation and boundary
 
@@ -252,3 +253,116 @@ test pass/fail criterion. Decoder differences still concern the unchanged
 decoder operating on identical bytes. The full measurement completed in
 BM-0096 with all 72 records validated. Completion alone does not authorize
 production promotion.
+
+## Production migration plan (DD-1171)
+
+BM-0096 supplies positive whole-codec evidence for the 4 MiB contextual
+rANS profile, not a throughput claim for every codec, window, machine, or
+compiler. Adopt the exact pruning rule as an implementation optimization
+of HashChain, rather than introducing another public strategy or option.
+The sequence below separates preparing an independent oracle from changing
+production behavior. No production code changes accompany this plan.
+
+### Scope and invariant boundaries
+
+`LzssHashChainMatchFinder` is shared by serialized LZSS preflight/encoding,
+typed-token preflight/encoding, and the single-pass typed-token encoder.
+The latter is used by contextual Range, rANS, tANS, Blocked Huffman, and
+Adaptive Huffman. Its private bucket-scaled wrappers also delegate queries
+to this finder. A change here must therefore be validated beyond the one
+measured contextual rANS route.
+
+Keep the public HashChain strategy value, default strategy selection,
+configuration initializers/profile helpers, C ABI, format IDs, exact token
+and archive bytes, limits and workspace queries unchanged. Do not alter
+hash mixing, bucket caps, chain insertion/traversal, parsing, tie breaking,
+frame boundaries, Binary Tree, or the exhaustive reference. Private mixer
+and bucket experiments must explicitly select their intended probe policy;
+they must not inherit a changed policy accidentally.
+
+The correctness argument above applies to every supported parameter set,
+but performance outside the measured 4 MiB profile remains unmeasured.
+Do not generalize the 1.952496x observed speedup to those other routes.
+
+### Gate 1: preserve the no-probe comparison route
+
+Before enabling pruning in production, create an explicitly named internal
+no-probe finder and the minimal typed-token/whole-codec comparison plumbing.
+Keep the shared implementation compile-time selected, with no new runtime
+switch in the candidate loop. The no-probe path must use the same production
+hash, bucket cap, links, validation and workspace as the candidate, but must
+instantiate the comparison loop with probing disabled explicitly.
+
+Route historical baseline benchmark modes through this no-probe path, not
+through whichever implementation happens to be public. This includes the
+whole-codec `--best-length-probe-baseline` mode and the isolated match-finder
+campaign baseline. Keep the frozen v1 contracts, report semantics, and
+checkpoint identities intact; never mix records from different source/build
+identities. A new production-facing benchmark report must be distinguishable
+from a historical no-probe result rather than silently repurposing a label.
+The public encoder remains an archive oracle, but after promotion it is not
+an independent no-probe timing/control path.
+
+Use explicit internal route names for production, no-probe control and
+probe candidate. Replace ambiguous experiment booleans where necessary;
+do not retain a misleading compatibility alias or expose a public selector.
+Preserve the existing probe candidate long enough to prove migration
+identity. Remove redundant private plumbing only in a later reviewed step,
+while retaining a genuine no-probe oracle for regression and measurement.
+
+### Gate 2: regression evidence before switching
+
+Add tests while production is still unmodified, and compare complete tokens
+against both the no-probe finder and the exhaustive reference on bounded
+inputs. Cover no current best, probe rejection, probe hit followed by an
+earlier mismatch, later longer matches, nearest-distance ties, overlap,
+maximum match length, short tails, window expiry and wrapped link storage.
+Exercise supported minimum/maximum match parameters and all public window
+profiles. Large-profile tests must include actual long-distance references,
+not just a large configured window around a tiny input; bound their memory
+and runtime and use independent expected vectors where exhaustive scanning
+would be impractical.
+
+Check serialized, typed two-pass and single-pass entry points, including
+preflight/output-size agreement, insufficient workspace and output capacity,
+misalignment/overlap rejection and unchanged atomic failure behavior. Verify
+empty, binary, repeated, exact-frame, short-final-frame and multiple-frame
+archives through all five contextual entropy routes, with arbitrary input
+splits, one-byte output and ordinary decoder round trips. Existing golden
+bytes remain authoritative; do not regenerate them to accommodate drift.
+
+Treat diagnostic work counters separately from semantic output. Candidate
+counts and query-depth distributions remain unchanged; comparison counts
+may change. The production probe must obey
+`candidates = prefix_matches + prefix_mismatches + probe_pruned`, include
+probe reads in byte comparisons, and preserve checked counter overflow.
+The no-probe route must retain zero probe counts and its old partition.
+Update affected validators and fixtures to assert those precise contracts,
+not simply relax expected counts until tests pass.
+
+### Gate 3: production switch and integration validation
+
+After the explicit control path and regression tests pass, activate the
+probe in the production compile-time HashChain route. Re-run MSVC Release
+build and the complete CTest suite with the agreed 600-second test timeout,
+including interoperability schema compatibility. Run relevant bounded
+decoder/round-trip fuzz smoke campaigns with the established ClangCL and
+ASan runtime environment; report an unavailable or interrupted check rather
+than claiming coverage. Keep corpus measurements separate from CI tests
+and impose no speed threshold on correctness tests.
+
+Confirm archive/workspace identity and that the public route actually
+executes the probe, using counters outside timed measurements. Run the
+existing frozen full whole-codec comparison on a clean pinned post-switch
+build with new result/checkpoint paths. Old results remain immutable. The
+explicit no-probe control must still execute without pruning; rerunning two
+probe paths would not validate adoption. Retain all member slowdowns and
+report encode/decode time, ratio and queried workspace independently.
+
+Finally require Linux/Windows CI and the normal cross-platform archive
+verification before closing adoption. A wire-format change is neither
+expected nor permitted by this optimization; any token/archive discrepancy
+blocks promotion and must be diagnosed. Use local commits and fast-forward
+integration; remote pushes remain with the maintainer. If the integration
+gate fails, keep production unchanged or revert the isolated switch while
+retaining the experimental evidence and independent control path.

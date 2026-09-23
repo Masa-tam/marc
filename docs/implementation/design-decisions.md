@@ -23854,3 +23854,26 @@ identity-gated isolated benchmark. A positive selected pilot is not enough
 to change the default: require a fixed all-member and whole-codec audit
 before any such decision. A negative result must be recorded rather than
 hidden by selecting favorable inputs.
+
+## DD-1171: Stage production HashChain probing behind an explicit no-probe oracle
+
+- Date: 2026-09-23
+- Status: migration plan; production switch pending regression gates
+
+BM-0096 completed the full 4 MiB contextual rANS audit with exact archive
+identity and unchanged workspace. Plan to promote the best-length probe
+as an internal optimization of the existing exact HashChain strategy, not
+a new public strategy, option, ABI or representation. The shared finder
+also reaches serialized LZSS and all contextual entropy routes, so the
+measured speedup must not be extrapolated to every caller or window.
+
+First separate an explicitly no-probe compile-time control from production
+dispatch, preserving historical benchmark semantics and checkpoint identity.
+Then add cross-route, parameter/boundary, atomic-failure, archive and
+diagnostic-counter regression coverage. Only afterward switch production,
+run the complete test suite and relevant bounded fuzz checks, and repeat
+the frozen whole-codec comparison under a new pinned build identity. Keep
+the no-probe oracle genuinely independent of the production switch. Close
+the migration only after CI and cross-platform verification. The detailed
+gates are in `docs/design/lzss-hash-chain-best-length-probe.md`; this planning
+step itself changes no executable behavior.

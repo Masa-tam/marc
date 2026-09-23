@@ -32484,3 +32484,23 @@ both bounds.
   Completed replay launched no measurements and preserved result/checkpoint
   hashes. Documentation verification and diff check passed. No implementation
   or public default changed in this result-recording step.
+
+## CR-1308: 2026-09-23 - Production best-length-probe migration gates
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, BM-0096, and repository-owned matcher,
+  serialized/typed encoder, contextual frame and benchmark call sites.
+- Known implementations intentionally not consulted: external compressor,
+  match-finder implementations, benchmark source and test suites.
+- Independent decisions: preserve an explicit no-probe control before
+  changing shared production dispatch; distinguish semantic identity from
+  diagnostic work counters; require coverage beyond the measured rANS
+  profile and keep public strategy, ABI, format and workspace unchanged.
+- Generated-code task description: inspect shared callers and comparison
+  paths, document staged migration gates and truthful measurement scope,
+  and retain historical baseline contracts without changing executable code.
+- Similarity review: the plan follows marc's own code and recorded results;
+  no external implementation expression was consulted.
+- Local validation: documentation verification and diff check passed.
+  No source or test implementation changed, and no new performance run or
+  full CTest execution is claimed by this documentation-only step.
