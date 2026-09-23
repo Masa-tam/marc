@@ -135,3 +135,20 @@ this entry, with an explicit maximum-match-length 256 boundary test for the
 contextual codec (the isolated matcher campaign used 258). A short workspace
 must fail without writing tokens. Whole-stream archive identity and throughput
 remain a separate next gate; this entry alone does not establish either.
+
+### Private contextual rANS stream route
+
+The internal frame encoder and streaming encoder accept a default-false
+`private_best_length_probe` experiment switch. It is not a public config,
+strategy enum, profile, or serialized field. Only HashChain exact accepts it;
+BinaryTree and nested tokenization timing combinations are rejected. The
+probe uses a separate compile-time parser instantiation and the same frame
+validation, entropy coding, serialization, and workspace accounting as the
+baseline. Production callers omit the switch and retain their existing route.
+
+Regression fixtures compare complete baseline/probe archives for empty,
+binary, repetitive, exact/partial/multiple-frame inputs with large buffers
+and one-byte input/output buffers, then decode with the ordinary decoder.
+These bounded fixtures are not full-Corpus performance evidence. The next
+gate is an uninstrumented whole-codec benchmark with archive identity,
+round-trip, ratio, and workspace checks before timing is interpreted.

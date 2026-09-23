@@ -132,6 +132,95 @@ TEST(LzssContextualRansFrameStreamingEncoder,
 }
 
 TEST(LzssContextualRansFrameStreamingEncoder,
+     PrivateProbePreservesArchivesAcrossChunksAndFrames) {
+    using marc::dictionary::internal::LzssMatchFinderStrategy;
+    for (const auto size : {0U, 1U, 256U, 257U, 258U, 1025U}) {
+        for (const bool repetitive : {false, true}) {
+            std::vector<std::byte> input(size);
+            for (std::size_t i = 0; i < input.size(); ++i) {
+                input[i] = static_cast<std::byte>(repetitive ? i % 7 : (i * 73 + i / 13) % 256);
+            }
+            LzssContextualRansProfileConfig config{};
+            config.original_size = input.size();
+            config.frame_size = 257;
+            config.dictionary.window_size = 1U << 22;
+            config.variant = LzssContextualRansProfileVariant::field_context_4m;
+            LzssContextualRansStreamHeader stream{};
+            LzssContextualRansEncoderWorkspaceRequirements required{};
+            ASSERT_EQ(make_lzss_contextual_rans_profile(config, {}, stream, required),
+                      LzssContextualRansProfileError::none);
+            std::vector<std::byte> raw(required.frame_input_bytes);
+            std::vector<std::byte> serialized(required.frame_encoded_bytes);
+            AlignedWorkspace owner(required.views_bytes);
+            LzssContextualRansEncoderViews views{};
+            ASSERT_EQ(partition_lzss_contextual_rans_encoder_views(
+                          required, owner.bytes(required.views_bytes), views),
+                      LzssContextualRansWorkspaceError::none);
+            const auto encode = [&](const bool probe, const std::size_t chunk_size) {
+                LzssContextualRansFrameStreamingEncoder encoder{
+                    stream, {}, raw, views.tokens, views.match_finder, serialized,
+                    LzssMatchFinderStrategy::hash_chain_exact, nullptr, nullptr, probe};
+                std::vector<std::byte> archive;
+                std::vector<std::byte> output(chunk_size);
+                std::size_t offset{};
+                for (std::size_t call = 0; call < 100000; ++call) {
+                    const auto chunk = std::span{input}.subspan(
+                        offset, std::min(chunk_size, input.size() - offset));
+                    const auto result = encoder.process(chunk, output,
+                        offset + chunk.size() == input.size() ? end_flag() : 0U);
+                    EXPECT_TRUE(marc::core::is_valid(result, chunk.size(), output.size()));
+                    EXPECT_NE(result.status, StreamStatus::error);
+                    if (result.status == StreamStatus::error) return archive;
+                    offset += result.input_consumed;
+                    archive.insert(archive.end(), output.begin(),
+                                   output.begin() + result.output_produced);
+                    if (result.status == StreamStatus::end_of_stream) {
+                        EXPECT_EQ(offset, input.size());
+                        EXPECT_EQ(encoder.process({}, {}, 0).status, StreamStatus::end_of_stream);
+                        return archive;
+                    }
+                }
+                ADD_FAILURE() << "bounded streaming loop exhausted";
+                return archive;
+            };
+            const auto baseline = encode(false, 4096);
+            EXPECT_EQ(encode(true, 4096), baseline);
+            EXPECT_EQ(encode(true, 1), baseline);
+            std::vector<RansDecodeEntry> tables(contextual_rans_decode_table_entries);
+            std::vector<LzssTypedToken> tokens(257);
+            std::vector<std::byte> decoded(257);
+            LzssContextualRansFrameStreamingDecoder decoder{
+                {}, serialized, tables, tokens, decoded};
+            std::vector<std::byte> restored(input.size());
+            const auto result = decoder.process(baseline, restored, end_flag());
+            EXPECT_EQ(result.status, StreamStatus::end_of_stream);
+            EXPECT_EQ(result.input_consumed, baseline.size());
+            EXPECT_EQ(result.output_produced, input.size());
+            EXPECT_EQ(restored, input);
+        }
+    }
+}
+
+TEST(LzssContextualRansFrameStreamingEncoder,
+     PrivateProbeRejectsBinaryTreeAndNestedTimingBeforeOutput) {
+    using marc::dictionary::internal::LzssMatchFinderStrategy;
+    marc::dictionary::internal::LzssTypedTokenizeTiming nested{};
+    for (const bool use_nested : {false, true}) {
+        LzssContextualRansFrameStreamingEncoder encoder{
+            stream_config(1, 0), {}, {}, {}, {}, {},
+            use_nested ? LzssMatchFinderStrategy::hash_chain_exact
+                       : LzssMatchFinderStrategy::binary_tree_exact,
+            nullptr, use_nested ? &nested : nullptr, true};
+        std::array<std::byte, 256> output{};
+        const auto result = encoder.process({}, output, end_flag());
+        EXPECT_EQ(result.status, StreamStatus::error);
+        EXPECT_EQ(result.input_consumed, 0U);
+        EXPECT_EQ(result.output_produced, 0U);
+        EXPECT_EQ(encoder.process({}, output, end_flag()).status, StreamStatus::error);
+    }
+}
+
+TEST(LzssContextualRansFrameStreamingEncoder,
      NestedHashChainTimingPreservesTwoFrameArchive) {
     constexpr std::array input{std::byte{'A'}, std::byte{'A'}};
     const auto stream = stream_config(1, input.size());

@@ -32359,3 +32359,24 @@ both bounds.
   390.86 seconds, including interoperability schema compatibility in 106.02
   seconds. Documentation verification and diff check passed. Whole-codec
   archive comparison and timing remain pending.
+
+## CR-1302: 2026-09-23 - Private probe contextual rANS stream route
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170, the private probe design, and marc's own frame
+  encoder, streaming state machine, and typed-token entry.
+- Known implementations intentionally not consulted: external compressor,
+  entropy coder, match-finder implementations and test suites.
+- Independent decisions: add an internal default-false switch, preserve
+  public selection and format, reuse frame validation and workspace bounds,
+  and reject BinaryTree/nested-timing combinations before stream output.
+- Generated-code task description: connect the private exact probe to rANS
+  frames and streams; compare complete archives across chunk boundaries and
+  recover source bytes using the unchanged decoder.
+- Similarity review: repository-owned components reused without external
+  implementation expression or new algorithm references.
+- Local validation: MSVC Release build and all 3,595 CTest cases passed in
+  391.99 seconds, including interoperability schema compatibility in 106.01
+  seconds. Private archive/chunk/round-trip and invalid-combination tests,
+  documentation verification, and diff check passed. Whole-Corpus archive
+  comparison and whole-codec timing remain pending.

@@ -81,7 +81,7 @@ enum class FrameMatchFinder : std::uint8_t {
 
 } // namespace
 
-template <FrameMatchFinder MatchFinder>
+template <FrameMatchFinder MatchFinder, bool BestLengthProbe = false>
 [[nodiscard]] LzssContextualRansFrameEncodeResult plan_frame(
     const LzssContextualRansStreamHeader& stream,
     const core::DecoderLimits& limits, const std::uint64_t sequence,
@@ -96,7 +96,8 @@ template <FrameMatchFinder MatchFinder>
     LzssContextualRansFrameEncodeResult result{};
     if (tokenize_timing != nullptr
         && (timing == nullptr
-            || MatchFinder != FrameMatchFinder::hash_chain_exact)) {
+            || MatchFinder != FrameMatchFinder::hash_chain_exact
+            || BestLengthProbe)) {
         result.error = LzssContextualRansFrameEncodeError::
             unsupported_match_finder_strategy;
         return result;
@@ -157,7 +158,14 @@ template <FrameMatchFinder MatchFinder>
     const auto tokenize_start = timing != nullptr
         ? std::chrono::steady_clock::now()
         : std::chrono::steady_clock::time_point{};
-    if constexpr (MatchFinder == FrameMatchFinder::hash_chain_exact) {
+    if constexpr (BestLengthProbe) {
+        static_assert(MatchFinder == FrameMatchFinder::hash_chain_exact);
+        result.token_encode = dictionary::internal::
+            encode_lzss_typed_tokens_hash_chain_best_length_probe_single_pass(
+                raw_input, stream.dictionary, limits, private_tokens,
+                match_finder_workspace, statistics,
+                selected.layout.dictionary_variant);
+    } else if constexpr (MatchFinder == FrameMatchFinder::hash_chain_exact) {
         result.token_encode = dictionary::internal::
             encode_lzss_typed_tokens_hash_chain_single_pass(
                 raw_input, stream.dictionary, limits, private_tokens,
@@ -309,7 +317,7 @@ template <FrameMatchFinder MatchFinder>
     return result;
 }
 
-template <FrameMatchFinder MatchFinder>
+template <FrameMatchFinder MatchFinder, bool BestLengthProbe = false>
 [[nodiscard]] LzssContextualRansFrameEncodeResult encode_frame(
     const LzssContextualRansStreamHeader& stream,
     const core::DecoderLimits& limits, const std::uint64_t sequence,
@@ -350,7 +358,7 @@ template <FrameMatchFinder MatchFinder>
             return fail_overlap(result, overlap);
     }
 
-    result = plan_frame<MatchFinder>(
+    result = plan_frame<MatchFinder, BestLengthProbe>(
         stream, limits, sequence, output_already_committed, raw_input,
         private_tokens, match_finder_workspace, statistics, timing,
         tokenize_timing);
@@ -501,8 +509,21 @@ encode_lzss_contextual_rans_frame_with_match_finder(
     const std::span<std::byte> serialized_output,
     dictionary::internal::LzssMatchFinderStatistics* const statistics,
     context::internal::LzssContextualRansEncodePhaseTiming* const timing,
-    dictionary::internal::LzssTypedTokenizeTiming* const tokenize_timing)
+    dictionary::internal::LzssTypedTokenizeTiming* const tokenize_timing,
+    const bool private_best_length_probe)
     noexcept {
+    if (private_best_length_probe) {
+        if (strategy != dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact
+            || tokenize_timing != nullptr) {
+            LzssContextualRansFrameEncodeResult result{};
+            result.error = LzssContextualRansFrameEncodeError::unsupported_match_finder_strategy;
+            return result;
+        }
+        return encode_frame<FrameMatchFinder::hash_chain_exact, true>(
+            stream, limits, sequence, output_already_committed, raw_input,
+            private_tokens, match_finder_workspace, serialized_output,
+            statistics, timing, nullptr);
+    }
     switch (strategy) {
     case dictionary::internal::LzssMatchFinderStrategy::hash_chain_exact:
         return encode_frame<FrameMatchFinder::hash_chain_exact>(
