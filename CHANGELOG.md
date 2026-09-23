@@ -3,10 +3,16 @@
 This file records user-visible marc changes. Project release versions, stream
 format versions, and C ABI versions are independent namespaces.
 
-## Unreleased
+## 0.7.0 - 2026-09-24
 
 ### Changed
 
+- Increased the default LZSS HashChain bucket cap from 65,536 to 262,144.
+  The full Silesia matcher comparison improved aggregate throughput by about
+  3.2%, 11.8%, and 12.6% for 4-, 16-, and 64-MiB windows, respectively. The
+  measured finder workspace increased by 1,572,864 bytes at each window;
+  a separate whole-codec comparison observed a smaller 2.25% aggregate gain.
+  Exact tokens and archive bytes remain unchanged.
 - Enabled exact best-length probing in the default LZSS HashChain match finder.
   It skips candidates that cannot improve the current match. The selected
   tokens, archive bytes, decoder, C ABI, format IDs, and queried workspace are
@@ -17,6 +23,23 @@ format versions, and C ABI versions are independent namespaces.
   (2.23x). Eleven files improved; `x-ray` was about 0.66% slower. These are
   descriptive measurements, not a promise for every input. The same 67
   interoperability archives passed Windows/MSVC and Ubuntu cross-checks.
+
+### Validation and research
+
+- Compared private Red-Black, Scapegoat, WAVL, and Sparse HashTree match
+  finders against existing Exact controls. None met its public adoption gate.
+  The immutable Sparse snapshot improved relative to HashChain as the tested
+  window grew from 4 to 64 MiB, reaching 0.935x aggregate throughput at
+  64 MiB. That comparison predates both HashChain improvements above, so a
+  future larger-window study must compare against the new default. The
+  experimental finders add no public selector.
+- Added bounded direct encoder/probe sanitizer comparisons and a resumable,
+  identity-checked Silesia experiment path. Windows fuzz builds can opt into
+  separate string and vector annotation compatibility settings for the
+  installed libFuzzer runtime. Ordinary builds are unaffected.
+
+The C ABI version, codec/profile inventory, format IDs, and stream
+representations are unchanged from 0.6.0.
 
 ## 0.6.0 - 2026-09-06
 

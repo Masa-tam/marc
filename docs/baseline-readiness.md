@@ -170,7 +170,8 @@ the twenty-five typed-token LZSS Contextual profiles. The internal canonical
 Huffman primitives remain support components rather than a separate public
 profile.
 
-The optimized Release configurations each enumerate 3,387 tests under
+At the 0.6.0 release boundary, the optimized Release configurations each
+enumerated 3,387 tests under
 MSVC/Visual Studio 2026 and ClangCL 22.1.3 on Windows x64. These suites cover
 the common implementation, public C ABI, CLI, benchmarks, fuzz compile-smoke
 and permanent regressions, installed-package behavior, documentation
@@ -206,6 +207,21 @@ Project version 0.6.0 is published as a GitHub pre-release from annotated tag
 `6c9af53d4135b49b946df6bd2a9bca1f95819a3a`. Final CI passed after the
 release-candidate schema-57 exchange was recorded, so the published boundary
 contains no unverified source change.
+
+Project version 0.7.0 is in local release preparation. The public inventory
+remains forty-two baseline profiles and the same schema-57 set of 67 archives;
+C ABI lifecycle version 1 and the existing stream representations are unchanged.
+The default LZSS HashChain encoder now uses 262,144 buckets and exact
+best-length probing. The alternative ordered-tree and Sparse HashTree
+implementations remain private research candidates, with their measured
+larger-window trend and rejection boundaries summarized in
+`docs/design/lzss-match-finder-strategy.md`. The production probe completed
+four-direction schema-57 verification at revision
+`a141c160074eb061145e1a8f3439fcc83e6d16e7`. A new 0.7.0 release-candidate
+revision still needs its own pushed CI and cross-platform exchange before
+tagging; prior evidence does not substitute for that final revision.
+The local MSVC Release preparation passed all 3,609 tests in 387.62 seconds,
+including the interoperability schema compatibility test in 115.52 seconds.
 
 ## Remaining release evidence
 
@@ -4035,3 +4051,26 @@ published boundary therefore contains all five 64-MiB LZSS Contextual entropy
 routes, the complete five-level resource family, all 67 interoperability
 archives, C ABI lifecycle version 1, and the dated release documentation
 without an unverified source change between validation and tagging.
+
+### BR-0274
+
+The local 0.7.0 pre-release preparation updates the CMake project version,
+runtime version string, status test and dated changelog together. The public
+header, format documentation, LICENSE, notices, and pinned GoogleTest commit
+remain unchanged from 0.6.0. The existing 42 public profiles and schema-57
+67-archive inventory are retained. HashChain's 262,144-bucket cap and exact
+best-length probe change encoder cost and the queried workspace as documented
+in BM-0083, BM-0084 and BM-0097; exact tokens and archive bytes are unchanged.
+Private tree experiments, their negative admission results and their
+larger-window research trend are summarized in the LZSS strategy design note.
+
+Official CMake 4.3.4 configured and built MSVC x64 Release locally.
+All 3,609 CTest cases passed in 387.62 seconds with a 600-second per-test limit;
+`marc_interoperability_schema_compatibility` passed in 115.52 seconds.
+Documentation structure and `git diff --check` passed. These are local
+preparation results, not evidence for the eventual pushed release commit.
+That commit still requires the Windows/MSVC and Ubuntu/Ninja CI suite,
+installed-package matrix and four-direction schema-57 exchange before tagging.
+The general non-x86-64, broader representative benchmark and longer sanitizer
+campaign items in this document remain open and must be assessed explicitly
+for the 0.7.0 release claim.

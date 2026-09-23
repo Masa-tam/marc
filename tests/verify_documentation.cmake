@@ -1352,10 +1352,11 @@ foreach(required_readiness_section IN ITEMS
 endforeach()
 foreach(required_current_baseline IN ITEMS
         "All forty-two baseline profiles"
-        "each enumerate 3,387 tests under"
+        "All 3,609 CTest cases passed"
         "interoperability schema 57 alongside"
         "Schema 56 completed its 66-archive four-direction"
         "Project version 0.6.0 is published as a GitHub pre-release"
+        "Project version 0.7.0 is in local release preparation"
         "cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9")
     string(FIND "${readiness_content}" "${required_current_baseline}"
         current_baseline_offset)

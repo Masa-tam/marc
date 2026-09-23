@@ -32862,3 +32862,29 @@ both bounds.
   `docs/interoperability.md`. These complete the external adoption gates for
   the production query. This record does not independently rerun those
   external environments or assert a universal performance improvement.
+
+## CR-1326: 2026-09-24 - Prepare 0.7.0 release scope and research summary
+
+- Author: Codex; reviewer: repository maintainer requested a 0.7.0 release
+  preparation and preservation of larger-window experimental trends.
+- References used: repository change history since `v0.6.0`, BM-0061 through
+  BM-0097, DD-1171, FZ-0043, the local release checklist and the existing
+  independent match-finder design records.
+- Known implementations intentionally not consulted: external compression
+  source code, copyleft implementations, and third-party benchmark suites.
+- Generated-code task: reconcile version strings, changelog, readiness status
+  and a concise account of accepted and rejected private match finders.
+- Independent decisions: report immutable Sparse snapshot's increasing
+  relative throughput at 4/16/64 MiB while explicitly identifying its older
+  HashChain baseline; retain negative and worst-member outcomes. Do not add a
+  public selector or change a decoder-visible representation.
+- Similarity review: the 0.6.0-to-current changed-file inventory and repository
+  provenance were reviewed for scope. The public header, format document,
+  license, notices and GoogleTest gitlink have no intervening change. No
+  external implementation material was introduced by this release-preparation
+  work. This process record is not a legal non-infringement guarantee.
+- Local validation: MSVC x64 Release rebuilt with official CMake 4.3.4;
+  all 3,609 CTest cases passed in 387.62 seconds, including complete schema
+  compatibility in 115.52 seconds. Documentation verification and diff checks
+  passed. A fresh pushed release-candidate CI run and matching four-direction
+  exchange are still required before the tag.
