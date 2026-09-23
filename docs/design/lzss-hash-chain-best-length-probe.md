@@ -124,3 +124,14 @@ to zero. The verification overhead is not whole-codec throughput.
 The same-archive requirement also covers contextual rANS once a production
 candidate is considered. This private experiment alone does not establish
 such an archive identity or an uninstrumented whole-codec speedup.
+
+### Typed-token integration prerequisite
+
+The private `encode_lzss_typed_tokens_hash_chain_best_length_probe_single_pass`
+entry reuses the existing single-pass parser, buffer validation, and production
+HashChain workspace calculation. It does not change the public strategy or
+the production caller. Reference/canonical-byte equality fixtures also exercise
+this entry, with an explicit maximum-match-length 256 boundary test for the
+contextual codec (the isolated matcher campaign used 258). A short workspace
+must fail without writing tokens. Whole-stream archive identity and throughput
+remain a separate next gate; this entry alone does not establish either.

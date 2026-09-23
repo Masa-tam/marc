@@ -32341,3 +32341,21 @@ both bounds.
   all token, traversal, counter, and workspace invariants held. Completed
   replay reused every record and preserved the full result. Documentation
   ordering/link verification and diff check passed.
+
+## CR-1301: 2026-09-23 - Private best-length-probe typed-token entry
+
+- Author: Codex; reviewer: repository maintainer review pending.
+- References used: DD-1170 and marc's own typed-token parser and probe design.
+- Known implementations intentionally not consulted: external compressor or
+  match-finder source and test suites.
+- Independent decisions: reuse bounded single-pass validation and workspace;
+  keep the public strategy and production callers unchanged. Explicitly test
+  contextual maximum match length 256 rather than infer it from the 258 pilot.
+- Generated-code task description: add the private typed-token prerequisite
+  for full-codec comparison, exact reference/byte checks and atomic rejection.
+- Similarity review: only independently authored repository components reused;
+  no external implementation expression consulted.
+- Local validation: MSVC Release build and all 3,593 CTest cases passed in
+  390.86 seconds, including interoperability schema compatibility in 106.02
+  seconds. Documentation verification and diff check passed. Whole-codec
+  archive comparison and timing remain pending.
