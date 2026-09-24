@@ -5,6 +5,8 @@
 #include "entropy/contextual_dynamic_range_encoder.hpp"
 #include "frame/lzss_short_match_candidate_selector.hpp"
 #include "frame/lzss_short_match_frame_decoder.hpp"
+#include "frame/lzss_short_length_escape_candidate_selector.hpp"
+#include "frame/lzss_short_length_escape_frame_decoder.hpp"
 
 #include <algorithm>
 #include <array>
@@ -204,16 +206,26 @@ int main(const int argc, const char* const argv[]) {
         {65536, 3, 258, 0},
         marc::frame::internal::typed_context_model_total,
         32, 7, 1, 6};
+    const marc::frame::internal::TypedContextStreamHeader escape_stream{
+        static_cast<std::uint32_t>(frame_bytes), sample_bytes,
+        {65536, 3, 258, 0},
+        marc::frame::internal::typed_context_model_total,
+        32, 8, 1, 7};
 
     std::uint64_t baseline_archive_bytes =
         marc::frame::internal::typed_context_stream_header_size;
     std::uint64_t candidate_archive_bytes = baseline_archive_bytes;
+    std::uint64_t escape_archive_bytes = baseline_archive_bytes;
     std::uint64_t exact_baseline_archive_bytes = baseline_archive_bytes;
     std::uint64_t exact_baseline_equal_token_frames{};
     std::array<std::uint64_t, 3> threshold_archive_bytes{
         baseline_archive_bytes, baseline_archive_bytes,
         baseline_archive_bytes};
+    std::array<std::uint64_t, 3> escape_threshold_archive_bytes{
+        baseline_archive_bytes, baseline_archive_bytes,
+        baseline_archive_bytes};
     std::array<std::uint64_t, 3> selected_counts{};
+    std::array<std::uint64_t, 3> escape_selected_counts{};
     std::uint64_t selected_better_frames{};
     std::uint64_t selected_equal_frames{};
     std::uint64_t selected_worse_frames{};
@@ -224,6 +236,8 @@ int main(const int argc, const char* const argv[]) {
     double baseline_plan_seconds{};
     double candidate_encode_seconds{};
     double candidate_decode_seconds{};
+    double escape_encode_seconds{};
+    double escape_decode_seconds{};
     std::uint64_t committed{};
     std::size_t frames{};
     while (committed < sample_bytes) {
@@ -301,6 +315,50 @@ int main(const int argc, const char* const argv[]) {
                       << '\n';
             return 2;
         }
+        const auto escape_encode_start = Clock::now();
+        const auto escape = search == "indexed"
+            ? marc::frame::internal::
+                encode_lzss_short_length_escape_candidate_frame_indexed(
+                    escape_stream, limits, frames, committed, frame, tokens,
+                    operations, candidate_workspace, serialized)
+            : marc::frame::internal::
+                encode_lzss_short_length_escape_candidate_frame(
+                    escape_stream, limits, frames, committed, frame, tokens,
+                    operations, serialized);
+        escape_encode_seconds += std::chrono::duration<double>(
+            Clock::now() - escape_encode_start).count();
+        if (escape.error != marc::frame::internal::
+                LzssShortMatchSelectionError::none
+            || escape.selected_minimum_length < 3
+            || escape.selected_minimum_length > 5
+            || escape.selected_frame_size != *std::min_element(
+                   escape.candidate_frame_sizes.begin(),
+                   escape.candidate_frame_sizes.end())) {
+            std::cerr << "escape frame failed at sequence " << frames
+                      << " error " << static_cast<unsigned>(escape.error)
+                      << '\n';
+            return 2;
+        }
+        const marc::frame::internal::TypedContextFrameValidationContext
+            escape_context{escape_stream, limits, frames, committed};
+        const auto escape_decode_start = Clock::now();
+        const auto escape_reconstructed = marc::frame::internal::
+            decode_lzss_short_length_escape_frame(
+                std::span<const std::byte>{serialized}.first(
+                    escape.selected_frame_size),
+                escape_context, decoded_tokens,
+                std::span<std::byte>{decoded}.first(count));
+        escape_decode_seconds += std::chrono::duration<double>(
+            Clock::now() - escape_decode_start).count();
+        if (escape_reconstructed.error != marc::frame::internal::
+                LzssShortMatchFrameDecodeError::none
+            || escape_reconstructed.serialized_consumed
+                != escape.selected_frame_size
+            || !std::equal(frame.begin(), frame.end(), decoded.begin())) {
+            std::cerr << "escape decode mismatch at sequence " << frames
+                      << '\n';
+            return 2;
+        }
         const auto exact_tokens = marc::dictionary::internal::
             tokenize_lzss_short_match_candidate_indexed(
                 frame, candidate_parameters, limits, 5, tokens,
@@ -344,11 +402,14 @@ int main(const int argc, const char* const argv[]) {
         }
         baseline_archive_bytes += baseline_size;
         candidate_archive_bytes += candidate.selected_frame_size;
+        escape_archive_bytes += escape.selected_frame_size;
         exact_baseline_archive_bytes += exact_baseline_size;
         for (std::size_t index = 0; index < threshold_archive_bytes.size();
              ++index) {
             threshold_archive_bytes[index] +=
                 candidate.candidate_frame_sizes[index];
+            escape_threshold_archive_bytes[index] +=
+                escape.candidate_frame_sizes[index];
         }
         if (candidate.selected_frame_size < baseline_size) {
             ++selected_better_frames;
@@ -360,6 +421,7 @@ int main(const int argc, const char* const argv[]) {
             ++selected_equal_frames;
         }
         ++selected_counts[candidate.selected_minimum_length - 3];
+        ++escape_selected_counts[escape.selected_minimum_length - 3];
         committed += count;
         ++frames;
     }
@@ -374,12 +436,19 @@ int main(const int argc, const char* const argv[]) {
               << "exact_baseline_equal_token_frames="
               << exact_baseline_equal_token_frames << '\n'
               << "candidate_archive_bytes=" << candidate_archive_bytes << '\n'
+              << "escape_archive_bytes=" << escape_archive_bytes << '\n'
               << "threshold_3_archive_bytes=" << threshold_archive_bytes[0]
               << '\n'
               << "threshold_4_archive_bytes=" << threshold_archive_bytes[1]
               << '\n'
               << "threshold_5_archive_bytes=" << threshold_archive_bytes[2]
               << '\n'
+              << "escape_threshold_3_archive_bytes="
+              << escape_threshold_archive_bytes[0] << '\n'
+              << "escape_threshold_4_archive_bytes="
+              << escape_threshold_archive_bytes[1] << '\n'
+              << "escape_threshold_5_archive_bytes="
+              << escape_threshold_archive_bytes[2] << '\n'
               << "selected_better_frames=" << selected_better_frames << '\n'
               << "selected_equal_frames=" << selected_equal_frames << '\n'
               << "selected_worse_frames=" << selected_worse_frames << '\n'
@@ -404,9 +473,15 @@ int main(const int argc, const char* const argv[]) {
               << "selected_3=" << selected_counts[0] << '\n'
               << "selected_4=" << selected_counts[1] << '\n'
               << "selected_5=" << selected_counts[2] << '\n'
+              << "escape_selected_3=" << escape_selected_counts[0] << '\n'
+              << "escape_selected_4=" << escape_selected_counts[1] << '\n'
+              << "escape_selected_5=" << escape_selected_counts[2] << '\n'
               << "baseline_plan_seconds=" << baseline_plan_seconds << '\n'
               << "candidate_encode_seconds=" << candidate_encode_seconds << '\n'
               << "candidate_decode_seconds=" << candidate_decode_seconds
+              << '\n'
+              << "escape_encode_seconds=" << escape_encode_seconds << '\n'
+              << "escape_decode_seconds=" << escape_decode_seconds
               << '\n';
     return 0;
 }

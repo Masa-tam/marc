@@ -8792,3 +8792,11 @@ The private raw-input stream writer follows marc's own Format 2.0 stream
 header, exact fixed-frame partition, complete-frame selector and prior
 typed-token stream writer. No external compressor stream writer, source
 code, table or test suite was consulted.
+
+### IR-0960
+
+The private length-escape measurement uses marc's own complete-frame
+variant-7 and variant-8 selectors, first-party decoders, and published
+64-KiB baseline planner. The locally supplied Silesia Corpus is input data
+only and remains outside Git. No external compressor implementation or
+benchmark harness was consulted.

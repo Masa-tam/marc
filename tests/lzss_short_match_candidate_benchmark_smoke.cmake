@@ -23,9 +23,12 @@ endif()
 foreach(key IN ITEMS sample_bytes frame_bytes frame_count
         baseline_archive_bytes exact_baseline_archive_bytes
         exact_baseline_equal_token_frames
-        candidate_archive_bytes selected_3 selected_4
+        candidate_archive_bytes escape_archive_bytes selected_3 selected_4
         selected_5 threshold_3_archive_bytes threshold_4_archive_bytes
-        threshold_5_archive_bytes selected_better_frames
+        threshold_5_archive_bytes escape_selected_3 escape_selected_4
+        escape_selected_5 escape_threshold_3_archive_bytes
+        escape_threshold_4_archive_bytes escape_threshold_5_archive_bytes
+        selected_better_frames
         selected_equal_frames selected_worse_frames selected_saved_bytes
         selected_extra_bytes baseline_length_symbols
         reserved_5_length_symbols baseline_length_bypass_bits
@@ -44,12 +47,15 @@ foreach(key IN ITEMS sample_bytes frame_bytes frame_count
     endif()
 endforeach()
 math(EXPR selections "${selected_3} + ${selected_4} + ${selected_5}")
+math(EXPR escape_selections
+    "${escape_selected_3} + ${escape_selected_4} + ${escape_selected_5}")
 math(EXPR comparisons
     "${selected_better_frames} + ${selected_equal_frames} + ${selected_worse_frames}")
 math(EXPR reconstructed_candidate
     "${baseline_archive_bytes} - ${selected_saved_bytes} + ${selected_extra_bytes}")
 if(NOT sample_bytes EQUAL 4096 OR NOT frame_bytes EQUAL 4096
     OR NOT frame_count EQUAL 1 OR NOT selections EQUAL frame_count
+    OR NOT escape_selections EQUAL frame_count
     OR NOT comparisons EQUAL frame_count
     OR NOT reconstructed_candidate EQUAL candidate_archive_bytes
     OR NOT exact_baseline_equal_token_frames EQUAL frame_count
@@ -57,6 +63,9 @@ if(NOT sample_bytes EQUAL 4096 OR NOT frame_bytes EQUAL 4096
     OR candidate_archive_bytes GREATER threshold_3_archive_bytes
     OR candidate_archive_bytes GREATER threshold_4_archive_bytes
     OR candidate_archive_bytes GREATER threshold_5_archive_bytes
+    OR escape_archive_bytes GREATER escape_threshold_3_archive_bytes
+    OR escape_archive_bytes GREATER escape_threshold_4_archive_bytes
+    OR escape_archive_bytes GREATER escape_threshold_5_archive_bytes
     OR NOT baseline_length_symbols EQUAL reserved_5_length_symbols
     OR NOT baseline_distance_symbols EQUAL reserved_5_distance_symbols
     OR NOT baseline_distance_bypass_bits EQUAL reserved_5_distance_bypass_bits
@@ -64,6 +73,7 @@ if(NOT sample_bytes EQUAL 4096 OR NOT frame_bytes EQUAL 4096
     OR baseline_length_symbols LESS 1
     OR baseline_archive_bytes LESS 192
     OR exact_baseline_archive_bytes LESS 192
-    OR candidate_archive_bytes LESS 192)
+    OR candidate_archive_bytes LESS 192
+    OR escape_archive_bytes LESS 192)
     message(FATAL_ERROR "Invalid bounded benchmark report: ${output}")
 endif()

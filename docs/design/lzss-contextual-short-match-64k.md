@@ -571,3 +571,15 @@ encoding checks all region overlap and capacity and commits the canonical
 produces only the header. This remains one-shot and private: there is no
 incremental writer, CLI/C API selector, public parser admission or
 interoperability inventory entry.
+
+## Twenty-seventh implementation boundary: complete-frame corpus measurement
+
+The bounded private benchmark now measures selected and fixed eligibility
+3/4/5 complete-frame sizes for both reserved length mappings beside the
+published 64-KiB baseline. It decodes every selected 2/8 + 1/7 + 3/2 frame
+and checks the source bytes before reporting; the tracked smoke test requires
+indexed/reference size and selection-count equality. BM-0105 records a
+full-Silesia local measurement. The length escape removes much of the
+eligibility-5 representation penalty, but its selected `mozilla` stream
+still misses the provisional `gzip -9v` target. No public encoder or format
+admission follows from this experiment.

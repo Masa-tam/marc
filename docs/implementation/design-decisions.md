@@ -24251,3 +24251,14 @@ and total stream size before writing output. Check all raw/workspace/output
 regions for overlap, then encode frames and commit the canonical 112-byte
 header last. Search method and 3/4/5 eligibility stay encoder-local. This is
 a private one-shot path, not incremental output or public stream admission.
+
+## DD-1205: Measure complete private escape frames before admission
+
+Extend the existing bounded, locally driven short-match benchmark with the
+private 2/8 + 1/7 + 3/2 candidate. Measure complete selected and fixed
+eligibility-3/4/5 frame sizes at the same raw partition as the published
+baseline and 2/7 + 1/6 candidate. Decode every variant-8 selected frame and
+compare it to the source before reporting. Keep indexed/reference equality
+as a tracked smoke invariant. Size planning, candidate encoding and decoding
+timings are distinct work and must not be presented as throughput ratios.
+Corpus observations do not admit a public format or change existing bytes.

@@ -15799,3 +15799,13 @@ and indexed paths to emit identical streams. Reject wrong identity, original
 size mismatch, insufficient token/operation/finder/output storage and every
 raw/workspace/output overlap before a valid header can be written. Use only
 hand-constructed first-party vectors.
+
+### TVG-1074
+
+Run the tracked bounded short-match benchmark fixture with indexed and
+exhaustive reference search. Require identical complete-frame sizes for
+the private length-escape selector, all three fixed eligibility sizes,
+and selected 3/4/5 counts. Require the selected size not to exceed any of
+its three fixed candidates, and decode every selected frame back to the
+fixture bytes. The external Silesia run is diagnostic evidence only; do not
+embed corpus bytes or assert a compression-ratio target in unit tests.

@@ -3778,3 +3778,49 @@ adaptive symbol probabilities and Range-coder state account for the fact
 that these figures are not additive. The extra bypass work identifies a
 promising representation hypothesis, not a measured byte-level attribution
 or permission to change the reserved decoder-visible mapping silently.
+
+### BM-0105: Measure the private short-length escape over complete frames
+
+On 2026-09-25, the private MSVC Release benchmark measured all twelve
+locally supplied Silesia members with 65,536-byte raw frames, a 65,536-byte
+window, indexed search, and at most 1,024 frames per member. Every member
+fits that bound. All columns include the 112-byte stream header and complete
+frame headers, Range descriptors, and payloads. The published column uses
+the production HashChain token parser and complete payload planner; the two
+reserved columns encode each selected complete frame and verify its decoded
+bytes. Eligibility 3/4/5 is chosen independently per frame by minimum
+serialized size, with higher eligibility on ties. Corpus bytes and generated
+archives are not tracked.
+
+| Member | Published baseline | Reserved 2/7 + 1/6 | Escape 2/8 + 1/7 | Escape vs. baseline |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 4,097,287 | 4,127,385 | 4,097,626 | +339 |
+| mozilla | 20,085,366 | 19,824,809 | 19,824,381 | -260,985 |
+| mr | 3,596,195 | 3,621,840 | 3,588,975 | -7,220 |
+| nci | 3,584,048 | 3,602,900 | 3,584,936 | +888 |
+| ooffice | 3,233,855 | 3,193,254 | 3,192,736 | -41,119 |
+| osdb | 4,112,363 | 4,133,678 | 4,112,656 | +293 |
+| reymont | 2,028,288 | 2,027,716 | 2,022,925 | -5,363 |
+| samba | 5,756,275 | 5,757,403 | 5,752,366 | -3,909 |
+| sao | 5,616,349 | 5,430,503 | 5,454,241 | -162,108 |
+| webster | 12,974,519 | 13,047,813 | 12,975,833 | +1,314 |
+| x-ray | 6,000,150 | 5,840,373 | 5,988,302 | -11,848 |
+| xml | 765,900 | 768,851 | 765,818 | -82 |
+| **Total** | **71,850,595** | **71,376,525** | **71,360,795** | **-489,800 (-0.682%)** |
+
+The escape identity improves eight members and regresses four against the
+published baseline. Its total is 15,730 bytes below the earlier reserved
+mapping, but that is not uniform: `sao` and `x-ray` lose 23,738 and 147,929
+bytes relative to 2/7 + 1/6. On `mozilla`, escape eligibility-5 alone is
+20,086,821 bytes, only 1,455 above the published baseline, compared with
+20,199,183 for the earlier mapping. The per-frame escape selector chooses
+eligibility 3/4/5 on 515/186/81 `mozilla` frames and reaches 19,824,381
+bytes. This remains 830,242 bytes above the user's provisional `gzip -9v`
+size of 18,994,139. The 51,220,480-byte `mozilla` run took 17.875 s for
+escape candidate selection plus encoding and 2.533 s for its private frame
+decoding, versus 3.163 s for *baseline size planning*; the latter is a
+different workload, not an encode-throughput comparison. The representation
+penalty is substantially reduced, but short-match eligibility and this
+mapping alone do not meet the stated compression target. Public admission
+and an interoperability archive remain gated on broader ratio, speed,
+workspace, malformed-input, and cross-platform evidence.

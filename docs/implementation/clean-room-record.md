@@ -33534,3 +33534,24 @@ both bounds.
 - Local validation: complete MSVC Release build and all 3,728 CTest cases
   passed, including raw-input stream assembly, indexed/reference byte parity,
   documentation and interoperability schema checks.
+
+## CR-1359: 2026-09-25 - Measure private short-length escape frames
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0960, DD-1205, TVG-1074, BM-0105 and marc's
+  first-party frame selectors, decoders, and bounded benchmark fixture.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft code, third-party benchmark harnesses and test suites.
+- Generated-code task: compare complete selected private frame sizes with
+  the published baseline and prior reserved mapping on the same raw frames.
+- Independent decisions: extend the existing bounded benchmark, verify
+  every private frame by decoding it, retain indexed/reference smoke parity,
+  and record local corpus observations without tracking corpus bytes.
+- Similarity review: only marc's first-party measurement and format
+  contracts were reused; no external implementation expression was
+  translated. No legal non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,728 CTest cases
+  passed after the documentation-order correction, including bounded
+  benchmark smoke, documentation layout and interoperability schema checks.
+  A separate local full-Silesia measurement verified every selected frame
+  before recording BM-0105.
