@@ -8882,3 +8882,10 @@ The corpus-wide partition screen extends BM-0115 using the unchanged first-party
 benchmark executable and the twelve externally stored Silesia members. Local
 checkpoint records bind input and executable SHA-256 identities. No external
 compressor implementation or third-party model code is consulted.
+
+### IR-0973
+
+The reduced-literal representation follows the first-party short-length escape
+format, DD-1215 partition definition and BM-0116 corpus evidence. Context IDs
+and dense model extents are independently specified here. No external coder
+source, third-party format implementation or copyleft material is consulted.

@@ -15920,3 +15920,20 @@ exact high4 control agreement and unchanged retained archive size. Reuse
 completed checkpoints only with matching input/executable hashes and arguments.
 Aggregate the same fixed partition across all members, retaining per-member
 differences so a large input cannot conceal regressions on smaller members.
+
+### TVG-1087
+
+The reserved reduced-literal model has 24 contexts, 2,490 frequency entries
+and group offsets 0/6/2310/2337/2490. Hand-check this token sequence:
+Literal 0x1f; Literal 0x20; Match(length=3,distance=1); Literal 0xff;
+Literal 0x00. Raw bytes are `1f 20 20 20 20 ff 00` (overlap copy).
+Kind contexts are 0,1,1,2,1. Literal contexts are 3,4,5,11: the Match
+does not replace the stored 0x20. Match length uses context 13, symbol 8,
+one bypass bit 0; distance uses context 23, symbol 0, no bypass operation.
+There are 12 operations and 12 decisions, including the one bypass bit.
+The first two Literal probabilities are 1/256. With reset state, consecutive
+Literals 0x20,0x3f,0x3f use contexts 3,5,5; the last has probability 2/257.
+Tests must also cover prefix boundaries 0x1f/0x20 and 0xdf/0xe0, context-count
+24/32 crossed descriptors, invalid tuple combinations, and unchanged old
+variant vectors. These are planned vectors; no Range payload is asserted
+until an independently checked arithmetic vector is added with the coder.

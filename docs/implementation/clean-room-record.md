@@ -33793,3 +33793,19 @@ both bounds.
   to the unchanged binary. Documentation checks are rerun for this record.
   All twelve checkpoints were reused successfully; nine model-cost tests,
   benchmark smoke and documentation layout passed (11 tests).
+
+## CR-1372: 2026-09-25 - Specify private reduced-literal representation
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0973, DD-1218, TVG-1087 and BM-0116; first-party
+  token/context semantics and corpus diagnostic evidence only.
+- Known implementations intentionally not consulted: external compressor
+  code, copyleft implementations and third-party probability-model code.
+- Task: specify a separate context variant before implementing actual coding,
+  preserving dictionary semantics and the existing private representation.
+- Independent decisions: dense 24-context layout, previous-Literal-token
+  prefix state, strict tuple/count validation and fixed-token first comparison.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation scope: documentation and hand-derived operation/probability
+  vectors only. No encoder, decoder or public admission is added in this step.

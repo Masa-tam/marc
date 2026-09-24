@@ -7922,8 +7922,10 @@ are in [the short-match candidate](design/lzss-contextual-short-match-64k.md).
 ### Reserved 64-KiB LZSS short-length escape identity
 
 Format 2.0 separately reserves exact stream identity
-`dictionary 2/8 + context 1/7 + entropy 3/2`. The three variant IDs MUST
-occur together. This identity is private:
+`dictionary 2/8 + context 1/7 + entropy 3/2`. This exact tuple is the
+original short-length escape identity. The separate reduced-literal tuple
+below is the only additional reservation using dictionary variant 8;
+other crossed tuples remain invalid. This identity is private:
 the published stream parser, CLI, C API, and interoperability inventory
 MUST continue to reject it. It does not reinterpret the existing
 `dictionary 2/7 + context 1/6` reservation.
@@ -7952,3 +7954,46 @@ The previous reserved variant's `2T..min(2F,5T)` event,
 `event_count..min(9F,27T)` decision, `18F+5` payload and `18F+85`
 complete-frame ceilings remain conservative for this mapping. Any later
 decoder or encoder must validate them before allocating or publishing data.
+
+### Reserved reduced-literal short-length escape identity
+
+Format 2.0 separately reserves `dictionary 2/8 + context 1/8 + entropy 3/2`
+for the nine-literal-context experiment. Dictionary variant 8 retains exactly
+its existing short-length escape token semantics and parameter limits. Only
+this full tuple may use context variant 8. Public parsers, CLI, C API and
+interoperability inventories MUST continue to reject it. The original
+2/8 + 1/7 + 3/2 representation remains byte-for-byte unchanged.
+
+The stream/frame headers, 16-byte Range descriptor, Range interval arithmetic,
+frequency-one initialization, increment-one update, total-32,768 ceil-half
+rescaling, equiprobable bypass coding and strict termination rules are
+unchanged. The descriptor context count MUST be 24 for this new tuple.
+Contexts have the following dense assignment:
+
+| Field | Context ID | Alphabet |
+| --- | --- | --- |
+| Token kind | previous kind: Start=0, Literal=1, Match=2 | 2 |
+| Literal before any preceding Literal token | 3 | 256 |
+| Literal after a preceding Literal token byte B | `4 + (B >> 5)` (4..11) | 256 |
+| Match length | `12 + previous_kind` (12..14) | 9 |
+| Match distance | `15 + length_class` (15..23) | 17 |
+
+At each frame start, previous kind is Start and no preceding Literal exists.
+Choose contexts before accepting the current token. A Literal updates the
+stored byte and previous kind; a Match updates previous kind only, not the
+stored byte. Thus the prefix is not necessarily the preceding reconstructed
+byte. Length classes, including class-8 lengths 3/4, and all bypass values
+are exactly those of context variant 7. The new model bank has 2,490 frequency
+entries (`3*2 + 9*256 + 3*9 + 9*17`), with group offsets 0, 6, 2,310,
+2,337 and final offset 2,490. No partition selector is stored per frame.
+
+The prior `2T..min(2F,5T)` event, `event_count..min(9F,27T)` decision,
+`18F+5` payload and `18F+85` complete-frame ceilings remain conservative.
+Preflight MUST validate the tuple, count 24, counts/extents, caller limits
+and checked aggregate workspace before allocation or publication. An old
+32-context descriptor is invalid for this tuple, and a 24-context descriptor
+is invalid for the original tuple. Model workspace accounting MUST reflect
+the actual new implementation storage, not merely the frequency-entry count.
+All original malformed-reference, padding/termination, truncation, strict
+trailing-data and frame-atomic publication requirements remain applicable.
+This reservation does not itself implement or publicly admit a codec.

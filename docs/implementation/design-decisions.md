@@ -24424,3 +24424,22 @@ high4 diagnostic equivalence and unchanged archive sizes against prior member
 records. Compare fixed-partition aggregate and per-member scores, without
 silently choosing a different partition for every frame or member. Keep
 empirical scores distinct from adaptive scores and actual compressed bytes.
+
+## DD-1218: Reserve a private nine-literal-context coding experiment
+
+Use dictionary 2/8 + context 1/8 + entropy 3/2. Reuse dictionary variant 8
+because neither dictionary parameters nor token meanings change; context
+variant 8 distinguishes the changed probabilities. Keep the old context-7
+tuple intact. Compact the model bank to 24 contexts and 2,490 frequencies;
+do not retain unused context slots and claim hypothetical memory savings.
+Define the complete mapping in the format before implementing validators.
+
+First measure actual coding on the exact decoded winners selected under the
+old model, rather than selecting new winners under changed probabilities.
+Charge the complete serialized headers/descriptors/payloads, verify decoding
+and compare actual bytes, encode/decode time and checked workspace. Only a
+later explicitly separated experiment may reselect distance policies under
+the new model. Do not add a public profile or claim gzip parity from the
+information estimate. Proceed through layout/vectors, private preflight,
+model coder, token decoder, frame integration and benchmarks with independent
+negative tests and unchanged old-format vectors at each relevant boundary.
