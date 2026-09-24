@@ -15533,3 +15533,13 @@ sizes, IDs, flags, counts, descriptor fields, and all reserved regions; assert
 rejection leaves caller-visible parsed output and requirements unchanged.
 The published parser's separate variant-7/6 rejection remains pinned by
 TVG-1048. These bytes are an envelope fixture, not a valid Range payload.
+
+### TVG-1051
+
+Decode the seven-byte `00 30 BF FF 9E 80 00` payload from TVG-1047 as the
+five specified events `(0,2,0), (3,256,97), (1,2,1), (21,9,0), (23,17,0)`;
+require exact event/decision counts and complete payload consumption. A
+five-zero-byte one-decision fixture reads the new context 31 with alphabet
+17 twice across model resets. Reject descriptor count 31, incorrect payload
+extent or leading state byte, context 32, wrong context-21 alphabet, and
+premature finish. Earlier format vectors remain unchanged.

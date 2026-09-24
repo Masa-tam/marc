@@ -23998,3 +23998,14 @@ checks before the existing semantic preflight; do not publish parsed fields or
 workspace requirements on failure. Require the complete advertised frame
 payload to be present but leave payload decoding, trailing-stream policy,
 32-context Range modeling, and public admission for later stages.
+
+## DD-1182: Isolate the 32-context Range event model
+
+Do not enlarge the published `ContextualDynamicRangeDecoder`'s 31-context
+arrays. Give the reserved short-match identity its own fixed 32-context,
+4,538-frequency event decoder, retaining the published Range arithmetic and
+reset/rescale order. Require exact descriptor count 32, strict payload length,
+leading zero state, context-alphabet checks, decision limits, and exact finish
+counts. Account for the full concrete decoder size in frame preflight's
+aggregate memory requirement. Token interpretation and raw reconstruction
+remain separate later gates; no public format admission changes here.

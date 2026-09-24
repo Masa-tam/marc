@@ -3,6 +3,7 @@
 #include "dictionary/lzss_typed_token.hpp"
 #include "frame/lzss_short_match_preflight.hpp"
 #include "core/endian.hpp"
+#include "entropy/lzss_short_match_range_decoder.hpp"
 
 #include <gtest/gtest.h>
 
@@ -155,10 +156,7 @@ TEST(LzssShortMatchPreflight, ComputesCompleteHandVectorRequirements) {
     EXPECT_EQ(requirements.token_count, 2U);
     EXPECT_EQ(requirements.raw_frame_bytes, 4U);
     constexpr auto model_bytes =
-        marc::context::internal::lzss_short_match_frequency_entries
-            * sizeof(std::uint16_t)
-        + marc::context::internal::lzss_short_match_context_count
-            * sizeof(std::uint32_t);
+        sizeof(marc::entropy::internal::LzssShortMatchRangeDecoder);
     EXPECT_EQ(requirements.aggregate_working_bytes,
               87U + 2 * sizeof(marc::dictionary::internal::LzssTypedToken)
                   + 4U + model_bytes);
@@ -216,10 +214,7 @@ TEST(LzssShortMatchPreflight, RejectsSequenceSizeAndWorkspaceLimits) {
 
     limits.max_block_size = 4;
     constexpr auto model_bytes =
-        marc::context::internal::lzss_short_match_frequency_entries
-            * sizeof(std::uint16_t)
-        + marc::context::internal::lzss_short_match_context_count
-            * sizeof(std::uint32_t);
+        sizeof(marc::entropy::internal::LzssShortMatchRangeDecoder);
     limits.max_internal_buffered_bytes =
         87 + 2 * sizeof(marc::dictionary::internal::LzssTypedToken)
         + 4 + model_bytes - 1;

@@ -33075,3 +33075,21 @@ both bounds.
 - Local validation: the full MSVC Release build and all 3,629 CTest cases
   passed, including the four byte-preflight cases, interoperability schema
   compatibility, and documentation layout checks.
+
+## CR-1336: 2026-09-24 - Decode short-match Range events privately
+
+- Author: Codex; reviewer: repository maintainer approved the staged
+  32-context decoder-side implementation.
+- References used: IR-0937, DD-1182, TVG-1051, marc's own Range `3/2`
+  arithmetic and the reserved 32-context layout.
+- Known implementations intentionally not consulted: external compressor or
+  entropy-coder source, copyleft implementations, third-party tests/tables.
+- Generated-code task: decode bounded Range events under isolated variant-6
+  models without enabling the public stream identity.
+- Independent decisions: keep published model arrays unchanged; reset every
+  frame, validate exact final counts, and account for concrete decoder size.
+- Similarity review: arithmetic was adapted from first-party code only; no
+  external expression was translated. No legal non-infringement guarantee.
+- Local validation: the full MSVC Release build and all 3,633 CTest cases
+  passed, including the four new Range event tests, interoperability schema
+  compatibility, and documentation layout checks.

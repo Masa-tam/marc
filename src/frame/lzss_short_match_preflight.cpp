@@ -4,6 +4,7 @@
 #include "core/checked_math.hpp"
 #include "core/endian.hpp"
 #include "dictionary/lzss_typed_token.hpp"
+#include "entropy/lzss_short_match_range_decoder.hpp"
 
 #include <algorithm>
 #include <array>
@@ -16,10 +17,7 @@ namespace {
 
 inline constexpr std::uint32_t maximum_short_match_frame_size = 65536;
 inline constexpr std::uint64_t short_match_model_bytes =
-    context::internal::lzss_short_match_frequency_entries
-        * sizeof(std::uint16_t)
-    + context::internal::lzss_short_match_context_count
-        * sizeof(std::uint32_t);
+    sizeof(entropy::internal::LzssShortMatchRangeDecoder);
 
 constexpr std::array stream_magic{
     std::byte{0x4d}, std::byte{0x41}, std::byte{0x52}, std::byte{0x43}};

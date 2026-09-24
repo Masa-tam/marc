@@ -1,9 +1,8 @@
 # LZSS Contextual 64-KiB short-match candidate
 
-Status: decoder-visible reservation with private dictionary-token and
-structured-header preflight validation (2026-09-24). No byte-stream parser,
-entropy decoder, encoder, public selector, or interoperability archive admits
-this identity yet.
+Status: decoder-visible reservation with private byte-envelope preflight and
+32-context Range event decoding (2026-09-24). No typed-token Range decoder,
+encoder, public selector, or interoperability archive admits this identity yet.
 
 ## Purpose and isolation
 
@@ -221,3 +220,17 @@ bytes and reports the serialized frame extent; a caller may retain subsequent
 bytes for later frames. It does not inspect or decode that payload, accept the
 reserved identity through the published parser, or publish raw output. The
 next boundary is the isolated 32-context Range decoder with token validation.
+
+## Fourth implementation boundary
+
+A separate fixed-storage Dynamic Range event decoder now holds exactly 4,538
+frequencies and 32 totals. It preserves the published 31-context decoder's
+storage and byte behavior. The new decoder checks the 32-context descriptor,
+payload extent and leading state byte, enforces each requested context's
+alphabet and decision count, resets its models on every `begin`, and verifies
+event/decision counts, payload exhaustion, and model totals on `finish`. The
+five-event `aaaa` payload and the newly added context 31 have independent
+tests. Semantic frame preflight now counts the full decoder object size in
+its aggregate workspace requirement. This event decoder cannot yet turn a
+payload into typed tokens or reconstruct raw bytes; the reserved stream gate
+remains closed.

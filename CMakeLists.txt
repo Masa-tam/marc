@@ -91,6 +91,7 @@ set(MARC_SOURCES
     src/frame/lzss_typed_context_frame_streaming_encoder.cpp
     src/frame/lzss_typed_context_frame_streaming_decoder.cpp
     src/entropy/contextual_dynamic_range_decoder.cpp
+    src/entropy/lzss_short_match_range_decoder.cpp
     src/entropy/contextual_dynamic_range_encoder.cpp
     src/entropy/contextual_rans_decoder.cpp
     src/entropy/contextual_rans_encode_core.cpp
@@ -2530,6 +2531,7 @@ if(MARC_BUILD_TESTS)
         tests/stream_header_tests.cpp
         tests/typed_context_format_tests.cpp
         tests/lzss_short_match_preflight_tests.cpp
+        tests/lzss_short_match_range_decoder_tests.cpp
     )
     target_compile_features(marc_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_core_tests

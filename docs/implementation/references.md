@@ -8619,3 +8619,11 @@ The private short-match byte parser uses IR-0933 through IR-0935, DD-1178
 through DD-1180, TVG-1047 through TVG-1049, and marc's own Format 2.0
 field offsets and checked little-endian helpers. No external parser source,
 tables, or test suite was consulted.
+
+### IR-0937
+
+The private short-match Range event decoder uses the repository's own
+Dynamic Range `3/2` arithmetic and descriptor, the independently specified
+32-context layout in IR-0933, DD-1180, and hand-calculated TVG-1047. No
+external entropy-coder implementation, source, table, or test suite was
+consulted.
