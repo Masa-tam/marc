@@ -24287,3 +24287,20 @@ quantity includes integer interval rounding or coder termination. Floating
 point is confined to diagnostics; the coding path remains integer-only.
 Measure published tokens and decoded winning escape tokens independently,
 so changes in parsing are visible in symbol counts as well as information.
+
+## DD-1208: Test encoder-local distance caps for short matches
+
+For the private length-escape identity, benchmark a greedy parser that
+accepts its longest, nearest-tied match of length 3 or 4 only when distance
+is at most a corresponding cap. A zero cap disables that length. Lengths
+at least 5 retain the existing rule. On rejection emit one Literal and
+resume search at the next byte, rather than splitting a previously selected
+Match into Literals. Do not search for a shorter near match after rejecting
+a longer far match in this experiment. Caps range from 0 through 65,536.
+
+Measure cap pairs (3-byte/4-byte): 0/0, 0/65536, 65536/65536, 256/4096,
+1024/16384, 4096/65536 and 16384/65536. The first three are controls for
+existing eligibility 5/4/3. Report each complete-frame size and the per-frame
+minimum together with the existing selector. All policies produce the same
+variant-8 representation; policy choice is encoder-local. Keep the helper
+in the benchmark build until corpus results justify codec integration.

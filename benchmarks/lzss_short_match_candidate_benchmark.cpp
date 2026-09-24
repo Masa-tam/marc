@@ -1,6 +1,7 @@
 #include "context/lzss_field_context.hpp"
 #include "context/lzss_short_length_escape_operations.hpp"
 #include "lzss_model_cost.hpp"
+#include "lzss_short_distance_policy.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "dictionary/lzss_short_prefix_match_finder.hpp"
 #include "dictionary/lzss_typed_encoder.hpp"
@@ -9,6 +10,7 @@
 #include "frame/lzss_short_match_frame_decoder.hpp"
 #include "frame/lzss_short_length_escape_candidate_selector.hpp"
 #include "frame/lzss_short_length_escape_frame_decoder.hpp"
+#include "frame/lzss_short_length_escape_frame_encoder.hpp"
 
 #include <algorithm>
 #include <array>
@@ -171,13 +173,18 @@ void print_cost(const std::string_view prefix,
 } // namespace
 
 int main(const int argc, const char* const argv[]) {
-    if (argc != 4 && argc != 5) {
+    if (argc < 4 || argc > 6) {
         std::cerr << "usage: marc_lzss_short_match_candidate_benchmark "
                      "<input> <max-frames:1..1024> <frame-bytes:1..65536> "
-                     "[indexed|reference]\n";
+                     "[indexed|reference] [distance-policies]\n";
         return 2;
     }
-    const std::string_view search = argc == 5 ? argv[4] : "indexed";
+    const std::string_view search = argc >= 5 ? argv[4] : "indexed";
+    const bool distance_policies = argc == 6;
+    if (distance_policies && std::string_view{argv[5]} != "distance-policies") {
+        std::cerr << "invalid experiment mode\n";
+        return 2;
+    }
     if (search != "indexed" && search != "reference") {
         std::cerr << "invalid search mode\n";
         return 2;
@@ -250,6 +257,10 @@ int main(const int argc, const char* const argv[]) {
         marc::frame::internal::typed_context_stream_header_size;
     std::uint64_t candidate_archive_bytes = baseline_archive_bytes;
     std::uint64_t escape_archive_bytes = baseline_archive_bytes;
+    std::array<std::uint64_t, marc::benchmarks::short_distance_policies.size()>
+        distance_policy_archive_bytes{};
+    distance_policy_archive_bytes.fill(baseline_archive_bytes);
+    std::uint64_t distance_policy_selected_archive_bytes = baseline_archive_bytes;
     std::uint64_t baseline_escape_oracle_archive_bytes =
         baseline_archive_bytes;
     std::uint64_t three_way_oracle_archive_bytes = baseline_archive_bytes;
@@ -427,6 +438,41 @@ int main(const int argc, const char* const argv[]) {
             std::cerr << "escape cost profile failed\n";
             return 2;
         }
+        if (distance_policies) {
+            auto best_size = escape.selected_frame_size;
+            for (std::size_t i = 0; i < marc::benchmarks::short_distance_policies.size(); ++i) {
+                const auto parsed = marc::benchmarks::tokenize_short_distance_policy(
+                    frame, candidate_parameters, limits,
+                    marc::benchmarks::short_distance_policies[i], tokens,
+                    search == "indexed" ? candidate_workspace : std::span<std::byte>{},
+                    search == "indexed");
+                if (!parsed.valid) {
+                    std::cerr << "distance policy parse failed\n";
+                    return 2;
+                }
+                const auto encoded = marc::frame::internal::
+                    encode_lzss_short_length_escape_frame(
+                        escape_stream, limits, frames, committed,
+                        std::span<const LzssTypedToken>{tokens}.first(parsed.token_count),
+                        operations, serialized);
+                if (encoded.error != marc::frame::internal::LzssShortMatchFrameEncodeError::none) {
+                    std::cerr << "distance policy encode failed\n";
+                    return 2;
+                }
+                const auto verified = marc::frame::internal::decode_lzss_short_length_escape_frame(
+                    std::span<const std::byte>{serialized}.first(encoded.serialized_size),
+                    escape_context, decoded_tokens, std::span<std::byte>{decoded}.first(count));
+                if (verified.error != marc::frame::internal::LzssShortMatchFrameDecodeError::none
+                    || verified.serialized_consumed != encoded.serialized_size
+                    || !std::equal(frame.begin(), frame.end(), decoded.begin())) {
+                    std::cerr << "distance policy decode mismatch\n";
+                    return 2;
+                }
+                distance_policy_archive_bytes[i] += encoded.serialized_size;
+                best_size = std::min(best_size, encoded.serialized_size);
+            }
+            distance_policy_selected_archive_bytes += best_size;
+        }
         const auto exact_tokens = marc::dictionary::internal::
             tokenize_lzss_short_match_candidate_indexed(
                 frame, candidate_parameters, limits, 5, tokens,
@@ -576,5 +622,18 @@ int main(const int argc, const char* const argv[]) {
               << '\n';
     print_cost("baseline_cost", baseline_cost);
     print_cost("escape_cost", escape_cost);
+    if (distance_policies) {
+        for (std::size_t i = 0; i < distance_policy_archive_bytes.size(); ++i) {
+            const auto policy = marc::benchmarks::short_distance_policies[i];
+            std::cout << "distance_policy_" << i << "_length3_cap="
+                      << policy.length3_max_distance << '\n'
+                      << "distance_policy_" << i << "_length4_cap="
+                      << policy.length4_max_distance << '\n'
+                      << "distance_policy_" << i << "_archive_bytes="
+                      << distance_policy_archive_bytes[i] << '\n';
+        }
+        std::cout << "distance_policy_selected_archive_bytes="
+                  << distance_policy_selected_archive_bytes << '\n';
+    }
     return 0;
 }

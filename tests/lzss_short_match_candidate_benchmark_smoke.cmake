@@ -4,7 +4,7 @@ if(NOT DEFINED MARC_BENCHMARK OR NOT DEFINED INPUT)
     message(FATAL_ERROR "MARC_BENCHMARK and INPUT are required")
 endif()
 execute_process(
-    COMMAND "${MARC_BENCHMARK}" "${INPUT}" 1 4096 indexed
+    COMMAND "${MARC_BENCHMARK}" "${INPUT}" 1 4096 indexed distance-policies
     RESULT_VARIABLE result
     OUTPUT_VARIABLE output
     ERROR_VARIABLE error)
@@ -12,7 +12,7 @@ if(NOT result EQUAL 0)
     message(FATAL_ERROR "Candidate benchmark failed (${result}): ${error}")
 endif()
 execute_process(
-    COMMAND "${MARC_BENCHMARK}" "${INPUT}" 1 4096 reference
+    COMMAND "${MARC_BENCHMARK}" "${INPUT}" 1 4096 reference distance-policies
     RESULT_VARIABLE reference_result
     OUTPUT_VARIABLE reference_output
     ERROR_VARIABLE reference_error)
@@ -26,6 +26,10 @@ foreach(key IN ITEMS sample_bytes frame_bytes frame_count
         candidate_archive_bytes escape_archive_bytes
         baseline_escape_oracle_archive_bytes
         three_way_oracle_archive_bytes selected_3 selected_4
+        distance_policy_0_archive_bytes distance_policy_1_archive_bytes
+        distance_policy_2_archive_bytes distance_policy_3_archive_bytes
+        distance_policy_4_archive_bytes distance_policy_5_archive_bytes
+        distance_policy_6_archive_bytes distance_policy_selected_archive_bytes
         selected_5 threshold_3_archive_bytes threshold_4_archive_bytes
         threshold_5_archive_bytes escape_selected_3 escape_selected_4
         escape_selected_5 escape_threshold_3_archive_bytes
@@ -70,6 +74,10 @@ if(NOT sample_bytes EQUAL 4096 OR NOT frame_bytes EQUAL 4096
     OR NOT escape_comparisons EQUAL frame_count
     OR NOT reconstructed_candidate EQUAL candidate_archive_bytes
     OR NOT reconstructed_escape EQUAL escape_archive_bytes
+    OR NOT distance_policy_0_archive_bytes EQUAL escape_threshold_5_archive_bytes
+    OR NOT distance_policy_1_archive_bytes EQUAL escape_threshold_4_archive_bytes
+    OR NOT distance_policy_2_archive_bytes EQUAL escape_threshold_3_archive_bytes
+    OR distance_policy_selected_archive_bytes GREATER escape_archive_bytes
     OR NOT baseline_escape_oracle_archive_bytes EQUAL
         expected_baseline_escape_oracle
     OR baseline_escape_oracle_archive_bytes GREATER baseline_archive_bytes
@@ -98,6 +106,11 @@ if(NOT sample_bytes EQUAL 4096 OR NOT frame_bytes EQUAL 4096
     OR escape_archive_bytes LESS 192)
     message(FATAL_ERROR "Invalid bounded benchmark report: ${output}")
 endif()
+foreach(index RANGE 0 6)
+    if(distance_policy_selected_archive_bytes GREATER distance_policy_${index}_archive_bytes)
+        message(FATAL_ERROR "Invalid distance policy selection")
+    endif()
+endforeach()
 foreach(prefix IN ITEMS baseline_cost escape_cost)
     foreach(category IN ITEMS kind literal length distance)
         foreach(metric IN ITEMS adaptive_bits empirical_bits symbols)

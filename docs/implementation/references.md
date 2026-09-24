@@ -8815,3 +8815,11 @@ model initialization, increment and rescaling rules. It computes symbol
 self-information as log2(total/frequency), and empirical frame/context
 entropy as sum(count * log2(context_count/count)). These mathematical
 quantities use no external implementation or compressor source.
+
+### IR-0963
+
+The benchmark-only short-distance parser uses marc's exhaustive and exact
+three-byte-prefix match finders, variant-8 token validation and private
+frame encoder/decoder. The distance-cap grid is an independently chosen
+experiment prompted by BM-0107, with no external compressor heuristics or
+source code consulted.

@@ -33596,3 +33596,23 @@ both bounds.
   smoke, documentation layout and interoperability schema compatibility.
   The separate complete mozilla measurement verified private frame round
   trips and retained the prior archive sizes.
+
+## CR-1362: 2026-09-25 - Evaluate distance-capped short LZSS matches
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0963, DD-1208, TVG-1077, BM-0107 and BM-0108,
+  plus marc's first-party exact match finders and private frame codec.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft code, third-party parsing heuristics and test suites.
+- Generated-code task: compare a fixed grid of short-match distance caps
+  using bounded benchmark-only parsing and actual private-frame round trips.
+- Independent decisions: retain lengths five and above, resume at the next
+  byte after rejection, include three existing minimum-length controls, and
+  keep all policy choices encoder-local without changing public defaults.
+- Similarity review: first-party contracts and measured field costs guided
+  this experiment; no external implementation expression was translated.
+  No legal non-infringement guarantee.
+- Local validation: five focused policy tests and indexed/reference benchmark
+  smoke passed. All seven policy frames round-tripped across complete mozilla.
+  The complete MSVC Release build and all 3,738 CTest cases passed, including
+  documentation layout and interoperability schema compatibility.

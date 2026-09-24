@@ -3910,3 +3910,39 @@ nor a universal lower bound for nonstationary adaptive data. It cannot be
 added to a predicted parser gain without remeasuring the combined system.
 All floating-point work is benchmark-only; actual codec arithmetic and
 stream bytes are unchanged.
+
+### BM-0108: Distance-capped short matches on mozilla
+
+On 2026-09-25, the private MSVC Release benchmark processed all 51,220,480
+bytes of `mozilla` with indexed search and 782 independent 65,536-byte frames.
+The optional `distance-policies` experiment reparses each frame for seven
+policies. Caps are inclusive; zero disables that match length. Lengths five
+and above retain existing eligibility. Rejected matches emit one literal
+and resume search at the next byte, rather than literalizing the entire match.
+Every policy frame was actually encoded and decoded with private variant 8.
+
+| Policy | Length-three distance cap | Length-four distance cap | Archive bytes |
+| --- | ---: | ---: | ---: |
+| 0 (minimum-five control) | 0 | 0 | 20,086,821 |
+| 1 (minimum-four control) | 0 | 65,536 | 19,977,575 |
+| 2 (minimum-three control) | 65,536 | 65,536 | 19,844,180 |
+| 3 | 256 | 4,096 | 19,671,252 |
+| 4 | 1,024 | 16,384 | 19,642,913 |
+| 5 | 4,096 | 65,536 | 19,685,258 |
+| 6 | 16,384 | 65,536 | 19,761,230 |
+| Per-frame minimum | varies | varies | **19,633,027** |
+
+Totals charge one 112-byte stream header and actual serialized frame sizes.
+All policies share one private representation, so selection requires no
+decoder-visible policy switch. The benchmark sums sizes; it does not publish
+a new public stream API. The three controls reproduce existing minimum-length
+totals. The selected total improves BM-0107's 19,824,381 bytes by 191,354,
+and the published baseline by 452,339, but remains 638,888 bytes above the
+user-reported `gzip -9v` result. Per-frame selection gains only 9,886 bytes
+beyond the best fixed policy in this sample.
+
+This is a single-member pilot, not evidence of a generally optimal distance
+cap. Full-corpus ratio, encode/decode time and workspace measurements remain
+admission gates. Existing benchmark timers do not include this optional
+policy sweep and must not be interpreted as its throughput. Public defaults,
+APIs and stream identities are unchanged.

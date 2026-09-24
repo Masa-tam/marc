@@ -15831,3 +15831,14 @@ crosses rescaling and costs log2(32767) + log2(16385/16384). Check independent
 field groups, bypass widths, empty input, invalid operations and layouts.
 Only benchmark floating-point diagnostics use tolerances; encoded bytes
 and codec conformance tests retain exact comparisons.
+
+### TVG-1077
+
+Use hand inputs with isolated repeated three-, four- and five-byte phrases
+to verify cap equality, one-below-cap rejection, and unchanged long-match
+eligibility. Compare benchmark parser tokens from exhaustive and indexed
+search. For control cap pairs require equality with existing minimum-length
+5/4/3 parsers, and round-trip each policy through the private frame codec.
+Test invalid caps, bounded output/storage and overlapping regions. Benchmark
+smoke compares all policy sizes between search modes and verifies the three
+control archive sizes against the existing fixed-eligibility results.

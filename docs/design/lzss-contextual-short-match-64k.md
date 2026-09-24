@@ -603,3 +603,13 @@ charge. Compare published and winning escape token counts and scores to
 identify the dominant cost and guide the next controlled experiment.
 BM-0107 records the local measurement. These floating-point scores are
 diagnostic quantities, not serialized sizes or a replacement entropy coder.
+
+## Thirtieth implementation boundary: short-match distance-cap experiment
+
+A benchmark-only parser tests independent distance caps for matches of
+length 3 and 4, using the existing longest-match and nearest-distance tie
+rules. A rejected match emits one Literal and the next position is searched
+again. Seven fixed policies include three controls equivalent to the
+existing eligibility 5/4/3 parsers. Each complete private frame is encoded
+and verified by decoding; a per-frame minimum includes the prior selector.
+The caps change parsing only and require no new stream representation.

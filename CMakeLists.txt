@@ -2204,6 +2204,7 @@ if(MARC_BUILD_TESTS)
         benchmarks/lzss_short_match_probe.cpp
         tests/lzss_short_match_probe_tests.cpp
         tests/lzss_model_cost_tests.cpp
+        tests/lzss_short_distance_policy_tests.cpp
         tests/lzss_prefix_hash_tests.cpp
         tests/lzss_binary_tree_match_finder_tests.cpp
         tests/lzss_wavl_tree_match_finder_tests.cpp
