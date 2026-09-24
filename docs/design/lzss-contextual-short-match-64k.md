@@ -1,7 +1,8 @@
 # LZSS Contextual 64-KiB short-match candidate
 
-Status: decoder-visible reservation only (2026-09-24). No encoder, decoder,
-public selector, or interoperability archive admits this identity yet.
+Status: decoder-visible reservation with private dictionary-token validation
+(2026-09-24). No stream parser, entropy decoder, encoder, public selector, or
+interoperability archive admits this identity yet.
 
 ## Purpose and isolation
 
@@ -177,3 +178,15 @@ changes to subsequent parse and adaptive model state. Full-corpus ratio,
 encode/decode time, workspace, split-buffer identity, sanitizer coverage, and
 cross-platform verification gate any public profile or interoperability
 archive. No `gzip -9v` comparison is an assertion in codec tests.
+
+## First implementation boundary
+
+The private dictionary token validator now recognizes variant 7 with exactly
+minimum match length 3, maximum 3..258, window at most 65,536, zero flags,
+caller hard limits, and raw-frame size at most 65,536. It validates distance
+against already reconstructed frame bytes and permits bytewise overlap.
+Malformed token frames fail before the reconstruction output is written.
+The generic serialized-byte LZSS parameter validator still requires minimum
+length 5. The shared typed-context stream parser intentionally still rejects
+the new `2/7 + 1/6` pair; full model and frame preflight must be implemented
+and tested before that gate opens.

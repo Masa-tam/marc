@@ -11,6 +11,21 @@ LzssTypedTokenError validate_lzss_typed_parameters(
     if (core::validate_limits(limits) != core::LimitError::none) {
         return LzssTypedTokenError::limit_exceeded;
     }
+    if (variant == LzssTypedTokenVariant::field_context_64k_short_match) {
+        // The serialized-byte LZSS validator deliberately retains its
+        // minimum-five contract. Only this typed-token variant permits three.
+        if (parameters.window_size == 0 || parameters.window_size > 65536
+            || parameters.min_match_length != 3
+            || parameters.max_match_length < 3
+            || parameters.max_match_length > 258 || parameters.flags != 0) {
+            return LzssTypedTokenError::invalid_parameters;
+        }
+        if (parameters.window_size > limits.max_lz_distance
+            || parameters.max_match_length > limits.max_lz_match_length) {
+            return LzssTypedTokenError::limit_exceeded;
+        }
+        return LzssTypedTokenError::none;
+    }
     const auto format_error = validate_lzss_parameters(parameters, limits);
     if (format_error == LzssFormatError::limit_exceeded) {
         return LzssTypedTokenError::limit_exceeded;
@@ -57,6 +72,8 @@ LzssTypedTokenError validate_lzss_typed_token(
         return parameter_error;
     }
     if (context.declared_raw_size > limits.max_frame_size
+        || (variant == LzssTypedTokenVariant::field_context_64k_short_match
+            && context.declared_raw_size > 65536)
         || context.raw_already_produced > context.declared_raw_size) {
         return LzssTypedTokenError::limit_exceeded;
     }
@@ -120,6 +137,8 @@ LzssTypedFrameValidationResult validate_lzss_typed_frame(
     }
     if (context.declared_raw_size > limits.max_frame_size
         || context.declared_raw_size > limits.max_block_size
+        || (variant == LzssTypedTokenVariant::field_context_64k_short_match
+            && context.declared_raw_size > 65536)
         || context.output_already_committed > limits.max_total_output_size) {
         result.error = LzssTypedFrameValidationError::limit_exceeded;
         return result;

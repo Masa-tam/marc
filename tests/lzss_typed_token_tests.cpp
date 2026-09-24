@@ -204,7 +204,7 @@ TEST(LzssTypedToken, VariantThreeExtendsOnlyTheWindowLimit) {
                   LzssTypedTokenVariant::field_context_1m),
               LzssTypedTokenError::invalid_parameters);
     EXPECT_EQ(validate_lzss_typed_parameters(
-                  {}, limits, static_cast<LzssTypedTokenVariant>(7)),
+                  {}, limits, static_cast<LzssTypedTokenVariant>(8)),
               LzssTypedTokenError::invalid_parameters);
 }
 
@@ -280,7 +280,7 @@ TEST(LzssTypedToken, VariantFiveExtendsOnlyTheWindowLimit) {
                   LzssTypedTokenVariant::field_context_16m),
               LzssTypedTokenError::invalid_parameters);
     EXPECT_EQ(validate_lzss_typed_parameters(
-                  {}, limits, static_cast<LzssTypedTokenVariant>(7)),
+                  {}, limits, static_cast<LzssTypedTokenVariant>(8)),
               LzssTypedTokenError::invalid_parameters);
 }
 
@@ -323,7 +323,7 @@ TEST(LzssTypedToken, VariantSixExtendsOnlyTheWindowLimit) {
                   LzssTypedTokenVariant::field_context_64m),
               LzssTypedTokenError::invalid_parameters);
     EXPECT_EQ(validate_lzss_typed_parameters(
-                  {}, limits, static_cast<LzssTypedTokenVariant>(7)),
+                  {}, limits, static_cast<LzssTypedTokenVariant>(8)),
               LzssTypedTokenError::invalid_parameters);
 }
 
@@ -346,4 +346,89 @@ TEST(LzssTypedToken, DistinguishesLocalPolicyLimits) {
     result = validate_lzss_typed_frame(
         tokens, {}, {1, 1, limits.max_total_output_size}, limits);
     EXPECT_EQ(result.error, LzssTypedFrameValidationError::limit_exceeded);
+}
+
+TEST(LzssTypedToken, ShortMatchVariantHasIsolatedParameterContract) {
+    auto parameters = LzssParameters{};
+    parameters.min_match_length = 3;
+    const auto limits = marc::core::DecoderLimits{};
+    constexpr auto variant =
+        LzssTypedTokenVariant::field_context_64k_short_match;
+
+    EXPECT_EQ(validate_lzss_typed_parameters(parameters, limits, variant),
+              LzssTypedTokenError::none);
+    EXPECT_EQ(validate_lzss_typed_parameters(
+                  parameters, limits, LzssTypedTokenVariant::field_context_64k),
+              LzssTypedTokenError::invalid_parameters);
+
+    for (const auto bad_minimum : {0U, 2U, 4U, 5U}) {
+        parameters.min_match_length = bad_minimum;
+        EXPECT_EQ(validate_lzss_typed_parameters(parameters, limits, variant),
+                  LzssTypedTokenError::invalid_parameters);
+    }
+    parameters.min_match_length = 3;
+    parameters.max_match_length = 2;
+    EXPECT_EQ(validate_lzss_typed_parameters(parameters, limits, variant),
+              LzssTypedTokenError::invalid_parameters);
+    parameters.max_match_length = 259;
+    EXPECT_EQ(validate_lzss_typed_parameters(parameters, limits, variant),
+              LzssTypedTokenError::invalid_parameters);
+    parameters.max_match_length = 3;
+    parameters.window_size = 65537;
+    EXPECT_EQ(validate_lzss_typed_parameters(parameters, limits, variant),
+              LzssTypedTokenError::invalid_parameters);
+    parameters.window_size = 65536;
+    parameters.flags = 1;
+    EXPECT_EQ(validate_lzss_typed_parameters(parameters, limits, variant),
+              LzssTypedTokenError::invalid_parameters);
+    parameters.flags = 0;
+    auto restrictive = limits;
+    restrictive.max_lz_match_length = 257;
+    parameters.max_match_length = 258;
+    EXPECT_EQ(validate_lzss_typed_parameters(parameters, restrictive, variant),
+              LzssTypedTokenError::limit_exceeded);
+    restrictive = limits;
+    restrictive.max_lz_distance = 65535;
+    EXPECT_EQ(validate_lzss_typed_parameters(parameters, restrictive, variant),
+              LzssTypedTokenError::limit_exceeded);
+}
+
+TEST(LzssTypedToken, ShortMatchVariantValidatesOverlapAndFrameAtomically) {
+    auto parameters = LzssParameters{};
+    parameters.min_match_length = 3;
+    constexpr auto variant =
+        LzssTypedTokenVariant::field_context_64k_short_match;
+    const auto limits = marc::core::DecoderLimits{};
+    constexpr std::array tokens{literal('a'), match(1, 3)};
+
+    const auto valid = validate_lzss_typed_frame(
+        tokens, parameters, {2, 4, 0}, limits, variant);
+    EXPECT_EQ(valid.error, LzssTypedFrameValidationError::none);
+    EXPECT_EQ(valid.raw_size, 4U);
+
+    const auto legacy = validate_lzss_typed_frame(
+        tokens, parameters, {2, 4, 0}, limits);
+    EXPECT_EQ(legacy.error,
+              LzssTypedFrameValidationError::invalid_parameters);
+
+    std::uint64_t next_size = 99;
+    EXPECT_EQ(validate_lzss_typed_token(match(2, 3), parameters,
+                                        {1, 4}, limits, next_size, variant),
+              LzssTypedTokenError::invalid_distance);
+    EXPECT_EQ(next_size, 99U);
+
+    EXPECT_EQ(validate_lzss_typed_token(match(65536, 3), parameters,
+                                        {65535, 65536}, limits, next_size,
+                                        variant),
+              LzssTypedTokenError::invalid_distance);
+    EXPECT_EQ(next_size, 99U);
+    EXPECT_EQ(validate_lzss_typed_token(match(1, 2), parameters,
+                                        {1, 4}, limits, next_size, variant),
+              LzssTypedTokenError::invalid_length);
+    EXPECT_EQ(next_size, 99U);
+
+    const auto too_large = validate_lzss_typed_frame(
+        tokens, parameters, {2, 65537, 0}, limits, variant);
+    EXPECT_EQ(too_large.error,
+              LzssTypedFrameValidationError::limit_exceeded);
 }

@@ -240,6 +240,8 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
                  TypedContextStreamHeaderError::contradictory_parameters},
         Mutation{14, std::byte{6},
                  TypedContextStreamHeaderError::contradictory_parameters},
+        Mutation{14, std::byte{7},
+                 TypedContextStreamHeaderError::unsupported_dictionary_variant},
         Mutation{16, std::byte{4},
                  TypedContextStreamHeaderError::unknown_entropy_algorithm},
         Mutation{18, std::byte{1},
@@ -252,6 +254,8 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
                  TypedContextStreamHeaderError::contradictory_parameters},
         Mutation{98, std::byte{5},
                  TypedContextStreamHeaderError::contradictory_parameters},
+        Mutation{98, std::byte{6},
+                 TypedContextStreamHeaderError::unsupported_context_variant},
     };
     for (const auto& mutation : mutations) {
         auto bytes = stream_vector();
@@ -266,6 +270,32 @@ TEST(TypedContextStreamFormat, RejectsUnknownIdentitiesAtomically) {
         EXPECT_EQ(output.original_size, 123U);
         EXPECT_EQ(consumed, 7U);
     }
+}
+
+TEST(TypedContextStreamFormat, ReservedShortMatchPairIsNotYetAdmitted) {
+    auto bytes = stream_vector();
+    bytes[14] = std::byte{7};
+    bytes[68] = std::byte{3};
+    bytes[84] = std::byte{32};
+    bytes[98] = std::byte{6};
+
+    TypedContextStreamHeader parsed{};
+    parsed.original_size = 123;
+    std::size_t consumed = 7;
+    EXPECT_EQ(parse_typed_context_stream_header(
+                  bytes, marc::core::DecoderLimits{}, parsed, consumed),
+              TypedContextStreamHeaderError::unsupported_dictionary_variant);
+    EXPECT_EQ(parsed.original_size, 123U);
+    EXPECT_EQ(consumed, 7U);
+
+    auto header = stream_config();
+    header.dictionary_variant = 7;
+    header.context_variant = 6;
+    header.context_count = 32;
+    header.dictionary.min_match_length = 3;
+    EXPECT_EQ(validate_typed_context_stream_header(
+                  header, marc::core::DecoderLimits{}),
+              TypedContextStreamHeaderError::unsupported_dictionary_variant);
 }
 
 TEST(TypedContextStreamFormat,

@@ -23964,3 +23964,14 @@ change only the exact pair, class mapping, alphabet/model extents, descriptor
 context count and conservative resource bounds. This is decoder-visible
 documentation, not a public codec admission or a claim that 3/4-byte Matches
 save space. A measured deterministic encoder selection rule is a later gate.
+
+## DD-1179: Validate short matches privately before stream admission
+
+Add dictionary typed-token variant 7 with its own parameter validation so the
+generic serialized-byte minimum-five rule remains unchanged. Enforce the
+65,536-byte raw-frame ceiling at both single-token and whole-frame entry
+points, in addition to configured limits. Reuse the existing frame-atomic
+token validation and bytewise-overlap reconstructor. Keep the typed-context
+stream parser's variant 7/6 rejection until a 32-context model and complete
+frame preflight are available; recognizing a token variant is not admitting
+a stream codec.

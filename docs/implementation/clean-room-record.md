@@ -33016,3 +33016,23 @@ both bounds.
   No legal non-infringement guarantee is made.
 - Local validation: the documentation checker and format-vector arithmetic
   were reviewed; the candidate is not yet decoded or encoded by marc.
+
+## CR-1333: 2026-09-24 - Validate private short-match dictionary tokens
+
+- Author: Codex; reviewer: repository maintainer approved decoder-first work.
+- References used: IR-0934, DD-1179, TVG-1048, and first-party typed-token,
+  reconstructor, stream-format, and limit contracts.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations, third-party tests, tables, or pseudocode.
+- Generated-code task: admit length-three parameters only in private
+  dictionary variant 7, validate bounded overlapping tokens, and keep the
+  public typed-context stream gate closed.
+- Independent decisions: isolate the minimum-three branch instead of
+  relaxing shared serialized-byte LZSS validation; check the frame ceiling
+  at token and frame entry points; preserve atomic output on failure.
+- Similarity review: this extends repository-owned validation logic and does
+  not translate external implementation expression. No legal non-infringement
+  guarantee is made.
+- Local validation: the new tests failed before implementation and passed
+  afterward. The full MSVC Release build and all 3,619 CTest cases passed,
+  including interoperability schema compatibility and documentation layout.

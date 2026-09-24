@@ -60,6 +60,32 @@ TEST(LzssTypedReconstructor, ReconstructsBytewiseOverlap) {
     expect_text(output, "AAAAAA");
 }
 
+TEST(LzssTypedReconstructor, ShortMatchVariantReconstructsThreeByteOverlap) {
+    constexpr std::array tokens{literal('a'), match(1, 3)};
+    auto parameters = LzssParameters{};
+    parameters.min_match_length = 3;
+    std::array<std::byte, 5> output{};
+    output.fill(std::byte{0xcc});
+    const auto result = reconstruct_lzss_typed_frame(
+        tokens, parameters, {2, 4, 0}, marc::core::DecoderLimits{}, output,
+        LzssTypedTokenVariant::field_context_64k_short_match);
+    EXPECT_EQ(result.error, LzssTypedReconstructError::none);
+    EXPECT_EQ(result.output_size, 4U);
+    EXPECT_EQ(output[4], std::byte{0xcc});
+    EXPECT_EQ(output[0], std::byte{'a'});
+    EXPECT_EQ(output[1], std::byte{'a'});
+    EXPECT_EQ(output[2], std::byte{'a'});
+    EXPECT_EQ(output[3], std::byte{'a'});
+
+    output.fill(std::byte{0xcc});
+    const auto legacy = reconstruct_lzss_typed_frame(
+        tokens, parameters, {2, 4, 0}, marc::core::DecoderLimits{}, output);
+    EXPECT_EQ(legacy.error, LzssTypedReconstructError::invalid_token_frame);
+    EXPECT_TRUE(std::ranges::all_of(output, [](const std::byte value) {
+        return value == std::byte{0xcc};
+    }));
+}
+
 TEST(LzssTypedReconstructor, ReconstructsDistanceThreeThenLiteral) {
     constexpr std::array tokens{
         literal('A'), literal('B'), literal('C'), match(3, 6), literal('X')};

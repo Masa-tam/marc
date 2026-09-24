@@ -8597,3 +8597,10 @@ DD-1177, and BM-0099 through BM-0100. The new length transform and model
 layout were specified independently from those contracts. No external
 compressor implementation, source, test, table, pseudocode, or match-selection
 policy was consulted.
+
+### IR-0934
+
+The first short-match decoder-side implementation uses IR-0933, DD-1178,
+TVG-1047, the repository-owned `lzss_typed_token` and typed reconstructor,
+and the existing Format 2.0 stream admission tests. No external dictionary
+coder implementation, source, table, or test suite was consulted.
