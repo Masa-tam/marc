@@ -296,6 +296,11 @@ int main(const int argc, const char* const argv[]) {
     marc::benchmarks::ModelCost retained_cost{};
     constexpr std::array<std::uint32_t, 4> literal_increments{1, 2, 4, 8};
     std::array<double, 4> literal_increment_bits{};
+    using marc::benchmarks::LiteralPartition;
+    constexpr std::array literal_partitions{LiteralPartition::shared, LiteralPartition::high0,
+        LiteralPartition::high1, LiteralPartition::high2, LiteralPartition::high3, LiteralPartition::high4};
+    constexpr std::array literal_partition_names{"shared", "high0", "high1", "high2", "high3", "high4"};
+    std::array<double, 6> literal_partition_bits{}, literal_partition_empirical_bits{};
     double baseline_plan_seconds{};
     double candidate_encode_seconds{};
     double candidate_decode_seconds{};
@@ -554,6 +559,14 @@ int main(const int argc, const char* const argv[]) {
                 if (!cost.valid) return 2;
                 literal_increment_bits[i] += cost.adaptive_bits[1];
             }
+            for (std::size_t i = 0; i < literal_partitions.size(); ++i) {
+                const auto cost = marc::benchmarks::measure_model_cost(
+                    std::span<const ModeledOperation>{operations}.first(selected_modeled.operation_count),
+                    marc::benchmarks::CostLayout::short_match_64k, 1, literal_partitions[i]);
+                if (!cost.valid) return 2;
+                literal_partition_bits[i] += cost.adaptive_bits[1];
+                literal_partition_empirical_bits[i] += cost.empirical_bits[1];
+            }
         }
         const auto exact_tokens = marc::dictionary::internal::
             tokenize_lzss_short_match_candidate_indexed(
@@ -706,6 +719,11 @@ int main(const int argc, const char* const argv[]) {
     print_cost("escape_cost", escape_cost);
     if (distance_policies) {
         print_cost("retained_cost", retained_cost);
+        for (std::size_t i = 0; i < literal_partitions.size(); ++i)
+            std::cout << "literal_partition_" << literal_partition_names[i]
+                      << "_adaptive_bits=" << literal_partition_bits[i] << '\n'
+                      << "literal_partition_" << literal_partition_names[i]
+                      << "_empirical_bits=" << literal_partition_empirical_bits[i] << '\n';
         for (std::size_t i = 0; i < literal_increments.size(); ++i)
             std::cout << "literal_increment_" << literal_increments[i]
                       << "_adaptive_bits=" << literal_increment_bits[i] << '\n';

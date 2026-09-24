@@ -33754,3 +33754,22 @@ both bounds.
   field, default equivalence and invalid configuration tests are included.
   Full MSVC Release build and all 3,745 CTest cases passed, including
   documentation layout and interoperability schema compatibility.
+
+## CR-1370: 2026-09-25 - Screen literal partitioning on mozilla
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0971, DD-1216, TVG-1085 and BM-0115; first-party
+  retained-winner profiling and external local corpus data only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party model heuristics.
+- Generated-code task: compare six literal partitions on identical decoded
+  winning tokens, report adaptive and empirical scores, verify the control.
+- Independent decisions: leave parsing, increment, frame boundaries and
+  nonliteral models fixed; distinguish diagnostics from compressed bytes.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation: nine model-cost tests and indexed/reference benchmark smoke
+  passed. All 782 mozilla selected frames round-tripped; high4 reproduced
+  the prior score and archive size remained unchanged.
+  Full MSVC Release build and all 3,745 CTest cases passed, including
+  documentation layout and interoperability schema compatibility.

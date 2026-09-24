@@ -24402,3 +24402,14 @@ remapping, merge both adaptive statistics and empirical histograms, and leave
 other fields untouched. Default high4 preserves existing diagnostics exactly.
 This step adds tested diagnostic primitives only; corpus measurements and any
 encoder/decoder format decision remain separate steps.
+
+## DD-1216: Screen all literal partitions on decoded retained winners
+
+For each retained winner, verify decoded bytes and regenerate its modeled
+operations before measuring all six DD-1215 partitions. Keep increment one,
+frame resets and all nonliteral models fixed. Accumulate adaptive and empirical
+literal scores separately, outside compression timers. Require high4 to match
+the original retained diagnostic and indexed/reference scores to agree.
+These are diagnostic probabilities, not alternate encoded archives. Do not
+select a public model from one corpus member or interpret empirical scores
+as attainable gains without a specified and measured encoder/decoder.

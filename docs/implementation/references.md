@@ -8869,3 +8869,9 @@ BM-0113. No external implementation or adaptive-model source is consulted.
 Literal partition diagnostics use marc's own field-context state and information
 profiler. Prefix coarsening and full sharing are independently chosen controls;
 no external model implementation or compressor source was consulted.
+
+### IR-0971
+
+The literal partition screening reuses IR-0970 and the first-party retained
+selector benchmark. Silesia mozilla remains an external local input; no external
+compressor code or model implementation is consulted.

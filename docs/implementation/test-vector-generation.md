@@ -15904,3 +15904,10 @@ probabilities (1 + prior occurrences)/(256 + prior occurrences). Verify the
 kind field is unchanged and high4 matches the default. Two different symbols
 in merged contexts have empirical cost two bits. Reject an invalid original
 alphabet before remapping and reject unknown partition values even on empty input.
+
+### TVG-1085
+
+Benchmark smoke requires all six partition names to report adaptive and
+empirical scores, exact indexed/reference agreement, and high4 equality with
+both retained literal scores. The complete mozilla run uses the same selected
+tokens for all conditions and verifies every selected frame round trip first.

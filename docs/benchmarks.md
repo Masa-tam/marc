@@ -4192,3 +4192,33 @@ No actual alternate-model range encoding was performed, so the table reports
 information quantities, not compressed sizes. A next diagnostic should examine
 literal-context partitioning and sharing on the same fixed token sequence
 rather than changing the public model in response to the histogram gap alone.
+
+### BM-0115: Literal partition screening on fixed mozilla tokens
+
+On 2026-09-25, MSVC Release processed all 51,220,480 mozilla bytes in 782
+64-KiB frames. All retained winners round-tripped before the same operations
+were scored with increment one under six partitions. Matches do not update
+the previous-literal-token history. Initial-context separation is retained
+except for shared. Each model resets per frame; diagnostics are outside timers.
+
+| Partition | Contexts | Adaptive literal bits | Empirical literal bits | Adaptive change, byte-equivalent |
+| --- | ---: | ---: | ---: | ---: |
+| shared | 1 | 79,613,629.162798 | 78,986,838.754268 | +20,863.138 |
+| high0 | 2 | 79,614,600.712523 | 78,981,578.782986 | +20,984.582 |
+| high1 | 3 | 79,324,758.608026 | 78,253,175.397112 | -15,245.681 |
+| high2 | 5 | 79,096,165.151220 | 77,285,332.142252 | -43,819.864 |
+| high3 | 9 | 79,099,652.914591 | 76,068,682.572416 | -43,383.893 |
+| high4 (control) | 17 | 79,446,724.059640 | 74,479,752.821076 | 0 |
+
+The control exactly reproduces BM-0113/0114 for 10,620,073 literals. Actual
+archive size remains 19,636,009 bytes: no alternate-model encoding occurred.
+High2 is best on this input, only 435.970 byte-equivalents ahead of high3.
+Full sharing is worse. Coarser partitions reduce this adaptive score despite
+worse empirical scores, illustrating that finer historical histograms alone
+do not predict online performance with limited per-frame observations.
+
+The best reduction is small relative to the 641,870-byte gap to the reported
+gzip result. It is not an actual archive saving and does not establish a
+corpus-wide winner. Next compare the same six fixed-token controls across
+the complete corpus before selecting a model for actual range coding. This
+screen leaves public models, APIs and serialized representations unchanged.
