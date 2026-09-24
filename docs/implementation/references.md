@@ -8672,3 +8672,12 @@ typed-token validator, variant-6 forward modeler, 32-context Range encoder,
 semantic frame preflight, and explicit little-endian layout. The independent
 hand frame and private decoder provide exact-byte and round-trip checks.
 No external encoder source, table, or test suite was consulted.
+
+### IR-0944
+
+The private short-match candidate parser uses marc's first-party exhaustive
+LZSS match finder and reserved variant-7 typed-token contract. The selector
+uses the first-party complete frame planner rather than an external match
+cost heuristic. Hand examples and the private frame decoder are the
+validation references. No external encoder source, table, or test suite
+was consulted.

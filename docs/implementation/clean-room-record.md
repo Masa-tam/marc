@@ -33205,3 +33205,24 @@ both bounds.
 - Local validation: the full MSVC Release build and all 3,658 CTest cases
   passed, including four private frame-encoder tests, interoperability schema
   compatibility, and documentation layout checks.
+
+## CR-1343: 2026-09-24 - Select private short-match frames by exact size
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  candidate parser and complete-frame comparison.
+- References used: IR-0944, DD-1189, TVG-1058, and marc's first-party
+  exhaustive match finder and reserved frame encoder/decoder.
+- Known implementations intentionally not consulted: external LZSS parsers,
+  copyleft source, third-party test suites or tables.
+- Generated-code task: derive bounded typed-token candidates at eligibility
+  3, 4, and 5, and select by complete serialized frame size while retaining
+  private format status.
+- Independent decisions: use a two-pass reference parser, nearest-distance
+  tie break, higher eligibility on equal frame size, and re-tokenize only
+  the selected candidate before writing the frame.
+- Similarity review: composed first-party search, typed-token, and frame
+  contracts only; no external expression was translated. No legal
+  non-infringement guarantee.
+- Local validation: the full MSVC Release build and all 3,667 CTest cases
+  passed, including nine private candidate/selection tests, interoperability
+  schema compatibility, and documentation layout checks.

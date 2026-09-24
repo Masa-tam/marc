@@ -24072,3 +24072,13 @@ operation workspace in the aggregate limit in addition to decoder preflight
 requirements. Serialize fixed fields explicitly and publish header and
 descriptor only after payload encoding succeeds. Public stream admission
 and complete-frame candidate selection remain separate work.
+
+## DD-1189: Compare reserved short-match candidates by complete frame size
+
+For each raw frame, independently tokenize with minimum eligible match
+lengths 3, 4, and 5 while retaining longest-match and nearest-distance
+tie-breaking. Plan the complete serialized frame for each candidate,
+including its Range-coded payload and fixed metadata. Choose the smallest
+frame; on equality choose the higher minimum. The threshold is encoder-only,
+not a stream parameter. Keep the exhaustive parser and selector private
+until corpus-size, speed, and memory measurements justify public admission.

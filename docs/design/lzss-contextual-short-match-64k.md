@@ -325,3 +325,27 @@ the private decoder; a later frame with a 258-byte match also round-trips.
 This function does not search for matches or choose among candidate parses,
 write a stream header, or open public admission. Complete-frame comparison
 and real-corpus measurement remain subsequent gates.
+
+## Eleventh implementation boundary
+
+A private reference parser now derives deterministic variant-7 typed tokens
+directly from a bounded raw frame. It searches for the longest available
+match, prefers the nearest distance on equal length, and emits a match only
+when its length meets the candidate threshold 3, 4, or 5. Each candidate
+starts from the same raw input and fresh dictionary state. Planning counts
+tokens and checks the frame and aggregate workspace limits before writing;
+tokenization rejects short or overlapping output storage. The exhaustive
+finder intentionally favors a simple, inspectable reference policy over
+corpus-scale encode speed.
+
+A private selector evaluates all three candidates through the complete
+variant-7 frame planner, including typed-token modeling, Dynamic Range
+payload, descriptor, and frame header. It selects the smallest serialized
+frame and breaks equal-size ties in favor of the higher threshold. The
+chosen candidate is regenerated before the frame is written, so the parser
+threshold remains encoder-only and is not stored in the stream. Tests cover
+short-match hand cases, nearest-distance tie-breaking, exact frame-size
+comparison, private decode of the winner, limits, and buffer overlap. This
+does not change any published encoder, admit the reserved format publicly,
+or establish a corpus compression-rate or throughput improvement. Bounded
+corpus measurement and a faster equivalent search remain later gates.

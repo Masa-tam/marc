@@ -15605,3 +15605,16 @@ size 7, context count 32; then `00 30 BF FF 9E 80 00`. Decode it privately.
 Also encode a later frame containing length 4 and length 258, and reject
 invalid distance, wrong sequence, short output, and aliased storage without
 changing serialized output.
+
+### TVG-1058
+
+For raw `aaaa`, eligibility 3 produces `Literal(0x61), Match(1,3)` and
+the independently specified 87-byte frame; eligibility 4 and 5 produce
+four literals. For `abcdabcd`, eligibility 3 and 4 emit `Match(4,4)`
+after four literals, while eligibility 5 keeps all bytes literal.
+For `abcXabcYabc`, the final three-byte match must choose distance 4 over
+the equal-length distance 8. Encode all three candidate frames separately
+and compare their actual byte counts with the selector; decode its winning
+frame. For `abc`, all candidates are identical and the selector must choose
+eligibility 5. Reject invalid eligibility, insufficient output, mismatched
+raw partition, and aliased workspaces without publishing output.
