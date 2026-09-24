@@ -384,3 +384,19 @@ BM-0102 records the indexed full-Silesia measurement. Despite a small
 aggregate gain and practical pilot speed, seven of twelve corpus members
 grow, and `mozilla` still misses the stated gzip target. No public encoder,
 interoperability archive, or automatic stream-level selection is admitted.
+
+## Fourteenth implementation boundary: matched-token size diagnosis
+
+The private benchmark now reports complete archive sizes for each fixed
+eligibility 3/4/5 and the framewise selector, alongside the published
+baseline. It also replays the eligibility-5 tokens through the published
+31-context Range model and compares those tokens field-by-field with the
+production HashChain output. On the external Silesia corpus, all 3,239
+frames have identical eligibility-5 and production token sequences, and the
+published-model archive sizes therefore coincide. Yet the reserved
+32-context representation of those same tokens is larger on every corpus
+member, by 551,143 bytes in aggregate. This separates the observed loss
+from a match-finder difference under these conditions; it does not prove
+which context or symbol mapping accounts for the excess. BM-0103 records
+the measurements. Keep the reserved identity private and investigate its
+model/representation cost before any stream-level format or API change.

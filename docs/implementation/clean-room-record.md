@@ -33269,3 +33269,25 @@ both bounds.
   passed, including indexed/reference smoke, interoperability schema
   compatibility, and documentation layout checks. BM-0102 records the
   external full-Silesia results; no corpus bytes are tracked.
+
+## CR-1346: 2026-09-24 - Separate short-match and context costs
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  investigation after the indexed full-corpus measurement.
+- References used: IR-0947, DD-1192, TVG-1061, BM-0102, BM-0103, and
+  marc's first-party tokenizer, context model, and Range planner.
+- Known implementations intentionally not consulted: external encoder
+  sources, copyleft code, third-party model tables and test suites.
+- Generated-code task: measure fixed eligibility 3/4/5 complete frame sizes,
+  compare eligibility-5 tokens field-by-field with production tokens, and
+  recode identical tokens through the published context model.
+- Independent decisions: retain a private diagnostic only, distinguish
+  token identity from representation cost, and report framewise wins and
+  losses without claiming a stream-level fallback or public admission.
+- Similarity review: extended only first-party benchmark and regression
+  interfaces; no external implementation expression was translated. No
+  legal non-infringement guarantee.
+- Local validation: MSVC Release benchmark build and all 3,676 CTest cases
+  passed, including indexed/reference benchmark smoke and interoperability
+  schema compatibility. BM-0103 records the external Silesia observations;
+  no corpus bytes or measurement reports are tracked.

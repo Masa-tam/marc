@@ -8697,3 +8697,11 @@ longest-match, nearest-distance, frame-reset, and caller-workspace contracts.
 The exhaustive finder is its correctness oracle. BM-0101 supplies the fixed
 pilot conditions; BM-0102 records the full external Silesia measurement.
 No third-party match-finder code, table, or test suite was consulted.
+
+### IR-0947
+
+The matched-token diagnosis uses only marc's first-party production
+HashChain tokenizer, exact indexed short-match tokenizer, published
+31-context model, and reserved 32-context frame planner. BM-0103 uses the
+external Silesia corpus solely as local measurement input. No external
+encoder implementation, model table, or test suite was consulted.

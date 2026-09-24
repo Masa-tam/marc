@@ -36,27 +36,20 @@ using marc::dictionary::internal::LzssTypedToken;
         && value > 0 && value <= upper;
 }
 
-[[nodiscard]] bool baseline_frame_size(
-    const std::span<const std::byte> raw,
+[[nodiscard]] bool baseline_frame_size_from_tokens(
+    const std::size_t raw_size,
     const std::uint64_t committed,
     const marc::core::DecoderLimits& limits,
-    const std::span<LzssTypedToken> tokens,
+    const std::span<const LzssTypedToken> tokens,
     const std::span<ModeledOperation> operations,
-    const std::span<std::byte> finder_workspace,
     std::size_t& serialized_size) noexcept {
     const LzssParameters parameters{65536, 5, 258, 0};
-    const auto parsed = marc::dictionary::internal::
-        encode_lzss_typed_tokens_hash_chain_single_pass(
-            raw, parameters, limits, tokens, finder_workspace);
-    if (parsed.error != marc::dictionary::internal::LzssTypedEncodeError::none)
-        return false;
     const marc::dictionary::internal::LzssTypedFrameValidationContext context{
-        static_cast<std::uint32_t>(parsed.token_count),
-        static_cast<std::uint32_t>(raw.size()), committed};
+        static_cast<std::uint32_t>(tokens.size()),
+        static_cast<std::uint32_t>(raw_size), committed};
     const auto modeled = marc::context::internal::
         model_lzss_field_context_tokens(
-            tokens.first(parsed.token_count), parameters, context,
-            limits, operations);
+            tokens, parameters, context, limits, operations);
     if (modeled.error != marc::context::internal::LzssFieldContextError::none)
         return false;
     marc::entropy::internal::ContextualDynamicRangeDescriptor descriptor{};
@@ -70,6 +63,33 @@ using marc::dictionary::internal::LzssTypedToken;
         + marc::frame::internal::typed_context_range_descriptor_size
         + planned.payload_size;
     return true;
+}
+
+[[nodiscard]] bool baseline_frame_size(
+    const std::span<const std::byte> raw,
+    const std::uint64_t committed,
+    const marc::core::DecoderLimits& limits,
+    const std::span<LzssTypedToken> tokens,
+    const std::span<ModeledOperation> operations,
+    const std::span<std::byte> finder_workspace,
+    std::size_t& token_count,
+    std::size_t& serialized_size) noexcept {
+    const LzssParameters parameters{65536, 5, 258, 0};
+    const auto parsed = marc::dictionary::internal::
+        encode_lzss_typed_tokens_hash_chain_single_pass(
+            raw, parameters, limits, tokens, finder_workspace);
+    if (parsed.error != marc::dictionary::internal::
+            LzssTypedEncodeError::none) return false;
+    token_count = parsed.token_count;
+    return baseline_frame_size_from_tokens(
+        raw.size(), committed, limits, tokens.first(token_count),
+        operations, serialized_size);
+}
+
+[[nodiscard]] bool same_token(const LzssTypedToken& first,
+                              const LzssTypedToken& second) noexcept {
+    return first.kind == second.kind && first.literal == second.literal
+        && first.distance == second.distance && first.length == second.length;
 }
 
 } // namespace
@@ -136,6 +156,7 @@ int main(const int argc, const char* const argv[]) {
     std::vector<std::byte> decoded(frame_bytes);
     std::vector<std::byte> serialized(18 * frame_bytes + 85);
     std::vector<LzssTypedToken> tokens(frame_bytes);
+    std::vector<LzssTypedToken> baseline_tokens(frame_bytes);
     std::vector<LzssTypedToken> decoded_tokens(frame_bytes);
     std::vector<ModeledOperation> operations(5 * frame_bytes);
     const marc::frame::internal::TypedContextStreamHeader stream{
@@ -147,7 +168,17 @@ int main(const int argc, const char* const argv[]) {
     std::uint64_t baseline_archive_bytes =
         marc::frame::internal::typed_context_stream_header_size;
     std::uint64_t candidate_archive_bytes = baseline_archive_bytes;
+    std::uint64_t exact_baseline_archive_bytes = baseline_archive_bytes;
+    std::uint64_t exact_baseline_equal_token_frames{};
+    std::array<std::uint64_t, 3> threshold_archive_bytes{
+        baseline_archive_bytes, baseline_archive_bytes,
+        baseline_archive_bytes};
     std::array<std::uint64_t, 3> selected_counts{};
+    std::uint64_t selected_better_frames{};
+    std::uint64_t selected_equal_frames{};
+    std::uint64_t selected_worse_frames{};
+    std::uint64_t selected_saved_bytes{};
+    std::uint64_t selected_extra_bytes{};
     double baseline_plan_seconds{};
     double candidate_encode_seconds{};
     double candidate_decode_seconds{};
@@ -164,9 +195,11 @@ int main(const int argc, const char* const argv[]) {
         }
         const auto frame = std::span<const std::byte>{raw}.first(count);
         std::size_t baseline_size{};
+        std::size_t baseline_token_count{};
         const auto baseline_start = Clock::now();
-        if (!baseline_frame_size(frame, committed, limits, tokens, operations,
-                                 finder_workspace, baseline_size)) {
+        if (!baseline_frame_size(frame, committed, limits, baseline_tokens,
+                                 operations, finder_workspace,
+                                 baseline_token_count, baseline_size)) {
             std::cerr << "baseline frame failed\n";
             return 2;
         }
@@ -188,7 +221,10 @@ int main(const int argc, const char* const argv[]) {
         if (candidate.error != marc::frame::internal::
                 LzssShortMatchSelectionError::none
             || candidate.selected_minimum_length < 3
-            || candidate.selected_minimum_length > 5) {
+            || candidate.selected_minimum_length > 5
+            || candidate.selected_frame_size != *std::min_element(
+                   candidate.candidate_frame_sizes.begin(),
+                   candidate.candidate_frame_sizes.end())) {
             std::cerr << "candidate frame failed at sequence " << frames
                       << " error " << static_cast<unsigned>(candidate.error)
                       << '\n';
@@ -214,8 +250,45 @@ int main(const int argc, const char* const argv[]) {
                       << '\n';
             return 2;
         }
+        const auto exact_tokens = marc::dictionary::internal::
+            tokenize_lzss_short_match_candidate_indexed(
+                frame, candidate_parameters, limits, 5, tokens,
+                candidate_workspace);
+        std::size_t exact_baseline_size{};
+        if (exact_tokens.error != marc::dictionary::internal::
+                LzssShortMatchCandidateError::none
+            || !baseline_frame_size_from_tokens(
+                count, committed, limits,
+                std::span<const LzssTypedToken>{tokens}.first(
+                    exact_tokens.token_count), operations,
+                exact_baseline_size)) {
+            std::cerr << "exact baseline frame failed at sequence "
+                      << frames << '\n';
+            return 2;
+        }
+        if (exact_tokens.token_count == baseline_token_count
+            && std::equal(
+                tokens.begin(), tokens.begin() + exact_tokens.token_count,
+                baseline_tokens.begin(), same_token)) {
+            ++exact_baseline_equal_token_frames;
+        }
         baseline_archive_bytes += baseline_size;
         candidate_archive_bytes += candidate.selected_frame_size;
+        exact_baseline_archive_bytes += exact_baseline_size;
+        for (std::size_t index = 0; index < threshold_archive_bytes.size();
+             ++index) {
+            threshold_archive_bytes[index] +=
+                candidate.candidate_frame_sizes[index];
+        }
+        if (candidate.selected_frame_size < baseline_size) {
+            ++selected_better_frames;
+            selected_saved_bytes += baseline_size - candidate.selected_frame_size;
+        } else if (candidate.selected_frame_size > baseline_size) {
+            ++selected_worse_frames;
+            selected_extra_bytes += candidate.selected_frame_size - baseline_size;
+        } else {
+            ++selected_equal_frames;
+        }
         ++selected_counts[candidate.selected_minimum_length - 3];
         committed += count;
         ++frames;
@@ -226,7 +299,22 @@ int main(const int argc, const char* const argv[]) {
               << "frame_bytes=" << frame_bytes << '\n'
               << "frame_count=" << frames << '\n'
               << "baseline_archive_bytes=" << baseline_archive_bytes << '\n'
+              << "exact_baseline_archive_bytes="
+              << exact_baseline_archive_bytes << '\n'
+              << "exact_baseline_equal_token_frames="
+              << exact_baseline_equal_token_frames << '\n'
               << "candidate_archive_bytes=" << candidate_archive_bytes << '\n'
+              << "threshold_3_archive_bytes=" << threshold_archive_bytes[0]
+              << '\n'
+              << "threshold_4_archive_bytes=" << threshold_archive_bytes[1]
+              << '\n'
+              << "threshold_5_archive_bytes=" << threshold_archive_bytes[2]
+              << '\n'
+              << "selected_better_frames=" << selected_better_frames << '\n'
+              << "selected_equal_frames=" << selected_equal_frames << '\n'
+              << "selected_worse_frames=" << selected_worse_frames << '\n'
+              << "selected_saved_bytes=" << selected_saved_bytes << '\n'
+              << "selected_extra_bytes=" << selected_extra_bytes << '\n'
               << "selected_3=" << selected_counts[0] << '\n'
               << "selected_4=" << selected_counts[1] << '\n'
               << "selected_5=" << selected_counts[2] << '\n'

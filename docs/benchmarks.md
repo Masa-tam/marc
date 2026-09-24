@@ -3702,3 +3702,42 @@ Those two timing quantities perform different work and are **not** an
 encode-throughput ratio. This candidate remains private. The mixed member
 result and unmet gzip target rule out a claim that short-match eligibility
 alone solves the 64-KiB compression-ratio deficit.
+
+### BM-0103: Separate short-match eligibility from model cost
+
+On 2026-09-24, the private MSVC Release benchmark repeated BM-0102's full
+external Silesia run with the same 65,536-byte frame/window partition and
+`indexed` search mode. It additionally measured every fixed eligibility
+3/4/5 candidate and recoded eligibility-5 tokens through the published
+31-context model. The benchmark compares every eligibility-5 token field
+(`kind`, `literal`, `distance`, `length`) with the production HashChain
+tokenizer's result. No corpus bytes or generated reports are tracked.
+
+| Member | Frames with equal tokens / all | Published size | Reserved eligibility-5 size | Eligibility-5 excess | Selected size |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| dickens | 156/156 | 4,097,287 | 4,152,284 | +54,997 | 4,127,385 |
+| mozilla | 782/782 | 20,085,366 | 20,199,183 | +113,817 | 19,824,809 |
+| mr | 153/153 | 3,596,195 | 3,651,423 | +55,228 | 3,621,840 |
+| nci | 512/512 | 3,584,048 | 3,602,900 | +18,852 | 3,602,900 |
+| ooffice | 94/94 | 3,233,855 | 3,258,508 | +24,653 | 3,193,254 |
+| osdb | 154/154 | 4,112,363 | 4,133,678 | +21,315 | 4,133,678 |
+| reymont | 102/102 | 2,028,288 | 2,048,580 | +20,292 | 2,027,716 |
+| samba | 330/330 | 5,756,275 | 5,795,066 | +38,791 | 5,757,403 |
+| sao | 111/111 | 5,616,349 | 5,640,677 | +24,328 | 5,430,503 |
+| webster | 633/633 | 12,974,519 | 13,096,607 | +122,088 | 13,047,813 |
+| x-ray | 130/130 | 6,000,150 | 6,051,020 | +50,870 | 5,840,373 |
+| xml | 82/82 | 765,900 | 771,812 | +5,912 | 768,851 |
+| **Total** | **3,239/3,239** | **71,850,595** | **72,401,738** | **+551,143** | **71,376,525** |
+
+Recoding the exact eligibility-5 tokens through the published model gave
+the published size on every member. Thus the observed eligibility-5 excess
+comes from the reserved token mapping/context representation, not different
+matches, for this corpus and configuration. This does not identify the
+specific expensive contexts. The selected reserved frames beat the
+published baseline in 1,298 frames, tied in 4, and lost in 1,937; their
+673,183 saved bytes minus 199,113 extra bytes yield the 474,070-byte net
+gain already reported in BM-0102. Fixed eligibility-3/4 sizes and those
+framewise counters are emitted by the benchmark for further diagnosis.
+The stream header fixes the variant, so the baseline cannot simply be
+selected for individual frames within the current reserved stream. No
+public format or encoder-policy change follows from this diagnostic.

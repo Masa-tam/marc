@@ -15646,3 +15646,16 @@ requires the same size and threshold summary. External Silesia bytes remain
 outside the regression fixture. An invalid variant-7 parameter set must
 retain its invalid-parameter error rather than being mislabeled as a
 workspace shortage.
+
+### TVG-1061
+
+Run the one-frame README benchmark smoke in both indexed and exhaustive
+selector modes. Require identical fixed-threshold archive sizes, selected
+frame counts, and baseline-versus-selected gains. Independently require
+the exact eligibility-5 tokens to equal the production tokenizer's tokens
+on this tracked fixture and their published-model sizes to match. Verify
+that selected size is no larger than any fixed-threshold candidate, that
+framewise wins/ties/losses sum to the frame count, and that saved minus
+extra bytes reconstruct the selected archive size from the baseline.
+BM-0103 records the corresponding external-corpus diagnosis without
+copying corpus input into the regression suite.

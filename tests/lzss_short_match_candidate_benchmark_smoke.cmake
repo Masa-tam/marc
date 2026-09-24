@@ -21,8 +21,13 @@ if(NOT reference_result EQUAL 0)
         "Reference benchmark failed (${reference_result}): ${reference_error}")
 endif()
 foreach(key IN ITEMS sample_bytes frame_bytes frame_count
-        baseline_archive_bytes candidate_archive_bytes selected_3 selected_4
-        selected_5)
+        baseline_archive_bytes exact_baseline_archive_bytes
+        exact_baseline_equal_token_frames
+        candidate_archive_bytes selected_3 selected_4
+        selected_5 threshold_3_archive_bytes threshold_4_archive_bytes
+        threshold_5_archive_bytes selected_better_frames
+        selected_equal_frames selected_worse_frames selected_saved_bytes
+        selected_extra_bytes)
     string(REGEX MATCH "${key}=([0-9]+)" field "${output}")
     if(field STREQUAL "")
         message(FATAL_ERROR "Missing ${key}: ${output}")
@@ -35,8 +40,21 @@ foreach(key IN ITEMS sample_bytes frame_bytes frame_count
     endif()
 endforeach()
 math(EXPR selections "${selected_3} + ${selected_4} + ${selected_5}")
+math(EXPR comparisons
+    "${selected_better_frames} + ${selected_equal_frames} + ${selected_worse_frames}")
+math(EXPR reconstructed_candidate
+    "${baseline_archive_bytes} - ${selected_saved_bytes} + ${selected_extra_bytes}")
 if(NOT sample_bytes EQUAL 4096 OR NOT frame_bytes EQUAL 4096
     OR NOT frame_count EQUAL 1 OR NOT selections EQUAL frame_count
-    OR baseline_archive_bytes LESS 192 OR candidate_archive_bytes LESS 192)
+    OR NOT comparisons EQUAL frame_count
+    OR NOT reconstructed_candidate EQUAL candidate_archive_bytes
+    OR NOT exact_baseline_equal_token_frames EQUAL frame_count
+    OR NOT exact_baseline_archive_bytes EQUAL baseline_archive_bytes
+    OR candidate_archive_bytes GREATER threshold_3_archive_bytes
+    OR candidate_archive_bytes GREATER threshold_4_archive_bytes
+    OR candidate_archive_bytes GREATER threshold_5_archive_bytes
+    OR baseline_archive_bytes LESS 192
+    OR exact_baseline_archive_bytes LESS 192
+    OR candidate_archive_bytes LESS 192)
     message(FATAL_ERROR "Invalid bounded benchmark report: ${output}")
 endif()

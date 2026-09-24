@@ -24105,3 +24105,16 @@ tokens for every threshold. Require caller-owned aligned storage and count
 the active index against the frame's hard aggregate memory limit. Retain the
 exhaustive parser as an oracle. BM-0102's small aggregate gain and seven
 member regressions do not justify public admission or a claim of gzip parity.
+
+## DD-1192: Diagnose reserved short matches with identical tokens
+
+Keep the candidate selector and public stream unchanged. Extend only the
+private bounded benchmark to report all three fixed eligibility sizes and
+framewise wins/losses. Reuse eligibility-5 indexed tokens in the published
+31-context model and compare their fields with production HashChain tokens.
+BM-0103 finds equality on all 3,239 measured Silesia frames, while the
+reserved 32-context representation of those tokens costs 551,143 more
+bytes. Treat this as evidence of a model/representation penalty under the
+measured conditions, not proof that a specific context is responsible.
+Because the stream header fixes the variant, do not claim a per-frame
+baseline fallback without a separately specified format change.
