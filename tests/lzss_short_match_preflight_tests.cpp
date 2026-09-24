@@ -129,6 +129,11 @@ TEST(LzssShortMatchPreflight, ValidatesOnlyTheReservedStreamSemantics) {
     EXPECT_EQ(validate_lzss_short_match_stream_semantics(stream, limits),
               LzssShortMatchPreflightError::invalid_stream);
     stream = short_stream();
+    stream.dictionary_variant = 8;
+    stream.context_variant = 7;
+    EXPECT_EQ(validate_lzss_short_match_stream_semantics(stream, limits),
+              LzssShortMatchPreflightError::invalid_stream);
+    stream = short_stream();
     stream.frame_size = 65537;
     EXPECT_EQ(validate_lzss_short_match_stream_semantics(stream, limits),
               LzssShortMatchPreflightError::invalid_stream);

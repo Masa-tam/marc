@@ -7918,3 +7918,37 @@ rejected without publishing a partial frame.
 
 The exact two-token decoder vector, Range payload, and staged admission gates
 are in [the short-match candidate](design/lzss-contextual-short-match-64k.md).
+
+### Reserved 64-KiB LZSS short-length escape identity
+
+Format 2.0 separately reserves exact stream identity
+`dictionary 2/8 + context 1/7 + entropy 3/2`. The three variant IDs MUST
+occur together. This identity is private:
+the published stream parser, CLI, C API, and interoperability inventory
+MUST continue to reject it. It does not reinterpret the existing
+`dictionary 2/7 + context 1/6` reservation.
+
+Except for the IDs and Match-length mapping below, the previous reserved
+64-KiB short-match identity's stream/frame/descriptor fields, parameter
+limits, frame reset, token and distance semantics, Range arithmetic,
+strict termination, 32 context alphabets and 4,538 frequency entries apply
+unchanged. In particular the length symbol alphabet in contexts 20..22 is
+`0..8`, and the distance model context is `23 + length_class`.
+
+For a Match length `L` in `3..258`:
+
+- If `L` is 3 or 4, emit length class 8 and exactly one LSB-first bypass
+  bit, respectively 0 or 1. This is the short-length escape class.
+- If `L` is 5..258, let `V = L - 4`, emit class
+  `floor(log2(V))` in `0..7`, then emit `V - 2^class` in exactly `class`
+  LSB-first bypass bits. Class 0 has no bypass operation.
+
+The decoder MUST reject class values outside `0..8`, a bypass field with
+the wrong width or a value not representable in that width, and a decoded
+length outside `3..258`. In particular class 7 with bypass value 127 would
+decode to forbidden length 259 and MUST be rejected. The resulting token
+still undergoes the unchanged distance, frame-output and hard-limit checks.
+The previous reserved variant's `2T..min(2F,5T)` event,
+`event_count..min(9F,27T)` decision, `18F+5` payload and `18F+85`
+complete-frame ceilings remain conservative for this mapping. Any later
+decoder or encoder must validate them before allocating or publishing data.

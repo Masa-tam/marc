@@ -33313,3 +33313,24 @@ both bounds.
   passed; after the final timer-boundary adjustment, benchmark smoke and
   documentation layout tests passed again. BM-0104 records external
   full-Silesia measurements without tracking corpus bytes or reports.
+
+## CR-1348: 2026-09-24 - Reserve an isolated short-length escape
+
+- Author: Codex; reviewer: repository maintainer approved progression from
+  the measured length-bypass diagnosis to the next staged implementation.
+- References used: IR-0949, DD-1194, TVG-1063, BM-0104, and marc's own
+  published and previously reserved length mappings.
+- Known implementations intentionally not consulted: external compressor
+  sources, copyleft code, third-party tables, pseudocode and test suites.
+- Generated-code task: specify an independent private stream identity,
+  implement a bounded length-field encoder and validator, and prove its
+  canonical 3..258 domain without changing any published format.
+- Independent decisions: retain published long-length classes, use class 8
+  as a one-bit escape for 3/4, reject the sole class-7 terminal overflow,
+  and leave the new identity closed in the existing frame preflight.
+- Similarity review: used first-party format rules and independently written
+  hand vectors only; no external implementation expression was translated.
+  No legal non-infringement guarantee.
+- Local validation: the complete MSVC Release build and all 3,680 CTest
+  cases passed, including the new hand, exhaustive-domain, malformed-field,
+  old-identity rejection, documentation, and interoperability tests.

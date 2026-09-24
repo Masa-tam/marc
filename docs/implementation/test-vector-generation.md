@@ -15670,3 +15670,16 @@ their token sequences match. Assert that reserved length-bypass work is no
 smaller on this fixture. Retain BM-0104 as separate external-corpus evidence;
 do not embed Silesia bytes in a regression test or treat logical bypass
 counts as exact output sizes.
+
+### TVG-1063
+
+Derive hand length fields directly from the reserved escape rule:
+`3 -> (8,1,0)`, `4 -> (8,1,1)`, `5 -> (0,0,0)`,
+`6 -> (1,1,0)`, `7 -> (1,1,1)`, `8 -> (2,2,0)`,
+`132 -> (7,7,0)`, and `258 -> (7,7,126)`, where each tuple is
+`(class,bypass width,extra)`. Enumerate all lengths 3..258 and all
+possible class/extra combinations to show each valid length has exactly
+one representation. Class 7 extra 127 would yield 259 and must fail.
+Also reject invalid class, width, extra and source length. The existing
+variant-7/6 preflight must reject the new 8/7 IDs before any stream
+publication. No external corpus bytes enter these vectors.

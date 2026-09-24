@@ -418,3 +418,18 @@ mapping while isolating short matches. It changes decoder-visible length
 semantics, so it requires its own fully specified reserved revision, hand
 vectors, decoder-first validation, and complete-frame measurement before
 any admission. The current variant-7/variant-6 representation is unchanged.
+
+## Sixteenth implementation boundary: isolated escape-length primitive
+
+Format 2.0 now reserves a *different*, still-private identity
+`dictionary 2/8 + context 1/7 + entropy 3/2`. Its complete length field
+is specified in `docs/format.md`; all other short-match frame and Range
+rules are inherited explicitly from the previous reservation. A bounded,
+allocation-free primitive maps every length 3..258 to a class, bypass
+width, and extra value, and validates the inverse. Classes 0..7 retain
+the published `length - 4` mapping for lengths 5..258; class 8 uses one
+bit for lengths 3 and 4. Of the possible class-7 extras, 127 decodes to
+259 and is invalid. Tests cover hand boundaries, all 256 permitted lengths,
+unique canonical decoding, malformed fields, and rejection of the new
+identity by the existing private preflight. There is no Range payload,
+frame parser, encoder, public admission, or archive for this identity yet.

@@ -24130,3 +24130,16 @@ Silesia frames. Do not equate logical bypass bits with final Range bytes.
 Investigate an isolated short-length escape class while retaining the
 published long-length classes as a future decoder-visible design; require
 its own format rule and decoder tests before implementation or admission.
+
+## DD-1194: Give short-length escape an isolated reserved identity
+
+Reserve exact private identity
+`dictionary 2/8 + context 1/7 + entropy 3/2`, leaving the existing
+`2/7 + 1/6 + 3/2` mapping byte-for-byte
+unchanged. Keep contexts 20..22 at alphabet 9 and distance context
+`23 + length_class`. For lengths 3 and 4, class 8 has one bypass bit;
+for lengths 5..258, classes 0..7 use the published `length - 4`
+mapping. The class-7 extra 127 is invalid because it would yield 259.
+Implement only a pure bounded encode/decode primitive at this stage;
+existing frame preflight must reject 2/8 + 1/7 until decoder-first
+validation and full format admission are separately complete.

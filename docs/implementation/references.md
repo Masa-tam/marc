@@ -8713,3 +8713,11 @@ LZSS field-context model, reserved short-match model, and private matched-
 token benchmark. BM-0104 uses external Silesia bytes only as untracked
 measurement input. No external compressor's source, model table, or test
 suite was consulted.
+
+### IR-0949
+
+The private short-length escape is derived from marc's own published
+`length - 4` mapping, reserved `length - 2` experiment, BM-0104's
+bypass-bit diagnosis, and the independently specified length rule in
+`docs/format.md`. No external encoder source, table, pseudocode, or test
+suite was consulted.
