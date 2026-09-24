@@ -24389,3 +24389,16 @@ both weaken the initial prior and shorten the effective adaptation horizon;
 this experiment does not isolate those effects. Its floating-point scores
 are not actual range-coded sizes and do not alter any serialized format.
 Any adopted update rule needs a separately specified encoder/decoder variant.
+
+## DD-1215: Isolate literal context partitioning in diagnostics
+
+Add diagnostic-only partitions shared and high0 through high4. The original
+context describes the high nibble of the previous literal token, not necessarily
+the previous reconstructed byte: matches do not update that literal history.
+Keep the no-previous-literal context separate for high0 through high4, and retain
+zero through four prefix bits respectively. These use 2, 3, 5, 9 and 17 contexts.
+Shared merges all literal contexts into one. Validate original operations before
+remapping, merge both adaptive statistics and empirical histograms, and leave
+other fields untouched. Default high4 preserves existing diagnostics exactly.
+This step adds tested diagnostic primitives only; corpus measurements and any
+encoder/decoder format decision remain separate steps.

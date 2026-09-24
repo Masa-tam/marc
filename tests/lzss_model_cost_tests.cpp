@@ -112,4 +112,52 @@ TEST(LzssModelCost, WeightedLiteralRescaleHasIndependentProbabilityFormula) {
         EXPECT_EQ(invalid.adaptive_bits, (std::array<double, 4>{}));
     }
 }
+TEST(LzssModelCost, LiteralPartitionsMergeOnlyTheSpecifiedPrefixBins) {
+    using marc::benchmarks::LiteralPartition;
+    const std::array partitions{LiteralPartition::shared, LiteralPartition::high0,
+        LiteralPartition::high1, LiteralPartition::high2,
+        LiteralPartition::high3, LiteralPartition::high4};
+    // Explicit expected bins for source contexts 3, 4, 5, 11, 12, 19.
+    constexpr unsigned bins[6][6]{{0,0,0,0,0,0}, {0,1,1,1,1,1},
+        {0,1,1,1,2,2}, {0,1,1,2,3,4}, {0,1,1,4,5,8}, {0,1,2,8,9,16}};
+    const std::array operations{
+        ModeledOperation{ModeledOperationKind::symbol, 3, 256, 97, 0},
+        ModeledOperation{ModeledOperationKind::symbol, 4, 256, 97, 0},
+        ModeledOperation{ModeledOperationKind::symbol, 5, 256, 97, 0},
+        ModeledOperation{ModeledOperationKind::symbol, 11, 256, 97, 0},
+        ModeledOperation{ModeledOperationKind::symbol, 12, 256, 97, 0},
+        ModeledOperation{ModeledOperationKind::symbol, 19, 256, 97, 0},
+        ModeledOperation{ModeledOperationKind::symbol, 0, 2, 0, 0}};
+    for (std::size_t p = 0; p < partitions.size(); ++p) {
+        std::array<unsigned, 17> seen{};
+        double expected{};
+        for (const auto bin : bins[p]) {
+            expected += std::log2((256.0 + seen[bin]) / (1.0 + seen[bin]));
+            ++seen[bin];
+        }
+        const auto result = measure_model_cost(operations, CostLayout::short_match_64k, 1, partitions[p]);
+        ASSERT_TRUE(result.valid);
+        EXPECT_NEAR(result.adaptive_bits[1], expected, 1e-12);
+        EXPECT_DOUBLE_EQ(result.empirical_bits[1], 0);
+        EXPECT_EQ(result.symbols[1], 6);
+        EXPECT_DOUBLE_EQ(result.adaptive_bits[0], 1);
+    }
+    EXPECT_EQ(measure_model_cost(operations, CostLayout::short_match_64k).adaptive_bits,
+        measure_model_cost(operations, CostLayout::short_match_64k, 1, LiteralPartition::high4).adaptive_bits);
+}
+
+TEST(LzssModelCost, SharedPartitionUsesMergedHistogramAndValidatesSource) {
+    using marc::benchmarks::LiteralPartition;
+    std::array operations{
+        ModeledOperation{ModeledOperationKind::symbol, 3, 256, 97, 0},
+        ModeledOperation{ModeledOperationKind::symbol, 19, 256, 98, 0}};
+    const auto result = measure_model_cost(operations, CostLayout::short_match_64k, 1, LiteralPartition::shared);
+    ASSERT_TRUE(result.valid);
+    EXPECT_DOUBLE_EQ(result.empirical_bits[1], 2);
+    EXPECT_NEAR(result.adaptive_bits[1], 8 + std::log2(257.0), 1e-12);
+    operations[1].alphabet_size = 255;
+    EXPECT_FALSE(measure_model_cost(operations, CostLayout::short_match_64k, 1, LiteralPartition::shared).valid);
+    EXPECT_FALSE(measure_model_cost({}, CostLayout::short_match_64k, 1,
+        static_cast<LiteralPartition>(99)).valid);
+}
 } // namespace

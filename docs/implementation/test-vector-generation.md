@@ -15895,3 +15895,12 @@ identical updates reach total 32,768; the next probability is 16,257/16,512.
 Check this independently calculated rescale boundary and reject invalid steps.
 Benchmark smoke requires indexed/reference equality for all trial scores and
 exact step-one agreement with the retained-winner diagnostic.
+
+### TVG-1084
+
+Use explicit expected bins for original contexts 3, 4, 5, 11, 12 and 19 under
+all six partitions. Repeated identical symbols have independently calculated
+probabilities (1 + prior occurrences)/(256 + prior occurrences). Verify the
+kind field is unchanged and high4 matches the default. Two different symbols
+in merged contexts have empirical cost two bits. Reject an invalid original
+alphabet before remapping and reject unknown partition values even on empty input.

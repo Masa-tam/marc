@@ -33736,3 +33736,21 @@ both bounds.
   actual archive size stayed unchanged. Full MSVC Release build and all
   3,743 CTest cases passed, including documentation layout and interoperability
   schema compatibility.
+
+## CR-1369: 2026-09-25 - Define literal partition diagnostic controls
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0970, DD-1215 and TVG-1084; first-party context state
+  and bounded model-cost diagnostic only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party model heuristics.
+- Generated-code task: add six bounded literal-sharing controls and independent
+  probability tests without changing public coding behavior or formats.
+- Independent decisions: retain the initial context except in the fully shared
+  control, validate before merging, and merge empirical histograms as well.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation: explicit bin mappings, hand-calculated scores, unchanged nonliteral
+  field, default equivalence and invalid configuration tests are included.
+  Full MSVC Release build and all 3,745 CTest cases passed, including
+  documentation layout and interoperability schema compatibility.

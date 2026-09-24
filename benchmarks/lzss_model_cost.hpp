@@ -12,6 +12,7 @@
 namespace marc::benchmarks {
 
 enum class CostLayout { published_64k, short_match_64k };
+enum class LiteralPartition { shared, high0, high1, high2, high3, high4 };
 
 // Benchmark-only information quantities. No serialized representation uses
 // these floating-point calculations. Categories: kind, literal, length, distance.
@@ -26,11 +27,21 @@ struct ModelCost {
 [[nodiscard]] inline ModelCost measure_model_cost(
     const std::span<const context::internal::ModeledOperation> operations,
     const CostLayout layout,
-    const std::uint32_t literal_increment = 1) noexcept {
+    const std::uint32_t literal_increment = 1,
+    const LiteralPartition partition = LiteralPartition::high4) noexcept {
     using namespace context::internal;
     if (operations.size() > 5 * 65536
         || (literal_increment != 1 && literal_increment != 2
             && literal_increment != 4 && literal_increment != 8)) return {};
+    unsigned retained_bits{};
+    switch (partition) {
+    case LiteralPartition::shared: case LiteralPartition::high0: break;
+    case LiteralPartition::high1: retained_bits = 1; break;
+    case LiteralPartition::high2: retained_bits = 2; break;
+    case LiteralPartition::high3: retained_bits = 3; break;
+    case LiteralPartition::high4: retained_bits = 4; break;
+    default: return {};
+    }
     std::span<const std::uint16_t> alphabets;
     if (layout == CostLayout::published_64k) {
         alphabets = lzss_field_context_alphabets_v1;
@@ -54,12 +65,18 @@ struct ModelCost {
     std::size_t preceding = alphabets.size();
     for (const auto& operation : operations) {
         if (operation.kind == ModeledOperationKind::symbol) {
-            const auto id = operation.context_id;
+            std::size_t id = operation.context_id;
             if (id >= alphabets.size()
                 || operation.alphabet_size != alphabets[id]
                 || operation.value >= alphabets[id]
                 || operation.bit_count != 0) return {};
             const auto group = category(id);
+            // Validate the original operation before merging literal statistics.
+            // Context 3 denotes no preceding literal token, not a byte prefix.
+            if (group == 1) {
+                if (partition == LiteralPartition::shared) id = 3;
+                else if (id >= 4) id = 4 + ((id - 4) >> (4 - retained_bits));
+            }
             auto& frequency = frequencies[id][operation.value];
             result.adaptive_bits[group] += std::log2(
                 static_cast<double>(totals[id]) / frequency);

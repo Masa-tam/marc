@@ -8863,3 +8863,9 @@ The literal-increment diagnostic extends marc's own bounded information
 profiler, retaining frequency-one initialization and ceil-half rescaling.
 Its increment grid is an independently chosen experiment motivated by
 BM-0113. No external implementation or adaptive-model source is consulted.
+
+### IR-0970
+
+Literal partition diagnostics use marc's own field-context state and information
+profiler. Prefix coarsening and full sharing are independently chosen controls;
+no external model implementation or compressor source was consulted.
