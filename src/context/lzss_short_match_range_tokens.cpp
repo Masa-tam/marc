@@ -1,6 +1,8 @@
 #include "context/lzss_short_match_range_tokens.hpp"
+#include "context/lzss_short_length_escape_range_tokens.hpp"
 
 #include "context/lzss_field_context_state.hpp"
+#include "context/lzss_short_length_escape.hpp"
 #include "core/checked_math.hpp"
 #include "entropy/lzss_short_match_range_decoder.hpp"
 
@@ -15,6 +17,20 @@ using dictionary::internal::LzssTypedTokenError;
 using dictionary::internal::LzssTypedTokenKind;
 using entropy::internal::ContextualDynamicRangeDecodeError;
 using entropy::internal::LzssShortMatchRangeDecoder;
+
+enum class LengthMapping : std::uint8_t {
+    shifted_two,
+    isolated_escape,
+};
+
+[[nodiscard]] constexpr dictionary::internal::LzssTypedTokenVariant
+token_variant(const LengthMapping mapping) noexcept {
+    return mapping == LengthMapping::isolated_escape
+        ? dictionary::internal::LzssTypedTokenVariant::
+              field_context_64k_short_length_escape
+        : dictionary::internal::LzssTypedTokenVariant::
+              field_context_64k_short_match;
+}
 
 [[nodiscard]] bool read_symbol(
     LzssShortMatchRangeDecoder& decoder, const std::uint16_t context_id,
@@ -42,6 +58,7 @@ using entropy::internal::LzssShortMatchRangeDecoder;
 
 [[nodiscard]] bool read_token(
     LzssShortMatchRangeDecoder& decoder, const LzssFieldContextState& state,
+    const LengthMapping mapping,
     LzssTypedToken& token,
     LzssContextualRangeDecodeResult& result) noexcept {
     std::uint32_t kind{};
@@ -65,12 +82,26 @@ using entropy::internal::LzssShortMatchRangeDecoder;
         return false;
     }
     std::uint32_t length_extra{};
-    if (length_class != 0
-        && !read_bypass(decoder, static_cast<std::uint8_t>(length_class),
+    const auto length_bits = static_cast<std::uint8_t>(
+        mapping == LengthMapping::isolated_escape && length_class == 8
+            ? 1 : length_class);
+    if (length_bits != 0
+        && !read_bypass(decoder, length_bits,
                         length_extra, result)) {
         return false;
     }
-    const auto length = (UINT32_C(1) << length_class) + length_extra + 2;
+    std::uint32_t length{};
+    if (mapping == LengthMapping::isolated_escape) {
+        const auto decoded = decode_lzss_short_length_escape(
+            length_class, length_bits, length_extra);
+        if (decoded.error != LzssShortLengthEscapeError::none) {
+            result.error = LzssContextualRangeDecodeError::invalid_token;
+            return false;
+        }
+        length = decoded.length;
+    } else {
+        length = (UINT32_C(1) << length_class) + length_extra + 2;
+    }
     const auto distance_context =
         LzssFieldContextState::distance_context(length_class);
     std::uint32_t distance_class{};
@@ -138,12 +169,11 @@ using entropy::internal::LzssShortMatchRangeDecoder;
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
+    const LengthMapping mapping,
     const std::span<LzssTypedToken> output) noexcept {
     LzssContextualRangeDecodeResult result{};
     result.token_error = dictionary::internal::validate_lzss_typed_parameters(
-        parameters, limits,
-        dictionary::internal::LzssTypedTokenVariant::
-            field_context_64k_short_match);
+        parameters, limits, token_variant(mapping));
     if (result.token_error != LzssTypedTokenError::none) {
         result.error = result.token_error == LzssTypedTokenError::limit_exceeded
             ? LzssContextualRangeDecodeError::limit_exceeded
@@ -174,13 +204,12 @@ using entropy::internal::LzssShortMatchRangeDecoder;
     while (result.token_count < context.declared_token_count) {
         result.token_index = result.token_count;
         LzssTypedToken token{};
-        if (!read_token(decoder, state, token, result)) return result;
+        if (!read_token(decoder, state, mapping, token, result)) return result;
         std::uint64_t next_raw{};
         result.token_error = dictionary::internal::validate_lzss_typed_token(
             token, parameters,
             {result.raw_size, context.declared_raw_size}, limits, next_raw,
-            dictionary::internal::LzssTypedTokenVariant::
-                field_context_64k_short_match);
+            token_variant(mapping));
         if (result.token_error != LzssTypedTokenError::none) {
             if (result.token_error == LzssTypedTokenError::limit_exceeded) {
                 result.error = LzssContextualRangeDecodeError::limit_exceeded;
@@ -251,18 +280,22 @@ LzssContextualRangeDecodeResult validate_lzss_short_match_range_tokens(
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits) noexcept {
-    return run_pass(descriptor, payload, parameters, context, limits, {});
+    return run_pass(descriptor, payload, parameters, context, limits,
+                    LengthMapping::shifted_two, {});
 }
 
-LzssContextualRangeDecodeResult decode_lzss_short_match_range_tokens(
+namespace {
+
+[[nodiscard]] LzssContextualRangeDecodeResult decode_tokens(
     const entropy::internal::ContextualDynamicRangeDescriptor& descriptor,
     const std::span<const std::byte> payload,
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
-    const std::span<LzssTypedToken> private_tokens) noexcept {
+    const std::span<LzssTypedToken> private_tokens,
+    const LengthMapping mapping) noexcept {
     auto result = run_pass(descriptor, payload, parameters, context, limits,
-                           {});
+                           mapping, {});
     if (result.error != LzssContextualRangeDecodeError::none) return result;
     if (private_tokens.size() < context.declared_token_count) {
         result.error = LzssContextualRangeDecodeError::output_too_small;
@@ -279,7 +312,7 @@ LzssContextualRangeDecodeResult decode_lzss_short_match_range_tokens(
         return result;
     }
     const auto decoded = run_pass(descriptor, payload, parameters, context,
-                                  limits, output);
+                                  limits, mapping, output);
     if (decoded.error != LzssContextualRangeDecodeError::none
         || decoded.token_count != result.token_count
         || decoded.raw_size != result.raw_size
@@ -291,6 +324,41 @@ LzssContextualRangeDecodeResult decode_lzss_short_match_range_tokens(
         return result;
     }
     return decoded;
+}
+
+} // namespace
+
+LzssContextualRangeDecodeResult decode_lzss_short_match_range_tokens(
+    const entropy::internal::ContextualDynamicRangeDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<LzssTypedToken> private_tokens) noexcept {
+    return decode_tokens(descriptor, payload, parameters, context, limits,
+                         private_tokens, LengthMapping::shifted_two);
+}
+
+LzssContextualRangeDecodeResult
+validate_lzss_short_length_escape_range_tokens(
+    const entropy::internal::ContextualDynamicRangeDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits) noexcept {
+    return run_pass(descriptor, payload, parameters, context, limits,
+                    LengthMapping::isolated_escape, {});
+}
+
+LzssContextualRangeDecodeResult decode_lzss_short_length_escape_range_tokens(
+    const entropy::internal::ContextualDynamicRangeDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<LzssTypedToken> private_tokens) noexcept {
+    return decode_tokens(descriptor, payload, parameters, context, limits,
+                         private_tokens, LengthMapping::isolated_escape);
 }
 
 } // namespace marc::context::internal

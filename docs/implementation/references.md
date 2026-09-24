@@ -8728,3 +8728,10 @@ The operation inversion follows marc's independently implemented
 field-context state and typed-token validation contracts, with the
 private escape mapping from IR-0949 and `docs/format.md`. No external
 compressor decoder, source code, table or test suite was consulted.
+
+### IR-0951
+
+The private Range payload path reuses marc's own 32-context integer Range
+model and the independently defined escape-length rule from IR-0949/0950.
+No external compressor decoder, entropy implementation, table, pseudocode
+or test suite was consulted.

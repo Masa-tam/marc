@@ -15696,3 +15696,15 @@ Mutate the bypass value, terminal class-7 extra, distance history,
 context, alphabet, declared counts, frame limit and token-buffer alias to
 assert deterministic rejection without partial token output. These are
 first-party hand/generated vectors; no external corpus is embedded.
+
+### TVG-1065
+
+For each length 3..258, construct a literal `a` followed by a distance-1
+match in the private 2/8 + 1/7 operation grammar, including the class-0
+no-bypass case and the class-8 one-bit case. Encode those operations with
+marc's first-party private 32-context Range writer, then validate and
+invert the payload against independently expected tokens and counts.
+Encode class 7 with extra 127 separately to require rejection of length
+259. Mutate descriptor counts, the initial coder byte, distance history,
+trailing payload and output-buffer alias to test strict failures without
+partial token writes. Existing 2/7 + 1/6 vectors remain unchanged.

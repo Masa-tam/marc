@@ -12,8 +12,9 @@
 
 namespace marc::entropy::internal {
 
-// Private Format 2.0 context-variant-6 model. No published stream selector
-// constructs this decoder yet; prior 31-context model storage is unchanged.
+// Private Format 2.0 32-context model shared by context variants 6 and 7.
+// No published stream selector constructs it; the earlier 31-context model
+// storage is unchanged.
 class LzssShortMatchRangeDecoder {
 public:
     [[nodiscard]] ContextualDynamicRangeDecodeResult begin(

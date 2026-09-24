@@ -446,3 +446,18 @@ the caller's token buffer untouched. Every length 3..258 is covered by an
 operation-level round trip, with separate malformed-operation tests.
 The existing public parser, Range payload and frame paths still reject or
 do not route to this identity. No encoder or archive has been introduced.
+
+## Eighteenth implementation boundary: private Range payload decoding
+
+The private 2/8 + 1/7 + 3/2 identity now decodes a bounded Range payload
+directly into typed tokens. It reuses the existing 32-context arithmetic
+model and selects only the independent length interpretation: class 8 reads
+one bypass bit for length 3 or 4, while classes 0..7 decode `length - 4`.
+The previous 2/7 + 1/6 path retains its original interpretation and tests.
+Before token publication the new path validates the descriptor, declared
+counts, compressed-size ceilings, history distance, raw output, hard limits,
+strict coder termination and payload/output disjointness. Tests encode
+first-party modeled operations and decode every length 3..258, as well as
+forbidden length 259 and malformed or trailing payloads. The public stream
+preflight still rejects this identity; frame parsing, streaming and a
+complete encoder remain outside this boundary.

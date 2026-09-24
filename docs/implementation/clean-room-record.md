@@ -33355,3 +33355,23 @@ both bounds.
 - Local validation: complete MSVC Release build and all 3,686 CTest cases
   passed, including focused hand, exhaustive-length, malformed-operation,
   documentation and interoperability tests.
+
+## CR-1350: 2026-09-24 - Decode private escape Range payloads
+
+- Author: Codex; reviewer: repository maintainer approved progression to
+  the next staged private Range decoding boundary.
+- References used: IR-0951, DD-1196, TVG-1065, and marc's existing private
+  32-context Range coder and independently specified 2/8 length rule.
+- Known implementations intentionally not consulted: external compressor
+  sources, copyleft code, third-party entropy tables, pseudocode and tests.
+- Generated-code task: validate and decode the private 2/8 + 1/7 + 3/2
+  Range payload without changing the old reservation or admitting a stream.
+- Independent decisions: share the model and arithmetic path while selecting
+  only the length interpretation; use a complete validation pass before
+  writing tokens and preserve strict payload termination.
+- Similarity review: the change adapts first-party private decoder logic and
+  hand-derived operation vectors only; no external implementation expression
+  was translated. No legal non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,690 CTest cases
+  passed, including the new and old private Range cases, documentation and
+  interoperability tests.

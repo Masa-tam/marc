@@ -24153,3 +24153,13 @@ literal and distance contexts. Reject malformed contexts, fields, counts,
 truncation and over-limit output before touching the caller's token buffer;
 then invert the validated sequence. Do not route public streams to this
 decoder until separate Range/frame validation and admission are complete.
+
+## DD-1196: Share the private Range model, isolate length interpretation
+
+Both reserved short-match identities use the same 32-context Range model,
+but their length-class semantics differ. Reuse the bounded private Range
+decoder and its count/termination checks while selecting the length mapping
+explicitly at the internal token-decoding boundary. Preserve the 2/7 + 1/6
+behavior and expose separate internal 2/8 + 1/7 validation/decode entry
+points. Validate a complete pass before writing caller-owned tokens; do not
+admit the new identity through public stream preflight at this stage.
