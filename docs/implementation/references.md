@@ -8689,3 +8689,11 @@ HashChain typed encoder, field-context mapper, and Range planner with the
 reserved private selector and decoder. The Silesia corpus is an external
 measurement input only; its bytes are not copied into tests or the
 repository. No external encoder source, table, or test suite was consulted.
+
+### IR-0946
+
+The private three-byte-prefix index follows marc's first-party LZSS
+longest-match, nearest-distance, frame-reset, and caller-workspace contracts.
+The exhaustive finder is its correctness oracle. BM-0101 supplies the fixed
+pilot conditions; BM-0102 records the full external Silesia measurement.
+No third-party match-finder code, table, or test suite was consulted.

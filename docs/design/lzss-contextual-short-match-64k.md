@@ -364,3 +364,23 @@ The 64-KiB-frame `mozilla` pilot is recorded in BM-0101. The exhaustive
 candidate parser remains far too slow for corpus-wide use; short-prefix
 indexing with an exact-match oracle is the next optimization gate. No public
 admission follows from the bounded pilot.
+
+## Thirteenth implementation boundary: exact short-prefix index
+
+A private 3-byte-prefix HashChain uses 65,536 buckets and one link per raw
+frame byte (524,288 bytes at a full 65,536-byte frame). Hash collisions are
+checked against all three source bytes. Positions are inserted in raw order,
+including bytes skipped by a Match, so chain traversal visits the nearest
+distance first. A candidate replaces the best Match only on strictly greater
+length; a safe best-length byte probe may skip candidates that cannot win.
+The index accepts caller-owned aligned storage, validates disjoint regions
+and hard limits, and resets independently for each frame and candidate.
+
+The original exhaustive parser and selector remain the oracle. Tests compare
+every query on bounded hand/random inputs, candidate tokens for thresholds
+3/4/5, and the final serialized frame bytes. The benchmark can run either
+search mode; both select identical frame sizes in its tracked smoke fixture.
+BM-0102 records the indexed full-Silesia measurement. Despite a small
+aggregate gain and practical pilot speed, seven of twelve corpus members
+grow, and `mozilla` still misses the stated gzip target. No public encoder,
+interoperability archive, or automatic stream-level selection is admitted.

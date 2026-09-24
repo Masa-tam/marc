@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <vector>
 
 namespace {
 
@@ -112,5 +113,63 @@ TEST(LzssShortMatchCandidate, RejectsInvalidCapacityAndOverlap) {
         reinterpret_cast<const std::byte*>(aliased.data()), aaaa.size()};
     result = tokenize_lzss_short_match_candidate(
         input, parameters, limits, 3, aliased);
+    EXPECT_EQ(result.error, LzssShortMatchCandidateError::overlapping_buffers);
+}
+
+TEST(LzssShortMatchCandidate, IndexedTokensMatchExhaustiveCandidates) {
+    std::vector<std::byte> raw(513);
+    for (std::size_t index = 0; index < raw.size(); ++index) {
+        raw[index] = std::byte{static_cast<std::uint8_t>(
+            (index * 17U + index / 11U) & 0x0fU)};
+    }
+    const auto limits = marc::core::DecoderLimits{};
+    const auto needed = calculate_lzss_short_prefix_workspace(
+        raw.size(), parameters, limits);
+    ASSERT_EQ(needed.error, LzssShortPrefixError::none);
+    std::vector<std::uint32_t> storage(
+        needed.workspace_size / sizeof(std::uint32_t));
+    const auto workspace = std::span<std::byte>{
+        reinterpret_cast<std::byte*>(storage.data()),
+        storage.size() * sizeof(std::uint32_t)};
+    std::vector<LzssTypedToken> reference(raw.size());
+    std::vector<LzssTypedToken> indexed(raw.size());
+    for (const auto eligibility : {3U, 4U, 5U}) {
+        const auto expected = tokenize_lzss_short_match_candidate(
+            raw, parameters, limits, eligibility, reference);
+        const auto actual = tokenize_lzss_short_match_candidate_indexed(
+            raw, parameters, limits, eligibility, indexed, workspace);
+        ASSERT_EQ(expected.error, LzssShortMatchCandidateError::none);
+        ASSERT_EQ(actual.error, LzssShortMatchCandidateError::none);
+        ASSERT_EQ(actual.token_count, expected.token_count);
+        for (std::size_t index = 0; index < expected.token_count; ++index) {
+            EXPECT_EQ(indexed[index].kind, reference[index].kind);
+            EXPECT_EQ(indexed[index].literal, reference[index].literal);
+            EXPECT_EQ(indexed[index].distance, reference[index].distance);
+            EXPECT_EQ(indexed[index].length, reference[index].length);
+        }
+    }
+}
+
+TEST(LzssShortMatchCandidate, IndexedParserRejectsShortOrAliasedWorkspace) {
+    const auto limits = marc::core::DecoderLimits{};
+    const auto needed = calculate_lzss_short_prefix_workspace(
+        aaaa.size(), parameters, limits);
+    ASSERT_EQ(needed.error, LzssShortPrefixError::none);
+    std::vector<std::uint32_t> storage(
+        needed.workspace_size / sizeof(std::uint32_t));
+    const auto workspace = std::span<std::byte>{
+        reinterpret_cast<std::byte*>(storage.data()),
+        storage.size() * sizeof(std::uint32_t)};
+    std::array<LzssTypedToken, 4> tokens{};
+    tokens[0].literal = 0xcc;
+    auto result = tokenize_lzss_short_match_candidate_indexed(
+        aaaa, parameters, limits, 3, tokens,
+        workspace.first(workspace.size() - 1));
+    EXPECT_EQ(result.error, LzssShortMatchCandidateError::workspace_too_small);
+    EXPECT_EQ(tokens[0].literal, 0xccU);
+    const auto aliased = std::span<LzssTypedToken>{
+        reinterpret_cast<LzssTypedToken*>(storage.data()), 4};
+    result = tokenize_lzss_short_match_candidate_indexed(
+        aaaa, parameters, limits, 3, aliased, workspace);
     EXPECT_EQ(result.error, LzssShortMatchCandidateError::overlapping_buffers);
 }

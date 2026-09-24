@@ -24094,3 +24094,14 @@ selection-plus-encode time; do not label them comparable throughput. Do not
 promote the exhaustive reference parser from a bounded pilot: BM-0101 shows
 only a small prefix gain at prohibitive latency. Design and validate an
 exact three-byte-prefix search before a whole-corpus admission decision.
+
+## DD-1191: Keep short-prefix indexing exact and private
+
+Use a bounded three-byte HashChain only for the reserved 64-KiB short-match
+identity. Hash collisions never establish a match without byte comparison.
+Insert skipped raw positions, visit nearest candidates first, and update the
+best only for a strictly longer match, preserving the exhaustive parser's
+tokens for every threshold. Require caller-owned aligned storage and count
+the active index against the frame's hard aggregate memory limit. Retain the
+exhaustive parser as an oracle. BM-0102's small aggregate gain and seven
+member regressions do not justify public admission or a claim of gzip parity.

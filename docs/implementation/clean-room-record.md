@@ -33248,3 +33248,24 @@ both bounds.
   passed, including the bounded benchmark smoke, interoperability schema
   compatibility, and documentation layout checks. BM-0101 records the
   external 16-frame `mozilla` pilot; its input is not tracked.
+
+## CR-1345: 2026-09-24 - Index three-byte short-match prefixes privately
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  exact short-prefix search and benchmark comparison.
+- References used: IR-0946, DD-1191, TVG-1060, BM-0101, BM-0102, and
+  marc's first-party exhaustive match finder and reserved frame codec.
+- Known implementations intentionally not consulted: external match-finder
+  sources, copyleft code, third-party test suites or tables.
+- Generated-code task: index exact three-byte prefixes with caller-owned
+  memory, preserve exhaustive tokens and frame bytes, and measure every
+  external Silesia member without copying corpus data into the repository.
+- Independent decisions: verify hash collisions against source bytes,
+  maintain nearest-first links, account for finder workspace, retain the
+  exhaustive oracle, and withhold public admission after mixed corpus gains.
+- Similarity review: used first-party search and format contracts only;
+  no external expression was translated. No legal non-infringement guarantee.
+- Local validation: the full MSVC Release build and all 3,676 CTest cases
+  passed, including indexed/reference smoke, interoperability schema
+  compatibility, and documentation layout checks. BM-0102 records the
+  external full-Silesia results; no corpus bytes are tracked.

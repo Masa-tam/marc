@@ -1,5 +1,6 @@
 #include "context/lzss_field_context.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
+#include "dictionary/lzss_short_prefix_match_finder.hpp"
 #include "dictionary/lzss_typed_encoder.hpp"
 #include "entropy/contextual_dynamic_range_encoder.hpp"
 #include "frame/lzss_short_match_candidate_selector.hpp"
@@ -74,9 +75,15 @@ using marc::dictionary::internal::LzssTypedToken;
 } // namespace
 
 int main(const int argc, const char* const argv[]) {
-    if (argc != 4) {
+    if (argc != 4 && argc != 5) {
         std::cerr << "usage: marc_lzss_short_match_candidate_benchmark "
-                     "<input> <max-frames:1..1024> <frame-bytes:1..65536>\n";
+                     "<input> <max-frames:1..1024> <frame-bytes:1..65536> "
+                     "[indexed|reference]\n";
+        return 2;
+    }
+    const std::string_view search = argc == 5 ? argv[4] : "indexed";
+    if (search != "indexed" && search != "reference") {
+        std::cerr << "invalid search mode\n";
         return 2;
     }
     std::size_t maximum_frames{};
@@ -107,14 +114,24 @@ int main(const int argc, const char* const argv[]) {
     const auto required = marc::dictionary::internal::
         calculate_lzss_hash_chain_workspace(
             frame_bytes, baseline_parameters, limits);
+    const LzssParameters candidate_parameters{65536, 3, 258, 0};
+    const auto candidate_required = marc::dictionary::internal::
+        calculate_lzss_short_prefix_workspace(
+            frame_bytes, candidate_parameters, limits);
     if (required.error != marc::dictionary::internal::LzssHashChainError::none)
         return 2;
+    if (candidate_required.error
+        != marc::dictionary::internal::LzssShortPrefixError::none) return 2;
+    const auto workspace_bytes = std::max(
+        required.workspace_size, candidate_required.workspace_size);
     std::vector<std::max_align_t> finder_storage(
-        (required.workspace_size + sizeof(std::max_align_t) - 1)
+        (workspace_bytes + sizeof(std::max_align_t) - 1)
             / sizeof(std::max_align_t));
     const auto finder_workspace = std::span<std::byte>{
         reinterpret_cast<std::byte*>(finder_storage.data()),
         finder_storage.size() * sizeof(std::max_align_t)};
+    const auto candidate_workspace = finder_workspace.first(
+        candidate_required.workspace_size);
     std::vector<std::byte> raw(frame_bytes);
     std::vector<std::byte> decoded(frame_bytes);
     std::vector<std::byte> serialized(18 * frame_bytes + 85);
@@ -157,10 +174,15 @@ int main(const int argc, const char* const argv[]) {
             Clock::now() - baseline_start).count();
 
         const auto encode_start = Clock::now();
-        const auto candidate = marc::frame::internal::
-            encode_lzss_short_match_candidate_frame(
-                stream, limits, frames, committed, frame, tokens,
-                operations, serialized);
+        const auto candidate = search == "indexed"
+            ? marc::frame::internal::
+                encode_lzss_short_match_candidate_frame_indexed(
+                    stream, limits, frames, committed, frame, tokens,
+                    operations, candidate_workspace, serialized)
+            : marc::frame::internal::
+                encode_lzss_short_match_candidate_frame(
+                    stream, limits, frames, committed, frame, tokens,
+                    operations, serialized);
         candidate_encode_seconds += std::chrono::duration<double>(
             Clock::now() - encode_start).count();
         if (candidate.error != marc::frame::internal::
@@ -199,6 +221,7 @@ int main(const int argc, const char* const argv[]) {
         ++frames;
     }
     std::cout << "mode=lzss-short-match-candidate-sample\n"
+              << "candidate_search=" << search << '\n'
               << "sample_bytes=" << sample_bytes << '\n'
               << "frame_bytes=" << frame_bytes << '\n'
               << "frame_count=" << frames << '\n'

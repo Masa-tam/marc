@@ -20,7 +20,8 @@ struct Region {
     const std::span<const std::byte> raw_input,
     const std::span<dictionary::internal::LzssTypedToken> tokens,
     const std::span<context::internal::ModeledOperation> operations,
-    const std::span<std::byte> serialized_output) noexcept {
+    const std::span<std::byte> serialized_output,
+    const std::span<std::byte> finder_workspace = {}) noexcept {
     std::size_t token_bytes{};
     std::size_t operation_bytes{};
     if (!core::checked_multiply(
@@ -35,7 +36,8 @@ struct Region {
         Region{raw_input.data(), raw_input.size()},
         Region{tokens.data(), token_bytes},
         Region{operations.data(), operation_bytes},
-        Region{serialized_output.data(), serialized_output.size()}};
+        Region{serialized_output.data(), serialized_output.size()},
+        Region{finder_workspace.data(), finder_workspace.size()}};
     for (std::size_t first = 0; first < regions.size(); ++first) {
         for (std::size_t second = first + 1; second < regions.size();
              ++second) {
@@ -134,6 +136,143 @@ LzssShortMatchSelectionResult encode_lzss_short_match_candidate_frame(
     }
     result.frame = encode_lzss_short_match_frame(
         stream, limits, sequence, raw_already_committed,
+        tokens.first(result.selected_token_count), operations,
+        serialized_output.first(result.selected_frame_size));
+    if (result.frame.error != LzssShortMatchFrameEncodeError::none
+        || result.frame.serialized_size != result.selected_frame_size) {
+        result.error = LzssShortMatchSelectionError::internal_error;
+    }
+    return result;
+}
+
+LzssShortMatchSelectionResult plan_lzss_short_match_candidate_frame_indexed(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t raw_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> finder_workspace) noexcept {
+    LzssShortMatchSelectionResult result{};
+    result.error = check_regions(raw_input, tokens, operations, {},
+                                 finder_workspace);
+    if (result.error != LzssShortMatchSelectionError::none) return result;
+    if (raw_input.size() > std::numeric_limits<std::uint32_t>::max()) {
+        result.error = LzssShortMatchSelectionError::arithmetic_overflow;
+        return result;
+    }
+    const auto needed = dictionary::internal::
+        calculate_lzss_short_prefix_workspace(
+            raw_input.size(), stream.dictionary, limits);
+    if (needed.error != dictionary::internal::LzssShortPrefixError::none) {
+        result.candidate.finder_error = needed.error;
+        switch (needed.error) {
+        case dictionary::internal::LzssShortPrefixError::invalid_parameters:
+            result.candidate.error = dictionary::internal::
+                LzssShortMatchCandidateError::invalid_parameters;
+            break;
+        case dictionary::internal::LzssShortPrefixError::input_limit_exceeded:
+            result.candidate.error = dictionary::internal::
+                LzssShortMatchCandidateError::input_limit_exceeded;
+            break;
+        case dictionary::internal::LzssShortPrefixError::arithmetic_overflow:
+            result.candidate.error = dictionary::internal::
+                LzssShortMatchCandidateError::arithmetic_overflow;
+            break;
+        default:
+            result.candidate.error = dictionary::internal::
+                LzssShortMatchCandidateError::token_storage_limit_exceeded;
+            break;
+        }
+        result.error = LzssShortMatchSelectionError::candidate_error;
+        return result;
+    }
+    if (needed.workspace_size > limits.max_internal_buffered_bytes
+        || limits.max_internal_buffered_bytes - needed.workspace_size
+               < limits.max_block_size) {
+        result.candidate.error = dictionary::internal::
+            LzssShortMatchCandidateError::token_storage_limit_exceeded;
+        result.error = LzssShortMatchSelectionError::candidate_error;
+        return result;
+    }
+    auto frame_limits = limits;
+    frame_limits.max_internal_buffered_bytes -= needed.workspace_size;
+    for (std::size_t index = 0; index < 3; ++index) {
+        result.candidate_index = index;
+        const auto eligibility = static_cast<std::uint32_t>(index + 3);
+        result.candidate = dictionary::internal::
+            tokenize_lzss_short_match_candidate_indexed(
+                raw_input, stream.dictionary, limits, eligibility,
+                tokens, finder_workspace);
+        if (result.candidate.error
+            != dictionary::internal::LzssShortMatchCandidateError::none) {
+            result.error = LzssShortMatchSelectionError::candidate_error;
+            return result;
+        }
+        result.frame = plan_lzss_short_match_frame(
+            stream, frame_limits, sequence, raw_already_committed,
+            tokens.first(result.candidate.token_count), operations);
+        if (result.frame.error != LzssShortMatchFrameEncodeError::none) {
+            result.error = LzssShortMatchSelectionError::frame_error;
+            return result;
+        }
+        result.candidate_frame_sizes[index] = result.frame.serialized_size;
+        if (result.selected_minimum_length == 0
+            || result.frame.serialized_size <= result.selected_frame_size) {
+            result.selected_minimum_length = eligibility;
+            result.selected_frame_size = result.frame.serialized_size;
+            result.selected_token_count = result.candidate.token_count;
+        }
+    }
+    result.candidate_index = result.selected_minimum_length - 3U;
+    return result;
+}
+
+LzssShortMatchSelectionResult encode_lzss_short_match_candidate_frame_indexed(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t raw_already_committed,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> finder_workspace,
+    const std::span<std::byte> serialized_output) noexcept {
+    LzssShortMatchSelectionResult result{};
+    result.error = check_regions(raw_input, tokens, operations,
+                                 serialized_output, finder_workspace);
+    if (result.error != LzssShortMatchSelectionError::none) return result;
+    result = plan_lzss_short_match_candidate_frame_indexed(
+        stream, limits, sequence, raw_already_committed,
+        raw_input, tokens, operations, finder_workspace);
+    if (result.error != LzssShortMatchSelectionError::none) return result;
+    if (serialized_output.size() < result.selected_frame_size) {
+        result.error =
+            LzssShortMatchSelectionError::serialized_output_too_small;
+        return result;
+    }
+    const auto needed = dictionary::internal::
+        calculate_lzss_short_prefix_workspace(
+            raw_input.size(), stream.dictionary, limits);
+    if (needed.error != dictionary::internal::LzssShortPrefixError::none) {
+        result.error = LzssShortMatchSelectionError::internal_error;
+        return result;
+    }
+    auto frame_limits = limits;
+    frame_limits.max_internal_buffered_bytes -= needed.workspace_size;
+    result.candidate = dictionary::internal::
+        tokenize_lzss_short_match_candidate_indexed(
+            raw_input, stream.dictionary, limits,
+            result.selected_minimum_length, tokens, finder_workspace);
+    if (result.candidate.error
+            != dictionary::internal::LzssShortMatchCandidateError::none
+        || result.candidate.token_count != result.selected_token_count) {
+        result.error = LzssShortMatchSelectionError::internal_error;
+        return result;
+    }
+    result.frame = encode_lzss_short_match_frame(
+        stream, frame_limits, sequence, raw_already_committed,
         tokens.first(result.selected_token_count), operations,
         serialized_output.first(result.selected_frame_size));
     if (result.frame.error != LzssShortMatchFrameEncodeError::none

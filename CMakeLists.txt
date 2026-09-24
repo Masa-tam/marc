@@ -154,6 +154,7 @@ set(MARC_SOURCES
     src/dictionary/lzss_validator.cpp
     src/dictionary/lzss_typed_token.cpp
     src/dictionary/lzss_short_match_candidate.cpp
+    src/dictionary/lzss_short_prefix_match_finder.cpp
     src/dictionary/lzss_typed_reconstructor.cpp
     src/dictionary/lz78_format.cpp
     src/dictionary/lz78_decoder.cpp
@@ -2576,6 +2577,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_short_match_frame_encoder_tests.cpp
         tests/lzss_short_match_candidate_tests.cpp
         tests/lzss_short_match_candidate_selector_tests.cpp
+        tests/lzss_short_prefix_match_finder_tests.cpp
         tests/lzss_short_match_stream_decoder_tests.cpp
     )
     target_compile_features(marc_core_tests PRIVATE cxx_std_20)

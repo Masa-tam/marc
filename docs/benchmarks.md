@@ -3655,3 +3655,50 @@ candidate's observed latency alone rules out the current reference parser
 for public use. This is a bounded prefix pilot, not a whole-`mozilla` or
 whole-Silesia result, and does not establish `gzip -9v` parity. A validated
 short-prefix match index and corpus-wide measurement are still required.
+
+### BM-0102: Indexed short-match candidate across all Silesia members
+
+On 2026-09-24, the private MSVC Release benchmark used each external
+Silesia member in full, with 65,536-byte frames and a 65,536-byte window:
+
+```text
+marc_lzss_short_match_candidate_benchmark <member> 1024 65536 indexed
+```
+
+Every selected reserved frame was encoded and privately decoded against its
+source. The complete-size column adds the fixed 112-byte stream header to
+the actual selected frame lengths, but no public archive was produced. The
+published baseline column uses the production HashChain token parser and
+complete Range payload planner; BM-0100 and tracked CLI-identity tests
+validate that baseline size method. No corpus bytes or generated reports are
+tracked.
+
+| Member | Published baseline | Reserved indexed | Difference |
+| --- | ---: | ---: | ---: |
+| dickens | 4,097,287 | 4,127,385 | +30,098 |
+| mozilla | 20,085,366 | 19,824,809 | -260,557 |
+| mr | 3,596,195 | 3,621,840 | +25,645 |
+| nci | 3,584,048 | 3,602,900 | +18,852 |
+| ooffice | 3,233,855 | 3,193,254 | -40,601 |
+| osdb | 4,112,363 | 4,133,678 | +21,315 |
+| reymont | 2,028,288 | 2,027,716 | -572 |
+| samba | 5,756,275 | 5,757,403 | +1,128 |
+| sao | 5,616,349 | 5,430,503 | -185,846 |
+| webster | 12,974,519 | 13,047,813 | +73,294 |
+| x-ray | 6,000,150 | 5,840,373 | -159,777 |
+| xml | 765,900 | 768,851 | +2,951 |
+| **Total** | **71,850,595** | **71,376,525** | **-474,070 (-0.660%)** |
+
+Five members improve and seven regress. The `mozilla` result remains
+830,670 bytes above the user's provisional `gzip -9v` size of 18,994,139.
+For the first sixteen `mozilla` frames, the indexed selector produced the
+same 670,231-byte size and 2/13/1 threshold counts as the exhaustive
+selector, while its selection-plus-encode time fell from 211.285 s to
+0.303 s. The full `mozilla` indexed run selected thresholds 3/4/5 on
+477/276/29 frames and took 17.957 s to select and encode, plus 2.445 s
+to decode. Across all twelve members, the indexed selection-plus-encode
+times summed to 55.432 s; baseline size-planning times summed to 8.445 s.
+Those two timing quantities perform different work and are **not** an
+encode-throughput ratio. This candidate remains private. The mixed member
+result and unmet gzip target rule out a claim that short-match eligibility
+alone solves the 64-KiB compression-ratio deficit.

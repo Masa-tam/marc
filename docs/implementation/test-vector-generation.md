@@ -15627,3 +15627,22 @@ one frame, exactly one chosen threshold among 3/4/5, and positive complete
 archive sizes. The benchmark must encode the selected frame and reject any
 private decode mismatch before reporting success. Keep external Silesia
 bytes out of the regression fixture; BM-0101 records that separate pilot.
+
+### TVG-1060
+
+For hand cases of zero to eleven bytes, a deterministic 513-byte binary
+pattern, and a four-byte window, compare each indexed query with exhaustive
+LZSS at every position. Include distinct three-byte prefixes `03 00 00` and
+`60 C5 00`, which collide in the current 65,536-bucket mapping: the nearer
+false candidate must not hide the older exact hit. The index must still find
+three-byte matches at the
+end of a frame, choose the nearer distance for equal lengths, and reject
+aliased, short, or over-limit workspaces. For each eligibility 3/4/5,
+compare the complete typed-token sequence. Encode a deterministic 256-byte
+frame with both selectors and require identical candidate sizes, selected
+threshold, and serialized bytes. The tracked README smoke runs both
+benchmark search modes, privately decodes their selected frames, and
+requires the same size and threshold summary. External Silesia bytes remain
+outside the regression fixture. An invalid variant-7 parameter set must
+retain its invalid-parameter error rather than being mislabeled as a
+workspace shortage.

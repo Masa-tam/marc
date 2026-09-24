@@ -56,6 +56,31 @@ encode_lzss_short_match_candidate_frame(
     std::span<context::internal::ModeledOperation> operations,
     std::span<std::byte> serialized_output) noexcept;
 
+// Indexed equivalent of the exhaustive reference selector. The caller
+// supplies disjoint, aligned finder storage counted against the hard limit.
+[[nodiscard]] LzssShortMatchSelectionResult
+plan_lzss_short_match_candidate_frame_indexed(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t raw_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> tokens,
+    std::span<context::internal::ModeledOperation> operations,
+    std::span<std::byte> finder_workspace) noexcept;
+
+[[nodiscard]] LzssShortMatchSelectionResult
+encode_lzss_short_match_candidate_frame_indexed(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t raw_already_committed,
+    std::span<const std::byte> raw_input,
+    std::span<dictionary::internal::LzssTypedToken> tokens,
+    std::span<context::internal::ModeledOperation> operations,
+    std::span<std::byte> finder_workspace,
+    std::span<std::byte> serialized_output) noexcept;
+
 } // namespace marc::frame::internal
 
 #endif
