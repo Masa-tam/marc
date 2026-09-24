@@ -4004,3 +4004,51 @@ Policy 3 is the smallest fixed policy in aggregate; selection gains another
 224,080 bytes. The next experiment should measure smaller candidate sets and
 their selection cost, retaining per-member reporting and round trips. Neither
 the seven-pass sweep nor a fixed cap is admitted to the public codec yet.
+
+### BM-0110: Reduced short-distance candidate sets
+
+On 2026-09-25, repeat BM-0109's complete twelve-file, 3,239-frame MSVC
+Release measurement using the six sets fixed in DD-1210. All seven policy
+totals reproduced the previous per-member results exactly; every policy
+frame round-tripped. Local hash-bound checkpoints again resumed all twelve
+completed files without rerunning them. Sets use only their named members;
+the prior selector is not implicitly included.
+
+| Policies | Total bytes | Excess over seven policies | Member encode seconds sum |
+| --- | ---: | ---: | ---: |
+| 0, 3 | 71,044,174 | 75,061 | 22.690927 |
+| 0, 4 | 71,072,529 | 103,416 | 22.344193 |
+| 3, 4 | 71,129,372 | 160,259 | 21.768512 |
+| **0, 3, 4** | **70,980,791** | **11,678** | **33.401815** |
+| 0, 2, 3, 4 | 70,978,651 | 9,538 | 43.814921 |
+| 0 through 6 | 70,969,113 | 0 | 75.383769 |
+
+| Member | Policies 0,3,4 bytes | Seven-policy bytes | Excess |
+| --- | ---: | ---: | ---: |
+| dickens | 4,097,624 | 4,097,624 | 0 |
+| mozilla | 19,636,009 | 19,633,027 | 2,982 |
+| mr | 3,596,220 | 3,588,937 | 7,283 |
+| nci | 3,584,906 | 3,584,906 | 0 |
+| ooffice | 3,155,610 | 3,155,517 | 93 |
+| osdb | 4,112,656 | 4,112,656 | 0 |
+| reymont | 1,999,706 | 1,999,706 | 0 |
+| samba | 5,718,530 | 5,718,282 | 248 |
+| sao | 5,403,519 | 5,403,457 | 62 |
+| webster | 12,941,027 | 12,941,027 | 0 |
+| x-ray | 5,971,124 | 5,970,116 | 1,008 |
+| xml | 763,860 | 763,858 | 2 |
+
+The three-policy set saves 380,004 bytes against the prior escape selector,
+retaining 97.02% of the seven-policy improvement. Its measured member-work
+sum is 55.69% lower than the seven-policy sum in this run. This is screening
+of component work, not a measured end-to-end speedup: the benchmark still
+executes all policies, and no reduced selector retaining a winning frame is
+implemented here. Timing remains a single-run observation. A fourth candidate
+saves only another 2,140 bytes in aggregate, so {0,3,4} is the next bounded
+selector implementation candidate, not yet a public default.
+
+Most lost compression is on mr and mozilla. The reduced set makes mr 25
+bytes larger than the published baseline and keeps the small dickens/nci/osdb
+regressions; it is not a no-regression guarantee. Mozilla remains 641,870
+bytes above the user's gzip result. Profile/model improvement remains needed
+to meet that target even after reducing selection cost.

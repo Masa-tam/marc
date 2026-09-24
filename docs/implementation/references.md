@@ -8830,3 +8830,9 @@ The full-corpus distance-policy evaluation uses the first-party BM-0108
 grid and the maintainer-supplied external Silesia corpus. Timing uses the
 C++ steady clock around existing parsing/encoding and decoding calls.
 No external compressor implementation is consulted.
+
+### IR-0965
+
+The reduced-grid screening uses BM-0109's first-party policy measurements
+and DD-1208's fixed distance caps. It computes within-frame minima over
+explicit subsets; no external parser or selection implementation is used.

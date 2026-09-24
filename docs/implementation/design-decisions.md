@@ -24316,3 +24316,16 @@ Preserve successful per-member local reports with executable/input hashes
 and exact arguments; do not reuse checkpoints across changed experiments.
 Report all members, including regressions, before choosing an integration
 candidate. One sequential run supports screening, not a stable speed ranking.
+
+## DD-1210: Screen fixed reduced distance-policy sets
+
+Before measuring, fix policy sets {0,3}, {0,4}, {3,4}, {0,3,4}, {0,2,3,4}
+and {0,1,2,3,4,5,6}. Policy numbers retain DD-1208's meanings. Include the
+minimum-five control, the full-corpus best fixed cap, and the mozilla best
+fixed cap in the three-policy set; test minimum-three as a fourth option.
+For each frame choose only among that set's actual encoded sizes and charge
+one stream header per file. Do not silently include the old escape selector
+in reduced sets. Report summed member parse/encode intervals as a work-cost
+proxy, not the wall time of an implemented reduced selector. Candidate buffer
+retention, copying, cache effects and selection overhead need separate
+measurement before claiming a production speedup. Keep all changes private.

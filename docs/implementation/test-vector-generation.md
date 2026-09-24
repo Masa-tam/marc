@@ -15850,3 +15850,11 @@ decimal encode/decode timing fields for every distance policy. Do not compare
 wall-clock values between runs or enforce a performance threshold in CI.
 Retain exact archive-size parity and control identities. The external corpus
 measurement checks complete input coverage and decodes every policy frame.
+
+### TVG-1079
+
+For the one-frame benchmark smoke, calculate each fixed subset's minimum
+directly from member-policy archive totals. Require exact equality in both
+indexed and exhaustive modes, correct membership masks and nonnegative
+timing-sum fields. Full-corpus screening retains per-policy frame round trips
+and compares unchanged policy totals against the prior complete measurement.

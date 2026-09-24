@@ -33635,3 +33635,24 @@ both bounds.
   3,239 frames. Corpus hashes and completed-checkpoint reuse were verified.
   Full MSVC Release build and all 3,738 CTest cases passed, including
   documentation layout and interoperability schema compatibility.
+
+## CR-1364: 2026-09-25 - Screen reduced short-distance candidate sets
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0965, DD-1210, TVG-1079 and BM-0110, using only
+  first-party measured frames and the externally stored Silesia corpus.
+- Known implementations intentionally not consulted: external compressor
+  code, copyleft implementations and third-party selector heuristics.
+- Generated-code task: evaluate six predeclared policy subsets by summing
+  their per-frame minima and measured member encode work, with exact
+  membership checks against indexed and exhaustive one-frame reports.
+- Independent decisions: retain the minimum-five control, evaluate both
+  prior fixed-policy winners, and distinguish work sums from implemented
+  selector runtime. Preserve public defaults and bitstream identities.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation: bounded benchmark smoke and documentation layout passed;
+  all twelve files round-tripped under every policy and reproduced prior
+  policy sizes. Completed checkpoint reuse was verified. Full MSVC Release
+  build and all 3,738 CTest cases passed, including documentation layout and
+  interoperability schema compatibility.

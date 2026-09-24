@@ -29,6 +29,7 @@
 namespace {
 
 using Clock = std::chrono::steady_clock;
+constexpr std::array<unsigned, 6> distance_subset_masks{9, 17, 24, 25, 29, 127};
 using marc::context::internal::ModeledOperation;
 using marc::context::internal::ModeledOperationKind;
 using marc::dictionary::internal::LzssParameters;
@@ -260,6 +261,8 @@ int main(const int argc, const char* const argv[]) {
     std::array<std::uint64_t, marc::benchmarks::short_distance_policies.size()>
         distance_policy_archive_bytes{};
     distance_policy_archive_bytes.fill(baseline_archive_bytes);
+    std::array<std::uint64_t, distance_subset_masks.size()> distance_subset_bytes{};
+    distance_subset_bytes.fill(baseline_archive_bytes);
     std::uint64_t distance_policy_selected_archive_bytes = baseline_archive_bytes;
     std::uint64_t baseline_escape_oracle_archive_bytes =
         baseline_archive_bytes;
@@ -442,6 +445,7 @@ int main(const int argc, const char* const argv[]) {
         }
         if (distance_policies) {
             auto best_size = escape.selected_frame_size;
+            std::array<std::size_t, marc::benchmarks::short_distance_policies.size()> sizes{};
             for (std::size_t i = 0; i < marc::benchmarks::short_distance_policies.size(); ++i) {
                 const auto policy_start = Clock::now();
                 const auto parsed = marc::benchmarks::tokenize_short_distance_policy(
@@ -477,7 +481,16 @@ int main(const int argc, const char* const argv[]) {
                     return 2;
                 }
                 distance_policy_archive_bytes[i] += encoded.serialized_size;
+                sizes[i] = encoded.serialized_size;
                 best_size = std::min(best_size, encoded.serialized_size);
+            }
+            for (std::size_t subset = 0; subset < distance_subset_masks.size(); ++subset) {
+                auto minimum = std::numeric_limits<std::size_t>::max();
+                for (std::size_t i = 0; i < sizes.size(); ++i) {
+                    if ((distance_subset_masks[subset] & (1U << i)) != 0)
+                        minimum = std::min(minimum, sizes[i]);
+                }
+                distance_subset_bytes[subset] += minimum;
             }
             distance_policy_selected_archive_bytes += best_size;
         }
@@ -646,6 +659,19 @@ int main(const int argc, const char* const argv[]) {
         }
         std::cout << "distance_policy_selected_archive_bytes="
                   << distance_policy_selected_archive_bytes << '\n';
+        for (std::size_t subset = 0; subset < distance_subset_masks.size(); ++subset) {
+            double encode_sum{};
+            for (std::size_t i = 0; i < distance_encode_seconds.size(); ++i) {
+                if ((distance_subset_masks[subset] & (1U << i)) != 0)
+                    encode_sum += distance_encode_seconds[i];
+            }
+            std::cout << "distance_subset_" << subset << "_mask="
+                      << distance_subset_masks[subset] << '\n'
+                      << "distance_subset_" << subset << "_archive_bytes="
+                      << distance_subset_bytes[subset] << '\n'
+                      << "distance_subset_" << subset << "_encode_seconds_sum="
+                      << encode_sum << '\n';
+        }
     }
     return 0;
 }
