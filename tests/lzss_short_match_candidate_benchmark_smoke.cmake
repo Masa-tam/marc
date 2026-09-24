@@ -27,7 +27,11 @@ foreach(key IN ITEMS sample_bytes frame_bytes frame_count
         selected_5 threshold_3_archive_bytes threshold_4_archive_bytes
         threshold_5_archive_bytes selected_better_frames
         selected_equal_frames selected_worse_frames selected_saved_bytes
-        selected_extra_bytes)
+        selected_extra_bytes baseline_length_symbols
+        reserved_5_length_symbols baseline_length_bypass_bits
+        reserved_5_length_bypass_bits baseline_distance_symbols
+        reserved_5_distance_symbols baseline_distance_bypass_bits
+        reserved_5_distance_bypass_bits)
     string(REGEX MATCH "${key}=([0-9]+)" field "${output}")
     if(field STREQUAL "")
         message(FATAL_ERROR "Missing ${key}: ${output}")
@@ -53,6 +57,11 @@ if(NOT sample_bytes EQUAL 4096 OR NOT frame_bytes EQUAL 4096
     OR candidate_archive_bytes GREATER threshold_3_archive_bytes
     OR candidate_archive_bytes GREATER threshold_4_archive_bytes
     OR candidate_archive_bytes GREATER threshold_5_archive_bytes
+    OR NOT baseline_length_symbols EQUAL reserved_5_length_symbols
+    OR NOT baseline_distance_symbols EQUAL reserved_5_distance_symbols
+    OR NOT baseline_distance_bypass_bits EQUAL reserved_5_distance_bypass_bits
+    OR reserved_5_length_bypass_bits LESS baseline_length_bypass_bits
+    OR baseline_length_symbols LESS 1
     OR baseline_archive_bytes LESS 192
     OR exact_baseline_archive_bytes LESS 192
     OR candidate_archive_bytes LESS 192)

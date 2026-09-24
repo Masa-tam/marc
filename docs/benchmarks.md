@@ -3741,3 +3741,40 @@ framewise counters are emitted by the benchmark for further diagnosis.
 The stream header fixes the variant, so the baseline cannot simply be
 selected for individual frames within the current reserved stream. No
 public format or encoder-policy change follows from this diagnostic.
+
+### BM-0104: Locate the short-match representation's extra bypass work
+
+On 2026-09-24, the private MSVC Release benchmark repeated BM-0103's
+full-Silesia, 65,536-byte-frame run. It counted the actual modeled
+operations for the same eligibility-5 tokens under the published 31-context
+and reserved 32-context mappings. A bypass operation is attributed to the
+preceding length or distance symbol. The counts below are *logical bypass
+bits*, not independently byte-aligned payload sizes or exact contributions
+to the Range-coded output. No corpus bytes are tracked.
+
+| Member | Matches in both mappings | Extra reserved length-bypass bits | Extra reserved distance-bypass bits |
+| --- | ---: | ---: | ---: |
+| dickens | 1,183,792 | 909,642 | 0 |
+| mozilla | 3,065,042 | 1,840,893 | 0 |
+| mr | 820,053 | 691,845 | 0 |
+| nci | 970,567 | 299,846 | 0 |
+| ooffice | 414,595 | 318,956 | 0 |
+| osdb | 505,105 | 302,232 | 0 |
+| reymont | 648,312 | 410,358 | 0 |
+| samba | 1,160,944 | 648,143 | 0 |
+| sao | 410,075 | 349,940 | 0 |
+| webster | 3,266,954 | 2,103,213 | 0 |
+| x-ray | 409,092 | 408,618 | 0 |
+| xml | 199,076 | 92,763 | 0 |
+| **Total** | **13,053,607** | **8,376,449** | **0** |
+
+Both mappings also emitted the same number of length and distance symbols
+for each member. The published mapping classifies `length - 4`; the
+reserved mapping classifies `length - 2`, shifting many existing long
+matches into wider length classes. The extra 8,376,449 logical bypass bits
+would be about 1,047,056 bytes if packed independently, but the observed
+eligibility-5 archive excess is only 551,143 bytes (BM-0103). Different
+adaptive symbol probabilities and Range-coder state account for the fact
+that these figures are not additive. The extra bypass work identifies a
+promising representation hypothesis, not a measured byte-level attribution
+or permission to change the reserved decoder-visible mapping silently.

@@ -400,3 +400,21 @@ from a match-finder difference under these conditions; it does not prove
 which context or symbol mapping accounts for the excess. BM-0103 records
 the measurements. Keep the reserved identity private and investigate its
 model/representation cost before any stream-level format or API change.
+
+## Fifteenth implementation boundary: operation-level attribution
+
+The private benchmark counts length and distance symbols and their logical
+LSB-first bypass bits for the same eligibility-5 tokens in both mappings.
+BM-0104 finds equal match-symbol counts and equal distance-bypass totals
+across all Silesia members, but 8,376,449 additional length-bypass bits
+in the reserved `length - 2` mapping. Range coding and adaptive models make
+this a diagnostic count, not an exact byte-cost decomposition.
+
+One next representation hypothesis is to retain the published `length - 4`
+classes 0..7 for matches of length at least five and use class 8 plus one
+bypass bit for lengths three and four. This would keep long-match length
+bypass widths and distance contexts aligned with the published 64-KiB
+mapping while isolating short matches. It changes decoder-visible length
+semantics, so it requires its own fully specified reserved revision, hand
+vectors, decoder-first validation, and complete-frame measurement before
+any admission. The current variant-7/variant-6 representation is unchanged.

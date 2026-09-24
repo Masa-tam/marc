@@ -23,6 +23,7 @@ namespace {
 
 using Clock = std::chrono::steady_clock;
 using marc::context::internal::ModeledOperation;
+using marc::context::internal::ModeledOperationKind;
 using marc::dictionary::internal::LzssParameters;
 using marc::dictionary::internal::LzssTypedToken;
 
@@ -36,12 +37,49 @@ using marc::dictionary::internal::LzssTypedToken;
         && value > 0 && value <= upper;
 }
 
+struct MatchOperationSummary {
+    std::uint64_t length_symbols{};
+    std::uint64_t length_bypass_bits{};
+    std::uint64_t distance_symbols{};
+    std::uint64_t distance_bypass_bits{};
+};
+
+[[nodiscard]] bool summarize_match_operations(
+    const std::span<const ModeledOperation> operations,
+    MatchOperationSummary& summary) noexcept {
+    std::uint16_t preceding_context{};
+    for (const auto& operation : operations) {
+        if (operation.kind == ModeledOperationKind::symbol) {
+            preceding_context = operation.context_id;
+            if (preceding_context >= 20 && preceding_context < 23) {
+                ++summary.length_symbols;
+            } else if (preceding_context >= 23 && preceding_context < 32) {
+                ++summary.distance_symbols;
+            } else if (preceding_context >= 32) {
+                return false;
+            }
+        } else if (operation.kind == ModeledOperationKind::bypass_bits) {
+            if (preceding_context >= 20 && preceding_context < 23) {
+                summary.length_bypass_bits += operation.bit_count;
+            } else if (preceding_context >= 23 && preceding_context < 32) {
+                summary.distance_bypass_bits += operation.bit_count;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
+
 [[nodiscard]] bool baseline_frame_size_from_tokens(
     const std::size_t raw_size,
     const std::uint64_t committed,
     const marc::core::DecoderLimits& limits,
     const std::span<const LzssTypedToken> tokens,
     const std::span<ModeledOperation> operations,
+    std::size_t& operation_count,
     std::size_t& serialized_size) noexcept {
     const LzssParameters parameters{65536, 5, 258, 0};
     const marc::dictionary::internal::LzssTypedFrameValidationContext context{
@@ -52,6 +90,7 @@ using marc::dictionary::internal::LzssTypedToken;
             tokens, parameters, context, limits, operations);
     if (modeled.error != marc::context::internal::LzssFieldContextError::none)
         return false;
+    operation_count = modeled.operation_count;
     marc::entropy::internal::ContextualDynamicRangeDescriptor descriptor{};
     const auto planned = marc::entropy::internal::
         plan_contextual_dynamic_range_operations(
@@ -73,6 +112,7 @@ using marc::dictionary::internal::LzssTypedToken;
     const std::span<ModeledOperation> operations,
     const std::span<std::byte> finder_workspace,
     std::size_t& token_count,
+    std::size_t& operation_count,
     std::size_t& serialized_size) noexcept {
     const LzssParameters parameters{65536, 5, 258, 0};
     const auto parsed = marc::dictionary::internal::
@@ -83,7 +123,7 @@ using marc::dictionary::internal::LzssTypedToken;
     token_count = parsed.token_count;
     return baseline_frame_size_from_tokens(
         raw.size(), committed, limits, tokens.first(token_count),
-        operations, serialized_size);
+        operations, operation_count, serialized_size);
 }
 
 [[nodiscard]] bool same_token(const LzssTypedToken& first,
@@ -179,6 +219,8 @@ int main(const int argc, const char* const argv[]) {
     std::uint64_t selected_worse_frames{};
     std::uint64_t selected_saved_bytes{};
     std::uint64_t selected_extra_bytes{};
+    MatchOperationSummary baseline_operations{};
+    MatchOperationSummary reserved_five_operations{};
     double baseline_plan_seconds{};
     double candidate_encode_seconds{};
     double candidate_decode_seconds{};
@@ -196,15 +238,24 @@ int main(const int argc, const char* const argv[]) {
         const auto frame = std::span<const std::byte>{raw}.first(count);
         std::size_t baseline_size{};
         std::size_t baseline_token_count{};
+        std::size_t baseline_operation_count{};
         const auto baseline_start = Clock::now();
         if (!baseline_frame_size(frame, committed, limits, baseline_tokens,
                                  operations, finder_workspace,
-                                 baseline_token_count, baseline_size)) {
+                                 baseline_token_count,
+                                 baseline_operation_count, baseline_size)) {
             std::cerr << "baseline frame failed\n";
             return 2;
         }
         baseline_plan_seconds += std::chrono::duration<double>(
             Clock::now() - baseline_start).count();
+        if (!summarize_match_operations(
+                std::span<const ModeledOperation>{operations}.first(
+                    baseline_operation_count),
+                baseline_operations)) {
+            std::cerr << "baseline operation profile failed\n";
+            return 2;
+        }
 
         const auto encode_start = Clock::now();
         const auto candidate = search == "indexed"
@@ -255,13 +306,14 @@ int main(const int argc, const char* const argv[]) {
                 frame, candidate_parameters, limits, 5, tokens,
                 candidate_workspace);
         std::size_t exact_baseline_size{};
+        std::size_t exact_baseline_operation_count{};
         if (exact_tokens.error != marc::dictionary::internal::
                 LzssShortMatchCandidateError::none
             || !baseline_frame_size_from_tokens(
                 count, committed, limits,
                 std::span<const LzssTypedToken>{tokens}.first(
                     exact_tokens.token_count), operations,
-                exact_baseline_size)) {
+                exact_baseline_operation_count, exact_baseline_size)) {
             std::cerr << "exact baseline frame failed at sequence "
                       << frames << '\n';
             return 2;
@@ -271,6 +323,24 @@ int main(const int argc, const char* const argv[]) {
                 tokens.begin(), tokens.begin() + exact_tokens.token_count,
                 baseline_tokens.begin(), same_token)) {
             ++exact_baseline_equal_token_frames;
+        }
+        const marc::dictionary::internal::LzssTypedFrameValidationContext
+            token_context{static_cast<std::uint32_t>(exact_tokens.token_count),
+                          static_cast<std::uint32_t>(count), committed};
+        const auto reserved_modeled = marc::context::internal::
+            model_lzss_short_match_tokens(
+                std::span<const LzssTypedToken>{tokens}.first(
+                    exact_tokens.token_count),
+                candidate_parameters, token_context, limits, operations);
+        if (reserved_modeled.error != marc::context::internal::
+                LzssFieldContextError::none
+            || !summarize_match_operations(
+                std::span<const ModeledOperation>{operations}.first(
+                    reserved_modeled.operation_count),
+                reserved_five_operations)) {
+            std::cerr << "reserved operation profile failed at sequence "
+                      << frames << '\n';
+            return 2;
         }
         baseline_archive_bytes += baseline_size;
         candidate_archive_bytes += candidate.selected_frame_size;
@@ -315,6 +385,22 @@ int main(const int argc, const char* const argv[]) {
               << "selected_worse_frames=" << selected_worse_frames << '\n'
               << "selected_saved_bytes=" << selected_saved_bytes << '\n'
               << "selected_extra_bytes=" << selected_extra_bytes << '\n'
+              << "baseline_length_symbols="
+              << baseline_operations.length_symbols << '\n'
+              << "reserved_5_length_symbols="
+              << reserved_five_operations.length_symbols << '\n'
+              << "baseline_length_bypass_bits="
+              << baseline_operations.length_bypass_bits << '\n'
+              << "reserved_5_length_bypass_bits="
+              << reserved_five_operations.length_bypass_bits << '\n'
+              << "baseline_distance_symbols="
+              << baseline_operations.distance_symbols << '\n'
+              << "reserved_5_distance_symbols="
+              << reserved_five_operations.distance_symbols << '\n'
+              << "baseline_distance_bypass_bits="
+              << baseline_operations.distance_bypass_bits << '\n'
+              << "reserved_5_distance_bypass_bits="
+              << reserved_five_operations.distance_bypass_bits << '\n'
               << "selected_3=" << selected_counts[0] << '\n'
               << "selected_4=" << selected_counts[1] << '\n'
               << "selected_5=" << selected_counts[2] << '\n'

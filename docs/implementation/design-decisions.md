@@ -24118,3 +24118,15 @@ bytes. Treat this as evidence of a model/representation penalty under the
 measured conditions, not proof that a specific context is responsible.
 Because the stream header fixes the variant, do not claim a per-frame
 baseline fallback without a separately specified format change.
+
+## DD-1193: Count modeled bypass work before revising short-match classes
+
+Keep both coder implementations and the reserved representation unchanged.
+In the private benchmark, classify actual modeled symbol and bypass
+operations by length and distance for identical eligibility-5 tokens.
+BM-0104 shows 8,376,449 extra reserved length-bypass bits, equal
+distance-bypass totals, and equal match-symbol counts across the measured
+Silesia frames. Do not equate logical bypass bits with final Range bytes.
+Investigate an isolated short-length escape class while retaining the
+published long-length classes as a future decoder-visible design; require
+its own format rule and decoder tests before implementation or admission.

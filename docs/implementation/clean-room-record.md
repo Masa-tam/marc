@@ -33291,3 +33291,25 @@ both bounds.
   passed, including indexed/reference benchmark smoke and interoperability
   schema compatibility. BM-0103 records the external Silesia observations;
   no corpus bytes or measurement reports are tracked.
+
+## CR-1347: 2026-09-24 - Attribute short-match modeled operations
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  investigation of the reserved model's measured size penalty.
+- References used: IR-0948, DD-1193, TVG-1062, BM-0103, BM-0104, and
+  marc's first-party 31- and 32-context mappers.
+- Known implementations intentionally not consulted: external compressor
+  sources, copyleft code, third-party model tables and test suites.
+- Generated-code task: count actual length/distance symbols and logical
+  bypass bits for identical eligibility-5 tokens without changing either
+  stream format or public encoder.
+- Independent decisions: classify bypass work by its preceding modeled
+  symbol; keep these counts separate from Range-coded byte size; propose a
+  future isolated short-length escape class only as a design hypothesis.
+- Similarity review: first-party context operations and benchmark fixtures
+  only; no external implementation expression was translated. No legal
+  non-infringement guarantee.
+- Local validation: MSVC Release benchmark build and all 3,676 CTest cases
+  passed; after the final timer-boundary adjustment, benchmark smoke and
+  documentation layout tests passed again. BM-0104 records external
+  full-Silesia measurements without tracking corpus bytes or reports.

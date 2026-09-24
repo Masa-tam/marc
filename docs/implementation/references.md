@@ -8705,3 +8705,11 @@ HashChain tokenizer, exact indexed short-match tokenizer, published
 31-context model, and reserved 32-context frame planner. BM-0103 uses the
 external Silesia corpus solely as local measurement input. No external
 encoder implementation, model table, or test suite was consulted.
+
+### IR-0948
+
+The operation attribution is derived from marc's first-party published
+LZSS field-context model, reserved short-match model, and private matched-
+token benchmark. BM-0104 uses external Silesia bytes only as untracked
+measurement input. No external compressor's source, model table, or test
+suite was consulted.

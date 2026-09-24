@@ -15659,3 +15659,14 @@ framewise wins/ties/losses sum to the frame count, and that saved minus
 extra bytes reconstruct the selected archive size from the baseline.
 BM-0103 records the corresponding external-corpus diagnosis without
 copying corpus input into the regression suite.
+
+### TVG-1062
+
+In the tracked one-frame README benchmark smoke, compare indexed and
+exhaustive search reports for length/distance symbol counts and bypass-bit
+totals. The published and reserved eligibility-5 profiles must have equal
+length and distance symbol counts and equal distance-bypass totals when
+their token sequences match. Assert that reserved length-bypass work is no
+smaller on this fixture. Retain BM-0104 as separate external-corpus evidence;
+do not embed Silesia bytes in a regression test or treat logical bypass
+counts as exact output sizes.
