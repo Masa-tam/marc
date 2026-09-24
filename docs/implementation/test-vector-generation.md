@@ -15842,3 +15842,11 @@ search. For control cap pairs require equality with existing minimum-length
 Test invalid caps, bounded output/storage and overlapping regions. Benchmark
 smoke compares all policy sizes between search modes and verifies the three
 control archive sizes against the existing fixed-eligibility results.
+
+### TVG-1078
+
+Extend the bounded indexed/reference benchmark smoke to require nonnegative
+decimal encode/decode timing fields for every distance policy. Do not compare
+wall-clock values between runs or enforce a performance threshold in CI.
+Retain exact archive-size parity and control identities. The external corpus
+measurement checks complete input coverage and decodes every policy frame.

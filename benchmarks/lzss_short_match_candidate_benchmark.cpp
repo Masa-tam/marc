@@ -293,6 +293,8 @@ int main(const int argc, const char* const argv[]) {
     double candidate_decode_seconds{};
     double escape_encode_seconds{};
     double escape_decode_seconds{};
+    std::array<double, 7> distance_encode_seconds{};
+    std::array<double, 7> distance_decode_seconds{};
     std::uint64_t committed{};
     std::size_t frames{};
     while (committed < sample_bytes) {
@@ -441,6 +443,7 @@ int main(const int argc, const char* const argv[]) {
         if (distance_policies) {
             auto best_size = escape.selected_frame_size;
             for (std::size_t i = 0; i < marc::benchmarks::short_distance_policies.size(); ++i) {
+                const auto policy_start = Clock::now();
                 const auto parsed = marc::benchmarks::tokenize_short_distance_policy(
                     frame, candidate_parameters, limits,
                     marc::benchmarks::short_distance_policies[i], tokens,
@@ -459,9 +462,14 @@ int main(const int argc, const char* const argv[]) {
                     std::cerr << "distance policy encode failed\n";
                     return 2;
                 }
+                distance_encode_seconds[i] += std::chrono::duration<double>(
+                    Clock::now() - policy_start).count();
+                const auto policy_decode_start = Clock::now();
                 const auto verified = marc::frame::internal::decode_lzss_short_length_escape_frame(
                     std::span<const std::byte>{serialized}.first(encoded.serialized_size),
                     escape_context, decoded_tokens, std::span<std::byte>{decoded}.first(count));
+                distance_decode_seconds[i] += std::chrono::duration<double>(
+                    Clock::now() - policy_decode_start).count();
                 if (verified.error != marc::frame::internal::LzssShortMatchFrameDecodeError::none
                     || verified.serialized_consumed != encoded.serialized_size
                     || !std::equal(frame.begin(), frame.end(), decoded.begin())) {
@@ -630,7 +638,11 @@ int main(const int argc, const char* const argv[]) {
                       << "distance_policy_" << i << "_length4_cap="
                       << policy.length4_max_distance << '\n'
                       << "distance_policy_" << i << "_archive_bytes="
-                      << distance_policy_archive_bytes[i] << '\n';
+                      << distance_policy_archive_bytes[i] << '\n'
+                      << "distance_policy_" << i << "_encode_seconds="
+                      << distance_encode_seconds[i] << '\n'
+                      << "distance_policy_" << i << "_decode_seconds="
+                      << distance_decode_seconds[i] << '\n';
         }
         std::cout << "distance_policy_selected_archive_bytes="
                   << distance_policy_selected_archive_bytes << '\n';

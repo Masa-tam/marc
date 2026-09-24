@@ -8823,3 +8823,10 @@ three-byte-prefix match finders, variant-8 token validation and private
 frame encoder/decoder. The distance-cap grid is an independently chosen
 experiment prompted by BM-0107, with no external compressor heuristics or
 source code consulted.
+
+### IR-0964
+
+The full-corpus distance-policy evaluation uses the first-party BM-0108
+grid and the maintainer-supplied external Silesia corpus. Timing uses the
+C++ steady clock around existing parsing/encoding and decoding calls.
+No external compressor implementation is consulted.

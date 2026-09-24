@@ -24304,3 +24304,15 @@ existing eligibility 5/4/3. Report each complete-frame size and the per-frame
 minimum together with the existing selector. All policies produce the same
 variant-8 representation; policy choice is encoder-local. Keep the helper
 in the benchmark build until corpus results justify codec integration.
+
+## DD-1209: Measure distance-policy costs separately on the full corpus
+
+Keep DD-1208's grid fixed for all twelve Silesia members. Measure each
+policy's parsing plus complete-frame encoding separately from its decoding.
+Exclude diagnostic profiling, I/O, verification comparison and other policies
+from those intervals. Do not interpret the sum of seven trials as the cost
+of one fixed policy. Timing is observational and never changes selection.
+Preserve successful per-member local reports with executable/input hashes
+and exact arguments; do not reuse checkpoints across changed experiments.
+Report all members, including regressions, before choosing an integration
+candidate. One sequential run supports screening, not a stable speed ranking.

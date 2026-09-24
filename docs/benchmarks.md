@@ -3946,3 +3946,61 @@ cap. Full-corpus ratio, encode/decode time and workspace measurements remain
 admission gates. Existing benchmark timers do not include this optional
 policy sweep and must not be interpreted as its throughput. Public defaults,
 APIs and stream identities are unchanged.
+
+### BM-0109: Full-Silesia distance-policy screening
+
+On 2026-09-25, MSVC Release processed all twelve verified Silesia files
+(211,938,580 bytes, 3,239 frames) sequentially with the BM-0108 grid. Invoke
+`marc_lzss_short_match_candidate_benchmark <file> 1024 65536 indexed distance-policies`
+for each member. Every policy frame round-tripped. Local per-member JSON
+checkpoints retained executable/input SHA-256 and arguments; a second batch
+invocation reused all twelve completed reports without launching benchmarks.
+Corpus verification confirmed all twelve expected files. Neither corpus nor
+local checkpoint files are included in the repository.
+
+| Member | Published bytes | Prior escape bytes | Fixed policy 4 bytes | Selected bytes |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 4,097,287 | 4,097,626 | 4,133,853 | 4,097,624 |
+| mozilla | 20,085,366 | 19,824,381 | 19,642,913 | 19,633,027 |
+| mr | 3,596,195 | 3,588,975 | 3,701,052 | 3,588,937 |
+| nci | 3,584,048 | 3,584,936 | 3,640,360 | 3,584,906 |
+| ooffice | 3,233,855 | 3,192,736 | 3,158,984 | 3,155,517 |
+| osdb | 4,112,363 | 4,112,656 | 4,202,605 | 4,112,656 |
+| reymont | 2,028,288 | 2,022,925 | 2,008,887 | 1,999,706 |
+| samba | 5,756,275 | 5,752,366 | 5,739,373 | 5,718,282 |
+| sao | 5,616,349 | 5,454,241 | 5,403,526 | 5,403,457 |
+| webster | 12,974,519 | 12,975,833 | 13,033,832 | 12,941,027 |
+| x-ray | 6,000,150 | 5,988,302 | 6,041,700 | 5,970,116 |
+| xml | 765,900 | 765,818 | 772,096 | 763,858 |
+| **Total** | **71,850,595** | **71,360,795** | **71,479,181** | **70,969,113** |
+
+Selection saves 391,682 bytes versus prior escape and 881,482 versus published.
+It retains small published-baseline regressions on dickens (+337), nci (+858)
+and osdb (+293). Policy 4, best fixed policy for mozilla, loses 118,386 bytes
+against prior escape over the full corpus. A single-member winner is therefore
+not suitable as an unconditional default.
+
+| Policy | Total bytes | Parse + encode seconds | Decode seconds |
+| --- | ---: | ---: | ---: |
+| 0 | 71,856,743 | 11.984297 | 10.233165 |
+| 1 | 72,054,749 | 11.013533 | 9.317262 |
+| 2 | 72,247,609 | 10.729982 | 8.286260 |
+| 3 | 71,193,193 | 11.423323 | 9.384815 |
+| 4 | 71,479,181 | 11.071976 | 8.966292 |
+| 5 | 71,842,542 | 10.816582 | 8.588972 |
+| 6 | 72,021,258 | 10.727351 | 8.354795 |
+
+These are single sequential observations, not statistically stable rankings.
+Each policy timer includes parsing and one actual complete-frame encoding;
+decode excludes output comparison. The prior multi-candidate escape selector
+measured 57.962188 seconds to encode and 9.387658 to decode. Its work differs
+from a fixed single-pass policy, so this is not a like-for-like codec speedup.
+The diagnostic sweep repeats all seven policies as well as the prior selector;
+its time is not the cost of a production selector. Policy evaluation reuses
+existing bounded token, operation, finder and frame buffers, rather than
+retaining seven copies. Process peak memory was not measured in this run.
+
+Policy 3 is the smallest fixed policy in aggregate; selection gains another
+224,080 bytes. The next experiment should measure smaller candidate sets and
+their selection cost, retaining per-member reporting and round trips. Neither
+the seven-pass sweep nor a fixed cap is admitted to the public codec yet.

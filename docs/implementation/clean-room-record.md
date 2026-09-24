@@ -33616,3 +33616,22 @@ both bounds.
   smoke passed. All seven policy frames round-tripped across complete mozilla.
   The complete MSVC Release build and all 3,738 CTest cases passed, including
   documentation layout and interoperability schema compatibility.
+
+## CR-1363: 2026-09-25 - Screen short-distance policies across Silesia
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0964, DD-1209, TVG-1078 and BM-0109, using only
+  first-party benchmark code and the externally stored verified corpus.
+- Known implementations intentionally not consulted: external compressor
+  implementations, copyleft code and third-party parsing heuristics.
+- Generated-code task: add separate per-policy encode/decode timing and
+  measure the unchanged grid over all twelve corpus members with resumable
+  per-member local reports bound to executable and input hashes.
+- Independent decisions: report regressions, keep timing out of selection,
+  and distinguish single-policy work from multi-candidate selector work.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation: benchmark smoke passed; all policy frames round-tripped over
+  3,239 frames. Corpus hashes and completed-checkpoint reuse were verified.
+  Full MSVC Release build and all 3,738 CTest cases passed, including
+  documentation layout and interoperability schema compatibility.
