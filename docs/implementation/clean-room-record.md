@@ -33148,3 +33148,21 @@ both bounds.
 - Local validation: the full MSVC Release build and all 3,645 CTest cases
   passed, including four private whole-stream tests, interoperability schema
   compatibility, and documentation layout checks.
+
+## CR-1340: 2026-09-24 - Model reserved short-match tokens for encoding
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  encoder-side implementation.
+- References used: IR-0941, DD-1186, TVG-1055, and marc's first-party typed
+  token, context-state, and modeled-operation contracts.
+- Known implementations intentionally not consulted: external encoder source,
+  copyleft implementations, third-party test suites or tables.
+- Generated-code task: create a private variant-6 forward operation modeler
+  and define a complete-frame selection experiment without public admission.
+- Independent decisions: validate the whole typed frame before output, count
+  operations and decisions with checked arithmetic, and reject storage alias.
+- Similarity review: derived fields from the independently recorded format;
+  no external expression was translated. No legal non-infringement guarantee.
+- Local validation: the full MSVC Release build and all 3,649 CTest cases
+  passed, including four forward-modeler tests, interoperability schema
+  compatibility, and documentation layout checks.

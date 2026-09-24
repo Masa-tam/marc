@@ -15575,3 +15575,12 @@ frames with sequences zero and one and produces eight bytes. Add one trailing
 byte, truncate the second frame, corrupt its Range payload, or repeat sequence
 zero; each must fail without changing caller whole-stream output. Also reject
 short output, short token scratch, and aliased input/output regions.
+
+### TVG-1055
+
+Forward-map `Literal(0x61), Match(1,3)` into contexts 0, 3, 1, 21,
+and 23 with five events and five decisions, exactly matching the reserved
+hand decoder vector. Length four has class 1 and one zero-valued bypass bit;
+length 258 has class 8 and eight zero-valued bypass bits. Verify the
+distance context becomes 31 for class 8. Reject an impossible distance,
+short operation output, and aliased token/operation storage before writing.

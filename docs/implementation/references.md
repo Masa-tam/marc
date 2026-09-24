@@ -8648,3 +8648,11 @@ The private strict short-match stream decoder uses IR-0933 through IR-0939,
 marc's first-party stream-header parser, frame decoder, checked arithmetic,
 and caller-supplied bounded scratch contract. No external stream-decoder
 source or test suite was consulted.
+
+### IR-0941
+
+The private short-match forward modeler uses the repository's own variant-7
+typed-token validator, variant-6 context table and state transition, and
+checked arithmetic. The benchmark candidate policy is derived from the
+first-party BM-0099/BM-0100 observations, not external encoder source.
+No external implementation, code table, or test suite was consulted.

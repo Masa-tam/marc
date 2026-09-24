@@ -62,6 +62,7 @@ set(MARC_SOURCES
     src/context/lzss_contextual_range_decoder.cpp
     src/context/lzss_short_match_range_tokens.cpp
     src/context/lzss_field_context.cpp
+    src/context/lzss_short_match_operations.cpp
     src/frame/lzss_typed_context_frame_decoder.cpp
     src/frame/lzss_short_match_frame_decoder.cpp
     src/frame/lzss_short_match_stream_decoder.cpp
@@ -2536,6 +2537,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_short_match_preflight_tests.cpp
         tests/lzss_short_match_range_decoder_tests.cpp
         tests/lzss_short_match_range_tokens_tests.cpp
+        tests/lzss_short_match_operations_tests.cpp
         tests/lzss_short_match_frame_decoder_tests.cpp
         tests/lzss_short_match_stream_decoder_tests.cpp
     )

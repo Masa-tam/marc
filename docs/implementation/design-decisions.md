@@ -24041,3 +24041,13 @@ permits no frames. After success, decode a second time and copy each frame
 to disjoint caller-owned whole-stream output. This preserves output on
 malformed later frames without retaining an unbounded decoded stream. Input
 and workspaces must remain stable throughout both passes.
+
+## DD-1186: Keep short-match selection experimental and frame-complete
+
+Map validated variant-7 tokens to variant-6 operations privately before
+adding Range encoding. Use `L-2` and nine length classes without changing
+published 31-context layouts. The initial benchmark compares deterministic
+greedy minimum-eligible-length 3, 4, and 5 parses under the same reserved
+identity. Choose the smallest complete serialized frame; ties prefer the
+higher minimum length. Do not promote a local match-cost heuristic or a
+decoder-visible selection flag before complete-payload measurement.

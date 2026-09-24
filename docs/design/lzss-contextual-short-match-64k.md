@@ -275,3 +275,24 @@ and all regions must be disjoint. Tests cover empty, one- and two-frame
 streams, truncation, malformed later frames, trailing data, sequence errors,
 insufficient workspaces, and overlap. This does not open the public streaming
 decoder, selector, C API, or interoperability inventory.
+
+## Eighth implementation boundary and candidate-selection experiment
+
+A private forward modeler now converts a complete, validated variant-7 typed
+frame into variant-6 modeled operations. It emits `L-2` length classes 0..8,
+distance contexts 23..31, and only the required LSB-first bypass decisions.
+The modeler plans event and decision counts with checked arithmetic before
+writing into caller-owned storage, rejects aliases and insufficient storage,
+and has hand-vector tests for lengths 3, 4, and 258. It does not yet produce
+a Range payload or serialized frame.
+
+For the first complete-payload experiment, compare three deterministic greedy
+candidate parsers with minimum eligible match lengths 3, 4, and 5, otherwise
+using the same longest-match and nearest-distance tie break, frame size,
+window, and maximum length. Each candidate must be encoded with this same
+reserved identity and evaluated by **complete serialized frame size**, not
+token count or an isolated token-cost estimate. On equal frame size, prefer
+the higher minimum eligible length. This is an
+experimental encoder-selection policy, not a decoder-visible parameter or a
+claim that any short match is profitable. Record full-archive size and
+encode/decode time against BM-0100 before considering public admission.
