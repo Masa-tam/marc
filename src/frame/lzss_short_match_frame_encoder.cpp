@@ -1,6 +1,9 @@
 #include "frame/lzss_short_match_frame_encoder.hpp"
+#include "frame/lzss_short_length_escape_frame_encoder.hpp"
 
+#include "context/lzss_short_length_escape_operations.hpp"
 #include "context/lzss_short_match_context_layout.hpp"
+#include "frame/lzss_short_length_escape_preflight.hpp"
 #include "core/checked_math.hpp"
 #include "core/endian.hpp"
 
@@ -82,10 +85,12 @@ enum class OverlapCheck : std::uint8_t {
     const std::uint64_t sequence,
     const std::uint64_t raw_already_committed,
     const std::span<const dictionary::internal::LzssTypedToken> tokens,
-    const std::span<context::internal::ModeledOperation> operations) noexcept {
+    const std::span<context::internal::ModeledOperation> operations,
+    const bool escape_identity) noexcept {
     LzssShortMatchFrameEncodeResult result{};
-    result.preflight_error = validate_lzss_short_match_stream_semantics(
-        stream, limits);
+    result.preflight_error = escape_identity
+        ? validate_lzss_short_length_escape_stream_semantics(stream, limits)
+        : validate_lzss_short_match_stream_semantics(stream, limits);
     if (result.preflight_error != LzssShortMatchPreflightError::none) {
         result.error = LzssShortMatchFrameEncodeError::invalid_stream;
         return result;
@@ -105,8 +110,11 @@ enum class OverlapCheck : std::uint8_t {
     const dictionary::internal::LzssTypedFrameValidationContext token_context{
         static_cast<std::uint32_t>(tokens.size()),
         static_cast<std::uint32_t>(raw_size), raw_already_committed};
-    result.context = context::internal::model_lzss_short_match_tokens(
-        tokens, stream.dictionary, token_context, limits, operations);
+    result.context = escape_identity
+        ? context::internal::model_lzss_short_length_escape_tokens(
+              tokens, stream.dictionary, token_context, limits, operations)
+        : context::internal::model_lzss_short_match_tokens(
+              tokens, stream.dictionary, token_context, limits, operations);
     if (result.context.error != context::internal::LzssFieldContextError::none) {
         result.error = result.context.error
                 == context::internal::LzssFieldContextError::output_too_small
@@ -147,8 +155,11 @@ enum class OverlapCheck : std::uint8_t {
     const TypedContextFrameValidationContext frame_context{
         stream, limits, sequence, raw_already_committed};
     LzssShortMatchFrameRequirements requirements{};
-    result.preflight_error = preflight_lzss_short_match_frame_semantics(
-        header, descriptor, frame_context, requirements);
+    result.preflight_error = escape_identity
+        ? preflight_lzss_short_length_escape_frame_semantics(
+              header, descriptor, frame_context, requirements)
+        : preflight_lzss_short_match_frame_semantics(
+              header, descriptor, frame_context, requirements);
     if (result.preflight_error != LzssShortMatchPreflightError::none) {
         result.error = LzssShortMatchFrameEncodeError::preflight_error;
         return result;
@@ -168,27 +179,15 @@ enum class OverlapCheck : std::uint8_t {
     return result;
 }
 
-} // namespace
-
-LzssShortMatchFrameEncodeResult plan_lzss_short_match_frame(
-    const TypedContextStreamHeader& stream,
-    const core::DecoderLimits& limits,
-    const std::uint64_t sequence,
-    const std::uint64_t raw_already_committed,
-    const std::span<const dictionary::internal::LzssTypedToken> tokens,
-    const std::span<context::internal::ModeledOperation> operations) noexcept {
-    return plan(stream, limits, sequence, raw_already_committed, tokens,
-                operations);
-}
-
-LzssShortMatchFrameEncodeResult encode_lzss_short_match_frame(
+[[nodiscard]] LzssShortMatchFrameEncodeResult encode(
     const TypedContextStreamHeader& stream,
     const core::DecoderLimits& limits,
     const std::uint64_t sequence,
     const std::uint64_t raw_already_committed,
     const std::span<const dictionary::internal::LzssTypedToken> tokens,
     const std::span<context::internal::ModeledOperation> operations,
-    const std::span<std::byte> serialized_output) noexcept {
+    const std::span<std::byte> serialized_output,
+    const bool escape_identity) noexcept {
     LzssShortMatchFrameEncodeResult result{};
     std::size_t token_bytes{};
     std::size_t operation_bytes{};
@@ -222,7 +221,7 @@ LzssShortMatchFrameEncodeResult encode_lzss_short_match_frame(
         }
     }
     result = plan(stream, limits, sequence, raw_already_committed, tokens,
-                  operations);
+                  operations, escape_identity);
     if (result.error != LzssShortMatchFrameEncodeError::none) return result;
     if (serialized_output.size() < result.serialized_size) {
         result.error = LzssShortMatchFrameEncodeError::serialized_output_too_small;
@@ -269,6 +268,54 @@ LzssShortMatchFrameEncodeResult encode_lzss_short_match_frame(
     std::memcpy(output.data() + typed_context_frame_header_size,
                 descriptor_bytes.data(), descriptor_bytes.size());
     return result;
+}
+
+} // namespace
+
+LzssShortMatchFrameEncodeResult plan_lzss_short_match_frame(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t raw_already_committed,
+    const std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations) noexcept {
+    return plan(stream, limits, sequence, raw_already_committed, tokens,
+                operations, false);
+}
+
+LzssShortMatchFrameEncodeResult encode_lzss_short_match_frame(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t raw_already_committed,
+    const std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> serialized_output) noexcept {
+    return encode(stream, limits, sequence, raw_already_committed, tokens,
+                  operations, serialized_output, false);
+}
+
+LzssShortMatchFrameEncodeResult plan_lzss_short_length_escape_frame(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t raw_already_committed,
+    const std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations) noexcept {
+    return plan(stream, limits, sequence, raw_already_committed, tokens,
+                operations, true);
+}
+
+LzssShortMatchFrameEncodeResult encode_lzss_short_length_escape_frame(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t raw_already_committed,
+    const std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> serialized_output) noexcept {
+    return encode(stream, limits, sequence, raw_already_committed, tokens,
+                  operations, serialized_output, true);
 }
 
 } // namespace marc::frame::internal

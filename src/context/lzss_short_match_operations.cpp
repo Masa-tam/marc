@@ -1,6 +1,8 @@
 #include "context/lzss_short_match_operations.hpp"
+#include "context/lzss_short_length_escape_operations.hpp"
 
 #include "context/lzss_field_context_state.hpp"
+#include "context/lzss_short_length_escape.hpp"
 #include "context/lzss_short_match_context_layout.hpp"
 #include "core/checked_math.hpp"
 
@@ -84,17 +86,17 @@ void write_bypass(const std::span<ModeledOperation> output,
     output[index++] = {ModeledOperationKind::bypass_bits, 0, 0, value, width};
 }
 
-} // namespace
-
-LzssFieldContextResult plan_lzss_short_match_operations(
+[[nodiscard]] LzssFieldContextResult plan_operations(
     const std::span<const LzssTypedToken> tokens,
     const dictionary::internal::LzssParameters& parameters,
     const dictionary::internal::LzssTypedFrameValidationContext& context,
-    const core::DecoderLimits& limits) noexcept {
+    const core::DecoderLimits& limits, const bool escape_identity) noexcept {
     LzssFieldContextResult result{};
     const auto checked = dictionary::internal::validate_lzss_typed_frame(
         tokens, parameters, context, limits,
-        LzssTypedTokenVariant::field_context_64k_short_match);
+        escape_identity
+            ? LzssTypedTokenVariant::field_context_64k_short_length_escape
+            : LzssTypedTokenVariant::field_context_64k_short_match);
     result.token_count = checked.token_count;
     result.token_index = checked.token_index;
     result.raw_size = checked.raw_size;
@@ -106,14 +108,15 @@ LzssFieldContextResult plan_lzss_short_match_operations(
         std::size_t events = 2;
         std::uint32_t decisions = 2;
         if (token.kind == LzssTypedTokenKind::match) {
-            const auto length_class =
-                lzss_field_context_value_class(token.length - 2);
+            const auto length_width = escape_identity
+                ? encode_lzss_short_length_escape(token.length).bit_count
+                : lzss_field_context_value_class(token.length - 2);
             const auto distance_class =
                 lzss_field_context_value_class(token.distance);
-            events = static_cast<std::size_t>(3 + (length_class != 0)
+            events = static_cast<std::size_t>(3 + (length_width != 0)
                                                + (distance_class != 0));
             decisions = static_cast<std::uint32_t>(
-                3 + length_class + distance_class);
+                3 + length_width + distance_class);
         }
         if (!core::checked_add(result.operation_count, events,
                                result.operation_count)
@@ -134,14 +137,15 @@ LzssFieldContextResult plan_lzss_short_match_operations(
     return result;
 }
 
-LzssFieldContextResult model_lzss_short_match_tokens(
+[[nodiscard]] LzssFieldContextResult model_tokens(
     const std::span<const LzssTypedToken> tokens,
     const dictionary::internal::LzssParameters& parameters,
     const dictionary::internal::LzssTypedFrameValidationContext& context,
     const core::DecoderLimits& limits,
-    const std::span<ModeledOperation> operations) noexcept {
-    auto result = plan_lzss_short_match_operations(
-        tokens, parameters, context, limits);
+    const std::span<ModeledOperation> operations,
+    const bool escape_identity) noexcept {
+    auto result = plan_operations(tokens, parameters, context, limits,
+                                  escape_identity);
     if (result.error != LzssFieldContextError::none) return result;
     if (operations.size() < result.operation_count) {
         result.error = LzssFieldContextError::output_too_small;
@@ -169,14 +173,22 @@ LzssFieldContextResult model_lzss_short_match_tokens(
                          token.literal);
         } else {
             const auto length_value = token.length - 2;
-            const auto length_class =
-                lzss_field_context_value_class(length_value);
+            const auto escaped = escape_identity
+                ? encode_lzss_short_length_escape(token.length)
+                : LzssShortLengthEscapeEncodeResult{};
+            const auto length_class = escape_identity
+                ? escaped.length_class
+                : lzss_field_context_value_class(length_value);
+            const auto length_width = escape_identity
+                ? escaped.bit_count : length_class;
+            const auto length_extra = escape_identity
+                ? escaped.extra
+                : length_value - (UINT32_C(1) << length_class);
             const auto distance_class =
                 lzss_field_context_value_class(token.distance);
             write_symbol(output, index, state.length_context(), length_class);
-            if (length_class != 0) {
-                write_bypass(output, index, length_class,
-                             length_value - (UINT32_C(1) << length_class));
+            if (length_width != 0) {
+                write_bypass(output, index, length_width, length_extra);
             }
             write_symbol(output, index,
                          LzssFieldContextState::distance_context(length_class),
@@ -190,6 +202,43 @@ LzssFieldContextResult model_lzss_short_match_tokens(
     }
     result.operation_index = index;
     return result;
+}
+
+} // namespace
+
+LzssFieldContextResult plan_lzss_short_match_operations(
+    const std::span<const LzssTypedToken> tokens,
+    const dictionary::internal::LzssParameters& parameters,
+    const dictionary::internal::LzssTypedFrameValidationContext& context,
+    const core::DecoderLimits& limits) noexcept {
+    return plan_operations(tokens, parameters, context, limits, false);
+}
+
+LzssFieldContextResult model_lzss_short_match_tokens(
+    const std::span<const LzssTypedToken> tokens,
+    const dictionary::internal::LzssParameters& parameters,
+    const dictionary::internal::LzssTypedFrameValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<ModeledOperation> operations) noexcept {
+    return model_tokens(tokens, parameters, context, limits, operations,
+                        false);
+}
+
+LzssFieldContextResult plan_lzss_short_length_escape_operations(
+    const std::span<const LzssTypedToken> tokens,
+    const dictionary::internal::LzssParameters& parameters,
+    const dictionary::internal::LzssTypedFrameValidationContext& context,
+    const core::DecoderLimits& limits) noexcept {
+    return plan_operations(tokens, parameters, context, limits, true);
+}
+
+LzssFieldContextResult model_lzss_short_length_escape_tokens(
+    const std::span<const LzssTypedToken> tokens,
+    const dictionary::internal::LzssParameters& parameters,
+    const dictionary::internal::LzssTypedFrameValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<ModeledOperation> operations) noexcept {
+    return model_tokens(tokens, parameters, context, limits, operations, true);
 }
 
 } // namespace marc::context::internal

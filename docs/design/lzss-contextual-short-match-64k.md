@@ -476,3 +476,20 @@ and malformed entropy never publishes raw bytes. Hand-built frame tests
 cover lengths 3, 4, 5 and 258, wrong IDs, invalid framing, overlap and
 limits. The published stream parser still rejects the new identity; this
 boundary does not add an encoder, streaming API or public admission.
+
+## Twentieth implementation boundary: private complete-frame encode
+
+The isolated 2/8 + 1/7 + 3/2 identity now maps validated typed tokens to
+modeled operations and encodes one complete frame. Lengths 3 and 4 use
+class 8 with one bypass bit; lengths 5..258 use classes 0..7 and the
+canonical `length - 4` value. The existing 32-context Range writer and
+fixed frame layout are reused; only the length interpretation changes.
+Planning checks the exact stream identity, frame position, typed tokens,
+event and decision counts, payload size, preflight limits and aggregate
+workspace before encoding. The encoder checks caller-owned workspace
+overlap and output capacity before writing, then commits the fixed header
+and descriptor only after the payload matches the plan. Tests exercise all
+256 allowed match lengths at the operation boundary, boundary frame
+round trips, wrong identity, invalid tokens, insufficient storage and
+overlap. The old private identity retains its hand-vector bytes. No
+published stream selector, CLI, C API or streaming encoder admits 2/8.

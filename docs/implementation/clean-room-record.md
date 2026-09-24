@@ -33395,3 +33395,24 @@ both bounds.
 - Local validation: complete MSVC Release build and all 3,694 CTest cases
   passed, including private frame/preflight, published-parser rejection,
   documentation and interoperability tests.
+
+## CR-1352: 2026-09-24 - Encode private escape frames
+
+- Author: Codex; reviewer: repository maintainer approved the next private
+  frame-encoder step.
+- References used: IR-0953, DD-1198, TVG-1067, the 2/8 length rule, and
+  marc's first-party frame preflight and Range writer.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft code, tables, pseudocode and tests.
+- Generated-code task: model validated typed tokens and encode one complete
+  private 2/8 + 1/7 + 3/2 frame without public admission.
+- Independent decisions: share fixed-frame construction and exact limits,
+  select only the private identity's length rule and semantic validation,
+  and commit header fields after the planned Range payload is reproduced.
+- Similarity review: all implementation logic and vectors derive from this
+  repository's own documented format; no external expression was translated.
+  No legal non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,698 CTest cases
+  passed after the documentation-order check caught and corrected the
+  initial placement of this record. Focused old/new private encoder and
+  decoder tests also passed.

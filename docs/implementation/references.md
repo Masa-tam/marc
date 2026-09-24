@@ -8742,3 +8742,11 @@ The private complete-frame route follows marc's own typed-context frame
 layout, existing short-match preflight and frame decoder, and the private
 escape Range token decoder from IR-0951. No external frame parser,
 compressor source, serialization code or test suite was consulted.
+
+### IR-0953
+
+The private frame encoder uses marc's own typed-token validation, the
+independently specified escape-length mapping from IR-0949, the existing
+32-context Range writer, and marc's explicit fixed-frame serialization.
+No external compressor encoder, source code, table or test suite was
+consulted.

@@ -2578,6 +2578,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_short_length_escape_operation_decoder_tests.cpp
         tests/lzss_short_length_escape_range_tokens_tests.cpp
         tests/lzss_short_length_escape_frame_decoder_tests.cpp
+        tests/lzss_short_length_escape_frame_encoder_tests.cpp
         tests/lzss_short_match_range_encoder_tests.cpp
         tests/lzss_short_match_frame_decoder_tests.cpp
         tests/lzss_short_match_frame_encoder_tests.cpp

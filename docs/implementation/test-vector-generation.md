@@ -15720,3 +15720,15 @@ independently; the old private parser must reject it. Mutate identity,
 sequence, reserved fields, payload prefix, truncation, output capacities,
 workspace aliasing and a valid-but-insufficient aggregate workspace limit.
 On errors, no raw output may be published. No external corpus is embedded.
+
+### TVG-1067
+
+For each length 3..258, build a literal `a` followed by a distance-1
+match and compare the modeled class, bypass width and extra with the
+independent length rule; invert the operation sequence back to the exact
+typed token. Encode complete frames at lengths 3, 4, 5 and 258, then
+decode and compare every raw byte. Reject a wrong stream identity, invalid
+distance, wrong frame position, short operation/output workspaces and
+overlap before publishing output. Retain the old private hand-frame byte
+vector to detect any change to the previous identity. These first-party
+vectors do not use an external corpus or another encoder.

@@ -24173,3 +24173,14 @@ old 2/7 + 1/6 path still rejects the new pair. Reuse complete-frame
 capacity and overlap checks, selecting the corresponding private Range
 token decoder and typed-token variant only after successful preflight.
 Do not change the published stream parser or admit either reservation.
+
+## DD-1198: Reuse private frame construction with exact length selection
+
+The 2/8 + 1/7 + 3/2 frame has the same fixed layout and 32-context Range
+model as the previous private 2/7 + 1/6 identity, but a distinct length
+mapping. Give it separate private planning and encoding entry points;
+share the existing bounded frame construction while selecting typed-token
+validation, operation modeling and frame preflight by exact identity.
+Plan and validate all counts, sizes, workspace and frame position before
+committing serialized fields. Keep the public parser and stream writer
+unchanged until an independent streaming boundary is complete.
