@@ -24372,3 +24372,20 @@ prior escape and retained paths on the same complete mozilla input before
 choosing another model experiment. Adaptive information and empirical
 histogram scores remain diagnostic quantities, not serialized byte counts
 or achievable coding bounds.
+
+## DD-1214: Compare literal update increments on fixed retained tokens
+
+In diagnostics only, compare literal frequency increments 1, 2, 4 and 8.
+Initialize every active symbol to one and reset each frame/context as before.
+Score the probability before updating. Only literal contexts change; other
+fields, bypass bits, token parsing and winner choice stay fixed. After each
+update, rescale when total is at least 32,768 by ceil-halving every frequency.
+Using greater-than-or-equal is necessary when larger steps cross the boundary.
+The pre-update total is below 32,768 and the largest increment is eight, so
+32-bit diagnostic arithmetic is bounded. Reject increments outside the grid.
+
+Increment one must reproduce the current diagnostic exactly. Larger increments
+both weaken the initial prior and shorten the effective adaptation horizon;
+this experiment does not isolate those effects. Its floating-point scores
+are not actual range-coded sizes and do not alter any serialized format.
+Any adopted update rule needs a separately specified encoder/decoder variant.

@@ -4163,3 +4163,32 @@ gain. It motivates a bounded comparison of literal-model initialization and
 update rules on fixed retained tokens before considering another format.
 Any actual model change requires its own decoder-visible specification;
 this diagnostic changes no existing representation or public default.
+
+### BM-0114: Literal increment screening on fixed mozilla tokens
+
+On 2026-09-25, MSVC Release replayed the same retained winners for all
+782 mozilla frames, resetting each diagnostic context per frame. The actual
+archive remained 19,636,009 bytes and all selected frames round-tripped.
+Only literal update increments changed in the diagnostic; initialization,
+tokens, context assignment and nonliteral model rules stayed fixed.
+
+| Literal increment | Adaptive literal bits | Change from one, byte-equivalent |
+| --- | ---: | ---: |
+| 1 (control) | 79,446,724.059640 | 0 |
+| 2 | 79,485,725.810702 | +4,875.219 |
+| 4 | 79,999,768.104840 | +69,130.506 |
+| 8 | 80,945,313.902510 | +187,323.730 |
+
+Increment one exactly reproduces BM-0113. None of the larger steps improves
+this aggregate score, so a uniformly increased literal increment is not the
+next implementation candidate. This single-input negative result does not
+establish that other update schedules or other inputs cannot benefit.
+
+The result also cautions against treating the empirical/adaptive gap as pure
+initialization loss. Increasing the step weakens the initial frequency-one
+prior relative to observations but also increases rescaling frequency and
+shortens memory. Separating those effects would require a different experiment.
+No actual alternate-model range encoding was performed, so the table reports
+information quantities, not compressed sizes. A next diagnostic should examine
+literal-context partitioning and sharing on the same fixed token sequence
+rather than changing the public model in response to the histogram gap alone.

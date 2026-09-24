@@ -33716,3 +33716,23 @@ both bounds.
   frame round-tripped before profiling. Full MSVC Release build and all
   3,741 CTest cases passed, including documentation layout and interoperability
   schema compatibility.
+
+## CR-1368: 2026-09-25 - Screen literal update increments
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0969, DD-1214, TVG-1083 and BM-0114; first-party
+  model diagnostic and fixed retained token sequences only.
+- Known implementations intentionally not consulted: external compressor
+  code, copyleft implementations and third-party adaptive-model heuristics.
+- Generated-code task: compare literal increments 1/2/4/8 without changing
+  parsing or actual coding, with hand-calculated probabilities and rescaling.
+- Independent decisions: keep frequency-one initialization, score before
+  updating, rescale at or above the threshold and reject other increments.
+  Record the negative result without changing public defaults or format.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation: seven model-cost tests and benchmark smoke passed. Complete
+  mozilla winners round-tripped; step one reproduced the existing score and
+  actual archive size stayed unchanged. Full MSVC Release build and all
+  3,743 CTest cases passed, including documentation layout and interoperability
+  schema compatibility.

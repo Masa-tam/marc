@@ -25,9 +25,12 @@ struct ModelCost {
 
 [[nodiscard]] inline ModelCost measure_model_cost(
     const std::span<const context::internal::ModeledOperation> operations,
-    const CostLayout layout) noexcept {
+    const CostLayout layout,
+    const std::uint32_t literal_increment = 1) noexcept {
     using namespace context::internal;
-    if (operations.size() > 5 * 65536) return {};
+    if (operations.size() > 5 * 65536
+        || (literal_increment != 1 && literal_increment != 2
+            && literal_increment != 4 && literal_increment != 8)) return {};
     std::span<const std::uint16_t> alphabets;
     if (layout == CostLayout::published_64k) {
         alphabets = lzss_field_context_alphabets_v1;
@@ -63,8 +66,10 @@ struct ModelCost {
             ++result.symbols[group];
             ++observed[id][operation.value];
             ++counts[id];
-            ++frequency;
-            if (++totals[id] == 32768) {
+            const auto increment = group == 1 ? literal_increment : 1U;
+            frequency += increment;
+            totals[id] += increment;
+            if (totals[id] >= 32768) {
                 totals[id] = 0;
                 for (std::size_t symbol = 0; symbol < alphabets[id]; ++symbol) {
                     auto& value = frequencies[id][symbol];

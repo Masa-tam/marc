@@ -8856,3 +8856,10 @@ The retained-winner cost attribution reuses marc's BM-0107 model-cost
 diagnostic, private variant-8 decoder and typed-token modeler. It applies
 the same first-party frequency and bypass rules to the actual retained
 winner. No external compressor implementation is consulted.
+
+### IR-0969
+
+The literal-increment diagnostic extends marc's own bounded information
+profiler, retaining frequency-one initialization and ceil-half rescaling.
+Its increment grid is an independently chosen experiment motivated by
+BM-0113. No external implementation or adaptive-model source is consulted.

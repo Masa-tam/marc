@@ -15885,3 +15885,13 @@ symbol count and bypass-bit count in the existing bounded benchmark smoke.
 Extend bypass checks to published and prior escape diagnostics as well.
 The full mozilla measurement still verifies candidate minima, decodes the
 retained frame and compares restored bytes before profiling decoded tokens.
+
+### TVG-1083
+
+For two identical literals plus one in a fresh context, check the exact
+score 16 + log2((256 + step)/(1 + step)) for steps 1/2/4/8. Verify other
+fields, empirical scores and counts are unchanged. For step eight, 4,064
+identical updates reach total 32,768; the next probability is 16,257/16,512.
+Check this independently calculated rescale boundary and reject invalid steps.
+Benchmark smoke requires indexed/reference equality for all trial scores and
+exact step-one agreement with the retained-winner diagnostic.
