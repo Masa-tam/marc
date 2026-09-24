@@ -32,7 +32,13 @@ calculate_lzss_short_prefix_workspace(
     std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits) noexcept;
 
-// Private exact index for variant 7. Hash collisions are verified against
+[[nodiscard]] LzssShortPrefixWorkspaceRequirements
+calculate_lzss_short_prefix_workspace(
+    std::size_t input_size, const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    LzssTypedTokenVariant variant) noexcept;
+
+// Private exact index for variants 7 and 8. Collisions are verified against
 // the source bytes; a chain is traversed nearest-first. Caller owns storage.
 class LzssShortPrefixMatchFinder {
 public:
@@ -43,7 +49,7 @@ private:
     friend LzssShortPrefixError initialize_lzss_short_prefix_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,
-        LzssShortPrefixMatchFinder&) noexcept;
+        LzssShortPrefixMatchFinder&, LzssTypedTokenVariant) noexcept;
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
@@ -58,6 +64,12 @@ static_assert(LzssMatchFinder<LzssShortPrefixMatchFinder>);
     std::span<const std::byte> input, const LzssParameters& parameters,
     const core::DecoderLimits& limits, std::span<std::byte> workspace,
     LzssShortPrefixMatchFinder& finder) noexcept;
+
+[[nodiscard]] LzssShortPrefixError initialize_lzss_short_prefix_match_finder(
+    std::span<const std::byte> input, const LzssParameters& parameters,
+    const core::DecoderLimits& limits, std::span<std::byte> workspace,
+    LzssShortPrefixMatchFinder& finder,
+    LzssTypedTokenVariant variant) noexcept;
 
 } // namespace marc::dictionary::internal
 

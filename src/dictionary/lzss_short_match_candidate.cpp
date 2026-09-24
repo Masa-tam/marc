@@ -224,25 +224,27 @@ LzssShortMatchCandidateResult tokenize_lzss_short_length_escape_candidate(
         LzssTypedTokenVariant::field_context_64k_short_length_escape);
 }
 
-LzssShortMatchCandidateResult plan_lzss_short_match_candidate_indexed(
+namespace {
+
+[[nodiscard]] LzssShortMatchCandidateResult plan_indexed(
     const std::span<const std::byte> input,
     const LzssParameters& parameters,
     const core::DecoderLimits& limits,
     const std::uint32_t minimum_eligible_length,
-    const std::span<std::byte> finder_workspace) noexcept {
+    const std::span<std::byte> finder_workspace,
+    const LzssTypedTokenVariant variant) noexcept {
     auto result = validate_input(
-        input, parameters, limits, minimum_eligible_length,
-        LzssTypedTokenVariant::field_context_64k_short_match);
+        input, parameters, limits, minimum_eligible_length, variant);
     if (result.error != LzssShortMatchCandidateError::none) return result;
     const auto required = calculate_lzss_short_prefix_workspace(
-        input.size(), parameters, limits);
+        input.size(), parameters, limits, variant);
     if (required.error != LzssShortPrefixError::none) {
         set_finder_error(result, required.error);
         return result;
     }
     LzssShortPrefixMatchFinder finder{};
     const auto initialized = initialize_lzss_short_prefix_match_finder(
-        input, parameters, limits, finder_workspace, finder);
+        input, parameters, limits, finder_workspace, finder, variant);
     if (initialized != LzssShortPrefixError::none) {
         set_finder_error(result, initialized);
         return result;
@@ -260,13 +262,14 @@ LzssShortMatchCandidateResult plan_lzss_short_match_candidate_indexed(
     return result;
 }
 
-LzssShortMatchCandidateResult tokenize_lzss_short_match_candidate_indexed(
+[[nodiscard]] LzssShortMatchCandidateResult tokenize_indexed(
     const std::span<const std::byte> input,
     const LzssParameters& parameters,
     const core::DecoderLimits& limits,
     const std::uint32_t minimum_eligible_length,
     const std::span<LzssTypedToken> output,
-    const std::span<std::byte> finder_workspace) noexcept {
+    const std::span<std::byte> finder_workspace,
+    const LzssTypedTokenVariant variant) noexcept {
     LzssShortMatchCandidateResult result{};
     result.input_size = input.size();
     std::size_t output_bytes{};
@@ -295,9 +298,9 @@ LzssShortMatchCandidateResult tokenize_lzss_short_match_candidate_indexed(
         result.error = LzssShortMatchCandidateError::overlapping_buffers;
         return result;
     }
-    result = plan_lzss_short_match_candidate_indexed(
+    result = plan_indexed(
         input, parameters, limits, minimum_eligible_length,
-        finder_workspace);
+        finder_workspace, variant);
     if (result.error != LzssShortMatchCandidateError::none) return result;
     if (output.size() < result.token_count) {
         result.error = LzssShortMatchCandidateError::output_too_small;
@@ -305,7 +308,7 @@ LzssShortMatchCandidateResult tokenize_lzss_short_match_candidate_indexed(
     }
     LzssShortPrefixMatchFinder finder{};
     const auto initialized = initialize_lzss_short_prefix_match_finder(
-        input, parameters, limits, finder_workspace, finder);
+        input, parameters, limits, finder_workspace, finder, variant);
     if (initialized != LzssShortPrefixError::none) {
         set_finder_error(result, initialized);
         return result;
@@ -319,6 +322,56 @@ LzssShortMatchCandidateResult tokenize_lzss_short_match_candidate_indexed(
         result.error = LzssShortMatchCandidateError::internal_error;
     }
     return result;
+}
+
+} // namespace
+
+LzssShortMatchCandidateResult plan_lzss_short_match_candidate_indexed(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint32_t minimum_eligible_length,
+    const std::span<std::byte> finder_workspace) noexcept {
+    return plan_indexed(
+        input, parameters, limits, minimum_eligible_length, finder_workspace,
+        LzssTypedTokenVariant::field_context_64k_short_match);
+}
+
+LzssShortMatchCandidateResult tokenize_lzss_short_match_candidate_indexed(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint32_t minimum_eligible_length,
+    const std::span<LzssTypedToken> output,
+    const std::span<std::byte> finder_workspace) noexcept {
+    return tokenize_indexed(
+        input, parameters, limits, minimum_eligible_length, output,
+        finder_workspace,
+        LzssTypedTokenVariant::field_context_64k_short_match);
+}
+
+LzssShortMatchCandidateResult plan_lzss_short_length_escape_candidate_indexed(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint32_t minimum_eligible_length,
+    const std::span<std::byte> finder_workspace) noexcept {
+    return plan_indexed(
+        input, parameters, limits, minimum_eligible_length, finder_workspace,
+        LzssTypedTokenVariant::field_context_64k_short_length_escape);
+}
+
+LzssShortMatchCandidateResult tokenize_lzss_short_length_escape_candidate_indexed(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint32_t minimum_eligible_length,
+    const std::span<LzssTypedToken> output,
+    const std::span<std::byte> finder_workspace) noexcept {
+    return tokenize_indexed(
+        input, parameters, limits, minimum_eligible_length, output,
+        finder_workspace,
+        LzssTypedTokenVariant::field_context_64k_short_length_escape);
 }
 
 } // namespace marc::dictionary::internal

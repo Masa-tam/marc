@@ -22,6 +22,25 @@ tokenize_lzss_short_length_escape_candidate(
     std::uint32_t minimum_eligible_length,
     std::span<LzssTypedToken> output) noexcept;
 
+// Exact three-byte-prefix index; workspace must be caller-owned and disjoint
+// from raw input and token output. Tokens match the exhaustive reference.
+[[nodiscard]] LzssShortMatchCandidateResult
+plan_lzss_short_length_escape_candidate_indexed(
+    std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint32_t minimum_eligible_length,
+    std::span<std::byte> finder_workspace) noexcept;
+
+[[nodiscard]] LzssShortMatchCandidateResult
+tokenize_lzss_short_length_escape_candidate_indexed(
+    std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint32_t minimum_eligible_length,
+    std::span<LzssTypedToken> output,
+    std::span<std::byte> finder_workspace) noexcept;
+
 } // namespace marc::dictionary::internal
 
 #endif

@@ -31,9 +31,24 @@ constexpr std::uint32_t empty_link = std::numeric_limits<std::uint32_t>::max();
 LzssShortPrefixWorkspaceRequirements calculate_lzss_short_prefix_workspace(
     const std::size_t input_size, const LzssParameters& parameters,
     const core::DecoderLimits& limits) noexcept {
+    return calculate_lzss_short_prefix_workspace(
+        input_size, parameters, limits,
+        LzssTypedTokenVariant::field_context_64k_short_match);
+}
+
+LzssShortPrefixWorkspaceRequirements calculate_lzss_short_prefix_workspace(
+    const std::size_t input_size, const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const LzssTypedTokenVariant variant) noexcept {
     LzssShortPrefixWorkspaceRequirements result{};
+    if (variant != LzssTypedTokenVariant::field_context_64k_short_match
+        && variant != LzssTypedTokenVariant::
+            field_context_64k_short_length_escape) {
+        result.error = LzssShortPrefixError::invalid_parameters;
+        return result;
+    }
     const auto parameter_error = validate_lzss_typed_parameters(
-        parameters, limits, LzssTypedTokenVariant::field_context_64k_short_match);
+        parameters, limits, variant);
     if (parameter_error != LzssTypedTokenError::none) {
         result.error = parameter_error == LzssTypedTokenError::limit_exceeded
             ? LzssShortPrefixError::input_limit_exceeded
@@ -66,8 +81,20 @@ LzssShortPrefixError initialize_lzss_short_prefix_match_finder(
     const core::DecoderLimits& limits,
     const std::span<std::byte> workspace,
     LzssShortPrefixMatchFinder& finder) noexcept {
+    return initialize_lzss_short_prefix_match_finder(
+        input, parameters, limits, workspace, finder,
+        LzssTypedTokenVariant::field_context_64k_short_match);
+}
+
+LzssShortPrefixError initialize_lzss_short_prefix_match_finder(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::span<std::byte> workspace,
+    LzssShortPrefixMatchFinder& finder,
+    const LzssTypedTokenVariant variant) noexcept {
     const auto required = calculate_lzss_short_prefix_workspace(
-        input.size(), parameters, limits);
+        input.size(), parameters, limits, variant);
     if (required.error != LzssShortPrefixError::none) return required.error;
     if (workspace.size() < required.workspace_size)
         return LzssShortPrefixError::workspace_too_small;

@@ -24216,3 +24216,15 @@ validator explicitly at the private entry point. Keep 3/4/5 eligibility
 encoder-local and preserve the existing longest-match/nearest-distance
 choice. Do not silently route the published parser or add indexed search,
 frame-size selection or public selection in this step.
+
+## DD-1202: Share the exact prefix index with private length-escape parsing
+
+The three-byte-prefix index finds the same longest match and nearest-distance
+tie as the exhaustive reference, independent of the entropy length mapping.
+Retain the existing variant-7 entry points and add explicit variant-8
+planning/tokenization entry points with caller-owned, disjoint workspace.
+Validate the selected typed-token variant during both workspace sizing and
+finder initialization; never silently rely on variant-7 validation for a
+variant-8 call. Preserve 3/4/5 eligibility as an encoder-only choice and
+leave candidate-size selection, raw-stream assembly and public admission for
+later boundaries.

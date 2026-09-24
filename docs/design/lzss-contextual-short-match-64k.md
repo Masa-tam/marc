@@ -532,3 +532,16 @@ writing. Small hand vectors and a mixed binary vector compare the old and
 new token choices, then pass the new tokens through the private frame
 encoder and decoder. Indexed search, candidate-size selection, raw-input
 stream assembly and all public admission remain separate stages.
+
+## Twenty-fourth implementation boundary: private indexed tokenization
+
+The 2/8 + 1/7 + 3/2 identity may also tokenize one bounded raw frame using
+the existing exact three-byte-prefix index. Its caller-owned workspace is
+calculated and initialized with explicit variant-8 parameter validation,
+while existing variant-7 entry points retain their contract. Planning and
+materialization use the same nearest-first chain and 3/4/5 encoder-local
+eligibility, so indexed tokens must exactly match the exhaustive reference
+for the same frame. Capacity, alignment, workspace limits and all buffer
+overlaps are checked before token output is written. This boundary does not
+choose between candidates, assemble raw-input streams or admit variant 8
+through any public API.

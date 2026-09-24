@@ -15765,3 +15765,14 @@ input and eligibility. Feed the variant-8 tokens to its private complete-
 frame encoder and decoder. Reject eligibility outside 3..5, insufficient
 token output and aliased raw/token buffers before token publication. Include
 empty input and a mixed binary vector; no third-party corpus is embedded.
+
+### TVG-1071
+
+For variant 8, compare indexed and exhaustive token counts and every token
+field at eligibility 3, 4 and 5 for `aaaa`, a repeated four-byte phrase,
+an equal-length nearest-distance tie, empty input and deterministic mixed
+binary data. Check that planning reports exact token storage and that
+materialization rejects a too-small, misaligned or aliased index workspace,
+token/output overlap, invalid eligibility and insufficient token capacity
+without publishing tokens. Supply the indexed tokens to the private frame
+encoder and decoder for a round trip; no third-party corpus is embedded.

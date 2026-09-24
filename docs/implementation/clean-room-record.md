@@ -33475,3 +33475,23 @@ both bounds.
 - Local validation: complete MSVC Release build and all 3,711 CTest cases
   passed, including private reference parsing, complete-frame inversion,
   documentation and interoperability schema checks.
+
+## CR-1356: 2026-09-25 - Index private escape-token parsing
+
+- Author: Codex; reviewer: repository maintainer approved the next private
+  indexed-search boundary.
+- References used: IR-0957, DD-1202, TVG-1071 and marc's independently
+  written exact three-byte-prefix finder.
+- Known implementations intentionally not consulted: external compressor
+  implementations, copyleft code, third-party indexes and test suites.
+- Generated-code task: add bounded indexed tokenization to the private
+  variant-8 raw-frame path without changing the published parser.
+- Independent decisions: preserve old entry points, explicitly validate
+  variant 8 in workspace sizing and initialization, and require exact token
+  parity with the exhaustive reference at eligibility 3/4/5.
+- Similarity review: only marc's prior first-party index and format rules
+  were reused; no external implementation expression was translated. No
+  legal non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,715 CTest cases
+  passed, including indexed/reference token parity, private frame inversion,
+  documentation and interoperability schema checks.

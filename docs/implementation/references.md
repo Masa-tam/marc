@@ -8771,3 +8771,10 @@ The private reference token parser uses marc's own exhaustive LZSS match
 finder, variant-8 typed-token limits and the established 3/4/5 eligibility
 rule. No external compressor parser, source code, table or test suite was
 consulted.
+
+### IR-0957
+
+The private indexed token parser uses marc's own exact three-byte-prefix
+finder and variant-8 typed-token contract. The index and its workspace rules
+come from this repository's prior variant-7 implementation; no external
+compressor parser or index implementation was consulted.
