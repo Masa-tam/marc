@@ -545,3 +545,15 @@ for the same frame. Capacity, alignment, workspace limits and all buffer
 overlaps are checked before token output is written. This boundary does not
 choose between candidates, assemble raw-input streams or admit variant 8
 through any public API.
+
+## Twenty-fifth implementation boundary: private candidate-size selection
+
+For one bounded raw frame of the 2/8 + 1/7 + 3/2 identity, plan exact
+complete-frame sizes for eligibility 3, 4 and 5. Choose the smallest full
+serialized frame; a tie prefers the higher eligibility. The same rule
+applies to exhaustive and exact indexed tokenization, while indexed finder
+workspace remains charged to the aggregate hard limit. Materialization
+recreates only the winning candidate and verifies its planned size before
+committing the frame. Eligibility and search method remain encoder-local;
+neither changes a format field. This does not add raw-input stream assembly,
+an incremental writer or public admission.

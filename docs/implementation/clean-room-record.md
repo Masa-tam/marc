@@ -33495,3 +33495,23 @@ both bounds.
 - Local validation: complete MSVC Release build and all 3,715 CTest cases
   passed, including indexed/reference token parity, private frame inversion,
   documentation and interoperability schema checks.
+
+## CR-1357: 2026-09-25 - Select private escape frames by exact size
+
+- Author: Codex; reviewer: repository maintainer approved the next private
+  candidate-selection boundary.
+- References used: IR-0958, DD-1203, TVG-1072, marc's independently
+  authored frame planner and candidate selector.
+- Known implementations intentionally not consulted: external compressor
+  implementations, copyleft code, third-party selection logic and tests.
+- Generated-code task: compare complete private variant-8 frame candidates
+  at eligibility 3/4/5 and emit only the selected one.
+- Independent decisions: preserve the first-party smallest-size/higher-
+  eligibility tie rule, count indexed finder workspace against the limit,
+  and retain old variant-7 entry points without public admission of 8.
+- Similarity review: only marc's prior first-party format and selector
+  contracts were reused; no external implementation expression was
+  translated. No legal non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,721 CTest cases
+  passed, including complete-frame candidate sizing, indexed/reference
+  byte parity, documentation and interoperability schema checks.

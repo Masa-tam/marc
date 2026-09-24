@@ -24228,3 +24228,14 @@ finder initialization; never silently rely on variant-7 validation for a
 variant-8 call. Preserve 3/4/5 eligibility as an encoder-only choice and
 leave candidate-size selection, raw-stream assembly and public admission for
 later boundaries.
+
+## DD-1203: Select private escape candidates by complete serialized frame
+
+For the reserved 2/8 + 1/7 + 3/2 identity, compare encoder-local greedy
+eligibility 3, 4 and 5 using the exact complete-frame planner. Select the
+smallest serialized frame and prefer the higher eligibility on equal sizes;
+the choice is not stored in the stream. Reuse the same decision for exhaustive
+and indexed search, with finder workspace counted against the aggregate
+hard limit during indexed frame planning. Preserve variant-7 entry points
+and output. Do not yet choose between exhaustive and indexed search, assemble
+raw-input streams, or admit variant 8 publicly.

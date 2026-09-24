@@ -15776,3 +15776,15 @@ materialization rejects a too-small, misaligned or aliased index workspace,
 token/output overlap, invalid eligibility and insufficient token capacity
 without publishing tokens. Supply the indexed tokens to the private frame
 encoder and decoder for a round trip; no third-party corpus is embedded.
+
+### TVG-1072
+
+For `aaaa`, independently tokenize and encode eligibility 3, 4 and 5 under
+the exact 2/8 + 1/7 + 3/2 frame identity; require the selector's three
+sizes and winner to equal those complete frames. For a literal-only frame,
+require a tie to prefer 5. For a deterministic mixed binary frame, require
+indexed and exhaustive selectors to report equal candidate sizes and emit
+byte-identical winner frames that the private decoder reconstructs. Reject
+wrong stream identity, invalid raw partition, insufficient output and
+overlapping raw/token/operation/finder/output regions without publishing
+serialized output. No third-party corpus supplies the vectors.

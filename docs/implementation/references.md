@@ -8778,3 +8778,10 @@ The private indexed token parser uses marc's own exact three-byte-prefix
 finder and variant-8 typed-token contract. The index and its workspace rules
 come from this repository's prior variant-7 implementation; no external
 compressor parser or index implementation was consulted.
+
+### IR-0958
+
+The private length-escape candidate selector follows marc's own exact
+complete-frame planning contract, independently specified variant-8 length
+mapping, and first-party reference/indexed token parsers. No external
+compressor candidate-selection code or test vectors were consulted.
