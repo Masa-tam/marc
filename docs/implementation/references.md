@@ -8843,3 +8843,9 @@ The private three-policy selector uses marc's own distance-policy parser,
 variant-8 frame encoder and BM-0110 subset evidence. Model memory charging
 follows the existing private frame preflight contract. No external source
 code or selector implementation is consulted.
+
+### IR-0967
+
+The selector repeatability check uses the unchanged BM-0111 executable,
+first-party checkpoint reports and externally stored Silesia inputs. No
+external compressor source or third-party benchmark results are used.

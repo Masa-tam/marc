@@ -33678,3 +33678,22 @@ both bounds.
   sizes matched, and all winners decoded correctly. Full MSVC Release build
   and all 3,741 CTest cases passed, including documentation layout and
   interoperability schema compatibility.
+
+## CR-1366: 2026-09-25 - Check retained-selector repeatability
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0967, DD-1212, TVG-1081 and BM-0112; unchanged
+  first-party executable and local verified corpus/checkpoint reports.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party performance claims.
+- Generated-code task: repeat the full corpus twice with hash-bound local
+  checkpoints, reverse file order once and compare size/memory invariants.
+- Independent decisions: retain all three observations, report range and
+  median, and explicitly preserve the within-frame order-bias caveat.
+- Similarity review: no implementation code was imported or translated.
+  No legal non-infringement guarantee.
+- Validation: both additional twelve-member runs completed with candidate
+  size and retained-frame round-trip checks; all size and memory invariants
+  matched BM-0111. Completed checkpoint reuse passed for all 24 reports.
+  Runtime sources and the executable are unchanged from CR-1365's full
+  3,741-case validation; this documentation-only step reruns layout checks.

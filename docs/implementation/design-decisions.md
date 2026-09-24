@@ -24347,3 +24347,16 @@ limit. Report both supplied bytes and required aggregate bytes, not process
 RSS. Existing configuration consistency requirements (notably max block
 size no greater than aggregate limit) still apply. Keep this helper outside
 the library API until its tests and corpus evaluation justify integration.
+
+## DD-1212: Repeat the retained-selector corpus measurement
+
+Use the unchanged BM-0111 executable and corpus for two additional complete
+runs, yielding three observations including BM-0111. Reverse member order
+for the first added run and restore original order for the second. Bind
+checkpoints to executable/input SHA-256 and exact arguments; compare archive
+sizes and supplied/required memory counts before accepting a new report.
+Summarize per-run total encode/decode time and their range/median, without
+treating three observations as a statistical guarantee. The benchmark's
+within-frame order remains unchanged: prior selector precedes the retained
+selector and diagnostics intervene. Reversing corpus order does not remove
+that possible cache/order bias. No source or public codec changes are needed.

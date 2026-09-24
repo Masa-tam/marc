@@ -4094,3 +4094,36 @@ existing frame contract's 9,272-byte fixed model charge gives 8,987,874 bytes
 against the aggregate limit. This is not process RSS, allocator overhead or
 all scalar stack state. Buffers are reused across candidates without heap
 allocation inside the selector. Public codecs and defaults remain unchanged.
+
+### BM-0112: Retained-selector repeatability
+
+On 2026-09-25, two additional full-corpus runs used exactly the BM-0111
+executable, arguments and inputs. The first additional run reversed member
+order; the second restored it. Executable/input SHA-256, prior and retained
+archive sizes and both memory counts matched for every member before a
+checkpoint was accepted. Both completed runs resumed without relaunching
+benchmarks. Each run covers 211,938,580 bytes and 3,239 frames, with all
+candidate-size checks and retained-winner round trips enabled.
+
+| Run | Prior encode seconds | Retained encode seconds | Prior decode seconds | Retained decode seconds |
+| --- | ---: | ---: | ---: | ---: |
+| BM-0111, original order | 56.724434 | 33.320856 | 9.093179 | 9.065586 |
+| Repeat 1, reversed order | 57.083673 | 33.717818 | 9.237193 | 9.238103 |
+| Repeat 2, original order | 57.113057 | 33.729774 | 9.271127 | 9.258336 |
+| **Median** | **57.083673** | **33.717818** | **9.237193** | **9.238103** |
+
+Encode ranges are 56.724434--57.113057 seconds for the prior selector and
+33.320856--33.729774 for the retained selector. Every member in every run
+encoded faster with the retained selector. Decode times remain close; no
+decode speedup is claimed. All three runs produced **70,980,791 bytes**
+for the retained selector, and maximum supplied/required memory counts
+remained 8,978,602 / 8,987,874 bytes. These observations support repeatable
+lower encode cost on this host and harness, not a cross-machine guarantee.
+
+Within each frame the prior selector still runs before the retained selector,
+with diagnostics and other policy trials between them. Corpus-order reversal
+does not remove that cache/order bias. The selectors also use different
+policies, so the result is not an isolated retention optimization comparison.
+No runtime source changed for these repeats. The next compression-ratio
+investigation can use the retained three-policy selector as a private
+reference point; the remaining mozilla gap is not solved by this speed result.

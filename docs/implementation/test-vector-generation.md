@@ -15868,3 +15868,12 @@ and one-byte-short rejection with a consistent small block limit. Reject
 overlapping output/scratch or token storage, short output/scratch and invalid
 frame position. During corpus measurement compare all three candidate sizes
 with independently measured policy sizes and decode the retained winner.
+
+### TVG-1081
+
+For two additional complete corpus runs, retain BM-0111's per-frame candidate
+size checks and selected-frame round trips. Require identical executable and
+input hashes, prior/retained archive totals, supplied capacity and fixed-model
+aggregate charge for each member. Completed reports are reusable only under
+their original experiment identity; timing differences are expected and are
+not test failures.
