@@ -2,6 +2,7 @@
 #include "context/lzss_short_length_escape_operations.hpp"
 #include "lzss_model_cost.hpp"
 #include "lzss_short_distance_policy.hpp"
+#include "lzss_short_distance_selector.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "dictionary/lzss_short_prefix_match_finder.hpp"
 #include "dictionary/lzss_typed_encoder.hpp"
@@ -239,6 +240,7 @@ int main(const int argc, const char* const argv[]) {
     std::vector<std::byte> raw(frame_bytes);
     std::vector<std::byte> decoded(frame_bytes);
     std::vector<std::byte> serialized(18 * frame_bytes + 85);
+    std::vector<std::byte> distance_winner(distance_policies ? serialized.size() : 0);
     std::vector<LzssTypedToken> tokens(frame_bytes);
     std::vector<LzssTypedToken> baseline_tokens(frame_bytes);
     std::vector<LzssTypedToken> decoded_tokens(frame_bytes);
@@ -296,6 +298,10 @@ int main(const int argc, const char* const argv[]) {
     double candidate_decode_seconds{};
     double escape_encode_seconds{};
     double escape_decode_seconds{};
+    double distance_selector_encode_seconds{}, distance_selector_decode_seconds{};
+    std::size_t distance_selector_buffer_bytes{};
+    std::size_t distance_selector_required_bytes{};
+    std::uint64_t distance_selector_archive_bytes = baseline_archive_bytes;
     std::array<double, 7> distance_encode_seconds{};
     std::array<double, 7> distance_decode_seconds{};
     std::uint64_t committed{};
@@ -493,6 +499,35 @@ int main(const int argc, const char* const argv[]) {
                 distance_subset_bytes[subset] += minimum;
             }
             distance_policy_selected_archive_bytes += best_size;
+            const auto selection_start = Clock::now();
+            const auto selection = marc::benchmarks::select_short_distance_frame(
+                escape_stream, limits, frames, committed, frame, tokens, operations,
+                search == "indexed" ? candidate_workspace : std::span<std::byte>{},
+                serialized, distance_winner, search == "indexed");
+            distance_selector_encode_seconds += std::chrono::duration<double>(
+                Clock::now() - selection_start).count();
+            if (!selection.valid || selection.sizes != std::array{sizes[0], sizes[3], sizes[4]}
+                || selection.serialized_size != std::min({sizes[0], sizes[3], sizes[4]})) {
+                std::cerr << "distance selector mismatch\n";
+                return 2;
+            }
+            distance_selector_buffer_bytes = std::max(distance_selector_buffer_bytes,
+                                                       selection.supplied_buffer_bytes);
+            distance_selector_required_bytes = std::max(distance_selector_required_bytes,
+                                                         selection.required_buffered_bytes);
+            distance_selector_archive_bytes += selection.serialized_size;
+            const auto selected_decode_start = Clock::now();
+            const auto verified = marc::frame::internal::decode_lzss_short_length_escape_frame(
+                std::span<const std::byte>{distance_winner}.first(selection.serialized_size),
+                escape_context, decoded_tokens, std::span<std::byte>{decoded}.first(count));
+            distance_selector_decode_seconds += std::chrono::duration<double>(
+                Clock::now() - selected_decode_start).count();
+            if (verified.error != marc::frame::internal::LzssShortMatchFrameDecodeError::none
+                || verified.serialized_consumed != selection.serialized_size
+                || !std::equal(frame.begin(), frame.end(), decoded.begin())) {
+                std::cerr << "distance selector decode mismatch\n";
+                return 2;
+            }
         }
         const auto exact_tokens = marc::dictionary::internal::
             tokenize_lzss_short_match_candidate_indexed(
@@ -659,6 +694,11 @@ int main(const int argc, const char* const argv[]) {
         }
         std::cout << "distance_policy_selected_archive_bytes="
                   << distance_policy_selected_archive_bytes << '\n';
+        std::cout << "distance_selector_archive_bytes=" << distance_selector_archive_bytes << '\n'
+                  << "distance_selector_encode_seconds=" << distance_selector_encode_seconds << '\n'
+                  << "distance_selector_decode_seconds=" << distance_selector_decode_seconds << '\n'
+                  << "distance_selector_supplied_buffer_bytes=" << distance_selector_buffer_bytes << '\n'
+                  << "distance_selector_required_buffered_bytes=" << distance_selector_required_bytes << '\n';
         for (std::size_t subset = 0; subset < distance_subset_masks.size(); ++subset) {
             double encode_sum{};
             for (std::size_t i = 0; i < distance_encode_seconds.size(); ++i) {

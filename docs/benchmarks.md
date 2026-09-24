@@ -4052,3 +4052,45 @@ bytes larger than the published baseline and keeps the small dickens/nci/osdb
 regressions; it is not a no-regression guarantee. Mozilla remains 641,870
 bytes above the user's gzip result. Profile/model improvement remains needed
 to meet that target even after reducing selection cost.
+
+### BM-0111: Dedicated three-policy selector with retained output
+
+On 2026-09-25, MSVC Release repeated the full 211,938,580-byte Silesia
+measurement with the private DD-1211 selector. All 3,239 selected frames
+round-tripped; each candidate size matched its independently measured policy
+and each member total reproduced BM-0110's {0,3,4} column exactly. The total
+remains **70,980,791 bytes**. Completed local checkpoints were reused without
+rerunning benchmarks on a second invocation.
+
+| Member | Prior selector encode seconds | Dedicated selector encode seconds | Dedicated decode seconds |
+| --- | ---: | ---: | ---: |
+| dickens | 3.776210 | 2.034262 | 0.514261 |
+| mozilla | 17.892000 | 10.297775 | 2.604569 |
+| mr | 3.702220 | 1.992032 | 0.428877 |
+| nci | 4.957480 | 2.271944 | 0.373656 |
+| ooffice | 1.923670 | 1.360654 | 0.444732 |
+| osdb | 1.861410 | 1.416925 | 0.539631 |
+| reymont | 2.841600 | 1.325626 | 0.192271 |
+| samba | 4.046960 | 2.422792 | 0.721752 |
+| sao | 2.168010 | 1.793694 | 0.773925 |
+| webster | 10.678900 | 6.093757 | 1.542555 |
+| x-ray | 2.215490 | 1.953037 | 0.842924 |
+| xml | 0.660484 | 0.358358 | 0.086433 |
+| **Total** | **56.724434** | **33.320856** | **9.065586** |
+
+Prior selector decode took 9.093179 seconds. Dedicated encode time includes
+three parses/encodes, buffer checks and provisional-winner copies, but not
+I/O, diagnostic profiling or verification decoding. Unlike BM-0110's work
+sum, this is the actual selector call. The same run's component sum was
+33.359674 seconds; the small difference is measurement/cache variation, not
+evidence that retention is free. This single sequential run suggests lower
+selection cost, not a stable production throughput guarantee. The prior
+selector also uses different parsing policies; this is not an isolated
+measurement of copying versus reparsing.
+
+Maximum supplied capacity was 8,978,602 bytes (raw input, token/operation
+scratch, indexed finder, candidate frame and winner frame). Including the
+existing frame contract's 9,272-byte fixed model charge gives 8,987,874 bytes
+against the aggregate limit. This is not process RSS, allocator overhead or
+all scalar stack state. Buffers are reused across candidates without heap
+allocation inside the selector. Public codecs and defaults remain unchanged.

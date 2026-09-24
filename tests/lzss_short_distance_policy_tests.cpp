@@ -1,4 +1,5 @@
 #include "lzss_short_distance_policy.hpp"
+#include "lzss_short_distance_selector.hpp"
 #include "dictionary/lzss_short_length_escape_candidate.hpp"
 #include "frame/lzss_short_length_escape_frame_encoder.hpp"
 #include "frame/lzss_short_length_escape_frame_decoder.hpp"
@@ -139,5 +140,85 @@ TEST(LzssShortDistancePolicy, EmptyAndInvalidInputsAreBounded) {
     EXPECT_FALSE(tokenize_short_distance_policy(
         alias, parameters, limits, {4, 5}, tokens, {}, false).valid);
     for (const auto& token : tokens) EXPECT_EQ(token.literal, 99);
+}
+TEST(LzssShortDistanceSelector, RetainsDeterministicWinnerAndRoundTrips) {
+    const auto raw = bytes("abcdXabcdY abcXabcY abcdXabcdY");
+    const auto required = calculate_lzss_short_prefix_workspace(
+        raw.size(), parameters, limits,
+        LzssTypedTokenVariant::field_context_64k_short_length_escape);
+    std::vector<std::uint32_t> storage(required.workspace_size / 4);
+    const auto finder = std::as_writable_bytes(std::span{storage});
+    std::vector<LzssTypedToken> tokens(raw.size()), decoded(raw.size());
+    std::vector<marc::context::internal::ModeledOperation> ops(5 * raw.size());
+    std::vector<std::byte> scratch(18 * raw.size() + 85), output(scratch.size()),
+        reference(scratch.size()), restored(raw.size());
+    const TypedContextStreamHeader stream{
+        static_cast<std::uint32_t>(raw.size()), raw.size(), parameters,
+        typed_context_model_total, 32, 8, 1, 7};
+    const auto a = select_short_distance_frame(
+        stream, limits, 0, 0, raw, tokens, ops, finder, scratch, output, true);
+    const auto b = select_short_distance_frame(
+        stream, limits, 0, 0, raw, tokens, ops, {}, scratch, reference, false);
+    ASSERT_TRUE(a.valid);
+    ASSERT_TRUE(b.valid);
+    EXPECT_EQ(a.sizes, b.sizes);
+    EXPECT_EQ(a.selected_policy, b.selected_policy);
+    EXPECT_EQ(a.serialized_size, *std::min_element(a.sizes.begin(), a.sizes.end()));
+    EXPECT_EQ(output, reference);
+    const auto result = decode_lzss_short_length_escape_frame(
+        std::span{output}.first(a.serialized_size), {stream, limits, 0, 0}, decoded, restored);
+    ASSERT_EQ(result.error, LzssShortMatchFrameDecodeError::none);
+    EXPECT_EQ(restored, raw);
+}
+
+TEST(LzssShortDistanceSelector, TiesPreferControlAndAccountForEveryBuffer) {
+    const auto raw = bytes("a");
+    std::vector<LzssTypedToken> tokens(1);
+    std::vector<marc::context::internal::ModeledOperation> ops(5);
+    std::vector<std::byte> scratch(103), output(103);
+    const TypedContextStreamHeader stream{1, 1, parameters, typed_context_model_total, 32, 8, 1, 7};
+    const auto a = select_short_distance_frame(
+        stream, limits, 0, 0, raw, tokens, ops, {}, scratch, output, false);
+    ASSERT_TRUE(a.valid);
+    EXPECT_EQ(a.sizes[0], a.sizes[1]);
+    EXPECT_EQ(a.sizes[0], a.sizes[2]);
+    EXPECT_EQ(a.selected_policy, 0U);
+    EXPECT_EQ(a.supplied_buffer_bytes, raw.size() + sizeof(LzssTypedToken)
+        + 5 * sizeof(marc::context::internal::ModeledOperation) + 206);
+    auto bounded = limits;
+    // Keep the independent max-block <= aggregate configuration invariant
+    // valid while testing this one-byte frame's exact aggregate charge.
+    bounded.max_block_size = raw.size();
+    EXPECT_EQ(a.required_buffered_bytes, a.supplied_buffer_bytes
+        + sizeof(marc::entropy::internal::LzssShortMatchRangeDecoder));
+    bounded.max_internal_buffered_bytes = a.required_buffered_bytes;
+    EXPECT_TRUE(select_short_distance_frame(
+        stream, bounded, 0, 0, raw, tokens, ops, {}, scratch, output, false).valid);
+    --bounded.max_internal_buffered_bytes;
+    EXPECT_FALSE(select_short_distance_frame(
+        stream, bounded, 0, 0, raw, tokens, ops, {}, scratch, output, false).valid);
+}
+
+TEST(LzssShortDistanceSelector, RejectsAliasesShortBuffersAndInvalidPosition) {
+    const auto raw = bytes("abcXabcY");
+    std::vector<LzssTypedToken> tokens(raw.size());
+    std::vector<marc::context::internal::ModeledOperation> ops(5 * raw.size());
+    std::vector<std::byte> scratch(18 * raw.size() + 85), output(scratch.size());
+    const TypedContextStreamHeader stream{
+        static_cast<std::uint32_t>(raw.size()), raw.size(), parameters,
+        typed_context_model_total, 32, 8, 1, 7};
+    EXPECT_FALSE(select_short_distance_frame(
+        stream, limits, 0, 0, raw, tokens, ops, {}, scratch, scratch, false).valid);
+    EXPECT_FALSE(select_short_distance_frame(
+        stream, limits, 0, 0, raw, tokens, ops, {}, scratch,
+        std::as_writable_bytes(std::span{tokens}), false).valid);
+    EXPECT_FALSE(select_short_distance_frame(
+        stream, limits, 0, 0, raw, tokens, ops, {}, scratch,
+        std::span{output}.first(1), false).valid);
+    EXPECT_FALSE(select_short_distance_frame(
+        stream, limits, 0, 0, raw, tokens, ops, {}, std::span{scratch}.first(1),
+        output, false).valid);
+    EXPECT_FALSE(select_short_distance_frame(
+        stream, limits, 0, raw.size(), raw, tokens, ops, {}, scratch, output, false).valid);
 }
 } // namespace

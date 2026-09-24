@@ -15858,3 +15858,13 @@ directly from member-policy archive totals. Require exact equality in both
 indexed and exhaustive modes, correct membership masks and nonnegative
 timing-sum fields. Full-corpus screening retains per-policy frame round trips
 and compares unchanged policy totals against the prior complete measurement.
+
+### TVG-1080
+
+Test retained winner bytes and indexed/reference equality, then decode the
+winner. A one-literal tie must choose policy 0. Verify the reported sum of
+all supplied capacities and fixed model charge, including aggregate equality
+and one-byte-short rejection with a consistent small block limit. Reject
+overlapping output/scratch or token storage, short output/scratch and invalid
+frame position. During corpus measurement compare all three candidate sizes
+with independently measured policy sizes and decode the retained winner.

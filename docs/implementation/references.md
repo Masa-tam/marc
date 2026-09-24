@@ -8836,3 +8836,10 @@ No external compressor implementation is consulted.
 The reduced-grid screening uses BM-0109's first-party policy measurements
 and DD-1208's fixed distance caps. It computes within-frame minima over
 explicit subsets; no external parser or selection implementation is used.
+
+### IR-0966
+
+The private three-policy selector uses marc's own distance-policy parser,
+variant-8 frame encoder and BM-0110 subset evidence. Model memory charging
+follows the existing private frame preflight contract. No external source
+code or selector implementation is consulted.

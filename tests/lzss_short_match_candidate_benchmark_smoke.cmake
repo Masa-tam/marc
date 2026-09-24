@@ -30,6 +30,7 @@ foreach(key IN ITEMS sample_bytes frame_bytes frame_count
         distance_policy_2_archive_bytes distance_policy_3_archive_bytes
         distance_policy_4_archive_bytes distance_policy_5_archive_bytes
         distance_policy_6_archive_bytes distance_policy_selected_archive_bytes
+        distance_selector_archive_bytes
         selected_5 threshold_3_archive_bytes threshold_4_archive_bytes
         threshold_5_archive_bytes escape_selected_3 escape_selected_4
         escape_selected_5 escape_threshold_3_archive_bytes
@@ -163,4 +164,26 @@ foreach(subset RANGE 0 5)
             message(FATAL_ERROR "Missing subset timing sum")
         endif()
     endforeach()
+endforeach()
+# Subset values are independently checked above; extract the report's value.
+string(REGEX MATCH "distance_subset_3_archive_bytes=([0-9]+)" field "${output}")
+if(field STREQUAL "" OR NOT distance_selector_archive_bytes EQUAL CMAKE_MATCH_1)
+    message(FATAL_ERROR "Dedicated selector size differs from subset minimum")
+endif()
+foreach(report IN ITEMS output reference_output)
+    foreach(phase IN ITEMS encode decode)
+        string(REGEX MATCH "distance_selector_${phase}_seconds=([0-9]+[.][0-9]+)" field "${${report}}")
+        if(field STREQUAL "")
+            message(FATAL_ERROR "Missing dedicated selector timing")
+        endif()
+    endforeach()
+    string(REGEX MATCH "distance_selector_supplied_buffer_bytes=([0-9]+)" field "${${report}}")
+    if(field STREQUAL "" OR CMAKE_MATCH_1 LESS 1)
+        message(FATAL_ERROR "Missing dedicated selector buffer accounting")
+    endif()
+    set(supplied "${CMAKE_MATCH_1}")
+    string(REGEX MATCH "distance_selector_required_buffered_bytes=([0-9]+)" field "${${report}}")
+    if(field STREQUAL "" OR NOT CMAKE_MATCH_1 GREATER supplied)
+        message(FATAL_ERROR "Missing dedicated selector fixed model charge")
+    endif()
 endforeach()

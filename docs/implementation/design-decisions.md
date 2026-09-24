@@ -24329,3 +24329,21 @@ in reduced sets. Report summed member parse/encode intervals as a work-cost
 proxy, not the wall time of an implemented reduced selector. Candidate buffer
 retention, copying, cache effects and selection overhead need separate
 measurement before claiming a production speedup. Keep all changes private.
+
+## DD-1211: Retain the winning frame in a private three-policy selector
+
+Implement benchmark-only policies 0, 3 and 4 in that order, choosing the
+first on equal serialized size. Parse and encode each exactly once into
+caller-provided scratch, copying a strictly smaller frame into a separate
+winner buffer. No winner reparse or re-encode is needed. Tokens/operations
+remain scratch, not the winning token sequence. Output is consumable only
+after successful completion; scratch and provisional output are unspecified
+on failure. Output must fit every provisional winner, not just the final one.
+
+Reject pairwise buffer overlap and arithmetic overflow before mutation.
+Charge the full supplied span capacities, including raw input, plus the
+fixed model charge used by private frame preflight against the aggregate
+limit. Report both supplied bytes and required aggregate bytes, not process
+RSS. Existing configuration consistency requirements (notably max block
+size no greater than aggregate limit) still apply. Keep this helper outside
+the library API until its tests and corpus evaluation justify integration.

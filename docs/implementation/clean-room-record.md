@@ -33656,3 +33656,25 @@ both bounds.
   policy sizes. Completed checkpoint reuse was verified. Full MSVC Release
   build and all 3,738 CTest cases passed, including documentation layout and
   interoperability schema compatibility.
+
+## CR-1365: 2026-09-25 - Retain private three-policy winner frames
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0966, DD-1211, TVG-1080 and BM-0111; first-party
+  parsers, frame encoder/decoder and preflight memory contract only.
+- Known implementations intentionally not consulted: external compressors,
+  copyleft code and third-party candidate-selector implementations.
+- Generated-code task: implement an allocation-free benchmark selector for
+  policies 0/3/4, retain the winning serialized frame, and verify sizes,
+  round trips, tie behavior, overlap handling and memory bounds.
+- Independent decisions: charge all supplied capacities plus the existing
+  fixed model charge, prefer policy order on ties and expose no valid output
+  on failure. Keep the helper outside public codecs.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation: focused tests and benchmark smoke passed. Exact-budget testing
+  exposed the initially omitted model charge; its fix retains the existing
+  max-block/aggregate consistency rule. Full-corpus candidate and winner
+  sizes matched, and all winners decoded correctly. Full MSVC Release build
+  and all 3,741 CTest cases passed, including documentation layout and
+  interoperability schema compatibility.
