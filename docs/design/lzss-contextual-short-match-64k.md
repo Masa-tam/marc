@@ -1,8 +1,9 @@
 # LZSS Contextual 64-KiB short-match candidate
 
-Status: decoder-visible reservation with private dictionary-token validation
-(2026-09-24). No stream parser, entropy decoder, encoder, public selector, or
-interoperability archive admits this identity yet.
+Status: decoder-visible reservation with private dictionary-token and
+structured-header preflight validation (2026-09-24). No byte-stream parser,
+entropy decoder, encoder, public selector, or interoperability archive admits
+this identity yet.
 
 ## Purpose and isolation
 
@@ -115,7 +116,7 @@ For raw frame size `F` and token count `T`, checked preflight requires:
 1 <= T <= F
 2T <= event_count <= min(2F, 5T)
 event_count <= decision_count <= min(9F, 27T)
-5 <= payload_size <= 18F + 5
+5 <= payload_size <= min(18F + 5, 2*decision_count + 5)
 ```
 
 A Literal has two events and two decisions. A Match has at most five events
@@ -188,5 +189,23 @@ against already reconstructed frame bytes and permits bytewise overlap.
 Malformed token frames fail before the reconstruction output is written.
 The generic serialized-byte LZSS parameter validator still requires minimum
 length 5. The shared typed-context stream parser intentionally still rejects
-the new `2/7 + 1/6` pair; full model and frame preflight must be implemented
-and tested before that gate opens.
+the new `2/7 + 1/6` pair; byte-level parsing and 32-context entropy decoding
+must be completed and tested before that gate opens.
+
+## Second implementation boundary
+
+An isolated compile-time layout now supplies 32 alphabets and 33 cumulative
+offsets, ending at frequency entry 4,538. The old 31-context arrays and model
+storage are not enlarged. A private semantic preflight accepts only the exact
+reserved identity and validates a structured stream/frame/descriptor triple:
+frame sequence and raw partition, token/event/decision counts, the tighter
+`2*decision_count+5` payload bound, descriptor context count 32, configured
+hard limits, and checked aggregate space for serialized frame, token array,
+raw frame, and fixed Range model. It publishes workspace requirements only
+after every check passes. The maximum-frame test verifies the `18F+85`
+serialized-frame ceiling at `F = 65,536`.
+
+This helper does **not** parse bytes, inspect magic/reserved fields, decode
+Range payloads, or authorize a stream. A subsequent byte-level parser and
+32-context decoder must call the semantic preflight before allocation or raw
+publication; only then can the reserved stream gate be opened privately.

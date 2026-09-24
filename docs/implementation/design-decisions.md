@@ -23975,3 +23975,15 @@ token validation and bytewise-overlap reconstructor. Keep the typed-context
 stream parser's variant 7/6 rejection until a 32-context model and complete
 frame preflight are available; recognizing a token variant is not admitting
 a stream codec.
+
+## DD-1180: Keep the short-match model layout isolated until decoder admission
+
+Do not expand the shared 31-context arrays or hard-coded model banks used by
+published variants. Define variant-6's 32 alphabets and 33 offsets separately,
+then add a private structured-header semantic preflight. Require exact
+`2/7 + 1/6 + 3/2`, frame/window at most 65,536, descriptor count 32, checked
+token/event/decision bounds, payload no larger than both `18F+5` and
+`2*decision_count+5`, and aggregate workspace accounting including the fixed
+Range model. The helper is not a byte parser and does not open stream
+admission; a later parser must first check magic, reserved fields, exact
+extents, and malformed payload before decoding or publishing raw bytes.

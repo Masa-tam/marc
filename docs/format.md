@@ -7908,7 +7908,8 @@ this exact identity; all earlier identities retain their own frozen counts.
 For raw frame size `F` and token count `T`, preflight requires `1 <= T <= F`,
 `2T <= event_count <= min(2F,5T)`, and
 `event_count <= decision_count <= min(9F,27T)`. The conservative payload
-ceiling is `18F+5` bytes; the complete frame ceiling is `18F+85` bytes.
+ceiling is `18F+5` bytes, further bounded by `2*decision_count+5` for the
+declared decisions; the complete frame ceiling is `18F+85` bytes.
 Every multiplication, sum, table extent, payload extent and aggregate
 workspace is checked against caller hard limits before allocation. Malformed
 classes, bypass widths, distances, count disagreements, Range states,

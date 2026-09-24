@@ -391,6 +391,7 @@ set(MARC_SOURCES
     src/frame/blocked_huffman_profile.cpp
     src/frame/stream_header.cpp
     src/frame/typed_context_format.cpp
+    src/frame/lzss_short_match_preflight.cpp
     src/marc.cpp
 )
 
@@ -2528,6 +2529,7 @@ if(MARC_BUILD_TESTS)
         tests/status_tests.cpp
         tests/stream_header_tests.cpp
         tests/typed_context_format_tests.cpp
+        tests/lzss_short_match_preflight_tests.cpp
     )
     target_compile_features(marc_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_core_tests

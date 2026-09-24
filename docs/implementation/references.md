@@ -8604,3 +8604,11 @@ The first short-match decoder-side implementation uses IR-0933, DD-1178,
 TVG-1047, the repository-owned `lzss_typed_token` and typed reconstructor,
 and the existing Format 2.0 stream admission tests. No external dictionary
 coder implementation, source, table, or test suite was consulted.
+
+### IR-0935
+
+The isolated short-match layout and structured frame preflight use IR-0933
+through IR-0934, DD-1178 through DD-1179, TVG-1047 through TVG-1048,
+marc's own Format 2.0 frame/descriptor structures, checked arithmetic,
+decoder limits, and typed-token size. No external coder or parser source,
+table, test suite, pseudocode, or optimization structure was consulted.

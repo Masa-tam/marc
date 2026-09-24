@@ -33036,3 +33036,23 @@ both bounds.
 - Local validation: the new tests failed before implementation and passed
   afterward. The full MSVC Release build and all 3,619 CTest cases passed,
   including interoperability schema compatibility and documentation layout.
+
+## CR-1334: 2026-09-24 - Preflight the isolated short-match model and frame
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  decoder-side implementation.
+- References used: IR-0935, DD-1180, TVG-1049, and repository-owned format,
+  bounds, checked-arithmetic, and token contracts.
+- Known implementations intentionally not consulted: external compressor or
+  entropy-coder source, copyleft implementations, third-party tests or tables.
+- Generated-code task: define variant-6's separate 32-context layout and
+  validate structured stream/frame/descriptor fields before allocation.
+- Independent decisions: retain old 31-context storage; include the fixed
+  model, serialized frame, tokens, and raw frame in aggregate workspace;
+  keep byte parsing and stream admission closed.
+- Similarity review: first-party arithmetic and table extents were used; no
+  external algorithm expression was translated. No legal non-infringement
+  guarantee is made.
+- Local validation: the full MSVC Release build and all 3,625 CTest cases
+  passed, including the six layout/preflight tests, interoperability schema
+  compatibility, and documentation layout checks.
