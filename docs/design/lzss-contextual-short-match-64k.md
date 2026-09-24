@@ -1,7 +1,7 @@
 # LZSS Contextual 64-KiB short-match candidate
 
-Status: decoder-visible reservation with a private frame decoder
-(2026-09-24). No whole-stream decoder, encoder, public selector, or
+Status: decoder-visible reservation with private frame and strict one-shot
+whole-stream decoders (2026-09-24). No encoder, public selector, or
 interoperability archive admits this identity yet.
 
 ## Purpose and isolation
@@ -259,3 +259,19 @@ output untouched. The hand vector reconstructs `aaaa`, including when used as
 a subsequent independent frame with sequence 1 and a four-byte committed
 prefix. No published whole-stream parser or C API calls this frame decoder;
 strict stream termination and cross-frame publication are later work.
+
+## Seventh implementation boundary
+
+A private strict one-shot stream decoder now composes the reserved stream
+header parser and frame decoder. Empty input is exactly the 112-byte header
+with original size zero and no frames. Nonempty streams require contiguous
+frame sequence numbers and the declared raw partition; each frame resets its
+dictionary history and Range models. An incomplete subsequent frame and any
+bytes after the declared raw size are rejected. Before writing the caller's
+whole-stream output, a validation pass decodes every frame into bounded
+frame-local scratch. A second pass reconstructs and copies the verified raw
+frames. Input and caller workspaces must remain stable throughout the call,
+and all regions must be disjoint. Tests cover empty, one- and two-frame
+streams, truncation, malformed later frames, trailing data, sequence errors,
+insufficient workspaces, and overlap. This does not open the public streaming
+decoder, selector, C API, or interoperability inventory.

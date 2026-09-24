@@ -24030,3 +24030,14 @@ the consumed frame extent only after full raw reconstruction succeeds. Frame
 history and Range models reset independently even at nonzero whole-stream
 offsets. Whole-stream completion, trailing bytes, and public admission remain
 future gates.
+
+## DD-1185: Validate every reserved short-match frame before stream output
+
+Keep public streaming admission closed. The private one-shot decoder first
+parses the exact reserved header, then validates all frames into caller-owned
+frame scratch with contiguous sequence and raw partition checks. Require
+the final serialized offset to equal the input extent; empty original size
+permits no frames. After success, decode a second time and copy each frame
+to disjoint caller-owned whole-stream output. This preserves output on
+malformed later frames without retaining an unbounded decoded stream. Input
+and workspaces must remain stable throughout both passes.

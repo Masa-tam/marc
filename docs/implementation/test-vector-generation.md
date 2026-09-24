@@ -15565,3 +15565,13 @@ provide one token slot or three raw bytes and require capacity failure before
 writes. Alias frame/raw and token/raw workspaces and require rejection. Repeat
 the same frame payload as sequence 1 after four committed raw bytes, proving
 frame-local dictionary and model reset without cross-frame references.
+
+### TVG-1054
+
+Wrap the 87-byte `aaaa` frame in the reserved 112-byte stream header.
+Original size zero admits only the header. Original size four admits exactly
+one frame and produces four `0x61` bytes. Original size eight admits two
+frames with sequences zero and one and produces eight bytes. Add one trailing
+byte, truncate the second frame, corrupt its Range payload, or repeat sequence
+zero; each must fail without changing caller whole-stream output. Also reject
+short output, short token scratch, and aliased input/output regions.

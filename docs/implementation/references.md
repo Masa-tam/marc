@@ -8641,3 +8641,10 @@ The private short-match frame decoder uses IR-0933 through IR-0938,
 marc's first-party byte preflight, Range-to-token validator, typed-token
 frame reconstructor, checked address arithmetic, and hard-limit contract.
 No external decoder source or test suite was consulted.
+
+### IR-0940
+
+The private strict short-match stream decoder uses IR-0933 through IR-0939,
+marc's first-party stream-header parser, frame decoder, checked arithmetic,
+and caller-supplied bounded scratch contract. No external stream-decoder
+source or test suite was consulted.

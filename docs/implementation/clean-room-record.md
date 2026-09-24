@@ -33129,3 +33129,22 @@ both bounds.
 - Local validation: the full MSVC Release build and all 3,641 CTest cases
   passed, including four private-frame tests, interoperability schema
   compatibility, and documentation layout checks.
+
+## CR-1339: 2026-09-24 - Validate reserved short-match whole streams privately
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  strict whole-stream decoder implementation.
+- References used: IR-0940, DD-1185, TVG-1054, and marc's first-party
+  stream-header and frame-decode contracts.
+- Known implementations intentionally not consulted: external stream
+  decoders, copyleft source, third-party tests or tables.
+- Generated-code task: decode empty and multiple reserved frames, reject
+  truncation or trailing data, and leave public admission closed.
+- Independent decisions: validate all frames in bounded caller-owned scratch
+  before copying any raw bytes to final output; require disjoint, stable
+  input and workspace regions.
+- Similarity review: composed only first-party format and validation stages;
+  no external expression was translated. No legal non-infringement guarantee.
+- Local validation: the full MSVC Release build and all 3,645 CTest cases
+  passed, including four private whole-stream tests, interoperability schema
+  compatibility, and documentation layout checks.
