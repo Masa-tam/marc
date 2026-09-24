@@ -8681,3 +8681,11 @@ uses the first-party complete frame planner rather than an external match
 cost heuristic. Hand examples and the private frame decoder are the
 validation references. No external encoder source, table, or test suite
 was consulted.
+
+### IR-0945
+
+The bounded short-match benchmark composes marc's first-party published
+HashChain typed encoder, field-context mapper, and Range planner with the
+reserved private selector and decoder. The Silesia corpus is an external
+measurement input only; its bytes are not copied into tests or the
+repository. No external encoder source, table, or test suite was consulted.

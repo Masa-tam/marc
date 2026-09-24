@@ -15618,3 +15618,12 @@ and compare their actual byte counts with the selector; decode its winning
 frame. For `abc`, all candidates are identical and the selector must choose
 eligibility 5. Reject invalid eligibility, insufficient output, mismatched
 raw partition, and aliased workspaces without publishing output.
+
+### TVG-1059
+
+Run the bounded private benchmark on the first 4,096 bytes of the tracked
+README as one frame. Require the reported sample and frame size to be 4,096,
+one frame, exactly one chosen threshold among 3/4/5, and positive complete
+archive sizes. The benchmark must encode the selected frame and reject any
+private decode mismatch before reporting success. Keep external Silesia
+bytes out of the regression fixture; BM-0101 records that separate pilot.

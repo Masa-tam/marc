@@ -3618,3 +3618,40 @@ only by the external corpus. The 112-byte stream header plus 782 pairs of
 Symbol and bypass counts describe the current representation, not additive
 compressed-bit costs or a forecast for a shorter-match format. No new
 encoder policy, archive variant, or compression-ratio improvement is claimed.
+
+### BM-0101: Bounded 64-KiB short-match candidate pilot
+
+On 2026-09-24, the private MSVC Release benchmark measured a prefix of the
+external Silesia `mozilla` input. No corpus bytes or generated report are
+tracked. The command was:
+
+```text
+marc_lzss_short_match_candidate_benchmark mozilla 16 65536
+```
+
+It compares the published minimum-5 HashChain typed-token path against the
+reserved minimum-3 variant's exhaustive candidate selector (eligibility 3,
+4, or 5) on the same frame partition. Both reported sizes include a 112-byte
+stream header and complete 64-byte frame header, 16-byte Range descriptor,
+and planned payload for each frame. The private side actually encodes every
+selected frame and decodes it byte-for-byte against the sampled source.
+
+| Measure | Published baseline | Reserved candidate |
+| --- | ---: | ---: |
+| Sample | 1,048,576 bytes / 16 frames | same |
+| Complete sample archive | 670,917 bytes | 670,231 bytes |
+| Size difference | reference | -686 bytes (-0.102%) |
+| Selected thresholds 3 / 4 / 5 | not applicable | 2 / 13 / 1 frames |
+| Size-planning time | 0.067 s | not measured separately |
+| Selection plus frame-encode time | not measured | 211.285 s |
+| Private frame-decode time | not measured | 0.113 s |
+
+The single first frame measured 16,163 versus 15,815 bytes; the smaller
+16-frame gain shows why that isolated observation must not be extrapolated.
+The timing columns are deliberately **not** an encode-speed comparison:
+baseline timing only plans sizes, whereas candidate timing performs repeated
+exhaustive search, three complete size plans, and a final encode. The
+candidate's observed latency alone rules out the current reference parser
+for public use. This is a bounded prefix pilot, not a whole-`mozilla` or
+whole-Silesia result, and does not establish `gzip -9v` parity. A validated
+short-prefix match index and corpus-wide measurement are still required.

@@ -24082,3 +24082,15 @@ including its Range-coded payload and fixed metadata. Choose the smallest
 frame; on equality choose the higher minimum. The threshold is encoder-only,
 not a stream parameter. Keep the exhaustive parser and selector private
 until corpus-size, speed, and memory measurements justify public admission.
+
+## DD-1190: Bound the first real-corpus short-match measurement
+
+Add a private benchmark that takes an external file, explicit frame count,
+and frame size. Reuse the published baseline's exact HashChain tokenization,
+field-context mapping, and complete Range payload planning. Encode and decode
+every chosen reserved frame, reporting complete sampled archive sizes and
+threshold counts. Keep baseline planning time separate from candidate
+selection-plus-encode time; do not label them comparable throughput. Do not
+promote the exhaustive reference parser from a bounded pilot: BM-0101 shows
+only a small prefix gain at prohibitive latency. Design and validate an
+exact three-byte-prefix search before a whole-corpus admission decision.

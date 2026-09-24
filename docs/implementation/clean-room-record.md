@@ -33226,3 +33226,25 @@ both bounds.
 - Local validation: the full MSVC Release build and all 3,667 CTest cases
   passed, including nine private candidate/selection tests, interoperability
   schema compatibility, and documentation layout checks.
+
+## CR-1344: 2026-09-24 - Measure a bounded private short-match sample
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  corpus measurement after private candidate selection.
+- References used: IR-0945, DD-1190, TVG-1059, BM-0100, BM-0101, and
+  marc's first-party baseline planner and private frame codec.
+- Known implementations intentionally not consulted: external encoder
+  sources, copyleft code, third-party tables and test suites.
+- Generated-code task: compare complete sample archive sizes on external
+  data, verify every reserved frame by decoding, and bound the run by an
+  explicit frame count and frame size.
+- Independent decisions: distinguish baseline size-planning time from
+  candidate selection/encoding time and decline a throughput claim from
+  unlike operations or a corpus-wide claim from a prefix sample.
+- Similarity review: composed first-party benchmark and codec interfaces;
+  no external implementation expression was translated. No legal
+  non-infringement guarantee.
+- Local validation: the full MSVC Release build and all 3,668 CTest cases
+  passed, including the bounded benchmark smoke, interoperability schema
+  compatibility, and documentation layout checks. BM-0101 records the
+  external 16-frame `mozilla` pilot; its input is not tracked.

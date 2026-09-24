@@ -472,6 +472,35 @@ endif()
 
 if(MARC_BUILD_BENCHMARKS)
     if(TARGET marc_static)
+        add_executable(marc_lzss_short_match_candidate_benchmark
+            benchmarks/lzss_short_match_candidate_benchmark.cpp)
+        target_compile_features(marc_lzss_short_match_candidate_benchmark
+            PRIVATE cxx_std_20)
+        set_target_properties(marc_lzss_short_match_candidate_benchmark
+            PROPERTIES CXX_EXTENSIONS OFF)
+        target_include_directories(marc_lzss_short_match_candidate_benchmark
+            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        if(MSVC)
+            target_compile_options(marc_lzss_short_match_candidate_benchmark
+                PRIVATE /W4 /permissive- /Zc:__cplusplus)
+        else()
+            target_compile_options(marc_lzss_short_match_candidate_benchmark
+                PRIVATE -Wall -Wextra -Wpedantic)
+        endif()
+        target_link_libraries(marc_lzss_short_match_candidate_benchmark
+            PRIVATE marc::static)
+        if(MARC_BUILD_TESTS)
+            add_test(NAME marc_lzss_short_match_candidate_benchmark_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_short_match_candidate_benchmark>"
+                    "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_short_match_candidate_benchmark_smoke.cmake)
+            set_tests_properties(
+                marc_lzss_short_match_candidate_benchmark_smoke
+                PROPERTIES LABELS benchmark-experimental-smoke)
+        endif()
+    endif()
+    if(TARGET marc_static)
         add_executable(marc_lzss_contextual_rans_phase_benchmark
             benchmarks/lzss_contextual_rans_phase_benchmark.cpp)
         target_compile_features(marc_lzss_contextual_rans_phase_benchmark

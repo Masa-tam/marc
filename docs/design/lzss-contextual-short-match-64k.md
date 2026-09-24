@@ -1,8 +1,8 @@
 # LZSS Contextual 64-KiB short-match candidate
 
-Status: decoder-visible reservation with private frame and strict one-shot
-whole-stream decoders (2026-09-24). No encoder, public selector, or
-interoperability archive admits this identity yet.
+Status: decoder-visible reservation with private frame/stream decoders and a
+private candidate-selecting frame encoder (2026-09-24). No public encoder,
+public selector, or interoperability archive admits this identity yet.
 
 ## Purpose and isolation
 
@@ -349,3 +349,18 @@ comparison, private decode of the winner, limits, and buffer overlap. This
 does not change any published encoder, admit the reserved format publicly,
 or establish a corpus compression-rate or throughput improvement. Bounded
 corpus measurement and a faster equivalent search remain later gates.
+
+## Twelfth implementation boundary: bounded corpus pilot
+
+A private benchmark accepts a local input path, a maximum of 1..1,024
+frames, and a frame size of 1..65,536 bytes. It measures a complete sample
+archive size for the published 64-KiB HashChain/field-context/Dynamic Range
+baseline and the reserved short-match selector at the same raw partition.
+Every selected private frame is decoded and compared with its source before
+the benchmark reports a result. Timing distinguishes baseline *size planning*
+from selected-frame *encoding*; those times are not an encode-throughput A/B
+comparison. Input samples and generated output remain outside version control.
+The 64-KiB-frame `mozilla` pilot is recorded in BM-0101. The exhaustive
+candidate parser remains far too slow for corpus-wide use; short-prefix
+indexing with an exact-match oracle is the next optimization gate. No public
+admission follows from the bounded pilot.
