@@ -8664,3 +8664,11 @@ Format 2.0 `3/2` interval and termination rules, IR-0941 operation mapping,
 and the reserved 4,538-frequency layout. Its exact-byte comparison uses
 the independently recorded `aaaa` hand vector. No external entropy-coder
 source, table, or test suite was consulted.
+
+### IR-0943
+
+The private short-match frame encoder composes marc's first-party variant-7
+typed-token validator, variant-6 forward modeler, 32-context Range encoder,
+semantic frame preflight, and explicit little-endian layout. The independent
+hand frame and private decoder provide exact-byte and round-trip checks.
+No external encoder source, table, or test suite was consulted.

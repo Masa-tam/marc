@@ -24061,3 +24061,14 @@ Dry-run the exact operation sequence before writing, so invalid operations,
 hard-limit failures, and insufficient or aliased output do not publish a
 descriptor or payload. This stage encodes only the payload, not frames or
 streams, and grants no public admission.
+
+## DD-1188: Serialize reserved short-match frames only after full planning
+
+Accept caller-selected complete typed-token frames rather than embedding a
+match-finder policy in the private frame encoder. Enforce fixed raw partition
+and sequence from the committed offset, then model, Range-plan, and run the
+reserved semantic preflight before touching serialized output. Count the
+operation workspace in the aggregate limit in addition to decoder preflight
+requirements. Serialize fixed fields explicitly and publish header and
+descriptor only after payload encoding succeeds. Public stream admission
+and complete-frame candidate selection remain separate work.

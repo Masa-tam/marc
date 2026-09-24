@@ -310,3 +310,18 @@ undersized output. The hand-vector operations reproduce payload
 model-frequency rescaling against the private decoder. This is not yet a
 serialized frame encoder or a candidate-size comparison. Published
 31-context encoder behavior and public admission remain unchanged.
+
+## Tenth implementation boundary
+
+A private frame encoder now accepts an already selected, complete variant-7
+typed-token frame. It validates frame position and raw partition, models the
+variant-6 operations, plans the exact Range payload, checks the reserved
+frame preflight and aggregate workspace limit, then writes the 64-byte frame
+header, 16-byte descriptor, and payload. The fixed header and descriptor are
+serialized explicitly in little-endian form and copied only after payload
+encoding succeeds. Caller token, operation, and serialized-output regions
+must be disjoint. The hand frame is exactly 87 bytes and round-trips through
+the private decoder; a later frame with a 258-byte match also round-trips.
+This function does not search for matches or choose among candidate parses,
+write a stream header, or open public admission. Complete-frame comparison
+and real-corpus measurement remain subsequent gates.

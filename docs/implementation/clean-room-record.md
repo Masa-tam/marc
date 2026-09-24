@@ -33186,3 +33186,22 @@ both bounds.
 - Local validation: the full MSVC Release build and all 3,654 CTest cases
   passed, including five private Range-encoder tests, interoperability schema
   compatibility, and documentation layout checks.
+
+## CR-1342: 2026-09-24 - Serialize reserved short-match frames privately
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  private frame-encoder implementation.
+- References used: IR-0943, DD-1188, TVG-1057, and marc's first-party
+  reserved frame preflight and explicit little-endian helpers.
+- Known implementations intentionally not consulted: external frame encoders,
+  copyleft source, third-party test suites or tables.
+- Generated-code task: assemble a complete reserved frame from selected
+  typed tokens, without introducing a search policy or public admission.
+- Independent decisions: require frame position and workspace checks before
+  serialized output; publish the fixed header and descriptor after payload
+  encoding; verify against an independently written 87-byte frame.
+- Similarity review: composed first-party format and encoder stages only;
+  no external expression was translated. No legal non-infringement guarantee.
+- Local validation: the full MSVC Release build and all 3,658 CTest cases
+  passed, including four private frame-encoder tests, interoperability schema
+  compatibility, and documentation layout checks.

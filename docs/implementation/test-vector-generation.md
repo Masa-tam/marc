@@ -15594,3 +15594,14 @@ every symbol and bypass value through the private 32-context decoder.
 Cross the 32,768-total frequency rescale boundary with repeated two-symbol
 events. Invalid context, insufficient payload output, and aliased operation
 and output storage must fail without publishing payload or descriptor.
+
+### TVG-1057
+
+Assemble the `aaaa` hand frame from `Literal(0x61), Match(1,3)` and the
+TVG-1056 payload. Require exactly 87 bytes: a 64-byte `MRF2` header with
+raw size 4, token count 2, event/decision counts 5, payload size 7, and
+descriptor size 16; then a 16-byte descriptor with decisions 5, payload
+size 7, context count 32; then `00 30 BF FF 9E 80 00`. Decode it privately.
+Also encode a later frame containing length 4 and length 258, and reject
+invalid distance, wrong sequence, short output, and aliased storage without
+changing serialized output.
