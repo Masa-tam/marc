@@ -15911,3 +15911,12 @@ Benchmark smoke requires all six partition names to report adaptive and
 empirical scores, exact indexed/reference agreement, and high4 equality with
 both retained literal scores. The complete mozilla run uses the same selected
 tokens for all conditions and verifies every selected frame round trip first.
+
+### TVG-1086
+
+For each corpus member require complete input coverage, successful selected
+frame round trips, all six finite nonnegative adaptive/empirical scores,
+exact high4 control agreement and unchanged retained archive size. Reuse
+completed checkpoints only with matching input/executable hashes and arguments.
+Aggregate the same fixed partition across all members, retaining per-member
+differences so a large input cannot conceal regressions on smaller members.

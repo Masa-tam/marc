@@ -8875,3 +8875,10 @@ no external model implementation or compressor source was consulted.
 The literal partition screening reuses IR-0970 and the first-party retained
 selector benchmark. Silesia mozilla remains an external local input; no external
 compressor code or model implementation is consulted.
+
+### IR-0972
+
+The corpus-wide partition screen extends BM-0115 using the unchanged first-party
+benchmark executable and the twelve externally stored Silesia members. Local
+checkpoint records bind input and executable SHA-256 identities. No external
+compressor implementation or third-party model code is consulted.

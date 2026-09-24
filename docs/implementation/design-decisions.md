@@ -24413,3 +24413,14 @@ the original retained diagnostic and indexed/reference scores to agree.
 These are diagnostic probabilities, not alternate encoded archives. Do not
 select a public model from one corpus member or interpret empirical scores
 as attainable gains without a specified and measured encoder/decoder.
+
+## DD-1217: Validate literal partition trends across the complete corpus
+
+Replay the six BM-0115 conditions on all twelve Silesia members with the same
+64-KiB frame/window configuration, increment one and retained-winner tokens.
+Checkpoint each complete member under input/executable hashes and exact
+arguments; do not resume a record with a different identity. Require original
+high4 diagnostic equivalence and unchanged archive sizes against prior member
+records. Compare fixed-partition aggregate and per-member scores, without
+silently choosing a different partition for every frame or member. Keep
+empirical scores distinct from adaptive scores and actual compressed bytes.

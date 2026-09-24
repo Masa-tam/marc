@@ -4222,3 +4222,55 @@ gzip result. It is not an actual archive saving and does not establish a
 corpus-wide winner. Next compare the same six fixed-token controls across
 the complete corpus before selecting a model for actual range coding. This
 screen leaves public models, APIs and serialized representations unchanged.
+
+### BM-0116: Complete-corpus literal partition screening
+
+On 2026-09-25 the unchanged BM-0115 MSVC Release executable processed all
+twelve Silesia members: 211,938,580 bytes and 3,239 64-KiB frames. Executable
+SHA-256 was `CE6DEC24461EF2DE4C137249101BC8533F66531CCDBB5508569434F353DCF693`.
+Arguments were `1024 65536 indexed distance-policies` for every member.
+Local ignored reports in `out/literal-partition-corpus` checkpoint each member
+with executable/input hashes and arguments. All selected frames round-tripped;
+original high4 scores matched retained diagnostics and all actual archive sizes
+matched prior member records. Aggregate actual size remains 70,980,791 bytes.
+
+The following applies one fixed partition across the complete corpus, not
+per-frame or per-file winner selection. Changes are adaptive bits divided by
+eight relative to high4; negative values are better, but are not actual bytes.
+
+| Partition | Adaptive literal bits | Empirical literal bits | Change, byte-equivalent | Improved members |
+| --- | ---: | ---: | ---: | ---: |
+| shared | 256,863,265.382691 | 253,477,534.967287 | +286,806.907 | 7/12 |
+| high0 | 256,870,144.615972 | 253,458,669.979914 | +287,666.811 | 7/12 |
+| high1 | 254,852,967.283443 | 250,505,716.606365 | +35,519.645 | 8/12 |
+| high2 | 253,133,333.947555 | 246,026,299.083264 | -179,434.522 | 9/12 |
+| high3 | 252,584,021.327774 | 241,652,961.873226 | -248,098.600 | 11/12 |
+| high4 | 254,568,810.125770 | 237,541,977.922866 | 0 | control |
+
+| Member | high2 change, byte-equivalent | high3 change, byte-equivalent |
+| --- | ---: | ---: |
+| dickens | -16,779.304 | -18,232.808 |
+| mozilla | -43,819.864 | -43,383.893 |
+| mr | -24,479.270 | -24,292.173 |
+| nci | -28,213.568 | -26,155.266 |
+| ooffice | +13,807.215 | +4,227.566 |
+| osdb | +26,371.922 | -8,339.468 |
+| reymont | -8,479.552 | -6,187.049 |
+| samba | -16,375.957 | -27,887.257 |
+| sao | -8,612.554 | -6,690.971 |
+| webster | -92,934.485 | -71,913.628 |
+| x-ray | +25,609.249 | -14,097.351 |
+| xml | -5,528.353 | -5,146.302 |
+
+High3 (nine contexts including the initial context) is the next actual-coder
+experiment candidate: its aggregate is best and it improves eleven members.
+The ooffice regression prevents a claim of universal improvement. High2 wins
+on mozilla alone but regresses on three members and loses in aggregate.
+Full sharing improves several inputs yet loses overall, notably on x-ray.
+
+No alternate-model archive was produced. Before adoption, specify a private
+decoder-visible representation, encode/decode it and compare actual sizes,
+throughput and bounded memory. Retain the existing public model unchanged.
+This evidence supports a modest model experiment, not a claim that the gzip
+gap has been closed. Empirical histograms still use future counts and omit
+model transmission; their scores are not achievable savings promises.

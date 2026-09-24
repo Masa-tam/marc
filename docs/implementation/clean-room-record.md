@@ -33773,3 +33773,23 @@ both bounds.
   the prior score and archive size remained unchanged.
   Full MSVC Release build and all 3,745 CTest cases passed, including
   documentation layout and interoperability schema compatibility.
+
+## CR-1371: 2026-09-25 - Compare literal partitions across Silesia
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0972, DD-1217, TVG-1086 and BM-0116; unchanged
+  first-party benchmark and externally stored local Silesia inputs.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party model heuristics.
+- Task: run all six fixed-token partitions across twelve corpus members,
+  checkpoint complete members and preserve both improvements and regressions.
+- Independent decisions: compare fixed-partition aggregates, identify ooffice
+  regression, and nominate high3 only for a subsequent actual-coder experiment.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation: all 3,239 selected frames round-tripped, input coverage totals
+  211,938,580 bytes, original controls agree and archive sizes are unchanged.
+  No tracked executable source changed; the prior 3,745-test validation applies
+  to the unchanged binary. Documentation checks are rerun for this record.
+  All twelve checkpoints were reused successfully; nine model-cost tests,
+  benchmark smoke and documentation layout passed (11 tests).
