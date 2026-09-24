@@ -15788,3 +15788,14 @@ byte-identical winner frames that the private decoder reconstructs. Reject
 wrong stream identity, invalid raw partition, insufficient output and
 overlapping raw/token/operation/finder/output regions without publishing
 serialized output. No third-party corpus supplies the vectors.
+
+### TVG-1073
+
+From raw `aaaaaaaa`, require two fixed four-byte frames and compare the
+private raw-input writer to manual candidate-frame assembly byte for byte.
+Repeat encoding and decode with the independent strict private stream
+decoder. Check empty input and one short final frame. Require the exhaustive
+and indexed paths to emit identical streams. Reject wrong identity, original
+size mismatch, insufficient token/operation/finder/output storage and every
+raw/workspace/output overlap before a valid header can be written. Use only
+hand-constructed first-party vectors.

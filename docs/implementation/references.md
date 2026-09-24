@@ -8785,3 +8785,10 @@ The private length-escape candidate selector follows marc's own exact
 complete-frame planning contract, independently specified variant-8 length
 mapping, and first-party reference/indexed token parsers. No external
 compressor candidate-selection code or test vectors were consulted.
+
+### IR-0959
+
+The private raw-input stream writer follows marc's own Format 2.0 stream
+header, exact fixed-frame partition, complete-frame selector and prior
+typed-token stream writer. No external compressor stream writer, source
+code, table or test suite was consulted.

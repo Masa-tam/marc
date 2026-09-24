@@ -33515,3 +33515,22 @@ both bounds.
 - Local validation: complete MSVC Release build and all 3,721 CTest cases
   passed, including complete-frame candidate sizing, indexed/reference
   byte parity, documentation and interoperability schema checks.
+
+## CR-1358: 2026-09-25 - Assemble private escape streams from raw input
+
+- Author: Codex; reviewer: repository maintainer approved the next private
+  raw-stream assembly boundary.
+- References used: IR-0959, DD-1204, TVG-1073, marc's independently
+  authored complete-frame selector and typed-token stream writer.
+- Known implementations intentionally not consulted: external compressor
+  implementations, copyleft code, third-party stream writers and tests.
+- Generated-code task: partition caller-owned raw bytes into bounded private
+  variant-8 frames and emit one strict one-shot stream.
+- Independent decisions: plan all selected frames before writing, reuse
+  frame workspaces, enforce nonoverlap, and commit the stream header last.
+- Similarity review: only marc's first-party format and framing rules were
+  reused; no external implementation expression was translated. No legal
+  non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,728 CTest cases
+  passed, including raw-input stream assembly, indexed/reference byte parity,
+  documentation and interoperability schema checks.

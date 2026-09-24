@@ -1,10 +1,12 @@
 #include "frame/lzss_short_length_escape_stream_encoder.hpp"
+#include "frame/lzss_short_length_escape_raw_stream_encoder.hpp"
 
 #include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
 #include "core/endian.hpp"
 #include "frame/lzss_short_length_escape_preflight.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -157,6 +159,175 @@ struct Region {
     return result;
 }
 
+[[nodiscard]] LzssShortLengthEscapeRawStreamEncodeError check_raw_regions(
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> finder_workspace,
+    const std::span<std::byte> output) noexcept {
+    std::size_t token_bytes{};
+    std::size_t operation_bytes{};
+    if (!core::checked_multiply(
+            tokens.size(), sizeof(dictionary::internal::LzssTypedToken),
+            token_bytes)
+        || !core::checked_multiply(
+            operations.size(), sizeof(context::internal::ModeledOperation),
+            operation_bytes)) {
+        return LzssShortLengthEscapeRawStreamEncodeError::arithmetic_overflow;
+    }
+    const std::array regions{
+        Region{raw_input.data(), raw_input.size()},
+        Region{tokens.data(), token_bytes},
+        Region{operations.data(), operation_bytes},
+        Region{finder_workspace.data(), finder_workspace.size()},
+        Region{output.data(), output.size()}};
+    for (std::size_t first = 0; first < regions.size(); ++first) {
+        for (std::size_t second = first + 1; second < regions.size();
+             ++second) {
+            const auto overlap = core::check_buffer_overlap(
+                regions[first].data, regions[first].size,
+                regions[second].data, regions[second].size);
+            if (overlap == core::BufferOverlap::arithmetic_overflow) {
+                return LzssShortLengthEscapeRawStreamEncodeError::
+                    arithmetic_overflow;
+            }
+            if (overlap == core::BufferOverlap::overlap) {
+                return LzssShortLengthEscapeRawStreamEncodeError::
+                    overlapping_workspaces;
+            }
+        }
+    }
+    return LzssShortLengthEscapeRawStreamEncodeError::none;
+}
+
+[[nodiscard]] LzssShortLengthEscapeRawStreamEncodeResult plan_raw_impl(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> finder_workspace,
+    const bool indexed) noexcept {
+    LzssShortLengthEscapeRawStreamEncodeResult result{};
+    result.stream_error =
+        validate_lzss_short_length_escape_stream_semantics(stream, limits);
+    if (result.stream_error != LzssShortMatchPreflightError::none) {
+        result.error = LzssShortLengthEscapeRawStreamEncodeError::invalid_stream;
+        return result;
+    }
+    if (!std::in_range<std::uint64_t>(raw_input.size())
+        || stream.original_size != raw_input.size()) {
+        result.error = LzssShortLengthEscapeRawStreamEncodeError::
+            raw_size_mismatch;
+        return result;
+    }
+    result.error = check_raw_regions(raw_input, tokens, operations,
+                                     finder_workspace, {});
+    if (result.error != LzssShortLengthEscapeRawStreamEncodeError::none) {
+        return result;
+    }
+    result.serialized_size = typed_context_stream_header_size;
+    std::size_t raw_offset{};
+    while (raw_offset < raw_input.size()) {
+        const auto frame_size = std::min<std::size_t>(
+            stream.frame_size, raw_input.size() - raw_offset);
+        const auto raw_frame = raw_input.subspan(raw_offset, frame_size);
+        result.selection = indexed
+            ? plan_lzss_short_length_escape_candidate_frame_indexed(
+                stream, limits, result.frame_index, raw_offset, raw_frame,
+                tokens, operations, finder_workspace)
+            : plan_lzss_short_length_escape_candidate_frame(
+                stream, limits, result.frame_index, raw_offset, raw_frame,
+                tokens, operations);
+        if (result.selection.error != LzssShortMatchSelectionError::none) {
+            result.error = LzssShortLengthEscapeRawStreamEncodeError::
+                selection_error;
+            return result;
+        }
+        if (!core::checked_add(result.serialized_size,
+                               result.selection.selected_frame_size,
+                               result.serialized_size)) {
+            result.error = LzssShortLengthEscapeRawStreamEncodeError::
+                arithmetic_overflow;
+            return result;
+        }
+        raw_offset += frame_size;
+        ++result.frame_index;
+    }
+    result.frame_count = result.frame_index;
+    return result;
+}
+
+[[nodiscard]] LzssShortLengthEscapeRawStreamEncodeResult encode_raw_impl(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> finder_workspace,
+    const std::span<std::byte> serialized_output,
+    const bool indexed) noexcept {
+    LzssShortLengthEscapeRawStreamEncodeResult result{};
+    result.error = check_raw_regions(raw_input, tokens, operations,
+                                     finder_workspace, serialized_output);
+    if (result.error != LzssShortLengthEscapeRawStreamEncodeError::none) {
+        return result;
+    }
+    result = plan_raw_impl(stream, limits, raw_input, tokens, operations,
+                           finder_workspace, indexed);
+    if (result.error != LzssShortLengthEscapeRawStreamEncodeError::none) {
+        return result;
+    }
+    if (serialized_output.size() < result.serialized_size) {
+        result.error = LzssShortLengthEscapeRawStreamEncodeError::
+            output_too_small;
+        return result;
+    }
+    std::array<std::byte, typed_context_stream_header_size> header{};
+    if (!serialize_header(stream, header)) {
+        result.error = LzssShortLengthEscapeRawStreamEncodeError::internal_error;
+        return result;
+    }
+    std::size_t raw_offset{};
+    std::size_t serialized_offset = typed_context_stream_header_size;
+    std::size_t frame_index{};
+    while (raw_offset < raw_input.size()) {
+        const auto frame_size = std::min<std::size_t>(
+            stream.frame_size, raw_input.size() - raw_offset);
+        const auto raw_frame = raw_input.subspan(raw_offset, frame_size);
+        result.frame_index = frame_index;
+        result.selection = indexed
+            ? encode_lzss_short_length_escape_candidate_frame_indexed(
+                stream, limits, frame_index, raw_offset, raw_frame,
+                tokens, operations, finder_workspace,
+                serialized_output.subspan(
+                    serialized_offset, result.serialized_size - serialized_offset))
+            : encode_lzss_short_length_escape_candidate_frame(
+                stream, limits, frame_index, raw_offset, raw_frame,
+                tokens, operations,
+                serialized_output.subspan(
+                    serialized_offset, result.serialized_size - serialized_offset));
+        if (result.selection.error != LzssShortMatchSelectionError::none
+            || !core::checked_add(serialized_offset,
+                                  result.selection.selected_frame_size,
+                                  serialized_offset)
+            || serialized_offset > result.serialized_size) {
+            result.error = LzssShortLengthEscapeRawStreamEncodeError::internal_error;
+            return result;
+        }
+        raw_offset += frame_size;
+        ++frame_index;
+    }
+    if (serialized_offset != result.serialized_size
+        || frame_index != result.frame_count) {
+        result.error = LzssShortLengthEscapeRawStreamEncodeError::internal_error;
+        return result;
+    }
+    std::memcpy(serialized_output.data(), header.data(), header.size());
+    result.frame_index = frame_index;
+    return result;
+}
+
 } // namespace
 
 LzssShortLengthEscapeStreamEncodeResult
@@ -219,6 +390,54 @@ encode_lzss_short_length_escape_stream(
     std::memcpy(serialized_output.data(), header.data(), header.size());
     result.frame_index = frames.size();
     return result;
+}
+
+LzssShortLengthEscapeRawStreamEncodeResult
+plan_lzss_short_length_escape_raw_stream(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations) noexcept {
+    return plan_raw_impl(stream, limits, raw_input, tokens, operations,
+                         {}, false);
+}
+
+LzssShortLengthEscapeRawStreamEncodeResult
+encode_lzss_short_length_escape_raw_stream(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> serialized_output) noexcept {
+    return encode_raw_impl(stream, limits, raw_input, tokens, operations,
+                           {}, serialized_output, false);
+}
+
+LzssShortLengthEscapeRawStreamEncodeResult
+plan_lzss_short_length_escape_raw_stream_indexed(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> finder_workspace) noexcept {
+    return plan_raw_impl(stream, limits, raw_input, tokens, operations,
+                         finder_workspace, true);
+}
+
+LzssShortLengthEscapeRawStreamEncodeResult
+encode_lzss_short_length_escape_raw_stream_indexed(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::span<const std::byte> raw_input,
+    const std::span<dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> finder_workspace,
+    const std::span<std::byte> serialized_output) noexcept {
+    return encode_raw_impl(stream, limits, raw_input, tokens, operations,
+                           finder_workspace, serialized_output, true);
 }
 
 } // namespace marc::frame::internal

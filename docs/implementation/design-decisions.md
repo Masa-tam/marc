@@ -24239,3 +24239,15 @@ and indexed search, with finder workspace counted against the aggregate
 hard limit during indexed frame planning. Preserve variant-7 entry points
 and output. Do not yet choose between exhaustive and indexed search, assemble
 raw-input streams, or admit variant 8 publicly.
+
+## DD-1204: Assemble private raw streams with bounded reusable workspaces
+
+For the reserved 2/8 + 1/7 + 3/2 identity, require declared original size
+to equal the caller's raw span and partition that span into fixed raw-byte
+frames with only the final frame short. Reuse one caller-owned token and
+modeled-operation workspace across frames; indexed search additionally uses
+one caller-owned prefix-finder workspace. Plan every selected complete frame
+and total stream size before writing output. Check all raw/workspace/output
+regions for overlap, then encode frames and commit the canonical 112-byte
+header last. Search method and 3/4/5 eligibility stay encoder-local. This is
+a private one-shot path, not incremental output or public stream admission.

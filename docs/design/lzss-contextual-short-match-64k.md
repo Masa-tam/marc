@@ -557,3 +557,17 @@ recreates only the winning candidate and verifies its planned size before
 committing the frame. Eligibility and search method remain encoder-local;
 neither changes a format field. This does not add raw-input stream assembly,
 an incremental writer or public admission.
+
+## Twenty-sixth implementation boundary: private raw-input stream assembly
+
+The 2/8 + 1/7 + 3/2 identity may now be assembled privately from one
+caller-owned raw byte span. Its declared original size must match that span;
+fixed-size raw frames are selected independently, with only the last frame
+short. Both exhaustive and indexed paths reuse caller-owned token and
+modeled-operation storage, and the indexed path reuses one bounded finder
+workspace. Planning sums complete selected-frame sizes before output, while
+encoding checks all region overlap and capacity and commits the canonical
+112-byte stream header only after all frames match the plan. Empty raw input
+produces only the header. This remains one-shot and private: there is no
+incremental writer, CLI/C API selector, public parser admission or
+interoperability inventory entry.
