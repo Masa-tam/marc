@@ -3864,3 +3864,49 @@ per-frame choice among these existing identities cannot explain or close
 the remaining `mozilla` gap. Its small theoretical headroom does not justify
 a mixed-identity stream extension at this stage; parsing or entropy modeling
 must be investigated separately before a new format is proposed.
+
+### BM-0107: Attribute mozilla's modeled field costs
+
+On 2026-09-25, the private MSVC Release benchmark repeated the full
+51,220,480-byte `mozilla` measurement with 782 independent 65,536-byte
+frames and indexed search. It replayed the published and decoded winning
+escape tokens through their respective frequency-one models. Symbol scores
+sum log2(total/frequency) before each update, including specified rescaling;
+bypass costs are their logical bit counts. The table divides these scores
+by eight for readability. They are byte-equivalent information quantities,
+not separately serialized fields. Every selected private frame round-tripped.
+
+| Field | Published byte-equivalent | Escape byte-equivalent | Change |
+| --- | ---: | ---: | ---: |
+| Token kind | 1,239,466.379 | 1,281,414.164 | +41,947.786 |
+| Literal symbol | 12,822,774.873 | 8,998,384.169 | -3,824,390.705 |
+| Length class | 788,825.575 | 1,221,384.801 | +432,559.226 |
+| Distance class | 1,247,884.594 | 2,085,417.420 | +837,532.825 |
+| Length bypass | 683,498.125 | 921,344.625 | +237,846.500 |
+| Distance bypass | 3,236,519.000 | 5,250,102.875 | +2,013,583.875 |
+| **Total** | **20,018,968.546** | **19,758,048.053** | **-260,920.493** |
+
+Literal tokens fall from 14,711,301 to 9,444,672 while Match tokens rise
+from 3,065,042 to 4,905,913. The modeled literal saving of 3,824,390.705
+byte-equivalents is offset by 3,563,470.212 in the remaining fields. This
+locates a large cost in match metadata, especially distance bypass, but
+does not prove that any individual Match loses: token choices change later
+parsing and model state as well. A distance-sensitive short-match admission
+experiment is consequently a stronger next candidate than profile switching.
+
+Both streams have 62,672 actual framing bytes (112 + 782 * 80). Subtracting
+those bytes and modeled information from actual archive size leaves
+3,725.454 bytes for the published path and 3,660.947 for escape, consistent
+with small integer-coder/termination costs rather than the approximately
+830,000-byte target gap. No coder-overhead optimization is justified by this
+aggregate measurement alone.
+
+The escape Literal group's empirical within-frame/context histogram score
+is 67,376,237.378 bits, against 71,987,073.348 adaptive bits, a difference
+of 576,354.496 byte-equivalents. This suggests a separate model-initialization
+or context-sharing experiment may be useful. The histogram uses future
+counts and charges no model storage; it is neither a feasible encoded size
+nor a universal lower bound for nonstationary adaptive data. It cannot be
+added to a predicted parser gain without remeasuring the combined system.
+All floating-point work is benchmark-only; actual codec arithmetic and
+stream bytes are unchanged.

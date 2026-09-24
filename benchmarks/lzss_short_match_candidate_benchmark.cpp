@@ -1,4 +1,6 @@
 #include "context/lzss_field_context.hpp"
+#include "context/lzss_short_length_escape_operations.hpp"
+#include "lzss_model_cost.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
 #include "dictionary/lzss_short_prefix_match_finder.hpp"
 #include "dictionary/lzss_typed_encoder.hpp"
@@ -16,6 +18,7 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <limits>
 #include <span>
 #include <string_view>
@@ -45,6 +48,37 @@ struct MatchOperationSummary {
     std::uint64_t distance_symbols{};
     std::uint64_t distance_bypass_bits{};
 };
+
+[[nodiscard]] bool accumulate_cost(
+    marc::benchmarks::ModelCost& total,
+    const marc::benchmarks::ModelCost& frame) noexcept {
+    if (!frame.valid) return false;
+    for (std::size_t index = 0; index < 4; ++index) {
+        total.adaptive_bits[index] += frame.adaptive_bits[index];
+        total.empirical_bits[index] += frame.empirical_bits[index];
+        total.symbols[index] += frame.symbols[index];
+    }
+    for (std::size_t index = 0; index < 2; ++index)
+        total.bypass_bits[index] += frame.bypass_bits[index];
+    return true;
+}
+
+void print_cost(const std::string_view prefix,
+                const marc::benchmarks::ModelCost& cost) {
+    constexpr std::array names{"kind", "literal", "length", "distance"};
+    std::cout << std::fixed << std::setprecision(6);
+    for (std::size_t index = 0; index < names.size(); ++index) {
+        std::cout << prefix << '_' << names[index] << "_adaptive_bits="
+                  << cost.adaptive_bits[index] << '\n'
+                  << prefix << '_' << names[index] << "_empirical_bits="
+                  << cost.empirical_bits[index] << '\n'
+                  << prefix << '_' << names[index] << "_symbols="
+                  << cost.symbols[index] << '\n';
+    }
+    std::cout << prefix << "_length_bypass_bits=" << cost.bypass_bits[0]
+              << '\n' << prefix << "_distance_bypass_bits="
+              << cost.bypass_bits[1] << '\n';
+}
 
 [[nodiscard]] bool summarize_match_operations(
     const std::span<const ModeledOperation> operations,
@@ -241,6 +275,8 @@ int main(const int argc, const char* const argv[]) {
     std::uint64_t escape_extra_bytes{};
     MatchOperationSummary baseline_operations{};
     MatchOperationSummary reserved_five_operations{};
+    marc::benchmarks::ModelCost baseline_cost{};
+    marc::benchmarks::ModelCost escape_cost{};
     double baseline_plan_seconds{};
     double candidate_encode_seconds{};
     double candidate_decode_seconds{};
@@ -276,6 +312,13 @@ int main(const int argc, const char* const argv[]) {
                     baseline_operation_count),
                 baseline_operations)) {
             std::cerr << "baseline operation profile failed\n";
+            return 2;
+        }
+        if (!accumulate_cost(baseline_cost, marc::benchmarks::measure_model_cost(
+                std::span<const ModeledOperation>{operations}.first(
+                    baseline_operation_count),
+                marc::benchmarks::CostLayout::published_64k))) {
+            std::cerr << "baseline cost profile failed\n";
             return 2;
         }
 
@@ -365,6 +408,23 @@ int main(const int argc, const char* const argv[]) {
             || !std::equal(frame.begin(), frame.end(), decoded.begin())) {
             std::cerr << "escape decode mismatch at sequence " << frames
                       << '\n';
+            return 2;
+        }
+        const marc::dictionary::internal::LzssTypedFrameValidationContext
+            escape_token_context{
+                static_cast<std::uint32_t>(escape_reconstructed.required_token_count),
+                static_cast<std::uint32_t>(count), committed};
+        const auto escape_modeled = marc::context::internal::
+            model_lzss_short_length_escape_tokens(
+                std::span<const LzssTypedToken>{decoded_tokens}.first(
+                    escape_reconstructed.required_token_count),
+                candidate_parameters, escape_token_context, limits, operations);
+        if (escape_modeled.error != marc::context::internal::LzssFieldContextError::none
+            || !accumulate_cost(escape_cost, marc::benchmarks::measure_model_cost(
+                std::span<const ModeledOperation>{operations}.first(
+                    escape_modeled.operation_count),
+                marc::benchmarks::CostLayout::short_match_64k))) {
+            std::cerr << "escape cost profile failed\n";
             return 2;
         }
         const auto exact_tokens = marc::dictionary::internal::
@@ -514,5 +574,7 @@ int main(const int argc, const char* const argv[]) {
               << "escape_encode_seconds=" << escape_encode_seconds << '\n'
               << "escape_decode_seconds=" << escape_decode_seconds
               << '\n';
+    print_cost("baseline_cost", baseline_cost);
+    print_cost("escape_cost", escape_cost);
     return 0;
 }

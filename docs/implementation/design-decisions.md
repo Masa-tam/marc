@@ -24273,3 +24273,17 @@ escape. Retain one stream-header charge in each sum. These are optimistic
 diagnostic lower bounds only: the three identities cannot be mixed in one
 current stream, and any future per-frame signaling has positive cost.
 Do not route the public encoder through these synthetic oracles.
+
+## DD-1207: Attribute modeled information without changing the coder
+
+In the private benchmark, replay validated operations through the specified
+frequency-one model with increment-after-symbol and ceiling-half rescaling
+at total 32,768. Sum log2(total/frequency) separately for token kind,
+literal, length and distance. Count length/distance bypass bits separately.
+For each frame and context, also compute empirical histogram entropy with
+no model-description charge. This comparator is not a realizable archive
+or a universal lower bound for a nonstationary adaptive sequence. Neither
+quantity includes integer interval rounding or coder termination. Floating
+point is confined to diagnostics; the coding path remains integer-only.
+Measure published tokens and decoded winning escape tokens independently,
+so changes in parsing are visible in symbol counts as well as information.

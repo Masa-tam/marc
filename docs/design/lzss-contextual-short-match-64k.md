@@ -593,3 +593,13 @@ three measured identities. Each sum charges one stream header but excludes
 any identity signaling; no current stream can decode such a mixture.
 BM-0106 records how much of the remaining `mozilla` gap even this idealized
 switch could close. This is diagnosis, not a format or public API change.
+
+## Twenty-ninth implementation boundary: field information diagnosis
+
+The private benchmark measures adaptive self-information for kind, literal,
+length and distance operations and counts bypass bits separately. A second
+score uses each frame/context's observed histogram without a model-storage
+charge. Compare published and winning escape token counts and scores to
+identify the dominant cost and guide the next controlled experiment.
+BM-0107 records the local measurement. These floating-point scores are
+diagnostic quantities, not serialized sizes or a replacement entropy coder.

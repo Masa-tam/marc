@@ -15820,3 +15820,14 @@ not exceed baseline, prior reserved or escape archive size. Indexed and
 reference runs must report the same counts and oracle sizes. Keep all
 comparison arithmetic on complete frame sizes, with exactly one 112-byte
 stream-header charge, and do not treat oracle sums as decodable archives.
+
+### TVG-1076
+
+Check benchmark model costs against hand probabilities: two identical
+literal symbols cost 8 + log2(257/2) adaptive bits and zero empirical bits;
+two distinct symbols cost 8 + log2(257) and two empirical bits. A separate
+context restarts at eight bits. A 32,767-symbol constant binary sequence
+crosses rescaling and costs log2(32767) + log2(16385/16384). Check independent
+field groups, bypass widths, empty input, invalid operations and layouts.
+Only benchmark floating-point diagnostics use tolerances; encoded bytes
+and codec conformance tests retain exact comparisons.

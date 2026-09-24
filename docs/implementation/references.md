@@ -8807,3 +8807,11 @@ The framewise selector headroom calculation uses only marc's own measured
 complete-frame sizes from IR-0960. Minima across incompatible stream
 identities are diagnostic arithmetic, not a proposed on-wire representation.
 No external compressor implementation or archive-switching scheme was used.
+
+### IR-0962
+
+The benchmark-only field-cost diagnostic follows marc's documented Range
+model initialization, increment and rescaling rules. It computes symbol
+self-information as log2(total/frequency), and empirical frame/context
+entropy as sum(count * log2(context_count/count)). These mathematical
+quantities use no external implementation or compressor source.

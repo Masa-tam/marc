@@ -33575,3 +33575,24 @@ both bounds.
   passed, including indexed/reference benchmark smoke, documentation layout
   and interoperability schema checks. A separate full-Silesia measurement
   verified every selected private frame before recording BM-0106.
+
+## CR-1361: 2026-09-25 - Attribute modeled LZSS field information
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0962, DD-1207, TVG-1076, BM-0107 and marc's
+  independently specified Range model and token modelers.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft code, third-party probability profilers and test suites.
+- Generated-code task: measure adaptive symbol information and empirical
+  per-frame/context entropy by field using bounded benchmark-only storage.
+- Independent decisions: keep bypass bits separate, regenerate operations
+  from verified escape tokens, reset diagnostic models for each frame, and
+  exclude floating point from all coding decisions and serialized output.
+- Similarity review: only first-party model rules and mathematical
+  self-information were used; no external implementation expression was
+  translated. No legal non-infringement guarantee.
+- Local validation: full MSVC Release build and all 3,733 CTest cases passed,
+  including hand-probability/rescaling tests, indexed/reference benchmark
+  smoke, documentation layout and interoperability schema compatibility.
+  The separate complete mozilla measurement verified private frame round
+  trips and retained the prior archive sizes.
