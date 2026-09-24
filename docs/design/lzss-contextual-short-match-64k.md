@@ -518,3 +518,17 @@ descriptors, tokens and operation storage, emits each frame, and commits the
 112-byte stream header only after all frames match the plan. An empty stream
 contains only that header. This stage does not tokenize raw input, select a
 search policy, offer an incremental writer, or admit the identity publicly.
+
+## Twenty-third implementation boundary: private reference tokenization
+
+The 2/8 + 1/7 + 3/2 identity now has an exhaustive, deterministic raw-byte
+to typed-token reference parser for one bounded frame. Match eligibility
+3, 4 or 5 is an encoder-local choice, not a stream field. The existing
+first-party match finder and nearest-distance tie rule are unchanged;
+the new entry points select exact variant-8 parameter validation before
+parsing. Planning measures token count and storage without publishing
+tokens. Materialization checks capacity and raw/output overlap before
+writing. Small hand vectors and a mixed binary vector compare the old and
+new token choices, then pass the new tokens through the private frame
+encoder and decoder. Indexed search, candidate-size selection, raw-input
+stream assembly and all public admission remain separate stages.

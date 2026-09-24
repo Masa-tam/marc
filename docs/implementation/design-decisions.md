@@ -24206,3 +24206,13 @@ workspace aliasing and insufficient capacity up front. Write the fixed
 stream header only after all frame encodes succeed, so an internal failure
 cannot expose a valid-looking partial stream header. Keep raw-input parsing,
 search selection, incremental output and public admission separate.
+
+## DD-1201: Keep raw match discovery independent of length representation
+
+The exhaustive first-party LZSS match finder already chooses matches
+without inspecting the entropy length mapping. Share its bounded parser
+between reserved variant 7 and private variant 8, selecting the typed-token
+validator explicitly at the private entry point. Keep 3/4/5 eligibility
+encoder-local and preserve the existing longest-match/nearest-distance
+choice. Do not silently route the published parser or add indexed search,
+frame-size selection or public selection in this step.

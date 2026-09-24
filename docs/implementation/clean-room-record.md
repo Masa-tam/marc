@@ -33455,3 +33455,23 @@ both bounds.
 - Local validation: complete MSVC Release build and all 3,706 CTest cases
   passed, including the new private stream writer, existing private
   decoder, documentation and interoperability schema checks.
+
+## CR-1355: 2026-09-24 - Parse private escape tokens from raw frames
+
+- Author: Codex; reviewer: repository maintainer approved the next private
+  raw-to-token reference boundary.
+- References used: IR-0956, DD-1201, TVG-1070, marc's independent LZSS
+  match finder and private typed-token contract.
+- Known implementations intentionally not consulted: external compressor
+  implementations, copyleft code, third-party parsers and test suites.
+- Generated-code task: parse one bounded raw frame into deterministic
+  variant-8 typed tokens without changing public stream selection.
+- Independent decisions: retain the first-party exhaustive search and its
+  tie rule, select variant validation at named private entry points, and
+  keep eligibility local to the encoder.
+- Similarity review: the parser reuses only this repository's independently
+  authored match finder and format rules; no external implementation
+  expression was translated. No legal non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,711 CTest cases
+  passed, including private reference parsing, complete-frame inversion,
+  documentation and interoperability schema checks.

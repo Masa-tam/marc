@@ -1,4 +1,5 @@
 #include "dictionary/lzss_short_match_candidate.hpp"
+#include "dictionary/lzss_short_length_escape_candidate.hpp"
 
 #include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
@@ -53,7 +54,8 @@ template <LzssMatchFinder Finder>
     const std::span<const std::byte> input,
     const LzssParameters& parameters,
     const core::DecoderLimits& limits,
-    const std::uint32_t eligibility) noexcept {
+    const std::uint32_t eligibility,
+    const LzssTypedTokenVariant variant) noexcept {
     LzssShortMatchCandidateResult result{};
     result.input_size = input.size();
     if (eligibility < 3 || eligibility > 5) {
@@ -61,8 +63,7 @@ template <LzssMatchFinder Finder>
         return result;
     }
     result.token_error = validate_lzss_typed_parameters(
-        parameters, limits,
-        LzssTypedTokenVariant::field_context_64k_short_match);
+        parameters, limits, variant);
     if (result.token_error != LzssTypedTokenError::none) {
         result.error = result.token_error == LzssTypedTokenError::limit_exceeded
             ? LzssShortMatchCandidateError::input_limit_exceeded
@@ -82,8 +83,10 @@ template <LzssMatchFinder Finder>
     const std::span<const std::byte> input,
     const LzssParameters& parameters,
     const core::DecoderLimits& limits,
-    const std::uint32_t eligibility) noexcept {
-    auto result = validate_input(input, parameters, limits, eligibility);
+    const std::uint32_t eligibility,
+    const LzssTypedTokenVariant variant) noexcept {
+    auto result = validate_input(input, parameters, limits, eligibility,
+                                 variant);
     if (result.error != LzssShortMatchCandidateError::none) return result;
     LzssExhaustiveMatchFinder finder{input, parameters};
     result = parse_with_finder(input, eligibility, {}, finder);
@@ -138,17 +141,21 @@ LzssShortMatchCandidateResult plan_lzss_short_match_candidate(
     const LzssParameters& parameters,
     const core::DecoderLimits& limits,
     const std::uint32_t minimum_eligible_length) noexcept {
-    return preflight(input, parameters, limits, minimum_eligible_length);
+    return preflight(input, parameters, limits, minimum_eligible_length,
+                     LzssTypedTokenVariant::field_context_64k_short_match);
 }
 
-LzssShortMatchCandidateResult tokenize_lzss_short_match_candidate(
+namespace {
+
+[[nodiscard]] LzssShortMatchCandidateResult tokenize_exhaustive(
     const std::span<const std::byte> input,
     const LzssParameters& parameters,
     const core::DecoderLimits& limits,
     const std::uint32_t minimum_eligible_length,
-    const std::span<LzssTypedToken> output) noexcept {
+    const std::span<LzssTypedToken> output,
+    const LzssTypedTokenVariant variant) noexcept {
     auto result = preflight(input, parameters, limits,
-                            minimum_eligible_length);
+                            minimum_eligible_length, variant);
     if (result.error != LzssShortMatchCandidateError::none) return result;
     if (output.size() < result.token_count) {
         result.error = LzssShortMatchCandidateError::output_too_small;
@@ -183,14 +190,49 @@ LzssShortMatchCandidateResult tokenize_lzss_short_match_candidate(
     return result;
 }
 
+} // namespace
+
+LzssShortMatchCandidateResult tokenize_lzss_short_match_candidate(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint32_t minimum_eligible_length,
+    const std::span<LzssTypedToken> output) noexcept {
+    return tokenize_exhaustive(
+        input, parameters, limits, minimum_eligible_length, output,
+        LzssTypedTokenVariant::field_context_64k_short_match);
+}
+
+LzssShortMatchCandidateResult plan_lzss_short_length_escape_candidate(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint32_t minimum_eligible_length) noexcept {
+    return preflight(
+        input, parameters, limits, minimum_eligible_length,
+        LzssTypedTokenVariant::field_context_64k_short_length_escape);
+}
+
+LzssShortMatchCandidateResult tokenize_lzss_short_length_escape_candidate(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint32_t minimum_eligible_length,
+    const std::span<LzssTypedToken> output) noexcept {
+    return tokenize_exhaustive(
+        input, parameters, limits, minimum_eligible_length, output,
+        LzssTypedTokenVariant::field_context_64k_short_length_escape);
+}
+
 LzssShortMatchCandidateResult plan_lzss_short_match_candidate_indexed(
     const std::span<const std::byte> input,
     const LzssParameters& parameters,
     const core::DecoderLimits& limits,
     const std::uint32_t minimum_eligible_length,
     const std::span<std::byte> finder_workspace) noexcept {
-    auto result = validate_input(input, parameters, limits,
-                                 minimum_eligible_length);
+    auto result = validate_input(
+        input, parameters, limits, minimum_eligible_length,
+        LzssTypedTokenVariant::field_context_64k_short_match);
     if (result.error != LzssShortMatchCandidateError::none) return result;
     const auto required = calculate_lzss_short_prefix_workspace(
         input.size(), parameters, limits);

@@ -8764,3 +8764,10 @@ The private one-shot stream writer follows marc's own Format 2.0 stream
 field layout, independently specified 2/8 identity, complete-frame planner
 and bounded workspace conventions. No external compressor writer, source
 code, table or test suite was consulted.
+
+### IR-0956
+
+The private reference token parser uses marc's own exhaustive LZSS match
+finder, variant-8 typed-token limits and the established 3/4/5 eligibility
+rule. No external compressor parser, source code, table or test suite was
+consulted.

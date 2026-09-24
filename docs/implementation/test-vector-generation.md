@@ -15755,3 +15755,13 @@ encodings byte for byte. Check the serialized header's exact 2/8 + 1/7 +
 omit or add a frame, shorten output or operation storage, and alias token,
 descriptor or operation storage with output; reject before stream output
 is written. No external compressor or corpus supplies these vectors.
+
+### TVG-1070
+
+Parse `aaaa` at eligibility 3, 4 and 5, and a repeated four-byte phrase at
+eligibility 3/4/5. Require the exact first-party literal/match tokens and
+compare variant-7 and variant-8 reference-parser output for identical raw
+input and eligibility. Feed the variant-8 tokens to its private complete-
+frame encoder and decoder. Reject eligibility outside 3..5, insufficient
+token output and aliased raw/token buffers before token publication. Include
+empty input and a mixed binary vector; no third-party corpus is embedded.

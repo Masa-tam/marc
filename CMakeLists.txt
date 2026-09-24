@@ -2584,6 +2584,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_short_match_frame_decoder_tests.cpp
         tests/lzss_short_match_frame_encoder_tests.cpp
         tests/lzss_short_match_candidate_tests.cpp
+        tests/lzss_short_length_escape_candidate_tests.cpp
         tests/lzss_short_match_candidate_selector_tests.cpp
         tests/lzss_short_prefix_match_finder_tests.cpp
         tests/lzss_short_match_stream_decoder_tests.cpp
