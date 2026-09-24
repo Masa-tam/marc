@@ -1,6 +1,9 @@
 #include "frame/lzss_short_match_stream_decoder.hpp"
+#include "frame/lzss_short_length_escape_stream_decoder.hpp"
 
 #include "core/checked_math.hpp"
+#include "frame/lzss_short_length_escape_frame_decoder.hpp"
+#include "frame/lzss_short_length_escape_preflight.hpp"
 
 #include <array>
 #include <cstddef>
@@ -57,7 +60,8 @@ struct PassResult {
     const core::DecoderLimits& limits,
     const std::span<dictionary::internal::LzssTypedToken> tokens,
     const std::span<std::byte> raw_frame,
-    const std::span<std::byte> raw_output) noexcept {
+    const std::span<std::byte> raw_output,
+    const bool escape_identity) noexcept {
     PassResult result{};
     std::size_t offset = typed_context_stream_header_size;
     std::uint64_t raw_committed{};
@@ -65,8 +69,11 @@ struct PassResult {
     while (raw_committed < stream.original_size) {
         const TypedContextFrameValidationContext context{
             stream, limits, sequence, raw_committed};
-        const auto decoded = decode_lzss_short_match_frame(
-            serialized_stream.subspan(offset), context, tokens, raw_frame);
+        const auto decoded = escape_identity
+            ? decode_lzss_short_length_escape_frame(
+                  serialized_stream.subspan(offset), context, tokens, raw_frame)
+            : decode_lzss_short_match_frame(
+                  serialized_stream.subspan(offset), context, tokens, raw_frame);
         if (decoded.error != LzssShortMatchFrameDecodeError::none) {
             result.error = LzssShortMatchStreamDecodeError::frame_error;
             result.error_offset = offset;
@@ -112,19 +119,21 @@ struct PassResult {
     return result;
 }
 
-} // namespace
-
-LzssShortMatchStreamDecodeResult decode_lzss_short_match_stream(
+[[nodiscard]] LzssShortMatchStreamDecodeResult decode_stream(
     const std::span<const std::byte> serialized_stream,
     const core::DecoderLimits& limits,
     const std::span<dictionary::internal::LzssTypedToken> token_workspace,
     const std::span<std::byte> raw_frame_workspace,
-    const std::span<std::byte> raw_stream_output) noexcept {
+    const std::span<std::byte> raw_stream_output,
+    const bool escape_identity) noexcept {
     LzssShortMatchStreamDecodeResult result{};
     TypedContextStreamHeader stream{};
     std::size_t header_consumed{};
-    result.stream_header_error = parse_lzss_short_match_stream_header(
-        serialized_stream, limits, stream, header_consumed);
+    result.stream_header_error = escape_identity
+        ? parse_lzss_short_length_escape_stream_header(
+              serialized_stream, limits, stream, header_consumed)
+        : parse_lzss_short_match_stream_header(
+              serialized_stream, limits, stream, header_consumed);
     if (result.stream_header_error != LzssShortMatchPreflightError::none
         || header_consumed != typed_context_stream_header_size) {
         result.error = LzssShortMatchStreamDecodeError::stream_header_error;
@@ -171,7 +180,7 @@ LzssShortMatchStreamDecodeResult decode_lzss_short_match_stream(
 
     const auto checked = decode_pass(serialized_stream, stream, limits,
                                      token_workspace, raw_frame_workspace,
-                                     {});
+                                     {}, escape_identity);
     if (checked.error != LzssShortMatchStreamDecodeError::none) {
         result.error = checked.error;
         result.error_offset = checked.error_offset;
@@ -179,11 +188,10 @@ LzssShortMatchStreamDecodeResult decode_lzss_short_match_stream(
         result.frame_count = checked.frame_count;
         return result;
     }
-    // Input and workspaces must remain stable for this call. The first pass
-    // has validated all frames; only the second pass publishes raw bytes.
+    // All frames have been validated before whole-stream raw publication.
     const auto decoded = decode_pass(serialized_stream, stream, limits,
                                      token_workspace, raw_frame_workspace,
-                                     raw_stream_output);
+                                     raw_stream_output, escape_identity);
     if (decoded.error != LzssShortMatchStreamDecodeError::none
         || decoded.serialized_consumed != checked.serialized_consumed
         || decoded.raw_size != checked.raw_size
@@ -197,6 +205,28 @@ LzssShortMatchStreamDecodeResult decode_lzss_short_match_stream(
     result.raw_produced = decoded.raw_size;
     result.frame_count = decoded.frame_count;
     return result;
+}
+
+} // namespace
+
+LzssShortMatchStreamDecodeResult decode_lzss_short_match_stream(
+    const std::span<const std::byte> serialized_stream,
+    const core::DecoderLimits& limits,
+    const std::span<dictionary::internal::LzssTypedToken> token_workspace,
+    const std::span<std::byte> raw_frame_workspace,
+    const std::span<std::byte> raw_stream_output) noexcept {
+    return decode_stream(serialized_stream, limits, token_workspace,
+                         raw_frame_workspace, raw_stream_output, false);
+}
+
+LzssShortMatchStreamDecodeResult decode_lzss_short_length_escape_stream(
+    const std::span<const std::byte> serialized_stream,
+    const core::DecoderLimits& limits,
+    const std::span<dictionary::internal::LzssTypedToken> token_workspace,
+    const std::span<std::byte> raw_frame_workspace,
+    const std::span<std::byte> raw_stream_output) noexcept {
+    return decode_stream(serialized_stream, limits, token_workspace,
+                         raw_frame_workspace, raw_stream_output, true);
 }
 
 } // namespace marc::frame::internal

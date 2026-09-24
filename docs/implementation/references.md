@@ -8750,3 +8750,10 @@ independently specified escape-length mapping from IR-0949, the existing
 32-context Range writer, and marc's explicit fixed-frame serialization.
 No external compressor encoder, source code, table or test suite was
 consulted.
+
+### IR-0954
+
+The private strict stream route uses marc's own typed-context stream
+header, private 2/8 frame decoder and existing two-pass 2/7 orchestration.
+No external compressor stream parser, source code, table or test suite
+was consulted.

@@ -15732,3 +15732,14 @@ distance, wrong frame position, short operation/output workspaces and
 overlap before publishing output. Retain the old private hand-frame byte
 vector to detect any change to the previous identity. These first-party
 vectors do not use an external corpus or another encoder.
+
+### TVG-1068
+
+Serialize the exact 2/8 + 1/7 + 3/2 stream header with explicit
+little-endian field stores. Build frames from first-party modeled
+operations and the existing Range writer, then test zero, one and two
+frames. Mutate the second frame's sequence and payload prefix, append
+trailing data, truncate the final frame, and use insufficient or aliased
+caller-owned workspaces. For every failure after a valid first frame,
+require the entire whole-stream output buffer to remain untouched. The
+old private stream decoder must reject the new header.

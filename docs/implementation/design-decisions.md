@@ -24184,3 +24184,13 @@ validation, operation modeling and frame preflight by exact identity.
 Plan and validate all counts, sizes, workspace and frame position before
 committing serialized fields. Keep the public parser and stream writer
 unchanged until an independent streaming boundary is complete.
+
+## DD-1199: Validate the entire private escape stream before publication
+
+Use separate named private stream entry points for the 2/8 + 1/7 + 3/2
+identity and the prior 2/7 + 1/6 identity. Share their strict, bounded
+two-pass orchestration while selecting the exact header parser and frame
+decoder. The first pass must reject any later malformed frame or trailing
+byte before the whole-stream output is written; the second pass may publish
+only after that validation succeeds. Do not imply incremental streaming
+support or route the new identity through public selection.

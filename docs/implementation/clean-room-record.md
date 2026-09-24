@@ -33416,3 +33416,23 @@ both bounds.
   passed after the documentation-order check caught and corrected the
   initial placement of this record. Focused old/new private encoder and
   decoder tests also passed.
+
+## CR-1353: 2026-09-24 - Decode private escape streams
+
+- Author: Codex; reviewer: repository maintainer approved the next private
+  stream boundary.
+- References used: IR-0954, DD-1199, TVG-1068, marc's own stream layout
+  and the private 2/8 frame decoder.
+- Known implementations intentionally not consulted: external compressor
+  sources, copyleft code, third-party parsers, tables and test suites.
+- Generated-code task: decode a complete private 2/8 + 1/7 + 3/2 stream
+  without admitting it through published selection.
+- Independent decisions: retain bounded caller-owned workspaces, disjoint
+  regions and two-pass validation before raw output publication, while
+  selecting the exact new identity at private entry points.
+- Similarity review: shared logic and vectors derive from this repository's
+  own documented representation; no external implementation expression
+  was translated. No legal non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,701 CTest cases
+  passed, including new and old private stream paths, documentation and
+  interoperability schema checks.

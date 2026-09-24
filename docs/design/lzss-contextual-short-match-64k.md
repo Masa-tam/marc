@@ -493,3 +493,15 @@ and descriptor only after the payload matches the plan. Tests exercise all
 round trips, wrong identity, invalid tokens, insufficient storage and
 overlap. The old private identity retains its hand-vector bytes. No
 published stream selector, CLI, C API or streaming encoder admits 2/8.
+
+## Twenty-first implementation boundary: private strict stream decode
+
+The isolated 2/8 + 1/7 + 3/2 identity gains a private, one-shot stream
+decoder. It checks the exact stream header, walks all complete frames in
+sequence, rejects truncation and trailing bytes, and validates every frame
+before writing any whole-stream raw output. A second pass reconstructs the
+raw bytes using caller-owned bounded token and frame workspaces; all input,
+workspace and output regions must be disjoint and stable throughout the
+call. An empty stream has only its header. This is not an incremental
+streaming API and does not admit the identity through the public parser,
+CLI, C API or interoperability inventory.
