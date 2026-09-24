@@ -24009,3 +24009,13 @@ leading zero state, context-alphabet checks, decision limits, and exact finish
 counts. Account for the full concrete decoder size in frame preflight's
 aggregate memory requirement. Token interpretation and raw reconstruction
 remain separate later gates; no public format admission changes here.
+
+## DD-1183: Validate short-match Range tokens before writing them
+
+Map private Range events through the frozen token-kind/literal context state,
+but use the new nine-class `L-2` length inverse and distance context 23..31.
+Validate each completed typed token as dictionary variant 7, along with
+declared counts, raw size, payload ceiling, and hard limits. Use a read-only
+validation pass before writing caller-owned token workspace, reject payload
+overlap and insufficient space, and verify both passes agree. This is not yet
+a frame-level raw decoder or a public stream admission.

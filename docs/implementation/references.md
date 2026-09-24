@@ -8627,3 +8627,10 @@ Dynamic Range `3/2` arithmetic and descriptor, the independently specified
 32-context layout in IR-0933, DD-1180, and hand-calculated TVG-1047. No
 external entropy-coder implementation, source, table, or test suite was
 consulted.
+
+### IR-0938
+
+The private short-match Range-to-token decoder uses first-party IR-0933
+through IR-0937, the typed-token variant-7 validator, field-context state
+mapping, and Range event decoder. No external codec source, pseudocode,
+table, or test suite was consulted.

@@ -15543,3 +15543,14 @@ five-zero-byte one-decision fixture reads the new context 31 with alphabet
 17 twice across model resets. Reject descriptor count 31, incorrect payload
 extent or leading state byte, context 32, wrong context-21 alphabet, and
 premature finish. Earlier format vectors remain unchanged.
+
+### TVG-1052
+
+The reserved `aaaa` seven-byte Range payload must validate as two tokens and
+four raw bytes, then decode privately to `Literal(0x61), Match(1,3)` with
+five events and decisions. Declare a three-byte raw frame to reject the
+second token, four or six events to distinguish exact-finish mismatch from
+preflight count contradiction, or use minimum match length five or context
+count 31 to reject the variant. Corrupt the leading Range byte and provide a
+one-token output buffer to verify no token writes; alias the valid payload
+with token output to verify overlap rejection.

@@ -1,7 +1,7 @@
 # LZSS Contextual 64-KiB short-match candidate
 
 Status: decoder-visible reservation with private byte-envelope preflight and
-32-context Range event decoding (2026-09-24). No typed-token Range decoder,
+32-context Range-to-token validation (2026-09-24). No frame-level raw decoder,
 encoder, public selector, or interoperability archive admits this identity yet.
 
 ## Purpose and isolation
@@ -234,3 +234,16 @@ tests. Semantic frame preflight now counts the full decoder object size in
 its aggregate workspace requirement. This event decoder cannot yet turn a
 payload into typed tokens or reconstruct raw bytes; the reserved stream gate
 remains closed.
+
+## Fifth implementation boundary
+
+The private 32-context Range decoder now maps events to typed LZSS tokens.
+It uses the variant-6 `V = L - 2` inverse, length classes 0..8 and distance
+contexts 23..31, then validates every token with dictionary variant 7 before
+accepting it. It checks declared token/event/decision/raw counts and the
+payload ceiling. A first pass validates without writing; a second pass writes
+only to a nonoverlapping caller-owned token workspace of sufficient size.
+The `aaaa` fixture yields `Literal(0x61), Match(1,3)`. Malformed count and
+descriptor cases, insufficient output, and payload/output overlap have
+separate negative tests. No raw bytes are reconstructed by this function;
+frame-level atomic reconstruction and stream admission remain later gates.

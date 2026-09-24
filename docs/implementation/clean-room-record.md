@@ -33093,3 +33093,21 @@ both bounds.
 - Local validation: the full MSVC Release build and all 3,633 CTest cases
   passed, including the four new Range event tests, interoperability schema
   compatibility, and documentation layout checks.
+
+## CR-1337: 2026-09-24 - Validate short-match Range tokens privately
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  typed-token decoder implementation.
+- References used: IR-0938, DD-1183, TVG-1052, first-party context state,
+  typed-token validator, and Range event decoder.
+- Known implementations intentionally not consulted: external compressor or
+  entropy-coder source, copyleft implementations, third-party tests/tables.
+- Generated-code task: map bounded variant-6 events to variant-7 tokens,
+  validate first, and write only to nonoverlapping private token workspace.
+- Independent decisions: preserve the published parser gate, use two-pass
+  validation, and leave raw reconstruction to a later frame-level stage.
+- Similarity review: the token mapping and bounds follow marc's own format;
+  no external expression was translated. No legal non-infringement guarantee.
+- Local validation: the full MSVC Release build and all 3,637 CTest cases
+  passed, including four Range-to-token tests, interoperability schema
+  compatibility, and documentation layout checks.
