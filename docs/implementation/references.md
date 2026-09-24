@@ -8735,3 +8735,10 @@ The private Range payload path reuses marc's own 32-context integer Range
 model and the independently defined escape-length rule from IR-0949/0950.
 No external compressor decoder, entropy implementation, table, pseudocode
 or test suite was consulted.
+
+### IR-0952
+
+The private complete-frame route follows marc's own typed-context frame
+layout, existing short-match preflight and frame decoder, and the private
+escape Range token decoder from IR-0951. No external frame parser,
+compressor source, serialization code or test suite was consulted.

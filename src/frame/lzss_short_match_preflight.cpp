@@ -1,4 +1,5 @@
 #include "frame/lzss_short_match_preflight.hpp"
+#include "frame/lzss_short_length_escape_preflight.hpp"
 
 #include "context/lzss_short_match_context_layout.hpp"
 #include "core/checked_math.hpp"
@@ -19,6 +20,20 @@ inline constexpr std::uint32_t maximum_short_match_frame_size = 65536;
 inline constexpr std::uint64_t short_match_model_bytes =
     sizeof(entropy::internal::LzssShortMatchRangeDecoder);
 
+enum class ReservedIdentity : std::uint8_t {
+    short_match,
+    short_length_escape,
+};
+
+[[nodiscard]] constexpr dictionary::internal::LzssTypedTokenVariant
+token_variant(const ReservedIdentity identity) noexcept {
+    return identity == ReservedIdentity::short_length_escape
+        ? dictionary::internal::LzssTypedTokenVariant::
+              field_context_64k_short_length_escape
+        : dictionary::internal::LzssTypedTokenVariant::
+              field_context_64k_short_match;
+}
+
 constexpr std::array stream_magic{
     std::byte{0x4d}, std::byte{0x41}, std::byte{0x52}, std::byte{0x43}};
 constexpr std::array frame_magic{
@@ -30,16 +45,18 @@ constexpr std::array frame_magic{
     });
 }
 
-} // namespace
-
-LzssShortMatchPreflightError validate_lzss_short_match_stream_semantics(
+LzssShortMatchPreflightError validate_stream_impl(
     const TypedContextStreamHeader& stream,
-    const core::DecoderLimits& limits) noexcept {
+    const core::DecoderLimits& limits,
+    const ReservedIdentity identity) noexcept {
     if (core::validate_limits(limits) != core::LimitError::none) {
         return LzssShortMatchPreflightError::limit_exceeded;
     }
-    if (stream.dictionary_variant != 7 || stream.context_algorithm != 1
-        || stream.context_variant != 6
+    if (stream.dictionary_variant
+            != (identity == ReservedIdentity::short_length_escape ? 8 : 7)
+        || stream.context_algorithm != 1
+        || stream.context_variant
+               != (identity == ReservedIdentity::short_length_escape ? 7 : 6)
         || stream.range_model_total != typed_context_model_total
         || stream.context_count
                != context::internal::lzss_short_match_context_count
@@ -49,9 +66,7 @@ LzssShortMatchPreflightError validate_lzss_short_match_stream_semantics(
     }
     const auto dictionary_error =
         dictionary::internal::validate_lzss_typed_parameters(
-            stream.dictionary, limits,
-            dictionary::internal::LzssTypedTokenVariant::
-                field_context_64k_short_match);
+            stream.dictionary, limits, token_variant(identity));
     if (dictionary_error
         == dictionary::internal::LzssTypedTokenError::limit_exceeded) {
         return LzssShortMatchPreflightError::limit_exceeded;
@@ -73,14 +88,14 @@ LzssShortMatchPreflightError validate_lzss_short_match_stream_semantics(
     return LzssShortMatchPreflightError::none;
 }
 
-LzssShortMatchPreflightError preflight_lzss_short_match_frame_semantics(
+LzssShortMatchPreflightError preflight_frame_impl(
     const TypedContextFrameHeader& frame,
     const TypedContextRangeDescriptor& descriptor,
     const TypedContextFrameValidationContext& context,
-    LzssShortMatchFrameRequirements& requirements) noexcept {
+    LzssShortMatchFrameRequirements& requirements,
+    const ReservedIdentity identity) noexcept {
     const auto stream_error =
-        validate_lzss_short_match_stream_semantics(
-            context.stream, context.limits);
+        validate_stream_impl(context.stream, context.limits, identity);
     if (stream_error != LzssShortMatchPreflightError::none) {
         return stream_error;
     }
@@ -175,11 +190,11 @@ LzssShortMatchPreflightError preflight_lzss_short_match_frame_semantics(
     return LzssShortMatchPreflightError::none;
 }
 
-LzssShortMatchPreflightError parse_lzss_short_match_stream_header(
+LzssShortMatchPreflightError parse_stream_impl(
     const std::span<const std::byte> input,
     const core::DecoderLimits& limits,
-    TypedContextStreamHeader& stream,
-    std::size_t& bytes_consumed) noexcept {
+    TypedContextStreamHeader& stream, std::size_t& bytes_consumed,
+    const ReservedIdentity identity) noexcept {
     if (input.size() < typed_context_stream_header_size) {
         return LzssShortMatchPreflightError::truncated_stream_header;
     }
@@ -239,9 +254,13 @@ LzssShortMatchPreflightError parse_lzss_short_match_stream_header(
     if (flags != 1 || entropy_flags != 0 || context_flags != 0) {
         return LzssShortMatchPreflightError::unsupported_feature;
     }
-    if (dictionary_algorithm != 2 || dictionary_variant != 7
+    if (dictionary_algorithm != 2
+        || dictionary_variant
+               != (identity == ReservedIdentity::short_length_escape ? 8 : 7)
         || entropy_algorithm != 3 || entropy_variant != 2
-        || parsed.context_algorithm != 1 || parsed.context_variant != 6) {
+        || parsed.context_algorithm != 1
+        || parsed.context_variant
+               != (identity == ReservedIdentity::short_length_escape ? 7 : 6)) {
         return LzssShortMatchPreflightError::unsupported_format;
     }
     if (entropy_block_size != 0 || dictionary_parameter_size != 16
@@ -255,21 +274,21 @@ LzssShortMatchPreflightError parse_lzss_short_match_stream_header(
         return LzssShortMatchPreflightError::nonzero_reserved;
     }
     parsed.dictionary_variant = dictionary_variant;
-    const auto error = validate_lzss_short_match_stream_semantics(parsed,
-                                                                   limits);
+    const auto error = validate_stream_impl(parsed, limits, identity);
     if (error != LzssShortMatchPreflightError::none) return error;
     stream = parsed;
     bytes_consumed = typed_context_stream_header_size;
     return LzssShortMatchPreflightError::none;
 }
 
-LzssShortMatchPreflightError preflight_lzss_short_match_frame_bytes(
+LzssShortMatchPreflightError preflight_frame_bytes_impl(
     const std::span<const std::byte> input,
     const TypedContextFrameValidationContext& context,
     TypedContextFrameLayout& layout,
-    LzssShortMatchFrameRequirements& requirements) noexcept {
-    const auto stream_error = validate_lzss_short_match_stream_semantics(
-        context.stream, context.limits);
+    LzssShortMatchFrameRequirements& requirements,
+    const ReservedIdentity identity) noexcept {
+    const auto stream_error = validate_stream_impl(
+        context.stream, context.limits, identity);
     if (stream_error != LzssShortMatchPreflightError::none) {
         return stream_error;
     }
@@ -327,8 +346,8 @@ LzssShortMatchPreflightError preflight_lzss_short_match_frame_bytes(
     }
 
     LzssShortMatchFrameRequirements parsed_requirements{};
-    const auto error = preflight_lzss_short_match_frame_semantics(
-        frame, parsed.descriptor, context, parsed_requirements);
+    const auto error = preflight_frame_impl(
+        frame, parsed.descriptor, context, parsed_requirements, identity);
     if (error != LzssShortMatchPreflightError::none) return error;
     if (input.size() < parsed_requirements.serialized_frame_bytes) {
         return LzssShortMatchPreflightError::truncated_frame;
@@ -337,6 +356,77 @@ LzssShortMatchPreflightError preflight_lzss_short_match_frame_bytes(
     layout = parsed;
     requirements = parsed_requirements;
     return LzssShortMatchPreflightError::none;
+}
+
+} // namespace
+
+LzssShortMatchPreflightError validate_lzss_short_match_stream_semantics(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits) noexcept {
+    return validate_stream_impl(stream, limits, ReservedIdentity::short_match);
+}
+
+LzssShortMatchPreflightError
+validate_lzss_short_length_escape_stream_semantics(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits) noexcept {
+    return validate_stream_impl(stream, limits,
+                                ReservedIdentity::short_length_escape);
+}
+
+LzssShortMatchPreflightError preflight_lzss_short_match_frame_semantics(
+    const TypedContextFrameHeader& frame,
+    const TypedContextRangeDescriptor& descriptor,
+    const TypedContextFrameValidationContext& context,
+    LzssShortMatchFrameRequirements& requirements) noexcept {
+    return preflight_frame_impl(frame, descriptor, context, requirements,
+                                ReservedIdentity::short_match);
+}
+
+LzssShortMatchPreflightError
+preflight_lzss_short_length_escape_frame_semantics(
+    const TypedContextFrameHeader& frame,
+    const TypedContextRangeDescriptor& descriptor,
+    const TypedContextFrameValidationContext& context,
+    LzssShortMatchFrameRequirements& requirements) noexcept {
+    return preflight_frame_impl(frame, descriptor, context, requirements,
+                                ReservedIdentity::short_length_escape);
+}
+
+LzssShortMatchPreflightError parse_lzss_short_match_stream_header(
+    const std::span<const std::byte> input,
+    const core::DecoderLimits& limits,
+    TypedContextStreamHeader& stream,
+    std::size_t& bytes_consumed) noexcept {
+    return parse_stream_impl(input, limits, stream, bytes_consumed,
+                             ReservedIdentity::short_match);
+}
+
+LzssShortMatchPreflightError parse_lzss_short_length_escape_stream_header(
+    const std::span<const std::byte> input,
+    const core::DecoderLimits& limits,
+    TypedContextStreamHeader& stream,
+    std::size_t& bytes_consumed) noexcept {
+    return parse_stream_impl(input, limits, stream, bytes_consumed,
+                             ReservedIdentity::short_length_escape);
+}
+
+LzssShortMatchPreflightError preflight_lzss_short_match_frame_bytes(
+    const std::span<const std::byte> input,
+    const TypedContextFrameValidationContext& context,
+    TypedContextFrameLayout& layout,
+    LzssShortMatchFrameRequirements& requirements) noexcept {
+    return preflight_frame_bytes_impl(input, context, layout, requirements,
+                                      ReservedIdentity::short_match);
+}
+
+LzssShortMatchPreflightError preflight_lzss_short_length_escape_frame_bytes(
+    const std::span<const std::byte> input,
+    const TypedContextFrameValidationContext& context,
+    TypedContextFrameLayout& layout,
+    LzssShortMatchFrameRequirements& requirements) noexcept {
+    return preflight_frame_bytes_impl(input, context, layout, requirements,
+                                      ReservedIdentity::short_length_escape);
 }
 
 } // namespace marc::frame::internal

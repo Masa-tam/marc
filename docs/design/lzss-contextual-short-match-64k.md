@@ -461,3 +461,18 @@ first-party modeled operations and decode every length 3..258, as well as
 forbidden length 259 and malformed or trailing payloads. The public stream
 preflight still rejects this identity; frame parsing, streaming and a
 complete encoder remain outside this boundary.
+
+## Nineteenth implementation boundary: private complete-frame decode
+
+The isolated 2/8 + 1/7 + 3/2 identity now has separate private stream-
+header and frame preflight entry points, followed by complete-frame token
+decode and raw reconstruction. The existing parser and decoder for the
+2/7 + 1/6 identity retain their exact selection and semantics. Shared
+preflight applies strict format fields, sequence and raw-frame size,
+descriptor/count ceilings, aggregate workspace limits, truncation and
+reserved-byte rules before exposing a frame layout. The frame decoder
+checks token/raw capacities and all workspace overlap before decoding,
+and malformed entropy never publishes raw bytes. Hand-built frame tests
+cover lengths 3, 4, 5 and 258, wrong IDs, invalid framing, overlap and
+limits. The published stream parser still rejects the new identity; this
+boundary does not add an encoder, streaming API or public admission.

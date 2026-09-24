@@ -33375,3 +33375,23 @@ both bounds.
 - Local validation: complete MSVC Release build and all 3,690 CTest cases
   passed, including the new and old private Range cases, documentation and
   interoperability tests.
+
+## CR-1351: 2026-09-24 - Decode private escape frames
+
+- Author: Codex; reviewer: repository maintainer approved the next private
+  complete-frame decoder step.
+- References used: IR-0952, DD-1197, TVG-1066, the independent 2/8 frame
+  rule, and marc's first-party private frame preflight and reconstruction.
+- Known implementations intentionally not consulted: external compressor
+  sources, copyleft code, third-party frame layouts, pseudocode and tests.
+- Generated-code task: parse and validate the exact private 2/8 + 1/7 + 3/2
+  stream/frame fields, then decode one frame without public admission.
+- Independent decisions: select the exact identity only inside private
+  entry points, retain conservative shared ceilings and overlap checks,
+  validate before publishing raw output, and keep old and public paths closed.
+- Similarity review: the change reuses first-party frame logic and
+  independently built vectors; no external implementation expression was
+  translated. No legal non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,694 CTest cases
+  passed, including private frame/preflight, published-parser rejection,
+  documentation and interoperability tests.

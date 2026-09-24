@@ -15708,3 +15708,15 @@ Encode class 7 with extra 127 separately to require rejection of length
 259. Mutate descriptor counts, the initial coder byte, distance history,
 trailing payload and output-buffer alias to test strict failures without
 partial token writes. Existing 2/7 + 1/6 vectors remain unchanged.
+
+### TVG-1066
+
+Build one private frame from a literal `a` and distance-1 match, using
+marc's 32-context Range writer for the payload and explicit little-endian
+field stores for the fixed frame header and descriptor. Repeat at match
+lengths 3, 4, 5 and 258 and require the reconstructed raw output to consist
+entirely of `a`. Serialize the exact 2/8 + 1/7 + 3/2 stream header
+independently; the old private parser must reject it. Mutate identity,
+sequence, reserved fields, payload prefix, truncation, output capacities,
+workspace aliasing and a valid-but-insufficient aggregate workspace limit.
+On errors, no raw output may be published. No external corpus is embedded.

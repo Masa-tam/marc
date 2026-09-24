@@ -1,6 +1,9 @@
 #include "frame/lzss_short_match_frame_decoder.hpp"
+#include "frame/lzss_short_length_escape_frame_decoder.hpp"
 
+#include "context/lzss_short_length_escape_range_tokens.hpp"
 #include "core/checked_math.hpp"
+#include "frame/lzss_short_length_escape_preflight.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -35,18 +38,20 @@ enum class OverlapCheck : std::uint8_t {
         : OverlapCheck::disjoint;
 }
 
-} // namespace
-
-LzssShortMatchFrameDecodeResult decode_lzss_short_match_frame(
+[[nodiscard]] LzssShortMatchFrameDecodeResult decode_impl(
     const std::span<const std::byte> serialized_frame,
     const TypedContextFrameValidationContext& context,
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
-    const std::span<std::byte> private_raw_output) noexcept {
+    const std::span<std::byte> private_raw_output,
+    const bool escape_identity) noexcept {
     LzssShortMatchFrameDecodeResult result{};
     TypedContextFrameLayout layout{};
     LzssShortMatchFrameRequirements requirements{};
-    result.preflight_error = preflight_lzss_short_match_frame_bytes(
-        serialized_frame, context, layout, requirements);
+    result.preflight_error = escape_identity
+        ? preflight_lzss_short_length_escape_frame_bytes(
+              serialized_frame, context, layout, requirements)
+        : preflight_lzss_short_match_frame_bytes(
+              serialized_frame, context, layout, requirements);
     if (result.preflight_error != LzssShortMatchPreflightError::none) {
         result.error = LzssShortMatchFrameDecodeError::preflight_error;
         return result;
@@ -102,10 +107,13 @@ LzssShortMatchFrameDecodeResult decode_lzss_short_match_frame(
         layout.header.decision_count,
         layout.header.uncompressed_size,
         context.output_already_committed};
-    result.token_decode =
-        context::internal::decode_lzss_short_match_range_tokens(
-            layout.descriptor, payload, context.stream.dictionary,
-            token_context, context.limits, tokens);
+    result.token_decode = escape_identity
+        ? context::internal::decode_lzss_short_length_escape_range_tokens(
+              layout.descriptor, payload, context.stream.dictionary,
+              token_context, context.limits, tokens)
+        : context::internal::decode_lzss_short_match_range_tokens(
+              layout.descriptor, payload, context.stream.dictionary,
+              token_context, context.limits, tokens);
     if (result.token_decode.error
         != context::internal::LzssContextualRangeDecodeError::none) {
         result.error = LzssShortMatchFrameDecodeError::token_decode_error;
@@ -118,8 +126,11 @@ LzssShortMatchFrameDecodeResult decode_lzss_short_match_frame(
         context.output_already_committed};
     result.reconstruction = dictionary::internal::reconstruct_lzss_typed_frame(
         tokens, context.stream.dictionary, raw_context, context.limits, raw,
-        dictionary::internal::LzssTypedTokenVariant::
-            field_context_64k_short_match);
+        escape_identity
+            ? dictionary::internal::LzssTypedTokenVariant::
+                  field_context_64k_short_length_escape
+            : dictionary::internal::LzssTypedTokenVariant::
+                  field_context_64k_short_match);
     if (result.reconstruction.error
         != dictionary::internal::LzssTypedReconstructError::none) {
         result.error = LzssShortMatchFrameDecodeError::reconstruction_error;
@@ -127,6 +138,26 @@ LzssShortMatchFrameDecodeResult decode_lzss_short_match_frame(
     }
     result.serialized_consumed = layout.serialized_size;
     return result;
+}
+
+} // namespace
+
+LzssShortMatchFrameDecodeResult decode_lzss_short_match_frame(
+    const std::span<const std::byte> serialized_frame,
+    const TypedContextFrameValidationContext& context,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<std::byte> private_raw_output) noexcept {
+    return decode_impl(serialized_frame, context, private_tokens,
+                       private_raw_output, false);
+}
+
+LzssShortMatchFrameDecodeResult decode_lzss_short_length_escape_frame(
+    const std::span<const std::byte> serialized_frame,
+    const TypedContextFrameValidationContext& context,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<std::byte> private_raw_output) noexcept {
+    return decode_impl(serialized_frame, context, private_tokens,
+                       private_raw_output, true);
 }
 
 } // namespace marc::frame::internal

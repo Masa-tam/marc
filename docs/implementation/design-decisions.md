@@ -24163,3 +24163,13 @@ explicitly at the internal token-decoding boundary. Preserve the 2/7 + 1/6
 behavior and expose separate internal 2/8 + 1/7 validation/decode entry
 points. Validate a complete pass before writing caller-owned tokens; do not
 admit the new identity through public stream preflight at this stage.
+
+## DD-1197: Route the isolated identity only through private frame entry points
+
+The new 2/8 + 1/7 + 3/2 identity inherits the reserved short-match frame
+layout and conservative ceilings. Parameterize the private semantic and
+byte preflight by exact identity, with separate named entry points so the
+old 2/7 + 1/6 path still rejects the new pair. Reuse complete-frame
+capacity and overlap checks, selecting the corresponding private Range
+token decoder and typed-token variant only after successful preflight.
+Do not change the published stream parser or admit either reservation.
