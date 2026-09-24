@@ -4127,3 +4127,39 @@ policies, so the result is not an isolated retention optimization comparison.
 No runtime source changed for these repeats. The next compression-ratio
 investigation can use the retained three-policy selector as a private
 reference point; the remaining mozilla gap is not solved by this speed result.
+
+### BM-0113: Attribute retained-winner field costs on mozilla
+
+On 2026-09-25, the MSVC Release benchmark decoded and profiled the retained
+winner for all 782 mozilla frames (51,220,480 bytes). Archive size remained
+19,636,009 bytes, versus 19,824,381 for prior escape. Each winner round-tripped
+before its decoded tokens were modeled; the last trial's scratch tokens are
+not used. Diagnostic work is outside encode/decode timers and coding decisions.
+
+| Field | Prior escape byte-equivalent | Retained byte-equivalent | Change |
+| --- | ---: | ---: | ---: |
+| Token kind | 1,281,414.164 | 1,339,295.924 | +57,881.759 |
+| Literal symbol | 8,998,384.169 | 9,930,840.507 | +932,456.339 |
+| Length class | 1,221,384.801 | 1,196,161.521 | -25,223.280 |
+| Distance class | 2,085,417.420 | 1,824,879.672 | -260,537.748 |
+| Length bypass | 921,344.625 | 863,472.500 | -57,872.125 |
+| Distance bypass | 5,250,102.875 | 4,415,033.000 | -835,069.875 |
+| **Total** | **19,758,048.053** | **19,569,683.124** | **-188,364.930** |
+
+Match count falls from 4,905,913 to 4,456,695, while Literal count rises
+from 9,444,672 to 10,620,073. Length/distance metadata saves 1,178,703.028
+byte-equivalents, offset by 990,338.098 in literal/kind costs. This supports
+the distance-cap mechanism, rather than suggesting a lower per-symbol coder
+overhead. Actual savings are 188,372 bytes. With the unchanged 62,672 framing
+bytes removed, retained modeled information leaves 3,653.876 bytes of actual
+integer-coder/termination overhead, still far below the gzip target gap.
+
+Retained Literal adaptive information is 79,446,724.060 bits; the empirical
+within-frame/context score is 74,479,752.821 bits, a 620,871.405-byte-equivalent
+difference. It uses future counts without paying model storage and is neither
+an achievable size prediction nor a universal lower bound. In particular it
+must not be subtracted from the remaining 641,870-byte gzip gap as a promised
+gain. It motivates a bounded comparison of literal-model initialization and
+update rules on fixed retained tokens before considering another format.
+Any actual model change requires its own decoder-visible specification;
+this diagnostic changes no existing representation or public default.

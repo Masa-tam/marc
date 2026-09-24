@@ -15877,3 +15877,11 @@ input hashes, prior/retained archive totals, supplied capacity and fixed-model
 aggregate charge for each member. Completed reports are reusable only under
 their original experiment identity; timing differences are expected and are
 not test failures.
+
+### TVG-1082
+
+Require indexed/reference equality for every retained-winner field score,
+symbol count and bypass-bit count in the existing bounded benchmark smoke.
+Extend bypass checks to published and prior escape diagnostics as well.
+The full mozilla measurement still verifies candidate minima, decodes the
+retained frame and compares restored bytes before profiling decoded tokens.

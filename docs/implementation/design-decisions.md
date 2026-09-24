@@ -24360,3 +24360,15 @@ treating three observations as a statistical guarantee. The benchmark's
 within-frame order remains unchanged: prior selector precedes the retained
 selector and diagnostics intervene. Reversing corpus order does not remove
 that possible cache/order bias. No source or public codec changes are needed.
+
+## DD-1213: Attribute costs from the retained winner, not parser scratch
+
+After validating and decoding the retained selector's output, regenerate
+modeled operations from those decoded tokens and feed the existing bounded
+field-cost diagnostic. Never use the selector's token scratch, which belongs
+to its last trial and may not represent the winner. Keep all profiling
+outside encode/decode timers and selection decisions. Compare the published,
+prior escape and retained paths on the same complete mozilla input before
+choosing another model experiment. Adaptive information and empirical
+histogram scores remain diagnostic quantities, not serialized byte counts
+or achievable coding bounds.

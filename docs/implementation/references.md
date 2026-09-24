@@ -8849,3 +8849,10 @@ code or selector implementation is consulted.
 The selector repeatability check uses the unchanged BM-0111 executable,
 first-party checkpoint reports and externally stored Silesia inputs. No
 external compressor source or third-party benchmark results are used.
+
+### IR-0968
+
+The retained-winner cost attribution reuses marc's BM-0107 model-cost
+diagnostic, private variant-8 decoder and typed-token modeler. It applies
+the same first-party frequency and bypass rules to the actual retained
+winner. No external compressor implementation is consulted.

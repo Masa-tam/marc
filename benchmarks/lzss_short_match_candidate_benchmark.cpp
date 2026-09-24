@@ -293,6 +293,7 @@ int main(const int argc, const char* const argv[]) {
     MatchOperationSummary reserved_five_operations{};
     marc::benchmarks::ModelCost baseline_cost{};
     marc::benchmarks::ModelCost escape_cost{};
+    marc::benchmarks::ModelCost retained_cost{};
     double baseline_plan_seconds{};
     double candidate_encode_seconds{};
     double candidate_decode_seconds{};
@@ -528,6 +529,22 @@ int main(const int argc, const char* const argv[]) {
                 std::cerr << "distance selector decode mismatch\n";
                 return 2;
             }
+            // Profile the decoded winner, not scratch tokens left by policy 4.
+            const marc::dictionary::internal::LzssTypedFrameValidationContext selected_context{
+                static_cast<std::uint32_t>(verified.required_token_count),
+                static_cast<std::uint32_t>(count), committed};
+            const auto selected_modeled = marc::context::internal::
+                model_lzss_short_length_escape_tokens(
+                    std::span<const LzssTypedToken>{decoded_tokens}.first(
+                        verified.required_token_count),
+                    candidate_parameters, selected_context, limits, operations);
+            if (selected_modeled.error != marc::context::internal::LzssFieldContextError::none
+                || !accumulate_cost(retained_cost, marc::benchmarks::measure_model_cost(
+                    std::span<const ModeledOperation>{operations}.first(selected_modeled.operation_count),
+                    marc::benchmarks::CostLayout::short_match_64k))) {
+                std::cerr << "retained cost profile failed\n";
+                return 2;
+            }
         }
         const auto exact_tokens = marc::dictionary::internal::
             tokenize_lzss_short_match_candidate_indexed(
@@ -679,6 +696,7 @@ int main(const int argc, const char* const argv[]) {
     print_cost("baseline_cost", baseline_cost);
     print_cost("escape_cost", escape_cost);
     if (distance_policies) {
+        print_cost("retained_cost", retained_cost);
         for (std::size_t i = 0; i < distance_policy_archive_bytes.size(); ++i) {
             const auto policy = marc::benchmarks::short_distance_policies[i];
             std::cout << "distance_policy_" << i << "_length3_cap="

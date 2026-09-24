@@ -33697,3 +33697,22 @@ both bounds.
   matched BM-0111. Completed checkpoint reuse passed for all 24 reports.
   Runtime sources and the executable are unchanged from CR-1365's full
   3,741-case validation; this documentation-only step reruns layout checks.
+
+## CR-1367: 2026-09-25 - Attribute retained-winner field costs
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0968, DD-1213, TVG-1082 and BM-0113; first-party
+  decoded tokens, modeler and existing information-cost diagnostic only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party model optimization code.
+- Generated-code task: profile the decoded retained winner by field, keeping
+  diagnostic arithmetic outside codec decisions and timing intervals.
+- Independent decisions: never profile last-trial scratch as the winner;
+  distinguish adaptive information, empirical scores and actual archive bytes.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation: indexed/reference diagnostic smoke and documentation layout
+  passed. Complete mozilla retained its prior archive size and every selected
+  frame round-tripped before profiling. Full MSVC Release build and all
+  3,741 CTest cases passed, including documentation layout and interoperability
+  schema compatibility.
