@@ -8721,3 +8721,10 @@ The private short-length escape is derived from marc's own published
 bypass-bit diagnosis, and the independently specified length rule in
 `docs/format.md`. No external encoder source, table, pseudocode, or test
 suite was consulted.
+
+### IR-0950
+
+The operation inversion follows marc's independently implemented
+field-context state and typed-token validation contracts, with the
+private escape mapping from IR-0949 and `docs/format.md`. No external
+compressor decoder, source code, table or test suite was consulted.

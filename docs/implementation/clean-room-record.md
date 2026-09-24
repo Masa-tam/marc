@@ -33334,3 +33334,24 @@ both bounds.
 - Local validation: the complete MSVC Release build and all 3,680 CTest
   cases passed, including the new hand, exhaustive-domain, malformed-field,
   old-identity rejection, documentation, and interoperability tests.
+
+## CR-1349: 2026-09-24 - Validate private escape operations
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  decoder-first implementation step.
+- References used: IR-0950, DD-1195, TVG-1064, the private format rule and
+  marc's existing first-party field-context and typed-token contracts.
+- Known implementations intentionally not consulted: external compressor
+  sources, copyleft code, third-party tables, pseudocode and test suites.
+- Generated-code task: parse and validate the private 2/8 + 1/7 modeled
+  operation sequence, then invert it into typed tokens without allocation or
+  public stream admission.
+- Independent decisions: reuse the established context-state transitions,
+  require class 8 to have one bypass bit, validate the whole sequence before
+  materialization, and leave the existing published and reserved paths closed.
+- Similarity review: new logic follows only the repository's own format and
+  validation contracts; no external implementation expression was translated.
+  No legal non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,686 CTest cases
+  passed, including focused hand, exhaustive-length, malformed-operation,
+  documentation and interoperability tests.

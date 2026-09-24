@@ -15683,3 +15683,16 @@ one representation. Class 7 extra 127 would yield 259 and must fail.
 Also reject invalid class, width, extra and source length. The existing
 variant-7/6 preflight must reject the new 8/7 IDs before any stream
 publication. No external corpus bytes enter these vectors.
+
+### TVG-1064
+
+Construct a literal `a` followed by a distance-1 match using the start,
+post-literal, length, and class-dependent distance contexts. For length
+three the operation sequence is `(0,2,0)`, `(3,256,97)`, `(1,2,1)`,
+`(21,9,8)`, one bypass zero, then `(31,17,0)`, yielding `aaaa`.
+Enumerate all lengths 3..258 using the independently specified length
+field primitive, including class 0 with no bypass and class 8 with one.
+Mutate the bypass value, terminal class-7 extra, distance history,
+context, alphabet, declared counts, frame limit and token-buffer alias to
+assert deterministic rejection without partial token output. These are
+first-party hand/generated vectors; no external corpus is embedded.

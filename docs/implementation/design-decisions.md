@@ -24143,3 +24143,13 @@ mapping. The class-7 extra 127 is invalid because it would yield 259.
 Implement only a pure bounded encode/decode primitive at this stage;
 existing frame preflight must reject 2/8 + 1/7 until decoder-first
 validation and full format admission are separately complete.
+
+## DD-1195: Validate escape operations before materializing typed tokens
+
+Keep dictionary variant 2/8 private and reuse the established typed-token
+distance, raw-size and limit checks. The 1/7 operation decoder reads the
+new length alphabet and class-8 bypass while retaining the prior token,
+literal and distance contexts. Reject malformed contexts, fields, counts,
+truncation and over-limit output before touching the caller's token buffer;
+then invert the validated sequence. Do not route public streams to this
+decoder until separate Range/frame validation and admission are complete.

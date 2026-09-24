@@ -17,6 +17,7 @@ enum class LzssTypedTokenVariant : std::uint16_t {
     field_context_16m = 5,
     field_context_64m = 6,
     field_context_64k_short_match = 7,
+    field_context_64k_short_length_escape = 8,
 };
 
 enum class LzssTypedTokenKind : std::uint8_t {

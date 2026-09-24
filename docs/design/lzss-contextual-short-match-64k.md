@@ -433,3 +433,16 @@ bit for lengths 3 and 4. Of the possible class-7 extras, 127 decodes to
 unique canonical decoding, malformed fields, and rejection of the new
 identity by the existing private preflight. There is no Range payload,
 frame parser, encoder, public admission, or archive for this identity yet.
+
+## Seventeenth implementation boundary: escape-operation inversion
+
+The private 2/8 + 1/7 identity now has an allocation-free decoder-side
+validator for modeled operations and an inversion step to typed LZSS tokens.
+It checks the 32-context shape, canonical length class and bypass width,
+distance history, frame output, declared operation/decision/token counts,
+hard limits, and output-buffer overlap before writing tokens. Inversion
+validates the entire operation sequence first, so malformed input leaves
+the caller's token buffer untouched. Every length 3..258 is covered by an
+operation-level round trip, with separate malformed-operation tests.
+The existing public parser, Range payload and frame paths still reject or
+do not route to this identity. No encoder or archive has been introduced.
