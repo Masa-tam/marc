@@ -24019,3 +24019,14 @@ declared counts, raw size, payload ceiling, and hard limits. Use a read-only
 validation pass before writing caller-owned token workspace, reject payload
 overlap and insufficient space, and verify both passes agree. This is not yet
 a frame-level raw decoder or a public stream admission.
+
+## DD-1184: Reconstruct reserved short-match frames only after preflight
+
+Compose the private byte-envelope parser, two-pass Range-to-token decoder,
+and variant-7 typed reconstructor without altering the published decoder.
+Require sufficient caller-owned token and raw workspaces, and reject overlap
+among serialized frame, tokens, and raw output before token writes. Publish
+the consumed frame extent only after full raw reconstruction succeeds. Frame
+history and Range models reset independently even at nonzero whole-stream
+offsets. Whole-stream completion, trailing bytes, and public admission remain
+future gates.

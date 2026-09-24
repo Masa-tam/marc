@@ -1,8 +1,8 @@
 # LZSS Contextual 64-KiB short-match candidate
 
-Status: decoder-visible reservation with private byte-envelope preflight and
-32-context Range-to-token validation (2026-09-24). No frame-level raw decoder,
-encoder, public selector, or interoperability archive admits this identity yet.
+Status: decoder-visible reservation with a private frame decoder
+(2026-09-24). No whole-stream decoder, encoder, public selector, or
+interoperability archive admits this identity yet.
 
 ## Purpose and isolation
 
@@ -247,3 +247,15 @@ The `aaaa` fixture yields `Literal(0x61), Match(1,3)`. Malformed count and
 descriptor cases, insufficient output, and payload/output overlap have
 separate negative tests. No raw bytes are reconstructed by this function;
 frame-level atomic reconstruction and stream admission remain later gates.
+
+## Sixth implementation boundary
+
+A private frame decoder now chains the byte-envelope preflight, two-pass
+Range-to-token decoding, and variant-7 typed-token reconstruction. It checks
+the serialized frame, token workspace, raw workspace, and all pairwise memory
+overlaps before writing either workspace. `serialized_consumed` is published
+only after complete reconstruction; truncated or malformed input leaves raw
+output untouched. The hand vector reconstructs `aaaa`, including when used as
+a subsequent independent frame with sequence 1 and a four-byte committed
+prefix. No published whole-stream parser or C API calls this frame decoder;
+strict stream termination and cross-frame publication are later work.

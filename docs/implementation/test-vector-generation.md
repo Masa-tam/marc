@@ -15554,3 +15554,14 @@ preflight count contradiction, or use minimum match length five or context
 count 31 to reject the variant. Corrupt the leading Range byte and provide a
 one-token output buffer to verify no token writes; alias the valid payload
 with token output to verify overlap rejection.
+
+### TVG-1053
+
+Place the seven-byte `aaaa` Range payload after the hand-written 64-byte
+frame header and 16-byte descriptor. A private frame decode must yield two
+tokens, four `0x61` bytes, and exactly 87 consumed bytes. Truncate one payload
+byte or corrupt the leading Range state and require no raw publication;
+provide one token slot or three raw bytes and require capacity failure before
+writes. Alias frame/raw and token/raw workspaces and require rejection. Repeat
+the same frame payload as sequence 1 after four committed raw bytes, proving
+frame-local dictionary and model reset without cross-frame references.

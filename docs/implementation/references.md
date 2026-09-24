@@ -8634,3 +8634,10 @@ The private short-match Range-to-token decoder uses first-party IR-0933
 through IR-0937, the typed-token variant-7 validator, field-context state
 mapping, and Range event decoder. No external codec source, pseudocode,
 table, or test suite was consulted.
+
+### IR-0939
+
+The private short-match frame decoder uses IR-0933 through IR-0938,
+marc's first-party byte preflight, Range-to-token validator, typed-token
+frame reconstructor, checked address arithmetic, and hard-limit contract.
+No external decoder source or test suite was consulted.

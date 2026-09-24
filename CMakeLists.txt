@@ -63,6 +63,7 @@ set(MARC_SOURCES
     src/context/lzss_short_match_range_tokens.cpp
     src/context/lzss_field_context.cpp
     src/frame/lzss_typed_context_frame_decoder.cpp
+    src/frame/lzss_short_match_frame_decoder.cpp
     src/frame/lzss_contextual_rans_format.cpp
     src/frame/lzss_contextual_blocked_huffman_format.cpp
     src/frame/lzss_contextual_blocked_huffman_frame_decoder.cpp
@@ -2534,6 +2535,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_short_match_preflight_tests.cpp
         tests/lzss_short_match_range_decoder_tests.cpp
         tests/lzss_short_match_range_tokens_tests.cpp
+        tests/lzss_short_match_frame_decoder_tests.cpp
     )
     target_compile_features(marc_core_tests PRIVATE cxx_std_20)
     target_include_directories(marc_core_tests

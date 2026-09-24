@@ -33111,3 +33111,21 @@ both bounds.
 - Local validation: the full MSVC Release build and all 3,637 CTest cases
   passed, including four Range-to-token tests, interoperability schema
   compatibility, and documentation layout checks.
+
+## CR-1338: 2026-09-24 - Reconstruct reserved short-match frames privately
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  frame decoder implementation.
+- References used: IR-0939, DD-1184, TVG-1053, and marc's first-party
+  preflight, token decoder, overlap checks, and typed reconstruction.
+- Known implementations intentionally not consulted: external compressor or
+  frame-decoder source, copyleft implementations, third-party tests/tables.
+- Generated-code task: combine the private verified stages without opening
+  public stream admission or exposing partially decoded raw frames.
+- Independent decisions: check all workspace overlaps before writing and
+  publish consumed extent only after complete reconstruction.
+- Similarity review: reused first-party frame contracts; no external
+  expression was translated. No legal non-infringement guarantee is made.
+- Local validation: the full MSVC Release build and all 3,641 CTest cases
+  passed, including four private-frame tests, interoperability schema
+  compatibility, and documentation layout checks.
