@@ -15521,3 +15521,15 @@ Private short-match layout and semantic preflight checks:
   the conservative `18F+85` serialized ceiling and reject the next byte.
 - These tests exercise structured values only; byte parsing, Range decoding,
   and public stream admission remain separate future gates.
+
+### TVG-1050
+
+Construct the 112-byte reserved stream header and 87-byte `aaaa` frame by
+writing each documented integer at its fixed little-endian offset into a
+zero-filled array. Confirm exact identity, minimum match length 3, frame
+extent, and workspace requirements. Truncate just before stream, frame,
+descriptor, and payload boundaries. Independently mutate magic, version,
+sizes, IDs, flags, counts, descriptor fields, and all reserved regions; assert
+rejection leaves caller-visible parsed output and requirements unchanged.
+The published parser's separate variant-7/6 rejection remains pinned by
+TVG-1048. These bytes are an envelope fixture, not a valid Range payload.

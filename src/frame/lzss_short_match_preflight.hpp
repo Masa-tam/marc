@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <span>
 
 namespace marc::frame::internal {
 
@@ -20,6 +21,15 @@ enum class LzssShortMatchPreflightError : std::uint8_t {
     unsupported_feature,
     limit_exceeded,
     arithmetic_overflow,
+    truncated_stream_header,
+    truncated_frame_header,
+    truncated_descriptor,
+    truncated_frame,
+    invalid_magic,
+    unsupported_version,
+    invalid_header_size,
+    nonzero_reserved,
+    unsupported_format,
 };
 
 struct LzssShortMatchFrameRequirements {
@@ -39,6 +49,20 @@ preflight_lzss_short_match_frame_semantics(
     const TypedContextFrameHeader& frame,
     const TypedContextRangeDescriptor& descriptor,
     const TypedContextFrameValidationContext& context,
+    LzssShortMatchFrameRequirements& requirements) noexcept;
+
+// Parse the reserved identity privately. Success does not admit it through
+// the published typed-context stream decoder.
+[[nodiscard]] LzssShortMatchPreflightError
+parse_lzss_short_match_stream_header(
+    std::span<const std::byte> input, const core::DecoderLimits& limits,
+    TypedContextStreamHeader& stream, std::size_t& bytes_consumed) noexcept;
+
+[[nodiscard]] LzssShortMatchPreflightError
+preflight_lzss_short_match_frame_bytes(
+    std::span<const std::byte> input,
+    const TypedContextFrameValidationContext& context,
+    TypedContextFrameLayout& layout,
     LzssShortMatchFrameRequirements& requirements) noexcept;
 
 } // namespace marc::frame::internal

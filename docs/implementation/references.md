@@ -8612,3 +8612,10 @@ through IR-0934, DD-1178 through DD-1179, TVG-1047 through TVG-1048,
 marc's own Format 2.0 frame/descriptor structures, checked arithmetic,
 decoder limits, and typed-token size. No external coder or parser source,
 table, test suite, pseudocode, or optimization structure was consulted.
+
+### IR-0936
+
+The private short-match byte parser uses IR-0933 through IR-0935, DD-1178
+through DD-1180, TVG-1047 through TVG-1049, and marc's own Format 2.0
+field offsets and checked little-endian helpers. No external parser source,
+tables, or test suite was consulted.

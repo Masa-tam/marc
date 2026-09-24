@@ -209,3 +209,15 @@ This helper does **not** parse bytes, inspect magic/reserved fields, decode
 Range payloads, or authorize a stream. A subsequent byte-level parser and
 32-context decoder must call the semantic preflight before allocation or raw
 publication; only then can the reserved stream gate be opened privately.
+
+## Third implementation boundary
+
+An isolated byte-level parser now checks the exact 112-byte stream header,
+64-byte frame header, and 16-byte Range descriptor. It checks magic, version,
+fixed sizes, algorithm IDs, zero-only reserved fields, and unsupported flags,
+then invokes the semantic preflight before exposing parsed fields or workspace
+requirements. It requires the declared payload to fit the supplied frame
+bytes and reports the serialized frame extent; a caller may retain subsequent
+bytes for later frames. It does not inspect or decode that payload, accept the
+reserved identity through the published parser, or publish raw output. The
+next boundary is the isolated 32-context Range decoder with token validation.

@@ -23987,3 +23987,14 @@ token/event/decision bounds, payload no larger than both `18F+5` and
 Range model. The helper is not a byte parser and does not open stream
 admission; a later parser must first check magic, reserved fields, exact
 extents, and malformed payload before decoding or publishing raw bytes.
+
+## DD-1181: Parse the short-match wire envelope privately
+
+Keep the published typed-context parser unchanged because it intentionally
+rejects dictionary variant 7 and context variant 6. Add dedicated internal
+byte parsers for the exact reserved 112-byte stream header and 64+16-byte
+frame envelope. Require byte-level magic, version, size, ID, flag and reserved
+checks before the existing semantic preflight; do not publish parsed fields or
+workspace requirements on failure. Require the complete advertised frame
+payload to be present but leave payload decoding, trailing-stream policy,
+32-context Range modeling, and public admission for later stages.

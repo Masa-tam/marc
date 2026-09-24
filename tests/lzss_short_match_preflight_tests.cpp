@@ -2,11 +2,13 @@
 #include "context/lzss_short_match_context_layout.hpp"
 #include "dictionary/lzss_typed_token.hpp"
 #include "frame/lzss_short_match_preflight.hpp"
+#include "core/endian.hpp"
 
 #include <gtest/gtest.h>
 
 #include <cstddef>
 #include <cstdint>
+#include <array>
 
 namespace {
 
@@ -31,6 +33,56 @@ using namespace marc::frame::internal;
 
 [[nodiscard]] constexpr TypedContextRangeDescriptor short_descriptor() {
     return {5, 7, 32};
+}
+
+[[nodiscard]] std::array<std::byte, typed_context_stream_header_size>
+short_stream_bytes() {
+    std::array<std::byte, typed_context_stream_header_size> bytes{};
+    bytes[0] = std::byte{0x4d};
+    bytes[1] = std::byte{0x41};
+    bytes[2] = std::byte{0x52};
+    bytes[3] = std::byte{0x43};
+    const std::span<std::byte> output{bytes};
+    EXPECT_TRUE(marc::core::store_le(output, 4, std::uint16_t{2}));
+    EXPECT_TRUE(marc::core::store_le(output, 8, std::uint16_t{64}));
+    EXPECT_TRUE(marc::core::store_le(output, 10, std::uint16_t{1}));
+    EXPECT_TRUE(marc::core::store_le(output, 12, std::uint16_t{2}));
+    EXPECT_TRUE(marc::core::store_le(output, 14, std::uint16_t{7}));
+    EXPECT_TRUE(marc::core::store_le(output, 16, std::uint16_t{3}));
+    EXPECT_TRUE(marc::core::store_le(output, 18, std::uint16_t{2}));
+    EXPECT_TRUE(marc::core::store_le(output, 20, std::uint32_t{4}));
+    EXPECT_TRUE(marc::core::store_le(output, 28, std::uint32_t{16}));
+    EXPECT_TRUE(marc::core::store_le(output, 32, std::uint32_t{16}));
+    EXPECT_TRUE(marc::core::store_le(output, 40, std::uint64_t{4}));
+    EXPECT_TRUE(marc::core::store_le(output, 48, std::uint32_t{16}));
+    EXPECT_TRUE(marc::core::store_le(output, 64, std::uint32_t{65536}));
+    EXPECT_TRUE(marc::core::store_le(output, 68, std::uint32_t{3}));
+    EXPECT_TRUE(marc::core::store_le(output, 72, std::uint32_t{258}));
+    EXPECT_TRUE(marc::core::store_le(output, 80, typed_context_model_total));
+    EXPECT_TRUE(marc::core::store_le(output, 84, std::uint16_t{32}));
+    EXPECT_TRUE(marc::core::store_le(output, 96, std::uint16_t{1}));
+    EXPECT_TRUE(marc::core::store_le(output, 98, std::uint16_t{6}));
+    return bytes;
+}
+
+[[nodiscard]] std::array<std::byte, 87> short_frame_bytes() {
+    std::array<std::byte, 87> bytes{};
+    bytes[0] = std::byte{0x4d};
+    bytes[1] = std::byte{0x52};
+    bytes[2] = std::byte{0x46};
+    bytes[3] = std::byte{0x32};
+    const std::span<std::byte> output{bytes};
+    EXPECT_TRUE(marc::core::store_le(output, 4, std::uint16_t{64}));
+    EXPECT_TRUE(marc::core::store_le(output, 16, std::uint32_t{4}));
+    EXPECT_TRUE(marc::core::store_le(output, 20, std::uint32_t{2}));
+    EXPECT_TRUE(marc::core::store_le(output, 24, std::uint32_t{5}));
+    EXPECT_TRUE(marc::core::store_le(output, 28, std::uint32_t{5}));
+    EXPECT_TRUE(marc::core::store_le(output, 32, std::uint32_t{7}));
+    EXPECT_TRUE(marc::core::store_le(output, 36, std::uint32_t{16}));
+    EXPECT_TRUE(marc::core::store_le(output, 64, std::uint32_t{5}));
+    EXPECT_TRUE(marc::core::store_le(output, 68, std::uint32_t{7}));
+    EXPECT_TRUE(marc::core::store_le(output, 72, std::uint16_t{32}));
+    return bytes;
 }
 
 } // namespace
@@ -201,4 +253,164 @@ TEST(LzssShortMatchPreflight, EnforcesMaximumFramePayloadCeiling) {
     EXPECT_EQ(preflight_lzss_short_match_frame_semantics(
                   frame, descriptor, {stream, limits, 0, 0}, requirements),
               LzssShortMatchPreflightError::contradictory_counts);
+}
+
+TEST(LzssShortMatchBytePreflight, ParsesOnlyExactReservedStreamHeader) {
+    auto bytes = short_stream_bytes();
+    const auto limits = marc::core::DecoderLimits{};
+    TypedContextStreamHeader parsed{};
+    std::size_t consumed = 777;
+    EXPECT_EQ(parse_lzss_short_match_stream_header(
+                  std::span<const std::byte>{bytes}.first(111), limits,
+                  parsed, consumed),
+              LzssShortMatchPreflightError::truncated_stream_header);
+    EXPECT_EQ(consumed, 777U);
+    ASSERT_EQ(parse_lzss_short_match_stream_header(bytes, limits, parsed,
+                                                    consumed),
+              LzssShortMatchPreflightError::none);
+    EXPECT_EQ(consumed, 112U);
+    EXPECT_EQ(parsed.dictionary.min_match_length, 3U);
+    EXPECT_EQ(parsed.dictionary_variant, 7U);
+    EXPECT_EQ(parsed.context_variant, 6U);
+
+    bytes[52] = std::byte{1};
+    consumed = 777;
+    EXPECT_EQ(parse_lzss_short_match_stream_header(bytes, limits, parsed,
+                                                    consumed),
+              LzssShortMatchPreflightError::nonzero_reserved);
+    EXPECT_EQ(consumed, 777U);
+    bytes = short_stream_bytes();
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 14,
+                                     std::uint16_t{6}));
+    EXPECT_EQ(parse_lzss_short_match_stream_header(bytes, limits, parsed,
+                                                    consumed),
+              LzssShortMatchPreflightError::unsupported_format);
+    bytes = short_stream_bytes();
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 68,
+                                     std::uint32_t{5}));
+    EXPECT_EQ(parse_lzss_short_match_stream_header(bytes, limits, parsed,
+                                                    consumed),
+              LzssShortMatchPreflightError::invalid_stream);
+}
+
+TEST(LzssShortMatchBytePreflight, ValidatesFrameBeforePublishingLayout) {
+    auto bytes = short_frame_bytes();
+    const auto stream = short_stream();
+    const auto limits = marc::core::DecoderLimits{};
+    const TypedContextFrameValidationContext context{stream, limits, 0, 0};
+    TypedContextFrameLayout layout{};
+    LzssShortMatchFrameRequirements requirements{};
+    EXPECT_EQ(preflight_lzss_short_match_frame_bytes(
+                  std::span<const std::byte>{bytes}.first(86), context,
+                  layout, requirements),
+              LzssShortMatchPreflightError::truncated_frame);
+    ASSERT_EQ(preflight_lzss_short_match_frame_bytes(bytes, context, layout,
+                                                     requirements),
+              LzssShortMatchPreflightError::none);
+    EXPECT_EQ(layout.serialized_size, 87U);
+    EXPECT_EQ(requirements.serialized_frame_bytes, 87U);
+
+    layout.serialized_size = 777;
+    requirements.serialized_frame_bytes = 777;
+    bytes[48] = std::byte{1};
+    EXPECT_EQ(preflight_lzss_short_match_frame_bytes(bytes, context, layout,
+                                                     requirements),
+              LzssShortMatchPreflightError::nonzero_reserved);
+    EXPECT_EQ(layout.serialized_size, 777U);
+    EXPECT_EQ(requirements.serialized_frame_bytes, 777U);
+    bytes = short_frame_bytes();
+    bytes[76] = std::byte{1};
+    EXPECT_EQ(preflight_lzss_short_match_frame_bytes(bytes, context, layout,
+                                                     requirements),
+              LzssShortMatchPreflightError::nonzero_reserved);
+    bytes = short_frame_bytes();
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 72,
+                                     std::uint16_t{31}));
+    EXPECT_EQ(preflight_lzss_short_match_frame_bytes(bytes, context, layout,
+                                                     requirements),
+              LzssShortMatchPreflightError::invalid_descriptor);
+}
+
+TEST(LzssShortMatchBytePreflight, RejectsInvalidStreamFieldsAtomically) {
+    const auto limits = marc::core::DecoderLimits{};
+    auto bytes = short_stream_bytes();
+    TypedContextStreamHeader parsed{};
+    parsed.frame_size = 777;
+    std::size_t consumed = 777;
+    const auto expect_error = [&](const LzssShortMatchPreflightError expected) {
+        EXPECT_EQ(parse_lzss_short_match_stream_header(bytes, limits, parsed,
+                                                        consumed), expected);
+        EXPECT_EQ(parsed.frame_size, 777U);
+        EXPECT_EQ(consumed, 777U);
+        bytes = short_stream_bytes();
+    };
+    bytes[0] = std::byte{0};
+    expect_error(LzssShortMatchPreflightError::invalid_magic);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 6,
+                                     std::uint16_t{1}));
+    expect_error(LzssShortMatchPreflightError::unsupported_version);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 8,
+                                     std::uint16_t{63}));
+    expect_error(LzssShortMatchPreflightError::invalid_header_size);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 10,
+                                     std::uint16_t{3}));
+    expect_error(LzssShortMatchPreflightError::unsupported_feature);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 16,
+                                     std::uint16_t{4}));
+    expect_error(LzssShortMatchPreflightError::unsupported_format);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 28,
+                                     std::uint32_t{1}));
+    expect_error(LzssShortMatchPreflightError::invalid_stream);
+    bytes[88] = std::byte{1};
+    expect_error(LzssShortMatchPreflightError::nonzero_reserved);
+    bytes[104] = std::byte{1};
+    expect_error(LzssShortMatchPreflightError::nonzero_reserved);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 84,
+                                     std::uint16_t{31}));
+    expect_error(LzssShortMatchPreflightError::invalid_stream);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 76,
+                                     std::uint32_t{1}));
+    expect_error(LzssShortMatchPreflightError::invalid_stream);
+}
+
+TEST(LzssShortMatchBytePreflight, RejectsFrameTruncationAndFieldMutations) {
+    const auto stream = short_stream();
+    const auto limits = marc::core::DecoderLimits{};
+    const TypedContextFrameValidationContext context{stream, limits, 0, 0};
+    auto bytes = short_frame_bytes();
+    TypedContextFrameLayout layout{};
+    layout.serialized_size = 777;
+    LzssShortMatchFrameRequirements requirements{777, 777, 777, 777};
+    EXPECT_EQ(preflight_lzss_short_match_frame_bytes(
+                  std::span<const std::byte>{bytes}.first(63), context,
+                  layout, requirements),
+              LzssShortMatchPreflightError::truncated_frame_header);
+    EXPECT_EQ(preflight_lzss_short_match_frame_bytes(
+                  std::span<const std::byte>{bytes}.first(79), context,
+                  layout, requirements),
+              LzssShortMatchPreflightError::truncated_descriptor);
+    const auto expect_error = [&](const LzssShortMatchPreflightError expected) {
+        EXPECT_EQ(preflight_lzss_short_match_frame_bytes(
+                      bytes, context, layout, requirements), expected);
+        EXPECT_EQ(layout.serialized_size, 777U);
+        EXPECT_EQ(requirements.serialized_frame_bytes, 777U);
+        bytes = short_frame_bytes();
+    };
+    bytes[0] = std::byte{0};
+    expect_error(LzssShortMatchPreflightError::invalid_magic);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 4,
+                                     std::uint16_t{63}));
+    expect_error(LzssShortMatchPreflightError::invalid_header_size);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 8,
+                                     std::uint64_t{1}));
+    expect_error(LzssShortMatchPreflightError::unexpected_sequence);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 32,
+                                     std::uint32_t{16}));
+    expect_error(LzssShortMatchPreflightError::contradictory_counts);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 68,
+                                     std::uint32_t{8}));
+    expect_error(LzssShortMatchPreflightError::invalid_descriptor);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{bytes}, 74,
+                                     std::uint16_t{1}));
+    expect_error(LzssShortMatchPreflightError::unsupported_feature);
 }

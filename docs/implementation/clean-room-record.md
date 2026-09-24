@@ -33056,3 +33056,22 @@ both bounds.
 - Local validation: the full MSVC Release build and all 3,625 CTest cases
   passed, including the six layout/preflight tests, interoperability schema
   compatibility, and documentation layout checks.
+
+## CR-1335: 2026-09-24 - Parse the reserved short-match wire envelope
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  decoder-side implementation.
+- References used: IR-0936, DD-1181, TVG-1050, the repository's Format 2.0
+  field offsets, little-endian helpers, and semantic preflight.
+- Known implementations intentionally not consulted: external compressor or
+  parser source, copyleft implementations, third-party tests or tables.
+- Generated-code task: check exact stream/frame/descriptor bytes privately
+  before exposing parsed fields and bounded workspace requirements.
+- Independent decisions: keep published parser rejection intact; reject
+  structural mismatches and truncation before 32-context Range decoding;
+  commit output parameters only after all checks succeed.
+- Similarity review: field offsets were transcribed from marc's own format,
+  not external source; no legal non-infringement guarantee is made.
+- Local validation: the full MSVC Release build and all 3,629 CTest cases
+  passed, including the four byte-preflight cases, interoperability schema
+  compatibility, and documentation layout checks.
