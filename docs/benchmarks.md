@@ -3824,3 +3824,43 @@ penalty is substantially reduced, but short-match eligibility and this
 mapping alone do not meet the stated compression target. Public admission
 and an interoperability archive remain gated on broader ratio, speed,
 workspace, malformed-input, and cross-platform evidence.
+
+### BM-0106: Bound framewise profile-switching headroom
+
+On 2026-09-25, the private MSVC Release benchmark repeated BM-0105's full
+local Silesia run. The two-way diagnostic sums, for each complete raw frame,
+the smaller of the published-baseline and 2/8 + 1/7 escape frame sizes. The
+three-way diagnostic also permits the earlier private 2/7 + 1/6 candidate.
+Each total includes one 112-byte stream header. Neither is a decodable
+archive: current identities are fixed for a whole stream, and any future
+per-frame identity signal would add bytes. Every private candidate selected
+for measurement is decoded and compared with its raw frame; corpus bytes
+and generated archives remain untracked.
+
+| Member | Escape stream | Baseline/escape lower bound | Three-way lower bound |
+| --- | ---: | ---: | ---: |
+| dickens | 4,097,626 | 4,097,287 | 4,097,287 |
+| mozilla | 19,824,381 | 19,824,219 | 19,803,849 |
+| mr | 3,588,975 | 3,588,782 | 3,588,782 |
+| nci | 3,584,936 | 3,584,048 | 3,584,048 |
+| ooffice | 3,192,736 | 3,192,725 | 3,189,770 |
+| osdb | 4,112,656 | 4,112,363 | 4,112,363 |
+| reymont | 2,022,925 | 2,022,898 | 2,022,898 |
+| samba | 5,752,366 | 5,751,918 | 5,743,367 |
+| sao | 5,454,241 | 5,454,241 | 5,430,503 |
+| webster | 12,975,833 | 12,974,519 | 12,974,349 |
+| x-ray | 5,988,302 | 5,988,230 | 5,840,373 |
+| xml | 765,818 | 765,716 | 765,440 |
+| **Total** | **71,360,795** | **71,356,946** | **71,153,029** |
+
+Across 3,239 frames, escape beats the published baseline in 1,235, ties in
+10, and loses in 1,994. On `mozilla` specifically the counts are 693/6/83;
+the 261,147 saved bytes and 162 excess bytes yield the measured 260,985-byte
+net gain. Choosing the published frame only on those 83 losing frames saves
+merely 162 more bytes than the escape stream. Even the impossible, free
+three-way switch saves only 20,532 bytes beyond escape and remains 809,710
+bytes above the user's provisional `gzip -9v` size of 18,994,139. Thus
+per-frame choice among these existing identities cannot explain or close
+the remaining `mozilla` gap. Its small theoretical headroom does not justify
+a mixed-identity stream extension at this stage; parsing or entropy modeling
+must be investigated separately before a new format is proposed.

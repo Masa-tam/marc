@@ -24262,3 +24262,14 @@ compare it to the source before reporting. Keep indexed/reference equality
 as a tracked smoke invariant. Size planning, candidate encoding and decoding
 timings are distinct work and must not be presented as throughput ratios.
 Corpus observations do not admit a public format or change existing bytes.
+
+## DD-1206: Bound profile-switching gains without creating a stream format
+
+Count frames where the private length-escape winner is smaller, equal or
+larger than the published baseline, and sum its saved and excess bytes.
+Also sum the minimum complete-frame size for each frame across baseline
+and escape, and separately across baseline, prior reserved mapping and
+escape. Retain one stream-header charge in each sum. These are optimistic
+diagnostic lower bounds only: the three identities cannot be mixed in one
+current stream, and any future per-frame signaling has positive cost.
+Do not route the public encoder through these synthetic oracles.

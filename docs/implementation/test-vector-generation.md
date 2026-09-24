@@ -15809,3 +15809,14 @@ and selected 3/4/5 counts. Require the selected size not to exceed any of
 its three fixed candidates, and decode every selected frame back to the
 fixture bytes. The external Silesia run is diagnostic evidence only; do not
 embed corpus bytes or assert a compression-ratio target in unit tests.
+
+### TVG-1075
+
+On the tracked bounded benchmark fixture, require the escape comparison
+counts to sum to frame count and require baseline minus saved plus excess
+to equal the measured escape archive size. The two-way optimistic oracle
+must not exceed either baseline or escape, and the three-way oracle must
+not exceed baseline, prior reserved or escape archive size. Indexed and
+reference runs must report the same counts and oracle sizes. Keep all
+comparison arithmetic on complete frame sizes, with exactly one 112-byte
+stream-header charge, and do not treat oracle sums as decodable archives.

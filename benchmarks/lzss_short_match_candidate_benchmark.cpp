@@ -216,6 +216,9 @@ int main(const int argc, const char* const argv[]) {
         marc::frame::internal::typed_context_stream_header_size;
     std::uint64_t candidate_archive_bytes = baseline_archive_bytes;
     std::uint64_t escape_archive_bytes = baseline_archive_bytes;
+    std::uint64_t baseline_escape_oracle_archive_bytes =
+        baseline_archive_bytes;
+    std::uint64_t three_way_oracle_archive_bytes = baseline_archive_bytes;
     std::uint64_t exact_baseline_archive_bytes = baseline_archive_bytes;
     std::uint64_t exact_baseline_equal_token_frames{};
     std::array<std::uint64_t, 3> threshold_archive_bytes{
@@ -231,6 +234,11 @@ int main(const int argc, const char* const argv[]) {
     std::uint64_t selected_worse_frames{};
     std::uint64_t selected_saved_bytes{};
     std::uint64_t selected_extra_bytes{};
+    std::uint64_t escape_better_frames{};
+    std::uint64_t escape_equal_frames{};
+    std::uint64_t escape_worse_frames{};
+    std::uint64_t escape_saved_bytes{};
+    std::uint64_t escape_extra_bytes{};
     MatchOperationSummary baseline_operations{};
     MatchOperationSummary reserved_five_operations{};
     double baseline_plan_seconds{};
@@ -403,6 +411,11 @@ int main(const int argc, const char* const argv[]) {
         baseline_archive_bytes += baseline_size;
         candidate_archive_bytes += candidate.selected_frame_size;
         escape_archive_bytes += escape.selected_frame_size;
+        baseline_escape_oracle_archive_bytes +=
+            std::min(baseline_size, escape.selected_frame_size);
+        three_way_oracle_archive_bytes += std::min(
+            {baseline_size, candidate.selected_frame_size,
+             escape.selected_frame_size});
         exact_baseline_archive_bytes += exact_baseline_size;
         for (std::size_t index = 0; index < threshold_archive_bytes.size();
              ++index) {
@@ -419,6 +432,15 @@ int main(const int argc, const char* const argv[]) {
             selected_extra_bytes += candidate.selected_frame_size - baseline_size;
         } else {
             ++selected_equal_frames;
+        }
+        if (escape.selected_frame_size < baseline_size) {
+            ++escape_better_frames;
+            escape_saved_bytes += baseline_size - escape.selected_frame_size;
+        } else if (escape.selected_frame_size > baseline_size) {
+            ++escape_worse_frames;
+            escape_extra_bytes += escape.selected_frame_size - baseline_size;
+        } else {
+            ++escape_equal_frames;
         }
         ++selected_counts[candidate.selected_minimum_length - 3];
         ++escape_selected_counts[escape.selected_minimum_length - 3];
@@ -437,6 +459,10 @@ int main(const int argc, const char* const argv[]) {
               << exact_baseline_equal_token_frames << '\n'
               << "candidate_archive_bytes=" << candidate_archive_bytes << '\n'
               << "escape_archive_bytes=" << escape_archive_bytes << '\n'
+              << "baseline_escape_oracle_archive_bytes="
+              << baseline_escape_oracle_archive_bytes << '\n'
+              << "three_way_oracle_archive_bytes="
+              << three_way_oracle_archive_bytes << '\n'
               << "threshold_3_archive_bytes=" << threshold_archive_bytes[0]
               << '\n'
               << "threshold_4_archive_bytes=" << threshold_archive_bytes[1]
@@ -454,6 +480,11 @@ int main(const int argc, const char* const argv[]) {
               << "selected_worse_frames=" << selected_worse_frames << '\n'
               << "selected_saved_bytes=" << selected_saved_bytes << '\n'
               << "selected_extra_bytes=" << selected_extra_bytes << '\n'
+              << "escape_better_frames=" << escape_better_frames << '\n'
+              << "escape_equal_frames=" << escape_equal_frames << '\n'
+              << "escape_worse_frames=" << escape_worse_frames << '\n'
+              << "escape_saved_bytes=" << escape_saved_bytes << '\n'
+              << "escape_extra_bytes=" << escape_extra_bytes << '\n'
               << "baseline_length_symbols="
               << baseline_operations.length_symbols << '\n'
               << "reserved_5_length_symbols="

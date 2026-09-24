@@ -8800,3 +8800,10 @@ variant-7 and variant-8 selectors, first-party decoders, and published
 64-KiB baseline planner. The locally supplied Silesia Corpus is input data
 only and remains outside Git. No external compressor implementation or
 benchmark harness was consulted.
+
+### IR-0961
+
+The framewise selector headroom calculation uses only marc's own measured
+complete-frame sizes from IR-0960. Minima across incompatible stream
+identities are diagnostic arithmetic, not a proposed on-wire representation.
+No external compressor implementation or archive-switching scheme was used.

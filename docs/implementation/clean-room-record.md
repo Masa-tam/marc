@@ -33555,3 +33555,23 @@ both bounds.
   benchmark smoke, documentation layout and interoperability schema checks.
   A separate local full-Silesia measurement verified every selected frame
   before recording BM-0105.
+
+## CR-1360: 2026-09-25 - Bound short-match profile-switching headroom
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0961, DD-1206, TVG-1075, BM-0105 and BM-0106,
+  together with marc's first-party complete-frame benchmark.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft code, third-party archive-switching schemes and tests.
+- Generated-code task: sum per-frame minima across measured private and
+  published identities without claiming those sums are valid archives.
+- Independent decisions: count wins/ties/losses and saved/excess bytes,
+  charge one header, and omit hypothetical signaling to make an explicitly
+  optimistic lower bound. Preserve all existing stream identities.
+- Similarity review: only marc's own size measurements were combined; no
+  external implementation expression was translated. No legal
+  non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,728 CTest cases
+  passed, including indexed/reference benchmark smoke, documentation layout
+  and interoperability schema checks. A separate full-Silesia measurement
+  verified every selected private frame before recording BM-0106.

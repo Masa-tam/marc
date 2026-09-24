@@ -583,3 +583,13 @@ full-Silesia local measurement. The length escape removes much of the
 eligibility-5 representation penalty, but its selected `mozilla` stream
 still misses the provisional `gzip -9v` target. No public encoder or format
 admission follows from this experiment.
+
+## Twenty-eighth implementation boundary: framewise switching headroom
+
+The bounded private benchmark distinguishes frames where the new escape
+candidate beats or loses to the published baseline. It also reports the
+optimistic sum of per-frame minima for baseline plus escape, and for all
+three measured identities. Each sum charges one stream header but excludes
+any identity signaling; no current stream can decode such a mixture.
+BM-0106 records how much of the remaining `mozilla` gap even this idealized
+switch could close. This is diagnosis, not a format or public API change.
