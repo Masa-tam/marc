@@ -8757,3 +8757,10 @@ The private strict stream route uses marc's own typed-context stream
 header, private 2/8 frame decoder and existing two-pass 2/7 orchestration.
 No external compressor stream parser, source code, table or test suite
 was consulted.
+
+### IR-0955
+
+The private one-shot stream writer follows marc's own Format 2.0 stream
+field layout, independently specified 2/8 identity, complete-frame planner
+and bounded workspace conventions. No external compressor writer, source
+code, table or test suite was consulted.

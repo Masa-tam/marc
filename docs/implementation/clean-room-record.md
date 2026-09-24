@@ -33436,3 +33436,22 @@ both bounds.
 - Local validation: complete MSVC Release build and all 3,701 CTest cases
   passed, including new and old private stream paths, documentation and
   interoperability schema checks.
+
+## CR-1354: 2026-09-24 - Encode private escape streams
+
+- Author: Codex; reviewer: repository maintainer approved the next private
+  stream construction stage.
+- References used: IR-0955, DD-1200, TVG-1069, marc's Format 2.0 field
+  layout and private 2/8 complete-frame encoder.
+- Known implementations intentionally not consulted: external compressor
+  code, copyleft implementations, third-party tables and test suites.
+- Generated-code task: plan and encode a complete private 2/8 + 1/7 + 3/2
+  stream from caller-owned typed-token frame views without public admission.
+- Independent decisions: prevalidate all frames and output capacity, reuse
+  one bounded operation workspace, and commit the stream header last.
+- Similarity review: implementation and vectors follow only this
+  repository's independently documented format and first-party code; no
+  external expression was translated. No legal non-infringement guarantee.
+- Local validation: complete MSVC Release build and all 3,706 CTest cases
+  passed, including the new private stream writer, existing private
+  decoder, documentation and interoperability schema checks.

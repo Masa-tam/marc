@@ -505,3 +505,16 @@ workspace and output regions must be disjoint and stable throughout the
 call. An empty stream has only its header. This is not an incremental
 streaming API and does not admit the identity through the public parser,
 CLI, C API or interoperability inventory.
+
+## Twenty-second implementation boundary: private strict stream encode
+
+The 2/8 + 1/7 + 3/2 identity may be assembled privately from one complete
+typed-token span per fixed raw frame. The caller retains ownership of every
+token span and one reusable modeled-operation workspace. Planning validates
+the exact stream identity, required frame count, each frame's typed tokens,
+frame position and all serialized sizes before any stream bytes are written.
+Encoding checks that the output is large enough and disjoint from frame
+descriptors, tokens and operation storage, emits each frame, and commits the
+112-byte stream header only after all frames match the plan. An empty stream
+contains only that header. This stage does not tokenize raw input, select a
+search policy, offer an incremental writer, or admit the identity publicly.

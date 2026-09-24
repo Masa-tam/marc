@@ -24194,3 +24194,15 @@ decoder. The first pass must reject any later malformed frame or trailing
 byte before the whole-stream output is written; the second pass may publish
 only after that validation succeeds. Do not imply incremental streaming
 support or route the new identity through public selection.
+
+## DD-1200: Assemble private streams only from complete validated frames
+
+Accept an ordered span of caller-owned typed-token frame views for the
+private 2/8 + 1/7 + 3/2 identity. Derive the required frame count from
+declared original size and fixed frame size; reject missing or extra views.
+Reuse the complete-frame planner to validate every frame and sum encoded
+sizes with checked arithmetic before touching serialized output. Reject
+workspace aliasing and insufficient capacity up front. Write the fixed
+stream header only after all frame encodes succeed, so an internal failure
+cannot expose a valid-looking partial stream header. Keep raw-input parsing,
+search selection, incremental output and public admission separate.

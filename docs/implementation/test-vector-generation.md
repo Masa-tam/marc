@@ -15743,3 +15743,15 @@ trailing data, truncate the final frame, and use insufficient or aliased
 caller-owned workspaces. For every failure after a valid first frame,
 require the entire whole-stream output buffer to remain untouched. The
 old private stream decoder must reject the new header.
+
+### TVG-1069
+
+Use a literal `a` and distance-1 length-3 Match as one four-byte frame,
+then assemble empty, one-frame and two-frame streams from explicit token
+views. Decode every emitted stream with the independent private stream
+decoder, verify exact raw size, sequence and bytes, and compare repeated
+encodings byte for byte. Check the serialized header's exact 2/8 + 1/7 +
+3/2 fields and old-parser rejection. Mutate the second frame's token,
+omit or add a frame, shorten output or operation storage, and alias token,
+descriptor or operation storage with output; reject before stream output
+is written. No external compressor or corpus supplies these vectors.
