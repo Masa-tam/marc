@@ -15584,3 +15584,13 @@ hand decoder vector. Length four has class 1 and one zero-valued bypass bit;
 length 258 has class 8 and eight zero-valued bypass bits. Verify the
 distance context becomes 31 for class 8. Reject an impossible distance,
 short operation output, and aliased token/operation storage before writing.
+
+### TVG-1056
+
+The five operations of TVG-1055 must encode to the independent seven-byte
+payload `00 30 BF FF 9E 80 00` with descriptor decisions 5, payload size 7,
+and context count 32. Forward-map lengths 4 and 258, encode, then decode
+every symbol and bypass value through the private 32-context decoder.
+Cross the 32,768-total frequency rescale boundary with repeated two-symbol
+events. Invalid context, insufficient payload output, and aliased operation
+and output storage must fail without publishing payload or descriptor.

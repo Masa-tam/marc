@@ -8656,3 +8656,11 @@ typed-token validator, variant-6 context table and state transition, and
 checked arithmetic. The benchmark candidate policy is derived from the
 first-party BM-0099/BM-0100 observations, not external encoder source.
 No external implementation, code table, or test suite was consulted.
+
+### IR-0942
+
+The private 32-context Dynamic Range encoder uses marc's first-party
+Format 2.0 `3/2` interval and termination rules, IR-0941 operation mapping,
+and the reserved 4,538-frequency layout. Its exact-byte comparison uses
+the independently recorded `aaaa` hand vector. No external entropy-coder
+source, table, or test suite was consulted.

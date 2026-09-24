@@ -292,7 +292,21 @@ using the same longest-match and nearest-distance tie break, frame size,
 window, and maximum length. Each candidate must be encoded with this same
 reserved identity and evaluated by **complete serialized frame size**, not
 token count or an isolated token-cost estimate. On equal frame size, prefer
-the higher minimum eligible length. This is an
-experimental encoder-selection policy, not a decoder-visible parameter or a
+the higher minimum eligible length. This is an experimental encoder-selection
+policy, not a decoder-visible parameter or a
 claim that any short match is profitable. Record full-archive size and
 encode/decode time against BM-0100 before considering public admission.
+
+## Ninth implementation boundary
+
+A private Dynamic Range encoder now accepts the 32-context modeled-operation
+sequence. It resets the 4,538-frequency bank and 32 totals for each call,
+uses the existing Format 2.0 `3/2` integer interval and five-shift finalization
+rules, and writes a descriptor with context count 32. A planning pass checks
+operation fields, decision count, exact payload size, and caller hard limits
+before any payload or descriptor publication. Encoding then rejects aliased or
+undersized output. The hand-vector operations reproduce payload
+`00 30 BF FF 9E 80 00` byte-for-byte; tests also cover bypass classes and
+model-frequency rescaling against the private decoder. This is not yet a
+serialized frame encoder or a candidate-size comparison. Published
+31-context encoder behavior and public admission remain unchanged.

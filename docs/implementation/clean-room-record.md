@@ -33166,3 +33166,23 @@ both bounds.
 - Local validation: the full MSVC Release build and all 3,649 CTest cases
   passed, including four forward-modeler tests, interoperability schema
   compatibility, and documentation layout checks.
+
+## CR-1341: 2026-09-24 - Encode reserved short-match Range payloads privately
+
+- Author: Codex; reviewer: repository maintainer approved the next staged
+  32-context Range-encoder implementation.
+- References used: IR-0942, DD-1187, TVG-1056, and marc's first-party
+  Dynamic Range arithmetic and reserved context layout.
+- Known implementations intentionally not consulted: external entropy-coder
+  source, copyleft implementations, third-party tables or test suites.
+- Generated-code task: encode the reserved modeled-operation stream with a
+  private 32-context bank while leaving public admission and old variants
+  unchanged.
+- Independent decisions: dry-run exact payload size and operation validity;
+  reject insufficient or aliased output before publication; compare exact
+  bytes with the independent hand vector and rescaling with the decoder.
+- Similarity review: used only first-party format and algorithm contracts;
+  no external expression was translated. No legal non-infringement guarantee.
+- Local validation: the full MSVC Release build and all 3,654 CTest cases
+  passed, including five private Range-encoder tests, interoperability schema
+  compatibility, and documentation layout checks.

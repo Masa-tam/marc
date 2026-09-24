@@ -24051,3 +24051,13 @@ greedy minimum-eligible-length 3, 4, and 5 parses under the same reserved
 identity. Choose the smallest complete serialized frame; ties prefer the
 higher minimum length. Do not promote a local match-cost heuristic or a
 decoder-visible selection flag before complete-payload measurement.
+
+## DD-1187: Encode reserved Range operations in an isolated 32-context bank
+
+Keep the published 31-context encoder untouched. Give variant 6 its own
+fixed 32-context, 4,538-frequency adaptive bank while preserving Format 2.0
+`3/2` interval, bypass-bit, rescaling, and five-shift termination rules.
+Dry-run the exact operation sequence before writing, so invalid operations,
+hard-limit failures, and insufficient or aliased output do not publish a
+descriptor or payload. This stage encodes only the payload, not frames or
+streams, and grants no public admission.
