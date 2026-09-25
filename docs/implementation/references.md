@@ -8908,3 +8908,11 @@ No external implementation or test suite was consulted.
 Reduced-literal byte preflight uses the repository's explicit little-endian
 header grammar and existing private prefix parsers. Independent metadata
 fixtures and byte mutations are authored from that grammar, not external code.
+
+### IR-0977
+
+The reduced-literal Range operation decoder adapts marc's own independently
+written short-match decoder arithmetic to the context-8 model and concrete
+state contract. Tests reuse the first-party hand-checked arithmetic vector
+and relabel first-party encoder model IDs as a reference. No external source
+or third-party vectors are consulted.

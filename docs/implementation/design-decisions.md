@@ -24483,3 +24483,20 @@ the new tuple. Accept a following byte without counting it in this prefix;
 whole-stream trailing-data validation belongs to a later stream controller.
 Frame preflight verifies declared payload availability, not Range termination
 or decoded token correctness. No raw output is produced by these entry points.
+
+## DD-1222: Implement reduced-literal Range decoding before its encoder
+
+Use the existing integer interval, byte normalization, frequency updates and
+rescaling rules with 24 contexts and the concrete reduced-literal state object.
+Assert decoder sizeof equals the state charge used by preflight. At begin,
+enforce payload plus decoder storage against aggregate limits as well as the
+table/model bounds. Errors latch until begin resets the instance; symbol and
+bypass output values commit only after successful decoding. Finish checks
+exact counts, consumed extent and model invariants; it does not substitute
+for later frame-level canonical re-encoding and token-grammar validation.
+
+Validate with a known arithmetic vector and a context-isomorphic old encoder:
+new IDs 0..11 map to old IDs 0..11; new IDs 12..23 map to old IDs 20..31.
+These preserve independent model histories for arbitrary operation tests, not
+the original token model's literal assignment. Keep the old codec unchanged.
+The new actual encoder and raw-token integration remain separate next steps.

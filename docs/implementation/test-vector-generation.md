@@ -15972,3 +15972,18 @@ byte, each algorithm/variant identity field, model counts, versions, sizes and
 flags. Check descriptor disagreement, event contradictions and payload limits.
 Require rejection by the public parser and the old escape-specific parser.
 Payload bytes are metadata-fixture placeholders, not a valid coded vector.
+
+### TVG-1091
+
+The existing first-party arithmetic payload `00 30 bf ff 9e 80 00` decodes
+symbols 0,97,1,0,0 in new contexts 0,3,1,13,15 with alphabets 2,256,2,9,17.
+Its probabilities are unchanged by context renumbering; descriptor count is
+24, with five events/decisions. The length-class-zero symbol here means length
+five under the escape grammar, not the short-match variant's length three.
+An operation-level reference enumerates all 2,490 symbols, adds 40,000 repeated
+literals to cross rescaling, and appends widths 1..16 with alternating bypass
+bits. Encode under isomorphic old model IDs and decode under new IDs.
+Check all shorter payload extents, wrong count, invalid initial byte, exact
+memory cap/one-under, table limits, invalid context/alphabet/bypass width,
+sticky errors/reset, premature finish, repeated finish, trailing payload and
+decision exhaustion. These tests do not yet admit a framed codec.

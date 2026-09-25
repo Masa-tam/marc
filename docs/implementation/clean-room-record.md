@@ -33862,3 +33862,20 @@ both bounds.
 - Validation: MSVC Release build and all 3,757 CTest cases passed, including
   four new byte-preflight tests, documentation layout and interoperability
   schema compatibility. Public parsing still rejects the private identity.
+
+## CR-1376: 2026-09-25 - Implement reduced-literal Range operation decoder
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0977, DD-1222 and TVG-1091; first-party decoder arithmetic,
+  model layout, hand vector and context-isomorphic encoder only.
+- Known implementations intentionally not consulted: external Range coders,
+  copyleft compressor source and third-party conformance suites.
+- Generated-code task: adapt the existing independent decoder to concrete
+  context-8 state, enforcing bounded storage and preserving old codec behavior.
+- Independent decisions: implement decoder first; distinguish operation-level
+  finish checks from full canonical frame validation and raw publication.
+- Similarity review: explicit reuse of this repository's own implementation;
+  no external implementation expression copied. No legal guarantee is claimed.
+- Validation: MSVC Release build and all 3,762 CTest cases passed, including
+  five new decoder tests, documentation layout and interoperability schema
+  compatibility. Decoder sizeof is statically tied to the preflight state charge.
