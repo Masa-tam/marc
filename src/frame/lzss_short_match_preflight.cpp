@@ -2,6 +2,8 @@
 #include "frame/lzss_short_length_escape_preflight.hpp"
 #include "frame/lzss_reduced_literal_preflight.hpp"
 #include "entropy/lzss_reduced_literal_range_state.hpp"
+#include "frame/lzss_position_distance_preflight.hpp"
+#include "entropy/lzss_position_distance_range_state.hpp"
 
 #include "context/lzss_short_match_context_layout.hpp"
 #include "core/checked_math.hpp"
@@ -26,6 +28,7 @@ enum class ReservedIdentity : std::uint8_t {
     short_match,
     short_length_escape,
     reduced_literal,
+    position_distance,
 };
 
 constexpr std::uint16_t expected_dictionary_variant(const ReservedIdentity identity) noexcept {
@@ -33,19 +36,26 @@ constexpr std::uint16_t expected_dictionary_variant(const ReservedIdentity ident
 }
 constexpr std::uint16_t context_variant(const ReservedIdentity identity) noexcept {
     return identity == ReservedIdentity::short_match ? 6
-        : identity == ReservedIdentity::short_length_escape ? 7 : 8;
+        : identity == ReservedIdentity::short_length_escape ? 7
+        : identity == ReservedIdentity::reduced_literal ? 8 : 9;
 }
 constexpr std::uint16_t context_count(const ReservedIdentity identity) noexcept {
+    if (identity == ReservedIdentity::position_distance)
+        return context::internal::lzss_position_distance_context_count;
     return identity == ReservedIdentity::reduced_literal
         ? context::internal::lzss_reduced_literal_context_count
         : context::internal::lzss_short_match_context_count;
 }
 constexpr std::size_t frequency_entries(const ReservedIdentity identity) noexcept {
+    if (identity == ReservedIdentity::position_distance)
+        return context::internal::lzss_position_distance_frequency_entries;
     return identity == ReservedIdentity::reduced_literal
         ? context::internal::lzss_reduced_literal_frequency_entries
         : context::internal::lzss_short_match_frequency_entries;
 }
 constexpr std::size_t model_bytes(const ReservedIdentity identity) noexcept {
+    if (identity == ReservedIdentity::position_distance)
+        return sizeof(entropy::internal::LzssPositionDistanceRangeState);
     return identity == ReservedIdentity::reduced_literal
         ? sizeof(entropy::internal::LzssReducedLiteralRangeState)
         : short_match_model_bytes;
@@ -481,6 +491,34 @@ LzssShortMatchPreflightError preflight_lzss_reduced_literal_frame_bytes(
     LzssShortMatchFrameRequirements& requirements) noexcept {
     return preflight_frame_bytes_impl(input, context, layout, requirements,
         ReservedIdentity::reduced_literal);
+}
+
+LzssShortMatchPreflightError validate_lzss_position_distance_stream_semantics(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits) noexcept {
+    return validate_stream_impl(stream, limits, ReservedIdentity::position_distance);
+}
+
+LzssShortMatchPreflightError preflight_lzss_position_distance_frame_semantics(
+    const TypedContextFrameHeader& frame, const TypedContextRangeDescriptor& descriptor,
+    const TypedContextFrameValidationContext& context,
+    LzssShortMatchFrameRequirements& requirements) noexcept {
+    return preflight_frame_impl(frame, descriptor, context, requirements,
+        ReservedIdentity::position_distance);
+}
+
+LzssShortMatchPreflightError parse_lzss_position_distance_stream_header(
+    const std::span<const std::byte> input, const core::DecoderLimits& limits,
+    TypedContextStreamHeader& stream, std::size_t& bytes_consumed) noexcept {
+    return parse_stream_impl(input, limits, stream, bytes_consumed,
+        ReservedIdentity::position_distance);
+}
+
+LzssShortMatchPreflightError preflight_lzss_position_distance_frame_bytes(
+    const std::span<const std::byte> input,
+    const TypedContextFrameValidationContext& context, TypedContextFrameLayout& layout,
+    LzssShortMatchFrameRequirements& requirements) noexcept {
+    return preflight_frame_bytes_impl(input, context, layout, requirements,
+        ReservedIdentity::position_distance);
 }
 
 } // namespace marc::frame::internal

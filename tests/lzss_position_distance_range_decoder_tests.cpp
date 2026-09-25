@@ -1,10 +1,12 @@
 #include "entropy/lzss_position_distance_range_decoder.hpp"
+#include "entropy/lzss_reduced_literal_range_encoder.hpp"
 
 #include <gtest/gtest.h>
 #include <array>
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <vector>
 
 namespace {
 using namespace marc::entropy::internal;
@@ -120,5 +122,34 @@ TEST(LzssPositionDistanceRangeDecoder, RejectsTrailingPayload) {
     ModeledOperation op{};
     for (unsigned i=0;i<14;++i) ASSERT_EQ(d.decode_next(op).error,Error::none);
     EXPECT_EQ(d.finish(14,14).error,Error::trailing_payload);
+}
+TEST(LzssPositionDistanceRangeDecoder, LongLiteralModelRescalingAndReset) {
+    // A legal 40000-byte literal frame crosses ordinary-model rescaling.
+    // With no distance extras, context 8 is an independent byte control.
+    std::vector<ModeledOperation> operations;
+    for (unsigned i=0;i<40000;++i) {
+        operations.push_back({ModeledOperationKind::symbol,
+            static_cast<std::uint16_t>(i==0 ? 0 : 1),2,0,0});
+        operations.push_back({ModeledOperationKind::symbol,
+            static_cast<std::uint16_t>(i==0 ? 3 : 7),256,97,0});
+    }
+    ContextualDynamicRangeDescriptor control{};
+    const auto plan=plan_lzss_reduced_literal_range_operations(operations,{},control);
+    ASSERT_EQ(plan.error,ContextualDynamicRangeEncodeError::none);
+    std::vector<std::byte> bytes(plan.payload_size);
+    ASSERT_EQ(encode_lzss_reduced_literal_range_operations(operations,{},bytes,control).error,
+        ContextualDynamicRangeEncodeError::none);
+    control.context_count=40;
+    LzssPositionDistanceRangeDecoder d;
+    for (int repetition=0;repetition<2;++repetition) {
+        ASSERT_EQ(d.begin(control,bytes,{}).error,Error::none);
+        for (const auto& expected:operations) {
+            ModeledOperation op{};
+            ASSERT_EQ(d.decode_next(op).error,Error::none);
+            ASSERT_EQ(op.value,expected.value);
+            ASSERT_EQ(op.context_id,expected.context_id);
+        }
+        EXPECT_EQ(d.finish(80000,80000).error,Error::none);
+    }
 }
 } // namespace

@@ -34203,3 +34203,21 @@ both bounds.
   six new decoder tests and interoperability schema compatibility. Frame/history
   preflight, raw publication, long-payload rescaling and public admission remain
   pending.
+
+## CR-1396: 2026-09-25 - Preflight private position-distance frames
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0997, DD-1242 and TVG-1111; first-party preflight and
+  literal-only Range control, plus a direct frame-size bound.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: enforce context-9 frame identity and resource bounds, and test long
+  decoder model updates within the legal frame size.
+- Independent decisions: distinguish unreachable distance-model rescaling
+  from reachable ordinary-model rescaling; retain primitive defensive tests.
+- Similarity review: repository-owned validation reuse only; no external
+  expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,825 CTest cases passed, including
+  nine new preflight tests, long literal rescaling/reset and interoperability
+  schema compatibility. Full frame payload decoding, raw publication and
+  public admission remain separate work.

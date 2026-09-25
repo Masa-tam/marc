@@ -9043,3 +9043,10 @@ interval/carry and canonical replay implementation with the context-9 layout
 and field cursor. Fixed payload vectors were independently calculated with
 integer interval equations in a local JavaScript diagnostic, not by the new
 decoder or a production encoder. No external implementation was consulted.
+
+### IR-0997
+
+Context-9 preflight extends repository-owned context-8 checks with the new
+identity/count/state size. Long literal decoding uses the unchanged context-8
+encoder as a control. The distance-update bound follows solely from the
+65536-byte frame cap and minimum match length three; no external source used.

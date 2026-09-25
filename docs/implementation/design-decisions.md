@@ -24762,3 +24762,18 @@ field and cursor validation succeed. Latch errors; begin explicitly resets
 state. Finish requires token boundary, exact counts, model invariants, exact
 payload consumption and canonical termination. Frame/history preflight and
 atomic raw-output publication remain separate future integration work.
+
+## DD-1242: Preflight context 9 and distinguish reachable rescaling paths
+
+Add private byte and semantic preflight entry points using the shared checked
+parser and context-9 model counts/concrete state size. Preserve old identities,
+public rejection, unchanged outputs on failure, and exact consumed extents.
+This validates framing and resource requirements, not payload or raw output.
+
+A legal 64-KiB frame has at most floor(65536/3)=21845 Matches, hence at most
+that many updates to any one distance-position model, below the 32766 updates
+needed for its first rescale. Actual history requirements only reduce this
+upper bound. Frames reset independently, so longer streams do not change it.
+Keep binary primitive rescale tests as defensive coverage. Exercise reachable
+ordinary-model rescaling with a 40000-byte Literal frame and repeated begin;
+do not label an oversized backend sequence as a valid frame test.

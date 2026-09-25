@@ -16194,3 +16194,20 @@ limit, count-40 descriptor, model limits, truncation, noncanonical adjacent
 tail, partial token finish, latched errors/output preservation, decision
 exhaustion and trailing payload. Model rescaling remains covered by primitive
 tests; long-payload rescale coverage is still required before frame admission.
+
+### TVG-1111
+
+Reuse the first-party preflight test structure for context 9: exact aggregate
+threshold, failure-output preservation, identity/count crossings, table/output/
+payload limits, contradictory counts, final-short-frame rule, every header and
+frame truncation, reserved bytes and exact consumed extent. Add explicit
+context-8 isolation and 65536/65537 frame-cap tests. Nine preflight tests plus
+one long decoder test extend coverage.
+
+The long test encodes 40000 a Literals with context 8 and decodes identical
+payload bytes with context 9 (descriptor count 40), twice with begin/reset.
+Check all 80000 operations and canonical finish across ordinary-model rescale.
+Distance-model rescale cannot occur within the legal frame cap: each Match
+consumes at least three bytes and updates each position at most once. This
+refines the earlier generic long-payload rescale requirement without weakening
+the binary primitive's threshold vectors.
