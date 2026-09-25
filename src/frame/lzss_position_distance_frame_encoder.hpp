@@ -26,6 +26,17 @@ encode_lzss_position_distance_frame(
     std::span<context::internal::ModeledOperation> operations,
     std::span<std::byte> serialized_output) noexcept;
 
+// Retained three-run path for private differential tests and benchmarks.
+[[nodiscard]] LzssShortMatchFrameEncodeResult
+encode_lzss_position_distance_frame_reference(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    std::uint64_t sequence,
+    std::uint64_t raw_already_committed,
+    std::span<const dictionary::internal::LzssTypedToken> tokens,
+    std::span<context::internal::ModeledOperation> operations,
+    std::span<std::byte> serialized_output) noexcept;
+
 } // namespace marc::frame::internal
 
 #endif

@@ -9177,3 +9177,9 @@ and DD-1260. No external implementation was consulted.
 The prepared context-9 encoder primitive follows IR-1016/DD-1261 and reuses
 repository checked planning/writing routines. Differential tests extend existing
 grammar-derived vectors; no external implementation was consulted.
+
+### IR-1018
+
+Context-9 frame plan reuse follows IR-1017 and DD-1261/DD-1262, using first-party
+frame validation and prepared entropy encoding. No external implementation was
+consulted.

@@ -39,6 +39,51 @@ using marc::dictionary::internal::LzssTypedTokenKind;
 
 } // namespace
 
+TEST(LzssPositionDistanceFrameEncoder, PreparedAndThreeRunFramesAgreeForAllLengths) {
+    for (std::uint32_t length=3;length<=258;++length) {
+        SCOPED_TRACE(length);
+        auto tokens=tokens_for(length); const auto stream=stream_for(length+1);
+        std::array<ModeledOperation,7> a{},b{};
+        a.back().value=123; b.back().value=123;
+        std::array<std::byte,256> oa{},ob{};
+        oa.fill(std::byte{0xcc}); ob=oa;
+        const auto x=encode_lzss_position_distance_frame(stream,{},0,0,tokens,a,oa);
+        const auto y=encode_lzss_position_distance_frame_reference(stream,{},0,0,tokens,b,ob);
+        ASSERT_EQ(x.error,LzssShortMatchFrameEncodeError::none);
+        ASSERT_EQ(y.error,x.error); EXPECT_EQ(oa,ob);
+        EXPECT_EQ(x.serialized_size,y.serialized_size); EXPECT_EQ(x.payload_size,y.payload_size);
+        EXPECT_EQ(x.operation_count,y.operation_count); EXPECT_EQ(x.decision_count,y.decision_count);
+        EXPECT_EQ(a.back().value,123); EXPECT_EQ(b.back().value,123);
+    }
+}
+
+TEST(LzssPositionDistanceFrameEncoder, PreparedAndThreeRunPreflightFailuresAgree) {
+    for (unsigned scenario=0;scenario<6;++scenario) {
+        SCOPED_TRACE(scenario);
+        auto stream=stream_for(4); auto tokens=tokens_for(3);
+        auto limits=marc::core::DecoderLimits{};
+        std::array<ModeledOperation,6> a{},b{};
+        std::array<std::byte,128> oa{},ob{}; oa.fill(std::byte{0xcc}); ob=oa;
+        std::size_t capacity=oa.size(),op_count=a.size(); std::uint64_t sequence=0;
+        switch(scenario) {
+        case 0: tokens[1].distance=2; break;
+        case 1: op_count=5; break;
+        case 2: capacity=1; break;
+        case 3: sequence=1; break;
+        case 4: stream.dictionary_variant=7; break;
+        case 5: limits.max_internal_buffered_bytes=1; break;
+        }
+        const auto x=encode_lzss_position_distance_frame(stream,limits,sequence,0,tokens,
+            std::span{a}.first(op_count),std::span{oa}.first(capacity));
+        const auto y=encode_lzss_position_distance_frame_reference(stream,limits,sequence,0,tokens,
+            std::span{b}.first(op_count),std::span{ob}.first(capacity));
+        EXPECT_NE(x.error,LzssShortMatchFrameEncodeError::none); EXPECT_EQ(x.error,y.error);
+        EXPECT_EQ(x.preflight_error,y.preflight_error); EXPECT_EQ(x.context.error,y.context.error);
+        EXPECT_EQ(x.entropy.error,y.entropy.error); EXPECT_EQ(oa,ob);
+        for(auto byte:oa) EXPECT_EQ(byte,std::byte{0xcc});
+    }
+}
+
 TEST(LzssPositionDistanceFrameEncoder, ModelsEveryLengthAndInvertsOperations) {
     const auto limits = marc::core::DecoderLimits{};
     for (std::uint32_t length = 3; length <= 258; ++length) {
@@ -94,6 +139,12 @@ TEST(LzssPositionDistanceFrameEncoder, EncodesAndDecodesBoundaryFrames) {
         const auto encoded = encode_lzss_position_distance_frame(
             stream, limits, 0, 0, tokens, operations, frame);
         ASSERT_EQ(encoded.error, LzssShortMatchFrameEncodeError::none);
+        std::array<ModeledOperation,6> reference_operations{};
+        std::vector<std::byte> reference_frame(frame.size());
+        const auto reference = encode_lzss_position_distance_frame_reference(
+            stream,limits,0,0,tokens,reference_operations,reference_frame);
+        ASSERT_EQ(reference.error,LzssShortMatchFrameEncodeError::none);
+        EXPECT_EQ(frame,reference_frame);
         EXPECT_EQ(encoded.serialized_size, frame.size());
         EXPECT_EQ(encoded.decision_count, planned.decision_count);
         const TypedContextFrameValidationContext context{stream, limits, 0, 0};
@@ -193,6 +244,12 @@ TEST(LzssPositionDistanceFrameEncoder, DeterministicFinalFrameAndExactAggregate)
         stream, limits, 1, 7, tokens, operations, repeated).error,
         LzssShortMatchFrameEncodeError::none);
     EXPECT_EQ(frame, repeated);
+    std::array<ModeledOperation,7> reference_operations{};
+    std::vector<std::byte> reference_frame(frame.size(),std::byte{0xcc});
+    ASSERT_EQ(encode_lzss_position_distance_frame_reference(
+        stream,limits,1,7,tokens,reference_operations,reference_frame).error,
+        LzssShortMatchFrameEncodeError::none);
+    EXPECT_EQ(frame,reference_frame);
     std::array<LzssTypedToken, 2> restored{};
     std::array<std::byte, 4> raw{};
     ASSERT_EQ(decode_lzss_position_distance_frame(

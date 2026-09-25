@@ -97,7 +97,8 @@ enum class OverlapCheck : std::uint8_t {
     const std::uint64_t raw_already_committed,
     const std::span<const dictionary::internal::LzssTypedToken> tokens,
     const std::span<context::internal::ModeledOperation> operations,
-    const FrameIdentity identity) noexcept {
+    const FrameIdentity identity,
+    entropy::internal::PreparedLzssPositionDistanceEncode* prepared = nullptr) noexcept {
     LzssShortMatchFrameEncodeResult result{};
     result.preflight_error = identity == FrameIdentity::position_distance
         ? validate_lzss_position_distance_stream_semantics(stream, limits)
@@ -151,7 +152,8 @@ enum class OverlapCheck : std::uint8_t {
     const auto used = operations.first(result.operation_count);
     TypedContextRangeDescriptor descriptor{};
     result.entropy = identity == FrameIdentity::position_distance
-        ? entropy::internal::plan_lzss_position_distance_range_operations(used, limits, descriptor)
+        ? (prepared ? prepared->prepare(used, limits, descriptor)
+                    : entropy::internal::plan_lzss_position_distance_range_operations(used, limits, descriptor))
         : identity == FrameIdentity::reduced_literal
         ? entropy::internal::plan_lzss_reduced_literal_range_operations(used, limits, descriptor)
         : entropy::internal::plan_lzss_short_match_range_operations(used, limits, descriptor);
@@ -222,7 +224,8 @@ enum class OverlapCheck : std::uint8_t {
     const std::span<const dictionary::internal::LzssTypedToken> tokens,
     const std::span<context::internal::ModeledOperation> operations,
     const std::span<std::byte> serialized_output,
-    const FrameIdentity identity) noexcept {
+    const FrameIdentity identity,
+    entropy::internal::PreparedLzssPositionDistanceEncode* prepared = nullptr) noexcept {
     LzssShortMatchFrameEncodeResult result{};
     std::size_t token_bytes{};
     std::size_t operation_bytes{};
@@ -256,7 +259,7 @@ enum class OverlapCheck : std::uint8_t {
         }
     }
     result = plan(stream, limits, sequence, raw_already_committed, tokens,
-                  operations, identity);
+                  operations, identity, prepared);
     if (result.error != LzssShortMatchFrameEncodeError::none) return result;
     if (serialized_output.size() < result.serialized_size) {
         result.error = LzssShortMatchFrameEncodeError::serialized_output_too_small;
@@ -292,7 +295,9 @@ enum class OverlapCheck : std::uint8_t {
         : identity == FrameIdentity::reduced_literal
         ? entropy::internal::encode_lzss_reduced_literal_range_operations
         : entropy::internal::encode_lzss_short_match_range_operations;
-    result.entropy = entropy_encode(
+    result.entropy = identity == FrameIdentity::position_distance && prepared
+        ? prepared->write(output.subspan(payload_offset, result.payload_size), encoded_descriptor)
+        : entropy_encode(
         operations.first(result.operation_count), limits,
         output.subspan(payload_offset, result.payload_size),
         encoded_descriptor);
@@ -395,6 +400,19 @@ LzssShortMatchFrameEncodeResult plan_lzss_position_distance_frame(
 }
 
 LzssShortMatchFrameEncodeResult encode_lzss_position_distance_frame(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t raw_already_committed,
+    const std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> serialized_output) noexcept {
+    entropy::internal::PreparedLzssPositionDistanceEncode prepared;
+    return encode(stream, limits, sequence, raw_already_committed, tokens,
+                  operations, serialized_output, FrameIdentity::position_distance, &prepared);
+}
+
+LzssShortMatchFrameEncodeResult encode_lzss_position_distance_frame_reference(
     const TypedContextStreamHeader& stream,
     const core::DecoderLimits& limits,
     const std::uint64_t sequence,

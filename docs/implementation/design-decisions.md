@@ -25151,3 +25151,25 @@ Input stability/lifetime is a caller contract, not a content hash check. Keep
 the object call-scoped in future integration. Existing standalone and frame
 entry points are unchanged in this step, so frame encoding still takes three
 entropy runs. No public API, format, workspace limit or performance claim changes.
+
+## DD-1263: Connect prepared entropy planning only to context-9 frames
+
+The private context-9 frame encoder creates a call-scoped prepared encoder and
+passes it into frame planning. At the original entropy planning point, prepare
+performs the checked count-only run. After unchanged frame preflight, aggregate,
+capacity and header/descriptor construction checks, write performs one checked
+payload run. The serialized header and descriptor are copied only after the
+existing post-write consistency checks succeed.
+
+This structurally removes the second count-only run: context-9 planning calls
+prepare once and encoding calls write rather than the standalone operation
+encoder. Frame plan-only queries and other private identities continue through
+their original paths. Retain encode_lzss_position_distance_frame_reference as
+the old three-run private path for differential tests and future same-binary
+measurement; it uses the same specialized entropy implementation.
+
+No operation mutation or callback intervenes between prepare and write.
+Existing full-region overlap checks precede modeling, and write rechecks
+operation/payload overlap. Fixed workspace charges and error order remain.
+The prepared metadata is bounded transient stack storage described in DD-1262.
+No public entry point, stream representation or measured speed claim changes.

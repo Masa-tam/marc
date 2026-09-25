@@ -34534,3 +34534,18 @@ both bounds.
 - Validation: MSVC Release build and all 3,854 CTest cases passed, including
   prepared-plan lifecycle and interoperability schema compatibility. No frame
   integration or new performance measurement is included.
+
+## CR-1417: 2026-09-26 - Reuse context-9 entropy plan within frame encoding
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1018, DD-1263 and TVG-1132; repository-owned prepared
+  encoder and frame validation/serialization only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: connect the prepared primitive to context-9 frames while retaining
+  the old three-run path and checking full bytes and preflight behavior.
+- Similarity review: independently written first-party integration; no external
+  expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,856 CTest cases passed, including
+  frame-path differential tests and interoperability schema compatibility.
+  No new timing result or public-format promotion is claimed.

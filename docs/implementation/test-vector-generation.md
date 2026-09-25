@@ -16451,3 +16451,19 @@ unready counts; compile-time checks reject copy/move and bound metadata to 128
 bytes. Structural inspection confirms write calls run once and never plans.
 Frame integration, frame-path differential measurement and injected write-time
 failure tests are not claimed by this primitive-only step.
+
+## TVG-1132: Compare prepared and three-run context-9 frame paths
+
+Add full-frame byte and size/count comparisons across every match length 3..258,
+including output and unused operation-tail sentinels. Compare both paths in
+existing boundary round trips and the exact-aggregate final-short-frame case.
+Existing fixed adaptive-distance payload, overlap and one-byte-short aggregate
+tests continue unchanged.
+
+Add paired preflight failures for invalid history, short operation workspace,
+short serialized output, invalid frame sequence, wrong variant and insufficient
+buffer limit. Require matching top-level/nested error categories and unchanged
+serialized output. Structural inspection verifies prepare occurs at the original
+planning point and write does not call the standalone two-run entropy encoder.
+The reference path retains that call, yielding three total entropy runs.
+Write-time fault injection and real-data paired frame timing are not claimed.
