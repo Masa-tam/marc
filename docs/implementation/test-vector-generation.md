@@ -16211,3 +16211,14 @@ Distance-model rescale cannot occur within the legal frame cap: each Match
 consumes at least three bytes and updates each position at most once. This
 refines the earlier generic long-payload rescale requirement without weakening
 the binary primitive's threshold vectors.
+
+### TVG-1112
+
+Five context-9 token tests use the TVG-1110 fixed payloads. Sixteen a Literals
+plus length-5/distance-13 recover 17 tokens and 21 raw bytes with an untouched
+trailing output sentinel. The two-Literal mixed vector is arithmetically valid
+but its first distance-3 Match precedes available history; reject without
+publishing even the earlier Literals. Test exact combined-memory threshold,
+one-byte shortage, output capacity, committed-output overflow, crossed model
+count, declared counts, raw under/overstatement, noncanonical tail and aliased
+payload/token storage. Preserve token output on every rejection.

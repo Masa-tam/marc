@@ -34221,3 +34221,20 @@ both bounds.
   nine new preflight tests, long literal rescaling/reset and interoperability
   schema compatibility. Full frame payload decoding, raw publication and
   public admission remain separate work.
+
+## CR-1397: 2026-09-25 - Validate and materialize position-distance tokens
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0998, DD-1243 and TVG-1112; first-party token walker
+  and independently pinned arithmetic payloads.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: connect private context-9 decoding to reference/output/count checks
+  and two-pass typed-token publication.
+- Independent decisions: reuse unchanged field semantics and bounded
+  validation; make cursor/walker disagreement an internal error.
+- Similarity review: first-party component reuse only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,830 CTest cases passed, including
+  five new token tests and interoperability schema compatibility. Raw-frame
+  publication, encoding and public admission remain separate work.

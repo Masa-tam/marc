@@ -24777,3 +24777,17 @@ upper bound. Frames reset independently, so longer streams do not change it.
 Keep binary primitive rescale tests as defensive coverage. Exercise reachable
 ordinary-model rescaling with a 40000-byte Literal frame and repeated begin;
 do not label an oversized backend sequence as a valid frame test.
+
+## DD-1243: Validate private context-9 tokens before materialization
+
+Connect the grammar-aware decoder to the shared short-length token walker.
+The field mapping remains the reduced-literal mapping; the decoder controls
+distance interval selection. Check operation shape agreement between the
+walker and cursor, then validate each reconstructed reference against current
+frame history and raw extent. Require declared counts and canonical finish.
+
+Reuse two-pass validation/materialization with checked token/payload/decoder
+aggregate accounting and overlap rejection. Caller token storage is untouched
+on validation failure, including a late invalid reference or termination.
+These private entry points return typed tokens only; no raw-frame publication,
+public stream admission or encoder is introduced.

@@ -2,6 +2,8 @@
 #include "context/lzss_short_length_escape_range_tokens.hpp"
 #include "context/lzss_reduced_literal_range_tokens.hpp"
 #include "entropy/lzss_reduced_literal_range_decoder.hpp"
+#include "context/lzss_position_distance_range_tokens.hpp"
+#include "entropy/lzss_position_distance_range_decoder.hpp"
 
 #include "context/lzss_field_context_state.hpp"
 #include "context/lzss_short_length_escape.hpp"
@@ -59,6 +61,45 @@ template<class Decoder>
     }
     result.error = LzssContextualRangeDecodeError::entropy_error;
     return false;
+}
+
+// Context 9 determines its interval family from its own grammar cursor.
+// Check agreement with the shared token walker before publishing the value.
+[[nodiscard]] bool read_symbol(
+    entropy::internal::LzssPositionDistanceRangeDecoder& decoder,
+    const std::uint16_t context_id, const std::uint16_t alphabet,
+    std::uint32_t& value, LzssContextualRangeDecodeResult& result) noexcept {
+    ModeledOperation operation{};
+    result.entropy = decoder.decode_next(operation);
+    if (result.entropy.error != ContextualDynamicRangeDecodeError::none) {
+        result.error = LzssContextualRangeDecodeError::entropy_error;
+        return false;
+    }
+    if (operation.kind != ModeledOperationKind::symbol
+        || operation.context_id != context_id || operation.alphabet_size != alphabet) {
+        result.error = LzssContextualRangeDecodeError::internal_error;
+        return false;
+    }
+    value = operation.value;
+    return true;
+}
+
+[[nodiscard]] bool read_bypass(
+    entropy::internal::LzssPositionDistanceRangeDecoder& decoder,
+    const std::uint8_t bits, std::uint32_t& value,
+    LzssContextualRangeDecodeResult& result) noexcept {
+    ModeledOperation operation{};
+    result.entropy = decoder.decode_next(operation);
+    if (result.entropy.error != ContextualDynamicRangeDecodeError::none) {
+        result.error = LzssContextualRangeDecodeError::entropy_error;
+        return false;
+    }
+    if (operation.kind != ModeledOperationKind::bypass_bits || operation.bit_count != bits) {
+        result.error = LzssContextualRangeDecodeError::internal_error;
+        return false;
+    }
+    value = operation.value;
+    return true;
 }
 
 template<class Decoder>
@@ -409,6 +450,27 @@ LzssContextualRangeDecodeResult decode_lzss_reduced_literal_range_tokens(
     const std::span<LzssTypedToken> private_tokens) noexcept {
     return decode_tokens<entropy::internal::LzssReducedLiteralRangeDecoder>(descriptor, payload, parameters, context, limits,
                          private_tokens, LengthMapping::reduced_literal);
+}
+
+LzssContextualRangeDecodeResult validate_lzss_position_distance_range_tokens(
+    const entropy::internal::ContextualDynamicRangeDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits) noexcept {
+    return run_pass<entropy::internal::LzssPositionDistanceRangeDecoder>(
+        descriptor, payload, parameters, context, limits, LengthMapping::reduced_literal, {});
+}
+
+LzssContextualRangeDecodeResult decode_lzss_position_distance_range_tokens(
+    const entropy::internal::ContextualDynamicRangeDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<LzssTypedToken> private_tokens) noexcept {
+    return decode_tokens<entropy::internal::LzssPositionDistanceRangeDecoder>(
+        descriptor, payload, parameters, context, limits, private_tokens, LengthMapping::reduced_literal);
 }
 
 } // namespace marc::context::internal

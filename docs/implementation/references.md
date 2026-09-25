@@ -9050,3 +9050,10 @@ Context-9 preflight extends repository-owned context-8 checks with the new
 identity/count/state size. Long literal decoding uses the unchanged context-8
 encoder as a control. The distance-update bound follows solely from the
 65536-byte frame cap and minimum match length three; no external source used.
+
+### IR-0998
+
+Context-9 token reconstruction uses the first-party checked token walker and
+grammar-aware Range decoder. Fixed arithmetic payloads from TVG-1110 provide
+valid and invalid-history controls. No external implementation or third-party
+test suite was consulted.
