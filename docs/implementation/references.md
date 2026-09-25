@@ -9153,3 +9153,9 @@ vectors. No external implementation was consulted.
 The encoder A/B harness uses the repository's retained generic and specialized
 context-9 encoders from IR-1012, following DD-1257 and the decoder pairing
 method. No external source was consulted.
+
+### IR-1014
+
+The encoder measurement in BM-0127 uses the first-party harness from IR-1013
+and local mozilla input with recorded SHA-256. No external implementation or
+new algorithm reference was consulted.

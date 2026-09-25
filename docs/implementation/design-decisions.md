@@ -25053,3 +25053,11 @@ output bytes. The buffer is bounded by 18 * frame_bytes + 85, not a peak-memory
 measurement. These warm in-process pairs retain scheduling/cache and fixed
 warmup-order caveats. Frame encoding still uses three passes; these two-pass
 operation timings must not be presented as full frame or CLI throughput.
+
+## DD-1259: Bound the encoder speed conclusion to paired operation timing
+
+BM-0127 observes a 4.55% to 5.13% reduction for five mozilla pairs, with unchanged
+bytes and controls. Retain the specialization as a promising private path, but
+validate all twelve corpus members before generalizing. The measured boundary
+includes count-only plan plus write, not the complete frame or CLI. Do not
+combine this percentage with decoder improvements as an end-to-end claim.

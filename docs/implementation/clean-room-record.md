@@ -34471,3 +34471,19 @@ both bounds.
 - Validation: MSVC Release build and all 3,853 CTest cases passed, including
   encoder A/B smoke and interoperability schema compatibility. Real-data speed
   measurements are not claimed by this harness change.
+
+## CR-1413: 2026-09-26 - Measure paired mozilla binary distance encoding
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1014, DD-1259, TVG-1128 and BM-0127; first-party harness
+  and existing local corpus input only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: run five alternating-order encoder pairs on full mozilla and retain
+  raw measurements, identity hashes and correctness controls.
+- Results: all pairs verified 782 frames; time decreased by 4.55% to 5.13%
+  within the plan-plus-write boundary. Accounted sizes remain unchanged.
+- Similarity review: measurement and documentation only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: checkpoint controls, hashes and documentation layout test passed.
+  Runtime unchanged since the full 3,853-test validation.

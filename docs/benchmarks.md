@@ -4718,3 +4718,41 @@ change. This supports the private decoder specialization across this corpus,
 not a whole-CLI speed claim or a public-format promotion. Next audit the private
 binary distance encoder's repeated model/interval work while retaining exact
 bytes, safety checks and a generic differential reference.
+
+## BM-0127: Paired mozilla binary distance encoding
+
+Measured on 2026-09-26 at revision `c97f9e19` with the MSVC Release candidate
+benchmark and arguments `1024 65536 indexed distance-encode-ab 5`.
+The complete mozilla input is 51,220,480 bytes, split into 782 frames.
+
+- Executable SHA-256: `2E208BBBD792DA97D16E1ADA42EB302B5C478D0063C43084A9DDD9E13C821912`.
+- Input SHA-256: `657FC3764B0C75AC9DE9623125705831EBBFBE08FED248DF73BC2DC66E2A963B`.
+- Ignored local checkpoint: `out/position-distance-encode-ab/mozilla.json`.
+
+| Pair | Generic seconds | Specialized seconds | Time reduction |
+| --- | ---: | ---: | ---: |
+| 1 | 1.638619 | 1.557007 | 4.98% |
+| 2 | 1.632186 | 1.555625 | 4.69% |
+| 3 | 1.637613 | 1.561231 | 4.66% |
+| 4 | 1.638246 | 1.563654 | 4.55% |
+| 5 | 1.635125 | 1.551252 | 5.13% |
+
+All pairs verify all 782 frames, with 391 generic-first and 391 specialized-first
+frames. Every output byte, descriptor field and operation/decision count agrees
+with the already round-trip-verified frame payload. All previous non-time
+controls match BM-0122; context-9 accounted archive size remains 18,542,748 bytes
+against context-8's 19,592,635. Executable/input hashes were rechecked afterwards.
+
+Generic and specialized time medians are 1.637613 and 1.557007 seconds.
+The median paired reduction is 4.69%, not the ratio of those separate medians.
+The reusable output buffer is 1,179,733 bytes, allocated outside timing; this is
+not peak RSS or an added codec workspace requirement.
+
+The timing boundary is the checked operation encoder's count-only plan plus
+payload writing. It excludes dictionary search, context modeling, frame
+preflight/serialization and output comparisons. Do not equate this two-pass
+result with full three-pass frame timing or whole-CLI speed. Five pairs run in
+one process, with generic-then-specialized warmup; scheduling/cache effects
+remain. The improvement supports the local specialization on mozilla but does
+not establish corpus-wide benefit. Next repeat this pairing across all twelve
+members; repeated frame planning remains a separate optimization.

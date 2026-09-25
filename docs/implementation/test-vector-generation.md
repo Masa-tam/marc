@@ -16388,3 +16388,12 @@ missing pair counts. Full byte/descriptor/count comparisons run within the
 harness outside timing, including both warmup calls. Existing smoke tests retain
 coverage of default and decoder-pairing behavior. Real corpus measurements remain
 separate from this harness-validation step.
+
+## TVG-1128: Validate paired mozilla encoder measurements
+
+Run full mozilla with `1024 65536 indexed distance-encode-ab 5`.
+Retain raw fields and executable/input hashes in the BM-0127 checkpoint.
+Require 782 verified frames and 391 generic-first frames in each pair; compare
+all prior non-time report controls with BM-0122 and recheck hashes after execution.
+The harness verifies complete payload bytes and metadata outside timing.
+Keep performance percentages as observations, not correctness thresholds.
