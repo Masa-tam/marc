@@ -33897,3 +33897,20 @@ both bounds.
   four new encoder tests, documentation layout and interoperability schema
   compatibility. Known payload, isomorphic old-codec bytes and decoder round
   trips agree; no raw-token integration or public admission is introduced.
+
+## CR-1378: 2026-09-25 - Map reduced-literal typed tokens to operations
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0979, DD-1224 and TVG-1093; first-party escape mapper,
+  context-8 specification and hand-derived token vector only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Generated-code task: connect typed tokens to the new operation layout,
+  reusing validated grammar and proving exact state/mapping boundaries.
+- Independent decisions: remap generated IDs in place after successful
+  validation; preserve bypass fields, counts and untouched output tail.
+- Similarity review: explicit reuse of this repository's own mapper; no
+  external implementation expression copied. No legal guarantee is claimed.
+- Validation: MSVC Release build and all 3,770 CTest cases passed, including
+  four new forward-mapping tests, documentation layout and interoperability
+  schema compatibility. No inverse token decoder or public admission is added.

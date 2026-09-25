@@ -8923,3 +8923,10 @@ The reduced-literal operation encoder adapts the repository's independently
 written short-match Range encoder to the specified 24-context model. Arithmetic
 vectors, old-model isomorphism and the new decoder provide first-party checks.
 No external source code, model implementation or test suite is consulted.
+
+### IR-0979
+
+The reduced-literal token mapper reuses marc's validated short-length escape
+mapper, followed by the context-8 ID mapping specified in the format. Hand
+vectors and prefix boundaries come from the repository's own specification;
+no external implementation or test suite is consulted.

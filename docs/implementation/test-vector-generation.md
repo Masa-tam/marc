@@ -15999,3 +15999,13 @@ Reject malformed operations, empty input, one-byte-short output and overlap
 without publishing descriptor or payload. Accept the exact aggregate charge
 (operation bytes + model/writer state + payload), reject one byte less, and
 exercise entropy-table and payload limits with otherwise valid settings.
+
+### TVG-1093
+
+Instantiate the five-token TVG-1087 vector and assert all twelve operations'
+kinds, contexts, alphabets, values and bypass widths independently. Test every
+possible preceding Literal byte and fresh state on each mapping call. Encode
+the resulting operations with the new Range encoder, then decode the same
+operations and exact counts. Invalid late tokens, insufficient operation
+capacity and a one-byte-short operation-memory cap must leave sentinels intact.
+The end-to-end raw-token inverse is not claimed by this operation-level test.

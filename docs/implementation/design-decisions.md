@@ -24518,3 +24518,16 @@ and transient scalar call-stack overhead are outside this component charge;
 frame integration must separately account for its simultaneously live buffers.
 This operation encoder does not validate LZ token grammar or publicly admit
 the new identity. Existing encoders and their outputs remain unchanged.
+
+## DD-1224: Reuse escape-token validation and remap generated context IDs
+
+Context 8 changes neither token validity nor event/decision counts. Delegate
+planning and initial operation generation to the existing escape mapper, which
+validates the whole frame and output region before writing. After success,
+remap only generated symbol IDs: 0..3 unchanged, 4..19 to 4+(id-4)/2,
+20..31 to id-8. Alphabets, values and bypass operations remain unchanged.
+This is equivalent to the preceding Literal byte's upper three bits and
+preserves Match behavior without duplicating the token-state machine. Remap
+in the same caller buffer with no second token parse or auxiliary allocation;
+leave unused output capacity untouched. Token input must stay stable during
+the call. This is a forward mapper, not the still-pending inverse grammar.
