@@ -24805,3 +24805,17 @@ after successful reconstruction; return the exact first-frame extent.
 Invalid payload, reference or termination leaves raw output untouched. This
 is a complete-frame internal entry point, not incremental stream admission,
 public API support or encoding. Existing format identities remain unchanged.
+
+## DD-1245: Encode private context-9 payloads with grammar-selected intervals
+
+Validate each operation against the field cursor before indexing models or
+shifting bits. Keep length extras uniform and use model 24+p for distance bit
+p, updating after each decision. Count grouped extras as one event, but count
+every bit as a decision. Require a complete token boundary at termination.
+Invalid field sequences return invalid_symbol; dictionary history validation
+remains the frame layer's responsibility.
+
+Plan the complete payload before writing, reject overlap and insufficient
+capacity, and publish the descriptor only on success. Charge operation storage,
+model/writer/cursor state and payload against the aggregate limit. Public
+formats and admission remain unchanged.

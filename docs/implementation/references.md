@@ -9064,3 +9064,9 @@ Private context-9 complete-frame reconstruction composes repository-owned
 preflight, token validation and overlap-aware typed reconstruction. Tests use
 the independent fixed Range payloads from TVG-1110 and the prior no-distance-
 extra control. No external implementation or third-party vectors were used.
+
+### IR-1000
+
+The private context-9 payload encoder reuses repository-owned Range arithmetic
+and the independently specified field cursor. Fixed payloads from TVG-1110
+remain independent encoder oracles. No external source or test suite was used.

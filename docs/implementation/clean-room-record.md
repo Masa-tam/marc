@@ -34255,3 +34255,18 @@ both bounds.
 - Validation: MSVC Release build and all 3,835 CTest cases passed, including
   five new frame tests and interoperability schema compatibility. Incremental
   stream decoding, encoding and public admission remain separate work.
+
+## CR-1399: 2026-09-25 - Encode private position-distance payloads
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1000, DD-1245 and TVG-1114; first-party arithmetic,
+  field grammar and independently pinned payloads.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: bounded grammar-aware payload planning and encoding, adaptive
+  distance-bit intervals and transactional preflight failures.
+- Similarity review: adapted repository-owned code only; no external
+  expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,839 CTest cases passed, including
+  four new encoder tests and interoperability schema compatibility.
+  Frame encoding, measurements and public admission remain separate work.

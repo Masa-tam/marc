@@ -16233,3 +16233,12 @@ history, noncanonical tail, exact aggregate threshold and one-byte shortage.
 Exercise all three workspace overlaps: serialized/token, serialized/raw and
 token/raw. Failed decoding reports no committed serialized extent and leaves
 raw output unchanged.
+
+### TVG-1114
+
+The context-9 payload encoder must reproduce both independent TVG-1110 mixed
+and distance-13 payloads byte for byte. Decode the latter and verify grouped
+event/decision counts. Reject incomplete tokens, backend model injection,
+incorrect contexts, oversized extra widths, forbidden length-259 and nonzero
+class-16 distance extras without changing output or descriptor. Check exact
+aggregate capacity, one-byte shortage, table limits, output shortage and aliasing.
