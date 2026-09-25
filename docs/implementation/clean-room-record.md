@@ -34549,3 +34549,18 @@ both bounds.
 - Validation: MSVC Release build and all 3,856 CTest cases passed, including
   frame-path differential tests and interoperability schema compatibility.
   No new timing result or public-format promotion is claimed.
+
+## CR-1418: 2026-09-26 - Add full-frame plan-reuse A/B harness
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1019, DD-1264 and TVG-1133; first-party retained frame
+  paths and pairing harness only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: pair three-run and two-run complete frame encoding with identical
+  tokens, alternating order and byte/count verification outside timing.
+- Similarity review: independently written first-party integration; no external
+  expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,857 CTest cases passed, including
+  frame A/B smoke and interoperability schema compatibility. No real-data
+  timing result or public interface change is claimed.

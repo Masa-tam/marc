@@ -25173,3 +25173,24 @@ Existing full-region overlap checks precede modeling, and write rechecks
 operation/payload overlap. Fixed workspace charges and error order remain.
 The prepared metadata is bounded transient stack storage described in DD-1262.
 No public entry point, stream representation or measured speed claim changes.
+
+## DD-1264: Pair full private frame encoding after planning reuse
+
+Add benchmark mode `distance-frame-ab <pairs:1..20>`, separate from operation
+encoder and decoder pairing. Both paths receive identical retained tokens,
+stream/limits and frame position, and reuse the same bounded operation/output
+workspaces. Warm three-run then two-run paths and alternate first path by
+frame/pair parity.
+
+Time only the complete frame encoder call: context modeling, validation,
+entropy runs and frame serialization are included; dictionary search,
+allocations, surrounding candidate selection, round-trip verification and
+output comparison are excluded. Compare complete frame bytes and returned raw,
+token, operation, decision, payload and serialized counts against the already
+verified frame after each call, outside timing.
+
+Report three_run/two_run seconds, verified frames, three-run-first counts and
+output storage under a distinct position_frame_ab prefix. The buffer remains
+18 * frame_bytes + 85 bytes, not peak RSS. Fixed warmup order and warm in-process
+pairing retain cache/scheduling caveats. This harness is not real-data speed
+evidence and does not change codec behavior.

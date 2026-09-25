@@ -16467,3 +16467,13 @@ serialized output. Structural inspection verifies prepare occurs at the original
 planning point and write does not call the standalone two-run entropy encoder.
 The reference path retains that call, yielding three total entropy runs.
 Write-time fault injection and real-data paired frame timing are not claimed.
+
+## TVG-1133: Frame pairing smoke contract
+
+Run one bounded README frame with two frame-encoding pairs. Require both
+three-run/two-run timing fields, one verified frame per pair, first-path counts
+1 then 0 and exactly 73,813 output-buffer bytes for a 4,096-byte frame.
+Reject pair counts zero, 21, nonnumeric and missing. The harness compares full
+frame bytes and metadata outside timing for warmup and timed calls. Existing
+operation-encoder, decoder and default-mode smoke tests remain active.
+Real-data measurement is a separate step and speed is not a test threshold.
