@@ -15987,3 +15987,15 @@ Check all shorter payload extents, wrong count, invalid initial byte, exact
 memory cap/one-under, table limits, invalid context/alphabet/bypass width,
 sticky errors/reset, premature finish, repeated finish, trailing payload and
 decision exhaustion. These tests do not yet admit a framed codec.
+
+### TVG-1092
+
+Require the five-operation TVG-1091 arithmetic vector to encode exactly as
+`00 30 bf ff 9e 80 00`, with descriptor count 24 and an untouched extra output
+byte. Enumerate every model symbol, cross rescaling with 40,000 literal updates,
+and test alternating bypass bits at widths 1..16. Compare exact payload against
+the isomorphic old encoder and decode every operation with the new decoder.
+Reject malformed operations, empty input, one-byte-short output and overlap
+without publishing descriptor or payload. Accept the exact aggregate charge
+(operation bytes + model/writer state + payload), reject one byte less, and
+exercise entropy-table and payload limits with otherwise valid settings.

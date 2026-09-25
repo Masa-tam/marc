@@ -24500,3 +24500,21 @@ new IDs 0..11 map to old IDs 0..11; new IDs 12..23 map to old IDs 20..31.
 These preserve independent model histories for arbitrary operation tests, not
 the original token model's literal assignment. Keep the old codec unchanged.
 The new actual encoder and raw-token integration remain separate next steps.
+
+## DD-1223: Plan reduced-literal Range output before writing
+
+Keep the existing integer carry/normalization and increment-one model rules,
+using the new dense layout only in a private encoder. Plan all operations before
+writing; validate context, alphabet, value, bypass fields and exact output size.
+Reject overlapping operation/output ranges and insufficient capacity before
+publication. Operations must stay immutable across planning and writing.
+Descriptor publication occurs only on success; runtime internal failures do
+not promise output rollback, so output is consumable only on success.
+
+Charge operation span bytes plus actual sizeof model and writer state plus
+planned payload bytes with checked arithmetic. Expose the fixed state charge
+for internal workspace accounting and exact-bound tests. Unused caller capacity
+and transient scalar call-stack overhead are outside this component charge;
+frame integration must separately account for its simultaneously live buffers.
+This operation encoder does not validate LZ token grammar or publicly admit
+the new identity. Existing encoders and their outputs remain unchanged.

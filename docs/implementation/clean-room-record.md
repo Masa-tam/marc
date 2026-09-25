@@ -33879,3 +33879,21 @@ both bounds.
 - Validation: MSVC Release build and all 3,762 CTest cases passed, including
   five new decoder tests, documentation layout and interoperability schema
   compatibility. Decoder sizeof is statically tied to the preflight state charge.
+
+## CR-1377: 2026-09-25 - Implement reduced-literal Range operation encoder
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0978, DD-1223 and TVG-1092; first-party Range encoder,
+  reduced-literal decoder, specified layout and arithmetic vector only.
+- Known implementations intentionally not consulted: external Range coder
+  source, copyleft compressors and third-party test suites.
+- Generated-code task: implement private 24-context planning/writing with
+  checked memory accounting, exact payload comparison and decoder round trips.
+- Independent decisions: preserve old encoders, validate before writing and
+  distinguish operation encoding from future token/frame integration.
+- Similarity review: explicit reuse of this repository's own implementation;
+  no external implementation expression copied. No legal guarantee is claimed.
+- Validation: MSVC Release build and all 3,766 CTest cases passed, including
+  four new encoder tests, documentation layout and interoperability schema
+  compatibility. Known payload, isomorphic old-codec bytes and decoder round
+  trips agree; no raw-token integration or public admission is introduced.

@@ -8916,3 +8916,10 @@ written short-match decoder arithmetic to the context-8 model and concrete
 state contract. Tests reuse the first-party hand-checked arithmetic vector
 and relabel first-party encoder model IDs as a reference. No external source
 or third-party vectors are consulted.
+
+### IR-0978
+
+The reduced-literal operation encoder adapts the repository's independently
+written short-match Range encoder to the specified 24-context model. Arithmetic
+vectors, old-model isomorphism and the new decoder provide first-party checks.
+No external source code, model implementation or test suite is consulted.

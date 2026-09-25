@@ -102,6 +102,7 @@ set(MARC_SOURCES
     src/entropy/contextual_dynamic_range_decoder.cpp
     src/entropy/lzss_short_match_range_decoder.cpp
     src/entropy/lzss_reduced_literal_range_decoder.cpp
+    src/entropy/lzss_reduced_literal_range_encoder.cpp
     src/entropy/lzss_short_match_range_encoder.cpp
     src/entropy/contextual_dynamic_range_encoder.cpp
     src/entropy/contextual_rans_decoder.cpp
@@ -2577,6 +2578,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_short_match_preflight_tests.cpp
         tests/lzss_short_match_range_decoder_tests.cpp
         tests/lzss_reduced_literal_range_decoder_tests.cpp
+        tests/lzss_reduced_literal_range_encoder_tests.cpp
         tests/lzss_short_match_range_tokens_tests.cpp
         tests/lzss_short_match_operations_tests.cpp
         tests/lzss_reduced_literal_context_layout_tests.cpp
