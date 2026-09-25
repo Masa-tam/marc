@@ -4620,3 +4620,45 @@ on identical prebuilt payloads, with alternating order and repeated samples.
 Keep encoding, I/O and token selection outside that timing region and keep
 correctness checks outside it where possible. Report workload/phase boundaries
 explicitly; do not silently compare payload-only times with frame timings.
+
+## BM-0125: Same-binary mozilla distance-decoder comparison
+
+Measured on 2026-09-25 at revision `e80d8f42`, using the MSVC Release
+candidate benchmark with arguments `1024 65536 indexed distance-policies 5`.
+The full mozilla input contains 51,220,480 bytes in 782 frames.
+
+- Executable SHA-256: `1E4CBB2084B64528CD2A85BC7F9080F50B552BFD09C9A3DC1D89E1B0AC35E6D8`.
+- Input SHA-256: `657FC3764B0C75AC9DE9623125705831EBBFBE08FED248DF73BC2DC66E2A963B`.
+- Local, ignored checkpoint: `out/position-distance-decode-ab/mozilla.json`.
+
+Each pair decodes identical prebuilt context-9 payloads with the retained generic
+and specialized paths in one executable. Ordering alternates by frame and pair;
+each pair has 391 generic-first and 391 specialized-first frames. Both paths
+passed modeled-operation equality checks for every frame.
+
+| Pair | Generic seconds | Specialized seconds | Time reduction |
+| --- | ---: | ---: | ---: |
+| 1 | 2.171811 | 1.904824 | 12.29% |
+| 2 | 2.173442 | 1.903509 | 12.42% |
+| 3 | 2.173072 | 1.904032 | 12.38% |
+| 4 | 2.162785 | 1.899995 | 12.15% |
+| 5 | 2.170440 | 1.896983 | 12.60% |
+
+The generic median is 2.171811 seconds and the specialized median is 1.903509
+seconds; the median of the five paired reductions is 12.38%. These are five
+pairs within one process, not five independent process trials. The timings
+cover single-pass operation decoding, including initialization and finish,
+but exclude search, encoding, file I/O and comparison with expected operations.
+Warmup runs generic then specialized; cache, scheduling and warmup-order effects
+are not eliminated. Do not compare these values directly with two-pass frame
+decode timings in BM-0122/BM-0124 or claim equivalent CLI throughput gains.
+
+All prior non-time report controls match BM-0122. Context-9 accounted archive
+size remains 18,542,748 bytes against context-8's 19,592,635 bytes, with 782
+verified frames. These are private benchmark representations, not a public
+context-9 CLI format. The 5,242,880-byte operation output buffer is benchmark
+storage, not a codec workspace change or a peak-RSS measurement.
+
+The paired evidence supports the specialization on mozilla, without resolving
+encoder overhead or establishing corpus-wide speed gains. Next extend this
+same-binary comparison to all twelve corpus members before generalizing.

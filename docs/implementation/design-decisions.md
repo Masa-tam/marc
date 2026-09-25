@@ -24953,3 +24953,13 @@ These are warm payload-level single-pass timings, not the existing two-pass
 frame decode times or end-to-end CLI throughput. No speed threshold belongs
 in smoke tests. Same-binary pairing reduces historical build differences but
 does not eliminate scheduling, cache or fixed warmup-order effects.
+
+## DD-1254: Interpret distance-decoder speed evidence at its measured boundary
+
+BM-0125 compares generic and specialized context-9 operation decoding in the
+same executable on identical payloads. Five alternating-order pairs improve
+measured decode time by 12.15% to 12.60%, with operation equality on every frame.
+Keep the specialization, but do not infer whole-CLI speedup, encoder improvement
+or corpus-wide behavior. The next measurement gate is the same paired experiment
+across all twelve corpus members. Public APIs, defaults and wire formats remain
+unchanged; five in-process pairs are not independent process replications.

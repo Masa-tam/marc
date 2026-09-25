@@ -9119,3 +9119,9 @@ third-party tests or new reference implementation was consulted.
 The same-executable distance-decoder A/B harness uses repository-owned retained
 generic and specialized decoders and context-9 frame payloads. Measurement
 boundaries derive from BM-0124. No external implementation was consulted.
+
+### IR-1009
+
+The mozilla same-binary distance-decoder measurement uses the repository-owned
+harness from IR-1008 and local Silesia input identified by SHA-256 in BM-0125.
+No external implementation or new algorithm reference was consulted.

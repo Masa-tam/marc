@@ -34393,3 +34393,18 @@ both bounds.
 - Validation: MSVC Release build and all 3,849 CTest cases passed, including
   the new A/B smoke test and interoperability schema compatibility. Real-data A/B timing
   remains separate from harness validation; no public codec interface changed.
+
+## CR-1408: 2026-09-25 - Measure paired mozilla distance decoding
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1009, DD-1254, TVG-1123 and first-party measurement BM-0125.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: measure five same-binary alternating-order pairs on full mozilla,
+  checking every operation and retaining hashes and prior non-time controls.
+- Results: all five pairs verified all 782 frames; measured payload decode time
+  decreased by 12.15% to 12.60%. Accounted archive sizes remain unchanged.
+- Similarity review: measurements and documentation only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: checkpoint controls, pair counts and hashes passed. Documentation
+  layout test passed; runtime code unchanged since the full 3,849-test validation.

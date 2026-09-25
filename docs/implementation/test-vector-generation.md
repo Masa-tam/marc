@@ -16316,3 +16316,14 @@ output storage and generic-first counts 1 then 0. Reject pair counts 0, 21 and
 non-numeric text. The harness itself compares all decoded operation fields with
 the original modeled sequence outside each timing region, including warmup.
 Existing candidate smoke continues to exercise default execution without A/B.
+
+## TVG-1123: Validate the mozilla paired distance-decoder report
+
+Run the candidate benchmark on the full local mozilla input with
+`1024 65536 indexed distance-policies 5`. Preserve executable/input hashes and
+all raw fields in the ignored checkpoint identified in BM-0125. Verify that
+all non-time controls shared with BM-0122 match, and that each pair verifies
+782 frames with 391 generic-first frames. The harness checks every decoded
+operation against the original sequence outside timing, including warmup.
+Recheck input and executable hashes after measurement. Treat observed timing
+reductions as measurements, never portable pass/fail thresholds.
