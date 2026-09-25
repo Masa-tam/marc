@@ -34083,3 +34083,19 @@ both bounds.
 - Validation: MSVC Release build and all 3,798 CTest cases passed, including
   five new hand-calculated diagnostic tests, documentation layout and
   interoperability schema compatibility. Corpus integration is still pending.
+
+## CR-1389: 2026-09-25 - Connect fixed-token distance-bit benchmark diagnostics
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0990, DD-1235 and TVG-1104; first-party components only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Generated-code task: report bounded distance-bit information on fixed winner
+  operations and require agreement with existing bypass counts.
+- Independent decisions: separate fixed and reselected tokens; retain negative
+  results and leave codec behavior and timing scopes unchanged.
+- Similarity review: repository-owned diagnostic integration only; no external
+  expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,798 CTest cases passed, including
+  indexed/reference diagnostic smoke, documentation layout and interoperability
+  schema compatibility. Actual corpus diagnostic measurement remains pending.

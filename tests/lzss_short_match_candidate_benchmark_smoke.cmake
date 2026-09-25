@@ -37,6 +37,8 @@ foreach(key IN ITEMS sample_bytes frame_bytes frame_count
         reduced_reselected_changed_frames reduced_reselected_count_0
         reduced_reselected_count_1 reduced_reselected_count_2
         reduced_policy_bytes_0 reduced_policy_bytes_1 reduced_policy_bytes_2
+        distance_bit_uniform_bits distance_bit_zero_count distance_bit_one_count
+        distance_bit_verified_frames retained_cost_distance_bypass_bits
         selected_5 threshold_3_archive_bytes threshold_4_archive_bytes
         threshold_5_archive_bytes escape_selected_3 escape_selected_4
         escape_selected_5 escape_threshold_3_archive_bytes
@@ -80,6 +82,7 @@ math(EXPR reconstructed_reselected
     "${reduced_literal_archive_bytes} - ${reduced_reselected_saved_bytes}")
 math(EXPR reselected_count
     "${reduced_reselected_count_0} + ${reduced_reselected_count_1} + ${reduced_reselected_count_2}")
+math(EXPR distance_bit_count "${distance_bit_zero_count} + ${distance_bit_one_count}")
 set(reduced_minimum "${reduced_policy_bytes_0}")
 set(reduced_winner 0)
 foreach(index RANGE 1 2)
@@ -99,6 +102,9 @@ foreach(index RANGE 0 2)
     endif()
 endforeach()
 if(NOT sample_bytes EQUAL 4096 OR NOT frame_bytes EQUAL 4096
+    OR NOT distance_bit_count EQUAL distance_bit_uniform_bits
+    OR NOT distance_bit_uniform_bits EQUAL retained_cost_distance_bypass_bits
+    OR NOT distance_bit_verified_frames EQUAL frame_count
     OR NOT reduced_minimum EQUAL reduced_reselected_archive_bytes
     OR NOT reconstructed_reselected EQUAL reduced_reselected_archive_bytes
     OR NOT reselected_count EQUAL frame_count
@@ -157,6 +163,20 @@ foreach(index RANGE 0 6)
     if(distance_policy_selected_archive_bytes GREATER distance_policy_${index}_archive_bytes)
         message(FATAL_ERROR "Invalid distance policy selection")
     endif()
+endforeach()
+foreach(model IN ITEMS position class_position)
+    foreach(metric IN ITEMS adaptive empirical)
+        set(key "distance_bit_${model}_${metric}_bits")
+        string(REGEX MATCH "${key}=([0-9]+[.][0-9]+)" field "${output}")
+        if(field STREQUAL "")
+            message(FATAL_ERROR "Missing distance-bit diagnostic ${key}")
+        endif()
+        set(value "${CMAKE_MATCH_1}")
+        string(REGEX MATCH "${key}=([0-9]+[.][0-9]+)" field "${reference_output}")
+        if(field STREQUAL "" OR NOT CMAKE_MATCH_1 STREQUAL value)
+            message(FATAL_ERROR "Distance-bit diagnostic mismatch ${key}")
+        endif()
+    endforeach()
 endforeach()
 foreach(prefix IN ITEMS baseline_cost escape_cost retained_cost)
     foreach(category IN ITEMS kind literal length distance)

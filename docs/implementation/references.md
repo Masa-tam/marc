@@ -8994,3 +8994,9 @@ Distance extra-bit diagnostics implement the independently documented Stage 4
 binary-frequency equations from IR-0988. Hand vectors use elementary log2
 probabilities and repository context-7 operation shapes. No external codec
 source or third-party test suite was consulted.
+
+### IR-0990
+
+Benchmark integration uses the first-party distance-bit diagnostic from
+IR-0989 and retained-token operation path from IR-0984. No external source,
+compressor implementation or third-party test suite was consulted.

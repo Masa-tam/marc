@@ -24669,3 +24669,15 @@ class-16 distance restriction and forbidden escaped length 259. Reject inputs
 above five times 65,536 operations; return a zero invalid result on any failure.
 This is not a full token-grammar validator: callers must supply validated
 frames. No diagnostic score participates in coding or changes public bytes.
+
+## DD-1235: Attach distance-bit diagnostics to the fixed-token benchmark path
+
+Replay the context-7-selected winner's validated operations before they are
+reused for context-8 encoding. Keep reselection observations separate. Sum
+per-frame adaptive and empirical scores for position and class/position banks;
+report uniform bits, zero/one totals and verified-frame count.
+
+Require both banks' observation totals to agree and uniform bits to reproduce
+the existing retained distance-bypass count. Diagnostics remain outside coding
+timers and cannot affect tokens, selection or representation. Do not assert
+that adaptive information beats uniform bits; negative findings are valid.

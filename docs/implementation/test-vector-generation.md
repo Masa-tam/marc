@@ -16110,3 +16110,12 @@ for reset determinism. After 32,766 zeros, test the next rescaled prediction
 against log2(32767)+log2(16385/16384). Reject malformed metadata, missing,
 orphaned, duplicate and wrong-width bypass, illegal class-16 distance and
 length 259, and accept/reject the exact operation-cap boundary.
+
+### TVG-1104
+
+Extend the indexed/reference benchmark smoke to require equal distance-bit
+uniform counts, zero/one totals, verified-frame count and all four information
+scores. Independently sum zero and one observations and compare with the
+retained distance-bypass control. Keep all existing size and selection checks.
+Reject missing or malformed numeric report fields, but impose no compression
+improvement or timing gate on the diagnostic.

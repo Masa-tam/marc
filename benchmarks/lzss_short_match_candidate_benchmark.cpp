@@ -1,6 +1,7 @@
 #include "context/lzss_field_context.hpp"
 #include "context/lzss_short_length_escape_operations.hpp"
 #include "lzss_model_cost.hpp"
+#include "lzss_distance_bit_cost.hpp"
 #include "lzss_short_distance_policy.hpp"
 #include "lzss_short_distance_selector.hpp"
 #include "dictionary/lzss_hash_chain_match_finder.hpp"
@@ -296,6 +297,9 @@ int main(const int argc, const char* const argv[]) {
     marc::benchmarks::ModelCost baseline_cost{};
     marc::benchmarks::ModelCost escape_cost{};
     marc::benchmarks::ModelCost retained_cost{};
+    std::uint64_t distance_bit_uniform{}, distance_bit_verified_frames{};
+    std::array<std::uint64_t, 2> distance_bit_counts{};
+    std::array<double, 2> distance_bit_adaptive{}, distance_bit_empirical{};
     constexpr std::array<std::uint32_t, 4> literal_increments{1, 2, 4, 8};
     std::array<double, 4> literal_increment_bits{};
     using marc::benchmarks::LiteralPartition;
@@ -608,6 +612,30 @@ int main(const int argc, const char* const argv[]) {
                 literal_partition_bits[i] += cost.adaptive_bits[1];
                 literal_partition_empirical_bits[i] += cost.empirical_bits[1];
             }
+            const auto bit_cost = marc::benchmarks::measure_distance_bit_cost(
+                std::span<const ModeledOperation>{operations}.first(selected_modeled.operation_count));
+            if (!bit_cost.valid) {
+                std::cerr << "distance bit diagnostic failed\n";
+                return 2;
+            }
+            std::array<std::uint64_t, 2> position_counts{}, class_counts{};
+            for (const auto& pair : bit_cost.position_counts)
+                for (std::size_t bit = 0; bit < 2; ++bit) position_counts[bit] += pair[bit];
+            for (const auto& pair : bit_cost.class_position_counts)
+                for (std::size_t bit = 0; bit < 2; ++bit) class_counts[bit] += pair[bit];
+            distance_bit_uniform += bit_cost.uniform_bits;
+            if (position_counts != class_counts
+                || position_counts[0] + position_counts[1] != bit_cost.uniform_bits
+                || distance_bit_uniform != retained_cost.bypass_bits[1]) {
+                std::cerr << "distance bit control mismatch\n";
+                return 2;
+            }
+            ++distance_bit_verified_frames;
+            for (std::size_t i = 0; i < 2; ++i) {
+                distance_bit_counts[i] += position_counts[i];
+                distance_bit_adaptive[i] += bit_cost.adaptive_bits[i];
+                distance_bit_empirical[i] += bit_cost.empirical_bits[i];
+            }
             // Freeze the old model's selected token sequence. Do not reselect
             // policies under the new model or parse the dictionary again.
             const auto retained_tokens = std::span<const LzssTypedToken>{decoded_tokens}
@@ -811,6 +839,16 @@ int main(const int argc, const char* const argv[]) {
     print_cost("escape_cost", escape_cost);
     if (distance_policies) {
         print_cost("retained_cost", retained_cost);
+        std::cout << "distance_bit_uniform_bits=" << distance_bit_uniform << '\n'
+                  << "distance_bit_zero_count=" << distance_bit_counts[0] << '\n'
+                  << "distance_bit_one_count=" << distance_bit_counts[1] << '\n'
+                  << "distance_bit_verified_frames=" << distance_bit_verified_frames << '\n';
+        constexpr std::array bit_model_names{"position", "class_position"};
+        for (std::size_t i = 0; i < bit_model_names.size(); ++i)
+            std::cout << "distance_bit_" << bit_model_names[i] << "_adaptive_bits="
+                      << distance_bit_adaptive[i] << '\n'
+                      << "distance_bit_" << bit_model_names[i] << "_empirical_bits="
+                      << distance_bit_empirical[i] << '\n';
         std::cout << "reduced_reselected_archive_bytes=" << reduced_reselected_archive_bytes << '\n'
                   << "reduced_reselected_saved_bytes=" << reduced_reselected_saved_bytes << '\n'
                   << "reduced_reselected_changed_frames=" << reduced_reselected_changed_frames << '\n';
