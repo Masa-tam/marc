@@ -16099,3 +16099,14 @@ For the planned distance-bit diagnostic, hand-check binary predictions and
 LSB order, isolate length bits, exercise classes 0 and 16 and rescale/reset
 boundaries, and reject invalid symbol/bypass association. Require uniform
 bit count to equal the existing distance-bypass control before corpus use.
+
+### TVG-1103
+
+Hand vectors check two zero bits cost log2(3), position sharing across classes,
+LSB-first observations for value 5 at width 3, and empirical information.
+Isolate a length-escape bit from distance classes zero and sixteen; compare
+uniform distance count with the existing cost diagnostic. Repeat invocations
+for reset determinism. After 32,766 zeros, test the next rescaled prediction
+against log2(32767)+log2(16385/16384). Reject malformed metadata, missing,
+orphaned, duplicate and wrong-width bypass, illegal class-16 distance and
+length 259, and accept/reject the exact operation-cap boundary.

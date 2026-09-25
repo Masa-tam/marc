@@ -34067,3 +34067,19 @@ both bounds.
   no external implementation expression copied and no legal guarantee claimed.
 - Validation: report aggregation, documentation layout and diff checks passed.
   No implementation or corpus rerun was performed for this design step.
+
+## CR-1388: 2026-09-25 - Implement bounded distance-bit diagnostics
+
+- Author: Codex; reviewer: repository maintainer approved implementation.
+- References used: IR-0989, DD-1234 and TVG-1103; first-party mathematics/specs.
+- Known implementations intentionally not consulted: external compressor
+  sources, copyleft implementations and third-party test suites.
+- Generated-code task: implement fixed-array causal distance-bit information
+  models and independent hand-calculated boundary/malformed tests.
+- Independent decisions: retain observation counts and separate adaptive from
+  empirical scores; discard partial results on validation failure.
+- Similarity review: mathematical frequency counting and first-party operation
+  contracts only; no external expression copied or legal guarantee claimed.
+- Validation: MSVC Release build and all 3,798 CTest cases passed, including
+  five new hand-calculated diagnostic tests, documentation layout and
+  interoperability schema compatibility. Corpus integration is still pending.

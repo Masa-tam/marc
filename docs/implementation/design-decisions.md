@@ -24656,3 +24656,16 @@ rescaling at total 32768. Keep length bypass and all other fields unchanged.
 Measure adaptive and empirical information separately; never treat future
 histograms as achievable savings. No new format ID, public API or production
 model change is authorized by this diagnostic design.
+
+## DD-1234: Implement bounded distance-bit information diagnostics
+
+Add a benchmark-only context-7 operation reader with fixed position and
+class/position banks. Return uniform bit count, two adaptive and empirical
+scores and zero/one observations per bank. Each invocation is a fresh frame;
+count before updating and rescale by ceiling halves at 32768.
+
+Validate all operation shapes and required bypass association, including
+class-16 distance restriction and forbidden escaped length 259. Reject inputs
+above five times 65,536 operations; return a zero invalid result on any failure.
+This is not a full token-grammar validator: callers must supply validated
+frames. No diagnostic score participates in coding or changes public bytes.

@@ -8987,3 +8987,10 @@ Remaining field-cost attribution uses checked BM-0118 reports, the first-party
 model-cost diagnostic and the documented distance-class/LSB bypass mapping.
 The proposed binary diagnostic follows elementary online frequency counting;
 no external compressor source or third-party tests were consulted.
+
+### IR-0989
+
+Distance extra-bit diagnostics implement the independently documented Stage 4
+binary-frequency equations from IR-0988. Hand vectors use elementary log2
+probabilities and repository context-7 operation shapes. No external codec
+source or third-party test suite was consulted.
