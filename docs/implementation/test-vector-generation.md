@@ -16251,3 +16251,11 @@ overlap and exact aggregate limits. A short final frame verifies deterministic
 bytes and output sentinels. Sixteen a Literals followed by length-5/distance-13
 must reproduce the independent 18-byte payload, with 36 events and 38 decisions,
 and reconstruct 21 a bytes through the private frame decoder.
+
+### TVG-1116
+
+Extend the candidate benchmark smoke contract with context-9 fixed-token
+archive totals, per-frame verification count, saved/extra-byte reconciliation
+against context 8 and encode/decode timing fields. Compare integer results
+between independent reference search and indexed search. Improvement is not
+a pass condition; decoded tokens and raw input must match on every frame.

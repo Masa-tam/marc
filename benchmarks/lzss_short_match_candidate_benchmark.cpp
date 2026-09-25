@@ -15,6 +15,8 @@
 #include "frame/lzss_short_length_escape_frame_encoder.hpp"
 #include "frame/lzss_reduced_literal_frame_encoder.hpp"
 #include "frame/lzss_reduced_literal_frame_decoder.hpp"
+#include "frame/lzss_position_distance_frame_encoder.hpp"
+#include "frame/lzss_position_distance_frame_decoder.hpp"
 
 #include <algorithm>
 #include <array>
@@ -320,6 +322,9 @@ int main(const int argc, const char* const argv[]) {
     std::uint64_t reduced_literal_verified_frames{}, reduced_literal_saved_bytes{},
         reduced_literal_extra_bytes{};
     double reduced_literal_encode_seconds{}, reduced_literal_decode_seconds{};
+    std::uint64_t position_distance_archive_bytes = baseline_archive_bytes;
+    std::uint64_t position_distance_verified_frames{}, position_distance_saved_bytes{}, position_distance_extra_bytes{};
+    double position_distance_encode_seconds{}, position_distance_decode_seconds{};
     std::uint64_t reduced_reselected_archive_bytes = baseline_archive_bytes;
     std::uint64_t reduced_reselected_saved_bytes{}, reduced_reselected_changed_frames{};
     std::array<std::uint64_t, 3> reduced_reselected_counts{};
@@ -670,6 +675,41 @@ int main(const int argc, const char* const argv[]) {
                 reduced_literal_saved_bytes += selection.serialized_size - reduced.serialized_size;
             else
                 reduced_literal_extra_bytes += reduced.serialized_size - selection.serialized_size;
+            auto position_stream = reduced_stream;
+            position_stream.context_count = 40;
+            position_stream.context_variant = 9;
+            const marc::frame::internal::TypedContextFrameValidationContext position_context{
+                position_stream, limits, frames, committed};
+            const auto position_start = Clock::now();
+            const auto positioned = marc::frame::internal::encode_lzss_position_distance_frame(
+                position_stream, limits, frames, committed, retained_tokens,
+                operations, serialized);
+            position_distance_encode_seconds += std::chrono::duration<double>(
+                Clock::now() - position_start).count();
+            if (positioned.error != marc::frame::internal::LzssShortMatchFrameEncodeError::none) {
+                std::cerr << "position distance encode failed\n";
+                return 2;
+            }
+            const auto position_decode_start = Clock::now();
+            const auto position_restored = marc::frame::internal::decode_lzss_position_distance_frame(
+                std::span<const std::byte>{serialized}.first(positioned.serialized_size),
+                position_context, tokens, std::span<std::byte>{decoded}.first(count));
+            position_distance_decode_seconds += std::chrono::duration<double>(
+                Clock::now() - position_decode_start).count();
+            if (position_restored.error != marc::frame::internal::LzssShortMatchFrameDecodeError::none
+                || position_restored.serialized_consumed != positioned.serialized_size
+                || position_restored.required_token_count != retained_tokens.size()
+                || !std::equal(retained_tokens.begin(), retained_tokens.end(), tokens.begin(), same_token)
+                || !std::equal(frame.begin(), frame.end(), decoded.begin())) {
+                std::cerr << "position distance fixed-token round trip mismatch\n";
+                return 2;
+            }
+            ++position_distance_verified_frames;
+            position_distance_archive_bytes += positioned.serialized_size;
+            if (positioned.serialized_size < reduced.serialized_size)
+                position_distance_saved_bytes += reduced.serialized_size - positioned.serialized_size;
+            else
+                position_distance_extra_bytes += positioned.serialized_size - reduced.serialized_size;
             const auto old_member = std::find(reduced_policies.begin(), reduced_policies.end(),
                                                selection.selected_policy);
             if (old_member == reduced_policies.end()
@@ -861,6 +901,12 @@ int main(const int argc, const char* const argv[]) {
                   << "reduced_literal_extra_bytes=" << reduced_literal_extra_bytes << '\n'
                   << "reduced_literal_encode_seconds=" << reduced_literal_encode_seconds << '\n'
                   << "reduced_literal_decode_seconds=" << reduced_literal_decode_seconds << '\n';
+        std::cout << "position_distance_archive_bytes=" << position_distance_archive_bytes << '\n'
+                  << "position_distance_verified_frames=" << position_distance_verified_frames << '\n'
+                  << "position_distance_saved_bytes=" << position_distance_saved_bytes << '\n'
+                  << "position_distance_extra_bytes=" << position_distance_extra_bytes << '\n'
+                  << "position_distance_encode_seconds=" << position_distance_encode_seconds << '\n'
+                  << "position_distance_decode_seconds=" << position_distance_decode_seconds << '\n';
         for (std::size_t i = 0; i < literal_partitions.size(); ++i)
             std::cout << "literal_partition_" << literal_partition_names[i]
                       << "_adaptive_bits=" << literal_partition_bits[i] << '\n'

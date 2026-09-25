@@ -33,6 +33,8 @@ foreach(key IN ITEMS sample_bytes frame_bytes frame_count
         distance_selector_archive_bytes
         reduced_literal_archive_bytes reduced_literal_verified_frames
         reduced_literal_saved_bytes reduced_literal_extra_bytes
+        position_distance_archive_bytes position_distance_verified_frames
+        position_distance_saved_bytes position_distance_extra_bytes
         reduced_reselected_archive_bytes reduced_reselected_saved_bytes
         reduced_reselected_changed_frames reduced_reselected_count_0
         reduced_reselected_count_1 reduced_reselected_count_2
@@ -80,6 +82,8 @@ math(EXPR reconstructed_reduced_literal
     "${distance_selector_archive_bytes} - ${reduced_literal_saved_bytes} + ${reduced_literal_extra_bytes}")
 math(EXPR reconstructed_reselected
     "${reduced_literal_archive_bytes} - ${reduced_reselected_saved_bytes}")
+math(EXPR reconstructed_position_distance
+    "${reduced_literal_archive_bytes} - ${position_distance_saved_bytes} + ${position_distance_extra_bytes}")
 math(EXPR reselected_count
     "${reduced_reselected_count_0} + ${reduced_reselected_count_1} + ${reduced_reselected_count_2}")
 math(EXPR distance_bit_count "${distance_bit_zero_count} + ${distance_bit_one_count}")
@@ -111,6 +115,9 @@ if(NOT sample_bytes EQUAL 4096 OR NOT frame_bytes EQUAL 4096
     OR reduced_reselected_changed_frames GREATER frame_count
     OR reduced_reselected_archive_bytes LESS 192
     OR NOT reduced_literal_verified_frames EQUAL frame_count
+    OR NOT position_distance_verified_frames EQUAL frame_count
+    OR NOT reconstructed_position_distance EQUAL position_distance_archive_bytes
+    OR position_distance_archive_bytes LESS 192
     OR NOT reconstructed_reduced_literal EQUAL reduced_literal_archive_bytes
     OR reduced_literal_archive_bytes LESS 192
     OR NOT frame_count EQUAL 1 OR NOT selections EQUAL frame_count
@@ -282,6 +289,10 @@ if(field STREQUAL "" OR NOT distance_selector_archive_bytes EQUAL CMAKE_MATCH_1)
 endif()
 foreach(report IN ITEMS output reference_output)
     foreach(phase IN ITEMS encode decode)
+        string(REGEX MATCH "position_distance_${phase}_seconds=([0-9]+[.][0-9]+)" field "${${report}}")
+        if(field STREQUAL "")
+            message(FATAL_ERROR "Missing fixed-token position distance timing")
+        endif()
         string(REGEX MATCH "reduced_literal_${phase}_seconds=([0-9]+[.][0-9]+)" field "${${report}}")
         if(field STREQUAL "")
             message(FATAL_ERROR "Missing fixed-token reduced literal timing")

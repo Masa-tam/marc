@@ -34285,3 +34285,17 @@ both bounds.
   copied and no legal guarantee claimed.
 - Validation: MSVC Release build and all 3,845 CTest cases passed, including
   six frame-encoder tests and interoperability schema compatibility.
+
+## CR-1401: 2026-09-25 - Integrate private position-distance benchmark
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1002, DD-1247 and TVG-1116; first-party harness only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: compare actual context-9 frame bytes on frozen context-8 control tokens,
+  verify every round trip and expose timing and byte-difference counters.
+- Similarity review: repository-owned integration; no external expression
+  copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,845 CTest cases passed, including
+  the extended candidate benchmark smoke and interoperability schema test.
+  Full-corpus measurement remains separate from this harness integration.

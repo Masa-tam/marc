@@ -9076,3 +9076,9 @@ remain independent encoder oracles. No external source or test suite was used.
 Private context-9 frame encoding composes first-party token modeling, payload
 encoding and frame preflight. The fixed distance-13 payload remains the
 independent arithmetic oracle from TVG-1110. No external source was consulted.
+
+### IR-1002
+
+Context-9 benchmark integration uses only repository-owned frame encoders,
+decoders and the existing fixed-token comparison harness. No external
+implementation or test vectors were consulted.

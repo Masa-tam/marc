@@ -24830,3 +24830,13 @@ preflight, capacity and overlap errors; operation storage remains scratch space.
 Charge the existing bounded frame requirements plus used operations and any
 encoder-state excess over the corresponding decoder state. Public admission,
 stream encoding and benchmark integration remain separate work.
+
+## DD-1247: Measure context-9 bytes on frozen selected tokens
+
+In the distance-policies benchmark, encode the old selector's retained tokens
+with both context 8 and context 9. Do not reparse or reselect under context 9.
+Validate decoded tokens and raw bytes for every frame. Report archive bytes,
+verified frames, encode/decode time and saved/extra bytes relative to context 8.
+Archive totals retain the harness's common header accounting; this is not a
+published stream encoder. Smoke checks require indexed/reference agreement
+and reconcile the signed byte difference without assuming an improvement.
