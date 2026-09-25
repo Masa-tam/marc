@@ -4322,3 +4322,49 @@ enforcement remains active.
 Next evaluate policy reselection under context 8 separately from this fixed-token
 control. Retain the private status and unchanged public model until broader
 validation and an explicit adoption decision.
+
+### BM-0118: Context-8 policy reselection across the complete corpus
+
+On 2026-09-25, the MSVC Release executable at `e91c423c` processed all twelve
+Silesia members with `1024 65536 indexed distance-policies`: 211,938,580 bytes
+and 3,239 frames. Executable SHA-256 was
+`748732B0447161B34ABFC86314513C30C6DC5C6F014FB3AB90F1E6C28283EBEA`.
+Local ignored checkpoints in `out/reduced-reselected-corpus` retain input and
+executable hashes and arguments. All context-7 totals and fixed-token context-8
+totals reproduced their previous per-member values. Every evaluated candidate
+strictly recovered identical token fields and raw bytes. All twelve completed
+checkpoints were revalidated without relaunching the benchmark.
+
+Only policies 0,3,4 were eligible, exactly as in the fixed-token control. Each
+frame selects the smallest actual context-8 size; ties prefer the first policy
+in that order. Totals include the common 112-byte stream-header charge per file.
+
+| Member | Fixed-token bytes | Reselected bytes | Additional bytes saved | Changed-policy frames |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 4,079,396 | 4,079,396 | 0 | 0 |
+| mozilla | 19,592,635 | 19,592,366 | 269 | 25 |
+| mr | 3,571,931 | 3,571,772 | 159 | 9 |
+| nci | 3,558,750 | 3,558,718 | 32 | 4 |
+| ooffice | 3,159,844 | 3,158,736 | 1,108 | 38 |
+| osdb | 4,104,316 | 4,104,316 | 0 | 0 |
+| reymont | 1,993,514 | 1,993,514 | 0 | 0 |
+| samba | 5,690,657 | 5,690,638 | 19 | 5 |
+| sao | 5,396,832 | 5,396,799 | 33 | 1 |
+| webster | 12,869,094 | 12,869,080 | 14 | 7 |
+| x-ray | 5,957,025 | 5,957,007 | 18 | 1 |
+| xml | 758,720 | 758,717 | 3 | 3 |
+| **Total** | **70,732,714** | **70,731,059** | **1,655** | **93** |
+
+Selected policy counts were 1,134 / 1,368 / 737 for policies 0 / 3 / 4.
+Changed-policy counts include tie changes, not only strict improvements.
+The additional reduction is about 0.00234%; most of the earlier gain came from
+the literal partition itself, not policy reselection. Ooffice recovers 1,108
+bytes but remains 3,126 bytes larger than its context-7 result. Mozilla remains
+598,227 bytes above the maintainer's reported gzip -9v size.
+
+This is a size-only experiment, not a retained-output selector implementation
+or speed/RSS comparison. It does not justify expanding the policy search solely
+for these small gains. If context 8 is adopted, its own candidate sizes can
+replace context-7 scoring; a second old-model selection stage is not required.
+Keep public behavior unchanged and return to the remaining model/parser cost
+breakdown before adding further search combinations.

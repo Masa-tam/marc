@@ -24629,3 +24629,16 @@ cannot exceed the fixed control because that policy is in the candidate set.
 This is a size-only per-frame minimum experiment, not a retained production
 selector, a new public codec, or an end-to-end performance result. Existing
 fixed-token timing fields exclude the added candidate evaluations.
+
+## DD-1232: Validate context-8 reselection against complete fixed-token controls
+
+Measure all twelve Silesia members using the unchanged 64-KiB indexed policy
+set 0,3,4. Require each member's context-7 and fixed-token context-8 sizes to
+reproduce previous reports before accepting reselection data. Check input and
+executable identity, complete coverage, selection counts and byte deltas at
+checkpoint publication and validate them again when resuming.
+
+Report additional savings relative to BM-0117 separately from model changes.
+Changed-policy counts include deterministic tie changes and therefore do not
+necessarily count strictly improved frames. This experiment measures actual
+candidate frame sizes, not an implemented retained-output selector's speed.

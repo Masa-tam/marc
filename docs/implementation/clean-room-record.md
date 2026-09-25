@@ -34033,3 +34033,22 @@ both bounds.
 - Validation: MSVC Release build and all 3,793 CTest cases passed, including
   benchmark smoke, documentation layout and interoperability schema checks.
   Full-corpus reselection measurement remains the next separate experiment.
+
+## CR-1386: 2026-09-25 - Measure complete-corpus context-8 reselection
+
+- Author: Codex; reviewer: repository maintainer approved the next experiment.
+- References used: IR-0987, DD-1232 and TVG-1101; local data and first-party code.
+- Known implementations intentionally not consulted: external compressors,
+  copyleft source and third-party test suites.
+- Generated-code task: execute checkpointed context-8 policy reselection across
+  all corpus members while reproducing the fixed-token controls.
+- Independent decisions: separate model and selection savings; do not interpret
+  changed-policy counts as strictly improved frame counts or claim speedups.
+- Similarity review: repository-owned harness reuse only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: all twelve members and 3,239 frames passed candidate token/raw
+  recovery, prior-size controls and checkpoint revalidation. BM-0118 records
+  1,655 additional bytes saved and 93 changed-policy frames. No production
+  code changed; the executable is the previously validated 3,793-test build.
+  Benchmark smoke and documentation layout passed after measurement; the
+  full suite was not rerun for this documentation-only change.

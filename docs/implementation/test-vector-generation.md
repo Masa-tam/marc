@@ -16079,3 +16079,13 @@ counts sum to frame count, changed count is bounded, and savings reconstruct
 the selected total from the fixed-token total. The benchmark itself requires
 strict token/raw recovery for each candidate and equality of the fixed-policy
 size with the corresponding independently encoded candidate.
+
+### TVG-1101
+
+Use the complete local Silesia corpus with 1024 maximum 65,536-byte frames per
+member. Require prior input identity and old/fixed byte totals, all frames
+verified, three selection counts summing to frame count, bounded changed count,
+and selected bytes equal to fixed bytes minus savings. The per-frame minimum
+sum must not exceed any single-policy total. Revalidate completed checkpoints
+without launching another benchmark; the executable checks every candidate's
+strict token and raw recovery as specified in TVG-1100.

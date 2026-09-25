@@ -8974,3 +8974,9 @@ from IR-0984. No external compressor source or third-party tests were consulted.
 Reduced-literal policy reselection uses marc's first-party distance policy
 benchmark, frame encoder and strict decoder, building on BM-0117. No external
 compressor implementation or third-party test suite was consulted.
+
+### IR-0987
+
+Complete-corpus reduced-literal reselection uses the locally supplied Silesia
+members from BM-0117 and the first-party comparison harness from IR-0986.
+No external compressor source or third-party test vectors were consulted.
