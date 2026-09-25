@@ -4274,3 +4274,51 @@ throughput and bounded memory. Retain the existing public model unchanged.
 This evidence supports a modest model experiment, not a claim that the gzip
 gap has been closed. Empirical histograms still use future counts and omit
 model transmission; their scores are not achievable savings promises.
+
+### BM-0117: Actual reduced-literal coding on fixed selected tokens
+
+On 2026-09-25, MSVC Release at `db6f7fed` processed all twelve Silesia members
+with `1024 65536 indexed distance-policies`: 211,938,580 input bytes and 3,239
+frames. Executable SHA-256 was
+`D9E58E869231B6E462C6993500E80F287CBC20CC913BE7593F98AE5671F7A48B`.
+Ignored local reports in `out/reduced-literal-corpus` retain executable/input
+hashes, arguments and per-member results. The old 0/3/4 context-7 selector was
+unchanged; its selected tokens were encoded with context 8 without dictionary
+search or new-model reselection. Every new frame strictly decoded to the same
+token fields and raw bytes. Old sizes reproduced BM-0116 for every member.
+
+These are actual encoded frame totals plus 112 stream-header bytes per member,
+not logarithmic cost estimates. No public stream was emitted or admitted.
+
+| Member | Context 7 bytes | Context 8 bytes | Change |
+| --- | ---: | ---: | ---: |
+| dickens | 4,097,624 | 4,079,396 | -18,228 |
+| mozilla | 19,636,009 | 19,592,635 | -43,374 |
+| mr | 3,596,220 | 3,571,931 | -24,289 |
+| nci | 3,584,906 | 3,558,750 | -26,156 |
+| ooffice | 3,155,610 | 3,159,844 | +4,234 |
+| osdb | 4,112,656 | 4,104,316 | -8,340 |
+| reymont | 1,999,706 | 1,993,514 | -6,192 |
+| samba | 5,718,530 | 5,690,657 | -27,873 |
+| sao | 5,403,519 | 5,396,832 | -6,687 |
+| webster | 12,941,027 | 12,869,094 | -71,933 |
+| x-ray | 5,971,124 | 5,957,025 | -14,099 |
+| xml | 763,860 | 758,720 | -5,140 |
+| **Total** | **70,980,791** | **70,732,714** | **-248,077** |
+
+The 0.3495% reduction improves eleven members but is not universal. The actual
+saving differs from BM-0116's 248,098.600 byte-equivalent prediction by only
+21.600 bytes across the corpus. Mozilla still exceeds the maintainer's reported
+gzip -9v size of 18,994,139 bytes by 598,496 bytes; this experiment does not
+close that gap or rerun gzip under controlled conditions.
+
+The same bounded benchmark buffers were reused; no new token/payload buffer
+was allocated for this comparison. Encoder and strict decoder timing exclude
+dictionary selection and diagnostic scoring. Single-run totals are recorded
+as 5.573251 s encode and 10.358276 s decode. They are not an end-to-end speedup
+claim, and peak process memory was not measured. Existing per-frame hard-limit
+enforcement remains active.
+
+Next evaluate policy reselection under context 8 separately from this fixed-token
+control. Retain the private status and unchanged public model until broader
+validation and an explicit adoption decision.

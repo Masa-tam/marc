@@ -33996,3 +33996,24 @@ both bounds.
   3,793 CTest cases passed, including documentation layout and interoperability
   schema compatibility. Fixed-token comparison checks both token fields and raw
   bytes; full-corpus performance measurement remains a separate next step.
+
+## CR-1384: 2026-09-25 - Measure actual reduced-literal corpus sizes
+
+- Author: Codex; reviewer: repository maintainer approved the corpus experiment.
+- References used: IR-0985, DD-1230 and TVG-1099; local Silesia data and
+  repository-owned fixed-token benchmark only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Generated-code task: execute checkpointed complete-corpus comparison with
+  old selected tokens fixed, and record actual bytes and strict round trips.
+- Independent decisions: retain input/executable identity checks and old-size
+  controls; report member regressions and avoid incomparable timing claims.
+- Similarity review: first-party harness reuse only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: all twelve members, 211,938,580 bytes and 3,239 frames passed
+  exact token/raw recovery and old-size controls. All twelve checkpoints were
+  revalidated without relaunching the benchmark. BM-0117 records 248,077 bytes
+  saved in aggregate, including the 4,234-byte ooffice regression. Production
+  code is unchanged from the previously tested 3,793-case build.
+  The benchmark smoke and documentation layout checks also passed after the
+  measurement; the complete suite was not rerun for this documentation-only change.

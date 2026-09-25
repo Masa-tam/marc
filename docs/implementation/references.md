@@ -8962,3 +8962,9 @@ frame specifications; no external source or third-party test suite was used.
 Fixed-token reduced-literal measurement uses marc's own candidate benchmark,
 retained selector, context-8 frame writer and strict decoder. No external
 compressor implementation or third-party test vectors were consulted.
+
+### IR-0985
+
+Actual reduced-literal corpus measurement uses the locally supplied Silesia
+members already identified in BM-0116 and the first-party fixed-token harness
+from IR-0984. No external compressor source or third-party tests were consulted.

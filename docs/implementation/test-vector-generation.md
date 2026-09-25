@@ -16060,3 +16060,12 @@ reconstruct the total from the old selector total and byte deltas. Require
 indexed/reference agreement and both timing fields without throughput gates.
 The executable compares every decoded token field and raw byte for each frame;
 no assertion assumes that reduced context count always improves compression.
+
+### TVG-1099
+
+For each complete Silesia member, require verified reduced-literal frame count
+to equal frame count, and reconstruct new size as old size minus saved bytes
+plus extra bytes. Check the old size and input hash against BM-0116 reports.
+Reject missing or invalid numeric fields and non-finite or negative timings.
+The benchmark itself checks exact decoded token fields and raw bytes. Retain
+per-member checkpoints so interruption does not discard completed checks.

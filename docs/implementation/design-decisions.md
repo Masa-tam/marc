@@ -24600,3 +24600,17 @@ saved/extra bytes relative to the old winner, verified frame count, and separate
 encode/decode times excluding selection. Reuse existing bounded scratch; no
 new token or payload allocation is needed. These are private experimental size
 estimates, not publicly decodable archives or evidence of corpus-wide benefit.
+
+## DD-1230: Measure context-8 actual bytes across the complete fixed-token corpus
+
+Run all twelve Silesia members with 64-KiB frames and the existing indexed
+0/3/4 selector. Keep context-7 winners fixed as specified in DD-1229. Require
+old-model byte totals to reproduce BM-0116, exact input identity, complete-file
+coverage and strict recovery of every frame and token. Checkpoint each member
+with input/executable SHA-256 and arguments; reject mismatched checkpoints.
+
+Compare actual context-8 frame sizes, including the common stream-header
+charge, against actual context-7 sizes. Record regressions as well as savings.
+Report isolated new encoder/decoder timing as a single-run observation, not
+as a speedup against old selection-inclusive timings. A favorable corpus sum
+alone does not admit the private representation to the public API.
