@@ -1,4 +1,5 @@
 #include "context/lzss_short_length_escape_operation_decoder.hpp"
+#include "context/lzss_reduced_literal_operation_decoder.hpp"
 
 #include "context/lzss_field_context_state.hpp"
 #include "context/lzss_short_length_escape.hpp"
@@ -81,15 +82,20 @@ constexpr auto token_variant = dictionary::internal::LzssTypedTokenVariant::
 
 [[nodiscard]] bool read_token(const std::span<const ModeledOperation> operations,
                               const LzssFieldContextState& state,
+                              const bool reduced_literal,
                               LzssTypedToken& token,
                               LzssFieldContextResult& result) noexcept {
+    const auto context_id = [reduced_literal](const std::uint16_t id) {
+        return static_cast<std::uint16_t>(!reduced_literal || id < 4 ? id
+            : id < 20 ? 4 + (id - 4) / 2 : id - 8);
+    };
     std::uint32_t kind{};
     if (!read_symbol(operations, state.token_context(), 2, kind, result)) {
         return false;
     }
     if (kind == 0) {
         std::uint32_t literal{};
-        if (!read_symbol(operations, state.literal_context(), 256,
+        if (!read_symbol(operations, context_id(state.literal_context()), 256,
                          literal, result)) return false;
         token = {LzssTypedTokenKind::literal,
                  static_cast<std::uint8_t>(literal), 0, 0};
@@ -97,7 +103,7 @@ constexpr auto token_variant = dictionary::internal::LzssTypedTokenVariant::
     }
 
     std::uint32_t length_class{};
-    if (!read_symbol(operations, state.length_context(), 9,
+    if (!read_symbol(operations, context_id(state.length_context()), 9,
                      length_class, result)) return false;
     const auto length_bits = static_cast<std::uint8_t>(
         length_class == 8 ? 1 : length_class);
@@ -115,7 +121,7 @@ constexpr auto token_variant = dictionary::internal::LzssTypedTokenVariant::
 
     std::uint32_t distance_class{};
     if (!read_symbol(operations,
-                     LzssFieldContextState::distance_context(length_class),
+                     context_id(LzssFieldContextState::distance_context(length_class)),
                      17, distance_class, result)) return false;
     std::uint32_t distance_extra{};
     if (distance_class != 0
@@ -133,7 +139,8 @@ constexpr auto token_variant = dictionary::internal::LzssTypedTokenVariant::
     const dictionary::internal::LzssParameters& parameters,
     const LzssFieldContextValidationContext& context,
     const core::DecoderLimits& limits,
-    const std::span<LzssTypedToken> output) noexcept {
+    const std::span<LzssTypedToken> output,
+    const bool reduced_literal = false) noexcept {
     LzssFieldContextResult result{};
     result.token_error = dictionary::internal::validate_lzss_typed_parameters(
         parameters, limits, token_variant);
@@ -191,7 +198,7 @@ constexpr auto token_variant = dictionary::internal::LzssTypedTokenVariant::
             return result;
         }
         LzssTypedToken token{};
-        if (!read_token(operations, state, token, result)) return result;
+        if (!read_token(operations, state, reduced_literal, token, result)) return result;
         std::uint64_t next_raw{};
         result.token_error = dictionary::internal::validate_lzss_typed_token(
             token, parameters, {result.raw_size, raw}, limits,
@@ -283,6 +290,32 @@ LzssFieldContextResult invert_lzss_short_length_escape_operations(
     result.error = check_overlap(operations, output);
     if (result.error != LzssFieldContextError::none) return result;
     return run(operations, parameters, context, limits, output);
+}
+
+LzssFieldContextResult validate_lzss_reduced_literal_operations(
+    const std::span<const ModeledOperation> operations,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits) noexcept {
+    return run(operations, parameters, context, limits, {}, true);
+}
+
+LzssFieldContextResult invert_lzss_reduced_literal_operations(
+    const std::span<const ModeledOperation> operations,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<LzssTypedToken> private_tokens) noexcept {
+    auto result = run(operations, parameters, context, limits, {}, true);
+    if (result.error != LzssFieldContextError::none) return result;
+    if (private_tokens.size() < context.declared_token_count) {
+        result.error = LzssFieldContextError::output_too_small;
+        return result;
+    }
+    const auto output = private_tokens.first(context.declared_token_count);
+    result.error = check_overlap(operations, output);
+    if (result.error != LzssFieldContextError::none) return result;
+    return run(operations, parameters, context, limits, output, true);
 }
 
 } // namespace marc::context::internal

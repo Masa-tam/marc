@@ -33914,3 +33914,19 @@ both bounds.
 - Validation: MSVC Release build and all 3,770 CTest cases passed, including
   four new forward-mapping tests, documentation layout and interoperability
   schema compatibility. No inverse token decoder or public admission is added.
+
+## CR-1379: 2026-09-25 - Restore reduced-literal operations to typed tokens
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0980, DD-1225 and TVG-1094; first-party grammar only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Generated-code task: validate and invert the context-8 operation grammar
+  while retaining shared token/reference and failure-before-output checks.
+- Independent decisions: remap expected IDs, not input operations; preserve
+  literal history across Match and reset local state on each invocation.
+- Similarity review: intentional reuse of repository-owned code and vectors;
+  no external expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,777 CTest cases passed, including
+  seven reduced-literal inverse tests, existing inverse regressions,
+  documentation layout and interoperability schema compatibility.

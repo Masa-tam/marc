@@ -8930,3 +8930,10 @@ The reduced-literal token mapper reuses marc's validated short-length escape
 mapper, followed by the context-8 ID mapping specified in the format. Hand
 vectors and prefix boundaries come from the repository's own specification;
 no external implementation or test suite is consulted.
+
+### IR-0980
+
+The reduced-literal inverse reuses marc's first-party escape-operation grammar
+and validation with the specified context-8 expected-ID mapping. Boundary and
+negative vectors are adapted from the repository's own tests. No external
+implementation or third-party test suite was consulted.

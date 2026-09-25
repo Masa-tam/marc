@@ -2583,6 +2583,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_short_match_operations_tests.cpp
         tests/lzss_reduced_literal_context_layout_tests.cpp
         tests/lzss_reduced_literal_operations_tests.cpp
+        tests/lzss_reduced_literal_operation_decoder_tests.cpp
         tests/lzss_reduced_literal_preflight_tests.cpp
         tests/lzss_short_length_escape_tests.cpp
         tests/lzss_short_length_escape_operation_decoder_tests.cpp

@@ -16009,3 +16009,13 @@ the resulting operations with the new Range encoder, then decode the same
 operations and exact counts. Invalid late tokens, insufficient operation
 capacity and a one-byte-short operation-memory cap must leave sentinels intact.
 The end-to-end raw-token inverse is not claimed by this operation-level test.
+
+### TVG-1094
+
+Adapt the first-party escape inverse vectors to context 8: length context 13,
+distance context 23 for short length escape, and 15+class otherwise. Cover all
+lengths 3..258, rejected length 259, invalid distance, context/alphabet errors,
+truncation, counts, limits, short output and overlapping buffers. Preserve
+sentinels on malformed input. For all 256 preceding literal values, map and
+invert Literal/Match/Literal and independently require final literal context
+4+(byte>>5); reject resetting that history to initial context 3.

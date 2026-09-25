@@ -24531,3 +24531,13 @@ preserves Match behavior without duplicating the token-state machine. Remap
 in the same caller buffer with no second token parse or auxiliary allocation;
 leave unused output capacity untouched. Token input must stay stable during
 the call. This is a forward mapper, not the still-pending inverse grammar.
+
+## DD-1225: Share inverse escape grammar with explicit reduced-literal layout
+
+Select the reduced-literal layout only through private entry points. Map the
+expected literal, length and distance context IDs during grammar validation;
+do not mutate or copy the input operations. Token-state transitions, reference
+bounds, counts, aggregate limits and overlap checks remain shared with context
+7. Validate the complete stable input before writing any tokens, then repeat
+the same bounded parser to populate the caller's token prefix. Match retains
+literal history. This adds no public stream admission or Range frame decoder.
