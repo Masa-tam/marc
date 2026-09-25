@@ -24972,3 +24972,43 @@ Retain the private specialization without claiming end-to-end gains or promoting
 the format. The remaining encoder cost deserves a separate audit of binary
 model/interval work, with exact-byte differential tests against the generic
 path before any optimization. No public API, default or representation changes.
+
+## DD-1256: Separate binary encoder specialization from repeated planning
+
+Audit the private context-9 encoder after BM-0126. The adaptive distance-extra
+loop recomputes the field-kind predicate, selects the context offset and invokes
+generic model update for every bit. Model update resolves the offset again and
+uses an alphabet loop at rescale. A binary-specific path can select the field
+once, bind the two frequencies and total once per position, and explicitly
+rescale the pair. These are source-level opportunities; compiler inlining or
+hoisting may already eliminate some work, so gains require measurement.
+
+Unlike generic distance decoding, RangeWriter::encode already divides the
+range by total only once per bit. Do not promise the decoder's division
+reduction on the encoder or substitute approximate arithmetic. Preserve the
+same low/range update, carry handling, delayed-byte emission and five-step
+finish. Keep ordinary symbols and uniform length-extra bits unchanged.
+
+The first implementation step should retain a compile-time generic reference
+and specialize only adaptive distance-extra interval selection/model update.
+Keep the fixed model layout and workspace charge. Validate field grammar,
+width and value before indexing or shifting. Keep positive frequency/total,
+interval containment, normalized range, nonzero quotient, output capacity,
+decision overflow and carry checks. Update the selected frequency only after
+successful interval coding; rescale with ceil-half exactly at total 32768.
+A generic reference must not call the new specialized model-update helper.
+
+A separate source-level finding is three complete entropy runs per frame
+encode: frame plan performs a count-only run; entropy encode repeats its own
+plan/count-only run; entropy encode then writes. The existing frame timing
+includes all three plus context modeling and frame validation. The same
+architecture also serves the reduced-literal comparison, so this is not alone
+an explanation for the relative context-9 penalty. No per-phase costs have
+been measured here.
+
+Do not remove preflight merely to remove a pass. Any later reuse of a validated
+plan needs a separate internal contract for stable operations, limits, overlap,
+exact capacity, count agreement and descriptor publication; do not expose a
+caller-forgeable unchecked plan. Keep this integration change separate from
+the binary micro-optimization and measure it independently. Public APIs,
+defaults, wire representation and current failure contracts remain unchanged.

@@ -34424,3 +34424,20 @@ both bounds.
   copied and no legal guarantee claimed.
 - Validation: all checkpoint controls and reuse passed; documentation layout
   test passed. Runtime code unchanged since the full 3,849-test validation.
+
+## CR-1410: 2026-09-25 - Audit private binary distance encoding
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1011, DD-1256 and TVG-1125; repository encoder, frame
+  integration, layout/cursor and existing tests only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: identify byte-preserving binary model/interval optimization scope
+  and distinguish it from preflight/planning changes.
+- Findings: binary model lookup/update offers a bounded specialization;
+  interval coding already uses one division per bit. Frame encode performs
+  three entropy passes, a separate integration issue requiring its own contract.
+- Similarity review: source audit and independently written design only;
+  no external expression copied and no legal guarantee claimed.
+- Validation: documentation layout test passed. No runtime or test-code changes;
+  no new speed measurement and no claim of compiler-level redundant work.

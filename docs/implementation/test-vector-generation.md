@@ -16338,3 +16338,24 @@ including odd-frame members; reject missing, non-finite or non-positive times.
 Recheck hashes after execution and publish checkpoints only after validation.
 Rerun the driver to validate reuse of all twelve reports. Summarize paired
 reductions without introducing timing thresholds into correctness tests.
+
+## TVG-1125: Encoder specialization differential acceptance plan
+
+Before activating the DD-1256 binary specialization, compare the retained
+generic and specialized encoders for complete payload bytes, descriptors,
+payload/operation/decision counts and error positions/categories. Retain the
+independently fixed mixed and wide-distance vectors, not just round trips.
+
+Cover distance widths 1..16 with zero and maximum legal extras (class 16 permits
+only zero), mixed literals/matches and uniform length extras, and repeated
+updates crossing total 32768 with both selected bits. Compare count-only plans
+and written sizes. Include incomplete grammar, invalid fields/width/value,
+short output, exact and one-byte-short aggregate limits, overlapping storage
+and unchanged descriptor/output on preflight rejection. Preserve frame-level
+fixed payload, deterministic final-frame and exact-aggregate tests.
+
+Only after correctness validation, measure generic and specialized encoding
+in the same binary on identical operations with alternating order and output
+comparison outside timing. State whether timing includes planning, writing or
+the complete frame path. Keep repeated-plan removal out of this comparison.
+This is a future acceptance plan, not a claim that new differential tests ran.

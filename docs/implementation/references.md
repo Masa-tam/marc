@@ -9132,3 +9132,11 @@ Corpus-wide paired decoding extends IR-1009 using repository-owned benchmark
 code and existing local Silesia members. BM-0126 records method and results;
 per-member checkpoints preserve input hashes. No external implementation was
 consulted.
+
+### IR-1011
+
+The private context-9 encoder audit inspects repository-owned
+`lzss_position_distance_range_encoder.cpp`,
+`lzss_short_match_frame_encoder.cpp`, field cursor/layout and existing encoder
+tests. No external source or new algorithm reference was consulted. This is
+source-level analysis, not profiling or a measured speedup.
