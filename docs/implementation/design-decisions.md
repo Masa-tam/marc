@@ -25073,3 +25073,60 @@ The next design step is safe reuse of the already performed frame-level entropy
 plan identified in DD-1256. Preserve preflight transactionality, limits, overlap
 checks and stable-operation requirements; design this separately before reducing
 passes. No public API, default, format or allocation policy changes here.
+
+## DD-1261: Reuse one call-scoped prepared entropy plan in context-9 frames
+
+The context-9 frame encode currently performs entropy count-only planning twice,
+then payload writing. Target two runs: one complete checked plan and one checked
+write. Restrict the first integration to the private context-9 frame path; retain
+the existing standalone operation encoder and other frame identities unchanged.
+Do not promise a one-third whole-frame speedup: modeling, validation and framing
+remain outside the removed pass.
+
+Introduce an internal prepared-encode object whose ready state can only be set
+by successful checked planning. It retains a const operation span, validated
+counts and descriptor; callers cannot supply those fields as a trusted plan.
+Default construction is unready; delete copying/moving. Preparation clears any
+old ready state before validation, publishes readiness only on success, and
+uses existing limit/overflow/grammar checks. A write attempt consumes readiness,
+including rejected attempts, so retry requires preparation again. Reject an
+unready write without touching descriptor/output. Use an existing internal
+error category for this internal misuse, with deterministic result fields.
+
+Keep the object on the synchronous frame encode stack. Do not return it from
+the public frame-plan query, cache it across calls, or expose a C/public API.
+Preparation binds the operation pointer and extent; writing accepts no
+replacement operation span or replacement limits. Tokens/operations and their
+backing storage must remain unchanged/alive until the call returns, as already
+required during planning and writing. Pointer identity does not prove unchanged
+contents: this is a lifetime/stability contract, not mutation detection.
+No callbacks or asynchronous handoff may intervene.
+
+Before preparing, preserve the frame encoder's existing full-region overlap
+checks and token/context validation. After preparing, preserve frame semantics,
+aggregate limits, header/descriptor construction and output-capacity validation.
+Only then write the exact planned payload subspan. The internal write must also
+check payload capacity, checked address arithmetic and operation/output overlap
+before touching output. Re-run grammar and all checked range/model updates while
+writing; do not re-run count-only planning. Compare operation count/index,
+decision count, payload size and descriptor against the prepared values before
+publishing success. Publish serialized frame header/descriptor only after success.
+
+Failure contracts remain distinct: preflight rejection leaves serialized output
+and caller descriptor untouched, although caller-supplied operation workspace may
+already have been populated by modeling. An unexpected write-time inconsistency
+may leave partial payload bytes, but no successful descriptor/header publication;
+the output is unusable. Do not promise full rollback or allocate a frame-sized
+temporary to simulate it.
+
+The prepared object holds bounded scalar metadata, no new model arrays, heap
+allocation or owned operation buffer. Document its size/lifetime during
+implementation. Follow existing accounting for transient scalar stack metadata;
+do not silently change fixed model/writer/cursor workspace charges or exact-limit
+acceptance. If implementation requires additional owned working storage, stop
+and explicitly revise accounting before integration.
+
+Implementation sequence: add/test the prepared primitive against the existing
+operation encoder; then integrate only context-9 frames with full-byte/error/
+exact-limit regression checks; finally measure full-frame old/new paths in one
+binary. Keep primitive, integration and measurement evidence distinguishable.

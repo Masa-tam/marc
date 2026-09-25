@@ -34503,3 +34503,19 @@ both bounds.
   copied and no legal guarantee claimed.
 - Validation: checkpoint controls, identity hashes and reuse passed;
   documentation layout test passed. Runtime unchanged since full 3,853-test validation.
+
+## CR-1415: 2026-09-26 - Design call-scoped entropy plan reuse
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1016, DD-1261 and TVG-1130; first-party operation/frame
+  encoder contracts and existing regression tests.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: design removal of one redundant entropy planning run without trusting
+  caller-supplied plan metadata or weakening preflight publication guarantees.
+- Decision: a non-copyable internal prepared object, synchronous same-call
+  lifetime, unchanged input stability contract and one-shot write readiness.
+- Similarity review: independently authored design from repository contracts;
+  no external expression copied and no legal guarantee claimed.
+- Validation: documentation layout test passed; no runtime changes or new timing
+  measurements. Implementation and acceptance tests are future work.

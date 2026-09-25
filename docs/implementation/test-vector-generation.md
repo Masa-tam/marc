@@ -16407,3 +16407,30 @@ finite positive times without a performance threshold. Compare every prior
 non-time control with BM-0123, recheck hashes after execution, and publish each
 checkpoint only after validation. Reinvoke the driver to validate reuse of all
 twelve reports. The harness checks bytes and metadata outside timing.
+
+## TVG-1130: Prepared context-9 encoder acceptance plan
+
+Test unready writes, failed preparation after success, repeated preparation,
+successful write followed by repeated write, and consumption after short-output
+or overlap rejection. A fresh preparation must restore normal use. Assert
+descriptor/output sentinels for every preflight rejection, and compile-time
+non-copy/non-move properties; do not test concurrent mutation as supported use.
+
+Compare preparation and write results with existing plan/encode functions:
+complete payload bytes, operation count/index, decision count, descriptor and
+sizes. Cover independent fixed vectors, widths 1..16, binary rescaling, malformed
+or incomplete grammar, exact/short payload capacity, operation/output overlap,
+limits and checked arithmetic. Existing generic/specialized differential tests
+remain separate from prepared-plan equivalence.
+
+At frame integration, verify complete frames (including headers), final short
+frames, deterministic output, unchanged workspace tail and exact/one-byte-short
+aggregate limits. Preserve existing error priority and preflight output sentinels.
+Demonstrate the two-run path structurally or with test-only counting; size/byte
+equality alone does not prove a planning pass was removed. Any injected write
+failure must leave the frame unpublished, without asserting payload rollback.
+
+Benchmark only after correctness: pair the old three-run frame path with the
+new two-run path on identical retained tokens, alternating order and comparing
+outside timing. Do not reuse BM-0128's operation-only timings as frame evidence.
+This is a design acceptance plan; these new tests have not yet been implemented.

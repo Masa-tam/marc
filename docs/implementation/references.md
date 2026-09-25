@@ -9165,3 +9165,9 @@ new algorithm reference was consulted.
 Corpus-wide encoder pairing extends IR-1014 with existing local Silesia inputs
 and the repository-owned harness. BM-0128 records results; local checkpoints
 retain input hashes. No external implementation was consulted.
+
+### IR-1016
+
+Prepared-plan design uses repository-owned context-9 operation encoder, shared
+private frame encoder and transactional/exact-aggregate tests, following DD-1256
+and DD-1260. No external implementation was consulted.
