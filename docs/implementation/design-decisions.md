@@ -24718,3 +24718,16 @@ state storage, not just the 32 added frequencies. Specify bounded association
 of extra fields with their preceding class before implementation. No public
 admission, parser-policy change, fallback selector or class-conditioned model
 is part of this reservation. See the format reservation and Stage 5 design.
+
+## DD-1239: Separate backend binary state from ordinary token symbols
+
+Add a private exact-identity/count predicate and dense context-9 layout.
+Ordinary-symbol validation retains the context-8 domain 0..23; appended
+contexts 24..39 cannot be supplied as independent token symbols. This is
+shape validation, not full descriptor or token-grammar preflight.
+
+Provide a fixed sixteen-pair binary bank with separate read-only interval
+query and explicit update after successful coding. Invalid position/bit
+requests leave both state and output unchanged. Compute totals from pairs,
+reset to ones and rescale at 32768. This primitive is not yet attached to a
+Range coder, grouped-extra adapter or public stream parser.

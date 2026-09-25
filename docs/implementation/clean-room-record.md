@@ -34150,3 +34150,21 @@ both bounds.
 - Validation: documentation layout and diff checks passed. Runtime code and
   public admission are unchanged; no full-suite or corpus rerun for this
   design-only step. Payload vectors and implementation tests remain pending.
+
+## CR-1393: 2026-09-25 - Add private distance-position layout and binary models
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0994, DD-1239 and TVG-1108; repository specifications
+  and hand-computed integer intervals only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: implement exact identity/layout predicates and bounded binary model
+  primitives with independent tests before full decoder work.
+- Independent decisions: prevent ordinary-symbol access to backend contexts;
+  keep prediction separate from state update and preserve output on error.
+- Similarity review: first-party layout extension and elementary arithmetic;
+  no external expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,804 CTest cases passed, including
+  six new primitive tests and interoperability schema compatibility. The
+  sandbox build hit FileTracker initialization failure; the normal-permission
+  build succeeded. Public behavior and existing bytes remain unchanged.

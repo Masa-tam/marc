@@ -16156,3 +16156,14 @@ counts, count-40 descriptor and exact/crossed tuples. Subsequent code stages
 must pin independently computed payload bytes, strict replay and limit edges;
 these are planned tests, not claims of an implemented codec. Validate current
 documentation layout for this design-only step.
+
+### TVG-1108
+
+Add six tests for context-9 dense offsets/alphabets and frozen context-8
+prefix, exact identity/count and single-field mutations, rejection of backend
+contexts as ordinary symbols, hand-computed pre-update intervals and LSB
+position independence, reset, ceiling-half rescaling for both zero and one,
+and invalid accesses preserving state/output. At 32765 observations the
+selected frequency/total is 32766/32767; the next update yields 16384/16385.
+Full grouped grammar, canonical payload and stream admission remain later
+stages; these primitive tests do not claim end-to-end codec coverage.

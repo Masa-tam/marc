@@ -9021,3 +9021,10 @@ Position-adaptive distance design derives from BM-0120/BM-0121 and the
 repository's context-8 operation mapping, Range interval implementation and
 strict canonical replay. Binary prediction equations are those of IR-0989.
 No external compressor implementation or third-party test suite was consulted.
+
+### IR-0994
+
+Private context-9 layout and binary state follow DD-1238 and TVG-1107.
+The first-party context-8 layout supplies unchanged field alphabets. Binary
+interval and rescaling tests use independently hand-calculated integers;
+no external implementation or test suite was consulted.
