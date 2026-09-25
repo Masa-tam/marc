@@ -72,6 +72,7 @@ set(MARC_SOURCES
     src/frame/lzss_short_match_stream_decoder.cpp
     src/frame/lzss_short_length_escape_stream_encoder.cpp
     src/frame/lzss_position_distance_stream_encoder.cpp
+    src/frame/lzss_position_distance_raw_frame_encoder.cpp
     src/frame/lzss_contextual_rans_format.cpp
     src/frame/lzss_contextual_blocked_huffman_format.cpp
     src/frame/lzss_contextual_blocked_huffman_frame_decoder.cpp
@@ -2622,6 +2623,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_position_distance_frame_decoder_tests.cpp
         tests/lzss_position_distance_stream_decoder_tests.cpp
         tests/lzss_position_distance_stream_encoder_tests.cpp
+        tests/lzss_position_distance_raw_frame_encoder_tests.cpp
         tests/lzss_position_distance_frame_encoder_tests.cpp
         tests/lzss_short_length_escape_tests.cpp
         tests/lzss_short_length_escape_operation_decoder_tests.cpp

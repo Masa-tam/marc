@@ -321,3 +321,12 @@ the result. This stage adds no raw-input parser, candidate policy or public entr
 Whole-stream preflight adds a planning pass, so paired frame timing is not a
 whole-stream performance claim. Next integrate bounded raw-input tokenization
 with an explicit fixed parsing policy before considering candidate reselection.
+
+### Fixed-policy raw-frame connection
+
+DD-1272 introduces one raw-frame adapter before whole raw-stream iteration.
+The caller fixes eligibility 3/4/5 and exact reference/indexed search; no size
+selector runs. Materialized tokens are retained through frame writing. Indexed
+finder storage is charged alongside the frame working set. Differential tests
+compare tokens, complete bytes and reconstruction. Whole raw-stream planning
+and assembly remain the next step; no new speed/size result is claimed here.

@@ -25287,3 +25287,19 @@ Whole-stream preflight adds an entropy planning pass before per-frame encoding;
 do not claim BM-0130's two-run timing for this one-shot stream boundary. Avoid
 retaining prepared spans across frames just to remove that pass. Raw tokenization,
 candidate selection, incremental operation and public admission are separate.
+
+## DD-1272: Connect fixed-policy raw frames before raw streams
+
+Add a private single-frame adapter with explicit reference/indexed search and
+fixed eligibility 3/4/5. Do not select among compressed candidates. Validate
+the exact context-9 stream identity, frame position and required raw extent,
+then reject all pairwise raw/token/operation/finder/output overlaps before
+tokenization. Retain materialized tokens through prepared frame encoding; do
+not repeat dictionary search merely to write the frame.
+
+Indexed mode reserves the queried finder bytes from the aggregate frame limit,
+following existing private selector accounting. Caller-unused capacity is not
+charged as live state. This boundary owns no allocation and changes no public
+API or bytes. Scratch may change on errors; only successful output is usable.
+It rejects empty data frames. Whole raw-stream iteration and its planning pass
+are the next integration step, not part of this adapter.

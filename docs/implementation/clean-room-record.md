@@ -34669,3 +34669,16 @@ both bounds.
   passed, including documentation layout and existing codec regressions.
 - Similarity review: documented adaptation of first-party length-escape writer;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1426: 2026-09-26 - Connect fixed-policy raw context-9 frames
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1027, DD-1272 and TVG-1141; first-party code only.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: connect raw frames without adding candidate selection or public admission.
+- Changes: bounded raw-frame adapter, reference/indexed comparisons and limits.
+- Validation: Release build, three new tests (including 81 differential cases)
+  and the full 3,875-case CTest run passed.
+- Similarity review: composition of existing first-party primitives; no external
+  expression copied and no legal guarantee claimed.

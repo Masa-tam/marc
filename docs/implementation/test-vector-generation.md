@@ -16566,3 +16566,16 @@ Reject wrong identity/frame count, invalid later-frame history, insufficient
 output/operation capacity, limits and output aliases of views/tokens/operations.
 Preflight failures preserve sentinel output; successful modeling must not touch
 unused operation capacity. Existing frame fault tests retain write-time coverage.
+
+## TVG-1141: Fixed-policy raw-frame differential tests
+
+Compare exhaustive and indexed paths at fixed eligibility 3, 4 and 5 for lengths
+1/3/4/5/6/257/258/259/260 and repeated, periodic and deterministic binary data.
+Compare logical token fields and entire frame bytes including untouched output
+tail, then strictly decode to source. Reject bad identity, position, raw extent,
+eligibility/search, short token/operation/output/finder storage and raw/output
+overlap without publishing output. Test a short final frame at sequence one.
+
+Find the combined finder-plus-frame memory threshold by bounded binary search;
+require success at the threshold and unchanged output one byte below. This is
+a functional limit test, not a measurement of process memory or throughput.

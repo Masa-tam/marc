@@ -9233,3 +9233,10 @@ Context-9 typed-token stream assembly adapts the first-party length-escape
 stream writer and tests, using the existing context-9 prepared frame encoder.
 The independent seven-byte frame vector is retained as a payload oracle.
 No external implementation or test suite was consulted.
+
+### IR-1027
+
+The raw-frame adapter uses the first-party variant-8 exhaustive/indexed parsers,
+prefix-workspace query and context-9 prepared frame encoder. Tests independently
+compare their tokens and bytes and decode the resulting frame. No external
+implementation was consulted.
