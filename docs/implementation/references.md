@@ -8956,3 +8956,9 @@ No external compressor implementation or third-party vectors were consulted.
 Reduced-literal frame encoding reuses marc's own escape frame writer and
 context-8 operation/Range encoder. Fixtures derive from repository token and
 frame specifications; no external source or third-party test suite was used.
+
+### IR-0984
+
+Fixed-token reduced-literal measurement uses marc's own candidate benchmark,
+retained selector, context-8 frame writer and strict decoder. No external
+compressor implementation or third-party test vectors were consulted.

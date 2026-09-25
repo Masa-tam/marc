@@ -12,6 +12,8 @@
 #include "frame/lzss_short_length_escape_candidate_selector.hpp"
 #include "frame/lzss_short_length_escape_frame_decoder.hpp"
 #include "frame/lzss_short_length_escape_frame_encoder.hpp"
+#include "frame/lzss_reduced_literal_frame_encoder.hpp"
+#include "frame/lzss_reduced_literal_frame_decoder.hpp"
 
 #include <algorithm>
 #include <array>
@@ -310,6 +312,10 @@ int main(const int argc, const char* const argv[]) {
     std::size_t distance_selector_buffer_bytes{};
     std::size_t distance_selector_required_bytes{};
     std::uint64_t distance_selector_archive_bytes = baseline_archive_bytes;
+    std::uint64_t reduced_literal_archive_bytes = baseline_archive_bytes;
+    std::uint64_t reduced_literal_verified_frames{}, reduced_literal_saved_bytes{},
+        reduced_literal_extra_bytes{};
+    double reduced_literal_encode_seconds{}, reduced_literal_decode_seconds{};
     std::array<double, 7> distance_encode_seconds{};
     std::array<double, 7> distance_decode_seconds{};
     std::uint64_t committed{};
@@ -567,6 +573,45 @@ int main(const int argc, const char* const argv[]) {
                 literal_partition_bits[i] += cost.adaptive_bits[1];
                 literal_partition_empirical_bits[i] += cost.empirical_bits[1];
             }
+            // Freeze the old model's selected token sequence. Do not reselect
+            // policies under the new model or parse the dictionary again.
+            auto reduced_stream = escape_stream;
+            reduced_stream.context_count = 24;
+            reduced_stream.context_variant = 8;
+            const auto retained_tokens = std::span<const LzssTypedToken>{decoded_tokens}
+                .first(verified.required_token_count);
+            const auto reduced_start = Clock::now();
+            const auto reduced = marc::frame::internal::encode_lzss_reduced_literal_frame(
+                reduced_stream, limits, frames, committed, retained_tokens,
+                operations, serialized);
+            reduced_literal_encode_seconds += std::chrono::duration<double>(
+                Clock::now() - reduced_start).count();
+            if (reduced.error != marc::frame::internal::LzssShortMatchFrameEncodeError::none) {
+                std::cerr << "reduced literal encode failed\n";
+                return 2;
+            }
+            const auto reduced_decode_start = Clock::now();
+            const marc::frame::internal::TypedContextFrameValidationContext reduced_context{
+                reduced_stream, limits, frames, committed};
+            const auto restored = marc::frame::internal::decode_lzss_reduced_literal_frame(
+                std::span<const std::byte>{serialized}.first(reduced.serialized_size),
+                reduced_context, tokens, std::span<std::byte>{decoded}.first(count));
+            reduced_literal_decode_seconds += std::chrono::duration<double>(
+                Clock::now() - reduced_decode_start).count();
+            if (restored.error != marc::frame::internal::LzssShortMatchFrameDecodeError::none
+                || restored.serialized_consumed != reduced.serialized_size
+                || restored.required_token_count != retained_tokens.size()
+                || !std::equal(retained_tokens.begin(), retained_tokens.end(), tokens.begin(), same_token)
+                || !std::equal(frame.begin(), frame.end(), decoded.begin())) {
+                std::cerr << "reduced literal fixed-token round trip mismatch\n";
+                return 2;
+            }
+            ++reduced_literal_verified_frames;
+            reduced_literal_archive_bytes += reduced.serialized_size;
+            if (reduced.serialized_size < selection.serialized_size)
+                reduced_literal_saved_bytes += selection.serialized_size - reduced.serialized_size;
+            else
+                reduced_literal_extra_bytes += reduced.serialized_size - selection.serialized_size;
         }
         const auto exact_tokens = marc::dictionary::internal::
             tokenize_lzss_short_match_candidate_indexed(
@@ -719,6 +764,12 @@ int main(const int argc, const char* const argv[]) {
     print_cost("escape_cost", escape_cost);
     if (distance_policies) {
         print_cost("retained_cost", retained_cost);
+        std::cout << "reduced_literal_archive_bytes=" << reduced_literal_archive_bytes << '\n'
+                  << "reduced_literal_verified_frames=" << reduced_literal_verified_frames << '\n'
+                  << "reduced_literal_saved_bytes=" << reduced_literal_saved_bytes << '\n'
+                  << "reduced_literal_extra_bytes=" << reduced_literal_extra_bytes << '\n'
+                  << "reduced_literal_encode_seconds=" << reduced_literal_encode_seconds << '\n'
+                  << "reduced_literal_decode_seconds=" << reduced_literal_decode_seconds << '\n';
         for (std::size_t i = 0; i < literal_partitions.size(); ++i)
             std::cout << "literal_partition_" << literal_partition_names[i]
                       << "_adaptive_bits=" << literal_partition_bits[i] << '\n'

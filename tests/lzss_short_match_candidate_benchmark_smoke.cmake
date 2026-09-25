@@ -31,6 +31,8 @@ foreach(key IN ITEMS sample_bytes frame_bytes frame_count
         distance_policy_4_archive_bytes distance_policy_5_archive_bytes
         distance_policy_6_archive_bytes distance_policy_selected_archive_bytes
         distance_selector_archive_bytes
+        reduced_literal_archive_bytes reduced_literal_verified_frames
+        reduced_literal_saved_bytes reduced_literal_extra_bytes
         selected_5 threshold_3_archive_bytes threshold_4_archive_bytes
         threshold_5_archive_bytes escape_selected_3 escape_selected_4
         escape_selected_5 escape_threshold_3_archive_bytes
@@ -68,7 +70,12 @@ math(EXPR reconstructed_escape
     "${baseline_archive_bytes} - ${escape_saved_bytes} + ${escape_extra_bytes}")
 math(EXPR expected_baseline_escape_oracle
     "${baseline_archive_bytes} - ${escape_saved_bytes}")
+math(EXPR reconstructed_reduced_literal
+    "${distance_selector_archive_bytes} - ${reduced_literal_saved_bytes} + ${reduced_literal_extra_bytes}")
 if(NOT sample_bytes EQUAL 4096 OR NOT frame_bytes EQUAL 4096
+    OR NOT reduced_literal_verified_frames EQUAL frame_count
+    OR NOT reconstructed_reduced_literal EQUAL reduced_literal_archive_bytes
+    OR reduced_literal_archive_bytes LESS 192
     OR NOT frame_count EQUAL 1 OR NOT selections EQUAL frame_count
     OR NOT escape_selections EQUAL frame_count
     OR NOT comparisons EQUAL frame_count
@@ -223,6 +230,12 @@ if(field STREQUAL "" OR NOT distance_selector_archive_bytes EQUAL CMAKE_MATCH_1)
     message(FATAL_ERROR "Dedicated selector size differs from subset minimum")
 endif()
 foreach(report IN ITEMS output reference_output)
+    foreach(phase IN ITEMS encode decode)
+        string(REGEX MATCH "reduced_literal_${phase}_seconds=([0-9]+[.][0-9]+)" field "${${report}}")
+        if(field STREQUAL "")
+            message(FATAL_ERROR "Missing fixed-token reduced literal timing")
+        endif()
+    endforeach()
     foreach(phase IN ITEMS encode decode)
         string(REGEX MATCH "distance_selector_${phase}_seconds=([0-9]+[.][0-9]+)" field "${${report}}")
         if(field STREQUAL "")

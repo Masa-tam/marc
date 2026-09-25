@@ -33979,3 +33979,20 @@ both bounds.
 - Validation: MSVC Release build and all 3,793 CTest cases passed, including
   five new frame-encoding tests, strict decoder round trips, exact aggregate
   bounds, documentation layout and interoperability schema compatibility.
+
+## CR-1383: 2026-09-25 - Measure reduced-literal coding with fixed selected tokens
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0984, DD-1229 and TVG-1098; first-party components only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Generated-code task: connect context-8 frame coding to the benchmark while
+  fixing the old selector's token sequence and checking strict token/raw recovery.
+- Independent decisions: report actual byte deltas separately from ideal model
+  cost, retain old selection, reuse bounded buffers, and exclude selection time.
+- Similarity review: deliberate reuse of repository-owned components; no
+  external expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build, indexed/reference benchmark smoke and all
+  3,793 CTest cases passed, including documentation layout and interoperability
+  schema compatibility. Fixed-token comparison checks both token fields and raw
+  bytes; full-corpus performance measurement remains a separate next step.

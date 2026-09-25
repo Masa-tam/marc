@@ -24586,3 +24586,17 @@ charging both states simultaneously. Planning may modify operation scratch;
 preflight failures must not write the serialized output. Inputs must remain
 stable throughout the call. Unused operation/output tails remain untouched.
 Public stream selection and existing representation bytes remain unchanged.
+
+## DD-1229: Compare reduced-literal bytes on the old model's fixed winner
+
+The distance-policies benchmark decodes the context-7 winner selected from
+policies 0,3,4 and supplies exactly those tokens to the context-8 writer. Do not
+repeat dictionary search or reselect under the new model. Strictly decode the
+new frame into separate token storage and compare every token field and raw
+byte. This isolates model partitioning from parsing policy changes.
+
+Report actual frame bytes plus the common 112-byte stream-header charge,
+saved/extra bytes relative to the old winner, verified frame count, and separate
+encode/decode times excluding selection. Reuse existing bounded scratch; no
+new token or payload allocation is needed. These are private experimental size
+estimates, not publicly decodable archives or evidence of corpus-wide benefit.

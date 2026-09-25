@@ -16051,3 +16051,12 @@ Encode a four-byte final frame after a seven-byte frame, independently check
 sequence/raw/count bytes, repeat byte-for-byte, preserve caller tails, and
 round-trip through strict canonical decoding. Accept exact conservative
 aggregate bytes and reject one byte less with serialized sentinels unchanged.
+
+### TVG-1098
+
+Extend the first-party candidate benchmark smoke test to require actual
+reduced-literal size, saved/extra bytes and verified-frame counts. Independently
+reconstruct the total from the old selector total and byte deltas. Require
+indexed/reference agreement and both timing fields without throughput gates.
+The executable compares every decoded token field and raw byte for each frame;
+no assertion assumes that reduced context count always improves compression.
