@@ -25194,3 +25194,11 @@ output storage under a distinct position_frame_ab prefix. The buffer remains
 18 * frame_bytes + 85 bytes, not peak RSS. Fixed warmup order and warm in-process
 pairing retain cache/scheduling caveats. This harness is not real-data speed
 evidence and does not change codec behavior.
+
+## DD-1265: Assess plan reuse using paired full-frame timing
+
+BM-0129 verifies all mozilla frames and observes 29.23% to 29.89% lower frame
+encoding time for the two-run path across five pairs. Retain the prepared path
+and extend the same comparison to all corpus members. This comparison holds
+binary specialization constant. It is neither CLI throughput nor evidence that
+decoder time or compression ratio changed. Public-format promotion is separate.

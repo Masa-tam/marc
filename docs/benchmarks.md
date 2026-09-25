@@ -4806,3 +4806,42 @@ BM-0127 remain. The 1,179,733-byte reusable output buffer is benchmark storage,
 not peak RSS. This corpus evidence supports retaining binary specialization;
 it does not remove context-9's overall cost or justify a public-format change.
 Next design safe reuse of frame-level planning, separately from this optimization.
+
+## BM-0129: Paired mozilla frame encoding with plan reuse
+
+Measured on 2026-09-26 at `572d347d`, MSVC Release, with
+`1024 65536 indexed distance-frame-ab 5`. Full input: 51,220,480 bytes,
+782 frames of at most 65,536 bytes.
+
+- Executable SHA-256: `68561D666D3555263F7AD7FAF43D6A8E958415F7B8DB09CDC6D0553D1250F22B`.
+- Input SHA-256: `657FC3764B0C75AC9DE9623125705831EBBFBE08FED248DF73BC2DC66E2A963B`.
+- Ignored local checkpoint: `out/position-distance-frame-ab/mozilla.json`.
+
+| Pair | Three-run seconds | Two-run seconds | Time reduction |
+| --- | ---: | ---: | ---: |
+| 1 | 2.640353 | 1.868338 | 29.24% |
+| 2 | 2.655326 | 1.863139 | 29.83% |
+| 3 | 2.642049 | 1.852428 | 29.89% |
+| 4 | 2.634086 | 1.851088 | 29.73% |
+| 5 | 2.630404 | 1.861584 | 29.23% |
+
+Each pair verifies all 782 complete frames and metadata, with 391 three-run-first
+frames. Prior non-time controls match BM-0122; context-9 accounted archive size
+is still 18,542,748 bytes against context-8's 19,592,635. Input and executable
+hashes were rechecked after execution.
+
+Separate time medians are 2.640353 and 1.861584 seconds. The median paired
+reduction is 29.73%; it is not computed as the ratio of those separate medians.
+Both paths use specialized binary encoding, so this comparison isolates plan
+reuse rather than also changing the model-update implementation.
+
+Timing includes context modeling, validation, entropy coding and frame
+serialization from retained tokens; it excludes dictionary search, allocation,
+I/O, surrounding candidate selection and output comparison. Five pairs are
+within one process, with three-run-then-two-run warmup. Cache/scheduling effects
+remain. The 1,179,733-byte output buffer is benchmark storage, not peak RSS.
+Do not claim the same reduction for whole CLI compression, add it to prior
+encoder percentages, or generalize beyond mozilla without corpus measurements.
+
+The result supports keeping the prepared frame path. Next repeat the paired
+comparison across all twelve corpus members with identical conditions.

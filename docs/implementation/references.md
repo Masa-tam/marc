@@ -9189,3 +9189,9 @@ consulted.
 Frame A/B measurement uses the retained three-run and prepared two-run
 repository frame encoders from IR-1018 and the first-party pairing harness.
 No external implementation was consulted.
+
+### IR-1020
+
+BM-0129 uses the first-party frame pairing harness from IR-1019 and existing
+local mozilla input with recorded identity hashes. No external implementation
+or new algorithm reference was consulted.

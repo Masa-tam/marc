@@ -16477,3 +16477,11 @@ Reject pair counts zero, 21, nonnumeric and missing. The harness compares full
 frame bytes and metadata outside timing for warmup and timed calls. Existing
 operation-encoder, decoder and default-mode smoke tests remain active.
 Real-data measurement is a separate step and speed is not a test threshold.
+
+## TVG-1134: Validate paired mozilla frame measurements
+
+Run full mozilla with `1024 65536 indexed distance-frame-ab 5`. Preserve raw
+fields and hashes in the BM-0129 checkpoint. Require 782 verified frames and
+391 three-run-first frames per pair. Compare prior non-time fields with BM-0122,
+and recheck input/executable hashes. The harness checks complete frame bytes
+and metadata outside timing. No speed threshold is a correctness requirement.

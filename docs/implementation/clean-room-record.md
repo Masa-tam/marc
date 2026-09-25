@@ -34564,3 +34564,19 @@ both bounds.
 - Validation: MSVC Release build and all 3,857 CTest cases passed, including
   frame A/B smoke and interoperability schema compatibility. No real-data
   timing result or public interface change is claimed.
+
+## CR-1419: 2026-09-26 - Measure paired mozilla frame plan reuse
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1020, DD-1265, TVG-1134 and BM-0129; first-party harness
+  and existing local mozilla input.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: measure five frame pairs with identical tokens and binary specialization,
+  checking full bytes, metadata, hashes and existing size controls.
+- Results: every pair verified all 782 frames; frame time decreased by
+  29.23% to 29.89%, with unchanged accounted archive size.
+- Similarity review: measurements/documentation only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: checkpoint controls, hashes and documentation layout test passed.
+  Runtime unchanged since full 3,857-test validation.
