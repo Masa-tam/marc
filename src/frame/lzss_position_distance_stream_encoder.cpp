@@ -1,4 +1,5 @@
 #include "frame/lzss_position_distance_stream_encoder.hpp"
+#include "frame/lzss_position_distance_raw_stream_encoder.hpp"
 
 #include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
@@ -222,5 +223,98 @@ encode_lzss_position_distance_stream(
     return result;
 }
 
-} // namespace marc::frame::internal
 
+namespace {
+LzssPositionDistanceRawStreamResult process_raw_stream(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    std::span<const std::byte> raw, std::uint32_t eligibility, LzssPositionDistanceSearch search,
+    std::span<dictionary::internal::LzssTypedToken> tokens,
+    std::span<context::internal::ModeledOperation> operations,
+    std::span<std::byte> finder, std::span<std::byte> output, bool write) noexcept {
+    using Error=LzssPositionDistanceRawStreamError;
+    LzssPositionDistanceRawStreamResult result{};
+    if(validate_lzss_position_distance_stream_semantics(stream,limits)!=LzssShortMatchPreflightError::none) {
+        result.error=Error::invalid_stream; return result;
+    }
+    if(eligibility<3 || eligibility>5
+        || (search!=LzssPositionDistanceSearch::reference && search!=LzssPositionDistanceSearch::indexed)) {
+        result.error=Error::invalid_policy; return result;
+    }
+    if(!std::in_range<std::uint64_t>(raw.size()) || raw.size()!=stream.original_size) {
+        result.error=Error::raw_size_mismatch; return result;
+    }
+    std::size_t token_bytes{},operation_bytes{};
+    if(!core::checked_multiply(tokens.size(),sizeof(dictionary::internal::LzssTypedToken),token_bytes)
+        || !core::checked_multiply(operations.size(),sizeof(context::internal::ModeledOperation),operation_bytes)) {
+        result.error=Error::arithmetic_overflow; return result;
+    }
+    const std::array regions{Region{raw.data(),raw.size()},Region{tokens.data(),token_bytes},
+        Region{operations.data(),operation_bytes},Region{finder.data(),finder.size()},Region{output.data(),output.size()}};
+    for(std::size_t i=0;i<regions.size();++i) for(std::size_t j=i+1;j<regions.size();++j) {
+        const auto overlap=core::check_buffer_overlap(regions[i].data,regions[i].size,regions[j].data,regions[j].size);
+        if(overlap!=core::BufferOverlap::disjoint) {
+            result.error=overlap==core::BufferOverlap::arithmetic_overflow ? Error::arithmetic_overflow : Error::overlapping_buffers;
+            return result;
+        }
+    }
+    result.serialized_size=typed_context_stream_header_size;
+    std::size_t raw_offset{};
+    while(raw_offset<raw.size()) {
+        const auto size=std::min<std::size_t>(stream.frame_size,raw.size()-raw_offset);
+        result.frame=plan_lzss_position_distance_raw_frame(stream,limits,result.frame_index,raw_offset,
+            raw.subspan(raw_offset,size),eligibility,search,tokens,operations,finder);
+        if(result.frame.error!=LzssPositionDistanceRawFrameError::none) {
+            result.error=Error::frame_error; return result;
+        }
+        if(!core::checked_add(result.serialized_size,result.frame.frame.serialized_size,result.serialized_size)) {
+            result.error=Error::arithmetic_overflow; return result;
+        }
+        raw_offset+=size; // bounded by remaining raw span
+        ++result.frame_index; // at most raw.size(), representable in uint64 above
+    }
+    result.frame_count=result.frame_index;
+    if(!write) return result;
+    if(output.size()<result.serialized_size) { result.error=Error::output_too_small; return result; }
+    std::array<std::byte,typed_context_stream_header_size> header{};
+    if(!serialize_header(stream,header)) { result.error=Error::internal_error; return result; }
+    raw_offset=0;
+    std::size_t offset=typed_context_stream_header_size;
+    result.frame_index=0;
+    while(raw_offset<raw.size()) {
+        const auto size=std::min<std::size_t>(stream.frame_size,raw.size()-raw_offset);
+        result.frame=encode_lzss_position_distance_raw_frame(stream,limits,result.frame_index,raw_offset,
+            raw.subspan(raw_offset,size),eligibility,search,tokens,operations,finder,
+            output.subspan(offset,result.serialized_size-offset));
+        if(result.frame.error!=LzssPositionDistanceRawFrameError::none
+            || !core::checked_add(offset,result.frame.frame.serialized_size,offset)
+            || offset>result.serialized_size) {
+            result.error=Error::internal_error; return result;
+        }
+        raw_offset+=size;
+        ++result.frame_index;
+    }
+    if(offset!=result.serialized_size || result.frame_index!=result.frame_count) {
+        result.error=Error::internal_error; return result;
+    }
+    std::memcpy(output.data(),header.data(),header.size());
+    return result;
+}
+} // namespace
+
+LzssPositionDistanceRawStreamResult plan_lzss_position_distance_raw_stream(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    std::span<const std::byte> raw, std::uint32_t eligibility, LzssPositionDistanceSearch search,
+    std::span<dictionary::internal::LzssTypedToken> tokens,
+    std::span<context::internal::ModeledOperation> operations, std::span<std::byte> finder) noexcept {
+    return process_raw_stream(stream,limits,raw,eligibility,search,tokens,operations,finder,{},false);
+}
+LzssPositionDistanceRawStreamResult encode_lzss_position_distance_raw_stream(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    std::span<const std::byte> raw, std::uint32_t eligibility, LzssPositionDistanceSearch search,
+    std::span<dictionary::internal::LzssTypedToken> tokens,
+    std::span<context::internal::ModeledOperation> operations,
+    std::span<std::byte> finder, std::span<std::byte> output) noexcept {
+    return process_raw_stream(stream,limits,raw,eligibility,search,tokens,operations,finder,output,true);
+}
+
+} // namespace marc::frame::internal

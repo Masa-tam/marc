@@ -25303,3 +25303,21 @@ charged as live state. This boundary owns no allocation and changes no public
 API or bytes. Scratch may change on errors; only successful output is usable.
 It rejects empty data frames. Whole raw-stream iteration and its planning pass
 are the next integration step, not part of this adapter.
+
+## DD-1273: Plan and assemble fixed-policy raw context-9 streams
+
+Add a raw-frame plan entry point sharing validation/tokenization with encoding.
+The private raw-stream writer validates identity, policy (also for empty input),
+declared raw size and all full-span overlap pairs before touching scratch.
+It plans every bounded frame and checked total serialized extent before writing,
+then reconstructs each frame with the same fixed policy and shared workspaces.
+Commit the canonical stream header only after total/count checks succeed.
+
+Empty input needs no frame/finder storage and produces the existing header only.
+No frame-sized list or whole-stream token allocation is owned by this layer.
+Preflight failure preserves output; unexpected writing failure can leave unusable
+frame bytes, never a newly committed stream header. Inputs remain stable throughout.
+Per-frame indexed memory charges stay unchanged. Planning and writing tokenize
+separately to keep bounded storage and whole-input preflight; this does not claim
+one dictionary pass for the complete stream or inherit frame benchmark timings.
+No candidate reselection, public admission or incremental API is added.

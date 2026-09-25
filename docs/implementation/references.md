@@ -9240,3 +9240,10 @@ The raw-frame adapter uses the first-party variant-8 exhaustive/indexed parsers,
 prefix-workspace query and context-9 prepared frame encoder. Tests independently
 compare their tokens and bytes and decode the resulting frame. No external
 implementation was consulted.
+
+### IR-1028
+
+Raw-stream assembly composes the first-party fixed-policy raw-frame adapter,
+typed-token stream header serializer and private strict stream decoder. Tests
+compare both search paths with independently orchestrated token-frame assembly.
+No external implementation or test suite was consulted.

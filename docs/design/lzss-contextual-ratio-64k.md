@@ -330,3 +330,14 @@ selector runs. Materialized tokens are retained through frame writing. Indexed
 finder storage is charged alongside the frame working set. Differential tests
 compare tokens, complete bytes and reconstruction. Whole raw-stream planning
 and assembly remain the next step; no new speed/size result is claimed here.
+
+### Fixed-policy raw-stream assembly
+
+DD-1273 connects raw-frame planning and writing over the full caller-owned raw
+span, using one reusable token/operation/finder workspace set. All frames are
+planned before output and the stream header is committed last. Reference/indexed
+streams are byte-identical for a fixed eligibility and agree with typed-token
+assembly. Empty input is header-only. This is still private one-shot processing;
+whole-stream planning repeats tokenization during writing, so whole-path timing
+must be measured separately. Dedicated stream robustness/fuzz validation and
+real emitted-archive measurement remain before public admission.

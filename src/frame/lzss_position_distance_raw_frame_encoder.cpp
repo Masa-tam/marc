@@ -6,13 +6,14 @@
 #include <array>
 
 namespace marc::frame::internal {
-LzssPositionDistanceRawFrameResult encode_lzss_position_distance_raw_frame(
+namespace {
+LzssPositionDistanceRawFrameResult process_frame(
     const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
     std::uint64_t sequence, std::uint64_t committed, std::span<const std::byte> raw,
     std::uint32_t eligibility, LzssPositionDistanceSearch search,
     std::span<dictionary::internal::LzssTypedToken> tokens,
     std::span<context::internal::ModeledOperation> operations,
-    std::span<std::byte> finder, std::span<std::byte> output) noexcept {
+    std::span<std::byte> finder, std::span<std::byte> output, bool write) noexcept {
     using Error=LzssPositionDistanceRawFrameError;
     namespace dictionary=marc::dictionary::internal;
     LzssPositionDistanceRawFrameResult result{};
@@ -65,9 +66,34 @@ LzssPositionDistanceRawFrameResult encode_lzss_position_distance_raw_frame(
         result.error=Error::candidate_error; return result;
     }
     // Retain the materialized tokens through planning/writing; no second search.
-    result.frame=encode_lzss_position_distance_frame(stream,frame_limits,sequence,committed,
-        tokens.first(result.candidate.token_count),operations,output);
+    result.frame=write
+        ? encode_lzss_position_distance_frame(stream,frame_limits,sequence,committed,
+            tokens.first(result.candidate.token_count),operations,output)
+        : plan_lzss_position_distance_frame(stream,frame_limits,sequence,committed,
+            tokens.first(result.candidate.token_count),operations);
     if(result.frame.error!=LzssShortMatchFrameEncodeError::none) result.error=Error::frame_error;
     return result;
+}
+} // namespace
+
+LzssPositionDistanceRawFrameResult plan_lzss_position_distance_raw_frame(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    std::uint64_t sequence, std::uint64_t committed, std::span<const std::byte> raw,
+    std::uint32_t eligibility, LzssPositionDistanceSearch search,
+    std::span<dictionary::internal::LzssTypedToken> tokens,
+    std::span<context::internal::ModeledOperation> operations,
+    std::span<std::byte> finder) noexcept {
+    return process_frame(stream,limits,sequence,committed,raw,eligibility,search,
+                         tokens,operations,finder,{},false);
+}
+LzssPositionDistanceRawFrameResult encode_lzss_position_distance_raw_frame(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    std::uint64_t sequence, std::uint64_t committed, std::span<const std::byte> raw,
+    std::uint32_t eligibility, LzssPositionDistanceSearch search,
+    std::span<dictionary::internal::LzssTypedToken> tokens,
+    std::span<context::internal::ModeledOperation> operations,
+    std::span<std::byte> finder, std::span<std::byte> output) noexcept {
+    return process_frame(stream,limits,sequence,committed,raw,eligibility,search,
+                         tokens,operations,finder,output,true);
 }
 }

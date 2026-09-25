@@ -34682,3 +34682,17 @@ both bounds.
   and the full 3,875-case CTest run passed.
 - Similarity review: composition of existing first-party primitives; no external
   expression copied and no legal guarantee claimed.
+
+## CR-1427: 2026-09-26 - Assemble fixed-policy raw context-9 streams
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1028, DD-1273 and TVG-1142; first-party source only.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: add bounded raw-stream planning and assembly with fixed parsing policy.
+- Changes: shared raw-frame planning, private raw-stream entry points and tests;
+  no public API, candidate selector or wire change.
+- Validation: Release build, new raw-stream and existing raw-frame tests,
+  and all 3,879 CTest cases passed.
+- Similarity review: independently composed first-party components; no external
+  expression copied and no legal guarantee claimed.

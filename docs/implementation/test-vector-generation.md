@@ -16579,3 +16579,16 @@ overlap without publishing output. Test a short final frame at sequence one.
 Find the combined finder-plus-frame memory threshold by bounded binary search;
 require success at the threshold and unchanged output one byte below. This is
 a functional limit test, not a measurement of process memory or throughput.
+
+## TVG-1142: Fixed-policy raw-stream assembly tests
+
+For raw lengths 0/1/63/64/65/130 with 64-byte frames and eligibility 3/4/5,
+compare exact reference/indexed stream bytes, planned sizes/counts and strict
+reconstruction. Independently tokenize each frame and use the existing typed
+stream assembler as an additional exact-byte control. Keep outer canaries.
+
+Reject invalid policy even for empty input, wrong identity/raw size and one-byte
+short output. Force a later-frame token-capacity failure using a compressible
+first frame followed by distinct bytes, preserving the entire output. Reject
+an output span overlapping only the final raw byte, before any frame processing.
+Existing raw-frame tests continue to cover aggregate finder/frame limits.

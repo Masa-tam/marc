@@ -17,6 +17,15 @@ struct LzssPositionDistanceRawFrameResult {
 // Fixed eligibility (3/4/5), no size-based candidate selection. All spans must
 // stay stable and mutually disjoint. Scratch can change on failure; output is
 // consumable only on success. Empty raw frames are not allowed.
+[[nodiscard]] LzssPositionDistanceRawFrameResult plan_lzss_position_distance_raw_frame(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    std::uint64_t sequence, std::uint64_t raw_already_committed,
+    std::span<const std::byte> raw, std::uint32_t minimum_eligible_length,
+    LzssPositionDistanceSearch search,
+    std::span<dictionary::internal::LzssTypedToken> tokens,
+    std::span<context::internal::ModeledOperation> operations,
+    std::span<std::byte> finder_workspace) noexcept;
+
 [[nodiscard]] LzssPositionDistanceRawFrameResult encode_lzss_position_distance_raw_frame(
     const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
     std::uint64_t sequence, std::uint64_t raw_already_committed,
