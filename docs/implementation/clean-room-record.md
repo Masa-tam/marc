@@ -34238,3 +34238,20 @@ both bounds.
 - Validation: MSVC Release build and all 3,830 CTest cases passed, including
   five new token tests and interoperability schema compatibility. Raw-frame
   publication, encoding and public admission remain separate work.
+
+## CR-1398: 2026-09-25 - Reconstruct private position-distance frames
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0999, DD-1244 and TVG-1113; repository-owned components
+  and independently pinned payloads only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: complete private frame reconstruction with bounded workspace,
+  validated tokens, exact consumed extent and raw-output failure isolation.
+- Independent decisions: explicit internal identity dispatch and reuse of
+  checked overlap-aware dictionary reconstruction.
+- Similarity review: first-party component integration only; no external
+  expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,835 CTest cases passed, including
+  five new frame tests and interoperability schema compatibility. Incremental
+  stream decoding, encoding and public admission remain separate work.

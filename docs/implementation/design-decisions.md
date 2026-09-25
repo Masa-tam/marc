@@ -24791,3 +24791,17 @@ aggregate accounting and overlap rejection. Caller token storage is untouched
 on validation failure, including a late invalid reference or termination.
 These private entry points return typed tokens only; no raw-frame publication,
 public stream admission or encoder is introduced.
+
+## DD-1244: Compose private context-9 complete-frame reconstruction
+
+Connect context-9 byte preflight, validated typed-token materialization and
+the existing checked short-length-escape reconstructor. Replace internal
+boolean identity combinations with an explicit four-value identity enum so
+each private frame path chooses its matching preflight and entropy decoder.
+Require serialized/token/raw regions to be disjoint and all capacities and
+aggregate limits to pass before decoding. Report serialized consumption only
+after successful reconstruction; return the exact first-frame extent.
+
+Invalid payload, reference or termination leaves raw output untouched. This
+is a complete-frame internal entry point, not incremental stream admission,
+public API support or encoding. Existing format identities remain unchanged.

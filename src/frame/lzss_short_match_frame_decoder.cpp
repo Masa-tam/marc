@@ -3,6 +3,9 @@
 #include "frame/lzss_reduced_literal_frame_decoder.hpp"
 #include "frame/lzss_reduced_literal_preflight.hpp"
 #include "context/lzss_reduced_literal_range_tokens.hpp"
+#include "frame/lzss_position_distance_frame_decoder.hpp"
+#include "frame/lzss_position_distance_preflight.hpp"
+#include "context/lzss_position_distance_range_tokens.hpp"
 
 #include "context/lzss_short_length_escape_range_tokens.hpp"
 #include "core/checked_math.hpp"
@@ -19,6 +22,10 @@ enum class OverlapCheck : std::uint8_t {
     disjoint,
     overlap,
     arithmetic_overflow,
+};
+
+enum class FrameIdentity : std::uint8_t {
+    short_match, length_escape, reduced_literal, position_distance,
 };
 
 [[nodiscard]] OverlapCheck regions_overlap(
@@ -46,12 +53,17 @@ enum class OverlapCheck : std::uint8_t {
     const TypedContextFrameValidationContext& context,
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
     const std::span<std::byte> private_raw_output,
-    const bool escape_identity,
-    const bool reduced_literal = false) noexcept {
+    const FrameIdentity identity) noexcept {
+    const bool escape_identity = identity != FrameIdentity::short_match;
+    const bool reduced_literal = identity == FrameIdentity::reduced_literal;
+    const bool position_distance = identity == FrameIdentity::position_distance;
     LzssShortMatchFrameDecodeResult result{};
     TypedContextFrameLayout layout{};
     LzssShortMatchFrameRequirements requirements{};
-    result.preflight_error = reduced_literal
+    result.preflight_error = position_distance
+        ? preflight_lzss_position_distance_frame_bytes(
+              serialized_frame, context, layout, requirements)
+        : reduced_literal
         ? preflight_lzss_reduced_literal_frame_bytes(
               serialized_frame, context, layout, requirements)
         : escape_identity
@@ -114,7 +126,11 @@ enum class OverlapCheck : std::uint8_t {
         layout.header.decision_count,
         layout.header.uncompressed_size,
         context.output_already_committed};
-    result.token_decode = reduced_literal
+    result.token_decode = position_distance
+        ? context::internal::decode_lzss_position_distance_range_tokens(
+              layout.descriptor, payload, context.stream.dictionary,
+              token_context, context.limits, tokens)
+        : reduced_literal
         ? context::internal::decode_lzss_reduced_literal_range_tokens(
               layout.descriptor, payload, context.stream.dictionary,
               token_context, context.limits, tokens)
@@ -159,7 +175,7 @@ LzssShortMatchFrameDecodeResult decode_lzss_short_match_frame(
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
     const std::span<std::byte> private_raw_output) noexcept {
     return decode_impl(serialized_frame, context, private_tokens,
-                       private_raw_output, false);
+                       private_raw_output, FrameIdentity::short_match);
 }
 
 LzssShortMatchFrameDecodeResult decode_lzss_short_length_escape_frame(
@@ -168,7 +184,7 @@ LzssShortMatchFrameDecodeResult decode_lzss_short_length_escape_frame(
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
     const std::span<std::byte> private_raw_output) noexcept {
     return decode_impl(serialized_frame, context, private_tokens,
-                       private_raw_output, true);
+                       private_raw_output, FrameIdentity::length_escape);
 }
 
 LzssShortMatchFrameDecodeResult decode_lzss_reduced_literal_frame(
@@ -177,7 +193,16 @@ LzssShortMatchFrameDecodeResult decode_lzss_reduced_literal_frame(
     const std::span<dictionary::internal::LzssTypedToken> private_tokens,
     const std::span<std::byte> private_raw_output) noexcept {
     return decode_impl(serialized_frame, context, private_tokens,
-                       private_raw_output, true, true);
+                       private_raw_output, FrameIdentity::reduced_literal);
+}
+
+LzssShortMatchFrameDecodeResult decode_lzss_position_distance_frame(
+    const std::span<const std::byte> serialized_frame,
+    const TypedContextFrameValidationContext& context,
+    const std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    const std::span<std::byte> private_raw_output) noexcept {
+    return decode_impl(serialized_frame, context, private_tokens,
+                       private_raw_output, FrameIdentity::position_distance);
 }
 
 } // namespace marc::frame::internal

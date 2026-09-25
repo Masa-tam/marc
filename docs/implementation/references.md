@@ -9057,3 +9057,10 @@ Context-9 token reconstruction uses the first-party checked token walker and
 grammar-aware Range decoder. Fixed arithmetic payloads from TVG-1110 provide
 valid and invalid-history controls. No external implementation or third-party
 test suite was consulted.
+
+### IR-0999
+
+Private context-9 complete-frame reconstruction composes repository-owned
+preflight, token validation and overlap-aware typed reconstruction. Tests use
+the independent fixed Range payloads from TVG-1110 and the prior no-distance-
+extra control. No external implementation or third-party vectors were used.

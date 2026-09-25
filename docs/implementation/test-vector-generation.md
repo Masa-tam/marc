@@ -16222,3 +16222,14 @@ publishing even the earlier Literals. Test exact combined-memory threshold,
 one-byte shortage, output capacity, committed-output overflow, crossed model
 count, declared counts, raw under/overstatement, noncanonical tail and aliased
 payload/token storage. Preserve token output on every rejection.
+
+### TVG-1113
+
+Five private frame tests reconstruct the fixed distance-13 vector to 21 a
+bytes and a distance-1 overlapping Match to six a bytes. Check exact prefix
+consumption with a following byte, output sentinels, rejection by the old
+context decoder, every serialized truncation, token/raw capacity, invalid
+history, noncanonical tail, exact aggregate threshold and one-byte shortage.
+Exercise all three workspace overlaps: serialized/token, serialized/raw and
+token/raw. Failed decoding reports no committed serialized extent and leaves
+raw output unchanged.
