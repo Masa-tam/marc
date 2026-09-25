@@ -34052,3 +34052,18 @@ both bounds.
   code changed; the executable is the previously validated 3,793-test build.
   Benchmark smoke and documentation layout passed after measurement; the
   full suite was not rerun for this documentation-only change.
+
+## CR-1387: 2026-09-25 - Attribute remaining costs and design a distance-bit screen
+
+- Author: Codex; reviewer: repository maintainer approved the next investigation.
+- References used: IR-0988, DD-1233, TVG-1102 and checked BM-0118 local reports.
+- Known implementations intentionally not consulted: external compressors,
+  copyleft source and third-party test suites.
+- Generated-code task: aggregate fixed-token field costs and define a bounded
+  causal diagnostic for distance extra bits without changing stream semantics.
+- Independent decisions: distinguish volume from bias, keep uniform and sparse
+  controls, preserve fixed tokens and separate empirical from adaptive scores.
+- Similarity review: first-party measurements and mathematical model only;
+  no external implementation expression copied and no legal guarantee claimed.
+- Validation: report aggregation, documentation layout and diff checks passed.
+  No implementation or corpus rerun was performed for this design step.

@@ -24642,3 +24642,17 @@ Report additional savings relative to BM-0117 separately from model changes.
 Changed-policy counts include deterministic tie changes and therefore do not
 necessarily count strictly improved frames. This experiment measures actual
 candidate frame sizes, not an implemented retained-output selector's speed.
+
+## DD-1233: Screen distance extra-bit bias before another format change
+
+BM-0119 separates fixed-token high3 costs from the reselected result and shows
+that interval/termination residual is not the main size gap. Distance bypass
+is large but its bias is unmeasured. Next compare uniform, bit-position-only
+and distance-class/bit-position binary probabilities with fixed tokens and
+per-frame reset, as specified in the ratio investigation's Stage 4.
+
+Use causal prediction, initial frequencies 1,1, increment one and ceiling-half
+rescaling at total 32768. Keep length bypass and all other fields unchanged.
+Measure adaptive and empirical information separately; never treat future
+histograms as achievable savings. No new format ID, public API or production
+model change is authorized by this diagnostic design.

@@ -8980,3 +8980,10 @@ compressor implementation or third-party test suite was consulted.
 Complete-corpus reduced-literal reselection uses the locally supplied Silesia
 members from BM-0117 and the first-party comparison harness from IR-0986.
 No external compressor source or third-party test vectors were consulted.
+
+### IR-0988
+
+Remaining field-cost attribution uses checked BM-0118 reports, the first-party
+model-cost diagnostic and the documented distance-class/LSB bypass mapping.
+The proposed binary diagnostic follows elementary online frequency counting;
+no external compressor source or third-party tests were consulted.

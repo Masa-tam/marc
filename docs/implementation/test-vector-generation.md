@@ -16089,3 +16089,13 @@ and selected bytes equal to fixed bytes minus savings. The per-frame minimum
 sum must not exceed any single-policy total. Revalidate completed checkpoints
 without launching another benchmark; the executable checks every candidate's
 strict token and raw recovery as specified in TVG-1100.
+
+### TVG-1102
+
+For BM-0119 sum checked report fields as documented and reconstruct actual
+fixed-token size from modeled information, 112-byte member headers, 80-byte
+frame overhead and the residual. Do not substitute reselection totals.
+For the planned distance-bit diagnostic, hand-check binary predictions and
+LSB order, isolate length bits, exercise classes 0 and 16 and rescale/reset
+boundaries, and reject invalid symbol/bypass association. Require uniform
+bit count to equal the existing distance-bypass control before corpus use.

@@ -4368,3 +4368,42 @@ for these small gains. If context 8 is adopted, its own candidate sizes can
 replace context-7 scoring; a second old-model selection stage is not required.
 Keep public behavior unchanged and return to the remaining model/parser cost
 breakdown before adding further search combinations.
+
+### BM-0119: Remaining fixed-token context-8 field costs
+
+On 2026-09-25, aggregate the checked BM-0118 reports without rerunning the
+encoder. Use `literal_partition_high3_adaptive_bits / 8` for literals and
+`retained_cost_*_adaptive_bits / 8` for unchanged kind/length/distance classes;
+divide each retained bypass-bit count by eight. These diagnostics describe
+BM-0117's **fixed context-7-selected tokens**, not BM-0118's reselected tokens.
+They share the recorded input identities and reproduce the fixed byte totals.
+
+| Component | Mozilla byte-equivalent | Complete corpus byte-equivalent |
+| --- | ---: | ---: |
+| Kind symbols | 1,339,295.924 | 4,844,836.680 |
+| Literal symbols (high3) | 9,887,456.614 | 31,573,002.666 |
+| Length classes | 1,196,161.521 | 4,411,366.581 |
+| Distance classes | 1,824,879.672 | 6,624,433.508 |
+| Length bypass | 863,472.500 | 3,165,227.250 |
+| Distance bypass | 4,415,033.000 | 19,838,224.875 |
+| **Modeled total** | **19,526,299.231** | **70,457,091.560** |
+| Explicit framing bytes | 62,672 | 260,464 |
+| Actual size minus modeled total and framing | 3,663.769 | 15,158.440 |
+| **Actual fixed-token bytes** | **19,592,635** | **70,732,714** |
+
+Framing is 112 bytes per member plus 80 bytes per frame. The residual includes
+integer interval rounding and coder termination; it is not an independently
+measured field. It is far smaller than the 598,496-byte mozilla gap to the
+reported gzip result, so arithmetic termination is not the next size priority.
+
+The high3 literal adaptive-minus-empirical gap is 378,871.293 byte-equivalents
+on mozilla and 1,366,382.432 across the corpus. These future-histogram scores
+exclude model transmission and do not promise recoverable bytes. Literal
+modeling remains important; the prior increment and partition experiments do
+not exhaust its design space.
+
+Distance bypass is the second-largest component here, but its magnitude says
+nothing about its bias. Its empirical information was not measured in these
+reports. Next screen causal binary models on fixed tokens before specifying
+any new format. This is a testable hypothesis, not a claim that bypass bits
+are compressible or that the gzip gap can be closed.

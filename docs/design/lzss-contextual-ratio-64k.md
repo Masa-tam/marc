@@ -165,3 +165,42 @@ and a measured size/speed/memory comparison across all twelve Silesia members.
 Report the aggregate and worst-member regressions; a `mozilla` win alone is
 insufficient. The reported gzip size is an aspirational reference, not a test
 assertion or a promise to match a different compressor architecture.
+
+## Stage 4: fixed-token distance-extra-bit diagnostic
+
+BM-0119 identifies distance bypass as a large, not yet characterized cost.
+Keep the context-7-selected 0/3/4 winner tokens fixed, as in BM-0117. Do not
+change parsing, literal partition, Range arithmetic, frame boundaries or
+public bytes. Replay only the distance extra bits in a benchmark diagnostic.
+
+Compare these three bounded controls, reset at each frame:
+
+- Equal binary probabilities: exactly one information bit per bypass bit.
+- Position-only: 16 binary models, one per numeric bit position.
+- Class and position: 17 by 16 binary models, indexed by decoded distance
+  class and numeric bit position. Unused combinations remain unused.
+
+Distance class `c = floor(log2(distance))` is already decoded before its
+`c` extra bits. Class zero has no bypass operation. Consume bits LSB-first;
+predict each bit before updating its own model. Initialize frequencies to
+`[1,1]`, add one to the observed frequency, and when the total reaches 32768,
+replace each frequency with `(frequency + 1) / 2`. No future data, decoded raw
+byte, extra dictionary search or recursive structure is needed for prediction.
+Treat class 16 consistently, including its constrained legal distance range.
+
+For each candidate report adaptive information, per-frame empirical binary
+information, zero/one counts and modeled-bit count. Empirical scores are
+diagnostic only and must not drive predictions. The uniform control must
+exactly reproduce `retained_cost_distance_bypass_bits`; length bypass remains
+unchanged and must never enter these counters. Validate operation shapes and
+association with a preceding distance-class symbol before indexing arrays.
+Require width to match class, reject an orphan/duplicate bypass, and leave
+input tokens and operations untouched. Use fixed-capacity arrays only.
+
+Test hand-calculated sequences, LSB ordering, field isolation, class zero and
+16, reset behavior, rescaling and malformed operations. Then screen mozilla
+and all twelve corpus members, reporting regressions as well as totals. A
+favorable diagnostic requires a separately specified private format and
+actual bounded encode/decode measurement before adoption. This stage reserves
+no IDs and changes no existing codec. Do not expand parser policy combinations
+merely to pursue BM-0118's small reselection benefit.
