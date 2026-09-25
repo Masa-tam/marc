@@ -8950,3 +8950,9 @@ Reduced-literal frame integration uses marc's own frame preflight, Range/token
 parser and typed reconstructor. Canonical interval replay uses the carry and
 five-shift termination arithmetic of the first-party reduced-literal encoder.
 No external compressor implementation or third-party vectors were consulted.
+
+### IR-0983
+
+Reduced-literal frame encoding reuses marc's own escape frame writer and
+context-8 operation/Range encoder. Fixtures derive from repository token and
+frame specifications; no external source or third-party test suite was used.

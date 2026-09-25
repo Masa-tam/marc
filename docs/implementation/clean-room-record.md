@@ -33963,3 +33963,19 @@ both bounds.
   five new frame/identity tests, all-symbol and rescaling replay coverage,
   documentation layout and interoperability schema compatibility. The altered
   terminal-code regression rejects before either output buffer changes.
+
+## CR-1382: 2026-09-25 - Encode reduced-literal frames from retained tokens
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0983, DD-1228 and TVG-1097; first-party components only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Generated-code task: connect retained tokens, context-8 operations and Range
+  payload generation to bounded complete-frame serialization.
+- Independent decisions: retain conservative decode-ready accounting plus
+  operations and any larger encoder state; no repeated dictionary search.
+- Similarity review: explicit reuse of repository-owned writer and tests;
+  no external implementation expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,793 CTest cases passed, including
+  five new frame-encoding tests, strict decoder round trips, exact aggregate
+  bounds, documentation layout and interoperability schema compatibility.

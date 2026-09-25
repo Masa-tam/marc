@@ -1,5 +1,10 @@
 #include "frame/lzss_short_match_frame_encoder.hpp"
 #include "frame/lzss_short_length_escape_frame_encoder.hpp"
+#include "frame/lzss_reduced_literal_frame_encoder.hpp"
+#include "frame/lzss_reduced_literal_preflight.hpp"
+#include "context/lzss_reduced_literal_operations.hpp"
+#include "entropy/lzss_reduced_literal_range_encoder.hpp"
+#include "entropy/lzss_reduced_literal_range_state.hpp"
 
 #include "context/lzss_short_length_escape_operations.hpp"
 #include "context/lzss_short_match_context_layout.hpp"
@@ -86,9 +91,12 @@ enum class OverlapCheck : std::uint8_t {
     const std::uint64_t raw_already_committed,
     const std::span<const dictionary::internal::LzssTypedToken> tokens,
     const std::span<context::internal::ModeledOperation> operations,
-    const bool escape_identity) noexcept {
+    const bool escape_identity,
+    const bool reduced_literal = false) noexcept {
     LzssShortMatchFrameEncodeResult result{};
-    result.preflight_error = escape_identity
+    result.preflight_error = reduced_literal
+        ? validate_lzss_reduced_literal_stream_semantics(stream, limits)
+        : escape_identity
         ? validate_lzss_short_length_escape_stream_semantics(stream, limits)
         : validate_lzss_short_match_stream_semantics(stream, limits);
     if (result.preflight_error != LzssShortMatchPreflightError::none) {
@@ -110,7 +118,10 @@ enum class OverlapCheck : std::uint8_t {
     const dictionary::internal::LzssTypedFrameValidationContext token_context{
         static_cast<std::uint32_t>(tokens.size()),
         static_cast<std::uint32_t>(raw_size), raw_already_committed};
-    result.context = escape_identity
+    result.context = reduced_literal
+        ? context::internal::model_lzss_reduced_literal_tokens(
+              tokens, stream.dictionary, token_context, limits, operations)
+        : escape_identity
         ? context::internal::model_lzss_short_length_escape_tokens(
               tokens, stream.dictionary, token_context, limits, operations)
         : context::internal::model_lzss_short_match_tokens(
@@ -132,8 +143,9 @@ enum class OverlapCheck : std::uint8_t {
     }
     const auto used = operations.first(result.operation_count);
     TypedContextRangeDescriptor descriptor{};
-    result.entropy = entropy::internal::plan_lzss_short_match_range_operations(
-        used, limits, descriptor);
+    result.entropy = reduced_literal
+        ? entropy::internal::plan_lzss_reduced_literal_range_operations(used, limits, descriptor)
+        : entropy::internal::plan_lzss_short_match_range_operations(used, limits, descriptor);
     if (result.entropy.error
         != entropy::internal::ContextualDynamicRangeEncodeError::none) {
         result.error = LzssShortMatchFrameEncodeError::entropy_error;
@@ -155,7 +167,10 @@ enum class OverlapCheck : std::uint8_t {
     const TypedContextFrameValidationContext frame_context{
         stream, limits, sequence, raw_already_committed};
     LzssShortMatchFrameRequirements requirements{};
-    result.preflight_error = escape_identity
+    result.preflight_error = reduced_literal
+        ? preflight_lzss_reduced_literal_frame_semantics(
+              header, descriptor, frame_context, requirements)
+        : escape_identity
         ? preflight_lzss_short_length_escape_frame_semantics(
               header, descriptor, frame_context, requirements)
         : preflight_lzss_short_match_frame_semantics(
@@ -167,11 +182,16 @@ enum class OverlapCheck : std::uint8_t {
     result.serialized_size = requirements.serialized_frame_bytes;
     std::size_t operation_bytes{};
     std::size_t aggregate{};
+    const auto encoder_state = reduced_literal
+        ? entropy::internal::lzss_reduced_literal_range_encoder_state_bytes() : 0;
+    const auto decoder_state = sizeof(entropy::internal::LzssReducedLiteralRangeState);
+    const auto extra_state = encoder_state > decoder_state ? encoder_state - decoder_state : 0;
     if (!core::checked_multiply(result.operation_count,
                                 sizeof(context::internal::ModeledOperation),
                                 operation_bytes)
         || !core::checked_add(requirements.aggregate_working_bytes,
-                              operation_bytes, aggregate)) {
+                              operation_bytes, aggregate)
+        || !core::checked_add(aggregate, extra_state, aggregate)) {
         result.error = LzssShortMatchFrameEncodeError::arithmetic_overflow;
     } else if (aggregate > limits.max_internal_buffered_bytes) {
         result.error = LzssShortMatchFrameEncodeError::workspace_limit;
@@ -187,7 +207,8 @@ enum class OverlapCheck : std::uint8_t {
     const std::span<const dictionary::internal::LzssTypedToken> tokens,
     const std::span<context::internal::ModeledOperation> operations,
     const std::span<std::byte> serialized_output,
-    const bool escape_identity) noexcept {
+    const bool escape_identity,
+    const bool reduced_literal = false) noexcept {
     LzssShortMatchFrameEncodeResult result{};
     std::size_t token_bytes{};
     std::size_t operation_bytes{};
@@ -221,7 +242,7 @@ enum class OverlapCheck : std::uint8_t {
         }
     }
     result = plan(stream, limits, sequence, raw_already_committed, tokens,
-                  operations, escape_identity);
+                  operations, escape_identity, reduced_literal);
     if (result.error != LzssShortMatchFrameEncodeError::none) return result;
     if (serialized_output.size() < result.serialized_size) {
         result.error = LzssShortMatchFrameEncodeError::serialized_output_too_small;
@@ -237,7 +258,8 @@ enum class OverlapCheck : std::uint8_t {
     const TypedContextRangeDescriptor descriptor{
         result.decision_count,
         static_cast<std::uint32_t>(result.payload_size),
-        context::internal::lzss_short_match_context_count};
+        reduced_literal ? context::internal::lzss_reduced_literal_context_count
+                        : context::internal::lzss_short_match_context_count};
     std::array<std::byte, typed_context_frame_header_size> header_bytes{};
     std::array<std::byte, typed_context_range_descriptor_size>
         descriptor_bytes{};
@@ -250,7 +272,10 @@ enum class OverlapCheck : std::uint8_t {
     const auto payload_offset = typed_context_frame_header_size
         + typed_context_range_descriptor_size;
     TypedContextRangeDescriptor encoded_descriptor{};
-    result.entropy = entropy::internal::encode_lzss_short_match_range_operations(
+    const auto entropy_encode = reduced_literal
+        ? entropy::internal::encode_lzss_reduced_literal_range_operations
+        : entropy::internal::encode_lzss_short_match_range_operations;
+    result.entropy = entropy_encode(
         operations.first(result.operation_count), limits,
         output.subspan(payload_offset, result.payload_size),
         encoded_descriptor);
@@ -316,6 +341,29 @@ LzssShortMatchFrameEncodeResult encode_lzss_short_length_escape_frame(
     const std::span<std::byte> serialized_output) noexcept {
     return encode(stream, limits, sequence, raw_already_committed, tokens,
                   operations, serialized_output, true);
+}
+
+LzssShortMatchFrameEncodeResult plan_lzss_reduced_literal_frame(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t raw_already_committed,
+    const std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations) noexcept {
+    return plan(stream, limits, sequence, raw_already_committed, tokens,
+                operations, true, true);
+}
+
+LzssShortMatchFrameEncodeResult encode_lzss_reduced_literal_frame(
+    const TypedContextStreamHeader& stream,
+    const core::DecoderLimits& limits,
+    const std::uint64_t sequence,
+    const std::uint64_t raw_already_committed,
+    const std::span<const dictionary::internal::LzssTypedToken> tokens,
+    const std::span<context::internal::ModeledOperation> operations,
+    const std::span<std::byte> serialized_output) noexcept {
+    return encode(stream, limits, sequence, raw_already_committed, tokens,
+                  operations, serialized_output, true, true);
 }
 
 } // namespace marc::frame::internal

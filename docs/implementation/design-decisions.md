@@ -24571,3 +24571,18 @@ raw reconstruction follows only successful token decoding. Reject overlapping
 frame/token/raw regions and insufficient capacities before writes. Return the
 exact frame-prefix extent only on success; public stream admission is unchanged.
 Existing short-match/escape decoders retain their current behavior.
+
+## DD-1228: Encode retained tokens as reduced-literal complete frames
+
+Add private planning/encoding entry points for 2/8 + 1/8 + 3/2. Reuse the
+existing bounded frame writer with explicit context-8 mapping, entropy encoder
+and semantic preflight. Consume retained tokens without repeating dictionary
+search. Serialize the 24-context descriptor explicitly in little-endian form.
+
+Preserve the conservative decode-ready frame charge (frame, tokens, raw bytes,
+decoder state), add used operation bytes, and add any positive encoder-state
+excess over decoder state. This covers either sequential entropy pass without
+charging both states simultaneously. Planning may modify operation scratch;
+preflight failures must not write the serialized output. Inputs must remain
+stable throughout the call. Unused operation/output tails remain untouched.
+Public stream selection and existing representation bytes remain unchanged.

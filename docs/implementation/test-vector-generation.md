@@ -16040,3 +16040,14 @@ sequence and aggregate limits. Mutate the final Range byte by XOR 1: the same
 two tokens and four raw bytes are decoded internally, but canonical comparison
 must reject the alternative terminal code before token or raw output changes.
 Existing all-symbol/rescaling/bypass decoder tests also exercise interval replay.
+
+### TVG-1097
+
+Adapt escape frame encoder tests to context count 24, variant 8 and remapped
+length/distance IDs. Cover every legal length in operation inversion and
+strict frame round trips at lengths 3,4,5,258. Reject invalid tokens, identity,
+position, short workspace/output and overlap without serialized publication.
+Encode a four-byte final frame after a seven-byte frame, independently check
+sequence/raw/count bytes, repeat byte-for-byte, preserve caller tails, and
+round-trip through strict canonical decoding. Accept exact conservative
+aggregate bytes and reject one byte less with serialized sentinels unchanged.
