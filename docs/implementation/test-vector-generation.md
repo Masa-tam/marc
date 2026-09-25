@@ -16267,3 +16267,12 @@ prior baseline, selected and context-8 totals. Require 782 verified frames for
 both models and reconcile 19,592,635 - 1,049,977 + 90 = 18,542,748 bytes.
 The benchmark checks raw and token round trips for every frame. Timing ratios
 are observations, not pass/fail thresholds or portable regression expectations.
+
+### TVG-1118
+
+The complete-corpus measurement verifies input/executable hashes, arguments,
+full member byte/frame extents and every token/raw round trip. Reconcile old
+controls and saved/extra totals for each member. A second runner invocation
+must reuse twelve validated checkpoints without benchmarking. Aggregate checks
+require 211,938,580 bytes, 3,239 frames and 70,732,714 - 1,566,004 + 118 =
+69,166,828 accounted bytes. Timing is observational, not a test threshold.

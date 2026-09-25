@@ -4536,3 +4536,53 @@ selection and include the validating frame paths; they are not end-to-end CLI
 throughput. Peak resident memory was not measured. Keep the private candidate,
 next measure all twelve corpus members on the same frozen-token controls,
 and examine speed and memory before public admission.
+
+### BM-0123: Complete-corpus actual position-distance coding
+
+On 2026-09-25, extend BM-0122 to all twelve Silesia members with the same
+executable hash and `1024 65536 indexed distance-policies` arguments. Reuse
+mozilla after checking its input/executable hashes and arguments; measure the
+other eleven sequentially. Ignored `out/position-distance-corpus` records
+preserve each input hash and all report fields. A second local runner invocation
+validated and reused all twelve without launching the benchmark. Checkpoints
+are per member, not per frame; an interrupted member must restart.
+
+All 211,938,580 bytes in 3,239 frames passed raw and typed-token round trips.
+Prior baseline, selected, context-8 and reselected size controls all reproduced.
+Tokens remain fixed to the context-7 selector; no context-9 reselection occurs.
+
+| Member | Context 8 bytes | Context 9 bytes | Net saved bytes |
+| --- | ---: | ---: | ---: |
+| dickens | 4,079,396 | 4,073,776 | 5,620 |
+| mozilla | 19,592,635 | 18,542,748 | 1,049,887 |
+| mr | 3,571,931 | 3,467,223 | 104,708 |
+| nci | 3,558,750 | 3,539,963 | 18,787 |
+| ooffice | 3,159,844 | 3,142,951 | 16,893 |
+| osdb | 4,104,316 | 4,088,956 | 15,360 |
+| reymont | 1,993,514 | 1,990,298 | 3,216 |
+| samba | 5,690,657 | 5,655,392 | 35,265 |
+| sao | 5,396,832 | 5,193,548 | 203,284 |
+| webster | 12,869,094 | 12,857,802 | 11,292 |
+| x-ray | 5,957,025 | 5,856,405 | 100,620 |
+| xml | 758,720 | 757,766 | 954 |
+| **Total** | **70,732,714** | **69,166,828** | **1,565,886** |
+
+Net reduction is 2.214% and all member totals improve. Some individual frames
+regress: extra bytes total 118 (mozilla 90, samba 11, xml 17). Gross savings
+are 1,566,004 bytes. BM-0121's causal information estimate exceeds actual net
+savings by about 367.635 bytes; it predicted the direction accurately but was
+not itself an encoded-size measurement.
+
+Summed fixed-token encode phase time increases from 5.809752 to 10.439411
+seconds (1.797 times), and decode from 10.912139 to 17.418667 seconds
+(1.596 times). These are one sample per member, including reused mozilla,
+not repeated trials or end-to-end throughput. They exclude dictionary search
+and policy selection. No peak resident-memory measurement was made. Header
+accounting and private/non-published stream caveats remain as in BM-0122.
+
+The size result justifies retaining context 9, but does not justify changing
+a public default. Next investigate the extra cost of grammar/model processing
+and repeated validation in the fixed-token path, preserving exact bytes and
+bounds; separate unavoidable adaptive-coding work from removable overhead.
+Do not introduce file-name-dependent policies or infer general superiority
+from this corpus alone.

@@ -34315,3 +34315,19 @@ both bounds.
 - Validation: report controls, hashes and accounting verified; documentation
   layout test passed. The preceding full 3,845-test run remains the code baseline.
   Production code is unchanged; full corpus and public admission remain open.
+
+## CR-1403: 2026-09-25 - Measure complete-corpus position-distance coding
+
+- Author: Codex; reviewer: repository maintainer approved corpus measurement.
+- References used: IR-1004, DD-1249, TVG-1118 and BM-0123; local corpus and
+  first-party benchmark only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: reuse checked mozilla results and measure eleven remaining members,
+  saving validated per-member checkpoints and verifying restart reuse.
+- Results: all 3,239 frame round trips passed; every file total improved.
+  Net reduction is 1,565,886 bytes, with increased encode/decode phase times.
+- Similarity review: measurements and documentation only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: all twelve checkpoints revalidated and reused; documentation
+  layout test passed. Production code unchanged; public admission remains open.

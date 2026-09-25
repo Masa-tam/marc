@@ -24848,3 +24848,11 @@ with all 782 frames verified. Preserve this private candidate for corpus-wide
 measurement, not immediate admission: encode and decode phase times increase,
 and some frames regress. Treat the reported gzip comparison as a single-file
 size observation only. Do not change public defaults or token selection.
+
+## DD-1249: Retain position-distance coding with an explicit speed tradeoff
+
+BM-0123 confirms lower file totals on all twelve members and 1,565,886 bytes
+net savings, with all 3,239 frame round trips verified. Keep context 9 private:
+fixed-token encoding and decoding are slower in this single-pass measurement.
+Next diagnose processing overhead before public admission. Preserve frozen
+tokens, exact bytes, validation and bounds when evaluating optimizations.

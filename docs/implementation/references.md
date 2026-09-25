@@ -9088,3 +9088,9 @@ implementation or test vectors were consulted.
 BM-0122 uses the locally supplied Silesia mozilla member, repository benchmark
 and the maintainer-reported gzip -9v byte total. No external compressor source
 or third-party test suite was consulted.
+
+### IR-1004
+
+BM-0123 uses the twelve locally supplied Silesia members and repository-owned
+benchmark. Existing hash-checked context-8 reports provide size controls.
+No external compressor implementation or third-party tests were consulted.
