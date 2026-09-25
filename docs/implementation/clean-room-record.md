@@ -34116,3 +34116,20 @@ both bounds.
 - Validation: 782 frames and all three prior size controls agreed; checkpoint
   reuse succeeded. Focused benchmark smoke and documentation checks passed.
   No codec changes; the full suite was not repeated for this measurement record.
+
+## CR-1391: 2026-09-25 - Complete distance-bit corpus screening
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0992, DD-1237, TVG-1106 and BM-0121; local corpus and
+  first-party diagnostics only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: extend fixed-token distance-bit screening to the full corpus with
+  resumable checkpoints and unchanged archive controls.
+- Independent decisions: retain regressions, prioritize the smaller position
+  bank for subsequent private format design, and make no actual-size claim.
+- Similarity review: first-party numerical analysis only; no external
+  expression copied and no legal guarantee claimed.
+- Validation: all 3,239 frames and prior size controls agreed; all twelve
+  checkpoints revalidated. Benchmark smoke and documentation checks passed.
+  No codec changes; the full suite was not repeated for this measurement record.

@@ -16129,3 +16129,13 @@ checkpoints; all agree. Save input/executable hashes and exact arguments, then
 revalidate the completed checkpoint without relaunching measurement. Run the
 indexed/reference benchmark smoke and documentation layout checks for this
 measurement-only record; the codec implementation is unchanged.
+
+### TVG-1106
+
+Extend TVG-1105 to all twelve Silesia members and 3,239 frames. Reuse mozilla;
+validate every remaining report's observation counts, verified frames, input
+identity and old/fixed/reselected size controls. Revalidate all checkpoints
+without rerunning measurement. Aggregate unrounded reported scores, retain
+negative gains, and distinguish file-total from frame-level conclusions.
+Run benchmark smoke and documentation layout checks; this record changes no
+codec implementation and does not repeat the full suite.

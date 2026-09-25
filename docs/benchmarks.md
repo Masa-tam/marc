@@ -4446,3 +4446,52 @@ range coding, termination, representation and runtime costs are unmeasured;
 the existing archives still have the unchanged sizes above. Next screen all
 twelve corpus members, including regressions, before designing a new private
 representation. No public API, format, default or performance claim changes.
+
+### BM-0121: Complete-corpus distance extra-bit screening
+
+On 2026-09-25, extend BM-0120 to all twelve Silesia members using the same
+executable SHA-256 and `1024 65536 indexed distance-policies` arguments.
+Reuse mozilla's checked result; measure the other eleven members. Local ignored
+`out/distance-bit-corpus` checkpoints preserve each input hash, executable hash,
+arguments and report fields. A second invocation revalidated all twelve without
+relaunching the benchmark. All old selected, fixed context-8 and reselected
+byte totals reproduced the previous controls.
+
+The 211,938,580 input bytes span 3,239 verified frames. Uniform distance extras
+total 158,705,799 bits (89,239,378 zeros and 69,466,421 ones), exactly agreeing
+with retained bypass counts. Scores describe fixed context-7-selected tokens,
+not context-8 reselection. Positive savings below mean fewer estimated bits;
+negative savings mean a regression. Values are byte-equivalents, not archives.
+
+| Member | Uniform distance bytes | Position adaptive savings | Class/position adaptive savings |
+| --- | ---: | ---: | ---: |
+| dickens | 1,737,204.125 | 5,665.908 | -401.442 |
+| mozilla | 4,415,033.000 | 1,049,988.060 | 1,077,996.422 |
+| mr | 1,202,043.000 | 104,729.647 | 100,656.118 |
+| nci | 1,336,278.000 | 18,789.502 | 85,441.890 |
+| ooffice | 689,960.750 | 16,897.829 | 17,313.745 |
+| osdb | 752,808.375 | 15,367.471 | 11,118.225 |
+| reymont | 961,052.750 | 3,247.549 | 795.337 |
+| samba | 1,617,384.625 | 35,280.476 | 62,555.828 |
+| sao | 986,497.750 | 203,301.845 | 231,958.125 |
+| webster | 5,029,660.875 | 11,393.569 | -11,480.821 |
+| x-ray | 826,857.000 | 100,633.792 | 113,129.330 |
+| xml | 283,444.625 | 957.987 | 1,237.569 |
+| **Total** | **19,838,224.875** | **1,566,253.635** | **1,690,320.326** |
+
+Position-only causal information totals 18,271,971.240 byte-equivalents versus
+18,147,904.549 for class/position. Empirical future-histogram scores total
+18,239,208.897 and 17,956,100.202 respectively; these exclude transmission
+costs and are not causal coding results. The larger bank gains another
+124,066.691 byte-equivalents overall but loses to position-only on five members
+and exceeds uniform coding on two. Position-only beats uniform on all twelve
+members at file-total granularity; this does not establish a per-frame guarantee.
+
+Use the 16-model position-only candidate as the first private representation
+design target. It has broader observed behavior and one seventeenth the binary
+model count. Retain class/position as a measured alternative, not a default or
+an input-name-dependent selector. Next specify exact binary range operations,
+reset/update rules and decoder bounds before implementing actual coding. Keep
+tokens and non-distance fields fixed for the first comparison. Measure actual
+bytes, encode/decode cost and workspace before considering public admission;
+the current results do not establish actual savings or a gzip win.

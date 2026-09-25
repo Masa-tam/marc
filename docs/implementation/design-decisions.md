@@ -24690,3 +24690,14 @@ candidates: the larger bank's additional gain is small relative to its model
 count. Next measure all corpus members with the same reset/update rules and
 fixed-token controls, accepting regressions. Do not substitute information
 estimates for actual archive sizes or declare the gzip target achieved.
+
+## DD-1237: Prioritize position-only distance-bit coding for private design
+
+BM-0121 finds causal position-only savings on all twelve file totals. The
+272-model class/position bank improves the corpus sum but regresses against
+uniform bits on dickens and webster. First design the smaller 16-model binary
+position candidate with unchanged tokens and non-distance modeling. Preserve
+the larger bank as experimental evidence without input-specific selection.
+File-total improvements do not guarantee every frame improves. Specify exact
+decoder-visible rules before coding; require actual size, speed and workspace
+measurements before adoption. No public representation changes at this stage.

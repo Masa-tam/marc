@@ -9007,3 +9007,10 @@ Mozilla distance-bit screening uses the first-party executable from IR-0990,
 the locally supplied Silesia member and prior BM-0118 controls. No external
 implementation or new third-party source was consulted. BM-0120 records the
 input/executable identities and distinguishes information scores from bytes.
+
+### IR-0992
+
+Complete-corpus distance-bit screening extends IR-0991 using the same
+repository diagnostic and locally supplied twelve Silesia members. BM-0121
+records causal and empirical scores and unchanged size controls. No external
+codec source, third-party tests or new implementation reference was consulted.
