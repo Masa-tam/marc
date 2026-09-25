@@ -4845,3 +4845,55 @@ encoder percentages, or generalize beyond mozilla without corpus measurements.
 
 The result supports keeping the prepared frame path. Next repeat the paired
 comparison across all twelve corpus members with identical conditions.
+
+## BM-0130: Corpus-wide paired frame plan reuse
+
+On 2026-09-26, extend BM-0129 to twelve complete Silesia members: 211,938,580
+bytes and 3,239 frames. Use its binary SHA-256 and
+`1024 65536 indexed distance-frame-ab 5`; binary revision is `572d347d`,
+measurement HEAD is `2922303b`. Reuse validated mozilla and measure the other
+eleven sequentially. Ignored `out/position-distance-frame-ab/run.ps1` stores
+per-member identity hashes, arguments and raw fields after validation.
+A second invocation validated all twelve checkpoints without rerunning timing.
+
+| Member | Three-run median seconds | Two-run median seconds | Median paired time reduction |
+| --- | ---: | ---: | ---: |
+| dickens | 0.689097 | 0.481599 | 30.05% |
+| mozilla | 2.640353 | 1.861584 | 29.73% |
+| mr | 0.530329 | 0.369861 | 30.30% |
+| nci | 0.513142 | 0.362272 | 29.62% |
+| ooffice | 0.449668 | 0.319204 | 29.71% |
+| osdb | 0.548440 | 0.381570 | 30.38% |
+| reymont | 0.315455 | 0.220344 | 30.49% |
+| samba | 0.798395 | 0.561483 | 29.61% |
+| sao | 0.667377 | 0.466924 | 29.83% |
+| webster | 2.074991 | 1.449124 | 30.25% |
+| x-ray | 0.807593 | 0.565036 | 29.84% |
+| xml | 0.110806 | 0.077964 | 29.35% |
+
+Summing member times by pair index:
+
+| Pair | Three-run seconds | Two-run seconds | Time reduction |
+| --- | ---: | ---: | ---: |
+| 1 | 10.136386 | 7.111297 | 29.84% |
+| 2 | 10.137324 | 7.118461 | 29.78% |
+| 3 | 10.153728 | 7.111225 | 29.96% |
+| 4 | 10.144984 | 7.105246 | 29.96% |
+| 5 | 10.144013 | 7.128577 | 29.73% |
+
+All sixty member/pair comparisons favor two-run encoding, with full-byte and
+metadata agreement for every frame in each pair. Prior non-time controls match
+BM-0123, including total accounted sizes of 70,732,714 bytes for context 8 and
+69,166,828 for context 9. Hashes and parity-correct first-path counts validate.
+
+This isolates plan reuse with binary specialization held constant. Each aggregate
+row combines sequential member runs (including earlier mozilla), not an independent
+whole-corpus trial. Median paired reductions differ from ratios of separate
+medians. BM-0129's warmup/cache/scheduling caveats and timing boundary apply:
+complete frame encoding from retained tokens, excluding dictionary search,
+allocation, I/O and output comparison. The 1,179,733-byte reusable output buffer
+is not peak RSS. This does not establish whole-CLI throughput or remove the
+need for malformed-input and write-failure validation before public admission.
+
+Retain the prepared path. Close the remaining write-time failure/publication
+test gap from TVG-1130 before expanding private context-9 integration.

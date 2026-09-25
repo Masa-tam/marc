@@ -16485,3 +16485,13 @@ fields and hashes in the BM-0129 checkpoint. Require 782 verified frames and
 391 three-run-first frames per pair. Compare prior non-time fields with BM-0122,
 and recheck input/executable hashes. The harness checks complete frame bytes
 and metadata outside timing. No speed threshold is a correctness requirement.
+
+## TVG-1135: Validate corpus-wide frame pairing checkpoints
+
+Extend TVG-1134 to all twelve members. Require identity hashes, arguments, full
+extent, five pairs, the 1,179,733-byte buffer and matching prior non-time controls.
+Each pair must verify every frame and the expected alternating first-path count,
+including odd-frame members. Reject invalid/non-finite/non-positive times without
+imposing a speed threshold. Recheck hashes after execution; publish checkpoints
+only after validation. A reuse-only rerun must validate all twelve records.
+Aggregate by pair index; do not label these independent whole-corpus trials.

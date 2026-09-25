@@ -34580,3 +34580,18 @@ both bounds.
   copied and no legal guarantee claimed.
 - Validation: checkpoint controls, hashes and documentation layout test passed.
   Runtime unchanged since full 3,857-test validation.
+
+## CR-1420: 2026-09-26 - Measure corpus-wide frame plan reuse
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1021, DD-1266, TVG-1135 and BM-0130; first-party harness
+  and local corpus inputs only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: extend frame pairing to all members with checked, resumable results.
+- Results: all 3,239 frames verified per pair; all sixty comparisons favored
+  two-run encoding, with unchanged accounted archive totals.
+- Similarity review: measurement/documentation only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: identity, controls, pair counts and checkpoint reuse passed;
+  documentation layout test passed. Runtime unchanged since full 3,857-test validation.

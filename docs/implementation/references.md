@@ -9195,3 +9195,9 @@ No external implementation was consulted.
 BM-0129 uses the first-party frame pairing harness from IR-1019 and existing
 local mozilla input with recorded identity hashes. No external implementation
 or new algorithm reference was consulted.
+
+### IR-1021
+
+Corpus-wide frame pairing extends IR-1020 using repository-owned frame paths
+and existing local Silesia inputs. BM-0130 and ignored per-member checkpoints
+record results and identity. No external implementation was consulted.

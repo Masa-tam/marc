@@ -25202,3 +25202,15 @@ encoding time for the two-run path across five pairs. Retain the prepared path
 and extend the same comparison to all corpus members. This comparison holds
 binary specialization constant. It is neither CLI throughput nor evidence that
 decoder time or compression ratio changed. Public-format promotion is separate.
+
+## DD-1266: Keep prepared frame encoding after corpus-wide paired evidence
+
+BM-0130 verifies every frame across five pairs for all twelve members. All sixty
+comparisons favor two-run encoding; summed frame times decrease by 29.73% to
+29.96%. Keep the private prepared path without claiming CLI-equivalent gains
+or adding percentages from earlier binary-model measurements.
+
+Performance evidence does not replace robustness coverage. Next close the
+write-time failure/publication test gap in TVG-1130 with bounded test-only
+injection, without treating caller mutation as supported use or changing public
+APIs. Public admission remains a separate decision.
