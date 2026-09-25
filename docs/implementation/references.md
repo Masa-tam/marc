@@ -8902,3 +8902,9 @@ Reduced-literal semantic preflight reuses marc's own short-match/escape bounds
 checks and the specified context-8 layout. The decoder-state storage contract
 uses the existing Range state fields with the new bounded model extents.
 No external implementation or test suite was consulted.
+
+### IR-0976
+
+Reduced-literal byte preflight uses the repository's explicit little-endian
+header grammar and existing private prefix parsers. Independent metadata
+fixtures and byte mutations are authored from that grammar, not external code.

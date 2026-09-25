@@ -33845,3 +33845,20 @@ both bounds.
   block cap; the fixture now explicitly validates its configuration before
   testing the intended bound. MSVC Release build and all 3,753 CTest cases
   passed, including documentation layout and interoperability compatibility.
+
+## CR-1375: 2026-09-25 - Parse reduced-literal byte prefixes
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0976, DD-1221 and TVG-1090; first-party byte grammar,
+  private parser and reduced-literal semantic checks only.
+- Known implementations intentionally not consulted: external compressor code,
+  copyleft implementations and third-party parsing/test libraries.
+- Generated-code task: expose private context-8 prefix parsing, reject malformed
+  metadata atomically, and exhaustively test prefix truncation positions.
+- Independent decisions: preserve public rejection and exact consumed extent;
+  separate metadata/payload-availability checks from actual payload decoding.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation: MSVC Release build and all 3,757 CTest cases passed, including
+  four new byte-preflight tests, documentation layout and interoperability
+  schema compatibility. Public parsing still rejects the private identity.

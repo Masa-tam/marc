@@ -2,6 +2,10 @@
 #include "frame/lzss_short_length_escape_preflight.hpp"
 #include "entropy/lzss_reduced_literal_range_state.hpp"
 #include "dictionary/lzss_typed_token.hpp"
+#include "core/endian.hpp"
+
+#include <array>
+#include <span>
 
 #include <gtest/gtest.h>
 
@@ -100,5 +104,114 @@ TEST(LzssReducedLiteralPreflight, RejectsContradictionsAndAllowsOnlyFinalShortFr
     s.original_size = 65536;
     EXPECT_EQ(preflight_lzss_reduced_literal_frame_semantics(frame_header(), descriptor(), {s,limits}, r), Error::unexpected_frame_size);
     EXPECT_EQ(preflight_lzss_reduced_literal_frame_semantics(frame_header(), descriptor(), {s,limits,0,65529}, r), Error::none);
+}
+std::array<std::byte, 113> stream_bytes() {
+    std::array<std::byte, 113> b{};
+    b[0]=std::byte{0x4d}; b[1]=std::byte{0x41}; b[2]=std::byte{0x52}; b[3]=std::byte{0x43};
+    const auto u16 = [&](std::size_t offset, std::uint16_t value) {
+        EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{b}, offset, value));
+    };
+    const auto u32 = [&](std::size_t offset, std::uint32_t value) {
+        EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{b}, offset, value));
+    };
+    u16(4,2); u16(8,64); u16(10,1); u16(12,2); u16(14,8);
+    u16(16,3); u16(18,2); u32(20,7); u32(28,16); u32(32,16);
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{b}, 40, std::uint64_t{7}));
+    u32(48,16); u32(64,65536); u32(68,3); u32(72,258);
+    u32(80,32768); u16(84,24); u16(96,1); u16(98,8);
+    b[112]=std::byte{0xff}; // following byte is not part of this header
+    return b;
+}
+std::array<std::byte, 89> frame_bytes() {
+    std::array<std::byte, 89> b{};
+    b[0]=std::byte{0x4d}; b[1]=std::byte{0x52}; b[2]=std::byte{0x46}; b[3]=std::byte{0x32};
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{b}, 4, std::uint16_t{64}));
+    for (const auto [offset,value] : std::array<std::array<std::uint32_t,2>,8>{
+            {{16,7},{20,5},{24,12},{28,12},{32,8},{36,16},{64,12},{68,8}}})
+        EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{b}, offset, value));
+    EXPECT_TRUE(marc::core::store_le(std::span<std::byte>{b}, 72, std::uint16_t{24}));
+    b[88]=std::byte{0xff};
+    return b;
+}
+
+TEST(LzssReducedLiteralBytePreflight, EveryTruncatedHeaderLeavesOutputsUnchanged) {
+    const auto bytes = stream_bytes();
+    const auto limits = marc::core::DecoderLimits{};
+    TypedContextStreamHeader s{}; s.frame_size = 777;
+    std::size_t consumed = 999;
+    for (std::size_t size = 0; size < 112; ++size) {
+        EXPECT_EQ(parse_lzss_reduced_literal_stream_header(
+            std::span<const std::byte>{bytes}.first(size), limits, s, consumed), Error::truncated_stream_header);
+        EXPECT_EQ(s.frame_size, 777); EXPECT_EQ(consumed, 999);
+    }
+    EXPECT_EQ(parse_typed_context_stream_header(bytes, limits, s, consumed),
+        TypedContextStreamHeaderError::unsupported_dictionary_variant);
+    EXPECT_EQ(parse_lzss_short_length_escape_stream_header(bytes, limits, s, consumed), Error::unsupported_format);
+    ASSERT_EQ(parse_lzss_reduced_literal_stream_header(bytes, limits, s, consumed), Error::none);
+    EXPECT_EQ(consumed, 112); EXPECT_EQ(s.context_variant, 8); EXPECT_EQ(s.context_count, 24);
+}
+
+TEST(LzssReducedLiteralBytePreflight, RejectsMutatedHeaderFieldsAndReservedBytes) {
+    const auto original = stream_bytes();
+    const auto limits = marc::core::DecoderLimits{};
+    const auto reject = [&](const auto& b, Error expected) {
+        TypedContextStreamHeader s{}; s.frame_size=777;
+        std::size_t consumed=999;
+        EXPECT_EQ(parse_lzss_reduced_literal_stream_header(b, limits, s, consumed), expected);
+        EXPECT_EQ(s.frame_size,777); EXPECT_EQ(consumed,999);
+    };
+    for (const auto offset : {12U,14U,16U,18U,96U,98U}) {
+        auto b=original; b[offset]=std::byte{0xff}; reject(b,Error::unsupported_format);
+    }
+    for (std::size_t offset=0; offset<112; ++offset) {
+        if (!((offset>=52 && offset<64) || (offset>=88 && offset<96) || offset>=104)) continue;
+        auto b=original; b[offset]=std::byte{1}; reject(b,Error::nonzero_reserved);
+    }
+    auto b=original; b[0]=std::byte{0}; reject(b,Error::invalid_magic);
+    b=original; b[6]=std::byte{1}; reject(b,Error::unsupported_version);
+    b=original; b[8]=std::byte{63}; reject(b,Error::invalid_header_size);
+    b=original; b[84]=std::byte{32}; reject(b,Error::invalid_stream);
+    b=original; b[86]=std::byte{1}; reject(b,Error::unsupported_feature);
+    b=original; b[100]=std::byte{1}; reject(b,Error::unsupported_feature);
+}
+
+TEST(LzssReducedLiteralBytePreflight, EveryTruncatedFrameAndExactExtent) {
+    const auto bytes=frame_bytes(); const auto s=stream_header();
+    const auto limits=marc::core::DecoderLimits{};
+    TypedContextFrameLayout layout{}; layout.serialized_size=777;
+    LzssShortMatchFrameRequirements r{11,22,33,44};
+    for (std::size_t size=0; size<88; ++size) {
+        const auto expected=size<64 ? Error::truncated_frame_header
+            : size<80 ? Error::truncated_descriptor : Error::truncated_frame;
+        EXPECT_EQ(preflight_lzss_reduced_literal_frame_bytes(
+            std::span<const std::byte>{bytes}.first(size), {s,limits}, layout,r), expected);
+        EXPECT_EQ(layout.serialized_size,777); EXPECT_EQ(r.serialized_frame_bytes,11);
+        EXPECT_EQ(r.token_count,22); EXPECT_EQ(r.raw_frame_bytes,33); EXPECT_EQ(r.aggregate_working_bytes,44);
+    }
+    ASSERT_EQ(preflight_lzss_reduced_literal_frame_bytes(bytes,{s,limits},layout,r),Error::none);
+    EXPECT_EQ(layout.serialized_size,88); EXPECT_EQ(r.serialized_frame_bytes,88);
+    EXPECT_EQ(layout.descriptor.context_count,24);
+}
+
+TEST(LzssReducedLiteralBytePreflight, RejectsFrameMetadataBeforePublishingLayout) {
+    const auto original=frame_bytes(); const auto s=stream_header();
+    auto limits=marc::core::DecoderLimits{};
+    const auto reject = [&](const auto& b, Error expected) {
+        TypedContextFrameLayout layout{}; layout.serialized_size=777;
+        LzssShortMatchFrameRequirements r{11,22,33,44};
+        EXPECT_EQ(preflight_lzss_reduced_literal_frame_bytes(b,{s,limits},layout,r),expected);
+        EXPECT_EQ(layout.serialized_size,777); EXPECT_EQ(r.serialized_frame_bytes,11);
+    };
+    for (std::size_t offset=48; offset<80; ++offset) {
+        if (offset>=64 && offset<76) continue;
+        auto b=original; b[offset]=std::byte{1}; reject(b,Error::nonzero_reserved);
+    }
+    auto b=original; b[0]=std::byte{0}; reject(b,Error::invalid_magic);
+    b=original; b[4]=std::byte{63}; reject(b,Error::invalid_header_size);
+    b=original; b[72]=std::byte{32}; reject(b,Error::invalid_descriptor);
+    b=original; b[68]=std::byte{9}; reject(b,Error::invalid_descriptor);
+    b=original; b[74]=std::byte{1}; reject(b,Error::unsupported_feature);
+    b=original; b[24]=std::byte{9}; reject(b,Error::contradictory_counts);
+    limits.max_compressed_payload_size=7; reject(original,Error::limit_exceeded);
 }
 } // namespace

@@ -28,7 +28,7 @@ enum class ReservedIdentity : std::uint8_t {
     reduced_literal,
 };
 
-constexpr std::uint16_t dictionary_variant(const ReservedIdentity identity) noexcept {
+constexpr std::uint16_t expected_dictionary_variant(const ReservedIdentity identity) noexcept {
     return identity == ReservedIdentity::short_match ? 7 : 8;
 }
 constexpr std::uint16_t context_variant(const ReservedIdentity identity) noexcept {
@@ -79,7 +79,7 @@ LzssShortMatchPreflightError validate_stream_impl(
         return LzssShortMatchPreflightError::limit_exceeded;
     }
     if (stream.dictionary_variant
-            != dictionary_variant(identity)
+            != expected_dictionary_variant(identity)
         || stream.context_algorithm != 1
         || stream.context_variant
                != context_variant(identity)
@@ -282,11 +282,11 @@ LzssShortMatchPreflightError parse_stream_impl(
     }
     if (dictionary_algorithm != 2
         || dictionary_variant
-               != (identity == ReservedIdentity::short_length_escape ? 8 : 7)
+               != expected_dictionary_variant(identity)
         || entropy_algorithm != 3 || entropy_variant != 2
         || parsed.context_algorithm != 1
         || parsed.context_variant
-               != (identity == ReservedIdentity::short_length_escape ? 7 : 6)) {
+               != context_variant(identity)) {
         return LzssShortMatchPreflightError::unsupported_format;
     }
     if (entropy_block_size != 0 || dictionary_parameter_size != 16
@@ -465,6 +465,21 @@ LzssShortMatchPreflightError preflight_lzss_reduced_literal_frame_semantics(
     const TypedContextFrameValidationContext& context,
     LzssShortMatchFrameRequirements& requirements) noexcept {
     return preflight_frame_impl(frame, descriptor, context, requirements,
+        ReservedIdentity::reduced_literal);
+}
+
+LzssShortMatchPreflightError parse_lzss_reduced_literal_stream_header(
+    const std::span<const std::byte> input, const core::DecoderLimits& limits,
+    TypedContextStreamHeader& stream, std::size_t& bytes_consumed) noexcept {
+    return parse_stream_impl(input, limits, stream, bytes_consumed,
+        ReservedIdentity::reduced_literal);
+}
+
+LzssShortMatchPreflightError preflight_lzss_reduced_literal_frame_bytes(
+    const std::span<const std::byte> input,
+    const TypedContextFrameValidationContext& context, TypedContextFrameLayout& layout,
+    LzssShortMatchFrameRequirements& requirements) noexcept {
+    return preflight_frame_bytes_impl(input, context, layout, requirements,
         ReservedIdentity::reduced_literal);
 }
 

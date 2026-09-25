@@ -15961,3 +15961,14 @@ UINT32_MAX payload, flags, sequence, and short final versus nonfinal frames.
 Set the block cap to seven when testing the small aggregate threshold, and
 keep frame cap consistent with total output cap; assert configuration validity
 so these checks exercise the intended bound rather than an earlier config error.
+
+### TVG-1090
+
+Construct stream and frame bytes directly with explicit little-endian stores.
+Check all 112 truncated stream-header lengths and all 88 truncated lengths of
+the semantic frame fixture. Verify unchanged output sentinels on failure and
+exact 112/88-byte extents with one following sentinel byte. Mutate each reserved
+byte, each algorithm/variant identity field, model counts, versions, sizes and
+flags. Check descriptor disagreement, event contradictions and payload limits.
+Require rejection by the public parser and the old escape-specific parser.
+Payload bytes are metadata-fixture placeholders, not a valid coded vector.

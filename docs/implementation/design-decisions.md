@@ -24472,3 +24472,14 @@ additional storage requires a corresponding preflight update. This is not a
 measurement of process RSS. Failed semantic preflight leaves caller requirement
 outputs untouched. Reject crossed model counts, contradictory event/decision
 counts and all existing frame/stream hard-limit violations before allocation.
+
+## DD-1221: Parse private reduced-literal prefixes atomically
+
+Reuse the bounded private byte parser with exact context-8 identity selection,
+then invoke reduced-literal semantic preflight. Decode integers explicitly in
+little-endian order. Only commit caller header/layout/requirements and consumed
+extent after all applicable checks succeed. Public parsing continues to reject
+the new tuple. Accept a following byte without counting it in this prefix;
+whole-stream trailing-data validation belongs to a later stream controller.
+Frame preflight verifies declared payload availability, not Range termination
+or decoded token correctness. No raw output is produced by these entry points.
