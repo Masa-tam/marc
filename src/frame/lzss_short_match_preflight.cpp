@@ -1,5 +1,7 @@
 #include "frame/lzss_short_match_preflight.hpp"
 #include "frame/lzss_short_length_escape_preflight.hpp"
+#include "frame/lzss_reduced_literal_preflight.hpp"
+#include "entropy/lzss_reduced_literal_range_state.hpp"
 
 #include "context/lzss_short_match_context_layout.hpp"
 #include "core/checked_math.hpp"
@@ -23,11 +25,35 @@ inline constexpr std::uint64_t short_match_model_bytes =
 enum class ReservedIdentity : std::uint8_t {
     short_match,
     short_length_escape,
+    reduced_literal,
 };
+
+constexpr std::uint16_t dictionary_variant(const ReservedIdentity identity) noexcept {
+    return identity == ReservedIdentity::short_match ? 7 : 8;
+}
+constexpr std::uint16_t context_variant(const ReservedIdentity identity) noexcept {
+    return identity == ReservedIdentity::short_match ? 6
+        : identity == ReservedIdentity::short_length_escape ? 7 : 8;
+}
+constexpr std::uint16_t context_count(const ReservedIdentity identity) noexcept {
+    return identity == ReservedIdentity::reduced_literal
+        ? context::internal::lzss_reduced_literal_context_count
+        : context::internal::lzss_short_match_context_count;
+}
+constexpr std::size_t frequency_entries(const ReservedIdentity identity) noexcept {
+    return identity == ReservedIdentity::reduced_literal
+        ? context::internal::lzss_reduced_literal_frequency_entries
+        : context::internal::lzss_short_match_frequency_entries;
+}
+constexpr std::size_t model_bytes(const ReservedIdentity identity) noexcept {
+    return identity == ReservedIdentity::reduced_literal
+        ? sizeof(entropy::internal::LzssReducedLiteralRangeState)
+        : short_match_model_bytes;
+}
 
 [[nodiscard]] constexpr dictionary::internal::LzssTypedTokenVariant
 token_variant(const ReservedIdentity identity) noexcept {
-    return identity == ReservedIdentity::short_length_escape
+    return identity != ReservedIdentity::short_match
         ? dictionary::internal::LzssTypedTokenVariant::
               field_context_64k_short_length_escape
         : dictionary::internal::LzssTypedTokenVariant::
@@ -53,13 +79,13 @@ LzssShortMatchPreflightError validate_stream_impl(
         return LzssShortMatchPreflightError::limit_exceeded;
     }
     if (stream.dictionary_variant
-            != (identity == ReservedIdentity::short_length_escape ? 8 : 7)
+            != dictionary_variant(identity)
         || stream.context_algorithm != 1
         || stream.context_variant
-               != (identity == ReservedIdentity::short_length_escape ? 7 : 6)
+               != context_variant(identity)
         || stream.range_model_total != typed_context_model_total
         || stream.context_count
-               != context::internal::lzss_short_match_context_count
+               != context_count(identity)
         || stream.frame_size == 0
         || stream.frame_size > maximum_short_match_frame_size) {
         return LzssShortMatchPreflightError::invalid_stream;
@@ -79,9 +105,9 @@ LzssShortMatchPreflightError validate_stream_impl(
         || stream.original_size > limits.max_total_output_size
         || typed_context_stream_header_size
                > limits.max_internal_buffered_bytes
-        || short_match_model_bytes > limits.max_internal_buffered_bytes
+        || model_bytes(identity) > limits.max_internal_buffered_bytes
         || stream.range_model_total > limits.max_range_model_total
-        || context::internal::lzss_short_match_frequency_entries
+        || frequency_entries(identity)
                > limits.max_entropy_table_entries) {
         return LzssShortMatchPreflightError::limit_exceeded;
     }
@@ -133,7 +159,7 @@ LzssShortMatchPreflightError preflight_frame_impl(
     if (descriptor.decision_count != frame.decision_count
         || descriptor.payload_size != frame.payload_size
         || descriptor.context_count
-               != context::internal::lzss_short_match_context_count) {
+               != context_count(identity)) {
         return LzssShortMatchPreflightError::invalid_descriptor;
     }
 
@@ -153,7 +179,7 @@ LzssShortMatchPreflightError preflight_frame_impl(
         || !core::checked_add(serialized, token_bytes, frame_working)
         || !core::checked_add(frame_working, raw, frame_working)
         || !core::checked_add(
-            frame_working, short_match_model_bytes, aggregate)
+            frame_working, static_cast<std::uint64_t>(model_bytes(identity)), aggregate)
         || !std::in_range<std::size_t>(serialized)
         || !std::in_range<std::size_t>(aggregate)) {
         return LzssShortMatchPreflightError::arithmetic_overflow;
@@ -168,9 +194,9 @@ LzssShortMatchPreflightError preflight_frame_impl(
         context.stream.dictionary.window_size,
         context.stream.dictionary.max_match_length,
         0,
-        context::internal::lzss_short_match_frequency_entries,
+        frequency_entries(identity),
         context.stream.range_model_total,
-        short_match_model_bytes,
+        model_bytes(identity),
         frame_working,
         1};
     const auto limit_error = core::validate_frame_bounds(
@@ -427,6 +453,19 @@ LzssShortMatchPreflightError preflight_lzss_short_length_escape_frame_bytes(
     LzssShortMatchFrameRequirements& requirements) noexcept {
     return preflight_frame_bytes_impl(input, context, layout, requirements,
                                       ReservedIdentity::short_length_escape);
+}
+
+LzssShortMatchPreflightError validate_lzss_reduced_literal_stream_semantics(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits) noexcept {
+    return validate_stream_impl(stream, limits, ReservedIdentity::reduced_literal);
+}
+
+LzssShortMatchPreflightError preflight_lzss_reduced_literal_frame_semantics(
+    const TypedContextFrameHeader& frame, const TypedContextRangeDescriptor& descriptor,
+    const TypedContextFrameValidationContext& context,
+    LzssShortMatchFrameRequirements& requirements) noexcept {
+    return preflight_frame_impl(frame, descriptor, context, requirements,
+        ReservedIdentity::reduced_literal);
 }
 
 } // namespace marc::frame::internal

@@ -8895,3 +8895,10 @@ source, third-party format implementation or copyleft material is consulted.
 The reduced-literal layout and symbol-shape checks implement DD-1218 and the
 repository's reserved format directly. Tests enumerate its specified alphabets
 and malformed fields without importing external tables or test vectors.
+
+### IR-0975
+
+Reduced-literal semantic preflight reuses marc's own short-match/escape bounds
+checks and the specified context-8 layout. The decoder-state storage contract
+uses the existing Range state fields with the new bounded model extents.
+No external implementation or test suite was consulted.

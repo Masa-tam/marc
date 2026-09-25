@@ -15947,3 +15947,17 @@ field and context count independently, including old variants and count 32.
 Reject context IDs 24/65535, the old literal alphabet at new length context 12,
 UINT32_MAX symbols, nonzero unused bit counts, bypass operations and unknown
 operation kinds. This tests model access shape, not complete token grammar.
+
+### TVG-1089
+
+Use a semantic fixture with raw size 7, five tokens, twelve events/decisions,
+payload size 8 and descriptor size 16 (not an asserted encoded Range vector).
+Its requirement is 88 serialized bytes + five token objects + seven raw bytes
++ sizeof the reduced-literal decoder state. Accept exactly that aggregate cap
+and reject one byte less without altering sentinel requirement fields. Accept
+2,490 table entries and reject 2,489. Cross old/new stream variants and 24/32
+descriptor counts. Test frame/output/payload caps, contradictory counts,
+UINT32_MAX payload, flags, sequence, and short final versus nonfinal frames.
+Set the block cap to seven when testing the small aggregate threshold, and
+keep frame cap consistent with total output cap; assert configuration validity
+so these checks exercise the intended bound rather than an earlier config error.

@@ -33826,3 +33826,22 @@ both bounds.
 - Validation: MSVC Release build and all 3,749 CTest cases passed, including
   the four new layout tests, documentation layout and interoperability schema
   compatibility. No public encoder/decoder admission is introduced.
+
+## CR-1374: 2026-09-25 - Add reduced-literal semantic preflight
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0975, DD-1220 and TVG-1089; first-party preflight,
+  checked limits and Range decoder state design.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Generated-code task: validate new private stream/frame metadata and bounded
+  storage, preserving old identities, with exact/one-under limit tests.
+- Independent decisions: use a concrete decoder-state contract rather than
+  frequency-only memory estimates; leave byte parsing and payload validation
+  to later steps and preserve output requirements on failure.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation: the initial exact-cap fixture exposed an inconsistent default
+  block cap; the fixture now explicitly validates its configuration before
+  testing the intended bound. MSVC Release build and all 3,753 CTest cases
+  passed, including documentation layout and interoperability compatibility.

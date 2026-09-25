@@ -24454,3 +24454,21 @@ kind, context bounds, exact alphabet, value bounds and zero unused bit count.
 Return existing stable field-context errors and never index an unchecked ID.
 The helper validates storage shape only; token-state grammar, bypass order,
 hard limits and full-frame validation remain required at higher layers.
+
+## DD-1220: Separate reduced-literal semantic preflight from byte admission
+
+Add private stream/frame semantic entry points to the existing bounded
+preflight implementation. Select dictionary rules, context count, frequency
+extent and model charge by the internal identity; keep old identities and
+their model charges unchanged. No new byte parser or public admission is
+introduced in this step. Success validates metadata, not Range payloads.
+
+Define a concrete reduced-literal decoder-state storage contract containing
+2,490 frequencies, 24 totals, payload view, descriptor, counters and status.
+Charge its sizeof, including padding, plus the complete serialized frame,
+typed tokens and raw frame with checked arithmetic. The future decoder must
+use this state and verify that the charged size covers its actual storage;
+additional storage requires a corresponding preflight update. This is not a
+measurement of process RSS. Failed semantic preflight leaves caller requirement
+outputs untouched. Reject crossed model counts, contradictory event/decision
+counts and all existing frame/stream hard-limit violations before allocation.
