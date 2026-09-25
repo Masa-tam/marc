@@ -90,6 +90,12 @@ bool LzssPositionDistanceRangeDecoder::decode_interval(
     }
     const auto unit = state_.range / total;
     if (unit == 0) return false;
+    return advance_interval(cumulative, frequency, unit);
+}
+
+bool LzssPositionDistanceRangeDecoder::advance_interval(
+    const std::uint32_t cumulative, const std::uint16_t frequency,
+    const std::uint32_t unit) noexcept {
     state_.canonical_low += static_cast<std::uint64_t>(cumulative) * unit;
     state_.code -= cumulative * unit;
     state_.range = unit * frequency;
@@ -215,7 +221,7 @@ ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_bypa
     return result();
 }
 
-ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_distance_extra(
+ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_distance_extra_reference(
     const std::uint8_t bit_count, std::uint32_t& value) noexcept {
     if (state_.decision_count > state_.descriptor.decision_count
         || bit_count > state_.descriptor.decision_count - state_.decision_count)
@@ -233,7 +239,65 @@ ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_dist
     return result();
 }
 
+ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_distance_extra(
+    const std::uint8_t bit_count, std::uint32_t& value) noexcept {
+    // Called only by the grammar-aware, lifecycle-checked entry point.
+    if (bit_count == 0 || bit_count > 16)
+        return fail(ContextualDynamicRangeDecodeError::invalid_bypass_width);
+    if (state_.decision_count > state_.descriptor.decision_count
+        || bit_count > state_.descriptor.decision_count - state_.decision_count)
+        return fail(ContextualDynamicRangeDecodeError::decision_count_exceeded);
+    std::uint32_t decoded{};
+    for (std::uint8_t p = 0; p < bit_count; ++p) {
+        const auto id = static_cast<std::uint16_t>(24 + p);
+        const auto offset = context::internal::lzss_position_distance_offsets[id];
+        auto& total = state_.totals[id];
+        const auto zero = state_.frequencies[offset];
+        const auto one = state_.frequencies[offset + 1];
+        if (total == 0 || zero == 0 || one == 0 || zero + one != total
+            || state_.range < normalization_threshold)
+            return fail(ContextualDynamicRangeDecodeError::invalid_interval);
+        const auto unit = state_.range / total;
+        // unit*total <= range, including UINT32_MAX. Reject the unused tail
+        // exactly as the generic scaled-code check does.
+        if (unit == 0 || state_.code >= unit * total)
+            return fail(ContextualDynamicRangeDecodeError::invalid_interval);
+        const auto bit = state_.code >= unit * zero ? 1U : 0U;
+        const auto cumulative = bit == 0 ? 0U : zero;
+        auto& frequency = state_.frequencies[offset + bit];
+        if (!advance_interval(cumulative, frequency, unit))
+            return fail(state_.payload_offset >= state_.payload.size()
+                ? ContextualDynamicRangeDecodeError::truncated_payload
+                : ContextualDynamicRangeDecodeError::invalid_interval);
+        ++frequency;
+        ++total;
+        if (total == contextual_dynamic_range_model_total_limit) {
+            auto& f0 = state_.frequencies[offset];
+            auto& f1 = state_.frequencies[offset + 1];
+            f0 = static_cast<std::uint16_t>((static_cast<std::uint32_t>(f0) + 1U) / 2U);
+            f1 = static_cast<std::uint16_t>((static_cast<std::uint32_t>(f1) + 1U) / 2U);
+            total = f0 + f1;
+        }
+        decoded |= bit << p;
+        ++state_.decision_count;
+    }
+    ++state_.event_count;
+    value = decoded;
+    return result();
+}
+
 ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_next(
+    context::internal::ModeledOperation& operation) noexcept {
+    return decode_next_impl<false>(operation);
+}
+
+ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_next_reference(
+    context::internal::ModeledOperation& operation) noexcept {
+    return decode_next_impl<true>(operation);
+}
+
+template<bool Reference>
+ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_next_impl(
     context::internal::ModeledOperation& operation) noexcept {
     if (!state_.started) {
         if (state_.error == ContextualDynamicRangeDecodeError::none
@@ -255,7 +319,10 @@ ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_next
         checked = decode_bypass(decoded.bit_count, decoded.value);
         break;
     case Field::adaptive_distance_extra:
-        checked = decode_distance_extra(decoded.bit_count, decoded.value);
+        if constexpr (Reference)
+            checked = decode_distance_extra_reference(decoded.bit_count, decoded.value);
+        else
+            checked = decode_distance_extra(decoded.bit_count, decoded.value);
         break;
     }
     if (checked.error != ContextualDynamicRangeDecodeError::none) return checked;

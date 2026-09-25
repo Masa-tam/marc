@@ -16285,3 +16285,17 @@ decision counts and consumed extent; compare stable error categories and
 unchanged caller output on malformed input. Exercise both binary branches,
 widths 1 and 16, reset, count exhaustion, truncation, unused interval tail and
 noncanonical termination. These tests are a next-step plan, not completed work.
+
+### TVG-1120
+
+Three additional tests compare specialized and generic distance decoding.
+Enumerate all 256 replacements of each byte of the nine-byte mixed vector,
+all its truncations and shortened decision limits, with repeated begin/reset.
+Compare values, metadata, error categories, consumed extent, counts and latched
+errors; failed calls preserve sentinel output. Generated operation sequences
+cover widths 1..16 and zero/max extras (class 16 permits only zero).
+
+Controlled private state tests isolate the unused UINT32_MAX interval tail
+for total two and both branches at the 32767-to-rescale transition. Compare
+frequency arrays and totals after update. This rescale case is defensive state
+coverage, not a claim that valid 64KiB frames reach binary-model rescaling.

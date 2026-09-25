@@ -34347,3 +34347,18 @@ both bounds.
   and no legal guarantee claimed.
 - Validation: documentation layout test passed. Runtime code, safety checks
   and public admission unchanged; specialization and measurement remain future work.
+
+## CR-1405: 2026-09-25 - Specialize private binary-distance decoding
+
+- Author: Codex; reviewer: repository maintainer approved implementation.
+- References used: IR-1006, DD-1251 and TVG-1120; first-party Range arithmetic.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: specialize binary interval selection while retaining the generic
+  comparison path, exact model rules and malformed-input behavior.
+- Similarity review: repository-owned refactoring only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,848 CTest cases passed, including
+  three new differential tests and interoperability schema compatibility.
+  No public format change;
+  performance measurement remains separate from equivalence testing.

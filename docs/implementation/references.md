@@ -9101,3 +9101,9 @@ The context-9 speed audit examines repository-owned frame planning, payload
 encoding, token materialization, field cursor and Range decoder, compared with
 context 8. BM-0123 supplies observed phase timings and BM-0121 supplies logical
 distance-bit counts. No external implementation or profiler source was used.
+
+### IR-1006
+
+The private binary-distance decoder specialization derives from DD-1250 and
+repository Range arithmetic. The previous generic symbol path is retained as
+a differential oracle. No external implementation was consulted.

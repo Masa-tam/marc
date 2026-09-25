@@ -1,5 +1,6 @@
 #include "entropy/lzss_position_distance_range_decoder.hpp"
 #include "entropy/lzss_reduced_literal_range_encoder.hpp"
+#include "entropy/lzss_position_distance_range_encoder.hpp"
 
 #include <gtest/gtest.h>
 #include <array>
@@ -7,6 +8,16 @@
 #include <cstdint>
 #include <span>
 #include <vector>
+
+namespace marc::entropy::internal {
+struct LzssPositionDistanceRangeDecoderTestAccess {
+    static auto next(LzssPositionDistanceRangeDecoder& d,
+                     context::internal::ModeledOperation& op) {
+        return d.decode_next_reference(op);
+    }
+    static auto& state(LzssPositionDistanceRangeDecoder& d) { return d.state_; }
+};
+}
 
 namespace {
 using namespace marc::entropy::internal;
@@ -17,6 +28,110 @@ constexpr std::array payload{std::byte{0},std::byte{48},std::byte{152},
 constexpr ContextualDynamicRangeDescriptor descriptor{14,9,40};
 constexpr std::array<std::uint32_t,14> values{0,97,0,98,1,8,1,1,1,1,8,0,1,0};
 constexpr std::array<std::uint16_t,14> ids{0,3,1,7,1,13,0,23,0,2,14,0,23,0};
+
+void same_result(const ContextualDynamicRangeDecodeResult& a,
+                 const ContextualDynamicRangeDecodeResult& b) {
+    EXPECT_EQ(a.error,b.error); EXPECT_EQ(a.event_count,b.event_count);
+    EXPECT_EQ(a.decision_count,b.decision_count);
+    EXPECT_EQ(a.payload_consumed,b.payload_consumed);
+}
+
+void compare_paths(ContextualDynamicRangeDescriptor desc,
+                   std::span<const std::byte> bytes, unsigned events) {
+    LzssPositionDistanceRangeDecoder fast, reference;
+    for (unsigned repeat=0;repeat<2;++repeat) {
+        const auto begun=fast.begin(desc,bytes,{});
+        same_result(begun,reference.begin(desc,bytes,{}));
+        if (begun.error!=Error::none) continue;
+        for (unsigned i=0;i<events;++i) {
+            ModeledOperation a{ModeledOperationKind::symbol,99,99,999,9},b=a;
+            const auto result=fast.decode_next(a);
+            same_result(result,LzssPositionDistanceRangeDecoderTestAccess::next(reference,b));
+            EXPECT_EQ(a.kind,b.kind); EXPECT_EQ(a.context_id,b.context_id);
+            EXPECT_EQ(a.alphabet_size,b.alphabet_size); EXPECT_EQ(a.value,b.value);
+            EXPECT_EQ(a.bit_count,b.bit_count);
+            if (result.error!=Error::none) {
+                EXPECT_EQ(a.value,999);
+                same_result(fast.decode_next(a),
+                    LzssPositionDistanceRangeDecoderTestAccess::next(reference,b));
+                break;
+            }
+        }
+        same_result(fast.finish(events,desc.decision_count),
+                    reference.finish(events,desc.decision_count));
+    }
+}
+
+TEST(LzssPositionDistanceRangeDecoder, BinaryPathMatchesReferenceOnByteMutations) {
+    compare_paths(descriptor,payload,14);
+    for (std::size_t i=0;i<payload.size();++i) {
+        for (unsigned v=0;v<256;++v) {
+            auto bytes=payload; bytes[i]=static_cast<std::byte>(v);
+            compare_paths(descriptor,bytes,14);
+        }
+    }
+    for (std::size_t size=0;size<payload.size();++size) {
+        auto desc=descriptor; desc.payload_size=static_cast<std::uint32_t>(size);
+        compare_paths(desc,std::span{payload}.first(size),14);
+    }
+    for (unsigned count=1;count<14;++count) {
+        auto desc=descriptor; desc.decision_count=count;
+        compare_paths(desc,payload,14);
+    }
+}
+
+TEST(LzssPositionDistanceRangeDecoder, BinaryPathMatchesReferenceForEveryWidth) {
+    LzssPositionDistanceFieldCursor cursor;
+    std::vector<ModeledOperation> ops;
+    auto append=[&](unsigned value) {
+        auto op=cursor.next().shape; op.value=value;
+        EXPECT_EQ(cursor.accept(op),LzssFieldContextError::none);
+        ops.push_back(op);
+    };
+    // Operation grammar only; frame-level dictionary history is separate.
+    for (unsigned width=1;width<=16;++width) {
+        for (unsigned choice=0;choice<2;++choice) {
+            append(1); append(0); append(width);
+            append(width==16 || choice==0 ? 0 : (1U<<width)-1);
+        }
+    }
+    ContextualDynamicRangeDescriptor desc{};
+    const auto plan=plan_lzss_position_distance_range_operations(ops,{},desc);
+    ASSERT_EQ(plan.error,ContextualDynamicRangeEncodeError::none);
+    std::vector<std::byte> bytes(plan.payload_size);
+    ASSERT_EQ(encode_lzss_position_distance_range_operations(ops,{},bytes,desc).error,
+              ContextualDynamicRangeEncodeError::none);
+    compare_paths(desc,bytes,static_cast<unsigned>(ops.size()));
+}
+
+TEST(LzssPositionDistanceRangeDecoder, BinaryIntervalTailAndRescaleMatchReference) {
+    for (unsigned scenario=0;scenario<3;++scenario) {
+        LzssPositionDistanceRangeDecoder fast,reference;
+        ASSERT_EQ(fast.begin(descriptor,payload,{}).error,Error::none);
+        auto& s=LzssPositionDistanceRangeDecoderTestAccess::state(fast);
+        for (auto value : {1U,0U,1U}) {
+            auto op=s.cursor.next().shape; op.value=value;
+            ASSERT_EQ(s.cursor.accept(op),LzssFieldContextError::none);
+        }
+        s.descriptor.decision_count=1;
+        s.code=scenario==0 ? UINT32_MAX : 0;
+        s.range=UINT32_MAX;
+        if (scenario!=0) {
+            s.frequencies[2490]=16384;
+            s.frequencies[2491]=16383;
+            s.totals[24]=32767;
+            if (scenario==2) s.code=(UINT32_MAX/32767)*16384;
+        }
+        LzssPositionDistanceRangeDecoderTestAccess::state(reference)=s;
+        ModeledOperation a{},b{};
+        auto r=fast.decode_next(a);
+        same_result(r,LzssPositionDistanceRangeDecoderTestAccess::next(reference,b));
+        EXPECT_EQ(r.error,scenario==0 ? Error::invalid_interval : Error::none);
+        EXPECT_EQ(a.value,b.value);
+        EXPECT_EQ(s.frequencies,LzssPositionDistanceRangeDecoderTestAccess::state(reference).frequencies);
+        EXPECT_EQ(s.totals,LzssPositionDistanceRangeDecoderTestAccess::state(reference).totals);
+    }
+}
 
 TEST(LzssPositionDistanceRangeDecoder, FixedMixedAdaptiveAndUniformVector) {
     LzssPositionDistanceRangeDecoder d;

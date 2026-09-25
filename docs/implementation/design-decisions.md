@@ -24908,3 +24908,18 @@ reduction are separate candidates with separate contract reviews.
 This turn changes no runtime code. Implement and measure the narrow binary
 path next; compare repeated sequential runs with unchanged tokens/bytes before
 claiming a speed improvement or considering public admission.
+
+## DD-1251: Specialize private binary-distance decoding without changing bytes
+
+Use a direct code-versus-unit*zero-frequency comparison and reuse the computed
+unit for interval advancement. Reject the unused division remainder tail before
+selecting a bit. Retain normalization, canonical replay, model positivity and
+sum checks, per-decision updates, rescaling and grouped event semantics.
+
+Keep the old generic binary-symbol loop behind a private test friend, with
+compile-time path selection and no new runtime state or public configuration.
+Both paths share ordinary symbol decoding and checked interval advancement;
+the comparison isolates binary selection, accounting and model updates rather
+than claiming an independent implementation of the whole Range coder.
+Transactional two-pass token decoding and encoder planning remain unchanged.
+Timing improvement is not assumed; measure after equivalence validation.
