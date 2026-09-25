@@ -34696,3 +34696,17 @@ both bounds.
   and all 3,879 CTest cases passed.
 - Similarity review: independently composed first-party components; no external
   expression copied and no legal guarantee claimed.
+
+## CR-1428: 2026-09-26 - Strengthen context-9 stream rejection coverage
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1029, DD-1274 and TVG-1143; first-party specifications.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: cover late metadata contradictions and declared stream termination.
+- Changes: independent negative vectors with exact offsets and no-publication
+  checks; no production implementation, public API or format change.
+- Validation: Release build, focused decoder/documentation tests and all 3,881
+  CTest cases passed, including interoperability schema compatibility.
+- Similarity review: first-party vector transformations; no external expression
+  copied and no legal guarantee claimed.

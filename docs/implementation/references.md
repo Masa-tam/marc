@@ -9247,3 +9247,9 @@ Raw-stream assembly composes the first-party fixed-policy raw-frame adapter,
 typed-token stream header serializer and private strict stream decoder. Tests
 compare both search paths with independently orchestrated token-frame assembly.
 No external implementation or test suite was consulted.
+
+### IR-1029
+
+Stream rejection tests use the first-party context-9 fixed payload vectors and
+documented frame/header offsets. Contradictory counts and stream termination
+cases are derived independently; no external implementation was consulted.

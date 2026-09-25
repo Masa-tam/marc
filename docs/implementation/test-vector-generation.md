@@ -16592,3 +16592,16 @@ short output. Force a later-frame token-capacity failure using a compressible
 first frame followed by distinct bytes, preserving the entire output. Reject
 an output span overlapping only the final raw byte, before any frame processing.
 Existing raw-frame tests continue to cover aggregate finder/frame limits.
+
+## TVG-1143: Context-9 late metadata and termination rejection
+
+Use independent fixed vectors for two 21-byte frames and a six-byte final frame.
+Alter twelve second-frame fields/values: zero or oversized raw/token/event
+counts, decision count, payload/model extent, and descriptor count/size/context.
+Require frame_error at the second frame, one validated frame, zero committed
+input/output and an unchanged output including outer canaries.
+
+Four separate cases declare an empty stream with frames, declare only the two
+full frames, remove the required short final frame, or declare one more raw byte
+than the short frame supplies. Require the specific frame/trailing-data category,
+exact error offset, zero committed counts and unchanged whole output.

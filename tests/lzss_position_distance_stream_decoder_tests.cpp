@@ -193,4 +193,59 @@ TEST(LzssPositionDistanceStreamDecoder, RejectsAllWorkspaceOverlapPairs) {
         EXPECT_TRUE(std::equal(before.begin(),before.end(),out.begin()));
     }
 }
+TEST(LzssPositionDistanceStreamDecoder, LaterFrameContradictoryCountsPreserveWholeOutput) {
+    // Independent fixed vectors: a valid first frame must not be published
+    // when the following frame disagrees with its own descriptor or extent.
+    struct Fault { std::size_t offset; std::uint32_t value; };
+    constexpr std::array faults{
+        Fault{16,0}, Fault{16,22}, Fault{20,0}, Fault{20,UINT32_MAX},
+        Fault{24,0}, Fault{24,UINT32_MAX}, Fault{28,0},
+        Fault{32,UINT32_MAX}, Fault{36,0}, Fault{64,39},
+        Fault{68,19}, Fault{72,41}};
+    for(const auto fault:faults) {
+        SCOPED_TRACE(fault.offset);
+        SCOPED_TRACE(fault.value);
+        auto bytes=stream(2,true);
+        constexpr std::size_t second=112+98;
+        ASSERT_TRUE(marc::core::store_le(std::span{bytes},second+fault.offset,fault.value));
+        std::array<LzssTypedToken,17> tokens{};
+        std::array<std::byte,21> scratch{};
+        std::array<std::byte,50> output; output.fill(std::byte{0xcc});
+        const auto r=decode_lzss_position_distance_stream(bytes,{},tokens,scratch,
+            std::span{output}.subspan(1,48));
+        EXPECT_EQ(r.error,Error::frame_error);
+        EXPECT_EQ(r.error_offset,second); EXPECT_EQ(r.frame_count,1);
+        EXPECT_EQ(r.raw_produced,0); EXPECT_EQ(r.serialized_consumed,0);
+        EXPECT_TRUE(std::ranges::all_of(output,[](auto b){return b==std::byte{0xcc};}));
+    }
+}
+
+TEST(LzssPositionDistanceStreamDecoder, DeclaredTerminationRejectsMissingAndExtraFrames) {
+    for(unsigned fault=0;fault<4;++fault) {
+        SCOPED_TRACE(fault);
+        auto bytes=stream(2,true);
+        std::size_t expected_offset{};
+        auto expected_error=Error::frame_error;
+        switch(fault) {
+        case 0: // A declared empty stream cannot contain even a valid frame.
+            ASSERT_TRUE(marc::core::store_le(std::span{bytes},40,UINT64_C(0)));
+            expected_offset=112; expected_error=Error::trailing_data; break;
+        case 1: // Full frames do not authorize an undeclared final short frame.
+            ASSERT_TRUE(marc::core::store_le(std::span{bytes},40,UINT64_C(42)));
+            expected_offset=112+2*98; expected_error=Error::trailing_data; break;
+        case 2: // A missing final frame is not successful end-of-stream.
+            bytes.resize(112+2*98); expected_offset=bytes.size(); break;
+        case 3: // A short frame cannot appear before the declared final extent.
+            ASSERT_TRUE(marc::core::store_le(std::span{bytes},40,UINT64_C(49)));
+            expected_offset=112+2*98; break;
+        }
+        std::array<LzssTypedToken,17> tokens{};
+        std::array<std::byte,21> scratch{};
+        std::array<std::byte,49> output; output.fill(std::byte{0xcc});
+        const auto r=decode_lzss_position_distance_stream(bytes,{},tokens,scratch,output);
+        EXPECT_EQ(r.error,expected_error); EXPECT_EQ(r.error_offset,expected_offset);
+        EXPECT_EQ(r.raw_produced,0); EXPECT_EQ(r.serialized_consumed,0);
+        EXPECT_TRUE(std::ranges::all_of(output,[](auto b){return b==std::byte{0xcc};}));
+    }
+}
 } // namespace

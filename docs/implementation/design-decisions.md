@@ -25321,3 +25321,12 @@ Per-frame indexed memory charges stay unchanged. Planning and writing tokenize
 separately to keep bounded storage and whole-input preflight; this does not claim
 one dictionary pass for the complete stream or inherit frame benchmark timings.
 No candidate reselection, public admission or incremental API is added.
+
+## DD-1274: Preserve whole output on late stream metadata and termination errors
+
+Exercise context-9 stream validation separately from encoder round trips. A
+valid first frame must not publish output when later counts, extents or entropy
+descriptors contradict the format. Empty declared streams reject frames; full
+declared extents reject extra frames; missing or incorrectly sized final frames
+fail rather than terminate successfully. Keep the existing error offset and
+zero committed-byte counts. This adds coverage, not a wire or API change.
