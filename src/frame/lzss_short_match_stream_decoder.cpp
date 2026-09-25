@@ -1,5 +1,8 @@
 #include "frame/lzss_short_match_stream_decoder.hpp"
 #include "frame/lzss_short_length_escape_stream_decoder.hpp"
+#include "frame/lzss_position_distance_stream_decoder.hpp"
+#include "frame/lzss_position_distance_frame_decoder.hpp"
+#include "frame/lzss_position_distance_preflight.hpp"
 
 #include "core/checked_math.hpp"
 #include "frame/lzss_short_length_escape_frame_decoder.hpp"
@@ -13,6 +16,8 @@
 
 namespace marc::frame::internal {
 namespace {
+
+enum class StreamIdentity { short_match, length_escape, position_distance };
 
 enum class OverlapCheck : std::uint8_t {
     disjoint,
@@ -61,7 +66,7 @@ struct PassResult {
     const std::span<dictionary::internal::LzssTypedToken> tokens,
     const std::span<std::byte> raw_frame,
     const std::span<std::byte> raw_output,
-    const bool escape_identity) noexcept {
+    const StreamIdentity identity) noexcept {
     PassResult result{};
     std::size_t offset = typed_context_stream_header_size;
     std::uint64_t raw_committed{};
@@ -69,7 +74,10 @@ struct PassResult {
     while (raw_committed < stream.original_size) {
         const TypedContextFrameValidationContext context{
             stream, limits, sequence, raw_committed};
-        const auto decoded = escape_identity
+        const auto decoded = identity == StreamIdentity::position_distance
+            ? decode_lzss_position_distance_frame(
+                  serialized_stream.subspan(offset), context, tokens, raw_frame)
+            : identity == StreamIdentity::length_escape
             ? decode_lzss_short_length_escape_frame(
                   serialized_stream.subspan(offset), context, tokens, raw_frame)
             : decode_lzss_short_match_frame(
@@ -125,11 +133,14 @@ struct PassResult {
     const std::span<dictionary::internal::LzssTypedToken> token_workspace,
     const std::span<std::byte> raw_frame_workspace,
     const std::span<std::byte> raw_stream_output,
-    const bool escape_identity) noexcept {
+    const StreamIdentity identity) noexcept {
     LzssShortMatchStreamDecodeResult result{};
     TypedContextStreamHeader stream{};
     std::size_t header_consumed{};
-    result.stream_header_error = escape_identity
+    result.stream_header_error = identity == StreamIdentity::position_distance
+        ? parse_lzss_position_distance_stream_header(
+              serialized_stream, limits, stream, header_consumed)
+        : identity == StreamIdentity::length_escape
         ? parse_lzss_short_length_escape_stream_header(
               serialized_stream, limits, stream, header_consumed)
         : parse_lzss_short_match_stream_header(
@@ -180,7 +191,7 @@ struct PassResult {
 
     const auto checked = decode_pass(serialized_stream, stream, limits,
                                      token_workspace, raw_frame_workspace,
-                                     {}, escape_identity);
+                                     {}, identity);
     if (checked.error != LzssShortMatchStreamDecodeError::none) {
         result.error = checked.error;
         result.error_offset = checked.error_offset;
@@ -191,7 +202,7 @@ struct PassResult {
     // All frames have been validated before whole-stream raw publication.
     const auto decoded = decode_pass(serialized_stream, stream, limits,
                                      token_workspace, raw_frame_workspace,
-                                     raw_stream_output, escape_identity);
+                                     raw_stream_output, identity);
     if (decoded.error != LzssShortMatchStreamDecodeError::none
         || decoded.serialized_consumed != checked.serialized_consumed
         || decoded.raw_size != checked.raw_size
@@ -216,7 +227,7 @@ LzssShortMatchStreamDecodeResult decode_lzss_short_match_stream(
     const std::span<std::byte> raw_frame_workspace,
     const std::span<std::byte> raw_stream_output) noexcept {
     return decode_stream(serialized_stream, limits, token_workspace,
-                         raw_frame_workspace, raw_stream_output, false);
+                         raw_frame_workspace, raw_stream_output, StreamIdentity::short_match);
 }
 
 LzssShortMatchStreamDecodeResult decode_lzss_short_length_escape_stream(
@@ -226,7 +237,17 @@ LzssShortMatchStreamDecodeResult decode_lzss_short_length_escape_stream(
     const std::span<std::byte> raw_frame_workspace,
     const std::span<std::byte> raw_stream_output) noexcept {
     return decode_stream(serialized_stream, limits, token_workspace,
-                         raw_frame_workspace, raw_stream_output, true);
+                         raw_frame_workspace, raw_stream_output, StreamIdentity::length_escape);
+}
+
+LzssShortMatchStreamDecodeResult decode_lzss_position_distance_stream(
+    const std::span<const std::byte> serialized_stream,
+    const core::DecoderLimits& limits,
+    const std::span<dictionary::internal::LzssTypedToken> token_workspace,
+    const std::span<std::byte> raw_frame_workspace,
+    const std::span<std::byte> raw_stream_output) noexcept {
+    return decode_stream(serialized_stream, limits, token_workspace,
+                         raw_frame_workspace, raw_stream_output, StreamIdentity::position_distance);
 }
 
 } // namespace marc::frame::internal

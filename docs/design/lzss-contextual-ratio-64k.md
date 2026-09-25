@@ -301,3 +301,13 @@ test vectors must be independently assembled header/frame combinations,
 including failure in a later frame with sentinel whole-output preservation.
 No new format identity, larger window, context selector or candidate policy is
 part of this integration review.
+
+### Private strict decoder implementation
+
+DD-1270 implements step 1 as `decode_lzss_position_distance_stream`: a strict
+one-shot two-pass decoder with caller-owned bounded scratch storage. It validates
+all frames before publishing whole-stream raw output. Input must remain stable
+and all regions disjoint; scratch can change on failure. Fixed-vector tests
+cover empty/multi-frame/final-short streams, truncation, late corruption,
+identity, capacity, overlap and limits. Public admission and incremental
+streaming remain absent. Step 2 (private typed-token stream assembly) is next.

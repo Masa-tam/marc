@@ -16538,3 +16538,18 @@ wrong/crossed identities; every small-vector truncation and trailing bytes;
 capacity, overlap, exact/one-below limits; and malformed later frames preserving
 all caller output. Preserve public-parser rejection and old fixed vectors.
 These are planned tests, not coverage already delivered by this review.
+
+## TVG-1139: Private context-9 strict stream vectors
+
+Assemble canonical 112-byte headers and 80-byte frame prefixes explicitly in
+little endian around the independent 18-byte (21 raw bytes) and seven-byte
+(six raw bytes) payload vectors. Test zero, one and two full frames with and
+without a final short frame; each frame independently resets and yields 'a'.
+Try every truncated prefix of a two-full-plus-short stream, trailing bytes,
+late payload corruption, wrong sequence, flags and reserved bytes. Require
+zero committed counts and unchanged whole-output sentinels on rejection.
+
+Test crossed IDs, insufficient output/token/frame storage, exact and one-below
+aggregate/output limits and all six pairwise input/workspace/output overlaps.
+Retain old private/public rejection tests in the full suite. No encoder-generated
+payload is used as the only oracle, and no stream fuzz result is claimed here.

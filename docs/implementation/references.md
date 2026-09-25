@@ -9219,3 +9219,10 @@ Context-9 integration review uses the first-party private frame and stream
 implementations, BM-0122 through BM-0130 and TVG-1136/1137. The gzip size is
 maintainer-reported evidence, not a newly reproduced measurement. No external
 implementation or new algorithm reference was consulted.
+
+### IR-1025
+
+The context-9 stream decoder reuses the first-party private two-pass stream
+walker and exact-identity header/frame validators. Tests assemble headers around
+the existing independent fixed context-9 payload vectors. No external source
+or test suite was consulted.

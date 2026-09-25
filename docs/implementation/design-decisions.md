@@ -25255,3 +25255,16 @@ speed or a completed gzip victory from accounted frame sizes and paired timing.
 Retain the current format, tokens and search policy. Candidate reselection,
 larger windows and default-codec changes are separate decisions. Correct the
 format's stale implementation-status sentence without changing wire semantics.
+
+## DD-1270: Decode private context-9 streams in two bounded passes
+
+Replace the private stream walker's two-way boolean with an explicit three-way
+identity enum. Context 9 dispatches only to its exact header parser and frame
+decoder; old identities retain their paths. Validate the complete stream before
+reconstructing output in a second pass, with bounded reusable token/frame
+workspaces, checked extents and strict trailing-data rejection.
+
+Input and all caller-owned regions must remain stable and disjoint throughout
+the call. Malformed input publishes no whole-stream raw bytes; scratch workspaces
+may change. Header-only empty streams are accepted. This is one-shot private
+integration, not incremental streaming, a public selector or new wire format.

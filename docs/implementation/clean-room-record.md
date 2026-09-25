@@ -34639,3 +34639,19 @@ both bounds.
   full 3,860-test validation, not rerun for this documentation-only change.
 - Similarity review: independent repository review; no external expression
   copied and no legal guarantee claimed.
+
+## CR-1424: 2026-09-26 - Decode private context-9 streams
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1025, DD-1270 and TVG-1139; first-party code and vectors.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: extend the private two-pass stream walker to the exact context-9 tuple.
+- Changes: internal entry point, explicit identity dispatch and fixed-vector
+  stream tests; no public API, admission or wire change.
+- Validation: new five-test suite and full 3,865-case CTest run passed. During
+  test development, corrected span types, duplicate trace macro line, limit
+  configuration and an undersized overlap-test backing buffer; runtime checks
+  were not relaxed. The overlap setup now asserts capacity before copying.
+- Similarity review: reuse of first-party implementation and independent test
+  assembly; no external expression copied and no legal guarantee claimed.
