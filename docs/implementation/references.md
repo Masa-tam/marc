@@ -9140,3 +9140,10 @@ The private context-9 encoder audit inspects repository-owned
 `lzss_short_match_frame_encoder.cpp`, field cursor/layout and existing encoder
 tests. No external source or new algorithm reference was consulted. This is
 source-level analysis, not profiling or a measured speedup.
+
+### IR-1012
+
+The private encoder binary specialization follows IR-1011 and DD-1256.
+Its generic reference retains the original model-update path; tests derive
+operation sequences from the repository field grammar and existing fixed
+vectors. No external implementation was consulted.

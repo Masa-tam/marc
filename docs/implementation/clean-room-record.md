@@ -34441,3 +34441,18 @@ both bounds.
   no external expression copied and no legal guarantee claimed.
 - Validation: documentation layout test passed. No runtime or test-code changes;
   no new speed measurement and no claim of compiler-level redundant work.
+
+## CR-1411: 2026-09-25 - Specialize private distance-bit encoding
+
+- Author: Codex; reviewer: repository maintainer approved implementation.
+- References used: IR-1012, DD-1257 and TVG-1126; repository-owned grammar,
+  generic encoder and existing independent vectors only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: specialize adaptive binary model update while preserving checked range
+  arithmetic, bytes, memory accounting and preflight behavior.
+- Similarity review: independently written changes derived from repository
+  design; no external expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,852 CTest cases passed, including
+  the three new differential tests and interoperability schema compatibility.
+  Encoder speed remains unmeasured; repeated frame planning remains unchanged.

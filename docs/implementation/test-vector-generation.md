@@ -16359,3 +16359,22 @@ in the same binary on identical operations with alternating order and output
 comparison outside timing. State whether timing includes planning, writing or
 the complete frame path. Keep repeated-plan removal out of this comparison.
 This is a future acceptance plan, not a claim that new differential tests ran.
+
+## TVG-1126: Binary encoder specialization differential tests
+
+Three new encoder tests compare generic and specialized plans, complete payloads,
+descriptors, operation/decision counts and errors. Successful sequences also
+decode back to every original operation field, with an output-tail canary.
+
+Cover every distance-extra width 1..16 with alternating zero and maximum legal
+values (width 16 only zero), preceded by mixed literals and uniform length extras.
+Two 66,000-match sequences at width 15 select all-zero or all-one extras, crossing
+binary model total 32768 repeatedly and continuing after rescaling. These are
+grammar-level encoder vectors, not claims of valid frame history.
+
+Negative comparisons cover empty/incomplete grammar, invalid operation kind,
+context, alphabet, value and width, short output and one-byte-short aggregate.
+Both paths accept the exact aggregate limit and reject overlapping operation/
+output storage without mutation. Existing independently fixed payload vectors
+and frame-level tests remain unchanged. Real-data timing is not part of these
+correctness assertions.

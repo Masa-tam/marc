@@ -139,6 +139,7 @@ struct Models {
     return true;
 }
 
+template<bool Reference>
 [[nodiscard]] ContextualDynamicRangeEncodeResult run(
     const std::span<const context::internal::ModeledOperation> operations,
     const std::span<std::byte> output) noexcept {
@@ -203,7 +204,29 @@ struct Models {
                 return fail(result, ContextualDynamicRangeEncodeError::
                                         nonzero_unused_field);
             }
-            for (std::uint8_t bit = 0; bit < operation.bit_count; ++bit) {
+            if (!Reference && field == context::internal::LzssPositionDistanceField::adaptive_distance_extra) {
+                for (std::uint8_t bit = 0; bit < operation.bit_count; ++bit) {
+                    const auto value = (operation.value >> bit) & 1U;
+                    const auto offset = context::internal::lzss_position_distance_offsets[24 + bit];
+                    auto& zero = models.frequencies[offset];
+                    auto& one = models.frequencies[offset + 1];
+                    auto& total = models.totals[24 + bit];
+                    if (zero == 0 || one == 0
+                        || total != static_cast<std::uint32_t>(zero) + one
+                        || total >= contextual_dynamic_range_model_total_limit
+                        || !writer.encode(value == 0 ? 0U : zero,
+                                          value == 0 ? zero : one, total)) {
+                        return fail(result, ContextualDynamicRangeEncodeError::internal_error);
+                    }
+                    // Commit adaptation only after interval coding succeeds.
+                    ++models.frequencies[offset + value];
+                    if (++total == contextual_dynamic_range_model_total_limit) {
+                        zero = static_cast<std::uint16_t>((static_cast<std::uint32_t>(zero) + 1U) / 2U);
+                        one = static_cast<std::uint16_t>((static_cast<std::uint32_t>(one) + 1U) / 2U);
+                        total = static_cast<std::uint32_t>(zero) + one;
+                    }
+                }
+            } else for (std::uint8_t bit = 0; bit < operation.bit_count; ++bit) {
                 const auto value = (operation.value >> bit) & 1U;
                 const bool adaptive = field == context::internal::LzssPositionDistanceField::adaptive_distance_extra;
                 const auto id = static_cast<std::uint16_t>(24 + bit);
@@ -278,7 +301,9 @@ std::size_t lzss_position_distance_range_encoder_state_bytes() noexcept {
         + sizeof(context::internal::LzssPositionDistanceFieldCursor);
 }
 
-ContextualDynamicRangeEncodeResult plan_lzss_position_distance_range_operations(
+namespace {
+template<bool Reference>
+ContextualDynamicRangeEncodeResult plan_operations(
     const std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,
     ContextualDynamicRangeDescriptor& descriptor) noexcept {
@@ -311,7 +336,7 @@ ContextualDynamicRangeEncodeResult plan_lzss_position_distance_range_operations(
                 ContextualDynamicRangeEncodeError::limit_exceeded};
     }
 
-    const auto result = run(operations, {});
+    const auto result = run<Reference>(operations, {});
     if (result.error != ContextualDynamicRangeEncodeError::none) return result;
     if (result.payload_size > std::numeric_limits<std::uint32_t>::max()) {
         return fail(result,
@@ -331,13 +356,14 @@ ContextualDynamicRangeEncodeResult plan_lzss_position_distance_range_operations(
     return result;
 }
 
-ContextualDynamicRangeEncodeResult encode_lzss_position_distance_range_operations(
+template<bool Reference>
+ContextualDynamicRangeEncodeResult encode_operations(
     const std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,
     const std::span<std::byte> payload_output,
     ContextualDynamicRangeDescriptor& descriptor) noexcept {
     ContextualDynamicRangeDescriptor planned{};
-    const auto plan = plan_lzss_position_distance_range_operations(
+    const auto plan = plan_operations<Reference>(
         operations, limits, planned);
     if (plan.error != ContextualDynamicRangeEncodeError::none) return plan;
     if (payload_output.size() < plan.payload_size) {
@@ -354,7 +380,7 @@ ContextualDynamicRangeEncodeResult encode_lzss_position_distance_range_operation
         return fail(plan,
                     ContextualDynamicRangeEncodeError::overlapping_buffers);
     }
-    const auto encoded = run(operations, output);
+    const auto encoded = run<Reference>(operations, output);
     if (encoded.error != ContextualDynamicRangeEncodeError::none
         || encoded.operation_count != plan.operation_count
         || encoded.decision_count != plan.decision_count
@@ -363,6 +389,36 @@ ContextualDynamicRangeEncodeResult encode_lzss_position_distance_range_operation
     }
     descriptor = planned;
     return encoded;
+}
+
+} // namespace
+
+ContextualDynamicRangeEncodeResult plan_lzss_position_distance_range_operations(
+    const std::span<const context::internal::ModeledOperation> operations,
+    const core::DecoderLimits& limits,
+    ContextualDynamicRangeDescriptor& descriptor) noexcept {
+    return plan_operations<false>(operations, limits, descriptor);
+}
+
+ContextualDynamicRangeEncodeResult encode_lzss_position_distance_range_operations(
+    const std::span<const context::internal::ModeledOperation> operations,
+    const core::DecoderLimits& limits, const std::span<std::byte> output,
+    ContextualDynamicRangeDescriptor& descriptor) noexcept {
+    return encode_operations<false>(operations, limits, output, descriptor);
+}
+
+ContextualDynamicRangeEncodeResult plan_lzss_position_distance_range_operations_reference(
+    const std::span<const context::internal::ModeledOperation> operations,
+    const core::DecoderLimits& limits,
+    ContextualDynamicRangeDescriptor& descriptor) noexcept {
+    return plan_operations<true>(operations, limits, descriptor);
+}
+
+ContextualDynamicRangeEncodeResult encode_lzss_position_distance_range_operations_reference(
+    const std::span<const context::internal::ModeledOperation> operations,
+    const core::DecoderLimits& limits, const std::span<std::byte> output,
+    ContextualDynamicRangeDescriptor& descriptor) noexcept {
+    return encode_operations<true>(operations, limits, output, descriptor);
 }
 
 } // namespace marc::entropy::internal

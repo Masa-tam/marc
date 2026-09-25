@@ -22,5 +22,16 @@ namespace marc::entropy::internal {
     const core::DecoderLimits& limits, std::span<std::byte> payload_output,
     ContextualDynamicRangeDescriptor& descriptor) noexcept;
 
+// Retained generic model-update path for private differential tests/benchmarks.
+// Same validation and memory contract; not a public codec API or format variant.
+[[nodiscard]] ContextualDynamicRangeEncodeResult plan_lzss_position_distance_range_operations_reference(
+    std::span<const context::internal::ModeledOperation> operations,
+    const core::DecoderLimits& limits, ContextualDynamicRangeDescriptor& descriptor) noexcept;
+
+[[nodiscard]] ContextualDynamicRangeEncodeResult encode_lzss_position_distance_range_operations_reference(
+    std::span<const context::internal::ModeledOperation> operations,
+    const core::DecoderLimits& limits, std::span<std::byte> payload_output,
+    ContextualDynamicRangeDescriptor& descriptor) noexcept;
+
 } // namespace marc::entropy::internal
 #endif

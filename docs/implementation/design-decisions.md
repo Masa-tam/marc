@@ -25012,3 +25012,22 @@ exact capacity, count agreement and descriptor publication; do not expose a
 caller-forgeable unchecked plan. Keep this integration change separate from
 the binary micro-optimization and measure it independently. Public APIs,
 defaults, wire representation and current failure contracts remain unchanged.
+
+## DD-1257: Specialize distance-bit model updates without changing range arithmetic
+
+The private context-9 encoder now selects the adaptive-distance loop once per
+operation. Each bit binds its zero/one frequencies and total, validates positive
+frequencies, their sum and the rescale bound, then uses the unchanged checked
+RangeWriter interval update. Successful coding increments the selected frequency
+and total, with explicit ceil-half rescaling of the two frequencies at 32768.
+
+Retain a compile-time generic path for private plan/encode differential tests
+and future same-binary measurements. It uses the original generic model update,
+not the specialized update. Both paths share grammar/preflight checks, ordinary
+symbol coding, uniform length extras and range carry/normalization. This is
+differential coverage of the specialization, not an independent implementation
+of the whole codec. Independent fixed vectors remain required.
+
+Model storage and workspace accounting are unchanged. The three-pass frame
+encode path is unchanged. No public API, wire-format or speed claim is added;
+real-data encoder A/B measurement remains a separate gate.
