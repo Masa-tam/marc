@@ -7,27 +7,7 @@
 #include <vector>
 #include <type_traits>
 
-namespace marc::entropy::internal {
-// Test-only metadata faults; borrowed operations remain alive and unchanged.
-struct PreparedLzssPositionDistanceEncodeTestAccess {
-    static void shorten_payload(PreparedLzssPositionDistanceEncode& value,
-                                std::size_t size) noexcept {
-        value.plan_.payload_size=size;
-        value.descriptor_.payload_size=static_cast<std::uint32_t>(size);
-    }
-    static void mismatch(PreparedLzssPositionDistanceEncode& value, unsigned field) noexcept {
-        switch (field) {
-        case 0: ++value.plan_.operation_count; break;
-        case 1: ++value.plan_.operation_index; break;
-        case 2: ++value.plan_.decision_count; break;
-        case 3: ++value.plan_.payload_size; break;
-        case 4: ++value.descriptor_.decision_count; break;
-        case 5: ++value.descriptor_.payload_size; break;
-        case 6: ++value.descriptor_.context_count; break;
-        }
-    }
-};
-}
+#include "prepared_position_distance_test_access.hpp"
 
 namespace {
 using namespace marc::entropy::internal;

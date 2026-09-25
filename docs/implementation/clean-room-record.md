@@ -34609,3 +34609,18 @@ both bounds.
   new fault test and documentation layout check.
 - Similarity review: independently derived from existing invariants and fixed
   vector; no external expression copied and no legal guarantee claimed.
+
+## CR-1422: 2026-09-26 - Test failed payload frame publication
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1023, DD-1268 and TVG-1137; first-party sources only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: directly test the production frame publication gate using real failed
+  prepared writes, without runtime fault hooks or borrowed-input mutation.
+- Changes: extract the private publication helper, share the test-only accessor
+  and add failure and successful-control coverage; public API and wire unchanged.
+- Validation: Release build and all 3,860 CTest cases passed, including both
+  new publication tests and existing complete-frame differential coverage.
+- Similarity review: first-party code extraction and independently authored
+  tests; no external expression copied and no legal guarantee claimed.

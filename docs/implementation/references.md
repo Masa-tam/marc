@@ -9207,3 +9207,8 @@ record results and identity. No external implementation was consulted.
 Prepared encoder fault tests use the first-party writer, fixed mixed vector,
 and existing private friend-access testing pattern. No external source or test
 suite was consulted.
+
+### IR-1023
+
+Frame publication tests use the repository frame encoder, prepared entropy
+encoder and IR-1022 fault accessor. No external implementation was consulted.

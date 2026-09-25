@@ -16511,3 +16511,17 @@ faults, a second write must fail with zero counts without changing output;
 fresh preparation must recover the fixed vector. Verify borrowed operations
 are unchanged. This does not establish support for caller mutation or test
 frame-header publication.
+
+## TVG-1137: Verify frame publication after prepared write faults
+
+Model a literal followed by a length-258 distance-one match. Retain a successful
+frame as the byte oracle, and feed each nonempty truncated prepared write and
+all seven metadata faults from TVG-1136 through the production publication
+helper. Require internal_error, unchanged 80-byte header/descriptor area,
+exact partial payload prefix, unchanged trailing capacity and outer canaries.
+Include a successful control that publishes exactly the reference prefix.
+
+Independently perturb each of the five count/descriptor comparisons after a
+successful entropy result and test a 79-byte output span. Each must reject
+without touching output. Existing full-frame differential tests cover normal
+integration across all match lengths; no input mutation or runtime hook is used.

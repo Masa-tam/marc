@@ -25227,3 +25227,18 @@ An internal failure does not publish the descriptor and consumes readiness.
 Partial output is unusable, not rolled back. A fresh prepare restores normal
 operation. These tests cover entropy publication only; direct frame-header
 publication fault injection remains a separate next step under DD-1266.
+
+## DD-1268: Share the frame publication gate with failure tests
+
+Extract the existing post-write consistency checks and header/descriptor copies
+into a private inline helper used by the frame encoder. This introduces no
+callback between preparation and writing, global fault state or public API.
+Tests pass real failed prepared writes through that same publication gate,
+without modifying borrowed operations. Header and descriptor bytes remain
+untouched on failure; partial payload and nonzero planned sizes do not imply
+committed output. Only a successful result makes the frame consumable.
+
+Test the gate's independent metadata checks as well as propagated entropy
+failure. Successful complete frames must remain byte-identical to the retained
+three-run path. This closes the bounded publication coverage planned in
+DD-1266, not a claim of arbitrary memory-corruption tolerance.

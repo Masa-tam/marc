@@ -2,6 +2,7 @@
 #include "frame/lzss_short_length_escape_frame_encoder.hpp"
 #include "frame/lzss_reduced_literal_frame_encoder.hpp"
 #include "frame/lzss_position_distance_frame_encoder.hpp"
+#include "frame/lzss_range_frame_publication.hpp"
 #include "frame/lzss_position_distance_preflight.hpp"
 #include "entropy/lzss_position_distance_range_encoder.hpp"
 #include "entropy/lzss_position_distance_range_state.hpp"
@@ -301,20 +302,8 @@ enum class OverlapCheck : std::uint8_t {
         operations.first(result.operation_count), limits,
         output.subspan(payload_offset, result.payload_size),
         encoded_descriptor);
-    if (result.entropy.error
-            != entropy::internal::ContextualDynamicRangeEncodeError::none
-        || result.entropy.decision_count != result.decision_count
-        || result.entropy.payload_size != result.payload_size
-        || encoded_descriptor.decision_count != descriptor.decision_count
-        || encoded_descriptor.payload_size != descriptor.payload_size
-        || encoded_descriptor.context_count != descriptor.context_count) {
-        result.error = LzssShortMatchFrameEncodeError::internal_error;
-        return result;
-    }
-    std::memcpy(output.data(), header_bytes.data(), header_bytes.size());
-    std::memcpy(output.data() + typed_context_frame_header_size,
-                descriptor_bytes.data(), descriptor_bytes.size());
-    return result;
+    return publish_lzss_range_frame(result, descriptor, encoded_descriptor,
+                                    header_bytes, descriptor_bytes, output);
 }
 
 } // namespace

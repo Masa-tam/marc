@@ -9,6 +9,9 @@
 #include "entropy/lzss_position_distance_range_encoder.hpp"
 #include "entropy/lzss_position_distance_range_state.hpp"
 #include "core/endian.hpp"
+#include "frame/lzss_range_frame_publication.hpp"
+#include "prepared_position_distance_test_access.hpp"
+#include <algorithm>
 
 #include <gtest/gtest.h>
 
@@ -54,6 +57,85 @@ TEST(LzssPositionDistanceFrameEncoder, PreparedAndThreeRunFramesAgreeForAllLengt
         EXPECT_EQ(x.serialized_size,y.serialized_size); EXPECT_EQ(x.payload_size,y.payload_size);
         EXPECT_EQ(x.operation_count,y.operation_count); EXPECT_EQ(x.decision_count,y.decision_count);
         EXPECT_EQ(a.back().value,123); EXPECT_EQ(b.back().value,123);
+    }
+}
+
+TEST(LzssPositionDistanceFrameEncoder, FailedPreparedPayloadNeverPublishesFramePrefix) {
+    using namespace marc::entropy::internal;
+    const auto tokens=tokens_for(258);
+    const auto stream=stream_for(259);
+    std::array<ModeledOperation,6> operations{};
+    std::array<std::byte,256> reference{};
+    const auto planned=encode_lzss_position_distance_frame(
+        stream,{},0,0,tokens,operations,reference);
+    ASSERT_EQ(planned.error,LzssShortMatchFrameEncodeError::none);
+    ASSERT_GT(planned.payload_size,1);
+    std::array<std::byte,typed_context_frame_header_size> header{};
+    std::array<std::byte,typed_context_range_descriptor_size> descriptor{};
+    std::copy_n(reference.begin(),header.size(),header.begin());
+    std::copy_n(reference.begin()+header.size(),descriptor.size(),descriptor.begin());
+    constexpr auto offset=typed_context_frame_header_size+typed_context_range_descriptor_size;
+    // Every nonempty truncated write, all seven consistency faults, then success.
+    for (std::size_t scenario=0;scenario<planned.payload_size+7;++scenario) {
+        SCOPED_TRACE(scenario);
+        PreparedLzssPositionDistanceEncode prepared;
+        ContextualDynamicRangeDescriptor expected{};
+        ASSERT_EQ(prepared.prepare(std::span{operations}.first(planned.operation_count),{},expected).error,
+                  ContextualDynamicRangeEncodeError::none);
+        const bool truncated=scenario<planned.payload_size-1;
+        const bool success=scenario==planned.payload_size+6;
+        const auto written=truncated ? scenario+1 : planned.payload_size;
+        if (truncated) PreparedLzssPositionDistanceEncodeTestAccess::shorten_payload(prepared,written);
+        else if (!success) PreparedLzssPositionDistanceEncodeTestAccess::mismatch(
+            prepared,static_cast<unsigned>(scenario-(planned.payload_size-1)));
+        std::array<std::byte,258> output; output.fill(std::byte{0xcc});
+        auto frame=std::span{output}.subspan(1,256);
+        ContextualDynamicRangeDescriptor encoded{99,98,97};
+        auto result=planned;
+        // Extra capacity lets the enlarged-size fault reach the post-write check.
+        result.entropy=prepared.write(frame.subspan(offset),encoded);
+        result=publish_lzss_range_frame(result,expected,encoded,header,descriptor,frame);
+        EXPECT_EQ(result.error,success ? LzssShortMatchFrameEncodeError::none
+                                     : LzssShortMatchFrameEncodeError::internal_error);
+        for (std::size_t i=0;i<offset;++i)
+            EXPECT_EQ(frame[i],success ? reference[i] : std::byte{0xcc});
+        for (std::size_t i=0;i<written;++i) EXPECT_EQ(frame[offset+i],reference[offset+i]);
+        for (std::size_t i=offset+written;i<frame.size();++i) EXPECT_EQ(frame[i],std::byte{0xcc});
+        EXPECT_EQ(output.front(),std::byte{0xcc}); EXPECT_EQ(output.back(),std::byte{0xcc});
+        if (!success) {
+            EXPECT_EQ(encoded.decision_count,99); EXPECT_EQ(encoded.payload_size,98);
+            EXPECT_EQ(encoded.context_count,97);
+        }
+    }
+}
+
+TEST(LzssPositionDistanceFrameEncoder, PublicationRejectsInconsistentSuccessfulEntropy) {
+    const auto tokens=tokens_for(3);
+    std::array<ModeledOperation,6> operations{};
+    std::array<std::byte,256> reference{};
+    const auto valid=encode_lzss_position_distance_frame(stream_for(4),{},0,0,tokens,operations,reference);
+    ASSERT_EQ(valid.error,LzssShortMatchFrameEncodeError::none);
+    const TypedContextRangeDescriptor expected{valid.decision_count,
+        static_cast<std::uint32_t>(valid.payload_size),40};
+    std::array<std::byte,typed_context_frame_header_size> header{};
+    std::array<std::byte,typed_context_range_descriptor_size> descriptor{};
+    std::copy_n(reference.begin(),header.size(),header.begin());
+    std::copy_n(reference.begin()+header.size(),descriptor.size(),descriptor.begin());
+    for (unsigned field=0;field<6;++field) {
+        SCOPED_TRACE(field);
+        auto result=valid; auto encoded=expected;
+        switch(field) {
+        case 0: ++result.entropy.decision_count; break;
+        case 1: ++result.entropy.payload_size; break;
+        case 2: ++encoded.decision_count; break;
+        case 3: ++encoded.payload_size; break;
+        case 4: ++encoded.context_count; break;
+        }
+        std::array<std::byte,256> output; output.fill(std::byte{0xcc});
+        const auto capacity=field==5 ? header.size()+descriptor.size()-1 : output.size();
+        EXPECT_EQ(publish_lzss_range_frame(result,expected,encoded,header,descriptor,
+            std::span{output}.first(capacity)).error,LzssShortMatchFrameEncodeError::internal_error);
+        for (auto b:output) EXPECT_EQ(b,std::byte{0xcc});
     }
 }
 
