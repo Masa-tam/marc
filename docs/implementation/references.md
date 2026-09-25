@@ -9082,3 +9082,9 @@ independent arithmetic oracle from TVG-1110. No external source was consulted.
 Context-9 benchmark integration uses only repository-owned frame encoders,
 decoders and the existing fixed-token comparison harness. No external
 implementation or test vectors were consulted.
+
+### IR-1003
+
+BM-0122 uses the locally supplied Silesia mozilla member, repository benchmark
+and the maintainer-reported gzip -9v byte total. No external compressor source
+or third-party test suite was consulted.

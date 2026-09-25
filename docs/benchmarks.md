@@ -4495,3 +4495,44 @@ reset/update rules and decoder bounds before implementing actual coding. Keep
 tokens and non-distance fields fixed for the first comparison. Measure actual
 bytes, encode/decode cost and workspace before considering public admission;
 the current results do not establish actual savings or a gzip win.
+
+### BM-0122: Mozilla actual position-adaptive distance coding
+
+On 2026-09-25, benchmark revision `0f3dd715` processed all 51,220,480
+mozilla bytes in 782 frames with `1024 65536 indexed distance-policies`.
+Executable SHA-256:
+`54520B039E5A6235C5101DCE93E6E26E57F59754628C9CC51D7C0024BCCD008D`.
+Input SHA-256:
+`657FC3764B0C75AC9DE9623125705831EBBFBE08FED248DF73BC2DC66E2A963B`.
+The ignored `out/position-distance-corpus/mozilla.json` records all report
+fields, hashes and arguments. This is one completed measurement, not a
+multi-run timing study or a resumable per-frame run.
+
+| Fixed-token model | Accounted archive bytes | Encode seconds | Decode seconds |
+| --- | ---: | ---: | ---: |
+| Context 8, uniform distance extras | 19,592,635 | 1.556813 | 2.965092 |
+| Context 9, position-adaptive distance extras | 18,542,748 | 2.554061 | 4.427039 |
+
+Both models use the identical context-7 selector's retained tokens; no context-9
+reselection or dictionary reparse occurs. All 782 frames reproduced their raw
+input and token sequence. Baseline 20,085,366, old selected 19,636,009 and
+context-8 reselected 19,592,366 bytes reproduce the prior controls.
+
+The net context-8 reduction is 1,049,887 bytes (5.359%): improving frames save
+1,049,977 bytes while regressing frames add 90. Thus improvement is not universal
+per frame. The causal information estimate predicted 1,049,988.060 bytes,
+only 101.060 bytes above the actual reduction; integer coding and termination
+account for the residual collectively, without a separately measured split.
+
+Against the maintainer-reported gzip -9v result of 18,994,139 bytes, the private
+accounted size is 451,391 bytes smaller (2.376%). This is a single-member size
+comparison, not a reproduced gzip run, CLI release result or general superiority
+claim. The total includes the common 112-byte stream-header allowance and
+80 bytes per frame, but no public context-9 stream writer exists yet.
+
+Fixed-token encoding took 1.641 times and decoding 1.493 times the context-8
+time in this run. These phase timings exclude dictionary search and policy
+selection and include the validating frame paths; they are not end-to-end CLI
+throughput. Peak resident memory was not measured. Keep the private candidate,
+next measure all twelve corpus members on the same frozen-token controls,
+and examine speed and memory before public admission.

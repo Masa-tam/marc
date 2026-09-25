@@ -16259,3 +16259,11 @@ archive totals, per-frame verification count, saved/extra-byte reconciliation
 against context 8 and encode/decode timing fields. Compare integer results
 between independent reference search and indexed search. Improvement is not
 a pass condition; decoded tokens and raw input must match on every frame.
+
+### TVG-1117
+
+Validate the completed mozilla report against its input/executable hashes and
+prior baseline, selected and context-8 totals. Require 782 verified frames for
+both models and reconcile 19,592,635 - 1,049,977 + 90 = 18,542,748 bytes.
+The benchmark checks raw and token round trips for every frame. Timing ratios
+are observations, not pass/fail thresholds or portable regression expectations.

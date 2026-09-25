@@ -24840,3 +24840,11 @@ verified frames, encode/decode time and saved/extra bytes relative to context 8.
 Archive totals retain the harness's common header accounting; this is not a
 published stream encoder. Smoke checks require indexed/reference agreement
 and reconcile the signed byte difference without assuming an improvement.
+
+## DD-1248: Retain context-9 candidate after actual mozilla measurement
+
+BM-0122 confirms a 1,049,887-byte reduction against fixed-token context 8,
+with all 782 frames verified. Preserve this private candidate for corpus-wide
+measurement, not immediate admission: encode and decode phase times increase,
+and some frames regress. Treat the reported gzip comparison as a single-file
+size observation only. Do not change public defaults or token selection.

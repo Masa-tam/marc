@@ -34299,3 +34299,19 @@ both bounds.
 - Validation: MSVC Release build and all 3,845 CTest cases passed, including
   the extended candidate benchmark smoke and interoperability schema test.
   Full-corpus measurement remains separate from this harness integration.
+
+## CR-1402: 2026-09-25 - Measure actual mozilla position-distance coding
+
+- Author: Codex; reviewer: repository maintainer approved measurement.
+- References used: IR-1003, DD-1248, TVG-1117 and BM-0122; local corpus,
+  first-party benchmark and maintainer-reported gzip byte count.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: measure actual private context-9 size and phase timing on fixed tokens.
+- Results: all 782 frame round trips passed; 18,542,748 accounted bytes,
+  1,049,887 fewer than context 8. Encode/decode phases were slower in this run.
+- Similarity review: measurement and documentation only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: report controls, hashes and accounting verified; documentation
+  layout test passed. The preceding full 3,845-test run remains the code baseline.
+  Production code is unchanged; full corpus and public admission remain open.
