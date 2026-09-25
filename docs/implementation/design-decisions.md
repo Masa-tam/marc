@@ -24554,3 +24554,20 @@ written prefix is excluded. Preserve existing paths and their memory policy.
 This component checks grammar, counts and payload consumption, but canonical
 re-encoding and raw-frame publication remain responsibilities of the pending
 frame integration. It does not admit a public codec or stream identity.
+
+## DD-1227: Verify canonical Range bytes before reduced-literal reconstruction
+
+Replay the decoded cumulative/frequency intervals through the specified encoder
+carry arithmetic, comparing emitted bytes directly with the immutable payload.
+Reuse the decoder's interval range and model lookup; retain only low/carry/cache,
+pending-byte count, comparison offset and mismatch state. Finalize with five
+carry shifts at finish, after count/consumption/model checks; reject mismatch
+as invalid_interval. Include this replay storage in the concrete decoder state
+charged by preflight. No operation array or second frequency model is needed.
+
+Connect private frame preflight, two-pass token decoding and typed reconstruction.
+The validation pass must finish canonical comparison before token output, and
+raw reconstruction follows only successful token decoding. Reject overlapping
+frame/token/raw regions and insufficient capacities before writes. Return the
+exact frame-prefix extent only on success; public stream admission is unchanged.
+Existing short-match/escape decoders retain their current behavior.

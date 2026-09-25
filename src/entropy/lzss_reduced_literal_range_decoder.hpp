@@ -7,8 +7,8 @@
 namespace marc::entropy::internal {
 
 // Private operation decoder. The caller supplies token-grammar context IDs.
-// finish checks counts, consumed extent and model invariants; frame-level
-// canonical re-encoding remains required before publishing decoded bytes.
+// finish checks counts, consumed extent, model invariants and canonical bytes
+// replayed from the decoded intervals, including the five final carry shifts.
 class LzssReducedLiteralRangeDecoder {
 public:
     [[nodiscard]] ContextualDynamicRangeDecodeResult begin(
@@ -26,6 +26,8 @@ private:
     [[nodiscard]] bool decode_interval(std::uint32_t cumulative, std::uint16_t frequency,
         std::uint32_t total) noexcept;
     [[nodiscard]] bool validate_models() const noexcept;
+    [[nodiscard]] bool canonical_shift_low() noexcept;
+    void canonical_emit(std::uint8_t value) noexcept;
     LzssReducedLiteralRangeState state_{};
 };
 static_assert(sizeof(LzssReducedLiteralRangeDecoder) == sizeof(LzssReducedLiteralRangeState));

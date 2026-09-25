@@ -2585,6 +2585,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_reduced_literal_operations_tests.cpp
         tests/lzss_reduced_literal_operation_decoder_tests.cpp
         tests/lzss_reduced_literal_range_tokens_tests.cpp
+        tests/lzss_reduced_literal_frame_decoder_tests.cpp
         tests/lzss_reduced_literal_preflight_tests.cpp
         tests/lzss_short_length_escape_tests.cpp
         tests/lzss_short_length_escape_operation_decoder_tests.cpp

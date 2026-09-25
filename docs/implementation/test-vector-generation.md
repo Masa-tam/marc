@@ -16030,3 +16030,13 @@ for every possible initial literal and compare every restored token field.
 Accept the exact payload+token+decoder aggregate, reject one byte less without
 changing sentinel tokens, retain unused output capacity and reject the old
 32-context descriptor.
+
+### TVG-1096
+
+Adapt first-party escape frame fixtures to context variant 8, count 24 and
+context IDs 13/15+class. Reconstruct lengths 3,4,5,258; check private identity,
+truncation, reserved bytes, invalid start byte, capacities, workspace overlap,
+sequence and aggregate limits. Mutate the final Range byte by XOR 1: the same
+two tokens and four raw bytes are decoded internally, but canonical comparison
+must reject the alternative terminal code before token or raw output changes.
+Existing all-symbol/rescaling/bypass decoder tests also exercise interval replay.

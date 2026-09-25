@@ -8943,3 +8943,10 @@ implementation or third-party test suite was consulted.
 The reduced-literal Range/token connection uses marc's first-party shared
 Range-token parser, context-8 arithmetic decoder and operation vectors only.
 No external compressor implementation or third-party test suite was consulted.
+
+### IR-0982
+
+Reduced-literal frame integration uses marc's own frame preflight, Range/token
+parser and typed reconstructor. Canonical interval replay uses the carry and
+five-shift termination arithmetic of the first-party reduced-literal encoder.
+No external compressor implementation or third-party vectors were consulted.

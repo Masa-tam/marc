@@ -33946,3 +33946,20 @@ both bounds.
 - Validation: MSVC Release build and all 3,783 CTest cases passed, including
   six new Range/token tests, existing Range-token regressions, documentation
   layout and interoperability schema compatibility. Public APIs are unchanged.
+
+## CR-1381: 2026-09-25 - Integrate strict reduced-literal frame decoding
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0982, DD-1227 and TVG-1096; first-party components only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Generated-code task: connect private frame decoding and validate canonical
+  Range terminal bytes before publishing reconstructed output.
+- Independent decisions: compare interval replay bytes without a second model
+  or operation buffer; account replay fields in the concrete decoder state.
+- Similarity review: deliberate reuse of repository-owned arithmetic and tests;
+  no external implementation expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,788 CTest cases passed, including
+  five new frame/identity tests, all-symbol and rescaling replay coverage,
+  documentation layout and interoperability schema compatibility. The altered
+  terminal-code regression rejects before either output buffer changes.

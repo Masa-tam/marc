@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 
 namespace marc::entropy::internal {
 namespace {
@@ -32,6 +33,11 @@ ContextualDynamicRangeDecodeResult LzssReducedLiteralRangeDecoder::begin(
     state_.range = UINT32_MAX;
     state_.event_count = 0;
     state_.decision_count = 0;
+    state_.canonical_low = 0;
+    state_.canonical_pending = 1;
+    state_.canonical_offset = 0;
+    state_.canonical_cache = 0;
+    state_.canonical_mismatch = false;
     state_.error = ContextualDynamicRangeDecodeError::none;
     state_.started = false;
     state_.finished = false;
@@ -83,6 +89,7 @@ bool LzssReducedLiteralRangeDecoder::decode_interval(
     }
     const auto unit = state_.range / total;
     if (unit == 0) return false;
+    state_.canonical_low += static_cast<std::uint64_t>(cumulative) * unit;
     state_.code -= cumulative * unit;
     state_.range = unit * frequency;
     while (state_.range < normalization_threshold) {
@@ -90,6 +97,7 @@ bool LzssReducedLiteralRangeDecoder::decode_interval(
         const auto byte =
             std::to_integer<std::uint8_t>(state_.payload[state_.payload_offset++]);
         state_.range <<= 8;
+        if (!canonical_shift_low()) return false;
         state_.code = static_cast<std::uint32_t>((state_.code << 8) | byte);
     }
     return true;
@@ -206,6 +214,35 @@ ContextualDynamicRangeDecodeResult LzssReducedLiteralRangeDecoder::decode_bypass
     return result();
 }
 
+void LzssReducedLiteralRangeDecoder::canonical_emit(const std::uint8_t value) noexcept {
+    if (state_.canonical_offset >= state_.payload.size()) {
+        state_.canonical_mismatch = true;
+        return;
+    }
+    if (state_.payload[state_.canonical_offset] != static_cast<std::byte>(value)) {
+        state_.canonical_mismatch = true;
+    }
+    ++state_.canonical_offset;
+}
+
+bool LzssReducedLiteralRangeDecoder::canonical_shift_low() noexcept {
+    const auto low = static_cast<std::uint32_t>(state_.canonical_low);
+    const auto carry = static_cast<std::uint32_t>(state_.canonical_low >> 32);
+    if (carry > 1) return false;
+    if (low < UINT32_C(0xff000000) || carry != 0) {
+        canonical_emit(static_cast<std::uint8_t>(state_.canonical_cache + carry));
+        for (std::size_t i = 1; i < state_.canonical_pending; ++i) {
+            canonical_emit(static_cast<std::uint8_t>(UINT32_C(0xff) + carry));
+        }
+        state_.canonical_cache = static_cast<std::uint8_t>(low >> 24);
+        state_.canonical_pending = 0;
+    }
+    if (state_.canonical_pending == std::numeric_limits<std::size_t>::max()) return false;
+    ++state_.canonical_pending;
+    state_.canonical_low = static_cast<std::uint32_t>(low << 8);
+    return true;
+}
+
 bool LzssReducedLiteralRangeDecoder::validate_models() const noexcept {
     for (std::size_t context_id = 0; context_id < state_.totals.size(); ++context_id) {
         const auto alphabet =
@@ -249,6 +286,12 @@ ContextualDynamicRangeDecodeResult LzssReducedLiteralRangeDecoder::finish(
     }
     if (!validate_models()) {
         return fail(ContextualDynamicRangeDecodeError::invalid_model);
+    }
+    for (int i = 0; i < 5; ++i) {
+        if (!canonical_shift_low()) return fail(ContextualDynamicRangeDecodeError::invalid_interval);
+    }
+    if (state_.canonical_mismatch || state_.canonical_offset != state_.payload.size()) {
+        return fail(ContextualDynamicRangeDecodeError::invalid_interval);
     }
     state_.finished = true;
     return result();

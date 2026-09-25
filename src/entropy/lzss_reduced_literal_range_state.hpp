@@ -11,9 +11,9 @@
 
 namespace marc::entropy::internal {
 
-// Concrete private decoder storage contract. The future decoder must own this
-// state; preflight charges sizeof including padding, counters and payload view.
-// This is neither a decoder implementation nor a native serialized structure.
+// Concrete private decoder storage, including canonical interval replay.
+// Preflight charges sizeof including padding, counters and payload view.
+// This is not a native serialized structure.
 struct LzssReducedLiteralRangeState {
     std::array<std::uint16_t, context::internal::lzss_reduced_literal_frequency_entries> frequencies{};
     std::array<std::uint32_t, context::internal::lzss_reduced_literal_context_count> totals{};
@@ -24,6 +24,11 @@ struct LzssReducedLiteralRangeState {
     std::uint32_t range{UINT32_MAX};
     std::uint32_t event_count{};
     std::uint32_t decision_count{};
+    std::uint64_t canonical_low{};
+    std::size_t canonical_pending{1};
+    std::size_t canonical_offset{};
+    std::uint8_t canonical_cache{};
+    bool canonical_mismatch{};
     ContextualDynamicRangeDecodeError error{ContextualDynamicRangeDecodeError::not_started};
     bool started{};
     bool finished{};
