@@ -34408,3 +34408,19 @@ both bounds.
   copied and no legal guarantee claimed.
 - Validation: checkpoint controls, pair counts and hashes passed. Documentation
   layout test passed; runtime code unchanged since the full 3,849-test validation.
+
+## CR-1409: 2026-09-25 - Extend paired distance decoding to Silesia
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1010, DD-1255, TVG-1124 and BM-0126; first-party harness
+  and local corpus inputs only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: run five same-binary pairs per corpus member with resumable validated
+  checkpoints; reuse the prior mozilla result under identical executable identity.
+- Results: all twelve members and 3,239 frames passed in each pair; all sixty
+  comparisons favored specialization. Accounted sizes remain unchanged.
+- Similarity review: measurements and documentation only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: all checkpoint controls and reuse passed; documentation layout
+  test passed. Runtime code unchanged since the full 3,849-test validation.

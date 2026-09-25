@@ -4662,3 +4662,59 @@ storage, not a codec workspace change or a peak-RSS measurement.
 The paired evidence supports the specialization on mozilla, without resolving
 encoder overhead or establishing corpus-wide speed gains. Next extend this
 same-binary comparison to all twelve corpus members before generalizing.
+
+## BM-0126: Corpus-wide paired distance-decoder comparison
+
+On 2026-09-25, extend BM-0125 to all twelve local Silesia members using the
+same executable SHA-256 and arguments. Reuse the verified mozilla checkpoint
+from BM-0125; measure the other eleven members sequentially. The executable
+was built at `e80d8f42`; measurement/documentation HEAD was `b4aeb98e`.
+The full corpus contains 211,938,580 bytes and 3,239 frames.
+
+The ignored runner `out/position-distance-decode-ab/run.ps1` checkpoints each
+member atomically after validation, preserving input/executable SHA-256,
+arguments and raw fields in per-member JSON. A second invocation validated
+and reused all twelve checkpoints without launching another benchmark.
+All non-time controls match BM-0123, including accounted archive totals:
+70,732,714 bytes for context 8 and 69,166,828 bytes for context 9.
+
+| Member | Frames | Generic median seconds | Specialized median seconds | Median paired time reduction |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 156 | 0.468943 | 0.379490 | 19.08% |
+| mozilla | 782 | 2.171811 | 1.903509 | 12.38% |
+| mr | 153 | 0.371750 | 0.316178 | 15.11% |
+| nci | 512 | 0.338610 | 0.281206 | 16.94% |
+| ooffice | 94 | 0.334458 | 0.297897 | 10.83% |
+| osdb | 154 | 0.402935 | 0.365673 | 9.22% |
+| reymont | 102 | 0.209101 | 0.157662 | 24.52% |
+| samba | 330 | 0.584307 | 0.505187 | 13.58% |
+| sao | 111 | 0.541794 | 0.501613 | 7.72% |
+| webster | 633 | 1.373565 | 1.111533 | 19.10% |
+| x-ray | 130 | 0.581733 | 0.546373 | 6.59% |
+| xml | 82 | 0.074685 | 0.060864 | 17.99% |
+
+For each pair index, summing member times gives:
+
+| Pair | Generic seconds | Specialized seconds | Time reduction |
+| --- | ---: | ---: | ---: |
+| 1 | 7.443404 | 6.421844 | 13.72% |
+| 2 | 7.459639 | 6.435358 | 13.73% |
+| 3 | 7.461524 | 6.424731 | 13.90% |
+| 4 | 7.448054 | 6.420605 | 13.79% |
+| 5 | 7.459155 | 6.429827 | 13.80% |
+
+All sixty member/pair comparisons favor specialization, and every pair verifies
+all modeled operations against the original sequence. Generic-first counts are
+ceil(frame_count/2) for even pair indices and floor(frame_count/2) for odd ones.
+These sums combine sequential member runs (including prior mozilla), not five
+independent corpus-wide executions. Median paired reductions are calculated
+from paired ratios, not ratios of independently selected medians.
+
+BM-0125's timing boundary and caveats still apply: warm, single-pass operation
+decode; initialization and finish included; search, encoding, I/O and correctness
+comparison excluded. Fixed warmup order and scheduling effects remain.
+The extra 5,242,880-byte benchmark buffer is not peak RSS or a codec workspace
+change. This supports the private decoder specialization across this corpus,
+not a whole-CLI speed claim or a public-format promotion. Next audit the private
+binary distance encoder's repeated model/interval work while retaining exact
+bytes, safety checks and a generic differential reference.

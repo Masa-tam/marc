@@ -9125,3 +9125,10 @@ boundaries derive from BM-0124. No external implementation was consulted.
 The mozilla same-binary distance-decoder measurement uses the repository-owned
 harness from IR-1008 and local Silesia input identified by SHA-256 in BM-0125.
 No external implementation or new algorithm reference was consulted.
+
+### IR-1010
+
+Corpus-wide paired decoding extends IR-1009 using repository-owned benchmark
+code and existing local Silesia members. BM-0126 records method and results;
+per-member checkpoints preserve input hashes. No external implementation was
+consulted.

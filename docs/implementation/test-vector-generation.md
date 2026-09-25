@@ -16327,3 +16327,14 @@ all non-time controls shared with BM-0122 match, and that each pair verifies
 operation against the original sequence outside timing, including warmup.
 Recheck input and executable hashes after measurement. Treat observed timing
 reductions as measurements, never portable pass/fail thresholds.
+
+## TVG-1124: Validate corpus-wide distance-decoder checkpoints
+
+Extend TVG-1123 to twelve complete Silesia members, with five pairs each.
+Require input/executable identity, arguments, full input extent, five pairs,
+5,242,880 output-buffer bytes and matching prior non-time report fields.
+Require verified frame counts and alternating-order counts for every pair,
+including odd-frame members; reject missing, non-finite or non-positive times.
+Recheck hashes after execution and publish checkpoints only after validation.
+Rerun the driver to validate reuse of all twelve reports. Summarize paired
+reductions without introducing timing thresholds into correctness tests.

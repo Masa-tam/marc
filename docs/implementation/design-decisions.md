@@ -24963,3 +24963,12 @@ Keep the specialization, but do not infer whole-CLI speedup, encoder improvement
 or corpus-wide behavior. The next measurement gate is the same paired experiment
 across all twelve corpus members. Public APIs, defaults and wire formats remain
 unchanged; five in-process pairs are not independent process replications.
+
+## DD-1255: Retain specialized distance decoding after corpus-wide pairing
+
+BM-0126 verifies all 3,239 frames in each of five pairs. All sixty member/pair
+comparisons favor specialization; summed times decrease by 13.72% to 13.90%.
+Retain the private specialization without claiming end-to-end gains or promoting
+the format. The remaining encoder cost deserves a separate audit of binary
+model/interval work, with exact-byte differential tests against the generic
+path before any optimization. No public API, default or representation changes.
