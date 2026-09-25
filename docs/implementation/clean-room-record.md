@@ -34624,3 +34624,18 @@ both bounds.
   new publication tests and existing complete-frame differential coverage.
 - Similarity review: first-party code extraction and independently authored
   tests; no external expression copied and no legal guarantee claimed.
+
+## CR-1423: 2026-09-26 - Review context-9 integration readiness
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1024, DD-1269 and TVG-1138; first-party code and records.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: distinguish measured private-frame results from remaining stream and
+  public contracts, and choose the next bounded implementation stage.
+- Changes: integration checklist and format implementation-status correction;
+  no runtime, public admission, algorithm or wire change.
+- Validation: documentation layout passed; runtime remains at the preceding
+  full 3,860-test validation, not rerun for this documentation-only change.
+- Similarity review: independent repository review; no external expression
+  copied and no legal guarantee claimed.

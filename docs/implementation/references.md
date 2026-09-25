@@ -9212,3 +9212,10 @@ suite was consulted.
 
 Frame publication tests use the repository frame encoder, prepared entropy
 encoder and IR-1022 fault accessor. No external implementation was consulted.
+
+### IR-1024
+
+Context-9 integration review uses the first-party private frame and stream
+implementations, BM-0122 through BM-0130 and TVG-1136/1137. The gzip size is
+maintainer-reported evidence, not a newly reproduced measurement. No external
+implementation or new algorithm reference was consulted.

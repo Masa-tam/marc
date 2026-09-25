@@ -247,3 +247,57 @@ not merely frequencies. The diagnostic's log2 savings are neither an output
 size guarantee nor a speed prediction. Keep length extras uniform and avoid
 changing literal state, parsing, frame size or any non-distance model so the
 first measured difference has a single cause.
+
+## Context-9 integration readiness after frame optimization
+
+Review date: 2026-09-26; implementation through `e39f81c2`. The exact private
+identity remains dictionary 2/8 + context 1/9 + entropy 3/2. This review does
+not admit it through the public parser or replace an existing codec.
+
+### Evidence and its limits
+
+| Area | Established evidence | Not established |
+| --- | --- | --- |
+| Size | BM-0122/0123: mozilla 18,542,748 accounted bytes; all twelve Silesia totals improve over context 8 (69,166,828 versus 70,732,714 bytes in aggregate) | A publicly emitted context-9 archive or a reproduced, identical-environment gzip comparison |
+| Decode speed | BM-0125/0126: specialized binary-model payload decoding improves over its retained generic implementation | Whole-stream or CLI decoding speed |
+| Encode speed | BM-0127/0128: binary specialization; BM-0129/0130: two-run frame encoding reduces summed paired frame time by 29.73% to 29.96% | Whole-CLI gains, additive optimization percentages, or parity with the published baseline |
+| Correctness | Fixed vectors, frame round trips, reference comparisons, model rescaling, bounds and publication faults; full 3,860-test validation | Incremental context-9 streaming, dedicated stream fuzz coverage or cross-platform artifact verification |
+| Memory | Bounded caller-owned frame workspaces and checked aggregate limits | Process peak RSS or a public context-9 workspace/configuration contract |
+
+The accounted mozilla size is below the user's reported gzip -9v size of
+18,994,139 bytes. Treat that as a promising target comparison, not a completed
+CLI interoperability or performance result. Measurements retain fixed tokens
+chosen by the existing experiment; context-9-specific candidate reselection
+is not required for initial integration and must be evaluated separately.
+
+### Ordered remaining work
+
+1. Add a private strict one-shot stream decoder for the exact tuple. Reuse the
+   complete-frame decoder; validate the canonical 112-byte stream header,
+   sequence, reset semantics, raw extent, final short frame and exact end.
+   A header-only empty stream is valid. Reject crossed identities, truncation,
+   trailing bytes and hard-limit violations without publishing raw output.
+   Use validation then reconstruction over stable caller-owned input and bounded
+   reusable frame/token storage, following the existing private stream contract.
+   This is not an incremental decoder and does not relax public admission.
+2. Assemble private streams from caller-owned typed-token frame spans, then
+   integrate bounded raw-input tokenization without changing the search/tie
+   rules. Check exact whole-stream sizes, empty/final-frame behavior, overlap,
+   limits and delayed stream-header publication. Keep prepared objects local
+   to each frame; never retain a borrowed operation span across caller returns.
+3. Add dedicated stream malformed-input and bounded fuzz coverage, then measure
+   real emitted archives and whole encode/decode paths with explicit timing and
+   memory boundaries. Keep the paired frame benchmarks as diagnostic controls.
+4. Design incremental encoder/decoder state, workspace query, profile/config
+   contract and C API/CLI naming. Preserve existing defaults and old bytes;
+   require one-byte and arbitrary split-buffer equivalence, limit and hash tests.
+   Public format admission is an explicit later change, not a parser shortcut.
+5. Extend installed-consumer tests, examples, interoperability inventory and CI
+   artifacts; complete Windows/Linux cross-tests before calling the codec public
+   and complete. A release/version decision remains with the maintainer.
+
+The immediate next implementation is step 1, not all five steps at once. Its
+test vectors must be independently assembled header/frame combinations,
+including failure in a later frame with sentinel whole-output preservation.
+No new format identity, larger window, context selector or candidate policy is
+part of this integration review.

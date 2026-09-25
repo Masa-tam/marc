@@ -25242,3 +25242,16 @@ Test the gate's independent metadata checks as well as propagated entropy
 failure. Successful complete frames must remain byte-identical to the retained
 three-run path. This closes the bounded publication coverage planned in
 DD-1266, not a claim of arbitrary memory-corruption tolerance.
+
+## DD-1269: Integrate context 9 through a private strict stream boundary first
+
+The readiness review in docs/design/lzss-contextual-ratio-64k.md separates
+completed frame evidence from missing stream/public contracts. Next implement
+only the private exact-identity one-shot stream decoder, retaining public
+rejection. Follow with stream assembly, bounded stream validation/fuzzing and
+whole-path measurement before incremental/public admission. Do not infer CLI
+speed or a completed gzip victory from accounted frame sizes and paired timing.
+
+Retain the current format, tokens and search policy. Candidate reselection,
+larger windows and default-codec changes are separate decisions. Correct the
+format's stale implementation-status sentence without changing wire semantics.

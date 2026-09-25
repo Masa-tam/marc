@@ -16525,3 +16525,16 @@ Independently perturb each of the five count/descriptor comparisons after a
 successful entropy result and test a 79-byte output span. Each must reject
 without touching output. Existing full-frame differential tests cover normal
 integration across all match lengths; no input mutation or runtime hook is used.
+
+## TVG-1138: Admission review and next private stream test scope
+
+For this documentation review, run the documentation layout test and inspect
+the evidence boundaries against BM-0122 through BM-0130 and current private
+entry points. No new timing or runtime validation is claimed.
+
+The next decoder implementation must test independently assembled header-only,
+single-frame, multi-frame and final-short-frame streams; reset and sequence;
+wrong/crossed identities; every small-vector truncation and trailing bytes;
+capacity, overlap, exact/one-below limits; and malformed later frames preserving
+all caller output. Preserve public-parser rejection and old fixed vectors.
+These are planned tests, not coverage already delivered by this review.

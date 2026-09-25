@@ -8058,5 +8058,7 @@ and canonical replay storage including padding; do not assume the aggregate
 increase equals the 64 bytes of added uint16 frequencies. Invalid/truncated
 payload, noncanonical termination, forbidden trailing data, count mismatch,
 invalid references and hard-limit failures publish no partial frame. Empty
-input remains header-only, without an empty data frame. This is a reservation,
-not an implemented or publicly admitted codec.
+input remains header-only, without an empty data frame. Private complete-frame
+encoding and decoding are implemented; the identity remains reserved and is
+not a publicly admitted stream codec. See the integration readiness review in
+[the ratio design](design/lzss-contextual-ratio-64k.md).
