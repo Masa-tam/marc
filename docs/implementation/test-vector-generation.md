@@ -16139,3 +16139,20 @@ without rerunning measurement. Aggregate unrounded reported scores, retain
 negative gains, and distinguish file-total from frame-level conclusions.
 Run benchmark smoke and documentation layout checks; this record changes no
 codec implementation and does not repeat the full suite.
+
+### TVG-1107
+
+Specify private context-9 vectors before implementation. Binary position zero
+starts [1,1]: two zeros use intervals (0,1,2), then (0,2,3), ending [3,1].
+For distance D=13 (class 3, extra 5), bits are 1,0,1 in independent positions
+0,1,2; fresh models end [1,2], [2,1], [1,2]. A length-4 escape bit is also one
+but leaves all distance models unchanged. Class zero has no extra event;
+class sixteen codes sixteen zero bits but nonzero extras are invalid.
+
+After 32766 zero observations in one binary model, rescaling changes
+[32767,1] to [16384,1]; the next zero interval is (0,16384,16385).
+Test reset, pending-field association, logical event versus bit decision
+counts, count-40 descriptor and exact/crossed tuples. Subsequent code stages
+must pin independently computed payload bytes, strict replay and limit edges;
+these are planned tests, not claims of an implemented codec. Validate current
+documentation layout for this design-only step.

@@ -34133,3 +34133,20 @@ both bounds.
 - Validation: all 3,239 frames and prior size controls agreed; all twelve
   checkpoints revalidated. Benchmark smoke and documentation checks passed.
   No codec changes; the full suite was not repeated for this measurement record.
+
+## CR-1392: 2026-09-25 - Specify private position-adaptive distance coding
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0993, DD-1238, TVG-1107 and BM-0121; repository-owned
+  operation mappings, interval rules and diagnostic equations only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: define a separate private context identity, binary update order,
+  grouped-event accounting, decoder bounds and staged implementation gates.
+- Independent decisions: sixteen position models, unchanged length bypass,
+  explicit field association and concrete workspace accounting; no selector.
+- Similarity review: first-party format extension only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: documentation layout and diff checks passed. Runtime code and
+  public admission are unchanged; no full-suite or corpus rerun for this
+  design-only step. Payload vectors and implementation tests remain pending.

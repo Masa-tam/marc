@@ -24701,3 +24701,20 @@ the larger bank as experimental evidence without input-specific selection.
 File-total improvements do not guarantee every frame improves. Specify exact
 decoder-visible rules before coding; require actual size, speed and workspace
 measurements before adoption. No public representation changes at this stage.
+
+## DD-1238: Reserve private position-adaptive distance context variant 9
+
+Reserve only dictionary 2/8 + context 1/9 + entropy 3/2. Keep context-8
+token grammar and contexts 0..23; append binary position models 24..39.
+Distance extras use those models LSB-first, whereas length extras remain
+equiprobable. A grouped extra field remains one logical event; each bit is
+one arithmetic decision. No expanded per-bit operation buffer is required.
+
+Retain Range interval/carry/termination behavior, initialize every binary
+frequency to one, predict before increment, and ceil-half at total 32768.
+Reset per frame and canonically replay the exact adaptive intervals during
+strict decoding. Declare 40 contexts and 2522 frequency entries; charge actual
+state storage, not just the 32 added frequencies. Specify bounded association
+of extra fields with their preceding class before implementation. No public
+admission, parser-policy change, fallback selector or class-conditioned model
+is part of this reservation. See the format reservation and Stage 5 design.

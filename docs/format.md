@@ -7924,7 +7924,8 @@ are in [the short-match candidate](design/lzss-contextual-short-match-64k.md).
 Format 2.0 separately reserves exact stream identity
 `dictionary 2/8 + context 1/7 + entropy 3/2`. This exact tuple is the
 original short-length escape identity. The separate reduced-literal tuple
-below is the only additional reservation using dictionary variant 8;
+below and the position-adaptive distance tuple are additional reservations
+using dictionary variant 8;
 other crossed tuples remain invalid. This identity is private:
 the published stream parser, CLI, C API, and interoperability inventory
 MUST continue to reject it. It does not reinterpret the existing
@@ -7997,3 +7998,65 @@ the actual new implementation storage, not merely the frequency-entry count.
 All original malformed-reference, padding/termination, truncation, strict
 trailing-data and frame-atomic publication requirements remain applicable.
 This reservation does not itself implement or publicly admit a codec.
+
+### Reserved position-adaptive distance short-length escape identity
+
+Format 2.0 reserves only `dictionary 2/8 + context 1/9 + entropy 3/2`
+for position-adaptive distance extra bits. It is private and MUST remain
+rejected by public stream parsers, CLI, C API and interoperability inventories.
+Other crossed identities are invalid. Earlier context variants retain their
+exact bytes and contracts; this is not a reinterpretation of context 8.
+
+All context-8 token semantics, dictionary/frame parameters, headers and the
+16-byte Range descriptor apply except the following changes. Context IDs
+0..23 and their alphabets are unchanged. Append contexts `24+p`, alphabet 2,
+for numeric bit positions `p=0..15`. The descriptor context count MUST be 40.
+There are 2522 flattened frequency entries: the previous 2490 followed by
+16 pairs at offsets `2490+2*p`. No frequency tables or per-frame model selector
+are serialized. All models reset at every frame boundary.
+
+For distance class `c=floor(log2(D))` in 0..16, first code its symbol using
+context `15+length_class`. If c is zero, D is 1 and there is no extra event.
+Otherwise, let `E=D-2^c`. For each p from zero through c-1, encode/decode
+bit `(E >> p) & 1` using model `24+p`. Bits are LSB-first numeric decisions
+inside the existing Range payload, not separately packed raw bytes. Class 16
+still requires E=0 (D=65536); all sixteen zero bits MUST be coded and update
+their models. Do not omit constrained bits or introduce a special class-16
+interval. Ordinary history and frame-output checks still apply.
+
+Each binary model starts with frequencies `[1,1]`. For a bit b, total is
+`f0+f1`, cumulative is zero for b=0 or f0 for b=1, and frequency is fb.
+Use the unchanged entropy-3/2 integer interval, normalization and carry rules.
+After the interval operation succeeds, increment fb by one. If the updated
+total reaches 32768, replace both frequencies by `(f+1)/2` using integer
+division and recompute their total. Prediction MUST precede updating; all
+frequencies remain positive. Decoder canonical replay uses these same
+pre-update intervals, with unchanged five-shift termination and exact payload
+consumption. Floating-point diagnostic scores MUST NOT enter coding.
+
+Length classes and their extra fields remain exactly context 8, including
+equiprobable `(cumulative=bit, frequency=1, total=2)` intervals. Length extras
+MUST NOT update distance models. Invalid classes, missing or extra fields,
+incorrect widths, out-of-width values and the escaped length-259 code are
+rejected. Validate field association from the token grammar, not from the
+shared internal bypass-operation kind alone. This context changes how a
+distance extra field is coded, not its logical event shape.
+
+Each ordinary symbol counts as one event and one decision. Each nonempty
+extra field counts as one event and its width in decisions, even when its
+bits use adaptive models. Thus for nonempty raw frame size F and token count
+T, retain `1 <= T <= F`, `2T <= event_count <= min(2F,5T)` and
+`event_count <= decision_count <= min(9F,27T)`. Before each decision the total
+is below 32768 and positive frequencies are at least one. The inherited
+`2*decision_count+5`, `18F+5` payload and `18F+85` complete-frame ceilings
+therefore remain conservative under unchanged Range normalization.
+
+Preflight MUST validate the exact tuple, count 40, 2522-entry model requirement,
+range total limit, counts/extents and checked aggregate workspace before
+allocation or publication. Charge actual model arrays, totals, grammar state
+and canonical replay storage including padding; do not assume the aggregate
+increase equals the 64 bytes of added uint16 frequencies. Invalid/truncated
+payload, noncanonical termination, forbidden trailing data, count mismatch,
+invalid references and hard-limit failures publish no partial frame. Empty
+input remains header-only, without an empty data frame. This is a reservation,
+not an implemented or publicly admitted codec.

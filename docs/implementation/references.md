@@ -9014,3 +9014,10 @@ Complete-corpus distance-bit screening extends IR-0991 using the same
 repository diagnostic and locally supplied twelve Silesia members. BM-0121
 records causal and empirical scores and unchanged size controls. No external
 codec source, third-party tests or new implementation reference was consulted.
+
+### IR-0993
+
+Position-adaptive distance design derives from BM-0120/BM-0121 and the
+repository's context-8 operation mapping, Range interval implementation and
+strict canonical replay. Binary prediction equations are those of IR-0989.
+No external compressor implementation or third-party test suite was consulted.

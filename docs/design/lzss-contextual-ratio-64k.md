@@ -204,3 +204,46 @@ favorable diagnostic requires a separately specified private format and
 actual bounded encode/decode measurement before adoption. This stage reserves
 no IDs and changes no existing codec. Do not expand parser policy combinations
 merely to pursue BM-0118's small reselection benefit.
+
+## Stage 5: private position-adaptive distance representation
+
+BM-0121 supports testing actual binary coding: the position-only diagnostic
+improves all twelve file totals, while the larger class/position bank loses
+to uniform coding on two. First implement the smaller candidate, not both
+banks or a framewise selector. The exact private identity and integer rules
+are reserved in [the format](../format.md) as 2/8 + 1/9 + 3/2.
+
+Keep the context-8 field mapping and append sixteen binary models. The
+dictionary emits the same typed tokens. The context boundary retains grouped
+extra operations; a grammar-aware adapter identifies length versus distance
+and passes the latter to an explicit distance-extra backend operation.
+Do not allow the generic bypass method to guess the field from its width.
+In particular, width one is legal for both short-length escape and distance.
+Reject orphan, duplicate or interrupted extra fields before coding them.
+The decoder knows the field from the current token/class and requests the
+same explicit operation. Context IDs 24..39 are backend bit models, not new
+independent token events or permission for arbitrary operation injection.
+
+Implement in bounded stages:
+
+1. Add identity/layout and descriptor validation plus hand-checkable vectors.
+   Keep every published parser rejecting the private tuple and crossed IDs.
+2. Add bounded model state and strict decoder interval replay. Preserve event
+   versus decision accounting and failure-before-frame-publication behavior.
+3. Add reference planning/encoding over validated operations, with explicit
+   overlap/capacity checks and concrete workspace accounting. Retain grouped
+   operations so the existing five-operations-per-input-byte cap suffices.
+4. Integrate private frames; test reset, chunk/capacity boundaries, malformed
+   fields, count limits, termination and model rescaling. Pin canonical payload
+   vectors independently of encoder/decoder agreement and retain old vectors.
+5. Measure complete actual frames on the same fixed tokens as BM-0121, with
+   context 8 as control, strict token/raw recovery and identical framing costs.
+   Report every member's size, coding timings and supplied/required workspace.
+   Only afterward consider candidate reselection or public admission.
+
+The binary bank adds 32 frequency entries to 2490, and sixteen contexts to 24.
+Workspace query must include totals, pending-field state and replay storage,
+not merely frequencies. The diagnostic's log2 savings are neither an output
+size guarantee nor a speed prediction. Keep length extras uniform and avoid
+changing literal state, parsing, frame size or any non-distance model so the
+first measured difference has a single cause.
