@@ -9000,3 +9000,10 @@ source or third-party test suite was consulted.
 Benchmark integration uses the first-party distance-bit diagnostic from
 IR-0989 and retained-token operation path from IR-0984. No external source,
 compressor implementation or third-party test suite was consulted.
+
+### IR-0991
+
+Mozilla distance-bit screening uses the first-party executable from IR-0990,
+the locally supplied Silesia member and prior BM-0118 controls. No external
+implementation or new third-party source was consulted. BM-0120 records the
+input/executable identities and distinguishes information scores from bytes.

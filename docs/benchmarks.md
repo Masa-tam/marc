@@ -4407,3 +4407,42 @@ nothing about its bias. Its empirical information was not measured in these
 reports. Next screen causal binary models on fixed tokens before specifying
 any new format. This is a testable hypothesis, not a claim that bypass bits
 are compressible or that the gzip gap can be closed.
+
+### BM-0120: Mozilla fixed-token distance extra-bit screening
+
+On 2026-09-25, executable `30798f7a` processed mozilla with
+`1024 65536 indexed distance-policies`: 51,220,480 bytes in 782 frames.
+Executable SHA-256:
+`965523E7E10218388C52D5ACF0754508E5A57F42E859CEEC9EDC0027EA0B13F5`.
+Input SHA-256:
+`657FC3764B0C75AC9DE9623125705831EBBFBE08FED248DF73BC2DC66E2A963B`.
+The ignored checkpoint `out/distance-bit-corpus/mozilla.json` preserves hashes,
+arguments and all report fields; a second invocation revalidated and reused it
+without rerunning measurement. Wall time was 126.949476 seconds for the whole
+multi-experiment benchmark, not a codec throughput measurement.
+
+All 782 frames passed the diagnostic count checks. Distance extras contained
+35,320,264 bits: 23,606,409 zeros and 11,713,855 ones. Their count exactly
+reproduced the retained distance-bypass control. Old selected size 19,636,009,
+fixed-token context-8 size 19,592,635 and reselected size 19,592,366 bytes all
+reproduced BM-0118. Diagnostics use the fixed context-7-selected tokens only.
+
+| Distance-bit model | Causal adaptive byte-equivalent | Uniform minus adaptive | Empirical byte-equivalent |
+| --- | ---: | ---: | ---: |
+| Uniform control | 4,415,033.000 | 0.000 | Not applicable |
+| Bit position (16 binary models) | 3,365,044.940 | 1,049,988.060 | 3,357,120.885 |
+| Class and bit position (272 binary models) | 3,337,036.578 | 1,077,996.422 | 3,287,786.691 |
+
+Each frame resets frequencies to one; scores predict before updating and use
+the specified ceiling-half rescaling. Empirical scores use future histograms
+and exclude their transmission cost. Class/position improves causal information
+by only 28,008.362 byte-equivalents over position alone while using seventeen
+times as many binary models. Keep both candidates for corpus screening rather
+than choosing the larger bank from this single member.
+
+Both causal estimates exceed the previous 598,496-byte fixed-token gap to the
+reported gzip result, but they are **not actual archive savings**. Integer
+range coding, termination, representation and runtime costs are unmeasured;
+the existing archives still have the unchanged sizes above. Next screen all
+twelve corpus members, including regressions, before designing a new private
+representation. No public API, format, default or performance claim changes.

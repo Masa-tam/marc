@@ -24681,3 +24681,12 @@ Require both banks' observation totals to agree and uniform bits to reproduce
 the existing retained distance-bypass count. Diagnostics remain outside coding
 timers and cannot affect tokens, selection or representation. Do not assert
 that adaptive information beats uniform bits; negative findings are valid.
+
+## DD-1236: Screen distance-bit models across the corpus before format work
+
+BM-0120 finds causal distance-bit information savings on mozilla with unchanged
+tokens and archive controls. Retain both position-only and class/position
+candidates: the larger bank's additional gain is small relative to its model
+count. Next measure all corpus members with the same reset/update rules and
+fixed-token controls, accepting regressions. Do not substitute information
+estimates for actual archive sizes or declare the gzip target achieved.

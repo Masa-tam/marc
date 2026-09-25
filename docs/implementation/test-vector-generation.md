@@ -16119,3 +16119,13 @@ scores. Independently sum zero and one observations and compare with the
 retained distance-bypass control. Keep all existing size and selection checks.
 Reject missing or malformed numeric report fields, but impose no compression
 improvement or timing gate on the diagnostic.
+
+### TVG-1105
+
+Mozilla measurement validates all 782 frames, uniform distance count against
+the existing bypass diagnostic, and zero-plus-one count against that uniform
+count. Compare old, fixed context-8 and reselected byte totals with prior
+checkpoints; all agree. Save input/executable hashes and exact arguments, then
+revalidate the completed checkpoint without relaunching measurement. Run the
+indexed/reference benchmark smoke and documentation layout checks for this
+measurement-only record; the codec implementation is unchanged.

@@ -34099,3 +34099,20 @@ both bounds.
 - Validation: MSVC Release build and all 3,798 CTest cases passed, including
   indexed/reference diagnostic smoke, documentation layout and interoperability
   schema compatibility. Actual corpus diagnostic measurement remains pending.
+
+## CR-1390: 2026-09-25 - Measure mozilla distance extra-bit information
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0991, DD-1236, TVG-1105 and BM-0120; local corpus and
+  repository-owned diagnostics only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: measure mozilla fixed-token distance-bit bias with causal binary
+  models, preserve byte controls and record a resumable local checkpoint.
+- Independent decisions: compare both model banks, separate empirical and
+  causal scores, and defer representation decisions until corpus screening.
+- Similarity review: numerical report and first-party analysis only; no
+  external expression copied and no legal guarantee claimed.
+- Validation: 782 frames and all three prior size controls agreed; checkpoint
+  reuse succeeded. Focused benchmark smoke and documentation checks passed.
+  No codec changes; the full suite was not repeated for this measurement record.
