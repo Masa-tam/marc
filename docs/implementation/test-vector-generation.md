@@ -16397,3 +16397,13 @@ Require 782 verified frames and 391 generic-first frames in each pair; compare
 all prior non-time report controls with BM-0122 and recheck hashes after execution.
 The harness verifies complete payload bytes and metadata outside timing.
 Keep performance percentages as observations, not correctness thresholds.
+
+## TVG-1129: Validate corpus-wide encoder pairing
+
+Apply TVG-1128 to all twelve complete members, with five pairs each and a
+1,179,733-byte output buffer. Require identity hashes, arguments, input extent,
+pair/verified-frame counts and parity-correct generic-first counts. Validate
+finite positive times without a performance threshold. Compare every prior
+non-time control with BM-0123, recheck hashes after execution, and publish each
+checkpoint only after validation. Reinvoke the driver to validate reuse of all
+twelve reports. The harness checks bytes and metadata outside timing.

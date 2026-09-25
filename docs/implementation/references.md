@@ -9159,3 +9159,9 @@ method. No external source was consulted.
 The encoder measurement in BM-0127 uses the first-party harness from IR-1013
 and local mozilla input with recorded SHA-256. No external implementation or
 new algorithm reference was consulted.
+
+### IR-1015
+
+Corpus-wide encoder pairing extends IR-1014 with existing local Silesia inputs
+and the repository-owned harness. BM-0128 records results; local checkpoints
+retain input hashes. No external implementation was consulted.

@@ -25061,3 +25061,15 @@ bytes and controls. Retain the specialization as a promising private path, but
 validate all twelve corpus members before generalizing. The measured boundary
 includes count-only plan plus write, not the complete frame or CLI. Do not
 combine this percentage with decoder improvements as an end-to-end claim.
+
+## DD-1260: Retain binary encoding specialization after corpus pairing
+
+BM-0128 shows all sixty member/pair comparisons favor specialization, with
+aggregate plan-plus-write reductions of 4.67% to 5.14%. Keep the private binary
+model specialization with its differential reference. This is not whole-CLI
+evidence and must not be added to decoder percentages.
+
+The next design step is safe reuse of the already performed frame-level entropy
+plan identified in DD-1256. Preserve preflight transactionality, limits, overlap
+checks and stable-operation requirements; design this separately before reducing
+passes. No public API, default, format or allocation policy changes here.

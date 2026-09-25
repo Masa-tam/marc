@@ -34487,3 +34487,19 @@ both bounds.
   copied and no legal guarantee claimed.
 - Validation: checkpoint controls, hashes and documentation layout test passed.
   Runtime unchanged since the full 3,853-test validation.
+
+## CR-1414: 2026-09-26 - Measure corpus-wide paired binary encoding
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1015, DD-1260, TVG-1129 and BM-0128; first-party harness
+  and existing local corpus only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: extend five encoder pairs to all corpus members with validated resumable
+  checkpoints, reusing the prior mozilla result with identical binary identity.
+- Results: all twelve members and 3,239 frames verified per pair; all sixty
+  comparisons favored specialization. Accounted archive sizes remain unchanged.
+- Similarity review: measurements and documentation only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: checkpoint controls, identity hashes and reuse passed;
+  documentation layout test passed. Runtime unchanged since full 3,853-test validation.

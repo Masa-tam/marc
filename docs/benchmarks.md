@@ -4756,3 +4756,53 @@ one process, with generic-then-specialized warmup; scheduling/cache effects
 remain. The improvement supports the local specialization on mozilla but does
 not establish corpus-wide benefit. Next repeat this pairing across all twelve
 members; repeated frame planning remains a separate optimization.
+
+## BM-0128: Corpus-wide paired binary distance encoding
+
+On 2026-09-26, extend BM-0127 to all twelve full Silesia members (211,938,580
+bytes, 3,239 frames), using its executable SHA-256 and arguments.
+The binary was built at `c97f9e19`; measurement HEAD is `7db0a558`.
+Reuse the validated mozilla result and measure the other eleven sequentially.
+The ignored `out/position-distance-encode-ab/run.ps1` records per-member
+input/executable hashes, arguments and raw fields in JSON after validation.
+A second invocation verified reuse of all twelve checkpoints.
+
+| Member | Generic median seconds | Specialized median seconds | Median paired time reduction |
+| --- | ---: | ---: | ---: |
+| dickens | 0.424156 | 0.400613 | 5.40% |
+| mozilla | 1.637613 | 1.557007 | 4.69% |
+| mr | 0.330472 | 0.316096 | 4.35% |
+| nci | 0.335414 | 0.309613 | 8.07% |
+| ooffice | 0.281222 | 0.268052 | 4.19% |
+| osdb | 0.344605 | 0.333172 | 3.31% |
+| reymont | 0.204587 | 0.193665 | 5.34% |
+| samba | 0.518595 | 0.493182 | 4.78% |
+| sao | 0.423752 | 0.412760 | 2.44% |
+| webster | 1.292560 | 1.220352 | 6.05% |
+| x-ray | 0.480494 | 0.463267 | 3.47% |
+| xml | 0.072992 | 0.067135 | 8.48% |
+
+Summing member times by pair index gives:
+
+| Pair | Generic seconds | Specialized seconds | Time reduction |
+| --- | ---: | ---: | ---: |
+| 1 | 6.360812 | 6.033947 | 5.14% |
+| 2 | 6.333148 | 6.037197 | 4.67% |
+| 3 | 6.353352 | 6.030684 | 5.08% |
+| 4 | 6.353936 | 6.029029 | 5.11% |
+| 5 | 6.346631 | 6.033507 | 4.93% |
+
+All sixty member/pair comparisons favor specialization. Every pair verifies all
+3,239 frames, complete payload bytes and metadata. All prior non-time controls
+match BM-0123, including 70,732,714 context-8 and 69,166,828 context-9 accounted
+archive bytes. Generic-first counts match alternating frame/pair parity,
+including odd-frame members. Input/executable hashes and checkpoint reuse pass.
+
+These are warm plan-plus-write operation timings, not full frame or CLI times.
+The five aggregate rows combine sequential member runs, including prior mozilla,
+not independent corpus-wide trials. Median paired reductions use paired ratios,
+not separate time medians. Fixed warmup order, scheduling and cache caveats from
+BM-0127 remain. The 1,179,733-byte reusable output buffer is benchmark storage,
+not peak RSS. This corpus evidence supports retaining binary specialization;
+it does not remove context-9's overall cost or justify a public-format change.
+Next design safe reuse of frame-level planning, separately from this optimization.
