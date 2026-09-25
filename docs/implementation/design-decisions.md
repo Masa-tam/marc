@@ -24541,3 +24541,16 @@ bounds, counts, aggregate limits and overlap checks remain shared with context
 7. Validate the complete stable input before writing any tokens, then repeat
 the same bounded parser to populate the caller's token prefix. Match retains
 literal history. This adds no public stream admission or Range frame decoder.
+
+## DD-1226: Decode reduced-literal Range payloads through shared token grammar
+
+Parameterize the existing private Range-token parser by arithmetic decoder
+and select context-8 expected IDs explicitly. Preserve the isolated short
+length escape mapping and dictionary variant 2/8. Validate the whole stable
+payload before a second pass writes private tokens, rejecting overlap and
+insufficient output. Charge payload bytes, declared token bytes and concrete
+Range decoder state together before decoding; caller capacity beyond the
+written prefix is excluded. Preserve existing paths and their memory policy.
+This component checks grammar, counts and payload consumption, but canonical
+re-encoding and raw-frame publication remain responsibilities of the pending
+frame integration. It does not admit a public codec or stream identity.

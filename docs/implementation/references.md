@@ -8937,3 +8937,9 @@ The reduced-literal inverse reuses marc's first-party escape-operation grammar
 and validation with the specified context-8 expected-ID mapping. Boundary and
 negative vectors are adapted from the repository's own tests. No external
 implementation or third-party test suite was consulted.
+
+### IR-0981
+
+The reduced-literal Range/token connection uses marc's first-party shared
+Range-token parser, context-8 arithmetic decoder and operation vectors only.
+No external compressor implementation or third-party test suite was consulted.

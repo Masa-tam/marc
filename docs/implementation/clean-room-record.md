@@ -33930,3 +33930,19 @@ both bounds.
 - Validation: MSVC Release build and all 3,777 CTest cases passed, including
   seven reduced-literal inverse tests, existing inverse regressions,
   documentation layout and interoperability schema compatibility.
+
+## CR-1380: 2026-09-25 - Connect reduced-literal Range payloads to tokens
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0981, DD-1226 and TVG-1095; first-party components only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Generated-code task: connect the context-8 Range decoder to token grammar
+  with aggregate memory enforcement and failure-before-output validation.
+- Independent decisions: share the parser through a decoder template; select
+  the context layout explicitly and retain existing codec paths.
+- Similarity review: deliberate reuse of repository-owned code and vectors;
+  no external expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,783 CTest cases passed, including
+  six new Range/token tests, existing Range-token regressions, documentation
+  layout and interoperability schema compatibility. Public APIs are unchanged.

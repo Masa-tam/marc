@@ -16019,3 +16019,14 @@ truncation, counts, limits, short output and overlapping buffers. Preserve
 sentinels on malformed input. For all 256 preceding literal values, map and
 invert Literal/Match/Literal and independently require final literal context
 4+(byte>>5); reject resetting that history to initial context 3.
+
+### TVG-1095
+
+Adapt first-party escape Range/token tests to literal layout 24 and expected
+length/distance IDs 13 and 15+class. Decode every permitted match length;
+reject terminal length 259, invalid history, count disagreement, corrupt start
+byte, trailing byte, output shortage and aliasing. Encode Literal/Match/Literal
+for every possible initial literal and compare every restored token field.
+Accept the exact payload+token+decoder aggregate, reject one byte less without
+changing sentinel tokens, retain unused output capacity and reject the old
+32-context descriptor.
