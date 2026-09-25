@@ -34168,3 +34168,20 @@ both bounds.
   six new primitive tests and interoperability schema compatibility. The
   sandbox build hit FileTracker initialization failure; the normal-permission
   build succeeded. Public behavior and existing bytes remain unchanged.
+
+## CR-1394: 2026-09-25 - Validate position-distance field sequencing
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0995, DD-1240 and TVG-1109; first-party grammar only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: provide bounded next-field requests and non-mutating rejection for
+  the future adaptive-distance Range decoder/encoder adapters.
+- Independent decisions: explicitly separate equal-width extra families and
+  preserve Literal history across Matches; leave frame/history limits to
+  their existing validation layer.
+- Similarity review: repository-owned grammar and independent vectors only;
+  no external expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,809 CTest cases passed, including
+  five new cursor tests and interoperability schema compatibility. Range
+  payload decoding and public admission are not implemented by this step.

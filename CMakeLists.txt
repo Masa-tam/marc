@@ -2584,6 +2584,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_short_match_operations_tests.cpp
         tests/lzss_reduced_literal_context_layout_tests.cpp
         tests/lzss_position_distance_layout_tests.cpp
+        tests/lzss_position_distance_field_cursor_tests.cpp
         tests/lzss_reduced_literal_operations_tests.cpp
         tests/lzss_reduced_literal_operation_decoder_tests.cpp
         tests/lzss_reduced_literal_range_tokens_tests.cpp

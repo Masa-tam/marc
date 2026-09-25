@@ -9028,3 +9028,10 @@ Private context-9 layout and binary state follow DD-1238 and TVG-1107.
 The first-party context-8 layout supplies unchanged field alphabets. Binary
 interval and rescaling tests use independently hand-calculated integers;
 no external implementation or test suite was consulted.
+
+### IR-0995
+
+The context-9 field cursor follows the private format reservation and the
+repository's context-8 token grammar. Tests independently enumerate lengths,
+distance classes and malformed field sequences; no external implementation
+or third-party test vectors were consulted.

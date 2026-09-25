@@ -24731,3 +24731,18 @@ query and explicit update after successful coding. Invalid position/bit
 requests leave both state and output unchanged. Compute totals from pairs,
 reset to ones and rescale at 32768. This primitive is not yet attached to a
 Range coder, grouped-extra adapter or public stream parser.
+
+## DD-1240: Expose the expected field before consuming its value
+
+Use a bounded context-9 cursor that reports the next symbol shape or grouped
+extra width and explicitly distinguishes uniform length extras from adaptive
+distance extras. Encoder adapters validate supplied operations; a future
+decoder can request the correct interval family before reading the value.
+Advance only after successful shape/value validation; an error preserves
+cursor state. Finishing a partial token is truncation, not an implicit reset.
+
+The cursor enforces context history, width, class and forbidden extra values.
+It does not validate history distance, raw output, declared counts, memory
+limits or stream identity; frame/token preflight must still enforce those.
+This step prepares the decoder connection without implementing Range payload
+decoding or admitting a new public codec.

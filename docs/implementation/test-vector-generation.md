@@ -16167,3 +16167,14 @@ and invalid accesses preserving state/output. At 32765 observations the
 selected frequency/total is 32766/32767; the next update yields 16384/16385.
 Full grouped grammar, canonical payload and stream admission remain later
 stages; these primitive tests do not claim end-to-end codec coverage.
+
+### TVG-1109
+
+Add five field-cursor tests: equal-width length/distance extras route to
+different interval families; Literal history survives Matches and resets;
+all lengths 3..258 and distance classes 0..16 complete the expected grammar;
+partial tokens, orphan/duplicate/interrupted extras fail; forbidden length
+259, class-16 nonzero extras, invalid widths, metadata, symbols and contexts
+fail without advancing. Width 255 is rejected before any shift. Cursor tests
+intentionally allow a syntactic Match without history: raw-reference and
+frame/count validation belong to separate required layers, not this cursor.
