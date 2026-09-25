@@ -16178,3 +16178,19 @@ partial tokens, orphan/duplicate/interrupted extras fail; forbidden length
 fail without advancing. Width 255 is rejected before any shift. Cursor tests
 intentionally allow a syntactic Match without history: raw-reference and
 frame/count validation belong to separate required layers, not this cursor.
+
+### TVG-1110
+
+Independently evaluate integer Range equations for literals a,b followed by
+length-4/distance-3 and length-3/distance-2 Matches. The 14 events/decisions
+produce bytes `00 30 98 be 92 6b 3d 22 8e`; uniform length bits 1,0 are
+interleaved with adaptive distance bits 1,0. A second vector of sixteen a
+Literals followed by length-5/distance-13 Match produces 36 events and 38
+decisions, bytes `00 30 98 4f d1 60 09 cf 4d 3d 27 e7 8c 43 ad 48 0b 40`.
+Its grouped distance extra is value 5, width 3 (LSB decisions 1,0,1).
+
+Six decoder tests pin those bytes and field values, reset, exact storage
+limit, count-40 descriptor, model limits, truncation, noncanonical adjacent
+tail, partial token finish, latched errors/output preservation, decision
+exhaustion and trailing payload. Model rescaling remains covered by primitive
+tests; long-payload rescale coverage is still required before frame admission.

@@ -9035,3 +9035,11 @@ The context-9 field cursor follows the private format reservation and the
 repository's context-8 token grammar. Tests independently enumerate lengths,
 distance classes and malformed field sequences; no external implementation
 or third-party test vectors were consulted.
+
+### IR-0996
+
+Private position-distance Range decoding reuses the repository's context-8
+interval/carry and canonical replay implementation with the context-9 layout
+and field cursor. Fixed payload vectors were independently calculated with
+integer interval equations in a local JavaScript diagnostic, not by the new
+decoder or a production encoder. No external implementation was consulted.

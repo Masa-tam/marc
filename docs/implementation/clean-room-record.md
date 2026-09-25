@@ -34185,3 +34185,21 @@ both bounds.
 - Validation: MSVC Release build and all 3,809 CTest cases passed, including
   five new cursor tests and interoperability schema compatibility. Range
   payload decoding and public admission are not implemented by this step.
+
+## CR-1395: 2026-09-25 - Decode private position-adaptive Range operations
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0996, DD-1241 and TVG-1110; first-party Range equations
+  and independently evaluated fixed payloads only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: connect grammar-aware field requests to adaptive binary intervals,
+  preserve grouped counts and validate exact canonical termination.
+- Independent decisions: reuse repository interval logic in the new private
+  decoder; expose no arbitrary context requests and charge concrete storage.
+- Similarity review: first-party code reuse and local integer vector work;
+  no external expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,815 CTest cases passed, including
+  six new decoder tests and interoperability schema compatibility. Frame/history
+  preflight, raw publication, long-payload rescaling and public admission remain
+  pending.

@@ -24746,3 +24746,19 @@ It does not validate history distance, raw output, declared counts, memory
 limits or stream identity; frame/token preflight must still enforce those.
 This step prepares the decoder connection without implementing Range payload
 decoding or admitting a new public codec.
+
+## DD-1241: Decode private context-9 operations through the field cursor
+
+Expose begin/decode-next/finish only. The cursor selects ordinary symbol,
+uniform length-extra or adaptive distance-extra intervals; callers cannot
+inject context IDs. Store all 40 model totals and 2522 frequencies in concrete
+decoder state and charge sizeof state plus payload before beginning. Reuse
+the first-party interval and canonical replay rules without altering context 8.
+
+Each grouped distance field decodes through binary contexts 24+p and updates
+them after each successful interval, but increments event count only once.
+Decisions still count every bit. Publish an operation only after its entire
+field and cursor validation succeed. Latch errors; begin explicitly resets
+state. Finish requires token boundary, exact counts, model invariants, exact
+payload consumption and canonical termination. Frame/history preflight and
+atomic raw-output publication remain separate future integration work.
