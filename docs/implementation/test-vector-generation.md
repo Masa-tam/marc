@@ -16276,3 +16276,12 @@ controls and saved/extra totals for each member. A second runner invocation
 must reuse twelve validated checkpoints without benchmarking. Aggregate checks
 require 211,938,580 bytes, 3,239 frames and 70,732,714 - 1,566,004 + 118 =
 69,166,828 accounted bytes. Timing is observational, not a test threshold.
+
+### TVG-1119
+
+Planned binary-distance decoder differential tests retain the current generic
+symbol path as the reference. Compare successful values, grouped events,
+decision counts and consumed extent; compare stable error categories and
+unchanged caller output on malformed input. Exercise both binary branches,
+widths 1 and 16, reset, count exhaustion, truncation, unused interval tail and
+noncanonical termination. These tests are a next-step plan, not completed work.

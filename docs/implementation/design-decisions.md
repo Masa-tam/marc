@@ -24856,3 +24856,55 @@ net savings, with all 3,239 frame round trips verified. Keep context 9 private:
 fixed-token encoding and decoding are slower in this single-pass measurement.
 Next diagnose processing overhead before public admission. Preserve frozen
 tokens, exact bytes, validation and bounds when evaluating optimizations.
+
+## DD-1250: Audit context-9 overhead before binary decoder specialization
+
+Source inspection after BM-0123 distinguishes shared passes from newly added
+work. This is a call-path audit, not a sampled CPU profile; no percentage of
+time is attributed to a particular instruction or check.
+
+- Both frame encoders run Range coding three times: frame planning performs
+  a counting pass, payload encoding plans again, then writes. Both token
+  decoders perform validation and materialization passes before raw reconstruction.
+  This magnifies costs but is not a context-9-only regression.
+- Context 9 adds field-cursor dispatch/validation. Encoder cursor acceptance
+  is followed by additional operation-shape checks; decoded fields are also
+  checked against token grammar. Some checks overlap, but they protect distinct
+  entry points and cannot be removed indiscriminately.
+- Context-8 distance extras use a constant total of two with no model update.
+  Context 9 uses a variable total, reads and updates position frequencies and
+  retains deterministic rescaling. This additional adaptive work is intrinsic
+  to the current representation; equal speed is not guaranteed.
+- Each context-9 distance bit currently calls generic decode_symbol, including
+  lifecycle/context/alphabet checks, a generic symbol search, a result object,
+  event increment and a compensating decrement. decode_symbol computes a unit
+  and scaled code, then decode_interval recomputes the unit in source. Compiler
+  optimization may remove some work; machine-code costs remain unmeasured.
+
+The corpus contains 158,705,799 logical distance decisions. The shared three
+encode passes imply 476,117,397 distance coding visits; the two decode passes
+imply 317,411,598 visits to the current generic binary-symbol path. These are
+call-graph-derived counts for the fixed-token comparison, not hardware counters
+or totals for the entire multi-experiment harness.
+
+First candidate: specialize only the private distance-extra decoder. Keep
+lifecycle validation at decode_next, validate grouped width/count before any
+iteration, derive model 24+p internally, and directly compare the code with
+unit*frequency_zero. Reject code >= unit*total, including division remainder
+space; do not silently accept the unused tail. Reuse the computed unit for
+interval advancement, preserve canonical replay and normalization bounds,
+update the selected frequency with the same rescale rule, and count one event
+per successfully completed field. Preserve partial-error decision counts and
+publish no operation until the complete field and cursor validation succeed.
+
+Keep the generic implementation as a differential reference in tests. Cover
+fixed payloads, both bit values, width boundaries, truncation, invalid interval
+tails, canonical termination, count exhaustion, reset and error latching.
+Test status categories, counts and output preservation as well as successful
+values. Do not remove canonical checking, the transactional two-pass decoder,
+or frame planning in the first experiment. Encode optimizations and shared-pass
+reduction are separate candidates with separate contract reviews.
+
+This turn changes no runtime code. Implement and measure the narrow binary
+path next; compare repeated sequential runs with unchanged tokens/bytes before
+claiming a speed improvement or considering public admission.

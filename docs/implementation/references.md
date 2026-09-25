@@ -9094,3 +9094,10 @@ or third-party test suite was consulted.
 BM-0123 uses the twelve locally supplied Silesia members and repository-owned
 benchmark. Existing hash-checked context-8 reports provide size controls.
 No external compressor implementation or third-party tests were consulted.
+
+### IR-1005
+
+The context-9 speed audit examines repository-owned frame planning, payload
+encoding, token materialization, field cursor and Range decoder, compared with
+context 8. BM-0123 supplies observed phase timings and BM-0121 supplies logical
+distance-bit counts. No external implementation or profiler source was used.

@@ -34331,3 +34331,19 @@ both bounds.
   copied and no legal guarantee claimed.
 - Validation: all twelve checkpoints revalidated and reused; documentation
   layout test passed. Production code unchanged; public admission remains open.
+
+## CR-1404: 2026-09-25 - Audit position-distance processing overhead
+
+- Author: Codex; reviewer: repository maintainer approved investigation.
+- References used: IR-1005, DD-1250, TVG-1119, BM-0121 and BM-0123;
+  first-party source inspection and prior measurements only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: distinguish shared validation passes, intrinsic adaptive work and
+  context-9-specific generic binary dispatch; define a bounded next experiment.
+- Results: source-derived three encode/two decode passes and per-bit generic
+  decoder overhead identified. No profiler-based time attribution was made.
+- Similarity review: independent audit only; no external expression copied
+  and no legal guarantee claimed.
+- Validation: documentation layout test passed. Runtime code, safety checks
+  and public admission unchanged; specialization and measurement remain future work.
