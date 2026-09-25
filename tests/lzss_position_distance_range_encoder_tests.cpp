@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <array>
 #include <vector>
+#include <type_traits>
 
 namespace {
 using namespace marc::entropy::internal;
@@ -131,6 +132,12 @@ void compare_success(const std::vector<ModeledOperation>& ops) {
     ASSERT_EQ(ea.error,Error::none); ASSERT_EQ(eb.error,Error::none);
     same_result(ea,eb); same_result(pa,ea); same_descriptor(a,b);
     EXPECT_EQ(oa,ob); EXPECT_EQ(oa.back(),std::byte{0x55});
+    PreparedLzssPositionDistanceEncode prepared;
+    ContextualDynamicRangeDescriptor pd{};
+    same_result(prepared.prepare(ops,{},pd),pa); same_descriptor(pd,a);
+    std::vector<std::byte> po(oa.size(),std::byte{0x55});
+    same_result(prepared.write(po,pd),ea); same_descriptor(pd,a);
+    EXPECT_EQ(po,oa);
     LzssPositionDistanceRangeDecoder decoder;
     ASSERT_EQ(decoder.begin(a,std::span{oa}.first(pa.payload_size),{}).error,
               ContextualDynamicRangeDecodeError::none);
@@ -193,6 +200,11 @@ TEST(LzssPositionDistanceRangeEncoder, ReferenceAndSpecializedRejectWithoutPubli
         same_result(plan_lzss_position_distance_range_operations(ops,limits,a),
                     plan_lzss_position_distance_range_operations_reference(ops,limits,b));
         same_descriptor(a,b);
+        PreparedLzssPositionDistanceEncode prepared;
+        ContextualDynamicRangeDescriptor pd{99,99,99}, expected=pd;
+        same_result(prepared.prepare(ops,limits,pd),
+                    plan_lzss_position_distance_range_operations(ops,limits,expected));
+        same_descriptor(pd,expected);
     };
     compare_failure({}, {},100);
     for (std::size_t count=1;count<valid.size();++count) {
@@ -231,5 +243,55 @@ TEST(LzssPositionDistanceRangeEncoder, ReferenceAndSpecializedRejectWithoutPubli
         EXPECT_EQ(desc.context_count,99);
         EXPECT_TRUE(std::equal(before.begin(),before.end(),std::as_bytes(std::span{ops}).begin()));
     }
+}
+TEST(LzssPositionDistanceRangeEncoder, PreparedPlanReadinessAndPreflightAreOneShot) {
+    static_assert(!std::is_copy_constructible_v<PreparedLzssPositionDistanceEncode>);
+    static_assert(!std::is_copy_assignable_v<PreparedLzssPositionDistanceEncode>);
+    static_assert(!std::is_move_constructible_v<PreparedLzssPositionDistanceEncode>);
+    static_assert(!std::is_move_assignable_v<PreparedLzssPositionDistanceEncode>);
+    static_assert(sizeof(PreparedLzssPositionDistanceEncode) <= 128);
+    auto ops=mixed();
+    PreparedLzssPositionDistanceEncode prepared;
+    ContextualDynamicRangeDescriptor descriptor{99,99,99};
+    std::array<std::byte,10> output; output.fill(std::byte{0x55});
+    const auto unready=[&] {
+        descriptor={99,99,99};
+        const auto result=prepared.write(output,descriptor);
+        EXPECT_EQ(result.error,Error::internal_error);
+        EXPECT_EQ(result.operation_count,0); EXPECT_EQ(result.operation_index,0);
+        EXPECT_EQ(result.decision_count,0); EXPECT_EQ(result.payload_size,0);
+        EXPECT_EQ(descriptor.context_count,99); EXPECT_EQ(descriptor.payload_size,99);
+        EXPECT_EQ(descriptor.decision_count,99);
+    };
+    unready();
+    ASSERT_EQ(prepared.prepare(ops,{},descriptor).error,Error::none);
+    descriptor={99,99,99};
+    EXPECT_EQ(prepared.prepare({}, {},descriptor).error,Error::empty_operations);
+    EXPECT_EQ(descriptor.context_count,99); unready();
+    ASSERT_EQ(prepared.prepare(ops,{},descriptor).error,Error::none);
+    ASSERT_EQ(prepared.prepare(ops,{},descriptor).error,Error::none);
+    descriptor={99,99,99};
+    EXPECT_EQ(prepared.write(std::span{output}.first(8),descriptor).error,Error::payload_output_too_small);
+    EXPECT_EQ(descriptor.context_count,99); unready();
+    for(auto b:output) EXPECT_EQ(b,std::byte{0x55});
+    ASSERT_EQ(prepared.prepare(ops,{},descriptor).error,Error::none);
+    const auto before=ops;
+    descriptor={99,99,99};
+    EXPECT_EQ(prepared.write(std::as_writable_bytes(std::span{ops}),descriptor).error,Error::overlapping_buffers);
+    EXPECT_TRUE(std::equal(std::as_bytes(std::span{ops}).begin(),std::as_bytes(std::span{ops}).end(),
+                           std::as_bytes(std::span{before}).begin()));
+    unready();
+    auto limits=marc::core::DecoderLimits{}; limits.max_block_size=1;
+    limits.max_internal_buffered_bytes=ops.size()*sizeof(ModeledOperation)
+        +lzss_position_distance_range_encoder_state_bytes()+9;
+    ASSERT_EQ(prepared.prepare(ops,limits,descriptor).error,Error::none);
+    auto short_limit=limits; --short_limit.max_internal_buffered_bytes;
+    descriptor={99,99,99};
+    EXPECT_EQ(prepared.prepare(ops,short_limit,descriptor).error,Error::limit_exceeded);
+    EXPECT_EQ(descriptor.context_count,99); unready();
+    ASSERT_EQ(prepared.prepare(ops,limits,descriptor).error,Error::none);
+    EXPECT_EQ(prepared.write(output,descriptor).error,Error::none);
+    const auto encoded=output; unready(); EXPECT_EQ(output,encoded);
+    EXPECT_EQ(output.back(),std::byte{0x55});
 }
 } // namespace

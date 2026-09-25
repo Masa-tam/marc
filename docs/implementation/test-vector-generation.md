@@ -16434,3 +16434,20 @@ Benchmark only after correctness: pair the old three-run frame path with the
 new two-run path on identical retained tokens, alternating order and comparing
 outside timing. Do not reuse BM-0128's operation-only timings as frame evidence.
 This is a design acceptance plan; these new tests have not yet been implemented.
+
+## TVG-1131: Prepared encoder differential and readiness coverage
+
+Extend existing width-1..16 and repeated binary-rescale success comparisons with
+prepare/write versus existing encode: complete payload, tail canary, descriptor,
+operation/index/decision counts and size. Extend malformed-operation and limit
+planning comparisons to the prepared primitive.
+
+Add a lifecycle test for default-unready write, successful then failed preparation,
+repeated preparation, short output consuming readiness, overlap consuming
+readiness without modifying operations, exact aggregate acceptance, one-byte-short
+aggregate failure invalidating readiness, successful write then rejected repeated
+write, and recovery by preparation. Check output/descriptor sentinels and zero
+unready counts; compile-time checks reject copy/move and bound metadata to 128
+bytes. Structural inspection confirms write calls run once and never plans.
+Frame integration, frame-path differential measurement and injected write-time
+failure tests are not claimed by this primitive-only step.

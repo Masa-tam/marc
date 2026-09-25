@@ -34519,3 +34519,18 @@ both bounds.
   no external expression copied and no legal guarantee claimed.
 - Validation: documentation layout test passed; no runtime changes or new timing
   measurements. Implementation and acceptance tests are future work.
+
+## CR-1416: 2026-09-26 - Implement call-scoped prepared entropy encoding
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1017, DD-1262 and TVG-1131; existing first-party checked
+  planning/writing routines and grammar-derived tests only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: implement a non-copyable borrowed prepared plan, one-shot writing and
+  differential/state-transition tests before connecting the frame path.
+- Similarity review: independently written integration derived from repository
+  contracts; no external expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,854 CTest cases passed, including
+  prepared-plan lifecycle and interoperability schema compatibility. No frame
+  integration or new performance measurement is included.

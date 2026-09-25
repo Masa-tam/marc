@@ -9171,3 +9171,9 @@ retain input hashes. No external implementation was consulted.
 Prepared-plan design uses repository-owned context-9 operation encoder, shared
 private frame encoder and transactional/exact-aggregate tests, following DD-1256
 and DD-1260. No external implementation was consulted.
+
+### IR-1017
+
+The prepared context-9 encoder primitive follows IR-1016/DD-1261 and reuses
+repository checked planning/writing routines. Differential tests extend existing
+grammar-derived vectors; no external implementation was consulted.

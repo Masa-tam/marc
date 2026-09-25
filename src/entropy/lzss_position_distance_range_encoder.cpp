@@ -407,6 +407,55 @@ ContextualDynamicRangeEncodeResult encode_lzss_position_distance_range_operation
     return encode_operations<false>(operations, limits, output, descriptor);
 }
 
+ContextualDynamicRangeEncodeResult PreparedLzssPositionDistanceEncode::prepare(
+    const std::span<const context::internal::ModeledOperation> operations,
+    const core::DecoderLimits& limits,
+    ContextualDynamicRangeDescriptor& descriptor) noexcept {
+    ready_ = false;
+    operations_ = {};
+    plan_ = {};
+    descriptor_ = {};
+    ContextualDynamicRangeDescriptor planned{};
+    const auto result = plan_operations<false>(operations, limits, planned);
+    if (result.error != ContextualDynamicRangeEncodeError::none) return result;
+    operations_ = operations;
+    plan_ = result;
+    descriptor_ = planned;
+    ready_ = true;
+    descriptor = planned;
+    return result;
+}
+
+ContextualDynamicRangeEncodeResult PreparedLzssPositionDistanceEncode::write(
+    const std::span<std::byte> output,
+    ContextualDynamicRangeDescriptor& descriptor) noexcept {
+    if (!ready_) return fail({}, ContextualDynamicRangeEncodeError::internal_error);
+    ready_ = false;
+    const auto operations = operations_;
+    operations_ = {};
+    if (output.size() < plan_.payload_size)
+        return fail(plan_, ContextualDynamicRangeEncodeError::payload_output_too_small);
+    const auto payload = output.first(plan_.payload_size);
+    const auto overlap = overlaps(operations, payload);
+    if (overlap == OverlapCheck::arithmetic_overflow)
+        return fail(plan_, ContextualDynamicRangeEncodeError::arithmetic_overflow);
+    if (overlap == OverlapCheck::overlap)
+        return fail(plan_, ContextualDynamicRangeEncodeError::overlapping_buffers);
+    // Exactly one checked writing run; no count-only planning here.
+    const auto encoded = run<false>(operations, payload);
+    if (encoded.error != ContextualDynamicRangeEncodeError::none
+        || encoded.operation_count != plan_.operation_count
+        || encoded.operation_index != plan_.operation_index
+        || encoded.decision_count != plan_.decision_count
+        || encoded.payload_size != plan_.payload_size
+        || descriptor_.decision_count != encoded.decision_count
+        || descriptor_.payload_size != encoded.payload_size
+        || descriptor_.context_count != context::internal::lzss_position_distance_context_count)
+        return fail(plan_, ContextualDynamicRangeEncodeError::internal_error);
+    descriptor = descriptor_;
+    return encoded;
+}
+
 ContextualDynamicRangeEncodeResult plan_lzss_position_distance_range_operations_reference(
     const std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,

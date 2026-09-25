@@ -22,6 +22,32 @@ namespace marc::entropy::internal {
     const core::DecoderLimits& limits, std::span<std::byte> payload_output,
     ContextualDynamicRangeDescriptor& descriptor) noexcept;
 
+// Call-scoped borrowed plan. Operations must stay alive and unchanged from prepare
+// through write; no mutation detection is promised. Every write attempt consumes
+// readiness. Metadata only (no owned buffers); transient scalar stack overhead is
+// excluded from the existing model/writer/cursor workspace charge.
+class PreparedLzssPositionDistanceEncode {
+public:
+    PreparedLzssPositionDistanceEncode() noexcept = default;
+    PreparedLzssPositionDistanceEncode(const PreparedLzssPositionDistanceEncode&) = delete;
+    PreparedLzssPositionDistanceEncode& operator=(const PreparedLzssPositionDistanceEncode&) = delete;
+    PreparedLzssPositionDistanceEncode(PreparedLzssPositionDistanceEncode&&) = delete;
+    PreparedLzssPositionDistanceEncode& operator=(PreparedLzssPositionDistanceEncode&&) = delete;
+
+    [[nodiscard]] ContextualDynamicRangeEncodeResult prepare(
+        std::span<const context::internal::ModeledOperation> operations,
+        const core::DecoderLimits& limits,
+        ContextualDynamicRangeDescriptor& descriptor) noexcept;
+    [[nodiscard]] ContextualDynamicRangeEncodeResult write(
+        std::span<std::byte> output,
+        ContextualDynamicRangeDescriptor& descriptor) noexcept;
+private:
+    std::span<const context::internal::ModeledOperation> operations_{};
+    ContextualDynamicRangeEncodeResult plan_{};
+    ContextualDynamicRangeDescriptor descriptor_{};
+    bool ready_{};
+};
+
 // Retained generic model-update path for private differential tests/benchmarks.
 // Same validation and memory contract; not a public codec API or format variant.
 [[nodiscard]] ContextualDynamicRangeEncodeResult plan_lzss_position_distance_range_operations_reference(

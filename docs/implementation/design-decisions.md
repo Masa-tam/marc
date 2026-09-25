@@ -25130,3 +25130,24 @@ Implementation sequence: add/test the prepared primitive against the existing
 operation encoder; then integrate only context-9 frames with full-byte/error/
 exact-limit regression checks; finally measure full-frame old/new paths in one
 binary. Keep primitive, integration and measurement evidence distinguishable.
+
+## DD-1262: Implement the prepared operation encoder before frame integration
+
+PreparedLzssPositionDistanceEncode owns only a borrowed const operation span,
+plan result, descriptor and readiness flag. Copy/move are deleted. Its fixed
+metadata footprint is bounded by a 128-byte compile-time test on supported
+builds; no model/payload buffer or heap allocation is added. This transient
+metadata follows the existing scalar-stack exclusion from workspace accounting.
+
+Preparation first invalidates old readiness and clears the borrowed span, then
+uses the existing checked specialized planner. Only success publishes the
+descriptor and ready state. Writing consumes readiness before any validation,
+clears the stored borrowed span, checks capacity and overlap, and invokes exactly
+one checked writing run. It does not invoke the planner. Post-write counts,
+operation index, payload size and descriptor consistency must match before
+descriptor publication. Unready write returns internal_error with zero counts.
+
+Input stability/lifetime is a caller contract, not a content hash check. Keep
+the object call-scoped in future integration. Existing standalone and frame
+entry points are unchanged in this step, so frame encoding still takes three
+entropy runs. No public API, format, workspace limit or performance claim changes.
