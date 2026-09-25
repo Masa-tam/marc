@@ -9070,3 +9070,9 @@ extra control. No external implementation or third-party vectors were used.
 The private context-9 payload encoder reuses repository-owned Range arithmetic
 and the independently specified field cursor. Fixed payloads from TVG-1110
 remain independent encoder oracles. No external source or test suite was used.
+
+### IR-1001
+
+Private context-9 frame encoding composes first-party token modeling, payload
+encoding and frame preflight. The fixed distance-13 payload remains the
+independent arithmetic oracle from TVG-1110. No external source was consulted.

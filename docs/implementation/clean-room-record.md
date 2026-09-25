@@ -34270,3 +34270,18 @@ both bounds.
 - Validation: MSVC Release build and all 3,839 CTest cases passed, including
   four new encoder tests and interoperability schema compatibility.
   Frame encoding, measurements and public admission remain separate work.
+
+## CR-1400: 2026-09-25 - Connect private position-distance frame encoding
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1001, DD-1246 and TVG-1115; first-party components only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: connect typed-token validation, context-9 payload encoding and bounded
+  frame serialization without changing public formats or admission.
+- Independent decisions: explicit frame identity dispatch and corresponding
+  encoder/decoder state accounting; operation storage remains scratch space.
+- Similarity review: repository-owned integration only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,845 CTest cases passed, including
+  six frame-encoder tests and interoperability schema compatibility.

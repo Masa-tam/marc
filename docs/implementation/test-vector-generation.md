@@ -16242,3 +16242,12 @@ event/decision counts. Reject incomplete tokens, backend model injection,
 incorrect contexts, oversized extra widths, forbidden length-259 and nonzero
 class-16 distance extras without changing output or descriptor. Check exact
 aggregate capacity, one-byte shortage, table limits, output shortage and aliasing.
+
+### TVG-1115
+
+Six private frame-encoder tests cover length mapping, boundary-frame round trips,
+invalid history, frame position, crossed identity, workspace/output shortages,
+overlap and exact aggregate limits. A short final frame verifies deterministic
+bytes and output sentinels. Sixteen a Literals followed by length-5/distance-13
+must reproduce the independent 18-byte payload, with 36 events and 38 decisions,
+and reconstruct 21 a bytes through the private frame decoder.

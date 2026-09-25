@@ -24819,3 +24819,14 @@ Plan the complete payload before writing, reject overlap and insufficient
 capacity, and publish the descriptor only on success. Charge operation storage,
 model/writer/cursor state and payload against the aggregate limit. Public
 formats and admission remain unchanged.
+
+## DD-1246: Connect private context-9 complete-frame encoding
+
+Use an explicit internal frame identity to select validation, Range encoder,
+context count and state accounting. Context 9 reuses the context-8 token-to-field
+mapping, but not its uniform distance-extra entropy coding. Validate dictionary
+history and raw extent before payload writing. Preserve serialized output on
+preflight, capacity and overlap errors; operation storage remains scratch space.
+Charge the existing bounded frame requirements plus used operations and any
+encoder-state excess over the corresponding decoder state. Public admission,
+stream encoding and benchmark integration remain separate work.
