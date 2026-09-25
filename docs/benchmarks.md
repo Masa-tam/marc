@@ -4586,3 +4586,37 @@ and repeated validation in the fixed-token path, preserving exact bytes and
 bounds; separate unavoidable adaptive-coding work from removable overhead.
 Do not introduce file-name-dependent policies or infer general superiority
 from this corpus alone.
+
+### BM-0124: Repeated mozilla measurement after binary specialization
+
+On 2026-09-25, run revision `f35bfa40` three times sequentially with the
+BM-0122 arguments and input hash. Executable SHA-256:
+`E5531D85D926308CAB5AD654A0CC93268227894AB05D8C4354722D6FCC9A2CCF`.
+Ignored `out/position-distance-specialized/mozilla-{1,2,3}.json` records
+retain all fields and hashes. Reinvocation validated and reused all three
+checkpoints. Each run verified all 782 frames and matched every non-time
+report field against BM-0122, including 18,542,748 context-9 bytes. Aggregate
+size equality is not a per-frame payload hash comparison; independent fixed
+vectors and differential tests supply separate byte/decoder evidence.
+
+| Trial | Context-8 encode s | Context-9 encode s | Context-8 decode s | Context-9 decode s | Decode ratio 9/8 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 1.639979 | 2.708053 | 3.083887 | 4.317964 | 1.400 |
+| 2 | 1.628794 | 2.674184 | 3.097136 | 4.347153 | 1.404 |
+| 3 | 1.647543 | 2.709036 | 3.109211 | 4.376196 | 1.407 |
+
+Context-9 decode median is 4.347153 seconds, with range 4.317964..4.376196.
+BM-0122's old generic-path single sample was 4.427039 seconds: the new median
+is about 1.8% lower. However, the unchanged context-8 control rose from
+2.965092 to a median 3.097136 seconds. The within-run relative penalty fell
+from 1.493 to about 1.404, but normalization is not proof of a causal speedup.
+Runs were sequential in fixed order, the older executable was not rerun,
+and thermal/scheduling/build effects were not controlled.
+
+The specialization preserves measured sizes and has a favorable indication,
+not a conclusive speed claim. It does not eliminate the context-9 overhead.
+Next compare generic and specialized distance decoding in the same executable
+on identical prebuilt payloads, with alternating order and repeated samples.
+Keep encoding, I/O and token selection outside that timing region and keep
+correctness checks outside it where possible. Report workload/phase boundaries
+explicitly; do not silently compare payload-only times with frame timings.

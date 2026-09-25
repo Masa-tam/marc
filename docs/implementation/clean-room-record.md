@@ -34362,3 +34362,19 @@ both bounds.
   three new differential tests and interoperability schema compatibility.
   No public format change;
   performance measurement remains separate from equivalence testing.
+
+## CR-1406: 2026-09-25 - Remeasure specialized distance decoding
+
+- Author: Codex; reviewer: repository maintainer approved repeated measurement.
+- References used: IR-1007, DD-1252, TVG-1121 and BM-0124; local input and
+  repository benchmark only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: measure mozilla three times, preserve all non-time controls and assess
+  speed evidence without conflating historical and paired measurements.
+- Results: all three 782-frame runs passed; size unchanged. Decode median
+  4.347153 seconds; same-executable A/B evidence remains outstanding.
+- Similarity review: measurements and documentation only; no external expression
+  copied and no legal guarantee claimed.
+- Validation: report controls and checkpoint reuse passed; documentation test
+  passed. Runtime code unchanged since the full 3,848-test validation.

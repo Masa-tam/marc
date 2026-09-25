@@ -16299,3 +16299,11 @@ Controlled private state tests isolate the unused UINT32_MAX interval tail
 for total two and both branches at the 32767-to-rescale transition. Compare
 frequency arrays and totals after update. This rescale case is defensive state
 coverage, not a claim that valid 64KiB frames reach binary-model rescaling.
+
+### TVG-1121
+
+Check all three BM-0124 reports against the input/executable hashes and every
+non-time BM-0122 field. Require 782 verified frames per run and unchanged
+18,542,748 accounted bytes. Reinvoke the local runner to verify completed
+checkpoint reuse. Timing ranges and medians are observations, not thresholds;
+aggregate sizes do not replace per-payload equivalence tests.

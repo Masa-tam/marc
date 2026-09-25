@@ -9107,3 +9107,9 @@ distance-bit counts. No external implementation or profiler source was used.
 The private binary-distance decoder specialization derives from DD-1250 and
 repository Range arithmetic. The previous generic symbol path is retained as
 a differential oracle. No external implementation was consulted.
+
+### IR-1007
+
+BM-0124 uses repository-owned benchmark revision f35bfa40, the local mozilla
+member and the hash-checked BM-0122 report. No external compressor source,
+third-party tests or new reference implementation was consulted.

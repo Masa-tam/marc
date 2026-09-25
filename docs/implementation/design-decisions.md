@@ -24923,3 +24923,12 @@ the comparison isolates binary selection, accounting and model updates rather
 than claiming an independent implementation of the whole Range coder.
 Transactional two-pass token decoding and encoder planning remain unchanged.
 Timing improvement is not assumed; measure after equivalence validation.
+
+## DD-1252: Separate observed timing improvement from causal A/B evidence
+
+Three specialized-decoder mozilla runs reproduce every non-time control.
+BM-0124 shows a smaller relative decode penalty but uses a historical single
+sample for the generic path. Do not claim the full difference as optimization
+benefit. Next add a bounded same-executable comparison of retained generic and
+specialized paths, using identical payloads and alternating order. Keep the
+private format and public defaults unchanged.
