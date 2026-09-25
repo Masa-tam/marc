@@ -513,6 +513,13 @@ if(MARC_BUILD_BENCHMARKS)
                     -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_decode_ab_smoke.cmake)
             set_tests_properties(marc_lzss_position_distance_decode_ab_smoke
                 PROPERTIES LABELS benchmark-experimental-smoke)
+            add_test(NAME marc_lzss_position_distance_encode_ab_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_short_match_candidate_benchmark>"
+                    "-DINPUT=${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_encode_ab_smoke.cmake)
+            set_tests_properties(marc_lzss_position_distance_encode_ab_smoke
+                PROPERTIES LABELS benchmark-experimental-smoke)
         endif()
     endif()
     if(TARGET marc_static)

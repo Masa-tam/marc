@@ -9147,3 +9147,9 @@ The private encoder binary specialization follows IR-1011 and DD-1256.
 Its generic reference retains the original model-update path; tests derive
 operation sequences from the repository field grammar and existing fixed
 vectors. No external implementation was consulted.
+
+### IR-1013
+
+The encoder A/B harness uses the repository's retained generic and specialized
+context-9 encoders from IR-1012, following DD-1257 and the decoder pairing
+method. No external source was consulted.

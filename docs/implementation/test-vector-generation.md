@@ -16378,3 +16378,13 @@ Both paths accept the exact aggregate limit and reject overlapping operation/
 output storage without mutation. Existing independently fixed payload vectors
 and frame-level tests remain unchanged. Real-data timing is not part of these
 correctness assertions.
+
+## TVG-1127: Encoder A/B harness smoke contract
+
+Run the encoder A/B mode on one bounded README frame with two pairs. Require
+both paths' decimal timing fields, one verified frame per pair, generic-first
+counts 1 then 0, and bounded output storage. Reject zero, 21, nonnumeric and
+missing pair counts. Full byte/descriptor/count comparisons run within the
+harness outside timing, including both warmup calls. Existing smoke tests retain
+coverage of default and decoder-pairing behavior. Real corpus measurements remain
+separate from this harness-validation step.

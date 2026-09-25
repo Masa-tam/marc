@@ -25031,3 +25031,25 @@ of the whole codec. Independent fixed vectors remain required.
 Model storage and workspace accounting are unchanged. The three-pass frame
 encode path is unchanged. No public API, wire-format or speed claim is added;
 real-data encoder A/B measurement remains a separate gate.
+
+## DD-1258: Pair private encoder timings on identical modeled operations
+
+Add the benchmark-only mode `distance-encode-ab <pairs:1..20>` after the search
+argument. Unlike optional decoder pairing under `distance-policies`, this mode
+requires the pair count and does not run decoder pairing. Default behavior and
+the existing decoder mode remain unchanged.
+
+Use identical operations and a reusable bounded output buffer for both encoders.
+Warm generic then specialized, checking each result. Alternate first path by
+frame/pair parity. Time the checked operation encoder call, including its
+count-only plan and payload write; exclude search, frame modeling/preflight,
+allocation, expected-output comparison and the surrounding frame encoder.
+Compare complete payload bytes against the already round-trip-verified frame
+payload, plus operation/decision counts, operation index and descriptor fields,
+outside each timing region. No time-based pass/fail threshold is imposed.
+
+Report per-pair summed times, verified frames, generic-first frames and allocated
+output bytes. The buffer is bounded by 18 * frame_bytes + 85, not a peak-memory
+measurement. These warm in-process pairs retain scheduling/cache and fixed
+warmup-order caveats. Frame encoding still uses three passes; these two-pass
+operation timings must not be presented as full frame or CLI throughput.

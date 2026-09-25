@@ -18,6 +18,7 @@
 #include "frame/lzss_position_distance_frame_encoder.hpp"
 #include "frame/lzss_position_distance_frame_decoder.hpp"
 #include "entropy/lzss_position_distance_range_decoder.hpp"
+#include "entropy/lzss_position_distance_range_encoder.hpp"
 
 #include <algorithm>
 #include <array>
@@ -215,17 +216,20 @@ int main(const int argc, const char* const argv[]) {
     if (argc < 4 || argc > 7) {
         std::cerr << "usage: marc_lzss_short_match_candidate_benchmark "
                      "<input> <max-frames:1..1024> <frame-bytes:1..65536> "
-                     "[indexed|reference] [distance-policies [decode-ab-pairs:1..20]]\n";
+                     "[indexed|reference] [distance-policies [decode-ab-pairs:1..20] | distance-encode-ab <pairs:1..20>]\n";
         return 2;
     }
     const std::string_view search = argc >= 5 ? argv[4] : "indexed";
     const bool distance_policies = argc >= 6;
+    const bool encode_ab = argc >= 6 && std::string_view{argv[5]} == "distance-encode-ab";
     std::size_t decode_ab_pairs{};
-    if (argc == 7 && !parse_positive(argv[6],20,decode_ab_pairs)) {
-        std::cerr << "invalid decode AB pair count\n";
+    std::size_t encode_ab_pairs{};
+    if ((encode_ab && argc != 7)
+        || (argc == 7 && !parse_positive(argv[6],20,encode_ab ? encode_ab_pairs : decode_ab_pairs))) {
+        std::cerr << "invalid AB pair count\n";
         return 2;
     }
-    if (distance_policies && std::string_view{argv[5]} != "distance-policies") {
+    if (distance_policies && !encode_ab && std::string_view{argv[5]} != "distance-policies") {
         std::cerr << "invalid experiment mode\n";
         return 2;
     }
@@ -291,6 +295,9 @@ int main(const int argc, const char* const argv[]) {
     std::vector<ModeledOperation> ab_output(decode_ab_pairs ? 5 * frame_bytes : 0);
     std::array<double,20> ab_generic_seconds{}, ab_specialized_seconds{};
     std::array<std::uint64_t,20> ab_verified_frames{}, ab_generic_first_frames{};
+    std::vector<std::byte> encode_ab_output(encode_ab ? serialized.size() : 0);
+    std::array<double,20> encode_ab_generic_seconds{}, encode_ab_specialized_seconds{};
+    std::array<std::uint64_t,20> encode_ab_verified_frames{}, encode_ab_generic_first_frames{};
     const marc::frame::internal::TypedContextStreamHeader stream{
         static_cast<std::uint32_t>(frame_bytes), sample_bytes,
         {65536, 3, 258, 0},
@@ -746,6 +753,42 @@ int main(const int argc, const char* const argv[]) {
                 return 2;
             }
             ++position_distance_verified_frames;
+            if (encode_ab) {
+                const auto expected = std::span<const std::byte>{serialized}.subspan(80,positioned.payload_size);
+                const auto used = std::span<const ModeledOperation>{operations}.first(positioned.operation_count);
+                const auto output = std::span{encode_ab_output}.first(positioned.payload_size);
+                using namespace marc::entropy::internal;
+                const auto invoke = [&](bool generic, bool timed, std::size_t pair) {
+                    ContextualDynamicRangeDescriptor descriptor{};
+                    const auto encode = generic ? encode_lzss_position_distance_range_operations_reference
+                                                : encode_lzss_position_distance_range_operations;
+                    const auto start = Clock::now();
+                    const auto result = encode(used,limits,output,descriptor);
+                    const auto seconds = std::chrono::duration<double>(Clock::now()-start).count();
+                    // Compare after timing, against the already verified frame payload.
+                    if (result.error != ContextualDynamicRangeEncodeError::none
+                        || result.operation_count != positioned.operation_count
+                        || result.operation_index != positioned.operation_count
+                        || result.decision_count != positioned.decision_count
+                        || result.payload_size != expected.size()
+                        || descriptor.context_count != 40
+                        || descriptor.payload_size != expected.size()
+                        || descriptor.decision_count != positioned.decision_count
+                        || !std::equal(expected.begin(),expected.end(),output.begin())) return false;
+                    if (timed) (generic ? encode_ab_generic_seconds[pair] : encode_ab_specialized_seconds[pair]) += seconds;
+                    return true;
+                };
+                if (!invoke(true,false,0) || !invoke(false,false,0)) return 2;
+                for (std::size_t pair=0;pair<encode_ab_pairs;++pair) {
+                    const bool generic_first = (frames+pair)%2==0;
+                    if (generic_first) ++encode_ab_generic_first_frames[pair];
+                    if (!invoke(generic_first,true,pair) || !invoke(!generic_first,true,pair)) {
+                        std::cerr << "position distance encode AB mismatch\n";
+                        return 2;
+                    }
+                    ++encode_ab_verified_frames[pair];
+                }
+            }
             if (decode_ab_pairs != 0) {
                 const auto payload = std::span<const std::byte>{serialized}.subspan(
                     80, positioned.payload_size);
@@ -956,6 +999,15 @@ int main(const int argc, const char* const argv[]) {
               << "escape_decode_seconds=" << escape_decode_seconds
               << '\n';
     print_cost("baseline_cost", baseline_cost);
+    if (encode_ab) {
+        std::cout << "position_encode_ab_pairs=" << encode_ab_pairs << '\n'
+                  << "position_encode_ab_output_bytes=" << encode_ab_output.size() << '\n';
+        for (std::size_t pair=0;pair<encode_ab_pairs;++pair)
+            std::cout << "position_encode_ab_" << pair << "_generic_seconds=" << encode_ab_generic_seconds[pair] << '\n'
+                      << "position_encode_ab_" << pair << "_specialized_seconds=" << encode_ab_specialized_seconds[pair] << '\n'
+                      << "position_encode_ab_" << pair << "_verified_frames=" << encode_ab_verified_frames[pair] << '\n'
+                      << "position_encode_ab_" << pair << "_generic_first_frames=" << encode_ab_generic_first_frames[pair] << '\n';
+    }
     if (decode_ab_pairs != 0) {
         std::cout << "position_decode_ab_pairs=" << decode_ab_pairs << '\n'
                   << "position_decode_ab_output_bytes=" << ab_output.size()*sizeof(ModeledOperation) << '\n';

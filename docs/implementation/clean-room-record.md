@@ -34456,3 +34456,18 @@ both bounds.
 - Validation: MSVC Release build and all 3,852 CTest cases passed, including
   the three new differential tests and interoperability schema compatibility.
   Encoder speed remains unmeasured; repeated frame planning remains unchanged.
+
+## CR-1412: 2026-09-26 - Add private encoder paired measurement harness
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1013, DD-1258 and TVG-1127; repository encoder and
+  previously validated frame payload only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: add bounded same-binary alternating-order encoder pairing with output
+  verification outside timing and an explicit plan-plus-write boundary.
+- Similarity review: independently written first-party integration; no external
+  expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,853 CTest cases passed, including
+  encoder A/B smoke and interoperability schema compatibility. Real-data speed
+  measurements are not claimed by this harness change.
