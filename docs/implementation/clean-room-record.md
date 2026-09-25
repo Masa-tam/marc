@@ -34017,3 +34017,19 @@ both bounds.
   code is unchanged from the previously tested 3,793-case build.
   The benchmark smoke and documentation layout checks also passed after the
   measurement; the complete suite was not rerun for this documentation-only change.
+
+## CR-1385: 2026-09-25 - Compare reduced-literal policy reselection
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0986, DD-1231 and TVG-1100; first-party code only.
+- Known implementations intentionally not consulted: external compressors,
+  copyleft source and third-party test suites.
+- Generated-code task: compare context-8 policies 0,3,4 against the unchanged
+  fixed-token control with strict candidate recovery and deterministic ties.
+- Independent decisions: preserve the candidate set and separate size-only
+  reselection from future retained-output selection and performance assessment.
+- Similarity review: repository-owned components reused explicitly; no external
+  expression copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,793 CTest cases passed, including
+  benchmark smoke, documentation layout and interoperability schema checks.
+  Full-corpus reselection measurement remains the next separate experiment.

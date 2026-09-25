@@ -8968,3 +8968,9 @@ compressor implementation or third-party test vectors were consulted.
 Actual reduced-literal corpus measurement uses the locally supplied Silesia
 members already identified in BM-0116 and the first-party fixed-token harness
 from IR-0984. No external compressor source or third-party tests were consulted.
+
+### IR-0986
+
+Reduced-literal policy reselection uses marc's first-party distance policy
+benchmark, frame encoder and strict decoder, building on BM-0117. No external
+compressor implementation or third-party test suite was consulted.

@@ -33,6 +33,10 @@ foreach(key IN ITEMS sample_bytes frame_bytes frame_count
         distance_selector_archive_bytes
         reduced_literal_archive_bytes reduced_literal_verified_frames
         reduced_literal_saved_bytes reduced_literal_extra_bytes
+        reduced_reselected_archive_bytes reduced_reselected_saved_bytes
+        reduced_reselected_changed_frames reduced_reselected_count_0
+        reduced_reselected_count_1 reduced_reselected_count_2
+        reduced_policy_bytes_0 reduced_policy_bytes_1 reduced_policy_bytes_2
         selected_5 threshold_3_archive_bytes threshold_4_archive_bytes
         threshold_5_archive_bytes escape_selected_3 escape_selected_4
         escape_selected_5 escape_threshold_3_archive_bytes
@@ -72,7 +76,34 @@ math(EXPR expected_baseline_escape_oracle
     "${baseline_archive_bytes} - ${escape_saved_bytes}")
 math(EXPR reconstructed_reduced_literal
     "${distance_selector_archive_bytes} - ${reduced_literal_saved_bytes} + ${reduced_literal_extra_bytes}")
+math(EXPR reconstructed_reselected
+    "${reduced_literal_archive_bytes} - ${reduced_reselected_saved_bytes}")
+math(EXPR reselected_count
+    "${reduced_reselected_count_0} + ${reduced_reselected_count_1} + ${reduced_reselected_count_2}")
+set(reduced_minimum "${reduced_policy_bytes_0}")
+set(reduced_winner 0)
+foreach(index RANGE 1 2)
+    if(reduced_policy_bytes_${index} LESS reduced_minimum)
+        set(reduced_minimum "${reduced_policy_bytes_${index}}")
+        set(reduced_winner "${index}")
+    endif()
+endforeach()
+foreach(index RANGE 0 2)
+    if(index EQUAL reduced_winner)
+        set(expected_count 1)
+    else()
+        set(expected_count 0)
+    endif()
+    if(NOT reduced_reselected_count_${index} EQUAL expected_count)
+        message(FATAL_ERROR "Reduced policy selection or tie order mismatch")
+    endif()
+endforeach()
 if(NOT sample_bytes EQUAL 4096 OR NOT frame_bytes EQUAL 4096
+    OR NOT reduced_minimum EQUAL reduced_reselected_archive_bytes
+    OR NOT reconstructed_reselected EQUAL reduced_reselected_archive_bytes
+    OR NOT reselected_count EQUAL frame_count
+    OR reduced_reselected_changed_frames GREATER frame_count
+    OR reduced_reselected_archive_bytes LESS 192
     OR NOT reduced_literal_verified_frames EQUAL frame_count
     OR NOT reconstructed_reduced_literal EQUAL reduced_literal_archive_bytes
     OR reduced_literal_archive_bytes LESS 192

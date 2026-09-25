@@ -24614,3 +24614,18 @@ charge, against actual context-7 sizes. Record regressions as well as savings.
 Report isolated new encoder/decoder timing as a single-run observation, not
 as a speedup against old selection-inclusive timings. A favorable corpus sum
 alone does not admit the private representation to the public API.
+
+## DD-1231: Isolate reduced-literal policy reselection from model changes
+
+Evaluate only policies 0,3,4 under context 8, reusing each policy's tokens from
+the existing comparison loop. Encode and strictly decode every candidate,
+checking token fields and raw bytes. Select the minimum actual frame size;
+resolve ties by the first policy in order 0,3,4. Keep the fixed context-7-winner
+control and require its new-model size to equal the same policy's measured size.
+
+Report each policy total, selected total, savings relative to the fixed-token
+control, selected counts and changed-policy frame count. The selected total
+cannot exceed the fixed control because that policy is in the candidate set.
+This is a size-only per-frame minimum experiment, not a retained production
+selector, a new public codec, or an end-to-end performance result. Existing
+fixed-token timing fields exclude the added candidate evaluations.

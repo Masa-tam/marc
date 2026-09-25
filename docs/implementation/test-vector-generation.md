@@ -16069,3 +16069,13 @@ plus extra bytes. Check the old size and input hash against BM-0116 reports.
 Reject missing or invalid numeric fields and non-finite or negative timings.
 The benchmark itself checks exact decoded token fields and raw bytes. Retain
 per-member checkpoints so interruption does not discard completed checks.
+
+### TVG-1100
+
+Extend the indexed/reference benchmark smoke to compare all new reselection
+fields. For its single frame, independently take the minimum of the three
+reported policy sizes and compare it with the selected size. Check selection
+counts sum to frame count, changed count is bounded, and savings reconstruct
+the selected total from the fixed-token total. The benchmark itself requires
+strict token/raw recovery for each candidate and equality of the fixed-policy
+size with the corresponding independently encoded candidate.

@@ -316,6 +316,11 @@ int main(const int argc, const char* const argv[]) {
     std::uint64_t reduced_literal_verified_frames{}, reduced_literal_saved_bytes{},
         reduced_literal_extra_bytes{};
     double reduced_literal_encode_seconds{}, reduced_literal_decode_seconds{};
+    std::uint64_t reduced_reselected_archive_bytes = baseline_archive_bytes;
+    std::uint64_t reduced_reselected_saved_bytes{}, reduced_reselected_changed_frames{};
+    std::array<std::uint64_t, 3> reduced_reselected_counts{};
+    std::array<std::uint64_t, 3> reduced_policy_bytes{
+        baseline_archive_bytes, baseline_archive_bytes, baseline_archive_bytes};
     std::array<double, 7> distance_encode_seconds{};
     std::array<double, 7> distance_decode_seconds{};
     std::uint64_t committed{};
@@ -466,6 +471,13 @@ int main(const int argc, const char* const argv[]) {
         if (distance_policies) {
             auto best_size = escape.selected_frame_size;
             std::array<std::size_t, marc::benchmarks::short_distance_policies.size()> sizes{};
+            std::array<std::size_t, 3> reduced_sizes{};
+            constexpr std::array<std::size_t, 3> reduced_policies{0, 3, 4};
+            auto reduced_stream = escape_stream;
+            reduced_stream.context_count = 24;
+            reduced_stream.context_variant = 8;
+            const marc::frame::internal::TypedContextFrameValidationContext reduced_context{
+                reduced_stream, limits, frames, committed};
             for (std::size_t i = 0; i < marc::benchmarks::short_distance_policies.size(); ++i) {
                 const auto policy_start = Clock::now();
                 const auto parsed = marc::benchmarks::tokenize_short_distance_policy(
@@ -503,6 +515,29 @@ int main(const int argc, const char* const argv[]) {
                 distance_policy_archive_bytes[i] += encoded.serialized_size;
                 sizes[i] = encoded.serialized_size;
                 best_size = std::min(best_size, encoded.serialized_size);
+                const auto member = std::find(reduced_policies.begin(), reduced_policies.end(), i);
+                if (member != reduced_policies.end()) {
+                    const auto reduced = marc::frame::internal::encode_lzss_reduced_literal_frame(
+                        reduced_stream, limits, frames, committed,
+                        std::span<const LzssTypedToken>{tokens}.first(parsed.token_count),
+                        operations, serialized);
+                    if (reduced.error != marc::frame::internal::LzssShortMatchFrameEncodeError::none)
+                        return 2;
+                    const auto restored = marc::frame::internal::decode_lzss_reduced_literal_frame(
+                        std::span<const std::byte>{serialized}.first(reduced.serialized_size),
+                        reduced_context, decoded_tokens, std::span<std::byte>{decoded}.first(count));
+                    if (restored.error != marc::frame::internal::LzssShortMatchFrameDecodeError::none
+                        || restored.serialized_consumed != reduced.serialized_size
+                        || restored.required_token_count != parsed.token_count
+                        || !std::equal(tokens.begin(), tokens.begin() + parsed.token_count,
+                                       decoded_tokens.begin(), same_token)
+                        || !std::equal(frame.begin(), frame.end(), decoded.begin())) {
+                        std::cerr << "reduced literal policy round trip mismatch\n";
+                        return 2;
+                    }
+                    reduced_sizes[static_cast<std::size_t>(member - reduced_policies.begin())]
+                        = reduced.serialized_size;
+                }
             }
             for (std::size_t subset = 0; subset < distance_subset_masks.size(); ++subset) {
                 auto minimum = std::numeric_limits<std::size_t>::max();
@@ -575,9 +610,6 @@ int main(const int argc, const char* const argv[]) {
             }
             // Freeze the old model's selected token sequence. Do not reselect
             // policies under the new model or parse the dictionary again.
-            auto reduced_stream = escape_stream;
-            reduced_stream.context_count = 24;
-            reduced_stream.context_variant = 8;
             const auto retained_tokens = std::span<const LzssTypedToken>{decoded_tokens}
                 .first(verified.required_token_count);
             const auto reduced_start = Clock::now();
@@ -591,8 +623,6 @@ int main(const int argc, const char* const argv[]) {
                 return 2;
             }
             const auto reduced_decode_start = Clock::now();
-            const marc::frame::internal::TypedContextFrameValidationContext reduced_context{
-                reduced_stream, limits, frames, committed};
             const auto restored = marc::frame::internal::decode_lzss_reduced_literal_frame(
                 std::span<const std::byte>{serialized}.first(reduced.serialized_size),
                 reduced_context, tokens, std::span<std::byte>{decoded}.first(count));
@@ -612,6 +642,23 @@ int main(const int argc, const char* const argv[]) {
                 reduced_literal_saved_bytes += selection.serialized_size - reduced.serialized_size;
             else
                 reduced_literal_extra_bytes += reduced.serialized_size - selection.serialized_size;
+            const auto old_member = std::find(reduced_policies.begin(), reduced_policies.end(),
+                                               selection.selected_policy);
+            if (old_member == reduced_policies.end()
+                || reduced_sizes[static_cast<std::size_t>(old_member - reduced_policies.begin())]
+                    != reduced.serialized_size) {
+                std::cerr << "fixed-token policy control mismatch\n";
+                return 2;
+            }
+            const auto winner = static_cast<std::size_t>(
+                std::min_element(reduced_sizes.begin(), reduced_sizes.end()) - reduced_sizes.begin());
+            reduced_reselected_archive_bytes += reduced_sizes[winner];
+            for (std::size_t i = 0; i < reduced_sizes.size(); ++i)
+                reduced_policy_bytes[i] += reduced_sizes[i];
+            reduced_reselected_saved_bytes += reduced.serialized_size - reduced_sizes[winner];
+            ++reduced_reselected_counts[winner];
+            if (reduced_policies[winner] != selection.selected_policy)
+                ++reduced_reselected_changed_frames;
         }
         const auto exact_tokens = marc::dictionary::internal::
             tokenize_lzss_short_match_candidate_indexed(
@@ -764,6 +811,12 @@ int main(const int argc, const char* const argv[]) {
     print_cost("escape_cost", escape_cost);
     if (distance_policies) {
         print_cost("retained_cost", retained_cost);
+        std::cout << "reduced_reselected_archive_bytes=" << reduced_reselected_archive_bytes << '\n'
+                  << "reduced_reselected_saved_bytes=" << reduced_reselected_saved_bytes << '\n'
+                  << "reduced_reselected_changed_frames=" << reduced_reselected_changed_frames << '\n';
+        for (std::size_t i = 0; i < reduced_reselected_counts.size(); ++i)
+            std::cout << "reduced_reselected_count_" << i << '=' << reduced_reselected_counts[i] << '\n'
+                      << "reduced_policy_bytes_" << i << '=' << reduced_policy_bytes[i] << '\n';
         std::cout << "reduced_literal_archive_bytes=" << reduced_literal_archive_bytes << '\n'
                   << "reduced_literal_verified_frames=" << reduced_literal_verified_frames << '\n'
                   << "reduced_literal_saved_bytes=" << reduced_literal_saved_bytes << '\n'
