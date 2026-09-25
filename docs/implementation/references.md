@@ -9113,3 +9113,9 @@ a differential oracle. No external implementation was consulted.
 BM-0124 uses repository-owned benchmark revision f35bfa40, the local mozilla
 member and the hash-checked BM-0122 report. No external compressor source,
 third-party tests or new reference implementation was consulted.
+
+### IR-1008
+
+The same-executable distance-decoder A/B harness uses repository-owned retained
+generic and specialized decoders and context-9 frame payloads. Measurement
+boundaries derive from BM-0124. No external implementation was consulted.

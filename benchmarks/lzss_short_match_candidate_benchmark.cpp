@@ -17,6 +17,7 @@
 #include "frame/lzss_reduced_literal_frame_decoder.hpp"
 #include "frame/lzss_position_distance_frame_encoder.hpp"
 #include "frame/lzss_position_distance_frame_decoder.hpp"
+#include "entropy/lzss_position_distance_range_decoder.hpp"
 
 #include <algorithm>
 #include <array>
@@ -32,6 +33,15 @@
 #include <string_view>
 #include <vector>
 
+namespace marc::entropy::internal {
+struct LzssPositionDistanceRangeDecoderBenchmarkAccess {
+    static auto next(LzssPositionDistanceRangeDecoder& decoder,
+                     context::internal::ModeledOperation& operation) noexcept {
+        return decoder.decode_next_reference(operation);
+    }
+};
+}
+
 namespace {
 
 using Clock = std::chrono::steady_clock;
@@ -40,6 +50,28 @@ using marc::context::internal::ModeledOperation;
 using marc::context::internal::ModeledOperationKind;
 using marc::dictionary::internal::LzssParameters;
 using marc::dictionary::internal::LzssTypedToken;
+
+template<bool Reference>
+bool decode_position_operations(
+    const marc::entropy::internal::ContextualDynamicRangeDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const std::span<ModeledOperation> output) noexcept {
+    using namespace marc::entropy::internal;
+    LzssPositionDistanceRangeDecoder decoder;
+    if (decoder.begin(descriptor,payload,{}).error != ContextualDynamicRangeDecodeError::none)
+        return false;
+    for (auto& op : output) {
+        const auto result = [&] {
+            if constexpr (Reference)
+                return LzssPositionDistanceRangeDecoderBenchmarkAccess::next(decoder,op);
+            else
+                return decoder.decode_next(op);
+        }();
+        if (result.error != ContextualDynamicRangeDecodeError::none) return false;
+    }
+    return decoder.finish(static_cast<std::uint32_t>(output.size()),
+        descriptor.decision_count).error == ContextualDynamicRangeDecodeError::none;
+}
 
 [[nodiscard]] bool parse_positive(const char* const text,
                                   const std::size_t upper,
@@ -180,14 +212,19 @@ void print_cost(const std::string_view prefix,
 } // namespace
 
 int main(const int argc, const char* const argv[]) {
-    if (argc < 4 || argc > 6) {
+    if (argc < 4 || argc > 7) {
         std::cerr << "usage: marc_lzss_short_match_candidate_benchmark "
                      "<input> <max-frames:1..1024> <frame-bytes:1..65536> "
-                     "[indexed|reference] [distance-policies]\n";
+                     "[indexed|reference] [distance-policies [decode-ab-pairs:1..20]]\n";
         return 2;
     }
     const std::string_view search = argc >= 5 ? argv[4] : "indexed";
-    const bool distance_policies = argc == 6;
+    const bool distance_policies = argc >= 6;
+    std::size_t decode_ab_pairs{};
+    if (argc == 7 && !parse_positive(argv[6],20,decode_ab_pairs)) {
+        std::cerr << "invalid decode AB pair count\n";
+        return 2;
+    }
     if (distance_policies && std::string_view{argv[5]} != "distance-policies") {
         std::cerr << "invalid experiment mode\n";
         return 2;
@@ -250,6 +287,10 @@ int main(const int argc, const char* const argv[]) {
     std::vector<LzssTypedToken> baseline_tokens(frame_bytes);
     std::vector<LzssTypedToken> decoded_tokens(frame_bytes);
     std::vector<ModeledOperation> operations(5 * frame_bytes);
+    // Allocated once outside all timed regions; no retained whole-file payloads.
+    std::vector<ModeledOperation> ab_output(decode_ab_pairs ? 5 * frame_bytes : 0);
+    std::array<double,20> ab_generic_seconds{}, ab_specialized_seconds{};
+    std::array<std::uint64_t,20> ab_verified_frames{}, ab_generic_first_frames{};
     const marc::frame::internal::TypedContextStreamHeader stream{
         static_cast<std::uint32_t>(frame_bytes), sample_bytes,
         {65536, 3, 258, 0},
@@ -705,6 +746,45 @@ int main(const int argc, const char* const argv[]) {
                 return 2;
             }
             ++position_distance_verified_frames;
+            if (decode_ab_pairs != 0) {
+                const auto payload = std::span<const std::byte>{serialized}.subspan(
+                    80, positioned.payload_size);
+                const marc::entropy::internal::ContextualDynamicRangeDescriptor descriptor{
+                    positioned.decision_count,
+                    static_cast<std::uint32_t>(positioned.payload_size),40};
+                const auto expected = std::span<const ModeledOperation>{operations}.first(positioned.operation_count);
+                const auto output = std::span{ab_output}.first(positioned.operation_count);
+                const auto matches = [&] {
+                    return std::equal(expected.begin(),expected.end(),output.begin(),
+                        [](const auto& a,const auto& b) {
+                            return a.kind==b.kind && a.context_id==b.context_id
+                                && a.alphabet_size==b.alphabet_size && a.value==b.value
+                                && a.bit_count==b.bit_count;
+                        });
+                };
+                // Warm both paths, validating outside any measured interval.
+                if (!decode_position_operations<true>(descriptor,payload,output) || !matches()
+                    || !decode_position_operations<false>(descriptor,payload,output) || !matches())
+                    return 2;
+                for (std::size_t pair=0;pair<decode_ab_pairs;++pair) {
+                    const bool generic_first = (frames+pair)%2==0;
+                    if (generic_first) ++ab_generic_first_frames[pair];
+                    for (unsigned turn=0;turn<2;++turn) {
+                        const bool generic = turn==0 ? generic_first : !generic_first;
+                        const auto decode = generic ? decode_position_operations<true>
+                                                    : decode_position_operations<false>;
+                        const auto start=Clock::now();
+                        const bool ok=decode(descriptor,payload,output);
+                        const auto seconds=std::chrono::duration<double>(Clock::now()-start).count();
+                        if (!ok || !matches()) {
+                            std::cerr << "position distance AB mismatch\n";
+                            return 2;
+                        }
+                        (generic ? ab_generic_seconds[pair] : ab_specialized_seconds[pair]) += seconds;
+                    }
+                    ++ab_verified_frames[pair];
+                }
+            }
             position_distance_archive_bytes += positioned.serialized_size;
             if (positioned.serialized_size < reduced.serialized_size)
                 position_distance_saved_bytes += reduced.serialized_size - positioned.serialized_size;
@@ -876,6 +956,15 @@ int main(const int argc, const char* const argv[]) {
               << "escape_decode_seconds=" << escape_decode_seconds
               << '\n';
     print_cost("baseline_cost", baseline_cost);
+    if (decode_ab_pairs != 0) {
+        std::cout << "position_decode_ab_pairs=" << decode_ab_pairs << '\n'
+                  << "position_decode_ab_output_bytes=" << ab_output.size()*sizeof(ModeledOperation) << '\n';
+        for (std::size_t pair=0;pair<decode_ab_pairs;++pair)
+            std::cout << "position_decode_ab_" << pair << "_generic_seconds=" << ab_generic_seconds[pair] << '\n'
+                      << "position_decode_ab_" << pair << "_specialized_seconds=" << ab_specialized_seconds[pair] << '\n'
+                      << "position_decode_ab_" << pair << "_verified_frames=" << ab_verified_frames[pair] << '\n'
+                      << "position_decode_ab_" << pair << "_generic_first_frames=" << ab_generic_first_frames[pair] << '\n';
+    }
     print_cost("escape_cost", escape_cost);
     if (distance_policies) {
         print_cost("retained_cost", retained_cost);

@@ -20,6 +20,7 @@ public:
         std::uint32_t event_count, std::uint32_t decision_count) noexcept;
 private:
     friend struct LzssPositionDistanceRangeDecoderTestAccess;
+    friend struct LzssPositionDistanceRangeDecoderBenchmarkAccess;
     template<bool Reference>
     [[nodiscard]] ContextualDynamicRangeDecodeResult decode_next_impl(
         context::internal::ModeledOperation& operation) noexcept;

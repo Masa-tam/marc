@@ -34378,3 +34378,18 @@ both bounds.
   copied and no legal guarantee claimed.
 - Validation: report controls and checkpoint reuse passed; documentation test
   passed. Runtime code unchanged since the full 3,848-test validation.
+
+## CR-1407: 2026-09-25 - Add same-binary distance decoder A/B harness
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1008, DD-1253 and TVG-1122; first-party benchmark and
+  retained generic decoder only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: compare identical prebuilt payloads with bounded storage, alternating
+  order and correctness verification outside the measured interval.
+- Similarity review: repository-owned integration; no external expression
+  copied and no legal guarantee claimed.
+- Validation: MSVC Release build and all 3,849 CTest cases passed, including
+  the new A/B smoke test and interoperability schema compatibility. Real-data A/B timing
+  remains separate from harness validation; no public codec interface changed.

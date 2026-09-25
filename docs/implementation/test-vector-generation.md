@@ -16307,3 +16307,12 @@ non-time BM-0122 field. Require 782 verified frames per run and unchanged
 18,542,748 accounted bytes. Reinvoke the local runner to verify completed
 checkpoint reuse. Timing ranges and medians are observations, not thresholds;
 aggregate sizes do not replace per-payload equivalence tests.
+
+### TVG-1122
+
+A dedicated A/B smoke test requests two pairs over one bounded README frame.
+Require both paths' timing fields, one verified frame per pair, positive bounded
+output storage and generic-first counts 1 then 0. Reject pair counts 0, 21 and
+non-numeric text. The harness itself compares all decoded operation fields with
+the original modeled sequence outside each timing region, including warmup.
+Existing candidate smoke continues to exercise default execution without A/B.

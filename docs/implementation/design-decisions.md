@@ -24932,3 +24932,24 @@ sample for the generic path. Do not claim the full difference as optimization
 benefit. Next add a bounded same-executable comparison of retained generic and
 specialized paths, using identical payloads and alternating order. Keep the
 private format and public defaults unchanged.
+
+## DD-1253: Compare distance decoders on identical frame payloads
+
+Add an optional final decode-ab-pairs argument (1..20) to distance-policies
+benchmark mode. Default execution remains unchanged. Reuse each already encoded
+context-9 payload and expected modeled operations; allocate one bounded output
+operation buffer before timing. Do not buffer the whole corpus.
+
+For each frame, warm both paths once and validate every operation field. For
+each pair, alternate the first path by (frame_index + pair_index) parity.
+Measure decoder construction, begin, operation decoding/output writes and
+finish, including error checks and canonical validation. Compare the resulting
+operations after stopping the timer. Fail rather than report an invalid run.
+Print per-pair summed generic/specialized seconds, verified frames, generic-first
+frame counts and extra operation-buffer bytes. The reference friend exposes
+only the private generic entry point, not mutable decoder state.
+
+These are warm payload-level single-pass timings, not the existing two-pass
+frame decode times or end-to-end CLI throughput. No speed threshold belongs
+in smoke tests. Same-binary pairing reduces historical build differences but
+does not eliminate scheduling, cache or fixed warmup-order effects.
