@@ -15937,3 +15937,13 @@ Tests must also cover prefix boundaries 0x1f/0x20 and 0xdf/0xe0, context-count
 24/32 crossed descriptors, invalid tuple combinations, and unchanged old
 variant vectors. These are planned vectors; no Range payload is asserted
 until an independently checked arithmetic vector is added with the coder.
+
+### TVG-1088
+
+Check every dense offset against independently specified group sizes, retaining
+old 32-context/4,538-entry layout assertions. Enumerate all 2,490 valid symbol
+values and reject each alphabet's first out-of-range value. Vary every tuple
+field and context count independently, including old variants and count 32.
+Reject context IDs 24/65535, the old literal alphabet at new length context 12,
+UINT32_MAX symbols, nonzero unused bit counts, bypass operations and unknown
+operation kinds. This tests model access shape, not complete token grammar.

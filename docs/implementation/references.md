@@ -8889,3 +8889,9 @@ The reduced-literal representation follows the first-party short-length escape
 format, DD-1215 partition definition and BM-0116 corpus evidence. Context IDs
 and dense model extents are independently specified here. No external coder
 source, third-party format implementation or copyleft material is consulted.
+
+### IR-0974
+
+The reduced-literal layout and symbol-shape checks implement DD-1218 and the
+repository's reserved format directly. Tests enumerate its specified alphabets
+and malformed fields without importing external tables or test vectors.

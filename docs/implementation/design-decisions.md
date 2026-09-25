@@ -24443,3 +24443,14 @@ the new model. Do not add a public profile or claim gzip parity from the
 information estimate. Proceed through layout/vectors, private preflight,
 model coder, token decoder, frame integration and benchmarks with independent
 negative tests and unchanged old-format vectors at each relevant boundary.
+
+## DD-1219: Validate reduced-literal model access before indexing
+
+Keep the private 24-context alphabets and prefix offsets separate from the
+32-context short-match layout. A narrow predicate accepts only the exact
+2/8 + 1/8 + 3/2 tuple with count 24. It is not public format admission and
+does not replace stream/frame preflight. Validate a symbol operation in order:
+kind, context bounds, exact alphabet, value bounds and zero unused bit count.
+Return existing stable field-context errors and never index an unchecked ID.
+The helper validates storage shape only; token-state grammar, bypass order,
+hard limits and full-frame validation remain required at higher layers.

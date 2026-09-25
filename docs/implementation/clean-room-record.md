@@ -33809,3 +33809,20 @@ both bounds.
   translated. No legal non-infringement guarantee.
 - Validation scope: documentation and hand-derived operation/probability
   vectors only. No encoder, decoder or public admission is added in this step.
+
+## CR-1373: 2026-09-25 - Implement reduced-literal layout checks
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-0974, DD-1219 and TVG-1088; repository format and
+  existing first-party error categories only.
+- Known implementations intentionally not consulted: external compressor code,
+  copyleft implementations and third-party tables/test suites.
+- Generated-code task: implement dense layout, exact tuple/count predicate
+  and bounds-first symbol validation with exhaustive alphabet tests.
+- Independent decisions: separate storage shape from token grammar and frame
+  preflight; preserve old model layout and all public selection behavior.
+- Similarity review: no external implementation expression was used or
+  translated. No legal non-infringement guarantee.
+- Validation: MSVC Release build and all 3,749 CTest cases passed, including
+  the four new layout tests, documentation layout and interoperability schema
+  compatibility. No public encoder/decoder admission is introduced.
