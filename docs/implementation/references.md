@@ -9201,3 +9201,9 @@ or new algorithm reference was consulted.
 Corpus-wide frame pairing extends IR-1020 using repository-owned frame paths
 and existing local Silesia inputs. BM-0130 and ignored per-member checkpoints
 record results and identity. No external implementation was consulted.
+
+### IR-1022
+
+Prepared encoder fault tests use the first-party writer, fixed mixed vector,
+and existing private friend-access testing pattern. No external source or test
+suite was consulted.

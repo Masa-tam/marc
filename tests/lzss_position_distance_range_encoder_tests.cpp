@@ -7,6 +7,28 @@
 #include <vector>
 #include <type_traits>
 
+namespace marc::entropy::internal {
+// Test-only metadata faults; borrowed operations remain alive and unchanged.
+struct PreparedLzssPositionDistanceEncodeTestAccess {
+    static void shorten_payload(PreparedLzssPositionDistanceEncode& value,
+                                std::size_t size) noexcept {
+        value.plan_.payload_size=size;
+        value.descriptor_.payload_size=static_cast<std::uint32_t>(size);
+    }
+    static void mismatch(PreparedLzssPositionDistanceEncode& value, unsigned field) noexcept {
+        switch (field) {
+        case 0: ++value.plan_.operation_count; break;
+        case 1: ++value.plan_.operation_index; break;
+        case 2: ++value.plan_.decision_count; break;
+        case 3: ++value.plan_.payload_size; break;
+        case 4: ++value.descriptor_.decision_count; break;
+        case 5: ++value.descriptor_.payload_size; break;
+        case 6: ++value.descriptor_.context_count; break;
+        }
+    }
+};
+}
+
 namespace {
 using namespace marc::entropy::internal;
 using namespace marc::context::internal;
@@ -244,6 +266,46 @@ TEST(LzssPositionDistanceRangeEncoder, ReferenceAndSpecializedRejectWithoutPubli
         EXPECT_TRUE(std::equal(before.begin(),before.end(),std::as_bytes(std::span{ops}).begin()));
     }
 }
+TEST(LzssPositionDistanceRangeEncoder, PreparedWriteFaultsDoNotPublishDescriptor) {
+    const auto ops=mixed();
+    const auto before=ops;
+    constexpr std::array<unsigned,9> expected{0,48,152,190,146,107,61,34,142};
+    // Eight real truncated writes, then seven post-write consistency faults.
+    for (unsigned fault=0;fault<15;++fault) {
+        SCOPED_TRACE(fault);
+        PreparedLzssPositionDistanceEncode prepared;
+        ContextualDynamicRangeDescriptor descriptor{};
+        ASSERT_EQ(prepared.prepare(ops,{},descriptor).error,Error::none);
+        ASSERT_EQ(descriptor.payload_size,9);
+        const std::size_t written=fault<8 ? fault+1 : 9;
+        if (fault<8)
+            PreparedLzssPositionDistanceEncodeTestAccess::shorten_payload(prepared,written);
+        else
+            PreparedLzssPositionDistanceEncodeTestAccess::mismatch(prepared,fault-8);
+        std::array<std::byte,12> output; output.fill(std::byte{0x55});
+        descriptor={99,98,97};
+        EXPECT_EQ(prepared.write(std::span{output}.subspan(1,10),descriptor).error,
+                  Error::internal_error);
+        same_descriptor(descriptor,ContextualDynamicRangeDescriptor{99,98,97});
+        EXPECT_EQ(output.front(),std::byte{0x55});
+        for (std::size_t i=0;i<written;++i) EXPECT_EQ(output[i+1],std::byte(expected[i]));
+        for (std::size_t i=written+1;i<output.size();++i) EXPECT_EQ(output[i],std::byte{0x55});
+        const auto failed_output=output;
+        const auto retry=prepared.write(output,descriptor);
+        EXPECT_EQ(retry.error,Error::internal_error);
+        EXPECT_EQ(retry.operation_count,0); EXPECT_EQ(retry.operation_index,0);
+        EXPECT_EQ(retry.decision_count,0); EXPECT_EQ(retry.payload_size,0);
+        EXPECT_EQ(output,failed_output);
+        same_descriptor(descriptor,ContextualDynamicRangeDescriptor{99,98,97});
+        ASSERT_EQ(prepared.prepare(ops,{},descriptor).error,Error::none);
+        ASSERT_EQ(prepared.write(output,descriptor).error,Error::none);
+        for (std::size_t i=0;i<expected.size();++i) EXPECT_EQ(output[i],std::byte(expected[i]));
+        EXPECT_TRUE(std::equal(std::as_bytes(std::span{ops}).begin(),
+                               std::as_bytes(std::span{ops}).end(),
+                               std::as_bytes(std::span{before}).begin()));
+    }
+}
+
 TEST(LzssPositionDistanceRangeEncoder, PreparedPlanReadinessAndPreflightAreOneShot) {
     static_assert(!std::is_copy_constructible_v<PreparedLzssPositionDistanceEncode>);
     static_assert(!std::is_copy_assignable_v<PreparedLzssPositionDistanceEncode>);

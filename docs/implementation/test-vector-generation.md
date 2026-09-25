@@ -16495,3 +16495,19 @@ including odd-frame members. Reject invalid/non-finite/non-positive times withou
 imposing a speed threshold. Recheck hashes after execution; publish checkpoints
 only after validation. A reuse-only rerun must validate all twelve records.
 Aggregate by pair index; do not label these independent whole-corpus trials.
+
+## TVG-1136: Inject prepared entropy metadata faults
+
+Use the independent nine-byte mixed vector. For each payload length 1 through
+8, shorten the internal planned size and matching private descriptor, keeping
+caller capacity sufficient: require internal_error, the exact emitted prefix,
+untouched surrounding canaries and unchanged caller descriptor. Zero length is
+excluded because an empty writer span denotes count-only operation.
+
+Separately perturb operation count, operation index, decision count, payload
+size, and each of the three descriptor fields. Require internal_error after
+the exact nine-byte write, unchanged descriptor and canaries. For all fifteen
+faults, a second write must fail with zero counts without changing output;
+fresh preparation must recover the fixed vector. Verify borrowed operations
+are unchanged. This does not establish support for caller mutation or test
+frame-header publication.

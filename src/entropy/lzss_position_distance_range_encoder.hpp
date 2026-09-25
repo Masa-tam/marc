@@ -42,6 +42,7 @@ public:
         std::span<std::byte> output,
         ContextualDynamicRangeDescriptor& descriptor) noexcept;
 private:
+    friend struct PreparedLzssPositionDistanceEncodeTestAccess;
     std::span<const context::internal::ModeledOperation> operations_{};
     ContextualDynamicRangeEncodeResult plan_{};
     ContextualDynamicRangeDescriptor descriptor_{};

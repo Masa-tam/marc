@@ -34595,3 +34595,17 @@ both bounds.
   copied and no legal guarantee claimed.
 - Validation: identity, controls, pair counts and checkpoint reuse passed;
   documentation layout test passed. Runtime unchanged since full 3,857-test validation.
+
+## CR-1421: 2026-09-26 - Exercise prepared entropy write failures
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1022, DD-1267 and TVG-1136; first-party sources only.
+- Known implementations intentionally not consulted: external compressor
+  source, copyleft implementations and third-party test suites.
+- Task: add bounded test-only metadata faults without mutating borrowed input.
+- Changes: friend declaration and fifteen fault cases in one regression test;
+  no runtime algorithm or public interface change.
+- Validation: Release build and all 3,858 CTest cases passed, including the
+  new fault test and documentation layout check.
+- Similarity review: independently derived from existing invariants and fixed
+  vector; no external expression copied and no legal guarantee claimed.

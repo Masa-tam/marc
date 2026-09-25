@@ -25214,3 +25214,16 @@ Performance evidence does not replace robustness coverage. Next close the
 write-time failure/publication test gap in TVG-1130 with bounded test-only
 injection, without treating caller mutation as supported use or changing public
 APIs. Public admission remains a separate decision.
+
+## DD-1267: Isolate prepared entropy write fault coverage
+
+Use a test-defined friend accessor to perturb only private prepared metadata.
+Shortened payload plans force real bounded writes to fail after a prefix;
+count and descriptor mismatches exercise post-write rejection. Borrowed
+operations stay unchanged. No runtime hook, callback, global state, object
+layout change or public API is introduced.
+
+An internal failure does not publish the descriptor and consumes readiness.
+Partial output is unusable, not rolled back. A fresh prepare restores normal
+operation. These tests cover entropy publication only; direct frame-header
+publication fault injection remains a separate next step under DD-1266.
