@@ -25268,3 +25268,22 @@ Input and all caller-owned regions must remain stable and disjoint throughout
 the call. Malformed input publishes no whole-stream raw bytes; scratch workspaces
 may change. Header-only empty streams are accepted. This is one-shot private
 integration, not incremental streaming, a public selector or new wire format.
+
+## DD-1271: Assemble private context-9 streams from complete token frames
+
+Provide separately named private plan/encode entry points and result/view types
+for the exact 2/8 + 1/9 + 3/2 identity. Validate the required frame count and all
+typed frames before writing. Sum checked serialized sizes, enforce per-frame
+aggregate limits and reject overlap of output/operations with token storage
+and frame views. Reuse one operation workspace; no owned allocation is added.
+
+Encode each frame using the prepared frame encoder and publish the canonical
+112-byte stream header only after successful extent checks. Empty input emits
+only that header. Preflight errors preserve output; unexpected write failure
+can leave partial frame bytes and requires discarding output. A size in an error
+result is not a committed-byte count. Caller-owned views/tokens remain stable.
+
+Whole-stream preflight adds an entropy planning pass before per-frame encoding;
+do not claim BM-0130's two-run timing for this one-shot stream boundary. Avoid
+retaining prepared spans across frames just to remove that pass. Raw tokenization,
+candidate selection, incremental operation and public admission are separate.

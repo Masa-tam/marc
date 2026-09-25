@@ -9226,3 +9226,10 @@ The context-9 stream decoder reuses the first-party private two-pass stream
 walker and exact-identity header/frame validators. Tests assemble headers around
 the existing independent fixed context-9 payload vectors. No external source
 or test suite was consulted.
+
+### IR-1026
+
+Context-9 typed-token stream assembly adapts the first-party length-escape
+stream writer and tests, using the existing context-9 prepared frame encoder.
+The independent seven-byte frame vector is retained as a payload oracle.
+No external implementation or test suite was consulted.

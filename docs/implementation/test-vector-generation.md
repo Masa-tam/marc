@@ -16553,3 +16553,16 @@ Test crossed IDs, insufficient output/token/frame storage, exact and one-below
 aggregate/output limits and all six pairwise input/workspace/output overlaps.
 Retain old private/public rejection tests in the full suite. No encoder-generated
 payload is used as the only oracle, and no stream fuzz result is claimed here.
+
+## TVG-1140: Private typed-token context-9 stream assembly
+
+Adapt first-party stream-writer tests to exact context-9 headers. Check empty,
+single, repeated full frames and a six-byte frame followed by a four-byte final
+frame. Pin the independent seven-byte literal-a/length-five/distance-one payload,
+compare canonical stream header bytes and verify full strict decoding. Compare
+planned/written sizes, determinism and leading/trailing output canaries.
+
+Reject wrong identity/frame count, invalid later-frame history, insufficient
+output/operation capacity, limits and output aliases of views/tokens/operations.
+Preflight failures preserve sentinel output; successful modeling must not touch
+unused operation capacity. Existing frame fault tests retain write-time coverage.

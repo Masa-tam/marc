@@ -311,3 +311,13 @@ and all regions disjoint; scratch can change on failure. Fixed-vector tests
 cover empty/multi-frame/final-short streams, truncation, late corruption,
 identity, capacity, overlap and limits. Public admission and incremental
 streaming remain absent. Step 2 (private typed-token stream assembly) is next.
+
+### Private typed-token stream assembly
+
+DD-1271 adds context-9 stream plan/encode over caller-owned complete token frames.
+One bounded operation workspace is reused; all frames are planned before output,
+and the canonical header is published last. The strict private decoder verifies
+the result. This stage adds no raw-input parser, candidate policy or public entry.
+Whole-stream preflight adds a planning pass, so paired frame timing is not a
+whole-stream performance claim. Next integrate bounded raw-input tokenization
+with an explicit fixed parsing policy before considering candidate reselection.

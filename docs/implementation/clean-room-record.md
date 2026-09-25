@@ -34655,3 +34655,17 @@ both bounds.
   were not relaxed. The overlap setup now asserts capacity before copying.
 - Similarity review: reuse of first-party implementation and independent test
   assembly; no external expression copied and no legal guarantee claimed.
+
+## CR-1425: 2026-09-26 - Assemble private context-9 token streams
+
+- Author: Codex; reviewer: repository maintainer approved the next step.
+- References used: IR-1026, DD-1271 and TVG-1140; first-party source and vectors.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: add private one-shot stream planning/writing from caller-owned token frames.
+- Changes: exact-identity writer, tests and documentation; no public selector,
+  raw tokenization or format change.
+- Validation: Release build, seven new stream tests and all 3,872 CTest cases
+  passed, including documentation layout and existing codec regressions.
+- Similarity review: documented adaptation of first-party length-escape writer;
+  no external expression copied and no legal guarantee claimed.
