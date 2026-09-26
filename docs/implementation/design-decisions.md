@@ -25356,3 +25356,21 @@ and byte comparisons are outside timed calls. Report supplied scratch and
 whole-input/archive/restored buffer extents separately, not as peak process RSS.
 Fixed eligibility differs from the earlier per-frame selector measurements;
 their byte counts and timings cannot be substituted for this experiment.
+
+## DD-1277: Integrate context-9 incrementally with frame-level publication
+
+Follow the staged design in
+[position-distance streaming](../design/lzss-position-distance-streaming.md).
+Keep the exact reserved tuple and implement private incremental decoding first.
+Validate each complete frame before exposing its raw bytes; a later error does
+not revoke previously returned frames. Preserve the existing strict one-shot
+whole-output guarantee. Explicit EndInput is required to finish and reject
+trailing input across calls; Flush leaves frame boundaries unchanged.
+
+Retain one frame of tokens through encoder preparation/draining, with no
+whole-input planning pass. Derive query/create from one checked layout including
+finder, operation, model and replay storage. Freeze exact resource defaults in
+the private layout stage. Plan a separate position-distance Dynamic Range C/CLI
+family with a complete single-profile initializer and fixed eligibility 3.
+Existing codec configs and bytes remain unchanged. Public admission, complete
+corpus measurements and cross-platform verification are later explicit steps.

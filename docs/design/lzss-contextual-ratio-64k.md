@@ -370,3 +370,13 @@ confirmation of earlier selector-based accounted estimates. The measurement
 does not establish CLI throughput or peak RSS. Keep public admission gated on
 incremental streaming, profile/workspace and C ABI design, installed-consumer
 tests and cross-platform interoperability validation.
+
+### Incremental integration contract
+
+DD-1277 records the next-stage
+[streaming design](lzss-position-distance-streaming.md). It defines frame-atomic
+decoder publication, retained-token encoding with one dictionary search per
+frame, checked workspace layout and an additive public family. Existing one-shot
+decoding retains its stronger whole-output publication guarantee. The immediate
+implementation is a private incremental decoder; public admission follows the
+documented validation sequence.

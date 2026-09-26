@@ -9265,3 +9265,11 @@ and checks were written independently; no external implementation was consulted.
 The context-9 whole-stream benchmark composes the first-party raw-stream
 planner/writer, strict decoder and SHA-256 implementation. Its timing boundaries
 and file checks are independently authored; no external implementation was used.
+
+### IR-1032
+
+The context-9 incremental integration design uses the first-party typed-context
+and contextual tANS streaming state machines, core process contract, private
+position-distance frame/stream interfaces, resource-profile design and BM-0131.
+Publication units and workspace ownership were reasoned from those contracts.
+No external implementation or test suite was consulted.

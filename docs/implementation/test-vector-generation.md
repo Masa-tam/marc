@@ -16623,3 +16623,19 @@ and independently check emitted file size and SHA-256 against reported values.
 Check frame count, input digest, iteration verification and timing fields; empty
 output is a 112-byte header. Verify invalid arguments and excess frame count
 fail, and an existing output file is rejected without changing its digest.
+
+## TVG-1146: Planned context-9 incremental contract vectors
+
+These are requirements for subsequent implementation, not executed-test claims.
+Split independently assembled empty, one-frame, multi-frame and final-short
+streams at every byte for small fixtures. Exercise zero/one-byte output, Flush,
+partial EndInput, unsupported flags, sticky errors and repeated EndOfStream.
+Check exact counts and stable error offsets. A valid first frame may publish;
+corrupting the second must publish none of that frame. Supply trailing data in
+a later call while awaiting EndInput and reject it.
+
+Compare incremental encoding with the one-shot byte oracle for eligibility
+3/4/5 and both internal searches, with randomized splits and frame boundaries.
+Test exact queried workspace and one-byte-short/alignment/overlap failures,
+strict local limits, dictionary-search counts and hash taps over committed
+bytes. Keep existing public parsers rejecting the reserved tuple until admission.

@@ -34757,3 +34757,19 @@ both bounds.
   digests were independently checked, and one stream header was parsed.
 - Similarity review: measurement of first-party implementation; no external
   expression copied and no legal guarantee claimed.
+
+## CR-1432: 2026-09-26 - Design context-9 incremental integration
+
+- Author: Codex; reviewer: repository maintainer authorized the next design step.
+- References used: IR-1032, DD-1277, TVG-1146 and BM-0131; first-party
+  streaming implementations and profile/workspace contracts.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: define bounded incremental state, publication units, workspace and an
+  additive public-family plan after the emitted-stream measurement.
+- Changes: design, navigation and provenance records; no executable or format
+  admission change. Planned validation is explicitly distinguished from results.
+- Validation: documentation layout and diff checks; implementation tests remain
+  scheduled by TVG-1146.
+- Similarity review: independently derived first-party integration design; no
+  external expression copied and no legal guarantee claimed.
