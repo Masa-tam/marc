@@ -5228,3 +5228,71 @@ results SHA-256:
 Run the probe with the Mozilla input path and the BM-0134 saved CLI archive path;
 it refuses missing/empty/oversized inputs and reports failure on any disagreement.
 This single-file diagnostic does not establish corpus-wide performance.
+
+## BM-0136: Position-distance event work and repeated token decoding
+
+On 2026-09-27 extend BM-0135's ignored diagnostic at revision `b9efc799`.
+After each ordinary frame round trip, independently run the production range
+decoder's begin/decode_next/finish sequence once into bounded operation storage.
+Outside its timer, compare every operation field with the encoder's retained
+operations and classify fields using the independent cursor. Count only the
+first iteration; use three iterations for timings. All 782 frames passed byte
+equality, raw reconstruction, operation equality and final coder validation on
+every iteration. No codec source was changed.
+
+| Scope | Run 1 seconds | Run 2 seconds | Run 3 seconds |
+|---|---:|---:|---:|
+| Existing range-to-token decoder | 3.9553164 | 3.9520367 | 3.9605720 |
+| Single direct event replay | 1.7792370 | 1.7813834 | 1.7816050 |
+
+Direct replay includes coder initialization, field grammar, model updates,
+canonical checks and operation writes, but not the outer token assembler or
+history/output-limit validation. Comparisons and counters are outside its timer.
+It runs after ordinary decoding, so cache/order bias exists. The difference is
+not a measured speedup for a safe replacement decoder.
+
+| Generic modeled alphabet | Calls per logical pass | Inferred linear lookup visits |
+|---|---:|---:|
+| 2 (token kind) | 14,011,113 | 19,118,793 |
+| 9 (length class) | 5,107,680 | 28,894,085 |
+| 17 (distance class) | 5,107,680 | 48,944,506 |
+| 256 (literal contexts) | 8,903,433 | 1,035,825,785 |
+
+The inferred visits are decoded symbol value plus one, matching the current
+generic linear lookup loop on valid input; these are algorithmic visits, not
+hardware load counts or instruction samples. Literal contexts account for about
+91.4% of the 1,132,783,169 generic visits. Additionally there are 4,743,553
+uniform-length-extra events (7,569,337 bits) and 5,090,600 adaptive-distance-extra
+events (43,836,826 binary decisions). The distance path already uses its binary
+specialization, so those decisions are not generic linear scans. No attribution
+of elapsed time to division versus lookup follows from these counts alone.
+
+Source inspection establishes a larger structural cost: the position-distance
+entry point in `src/context/lzss_short_match_range_tokens.cpp` calls
+`decode_tokens<LzssPositionDistanceRangeDecoder>`. That wrapper first calls
+`run_pass` with no output to validate, then calls it again with token storage.
+Both passes initialize and run the same entropy decoder. The successful current
+path therefore repeats the logical events and lookup work above. This is not
+duplicate LZSS search; it is a token-output transaction guarantee.
+
+The next candidate should be a separately contracted one-pass decode into
+discardable private token scratch inside the already frame-atomic stream path.
+Preserve the existing transactional helper and its unchanged-on-error contract
+as a reference. Check capacities/overlap before writes, perform all counts,
+reference bounds and canonical termination checks, reconstruct only after
+success, and publish no raw bytes from a bad frame. Preserve prior-frame output,
+sticky errors and exact error categories/positions as required by the public
+contract. Do not substitute the direct replay diagnostic for those checks.
+Only after differential malformed-input and boundary tests should timing decide
+adoption. Literal-model lookup remains a subsequent, separate optimization.
+
+The updated local probe source/executable SHA-256 values are
+`4470347da742d429cc5113421604807f30bf5700a27745bb437542ae1b11182d`
+and `0a7218f0888fe71696274284fd0577b29bcf69d26c55c5973278e929de8d4973`.
+`out/position-distance-stages-20260927/event-results.txt` SHA-256 is
+`934909a3e6b835a0eb5c44543b55583af47b657206273e6ba3efc1826ae280fb`.
+BM-0135's earlier results file is retained; its probe version is identified by
+the earlier hash. The approval-review transport failure interrupted the new
+build before execution; after the maintainer switched approval mode, build and
+measurement succeeded. These observations do not change public defaults,
+workspace charges, stream bytes or the reported external interoperability scope.

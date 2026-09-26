@@ -9392,3 +9392,9 @@ observed working-set peaks, separately from internal workspace policy charges.
 Stage isolation uses first-party position-distance frame/token/reconstruction
 entry points, the BM-0134 CLI archive and the local Silesia Mozilla input.
 No external codec implementation or optimization source was consulted.
+
+### IR-1051
+
+Event profiling and the one-pass scratch proposal use first-party range decoder,
+field cursor, token decode wrapper and BM-0135's local Mozilla diagnostic.
+No external source or algorithm implementation was consulted.

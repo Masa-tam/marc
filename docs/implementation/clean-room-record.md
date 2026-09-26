@@ -35137,3 +35137,20 @@ both bounds.
   causes. Encoder search remains a separate major cost.
 - Similarity review: independently authored diagnostic using first-party
   interfaces; no external expression copied and no legal guarantee claimed.
+
+## CR-1452: 2026-09-27 - Count range events and identify duplicate decode passes
+
+- Author: Codex; reviewer: repository maintainer approved deeper diagnosis and
+  resumed execution after approval-review transport failure.
+- References used: IR-1051, BM-0136 and DD-1294; first-party codec source.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party tests.
+- Validation: three 782-frame diagnostic iterations passed CLI byte equality,
+  raw reconstruction and complete decoded-operation equality. Counters run
+  outside direct-replay timing; inferred scan counts are not hardware samples.
+- Findings: current token wrapper performs two full decoding passes to preserve
+  its transactional output contract. A separate discardable-scratch path is a
+  candidate, not permission to remove validation or relax public publication.
+- Changes: diagnosis and design record only; no codec implementation or API change.
+- Similarity review: independently authored first-party diagnostic and analysis;
+  no external expression copied and no legal guarantee claimed.

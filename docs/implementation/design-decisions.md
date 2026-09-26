@@ -25612,3 +25612,14 @@ missing binary classes and default frame boundaries. Keep C source/ABI, fixed
 search policy and exact format unchanged. Record the exact profile separately
 from historical schema-57 inventories; private contexts and larger-window
 variants are not admitted by its successful external exchange.
+
+## DD-1294: Investigate one-pass private token scratch before model lookup tuning
+
+BM-0136 confirms repeated entropy decoding in the transactional token helper.
+Retain that helper's unchanged-on-failure contract and reference behavior.
+Investigate a separate private scratch-writing entry point for the frame-atomic
+stream decoder: validate storage before writes, allow discarded token scratch
+to change on failure, but never reconstruct or publish a failing frame. Preserve
+all grammar, reference, count, termination and canonical checks. Require public
+error/publication equivalence and unchanged valid stream bytes before timing
+or adoption. This is a proposed optimization boundary, not an implemented change.
