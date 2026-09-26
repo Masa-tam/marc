@@ -16703,3 +16703,23 @@ is valid; the following repeated frame is too compressible for that caller's
 limit. Require the earlier header/frame only, a raw error offset of 256, and
 unchanged output after the reported produced prefix. This distinguishes
 per-frame publication from whole-stream atomicity without weakening limits.
+
+## TVG-1150: Incremental context-9 hash boundaries and bounded fuzz schedules
+
+For raw lengths 0/1/63/64/65/128 and input/output capacities 1/7/1024, use SHA-256
+HashTap objects at both process boundaries. Compare counts and digests with
+direct hashing of raw input and one-shot wire bytes. Alternate Flush and insert
+zero-capacity output calls; reset taps across streams and commit the zero counts
+from repeated terminal calls. Check output guards on every call.
+
+Corrupt the second frame's magic and separately truncate a short final frame.
+Only the first 64 validated raw bytes may reach the output hash; the input hash
+must match exactly the reported consumed prefix, even on error.
+
+The private fuzz target compares incremental schedules on arbitrary bytes and
+on generated valid/truncated/mutated streams. Fixed input lengths are
+0/1/63/64/65/128/129/4096/4097 for zero, periodic and arithmetic patterns. Run
+these 27 cases at sanitizer initialization as well as under CTest. Random smoke
+uses seed 20260926, 1,000 runs, max_len 4096, max_total_time 30 seconds, per-input
+timeout 5 seconds and RSS limit 512 MiB. Record actual completion separately;
+no corpus completeness or absence-of-bugs claim follows from this smoke run.

@@ -9296,3 +9296,10 @@ checked workspace layout, fixed-policy raw-frame adapter and shared stream-heade
 serialization. State transitions derive from DD-1277 and the core process
 contract. The existing one-shot writer is the byte oracle. No external source
 or test suite was consulted.
+
+### IR-1036
+
+The incremental hash-boundary tests and bounded fuzz driver use the first-party
+HashTap, SHA-256, private streaming transforms, one-shot oracle and existing
+fixed boundary cases. Drivers and guards were independently composed from the
+process contract. No external implementation or test suite was consulted.

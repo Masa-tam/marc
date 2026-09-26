@@ -34828,3 +34828,25 @@ both bounds.
   errors before execution, without changing codec assertions.
 - Similarity review: independently composed first-party primitives and tests;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1436: 2026-09-26 - Check incremental context-9 hash and fuzz boundaries
+
+- Author: Codex; reviewer: repository maintainer approved bounded validation.
+- References used: IR-1036, DD-1281 and TVG-1150; first-party HashTap/SHA-256,
+  one-shot writer, incremental transforms and fixed local samples.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: verify committed hash boundaries and bounded chunk-independent decoder
+  behavior without adding stored hashes or public admission.
+- Changes: three hash tests and incremental paths in the existing private fuzz
+  target, including fixed boundary checks at sanitizer initialization.
+- Validation: targeted hash/smoke tests passed; Clang ASan/UBSan initialization
+  reported all 27 boundary cases completed, followed by 1,000 seeded runs in
+  one second with no finding (reported RSS 67 MiB). The empty-corpus mutation
+  phase reached inputs of six bytes; fixed cases separately cover frame/input
+  boundaries. All 3,912 Release CTest cases passed in 352.53 seconds, including
+  interoperability schema compatibility (106.27 seconds). A final MSVC smoke
+  rebuild initially hit a FileTracker access denial in the sandbox; the approved
+  elevated rebuild succeeded before the full suite ran.
+- Similarity review: independently composed first-party tests and drivers;
+  no external expression copied and no legal guarantee claimed.

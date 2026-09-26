@@ -25438,3 +25438,28 @@ before progress on that call. Flush preserves frames; unsupported flags fail
 before progress. After the final frame drains, await explicit EndInput. Ended
 and error states are sticky. Frame preparation failure reports its raw-frame
 start and exposes no failed-frame bytes; earlier header/frames remain published.
+
+## DD-1281: Observe committed stream boundaries and bound incremental fuzz work
+
+Keep hashing outside the private codec. Hash only the consumed input prefix and
+produced output prefix on each process call, including calls returning errors.
+An input tap records consumed malformed bytes, not just validated frames; a raw
+output tap receives only successfully validated frame bytes. Replay, scratch
+capacity, zero-capacity calls and repeated terminal calls contribute no bytes.
+Wire hashing in these tests covers the complete serialized stream, including
+header and descriptors; it adds no stored hash descriptor or format feature.
+
+Extend the existing private stream fuzz target rather than creating another
+build directory. Cap arbitrary input at 4,096 bytes, raw output at 128 bytes,
+frame capacity at 64 bytes and each incremental driver at 32,768 calls. Compare
+1/1 and 23/31 input/output chunk schedules, with periodic zero output capacity,
+for final status, error location and published prefix. A malformed later frame
+may follow already published output; do not impose the one-shot decoder's
+whole-stream atomicity on the incremental decoder.
+
+For raw samples up to 128 bytes, compare the indexed incremental encoder with
+the reference one-shot bytes, then test generated valid, truncated and mutated
+archives. Retain guards and sticky-state checks. Execute the existing 27 fixed
+boundary cases both in the CTest smoke executable and during sanitizer fuzzer
+initialization; this includes three deliberate over-cap inputs that are skipped.
+Short randomized runs from an empty corpus are supplemental, not exhaustive.

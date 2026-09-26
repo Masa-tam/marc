@@ -205,3 +205,13 @@ TVG-1149 compares complete bytes against the one-shot oracle under alternate
 policies, chunking and Flush, and pins delayed EndInput and frame failure behavior.
 The next stage is bounded incremental fuzz and hash-tap coverage in item 3,
 followed by whole-stream measurements. No public codec is admitted by this step.
+
+## Incremental hash and fuzz coverage
+
+DD-1281 implements the bounded validation portion of item 3. External SHA-256
+taps check consumed and produced prefixes independently; malformed input can be
+consumed without its unvalidated frame contributing raw output. The existing
+private fuzz target now compares chunk schedules and incremental/reference
+encoding, with fixed capacity/call ceilings and boundary cases at initialization.
+TVG-1150 records the deterministic schedules and smoke budget. Whole-stream
+incremental measurements remain the next step; public admission is still gated.
