@@ -34726,3 +34726,17 @@ both bounds.
   including interoperability schema compatibility.
 - Similarity review: independently composed first-party primitives; no external
   expression copied and no legal guarantee claimed.
+
+## CR-1430: 2026-09-26 - Add context-9 emitted-stream benchmark
+
+- Author: Codex; reviewer: repository maintainer approved the next step and retry.
+- References used: IR-1031, DD-1276 and TVG-1145; first-party components.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: make actual stream size and whole encode/decode timing measurable.
+- Changes: bounded benchmark, emitted-file differential smoke and timing/memory
+  documentation. Fixed policy and private format identity are preserved.
+- Validation: Release benchmark build, emitted-file smoke, documentation layout
+  and all 3,883 CTest cases passed, including interoperability schema compatibility.
+- Similarity review: independently composed first-party primitives; no external
+  expression copied and no legal guarantee claimed.

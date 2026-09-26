@@ -1,5 +1,30 @@
 # Benchmarks
 
+## Private context-9 whole-stream measurement
+
+With `MARC_BUILD_BENCHMARKS=ON` and a static library, build
+`marc_lzss_position_distance_stream_benchmark`. Example:
+
+```console
+marc_lzss_position_distance_stream_benchmark corpus.bin 65536 3 indexed 3 new-stream.marc
+```
+
+Arguments are input, frame bytes (1..65536), fixed match eligibility (3..5),
+search (`indexed` or `reference`), iterations (1..10), and a new output path.
+It reads the entire input, allows at most 64 MiB and 1,024 frames, and caps the
+planned archive buffer at 128 MiB. An existing output file is rejected. Every
+iteration strictly reconstructs the original bytes and checks archive SHA-256
+determinism before the final archive is saved. It uses private context 1/9;
+the public CLI does not yet decode this artifact.
+
+`plan_seconds` measures the external sizing pass. Each encode timing includes
+the writer's internal full planning pass and frame generation. Each decode
+timing includes validation and reconstruction passes. I/O, allocation, hashing
+and byte comparisons are excluded. Scratch byte fields report supplied spans;
+input/archive/restored buffers are separate. These values exclude allocator
+overhead and internal stack state and are not peak RSS. Fixed eligibility is
+not the previous per-frame size selector, so compare parsing policies explicitly.
+
 ## Running the benchmark
 
 Configure an optimized build with `MARC_BUILD_BENCHMARKS=ON`, then build and run

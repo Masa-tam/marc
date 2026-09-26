@@ -9259,3 +9259,9 @@ cases are derived independently; no external implementation was consulted.
 The private context-9 stream campaign composes first-party raw-stream encoding
 and strict decoding under fixed caller-owned workspaces. Its input mutations
 and checks were written independently; no external implementation was consulted.
+
+### IR-1031
+
+The context-9 whole-stream benchmark composes the first-party raw-stream
+planner/writer, strict decoder and SHA-256 implementation. Its timing boundaries
+and file checks are independently authored; no external implementation was used.

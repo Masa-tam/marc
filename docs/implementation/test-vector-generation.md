@@ -16614,3 +16614,12 @@ change one byte at a supplied-input-derived offset. On error require zero
 committed counts and unchanged output with outer canaries. Ordinary-build
 smoke inputs use empty, 1, 63, 64, 65, 128, 129, 4,096 and 4,097 bytes
 with zero, seven-symbol periodic and deterministic binary patterns.
+
+## TVG-1145: Emitted context-9 stream benchmark smoke
+
+Generate bounded text fixtures of 0/1/63/64/65/129 bytes. For eligibility 3/4/5
+and both searches, run two iterations, compare reference/indexed archive hashes,
+and independently check emitted file size and SHA-256 against reported values.
+Check frame count, input digest, iteration verification and timing fields; empty
+output is a 112-byte header. Verify invalid arguments and excess frame count
+fail, and an existing output file is rejected without changing its digest.

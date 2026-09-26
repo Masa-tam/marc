@@ -482,6 +482,29 @@ endif()
 
 if(MARC_BUILD_BENCHMARKS)
     if(TARGET marc_static)
+        add_executable(marc_lzss_position_distance_stream_benchmark
+            benchmarks/lzss_position_distance_stream_benchmark.cpp)
+        target_compile_features(marc_lzss_position_distance_stream_benchmark PRIVATE cxx_std_20)
+        set_target_properties(marc_lzss_position_distance_stream_benchmark PROPERTIES CXX_EXTENSIONS OFF)
+        target_include_directories(marc_lzss_position_distance_stream_benchmark
+            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_lzss_position_distance_stream_benchmark PRIVATE marc::static)
+        if(MSVC)
+            target_compile_options(marc_lzss_position_distance_stream_benchmark
+                PRIVATE /W4 /permissive- /Zc:__cplusplus)
+        else()
+            target_compile_options(marc_lzss_position_distance_stream_benchmark
+                PRIVATE -Wall -Wextra -Wpedantic)
+        endif()
+        if(MARC_BUILD_TESTS)
+            add_test(NAME marc_lzss_position_distance_stream_benchmark_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DMARC_BENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_stream_benchmark>"
+                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-distance-stream-smoke"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_stream_benchmark_smoke.cmake)
+            set_tests_properties(marc_lzss_position_distance_stream_benchmark_smoke
+                PROPERTIES LABELS benchmark-experimental-smoke TIMEOUT 60)
+        endif()
         add_executable(marc_lzss_short_match_candidate_benchmark
             benchmarks/lzss_short_match_candidate_benchmark.cpp)
         target_compile_features(marc_lzss_short_match_candidate_benchmark

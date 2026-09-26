@@ -25340,3 +25340,19 @@ bytes and change one byte. Bound supplied input at 4,096 bytes, raw output at
 failed decodes to preserve caller output and report no committed byte counts.
 Retain a deterministic ordinary-build smoke alongside sanitizer campaigns.
 This tests private format handling, not public stream admission.
+
+## DD-1276: Measure emitted context-9 streams with explicit whole-path boundaries
+
+Add a separate fixed-policy one-shot benchmark with caller-selected eligibility
+3/4/5, reference/indexed search, frame size and repeated iterations. Read one
+complete input, cap it at 64 MiB and 1,024 frames, and cap the planned archive
+at 128 MiB before allocating its output. Save only after strict round-trip and
+repeated archive-digest checks pass; reject an existing output path.
+
+Report the initial sizing-plan time separately. Encode timing includes the
+writer's own full preflight and repeated tokenization; decode timing includes
+both validation and publication passes. Allocation, file I/O, digest calculation
+and byte comparisons are outside timed calls. Report supplied scratch and
+whole-input/archive/restored buffer extents separately, not as peak process RSS.
+Fixed eligibility differs from the earlier per-frame selector measurements;
+their byte counts and timings cannot be substituted for this experiment.

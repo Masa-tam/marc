@@ -341,3 +341,14 @@ assembly. Empty input is header-only. This is still private one-shot processing;
 whole-stream planning repeats tokenization during writing, so whole-path timing
 must be measured separately. Dedicated stream robustness/fuzz validation and
 real emitted-archive measurement remain before public admission.
+
+### Private whole-stream measurement harness
+
+DD-1274/1275 add late metadata/termination checks and bounded stream fuzzing.
+DD-1276 adds a dedicated emitted-stream benchmark with fixed eligibility and
+reference/indexed search. Each saved archive has passed strict whole-stream
+reconstruction; reported encode/decode timing includes the complete private
+calls. The external sizing pass and supplied buffers are reported separately.
+The next measurement is a complete mozilla input with explicitly fixed policy;
+earlier selector-based size estimates are diagnostic controls, not an expected
+byte count for a different parser policy.
