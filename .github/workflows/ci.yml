@@ -106,7 +106,7 @@ jobs:
       - name: Configure installed consumer
         shell: pwsh
         run: >-
-          cmake -S examples -B out/consumer -G '${{ matrix.generator }}'
+          cmake -S out/install/share/marc/examples -B out/consumer -G '${{ matrix.generator }}'
           ${{ matrix.platform_args }}
           -Dmarc_DIR='${{ github.workspace }}/out/install/lib/cmake/marc'
       - name: Build installed consumer
@@ -116,10 +116,10 @@ jobs:
         shell: pwsh
         run: |
           $env:PATH = '${{ github.workspace }}\out\install\bin;' + $env:PATH
-          & '${{ github.workspace }}\out\consumer\Release\marc_c_roundtrip.exe'
+          ctest --test-dir out/consumer -C Release --output-on-failure --timeout 600
       - name: Run installed consumer on Ubuntu
         if: runner.os == 'Linux'
         shell: bash
         run: >-
           LD_LIBRARY_PATH='${{ github.workspace }}/out/install/lib'
-          '${{ github.workspace }}/out/consumer/marc_c_roundtrip'
+          ctest --test-dir out/consumer -C Release --output-on-failure --timeout 600

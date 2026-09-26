@@ -25559,3 +25559,13 @@ implementation and handle lifetimes and assert no process-time allocation.
 Do not add global failure switches or test hooks to the production library.
 The static replacement test does not claim to interpose allocations inside a
 Windows DLL. Shared-library C linkage is covered by its separate consumer.
+
+## DD-1288: Validate examples from the installed package
+
+Install the position-distance C example with the standalone examples project.
+Build one consumer for every exported library kind and register them with CTest.
+Keep the existing baseline example. Configure CI consumers from installed
+sources rather than repository examples, preserving the shared-only/static-only
+Windows/Ubuntu matrix. The example handles partial buffers and frees all caller
+workspace after destroying the handle, including failure paths. CLI and public
+format admission remain separate gates.

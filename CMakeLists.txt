@@ -2006,6 +2006,7 @@ install(DIRECTORY docs/
     DESTINATION ${CMAKE_INSTALL_DATADIR}/marc/docs
     FILES_MATCHING PATTERN "*.md")
 install(FILES examples/CMakeLists.txt examples/c_roundtrip.c
+    examples/position_distance_roundtrip.c
     DESTINATION ${CMAKE_INSTALL_DATADIR}/marc/examples)
 
 if(MARC_BUILD_TESTS)

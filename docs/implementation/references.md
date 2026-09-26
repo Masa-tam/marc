@@ -9342,3 +9342,9 @@ oracle. No external codec source or third-party tests were consulted.
 Standalone position-distance consumers and allocation-failure tests derive from
 the first-party C contract, existing C test assertion helper and C++ replaceable
 allocation interfaces. No external codec implementation or test suite was used.
+
+### IR-1043
+
+The installed position-distance example uses the first-party C lifecycle,
+exported package targets and existing installed-package CI matrix. No external
+codec implementation or third-party test suite was consulted.

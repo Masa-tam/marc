@@ -16802,3 +16802,13 @@ live tracked allocations. On success require two allocations, no additional
 allocation during two-frame process with one-byte output, both releases on
 destruction, and successful reconstruction after injected failures. Query and invalid
 configuration must not allocate. No ambient low-memory condition is required.
+
+## TVG-1157: Installed position-distance C example
+
+Configure the standalone project using installed sources and find_package,
+without src/ includes or build-tree library paths. Build and run the baseline
+example plus one position-distance example per exported library kind. The new
+example uses a known-size, multi-frame input and one-byte input/output calls,
+checks decoded size and bytes, and bounds its process loop. CI keeps its four
+platform/linkage package entries; local validation uses the existing Release
+build and a stable installed-package validation subdirectory.

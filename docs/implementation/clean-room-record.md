@@ -34972,3 +34972,25 @@ both bounds.
   Installed-package and external interoperability coverage remain pending.
 - Similarity review: independently authored first-party harnesses and vectors;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1443: 2026-09-26 - Install and validate the position-distance C example
+
+- Author: Codex; reviewer: repository maintainer approved the installed example.
+- References used: IR-1043, DD-1288 and TVG-1157; first-party C lifecycle,
+  exported package targets and existing installed-package CI matrix.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Task: install a small streaming C example and validate consumers against the
+  installed package, independently of internal headers and build-tree libraries.
+- Changes: one-byte multi-frame example, per-exported-library CTest consumers,
+  installed-source CI configuration and user instructions. No production codec,
+  ABI or wire representation changes; CLI and format admission remain pending.
+- Validation: the baseline and position-distance static/shared installed-package
+  consumers passed (3/3). Sandbox configuration, build and DLL loading failed;
+  exact approved reruns succeeded without source or build-setting changes.
+  All 3,929 Release CTest cases passed in 398.18 seconds, including
+  interoperability schema compatibility (122.93 seconds).
+  The local package exports both library kinds; the four platform/linkage CI
+  entries are configured but their hosted execution remains pending.
+- Similarity review: independently authored first-party example and integration;
+  no external expression copied and no legal guarantee claimed.

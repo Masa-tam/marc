@@ -671,6 +671,30 @@ See [`../examples/c_roundtrip.c`](../examples/c_roundtrip.c) for a complete
 single-call round trip. Real streaming callers should also handle partial
 consumption and production as described above.
 
+### Installed streaming example
+
+[`position_distance_roundtrip.c`](../examples/position_distance_roundtrip.c)
+demonstrates the staged position-distance family with one-byte buffers, multiple
+frames, known-size encoding, local decoder limits and failure-path cleanup.
+It needs no profile helper. This example does not imply CLI or format admission.
+The installed examples project uses only `find_package(marc CONFIG REQUIRED)`
+and public targets; it builds a position-distance consumer for each available
+`marc::static` / `marc::shared` target and registers round trips with CTest.
+
+For a package installed at `<prefix>` (default `share` data directory):
+
+```sh
+cmake -S <prefix>/share/marc/examples -B out/consumer -Dmarc_DIR=<prefix>/lib/cmake/marc
+cmake --build out/consumer --config Release
+ctest --test-dir out/consumer -C Release --output-on-failure --timeout 600
+```
+
+Use the package's actual library/data directories if customized. On Windows,
+prepend `<prefix>/bin` to the process PATH for DLL discovery; on Linux use the
+installed library directory in `LD_LIBRARY_PATH` if the loader needs it. Keep
+these changes local to the test process/environment. CI uses separate shared-only
+and static-only packages on Windows and Ubuntu and runs the installed examples.
+
 ## Contextual rANS canonical surface for 0.2.0
 
 The final pre-1.0 Contextual rANS C surface uses only the unqualified
