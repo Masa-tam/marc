@@ -5387,3 +5387,61 @@ decoding. TVG-1164 and FZ-0046 cover interval boundaries, model rescaling,
 operation/error equivalence and canonical state; previous frame-publication
 tests remain in the complete suite. No format, ABI, encoder or other codec
 change is made, and no new external-platform interoperability result is claimed.
+
+## BM-0139: Fixed-profile Silesia validation of grouped literal lookup
+
+On 2026-09-27 extend BM-0138 to all twelve provisioned Silesia inputs at
+`33029427`. Reuse the same verified diagnostic binary and public CLI, with
+fixed eligibility 3 and 65,536-byte frames. No codec source changes are made.
+For each input, run three CLI encode/decode pairs and four alternating-order
+linear/grouped entropy comparisons. Both lookup paths use identical specialized
+distance decoding. Verify every operation and raw frame before timing, repeated
+archive hashes/sizes, exact restored input hashes and complete frame extents.
+
+All 3,239 frames across 211,938,580 input bytes passed; all 36 CLI pairs
+round-tripped and repeated archives were identical within each input. The sum
+of the twelve separate archive sizes is 70,126,519 bytes (33.0881% of raw size).
+This is not a solid archive or a concatenated-input experiment.
+
+| Input | Archive bytes | Linear entropy median s | Grouped entropy median s | Reduction | CLI encode median s | CLI decode median s |
+|---|---:|---:|---:|---:|---:|---:|
+| dickens | 4,155,283 | 0.316797 | 0.307297 | 3.00% | 1.197318 | 0.487980 |
+| mozilla | 18,655,833 | 1.678509 | 1.380622 | 17.75% | 5.387600 | 2.113436 |
+| mr | 3,545,896 | 0.295354 | 0.275083 | 6.86% | 1.042861 | 0.432442 |
+| nci | 3,687,394 | 0.266028 | 0.257826 | 3.08% | 1.746402 | 0.527054 |
+| ooffice | 3,170,470 | 0.263667 | 0.225690 | 14.40% | 0.642556 | 0.360382 |
+| osdb | 4,204,247 | 0.345015 | 0.292438 | 15.24% | 0.619436 | 0.467193 |
+| reymont | 2,015,408 | 0.150226 | 0.144541 | 3.78% | 0.887244 | 0.240153 |
+| samba | 5,756,911 | 0.468377 | 0.402280 | 14.11% | 1.353946 | 0.651790 |
+| sao | 5,219,872 | 0.486874 | 0.369384 | 24.13% | 0.755138 | 0.539485 |
+| webster | 13,190,513 | 1.003098 | 0.969557 | 3.34% | 3.511196 | 1.464460 |
+| x-ray | 5,747,816 | 0.504855 | 0.444001 | 12.05% | 0.845039 | 0.630278 |
+| xml | 776,876 | 0.057104 | 0.053924 | 5.57% | 0.239135 | 0.124834 |
+
+The sum of per-input entropy medians decreases from 5.83590485 to 5.12264200
+seconds, or 12.22%. All twelve medians and all 48 observed traversal pairs
+favor grouped lookup. Small differences remain sensitive to scheduling/cache
+effects; this finite campaign is not a general no-regression guarantee.
+Entropy timers exclude preflight, token assembly and raw reconstruction.
+
+Summed per-input CLI medians are 18.2278711 seconds encode and 8.0394859 seconds
+decode, equivalent to 11.089 and 25.141 raw MiB/s respectively. These sums
+include individual process startup and I/O, not one whole-corpus timed process.
+Observed process-peak samples span 11,202,560..11,325,440 bytes for encode and
+5,492,736..5,619,712 for decode; they are not codec allocation bounds.
+
+Historical corpus records identify the same input hashes but reuse selected
+token parses. They are not size or byte oracles for the public fixed-eligibility
+profile, as also distinguished in BM-0131. A preliminary size assertion stopped
+after the first dickens pair (historical selected-token accounting 4,073,776
+bytes versus fixed-profile 4,155,283). The restored input matched. Inspection
+confirmed the different parsing conditions; the corrected campaign used a new
+result set and retained the preliminary artifacts. Its timings are excluded
+from the table. Current deterministic bytes are established by the new repeated
+archives, not inferred from historical size equality.
+
+This evidence supports retaining grouped lookup beyond Mozilla. No format,
+ABI, allocation, workspace or codec implementation changes are introduced by
+this validation step. Earlier full-suite/fuzz evidence remains evidence for
+the unchanged implementation; it was not rerun as part of this measurement-only
+step. External-platform validation remains separate.

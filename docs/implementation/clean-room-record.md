@@ -35207,3 +35207,28 @@ both bounds.
 - Similarity review: independently derived grouping of the repository's own
   cumulative search; no external expression copied or legal guarantee claimed.
   Public ABI, format, encoder bytes and workspace charges remain unchanged.
+
+## CR-1455: 2026-09-27 - Validate grouped literal lookup across Silesia
+
+- Author: Codex; local result review: Codex; maintainer review pending.
+- Task: following approval of the literal-search refinement, extend its
+  correctness and performance comparison beyond Mozilla using existing inputs.
+- References used: IR-1054, BM-0131/BM-0138 and first-party diagnostic/CLI code.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test or optimization logic.
+- Method: confirm input and binary identities; run four alternating entropy
+  comparisons and three CLI encode/decode pairs for each of twelve inputs.
+  Compare all operations, reconstructed frames and repeated archive hashes.
+- Correction: the initial runner incorrectly asserted equality with historical
+  selected-token sizes. It stopped on dickens despite a correct round trip.
+  Source and existing documentation establish that the public fixed profile
+  uses a different parsing policy. Preserve preliminary artifacts and use a
+  separate corrected campaign; do not reinterpret historical data as an oracle.
+- Validation: all 3,239 frames and 36 CLI pairs passed. BM-0139 records all
+  twelve input medians, scope and process-memory observations. All 48 observed
+  lookup comparisons favor grouping; the sum of entropy medians falls 12.22%.
+- Changes: measurement/provenance records only. Codec, tests, format and ABI
+  remain unchanged; prior full-suite/fuzz results are not claimed as new runs.
+- Similarity review: independently assembled runner from first-party tooling;
+  no external expression copied and no legal guarantee claimed. No new external
+  interoperability evidence is asserted.

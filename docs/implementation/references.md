@@ -9414,3 +9414,14 @@ The grouped literal search trial uses the repository's position-distance range
 decoder, its linear reference path and BM-0136/BM-0137. Group sums and boundary
 tests are independently derived from the existing cumulative-frequency rule.
 No external implementation or optimization source was consulted.
+
+### IR-1054
+
+The grouped-literal corpus validation uses the first-party BM-0138 diagnostic,
+the current CLI, provisioned Silesia inputs and prior position-distance corpus
+size records. Historical input hashes identify the same data; newly repeated
+archives establish current deterministic bytes. No external implementation or
+test logic is consulted.
+The prior size records reuse selected token parses, not the public CLI's fixed
+eligibility-3 parsing. They identify historical data but are not an archive-size
+or byte oracle for this fixed-profile run; BM-0131 also documents this distinction.
