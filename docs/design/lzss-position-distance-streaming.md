@@ -238,7 +238,8 @@ identity handling before implementing public factories or changing defaults.
 ## Public integration contract (planned, not yet admitted)
 
 BM-0132/BM-0133 complete the fixed-policy measurement gate. This section is the
-integration contract. Only initializer/query symbols are implemented so far.
+integration contract. Initializer/query/factory symbols are implemented so far;
+consumer, CLI and public-admission gates remain pending.
 
 ### Additive C family
 
@@ -341,5 +342,5 @@ Stage implementation: C initializer/query and negative tests; factory/process
 integration and exact private/public byte comparison; static/shared C consumers
 and installed-package example; CLI selection and wrong-codec tests; documented
 format admission audit; interoperability artifacts and external cross-platform
-verification. Public completion requires the final gate. Initializer/query now
-have C configuration boundary tests; factory and public admission remain pending.
+verification. Public completion requires the final gate. Initializer/query and
+factory/process now have C integration tests; subsequent gates remain pending.

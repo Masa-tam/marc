@@ -9330,3 +9330,9 @@ The position-distance C initializer/query uses the first-party DD-1284 contract,
 private workspace calculator, stream owners and core overlap/limit validators.
 Tests independently exercise C metadata and resource boundaries. No external
 codec implementation, ABI template or test suite was consulted.
+
+### IR-1041
+
+Position-distance C construction uses the first-party incremental transforms,
+workspace partitioner, C handle publication helper and independent raw-stream
+oracle. No external codec source or third-party tests were consulted.

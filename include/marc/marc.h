@@ -381,7 +381,7 @@ typedef struct marc_lzss_dynamic_range_config {
 } marc_lzss_dynamic_range_config;
 
 /* Position-distance configuration: fixed 64 KiB window, matches 3..258.
- * No profile helper is needed. Factory integration is not yet available. */
+ * No profile helper is needed. This family is staged pending admission. */
 typedef struct marc_lzss_position_distance_dynamic_range_config {
     uint32_t struct_size;
     uint32_t abi_version;
@@ -1243,6 +1243,16 @@ MARC_API marc_status marc_lzss_position_distance_dynamic_range_config_init(
 MARC_API marc_status marc_lzss_position_distance_dynamic_range_workspace_requirements(
     const marc_lzss_position_distance_dynamic_range_config* config,
     marc_workspace_requirements* requirements) MARC_NOEXCEPT;
+
+/* Retains only queried prefixes for the handle lifetime. Retained prefixes
+ * must be disjoint from one another and config; handle output must not overlap config or
+ * supplied workspace. A disjoint handle output is null on failure. Flush
+ * preserves frames; ResetBlock is unsupported. Ended/error states are sticky.
+ * Decoder publication is atomic per frame, not for the whole stream. */
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_create(
+    const marc_lzss_position_distance_dynamic_range_config* config,
+    marc_buffer primary_workspace, marc_buffer secondary_workspace,
+    marc_buffer views_workspace, marc_transform** transform) MARC_NOEXCEPT;
 
 MARC_API marc_status marc_lzss_contextual_dynamic_range_config_init(
     marc_direction direction,

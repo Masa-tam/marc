@@ -16779,3 +16779,13 @@ for both directions, accepting it and rejecting one byte less. These are C
 configuration tests, not public factory/process or interoperability completion.
 The documentation inventory separately requires the staged initializer and its
 query-only status; it must not count the family as a complete CLI profile.
+
+## TVG-1155: Position-distance C factory and process integration
+
+Check short/misaligned/overlapping workspaces and metadata aliases before writes,
+null handles on disjoint failures and successful larger-buffer prefix trimming.
+Compare chunked C encoding with the independent private raw-stream oracle and
+decode under one-byte buffers. Exercise empty/final-short frames, Flush,
+EndInput, sticky states, malformed input and exact aggregate boundaries.
+These integration tests do not replace installed C consumers or external
+interoperability verification.

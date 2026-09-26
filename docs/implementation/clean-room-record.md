@@ -34931,3 +34931,24 @@ both bounds.
   and explicitly asserted rather than changing the existing workspace ABI.
 - Similarity review: independently composed first-party integration and tests;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1441: 2026-09-26 - Connect position-distance C factory and process
+
+- Author: Codex; reviewer: repository maintainer approved factory integration.
+- References used: IR-1041, DD-1286, TVG-1155 and the first-party integration
+  contract, workspace partitioner, incremental owners and raw-stream oracle.
+- Known implementations intentionally not consulted: external compressor code,
+  copyleft implementations and third-party test suites.
+- Task: connect the staged C factory to generic process without changing CLI
+  selection, general format dispatch or public-completion status.
+- Changes: shared config/query/construction accounting, metadata-first overlap
+  rejection, retained-prefix validation and nothrow handle publication. Tests
+  compare private reference bytes across chunk sizes and exercise per-frame
+  atomic publication, sticky errors and exact aggregate limits with excess tails.
+- Validation: six targeted factory/process tests passed. All 3,926 Release
+  CTest cases passed in 394.41 seconds, including interoperability schema
+  compatibility (121.10 seconds). Allocation-failure cleanup reuses the existing
+  publication helper; injected allocation failure and standalone C consumer
+  coverage remain subsequent work, not claimed as completed here.
+- Similarity review: independently composed first-party adapters and tests;
+  no external expression copied and no legal guarantee claimed.

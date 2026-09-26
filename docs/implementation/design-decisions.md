@@ -25537,3 +25537,14 @@ accounting. Invalid core limit relationships are invalid arguments; coherent
 but insufficient resource budgets are limit errors. Decode capacity uses local
 frame limits capped at 65536, ignoring both encode-only fields. Factory, CLI and
 public wire admission remain pending; existing codec behavior is unchanged.
+
+## DD-1286: Connect the staged position-distance C factory
+
+Share config validation and handle-adjusted limits between query and factory.
+Reject handle-output overlap with config or any supplied workspace before
+writing null; validate retained prefixes against one another and config before
+constructing typed objects. Trim excess capacity before private construction.
+Reuse nothrow handle publication and its implementation cleanup on failure.
+Expose generic process semantics through the private strict stream owners,
+without changing general format dispatch or adding a CLI option. Consumer,
+admission and interoperability gates remain pending.

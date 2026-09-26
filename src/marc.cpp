@@ -4891,21 +4891,19 @@ marc_status marc_lzss_position_distance_dynamic_range_config_init(
     return MARC_STATUS_OK;
 }
 
-marc_status marc_lzss_position_distance_dynamic_range_workspace_requirements(
+static marc_status prepare_position_distance_config(
     const marc_lzss_position_distance_dynamic_range_config* config,
-    marc_workspace_requirements* requirements) noexcept {
+    marc::core::DecoderLimits& limits,
+    marc::frame::internal::TypedContextStreamHeader& stream,
+    marc::frame::internal::LzssPositionDistanceWorkspaceRequirements& r) noexcept {
     using namespace marc::frame::internal;
-    if (config == nullptr || requirements == nullptr
-        || marc::core::check_buffer_overlap(config, sizeof(*config), requirements,
-            sizeof(*requirements)) != marc::core::BufferOverlap::disjoint)
-        return MARC_STATUS_INVALID_ARGUMENT;
-    if (config->struct_size != sizeof(*config)
+    if (config == nullptr || config->struct_size != sizeof(*config)
         || config->abi_version != MARC_ABI_VERSION
         || config->reserved != 0 || config->reserved2 != 0
         || (config->direction != MARC_DIRECTION_ENCODE
             && config->direction != MARC_DIRECTION_DECODE))
         return MARC_STATUS_INVALID_ARGUMENT;
-    marc::core::DecoderLimits limits{};
+    limits = {};
     limits.max_total_output_size = config->max_total_output_size;
     limits.max_frame_size = config->max_frame_size;
     limits.max_block_size = config->max_block_size;
@@ -4929,10 +4927,9 @@ marc_status marc_lzss_position_distance_dynamic_range_workspace_requirements(
     limits.max_internal_buffered_bytes -= sizeof(marc_transform);
     const auto frame_size = encode ? config->frame_size
         : static_cast<std::uint32_t>(std::min(config->max_frame_size, UINT64_C(65536)));
-    const TypedContextStreamHeader stream{frame_size,
+    stream = {frame_size,
         encode ? config->original_size : UINT64_C(0),
         {65536, 3, 258, 0}, 32768, 40, 8, 1, 9};
-    LzssPositionDistanceWorkspaceRequirements r{};
     const auto error = calculate_lzss_position_distance_workspace(stream, limits,
         encode ? LzssPositionDistanceWorkspaceDirection::encode
                : LzssPositionDistanceWorkspaceDirection::decode,
@@ -4942,10 +4939,89 @@ marc_status marc_lzss_position_distance_dynamic_range_workspace_requirements(
         return error == LzssPositionDistanceWorkspaceError::limit_exceeded
             || error == LzssPositionDistanceWorkspaceError::arithmetic_overflow
             ? MARC_STATUS_LIMIT_EXCEEDED : MARC_STATUS_INVALID_ARGUMENT;
+    return MARC_STATUS_OK;
+}
+
+marc_status marc_lzss_position_distance_dynamic_range_workspace_requirements(
+    const marc_lzss_position_distance_dynamic_range_config* config,
+    marc_workspace_requirements* requirements) noexcept {
+    if (config == nullptr || requirements == nullptr
+        || marc::core::check_buffer_overlap(config, sizeof(*config), requirements,
+            sizeof(*requirements)) != marc::core::BufferOverlap::disjoint)
+        return MARC_STATUS_INVALID_ARGUMENT;
+    marc::core::DecoderLimits limits{};
+    marc::frame::internal::TypedContextStreamHeader stream{};
+    marc::frame::internal::LzssPositionDistanceWorkspaceRequirements r{};
+    const auto status = prepare_position_distance_config(config, limits, stream, r);
+    if (status != MARC_STATUS_OK) return status;
+    const bool encode = config->direction == MARC_DIRECTION_ENCODE;
     *requirements = {sizeof(*requirements), MARC_ABI_VERSION,
         encode ? r.raw_bytes : r.serialized_bytes,
         encode ? r.serialized_bytes : r.raw_bytes, r.views_bytes, r.views_alignment};
     return MARC_STATUS_OK;
+}
+
+marc_status marc_lzss_position_distance_dynamic_range_create(
+    const marc_lzss_position_distance_dynamic_range_config* config,
+    const marc_buffer primary, const marc_buffer secondary,
+    const marc_buffer views, marc_transform** transform) noexcept {
+    using namespace marc::frame::internal;
+    if (transform == nullptr) return MARC_STATUS_INVALID_ARGUMENT;
+    const auto disjoint = [](const void* a, std::size_t an,
+                             const void* b, std::size_t bn) noexcept {
+        return marc::core::check_buffer_overlap(a, an, b, bn)
+            == marc::core::BufferOverlap::disjoint;
+    };
+    if (config != nullptr && !disjoint(config, sizeof(*config), transform, sizeof(*transform)))
+        return MARC_STATUS_INVALID_ARGUMENT;
+    for (const auto storage : {primary, secondary, views}) {
+        if (!disjoint(storage.data, storage.size, transform, sizeof(*transform)))
+            return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    *transform = nullptr;
+    if (!valid_buffer(primary.data, primary.size)
+        || !valid_buffer(secondary.data, secondary.size)
+        || !valid_buffer(views.data, views.size)) return MARC_STATUS_INVALID_ARGUMENT;
+    marc::core::DecoderLimits limits{};
+    TypedContextStreamHeader stream{};
+    LzssPositionDistanceWorkspaceRequirements r{};
+    const auto status = prepare_position_distance_config(config, limits, stream, r);
+    if (status != MARC_STATUS_OK) return status;
+    const bool encode = config->direction == MARC_DIRECTION_ENCODE;
+    const auto raw = encode ? primary : secondary;
+    const auto serialized = encode ? secondary : primary;
+    if (raw.size < r.raw_bytes || serialized.size < r.serialized_bytes
+        || views.size < r.views_bytes
+        || reinterpret_cast<std::uintptr_t>(views.data) % r.views_alignment != 0)
+        return MARC_STATUS_INVALID_ARGUMENT;
+    const marc_buffer prefixes[]{{raw.data, r.raw_bytes},
+        {serialized.data, r.serialized_bytes}, {views.data, r.views_bytes}};
+    for (std::size_t i = 0; i < 3; ++i) {
+        if (!disjoint(prefixes[i].data, prefixes[i].size, config, sizeof(*config)))
+            return MARC_STATUS_INVALID_ARGUMENT;
+        for (std::size_t j = 0; j < i; ++j)
+            if (!disjoint(prefixes[i].data, prefixes[i].size, prefixes[j].data, prefixes[j].size))
+                return MARC_STATUS_INVALID_ARGUMENT;
+    }
+    const std::span raw_span{reinterpret_cast<std::byte*>(raw.data), r.raw_bytes};
+    const std::span serialized_span{reinterpret_cast<std::byte*>(serialized.data), r.serialized_bytes};
+    const std::span views_span{reinterpret_cast<std::byte*>(views.data), r.views_bytes};
+    marc::core::Transform* implementation{};
+    if (encode) {
+        implementation = new (std::nothrow) LzssPositionDistanceFrameStreamingEncoder(
+            stream, limits, raw_span, serialized_span, views_span);
+    } else {
+        LzssPositionDistanceWorkspaceViews partition{};
+        const auto error = partition_lzss_position_distance_workspace(stream, limits,
+            LzssPositionDistanceWorkspaceDirection::decode,
+            sizeof(LzssPositionDistanceFrameStreamingDecoder), raw_span,
+            serialized_span, views_span, partition);
+        if (error != LzssPositionDistanceWorkspaceError::none)
+            return MARC_STATUS_INTERNAL_ERROR; // All inputs were checked above.
+        implementation = new (std::nothrow) LzssPositionDistanceFrameStreamingDecoder(
+            limits, serialized_span, partition.tokens, raw_span);
+    }
+    return publish_transform(implementation, transform);
 }
 
 marc_status marc_lzss_contextual_dynamic_range_config_init(
