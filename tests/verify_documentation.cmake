@@ -1643,22 +1643,30 @@ endforeach()
 file(STRINGS "${source_dir}/include/marc/marc.h" c_api_config_initializers
     REGEX "^MARC_API marc_status marc_.*_config_init\\(")
 list(LENGTH c_api_config_initializers c_api_profile_count)
-set(c_api_staged_initializers ${c_api_config_initializers})
-list(FILTER c_api_staged_initializers INCLUDE REGEX
+set(c_api_position_distance_initializers ${c_api_config_initializers})
+list(FILTER c_api_position_distance_initializers INCLUDE REGEX
     "marc_lzss_position_distance_dynamic_range_config_init")
-list(LENGTH c_api_staged_initializers c_api_staged_profile_count)
-if(NOT c_api_staged_profile_count EQUAL 1)
-    message(FATAL_ERROR "Missing staged position-distance initializer")
+list(LENGTH c_api_position_distance_initializers c_api_position_distance_profile_count)
+if(NOT c_api_position_distance_profile_count EQUAL 1)
+    message(FATAL_ERROR "Missing public position-distance initializer")
 endif()
-foreach(staged_contract IN ITEMS
-        "staged C factory integration"
+foreach(position_distance_contract IN ITEMS
+        "public C factory integration"
         "marc_lzss_position_distance_dynamic_range_config_init()"
         "marc_lzss_position_distance_dynamic_range_workspace_requirements()"
         "marc_lzss_position_distance_dynamic_range_create()"
-        "Its explicit staged command-line codec is")
-    string(FIND "${c_api_content}" "${staged_contract}" staged_contract_offset)
-    if(staged_contract_offset EQUAL -1)
-        message(FATAL_ERROR "Missing staged C API contract: ${staged_contract}")
+        "Its explicit command-line codec is"
+        "schema 58 has passed external four-direction verification")
+    string(FIND "${c_api_content}" "${position_distance_contract}" position_distance_contract_offset)
+    if(position_distance_contract_offset EQUAL -1)
+        message(FATAL_ERROR "Missing public position-distance contract: ${position_distance_contract}")
+    endif()
+endforeach()
+foreach(stale_position_distance_contract IN ITEMS
+        "staged C factory integration" "not a complete public profile")
+    string(FIND "${c_api_content}" "${stale_position_distance_contract}" stale_position_distance_offset)
+    if(NOT stale_position_distance_offset EQUAL -1)
+        message(FATAL_ERROR "Stale position-distance status: ${stale_position_distance_contract}")
     endif()
 endforeach()
 math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 1")
@@ -1666,7 +1674,7 @@ if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "
         "${cli_profile_count} CLI profiles plus five experimental profiles "
-        "and one staged C factory family")
+        "and one public position-distance family")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
     "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")

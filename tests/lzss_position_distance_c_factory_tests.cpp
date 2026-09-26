@@ -47,25 +47,30 @@ std::vector<uint8_t> run(const Config& c, const std::vector<uint8_t>& input,
     Storage s(c); marc_transform* t{};
     EXPECT_EQ(marc_lzss_position_distance_dynamic_range_create(&c,s.p(),s.s(),s.v(),&t), MARC_STATUS_OK);
     if (!t) return {};
-    std::vector<uint8_t> output, buffer(capacity);
+    std::vector<uint8_t> output, buffer(capacity + 2, 0xcd);
     std::size_t offset{};
     bool ended=false;
     for (std::size_t calls=0; calls<100000; ++calls) {
         auto n=std::min(chunk,input.size()-offset);
         const auto flags=(offset+n==input.size()?MARC_PROCESS_END_INPUT:0u)
             | (calls%2?MARC_PROCESS_FLUSH:0u);
-        auto r=marc_transform_process(t,{n?input.data()+offset:nullptr,n},{buffer.data(),buffer.size()},flags);
+        auto r=marc_transform_process(t,{n?input.data()+offset:nullptr,n},{buffer.data()+1,capacity},flags);
+        EXPECT_EQ(buffer.front(),0xcd); EXPECT_EQ(buffer.back(),0xcd);
         EXPECT_LE(r.input_consumed,n); EXPECT_LE(r.output_produced,capacity);
         if (r.input_consumed>n || r.output_produced>capacity || r.status>=100) {
             ADD_FAILURE()<<r.status; break;
         }
         EXPECT_FALSE(r.status==MARC_STATUS_PROGRESS && !r.input_consumed && !r.output_produced);
         offset+=r.input_consumed;
-        output.insert(output.end(),buffer.begin(),buffer.begin()+r.output_produced);
+        output.insert(output.end(),buffer.begin()+1,buffer.begin()+1+r.output_produced);
         if (r.status==MARC_STATUS_END_OF_STREAM) { ended=true; break; }
     }
     EXPECT_TRUE(ended); EXPECT_EQ(offset,input.size());
-    EXPECT_EQ(marc_transform_process(t,{nullptr,0},{nullptr,0},MARC_PROCESS_END_INPUT).status,MARC_STATUS_END_OF_STREAM);
+    for (auto flags : {MARC_PROCESS_NONE, MARC_PROCESS_END_INPUT, MARC_PROCESS_FLUSH}) {
+        const auto terminal=marc_transform_process(t,{nullptr,0},{nullptr,0},flags);
+        EXPECT_EQ(terminal.status,MARC_STATUS_END_OF_STREAM);
+        EXPECT_EQ(terminal.input_consumed,0u); EXPECT_EQ(terminal.output_produced,0u);
+    }
     marc_transform_destroy(t); s.tails(); return output;
 }
 std::vector<uint8_t> oracle(const std::vector<uint8_t>& input) {
@@ -101,6 +106,54 @@ TEST(PositionDistanceCFactory, ChunkedBytesMatchPrivateOracleAndRoundTrip) {
             EXPECT_EQ(encoded,expected);
             EXPECT_EQ(run(config_for(MARC_DIRECTION_DECODE),encoded,chunk,chunk),input);
         }
+    }
+}
+TEST(PositionDistanceCFactory, CompletionEverySingleByteAndIndependentBufferSizes) {
+    for (unsigned value=0; value<256; ++value) {
+        SCOPED_TRACE(value);
+        const std::vector<uint8_t> input{static_cast<uint8_t>(value)};
+        const auto expected=oracle(input);
+        EXPECT_EQ(run(config_for(MARC_DIRECTION_ENCODE,1),input,1,7),expected);
+        EXPECT_EQ(run(config_for(MARC_DIRECTION_DECODE),expected,7,1),input);
+    }
+}
+TEST(PositionDistanceCFactory, CompletionDataClassesAndDeterministicChunking) {
+    std::vector<std::vector<uint8_t>> inputs{{}, std::vector<uint8_t>(513,0),
+        std::vector<uint8_t>(513,0xff), std::vector<uint8_t>(513),
+        std::vector<uint8_t>(513), std::vector<uint8_t>(513)};
+    uint32_t state=0x12345678u;
+    for (std::size_t i=0;i<513;++i) {
+        inputs[3][i]=static_cast<uint8_t>(i);
+        inputs[4][i]=static_cast<uint8_t>(i%7);
+        state^=state<<13; state^=state>>17; state^=state<<5;
+        inputs[5][i]=static_cast<uint8_t>(state);
+    }
+    // Already-coded bytes are a separate binary input class, not a ratio assertion.
+    inputs.push_back(oracle(inputs.back()));
+    for (std::size_t index=0;index<inputs.size();++index) {
+        SCOPED_TRACE(index);
+        const auto& input=inputs[index];
+        const auto expected=oracle(input);
+        for (const auto chunks : {std::array<std::size_t,2>{1,7}, {7,1}, {13,29}, {4096,4096}}) {
+            SCOPED_TRACE(chunks[0]);
+            SCOPED_TRACE(chunks[1]);
+            EXPECT_EQ(run(config_for(MARC_DIRECTION_ENCODE,input.size()),input,chunks[0],chunks[1]),expected);
+            EXPECT_EQ(run(config_for(MARC_DIRECTION_DECODE),expected,chunks[1],chunks[0]),input);
+        }
+    }
+}
+TEST(PositionDistanceCFactory, CompletionDefaultFrameAndMatchBoundaries) {
+    for (std::size_t size : {257u,258u,259u,65535u,65536u,65537u}) {
+        SCOPED_TRACE(size);
+        std::vector<uint8_t> input(size);
+        for (std::size_t i=0;i<size;++i) input[i]=static_cast<uint8_t>(i%7);
+        Config encoder{},decoder{};
+        ASSERT_EQ(marc_lzss_position_distance_dynamic_range_config_init(MARC_DIRECTION_ENCODE,&encoder),MARC_STATUS_OK);
+        ASSERT_EQ(marc_lzss_position_distance_dynamic_range_config_init(MARC_DIRECTION_DECODE,&decoder),MARC_STATUS_OK);
+        encoder.original_size=size;
+        const auto encoded=run(encoder,input,4096,4096);
+        EXPECT_EQ(run(encoder,input,257,31),encoded);
+        EXPECT_EQ(run(decoder,encoded,31,257),input);
     }
 }
 TEST(PositionDistanceCFactory, WorkspaceFailuresPublishNull) {

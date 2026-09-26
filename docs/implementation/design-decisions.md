@@ -25604,3 +25604,11 @@ a platform-specific runtime. Quote complete PowerShell CMake BOOL arguments so
 shared/static matrix values expand rather than becoming literal variable names.
 Assert the expected exported target set at consumer configuration; a matrix label
 alone is not evidence of a shared-only or static-only package.
+
+## DD-1293: Complete the fixed position-distance public boundary without widening identity
+
+Map existing public factory tests to completion requirements and supplement
+missing binary classes and default frame boundaries. Keep C source/ABI, fixed
+search policy and exact format unchanged. Record the exact profile separately
+from historical schema-57 inventories; private contexts and larger-window
+variants are not admitted by its successful external exchange.

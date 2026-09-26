@@ -35086,3 +35086,23 @@ both bounds.
   than claimed as locally reproduced. No implementation or format changes.
 - Similarity review: independently authored evidence summary; no external
   expression copied and no legal guarantee claimed.
+
+## CR-1449: 2026-09-27 - Complete position-distance public C boundary evidence
+
+- Author: Codex; reviewer: repository maintainer approved completion review.
+- References used: IR-1048, DD-1293, TVG-1162 and first-party C factory tests.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party tests.
+- Task: map public completion requirements, add missing data/buffer/boundary
+  coverage and update current public status without changing the codec.
+- Changes: three public C factory tests, guarded output and repeated terminal
+  checks; BR-0278 evidence mapping and current format/C API/CLI wording.
+- Validation: targeted C factory tests passed 11/11. The complete 3,936-case
+  MSVC Release run took 407.26 seconds: 3,935 passed, with only the documentation
+  check failing because it required the previous staged wording. Updating that
+  status contract and adding stale-wording rejection passed the targeted rerun
+  (0.47 seconds). Schema compatibility passed in 115.87 seconds. No tests were
+  excluded from the full run; it was not repeated after the documentation-only
+  correction. Earlier external exchange remains attributed to the reported revision.
+- Similarity review: independently generated binary cases and first-party
+  oracle comparisons; no external expression copied or legal guarantee claimed.

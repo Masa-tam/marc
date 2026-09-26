@@ -16856,3 +16856,19 @@ Locally verify the both-target package succeeds, shared/static expectations each
 reject its extra target, and an unknown expectation is rejected. Keep the C11
 source requirement; successful Windows linking alone does not prove Linux runtime
 linkage. Ubuntu confirmation requires the repaired CI run.
+
+## TVG-1162: Position-distance public completion data and buffer matrix
+
+Generate all 256 one-byte inputs, empty data, 513-byte zero/0xff/all-byte/period-7
+inputs, and a uint32 xorshift sequence seeded with 0x12345678 (shifts 13,17,5).
+Also feed the reference-coded pseudorandom bytes as input. Compare small-frame
+archives with the reference writer under independent input/output capacities
+1/7, 7/1, 13/29 and 4096/4096, then decode with reversed capacities. Guard both
+ends of the output buffer and query the ended transform with None/EndInput/Flush,
+requiring zero consumption/production. At default configuration use periodic
+data of lengths 257/258/259 and 65535/65536/65537; require deterministic archives
+and round trips with bounded chunk schedules. Retain prior malformed-frame,
+identity and workspace tests rather than replacing them with positive cases.
+The documentation test now requires public integration wording and schema-58
+verification, preserves the exact initializer count, and rejects stale staged
+or incomplete-profile descriptions in the current C API reference.

@@ -9372,3 +9372,10 @@ No external codec source or third-party vectors were used.
 Installed-consumer repair uses maintainer-supplied Ubuntu configure/link logs,
 first-party CMake exports and local PowerShell native-argument reproduction.
 No external implementation or third-party test source was consulted.
+
+### IR-1048
+
+Position-distance completion uses AGENTS.md requirements, first-party C factory
+and reference encoder tests, the readiness contract, and reported schema-58
+exchange. Test data are generated locally; no external implementation or corpus
+is embedded in these regression cases.

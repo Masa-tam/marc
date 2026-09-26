@@ -109,12 +109,20 @@ followed by twenty-five typed-token LZSS Contextual profiles. Schema 56 retains
 its exact archive order and meaning; schema 57 appends only the 64-MiB
 Contextual Adaptive Huffman profile.
 
-Schema 58 retains that 67-archive prefix and appends the staged
-`lzss-position-distance-dynamic-range` candidate as archive 68. The matrices
-below retain the completed schema-57 scope. The new candidate's external
+Schema 58 retains that 67-archive prefix and appends
+`lzss-position-distance-dynamic-range` as archive 68. The older matrices
+below retain the completed schema-57 scope. The new profile's external
 four-direction verification passed at `559c16a8280687f1ad57602ae01e133dbece3611`
-as reported by the maintainer on 2026-09-27. Final public-completion review and
-inventory promotion remain separate; see BR-0277.
+as reported by the maintainer on 2026-09-27; see BR-0277.
+
+### Additional schema-58 profile
+
+| Profile | Local status | Format / streaming / C ABI / CLI | Benchmark / bounded fuzz | Public completion | Schema 58 |
+|---|---|---|---|---|---|
+| `lzss-position-distance-dynamic-range` | Ready | Yes | Yes | Yes | Included; four-direction exchange passed |
+
+The completion mapping is BR-0278. This is the fixed 64-KiB profile only, not
+admission of other experimental contexts, larger windows or new search options.
 
 ## Public-profile evidence matrix
 
@@ -4131,3 +4139,27 @@ completion mapping for required data classes, deterministic chunking, repeated
 terminal calls and malformed final-frame publication; existing private tests or
 the interoperability fixture alone do not substitute for that review. No profile
 default, stream representation, release version or other reserved identity changes.
+
+### BR-0278
+
+The position-distance public C ABI completion review supplements the existing
+factory tests with every one-byte value, empty/zero/repeated/all-byte/random and
+already-coded inputs, independent input/output capacities, output guards and
+repeated terminal calls with None/EndInput/Flush. Default frame/window boundary
+lengths 65535/65536/65537 and match-boundary lengths 257/258/259 round-trip and
+encode identically under two buffer schedules. Small-frame oracle comparisons
+retain the 20/21/22 boundary and multi-frame coverage.
+
+| Completion boundary | Repository evidence |
+|---|---|
+| Binary classes, deterministic bytes and small-buffer lifecycle | `PositionDistanceCFactory.Completion*`, `ChunkedBytesMatchPrivateOracleAndRoundTrip` |
+| Malformed final frame, prior-frame preservation and sticky failure | `SecondFrameFailurePreservesOnlyFirstFrame`, `MalformedInputAndUnsupportedResetAreSticky` |
+| Exact workspace and metadata/identity rejection | C config/factory tests, allocation-failure tests and admission identity grid |
+| Public linking and CLI | C11 static/shared consumers, installed-package CI, explicit CLI selection/rejection tests |
+| Hash, fuzz and performance | Incremental HashTap tests, bounded differential fuzz target, BM-0132/BM-0133 |
+| External byte identity | BR-0277 schema-58 four-direction exchange at the recorded earlier revision |
+
+Together these support local Ready status for the exact profile. The new tests
+do not modify codec bytes or defaults, and the prior external results are not
+attributed to this later test/documentation commit. Broader architecture and
+longer fuzz-campaign limitations remain unchanged.

@@ -12,7 +12,7 @@ marc-interoperability-ubuntu-ninja-x64
 
 Each current schema-58 bundle contains the same generated `input.bin`, the
 frozen 42 stable-profile archives, twenty-five experimental Format 2 archives,
-one staged position-distance archive, and `manifest.json`. The manifest declares
+one position-distance archive, and `manifest.json`. The manifest declares
 codec set `marc-cli-v58` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.

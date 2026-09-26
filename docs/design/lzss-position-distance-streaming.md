@@ -403,3 +403,13 @@ missing public-boundary coverage, and only then update the completed inventory
 and reserved/staged wording consistently. Preserve the strict legacy parser,
 fixed initial profile and all previous archive bytes. Do not generalize this
 x64 exchange to other architectures, longer fuzz campaigns or other policies.
+
+## Public completion mapping (2026-09-27)
+
+BR-0278 closes the above mapping step. Public factory tests now explicitly
+cover all one-byte values and required binary classes, independent buffer
+capacities, default frame boundaries and repeated terminal calls, with output
+guards. Existing late-frame rejection, limits, identity and allocation tests
+remain part of the evidence. Current C API, CLI, format and readiness summaries
+identify the exact fixed profile as public; earlier staged sections retain their
+historical meaning. No legacy parser acceptance, stream bytes or defaults change.
