@@ -35053,3 +35053,20 @@ both bounds.
   verification remains pending.
 - Similarity review: independently authored first-party script integration;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1447: 2026-09-26 - Repair installed C consumer linkage and CI package isolation
+
+- Author: Codex; reviewer: repository maintainer requested the repair.
+- References used: IR-1047, DD-1292 and TVG-1161; supplied Ubuntu logs and local
+  PowerShell argument reproduction.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Changes: retain C11 sources, enable CXX and explicit C++ static linkage; quote
+  native BOOL arguments and assert CI package target isolation.
+- Validation: Windows installed consumer build and all three round trips passed.
+  Both-target package rejected shared-only/static-only expectations and an invalid
+  expectation; restoring both succeeded. Sandbox compiler detection and DLL loading
+  failed, while identical outside-sandbox commands succeeded. Ubuntu CI validation
+  remains pending; no codec format or implementation changed.
+- Similarity review: independently authored first-party build configuration;
+  no external expression copied and no legal guarantee claimed.

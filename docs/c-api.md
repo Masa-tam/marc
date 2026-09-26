@@ -680,6 +680,11 @@ It needs no profile helper. This example does not imply general format admission
 The installed examples project uses only `find_package(marc CONFIG REQUIRED)`
 and public targets; it builds a position-distance consumer for each available
 `marc::static` / `marc::shared` target and registers round trips with CTest.
+The project enables C and C++; example sources remain C11, while static-library
+consumers use the C++ linker for the implementation's runtime dependencies.
+Do not hard-code a platform-specific C++ runtime library in C callers.
+CI sets `MARC_EXPECTED_LINKAGE=shared` or `static` to reject missing or unexpected
+exported targets. Normal users may omit this assertion; `both` is also supported.
 
 For a package installed at `<prefix>` (default `share` data directory):
 

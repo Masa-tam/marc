@@ -25595,3 +25595,12 @@ lzss-position-distance-dynamic-range candidate; require marc-cli-v58 and
 68 entries in order. Preserve all historical schema sets. Validate the new
 archive's header identity at generation, decode and re-encode byte-identically
 in verification, and keep external four-way evidence pending until reported.
+
+## DD-1292: Preserve C11 consumers with C++ static linkage and isolated package checks
+
+Enable CXX in the installed example project and explicitly select the C++ linker
+for consumers of marc::static, without changing C source compilation or naming
+a platform-specific runtime. Quote complete PowerShell CMake BOOL arguments so
+shared/static matrix values expand rather than becoming literal variable names.
+Assert the expected exported target set at consumer configuration; a matrix label
+alone is not evidence of a shared-only or static-only package.

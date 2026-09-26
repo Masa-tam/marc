@@ -16846,3 +16846,13 @@ Swap the last two manifest entries and require order rejection. Convert schema
 58 to 57 and continue through every historical schema, preserving original
 sets and the documented historical rANS name mapping. This is local regression
 evidence, not an external platform exchange.
+
+## TVG-1161: Installed consumer linkage and package-selection regression
+
+Use the existing installed baseline and position-distance C round trips.
+CI configures separate shared-only and static-only packages on Windows/Ubuntu,
+asserts the exact exported target set and builds/runs each installed consumer.
+Locally verify the both-target package succeeds, shared/static expectations each
+reject its extra target, and an unknown expectation is rejected. Keep the C11
+source requirement; successful Windows linking alone does not prove Linux runtime
+linkage. Ubuntu confirmation requires the repaired CI run.

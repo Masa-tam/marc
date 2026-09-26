@@ -9366,3 +9366,9 @@ implementation or third-party conformance suite was consulted.
 Schema 58 uses the repository-generated interoperability fixture, frozen
 schema-57 inventory and first-party position-distance format/C/CLI contract.
 No external codec source or third-party vectors were used.
+
+### IR-1047
+
+Installed-consumer repair uses maintainer-supplied Ubuntu configure/link logs,
+first-party CMake exports and local PowerShell native-argument reproduction.
+No external implementation or third-party test source was consulted.
