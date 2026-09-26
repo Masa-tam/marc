@@ -388,3 +388,18 @@ with frozen historical-prefix and schema-conversion checks. Next obtain hosted C
 external four-way verification, then update completion status. Do not infer
 cross-platform success from this local audit. Existing stream bytes and the
 general format 1/legacy Format 2 parser contracts remain unchanged.
+
+## External verification and completion review (2026-09-27)
+
+The hosted-CI and external-exchange gates described above now have evidence:
+the maintainer reported successful CI and four 68-archive schema-58 verifier
+passes at `559c16a8280687f1ad57602ae01e133dbece3611`. Producer/consumer
+directions and the evidence scope are recorded in `../interoperability.md`.
+This includes the corrected shared-only/static-only installed-package checks.
+
+The remaining step is a consolidated public-completion review, not another
+stream-format change: map the C ABI tests to the readiness matrix, add any
+missing public-boundary coverage, and only then update the completed inventory
+and reserved/staged wording consistently. Preserve the strict legacy parser,
+fixed initial profile and all previous archive bytes. Do not generalize this
+x64 exchange to other architectures, longer fuzz campaigns or other policies.

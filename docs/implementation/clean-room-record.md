@@ -35070,3 +35070,19 @@ both bounds.
   remains pending; no codec format or implementation changed.
 - Similarity review: independently authored first-party build configuration;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1448: 2026-09-27 - Record schema 58 external verification evidence
+
+- Author: Codex; reviewer: repository maintainer approved evidence recording.
+- References used: maintainer's four successful 68-archive verifier reports at
+  `559c16a8280687f1ad57602ae01e133dbece3611`, reported successful CI, and
+  first-party streaming design, C factory tests and BM-0132/BM-0133 measurements.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Task: record external evidence and distinguish it from final public completion.
+- Changes: update current interoperability status, append BR-0277 and the design
+  follow-up; preserve historical pending statements as records of their time.
+- Validation scope: external results are attributed to the maintainer rather
+  than claimed as locally reproduced. No implementation or format changes.
+- Similarity review: independently authored evidence summary; no external
+  expression copied and no legal guarantee claimed.

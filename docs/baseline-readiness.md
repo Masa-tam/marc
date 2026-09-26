@@ -111,8 +111,10 @@ Contextual Adaptive Huffman profile.
 
 Schema 58 retains that 67-archive prefix and appends the staged
 `lzss-position-distance-dynamic-range` candidate as archive 68. The matrices
-below retain the completed schema-57 scope; the new candidate's external
-four-direction verification and completion declaration remain pending.
+below retain the completed schema-57 scope. The new candidate's external
+four-direction verification passed at `559c16a8280687f1ad57602ae01e133dbece3611`
+as reported by the maintainer on 2026-09-27. Final public-completion review and
+inventory promotion remain separate; see BR-0277.
 
 ## Public-profile evidence matrix
 
@@ -4110,3 +4112,22 @@ exchange belongs to earlier release-candidate revision
 `be2febf16eff3e71cac00368ed975bf904ee4aa9`; the intervening commit only
 records its evidence. This release does not close the outstanding non-x86-64,
 broader performance, or longer fuzz-campaign items.
+
+### BR-0277
+
+The maintainer reported successful CI and four schema-58 exchanges at
+`559c16a8280687f1ad57602ae01e133dbece3611`, each verifying 68 archives.
+Windows/MSVC and Ubuntu 24.04/Ninja artifacts verified on Ubuntu 26.04;
+the Ubuntu 26.04/Clang 21.1.8 bundle verified there and on Windows/MSVC.
+The installed-package CI repair is externally confirmed by the successful run;
+its target-set assertions distinguish shared-only and static-only packages.
+
+The position-distance path has exact identity validation, bounded reference and
+incremental implementations, C config/query/factory tests, static/shared C11
+consumers, CLI rejection tests, incremental HashTap/fuzz coverage, and fixed-policy
+Silesia measurements (BM-0132/BM-0133). External interoperability is now evidenced,
+not pending. Before promoting the profile to Ready, consolidate the public C ABI
+completion mapping for required data classes, deterministic chunking, repeated
+terminal calls and malformed final-frame publication; existing private tests or
+the interoperability fixture alone do not substitute for that review. No profile
+default, stream representation, release version or other reserved identity changes.

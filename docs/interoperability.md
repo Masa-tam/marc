@@ -186,8 +186,22 @@ remain unchanged. The new archive must carry exactly format 2.0 dictionary
 
 ## Integrity and current evidence
 
-Schema 58 external four-direction verification is pending; generating a local
-bundle or passing historical-schema checks does not complete public admission.
+On 2026-09-27 the maintainer reported successful CI and all four schema-58
+external verification directions at revision
+`559c16a8280687f1ad57602ae01e133dbece3611`, with 68 archives in every result:
+
+| Producer | Verification host | Result |
+|---|---|---|
+| Windows/MSVC x64 CI | Ubuntu 26.04 / Clang 21.1.8 x64 | 68 verified |
+| Ubuntu 24.04 / Ninja x64 CI | Ubuntu 26.04 / Clang 21.1.8 x64 | 68 verified |
+| Ubuntu 26.04 / Clang 21.1.8 x64 | Ubuntu 26.04 / Clang 21.1.8 x64 | 68 verified |
+| Ubuntu 26.04 / Clang 21.1.8 x64 | Windows/MSVC x64 | 68 verified |
+
+These are maintainer-reported external results, not a local rerun. Each verifier
+pass includes manifest/digest validation, foreign decoding and byte-identical
+local re-encoding. The evidence covers the new position-distance archive and
+the unchanged 67-archive prefix. It does not cover other architectures or
+replace the public completion review.
 Local generation, 68-archive decode/re-encode equality, reordered-tail rejection
 and conversion checks for schemas 1 through 58 have passed.
 
