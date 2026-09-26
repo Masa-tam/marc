@@ -215,3 +215,13 @@ private fuzz target now compares chunk schedules and incremental/reference
 encoding, with fixed capacity/call ceilings and boundary cases at initialization.
 TVG-1150 records the deterministic schedules and smoke budget. Whole-stream
 incremental measurements remain the next step; public admission is still gated.
+
+## Incremental whole-stream measurement
+
+DD-1282 and BM-0132 add a reusable incremental mode to the private stream
+benchmark. Mozilla retains exact one-shot archive bytes while preparing each
+frame once. Both transform directions are timed with bounded caller workspaces;
+oracle generation and whole-file harness storage are reported separately.
+This is one corpus member and one parsing policy, not a general performance
+claim. Wider corpus measurement and public C ABI/CLI design review remain before
+admission; neither public identifiers nor defaults change in this step.

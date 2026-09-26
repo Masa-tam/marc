@@ -25463,3 +25463,23 @@ archives. Retain guards and sticky-state checks. Execute the existing 27 fixed
 boundary cases both in the CTest smoke executable and during sanitizer fuzzer
 initialization; this includes three deliberate over-cap inputs that are skipped.
 Short randomized runs from an empty corpus are supplemental, not exhaustive.
+
+## DD-1282: Measure incremental context-9 separately from its byte oracle
+
+Extend the private whole-stream benchmark with optional trailing arguments
+`incremental <input-chunk> <output-chunk>`, each chunk in 1..65536 bytes. Preserve
+the existing one-shot invocation. Both modes retain the 64 MiB input, 1024-frame
+and 128 MiB archive caps and refuse existing output files.
+
+Generate the exact one-shot oracle outside incremental timing. Each measured
+iteration constructs fresh transforms over reused, preallocated workspaces,
+checks process bounds and termination, compares all encoded bytes with that
+oracle, and reconstructs the complete input. Require one frame preparation per
+frame. Time construction and process calls, not I/O, allocation, hashing or
+comparison. The separate plan timing belongs to benchmark setup; the incremental
+transform does not require a whole-input preflight.
+
+Report direction-specific aggregate policy charges, model/owner sizes and
+benchmark/oracle buffers separately. These are not process peak RSS. Keep both
+directions' buffers resident for convenience; do not present this harness as a
+minimal-memory streaming application or a public codec performance claim.

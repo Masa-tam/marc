@@ -34850,3 +34850,23 @@ both bounds.
   elevated rebuild succeeded before the full suite ran.
 - Similarity review: independently composed first-party tests and drivers;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1437: 2026-09-26 - Measure private incremental context-9 streams
+
+- Author: Codex; reviewer: repository maintainer approved the next measurement step.
+- References used: IR-1037, DD-1282, TVG-1151 and BM-0132; first-party transforms,
+  workspace layout, SHA-256 and existing independently supplied Silesia input.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: measure whole-stream incremental speed, preserve exact one-shot bytes
+  and separate codec workspace charges from benchmark-only buffers.
+- Changes: optional incremental benchmark mode, expanded smoke checks and records.
+  No public ABI, format or codec implementation changed.
+- Validation: boundary smoke and three full Mozilla iterations in each mode
+  passed byte equality, round-trip, digest and frame-preparation checks. BM-0132
+  records the timing samples and memory-accounting limitations.
+  All 3,912 Release CTest cases passed in 343.38 seconds, including interoperability
+  schema compatibility (105.38 seconds). The initial sandboxed build encountered
+  FileTracker E_ACCESSDENIED; the approved build outside the sandbox succeeded.
+- Similarity review: independently composed first-party driver and assertions;
+  no external expression copied and no legal guarantee claimed.

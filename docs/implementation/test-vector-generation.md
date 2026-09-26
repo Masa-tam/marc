@@ -16723,3 +16723,16 @@ these 27 cases at sanitizer initialization as well as under CTest. Random smoke
 uses seed 20260926, 1,000 runs, max_len 4096, max_total_time 30 seconds, per-input
 timeout 5 seconds and RSS limit 512 MiB. Record actual completion separately;
 no corpus completeness or absence-of-bugs claim follows from this smoke run.
+
+## TVG-1151: Incremental whole-stream benchmark verification
+
+Extend the existing benchmark smoke across lengths 0/1/63/64/65/129, eligibility
+3/4/5, reference/indexed search and chunk pairs 1/1, 17/7 and 65536/65536. Run
+two iterations and compare saved SHA-256 with the one-shot archive. Check oracle
+equality, preparation counts, workspace charges and completed iteration fields.
+Reject invalid mode, missing/invalid/zero/oversized chunks without creating an
+archive. Reusing an existing output path must fail without modifying its bytes.
+
+Measure full Mozilla with 65536-byte frames, indexed matching, eligibility 3,
+three iterations and 65536/65536 chunks, serially with a contemporary one-shot
+baseline. Record observed sizes, digests and timing samples separately.

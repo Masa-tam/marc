@@ -2,6 +2,8 @@
 #include "dictionary/lzss_short_prefix_match_finder.hpp"
 #include "frame/lzss_position_distance_raw_stream_encoder.hpp"
 #include "frame/lzss_position_distance_stream_decoder.hpp"
+#include "frame/lzss_position_distance_frame_streaming_encoder.hpp"
+#include "frame/lzss_position_distance_frame_streaming_decoder.hpp"
 
 #include <algorithm>
 #include <array>
@@ -37,16 +39,51 @@ void print_digest(const char* name, const Digest& value) {
 double seconds(Clock::time_point begin, Clock::time_point end) {
     return std::chrono::duration<double>(end-begin).count();
 }
+bool drive(marc::core::Transform& transform, std::span<const std::byte> input,
+    std::span<std::byte> output, std::size_t input_chunk, std::size_t output_chunk) {
+    std::size_t consumed{}, produced{};
+    // Input and archive caps bound this sum well below size_t's limit.
+    for(std::size_t call=0;call<input.size()+output.size()+4;++call) {
+        const auto in=input.subspan(consumed,std::min(input_chunk,input.size()-consumed));
+        const auto out=output.subspan(produced,std::min(output_chunk,output.size()-produced));
+        const auto flags=consumed+in.size()==input.size()
+            ? marc::core::flag_value(marc::core::ProcessFlags::end_input) : 0;
+        const auto result=transform.process(in,out,flags);
+        if(!marc::core::is_valid(result,in.size(),out.size())
+           || result.status==marc::core::StreamStatus::error) return false;
+        consumed+=result.input_consumed; produced+=result.output_produced;
+        if(result.status==marc::core::StreamStatus::end_of_stream)
+            return consumed==input.size() && produced==output.size();
+        if(result.input_consumed==0 && result.output_produced==0) return false;
+    }
+    return false;
+}
+struct Storage {
+    marc::frame::internal::LzssPositionDistanceWorkspaceRequirements requirements{};
+    std::vector<std::byte> raw,serialized;
+    std::vector<std::max_align_t> aligned;
+    void allocate() {
+        raw.resize(requirements.raw_bytes); serialized.resize(requirements.serialized_bytes);
+        aligned.resize((requirements.views_bytes+sizeof(std::max_align_t)-1)/sizeof(std::max_align_t));
+    }
+    std::span<std::byte> views() {
+        return std::as_writable_bytes(std::span{aligned}).first(requirements.views_bytes);
+    }
+};
 }
 
 int main(int argc, const char* const argv[]) {
-    if(argc!=7) {
+    if(argc!=7 && argc!=10) {
         std::cerr << "usage: marc_lzss_position_distance_stream_benchmark <input> "
             "<frame-bytes:1..65536> <eligibility:3..5> <indexed|reference> "
-            "<iterations:1..10> <new-output-file>\n";
+            "<iterations:1..10> <new-output-file> [incremental <input-chunk:1..65536> <output-chunk:1..65536>]\n";
         return 2;
     }
     std::size_t frame_bytes{}, eligibility{}, iterations{};
+    const bool incremental=argc==10;
+    std::size_t input_chunk{}, output_chunk{};
+    if(incremental && (std::string_view{argv[7]}!="incremental"
+        || !number(argv[8],1,65536,input_chunk) || !number(argv[9],1,65536,output_chunk))) return 2;
     const std::string_view search_name{argv[4]};
     if(!number(argv[2],1,65536,frame_bytes) || !number(argv[3],3,5,eligibility)
        || !number(argv[5],1,10,iterations)
@@ -94,10 +131,48 @@ int main(int argc, const char* const argv[]) {
     if(plan.error!=LzssPositionDistanceRawStreamError::none || plan.frame_count!=frame_count
        || plan.serialized_size>128U*1024U*1024U) return 1;
     std::vector<std::byte> encoded(plan.serialized_size);
+    std::vector<std::byte> expected;
+    using Encoder=LzssPositionDistanceFrameStreamingEncoder;
+    using Decoder=LzssPositionDistanceFrameStreamingDecoder;
+    Storage encoder_storage,decoder_storage;
+    LzssPositionDistanceWorkspaceViews decoder_views{};
+    if(incremental) {
+        expected.resize(encoded.size());
+        const auto oracle=encode_lzss_position_distance_raw_stream(stream,limits,raw,
+            static_cast<std::uint32_t>(eligibility),search,tokens,operations,finder,expected);
+        if(oracle.error!=LzssPositionDistanceRawStreamError::none
+            || oracle.serialized_size!=expected.size() || oracle.frame_count!=frame_count) return 1;
+        if(calculate_lzss_position_distance_workspace(stream,limits,LzssPositionDistanceWorkspaceDirection::encode,
+                sizeof(Encoder),encoder_storage.requirements)!=LzssPositionDistanceWorkspaceError::none
+           || calculate_lzss_position_distance_workspace(stream,limits,LzssPositionDistanceWorkspaceDirection::decode,
+                sizeof(Decoder),decoder_storage.requirements)!=LzssPositionDistanceWorkspaceError::none) return 1;
+        encoder_storage.allocate(); decoder_storage.allocate();
+        if(partition_lzss_position_distance_workspace(stream,limits,LzssPositionDistanceWorkspaceDirection::decode,
+            sizeof(Decoder),decoder_storage.raw,decoder_storage.serialized,decoder_storage.views(),decoder_views)
+            !=LzssPositionDistanceWorkspaceError::none) return 1;
+    }
     std::array<double,10> encode_seconds{}, decode_seconds{};
     Digest input_digest{}, archive_digest{}, previous_digest{};
     if(!digest(raw,input_digest)) return 1;
     for(std::size_t i=0;i<iterations;++i) {
+        if(incremental) {
+            const auto encode_begin=Clock::now();
+            Encoder encoder(stream,limits,encoder_storage.raw,encoder_storage.serialized,
+                encoder_storage.views(),static_cast<std::uint32_t>(eligibility),search);
+            const bool encoded_ok=drive(encoder,raw,encoded,input_chunk,output_chunk);
+            const auto encode_end=Clock::now();
+            if(!encoded_ok || encoder.frame_preparation_count()!=frame_count || encoded!=expected) return 1;
+            const auto decode_begin=Clock::now();
+            Decoder decoder(limits,decoder_views.serialized,decoder_views.tokens,decoder_views.raw);
+            const bool decoded_ok=drive(decoder,encoded,restored,input_chunk,output_chunk);
+            const auto decode_end=Clock::now();
+            if(!decoded_ok || raw!=restored || !digest(encoded,archive_digest)
+               || (i!=0 && archive_digest!=previous_digest)) return 1;
+            previous_digest=archive_digest;
+            encode_seconds[i]=seconds(encode_begin,encode_end);
+            decode_seconds[i]=seconds(decode_begin,decode_end);
+            continue;
+        }
         const auto encode_begin=Clock::now();
         const auto written=encode_lzss_position_distance_raw_stream(stream,limits,raw,
             static_cast<std::uint32_t>(eligibility),search,tokens,operations,finder,encoded);
@@ -126,11 +201,22 @@ int main(int argc, const char* const argv[]) {
         << "\nframe_bytes=" << frame_bytes << "\nframe_count=" << frame_count
         << "\neligibility=" << eligibility << "\niterations=" << iterations
         << "\nplan_seconds=" << seconds(plan_begin,plan_end)
-        << "\nencode_scratch_bytes=" << tokens.size()*sizeof(LzssTypedToken)
+        << (incremental?"\noracle_encode_scratch_bytes=":"\nencode_scratch_bytes=") << tokens.size()*sizeof(LzssTypedToken)
             +operations.size()*sizeof(ModeledOperation)+finder.size()
-        << "\ndecode_scratch_bytes=" << tokens.size()*sizeof(LzssTypedToken)+frame.size()
+        << (incremental?"\noracle_decode_scratch_bytes=":"\ndecode_scratch_bytes=") << tokens.size()*sizeof(LzssTypedToken)+frame.size()
         << "\ninput_buffer_bytes=" << raw.size() << "\narchive_buffer_bytes=" << encoded.size()
         << "\nrestored_buffer_bytes=" << restored.size() << '\n';
+    std::cout << "processing=" << (incremental?"incremental":"one-shot")
+        << "\ninput_chunk_bytes=" << input_chunk << "\noutput_chunk_bytes=" << output_chunk
+        << "\noracle_buffer_bytes=" << expected.size() << '\n';
+    if(incremental) {
+        std::cout << "encoder_aggregate_bytes=" << encoder_storage.requirements.aggregate_bytes
+            << "\ndecoder_aggregate_bytes=" << decoder_storage.requirements.aggregate_bytes
+            << "\nencoder_model_state_bytes=" << encoder_storage.requirements.model_state_bytes
+            << "\ndecoder_model_state_bytes=" << decoder_storage.requirements.model_state_bytes
+            << "\nencoder_owner_bytes=" << sizeof(Encoder) << "\ndecoder_owner_bytes=" << sizeof(Decoder)
+            << "\nframe_preparations=" << frame_count << "\noracle_byte_equal=1\n";
+    }
     print_digest("input_sha256",input_digest);
     print_digest("archive_sha256",archive_digest);
     for(std::size_t i=0;i<iterations;++i)

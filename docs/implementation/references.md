@@ -9303,3 +9303,9 @@ The incremental hash-boundary tests and bounded fuzz driver use the first-party
 HashTap, SHA-256, private streaming transforms, one-shot oracle and existing
 fixed boundary cases. Drivers and guards were independently composed from the
 process contract. No external implementation or test suite was consulted.
+
+### IR-1037
+
+The incremental whole-stream benchmark composes first-party context-9 transforms,
+workspace queries, the one-shot byte oracle and SHA-256. Silesia input provenance
+is unchanged. No external compressor implementation or test suite was consulted.

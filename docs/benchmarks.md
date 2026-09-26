@@ -4967,3 +4967,53 @@ These are supplied capacities, not measured peak RSS. Local saved archives under
 ignored `out/position-distance-stream/` are measurement artifacts, not corpus
 or repository contents. This result supports further private integration review,
 not a public API or throughput claim for the CLI.
+
+## BM-0132: Private context-9 incremental Mozilla streams
+
+On 2026-09-26, extend BM-0131's benchmark at parent revision `d41baf3c` with
+the DD-1282 incremental driver. Final Release executable SHA-256 is
+`2b4623c1e26c6957885712233e400f33ee1d7351d8fdf9d61cbeb5d9d099fd99`.
+Use the same 51,220,480-byte Mozilla input and input hash as BM-0131, 65,536-byte
+frames, indexed search, eligibility 3 and three iterations. Incremental input
+and output chunks are both 65,536 bytes. Run incremental first, then the final
+one-shot baseline, without concurrent tests or benchmarks.
+
+| Mode | Encode seconds (three runs; median) | Decode seconds (three runs; median) |
+| --- | --- | --- |
+| One-shot | 10.241325600, 10.204168300, 10.334294200; 10.241325600 | 8.536131900, 8.427436000, 8.425614600; 8.427436000 |
+| Incremental | 5.600656700, 5.603228900, 5.551535100; 5.600656700 | 4.314007300, 4.301369100, 4.266093700; 4.301369100 |
+
+Median elapsed reductions are about 45.3% for encoding and 49.0% for decoding.
+These sequential samples are not randomized paired trials and do not establish
+general corpus performance. A preliminary one-shot run before a reporting-only
+rebuild gave encode median 10.376325400 and decode median 8.584161000 seconds;
+the table uses the final common executable only.
+
+Both saved archives are exactly 18,655,833 bytes in 782 frames, SHA-256
+`244b2fbd55fb394c92501e6d50e26c59823ae1251a5a430834cee69ca59ddaf2`.
+Every incremental iteration compares all wire bytes with the untimed one-shot
+oracle, reconstructs the raw input, checks repeated digests and requires exactly
+782 frame preparations. File hashes were checked independently after writing.
+Incremental operation preserves compression ratio while removing repeated
+whole-stream work; it does not introduce a different parsing policy or format.
+
+Plan setup takes 4.625622400 seconds for incremental and 4.585728000 for one-shot.
+Incremental timing includes transform construction and process calls; its
+one-shot oracle/setup is excluded. One-shot encoding includes its internal
+preflight and decoding includes whole-stream two-pass validation. The incremental
+decoder validates before publishing each frame, not atomically for the whole
+stream. File I/O, allocation, digests and comparisons are excluded from both.
+
+Incremental aggregate policy charges are 7,804,677 bytes for encode and 2,037,541
+for decode, including 5,304 bytes of model/replay state each and owner sizes
+504/536 bytes respectively. The harness additionally retains raw/restored
+buffers of 51,220,480 bytes each, archive/oracle buffers of 18,655,833 each and
+one-shot scratch. Reported oracle encode/decode scratch spans (6,553,600/851,968)
+share token storage; do not sum them as disjoint allocations. Aggregate charges
+and supplied capacities are not measured peak RSS or allocator overhead.
+
+Reproduce with the private benchmark's existing arguments and append
+`incremental 65536 65536`; omit those arguments for the one-shot baseline. Use
+new output filenames. Archives remain in ignored `out/position-distance-stream/`.
+Public API, CLI admission and defaults remain unchanged. Broader Silesia coverage
+and public integration review remain separate follow-up work.
