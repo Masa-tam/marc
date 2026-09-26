@@ -16,6 +16,10 @@ struct LzssPositionDistanceRangeDecoderTestAccess {
         return d.decode_next_reference(op);
     }
     static auto& state(LzssPositionDistanceRangeDecoder& d) { return d.state_; }
+    static auto linear_literals(LzssPositionDistanceRangeDecoder& d,
+                                context::internal::ModeledOperation& op) {
+        return d.decode_next_linear_literals(op);
+    }
 };
 }
 
@@ -255,6 +259,7 @@ TEST(LzssPositionDistanceRangeDecoder, LongLiteralModelRescalingAndReset) {
     ASSERT_EQ(encode_lzss_reduced_literal_range_operations(operations,{},bytes,control).error,
         ContextualDynamicRangeEncodeError::none);
     control.context_count=40;
+    compare_paths(control,bytes,80000);
     LzssPositionDistanceRangeDecoder d;
     for (int repetition=0;repetition<2;++repetition) {
         ASSERT_EQ(d.begin(control,bytes,{}).error,Error::none);
@@ -265,6 +270,69 @@ TEST(LzssPositionDistanceRangeDecoder, LongLiteralModelRescalingAndReset) {
             ASSERT_EQ(op.context_id,expected.context_id);
         }
         EXPECT_EQ(d.finish(80000,80000).error,Error::none);
+    }
+}
+TEST(LzssPositionDistanceRangeDecoder, GroupedLiteralEveryScaledPointAndRescale) {
+    for(unsigned pattern=0;pattern<4;++pattern) {
+        LzssPositionDistanceRangeDecoder base;
+        ASSERT_EQ(base.begin(descriptor,payload,{}).error,Error::none);
+        auto& initial=LzssPositionDistanceRangeDecoderTestAccess::state(base);
+        auto kind=initial.cursor.next().shape; kind.value=0;
+        ASSERT_EQ(initial.cursor.accept(kind),LzssFieldContextError::none);
+        const auto id=initial.cursor.next().shape.context_id;
+        const auto offset=lzss_position_distance_offsets[id];
+        initial.totals[id]=0;
+        for(unsigned i=0;i<256;++i) {
+            const unsigned frequency=pattern==0 ? 1 : pattern==1 ? 1+i%31
+                : i==(pattern==2?0U:255U) ? 32512 : 1;
+            initial.frequencies[offset+i]=static_cast<std::uint16_t>(frequency);
+            initial.totals[id]+=frequency;
+        }
+        const auto total=initial.totals[id];
+        const auto unit=UINT32_MAX/total;
+        for(std::uint32_t scaled=0;scaled<=total;++scaled) {
+            auto fast=base,reference=base;
+            auto& a=LzssPositionDistanceRangeDecoderTestAccess::state(fast);
+            auto& b=LzssPositionDistanceRangeDecoderTestAccess::state(reference);
+            a.code=b.code=scaled*unit;
+            ModeledOperation x{ModeledOperationKind::symbol,99,99,999,9},y=x;
+            same_result(fast.decode_next(x),
+                LzssPositionDistanceRangeDecoderTestAccess::linear_literals(reference,y));
+            EXPECT_EQ(x.value,y.value); EXPECT_EQ(x.context_id,y.context_id);
+            EXPECT_EQ(a.frequencies,b.frequencies); EXPECT_EQ(a.totals,b.totals);
+            EXPECT_EQ(a.code,b.code); EXPECT_EQ(a.range,b.range);
+            EXPECT_EQ(a.canonical_low,b.canonical_low);
+            EXPECT_EQ(a.canonical_pending,b.canonical_pending);
+            EXPECT_EQ(a.canonical_cache,b.canonical_cache);
+            EXPECT_EQ(a.canonical_offset,b.canonical_offset);
+            EXPECT_EQ(a.canonical_mismatch,b.canonical_mismatch);
+            if(scaled==total) { EXPECT_EQ(a.error,Error::invalid_interval); EXPECT_EQ(x.value,999); }
+        }
+    }
+}
+
+TEST(LzssPositionDistanceRangeDecoder, GroupedLiteralAllSymbolsAndAdaptiveHistories) {
+    for(unsigned pattern=0;pattern<3;++pattern) {
+        LzssPositionDistanceFieldCursor cursor;
+        std::vector<ModeledOperation> operations;
+        for(unsigned i=0;i<4096;++i) {
+            auto kind=cursor.next().shape; kind.value=0;
+            ASSERT_EQ(cursor.accept(kind),LzssFieldContextError::none); operations.push_back(kind);
+            auto literal=cursor.next().shape;
+            literal.value=pattern==0 ? i%256 : pattern==1 ? 255-i%256 : (i*71+i/11)%256;
+            ASSERT_EQ(cursor.accept(literal),LzssFieldContextError::none); operations.push_back(literal);
+        }
+        ContextualDynamicRangeDescriptor desc{};
+        const auto plan=plan_lzss_position_distance_range_operations(operations,{},desc);
+        ASSERT_EQ(plan.error,ContextualDynamicRangeEncodeError::none);
+        std::vector<std::byte> bytes(plan.payload_size);
+        ASSERT_EQ(encode_lzss_position_distance_range_operations(operations,{},bytes,desc).error,
+            ContextualDynamicRangeEncodeError::none);
+        compare_paths(desc,bytes,static_cast<unsigned>(operations.size()));
+        for(std::size_t offset:{0U,1U,7U,8U,15U,16U}) {
+            auto changed=bytes; changed[offset]^=std::byte{0x80};
+            compare_paths(desc,changed,static_cast<unsigned>(operations.size()));
+        }
     }
 }
 } // namespace

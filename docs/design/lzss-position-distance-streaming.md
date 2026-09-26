@@ -431,3 +431,13 @@ TVG-1163, FZ-0045 and the complete test suite validate the boundary; BM-0137
 supports retaining this integration based on an independent same-binary timing
 comparison. Whole-stream transactional helpers and other variants retain their
 previous behavior.
+
+## Literal search refinement (2026-09-27)
+
+DD-1296 groups eight current literal frequencies at a time before resolving
+the selected symbol with scalar search. It adds no retained table or allocation
+and leaves decoder state size and workspace charges unchanged. The private
+linear reference remains available. TVG-1164, FZ-0046 and the full test suite
+preserve diagnostic, model, canonical and frame-publication behavior; BM-0138
+records the independent timing evidence for retaining this refinement.
+Encoder bytes and all public format/ABI contracts remain unchanged.

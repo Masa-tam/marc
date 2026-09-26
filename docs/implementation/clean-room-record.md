@@ -35181,3 +35181,29 @@ both bounds.
 - Similarity review: changes reuse the repository's own walker and validators;
   no external expression copied and no legal guarantee claimed. This work does
   not establish new external-platform interoperability evidence.
+
+## CR-1454: 2026-09-27 - Trial and retain grouped literal-frequency search
+
+- Author: Codex; local contract review: Codex; maintainer review pending.
+- Task: following approval of the private token scratch change, investigate
+  the recorded next candidate, literal-model linear lookup, without weakening
+  failure/publication contracts or introducing undocumented memory charges.
+- References used: IR-1053, DD-1296, TVG-1164 and first-party decoder/tests.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Independent decision: sum fixed groups of eight frequencies on demand, then
+  use scalar search within the chosen group. Retain linear lookup as a private
+  reference. Frequencies, rescaling, interval updates and canonical checks stay
+  unchanged; no retained index, additional allocation or state-size change.
+- Validation: 133 targeted tests and all 3,944 CTest cases passed with no
+  exclusions, including schema compatibility and prior frame-publication,
+  public hash, workspace and allocation tests. FZ-0046 completed 10,000 bounded
+  runs without a finding or mismatch. Injected models exercise every scaled
+  value and rescaling; generated histories cover every literal value.
+- Measurement: BM-0138 compares the two literal paths using identical distance
+  decoding, verifies all 782 Mozilla frames and three byte-identical public
+  CLI archives/restored inputs. Its approximately 17.5% median entropy-time
+  reduction supports retaining the candidate within this decoder.
+- Similarity review: independently derived grouping of the repository's own
+  cumulative search; no external expression copied or legal guarantee claimed.
+  Public ABI, format, encoder bytes and workspace charges remain unchanged.

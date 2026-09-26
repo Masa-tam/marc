@@ -25640,3 +25640,21 @@ the adapter in production. Raw reconstruction starts only after successful token
 validation, and publication remains behind full frame success. No ABI, format,
 encoder bytes, allocation or workspace charge changes are intended. Differential
 tests and bounded fuzz precede measurements and adoption assessment.
+
+## DD-1296: Trial stateless grouped literal-frequency search
+
+For position-distance literal alphabets only, sum eight consecutive frequencies
+in a uint32 accumulator. Skip a group when the scaled code is at or beyond its
+upper cumulative boundary, then retain the scalar search within the selected
+group. Exact-boundary comparisons retain the original half-open intervals.
+At most 256 uint16 frequencies contribute to a cumulative sum, so these sums
+fit uint32 even before applying the stricter model-total invariant.
+
+Keep frequencies, rescaling, canonical replay, interval advancement and all
+validation unchanged. Do not add persistent tables or allocations; decoder
+size and workspace charges remain identical. Preserve linear literal search
+as a private reference, including a path using the same specialized distance
+decoder to isolate the literal change. Require differential operation/state
+and malformed-input checks, complete tests and bounded fuzz before timing.
+Retain the candidate only if independent measurement supports it. Wire format,
+encoder behavior and frame-publication contracts remain unchanged.

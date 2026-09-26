@@ -16891,3 +16891,21 @@ the second frame's final byte; require unchanged raw scratch, no second-frame
 publication, and the existing sticky error category and position for input
 chunks 1/13/1024. Extend the bounded stream fuzzer with reference/scratch frame
 diagnostic, token and raw comparisons on generated and mutated archives.
+
+## TVG-1164: Grouped literal cumulative-frequency differential vectors
+
+Compare grouped lookup with the retained linear lookup using identical
+specialized distance decoding. For an initial literal request, inject uniform,
+periodically increasing and first/last-symbol-skewed frequency distributions.
+Visit every scaled value, including the unused interval tail. The skewed
+distributions total 32,767 so a successful update triggers model rescaling.
+Compare results, output values, all frequencies/totals, coder interval and
+canonical-replay state. Eight-symbol group edges obey the scalar interval rule.
+
+Generate ascending, descending and mixed histories covering all byte values,
+encode them with the unchanged reference encoder and compare operation results
+on valid and damaged payloads. Add differential replay to the existing long
+literal rescaling/reset vector. Retain exhaustive fixed-vector byte mutations,
+truncations, count failures, workspace limits and frame-publication regressions.
+The bounded stream harness additionally compares linear/grouped entropy events
+and final model/coder state inside preflighted valid and mutated frames.

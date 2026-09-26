@@ -21,13 +21,17 @@ public:
 private:
     friend struct LzssPositionDistanceRangeDecoderTestAccess;
     friend struct LzssPositionDistanceRangeDecoderBenchmarkAccess;
-    template<bool Reference>
+    friend struct LzssPositionDistanceRangeDecoderFuzzAccess;
+    template<bool Reference, bool LinearLiterals = Reference>
     [[nodiscard]] ContextualDynamicRangeDecodeResult decode_next_impl(
         context::internal::ModeledOperation& operation) noexcept;
     [[nodiscard]] ContextualDynamicRangeDecodeResult decode_next_reference(
         context::internal::ModeledOperation& operation) noexcept;
+    [[nodiscard]] ContextualDynamicRangeDecodeResult decode_next_linear_literals(
+        context::internal::ModeledOperation& operation) noexcept;
     [[nodiscard]] ContextualDynamicRangeDecodeResult decode_distance_extra_reference(
         std::uint8_t bit_count, std::uint32_t& value) noexcept;
+    template<bool LinearLiterals>
     [[nodiscard]] ContextualDynamicRangeDecodeResult decode_symbol(
         std::uint16_t context_id, std::uint16_t alphabet, std::uint32_t& value) noexcept;
     [[nodiscard]] ContextualDynamicRangeDecodeResult decode_bypass(

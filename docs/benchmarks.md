@@ -5342,3 +5342,48 @@ encoded bytes, allocations and workspace charges remain unchanged. Error-result
 equivalence, failed-raw immutability, previous-frame publication and sticky errors
 are covered by TVG-1163 and the full suite. New external interoperability testing
 is separate from the previously reported schema-58 exchange.
+
+## BM-0138: Stateless grouped literal search comparison
+
+After all 3,944 tests and FZ-0046 passed on 2026-09-27, compare linear and
+eight-frequency grouped literal lookup in one binary. Both paths use the same
+specialized distance decoder, initialization, operation output, model updates
+and canonical finish. Alternate first path over four complete traversals.
+Before timing, compare all operations for all 782 Mozilla frames and reconstruct
+every frame through the scratch decoder against the original raw input.
+
+Timers cover entropy operation decoding only. Header/preflight work and raw
+reconstruction are outside them. These times are not directly comparable to
+BM-0137's complete-frame decoder times, nor a measurement of lookup alone.
+
+| Literal search | Run 1 seconds | Run 2 seconds | Run 3 seconds | Run 4 seconds | Median seconds | Raw-equivalent MiB/s |
+|---|---:|---:|---:|---:|---:|---:|
+| Linear | 1.6723763 | 1.7417103 | 1.7049795 | 1.6741487 | 1.6895641 | 28.911 |
+| Groups of eight | 1.3952754 | 1.3843056 | 1.3936621 | 1.4684767 | 1.3944688 | 35.030 |
+
+The median entropy decoding time decreases by approximately 17.5% in this
+experiment. This is a finite single-input measurement, not a general speedup
+guarantee; alternating order does not eliminate scheduling/cache effects.
+
+Three separate public CLI encode/decode pairs all reproduce the existing
+18,655,833-byte oracle archive from the 51,220,480-byte input (36.4226%) and
+restore identical raw bytes. Archive SHA-256 remains
+`244b2fbd55fb394c92501e6d50e26c59823ae1251a5a430834cee69ca59ddaf2`.
+
+| Public CLI operation | Median wall seconds | Raw MiB/s at median | Median observed process peak bytes | Observed peak range bytes |
+|---|---:|---:|---:|---:|
+| Encode | 5.4088766 | 9.031 | 11,321,344 | 11,317,248..11,321,344 |
+| Decode | 2.1181471 | 23.062 | 5,554,176 | 5,545,984..5,570,560 |
+
+CLI wall times include startup and file I/O; they are new standalone observations,
+not a paired comparison with earlier CLI runs. Observed process peaks are not
+codec allocation bounds. Decoder state size, tables, allocations and workspace
+charges remain unchanged and their existing limit tests pass. Detailed identity,
+source and raw measurements are retained in separate local artifacts.
+
+Retain the grouped search for the position-distance decoder. The private linear
+reference remains available, including a comparator with identical distance
+decoding. TVG-1164 and FZ-0046 cover interval boundaries, model rescaling,
+operation/error equivalence and canonical state; previous frame-publication
+tests remain in the complete suite. No format, ABI, encoder or other codec
+change is made, and no new external-platform interoperability result is claimed.

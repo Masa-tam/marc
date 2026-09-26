@@ -110,6 +110,7 @@ bool LzssPositionDistanceRangeDecoder::advance_interval(
     return true;
 }
 
+template<bool LinearLiterals>
 ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_symbol(
     const std::uint16_t context_id, const std::uint16_t alphabet,
     std::uint32_t& value) noexcept {
@@ -145,6 +146,20 @@ ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_symb
     }
     std::uint32_t cumulative{};
     std::uint32_t decoded{};
+    if constexpr (!LinearLiterals) {
+        if (alphabet == 256) {
+            // No retained index: sum bounded groups from the current model.
+            // Equality belongs to the next group, as in the scalar search.
+            for (; decoded + 8 <= alphabet; decoded += 8) {
+                const auto* frequencies = state_.frequencies.data() + offset + decoded;
+                const std::uint32_t group = static_cast<std::uint32_t>(frequencies[0])
+                    + frequencies[1] + frequencies[2] + frequencies[3]
+                    + frequencies[4] + frequencies[5] + frequencies[6] + frequencies[7];
+                if (scaled < cumulative + group) break;
+                cumulative += group;
+            }
+        }
+    }
     for (; decoded < alphabet; ++decoded) {
         const auto frequency = state_.frequencies[offset + decoded];
         if (scaled < cumulative + frequency) break;
@@ -229,7 +244,7 @@ ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_dist
     std::uint32_t decoded{};
     for (std::uint8_t p = 0; p < bit_count; ++p) {
         std::uint32_t bit{};
-        const auto checked = decode_symbol(static_cast<std::uint16_t>(24 + p), 2, bit);
+        const auto checked = decode_symbol<true>(static_cast<std::uint16_t>(24 + p), 2, bit);
         if (checked.error != ContextualDynamicRangeDecodeError::none) return checked;
         --state_.event_count; // grouped field, not one event per binary decision
         decoded |= bit << p;
@@ -296,7 +311,12 @@ ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_next
     return decode_next_impl<true>(operation);
 }
 
-template<bool Reference>
+ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_next_linear_literals(
+    context::internal::ModeledOperation& operation) noexcept {
+    return decode_next_impl<false, true>(operation);
+}
+
+template<bool Reference, bool LinearLiterals>
 ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_next_impl(
     context::internal::ModeledOperation& operation) noexcept {
     if (!state_.started) {
@@ -313,7 +333,7 @@ ContextualDynamicRangeDecodeResult LzssPositionDistanceRangeDecoder::decode_next
     using Field = context::internal::LzssPositionDistanceField;
     switch (request.field) {
     case Field::symbol:
-        checked = decode_symbol(decoded.context_id, decoded.alphabet_size, decoded.value);
+        checked = decode_symbol<LinearLiterals>(decoded.context_id, decoded.alphabet_size, decoded.value);
         break;
     case Field::uniform_length_extra:
         checked = decode_bypass(decoded.bit_count, decoded.value);

@@ -3,6 +3,7 @@
 #include "frame/lzss_position_distance_frame_streaming_encoder.hpp"
 #include "frame/lzss_position_distance_frame_streaming_decoder.hpp"
 #include "frame/lzss_position_distance_frame_decoder.hpp"
+#include "entropy/lzss_position_distance_range_decoder.hpp"
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -11,6 +12,15 @@
 #include <cstdio>
 #include <span>
 #include <tuple>
+
+namespace marc::entropy::internal {
+struct LzssPositionDistanceRangeDecoderFuzzAccess {
+    static auto next(LzssPositionDistanceRangeDecoder& d, context::internal::ModeledOperation& op) {
+        return d.decode_next_linear_literals(op);
+    }
+    static const auto& state(const LzssPositionDistanceRangeDecoder& d) { return d.state_; }
+};
+}
 
 namespace {
 constexpr std::size_t max_input = 4096;
@@ -77,6 +87,39 @@ auto token_result_key(const marc::context::internal::LzssContextualRangeDecodeRe
         r.entropy.error,r.entropy.event_count,r.entropy.decision_count,r.entropy.payload_consumed};
 }
 
+void compare_literal_search(std::span<const std::byte> frame,
+    const marc::frame::internal::TypedContextFrameValidationContext& context) {
+    using namespace marc::frame::internal;
+    using namespace marc::entropy::internal;
+    TypedContextFrameLayout layout{}; LzssShortMatchFrameRequirements needed{};
+    if(preflight_lzss_position_distance_frame_bytes(frame,context,layout,needed)
+        !=LzssShortMatchPreflightError::none) return;
+    const auto payload=frame.subspan(80,layout.header.payload_size);
+    LzssPositionDistanceRangeDecoder fast,linear;
+    const auto key=[](const auto& r) {
+        return std::tuple{r.error,r.event_count,r.decision_count,r.payload_consumed};
+    };
+    const auto begun=fast.begin(layout.descriptor,payload,context.limits);
+    if(key(begun)!=key(linear.begin(layout.descriptor,payload,context.limits))) std::abort();
+    if(begun.error!=ContextualDynamicRangeDecodeError::none) return;
+    for(std::uint32_t i=0;i<layout.header.event_count;++i) {
+        marc::context::internal::ModeledOperation a{},b{};
+        const auto result=fast.decode_next(a);
+        if(key(result)!=key(LzssPositionDistanceRangeDecoderFuzzAccess::next(linear,b))
+            || a.kind!=b.kind || a.context_id!=b.context_id || a.alphabet_size!=b.alphabet_size
+            || a.value!=b.value || a.bit_count!=b.bit_count) std::abort();
+        if(result.error!=ContextualDynamicRangeDecodeError::none) break;
+    }
+    if(key(fast.finish(layout.header.event_count,layout.header.decision_count))
+        !=key(linear.finish(layout.header.event_count,layout.header.decision_count))) std::abort();
+    const auto& a=LzssPositionDistanceRangeDecoderFuzzAccess::state(fast);
+    const auto& b=LzssPositionDistanceRangeDecoderFuzzAccess::state(linear);
+    if(a.frequencies!=b.frequencies || a.totals!=b.totals || a.code!=b.code || a.range!=b.range
+        || a.canonical_low!=b.canonical_low || a.canonical_pending!=b.canonical_pending
+        || a.canonical_cache!=b.canonical_cache || a.canonical_offset!=b.canonical_offset
+        || a.canonical_mismatch!=b.canonical_mismatch) std::abort();
+}
+
 void compare_frame_scratch(std::span<const std::byte> input) {
     using namespace marc::frame::internal;
     TypedContextStreamHeader stream{}; std::size_t consumed{};
@@ -84,6 +127,7 @@ void compare_frame_scratch(std::span<const std::byte> input) {
         !=LzssShortMatchPreflightError::none) return;
     std::uint64_t sequence{},committed{};
     while(consumed<input.size()) {
+        compare_literal_search(input.subspan(consumed),{stream,limits(),sequence,committed});
         std::array<marc::dictionary::internal::LzssTypedToken,66> a{},b{};
         for(auto& t:a) t.literal=0xcc;
         b=a;

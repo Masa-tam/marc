@@ -1064,3 +1064,16 @@ fuzz runs without a sanitizer finding or differential mismatch. Harness
 input/output/frame bounds remain 4,096/128/64 bytes. This finite campaign is
 not exhaustive malformed-stream or public-API coverage; public factory and
 hash tests remain separate evidence.
+
+### FZ-0046: Grouped literal search differential coverage
+
+Extend the bounded position-distance stream harness with operation-level
+comparison of grouped and linear literal searches while using the same
+specialized distance decoder. Compare every result and operation, then final
+frequency totals, interval and canonical state, including sticky failures.
+The existing frame scratch, raw publication and incremental comparisons remain.
+
+The 2026-09-27 campaign completed 27 boundary cases and 10,000 fuzz runs with
+no sanitizer finding or differential mismatch. Harness input/output/frame
+bounds remain 4,096/128/64 bytes. Larger model histories and rescaling are
+covered separately by TVG-1164; this bounded campaign is not exhaustive.

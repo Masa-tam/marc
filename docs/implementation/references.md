@@ -9407,3 +9407,10 @@ transactional decoder as oracle. No external implementation source was consulted
 The independent timing diagnostic uses those same first-party frame interfaces,
 the existing Mozilla archive oracle and the provisioned Silesia input; it does
 not use external codec source or imported test logic.
+
+### IR-1053
+
+The grouped literal search trial uses the repository's position-distance range
+decoder, its linear reference path and BM-0136/BM-0137. Group sums and boundary
+tests are independently derived from the existing cumulative-frequency rule.
+No external implementation or optimization source was consulted.
