@@ -10,9 +10,10 @@ marc-interoperability-windows-msvc-x64
 marc-interoperability-ubuntu-ninja-x64
 ```
 
-Each current schema-57 bundle contains the same generated `input.bin`, the
+Each current schema-58 bundle contains the same generated `input.bin`, the
 frozen 42 stable-profile archives, twenty-five experimental Format 2 archives,
-and `manifest.json`. The manifest declares codec set `marc-cli-v57` and records
+one staged position-distance archive, and `manifest.json`. The manifest declares
+codec set `marc-cli-v58` and records
 the source revision, producing platform, compiler label, architecture, CLI
 SHA-256, and the size and SHA-256 of every input and archive file.
 
@@ -33,7 +34,7 @@ arguments. The verifier performs all of the following:
 
 1. validates the manifest version, exact codec set and profile order, leaf-only
    file names, sizes, and SHA-256 values;
-2. decodes all sixty-seven foreign archives and compares their output byte
+2. decodes all sixty-eight foreign archives and compares their output byte
    for byte with `input.bin`;
 3. re-encodes `input.bin` with the local executable and compares every complete
    archive byte for byte with the foreign archive.
@@ -46,7 +47,7 @@ has this form:
 artifact: marc-interoperability-windows-msvc-x64
 local platform: <OS, architecture, compiler>
 commit: <manifest source_revision and local Git commit>
-result: Verified 67 archives from windows-msvc-x64 (...), revision <Git object ID>
+result: Verified 68 archives from windows-msvc-x64 (...), revision <Git object ID>
 ```
 
 ## Schema compatibility
@@ -177,7 +178,18 @@ Schema 57 requires `marc-cli-v57` and all sixty-seven archives, appending
 `lzss-contextual-adaptive-huffman-64m` to the frozen schema-56 order. No
 earlier schema silently inherits this later profile or name.
 
+Schema 58 requires `marc-cli-v58` and all sixty-eight archives, appending
+`lzss-position-distance-dynamic-range` as archive 68 after the unchanged
+schema-57 prefix. The generated fixture and all earlier codec configurations
+remain unchanged. The new archive must carry exactly format 2.0 dictionary
+2/8, context 1/9, entropy 3/2. Schemas 1 through 57 keep their original sets.
+
 ## Integrity and current evidence
+
+Schema 58 external four-direction verification is pending; generating a local
+bundle or passing historical-schema checks does not complete public admission.
+Local generation, 68-archive decode/re-encode equality, reordered-tail rejection
+and conversion checks for schemas 1 through 58 have passed.
 
 The SHA-256 values detect accidental artifact changes but are not signatures
 and do not authenticate the producer. Use bundles downloaded from a trusted

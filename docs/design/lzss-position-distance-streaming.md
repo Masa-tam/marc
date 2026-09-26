@@ -383,8 +383,8 @@ zero published bytes, unchanged output sentinels and sticky failure. A valid
 empty stream is the positive control. This grid is a regression boundary, not
 a claim of exhaustive validation of all 16-bit values or malformed payloads.
 
-Next gate: integrate the exact candidate in the interoperability bundle/schema
-and corresponding documentation/inventory checks, obtain hosted CI and the
+The exact candidate is now appended in interoperability schema 58 as archive 68,
+with frozen historical-prefix and schema-conversion checks. Next obtain hosted CI and the
 external four-way verification, then update completion status. Do not infer
 cross-platform success from this local audit. Existing stream bytes and the
 general format 1/legacy Format 2 parser contracts remain unchanged.

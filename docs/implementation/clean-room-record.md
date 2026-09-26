@@ -35035,3 +35035,21 @@ both bounds.
   pending; the audit does not claim public completion.
 - Similarity review: independently authored first-party audit and test mutations;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1446: 2026-09-26 - Add schema 58 position-distance interoperability candidate
+
+- Author: Codex; reviewer: repository maintainer approved bundle integration.
+- References used: IR-1046, DD-1291 and TVG-1160; first-party fixture, historical
+  inventories and the exact position-distance format contract.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test vectors.
+- Task: append one interoperability candidate without changing historical
+  fixture/profile definitions or claiming external results.
+- Changes: schema 58 generation and verification, frozen-prefix/count checks,
+  reordered-tail rejection, conversion to schema 57 and current documentation.
+- Validation: all 3,933 Release CTest cases passed in 408.36 seconds. Schema
+  compatibility passed in 130.33 seconds, including the 68-archive local bundle,
+  reordered-tail rejection and schemas 1 through 58. External four-direction
+  verification remains pending.
+- Similarity review: independently authored first-party script integration;
+  no external expression copied and no legal guarantee claimed.

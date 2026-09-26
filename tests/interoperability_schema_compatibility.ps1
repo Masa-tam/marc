@@ -64,7 +64,8 @@ $resolvedCli = (Resolve-Path -LiteralPath $MarcCli).Path
 $root = Join-Path ([System.IO.Path]::GetTempPath()) (
     'marc-interoperability-' + [System.Guid]::NewGuid().ToString('N'))
 $schema57 = Join-Path $root 'schema57'
-$schema57Reordered = Join-Path $root 'schema57-reordered'
+$schema58 = Join-Path $root 'schema58'
+$schema58Reordered = Join-Path $root 'schema58-reordered'
 $schema56 = Join-Path $root 'schema56'
 $schema55 = Join-Path $root 'schema55'
 $schema54 = Join-Path $root 'schema54'
@@ -227,29 +228,41 @@ try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema57 `
+        -OutputDirectory $schema58 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    $latest = Get-Content -LiteralPath (Join-Path $schema58 'manifest.json') -Raw |
+        ConvertFrom-Json
+    if ($latest.schema_version -ne 58 -or $latest.codec_set -ne 'marc-cli-v58' -or
+            @($latest.archives).Count -ne 68 -or
+            $latest.archives[67].codec -ne 'lzss-position-distance-dynamic-range') {
+        throw 'Schema 58 must append exactly one position-distance archive'
+    }
+    for ($index = 0; $index -lt $schema57Profiles.Count; ++$index) {
+        if ($latest.archives[$index].codec -ne $schema57Profiles[$index]) {
+            throw 'Schema 58 changed the frozen schema-57 prefix'
+        }
+    }
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -BundleDirectory $schema57 `
-        -OutputDirectory (Join-Path $root 'verified57')
+        -BundleDirectory $schema58 `
+        -OutputDirectory (Join-Path $root 'verified58')
 
-    Copy-Item -LiteralPath $schema57 -Destination $schema57Reordered -Recurse
-    $reorderedManifestPath = Join-Path $schema57Reordered 'manifest.json'
+    Copy-Item -LiteralPath $schema58 -Destination $schema58Reordered -Recurse
+    $reorderedManifestPath = Join-Path $schema58Reordered 'manifest.json'
     $reorderedManifest = Get-Content -LiteralPath $reorderedManifestPath -Raw |
         ConvertFrom-Json
-    $firstArchive = $reorderedManifest.archives[0]
-    $reorderedManifest.archives[0] = $reorderedManifest.archives[1]
-    $reorderedManifest.archives[1] = $firstArchive
+    $lastArchive = $reorderedManifest.archives[67]
+    $reorderedManifest.archives[67] = $reorderedManifest.archives[66]
+    $reorderedManifest.archives[66] = $lastArchive
     Write-Manifest $reorderedManifestPath $reorderedManifest
     $reorderedRejected = $false
     try {
         & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
             -MarcCli $resolvedCli `
-            -BundleDirectory $schema57Reordered `
-            -OutputDirectory (Join-Path $root 'verified57-reordered')
+            -BundleDirectory $schema58Reordered `
+            -OutputDirectory (Join-Path $root 'verified58-reordered')
     } catch {
         if ($_.Exception.Message -notlike 'Codec is out of schema order*') {
             throw
@@ -257,8 +270,14 @@ try {
         $reorderedRejected = $true
     }
     if (-not $reorderedRejected) {
-        throw 'Verifier accepted a reordered schema-57 manifest'
+        throw 'Verifier accepted a reordered schema-58 manifest'
     }
+
+    Convert-Bundle $schema58 $schema57 57 'marc-cli-v57' $schema57Profiles
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+        -MarcCli $resolvedCli `
+        -BundleDirectory $schema57 `
+        -OutputDirectory (Join-Path $root 'verified57')
 
     Convert-Bundle $schema57 $schema56 56 'marc-cli-v56' $schema56Profiles
     & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
@@ -596,7 +615,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 57'
+    Write-Host 'Verified interoperability schemas 1 through 58'
 } finally {
     if (Test-Path -LiteralPath $root) {
         Remove-Item -LiteralPath $root -Recurse -Force

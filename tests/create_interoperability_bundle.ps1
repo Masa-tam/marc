@@ -148,7 +148,8 @@ $profiles = @(
     'lzss-contextual-rans-64m',
     'lzss-contextual-tans-64m',
     'lzss-contextual-blocked-huffman-64m',
-    'lzss-contextual-adaptive-huffman-64m'
+    'lzss-contextual-adaptive-huffman-64m',
+    'lzss-position-distance-dynamic-range'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -156,6 +157,19 @@ foreach ($profile in $profiles) {
     $archivePath = Join-Path $resolvedOutput $archiveName
     $decodedPath = Join-Path $resolvedOutput "$profile.decoded"
     Invoke-Marc @('encode', '--codec', $profile, $inputPath, $archivePath)
+    if ($profile -eq 'lzss-position-distance-dynamic-range') {
+        $archiveBytes = [System.IO.File]::ReadAllBytes($archivePath)
+        if ($archiveBytes.Length -lt 112) {
+            throw 'Position-distance archive header is truncated'
+        }
+        foreach ($field in @(@(4, 2), @(6, 0), @(12, 2), @(14, 8),
+                @(16, 3), @(18, 2), @(96, 1), @(98, 9))) {
+            if ($archiveBytes[$field[0]] -ne $field[1] -or
+                    $archiveBytes[$field[0] + 1] -ne 0) {
+                throw 'Position-distance archive does not carry exact identity 2.0: 2/8 + 1/9 + 3/2'
+            }
+        }
+    }
     if ($profile -eq 'lzss-contextual-dynamic-range-1m' -or
             $profile -eq 'lzss-contextual-rans-1m' -or
             $profile -eq 'lzss-contextual-tans-1m' -or
@@ -416,8 +430,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 57
-    codec_set = 'marc-cli-v57'
+    schema_version = 58
+    codec_set = 'marc-cli-v58'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

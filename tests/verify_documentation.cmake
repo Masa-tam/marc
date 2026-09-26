@@ -1417,9 +1417,10 @@ foreach(required_interoperability_section IN ITEMS
         "${interoperability_section_offset}")
 endforeach()
 foreach(required_current_interoperability_term IN ITEMS
-        "Each current schema-57 bundle"
-        "marc-cli-v57"
-        "sixty-seven foreign archives"
+        "Each current schema-58 bundle"
+        "marc-cli-v58"
+        "sixty-eight foreign archives"
+        "Schema 58 requires"
         "Schema 57 requires"
         "schemas 1 through 56"
         "cdf90a4f93d3ef5c01db2c60a96bf6a439e02cd9"

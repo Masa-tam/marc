@@ -16835,3 +16835,14 @@ and sticky error on another call. The valid stream must end successfully.
 Separately require the old typed-context parser to reject the new header while
 preserving caller metadata and consumption. Existing payload tests remain in
 place; this grid does not replace them or exhaust the 16-bit identity space.
+
+## TVG-1160: Schema 58 position-distance interoperability candidate
+
+Generate the unchanged 8,193-byte fixture and all 67 schema-57 archives, then
+append the position-distance archive. Assert schema/codec-set/count, all prior
+names in order, and the new archive's full version/dictionary/context/entropy
+identity words. Verify decoding and byte-identical re-encoding of 68 archives.
+Swap the last two manifest entries and require order rejection. Convert schema
+58 to 57 and continue through every historical schema, preserving original
+sets and the documented historical rANS name mapping. This is local regression
+evidence, not an external platform exchange.

@@ -25587,3 +25587,11 @@ typed-context parser is not a universal dispatcher; do not add the new dictionar
 variant to its older model family. Audit the actual construction, header, frame
 and CLI boundaries, and exercise crossed identities through the C factory.
 An audit is not an external interoperability result or a completion claim.
+
+## DD-1291: Append position-distance as schema 58 archive 68
+
+Freeze the complete schema-57 prefix and fixture. Append only the exact
+lzss-position-distance-dynamic-range candidate; require marc-cli-v58 and
+68 entries in order. Preserve all historical schema sets. Validate the new
+archive's header identity at generation, decode and re-encode byte-identically
+in verification, and keep external four-way evidence pending until reported.

@@ -9360,3 +9360,9 @@ or third-party tests were consulted.
 The position-distance admission audit uses first-party header parsing, C factory
 configuration, CLI selection and existing boundary tests. No external codec
 implementation or third-party conformance suite was consulted.
+
+### IR-1046
+
+Schema 58 uses the repository-generated interoperability fixture, frozen
+schema-57 inventory and first-party position-distance format/C/CLI contract.
+No external codec source or third-party vectors were used.

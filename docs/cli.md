@@ -39,7 +39,8 @@ marc decode --codec lzss-position-distance-dynamic-range output.marc restored.bi
 ```
 
 This is a staged integration, outside the completed profile inventory below;
-general format admission and external interoperability remain pending. No
+completion and external interoperability remain pending. Schema 58 includes
+this candidate as archive 68 for cross-platform verification. No
 header-driven codec selection or automatic limit expansion is performed.
 Existing contextual decoders reject this identity, and this decoder rejects
 their streams. Failure removes temporary output and preserves existing files.

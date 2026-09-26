@@ -109,6 +109,11 @@ followed by twenty-five typed-token LZSS Contextual profiles. Schema 56 retains
 its exact archive order and meaning; schema 57 appends only the 64-MiB
 Contextual Adaptive Huffman profile.
 
+Schema 58 retains that 67-archive prefix and appends the staged
+`lzss-position-distance-dynamic-range` candidate as archive 68. The matrices
+below retain the completed schema-57 scope; the new candidate's external
+four-direction verification and completion declaration remain pending.
+
 ## Public-profile evidence matrix
 
 Every `Yes` below names an implemented and test-covered repository boundary.
