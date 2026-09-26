@@ -9386,3 +9386,9 @@ The public CLI Mozilla confirmation uses the locally provisioned Silesia input,
 BM-0131/BM-0132, first-party CLI binaries and the maintainer's earlier gzip size
 report. No external codec source was consulted. Windows process counters supply
 observed working-set peaks, separately from internal workspace policy charges.
+
+### IR-1050
+
+Stage isolation uses first-party position-distance frame/token/reconstruction
+entry points, the BM-0134 CLI archive and the local Silesia Mozilla input.
+No external codec implementation or optimization source was consulted.

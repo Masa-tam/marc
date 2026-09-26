@@ -35121,3 +35121,19 @@ both bounds.
   and limitations. No codec implementation, public default or format changed.
 - Similarity review: independently authored measurement harness and analysis;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1451: 2026-09-27 - Isolate position-distance encode/decode stage costs
+
+- Author: Codex; reviewer: repository maintainer approved bottleneck investigation.
+- References used: IR-1050, BM-0134 and first-party codec source.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party profiler/codec examples.
+- Task: identify measured stage costs before selecting a byte-preserving change.
+- Validation: three complete 782-frame iterations reproduced every CLI frame
+  and every original raw frame. BM-0135 records timings, diagnostic hashes and
+  measurement limits. No production code, API, format or default was modified.
+- Conclusion: prioritize decoder range/token processing; linear lookup and
+  apparent repeated division are unproven substage candidates, not established
+  causes. Encoder search remains a separate major cost.
+- Similarity review: independently authored diagnostic using first-party
+  interfaces; no external expression copied and no legal guarantee claimed.

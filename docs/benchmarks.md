@@ -5156,3 +5156,75 @@ The next useful optimization investigation is a bounded profile of the new
 encode/decode hot paths, especially model updates and symbol lookup; this result
 does not itself identify the bottleneck. Preserve the new archive bytes and
 measure before changing search, models, memory limits or default selection.
+
+## BM-0135: Position-distance Mozilla stage isolation
+
+On 2026-09-27, at revision `2d27905d` use a local, ignored C++20 Release
+diagnostic linked against the existing MSVC static library. No production
+instrumentation, source change or new public API is introduced. Reuse BM-0134's
+exact Mozilla input and its first position-distance CLI archive. Three sequential
+iterations each traverse all 782 frames. Every generated frame must equal the
+corresponding CLI frame bytes, every reconstruction must equal the original raw
+frame, and the final archive offset must equal the complete archive size.
+All checks passed in all three iterations.
+
+| Stage, summed over 782 frames | Run 1 seconds | Run 2 seconds | Run 3 seconds | Median seconds |
+|---|---:|---:|---:|---:|
+| Indexed LZSS tokenization | 3.5922574 | 3.7136397 | 3.6048818 | 3.6048818 |
+| Frame encoding from retained tokens | 1.9102961 | 1.9719084 | 1.9201463 | 1.9201463 |
+| Decoder frame-byte preflight | 0.0002466 | 0.0002584 | 0.0002475 | 0.0002475 |
+| Range decode plus token grammar/validation | 4.0492605 | 4.1590874 | 4.0638221 | 4.0638221 |
+| Typed-token reconstruction | 0.1443027 | 0.1481362 | 0.1447112 | 0.1447112 |
+
+The encoder calls `tokenize_lzss_short_length_escape_candidate_indexed` with
+eligibility 3 and then `encode_lzss_position_distance_frame`, retaining tokens
+and charging finder storage as the real raw-frame wrapper does. The latter
+measurement includes field mapping, planning, model reset, prepared entropy
+encoding and frame serialization; it is not pure arithmetic-coder time.
+Decoder stages use `preflight_lzss_position_distance_frame_bytes`,
+`decode_lzss_position_distance_range_tokens` and `reconstruct_lzss_typed_frame`.
+The real incremental decoder uses the same complete-frame path. Token decoding
+includes context selection, model reset/update/rescaling, symbol lookup, range
+arithmetic, canonical replay and grammar/reference validation. Reconstruction
+also includes its own token validation, not only copying.
+
+These are warm, in-memory stage measurements, not a profiler attribution of
+the CLI wall time. File I/O, process startup, allocation, archive/input loading,
+outer incremental buffering and byte comparisons are outside the stage timers.
+The diagnostic interleaves encoding and decoding per frame, changing cache
+conditions relative to BM-0134. A small amount of intervening error checking is
+included in adjacent timers. Do not subtract these times from CLI times to
+estimate unmeasured overhead, or treat the new-only stage split as proof of
+which stage caused the old/new difference.
+
+Within this diagnostic, tokenization is approximately 65% of measured encoder
+time and frame encoding 35%. Range/token decoding is approximately 96.6% of
+measured decoder time; reconstruction is about 3.4%, and preflight is negligible.
+Prioritize deeper decoder profiling before copy optimization. Encoding search
+remains a separate substantial target; the retained-token path already performs
+one search per frame, so reintroducing a duplicate-search explanation would be
+incorrect.
+
+Code inspection finds linear cumulative summation in range encoding and linear
+symbol lookup in generic range decoding, and the generic decoder recomputes the
+interval unit in `decode_interval` after calculating it for symbol selection.
+These are candidates, not proven costs: compiler optimization may eliminate
+redundant arithmetic. The distance-bit path already has a binary specialization.
+Next measure per-context decision/lookup work or obtain symbol-level samples,
+then evaluate a bounded lookup change and/or explicit unit reuse against the
+unchanged reference bytes. Do not remove validation or change probability updates
+merely to improve the benchmark. Any candidate must retain malformed-input,
+memory-limit and deterministic-byte behavior and be compared under one harness.
+
+Local diagnostic files are retained under ignored
+`out/position-distance-stages-20260927/` (CMake project, probe, executable and
+`results.txt`). No corpus or generated archive enters the repository.
+Probe source SHA-256:
+`9bebd966342a1829a6288cac716843a6fb04024652eea746fbdb7f532cb9c779`;
+executable SHA-256:
+`c3b75587ab4ca79c4b1ba9e372a8397e8fe87396659dab39557770bf3db7475b`;
+results SHA-256:
+`b62c8a702019667c4e4a99c83c91bf5c11de6b13545d9c0adb60b2addbf04f97`.
+Run the probe with the Mozilla input path and the BM-0134 saved CLI archive path;
+it refuses missing/empty/oversized inputs and reports failure on any disagreement.
+This single-file diagnostic does not establish corpus-wide performance.
