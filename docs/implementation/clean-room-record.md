@@ -35271,3 +35271,22 @@ both bounds.
   format changes. Prior fuzz/full-suite results are not new executions here.
 - Similarity review: independent first-party vectors, no external expression
   copied, no legal guarantee or external interoperability claim.
+
+## CR-1458: 2026-09-27 - Validate the optimized decoder in another build
+
+- Author: Codex; local review: Codex; maintainer review pending.
+- Task: following approval of public failure vectors, run the complete suite
+  in an additional existing build and verify local bidirectional archive bytes.
+- References used: first-party build/test definitions, bundle generation and
+  verification scripts, DD-1295/DD-1296 and TVG-1165/TVG-1166.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Results at `363dcf745ac42bcc081654c0d4bdb560fd97cc90`: all 3,945 tests passed
+  without exclusions. Both local exchange directions verified all 68 schema-58
+  archives, including decoded fixture equality and byte-identical re-encoding.
+- Scope: validation/provenance records only; no implementation, format, ABI,
+  allocation or profile changes. Local environment and binary identities remain
+  outside public documentation. Hosted CI and external optimized-revision
+  exchange are still separate gates; earlier external reports are not reused.
+- Similarity review: first-party verification workflow; no external expression
+  copied and no legal guarantee claimed.

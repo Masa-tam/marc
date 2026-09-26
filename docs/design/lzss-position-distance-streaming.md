@@ -441,3 +441,19 @@ linear reference remains available. TVG-1164, FZ-0046 and the full test suite
 preserve diagnostic, model, canonical and frame-publication behavior; BM-0138
 records the independent timing evidence for retaining this refinement.
 Encoder bytes and all public format/ABI contracts remain unchanged.
+
+## Post-optimization validation checkpoint (2026-09-27)
+
+At `363dcf745ac42bcc081654c0d4bdb560fd97cc90`, an additional build configuration
+passed the complete 3,945-test suite, including schema compatibility and the
+public failure-publication vectors. A bidirectional local exchange passed all
+68 schema-58 archives in each direction: manifest validation, exact decoded
+fixture bytes and byte-identical re-encoding. Detailed execution identities and
+environment data remain in separate local records.
+
+Together with BM-0139, FZ-0047 and TVG-1166, this supports retaining the scratch
+and grouped-literal changes with their original failure contracts. The exchange
+is local evidence only; hosted CI and an external exchange for the optimized
+revision remain separate maintainer gates. Historical external success does not
+establish those results for this revision. No further format, profile or release
+change is implied by this checkpoint.
