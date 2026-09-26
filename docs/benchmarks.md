@@ -4922,3 +4922,48 @@ need for malformed-input and write-failure validation before public admission.
 
 Retain the prepared path. Close the remaining write-time failure/publication
 test gap from TVG-1130 before expanding private context-9 integration.
+
+## BM-0131: Private context-9 emitted mozilla streams
+
+On 2026-09-26, measure actual saved streams from the private whole-stream
+benchmark at revision `cf54bf3eb68f0fea32541d96e0411b5f2fe9f520`. The
+Release executable SHA-256 is
+`2a5ca95fba0ad550b44139ca6b8b177bc7f825469c011ace401eb3496a2af16d`.
+Input is Silesia `mozilla`, 51,220,480 bytes, SHA-256
+`657fc3764b0c75ac9de9623125705831ebbfbe08fed248df73bc2dc66e2a963b`.
+Use 65,536-byte raw frames, indexed matching, fixed eligibility 3/4/5 and
+three iterations per policy. Each stream has 782 frames. Strict whole-stream
+reconstruction and repeated archive digest checks passed. Saved file sizes and
+SHA-256 values were independently checked on disk.
+
+| Eligibility | Saved bytes | Plan seconds | Encode seconds (three runs; median) | Decode seconds (three runs; median) |
+| --- | ---: | ---: | --- | --- |
+| 3 | 18,655,833 | 4.545883400 | 9.851782800, 9.810357000, 9.820307400; 9.820307400 | 8.005607500, 8.016552200, 8.008731200; 8.008731200 |
+| 4 | 19,048,383 | 4.459929100 | 9.691433600, 9.694140000, 9.763465200; 9.694140000 | 8.343723500, 8.354892500, 8.498961900; 8.354892500 |
+| 5 | 19,351,929 | 4.955417500 | 10.654928000, 10.635883700, 10.608695400; 10.635883700 | 8.787551200, 8.791648600, 8.827818100; 8.791648600 |
+
+Archive SHA-256 values for eligibility 3, 4 and 5 respectively are
+`244b2fbd55fb394c92501e6d50e26c59823ae1251a5a430834cee69ca59ddaf2`,
+`6b57b146d3e4aa8d09fd1a7228e93bfc780e358528389b53d3a6afefb8939307`
+and `4ec3dae0cba9777fd38c254febce3c1db571b3da2905b748d914a843770f46a9`.
+The first saved header was also parsed independently: `MARC`, dictionary 2/8,
+entropy 3/2, context 1/9, frame size 65,536 and original size 51,220,480.
+These are private format identifiers, not public codec admission.
+
+The maintainer previously reported an Ubuntu `gzip -9v` archive of 18,994,139
+bytes for this input. Eligibility 3 is 338,306 bytes (1.78%) smaller; eligibility
+4 is 54,244 bytes larger and eligibility 5 is 357,790 bytes larger. That gzip
+archive was not independently reproduced in this Windows measurement. The
+earlier 18,542,748-byte context-9 accounted estimate retained selected tokens;
+it is not the same fixed parsing policy or an emitted whole-stream result.
+Eligibility 3's saved stream is 113,085 bytes larger than that estimate.
+
+Planning is timed separately. Encode timing includes the writer's full preflight
+and repeated raw tokenization; decode timing includes its two passes. File I/O,
+allocation, digest calculation and byte comparison are outside these timings.
+Caller-supplied encode and decode scratch spans are 6,553,600 and 851,968 bytes;
+input and restored buffers are each 51,220,480 bytes, plus the archive buffer.
+These are supplied capacities, not measured peak RSS. Local saved archives under
+ignored `out/position-distance-stream/` are measurement artifacts, not corpus
+or repository contents. This result supports further private integration review,
+not a public API or throughput claim for the CLI.

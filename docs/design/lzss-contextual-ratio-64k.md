@@ -352,3 +352,21 @@ calls. The external sizing pass and supplied buffers are reported separately.
 The next measurement is a complete mozilla input with explicitly fixed policy;
 earlier selector-based size estimates are diagnostic controls, not an expected
 byte count for a different parser policy.
+
+### First emitted mozilla measurement
+
+BM-0131 measures saved private context-9 streams for complete Silesia `mozilla`
+with 65,536-byte frames, indexed matching and fixed eligibility 3/4/5. All
+three policies reconstruct strictly and produce repeatable archive digests.
+Eligibility 3 saves 18,655,833 bytes, compared with 19,048,383 and 19,351,929
+for eligibility 4 and 5. Its three-run median whole encode and decode times
+are 9.820307400 and 8.008731200 seconds, with planning separately timed at
+4.545883400 seconds. The previously reported `gzip -9v` size is 18,994,139
+bytes; eligibility 3 is 338,306 bytes smaller on this input, subject to the
+cross-environment comparison caveat in BM-0131.
+
+This is an emitted-stream result under a fixed private parser policy, not a
+confirmation of earlier selector-based accounted estimates. The measurement
+does not establish CLI throughput or peak RSS. Keep public admission gated on
+incremental streaming, profile/workspace and C ABI design, installed-consumer
+tests and cross-platform interoperability validation.

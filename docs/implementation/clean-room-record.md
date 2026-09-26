@@ -34740,3 +34740,20 @@ both bounds.
   and all 3,883 CTest cases passed, including interoperability schema compatibility.
 - Similarity review: independently composed first-party primitives; no external
   expression copied and no legal guarantee claimed.
+
+## CR-1431: 2026-09-26 - Measure emitted context-9 mozilla streams
+
+- Author: Codex; reviewer: repository maintainer approved documentation.
+- References used: IR-1031, DD-1276, TVG-1145 and BM-0131; first-party
+  benchmark, saved artifacts and maintainer-provided `gzip -9v` size.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: record actual whole-stream archive sizes and encode/decode times for
+  fixed eligibility 3/4/5 without presenting estimates as emitted results.
+- Changes: benchmark and design records only; no codec, public API, wire or
+  build behavior changed.
+- Validation: three iterations per policy on Silesia `mozilla`; all strict
+  reconstructions and archive-determinism checks passed. Saved sizes and
+  digests were independently checked, and one stream header was parsed.
+- Similarity review: measurement of first-party implementation; no external
+  expression copied and no legal guarantee claimed.
