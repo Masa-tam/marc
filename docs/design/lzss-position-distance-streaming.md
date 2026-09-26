@@ -225,3 +225,12 @@ oracle generation and whole-file harness storage are reported separately.
 This is one corpus member and one parsing policy, not a general performance
 claim. Wider corpus measurement and public C ABI/CLI design review remain before
 admission; neither public identifiers nor defaults change in this step.
+
+## Remaining corpus measurements
+
+BM-0133 covers the other eleven Silesia members through DD-1283's checkpointed
+runner. Every member preserves the one-shot archive and has lower median encode
+and decode times for the incremental path. Together with the separate Mozilla
+measurement, this closes the planned fixed-policy corpus comparison, not public
+admission. Next review the C ABI/CLI integration contract, limits and public
+identity handling before implementing public factories or changing defaults.

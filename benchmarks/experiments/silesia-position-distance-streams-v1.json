@@ -1,0 +1,12 @@
+{
+  "schema": "marc-position-distance-stream-comparison-v1",
+  "members": ["dickens", "mr", "nci", "ooffice", "osdb", "reymont", "samba", "sao", "webster", "xml", "x-ray"],
+  "frame_bytes": 65536,
+  "eligibility": 3,
+  "search": "indexed",
+  "iterations": 3,
+  "input_chunk": 65536,
+  "output_chunk": 65536,
+  "timeout_seconds": 600,
+  "order": "alternate-first-mode-per-member"
+}

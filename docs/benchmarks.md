@@ -5017,3 +5017,64 @@ Reproduce with the private benchmark's existing arguments and append
 new output filenames. Archives remain in ignored `out/position-distance-stream/`.
 Public API, CLI admission and defaults remain unchanged. Broader Silesia coverage
 and public integration review remain separate follow-up work.
+
+## BM-0133: Remaining Silesia members with incremental context-9
+
+On 2026-09-26, run the eleven non-Mozilla members at parent revision `05d5166b`
+with `tools/run_silesia_position_distance_streams.py` and
+`benchmarks/experiments/silesia-position-distance-streams-v1.json`. Use BM-0132's
+same Release executable (SHA-256
+`2b4623c1e26c6957885712233e400f33ee1d7351d8fdf9d61cbeb5d9d099fd99`), indexed
+eligibility 3, 65536-byte frames and incremental input/output chunks, three
+iterations per child and no concurrent benchmark/test execution. Verify the
+entire local corpus manifest before launch. Alternate first mode per member,
+starting with one-shot for dickens. The 22 child records and a no-relaunch resume
+verification all succeeded.
+
+Times below are medians in seconds; archive sizes apply to both modes.
+
+| Member | Archive bytes | One-shot encode | Incremental encode | One-shot decode | Incremental decode |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| dickens | 4,155,283 | 2.1857424 | 1.2040415 | 1.6476796 | 0.8126692 |
+| mr | 3,545,896 | 1.9074683 | 1.0452458 | 1.4919187 | 0.7716052 |
+| nci | 3,687,394 | 3.2686458 | 1.7282724 | 1.3671348 | 0.6905292 |
+| ooffice | 3,170,470 | 1.1057639 | 0.6324001 | 1.3493603 | 0.6624796 |
+| osdb | 4,204,247 | 1.0256639 | 0.6107630 | 1.7436375 | 0.8503613 |
+| reymont | 2,015,408 | 1.6372990 | 0.9091498 | 0.7755745 | 0.4291165 |
+| samba | 5,756,911 | 2.4890827 | 1.3669854 | 2.3780715 | 1.1766209 |
+| sao | 5,219,872 | 1.3075775 | 0.7780659 | 2.3631438 | 1.1890161 |
+| webster | 13,190,513 | 6.4413052 | 3.5373056 | 5.0176731 | 2.4925460 |
+| xml | 776,876 | 0.3869566 | 0.2095833 | 0.2865777 | 0.1409979 |
+| x-ray | 5,747,816 | 1.3447236 | 0.8168626 | 2.4796074 | 1.2397255 |
+
+All eleven improve in both directions: encode elapsed reductions range from
+39.3% to 47.1%, decode from 44.7% to 51.2%. Summed member medians fall from
+23.1002289 to 12.8386754 seconds for encode (44.4%) and from 20.9003789 to
+10.4556674 seconds for decode (50.0%). These sums are not separately measured
+corpus trials. The archive total is 51,470,686 bytes; adding the separately
+measured Mozilla archive gives 70,126,519 bytes across all twelve members.
+
+Each child verifies all iterations and raw reconstruction; incremental children
+compare exact one-shot bytes and one preparation per frame. Both modes' saved
+archive sizes/SHA-256 agree for every member. Resume rehashes every saved archive
+and checks executable, tool and input identities before accepting the records.
+The complete raw reports remain in ignored
+`out/position-distance-stream/silesia-incremental-v1/checkpoint.json`, SHA-256
+`148b61dfa8bfdcf918ffc52c0c83e6e24a0e4574bebc14d24eb569c0fc376e15`.
+
+Reproduce from the repository root (substitute the local Python/executable path):
+
+```text
+python tools/run_silesia_position_distance_streams.py --benchmark out/build/windows-msvc/Release/marc_lzss_position_distance_stream_benchmark.exe --corpus benchmarks/data/silesia/corpus --manifest benchmarks/experiments/silesia-position-distance-streams-v1.json --output out/position-distance-stream/silesia-incremental-v1
+```
+
+Use a new output directory for independent timing samples; the same directory
+resumes validated records. An abrupt termination may leave `running.lock`; inspect
+running processes before removing that lock. Uncheckpointed archives are retained,
+not accepted or overwritten. No network download is performed.
+
+BM-0132's timing boundaries, whole-stream versus per-frame publication distinction
+and workspace-versus-RSS caveats still apply. Alternating order limits a simple
+order bias but is not a randomized repeated trial. This establishes no measured
+regression for this fixed corpus/configuration and supports proceeding to public
+integration design; it does not admit a public format or change defaults.

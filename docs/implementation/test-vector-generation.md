@@ -16736,3 +16736,12 @@ archive. Reusing an existing output path must fail without modifying its bytes.
 Measure full Mozilla with 65536-byte frames, indexed matching, eligibility 3,
 three iterations and 65536/65536 chunks, serially with a contemporary one-shot
 baseline. Record observed sizes, digests and timing samples separately.
+
+## TVG-1152: Remaining-member comparison runner checks
+
+Use temporary files and a fake child with deterministic reports, without a corpus
+download or compressor execution. Verify 22 records, completed resume with zero
+child launches, timeout after two records followed by twenty launches, executable
+identity mismatch, archive corruption, invalid manifest, existing lock retention,
+duplicate report fields, nonfinite timings and checkpoint path escape rejection.
+Keep the real corpus and benchmark execution separate from these tooling tests.

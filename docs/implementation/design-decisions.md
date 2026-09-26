@@ -25483,3 +25483,24 @@ Report direction-specific aggregate policy charges, model/owner sizes and
 benchmark/oracle buffers separately. These are not process peak RSS. Keep both
 directions' buffers resident for convenience; do not present this harness as a
 minimal-memory streaming application or a public codec performance claim.
+
+## DD-1283: Checkpoint the remaining Silesia stream comparisons
+
+Fix the eleven non-Mozilla members, three iterations, indexed eligibility 3,
+65536-byte frames/chunks and 600-second child timeout in a JSON manifest. Alternate
+which mode runs first per member. Mozilla retains the separate BM-0132 samples;
+do not call the combined data one randomized corpus trial.
+
+Verify all local corpus members before launching children. Bind checkpoints to
+conditions, executable, runner/helper digests and selected input digests. Validate
+saved reports and archive sizes/hashes on resume, including order and paths.
+Atomically checkpoint each validated child result. Compare each pair's archive
+size and digest; incremental children also compare exact oracle bytes internally.
+Keep any uncheckpointed archive and use a new unique filename for its rerun.
+Never download inputs or overwrite prior archives. A per-output-directory lock
+rejects concurrent runs. Normal exceptions release it; after abrupt termination,
+an operator must confirm no child remains before removing a stale lock.
+
+Timings remain descriptive, with the DD-1282 construction/process boundary and
+memory-accounting caveats. Resume skips only validated completed records; it
+does not treat an existing output filename as completion evidence.

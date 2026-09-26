@@ -9309,3 +9309,10 @@ process contract. No external implementation or test suite was consulted.
 The incremental whole-stream benchmark composes first-party context-9 transforms,
 workspace queries, the one-shot byte oracle and SHA-256. Silesia input provenance
 is unchanged. No external compressor implementation or test suite was consulted.
+
+### IR-1038
+
+The remaining-member stream comparison uses the first-party corpus verifier,
+atomic JSON checkpoint helper and private context-9 benchmark. The fixed manifest,
+resume checks and test doubles were independently authored; no external codec
+source or test suite was consulted.

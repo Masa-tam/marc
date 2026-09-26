@@ -34870,3 +34870,22 @@ both bounds.
   FileTracker E_ACCESSDENIED; the approved build outside the sandbox succeeded.
 - Similarity review: independently composed first-party driver and assertions;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1438: 2026-09-26 - Compare remaining Silesia incremental streams
+
+- Author: Codex; reviewer: repository maintainer approved broader measurement.
+- References used: IR-1038, DD-1283, TVG-1152 and BM-0133; first-party corpus
+  verifier, checkpoint helper and private stream benchmark.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: compare the eleven remaining members with fixed conditions, checkpoint
+  completed records and verify safe resume without relaunching completed work.
+- Changes: fixed JSON manifest, local runner, mocked runner tests and records;
+  codec implementations, public APIs and formats are unchanged.
+- Validation: all 22 real measurement records passed, including repeated round
+  trips, exact incremental/oracle bytes and paired archive hashes. Completed
+  resume revalidated saved archives without launching benchmark children.
+  All 3,913 Release CTest cases passed in 353.00 seconds, including the eight
+  mocked runner checks and interoperability schema compatibility (103.95 seconds).
+- Similarity review: independently composed first-party orchestration and tests;
+  no external expression copied and no legal guarantee claimed.
