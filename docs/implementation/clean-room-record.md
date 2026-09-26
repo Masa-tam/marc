@@ -35254,3 +35254,20 @@ both bounds.
 - Results: ordinary smoke and documentation checks passed; the sanitizer run
   completed 27 raw cases, 738 serialized cases and 100,000 fuzz runs without a
   reported finding or mismatch. Detailed local execution data remains separate.
+
+## CR-1457: 2026-09-27 - Extend public C failure-publication vectors
+
+- Author: Codex; local review: Codex; maintainer review pending.
+- Task: after approval of the private publication oracle, cover corresponding
+  truncation, trailing-data and late-payload boundaries through the public C API.
+- References: IR-1056, TVG-1165 and existing first-party C factory tests.
+- Independent design: derive published bytes from complete source frames and
+  establish late payload rejection with the retained transactional decoder.
+  Exercise independent buffer sizes, zero output capacity and both EndInput
+  delivery forms; compare output, stable error positions and repeated failures.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Scope: regression tests and provenance only; no production codec, ABI or
+  format changes. Prior fuzz/full-suite results are not new executions here.
+- Similarity review: independent first-party vectors, no external expression
+  copied, no legal guarantee or external interoperability claim.

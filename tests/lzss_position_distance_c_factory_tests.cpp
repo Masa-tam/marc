@@ -1,6 +1,7 @@
 #include "marc/marc.h"
 #include "frame/lzss_position_distance_raw_stream_encoder.hpp"
 #include "frame/lzss_position_distance_frame_streaming_encoder.hpp"
+#include "frame/lzss_position_distance_frame_decoder.hpp"
 #include "frame/typed_context_format.hpp"
 #include <gtest/gtest.h>
 #include <algorithm>
@@ -8,6 +9,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <memory>
 #include <span>
 #include <vector>
 
@@ -243,6 +245,72 @@ TEST(PositionDistanceCFactory, SecondFrameFailurePreservesOnlyFirstFrame) {
         EXPECT_EQ(marc_transform_process(t,{nullptr,0},{nullptr,0},0).status,result.status);
         marc_transform_destroy(t); s.tails();
     }
+}
+TEST(PositionDistanceCFactory, TruncationPayloadAndTrailingFailuresPublishOnlyValidatedFrames) {
+    std::vector<uint8_t> raw(42);
+    for(std::size_t i=0;i<raw.size();++i) raw[i]=static_cast<uint8_t>(i*71+i/11);
+    const auto valid=oracle(raw);
+    const auto second=oracle(std::vector<uint8_t>(raw.begin(),raw.begin()+21)).size();
+    ASSERT_LT(second,valid.size());
+    const auto check=[&](const std::vector<uint8_t>& bytes,std::size_t published,std::size_t position) {
+        for(const auto schedule:{std::array<std::size_t,2>{1,1},{13,7},{512,31}})
+        for(bool separate_end:{false,true}) {
+            SCOPED_TRACE(bytes.size());
+            SCOPED_TRACE(published);
+            SCOPED_TRACE(schedule[0]);
+            SCOPED_TRACE(separate_end);
+            auto c=config_for(MARC_DIRECTION_DECODE); Storage storage(c); marc_transform* handle{};
+            ASSERT_EQ(marc_lzss_position_distance_dynamic_range_create(&c,storage.p(),storage.s(),storage.v(),
+                &handle),MARC_STATUS_OK);
+            std::unique_ptr<marc_transform,decltype(&marc_transform_destroy)> owner(handle,marc_transform_destroy);
+            std::size_t consumed{}; std::vector<uint8_t> output;
+            marc_process_result result{};
+            for(std::size_t call=0;call<10000;++call) {
+                const auto n=std::min(schedule[0],bytes.size()-consumed);
+                const auto capacity=call%5==0?0:schedule[1];
+                std::array<uint8_t,33> buffer; buffer.fill(0xcd);
+                const auto end=separate_end?consumed==bytes.size():consumed+n==bytes.size();
+                result=marc_transform_process(handle,{n?bytes.data()+consumed:nullptr,n},
+                    {buffer.data()+1,capacity},MARC_PROCESS_FLUSH|(end?MARC_PROCESS_END_INPUT:0u));
+                ASSERT_LE(result.input_consumed,n); ASSERT_LE(result.output_produced,capacity);
+                EXPECT_EQ(buffer.front(),0xcd);
+                EXPECT_TRUE(std::all_of(buffer.begin()+1+result.output_produced,buffer.end(),
+                    [](auto b){return b==0xcd;}));
+                EXPECT_FALSE(result.status==MARC_STATUS_PROGRESS && !result.input_consumed && !result.output_produced);
+                consumed+=result.input_consumed;
+                output.insert(output.end(),buffer.begin()+1,buffer.begin()+1+result.output_produced);
+                if(result.status>=100 || result.status==MARC_STATUS_END_OF_STREAM) break;
+            }
+            EXPECT_EQ(result.status,MARC_STATUS_MALFORMED_STREAM);
+            EXPECT_EQ(result.error_byte_position,position);
+            EXPECT_EQ(result.error_bit_position,0u);
+            EXPECT_EQ(output,std::vector<uint8_t>(raw.begin(),raw.begin()+published));
+            for(auto flags:{MARC_PROCESS_NONE,MARC_PROCESS_END_INPUT,MARC_PROCESS_FLUSH}) {
+                std::array<uint8_t,7> buffer; buffer.fill(0xcd);
+                const auto again=marc_transform_process(handle,{nullptr,0},{buffer.data(),buffer.size()},flags);
+                EXPECT_EQ(again.status,result.status); EXPECT_EQ(again.error_byte_position,result.error_byte_position);
+                EXPECT_EQ(again.error_bit_position,result.error_bit_position);
+                EXPECT_EQ(again.input_consumed,0u); EXPECT_EQ(again.output_produced,0u);
+                EXPECT_TRUE(std::all_of(buffer.begin(),buffer.end(),[](auto b){return b==0xcd;}));
+            }
+            owner.reset(); storage.tails();
+        }
+    };
+    for(std::size_t n=0;n<valid.size();++n)
+        check(std::vector<uint8_t>(valid.begin(),valid.begin()+n),n>=second?21:0,n);
+    auto trailing=valid; trailing.push_back(0x5a);
+    check(trailing,raw.size(),valid.size());
+    auto damaged=valid; damaged.back()^=0x80;
+    using namespace marc::frame::internal;
+    const TypedContextStreamHeader stream{21,raw.size(),{65536,3,258,0},32768,40,8,1,9};
+    std::array<marc::dictionary::internal::LzssTypedToken,21> tokens{};
+    std::array<std::byte,21> restored; restored.fill(std::byte{0xcc});
+    const auto reference=decode_lzss_position_distance_frame(std::as_bytes(std::span{damaged}).subspan(second),
+        {stream,{},1,21},tokens,restored);
+    ASSERT_NE(reference.error,LzssShortMatchFrameDecodeError::none);
+    ASSERT_EQ(reference.preflight_error,LzssShortMatchPreflightError::none);
+    ASSERT_TRUE(std::all_of(restored.begin(),restored.end(),[](auto b){return b==std::byte{0xcc};}));
+    check(damaged,21,second+80);
 }
 TEST(PositionDistanceCFactory, MalformedInputAndUnsupportedResetAreSticky) {
     auto encoded=oracle(std::vector<uint8_t>(49,42));

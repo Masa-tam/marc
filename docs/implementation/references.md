@@ -9432,3 +9432,10 @@ The publication oracle derives from the retained transactional position-distance
 frame decoder and the first-party DD-1295/TVG-1163 contract. The generated
 two-frame fixture, truncations and byte mutations use only repository code and
 independently chosen binary input. No external implementation or test was used.
+
+### IR-1056
+
+The public C publication vectors extend the first-party C factory tests and
+TVG-1165 boundary reasoning. Expected output comes from complete original raw
+frames; the retained transactional decoder confirms the damaged payload fails
+after preflight without altering raw output. No external code or vectors used.

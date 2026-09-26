@@ -16926,3 +16926,19 @@ strict truncation, a high-bit flip at every serialized byte, and a trailing byte
 This includes second-frame failures after the first frame is committed. Run
 these deterministic cases in both the ordinary smoke and sanitizer initializer.
 The fixture is generated independently and does not import external vectors.
+
+## TVG-1166: Public C publication and terminal-error boundaries
+
+Generate 42 binary bytes with `(i * 71 + i / 11) & 255`, encoded as two 21-byte
+frames by the existing reference encoder. Try every strict truncation, a trailing
+byte and a high-bit flip in the final payload byte. Confirm the damaged frame
+passes preflight but fails transactional frame decoding with raw output intact.
+
+For every case, use input/output capacities 1/1, 13/7 and 512/31, interleave
+zero-capacity output calls, and supply EndInput either with the last input or
+on a separate empty call. Require the exact validated raw prefix and malformed
+status: truncations report their input extent, trailing data reports the valid
+archive extent, and payload rejection reports the second-frame payload start.
+Verify zero bit position, output guards, workspace tails and sticky error with
+None, EndInput and Flush; repeated failures consume and produce nothing.
+The public profile, encoder, format and production decoder remain unchanged.
