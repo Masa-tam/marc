@@ -35290,3 +35290,21 @@ both bounds.
   exchange are still separate gates; earlier external reports are not reused.
 - Similarity review: first-party verification workflow; no external expression
   copied and no legal guarantee claimed.
+
+## CR-1459: 2026-09-27 - Record optimized-revision external verification
+
+- Author: Codex; evidence supplied by the maintainer; record review: Codex.
+- Task: record the maintainer's successful CI and four external verifier reports
+  for revision `9b6e5df4d97471bfe4e0a231c92c6af1aac0b67b`.
+- References: the four supplied final verifier lines, the first-party verifier
+  contract, DD-1295/DD-1296 and the preceding validation checkpoint.
+- Evidence: each reported pass verified 68 schema-58 archives at the exact
+  revision. The two CI bundles, external self-verification and reverse exchange
+  complete the previously pending external gate for the optimized decoder.
+- Scope: maintainer-reported results, not independently rerun here. Preserve
+  historical evidence and distinguish the tested revision from this record-only
+  commit. No source, format, profile, ABI, benchmark or release change.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Similarity review: evidence transcription and first-party documentation only;
+  no external implementation expression copied and no legal guarantee claimed.

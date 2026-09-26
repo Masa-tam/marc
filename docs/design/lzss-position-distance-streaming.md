@@ -457,3 +457,15 @@ is local evidence only; hosted CI and an external exchange for the optimized
 revision remain separate maintainer gates. Historical external success does not
 establish those results for this revision. No further format, profile or release
 change is implied by this checkpoint.
+
+## Optimized-revision external verification (2026-09-27)
+
+The maintainer subsequently reported successful pushed CI and all four
+68-archive schema-58 verification passes at
+`9b6e5df4d97471bfe4e0a231c92c6af1aac0b67b`. The directions and evidence scope
+are recorded in `../interoperability.md`. This closes the optimized-revision
+external gates left pending at the preceding checkpoint; earlier records retain
+their historical scope. Together with the recorded differential, publication,
+fuzz, complete-suite and performance evidence, the DD-1294 optimization trial
+and its grouped-literal follow-up are validated for the existing exact profile.
+This record introduces no implementation change, new profile or release tag.

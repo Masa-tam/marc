@@ -1131,3 +1131,21 @@ decode output, and byte-identical local re-encoding. This repeats the
 three-producer, two-consumer x86-64 exchange for the 0.7.0 release candidate
 without changing the schema-57 archive inventory or representation. These
 are maintainer-reported external results, not independently rerun here.
+
+#### Position-distance scratch and grouped-literal optimization repeat
+
+The maintainer reported successful pushed CI and four successful schema-58
+verifier passes at `9b6e5df4d97471bfe4e0a231c92c6af1aac0b67b`.
+Each final verifier line reports 68 archives and that exact revision:
+
+1. The Windows CI bundle verified on the external consumer.
+2. The Ubuntu CI bundle verified on the external consumer.
+3. The externally generated bundle self-verified there.
+4. That external bundle verified in the reverse direction with the Windows build.
+
+The verifier checks manifest order, sizes and SHA-256 values, exact decoded
+fixture bytes and byte-identical local re-encoding. These maintainer-reported
+results complete the external exchange gate for the private token scratch and
+grouped-literal decoder changes (DD-1295/DD-1296). They are not independently
+rerun results and do not extend to untested architectures or profiles.
+The schema-58 inventory, encoder representation and public ABI are unchanged.
