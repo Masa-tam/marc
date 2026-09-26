@@ -25504,3 +25504,25 @@ an operator must confirm no child remains before removing a stale lock.
 Timings remain descriptive, with the DD-1282 construction/process boundary and
 memory-accounting caveats. Resume skips only validated completed records; it
 does not treat an existing output filename as completion evidence.
+
+## DD-1284: Define additive position-distance public integration before admission
+
+Follow the public integration contract in
+`docs/design/lzss-position-distance-streaming.md`. Introduce a distinct C family
+and explicit CLI name without modifying published contextual families or ABI 1
+layouts. The single initial configuration range needs no profile helper.
+Initializer defaults cover the fixed 64 KiB frame/window and 3..258 token range,
+forty models and conservative serialized-frame capacity. Experimental parsing
+policies remain private.
+
+Encode uses known original_size and frame_size; decode ignores these encode-only
+fields and queries from local max_frame_size capped at 65536. Stream headers
+never expand configured capacity. Expose applicable hard limits, including the
+existing expansion-ratio/slack policy, and reject incoherent combinations.
+Account for the C handle as well as private transform/model state and retained
+workspace. Larger supplied buffers expose only queried prefixes, consistently
+with existing factories; metadata alias rejection precedes output mutation.
+
+This is a design decision, not a public format-status change. Implement query
+and initializer tests first, then factory/consumer/CLI integration and explicit
+admission, followed by interoperability verification before claiming completion.

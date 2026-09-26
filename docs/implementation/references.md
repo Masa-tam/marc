@@ -9316,3 +9316,10 @@ The remaining-member stream comparison uses the first-party corpus verifier,
 atomic JSON checkpoint helper and private context-9 benchmark. The fixed manifest,
 resume checks and test doubles were independently authored; no external codec
 source or test suite was consulted.
+
+### IR-1039
+
+The planned position-distance public integration derives from the first-party
+C header/factories, core limits, private checked workspace and incremental
+transforms, with BM-0132/BM-0133 as measurement evidence. No external codec source,
+ABI template or third-party test suite was consulted.

@@ -234,3 +234,112 @@ and decode times for the incremental path. Together with the separate Mozilla
 measurement, this closes the planned fixed-policy corpus comparison, not public
 admission. Next review the C ABI/CLI integration contract, limits and public
 identity handling before implementing public factories or changing defaults.
+
+## Public integration contract (planned, not yet admitted)
+
+BM-0132/BM-0133 complete the fixed-policy measurement gate. This section is the
+next implementation contract, not a declaration that the symbols already exist.
+
+### Additive C family
+
+Add `marc_lzss_position_distance_dynamic_range_config` and the three functions
+`marc_lzss_position_distance_dynamic_range_config_init`,
+`marc_lzss_position_distance_dynamic_range_workspace_requirements`, and
+`marc_lzss_position_distance_dynamic_range_create`. Keep `MARC_ABI_VERSION` 1
+and existing generic workspace/result/transform types unchanged. Follow the
+existing initializer `(direction, config)` and query/create argument ordering.
+No aliases, new public finder values, profile enum or `apply_profile` function
+are introduced. Document that initializer defaults suffice for this single
+supported configuration range.
+
+The new config contains, in order, `uint32_t struct_size`, `abi_version`,
+`marc_direction direction`, `uint32_t reserved`, `uint64_t original_size`,
+`uint32_t frame_size`, `reserved2`, then uint64_t limits:
+`max_total_output_size`, `max_frame_size`, `max_block_size`,
+`max_compressed_payload_size`, `max_internal_buffered_bytes`, `max_lz_distance`,
+`max_lz_match_length`, `max_entropy_table_entries`, `max_range_model_total`,
+`max_expansion_ratio`, and `expansion_slack`.
+Require zero reserved fields, exact struct size, the supported ABI version and
+a valid direction. Do not expose window/minimum/maximum match fields whose sole
+initial values would be 65536/3/258. Encoder eligibility 3 and indexed search
+remain fixed; other private parsing policies are not public options.
+Unexposed core limits retain current DecoderLimits defaults; no public field is
+silently reused for a different unit or boundary. Validate core relationships
+such as max_frame_size <= max_total_output_size and max_block_size <= aggregate.
+
+| Setting | Initializer value | Meaning |
+| --- | ---: | --- |
+| original_size | 0 | Encode: exact known size; decode: ignored |
+| frame_size | 65536 | Encode: 1..65536 raw bytes; decode: ignored |
+| max_total_output_size | 1099511627776 | 1 TiB hard output ceiling |
+| max_frame_size / max_block_size | 65536 each | Raw-frame limits |
+| max_compressed_payload_size | 1179653 | `18*65536+5`, excludes 80-byte frame metadata |
+| max_internal_buffered_bytes | 134217728 | 128 MiB aggregate ceiling |
+| max_lz_distance / max_lz_match_length | 65536 / 258 | Hard reference limits |
+| max_entropy_table_entries | 2522 | Frequency entries across forty contexts |
+| max_range_model_total | 32768 | Per-model frequency total ceiling |
+| max_expansion_ratio / expansion_slack | 1024 / 1048576 | Existing core ratio semantics; slack in bytes |
+
+Decoder construction does not require the original size or frame size before
+reading the header. Query uses `F=min(max_frame_size,65536)` and a synthetic
+known-empty header only to calculate capacity; actual received original size is
+checked against max_total_output_size. Encode uses frame_size and original_size.
+Both directions use the checked private layout and reject incoherent limits,
+including block/payload ceilings insufficient for the selected F. Callers may
+reduce frame capacity with coherent limits; query never silently raises them.
+Larger local ceilings do not extend the fixed wire limits. Unknown-size encoding
+remains unsupported. Decode ignores encode-only fields even if they would be
+invalid encoding parameters; size/version/reserved validation still applies.
+
+### Workspace and construction
+
+Map primary/secondary to raw/serialized on encode and serialized/raw on decode.
+Views holds aligned typed storage. Query reports actual required caller spans,
+not aggregate bytes or allocator overhead; derive them from the checked layout.
+
+Charge the opaque `marc_transform` handle as well as the concrete transform,
+model/replay state and retained workspace. Subtract the handle's actual sizeof
+with checked arithmetic before passing the remaining aggregate budget to both
+private query and constructor. BM-0132's private charges of 7,804,677/2,037,541
+bytes are observations for one x64 build, not frozen public constants. Query and
+create must share accounting, including exact-limit and one-byte-under tests.
+Use nothrow allocations and release the implementation if handle publication
+fails. No allocator callback or steady-state allocation is introduced.
+
+Accept larger buffers but retain only queried prefixes, as existing factories
+do. Validate prefix overlap/alignment and pass only those prefixes to partition
+and transform. Unused tails are neither retained nor charged. Validate metadata
+overlap before writing config/query/handle outputs; do not corrupt config or
+workspace by setting an aliased handle output to null. For a disjoint output
+pointer, create publishes null before failure-prone work. Query leaves its
+output unchanged on failure. Do not claim to validate arbitrary dangling C
+pointers; supplied objects must be valid for the duration of each call.
+
+Invalid size/version/direction/reserved fields and short/misaligned/overlapping
+workspace return INVALID_ARGUMENT. Valid configuration exceeding resource
+ceilings returns LIMIT_EXCEEDED; allocation failure returns OUT_OF_MEMORY.
+Preserve existing process error mapping, sticky states and per-frame publication.
+Hashing stays an external tap; applications requiring whole-file atomicity must
+stage output until EndOfStream.
+
+### CLI and admission gates
+
+Add only `lzss-position-distance-dynamic-range`, explicitly selected for encode
+and decode. Use this initializer and fixed encoder policy. Do not change the
+default codec, existing contextual names or their bytes. Header inspection must
+not allocate from untrusted fields or upgrade a selected decoder. Reject
+unsupported finder/profile options explicitly rather than silently ignoring
+them. No larger-window suffixes belong to this family initially.
+
+Admit only format 2.0 dictionary 2/8, context 1/9, entropy 3/2. Old decoders must
+continue rejecting the new identity; the new decoder must reject old or crossed
+identities. Do not broadly admit other reserved experimental contexts. Update
+public format status and relevant explicit dispatch points together, preserving
+the strict private parser as oracle.
+
+Stage implementation: C initializer/query and negative tests; factory/process
+integration and exact private/public byte comparison; static/shared C consumers
+and installed-package example; CLI selection and wrong-codec tests; documented
+format admission audit; interoperability artifacts and external cross-platform
+verification. Public completion requires the final gate. This change is design
+only; implementations and public admission remain pending.

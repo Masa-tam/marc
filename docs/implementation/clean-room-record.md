@@ -34889,3 +34889,21 @@ both bounds.
   mocked runner checks and interoperability schema compatibility (103.95 seconds).
 - Similarity review: independently composed first-party orchestration and tests;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1439: 2026-09-26 - Specify position-distance public integration contract
+
+- Author: Codex; reviewer: repository maintainer approved integration planning.
+- References used: IR-1039, DD-1284 and TVG-1153; existing C factories, checked
+  private workspace, core limits and BM-0132/BM-0133 measurements.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Task: specify additive API/CLI names, initializer limits, decoder sizing,
+  aggregate accounting and staged public-admission gates before implementation.
+- Changes: design and implementation records only. Public declarations,
+  implementations, format status and published bytes remain unchanged.
+- Validation: compare the contract with first-party source; planned public tests
+  are explicitly labeled unimplemented rather than reported as passed.
+  Documentation-layout CTest and diff whitespace checks passed. No executable
+  code changed; the full codec suite was not rerun for this documentation step.
+- Similarity review: independently composed design derived from first-party
+  contracts; no external expression copied and no legal guarantee claimed.

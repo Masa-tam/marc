@@ -16745,3 +16745,25 @@ child launches, timeout after two records followed by twenty launches, executabl
 identity mismatch, archive corruption, invalid manifest, existing lock retention,
 duplicate report fields, nonfinite timings and checkpoint path escape rejection.
 Keep the real corpus and benchmark execution separate from these tooling tests.
+
+## TVG-1153: Planned position-distance public integration acceptance tests
+
+These tests are requirements for subsequent implementation, not executed cases.
+Pin initializer defaults/reserved bytes, exact struct/ABI checks, invalid
+directions, null arguments and unchanged query output on error. Check encode
+original/frame sizes and that decode ignores those fields, while its capacity
+depends on local max_frame_size and fixed wire limits. Test payload bound 18F+5,
+serialized span 18F+85, model totals/entries and stricter coherent hard limits.
+
+Exercise exact queried storage and one-byte-short/misaligned/overlapping spans;
+pin unused-tail semantics and metadata alias rejection before writes. Include
+the public handle in exact-aggregate and one-byte-under-limit tests and exercise
+allocation-failure cleanup. Compare complete C output with private oracle bytes
+under one-byte buffers, Flush, partial EndInput and sticky terminal states.
+Require valid first-frame publication followed by malformed-second-frame failure.
+
+Compile/run static and shared C consumers and the installed-package example.
+Check explicit CLI selection, unsupported finder options and crossed/old codec
+identities. Preserve previous published byte vectors. Expand interoperability
+artifacts only with the coordinated public admission step; do not count the
+existing private benchmarks as external interoperability evidence.
