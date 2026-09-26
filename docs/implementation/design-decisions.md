@@ -25579,3 +25579,11 @@ Preserve default LZ77 and all existing selectors. Unsupported window suffixes
 and finder/profile options fail as usage errors. Keep the existing atomic-output
 path; codec mismatch must not retain partial output. General format admission
 and external interoperability remain separate gates.
+
+## DD-1290: Audit exact position-distance admission without widening legacy parsers
+
+Keep the explicit C/CLI path on its strict identity-specific parser. The legacy
+typed-context parser is not a universal dispatcher; do not add the new dictionary
+variant to its older model family. Audit the actual construction, header, frame
+and CLI boundaries, and exercise crossed identities through the C factory.
+An audit is not an external interoperability result or a completion claim.

@@ -21,8 +21,8 @@ navigate chronological development records.
   frozen `mozilla` baseline, short-match hypothesis, and staged full-corpus
   admission gates without changing existing stream bytes.
 - [Position-distance LZSS streaming integration](design/lzss-position-distance-streaming.md):
-  private context-9 incremental state, per-frame publication, workspace and
-  planned additive C API/CLI contract.
+  context-9 incremental state, per-frame publication, workspace, staged C/CLI
+  integration and exact-identity admission audit.
 - [64-KiB LZSS Contextual short-match candidate](design/lzss-contextual-short-match-64k.md):
   reserved decoder-visible identity for 3/4-byte matches, model bounds, and
   staged admission gates; no public codec admission yet.

@@ -352,3 +352,39 @@ streaming C consumer per exported library kind, configured in the CI package mat
 The explicit CLI adapter uses the full initializer and rejects unsupported
 options; round trips and reciprocal wrong-codec rejection are covered.
 Admission gates remain pending; no DLL allocation interposition is claimed.
+
+## Format admission audit (2026-09-26)
+
+Scope: audit the implemented explicit C/CLI paths, without declaring external
+interoperability or adding the identity to the completed profile inventory.
+The only candidate is format 2.0, dictionary 2/8, context 1/9, entropy 3/2.
+
+| Boundary | Implementation and decision | Evidence |
+|---|---|---|
+| C configuration | `prepare_position_distance_config` in `src/marc.cpp` fixes the identity and derives storage from local limits, not stream fields | Config/query, exact aggregate and allocation-failure tests |
+| Serialized header | `parse_lzss_position_distance_stream_header` selects the position-distance branch of `parse_stream_impl` in `src/frame/lzss_short_match_preflight.cpp` | Header mutations/truncation tests and C identity-grid rejection |
+| Incremental decode | `LzssPositionDistanceFrameStreamingDecoder` calls the strict header parser before frame handling; errors are sticky and frame output is private until validation | Streaming, C factory and HashTap tests |
+| Legacy field-context parser | `parse_typed_context_stream_header` is specific to the older field-context family, not a universal dispatcher; keep its accepted set unchanged | Legacy parser rejects the new header without publishing metadata |
+| CLI | The explicit selector calls the dedicated C factory; no header-driven selection or limit upgrade | Reciprocal wrong-codec rejection, unsupported options, trailing data and output cleanup tests |
+| Reference path | Keep the one-shot decoder and encoder as internal differential oracles | Chunked C output agrees with the independently exercised reference path |
+
+The audit found no missing automatic dispatcher that should be broadened.
+Adding dictionary 8/context 9 to the legacy field-context parser would be the
+wrong integration: it would widen old codec acceptance and apply incompatible
+model assumptions. The dedicated path already performs the required exact
+identity check. Contexts 6, 7 and 8 remain separate private experiments; sharing
+bounded implementation helpers does not grant them public admission.
+
+The C boundary regression enumerates dictionary variants 0..9 against context
+variants 0..10, excluding the one valid pair (109 rejections). It additionally
+mutates the other identity words and high bytes (14 rejections), for 123 invalid
+headers at both one-byte and complete-header chunk sizes. Require UNSUPPORTED,
+zero published bytes, unchanged output sentinels and sticky failure. A valid
+empty stream is the positive control. This grid is a regression boundary, not
+a claim of exhaustive validation of all 16-bit values or malformed payloads.
+
+Next gate: integrate the exact candidate in the interoperability bundle/schema
+and corresponding documentation/inventory checks, obtain hosted CI and the
+external four-way verification, then update completion status. Do not infer
+cross-platform success from this local audit. Existing stream bytes and the
+general format 1/legacy Format 2 parser contracts remain unchanged.

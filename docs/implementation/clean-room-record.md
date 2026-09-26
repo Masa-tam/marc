@@ -35015,3 +35015,23 @@ both bounds.
   selection checks. External interoperability of the new identity is not claimed.
 - Similarity review: independently authored first-party CLI adapter and tests;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1445: 2026-09-26 - Audit position-distance format admission boundaries
+
+- Author: Codex; reviewer: repository maintainer approved admission auditing.
+- References used: IR-1045, DD-1290, TVG-1159 and first-party parsers, factories,
+  CLI dispatch and incremental publication tests.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party conformance suites.
+- Task: audit the exact new identity and preserve rejection of old, crossed
+  and other reserved identities without broadening legacy decoder contracts.
+- Changes: documented boundary map and next interoperability gate; C factory
+  regression grid and legacy parser rejection test. No production or wire changes.
+- Validation: both targeted admission tests passed; 123 invalid headers are
+  checked at two chunk sizes, with a valid empty-stream control.
+  All 3,933 Release CTest cases passed in 400.03 seconds, including
+  interoperability schema compatibility (122.10 seconds). The targeted rebuild
+  succeeded inside the sandbox. External verification of this identity remains
+  pending; the audit does not claim public completion.
+- Similarity review: independently authored first-party audit and test mutations;
+  no external expression copied and no legal guarantee claimed.

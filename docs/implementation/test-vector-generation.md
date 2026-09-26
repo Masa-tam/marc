@@ -16823,3 +16823,15 @@ old 64 KiB stream with the new selection. Require rejection and no temporary or
 partial output, preserving pre-existing output sentinels. Independently require
 usage errors for larger-window suffixes and finder/profile options in both
 directions. Do not change wire vectors or public admission inventories.
+
+## TVG-1159: Position-distance C identity admission grid
+
+Start from the reference writer's valid empty 112-byte stream. Enumerate all
+dictionary/context low-byte pairs in 0..9 by 0..10 except 8/9; mutate the six
+remaining version/algorithm identity words and the high byte of all eight
+identity words. For these 123 invalid headers use one-byte and whole-header
+input. Require UNSUPPORTED at byte zero, no output, intact output/storage guards
+and sticky error on another call. The valid stream must end successfully.
+Separately require the old typed-context parser to reject the new header while
+preserving caller metadata and consumption. Existing payload tests remain in
+place; this grid does not replace them or exhaust the 16-bit identity space.

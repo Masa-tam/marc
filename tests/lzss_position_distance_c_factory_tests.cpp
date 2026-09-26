@@ -1,6 +1,7 @@
 #include "marc/marc.h"
 #include "frame/lzss_position_distance_raw_stream_encoder.hpp"
 #include "frame/lzss_position_distance_frame_streaming_encoder.hpp"
+#include "frame/typed_context_format.hpp"
 #include <gtest/gtest.h>
 #include <algorithm>
 #include <array>
@@ -207,5 +208,80 @@ TEST(PositionDistanceCFactory, MalformedInputAndUnsupportedResetAreSticky) {
     EXPECT_EQ(result.status,MARC_STATUS_UNSUPPORTED);
     EXPECT_EQ(marc_transform_process(t,{nullptr,0},{nullptr,0},MARC_PROCESS_NONE).status,result.status);
     marc_transform_destroy(t);
+}
+TEST(PositionDistanceCFactory, AdmissionRejectsCrossedIdentitiesBeforeOutput) {
+    const auto valid = oracle({});
+    ASSERT_EQ(valid.size(), 112u);
+    EXPECT_TRUE(run(config_for(MARC_DIRECTION_DECODE), valid, 1, 1).empty());
+    std::vector<std::vector<uint8_t>> rejected;
+    for (uint8_t dictionary = 0; dictionary <= 9; ++dictionary) {
+        for (uint8_t context = 0; context <= 10; ++context) {
+            if (dictionary == 8 && context == 9) continue;
+            auto bytes = valid;
+            bytes[14] = dictionary;
+            bytes[98] = context;
+            rejected.push_back(bytes);
+        }
+    }
+    // Alter each remaining identity word, including unknown high-byte values.
+    for (std::size_t offset : {4u, 6u, 12u, 16u, 18u, 96u}) {
+        auto bytes = valid;
+        bytes[offset] ^= 1;
+        rejected.push_back(bytes);
+    }
+    for (std::size_t offset : {4u, 6u, 12u, 14u, 16u, 18u, 96u, 98u}) {
+        auto bytes = valid;
+        bytes[offset + 1] = 0xff;
+        rejected.push_back(bytes);
+    }
+    for (std::size_t index = 0; index < rejected.size(); ++index) {
+        SCOPED_TRACE(index);
+        for (std::size_t chunk : {1u, 112u}) {
+            SCOPED_TRACE(chunk);
+            const auto c = config_for(MARC_DIRECTION_DECODE);
+            Storage storage(c);
+            marc_transform* transform{};
+            ASSERT_EQ(marc_lzss_position_distance_dynamic_range_create(
+                &c, storage.p(), storage.s(), storage.v(), &transform), MARC_STATUS_OK);
+            std::array<uint8_t, 16> output;
+            output.fill(0xcd);
+            std::size_t consumed{};
+            marc_process_result result{};
+            for (std::size_t call = 0; call <= valid.size(); ++call) {
+                const auto n = std::min(chunk, valid.size() - consumed);
+                result = marc_transform_process(transform,
+                    {rejected[index].data() + consumed, n},
+                    {output.data(), output.size()},
+                    consumed + n == valid.size() ? MARC_PROCESS_END_INPUT : MARC_PROCESS_NONE);
+                EXPECT_LE(result.input_consumed, n);
+                EXPECT_EQ(result.output_produced, 0u);
+                if (result.input_consumed > n) break;
+                consumed += result.input_consumed;
+                if (result.status >= 100 || result.status == MARC_STATUS_END_OF_STREAM) break;
+            }
+            EXPECT_EQ(result.status, MARC_STATUS_UNSUPPORTED);
+            EXPECT_EQ(result.error_byte_position, 0u);
+            const auto sticky = marc_transform_process(transform, {nullptr, 0},
+                {output.data(), output.size()}, MARC_PROCESS_END_INPUT);
+            EXPECT_EQ(sticky.status, result.status);
+            EXPECT_EQ(sticky.input_consumed, 0u);
+            EXPECT_EQ(sticky.output_produced, 0u);
+            EXPECT_TRUE(std::all_of(output.begin(), output.end(), [](auto b) { return b == 0xcd; }));
+            marc_transform_destroy(transform);
+            storage.tails();
+        }
+    }
+}
+
+TEST(PositionDistanceCFactory, LegacyFieldContextParserRemainsNarrow) {
+    const auto bytes = oracle({});
+    marc::frame::internal::TypedContextStreamHeader parsed{};
+    parsed.original_size = 123;
+    std::size_t consumed = 7;
+    EXPECT_EQ(marc::frame::internal::parse_typed_context_stream_header(
+        std::as_bytes(std::span{bytes}), marc::core::DecoderLimits{}, parsed, consumed),
+        marc::frame::internal::TypedContextStreamHeaderError::unsupported_dictionary_variant);
+    EXPECT_EQ(parsed.original_size, 123u);
+    EXPECT_EQ(consumed, 7u);
 }
 } // namespace

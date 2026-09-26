@@ -9354,3 +9354,9 @@ codec implementation or third-party test suite was consulted.
 Position-distance CLI integration uses the first-party C factory, streaming
 contract and existing atomic-output CLI/test harness. No external codec source
 or third-party tests were consulted.
+
+### IR-1045
+
+The position-distance admission audit uses first-party header parsing, C factory
+configuration, CLI selection and existing boundary tests. No external codec
+implementation or third-party conformance suite was consulted.
