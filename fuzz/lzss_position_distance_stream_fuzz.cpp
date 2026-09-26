@@ -120,13 +120,14 @@ void compare_literal_search(std::span<const std::byte> frame,
         || a.canonical_mismatch!=b.canonical_mismatch) std::abort();
 }
 
-void compare_frame_scratch(std::span<const std::byte> input) {
+IncrementalResult compare_frame_scratch(std::span<const std::byte> input) {
     using namespace marc::frame::internal;
+    IncrementalResult verified{};
     TypedContextStreamHeader stream{}; std::size_t consumed{};
     if(parse_lzss_position_distance_stream_header(input,limits(),stream,consumed)
-        !=LzssShortMatchPreflightError::none) return;
+        !=LzssShortMatchPreflightError::none) return verified;
     std::uint64_t sequence{},committed{};
-    while(consumed<input.size()) {
+    while(consumed<input.size() && committed<stream.original_size) {
         compare_literal_search(input.subspan(consumed),{stream,limits(),sequence,committed});
         std::array<marc::dictionary::internal::LzssTypedToken,66> a{},b{};
         for(auto& t:a) t.literal=0xcc;
@@ -147,7 +148,7 @@ void compare_frame_scratch(std::span<const std::byte> input) {
         if(r.error!=LzssShortMatchFrameDecodeError::none) {
             if(!std::ranges::all_of(y,[](auto v){return v==sentinel;})
                 || !std::ranges::all_of(a,[](auto t){return t.literal==0xcc;})) std::abort();
-            return;
+            return verified;
         }
         for(std::size_t i=0;i<r.required_token_count;++i) {
             const auto& t=a[i+1]; const auto& u=b[i+1];
@@ -155,17 +156,22 @@ void compare_frame_scratch(std::span<const std::byte> input) {
                 std::abort();
         }
         if(r.serialized_consumed==0 || r.serialized_consumed>input.size()-consumed) std::abort();
+        if(r.required_raw_size>verified.bytes.size()-verified.produced) std::abort();
+        std::copy_n(x.begin()+1,r.required_raw_size,verified.bytes.begin()+verified.produced);
+        verified.produced+=r.required_raw_size;
         consumed+=r.serialized_consumed; committed+=r.required_raw_size; ++sequence;
     }
+    return verified;
 }
 
 void compare_incremental(std::span<const std::byte> input) {
-    compare_frame_scratch(input);
+    const auto verified=compare_frame_scratch(input);
     const auto a=incremental_decode(input,1,1);
     const auto b=incremental_decode(input,23,31);
     if(a.last.status!=b.last.status || a.last.error.code!=b.last.error.code
         || a.last.error.byte_position!=b.last.error.byte_position
-        || a.produced!=b.produced || a.bytes!=b.bytes) std::abort();
+        || a.produced!=b.produced || a.bytes!=b.bytes
+        || a.produced!=verified.produced || a.bytes!=verified.bytes) std::abort();
 }
 
 void incremental_encode(std::span<const std::byte> input,
@@ -276,15 +282,43 @@ void run_boundary_inputs() {
         }
     }
 }
+
+void run_serialized_boundaries() {
+    using namespace marc::frame::internal;
+    std::array<std::byte,128> raw{};
+    for(std::size_t i=0;i<raw.size();++i) raw[i]=std::byte((i*71+i/11)&255);
+    TypedContextStreamHeader stream{64,raw.size(),{65536,3,258,0},32768,40,8,1,9};
+    std::array<marc::dictionary::internal::LzssTypedToken,64> tokens{};
+    std::array<marc::context::internal::ModeledOperation,320> operations{};
+    std::array<std::byte,3000> encoded{};
+    const auto written=encode_lzss_position_distance_raw_stream(stream,limits(),raw,3,
+        LzssPositionDistanceSearch::reference,tokens,operations,{},encoded);
+    if(written.error!=LzssPositionDistanceRawStreamError::none
+        || written.serialized_size>=encoded.size()) std::abort();
+    const auto valid=std::span{encoded}.first(written.serialized_size);
+    compare_incremental(valid);
+    // Exercise every truncation and a mutation at each serialized byte, including
+    // the second frame after the first frame has already been committed.
+    for(std::size_t i=0;i<valid.size();++i) {
+        compare_incremental(valid.first(i));
+        encoded[i]^=std::byte{0x80};
+        compare_incremental(valid);
+        encoded[i]^=std::byte{0x80};
+    }
+    encoded[valid.size()]=std::byte{0x5a};
+    compare_incremental(std::span{encoded}.first(valid.size()+1));
+    std::fprintf(stderr,"context-9 serialized boundaries: %zu cases completed\n",2*valid.size()+2);
+}
 }
 
 #ifdef MARC_POSITION_DISTANCE_FUZZ_SMOKE
-int main() { run_boundary_inputs(); }
+int main() { run_boundary_inputs(); run_serialized_boundaries(); }
 #else
 // Exercise the same boundary seeds under sanitizers before random mutation;
 // an empty starting corpus must not leave multi-frame paths unexecuted.
 extern "C" int LLVMFuzzerInitialize(int*, char***) {
     run_boundary_inputs();
+    run_serialized_boundaries();
     std::fprintf(stderr,"context-9 boundary smoke: 27 cases completed\n");
     return 0;
 }

@@ -16909,3 +16909,20 @@ literal rescaling/reset vector. Retain exhaustive fixed-vector byte mutations,
 truncations, count failures, workspace limits and frame-publication regressions.
 The bounded stream harness additionally compares linear/grouped entropy events
 and final model/coder state inside preflighted valid and mutated frames.
+
+## TVG-1165: Reference-validated publication prefix in the stream fuzzer
+
+Accumulate raw bytes only from frames accepted by the retained transactional
+frame decoder. Stop at the first rejected frame or the declared original size;
+trailing bytes cannot authorize another frame. Compare the entire accumulated
+prefix and its length with incremental output at both existing chunk schedules.
+This checks publication against a separate frame-level reference in addition
+to agreement between schedules. Preserve failed-output sentinels, scratch
+guards, token diagnostics, entropy equivalence and sticky errors.
+
+Generate 128 binary bytes with `(i * 71 + i / 11) & 255` and encode two 64-byte
+frames with the existing reference encoder. Check the intact stream, every
+strict truncation, a high-bit flip at every serialized byte, and a trailing byte.
+This includes second-frame failures after the first frame is committed. Run
+these deterministic cases in both the ordinary smoke and sanitizer initializer.
+The fixture is generated independently and does not import external vectors.

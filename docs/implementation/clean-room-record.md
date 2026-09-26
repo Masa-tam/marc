@@ -35232,3 +35232,25 @@ both bounds.
 - Similarity review: independently assembled runner from first-party tooling;
   no external expression copied and no legal guarantee claimed. No new external
   interoperability evidence is asserted.
+
+## CR-1456: 2026-09-27 - Check publication against transactional frame results
+
+- Author: Codex; local review: Codex; maintainer review pending.
+- Task: after approval of corpus validation, strengthen failure-publication
+  evidence for the one-pass scratch decoder without modifying production code.
+- References: IR-1055, DD-1295, TVG-1163 and the retained first-party frame decoder.
+- Independent design: concatenate only reference-accepted raw frames, stopping
+  at the first failure or declared output boundary; require incremental output
+  to match this prefix exactly. Keep chunk-schedule and sticky-error comparisons.
+- Vectors: independently generate two binary frames and exercise all strict
+  truncations, per-byte high-bit flips, intact input and a trailing byte.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Validation scope: TVG-1165 and FZ-0047 describe bounded harness coverage.
+  Existing full-codec results are not represented as a new complete suite run.
+- Similarity review: first-party harness extension with no external expression
+  copied. The reference shares format/reconstruction primitives, so this is not
+  external interoperability proof or a legal guarantee. No format or ABI change.
+- Results: ordinary smoke and documentation checks passed; the sanitizer run
+  completed 27 raw cases, 738 serialized cases and 100,000 fuzz runs without a
+  reported finding or mismatch. Detailed local execution data remains separate.

@@ -9425,3 +9425,10 @@ test logic is consulted.
 The prior size records reuse selected token parses, not the public CLI's fixed
 eligibility-3 parsing. They identify historical data but are not an archive-size
 or byte oracle for this fixed-profile run; BM-0131 also documents this distinction.
+
+### IR-1055
+
+The publication oracle derives from the retained transactional position-distance
+frame decoder and the first-party DD-1295/TVG-1163 contract. The generated
+two-frame fixture, truncations and byte mutations use only repository code and
+independently chosen binary input. No external implementation or test was used.

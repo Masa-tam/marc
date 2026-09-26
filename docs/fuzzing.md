@@ -1077,3 +1077,24 @@ The 2026-09-27 campaign completed 27 boundary cases and 10,000 fuzz runs with
 no sanitizer finding or differential mismatch. Harness input/output/frame
 bounds remain 4,096/128/64 bytes. Larger model histories and rescaling are
 covered separately by TVG-1164; this bounded campaign is not exhaustive.
+
+### FZ-0047: Transactional reference oracle for incremental publication
+
+TVG-1165 strengthens the stream harness: incremental output must equal exactly
+the raw prefix accepted by the retained transactional frame decoder, even on
+malformed streams. Agreement between chunk schedules alone is insufficient.
+The ordinary smoke and sanitizer initializer add 738 generated serialized cases
+covering every truncation and per-byte high-bit mutation of a two-frame stream,
+plus intact and trailing-byte cases. The prior 27 raw boundary cases remain.
+
+Harness bounds remain 4,096 input bytes, 128 output bytes and 64 bytes per frame.
+Random inputs above 128 bytes exercise supplied-stream decoding only; generated
+raw round trips remain capped at 128 bytes. Larger histories and model rescaling
+retain their separate test coverage. This oracle shares first-party format and
+reconstruction primitives and is not external interoperability evidence.
+
+On 2026-09-27 the extended harness completed the 27 raw and 738 serialized
+cases, followed by 100,000 ASan/UBSan fuzz runs, with no reported sanitizer
+finding or differential mismatch. The ordinary smoke and documentation checks
+also passed. No production codec changes were made; this finite campaign does
+not establish exhaustive malformed-stream coverage or replace public API tests.
