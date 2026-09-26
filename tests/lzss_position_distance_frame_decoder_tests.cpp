@@ -110,4 +110,66 @@ TEST(LzssPositionDistanceFrameDecoder, AggregateLimitAndAllWorkspaceOverlaps) {
     std::memcpy(token_bytes.data(),bytes.data(),bytes.size());
     EXPECT_EQ(decode_lzss_position_distance_frame(token_bytes.first(bytes.size()),{s,{}},tokens,raw).error,Error::overlapping_workspaces);
 }
+void compare_frame_scratch(std::span<const std::byte> bytes) {
+    for(std::size_t capacity:{16U,17U}) for(std::size_t raw_capacity:{20U,21U}) {
+        std::array<LzssTypedToken,19> a{},b{};
+        for(auto& t:a) t.literal=0xa5;
+        b=a;
+        std::array<std::byte,23> x{},y{}; x.fill(std::byte{0xa5}); y=x;
+        const auto r=decode_lzss_position_distance_frame(bytes,{stream(),{}},
+            std::span{a}.subspan(1,capacity),std::span{x}.subspan(1,raw_capacity));
+        const auto s=decode_lzss_position_distance_frame_scratch(bytes,{stream(),{}},
+            std::span{b}.subspan(1,capacity),std::span{y}.subspan(1,raw_capacity));
+        EXPECT_EQ(r.error,s.error); EXPECT_EQ(r.preflight_error,s.preflight_error);
+        EXPECT_EQ(r.serialized_consumed,s.serialized_consumed);
+        EXPECT_EQ(r.required_token_count,s.required_token_count);
+        EXPECT_EQ(r.required_raw_size,s.required_raw_size);
+        EXPECT_EQ(r.token_decode.error,s.token_decode.error);
+        EXPECT_EQ(r.token_decode.token_error,s.token_decode.token_error);
+        EXPECT_EQ(r.token_decode.token_count,s.token_decode.token_count);
+        EXPECT_EQ(r.token_decode.token_index,s.token_decode.token_index);
+        EXPECT_EQ(r.token_decode.raw_size,s.token_decode.raw_size);
+        EXPECT_EQ(r.token_decode.entropy.error,s.token_decode.entropy.error);
+        EXPECT_EQ(r.token_decode.entropy.event_count,s.token_decode.entropy.event_count);
+        EXPECT_EQ(r.token_decode.entropy.decision_count,s.token_decode.entropy.decision_count);
+        EXPECT_EQ(r.token_decode.entropy.payload_consumed,s.token_decode.entropy.payload_consumed);
+        EXPECT_EQ(r.reconstruction.error,s.reconstruction.error);
+        EXPECT_EQ(x,y); EXPECT_EQ(y.front(),std::byte{0xa5}); EXPECT_EQ(y.back(),std::byte{0xa5});
+        EXPECT_EQ(b.front().literal,0xa5); EXPECT_EQ(b.back().literal,0xa5);
+        if(r.error!=Error::none) {
+            for(const auto byte:y) EXPECT_EQ(byte,std::byte{0xa5});
+            for(const auto& token:a) EXPECT_EQ(token.literal,0xa5);
+        } else for(std::size_t i=1;i<=17;++i) {
+            EXPECT_EQ(a[i].kind,b[i].kind); EXPECT_EQ(a[i].literal,b[i].literal);
+            EXPECT_EQ(a[i].distance,b[i].distance); EXPECT_EQ(a[i].length,b[i].length);
+        }
+    }
+}
+
+TEST(LzssPositionDistanceFrameDecoder, ScratchDifferentialEveryBitAndTruncation) {
+    const auto bytes=frame(); compare_frame_scratch(bytes);
+    for(std::size_t n=0;n<bytes.size();++n) compare_frame_scratch(std::span{bytes}.first(n));
+    for(std::size_t n=0;n<bytes.size();++n) for(unsigned bit=0;bit<8;++bit) {
+        auto bad=bytes; bad[n]^=std::byte{static_cast<unsigned char>(1U<<bit)};
+        compare_frame_scratch(bad);
+    }
+}
+
+TEST(LzssPositionDistanceFrameDecoder, ScratchRejectsAllWorkspaceOverlapsBeforeWrites) {
+    auto bytes=frame(); std::array<LzssTypedToken,17> tokens{};
+    std::array<std::byte,21> raw{}; raw.fill(std::byte{0xa5});
+    const auto original=bytes;
+    EXPECT_EQ(decode_lzss_position_distance_frame_scratch(bytes,{stream(),{}},tokens,
+        std::span{bytes}.first(21)).error,Error::overlapping_workspaces);
+    EXPECT_EQ(bytes,original);
+    auto token_bytes=std::as_writable_bytes(std::span{tokens});
+    std::memcpy(token_bytes.data(),bytes.data(),bytes.size());
+    const auto before=tokens;
+    EXPECT_EQ(decode_lzss_position_distance_frame_scratch(bytes,{stream(),{}},tokens,
+        token_bytes.first(21)).error,Error::overlapping_workspaces);
+    EXPECT_EQ(decode_lzss_position_distance_frame_scratch(token_bytes.first(bytes.size()),
+        {stream(),{}},tokens,raw).error,Error::overlapping_workspaces);
+    EXPECT_EQ(std::memcmp(tokens.data(),before.data(),sizeof(tokens)),0);
+    for(auto byte:raw) EXPECT_EQ(byte,std::byte{0xa5});
+}
 } // namespace

@@ -9398,3 +9398,12 @@ No external codec implementation or optimization source was consulted.
 Event profiling and the one-pass scratch proposal use first-party range decoder,
 field cursor, token decode wrapper and BM-0135's local Mozilla diagnostic.
 No external source or algorithm implementation was consulted.
+
+### IR-1052
+
+The DD-1294 scratch prototype uses the first-party token walker, frame preflight,
+streaming decoder and pinned context-9 vectors. Differential tests use the retained
+transactional decoder as oracle. No external implementation source was consulted.
+The independent timing diagnostic uses those same first-party frame interfaces,
+the existing Mozilla archive oracle and the provisioned Silesia input; it does
+not use external codec source or imported test logic.

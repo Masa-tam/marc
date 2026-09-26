@@ -143,7 +143,7 @@ core::ProcessResult LzssPositionDistanceFrameStreamingDecoder::process(
             std::memcpy(serialized_.data(), prefix_.data(), prefix_size);
             state_ = State::payload;
         } else {
-            const auto decoded = decode_lzss_position_distance_frame(
+            const auto decoded = decode_lzss_position_distance_frame_scratch(
                 serialized_.first(needed_.serialized_frame_bytes),
                 {stream_, limits_, sequence_, raw_validated_},
                 tokens_.first(needed_.token_count), raw_.first(needed_.raw_frame_bytes));

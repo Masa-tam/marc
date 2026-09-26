@@ -5,13 +5,21 @@
 
 namespace marc::frame::internal {
 
-// Complete-frame private 2/8 + 1/9 + 3/2 decoder. It is not called by the
-// published stream decoder or any public API.
+// Transactional complete-frame reference for private 2/8 + 1/9 + 3/2 decoding.
 [[nodiscard]] LzssShortMatchFrameDecodeResult
 decode_lzss_position_distance_frame(
     std::span<const std::byte> serialized_frame,
     const TypedContextFrameValidationContext& context,
     std::span<dictionary::internal::LzssTypedToken> private_tokens,
+    std::span<std::byte> private_raw_output) noexcept;
+
+// Frame-atomic streaming adapter. Token scratch may change on failure; raw
+// output remains unchanged. Discard failed scratch and publish only on success.
+[[nodiscard]] LzssShortMatchFrameDecodeResult
+decode_lzss_position_distance_frame_scratch(
+    std::span<const std::byte> serialized_frame,
+    const TypedContextFrameValidationContext& context,
+    std::span<dictionary::internal::LzssTypedToken> token_scratch,
     std::span<std::byte> private_raw_output) noexcept;
 
 } // namespace marc::frame::internal

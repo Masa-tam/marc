@@ -16872,3 +16872,22 @@ identity and workspace tests rather than replacing them with positive cases.
 The documentation test now requires public integration wording and schema-58
 verification, preserves the exact initializer count, and rejects stale staged
 or incomplete-profile descriptions in the current C API reference.
+
+## TVG-1163: Position-distance scratch differential vectors
+
+Reuse the pinned 17-token/21-byte canonical vector and invalid-history vector.
+Compare every token-result field, including entropy counters and failure index,
+under every payload bit flip, every truncation, count/size/limit changes and
+capacities 0/16/17/18. Check guards and the transactional reference's unchanged
+tokens on failure. Invalid history explicitly leaves two validated literals in
+discardable scratch. Test valid and malformed payloads overlapping token storage
+at several byte offsets to preserve validation-before-storage error precedence.
+
+At the frame layer compare every serialized bit flip and truncation with both
+insufficient and sufficient token/raw capacities. Require identical raw output
+and unchanged failed raw frames, and reject all three workspace overlap pairs
+before writes. After publishing the first frame, poison raw scratch and damage
+the second frame's final byte; require unchanged raw scratch, no second-frame
+publication, and the existing sticky error category and position for input
+chunks 1/13/1024. Extend the bounded stream fuzzer with reference/scratch frame
+diagnostic, token and raw comparisons on generated and mutated archives.

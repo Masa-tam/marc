@@ -24,6 +24,19 @@ decode_lzss_position_distance_range_tokens(
     const core::DecoderLimits& limits,
     std::span<dictionary::internal::LzssTypedToken> private_tokens) noexcept;
 
+// Discardable scratch only: on failure tokens may contain a validated prefix.
+// Never reconstruct/publish them unless the complete result succeeds. Input and
+// configuration objects must be disjoint from scratch. Invalid storage retains
+// the transactional helper's error precedence and leaves storage unchanged.
+[[nodiscard]] LzssContextualRangeDecodeResult
+decode_lzss_position_distance_range_token_scratch(
+    const entropy::internal::ContextualDynamicRangeDescriptor& descriptor,
+    std::span<const std::byte> payload,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits,
+    std::span<dictionary::internal::LzssTypedToken> token_scratch) noexcept;
+
 } // namespace marc::context::internal
 
 #endif

@@ -25623,3 +25623,20 @@ to change on failure, but never reconstruct or publish a failing frame. Preserve
 all grammar, reference, count, termination and canonical checks. Require public
 error/publication equivalence and unchanged valid stream bytes before timing
 or adoption. This is a proposed optimization boundary, not an implemented change.
+
+## DD-1295: Preserve diagnostic precedence in the private scratch prototype
+
+Add a separate position-distance token scratch decoder sharing the full existing
+token walker. Check capacity and payload overlap with checked arithmetic before
+any write. If storage is unsuitable, call the transactional reference: it writes
+nothing on this path and preserves malformed-input precedence and all diagnostic
+counters. Suitable storage takes one decoding pass, including finish/canonical
+validation. A failed call may change only token scratch; its contents must be
+discarded. Inputs and configuration must remain disjoint from writable scratch.
+
+Expose a separate private frame adapter using this decoder; retain the original
+complete-frame helper unchanged. Only the frame-atomic streaming decoder may use
+the adapter in production. Raw reconstruction starts only after successful token
+validation, and publication remains behind full frame success. No ABI, format,
+encoder bytes, allocation or workspace charge changes are intended. Differential
+tests and bounded fuzz precede measurements and adoption assessment.

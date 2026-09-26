@@ -35154,3 +35154,30 @@ both bounds.
 - Changes: diagnosis and design record only; no codec implementation or API change.
 - Similarity review: independently authored first-party diagnostic and analysis;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1453: 2026-09-27 - Decode position-distance frames into discardable scratch
+
+- Author: Codex; local contract review: Codex; maintainer review pending.
+- Task: reconcile the handoff and implement the DD-1294 private one-pass token
+  scratch trial, preserving failure atomicity, public errors and frame publication.
+- References used: IR-1052, DD-1294/DD-1295, TVG-1163 and first-party sources.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Independent decision: precheck storage and retain the transactional fallback
+  for unsuitable spans so malformed-input precedence and diagnostics do not
+  change. Reuse the complete walker and canonical finish checks for the single
+  writing pass. Add a separate frame adapter used only by frame-atomic streaming.
+- Validation: all 3,942 CTest cases passed without exclusions, including the six
+  new differential/storage/publication tests, public factory and hash tests,
+  allocation limits and schema compatibility. FZ-0045 completed 10,000 bounded
+  runs without a finding. One new fixture assertion initially expected 'a' for
+  the second literal; the independently pinned vector specifies 'b'. Correcting
+  that test expectation preceded the successful full suite.
+- Measurement: BM-0137 compares reference and scratch in one binary, verifies
+  all 782 Mozilla frames, and confirms three byte-identical public CLI archives
+  and restored inputs. Retain the streaming integration; retain transactional
+  helpers and all other codec paths. No new allocation, workspace charge,
+  public ABI or stream format is introduced.
+- Similarity review: changes reuse the repository's own walker and validators;
+  no external expression copied and no legal guarantee claimed. This work does
+  not establish new external-platform interoperability evidence.

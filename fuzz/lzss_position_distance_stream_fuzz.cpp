@@ -2,6 +2,7 @@
 #include "frame/lzss_position_distance_raw_stream_encoder.hpp"
 #include "frame/lzss_position_distance_frame_streaming_encoder.hpp"
 #include "frame/lzss_position_distance_frame_streaming_decoder.hpp"
+#include "frame/lzss_position_distance_frame_decoder.hpp"
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -9,6 +10,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <span>
+#include <tuple>
 
 namespace {
 constexpr std::size_t max_input = 4096;
@@ -70,7 +72,51 @@ IncrementalResult incremental_decode(std::span<const std::byte> input,
     std::abort();
 }
 
+auto token_result_key(const marc::context::internal::LzssContextualRangeDecodeResult& r) {
+    return std::tuple{r.error,r.token_error,r.token_count,r.token_index,r.raw_size,
+        r.entropy.error,r.entropy.event_count,r.entropy.decision_count,r.entropy.payload_consumed};
+}
+
+void compare_frame_scratch(std::span<const std::byte> input) {
+    using namespace marc::frame::internal;
+    TypedContextStreamHeader stream{}; std::size_t consumed{};
+    if(parse_lzss_position_distance_stream_header(input,limits(),stream,consumed)
+        !=LzssShortMatchPreflightError::none) return;
+    std::uint64_t sequence{},committed{};
+    while(consumed<input.size()) {
+        std::array<marc::dictionary::internal::LzssTypedToken,66> a{},b{};
+        for(auto& t:a) t.literal=0xcc;
+        b=a;
+        std::array<std::byte,66> x{},y{}; x.fill(sentinel); y=x;
+        const auto r=decode_lzss_position_distance_frame(input.subspan(consumed),
+            {stream,limits(),sequence,committed},std::span{a}.subspan(1,64),std::span{x}.subspan(1,64));
+        const auto s=decode_lzss_position_distance_frame_scratch(input.subspan(consumed),
+            {stream,limits(),sequence,committed},std::span{b}.subspan(1,64),std::span{y}.subspan(1,64));
+        if(r.error!=s.error || r.preflight_error!=s.preflight_error
+            || r.serialized_consumed!=s.serialized_consumed
+            || r.required_token_count!=s.required_token_count || r.required_raw_size!=s.required_raw_size
+            || token_result_key(r.token_decode)!=token_result_key(s.token_decode)
+            || r.reconstruction.error!=s.reconstruction.error
+            || r.reconstruction.output_size!=s.reconstruction.output_size || x!=y
+            || b.front().literal!=0xcc || b.back().literal!=0xcc
+            || y.front()!=sentinel || y.back()!=sentinel) std::abort();
+        if(r.error!=LzssShortMatchFrameDecodeError::none) {
+            if(!std::ranges::all_of(y,[](auto v){return v==sentinel;})
+                || !std::ranges::all_of(a,[](auto t){return t.literal==0xcc;})) std::abort();
+            return;
+        }
+        for(std::size_t i=0;i<r.required_token_count;++i) {
+            const auto& t=a[i+1]; const auto& u=b[i+1];
+            if(t.kind!=u.kind || t.literal!=u.literal || t.distance!=u.distance || t.length!=u.length)
+                std::abort();
+        }
+        if(r.serialized_consumed==0 || r.serialized_consumed>input.size()-consumed) std::abort();
+        consumed+=r.serialized_consumed; committed+=r.required_raw_size; ++sequence;
+    }
+}
+
 void compare_incremental(std::span<const std::byte> input) {
+    compare_frame_scratch(input);
     const auto a=incremental_decode(input,1,1);
     const auto b=incremental_decode(input,23,31);
     if(a.last.status!=b.last.status || a.last.error.code!=b.last.error.code

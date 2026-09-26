@@ -26,6 +26,7 @@ enum class OverlapCheck : std::uint8_t {
 
 enum class FrameIdentity : std::uint8_t {
     short_match, length_escape, reduced_literal, position_distance,
+    position_distance_scratch,
 };
 
 [[nodiscard]] OverlapCheck regions_overlap(
@@ -56,7 +57,8 @@ enum class FrameIdentity : std::uint8_t {
     const FrameIdentity identity) noexcept {
     const bool escape_identity = identity != FrameIdentity::short_match;
     const bool reduced_literal = identity == FrameIdentity::reduced_literal;
-    const bool position_distance = identity == FrameIdentity::position_distance;
+    const bool scratch = identity == FrameIdentity::position_distance_scratch;
+    const bool position_distance = identity == FrameIdentity::position_distance || scratch;
     LzssShortMatchFrameDecodeResult result{};
     TypedContextFrameLayout layout{};
     LzssShortMatchFrameRequirements requirements{};
@@ -126,7 +128,11 @@ enum class FrameIdentity : std::uint8_t {
         layout.header.decision_count,
         layout.header.uncompressed_size,
         context.output_already_committed};
-    result.token_decode = position_distance
+    result.token_decode = scratch
+        ? context::internal::decode_lzss_position_distance_range_token_scratch(
+              layout.descriptor, payload, context.stream.dictionary,
+              token_context, context.limits, tokens)
+        : position_distance
         ? context::internal::decode_lzss_position_distance_range_tokens(
               layout.descriptor, payload, context.stream.dictionary,
               token_context, context.limits, tokens)
@@ -203,6 +209,15 @@ LzssShortMatchFrameDecodeResult decode_lzss_position_distance_frame(
     const std::span<std::byte> private_raw_output) noexcept {
     return decode_impl(serialized_frame, context, private_tokens,
                        private_raw_output, FrameIdentity::position_distance);
+}
+
+LzssShortMatchFrameDecodeResult decode_lzss_position_distance_frame_scratch(
+    const std::span<const std::byte> serialized_frame,
+    const TypedContextFrameValidationContext& context,
+    const std::span<dictionary::internal::LzssTypedToken> token_scratch,
+    const std::span<std::byte> private_raw_output) noexcept {
+    return decode_impl(serialized_frame, context, token_scratch,
+                       private_raw_output, FrameIdentity::position_distance_scratch);
 }
 
 } // namespace marc::frame::internal

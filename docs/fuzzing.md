@@ -1049,3 +1049,18 @@ minimized file in the corpus. Record externally sourced corpus provenance and
 license before adding it; generated and hand-authored inputs are preferred.
 Corpus paths are marked binary in `.gitattributes`; do not enable text or line
 ending normalization for individual seeds or minimized reproducers.
+
+### FZ-0045: Position-distance scratch differential coverage
+
+Extend the existing bounded context-9 harness with frame-by-frame comparisons
+between the retained transactional helper and the discardable-token-scratch
+adapter. Compare token diagnostics, successful tokens and raw bytes; require
+unchanged failed raw frames and storage guards. Generated valid archives and
+their mutations also traverse the frame-atomic incremental decoder at different
+chunk sizes with sticky-error and publication comparisons.
+
+The 2026-09-27 bounded campaign completed the 27 boundary cases and 10,000
+fuzz runs without a sanitizer finding or differential mismatch. Harness
+input/output/frame bounds remain 4,096/128/64 bytes. This finite campaign is
+not exhaustive malformed-stream or public-API coverage; public factory and
+hash tests remain separate evidence.

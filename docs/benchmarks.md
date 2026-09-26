@@ -5296,3 +5296,49 @@ the earlier hash. The approval-review transport failure interrupted the new
 build before execution; after the maintainer switched approval mode, build and
 measurement succeeded. These observations do not change public defaults,
 workspace charges, stream bytes or the reported external interoperability scope.
+
+## BM-0137: One-pass position-distance token scratch comparison
+
+On 2026-09-27, after the complete 3,942-test suite and FZ-0045 passed, compare
+the retained transactional complete-frame decoder with the new scratch adapter
+in the same binary. Both paths include frame preflight, full token/entropy
+validation, canonical finish and raw reconstruction. Before timing, compare
+every successful token/result and raw byte across all 782 Mozilla frames.
+Use four timed traversals per path, alternating which path runs first. Archive
+loading and the initial equality checks are outside the timers. This measures
+frame decoding, not just entropy replay and not public CLI wall time.
+
+| Path | Run 1 seconds | Run 2 seconds | Run 3 seconds | Run 4 seconds | Median seconds | MiB/s at median |
+|---|---:|---:|---:|---:|---:|---:|
+| Transactional reference | 4.2960176 | 4.1740248 | 4.3255428 | 4.1931568 | 4.2445872 | 11.508 |
+| Private token scratch | 2.2269422 | 2.1592472 | 2.1766852 | 2.1738275 | 2.1752564 | 22.456 |
+
+Median frame decoding time decreases by 48.75% in this paired experiment.
+Alternating order reduces but does not eliminate cache or scheduling effects;
+these four traversals are not a general throughput guarantee. Unlike BM-0136's
+direct event replay, the scratch path retains the complete token validation.
+
+Separately run three public CLI encode/decode pairs. Every encoded archive
+equals the prior oracle byte-for-byte and every restored file equals the input.
+The 51,220,480-byte input still produces 18,655,833 archive bytes, or 36.4226%
+of the raw size. Archive SHA-256 remains
+`244b2fbd55fb394c92501e6d50e26c59823ae1251a5a430834cee69ca59ddaf2`.
+
+| Public CLI operation | Median wall seconds | Raw MiB/s at median | Median observed process peak bytes | Observed peak range bytes |
+|---|---:|---:|---:|---:|
+| Encode | 5.4671266 | 8.935 | 11,313,152 | 11,313,152..11,317,248 |
+| Decode | 2.4193192 | 20.191 | 5,582,848 | 5,550,080..5,591,040 |
+
+CLI timings include process startup and file I/O. Observed process high-water
+samples are not codec allocation bounds; existing workspace-charge and allocation
+tests pass unchanged. Do not derive a paired CLI speedup from BM-0134's earlier
+run. Detailed experiment identity, diagnostic source and raw results are retained
+in local artifacts; no earlier measurements were overwritten.
+
+Retain the new adapter only in frame-atomic position-distance streaming.
+Transactional token/complete-frame helpers remain the reference, and complete
+stream helpers and other variants keep their existing paths. Public ABI, format,
+encoded bytes, allocations and workspace charges remain unchanged. Error-result
+equivalence, failed-raw immutability, previous-frame publication and sticky errors
+are covered by TVG-1163 and the full suite. New external interoperability testing
+is separate from the previously reported schema-58 exchange.

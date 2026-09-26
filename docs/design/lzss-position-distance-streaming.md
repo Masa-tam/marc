@@ -413,3 +413,21 @@ guards. Existing late-frame rejection, limits, identity and allocation tests
 remain part of the evidence. Current C API, CLI, format and readiness summaries
 identify the exact fixed profile as public; earlier staged sections retain their
 historical meaning. No legacy parser acceptance, stream bytes or defaults change.
+
+## Private token scratch decoding (2026-09-27)
+
+DD-1295 implements the DD-1294 trial with a separate scratch-writing token entry
+point and frame adapter. The frame-atomic decoder now uses that adapter after
+its existing preflight and storage checks. Token scratch may hold a prefix after
+failure, but no failing frame is reconstructed or published. Prior-frame output,
+sticky errors, raw scratch on failure and public error positions remain intact.
+The transactional token and complete-frame helpers remain the reference paths.
+
+The successful scratch path runs the existing token walker once, including all
+grammar, history, counts and canonical termination checks. Unsuitable storage
+uses the non-writing reference failure path to preserve error precedence. Model
+state, workspace charges, allocation behavior and wire bytes are unchanged.
+TVG-1163, FZ-0045 and the complete test suite validate the boundary; BM-0137
+supports retaining this integration based on an independent same-binary timing
+comparison. Whole-stream transactional helpers and other variants retain their
+previous behavior.

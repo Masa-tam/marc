@@ -473,4 +473,26 @@ LzssContextualRangeDecodeResult decode_lzss_position_distance_range_tokens(
         descriptor, payload, parameters, context, limits, private_tokens, LengthMapping::reduced_literal);
 }
 
+LzssContextualRangeDecodeResult decode_lzss_position_distance_range_token_scratch(
+    const entropy::internal::ContextualDynamicRangeDescriptor& descriptor,
+    const std::span<const std::byte> payload,
+    const dictionary::internal::LzssParameters& parameters,
+    const LzssFieldContextValidationContext& context,
+    const core::DecoderLimits& limits,
+    const std::span<LzssTypedToken> token_scratch) noexcept {
+    // Storage failures still report the reference's validation-first diagnostics.
+    // In either fallback case the reference cannot reach its writing pass.
+    if (token_scratch.size() < context.declared_token_count
+        || payload_token_overlap(payload,
+               token_scratch.first(context.declared_token_count))
+               != OverlapCheck::disjoint) {
+        return decode_lzss_position_distance_range_tokens(
+            descriptor, payload, parameters, context, limits, token_scratch);
+    }
+    return run_pass<entropy::internal::LzssPositionDistanceRangeDecoder>(
+        descriptor, payload, parameters, context, limits,
+        LengthMapping::reduced_literal,
+        token_scratch.first(context.declared_token_count));
+}
+
 } // namespace marc::context::internal

@@ -173,6 +173,28 @@ TEST(LzssPositionDistanceStreamingDecoder, WaitsForEndAndRejectsLaterTrailingInp
     }
 }
 
+TEST(LzssPositionDistanceStreamingDecoder, FailedScratchNeverReconstructsOrPublishesSecondFrame) {
+    auto bytes=fixture(2); bytes.back()^=std::byte{1}; // late canonical failure
+    for(std::size_t step:{1U,13U,1024U}) {
+        Scratch active;
+        Decoder streaming({},active.serialized,active.tokens,active.raw);
+        std::array<std::byte,21> output{};
+        const auto good=streaming.process(std::span{bytes}.first(210),output,0);
+        ASSERT_EQ(good.output_produced,21);
+        active.raw.fill(std::byte{0xa5});
+        const auto failed=drive(streaming,std::span{bytes}.subspan(210),0,step,1);
+        EXPECT_EQ(failed.last.status,Status::error);
+        EXPECT_EQ(failed.last.error.code,Code::malformed_stream);
+        EXPECT_EQ(failed.last.error.byte_position,290);
+        EXPECT_TRUE(failed.output.empty());
+        for(auto byte:active.raw) EXPECT_EQ(byte,std::byte{0xa5});
+        for(auto byte:output) EXPECT_EQ(byte,std::byte{'a'});
+        const auto again=streaming.process(bytes,output,end_flag);
+        EXPECT_EQ(again.status,Status::error); EXPECT_EQ(again.error.byte_position,290);
+        EXPECT_EQ(again.input_consumed,0); EXPECT_EQ(again.output_produced,0);
+    }
+}
+
 TEST(LzssPositionDistanceStreamingDecoder, ZeroCapacityRetainsFrameAndFinalInputSuffix) {
     Scratch scratch; Decoder decoder({},scratch.serialized,scratch.tokens,scratch.raw);
     EXPECT_EQ(decoder.process({}, {},0).status,Status::need_input);
