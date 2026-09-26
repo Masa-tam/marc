@@ -35106,3 +35106,18 @@ both bounds.
   correction. Earlier external exchange remains attributed to the reported revision.
 - Similarity review: independently generated binary cases and first-party
   oracle comparisons; no external expression copied or legal guarantee claimed.
+
+## CR-1450: 2026-09-27 - Measure public CLI Mozilla size, time and working set
+
+- Author: Codex; reviewer: repository maintainer approved public CLI measurement.
+- References used: IR-1049 and BM-0131/BM-0132; first-party CLI and local corpus.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Task: compare old and new 64-KiB CLI profiles, distinguish externally reported
+  gzip size from locally reproduced results, and identify the next investigation.
+- Validation: six sequential encode/decode pairs passed input reconstruction and
+  repeated archive SHA-256 checks. Resume revalidated all six without relaunch.
+  BM-0134 records sizes, all timing samples, observed process memory, identities
+  and limitations. No codec implementation, public default or format changed.
+- Similarity review: independently authored measurement harness and analysis;
+  no external expression copied and no legal guarantee claimed.

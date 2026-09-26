@@ -5078,3 +5078,81 @@ and workspace-versus-RSS caveats still apply. Alternating order limits a simple
 order bias but is not a randomized repeated trial. This establishes no measured
 regression for this fixed corpus/configuration and supports proceeding to public
 integration design; it does not admit a public format or change defaults.
+
+## BM-0134: Public CLI Mozilla confirmation after position-distance admission
+
+On 2026-09-27 measure the Windows/MSVC x64 Release CLI at revision
+`0e79e6156789efdb88cc755a03eb67b6239380b9`. Official CMake 4.3.4 rebuilt
+the CLI target (the sandbox FileTracker access failure was resolved by running
+the identical build outside the sandbox). The measurement ran inside the
+sandbox with no concurrent repository test or benchmark. Executable SHA-256:
+`3033d205fb3680ffdbef35cfd88c8aebb08544e77e002e9a7f6b1a184f54a758`;
+shared library SHA-256:
+`2f397672a8228bef7ac405748b2833166bb13a96f440089490394ff721eb95cd`.
+
+Input is the unchanged Silesia Mozilla file, 51,220,480 bytes, SHA-256
+`657fc3764b0c75ac9de9623125705831ebbfbe08fed248df73bc2dc66e2a963b`.
+Use the default settings of `lzss-contextual-dynamic-range` (old) and
+`lzss-position-distance-dynamic-range` (new), each with a 64-KiB window.
+Perform three encode/decode pairs per codec, alternating first codec by iteration
+(old/new, new/old, old/new), with new output filenames and a 600-second child
+limit. No separate warmup or cold-cache control was used.
+
+| CLI profile | Archive bytes | Encode seconds, median | Decode seconds, median | Observed encode peak working set, MiB | Observed decode peak working set, MiB |
+|---|---:|---:|---:|---:|---:|
+| `lzss-contextual-dynamic-range` | 20,085,366 | 4.211524 | 3.524065 | 8.168 | 5.406 |
+| `lzss-position-distance-dynamic-range` | 18,655,833 | 5.467712 | 4.714370 | 10.871 | 5.414 |
+
+Old encode samples: 4.2390230, 4.2115239, 4.2065390 seconds; decode:
+3.4016148, 3.7768085, 3.5240649. New encode samples: 5.5039435, 5.4677116,
+5.4651399; decode: 4.7494976, 4.5373855, 4.7143698.
+The table's memory values are the maximum observed per-process
+`GetProcessMemoryInfo.PeakWorkingSetSize` across the three samples, queried
+approximately every 10 ms. They include executable/DLL pages, caller buffers,
+codec storage and I/O state; they are not workspace-query charges, portable RSS,
+peak private allocations or an allocator trace. Very late unobserved growth
+cannot be excluded. Exact observed maxima in bytes are old encode 8,564,736,
+old decode 5,668,864, new encode 11,399,168 and new decode 5,677,056.
+
+Wall time includes process creation, DLL loading, allocation, file I/O, codec
+processing and exit observation (including polling delay), unlike BM-0132's
+internal timings. Harness hashing/verification occurs outside each measurement.
+Do not directly interpret differences from BM-0132 as a codec slowdown.
+Within this common CLI experiment, new encode/decode medians are 29.83%/33.78%
+longer than the old profile, in exchange for 1,429,533 fewer bytes (7.12%).
+
+All six pairs reconstruct the input digest. Each codec's archive digest is
+identical across its three runs. The old archive SHA-256 is
+`95eec4f4450a991c75af5dc805c3bde02cafb20d4f21197a55145f2338cd8317`;
+the new archive SHA-256 is
+`244b2fbd55fb394c92501e6d50e26c59823ae1251a5a430834cee69ca59ddaf2`,
+identical to BM-0131/BM-0132's actual emitted streams.
+
+The maintainer's earlier Ubuntu `gzip -9v` result is 18,994,139 bytes. The public
+new CLI output is 338,306 bytes (1.78%) smaller, satisfying the Mozilla size goal
+relative to that reported file. gzip was not rerun here; gzip timing, memory,
+version, header options and cross-corpus superiority are not established.
+The marc window is 64 KiB, not gzip's 32 KiB. This is not an equal-window result.
+
+The local JSON manifest, measurement script, six archives/restored files and
+atomic pair-level checkpoint are retained under ignored
+`out/public-cli-mozilla-20260927/`. Resume validates source, executable, DLL,
+runner, revision and saved outputs; a second invocation verified all six records
+without launching codecs. Partial uncheckpointed outputs require inspection,
+not silent overwrite. Checkpoint SHA-256:
+`b33de9c81c3cd65d3e747654a64f65f5de8af0f0337152ce55a4534e989452af`.
+The corpus and generated binaries are not committed.
+
+To reproduce archive sizes, run the following for each selector with fresh paths:
+
+```text
+marc encode --codec <selector> benchmarks/data/silesia/corpus/mozilla <archive>
+marc decode --codec <selector> <archive> <restored>
+```
+
+Verify restored SHA-256 and repeat three times. For timing comparisons use the
+same process/I/O boundaries and report the OS/memory measurement method.
+The next useful optimization investigation is a bounded profile of the new
+encode/decode hot paths, especially model updates and symbol lookup; this result
+does not itself identify the bottleneck. Preserve the new archive bytes and
+measure before changing search, models, memory limits or default selection.

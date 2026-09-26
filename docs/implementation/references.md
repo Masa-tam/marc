@@ -9379,3 +9379,10 @@ Position-distance completion uses AGENTS.md requirements, first-party C factory
 and reference encoder tests, the readiness contract, and reported schema-58
 exchange. Test data are generated locally; no external implementation or corpus
 is embedded in these regression cases.
+
+### IR-1049
+
+The public CLI Mozilla confirmation uses the locally provisioned Silesia input,
+BM-0131/BM-0132, first-party CLI binaries and the maintainer's earlier gzip size
+report. No external codec source was consulted. Windows process counters supply
+observed working-set peaks, separately from internal workspace policy charges.
