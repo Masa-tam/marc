@@ -240,7 +240,8 @@ identity handling before implementing public factories or changing defaults.
 BM-0132/BM-0133 complete the fixed-policy measurement gate. This section is the
 integration contract. Initializer/query/factory symbols and C consumers are
 implemented, including locally verified installed-package examples. Hosted
-package CI, CLI and public-admission gates remain pending.
+package CI and public-admission gates remain pending. Explicit CLI selection
+and wrong-codec rejection tests are now implemented.
 
 ### Additive C family
 
@@ -348,4 +349,6 @@ factory/process now have C integration tests. Standalone C11 consumers cover
 both enabled library kinds; isolated static-linked allocation-failure injection
 checks owner/handle cleanup. The installed examples project now includes a
 streaming C consumer per exported library kind, configured in the CI package matrix.
-CLI and admission gates remain pending; no DLL allocation interposition is claimed.
+The explicit CLI adapter uses the full initializer and rejects unsupported
+options; round trips and reciprocal wrong-codec rejection are covered.
+Admission gates remain pending; no DLL allocation interposition is claimed.

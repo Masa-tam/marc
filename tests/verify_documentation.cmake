@@ -1654,7 +1654,7 @@ foreach(staged_contract IN ITEMS
         "marc_lzss_position_distance_dynamic_range_config_init()"
         "marc_lzss_position_distance_dynamic_range_workspace_requirements()"
         "marc_lzss_position_distance_dynamic_range_create()"
-        "It has no command-line codec yet")
+        "Its explicit staged command-line codec is")
     string(FIND "${c_api_content}" "${staged_contract}" staged_contract_offset)
     if(staged_contract_offset EQUAL -1)
         message(FATAL_ERROR "Missing staged C API contract: ${staged_contract}")

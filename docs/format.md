@@ -8002,8 +8002,12 @@ This reservation does not itself implement or publicly admit a codec.
 ### Reserved position-adaptive distance short-length escape identity
 
 Format 2.0 reserves only `dictionary 2/8 + context 1/9 + entropy 3/2`
-for position-adaptive distance extra bits. It is private and MUST remain
-rejected by public stream parsers, CLI, C API and interoperability inventories.
+for position-adaptive distance extra bits. General public stream parsers and
+interoperability inventories MUST continue rejecting it until admission review.
+The staged position-distance C factory and explicitly selected
+`lzss-position-distance-dynamic-range` CLI adapter use the strict private parser
+for this exact identity only. They do not admit other reserved contexts or
+declare public completion; see the streaming integration design.
 Other crossed identities are invalid. Earlier context variants retain their
 exact bytes and contracts; this is not a reinterpretation of context 8.
 

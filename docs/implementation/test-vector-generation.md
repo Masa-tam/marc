@@ -16812,3 +16812,14 @@ example uses a known-size, multi-frame input and one-byte input/output calls,
 checks decoded size and bytes, and bounds its process loop. CI keeps its four
 platform/linkage package entries; local validation uses the existing Release
 build and a stable installed-package validation subdirectory.
+
+## TVG-1158: Position-distance CLI selection and rejection
+
+Use the existing CLI round-trip generator with more than one 64 KiB frame,
+assert dictionary/context/entropy identity bytes and exact restored data; include
+empty input, malformed data, trailing data and output-overwrite rejection.
+Decode the new stream with old 64 KiB/1 MiB contextual Range selections and the
+old 64 KiB stream with the new selection. Require rejection and no temporary or
+partial output, preserving pre-existing output sentinels. Independently require
+usage errors for larger-window suffixes and finder/profile options in both
+directions. Do not change wire vectors or public admission inventories.

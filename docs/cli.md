@@ -25,6 +25,26 @@ An explicit `--codec lz77` is equivalent to omitting `--codec`.
 
 ## Profiles
 
+### Staged position-distance integration
+
+`lzss-position-distance-dynamic-range` explicitly selects the staged C factory
+for format 2.0 dictionary 2/8, context 1/9, entropy 3/2 in both directions.
+It uses the complete initializer defaults: 65,536-byte frames/window, matches
+3..258 and fixed exact indexed encoder search. It has no larger-window suffix,
+finder or profile option. Unsupported selections are usage errors.
+
+```console
+marc encode --codec lzss-position-distance-dynamic-range input.bin output.marc
+marc decode --codec lzss-position-distance-dynamic-range output.marc restored.bin
+```
+
+This is a staged integration, outside the completed profile inventory below;
+general format admission and external interoperability remain pending. No
+header-driven codec selection or automatic limit expansion is performed.
+Existing contextual decoders reject this identity, and this decoder rejects
+their streams. Failure removes temporary output and preserves existing files.
+The default codec and every existing codec's bytes remain unchanged.
+
 ### Profile inventory
 
 | CLI name | Dictionary | Entropy | Notes |

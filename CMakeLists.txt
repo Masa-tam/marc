@@ -4268,9 +4268,28 @@ if(MARC_BUILD_TESTS)
                 "-DCLI_DICTIONARY_VARIANT=02"
                 "-DCLI_CONTEXT_VARIANT=01"
                 "-DCLI_REJECT_CODEC=lzss-contextual-dynamic-range-1m"
+                "-DCLI_REJECT_CODEC_2=lzss-position-distance-dynamic-range"
                 "-DCLI_TRAILING_TEST=ON"
                 "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-lzss-contextual-range-test-$<CONFIG>"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        add_test(NAME marc_cli_lzss_position_distance_dynamic_range_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DCLI_CODEC=lzss-position-distance-dynamic-range"
+                "-DCLI_DICTIONARY_VARIANT=08"
+                "-DCLI_CONTEXT_VARIANT=09"
+                "-DCLI_ENTROPY_ALGORITHM=03"
+                "-DCLI_ENTROPY_VARIANT=02"
+                "-DCLI_REJECT_CODEC=lzss-contextual-dynamic-range"
+                "-DCLI_REJECT_CODEC_2=lzss-contextual-dynamic-range-1m"
+                "-DCLI_TRAILING_TEST=ON"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-position-distance-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        add_test(NAME marc_cli_position_distance_selection
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-position-distance-selection-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_distance_selection.cmake)
         add_test(NAME marc_cli_lzss_contextual_dynamic_range_1m_round_trip
             COMMAND ${CMAKE_COMMAND}
                 "-DMARC_CLI=$<TARGET_FILE:marc_cli>"

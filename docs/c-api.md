@@ -17,8 +17,8 @@ The position-distance family currently provides staged C factory integration:
 `marc_lzss_position_distance_dynamic_range_config_init()`,
 `marc_lzss_position_distance_dynamic_range_workspace_requirements()` and
 `marc_lzss_position_distance_dynamic_range_create()`.
-It has no command-line codec yet and is not a complete public
-profile. Its initializer needs no profile helper: window 65536 and matches
+Its explicit staged command-line codec is `lzss-position-distance-dynamic-range`;
+it is not a complete public profile. Its initializer needs no profile helper: window 65536 and matches
 3..258 are fixed, frame_size defaults to 65536, and hard limits are configurable.
 Decode ignores original_size/frame_size and sizes storage from local
 max_frame_size capped at 65536. Query returns caller storage requirements,
@@ -676,7 +676,7 @@ consumption and production as described above.
 [`position_distance_roundtrip.c`](../examples/position_distance_roundtrip.c)
 demonstrates the staged position-distance family with one-byte buffers, multiple
 frames, known-size encoding, local decoder limits and failure-path cleanup.
-It needs no profile helper. This example does not imply CLI or format admission.
+It needs no profile helper. This example does not imply general format admission.
 The installed examples project uses only `find_package(marc CONFIG REQUIRED)`
 and public targets; it builds a position-distance consumer for each available
 `marc::static` / `marc::shared` target and registers round trips with CTest.

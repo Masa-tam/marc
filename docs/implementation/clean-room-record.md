@@ -34994,3 +34994,24 @@ both bounds.
   entries are configured but their hosted execution remains pending.
 - Similarity review: independently authored first-party example and integration;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1444: 2026-09-26 - Connect explicit position-distance CLI selection
+
+- Author: Codex; reviewer: repository maintainer approved CLI integration.
+- References used: IR-1044, DD-1289, TVG-1158 and the first-party C factory,
+  strict streaming decoder, existing CLI lifecycle and atomic-output harness.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Task: connect an explicit selector without changing default codecs, wire
+  bytes or general public-format admission.
+- Changes: initializer/query/create dispatch, usage and name parsing, reciprocal
+  wrong-codec tests, unsupported-option tests and staged integration documents.
+- Validation: the new round-trip test first failed on missing selection;
+  after implementation both new and existing contextual Range round trips
+  passed, including reciprocal rejection. A FileTracker access denial during
+  rebuild was resolved by the exact approved rerun without build-setting changes.
+  All 3,931 Release CTest cases passed in 409.15 seconds, including
+  interoperability schema compatibility (122.06 seconds) and unsupported CLI
+  selection checks. External interoperability of the new identity is not claimed.
+- Similarity review: independently authored first-party CLI adapter and tests;
+  no external expression copied and no legal guarantee claimed.

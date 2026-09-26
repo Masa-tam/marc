@@ -9348,3 +9348,9 @@ allocation interfaces. No external codec implementation or test suite was used.
 The installed position-distance example uses the first-party C lifecycle,
 exported package targets and existing installed-package CI matrix. No external
 codec implementation or third-party test suite was consulted.
+
+### IR-1044
+
+Position-distance CLI integration uses the first-party C factory, streaming
+contract and existing atomic-output CLI/test harness. No external codec source
+or third-party tests were consulted.

@@ -25569,3 +25569,13 @@ sources rather than repository examples, preserving the shared-only/static-only
 Windows/Ubuntu matrix. The example handles partial buffers and frees all caller
 workspace after destroying the handle, including failure paths. CLI and public
 format admission remain separate gates.
+
+## DD-1289: Explicit staged position-distance CLI selection
+
+Add only lzss-position-distance-dynamic-range in both directions. Use its full
+initializer and known source size, then query and create through the C family.
+Do not inspect the header to upgrade limits or change the selected decoder.
+Preserve default LZ77 and all existing selectors. Unsupported window suffixes
+and finder/profile options fail as usage errors. Keep the existing atomic-output
+path; codec mismatch must not retain partial output. General format admission
+and external interoperability remain separate gates.
