@@ -469,3 +469,20 @@ their historical scope. Together with the recorded differential, publication,
 fuzz, complete-suite and performance evidence, the DD-1294 optimization trial
 and its grouped-literal follow-up are validated for the existing exact profile.
 This record introduces no implementation change, new profile or release tag.
+
+## Encoder search-pass correction and scratch path (2026-09-27)
+
+Earlier descriptions of one dictionary search per frame refer correctly to one
+outer frame preparation, but incorrectly imply a single finder traversal.
+The indexed tokenizer counted tokens with one parse, then reset its index and
+parsed again to write them. Retaining tokens through entropy encoding avoids
+another tokenizer call, not this internal counting parse.
+
+DD-1297 adds a scratch tokenizer to the existing position-distance raw-frame
+adapter. With conservative token capacity and memory bounds proven in advance,
+it validates and initializes the finder once and parses once. The original
+transactional tokenizer remains available; smaller capacities or tighter memory
+budgets fall back to it, preserving actual-token acceptance and diagnostics.
+The raw-frame contract already permits scratch changes on failure. Encoded
+frame publication still requires complete success, and the decoder guarantees
+are unaffected. TVG-1167 and FZ-0048 describe differential coverage.

@@ -35308,3 +35308,30 @@ both bounds.
   copyleft implementations and third-party test suites.
 - Similarity review: evidence transcription and first-party documentation only;
   no external implementation expression copied and no legal guarantee claimed.
+
+## CR-1460: 2026-09-27 - Remove redundant indexed encoder search in scratch
+
+- Author: Codex; local review: Codex; maintainer review pending.
+- Task: the maintainer explicitly requested resolving the discovered encoder
+  traversal discrepancy while respecting its foundational failure contracts.
+- References: IR-1057, the first-party tokenizer/finder and raw-frame adapter,
+  BM-0135 and the new paired search-pass diagnostic.
+- Correction: one frame preparation and retained tokens do not establish one
+  dictionary traversal. The transactional tokenizer counted then wrote tokens
+  in separate parses. Historical descriptions are corrected by appended records.
+- Independent design: DD-1297 admits one writing parse only after conservative
+  capacity/memory and normal storage validation. Preserve the transactional
+  entry and its fallback semantics, including exact actual-token capacity and
+  error precedence. Only the position-distance adapter selects scratch mode.
+- Validation: TVG-1167 differential and rejection tests, existing public
+  publication/allocation tests, all 3,947 CTest tests, and FZ-0048's bounded
+  10,000-run sanitizer campaign passed. Performance and full-corpus byte evidence
+  are reported separately; prior external exchange is not evidence for this edit.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization or test code.
+- Similarity review: shared first-party parser and independently derived bounds;
+  no external expression copied or legal guarantee claimed. No format, public
+  ABI, allocation or workspace charge change.
+- Measurement result: BM-0140 records all 3,239 corpus frames, 45,136,568 tokens
+  and 14 CLI round trips matching retained bytes. Summed tokenization medians
+  fall 49.85%; this is not a whole-CLI paired speedup or external verification.

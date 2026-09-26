@@ -16942,3 +16942,22 @@ archive extent, and payload rejection reports the second-frame payload start.
 Verify zero bit position, output guards, workspace tails and sticky error with
 None, EndInput and Flush; repeated failures consume and produce nothing.
 The public profile, encoder, format and production decoder remain unchanged.
+
+## TVG-1167: Single-pass encoder scratch tokenization equivalence
+
+Extend the length-escape indexed/exhaustive comparison to the private scratch
+entry for empty, repeated, nearest-distance tie, hash-collision and mixed input,
+with eligibility 3/4/5. Compare token kind, literal, distance, length and counts.
+Vary token capacity across zero, insufficient, exact actual count, below the
+worst-case count and full worst-case capacity. Compare all result diagnostics
+under invalid eligibility/parameters, input limits, short or misaligned finder
+storage and exact/insufficient actual-token memory limits. Require unchanged
+transactional failures and token guards; reject all three buffer overlap pairs
+before writes. Existing position-distance raw-frame, public C, allocation and
+streaming tests exercise integration and failed-frame publication.
+
+The bounded stream harness compares scratch/reference tokenization with full
+and data-dependent token capacities before its existing generated reference
+archive versus indexed incremental encoding comparisons. It retains decoder
+publication and canonical-byte checks. Timing probes additionally compare every
+token and emitted frame against a retained archive before entering timers.

@@ -56,7 +56,7 @@ LzssPositionDistanceRawFrameResult process_frame(
             result.error=Error::workspace_limit; result.candidate.finder_error=needed.error; return result;
         }
         frame_limits.max_internal_buffered_bytes-=needed.workspace_size;
-        result.candidate=dictionary::tokenize_lzss_short_length_escape_candidate_indexed(
+        result.candidate=dictionary::tokenize_lzss_short_length_escape_candidate_indexed_scratch(
             raw,stream.dictionary,limits,eligibility,tokens,finder);
     } else {
         result.candidate=dictionary::tokenize_lzss_short_length_escape_candidate(

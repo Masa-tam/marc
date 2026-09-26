@@ -174,6 +174,29 @@ void compare_incremental(std::span<const std::byte> input) {
         || a.produced!=verified.produced || a.bytes!=verified.bytes) std::abort();
 }
 
+void compare_encoder_scratch(std::span<const std::byte> input) {
+    using namespace marc::dictionary::internal;
+    input=input.first(std::min<std::size_t>(64,input.size()));
+    const LzssParameters parameters{65536,3,258,0};
+    std::array<std::uint32_t,65536+64> storage{};
+    auto workspace=std::as_writable_bytes(std::span{storage});
+    const auto key=[](const auto& r) { return std::tuple{r.error,r.token_error,r.finder_error,
+        r.input_size,r.token_count,r.token_storage_size}; };
+    for(const auto capacity:{input.size(),input.empty()?0:std::to_integer<std::size_t>(input[0])%(input.size()+1)}) {
+        std::array<LzssTypedToken,66> a{},b{};
+        for(auto& t:a) t.literal=0xcc;
+        b=a;
+        const auto expected=tokenize_lzss_short_length_escape_candidate_indexed(
+            input,parameters,limits(),3,std::span{a}.subspan(1,capacity),workspace);
+        const auto actual=tokenize_lzss_short_length_escape_candidate_indexed_scratch(
+            input,parameters,limits(),3,std::span{b}.subspan(1,capacity),workspace);
+        if(key(expected)!=key(actual)) std::abort();
+        for(std::size_t i=0;i<a.size();++i)
+            if(a[i].kind!=b[i].kind || a[i].literal!=b[i].literal
+                || a[i].distance!=b[i].distance || a[i].length!=b[i].length) std::abort();
+    }
+}
+
 void incremental_encode(std::span<const std::byte> input,
     marc::frame::internal::TypedContextStreamHeader stream,std::span<const std::byte> expected) {
     using namespace marc::frame::internal;
@@ -214,6 +237,7 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
     std::array<std::byte,max_output+2> output;
     output.fill(sentinel);
     const auto input = std::as_bytes(std::span{data,size});
+    compare_encoder_scratch(input);
     compare_incremental(input);
     const auto result = marc::frame::internal::decode_lzss_position_distance_stream(
         input,limits(),tokens,frame,std::span{output}.subspan(1,max_output));

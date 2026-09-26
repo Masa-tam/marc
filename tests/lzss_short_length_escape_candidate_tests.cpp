@@ -6,9 +6,11 @@
 #include <gtest/gtest.h>
 
 #include <array>
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <tuple>
 #include <vector>
 
 namespace {
@@ -60,9 +62,81 @@ void compare_indexed_to_reference(
         EXPECT_EQ(indexed[index].distance, reference[index].distance) << index;
         EXPECT_EQ(indexed[index].length, reference[index].length) << index;
     }
+    const auto scratch = tokenize_lzss_short_length_escape_candidate_indexed_scratch(
+        raw, parameters, limits, eligibility, indexed, workspace);
+    ASSERT_EQ(scratch.error, actual.error);
+    ASSERT_EQ(scratch.token_count, actual.token_count);
+    EXPECT_EQ(scratch.token_storage_size, actual.token_storage_size);
+    for (std::size_t index = 0; index < scratch.token_count; ++index) {
+        EXPECT_EQ(indexed[index].kind, reference[index].kind) << index;
+        EXPECT_EQ(indexed[index].literal, reference[index].literal) << index;
+        EXPECT_EQ(indexed[index].distance, reference[index].distance) << index;
+        EXPECT_EQ(indexed[index].length, reference[index].length) << index;
+    }
 }
 
 } // namespace
+
+TEST(LzssShortLengthEscapeCandidate, ScratchPreservesCapacityLimitsAndDiagnosticPrecedence) {
+    constexpr std::size_t size=64;
+    std::array<std::byte,size> raw; raw.fill(std::byte{97});
+    const auto required=calculate_lzss_short_prefix_workspace(size,parameters,{},
+        LzssTypedTokenVariant::field_context_64k_short_length_escape);
+    ASSERT_EQ(required.error,LzssShortPrefixError::none);
+    std::vector<std::uint32_t> storage(required.workspace_size/4+1);
+    const auto all=std::as_writable_bytes(std::span{storage});
+    const auto key=[](const auto& r) { return std::tuple{r.input_size,r.token_count,r.token_storage_size,
+        r.token_error,r.finder_error,r.error}; };
+    const auto same=[](const auto& a,const auto& b) { return a.kind==b.kind && a.literal==b.literal
+        && a.distance==b.distance && a.length==b.length; };
+    for(std::size_t capacity:{0u,1u,2u,63u,64u}) for(unsigned fault=0;fault<9;++fault) {
+        SCOPED_TRACE(capacity);
+        SCOPED_TRACE(fault);
+        auto limits=marc::core::DecoderLimits{}; auto p=parameters; unsigned eligibility=3;
+        auto workspace=all.first(required.workspace_size);
+        switch(fault) {
+        case 1: eligibility=2; break;
+        case 2: p.max_match_length=0; break;
+        case 3: limits.max_frame_size=size-1; break;
+        case 4: workspace=workspace.first(workspace.size()-1); break;
+        case 5: workspace=all.subspan(1,required.workspace_size); break;
+        case 6: limits.max_internal_buffered_bytes=required.workspace_size+size+2*sizeof(LzssTypedToken); break;
+        case 7: limits.max_internal_buffered_bytes=required.workspace_size+size+2*sizeof(LzssTypedToken)-1; break;
+        case 8: limits.max_internal_buffered_bytes=required.workspace_size+size-1; break;
+        }
+        std::array<LzssTypedToken,size+2> a{},b{};
+        for(auto& t:a) t={LzssTypedTokenKind::literal,0xcc,0,0}; b=a;
+        const auto expected=tokenize_lzss_short_length_escape_candidate_indexed(raw,p,limits,eligibility,
+            std::span{a}.subspan(1,capacity),workspace);
+        const auto actual=tokenize_lzss_short_length_escape_candidate_indexed_scratch(raw,p,limits,eligibility,
+            std::span{b}.subspan(1,capacity),workspace);
+        EXPECT_EQ(key(actual),key(expected));
+        EXPECT_TRUE(std::equal(a.begin(),a.end(),b.begin(),same));
+        EXPECT_EQ(b.front().literal,0xcc); EXPECT_EQ(b.back().literal,0xcc);
+        if(expected.error!=LzssShortMatchCandidateError::none)
+            EXPECT_TRUE(std::all_of(a.begin(),a.end(),[](auto t){return t.literal==0xcc;}));
+    }
+}
+
+TEST(LzssShortLengthEscapeCandidate, ScratchRejectsEveryOverlapPairBeforeWrites) {
+    std::array<std::byte,64> raw{};
+    const auto required=calculate_lzss_short_prefix_workspace(raw.size(),parameters,{},
+        LzssTypedTokenVariant::field_context_64k_short_length_escape);
+    for(unsigned pair=0;pair<3;++pair) {
+        std::vector<LzssTypedToken> storage((required.workspace_size+sizeof(LzssTypedToken)-1)/sizeof(LzssTypedToken)+64);
+        std::array<LzssTypedToken,64> tokens{};
+        auto workspace=std::as_writable_bytes(std::span{storage}).first(required.workspace_size);
+        std::span<const std::byte> input=raw; std::span<LzssTypedToken> output=tokens;
+        if(pair==0) input=std::as_bytes(output).first(raw.size());
+        if(pair==1) input=workspace.first(raw.size());
+        if(pair==2) output=std::span{storage}.first(64);
+        const std::vector<std::byte> before(workspace.begin(),workspace.end());
+        const auto result=tokenize_lzss_short_length_escape_candidate_indexed_scratch(input,parameters,{},3,output,workspace);
+        EXPECT_EQ(result.error,LzssShortMatchCandidateError::overlapping_buffers);
+        EXPECT_TRUE(std::equal(workspace.begin(),workspace.end(),before.begin()));
+        for(auto t:tokens) EXPECT_EQ(t.literal,0u);
+    }
+}
 
 TEST(LzssShortLengthEscapeCandidate, EligibilityControlsHandTokens) {
     const marc::core::DecoderLimits limits{};

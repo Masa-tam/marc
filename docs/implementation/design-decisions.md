@@ -25658,3 +25658,20 @@ decoder to isolate the literal change. Require differential operation/state
 and malformed-input checks, complete tests and bounded fuzz before timing.
 Retain the candidate only if independent measurement supports it. Wire format,
 encoder behavior and frame-publication contracts remain unchanged.
+
+## DD-1297: Single-pass tokenization into bounded private encoder scratch
+
+The indexed tokenizer performs a counting parse before its writing parse.
+One outer frame preparation is therefore not one dictionary traversal; earlier
+stage descriptions conflated these scopes. Preserve the existing transactional
+tokenizer and introduce a private scratch entry using the same parser/finder.
+
+After the existing full-span overlap and checked-size checks, admit a single
+writing parse only when parameters are valid, storage holds one token per input
+byte, and the corresponding conservative token/finder/input memory charge fits.
+Otherwise use the existing transactional path, preserving its actual-token
+capacity acceptance, error precedence and counters. Validate finder storage and
+alignment before parsing. Scratch is discardable on failure; failed frame bytes
+must never be published. Use the entry only in the position-distance raw-frame
+adapter, whose existing contract already permits scratch changes on failure.
+Keep exact parsing/tie rules, encoder bytes, ABI and workspace charges unchanged.

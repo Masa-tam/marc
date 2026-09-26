@@ -5445,3 +5445,61 @@ ABI, allocation, workspace or codec implementation changes are introduced by
 this validation step. Earlier full-suite/fuzz evidence remains evidence for
 the unchanged implementation; it was not rerun as part of this measurement-only
 step. External-platform validation remains separate.
+
+## BM-0140: Remove the indexed encoder's internal counting traversal
+
+The 2026-09-27 source audit corrects BM-0135's single-search interpretation.
+One outer raw-frame preparation retains tokens through entropy encoding, but
+the indexed tokenizer itself counted tokens and then reset/repeated the parse
+to write them. An initial Mozilla diagnostic verified 782 frames and 14,011,113
+tokens against the retained archive. Four alternating runs gave median planning
+time 1.7147106 seconds and full transactional tokenization 3.43977335 seconds.
+Planning includes one finder initialization/parse, not merely arithmetic sizing.
+This diagnostic alone is not a speedup measurement for a safe replacement.
+
+DD-1297 adds a separate bounded scratch entry. After TVG-1167, FZ-0048 and the
+complete 3,947-test suite passed, compare it with the unchanged transactional
+entry in one diagnostic binary. Use fixed eligibility 3, 65,536-byte frames,
+identical finder storage and four alternating traversals per input. Before
+timing, compare every token field/count, encode each frame against a retained
+fixed-profile archive, and reconstruct the exact raw input. Timers include each
+tokenizer call and its validation/index initialization; they exclude entropy
+encoding, raw reconstruction, file I/O, allocation and comparison work.
+
+| Input | Transactional median s | Scratch median s | Reduction |
+|---|---:|---:|---:|
+| dickens | 0.70958140 | 0.35885595 | 49.43% |
+| mozilla | 3.45988915 | 1.73860420 | 49.75% |
+| mr | 0.61062615 | 0.30722080 | 49.69% |
+| nci | 1.37583050 | 0.67863885 | 50.67% |
+| ooffice | 0.29653425 | 0.14599770 | 50.77% |
+| osdb | 0.18488765 | 0.09415490 | 49.07% |
+| reymont | 0.63873105 | 0.32060150 | 49.81% |
+| samba | 0.77538895 | 0.38981110 | 49.73% |
+| sao | 0.26314870 | 0.13215080 | 49.78% |
+| webster | 2.03123830 | 1.02086330 | 49.74% |
+| x-ray | 0.19944260 | 0.10264445 | 48.53% |
+| xml | 0.13376960 | 0.06581535 | 50.80% |
+
+All 3,239 frames and 45,136,568 tokens passed. All 48 observed pairs favored
+scratch. The sum of per-input medians is 10.6790683 versus 5.3553589 seconds,
+a 49.85% reduction; this is not one timed whole-corpus process or a general
+no-regression guarantee. Capacity- or memory-constrained fallback performance
+is not represented by these full-capacity measurements.
+
+Public CLI checks additionally passed three Mozilla encode/decode pairs and
+one pair for each other input. Every archive hash matches its retained
+fixed-profile oracle, and every restored hash matches raw input. The separate
+archive-size sum remains 70,126,519 bytes for 211,938,580 raw bytes (33.0881%).
+Mozilla remains 18,655,833 bytes with SHA-256
+`244b2fbd55fb394c92501e6d50e26c59823ae1251a5a430834cee69ca59ddaf2`.
+Its CLI medians are 3.6487658 seconds encode and 2.0734543 seconds decode,
+including process startup and I/O. Earlier CLI timings are not paired controls
+for an end-to-end improvement percentage.
+
+No new peak-memory measurement is claimed. Finder/token storage, allocations
+and workspace charges are unchanged and existing allocation/limit tests pass.
+Retain the scratch path in the position-distance adapter while preserving the
+transactional entry and its exact diagnostic fallback. Local raw data and
+execution identities are retained separately. Prior external exchange predates
+this encoder change; new hosted/external validation remains a separate gate.

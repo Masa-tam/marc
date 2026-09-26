@@ -9439,3 +9439,10 @@ The public C publication vectors extend the first-party C factory tests and
 TVG-1165 boundary reasoning. Expected output comes from complete original raw
 frames; the retained transactional decoder confirms the damaged payload fails
 after preflight without altering raw output. No external code or vectors used.
+
+### IR-1057
+
+The encoder search-pass investigation uses the first-party short-prefix finder,
+candidate tokenizer, raw-frame adapter and BM-0135 diagnostic. The tokenizer's
+planning parse and writing parse are distinct traversals even though the outer
+frame preparation runs once. No external implementation source was consulted.

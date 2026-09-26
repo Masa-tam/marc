@@ -1098,3 +1098,16 @@ cases, followed by 100,000 ASan/UBSan fuzz runs, with no reported sanitizer
 finding or differential mismatch. The ordinary smoke and documentation checks
 also passed. No production codec changes were made; this finite campaign does
 not establish exhaustive malformed-stream coverage or replace public API tests.
+
+### FZ-0048: Encoder scratch versus transactional tokenization
+
+Add direct indexed scratch/reference comparisons over at most 64 raw bytes,
+using full and data-dependent token capacities. Compare every diagnostic and
+token field, including guards and failed transactional output. The existing
+generated archive comparison now exercises indexed scratch encoding against
+the exhaustive reference path, while decoder publication checks remain active.
+
+On 2026-09-27 the extended harness passed its 27 raw and 738 serialized cases
+and 10,000 ASan/UBSan fuzz runs with no reported finding or differential mismatch.
+The original input/output/frame bounds remain unchanged. This bounded campaign
+does not replace full-frame differential measurements or public API tests.

@@ -262,6 +262,7 @@ namespace {
     return result;
 }
 
+template <bool Scratch = false>
 [[nodiscard]] LzssShortMatchCandidateResult tokenize_indexed(
     const std::span<const std::byte> input,
     const LzssParameters& parameters,
@@ -297,6 +298,32 @@ namespace {
         || output_workspace == core::BufferOverlap::overlap) {
         result.error = LzssShortMatchCandidateError::overlapping_buffers;
         return result;
+    }
+    if constexpr (Scratch) {
+        const auto validated = validate_input(
+            input, parameters, limits, minimum_eligible_length, variant);
+        const auto required = calculate_lzss_short_prefix_workspace(
+            input.size(), parameters, limits, variant);
+        std::size_t worst_tokens{}, aggregate{};
+        if (validated.error == LzssShortMatchCandidateError::none
+            && required.error == LzssShortPrefixError::none
+            && output.size() >= input.size()
+            && core::checked_multiply(input.size(), sizeof(LzssTypedToken), worst_tokens)
+            && core::checked_add(input.size(), worst_tokens, aggregate)
+            && core::checked_add(aggregate, required.workspace_size, aggregate)
+            && aggregate <= limits.max_internal_buffered_bytes) {
+            LzssShortPrefixMatchFinder finder{};
+            const auto initialized = initialize_lzss_short_prefix_match_finder(
+                input, parameters, limits, finder_workspace, finder, variant);
+            if (initialized != LzssShortPrefixError::none) {
+                set_finder_error(result, initialized);
+                return result;
+            }
+            // At most one token per source byte. No counting traversal is
+            // needed for this prevalidated, discardable scratch capacity.
+            return parse_with_finder(input, minimum_eligible_length,
+                                     output.first(input.size()), finder);
+        }
     }
     result = plan_indexed(
         input, parameters, limits, minimum_eligible_length,
@@ -371,6 +398,19 @@ LzssShortMatchCandidateResult tokenize_lzss_short_length_escape_candidate_indexe
     return tokenize_indexed(
         input, parameters, limits, minimum_eligible_length, output,
         finder_workspace,
+        LzssTypedTokenVariant::field_context_64k_short_length_escape);
+}
+
+LzssShortMatchCandidateResult
+tokenize_lzss_short_length_escape_candidate_indexed_scratch(
+    const std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    const std::uint32_t minimum_eligible_length,
+    const std::span<LzssTypedToken> output,
+    const std::span<std::byte> finder_workspace) noexcept {
+    return tokenize_indexed<true>(input, parameters, limits,
+        minimum_eligible_length, output, finder_workspace,
         LzssTypedTokenVariant::field_context_64k_short_length_escape);
 }
 

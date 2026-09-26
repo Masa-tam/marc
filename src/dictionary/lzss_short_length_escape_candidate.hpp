@@ -41,6 +41,19 @@ tokenize_lzss_short_length_escape_candidate_indexed(
     std::span<LzssTypedToken> output,
     std::span<std::byte> finder_workspace) noexcept;
 
+// Private discardable scratch path. On failure tokens may change; inputs,
+// parameters and limits must stay stable and disjoint from writable scratch.
+// Uses one parse with conservative capacity/budget, otherwise the transactional
+// entry above preserves actual-token capacity acceptance and diagnostics.
+[[nodiscard]] LzssShortMatchCandidateResult
+tokenize_lzss_short_length_escape_candidate_indexed_scratch(
+    std::span<const std::byte> input,
+    const LzssParameters& parameters,
+    const core::DecoderLimits& limits,
+    std::uint32_t minimum_eligible_length,
+    std::span<LzssTypedToken> output,
+    std::span<std::byte> finder_workspace) noexcept;
+
 } // namespace marc::dictionary::internal
 
 #endif
