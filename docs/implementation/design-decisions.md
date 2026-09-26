@@ -25330,3 +25330,13 @@ descriptors contradict the format. Empty declared streams reject frames; full
 declared extents reject extra frames; missing or incorrectly sized final frames
 fail rather than terminate successfully. Keep the existing error offset and
 zero committed-byte counts. This adds coverage, not a wire or API change.
+
+## DD-1275: Bound private context-9 stream campaigns
+
+Give the strict stream decoder its own bounded fuzz entry point. Check supplied
+serialized input directly, then generate a valid small stream from supplied raw
+bytes and change one byte. Bound supplied input at 4,096 bytes, raw output at
+128 bytes, each frame at 64 bytes, and all workspaces by fixed arrays. Require
+failed decodes to preserve caller output and report no committed byte counts.
+Retain a deterministic ordinary-build smoke alongside sanitizer campaigns.
+This tests private format handling, not public stream admission.

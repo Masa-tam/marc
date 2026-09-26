@@ -34010,6 +34010,7 @@ both bounds.
   controls; report member regressions and avoid incomparable timing claims.
 - Similarity review: first-party harness reuse only; no external expression
   copied and no legal guarantee claimed.
+
 - Validation: all twelve members, 211,938,580 bytes and 3,239 frames passed
   exact token/raw recovery and old-size controls. All twelve checkpoints were
   revalidated without relaunching the benchmark. BM-0117 records 248,077 bytes
@@ -34710,3 +34711,18 @@ both bounds.
   CTest cases passed, including interoperability schema compatibility.
 - Similarity review: first-party vector transformations; no external expression
   copied and no legal guarantee claimed.
+
+## CR-1429: 2026-09-26 - Bound private context-9 stream fuzzing
+
+- Author: Codex; reviewer: repository maintainer approved retry.
+- References used: IR-1030, DD-1275 and TVG-1144; first-party code only.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: exercise strict stream decoding and generated valid-stream mutations.
+- Changes: fixed-memory fuzz entry point, CMake target and deterministic smoke;
+  no public API or wire change.
+- Validation: Windows Clang ASan/UBSan 10,000-run campaign exited zero; Release
+  deterministic smoke, documentation layout and all 3,882 CTest cases passed,
+  including interoperability schema compatibility.
+- Similarity review: independently composed first-party primitives; no external
+  expression copied and no legal guarantee claimed.

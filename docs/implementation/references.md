@@ -9253,3 +9253,9 @@ No external implementation or test suite was consulted.
 Stream rejection tests use the first-party context-9 fixed payload vectors and
 documented frame/header offsets. Contradictory counts and stream termination
 cases are derived independently; no external implementation was consulted.
+
+### IR-1030
+
+The private context-9 stream campaign composes first-party raw-stream encoding
+and strict decoding under fixed caller-owned workspaces. Its input mutations
+and checks were written independently; no external implementation was consulted.

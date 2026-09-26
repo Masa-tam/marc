@@ -2,7 +2,7 @@
 
 ## Target coverage and fixed bounds
 
-The forty-two bounded targets cover the six standalone dictionary profiles,
+The forty-two public bounded targets cover the six standalone dictionary profiles,
 the five standalone entropy profiles, the checksum-raw profile, and the full
 six-dictionary by five-entropy composed-profile matrix. Targets
 exercise their public frame-streaming decoder with chunk sizes derived from the
@@ -1021,6 +1021,24 @@ PATH was process-local. The final run exited zero without a sanitizer finding.
 An earlier harness-only positive-pruning assumption was corrected as recorded
 in CR-1323. Large-distance, serialized, whole-codec and measurement gates remain
 separate; this finite campaign is not proof of safety.
+
+### FZ-0044: Private context-9 stream bounded campaign
+
+`marc_fuzz_lzss_position_distance_stream` tests the private 2/8 + 1/9 + 3/2
+strict stream decoder. The supplied input is capped at 4,096 bytes, output at
+128 bytes, and each raw frame at 64 bytes; token, frame and output workspaces
+are fixed arrays. Errors must commit no input or output and preserve the entire
+caller output. A second path encodes at most 128 supplied bytes with fixed
+eligibility 3, strictly decodes the result, then mutates one serialized byte.
+It reaches valid frame and model handling even when random bytes do not form a
+valid header. The ordinary-build smoke covers empty input, frame boundaries,
+two-frame input and supplied-input rejection beyond the fixed cap.
+
+On 2026-09-26 the Windows Clang 22 ASan/UBSan build completed 10,000 runs with
+`-seed=20260926 -max_len=128 -len_control=0 -timeout=5 -rss_limit_mb=512`.
+The ASan runtime directory was added to process-local PATH. The run exited
+zero with no sanitizer finding. This bounded private campaign does not cover
+public admission or incremental chunking.
 
 ## Finding retention policy
 

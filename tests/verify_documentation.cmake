@@ -1874,7 +1874,7 @@ foreach(required_fuzzing_section IN ITEMS
     endif()
     set(previous_fuzzing_section_offset "${fuzzing_section_offset}")
 endforeach()
-string(FIND "${fuzzing_content}" "The forty-two bounded targets"
+string(FIND "${fuzzing_content}" "The forty-two public bounded targets"
     fuzzing_target_count_offset)
 if(fuzzing_target_count_offset EQUAL -1)
     message(FATAL_ERROR "Fuzzing target count is stale")

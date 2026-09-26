@@ -1261,6 +1261,18 @@ if(MARC_BUILD_FUZZERS)
     target_compile_options(marc_static PRIVATE
         -fsanitize=fuzzer-no-link,address,undefined
         -fno-omit-frame-pointer)
+    add_executable(marc_fuzz_lzss_position_distance_stream
+        fuzz/lzss_position_distance_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_position_distance_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_distance_stream
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_distance_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzss_position_distance_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_distance_stream PRIVATE marc::static)
+
     add_executable(marc_fuzz_lz77_stream fuzz/lz77_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lz77_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lz77_stream
@@ -2749,6 +2761,20 @@ if(MARC_BUILD_TESTS)
         target_compile_options(
             marc_lz77_tans_fuzz_compile_smoke
             PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+
+    if(TARGET marc_static)
+        add_executable(marc_position_distance_fuzz_smoke
+            fuzz/lzss_position_distance_stream_fuzz.cpp)
+        target_compile_features(marc_position_distance_fuzz_smoke PRIVATE cxx_std_20)
+        target_compile_definitions(marc_position_distance_fuzz_smoke
+            PRIVATE MARC_POSITION_DISTANCE_FUZZ_SMOKE)
+        target_include_directories(marc_position_distance_fuzz_smoke
+            PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_distance_fuzz_smoke PRIVATE marc::static)
+        add_test(NAME marc_position_distance_fuzz_smoke
+            COMMAND marc_position_distance_fuzz_smoke)
+        set_tests_properties(marc_position_distance_fuzz_smoke PROPERTIES TIMEOUT 60)
     endif()
 
     add_library(marc_lzss_tans_fuzz_compile_smoke OBJECT

@@ -16605,3 +16605,12 @@ Four separate cases declare an empty stream with frames, declare only the two
 full frames, remove the required short final frame, or declare one more raw byte
 than the short frame supplies. Require the specific frame/trailing-data category,
 exact error offset, zero committed counts and unchanged whole output.
+
+## TVG-1144: Bounded private context-9 stream campaign
+
+Use supplied bytes as serialized input and as at most 128 raw bytes for a
+fixed-policy, 64-byte-frame stream. Decode the generated stream exactly, then
+change one byte at a supplied-input-derived offset. On error require zero
+committed counts and unchanged output with outer canaries. Ordinary-build
+smoke inputs use empty, 1, 63, 64, 65, 128, 129, 4,096 and 4,097 bytes
+with zero, seven-symbol periodic and deterministic binary patterns.
