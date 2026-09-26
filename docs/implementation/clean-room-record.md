@@ -34791,3 +34791,21 @@ both bounds.
   399.06 seconds, including interoperability schema compatibility (111.72 seconds).
 - Similarity review: independently composed first-party primitives and vectors;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1434: 2026-09-26 - Define checked private context-9 workspace layout
+
+- Author: Codex; reviewer: repository maintainer approved the workspace step.
+- References used: IR-1034, DD-1279 and TVG-1148; first-party design, resource
+  queries, frame adapter and concrete model state.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: share deterministic workspace layout, transactional partition and checked
+  aggregate accounting before incremental encoder construction.
+- Changes: private layout helpers, shared decoder charge, boundary/integration
+  tests and documentation. No public API or format admission change.
+- Validation: Release build and 99 focused tests passed. All 3,901 CTest cases
+  passed in 375.83 seconds, including interoperability schema compatibility
+  (103.86 seconds). The six new workspace tests include exact-allocation encode
+  and incremental-decode integration through the maximum 65,536-byte frame.
+- Similarity review: independently derived first-party layout and tests; no
+  external expression copied and no legal guarantee claimed.

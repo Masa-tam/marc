@@ -16663,3 +16663,20 @@ Assert that prefix preflight accepts these two changes; their mismatch with
 actual tokens is detected during payload replay, so their reported location is
 the payload start. This separates structurally invalid metadata from metadata
 that is only inconsistent with the encoded payload.
+
+## TVG-1148: Private context-9 workspace layout boundaries
+
+Independently check frame capacities 1/2/3/21/65,536 in both directions: raw and
+serialized ceilings, token/operation counts, offset alignment and padding,
+the three-byte finder activation boundary, concrete fixed state, and aggregate
+sum. Empty streams retain the same configured capacity. Query and partition at
+the exact aggregate limit, then reduce by one byte and require rejection.
+
+Individually shorten raw, serialized and aligned storage by one byte. Test
+misalignment, all three scratch overlap pairs, tighter block/payload/model limits,
+wrong identity/direction, checked-add overflow and unchanged failure outputs.
+Charge extra supplied capacity while exposing only required views, retaining a
+guard byte. Encode indexed frames of 1/2/3/21/257/65,536 bytes using exact queried
+storage/aggregate; incrementally decode the corresponding one-shot archives with
+the exact decoder allocation and seven-byte output chunks. The simulated encoder
+owner charge is a test parameter, not an announced public ABI size.

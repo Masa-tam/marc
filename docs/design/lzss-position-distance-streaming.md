@@ -182,3 +182,15 @@ replay. It charges all supplied spans plus retained object/model state and
 uses frame-level publication. TVG-1147 defines the decoder's split, boundary,
 failure and limit coverage. The next stage is the checked private workspace
 layout and encoder in item 2.
+
+## Private workspace implementation
+
+DD-1279 implements the shared layout portion of item 2. The query uses configured
+F, including for empty input, and reports raw/serialized/view extents, alignment,
+model state, owner-supplied retained stream state and their aggregate separately.
+Partition recomputes offsets, charges all supplied capacity and starts typed
+object lifetimes only after all checks pass. Returned views are trimmed to the
+required extents. The decoder constructor shares the aggregate calculation.
+TVG-1148 pins exact limits and short/overlapping storage rejection. The next step
+is the private incremental encoder using this layout; its concrete retained
+object size and eventual public defaults are not frozen by the test owner size.

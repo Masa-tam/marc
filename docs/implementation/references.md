@@ -9281,3 +9281,10 @@ typed-context streaming decoder and shared reserved-frame preflight. Its fixed
 vectors reuse independently pinned context-9 payload bytes with explicitly
 assembled headers; binary cases use the first-party one-shot raw writer.
 No external implementation or test suite was consulted.
+
+### IR-1034
+
+The private position-distance workspace layout derives from DD-1277, the
+first-party short-prefix finder query, concrete Range model/replay state and
+typed-token/operation types. Alignment and transactional partition checks were
+written independently. No external implementation or test suite was consulted.

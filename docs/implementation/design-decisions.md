@@ -25393,3 +25393,26 @@ errors the frame start, payload errors the payload start, and truncation/trailin
 data the consumed stream position, independently of input chunking. Unsupported
 flags fail before progress. Ended and error states are sticky. Public admission
 and the direction-specific workspace query remain later steps.
+
+## DD-1279: Share checked context-9 workspace layout and aggregate charges
+
+Use the configured frame capacity F even for short or empty input: raw F,
+serialized 18F+85, F tokens, and on encode 5F operations plus the independently
+queried exact indexed finder. Align operation and finder offsets explicitly;
+include padding in the charge. Decode needs neither operations nor a finder.
+The private owner supplies sizeof(its transform), separately from concrete model
+state. Encode charges the greater of encoder and decoder-validation state,
+because the frame preflight also validates decoder resource requirements.
+
+Partition recomputes the canonical layout from configuration and limits instead
+of accepting mutable offsets. It validates all capacities, alignment, disjointness
+and the charge for all supplied capacity before starting typed object lifetimes
+or publishing views. Failure preserves output metadata and scratch. The returned
+views expose exact required extents. Share the same aggregate helper with the
+existing incremental decoder constructor. This is a bounded-memory policy, not
+a peak-RSS claim or an accounting of transient scalar stack variables.
+
+Keep the existing indexed raw-frame adapter's reduced downstream aggregate cap
+coherent with max_block_size; do not silently raise limits. These private layout
+primitives precede the incremental encoder, whose retained size will be supplied
+by its concrete type. Public resource defaults and ABI admission remain pending.

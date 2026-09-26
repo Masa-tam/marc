@@ -4,6 +4,7 @@
 #include "core/checked_math.hpp"
 #include "entropy/lzss_position_distance_range_state.hpp"
 #include "frame/lzss_position_distance_frame_decoder.hpp"
+#include "frame/lzss_position_distance_workspace.hpp"
 
 #include <algorithm>
 #include <cstring>
@@ -54,15 +55,13 @@ LzssPositionDistanceFrameStreamingDecoder::LzssPositionDistanceFrameStreamingDec
         return;
     }
     // Charge supplied storage, retained headers and bounded model/replay state.
-    std::size_t aggregate = sizeof(*this);
-    for (const auto bytes : {serialized_.size(), token_bytes_, raw_.size(),
-            sizeof(entropy::internal::LzssPositionDistanceRangeState)}) {
-        if (!core::checked_add(aggregate, bytes, aggregate)
-            || aggregate > limits_.max_internal_buffered_bytes) {
-            state_ = State::error;
-            error_ = {core::ErrorCode::limit_exceeded, 0, 0};
-            return;
-        }
+    std::size_t aggregate{};
+    if (charge_lzss_position_distance_workspace(limits_,
+            LzssPositionDistanceWorkspaceDirection::decode, sizeof(*this),
+            raw_.size(), serialized_.size(), token_bytes_, aggregate)
+        != LzssPositionDistanceWorkspaceError::none) {
+        state_ = State::error;
+        error_ = {core::ErrorCode::limit_exceeded, 0, 0};
     }
 }
 
