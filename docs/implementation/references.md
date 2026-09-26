@@ -9273,3 +9273,11 @@ and contextual tANS streaming state machines, core process contract, private
 position-distance frame/stream interfaces, resource-profile design and BM-0131.
 Publication units and workspace ownership were reasoned from those contracts.
 No external implementation or test suite was consulted.
+
+### IR-1033
+
+The private context-9 incremental decoder follows DD-1277, the first-party
+typed-context streaming decoder and shared reserved-frame preflight. Its fixed
+vectors reuse independently pinned context-9 payload bytes with explicitly
+assembled headers; binary cases use the first-party one-shot raw writer.
+No external implementation or test suite was consulted.

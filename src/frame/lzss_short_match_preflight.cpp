@@ -322,7 +322,7 @@ LzssShortMatchPreflightError preflight_frame_bytes_impl(
     const TypedContextFrameValidationContext& context,
     TypedContextFrameLayout& layout,
     LzssShortMatchFrameRequirements& requirements,
-    const ReservedIdentity identity) noexcept {
+    const ReservedIdentity identity, const bool require_payload = true) noexcept {
     const auto stream_error = validate_stream_impl(
         context.stream, context.limits, identity);
     if (stream_error != LzssShortMatchPreflightError::none) {
@@ -385,7 +385,7 @@ LzssShortMatchPreflightError preflight_frame_bytes_impl(
     const auto error = preflight_frame_impl(
         frame, parsed.descriptor, context, parsed_requirements, identity);
     if (error != LzssShortMatchPreflightError::none) return error;
-    if (input.size() < parsed_requirements.serialized_frame_bytes) {
+    if (require_payload && input.size() < parsed_requirements.serialized_frame_bytes) {
         return LzssShortMatchPreflightError::truncated_frame;
     }
     parsed.serialized_size = parsed_requirements.serialized_frame_bytes;
@@ -496,6 +496,15 @@ LzssShortMatchPreflightError preflight_lzss_reduced_literal_frame_bytes(
 LzssShortMatchPreflightError validate_lzss_position_distance_stream_semantics(
     const TypedContextStreamHeader& stream, const core::DecoderLimits& limits) noexcept {
     return validate_stream_impl(stream, limits, ReservedIdentity::position_distance);
+}
+
+LzssShortMatchPreflightError preflight_lzss_position_distance_frame_prefix(
+    const std::span<const std::byte> input,
+    const TypedContextFrameValidationContext& context,
+    TypedContextFrameLayout& layout,
+    LzssShortMatchFrameRequirements& requirements) noexcept {
+    return preflight_frame_bytes_impl(input, context, layout, requirements,
+        ReservedIdentity::position_distance, false);
 }
 
 LzssShortMatchPreflightError preflight_lzss_position_distance_frame_semantics(

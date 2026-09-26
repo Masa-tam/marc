@@ -5,6 +5,12 @@
 
 namespace marc::frame::internal {
 
+// Validate only the fixed header/descriptor, before buffering payload. Success
+// supplies bounded extents, not payload validity; failure preserves outputs.
+[[nodiscard]] LzssShortMatchPreflightError preflight_lzss_position_distance_frame_prefix(
+    std::span<const std::byte> input, const TypedContextFrameValidationContext& context,
+    TypedContextFrameLayout& layout, LzssShortMatchFrameRequirements& requirements) noexcept;
+
 // Private checks only; no public format admission.
 [[nodiscard]] LzssShortMatchPreflightError validate_lzss_position_distance_stream_semantics(
     const TypedContextStreamHeader& stream, const core::DecoderLimits& limits) noexcept;

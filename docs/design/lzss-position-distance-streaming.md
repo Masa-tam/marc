@@ -172,3 +172,13 @@ larger-window suffixes are not part of this family yet.
 
 This design completes the next planning step. The immediate implementation is
 the private incremental decoder in item 1; public admission remains gated.
+
+## Private decoder implementation
+
+DD-1278 implements item 1 with `LzssPositionDistanceFrameStreamingDecoder`.
+Its fixed frame-prefix staging validates the header and descriptor together
+before payload buffering; complete-frame decoding still performs canonical
+replay. It charges all supplied spans plus retained object/model state and
+uses frame-level publication. TVG-1147 defines the decoder's split, boundary,
+failure and limit coverage. The next stage is the checked private workspace
+layout and encoder in item 2.

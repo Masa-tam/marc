@@ -16639,3 +16639,27 @@ Compare incremental encoding with the one-shot byte oracle for eligibility
 Test exact queried workspace and one-byte-short/alignment/overlap failures,
 strict local limits, dictionary-search counts and hash taps over committed
 bytes. Keep existing public parsers rejecting the reserved tuple until admission.
+
+## TVG-1147: Private context-9 incremental decoder vectors
+
+Assemble canonical stream and frame headers explicitly around the pinned
+18-byte full-frame and seven-byte short-frame payloads. Test empty, one/two
+full frames and six-byte final frames at every input split with output capacities
+1/7/64. Vary Flush and resubmit the unconsumed final suffix with EndInput.
+Truncate a multi-frame stream at every byte with one-byte input/output and
+require only fully validated earlier frames to have been published.
+
+Alter second-frame sequence, extents, counts, reserved bytes, descriptor and
+payload; compare error positions under 1/13/1024-byte input. Check delayed
+EndInput, trailing input in a later call, zero output capacity, sticky terminal
+states, unsupported flags, all ten external region-overlap pairs, exact and
+one-byte-short storage, aggregate state charges and tighter local limits.
+Prefix-only preflight must preserve outputs on failure while full preflight
+continues to reject a missing payload. Decode generated binary streams of
+0/1/20/21/22/63/64/65/128 bytes for fixed eligibility 3/4/5.
+
+Token count 17->16 and event count 36->37 remain within the prefix inequalities.
+Assert that prefix preflight accepts these two changes; their mismatch with
+actual tokens is detected during payload replay, so their reported location is
+the payload start. This separates structurally invalid metadata from metadata
+that is only inconsistent with the encoded payload.

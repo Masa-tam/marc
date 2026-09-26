@@ -34773,3 +34773,21 @@ both bounds.
   scheduled by TVG-1146.
 - Similarity review: independently derived first-party integration design; no
   external expression copied and no legal guarantee claimed.
+
+## CR-1433: 2026-09-26 - Decode private context-9 streams incrementally
+
+- Author: Codex; reviewer: repository maintainer approved implementation and
+  resumption after approval-review transport failures.
+- References used: IR-1033, DD-1278 and TVG-1147; first-party specifications,
+  shared frame validation and independently assembled fixed vectors.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: add bounded incremental decoding with frame-level publication, explicit
+  termination and split-independent errors for the private identity.
+- Changes: private decoder, prefix-only preflight, twelve tests and design
+  records. Existing full-frame validation and public admission remain unchanged.
+- Validation: Release build and 93 focused tests passed, including the twelve
+  new decoder tests and documentation layout. All 3,895 CTest cases passed in
+  399.06 seconds, including interoperability schema compatibility (111.72 seconds).
+- Similarity review: independently composed first-party primitives and vectors;
+  no external expression copied and no legal guarantee claimed.

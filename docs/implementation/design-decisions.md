@@ -25374,3 +25374,22 @@ the private layout stage. Plan a separate position-distance Dynamic Range C/CLI
 family with a complete single-profile initializer and fixed eligibility 3.
 Existing codec configs and bytes remain unchanged. Public admission, complete
 corpus measurements and cross-platform verification are later explicit steps.
+
+## DD-1278: Buffer context-9 frames only after bounded prefix validation
+
+Add a private incremental decoder for the exact reserved tuple. Share the
+existing preflight implementation through a separate header/descriptor-only
+entry point; the full-frame entry still requires all payload bytes. Retain a
+fixed 112-byte stream header and 80-byte frame prefix internally, then validate
+counts, limits and caller capacity before buffering payload. Complete-frame
+canonical replay and reconstruction precede any raw-frame drain.
+
+Charge supplied workspace extents, the transform object and concrete model/replay
+state to the aggregate cap. Reject all input/output/workspace overlap pairs.
+Keep the known-size end check explicit and latch EndInput only after its supplied
+span is consumed. A later malformed frame cannot revoke earlier output; its own
+raw bytes are never returned. Stream header errors report offset zero, prefix
+errors the frame start, payload errors the payload start, and truncation/trailing
+data the consumed stream position, independently of input chunking. Unsupported
+flags fail before progress. Ended and error states are sticky. Public admission
+and the direction-specific workspace query remain later steps.
