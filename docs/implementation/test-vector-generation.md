@@ -16680,3 +16680,26 @@ guard byte. Encode indexed frames of 1/2/3/21/257/65,536 bytes using exact queri
 storage/aggregate; incrementally decode the corresponding one-shot archives with
 the exact decoder allocation and seven-byte output chunks. The simulated encoder
 owner charge is a test parameter, not an announced public ABI size.
+
+## TVG-1149: Private context-9 incremental encoder vectors
+
+Compare byte-for-byte with the one-shot writer for frames 1/3/21/257 and raw
+sizes empty, one, F-1/F/F+1 and 2F+7. Exercise eligibility 3/4/5, reference and
+indexed search, one-byte input/output, fixed 13/7 splits, seeded random splits
+and alternating Flush. Check process-result invariants and preparation counts
+after every call. Compare every chunk width for a 49-byte repeated input and
+cover a full 65,536-byte frame followed by one byte.
+
+Use exact queried storage and aggregate including the concrete encoder size.
+Hold output at zero during header and frame drains; repeated Flush/starvation
+must not prepare a frame again. Supply EndInput with an unconsumed suffix and
+also after final bytes have drained. Check premature/excess final input,
+late excess input, unsupported flags, sticky states, one-byte-short workspaces,
+one-byte-short aggregate, invalid policies and every process buffer overlap
+with raw/serialized/aligned/object storage. Validate shared header publication.
+
+Set expansion ratio one with no slack. A first frame containing all byte values
+is valid; the following repeated frame is too compressible for that caller's
+limit. Require the earlier header/frame only, a raw error offset of 256, and
+unchanged output after the reported produced prefix. This distinguishes
+per-frame publication from whole-stream atomicity without weakening limits.

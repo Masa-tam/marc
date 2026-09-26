@@ -34809,3 +34809,22 @@ both bounds.
   and incremental-decode integration through the maximum 65,536-byte frame.
 - Similarity review: independently derived first-party layout and tests; no
   external expression copied and no legal guarantee claimed.
+
+## CR-1435: 2026-09-26 - Encode private context-9 streams incrementally
+
+- Author: Codex; reviewer: repository maintainer approved the encoder step.
+- References used: IR-1035, DD-1280 and TVG-1149; first-party streaming contract,
+  workspace layout, raw-frame adapter and one-shot writer.
+- Known implementations intentionally not consulted: external compressor source,
+  copyleft implementations and third-party test suites.
+- Task: retain one bounded frame and its typed tokens, avoid repeated dictionary
+  analysis, and preserve canonical bytes across process chunk boundaries.
+- Changes: private incremental encoder, validated shared header wrapper, eight
+  tests and implementation records. Public APIs and admission remain unchanged.
+- Validation: Release build and 107 focused tests passed. All 3,909 CTest cases
+  passed in 372.93 seconds, including interoperability schema compatibility
+  (106.61 seconds). Initial test compilation exposed a same-line trace-macro name
+  collision and swapped aggregate-initializer fields; corrected both test setup
+  errors before execution, without changing codec assertions.
+- Similarity review: independently composed first-party primitives and tests;
+  no external expression copied and no legal guarantee claimed.

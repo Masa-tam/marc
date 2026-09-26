@@ -6,8 +6,15 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <array>
 
 namespace marc::frame::internal {
+
+// Private shared header writer; validates before publishing and preserves
+// bytes on failure. No public format admission is implied.
+[[nodiscard]] bool serialize_lzss_position_distance_stream_header(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    std::array<std::byte, typed_context_stream_header_size>& bytes) noexcept;
 
 struct LzssPositionDistanceFrameTokens {
     std::span<const dictionary::internal::LzssTypedToken> tokens{};
@@ -58,5 +65,4 @@ encode_lzss_position_distance_stream(
 } // namespace marc::frame::internal
 
 #endif
-
 

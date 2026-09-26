@@ -317,4 +317,15 @@ LzssPositionDistanceRawStreamResult encode_lzss_position_distance_raw_stream(
     return process_raw_stream(stream,limits,raw,eligibility,search,tokens,operations,finder,output,true);
 }
 
+bool serialize_lzss_position_distance_stream_header(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    std::array<std::byte, typed_context_stream_header_size>& bytes) noexcept {
+    if (validate_lzss_position_distance_stream_semantics(stream, limits)
+        != LzssShortMatchPreflightError::none) return false;
+    std::array<std::byte, typed_context_stream_header_size> temporary{};
+    if (!serialize_header(stream, temporary)) return false;
+    bytes = temporary;
+    return true;
+}
+
 } // namespace marc::frame::internal

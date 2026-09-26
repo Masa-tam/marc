@@ -25416,3 +25416,25 @@ Keep the existing indexed raw-frame adapter's reduced downstream aggregate cap
 coherent with max_block_size; do not silently raise limits. These private layout
 primitives precede the incremental encoder, whose retained size will be supplied
 by its concrete type. Public resource defaults and ABI admission remain pending.
+
+## DD-1280: Prepare each private context-9 frame once before draining
+
+The incremental encoder uses the checked three-buffer layout with its concrete
+sizeof charge. Validate configuration, policy, alignment, capacity and all live
+region overlaps before header publication. Share the existing explicit header
+serializer through a separately validated private wrapper; do not relax public
+admission. Retain complete raw/token/operation storage for each bounded frame.
+
+Call the raw-frame encode adapter exactly once after collecting the required
+frame; do not call its planning adapter first. Dictionary tokenization therefore
+occurs once, although bounded entropy planning/replay still occurs. Retain the
+successful serialized frame while output drains. A private preparation counter
+tests that starvation, Flush and repeated drain calls cannot rerun preparation.
+Eligibility 3/4/5 and reference/indexed search remain private test policies.
+
+EndInput must describe the remaining known raw extent and is latched only after
+that supplied span is consumed. Excess or premature final input is invalid_argument
+before progress on that call. Flush preserves frames; unsupported flags fail
+before progress. After the final frame drains, await explicit EndInput. Ended
+and error states are sticky. Frame preparation failure reports its raw-frame
+start and exposes no failed-frame bytes; earlier header/frames remain published.

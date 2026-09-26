@@ -194,3 +194,14 @@ required extents. The decoder constructor shares the aggregate calculation.
 TVG-1148 pins exact limits and short/overlapping storage rejection. The next step
 is the private incremental encoder using this layout; its concrete retained
 object size and eventual public defaults are not frozen by the test owner size.
+
+## Private encoder implementation
+
+DD-1280 completes the incremental encoder portion of item 2. The concrete owner
+supplies its own size to workspace query/partition, shares explicit header
+serialization, and calls the raw-frame encoder once per collected frame. Output
+draining retains the successful serialized bytes without repeating preparation.
+TVG-1149 compares complete bytes against the one-shot oracle under alternate
+policies, chunking and Flush, and pins delayed EndInput and frame failure behavior.
+The next stage is bounded incremental fuzz and hash-tap coverage in item 3,
+followed by whole-stream measurements. No public codec is admitted by this step.

@@ -9288,3 +9288,11 @@ The private position-distance workspace layout derives from DD-1277, the
 first-party short-prefix finder query, concrete Range model/replay state and
 typed-token/operation types. Alignment and transactional partition checks were
 written independently. No external implementation or test suite was consulted.
+
+### IR-1035
+
+The private incremental position-distance encoder composes the first-party
+checked workspace layout, fixed-policy raw-frame adapter and shared stream-header
+serialization. State transitions derive from DD-1277 and the core process
+contract. The existing one-shot writer is the byte oracle. No external source
+or test suite was consulted.
