@@ -16767,3 +16767,15 @@ Check explicit CLI selection, unsupported finder options and crossed/old codec
 identities. Preserve previous published byte vectors. Expand interoperability
 artifacts only with the coordinated public admission step; do not count the
 existing private benchmarks as external interoperability evidence.
+
+## TVG-1154: Position-distance C initializer and query boundaries
+
+Generate configurations directly from the new initializer, with hand-computed
+18F+5 payload and 18F+85 serialized capacities at F=1,17,65536. Verify direction
+mapping, every default, reserved/ABI/size rejection, null/aliased metadata,
+unchanged output on failure, local decode caps and ignored encode-only fields.
+Reduce each applicable resource ceiling and locate the exact aggregate boundary
+for both directions, accepting it and rejecting one byte less. These are C
+configuration tests, not public factory/process or interoperability completion.
+The documentation inventory separately requires the staged initializer and its
+query-only status; it must not count the family as a complete CLI profile.

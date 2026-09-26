@@ -34907,3 +34907,27 @@ both bounds.
   code changed; the full codec suite was not rerun for this documentation step.
 - Similarity review: independently composed design derived from first-party
   contracts; no external expression copied and no legal guarantee claimed.
+
+## CR-1440: 2026-09-26 - Add position-distance C configuration and workspace query
+
+- Author: Codex; reviewer: repository maintainer approved the implementation step.
+- References used: IR-1040, DD-1285 and TVG-1154; the first-party integration
+  contract, checked private layouts, core limits and incremental owner types.
+- Known implementations intentionally not consulted: external codec sources,
+  copyleft implementations and third-party test suites.
+- Task: implement the additive initializer/query and negative boundary tests
+  without admitting the stream identity or exposing a factory/CLI codec yet.
+- Changes: fixed defaults, direction-aware caller storage sizes, handle-inclusive
+  aggregate checks and output-preserving metadata/resource validation. Existing
+  C layouts, defaults and encoded formats are unchanged.
+- Validation: all seven targeted configuration tests passed. Full Release CTest
+  ran 3,920 cases in 408.16 seconds: 3,919 passed, including interoperability
+  schema compatibility (128.39 seconds); documentation inventory rejected the
+  new initializer count. The reference and inventory now explicitly distinguish
+  the configuration/query-only family from complete profiles. The corrected
+  documentation test passed in 0.54 seconds; only documents and their inventory
+  test changed after the full run. The first build detected missing generic
+  workspace size/version fields in result initialization; these were corrected
+  and explicitly asserted rather than changing the existing workspace ABI.
+- Similarity review: independently composed first-party integration and tests;
+  no external expression copied and no legal guarantee claimed.

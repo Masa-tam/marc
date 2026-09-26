@@ -25526,3 +25526,14 @@ with existing factories; metadata alias rejection precedes output mutation.
 This is a design decision, not a public format-status change. Implement query
 and initializer tests first, then factory/consumer/CLI integration and explicit
 admission, followed by interoperability verification before claiming completion.
+
+## DD-1285: Stage position-distance C configuration and workspace queries
+
+Implement only the additive config initializer and workspace query from DD-1284.
+Validate metadata overlap before publication and preserve all output fields on
+failure. Populate generic workspace struct_size/abi_version metadata on success.
+Use private checked layouts and charge the opaque handle before owner/model
+accounting. Invalid core limit relationships are invalid arguments; coherent
+but insufficient resource budgets are limit errors. Decode capacity uses local
+frame limits capped at 65536, ignoring both encode-only fields. Factory, CLI and
+public wire admission remain pending; existing codec behavior is unchanged.

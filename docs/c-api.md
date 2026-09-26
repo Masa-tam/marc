@@ -13,6 +13,20 @@ workspace.
 All functions are `noexcept` in C++ translation units, and no C++ type appears
 in the ABI.
 
+The position-distance family currently provides configuration/query only:
+`marc_lzss_position_distance_dynamic_range_config_init()` and
+`marc_lzss_position_distance_dynamic_range_workspace_requirements()`.
+It has no create function or command-line codec yet and is not a complete public
+profile. Its initializer needs no profile helper: window 65536 and matches
+3..258 are fixed, frame_size defaults to 65536, and hard limits are configurable.
+Decode ignores original_size/frame_size and sizes storage from local
+max_frame_size capped at 65536. Query returns caller storage requirements,
+checks aggregate usage including the future handle/owner/model, rejects metadata
+overlap and leaves output unchanged on error. Invalid metadata or inconsistent
+limits return INVALID_ARGUMENT; insufficient coherent limits return
+LIMIT_EXCEEDED. See the [integration contract](design/lzss-position-distance-streaming.md#public-integration-contract-planned-not-yet-admitted)
+for the exact fields and defaults. Existing factories and profiles are unchanged.
+
 ## Profiles and composition
 
 The C ABI exposes complete, validated stream profiles rather than separate

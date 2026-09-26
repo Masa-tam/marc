@@ -9323,3 +9323,10 @@ The planned position-distance public integration derives from the first-party
 C header/factories, core limits, private checked workspace and incremental
 transforms, with BM-0132/BM-0133 as measurement evidence. No external codec source,
 ABI template or third-party test suite was consulted.
+
+### IR-1040
+
+The position-distance C initializer/query uses the first-party DD-1284 contract,
+private workspace calculator, stream owners and core overlap/limit validators.
+Tests independently exercise C metadata and resource boundaries. No external
+codec implementation, ABI template or test suite was consulted.

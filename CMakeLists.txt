@@ -2667,6 +2667,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_position_distance_stream_decoder_tests.cpp
         tests/lzss_position_distance_frame_streaming_decoder_tests.cpp
         tests/lzss_position_distance_workspace_tests.cpp
+        tests/lzss_position_distance_c_config_tests.cpp
         tests/lzss_position_distance_frame_streaming_encoder_tests.cpp
         tests/lzss_position_distance_streaming_hash_tests.cpp
         tests/lzss_position_distance_stream_encoder_tests.cpp

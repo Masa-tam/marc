@@ -1642,11 +1642,29 @@ endforeach()
 file(STRINGS "${source_dir}/include/marc/marc.h" c_api_config_initializers
     REGEX "^MARC_API marc_status marc_.*_config_init\\(")
 list(LENGTH c_api_config_initializers c_api_profile_count)
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5")
+set(c_api_staged_initializers ${c_api_config_initializers})
+list(FILTER c_api_staged_initializers INCLUDE REGEX
+    "marc_lzss_position_distance_dynamic_range_config_init")
+list(LENGTH c_api_staged_initializers c_api_staged_profile_count)
+if(NOT c_api_staged_profile_count EQUAL 1)
+    message(FATAL_ERROR "Missing staged position-distance initializer")
+endif()
+foreach(staged_contract IN ITEMS
+        "configuration/query only"
+        "marc_lzss_position_distance_dynamic_range_config_init()"
+        "marc_lzss_position_distance_dynamic_range_workspace_requirements()"
+        "It has no create function or command-line codec yet")
+    string(FIND "${c_api_content}" "${staged_contract}" staged_contract_offset)
+    if(staged_contract_offset EQUAL -1)
+        message(FATAL_ERROR "Missing staged C API contract: ${staged_contract}")
+    endif()
+endforeach()
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 1")
 if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "
-        "${cli_profile_count} CLI profiles plus five experimental profiles")
+        "${cli_profile_count} CLI profiles plus five experimental profiles "
+        "and one configuration/query-only family")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
     "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")

@@ -1,6 +1,10 @@
 #include "marc/marc.h"
 
 #include "core/checked_math.hpp"
+#include "core/buffer_overlap.hpp"
+#include "frame/lzss_position_distance_workspace.hpp"
+#include "frame/lzss_position_distance_frame_streaming_encoder.hpp"
+#include "frame/lzss_position_distance_frame_streaming_decoder.hpp"
 #include "core/status.hpp"
 #include "entropy/blocked_huffman_controller.hpp"
 #include "frame/blocked_huffman_frame_streaming_decoder.hpp"
@@ -4860,6 +4864,88 @@ marc_status marc_lzss_dynamic_range_create(
                  needed.frame_decoded_bytes});
     }
     return publish_transform(implementation, transform);
+}
+
+marc_status marc_lzss_position_distance_dynamic_range_config_init(
+    const marc_direction direction,
+    marc_lzss_position_distance_dynamic_range_config* config) noexcept {
+    if (config == nullptr || (direction != MARC_DIRECTION_ENCODE
+        && direction != MARC_DIRECTION_DECODE)) return MARC_STATUS_INVALID_ARGUMENT;
+    marc_lzss_position_distance_dynamic_range_config result{};
+    result.struct_size = sizeof(result);
+    result.abi_version = MARC_ABI_VERSION;
+    result.direction = direction;
+    result.frame_size = 65536;
+    result.max_total_output_size = UINT64_C(1) << 40;
+    result.max_frame_size = 65536;
+    result.max_block_size = 65536;
+    result.max_compressed_payload_size = 1179653;
+    result.max_internal_buffered_bytes = UINT64_C(128) << 20;
+    result.max_lz_distance = 65536;
+    result.max_lz_match_length = 258;
+    result.max_entropy_table_entries = 2522;
+    result.max_range_model_total = 32768;
+    result.max_expansion_ratio = 1024;
+    result.expansion_slack = UINT64_C(1) << 20;
+    *config = result;
+    return MARC_STATUS_OK;
+}
+
+marc_status marc_lzss_position_distance_dynamic_range_workspace_requirements(
+    const marc_lzss_position_distance_dynamic_range_config* config,
+    marc_workspace_requirements* requirements) noexcept {
+    using namespace marc::frame::internal;
+    if (config == nullptr || requirements == nullptr
+        || marc::core::check_buffer_overlap(config, sizeof(*config), requirements,
+            sizeof(*requirements)) != marc::core::BufferOverlap::disjoint)
+        return MARC_STATUS_INVALID_ARGUMENT;
+    if (config->struct_size != sizeof(*config)
+        || config->abi_version != MARC_ABI_VERSION
+        || config->reserved != 0 || config->reserved2 != 0
+        || (config->direction != MARC_DIRECTION_ENCODE
+            && config->direction != MARC_DIRECTION_DECODE))
+        return MARC_STATUS_INVALID_ARGUMENT;
+    marc::core::DecoderLimits limits{};
+    limits.max_total_output_size = config->max_total_output_size;
+    limits.max_frame_size = config->max_frame_size;
+    limits.max_block_size = config->max_block_size;
+    limits.max_compressed_payload_size = config->max_compressed_payload_size;
+    limits.max_internal_buffered_bytes = config->max_internal_buffered_bytes;
+    limits.max_lz_distance = config->max_lz_distance;
+    limits.max_lz_match_length = config->max_lz_match_length;
+    limits.max_entropy_table_entries = config->max_entropy_table_entries;
+    limits.max_range_model_total = config->max_range_model_total;
+    limits.max_expansion_ratio = config->max_expansion_ratio;
+    limits.expansion_slack = config->expansion_slack;
+    if (marc::core::validate_limits(limits) != marc::core::LimitError::none)
+        return MARC_STATUS_INVALID_ARGUMENT;
+    const bool encode = config->direction == MARC_DIRECTION_ENCODE;
+    if (encode && (config->frame_size == 0 || config->frame_size > 65536))
+        return MARC_STATUS_INVALID_ARGUMENT;
+    // Reserve the opaque C handle before querying private owner/model storage.
+    if (limits.max_internal_buffered_bytes <= sizeof(marc_transform)
+        || limits.max_internal_buffered_bytes - sizeof(marc_transform)
+            < limits.max_block_size) return MARC_STATUS_LIMIT_EXCEEDED;
+    limits.max_internal_buffered_bytes -= sizeof(marc_transform);
+    const auto frame_size = encode ? config->frame_size
+        : static_cast<std::uint32_t>(std::min(config->max_frame_size, UINT64_C(65536)));
+    const TypedContextStreamHeader stream{frame_size,
+        encode ? config->original_size : UINT64_C(0),
+        {65536, 3, 258, 0}, 32768, 40, 8, 1, 9};
+    LzssPositionDistanceWorkspaceRequirements r{};
+    const auto error = calculate_lzss_position_distance_workspace(stream, limits,
+        encode ? LzssPositionDistanceWorkspaceDirection::encode
+               : LzssPositionDistanceWorkspaceDirection::decode,
+        encode ? sizeof(LzssPositionDistanceFrameStreamingEncoder)
+               : sizeof(LzssPositionDistanceFrameStreamingDecoder), r);
+    if (error != LzssPositionDistanceWorkspaceError::none)
+        return error == LzssPositionDistanceWorkspaceError::limit_exceeded
+            || error == LzssPositionDistanceWorkspaceError::arithmetic_overflow
+            ? MARC_STATUS_LIMIT_EXCEEDED : MARC_STATUS_INVALID_ARGUMENT;
+    *requirements = {sizeof(*requirements), MARC_ABI_VERSION,
+        encode ? r.raw_bytes : r.serialized_bytes,
+        encode ? r.serialized_bytes : r.raw_bytes, r.views_bytes, r.views_alignment};
+    return MARC_STATUS_OK;
 }
 
 marc_status marc_lzss_contextual_dynamic_range_config_init(
