@@ -9336,3 +9336,9 @@ codec implementation, ABI template or test suite was consulted.
 Position-distance C construction uses the first-party incremental transforms,
 workspace partitioner, C handle publication helper and independent raw-stream
 oracle. No external codec source or third-party tests were consulted.
+
+### IR-1042
+
+Standalone position-distance consumers and allocation-failure tests derive from
+the first-party C contract, existing C test assertion helper and C++ replaceable
+allocation interfaces. No external codec implementation or test suite was used.

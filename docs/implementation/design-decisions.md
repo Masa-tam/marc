@@ -25548,3 +25548,14 @@ Reuse nothrow handle publication and its implementation cleanup on failure.
 Expose generic process semantics through the private strict stream owners,
 without changing general format dispatch or adding a CLI option. Consumer,
 admission and interoperability gates remain pending.
+
+## DD-1287: Test C linkage and allocation failures without production hooks
+
+Compile the same C11 consumer separately against each enabled static/shared
+library. Use only the public header and C ABI, checking chunked bytes
+and round trips. An isolated static-linked C++ executable replaces allocation
+functions locally to fail the first or second nothrow allocation; track the
+implementation and handle lifetimes and assert no process-time allocation.
+Do not add global failure switches or test hooks to the production library.
+The static replacement test does not claim to interpose allocations inside a
+Windows DLL. Shared-library C linkage is covered by its separate consumer.

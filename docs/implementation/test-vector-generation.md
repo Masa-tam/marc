@@ -16789,3 +16789,16 @@ decode under one-byte buffers. Exercise empty/final-short frames, Flush,
 EndInput, sticky states, malformed input and exact aggregate boundaries.
 These integration tests do not replace installed C consumers or external
 interoperability verification.
+
+## TVG-1156: Position-distance standalone C and allocation-failure tests
+
+Build the same C source against both enabled library kinds. Generate empty,
+all-byte and repeated inputs, use small frames and one-byte/mixed-size buffers,
+compare encoded bytes across chunking and verify decoded bytes exactly. Check
+sticky end state and workspace lifetime through destruction.
+In a separate static-linked process, fail allocation ordinal one (owner) and
+two (handle) in both directions; require OUT_OF_MEMORY, null output and zero
+live tracked allocations. On success require two allocations, no additional
+allocation during two-frame process with one-byte output, both releases on
+destruction, and successful reconstruction after injected failures. Query and invalid
+configuration must not allocate. No ambient low-memory condition is required.

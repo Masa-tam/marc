@@ -34952,3 +34952,23 @@ both bounds.
   coverage remain subsequent work, not claimed as completed here.
 - Similarity review: independently composed first-party adapters and tests;
   no external expression copied and no legal guarantee claimed.
+
+## CR-1442: 2026-09-26 - Verify standalone C consumers and allocation cleanup
+
+- Author: Codex; reviewer: repository maintainer approved C consumer/failure tests.
+- References used: IR-1042, DD-1287 and TVG-1156; first-party public C contract,
+  assertion helper and owner/handle construction paths.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Task: test both enabled library kinds from C11 and inject owner/handle
+  allocation failures in an isolated static-linked test process.
+- Changes: tests and documentation only; no production allocation hooks, ABI,
+  codec behavior or wire representation changes. Reuse the existing build tree.
+- Validation: targeted static/shared C consumers and allocation failure cases
+  passed. All 3,929 Release CTest cases passed in 409.78 seconds, including
+  interoperability schema compatibility (123.92 seconds). A FileTracker access
+  denial on the targeted rebuild was resolved by rerunning the same command
+  with approval; no alternate build tree or permission workaround was used.
+  Installed-package and external interoperability coverage remain pending.
+- Similarity review: independently authored first-party harnesses and vectors;
+  no external expression copied and no legal guarantee claimed.

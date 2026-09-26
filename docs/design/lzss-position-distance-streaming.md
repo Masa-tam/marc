@@ -343,4 +343,7 @@ integration and exact private/public byte comparison; static/shared C consumers
 and installed-package example; CLI selection and wrong-codec tests; documented
 format admission audit; interoperability artifacts and external cross-platform
 verification. Public completion requires the final gate. Initializer/query and
-factory/process now have C integration tests; subsequent gates remain pending.
+factory/process now have C integration tests. Standalone C11 consumers cover
+both enabled library kinds; isolated static-linked allocation-failure injection
+checks owner/handle cleanup. Installed-package, CLI and admission gates remain
+pending; no DLL allocation interposition is claimed.
