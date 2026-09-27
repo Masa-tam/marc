@@ -9454,3 +9454,10 @@ complete-frame encoder and prepared position-distance range encoder. Retained
 fixed-profile archives and the existing reconstruction code provide byte
 checks. Planning and writing costs are measured separately from the frame
 wrapper; no external profiler attribution or implementation source is used.
+
+### IR-1059
+
+The DD-1298 payload scratch prototype derives its conservative output bound
+from the first-party position-distance range writer, model-total limit and
+field cursor. The retained planner/prepared writer supplies differential
+results. No external implementation, pseudocode or test vectors were consulted.

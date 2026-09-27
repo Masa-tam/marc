@@ -16961,3 +16961,23 @@ and data-dependent token capacities before its existing generated reference
 archive versus indexed incremental encoding comparisons. It retains decoder
 publication and canonical-byte checks. Timing probes additionally compare every
 token and emitted frame against a retained archive before entering timers.
+
+## TVG-1168: Private entropy payload scratch equivalence and publication
+
+Compare DD-1299 scratch results with the retained transactional encoder,
+including every error/counter/index and descriptor field. Exercise all distance
+widths, binary-model rescaling, every mixed-operation prefix, invalid operation
+kind/context/alphabet/value/width, and capacities from zero through the exact
+and conservative payload sizes. Check actual-size memory/payload acceptance
+when the conservative bound does not fit. Test active overlap rejection and
+overlap only beyond the actual output extent, which must retain fallback
+acceptance. Guard both ends and preserve transactional failure output and the
+scratch descriptor; failed private payload bytes are intentionally discardable.
+
+Compare complete frame bytes for every match length 3 through 258. Compare all
+nested diagnostics for invalid tokens/stream/position, operation/output capacity,
+model/payload limits, expansion rejection and exact aggregate-memory boundaries.
+Require unchanged failed headers even when the private payload was already
+written. Retain the incremental failed-second-frame test, which publishes only
+the stream header and successfully validated first frame. Public chunking,
+hashing and allocation tests exercise the integrated private adapter.

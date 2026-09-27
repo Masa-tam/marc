@@ -407,6 +407,52 @@ ContextualDynamicRangeEncodeResult encode_lzss_position_distance_range_operation
     return encode_operations<false>(operations, limits, output, descriptor);
 }
 
+ContextualDynamicRangeEncodeResult encode_lzss_position_distance_range_operations_scratch(
+    const std::span<const context::internal::ModeledOperation> operations,
+    const core::DecoderLimits& limits, const std::span<std::byte> output,
+    ContextualDynamicRangeDescriptor& descriptor) noexcept {
+    const auto fallback = [&] {
+        return encode_operations<false>(operations, limits, output, descriptor);
+    };
+    if (operations.empty() || core::validate_limits(limits) != core::LimitError::none
+        || context::internal::lzss_position_distance_frequency_entries > limits.max_entropy_table_entries
+        || contextual_dynamic_range_model_total_limit > limits.max_range_model_total) {
+        return fallback();
+    }
+    std::uint32_t decisions{};
+    for (const auto& operation : operations) {
+        std::uint32_t count{};
+        if (operation.kind == context::internal::ModeledOperationKind::symbol) {
+            count = 1;
+        } else if (operation.kind == context::internal::ModeledOperationKind::bypass_bits
+                   && operation.bit_count > 0 && operation.bit_count <= 16) {
+            count = operation.bit_count;
+        } else {
+            return fallback();
+        }
+        if (!core::checked_add(decisions, count, decisions)) return fallback();
+    }
+    // At most two renormalizations per decision, then five final shifts.
+    // Deferred carry emission cannot exceed the total number of shifts.
+    std::size_t bound{}, operation_bytes{}, aggregate{};
+    if (!core::checked_multiply(static_cast<std::size_t>(decisions), std::size_t{2}, bound)
+        || !core::checked_add(bound, std::size_t{5}, bound)
+        || bound > UINT32_MAX || bound > output.size()
+        || bound > limits.max_compressed_payload_size
+        || !core::checked_multiply(operations.size(), sizeof(context::internal::ModeledOperation), operation_bytes)
+        || !core::checked_add(operation_bytes, lzss_position_distance_range_encoder_state_bytes(), aggregate)
+        || !core::checked_add(aggregate, bound, aggregate)
+        || aggregate > limits.max_internal_buffered_bytes
+        || overlaps(operations, output.first(bound)) != OverlapCheck::disjoint) {
+        return fallback();
+    }
+    const auto result = run<false>(operations, output.first(bound));
+    if (result.error != ContextualDynamicRangeEncodeError::none) return result;
+    descriptor = {result.decision_count, static_cast<std::uint32_t>(result.payload_size),
+                  context::internal::lzss_position_distance_context_count};
+    return result;
+}
+
 ContextualDynamicRangeEncodeResult PreparedLzssPositionDistanceEncode::prepare(
     const std::span<const context::internal::ModeledOperation> operations,
     const core::DecoderLimits& limits,

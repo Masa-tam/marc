@@ -25694,3 +25694,33 @@ descriptor state and late-frame failures before timing. A one-pass trial must
 prove exact payload/frame bytes, bounded memory and public chunk/hash behavior.
 This is the next investigation target, not an implemented or adopted change,
 and the diagnostic replay timings are not a predicted end-to-end speedup.
+
+## DD-1299: Bounded admission for private entropy payload writing
+
+Implement the DD-1298 trial with a shape-only operation scan that counts one
+decision per symbol and bit_count decisions per bypass operation. This scan
+does not run the probability model or range coder. Before each decision the
+range is at least 2^24 and the model total is at most 32768, with positive
+frequencies. The updated range is therefore at least 512 and needs at most
+two byte normalizations. Including five final shifts, 2 * decisions + 5 bounds
+emitted bytes: delayed carry bytes never exceed the accumulated shift count.
+
+Use checked arithmetic, validated limits and disjoint storage to admit that
+bound. If admission is unsuitable, retain the exact-size transactional path,
+including its error precedence and counters. Grammar and all coder checks run
+during writing; publish the descriptor only on success. New scratch entries
+may alter payload bytes on failure and must be used only with discardable
+private storage. Existing encoder entries retain their failure guarantees.
+
+The frame scratch wrapper checks overlap before writes and retains full frame
+preflight and workspace checks before publishing header/descriptor bytes.
+Only the streaming encoder's private frame buffer uses this entry; failed
+frames never enter the draining state. No format, public API or workspace
+charge changes. Differential tests and bounded fuzz precede timing/adoption.
+
+Validation outcome: TVG-1168 comparisons, the complete 3,949-test suite and
+FZ-0049's bounded sanitizer campaign pass. BM-0142 records exact corpus frame
+equality and lower complete-frame encoding medians on all twelve inputs.
+Retain the scratch adapter in private streaming storage, with transactional
+entries and the prepared reference available. CI/external verification of this
+implementation is still pending; earlier revision evidence is not reassigned.

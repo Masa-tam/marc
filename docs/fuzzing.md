@@ -1111,3 +1111,18 @@ On 2026-09-27 the extended harness passed its 27 raw and 738 serialized cases
 and 10,000 ASan/UBSan fuzz runs with no reported finding or differential mismatch.
 The original input/output/frame bounds remain unchanged. This bounded campaign
 does not replace full-frame differential measurements or public API tests.
+
+### FZ-0049: Private entropy scratch versus transactional payload writing
+
+Extend the position-distance stream harness with direct entropy comparisons
+over bounded literal-operation sequences, data-selected malformed fields,
+actual-size memory budgets and short output capacities. Compare every result
+counter and descriptor, successful bytes, output guards and unchanged failed
+transactional output. Existing generated archive comparisons exercise the new
+private frame writer through incremental encoding, including match operations.
+The existing decoder publication and canonical checks remain active.
+
+On 2026-09-27 the extended harness passed its 27 raw and 738 serialized boundary
+cases and 10,000 ASan/UBSan fuzz runs with no reported finding or mismatch.
+Bounds remain unchanged; distance-width/rescaling and late frame rejection
+have separate deterministic tests. This finite campaign is not exhaustive.

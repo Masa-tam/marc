@@ -140,6 +140,15 @@ void compare_success(const std::vector<ModeledOperation>& ops) {
     std::vector<std::byte> po(oa.size(),std::byte{0x55});
     same_result(prepared.write(po,pd),ea); same_descriptor(pd,a);
     EXPECT_EQ(po,oa);
+    std::vector<std::byte> scratch(2 * static_cast<std::size_t>(pa.decision_count) + 7, std::byte{0x55});
+    ContextualDynamicRangeDescriptor sd{};
+    same_result(encode_lzss_position_distance_range_operations_scratch(
+        ops,{},std::span{scratch}.subspan(1,scratch.size()-2),sd),ea);
+    same_descriptor(sd,a);
+    EXPECT_TRUE(std::equal(oa.begin(),oa.end()-1,scratch.begin()+1));
+    EXPECT_EQ(scratch.front(),std::byte{0x55});
+    EXPECT_TRUE(std::ranges::all_of(std::span{scratch}.subspan(pa.payload_size+1),
+        [](auto byte){return byte==std::byte{0x55};}));
     LzssPositionDistanceRangeDecoder decoder;
     ASSERT_EQ(decoder.begin(a,std::span{oa}.first(pa.payload_size),{}).error,
               ContextualDynamicRangeDecodeError::none);
@@ -246,6 +255,75 @@ TEST(LzssPositionDistanceRangeEncoder, ReferenceAndSpecializedRejectWithoutPubli
         EXPECT_TRUE(std::equal(before.begin(),before.end(),std::as_bytes(std::span{ops}).begin()));
     }
 }
+TEST(LzssPositionDistanceRangeEncoder, ScratchPreservesDiagnosticsBoundsAndActualSizeAcceptance) {
+    const auto valid=mixed();
+    const auto check=[&](const std::vector<ModeledOperation>& ops,
+                         marc::core::DecoderLimits limits, std::size_t capacity) {
+        SCOPED_TRACE(capacity);
+        std::vector<std::byte> expected(capacity+2,std::byte{0x55}),actual=expected;
+        ContextualDynamicRangeDescriptor ed{99,98,97},ad=ed;
+        const auto e=encode_lzss_position_distance_range_operations(
+            ops,limits,std::span{expected}.subspan(1,capacity),ed);
+        const auto a=encode_lzss_position_distance_range_operations_scratch(
+            ops,limits,std::span{actual}.subspan(1,capacity),ad);
+        same_result(e,a); same_descriptor(ed,ad);
+        EXPECT_EQ(actual.front(),std::byte{0x55}); EXPECT_EQ(actual.back(),std::byte{0x55});
+        if(e.error==Error::none) EXPECT_EQ(expected,actual);
+        else {
+            same_descriptor(ad,ContextualDynamicRangeDescriptor{99,98,97});
+            EXPECT_TRUE(std::ranges::all_of(expected,[](auto b){return b==std::byte{0x55};}));
+        }
+    };
+    for(std::size_t capacity=0;capacity<=34;++capacity) {
+        check(valid,{},capacity);
+        check({}, {},capacity);
+        for(std::size_t count=1;count<valid.size();++count)
+            check({valid.begin(),valid.begin()+count},{},capacity);
+    }
+    for(std::size_t index=0;index<valid.size();++index) for(unsigned field=0;field<5;++field) {
+        auto ops=valid;
+        switch(field) {
+        case 0: ops[index].kind=static_cast<ModeledOperationKind>(255); break;
+        case 1: ops[index].context_id=65535; break;
+        case 2: ops[index].alphabet_size=65535; break;
+        case 3: ops[index].value=UINT32_MAX; break;
+        case 4: ops[index].bit_count=32; break;
+        }
+        check(ops,{},100);
+        check(ops,{},0); // grammar errors precede capacity errors
+    }
+    auto limits=marc::core::DecoderLimits{};
+    limits.max_block_size=1;
+    const auto working=valid.size()*sizeof(ModeledOperation)+lzss_position_distance_range_encoder_state_bytes();
+    for(const auto extra:{0U,8U,9U,32U,33U,34U}) {
+        limits.max_internal_buffered_bytes=working+extra;
+        check(valid,limits,100);
+    }
+    limits={}; limits.max_frame_size=limits.max_block_size=1;
+    for(const auto payload:{8U,9U,32U,33U}) {
+        limits.max_compressed_payload_size=payload;
+        check(valid,limits,100);
+    }
+    limits={}; limits.max_entropy_table_entries=2521; check(valid,limits,100);
+    limits={}; limits.max_range_model_total=32767; check(valid,limits,100);
+
+    // Overlap only in the conservative bound must fall back to the actual extent.
+    std::vector<ModeledOperation> storage(valid.size()+4);
+    std::copy(valid.begin(),valid.end(),storage.begin()+2);
+    const auto ops=std::span{storage}.subspan(2,valid.size());
+    auto bytes=std::as_writable_bytes(std::span{storage});
+    ContextualDynamicRangeDescriptor d{};
+    ASSERT_EQ(encode_lzss_position_distance_range_operations_scratch(ops,{},bytes,d).error,Error::none);
+    EXPECT_EQ(d.payload_size,9);
+    const auto saved=storage;
+    d={99,98,97};
+    EXPECT_EQ(encode_lzss_position_distance_range_operations_scratch(
+        ops,{},std::as_writable_bytes(ops),d).error,Error::overlapping_buffers);
+    same_descriptor(d,ContextualDynamicRangeDescriptor{99,98,97});
+    EXPECT_TRUE(std::equal(std::as_bytes(std::span{storage}).begin(),std::as_bytes(std::span{storage}).end(),
+                           std::as_bytes(std::span{saved}).begin()));
+}
+
 TEST(LzssPositionDistanceRangeEncoder, PreparedWriteFaultsDoNotPublishDescriptor) {
     const auto ops=mixed();
     const auto before=ops;

@@ -22,6 +22,15 @@ namespace marc::entropy::internal {
     const core::DecoderLimits& limits, std::span<std::byte> payload_output,
     ContextualDynamicRangeDescriptor& descriptor) noexcept;
 
+// Private discardable payload scratch. A shape-only bound scan permits one
+// model/coder run when conservative capacity and limits fit, otherwise uses the
+// transactional encoder. Payload may change on failure; descriptor does not.
+// Operations, limits and descriptor must remain disjoint from writable scratch.
+[[nodiscard]] ContextualDynamicRangeEncodeResult encode_lzss_position_distance_range_operations_scratch(
+    std::span<const context::internal::ModeledOperation> operations,
+    const core::DecoderLimits& limits, std::span<std::byte> payload_output,
+    ContextualDynamicRangeDescriptor& descriptor) noexcept;
+
 // Call-scoped borrowed plan. Operations must stay alive and unchanged from prepare
 // through write; no mutation detection is promised. Every write attempt consumes
 // readiness. Metadata only (no owned buffers); transient scalar stack overhead is

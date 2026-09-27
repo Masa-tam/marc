@@ -19,6 +19,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <tuple>
 #include <vector>
 
 namespace {
@@ -52,6 +53,10 @@ TEST(LzssPositionDistanceFrameEncoder, PreparedAndThreeRunFramesAgreeForAllLengt
         oa.fill(std::byte{0xcc}); ob=oa;
         const auto x=encode_lzss_position_distance_frame(stream,{},0,0,tokens,a,oa);
         const auto y=encode_lzss_position_distance_frame_reference(stream,{},0,0,tokens,b,ob);
+        std::array<std::byte,256> scratch; scratch.fill(std::byte{0xcc});
+        const auto z=encode_lzss_position_distance_frame_scratch(stream,{},0,0,tokens,b,scratch);
+        ASSERT_EQ(z.error,x.error); EXPECT_EQ(scratch,oa);
+        EXPECT_EQ(z.serialized_size,x.serialized_size); EXPECT_EQ(z.decision_count,x.decision_count);
         ASSERT_EQ(x.error,LzssShortMatchFrameEncodeError::none);
         ASSERT_EQ(y.error,x.error); EXPECT_EQ(oa,ob);
         EXPECT_EQ(x.serialized_size,y.serialized_size); EXPECT_EQ(x.payload_size,y.payload_size);
@@ -164,6 +169,80 @@ TEST(LzssPositionDistanceFrameEncoder, PreparedAndThreeRunPreflightFailuresAgree
         EXPECT_EQ(x.entropy.error,y.entropy.error); EXPECT_EQ(oa,ob);
         for(auto byte:oa) EXPECT_EQ(byte,std::byte{0xcc});
     }
+}
+
+TEST(LzssPositionDistanceFrameEncoder, ScratchMatchesAllDiagnosticsAndKeepsFailedHeadersPrivate) {
+    const auto key=[](const auto& r) { return std::tuple{
+        r.error,r.preflight_error,r.serialized_size,r.raw_size,r.token_count,r.operation_count,
+        r.decision_count,r.payload_size,r.context.error,r.context.token_error,
+        r.context.operation_count,r.context.operation_index,r.context.token_count,r.context.token_index,
+        r.context.decision_count,r.context.raw_size,r.entropy.error,r.entropy.operation_count,
+        r.entropy.operation_index,r.entropy.decision_count,r.entropy.payload_size}; };
+    bool observed_late_write=false;
+    for(unsigned scenario=0;scenario<10;++scenario) for(const std::size_t capacity:{0U,79U,80U,85U,86U,128U,256U}) {
+        SCOPED_TRACE(scenario);
+        SCOPED_TRACE(capacity);
+        auto stream=stream_for(259); auto tokens=tokens_for(258);
+        auto limits=marc::core::DecoderLimits{};
+        std::array<ModeledOperation,7> operations{};
+        std::array<std::byte,258> expected{},actual{}; expected.fill(std::byte{0xcc}); actual=expected;
+        std::size_t op_count=operations.size(); std::uint64_t sequence=0;
+        switch(scenario) {
+        case 1: tokens[1].distance=2; break;
+        case 2: op_count=1; break;
+        case 3: sequence=1; break;
+        case 4: stream.dictionary_variant=7; break;
+        case 5: limits.max_internal_buffered_bytes=1; break;
+        case 6: limits.max_expansion_ratio=1; limits.expansion_slack=0; break;
+        case 7: limits.max_compressed_payload_size=5; break;
+        case 8: limits.max_entropy_table_entries=2521; break;
+        case 9: limits.max_range_model_total=32767; break;
+        }
+        const auto e=encode_lzss_position_distance_frame(stream,limits,sequence,0,tokens,
+            std::span{operations}.first(op_count),std::span{expected}.subspan(1,capacity));
+        const auto a=encode_lzss_position_distance_frame_scratch(stream,limits,sequence,0,tokens,
+            std::span{operations}.first(op_count),std::span{actual}.subspan(1,capacity));
+        EXPECT_EQ(key(e),key(a)); EXPECT_EQ(actual.front(),std::byte{0xcc});
+        EXPECT_TRUE(std::ranges::all_of(std::span{actual}.subspan(capacity+1),[](auto b){return b==std::byte{0xcc};}));
+        if(e.error==LzssShortMatchFrameEncodeError::none) EXPECT_EQ(expected,actual);
+        else {
+            EXPECT_TRUE(std::ranges::all_of(expected,[](auto b){return b==std::byte{0xcc};}));
+            EXPECT_TRUE(std::ranges::all_of(std::span{actual}.first(std::min<std::size_t>(capacity,80)+1),
+                [](auto b){return b==std::byte{0xcc};}));
+            if(scenario==6 && actual!=expected) observed_late_write=true;
+        }
+    }
+    EXPECT_TRUE(observed_late_write);
+    // A late aggregate-workspace failure also leaves the frame header untouched.
+    auto limits=marc::core::DecoderLimits{}; limits.max_block_size=259;
+    std::array<ModeledOperation,7> operations{};
+    const auto tokens=tokens_for(258); const auto stream=stream_for(259);
+    std::array<std::byte,256> baseline{};
+    const auto planned=encode_lzss_position_distance_frame(stream,limits,0,0,tokens,operations,baseline);
+    ASSERT_EQ(planned.error,LzssShortMatchFrameEncodeError::none);
+    TypedContextFrameLayout layout{};
+    LzssShortMatchFrameRequirements requirements{};
+    ASSERT_EQ(preflight_lzss_position_distance_frame_bytes(baseline,{stream,limits,0,0},layout,requirements),
+        LzssShortMatchPreflightError::none);
+    const auto encoder_state=marc::entropy::internal::lzss_position_distance_range_encoder_state_bytes();
+    const auto decoder_state=sizeof(marc::entropy::internal::LzssPositionDistanceRangeState);
+    const auto threshold=requirements.aggregate_working_bytes+planned.operation_count*sizeof(ModeledOperation)
+        +(encoder_state>decoder_state?encoder_state-decoder_state:0);
+    bool workspace_failure=false, exact_success=false;
+    for(std::size_t memory=threshold-64;memory<=threshold+1;++memory) {
+        limits.max_internal_buffered_bytes=memory;
+        std::array<std::byte,256> a{},b{}; a.fill(std::byte{0xcc}); b=a;
+        const auto e=encode_lzss_position_distance_frame(stream,limits,0,0,tokens,operations,a);
+        const auto r=encode_lzss_position_distance_frame_scratch(stream,limits,0,0,tokens,operations,b);
+        EXPECT_EQ(key(e),key(r));
+        if(e.error==LzssShortMatchFrameEncodeError::none) { EXPECT_EQ(a,b); exact_success=true; }
+        else EXPECT_TRUE(std::ranges::all_of(std::span{b}.first(80),[](auto byte){return byte==std::byte{0xcc};}));
+        if(e.error==LzssShortMatchFrameEncodeError::workspace_limit) workspace_failure=true;
+    }
+    EXPECT_TRUE(workspace_failure); EXPECT_TRUE(exact_success);
+    const auto bytes=std::as_writable_bytes(std::span{operations});
+    EXPECT_EQ(encode_lzss_position_distance_frame_scratch(stream,{},0,0,tokens,operations,bytes).error,
+              LzssShortMatchFrameEncodeError::overlapping_workspaces);
 }
 
 TEST(LzssPositionDistanceFrameEncoder, ModelsEveryLengthAndInvertsOperations) {

@@ -4,6 +4,8 @@
 #include "frame/lzss_position_distance_frame_streaming_decoder.hpp"
 #include "frame/lzss_position_distance_frame_decoder.hpp"
 #include "entropy/lzss_position_distance_range_decoder.hpp"
+#include "entropy/lzss_position_distance_range_encoder.hpp"
+#include "context/lzss_position_distance_field_cursor.hpp"
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -174,7 +176,56 @@ void compare_incremental(std::span<const std::byte> input) {
         || a.produced!=verified.produced || a.bytes!=verified.bytes) std::abort();
 }
 
+void compare_entropy_scratch(std::span<const std::byte> input) {
+    using namespace marc::entropy::internal;
+    using namespace marc::context::internal;
+    std::array<ModeledOperation,128> storage{};
+    LzssPositionDistanceFieldCursor cursor;
+    std::size_t count{};
+    for(const auto byte:input.first(std::min<std::size_t>(64,input.size()))) {
+        for(const auto value:{0U,std::to_integer<unsigned>(byte)}) {
+            auto operation=cursor.next().shape; operation.value=value;
+            if(cursor.accept(operation)!=LzssFieldContextError::none) std::abort();
+            storage[count++]=operation;
+        }
+    }
+    const auto key=[](const auto& r) { return std::tuple{r.error,r.operation_count,
+        r.operation_index,r.decision_count,r.payload_size}; };
+    for(unsigned scenario=0;scenario<4;++scenario) {
+        auto operations=storage;
+        auto active=std::span{operations}.first(count);
+        if(scenario==1 && count!=0) {
+            auto& op=active[std::to_integer<std::size_t>(input[0])%count];
+            switch(std::to_integer<unsigned>(input.back())%5) {
+            case 0: op.kind=static_cast<ModeledOperationKind>(255); break;
+            case 1: op.context_id=65535; break;
+            case 2: op.alphabet_size=65535; break;
+            case 3: op.value=UINT32_MAX; break;
+            case 4: op.bit_count=32; break;
+            }
+        }
+        auto l=limits();
+        if(scenario==2) {
+            l.max_block_size=1;
+            l.max_internal_buffered_bytes=count*sizeof(ModeledOperation)
+                +lzss_position_distance_range_encoder_state_bytes()+(input.empty()?0:std::to_integer<unsigned>(input[0]));
+        }
+        std::array<std::byte,263> expected{},actual{}; expected.fill(sentinel); actual=expected;
+        const auto capacity=scenario==3 && !input.empty()?std::to_integer<std::size_t>(input[0]):261U;
+        ContextualDynamicRangeDescriptor ed{99,98,97},ad=ed;
+        const auto e=encode_lzss_position_distance_range_operations(active,l,std::span{expected}.subspan(1,capacity),ed);
+        const auto a=encode_lzss_position_distance_range_operations_scratch(active,l,std::span{actual}.subspan(1,capacity),ad);
+        if(key(e)!=key(a) || ed.decision_count!=ad.decision_count || ed.payload_size!=ad.payload_size
+            || ed.context_count!=ad.context_count || actual.front()!=sentinel
+            || !std::ranges::all_of(std::span{actual}.subspan(1+capacity),[](auto byte){return byte==sentinel;})) std::abort();
+        if(e.error==ContextualDynamicRangeEncodeError::none) { if(expected!=actual) std::abort(); }
+        else if(ad.decision_count!=99 || ad.payload_size!=98 || ad.context_count!=97
+            || !std::ranges::all_of(expected,[](auto byte){return byte==sentinel;})) std::abort();
+    }
+}
+
 void compare_encoder_scratch(std::span<const std::byte> input) {
+    compare_entropy_scratch(input);
     using namespace marc::dictionary::internal;
     input=input.first(std::min<std::size_t>(64,input.size()));
     const LzssParameters parameters{65536,3,258,0};

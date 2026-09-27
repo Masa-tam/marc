@@ -13,7 +13,8 @@ LzssPositionDistanceRawFrameResult process_frame(
     std::uint32_t eligibility, LzssPositionDistanceSearch search,
     std::span<dictionary::internal::LzssTypedToken> tokens,
     std::span<context::internal::ModeledOperation> operations,
-    std::span<std::byte> finder, std::span<std::byte> output, bool write) noexcept {
+    std::span<std::byte> finder, std::span<std::byte> output, bool write,
+    bool payload_scratch = false) noexcept {
     using Error=LzssPositionDistanceRawFrameError;
     namespace dictionary=marc::dictionary::internal;
     LzssPositionDistanceRawFrameResult result{};
@@ -66,8 +67,10 @@ LzssPositionDistanceRawFrameResult process_frame(
         result.error=Error::candidate_error; return result;
     }
     // Retain the materialized tokens through planning/writing; no second search.
+    const auto encode_frame = payload_scratch ? encode_lzss_position_distance_frame_scratch
+                                             : encode_lzss_position_distance_frame;
     result.frame=write
-        ? encode_lzss_position_distance_frame(stream,frame_limits,sequence,committed,
+        ? encode_frame(stream,frame_limits,sequence,committed,
             tokens.first(result.candidate.token_count),operations,output)
         : plan_lzss_position_distance_frame(stream,frame_limits,sequence,committed,
             tokens.first(result.candidate.token_count),operations);
@@ -95,5 +98,16 @@ LzssPositionDistanceRawFrameResult encode_lzss_position_distance_raw_frame(
     std::span<std::byte> finder, std::span<std::byte> output) noexcept {
     return process_frame(stream,limits,sequence,committed,raw,eligibility,search,
                          tokens,operations,finder,output,true);
+}
+
+LzssPositionDistanceRawFrameResult encode_lzss_position_distance_raw_frame_scratch(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    std::uint64_t sequence, std::uint64_t committed, std::span<const std::byte> raw,
+    std::uint32_t eligibility, LzssPositionDistanceSearch search,
+    std::span<dictionary::internal::LzssTypedToken> tokens,
+    std::span<context::internal::ModeledOperation> operations,
+    std::span<std::byte> finder, std::span<std::byte> output) noexcept {
+    return process_frame(stream,limits,sequence,committed,raw,eligibility,search,
+                         tokens,operations,finder,output,true,true);
 }
 }

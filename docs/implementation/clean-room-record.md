@@ -35373,3 +35373,27 @@ both bounds.
   copyleft implementations and third-party benchmark or optimization code.
 - Similarity review: first-party diagnostic adaptation and independent analysis;
   no external expression copied or legal guarantee claimed.
+
+## CR-1463: 2026-09-27 - Single-pass private entropy payload scratch
+
+- Author: Codex; local review: Codex; maintainer review pending.
+- Task: implement the approved DD-1298 investigation while preserving existing
+  unchanged-on-failure entries and never publishing a failed frame.
+- References: IR-1059, first-party range writer/model/cursor, retained prepared
+  encoder, frame preflight/publication code and independently generated vectors.
+- Independent design: DD-1299 derives the conservative normalization/carry bound
+  and checked admission. Unsuitable bounds use the exact-size reference path;
+  only new private scratch entries permit failed payload writes. Frame headers
+  and the streaming draining state remain behind complete validation.
+- Validation: TVG-1168, all 3,949 tests, 27 raw and 738 serialized fuzz boundary
+  cases and 10,000 ASan/UBSan runs pass. BM-0142 compares 3,239 corpus frames and
+  45,136,568 tokens with retained bytes; all twelve frame-time medians improve.
+  Fourteen CLI round trips preserve archive and restored-input hashes.
+- Scope: no format, public API, allocation/workspace charge or release change.
+  Existing artifacts and historical records remain. CI/external verification
+  of this implementation is pending and is not inferred from earlier revisions.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: new admission/wrapping logic and comparisons were reviewed
+  against first-party contracts; no external expression copied or legal
+  guarantee claimed.

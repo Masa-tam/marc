@@ -34,5 +34,15 @@ struct LzssPositionDistanceRawFrameResult {
     std::span<dictionary::internal::LzssTypedToken> tokens,
     std::span<context::internal::ModeledOperation> operations,
     std::span<std::byte> finder_workspace, std::span<std::byte> output) noexcept;
+// Private frame buffer adapter; payload bytes may change on failure. Publish
+// only a successful frame, after all token/entropy/frame checks have completed.
+[[nodiscard]] LzssPositionDistanceRawFrameResult encode_lzss_position_distance_raw_frame_scratch(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    std::uint64_t sequence, std::uint64_t raw_already_committed,
+    std::span<const std::byte> raw, std::uint32_t minimum_eligible_length,
+    LzssPositionDistanceSearch search,
+    std::span<dictionary::internal::LzssTypedToken> tokens,
+    std::span<context::internal::ModeledOperation> operations,
+    std::span<std::byte> finder_workspace, std::span<std::byte> output) noexcept;
 }
 #endif

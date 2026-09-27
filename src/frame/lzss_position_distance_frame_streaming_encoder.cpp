@@ -95,9 +95,9 @@ core::ProcessResult LzssPositionDistanceFrameStreamingEncoder::process(
             consumed+=count; received_+=count; collected_+=count;
             if (collected_!=target) return {consumed,produced,Status::need_input,{}};
             // A single raw-frame call tokenizes once and retains those tokens
-            // through entropy planning/writing. Never run the raw-frame planner.
+            // through private entropy scratch writing. Publish only on success.
             ++preparations_;
-            const auto result=encode_lzss_position_distance_raw_frame(stream_,limits_,
+            const auto result=encode_lzss_position_distance_raw_frame_scratch(stream_,limits_,
                 preparations_-1,committed_,views_.raw.first(target),eligibility_,search_,
                 views_.tokens,views_.operations,views_.finder,views_.serialized);
             if (result.error!=LzssPositionDistanceRawFrameError::none) {

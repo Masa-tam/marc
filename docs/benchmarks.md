@@ -5544,3 +5544,39 @@ No new peak-memory or compression-ratio result is claimed; retained archives
 remain byte-identical. Detailed input/binary identities and measurements are
 kept separately. This diagnostic adds no new full-suite, fuzz or external
 interoperability evidence and does not establish a one-pass entropy speedup.
+
+## BM-0142: Single-pass private entropy payload scratch comparison
+
+After TVG-1168 differential tests and FZ-0049 bounded fuzz, compare DD-1299's
+private frame scratch writer with the retained prepared two-run frame encoder
+in the same binary. Use all twelve Silesia inputs, 64 KiB frames and fixed
+eligibility 3. Verify tokenization, reconstruction and saved frame bytes before
+timing. In three timed traversals, alternate execution order by frame and
+repetition; compare both complete outputs with the retained archive after each
+pair. All 3,239 frames and 45,136,568 tokens pass, with identical frame bytes in
+every traversal. Every input has a lower scratch median.
+
+| Complete retained-token frame encoding | Prepared reference, seconds | Private scratch, seconds |
+|---|---:|---:|
+| Mozilla median | 1.8816176 | 1.1117105 |
+| Sum of twelve input medians | 7.2447237 | 4.1802971 |
+
+The summed medians fall 42.30%. Timers include token validation/mapping, entropy
+coding, frame preflight and serialization, but exclude dictionary search,
+comparisons, allocation, I/O and process startup. These are warm in-memory
+measurements; alternating order reduces but does not eliminate cache effects.
+The aggregate is a sum of per-input medians, not one timed corpus invocation.
+The conservative shape scan remains; one pass refers to probability-model
+and range coding, not to every traversal of operation/token storage.
+
+Three separate Mozilla CLI round trips produce the same 18,655,833-byte archive
+and restored input hashes. Median elapsed encode/decode times are 2.8983150 /
+2.1023530 seconds, including process startup and file I/O. These are standalone
+current measurements, not a paired CLI comparison with earlier reports.
+Retained archive sizes and compression ratio are unchanged; no new peak-memory
+measurement is claimed. Working-state charges and allocations are unchanged.
+Full tests and bounded fuzz support retaining the private streaming path;
+external verification of the new implementation remains separate.
+
+One additional CLI round trip for each of the other eleven inputs also matches
+retained archive and restored-input hashes (fourteen CLI round trips total).
