@@ -34,6 +34,8 @@ void compare_every_position(const std::span<const std::byte> input,
     for (std::size_t position = 0; position < input.size(); ++position) {
         EXPECT_EQ(indexed.find_match(position), exhaustive.find_match(position))
             << "position " << position;
+        EXPECT_EQ(indexed.find_match_reference(position), exhaustive.find_match(position))
+            << "reference position " << position;
         indexed.advance(position, position + 1);
     }
 }
@@ -63,6 +65,14 @@ TEST(LzssShortPrefixMatchFinder, MatchesExhaustiveOnHandInputs) {
     compare_every_position(run, parameters);
     compare_every_position(ties, parameters);
     compare_every_position(collision, parameters);
+    // A near short hit establishes best.length before the middle colliding
+    // prefix is visited; the older real prefix still supplies the longer hit.
+    constexpr std::array guarded_collision{
+        std::byte{3},std::byte{0},std::byte{0},std::byte{'a'},std::byte{'b'},std::byte{'c'},std::byte{0xfe},
+        std::byte{0x60},std::byte{0xc5},std::byte{0},std::byte{'a'},std::byte{'q'},std::byte{0xfd},
+        std::byte{3},std::byte{0},std::byte{0},std::byte{'a'},std::byte{'x'},std::byte{0xfc},
+        std::byte{3},std::byte{0},std::byte{0},std::byte{'a'},std::byte{'b'},std::byte{'c'},std::byte{0xff}};
+    compare_every_position(guarded_collision,parameters);
     auto small_window = parameters;
     small_window.window_size = 4;
     compare_every_position(ties, small_window);
@@ -81,6 +91,44 @@ TEST(LzssShortPrefixMatchFinder, MatchesExhaustiveOnDeterministicBinaryData) {
     auto small_window = parameters;
     small_window.window_size = 37;
     compare_every_position(input, small_window);
+}
+
+TEST(LzssShortPrefixMatchFinder, ProbeOrderAgreesAcrossGreedyBoundariesAndVariants) {
+    std::vector<std::uint32_t> storage(65536+65536);
+    const auto workspace=std::as_writable_bytes(std::span{storage});
+    for(const auto size:{0U,1U,2U,3U,4U,17U,18U,19U,257U,258U,259U,65535U,65536U}) {
+        SCOPED_TRACE(size);
+        for(unsigned pattern=0;pattern<3;++pattern) {
+            std::vector<std::byte> input(size);
+            std::uint32_t random=0x6d617263;
+            for(std::size_t i=0;i<input.size();++i) {
+                random^=random<<13U; random^=random>>17U; random^=random<<5U;
+                input[i]=std::byte(static_cast<unsigned char>(pattern==0?0:pattern==1?i%7:random));
+            }
+            for(const auto variant:{LzssTypedTokenVariant::field_context_64k_short_match,
+                                    LzssTypedTokenVariant::field_context_64k_short_length_escape})
+            for(const auto maximum:{3U,258U}) for(const auto window:{37U,65536U})
+            for(const auto eligibility:{3U,4U,5U}) {
+                const LzssParameters config{window,3,maximum,0};
+                LzssShortPrefixMatchFinder finder;
+                ASSERT_EQ(initialize_lzss_short_prefix_match_finder(input,config,{},workspace,finder,variant),
+                          LzssShortPrefixError::none);
+                std::size_t position=0;
+                while(position<input.size()) {
+                    const auto match=finder.find_match(position);
+                    ASSERT_EQ(match,finder.find_match_reference(position)) << position;
+                    const auto next=position+(match.length>=eligibility?match.length:1);
+                    ASSERT_LE(next,input.size());
+                    finder.advance(position,next); position=next;
+                }
+                EXPECT_EQ(finder.find_match(position),LzssMatch{});
+                EXPECT_EQ(finder.find_match_reference(position),LzssMatch{});
+                finder.advance(position,position+1); // invalid advance poisons queries equally
+                EXPECT_EQ(finder.find_match(0),LzssMatch{});
+                EXPECT_EQ(finder.find_match_reference(0),LzssMatch{});
+            }
+        }
+    }
 }
 
 TEST(LzssShortPrefixMatchFinder, RequiresBoundedDisjointWorkspace) {

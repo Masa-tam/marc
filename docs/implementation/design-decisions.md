@@ -25753,3 +25753,29 @@ collisions, ties, overlapping matches, short tails and window/frame boundaries,
 including eligibility 3/4/5 and failure invariants. Run full tests and bounded
 fuzz, then same-binary alternating-order timings on every corpus input. No
 production change or new format is introduced by this diagnostic proposal.
+
+## DD-1301: Trial best-length probe before prefix verification
+
+Instantiate the same short-prefix search loop with two comparison orders.
+The candidate checks the existing guarded best-length probe first; the retained
+reference checks the three prefix bytes first. Both require both predicates
+before extending a match. No candidate may improve the current best if its
+byte at best.length differs, so rejecting it first preserves strict-longer
+selection and nearest-distance ties.
+
+The probe is skipped for zero best length and for maximum length. Otherwise
+best.length is below min(remaining input, configured maximum), and candidates
+precede the current position, bounding both reads even before prefix matching.
+Keep initialization, traversal, extension, insertion, bounds, error behavior
+and object/workspace layout unchanged. The private reference method adds no
+public codec API or stream variant. Differential tests, full tests and bounded
+fuzz precede paired corpus timings and the final adoption decision.
+
+Adoption outcome: TVG-1169 differential checks and FZ-0050 bounded sanitizer
+fuzz pass. All 3,950 registered checks pass, with the documentation ordering
+check supplied by a corrected rerun after the complete suite. BM-0144 records
+identical corpus tokens/frames and lower candidate medians on all twelve
+inputs. Retain probe-first production search and the private prefix-first
+reference. The measured aggregate reduction is 5.92% for initialized greedy
+parsing, not a whole-CLI paired speedup. Alternate-compiler full verification
+and hosted CI/external exchange for this new revision remain pending.

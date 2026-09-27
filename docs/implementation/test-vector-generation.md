@@ -16981,3 +16981,22 @@ Require unchanged failed headers even when the private payload was already
 written. Retain the incremental failed-second-frame test, which publishes only
 the stream header and successfully validated first frame. Public chunking,
 hashing and allocation tests exercise the integrated private adapter.
+
+## TVG-1169: Short-prefix comparison-order equivalence
+
+Compare the probe-first and retained prefix-first queries with exhaustive
+matches at every position of hand vectors and deterministic binary input.
+Include a near short hit establishing best.length before a colliding prefix
+and an older longer hit, nearest-distance ties, overlap matches and short tails.
+
+Compare both orders through greedy parsing with eligibility 3/4/5, variants
+7/8, windows 37/65536, maximum lengths 3/258, three input patterns and lengths
+0/1/2/3/4/17/18/19/257/258/259/65535/65536. Require identical distance/length
+queries and ended/invalid-advance behavior. Existing tokenizer reference tests
+compare complete token fields, capacity/limit failures and unchanged outputs;
+streaming/public tests retain failed-frame publication coverage.
+
+The bounded stream fuzzer adds direct three-way query comparisons at every
+position with data-dependent window/maximum length. Corpus timing compares
+both orders through the same initialized greedy parser, checks each token
+against production, and compares complete emitted frames with retained bytes.

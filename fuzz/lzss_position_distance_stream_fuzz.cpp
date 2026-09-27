@@ -231,6 +231,20 @@ void compare_encoder_scratch(std::span<const std::byte> input) {
     const LzssParameters parameters{65536,3,258,0};
     std::array<std::uint32_t,65536+64> storage{};
     auto workspace=std::as_writable_bytes(std::span{storage});
+    auto probe_parameters=parameters;
+    if(!input.empty()) {
+        probe_parameters.window_size=1+std::to_integer<unsigned>(input.front());
+        probe_parameters.max_match_length=3+std::to_integer<unsigned>(input.back());
+    }
+    LzssShortPrefixMatchFinder finder;
+    if(initialize_lzss_short_prefix_match_finder(input,probe_parameters,limits(),workspace,finder,
+        LzssTypedTokenVariant::field_context_64k_short_length_escape)!=LzssShortPrefixError::none) std::abort();
+    LzssExhaustiveMatchFinder exhaustive{input,probe_parameters};
+    for(std::size_t position=0;position<input.size();++position) {
+        const auto match=finder.find_match(position);
+        if(match!=finder.find_match_reference(position) || match!=exhaustive.find_match(position)) std::abort();
+        finder.advance(position,position+1);
+    }
     const auto key=[](const auto& r) { return std::tuple{r.error,r.token_error,r.finder_error,
         r.input_size,r.token_count,r.token_storage_size}; };
     for(const auto capacity:{input.size(),input.empty()?0:std::to_integer<std::size_t>(input[0])%(input.size()+1)}) {

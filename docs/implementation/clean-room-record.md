@@ -35435,3 +35435,26 @@ both bounds.
   copyleft implementations and third-party profiler/optimization code.
 - Similarity review: isolated adaptation of first-party diagnostic logic and
   independent analysis; no external expression copied or legal guarantee claimed.
+
+## CR-1466: 2026-09-27 - Short-prefix best-length probe order
+
+- Author: Codex; local review: Codex; maintainer review pending.
+- Task: implement the approved DD-1300 trial without changing exact token
+  selection, failure invariants or frame publication.
+- References: IR-1061, first-party short-prefix finder, exhaustive reference,
+  BM-0143 counters and independently generated boundary/collision inputs.
+- Independent design: DD-1301 keeps the loop and workspace unchanged while
+  instantiating both predicate orders. Bounded best-length rejection precedes
+  exact prefix checks only in the candidate; the old order remains testable.
+- Validation: TVG-1169; all 3,950 registered checks, including a corrected
+  documentation-ordering rerun; 27 raw/738 serialized initial fuzz cases and
+  10,000 ASan/UBSan runs. BM-0144 compares all 3,239 corpus frames/45,136,568
+  tokens, with identical bytes and lower medians on every input. Fourteen CLI
+  round trips preserve archive and reconstructed-input hashes.
+- Scope: no format, public API, allocation/workspace charge or release change.
+  New-revision alternate-compiler full tests and CI/external exchange remain
+  pending; prior revision reports are not reassigned. Existing artifacts kept.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: first-party loop refactoring and independently selected
+  comparisons only; no external expression copied or legal guarantee claimed.

@@ -43,9 +43,14 @@ calculate_lzss_short_prefix_workspace(
 class LzssShortPrefixMatchFinder {
 public:
     [[nodiscard]] LzssMatch find_match(std::size_t position) const noexcept;
+    // Retained prefix-first order for private differential tests/measurements.
+    [[nodiscard]] LzssMatch find_match_reference(std::size_t position) const noexcept;
     void advance(std::size_t position, std::size_t next_position) noexcept;
 
 private:
+    template<bool ProbeFirst>
+    [[nodiscard]] LzssMatch find_match_impl(std::size_t position) const noexcept;
+
     friend LzssShortPrefixError initialize_lzss_short_prefix_match_finder(
         std::span<const std::byte>, const LzssParameters&,
         const core::DecoderLimits&, std::span<std::byte>,

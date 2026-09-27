@@ -127,7 +127,8 @@ LzssShortPrefixError initialize_lzss_short_prefix_match_finder(
     return LzssShortPrefixError::none;
 }
 
-LzssMatch LzssShortPrefixMatchFinder::find_match(
+template<bool ProbeFirst>
+LzssMatch LzssShortPrefixMatchFinder::find_match_impl(
     const std::size_t position) const noexcept {
     LzssMatch best{};
     if (position != next_position_ || position >= input_.size()
@@ -141,12 +142,22 @@ LzssMatch LzssShortPrefixMatchFinder::find_match(
         const auto distance = position - candidate;
         if (distance == 0 || distance > parameters_.window_size) break;
         const auto previous = links_[candidate];
-        if (input_[position] == input_[candidate]
-            && input_[position + 1] == input_[candidate + 1]
-            && input_[position + 2] == input_[candidate + 2]
-            && (best.length == 0 || best.length == maximum_length
+        const auto prefix_matches = [&] {
+            return input_[position] == input_[candidate]
+                && input_[position + 1] == input_[candidate + 1]
+                && input_[position + 2] == input_[candidate + 2];
+        };
+        const auto can_improve = [&] {
+            // Candidates precede position. A nonzero, nonmaximum best length
+            // bounds both reads independently of whether the prefix matches.
+            return best.length == 0 || best.length == maximum_length
                 || input_[position + best.length]
-                    == input_[candidate + best.length])) {
+                    == input_[candidate + best.length];
+        };
+        const bool eligible = ProbeFirst
+            ? can_improve() && prefix_matches()
+            : prefix_matches() && can_improve();
+        if (eligible) {
             std::size_t length = prefix_size;
             while (length < maximum_length
                    && input_[position + length]
@@ -160,6 +171,16 @@ LzssMatch LzssShortPrefixMatchFinder::find_match(
         candidate = previous;
     }
     return best;
+}
+
+LzssMatch LzssShortPrefixMatchFinder::find_match(
+    const std::size_t position) const noexcept {
+    return find_match_impl<true>(position);
+}
+
+LzssMatch LzssShortPrefixMatchFinder::find_match_reference(
+    const std::size_t position) const noexcept {
+    return find_match_impl<false>(position);
 }
 
 void LzssShortPrefixMatchFinder::advance(

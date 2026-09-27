@@ -1126,3 +1126,16 @@ On 2026-09-27 the extended harness passed its 27 raw and 738 serialized boundary
 cases and 10,000 ASan/UBSan fuzz runs with no reported finding or mismatch.
 Bounds remain unchanged; distance-width/rescaling and late frame rejection
 have separate deterministic tests. This finite campaign is not exhaustive.
+
+### FZ-0050: Short-prefix probe order against retained and exhaustive search
+
+Extend the bounded position-distance harness with probe-first, prefix-first
+and exhaustive match comparisons at every position of up to 64 input bytes.
+Select window and maximum match length from input bytes within valid bounds.
+Reuse the existing bounded workspace; generated token/archive, malformed
+decode, guard and publication comparisons remain active.
+
+On 2026-09-27 the harness passed 27 raw and 738 serialized initial cases and
+10,000 ASan/UBSan fuzz runs without a reported finding or mismatch. Full-frame
+boundaries and greedy eligibility variants retain deterministic tests; this
+finite campaign does not establish exhaustive coverage.

@@ -9469,3 +9469,10 @@ first-party indexed tokenizer, short-prefix finder, private frame encoder and
 entropy scratch writer. An isolated instrumented replay of the existing finder
 compares every selected token with the production tokenizer before timing.
 No external implementation or optimization source was consulted.
+
+### IR-1061
+
+The DD-1300 comparison-order trial uses the first-party short-prefix finder
+and BM-0143's isolated candidate diagnostics. The existing comparison order
+and exhaustive finder remain differential references. No external source,
+pseudocode or test suite was consulted.

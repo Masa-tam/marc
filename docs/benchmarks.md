@@ -5630,3 +5630,46 @@ No codec, format, allocation or workspace change, new peak-memory measurement,
 full-suite run, fuzz campaign or external exchange is claimed here. Retained
 archive sizes remain identical. Detailed identities and raw measurements are
 kept separately; this step is diagnosis and design only.
+
+## BM-0144: Short-prefix probe-first comparison-order trial
+
+After TVG-1169, full-suite checks and FZ-0050, compare both orders in the same
+binary using one bounded greedy parser, 64 KiB frames and fixed eligibility 3.
+Each timed path includes finder initialization, queries, insertion and token
+writes; outer tokenizer admission checks are excluded. Alternate execution
+order by frame and repetition across three traversals. Compare every token
+with production scratch tokenization and every complete frame with retained
+archives. All 3,239 frames and 45,136,568 tokens match, including each timed
+comparison; raw reconstruction is checked before timing.
+
+| Input | Prefix-first median seconds | Probe-first median seconds |
+|---|---:|---:|
+| mozilla | 1.7729517 | 1.6091326 |
+| dickens | 0.3307663 | 0.3219036 |
+| mr | 0.2958121 | 0.2818128 |
+| nci | 0.6713012 | 0.6170770 |
+| ooffice | 0.1396999 | 0.1332606 |
+| osdb | 0.0887977 | 0.0866403 |
+| reymont | 0.3045441 | 0.2960589 |
+| samba | 0.3727713 | 0.3552304 |
+| sao | 0.1218394 | 0.1202904 |
+| webster | 0.9602183 | 0.9331892 |
+| x-ray | 0.0975958 | 0.0949104 |
+| xml | 0.0625965 | 0.0606662 |
+| Sum of input medians | 5.2188943 | 4.9101724 |
+
+The summed medians fall 5.92%, with per-input reductions from 1.27% to 9.24%.
+These are warm in-memory results with remaining order/cache and measurement
+noise, not confidence intervals or a predicted gain on other environments.
+Comparisons, allocation, frame/entropy encoding, I/O and startup are outside
+the timers. The sum is not one timed corpus invocation or a full-tokenizer/
+whole-CLI speedup. BM-0143's 92.46% logical rejection count is not a timing gain.
+
+Fourteen separate CLI round trips (Mozilla three times, every other input once)
+preserve retained archive and restored-input hashes. Mozilla's 18,655,833-byte
+archive is unchanged; median elapsed encode/decode times are 2.7455343 /
+2.0779457 seconds, including startup and I/O. These standalone measurements
+are not a paired CLI comparison with earlier runs. No new peak-memory result
+is claimed; object/workspace layout and allocations are unchanged. DD-1301
+retains the candidate based on the bounded change, differential coverage and
+this paired parser comparison; new-revision external verification is separate.
