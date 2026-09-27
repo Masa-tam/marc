@@ -9493,3 +9493,11 @@ finder and chain diagnostics. It uses a second bounded hash chain, an
 independent exhaustive small-input oracle, and retained token/frame outputs.
 No external implementation, pseudocode, test suite or optimization source
 was consulted.
+
+### IR-1064
+
+The compact dual-prefix experiment derives its position bound from the
+first-party 64 KiB frame limit and minimum three-byte prefix. It retains the
+prior wide-index trial and production finder as references, and uses the
+existing workspace calculator for layout and admission-boundary comparisons.
+No external implementation, pseudocode or optimization source was consulted.

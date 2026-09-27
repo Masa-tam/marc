@@ -35517,3 +35517,24 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: first-party independently authored prototype and checks;
   no external expression copied or legal guarantee claimed.
+
+## CR-1470: 2026-09-28 - Compact dual-prefix experiment
+
+- Author and reviewer: Codex.
+- Task: investigate the wide trial's osdb regression and memory admission,
+  then compare an independently derived compact index representation.
+- References: IR-1064, existing frame bounds, finder and workspace calculator.
+- Design: reserve the unused 16-bit position 65,535 as sentinel; retain both
+  exact prefix indices within the existing index-byte budget. DD-1304 records
+  the bound and conditions for a subsequent production trial.
+- Validation: TVG-1171 repeats primary and supplemental sanitizer comparisons,
+  checks all 65,537 input sizes and 65,534 existing admission-limit pairs, and
+  verifies all twelve corpus inputs and retained frame bytes. BM-0147 records
+  isolated insertion costs and three-way parser timings, including tradeoffs.
+- Scope: prototype/design only. Production memory admission, format, errors,
+  failed-frame publication and public APIs remain unchanged. No production
+  full-suite, new stream-fuzz, hosted CI or external verification claimed.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: first-party bounds reasoning and independent prototype;
+  no external expression copied or legal guarantee claimed.

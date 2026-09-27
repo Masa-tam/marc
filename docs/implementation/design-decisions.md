@@ -25855,3 +25855,40 @@ optional scratch admission with complete aggregate charging and an unchanged
 old-path fallback. A successful integration must retain accepted memory-limit
 boundaries, transactional errors and failed-frame non-publication; then run
 production differential/full/fuzz and alternate-compiler/external gates.
+
+## DD-1304: Compact dual-prefix indices within the existing storage budget
+
+For input of at most 65,536 bytes, the largest inserted three-byte prefix
+position is 65,533 and the largest four-byte position is 65,532. Store positions
+and links as unsigned 16-bit values with 65,535 reserved for the empty link.
+Keep position/distance arithmetic in the existing wider types and narrow only
+after checking prefix availability. The sentinel cannot alias an inserted
+position; this argument does not extend to larger frames or shorter prefixes.
+
+Two 65,536-entry head arrays and two input-sized link arrays require
+2 * (65,536 + input_size) * sizeof(uint16_t) bytes. This equals the existing
+single-index requirement of (65,536 + input_size) * sizeof(uint32_t).
+Inputs shorter than three bytes still need no index. Both compact link offsets
+are aligned to uint16_t even for odd input lengths; the existing four-byte
+workspace alignment is sufficient. The proposed layout needs no extra scratch
+admission or memory-limit fallback. Keep the old finder as a differential
+reference and verify full owner-state accounting during integration.
+
+The isolated prototype changes only index element width from DD-1303. TVG-1171
+checks sentinel bounds, all supported input sizes and existing exact-limit
+boundaries; both primary and supplemental differential checks pass sanitizers.
+BM-0147 shows all twelve compact medians below production, including osdb,
+with the osdb direction confirmed by nine extra traversals. Compact is slower
+than the wide prototype on some inputs, so memory reduction is not a universal
+speedup over that prototype. Its fixed preallocated vectors still reserve
+512 KiB even for short input; the input-sized layout is a verified proposal,
+not yet a production allocator.
+
+Select compact indices for the next production trial. Port them into bounded
+caller-owned workspace while preserving initialization failure atomicity,
+overlap/misalignment rejection, invalid-advance behavior and unchanged required
+capacity. Establish object lifetimes before link use without assuming the
+prototype's vector storage. Remeasure after restoring production checks and
+initialization, then require full tests, stream fuzz and alternate-compiler/
+external gates before closing adoption. This entry changes no production code,
+format, failure contract or failed-frame publication behavior.

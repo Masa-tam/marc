@@ -17026,3 +17026,26 @@ checks after each paired timing traversal. All twelve inputs, 3,239 frames
 and 45,136,568 tokens agree. Supplemental osdb repeats also agree. Prototype
 misuse/admission and public failure tests are not substituted by these checks;
 production code, workspace limits and publication behavior are unchanged.
+
+## TVG-1171: Compact dual-prefix bounds and equivalence
+
+Repeat TVG-1170's 33,264 configurations and 8,736,480 position comparisons
+with 16-bit indices, including lengths 65,535/65,536 and reuse across varying
+lengths. Both the primary checks and the 10,018 supplemental random/collision
+cases (639,470 queries) pass ASan/UBSan. Container annotation checks remain
+disabled in the compatible build. This is bounded differential coverage, not
+a replacement for the production stream-fuzzer gate.
+
+For every input size zero through 65,536, compare the proposed compact
+partition size with the existing workspace calculator. Check both link offsets,
+alignment and highest insertable position against the sentinel. For every
+size at least three, the current finder accepts input_size + workspace_size
+as the internal byte limit and rejects one byte less, with the block limit
+set to the 64 KiB profile. All 65,537 size checks and 65,534 limit pairs pass.
+These verify the proposed byte layout and existing admission boundary, not a
+new partitioner or production allocation path.
+
+Three-way corpus comparisons rotate production, wide and compact execution
+order. All twelve inputs, 3,239 frames and 45,136,568 tokens agree; compact
+tokens produce the retained frame bytes after every traversal. Additional
+osdb repeats agree. The production implementation remains unchanged.

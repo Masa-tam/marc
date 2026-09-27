@@ -5757,3 +5757,55 @@ the existing full-frame finder uses 512 KiB. These are element-storage sizes,
 not measured peak process memory, and both coexist in this comparison driver.
 No production memory admission or default changes. DD-1303 holds integration
 pending regression investigation and optional scratch design.
+
+## BM-0147: Compact dual-prefix trial and osdb index costs
+
+Base revision `a1b04ce02c2466c92db4d9284c8ab62b9282f357`. An isolated osdb
+experiment times initialization and bulk insertion separately, rotating three
+implementations over nine traversals. Per-frame insertion covers all positions
+before the final four bytes; a subsequent query verifies equivalent state.
+Median summed seconds are:
+
+| Implementation | Initialization | Bulk insertion |
+|---|---:|---:|
+| Production | 0.0007286 | 0.0151596 |
+| Wide dual-prefix | 0.0007282 | 0.0321980 |
+| Compact dual-prefix | 0.0003557 | 0.0316173 |
+
+The extra index approximately doubles insertion cost in this isolated setup;
+initialization is much smaller. These measurements do not share the greedy
+parser's interleaved cache state and must not be subtracted from parser times
+to claim exact search costs or a complete causal explanation of the regression.
+
+Then run three warm corpus traversals, rotating production/wide/compact order
+by frame and repetition. Times include initialization, queries, insertion and
+token writes; allocation, comparisons, frame encoding, I/O and startup are
+outside timers. Both prototypes retain DD-1303's reduced admission checks and
+head-only initialization; production integration must be remeasured.
+
+| Input | Production seconds | Wide seconds | Compact seconds |
+|---|---:|---:|---:|
+| mozilla | 1.6189166 | 1.2835374 | 1.3315608 |
+| dickens | 0.3247511 | 0.1894133 | 0.1847193 |
+| mr | 0.2911037 | 0.2756193 | 0.2874543 |
+| nci | 0.6213777 | 0.4239551 | 0.4062838 |
+| ooffice | 0.1343860 | 0.0869259 | 0.0811898 |
+| osdb | 0.0860131 | 0.0921232 | 0.0832526 |
+| reymont | 0.2938678 | 0.1885091 | 0.1782426 |
+| samba | 0.3578583 | 0.3195399 | 0.2993929 |
+| sao | 0.1197187 | 0.1094952 | 0.1002056 |
+| webster | 0.9621039 | 0.6780750 | 0.6294034 |
+| x-ray | 0.0945599 | 0.0803575 | 0.0709979 |
+| xml | 0.0605627 | 0.0526801 | 0.0500795 |
+| Sum of input medians | 4.9652195 | 3.7802310 | 3.7027825 |
+
+Compact reduces the sum 25.43% versus production, with all twelve medians
+lower. osdb improves 3.21%; nine additional paired traversals all put compact
+below production and wide above production. Compact is slower than wide on
+Mozilla and mr. These are measured prototype results with timing/cache noise,
+not confidence intervals, whole-CLI gains or a universal speed claim.
+All 3,239 frames and 45,136,568 tokens agree; candidate frame bytes match the
+retained archives. Measurement inputs, sources, executable and library hashes
+remain stable. Compact preallocates 512 KiB of index elements versus wide's
+1 MiB; all implementations coexist in this driver. No peak process-memory
+measurement is claimed. DD-1304 proposes equal-budget production integration.
