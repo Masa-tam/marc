@@ -25821,3 +25821,37 @@ integration costs. Production integration would additionally require boundary
 admission/failure tests, full tests, sanitizer fuzz and alternate-compiler/
 external verification. Failed frames must remain unpublished. This entry
 records the next experiment; no four-byte finder has been implemented yet.
+
+## DD-1303: Isolated dual-prefix trial and integration hold
+
+Implement DD-1302 as an isolated experiment, leaving production unchanged.
+First find the nearest exact three-byte candidate; if none exists, return no
+match. If at most three bytes can match, return that fallback. Otherwise
+traverse a separate four-byte hash chain nearest first, verify collisions,
+probe the established best length when applicable, and extend exact prefixes.
+Replace only with a strictly longer match and stop at the maximum. All raw
+positions passed by greedy parsing are inserted into both applicable indices.
+
+The four-byte hash assembles four source bytes into a little-endian unsigned
+32-bit value, xors with its right shift by eleven, multiplies modulo 2^32 by
+2654435761, and selects the upper sixteen bits. Hash arithmetic is deliberately
+modular; positions and accesses remain bounded. Match extension retains overlap
+semantics. The three-byte fallback preserves nearest-distance length-three ties;
+nearest-first traversal preserves ties among longer matches.
+
+The prototype preallocates four arrays of 65,536 32-bit words, totaling 1 MiB
+of index elements. Initialization clears both head arrays. Links are written
+before insertion makes them reachable and need not be cleared each frame.
+Timers include initialization, insertion, search and token writes, but exclude
+allocation. This prototype assumes valid ordered queries from its driver; it
+does not implement the production finder's complete misuse/admission contract.
+Its results therefore do not establish drop-in production performance or safety.
+
+TVG-1170 passes differential and sanitizer checks. BM-0146 shows a 25.31%
+reduction in summed parsing medians, but osdb regresses 4.28%, with the direction
+confirmed by nine further paired traversals. Retain the experiment, not a new
+production default. Before integration, investigate the regression and define
+optional scratch admission with complete aggregate charging and an unchanged
+old-path fallback. A successful integration must retain accepted memory-limit
+boundaries, transactional errors and failed-frame non-publication; then run
+production differential/full/fuzz and alternate-compiler/external gates.

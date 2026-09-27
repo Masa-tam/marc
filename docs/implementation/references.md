@@ -9485,3 +9485,11 @@ untimed replay checks every selected token and classifies current best length
 and fourth-byte mismatches. Workspace planning and raw-frame limit accounting
 provide the constraints for a possible additional index. No external source,
 pseudocode or implementation was consulted.
+
+### IR-1063
+
+The DD-1302 dual-prefix experiment derives from the first-party three-byte
+finder and chain diagnostics. It uses a second bounded hash chain, an
+independent exhaustive small-input oracle, and retained token/frame outputs.
+No external implementation, pseudocode, test suite or optimization source
+was consulted.

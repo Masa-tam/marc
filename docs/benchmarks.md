@@ -5716,3 +5716,44 @@ comparisons are outside timers; each timed output is checked. These are
 standalone stage observations, not a paired comparison against BM-0144 or
 whole-CLI measurements. No new peak-memory measurement is claimed. DD-1302
 specifies the bounded next experiment and memory-admission constraints.
+
+## BM-0146: Isolated dual-prefix versus production probe-first parsing
+
+At base revision `adb61787918a99e09b6cb4c2ef05890fb1ab8968`, compare the
+DD-1303 isolated finder with the unchanged production probe-first finder.
+Use three warm paired traversals, alternating order by frame and repetition.
+Include finder initialization, insertion, search and token writes; exclude
+allocation, comparison, frame encoding, I/O and startup. The prototype clears
+heads only and has less admission/misuse checking than production. This is a
+whole prototype parsing comparison, not attribution solely to the extra index.
+
+| Input | Production median seconds | Prototype median seconds |
+|---|---:|---:|
+| mozilla | 1.6159514 | 1.2683943 |
+| dickens | 0.3230624 | 0.1860815 |
+| mr | 0.2840965 | 0.2697332 |
+| nci | 0.6048465 | 0.4124284 |
+| ooffice | 0.1331876 | 0.0844808 |
+| osdb | 0.0850452 | 0.0886862 |
+| reymont | 0.2904137 | 0.1850650 |
+| samba | 0.3535628 | 0.3019683 |
+| sao | 0.1186500 | 0.1038020 |
+| webster | 0.9294650 | 0.6257704 |
+| x-ray | 0.0941003 | 0.0757260 |
+| xml | 0.0609876 | 0.0526207 |
+| Sum of input medians | 4.8933690 | 3.6547568 |
+
+The sum falls 25.31%; eleven input medians improve and osdb regresses 4.28%.
+Three additional osdb invocations, each with three paired traversals, all
+show the prototype slower, confirming the observed direction within this run.
+This is not a confidence interval, whole-CLI speedup, or universal adoption
+result. Remaining cache/order effects and timing noise still apply.
+
+All 3,239 frames and 45,136,568 tokens match production and retained archives
+in each timed comparison; independent reconstruction also passes. Corpus,
+archive, source, executable and production-library hashes remain unchanged
+during measurement. The experiment preallocates 1 MiB of index elements;
+the existing full-frame finder uses 512 KiB. These are element-storage sizes,
+not measured peak process memory, and both coexist in this comparison driver.
+No production memory admission or default changes. DD-1303 holds integration
+pending regression investigation and optional scratch design.

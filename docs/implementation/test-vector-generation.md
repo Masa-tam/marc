@@ -17000,3 +17000,29 @@ The bounded stream fuzzer adds direct three-way query comparisons at every
 position with data-dependent window/maximum length. Corpus timing compares
 both orders through the same initialized greedy parser, checks each token
 against production, and compares complete emitted frames with retained bytes.
+
+## TVG-1170: Isolated dual-prefix differential checks
+
+Compare every position with the production probe-first finder. Enumerate all
+binary strings of lengths zero through ten and compare additionally with an
+independent exhaustive distance/length search. Use windows 1/7/37/65536 and
+maximum match lengths 3/4/18/258. Add lengths 17/18/19/257/258/259/65535/65536
+with zero, periodic, three-equal-prefix/variable-fourth-byte and deterministic
+binary patterns. Apply exhaustive comparison to these added inputs below 300
+bytes. All 33,264 configurations and 8,736,480 position queries agree.
+
+Supplement with 10,000 deterministic generated inputs of length at most 128,
+varying alphabet, window and maximum match length. Construct distinct keys
+mapping to the same bucket for each prefix width; repeat the keys with separator
+bytes and check nine window/maximum combinations per width. Compare every
+position with exhaustive search. All 10,018 supplemental cases and 639,470
+queries pass under ASan/UBSan. Container annotation checks remain disabled in
+this compatible build; this is a bounded generated differential run, not a
+new coverage-guided stream-fuzzer campaign.
+
+For fixed eligibility 3 and 64 KiB corpus frames, compare every greedy token
+with production and encode candidate tokens to retained frame bytes. Repeat
+checks after each paired timing traversal. All twelve inputs, 3,239 frames
+and 45,136,568 tokens agree. Supplemental osdb repeats also agree. Prototype
+misuse/admission and public failure tests are not substituted by these checks;
+production code, workspace limits and publication behavior are unchanged.

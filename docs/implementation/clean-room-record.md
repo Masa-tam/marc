@@ -35496,3 +35496,24 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: independently extended first-party diagnostic logic;
   no external expression copied or legal guarantee claimed.
+
+## CR-1469: 2026-09-28 - Isolated dual-prefix finder trial
+
+- Author and reviewer: Codex.
+- Task: implement the approved DD-1302 isolated trial, compare tokens and
+  retained frame bytes, and measure paired parsing with index work included.
+- References: IR-1063 and first-party finder/diagnostic code only.
+- Independent design: nearest three-byte fallback plus a bounded four-byte
+  chain; exact collision checks, strict improvements and ordered insertion.
+- Validation: TVG-1170 records 33,264 primary configurations and 10,018
+  supplemental sanitizer cases. Corpus checks cover all twelve inputs,
+  3,239 frames and 45,136,568 tokens. BM-0146 records paired results, including
+  the osdb regression confirmed by extra traversals.
+- Decision: DD-1303 retains the isolated experiment and holds production
+  integration for regression and optional memory-admission work. No format,
+  public API, production failure guarantee or publication behavior changed.
+  No new production full-suite, stream-fuzz, hosted CI or external gate claimed.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: first-party independently authored prototype and checks;
+  no external expression copied or legal guarantee claimed.
