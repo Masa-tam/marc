@@ -35335,3 +35335,21 @@ both bounds.
 - Measurement result: BM-0140 records all 3,239 corpus frames, 45,136,568 tokens
   and 14 CLI round trips matching retained bytes. Summed tokenization medians
   fall 49.85%; this is not a whole-CLI paired speedup or external verification.
+
+## CR-1461: 2026-09-27 - Record single-pass encoder external verification
+
+- Author: Codex; evidence supplied by the maintainer; record review: Codex.
+- Task: record successful CI and four external verifier reports for
+  `3fb7c03488597b09a956463e1e88cf8a4cf5f595`, closing DD-1297's external gate.
+- References: the four supplied final verifier lines, the first-party verifier
+  contract, TVG-1167, FZ-0048 and BM-0140.
+- Evidence: every pass reports 68 schema-58 archives at the exact revision.
+  The two CI bundles verified externally, followed by external self-verification
+  and reverse verification of that bundle with the Windows build.
+- Scope: maintainer-reported evidence, not independently rerun here. Historical
+  reports retain their original revisions. This record-only commit introduces
+  no implementation, format, ABI, profile, measurement or release change.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Similarity review: first-party documentation and evidence transcription only;
+  no external implementation expression copied or legal guarantee claimed.

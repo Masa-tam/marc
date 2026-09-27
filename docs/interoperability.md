@@ -1149,3 +1149,20 @@ results complete the external exchange gate for the private token scratch and
 grouped-literal decoder changes (DD-1295/DD-1296). They are not independently
 rerun results and do not extend to untested architectures or profiles.
 The schema-58 inventory, encoder representation and public ABI are unchanged.
+
+#### Position-distance single-pass encoder scratch repeat
+
+The maintainer reported successful pushed CI and four successful schema-58
+verifier passes at `3fb7c03488597b09a956463e1e88cf8a4cf5f595`.
+All four final lines report 68 archives and that exact revision. The Windows
+and Ubuntu CI bundles verified on the external consumer; the externally
+generated bundle self-verified there and verified in the reverse direction
+with the Windows build.
+
+The verifier checks manifest order, sizes and SHA-256 values, exact decoded
+fixture bytes and byte-identical local re-encoding. These maintainer-reported
+results close the external exchange gate for DD-1297's single-pass encoder
+scratch path, separately from the earlier decoder optimization exchange.
+They were not independently rerun here and do not extend to untested profiles
+or architectures. No archive inventory, format, public ABI or release change
+is introduced by this evidence record.

@@ -486,3 +486,14 @@ budgets fall back to it, preserving actual-token acceptance and diagnostics.
 The raw-frame contract already permits scratch changes on failure. Encoded
 frame publication still requires complete success, and the decoder guarantees
 are unaffected. TVG-1167 and FZ-0048 describe differential coverage.
+
+## Single-pass encoder external verification (2026-09-27)
+
+The maintainer reported successful pushed CI and all four 68-archive schema-58
+verification passes at `3fb7c03488597b09a956463e1e88cf8a4cf5f595`.
+The directions and evidence scope are recorded in `../interoperability.md`.
+This closes the external gate for DD-1297. Together with TVG-1167, FZ-0048,
+the complete test suite and BM-0140's token/byte comparisons and measurements,
+the encoder's redundant counting traversal has been resolved for the existing
+exact profile while retaining transactional fallback and publication contracts.
+This completion record changes no implementation, profile or release tag.
