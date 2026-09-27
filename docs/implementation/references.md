@@ -9446,3 +9446,11 @@ The encoder search-pass investigation uses the first-party short-prefix finder,
 candidate tokenizer, raw-frame adapter and BM-0135 diagnostic. The tokenizer's
 planning parse and writing parse are distinct traversals even though the outer
 frame preparation runs once. No external implementation source was consulted.
+
+### IR-1058
+
+The post-DD-1297 encoder stage refresh uses the first-party scratch tokenizer,
+complete-frame encoder and prepared position-distance range encoder. Retained
+fixed-profile archives and the existing reconstruction code provide byte
+checks. Planning and writing costs are measured separately from the frame
+wrapper; no external profiler attribution or implementation source is used.

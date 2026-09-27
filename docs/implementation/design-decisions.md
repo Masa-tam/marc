@@ -25675,3 +25675,22 @@ alignment before parsing. Scratch is discardable on failure; failed frame bytes
 must never be published. Use the entry only in the position-distance raw-frame
 adapter, whose existing contract already permits scratch changes on failure.
 Keep exact parsing/tie rules, encoder bytes, ABI and workspace charges unchanged.
+
+## DD-1298: Investigate single-pass private entropy payload scratch
+
+BM-0141 measures the remaining count-only entropy run in prepared frame
+encoding after DD-1297. Retain the current planner/prepared writer as reference.
+Investigate a separate path into discardable serialized-frame scratch only when
+checked conservative payload capacity and complete memory/format limits can be
+proven before writes. Grammar, model updates, counts, range termination and
+serialization checks remain mandatory. Keep frame metadata/publication behind
+complete success; never expose a failed payload or bypass validation to time it.
+
+The proposal must preserve actual-size acceptance, diagnostic precedence and
+unchanged-on-failure contracts of existing entries, using a reference fallback
+where conservative admission is unsuitable. Require explicit differential
+coverage for malformed operations, payload limits, short buffers, aliasing,
+descriptor state and late-frame failures before timing. A one-pass trial must
+prove exact payload/frame bytes, bounded memory and public chunk/hash behavior.
+This is the next investigation target, not an implemented or adopted change,
+and the diagnostic replay timings are not a predicted end-to-end speedup.

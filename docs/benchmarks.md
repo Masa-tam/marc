@@ -5503,3 +5503,44 @@ Retain the scratch path in the position-distance adapter while preserving the
 transactional entry and its exact diagnostic fallback. Local raw data and
 execution identities are retained separately. Prior external exchange predates
 this encoder change; new hosted/external validation remains a separate gate.
+
+## BM-0141: Encoder stage refresh after single-pass tokenization
+
+At `eb3e1213b1286a84211690a491133db7beb6fd0a`, run a first-party diagnostic on
+all twelve provisioned Silesia inputs with fixed eligibility 3 and 65,536-byte
+frames. Before timing, compare scratch/transactional token fields and counts,
+re-encode retained frame bytes and reconstruct raw input. Each of three timed
+traversals measures scratch tokenization and complete retained-token frame
+encoding separately. It additionally replays prepared entropy planning and
+writing over the emitted operations, requiring the same complete payload bytes.
+All 3,239 frames and 45,136,568 tokens passed; every timed traversal retained
+exact frame/payload equality. No production implementation changed.
+
+| Measured scope | Mozilla median seconds | Sum of twelve input medians, seconds |
+|---|---:|---:|
+| Scratch tokenization | 1.7535913 | 5.3929078 |
+| Complete retained-token frame encoding | 1.9045272 | 7.3468571 |
+| Additional prepared entropy planning replay | 0.8170884 | 3.2207503 |
+| Additional prepared entropy writing replay | 0.8140441 | 3.2137421 |
+
+Frame encoding includes token validation/mapping, entropy planning/writing,
+size/limit checks and serialization. The entropy rows are separate diagnostic
+replays of work already included in that frame call; do not add them to frame
+time or subtract them to attribute the remainder. Replay follows frame encoding,
+so order/cache effects apply. Comparisons, allocation, file I/O, outer streaming
+and process startup are outside the timers. These are warm in-memory medians,
+not a paired comparison with earlier measurements or CLI profiler samples.
+The sums are per-input medians, not one whole-corpus timed process.
+
+Within the two measured main stages, frame encoding represents 57.67% of the
+summed medians. Source inspection confirms that prepared planning runs the
+coder without output to establish exact size/limits, then writing resets and
+runs it with output. Planning and writing have comparable diagnostic cost.
+DD-1298 therefore prioritizes investigating bounded private payload scratch
+before further dictionary tuning. Removing planning is not yet validated:
+capacity, memory, diagnostics and failure-publication checks must be preserved.
+
+No new peak-memory or compression-ratio result is claimed; retained archives
+remain byte-identical. Detailed input/binary identities and measurements are
+kept separately. This diagnostic adds no new full-suite, fuzz or external
+interoperability evidence and does not establish a one-pass entropy speedup.

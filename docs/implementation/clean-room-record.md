@@ -35353,3 +35353,23 @@ both bounds.
   copyleft implementations and third-party test suites.
 - Similarity review: first-party documentation and evidence transcription only;
   no external implementation expression copied or legal guarantee claimed.
+
+## CR-1462: 2026-09-27 - Refresh remaining encoder stage costs
+
+- Author: Codex; local review: Codex; maintainer review pending.
+- Task: after acceptance of DD-1297 and its external verification, measure the
+  current encoder stages and identify the next bounded optimization target.
+- References: IR-1058, DD-1297, first-party frame/prepared entropy implementations
+  and retained fixed-profile archives; no external implementation consulted.
+- Method: verify tokens, frame bytes and raw reconstruction before timing;
+  compare complete frame encoding with separate prepared entropy replays while
+  keeping timing scopes distinct. Record warm/order bias and excluded costs.
+- Results: BM-0141 records successful checks over 3,239 frames and 45,136,568
+  tokens. The remaining entropy counting/writing runs have comparable measured
+  cost; DD-1298 proposes investigation while preserving all failure contracts.
+- Scope: measurement and design only. No implementation, format, ABI, profile,
+  release or new external-verification claim. Existing artifacts are retained.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party benchmark or optimization code.
+- Similarity review: first-party diagnostic adaptation and independent analysis;
+  no external expression copied or legal guarantee claimed.
