@@ -35599,3 +35599,23 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: independent first-party diagnostic and algebraic identity;
   no external expression copied or legal guarantee claimed.
+
+## CR-1474: 2026-09-28 - Test complementary literal cumulative queries
+
+- Author and reviewer: Codex.
+- Task: implement the approved DD-1306 isolated trial, prove query/payload
+  equivalence and evaluate paired entropy timings before production adoption.
+- References: IR-1067, first-party encoder, field cursor and retained archives.
+- Independent work: select prefix or total-minus-suffix for literal queries,
+  preserving all model updates, rescaling, grammar and range behavior.
+- Validation: TVG-1173 records 115,712 cumulative comparisons, 20 rescales,
+  40 encode comparisons and sanitizer success. All twelve corpus inputs,
+  3,239 frames and 45,136,568 tokens agree. BM-0150 records mixed performance
+  and representative repeats; DD-1307 declines production integration.
+- Scope: isolated prototype and documentation only; production, format, public
+  API, memory admission and failed-frame publication remain unchanged. No new
+  production full-suite, stream-fuzz, hosted CI or external gate is claimed.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: independent algebraic query and first-party trial/tests;
+  no external expression copied or legal guarantee claimed.

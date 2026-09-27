@@ -25971,3 +25971,27 @@ seconds. Literal-only shorter sums would reduce logical ordinary-symbol
 frequency reads by 35.12%, without reducing the number of range decisions.
 The updated stage balance and bounded query change justify prioritizing this
 encoder experiment over another dictionary-index expansion.
+
+## DD-1307: Complementary literal-cumulative trial not adopted
+
+Implement DD-1306 independently: for a validated literal value s <= 128,
+retain the prefix sum; otherwise compute total minus the inclusive suffix
+from s through 255. Other alphabets retain the original prefix loop. Keep all
+grammar checks, range arithmetic, model updates, rescaling, scratch fallback,
+memory charges and descriptor publication unchanged. No additional model
+state is introduced; the trial reports the same charged encoder state size.
+
+TVG-1173 confirms cumulative equality through rescaling, bounded/failing encode
+equivalence, corpus payloads and descriptors. BM-0150 nevertheless measures
+3.2058282 seconds for production versus 3.2170843 for the trial in summed
+entropy medians (0.35% higher). Improvements and regressions vary by input;
+representative repeats preserve that mixed direction. Reduced logical reads
+alone are insufficient evidence of a useful throughput improvement.
+
+Do not integrate this literal-only query into production. Keep the trial and
+negative result for reference. Runtime branching, subtraction, code layout
+and compiler vectorization may influence the outcome, but this experiment
+does not isolate their causes. Before choosing another change, diagnose the
+remaining grammar validation, model update and range-decision work rather
+than extrapolating speed from frequency-read counts. This is not a rejection
+of every possible complementary-query implementation or smaller-alphabet trial.

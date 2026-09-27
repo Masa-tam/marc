@@ -5904,3 +5904,43 @@ For example, dickens literal reads only fall from 31,255,682 to 31,255,612,
 while Mozilla falls from 1,026,922,352 to 549,633,908. Range decisions and
 model updates remain necessary. DD-1306 selects a bounded, no-extra-state
 encoder query experiment; no production implementation changes in this record.
+
+## BM-0150: Complementary literal-cumulative entropy trial
+
+At base revision `62ef4a7d303cd85bf566820d6dfefc6fb67ba91b`, compare the
+isolated DD-1307 encoder with current production. Both scratch paths include
+the bound scan, initialization, grammar validation, range decisions and model
+updates. Alternate execution order by frame and repetition over three warm
+traversals. Preparation, allocation and payload/descriptor comparisons are
+outside these entropy timers. Every candidate output matches production and
+the retained frame payload; all 3,239 frames and 45,136,568 tokens agree.
+
+| Input | Production median seconds | Trial median seconds |
+|---|---:|---:|
+| mozilla | 0.8035125 | 0.7946559 |
+| dickens | 0.2148448 | 0.2186874 |
+| mr | 0.1800652 | 0.1821676 |
+| nci | 0.1646575 | 0.1724796 |
+| ooffice | 0.1420923 | 0.1420233 |
+| osdb | 0.1766766 | 0.1766110 |
+| reymont | 0.0986665 | 0.1012487 |
+| samba | 0.2496585 | 0.2501882 |
+| sao | 0.2096122 | 0.2024841 |
+| webster | 0.6552398 | 0.6673272 |
+| x-ray | 0.2751020 | 0.2725606 |
+| xml | 0.0357003 | 0.0366507 |
+| Sum of input medians | 3.2058282 | 3.2170843 |
+
+The trial sum is 0.35% higher. Five input medians fall and seven rise, from
+a 3.40% reduction on sao to a 4.75% increase on nci. Three additional paired
+traversals each for Mozilla, dickens and sao preserve the observed direction
+in every sample: Mozilla/sao lower, dickens higher. Small differences remain
+subject to timing/cache/code-layout effects; these are not confidence intervals.
+
+Source, executable, library and corpus/archive hashes remain stable during the
+main run. The candidate changes neither model state nor allocation charges;
+no new peak-memory or whole-CLI measurement is claimed. BM-0149's 35.12%
+logical-read reduction does not translate into a corpus-wide speedup here.
+DD-1307 therefore retains this as a negative isolated result, with production
+unchanged. The separately repeated production frame stage is not a candidate
+frame benchmark and is not added to or subtracted from these entropy timings.

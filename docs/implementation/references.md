@@ -9517,3 +9517,11 @@ Logical cumulative-frequency work is counted from validated operations outside
 timers. The proposed complementary cumulative sum follows directly from the
 existing model total and frequency array; no external implementation,
 pseudocode or optimization source was consulted.
+
+### IR-1067
+
+The complementary literal-cumulative trial uses the first-party position-distance
+encoder in an isolated namespace, changing only the 256-symbol cumulative
+query. Prefix/suffix equality follows from the existing positive-frequency
+model total. Current production functions and retained archives provide
+differential references. No external source, pseudocode or test suite was used.

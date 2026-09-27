@@ -17081,3 +17081,26 @@ Final-source validation after all refinements again passes all 3,953 registered
 tests in each of the MSVC and Clang builds. The source and binary identities
 remain unchanged through these runs. Initial-source results are not substituted
 for this final verification.
+
+## TVG-1173: Isolated complementary cumulative-query equivalence
+
+Exercise zero, 255, alternating 128/129 and deterministic varying model updates.
+At periodic checkpoints, near the total limit and after rescaling, compare
+every literal symbol's candidate cumulative value with the running prefix sum.
+All 115,712 cumulative queries and 20 rescale events agree. The midpoint tie
+retains the prefix path; the high-symbol suffix includes the symbol itself.
+
+Build four valid 70,000-literal operation sequences through the production
+field cursor. Compare result fields, descriptors and entire supplied output
+buffers for zero/one/exact-minus-one/exact/conservative capacities, exact and
+one-byte-short internal limits, incomplete grammar, invalid value and invalid
+context. All 40 encode comparisons agree. The candidate and current production
+report identical charged encoder-state bytes. Repeat these checks under
+ASan/UBSan with no reported finding; compatible container annotations remain
+disabled. This is a bounded standalone test, not a stream-fuzzer campaign.
+
+Across all twelve corpus inputs and three paired traversals, compare every
+candidate entropy payload and descriptor with production and retained frame
+payloads. All 3,239 frames and 45,136,568 input tokens agree; representative
+timing repeats also preserve bytes. Production code is unchanged; these checks
+do not constitute adoption or replace future integration/full-suite gates.
