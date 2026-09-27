@@ -35619,3 +35619,24 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: independent algebraic query and first-party trial/tests;
   no external expression copied or legal guarantee claimed.
+
+## CR-1475: 2026-09-28 - Diagnose range-encoder components
+
+- Author and reviewer: Codex.
+- Task: follow DD-1307 with separate grammar, model-recording and range-replay
+  measurements, checking exact output before selecting another optimization.
+- References: IR-1068, first-party encoder/cursor/model validators and retained
+  archives. No external implementation or test source was consulted.
+- Independent work: bounded decision tuples, unchanged range replay, rotated
+  diagnostic passes and explicit limits on interpreting staged measurements.
+- Validation: TVG-1174 records five long-sequence replay comparisons, negative
+  diagnostic checks and ASan/UBSan success; all twelve corpus inputs agree.
+  BM-0151 excludes the interrupted unoptimized run and records the verified
+  optimized run. DD-1308 proposes a narrow redundant-validation trial.
+- Scope: diagnostics and documentation only. Production APIs, allocation
+  admission, failure invariants and failed-frame publication remain unchanged.
+  No new production full-suite, stream-fuzz, CI or external gate is claimed.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: reuse is confined to repository-owned code and independent
+  diagnostic orchestration; no external expression or legal guarantee claimed.

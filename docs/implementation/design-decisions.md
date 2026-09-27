@@ -25995,3 +25995,34 @@ does not isolate their causes. Before choosing another change, diagnose the
 remaining grammar validation, model update and range-decision work rather
 than extrapolating speed from frequency-read counts. This is not a rejection
 of every possible complementary-query implementation or smaller-alphabet trial.
+
+## DD-1308: Diagnose range components before consolidating validation
+
+Separate diagnostic passes for grammar acceptance, grammar plus cumulative
+queries/model updates/decision recording, and range-writer replay. Each stored
+decision contains cumulative frequency, symbol frequency and total frequency;
+replay must reproduce the production payload exactly. Keep the ordinary
+production scratch encoder as a timed reference. Allocate bounded diagnostic
+storage before timing and rotate the four passes by frame and repetition.
+
+These are standalone workloads, not an additive profile. Recording introduces
+stores, replay introduces loads, and separating the code changes optimization
+and cache behavior. In particular, recording time minus grammar time is not
+the cost of model updates, nor is replay time a fraction of production runtime.
+BM-0151 does not establish a single dominant component or justify replacing
+the cumulative query or range arithmetic on its own.
+
+Select a narrow next trial: retain the cursor acceptance before every model
+access and bit shift, but remove only storage-shape checks proven redundant
+after that acceptance. Ordinary symbols already have valid context, alphabet,
+value and zero unused width; bypass operations already have zero context and
+alphabet, the phase-specific width and bounded value. Preserve the early
+invalid-symbol mapping, operation position, finish check, range/model
+invariants, checked decision counts, scratch admission/fallback and descriptor
+publication. Keep a reference path with the existing checks.
+
+This is a proposed isolated trial, not production adoption. Require malformed
+field mutations and truncations, capacity/limit/overlap differentials, identical
+payloads/descriptors and paired integrated-encoder timings across all inputs.
+Compiler elimination may already make the duplicate checks inexpensive. Do
+not weaken validation or infer a speedup from the standalone grammar timer.

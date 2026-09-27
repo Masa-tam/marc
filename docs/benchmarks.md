@@ -5944,3 +5944,45 @@ logical-read reduction does not translate into a corpus-wide speedup here.
 DD-1307 therefore retains this as a negative isolated result, with production
 unchanged. The separately repeated production frame stage is not a candidate
 frame benchmark and is not added to or subtracted from these entropy timings.
+
+## BM-0151: Standalone grammar, model-recording and range-replay diagnostic
+
+At base revision `a793532b05ed13b86b640a5158814a8808addc43`, time four
+standalone workloads over three traversals: production scratch entropy encoding,
+grammar acceptance, grammar plus cumulative queries/model updates/decision
+recording, and range-writer replay of the recorded tuples. Rotate order by
+frame and repetition. Preparation, allocation, reference recording and exact
+comparisons are outside timers. Replay includes range checks and finalization;
+recording includes grammar, model initialization, updates and rescaling, but
+does not perform range arithmetic. Grammar returns a checked field count.
+
+| Input | Production seconds | Grammar seconds | Recording seconds | Replay seconds |
+|---|---:|---:|---:|---:|
+| mozilla | 0.8235094 | 0.1961537 | 0.6392433 | 0.3395604 |
+| dickens | 0.2163324 | 0.0400484 | 0.1681693 | 0.0988816 |
+| mr | 0.1802593 | 0.0366434 | 0.1409198 | 0.0837827 |
+| nci | 0.1651676 | 0.0336194 | 0.1210651 | 0.0872353 |
+| ooffice | 0.1436867 | 0.0337209 | 0.1112422 | 0.0605878 |
+| osdb | 0.1782492 | 0.0385696 | 0.1405865 | 0.0718867 |
+| reymont | 0.1000225 | 0.0187719 | 0.0777530 | 0.0466099 |
+| samba | 0.2592509 | 0.0545674 | 0.2022284 | 0.1079626 |
+| sao | 0.2131072 | 0.0490544 | 0.1694171 | 0.0769239 |
+| webster | 0.6641332 | 0.1269698 | 0.5136337 | 0.3050218 |
+| x-ray | 0.2760813 | 0.0584589 | 0.2174625 | 0.1227204 |
+| xml | 0.0367726 | 0.0071739 | 0.0276746 | 0.0176233 |
+| Sum of input medians | 3.2565723 | 0.6937517 | 2.5293955 | 1.4187964 |
+
+All 3,239 frames and 45,136,568 tokens agree with retained archives; replayed
+payloads, production descriptors/counts and repeated decision tuples agree.
+All source, executable, library and input hashes checked by the runner remain
+stable. An initial diagnostic build lacked optimization after configuration
+failure; its interrupted measurements are retained but excluded. The table
+uses a fresh build with verified Release optimization settings.
+
+Do not add these columns or subtract grammar from recording to estimate the
+production model cost. Materialized decisions introduce memory traffic and
+different code/cache behavior. Model updates are not isolated from queries
+and recording here. The diagnostic is not an optimization, throughput gain,
+peak-memory measurement or whole-CLI result. DD-1308 selects a bounded
+validation-consolidation trial based on source invariants, with integrated
+timing and equivalence still required before any adoption.

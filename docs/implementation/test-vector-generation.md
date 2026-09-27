@@ -17104,3 +17104,24 @@ candidate entropy payload and descriptor with production and retained frame
 payloads. All 3,239 frames and 45,136,568 input tokens agree; representative
 timing repeats also preserve bytes. Production code is unchanged; these checks
 do not constitute adoption or replace future integration/full-suite gates.
+
+## TVG-1174: Recorded range-decision replay equivalence
+
+Build four 70,000-literal operation sequences (zero, 255, alternating 128/129,
+and cycling bytes) and one 70,000-match grammar sequence with sixteen adaptive
+distance bits per match. These are entropy/grammar tests, not claims of valid
+dictionary history. Record cumulative/frequency/total tuples using the
+first-party model rules and replay the first-party range writer. All five
+payloads and operation/decision counts match production, including repeated
+model rescaling. Check incomplete grammar, invalid values, insufficient
+decision storage and invalid replay intervals. Repeat under ASan/UBSan without
+reported findings; compatible container annotations remain disabled.
+
+Across twelve corpus inputs and three timed traversals, verify every replayed
+payload against production and the retained frame payload. Check production
+descriptor fields, operation/decision counts, repeated tuple values, complete
+archive bytes and raw reconstruction. All 3,239 frames and 45,136,568 tokens
+agree. Comparisons occur outside timers and consume the diagnostic results.
+The recorder is an internal measurement helper without the public admission
+or transactional-output contract; it is never connected to frame publication.
+No production implementation or failure behavior changes in this experiment.

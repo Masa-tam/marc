@@ -9525,3 +9525,13 @@ encoder in an isolated namespace, changing only the 256-symbol cumulative
 query. Prefix/suffix equality follows from the existing positive-frequency
 model total. Current production functions and retained archives provide
 differential references. No external source, pseudocode or test suite was used.
+
+### IR-1068
+
+The range-component diagnostic copies the first-party encoder's grammar,
+models and range writer into a private diagnostic namespace. It records each
+cumulative/frequency/total tuple and replays the existing integer range rules.
+The current encoder and retained archives are differential references. The
+field cursor and reduced-literal validator establish which storage checks are
+already implied by successful grammar acceptance. No external implementation,
+pseudocode or test suite was consulted.
