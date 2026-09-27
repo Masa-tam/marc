@@ -35561,3 +35561,22 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: first-party implementation and independently constructed
   tests; no external expression copied or legal guarantee claimed.
+
+## CR-1472: 2026-09-28 - Record compact-prefix external verification
+
+- Author: Codex; evidence supplied by the maintainer; record review: Codex.
+- Task: record successful pushed CI and four external verifier reports for
+  `0bbe882e2697aff8806c64b2ff4b5787ea6694ec`, closing DD-1305's gate.
+- References: supplied final verifier lines, first-party exchange contract,
+  TVG-1172, FZ-0051 and BM-0148.
+- Evidence: all four lines report 68 schema-58 archives at the exact revision.
+  Under the established workflow these cover two CI bundles verified externally,
+  external self-verification and reverse verification with the Windows build.
+  Local final-source full tests and bidirectional compiler exchange passed.
+- Scope: external evidence is maintainer-reported, not independently rerun here.
+  Historical pending entries are preserved. No implementation, format, public
+  ABI, performance measurement or release change is introduced.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Similarity review: first-party documentation and evidence transcription only;
+  no external expression copied or legal guarantee claimed.

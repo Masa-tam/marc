@@ -1198,3 +1198,20 @@ checks ordered inventory, sizes, SHA-256, exact decoded fixtures and
 byte-identical local re-encoding. Results were not independently rerun here.
 No archive inventory, format, public ABI or release state changes; these
 reports do not establish results for untested architectures or profiles.
+
+#### Compact dual-prefix production search repeat
+
+The maintainer reported successful pushed CI and four successful schema-58
+verifier passes at `0bbe882e2697aff8806c64b2ff4b5787ea6694ec`.
+Every final line reports 68 archives and that exact revision. Under the
+established exchange workflow, the Windows and Ubuntu CI bundles verified
+externally, the external bundle self-verified, and that bundle verified in
+the reverse direction with the Windows build.
+
+These maintainer-reported results close DD-1305's external exchange gate for
+compact dual-prefix production search. Earlier local verification passed
+3,953 tests in each compiler build and both 68-archive exchange directions.
+The verifier checks ordered inventory, sizes, SHA-256, exact decoded fixtures
+and byte-identical local re-encoding. External results were not independently
+rerun here. No archive inventory, format, public ABI or release state changes;
+the reports do not establish results for untested architectures or profiles.

@@ -25928,3 +25928,11 @@ repeats. Retain compact dual-prefix production search with unchanged required
 workspace and the private short-query reference. The measured 27.17% aggregate
 reduction is initialized parsing, not a paired whole-CLI gain. Hosted CI and
 external archive verification remain pending for the new committed revision.
+
+Validation completion: the maintainer subsequently reported successful pushed
+CI and four successful external schema-58 passes, each with 68 archives at
+`0bbe882e2697aff8806c64b2ff4b5787ea6694ec`. Together with final-source local
+full tests, sanitizer checks and both compiler exchange directions, this closes
+DD-1305's verification gate for that exact revision. External evidence is
+maintainer-reported, not independently rerun here. Historical pending notes
+retain their original context; this record introduces no implementation change.
