@@ -17125,3 +17125,31 @@ agree. Comparisons occur outside timers and consume the diagnostic results.
 The recorder is an internal measurement helper without the public admission
 or transactional-output contract; it is never connected to frame publication.
 No production implementation or failure behavior changes in this experiment.
+
+## TVG-1175: Redundant-storage-validation trial differentials
+
+Generate a complete operation grammar covering all nine length classes and
+seventeen distance classes, with intervening literals. At every operation
+position, mutate kind, context, alphabet, value and bit width using twelve
+boundary/invalid values. Compare both the transactional and private-scratch
+encoders with production. Also test every prefix of this grammar, including
+empty and incomplete sequences. Compare error category, operation count/index,
+decision count, payload size, descriptor and the entire supplied byte buffer.
+For transactional failures independently require an unchanged sentinel buffer
+and descriptor, not merely agreement between implementations.
+
+Four 70,000-literal sequences exercise model rescaling and zero/one/exact-minus-
+one/exact/conservative payload capacities, exact/short working-memory limits,
+incomplete grammar and invalid values/contexts. Additional mixed-grammar tests
+cover payload/model/table/block/internal limits and overlapping operation/output
+storage for both APIs; alias failures preserve all backing bytes and descriptor.
+All 127,549 encode comparisons pass in Release and under ASan/UBSan, with
+compatible container annotations disabled. This is a standalone differential
+test, not a coverage-guided stream-fuzzer run.
+
+For this trial, all twelve corpus inputs and three paired traversals also
+match the production entropy payload, result fields and descriptor, and the
+retained frame bytes/raw reconstruction. All 3,239 frames and 45,136,568 tokens
+agree. Additional three-traversal repeats for Mozilla, dickens and nci retain
+exact output. No trial output is connected to the production frame publisher;
+production integration and its full-suite/fuzz gates remain separate work.

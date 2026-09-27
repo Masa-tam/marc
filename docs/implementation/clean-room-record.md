@@ -35640,3 +35640,25 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: reuse is confined to repository-owned code and independent
   diagnostic orchestration; no external expression or legal guarantee claimed.
+
+## CR-1476: 2026-09-28 - Trial validated-field check consolidation
+
+- Author and reviewer: Codex.
+- Task: implement the approved DD-1308 isolated trial, establish malformed-input
+  and output-contract equivalence, then compare integrated entropy timings.
+- References: IR-1069, repository-owned cursor, symbol validator, encoder and
+  retained archives; no external implementation or test source was used.
+- Independent work: omit only backend storage checks already established by
+  successful cursor acceptance; retain all checks in the reference path.
+- Validation: TVG-1175's 127,549 comparisons pass in Release and ASan/UBSan;
+  all twelve corpus inputs agree. BM-0152 records a 3.43% lower summed median
+  and representative repeats, including effectively unchanged nci behavior.
+- Decision: DD-1309 advances the candidate to a separate production-integration
+  validation step. This commit changes documentation only; production APIs,
+  bounds, failure invariants and failed-frame publication remain unchanged.
+- No new production full-suite, coverage-guided stream-fuzz, CI or external
+  validation is claimed. Existing verification remains revision-bound.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: repository-owned source reuse and independently generated
+  differential mutations; no external expression or legal guarantee claimed.

@@ -5986,3 +5986,43 @@ and recording here. The diagnostic is not an optimization, throughput gain,
 peak-memory measurement or whole-CLI result. DD-1308 selects a bounded
 validation-consolidation trial based on source invariants, with integrated
 timing and equivalence still required before any adoption.
+
+## BM-0152: Redundant-storage-validation entropy trial
+
+At base revision `125fc5082e25e963c7da2dce3b91d8df5364e142`, compare the
+isolated DD-1309 scratch encoder with production over three traversals. Both
+timers include the bound scan, grammar, models, cumulative queries, range
+coding and finalization. Alternate order by frame and repetition; allocations,
+preparation and exact comparisons are outside timers. Verify Release
+optimization settings and stable source/executable/library/input hashes.
+
+| Input | Production median seconds | Trial median seconds |
+|---|---:|---:|
+| mozilla | 0.8140378 | 0.7876925 |
+| dickens | 0.2161809 | 0.2057817 |
+| mr | 0.1815097 | 0.1736499 |
+| nci | 0.1637901 | 0.1637406 |
+| ooffice | 0.1437347 | 0.1373025 |
+| osdb | 0.1777892 | 0.1727945 |
+| reymont | 0.1002721 | 0.0960502 |
+| samba | 0.2515570 | 0.2447804 |
+| sao | 0.2118563 | 0.2060279 |
+| webster | 0.6565000 | 0.6300950 |
+| x-ray | 0.2764422 | 0.2652478 |
+| xml | 0.0356570 | 0.0352445 |
+| Sum of input medians | 3.2293270 | 3.1184075 |
+
+The sum falls by 3.43%. All twelve initial medians fall, but nci's 0.03%
+difference is too small to treat as an established gain. Three additional
+paired traversals each for Mozilla, dickens and nci give respective production/
+trial medians of 0.8114353/0.7868339, 0.2152339/0.2069694 and
+0.1635066/0.1635484 seconds. Every Mozilla/dickens sample improves; nci has
+two slightly lower trial samples and one higher, with a 0.026% higher median.
+These are observed samples, not confidence intervals or universal speedups.
+
+All payloads, descriptors and result fields agree across 3,239 frames and
+45,136,568 tokens. Charged encoder state and allocation policy are unchanged;
+no new peak-memory measurement is claimed. The driver's separate production
+tokenization/frame timings do not measure a candidate pipeline and are not
+added to or subtracted from these values. Whole-CLI improvement and production
+integration are not established by this isolated result.

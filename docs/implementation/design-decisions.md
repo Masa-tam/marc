@@ -26026,3 +26026,33 @@ field mutations and truncations, capacity/limit/overlap differentials, identical
 payloads/descriptors and paired integrated-encoder timings across all inputs.
 Compiler elimination may already make the duplicate checks inexpensive. Do
 not weaken validation or infer a speedup from the standalone grammar timer.
+
+## DD-1309: Validation consolidation passes isolated trial gates
+
+Implement DD-1308 in a separate namespace copied from the production encoder.
+In run<false>, omit the repeated ordinary-symbol context/alphabet/value/unused-
+width checks and bypass context/alphabet/width/value checks after successful
+cursor.accept. Retain these checks in run<true>. Keep every other validation,
+range/model update, rescale, count, scratch fallback and publication step.
+The trial reports the same charged encoder-state size as production.
+
+The cursor's ordinary-symbol validator restricts contexts to the first 24
+models, verifies the context-specific alphabet, bounds the value and requires
+zero bit width. Its bypass path checks zero context/alphabet, the expected
+phase width and unused high bits; reachable bypass widths are 1 through 16.
+Thus the omitted checks cannot fail after cursor acceptance. Invalid input
+continues to fail at that acceptance with the same invalid-symbol mapping
+before any model access or shift. This argument depends on the existing
+cursor contract and must be revisited if that contract changes.
+
+TVG-1175's 127,549 comparisons and sanitizer checks pass. BM-0152's summed
+entropy medians fall by 3.43%, with all corpus payloads unchanged. Mozilla and
+dickens repeats retain their improvement, while nci is effectively unchanged
+and has mixed sample direction. Do not claim a benefit on every input.
+
+Proceed to a production-integration validation step, retaining the unchanged
+reference path and adding permanent malformed/boundary regressions. Before
+adoption, run the required production suites, decoder/stream safety checks,
+sanitizer/fuzzer coverage and whole-pipeline measurements; recheck actual
+production code generation and memory admission. This entry records a positive
+isolated trial, not completed integration or a new CI/external verification.

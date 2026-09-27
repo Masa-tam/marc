@@ -9535,3 +9535,12 @@ The current encoder and retained archives are differential references. The
 field cursor and reduced-literal validator establish which storage checks are
 already implied by successful grammar acceptance. No external implementation,
 pseudocode or test suite was consulted.
+
+### IR-1069
+
+The validation-consolidation trial uses the first-party position-distance
+field cursor, reduced-literal symbol validator and entropy encoder. Successful
+cursor acceptance already establishes the storage predicates before model
+indexing and shifts. An isolated encoder retains the reference checks while
+omitting only those repeated predicates in its optimized path. No external
+implementation, pseudocode or test suite was consulted.
