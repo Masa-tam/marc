@@ -155,24 +155,28 @@ template<bool Reference>
             return fail(result, ContextualDynamicRangeEncodeError::invalid_symbol);
         }
         if (operation.kind == context::internal::ModeledOperationKind::symbol) {
-            if (operation.context_id
-                >= context::internal::lzss_position_distance_context_count) {
-                return fail(result,
-                            ContextualDynamicRangeEncodeError::invalid_context);
-            }
-            if (operation.alphabet_size
-                != context::internal::lzss_position_distance_alphabets[
-                    operation.context_id]) {
-                return fail(result,
-                            ContextualDynamicRangeEncodeError::invalid_alphabet);
-            }
-            if (operation.value >= operation.alphabet_size) {
-                return fail(result,
-                            ContextualDynamicRangeEncodeError::invalid_symbol);
-            }
-            if (operation.bit_count != 0) {
-                return fail(result, ContextualDynamicRangeEncodeError::
-                                        nonzero_unused_field);
+            // Successful cursor acceptance proves these storage predicates.
+            // Retain the explicit checks in the reference implementation.
+            if constexpr (Reference) {
+                if (operation.context_id
+                    >= context::internal::lzss_position_distance_context_count) {
+                    return fail(result,
+                                ContextualDynamicRangeEncodeError::invalid_context);
+                }
+                if (operation.alphabet_size
+                    != context::internal::lzss_position_distance_alphabets[
+                        operation.context_id]) {
+                    return fail(result,
+                                ContextualDynamicRangeEncodeError::invalid_alphabet);
+                }
+                if (operation.value >= operation.alphabet_size) {
+                    return fail(result,
+                                ContextualDynamicRangeEncodeError::invalid_symbol);
+                }
+                if (operation.bit_count != 0) {
+                    return fail(result, ContextualDynamicRangeEncodeError::
+                                            nonzero_unused_field);
+                }
             }
             const auto offset = context::internal::lzss_position_distance_offsets[
                 operation.context_id];
@@ -192,17 +196,20 @@ template<bool Reference>
             if (!add_decisions(1, result)) return result;
         } else if (operation.kind
                    == context::internal::ModeledOperationKind::bypass_bits) {
-            if (operation.context_id != 0 || operation.alphabet_size != 0) {
-                return fail(result, ContextualDynamicRangeEncodeError::
-                                        nonzero_unused_field);
-            }
-            if (operation.bit_count == 0 || operation.bit_count > 16) {
-                return fail(result, ContextualDynamicRangeEncodeError::
-                                        invalid_bypass_width);
-            }
-            if ((operation.value >> operation.bit_count) != 0) {
-                return fail(result, ContextualDynamicRangeEncodeError::
-                                        nonzero_unused_field);
+            // The accepted phase fixes a width in 1..16 and bounds its value.
+            if constexpr (Reference) {
+                if (operation.context_id != 0 || operation.alphabet_size != 0) {
+                    return fail(result, ContextualDynamicRangeEncodeError::
+                                            nonzero_unused_field);
+                }
+                if (operation.bit_count == 0 || operation.bit_count > 16) {
+                    return fail(result, ContextualDynamicRangeEncodeError::
+                                            invalid_bypass_width);
+                }
+                if ((operation.value >> operation.bit_count) != 0) {
+                    return fail(result, ContextualDynamicRangeEncodeError::
+                                            nonzero_unused_field);
+                }
             }
             if (!Reference && field == context::internal::LzssPositionDistanceField::adaptive_distance_extra) {
                 for (std::uint8_t bit = 0; bit < operation.bit_count; ++bit) {

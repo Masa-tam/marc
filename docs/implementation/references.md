@@ -9544,3 +9544,11 @@ cursor acceptance already establishes the storage predicates before model
 indexing and shifts. An isolated encoder retains the reference checks while
 omitting only those repeated predicates in its optimized path. No external
 implementation, pseudocode or test suite was consulted.
+
+### IR-1070
+
+The production validation-consolidation change derives from DD-1308/DD-1309
+and their first-party cursor invariant proof and isolated differential trial.
+The pre-integration optimized encoder is retained privately for paired timing;
+the checked reference path remains in production for permanent differential
+tests. No external implementation, pseudocode or test suite was consulted.

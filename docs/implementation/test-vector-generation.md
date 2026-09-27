@@ -17153,3 +17153,26 @@ retained frame bytes/raw reconstruction. All 3,239 frames and 45,136,568 tokens
 agree. Additional three-traversal repeats for Mozilla, dickens and nci retain
 exact output. No trial output is connected to the production frame publisher;
 production integration and its full-suite/fuzz gates remain separate work.
+
+## TVG-1176: Production validated-field storage regression
+
+Add a permanent comparison of the optimized transactional and private-scratch
+encoders with the retained checked reference. Generate all nine length and
+seventeen distance classes with literals, compare every grammar prefix, and
+mutate each operation's kind, context, alphabet, value and bit width through
+twelve selected boundary values. Compare result counts/positions/errors and
+descriptors. Compare entire output buffers on success and independently require
+transactional failure output and both failure descriptors to remain unchanged.
+Private scratch bytes are not publishable on failure and need not be unchanged.
+
+Existing exact/short capacity, memory admission, overlap, rescaling, prepared
+write faults, chunking, guard and failed-frame publication tests remain active.
+The reference path keeps its redundant checks; the production path still runs
+cursor acceptance before any model indexing or shifts. FZ-0052 exercises the
+same integrated source through the bounded stream harness.
+
+The final integrated source passes all 3,954 tests in each of the MSVC and
+Clang builds, including this new regression and existing failed-frame tests.
+The full runs complete in 450.25 and 368.81 seconds respectively; concurrent
+validation workloads make these test durations unsuitable as codec benchmarks.
+Source and binary hashes remain unchanged through validation and measurement.

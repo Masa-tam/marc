@@ -1215,3 +1215,18 @@ The verifier checks ordered inventory, sizes, SHA-256, exact decoded fixtures
 and byte-identical local re-encoding. External results were not independently
 rerun here. No archive inventory, format, public ABI or release state changes;
 the reports do not establish results for untested architectures or profiles.
+
+#### Validated-field storage-check integration gate
+
+DD-1310 integrates an encoder-only removal of storage checks already proven
+by grammar acceptance. The checked reference remains available, the archive
+inventory remains schema 58 with 68 archives, and no stream format or public
+ABI changes. Both compiler builds pass all 3,954 tests; corpus payloads and
+fourteen CLI round trips remain byte-identical to retained archives.
+
+Run the two local compiler exchange directions at the clean implementation
+revision, then obtain hosted CI and external exchange results naming that
+revision before closing its external gate. The previously reported results
+at 0bbe882e validate the earlier compact-prefix integration only. At this
+recording point, the new hosted/external gate is pending; no prior report is
+relabelled as verification of this change.

@@ -6026,3 +6026,44 @@ no new peak-memory measurement is claimed. The driver's separate production
 tokenization/frame timings do not measure a candidate pipeline and are not
 added to or subtracted from these values. Whole-CLI improvement and production
 integration are not established by this isolated result.
+
+## BM-0153: Integrated validated-field storage checks
+
+Measure the actual DD-1310 production library against a private copy of the
+pre-integration optimized encoder from `5302a9542bae35c1256632a831bea5daddb30f7e`.
+Both include their scratch bound scan, grammar, model initialization/updates,
+range arithmetic and finalization. Alternate order by frame/repetition over
+three traversals; preparation, allocation and exact comparisons are outside
+timers. All builds/tests/fuzz finish before these standalone measurements.
+
+| Input | Prior encoder median seconds | Integrated encoder median seconds |
+|---|---:|---:|
+| mozilla | 0.8064505 | 0.7957243 |
+| dickens | 0.2114816 | 0.2061576 |
+| mr | 0.1777305 | 0.1739619 |
+| nci | 0.1648303 | 0.1594990 |
+| ooffice | 0.1414284 | 0.1388340 |
+| osdb | 0.1789091 | 0.1772463 |
+| reymont | 0.0978451 | 0.0958571 |
+| samba | 0.2469863 | 0.2439660 |
+| sao | 0.2073867 | 0.2056034 |
+| webster | 0.6485722 | 0.6350051 |
+| x-ray | 0.2712585 | 0.2673601 |
+| xml | 0.0361522 | 0.0348517 |
+| Sum of input medians | 3.1890314 | 3.1340665 |
+
+The summed median falls by 1.72%, with lower medians on all twelve measured
+inputs. This differs from the isolated trial's 3.43%; use these production
+measurements rather than transferring the trial percentage. These finite
+samples are not confidence intervals or a universal performance guarantee.
+All payloads, descriptors and result fields agree across 3,239 frames and
+45,136,568 tokens, with retained archives and raw reconstruction also exact.
+
+Three standalone Mozilla CLI runs have median encode/decode times of
+2.4261440/2.0813656 seconds. The archive remains 18,655,833 bytes with SHA-256
+`244b2fbd55fb394c92501e6d50e26c59823ae1251a5a430834cee69ca59ddaf2`.
+The other eleven inputs each pass an additional CLI encode/decode check, for
+fourteen complete CLI round trips. These are current absolute CLI timings,
+not a paired whole-CLI improvement claim. Separate retained-token frame timers
+are not added to entropy timings. Source, binaries and inputs remain stable;
+allocation charges are unchanged and no new peak-memory measurement is claimed.

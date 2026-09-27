@@ -364,6 +364,60 @@ TEST(LzssPositionDistanceRangeEncoder, PreparedWriteFaultsDoNotPublishDescriptor
     }
 }
 
+TEST(LzssPositionDistanceRangeEncoder, AcceptedFieldStorageMatchesCheckedReference) {
+    // Cover every grammar width and mutate each storage field, including
+    // in-range but phase-inappropriate values. History is a separate layer.
+    std::vector<ModeledOperation> ops;
+    LzssPositionDistanceFieldCursor cursor;
+    const auto append=[&](unsigned value) {
+        auto op=cursor.next().shape; op.value=value;
+        ASSERT_EQ(cursor.accept(op),LzssFieldContextError::none);
+        ops.push_back(op);
+    };
+    for(unsigned length=0;length<=8;++length) for(unsigned distance=0;distance<=16;++distance) {
+        append(0); append((length*29+distance)%256); append(1); append(length);
+        if(length) append(0);
+        append(distance); if(distance) append(0);
+    }
+    ASSERT_EQ(cursor.finish(),LzssFieldContextError::none);
+    const auto compare=[&](std::span<const ModeledOperation> input) {
+        std::array<std::byte,16000> expected,actual,scratch;
+        expected.fill(std::byte{0x55}); actual=expected; scratch=expected;
+        ContextualDynamicRangeDescriptor ed{99,98,97},ad=ed,sd=ed;
+        const auto e=encode_lzss_position_distance_range_operations_reference(input,{},expected,ed);
+        const auto a=encode_lzss_position_distance_range_operations(input,{},actual,ad);
+        const auto s=encode_lzss_position_distance_range_operations_scratch(input,{},scratch,sd);
+        same_result(e,a); same_result(e,s); same_descriptor(ed,ad); same_descriptor(ed,sd);
+        EXPECT_EQ(expected,actual);
+        if(e.error==Error::none) EXPECT_EQ(expected,scratch);
+        else {
+            EXPECT_TRUE(std::ranges::all_of(actual,[](auto b){return b==std::byte{0x55};}));
+            same_descriptor(ad,ContextualDynamicRangeDescriptor{99,98,97});
+            same_descriptor(sd,ContextualDynamicRangeDescriptor{99,98,97});
+        }
+    };
+    for(std::size_t size=0;size<=ops.size();++size) compare(std::span{ops}.first(size));
+    for(std::size_t index=0;index<ops.size();++index) {
+        SCOPED_TRACE(index);
+        const auto original=ops[index];
+        for(unsigned field=0;field<5;++field) for(unsigned value:
+            {0U,1U,2U,8U,16U,17U,24U,40U,255U,256U,65535U,UINT32_MAX}) {
+            SCOPED_TRACE(field);
+            SCOPED_TRACE(value);
+            ops[index]=original;
+            switch(field) {
+            case 0: ops[index].kind=static_cast<ModeledOperationKind>(value); break;
+            case 1: ops[index].context_id=static_cast<std::uint16_t>(value); break;
+            case 2: ops[index].alphabet_size=static_cast<std::uint16_t>(value); break;
+            case 3: ops[index].value=value; break;
+            case 4: ops[index].bit_count=static_cast<std::uint8_t>(value); break;
+            }
+            compare(ops);
+        }
+        ops[index]=original;
+    }
+}
+
 TEST(LzssPositionDistanceRangeEncoder, PreparedPlanReadinessAndPreflightAreOneShot) {
     static_assert(!std::is_copy_constructible_v<PreparedLzssPositionDistanceEncode>);
     static_assert(!std::is_copy_assignable_v<PreparedLzssPositionDistanceEncode>);

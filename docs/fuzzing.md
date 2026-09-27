@@ -1157,3 +1157,13 @@ After the final guarded-probe, nearest-prefix entry and insertion-loop
 refinements, rebuild and repeat all 765 initial cases and 10,000 runs with a
 different seed. The final source again passes without a finding or mismatch;
 initial and final campaign artifacts are retained separately.
+
+### FZ-0052: Integrated position-distance validation consolidation
+
+Rebuild the existing position-distance ASan/UBSan harness after integrating
+DD-1309's validated-field check consolidation. On 2026-09-28, all 738
+serialized boundary cases, 27 raw boundary cases and 10,000 generated runs
+pass without a reported finding or mismatch. Reference encoding, incremental
+stream decoding, malformed input, guards and failed-frame publication checks
+remain active. Compatible container annotations remain disabled. This finite
+campaign complements TVG-1176; it is not exhaustive malformed-input coverage.

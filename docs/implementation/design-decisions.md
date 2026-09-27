@@ -26056,3 +26056,27 @@ adoption, run the required production suites, decoder/stream safety checks,
 sanitizer/fuzzer coverage and whole-pipeline measurements; recheck actual
 production code generation and memory admission. This entry records a positive
 isolated trial, not completed integration or a new CI/external verification.
+
+## DD-1310: Integrate validated-field storage checks in the encoder
+
+Apply DD-1309's two compile-time reference guards to the production
+position-distance range encoder. Successful cursor acceptance remains the
+first operation validation, ahead of model indexing and bit shifts. Keep
+the redundant storage checks in the checked reference path and document the
+cursor predicates on which the optimized path relies. No range arithmetic,
+model updates, rescaling, memory charge, scratch admission/fallback, overlap
+check, error mapping or descriptor publication rule changes.
+
+TVG-1176 adds permanent cross-path storage-field mutation and grammar-prefix
+tests. Both compiler builds pass all 3,954 tests, and FZ-0052 passes the bounded
+ASan/UBSan stream campaign. The transactional output guarantee remains intact;
+private scratch may contain partial bytes on failure, but failed descriptors
+and frames are never published. The format, public API and stream bytes remain
+unchanged. BM-0153 measures the actual production library against a private
+copy of the pre-integration optimized encoder, rather than substituting the
+isolated trial's measurements for production results.
+
+Local source/test/benchmark evidence and an exact-revision local exchange are
+separate from hosted CI and external verification. The prior production gate
+at 0bbe882e does not validate this new integration; its CI/external gate must
+be closed with results naming the new implementation revision.

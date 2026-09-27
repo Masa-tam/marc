@@ -35662,3 +35662,26 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: repository-owned source reuse and independently generated
   differential mutations; no external expression or legal guarantee claimed.
+
+## CR-1477: 2026-09-28 - Integrate validated-field storage checks
+
+- Author and reviewer: Codex.
+- Task: integrate the approved DD-1309 trial, retain the checked reference,
+  add permanent regressions and validate production behavior and performance.
+- References: IR-1070, first-party cursor proof, encoder, differential trial,
+  stream tests and retained archives; no external implementation was consulted.
+- Independent change: conditionalize the two redundant backend storage-check
+  blocks on the reference template parameter. All admission, grammar, model,
+  range, error and publication behavior remains as specified by DD-1310.
+- Validation: TVG-1176 records both 3,954-test suites; FZ-0052 records 765
+  initial cases and 10,000 ASan/UBSan runs. BM-0153 records all-corpus exact
+  output, 1.72% lower summed entropy medians and fourteen exact CLI round trips.
+  Source and binary identities remain stable throughout final validation.
+- Scope: no format, API, archive inventory or memory-charge change. Preserve
+  transactional failure output and prevent failed private frames from being
+  published. Local exact-revision exchange and hosted/external gates remain
+  separately recorded; prior-revision external results are not substituted.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: repository-owned code and independent regression inputs;
+  no external expression copied or legal guarantee claimed.
