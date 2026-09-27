@@ -25892,3 +25892,39 @@ prototype's vector storage. Remeasure after restoring production checks and
 initialization, then require full tests, stream fuzz and alternate-compiler/
 external gates before closing adoption. This entry changes no production code,
 format, failure contract or failed-frame publication behavior.
+
+## DD-1305: Integrate compact dual-prefix search into bounded workspace
+
+Use DD-1304's two 16-bit head arrays and two input-sized 16-bit link arrays
+inside the existing required byte extent, retaining its four-byte alignment.
+Initialize all elements with explicit object construction after the unchanged
+admission/overlap checks; publish the initialized finder only after success.
+Keep the current query-position and invalid-advance guards. The retained
+three-byte reference query uses the same compact history; compare additionally
+with exhaustive search and the prior production implementation.
+
+The finder remains a local tokenizer helper, not persistent stream-owner state.
+Changing its private span layout must not alter charged heap workspace or
+frame-owner storage. No format, public API, limit acceptance, transactional
+output or failed-frame publication change is intended. Validate these contracts
+and remeasure full initialization/insertion costs before adoption.
+
+In the long-prefix chain, apply the guarded best-length probe even when the
+fallback length is three. If the nearest exact three-byte prefix also matches
+the fourth byte, start the long chain at that position: any nearer long-chain
+entry must be a collision because it cannot be an exact three-byte match.
+Otherwise look up the long-chain head normally. Both cases retain all possible
+longer matches and nearest-distance ties.
+
+For insertion, share the three-byte numeric key when computing both hashes.
+Process only positions with four available bytes in the main loop, then handle
+the possible final three-byte prefix separately. This preserves insertion of
+every skipped position while removing repeated tail checks and source reads.
+
+Adoption outcome: final-source TVG-1172 full tests pass in both compiler builds,
+and FZ-0051's repeated sanitizer campaign passes. BM-0148 verifies exact corpus
+tokens/frames and lower parsing medians on all twelve inputs, including osdb
+repeats. Retain compact dual-prefix production search with unchanged required
+workspace and the private short-query reference. The measured 27.17% aggregate
+reduction is initialized parsing, not a paired whole-CLI gain. Hosted CI and
+external archive verification remain pending for the new committed revision.

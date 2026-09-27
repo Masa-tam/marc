@@ -5809,3 +5809,49 @@ retained archives. Measurement inputs, sources, executable and library hashes
 remain stable. Compact preallocates 512 KiB of index elements versus wide's
 1 MiB; all implementations coexist in this driver. No peak process-memory
 measurement is claimed. DD-1304 proposes equal-budget production integration.
+
+## BM-0148: Integrated compact-prefix search with complete initialization
+
+Compare the DD-1305 final source worktree based on
+`ab9efd097f40a3c4b4068f009037f5dd18717396` with the prior production finder,
+retained in a separate namespace in the same measurement executable. Preserve
+the old initialization, 32-bit arrays, insertion and probe-first query. The new
+path includes production admission checks and construction of all compact
+heads and links. Rotate old/new order by frame and repetition over three warm
+traversals. Allocation, comparisons, frame encoding, startup and I/O are outside
+timers; initialization, queries, insertion and token writes are included.
+
+| Input | Prior production seconds | Integrated compact seconds |
+|---|---:|---:|
+| mozilla | 1.6048262 | 1.2933002 |
+| dickens | 0.3301732 | 0.1857844 |
+| mr | 0.2824958 | 0.2763132 |
+| nci | 0.6168382 | 0.3774108 |
+| ooffice | 0.1332996 | 0.0812904 |
+| osdb | 0.0848569 | 0.0821795 |
+| reymont | 0.2926439 | 0.1727845 |
+| samba | 0.3548189 | 0.2862211 |
+| sao | 0.1182870 | 0.1000297 |
+| webster | 0.9625485 | 0.6202319 |
+| x-ray | 0.0926548 | 0.0706842 |
+| xml | 0.0596121 | 0.0464924 |
+| Sum of input medians | 4.9330551 | 3.5927223 |
+
+The sum falls 27.17%, with lower medians on all twelve inputs. osdb falls
+3.16%, with nine additional paired traversals all below the prior production
+path. All 3,239 frames and 45,136,568 tokens agree, and each timed candidate
+sequence produces retained frame bytes. Source/executable/library/corpus hashes
+remain stable during measurement. The initial integration had an osdb regression;
+the final guarded probe, nearest-prefix chain entry and shared-key insertion
+are measured together here, without claiming isolated attribution to each.
+
+These are warm initialized-parser results, not confidence intervals, a
+whole-CLI speedup or a prediction for every input. Required index bytes and
+alignment remain unchanged; no new peak process-memory measurement is claimed.
+
+Fourteen final-source CLI round trips (Mozilla three times, other inputs once)
+preserve retained archive and restored-input hashes. Mozilla's unchanged
+18,655,833-byte archive has median elapsed encode/decode times of 2.4555232 /
+2.0277341 seconds including startup and I/O. These standalone CLI observations
+are not paired against the prior production CLI and do not establish its
+percentage speedup.

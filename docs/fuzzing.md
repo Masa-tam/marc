@@ -1139,3 +1139,21 @@ On 2026-09-27 the harness passed 27 raw and 738 serialized initial cases and
 10,000 ASan/UBSan fuzz runs without a reported finding or mismatch. Full-frame
 boundaries and greedy eligibility variants retain deterministic tests; this
 finite campaign does not establish exhaustive coverage.
+
+### FZ-0051: Integrated compact dual-prefix search
+
+Run the existing position-distance harness against the integrated compact
+finder. Its per-position comparisons now cover dual-prefix queries, retained
+three-byte queries and exhaustive search; incremental encoder/decoder,
+malformed input, guard and failed-frame publication checks remain active.
+
+On 2026-09-28, the harness passed 27 raw and 738 serialized initial cases and
+10,000 ASan/UBSan runs without a reported finding or mismatch. Full-frame
+compact sentinel and exact workspace-limit boundaries have deterministic
+tests in TVG-1172. Container annotations remain disabled in the compatible
+build; this finite campaign is not exhaustive decoder coverage.
+
+After the final guarded-probe, nearest-prefix entry and insertion-loop
+refinements, rebuild and repeat all 765 initial cases and 10,000 runs with a
+different seed. The final source again passes without a finding or mismatch;
+initial and final campaign artifacts are retained separately.

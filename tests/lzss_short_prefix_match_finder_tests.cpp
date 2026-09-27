@@ -107,7 +107,7 @@ TEST(LzssShortPrefixMatchFinder, ProbeOrderAgreesAcrossGreedyBoundariesAndVarian
             }
             for(const auto variant:{LzssTypedTokenVariant::field_context_64k_short_match,
                                     LzssTypedTokenVariant::field_context_64k_short_length_escape})
-            for(const auto maximum:{3U,258U}) for(const auto window:{37U,65536U})
+            for(const auto maximum:{3U,4U,258U}) for(const auto window:{37U,65536U})
             for(const auto eligibility:{3U,4U,5U}) {
                 const LzssParameters config{window,3,maximum,0};
                 LzssShortPrefixMatchFinder finder;
@@ -166,4 +166,64 @@ TEST(LzssShortPrefixMatchFinder, RequiresBoundedDisjointWorkspace) {
     EXPECT_EQ(calculate_lzss_short_prefix_workspace(
                   input.size(), parameters, tiny_limits).error,
               LzssShortPrefixError::workspace_limit_exceeded);
+}
+
+TEST(LzssShortPrefixMatchFinder, CompactLayoutPreservesEveryRequiredSizeAndLimit) {
+    marc::core::DecoderLimits limits{};
+    limits.max_block_size=65536;
+    for(std::size_t n=0;n<=65536;++n) {
+        const auto required=calculate_lzss_short_prefix_workspace(n,parameters,limits);
+        ASSERT_EQ(required.error,LzssShortPrefixError::none);
+        ASSERT_EQ(required.workspace_size,n<3?0:4*(65536+n));
+        ASSERT_EQ(required.workspace_alignment,alignof(std::uint32_t));
+        if(n<3) continue;
+        auto exact=limits;exact.max_internal_buffered_bytes=n+required.workspace_size;
+        ASSERT_EQ(calculate_lzss_short_prefix_workspace(n,parameters,exact).error,LzssShortPrefixError::none);
+        --exact.max_internal_buffered_bytes;
+        ASSERT_EQ(calculate_lzss_short_prefix_workspace(n,parameters,exact).error,LzssShortPrefixError::workspace_limit_exceeded);
+    }
+}
+
+TEST(LzssShortPrefixMatchFinder, CompactTailSentinelAndFailedReinitialization) {
+    std::vector<std::byte> input(65536,std::byte{0});
+    // Force queries and insertions at the highest legal compact positions.
+    input[65531]=std::byte{1};
+    std::vector<std::uint32_t> storage(131072);
+    auto workspace=std::as_writable_bytes(std::span{storage});
+    LzssShortPrefixMatchFinder finder;
+    ASSERT_EQ(initialize_lzss_short_prefix_match_finder(input,parameters,{},workspace,finder),LzssShortPrefixError::none);
+    finder.advance(0,65532);
+    LzssExhaustiveMatchFinder exhaustive{input,parameters};
+    for(std::size_t p=65532;p<65536;++p) {
+        ASSERT_EQ(finder.find_match(p),exhaustive.find_match(p));
+        ASSERT_EQ(finder.find_match_reference(p),exhaustive.find_match(p));
+        finder.advance(p,p+1);
+    }
+    ASSERT_EQ(initialize_lzss_short_prefix_match_finder(input,parameters,{},workspace,finder),LzssShortPrefixError::none);
+    finder.advance(0,4);
+    const auto expected=finder.find_match(4);
+    const std::vector<std::byte> saved(workspace.begin(),workspace.end());
+    EXPECT_EQ(initialize_lzss_short_prefix_match_finder(input,parameters,{},workspace.first(workspace.size()-1),finder),LzssShortPrefixError::workspace_too_small);
+    EXPECT_EQ(finder.find_match(4),expected);
+    EXPECT_TRUE(std::equal(saved.begin(),saved.end(),workspace.begin()));
+    const auto small_input=std::span<const std::byte>{input}.first(7);
+    EXPECT_EQ(initialize_lzss_short_prefix_match_finder(small_input,parameters,{},workspace.subspan(1),finder),LzssShortPrefixError::misaligned_workspace);
+    EXPECT_EQ(finder.find_match(4),expected);
+    EXPECT_TRUE(std::equal(saved.begin(),saved.end(),workspace.begin()));
+    const auto alias=std::span<const std::byte>{workspace}.first(7);
+    EXPECT_EQ(initialize_lzss_short_prefix_match_finder(alias,parameters,{},workspace,finder),LzssShortPrefixError::overlapping_buffers);
+    EXPECT_EQ(finder.find_match(4),expected);
+    EXPECT_TRUE(std::equal(saved.begin(),saved.end(),workspace.begin()));
+}
+
+TEST(LzssShortPrefixMatchFinder, FourByteCollisionsAndShortFallback) {
+    // The same colliding numeric keys as the three-byte test, extended by 00.
+    const std::array input{
+        std::byte{3},std::byte{0},std::byte{0},std::byte{0},std::byte{'a'},std::byte{0xff},
+        std::byte{0x60},std::byte{0xc5},std::byte{0},std::byte{0},std::byte{'b'},std::byte{0xfe},
+        std::byte{3},std::byte{0},std::byte{0},std::byte{1},std::byte{0xfd},
+        std::byte{3},std::byte{0},std::byte{0},std::byte{0},std::byte{'a'}};
+    compare_every_position(input,parameters);
+    auto four=parameters;four.max_match_length=4;
+    compare_every_position(input,four);
 }

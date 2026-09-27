@@ -17049,3 +17049,35 @@ Three-way corpus comparisons rotate production, wide and compact execution
 order. All twelve inputs, 3,239 frames and 45,136,568 tokens agree; compact
 tokens produce the retained frame bytes after every traversal. Additional
 osdb repeats agree. The production implementation remains unchanged.
+
+## TVG-1172: Production compact-prefix contracts
+
+Extend greedy differential coverage for both short-match variants with maximum
+length four, comparing the compact dual-prefix query with retained three-byte
+search. Existing small-input comparisons retain the exhaustive oracle. Add
+explicit four-byte hash collisions, nearer length-three fallbacks and queries
+at the highest insertable offsets of a 65,536-byte frame.
+
+Check required bytes and alignment for every input length zero through 65,536,
+including exact and one-byte-short internal limits for nonempty indices. After
+a successful initialization and advance, attempt undersized, misaligned and
+overlapping reinitializations; require unchanged workspace bytes and the same
+query result from the previously initialized finder. Existing greedy tests
+cover ended/invalid-advance guards, and tokenizer/frame/stream tests cover
+transactional outputs, owner accounting and failed-frame non-publication.
+
+Corpus comparison retains the prior 32-bit production finder in an isolated
+namespace and compares complete greedy tokens against the integrated compact
+finder, with initialization and insertion included in both measured paths.
+Every timed compact token sequence is encoded and compared with retained frame
+bytes. This is additional evidence beyond shared compact-history references.
+
+The initial integration passed the targeted seven finder checks and complete
+MSVC and Clang suites of 3,953 registered checks each. Subsequent probe and
+insertion refinements require fresh final-source validation; initial runs are
+retained separately. FZ-0051 records the bounded sanitizer campaigns.
+
+Final-source validation after all refinements again passes all 3,953 registered
+tests in each of the MSVC and Clang builds. The source and binary identities
+remain unchanged through these runs. Initial-source results are not substituted
+for this final verification.

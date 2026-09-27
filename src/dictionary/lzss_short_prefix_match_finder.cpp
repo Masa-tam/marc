@@ -14,16 +14,24 @@ namespace {
 
 constexpr std::size_t bucket_count = 65536;
 constexpr std::size_t prefix_size = 3;
-constexpr std::uint32_t empty_link = std::numeric_limits<std::uint32_t>::max();
+// With input <= 65536, inserted three-/four-byte prefixes end at 65533/65532.
+// The sentinel therefore cannot collide with a live position.
+constexpr std::uint16_t empty_link = std::numeric_limits<std::uint16_t>::max();
+
+[[nodiscard]] std::size_t key_bucket(std::uint32_t key) noexcept {
+    key ^= key >> 11U;
+    return static_cast<std::size_t>((key * UINT32_C(2654435761)) >> 16U);
+}
 
 [[nodiscard]] std::size_t bucket(const std::span<const std::byte> input,
-                                 const std::size_t position) noexcept {
+                                 const std::size_t position,
+                                 const bool four_bytes = false) noexcept {
     std::uint32_t key = std::to_integer<std::uint32_t>(input[position]);
     key |= std::to_integer<std::uint32_t>(input[position + 1]) << 8U;
     key |= std::to_integer<std::uint32_t>(input[position + 2]) << 16U;
-    key ^= key >> 11U;
-    return static_cast<std::size_t>(
-        (key * UINT32_C(2654435761)) >> 16U);
+    if (four_bytes)
+        key |= std::to_integer<std::uint32_t>(input[position + 3]) << 24U;
+    return key_bucket(key);
 }
 
 } // namespace
@@ -115,13 +123,15 @@ LzssShortPrefixError initialize_lzss_short_prefix_match_finder(
     initialized.input_ = input;
     initialized.parameters_ = parameters;
     if (!active.empty()) {
-        auto* const words = reinterpret_cast<std::uint32_t*>(active.data());
+        auto* const words = reinterpret_cast<std::uint16_t*>(active.data());
         initialized.heads_ = {words, bucket_count};
-        initialized.links_ = {words + bucket_count, input.size()};
-        for (std::size_t index = 0; index < initialized.heads_.size(); ++index)
-            std::construct_at(initialized.heads_.data() + index, empty_link);
-        for (std::size_t index = 0; index < initialized.links_.size(); ++index)
-            std::construct_at(initialized.links_.data() + index, empty_link);
+        initialized.long_heads_ = {words + bucket_count, bucket_count};
+        initialized.links_ = {words + 2 * bucket_count, input.size()};
+        initialized.long_links_ = {words + 2 * bucket_count + input.size(), input.size()};
+        // Two 16-bit indices occupy exactly the prior single 32-bit extent.
+        // Construct links as well as heads before any later assignment/read.
+        for (std::size_t index = 0; index < 2 * (bucket_count + input.size()); ++index)
+            std::construct_at(words + index, empty_link);
     }
     finder = initialized;
     return LzssShortPrefixError::none;
@@ -175,7 +185,50 @@ LzssMatch LzssShortPrefixMatchFinder::find_match_impl(
 
 LzssMatch LzssShortPrefixMatchFinder::find_match(
     const std::size_t position) const noexcept {
-    return find_match_impl<true>(position);
+    LzssMatch best{};
+    if (position != next_position_ || position >= input_.size()
+        || input_.size() - position < prefix_size || heads_.empty()) return best;
+    const auto maximum = std::min<std::size_t>(
+        input_.size() - position, parameters_.max_match_length);
+    auto nearest_prefix = empty_link;
+    // The first exact short prefix supplies the nearest length-three fallback.
+    for (auto candidate = heads_[bucket(input_, position)]; candidate != empty_link;
+         candidate = links_[candidate]) {
+        const auto distance = position - candidate;
+        if (distance == 0 || distance > parameters_.window_size) break;
+        if (input_[position] == input_[candidate]
+            && input_[position + 1] == input_[candidate + 1]
+            && input_[position + 2] == input_[candidate + 2]) {
+            best = {static_cast<std::uint32_t>(distance), 3};
+            nearest_prefix = candidate;
+            break;
+        }
+    }
+    if (best.length == 0 || maximum == 3) return best;
+    // If the nearest exact short prefix also matches byte four, no closer
+    // long-chain entry can be an exact match. Start from its existing link.
+    const auto first_long = input_[position + 3] == input_[nearest_prefix + 3]
+        ? nearest_prefix : long_heads_[bucket(input_, position, true)];
+    for (auto candidate = first_long; candidate != empty_link;
+         candidate = long_links_[candidate]) {
+        const auto distance = position - candidate;
+        if (distance == 0 || distance > parameters_.window_size) break;
+        // A maximum-length update exits immediately, bounding this probe.
+        // This also rejects fourth-byte mismatches while best.length is three.
+        if (input_[position + best.length] != input_[candidate + best.length])
+            continue;
+        if (input_[position] != input_[candidate]
+            || input_[position + 1] != input_[candidate + 1]
+            || input_[position + 2] != input_[candidate + 2]
+            || input_[position + 3] != input_[candidate + 3]) continue;
+        std::size_t length = 4;
+        while (length < maximum && input_[position + length] == input_[candidate + length]) ++length;
+        if (length > best.length) {
+            best = {static_cast<std::uint32_t>(distance), static_cast<std::uint32_t>(length)};
+            if (length == maximum) break;
+        }
+    }
+    return best;
 }
 
 LzssMatch LzssShortPrefixMatchFinder::find_match_reference(
@@ -190,11 +243,26 @@ void LzssShortPrefixMatchFinder::advance(
         next_position_ = input_.size() + 1;
         return;
     }
-    for (auto cursor = position; cursor < next_position; ++cursor) {
-        if (input_.size() - cursor < prefix_size) continue;
+    auto cursor = position;
+    const auto long_end = std::min(next_position, input_.size() >= 4 ? input_.size() - 3 : 0);
+    // All iterations here have four bytes. Share the three-byte numeric key
+    // and handle the final short prefix separately, outside the hot loop.
+    for (; cursor < long_end; ++cursor) {
+        std::uint32_t key = std::to_integer<std::uint32_t>(input_[cursor]);
+        key |= std::to_integer<std::uint32_t>(input_[cursor + 1]) << 8U;
+        key |= std::to_integer<std::uint32_t>(input_[cursor + 2]) << 16U;
+        const auto index = key_bucket(key);
+        const auto long_index = key_bucket(key | (std::to_integer<std::uint32_t>(input_[cursor + 3]) << 24U));
+        links_[cursor] = heads_[index];
+        heads_[index] = static_cast<std::uint16_t>(cursor);
+        long_links_[cursor] = long_heads_[long_index];
+        long_heads_[long_index] = static_cast<std::uint16_t>(cursor);
+    }
+    for (; cursor < next_position; ++cursor) {
+        if (input_.size() - cursor < prefix_size) break;
         const auto index = bucket(input_, cursor);
         links_[cursor] = heads_[index];
-        heads_[index] = static_cast<std::uint32_t>(cursor);
+        heads_[index] = static_cast<std::uint16_t>(cursor);
     }
     next_position_ = next_position;
 }

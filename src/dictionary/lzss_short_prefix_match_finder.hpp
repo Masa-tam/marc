@@ -38,7 +38,7 @@ calculate_lzss_short_prefix_workspace(
     const core::DecoderLimits& limits,
     LzssTypedTokenVariant variant) noexcept;
 
-// Private exact index for variants 7 and 8. Collisions are verified against
+// Private exact dual-prefix index for variants 7 and 8. Collisions are verified against
 // the source bytes; a chain is traversed nearest-first. Caller owns storage.
 class LzssShortPrefixMatchFinder {
 public:
@@ -58,8 +58,10 @@ private:
 
     std::span<const std::byte> input_{};
     LzssParameters parameters_{};
-    std::span<std::uint32_t> heads_{};
-    std::span<std::uint32_t> links_{};
+    std::span<std::uint16_t> heads_{};
+    std::span<std::uint16_t> links_{};
+    std::span<std::uint16_t> long_heads_{};
+    std::span<std::uint16_t> long_links_{};
     std::size_t next_position_{};
 };
 

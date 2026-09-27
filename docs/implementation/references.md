@@ -9501,3 +9501,10 @@ first-party 64 KiB frame limit and minimum three-byte prefix. It retains the
 prior wide-index trial and production finder as references, and uses the
 existing workspace calculator for layout and admission-boundary comparisons.
 No external implementation, pseudocode or optimization source was consulted.
+
+### IR-1065
+
+The compact-index production trial uses DD-1304's first-party bounds proof,
+isolated experiment and existing finder, tokenizer, workspace and stream tests.
+The prior production finder is retained separately for paired measurements.
+No external implementation source, pseudocode or test suite was consulted.

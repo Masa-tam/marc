@@ -35538,3 +35538,26 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: first-party bounds reasoning and independent prototype;
   no external expression copied or legal guarantee claimed.
+
+## CR-1471: 2026-09-28 - Integrate bounded compact-prefix search
+
+- Author and reviewer: Codex.
+- Task: implement the approved compact-prefix production trial while retaining
+  workspace admission, transactional errors and failed-frame non-publication.
+- References: IR-1065, DD-1304's first-party trial and existing production
+  finder, tokenizer, workspace, stream tests and fuzz harness.
+- Independent design: construct both compact indices in the original byte
+  extent; retain short-query reference, guard the best-length probe, reuse a
+  nearest exact prefix for chain entry, and share insertion keys with a bounded
+  separate tail. DD-1305 records correctness and lifetime constraints.
+- Validation: TVG-1172 adds capacity, sentinel, collision and failure-state
+  checks. FZ-0051 records separate initial/final sanitizer campaigns. BM-0148
+  compares final production behavior with the independently retained prior
+  finder and all twelve retained corpus archives.
+- Scope: no format, public API or required heap-workspace increase. Finder
+  metadata remains local to tokenization. Hosted CI and external verification
+  for the new production revision remain maintainer-owned gates.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: first-party implementation and independently constructed
+  tests; no external expression copied or legal guarantee claimed.
