@@ -9476,3 +9476,12 @@ The DD-1300 comparison-order trial uses the first-party short-prefix finder
 and BM-0143's isolated candidate diagnostics. The existing comparison order
 and exhaustive finder remain differential references. No external source,
 pseudocode or test suite was consulted.
+
+### IR-1062
+
+The post-DD-1301 chain diagnostic uses the first-party probe-first finder,
+scratch tokenizer, frame encoder and retained fixed-profile archives. An
+untimed replay checks every selected token and classifies current best length
+and fourth-byte mismatches. Workspace planning and raw-frame limit accounting
+provide the constraints for a possible additional index. No external source,
+pseudocode or implementation was consulted.

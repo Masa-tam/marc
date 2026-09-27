@@ -5673,3 +5673,46 @@ are not a paired CLI comparison with earlier runs. No new peak-memory result
 is claimed; object/workspace layout and allocations are unchanged. DD-1301
 retains the candidate based on the bounded change, differential coverage and
 this paired parser comparison; new-revision external verification is separate.
+
+## BM-0145: Post-probe-order chain diagnostic
+
+At base revision `b4dc77d0bd95f14bb5a73c1fbf05b6ba612368ba`, replay the
+unchanged production finder over all twelve Silesia inputs, fixed eligibility
+3 and 64 KiB frames. All 3,239 frames and 45,136,568 tokens match production;
+raw reconstruction and complete frames match retained inputs and archives.
+The production library matches the previously validated build. Input,
+archive, probe source, binary and library hashes remain stable during the run.
+
+Instrumentation runs outside timing. It inspects prefix membership separately
+and classifies the logical probe-first outcome, not machine instruction order.
+Candidate visits partition as follows:
+
+| Classification | Visits |
+|---|---:|
+| Best-length probe rejects | 1,835,376,124 |
+| Subsequent prefix rejects | 11,051,892 |
+| Extension attempted | 129,068,362 |
+| Total | 1,975,496,378 |
+
+At entry to each visit, current best lengths are zero for 32,631,233 visits,
+three for 147,113,778, four through seven for 718,784,330, eight through fifteen
+for 441,739,513 and at least sixteen for 635,227,524. There are 1,858 token
+queries with fewer than four remaining input bytes.
+
+Among all visits, 811,356,638 (41.07%) have a best length of at least three,
+more than three available match bytes, an exact three-byte prefix and a
+different fourth byte. Per-input shares range from 10.37% to 79.12%; Mozilla
+has 307,273,263 such visits (32.95%). These are candidates that cannot improve
+the established match, not visits proven removable by a particular new hash
+table. A new index introduces collisions, construction and insertion costs.
+The diagnostic does not predict a speedup.
+
+Three warm production traversals give summed per-input median seconds of
+4.9806436 for scratch tokenization, 4.1959657 for complete retained-token frame
+encoding, and 3.2779245 for an additional entropy-only replay. The entropy
+replay repeats work already included in frame encoding; do not add these
+three values or subtract them for causal attribution. Counters and byte
+comparisons are outside timers; each timed output is checked. These are
+standalone stage observations, not a paired comparison against BM-0144 or
+whole-CLI measurements. No new peak-memory measurement is claimed. DD-1302
+specifies the bounded next experiment and memory-admission constraints.

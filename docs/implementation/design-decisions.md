@@ -25788,3 +25788,36 @@ The two CI bundles verified externally, followed by external self-verification
 and reverse verification with the Windows build. This closes DD-1300/DD-1301's
 verification gate for that exact revision. External results are reported
 evidence, not independently rerun here; earlier pending notes remain historical.
+
+## DD-1302: Diagnose a fourth-byte index before changing workspace admission
+
+BM-0145 finds 811,356,638 visits with an established match of at least three
+bytes, an exact three-byte prefix and a different fourth byte. Such candidates
+cannot improve the current match. This motivates an isolated dual-index trial,
+not production adoption or a predicted throughput improvement.
+
+Retain the three-byte index to find the nearest valid length-three fallback;
+search four-byte candidates for longer matches, preserving strict-longer
+replacement, nearest-distance ties, window bounds and overlap semantics.
+Hash collisions still require exact prefix verification. Inputs or configured
+maximum lengths below four must retain the existing path. Every skipped raw
+position must still be inserted where its prefix is available.
+
+A straightforward second 65,536-head table and one 32-bit link per input byte
+adds 4 * (65,536 + input_size) bytes, at most 524,288 bytes per 64 KiB frame.
+This is a design footprint, not measured peak memory. Existing aggregate
+workspace charging, alignment and downstream limit subtraction must include
+any added storage. Simply doubling the required workspace would reject inputs
+that are currently accepted; it is not an acceptable integration strategy.
+An optional path must retain the current finder when extra storage cannot be
+admitted, without weakening aggregate limits or existing failure guarantees.
+
+First prototype independently of the production default and compare both
+finders, including exhaustive small cases, length-three ties, collisions,
+frame tails, maximum lengths and window boundaries. Measure paired initialized
+parsing with both index construction and insertion included. Require identical
+tokens and retained frame bytes, then assess whether gains justify memory and
+integration costs. Production integration would additionally require boundary
+admission/failure tests, full tests, sanitizer fuzz and alternate-compiler/
+external verification. Failed frames must remain unpublished. This entry
+records the next experiment; no four-byte finder has been implemented yet.

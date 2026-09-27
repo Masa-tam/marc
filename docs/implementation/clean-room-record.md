@@ -35477,3 +35477,22 @@ both bounds.
   copyleft implementations and third-party test suites.
 - Similarity review: first-party documentation and evidence transcription only;
   no external implementation expression copied or legal guarantee claimed.
+
+## CR-1468: 2026-09-28 - Diagnose remaining short-prefix chain visits
+
+- Author and reviewer: Codex.
+- Task: after the maintainer approved the next step, diagnose fourth-byte
+  rejection opportunities in the validated probe-first encoder search.
+- References: IR-1062, first-party finder/workspace code and retained corpus
+  archives. BM-0145 records the measurements; DD-1302 defines the next trial.
+- Independent work: an isolated untimed replay classifies candidate visits and
+  compares every selected token with production; existing production stages
+  are timed separately without counters. All twelve inputs, 3,239 frames and
+  45,136,568 tokens agree, with unchanged input/archive/build hashes.
+- Scope: diagnostic and design only; no production, format, public API or
+  memory-admission change. No new full-suite, fuzz, hosted CI or external
+  verification result is claimed. Existing verification remains revision-bound.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: independently extended first-party diagnostic logic;
+  no external expression copied or legal guarantee claimed.
