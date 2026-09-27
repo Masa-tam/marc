@@ -35458,3 +35458,22 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: first-party loop refactoring and independently selected
   comparisons only; no external expression copied or legal guarantee claimed.
+
+## CR-1467: 2026-09-28 - Record short-prefix probe-order external verification
+
+- Author: Codex; evidence supplied by the maintainer; record review: Codex.
+- Task: record successful pushed CI and four external verifier reports for
+  `37b17a3e11ebac67fcfedb0b872c1675136f36e9`, closing DD-1300/DD-1301's gate.
+- References: supplied final verifier lines, first-party exchange contract,
+  TVG-1169, FZ-0050 and BM-0144.
+- Evidence: all four lines report 68 schema-58 archives at the exact revision.
+  The established workflow covers the two CI bundles verified externally,
+  external self-verification and reverse verification with the Windows build.
+  Prior local alternate-compiler full tests and bidirectional exchange passed.
+- Scope: external evidence is maintainer-reported, not independently rerun here.
+  Historical pending records retain their context. No implementation, format,
+  ABI, profile, performance measurement or release change is introduced.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Similarity review: first-party documentation and evidence transcription only;
+  no external implementation expression copied or legal guarantee claimed.

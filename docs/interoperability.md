@@ -1182,3 +1182,19 @@ checks ordered inventory, sizes, SHA-256, exact decoded fixtures and
 byte-identical local re-encoding. Results were not independently rerun here.
 This record changes no archive inventory, format, public ABI or release state
 and makes no claim for untested architectures or profiles.
+
+#### Short-prefix best-length probe order repeat
+
+The maintainer reported successful pushed CI and four successful schema-58
+verifier passes at `37b17a3e11ebac67fcfedb0b872c1675136f36e9`.
+All four final lines report 68 archives and that exact revision. Under the
+established exchange workflow, the Windows and Ubuntu CI bundles verified
+externally, the external bundle self-verified, and that bundle verified in
+the reverse direction with the Windows build.
+
+These maintainer-reported results close the external exchange gate for
+DD-1300/DD-1301's short-prefix comparison-order optimization. The verifier
+checks ordered inventory, sizes, SHA-256, exact decoded fixtures and
+byte-identical local re-encoding. Results were not independently rerun here.
+No archive inventory, format, public ABI or release state changes; these
+reports do not establish results for untested architectures or profiles.

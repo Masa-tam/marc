@@ -25779,3 +25779,12 @@ inputs. Retain probe-first production search and the private prefix-first
 reference. The measured aggregate reduction is 5.92% for initialized greedy
 parsing, not a whole-CLI paired speedup. Alternate-compiler full verification
 and hosted CI/external exchange for this new revision remain pending.
+
+Validation completion: subsequent alternate-compiler verification passed all
+3,950 tests and both local 68-archive exchange directions. The maintainer then
+reported successful pushed CI and four successful external schema-58 passes,
+each with 68 archives at `37b17a3e11ebac67fcfedb0b872c1675136f36e9`.
+The two CI bundles verified externally, followed by external self-verification
+and reverse verification with the Windows build. This closes DD-1300/DD-1301's
+verification gate for that exact revision. External results are reported
+evidence, not independently rerun here; earlier pending notes remain historical.
