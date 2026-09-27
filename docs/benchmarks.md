@@ -5580,3 +5580,53 @@ external verification of the new implementation remains separate.
 
 One additional CLI round trip for each of the other eleven inputs also matches
 retained archive and restored-input hashes (fourteen CLI round trips total).
+
+## BM-0143: Post-entropy-scratch stages and short-prefix rejection counts
+
+At the externally verified DD-1299 implementation, repeat three warm traversals
+of all twelve Silesia inputs with 64 KiB frames and fixed eligibility 3. Check
+reference/scratch tokens, raw reconstruction and retained archive frame bytes
+before timing. Each timed frame measures production scratch tokenization and
+private scratch frame encoding, then separately replays entropy scratch over
+the emitted operations. Require exact frame and replayed payload equality.
+All 3,239 frames and 45,136,568 tokens pass, including every timed comparison.
+
+| Scope | Mozilla median seconds | Sum of twelve input medians, seconds |
+|---|---:|---:|
+| Indexed scratch tokenization | 1.7838410 | 5.4476582 |
+| Complete retained-token scratch frame encoding | 1.1300110 | 4.3155456 |
+| Additional entropy scratch replay | 0.8582195 | 3.3945074 |
+
+Tokenization includes finder initialization, search, insertion and token writes.
+It accounts for 55.80% of the two main-stage sums, not 55.80% of whole-CLI time.
+Entropy replay repeats work included in frame encoding; do not add or subtract
+it to attribute other costs. Timers exclude comparisons, allocation, I/O and
+process startup. Order/cache effects apply; sums are per-input medians, not a
+single timed corpus invocation or a paired comparison with earlier reports.
+
+Before timers, an isolated instrumented replay follows the current short-prefix
+finder and compares every selected token with production. Aggregate counts:
+
+| Candidate outcome/work | Count |
+|---|---:|
+| Candidate visits | 1,975,496,378 |
+| Prefix rejection | 19,870,801 |
+| Best-length probe rejection after prefix success | 1,826,557,215 |
+| Candidates entering length extension | 129,068,362 |
+| Extension byte comparisons | 726,096,307 |
+| Equal extension bytes | 597,066,577 |
+| Strict best-length updates | 33,921,948 |
+| Maximum-length exits | 38,632 |
+
+Prefix rejection, best-length rejection and extension partition all visits.
+Best-length rejection accounts
+for 92.46% of aggregate visits and 74.91% to 95.26% per input. This supports
+DD-1300's investigation of earlier best-length rejection, while requiring the
+same exact prefix checks for survivors. These are logical operation counts,
+not hardware load counts, CPU attribution or a predicted speedup. Replay
+instrumentation is outside production code and all timing scopes.
+
+No codec, format, allocation or workspace change, new peak-memory measurement,
+full-suite run, fuzz campaign or external exchange is claimed here. Retained
+archive sizes remain identical. Detailed identities and raw measurements are
+kept separately; this step is diagnosis and design only.

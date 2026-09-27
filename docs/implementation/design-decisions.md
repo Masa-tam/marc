@@ -25732,3 +25732,24 @@ externally, followed by external self-verification and reverse verification
 with the Windows build. This closes the DD-1298/DD-1299 external gate for that
 exact revision. It is reported evidence, not an independently rerun exchange;
 the preceding pending note records the earlier implementation-time status.
+
+## DD-1300: Investigate earlier best-length rejection in the short-prefix finder
+
+After DD-1299, BM-0143 identifies indexed tokenization as 55.80% of the two
+measured main stages. Separate untimed replay counts show that 92.46% of
+candidate visits pass the three-byte prefix but fail the current best-length
+probe. Investigate testing that probe before the prefix comparisons. These
+counts suggest a candidate; they do not establish a timing improvement.
+
+Keep nearest-first traversal, strict longer-match replacement, overlap matches,
+maximum-length termination and eligibility rules unchanged. Read the probe
+only when the best length is nonzero and strictly below the bounded maximum;
+both positions must remain inside input. Every surviving candidate must still
+pass the exact prefix and extension checks. Retain the current comparison
+order as a differential reference, with unchanged workspace/error contracts.
+
+Before adoption, compare token fields and serialized bytes across prefix/hash
+collisions, ties, overlapping matches, short tails and window/frame boundaries,
+including eligibility 3/4/5 and failure invariants. Run full tests and bounded
+fuzz, then same-binary alternating-order timings on every corpus input. No
+production change or new format is introduced by this diagnostic proposal.

@@ -9461,3 +9461,11 @@ The DD-1298 payload scratch prototype derives its conservative output bound
 from the first-party position-distance range writer, model-total limit and
 field cursor. The retained planner/prepared writer supplies differential
 results. No external implementation, pseudocode or test vectors were consulted.
+
+### IR-1060
+
+The post-entropy-scratch stage and candidate-count diagnostic uses the
+first-party indexed tokenizer, short-prefix finder, private frame encoder and
+entropy scratch writer. An isolated instrumented replay of the existing finder
+compares every selected token with the production tokenizer before timing.
+No external implementation or optimization source was consulted.

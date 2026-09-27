@@ -35415,3 +35415,23 @@ both bounds.
   copyleft implementations and third-party test suites.
 - Similarity review: first-party documentation and evidence transcription only;
   no external implementation expression copied or legal guarantee claimed.
+
+## CR-1465: 2026-09-27 - Diagnose post-entropy-scratch encoder work
+
+- Author: Codex; local review: Codex; maintainer review pending.
+- Task: following external verification, refresh encoder stage costs and
+  identify the next bounded optimization candidate without changing production.
+- References: IR-1060, first-party short-prefix finder/tokenizer and private
+  frame/entropy scratch writers; retained fixed-profile archives.
+- Independent analysis: compare an instrumented finder replay with every
+  production token outside timers. Keep stage timings and logical rejection
+  counts separate; do not infer CPU attribution from candidate counts.
+- Results: BM-0143 records successful 3,239-frame/45,136,568-token checks and
+  exact timed frame/payload bytes. DD-1300 proposes earlier best-length rejection
+  with bounded reads, unchanged nearest-distance ties and reference testing.
+- Scope: diagnostic/design records only; no production, format, ABI, release,
+  new full-suite/fuzz or external-verification change. Old artifacts retained.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party profiler/optimization code.
+- Similarity review: isolated adaptation of first-party diagnostic logic and
+  independent analysis; no external expression copied or legal guarantee claimed.
