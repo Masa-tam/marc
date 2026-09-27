@@ -1166,3 +1166,19 @@ scratch path, separately from the earlier decoder optimization exchange.
 They were not independently rerun here and do not extend to untested profiles
 or architectures. No archive inventory, format, public ABI or release change
 is introduced by this evidence record.
+
+#### Position-distance single-pass entropy payload scratch repeat
+
+The maintainer reported successful pushed CI and four successful schema-58
+verifier passes at `9a96f00b5025f07e5977fece692001a437658476`.
+Every final line reports 68 archives and that exact revision. Under the
+established exchange workflow, the Windows and Ubuntu CI bundles verified
+externally, the external bundle self-verified, and that bundle verified in
+the reverse direction with the Windows build.
+
+These maintainer-reported results close the external exchange gate for
+DD-1298/DD-1299's private single-pass entropy payload scratch. The verifier
+checks ordered inventory, sizes, SHA-256, exact decoded fixtures and
+byte-identical local re-encoding. Results were not independently rerun here.
+This record changes no archive inventory, format, public ABI or release state
+and makes no claim for untested architectures or profiles.

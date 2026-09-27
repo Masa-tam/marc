@@ -35397,3 +35397,21 @@ both bounds.
 - Similarity review: new admission/wrapping logic and comparisons were reviewed
   against first-party contracts; no external expression copied or legal
   guarantee claimed.
+
+## CR-1464: 2026-09-27 - Record entropy payload scratch external verification
+
+- Author: Codex; evidence supplied by the maintainer; record review: Codex.
+- Task: record successful pushed CI and four external verifier reports for
+  `9a96f00b5025f07e5977fece692001a437658476`, closing DD-1298/DD-1299's gate.
+- References: the supplied final verifier lines, first-party exchange contract,
+  TVG-1168, FZ-0049 and BM-0142.
+- Evidence: all four lines report 68 schema-58 archives at the exact revision.
+  The established workflow covers the two CI bundles verified externally,
+  external self-verification and reverse verification with the Windows build.
+- Scope: maintainer-reported evidence, not independently rerun here. Historical
+  pending records retain their original context. No implementation, format,
+  ABI, profile, performance measurement or release change is introduced.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party test suites.
+- Similarity review: first-party documentation and evidence transcription only;
+  no external implementation expression copied or legal guarantee claimed.

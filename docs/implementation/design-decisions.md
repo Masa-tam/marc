@@ -25724,3 +25724,11 @@ equality and lower complete-frame encoding medians on all twelve inputs.
 Retain the scratch adapter in private streaming storage, with transactional
 entries and the prepared reference available. CI/external verification of this
 implementation is still pending; earlier revision evidence is not reassigned.
+
+External validation completion: the maintainer subsequently reported successful
+pushed CI and four successful 68-archive schema-58 verifier passes at
+`9a96f00b5025f07e5977fece692001a437658476`. The two CI bundles verified
+externally, followed by external self-verification and reverse verification
+with the Windows build. This closes the DD-1298/DD-1299 external gate for that
+exact revision. It is reported evidence, not an independently rerun exchange;
+the preceding pending note records the earlier implementation-time status.
