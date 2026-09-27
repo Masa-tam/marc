@@ -5855,3 +5855,52 @@ preserve retained archive and restored-input hashes. Mozilla's unchanged
 2.0277341 seconds including startup and I/O. These standalone CLI observations
 are not paired against the prior production CLI and do not establish its
 percentage speedup.
+
+## BM-0149: Post-compact encoder stage and cumulative-work refresh
+
+At `8d5ee5bf67924ee5da36bbd0130dc5c4cb15dc59`, use the unchanged validated
+production library and fixed eligibility 3 with 64 KiB frames. All twelve
+inputs, 3,239 frames and 45,136,568 tokens agree with transactional/scratch
+tokenization, raw reconstruction and retained archives. Source, probe binary,
+library and input/archive hashes remain stable during measurement.
+
+Three warm traversals produce these per-input median seconds:
+
+| Input | Scratch tokenization | Retained-token frame encode | Additional entropy replay |
+|---|---:|---:|---:|
+| mozilla | 1.2933683 | 1.1355649 | 0.8540877 |
+| dickens | 0.1847175 | 0.2725678 | 0.2233172 |
+| mr | 0.2746883 | 0.2329222 | 0.1884856 |
+| nci | 0.3766689 | 0.2174856 | 0.1694426 |
+| ooffice | 0.0827459 | 0.1968241 | 0.1473196 |
+| osdb | 0.0824368 | 0.2331873 | 0.1831691 |
+| reymont | 0.1772507 | 0.1265847 | 0.1037558 |
+| samba | 0.2850052 | 0.3312905 | 0.2585433 |
+| sao | 0.1010583 | 0.2834007 | 0.2180216 |
+| webster | 0.6112755 | 0.8477184 | 0.6795752 |
+| x-ray | 0.0704258 | 0.3566837 | 0.2846408 |
+| xml | 0.0471759 | 0.0467369 | 0.0370437 |
+| Sum of input medians | 3.5868171 | 4.2809668 | 3.3474022 |
+
+Frame encoding represents 54.41% of the first two summed stages. The entropy
+replay repeats work already included in frame encoding; do not sum all three
+columns or subtract replay time for exact causal attribution. Allocation,
+comparisons and diagnostics are outside timers. Each timed output is checked.
+These are stage observations, not a paired comparison with earlier records,
+whole-CLI throughput or peak-memory measurements.
+
+An untimed grammar-validated operation scan counts 112,003,867 ordinary symbol
+operations, including 23,405,837 literals, and 41,203,691 bypass operations
+containing 221,235,238 adaptive distance bits and 31,190,340 uniform length
+bits. The existing ordinary-symbol prefix sums read 2,898,522,345 frequency
+entries logically; always selecting the shorter prefix/suffix would read
+1,699,423,852 (41.37% fewer). Literal-only frequency reads would fall from
+2,551,334,098 to 1,533,506,470 (39.89% fewer). Changing only literal queries
+would reduce total ordinary-symbol frequency reads by 35.12%.
+
+These counts omit runtime branch/subtraction cost and compiler vectorization;
+they are not machine-load counts, profiler attribution or predicted speedups.
+For example, dickens literal reads only fall from 31,255,682 to 31,255,612,
+while Mozilla falls from 1,026,922,352 to 549,633,908. Range decisions and
+model updates remain necessary. DD-1306 selects a bounded, no-extra-state
+encoder query experiment; no production implementation changes in this record.

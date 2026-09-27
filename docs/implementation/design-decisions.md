@@ -25936,3 +25936,38 @@ full tests, sanitizer checks and both compiler exchange directions, this closes
 DD-1305's verification gate for that exact revision. External evidence is
 maintainer-reported, not independently rerun here. Historical pending notes
 retain their original context; this record introduces no implementation change.
+
+## DD-1306: Diagnose and trial complementary cumulative-frequency sums
+
+Refresh stage measurements after DD-1305 before selecting another optimization.
+Count ordinary symbol operations and the number of frequency entries read by
+the current exclusive prefix sum. Separately count min(symbol, alphabet-symbol)
+as the logical work of selecting the shorter side. These counts describe an
+algorithmic opportunity, not measured instruction counts or a predicted speedup.
+
+For validated symbol s in alphabet A, cumulative(s) equals both
+sum(frequency[0..s)) and total - sum(frequency[s..A)). The suffix includes s.
+Current model totals equal the sum of positive frequencies and remain bounded;
+updates and deterministic rescaling must remain exactly unchanged. A suffix
+query therefore needs no additional persistent model state, initialization,
+allocation or memory charge. Preserve the prefix path for s=0 and ties.
+
+Next, trial this query independently against the current encoder, initially
+for the 256-symbol literal models, and assess smaller alphabets separately.
+Keep validation before indexing and the existing range arithmetic, update
+order, descriptor publication and failure semantics. Do not replace division,
+remove grammar checks or change the format as part of this experiment.
+
+Compare cumulative values through model updates/rescales, payload bytes and
+descriptors, then paired encode timings for all corpus inputs. The runtime
+branch, subtraction and compiler vectorization may offset shorter scans;
+text-heavy low-valued symbols may receive little benefit. Adopt only after
+differential, malformed-input, memory-boundary, full and sanitizer validation.
+This entry selects a next experiment, not a production change or adoption.
+
+Diagnostic outcome: BM-0149 measures summed tokenization/frame medians of
+3.5868171/4.2809668 seconds, with a separate entropy replay of 3.3474022
+seconds. Literal-only shorter sums would reduce logical ordinary-symbol
+frequency reads by 35.12%, without reducing the number of range decisions.
+The updated stage balance and bounded query change justify prioritizing this
+encoder experiment over another dictionary-index expansion.

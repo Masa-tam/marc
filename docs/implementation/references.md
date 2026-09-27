@@ -9508,3 +9508,12 @@ The compact-index production trial uses DD-1304's first-party bounds proof,
 isolated experiment and existing finder, tokenizer, workspace and stream tests.
 The prior production finder is retained separately for paired measurements.
 No external implementation source, pseudocode or test suite was consulted.
+
+### IR-1066
+
+The post-compact encoder diagnostic uses the validated first-party tokenizer,
+frame writer, entropy scratch encoder, field cursor and retained archives.
+Logical cumulative-frequency work is counted from validated operations outside
+timers. The proposed complementary cumulative sum follows directly from the
+existing model total and frequency array; no external implementation,
+pseudocode or optimization source was consulted.

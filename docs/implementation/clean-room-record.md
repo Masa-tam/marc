@@ -35580,3 +35580,22 @@ both bounds.
   copyleft implementations and third-party test suites.
 - Similarity review: first-party documentation and evidence transcription only;
   no external expression copied or legal guarantee claimed.
+
+## CR-1473: 2026-09-28 - Refresh encoder stages and cumulative-query work
+
+- Author and reviewer: Codex.
+- Task: after compact-prefix verification, measure the remaining encoder
+  stages and select the next optimization from current evidence.
+- References: IR-1066 and first-party validated codec/field-cursor code,
+  retained corpus archives and prior isolated diagnostic driver.
+- Independent work: an untimed validated operation scan counts exclusive
+  prefix and complementary suffix lengths; production stages are timed
+  without counters. BM-0149 records all twelve exact corpus comparisons
+  and timing/logical-work results. DD-1306 defines the next independent trial.
+- Scope: diagnostic/design only; no production, model-state, allocation,
+  format, error or failed-frame publication change. No new full-suite, fuzz,
+  hosted CI or external validation is claimed. Prior gates remain revision-bound.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: independent first-party diagnostic and algebraic identity;
+  no external expression copied or legal guarantee claimed.
