@@ -26282,3 +26282,19 @@ Allocation, input I/O, oracle generation and verification remain outside timing.
 The tokenizer includes validation, finder initialization, search, advance and
 token writing; its time alone cannot isolate search from those other activities.
 No production instrumentation, format, failure contract or public API changes.
+
+## DD-1320: Separate finder timing from diagnostic counters
+
+Replay the exact production token schedule through the production finder,
+checking every match. Measure initialization and individual find/advance calls
+with one unclocked-call warmup and three clocked repetitions. Also report total
+wall time for each run: per-call timers and checks perturb the hot path, so do
+not present their sum as uninstrumented codec throughput or subtract a guessed
+timer cost. Inputs are bounded to 64 MiB and frames to 1 MiB.
+
+In a separate untimed pass, replay a repository-derived counter finder and
+require the same tokens. Count short/long chain visits, rejected improvement
+probes, prefix rejection, extension byte comparisons and inserted positions.
+These describe work, not CPU time per comparison. Keep instrumentation entirely
+in the benchmark; preserve production code, exact longest/nearest match rules,
+format, memory policy and failure contracts.

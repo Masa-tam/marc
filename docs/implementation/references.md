@@ -9616,3 +9616,9 @@ codec implementation, optimization structure or test suite was consulted.
 Use only the repository's DD-1318 corpus harness, variant-9 candidate parser,
 frame encoder, token bridge and prepared Range encoder. No external source
 or implementation was consulted. The diagnostic changes no codec or format.
+
+## IR-1080: 1 MiB match-finder diagnostic
+
+Use the repository's variant-9 candidate tokenizer and dual-prefix finder,
+plus DD-1319's bounded measurement conventions. The counter replay is adapted
+only from this repository-owned finder; no external implementation is consulted.

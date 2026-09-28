@@ -6184,3 +6184,66 @@ Prioritize the tokenizer for further diagnosis, especially candidate traversal,
 match comparison, index initialization and advance. This result does not
 separate their costs or justify shortening search, changing nearest-match
 rules, or modifying failure contracts. Existing formats and defaults remain.
+
+## BM-0156: 1 MiB finder timing and work counts
+
+`marc_lzss_position_distance_1m_finder_benchmark <input-file>` implements
+DD-1320 for nonempty inputs up to 64 MiB. All twelve manifest-verified Silesia
+members use 1 MiB frames and eligibility 3. Production candidate tokens supply
+the exact replay schedule. A warmup without per-call clocks precedes three
+clocked passes through the production finder; a separate untimed counter
+implementation must agree at every token. Runs are serial; builds and tests
+are excluded from the corpus measurement interval.
+
+| Measured production call | Sum of member median seconds |
+|---|---:|
+| Finder initialization | 0.065829 |
+| Candidate search (`find_match`) | 37.591772 |
+| Index advance | 1.307687 |
+
+The clocked runs' wall-time median sums are 40.424305 seconds; the unclocked-call
+warmup wall times sum to 37.745229 seconds. These executions include match
+checks and schedule traversal. Per-call clocks perturb cache/scheduling and
+short calls, so neither the difference nor the call sums establish an exact
+timer cost or public encoder throughput. Do not combine these timings with
+BM-0155 as though they were one experiment.
+
+| Untimed work count across twelve members | Count |
+|---|---:|
+| Tokens | 32,791,633 |
+| Short-chain candidate visits | 122,657,700 |
+| Long-chain candidate visits | 10,099,400,746 |
+| Long candidates rejected by improvement-byte probe | 9,596,590,435 |
+| Remaining candidates rejected by four-byte prefix check | 2,896,281 |
+| Match-extension byte comparisons | 3,517,728,772 |
+| Equal extension bytes | 3,017,864,447 |
+| Short-prefix insertions | 211,938,166 |
+| Long-prefix insertions | 211,937,959 |
+
+About 95.02% of long-chain visits fail the improvement-byte probe. That is a
+work-count fraction, not a CPU-time fraction. The probe precedes prefix
+validation, so rejected candidates are not classified as hash collisions or
+exact-prefix entries. Extension comparisons exclude prefix/probe comparisons
+and count both equality and the terminating mismatch when present.
+
+| Member | Search seconds | Advance seconds | Long-chain visits |
+|---|---:|---:|---:|
+| dickens | 3.2581 | 0.0592 | 336,426,180 |
+| mozilla | 8.6459 | 0.3917 | 4,752,931,258 |
+| mr | 3.3768 | 0.0623 | 1,656,437,442 |
+| nci | 3.1113 | 0.1034 | 985,856,850 |
+| ooffice | 0.5513 | 0.0500 | 134,613,688 |
+| osdb | 0.7336 | 0.0710 | 55,209,239 |
+| reymont | 3.5397 | 0.0340 | 424,033,978 |
+| samba | 2.2881 | 0.1218 | 537,643,706 |
+| sao | 1.0640 | 0.1009 | 66,087,032 |
+| webster | 10.3135 | 0.2121 | 1,086,773,904 |
+| xml | 0.2986 | 0.0183 | 42,538,234 |
+| x-ray | 0.4108 | 0.0829 | 20,849,235 |
+
+Prioritize reducing long-chain candidate traversal while retaining exact
+longest-match and nearest-distance rules. Initialization and index maintenance
+are secondary targets in this measurement. Before selecting an index/filter
+change, distinguish collisions from exact-prefix chains and evaluate its memory
+cost. Any prototype still requires token and archive differential checks; this
+diagnostic itself changes no production behavior or compression ratio.

@@ -35877,3 +35877,18 @@ both bounds.
 - Similarity review: a first-party diagnostic adapter using existing interfaces;
   no external expression or legal guarantee claimed.
 - No codec, format, failure-atomicity, public API or default change.
+
+## CR-1488: 2026-09-29 - Diagnose 1 MiB finder work
+
+- Author and reviewer: Codex; maintainer approved further tokenizer diagnosis.
+- References: IR-1080, DD-1320, repository-owned variant-9 candidate parser
+  and dual-prefix finder. No external source was consulted.
+- Independent design: time production finder calls using a verified token
+  schedule; perform work counting separately in a repository-derived replay.
+- Validation: TVG-1186 requires exact match length/distance agreement. Timers
+  and counters are kept out of the production codec.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: the diagnostic counter intentionally follows this
+  repository's own finder; no external expression or legal guarantee claimed.
+- No format, public API, default, production memory or failure-contract change.

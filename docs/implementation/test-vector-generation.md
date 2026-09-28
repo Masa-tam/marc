@@ -17445,3 +17445,20 @@ frames. The serial twelve-member corpus run passes every oracle reconstruction,
 three split-frame repetitions and nested payload comparison. The diagnostic
 changes no production source; existing codec regressions are not relabelled as
 newly executed full-suite or fuzz results. BM-0155 records timing limitations.
+
+## TVG-1186: Finder timing and work-counter replay
+
+The finder diagnostic uses production candidate tokens as its schedule and
+checks every production find result in one unclocked-call warmup plus three
+clocked passes. An independent untimed counter replay must select the same
+match length and nearest distance at every position. Both paths advance over
+every byte covered by a token. Permanent smoke covers a full 1 MiB frame,
+a short final frame, one-byte input and rejected empty diagnostic input.
+No decoder or production failure path changes.
+
+Both compiler builds pass the new diagnostic smoke. The serial twelve-member
+corpus experiment verifies every production replay and counter replay, with
+source/executable identities retained. Aggregate token counts also agree with
+the preceding phase experiment. BM-0156 reports the clock perturbation and
+counter interpretation limits. No new full-suite, decoder fuzz or archive
+exchange result is claimed for this benchmark-only change.
