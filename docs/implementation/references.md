@@ -9610,3 +9610,9 @@ The evaluation harness uses the repository public C API and first-party
 Silesia manifest verifier. Schema 59 extends the repository-owned bundle
 generator/verifier and preserves earlier ordered profile sets. No external
 codec implementation, optimization structure or test suite was consulted.
+
+## IR-1079: 1 MiB encoder phase diagnostic
+
+Use only the repository's DD-1318 corpus harness, variant-9 candidate parser,
+frame encoder, token bridge and prepared Range encoder. No external source
+or implementation was consulted. The diagnostic changes no codec or format.

@@ -26268,3 +26268,17 @@ the frozen schema-58 prefix. Preserve the common 8,193-byte fixture, all earlier
 codec sets and verification semantics. This exchange fixture does not itself
 exercise the full window; permanent boundary tests supply that coverage.
 Local compiler exchange is not hosted or external-platform verification.
+
+## DD-1319: Measure 1 MiB encoder phases before optimization
+
+Call the existing candidate tokenizer and complete token-frame encoder with
+separate clocks, using the public profile's 1 MiB frames and eligibility 3.
+Compare every measured frame with the unsplit raw-frame encoder and reconstruct
+that oracle exactly. Use one warmup and three measured repetitions per frame.
+Separately replay token planning/modeling and prepared Range prepare/write;
+these nested diagnostic measurements overlap the full frame phase and MUST NOT
+be added to it. Check the replay payload against the same serialized frame.
+Allocation, input I/O, oracle generation and verification remain outside timing.
+The tokenizer includes validation, finder initialization, search, advance and
+token writing; its time alone cannot isolate search from those other activities.
+No production instrumentation, format, failure contract or public API changes.

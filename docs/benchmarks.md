@@ -6131,3 +6131,56 @@ explicit selectors and existing defaults. A further encoder optimization
 should start with a measured time breakdown; the comparison alone does not
 identify the responsible stage. Schema-59 external qualification remains a
 separate gate. No corpus input or local environment details are redistributed.
+
+## BM-0155: 1 MiB encoder phase diagnostic
+
+`marc_lzss_position_distance_1m_phase_benchmark <input-file>` implements
+DD-1319 for nonempty inputs up to 64 MiB. Twelve manifest-verified Silesia
+members were measured serially using the production indexed parser, fixed
+eligibility 3 and 1 MiB frames. For each frame, an unsplit raw-frame oracle
+is reconstructed exactly; one split-path warmup precedes three repetitions.
+Every split frame and replayed entropy payload must equal its oracle.
+
+The following times sum per-member medians of the three iteration totals.
+Allocation, file I/O, oracle generation, reconstruction and equality checks
+are excluded. The tokenizer/frame clocks cover existing function calls;
+nested replay clocks separately cover token plan/model and Range prepare/write.
+Replay changes cache history, so these are diagnostic timings rather than a
+replacement for the public end-to-end benchmark or a measured speedup.
+
+| Phase | Seconds | Share of tokenizer plus frame |
+|---|---:|---:|
+| Tokenizer, including finder initialization and updates | 37.2813 | 79.39% |
+| Complete frame encoding from selected tokens | 9.6806 | 20.61% |
+
+The independent nested replay totals are 3.9770 seconds for token planning
+and modeling, 2.8291 seconds for Range preparation, and 2.8227 seconds for
+Range writing. They overlap the complete frame phase and are not additive
+to the table. Differences between replay sums and frame time cannot reliably
+be attributed to header handling or validation overhead.
+
+| Member | Tokenizer seconds | Frame seconds |
+|---|---:|---:|
+| dickens | 3.2906 | 0.5373 |
+| mozilla | 8.3198 | 2.8133 |
+| mr | 3.3619 | 0.5575 |
+| nci | 3.1043 | 0.3986 |
+| ooffice | 0.5478 | 0.4629 |
+| osdb | 0.7369 | 0.5188 |
+| reymont | 3.5474 | 0.2539 |
+| samba | 2.2589 | 0.7377 |
+| sao | 1.0115 | 0.7571 |
+| webster | 10.3977 | 1.6676 |
+| xml | 0.3115 | 0.0860 |
+| x-ray | 0.3931 | 0.8899 |
+
+All oracle reconstruction and repeated frame/payload comparisons passed.
+Serialized frame totals plus the stream header also match the earlier public
+archive sizes for every member; this size check alone is not an archive hash
+comparison. Source and executable identities accompany the retained results.
+No new codec memory or compression-ratio improvement is claimed.
+
+Prioritize the tokenizer for further diagnosis, especially candidate traversal,
+match comparison, index initialization and advance. This result does not
+separate their costs or justify shortening search, changing nearest-match
+rules, or modifying failure contracts. Existing formats and defaults remain.

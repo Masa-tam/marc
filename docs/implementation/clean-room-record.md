@@ -35862,3 +35862,18 @@ both bounds.
   schema extension; no external expression or legal guarantee claimed.
 - Scope: no codec, wire representation or default-policy change; hosted and
   external schema-59 qualification requires new revision-specific reports.
+
+## CR-1487: 2026-09-29 - Diagnose 1 MiB encode phases
+
+- Author and reviewer: Codex; maintainer approved the next measured diagnostic
+  after the schema-59 external gate closed.
+- References: IR-1079 and DD-1319; repository-owned candidate, frame, token and
+  prepared Range operations, plus the verified corpus manifest.
+- Independent design: call-level clocks split tokenizer and frame encoding;
+  separate nested replay clocks describe modeling and Range prepare/write.
+- Validation: TVG-1185 requires frame/payload equality and exact reconstruction.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization or test code.
+- Similarity review: a first-party diagnostic adapter using existing interfaces;
+  no external expression or legal guarantee claimed.
+- No codec, format, failure-atomicity, public API or default change.

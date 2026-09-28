@@ -17430,3 +17430,18 @@ root before recursive removal. No existing output artifact is removed.
 Both local compiler configurations pass all 4,019 regression tests, including
 the public benchmark smoke and schema 1 through 59 compatibility checks.
 Hosted CI and external new-profile archive verification remain pending.
+
+## TVG-1185: 1 MiB phase diagnostic equivalence
+
+The diagnostic calls production functions without codec instrumentation. Each
+frame has a raw-frame oracle and exact reconstruction check. One warmup and
+three split tokenizer/frame runs must reproduce every oracle byte; replayed
+prepared entropy output must reproduce its payload. A permanent smoke spans
+one full 1 MiB frame and a short final frame, and rejects empty diagnostic input.
+This is a measurement harness, not a new encoder or altered malformed-input path.
+
+Both compiler builds pass the diagnostic smoke, including full and final-short
+frames. The serial twelve-member corpus run passes every oracle reconstruction,
+three split-frame repetitions and nested payload comparison. The diagnostic
+changes no production source; existing codec regressions are not relabelled as
+newly executed full-suite or fuzz results. BM-0155 records timing limitations.
