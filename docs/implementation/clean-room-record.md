@@ -35785,3 +35785,23 @@ both bounds.
 - Similarity review: adaptation of repository-owned state transitions plus
   independently written bounded owner; no external expression copied and no
   legal guarantee claimed.
+
+## CR-1483: 2026-09-28 - Wide private match finding and raw frame encoding
+
+- Author and reviewer: Codex; maintainer authorized the next development stage.
+- Task: transfer first-party exact-search improvements to bounded 1 MiB
+  position-distance encoding while preserving reference choices and output.
+- References: IR-1075, DD-1315, repository-owned exhaustive and dual-prefix
+  finders, candidate tokenization and complete-frame encoding helpers.
+- Independent design: widen heads and links to 32 bits with an unreachable
+  sentinel, retain nearest-first exhaustive/reference comparisons, and charge
+  supplied scratch capacities before raw-frame tokenization. No chain cutoff
+  or stream representation change is introduced.
+- Validation: TVG-1181 records differential, wide-position, budget, overlap,
+  capacity and serialized-output preservation tests and the dedicated fuzzer.
+- Scope: caller-supplied private raw-frame encoding; owning/incremental encode,
+  public factories, CLI admission and new-profile interoperability remain pending.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party codec optimization/test code.
+- Similarity review: adaptation of repository-owned algorithms and independently
+  written integration; no external expression copied or legal guarantee claimed.

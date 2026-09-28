@@ -117,6 +117,9 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_1m_frame_streaming_decoder.cpp
     src/frame/lzss_position_distance_1m_workspace.cpp
     src/frame/lzss_position_distance_1m_owned_decoder.cpp
+    src/dictionary/lzss_position_distance_1m_match_finder.cpp
+    src/dictionary/lzss_position_distance_1m_candidate.cpp
+    src/frame/lzss_position_distance_1m_raw_frame_encoder.cpp
     src/entropy/lzss_short_match_range_encoder.cpp
     src/entropy/contextual_dynamic_range_encoder.cpp
     src/entropy/contextual_rans_decoder.cpp
@@ -1326,6 +1329,14 @@ if(MARC_BUILD_FUZZERS)
         -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
     target_link_options(marc_fuzz_lzss_position_distance_1m_stream PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_1m_stream PRIVATE marc::static)
+
+    add_executable(marc_fuzz_lzss_position_distance_1m_raw fuzz/lzss_position_distance_1m_raw_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_position_distance_1m_raw PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_distance_1m_raw PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_distance_1m_raw PRIVATE
+        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzss_position_distance_1m_raw PRIVATE -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_distance_1m_raw PRIVATE marc::static)
 
     add_executable(marc_fuzz_lz77_stream fuzz/lz77_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lz77_stream PRIVATE cxx_std_20)
@@ -2687,6 +2698,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_position_distance_1m_tokens_tests.cpp
         tests/lzss_position_distance_1m_frame_tests.cpp
         tests/lzss_position_distance_1m_streaming_tests.cpp
+        tests/lzss_position_distance_1m_raw_encoder_tests.cpp
         tests/lzss_reduced_literal_operations_tests.cpp
         tests/lzss_reduced_literal_operation_decoder_tests.cpp
         tests/lzss_reduced_literal_range_tokens_tests.cpp

@@ -26194,3 +26194,32 @@ return a stable out-of-memory error without publishing an object. Caller-owned
 storage remains supported privately and its full supplied capacities are charged.
 This adds no public C factory or CLI selector. Encoding/raw match finding and
 new-profile interoperability remain later milestones.
+
+## DD-1315: Widen exact prefix search for 1 MiB raw frames
+
+Keep the verified 64 KiB finder unchanged. Add a private variant-9 finder
+with two 65,536-bucket head arrays and two input-sized link arrays, all using
+32-bit positions and UINT32_MAX as the empty sentinel. For input N >= 3 the
+workspace is 8*(65,536+N) bytes, aligned for uint32; shorter input needs none.
+N is bounded by 1,048,576, so no inserted position can collide with the sentinel.
+Verify hash collisions against input bytes; chains remain nearest-first.
+
+Retain both the full exhaustive reference and a single-prefix indexed reference.
+The optimized search preserves nearest length-three fallback, the fourth-byte
+seed, best-length rejection, shared key construction and insertion of skipped
+match positions. Never truncate traversal or change longest-match/nearest-tie
+selection. Eligibility 3/4/5 remains the established encoder-only candidate
+policy; there is no new size-based selection or decoder parameter.
+
+A private raw-frame adapter parses once with full N-token scratch; smaller
+token storage uses a counting pass before writing. It then invokes the verified
+1 MiB typed-frame encoder. Require disjoint source, configuration and writable
+workspaces, and charge their supplied capacities plus the larger entropy state
+before parsing. Failed private scratch may change, but no failed serialized
+frame is published. Preserve the existing transactional APIs unchanged.
+
+Token scratch needs at most N entries. Operation scratch needs at most 2N
+entries: each literal uses two operations and a match uses at most five while
+covering at least three raw bytes. Use the existing 18N+85 serialized bound.
+The raw-frame API takes caller-owned storage; owning and incremental encoding,
+public admission and corpus performance/interoperability remain later gates.

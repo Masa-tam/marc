@@ -17317,3 +17317,31 @@ is private decode evidence, not a public encoding or interoperability gate.
 Both local compiler configurations pass all 3,977 regression tests, including
 the isolated allocation test. No hosted CI or external archive result for this
 revision is inferred from earlier profile verification.
+
+## TVG-1181: Wide position-distance match finding and private raw encoding
+
+Six permanent tests compare exhaustive, single-prefix indexed reference and
+dual-prefix indexed parsing on bounded small inputs, three eligibility values
+and four window sizes. Compare tokens, complete serialized frames and decoded
+raw bytes. Selected large-position queries compare all three finders across
+65,535, 65,536, 65,537 and later positions, including live position 65,535 and
+distance 1,048,573. Full-MiB frame tests compare both indexed paths at each
+eligibility; they do not claim exhaustive parsing of the entire large frame.
+
+Workspace tests cover 32-bit links, alignment, frame ceilings, short storage,
+alias rejection and exact budget boundaries. Small token storage exercises
+the count-before-write fallback and preserves tokens on capacity failure.
+Raw-frame tests charge all supplied capacities and preserve serialized output
+on rejected budgets, overlap and insufficient output capacity.
+
+The dedicated raw fuzzer compares exhaustive and indexed tokens and frames,
+selected off-parse-path queries against both references, reconstruction and
+short-capacity results. Its input ceiling is 256 bytes; permanent tests supply
+the wide-position coverage. This stage remains private and makes no corpus
+performance or external interoperability claim.
+
+All six added tests pass under ASan/UBSan. A dedicated sanitizer fuzz campaign
+completes 10,000 executions without a finding, starting with all byte values.
+
+Both local compiler configurations pass all 3,983 regression tests. Hosted CI
+and external archive verification for this revision remain unreported.

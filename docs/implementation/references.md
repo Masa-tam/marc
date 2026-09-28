@@ -9583,3 +9583,11 @@ position-distance frame streaming state machine and DD-1313 frame validation.
 Owning storage uses independently specified bounded array capacities and the
 existing checked arithmetic/overlap primitives. No external codec source,
 pseudocode or tests were consulted.
+
+### IR-1075
+
+The 1 MiB raw encoder derives from repository-owned exhaustive LZSS search,
+short-length candidate policy, dual-prefix exact indexing and DD-1313 frame
+encoding. The widened position/link representation and capacity accounting
+are independently specified here. No external implementation, pseudocode or
+test suite was consulted.
