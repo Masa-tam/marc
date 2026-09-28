@@ -35805,3 +35805,24 @@ both bounds.
   copyleft implementations and third-party codec optimization/test code.
 - Similarity review: adaptation of repository-owned algorithms and independently
   written integration; no external expression copied or legal guarantee claimed.
+
+## CR-1484: 2026-09-28 - Own and stream private 1 MiB encoding
+
+- Author and reviewer: Codex; maintainer approved the next stage after private
+  raw-frame encoding.
+- Task: bounded owning workspace and partial-buffer streaming encode with
+  complete-frame publication and process-time allocation avoidance.
+- References: IR-1076, DD-1316, first-party workspace partitioning, streaming
+  encoder transitions, wide raw encoder and owned decoder lifetime pattern.
+- Independent design: preserve state transitions and format; charge full owner,
+  retained capacity, alignment and model state before four nothrow allocations.
+  Use the established 2F operation bound for raw tokens and widened finder.
+- Validation: TVG-1182 documents chunk/reference comparisons, full-MiB round
+  trips, failed-frame publication, capacity/alias checks, allocation injection
+  and sanitizer/differential fuzz coverage.
+- Scope: private transforms only; no public factory, CLI or admission changes,
+  corpus performance claim or new-profile external interoperability result.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party codec optimization/test code.
+- Similarity review: first-party state-machine/workspace adaptation and new
+  bounded owner integration; no external expression or legal guarantee claimed.

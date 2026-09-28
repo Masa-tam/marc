@@ -9591,3 +9591,9 @@ short-length candidate policy, dual-prefix exact indexing and DD-1313 frame
 encoding. The widened position/link representation and capacity accounting
 are independently specified here. No external implementation, pseudocode or
 test suite was consulted.
+
+### IR-1076
+
+Private 1 MiB streaming encoding reuses the repository-owned frame-streaming
+encoder state machine, checked workspace partitioning and owned decoder
+allocation/lifetime pattern. No external implementation was consulted.

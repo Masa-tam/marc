@@ -26223,3 +26223,20 @@ entries: each literal uses two operations and a match uses at most five while
 covering at least three raw bytes. Use the existing 18N+85 serialized bound.
 The raw-frame API takes caller-owned storage; owning and incremental encoding,
 public admission and corpus performance/interoperability remain later gates.
+
+## DD-1316: Own bounded storage for private 1 MiB streaming encoding
+
+Collect at most one configured raw frame, prepare it once with the wide indexed
+finder, and drain only a successful serialized frame. Flush preserves frame
+boundaries; ResetBlock is unsupported. Known original size is enforced, and
+an unconsumed final suffix must be resubmitted with EndInput. End/error are
+sticky. Previously committed frames remain visible after a later failure.
+
+Before allocation, charge the entire owner object, raw F bytes, serialized
+18F+85 bytes, F tokens, 2F operations, wide finder storage and alignment gaps,
+plus the larger encoder/validation model state. Borrowed construction charges
+all supplied capacity. Allocate three buffers and the owner with nothrow new;
+construct the borrowed encoder in the owner, with no process-time allocation.
+Objects cannot be copied or moved. All caller buffers must remain disjoint
+from each other and live owner storage. Preserve the existing private format
+and public profile admission unchanged.

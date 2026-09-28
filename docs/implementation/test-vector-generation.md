@@ -17345,3 +17345,36 @@ completes 10,000 executions without a finding, starting with all byte values.
 
 Both local compiler configurations pass all 3,983 regression tests. Hosted CI
 and external archive verification for this revision remain unreported.
+
+## TVG-1182: Owned and borrowed private 1 MiB streaming encoding
+
+Eleven permanent tests compare streaming bytes with complete-frame encoding
+across eligibility 3/4/5, empty streams, frame boundaries, final partial frames,
+one-byte buffers, irregular chunks and zero output capacity. Small inputs use
+exhaustive reference parsing; full-MiB and multi-frame owned round trips compare
+indexed reference parsing and the existing private streaming decoder. Check
+preparation counts so input starvation and output draining cannot prepare a
+frame twice. Flush preserves bytes; delayed or latched EndInput completes only
+after draining. Invalid sizes, unsupported flags and aliases produce sticky
+errors. A failing second frame publishes only the earlier successful frame.
+
+Workspace tests cover exact-minus-one budgets, unchanged failed query outputs,
+overflow, alignment, short buffers and unused supplied capacity. Owner tests
+cover object overlap and invalid configuration. An isolated executable fails
+each of four allocations and checks cleanup, zero allocations on invalid or
+under-budget creation, and no allocation during multi-frame processing.
+All eleven transform tests also pass under ASan/UBSan.
+
+The dedicated encode-stream fuzzer compares an exhaustive borrowed encoder
+using input/output chunks 13/7 against an indexed owner using chunks 1/1,
+with periodic output stalls. It reconstructs the result through the owned
+decoder with chunks 11/3 and verifies sticky end states. Its input ceiling is
+128 bytes; permanent tests separately cover the full-MiB boundary.
+
+A local sanitizer campaign completes 10,000 executions without a finding.
+This is private streaming evidence, not a public-profile performance or
+external interoperability result.
+
+Both local compiler configurations pass all 3,995 regression tests, including
+the isolated encode allocation executable. No hosted CI or external archive
+verification for this revision is inferred from earlier profile results.
