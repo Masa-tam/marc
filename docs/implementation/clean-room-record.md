@@ -36020,3 +36020,19 @@ both bounds.
 - Similarity review: extends repository-owned diagnostic structure; no external
   expression added and no legal guarantee claimed.
 - Scope: diagnostic and documentation only; production behavior is unchanged.
+
+## CR-1497: 2026-09-29 - Admitted five-prefix finder diagnosis
+
+- Author and reviewer: Codex; maintainer approved detailed diagnosis of the
+  remaining tokenization cost.
+- References: IR-1088, DD-1328 and repository-owned bounded finder/reference
+  tokenizer implementations.
+- Independent design: time actual finder calls and separately replay logical
+  counters, retaining exact token decisions and bounded frame assumptions.
+- Validation: TVG-1194 covers differential smoke, sanitizer, fallback/boundary
+  fixtures and corpus identity/counter consistency checks.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization or test code.
+- Similarity review: intentional adaptation of first-party finder semantics
+  and benchmark structure; no external expression or legal guarantee claimed.
+- Scope: benchmark-only diagnosis; no public implementation or format change.

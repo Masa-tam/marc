@@ -17621,3 +17621,25 @@ corpus members pass retained-reference frame identity and reconstruction.
 BM-0160 records tokenization at 69.21% of the measured sequential phase total.
 The next diagnostic should distinguish admitted-finder search, advance and
 initialization; do not infer their proportions from old dual-prefix results.
+
+## TVG-1194: Admitted five-prefix finder diagnostic validation
+
+The new benchmark times the actual bounded five-prefix finder and checks each
+find result and literal against retained indexed tokens. Its untimed counter
+replay must select the same matches at every position. Both paths cover every
+raw byte and every token, including final short frames.
+
+Reuse the first-party tiny/multiframe diagnostic smoke on both compilers.
+ASan/UBSan explicitly instruments the new benchmark/counter and bounded finder.
+Additional deterministic fallback patterns exercise three-, four- and five-byte
+matches, and a seeded 1,048,581-byte binary fixture crosses a full-frame boundary.
+Check independent expected insertion counts at every prefix length and the
+partition of five-prefix visits into exact prefixes and hash collisions.
+Corpus measurements verify the existing twelve-member manifest and retain
+source/executable identity, raw timings and counts. No new production behavior,
+full regression, decoder fuzz or external verification result is implied.
+
+Both compiler smoke tests and ASan/UBSan checks pass, including the three
+fallback patterns and full-frame binary boundary fixture. All twelve verified
+corpus members pass token decisions, insertion formulas and classification
+invariants. BM-0161 records timings and counters with their distinct scopes.

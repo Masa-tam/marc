@@ -6457,3 +6457,59 @@ Both compiler configurations pass indexed and five-prefix smoke tests. Public
 codec source, defaults, memory requirements and formats are unchanged by this
 diagnostic. These timings are neither a new public lifecycle speedup nor a peak
 memory result, and no new full regression or external verification is claimed.
+
+
+## BM-0161: Admitted five-prefix finder timing and work counts
+
+DD-1328 times the actual bounded five-prefix finder while retaining indexed
+tokens as the oracle. A separate untimed first-party replay counts logical work.
+All twelve manifest-verified Silesia members pass every token decision comparison
+in the warmup, three measured replays and counter replay. Per-member timing
+medians are summed below.
+
+| Timed operation | Seconds |
+|---|---:|
+| Initialization | 0.099512 |
+| Find | 21.312083 |
+| Advance | 1.540283 |
+| Enclosing measured replay | 24.402366 |
+
+The warmup replay without per-call clocks totals 21.704168 seconds.
+Measured wall time includes timer/validation overhead and does not equal the
+sum of measured operation durations. Per-call timing perturbs the loop; these
+are diagnostic measurements, not public encode throughput or exact CPU shares.
+
+| Logical operation | Count |
+|---|---:|
+| Three-prefix visits | 122,657,700 |
+| Four-prefix visits | 47,159,827 |
+| Five-prefix visits | 6,443,217,975 |
+| Exact five-byte prefixes among those visits | 6,332,136,383 |
+| Colliding five-byte prefixes among those visits | 111,081,592 |
+| Improvement-probe rejections | 6,121,941,203 |
+| Prefix rejections after passing the probe | 2,700,230 |
+| Extension comparisons | 3,017,814,759 |
+| Equal extension comparisons | 2,699,287,905 |
+| Improved matches | 20,451,630 |
+| Maximum-length exits | 49,688 |
+
+Exact prefixes constitute 98.28% of five-prefix
+visits, and probe rejections constitute 95.01%.
+These classifications overlap; neither percentage describes CPU time.
+Three/four/five-prefix insertion totals are 211,938,166,
+211,937,959 and 211,937,752, matching independent frame-length
+formulas. The replay covers 32,791,633 tokens.
+
+Search remains the next optimization target. Most long-chain visits involve
+exactly matching five-byte prefixes, so bucket collision reduction alone does
+not address most visits. Investigate reducing repeated candidates within those
+prefix groups, such as a longer-prefix index with nearest shorter-match fallbacks.
+Any such prototype must preserve longest/nearest selection and encoded bytes,
+charge added arrays, and demonstrate a measured benefit; this diagnosis does
+not establish a specific longer prefix or speedup.
+
+Both compiler smoke tests pass. ASan/UBSan passes the smoke plus three short
+fallback fixtures and a deterministic 1,048,581-byte binary boundary fixture.
+All corpus insertion/classification invariants pass. Production code and public
+defaults are unchanged; no new full regression, hosted CI, external verification
+or decoder-fuzz result is claimed.

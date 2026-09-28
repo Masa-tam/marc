@@ -9665,3 +9665,10 @@ vectors are repository-owned. No external implementation source is consulted.
 Use the first-party phase benchmark, retained indexed reference, admitted
 five-prefix tokenizer, frame encoder and modeled-operation/range primitives.
 No external source or implementation is consulted.
+
+## IR-1088: Admitted five-prefix finder timing and counters
+
+Use the bounded repository-owned five-prefix finder and retained indexed
+tokenizer, with the first-party finder diagnostic timing pattern. The untimed
+counter replay is derived only from repository-owned five-prefix semantics.
+No external implementation or optimization source is consulted.

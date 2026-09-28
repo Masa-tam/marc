@@ -26449,3 +26449,27 @@ measured repetitions per frame, sum per-member medians over the verified corpus,
 and interpret the results as phase diagnosis rather than a new public lifecycle
 speed benchmark. Select the next investigation from the remaining measured
 cost instead of carrying forward the pre-admission bottleneck percentages.
+
+## DD-1328: Separate admitted-finder timing from logical work counts
+
+Time initialization, find and advance on the actual bounded five-prefix finder.
+Use retained indexed tokens as the oracle at each sequential position. One
+warmup replay omits per-call clocks; three measured replays time find/advance
+individually and retain enclosing wall time. Timer calls and validation perturb
+the measured loop, so do not substitute these values for public encode time or
+infer exact CPU shares from them.
+
+Replay the same tokens separately through an untimed, benchmark-only counter
+implementation restricted to validated frames up to 1 MiB, a full-frame window
+and maximum match length 258. Count three/four/five-prefix visits and insertions,
+exact versus colliding five-byte prefixes, improvement-probe rejection,
+post-probe prefix rejection, extension comparisons/equalities, improved matches
+and maximum-length exits. Classifying a prefix before the production probe is
+diagnostic work only; it must not enter the timed or public path. Counters
+describe logical operations rather than instruction costs.
+
+Check replay decisions against the retained token oracle. Cross-check insertion
+totals against frame lengths, exact/colliding classification against total
+five-prefix visits and extension equalities against comparisons. Use these
+results to select the next experiment; do not attribute a cost reduction to
+one operation solely from its count.
