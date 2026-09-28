@@ -1247,3 +1247,25 @@ exchange directions, following the two 3,954-test suites and bounded fuzz
 campaign. The verifier checks inventory, sizes, SHA-256, decoded fixtures and
 byte-identical local re-encoding. No format, public ABI, archive inventory or
 release state changes; no claim extends to untested architectures or profiles.
+
+### IX-0051: Schema 59 - 1 MiB position-distance qualification
+
+This entry supersedes the earlier current-inventory descriptions. New bundles
+use schema 59 and `marc-cli-v59`, containing 69 archives. The first 68 entries
+retain schema 58's order and representations; the last entry is
+`lzss-position-distance-dynamic-range-1m` with identity 2/9 + 1/10 + 3/2.
+The verifier continues to accept schemas 1 through 58 using their frozen lists.
+Schema 59 requires the exact new codec set, archive count and order, hashes,
+decoded fixture and byte-identical local re-encoding.
+
+The common 8,193-byte fixture remains unchanged. It verifies exchange of this
+profile but does not exercise its full window: permanent tests separately
+cover the full frame and wide distances. Do not infer full-window coverage
+from the bundle fixture alone.
+
+Run both local compiler exchange directions at the clean implementation
+revision, then push and obtain hosted CI and the four external verification
+results naming that revision. Successful new verifier lines must name 69
+archives. Earlier 68-archive reports do not close this gate; repeated bundle
+labels do not establish additional platforms. Hosted/external qualification
+for schema 59 remains pending until the maintainer supplies those results.

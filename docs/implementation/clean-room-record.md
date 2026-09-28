@@ -35843,3 +35843,22 @@ both bounds.
   copyleft implementations and third-party codec optimization/test code.
 - Similarity review: adaptation of repository-owned API dispatch/tests with
   new profile-specific limits; no external expression or legal guarantee claimed.
+
+## CR-1486: 2026-09-29 - Evaluate 1 MiB and prepare schema-59 exchange
+
+- Author and reviewer: Codex; maintainer approved corpus evaluation and the
+  next interoperability gate following public integration.
+- References: IR-1078, DD-1318, repository public C API, first-party corpus
+  manifest and bundle-generation/verification conventions.
+- Independent design: a common bounded harness compares public profiles with
+  explicit timing boundaries and separate budget/process-memory measures;
+  schema 59 appends one profile without changing earlier ordered codec sets.
+- Validation: TVG-1184 records benchmark smoke, repeated corpus reconstruction
+  and schema history checks. BM-0154 records performance tradeoffs without
+  attributing them to an unmeasured implementation stage.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: independently written measurement adapter and first-party
+  schema extension; no external expression or legal guarantee claimed.
+- Scope: no codec, wire representation or default-policy change; hosted and
+  external schema-59 qualification requires new revision-specific reports.

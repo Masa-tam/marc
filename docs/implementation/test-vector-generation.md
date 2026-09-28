@@ -17411,3 +17411,22 @@ made from these bounded integration tests.
 Both local compiler configurations pass all 4,018 regression tests, including
 the C consumers and allocation executable. Hosted CI and new-profile external
 archive verification have not been reported for this revision.
+
+## TVG-1184: Public corpus harness and schema-59 compatibility
+
+The new public-API benchmark smoke runs all three profiles and requires
+verified repetitions, archive SHA-256 and positive budget reports; unsupported
+selectors fail. The serial corpus experiment covers all twelve manifest-checked
+Silesia members, one warmup plus three repetitions for each of three profiles,
+with byte-identical repeated encoding and exact reconstruction throughout.
+BM-0154 reports the measurement scope and memory-accounting distinctions.
+
+Schema compatibility generates the new 69-archive bundle, checks its ordered
+68-entry prefix and appended identity, verifies it and rejects a reordered
+manifest. It then converts to schema 58 and retains the earlier positive and
+negative checks through schema 1. Cleanup validates the generated temporary
+root before recursive removal. No existing output artifact is removed.
+
+Both local compiler configurations pass all 4,019 regression tests, including
+the public benchmark smoke and schema 1 through 59 compatibility checks.
+Hosted CI and external new-profile archive verification remain pending.

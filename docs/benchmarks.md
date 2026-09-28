@@ -6067,3 +6067,67 @@ fourteen complete CLI round trips. These are current absolute CLI timings,
 not a paired whole-CLI improvement claim. Separate retained-token frame timers
 are not added to entropy timings. Source, binaries and inputs remain stable;
 allocation charges are unchanged and no new peak-memory measurement is claimed.
+
+## BM-0154: Public position-distance 1 MiB corpus comparison
+
+The executable `marc_lzss_position_distance_public_benchmark` accepts a profile
+(`position-64k`, `position-1m` or `contextual-1m`) and an input-file argument.
+It reports three verified repetitions, archive hash/size and budget fields.
+
+DD-1318 compares all twelve verified Silesia members through the public C API.
+Each profile uses its default frame/window, fixed 65,536-byte input/output
+chunks, one warmup and three measured repetitions. Runs are serial, with
+profile order rotated by member. Every repetition reconstructs the input and
+matches the warmup archive byte-for-byte. These are profile comparisons:
+window, framing, model and match policy differ; this does not isolate window size.
+
+Times include transform creation/process/destruction and harness output copying;
+input file I/O and workspace allocation are outside timing. Throughput is total
+raw bytes divided by the sum of per-member median times. Results describe this
+measurement snapshot, not a portable speed guarantee.
+
+| Profile | Total archive bytes | Encode MiB/s | Decode MiB/s | Encoder budget bytes | Decoder budget bytes |
+|---|---:|---:|---:|---:|---:|
+| position-64k | 70,126,519 | 26.11 | 29.58 | 7,804,685 | 2,037,549 |
+| position-1m | 63,558,293 | 4.34 | 37.78 | 74,979,189 | 32,511,893 |
+| contextual-1m | 64,358,213 | 5.07 | 27.29 | 66,060,373 | 26,214,485 |
+
+Total raw input is 211,938,580 bytes. Relative to position-64k, position-1m
+reduces archive bytes by 9.37% but takes 6.01 times
+the encode time; decode time changes by -21.69%.
+Relative to contextual-1m, archive bytes change by -1.24%,
+encode time by +16.62% and decode time by -27.77%.
+
+Budget columns are the minimum accepted aggregate limits for each API, found
+by querying fixed configurations; they are policy charges, not allocator/RSS
+measurements. The harness retains both directional workspaces, raw input,
+archives and restored output. Its observed resident-memory peaks (OS peak
+counters sampled every 10 ms) are listed separately and may miss the final
+unsampled interval; they must not be called per-direction codec memory.
+
+| Profile | Maximum observed whole-harness resident bytes |
+|---|---:|
+| position-64k | 154,664,960 |
+| position-1m | 251,502,592 |
+| contextual-1m | 237,957,120 |
+
+| Member | 1 MiB archive bytes | Bytes vs position-64k | Bytes vs contextual-1m |
+|---|---:|---:|---:|
+| dickens | 3,472,780 | -16.42% | +0.79% |
+| mozilla | 18,241,669 | -2.22% | -4.34% |
+| mr | 3,403,468 | -4.02% | -0.81% |
+| nci | 2,825,695 | -23.37% | +2.51% |
+| ooffice | 3,037,421 | -4.20% | -0.29% |
+| osdb | 3,544,894 | -15.68% | +4.42% |
+| reymont | 1,691,028 | -16.10% | -0.17% |
+| samba | 5,049,664 | -12.29% | +0.16% |
+| sao | 5,146,691 | -1.40% | -3.65% |
+| webster | 11,109,357 | -15.78% | +1.09% |
+| xml | 585,045 | -24.69% | +1.67% |
+| x-ray | 5,450,581 | -5.17% | -2.21% |
+
+This establishes a tradeoff rather than a universal replacement. Keep the
+explicit selectors and existing defaults. A further encoder optimization
+should start with a measured time breakdown; the comparison alone does not
+identify the responsible stage. Schema-59 external qualification remains a
+separate gate. No corpus input or local environment details are redistributed.

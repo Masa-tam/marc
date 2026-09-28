@@ -64,6 +64,8 @@ $resolvedCli = (Resolve-Path -LiteralPath $MarcCli).Path
 $root = Join-Path ([System.IO.Path]::GetTempPath()) (
     'marc-interoperability-' + [System.Guid]::NewGuid().ToString('N'))
 $schema57 = Join-Path $root 'schema57'
+$schema59 = Join-Path $root 'schema59'
+$schema59Reordered = Join-Path $root 'schema59-reordered'
 $schema58 = Join-Path $root 'schema58'
 $schema58Reordered = Join-Path $root 'schema58-reordered'
 $schema56 = Join-Path $root 'schema56'
@@ -224,14 +226,57 @@ $schema56Profiles = $schema55Profiles + @(
     'lzss-contextual-blocked-huffman-64m')
 $schema57Profiles = $schema56Profiles + @(
     'lzss-contextual-adaptive-huffman-64m')
+$schema58Profiles = $schema57Profiles + @('lzss-position-distance-dynamic-range')
 try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema58 `
+        -OutputDirectory $schema59 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    $latest = Get-Content -LiteralPath (Join-Path $schema59 'manifest.json') -Raw |
+        ConvertFrom-Json
+    if ($latest.schema_version -ne 59 -or $latest.codec_set -ne 'marc-cli-v59' -or
+            @($latest.archives).Count -ne 69 -or
+            $latest.archives[68].codec -ne 'lzss-position-distance-dynamic-range-1m') {
+        throw 'Schema 59 must append exactly one position-distance archive'
+    }
+    for ($index = 0; $index -lt $schema58Profiles.Count; ++$index) {
+        if ($latest.archives[$index].codec -ne $schema58Profiles[$index]) {
+            throw 'Schema 59 changed the frozen schema-58 prefix'
+        }
+    }
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+        -MarcCli $resolvedCli `
+        -BundleDirectory $schema59 `
+        -OutputDirectory (Join-Path $root 'verified59')
+
+    Copy-Item -LiteralPath $schema59 -Destination $schema59Reordered -Recurse
+    $reorderedManifestPath = Join-Path $schema59Reordered 'manifest.json'
+    $reorderedManifest = Get-Content -LiteralPath $reorderedManifestPath -Raw |
+        ConvertFrom-Json
+    $lastArchive = $reorderedManifest.archives[68]
+    $reorderedManifest.archives[68] = $reorderedManifest.archives[67]
+    $reorderedManifest.archives[67] = $lastArchive
+    Write-Manifest $reorderedManifestPath $reorderedManifest
+    $reorderedRejected = $false
+    try {
+        & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+            -MarcCli $resolvedCli `
+            -BundleDirectory $schema59Reordered `
+            -OutputDirectory (Join-Path $root 'verified59-reordered')
+    } catch {
+        if ($_.Exception.Message -notlike 'Codec is out of schema order*') {
+            throw
+        }
+        $reorderedRejected = $true
+    }
+    if (-not $reorderedRejected) {
+        throw 'Verifier accepted a reordered schema-59 manifest'
+    }
+
+    Convert-Bundle $schema59 $schema58 58 'marc-cli-v58' $schema58Profiles
     $latest = Get-Content -LiteralPath (Join-Path $schema58 'manifest.json') -Raw |
         ConvertFrom-Json
     if ($latest.schema_version -ne 58 -or $latest.codec_set -ne 'marc-cli-v58' -or
@@ -615,9 +660,17 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 58'
+    Write-Host 'Verified interoperability schemas 1 through 59'
 } finally {
     if (Test-Path -LiteralPath $root) {
+        $resolvedRoot = [System.IO.Path]::GetFullPath($root)
+        $temporaryRoot = [System.IO.Path]::GetFullPath([System.IO.Path]::GetTempPath()).TrimEnd(
+            [System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar) +
+            [System.IO.Path]::DirectorySeparatorChar
+        if (-not $resolvedRoot.StartsWith($temporaryRoot, [System.StringComparison]::OrdinalIgnoreCase) -or
+                [System.IO.Path]::GetFileName($resolvedRoot) -notmatch '^marc-interoperability-[0-9a-f]{32}$') {
+            throw 'Refusing to remove a directory outside the generated interoperability scratch root'
+        }
         Remove-Item -LiteralPath $root -Recurse -Force
     }
 }

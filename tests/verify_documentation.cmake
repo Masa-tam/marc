@@ -1417,6 +1417,10 @@ foreach(required_interoperability_section IN ITEMS
         "${interoperability_section_offset}")
 endforeach()
 foreach(required_current_interoperability_term IN ITEMS
+        "### IX-0051: Schema 59"
+        "marc-cli-v59"
+        "containing 69 archives"
+        "does not exercise its full window"
         "Each current schema-58 bundle"
         "marc-cli-v58"
         "sixty-eight foreign archives"

@@ -26251,3 +26251,20 @@ plus bounded workspaces before allocation; decode ignores encoder size fields
 and caps frame capacity at 1 MiB. Fixed encoding eligibility remains three.
 Keep the schema-58 archive set and its external evidence unchanged; the new
 profile requires separate corpus and interoperability qualification.
+
+## DD-1318: Evaluate public 1 MiB and append interoperability schema 59
+
+Compare position-distance 64 KiB, position-distance 1 MiB and contextual
+1 MiB through their public APIs with fixed 65,536-byte chunks, one warmup and
+three measured repetitions. Read input outside timing; include transform
+creation, processing and harness output copying, but exclude file I/O and
+workspace allocation. Verify repeated archive bytes and every decoded result.
+Report the smallest accepted aggregate budget separately from whole-process
+memory counters, which include corpus/encoded/restored harness storage.
+Run profiles serially and rotate their order by corpus member.
+
+Schema 59 / marc-cli-v59 appends position-distance 1 MiB as archive 69 after
+the frozen schema-58 prefix. Preserve the common 8,193-byte fixture, all earlier
+codec sets and verification semantics. This exchange fixture does not itself
+exercise the full window; permanent boundary tests supply that coverage.
+Local compiler exchange is not hosted or external-platform verification.

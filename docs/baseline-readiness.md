@@ -4173,3 +4173,13 @@ The existing 64 KiB and contextual identities remain separate. Public API
 validation, chunking, allocation failure and CLI selection are checked locally;
 new-profile corpus ratio/speed/memory and external interoperability qualification
 remain pending. No older 68-archive verification is evidence for this profile.
+
+## 2026-09-29: 1 MiB corpus evaluation and schema-59 gate
+
+BM-0154 completes the twelve-member corpus comparison. The new profile trades
+additional encoding time and workspace for smaller aggregate archives and
+faster decoding; it does not replace existing defaults. No stage-level cause
+is inferred from whole-pipeline timings. Schema 59 appends the profile as the
+69th archive while preserving schemas 1 through 58. IX-0051 defines the new
+qualification gate; hosted CI and revision-specific external results remain
+required, independently of the older 68-archive reports.
