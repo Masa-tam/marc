@@ -17214,3 +17214,32 @@ history and 1 MiB extent. This is not a serialized-frame/stream test. All
 checks pass in Release and ASan/UBSan, with compatible container annotations
 disabled. No production full-suite, stream-fuzz, corpus performance or new
 interoperability result is claimed for this prototype.
+
+## TVG-1178: Private 1 MiB typed-token bridge
+
+Six permanent tests cover new versus legacy parameter admission, every match
+length 3..258, overlapping reconstruction, and valid distances 65,535, 65,536,
+65,537, 131,072, 524,288 and 1,048,573. The last case fills exactly one MiB
+with a literal prefix and a length-three match. Generic public layout selection
+continues to reject the reserved new identity.
+
+Compare transactional and single-pass scratch result fields for every payload
+prefix, capacities around the required count, count/descriptor mutations,
+output overflow, model limits and exact-minus-one/exact/extra aggregate memory.
+Check output sentinels, guard tokens and payload/output overlap. An entropy-
+valid distance 65,537 after one literal fails history validation even when a
+previous frame has committed one MiB. Only private scratch retains that first
+validated literal; transactional output remains unchanged.
+
+The six tests pass under ASan/UBSan. The promoted operation core also passes
+the retained TVG-1177 driver under ASan/UBSan: 748 encode comparisons,
+2,611,370 paired decode steps and 30 malformed-payload checks, including the
+fixed arithmetic vector and full-size operation sequence. These sanitizer
+runs use compatible container annotations disabled. They are deterministic
+differential tests, not a coverage-guided fuzz campaign. Stream integration,
+new-profile benchmarks and interoperability remain pending.
+
+The complete regression suite passes all 3,960 tests with both supported
+local compiler configurations. The targeted typed-token selection passes
+31 tests, including the six new cases. These are local results; no new hosted
+CI or external archive verification is inferred from earlier profile results.

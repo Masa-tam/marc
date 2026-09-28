@@ -9561,3 +9561,10 @@ updates and canonical replay. Wider distance classes follow directly from
 floor(log2(distance)); no external codec source, pseudocode or tests are used.
 The existing 1 MiB contextual profile is a separate comparison target, not a
 format to reinterpret as position-distance coding.
+
+### IR-1072
+
+The private 1 MiB token bridge derives from IR-1071, the repository's typed
+LZSS validator/reconstructor and transactional versus private-scratch decode
+contracts. Frame history validation is independent of entropy field grammar.
+No external implementation, pseudocode or test suite was consulted.

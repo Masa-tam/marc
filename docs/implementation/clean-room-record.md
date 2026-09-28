@@ -35725,3 +35725,21 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: repository-owned source transformation and independently
   mapped interval checks; no external expression or legal guarantee claimed.
+
+## CR-1480: 2026-09-28 - Private 1 MiB typed-token integration
+
+- Author and reviewer: Codex; maintainer authorized the next implementation
+  step for the selected new position-distance 1 MiB profile.
+- Task: promote the operation core, validate/map typed tokens and compare
+  transactional decoding with single-pass private scratch decoding.
+- References: IR-1072 and repository-owned validators, reconstruction, range
+  arithmetic and failure-output contracts; no external codec source used.
+- Independent design: DD-1312 separates grammar admission from reset-frame
+  history, charges bounded storage and requires successful canonical finish
+  before scratch may be consumed. Public frame admission remains unchanged.
+- Validation: TVG-1178 records permanent token tests and sanitizer differential
+  checks against the retained operation reference paths.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party codec optimization/test code.
+- Similarity review: new bridge reviewed against first-party contracts and
+  widened prototype; no external expression or legal guarantee claimed.

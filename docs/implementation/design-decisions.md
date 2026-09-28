@@ -26119,3 +26119,31 @@ The next step is typed-token validation/mapping and transactional versus
 single-pass private token decoding, then exact-identity frame admission and
 workspace accounting. New stream factories, CLI selection, complete-frame
 publication, corpus benchmarks and interoperability remain unimplemented.
+
+## DD-1312: Validate and decode private 1 MiB typed tokens
+
+Promote the DD-1311 operation core into private library sources and add typed
+variant 9 with lengths 3..258 and a window/frame bound of 1,048,576 bytes.
+Keep legacy typed variants and public context selection unchanged. This
+milestone does not admit dictionary 2/9 plus context 1/10 into framed streams.
+
+Validate the complete typed frame before mapping operations or modifying
+caller output. Charge token storage, operation storage and the field cursor
+against the internal-buffer limit. For entropy-to-token decoding, charge the
+declared token storage, supplied payload and decoder state together; check
+counts, frame/block limits and committed-plus-frame output before decoding.
+Distance validation uses only raw bytes reconstructed within this reset frame.
+Previously committed frames cannot supply dictionary history.
+
+Retain a two-pass transactional token decoder. Its single-pass companion may
+write validated tokens only into discardable private scratch. Capacity or
+overlap problems fall back to transactional validation to preserve diagnostic
+precedence. Both paths compare every result field; unsuccessful scratch is
+never eligible for reconstruction or publication. Payload and configuration
+objects must remain stable for each call and may not overlap active output.
+
+Full canonical entropy finish and exact raw extent are required for success.
+The next gate is exact-identity frame admission, aggregate frame workspace
+accounting and failed-frame publication tests, followed by stream/factory/CLI
+integration. Token tests do not establish those still-unimplemented gates or
+predict corpus throughput, compression ratio or complete-pipeline peak memory.

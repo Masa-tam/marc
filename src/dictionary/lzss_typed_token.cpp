@@ -3,6 +3,17 @@
 #include "core/checked_math.hpp"
 
 namespace marc::dictionary::internal {
+namespace {
+constexpr bool short_length_variant(const LzssTypedTokenVariant variant) noexcept {
+    return variant == LzssTypedTokenVariant::field_context_64k_short_match
+        || variant == LzssTypedTokenVariant::field_context_64k_short_length_escape
+        || variant == LzssTypedTokenVariant::field_context_1m_short_length_escape;
+}
+constexpr std::uint32_t short_window_limit(const LzssTypedTokenVariant variant) noexcept {
+    return variant == LzssTypedTokenVariant::field_context_1m_short_length_escape
+        ? 1048576U : 65536U;
+}
+} // namespace
 
 LzssTypedTokenError validate_lzss_typed_parameters(
     const LzssParameters& parameters,
@@ -11,12 +22,10 @@ LzssTypedTokenError validate_lzss_typed_parameters(
     if (core::validate_limits(limits) != core::LimitError::none) {
         return LzssTypedTokenError::limit_exceeded;
     }
-    if (variant == LzssTypedTokenVariant::field_context_64k_short_match
-        || variant == LzssTypedTokenVariant::
-            field_context_64k_short_length_escape) {
+    if (short_length_variant(variant)) {
         // The serialized-byte LZSS validator deliberately retains its
         // minimum-five contract. Only this typed-token variant permits three.
-        if (parameters.window_size == 0 || parameters.window_size > 65536
+        if (parameters.window_size == 0 || parameters.window_size > short_window_limit(variant)
             || parameters.min_match_length != 3
             || parameters.max_match_length < 3
             || parameters.max_match_length > 258 || parameters.flags != 0) {
@@ -74,10 +83,8 @@ LzssTypedTokenError validate_lzss_typed_token(
         return parameter_error;
     }
     if (context.declared_raw_size > limits.max_frame_size
-        || ((variant == LzssTypedTokenVariant::field_context_64k_short_match
-             || variant == LzssTypedTokenVariant::
-                 field_context_64k_short_length_escape)
-            && context.declared_raw_size > 65536)
+        || (short_length_variant(variant)
+            && context.declared_raw_size > short_window_limit(variant))
         || context.raw_already_produced > context.declared_raw_size) {
         return LzssTypedTokenError::limit_exceeded;
     }
@@ -141,10 +148,8 @@ LzssTypedFrameValidationResult validate_lzss_typed_frame(
     }
     if (context.declared_raw_size > limits.max_frame_size
         || context.declared_raw_size > limits.max_block_size
-        || ((variant == LzssTypedTokenVariant::field_context_64k_short_match
-             || variant == LzssTypedTokenVariant::
-                 field_context_64k_short_length_escape)
-            && context.declared_raw_size > 65536)
+        || (short_length_variant(variant)
+            && context.declared_raw_size > short_window_limit(variant))
         || context.output_already_committed > limits.max_total_output_size) {
         result.error = LzssTypedFrameValidationError::limit_exceeded;
         return result;
