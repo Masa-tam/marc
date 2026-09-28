@@ -17524,3 +17524,33 @@ complete serialized-frame equality and exact reconstruction against production.
 This is functional validation; no performance result is inferred from concurrent
 regression/corpus runs. Public factories and streams still use the existing
 finder, so private validation does not qualify a future production switch.
+
+## TVG-1190: Five-prefix internal streaming integration
+
+Extend the first-party streaming differential suite to explicitly select the
+bounded five-prefix path. Compare complete streams with exhaustive/reference
+frames over empty, small and multiple-frame inputs, eligibility 3/4/5, one-byte
+input/output, zero output capacity and randomized chunk sizes. Compare 1 MiB
+frames with 70,001-byte repeated history and final tails of one through five
+bytes at every eligibility. Owned encode/decode covers empty through maximum
+frames at the exact queried budget.
+
+Check the additional finder and aggregate charge at frame sizes 1/2/3/4/5 and
+1 MiB, query output preservation on insufficient budget or invalid selector,
+partition storage/metadata preservation on short storage and budget failure,
+and raw-frame serialized-output preservation on insufficient output. Old-size
+storage cannot silently admit the new path. A failed second frame publishes
+only the preceding successful frame and retains a sticky error.
+
+Extend the allocation-failure executable to both search paths. Query and failed
+preflight allocate nothing; all four owner-allocation failure points release
+prior allocations. Successful creation performs four allocations and one-byte
+stream draining performs none. Invalid selectors fail before allocation.
+Targeted ASan/UBSan compiles the changed integration sources and bounded finder
+and candidate explicitly, then runs the streaming and raw-frame test groups.
+
+The targeted differential run passed 26 tests. The explicitly instrumented
+streaming/raw-frame ASan/UBSan run passed 19 tests. Both compiler configurations
+passed all 4,033 regression tests, including allocation-failure checks and
+historical interoperability schema compatibility. This is internal functional
+validation, not a new hosted CI result or an end-to-end speed measurement.

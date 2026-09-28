@@ -35940,3 +35940,20 @@ both bounds.
   no external expression or legal guarantee claimed.
 - Scope: private candidate only; public queries/factories and streaming selectors
   do not choose it. No decoder, format or failed-frame publication change.
+
+## CR-1492: 2026-09-29 - Private five-prefix streaming integration
+
+- Author and reviewer: Codex; maintainer approved the next internal integration
+  step after the bounded candidate differential gate.
+- References: IR-1084, DD-1324 and repository-owned streaming/workspace contracts.
+- Independent design: explicit private selector propagation, selected workspace
+  preflight, transient-state charge assertion and retained transactional frame
+  publication. Public defaults and format remain unchanged.
+- Validation: TVG-1190 documents differential, budget, allocation, publication
+  and sanitizer checks; no new external interoperability claim is made here.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization or test code.
+- Similarity review: changes extend first-party dispatch and budget paths;
+  no external expression or legal guarantee claimed.
+- Scope: private internal integration. Public admission and end-to-end timing
+  require their own evaluation.

@@ -2,6 +2,7 @@
 #define MARC_FRAME_LZSS_POSITION_DISTANCE_1M_ENCODE_WORKSPACE_HPP
 
 #include "frame/lzss_position_distance_1m_preflight.hpp"
+#include "dictionary/lzss_position_distance_1m_candidate.hpp"
 #include "frame/lzss_position_distance_workspace.hpp"
 
 namespace marc::frame::internal {
@@ -14,7 +15,8 @@ namespace marc::frame::internal {
 calculate_lzss_position_distance_1m_encode_workspace(
     const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
     LzssPositionDistanceWorkspaceDirection direction, std::size_t stream_state_bytes,
-    LzssPositionDistanceWorkspaceRequirements& requirements) noexcept;
+    LzssPositionDistanceWorkspaceRequirements& requirements,
+    dictionary::internal::LzssPositionDistance1mSearch search = dictionary::internal::LzssPositionDistance1mSearch::indexed) noexcept;
 
 // Recompute the layout rather than trusting caller-modifiable offsets. All
 // supplied capacity is charged; returned views expose only the required extent.
@@ -24,7 +26,8 @@ partition_lzss_position_distance_1m_encode_workspace(
     const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
     LzssPositionDistanceWorkspaceDirection direction, std::size_t stream_state_bytes,
     std::span<std::byte> raw, std::span<std::byte> serialized,
-    std::span<std::byte> storage, LzssPositionDistanceWorkspaceViews& views) noexcept;
+    std::span<std::byte> storage, LzssPositionDistanceWorkspaceViews& views,
+    dictionary::internal::LzssPositionDistance1mSearch search = dictionary::internal::LzssPositionDistance1mSearch::indexed) noexcept;
 
 // Encoding only: decode direction is rejected. Includes full validation state.
 [[nodiscard]] LzssPositionDistanceWorkspaceError

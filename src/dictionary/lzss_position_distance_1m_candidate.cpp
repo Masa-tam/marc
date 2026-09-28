@@ -1,4 +1,5 @@
 #include "dictionary/lzss_position_distance_1m_candidate.hpp"
+#include "dictionary/lzss_position_distance_1m_five_prefix_candidate.hpp"
 #include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
 #include <array>
@@ -32,6 +33,8 @@ LzssShortMatchCandidateResult tokenize_lzss_position_distance_1m_candidate(
     const core::DecoderLimits& limits,std::uint32_t eligibility,
     LzssPositionDistance1mSearch search,std::span<LzssTypedToken> tokens,
     std::span<std::byte> workspace) noexcept {
+    if(search==LzssPositionDistance1mSearch::indexed_five_prefix)
+        return tokenize_lzss_position_distance_1m_five_prefix_candidate(input,parameters,limits,eligibility,tokens,workspace);
     LzssShortMatchCandidateResult r{};r.input_size=input.size();
     if(eligibility<3 || eligibility>5) {r.error=Error::invalid_eligibility;return r;}
     if(search!=LzssPositionDistance1mSearch::exhaustive && search!=LzssPositionDistance1mSearch::indexed_reference

@@ -10,10 +10,12 @@ namespace marc::frame::internal {
 class LzssPositionDistance1mOwnedEncoder final : public core::Transform {
 public:
     [[nodiscard]] static core::ErrorCode requirements(const TypedContextStreamHeader&,
-        const core::DecoderLimits&, LzssPositionDistanceWorkspaceRequirements&) noexcept;
+        const core::DecoderLimits&, LzssPositionDistanceWorkspaceRequirements&,
+        dictionary::internal::LzssPositionDistance1mSearch search = dictionary::internal::LzssPositionDistance1mSearch::indexed) noexcept;
     [[nodiscard]] static std::unique_ptr<LzssPositionDistance1mOwnedEncoder> create(
         const TypedContextStreamHeader&, const core::DecoderLimits&, core::ErrorCode&,
-        std::uint32_t eligibility = 3) noexcept;
+        std::uint32_t eligibility = 3,
+        dictionary::internal::LzssPositionDistance1mSearch search = dictionary::internal::LzssPositionDistance1mSearch::indexed) noexcept;
     LzssPositionDistance1mOwnedEncoder(const LzssPositionDistance1mOwnedEncoder&) = delete;
     LzssPositionDistance1mOwnedEncoder& operator=(const LzssPositionDistance1mOwnedEncoder&) = delete;
     [[nodiscard]] core::ProcessResult process(std::span<const std::byte>,

@@ -55,11 +55,13 @@ int main() {
     using Status=marc::core::StreamStatus;
     const TypedContextStreamHeader stream{4,9,{1048576,3,258,0},32768,44,9,1,10};
     std::array<std::byte,9> raw{};
+    using Search=marc::dictionary::internal::LzssPositionDistance1mSearch;
+    for(auto search:{Search::indexed,Search::indexed_five_prefix}) {
     for(unsigned failure:{0U,1U,2U,3U,4U,0U}) {
         attempts=released=0;fail_at=failure;armed=true;
         LzssPositionDistanceWorkspaceRequirements r{};
-        assert(Owner::requirements(stream,{},r)==Code::none && attempts==0);
-        Code error{};auto p=Owner::create(stream,{},error);
+        assert(Owner::requirements(stream,{},r,search)==Code::none && attempts==0);
+        Code error{};auto p=Owner::create(stream,{},error,3,search);
         if(failure) assert(!p && error==Code::out_of_memory && attempts==failure && released==failure-1);
         else {
             assert(p && error==Code::none && attempts==4);
@@ -84,9 +86,11 @@ int main() {
     assert(!Owner::create(invalid,{},error) && error==Code::invalid_argument && attempts==0);
     assert(!Owner::create(stream,{},error,2) && error==Code::invalid_argument && attempts==0);
     LzssPositionDistanceWorkspaceRequirements r{};
-    assert(Owner::requirements(stream,{},r)==Code::none && attempts==0);
+    assert(Owner::requirements(stream,{},r,search)==Code::none && attempts==0);
     auto limits=marc::core::DecoderLimits{};limits.max_block_size=4;
     limits.max_internal_buffered_bytes=r.aggregate_bytes-1;
-    assert(!Owner::create(stream,limits,error) && error==Code::limit_exceeded && attempts==0);
+    assert(!Owner::create(stream,limits,error,3,search) && error==Code::limit_exceeded && attempts==0);
+    assert(!Owner::create(stream,{},error,3,static_cast<Search>(99)) && error==Code::invalid_argument && attempts==0);
     armed=false;
+    }
 }

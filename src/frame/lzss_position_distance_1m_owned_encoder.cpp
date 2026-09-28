@@ -5,9 +5,10 @@
 namespace marc::frame::internal {
 core::ErrorCode LzssPositionDistance1mOwnedEncoder::requirements(
     const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
-    LzssPositionDistanceWorkspaceRequirements& result) noexcept {
+    LzssPositionDistanceWorkspaceRequirements& result,
+    dictionary::internal::LzssPositionDistance1mSearch search) noexcept {
     const auto error=calculate_lzss_position_distance_1m_encode_workspace(stream,limits,
-        LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mOwnedEncoder),result);
+        LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mOwnedEncoder),result,search);
     using E=LzssPositionDistanceWorkspaceError;
     if(error==E::none) return core::ErrorCode::none;
     return error==E::limit_exceeded || error==E::arithmetic_overflow
@@ -16,13 +17,14 @@ core::ErrorCode LzssPositionDistance1mOwnedEncoder::requirements(
 
 std::unique_ptr<LzssPositionDistance1mOwnedEncoder> LzssPositionDistance1mOwnedEncoder::create(
     const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
-    core::ErrorCode& error, std::uint32_t eligibility) noexcept {
+    core::ErrorCode& error, std::uint32_t eligibility,
+    dictionary::internal::LzssPositionDistance1mSearch search) noexcept {
     // Snapshot configuration before writing the caller's error output.
     const auto configuration=stream;
     const auto budget=limits;
     if(eligibility<3 || eligibility>5) {error=core::ErrorCode::invalid_argument;return {};}
     LzssPositionDistanceWorkspaceRequirements r{};
-    error=requirements(configuration,budget,r);
+    error=requirements(configuration,budget,r,search);
     if(error!=core::ErrorCode::none) return {};
     std::unique_ptr<LzssPositionDistance1mOwnedEncoder> owner(new(std::nothrow) LzssPositionDistance1mOwnedEncoder);
     if(!owner) {error=core::ErrorCode::out_of_memory;return {};}
@@ -38,7 +40,7 @@ std::unique_ptr<LzssPositionDistance1mOwnedEncoder> LzssPositionDistance1mOwnedE
     if(!owner->aligned_) {error=core::ErrorCode::out_of_memory;return {};}
     owner->encoder_.emplace(configuration,budget,std::span{owner->raw_.get(),r.raw_bytes},
         std::span{owner->serialized_.get(),r.serialized_bytes},std::span{owner->aligned_.get(),r.views_bytes},
-        eligibility,dictionary::internal::LzssPositionDistance1mSearch::indexed,
+        eligibility,search,
         sizeof(LzssPositionDistance1mOwnedEncoder)-sizeof(LzssPositionDistance1mFrameStreamingEncoder));
     error=core::ErrorCode::none;
     return owner;

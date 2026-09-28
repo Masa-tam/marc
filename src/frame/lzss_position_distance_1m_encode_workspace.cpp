@@ -3,6 +3,7 @@
 #include "core/buffer_overlap.hpp"
 #include "core/checked_math.hpp"
 #include "dictionary/lzss_position_distance_1m_match_finder.hpp"
+#include "dictionary/lzss_position_distance_1m_five_prefix_finder.hpp"
 #include "entropy/lzss_position_distance_1m_range_encoder.hpp"
 #include "entropy/lzss_position_distance_1m_range_decoder.hpp"
 
@@ -12,6 +13,11 @@
 
 namespace marc::frame::internal {
 namespace {
+using Search = dictionary::internal::LzssPositionDistance1mSearch;
+// Tokenization ends before entropy coding; the existing model charge covers
+// the transient five-prefix finder state as well.
+static_assert(sizeof(dictionary::internal::LzssPositionDistance1mFivePrefixFinder)
+    <= sizeof(entropy::internal::LzssPositionDistance1mRangeDecoder));
 using Error = LzssPositionDistanceWorkspaceError;
 using Direction = LzssPositionDistanceWorkspaceDirection;
 using Token = dictionary::internal::LzssTypedToken;
@@ -50,7 +56,10 @@ Error charge_lzss_position_distance_1m_encode_workspace(
 Error calculate_lzss_position_distance_1m_encode_workspace(
     const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
     Direction direction, std::size_t stream_state_bytes,
-    LzssPositionDistanceWorkspaceRequirements& requirements) noexcept {
+    LzssPositionDistanceWorkspaceRequirements& requirements, Search search) noexcept {
+    if (search != Search::exhaustive && search != Search::indexed_reference
+        && search != Search::indexed && search != Search::indexed_five_prefix)
+        return Error::invalid_configuration;
     if (!valid_direction(direction) || core::validate_limits(limits) != core::LimitError::none)
         return Error::invalid_configuration;
     const auto validation = validate_lzss_position_distance_1m_stream_semantics(stream, limits);
@@ -73,7 +82,13 @@ Error calculate_lzss_position_distance_1m_encode_workspace(
         return Error::limit_exceeded;
     r.views_bytes = token_bytes;
     if (direction == Direction::encode) {
-        const auto finder = dictionary::internal::calculate_lzss_position_distance_1m_match_workspace(
+        using Query = dictionary::internal::LzssShortPrefixWorkspaceRequirements (*)(
+            std::size_t, const dictionary::internal::LzssParameters&, const core::DecoderLimits&,
+            dictionary::internal::LzssTypedTokenVariant) noexcept;
+        const Query query = search == Search::indexed_five_prefix
+            ? static_cast<Query>(dictionary::internal::calculate_lzss_position_distance_1m_five_prefix_workspace)
+            : static_cast<Query>(dictionary::internal::calculate_lzss_position_distance_1m_match_workspace);
+        const auto finder = query(
             r.raw_bytes, stream.dictionary, limits,
             dictionary::internal::LzssTypedTokenVariant::field_context_1m_short_length_escape);
         if (finder.error != dictionary::internal::LzssShortPrefixError::none)
@@ -102,9 +117,9 @@ Error partition_lzss_position_distance_1m_encode_workspace(
     const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
     Direction direction, std::size_t stream_state_bytes, std::span<std::byte> raw,
     std::span<std::byte> serialized, std::span<std::byte> storage,
-    LzssPositionDistanceWorkspaceViews& views) noexcept {
+    LzssPositionDistanceWorkspaceViews& views, Search search) noexcept {
     LzssPositionDistanceWorkspaceRequirements r{};
-    auto error = calculate_lzss_position_distance_1m_encode_workspace(stream, limits, direction, stream_state_bytes, r);
+    auto error = calculate_lzss_position_distance_1m_encode_workspace(stream, limits, direction, stream_state_bytes, r, search);
     if (error != Error::none) return error;
     if (raw.size() < r.raw_bytes || serialized.size() < r.serialized_bytes || storage.size() < r.views_bytes)
         return Error::too_small;

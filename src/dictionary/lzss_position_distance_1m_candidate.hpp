@@ -4,7 +4,7 @@
 #include "dictionary/lzss_position_distance_1m_match_finder.hpp"
 
 namespace marc::dictionary::internal {
-enum class LzssPositionDistance1mSearch { exhaustive, indexed_reference, indexed };
+enum class LzssPositionDistance1mSearch { exhaustive, indexed_reference, indexed, indexed_five_prefix };
 
 // Private variant-9 candidate parser. Fixed eligibility 3/4/5, longest match,
 // nearest equal-length tie. All supplied capacities are charged. Input/config

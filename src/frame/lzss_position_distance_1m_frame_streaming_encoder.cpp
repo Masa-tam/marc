@@ -79,7 +79,8 @@ LzssPositionDistance1mFrameStreamingEncoder::LzssPositionDistance1mFrameStreamin
       aligned_storage_(aligned), eligibility_(eligibility), search_(search) {
     if (eligibility<3 || eligibility>5
         || (search!=dictionary::internal::LzssPositionDistance1mSearch::exhaustive && search!=dictionary::internal::LzssPositionDistance1mSearch::indexed
-        && search!=dictionary::internal::LzssPositionDistance1mSearch::indexed_reference)
+        && search!=dictionary::internal::LzssPositionDistance1mSearch::indexed_reference
+        && search!=dictionary::internal::LzssPositionDistance1mSearch::indexed_five_prefix)
         || !disjoint({},{})) {
         static_cast<void>(fail(core::ErrorCode::invalid_argument,0)); return;
     }
@@ -88,7 +89,7 @@ LzssPositionDistance1mFrameStreamingEncoder::LzssPositionDistance1mFrameStreamin
         static_cast<void>(fail(core::ErrorCode::limit_exceeded,0)); return;
     }
     const auto error=partition_lzss_position_distance_1m_encode_workspace(stream_,limits_,
-        LzssPositionDistanceWorkspaceDirection::encode,retained,raw,serialized,aligned,views_);
+        LzssPositionDistanceWorkspaceDirection::encode,retained,raw,serialized,aligned,views_,search_);
     if (error!=LzssPositionDistanceWorkspaceError::none) {
         static_cast<void>(fail(workspace_error(error),0)); return;
     }

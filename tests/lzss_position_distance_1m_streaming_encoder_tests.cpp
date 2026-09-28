@@ -22,10 +22,10 @@ struct Storage {
     LzssPositionDistanceWorkspaceRequirements requirements{};
     std::vector<std::byte> raw,serialized;
     std::vector<std::max_align_t> aligned;
-    explicit Storage(TypedContextStreamHeader stream) {
+    explicit Storage(TypedContextStreamHeader stream,Search search=Search::indexed) {
         limits.max_block_size=stream.frame_size;
         EXPECT_EQ(calculate_lzss_position_distance_1m_encode_workspace(stream,limits,
-            LzssPositionDistanceWorkspaceDirection::encode,sizeof(Encoder),requirements),
+            LzssPositionDistanceWorkspaceDirection::encode,sizeof(Encoder),requirements,search),
             LzssPositionDistanceWorkspaceError::none);
         raw.resize(requirements.raw_bytes); serialized.resize(requirements.serialized_bytes);
         aligned.resize((requirements.views_bytes+sizeof(std::max_align_t)-1)/sizeof(std::max_align_t));
@@ -35,9 +35,9 @@ struct Storage {
 };
 std::vector<std::byte> oracle(std::span<const std::byte> input,TypedContextStreamHeader stream,
     unsigned eligibility,Search search) {
-    Storage s(stream); LzssPositionDistanceWorkspaceViews v{};
+    Storage s(stream,search); LzssPositionDistanceWorkspaceViews v{};
     EXPECT_EQ(partition_lzss_position_distance_1m_encode_workspace(stream,s.limits,
-        LzssPositionDistanceWorkspaceDirection::encode,sizeof(Encoder),s.raw,s.serialized,s.views(),v),
+        LzssPositionDistanceWorkspaceDirection::encode,sizeof(Encoder),s.raw,s.serialized,s.views(),v,search),
         LzssPositionDistanceWorkspaceError::none);
     const auto frames=input.size()/stream.frame_size+(input.size()%stream.frame_size!=0);
     std::vector<std::byte> result(112+frames*s.requirements.serialized_bytes);
@@ -57,7 +57,7 @@ std::vector<std::byte> oracle(std::span<const std::byte> input,TypedContextStrea
 }
 std::vector<std::byte> run(std::span<const std::byte> input,TypedContextStreamHeader stream,
     unsigned eligibility,Search search,std::size_t in_chunk,std::size_t out_chunk,bool random=false) {
-    Storage s(stream);
+    Storage s(stream,search);
     Encoder encoder(stream,s.limits,s.raw,s.serialized,s.views(),eligibility,search);
     std::vector<std::byte> encoded,buffer(out_chunk);
     std::size_t position{}; std::uint32_t seed=17;
@@ -99,6 +99,8 @@ TEST(LzssPositionDistance1mStreamingEncoder, MatchesOracleAcrossPoliciesAndFrame
         const auto reference=oracle(input,stream,policy,Search::exhaustive);
         EXPECT_EQ(oracle(input,stream,policy,Search::indexed),reference);
         EXPECT_EQ(run(input,stream,policy,Search::indexed,1,1),reference);
+        EXPECT_EQ(run(input,stream,policy,Search::indexed_five_prefix,1,1),reference);
+        EXPECT_EQ(run(input,stream,policy,Search::indexed_five_prefix,79,31,true),reference);
         EXPECT_EQ(run(input,stream,policy,Search::exhaustive,13,7),reference);
         EXPECT_EQ(run(input,stream,policy,Search::indexed,79,31,true),reference);
     }
@@ -203,9 +205,10 @@ TEST(LzssPositionDistance1mStreamingEncoder, RejectsProcessOverlapWithEveryLiveR
 }
 
 TEST(LzssPositionDistance1mStreamingEncoder, FailedSecondFramePublishesOnlyEarlierFrame) {
-    const auto stream=stream_for(512,256); Storage s(stream);
+    for(auto search:{Search::indexed,Search::indexed_five_prefix}) {
+    const auto stream=stream_for(512,256); Storage s(stream,search);
     s.limits.max_expansion_ratio=1; s.limits.expansion_slack=0;
-    Encoder encoder(stream,s.limits,s.raw,s.serialized,s.views());
+    Encoder encoder(stream,s.limits,s.raw,s.serialized,s.views(),3,search);
     std::vector<std::byte> input(512,std::byte{'a'}),output(16384,std::byte{0xa5});
     for(std::size_t i=0;i<256;++i) input[i]=std::byte(i);
     const auto expected=oracle(input,stream,3,Search::indexed);
@@ -217,6 +220,10 @@ TEST(LzssPositionDistance1mStreamingEncoder, FailedSecondFramePublishesOnlyEarli
     EXPECT_EQ(encoder.frame_preparation_count(),2);
     EXPECT_TRUE(std::equal(output.begin(),output.begin()+result.output_produced,expected.begin()));
     EXPECT_TRUE(std::ranges::all_of(std::span{output}.subspan(result.output_produced),[](auto b){return b==std::byte{0xa5};}));
+    const auto again=encoder.process({},output,end_flag);
+    EXPECT_EQ(again.status,Status::error); EXPECT_EQ(again.output_produced,0);
+    EXPECT_EQ(again.error.code,result.error.code); EXPECT_EQ(again.error.byte_position,256);
+    }
 }
 
 TEST(LzssPositionDistance1mStreamingEncoder, SharedHeaderWriterValidatesBeforePublication) {
@@ -228,19 +235,20 @@ TEST(LzssPositionDistance1mStreamingEncoder, SharedHeaderWriterValidatesBeforePu
 }
 TEST(LzssPositionDistance1mStreamingEncoder, OwnedBudgetsRoundTripAndObjectOverlap) {
     using Owner=LzssPositionDistance1mOwnedEncoder;
+    for(auto search:{Search::indexed,Search::indexed_five_prefix})
     for(auto size:{0U,1U,63U,64U,65U,197U,1048577U}) {
         const auto stream=stream_for(size,size>1000000?1048576:64);
         LzssPositionDistanceWorkspaceRequirements required{};
         marc::core::DecoderLimits limits{};limits.max_block_size=stream.frame_size;
-        ASSERT_EQ(Owner::requirements(stream,limits,required),Code::none);
+        ASSERT_EQ(Owner::requirements(stream,limits,required,search),Code::none);
         const auto saved=required;
         limits.max_internal_buffered_bytes=required.aggregate_bytes-1;
-        EXPECT_EQ(Owner::requirements(stream,limits,required),Code::limit_exceeded);
+        EXPECT_EQ(Owner::requirements(stream,limits,required,search),Code::limit_exceeded);
         EXPECT_EQ(required,saved);
-        Code error{};EXPECT_FALSE(Owner::create(stream,limits,error));
+        Code error{};EXPECT_FALSE(Owner::create(stream,limits,error,3,search));
         EXPECT_EQ(error,Code::limit_exceeded);
         ++limits.max_internal_buffered_bytes;
-        auto encoder=Owner::create(stream,limits,error);ASSERT_TRUE(encoder);ASSERT_EQ(error,Code::none);
+        auto encoder=Owner::create(stream,limits,error,3,search);ASSERT_TRUE(encoder);ASSERT_EQ(error,Code::none);
         std::vector<std::byte> input(size);
         for(std::size_t i=0;i<input.size();++i) input[i]=std::byte(i%251);
         std::vector<std::byte> encoded;std::array<std::byte,997> buffer{};
@@ -313,5 +321,66 @@ TEST(LzssPositionDistance1mStreamingEncoder, LatchedEndDrainsWithoutRepeatingFla
     }
     EXPECT_EQ(status,Status::end_of_stream);EXPECT_EQ(encoder.frame_preparation_count(),1);
     EXPECT_EQ(bytes,oracle(input,stream,3,Search::exhaustive));
+}
+
+TEST(LzssPositionDistance1mStreamingEncoder, FivePrefixWorkspaceAdmissionAndRawFailure) {
+    using E=LzssPositionDistanceWorkspaceError;
+    constexpr auto five=Search::indexed_five_prefix;
+    for(auto frame:{1U,2U,3U,4U,5U,1048576U}) {
+        const auto stream=stream_for(frame,frame);
+        Storage old(stream),s(stream,five);
+        const auto extra=frame<3?0U:4U*(65536+frame);
+        EXPECT_EQ(s.requirements.finder_bytes,old.requirements.finder_bytes+extra);
+        EXPECT_EQ(s.requirements.aggregate_bytes,old.requirements.aggregate_bytes+extra);
+        auto r=s.requirements;const auto saved=r;
+        auto limits=s.limits;--limits.max_internal_buffered_bytes;
+        EXPECT_EQ(calculate_lzss_position_distance_1m_encode_workspace(stream,limits,
+            LzssPositionDistanceWorkspaceDirection::encode,sizeof(Encoder),r,five),E::limit_exceeded);
+        EXPECT_EQ(r,saved);
+        EXPECT_EQ(calculate_lzss_position_distance_1m_encode_workspace(stream,s.limits,
+            LzssPositionDistanceWorkspaceDirection::encode,sizeof(Encoder),r,static_cast<Search>(99)),
+            E::invalid_configuration);
+        EXPECT_EQ(r,saved);
+        LzssPositionDistanceWorkspaceViews views{};
+        std::fill(s.views().begin(),s.views().end(),std::byte{0xa5});
+        const auto before=std::vector<std::byte>(s.views().begin(),s.views().end());
+        EXPECT_EQ(partition_lzss_position_distance_1m_encode_workspace(stream,limits,
+            LzssPositionDistanceWorkspaceDirection::encode,sizeof(Encoder),
+            s.raw,s.serialized,s.views(),views,five),E::limit_exceeded);
+        EXPECT_TRUE(views.tokens.empty());
+        EXPECT_TRUE(std::equal(before.begin(),before.end(),s.views().begin()));
+        EXPECT_EQ(partition_lzss_position_distance_1m_encode_workspace(stream,s.limits,
+            LzssPositionDistanceWorkspaceDirection::encode,sizeof(Encoder),
+            s.raw,s.serialized,s.views().first(s.views().size()-1),views,five),E::too_small);
+        EXPECT_TRUE(views.tokens.empty());
+        EXPECT_TRUE(std::equal(before.begin(),before.end(),s.views().begin()));
+        ASSERT_EQ(partition_lzss_position_distance_1m_encode_workspace(stream,s.limits,
+            LzssPositionDistanceWorkspaceDirection::encode,sizeof(Encoder),
+            s.raw,s.serialized,s.views(),views,five),E::none);
+        s.serialized.assign(s.serialized.size(),std::byte{0xa5});
+        const auto result=encode_lzss_position_distance_1m_raw_frame(stream,s.limits,0,0,
+            s.raw,3,five,views.tokens,views.operations,views.finder,std::span{s.serialized}.first(1));
+        EXPECT_EQ(result.error,LzssPositionDistanceRawFrameError::frame_error);
+        EXPECT_TRUE(std::ranges::all_of(s.serialized,[](auto b){return b==std::byte{0xa5};}));
+    }
+    const auto stream=stream_for(21);
+    Storage old(stream);
+    Encoder short_storage(stream,old.limits,old.raw,old.serialized,old.views(),3,five);
+    std::array<std::byte,112> output{};output.fill(std::byte{0xa5});
+    const auto r=short_storage.process({},output,0);
+    EXPECT_EQ(r.status,Status::error);EXPECT_EQ(r.output_produced,0);
+    EXPECT_TRUE(std::ranges::all_of(output,[](auto b){return b==std::byte{0xa5};}));
+}
+
+TEST(LzssPositionDistance1mStreamingEncoder, FivePrefixWideHistoryAndShortFinalFrames) {
+    std::vector<std::byte> input(1048576+5);std::uint32_t seed=719;
+    for(std::size_t i=0;i<70001;++i) {seed=seed*1664525U+1013904223U;input[i]=std::byte(seed>>24);}
+    for(std::size_t i=70001;i<input.size();++i) input[i]=input[i%70001];
+    for(unsigned policy:{3U,4U,5U}) for(unsigned tail:{1U,2U,3U,4U,5U}) {
+        const auto raw=std::span{input}.first(1048576+tail);
+        const auto stream=stream_for(raw.size(),1048576);
+        EXPECT_EQ(run(raw,stream,policy,Search::indexed_five_prefix,8191,4093,true),
+            oracle(raw,stream,policy,Search::indexed));
+    }
 }
 } // namespace

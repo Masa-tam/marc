@@ -26354,3 +26354,29 @@ state before parsing. Insufficient token capacity uses a count pass and leaves
 token output unchanged; finder storage is discardable scratch. No failed tokens
 may be published as a frame. Public integration requires separate workspace and
 streaming admission tests after this private differential gate.
+
+## DD-1324: Explicit private five-prefix streaming selection
+
+Add indexed_five_prefix to the private variant-9 search selector and propagate
+it through candidate dispatch, raw-frame encoding, workspace calculation and
+partitioning, and borrowed/owned streaming encoders. Existing selectors remain
+available as references. Defaults remain indexed, including public factories;
+the public ABI, workspace requirements and encoded representation do not change.
+
+The selected finder determines workspace size before allocation or partitioning.
+For frame size F >= 3, five-prefix arrays require 12 * (65,536 + F) bytes,
+an increase of 4 * (65,536 + F) over the existing indexed path; smaller frames
+need no finder arrays. The maximum-frame increase is 4,456,448 bytes. Layout
+alignment, checked arithmetic, full supplied-capacity charging and failure
+preservation remain mandatory. Unknown selectors fail before storage mutation
+or allocation. A compile-time check establishes that transient finder state
+fits within the existing entropy/validation state charge; tokenization finishes
+before that state is needed. These are policy charges, not peak RSS estimates.
+
+Frame encoding retains private token/operation scratch until validation and
+serialization succeed. Streaming publishes only successful complete frames.
+A later failed frame cannot retract earlier committed output and must publish
+none of its own bytes; subsequent calls retain the error. Owned creation checks
+the complete selected budget before four allocations; process performs none.
+Public default admission and end-to-end performance evaluation remain separate
+from this internal integration gate.

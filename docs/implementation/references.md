@@ -9640,3 +9640,9 @@ No external implementation or optimization source was consulted.
 
 Use DD-1322's shared-key experiment and repository-owned dual-prefix workspace,
 overlap, checked-arithmetic and candidate contracts. No external source is used.
+
+## IR-1084: Five-prefix internal frame and stream integration
+
+Use DD-1323's bounded finder/candidate and the repository-owned variant-9
+raw-frame, workspace, borrowed transform and owned transform contracts.
+No external source or third-party implementation was consulted.

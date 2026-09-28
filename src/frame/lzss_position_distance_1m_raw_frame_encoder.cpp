@@ -26,7 +26,8 @@ LzssPositionDistanceRawFrameResult encode_lzss_position_distance_1m_raw_frame(
     if(raw.size()!=std::min<std::uint64_t>(stream.frame_size,stream.original_size-committed)) {
         r.error=Error::raw_size_mismatch;return r;
     }
-    if(search!=Search::exhaustive && search!=Search::indexed_reference && search!=Search::indexed) {
+    if(search!=Search::exhaustive && search!=Search::indexed_reference && search!=Search::indexed
+        && search!=Search::indexed_five_prefix) {
         r.error=Error::invalid_search;return r;
     }
     std::size_t token_bytes{},operation_bytes{};
