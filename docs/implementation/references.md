@@ -9552,3 +9552,12 @@ and their first-party cursor invariant proof and isolated differential trial.
 The pre-integration optimized encoder is retained privately for paired timing;
 the checked reference path remains in production for permanent differential
 tests. No external implementation, pseudocode or test suite was consulted.
+
+### IR-1071
+
+The 1 MiB position-distance extension uses the repository's context-9 field
+grammar, short-length escape mapping, range arithmetic, grouped binary model
+updates and canonical replay. Wider distance classes follow directly from
+floor(log2(distance)); no external codec source, pseudocode or tests are used.
+The existing 1 MiB contextual profile is a separate comparison target, not a
+format to reinterpret as position-distance coding.

@@ -26080,3 +26080,42 @@ Local source/test/benchmark evidence and an exact-revision local exchange are
 separate from hosted CI and external verification. The prior production gate
 at 0bbe882e does not validate this new integration; its CI/external gate must
 be closed with results naming the new implementation revision.
+
+## DD-1311: Start a distinct 1 MiB position-distance profile
+
+Close the 64 KiB optimization work at the verified DD-1310 implementation.
+The maintainer selects a new position-distance 1 MiB profile before optimizing
+the existing contextual 1 MiB format. Reserve dictionary 2/9, context 1/10,
+entropy 3/2; do not alter the bytes or admission of either existing profile.
+
+Retain short lengths 3..258 and the reduced literal model. Expand the nine
+distance-class alphabets from 17 to 21 symbols and the position-adaptive bit
+bank from 16 to 20 models. This gives 44 contexts and 2,566 frequencies: 2,526
+ordinary entries followed by twenty binary pairs. Class 16 now admits nonzero
+extras; only class 20 constrains its extra to zero. In a reset frame at most
+1 MiB long, the largest reconstructible distance is smaller than the full
+window because a match still needs output space. Test grammar admission of
+class 20 separately from valid frame history.
+
+First implement an isolated bounded operation encoder/decoder using these
+rules, with retained reference coding and canonical finish checks. Test high
+distance bits, rescaling, malformed input, capacity/limit failures and exact
+operation/payload agreement before a token/frame/stream integration. This is
+a staged new-format implementation, not permission to publish failed frames
+or to claim a public codec before its completion gates pass.
+
+Carry over validated single-pass private scratch, grouped binary/literal
+queries and transactional fallback principles. Do not copy 16-bit finder
+links/sentinels into a 1 MiB search structure: positions need a wider bounded
+representation and separate workspace accounting. Do not remove generic
+contextual checks based on a proof that applies only to the grammar-aware
+position-distance cursor. Benchmark ratio, speed and memory independently;
+the 64 KiB gains do not predict the 1 MiB result.
+
+TVG-1177 completes this first operation-core prototype gate: the widened
+optimized/reference paths agree, including a separately checked arithmetic
+vector and a full-size operation sequence with valid high-distance history.
+The next step is typed-token validation/mapping and transactional versus
+single-pass private token decoding, then exact-identity frame admission and
+workspace accounting. New stream factories, CLI selection, complete-frame
+publication, corpus benchmarks and interoperability remain unimplemented.

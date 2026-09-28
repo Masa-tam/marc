@@ -17176,3 +17176,41 @@ Clang builds, including this new regression and existing failed-frame tests.
 The full runs complete in 450.25 and 368.81 seconds respectively; concurrent
 validation workloads make these test durations unsuitable as codec benchmarks.
 Source and binary hashes remain unchanged through validation and measurement.
+
+## TVG-1177: Initial 1 MiB position-distance operation prototype
+
+For DD-1311, test a separately named 44-context/2,566-frequency encoder and
+decoder without public or frame admission. Cover every length 3..258 with
+distances 1, 65,535, 65,536, 65,537, 131,071, 131,072, 262,143, 262,144,
+524,287, 524,288, 1,048,573, 1,048,575 and 1,048,576. The largest distance
+cases are grammar tests and do not assert valid history inside a 1 MiB frame.
+Separate 70,000-literal and 70,000-wide-distance sequences exercise model
+rescaling. Optimized and checked encoders match entire supplied buffers on
+success; transactional failures preserve sentinels and descriptors. The
+private-scratch path matches result fields and success output.
+
+A small hand-mapped grammar vector contains literal 65, length 3/distance
+65,537, and length 258/distance 1,048,576. Its ordinary context/value pairs
+are (0,0), (3,65), (1,1), (13,8), (23,16), (2,1), (14,7), (22,20), with
+the intervening length/distance extras prescribed by the format. It has
+12 events and 52 decisions. A separately written integer arithmetic oracle
+over those explicit intervals agrees with both C++ paths on the 13-byte
+payload `00 20 fb ae 79 0c bb 23 c7 70 00 00 00`. This is an entropy vector,
+not a complete decodable raw frame with sufficient dictionary history.
+
+Compare every prefix and field mutations of the small grammar, exact-minus-
+one/exact/extra payload capacities, model-entry and internal-memory limits.
+Known truncations, wrong context counts and trailing payload bytes must fail;
+payload bit mutations compare optimized and reference decode behavior without
+assuming every mutation is invalid. The legacy 40-context decoder rejects the
+44-context descriptor. The optimized and linear/reference decoders compare
+every returned operation, error, count and consumed extent, including finish.
+
+One bounded operation sequence describes 1,048,573 literal bytes followed by
+a length-3 match at distance 1,048,573. Its 2,097,151 operations round-trip
+exactly and a separate byte-copy check establishes the final reference's raw
+history and 1 MiB extent. This is not a serialized-frame/stream test. All
+748 encode comparisons, 2,611,370 paired decode steps and 30 malformed-payload
+checks pass in Release and ASan/UBSan, with compatible container annotations
+disabled. No production full-suite, stream-fuzz, corpus performance or new
+interoperability result is claimed for this prototype.

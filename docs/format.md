@@ -8067,3 +8067,55 @@ input remains header-only, without an empty data frame. Private complete-frame
 encoding and decoding are implemented; the identity remains reserved and is
 not a publicly admitted stream codec. See the integration readiness review in
 [the ratio design](design/lzss-contextual-ratio-64k.md).
+
+### Reserved 1 MiB position-adaptive distance identity
+
+Reserve Format 2.0 tuple `dictionary 2/9 + context 1/10 + entropy 3/2`
+for the 1 MiB short-length escape position-distance profile. This reservation
+does not admit a public stream codec. Existing parsers/selectors MUST reject
+the new tuple and crossed identities until its dedicated integration exists.
+Dictionary 2/8 and context 1/9 retain their exact representation and limits;
+the existing contextual 1 MiB tuple is also unchanged.
+
+The new profile inherits context 9's token grammar, literal selection, length
+classes/escape, range arithmetic, reset rules and canonical termination, with
+these explicit changes. Dictionary distance is bounded by 1,048,576 bytes;
+minimum/maximum match lengths remain 3/258. Frames are independently reset,
+at most 1,048,576 raw bytes, with default window and frame size 1,048,576.
+Window and frame sizes remain byte units; references cannot cross a reset.
+History/output limits still restrict which distances can occur in a frame.
+
+Contexts 0..14 are unchanged. Contexts 15..23 have alphabet 21 and code
+distance classes 0..20. Contexts `24+p`, for p=0..19, have alphabet 2. The
+descriptor context count MUST be 44. The flattened model has 2,566 frequency
+entries: ordinary offsets are prefix sums of those alphabets, ending at
+2,526, and binary model p starts at `2526+2*p`. All frequencies start at one;
+updates and rescaling at total 32768 remain exactly context 9.
+
+For distance D, class c is floor(log2(D)) and E is D minus 2^c. Class zero
+has no extra event. Otherwise code all c bits of E through models 24..24+c-1
+in increasing numeric bit position. Class 16 permits E=0..65535; class 20
+requires E=0 and still codes/updates all twenty zero bits. Invalid widths,
+out-of-width values, classes above 20, and nonzero class-20 extras are errors.
+The length-259 escape remains invalid. No bit is omitted merely because its
+value is constrained. Length extras retain equiprobable intervals.
+
+Use the existing 112-byte stream header, 64-byte frame header and 16-byte
+Range descriptor layouts with the new tuple/count and unchanged explicit
+little-endian fields. Event counting is unchanged. For nonempty raw size F
+and token count T, require `1 <= T <= F`,
+`2T <= event_count <= min(2F,5T)` and
+`event_count <= decision_count <= min(9F,31T)`.
+The token ceiling is conservative: a match has at most three symbol decisions,
+seven length bits and twenty distance bits. A length-3 match uses at most
+24 decisions, and any longer match uses at most 30, so 9F is still safe.
+Thus `2*decision_count+5`, `18F+5` payload and `18F+85` complete-frame bounds
+remain conservative. Checked aggregate workspace MUST charge actual widened
+models, totals, grammar/canonical state and buffer extents before allocation.
+
+Empty input is header-only. Exact tuple, limits, reference history, raw extent,
+event/decision counts and canonical payload termination MUST all validate
+before a decoded frame is published. Existing transactional APIs must retain
+their failure guarantees; any single-pass scratch helper is private and its
+partial output MUST be discarded on failure. No new algorithm ID or public
+selector is implied by this reservation.

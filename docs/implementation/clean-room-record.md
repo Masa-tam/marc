@@ -35703,3 +35703,25 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: verification metadata only; no external expression copied
   or legal guarantee claimed.
+
+## CR-1479: 2026-09-28 - Begin the 1 MiB position-distance profile
+
+- Author and reviewer: Codex; the maintainer selected a new position-distance
+  profile ahead of optimizing the existing contextual 1 MiB representation.
+- Task: close the 64 KiB optimization phase, specify a distinct wider identity
+  and test its bounded operation encoder/decoder before frame integration.
+- References: IR-1071, first-party context-9 grammar, length escape, range
+  encoder/decoder and canonical replay. No external implementation was used.
+- Independent design: 21-symbol distance classes, twenty adaptive bit models,
+  44 contexts and 2,566 frequencies; constrained extra moves from class 16
+  to class 20. DD-1311 and the format reservation define exact semantics.
+- Validation: TVG-1177 records 748 encode comparisons, paired decode checks,
+  malformed cases, the independently mapped arithmetic vector and sanitizer
+  success. The private prototype is retained separately from production.
+- Scope: no existing codec/API/admission changes. Typed-token/frame/stream
+  integration, performance, whole-pipeline and external gates remain pending.
+  The prototype does not publish frames or reinterpret previous streams.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: repository-owned source transformation and independently
+  mapped interval checks; no external expression or legal guarantee claimed.
