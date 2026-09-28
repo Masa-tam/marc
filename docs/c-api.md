@@ -795,3 +795,16 @@ allocation occurs, and failed frames produce no output from that frame.
 This adds a second position-distance C family independently of the baseline
 42-profile matrix. Corpus performance and external qualification for the new
 family remain pending; the preceding schema-58 evidence covers the older family.
+
+### Five-prefix encoder workspace update
+
+The 1 MiB position-distance encoder now uses the exact five-prefix finder
+(DD-1326). For frame size F >= 3 its queried views extent grows by
+4 * (65,536 + F) bytes; at the default 1 MiB frame this adds 4,456,448 bytes
+(4.25 MiB). Re-query workspace requirements with the current library. Old
+smaller storage is rejected and an insufficient aggregate budget returns
+LIMIT_EXCEEDED before allocation. Frames shorter than three need no finder
+arrays. Decoder workspace, public struct layouts and encoded bytes are unchanged.
+The factory still borrows only queried prefixes, performs two allocations and
+allocates nothing while processing. Earlier external evidence does not replace
+verification of this encoder revision.

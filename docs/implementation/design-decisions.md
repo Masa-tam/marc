@@ -26408,3 +26408,28 @@ BM-0159's 32.29% corpus encode-time reduction for a 5.94% internal policy-charge
 increase supports proceeding to public admission checks. Repeated x-ray results
 remain near parity. Keep this recommendation distinct from actually changing
 public factory selection or claiming portable speed guarantees.
+
+## DD-1326: Admit five-prefix search to the public 1 MiB encoder
+
+Select indexed_five_prefix explicitly in both the public variant-9 workspace
+preflight and borrowed streaming encoder construction. Preserve eligibility
+three and the existing wire identity. Keep private indexed/exhaustive paths
+available as references and leave their default selectors unchanged. Public
+64 KiB and contextual profiles, decoder selection and all public struct layouts
+remain unchanged.
+
+The public query now accounts for the selected three-prefix arrays, adding
+4 * (65,536 + F) bytes for F >= 3 (4,456,448 at the maximum frame size);
+frames shorter than three require no finder arrays. Callers must query the
+current library rather than reuse an older extent. An insufficient configured
+budget fails before allocation and an old smaller workspace is rejected; do
+not silently switch search strategies to fit it. Retain prefix-only borrowing,
+untouched caller tails, opaque-handle and concrete-transform charges, two
+factory allocations, and allocation-free processing.
+
+No format or interoperability schema revision is needed because exact parsing
+and complete encoded bytes are unchanged. Failure atomicity, sticky errors and
+the prohibition on publishing failed frames remain mandatory. Gate admission
+on full regressions, public allocation checks, instrumented C tests and CLI
+archive identity/reconstruction. Hosted CI and external verification must still
+be tied to the new committed revision; earlier reports do not qualify it.

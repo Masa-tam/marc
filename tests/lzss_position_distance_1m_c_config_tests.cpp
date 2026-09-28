@@ -120,7 +120,8 @@ TEST(PositionDistance1mCConfig, ExactAggregateBoundary) {
         LzssPositionDistanceWorkspaceRequirements private_r{};
         if(direction==MARC_DIRECTION_ENCODE) {
             ASSERT_EQ(calculate_lzss_position_distance_1m_encode_workspace(stream,{},
-                LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mFrameStreamingEncoder),private_r),
+                LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mFrameStreamingEncoder),private_r,
+                marc::dictionary::internal::LzssPositionDistance1mSearch::indexed_five_prefix),
                 LzssPositionDistanceWorkspaceError::none);
         } else {
             LzssPositionDistance1mDecodeWorkspace d{};

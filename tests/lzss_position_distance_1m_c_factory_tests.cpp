@@ -75,9 +75,9 @@ std::vector<uint8_t> run(const Config& c, const std::vector<uint8_t>& input,
     }
     marc_transform_destroy(t); s.tails(); return output;
 }
-std::vector<uint8_t> oracle(const std::vector<uint8_t>& input) {
+std::vector<uint8_t> oracle(const std::vector<uint8_t>& input, uint32_t frame=21) {
     using namespace marc::frame::internal;
-    const TypedContextStreamHeader stream{21,input.size(),{1048576,3,258,0},32768,44,9,1,10};
+    const TypedContextStreamHeader stream{frame,input.size(),{1048576,3,258,0},32768,44,9,1,10};
     marc::core::DecoderLimits limits{};
     LzssPositionDistanceWorkspaceRequirements r{};
     EXPECT_EQ(calculate_lzss_position_distance_1m_encode_workspace(stream,limits,
@@ -90,16 +90,17 @@ std::vector<uint8_t> oracle(const std::vector<uint8_t>& input) {
         LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mFrameStreamingEncoder),
         raw,serialized,std::as_writable_bytes(std::span{storage}).first(r.views_bytes),v),
         LzssPositionDistanceWorkspaceError::none);
-    std::vector<uint8_t> output(112+((input.size()+20)/21)*r.serialized_bytes);
+    std::vector<uint8_t> output(112+((input.size()+frame-1)/frame)*r.serialized_bytes);
     std::array<std::byte,112> header{};
     EXPECT_TRUE(serialize_lzss_position_distance_1m_stream_header(stream,limits,header));
     std::memcpy(output.data(),header.data(),header.size());
     std::size_t written=112,pos=0;std::uint64_t sequence=0;
     while(pos<input.size()) {
-        const auto n=std::min<std::size_t>(21,input.size()-pos);
+        const auto n=std::min<std::size_t>(frame,input.size()-pos);
         const auto result=encode_lzss_position_distance_1m_raw_frame(stream,limits,sequence++,pos,
             std::as_bytes(std::span{input}).subspan(pos,n),3,
-            marc::dictionary::internal::LzssPositionDistance1mSearch::exhaustive,
+            frame==21 ? marc::dictionary::internal::LzssPositionDistance1mSearch::exhaustive
+                : marc::dictionary::internal::LzssPositionDistance1mSearch::indexed,
             v.tokens,v.operations,v.finder,v.serialized);
         EXPECT_EQ(result.error,LzssPositionDistanceRawFrameError::none);
         std::memcpy(output.data()+written,v.serialized.data(),result.frame.serialized_size);
@@ -414,5 +415,43 @@ TEST(PositionDistance1mCFactory, LegacyFieldContextParserRemainsNarrow) {
         marc::frame::internal::TypedContextStreamHeaderError::unsupported_dictionary_variant);
     EXPECT_EQ(parsed.original_size, 123u);
     EXPECT_EQ(consumed, 7u);
+}
+
+TEST(PositionDistance1mCFactory, FivePrefixPublicLayoutAndWideReferenceIdentity) {
+    using namespace marc::frame::internal;
+    for(uint32_t frame:{1U,2U,3U,5U,1048576U}) {
+        auto c=config_for(MARC_DIRECTION_ENCODE,frame);
+        c.frame_size=c.max_frame_size=c.max_block_size=frame;
+        c.max_compressed_payload_size=18ULL*frame+5;
+        Storage storage(c);
+        const TypedContextStreamHeader stream{frame,frame,{1048576,3,258,0},32768,44,9,1,10};
+        LzssPositionDistanceWorkspaceRequirements old{};
+        ASSERT_EQ(calculate_lzss_position_distance_1m_encode_workspace(stream,{},
+            LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mFrameStreamingEncoder),old),
+            LzssPositionDistanceWorkspaceError::none);
+        EXPECT_EQ(storage.r.primary_bytes,old.raw_bytes);
+        EXPECT_EQ(storage.r.secondary_bytes,old.serialized_bytes);
+        const auto extra=frame<3?0U:4U*(65536+frame);
+        EXPECT_EQ(storage.r.views_bytes,old.views_bytes+extra);
+        if(extra) {
+            auto short_views=storage.v();short_views.size=old.views_bytes;
+            marc_transform* transform{};
+            EXPECT_EQ(marc_lzss_position_distance_dynamic_range_1m_create(&c,storage.p(),storage.s(),
+                short_views,&transform),MARC_STATUS_INVALID_ARGUMENT);
+            EXPECT_EQ(transform,nullptr);
+            const auto view=storage.v();
+            EXPECT_TRUE(std::all_of(view.data,view.data+view.size,[](auto b){return b==0xcd;}));
+        }
+    }
+    std::vector<uint8_t> input(1048581);uint32_t seed=719;
+    for(std::size_t i=0;i<70001;++i) {seed=seed*1664525U+1013904223U;input[i]=static_cast<uint8_t>(seed>>24);}
+    for(std::size_t i=70001;i<input.size();++i) input[i]=input[i%70001];
+    Config c{};ASSERT_EQ(marc_lzss_position_distance_dynamic_range_1m_config_init(MARC_DIRECTION_ENCODE,&c),MARC_STATUS_OK);
+    c.original_size=input.size();
+    const auto expected=oracle(input,1048576);
+    EXPECT_EQ(run(c,input,8191,4093),expected);
+    EXPECT_EQ(run(c,input,65536,65536),expected);
+    Config d{};ASSERT_EQ(marc_lzss_position_distance_dynamic_range_1m_config_init(MARC_DIRECTION_DECODE,&d),MARC_STATUS_OK);
+    EXPECT_EQ(run(d,expected,103,997),input);
 }
 } // namespace

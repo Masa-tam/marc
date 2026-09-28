@@ -9653,3 +9653,9 @@ Use DD-1324's repository-owned private selectors, owned encoder/decoder and
 workspace requirements. Corpus provenance is the existing verified Silesia
 manifest. The timing and comparison harness is independently authored; no
 external codec source is consulted.
+
+## IR-1086: Public five-prefix selection for position-distance 1 MiB
+
+Use DD-1324's validated private integration and DD-1325/BM-0159's measured
+owned-stream comparison. Public query/factory contracts and compatibility
+vectors are repository-owned. No external implementation source is consulted.

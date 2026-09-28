@@ -17577,3 +17577,30 @@ All twelve verified Silesia members and five additional x-ray process runs pass
 complete-stream identity and reconstruction. BM-0159 records the timing and
 policy-charge comparison. No production code changes or new full regression,
 decoder fuzz, hosted CI or external archive verification result is claimed.
+
+## TVG-1192: Public five-prefix admission tests
+
+Update the public exact-budget oracle to the selected five-prefix workspace.
+Compare public workspace fields against retained indexed requirements at frame
+sizes 1/2/3/5 and 1 MiB, checking the exact additional array size. Passing the
+old smaller extent must publish a null handle without changing caller storage.
+Compare full public streams to the retained indexed raw-frame oracle on a
+1 MiB frame with 70,001-byte repeated history and a five-byte final frame;
+vary chunking and reconstruct through the public decoder.
+
+Retain all existing public empty/single-byte/data-class/frame-boundary tests,
+metadata/alias failure tests, queried-prefix tail sentinels, exact aggregate
+admission including the C handle, allocation failure injection, no process
+allocation, and later-frame failure publication checks. Instrument the changed
+C dispatch and five-prefix integration sources explicitly for ASan/UBSan.
+Verify CLI archives against retained pre-switch SHA-256 values for all twelve
+manifest-verified Silesia members and reconstruct each with the explicit 1 MiB
+codec selection. This corpus run is functional validation, not a timing result.
+
+Public ASan/UBSan passes all 20 C configuration/factory tests with the new
+sources instrumented. Both compiler configurations pass all 4,035 regression
+tests, including static/shared C consumers, allocation injection, CLI checks
+and historical interoperability schemas. All twelve CLI corpus archives match
+the retained pre-switch SHA-256 values and reconstruct exactly. Local exchange
+and hosted/external verification must identify the final committed revision;
+no new hosted CI or external-platform result is inferred from these tests.

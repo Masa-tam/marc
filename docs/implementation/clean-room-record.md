@@ -35973,3 +35973,19 @@ both bounds.
   established first-party timing methodology; no external expression or legal
   guarantee claimed.
 - Scope: benchmark and records only; public defaults and formats stay unchanged.
+
+## CR-1494: 2026-09-29 - Public five-prefix encoder admission
+
+- Author and reviewer: Codex; maintainer approved the public admission step
+  after the integrated streaming performance comparison.
+- References: IR-1086, DD-1326 and first-party public workspace/factory contracts.
+- Independent design: explicit identical query/construction selectors, retaining
+  existing prefix borrowing, budget preflight and failure publication semantics.
+- Validation: TVG-1192 records public boundary, allocation, sanitizer, complete
+  archive identity and reconstruction checks.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: selection changes reuse repository-owned implementations;
+  no external expression or legal guarantee claimed.
+- Scope: public 1 MiB encoder search and corresponding workspace accounting.
+  Public ABI, encoded representation, decoder and older profiles are unchanged.

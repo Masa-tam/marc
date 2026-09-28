@@ -5094,7 +5094,8 @@ static marc_status prepare_position_distance_1m_config(
         {1048576, 3, 258, 0}, 32768, 44, 9, 1, 10};
     if (encode) {
         const auto error = calculate_lzss_position_distance_1m_encode_workspace(stream,limits,
-            LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mFrameStreamingEncoder),r);
+            LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mFrameStreamingEncoder),r,
+            marc::dictionary::internal::LzssPositionDistance1mSearch::indexed_five_prefix);
         if(error!=LzssPositionDistanceWorkspaceError::none)
             return error==LzssPositionDistanceWorkspaceError::limit_exceeded
                 || error==LzssPositionDistanceWorkspaceError::arithmetic_overflow
@@ -5181,7 +5182,8 @@ marc_status marc_lzss_position_distance_dynamic_range_1m_create(
     marc::core::Transform* implementation{};
     if (encode) {
         implementation = new (std::nothrow) LzssPositionDistance1mFrameStreamingEncoder(
-            stream, limits, raw_span, serialized_span, views_span);
+            stream, limits, raw_span, serialized_span, views_span, 3,
+            marc::dictionary::internal::LzssPositionDistance1mSearch::indexed_five_prefix);
     } else {
         using Token=marc::dictionary::internal::LzssTypedToken;
         const std::span tokens{reinterpret_cast<Token*>(views_span.data()),r.token_count};
