@@ -9646,3 +9646,10 @@ overlap, checked-arithmetic and candidate contracts. No external source is used.
 Use DD-1323's bounded finder/candidate and the repository-owned variant-9
 raw-frame, workspace, borrowed transform and owned transform contracts.
 No external source or third-party implementation was consulted.
+
+## IR-1085: Integrated five-prefix stream measurement
+
+Use DD-1324's repository-owned private selectors, owned encoder/decoder and
+workspace requirements. Corpus provenance is the existing verified Silesia
+manifest. The timing and comparison harness is independently authored; no
+external codec source is consulted.

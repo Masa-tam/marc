@@ -17554,3 +17554,26 @@ streaming/raw-frame ASan/UBSan run passed 19 tests. Both compiler configurations
 passed all 4,033 regression tests, including allocation-failure checks and
 historical interoperability schema compatibility. This is internal functional
 validation, not a new hosted CI result or an end-to-end speed measurement.
+
+## TVG-1191: Integrated streaming benchmark validation
+
+The first-party stream benchmark accepts bounded input up to 64 MiB and caps
+collected archive bytes at 128 MiB. It drives actual owned transforms with
+64 KiB chunks, checks process results, requires full consumption and completion,
+compares every measured output with the complete baseline stream and verifies
+the baseline's decoded bytes against input. Equal streams share that exact
+reconstruction result. Reference generation and validation are not timed as
+encoding.
+
+The CMake smoke exercises empty input, lengths one through five, short-prefix
+fallback patterns and input spanning more than one maximum-sized frame.
+Require three measured iterations, stream identity, round-trip success and
+the exact 4,456,448-byte finder increase. Run both compiler configurations and
+ASan/UBSan with the benchmark and integrated candidate sources instrumented.
+Corpus measurement verifies the established Silesia manifest before execution.
+
+Both compiler smoke runs and the explicitly instrumented ASan/UBSan smoke pass.
+All twelve verified Silesia members and five additional x-ray process runs pass
+complete-stream identity and reconstruction. BM-0159 records the timing and
+policy-charge comparison. No production code changes or new full regression,
+decoder fuzz, hosted CI or external archive verification result is claimed.

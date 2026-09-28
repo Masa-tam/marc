@@ -26380,3 +26380,31 @@ none of its own bytes; subsequent calls retain the error. Owned creation checks
 the complete selected budget before four allocations; process performs none.
 Public default admission and end-to-end performance evaluation remain separate
 from this internal integration gate.
+
+## DD-1325: Compare complete internal streams before public admission
+
+Measure the actual owned variant-9 streaming encoder with indexed and
+indexed_five_prefix selection, fixed eligibility three, 1 MiB frames and
+64 KiB input/output chunks. Include owner creation, each process call and owner
+destruction in encode time; exclude file reading, sink collection, equality
+checks and decoder execution. Report separately measured decoder time for the
+identical stream. This measures the internal codec lifecycle, not CLI I/O.
+
+Generate one baseline stream and verify exact reconstruction, then compare all
+warmup and measured outputs byte-for-byte against it. Use one warmup pair and
+three measured pairs, alternating which path runs first. Report medians per
+member and sum those medians for corpus totals. Record queried owner policy
+charges separately from timings; they do not represent process peak RSS or the
+public C handle's exact charge. Preserve source/binary identity and raw timings.
+
+Keep public factories unchanged during measurement. An adoption recommendation
+must weigh complete-stream speed against the additional 4.25 MiB finder arrays,
+check the previous near-parity x-ray case, and retain the old path as reference.
+A subsequent public switch must align queries and creation, verify precise
+public allocation/budget contracts, and pass its own regression and external
+interoperability gates.
+
+BM-0159's 32.29% corpus encode-time reduction for a 5.94% internal policy-charge
+increase supports proceeding to public admission checks. Repeated x-ray results
+remain near parity. Keep this recommendation distinct from actually changing
+public factory selection or claiming portable speed guarantees.

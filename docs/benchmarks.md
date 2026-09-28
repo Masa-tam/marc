@@ -6354,3 +6354,56 @@ Production source, defaults, format and failure contracts remain unchanged.
 Before admitting this candidate, implement bounded workspace accounting and
 verify allocation/limit failures, frame publication rules, archive identity
 and end-to-end public performance. This benchmark does not qualify those gates.
+
+
+## BM-0159: Integrated five-prefix streaming lifecycle comparison
+
+DD-1325 measures the actual private owned encoder with indexed and
+indexed_five_prefix selectors, eligibility three, 1 MiB frames and 64 KiB
+input/output chunks. Timing includes owner creation, process calls and
+destruction. File I/O, sink collection, byte comparison and decoding are
+excluded. One warmup pair precedes three measured pairs with alternating
+first-path order. Per-member medians are summed; this is internal codec
+lifecycle timing rather than CLI wall time or isolated finder replay.
+
+All twelve manifest-verified Silesia members pass complete-stream identity and
+exact reconstruction, including every warmup and timed output comparison.
+Input totals 211,938,580 bytes and archives total 63,558,293 bytes on both paths.
+The unchanged encoded bytes preserve compression ratio and decoder input.
+Baseline median sum is 46.833756 seconds versus 31.711242 seconds for five-prefix:
+32.29% less encode time, or 1.477 times throughput for the same bytes.
+
+| Member | Indexed seconds | Five-prefix seconds | Time change |
+|---|---:|---:|---:|
+| x-ray | 1.3058 | 1.2836 | -1.70% |
+| dickens | 3.8208 | 1.8395 | -51.85% |
+| mozilla | 11.0402 | 8.2439 | -25.33% |
+| mr | 3.8767 | 2.6115 | -32.64% |
+| nci | 3.4517 | 3.0135 | -12.69% |
+| ooffice | 1.0274 | 0.8299 | -19.22% |
+| osdb | 1.2603 | 0.9890 | -21.52% |
+| reymont | 3.7961 | 1.9327 | -49.09% |
+| samba | 3.0046 | 2.2696 | -24.46% |
+| sao | 1.7664 | 1.2954 | -26.66% |
+| webster | 12.0825 | 7.0626 | -41.55% |
+| xml | 0.4015 | 0.3399 | -15.33% |
+
+The internal owned-encoder policy charge is 74,979,253 bytes for indexed and
+79,435,701 bytes for five-prefix in this build: an additional 4,456,448 bytes
+(4.25 MiB, 5.94%). This is the queried bounded-memory charge, not measured peak
+process RSS, and does not substitute for a public C factory query. No decoder
+algorithm or stream representation changes. The one reconstruction timing per
+member is diagnostic and does not establish a decode-speed improvement.
+
+Five additional serial x-ray runs each repeat the three-pair comparison.
+Their per-run median changes range from -2.11% to -0.06%, with all byte and
+reconstruction checks passing. Treat x-ray as near parity; these observations
+are not a portable non-regression guarantee.
+
+The aggregate improvement supports proceeding to public admission with explicit
+memory-query/factory alignment and allocation/failure regression checks. This
+benchmark does not switch the public default. Existing external verification
+of the old public path does not certify a later factory change. The previous
+internal integration passed 4,033 tests per compiler; this benchmark-only
+addition runs its new smoke on both compilers and under ASan/UBSan rather than
+claiming a new complete regression or hosted CI run.

@@ -35957,3 +35957,19 @@ both bounds.
   no external expression or legal guarantee claimed.
 - Scope: private internal integration. Public admission and end-to-end timing
   require their own evaluation.
+
+## CR-1493: 2026-09-29 - Integrated five-prefix stream benchmark
+
+- Author and reviewer: Codex; maintainer approved measuring the integrated
+  candidate before public adoption.
+- References: IR-1085, DD-1325, first-party transform/process contracts and the
+  established verified corpus manifest.
+- Independent design: owned-lifecycle timing separated from sink/validation
+  costs, alternating path order, complete-stream equality and reconstruction.
+- Validation: TVG-1191 covers benchmark smoke, sanitizer and corpus checks.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization or test code.
+- Similarity review: harness reuses first-party transform interfaces and the
+  established first-party timing methodology; no external expression or legal
+  guarantee claimed.
+- Scope: benchmark and records only; public defaults and formats stay unchanged.
