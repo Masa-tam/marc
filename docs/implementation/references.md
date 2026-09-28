@@ -9568,3 +9568,10 @@ The private 1 MiB token bridge derives from IR-1071, the repository's typed
 LZSS validator/reconstructor and transactional versus private-scratch decode
 contracts. Frame history validation is independent of entropy field grammar.
 No external implementation, pseudocode or test suite was consulted.
+
+### IR-1073
+
+The private 1 MiB frame integration reuses the repository's typed-context
+header parser, explicit little-endian frame layout, aggregate bounds checks,
+transactional reconstruction and DD-1312 token bridge. No external codec
+source, pseudocode or test suite was consulted.

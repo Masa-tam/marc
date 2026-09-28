@@ -26147,3 +26147,25 @@ The next gate is exact-identity frame admission, aggregate frame workspace
 accounting and failed-frame publication tests, followed by stream/factory/CLI
 integration. Token tests do not establish those still-unimplemented gates or
 predict corpus throughput, compression ratio or complete-pipeline peak memory.
+
+## DD-1313: Admit the 1 MiB identity through private frame helpers
+
+Add dedicated private preflight, complete-frame encode and decode helpers for
+exactly dictionary 2/9, context 1/10 and entropy 3/2. Preserve all existing
+public selector and parser admission. Reuse the documented fixed headers and
+reject crossed identities, reserved bits, count contradictions and unsupported
+features before payload decoding. Prefix preflight validates extents only.
+
+Charge serialized frame bytes, token bytes, raw bytes and the complete widened
+decoder state together. Encoding additionally charges operation bytes and any
+larger encoder state. Use checked arithmetic and the 31T/9F decision ceilings.
+Unused caller capacity and transient scalar stack metadata are excluded from
+these active-frame requirements; a future owning stream workspace must charge
+its actual allocated capacities separately.
+
+The complete-frame decoder checks all active buffer and configuration overlap
+before writes. The transactional path preserves token and raw output on error;
+the private scratch path may retain tokens but must preserve raw output on any
+failure. Both require history, counts and canonical termination before raw
+reconstruction. Successful decode consumes exactly one frame; following bytes
+belong to the caller. Stream chunking, public factories and CLI remain pending.

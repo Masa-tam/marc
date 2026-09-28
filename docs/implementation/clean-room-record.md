@@ -35743,3 +35743,24 @@ both bounds.
   copyleft implementations and third-party codec optimization/test code.
 - Similarity review: new bridge reviewed against first-party contracts and
   widened prototype; no external expression or legal guarantee claimed.
+
+## CR-1481: 2026-09-28 - Private 1 MiB complete-frame integration
+
+- Author and reviewer: Codex; the maintainer authorized continuation after the
+  private token milestone.
+- Task: add exact-identity preflight, typed-token frame encoding, transactional
+  and private-scratch frame decoding, aggregate accounting and failure tests.
+- References: IR-1073, DD-1313, repository-owned fixed header layouts, token
+  grammar, typed reconstruction and buffer-overlap checks. No external codec
+  source, pseudocode or test suite was consulted.
+- Independent design: private identity-specific parser entry points share the
+  established bounded parser; widened model/decoder state is charged explicitly.
+  Raw reconstruction follows complete token/canonical validation only.
+- Validation: TVG-1179 records permanent boundary, malformed, overlap and
+  publication tests plus sanitizer and dedicated fuzz coverage.
+- Scope: public stream selectors, owning workspaces, chunked stream processing,
+  raw match finding and new-profile CLI/interoperability remain pending.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party codec optimization/test code.
+- Similarity review: first-party parser reuse and new bounded frame wrappers;
+  no external expression or legal guarantee claimed.

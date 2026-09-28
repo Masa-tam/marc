@@ -113,6 +113,7 @@ set(MARC_SOURCES
     src/entropy/lzss_position_distance_1m_range_encoder.cpp
     src/entropy/lzss_position_distance_1m_range_decoder.cpp
     src/context/lzss_position_distance_1m_tokens.cpp
+    src/frame/lzss_position_distance_1m_frame.cpp
     src/entropy/lzss_short_match_range_encoder.cpp
     src/entropy/contextual_dynamic_range_encoder.cpp
     src/entropy/contextual_rans_decoder.cpp
@@ -1301,6 +1302,18 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_lzss_position_distance_stream PRIVATE
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_stream PRIVATE marc::static)
+
+    add_executable(marc_fuzz_lzss_position_distance_1m_frame
+        fuzz/lzss_position_distance_1m_frame_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_position_distance_1m_frame PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_distance_1m_frame
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_distance_1m_frame PRIVATE
+        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzss_position_distance_1m_frame PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_distance_1m_frame PRIVATE marc::static)
 
     add_executable(marc_fuzz_lz77_stream fuzz/lz77_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lz77_stream PRIVATE cxx_std_20)
@@ -2660,7 +2673,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_position_distance_range_decoder_tests.cpp
         tests/lzss_position_distance_range_encoder_tests.cpp
         tests/lzss_position_distance_1m_tokens_tests.cpp
-        tests/lzss_position_distance_1m_tokens_tests.cpp
+        tests/lzss_position_distance_1m_frame_tests.cpp
         tests/lzss_reduced_literal_operations_tests.cpp
         tests/lzss_reduced_literal_operation_decoder_tests.cpp
         tests/lzss_reduced_literal_range_tokens_tests.cpp

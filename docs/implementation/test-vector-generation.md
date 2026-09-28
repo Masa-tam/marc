@@ -17243,3 +17243,39 @@ The complete regression suite passes all 3,960 tests with both supported
 local compiler configurations. The targeted typed-token selection passes
 31 tests, including the six new cases. These are local results; no new hosted
 CI or external archive verification is inferred from earlier profile results.
+
+## TVG-1179: Private 1 MiB complete-frame integration
+
+Eight permanent tests cover exact tuple/header parsing, every stream-header
+prefix, crossed identities, unchanged public rejection, and full-frame
+round trips at distances 65,537 and 1,048,573. The latter fills exactly one
+MiB. Decoding consumes precisely one frame even with following caller bytes.
+
+Compare transactional and scratch decode over every frame prefix, every
+single-byte low-bit mutation, token/raw capacity boundaries and memory/limit
+failures. Guard bytes remain unchanged; all failed calls preserve raw output
+and transactional calls preserve tokens. Test serialized/token/raw overlap
+and raw output aliasing the stream configuration before any write.
+
+Check exact-minus-one/exact/extra aggregate decode and encode memory, table,
+payload, distance, block and expansion limits. Prefix-only preflight accepts
+valid bounded metadata without claiming payload validity. A separately mapped
+TVG-1177 grammar payload wrapped in a final frame fails distance validation
+although an earlier frame has committed one MiB. Only scratch retains the
+first literal; neither path publishes raw bytes. Encode tests cover final-frame
+position, invalid history and short output without changing serialized output.
+
+The eight tests pass under ASan/UBSan with consistent container annotations
+disabled. The dedicated libFuzzer target compares complete-frame diagnostics,
+transactional token preservation and raw failure atomicity. Each input also
+constructs a valid bounded literal/match frame, then mutates/truncates it and
+varies capacities. Its bounded generated frames supplement the permanent
+full-MiB cases; they do not establish stream chunking or public codec completion.
+
+A local ASan/UBSan campaign completes 10,000 executions without a finding,
+starting from one all-byte-values seed. This result covers the dedicated
+private frame target; it is not new-profile external interoperability evidence.
+
+Both local compiler configurations pass the complete 3,968-test regression
+suite. Existing profile tests remain in that suite; hosted CI and external
+archive verification for this revision have not been reported.
