@@ -117,6 +117,8 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_1m_frame_streaming_decoder.cpp
     src/frame/lzss_position_distance_1m_workspace.cpp
     src/frame/lzss_position_distance_1m_owned_decoder.cpp
+    src/dictionary/lzss_position_distance_1m_five_prefix_finder.cpp
+    src/dictionary/lzss_position_distance_1m_five_prefix_candidate.cpp
     src/dictionary/lzss_position_distance_1m_match_finder.cpp
     src/dictionary/lzss_position_distance_1m_candidate.cpp
     src/frame/lzss_position_distance_1m_raw_frame_encoder.cpp
@@ -496,6 +498,15 @@ if(MARC_BUILD_TOOLS)
     endif()
 endif()
 
+if(MARC_BUILD_TESTS AND TARGET marc_static)
+    add_executable(marc_position_distance_1m_five_prefix_allocation_tests
+        tests/position_distance_1m_five_prefix_allocation_tests.cpp)
+    target_compile_features(marc_position_distance_1m_five_prefix_allocation_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_1m_five_prefix_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_1m_five_prefix_allocation_tests PRIVATE marc::static)
+    add_test(NAME marc_position_distance_1m_five_prefix_allocation
+        COMMAND marc_position_distance_1m_five_prefix_allocation_tests)
+endif()
 if(MARC_BUILD_BENCHMARKS)
     if(TARGET marc_static)
         add_executable(marc_lzss_position_distance_1m_shared_advance_benchmark
@@ -2777,6 +2788,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_position_distance_1m_tokens_tests.cpp
         tests/lzss_position_distance_1m_frame_tests.cpp
         tests/lzss_position_distance_1m_streaming_tests.cpp
+        tests/lzss_position_distance_1m_five_prefix_tests.cpp
         tests/lzss_position_distance_1m_raw_encoder_tests.cpp
         tests/lzss_position_distance_1m_streaming_encoder_tests.cpp
         tests/lzss_reduced_literal_operations_tests.cpp

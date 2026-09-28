@@ -26334,3 +26334,23 @@ and three measured passes, with allocation and verification outside timing.
 Require complete token equality and serialized-frame equality before accepting
 results. Reevaluate x-ray explicitly; do not infer end-to-end encoder speed
 from finder-only timing or attribute small differences to one instruction.
+
+## DD-1323: Caller-owned five-prefix candidate before public integration
+
+Add a separate private variant-9 finder and candidate tokenizer. Keep public
+factories, workspace queries, streaming paths and existing finders unchanged.
+For N >= 3 the new finder uses 12 * (65,536 + N) bytes aligned for uint32;
+smaller inputs need no arrays. The query charges input plus active arrays plus
+finder state, checks arithmetic and limits before initialization. Initialization
+borrows only the queried prefix, and preserves both finder and workspace on
+validation, alignment, capacity, overlap or budget failure. No allocation occurs.
+
+Search supports the validated window and maximum match length, including windows
+smaller than the frame. Three/four-byte nearest fallbacks and five-byte chain
+traversal preserve longest/nearest choice. Invalid advance poisons future search;
+wrong-position find returns no match. All short-tail reads remain bounded.
+The candidate charges input, full supplied token/workspace capacities and finder
+state before parsing. Insufficient token capacity uses a count pass and leaves
+token output unchanged; finder storage is discardable scratch. No failed tokens
+may be published as a frame. Public integration requires separate workspace and
+streaming admission tests after this private differential gate.

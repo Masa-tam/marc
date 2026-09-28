@@ -17499,3 +17499,28 @@ token/frame equality. ASan/UBSan passes the boundary smoke and the retained
 seeded 1 MiB-plus-short binary fixture. This is targeted experiment validation,
 not a new decoder fuzz campaign or production full-suite qualification.
 BM-0158 records three-way timing, x-ray variability and unchanged array payload.
+
+## TVG-1189: Bounded five-prefix private candidate
+
+Seven permanent test groups cover exact query budgets and caps, failed
+initialization preserving a live finder and scratch, invalid sequencing/reset,
+small exhaustive token comparisons over windows 1/3/17/1 MiB and maximum
+lengths 3/4/5/258, eligibility 3/4/5, wide distances through 1,048,573 and nearest
+ties, token capacity/budget/alias failure preservation, and complete 1 MiB
+frame/token/reconstruction equality with production. Unused workspace tails
+retain sentinels. Exact-budget tests use internally consistent block limits;
+invalid global limit configurations retain their earlier validation precedence.
+
+A dedicated executable arms ordinary global new/new[] rejection after allocating
+caller storage and repeats query/tokenization 128 times. This verifies the
+candidate's allocation-free processing path independently of timing.
+Targeted ASan/UBSan compiles the new finder and candidate sources themselves
+and runs all seven test groups; no new decoder fuzz result is inferred.
+
+Both compiler configurations pass all 4,031 regression tests, including the
+allocation executable and historical interoperability schemas. All twelve
+manifest-verified Silesia members also pass bounded-candidate token equality,
+complete serialized-frame equality and exact reconstruction against production.
+This is functional validation; no performance result is inferred from concurrent
+regression/corpus runs. Public factories and streams still use the existing
+finder, so private validation does not qualify a future production switch.

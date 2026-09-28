@@ -35922,3 +35922,21 @@ both bounds.
 - Similarity review: first-party loop adaptation only; no external expression
   or legal guarantee claimed.
 - Scope: benchmark-only; no production format, memory contract or public change.
+
+## CR-1491: 2026-09-29 - Bounded private five-prefix candidate
+
+- Author and reviewer: Codex; maintainer approved transferring the shared-key
+  prototype into bounded caller-owned storage while preserving failure rules.
+- References: IR-1083, DD-1323, repository-owned checked arithmetic/overlap
+  helpers, variant-9 parameter validation and transactional candidate policy.
+- Independent design: span-based three-prefix state, bounded query and
+  failure-preserving initialization; count-first fallback for short token output.
+- Validation: TVG-1189 records exhaustive, boundary, wide-reference, failure,
+  allocation and targeted sanitizer checks. Existing production paths remain.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: deliberate reuse/adaptation of first-party checked
+  initialization and candidate structure, with first-party experimental search;
+  no external expression or legal guarantee claimed.
+- Scope: private candidate only; public queries/factories and streaming selectors
+  do not choose it. No decoder, format or failed-frame publication change.

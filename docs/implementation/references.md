@@ -9635,3 +9635,8 @@ Use DD-1321's repository-owned five-prefix prototype and retained production
 finder as references. Sharing prefix assembly and separating bounded tails is
 independently derived from the repository's existing dual-prefix advance loop.
 No external implementation or optimization source was consulted.
+
+## IR-1083: Bounded five-prefix internal candidate
+
+Use DD-1322's shared-key experiment and repository-owned dual-prefix workspace,
+overlap, checked-arithmetic and candidate contracts. No external source is used.
