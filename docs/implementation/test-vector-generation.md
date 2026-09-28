@@ -17604,3 +17604,20 @@ and historical interoperability schemas. All twelve CLI corpus archives match
 the retained pre-switch SHA-256 values and reconstruct exactly. Local exchange
 and hosted/external verification must identify the final committed revision;
 no new hosted CI or external-platform result is inferred from these tests.
+
+## TVG-1193: Admitted five-prefix phase diagnostic
+
+Keep the existing indexed diagnostic smoke and add explicit five-prefix mode
+with mode-label verification. Both modes validate complete frame bytes against
+the retained indexed oracle and exact reconstruction, exercise a full frame
+plus a short tail, and reject empty diagnostic input. Run both compiler
+configurations. Corpus diagnosis verifies the existing twelve-member manifest
+and retains per-iteration timings and executable/source identity. This
+benchmark-only change does not claim new production regression or decoder-fuzz
+results.
+
+Both compiler configurations pass both diagnostic modes. All twelve verified
+corpus members pass retained-reference frame identity and reconstruction.
+BM-0160 records tokenization at 69.21% of the measured sequential phase total.
+The next diagnostic should distinguish admitted-finder search, advance and
+initialization; do not infer their proportions from old dual-prefix results.

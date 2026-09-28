@@ -36005,3 +36005,18 @@ both bounds.
   expression added and no legal guarantee claimed.
 - Scope: close the CI/external exchange gate for the public five-prefix encoder.
   No codec, format, ABI, inventory or release-state change.
+
+## CR-1496: 2026-09-29 - Post-admission phase diagnosis and evidence clarification
+
+- Author and reviewer: Codex; maintainer authorized the next step and clarified
+  producer/consumer directions of the four external verification passes.
+- References: IR-1087, DD-1327, IX-0052 and first-party phase diagnostic code.
+- Independent design: optional admitted-path selection with the retained old
+  byte oracle, separately interpreted aggregate and replay timings.
+- Validation: TVG-1193 documents diagnostic checks; IX-0052 now distinguishes
+  bundle producer labels from actual verification consumers.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: extends repository-owned diagnostic structure; no external
+  expression added and no legal guarantee claimed.
+- Scope: diagnostic and documentation only; production behavior is unchanged.

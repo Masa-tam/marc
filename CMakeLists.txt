@@ -563,6 +563,12 @@ if(MARC_BUILD_BENCHMARKS)
         target_include_directories(marc_lzss_position_distance_1m_phase_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_lzss_position_distance_1m_phase_benchmark PRIVATE marc::static)
         if(MARC_BUILD_TESTS)
+            add_test(NAME marc_position_distance_1m_five_phase_benchmark_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_phase_benchmark>"
+                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-five-phase-smoke"
+                    "-DSEARCH_ARG=--five-prefix"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_phase_benchmark_smoke.cmake)
             add_test(NAME marc_position_distance_1m_phase_benchmark_smoke
                 COMMAND ${CMAKE_COMMAND}
                     "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_phase_benchmark>"

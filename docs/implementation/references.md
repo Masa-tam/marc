@@ -9659,3 +9659,9 @@ external codec source is consulted.
 Use DD-1324's validated private integration and DD-1325/BM-0159's measured
 owned-stream comparison. Public query/factory contracts and compatibility
 vectors are repository-owned. No external implementation source is consulted.
+
+## IR-1087: Post-admission 1 MiB encoder phase diagnosis
+
+Use the first-party phase benchmark, retained indexed reference, admitted
+five-prefix tokenizer, frame encoder and modeled-operation/range primitives.
+No external source or implementation is consulted.

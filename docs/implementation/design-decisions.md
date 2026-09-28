@@ -26433,3 +26433,19 @@ the prohibition on publishing failed frames remain mandatory. Gate admission
 on full regressions, public allocation checks, instrumented C tests and CLI
 archive identity/reconstruction. Hosted CI and external verification must still
 be tied to the new committed revision; earlier reports do not qualify it.
+
+## DD-1327: Remeasure remaining cost after five-prefix admission
+
+Extend the existing private phase diagnostic with an explicit --five-prefix
+mode while retaining its indexed default for historical comparisons. Allocate
+the selected finder workspace, use the retained indexed raw-frame encoder as
+the byte oracle, and time the admitted tokenizer followed by complete frame
+encoding. Require exact frame bytes and reconstruction for every input frame.
+
+Retain the separate replay timings for model planning/materialization, range
+preparation and range writing. Those intervals overlap work represented by
+complete-frame time and must not be added to it. Use one warmup and three
+measured repetitions per frame, sum per-member medians over the verified corpus,
+and interpret the results as phase diagnosis rather than a new public lifecycle
+speed benchmark. Select the next investigation from the remaining measured
+cost instead of carrying forward the pre-admission bottleneck percentages.

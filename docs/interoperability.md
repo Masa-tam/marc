@@ -1307,3 +1307,19 @@ Schema 59, its 69-archive inventory and the 8,193-byte exchange fixture remain
 unchanged. Full-window coverage comes from separate permanent tests, not from
 the bundle fixture. This qualification record changes no format, public ABI,
 defaults or release state and makes no claim for untested architectures or inputs.
+
+#### Verification producer and consumer clarification
+
+The maintainer clarified the four IX-0052 results in their reported order:
+
+| Pass | Archive producer | Verification consumer |
+|---|---|---|
+| 1 | Windows CI | Ubuntu |
+| 2 | Ubuntu CI | Ubuntu |
+| 3 | External Ubuntu Clang | Same Ubuntu environment (self-verification) |
+| 4 | External Ubuntu Clang | Windows after transferring the bundle |
+
+Verifier labels identify bundle producers, not the systems executing verification.
+The two equal Ubuntu Clang labels therefore represent self-verification and
+cross-system verification, respectively. This refines the evidence provenance;
+the reported revision, archive count and successful gate closure are unchanged.

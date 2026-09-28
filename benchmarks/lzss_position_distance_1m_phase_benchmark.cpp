@@ -8,11 +8,14 @@
 #include <iomanip>
 #include <iostream>
 #include <vector>
+#include <string_view>
+#include "dictionary/lzss_position_distance_1m_five_prefix_finder.hpp"
 
 // Diagnostic only: production functions are called without instrumentation.
 // Replay timings below overlap the complete frame timing and are not additive.
 int main(int argc, char** argv) {
-    if (argc != 2) return 2;
+    if (argc != 2 && (argc != 3 || std::string_view(argv[2]) != "--five-prefix")) return 2;
+    const bool five_prefix = argc == 3;
     std::ifstream file(argv[1], std::ios::binary | std::ios::ate);
     if (!file) return 2;
     const auto size = file.tellg();
@@ -29,8 +32,11 @@ int main(int argc, char** argv) {
     const TypedContextStreamHeader stream{frame_size, input.size(),
         {frame_size, 3, 258, 0}, 32768, 44, 9, 1, 10};
     const marc::core::DecoderLimits limits{};
-    const auto required = calculate_lzss_position_distance_1m_match_workspace(
-        frame_size, stream.dictionary, limits);
+    const auto search = five_prefix ? LzssPositionDistance1mSearch::indexed_five_prefix
+        : LzssPositionDistance1mSearch::indexed;
+    const auto required = five_prefix
+        ? calculate_lzss_position_distance_1m_five_prefix_workspace(frame_size, stream.dictionary, limits)
+        : calculate_lzss_position_distance_1m_match_workspace(frame_size, stream.dictionary, limits);
     if (required.error != LzssShortPrefixError::none) return 1;
     std::vector<std::max_align_t> storage((required.workspace_size + sizeof(std::max_align_t)-1) / sizeof(std::max_align_t));
     const auto finder = std::as_writable_bytes(std::span{storage}).first(required.workspace_size);
@@ -55,7 +61,7 @@ int main(int argc, char** argv) {
         for (int iteration = -1; iteration < 3; ++iteration) {
             auto begin = Clock::now();
             const auto candidate = tokenize_lzss_position_distance_1m_candidate(raw, stream.dictionary, limits,
-                3, LzssPositionDistance1mSearch::indexed, tokens, finder);
+                3, search, tokens, finder);
             const auto after_tokens = Clock::now();
             if (candidate.error != LzssShortMatchCandidateError::none) return 1;
             const auto selected = std::span{tokens}.first(candidate.token_count);
@@ -90,6 +96,7 @@ int main(int argc, char** argv) {
         }
     }
     std::cout << std::setprecision(12) << "input_bytes=" << input.size() << "\ntokens=" << token_count
+        << "\nsearch_mode=" << (five_prefix ? "five-prefix" : "indexed")
         << "\noperations=" << operation_count << "\nframe_bytes=" << serialized_bytes << "\nverified_iterations=3\n";
     const std::array names{"tokenize", "frame", "replay_model", "replay_prepare", "replay_write"};
     for (std::size_t i=0; i<totals.size(); ++i)

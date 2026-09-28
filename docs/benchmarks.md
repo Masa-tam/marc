@@ -6407,3 +6407,53 @@ of the old public path does not certify a later factory change. The previous
 internal integration passed 4,033 tests per compiler; this benchmark-only
 addition runs its new smoke on both compilers and under ASan/UBSan rather than
 claiming a new complete regression or hosted CI run.
+
+
+## BM-0160: Remaining encoder cost after five-prefix admission
+
+DD-1327 selects the admitted five-prefix tokenizer in the first-party phase
+diagnostic. The retained indexed raw-frame encoder supplies the byte oracle.
+All twelve manifest-verified Silesia members pass complete frame identity and
+reconstruction; serialized-frame sizes plus stream headers agree with the
+earlier public archives. One warmup precedes three measured repetitions per
+frame. The following values sum per-member medians.
+
+| Sequential phase | Seconds | Share of phase total |
+|---|---:|---:|
+| Five-prefix tokenization | 21.949739 | 69.21% |
+| Complete frame encoding | 9.765394 | 30.79% |
+| Total | 31.715133 | 100.00% |
+
+Separate replay measurements give 3.997246 seconds for model planning and
+materialization, 2.881262 seconds for range preparation, and 2.912589 seconds
+for range writing. These overlap the complete-frame work and must not be added
+to the sequential total. Independently timed replays have different timing/cache
+conditions and are not an exact partition of complete-frame time.
+
+| Member | Tokenization seconds | Complete frame seconds |
+|---|---:|---:|
+| dickens | 1.2988 | 0.5306 |
+| mozilla | 5.4558 | 2.8319 |
+| mr | 2.0807 | 0.5462 |
+| nci | 2.6116 | 0.4022 |
+| ooffice | 0.3611 | 0.4645 |
+| osdb | 0.4566 | 0.5265 |
+| reymont | 1.6489 | 0.2523 |
+| samba | 1.5023 | 0.7425 |
+| sao | 0.5324 | 0.7681 |
+| webster | 5.3631 | 1.7096 |
+| xml | 0.2510 | 0.0865 |
+| x-ray | 0.3874 | 0.9043 |
+
+Tokenization remains the largest measured phase. The next diagnostic should
+separate search, index advance and initialization for the admitted bounded
+five-prefix finder, and count its candidate/probe work before selecting an
+optimization. This result alone does not say which of those operations dominates;
+earlier dual-prefix counters do not establish the new path's distribution.
+Model planning/materialization is a secondary candidate, not evidence that
+validation can be removed.
+
+Both compiler configurations pass indexed and five-prefix smoke tests. Public
+codec source, defaults, memory requirements and formats are unchanged by this
+diagnostic. These timings are neither a new public lifecycle speedup nor a peak
+memory result, and no new full regression or external verification is claimed.
