@@ -6513,3 +6513,54 @@ fallback fixtures and a deterministic 1,048,581-byte binary boundary fixture.
 All corpus insertion/classification invariants pass. Production code and public
 defaults are unchanged; no new full regression, hosted CI, external verification
 or decoder-fuzz result is claimed.
+
+
+## BM-0162: Six-prefix candidate-index experiment
+
+DD-1329 compares the admitted bounded five-prefix finder, a vector-backed
+shared-advance five-prefix control, and the six-prefix prototype. One warmup
+precedes three timed token replays per frame, rotating the three-path order.
+Timing includes finder reset/initialization and token replay after allocating
+benchmark buffers, excluding byte comparisons, frame coding and decoding.
+
+All twelve manifest-verified Silesia members pass token identity against the
+retained indexed oracle, complete serialized-frame identity and reconstruction.
+Summed per-member medians are 21.959297 seconds for admitted
+five-prefix, 21.474676 seconds for the vector five-prefix control,
+and 17.764926 seconds for six-prefix. The prototype reduces replay
+time by 19.10% versus the admitted finder and
+17.28% versus the storage-structure control.
+This is not an end-to-end public encode-speed result.
+
+| Member | Admitted five seconds | Vector five seconds | Six seconds | Six vs admitted |
+|---|---:|---:|---:|---:|
+| x-ray | 0.3831 | 0.3991 | 0.4149 | +8.31% |
+| dickens | 1.3146 | 1.3057 | 0.7271 | -44.69% |
+| mozilla | 5.5223 | 5.2440 | 4.4499 | -19.42% |
+| mr | 2.0513 | 2.0146 | 2.0187 | -1.59% |
+| nci | 2.6189 | 2.5193 | 2.4407 | -6.80% |
+| ooffice | 0.3568 | 0.3563 | 0.3386 | -5.11% |
+| osdb | 0.4486 | 0.4469 | 0.4257 | -5.09% |
+| reymont | 1.6518 | 1.6521 | 0.9369 | -43.28% |
+| samba | 1.5077 | 1.4858 | 1.2669 | -15.97% |
+| sao | 0.5402 | 0.5377 | 0.5141 | -4.85% |
+| webster | 5.3187 | 5.2728 | 3.9978 | -24.84% |
+| xml | 0.2454 | 0.2402 | 0.2336 | -4.79% |
+
+The additional head/link pair requires 4,456,448 bytes (4.25 MiB) for a full
+frame, reaching 17,825,792 array bytes. These are array payload sizes, not
+measured process peak RSS or admitted public workspace requirements.
+
+Five additional serial x-ray runs reproduce a +8.55% to +9.05%
+replay-time increase versus the admitted finder; all comparisons and
+reconstructions still pass. The aggregate improvement therefore does not
+qualify an unconditional public switch. Retain the prototype and investigate
+the regression before bounded/public admission, separating extra-index
+initialization, advance and search costs. The current evidence does not
+establish which operation causes the regression.
+
+Both compiler smoke runs and explicitly instrumented ASan/UBSan checks pass,
+including exhaustive small-position, wide-distance, nearest-tie and short-tail
+fixtures. Public implementation, memory queries and defaults are unchanged.
+No new full regression, decoder-fuzz, hosted CI or external verification result
+is claimed.

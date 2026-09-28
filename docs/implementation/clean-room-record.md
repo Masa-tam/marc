@@ -36036,3 +36036,18 @@ both bounds.
 - Similarity review: intentional adaptation of first-party finder semantics
   and benchmark structure; no external expression or legal guarantee claimed.
 - Scope: benchmark-only diagnosis; no public implementation or format change.
+
+## CR-1498: 2026-09-29 - Six-prefix candidate-filtering experiment
+
+- Author and reviewer: Codex; maintainer approved a longer-prefix prototype
+  following the admitted-finder diagnosis.
+- References: IR-1089, DD-1329 and first-party exact finder/candidate/frame code.
+- Independent design: nearest five-byte fallback followed by six-byte chain
+  search, fourth bounded array pair and shared advance/tail handling.
+- Validation: TVG-1195 records exhaustive, wide-distance, tie, short-tail,
+  complete-frame and sanitizer checks; actual bounded five-prefix is retained.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: intentional adaptation of repository-owned five-prefix
+  experiment; no external expression or legal guarantee claimed.
+- Scope: benchmark-only prototype; public codec and stream format unchanged.

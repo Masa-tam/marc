@@ -26473,3 +26473,31 @@ totals against frame lengths, exact/colliding classification against total
 five-prefix visits and extension equalities against comparisons. Use these
 results to select the next experiment; do not attribute a cost reduction to
 one operation solely from its count.
+
+## DD-1329: Benchmark-only six-prefix candidate index
+
+Prototype a sixth-byte index while retaining nearest three-, four- and five-byte
+fallbacks. Find the nearest exact five-byte prefix before searching the six-byte
+chain; preserve length-five results when no longer match exists, and return
+immediately when the remaining input has only five bytes. Six-byte candidates
+must still pass the improvement probe and exact prefix comparison before bounded
+extension, with nearest-distance ties preserved. Extend the shared advance loop
+with the sixth-byte fold and retain a bounded short-tail path.
+
+Compare three paths: the admitted bounded five-prefix finder, the existing
+vector-backed shared-advance five-prefix control, and the vector-backed six-prefix
+prototype. This separates candidate-index changes from storage-structure effects.
+Use retained indexed tokens as the oracle, alternate three-path order over
+frames/repetitions, compare every token, and require complete frame equality
+and reconstruction. Time reset/initialization and token replay after allocating
+the bounded benchmark storage; this is not owned-stream lifecycle timing.
+
+A full-frame fourth head/link pair adds 4,456,448 bytes (4.25 MiB) to the
+five-prefix arrays, reaching 17,825,792 array bytes. Public workspace queries
+and factories remain unchanged. Assess per-member regressions before proposing
+bounded integration; aggregate improvement alone does not justify admission.
+
+BM-0162 finds 19.10% less aggregate replay time versus the admitted finder,
+but five repeated x-ray runs reproduce an 8.55% to 9.05% increase. Preserve the
+prototype without public admission. Next distinguish six-prefix initialization,
+advance and search costs before attributing the regression or choosing a fix.

@@ -17643,3 +17643,24 @@ Both compiler smoke tests and ASan/UBSan checks pass, including the three
 fallback patterns and full-frame binary boundary fixture. All twelve verified
 corpus members pass token decisions, insertion formulas and classification
 invariants. BM-0161 records timings and counters with their distinct scopes.
+
+## TVG-1195: Six-prefix experimental differential checks
+
+The benchmark runs exhaustive per-position comparisons on empty through
+513-byte deterministic zero, periodic and seeded binary inputs, including
+three/four/five/six-byte tails and maximum-length boundaries. Direct fixtures
+check distances 65,535/65,536/65,537/1,048,570 and a nearest tie at length six.
+These checks execute before timed work.
+
+The existing short-prefix/multiframe smoke runs on both compilers and with
+the experimental source and bounded finder explicitly instrumented by
+ASan/UBSan. Every measured token sequence matches the retained indexed oracle;
+prototype frames match byte-for-byte and decode to the exact input.
+Corpus comparison verifies the established twelve-member manifest and retains
+source/executable identities, raw iterations and added array size. No public
+memory-policy, full regression, fuzz or external verification claim is made.
+
+Both compiler smoke tests and ASan/UBSan checks pass. All twelve verified corpus
+members and five repeated x-ray runs retain exact token/frame identity and
+reconstruction. BM-0162 records an aggregate replay improvement but a repeatable
+x-ray regression; public admission is deferred pending investigation.

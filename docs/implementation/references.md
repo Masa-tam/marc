@@ -9672,3 +9672,10 @@ Use the bounded repository-owned five-prefix finder and retained indexed
 tokenizer, with the first-party finder diagnostic timing pattern. The untimed
 counter replay is derived only from repository-owned five-prefix semantics.
 No external implementation or optimization source is consulted.
+
+## IR-1089: Six-prefix experimental candidate filtering
+
+Use BM-0161's admitted-finder diagnosis and repository-owned shared-advance
+five-prefix prototype, bounded five-prefix finder and exact reference tokenizer.
+The experimental sixth-byte fold and nearest five-byte fallback are first-party
+design choices; no external implementation source is consulted.
