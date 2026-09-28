@@ -35892,3 +35892,18 @@ both bounds.
 - Similarity review: the diagnostic counter intentionally follows this
   repository's own finder; no external expression or legal guarantee claimed.
 - No format, public API, default, production memory or failure-contract change.
+
+## CR-1489: 2026-09-29 - Exact five-prefix experimental finder
+
+- Author and reviewer: Codex; maintainer approved the next candidate-traversal
+  step after the finder diagnostic.
+- References: IR-1081, DD-1321 and repository-owned dual-prefix finder/counters.
+- Independent design: nearest three/four-byte fallbacks plus an exact five-byte
+  chain; preserve insertion order and compare complete tokens and frame bytes.
+- Validation: TVG-1187 records experiment-only differential and boundary checks.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: adaptation of repository-owned prefix-chain ideas only;
+  no external expression or legal guarantee claimed.
+- Scope: benchmark-only prototype; no production format, memory accounting,
+  defaults, public APIs or failure contracts are changed.

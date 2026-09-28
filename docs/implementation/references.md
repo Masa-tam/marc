@@ -9622,3 +9622,9 @@ or implementation was consulted. The diagnostic changes no codec or format.
 Use the repository's variant-9 candidate tokenizer and dual-prefix finder,
 plus DD-1319's bounded measurement conventions. The counter replay is adapted
 only from this repository-owned finder; no external implementation is consulted.
+
+## IR-1081: Exact five-byte prefix prototype
+
+Use repository-owned variant-9 finder/candidate semantics and DD-1320 counters.
+The experimental extra prefix index is independently derived from the existing
+nearest short-prefix fallback rule. No external implementation is consulted.

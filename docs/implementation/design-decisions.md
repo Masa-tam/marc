@@ -26298,3 +26298,23 @@ probes, prefix rejection, extension byte comparisons and inserted positions.
 These describe work, not CPU time per comparison. Keep instrumentation entirely
 in the benchmark; preserve production code, exact longest/nearest match rules,
 format, memory policy and failure contracts.
+
+## DD-1321: Benchmark an exact five-byte prefix chain
+
+Keep the production three/four-byte finder unchanged. A benchmark-only finder
+retains nearest exact three- and four-byte fallbacks, then searches a five-byte
+prefix chain for longer matches. Every position is inserted; longest match and
+nearest equal-length tie remain mandatory. If the nearest four-byte candidate
+matches byte five, its existing link is a valid chain start because no closer
+exact five-byte candidate can exist. All five-byte reads require five remaining
+bytes; short final tails use the shorter fallbacks.
+
+Three sets of 65,536 heads and frame-sized 32-bit links add exactly
+4 * (65,536 + frame_bytes) bytes of array payload versus production, or
+4,456,448 bytes at 1 MiB. Measure this tradeoff before production admission.
+Time complete reset/replay passes for both finders with one warmup and three
+measured repetitions, alternating order; allocation and equality checking are
+outside timing. Compare each output token to the production candidate oracle.
+Separately classify the old long-chain visits by exact four-byte prefix versus
+hash collision, including candidates rejected by the improvement probe. Work
+counts are not CPU fractions. No public memory contract or wire format changes.

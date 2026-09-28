@@ -10,6 +10,7 @@
 namespace marc::benchmark {
 struct FinderCounts {
     std::uint64_t short_visits{}, long_visits{}, probe_rejects{}, prefix_rejects{};
+    std::uint64_t exact_long_prefix{}, colliding_long_prefix{};
     std::uint64_t extension_compares{}, extension_equal{}, short_inserts{}, long_inserts{};
 };
 // Untimed repository-derived replay, restricted to validated 1 MiB frames.
@@ -46,6 +47,9 @@ public:
         auto first=input_[p+3]==input_[nearest+3] ? nearest : long_heads_[bucket(p,true)];
         for (auto c=first; c!=empty; c=long_links_[c]) {
             ++counts_.long_visits;
+            if (input_[p]==input_[c] && input_[p+1]==input_[c+1]
+                && input_[p+2]==input_[c+2] && input_[p+3]==input_[c+3]) ++counts_.exact_long_prefix;
+            else ++counts_.colliding_long_prefix;
             if (input_[p+best.length]!=input_[c+best.length]) {++counts_.probe_rejects;continue;}
             if (input_[p]!=input_[c] || input_[p+1]!=input_[c+1]
                 || input_[p+2]!=input_[c+2] || input_[p+3]!=input_[c+3]) {++counts_.prefix_rejects;continue;}

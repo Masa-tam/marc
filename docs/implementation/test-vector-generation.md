@@ -17462,3 +17462,23 @@ source/executable identities retained. Aggregate token counts also agree with
 the preceding phase experiment. BM-0156 reports the clock perturbation and
 counter interpretation limits. No new full-suite, decoder fuzz or archive
 exchange result is claimed for this benchmark-only change.
+
+## TVG-1187: Five-prefix experimental differential checks
+
+The benchmark-only finder replays each frame with one warmup and three measured
+passes against production candidate tokens. Every kind, literal, length and
+distance must match. Encoding the retained prototype tokens and oracle tokens
+through the existing frame encoder must produce identical serialized frames.
+A separate classified counter replay must also match the production schedule.
+Permanent smoke includes lengths one through five, nearest three/four-byte
+fallbacks, exact three/four/five-byte tails, repetitive ties, and a full 1 MiB
+frame followed by a short final frame. No decoder or public failure path changes.
+
+Both compiler builds pass the new prototype smoke and the existing finder smoke
+after adding collision classification. The twelve-member serial corpus run
+passes all token and serialized-frame comparisons. ASan/UBSan validation passes
+the short/fallback/multiframe smoke plus a seeded binary input containing a
+full 1 MiB frame, a repeated 258-byte prefix near its end and a short final
+frame. This is targeted sanitizer validation, not a new decoder fuzz campaign.
+BM-0157 records the additional array memory and the x-ray regression; no new
+production full-suite or external archive result is claimed.

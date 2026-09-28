@@ -6247,3 +6247,55 @@ are secondary targets in this measurement. Before selecting an index/filter
 change, distinguish collisions from exact-prefix chains and evaluate its memory
 cost. Any prototype still requires token and archive differential checks; this
 diagnostic itself changes no production behavior or compression ratio.
+
+## BM-0157: Experimental five-byte prefix chain
+
+DD-1321's benchmark-only finder adds a five-byte prefix index while retaining
+nearest exact three/four-byte fallbacks and exhaustive longest/nearest choice.
+`marc_lzss_position_distance_1m_five_prefix_benchmark <input-file>` accepts
+nonempty inputs up to 64 MiB. It compares complete reset/token replay passes
+with the production finder using 1 MiB frames and eligibility 3. One warmup
+precedes three repetitions per frame; order alternates by frame and iteration.
+Allocation, equality checks, counter classification and frame encoding are
+outside timing. Both timed paths write tokens; neither timing is public C API
+throughput or the complete candidate-validator/stream-encoder cost.
+
+All twelve manifest-verified Silesia members were run serially. Summing member
+median times gives 37.121968 seconds for production finder replay and
+22.771125 seconds for the prototype, a 38.66% time reduction. This is a single
+measurement snapshot with repeated runs, not a portable performance guarantee.
+Every repeated token vector and each final serialized frame match production.
+
+| Member | Baseline seconds | Prototype seconds | Time change |
+|---|---:|---:|---:|
+| dickens | 3.2840 | 1.3586 | -58.63% |
+| mozilla | 8.2540 | 5.5800 | -32.40% |
+| mr | 3.2931 | 2.0761 | -36.95% |
+| nci | 3.0665 | 2.6596 | -13.27% |
+| ooffice | 0.5527 | 0.3926 | -28.96% |
+| osdb | 0.7295 | 0.5092 | -30.20% |
+| reymont | 3.5369 | 1.6860 | -52.33% |
+| samba | 2.2627 | 1.6014 | -29.23% |
+| sao | 1.0240 | 0.5895 | -42.43% |
+| webster | 10.4185 | 5.6167 | -46.09% |
+| xml | 0.3072 | 0.2642 | -13.99% |
+| x-ray | 0.3930 | 0.4373 | +11.28% |
+
+Separate classification of all 10,099,400,746 old long-chain visits finds
+9,968,915,549 exact four-byte-prefix entries and 130,485,197 collisions:
+98.71% exact versus 1.29% colliding. The classification includes entries that
+fail the improvement-byte probe. This supports investigating finer exact
+prefix partitioning rather than assuming that bucket expansion alone removes
+the dominant candidate population; it does not measure collision CPU cost.
+
+At full frame size, the additional index array payload is 4,456,448 bytes
+(4.25 MiB), raising finder array payload from 8,912,896 to 13,369,344 bytes.
+This excludes vector metadata and allocator overhead and is not an observed
+process peak or an admitted public memory budget. The prototype's reset cost
+is timed; its allocations occur before timing.
+
+Keep this as an experimental candidate. Eleven members improve, but x-ray
+regresses; investigate index-update overhead before production integration.
+Any admission must update bounded workspace accounting and validate allocation,
+limits, failure atomicity, full archive identity and end-to-end performance.
+Production code, format, public defaults and failure contracts are unchanged.
