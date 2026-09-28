@@ -17279,3 +17279,41 @@ private frame target; it is not new-profile external interoperability evidence.
 Both local compiler configurations pass the complete 3,968-test regression
 suite. Existing profile tests remain in that suite; hosted CI and external
 archive verification for this revision have not been reported.
+
+## TVG-1180: Private owned and borrowed 1 MiB streaming decode
+
+Eight permanent tests exercise every split of short empty, single-frame,
+multiple-frame and final-partial-frame streams with output capacities 1, 7
+and 64 and intermittent zero capacity. Every truncation is fed one byte at a
+time: only completed frames may have been published and the error offset is
+the truncation extent. A damaged second payload preserves exactly the first
+frame across input/output chunk sizes. Test strict trailing data, crossed
+identities, unsupported flags, sticky end/error, final suffix resubmission,
+and draining a latched EndInput without repeating flags.
+
+Check exact-minus-one/exact/extra owner budgets, invalid frame ceilings,
+compressed-payload bounds and arithmetic overflow without changing failed
+query outputs. Borrowed storage tests charge unused supplied capacity and
+reject overlap; owner tests reject output overlapping the owner object. A
+full-MiB frame ends with length three/distance 1,048,573 and round-trips with
+irregular input/output chunks and output stalls.
+
+A separate allocation-injection executable fails each of the four owning
+allocations in turn. It checks cleanup, null result and out-of-memory status,
+proves invalid/under-budget creation makes no allocation, and verifies no
+additional allocation during decoding. These controls exist only in the test
+executable. The eight streaming tests also pass under ASan/UBSan with matched
+container annotations disabled.
+
+The dedicated stream fuzzer compares borrowed one-byte input/output with an
+owned decoder using input chunks of 13 and output capacity 7, including zero
+capacity calls and sticky-state checks. It tests arbitrary bytes and generated
+bounded multi-frame literal streams, then mutations/truncations, comparing
+output, consumed extent, terminal status and error position. A local sanitizer
+campaign completes 10,000 runs without a finding. Its generated streams are
+small; permanent tests separately establish the full-MiB history case. This
+is private decode evidence, not a public encoding or interoperability gate.
+
+Both local compiler configurations pass all 3,977 regression tests, including
+the isolated allocation test. No hosted CI or external archive result for this
+revision is inferred from earlier profile verification.

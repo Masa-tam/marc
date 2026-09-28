@@ -9575,3 +9575,11 @@ The private 1 MiB frame integration reuses the repository's typed-context
 header parser, explicit little-endian frame layout, aggregate bounds checks,
 transactional reconstruction and DD-1312 token bridge. No external codec
 source, pseudocode or test suite was consulted.
+
+### IR-1074
+
+The private 1 MiB streaming decoder derives from the repository-owned
+position-distance frame streaming state machine and DD-1313 frame validation.
+Owning storage uses independently specified bounded array capacities and the
+existing checked arithmetic/overlap primitives. No external codec source,
+pseudocode or tests were consulted.

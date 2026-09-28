@@ -114,6 +114,9 @@ set(MARC_SOURCES
     src/entropy/lzss_position_distance_1m_range_decoder.cpp
     src/context/lzss_position_distance_1m_tokens.cpp
     src/frame/lzss_position_distance_1m_frame.cpp
+    src/frame/lzss_position_distance_1m_frame_streaming_decoder.cpp
+    src/frame/lzss_position_distance_1m_workspace.cpp
+    src/frame/lzss_position_distance_1m_owned_decoder.cpp
     src/entropy/lzss_short_match_range_encoder.cpp
     src/entropy/contextual_dynamic_range_encoder.cpp
     src/entropy/contextual_rans_decoder.cpp
@@ -1314,6 +1317,15 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_lzss_position_distance_1m_frame PRIVATE
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_1m_frame PRIVATE marc::static)
+
+    add_executable(marc_fuzz_lzss_position_distance_1m_stream
+        fuzz/lzss_position_distance_1m_stream_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_position_distance_1m_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_distance_1m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_distance_1m_stream PRIVATE
+        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzss_position_distance_1m_stream PRIVATE -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_distance_1m_stream PRIVATE marc::static)
 
     add_executable(marc_fuzz_lz77_stream fuzz/lz77_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lz77_stream PRIVATE cxx_std_20)
@@ -2674,6 +2686,7 @@ if(MARC_BUILD_TESTS)
         tests/lzss_position_distance_range_encoder_tests.cpp
         tests/lzss_position_distance_1m_tokens_tests.cpp
         tests/lzss_position_distance_1m_frame_tests.cpp
+        tests/lzss_position_distance_1m_streaming_tests.cpp
         tests/lzss_reduced_literal_operations_tests.cpp
         tests/lzss_reduced_literal_operation_decoder_tests.cpp
         tests/lzss_reduced_literal_range_tokens_tests.cpp
@@ -3508,6 +3521,13 @@ if(MARC_BUILD_TESTS)
         target_link_libraries(marc_position_distance_allocation_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_allocation_tests
             COMMAND marc_position_distance_allocation_tests)
+        add_executable(marc_position_distance_1m_allocation_tests
+            tests/position_distance_1m_allocation_tests.cpp)
+        target_compile_features(marc_position_distance_1m_allocation_tests PRIVATE cxx_std_20)
+        target_include_directories(marc_position_distance_1m_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_distance_1m_allocation_tests PRIVATE marc::static)
+        add_test(NAME marc_position_distance_1m_allocation_tests
+            COMMAND marc_position_distance_1m_allocation_tests)
     endif()
 
     add_executable(marc_c_api_tests tests/c_api_tests.c)

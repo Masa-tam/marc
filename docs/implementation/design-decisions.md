@@ -26169,3 +26169,28 @@ the private scratch path may retain tokens but must preserve raw output on any
 failure. Both require history, counts and canonical termination before raw
 reconstruction. Successful decode consumes exactly one frame; following bytes
 belong to the caller. Stream chunking, public factories and CLI remain pending.
+
+## DD-1314: Bound private 1 MiB streaming decode storage
+
+Add a distinct private streaming decoder for dictionary 2/9, context 1/10,
+entropy 3/2. Reuse the verified header/prefix/payload/drain state transitions
+and require successful complete-frame scratch decode before any raw bytes drain.
+Publication is atomic per frame: a late failure preserves earlier valid output
+but publishes no bytes from the failed frame. Strict trailing data is rejected.
+Flush preserves boundaries; ResetBlock is unsupported. EndInput must accompany
+resubmitted final input until consumed. Ended and error states remain sticky.
+
+Charge supplied serialized, token and raw workspace capacities, retained owner
+and streaming state, and the full transient widened decoder state. The owning
+helper checks conservative capacities for a chosen maximum frame size F before
+allocation: raw F, tokens F, serialized 18F+85. Fixed typed arrays have those
+exact element counts; allocator metadata and transient scalar stack overhead
+are excluded from this policy charge. No allocation occurs in process().
+The owner's frame ceiling also bounds admission of the stream header.
+
+The owner holds and destroys the workspaces and embedded streaming decoder;
+copying or moving active decoder objects is disallowed. Allocation failures
+return a stable out-of-memory error without publishing an object. Caller-owned
+storage remains supported privately and its full supplied capacities are charged.
+This adds no public C factory or CLI selector. Encoding/raw match finding and
+new-profile interoperability remain later milestones.

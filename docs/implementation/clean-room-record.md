@@ -35764,3 +35764,24 @@ both bounds.
   copyleft implementations and third-party codec optimization/test code.
 - Similarity review: first-party parser reuse and new bounded frame wrappers;
   no external expression or legal guarantee claimed.
+
+## CR-1482: 2026-09-28 - Own and stream private 1 MiB decode storage
+
+- Author and reviewer: Codex; maintainer authorized the next stage following
+  the private complete-frame integration.
+- Task: implement bounded owned/borrowed streaming decode, checked capacity
+  planning and frame-atomic publication under arbitrary partial buffers.
+- References: IR-1074, DD-1313 frame helpers, first-party streaming decoder
+  state transitions, checked bounds and isolated allocation-test conventions.
+- Independent design: DD-1314 charges full retained capacities and embedded
+  state before allocation; arrays remain fixed during process. Copy/move of
+  active decoder objects is disabled. Error and ended states remain sticky.
+- Validation: TVG-1180 records split/truncation/full-frame tests, allocation
+  failure injection, sanitizer and chunk-differential fuzz evidence.
+- Scope: no public C factory, CLI selector, raw encoder or format changes.
+  Existing identities and the prior external-verification gate are unchanged.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party codec optimization/test code.
+- Similarity review: adaptation of repository-owned state transitions plus
+  independently written bounded owner; no external expression copied and no
+  legal guarantee claimed.
