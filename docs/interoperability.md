@@ -1230,3 +1230,20 @@ revision before closing its external gate. The previously reported results
 at 0bbe882e validate the earlier compact-prefix integration only. At this
 recording point, the new hosted/external gate is pending; no prior report is
 relabelled as verification of this change.
+
+#### Validated-field storage-check external verification complete
+
+The maintainer reported successful pushed CI and four successful schema-58
+verifier passes at `f65cb552db9c0d8a04ddcc32991727af278b3272`.
+All four final lines identify 68 archives and that exact implementation
+revision: one Windows CI bundle, one Ubuntu CI bundle and two passes naming
+the external Ubuntu bundle. The repeated external bundle label is not a
+fourth platform. These are maintainer-reported results, not independently
+rerun hosted or external checks.
+
+These results close DD-1310's CI/external exchange gate. Local validation at
+the same implementation revision also passed both 68-archive compiler
+exchange directions, following the two 3,954-test suites and bounded fuzz
+campaign. The verifier checks inventory, sizes, SHA-256, decoded fixtures and
+byte-identical local re-encoding. No format, public ABI, archive inventory or
+release state changes; no claim extends to untested architectures or profiles.

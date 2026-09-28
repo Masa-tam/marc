@@ -35685,3 +35685,21 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Similarity review: repository-owned code and independent regression inputs;
   no external expression copied or legal guarantee claimed.
+
+## CR-1478: 2026-09-28 - Record validation-consolidation external verification
+
+- Author and reviewer: Codex; external results supplied by the maintainer.
+- Task: record successful pushed CI and four 68-archive verifier reports for
+  implementation revision f65cb552db9c0d8a04ddcc32991727af278b3272.
+- Evidence: every supplied final line names the same implementation revision
+  and archive count. The reports name the Windows and Ubuntu CI bundles once
+  each and the external Ubuntu bundle twice. Hosted/external checks were not
+  independently rerun here. Prior local exchange passed both directions at
+  that exact revision; this closes DD-1310's remaining CI/external gate.
+- Scope: record-only update; no implementation, format, public API, memory,
+  error or failed-frame publication change. No new codec tests or performance
+  claims are inferred from the reports.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: verification metadata only; no external expression copied
+  or legal guarantee claimed.
