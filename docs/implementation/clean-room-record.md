@@ -35826,3 +35826,20 @@ both bounds.
   copyleft implementations and third-party codec optimization/test code.
 - Similarity review: first-party state-machine/workspace adaptation and new
   bounded owner integration; no external expression or legal guarantee claimed.
+
+## CR-1485: 2026-09-29 - Expose separate 1 MiB position-distance factories
+
+- Author and reviewer: Codex; maintainer approved public API/CLI integration.
+- References: IR-1077, DD-1317 and repository-owned C configuration, prefix
+  ownership, allocation-publication, private transform and CLI conventions.
+- Independent design: separate additive C symbols and selector preserve the
+  old ABI and identities. Decode maps checked token capacity directly to its
+  private workspace, and encode uses the verified wide workspace query.
+- Validation: TVG-1183 records C metadata/factory, static/shared consumers,
+  allocation failure, CLI, sanitizer and public differential fuzz coverage.
+- Scope: public integration with corpus performance and new-profile external
+  interoperability still pending. Existing schema-58 evidence is not reused.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party codec optimization/test code.
+- Similarity review: adaptation of repository-owned API dispatch/tests with
+  new profile-specific limits; no external expression or legal guarantee claimed.

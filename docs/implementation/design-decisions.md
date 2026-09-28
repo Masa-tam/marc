@@ -26240,3 +26240,14 @@ construct the borrowed encoder in the owner, with no process-time allocation.
 Objects cannot be copied or moved. All caller buffers must remain disjoint
 from each other and live owner storage. Preserve the existing private format
 and public profile admission unchanged.
+
+## DD-1317: Separate public 1 MiB position-distance entry points
+
+Add a distinct C configuration and init/query/create family with suffix _1m,
+and the explicit CLI selector lzss-position-distance-dynamic-range-1m. Preserve
+the 64 KiB ABI and wire identity. Reuse caller-owned queried prefixes and the
+existing handle lifetime contract. Charge the handle and concrete transform
+plus bounded workspaces before allocation; decode ignores encoder size fields
+and caps frame capacity at 1 MiB. Fixed encoding eligibility remains three.
+Keep the schema-58 archive set and its external evidence unchanged; the new
+profile requires separate corpus and interoperability qualification.

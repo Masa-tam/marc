@@ -769,3 +769,29 @@ policy, and Exact finder are preserved. Callers may tighten limits and must
 query workspace again after changes. The ABI-1 layout and 64K initializer
 default are unchanged; the exact identity is 2/6 + 1/5 + 2/2. Tool names,
 bounded fuzz profile, and schema 55 are not extended by this admission.
+
+## 1 MiB position-distance integration
+
+The separate `marc_lzss_position_distance_dynamic_range_1m_config` uses
+`marc_lzss_position_distance_dynamic_range_1m_config_init()`,
+`marc_lzss_position_distance_dynamic_range_1m_workspace_requirements()` and
+`marc_lzss_position_distance_dynamic_range_1m_create()`. Its default frame and
+fixed window are 1,048,576 bytes, with lengths 3..258. The format identity is
+dictionary 2/9, context 1/10, entropy 3/2; contexts number 44 with 2,566 model
+entries. It cannot decode the 64 KiB or contextual 1 MiB profiles.
+
+The caller owns queried primary, secondary and aligned views buffers until
+handle destruction. Only queried prefixes are retained and charged. Encode
+uses raw primary and serialized secondary; decode reverses these roles.
+The aggregate check includes the opaque handle, concrete transform and model
+state. Decode ignores original_size/frame_size and derives local capacity
+from min(max_frame_size, 1,048,576). Limit fields never enlarge wire bounds.
+Query errors preserve the requirements; ordinary creation failure sets the
+disjoint handle output to null. Metadata aliases are rejected before writes.
+Flush preserves frames; ResetBlock is unsupported; final unconsumed input must
+be resubmitted with EndInput. End/error states are sticky. No process-time
+allocation occurs, and failed frames produce no output from that frame.
+
+This adds a second position-distance C family independently of the baseline
+42-profile matrix. Corpus performance and external qualification for the new
+family remain pending; the preceding schema-58 evidence covers the older family.

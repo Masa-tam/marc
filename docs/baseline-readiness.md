@@ -4163,3 +4163,13 @@ Together these support local Ready status for the exact profile. The new tests
 do not modify codec bytes or defaults, and the prior external results are not
 attributed to this later test/documentation commit. Broader architecture and
 longer fuzz-campaign limitations remain unchanged.
+
+## 2026-09-29: 1 MiB position-distance public integration
+
+The distinct C init/query/create family and explicit
+`lzss-position-distance-dynamic-range-1m` selector connect the bounded private
+streaming implementation. This is outside the unchanged 42-profile baseline.
+The existing 64 KiB and contextual identities remain separate. Public API
+validation, chunking, allocation failure and CLI selection are checked locally;
+new-profile corpus ratio/speed/memory and external interoperability qualification
+remain pending. No older 68-archive verification is evidence for this profile.

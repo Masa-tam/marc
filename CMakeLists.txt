@@ -1349,6 +1349,14 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_lzss_position_distance_1m_encode_stream PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_1m_encode_stream PRIVATE marc::static)
 
+    add_executable(marc_fuzz_lzss_position_distance_1m_public fuzz/lzss_position_distance_1m_public_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_position_distance_1m_public PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_distance_1m_public PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_distance_1m_public PRIVATE
+        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzss_position_distance_1m_public PRIVATE -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_distance_1m_public PRIVATE marc::static)
+
     add_executable(marc_fuzz_lz77_stream fuzz/lz77_stream_fuzz.cpp)
     target_compile_features(marc_fuzz_lz77_stream PRIVATE cxx_std_20)
     target_include_directories(marc_fuzz_lz77_stream
@@ -2724,6 +2732,8 @@ if(MARC_BUILD_TESTS)
         tests/lzss_position_distance_frame_streaming_decoder_tests.cpp
         tests/lzss_position_distance_workspace_tests.cpp
         tests/lzss_position_distance_c_config_tests.cpp
+        tests/lzss_position_distance_1m_c_config_tests.cpp
+        tests/lzss_position_distance_1m_c_factory_tests.cpp
         tests/lzss_position_distance_c_factory_tests.cpp
         tests/lzss_position_distance_frame_streaming_encoder_tests.cpp
         tests/lzss_position_distance_streaming_hash_tests.cpp
@@ -3538,6 +3548,15 @@ if(MARC_BUILD_TESTS)
             add_test(NAME ${consumer} COMMAND ${consumer})
         endif()
     endforeach()
+    foreach(kind IN ITEMS static shared)
+        if(TARGET marc_${kind})
+            set(consumer marc_position_distance_1m_c_${kind}_tests)
+            add_executable(${consumer} tests/position_distance_1m_c_consumer.c)
+            target_compile_features(${consumer} PRIVATE c_std_11)
+            target_link_libraries(${consumer} PRIVATE marc::${kind})
+            add_test(NAME ${consumer} COMMAND ${consumer})
+        endif()
+    endforeach()
     if(TARGET marc_static)
         add_executable(marc_position_distance_allocation_tests
             tests/position_distance_allocation_tests.cpp)
@@ -3545,6 +3564,12 @@ if(MARC_BUILD_TESTS)
         target_link_libraries(marc_position_distance_allocation_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_allocation_tests
             COMMAND marc_position_distance_allocation_tests)
+        add_executable(marc_position_distance_1m_c_allocation_tests
+            tests/position_distance_1m_c_allocation_tests.cpp)
+        target_compile_features(marc_position_distance_1m_c_allocation_tests PRIVATE cxx_std_20)
+        target_link_libraries(marc_position_distance_1m_c_allocation_tests PRIVATE marc::static)
+        add_test(NAME marc_position_distance_1m_c_allocation_tests
+            COMMAND marc_position_distance_1m_c_allocation_tests)
         add_executable(marc_position_distance_1m_allocation_tests
             tests/position_distance_1m_allocation_tests.cpp)
         target_compile_features(marc_position_distance_1m_allocation_tests PRIVATE cxx_std_20)
@@ -4354,6 +4379,19 @@ if(MARC_BUILD_TESTS)
                 "-DCLI_REJECT_CODEC_2=lzss-contextual-dynamic-range-1m"
                 "-DCLI_TRAILING_TEST=ON"
                 "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-position-distance-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        add_test(NAME marc_cli_lzss_position_distance_dynamic_range_1m_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DCLI_CODEC=lzss-position-distance-dynamic-range-1m"
+                "-DCLI_DICTIONARY_VARIANT=09"
+                "-DCLI_CONTEXT_VARIANT=0a"
+                "-DCLI_ENTROPY_ALGORITHM=03"
+                "-DCLI_ENTROPY_VARIANT=02"
+                "-DCLI_REJECT_CODEC=lzss-position-distance-dynamic-range"
+                "-DCLI_REJECT_CODEC_2=lzss-contextual-dynamic-range-1m"
+                "-DCLI_TRAILING_TEST=ON"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-position-distance-1m-test-$<CONFIG>"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
         add_test(NAME marc_cli_position_distance_selection
             COMMAND ${CMAKE_COMMAND}

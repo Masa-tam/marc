@@ -17378,3 +17378,36 @@ external interoperability result.
 Both local compiler configurations pass all 3,995 regression tests, including
 the isolated encode allocation executable. No hosted CI or external archive
 verification for this revision is inferred from earlier profile results.
+
+## TVG-1183: Public 1 MiB position-distance API and CLI integration
+
+Nineteen C configuration/factory tests validate defaults, exact aggregate
+budgets including the opaque handle, unchanged failed metadata, aliases,
+short/misaligned storage and retained-prefix tails. Compare public streaming
+bytes with the private exhaustive raw-frame oracle, every byte value, empty
+input, binary data classes, 1 MiB frame boundaries and arbitrary chunking.
+Decode truncations, trailing bytes and a damaged second frame with stable
+positions and publication of only earlier complete frames. Crossed identity
+words fail before output, while the old field-context parser stays narrow.
+These nineteen tests also pass under ASan/UBSan.
+
+Independent C11 consumers link the static and shared libraries and exercise
+one-byte and larger chunks. A separate allocation executable fails each of
+the two public factory allocations in both directions, checks cleanup and
+null publication, and proves no allocation during query/process. CLI checks
+the exact wire identifiers, round trips, wrong-selector rejection, trailing
+data, protected output files, near-miss names and a unique inventory entry.
+
+The dedicated public fuzzer compares encoders with chunks 1/1 and 13/7 and
+decoders with chunks 1/1 and 11/7, including zero output stalls, sticky states,
+arbitrary data, mutated encoded streams and truncations. Raw fuzz input is
+bounded to 128 bytes; permanent tests separately cover full-size boundaries.
+The schema-58 bundle is unchanged and does not qualify this new profile.
+
+The local public-API sanitizer fuzz campaign completes 10,000 executions
+without a finding. No corpus performance or external verification claim is
+made from these bounded integration tests.
+
+Both local compiler configurations pass all 4,018 regression tests, including
+the C consumers and allocation executable. Hosted CI and new-profile external
+archive verification have not been reported for this revision.

@@ -1669,12 +1669,22 @@ foreach(stale_position_distance_contract IN ITEMS
         message(FATAL_ERROR "Stale position-distance status: ${stale_position_distance_contract}")
     endif()
 endforeach()
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 1")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 2")
+foreach(one_mib_contract IN ITEMS
+        "marc_lzss_position_distance_dynamic_range_1m_config_init()"
+        "marc_lzss_position_distance_dynamic_range_1m_workspace_requirements()"
+        "marc_lzss_position_distance_dynamic_range_1m_create()"
+        "2,566 model")
+    string(FIND "${c_api_content}" "${one_mib_contract}" one_mib_offset)
+    if(one_mib_offset EQUAL -1)
+        message(FATAL_ERROR "Missing 1 MiB position-distance C API contract: ${one_mib_contract}")
+    endif()
+endforeach()
 if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "
         "${cli_profile_count} CLI profiles plus five experimental profiles "
-        "and one public position-distance family")
+        "and two public position-distance families")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
     "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")

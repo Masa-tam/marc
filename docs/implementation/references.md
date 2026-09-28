@@ -9597,3 +9597,9 @@ test suite was consulted.
 Private 1 MiB streaming encoding reuses the repository-owned frame-streaming
 encoder state machine, checked workspace partitioning and owned decoder
 allocation/lifetime pattern. No external implementation was consulted.
+
+### IR-1077
+
+The public 1 MiB adapter follows repository-owned C metadata, workspace and
+factory contracts, private streaming transforms and CLI dispatch conventions.
+No external implementation or test suite was consulted.

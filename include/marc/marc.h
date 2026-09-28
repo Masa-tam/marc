@@ -403,6 +403,28 @@ typedef struct marc_lzss_position_distance_dynamic_range_config {
     uint64_t expansion_slack;
 } marc_lzss_position_distance_dynamic_range_config;
 
+/* Separate 1 MiB window, matches 3..258; distinct wire identity. */
+typedef struct marc_lzss_position_distance_dynamic_range_1m_config {
+    uint32_t struct_size;
+    uint32_t abi_version;
+    marc_direction direction;
+    uint32_t reserved;
+    uint64_t original_size;
+    uint32_t frame_size;
+    uint32_t reserved2;
+    uint64_t max_total_output_size;
+    uint64_t max_frame_size;
+    uint64_t max_block_size;
+    uint64_t max_compressed_payload_size;
+    uint64_t max_internal_buffered_bytes;
+    uint64_t max_lz_distance;
+    uint64_t max_lz_match_length;
+    uint64_t max_entropy_table_entries;
+    uint64_t max_range_model_total;
+    uint64_t max_expansion_ratio;
+    uint64_t expansion_slack;
+} marc_lzss_position_distance_dynamic_range_1m_config;
+
 typedef struct marc_lzss_contextual_dynamic_range_config {
     uint32_t struct_size;
     uint32_t abi_version;
@@ -1251,6 +1273,29 @@ MARC_API marc_status marc_lzss_position_distance_dynamic_range_workspace_require
  * Decoder publication is atomic per frame, not for the whole stream. */
 MARC_API marc_status marc_lzss_position_distance_dynamic_range_create(
     const marc_lzss_position_distance_dynamic_range_config* config,
+    marc_buffer primary_workspace, marc_buffer secondary_workspace,
+    marc_buffer views_workspace, marc_transform** transform) MARC_NOEXCEPT;
+
+/* 1 MiB counterpart: the same prefix ownership and process contracts apply. */
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_1m_config_init(
+    marc_direction direction,
+    marc_lzss_position_distance_dynamic_range_1m_config* config) MARC_NOEXCEPT;
+
+/* Encode: primary=raw, secondary=serialized; decode reverses these roles.
+ * Views holds aligned typed storage. Includes handle/state in aggregate checks,
+ * but reports caller storage only. Failure (including metadata overlap) leaves
+ * requirements unchanged. Local limits never enlarge the wire envelope. */
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_1m_workspace_requirements(
+    const marc_lzss_position_distance_dynamic_range_1m_config* config,
+    marc_workspace_requirements* requirements) MARC_NOEXCEPT;
+
+/* Retains only queried prefixes for the handle lifetime. Retained prefixes
+ * must be disjoint from one another and config; handle output must not overlap config or
+ * supplied workspace. A disjoint handle output is null on failure. Flush
+ * preserves frames; ResetBlock is unsupported. Ended/error states are sticky.
+ * Decoder publication is atomic per frame, not for the whole stream. */
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_1m_create(
+    const marc_lzss_position_distance_dynamic_range_1m_config* config,
     marc_buffer primary_workspace, marc_buffer secondary_workspace,
     marc_buffer views_workspace, marc_transform** transform) MARC_NOEXCEPT;
 

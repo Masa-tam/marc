@@ -622,3 +622,21 @@ Interoperability schema 57 retains that complete schema-56 prefix and appends
 the exact `lzss-contextual-adaptive-huffman-64m` CLI profile as archive 67.
 The generator checks identity `2/6 + 1/5 + 1/2` before recording it and
 immediately decodes it back to the common fixture.
+
+## 1 MiB position-distance selector
+
+`lzss-position-distance-dynamic-range-1m` selects the separate 1 MiB window
+and default frame, dictionary/context identity 2/9 + 1/10, entropy 3/2.
+It uses fixed eligibility three and the bounded exact indexed finder.
+
+```sh
+marc encode --codec lzss-position-distance-dynamic-range-1m input.bin output.marc
+marc decode --codec lzss-position-distance-dynamic-range-1m output.marc restored.bin
+```
+
+This explicit selector adds one experimental profile outside the baseline
+42-profile matrix. The 64 KiB selector retains its meaning. The two selectors
+and contextual 1 MiB reject each other's headers. There is no automatic
+selection or `--profile`/`--finder` override. The existing schema-58 bundle
+continues to contain its original 68 archives; qualification of the new profile
+will use a subsequent interoperability gate.
