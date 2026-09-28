@@ -1269,3 +1269,19 @@ results naming that revision. Successful new verifier lines must name 69
 archives. Earlier 68-archive reports do not close this gate; repeated bundle
 labels do not establish additional platforms. Hosted/external qualification
 for schema 59 remains pending until the maintainer supplies those results.
+
+#### Schema-59 external verification complete
+
+The maintainer reported successful pushed CI and four successful verifier
+passes at `1d351cc47895bc9bcc5dd856804b27068d675121`. Each final line
+identifies 69 archives and that exact revision: one Windows CI bundle, one
+Ubuntu CI bundle and two passes naming the external Ubuntu bundle. The
+repeated bundle label does not establish a fourth platform. These results
+are maintainer-reported and were not independently rerun here.
+
+These reports close the schema-59 CI/external exchange gate. Local validation
+also passed both 69-archive compiler exchange directions and all 4,019 tests
+in each compiler configuration; the frozen schema-58 prefix retained identical
+archive bytes. The 8,193-byte exchange fixture limitation above still applies.
+This record changes no format, public ABI, default, archive inventory or
+release state, and makes no claim for untested architectures or inputs.
