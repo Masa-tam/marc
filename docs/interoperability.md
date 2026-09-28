@@ -1285,3 +1285,25 @@ in each compiler configuration; the frozen schema-58 prefix retained identical
 archive bytes. The 8,193-byte exchange fixture limitation above still applies.
 This record changes no format, public ABI, default, archive inventory or
 release state, and makes no claim for untested architectures or inputs.
+
+### IX-0052: Public five-prefix encoder external verification complete
+
+The maintainer reported successful pushed CI and four successful verifier
+passes at revision 268398a263766bfa2ef40ad833a495b7fe63fb71. Every final line
+identifies 69 archives and that exact revision: one Windows bundle, one
+Ubuntu bundle and two passes naming the Ubuntu Clang bundle. The repeated
+bundle label does not establish a fourth platform. These are maintainer-reported
+results, not independently rerun hosted or external checks.
+
+These reports close DD-1326's CI/external exchange gate for the public 1 MiB
+five-prefix encoder. At the same implementation revision, local validation
+passed both 69-archive compiler exchange directions with all archive hashes
+unchanged from the earlier schema-59 baseline. Both compiler regression suites
+passed 4,035 tests; the public sanitizer suite passed 20 tests, and all twelve
+verified corpus members retained their previous archive hashes and reconstructed
+exactly. Those local results remain distinct from the reported external passes.
+
+Schema 59, its 69-archive inventory and the 8,193-byte exchange fixture remain
+unchanged. Full-window coverage comes from separate permanent tests, not from
+the bundle fixture. This qualification record changes no format, public ABI,
+defaults or release state and makes no claim for untested architectures or inputs.

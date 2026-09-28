@@ -35989,3 +35989,19 @@ both bounds.
   no external expression or legal guarantee claimed.
 - Scope: public 1 MiB encoder search and corresponding workspace accounting.
   Public ABI, encoded representation, decoder and older profiles are unchanged.
+
+## CR-1495: 2026-09-29 - Public five-prefix external gate closure
+
+- Author and reviewer: Codex; maintainer supplied successful pushed CI and
+  four 69-archive verification lines naming the exact DD-1326 revision.
+- References: IX-0052, DD-1326 and the existing local admission records.
+- Evidence handling: distinguish maintainer-reported hosted/external results
+  from locally executed tests; repeated bundle labels are not extra platforms.
+- Validation: revision agrees with local HEAD and the recorded local exchange;
+  documentation layout and append-only/environment-separation checks apply.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: documentation-only evidence record; no implementation
+  expression added and no legal guarantee claimed.
+- Scope: close the CI/external exchange gate for the public five-prefix encoder.
+  No codec, format, ABI, inventory or release-state change.
