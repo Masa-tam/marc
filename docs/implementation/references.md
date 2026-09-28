@@ -9628,3 +9628,10 @@ only from this repository-owned finder; no external implementation is consulted.
 Use repository-owned variant-9 finder/candidate semantics and DD-1320 counters.
 The experimental extra prefix index is independently derived from the existing
 nearest short-prefix fallback rule. No external implementation is consulted.
+
+## IR-1082: Shared-key experimental index advance
+
+Use DD-1321's repository-owned five-prefix prototype and retained production
+finder as references. Sharing prefix assembly and separating bounded tails is
+independently derived from the repository's existing dual-prefix advance loop.
+No external implementation or optimization source was consulted.

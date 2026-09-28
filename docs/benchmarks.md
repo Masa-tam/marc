@@ -6299,3 +6299,58 @@ regresses; investigate index-update overhead before production integration.
 Any admission must update bounded workspace accounting and validate allocation,
 limits, failure atomicity, full archive identity and end-to-end performance.
 Production code, format, public defaults and failure contracts are unchanged.
+
+
+## BM-0158: Shared-key five-prefix advance
+
+DD-1322 retains the original five-prefix advance as a compile-time reference
+and changes only key assembly in the new experiment. The executable
+`marc_lzss_position_distance_1m_shared_advance_benchmark <input-file>` compares
+production, original five-prefix and shared-key five-prefix reset/token replay.
+It uses 1 MiB frames, eligibility 3, one warmup and three measured passes,
+rotating order by frame and iteration. Allocation, equality checks and frame
+encoding are excluded. All twelve verified Silesia members run serially.
+Both experimental instances retain allocated arrays during this comparison.
+These finder replay times are not public encoder throughput, and comparisons
+are within this experiment rather than ratios of separate historical runs.
+
+| Path | Sum of member median seconds |
+|---|---:|
+| Production finder | 37.600693 |
+| Original five-prefix | 23.401251 |
+| Shared-key five-prefix | 22.111953 |
+
+The shared-key path changes time by -41.19% relative to
+production and -5.51% relative to the original prototype.
+Token vectors match after every pass. A fresh shared replay also produces
+identical complete serialized frames through the existing frame encoder.
+
+| Member | Production seconds | Original seconds | Shared seconds | Shared vs production |
+|---|---:|---:|---:|---:|
+| x-ray | 0.3957 | 0.4700 | 0.3883 | -1.87% |
+| dickens | 3.2766 | 1.3739 | 1.3508 | -58.77% |
+| mozilla | 8.4949 | 5.9616 | 5.4653 | -35.66% |
+| mr | 3.3869 | 2.1502 | 2.1110 | -37.67% |
+| nci | 3.1838 | 2.7917 | 2.6545 | -16.62% |
+| ooffice | 0.5532 | 0.3905 | 0.3615 | -34.66% |
+| osdb | 0.7307 | 0.5128 | 0.4538 | -37.89% |
+| reymont | 3.5507 | 1.7006 | 1.6705 | -52.95% |
+| samba | 2.2822 | 1.6212 | 1.5199 | -33.40% |
+| sao | 1.0149 | 0.5840 | 0.5446 | -46.34% |
+| webster | 10.4170 | 5.5779 | 5.3463 | -48.68% |
+| xml | 0.3142 | 0.2668 | 0.2454 | -21.88% |
+
+Because x-ray is close to production, five additional serial process runs
+repeat its three-way comparison. The per-run median time differences for
+shared versus production range from -1.99% to +0.30%.
+These repeated observations describe this measurement environment; they do
+not establish a portable non-regression guarantee or isolate instruction costs.
+All repeated token and frame comparisons pass.
+
+Array payload is unchanged from DD-1321: the five-prefix experiment retains
+4,456,448 additional bytes (4.25 MiB) per full frame versus production.
+No additional arrays or public memory charges are introduced by key sharing.
+Production source, defaults, format and failure contracts remain unchanged.
+Before admitting this candidate, implement bounded workspace accounting and
+verify allocation/limit failures, frame publication rules, archive identity
+and end-to-end public performance. This benchmark does not qualify those gates.

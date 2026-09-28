@@ -7,7 +7,8 @@
 #include <vector>
 namespace marc::benchmark {
 // Experiment only. Caller supplies sequential positions inside one bounded frame.
-class FivePrefixFinder {
+template<bool SharedAdvance>
+class FivePrefixFinderImpl {
     static constexpr auto empty=std::numeric_limits<std::uint32_t>::max();
     std::span<const std::byte> input_;
     std::array<std::vector<std::uint32_t>,3> heads_,links_;
@@ -25,7 +26,7 @@ class FivePrefixFinder {
         return true;
     }
 public:
-    explicit FivePrefixFinder(std::size_t capacity) {
+    explicit FivePrefixFinderImpl(std::size_t capacity) {
         for(auto& h:heads_) h.resize(65536);
         for(auto& l:links_) l.resize(capacity);
     }
@@ -62,11 +63,32 @@ public:
         return best;
     }
     void advance(std::size_t p,std::size_t next) {
+        if constexpr (SharedAdvance) {
+            const auto end=std::min(next,input_.size()>=5?input_.size()-4:0);
+            const auto mix=[](std::uint32_t key) {
+                key^=key>>11;
+                return (key*UINT32_C(2654435761))>>16;
+            };
+            for(;p<end;++p) {
+                const auto three=std::to_integer<std::uint32_t>(input_[p])
+                    | (std::to_integer<std::uint32_t>(input_[p+1])<<8)
+                    | (std::to_integer<std::uint32_t>(input_[p+2])<<16);
+                const auto four=three | (std::to_integer<std::uint32_t>(input_[p+3])<<24);
+                const std::array<std::uint32_t,3> buckets{mix(three),mix(four),
+                    mix(four ^ (std::to_integer<std::uint32_t>(input_[p+4])*UINT32_C(2246822519)))};
+                for(std::size_t i=0;i<3;++i) {
+                    links_[i][p]=heads_[i][buckets[i]];
+                    heads_[i][buckets[i]]=static_cast<std::uint32_t>(p);
+                }
+            }
+        }
         for(;p<next;++p) for(std::size_t i=0;i<3;++i) {
             if(input_.size()-p<i+3) break;
             const auto b=bucket(p,i+3);links_[i][p]=heads_[i][b];heads_[i][b]=static_cast<std::uint32_t>(p);
         }
     }
 };
+using FivePrefixFinder = FivePrefixFinderImpl<false>;
+using SharedFivePrefixFinder = FivePrefixFinderImpl<true>;
 }
 #endif

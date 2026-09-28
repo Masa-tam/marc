@@ -26318,3 +26318,19 @@ outside timing. Compare each output token to the production candidate oracle.
 Separately classify the old long-chain visits by exact four-byte prefix versus
 hash collision, including candidates rejected by the improvement probe. Work
 counts are not CPU fractions. No public memory contract or wire format changes.
+
+## DD-1322: Share five-prefix insertion keys without changing search
+
+Retain the original experimental advance as a compile-time reference. In the
+new experimental variant, assemble the three-byte key once, extend to four
+bytes and fold byte five using the existing hash definition. Update all three
+heads/links in the same position order. The main loop only visits positions
+with five available bytes; a separate tail handles shorter prefixes safely.
+Search, reset, array sizes and longest/nearest decisions are unchanged.
+
+Compare production, original five-prefix and shared-key five-prefix replay in
+one harness, rotating their order by frame and repetition. Each uses one warmup
+and three measured passes, with allocation and verification outside timing.
+Require complete token equality and serialized-frame equality before accepting
+results. Reevaluate x-ray explicitly; do not infer end-to-end encoder speed
+from finder-only timing or attribute small differences to one instruction.

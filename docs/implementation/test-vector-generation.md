@@ -17482,3 +17482,20 @@ full 1 MiB frame, a repeated 258-byte prefix near its end and a short final
 frame. This is targeted sanitizer validation, not a new decoder fuzz campaign.
 BM-0157 records the additional array memory and the x-ray regression; no new
 production full-suite or external archive result is claimed.
+
+## TVG-1188: Shared-key advance differential experiment
+
+The three-way benchmark compares production finder replay, the retained
+original five-prefix advance and the shared-key advance. All token fields
+must agree after every warmup/measured pass. A fresh shared-key replay must
+also encode to the same complete serialized frame as production tokens.
+Reuse the five-prefix smoke's short inputs, three/four/five-byte tails,
+fallback/tie cases and full-plus-short frame sequence for both experiments.
+Neither production behavior nor decoder failure handling is changed.
+
+Both compiler builds pass the shared-key and retained five-prefix smoke tests.
+All twelve corpus members and five additional x-ray process runs pass complete
+token/frame equality. ASan/UBSan passes the boundary smoke and the retained
+seeded 1 MiB-plus-short binary fixture. This is targeted experiment validation,
+not a new decoder fuzz campaign or production full-suite qualification.
+BM-0158 records three-way timing, x-ray variability and unchanged array payload.

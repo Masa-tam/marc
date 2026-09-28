@@ -35907,3 +35907,18 @@ both bounds.
   no external expression or legal guarantee claimed.
 - Scope: benchmark-only prototype; no production format, memory accounting,
   defaults, public APIs or failure contracts are changed.
+
+## CR-1490: 2026-09-29 - Shared-key experimental advance
+
+- Author and reviewer: Codex; maintainer approved reducing index-update cost
+  and reevaluating the five-prefix prototype's x-ray regression.
+- References: IR-1082, DD-1322 and the repository-owned dual/five-prefix loops.
+- Independent design: share key assembly, preserve bucket mixing and insertion
+  order, and isolate short tails from the five-byte main loop.
+- Validation: TVG-1188 requires three-way token equality and shared-path frame
+  equality, retaining the original experimental implementation as a reference.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: first-party loop adaptation only; no external expression
+  or legal guarantee claimed.
+- Scope: benchmark-only; no production format, memory contract or public change.
