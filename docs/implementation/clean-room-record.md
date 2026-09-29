@@ -36549,3 +36549,20 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Validation: TVG-1224 and BM-0190. Existing source and executable identities are
   retained. No legal guarantee or public admission is asserted.
+
+
+## CR-1528: 2026-09-30 - Replicated finder-scratch measurement
+
+- Author and reviewer: Codex; maintainer approved the DD-1357 next step.
+- References: IR-1118, DD-1358, unchanged first-party finder-scratch adapters and
+  benchmark, verified manifest and retained first-screen records.
+- Independent task: test whole-encoder reproducibility with three reordered
+  passes and duplicate admitted prepared controls, preserving all observations.
+- Similarity review: no codec or benchmark implementation changes; the local
+  orchestration follows the existing first-party replication protocol.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1225 and BM-0191; immutable identities and complete records
+  distinguish new measurement evidence from earlier compiler/sanitizer evidence.
+- Scope: documentation and local measurement records only. No format, public
+  factory or default change, and no legal guarantee is asserted.

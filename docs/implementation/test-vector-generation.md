@@ -18466,3 +18466,25 @@ tests were strengthened to invoke the scratch frame directly; initial logs are
 retained separately, and all final compiler/sanitizer runs use the strengthened
 source. No fresh full-suite, fuzz campaign, hosted CI or external qualification
 is claimed. BM-0190 records the complete twelve-member comparison separately.
+
+
+## TVG-1225: Replicated complete-encoder identity and measurement protocol
+
+Reuse the unchanged DD-1357 executable and BM-0190 corpus/identity records.
+Predeclare three complete twelve-member passes, rotating member order by four,
+reversing the middle pass and alternating direction by original member index
+plus pass index. The 36 processes comprise eighteen forward and eighteen reverse
+runs; each retains a warmup and three rank-balanced measured iterations.
+
+Require byte identity and restoration in every process. Check every warmup and
+timed output against the captured admitted prepared stream; restore that stream
+with the original decoder. Require unchanged input/archive sizes, chunks,
+workspace requirements, additional-array count and successful iteration count
+against BM-0190. Validate finite positive timings and complete rank permutations.
+Retain all observations and verify source/executable identities before and after
+the campaign. BM-0191 records performance separately from these correctness checks.
+
+The compiler suites, sixteen sanitizer cases and allocation guard remain the
+unchanged TVG-1224 evidence. This measurement-only step does not claim a fresh
+build, full-suite run, sanitizer/fuzz campaign, hosted CI or external archive
+qualification. Public factory selection remains unchanged.

@@ -8122,3 +8122,60 @@ TVG-1224 validates streaming failure privacy and allocation behavior. The result
 supports a separately ordered replicated complete-encoder comparison before
 public admission; it does not extend hosted CI or external qualification to this
 private trial. Preserve old executables and all timing/identity records.
+
+
+## BM-0191: Replicated finder-scratch complete-encoder results
+
+Repeat BM-0190 using the unchanged executable, admitted prepared controls and
+private finder-scratch owner. Three complete twelve-member passes rotate order
+by four, reverse the middle pass and alternate member execution direction.
+All 36 processes are retained: eighteen forward and eighteen reverse. Each uses
+one warmup and three rank-balanced measured iterations. Creation, processing and
+destruction are timed; file I/O, sink storage, comparison and decode are excluded.
+No builds/tests run alongside timing and no observations are selectively rerun.
+
+| Pass | Prepared 0 sum (s) | Prepared 1 sum (s) | Trial sum (s) | Change vs 0 | Change vs 1 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 30.025688 | 29.927163 | 27.248906 | -9.25% | -8.95% |
+| 2 | 29.923587 | 29.888612 | 27.229601 | -9.00% | -8.90% |
+| 3 | 29.897798 | 29.944164 | 27.250673 | -8.85% | -9.00% |
+
+Each sum adds per-member medians, not pooled iterations.
+
+| Member | Change range across three passes and both controls | Wins against both | Maximum control spread |
+| --- | ---: | ---: | ---: |
+| dickens | -9.47% to -8.87% | 3/3 | 0.67% |
+| mozilla | -9.59% to -8.85% | 3/3 | 0.63% |
+| mr | -7.11% to -6.05% | 3/3 | 0.99% |
+| nci | -4.35% to -3.90% | 3/3 | 0.28% |
+| ooffice | -17.09% to -16.06% | 3/3 | 0.51% |
+| osdb | -17.35% to -15.58% | 3/3 | 0.95% |
+| reymont | -4.19% to -3.01% | 3/3 | 0.12% |
+| samba | -9.50% to -9.00% | 3/3 | 0.10% |
+| sao | -17.14% to -16.42% | 3/3 | 0.37% |
+| webster | -8.85% to -7.40% | 3/3 | 1.04% |
+| xml | -9.17% to -6.87% | 3/3 | 1.51% |
+| x-ray | -22.61% to -21.63% | 3/3 | 0.25% |
+
+The trial wins against both controls in 36/36 processes, loses against
+both in 0/36 and lies between them in 0/36. Maximum duplicate-control
+median spread is 1.51%. No isolated timing cause is inferred.
+
+All 36 reports pass byte identity and restoration. Every warmup and measured
+output matches the captured admitted prepared archive; the unchanged decoder
+restores it. Input/archive sizes and all stable report metadata match BM-0190.
+Requirements remain 79,435,701 bytes on both paths with zero additional arrays;
+this is policy accounting, not a physical peak-memory measurement. All current
+and inherited source/executable identity checks pass.
+
+These are repetitions with one unchanged build and benchmark environment, not
+cross-platform timing qualification. Earlier compiler, sanitizer, allocation
+and failure-publication tests remain TVG-1224 evidence, not newly repeated tests.
+The public factory and format remain unchanged in this measurement-only step.
+
+
+The three aggregate reductions range from 8.85% to 9.25%, consistent with the
+initial screen. Every member wins against both controls on all three passes.
+This supports DD-1358's next public-integration validation step, while retaining
+the prepared reference/fallback and requiring public-boundary validation before
+admission. No claim of identical speedup on other platforms is made.

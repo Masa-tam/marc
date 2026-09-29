@@ -9874,3 +9874,10 @@ No external codec implementation or new algorithm reference is consulted.
 Use first-party DD-1356 frame/raw-frame prototypes, admitted prepared stream and
 owning adapters, the retained complete-encoder benchmark and verified corpus
 manifest. No external codec implementation or new algorithm reference is used.
+
+
+## IR-1118: Replicated finder-scratch complete-encoder measurement
+
+Use unchanged first-party DD-1357 adapters and benchmark, retained BM-0190
+reports, the verified corpus manifest and the prior replicated measurement
+protocol. No external implementation or new algorithm reference is consulted.

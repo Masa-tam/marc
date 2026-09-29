@@ -27610,3 +27610,38 @@ reports -9.18% / -9.19% change in summed member medians, 12/12 wins against
 both admitted controls, identical bytes and unchanged policy requirements.
 Proceed to replicated, separately ordered whole-encoder measurement; retain the
 public prepared dispatch until that evidence is reviewed.
+
+
+## DD-1358: Replicate finder-scratch gains before public integration
+
+Keep the DD-1357 source and executable unchanged. Run three complete passes over
+all twelve verified corpus members. Rotate member order by four each pass,
+reverse the middle pass, and alternate forward/reverse execution by original
+member index plus pass index. Retain all 36 processes and every iteration.
+
+Each process compares two identical admitted prepared owners with one private
+finder-scratch owner, using one warmup and three rank-balanced measured
+iterations. Preserve complete-encoder timing boundaries, byte identity,
+restoration, workspace accounting and historical identity checks from BM-0190.
+Run no builds or tests alongside timing. Do not select favorable members or
+rerun outliers selectively. Assess per-pass aggregate changes, per-member
+consistency and duplicate-control spreads before deciding on integration.
+
+The public factory, format and default workspace policy remain unchanged during
+this measurement step. Successful timing replication alone does not replace
+public-factory validation, full suites or external qualification.
+
+
+TVG-1225 and BM-0191 complete all 36 processes. Each pass reduces the sum of
+member medians by 8.85% to 9.25% against the two controls; all 36 comparisons
+beat both controls. Maximum duplicate-control median spread is 1.51%. Bytes,
+restoration, workspace requirements and source/executable identities agree.
+
+The local reproducibility evidence supports proceeding to public integration
+validation of the finder-scratch path. Preserve the prepared implementation as
+reference/fallback and the exact stream/workspace contracts. Before admission,
+exercise public factory and failed-second-frame behavior, both full compiler
+suites, relevant sanitizers and all-corpus old/new CLI byte identity/restoration.
+Hosted CI and external archive verification remain separate subsequent evidence.
+This decision authorizes the integration validation direction, not a claim that
+public dispatch or cross-platform qualification changed during this step.
