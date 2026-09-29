@@ -17664,3 +17664,21 @@ Both compiler smoke tests and ASan/UBSan checks pass. All twelve verified corpus
 members and five repeated x-ray runs retain exact token/frame identity and
 reconstruction. BM-0162 records an aggregate replay improvement but a repeatable
 x-ray regression; public admission is deferred pending investigation.
+
+## TVG-1196: Six-prefix phase diagnostic checks
+
+The diagnostic smoke covers a repeating input just above one frame, one byte,
+and rejected empty input. Both compiler smoke tests pass; a build explicitly
+instrumenting the diagnostic and bounded finder passes ASan/UBSan smoke.
+
+Verify the established twelve-member corpus manifest before measuring x-ray
+in five independent processes and dickens as one improvement control. Each
+process performs warmup and three measured replays per frame, checks all token
+fields against retained indexed tokens, and validates the final query after
+the independent advance batch. Three additional original-benchmark x-ray
+processes retain token/frame equality and reconstruction. Preserve raw reports,
+source and executable identities, including variable results; do not discard
+outliers or relabel this focused run as full-corpus validation.
+
+This stage changes diagnostic code only. No new full regression, fuzz, public
+stream compatibility, hosted CI or external verification result is claimed.

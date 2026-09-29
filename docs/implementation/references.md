@@ -9679,3 +9679,10 @@ Use BM-0161's admitted-finder diagnosis and repository-owned shared-advance
 five-prefix prototype, bounded five-prefix finder and exact reference tokenizer.
 The experimental sixth-byte fold and nearest five-byte fallback are first-party
 design choices; no external implementation source is consulted.
+
+## IR-1090: Six-prefix phase isolation
+
+Use only first-party bounded five-prefix, vector-backed five/six-prefix finders,
+retained indexed tokenization and BM-0162's experiment. No external algorithm,
+source, timing implementation or test data beyond the established corpus
+manifest is introduced.

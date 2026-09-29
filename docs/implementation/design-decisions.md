@@ -26501,3 +26501,28 @@ BM-0162 finds 19.10% less aggregate replay time versus the admitted finder,
 but five repeated x-ray runs reproduce an 8.55% to 9.05% increase. Preserve the
 prototype without public admission. Next distinguish six-prefix initialization,
 advance and search costs before attributing the regression or choosing a fix.
+
+## DD-1330: Diagnose six-prefix costs without public admission
+
+Add a benchmark-only comparison of the admitted bounded five-prefix finder,
+vector-backed shared five-prefix control and six-prefix experiment. Replay
+identical reference tokens with warmup, rotating path order and alternating
+coarse/detailed measurement. Coarse mode has no per-call clocks; detailed mode
+times initialization, find and advance separately. Verify every emitted token
+outside timing against the retained indexed oracle.
+
+A second replay advances the index using oracle token boundaries without
+searches. Exclude reset and the last token from this timed batch, report the
+advanced byte count, then query the final token position outside timing. This
+is a separate workload: its cache state differs from search/advance interleaving
+and its duration cannot be subtracted from full replay to infer search cost.
+Per-call clocks also perturb detailed replay; independently computed medians
+are not an additive accounting identity.
+
+BM-0163 confirms extra advance-only cost in all five x-ray runs but substantial
+full-replay variation, including in the original benchmark control. Initialization
+is small in these measurements. Prioritize a benchmark-only attempt to reduce
+the fourth index's update work, while retaining exact nearest-match fallbacks.
+Do not claim the primary regression cause, specific cache/store behavior, or
+a reliable full-replay effect size from these noisy measurements. Require
+repeatable uninstrumented per-member results before bounded/public admission.

@@ -6564,3 +6564,51 @@ including exhaustive small-position, wide-distance, nearest-tie and short-tail
 fixtures. Public implementation, memory queries and defaults are unchanged.
 No new full regression, decoder-fuzz, hosted CI or external verification result
 is claimed.
+
+## BM-0163: Six-prefix initialization, search and advance diagnosis
+
+This focused follow-up to BM-0162 compares the same three finders on verified
+x-ray input in five independent processes, plus one dickens control. Each
+process uses warmup and three measured frame replays with rotating path order.
+The table reports the median of the five process medians, in seconds. All
+token comparisons pass. Coarse mode omits per-call clocks; detailed mode adds
+them. The advance-only batch excludes reset and the final token and does not
+perform searches inside timing.
+
+| Measurement on x-ray | Bounded five | Vector five | Six |
+| --- | ---: | ---: | ---: |
+| Coarse initialization | 0.004050 | 0.003663 | 0.004710 |
+| Coarse complete replay | 0.387467 | 0.402293 | 0.456365 |
+| Separate advance-only batch | 0.038342 | 0.036996 | 0.049254 |
+| Detailed find | 0.396291 | 0.411429 | 0.458015 |
+| Detailed advance | 0.094569 | 0.093698 | 0.105137 |
+| Detailed complete replay | 0.627241 | 0.649236 | 0.705317 |
+
+Six's separate advance batch takes 25.84% to 33.97% longer than vector five
+across all five processes. The extra initialization is small in comparison.
+The dickens control has coarse replay 1.300210/1.283007/0.721651 seconds and
+advance-only 0.045820/0.039416/0.053548 seconds: reduced search work can still
+outweigh additional update work on that input.
+
+However, x-ray full replay is variable: the six-versus-bounded delta ranges
+from -20.55% to +38.13%. Three independent runs of the original uninstrumented
+benchmark also vary (bounded/vector-five/six, seconds):
+
+| Control run | Bounded five | Vector five | Six |
+| --- | ---: | ---: | ---: |
+| 1 | 0.385682 | 0.423717 | 0.499841 |
+| 2 | 0.490847 | 0.508832 | 0.458899 |
+| 3 | 0.377868 | 0.383407 | 0.435282 |
+
+All original-control frame identity and reconstruction checks pass. No outlier
+is discarded. These observations do not replace BM-0162's earlier repeated
+regression range with a new reliable effect size. They also prevent assigning
+a precise fraction of that regression to search or updates. Detailed clocks
+perturb execution, and the isolated batch has different cache conditions;
+none of these timings establishes particular hardware-level causes.
+
+Both compiler smokes and explicit ASan/UBSan smoke pass. Preserve the six-prefix
+prototype without public admission. Next test a benchmark-only reduction of
+index-update work and require stable uninstrumented per-member measurements
+before deciding on integration. No production change, full-suite/fuzz run,
+new external verification or public end-to-end speedup is claimed.

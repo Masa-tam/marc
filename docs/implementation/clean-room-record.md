@@ -36051,3 +36051,18 @@ both bounds.
 - Similarity review: intentional adaptation of repository-owned five-prefix
   experiment; no external expression or legal guarantee claimed.
 - Scope: benchmark-only prototype; public codec and stream format unchanged.
+
+## CR-1499: 2026-09-29 - Six-prefix phase diagnosis
+
+- Author and reviewer: Codex; maintainer approved investigation of the x-ray
+  regression before admission.
+- References: IR-1090, DD-1330 and repository-owned finder diagnostics.
+- Independent work: coarse/detailed three-path replay and separate oracle-driven
+  advance batch, with token checks outside timing.
+- Validation: TVG-1196; results and uncertainty recorded in BM-0163.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: intentional reuse of first-party benchmark conventions;
+  no external expression or legal guarantee claimed.
+- Public codec, format, failure atomicity and failed-frame publication contracts
+  remain unchanged; this stage introduces no production edits.
