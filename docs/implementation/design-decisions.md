@@ -27257,3 +27257,39 @@ Pass sums improve 3.18% to 3.32% against both controls;
 member-specific near-ties remain in the report. Advance only to private complete
 encoder evaluation with checked workspace budgeting and exact/error-contract
 tests. Public selection remains unchanged pending end-to-end evidence.
+
+
+## DD-1349: Private complete encoder evaluation for bounded 18-bit search
+
+Create separate diagnostic-only workspace, raw-frame, streaming and owning
+adapters. Within these named adapters only, the existing indexed_five_prefix
+policy selects the DD-1347 18-bit candidate; other policies retain reference
+behavior. Keep public factory selection, enum values and production source lists
+unchanged. Reuse stream/header/entropy representation and the unchanged decoder.
+
+Calculate the larger aligned finder extent with checked arithmetic and charge
+all supplied capacities, owner state and transient model state before allocation
+or mutation. Preserve failed query/partition outputs, serialized-output failure
+atomicity, sticky errors and the rule that failed frames are never published.
+Private token/operation/finder scratch remains discardable on frame failure.
+
+Compare full byte streams with the retained 16-bit encoder and indexed/exhaustive
+oracles. Test arbitrary chunks, empty/full/short frames, budgets, overlap,
+capacity failures, late errors and previous-frame-only publication. Measure
+creation, processing and destruction, excluding file I/O, sink copies and decode
+checks. Use duplicate 16-bit controls, balanced three-slot order, and retain all
+observations. This experiment does not admit a public workspace/default change.
+
+Screen all twelve manifest-verified corpus members once with the preserved
+validated stream diagnostic, alternating execution direction by member index.
+Each process captures a retained-16-bit reference stream, decodes it, and compares
+every warmup/measured encoding byte-for-byte. Keep all three measured iterations
+per slot, summarize their medians, and sum member medians. One process per member
+is screening only, not replicated end-to-end admission evidence.
+
+TVG-1215 validates the isolated adapters and BM-0182 completes all twelve
+full-encoder screening inputs. Sums of member medians change -1.84% and
+-1.74% against the two controls. Preserve this diagnostic and repeat the
+complete-corpus measurements before public admission; small or adverse member
+results and the additional 786432-byte array requirement remain part of the
+decision. No public factory/workspace contract changes in this stage.

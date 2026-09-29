@@ -18173,3 +18173,38 @@ verify source/binary hashes before and after timing. BM-0181 records all results
 The unchanged binary uses prior compiler/sanitizer coverage from TVG-1213; no
 fresh full-suite, sanitizer, fuzz, hosted CI or external qualification is claimed.
 This stage modifies documentation only; all existing failure contracts remain.
+
+
+## TVG-1215: Private bounded 18-bit complete encoder validation
+
+Fourteen dedicated streaming tests pass under both compilers and ASan/UBSan.
+The candidate's stream bytes match retained raw-frame reference output across
+empty inputs, one-byte chunks, every small input chunk length, randomized
+input/output chunks, zero output capacity, eligibility 3/4/5, frame boundaries,
+wide history and final tails of 1 through 5 bytes after a full frame.
+
+Tests cover starvation/Flush/delayed EndInput, latched final draining, sticky
+errors, repeated end state, illegal flags, incorrect lengths, constructor and
+process overlap, short/misaligned/oversized storage and unchanged failed queries
+and partition outputs. A second-frame expansion-limit failure publishes only
+the header and earlier successful frame, leaving later output sentinels intact.
+Too-small raw-frame serialized capacity preserves the complete supplied output.
+
+The default private owner charges the 18-bit finder and rejects a one-byte-short
+aggregate budget before allocation; exact budgets succeed. Compare requirements
+with the retained 16-bit owner at sizes 1, 2, 3, 65536 and 1048576. Dedicated
+allocation guards under both compilers confirm rejected creation allocates
+nothing and streaming process/draining/destruction allocate nothing after setup.
+
+Both compilers pass dedicated CTest suites (detailed tests, allocation guard,
+stream diagnostic smoke). The multiframe smoke compares the unchanged 16-bit
+owner and private 18-bit owner in one binary, enforcing independent adapter
+symbols. Earlier development failures exposed mismatched test-policy budgets
+and a raw-frame symbol collision; both were corrected before final validation
+and timing. Those failed runs are retained and are not performance evidence.
+
+All twelve corpus screening processes compare every warmup/measured complete
+stream byte-for-byte with the retained 16-bit encoding and verify restoration
+with the unchanged decoder. Rank permutations, finite positive times, policy
+charges, corpus manifest and source/executable identities pass. BM-0182 retains
+all results. No full-suite/fuzz, hosted CI or external qualification is claimed.

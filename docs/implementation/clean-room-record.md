@@ -36369,3 +36369,23 @@ both bounds.
   algorithm expression. No legal guarantee or public adoption is claimed.
 - Scope: no public format, workspace, failure atomicity or failed-frame
   publication change. All earlier experiments and adverse results retained.
+
+
+## CR-1518: 2026-09-29 - Private bounded 18-bit complete encoder trial
+
+- Author and reviewer: Codex; maintainer approved the DD-1348 next integration.
+- References: IR-1109, DD-1349, first-party bounded candidate and existing private
+  workspace/raw-frame/streaming/owning adapters, decoder and tests.
+- Independent task: isolate a complete 18-bit encoder trial, preserve checked
+  ownership and failure contracts, compare exact streams and full encode cost.
+- Similarity review: intentional first-party adapter/test adaptation, with
+  distinct symbols and compile-only diagnostic targets. Shared header writer,
+  entropy/frame format and decoder are reused. No external expression copied.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1215 and BM-0182. Initial test-policy and symbol-isolation
+  failures were corrected; final compiler/sanitizer tests and corpus comparisons
+  pass. Retain all development failures and measurements without selection.
+- Scope: no public factory, enum/format ID, production source list or workspace
+  default changes. Failure atomicity and failed-frame non-publication retained.
+  No legal guarantee or public admission is claimed.

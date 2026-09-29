@@ -9811,3 +9811,10 @@ implementation or optimization reference is consulted.
 This stage uses the unchanged first-party DD-1347 bounded candidate and its
 diagnostic, the corpus manifest, and BM-0180 retained reports. No external
 implementation or new algorithm reference was consulted.
+
+
+## IR-1109: Private bounded 18-bit stream integration
+
+Use first-party DD-1347 finder/tokenizer, existing private workspace/raw-frame/
+streaming/owned encoder adapters and their tests. BM-0181 motivates whole-encoder
+evaluation. No external codec source or new algorithm reference was consulted.

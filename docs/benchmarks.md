@@ -7670,3 +7670,64 @@ in one; its full observed range is -1.36% to +0.09% with control spread up to
 1.47%. Treat nci as near-flat, not a demonstrated gain. Reymont is faster than
 both in all three passes, by 0.70% to 1.59% across both controls; this remains a
 small observed margin rather than a statistical significance claim.
+
+
+## BM-0182: Private bounded 18-bit complete encoder screening
+
+Date: 2026-09-29. DD-1349 adds separate private workspace, raw-frame, streaming
+and owning adapters to dedicated test/benchmark targets only. The ordinary
+production libraries and public factory still select the retained 16-bit path.
+Within the named private adapters indexed_five_prefix denotes 18-bit search;
+other policies remain references. No stream representation or public enum changes.
+
+Measure owner creation, process calls and destruction, including tokenization,
+framing and entropy encoding. Exclude file I/O, sink-buffer copies, comparisons
+and decoding. Input/output chunks are 65536 bytes, frames 1048576 bytes. Each
+process captures a retained-16-bit stream and decodes it, then performs one
+warmup and three rank-balanced measured iterations across slots 16/16/18.
+Both controls use the same retained owner implementation; all owners allocate
+their own queried storage and are destroyed before the next slot.
+
+Run one process per manifest member, alternating direction by member index.
+Retain all twelve processes; no tuning, fastest-run selection or concurrent
+builds/tests. Hashes identify the validated binary and all retained earlier
+artifacts. Take each slot's median of its three full-input iteration totals.
+This is one screening pass, not replicated end-to-end admission evidence.
+
+| Member | Control 0 seconds | Control 1 seconds | 18-bit seconds | Change vs control 0 | Change vs control 1 | Control spread |
+|---|---:|---:|---:|---:|---:|---:|
+| dickens | 1.833545 | 1.840269 | 1.765567 | -3.71% | -4.06% | 0.37% |
+| mozilla | 8.319153 | 8.244925 | 8.215675 | -1.24% | -0.35% | 0.90% |
+| mr | 2.609580 | 2.602553 | 2.593967 | -0.60% | -0.33% | 0.27% |
+| nci | 2.994090 | 3.000178 | 3.026336 | +1.08% | +0.87% | 0.20% |
+| ooffice | 0.826972 | 0.835055 | 0.787612 | -4.76% | -5.68% | 0.98% |
+| osdb | 0.979814 | 0.979866 | 0.969302 | -1.07% | -1.08% | 0.01% |
+| reymont | 1.899995 | 1.899810 | 1.874659 | -1.33% | -1.32% | 0.01% |
+| samba | 2.240079 | 2.234573 | 2.202919 | -1.66% | -1.42% | 0.25% |
+| sao | 1.311505 | 1.321272 | 1.274966 | -2.79% | -3.50% | 0.74% |
+| webster | 6.982911 | 7.006503 | 6.809205 | -2.49% | -2.82% | 0.34% |
+| xml | 0.337365 | 0.338329 | 0.335352 | -0.60% | -0.88% | 0.29% |
+| x-ray | 1.290159 | 1.290284 | 1.188792 | -7.86% | -7.87% | 0.01% |
+
+Sum of member medians: controls 31.625167 and 31.593616 seconds, candidate
+31.044353 seconds; changes -1.84% and -1.74%. Negative means faster.
+The candidate is faster than both controls in 11/12 processes and
+slower than both in 1/12. Maximum control spread is
+0.98%. Small differences within control variation are
+not evidence of statistically significant improvement. Keep all input-dependent
+regressions and near-ties when deciding whether a memory increase is worthwhile.
+
+Full-frame policy charges are 79,435,701 bytes for
+the retained owner and 80,222,133 bytes for the private
+owner, including arrays and charged state. Finder arrays increase by 786,432
+bytes. These are checked policy charges, not measured peak process memory.
+
+All complete output streams match the retained 16-bit encoding byte-for-byte;
+restoration succeeds. TVG-1215 covers compiler, sanitizer, allocation, budgets,
+chunk boundaries and failed-frame publication. The independent-owner smoke
+rejects accidental sharing of the candidate raw-frame symbol with the baseline.
+
+Public selection remains unchanged. Repeat the preserved complete-encoder
+diagnostic across the corpus before any admission decision, including small
+margins and adverse cases. Retain existing memory limits and failure contracts;
+no new hosted CI, external qualification or public speed guarantee is claimed.

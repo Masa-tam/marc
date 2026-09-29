@@ -1,0 +1,45 @@
+#ifndef MARC_FRAME_LZSS_POSITION_DISTANCE_1M_BOUNDED18_ENCODE_WORKSPACE_HPP
+#define MARC_FRAME_LZSS_POSITION_DISTANCE_1M_BOUNDED18_ENCODE_WORKSPACE_HPP
+
+#include "frame/lzss_position_distance_1m_preflight.hpp"
+#include "dictionary/lzss_position_distance_1m_candidate.hpp"
+#include "frame/lzss_position_distance_workspace.hpp"
+
+namespace marc::frame::internal {
+// Diagnostic-only adapter: indexed_five_prefix selects the private 18-bit
+// candidate here. Other policies retain reference behavior; no public factory
+// selects this type or these functions. The wire representation is unchanged.
+
+
+// Private layout, not a public ABI. The owner supplies sizeof(its transform)
+// as stream_state_bytes. F is the configured frame size, including empty input.
+// Encoder storage includes the exact indexed finder even for reference tests.
+// Outputs remain unchanged on failure. Sizes are policy charges, not peak RSS.
+[[nodiscard]] LzssPositionDistanceWorkspaceError
+calculate_lzss_position_distance_1m_bounded18_encode_workspace(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    LzssPositionDistanceWorkspaceDirection direction, std::size_t stream_state_bytes,
+    LzssPositionDistanceWorkspaceRequirements& requirements,
+    dictionary::internal::LzssPositionDistance1mSearch search = dictionary::internal::LzssPositionDistance1mSearch::indexed_five_prefix) noexcept;
+
+// Recompute the layout rather than trusting caller-modifiable offsets. All
+// supplied capacity is charged; returned views expose only the required extent.
+// Storage must be writable, disjoint and live for the full owner lifetime.
+[[nodiscard]] LzssPositionDistanceWorkspaceError
+partition_lzss_position_distance_1m_bounded18_encode_workspace(
+    const TypedContextStreamHeader& stream, const core::DecoderLimits& limits,
+    LzssPositionDistanceWorkspaceDirection direction, std::size_t stream_state_bytes,
+    std::span<std::byte> raw, std::span<std::byte> serialized,
+    std::span<std::byte> storage, LzssPositionDistanceWorkspaceViews& views,
+    dictionary::internal::LzssPositionDistance1mSearch search = dictionary::internal::LzssPositionDistance1mSearch::indexed_five_prefix) noexcept;
+
+// Encoding only: decode direction is rejected. Includes full validation state.
+[[nodiscard]] LzssPositionDistanceWorkspaceError
+charge_lzss_position_distance_1m_bounded18_encode_workspace(
+    const core::DecoderLimits& limits, LzssPositionDistanceWorkspaceDirection direction,
+    std::size_t stream_state_bytes, std::size_t raw_bytes,
+    std::size_t serialized_bytes, std::size_t views_bytes,
+    std::size_t& aggregate_bytes) noexcept;
+
+} // namespace marc::frame::internal
+#endif
