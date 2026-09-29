@@ -27111,3 +27111,40 @@ maximum-capacity backing storage would differ from production memory usage;
 its results must remain diagnostic and must not be presented as production
 throughput. Validate configuration/reset failure behavior before measuring.
 Preserve the current and earlier binaries and all adverse observations.
+
+## DD-1345: Hold storage and replay code constant across widths
+
+Create a separate benchmark-only finder with runtime long-prefix width 16/18/20.
+Allocate backing heads for 20 bits once and reuse the same object and arrays for
+all four logical slots: 16, 16, 18, 20. Reset validates width and input length
+before any state mutation, clears only active heads and input-sized links, and
+then starts a fresh sequential replay. Expanding after shrinking must clear the
+newly active head range. Cap constructor capacity at 1 MiB before allocation.
+Preserve exact longest/nearest search and token/frame identity.
+
+Use one non-inlined runtime reset/replay function for every slot. Slot dispatch
+and result verification stay outside timing. One warmup and four measured
+rotations per frame balance execution rank. Forward/reverse execution controls
+remain; allocation-order controls are removed because only one finder exists.
+Reuse the same input and output buffers and retain all per-frame times/ranks.
+Maximum file/frame sizes remain 64 MiB / 1 MiB.
+
+Predeclare three processes per execution direction on dickens and x-ray: twelve
+focused processes. Alternate direction/input order across repetitions. Check
+all twelve corpus members separately without timing and retain the eight-fixture
+cross-build validation. Keep earlier binaries and all results. Compare wider
+slots against both repeated 16-bit controls, retaining adverse observations.
+
+This tests active width under shared storage and runtime code; it does not prove
+the cause of earlier mixed-instance variation. Maximum-size backing allocation
+and variable shifts differ from production specialized storage/code, so neither
+public memory requirements nor production speedup may be inferred. No public
+format, decoder, failure atomicity or failed-frame publication changes.
+
+BM-0178 completes twelve focused processes with exact content and both wider
+modes faster than both repeated 16-bit controls in every process. Control spreads
+are much smaller than in the mixed-instance experiment, but this does not prove
+which former code/storage/cache condition caused its variation. Next use the
+preserved runtime binary for replicated whole-corpus measurement, including
+adverse cases from earlier experiments. Evaluate input-dependent gains and memory
+cost before any bounded production integration; keep wider variants unadmitted.

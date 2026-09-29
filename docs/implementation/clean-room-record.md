@@ -36300,3 +36300,20 @@ both bounds.
   no external expression, hardware-cause attribution or legal guarantee claimed.
 - Scope: diagnostic only; no public format, workspace limits, failure atomicity
   or failed-frame non-publication changes. Prior source/binaries remain intact.
+
+## CR-1514: 2026-09-29 - Shared-storage runtime width diagnostic
+
+- Author and reviewer: Codex; maintainer approved the DD-1344 next step.
+- References: IR-1105, DD-1345 and repository-owned guarded finder/replay code.
+- Independent task: replace the diagnostic's compile-time width by reset-time
+  validated width, keep one maximum-capacity backing allocation, and use one
+  non-inlined runtime replay function for all four logical slots.
+- Validation: TVG-1211 and BM-0178; invalid configuration/reset preservation,
+  shrink/expand resets, compiler/sanitizer smokes, 48 fixture reports, twelve
+  corpus verification runs and twelve focused measurements with rank/sum checks.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party tuning/benchmark code.
+- Similarity review: intentional first-party adaptation of guarded search and
+  measurement logic; no external expression or legal guarantee claimed.
+- Scope: diagnostic-only maximum backing storage and runtime shifts; no public
+  format, workspace, failure atomicity or failed-frame publication change.

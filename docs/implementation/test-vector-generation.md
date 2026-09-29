@@ -18067,3 +18067,31 @@ per-frame sums match iteration totals. Sizes and token/frame-byte totals match
 earlier reports. Old/new source and executable hashes remain unchanged. BM-0177
 retains every result, including adverse runs. No full-suite/fuzz, hosted CI or
 external qualification is claimed; public codec and failure contracts are unchanged.
+
+## TVG-1211: Shared-storage runtime width validation
+
+DD-1345 adds a separate bounded runtime-width finder and benchmark. Both compiler
+smokes and explicit ASan/UBSan pass forward/reverse execution, balanced ranks,
+multiple frames with a short final frame, verification-only mode and rejected
+empty/invalid-order input. Each process checks exhaustive small inputs, wide
+distances and nearest ties at all three widths.
+
+Rejected reset tests request a different valid width with an oversized input,
+and invalid widths 0/15/17/19/21/32 with valid input. They require the prior active
+width and match to remain unchanged. Repeated empty/nonempty resets through
+20/16/18/16/20 verify both width changes and subsequent exact matching. Validation
+precedes all writes in the reset implementation. Backing capacity is capped before
+allocation; active long-head clearing follows the newly validated width.
+
+The eight retained fixtures run with both execution directions on two compilers
+and ASan/UBSan: 48 reports agree after removing only the direction flag. Input,
+token and serialized-frame byte totals match earlier diagnostics. All twelve
+manifest-verified corpus members additionally pass verification-only replay at
+all logical slots. Every replay matches indexed tokens; representative actual
+tokens serialize identically to the oracle frame and restore the input. Other
+slots have matched the same token sequence, not been separately serialized.
+
+All twelve focused timing processes pass these checks and independent rank,
+finite-duration and per-frame sum validation. Prior and new source/executable
+identities are preserved. BM-0178 records the diagnostic results; no production
+behavior, full-suite/fuzz, hosted CI or external qualification change is claimed.

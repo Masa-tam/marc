@@ -9785,3 +9785,9 @@ allocator tuning or hardware-specific optimization source is consulted.
 Use the first-party DD-1343 harness, guarded 16/18/20-bit finders and retained
 indexed/exhaustive oracles. No external codec, tuning or hardware-specific source
 is consulted. Keep prior diagnostic sources and binaries intact.
+
+## IR-1105: Shared-storage runtime width diagnostic
+
+Use the repository-owned guarded five-prefix implementation and DD-1344 harness.
+Replace compile-time width with validated reset-time configuration in a separate
+diagnostic implementation. No external source or optimization reference is used.

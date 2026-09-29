@@ -7405,3 +7405,63 @@ all comparisons stable. Keep wider variants unadmitted and do not turn a
 focused-input win into a global width policy. Public format, memory limits,
 failure atomicity and failed-frame non-publication remain unchanged. No new
 full-suite/fuzz, hosted CI or external qualification is claimed.
+
+## BM-0178: Runtime widths through one code path and storage instance
+
+Date: 2026-09-29. DD-1345 replaces separate diagnostic instances by one finder,
+one set of maximum-capacity arrays and one non-inlined runtime reset/replay
+function. Logical slots request 16/16/18/20 bits. The duplicate 16-bit slots
+repeat the same configuration on the same storage. Reset validates width/length
+before mutation, clears active heads and input-sized links, then starts replay.
+Backing long-head capacity stays at 20 bits even during narrower modes.
+
+After a warmup cycle, four measured rotations per frame balance execution rank.
+Three processes per direction on dickens and x-ray produce twelve predetermined
+processes, all retained. Direction/input order alternates across repetitions.
+Default processor eligibility is unchanged and no builds/tests run concurrently.
+Each slot value is the median of four whole-input reset/replay iteration totals.
+Ratios compare each wider slot with both repeated 16-bit slots in its process;
+negative means faster. These are observed ranges, not confidence intervals.
+
+| Input | Width | Change vs 16-bit slot 0 | Change vs 16-bit slot 1 | Faster than both |
+|---|---:|---:|---:|---:|
+| dickens | 18 | -5.61% to -4.40% | -6.03% to -4.68% | 6/6 |
+| dickens | 20 | -6.63% to -5.45% | -6.36% to -5.66% | 6/6 |
+| x-ray | 18 | -26.57% to -25.49% | -25.95% to -25.36% | 6/6 |
+| x-ray | 20 | -33.31% to -32.39% | -33.09% to -32.02% | 6/6 |
+
+Control spread is `100 * (larger 16-bit median / smaller - 1)`:
+
+| Input | Control spread min / median / max | Slot 0 seconds | Slot 1 seconds | 18-bit seconds | 20-bit seconds |
+|---|---:|---:|---:|---:|---:|
+| dickens | 0.20% / 0.47% / 0.76% | 1.293921–1.320632 | 1.298829–1.329905 | 1.235187–1.249694 | 1.221952–1.245335 |
+| x-ray | 0.15% / 0.25% / 1.35% | 0.391803–0.401926 | 0.390779–0.401026 | 0.291398–0.299325 | 0.262402–0.270056 |
+
+Per-frame times and ranks are retained; finite-duration, rank and timing-sum
+checks pass. All token/frame/restoration checks, both compiler/sanitizer smokes,
+48 cross-build fixture executions and twelve corpus verification runs pass
+(TVG-1211). The corpus runs are verification-only, not full-corpus timing.
+
+At a full frame the single finder array payload is 17,301,504 bytes for every
+mode, excluding object and other diagnostic buffers. Only active heads are reset.
+This is neither measured peak process memory nor a public workspace proposal.
+The narrower modes retain excess backing capacity and use variable shifts;
+their timings cannot be substituted for production specialized-finder timings.
+
+Shared storage removes separate-instance placement from the within-process
+comparison, and the runtime function removes distinct width specializations.
+It does not fix cache residency, frequency or all preceding-execution effects,
+nor identify the cause of the earlier mixed-instance variation. Preserve those
+earlier results; do not compare times across harnesses as an optimization gain.
+The focused measurements alone do not justify a global width policy. Public
+format, memory limits, failure atomicity and failed-frame non-publication remain
+unchanged; no full-suite/fuzz, hosted CI or external qualification claim.
+
+Both wider modes improve against both repeated controls in all six processes per
+input. Maximum whole-input control spread is 0.76% on dickens and 1.35% on x-ray;
+per-frame control spread is larger, reaching 4.39% across 60 dickens observations
+and 5.78% across 54 x-ray observations. Shared runtime replay produces consistent
+focused-input direction in this run, not a universal performance guarantee.
+Next replicate timing across all twelve corpus members using this preserved
+binary and retain memory/cross-harness limitations before proposing any bounded
+production integration. Wider production variants remain unadmitted.
