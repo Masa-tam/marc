@@ -36534,3 +36534,18 @@ both bounds.
   sanitizers and all twelve corpus comparisons pass. No legal guarantee.
 - Scope: diagnostic-only frame/raw-frame prototype, no production source-list,
   public factory, format, default or workspace-policy change. No speed claim.
+
+
+## CR-1527: 2026-09-30 - Private finder-scratch streaming integration
+
+- Author and reviewer: Codex; maintainer approved the DD-1356 next step.
+- References: IR-1117, DD-1357, first-party prepared stream/owning adapters,
+  finder-scratch frame functions, differential fixtures and benchmark harness.
+- Independent task: connect expired finder storage to private streaming, retain
+  failed-frame privacy and workspace bounds, and measure complete-encoder cost.
+- Similarity review: deliberate reuse of first-party state-machine/owner code;
+  only dispatch/type names differ. Public source selection remains unchanged.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1224 and BM-0190. Existing source and executable identities are
+  retained. No legal guarantee or public admission is asserted.

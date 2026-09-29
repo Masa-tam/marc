@@ -8080,3 +8080,45 @@ budgets, fallbacks, malformed input, aliases, failed output and reinitialization
 Next integrate the prototype into a separate private stream/owner diagnostic
 and measure complete-encoder cost against two identical admitted prepared owners.
 No public factory, format or workspace requirement changes here.
+
+
+## BM-0190: Finder-scratch complete-encoder screening
+
+DD-1357 compares two identical admitted prepared owners with a separately named
+private finder-scratch owner. All use the five-prefix search, 1 MiB frames and
+64 KiB input/output chunks. Each member has one warmup and three rank-balanced
+measured iterations; member directions alternate. Values below are medians in
+seconds. Time includes owner creation, process and destruction, excluding file
+I/O, sink storage, byte comparisons and decoding. No builds/tests run alongside
+timing. This is one twelve-member screen, not an independent repeated campaign.
+
+| Member | Prepared 0 | Prepared 1 | Finder scratch | Change vs 0 | Change vs 1 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| dickens | 1.756596 | 1.749567 | 1.592542 | -9.34% | -8.98% |
+| mozilla | 7.757927 | 7.758323 | 7.018227 | -9.53% | -9.54% |
+| mr | 2.521835 | 2.513461 | 2.353029 | -6.69% | -6.38% |
+| nci | 2.950349 | 2.947383 | 2.823239 | -4.31% | -4.21% |
+| ooffice | 0.760634 | 0.756128 | 0.629814 | -17.20% | -16.71% |
+| osdb | 0.934429 | 0.905187 | 0.758507 | -18.83% | -16.20% |
+| reymont | 1.865899 | 1.864370 | 1.788477 | -4.15% | -4.07% |
+| samba | 2.104646 | 2.103714 | 1.904456 | -9.51% | -9.47% |
+| sao | 1.173324 | 1.167769 | 0.971606 | -17.19% | -16.80% |
+| webster | 6.683715 | 6.741744 | 6.191768 | -7.36% | -8.16% |
+| xml | 0.326367 | 0.325197 | 0.302208 | -7.40% | -7.07% |
+| x-ray | 1.153023 | 1.157239 | 0.900949 | -21.86% | -22.15% |
+| Sum of member medians | 29.988745 | 29.990082 | 27.234821 | -9.18% | -9.19% |
+
+The trial beats both controls on 12/12 members and loses to both on 0/12.
+Maximum duplicate-control median spread is 3.23%. Retain every
+member and iteration; no selective rerun or absolute comparison to older builds.
+
+Every warmup and timed stream equals the captured prepared baseline, which the
+unchanged decoder restores exactly. Input and archive sizes agree with retained
+whole-stream reports. Both policy requirements are 79,435,701 bytes, with zero
+additional array bytes. This is workspace accounting, not measured physical peak
+memory. No format, compression-ratio or decoder change is introduced.
+
+TVG-1224 validates streaming failure privacy and allocation behavior. The result
+supports a separately ordered replicated complete-encoder comparison before
+public admission; it does not extend hosted CI or external qualification to this
+private trial. Preserve old executables and all timing/identity records.

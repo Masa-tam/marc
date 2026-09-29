@@ -27577,3 +27577,36 @@ public selection. Verify small-buffer lifecycle and failed-second-frame privacy
 through that adapter before timing. Balance execution ranks and retain all corpus
 results; payload-copy cost, eligibility checks and code layout may offset removed
 Range passes. Eligibility alone is not performance evidence or public admission.
+
+
+## DD-1357: Private finder-scratch stream and complete-encoder screening
+
+Create separately named private streaming and owning adapters from the admitted
+prepared adapters. Change only the raw-frame dispatch and type/include names;
+retain state transitions, stream header writer, errors and workspace queries.
+Reuse no storage until the tokenizer's finder lifetime has ended. The DD-1356
+frame function controls scratch eligibility and retains the prepared fallback.
+No persistent eligibility counters or new arrays are added to the stream owner.
+The public factory and exact stream representation remain unchanged.
+
+Validate one-byte, zero-capacity and varied chunks, final-frame draining, sticky
+errors, budget/alias rejection, full frames and short tails. A failed second
+frame may leave the committed first frame visible, but must publish no bytes
+from the failed frame. Compare requirements against the admitted prepared owner
+and prohibit allocation after creation through destruction.
+
+Predeclare one complete-encoder screening process for each of twelve verified
+corpus members. Compare two identical admitted prepared owners against one trial
+owner, all explicitly using indexed_five_prefix. Use one warmup and three
+rank-balanced measured iterations; alternate forward/reverse order by member.
+Measure creation, processing and destruction; exclude file I/O, sink storage,
+byte comparisons and decoding. Check every stream against the captured baseline
+and restore it with the unchanged decoder. Retain all observations; do not tune
+or select favorable reruns. This screen alone does not admit the public path.
+
+
+TVG-1224 passes both compiler suites and all sixteen sanitizer cases. BM-0190
+reports -9.18% / -9.19% change in summed member medians, 12/12 wins against
+both admitted controls, identical bytes and unchanged policy requirements.
+Proceed to replicated, separately ordered whole-encoder measurement; retain the
+public prepared dispatch until that evidence is reviewed.

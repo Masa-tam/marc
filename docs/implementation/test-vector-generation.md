@@ -18433,3 +18433,36 @@ No public streaming state machine or factory changes. Serialized-output failure
 atomicity is checked at the new frame/raw-frame boundaries; trial streaming
 non-publication and complete-encoder timings belong to the next integration step.
 No fresh full-suite, fuzz campaign, hosted CI or external qualification is claimed.
+
+
+## TVG-1224: Finder-scratch streaming lifecycle and whole-encoder comparison
+
+Adapt the first-party prepared streaming suite to separately named finder-scratch
+stream/owning classes; retain the original raw-frame byte oracle and decoder.
+Sixteen cases pass under both compilers and ASan/UBSan. Cover empty input,
+one-byte and varied input/output chunks, zero output, Flush, delayed EndInput,
+latched finish, repeated ended/error calls, unsupported flags, wrong sizes,
+workspace alignment and overlapping live regions. Cover five-prefix full frames,
+wide-history fixtures, eligibility policies 3/4/5 and final tails 1 through 5.
+
+A deterministic second-frame expansion-limit failure must publish exactly the
+successful first-frame prefix and leave the remaining output sentinel untouched.
+A repeat call stays in error and emits zero bytes. Raw-frame admission failures
+also preserve output. Compare 12,300 frame budget/capacity combinations directly
+against the original transactional frame, plus malformed fields and output/token
+alias rejection; the candidate uses finder-scratch with retained fallback.
+The broader 36,900 scratch-boundary comparisons remain recorded in TVG-1223.
+
+Prepared/trial owner sizes and alignments, stream sizes and all requirement
+fields agree. For frame sizes 1, 2, 3, 65,536 and 1,048,576, exact owner budgets
+admit creation and one byte less rejects it. The armed allocation guard checks
+rejection before allocation, then processes 193 bytes in 64-byte frames with
+one-byte/zero-capacity output and destroys the owner without allocation.
+
+Dedicated CTest suites pass 3/3 on both compilers: the sixteen-case suite,
+allocation guard and complete-encoder smoke. Smoke covers empty/small input and
+a full frame plus tail with both execution directions. Initial inherited frame
+tests were strengthened to invoke the scratch frame directly; initial logs are
+retained separately, and all final compiler/sanitizer runs use the strengthened
+source. No fresh full-suite, fuzz campaign, hosted CI or external qualification
+is claimed. BM-0190 records the complete twelve-member comparison separately.

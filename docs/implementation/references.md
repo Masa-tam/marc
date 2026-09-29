@@ -9867,3 +9867,10 @@ codec implementation or new algorithm reference is consulted.
 Use first-party DD-1355 lifetime analysis, prepared frame/raw-frame functions,
 existing bounded scratch Range encoder, finder initialization and reference tests.
 No external codec implementation or new algorithm reference is consulted.
+
+
+## IR-1117: Streaming integration of finder-scratch payload encoding
+
+Use first-party DD-1356 frame/raw-frame prototypes, admitted prepared stream and
+owning adapters, the retained complete-encoder benchmark and verified corpus
+manifest. No external codec implementation or new algorithm reference is used.
