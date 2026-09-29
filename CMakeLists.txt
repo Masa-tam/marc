@@ -499,6 +499,22 @@ if(MARC_BUILD_TOOLS)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
+    add_executable(marc_position_distance_1m_bounded18_tests
+        tests/lzss_position_distance_1m_bounded18_tests.cpp
+        src/dictionary/lzss_position_distance_1m_bounded18_finder.cpp
+        src/dictionary/lzss_position_distance_1m_bounded18_candidate.cpp)
+    target_compile_features(marc_position_distance_1m_bounded18_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_1m_bounded18_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_1m_bounded18_tests PRIVATE marc::static GTest::gtest_main)
+    add_test(NAME marc_position_distance_1m_bounded18 COMMAND marc_position_distance_1m_bounded18_tests)
+    add_executable(marc_position_distance_1m_bounded18_allocation_tests
+        tests/position_distance_1m_bounded18_allocation_tests.cpp
+        src/dictionary/lzss_position_distance_1m_bounded18_finder.cpp
+        src/dictionary/lzss_position_distance_1m_bounded18_candidate.cpp)
+    target_compile_features(marc_position_distance_1m_bounded18_allocation_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_1m_bounded18_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_1m_bounded18_allocation_tests PRIVATE marc::static)
+    add_test(NAME marc_position_distance_1m_bounded18_allocation COMMAND marc_position_distance_1m_bounded18_allocation_tests)
     add_executable(marc_position_distance_1m_five_prefix_allocation_tests
         tests/position_distance_1m_five_prefix_allocation_tests.cpp)
     target_compile_features(marc_position_distance_1m_five_prefix_allocation_tests PRIVATE cxx_std_20)
@@ -556,6 +572,19 @@ if(MARC_BUILD_BENCHMARKS)
                     "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_online_six_benchmark>"
                     "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-online-six-smoke"
                     -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_online_six_benchmark_smoke.cmake)
+        endif()
+        add_executable(marc_lzss_position_distance_1m_bounded18_benchmark
+            benchmarks/lzss_position_distance_1m_bounded18_benchmark.cpp
+            src/dictionary/lzss_position_distance_1m_bounded18_finder.cpp)
+        target_compile_features(marc_lzss_position_distance_1m_bounded18_benchmark PRIVATE cxx_std_20)
+        target_include_directories(marc_lzss_position_distance_1m_bounded18_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_lzss_position_distance_1m_bounded18_benchmark PRIVATE marc::static)
+        if(MARC_BUILD_TESTS)
+            add_test(NAME marc_position_distance_1m_bounded18_benchmark_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_bounded18_benchmark>"
+                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-bounded18-smoke"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_bounded18_benchmark_smoke.cmake)
         endif()
         add_executable(marc_lzss_position_distance_1m_runtime_width_benchmark
             benchmarks/lzss_position_distance_1m_runtime_width_benchmark.cpp)

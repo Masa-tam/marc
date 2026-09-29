@@ -7543,3 +7543,62 @@ checks. This is a next experiment, not public admission: the current runtime
 harness cannot establish the speed or memory behavior of that implementation.
 Validate exact tokens/frames and failure preservation, then measure that bounded
 implementation before changing a public default or workspace contract.
+
+## BM-0180: Bounded private 18-bit candidate screening
+
+Date: 2026-09-29. DD-1347 implements separate private 18-bit finder/tokenizer
+sources, compiled only into dedicated tests and diagnostics. Production library
+source lists, 16-bit finder/tokenizer, factory and default memory limits remain
+unchanged. Only the long-prefix head count/projection and explicit array layout
+differ from the retained bounded reference.
+
+For N >= 3 the candidate borrows 4 * (393216 + 3*N) bytes aligned for uint32_t;
+shorter inputs borrow no arrays. The query charges input plus active arrays plus
+finder state against the internal-buffer limit. Full-frame arrays occupy
+14,155,776 bytes, 786,432 bytes above 16-bit arrays. This is explicit array
+arithmetic, not a peak-process or admitted public-workspace measurement.
+
+A separate diagnostic shares one maximum candidate workspace across slots
+16/16/18, each initializing only its queried prefix. The two 16-bit controls
+share the same specialization; the candidate has a different specialization.
+The measured scope includes checked initialization and token replay. Warmup and
+three rotated iterations per frame balance execution ranks. Three processes
+per direction on dickens and x-ray give twelve predetermined processes. No
+build/test work overlaps timing; old and new source/executable identities are
+checked, and every run is retained.
+
+Use the median of each slot's three whole-input iteration totals and compare
+18 bits against both controls. Negative means faster. The ranges below include
+all six processes and are observations, not confidence intervals.
+
+| Input | Change vs control 0 | Change vs control 1 | Faster than both | Control spread min / median / max |
+|---|---:|---:|---:|---:|
+| dickens | -6.36% to -4.66% | -5.14% to -3.89% | 6/6 | 0.04% / 0.61% / 1.31% |
+| x-ray | -26.71% to -25.77% | -27.00% to -25.81% | 6/6 | 0.03% / 0.35% / 0.99% |
+
+| Input | Control 0 seconds | Control 1 seconds | 18-bit seconds |
+|---|---:|---:|---:|
+| dickens | 1.291650–1.350810 | 1.292181–1.338578 | 1.228789–1.286559 |
+| x-ray | 0.382242–0.386587 | 0.380301–0.386773 | 0.280915–0.286950 |
+
+All twelve timed processes match indexed tokens and representative serialized
+frames and restore the input. Both compilers and ASan/UBSan pass detailed tests,
+both allocation guards pass, 48 cross-build fixture reports agree, and all twelve
+corpus members pass verification-only differential checks (TVG-1213). The corpus
+pass is not a whole-corpus performance result. Preserve per-frame ranks/times,
+all regressions and duplicate-control differences rather than selecting a
+favorable denominator.
+
+The diagnostic keeps one maximum workspace live and uses direct finder replay;
+it is not the public encoder or end-to-end compression. Earlier runtime-width
+gains cannot be substituted for this candidate's measurements. No public
+workspace size or algorithm default changes, and no new full-suite/fuzz, hosted
+CI or external qualification is claimed. Keep the candidate unadmitted pending
+its own bounded-path evidence; all original failure/publication contracts remain.
+
+The candidate beats both bounded 16-bit controls in all six processes per input:
+dickens improves 3.89%–6.36%, x-ray 25.77%–27.00%. Maximum whole-input control
+spread is 1.31% and 0.99%, respectively. This supports further bounded-path
+measurement, not a public default change. Next replicate this preserved bounded
+binary across all twelve corpus members, including nci/reymont and all earlier
+adverse cases, before any factory/workspace integration decision.

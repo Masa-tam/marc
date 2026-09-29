@@ -36334,3 +36334,21 @@ both bounds.
   no codec implementation changes, external expression or legal guarantee.
 - Scope: diagnostic results only; no format, public workspace, failure atomicity
   or failed-frame publication changes. Previous observations remain preserved.
+
+## CR-1516: 2026-09-29 - Bounded private 18-bit five-prefix candidate
+
+- Author and reviewer: Codex; maintainer approved the DD-1346 next prototype.
+- References: IR-1107, DD-1347, first-party bounded finder/tokenizer, preflight
+  helpers, allocation guard, exhaustive/indexed oracle and frame checks.
+- Independent task: refine the long-head projection, explicitly partition
+  caller-owned arrays, preserve preflight/token-output failure contracts, and
+  compare a separate candidate with retained 16-bit implementations.
+- Validation: TVG-1213 and BM-0180; detailed compiler/sanitizer tests, allocation
+  guards, overlap/suffix tests, cross-build fixtures and corpus differentials.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: intentional first-party adaptation; new layout arithmetic,
+  active-region alias tests and diagnostic comparison are independently specified.
+  No external expression or legal guarantee is claimed.
+- Scope: private prototype compiled only in tests/diagnostics; production factory,
+  format, workspace limits and failed-frame non-publication are unchanged.

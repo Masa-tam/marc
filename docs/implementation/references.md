@@ -9797,3 +9797,10 @@ diagnostic implementation. No external source or optimization reference is used.
 Use the preserved DD-1345 runtime-width executable, first-party measurement
 runner, corpus manifest and earlier verification reports. No external source,
 implementation or tuning reference is consulted.
+
+## IR-1107: Bounded private 18-bit five-prefix candidate
+
+Use the repository-owned bounded 16-bit finder/tokenizer, preflight helpers,
+indexed/exhaustive oracles and DD-1346 measurements. Adapt only the long-prefix
+projection and explicit workspace layout in a separate candidate. No external
+implementation or optimization reference is consulted.

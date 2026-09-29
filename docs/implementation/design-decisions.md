@@ -27186,3 +27186,47 @@ Prefer 18 bits for the next bounded private-workspace prototype. Preserve a
 preservation and exact token/frame output. Keep both wider variants unadmitted
 until the bounded implementation's own correctness and performance are verified;
 do not silently enlarge public memory limits or alter the existing factory.
+
+## DD-1347: Bounded private 18-bit candidate without public selection
+
+Add separate private finder/tokenizer files compiled only into dedicated tests
+and diagnostics. Preserve the production 16-bit implementation, factory, limits
+and library source lists. Keep the 3/4-byte heads at 65,536 words and widen only
+the 5-byte head to 262,144 words, using the high 18 bits of the same full mixer.
+All true-prefix candidates retain nearest-first order and exact match semantics.
+
+For N >= 3, array bytes are 4 * (393216 + 3*N); below 3 no arrays are required.
+At 1 MiB this is 14,155,776 bytes, 786,432 more than 16 bits. Align to uint32_t.
+Lay out three head regions followed by three input-sized link regions. Use
+checked arithmetic and charge input, active arrays and finder state to the
+existing internal-buffer limit before writing. Borrow only the queried prefix;
+an oversized workspace suffix remains untouched.
+
+Initialization rejects invalid parameters/limits, insufficient/misaligned space
+and aliases with input, parameters, limits or finder before mutation. Failure
+preserves the live finder and supplied scratch. The tokenizer retains the existing
+two-pass insufficient-output behavior: token output is preserved on failure,
+but its counting pass may mutate scratch. Do not extend this to a new scratch
+preservation guarantee. No failed frame is published by the unchanged frame layer.
+
+Differential tests cover exhaustive/window/tail/wide-distance/nearest-tie cases,
+exact budgets, rejected initialization, token-capacity failure and frame identity.
+Verify allocation-free operation after storage setup. Use a separate diagnostic
+with shared maximum 18-bit workspace, duplicate 16-bit controls and one 18-bit
+slot, balanced three-iteration execution ranks. Preserve earlier binaries.
+No public admission or performance conclusion follows merely from passing tests.
+
+Freeze the new diagnostic source/binary after validation. Run three processes
+per execution direction on dickens and x-ray (twelve total), alternating
+input/direction order across repetitions and retaining all results. Compare the
+18-bit candidate with both 16-bit controls; do not infer a gain from one slow
+control. All paths share the maximum caller-owned scratch region but initialize
+only their queried prefix. This remains a diagnostic topology, not an end-to-end
+pipeline or a basis for silently changing workspace requirements.
+
+BM-0180 completes the private implementation and focused screening. Detailed
+failure/allocation tests, cross-build fixtures and full-corpus content checks
+pass. In twelve measured processes, 18 bits beats both bounded controls in every
+run. Retain the candidate as private and next repeat full-corpus measurements
+using this bounded binary. Do not import the old runtime harness's aggregate
+speedup or alter public workspace/factory behavior before that evidence exists.

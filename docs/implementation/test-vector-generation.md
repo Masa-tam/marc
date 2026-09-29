@@ -18118,3 +18118,39 @@ member-level results, duplicate controls and pass aggregates without choosing
 only favorable comparisons. Prior compiler/sanitizer validation remains prior
 evidence; no new compiler/sanitizer rebuild, full-suite/fuzz, hosted CI or external
 qualification is claimed. Public codec and failure contracts are unchanged.
+
+## TVG-1213: Bounded private 18-bit workspace validation
+
+DD-1347's separate candidate passes nine detailed tests under both compilers and
+explicit ASan/UBSan. Query cases cover empty/short/full inputs, alignment, exact
+aggregate budget and one-byte-short budget, input limits and invalid variants.
+Initialization failure checks retain a live finder, snapshot its representation
+and scratch, and reject short/misaligned workspace, input/finder overlap, invalid
+parameters/variant and insufficient budget without changing either snapshot.
+
+Additional tests place parameter, limit and finder objects inside the active
+workspace and require rejection without writes. Input in the unborrowed suffix
+is accepted and that suffix remains unchanged. Invalid advance/reset behavior,
+exhaustive token comparisons across small windows, match maxima and eligibility
+thresholds, wide references and nearest ties are checked. Full-frame tokens match
+both the retained indexed oracle and production 16-bit tokenizer; frame bytes
+match and reconstruction restores the input.
+
+Tokenizer capacity, eligibility, alias and budget failures preserve token output.
+No scratch guarantee is added for its count-first insufficient-output path.
+Dedicated allocation guards pass on both compilers for 128 iterations alternating
+full token capacity and exact small capacity requiring count-then-write replay.
+Query, initialization and tokenization allocate nothing after caller storage setup.
+
+Both compiler and sanitizer diagnostic smokes pass execution-direction and
+rank-coverage checks, including a short final frame. Eight retained fixtures
+times two directions times three builds give 48 matching verification reports,
+normalized only by the direction flag. All twelve manifest-verified corpus
+members pass token/frame/restoration checks and match earlier input/token/frame
+totals. Twelve focused measured processes additionally pass content, finite-time,
+rank and timing-sum checks. BM-0180 retains all observations.
+
+The new sources are compiled only into dedicated tests/diagnostics. Existing
+production library source lists and factory selection remain unchanged. No new
+public codec/workspace contract, full-suite/fuzz, hosted CI or external
+qualification is claimed. Failed-frame non-publication remains unchanged.
