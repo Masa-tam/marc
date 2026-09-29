@@ -17714,3 +17714,19 @@ No source, compiler option, production API or stream-format change is made.
 This focused run does not repeat the full corpus, compiler/sanitizer suites,
 fuzzing, hosted CI or external interoperability qualification. BM-0165 records
 all observed ranges without discarding prior variable measurements.
+
+## TVG-1199: Rolling-key advance differential checks
+
+The rolling specialization retains exhaustive per-position checks on bounded
+zero, periodic and seeded-random inputs; wide-distance fixtures advance across
+many positions in one call. Preserve nearest-tie, short-tail, five-byte fallback
+and multiframe smoke cases. Both compiler builds pass all four affected
+benchmark smokes. Explicitly instrumented ASan/UBSan passes the rolling smoke.
+
+Verify the established corpus manifest, then screen x-ray and dickens against
+retained indexed tokens. Both pass every token comparison, complete frame
+identity and reconstruction, as do five further independent x-ray processes.
+Record all raw iterations and source/executable digests. BM-0166 records the
+limited benefit and unresolved regression; do not describe this focused screen
+as a new twelve-member corpus, public compatibility, full-suite/fuzz, hosted
+CI or external interoperability result.

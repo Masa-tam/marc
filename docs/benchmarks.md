@@ -6698,3 +6698,46 @@ should retain the five-byte fallback index and compare against these controls
 with repeated, paired measurements. This stage changes documentation only;
 there is no new full-corpus, compiler/sanitizer, full-suite/fuzz, hosted CI or
 external verification claim, and no production or format change.
+
+## BM-0166: Rolling four-byte key during six-prefix updates
+
+DD-1333 retains all four indexes and the existing search, but carries a
+four-byte key between positions within each advance call. Compare bounded
+five, original six and rolling six within one executable, with warmup, three
+measured iterations per frame and rotating path order. Timings include
+initialization and token replay after allocation; oracle, frame comparison
+and reconstruction execute outside timing. No per-call clocks are added.
+
+The focused screen verifies the corpus manifest and uses x-ray plus dickens,
+not a new full-corpus measurement. Both pass exact token/frame identity and
+reconstruction. Initial per-member median seconds are:
+
+| Member | Bounded five | Original six | Rolling six |
+| --- | ---: | ---: | ---: |
+| x-ray | 0.383403 | 0.416055 | 0.409496 |
+| dickens | 1.290411 | 0.724821 | 0.721964 |
+
+Five further independent x-ray runs also pass all identity checks:
+
+| Run | Bounded five | Original six | Rolling six |
+| --- | ---: | ---: | ---: |
+| 1 | 0.387369 | 0.416704 | 0.415705 |
+| 2 | 0.383547 | 0.415047 | 0.415277 |
+| 3 | 0.393989 | 0.420056 | 0.417815 |
+| 4 | 0.392351 | 0.430208 | 0.423915 |
+| 5 | 0.383427 | 0.424402 | 0.419554 |
+
+Rolling six differs from original six by -1.46% to +0.06% and remains
+6.05% to 9.42% slower than bounded five. Preserve every run; the small difference
+is not a demonstrated universal improvement, and no isolated update-phase or
+hardware-cause claim follows from full replay timing. The intended x-ray
+regression resolution is not achieved, so do not broaden this experiment into
+public admission. Array storage is unchanged from original six.
+
+Both compiler sets pass four affected smokes and explicit ASan/UBSan passes
+the rolling specialization. Retain the prototype for comparison, with bounded
+five still public. Before further update micro-optimizations, compare untimed
+search-work counts for five and six, including short-prefix fallbacks and
+long-chain candidates, to identify a better supported optimization target.
+No public end-to-end speedup, full-corpus/full-suite/fuzz, hosted CI or new
+external verification is claimed.

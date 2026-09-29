@@ -36096,3 +36096,19 @@ both bounds.
   no legal guarantee claimed.
 - Scope: measurement and documentation only; production failure atomicity and
   failed-frame publication contracts remain unchanged.
+
+## CR-1502: 2026-09-29 - Rolling-key six-prefix update trial
+
+- Author and reviewer: Codex; maintainer approved an update-work trial retaining
+  the five-byte fallback index.
+- References: IR-1093, DD-1333 and first-party bounded-key construction.
+- Independent design: reconstruct one four-byte key per advance and carry it
+  across positions using unsigned shifts; retain the original specialization.
+- Validation: TVG-1199 and BM-0166, including exact token/frame comparisons,
+  boundary checks and explicitly instrumented sanitizer execution.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: deliberate first-party experimental-template reuse only;
+  no external expression or legal guarantee claimed.
+- Scope: benchmark-only experiment; no production, format, failure atomicity
+  or failed-frame publication change.

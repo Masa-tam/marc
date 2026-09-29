@@ -26577,3 +26577,34 @@ so processor migration is not established as its cause. Keep the prototypes
 unadmitted. Subsequent update-work trials should retain the five-byte index,
 use unchanged binaries within each paired comparison, and preserve raw
 iterations and independent repeats before any performance admission.
+
+## DD-1333: Carry a four-byte key inside six-prefix advance
+
+Retain all three-, four-, five- and six-byte indexes and the unchanged search
+algorithm. Add a benchmark-only rolling-key specialization while preserving
+the original advance loop for the default specialization. At each advance
+call, assemble the first four-byte key only if at least one six-byte-indexable
+position will be advanced. Extract the three-byte key by masking, fold the
+fifth byte once, and use it for both five- and six-byte buckets. Carry the
+next four-byte key as an unsigned right shift plus the fifth byte in bits
+24 through 31. No native loads, host-endian assumptions or new retained state
+are introduced.
+
+The loop bound guarantees all six source bytes exist; the existing bounded
+tail handles remaining positions. Reconstruct the initial key for each new
+advance call, so the optimization relies on no assumption about the prior
+call's token length. Bucket values, insertion order, index arrays, fallback
+search and nearest-distance tie rules remain identical. Full-frame array
+payload remains 17,825,792 bytes, 4,456,448 above the admitted five-prefix
+arrays. This is not a new public memory query or measured peak RSS.
+
+Compare admitted bounded five, original six and rolling six within one
+unchanged executable, rotating order with warmup and three timed iterations.
+Screen x-ray and dickens, then repeat x-ray independently before deciding
+whether broader corpus or public admission work is justified. Production
+code, serialization and failure contracts remain unchanged.
+
+BM-0166 leaves rolling six 6.05% to 9.42% slower than bounded five in repeated
+x-ray runs. Keep it unadmitted. Its small difference from original six does
+not justify broader admission work; next compare untimed search-work counters
+before choosing another optimization.

@@ -9700,3 +9700,10 @@ Use the unchanged first-party compact-six benchmark from BM-0164 and its
 retained token/frame oracle. Compare default scheduling with one permitted
 logical processor selected for each benchmark process. No external codec
 source or new algorithm reference is used.
+
+## IR-1093: Rolling-key six-prefix advance experiment
+
+Use repository-owned six-prefix indexing and BM-0165's unchanged-binary
+comparison method. The bounded rolling four-byte key is independently derived
+from the existing little-endian byte assembly and unsigned shift operations.
+No external implementation or optimization source is consulted.

@@ -7,7 +7,7 @@
 #include <vector>
 namespace marc::benchmark {
 // Experiment only. Caller supplies sequential positions inside one bounded frame.
-template<bool SharedAdvance, bool OmitFive = false>
+template<bool SharedAdvance, bool OmitFive = false, bool RollingKey = false>
 class SixPrefixFinderImpl {
     static constexpr auto empty=std::numeric_limits<std::uint32_t>::max();
     std::span<const std::byte> input_;
@@ -81,19 +81,40 @@ public:
                 key^=key>>11;
                 return (key*UINT32_C(2654435761))>>16;
             };
-            for(;p<end;++p) {
-                const auto three=std::to_integer<std::uint32_t>(input_[p])
-                    | (std::to_integer<std::uint32_t>(input_[p+1])<<8)
-                    | (std::to_integer<std::uint32_t>(input_[p+2])<<16);
-                const auto four=three | (std::to_integer<std::uint32_t>(input_[p+3])<<24);
-                const std::array<std::uint32_t,4> buckets{mix(three),mix(four),
-                    mix(four ^ (std::to_integer<std::uint32_t>(input_[p+4])*UINT32_C(2246822519))),
-                    mix(four ^ (std::to_integer<std::uint32_t>(input_[p+4])*UINT32_C(2246822519))
-                        ^ (std::to_integer<std::uint32_t>(input_[p+5])*UINT32_C(3266489917)))};
-                for(std::size_t i=0;i<heads_.size();++i) {
-                    const auto b=buckets[OmitFive && i==2 ? 3 : i];
-                    links_[i][p]=heads_[i][b];
-                    heads_[i][b]=static_cast<std::uint32_t>(p);
+            if constexpr (RollingKey) {
+                std::uint32_t rolling{};
+                if(p<end) for(std::size_t i=0;i<4;++i)
+                    rolling|=std::to_integer<std::uint32_t>(input_[p+i])<<(8*i);
+                for(;p<end;++p) {
+                    const auto four=rolling;
+                    const auto three=four & UINT32_C(0x00ffffff);
+                    const auto fifth=std::to_integer<std::uint32_t>(input_[p+4]);
+                    const auto five=four ^ (fifth*UINT32_C(2246822519));
+                    const std::array<std::uint32_t,4> buckets{mix(three),mix(four),mix(five),
+                        mix(five ^ (std::to_integer<std::uint32_t>(input_[p+5])*UINT32_C(3266489917)))};
+                    // Carry the next four-byte key only within this bounded advance.
+                    rolling=(four>>8) | (fifth<<24);
+                    for(std::size_t i=0;i<heads_.size();++i) {
+                        const auto b=buckets[OmitFive && i==2 ? 3 : i];
+                        links_[i][p]=heads_[i][b];
+                        heads_[i][b]=static_cast<std::uint32_t>(p);
+                    }
+                }
+            } else {
+                for(;p<end;++p) {
+                    const auto three=std::to_integer<std::uint32_t>(input_[p])
+                        | (std::to_integer<std::uint32_t>(input_[p+1])<<8)
+                        | (std::to_integer<std::uint32_t>(input_[p+2])<<16);
+                    const auto four=three | (std::to_integer<std::uint32_t>(input_[p+3])<<24);
+                    const std::array<std::uint32_t,4> buckets{mix(three),mix(four),
+                        mix(four ^ (std::to_integer<std::uint32_t>(input_[p+4])*UINT32_C(2246822519))),
+                        mix(four ^ (std::to_integer<std::uint32_t>(input_[p+4])*UINT32_C(2246822519))
+                            ^ (std::to_integer<std::uint32_t>(input_[p+5])*UINT32_C(3266489917)))};
+                    for(std::size_t i=0;i<heads_.size();++i) {
+                        const auto b=buckets[OmitFive && i==2 ? 3 : i];
+                        links_[i][p]=heads_[i][b];
+                        heads_[i][b]=static_cast<std::uint32_t>(p);
+                    }
                 }
             }
         }
@@ -105,6 +126,7 @@ public:
     }
 };
 using SixPrefixFinder = SixPrefixFinderImpl<true>;
+using RollingSixPrefixFinder = SixPrefixFinderImpl<true, false, true>;
 using CompactSixPrefixFinder = SixPrefixFinderImpl<true, true>;
 }
 #endif
