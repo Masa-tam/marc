@@ -9853,3 +9853,10 @@ implementation or new technical reference is used.
 Use the first-party DD-1352 prepared frame/stream path, DD-1353 replicated
 measurements, retained public factory tests and unchanged frame oracle.
 No external codec implementation or new technical reference is used.
+
+
+## IR-1115: Phase diagnosis after prepared-mapping admission
+
+Use the unchanged first-party phase diagnostic as reference, DD-1354 admitted
+prepared model/frame functions and the verified corpus manifest. No external
+codec implementation or new algorithm reference is consulted.

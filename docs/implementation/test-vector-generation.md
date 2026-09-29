@@ -18373,3 +18373,23 @@ No test or external verification is rerun in this documentation-only stage.
 TVG-1220's local results remain attributed to the implementation revision, while
 these reported results close its separate CI/external gate. Corpus performance,
 full-window boundaries and exchange-fixture coverage are not conflated.
+
+
+## TVG-1222: Admitted prepared-path phase diagnostic checks
+
+A separate diagnostic calls the admitted prepared frame/model path and preserves
+the original phase source/target. Both compiler smoke runs pass multi-frame byte
+comparison/restoration, final short-frame handling, three measured repetitions,
+prepared/five-prefix identity markers and empty-input rejection.
+
+All twelve verified corpus processes compare every warmup/measured frame with
+the retained raw-frame encoder and restore it with the unchanged decoder.
+Replayed prepared mapping and Range preparation/writing reproduce the reference
+payload. Input/token/operation/frame counts match retained phase records. All
+fifteen per-member timing samples are finite and positive; every iteration and
+source/executable identity is retained. Timing excludes reference generation and
+decoding. Replay timing overlaps complete-frame timing and is non-additive.
+
+Production implementation and source lists are unchanged. Prior full-suite,
+sanitizer and revision-specific external results are retained, not rerun or
+relabelled as new qualification in this diagnostic-only stage.

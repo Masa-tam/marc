@@ -27487,3 +27487,51 @@ from the maintainer's successful CI report and four 69-archive verification
 results at `2511312625e2c324b75ecda04eac4b1c3fe9263c`. Record the producer and
 consumer routes separately, preserve the reports' provenance and do not claim an
 independent rerun. This gate closure changes no implementation or release state.
+
+
+## DD-1355: Diagnose the admitted prepared-mapping compression phases
+
+Preserve the original phase diagnostic and add a separate prepared-path target.
+Measure admitted five-prefix tokenization and prepared complete-frame encoding.
+Compare every frame byte with the retained raw-frame reference and restore it
+through the unchanged decoder. Replay prepared mapping, range preparation and
+range writing separately, retaining identical payloads and bounded storage.
+
+The replay timings overlap complete-frame time and must not be added to it.
+The prepared mapping object dies before range preparation. Use one warmup and
+three repetitions per frame, then report medians of whole-input phase totals.
+Screen all twelve verified corpus members once in manifest order; retain every
+iteration, without concurrent builds/tests or selecting favorable repeats.
+
+Check both compiler smoke cases before measurement. Preserve existing source and
+executable identities. Compare input/token/operation/frame counts with retained
+phase records; never infer a current performance ratio by dividing separately
+built historical timings. This is descriptive phase evidence, not a whole-CLI
+benchmark, a new optimization or a change to public contracts.
+
+
+TVG-1222 and BM-0188 complete both compiler smoke checks and all twelve corpus
+runs. The split-path tokenization/frame sums are 21.747048/8.123511
+seconds. Range preparation and writing replays remain similar in duration,
+without proving an additive cost or a projected optimization benefit.
+
+Select a distinct next trial: after tokenization has completed and its local
+finder has expired, investigate using the existing discardable finder byte
+workspace as temporary Range payload storage. The existing scratch encoder's
+checked bound is two bytes per decision plus five final bytes. Use the single-pass
+path only when the complete bound, limits and non-overlap checks fit; otherwise
+retain the admitted prepared path. Count eligibility before claiming coverage.
+
+The finder buffer is separate from tokens, operations and serialized output.
+A trial must prove its lifetime ends before reuse, correct finder reinitialization
+on the next frame, unchanged aggregate workspace charges and exact original
+result/error fields. Build and validate the frame prefix and every semantic,
+capacity and expansion-limit check before copying any scratch payload into the
+serialized output. Failed serialized output stays unchanged and no failed frame
+may drain. Keep both existing frame entry points intact as references/fallbacks.
+
+This selects a private prototype, not an implemented optimization or admission.
+Small/empty scratch, tight limits, malformed operations, aliases, short tails,
+multiple frames, failure sentinels and public non-publication require differential
+coverage. Revisit neither DD-1307's rejected complementary sums nor DD-1350's
+unconditional 18-bit admission without new evidence.

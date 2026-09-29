@@ -7993,3 +7993,47 @@ The old frame/raw-frame/streaming/owning path remains an independent oracle and
 supplies the tight-budget fallback. The admitted 16-bit dictionary, wire format,
 C ABI and failed-frame publication contract are unchanged. Hosted CI and external
 platform qualification must refer to the eventual integration revision separately.
+
+
+## BM-0188: Phase diagnosis of the admitted prepared-mapping encoder
+
+DD-1355 preserves the old phase diagnostic and adds a separate target using the
+admitted five-prefix finder and prepared frame/model functions. Screen all twelve
+verified corpus members in manifest order, one process each, with one warmup and
+three repetitions per frame. Each value is the median of whole-input iteration
+phase totals. No builds or tests overlap timing and no samples are discarded.
+
+| Member | Tokenize seconds | Complete frame seconds | Replay model seconds | Replay range preparation seconds | Replay range write seconds |
+|---|---:|---:|---:|---:|---:|
+| dickens | 1.284175 | 0.451744 | 0.127919 | 0.160840 | 0.161268 |
+| mozilla | 5.427684 | 2.323050 | 0.807331 | 0.752911 | 0.755365 |
+| mr | 2.053260 | 0.457616 | 0.136924 | 0.159700 | 0.161506 |
+| nci | 2.619004 | 0.342831 | 0.095687 | 0.122075 | 0.122909 |
+| ooffice | 0.356969 | 0.392054 | 0.124930 | 0.131984 | 0.131820 |
+| osdb | 0.446498 | 0.435694 | 0.134940 | 0.149705 | 0.150548 |
+| reymont | 1.641229 | 0.214219 | 0.060919 | 0.076846 | 0.076405 |
+| samba | 1.488785 | 0.623468 | 0.201940 | 0.207941 | 0.207474 |
+| sao | 0.530399 | 0.623871 | 0.218591 | 0.201107 | 0.201943 |
+| webster | 5.276421 | 1.427562 | 0.401859 | 0.506179 | 0.506078 |
+| xml | 0.241898 | 0.074546 | 0.021466 | 0.026010 | 0.025668 |
+| x-ray | 0.380725 | 0.756857 | 0.230626 | 0.259419 | 0.259175 |
+
+Summed tokenize/frame medians are 21.747048/8.123511 seconds,
+representing 72.80%/27.20% of their split-path sum.
+This excludes whole-owner construction/destruction and stream I/O; it is not a
+whole-CLI throughput profile. Separate replay sums are 2.563133
+seconds for mapping, 2.754718 for range preparation and
+2.760157 for range writing. Replays overlap complete-frame work and
+must not be added to it or treated as exact additive subdivisions. Do not divide
+these measurements by earlier separately built timings to claim a new speedup.
+
+Every encoded frame equals the retained raw-frame reference and restores exactly.
+Replayed Range payloads match. Input/token/operation/frame counts agree with the
+retained phase reports; source/executable identities and finite positive timing
+samples pass. Both compiler smoke runs cover a multi-frame input and empty-input
+rejection. No new public implementation, memory policy or format change occurs.
+
+Dictionary search remains the largest aggregate cost, but the two Range passes
+provide a distinct next opportunity after prior dictionary and cumulative-query
+trials. DD-1355 selects a bounded scratch-lifetime investigation before another
+production change. The measured times do not establish its eligibility or gain.

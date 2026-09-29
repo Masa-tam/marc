@@ -36499,3 +36499,20 @@ both bounds.
   copyleft implementations and third-party optimization/test code.
 - Decision: close the integration's CI/external exchange gate without changing
   format, ABI, defaults, memory limits, failure contracts or release state.
+
+
+## CR-1525: 2026-09-30 - Admitted prepared-path phase diagnosis
+
+- Author and reviewer: Codex; maintainer approved the next development step.
+- References: IR-1115, DD-1355, first-party phase diagnostic, prepared frame/model
+  functions, retained raw-frame oracle and verified corpus manifest.
+- Independent task: refresh descriptive phase evidence after admission without
+  replacing historical diagnostics or changing production behavior.
+- Similarity review: intentionally adapts first-party diagnostic expression;
+  no external codec implementation or optimization structure consulted.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1222 and BM-0188; both compiler smoke runs and all twelve corpus
+  frame/payload/restoration, count and identity checks pass. No legal guarantee.
+- Decision: investigate reuse of expired dictionary scratch for bounded Range
+  output in a separate trial. No public or format change is admitted here.
