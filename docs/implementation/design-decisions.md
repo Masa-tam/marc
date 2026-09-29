@@ -26857,3 +26857,59 @@ BM-0171 records observation cost and frame evidence. Do not calibrate a rule
 from just x-ray and dickens or treat their aggregate separation as a general
 predictor. Subsequent policy design needs separate-input and mixed/reversed
 within-frame validation, with decision overhead and catch-up cost included.
+
+## DD-1339: Challenge a causal activation-cost model before online integration
+
+Date: 2026-09-29. Freeze an offline nine-model sensitivity study before new
+measurements. Each evaluation input is exactly one MiB, so the observed first
+token ends reaching quarter/half coincide with the forced replay checkpoints;
+assert equality rather than assuming it for arbitrary short frame lengths.
+At most one activation is selected, at quarter or half, otherwise never.
+
+For the most recent observation interval use its byte width B and five-chain
+visits V. At current token boundary p, remaining bytes R=N-p, estimate saved
+candidate visits as rho*V*R/B. Compare strictly against hypothetical work cost
+k*(65536+N+2*p+R). Initialization accounts for heads and active links, catch-up
+has two units per historical position, and subsequent sixth maintenance one
+per remaining byte. These units are assumptions, not measured instructions or
+time. Freeze rho in {1/4,1/2,3/4} and k in {1,4,16}; retain all nine results.
+No best model is chosen from these evaluation runs. Integer comparison is
+rho_numerator*V*R > 4*B*k*(65536+N+2*p+R); equality stays Five. Queries must be
+present. With N<=2^20, V<=N*N and these fixed parameters both sides fit uint64;
+the diagnostic uses Python exact integers. Tests compare rational arithmetic.
+
+Observe the first interval at quarter. If no activation, use only the second
+interval's deltas at half; never consult future counts, filenames, timings or
+other frames for the decision. The four earlier counters remain available,
+but only visits and query presence enter this deliberately simple pressure
+model. Prefix/probe passes do not establish the sixth-chain reduction rho.
+There is no guaranteed saving bound: an identical observed prefix can precede
+an easy or difficult suffix. This is a falsifiable extrapolation, not a safe
+predictor or public admission policy.
+
+Before any timing, persist the model source/executable identities, input hashes,
+protocol and all input-specific predictions. Use first full frames of ooffice,
+osdb and sao as separate timing inputs, plus independently generated structured,
+random, structured-then-random and reversed-half fixtures. These corpus members
+were observed earlier; they are not blind statistical holdouts. Their new
+measurements must not tune this grid. Save both successful and adverse outcomes.
+
+Challenge predictions using the existing never/zero/quarter/half/late forced
+replays plus bounded-five/original-six controls, three processes per input and
+three rotated iterations per process. Selected forced timings include reset,
+checkpoint checks and actual activation/catch-up, but exclude online observation
+and decision cost. They can expose a bad decision before integration; they do
+not measure an adaptive implementation or establish its speedup. Keep complete
+replay timing separate from isolated activation phases. Compare every token and
+all lazy serialized frames/restoration with the retained reference.
+
+No finder, production path, stream representation, public workspace or failure
+contract changes. Future online integration requires a justified model, mixed
+and reversed distribution behavior, complete decision overhead, and existing
+bounded-memory/failure/publication admission gates. BM-0172 records this study.
+
+BM-0172 rejects admission of this family: low and low_high share all evidence
+at quarter/half but have opposite half-activation outcomes. Changing a threshold
+cannot distinguish identical observations. Retain the frozen family as a
+diagnostic; investigate later observations and remaining-work safeguards before
+any online policy or public integration.

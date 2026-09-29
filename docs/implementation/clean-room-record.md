@@ -36194,3 +36194,21 @@ both bounds.
   diagnostic identities; no external expression or legal guarantee claimed.
 - Scope: benchmark-only observations; no adaptive threshold or production,
   workspace, format, failure-atomicity or failed-frame-publication change.
+
+## CR-1508: 2026-09-29 - Prefix-pressure model and mixed-input challenge
+
+- Author and reviewer: Codex; maintainer approved judgment-model design and
+  separate/mixed-input validation following the bounded observation stage.
+- References: IR-1099, DD-1339 and repository-owned benchmarks/corpus manifest.
+- Independent design: an explicitly hypothetical nine-model work grid, integer
+  break-even comparison, prefix-only predictions frozen before measurement,
+  and seeded structured/random fixtures with reversed halves.
+- Validation: TVG-1205 and BM-0172; six arithmetic/causal-input test methods,
+  seven cross-compiler/sanitizer observation cases, and 21 exact forced replays.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party adaptive-policy/test code.
+- Similarity review: first-party semantics, independently specified arithmetic
+  and fixture construction; no external expression or legal guarantee claimed.
+- Outcome: identical prefix evidence can precede opposite timing outcomes.
+  No member of the grid is selected or admitted; no production, format,
+  workspace or failure/publication contract changes.

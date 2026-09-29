@@ -7003,3 +7003,71 @@ calibrating or admitting a policy. Do not infer adaptive speedup from these
 never-activation runs. Public bounded five, stream format, memory preflight,
 failure atomicity and failed-frame non-publication remain unchanged. No new
 full-suite/fuzz, hosted CI or external qualification is claimed.
+
+## BM-0172: Frozen activation-model sensitivity on separate and mixed inputs
+
+Date: 2026-09-29. DD-1339 freezes nine hypothetical saving/cost assumptions and
+quarter/half decisions before measurement. Use seven one-MiB inputs: first full
+frames from ooffice, osdb and sao, seeded structured (high), random (low), and
+both orders of their first half-frame pieces (TVG-1205). The corpus inputs had
+previously been observed; these are separate timing cases, not blind holdouts.
+
+Run three independent forced-replay processes per case, reversing case order
+in the middle process. Each warms up and rotates seven modes across three
+iterations. The following seconds are medians of process medians. Mode counts
+show the predictions from all nine models; never results are retained rather
+than dropping models that miss savings. No evaluation timing changes a model.
+
+| Case | Never | Quarter | Half | Models: quarter / half / never |
+|---|---:|---:|---:|---:|
+| ooffice-first-frame | 0.0674925 | 0.0613086 | 0.0634849 | 0 / 1 / 8 |
+| osdb-first-frame | 0.0478583 | 0.0464144 | 0.0475151 | 0 / 0 / 9 |
+| sao-first-frame | 0.0758870 | 0.0732522 | 0.0741663 | 0 / 0 / 9 |
+| high | 0.0918287 | 0.0591228 | 0.0723012 | 2 / 0 / 7 |
+| low | 0.0822371 | 0.0869540 | 0.0870852 | 0 / 0 / 9 |
+| high_low | 0.0987779 | 0.0892445 | 0.1022269 | 2 / 0 / 7 |
+| low_high | 0.0914683 | 0.0574286 | 0.0577078 | 0 / 0 / 9 |
+
+Only cost scale 1 with saving fractions 1/2 or 3/4 selects quarter for high and
+high_low. Only scale 1 with fraction 3/4 selects half for ooffice. All models
+stay Five for low, low_high, osdb and sao. These outcomes are diagnostic and do
+not select a preferred coefficient set.
+
+Paired process ranges relative to never are:
+
+| Case and forced choice | Difference |
+|---|---:|
+| high, quarter | -35.66% to -34.25% |
+| high_low, quarter | -11.70% to -8.41% |
+| high_low, half | +0.97% to +3.99% |
+| low, half | +3.31% to +6.46% |
+| low_high, half | -37.30% to -36.55% |
+
+Low and low_high have exactly the same observed evidence at both available
+decision boundaries, including token-end positions and all four counters. Half
+activation hurts low in all three runs but helps low_high in all three. No
+threshold change using only those same observations can distinguish the two
+cases at that boundary. The late-heavy case exposes the deadline at half and
+the extrapolation assumption; it does not prove all online selection is futile.
+High_low additionally shows that a later activation can lose after an earlier
+one would have won. Coefficients fitted to aggregate work cannot resolve an
+unobserved distribution change.
+
+All seven observation cases retain exact tokens, frames and reconstruction;
+reports agree across both compilers and explicit ASan/UBSan. All 21 forced
+processes retain token/frame identity for every lazy mode. Model arithmetic,
+strict ties, prefix causality and report validation tests pass (TVG-1205).
+
+Forced timings include reset, checkpoint checks and activation/catch-up but
+exclude online counters and decision evaluation. They are counterfactual checks,
+not adaptive throughput or end-to-end speedups. Isolated activation-phase times
+remain separate. Existing fourth-index reservation remains 17,825,792 array
+payload bytes; no memory reduction or peak-RSS measurement is claimed.
+
+Do not admit or tune this grid. Next trial observation opportunities after half
+with an explicit remaining-work/catch-up guard, retaining these identical-prefix
+and reversed-distribution cases and measuring the entire online decision path.
+Later evidence may help but cannot guarantee arbitrary future savings. Public
+bounded five and its format, preflight, failure atomicity and failed-frame
+non-publication contracts remain unchanged. No new full-suite/fuzz, hosted CI,
+external qualification or full-corpus timing is claimed.

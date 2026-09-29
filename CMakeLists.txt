@@ -2272,6 +2272,11 @@ if(MARC_BUILD_TESTS)
             -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/verify_documentation.cmake)
     find_package(Python3 3.9 QUIET COMPONENTS Interpreter)
     if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_distance_1m_activation_model_tests
+            COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_position_distance_1m_activation_model.py)
+        set_tests_properties(marc_position_distance_1m_activation_model_tests
+            PROPERTIES LABELS tooling)
         add_test(NAME marc_silesia_corpus_verifier_tests
             COMMAND ${Python3_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/silesia_corpus_verifier_tests.py)

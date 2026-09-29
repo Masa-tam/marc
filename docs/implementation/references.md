@@ -9744,3 +9744,10 @@ Use the first-party lazy-six finder, five-prefix diagnostic counters, retained
 indexed token oracle and existing frame serializer/decoder. The four counters
 reuse existing branch outcomes without extra byte comparisons. No external
 implementation, adaptive policy or optimization source is consulted.
+
+## IR-1099: Prefix-pressure activation-model sensitivity study
+
+Use DD-1338 observations, the first-party forced lazy-six replay, corpus manifest
+and independently generated structured/random bytes. Hypothetical work weights
+are an explicit sensitivity grid, not CPU coefficients derived from external
+code or calibrated on evaluation timings. No external source is consulted.

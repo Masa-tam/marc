@@ -17871,3 +17871,43 @@ checks. Full-corpus validation is verification-only, not a full-corpus speed
 result. These checks qualify a benchmark experiment, not new public failure,
 chunking, allocation or memory-limit behavior. No full-suite/fuzz, hosted CI or
 external verification result is claimed.
+
+## TVG-1205: Activation-model sensitivity and reversed-distribution checks
+
+Date: 2026-09-29. Test the offline model's exact integer comparison against a
+Fraction-based rational reference across two positions, four visit counts and
+all nine fixed assumptions (72 cases total). Check uint64 representability,
+zero-pressure never, high-pressure quarter, second-interval half, strict ties,
+invalid reports and duplicate fields. Later counts/timings do not alter earlier
+decisions. Six Python test methods pass directly and through the test registered
+in both compiler build configurations; this is one shared Python model, not two
+compiler-specific implementations of its arithmetic.
+
+Generate independent bytes using uint32 state = state*1664525+1013904223 modulo
+2^32, emitting the high byte. Advance state for every output byte, even where a
+fixed structured byte replaces it. Structured input uses seed 1709 and eight-byte
+records: high byte masked to 0..63, ASCII ABCD, then three unmasked high bytes.
+Random input uses seed 2909 and no substitution. Generate one MiB of each, then
+combine their first half-MiB pieces in both orders for two mixed fixtures. These
+are first-party generated data, not imported codec vectors. Keep SHA-256 hashes
+and manifest-verified first-MiB slices of ooffice, osdb and sao as seven cases.
+
+Persist the nine-model protocol and all predictions before timing. Every case
+passes observed/bounded/unobserved token comparison, observed frame identity and
+reconstruction. Clang and explicit ASan/UBSan observation reports match the MSVC
+reports exactly, including all four token-end snapshots. All 21 forced-replay
+processes pass token and complete-frame identity/restoration for all lazy paths;
+input/token/frame-byte counts match observation reports. Forced quarter/half
+positions equal corresponding observed positions. Retain all seven control
+modes and their raw iterations, not only model-selected modes.
+
+The low and low_high cases have identical positions, query counts, visits,
+probe passes and prefix passes at both quarter and half. At quarter these are
+(262144,258133,10,0,0); at half (524288,508577,44,0,0). Yet measured suffix outcomes
+differ (BM-0172). This is a permanent first-party reproducible challenge to the
+assumption of stationary future work, not a timing-based pass/fail assertion.
+
+No C++ finder or production code changed. The new tests qualify diagnostic
+arithmetic and selected inputs, not public chunking, allocation, memory-limit,
+failed-frame non-publication or whole-corpus performance. No new full-suite/fuzz,
+hosted CI or external qualification is claimed.
