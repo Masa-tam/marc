@@ -9707,3 +9707,10 @@ Use repository-owned six-prefix indexing and BM-0165's unchanged-binary
 comparison method. The bounded rolling four-byte key is independently derived
 from the existing little-endian byte assembly and unsigned shift operations.
 No external implementation or optimization source is consulted.
+
+## IR-1094: Five/six-prefix untimed search-work comparison
+
+Use the existing first-party five-prefix counter, original six-prefix finder,
+admitted bounded five-prefix finder and retained indexed token oracle. Derive
+the six-prefix counter only from those repository-owned semantics. No external
+implementation, optimization source or test suite is consulted.

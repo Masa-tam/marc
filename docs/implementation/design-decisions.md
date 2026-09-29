@@ -26608,3 +26608,33 @@ BM-0166 leaves rolling six 6.05% to 9.42% slower than bounded five in repeated
 x-ray runs. Keep it unadmitted. Its small difference from original six does
 not justify broader admission work; next compare untimed search-work counters
 before choosing another optimization.
+
+## DD-1334: Count fallback and long-chain work separately
+
+After BM-0166's limited update-loop benefit, compare untimed five- and six-prefix
+search work on x-ray and dickens. Keep the admitted five and original six finders
+unmodified. At every oracle token position compare both actual finders with
+both diagnostic replays, including complete match distance/length, literal
+value and final raw-byte coverage.
+
+For six, count nearest-three, nearest-four and nearest-five fallback visits
+separately from six-byte long-chain visits. Classify long candidates by exact
+prefix/collision, improvement-probe rejection, prefix rejection, extension
+comparisons, strict improvements and maximum-length exits. Also classify five-
+byte fallback visits into fifth-byte mismatch, fifth-byte equality with another
+prefix mismatch, and full match. Count index inserts and final token lengths.
+
+Classification may evaluate equality that the actual finder skips after a
+probe rejection; this is deliberately untimed diagnostic work, not a proposed
+execution order. Candidate visits at different stages have different costs
+and cannot establish CPU time or the cause of a timing regression. Counter
+identities and manually checkable zero-filled six/seven-byte fixtures guard
+the instrumentation independently of output equivalence.
+
+BM-0167 finds that x-ray's added nearest-five fallback consumes most of the
+long-chain visit reduction; 96.10% of fallback candidates differ in the fifth
+byte. Next trial a fifth-byte-first rejection before checking the remaining
+four prefix bytes, retaining all indexes, chain order and exact-match rules.
+Measure it independently before any admission: this classification supports
+a candidate experiment, not a guaranteed improvement. Public code, format
+and failure contracts remain unchanged.

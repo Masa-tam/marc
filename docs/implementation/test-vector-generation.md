@@ -17730,3 +17730,26 @@ Record all raw iterations and source/executable digests. BM-0166 records the
 limited benefit and unresolved regression; do not describe this focused screen
 as a new twelve-member corpus, public compatibility, full-suite/fuzz, hosted
 CI or external interoperability result.
+
+## TVG-1200: Untimed search counter validation
+
+On six/seven zero bytes, insert the first literal and query position one. Both
+finders must return distance one and length five/six. The five counter visits
+one candidate at each stage; six additionally visits one nearest-five fallback
+and visits a six-byte long candidate only for the seven-byte input. Five makes
+zero/one extension comparisons and six makes zero. Verify fallback classification
+as one match with no rejection.
+
+Smoke covers these sizes, tiny input, differing fifth/sixth bytes, nearest ties
+and a multiframe repeating input. Both compiler smokes and explicit ASan/UBSan
+pass. After corpus-manifest validation, x-ray and dickens pass complete match
+and token agreement among both counters, admitted five, original six and the
+retained indexed tokenizer; all bytes are covered. Final length bins sum to
+token count, classification sums equal visits, and common short/middle visits
+and insert counts agree. Every five-counter value also matches the prior
+BM-0161 report. Additional classification leaves all initial counters unchanged.
+
+This is a focused untimed token diagnostic. It introduces no new serialized-
+frame/reconstruction, full-corpus, full-suite/fuzz, hosted CI or external
+verification claim. Source/executable identities and initial/final raw reports
+are retained.

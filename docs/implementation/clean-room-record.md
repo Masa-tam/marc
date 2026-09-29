@@ -36112,3 +36112,18 @@ both bounds.
   no external expression or legal guarantee claimed.
 - Scope: benchmark-only experiment; no production, format, failure atomicity
   or failed-frame publication change.
+
+## CR-1503: 2026-09-29 - Six-prefix search-work counters
+
+- Author and reviewer: Codex; maintainer approved search-work diagnosis after
+  the rolling-key update experiment.
+- References: IR-1094, DD-1334 and repository-owned finders/tokenization.
+- Independent work: untimed six-prefix replay, fallback classification, length
+  histogram and four-way match comparison against retained tokens.
+- Validation: TVG-1200 and BM-0167, including hand-computed counter fixtures,
+  both compiler smokes, explicit sanitizer and prior-counter agreement.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: intentional first-party counter adaptation only; no
+  external expression or legal guarantee claimed.
+- Scope: benchmark-only diagnostics; production and failure contracts unchanged.

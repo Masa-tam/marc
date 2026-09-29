@@ -6741,3 +6741,51 @@ search-work counts for five and six, including short-prefix fallbacks and
 long-chain candidates, to identify a better supported optimization target.
 No public end-to-end speedup, full-corpus/full-suite/fuzz, hosted CI or new
 external verification is claimed.
+
+## BM-0167: Five- versus six-prefix search-work counts
+
+Use an untimed diagnostic on manifest-verified x-ray and dickens. Each token
+position must agree among the admitted bounded five finder, original six finder,
+both counter replays and retained indexed tokens. All comparisons pass. The
+five-counter reports exactly reproduce BM-0161; the new counters do not alter
+existing finder code. No throughput or hardware-cause measurement is made.
+
+| Search-work count | x-ray | dickens |
+| --- | ---: | ---: |
+| Three-byte visits, either finder | 9,006,675 | 1,480,578 |
+| Four-byte visits, either finder | 5,053,305 | 1,835,259 |
+| Five finder: long-chain visits | 12,150,401 | 123,676,417 |
+| Six finder: nearest-five fallback visits | 10,022,640 | 2,128,041 |
+| Six finder: long-chain visits | 2,673,292 | 58,509,964 |
+| Six fallback plus long visits | 12,695,932 | 60,638,005 |
+| Five finder: extension comparisons | 498,440 | 16,164,838 |
+| Six finder: extension comparisons | 143,580 | 9,189,067 |
+
+After the shared four-byte stage, six has 4.49% more candidate visits on x-ray
+but 50.97% fewer on dickens. These sums count visits at different stages, with
+different per-visit work; they are not a CPU-cost accounting identity. The
+additional six-byte index receives 8,474,195 and 10,192,396 inserts respectively.
+
+| Six nearest-five fallback classification | x-ray | dickens |
+| --- | ---: | ---: |
+| Fifth byte differs | 9,632,108 | 993,015 |
+| Fifth equal, another prefix byte differs | 40,677 | 43,011 |
+| Full five-byte match | 349,855 | 1,092,015 |
+
+Thus 96.10% of x-ray fallback visits, versus 46.66% on dickens, could be
+rejected by checking the fifth byte first. Current six checks the prefix in
+forward order. Classification alone does not prove that changing the order
+is faster: existing checks may already reject early, and added branches or
+loads have their own costs. The next supported trial is fifth-byte-first
+fallback filtering while retaining all indexes and exact nearest-match rules.
+
+Final token counts are 2,753,162 and 1,295,242. Their literal/length-three/
+length-four/length-five/length-six-or-longer bins are respectively
+828,715/543,950/1,030,642/222,137/127,718 and
+41,260/62,288/99,679/140,143/951,872. This further distinguishes the two inputs
+without assigning time to those token categories.
+
+Both compiler smokes, manually checked counts, explicit ASan/UBSan and report
+consistency checks pass. Preserve existing admission decisions: bounded five
+remains public, six prototypes remain experimental. No new frame reconstruction,
+full-corpus/full-suite/fuzz, hosted CI or external verification is claimed.

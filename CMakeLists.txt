@@ -533,6 +533,18 @@ if(MARC_BUILD_BENCHMARKS)
                     "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-six-phase-smoke"
                     -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_six_phase_benchmark_smoke.cmake)
         endif()
+        add_executable(marc_lzss_position_distance_1m_search_counts_benchmark
+            benchmarks/lzss_position_distance_1m_search_counts_benchmark.cpp)
+        target_compile_features(marc_lzss_position_distance_1m_search_counts_benchmark PRIVATE cxx_std_20)
+        target_include_directories(marc_lzss_position_distance_1m_search_counts_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_lzss_position_distance_1m_search_counts_benchmark PRIVATE marc::static)
+        if(MARC_BUILD_TESTS)
+            add_test(NAME marc_position_distance_1m_search_counts_benchmark_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_search_counts_benchmark>"
+                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-search-counts-smoke"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_search_counts_benchmark_smoke.cmake)
+        endif()
         add_executable(marc_lzss_position_distance_1m_six_rolling_benchmark
             benchmarks/lzss_position_distance_1m_six_rolling_benchmark.cpp)
         target_compile_features(marc_lzss_position_distance_1m_six_rolling_benchmark PRIVATE cxx_std_20)
