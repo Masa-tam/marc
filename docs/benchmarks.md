@@ -7224,3 +7224,61 @@ isolate the reproducibility of complete replay timing with unchanged binaries
 before selecting a width or implementing a bounded production variant. Preserve
 the old online experiment as a separate comparison; do not combine unqualified
 changes or silently increase public memory requirements.
+
+## BM-0175: Unchanged width benchmark scheduling controls
+
+Date: 2026-09-29. DD-1342 retains the BM-0174 executable and source identities.
+Measure five independent default/single-logical-processor pairs per input for
+dickens and x-ray, alternating condition and input order across pairs. Child
+affinity is inherited at creation and checked. All twenty scheduled processes
+are retained. There are no rebuilds or concurrent build/test runs.
+
+Each process still measures reset plus token replay, with warmup and three
+rotated iterations, for bounded five, original shared-key five and guarded
+16/18/20-bit paths. Values below use each process's median of those three totals.
+The ratios compare a wider path with guarded 16 in the same process. Negative
+means faster; ranges include every run and are not confidence intervals.
+
+| Input | Eligibility | 18 vs 16 range | Median ratio change | 20 vs 16 range | Median ratio change |
+|---|---|---:|---:|---:|---:|
+| dickens | default | -59.61% to +9.15% | -8.62% | -58.09% to -3.45% | -6.00% |
+| dickens | one logical processor | -9.03% to -4.22% | -4.88% | -7.36% to -0.92% | -4.36% |
+| x-ray | default | -58.85% to -2.61% | -43.03% | -55.26% to -28.36% | -40.94% |
+| x-ray | one logical processor | -42.12% to -8.51% | -29.99% | -35.90% to -2.83% | -33.08% |
+
+Large apparent improvements can reflect a slow comparison denominator. Absolute
+process-median ranges in seconds are therefore necessary context:
+
+| Input / eligibility | Bounded five | Original five | Guarded 16 | Guarded 18 | Guarded 20 |
+|---|---:|---:|---:|---:|---:|
+| dickens / default | 1.296–1.579 | 1.355–3.238 | 1.290–3.144 | 1.237–1.459 | 1.230–1.330 |
+| dickens / fixed | 1.330–2.792 | 1.333–1.856 | 1.317–1.415 | 1.242–1.287 | 1.255–1.320 |
+| x-ray / default | 0.383–0.429 | 0.477–0.668 | 0.477–0.702 | 0.289–0.478 | 0.298–0.352 |
+| x-ray / fixed | 0.402–0.708 | 0.419–0.693 | 0.448–0.555 | 0.317–0.409 | 0.315–0.455 |
+
+Some large slowdowns persist across all three internal iterations. For example,
+one default dickens process records guarded 16 totals of 2.759/2.794/2.794 seconds;
+a fixed process records bounded five at 2.815/2.773/2.792; another default process
+records original five at 3.224/3.282/3.238. These are not single slow iterations
+discarded by the median. Different paths exhibit the slowdown across processes.
+Preserve these runs and the earlier adverse BM-0174 results.
+
+Both wider paths improve on x-ray in all ten new processes. Fixed dickens also
+improves in all five, but default dickens retains an 18-bit regression. This is
+evidence of input-dependent potential, not a reliable global gain. Eligibility
+restriction alone does not stabilize every control, and the data do not identify
+CPU migration, frequency, cache behavior, address placement or compiler effects
+as the cause. No hardware-counter or per-frame timing evidence was collected.
+
+All non-timing fields match BM-0174 in all twenty processes (TVG-1208), including
+exact/collision counts and token/frame totals. Executable/source identities are
+unchanged. Separate warmed-array reset values are preserved but not subtracted
+to infer a search cost. This is neither replicated whole-corpus nor end-to-end
+compression evidence, and no peak-memory measurement is added.
+
+Keep both wider variants unadmitted. Next isolate same-code controls: multiple
+16-bit instances with separate working storage, controlled allocation/execution
+order and retained per-frame timing. Treat storage/order sensitivity as a testable
+hypothesis, not an established explanation. Public format, workspace limits,
+failure atomicity and failed-frame non-publication remain unchanged. No new
+full-suite/fuzz, hosted CI or external qualification is claimed.

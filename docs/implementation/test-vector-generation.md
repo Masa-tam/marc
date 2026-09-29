@@ -17987,3 +17987,26 @@ iterations; x-ray and dickens have two additional processes. Initialization is
 measured separately on warmed arrays. This is not a replicated whole-corpus or
 end-to-end result. No public workspace/failure/chunking behavior changes and no
 new full-suite/fuzz, hosted CI or external qualification is claimed.
+
+## TVG-1208: Unchanged width benchmark scheduling controls
+
+For DD-1342, retain the existing benchmark executable and verify its source,
+executable and static-library identities before and after measurement. Validate
+the corpus manifest. Run dickens and x-ray in five independent default/fixed
+pairs each, with predetermined alternating pair/input order: twenty processes
+total. Verify inherited child affinity in every process; restore the launcher's
+original affinity on exit. No rebuild or concurrent build/test work occurs.
+
+All twenty executions complete successfully. Each runs the existing boundary,
+nearest-tie, rejected-reset, indexed-token, representative frame-identity and
+restoration checks. Every non-timing report field matches its earlier BM-0174
+report, including per-frame sizes, token/frame-byte totals, exact-prefix visits,
+collisions and declared array payload. Warmup, rotated measured iterations and
+untimed counted replay remain unchanged. No independent per-path frame encoding
+or new decoder/fuzz qualification is implied by reusing these checks.
+
+Retain every measured process and all three internal iteration totals. Report
+within-process width ratios and absolute-time ranges separately for each input
+and affinity condition. Separate warmed-reset times remain diagnostic only.
+BM-0175 records the variability; no new full-suite, compiler/sanitizer rebuild,
+hosted CI or external qualification is claimed. Production behavior is unchanged.

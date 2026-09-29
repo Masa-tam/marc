@@ -26997,3 +26997,34 @@ sum regresses and dickens changes direction across processes despite identical
 counts. Do not admit a width or assign a cache/compiler cause without evidence.
 Next investigate reproducibility with unchanged binaries before bounded/public
 integration; preserve all results and existing memory/failure contracts.
+
+## DD-1342: Control five-prefix width timing before admission
+
+Freeze the DD-1341 executable and source identities. Run five independent pairs
+per input for dickens and x-ray, alternating default/fixed execution order and
+input order across pairs. The fixed condition inherits a single allowed logical
+processor from the measurement launcher before process creation; verify the
+child's mask. Restore the launcher's original mask afterward. Do not modify
+system-wide scheduling, power settings or benchmark code.
+
+Each process retains the existing warmup and three rotated measured iterations,
+all five replay paths, separate warmed-reset measurements and untimed identity
+checks. Compare process medians within each run; retain every scheduled run,
+including regressions. Check every non-timing report field against the earlier
+reports, not just total token counts. Preserve executable and source hashes
+before and after the experiment.
+
+This controls processor eligibility, not frequency, contention, cache state,
+memory placement or instruction behavior. A timing change under affinity does
+not by itself establish a causal mechanism. This focused study cannot replace
+replicated corpus or end-to-end qualification. Keep wider variants unadmitted
+and preserve public format, memory limits and failure/publication contracts.
+
+BM-0175 reproduces substantial process-level variation with unchanged non-timing
+reports. Fixed affinity does not stabilize every control. Some large slowdowns
+persist through all three internal iterations, affecting different paths across
+processes. Do not discard these processes or interpret a slow denominator as a
+guaranteed wider-table gain. Next use identical 16-bit implementations with
+separate working storage and controlled allocation/order permutations, recording
+per-frame timing outside the timed region. This tests storage/order sensitivity;
+it does not assume a cache, address-placement or compiler cause in advance.

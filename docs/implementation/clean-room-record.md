@@ -36250,3 +36250,19 @@ both bounds.
   or legal guarantee claimed.
 - Scope: benchmark-only; no public format, workspace, decoder, failure atomicity
   or failed-frame non-publication change.
+
+## CR-1511: 2026-09-29 - Unchanged width benchmark scheduling controls
+
+- Author and reviewer: Codex; maintainer approved the next reproducibility step.
+- References: IR-1102, DD-1342 and the repository-owned scheduling-control runner.
+- Independent procedure: preserve the executable, alternate default/single-CPU
+  process eligibility, retain all twenty runs and compare every non-timing field
+  against earlier reports. No parameter fitting or favorable-run selection.
+- Validation: TVG-1208 and BM-0175; source/binary identity, inherited affinity,
+  existing boundary/token/frame/restoration checks and unchanged diagnostic counts.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party tuning/test code.
+- Similarity review: first-party measurement procedure and documentation only;
+  no codec code is generated or changed. No legal guarantee is claimed.
+- Scope: no format, public memory, encoder/decoder, failure atomicity or
+  failed-frame non-publication change; timing causes remain unverified.

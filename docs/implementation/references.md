@@ -9765,3 +9765,10 @@ Use the repository-owned shared-key five-prefix finder, bounded production
 finder, indexed/exhaustive oracles and first-party corpus diagnostics. Widen only
 the long-prefix bucket projection of the existing 32-bit mixer. No external
 implementation or optimization source is consulted.
+
+## IR-1102: Unchanged five-prefix width scheduling controls
+
+Use the first-party DD-1341 benchmark, preserved measurement reports and the
+earlier scheduling-control procedure. Compare inherited default affinity with
+one allowed logical processor without rebuilding the measured executable.
+No external source, implementation or tuning reference is consulted.
