@@ -36231,3 +36231,22 @@ both bounds.
   legal guarantee claimed.
 - Scope: benchmark-only; no model admission, public format, workspace, decoder,
   failure atomicity or failed-frame non-publication changes.
+
+## CR-1510: 2026-09-29 - Specialized five-prefix bucket refinement
+
+- Author and reviewer: Codex; maintainer approved the collision-reduction trial
+  after the online late-decision experiment.
+- References: IR-1101, DD-1341 and repository-owned shared-key/production finders.
+- Independent design: refine only the long-prefix projection to 16/18/20 bits,
+  retain position links and exact search semantics, and classify collisions
+  only during untimed counted replay. The small collision vector is first-party.
+- Validation: TVG-1207 and BM-0174; exhaustive/wide-distance/reset checks, both
+  compiler and sanitizer smokes, eight cross-build reports, all twelve corpus
+  identity/count comparisons and focused independent repetitions.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party tuning/test code.
+- Similarity review: intentional first-party adaptation with independently
+  specified hash projection and diagnostic identities; no external expression
+  or legal guarantee claimed.
+- Scope: benchmark-only; no public format, workspace, decoder, failure atomicity
+  or failed-frame non-publication change.

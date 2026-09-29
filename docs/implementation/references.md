@@ -9758,3 +9758,10 @@ Use repository-owned lazy-six activation, DD-1339's explicitly hypothetical
 integer work model and TVG-1205 fixtures. No external implementation or adaptive
 selection source is consulted. Retain all nine assumptions without fitting them
 to the new measurements.
+
+## IR-1101: Specialized five-prefix bucket refinement
+
+Use the repository-owned shared-key five-prefix finder, bounded production
+finder, indexed/exhaustive oracles and first-party corpus diagnostics. Widen only
+the long-prefix bucket projection of the existing 32-bit mixer. No external
+implementation or optimization source is consulted.

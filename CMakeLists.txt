@@ -557,6 +557,18 @@ if(MARC_BUILD_BENCHMARKS)
                     "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-online-six-smoke"
                     -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_online_six_benchmark_smoke.cmake)
         endif()
+        add_executable(marc_lzss_position_distance_1m_wide_five_benchmark
+            benchmarks/lzss_position_distance_1m_wide_five_benchmark.cpp)
+        target_compile_features(marc_lzss_position_distance_1m_wide_five_benchmark PRIVATE cxx_std_20)
+        target_include_directories(marc_lzss_position_distance_1m_wide_five_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_lzss_position_distance_1m_wide_five_benchmark PRIVATE marc::static)
+        if(MARC_BUILD_TESTS)
+            add_test(NAME marc_position_distance_1m_wide_five_benchmark_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_wide_five_benchmark>"
+                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-wide_five-smoke"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_wide_five_benchmark_smoke.cmake)
+        endif()
         add_executable(marc_lzss_position_distance_1m_observation_benchmark
             benchmarks/lzss_position_distance_1m_observation_benchmark.cpp)
         target_compile_features(marc_lzss_position_distance_1m_observation_benchmark PRIVATE cxx_std_20)

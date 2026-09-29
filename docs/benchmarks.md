@@ -7143,3 +7143,84 @@ change or a claim of benefit on repeated exact prefixes.
 Public bounded five, format, preflight, failure atomicity and failed-frame
 non-publication remain unchanged. No new full-suite/fuzz, hosted CI or external
 qualification is claimed.
+
+## BM-0174: Five-prefix bucket width, collisions and initialization tradeoffs
+
+Date: 2026-09-29. DD-1341 fixes five-byte bucket widths 16/18/20 while retaining
+16-bit three/four-byte indexes. Compare bounded production, original shared-key
+five and a guarded 16-bit control with both wider variants. All variants retain
+exact tokens. Timed replay includes reset and all index updates/searches; counted
+classifications, IO, reporting, equality and frame checks are outside timing.
+
+The following is one process per complete corpus member, each with warmup and
+three rotated measured iterations. Entries are median seconds. Treat this as
+screening, not replicated whole-corpus evidence or end-to-end throughput.
+
+| Input | Bounded | Original | 16 bits | 18 bits | 20 bits |
+|---|---:|---:|---:|---:|---:|
+| dickens | 1.760367 | 1.280800 | 1.288446 | 1.783788 | 1.609105 |
+| mozilla | 5.565820 | 5.542885 | 5.558057 | 5.335096 | 5.404386 |
+| mr | 2.066333 | 2.084594 | 2.051940 | 2.062713 | 2.055249 |
+| nci | 2.639501 | 2.557447 | 2.545426 | 2.943380 | 3.281345 |
+| ooffice | 0.416606 | 0.413584 | 0.410764 | 0.403415 | 0.344473 |
+| osdb | 0.490237 | 0.464512 | 0.466230 | 0.460174 | 0.485409 |
+| reymont | 1.651863 | 1.669499 | 1.638251 | 1.917180 | 1.857247 |
+| samba | 1.545251 | 1.524939 | 1.498213 | 1.471803 | 1.488807 |
+| sao | 0.666847 | 0.551965 | 0.584519 | 0.549717 | 0.598368 |
+| webster | 5.427272 | 7.513576 | 5.352788 | 5.209194 | 5.224205 |
+| xml | 0.250498 | 0.253440 | 0.244531 | 0.241631 | 0.241364 |
+| x-ray | 0.381712 | 0.400764 | 0.399684 | 0.289885 | 0.326619 |
+| Sum | 22.862307 | 24.258005 | 22.038849 | 22.667974 | 22.916577 |
+
+Two additional independent processes each for x-ray/dickens give these paired
+ranges against the guarded 16-bit control. Keeping this control avoids assigning
+all production-versus-benchmark implementation differences to bucket width.
+
+| Input | 18 vs 16 bits | 20 vs 16 bits |
+|---|---:|---:|
+| x-ray | -28.02% to -14.87% | -33.86% to -18.28% |
+| dickens | -4.80% to +38.44% | -3.91% to +24.89% |
+
+Untimed classification confirms identical true-prefix visits and decreasing
+collisions for every frame. Selected totals explain why collision removal has
+different potential across inputs, without predicting CPU time:
+
+| Input | True-prefix visits, all widths | Collisions, 16 | Collisions, 18 | Collisions, 20 |
+|---|---:|---:|---:|---:|
+| x-ray | 628,776 | 11,521,625 | 2,879,470 | 714,455 |
+| dickens | 114,905,033 | 8,771,384 | 2,368,087 | 605,946 |
+| mozilla | 2,810,179,612 | 28,742,158 | 6,709,609 | 1,766,467 |
+| nci | 828,954,423 | 3,549,443 | 915,793 | 623,121 |
+
+Full-capacity index payload is 13,369,344 / 14,155,776 / 17,301,504 bytes. Wider
+heads add 768 KiB / 3.75 MiB; the number of position links is unchanged. Payload
+excludes object, allocator, token/frame buffers and process overhead; no peak
+RSS or admitted public workspace measurement is claimed.
+
+Separate warmed-array reset diagnostics sum to 0.090510 / 0.093130 / 0.120719 seconds
+across the twelve members. Cache conditions differ from interleaved replay;
+do not subtract these times to claim a causal search/initialization breakdown.
+Fewer logical visits need not imply proportionally shorter elapsed time, and
+these measurements do not establish an instruction- or cache-level cause.
+
+All corpus token/frame/restoration checks, counter identities, compiler/sanitizer
+smokes and eight cross-build fixtures pass (TVG-1207). Preserve both improvements
+and regressions. Do not promote a wider table solely because it removes more
+collisions or wins on one member. Public bounded five, format, workspace limits,
+failure atomicity and failed-frame non-publication remain unchanged. No new
+full-suite/fuzz, hosted CI or external qualification is claimed.
+
+The single-pass corpus sum is +2.85% for 18 bits and +3.98%
+for 20 bits versus guarded 16. On x-ray both wider variants improve in all three
+processes. On dickens the first process is slower, while both subsequent
+processes are faster with identical visit counts. Retain the first result rather
+than discarding it as an outlier. The mechanism of this process-level variation
+is unverified. The bounded/original controls also differ for some inputs, so a
+production-versus-vector comparison alone cannot identify bucket-width effects.
+
+Keep both wider variants unadmitted. The experiment establishes exact collision
+refinement and input-dependent potential, not a robust global policy. Next
+isolate the reproducibility of complete replay timing with unchanged binaries
+before selecting a width or implementing a bounded production variant. Preserve
+the old online experiment as a separate comparison; do not combine unqualified
+changes or silently increase public memory requirements.

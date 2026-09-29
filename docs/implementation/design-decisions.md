@@ -26956,3 +26956,44 @@ Keep the wrapper experimental; do not admit or retune a member of the grid.
 A separate collision-reduction trial in the specialized five-prefix index is
 a simpler comparison to investigate before adding further selector complexity.
 The standard HashChain cap from DD-1160 does not change this specialized index.
+
+## DD-1341: Refine only the specialized five-byte bucket table
+
+Date: 2026-09-29. Freeze a benchmark-only comparison of 16, 18 and 20 high hash
+bits for the five-byte index. Three/four-byte indexes retain 16 bits. Preserve
+the full 32-bit mixer, shared insertion keys, all input-position links, search
+order, longest/nearest semantics and exact comparisons. Wider high-bit buckets
+refine the original groups: remove collisions without removing any equal prefix.
+True equal-five-prefix visits should therefore remain identical while collision
+visits cannot increase; verify these identities separately from timing.
+
+Keep bounded production five and the original shared-key vector finder as
+controls, plus a new guarded 16-bit control and 18/20-bit candidates. All arrays
+are preallocated for at most one MiB; reset rejects an oversized frame before
+mutating state, and replay uses sequential positions. Full-capacity array payload
+is 4*(2*65536+2^bits+3*N): 13,369,344 / 14,155,776 / 17,301,504 bytes, respectively.
+The wider tables add 786,432 / 3,932,160 bytes; no additional position links or
+sixth index are maintained. These are payload counts, not peak RSS or public
+workspace queries. Initialization now clears a larger head table.
+
+Time reset plus token replay with warmup and three rotated iterations. Separately
+measure repeated reset on the guarded variants; these warmed-array initialization
+measurements cannot be subtracted from replay as a causal phase decomposition.
+Use counted specializations only in untimed replays to classify all long-chain
+visits as exact-prefix or collision, before the existing improvement probe.
+Compare every path with retained indexed tokens, exhaustive boundary cases,
+representative exact frame serialization and reconstruction.
+
+Run all twelve manifest-verified corpus members once (three measured iterations
+per process), then two additional independent processes each for x-ray/dickens.
+The full-corpus pass is a screening measurement, not replicated evidence for all
+members. Preserve any regressions and do not promote a fastest-only candidate.
+Keep public format, workspace/preflight, allocation and failure/non-publication
+contracts unchanged. BM-0174 records the tradeoffs before any bounded integration.
+
+BM-0174 confirms collision reduction and exact-prefix visit preservation on all
+twelve members. Focused x-ray repetitions improve, but the single-pass corpus
+sum regresses and dickens changes direction across processes despite identical
+counts. Do not admit a width or assign a cache/compiler cause without evidence.
+Next investigate reproducibility with unchanged binaries before bounded/public
+integration; preserve all results and existing memory/failure contracts.

@@ -17949,3 +17949,41 @@ results agree across builds. This tests reset after a real online transition.
 No production decoder, public preflight, allocation or arbitrary chunking behavior
 changed. These are benchmark checks, not a new public failure/publication gate,
 full regression/fuzz campaign, hosted CI or external qualification.
+
+## TVG-1207: Five-prefix bucket refinement and collision classification
+
+Date: 2026-09-29. For each of 16/18/20 long-prefix bits, compare every position
+with exhaustive search for empty/tiny, 257/258/259/513-byte zero, periodic and
+seeded-random fixtures. Check distances 65,535/65,536/65,537/1,048,570, nearest
+same-length ties, rejected oversized reset preserving the next match, and empty
+reset. The smoke includes differing fifth/sixth bytes, one-MiB-plus-sixteen-byte
+input, verification-only replay, and rejected empty benchmark files.
+
+A first-party generated collision fixture consists of decimal bytes
+57,77,53,96,97,69,85,70,66,64,69,85,70,66,63. The first five bytes hash to
+0x8cd10d21 and the final five to 0x8cd15d5c under the unchanged 32-bit mixer.
+They collide at 16 bits and separate at 18/20; the middle five-byte string gives
+a length-four fallback with a different fifth byte. Require one classified
+collision for 16 bits and zero for both wider tables. Both compiler smokes and
+explicit ASan/UBSan pass, including this regression vector.
+
+All twelve manifest-verified corpus members match retained indexed tokens for
+bounded five, original shared-key five, guarded 16-bit and both wider candidates.
+Three counted specializations also match every token field. Representative
+actual tokens serialize identically to the oracle and restore the input; each
+path has already matched that same token sequence. Earlier input, token and
+frame-byte totals agree. The 16-bit visit/exact/collision totals equal the earlier
+five-finder diagnostics for every member. Wider tables retain exactly the same
+true-prefix visit count, and visits/collisions never increase, checked per frame.
+These classifiers run outside timing and add prefix comparisons intentionally.
+
+Eight verification-only inputs (TVG-1205's seven fixtures plus the structured
+full frame followed by ASCII abcde) produce identical reports across both
+compilers and explicit ASan/UBSan, including counts and memory payloads. Separate
+instances and short final frames do not retain earlier index entries.
+
+Each corpus member has one timed process with warmup and three rotated measured
+iterations; x-ray and dickens have two additional processes. Initialization is
+measured separately on warmed arrays. This is not a replicated whole-corpus or
+end-to-end result. No public workspace/failure/chunking behavior changes and no
+new full-suite/fuzz, hosted CI or external qualification is claimed.
