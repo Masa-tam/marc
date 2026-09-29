@@ -4183,3 +4183,14 @@ is inferred from whole-pipeline timings. Schema 59 appends the profile as the
 69th archive while preserving schemas 1 through 58. IX-0051 defines the new
 qualification gate; hosted CI and revision-specific external results remain
 required, independently of the older 68-archive reports.
+
+
+## 2026-09-30: Prepared 1 MiB mapping external verification recorded
+
+IX-0053 records maintainer-reported successful hosted CI and four 69-archive
+verification routes at `2511312625e2c324b75ecda04eac4b1c3fe9263c`. This closes
+the pending CI/external gate for DD-1354's prepared-mapping integration. Repeated
+producer labels are distinguished by the reported consumer routes. The public
+profile remains outside the unchanged 42-profile baseline; format, workspace,
+failure/publication guarantees and release state are unchanged. TVG-1220 supplies
+local regression evidence; the external reports were not independently rerun.

@@ -27480,3 +27480,10 @@ format, C ABI, dictionary policy, workspace requirement or decoder change.
 BM-0187 distinguishes historical performance evidence from this integration's
 correctness validation. New hosted CI and external-platform qualification remain
 unverified until run for this revision; do not relabel previous qualification.
+
+
+IX-0053 and TVG-1221 close this integration's pending CI/external exchange gate
+from the maintainer's successful CI report and four 69-archive verification
+results at `2511312625e2c324b75ecda04eac4b1c3fe9263c`. Record the producer and
+consumer routes separately, preserve the reports' provenance and do not claim an
+independent rerun. This gate closure changes no implementation or release state.

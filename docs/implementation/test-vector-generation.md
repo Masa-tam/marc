@@ -18359,3 +18359,17 @@ header updates change comments only; their source declarations remain identical.
 No fresh fuzzing campaign, hosted CI, external-host qualification or peak-resident-
 memory measurement is claimed. Existing corpus/format qualification remains
 separate from these local production-path regression results.
+
+
+## TVG-1221: Prepared-mapping integration external result provenance
+
+The maintainer reports pushed CI success and four successful 69-archive verifier
+passes at `2511312625e2c324b75ecda04eac4b1c3fe9263c`. IX-0053 records Windows-CI
+to Ubuntu, Ubuntu-CI to Ubuntu, external Ubuntu-Clang self-verification and the
+same external bundle verified on Windows after transfer. All four lines name
+the integration revision; repeated producer labels do not imply extra platforms.
+
+No test or external verification is rerun in this documentation-only stage.
+TVG-1220's local results remain attributed to the implementation revision, while
+these reported results close its separate CI/external gate. Corpus performance,
+full-window boundaries and exchange-fixture coverage are not conflated.

@@ -1323,3 +1323,29 @@ Verifier labels identify bundle producers, not the systems executing verificatio
 The two equal Ubuntu Clang labels therefore represent self-verification and
 cross-system verification, respectively. This refines the evidence provenance;
 the reported revision, archive count and successful gate closure are unchanged.
+
+
+### IX-0053: Public prepared-mapping encoder external verification complete
+
+The maintainer reported successful pushed CI and four successful verifier passes
+at revision `2511312625e2c324b75ecda04eac4b1c3fe9263c`. Each final line identifies
+69 archives and that exact revision. The producer and consumer roles are:
+
+| Pass | Archive producer | Verification consumer |
+|---|---|---|
+| 1 | Windows CI | Ubuntu |
+| 2 | Ubuntu CI | Ubuntu |
+| 3 | External Ubuntu Clang | Same Ubuntu environment (self-verification) |
+| 4 | External Ubuntu Clang | Windows after transferring the bundle |
+
+The two equal Ubuntu Clang labels identify the same bundle producer and distinct
+verification routes, not additional platforms. These are maintainer-reported
+results; hosted CI and external runs were not independently rerun here.
+
+These reports close DD-1354's revision-specific CI/external exchange gate for
+the public prepared-mapping encoder. TVG-1220's local compiler, sanitizer, failed-
+frame and twelve-member CLI comparisons remain separate supporting evidence.
+Schema 59, its 69-archive inventory and the 8,193-byte exchange fixture remain
+unchanged; separate permanent tests cover full-window behavior. This record
+changes no implementation, format, ABI, defaults or release state and makes no
+claim about untested inputs or architectures.

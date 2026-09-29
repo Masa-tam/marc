@@ -36482,3 +36482,20 @@ both bounds.
   comparisons. No legal guarantee or new external qualification is claimed.
 - Decision: admit prepared mapping through the public 1 MiB encoder. Retain the
   original reference and strict-budget fallback; preserve all old artifacts.
+
+
+## CR-1524: 2026-09-30 - Prepared-mapping external qualification record
+
+- Author and reviewer: Codex; maintainer supplied successful CI and four external
+  verifier results for the exact DD-1354 integration revision.
+- References: DD-1354, IX-0053, TVG-1220/TVG-1221 and the maintainer's report.
+- Independent task: record revision-specific provenance and distinguish bundle
+  producers from consumers, including self-verification and transferred bundles.
+- Validation: documentation/scope checks only in this stage; reported hosted CI
+  and external runs were not independently rerun. Existing local evidence retained.
+- Similarity review: documentation-only provenance update; no implementation,
+  algorithm expression or external codec source consulted. No legal guarantee.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Decision: close the integration's CI/external exchange gate without changing
+  format, ABI, defaults, memory limits, failure contracts or release state.
