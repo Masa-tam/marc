@@ -7602,3 +7602,71 @@ spread is 1.31% and 0.99%, respectively. This supports further bounded-path
 measurement, not a public default change. Next replicate this preserved bounded
 binary across all twelve corpus members, including nci/reymont and all earlier
 adverse cases, before any factory/workspace integration decision.
+
+
+## BM-0181: Replicated complete-corpus bounded 18-bit measurements
+
+Date: 2026-09-29. DD-1348 repeats the preserved DD-1347 diagnostic over all
+twelve manifest-verified members in three passes. Member order rotates by four
+per pass and reverses on the middle pass; each member alternates forward/reverse
+execution. All 36 processes are retained. The source and executable identities,
+including earlier diagnostic artifacts, match before and after measurement.
+
+Each frame has one warmup and three rank-balanced measured iterations across
+slots 16/16/18 using one shared maximum-sized workspace. Take each slot's median
+of whole-input iteration totals, then sum those medians across each pass. These
+are checked initialization and finder replay times, not public pipeline times.
+Negative percentage means less elapsed time. No builds or tests overlap timing.
+
+| Pass | Control 0 seconds | Control 1 seconds | 18-bit seconds | Change vs control 0 | Change vs control 1 |
+|---|---:|---:|---:|---:|---:|
+| 1 | 22.060775 | 22.061967 | 21.359796 | -3.18% | -3.18% |
+| 2 | 21.909480 | 21.926326 | 21.210562 | -3.19% | -3.26% |
+| 3 | 22.046465 | 22.040964 | 21.315568 | -3.32% | -3.29% |
+
+The following ranges include all three processes and both controls for each
+member. They are observed ranges, not confidence intervals.
+
+| Member | 18-bit change range | Faster than both controls | Slower than both | Maximum control spread |
+|---|---:|---:|---:|---:|
+| dickens | -4.92% to -4.09% | 3/3 | 0/3 | 0.60% |
+| mozilla | -3.07% to -1.98% | 3/3 | 0/3 | 0.41% |
+| mr | -2.97% to -1.35% | 3/3 | 0/3 | 0.90% |
+| nci | -1.36% to +0.09% | 1/3 | 0/3 | 1.47% |
+| ooffice | -11.04% to -9.23% | 3/3 | 0/3 | 0.71% |
+| osdb | -5.94% to -4.46% | 3/3 | 0/3 | 0.57% |
+| reymont | -1.59% to -0.70% | 3/3 | 0/3 | 0.79% |
+| samba | -4.18% to -3.36% | 3/3 | 0/3 | 0.52% |
+| sao | -6.74% to -5.47% | 3/3 | 0/3 | 0.41% |
+| webster | -3.63% to -2.68% | 3/3 | 0/3 | 0.40% |
+| xml | -3.61% to -1.68% | 3/3 | 0/3 | 1.05% |
+| x-ray | -27.46% to -25.27% | 3/3 | 0/3 | 1.44% |
+
+Across passes, sums improve 3.18% to 3.32% against
+the two controls. The candidate is faster than both in 34/36 processes,
+slower than both in 0/36; maximum whole-input control spread is 1.47%.
+Retain near-ties and adverse observations. Small member differences within
+control variation do not establish a statistically significant improvement.
+
+Every measured replay matches indexed-reference tokens. A representative replay
+per frame serializes identically and restores the input. Frame sizes, token and
+serialized-byte totals agree with retained verification-only reports; execution
+ranks, finite timing values and frame-to-input time sums pass validation.
+
+The candidate's full-frame arrays remain 14,155,776 bytes, 786,432 bytes above
+16 bits. This is array arithmetic, not peak process memory. Shared scratch,
+different measured specializations and direct replay remain diagnostic limits.
+No public factory, workspace contract, codec format or failure/publication
+behavior changes. No compiler/sanitizer/full-suite/fuzz, hosted CI or external
+qualification is newly claimed in this measurement-only stage.
+
+Next evaluate a private complete encoder path with explicit workspace accounting,
+exact output and limit/failure tests before public admission. The bounded replay
+results justify that evaluation, not an assumed end-to-end speedup or automatic
+default change. Keep all earlier negative observations and the retained binary.
+
+In particular, nci lies between controls in two passes and is faster than both
+in one; its full observed range is -1.36% to +0.09% with control spread up to
+1.47%. Treat nci as near-flat, not a demonstrated gain. Reymont is faster than
+both in all three passes, by 0.70% to 1.59% across both controls; this remains a
+small observed margin rather than a statistical significance claim.

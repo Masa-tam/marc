@@ -18154,3 +18154,22 @@ The new sources are compiled only into dedicated tests/diagnostics. Existing
 production library source lists and factory selection remain unchanged. No new
 public codec/workspace contract, full-suite/fuzz, hosted CI or external
 qualification is claimed. Failed-frame non-publication remains unchanged.
+
+
+## TVG-1214: Bounded 18-bit complete-corpus replication checks
+
+DD-1348 executes three complete passes of twelve manifest-verified members. All
+36 processes check every timed replay against indexed tokens, a representative
+serialized frame against oracle bytes, and restoration of original input.
+Retained verification-only reports agree in all non-timing fields except the
+explicit execution direction and measured-iteration flags. Input/frame sizes,
+token counts, serialized totals and workspace bytes match.
+
+Validate the exact predetermined process order, 18 forward and 18 reverse runs,
+three execution ranks per slot/frame and all slot ranks per iteration, finite
+nonnegative times and frame-to-input time sums. Preserve every raw report and
+verify source/binary hashes before and after timing. BM-0181 records all results.
+
+The unchanged binary uses prior compiler/sanitizer coverage from TVG-1213; no
+fresh full-suite, sanitizer, fuzz, hosted CI or external qualification is claimed.
+This stage modifies documentation only; all existing failure contracts remain.

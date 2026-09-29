@@ -9804,3 +9804,10 @@ Use the repository-owned bounded 16-bit finder/tokenizer, preflight helpers,
 indexed/exhaustive oracles and DD-1346 measurements. Adapt only the long-prefix
 projection and explicit workspace layout in a separate candidate. No external
 implementation or optimization reference is consulted.
+
+
+## IR-1108: Replicated bounded 18-bit corpus measurements
+
+This stage uses the unchanged first-party DD-1347 bounded candidate and its
+diagnostic, the corpus manifest, and BM-0180 retained reports. No external
+implementation or new algorithm reference was consulted.

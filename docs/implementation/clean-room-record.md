@@ -36352,3 +36352,20 @@ both bounds.
   No external expression or legal guarantee is claimed.
 - Scope: private prototype compiled only in tests/diagnostics; production factory,
   format, workspace limits and failed-frame non-publication are unchanged.
+
+
+## CR-1517: 2026-09-29 - Replicated bounded 18-bit corpus evaluation
+
+- Author and reviewer: Codex; maintainer approved the DD-1347 next measurement.
+- References: IR-1108, DD-1348, unchanged first-party diagnostic and retained
+  corpus manifest, verification reports and source/binary identities.
+- Independent task: repeat all twelve members three times with declared order,
+  retain all measurements, compare both controls and report input dependence.
+- Validation: TVG-1214 and BM-0181; all 36 content/rank/timing checks and identity
+  checks pass. No new implementation, compiler or sanitizer qualification.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: documentation and locally authored analysis only; no new
+  algorithm expression. No legal guarantee or public adoption is claimed.
+- Scope: no public format, workspace, failure atomicity or failed-frame
+  publication change. All earlier experiments and adverse results retained.

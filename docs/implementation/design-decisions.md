@@ -27230,3 +27230,30 @@ pass. In twelve measured processes, 18 bits beats both bounded controls in every
 run. Retain the candidate as private and next repeat full-corpus measurements
 using this bounded binary. Do not import the old runtime harness's aggregate
 speedup or alter public workspace/factory behavior before that evidence exists.
+
+
+## DD-1348: Repeat complete-corpus timing before bounded 18-bit admission
+
+Preserve the DD-1347 diagnostic binary and source. Execute three complete passes
+of all twelve verified corpus members, including nci and reymont. Rotate member
+order by four per pass, reverse the middle pass, and alternate each member's
+forward/reverse execution direction between passes. Retain all 36 processes.
+
+Keep one warmup and three balanced measured iterations per frame, with two
+bounded 16-bit controls and one bounded 18-bit candidate sharing maximum-sized
+scratch. Compare each candidate with both controls and report absolute timings,
+control spread, per-member results and sums of member medians for each pass.
+Do not select only the fastest run, change affinity, or run builds/tests beside
+measurements. Verify tokens, representative serialized frames, restoration,
+rank permutations, elapsed-time sums and retained source/binary identities.
+
+This is initialization/replay timing, not public pipeline throughput or peak
+process memory. The candidate remains private pending evidence and a separate
+public workspace/factory integration decision. Existing formats, limits and
+failure/publication contracts are unchanged.
+
+BM-0181 completes all 36 processes with matching content and preserved identities.
+Pass sums improve 3.18% to 3.32% against both controls;
+member-specific near-ties remain in the report. Advance only to private complete
+encoder evaluation with checked workspace budgeting and exact/error-contract
+tests. Public selection remains unchanged pending end-to-end evidence.
