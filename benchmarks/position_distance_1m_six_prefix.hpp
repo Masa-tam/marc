@@ -7,11 +7,12 @@
 #include <vector>
 namespace marc::benchmark {
 // Experiment only. Caller supplies sequential positions inside one bounded frame.
-template<bool SharedAdvance>
+template<bool SharedAdvance, bool OmitFive = false>
 class SixPrefixFinderImpl {
     static constexpr auto empty=std::numeric_limits<std::uint32_t>::max();
     std::span<const std::byte> input_;
-    std::array<std::vector<std::uint32_t>,4> heads_,links_;
+    static constexpr std::size_t long_index = OmitFive ? 2 : 3;
+    std::array<std::vector<std::uint32_t>, OmitFive ? 3 : 4> heads_,links_;
     std::size_t bucket(std::size_t p,std::size_t n) const {
         std::uint32_t key{};
         for(std::size_t i=0;i<std::min<std::size_t>(n,4);++i)
@@ -51,14 +52,18 @@ public:
             if(equal(p,c,4)) {nearest=c;best={static_cast<std::uint32_t>(p-c),4};break;}
         }
         if(nearest==empty || maximum==4) return best;
-        first=input_[p+4]==input_[nearest+4] ? nearest : heads_[2][bucket(p,5)];
+        // The compact experiment searches the four-byte chain for its nearest
+        // five-byte fallback; it has no separate five-byte index.
+        constexpr std::size_t fallback_index = OmitFive ? 1 : 2;
+        first=input_[p+4]==input_[nearest+4] ? nearest
+            : heads_[fallback_index][bucket(p,OmitFive ? 4 : 5)];
         nearest=empty;
-        for(auto c=first;c!=empty;c=links_[2][c]) {
+        for(auto c=first;c!=empty;c=links_[fallback_index][c]) {
             if(equal(p,c,5)) {nearest=c;best={static_cast<std::uint32_t>(p-c),5};break;}
         }
         if(nearest==empty || maximum==5) return best;
-        first=input_[p+5]==input_[nearest+5] ? nearest : heads_[3][bucket(p,6)];
-        for(auto c=first;c!=empty;c=links_[3][c]) {
+        first=input_[p+5]==input_[nearest+5] ? nearest : heads_[long_index][bucket(p,6)];
+        for(auto c=first;c!=empty;c=links_[long_index][c]) {
             if(input_[p+best.length]!=input_[c+best.length] || !equal(p,c,6)) continue;
             std::size_t length=6;
             while(length<maximum && input_[p+length]==input_[c+length]) ++length;
@@ -85,18 +90,21 @@ public:
                     mix(four ^ (std::to_integer<std::uint32_t>(input_[p+4])*UINT32_C(2246822519))),
                     mix(four ^ (std::to_integer<std::uint32_t>(input_[p+4])*UINT32_C(2246822519))
                         ^ (std::to_integer<std::uint32_t>(input_[p+5])*UINT32_C(3266489917)))};
-                for(std::size_t i=0;i<4;++i) {
-                    links_[i][p]=heads_[i][buckets[i]];
-                    heads_[i][buckets[i]]=static_cast<std::uint32_t>(p);
+                for(std::size_t i=0;i<heads_.size();++i) {
+                    const auto b=buckets[OmitFive && i==2 ? 3 : i];
+                    links_[i][p]=heads_[i][b];
+                    heads_[i][b]=static_cast<std::uint32_t>(p);
                 }
             }
         }
-        for(;p<next;++p) for(std::size_t i=0;i<4;++i) {
-            if(input_.size()-p<i+3) break;
-            const auto b=bucket(p,i+3);links_[i][p]=heads_[i][b];heads_[i][b]=static_cast<std::uint32_t>(p);
+        for(;p<next;++p) for(std::size_t i=0;i<heads_.size();++i) {
+            const auto width=OmitFive && i==2 ? 6 : i+3;
+            if(input_.size()-p<width) break;
+            const auto b=bucket(p,width);links_[i][p]=heads_[i][b];heads_[i][b]=static_cast<std::uint32_t>(p);
         }
     }
 };
 using SixPrefixFinder = SixPrefixFinderImpl<true>;
+using CompactSixPrefixFinder = SixPrefixFinderImpl<true, true>;
 }
 #endif

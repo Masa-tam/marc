@@ -36066,3 +36066,19 @@ both bounds.
   no external expression or legal guarantee claimed.
 - Public codec, format, failure atomicity and failed-frame publication contracts
   remain unchanged; this stage introduces no production edits.
+
+## CR-1500: 2026-09-29 - Compact six-prefix update-work trial
+
+- Author and reviewer: Codex; maintainer approved an index-update optimization
+  trial following the phase diagnosis.
+- References: IR-1091, DD-1331 and repository-owned benchmark/finders.
+- Independent design: omit the five-byte head/link pair and obtain its exact
+  nearest fallback through the four-byte chain; keep the original specialization.
+- Validation: TVG-1197 and BM-0164 preserve differential, boundary, sanitizer
+  and corpus results, including performance variability and non-admission.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: deliberate first-party experimental-template reuse;
+  no external expression or legal guarantee claimed.
+- Scope: diagnostic experiment only; production failure atomicity, failed-frame
+  publication, stream representation and public memory limits are unchanged.

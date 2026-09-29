@@ -6612,3 +6612,51 @@ prototype without public admission. Next test a benchmark-only reduction of
 index-update work and require stable uninstrumented per-member measurements
 before deciding on integration. No production change, full-suite/fuzz run,
 new external verification or public end-to-end speedup is claimed.
+
+## BM-0164: Omitting the five-byte index from six-prefix search
+
+DD-1331's benchmark-only compact specialization maintains three-, four- and
+six-byte indexes. It removes one head/link pair and its per-position stores,
+but must scan the four-byte chain for the nearest five-byte fallback. Array
+payload falls from 17,825,792 to 13,369,344 bytes per full frame: a 4,456,448-byte
+saving, matching the admitted five-prefix array payload. These are structural
+array sizes, not measured peak RSS or a new public memory budget.
+
+The comparison uses the admitted bounded five-prefix finder, retained original
+six-prefix specialization and compact six. Each frame has warmup and three
+measured replays, rotating path order; reported seconds are per-member medians.
+Initialization and token replay are timed after buffer allocation, with token,
+frame and reconstruction checks outside timing. This is not public end-to-end
+compression timing. All twelve manifest-verified members pass those checks.
+
+| Member | Bounded five | Original six | Compact six | Compact vs bounded |
+| --- | ---: | ---: | ---: | ---: |
+| x-ray | 0.388097 | 0.423986 | 0.553576 | +42.64% |
+| dickens | 1.286815 | 0.853324 | 0.822819 | -36.06% |
+| mozilla | 5.486645 | 4.723391 | 5.006621 | -8.75% |
+| mr | 2.070362 | 2.347958 | 2.138740 | +3.30% |
+| nci | 2.559491 | 2.864767 | 2.221261 | -13.21% |
+| ooffice | 0.368856 | 0.383622 | 0.427538 | +15.91% |
+| osdb | 0.460236 | 0.448422 | 0.542688 | +17.92% |
+| reymont | 1.633308 | 1.001499 | 0.936479 | -42.66% |
+| samba | 1.514043 | 1.285114 | 1.341309 | -11.41% |
+| sao | 0.543947 | 0.613471 | 0.686692 | +26.24% |
+| webster | 5.349191 | 5.890153 | 4.126502 | -22.86% |
+| xml | 0.247003 | 0.218756 | 0.213771 | -13.45% |
+
+Sums of member medians are 21.9079953, 21.0544639 and 19.0179954 seconds,
+respectively. These aggregates do not qualify the experiment: the initial
+x-ray result is 42.64% slower than bounded five, and several other members
+also regress. Five further independent x-ray processes retain exact tokens,
+frames and reconstruction but vary from -19.70% to +50.06% versus bounded five
+and -20.62% to +31.36% versus original six. Keep all results; do not claim a
+stable regression magnitude, causal attribution or reliable aggregate speedup.
+
+Both compiler smoke sets and explicit ASan/UBSan checks pass, including added
+five-byte fallback fixtures. The compact approach is not admitted: the intended
+x-ray regression resolution is unproven, despite lower structural update work
+and array storage. Preserve it as a diagnostic comparison. Before another
+performance decision, investigate run-to-run measurement variability; subsequent
+update trials should retain the five-byte index rather than broadening fallback
+search. Public codec, memory queries and failure contracts remain unchanged.
+No new full-suite/fuzz, hosted CI or external verification is claimed.

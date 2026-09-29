@@ -17682,3 +17682,20 @@ outliers or relabel this focused run as full-corpus validation.
 
 This stage changes diagnostic code only. No new full regression, fuzz, public
 stream compatibility, hosted CI or external verification result is claimed.
+
+## TVG-1197: Compact six-prefix differential experiment
+
+Reuse the retained indexed tokenizer as the oracle. In the compact specialization,
+check every position of bounded zero, periodic and seeded-random inputs against
+the exhaustive finder; retain the wide-distance, nearest-tie and short-tail
+fixtures from TVG-1195. Add explicit four-byte groups with differing fifth/sixth
+bytes and nearest five-byte fallback ties to the compact smoke script.
+
+Both compiler builds pass the three affected benchmark smokes. The dedicated
+compact smoke, including added fallback cases and a multiframe input, passes
+with both compilers and explicitly instrumented ASan/UBSan. All twelve
+manifest-verified corpus members and five additional x-ray processes pass
+exact token comparisons, serialized-frame identity and reconstruction.
+Preserve raw iterations, executable/source identities and all variable results.
+There is no new public implementation, full regression, fuzz, hosted CI or
+external verification claim. BM-0164 does not qualify public admission.

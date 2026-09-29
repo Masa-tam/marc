@@ -9686,3 +9686,10 @@ Use only first-party bounded five-prefix, vector-backed five/six-prefix finders,
 retained indexed tokenization and BM-0162's experiment. No external algorithm,
 source, timing implementation or test data beyond the established corpus
 manifest is introduced.
+
+## IR-1091: Three-index six-prefix experiment
+
+Use the repository-owned six-prefix experiment, retained exact token oracle
+and BM-0163's phase diagnosis. Omitting the five-byte index and searching the
+four-byte chain for a five-byte fallback is an independent first-party design.
+No external implementation, optimization source or tests are consulted.

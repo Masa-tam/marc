@@ -26526,3 +26526,32 @@ the fourth index's update work, while retaining exact nearest-match fallbacks.
 Do not claim the primary regression cause, specific cache/store behavior, or
 a reliable full-replay effect size from these noisy measurements. Require
 repeatable uninstrumented per-member results before bounded/public admission.
+
+## DD-1331: Trial removing the five-byte index from six-prefix search
+
+Add a benchmark-only compile-time option to the six-prefix prototype, retaining
+the existing four-index specialization as the default and comparison path.
+The compact specialization stores only three-, four- and six-byte head/link
+pairs. After finding the nearest four-byte match, obtain the nearest five-byte
+match from the four-byte chain, checking the fifth byte. Retain the nearest
+five-byte fallback before traversing the six-byte chain for longer matches.
+
+Chains retain newest-first insertion order. Searching the broader four-byte
+chain for the first exact five-byte match therefore preserves the same nearest
+five-byte fallback; longest-match and nearest-distance tie rules remain intact.
+Every position with sufficient remaining input is inserted into the applicable
+three indexes, including bounded tail handling. The omitted five-byte hash
+lookup and head/link stores trade update work for potentially longer fallback
+search. There is no assumption that this trade improves overall throughput.
+
+At a full one-MiB frame the array payload becomes 13,369,344 bytes, saving
+4,456,448 bytes against the four-index six-prefix prototype and matching the
+three-index five-prefix array payload. This is not a measured process peak or
+a public workspace admission. Compare against both original six and admitted
+bounded five in one benchmark, checking exact tokens, frames and reconstruction.
+Public implementation, format and failure contracts remain unchanged.
+
+BM-0164 does not establish x-ray regression resolution. Preserve the compact
+experiment without admission; investigate measurement variability before the
+next performance decision and retain five-byte fallback indexing in further
+update trials. Reduced array storage alone is insufficient for adoption.
