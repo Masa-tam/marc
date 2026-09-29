@@ -26638,3 +26638,31 @@ four prefix bytes, retaining all indexes, chain order and exact-match rules.
 Measure it independently before any admission: this classification supports
 a candidate experiment, not a guaranteed improvement. Public code, format
 and failure contracts remain unchanged.
+
+## DD-1335: Probe the fifth byte before the nearest-five prefix check
+
+Add a benchmark-only specialization of the original four-index six-prefix
+finder. In its nearest-five fallback loop, reject a candidate if its fifth
+byte differs, then compare the remaining four bytes before accepting it.
+Keep the default specialization's forward five-byte comparison, all indexes,
+insertion order, nearest-first chains and longer-match search unchanged. Do
+not combine this trial with the compact or rolling-key experiments.
+
+The existing remaining-length check guarantees a fifth query byte, and the
+five-byte index contains only positions with five available bytes. The new
+predicate is exactly the original five-byte equality in a different order.
+It does not skip any exact match or change distance tie-breaking. Array payload
+remains 17,825,792 bytes at a full frame, 4,456,448 above bounded five.
+
+BM-0167 identifies many fifth-byte mismatches but does not prove a speedup.
+Compare bounded five, original six and fifth-first six with unchanged binaries
+within each run, rotating order, warmup, exact tokens/frames/reconstruction
+and independent x-ray repetitions. Start with x-ray and dickens; expand only
+if the screen supports further investigation. Public implementation, format,
+memory queries and failure contracts remain unchanged.
+
+BM-0168 does not establish a benefit: repeated x-ray remains 6.97% to 9.07%
+slower than bounded five. Keep the trial unadmitted and end this sequence of
+local update/comparison tweaks. Assess the cost and correctness of choosing
+between exact five/six search by workload before proposing another trial;
+no selection policy or production change is included here.

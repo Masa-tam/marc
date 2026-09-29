@@ -9714,3 +9714,10 @@ Use the existing first-party five-prefix counter, original six-prefix finder,
 admitted bounded five-prefix finder and retained indexed token oracle. Derive
 the six-prefix counter only from those repository-owned semantics. No external
 implementation, optimization source or test suite is consulted.
+
+## IR-1095: Fifth-byte-first fallback experiment
+
+Use the original repository-owned six-prefix finder, retained exact token
+oracle and BM-0167's fallback classification. Reordering exact prefix byte
+checks is an independent first-party experiment; no external implementation
+or optimization source is consulted.

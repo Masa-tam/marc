@@ -17753,3 +17753,20 @@ This is a focused untimed token diagnostic. It introduces no new serialized-
 frame/reconstruction, full-corpus, full-suite/fuzz, hosted CI or external
 verification claim. Source/executable identities and initial/final raw reports
 are retained.
+
+## TVG-1201: Fifth-byte-first fallback validation
+
+Retain exhaustive small-position zero/periodic/seeded-random checks, wide
+distances, nearest ties, five-byte fallback and short-tail fixtures from the
+existing six-prefix benchmark. The specialization compares the fifth byte
+before the remaining four bytes and must match the retained indexed token
+oracle on every replay. Complete serialized frames and reconstruction must
+also agree outside timing.
+
+Both compiler builds pass all six affected benchmark smokes; explicitly
+instrumented ASan/UBSan passes the fifth-first smoke. After corpus-manifest
+verification, the focused x-ray/dickens screen and five independent x-ray
+repetitions pass all token/frame/reconstruction checks. Preserve initial and
+repeated timing reports with executable/source digests. This is not a new
+twelve-member corpus, full regression, fuzz, hosted CI or external verification
+result. BM-0168 does not justify admission.

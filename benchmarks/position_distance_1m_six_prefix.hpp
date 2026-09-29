@@ -7,7 +7,7 @@
 #include <vector>
 namespace marc::benchmark {
 // Experiment only. Caller supplies sequential positions inside one bounded frame.
-template<bool SharedAdvance, bool OmitFive = false, bool RollingKey = false>
+template<bool SharedAdvance, bool OmitFive = false, bool RollingKey = false, bool FifthFirst = false>
 class SixPrefixFinderImpl {
     static constexpr auto empty=std::numeric_limits<std::uint32_t>::max();
     std::span<const std::byte> input_;
@@ -59,7 +59,10 @@ public:
             : heads_[fallback_index][bucket(p,OmitFive ? 4 : 5)];
         nearest=empty;
         for(auto c=first;c!=empty;c=links_[fallback_index][c]) {
-            if(equal(p,c,5)) {nearest=c;best={static_cast<std::uint32_t>(p-c),5};break;}
+            if constexpr (FifthFirst) {
+                if(input_[p+4]!=input_[c+4]) continue;
+            }
+            if(equal(p,c,FifthFirst ? 4 : 5)) {nearest=c;best={static_cast<std::uint32_t>(p-c),5};break;}
         }
         if(nearest==empty || maximum==5) return best;
         first=input_[p+5]==input_[nearest+5] ? nearest : heads_[long_index][bucket(p,6)];
@@ -126,6 +129,7 @@ public:
     }
 };
 using SixPrefixFinder = SixPrefixFinderImpl<true>;
+using FifthFirstSixPrefixFinder = SixPrefixFinderImpl<true, false, false, true>;
 using RollingSixPrefixFinder = SixPrefixFinderImpl<true, false, true>;
 using CompactSixPrefixFinder = SixPrefixFinderImpl<true, true>;
 }

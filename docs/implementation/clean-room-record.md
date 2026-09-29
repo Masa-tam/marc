@@ -36127,3 +36127,19 @@ both bounds.
 - Similarity review: intentional first-party counter adaptation only; no
   external expression or legal guarantee claimed.
 - Scope: benchmark-only diagnostics; production and failure contracts unchanged.
+
+## CR-1504: 2026-09-29 - Fifth-byte-first fallback trial
+
+- Author and reviewer: Codex; maintainer approved the comparison-order trial
+  suggested by the untimed fallback classification.
+- References: IR-1095, DD-1335 and first-party finder/counter evidence.
+- Independent design: fifth-byte rejection followed by exact four-byte equality;
+  retain all index structures, update paths and nearest-match ordering.
+- Validation: TVG-1201 and BM-0168, including both compiler smoke sets, explicit
+  ASan/UBSan and exact token/frame/reconstruction checks.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: intentional first-party experimental-template reuse only;
+  no external expression or legal guarantee claimed.
+- Scope: benchmark-only comparison; production, format and failure contracts
+  remain unchanged.

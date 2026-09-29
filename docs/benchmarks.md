@@ -6789,3 +6789,48 @@ Both compiler smokes, manually checked counts, explicit ASan/UBSan and report
 consistency checks pass. Preserve existing admission decisions: bounded five
 remains public, six prototypes remain experimental. No new frame reconstruction,
 full-corpus/full-suite/fuzz, hosted CI or external verification is claimed.
+
+## BM-0168: Fifth-byte-first nearest-five fallback
+
+DD-1335 changes only the equality order in the nearest-five fallback of the
+four-index six-prefix experiment. Compare bounded five, original six and
+fifth-first six in one executable, with warmup, rotating finder order and
+three measured iterations per frame. Time initialization and replay after
+allocation; perform exact token/frame/reconstruction checks outside timing.
+
+Initial focused-screen median seconds are:
+
+| Member | Bounded five | Original six | Fifth-first six |
+| --- | ---: | ---: | ---: |
+| x-ray | 0.395366 | 0.422360 | 0.429788 |
+| dickens | 1.296931 | 0.730689 | 0.735608 |
+
+Five independent x-ray repetitions give:
+
+| Run | Bounded five | Original six | Fifth-first six |
+| --- | ---: | ---: | ---: |
+| 1 | 0.389599 | 0.417092 | 0.416743 |
+| 2 | 0.378513 | 0.414084 | 0.412839 |
+| 3 | 0.387748 | 0.417975 | 0.415951 |
+| 4 | 0.385544 | 0.412153 | 0.413163 |
+| 5 | 0.391528 | 0.417340 | 0.424374 |
+
+Fifth-first differs from original six by -0.48% to +1.69% and remains
+6.97% to 9.07% slower than bounded five. All screened and repeated runs pass
+exact identity and reconstruction checks, but the comparison-order change
+does not establish an improvement or resolve the x-ray regression. The
+96.10% logical filterability in BM-0167 therefore does not justify adopting
+this predicate order. No instruction-level or hardware explanation is inferred.
+
+Both compiler smoke sets pass six affected tests each, and explicit ASan/UBSan
+passes the trial. Preserve it as a benchmark-only comparison; do not expand
+it into public admission or claim full-corpus/end-to-end improvement. Array
+storage and production behavior remain unchanged.
+
+The compact-index, rolling-key and comparison-order screens have not resolved
+the original six-prefix tradeoff. Stop this sequence of local update/comparison
+tweaks. Before another implementation trial, assess a workload-dependent choice
+of exact five/six search, including selection cost, bounded state and evidence
+needed for admission; no such selection policy is implemented or qualified
+here. Bounded five remains public. No new full-suite/fuzz, hosted CI or external
+verification is claimed.
