@@ -27028,3 +27028,40 @@ guaranteed wider-table gain. Next use identical 16-bit implementations with
 separate working storage and controlled allocation/order permutations, recording
 per-frame timing outside the timed region. This tests storage/order sensitivity;
 it does not assume a cache, address-placement or compiler cause in advance.
+
+## DD-1343: Same-code instances before attributing width gains
+
+Add a separate diagnostic target; preserve the prior width executable. Construct
+three guarded 16-bit finders with independent vector storage. Label slots 0/1/2
+and allocate in forward or reverse slot order. Independently select forward or
+reverse execution order, rotated across frames and three measured iterations so
+each slot occupies each execution rank once per frame. One warmup cycle precedes
+measurement. All slots enter one non-inlined reset-and-replay function, using the
+same input and output token buffer. No slot-specific search implementation.
+
+Record each frame/iteration/slot duration and rank after its timer ends; retain
+all observations, including slow runs. Check every replay against indexed tokens
+outside timing, then verify representative serialized frame identity and restore
+the bytes. Retain exhaustive small-input, wide-distance, nearest-tie and rejected
+reset checks. Verification-only mode skips timed iterations. Input is bounded to
+64 MiB and frame size to 1 MiB; all buffers and observations are bounded.
+
+Predeclare three processes for each of four allocation/execution permutations
+per focused input, dickens and x-ray. Rotate/reverse configuration order across
+repetitions; keep default processor eligibility and avoid concurrent build/test
+work. Compare absolute times and within-process slot spreads, not a selected
+fastest result. This changes the diagnostic harness and memory layout relative
+to the earlier width benchmark, so its times are not a direct width comparison.
+
+Allocation order controls construction order, not physical placement, alignment,
+cache residency or page mapping. The experiment cannot by itself identify a
+hardware mechanism. Leave public search, format, memory limits, failure atomicity
+and failed-frame non-publication unchanged; no production width admission.
+
+BM-0176 completes all 24 planned processes with matching tokens/frames and a
+maximum within-process total-time spread of 0.86% on dickens and 1.33% on x-ray.
+The large earlier variation is not reproduced by this same-code harness. This
+does not prove which changed code, layout or object-lifetime condition matters.
+Next compare widths through the same explicit timing boundary while retaining
+same-code controls and balanced order. Do not equate cross-harness differences
+with a production gain or disregard earlier adverse observations.

@@ -18010,3 +18010,34 @@ within-process width ratios and absolute-time ranges separately for each input
 and affinity condition. Separate warmed-reset times remain diagnostic only.
 BM-0175 records the variability; no new full-suite, compiler/sanitizer rebuild,
 hosted CI or external qualification is claimed. Production behavior is unchanged.
+
+## TVG-1209: Same-code instance and order controls
+
+DD-1343's separate diagnostic reuses the guarded 16-bit finder and first-party
+exhaustive/indexed oracles. Each process checks all positions of small zero,
+periodic and generated inputs, lengths around the match-length boundary, wide
+distances, nearest ties, empty reset and rejected oversized reset preservation.
+Every slot replay matches the indexed token sequence. Representative final
+replay tokens serialize identically to the oracle frame and restore the input;
+other replays have matched the same sequence, not been separately serialized.
+
+Both compiler smokes and explicit ASan/UBSan pass for all four allocation/order
+combinations. The smoke includes a two-frame input with a 16-byte final frame,
+verification-only execution, a timed small input, rejected empty input and an
+invalid allocation-order argument. An independent rank invariant requires each
+instance to occupy every execution position exactly once across three iterations.
+
+TVG-1207's eight fixtures, including the structured full frame plus five final
+bytes, pass forward/forward and reverse/reverse verification across both compilers
+and ASan/UBSan: 48 executions. Reports normalized only by removing the two
+requested order flags are identical across all six executions per input. Timed
+totals are zero in verification-only mode, and input/token/frame-byte totals
+match the previous width benchmark reports.
+
+For measured processes, independently check execution-rank permutations for each
+frame/iteration and frame/slot, finite nonnegative durations, and agreement of
+per-frame sums with reported iteration totals. Compare input, frame sizes, token
+and serialized-byte totals with prior reports. Source and executable identities
+are recorded before and after measurement; the older width binary is preserved.
+BM-0176 reports all scheduled observations. No production behavior, full-suite,
+fuzz, hosted CI or external qualification change is claimed.

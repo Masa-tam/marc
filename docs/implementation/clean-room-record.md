@@ -36266,3 +36266,21 @@ both bounds.
   no codec code is generated or changed. No legal guarantee is claimed.
 - Scope: no format, public memory, encoder/decoder, failure atomicity or
   failed-frame non-publication change; timing causes remain unverified.
+
+## CR-1512: 2026-09-29 - Same-code instance and order controls
+
+- Author and reviewer: Codex; maintainer approved the DD-1342 next step.
+- References: IR-1103, DD-1343, the first-party guarded finder, diagnostic replay
+  and exhaustive/indexed oracles. No external source is consulted.
+- Independent task: construct three same-type instances, use one non-inlined
+  measured function, permute allocation and balanced execution order, retain
+  per-frame timing outside its measurement region and verify every token replay.
+- Validation: TVG-1209 and BM-0176; both compiler and sanitizer smokes, 48 fixture
+  executions, rank/sum invariants and fixed-protocol focused measurements.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations, allocator tuning and third-party benchmark suites.
+- Similarity review: intentional first-party adaptation of boundary and frame
+  checks, with an independently specified same-code measurement protocol. No
+  external implementation expression or legal guarantee is claimed.
+- Scope: diagnostic target only; preserve prior binaries and public search,
+  format, workspace limits, failure atomicity and failed-frame non-publication.

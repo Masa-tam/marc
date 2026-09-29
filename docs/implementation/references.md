@@ -9772,3 +9772,10 @@ Use the first-party DD-1341 benchmark, preserved measurement reports and the
 earlier scheduling-control procedure. Compare inherited default affinity with
 one allowed logical processor without rebuilding the measured executable.
 No external source, implementation or tuning reference is consulted.
+
+## IR-1103: Same-code five-prefix storage and order controls
+
+Use the repository-owned guarded 16-bit finder, indexed/exhaustive oracles and
+DD-1342's preserved variability reports. Construct separate instances of the same
+type and route replay through one shared non-inlined function. No external codec,
+allocator tuning or hardware-specific optimization source is consulted.

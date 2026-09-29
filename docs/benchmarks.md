@@ -7282,3 +7282,68 @@ order and retained per-frame timing. Treat storage/order sensitivity as a testab
 hypothesis, not an established explanation. Public format, workspace limits,
 failure atomicity and failed-frame non-publication remain unchanged. No new
 full-suite/fuzz, hosted CI or external qualification is claimed.
+
+## BM-0176: Same-code instance and order controls
+
+Date: 2026-09-29. DD-1343 adds a separate diagnostic executable without changing
+the guarded 16-bit finder or the earlier width executable. Three independently
+allocated instances of the same type enter one non-inlined function measuring
+reset plus token replay. They share input and output buffers. Allocation labels
+are constructed forward/reverse; execution direction is independently selectable.
+For each frame, one warmup cycle and three rotated measured cycles make every
+instance occupy every execution rank once. Token comparison, frame checks and
+reporting occur outside the measured function.
+
+The protocol fixes three processes per allocation/execution combination for
+each of dickens and x-ray: 24 total. Configuration order rotates/reverses across
+repetitions, input order alternates, processor eligibility remains at its default,
+and no build/test work runs concurrently. All scheduled runs are retained.
+
+For each process, take each instance's median of its three whole-input iteration
+totals. Define spread as `100 * (largest instance median / smallest - 1)`.
+This is diagnostic variation among identical implementations, not speedup.
+
+| Input | Processes | Minimum spread | Median spread | Maximum spread | All instance medians, seconds |
+|---|---:|---:|---:|---:|---:|
+| dickens | 12 | 0.063% | 0.304% | 0.859% | 1.270562–1.295803 |
+| x-ray | 12 | 0.037% | 0.568% | 1.328% | 0.381962–0.389157 |
+
+Retain the configuration breakdown rather than selecting a favorable order.
+Each cell below contains spreads for all three independent repetitions:
+
+| Allocation / execution | dickens spread (%) | x-ray spread (%) |
+|---|---|---|
+| forward / forward | 0.063, 0.244, 0.348 | 0.788, 0.554, 0.582 |
+| forward / reverse | 0.762, 0.302, 0.306 | 1.145, 1.197, 1.328 |
+| reverse / forward | 0.282, 0.369, 0.150 | 0.037, 0.414, 0.349 |
+| reverse / reverse | 0.859, 0.501, 0.231 | 0.737, 0.396, 0.374 |
+
+Per-frame medians preserve shorter-scale differences that totals can conceal.
+Across 120 dickens frame observations, maximum inter-instance spread is 4.42%
+(0.067997/0.068007/0.071000 seconds). Across 108 x-ray frame observations,
+maximum is 16.83% on the short final frame
+(0.0012092/0.0010453/0.0010350 seconds). Thus small total-time spreads do not
+mean every individual frame is equally stable. Raw per-frame times and execution
+ranks are retained, and their sums agree with reported iteration totals.
+
+All 24 processes pass indexed-token, representative serialized-frame and restored
+byte comparisons, with sizes and token/frame-byte totals matching BM-0174.
+TVG-1209 also covers both compiler/sanitizer smokes and 48 cross-build fixture
+executions. Measured source/executable hashes and the older width executable's
+identity remain unchanged. Three finder array payloads are 13,369,344 bytes each,
+40,108,032 bytes combined; this excludes other diagnostic buffers and is not a
+peak-memory or proposed public workspace measurement.
+
+The large BM-0175 variation is not reproduced under this harness's tested
+allocation/execution permutations. This is a useful same-code control, not proof
+that allocation cannot matter or that inlining caused the earlier behavior.
+The new function boundary, code layout, number/types of live instances and memory
+layout differ from the old harness. Physical page placement, alignment effects,
+cache behavior and hardware counters were not measured. Do not compare absolute
+times between the two harnesses as an optimization gain.
+
+Next reintroduce width comparisons through an explicit common timing boundary,
+retaining duplicate same-code controls and balanced execution order. Both wider
+variants remain unadmitted; retain all earlier improvements and regressions.
+Public codec/format, memory limits, failure atomicity and failed-frame publication
+are unchanged. No new full-suite/fuzz, hosted CI or external qualification claim.
