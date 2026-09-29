@@ -10,12 +10,21 @@ namespace marc::benchmark {
 // Benchmark only: immutable full-window frames, maximum match 258, minimum 3.
 // Caller constructs with capacity <= 1 MiB. All arrays are reserved up front.
 struct LazyActivationTimes {double initialize{},catch_up{};};
-class LazySixPrefixFinder {
+struct LazySearchObservations {
+    std::uint64_t queries{},long_visits{},probe_passes{},prefix_passes{};
+    bool operator==(const LazySearchObservations&) const = default;
+};
+// Both specializations retain the same observation storage/layout. Counters
+// are enabled only for five-mode replay, with one find per advancing position.
+// For N <= 1 MiB, queries <= N and each visit counter <= N*N <= 2^40.
+template<bool Observe>
+class LazySixPrefixFinderImpl {
     static constexpr auto empty=std::numeric_limits<std::uint32_t>::max();
     std::span<const std::byte> input_;
     std::array<std::vector<std::uint32_t>,4> heads_,links_;
     std::size_t capacity_,next_{};
     bool six_{};
+    mutable LazySearchObservations observations_{};
     static std::uint32_t mix(std::uint32_t key) {
         key^=key>>11;return (key*UINT32_C(2654435761))>>16;
     }
@@ -54,14 +63,14 @@ class LazySixPrefixFinder {
         }
     }
 public:
-    explicit LazySixPrefixFinder(std::size_t capacity):capacity_(capacity) {
+    explicit LazySixPrefixFinderImpl(std::size_t capacity):capacity_(capacity) {
         for(std::size_t i=0;i<4;++i) if(capacity>=3 && (i<3 || capacity>=6)) {
             heads_[i].resize(65536);links_[i].resize(capacity);
         }
     }
     bool reset(std::span<const std::byte> input) {
         if(input.size()>capacity_ || input.size()>1048576) return false;
-        input_=input;next_=0;six_=false;
+        input_=input;next_=0;six_=false;observations_={};
         if(input.size()>=3) for(std::size_t i=0;i<3;++i) {
             std::fill(heads_[i].begin(),heads_[i].end(),empty);
             std::fill_n(links_[i].begin(),input.size(),empty);
@@ -94,9 +103,11 @@ public:
     bool activate(std::size_t p) {return activate_impl<false>(p,nullptr);}
     bool activate_measured(std::size_t p,LazyActivationTimes& times) {return activate_impl<true>(p,&times);}
     bool active() const {return six_;}
+    LazySearchObservations observations() const {return observations_;}
     dictionary::internal::LzssMatch find_match(std::size_t p) const {
         dictionary::internal::LzssMatch best{};
         if(p!=next_ || p>=input_.size()) return best;
+        if constexpr(Observe) {if(!six_) ++observations_.queries;}
         const auto maximum=std::min<std::size_t>(258,input_.size()-p);
         if(maximum<3) return best;
         auto nearest=empty;
@@ -113,7 +124,11 @@ public:
         first=input_[p+4]==input_[nearest+4] ? nearest : heads_[2][bucket(p,5)];
         if(!six_) {
             for(auto c=first;c!=empty;c=links_[2][c]) {
-                if(input_[p+best.length]!=input_[c+best.length] || !equal(p,c,5)) continue;
+                if constexpr(Observe) ++observations_.long_visits;
+                if(input_[p+best.length]!=input_[c+best.length]) continue;
+                if constexpr(Observe) ++observations_.probe_passes;
+                if(!equal(p,c,5)) continue;
+                if constexpr(Observe) ++observations_.prefix_passes;
                 std::size_t length=5;
                 while(length<maximum && input_[p+length]==input_[c+length]) ++length;
                 if(length>best.length) {
@@ -146,5 +161,7 @@ public:
         next_=next;return true;
     }
 };
+using LazySixPrefixFinder = LazySixPrefixFinderImpl<false>;
+using ObservedLazySixPrefixFinder = LazySixPrefixFinderImpl<true>;
 }
 #endif

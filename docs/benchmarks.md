@@ -6947,3 +6947,59 @@ choose a threshold from these two named inputs or use hindsight timing to
 claim an adaptive speedup. Public bounded five and existing memory/failure
 contracts remain unchanged. No full-suite/fuzz, hosted CI or external
 verification result is claimed.
+
+## BM-0171: Lazy-five observation cost and per-frame evidence
+
+Date: 2026-09-29. DD-1338 adds four counters without additional byte comparisons.
+Compare bounded five with identical-layout unobserved/observed lazy-never paths.
+All arrays are reserved before measurement; reset and complete token replay are
+timed. After warmup, rotate three paths across three iterations per frame, sum
+per-path iteration times across frames, then take process medians. Run three
+independent processes each for x-ray and dickens with alternating member order.
+The table gives medians of those process medians in seconds; the final column
+is the range of paired process percentage differences.
+
+| Input | Bounded five | Unobserved | Observed | Observed vs unobserved |
+|---|---:|---:|---:|---:|
+| x-ray | 0.3914644 | 0.3961574 | 0.3924812 | -1.19% to +0.39% |
+| dickens | 1.3044857 | 1.2956998 | 1.2825646 | -1.01% to +0.19% |
+
+No large observation penalty appears in these focused runs. Differences include
+compiler code-generation and run variation; a slightly faster instrumented
+path does not mean counting has negative cost. These are finder replay results,
+not end-to-end or full-corpus timing, and omit snapshot and decision overhead.
+
+All twelve corpus members pass verification-only token identity, observed
+frame identity and reconstruction, with counters matching the earlier untimed
+diagnostic. Both compiler observation/lazy-six smokes and explicit observation
+ASan/UBSan pass. The seeded final-short-frame fixture produces identical reports
+across both compilers and the sanitizer build (TVG-1204).
+
+Untimed cumulative snapshots are taken at the first token end reaching each
+raw-byte quarter. The following ranges use differences between snapshots,
+not cumulative averages, and describe five-chain visits per query. Short final
+frames are included; these are observations, not thresholds or predictions.
+
+| Input | First-quarter range | Last-quarter range |
+|---|---:|---:|
+| x-ray | 0.08 to 1.02 | 0.54 to 10.85 |
+| dickens | 20.09 to 28.29 | 128.32 to 201.20 |
+| mozilla | 0.07 to 523.44 | 0.17 to 5491.98 |
+
+Growing history and changing content can alter search work within a frame.
+In particular, the broad mozilla range warns against selecting one aggregate
+cutoff from two named files. Preserve all twelve members' actual positions and
+four raw counters for later analysis. Probe and prefix passes count only
+surviving candidates; they cannot classify every rejected candidate or directly
+predict six-chain visits and fallback cost.
+
+Counter payload is 32 bytes on the measured builds. Full-capacity index payload
+remains 17,825,792 bytes including the reserved sixth pair, even without a
+transition. Neither number is peak memory for the benchmark or a public query.
+
+Next specify a deterministic observation/checkpoint and activation-cost model,
+then test it on separate inputs and mixed/reversed distributions before
+calibrating or admitting a policy. Do not infer adaptive speedup from these
+never-activation runs. Public bounded five, stream format, memory preflight,
+failure atomicity and failed-frame non-publication remain unchanged. No new
+full-suite/fuzz, hosted CI or external qualification is claimed.

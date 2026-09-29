@@ -17842,3 +17842,32 @@ policy or bounded/public workspace implementation. Public preflight, allocation
 counts, arbitrary chunking, failed-frame non-publication and limits remain
 future admission gates under TVG-1202; existing public code is unchanged. No
 new full regression/fuzz, hosted CI or external verification is claimed.
+
+## TVG-1204: Lazy-five observation validation
+
+Date: 2026-09-29. A seven-zero-byte hand check expects one literal followed by
+distance-one length-six and counters (queries, visits, probe passes, prefix
+passes) = (2,1,1,1). Check rejected oversized reset preserves counters, successful
+and empty resets clear them, and Six-mode queries do not increment them. Retain
+the existing exhaustive lazy-switch/boundary checks and smoke fixtures.
+
+Both compiler observation and existing lazy-six smokes pass (two tests each).
+The observation smoke also passes explicit ASan/UBSan. Reuse TVG-1203's seeded
+1,048,581-byte fixture without altering it: both compilers and explicit
+ASan/UBSan produce identical verification-only reports including per-frame
+samples, checking the reset into a five-byte final frame.
+
+All twelve manifest-verified corpus members pass observed/unobserved/bounded
+five token equality against the retained indexed oracle, observed serialized
+frame identity and reconstruction. Input, token and frame-byte counts agree
+with the earlier corpus run. Observations repeat identically across replays;
+queries equal token count, visits equal the independent diagnostic, probe
+passes equal visits minus probe rejects, and prefix passes subtract subsequent
+prefix rejects. Aggregate values also match the retained earlier diagnostic
+logs for every member. Samples are monotone and taken at actual token ends.
+
+Three independent timed processes each for x-ray and dickens pass the same
+checks. Full-corpus validation is verification-only, not a full-corpus speed
+result. These checks qualify a benchmark experiment, not new public failure,
+chunking, allocation or memory-limit behavior. No full-suite/fuzz, hosted CI or
+external verification result is claimed.

@@ -9737,3 +9737,10 @@ and exhaustive token references, and existing frame comparison machinery.
 The benchmark-only lazy finder shares the three common index pairs and rebuilds
 the sixth in ascending historical-position order. No external implementation,
 selection policy or optimization source is consulted.
+
+## IR-1098: Bounded lazy-five search observations
+
+Use the first-party lazy-six finder, five-prefix diagnostic counters, retained
+indexed token oracle and existing frame serializer/decoder. The four counters
+reuse existing branch outcomes without extra byte comparisons. No external
+implementation, adaptive policy or optimization source is consulted.

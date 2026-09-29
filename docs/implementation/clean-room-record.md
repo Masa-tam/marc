@@ -36177,3 +36177,20 @@ both bounds.
   no external expression or legal guarantee claimed.
 - Scope: benchmark-only structural trial; no adaptive threshold, public codec,
   memory-policy or failure-contract change.
+
+## CR-1507: 2026-09-29 - Lazy-five observations and monitoring cost
+
+- Author and reviewer: Codex; maintainer approved the observation stage after
+  the forced lazy-six activation experiment.
+- References: IR-1098, DD-1338 and repository-owned finders and frame checks.
+- Independent design: four bounded counters at existing branch outcomes,
+  identical-layout unobserved control, and untimed token-end quarter snapshots.
+- Validation: TVG-1204 and BM-0171; both compiler smokes, explicit sanitizers,
+  seeded final short frame, all twelve corpus comparisons and earlier-count
+  agreement, with focused timings separated from full-corpus verification.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party adaptive-policy/test code.
+- Similarity review: intentional reuse of first-party search semantics and
+  diagnostic identities; no external expression or legal guarantee claimed.
+- Scope: benchmark-only observations; no adaptive threshold or production,
+  workspace, format, failure-atomicity or failed-frame-publication change.

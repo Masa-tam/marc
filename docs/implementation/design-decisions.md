@@ -26819,3 +26819,41 @@ BM-0170 validates forced transitions and measures their cost, without admitting
 a policy. All twelve corpus members retain exact frames and reconstruction.
 Next quantify bounded observation overhead and frame-level evidence before
 choosing a rule; keep public bounded five unchanged.
+
+## DD-1338: Measure observations before choosing lazy activation
+
+Date: 2026-09-29. Add benchmark-only observed and unobserved template
+specializations of the lazy finder. Both have the same storage and reset four
+64-bit counters; only the observed specialization increments them. Preserve the
+existing unobserved alias and all search, tie-break and activation semantics.
+
+While in Five mode, count valid sequential queries (including literal and short
+tail positions), five-chain candidate visits, passes of the existing improvement
+probe, and subsequent passes of the exact five-byte comparison. The latter is
+conditional on passing the probe; it is not the count of all exact prefixes.
+Do not add comparisons to classify probe-rejected candidates. Freeze counters
+in Six mode, clear them on successful frame reset, and preserve them on rejected
+oversized reset. Under the replay protocol of one query per advancing position,
+N <= 1 MiB implies queries <= N and each visit/pass count <= N*N <= 2^40.
+Repeated queries without advancement are outside that monitoring protocol.
+
+Compare bounded five, unobserved lazy-never, and observed lazy-never. Time reset
+and token replay, with warmup, three iterations and rotating path order. Verify
+all token fields outside timing. An independent untimed replay checks counters
+against the earlier five-prefix diagnostic and records cumulative values at the
+first token end reaching each ceiling-rounded raw-byte quarter. These samples
+may share a position. Snapshot collection, reporting, frame serialization and
+reconstruction are outside timing; no decision rule or activation runs here.
+The measurement includes compiler code-generation effects, not just isolated
+counter-update arithmetic, and does not measure a complete adaptive selector.
+
+Four counters occupy 32 payload bytes on the measured builds. The pre-reserved
+four index pairs remain 17,825,792 payload bytes at full frame capacity even
+without activation; this excludes object/allocator and other buffer overhead,
+and is neither peak RSS nor a public workspace commitment. Public format,
+factory, workspace query and failure/non-publication contracts are unchanged.
+
+BM-0171 records observation cost and frame evidence. Do not calibrate a rule
+from just x-ray and dickens or treat their aggregate separation as a general
+predictor. Subsequent policy design needs separate-input and mixed/reversed
+within-frame validation, with decision overhead and catch-up cost included.
