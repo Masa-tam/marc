@@ -8179,3 +8179,26 @@ initial screen. Every member wins against both controls on all three passes.
 This supports DD-1358's next public-integration validation step, while retaining
 the prepared reference/fallback and requiring public-boundary validation before
 admission. No claim of identical speedup on other platforms is made.
+
+
+## BM-0192: Public integration of the replicated finder-scratch path
+
+DD-1359 selects the finder-scratch stream for the public 1 MiB position-distance
+encoder. The measured codec bodies remain those of BM-0190/BM-0191; only public
+factory selection, library integration and explanatory comments change.
+
+BM-0191 supplies the performance evidence: three complete twelve-member passes
+reduce summed member medians by 8.85% to 9.25%, with all 36 trials beating both
+admitted prepared controls. This integration step does not introduce a new public
+CLI timing claim or physical peak-memory measurement. Concrete stream size and
+alignment remain equal; workspace formulas and the five-prefix policy are
+unchanged, and prepared encoding remains the fallback/reference.
+
+TVG-1226 passes both full 3,957-test suites, 52 sanitizer cases and two selected
+optional diagnostic smokes. All twelve old prepared/new public CLI archive
+comparisons and both new decoder restorations pass. Existing format, output
+bytes, workspace contracts and failed-frame publication rules are preserved.
+The original private owning adapter remains diagnostic-only.
+
+This records local integration readiness. Hosted CI and four-route external
+bundle verification must be recorded separately for the resulting revision.

@@ -27645,3 +27645,32 @@ suites, relevant sanitizers and all-corpus old/new CLI byte identity/restoration
 Hosted CI and external archive verification remain separate subsequent evidence.
 This decision authorizes the integration validation direction, not a claim that
 public dispatch or cross-platform qualification changed during this step.
+
+
+## DD-1359: Integrate finder-scratch encoding into the public factory
+
+Select the validated finder-scratch streaming encoder for the public 1 MiB
+position-distance encode query and creation path. Compile its frame, raw-frame
+and stream implementations into the library, removing duplicate compilation
+from dedicated diagnostics. Keep the owning adapter diagnostic-only.
+
+Retain the prepared reference stream and prepared frame fallback unchanged in
+behavior. Preserve the five-prefix search, eligibility, decoder, stream format,
+public ABI, workspace calculation and error contracts. Assert concrete stream
+size and alignment equality with the prepared and original implementations.
+Only factory selection, build integration and explanatory comments change;
+measured codec bodies remain identical to the replicated prototype.
+
+Validate both complete compiler suites, relevant sanitizer cases, diagnostic
+smokes and all twelve corpus archives through the old prepared and new public
+CLIs. Check public failed-second-frame privacy and exact workspace admission.
+Preserve prior binaries and source identities, recording any comment-only header
+changes explicitly. Existing external qualification does not automatically cover
+this integration; hosted CI and external bundle verification remain subsequent.
+
+
+TVG-1226 completes both full 3,957-test suites, 52 sanitizer cases, two selected
+optional diagnostic smokes and all twelve old/new CLI byte/restoration checks.
+Admit the finder-scratch stream to the local public encoder selection while
+retaining prepared fallback and unchanged format/workspace contracts. Hosted CI
+and external qualification for the resulting revision remain pending.

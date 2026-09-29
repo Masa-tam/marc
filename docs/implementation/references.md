@@ -9881,3 +9881,10 @@ manifest. No external codec implementation or new algorithm reference is used.
 Use unchanged first-party DD-1357 adapters and benchmark, retained BM-0190
 reports, the verified corpus manifest and the prior replicated measurement
 protocol. No external implementation or new algorithm reference is consulted.
+
+
+## IR-1119: Public integration of finder-scratch encoding
+
+Use first-party DD-1356 frame functions, DD-1357 streaming adapters, DD-1358
+replicated measurements and existing public-factory/error/workspace tests.
+No external implementation or new algorithm reference is consulted.

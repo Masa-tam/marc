@@ -18488,3 +18488,33 @@ The compiler suites, sixteen sanitizer cases and allocation guard remain the
 unchanged TVG-1224 evidence. This measurement-only step does not claim a fresh
 build, full-suite run, sanitizer/fuzz campaign, hosted CI or external archive
 qualification. Public factory selection remains unchanged.
+
+
+## TVG-1226: Finder-scratch public integration validation
+
+Both full compiler suites pass 3,957/3,957 tests with optional benchmarks disabled.
+The public factory now creates the finder-scratch stream, so existing public
+chunking, finish, alias, exact-budget and malformed-input tests exercise the
+integrated path. The encoder second-frame expansion-limit fixture uses one-byte
+and large output buffers, checks the exact committed first-frame prefix and
+untouched output tail, then verifies sticky failure with zero further output.
+Full-frame boundaries and wide-history identity remain covered.
+
+ASan/UBSan passes 52 cases spanning finder-scratch frame and streaming tests,
+prepared-model tests and public factory/configuration tests. These include
+scratch-boundary and result parity, fallback, alias and failed-output checks.
+The existing armed allocation guards run in both full suites. Dedicated optional
+finder-scratch stream and frame diagnostics link against the integrated library
+and pass 2/2 smoke tests on one compiler; only those optional targets are built,
+so this is not a complete benchmark-enabled suite.
+
+All twelve verified corpus members are encoded by the retained prepared public
+CLI and both newly built public CLIs. Every archive is byte-for-byte identical;
+both new decoders restore the original input. Executable hashes are checked
+before and after, and all generated files are retained. No CLI speed estimate is
+inferred from this untimed validation.
+
+Historical codec bodies and binaries remain intact; three internal headers have
+comment-only changes preserved with original snapshots. Full-suite validation
+includes local interoperability-schema checks, but no fresh hosted CI, external
+bundle qualification or fuzz campaign is claimed.

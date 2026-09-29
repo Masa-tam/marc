@@ -36566,3 +36566,21 @@ both bounds.
   distinguish new measurement evidence from earlier compiler/sanitizer evidence.
 - Scope: documentation and local measurement records only. No format, public
   factory or default change, and no legal guarantee is asserted.
+
+
+## CR-1529: 2026-09-30 - Public finder-scratch integration
+
+- Author and reviewer: Codex; maintainer approved the DD-1358 next step.
+- References: IR-1119, DD-1359, first-party finder-scratch frame/stream code,
+  replicated benchmark evidence and unchanged public-boundary test fixtures.
+- Independent task: select the validated encoder through the public factory,
+  retain the prepared fallback and preserve format, workspace and failure rules.
+- Similarity review: measured codec bodies are unchanged; implementation edits
+  are factory selection, build integration and three explanatory header comments.
+  The prepared reference and original decoder remain available and unchanged.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1226 and BM-0192; both full suites, sanitizers, selected optional
+  smokes and all twelve old/new CLI comparisons pass. No legal guarantee.
+- Scope: local public integration validated; hosted CI and external verification
+  are subsequent evidence, not inherited from the prior qualified revision.

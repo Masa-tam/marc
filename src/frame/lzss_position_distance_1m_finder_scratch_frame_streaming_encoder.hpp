@@ -7,7 +7,7 @@
 #include <array>
 
 namespace marc::frame::internal {
-// Diagnostic-only finder-scratch path; no public factory selects it.
+// Finder-scratch path used by the public 1 MiB position-distance encoder.
 
 
 [[nodiscard]] bool serialize_lzss_position_distance_1m_stream_header(

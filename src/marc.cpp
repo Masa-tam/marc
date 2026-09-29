@@ -2,6 +2,7 @@
 #include "frame/lzss_position_distance_1m_workspace.hpp"
 #include "frame/lzss_position_distance_1m_frame_streaming_encoder.hpp"
 #include "frame/lzss_position_distance_1m_prepared_frame_streaming_encoder.hpp"
+#include "frame/lzss_position_distance_1m_finder_scratch_frame_streaming_encoder.hpp"
 #include "frame/lzss_position_distance_1m_frame_streaming_decoder.hpp"
 #include "marc/marc.h"
 
@@ -5095,7 +5096,7 @@ static marc_status prepare_position_distance_1m_config(
         {1048576, 3, 258, 0}, 32768, 44, 9, 1, 10};
     if (encode) {
         const auto error = calculate_lzss_position_distance_1m_encode_workspace(stream,limits,
-            LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mPreparedFrameStreamingEncoder),r,
+            LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mFinderScratchFrameStreamingEncoder),r,
             marc::dictionary::internal::LzssPositionDistance1mSearch::indexed_five_prefix);
         if(error!=LzssPositionDistanceWorkspaceError::none)
             return error==LzssPositionDistanceWorkspaceError::limit_exceeded
@@ -5186,7 +5187,11 @@ marc_status marc_lzss_position_distance_dynamic_range_1m_create(
             == sizeof(LzssPositionDistance1mFrameStreamingEncoder));
         static_assert(alignof(LzssPositionDistance1mPreparedFrameStreamingEncoder)
             == alignof(LzssPositionDistance1mFrameStreamingEncoder));
-        implementation = new (std::nothrow) LzssPositionDistance1mPreparedFrameStreamingEncoder(
+        static_assert(sizeof(LzssPositionDistance1mFinderScratchFrameStreamingEncoder)
+            == sizeof(LzssPositionDistance1mPreparedFrameStreamingEncoder));
+        static_assert(alignof(LzssPositionDistance1mFinderScratchFrameStreamingEncoder)
+            == alignof(LzssPositionDistance1mPreparedFrameStreamingEncoder));
+        implementation = new (std::nothrow) LzssPositionDistance1mFinderScratchFrameStreamingEncoder(
             stream, limits, raw_span, serialized_span, views_span, 3,
             marc::dictionary::internal::LzssPositionDistance1mSearch::indexed_five_prefix);
     } else {

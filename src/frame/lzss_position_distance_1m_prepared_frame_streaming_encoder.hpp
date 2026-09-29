@@ -7,7 +7,7 @@
 #include <array>
 
 namespace marc::frame::internal {
-// Prepared-mapping path used by the public 1 MiB position-distance encoder.
+// Retained prepared-mapping reference stream; the prepared frame remains a fallback.
 
 
 [[nodiscard]] bool serialize_lzss_position_distance_1m_stream_header(

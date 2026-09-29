@@ -5,7 +5,7 @@
 #include "frame/lzss_position_distance_raw_frame_encoder.hpp"
 
 namespace marc::frame::internal {
-// Diagnostic-only reuse of expired finder storage; no public factory selects it.
+// Reuse of expired finder storage for the public 1 MiB position-distance encoder.
 
 struct LzssPositionDistance1mFinderScratchRawResult : LzssPositionDistanceRawFrameResult {
     bool used_finder_scratch{};
