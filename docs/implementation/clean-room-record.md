@@ -36425,3 +36425,22 @@ both bounds.
   and all twelve corpus comparisons pass. No legal guarantee is claimed.
 - Scope: diagnostic-only sources; no public library source-list, default, stream
   format, memory-limit or failed-frame publication change.
+
+
+## CR-1521: 2026-09-30 - Prepared mapping private stream integration
+
+- Author and reviewer: Codex; maintainer authorized the next development step.
+- References: IR-1112, DD-1352, first-party prepared bridge and retained frame,
+  raw-frame, streaming, owning and workspace implementations.
+- Independent task: remove duplicate operation planning from a private full
+  encoder while preserving exact bytes, all result/error fields, bounded state,
+  serialized-output preservation and failed-frame non-publication.
+- Similarity review: adapters intentionally reuse first-party implementation;
+  distinct symbols and target isolation preserve the unchanged reference path.
+  Prepared state lifetime and legacy error fallback are reviewed explicitly.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1218 and BM-0185 cover both compilers, allocation guards,
+  sanitizers and complete-encoder screening. No legal guarantee is claimed.
+- Scope: diagnostic-only integration; no production source-list, public default,
+  format, workspace-policy or external qualification change.

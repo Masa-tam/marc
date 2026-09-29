@@ -18260,3 +18260,38 @@ BM-0184 reports mapping-only times. The bridge is compiled only in dedicated
 tests/diagnostics. No public frame/encoder admission, new full-suite/fuzz, hosted
 CI or external qualification is claimed. Existing failure/publication contracts
 remain unchanged.
+
+
+## TVG-1218: Prepared mapping full-stream differential validation
+
+Both compiler builds pass the dedicated detailed, allocation-guard and benchmark
+smoke targets (three CTest targets each). ASan/UBSan passes all sixteen detailed
+cases. Retained raw-frame encoding supplies an independent unchanged oracle for
+the thirteen adapted streaming cases: empty input, eligibility/search modes,
+one-byte and randomized chunks, zero capacity, flush/starvation, final input,
+sticky errors/end, aliases, full-frame/tail and wide-history boundaries.
+
+The additional frame differential matrix compares 1,025 memory budgets against
+four serialized capacities and three operation capacities: 12,300 paired calls.
+Compare every frame result field, nested context/entropy result, entire output
+and error sentinels. Malformed tokens, invalid context/position and token/output
+aliasing also preserve exact reference errors and serialized bytes. Prepared
+planning failure falls back only after prepared state is destroyed and before
+operation/output writes, retaining tight-budget error precedence.
+
+Owner requirement fields match the retained owner for five frame sizes through
+1 MiB. Exact creation budgets succeed and one byte less fails. The armed
+allocation guard rejects short budgets before allocation and performs multiframe
+one-byte/zero-capacity processing and destruction without allocations after
+creation. Its initial tiny-frame setup used an inconsistent default block limit;
+aligning the test block limit with its frame size corrected the test setup.
+
+A second-frame failure exposes only the already committed earlier frame and
+leaves the failed frame private, with sentinel suffix and sticky error checks.
+Small/empty and multiframe diagnostic smoke runs verify exact stream/restoration
+and zero additional array bytes. All twelve BM-0185 screening runs pass stream,
+restoration, metadata, rank, finite-time and source/executable identity checks.
+
+Only dedicated diagnostic targets compile the new sources. No new full-suite,
+fuzz, hosted CI or external qualification is claimed. Existing public format,
+memory-limit and failed-frame publication contracts remain unchanged.

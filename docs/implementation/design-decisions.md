@@ -27367,3 +27367,44 @@ with exact operations and representative payload identity. Advance to a separate
 frame-encoder trial with explicit transient-state accounting and unchanged
 serialized-output/error-publication guarantees. This does not establish a
 complete-encoder speedup or admit the bridge into a public path.
+
+
+## DD-1352: Private frame integration of prepared operation mapping
+
+Create distinct diagnostic-only frame, raw-frame, streaming and owning adapters
+using the admitted 16-bit dictionary and unchanged range encoder/decoder. Reuse
+existing workspace queries. Only the redundant operation plan is replaced by
+DD-1351 prepare/write; keep serialization and field validation unchanged.
+
+Scope the prepared model so its lifetime ends before range preparation. Assert
+that its charged state plus field cursor fits the existing decoder-model charge.
+Do not add token/operation arrays or silently raise limits. If prepared planning
+fails, call the retained frame encoder before any operation/output write, so
+strict-budget failures retain reference error precedence and result fields.
+
+Retain operation-capacity checks and all-region overlap validation before mapping;
+keep semantic, aggregate, payload-capacity and serialized-output preflight. No
+failed frame may drain through the streaming adapter. Compare all frame result
+fields, success bytes and failure sentinels against the retained encoder,
+including budgets near the extra prepared-state threshold and frame limits.
+
+Validate both compilers, sanitizers and allocation-free processing. Then screen
+complete-encoder cost with two identical retained owners and one trial owner,
+rank-balanced iterations, exact stream comparisons and the unchanged decoder.
+Public factories, production source lists, workspace contracts and format IDs
+remain unchanged pending full-path evidence.
+
+Before timing, fix one screening process per verified corpus member, alternating
+forward/reverse order. Each process uses one warmup and three rank-balanced
+complete-input iterations. Retain all twelve results and both identical controls;
+verify exact bytes, restoration and unchanged workspace charges. Exclude file I/O,
+sink comparisons and decoding from measured encoder cost. Do not run builds or
+validation beside timing, or treat one screening pass as admission evidence.
+
+
+TVG-1218 completes compiler/sanitizer, allocation and differential validation.
+BM-0185 observes complete-encoder sum changes of -4.36% and
+-3.95% against two identical controls, with exact bytes
+and unchanged workspace requirements. Keep the integration private and next
+replicate all twelve members with declared order/direction variation before
+an admission decision. This screening does not authorize a public-path change.

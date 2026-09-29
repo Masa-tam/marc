@@ -7856,3 +7856,58 @@ failed-frame non-publication before measuring complete-encoder impact. Account
 for its transient owner state alongside existing model-state charges; do not
 assume it is free or translate this mapping speedup directly to whole-pipeline
 throughput. No public/default change or new external qualification is claimed.
+
+
+## BM-0185: Prepared mapping in a private complete encoder
+
+DD-1352 integrates the prepared operation bridge into distinct diagnostic-only
+frame, raw-frame, streaming and owning adapters. Keep the admitted 16-bit
+five-prefix dictionary and unchanged entropy coder, workspace policy and decoder.
+
+Screen all twelve verified members once, alternating execution direction. Each
+process creates two identical retained owners and one trial owner independently,
+with one warmup and three rank-balanced measured complete-input iterations.
+Measure owner creation, process calls and destruction; exclude file I/O, sink
+storage/comparisons and decoding. Use 1 MiB frames and 64 KiB input/output chunks.
+Keep every result. Builds and validation do not overlap performance measurement.
+
+Each cell is the median of three complete-input times; negative is faster.
+
+| Member | Control 0 seconds | Control 1 seconds | Prepared seconds | Change vs control 0 | Change vs control 1 |
+|---|---:|---:|---:|---:|---:|
+| dickens | 1.862400 | 1.862966 | 1.776609 | -4.61% | -4.64% |
+| mozilla | 8.443692 | 8.330253 | 7.948727 | -5.86% | -4.58% |
+| mr | 2.694945 | 2.683419 | 2.670832 | -0.89% | -0.47% |
+| nci | 3.088469 | 3.083361 | 3.063911 | -0.80% | -0.63% |
+| ooffice | 0.840122 | 0.849641 | 0.778594 | -7.32% | -8.36% |
+| osdb | 1.034895 | 1.031494 | 0.968281 | -6.44% | -6.13% |
+| reymont | 1.951350 | 1.957476 | 1.914592 | -1.88% | -2.19% |
+| samba | 2.294418 | 2.294052 | 2.162063 | -5.77% | -5.75% |
+| sao | 1.329051 | 1.308574 | 1.200520 | -9.67% | -8.26% |
+| webster | 7.055553 | 7.075547 | 6.841415 | -3.04% | -3.31% |
+| xml | 0.341558 | 0.347863 | 0.329352 | -3.57% | -5.32% |
+| x-ray | 1.318859 | 1.295051 | 1.195584 | -9.35% | -7.68% |
+
+Sums of member medians are 32.255312,
+32.119698 and 30.850480 seconds.
+Changes against the two controls are -4.36% and
+-3.95%; the trial is faster than both for
+12/12 members and slower than both for 0/12.
+Maximum duplicate-control spread is 1.85%.
+These are complete-encoder screening observations, not confidence intervals,
+replicated admission evidence or a prediction from mapping-only BM-0184.
+
+Both owners require 79435701 policy bytes for the full-frame configuration.
+No extra arrays are introduced. The prepared owner and field cursor fit within
+the existing logical model-state charge and die before range preparation; this
+is bounded workspace accounting, not a measured peak resident-memory claim.
+
+Every measured and warmup stream matches the retained output byte-for-byte;
+the unchanged decoder restores it. Input/archive sizes and chunk/workspace
+metadata match retained complete-stream reports. Corpus identity, balanced ranks,
+finite times and inherited source/executable hashes pass. TVG-1218 records
+compiler, sanitizer, error parity and publication validation.
+
+Keep the candidate private. Replicate this complete-encoder comparison across
+all twelve members before deciding admission. Public defaults, format IDs,
+workspace requirements and the previous external qualification remain unchanged.

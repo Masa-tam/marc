@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.25)
+file(MAKE_DIRECTORY "${WORK}")
+foreach(data IN ITEMS "" x xx xxx xxxx xxxxx abcXabcYabcZ abcdXabcdYabcdZ abcdeXabcde)
+    file(WRITE "${WORK}/small" "${data}")
+    execute_process(COMMAND "${BENCHMARK}" "${WORK}/small" forward RESULT_VARIABLE result OUTPUT_VARIABLE report TIMEOUT 60)
+    if(NOT result EQUAL 0 OR NOT report MATCHES "stream_identity=1" OR NOT report MATCHES "round_trip=1")
+        message(FATAL_ERROR "Small stream failed: ${result}: ${report}")
+    endif()
+endforeach()
+string(REPEAT "ABRACADABRA01234" 69906 input)
+file(WRITE "${WORK}/input" "${input}")
+execute_process(COMMAND "${BENCHMARK}" "${WORK}/input" reverse RESULT_VARIABLE result OUTPUT_VARIABLE report TIMEOUT 60)
+if(NOT result EQUAL 0 OR NOT report MATCHES "verified_iterations=3"
+    OR NOT report MATCHES "stream_identity=1" OR NOT report MATCHES "round_trip=1"
+    OR NOT report MATCHES "additional_array_bytes=0")
+    message(FATAL_ERROR "Multiframe stream failed: ${result}: ${report}")
+endif()

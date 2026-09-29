@@ -9832,3 +9832,10 @@ implementation or new technical reference is used.
 Use first-party token validation, field cursor, operation mapping and prepared
 range-encoder lifecycle designs. BM-0160 supplies retained phase evidence;
 DD-1350 closes unconditional 18-bit admission. No external source was consulted.
+
+
+## IR-1112: Prepared operation mapping in a private frame path
+
+Use the first-party DD-1351 bridge, retained frame/raw-frame/streaming/owning
+adapters, workspace policy and differential tests. BM-0184 supplies mapping-only
+evidence. No external codec implementation or new reference was consulted.
