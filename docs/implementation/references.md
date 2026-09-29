@@ -9693,3 +9693,10 @@ Use the repository-owned six-prefix experiment, retained exact token oracle
 and BM-0163's phase diagnosis. Omitting the five-byte index and searching the
 four-byte chain for a five-byte fallback is an independent first-party design.
 No external implementation, optimization source or tests are consulted.
+
+## IR-1092: Controlled replay variance follow-up
+
+Use the unchanged first-party compact-six benchmark from BM-0164 and its
+retained token/frame oracle. Compare default scheduling with one permitted
+logical processor selected for each benchmark process. No external codec
+source or new algorithm reference is used.

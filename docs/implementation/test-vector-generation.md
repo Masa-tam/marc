@@ -17699,3 +17699,18 @@ exact token comparisons, serialized-frame identity and reconstruction.
 Preserve raw iterations, executable/source identities and all variable results.
 There is no new public implementation, full regression, fuzz, hosted CI or
 external verification claim. BM-0164 does not qualify public admission.
+
+## TVG-1198: Unchanged-binary scheduling control
+
+Verify the established corpus manifest and the compact-six executable digest
+from TVG-1197 before the experiment; verify the executable again afterward.
+Ten x-ray processes (five per scheduling condition) pass the existing embedded
+exhaustive-position, wide-distance, nearest-tie, token, complete-frame and
+reconstruction checks. Token counts and serialized frame sizes agree across
+all runs. Check that each child receives the intended affinity and restore
+the launcher's original affinity on completion.
+
+No source, compiler option, production API or stream-format change is made.
+This focused run does not repeat the full corpus, compiler/sanitizer suites,
+fuzzing, hosted CI or external interoperability qualification. BM-0165 records
+all observed ranges without discarding prior variable measurements.

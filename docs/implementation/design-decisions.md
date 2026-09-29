@@ -26555,3 +26555,25 @@ BM-0164 does not establish x-ray regression resolution. Preserve the compact
 experiment without admission; investigate measurement variability before the
 next performance decision and retain five-byte fallback indexing in further
 update trials. Reduced array storage alone is insufficient for adoption.
+
+## DD-1332: Separate scheduling control from algorithm changes
+
+After BM-0164's variable results, keep the measured executable and input
+unchanged. Run five pairs of independent x-ray processes, alternating the
+order of default scheduling and fixed single-logical-processor affinity.
+Verify the inherited process affinity before accepting each run. Retain the
+benchmark's warmup, three timed iterations per frame, rotating finder order,
+exact tokens, frame identity and reconstruction checks. Preserve every result.
+
+Affinity constrains eligible execution locations; it does not reserve a core,
+eliminate interference, or control frequency and cache state. Record process
+CPU and wall time separately as ancillary evidence; they include oracle and
+validation work and cannot allocate time to individual finder phases. Do not
+change system-wide scheduling, power settings or unrelated processes.
+
+BM-0165 finds narrow ranges under both conditions and slower x-ray replay for
+both six-prefix prototypes. The previous large variability is not reproduced,
+so processor migration is not established as its cause. Keep the prototypes
+unadmitted. Subsequent update-work trials should retain the five-byte index,
+use unchanged binaries within each paired comparison, and preserve raw
+iterations and independent repeats before any performance admission.

@@ -36082,3 +36082,17 @@ both bounds.
   no external expression or legal guarantee claimed.
 - Scope: diagnostic experiment only; production failure atomicity, failed-frame
   publication, stream representation and public memory limits are unchanged.
+
+## CR-1501: 2026-09-29 - Replay scheduling-control experiment
+
+- Author and reviewer: Codex; maintainer approved measurement-variance diagnosis.
+- References: IR-1092, DD-1332 and the unchanged first-party compact-six benchmark.
+- Independent work: alternating paired scheduling conditions, verified child
+  affinity, executable identity and preservation of raw timing/check reports.
+- Validation: TVG-1198 and BM-0165; all ten processes retain exact identity.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: no codec implementation change or external expression;
+  no legal guarantee claimed.
+- Scope: measurement and documentation only; production failure atomicity and
+  failed-frame publication contracts remain unchanged.

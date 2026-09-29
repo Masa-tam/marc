@@ -6660,3 +6660,41 @@ performance decision, investigate run-to-run measurement variability; subsequent
 update trials should retain the five-byte index rather than broadening fallback
 search. Public codec, memory queries and failure contracts remain unchanged.
 No new full-suite/fuzz, hosted CI or external verification is claimed.
+
+## BM-0165: Default versus fixed-processor x-ray replay
+
+Follow BM-0164 with its unchanged executable and verified x-ray input. Run
+five independent process pairs, alternating which scheduling condition runs
+first: default eligibility or affinity to one permitted logical processor.
+Verify child affinity, preserve the embedded warmup and three rotating-order
+iterations per frame, and perform no concurrent repository build/test work.
+All ten processes pass token/frame identity and reconstruction checks.
+
+The table gives medians of the five process medians, with the full observed
+process-median range in parentheses, in seconds. These are initialized finder
+replays, not public end-to-end compression measurements.
+
+| Condition | Bounded five | Original six | Compact six |
+| --- | ---: | ---: | ---: |
+| Default | 0.383683 (0.377920–0.384581) | 0.414570 (0.409493–0.416923) | 0.465977 (0.464284–0.474424) |
+| Fixed processor | 0.398614 (0.391014–0.399904) | 0.430745 (0.426765–0.434293) | 0.485768 (0.482265–0.490303) |
+
+Within each process, original six takes 6.96%–8.43% longer than bounded five
+in the default condition and 7.06%–9.25% longer in the fixed condition. Compact
+six takes 20.90%–23.39% and 21.59%–23.34% longer, respectively. All ten runs
+therefore support retaining bounded five for x-ray; omitting the five-byte
+index does not resolve the regression. No result is discarded.
+
+The earlier large variation is not reproduced under either condition. This
+experiment consequently does not establish that migration caused it, nor that
+fixed affinity is faster or necessary for stable results. Fixed affinity does
+not isolate a core from other activity. Ancillary whole-process CPU/wall times
+include untimed oracle and validation work and do not identify a finder-phase
+cause. Preserve BM-0163/BM-0164's variable results rather than replacing them
+with a universal effect size.
+
+Keep both six-prefix prototypes unadmitted. The next update-work experiment
+should retain the five-byte fallback index and compare against these controls
+with repeated, paired measurements. This stage changes documentation only;
+there is no new full-corpus, compiler/sanitizer, full-suite/fuzz, hosted CI or
+external verification claim, and no production or format change.
