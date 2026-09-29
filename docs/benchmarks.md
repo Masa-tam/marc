@@ -7799,3 +7799,60 @@ variability), rather than simply repeating measurements until a favorable run.
 No format, public memory limit, failure contract or failed-frame publication
 behavior changes. No new compiler/sanitizer/full-suite/fuzz, hosted CI or
 external qualification is claimed in this documentation-only measurement stage.
+
+
+## BM-0184: Reusing validated 1 MiB operation plans
+
+Date: 2026-09-30. After DD-1350 retains the 16-bit dictionary default, DD-1351
+evaluates the repeated planning in frame-side operation generation. The existing
+frame path calls plan, then model, which internally calls plan again. The private
+prepared bridge calls the retained planner once and maps once with the same
+field cursor. It does not skip token validation or change the operation grammar.
+
+Use unchanged admitted five-prefix tokens. Exclude tokenization, reference-frame
+encoding, validation comparisons and entropy writing from timed mapping calls.
+Compare two identical non-inlined plan-plus-model controls and one prepared
+bridge, with one warmup and three rank-balanced iterations per frame. Screen
+all twelve manifest members once, alternating execution direction. Keep all
+processes and iterations; no builds/tests overlap measurement.
+
+Take each slot's median whole-input iteration total. Negative means faster.
+
+| Member | Control 0 seconds | Control 1 seconds | Prepared seconds | Change vs control 0 | Change vs control 1 |
+|---|---:|---:|---:|---:|---:|
+| dickens | 0.192296 | 0.191410 | 0.126947 | -33.98% | -33.68% |
+| mozilla | 1.248498 | 1.252236 | 0.825462 | -33.88% | -34.08% |
+| mr | 0.209334 | 0.213105 | 0.137939 | -34.11% | -35.27% |
+| nci | 0.144618 | 0.145045 | 0.095540 | -33.94% | -34.13% |
+| ooffice | 0.191030 | 0.192275 | 0.125545 | -34.28% | -34.71% |
+| osdb | 0.205640 | 0.206562 | 0.135405 | -34.15% | -34.45% |
+| reymont | 0.091250 | 0.092103 | 0.061103 | -33.04% | -33.66% |
+| samba | 0.312065 | 0.312901 | 0.208868 | -33.07% | -33.25% |
+| sao | 0.336929 | 0.338763 | 0.222475 | -33.97% | -34.33% |
+| webster | 0.608125 | 0.609939 | 0.405982 | -33.24% | -33.44% |
+| xml | 0.033108 | 0.032733 | 0.021605 | -34.74% | -34.00% |
+| x-ray | 0.353642 | 0.352951 | 0.232856 | -34.15% | -34.03% |
+
+Sums of member medians are 3.926537, 3.940021 and 2.599727 seconds; prepared
+mapping changes -33.79% and -34.02% against the two controls. It is faster
+than both controls for 12/12 members. Maximum whole-input control
+spread is 1.80%. These are mapping-only screening observations,
+not complete-encoder gains or confidence intervals.
+
+The prepared owner occupies 104 bytes in the measured build; the
+implementation charges sizeof(owner), not a hard-coded architecture size.
+It needs no extra token/operation arrays and performs no dynamic allocation.
+The retained planner's token, active-operation and cursor charge is increased
+explicitly for the owner. Public workspace requirements are unchanged.
+
+Every mapped operation matches the reference. A representative entropy payload
+also matches and the reference frame restores the input. Input/token/operation/
+frame counts match retained BM-0160 records. All ranks, timing sums and source/
+binary identities pass. TVG-1217 covers compiler/sanitizer and failure contracts.
+
+Keep this bridge private. Next connect it to a separate frame-encoder trial and
+prove exact frame bytes, preflight ordering, serialized-output preservation and
+failed-frame non-publication before measuring complete-encoder impact. Account
+for its transient owner state alongside existing model-state charges; do not
+assume it is free or translate this mapping speedup directly to whole-pipeline
+throughput. No public/default change or new external qualification is claimed.

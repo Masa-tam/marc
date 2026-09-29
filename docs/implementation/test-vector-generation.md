@@ -18227,3 +18227,36 @@ excludes only elapsed times, rank fields and the explicit direction flag.
 Use existing TVG-1215 compiler/sanitizer coverage; do not claim those suites were
 rerun in this documentation-only stage. No new full-suite/fuzz, hosted CI or
 external qualification is claimed. Public codec and failure contracts remain.
+
+
+## TVG-1217: Private prepared operation bridge validation
+
+Seven dedicated tests pass under both compilers and ASan/UBSan. Compare every
+LzssFieldContextResult field and every modeled-operation field with the retained
+planner/mapper. Cover empty input, all byte literals, every match length 3..258,
+wide distances through near-window limits and a near-full literal frame driving
+adaptive model rescaling. Representative Range descriptors and payloads match.
+
+Malformed late tokens, invalid parameters, count/raw-size mismatches and limits
+match planner errors. A failed new preparation invalidates prior readiness.
+Capacity failure and a consumed-plan retry leave operation output unchanged.
+Exact aggregate budgets succeed; one byte less fails, with the prepared owner
+charged in addition to the retained token/operation/cursor amount.
+
+Operation output overlapping tokens, original configuration or the owner is
+rejected before writes. Owner/input overlap during preparation preserves the
+owner representation and its prior usable plan. Owner/output overlap likewise
+preserves owner bytes. Successful writes preserve unused output suffix entries.
+The borrowed input/configuration must remain stable and live between calls.
+
+Allocation guards pass 128 prepare/write cycles under both compilers after
+setup. Both dedicated CTest suites pass detailed, allocation and small/multiframe
+diagnostic smoke targets. All twelve corpus screening processes match every
+operation; a representative Range payload matches the reference frame, which
+restores the raw input. Counts match retained BM-0160 reports; ranks, finite
+times, timing sums, corpus manifest and source/binary identities are checked.
+
+BM-0184 reports mapping-only times. The bridge is compiled only in dedicated
+tests/diagnostics. No public frame/encoder admission, new full-suite/fuzz, hosted
+CI or external qualification is claimed. Existing failure/publication contracts
+remain unchanged.

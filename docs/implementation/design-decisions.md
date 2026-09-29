@@ -27323,3 +27323,47 @@ tradeoff and all observed variability; do not automatically promote on aggregate
 benefit or repeat unchanged experiments until a favorable result appears. A
 future investigation must target a concrete unresolved question or an explicitly
 chosen speed/memory policy. Existing failure/publication guarantees remain.
+
+
+## DD-1351: Private prepared operation mapping after dictionary evaluation
+
+Keep the admitted 16-bit dictionary path. Existing frame encoding plans token
+operations, then calls a mapper that plans them again before materialization.
+Evaluate a separate prepared bridge that validates/plans once and materializes
+once, preserving field grammar checks and reference operation/result identity.
+No stream or format change is involved. Compile only into dedicated diagnostics.
+
+Preparation borrows stable tokens and configuration until the single write or
+a new preparation. Copying the prepared owner is disabled. Validate the full
+token frame before exposing success and charge token bytes, active operation
+bytes, field-cursor state and the prepared owner with checked arithmetic. The
+additional owner charge is explicit; do not silently change public budgets.
+
+Reject span-size overflow and owner/input overlap before changing the owner.
+Later preparation failures invalidate prior readiness. A write without a successful preparation
+or after a consumed write reports invalid_parameters. Check owner/output alias
+before mutation; such an alias leaves the owner intact. Other writes consume
+readiness, check active output capacity/configuration/token overlap before any
+operation write, and preserve output on these errors. Unused output suffix is
+not borrowed. Input/configuration must remain unchanged and live between calls.
+
+Compare against retained plan-plus-model results, including malformed input,
+capacity/budget/alias errors, full boundaries and exact range payloads. Do not
+remove validation or route public encoding through the trial. Benchmark mapping
+only against two identical plan-plus-model controls with balanced execution
+ranks; exclude dictionary search and entropy writing from those timings.
+
+After compiler/sanitizer validation, screen each of the twelve verified corpus
+members once, alternating execution direction. Tokenize with the unchanged
+admitted 16-bit finder outside timing. Balance three mapping iterations per
+frame across two plan-plus-model controls and one prepared bridge, with one
+warmup. Compare every operation and a representative payload/frame restoration;
+check counts against retained BM-0160 reports. Do not interpret mapping-only
+percentage changes as complete-encoder gains.
+
+TVG-1217 and BM-0184 complete the private bridge validation and twelve-member
+screening. Mapping sums change -33.79% and -34.02% against both controls,
+with exact operations and representative payload identity. Advance to a separate
+frame-encoder trial with explicit transient-state accounting and unchanged
+serialized-output/error-publication guarantees. This does not establish a
+complete-encoder speedup or admit the bridge into a public path.

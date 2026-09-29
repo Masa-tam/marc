@@ -9825,3 +9825,10 @@ evaluation. No external codec source or new algorithm reference was consulted.
 Use the unchanged first-party DD-1349 complete-encoder diagnostic, retained
 BM-0182 screening reports and verified corpus manifest. No external algorithm
 implementation or new technical reference is used.
+
+
+## IR-1111: Reusing validated 1 MiB operation plans
+
+Use first-party token validation, field cursor, operation mapping and prepared
+range-encoder lifecycle designs. BM-0160 supplies retained phase evidence;
+DD-1350 closes unconditional 18-bit admission. No external source was consulted.

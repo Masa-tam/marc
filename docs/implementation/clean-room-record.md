@@ -36407,3 +36407,21 @@ both bounds.
 - Decision: retain public 16-bit selection; private 18-bit remains unadmitted.
   Preserve all adverse results. No format, memory-limit or failure/publication
   contract changes and no new public or external qualification claim.
+
+
+## CR-1520: 2026-09-30 - Prepared 1 MiB operation mapping trial
+
+- Author and reviewer: Codex; maintainer authorized the next development step.
+- References: IR-1111, DD-1351, first-party token validator, mapper, field cursor
+  and prepared Range encoder lifecycle. BM-0160 supplies retained phase evidence.
+- Independent task: avoid repeating a validated operation plan, preserve output
+  preflight guarantees, charge retained state, and compare exact results/payloads.
+- Similarity review: mapper logic intentionally reuses first-party expression;
+  lifetime, overlap and one-use ownership rules are explicitly documented. No
+  external codec expression or optimization structure was consulted.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1217 and BM-0184; compiler/sanitizer tests, allocation guards
+  and all twelve corpus comparisons pass. No legal guarantee is claimed.
+- Scope: diagnostic-only sources; no public library source-list, default, stream
+  format, memory-limit or failed-frame publication change.
