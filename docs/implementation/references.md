@@ -9791,3 +9791,9 @@ is consulted. Keep prior diagnostic sources and binaries intact.
 Use the repository-owned guarded five-prefix implementation and DD-1344 harness.
 Replace compile-time width with validated reset-time configuration in a separate
 diagnostic implementation. No external source or optimization reference is used.
+
+## IR-1106: Replicated corpus runtime-width measurements
+
+Use the preserved DD-1345 runtime-width executable, first-party measurement
+runner, corpus manifest and earlier verification reports. No external source,
+implementation or tuning reference is consulted.

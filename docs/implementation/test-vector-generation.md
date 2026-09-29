@@ -18095,3 +18095,26 @@ All twelve focused timing processes pass these checks and independent rank,
 finite-duration and per-frame sum validation. Prior and new source/executable
 identities are preserved. BM-0178 records the diagnostic results; no production
 behavior, full-suite/fuzz, hosted CI or external qualification change is claimed.
+
+## TVG-1212: Replicated complete-corpus runtime-width checks
+
+DD-1346 runs the preserved DD-1345 executable for three complete corpus passes,
+36 processes total. Manifest verification and source/executable identity checks
+precede measurement and are repeated for identities afterward. No rebuilds or
+concurrent build/test work occur. Every run retains its complete raw report.
+
+Each process repeats the existing exhaustive-boundary, wide-distance, nearest-tie,
+invalid-width/oversized-reset preservation and shrink/expand checks. Every slot
+replay matches indexed tokens, representative actual tokens serialize identically
+to the oracle frame, and decoded bytes match the original input. Input size,
+per-frame sizes, tokens and serialized-frame byte totals agree with earlier
+reports in all 36 processes. Other slots are token-equal, not separately encoded.
+
+The independent report checks require every slot to occupy all four execution
+ranks in each frame and every iteration to contain all four ranks. Durations
+are finite/nonnegative and per-frame sums agree with reported iteration totals.
+All scheduled runs and the declared sequence are retained. BM-0179 summarizes
+member-level results, duplicate controls and pass aggregates without choosing
+only favorable comparisons. Prior compiler/sanitizer validation remains prior
+evidence; no new compiler/sanitizer rebuild, full-suite/fuzz, hosted CI or external
+qualification is claimed. Public codec and failure contracts are unchanged.

@@ -36317,3 +36317,20 @@ both bounds.
   measurement logic; no external expression or legal guarantee claimed.
 - Scope: diagnostic-only maximum backing storage and runtime shifts; no public
   format, workspace, failure atomicity or failed-frame publication change.
+
+## CR-1515: 2026-09-29 - Replicated corpus runtime-width measurements
+
+- Author and reviewer: Codex; maintainer approved complete-corpus repetition.
+- References: IR-1106, DD-1346, preserved first-party runtime-width diagnostics,
+  corpus manifest and prior exact-content reports. No external source consulted.
+- Independent procedure: freeze three complete passes with rotated/reversed
+  member order and alternating directions; compare each width with both controls,
+  report all members and retain adverse or marginal observations.
+- Validation: TVG-1212 and BM-0179; 36 exact-content processes, rank/sum invariants,
+  unchanged source/binary identities and fixed-protocol order verification.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party tuning/benchmark code.
+- Similarity review: first-party measurement adaptation and documentation only;
+  no codec implementation changes, external expression or legal guarantee.
+- Scope: diagnostic results only; no format, public workspace, failure atomicity
+  or failed-frame publication changes. Previous observations remain preserved.

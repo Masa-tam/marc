@@ -7465,3 +7465,81 @@ focused-input direction in this run, not a universal performance guarantee.
 Next replicate timing across all twelve corpus members using this preserved
 binary and retain memory/cross-harness limitations before proposing any bounded
 production integration. Wider production variants remain unadmitted.
+
+## BM-0179: Three complete-corpus passes with runtime widths
+
+Date: 2026-09-29. DD-1346 keeps the BM-0178 runtime binary and source unchanged.
+Three passes over twelve manifest-verified members give 36 independent processes.
+Member order rotates by four positions per pass, with the middle pass reversed;
+each member's execution direction alternates. Each member appears twice in one
+direction and once in the other, balanced globally. All planned runs are retained.
+No rebuild or concurrent build/test work occurs during measurement.
+
+One finder and maximum-capacity storage serve logical slots 16/16/18/20. Each
+frame has warmup and four rank-balanced reset/replay iterations. Slot values are
+medians of the four whole-input iteration totals. The following sums add those
+member medians within each pass; they are not end-to-end compression time,
+concatenated-input measurements or a newly selected fastest path. Negative
+relative changes mean faster; each range includes comparison with both controls.
+
+| Pass | 16-bit slot 0 sum (s) | 16-bit slot 1 sum (s) | 18-bit sum (s) | 20-bit sum (s) | 18-bit change | 20-bit change |
+|---|---:|---:|---:|---:|---:|---:|
+| 1 | 22.137724 | 22.138611 | 21.382209 | 21.277236 | -3.42% to -3.41% | -3.89% to -3.89% |
+| 2 | 22.602104 | 22.591725 | 21.694747 | 21.556629 | -4.01% to -3.97% | -4.63% to -4.58% |
+| 3 | 23.902235 | 23.989946 | 23.014844 | 23.012741 | -4.06% to -3.71% | -4.07% to -3.72% |
+
+Per-member observed ranges include all three processes and both 16-bit controls.
+The win count requires being faster than both controls in that process. Maximum
+control spread is `100 * (larger control median / smaller - 1)`. Ranges are not
+confidence intervals; small differences remain sensitive to measurement variation.
+
+| Input | 18-bit change range | Wins vs both | 20-bit change range | Wins vs both | Maximum control spread |
+|---|---:|---:|---:|---:|---:|
+| dickens | -5.02% to -3.73% | 3/3 | -6.20% to -4.81% | 3/3 | 1.36% |
+| mozilla | -5.22% to -3.15% | 3/3 | -6.36% to -2.51% | 3/3 | 0.50% |
+| mr | -2.77% to -2.10% | 3/3 | -3.15% to -2.37% | 3/3 | 0.65% |
+| nci | -1.08% to -0.19% | 3/3 | -0.30% to +1.19% | 2/3 | 0.90% |
+| ooffice | -12.11% to -8.28% | 3/3 | -15.77% to -11.80% | 3/3 | 1.22% |
+| osdb | -9.34% to -4.67% | 3/3 | -14.06% to -5.16% | 3/3 | 0.96% |
+| reymont | -2.06% to -0.88% | 3/3 | -1.93% to -1.16% | 3/3 | 0.61% |
+| samba | -4.10% to -3.18% | 3/3 | -3.92% to +0.65% | 2/3 | 0.96% |
+| sao | -8.17% to -7.19% | 3/3 | -9.00% to -5.95% | 3/3 | 0.58% |
+| webster | -3.45% to -3.00% | 3/3 | -3.86% to -3.29% | 3/3 | 0.28% |
+| xml | -3.81% to -2.39% | 3/3 | -5.32% to -3.79% | 3/3 | 1.19% |
+| x-ray | -34.19% to -26.07% | 3/3 | -44.89% to -32.46% | 3/3 | 0.57% |
+
+All 36 content checks pass, including earlier adverse cases nci/reymont. Tokens,
+frame bytes and restoration agree with previous reports, and independent rank/
+timing-sum checks pass (TVG-1212). Complete per-frame timing/rank reports and
+old/new source/executable hashes are preserved. Compiler/sanitizer tests were
+not rerun; the unchanged executable retains BM-0178's validation history.
+
+Every mode retains the same 17,301,504-byte full-frame array backing. Narrower
+active heads are cleared only up to their selected width. A specialized 18-bit
+array design would add 786,432 bytes over 16 bits; 20 bits would add 3,932,160.
+These are array-payload arithmetic, not observed peak memory or an admitted
+workspace change. Extra diagnostic backing, runtime shifts and shared storage
+mean the measurements do not establish production throughput or memory use.
+
+Preserve the earlier specialized/mixed-instance adverse results. This experiment
+does not identify why their variation occurred. Neither overall sums nor a single
+member's gains alone justify a global/adaptive policy. Public format, memory
+limits, failure atomicity and failed-frame non-publication remain unchanged.
+No new full-suite/fuzz, hosted CI or external qualification is claimed.
+
+Across all 36 processes, 18 bits is faster than both repeated controls. The
+pass-sum reduction spans 3.41%–4.06%. This is a consistent observed direction,
+not proof that nci's small 0.19%–1.08% differences exceed measurement noise.
+20 bits beats both controls in 34/36 processes: the third-pass nci result is
+slower than both and the third-pass samba result lies between them. Its pass-sum
+reduction spans 3.72%–4.63%. Duplicate-control spread never exceeds 1.36% in
+whole-input medians, while absolute process times vary between passes.
+
+Relative to 18-bit sums, 20 bits reduces time by about 0.49%, 0.64% and 0.01%
+across the three passes. Its specialized array payload would require another
+3 MiB beyond 18 bits. Prefer 18 bits as the first candidate for a bounded private
+workspace prototype, retaining a reference 16-bit path and explicit size/preflight
+checks. This is a next experiment, not public admission: the current runtime
+harness cannot establish the speed or memory behavior of that implementation.
+Validate exact tokens/frames and failure preservation, then measure that bounded
+implementation before changing a public default or workspace contract.

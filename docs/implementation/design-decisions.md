@@ -27148,3 +27148,41 @@ which former code/storage/cache condition caused its variation. Next use the
 preserved runtime binary for replicated whole-corpus measurement, including
 adverse cases from earlier experiments. Evaluate input-dependent gains and memory
 cost before any bounded production integration; keep wider variants unadmitted.
+
+## DD-1346: Replicate runtime widths across the complete corpus
+
+Retain the DD-1345 executable and source without rebuilding. Predeclare three
+passes over all twelve manifest-verified corpus members: 36 processes. Rotate
+member order by four positions per pass and reverse the middle pass. Alternate
+execution direction by original member index plus pass parity. Each member has
+both directions, with one direction appearing twice; the overall design has
+equal direction counts. Retain every scheduled observation and old/new identity.
+
+The existing process uses one workspace, slots 16/16/18/20, warmup and four
+rank-balanced measured iterations per frame. Verify token/frame identity and
+restoration in every process, preserve per-frame times and ranks, and independently
+check rank/sum invariants. Do not run builds/tests concurrently with timing.
+
+Compare each wider slot against both repeated 16-bit controls within each
+process. Report every member's range and sign, control spread, and each pass's
+sum of member medians. The latter is a diagnostic aggregate, not an end-to-end
+compressor time or a concatenated-input measurement. Avoid selecting favorable
+runs, fitting an input-dependent policy or treating small noisy differences as
+robust gains. Include the earlier adverse nci/reymont cases.
+
+Shared maximum backing storage and runtime shifts retain DD-1345's limitations.
+No public workspace size, format, failure atomicity or failed-frame publication
+contract changes. Global or adaptive width admission requires evidence beyond
+these diagnostic measurements and must preserve all previous adverse results.
+
+BM-0179 completes all 36 processes with exact content. The 18-bit path beats both
+controls in every process and pass aggregates improve 3.41%–4.06%; small nci
+margins remain measurement-sensitive. The 20-bit path beats both in 34/36, with
+adverse nci/samba comparisons, and adds only about 0.01%–0.64% aggregate reduction
+beyond 18 bits while requiring 3 MiB more specialized array payload.
+
+Prefer 18 bits for the next bounded private-workspace prototype. Preserve a
+16-bit reference, explicit workspace arithmetic/alignment, preflight failure
+preservation and exact token/frame output. Keep both wider variants unadmitted
+until the bounded implementation's own correctness and performance are verified;
+do not silently enlarge public memory limits or alter the existing factory.
