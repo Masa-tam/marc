@@ -27445,3 +27445,38 @@ all result/error fields and failed-frame privacy. Run appropriate regression,
 allocation, sanitizer and public-path tests before admitting the production
 change. This documentation-only step does not modify public selection or claim
 new hosted CI/external qualification.
+
+
+## DD-1354: Admit prepared operation mapping through the public 1 MiB factory
+
+Compile the prepared model, frame, raw-frame and streaming encoder into the
+production libraries. Select the prepared streaming encoder only at the public
+1 MiB position-distance factory and its workspace query. Retain the original
+frame/raw-frame/streaming/owning implementation as independent oracle and tight
+budget fallback; do not silently replace diagnostic baseline owners.
+
+Assert equal original/prepared streaming object size and alignment so the existing
+workspace charge remains unchanged. Keep the admitted 16-bit five-prefix search,
+format IDs, decoder, C ABI, chunking and serialized bytes. Prepared model lifetime
+ends before range preparation or the reference fallback. Validation failures
+preserve serialized output and a failed frame never enters public pending output.
+
+Remove duplicate production source compilation from dedicated diagnostic targets.
+The prepared owning adapter remains an internal diagnostic convenience; the public
+factory owns its existing caller-supplied buffers and opaque handle as before.
+Validate both compiler builds, public C/static/shared/CLI paths, allocation guards,
+reference differential cases and sanitizer coverage. Use separate build outputs
+to preserve all prior diagnostic executables and measurement evidence. Historical
+performance remains BM-0185/BM-0186 evidence, not a new public-path timing claim.
+
+
+TVG-1220 completes the public integration checks: both compiler suites pass all
+3,953 cases, both affected diagnostic smoke targets pass, ASan/UBSan passes 44
+cases, and all twelve corpus members match retained CLI bytes and restore under
+both new compiler builds. Admit the prepared streaming selection in the public
+factory. Retain the original implementations and strict-budget fallback; no
+format, C ABI, dictionary policy, workspace requirement or decoder change.
+
+BM-0187 distinguishes historical performance evidence from this integration's
+correctness validation. New hosted CI and external-platform qualification remain
+unverified until run for this revision; do not relabel previous qualification.

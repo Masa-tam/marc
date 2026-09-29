@@ -7971,3 +7971,25 @@ manifest, ranks and positive finite times are checked. TVG-1219 records scope.
 Proceed to a separate public-path integration and regression-validation step,
 retaining the old frame oracle and tight-budget fallback. No public factory,
 format, default, workspace contract or external qualification changes here.
+
+
+## BM-0187: Public-path integration of the measured prepared mapper
+
+DD-1354 selects the prepared streaming encoder in the public 1 MiB factory after
+BM-0185/BM-0186 screening and replication. TVG-1220 validates that integration
+with both compiler suites, sanitizer/public failure tests and exact twelve-member
+CLI comparisons against the retained encoder.
+
+No new throughput measurement is performed in this integration stage. The prior
+replication's first two aggregate comparisons show reductions of 3.71% to 4.15%;
+retain the documented third-pass variation and do not reinterpret its larger
+observed reduction as stable. Public factory/CLI overhead is not separately
+benchmarked here. The admitted implementation retains the same bounded workspace
+requirements and introduces no additional token/operation arrays. Object size
+and alignment are checked against the reference; no new physical peak-memory
+measurement is claimed.
+
+The old frame/raw-frame/streaming/owning path remains an independent oracle and
+supplies the tight-budget fallback. The admitted 16-bit dictionary, wire format,
+C ABI and failed-frame publication contract are unchanged. Hosted CI and external
+platform qualification must refer to the eventual integration revision separately.

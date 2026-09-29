@@ -5,7 +5,7 @@
 #include "frame/lzss_position_distance_raw_frame_encoder.hpp"
 
 namespace marc::frame::internal {
-// Separate diagnostic-only prepared-mapping path; no public factory selects it.
+// Prepared-mapping path used by the public 1 MiB position-distance encoder.
 
 // Private raw-frame encoder. Fixed eligibility 3/4/5. Charge all supplied
 // capacities before parsing; tokens/operations/finder are discardable scratch.

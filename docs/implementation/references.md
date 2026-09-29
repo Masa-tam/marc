@@ -9846,3 +9846,10 @@ evidence. No external codec implementation or new reference was consulted.
 Use unchanged first-party DD-1352 adapters and complete-encoder diagnostic,
 retained BM-0185 reports and verified corpus manifest. No external algorithm
 implementation or new technical reference is used.
+
+
+## IR-1114: Public integration of prepared operation mapping
+
+Use the first-party DD-1352 prepared frame/stream path, DD-1353 replicated
+measurements, retained public factory tests and unchanged frame oracle.
+No external codec implementation or new technical reference is used.

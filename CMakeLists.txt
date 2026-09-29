@@ -51,6 +51,10 @@ if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
 endif()
 
 set(MARC_SOURCES
+    src/context/lzss_position_distance_1m_prepared_model.cpp
+    src/frame/lzss_position_distance_1m_prepared_frame.cpp
+    src/frame/lzss_position_distance_1m_prepared_raw_frame_encoder.cpp
+    src/frame/lzss_position_distance_1m_prepared_frame_streaming_encoder.cpp
     src/context/lzss_contextual_adaptive_huffman_decoder.cpp
     src/context/lzss_contextual_adaptive_huffman_encoder.cpp
     src/context/lzss_contextual_blocked_huffman_decoder.cpp
@@ -501,36 +505,26 @@ endif()
 if(MARC_BUILD_TESTS AND TARGET marc_static)
     add_executable(marc_position_distance_1m_prepared_stream_tests
         tests/lzss_position_distance_1m_prepared_stream_tests.cpp
-        src/frame/lzss_position_distance_1m_prepared_frame.cpp
-        src/frame/lzss_position_distance_1m_prepared_raw_frame_encoder.cpp
-        src/frame/lzss_position_distance_1m_prepared_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_1m_prepared_owned_encoder.cpp
-        src/context/lzss_position_distance_1m_prepared_model.cpp)
+        src/frame/lzss_position_distance_1m_prepared_owned_encoder.cpp)
     target_compile_features(marc_position_distance_1m_prepared_stream_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_1m_prepared_stream_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_1m_prepared_stream_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_1m_prepared_stream_tests COMMAND marc_position_distance_1m_prepared_stream_tests)
     add_executable(marc_position_distance_1m_prepared_stream_allocation_tests
         tests/position_distance_1m_prepared_stream_allocation_tests.cpp
-        src/frame/lzss_position_distance_1m_prepared_frame.cpp
-        src/frame/lzss_position_distance_1m_prepared_raw_frame_encoder.cpp
-        src/frame/lzss_position_distance_1m_prepared_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_1m_prepared_owned_encoder.cpp
-        src/context/lzss_position_distance_1m_prepared_model.cpp)
+        src/frame/lzss_position_distance_1m_prepared_owned_encoder.cpp)
     target_compile_features(marc_position_distance_1m_prepared_stream_allocation_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_1m_prepared_stream_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_1m_prepared_stream_allocation_tests PRIVATE marc::static )
     add_test(NAME marc_position_distance_1m_prepared_stream_allocation_tests COMMAND marc_position_distance_1m_prepared_stream_allocation_tests)
     add_executable(marc_position_distance_1m_prepared_model_tests
-        tests/lzss_position_distance_1m_prepared_model_tests.cpp
-        src/context/lzss_position_distance_1m_prepared_model.cpp)
+        tests/lzss_position_distance_1m_prepared_model_tests.cpp)
     target_compile_features(marc_position_distance_1m_prepared_model_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_1m_prepared_model_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_1m_prepared_model_tests PRIVATE marc::static GTest::gtest_main)
     add_test(NAME marc_position_distance_1m_prepared_model_tests COMMAND marc_position_distance_1m_prepared_model_tests)
     add_executable(marc_position_distance_1m_prepared_model_allocation_tests
-        tests/position_distance_1m_prepared_model_allocation_tests.cpp
-        src/context/lzss_position_distance_1m_prepared_model.cpp)
+        tests/position_distance_1m_prepared_model_allocation_tests.cpp)
     target_compile_features(marc_position_distance_1m_prepared_model_allocation_tests PRIVATE cxx_std_20)
     target_include_directories(marc_position_distance_1m_prepared_model_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_1m_prepared_model_allocation_tests PRIVATE marc::static )
@@ -635,11 +629,7 @@ if(MARC_BUILD_BENCHMARKS)
         endif()
         add_executable(marc_lzss_position_distance_1m_prepared_stream_benchmark
             benchmarks/lzss_position_distance_1m_prepared_stream_benchmark.cpp
-        src/frame/lzss_position_distance_1m_prepared_frame.cpp
-        src/frame/lzss_position_distance_1m_prepared_raw_frame_encoder.cpp
-        src/frame/lzss_position_distance_1m_prepared_frame_streaming_encoder.cpp
-        src/frame/lzss_position_distance_1m_prepared_owned_encoder.cpp
-        src/context/lzss_position_distance_1m_prepared_model.cpp)
+            src/frame/lzss_position_distance_1m_prepared_owned_encoder.cpp)
         target_compile_features(marc_lzss_position_distance_1m_prepared_stream_benchmark PRIVATE cxx_std_20)
         target_include_directories(marc_lzss_position_distance_1m_prepared_stream_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_lzss_position_distance_1m_prepared_stream_benchmark PRIVATE marc::static)
@@ -651,8 +641,7 @@ if(MARC_BUILD_BENCHMARKS)
                     -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_prepared_stream_benchmark_smoke.cmake)
         endif()
         add_executable(marc_lzss_position_distance_1m_prepared_model_benchmark
-            benchmarks/lzss_position_distance_1m_prepared_model_benchmark.cpp
-            src/context/lzss_position_distance_1m_prepared_model.cpp)
+            benchmarks/lzss_position_distance_1m_prepared_model_benchmark.cpp)
         target_compile_features(marc_lzss_position_distance_1m_prepared_model_benchmark PRIVATE cxx_std_20)
         target_include_directories(marc_lzss_position_distance_1m_prepared_model_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(marc_lzss_position_distance_1m_prepared_model_benchmark PRIVATE marc::static)

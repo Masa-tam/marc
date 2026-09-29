@@ -2,7 +2,7 @@
 #define MARC_CONTEXT_LZSS_POSITION_DISTANCE_1M_PREPARED_MODEL_HPP
 #include "context/lzss_position_distance_1m_tokens.hpp"
 namespace marc::context::internal {
-// Diagnostic-only, one-use plan. Borrowed tokens and configuration must stay
+// Internal one-use plan. Borrowed tokens and configuration must stay
 // alive and unchanged through write. Output is unchanged on preflight failure.
 // The prepared object is charged in addition to the retained planner's state.
 class PreparedLzssPositionDistance1mModel final {

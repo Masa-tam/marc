@@ -36462,3 +36462,23 @@ both bounds.
 - Decision: proceed to separate public-path integration validation, preserving
   the reference and failure guarantees. Keep the third-pass variation and avoid
   claiming its inflated gain as stable. No production or format change here.
+
+
+## CR-1523: 2026-09-30 - Public prepared-mapping integration
+
+- Author and reviewer: Codex; maintainer approved integration after DD-1353.
+- References: IR-1114, DD-1354, first-party prepared model/frame/stream adapters,
+  retained public factory and reference frame implementation, BM-0185/BM-0186.
+- Independent task: select the validated prepared streaming path through the
+  existing public factory, preserve workspace/ABI/format contracts and verify
+  exact bytes and failed-frame privacy through the public interface.
+- Similarity review: factory wiring and source-list changes reuse first-party
+  implementations without changing their algorithm bodies. The new public
+  failure test applies the established expansion-limit scenario via C calls.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1220 covers both full compiler suites, allocation guards,
+  sanitizer cases, diagnostic linkage and twelve-member CLI byte/restoration
+  comparisons. No legal guarantee or new external qualification is claimed.
+- Decision: admit prepared mapping through the public 1 MiB encoder. Retain the
+  original reference and strict-budget fallback; preserve all old artifacts.

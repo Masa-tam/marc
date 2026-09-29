@@ -454,4 +454,43 @@ TEST(PositionDistance1mCFactory, FivePrefixPublicLayoutAndWideReferenceIdentity)
     Config d{};ASSERT_EQ(marc_lzss_position_distance_dynamic_range_1m_config_init(MARC_DIRECTION_DECODE,&d),MARC_STATUS_OK);
     EXPECT_EQ(run(d,expected,103,997),input);
 }
+TEST(PositionDistance1mCFactory, EncoderSecondFrameFailureKeepsPreparedFramePrivate) {
+    std::vector<uint8_t> input(512, 'a');
+    for (std::size_t i=0; i<256; ++i) input[i]=static_cast<uint8_t>(i);
+    const auto expected=oracle(input,256);
+    const auto first_size=oracle(std::vector<uint8_t>(input.begin(),input.begin()+256),256).size();
+    for (const auto capacity : {std::size_t{1},std::size_t{16384}}) {
+        auto c=config_for(MARC_DIRECTION_ENCODE,input.size());
+        c.frame_size=256; c.max_frame_size=256; c.max_block_size=256;
+        c.max_compressed_payload_size=18*256+5;
+        c.max_expansion_ratio=1; c.expansion_slack=0;
+        Storage storage(c); marc_transform* transform{};
+        ASSERT_EQ(marc_lzss_position_distance_dynamic_range_1m_create(
+            &c,storage.p(),storage.s(),storage.v(),&transform),MARC_STATUS_OK);
+        std::vector<uint8_t> buffer(capacity,0xa5),published;
+        std::size_t consumed{}; marc_process_result result{};
+        for (unsigned call=0; call<20000; ++call) {
+            std::fill(buffer.begin(),buffer.end(),0xa5);
+            result=marc_transform_process(transform,
+                {input.data()+consumed,input.size()-consumed},
+                {buffer.data(),buffer.size()},MARC_PROCESS_END_INPUT);
+            ASSERT_LE(result.input_consumed,input.size()-consumed);
+            ASSERT_LE(result.output_produced,buffer.size());
+            consumed+=result.input_consumed;
+            published.insert(published.end(),buffer.begin(),buffer.begin()+result.output_produced);
+            EXPECT_TRUE(std::all_of(buffer.begin()+result.output_produced,buffer.end(),
+                [](auto value){return value==0xa5;}));
+            if (result.status>=100 || result.status==MARC_STATUS_END_OF_STREAM) break;
+        }
+        EXPECT_EQ(result.status,MARC_STATUS_LIMIT_EXCEEDED);
+        EXPECT_EQ(result.error_byte_position,256u); EXPECT_EQ(consumed,input.size());
+        ASSERT_EQ(published.size(),first_size);
+        EXPECT_TRUE(std::equal(published.begin(),published.end(),expected.begin()));
+        const auto again=marc_transform_process(transform,{nullptr,0},
+            {buffer.data(),buffer.size()},MARC_PROCESS_END_INPUT);
+        EXPECT_EQ(again.status,result.status); EXPECT_EQ(again.error_byte_position,256u);
+        EXPECT_EQ(again.input_consumed,0u); EXPECT_EQ(again.output_produced,0u);
+        marc_transform_destroy(transform); storage.tails();
+    }
+}
 } // namespace

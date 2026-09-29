@@ -2,7 +2,7 @@
 #define MARC_FRAME_LZSS_POSITION_DISTANCE_1M_PREPARED_FRAME_HPP
 #include "frame/lzss_position_distance_1m_frame.hpp"
 namespace marc::frame::internal {
-// Diagnostic-only. Same output/error contract as the retained frame encoder.
+// Internal prepared path. Same output/error contract as the retained frame encoder.
 // Prepared mapping state is transient and fits the existing model-state charge.
 [[nodiscard]] LzssShortMatchFrameEncodeResult encode_lzss_position_distance_1m_prepared_frame(
     const TypedContextStreamHeader&,const core::DecoderLimits&,std::uint64_t,std::uint64_t,

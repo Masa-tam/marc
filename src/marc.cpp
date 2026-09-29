@@ -1,6 +1,7 @@
 #include "frame/lzss_position_distance_1m_encode_workspace.hpp"
 #include "frame/lzss_position_distance_1m_workspace.hpp"
 #include "frame/lzss_position_distance_1m_frame_streaming_encoder.hpp"
+#include "frame/lzss_position_distance_1m_prepared_frame_streaming_encoder.hpp"
 #include "frame/lzss_position_distance_1m_frame_streaming_decoder.hpp"
 #include "marc/marc.h"
 
@@ -5094,7 +5095,7 @@ static marc_status prepare_position_distance_1m_config(
         {1048576, 3, 258, 0}, 32768, 44, 9, 1, 10};
     if (encode) {
         const auto error = calculate_lzss_position_distance_1m_encode_workspace(stream,limits,
-            LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mFrameStreamingEncoder),r,
+            LzssPositionDistanceWorkspaceDirection::encode,sizeof(LzssPositionDistance1mPreparedFrameStreamingEncoder),r,
             marc::dictionary::internal::LzssPositionDistance1mSearch::indexed_five_prefix);
         if(error!=LzssPositionDistanceWorkspaceError::none)
             return error==LzssPositionDistanceWorkspaceError::limit_exceeded
@@ -5181,7 +5182,11 @@ marc_status marc_lzss_position_distance_dynamic_range_1m_create(
     const std::span views_span{reinterpret_cast<std::byte*>(views.data), r.views_bytes};
     marc::core::Transform* implementation{};
     if (encode) {
-        implementation = new (std::nothrow) LzssPositionDistance1mFrameStreamingEncoder(
+        static_assert(sizeof(LzssPositionDistance1mPreparedFrameStreamingEncoder)
+            == sizeof(LzssPositionDistance1mFrameStreamingEncoder));
+        static_assert(alignof(LzssPositionDistance1mPreparedFrameStreamingEncoder)
+            == alignof(LzssPositionDistance1mFrameStreamingEncoder));
+        implementation = new (std::nothrow) LzssPositionDistance1mPreparedFrameStreamingEncoder(
             stream, limits, raw_span, serialized_span, views_span, 3,
             marc::dictionary::internal::LzssPositionDistance1mSearch::indexed_five_prefix);
     } else {

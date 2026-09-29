@@ -18319,3 +18319,43 @@ This stage changes documentation only. Dedicated compiler, allocation-guard and
 ASan/UBSan coverage from TVG-1218 is reused, not freshly rerun. No new full-suite,
 fuzz, hosted CI, external qualification or physical peak-memory result is
 claimed. Existing failure/output/publication contracts and public paths remain.
+
+
+## TVG-1220: Public prepared-mapping admission validation
+
+The public 1 MiB position-distance factory now constructs the prepared streaming
+encoder with the existing five-prefix finder and caller-supplied workspace.
+Retain the original raw-frame encoder as the independent public-test oracle.
+Compile-time checks require identical original/prepared object size and alignment;
+existing exact-budget, short-budget and unused-tail tests retain their contract.
+
+Both compiler builds pass all 3,953 CTest cases in the benchmark-disabled full
+configuration. Coverage includes public configuration/factory, static/shared C
+consumers, allocation guards, dictionary/frame and prepared-path differentials,
+CLI profile selection/round trips, malformed input and interoperability schema
+compatibility. The two affected prepared diagnostic benchmark targets are also
+built against the production library and pass their dedicated smoke tests.
+
+Add a public encoder regression where an incompressible first frame succeeds
+and a repetitive second frame exceeds the configured expansion ratio. With
+output capacities of one byte and a large buffer, only the original header and
+first frame are published, exactly matching the retained encoder prefix. The
+failed frame is private, unused output retains its sentinel and subsequent calls
+return the same error/position without consumption or output.
+
+ASan/UBSan passes 44 dedicated cases covering the prepared model/stream and public
+factory/configuration, including the new encoder publication regression. Compile
+the current factory and relevant prepared/five-prefix/frame sources directly in
+that sanitizer executable; reuse the existing instrumented support library.
+
+All twelve verified corpus members produce identical archives through the retained
+CLI and both newly built compiler variants. Both new CLIs restore every member.
+The comparison harness initially omitted the decoder's explicit profile selection;
+correct the harness and retain initial outputs, then run the complete comparison
+in separate output storage. This was a harness invocation error, not a codec fix.
+
+All prior diagnostic executables and implementation bodies are retained. Four
+header updates change comments only; their source declarations remain identical.
+No fresh fuzzing campaign, hosted CI, external-host qualification or peak-resident-
+memory measurement is claimed. Existing corpus/format qualification remains
+separate from these local production-path regression results.

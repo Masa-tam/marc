@@ -7,7 +7,7 @@
 #include <array>
 
 namespace marc::frame::internal {
-// Separate diagnostic-only prepared-mapping path; no public factory selects it.
+// Prepared-mapping path used by the public 1 MiB position-distance encoder.
 
 
 [[nodiscard]] bool serialize_lzss_position_distance_1m_stream_header(
