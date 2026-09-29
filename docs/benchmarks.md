@@ -7731,3 +7731,71 @@ Public selection remains unchanged. Repeat the preserved complete-encoder
 diagnostic across the corpus before any admission decision, including small
 margins and adverse cases. Retain existing memory limits and failure contracts;
 no new hosted CI, external qualification or public speed guarantee is claimed.
+
+
+## BM-0183: Replicated private 18-bit complete encoder evaluation
+
+Date: 2026-09-29. DD-1350 repeats the unchanged DD-1349 complete-encoder
+diagnostic over all twelve manifest members in three passes, retaining all
+36 processes. Rotate member order by four per pass, reverse the middle pass
+and alternate each member's execution direction. No builds, tests or tuning
+overlap timing. Sources, executable and earlier artifact hashes are preserved.
+
+Measure owner creation, process and destruction with independently queried
+storage; exclude file I/O, sink copies, byte comparisons and decoding. Every
+process compares one warmup and three balanced measured iterations of slots
+16/16/18 against a retained-16-bit stream and verifies restoration. Use medians
+of each slot's three whole-input totals and sum member medians per pass.
+Negative percentage means less elapsed time.
+
+| Pass | Control 0 seconds | Control 1 seconds | 18-bit seconds | Change vs control 0 | Change vs control 1 |
+|---|---:|---:|---:|---:|---:|
+| 1 | 31.846195 | 31.783876 | 31.406790 | -1.38% | -1.19% |
+| 2 | 31.959678 | 31.968088 | 31.560994 | -1.25% | -1.27% |
+| 3 | 31.337245 | 31.367873 | 30.812983 | -1.67% | -1.77% |
+
+Per-member ranges include all three processes against both controls. They
+are observations, not confidence intervals or guarantees.
+
+| Member | 18-bit change range | Faster than both | Slower than both | Maximum control spread |
+|---|---:|---:|---:|---:|
+| dickens | -3.76% to -2.67% | 3/3 | 0/3 | 0.61% |
+| mozilla | -0.85% to +0.23% | 2/3 | 0/3 | 0.30% |
+| mr | -1.86% to -0.39% | 3/3 | 0/3 | 1.49% |
+| nci | +0.01% to +2.56% | 0/3 | 3/3 | 1.16% |
+| ooffice | -5.41% to +10.04% | 2/3 | 1/3 | 1.05% |
+| osdb | -3.14% to -1.11% | 3/3 | 0/3 | 1.05% |
+| reymont | -1.55% to -0.76% | 3/3 | 0/3 | 0.37% |
+| samba | -2.66% to -1.24% | 3/3 | 0/3 | 1.47% |
+| sao | -3.12% to -1.13% | 3/3 | 0/3 | 1.45% |
+| webster | -2.85% to -1.21% | 3/3 | 0/3 | 0.91% |
+| xml | -5.48% to -1.22% | 3/3 | 0/3 | 1.91% |
+| x-ray | -7.85% to -7.02% | 3/3 | 0/3 | 0.49% |
+
+Pass aggregate changes span -1.77% to -1.19% across
+both controls. The candidate is faster than both in 31/36 processes, slower
+than both in 4/36 and between controls in 1/36. Maximum
+whole-input duplicate-control spread is 1.91%. Do not select a favorable
+denominator or ignore input-specific regressions.
+
+The first ooffice process reverses the earlier screening result: its candidate
+iterations are 0.9959043, 0.9208670 and 0.8100319 seconds. The median is slower
+than both control medians, although the fastest candidate iteration is not.
+Control 0 also has an individual 1.0304212-second iteration. Retain these
+observations without attributing them to allocator, scheduling or hardware
+behavior that was not established by this experiment.
+
+Full-frame owner policy charges remain 79,435,701 and 80,222,133 bytes; arrays
+increase by 786,432 bytes. This is checked budget arithmetic, not measured peak
+process memory. Each complete stream remains identical to the retained encoder
+and restores the input. TVG-1216 checks metadata, rank coverage and identities.
+
+Keep the public 16-bit default. The aggregate benefit does not remove the
+input-specific regressions or variable small margins, so this result does not
+justify unconditional admission of the larger workspace. Preserve the private
+18-bit candidate and evidence for an explicit future speed/memory tradeoff.
+Further work should answer a specific unresolved question (such as ooffice
+variability), rather than simply repeating measurements until a favorable run.
+No format, public memory limit, failure contract or failed-frame publication
+behavior changes. No new compiler/sanitizer/full-suite/fuzz, hosted CI or
+external qualification is claimed in this documentation-only measurement stage.

@@ -27293,3 +27293,33 @@ full-encoder screening inputs. Sums of member medians change -1.84% and
 complete-corpus measurements before public admission; small or adverse member
 results and the additional 786432-byte array requirement remain part of the
 decision. No public factory/workspace contract changes in this stage.
+
+
+## DD-1350: Replicate complete-encoder measurements before 18-bit admission
+
+Preserve the validated DD-1349 sources and diagnostic binary. Repeat all twelve
+verified corpus members in three complete passes (36 processes). Rotate member
+order by four per pass, reverse the middle pass and alternate each member's
+execution direction. Keep all observations, including nci and small margins.
+
+Retain one warmup plus three rank-balanced iterations across two unchanged
+16-bit owners and one private 18-bit owner. Measure creation, process and
+destruction; exclude file I/O, sink copies, comparisons and decoding. Each owner
+uses its queried storage and is destroyed before the next slot. Verify exact
+complete streams, restoration, ranks, timings, metadata and source/binary
+identities. Do not build or run other tests during timing.
+
+Report per-member ranges, both controls, control variation and sums of member
+medians per pass. Compare the observed benefit with the additional 786432 bytes
+and retain regressions; a small aggregate gain alone does not establish a
+universal improvement or justify changing a public default. Existing memory
+limits, formats, factory selection and failure/publication contracts remain.
+
+BM-0183 completes 36 exact-stream processes with preserved identities. Pass
+aggregate changes range -1.77% to -1.19% against both
+controls, but input-specific adverse results remain. Keep the public 16-bit
+default and leave the private candidate unadmitted. Retain the 786432-byte
+tradeoff and all observed variability; do not automatically promote on aggregate
+benefit or repeat unchanged experiments until a favorable result appears. A
+future investigation must target a concrete unresolved question or an explicitly
+chosen speed/memory policy. Existing failure/publication guarantees remain.

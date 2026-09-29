@@ -36389,3 +36389,21 @@ both bounds.
 - Scope: no public factory, enum/format ID, production source list or workspace
   default changes. Failure atomicity and failed-frame non-publication retained.
   No legal guarantee or public admission is claimed.
+
+
+## CR-1519: 2026-09-29 - Replicated complete encoder admission evaluation
+
+- Author and reviewer: Codex; maintainer approved the DD-1349 next replication.
+- References: IR-1110, DD-1350, unchanged first-party complete-encoder diagnostic,
+  retained corpus manifest, baseline reports and source/executable identities.
+- Independent task: repeat all inputs in declared order, retain every iteration
+  and process, and evaluate aggregate benefit alongside regressions and memory.
+- Validation: TVG-1216 and BM-0183; all 36 exact-stream, restoration, rank, time,
+  metadata and identity checks pass. Existing compiler/sanitizer coverage reused.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Similarity review: documentation and first-party analysis only; no new
+  algorithm expression, external code or legal guarantee.
+- Decision: retain public 16-bit selection; private 18-bit remains unadmitted.
+  Preserve all adverse results. No format, memory-limit or failure/publication
+  contract changes and no new public or external qualification claim.

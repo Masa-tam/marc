@@ -9818,3 +9818,10 @@ implementation or new algorithm reference was consulted.
 Use first-party DD-1347 finder/tokenizer, existing private workspace/raw-frame/
 streaming/owned encoder adapters and their tests. BM-0181 motivates whole-encoder
 evaluation. No external codec source or new algorithm reference was consulted.
+
+
+## IR-1110: Replicated complete-encoder evaluation of private 18-bit search
+
+Use the unchanged first-party DD-1349 complete-encoder diagnostic, retained
+BM-0182 screening reports and verified corpus manifest. No external algorithm
+implementation or new technical reference is used.

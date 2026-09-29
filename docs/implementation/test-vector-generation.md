@@ -18208,3 +18208,22 @@ stream byte-for-byte with the retained 16-bit encoding and verify restoration
 with the unchanged decoder. Rank permutations, finite positive times, policy
 charges, corpus manifest and source/executable identities pass. BM-0182 retains
 all results. No full-suite/fuzz, hosted CI or external qualification is claimed.
+
+
+## TVG-1216: Replicated complete-encoder corpus verification
+
+DD-1350 executes three complete passes of all twelve verified corpus members.
+All 36 processes compare every warmup/measured stream byte-for-byte with the
+retained 16-bit encoder and check restoration with the unchanged decoder.
+Archive/input sizes, policy charges, additional array bytes, chunk sizes and
+identity flags agree with the prior screening reports.
+
+Verify the exact predetermined order, eighteen executions in each direction,
+all three ranks per slot and per iteration, finite positive elapsed times and
+unchanged source/executable/earlier-artifact hashes. Retain every raw iteration
+and process; BM-0183 includes regressions and small margins. Metadata comparison
+excludes only elapsed times, rank fields and the explicit direction flag.
+
+Use existing TVG-1215 compiler/sanitizer coverage; do not claim those suites were
+rerun in this documentation-only stage. No new full-suite/fuzz, hosted CI or
+external qualification is claimed. Public codec and failure contracts remain.
