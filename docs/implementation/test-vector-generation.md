@@ -17806,3 +17806,39 @@ Required, not yet executed, for the forced-activation implementation:
 No forced-activation code, adaptive threshold, new codec test pass, compiler/
 sanitizer run, full-corpus/full-suite/fuzz, hosted CI or external verification
 result is claimed in this design-only stage.
+
+## TVG-1203: Forced lazy-six activation validation
+
+For lengths zero through 32 and zero/periodic/seeded-random inputs, compare
+every position against exhaustive search while varying every switch position.
+Check ineligible short tails, wrong-position requests, duplicate activation
+and invalid advance. Repeat around lengths 257/258/259/513 and across resets.
+A 600-byte zero fixture activates after a length-258 match: the next nearest
+match must reference a byte inside that prior match. Reject an oversized reset
+without changing the current result. After activation, reset through lengths
+zero to seven and verify no stale sixth-index state remains. Wide-distance
+fixtures cover 65,535/65,536/65,537/1,048,570.
+
+The smoke adds differing fifth/sixth bytes, nearest ties, a multiframe input,
+verification-only mode and rejected empty benchmark files. Both compiler
+smokes and explicit ASan/UBSan pass. Empty raw finder state is covered by the
+embedded boundary checks even though the file-driven benchmark rejects emptiness.
+
+All twelve manifest-verified corpus members pass verification-only comparisons
+against bounded five, original six and retained indexed tokens. Every lazy
+never/zero/quarter/half/late path produces the identical serialized frame and
+restores the exact input. Token/frame-byte counts agree with prior corpus
+reports. Three independent timed processes per x-ray/dickens also pass, with
+recorded actual checkpoints, transition counts and history-insertion totals.
+
+Generate 1,048,581 bytes using unsigned 32-bit state initially 719, repeated
+state = state*1664525 + 1013904223 modulo 2^32, emitting the high byte. MSVC,
+Clang and explicit ASan/UBSan verification-only runs pass with identical reports.
+The five-byte final frame cannot activate Six; this checks reset across a full
+frame into an ineligible short frame. This generator is first-party test data.
+
+These checks qualify the benchmark-only structural experiment, not an adaptive
+policy or bounded/public workspace implementation. Public preflight, allocation
+counts, arbitrary chunking, failed-frame non-publication and limits remain
+future admission gates under TVG-1202; existing public code is unchanged. No
+new full regression/fuzz, hosted CI or external verification is claimed.

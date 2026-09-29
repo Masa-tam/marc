@@ -26766,3 +26766,56 @@ full-corpus exactness, lifecycle/memory measurements and preservation tests
 before any public change. No new stream variant is intended if exact tokens
 remain identical; an observed token difference is a failed experiment, not
 permission to alter the existing format.
+
+## DD-1337: Implement forced activation before selecting a policy
+
+Implement DD-1336 as a separate benchmark-only lazy finder. Constructor capacity
+is supplied by the benchmark and is at most one MiB; arrays are allocated before
+replay. Reset validates input size, clears the three common active indexes and
+returns to Five. For tiny capacities below three there are no index arrays;
+capacities below six have no sixth pair. A reusable full-frame instance still
+reserves all four pairs even for a short final input.
+
+Track the next sequential position. An activation request succeeds only at that
+position, when Six is not already active and at least six input bytes remain.
+Initialize the sixth heads and active links, insert every historical byte
+position in ascending order, then commit Six. Retain the original five/six
+search rules and shared-prefix update construction. Do not combine the previous
+compact, rolling or fifth-first experiments. Reset/advance/activation checks
+are diagnostic safeguards, not a replacement for future bounded workspace
+preflight and public preservation tests.
+
+The comparison contains seven paths: public bounded five, original experimental
+six, and lazy never/zero/quarter/half/late. For each frame derive explicit
+checkpoints from retained oracle token boundaries before timing. Quarter/half
+use the first token start at or beyond that fraction of raw frame bytes with
+at least six bytes remaining; late is the last eligible token start. If no
+eligible boundary exists, that path stays Five. Zero activates before position
+zero when eligible. These checkpoints are test controls, not adaptive thresholds.
+Record the actual byte positions, transition counts and historical insert count.
+
+Every timed replay includes reset, the checkpoint comparison and complete
+activation when requested. Warm up and rotate path order over frames and three
+iterations. Validate every emitted token outside timing. Independently replay
+all five lazy modes for complete-frame identity and reconstruction. There is
+no content classifier or adaptive monitoring cost in this experiment. Never
+versus bounded-five timing also includes implementation/layout differences and
+is not a pure measurement of one checkpoint comparison.
+
+A separate diagnostic prepares history without searches and measures sixth
+initialization and catch-up independently, then checks the activation-position
+match against exhaustive search. Keep those timings separate: their cache
+conditions differ from interleaved replay and they cannot be subtracted from
+complete time to infer the remaining search cost. Verification-only mode keeps
+one untimed comparison replay and all frame checks, with no timed iterations
+or activation-phase measurements.
+
+Full-frame array payload is 17,825,792 bytes, an extra 4,456,448 over bounded
+five; delayed initialization does not reduce reserved memory. Public query,
+factory, token serialization and failure/publication contracts are unchanged.
+This stage does not implement bounded integration or select a decision rule.
+
+BM-0170 validates forced transitions and measures their cost, without admitting
+a policy. All twelve corpus members retain exact frames and reconstruction.
+Next quantify bounded observation overhead and frame-level evidence before
+choosing a rule; keep public bounded five unchanged.

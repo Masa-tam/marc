@@ -36160,3 +36160,20 @@ both bounds.
   transition; no external expression or legal guarantee claimed.
 - Scope: documentation/design only, no runtime selection policy or production
   change; existing failure and publication contracts remain binding.
+
+## CR-1506: 2026-09-29 - Forced lazy-six activation prototype
+
+- Author and reviewer: Codex; maintainer approved the forced-transition
+  implementation following the lazy-six design assessment.
+- References: IR-1097, DD-1336/DD-1337 and repository-owned finders/frame code.
+- Independent design: shared three indexes, pre-reserved fourth pair, sequential
+  catch-up including prior match interiors, and one-way per-frame activation.
+- Validation: TVG-1203 and BM-0170; exhaustive boundary checks, both compiler
+  smokes, explicit sanitizers, all twelve corpus comparisons and seeded final
+  short-frame checks. Timed and verification-only results remain distinct.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party adaptive-policy/test code.
+- Similarity review: intentional adaptation of first-party search/update rules;
+  no external expression or legal guarantee claimed.
+- Scope: benchmark-only structural trial; no adaptive threshold, public codec,
+  memory-policy or failure-contract change.

@@ -9729,3 +9729,11 @@ candidate preflight and frame workspace/public factory code. No external
 implementation, selection policy or optimization source is consulted. Existing
 aggregate measurements motivate assessment but do not supply a frame-level
 selection threshold or activation-cost measurement.
+
+## IR-1097: Forced lazy-six activation prototype
+
+Use DD-1336's first-party design, the original five/six finders, retained indexed
+and exhaustive token references, and existing frame comparison machinery.
+The benchmark-only lazy finder shares the three common index pairs and rebuilds
+the sixth in ascending historical-position order. No external implementation,
+selection policy or optimization source is consulted.

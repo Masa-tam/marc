@@ -6870,3 +6870,80 @@ and mixed/reversed distributions; preserve per-member results and all adverse
 runs. No numeric threshold, break-even point or speedup is established here.
 An abstract 9,963-case insertion-order model supports the reconstruction
 argument only. Public bounded five and all admission decisions remain unchanged.
+
+## BM-0170: Forced lazy-six transitions and catch-up cost
+
+DD-1337 implements the structural experiment without a content classifier.
+Per-frame checkpoints are precomputed from retained token boundaries outside
+timing: never, zero, first eligible token at/after one-quarter or one-half of
+raw bytes, and the last eligible token. At least six remaining bytes are
+required; otherwise that path stays Five. These are forced experimental
+controls, not adaptive thresholds or predictions.
+
+Three independent processes for each of x-ray/dickens use warmup, three timed
+iterations per frame and rotating seven-path order. The table gives medians
+of process medians in seconds. Complete replay includes reset, checkpoint
+comparison and any sixth-index initialization/catch-up, after allocation.
+Oracle, token/frame comparison and reconstruction are outside timing.
+
+| Path | x-ray | dickens |
+| --- | ---: | ---: |
+| Bounded five | 0.408378 | 1.319800 |
+| Original six | 0.445615 | 0.752613 |
+| Lazy never | 0.406254 | 1.323176 |
+| Lazy zero | 0.431079 | 0.745077 |
+| Lazy quarter | 0.428615 | 0.757543 |
+| Lazy half | 0.428550 | 0.870340 |
+| Lazy late | 0.422450 | 1.342524 |
+
+All x-ray forced-switch paths are slower than lazy never in each of the three
+processes. On dickens, zero/quarter/half are faster than lazy never while late
+is slower in each process. This supports the need to account for remaining
+work and transition cost; it does not supply a general rule for choosing p.
+Never versus bounded five also includes implementation differences and cannot
+be interpreted as the isolated cost of one conditional branch. These are
+finder replay times, not public encoder lifecycle or adaptive throughput.
+
+The separate phase diagnostic prepares prior history without searches, then
+measures activation initialization and catch-up. Below are medians of process
+medians in seconds, summed over the input's frames; history counts are the
+number of inserted prior byte positions. There are nine eligible x-ray frames
+and ten dickens frames, with one transition per frame in these four modes.
+
+| Input and checkpoint | Sixth initialization | Catch-up | Historical positions |
+| --- | ---: | ---: | ---: |
+| x-ray, zero | 0.0012020 | 0.0000003 | 0 |
+| x-ray, quarter | 0.0012103 | 0.0054564 | 2,118,570 |
+| x-ray, half | 0.0012271 | 0.0111193 | 4,237,134 |
+| x-ray, late | 0.0011527 | 0.0216559 | 8,474,171 |
+| dickens, zero | 0.0013856 | 0.0000005 | 0 |
+| dickens, quarter | 0.0013601 | 0.0064556 | 2,548,145 |
+| dickens, half | 0.0013341 | 0.0135201 | 5,096,272 |
+| dickens, late | 0.0014149 | 0.0260135 | 10,192,332 |
+
+Phase cache conditions differ from interleaved replay. Do not subtract these
+numbers from complete time or infer an instruction-level cause. Zero has no
+historical inserts but still initializes the sixth arrays. Late activation
+constructs almost the entire history with little subsequent search left.
+Actual per-frame checkpoint positions and raw iterations are retained.
+
+All twelve corpus members pass verification-only token/frame identity and
+reconstruction for every lazy path; this is full-corpus correctness validation,
+not full-corpus timing. Both compiler smokes, explicit ASan/UBSan, exhaustive
+small switch boundaries, wide distances, prior-match-interior references and
+a seeded one-MiB-plus-five-byte cross-compiler/sanitizer fixture pass.
+
+Reported full-capacity array payload is 17,825,792 bytes, 4,456,448 above bounded
+five, including on the lazy-never path. This excludes object/allocator overhead
+and other benchmark buffers and is not measured peak RSS or an admitted public
+workspace. Activation makes no allocation calls; no allocation-count result
+for a public factory is claimed.
+
+The structural trial succeeds, but automatic selection and its monitoring
+cost remain unimplemented. Next collect bounded per-frame observations and
+measure their cost on no-transition paths before proposing or calibrating a
+rule, followed by separate-input and mixed-distribution validation. Do not
+choose a threshold from these two named inputs or use hindsight timing to
+claim an adaptive speedup. Public bounded five and existing memory/failure
+contracts remain unchanged. No full-suite/fuzz, hosted CI or external
+verification result is claimed.
