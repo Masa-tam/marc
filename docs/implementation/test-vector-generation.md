@@ -18041,3 +18041,29 @@ and serialized-byte totals with prior reports. Source and executable identities
 are recorded before and after measurement; the older width binary is preserved.
 BM-0176 reports all scheduled observations. No production behavior, full-suite,
 fuzz, hosted CI or external qualification change is claimed.
+
+## TVG-1210: Width comparison with duplicate controls
+
+DD-1344 preserves the earlier finder implementations and diagnostic binaries.
+Both compiler smokes and explicit ASan/UBSan pass all four allocation/execution
+combinations, including timed rank coverage, a two-frame input with a short final
+frame, verification-only execution, empty-input and invalid-order rejection.
+Every process runs exhaustive small-input, wide-distance, nearest-tie and
+rejected-reset preservation checks for all three widths.
+
+Eight retained fixtures run in forward/forward and reverse/reverse order on
+both compilers and ASan/UBSan: 48 executions. Reports agree after removing only
+the requested order flags, and verification-only timing totals are zero. Their
+input/token/frame-byte totals also match the earlier width diagnostic.
+All twelve manifest-verified corpus members pass an additional verification-only
+run: every slot matches indexed tokens, representative actual tokens serialize
+identically to the oracle frame and restore the bytes. This does not separately
+serialize each slot; every replay already matched that same token sequence.
+
+All 24 predetermined focused timing processes pass the same content checks.
+Independent report validation checks each slot occupies all four ranks per frame,
+each iteration contains all four ranks, durations are finite/nonnegative and
+per-frame sums match iteration totals. Sizes and token/frame-byte totals match
+earlier reports. Old/new source and executable hashes remain unchanged. BM-0177
+retains every result, including adverse runs. No full-suite/fuzz, hosted CI or
+external qualification is claimed; public codec and failure contracts are unchanged.

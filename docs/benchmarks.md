@@ -7347,3 +7347,61 @@ retaining duplicate same-code controls and balanced execution order. Both wider
 variants remain unadmitted; retain all earlier improvements and regressions.
 Public codec/format, memory limits, failure atomicity and failed-frame publication
 are unchanged. No new full-suite/fuzz, hosted CI or external qualification claim.
+
+## BM-0177: Width comparison with duplicate 16-bit controls
+
+Date: 2026-09-29. DD-1344 compares four live instances: two guarded 16-bit
+controls, one 18-bit and one 20-bit finder. Reset plus token replay uses one
+non-inlined function template, with dispatch outside timing. Both controls share
+a specialization; different widths have different generated specializations.
+No finder or production implementation changes. Keep the earlier diagnostic
+executables and observations intact.
+
+Each frame has one warmup cycle and four measured rotations, so every slot
+occupies each rank once. Allocation and execution directions independently
+reverse. Three processes for each of four combinations on dickens and x-ray
+give 24 processes, all retained. Configuration/input order is predetermined;
+default processor eligibility is unchanged and build/test work is excluded.
+All values below use the median of four whole-input iteration totals per slot.
+Negative changes mean faster; ranges are observed ranges, not confidence intervals.
+
+| Input | Width | Change vs control 0 | Change vs control 1 | Faster than both controls |
+|---|---:|---:|---:|---:|
+| dickens | 18 | -25.68% to +41.33% | -54.16% to +41.38% | 7/12 |
+| dickens | 20 | -25.62% to +32.35% | -54.23% to +32.82% | 9/12 |
+| x-ray | 18 | -50.84% to -9.22% | -38.04% to +14.65% | 11/12 |
+| x-ray | 20 | -57.79% to +8.18% | -46.31% to -2.21% | 11/12 |
+
+The duplicate control spread is `100 * (larger control median / smaller - 1)`.
+It must be reported alongside width ratios; choosing only a slow denominator
+can exaggerate a gain.
+
+| Input | Control spread min / median / max | Control 0 seconds | Control 1 seconds | 18-bit seconds | 20-bit seconds |
+|---|---:|---:|---:|---:|---:|
+| dickens | 0.04% / 1.27% / 106.48% | 1.290967–1.646816 | 1.295571–2.726024 | 1.223848–1.894648 | 1.224984–1.747411 |
+| x-ray | 0.20% / 15.41% / 68.64% | 0.383154–0.708476 | 0.392670–0.507422 | 0.289447–0.455536 | 0.272441–0.424164 |
+
+Both improvements and adverse runs remain evidence. In the first forward-allocation,
+reverse-execution dickens process, controls are 1.336075/1.344011 seconds
+(0.59% spread), while 18/20 bits take 1.627518/1.438746 seconds. Width regressions
+therefore cannot all be attributed to a slow control. Conversely, the first
+reverse/reverse x-ray process has controls 0.392096/0.433743 and 20-bit 0.424164
+seconds: it beats only one control. Neither example is removed from the table.
+
+Per-frame timing and execution ranks are retained and independently sum-checked.
+All content checks pass, together with both compiler/sanitizer smokes, 48 fixture
+executions and twelve corpus verification runs (TVG-1210). The corpus pass is
+verification-only; it is not a whole-corpus performance measurement.
+
+Full-capacity array payload is 13,369,344 bytes per 16-bit instance, 14,155,776
+for 18 and 17,301,504 for 20: 58,195,968 combined. This excludes other diagnostic
+buffers and is not peak process memory or a proposed public workspace size.
+
+Adding widths to the common-boundary harness does not preserve BM-0176's small
+duplicate-control spread. Live allocations and generated code differ, so this
+does not identify cache behavior, page placement, instruction layout or frequency
+as a cause. A common source-level timing boundary alone is insufficient to make
+all comparisons stable. Keep wider variants unadmitted and do not turn a
+focused-input win into a global width policy. Public format, memory limits,
+failure atomicity and failed-frame non-publication remain unchanged. No new
+full-suite/fuzz, hosted CI or external qualification is claimed.

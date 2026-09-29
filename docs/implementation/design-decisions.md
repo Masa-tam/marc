@@ -27065,3 +27065,49 @@ does not prove which changed code, layout or object-lifetime condition matters.
 Next compare widths through the same explicit timing boundary while retaining
 same-code controls and balanced order. Do not equate cross-harness differences
 with a production gain or disregard earlier adverse observations.
+
+## DD-1344: Compare widths with a duplicate 16-bit control
+
+Add a separate diagnostic with four live instances: slots 0/1 use the same
+16-bit type, slot 2 uses 18 bits, slot 3 uses 20 bits. Dispatch outside timing
+into a non-inlined function template that measures reset plus token replay.
+The two 16-bit instances share the same specialization; different widths have
+distinct specializations, not identical machine code. Retain the original finder
+implementations and public codec unchanged.
+
+Construct slots forward/reverse and independently reverse execution direction.
+After one warmup cycle, use four measured rotations per frame so every slot
+occupies each execution rank once. All four instances stay alive throughout.
+Compare every replay with indexed tokens outside timing, retain per-frame times
+and ranks, and verify representative serialized-frame identity and restoration.
+Repeat exhaustive boundaries and rejected-reset checks for all three widths.
+File/frame limits remain 64 MiB / 1 MiB. Verification-only mode skips measurement.
+
+Freeze three processes for each of four allocation/execution permutations on
+dickens and x-ray: 24 processes. Rotate/reverse configuration order and alternate
+input order across repetitions. Preserve every result and source/binary identity.
+Compare widths against both 16-bit instances in the same process and report the
+duplicate-control spread. Do not discard a slow denominator or fit thresholds
+to the observations. No concurrent build/test work during timing.
+
+This controls source-level timing boundaries and execution ranks, not physical
+placement, frequency or generated instruction layout. Changed live objects and
+code mean cross-harness timing differences cannot establish optimization gains.
+Keep both wider variants unadmitted until broader evidence justifies their extra
+memory; preserve format, failure atomicity and failed-frame non-publication.
+
+BM-0177 completes all 24 scheduled processes. Both wider paths beat both controls
+in 11/12 x-ray processes; dickens achieves 7/12 for 18 bits and 9/12 for 20.
+Regressions persist even where duplicate controls agree closely. The largest
+control spread exceeds 100% on dickens, so no denominator may be selected to
+support admission. All content checks remain exact. Common source-level timing
+boundaries and balanced ranks do not suffice to stabilize this mixed-instance
+harness; neither a hardware cause nor a global width policy is established.
+
+Next isolate another variable with a separate diagnostic: reuse one working
+storage instance and one runtime-configured code path, switching only the active
+long-prefix width between resets and retaining repeated 16-bit controls. Fixed
+maximum-capacity backing storage would differ from production memory usage;
+its results must remain diagnostic and must not be presented as production
+throughput. Validate configuration/reset failure behavior before measuring.
+Preserve the current and earlier binaries and all adverse observations.

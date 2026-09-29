@@ -9779,3 +9779,9 @@ Use the repository-owned guarded 16-bit finder, indexed/exhaustive oracles and
 DD-1342's preserved variability reports. Construct separate instances of the same
 type and route replay through one shared non-inlined function. No external codec,
 allocator tuning or hardware-specific optimization source is consulted.
+
+## IR-1104: Width comparison with duplicate same-code controls
+
+Use the first-party DD-1343 harness, guarded 16/18/20-bit finders and retained
+indexed/exhaustive oracles. No external codec, tuning or hardware-specific source
+is consulted. Keep prior diagnostic sources and binaries intact.

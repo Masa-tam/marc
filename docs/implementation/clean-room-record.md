@@ -36284,3 +36284,19 @@ both bounds.
   external implementation expression or legal guarantee is claimed.
 - Scope: diagnostic target only; preserve prior binaries and public search,
   format, workspace limits, failure atomicity and failed-frame non-publication.
+
+## CR-1513: 2026-09-29 - Width comparison with duplicate controls
+
+- Author and reviewer: Codex; maintainer approved the DD-1343 next step.
+- References: IR-1104, DD-1344, repository-owned guarded finders and oracles.
+- Independent task: retain duplicate 16-bit instances beside 18/20-bit instances,
+  dispatch outside a non-inlined measurement template, balance four execution
+  ranks and compare each width against both controls. Preserve all measurements.
+- Validation: TVG-1210 and BM-0177; compiler/sanitizer smokes, 48 fixture reports,
+  twelve corpus verification runs, 24 focused measurements and rank/sum checks.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party tuning or benchmark code.
+- Similarity review: intentional first-party adaptation of the same-code harness;
+  no external expression, hardware-cause attribution or legal guarantee claimed.
+- Scope: diagnostic only; no public format, workspace limits, failure atomicity
+  or failed-frame non-publication changes. Prior source/binaries remain intact.
