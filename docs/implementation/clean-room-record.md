@@ -36444,3 +36444,21 @@ both bounds.
   sanitizers and complete-encoder screening. No legal guarantee is claimed.
 - Scope: diagnostic-only integration; no production source-list, public default,
   format, workspace-policy or external qualification change.
+
+
+## CR-1522: 2026-09-30 - Prepared full-encoder performance replication
+
+- Author and reviewer: Codex; maintainer approved the next replication step.
+- References: IR-1113, DD-1353, unchanged first-party complete-encoder diagnostic,
+  retained BM-0185 reports, corpus manifest and source/executable identities.
+- Independent task: repeat every input in declared order, preserve all samples,
+  and evaluate aggregate changes, individual cases and duplicate-control spread.
+- Validation: TVG-1219 and BM-0186; all 36 byte-identity, restoration, metadata,
+  rank and hash checks pass. Prior compiler/sanitizer coverage is reused.
+- Similarity review: documentation and first-party analysis only; no new codec
+  expression or external implementation was consulted. No legal guarantee.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Decision: proceed to separate public-path integration validation, preserving
+  the reference and failure guarantees. Keep the third-pass variation and avoid
+  claiming its inflated gain as stable. No production or format change here.

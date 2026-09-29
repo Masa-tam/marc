@@ -7911,3 +7911,63 @@ compiler, sanitizer, error parity and publication validation.
 Keep the candidate private. Replicate this complete-encoder comparison across
 all twelve members before deciding admission. Public defaults, format IDs,
 workspace requirements and the previous external qualification remain unchanged.
+
+
+## BM-0186: Replicated prepared-mapping complete-encoder measurements
+
+DD-1353 repeats the unchanged BM-0185 binary over all twelve verified members
+in three passes. Rotate member order by four per pass, reverse the middle pass,
+and alternate per-member execution direction with pass parity. Eighteen of the
+36 processes run in each direction. Keep all observations, without selective
+reruns, parameter tuning or concurrent builds/tests.
+
+Each process has two identical retained owners and one private prepared-mapping
+owner. One warmup precedes three rank-balanced complete-input iterations; each
+slot's median is its reported time. Measure owner creation, processing and
+destruction, excluding file I/O, sink storage/comparisons and decoding. Frames
+are 1 MiB; input/output chunks are 64 KiB. Negative changes mean shorter time.
+
+| Pass | Control 0 sum seconds | Control 1 sum seconds | Prepared sum seconds | Change vs control 0 | Change vs control 1 |
+|---|---:|---:|---:|---:|---:|
+| 1 | 31.844590 | 31.841138 | 30.658356 | -3.73% | -3.71% |
+| 2 | 31.617721 | 31.615135 | 30.304904 | -4.15% | -4.14% |
+| 3 | 32.020010 | 33.159835 | 30.278489 | -5.44% | -8.69% |
+
+These sums combine per-member medians, not a concatenated-input throughput test.
+
+| Member | Change range across three passes and both controls | Faster than both | Maximum control spread |
+|---|---:|---:|---:|
+| dickens | -4.40% to -2.87% | 3/3 | 0.53% |
+| mozilla | -5.37% to -3.10% | 3/3 | 0.17% |
+| mr | -2.99% to -2.24% | 3/3 | 0.59% |
+| nci | -1.76% to -1.49% | 3/3 | 0.17% |
+| ooffice | -7.98% to -7.59% | 3/3 | 0.39% |
+| osdb | -8.05% to -6.59% | 3/3 | 1.24% |
+| reymont | -1.95% to -0.86% | 3/3 | 0.26% |
+| samba | -5.18% to -4.17% | 3/3 | 0.75% |
+| sao | -9.61% to -8.79% | 3/3 | 0.87% |
+| webster | -20.07% to -2.90% | 3/3 | 15.16% |
+| xml | -4.51% to -1.06% | 3/3 | 0.50% |
+| x-ray | -9.67% to -8.96% | 3/3 | 0.58% |
+
+The trial is faster than both controls for all 36 process medians. Passes one
+and two show aggregate changes from -3.71% to -4.15%. Pass three is affected by
+substantial within-process variation on webster: its control medians are
+7.396356 and 8.517888 seconds, a 15.16% spread, versus trial median 6.808134.
+Individual control iterations reach 11.791724 and 11.983207 seconds, and a trial
+iteration reaches 10.750528 seconds. No cause is established. Preserve this
+process and its rank/order data; neither its -20.07% comparison nor the third
+pass's aggregate range establishes a stable improvement of that magnitude.
+Do not discard or selectively rerun it, or interpret these samples as confidence
+intervals. The first two passes, earlier BM-0185 screen and all-member direction
+of change support progressing the integration, with a modest full-encoder gain.
+
+All 36 streams match byte-for-byte and restore through the unchanged decoder.
+Archive/input/chunk metadata agree with BM-0185. Both owners require 79,435,701
+policy bytes, with zero additional arrays; this is unchanged logical workspace
+accounting, not a new physical peak-memory measurement. Source/executable hashes,
+manifest, ranks and positive finite times are checked. TVG-1219 records scope.
+
+Proceed to a separate public-path integration and regression-validation step,
+retaining the old frame oracle and tight-budget fallback. No public factory,
+format, default, workspace contract or external qualification changes here.

@@ -18295,3 +18295,27 @@ restoration, metadata, rank, finite-time and source/executable identity checks.
 Only dedicated diagnostic targets compile the new sources. No new full-suite,
 fuzz, hosted CI or external qualification is claimed. Existing public format,
 memory-limit and failed-frame publication contracts remain unchanged.
+
+
+## TVG-1219: Prepared-mapping complete-encoder replication checks
+
+The DD-1353 run retains all 36 processes and every iteration. Each process uses
+unchanged code from TVG-1218, exact retained-stream comparison and unchanged
+owned-decoder restoration. Verify the corpus manifest before measurement and
+inherited source/executable hashes before and after all three passes.
+
+Every report has three rank-balanced iterations: each slot visits each rank,
+and every iteration contains each rank exactly once. Check positive finite
+encoder times, declared member order and eighteen processes per direction.
+Input/archive sizes, chunk sizes, policy bytes, zero additional arrays and
+identity/restoration flags match retained BM-0185 reports for all members.
+
+BM-0186 retains the third-pass webster variation, including the slow trial
+iteration, instead of replacing it. No hardware, allocator or scheduling cause
+is inferred. All 36 process medians favor the trial against both controls, while
+aggregate magnitude is interpreted with the observed control variation.
+
+This stage changes documentation only. Dedicated compiler, allocation-guard and
+ASan/UBSan coverage from TVG-1218 is reused, not freshly rerun. No new full-suite,
+fuzz, hosted CI, external qualification or physical peak-memory result is
+claimed. Existing failure/output/publication contracts and public paths remain.

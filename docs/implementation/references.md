@@ -9839,3 +9839,10 @@ DD-1350 closes unconditional 18-bit admission. No external source was consulted.
 Use the first-party DD-1351 bridge, retained frame/raw-frame/streaming/owning
 adapters, workspace policy and differential tests. BM-0184 supplies mapping-only
 evidence. No external codec implementation or new reference was consulted.
+
+
+## IR-1113: Replication of prepared mapping complete-encoder results
+
+Use unchanged first-party DD-1352 adapters and complete-encoder diagnostic,
+retained BM-0185 reports and verified corpus manifest. No external algorithm
+implementation or new technical reference is used.

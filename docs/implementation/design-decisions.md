@@ -27408,3 +27408,40 @@ BM-0185 observes complete-encoder sum changes of -4.36% and
 and unchanged workspace requirements. Keep the integration private and next
 replicate all twelve members with declared order/direction variation before
 an admission decision. This screening does not authorize a public-path change.
+
+
+## DD-1353: Replicated complete-encoder evaluation of prepared mapping
+
+Keep the DD-1352 sources and diagnostic executable unchanged. Repeat all twelve
+verified members in three passes. Rotate member order by four each pass and
+reverse the middle pass. Alternate per-member execution direction with pass
+parity, giving eighteen processes per direction. Retain every process and
+iteration; do not rerun selectively or tune parameters after seeing results.
+
+Each process retains two identical baseline owners and the prepared-mapping
+owner, with one warmup and three rank-balanced complete-input iterations.
+Measure creation, processing and destruction; exclude I/O, sink storage,
+comparisons and decoding. Run no builds or tests beside measurement.
+
+Compare every stream byte, unchanged-decoder restoration, input/archive/chunk
+metadata and workspace requirements against BM-0185. Preserve inherited source
+and executable identities. Evaluate per-pass sums of member medians, both control
+comparisons, duplicate-control spread and individual regressions. No automatic
+public admission follows an aggregate improvement; retain failure invariants,
+private failed-frame handling and existing format/workspace contracts.
+
+
+TVG-1219 and BM-0186 complete all 36 declared measurements. Every process median
+favors the trial against both controls; all streams and workspace metadata match.
+The first two passes show aggregate reductions of 3.71% to 4.15%. A 15.16%
+control spread on third-pass webster inflates that pass's aggregate reduction;
+retain all its observations, including a slow trial iteration, without asserting
+an unverified cause or selectively measuring again for a preferred outcome.
+
+The replicated direction of benefit and unchanged workspace charge justify the
+next separate public-path integration step. Preserve the retained frame encoder
+as oracle, prepared-state lifetime accounting, tight-budget reference fallback,
+all result/error fields and failed-frame privacy. Run appropriate regression,
+allocation, sanitizer and public-path tests before admitting the production
+change. This documentation-only step does not modify public selection or claim
+new hosted CI/external qualification.
