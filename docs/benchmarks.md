@@ -8037,3 +8037,46 @@ Dictionary search remains the largest aggregate cost, but the two Range passes
 provide a distinct next opportunity after prior dictionary and cumulative-query
 trials. DD-1355 selects a bounded scratch-lifetime investigation before another
 production change. The measured times do not establish its eligibility or gain.
+
+
+## BM-0189: Untimed eligibility of finder-scratch Range encoding
+
+DD-1356 adds private frame/raw-frame prototypes that reuse expired finder byte
+storage for Range payloads. This diagnostic records actual successful scratch
+path selection, reference frame identity and unchanged-decoder restoration.
+It does not measure throughput or imply a speedup.
+
+| Member | Frames | Scratch frames | Maximum checked payload bound, bytes |
+|---|---:|---:|---:|
+| dickens | 10 | 10 | 5068351 |
+| mozilla | 49 | 49 | 5640041 |
+| mr | 10 | 10 | 5226379 |
+| nci | 32 | 32 | 1400251 |
+| ooffice | 6 | 6 | 6492475 |
+| osdb | 10 | 10 | 3954227 |
+| reymont | 7 | 7 | 3687447 |
+| samba | 21 | 21 | 3985157 |
+| sao | 7 | 7 | 6507815 |
+| webster | 40 | 40 | 4241253 |
+| xml | 6 | 6 | 2192753 |
+| x-ray | 9 | 9 | 9318125 |
+
+All 207 frames across twelve verified members use the scratch path;
+all 211938580 input bytes are covered. The full-frame finder capacity
+is 13,369,344 bytes and the largest checked payload bound is
+9,318,125 bytes. The eligibility check also enforces model,
+compressed-payload and simultaneous workspace limits and disjointness. These
+results describe this corpus/configuration, not every possible frame or limit.
+
+Every frame matches the admitted prepared raw-frame reference and restores
+exactly. Aggregate input/token/operation/frame counts match the retained phase
+records. The final conservative capacity-accounting version was checked over
+all twelve members; initial implementation evidence is retained separately.
+
+The prototype allocates no additional arrays and performs no dynamic allocation
+in repeated raw-frame processing. It borrows already charged finder storage;
+this is not a physical peak-memory measurement. TVG-1223 covers exact/short
+budgets, fallbacks, malformed input, aliases, failed output and reinitialization.
+Next integrate the prototype into a separate private stream/owner diagnostic
+and measure complete-encoder cost against two identical admitted prepared owners.
+No public factory, format or workspace requirement changes here.

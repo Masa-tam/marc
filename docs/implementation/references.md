@@ -9860,3 +9860,10 @@ No external codec implementation or new technical reference is used.
 Use the unchanged first-party phase diagnostic as reference, DD-1354 admitted
 prepared model/frame functions and the verified corpus manifest. No external
 codec implementation or new algorithm reference is consulted.
+
+
+## IR-1116: Reusing expired dictionary scratch for Range payloads
+
+Use first-party DD-1355 lifetime analysis, prepared frame/raw-frame functions,
+existing bounded scratch Range encoder, finder initialization and reference tests.
+No external codec implementation or new algorithm reference is consulted.

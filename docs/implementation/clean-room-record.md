@@ -36516,3 +36516,21 @@ both bounds.
   frame/payload/restoration, count and identity checks pass. No legal guarantee.
 - Decision: investigate reuse of expired dictionary scratch for bounded Range
   output in a separate trial. No public or format change is admitted here.
+
+
+## CR-1526: 2026-09-30 - Private finder-scratch Range prototype
+
+- Author and reviewer: Codex; maintainer approved the DD-1355 next trial.
+- References: IR-1116, DD-1356, first-party prepared frame/raw-frame code, bounded
+  scratch Range encoder, finder initialization and differential fixtures.
+- Independent task: reuse expired finder storage for a bounded payload, keep
+  existing result/error precedence and output atomicity, and count eligibility.
+- Similarity review: intentionally reuses first-party validation/serialization;
+  separate symbols preserve admitted reference paths. Review conservative
+  simultaneous capacity accounting and all checks before committing bytes.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1223 and BM-0189; both compiler suites, allocation guard,
+  sanitizers and all twelve corpus comparisons pass. No legal guarantee.
+- Scope: diagnostic-only frame/raw-frame prototype, no production source-list,
+  public factory, format, default or workspace-policy change. No speed claim.

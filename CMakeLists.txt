@@ -503,6 +503,22 @@ if(MARC_BUILD_TOOLS)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
+    add_executable(marc_position_distance_1m_finder_scratch_tests
+        tests/lzss_position_distance_1m_finder_scratch_tests.cpp
+        src/frame/lzss_position_distance_1m_finder_scratch_frame.cpp
+        src/frame/lzss_position_distance_1m_finder_scratch_raw_frame_encoder.cpp)
+    target_compile_features(marc_position_distance_1m_finder_scratch_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_1m_finder_scratch_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_1m_finder_scratch_tests PRIVATE marc::static GTest::gtest_main)
+    add_test(NAME marc_position_distance_1m_finder_scratch_tests COMMAND marc_position_distance_1m_finder_scratch_tests)
+    add_executable(marc_position_distance_1m_finder_scratch_allocation_tests
+        tests/position_distance_1m_finder_scratch_allocation_tests.cpp
+        src/frame/lzss_position_distance_1m_finder_scratch_frame.cpp
+        src/frame/lzss_position_distance_1m_finder_scratch_raw_frame_encoder.cpp)
+    target_compile_features(marc_position_distance_1m_finder_scratch_allocation_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_1m_finder_scratch_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_1m_finder_scratch_allocation_tests PRIVATE marc::static )
+    add_test(NAME marc_position_distance_1m_finder_scratch_allocation_tests COMMAND marc_position_distance_1m_finder_scratch_allocation_tests)
     add_executable(marc_position_distance_1m_prepared_stream_tests
         tests/lzss_position_distance_1m_prepared_stream_tests.cpp
         src/frame/lzss_position_distance_1m_prepared_owned_encoder.cpp)
@@ -850,6 +866,20 @@ if(MARC_BUILD_BENCHMARKS)
                     "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_finder_benchmark>"
                     "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-finder-smoke"
                     -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_finder_benchmark_smoke.cmake)
+        endif()
+        add_executable(marc_lzss_position_distance_1m_finder_scratch_diagnostic
+            benchmarks/lzss_position_distance_1m_finder_scratch_diagnostic.cpp
+        src/frame/lzss_position_distance_1m_finder_scratch_frame.cpp
+        src/frame/lzss_position_distance_1m_finder_scratch_raw_frame_encoder.cpp)
+        target_compile_features(marc_lzss_position_distance_1m_finder_scratch_diagnostic PRIVATE cxx_std_20)
+        target_include_directories(marc_lzss_position_distance_1m_finder_scratch_diagnostic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_lzss_position_distance_1m_finder_scratch_diagnostic PRIVATE marc::static)
+        if(MARC_BUILD_TESTS)
+            add_test(NAME marc_position_distance_1m_finder_scratch_diagnostic_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_1m_finder_scratch_diagnostic>"
+                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-1m-finder-scratch-smoke"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_1m_finder_scratch_diagnostic_smoke.cmake)
         endif()
         add_executable(marc_lzss_position_distance_1m_prepared_phase_benchmark
             benchmarks/lzss_position_distance_1m_prepared_phase_benchmark.cpp)

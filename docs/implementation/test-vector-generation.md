@@ -18393,3 +18393,43 @@ decoding. Replay timing overlaps complete-frame timing and is non-additive.
 Production implementation and source lists are unchanged. Prior full-suite,
 sanitizer and revision-specific external results are retained, not rerun or
 relabelled as new qualification in this diagnostic-only stage.
+
+
+## TVG-1223: Finder-scratch frame differential validation
+
+Both compiler builds pass the dedicated detailed, allocation-guard and diagnostic
+smoke targets (three targets each). ASan/UBSan passes all eight detailed cases.
+The frame matrix compares 1,025 budgets, four output capacities, three operation
+capacities and three scratch capacities: 36,900 paired calls against the admitted
+prepared frame. Compare every original frame/context/entropy result field and
+entire serialized buffers. Empty, one-byte-short and exact-bound scratch exercise
+fallback and actual scratch generation; unused scratch suffix stays unchanged.
+
+Malformed tokens/configuration, entropy limits, position errors and conservative
+payload bounds retain reference errors or success. Scratch overlap with tokens,
+operations, serialized output, stream or limits falls back. A serialized-output
+alias retains its rejection and input bytes. Successful scratch entropy encoding
+followed by frame expansion-limit rejection leaves serialized sentinels intact.
+An oversized optional scratch span cannot evade simultaneous capacity accounting;
+it remains unused while the admitted path preserves its original result.
+
+Raw-frame results compare all candidate and nested frame fields. Exact aggregate
+budgets admit both paths and one byte less rejects both before serialization.
+Capacity, finder/token workspace and expansion failures leave output unchanged.
+Multiframe cases cover sizes 1, 2, 3, 21, 256, 65,536 and 1,048,576 plus a final
+one-byte tail, repeatedly reusing the same finder bytes after payload writes.
+The largest deterministic fixture copies a 65,536-byte region at distance 900,000
+inside each full frame and asserts that tokens include distances above 65,536.
+Raw input stays unchanged. Tiny finder storage selects fallback.
+
+An armed allocation guard completes 128 raw-frame calls after setup without
+allocation, with scratch use asserted on every call. Both smoke runs verify a
+full frame and short tail and reject empty diagnostic input. All twelve final
+corpus runs compare frame bytes, restoration and retained metadata; all 207
+frames actually use scratch. Preserve initial results separately from the final
+capacity-accounting version. BM-0189 reports eligibility, not performance.
+
+No public streaming state machine or factory changes. Serialized-output failure
+atomicity is checked at the new frame/raw-frame boundaries; trial streaming
+non-publication and complete-encoder timings belong to the next integration step.
+No fresh full-suite, fuzz campaign, hosted CI or external qualification is claimed.

@@ -27535,3 +27535,45 @@ Small/empty scratch, tight limits, malformed operations, aliases, short tails,
 multiple frames, failure sentinels and public non-publication require differential
 coverage. Revisit neither DD-1307's rejected complementary sums nor DD-1350's
 unconditional 18-bit admission without new evidence.
+
+
+## DD-1356: Private finder-scratch frame prototype
+
+Create separate diagnostic-only frame/raw-frame entry points. Retain the admitted
+prepared implementation unchanged. After successful tokenization returns and its
+local finder has expired, reuse its already charged byte workspace as bounded
+Range payload scratch. Preserve raw input, tokens and caller serialized output.
+
+Use the existing checked two-bytes-per-decision plus five bound, limit checks and
+disjointness before scratch encoding. Ineligible capacity, limits or aliases fall
+back to the admitted prepared frame. On any scratch entropy error use the retained
+frame to preserve error precedence. Keep original semantic/aggregate/capacity
+preflight and prefix serialization before committing payload and prefix together.
+Private finder contents may change; failed serialized output remains unchanged.
+
+Return diagnostic metadata distinguishing successful scratch payload generation
+from fallback. Do not change a public factory or streaming state machine. Test
+full result/error parity, sentinel preservation, exact-bound and short scratch,
+post-entropy failures, aliases, multiframe finder reinitialization, raw-frame
+budgets and allocation-free repeated processing. Verify all twelve corpus members
+and count actual scratch-path use before asserting eligibility or speed.
+
+The frame prototype conservatively charges raw extent, live tokens, full operation,
+scratch and serialized capacities plus the maximum model state before using
+scratch. This fits inside the raw wrapper's existing aggregate charge. If optional
+capacity cannot be charged, fall back without using it rather than introduce a
+new error. Test an oversized optional scratch span explicitly.
+
+
+TVG-1223 completes eight differential cases under both compilers and ASan/UBSan,
+including 36,900 budget/capacity comparisons, exact raw-frame budgets, aliases,
+late failures, wide-history reinitialization and allocation guards. The final
+capacity-accounting version preserves all corpus bytes and actually selects
+scratch for all 207 frames in BM-0189. Retain earlier evidence and binaries.
+
+Proceed to a separate private streaming/owning adapter and complete-encoder
+comparison against two identical admitted prepared owners, preserving the current
+public selection. Verify small-buffer lifecycle and failed-second-frame privacy
+through that adapter before timing. Balance execution ranks and retain all corpus
+results; payload-copy cost, eligibility checks and code layout may offset removed
+Range passes. Eligibility alone is not performance evidence or public admission.
