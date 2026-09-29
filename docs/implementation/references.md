@@ -9751,3 +9751,10 @@ Use DD-1338 observations, the first-party forced lazy-six replay, corpus manifes
 and independently generated structured/random bytes. Hypothetical work weights
 are an explicit sensitivity grid, not CPU coefficients derived from external
 code or calibrated on evaluation timings. No external source is consulted.
+
+## IR-1100: Online late-checkpoint sensitivity prototype
+
+Use repository-owned lazy-six activation, DD-1339's explicitly hypothetical
+integer work model and TVG-1205 fixtures. No external implementation or adaptive
+selection source is consulted. Retain all nine assumptions without fitting them
+to the new measurements.

@@ -7071,3 +7071,75 @@ Later evidence may help but cannot guarantee arbitrary future savings. Public
 bounded five and its format, preflight, failure atomicity and failed-frame
 non-publication contracts remain unchanged. No new full-suite/fuzz, hosted CI,
 external qualification or full-corpus timing is claimed.
+
+## BM-0173: Complete online monitoring, late decision and activation costs
+
+Date: 2026-09-29. DD-1340 implements later observations while retaining the nine
+unfitted hypothetical models. Reuse the seven TVG-1205 inputs unchanged. Run three
+independent processes per input (reverse order in the middle process), with
+warmup and three rotated iterations of twelve paths. Time reset, token replay,
+counters, schedule tests, integer decisions, bounded trace writes and any full
+sixth-index construction/catch-up. Reporting and equality/frame checks are outside
+timing. These are complete finder replays, not end-to-end encoder measurements.
+
+The table shows milliseconds as medians of process medians. s2k1 and s3k1 mean
+saving fractions 2/4 and 3/4 with work scale one. They are the only models that
+activate on these seven inputs, not newly selected production policies. The
+last column retains the range of paired changes versus unobserved across every
+process and all seven other models, all of which stay Five on these inputs.
+
+| Case | Unobserved | Monitor only | s2k1 | s3k1 | Other seven vs unobserved |
+|---|---:|---:|---:|---:|---:|
+| ooffice-first-frame | 69.157 | 69.587 | 67.600 | 65.901 | -3.87% to +3.00% |
+| osdb-first-frame | 50.560 | 48.963 | 48.537 | 48.327 | -5.61% to +0.11% |
+| sao-first-frame | 77.098 | 77.768 | 77.120 | 76.820 | -1.60% to +3.43% |
+| high | 93.467 | 93.055 | 62.662 | 62.568 | -1.49% to +20.26% |
+| low | 83.901 | 86.306 | 87.008 | 85.878 | -1.25% to +6.32% |
+| high_low | 107.341 | 104.976 | 96.001 | 93.573 | -6.95% to +4.08% |
+| low_high | 92.652 | 93.820 | 96.011 | 70.373 | -5.06% to +12.81% |
+
+The actual activation position is 262,149 for s2k1/s3k1 on high and high_low,
+327,684 for s3k1 on ooffice, and 655,360 for s3k1 on low_high. All other cases
+and models remain Five. Decisions repeat across iterations and compiler builds.
+
+Paired process changes for the activating s3k1 path versus unobserved are:
+
+| Case | Change |
+|---|---:|
+| ooffice-first-frame | -8.27% to -2.71% |
+| high | -33.78% to -32.07% |
+| high_low | -12.83% to -7.94% |
+| low_high | -27.94% to -21.60% |
+| low | -0.19% to +6.62% |
+
+The late-heavy mixed case now responds after half and improves in all three
+runs with counters and catch-up included. It is evidence that exact 1MiB search
+still has input-dependent headroom, not a general adaptive-speed guarantee.
+On low, no model activates; monitor-only costs 1.90% to 4.65% versus unobserved.
+Across the other inputs monitor differences vary in sign, and high includes a
+16.53% slow run. Preserve those results; do not infer a constant monitoring cost,
+a causal compiler explanation or a precise small gain from three processes.
+
+All twelve corpus members pass separate verification-only token/frame checks
+and rational trace validation. Eight cross-build fixtures, including actual
+activation followed by a five-byte final frame, agree between both compilers
+and explicit ASan/UBSan. Remaining-work guard boundary smokes pass (TVG-1206).
+Full-corpus correctness does not substitute for full-corpus timing or public
+failure/chunking qualification. The fixed nine-event trace allocates no replay
+storage dynamically. Full-capacity index array payload remains 17,825,792 bytes,
+4,456,448 above bounded five; no peak RSS or public workspace claim is made.
+
+Do not admit a model or tune its coefficients from these results. Late observation
+addresses the previous half-frame deadline, but monitoring regression and the
+hypothetical savings estimate remain unresolved. Preserve this online prototype
+as a comparison route. Before adding more selector complexity, a separate
+benchmark-only experiment may reduce collisions in the existing five-prefix
+index by changing its long-prefix bucket count. The admitted specialized finder
+still uses 65,536 buckets; DD-1160's 262,144 cap applies to the different standard
+HashChain route. Such a trial must keep exact tokens and independently measure
+initialization, memory and complete replay; it is not an approved public memory
+change or a claim of benefit on repeated exact prefixes.
+
+Public bounded five, format, preflight, failure atomicity and failed-frame
+non-publication remain unchanged. No new full-suite/fuzz, hosted CI or external
+qualification is claimed.

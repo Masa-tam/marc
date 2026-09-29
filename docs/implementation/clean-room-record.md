@@ -36212,3 +36212,22 @@ both bounds.
 - Outcome: identical prefix evidence can precede opposite timing outcomes.
   No member of the grid is selected or admitted; no production, format,
   workspace or failure/publication contract changes.
+
+## CR-1509: 2026-09-29 - Online late-checkpoint sensitivity trial
+
+- Author and reviewer: Codex; maintainer approved later observations and
+  remaining-work guards after the offline model challenge.
+- References: IR-1100, DD-1340, first-party lazy activation and TVG-1205 fixtures.
+- Independent design: fixed late-checkpoint schedule, guarded remaining input,
+  unchanged nine-model integer comparison, one transition per frame and bounded
+  diagnostic trace, with all online costs included in replay timing.
+- Validation: TVG-1206 and BM-0173; compiler/sanitizer smokes and eight cross-build
+  reports, 21 focused timed processes, twelve full-corpus verification-only
+  cases, rational trace checks and reset after an actual transition.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party selection policy/test code.
+- Similarity review: intentional reuse of repository-owned search semantics and
+  independently specified wrapper/trace validation; no external expression or
+  legal guarantee claimed.
+- Scope: benchmark-only; no model admission, public format, workspace, decoder,
+  failure atomicity or failed-frame non-publication changes.

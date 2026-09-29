@@ -26913,3 +26913,46 @@ at quarter/half but have opposite half-activation outcomes. Changing a threshold
 cannot distinguish identical observations. Retain the frozen family as a
 diagnostic; investigate later observations and remaining-work safeguards before
 any online policy or public integration.
+
+## DD-1340: Include later observations and complete decision cost
+
+Date: 2026-09-29. Implement a benchmark-only online wrapper around the observed
+lazy finder. Retain all DD-1339 saving fractions and work scales; none is chosen
+for public use. Start checking at max(65536,ceil(N/4)) raw bytes, then every
+65536 bytes through floor(3*N/4), at the first token end reaching each target.
+Require at least max(65536,ceil(N/8)) bytes remaining and at least six bytes to
+activate. These are frozen experimental schedule/remaining-work guards, not
+proof of payback. Short frames can have no eligible checkpoint.
+
+At each eligible boundary use visits/queries since the previous evaluation and
+the actual intervening byte width. Apply the previous strict integer benefit
+versus initialization/catch-up/future-maintenance cost comparison, then activate
+at most once per frame. Later observations can respond to late-heavy input;
+future work remains unknown. Reset all wrapper state and the finder each frame.
+Rejected oversized reset leaves both unchanged. Validate coefficients before
+reset. No allocations occur in replay; a fixed nine-event diagnostic trace is
+sufficient for this schedule at N<=1MiB. Recording it is included in timing.
+
+Compare bounded five, unobserved lazy-never, monitored no-activation and all
+nine online models with warmup and rotating three-iteration replays. Include
+reset, counters, schedule checks, arithmetic, trace recording, full activation
+and catch-up. File IO, equality checks, reporting and frame coding remain outside
+the timed finder replay. Compare all token fields with retained indexed tokens;
+verify representative serialized-frame identity and reconstruction. Preserve
+repeatable decisions, actual activation positions and traces, and independently
+recompute the integer decisions from those traces.
+
+Use the seven prior separate/mixed one-frame inputs for three independent
+processes each; they are regression/challenge inputs, not new blind holdouts.
+Verify all twelve corpus members separately without claiming full-corpus timing.
+Keep public bounded five, format, workspace/preflight and failure/publication
+contracts unchanged. Full fourth-pair reservation is still required, even when
+no activation occurs. BM-0173 determines whether this experiment merits further
+work; it cannot itself establish public or end-to-end readiness.
+
+BM-0173 demonstrates a real later activation on the reversed mixed fixture with
+complete online cost included, but also a no-activation monitoring penalty.
+Keep the wrapper experimental; do not admit or retune a member of the grid.
+A separate collision-reduction trial in the specialized five-prefix index is
+a simpler comparison to investigate before adding further selector complexity.
+The standard HashChain cap from DD-1160 does not change this specialized index.

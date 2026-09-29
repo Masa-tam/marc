@@ -17911,3 +17911,41 @@ No C++ finder or production code changed. The new tests qualify diagnostic
 arithmetic and selected inputs, not public chunking, allocation, memory-limit,
 failed-frame non-publication or whole-corpus performance. No new full-suite/fuzz,
 hosted CI or external qualification is claimed.
+
+## TVG-1206: Online decision, remaining-work guard and reset checks
+
+Date: 2026-09-29. Retain the existing exhaustive lazy activation boundaries and
+add wrapper checks for rejected oversized reset, invalid coefficients, preserved
+trace on rejection, successful empty reset and short-frame no activation. The
+smoke covers tiny inputs, differing prefix bytes, timed/verification-only modes,
+empty file rejection and a one-MiB-plus-sixteen-byte repeated input.
+
+For repeated x bytes, token ends are 1+258*k and the first scheduled observation
+is at 65,791. Lengths 131,326 and 131,327 respectively leave 65,535 and 65,536 bytes.
+Require zero and one monitored evaluations, exercising both sides of the exact
+remaining-work guard. Both compiler smokes and explicit ASan/UBSan pass.
+
+Replay TVG-1205's seven unchanged evaluation inputs, three independent timed
+processes each. All twelve paths match every oracle token field; repeat traces
+must match warmup. A representative actual token buffer serializes identically
+to the retained oracle and restores the input; all paths already matched that
+same token sequence. The stage does not separately serialize every model path.
+All twelve manifest-verified corpus members pass the same verification-only
+checks; input, token and frame-byte totals match earlier corpus results.
+
+Independently parse each decision trace and recompute benefit/cost with exact
+rational arithmetic. Check schedule positions within the maximum-token overshoot,
+remaining-work guard, interval widths, bounded counts, uint64 product bounds,
+strict selection, one-way activation, no missing eligible evaluations and total
+check/transition counts. Deliberately corrupt benefit, cost and choice fields;
+the checker rejects all three. Report checks are offline and outside timing.
+
+Both compilers and explicit ASan/UBSan produce identical verification-only
+reports for all seven evaluation inputs and an additional structured full frame
+followed by ASCII abcde. Require activation in the full frame and an empty trace
+with no activation in the final five-byte frame. The trace and checksum/frame
+results agree across builds. This tests reset after a real online transition.
+
+No production decoder, public preflight, allocation or arbitrary chunking behavior
+changed. These are benchmark checks, not a new public failure/publication gate,
+full regression/fuzz campaign, hosted CI or external qualification.
