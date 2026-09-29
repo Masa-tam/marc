@@ -26666,3 +26666,103 @@ slower than bounded five. Keep the trial unadmitted and end this sequence of
 local update/comparison tweaks. Assess the cost and correctness of choosing
 between exact five/six search by workload before proposing another trial;
 no selection policy or production change is included here.
+
+## DD-1336: Assess one-way lazy activation of the sixth index
+
+This is a design assessment, not an implemented policy or public admission.
+BM-0162 found useful aggregate six-prefix savings, while subsequent experiments
+retained an x-ray regression. BM-0167 distinguishes repeated exact long prefixes
+from collision-heavy fallback work. Aggregate file counts do not show when a
+frame would benefit, and none of these results establishes a selection threshold.
+
+Compare the possible approaches before implementation:
+
+| Approach | Cost or limitation | Assessment |
+| --- | --- | --- |
+| Choose from a separate sample before parsing | Extra scan/index construction; sample may not represent the remaining frame | Retain as an alternative, not the first prototype |
+| Maintain four indexes from the start, select search only | Pays sixth-index updates even on frames that stay five | Does not address avoiding that work |
+| Begin with five, activate six at most once per frame | Monitoring plus catch-up; worst-case fourth-pair reservation remains | Preferred structural prototype |
+| Repeated five/six switching | More policy/state complexity and potentially repeated reconstruction | Defer |
+
+The preferred prototype has states Five and Six, with at most one Five-to-Six
+transition per frame. Reset always returns to Five. Restrict the first experiment
+to complete immutable raw frames of at most one MiB, the full one-MiB window,
+minimum match length three, maximum length 258 and eligibility three. Do not
+claim support for arbitrary smaller windows, eligibility variants or streaming
+partial-history construction until separately implemented and tested.
+
+Share the existing three/four/five head/link arrays across both modes. In Five,
+use exact five-prefix search and update only those three indexes. Six uses the
+original six-prefix search and all four indexes; do not combine compact, rolling
+or fifth-first variants in the first structural trial.
+
+At a validated next-token position p in a frame of N bytes, a forced activation
+for testing performs these steps before searching at p:
+
+1. Require p < N and N - p >= 6; otherwise remain Five because no six-byte
+   match can be emitted. Permit p = 0 as an always-six control.
+2. Initialize the reserved sixth-index heads and links. The first prototype
+   should clear its complete reserved active region rather than introduce a
+   second initialization optimization. Charge this work to activation.
+3. Insert every historical position c in ascending order, with
+   0 <= c < min(p, max(N - 5, 0)), using the unchanged six-byte hash. Include
+   positions inside prior matches, not just token starts.
+4. Commit the mode flag to Six after construction, leaving shared arrays,
+   raw bytes and already emitted private tokens untouched. Continue normal
+   six-index advance thereafter. No switch back occurs before reset.
+
+The whole bounded raw frame is available, so historical keys may inspect
+lookahead bytes beyond p just as existing advance does. Never read past N.
+Ascending catch-up reconstructs newest-first chains exactly as if the sixth
+index had been maintained from frame start. Combined with identical shared
+arrays, this yields the same longest/nearest match at p. Induction over later
+positions then preserves the entire token sequence. This is a design argument;
+actual finder and frame differential tests remain mandatory.
+
+Reserve capacity before parsing; do not allocate during activation. For N >= 6,
+array payload is 16*(65536+N) bytes instead of 12*(65536+N). At a full frame this
+is 17,825,792 versus 13,369,344 bytes, an extra 4,456,448. Delaying writes does
+not reduce reserved capacity, query requirements or the worst-case memory limit.
+For N < 6, disable activation and use existing five-prefix sizing, including
+zero array bytes below length three. Add actual selector/counter state and
+alignment using checked arithmetic; these array figures are not total encoder
+memory or measured RSS. Do not assume the existing finder/model-size coverage
+assertion will cover the new state without checking it.
+
+The prototype must explicitly distinguish five-only and six-capable storage
+policies; do not activate because an oversized borrowed span happens to have
+spare bytes. Any later bounded integration must publish/validate the required
+active prefix and aggregate charge before writing finder or output state.
+An insufficient or overlapping workspace must fail during preflight with the
+existing preservation rules. Activation itself must have no allocation or
+new data-dependent recoverable failure after that preflight. Reset all mode
+and observation state for each counting/emitting pass, so the candidate's
+output-too-small prepass and real pass choose identically. Private scratch
+may follow its existing documented rules; do not broaden public guarantees
+or publish any failed frame. Public factories currently select bounded five
+and must keep their existing requirements until separate admission.
+
+No decision threshold is selected. A later policy may use bounded deterministic
+observations from already parsed bytes, such as chain visits, successful probes
+and token lengths. BM-0167's full exact-prefix classification adds work and
+must not silently become production instrumentation. Selection must not depend
+on file name, corpus identity, wall clocks, process affinity, address layout,
+prior streams or caller chunking. Define counter overflow behavior and bound
+observation cost before implementing a policy.
+
+The first implementation step is a benchmark-only forced-activation prototype,
+with never-activate, activate-at-zero and explicit token-boundary checkpoints.
+Checkpoints are experimental controls, not adaptive thresholds. Measure monitor
+cost separately and then include it in complete replay. Include sixth-array
+initialization, catch-up and post-transition work: a useful transition requires
+remaining five-search savings to exceed monitoring plus activation costs.
+There is no measured break-even point yet. Late transitions and changing data
+distributions may be unprofitable despite high prefix work earlier in the frame.
+
+Only after structural equivalence and cost measurements should a selection
+rule be proposed, calibrated and checked on separate inputs, including mixed
+frames whose early/late characteristics differ. Require per-member repetitions,
+full-corpus exactness, lifecycle/memory measurements and preservation tests
+before any public change. No new stream variant is intended if exact tokens
+remain identical; an observed token difference is a failed experiment, not
+permission to alter the existing format.

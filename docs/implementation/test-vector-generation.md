@@ -17770,3 +17770,39 @@ repetitions pass all token/frame/reconstruction checks. Preserve initial and
 repeated timing reports with executable/source digests. This is not a new
 twelve-member corpus, full regression, fuzz, hosted CI or external verification
 result. BM-0168 does not justify admission.
+
+## TVG-1202: Lazy-six design verification and planned gates
+
+Completed in this design stage: inspect actual five-prefix query/init/candidate
+preflight, frame workspace accounting and public factory selection; reconcile
+them with the original six-prefix experiment. An abstract insertion-order model
+checks N = 0 through 80, every p = 0 through N, and distinct, all-colliding and
+periodically colliding bucket assignments: 9,963 cases. For each, catch-up builds
+exactly the newest-first historical chains and subsequent insertion yields
+the same heads/links as continuous indexing. Verify the full-frame array-size
+formulas independently. This model is not a codec implementation, decoder test
+or performance measurement.
+
+Required, not yet executed, for the forced-activation implementation:
+
+- Compare every match and token to retained indexed/exhaustive references and
+  original five/six controls. Test never, zero, early, late and end checkpoints;
+  actual transitions occur only at validated token boundaries.
+- Cover empty and lengths around 3/4/5/6, match maximum, window and frame
+  boundaries, final short frames, collisions, nearest ties, overlaps and wide
+  distances. Compare complete frames and reconstruction, not only token counts.
+- Include a reference located inside a prior long match to detect catch-up
+  that incorrectly inserts only token starts. Check every small-input switch
+  boundary and compare reconstructed sixth chains with continuously built ones.
+- Test reset after activation and after a frame that never activates; detect
+  stale sixth-index state and uninitialized links with explicit sanitizers.
+- Before bounded/public integration, cover exact/short/misaligned/overlapping
+  workspace, arithmetic and aggregate limits, initialization preservation,
+  token-output prepass preservation, repeated passes and allocation counts.
+- Retain arbitrary chunking, failed-frame non-publication and committed-byte
+  hash behavior at the frame/stream boundary. Triggering must be deterministic
+  for the same bytes regardless of call boundaries.
+
+No forced-activation code, adaptive threshold, new codec test pass, compiler/
+sanitizer run, full-corpus/full-suite/fuzz, hosted CI or external verification
+result is claimed in this design-only stage.

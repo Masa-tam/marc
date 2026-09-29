@@ -9721,3 +9721,11 @@ Use the original repository-owned six-prefix finder, retained exact token
 oracle and BM-0167's fallback classification. Reordering exact prefix byte
 checks is an independent first-party experiment; no external implementation
 or optimization source is consulted.
+
+## IR-1096: Workload-sensitive exact-search design assessment
+
+Use first-party five/six finder semantics, BM-0162 through BM-0168, the existing
+candidate preflight and frame workspace/public factory code. No external
+implementation, selection policy or optimization source is consulted. Existing
+aggregate measurements motivate assessment but do not supply a frame-level
+selection threshold or activation-cost measurement.

@@ -6834,3 +6834,39 @@ of exact five/six search, including selection cost, bounded state and evidence
 needed for admission; no such selection policy is implemented or qualified
 here. Bounded five remains public. No new full-suite/fuzz, hosted CI or external
 verification is claimed.
+
+## BM-0169: Cost model for optional sixth-index activation
+
+This is a design assessment using BM-0162 through BM-0168, not a new timing
+result. File-level medians and total visit counts do not identify the beneficial
+transition point within a frame. Do not infer an adaptive threshold from the
+x-ray/dickens distinction or use corpus names as selection inputs.
+
+DD-1336 proposes beginning with exact five-prefix search and constructing the
+sixth index at most once, at a token boundary. Three common index pairs remain
+live. At position p in a complete N-byte frame, catch-up inserts
+min(p, max(N - 5, 0)) historical positions in ascending order, including match
+interiors. The proposed first prototype clears the reserved sixth head/link
+regions on activation, adding O(65536+N) initialization and O(p) catch-up work.
+These costs must be measured, not treated as free index reuse.
+
+| Design cost | Required accounting |
+| --- | --- |
+| A frame never activating six | Five search/advance plus any monitoring; extra capacity is still reserved |
+| A frame activating at p | Five prefix, monitoring, sixth initialization, catch-up, then six suffix |
+| Full-frame array capacity | 17,825,792 bytes versus 13,369,344 for five-only |
+| Additional pair capacity | 4,456,448 bytes; not a claim about RSS or total codec memory |
+| Remaining uncertainty | Monitoring cost, transition profitability, changing input distribution and selector generalization |
+
+The next benchmark should first force transitions at recorded token boundaries,
+with never/zero controls and original five/six comparators. Report initialization,
+catch-up and complete replay as well as tokens, bytes, transitions and memory;
+keep phase measurements distinct from uninstrumented comparisons. Do not use
+a hindsight minimum of the two static times as measured adaptive throughput.
+
+Before proposing a policy, obtain frame-level evidence and include control
+overhead even on no-transition inputs. Validate thresholds on separate inputs
+and mixed/reversed distributions; preserve per-member results and all adverse
+runs. No numeric threshold, break-even point or speedup is established here.
+An abstract 9,963-case insertion-order model supports the reconstruction
+argument only. Public bounded five and all admission decisions remain unchanged.

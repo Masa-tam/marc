@@ -36143,3 +36143,20 @@ both bounds.
   no external expression or legal guarantee claimed.
 - Scope: benchmark-only comparison; production, format and failure contracts
   remain unchanged.
+
+## CR-1505: 2026-09-29 - Lazy-six selection design assessment
+
+- Author and reviewer: Codex; maintainer approved assessment of workload-sensitive
+  exact five/six search following the unsuccessful local predicate trial.
+- References: IR-1096, DD-1336, first-party workspace/preflight code and existing
+  benchmark/counter reports. No new external reference is used.
+- Independent design: one-way per-frame activation, shared three indexes,
+  ascending catch-up of every historical position and pre-reserved fourth pair.
+- Verification: TVG-1202 records the abstract structural model and explicitly
+  separates completed design checks from future implementation gates.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party adaptive selection code.
+- Similarity review: repository-owned semantics and independently stated state
+  transition; no external expression or legal guarantee claimed.
+- Scope: documentation/design only, no runtime selection policy or production
+  change; existing failure and publication contracts remain binding.
