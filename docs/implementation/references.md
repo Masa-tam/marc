@@ -9943,3 +9943,9 @@ Use repository-authored complete-stream benchmark methodology, private DD-1366
 owners, qualified public one-MiB position-distance and existing contextual
 four-MiB C interfaces. No external codec implementation is consulted. Operating
 system process-memory counters are diagnostic observations, not codec bounds.
+
+## IR-1128: Four-MiB reference phase diagnostic
+
+Use first-party phase benchmark methodology, DD-1365 candidate/frame helpers,
+DD-1366 queried storage and DD-1367 frozen complete streams. No external
+implementation or optimization source is consulted.

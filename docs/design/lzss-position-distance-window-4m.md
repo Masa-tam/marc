@@ -135,3 +135,13 @@ selection and frame-coding time before transferring exact finder optimizations;
 retain exhaustive/reference differentials and failed-frame publication rules.
 Public profile admission and revision-specific external qualification remain
 separate, and the qualified one-MiB profile is unchanged.
+
+DD-1368, TVG-1235 and BM-0194 split the unchanged reference path into token
+selection and selected-token frame coding. Both compiler builds match all frozen
+complete archives and restore 57 frames; the exclusive initial phase screen
+identifies selection as the larger measured phase. Selection includes validation,
+reset/search and token materialization, so its share is not pure dictionary time.
+Next, transfer the retained exact five-prefix finder under differential selected-
+token/full-byte, bounded-workspace and failure-publication tests. Preserve the
+single-prefix/exhaustive reference paths and require repeated exclusive timing
+before accepting a speed claim. Public four-MiB admission remains later work.

@@ -8299,3 +8299,72 @@ before transferring the retained exact finder optimizations, with selected-token
 and complete-byte differentials. Any speed admission needs repeated trials;
 public selection, full-suite/fuzz validation and external exchange qualification
 remain later stages. No existing public codec or format changes in this screen.
+
+## BM-0194: Four-MiB reference selection and frame-coding phases
+
+DD-1368 measures the unchanged reference candidate tokenizer and selected-token
+frame encoder in disjoint intervals. Use the twelve maintained Silesia members,
+211,938,580 raw bytes and 57 frames. Frozen DD-1367 complete archives
+occupy 61,643,620 bytes, including twelve 112-byte stream headers.
+Both compiler builds first verify the split path against those archives and
+restore every frame; TVG-1235 records targeted smoke and sanitizer validation.
+
+Measure one fresh process per member with one observation per frame, after
+untimed verification. Query and partition buffers once, reusing them across
+frames. Allocation/initialization, file I/O, stream-header validation, byte
+comparison, scratch decoding/reconstruction and report formatting are excluded
+from both timers. Each measured frame must match the frozen bytes and restore
+the source before success. No build or unrelated test runs alongside timing.
+
+Selection includes candidate validation, finder reset/search and token
+materialization. Frame coding includes token planning/modeling, scalar Range
+planning/encoding and prefix construction. The phases do not overlap and may be
+added; these are not replay timings nested inside another measured interval.
+They are not a complete streaming/owning-transform timing or pure search counter.
+
+| Phase | Sum (s) | Share of measured phase sum |
+| --- | ---: | ---: |
+| Reference token selection | 319.183101 | 96.317% |
+| Selected-token frame coding | 12.205703 | 3.683% |
+| Additive phase sum | 331.388804 | 100% |
+
+The reports contain 28,533,369 selected tokens and 110,846,666
+modeled operations. Aggregate shares divide summed phase times, rather than
+averaging per-member percentages. All twelve measured processes / 57 frames
+pass complete-byte identity and raw restoration. No observations are discarded
+or selectively rerun. Per-member results follow.
+
+| Member | Frames | Tokens | Operations | Selection (s) | Coding (s) | Selection share |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| dickens | 3 | 1,115,635 | 5,447,454 | 29.887721 | 0.658089 | 97.846% |
+| mozilla | 13 | 9,916,815 | 35,286,329 | 70.431741 | 3.607787 | 95.127% |
+| mr | 3 | 1,285,352 | 5,972,613 | 33.681323 | 0.687610 | 97.999% |
+| nci | 8 | 786,563 | 3,825,152 | 30.520195 | 0.481817 | 98.446% |
+| ooffice | 2 | 1,390,454 | 5,508,315 | 6.314471 | 0.612938 | 91.152% |
+| osdb | 3 | 1,562,268 | 5,665,836 | 4.380913 | 0.669952 | 86.736% |
+| reymont | 2 | 542,149 | 2,547,375 | 21.907217 | 0.308287 | 98.612% |
+| samba | 6 | 2,521,184 | 8,743,452 | 18.505286 | 0.902244 | 95.351% |
+| sao | 2 | 3,363,927 | 9,655,100 | 7.383891 | 0.972198 | 88.365% |
+| webster | 10 | 3,515,622 | 17,026,350 | 93.255400 | 2.041806 | 97.857% |
+| xml | 2 | 213,518 | 955,318 | 1.291469 | 0.108743 | 92.234% |
+| x-ray | 3 | 2,319,882 | 10,213,372 | 1.623475 | 1.154233 | 58.447% |
+
+The retained encode query, with zero streaming-object charge for this split
+diagnostic, admits 281,286,093 bytes and includes 17,039,360
+finder bytes. This is workspace policy accounting, not measured physical memory.
+Input and frozen-archive storage are outside that codec workspace charge.
+No new peak-memory claim is made; BM-0193 reports complete-profile memory counters.
+
+This initial phase screen identifies token selection as the larger measured
+reference phase. It does not distinguish search from reset/materialization or
+qualify an optimization speedup. Timing boundaries and execution order differ
+from BM-0193; subtracting those totals would not isolate stream overhead.
+The cause of the absolute timing difference between those screens has not been
+isolated. Future reference/trial comparisons must use the same measurement path.
+
+Prioritize exact finder transfer next, retaining the clear single-prefix and
+exhaustive oracles. A five-prefix trial must preserve nearest ties, indexing
+inside matches, selected tokens, complete frame bytes, checked budgets/aliases
+and failure-publication contracts. Qualify any speed gain through exclusive
+repeated trials after correctness. Public four-MiB admission and external
+qualification remain separate stages.

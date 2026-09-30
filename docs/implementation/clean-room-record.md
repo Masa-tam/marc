@@ -36776,3 +36776,24 @@ both bounds.
 - Scope: private initial profile screen only; no replicated optimization claim,
   new full suite, fuzz campaign, public admission or hosted/external qualification.
   No legal guarantee is asserted.
+
+## CR-1539: 2026-10-01 - Four-MiB reference phase diagnostic
+
+- Author and reviewer: Codex; the maintainer authorized the next development stage.
+- References: IR-1128, DD-1368, first-party phase benchmark methodology and
+  retained candidate/frame/workspace helpers with frozen complete archives.
+- Independent task: measure token selection and frame coding in separate,
+  additive intervals without instrumenting codec bodies or altering output.
+- Similarity review: first-party helper calls and queried partitioning retain
+  their implementations; diagnostic orchestration independently compares frozen
+  frames and reconstructs before reporting. No production codec/factory changes.
+- Known implementations intentionally not consulted: external codec sources,
+  copyleft implementations and third-party profiling/optimization structures.
+- Validation: TVG-1235; both targeted compiler smokes and ASan/UBSan pass.
+  Twenty-four corpus checks cover 57 frames per compiler; twelve exclusive
+  measurement processes cover the same 57 frames and preserve bytes/counts.
+  BM-0194 separates additive phase costs from pure search or whole-stream time.
+  Source/executable/fixture identity, scope and append-only document checks pass.
+- Scope: private initial phase diagnostic only; no optimization admission,
+  new full suite/fuzz, public profile or hosted/external qualification. No legal
+  guarantee is asserted.

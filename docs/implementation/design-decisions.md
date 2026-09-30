@@ -27881,3 +27881,25 @@ results rather than averaging percentage gains. Model, frame, eligibility and
 finder differences make this a profile comparison, not an isolated window study.
 Do not run unrelated builds/tests during meaningful timing. Preserve all prior
 fixtures and public formats; no new public profile is admitted.
+
+## DD-1368: Separate reference selection and frame coding time
+
+Add an optional private diagnostic calling the unchanged four-MiB reference
+candidate tokenizer followed by the unchanged selected-token frame encoder.
+Measure these two calls in disjoint intervals, once per frame. Selection includes
+candidate validation, finder reset/search and token materialization; frame coding
+includes token planning/modeling, scalar Range coding and prefix construction.
+Do not describe selection as an isolated dictionary-search counter.
+
+Reuse query-sized storage across frames. Allocation/partition, file I/O, header
+validation, output comparison, reconstruction and reporting stay outside both
+intervals. Complete stream bytes must match DD-1367 frozen archives and each
+frame must restore its raw input before success. Untimed verification precedes
+exclusive measurement with frozen executable/source identities.
+
+Report all member/frame counts and additive phase sums with selection fractions.
+One initial observation per frame identifies reference phase costs; it does not
+qualify an optimization speedup. Different workloads and timing boundaries forbid
+subtracting these sums from BM-0193 to infer stream overhead. Preserve reference
+and failed-frame publication contracts; no codec implementation, public factory,
+format or workspace policy changes. Finder/model transfer remains subsequent work.
