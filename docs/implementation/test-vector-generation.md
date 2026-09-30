@@ -18740,3 +18740,43 @@ differentials cover each frame's first 512 raw bytes, rather than the whole
 corpus. The diagnostic is untimed for qualification purposes and writes private
 frame fixtures, not publicly admitted archives. No throughput or compression
 ratio comparison is inferred from it.
+
+## TVG-1233: Four-MiB bounded stream lifecycle
+
+Transfer first-party stream fixtures to the reserved four-MiB identity. Assemble
+the 112-byte stream header independently with little-endian fields: dictionary
+2/10, entropy 3/2, context 1/11, 46 contexts, window 4,194,304, minimum length 3,
+maximum 258 and model total 32,768. Compare incremental encoder output with a
+header plus complete reference raw-frame helpers, and decode using separate
+owned/borrowed streaming transforms.
+
+Twenty new cases include nineteen normal cases and one optional corpus case.
+For frame extents 1, 3, 21 and 257, vary empty/below/equal/above/two-plus-final
+input sizes and eligibility 3/4/5; exhaustive/reference selectors agree across
+one-byte and irregular chunks. Test every small decoder split with output 1,
+7 or 64 and zero-capacity pauses, all small encoder input chunk sizes, flush,
+delayed EndInput, resubmitted final suffix and latched finish without repeated
+flags. Ended/errors remain sticky; counts obey the core process contract.
+
+Every truncation publishes only earlier complete frames with stable error
+positions. A late corrupt second frame cannot publish failed raw bytes. A late
+encoder expansion-limit failure publishes only its earlier successful frame.
+Unknown identities, flags, trailing input, input extent mistakes, owner and live
+workspace aliases fail without unspecified output. Exact owner/borrowed budgets,
+one-byte-under limits, short/misaligned storage and unused supplied capacity are
+tested. Full four-MiB frames plus short final data round-trip, and an independently
+constructed distance-4,194,301 history decodes with irregular chunks.
+
+Both compiler targets pass 119 cases, with two optional diagnostics skipped in
+the normal 121-case run. ASan/UBSan passes 193 cases with the same two skipped
+in the 195-case run. New sources are explicitly instrumented. Previously validated
+private frame/token/Range/preflight and existing public one-MiB regressions are
+retained. This is not a complete suite or a fresh fuzz campaign.
+
+Separately reverify the Silesia manifest and retained DD-1365 frame-fixture hashes.
+Each compiler's new owned streaming decoder reads the other compiler's retained
+frames, with an independently assembled header, irregular input/output and zero
+capacity pauses. All twelve members and 57 frames restore the complete source
+bytes. Raw corpus tokenization/encoding is not rerun here. This is an untimed
+private lifecycle diagnostic, not public admission, hosted/external qualification
+or a performance claim.

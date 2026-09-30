@@ -9930,3 +9930,9 @@ interval arithmetic supplies a fixed serialized frame; no external source is use
 Use only repository-authored exhaustive matching, nearest-first prefix chains,
 typed-token candidates and transactional raw/frame adapters. No external
 implementation was consulted. DD-1365 defines the private selection policy.
+
+## IR-1126: Four-MiB private stream lifecycle and owned storage
+
+Use first-party one-MiB workspace queries, borrowed streaming transforms and
+owned wrappers, plus DD-1365 four-MiB reference raw/frame helpers. No external
+source or test implementation is consulted.

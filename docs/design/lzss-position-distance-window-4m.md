@@ -114,3 +114,12 @@ fixed eligibility. Full/final raw-frame positions, memory/capacity checks and
 publication privacy are tested. The next stage is a bounded private streaming
 owner with arbitrary input/output splits and whole-stream publication checks;
 public selection and optimization/performance qualification remain later work.
+
+DD-1366 and TVG-1233 add bounded private owned and borrowed streaming transforms
+with explicit workspace queries. They preserve deterministic frame bytes across
+arbitrary input/output splits and validate each complete frame before publication.
+The reference lifecycle is now testable end to end. Next, build a private complete
+profile diagnostic and measure compression ratio, encode/decode throughput and
+memory separately before transferring finder/model optimizations or considering
+public profile admission. Historical external qualification remains the one-MiB
+profile; private four-MiB tests do not replace it.

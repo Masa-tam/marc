@@ -36731,3 +36731,25 @@ both bounds.
 - Scope: private reference selection and raw-frame integration only; no public
   lifecycle, performance, hosted CI or external qualification. No legal
   guarantee is asserted.
+
+## CR-1537: 2026-10-01 - Private four-MiB stream lifecycle
+
+- Author and reviewer: Codex; the maintainer authorized the next development stage.
+- References: IR-1126, DD-1366, retained first-party one-MiB workspace/stream
+  state machines and owned wrappers, and DD-1365 four-MiB reference helpers.
+- Independent task: add bounded private owned/borrowed streaming transforms,
+  explicit workspace queries and full-frame publication with arbitrary chunks.
+- Similarity review: reuse first-party lifecycle and allocation structure with
+  reserved identity, three-prefix reference selection, concrete state sizes and
+  the 80-byte prefix charge. Existing production codec bodies, public factories
+  and formats remain unchanged. Hand-assembled header fixtures follow the format.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party lifecycle/optimization tests.
+- Validation: TVG-1233; 119 targeted cases per compiler, 193 ASan/UBSan cases,
+  exact budgets, chunk splits, sticky states, full/final frames and failed-frame
+  privacy. Separate cross-compiler retained-fixture stream decoding restores all
+  twelve Silesia members / 57 frames. Optional corpus tests are separate from
+  the normal test counts. Documentation and scope checks pass.
+- Scope: private lifecycle reference only; public admission, benchmarks, new
+  hosted CI and external qualification remain separate. No legal guarantee is
+  asserted.

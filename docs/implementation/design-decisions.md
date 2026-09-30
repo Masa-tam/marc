@@ -27832,3 +27832,29 @@ storage is discardable private scratch; failed serialized output is unchanged
 and must not be published. Raw input and configuration remain stable. Existing
 frame validation and canonical Range termination remain mandatory. Public
 parsers/factories and streaming lifecycle admission are separate later work.
+
+## DD-1366: Bounded private four-MiB streaming owners
+
+Transfer the retained first-party streaming state machines and owned wrappers
+to reserved four-MiB identity 2/10 + 1/11 + 3/2. Keep reference exhaustive and
+three-prefix selection only. Query before allocation, charge every supplied
+capacity plus retained owner and concrete phase state, and charge the encoder's
+80-byte serialization prefix. Reject configuration, arithmetic, capacity,
+alignment and overlap errors before publishing views. Caller limits remain
+authoritative, including for the four-MiB worst-case payload above 64 MiB.
+
+The encoder buffers one raw frame and publishes it only after successful complete
+encoding. The decoder buffers a complete frame, validates canonical entropy and
+history, reconstructs privately, then drains raw bytes. Atomic publication is
+per frame; earlier successful frames survive later failures. Direction is fixed.
+Flush preserves boundaries; ResetBlock is unsupported. Resubmit any unconsumed
+final suffix with EndInput; once the final suffix is consumed, draining no longer
+requires that flag. Ended and error states are sticky. Empty streams consist of
+the header. Known original size bounds input and frame positions; strict decoding
+rejects truncation and trailing data. No steady-state allocation is added.
+
+Test arbitrary splits, zero/one-byte output, starvation, delayed finish, final
+short/full frames, exact budgets and private aliases. Compare complete encoded
+bytes against independent header assembly and retained complete-frame helpers.
+Public parser/factory/profile admission and performance qualification remain
+separate work.
