@@ -155,3 +155,21 @@ measure reference and trial with identical phase paths and repeated exclusive
 controls before considering private owner integration and complete-stream timing.
 This correctness stage does not establish an optimization speedup or public
 four-MiB qualification.
+
+DD-1370, TVG-1237 and BM-0195 compare reference and five-prefix selection through
+the same candidate/scalar-frame diagnostic, with duplicate reference controls,
+rotated ordering and three complete exclusive passes. Every selected token,
+frozen complete frame and restored raw byte remains exact. The finder requires
+34,078,720 additional policy bytes; oracle/input/archive buffers are separate
+diagnostic overhead. Use the repeated per-input evidence and control spread
+when deciding private owner integration; complete-owner speed and memory still
+need their own validation. Public admission and external qualification remain
+separate, with the qualified one-MiB profile unchanged.
+
+All 36 input/pass comparisons beat both controls. Additive corpus phase time
+falls by 73.764% to 73.929% against the control mean, while
+maximum input/pass control spread is 1.364%.
+This repeated phase evidence supports private owner integration next, retaining
+the original reference and bounded failure/publication tests. Complete-owner
+throughput and physical-memory effects must be measured after integration;
+this phase result does not establish those gains or public admission.

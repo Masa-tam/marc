@@ -36822,3 +36822,25 @@ both bounds.
 - Scope: private correctness trial only; no speed claim, new full-suite/fuzz,
   streaming-owner/public admission or hosted/external qualification. No legal
   guarantee is asserted.
+
+## CR-1541: 2026-10-01 - Repeated four-MiB five-prefix phase comparison
+
+- Author and reviewer: Codex; the maintainer authorized the next development stage.
+- References: IR-1130, DD-1370, retained first-party phase diagnostic, candidate
+  helpers, scalar frame coding, bounded decoder and frozen reference archives.
+- Independent task: compare reference and trial through identical phase paths,
+  two duplicate controls, rotated order and three complete exclusive passes;
+  preserve selected tokens, frozen bytes and failure-publication contracts.
+- Similarity review: the optional diagnostic extends repository-authored phase
+  methodology with separate query-sized indices and an untimed decoded token
+  oracle. Existing codec/reference/public bodies are unchanged; only the optional
+  target links the additional private helpers. No external expression is used.
+- Known implementations intentionally not consulted: external codec sources,
+  copyleft implementations and third-party optimization/test structures.
+- Validation: TVG-1237; both compiler smokes and ASan/UBSan pass. Twenty-four
+  untimed corpus checks cover 57 frames per compiler; 108 exclusive rotated
+  observations cover 513 frames with exact token/frame/raw agreement. Source,
+  executable/archive identity, scope and append-only documentation checks pass.
+- Scope: repeated private phase comparison only. New owner/RSS, full-suite/fuzz,
+  public profile and hosted/external qualification are separate. No legal
+  guarantee is asserted.

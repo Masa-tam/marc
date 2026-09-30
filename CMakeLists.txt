@@ -782,6 +782,35 @@ if(MARC_BUILD_BENCHMARKS)
                     "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-phase-smoke"
                     -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_phase_benchmark_smoke.cmake)
         endif()
+        add_executable(marc_lzss_position_distance_4m_five_prefix_phase_benchmark
+            benchmarks/lzss_position_distance_4m_five_prefix_phase_benchmark.cpp
+            src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
+            src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
+            src/dictionary/lzss_position_distance_4m_match_finder.cpp
+            src/dictionary/lzss_position_distance_4m_candidate.cpp
+            src/context/lzss_position_distance_4m_tokens.cpp
+            src/entropy/lzss_position_distance_4m_range_encoder.cpp
+            src/entropy/lzss_position_distance_4m_range_decoder.cpp
+            src/frame/lzss_position_distance_4m_frame.cpp
+            src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
+            src/frame/lzss_position_distance_4m_encode_workspace.cpp
+            src/frame/lzss_position_distance_4m_workspace.cpp
+            src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
+            src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
+            src/frame/lzss_position_distance_4m_owned_encoder.cpp
+            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
+        target_compile_features(marc_lzss_position_distance_4m_five_prefix_phase_benchmark PRIVATE cxx_std_20)
+        target_include_directories(marc_lzss_position_distance_4m_five_prefix_phase_benchmark PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_lzss_position_distance_4m_five_prefix_phase_benchmark PRIVATE marc::static)
+        add_dependencies(marc_lzss_position_distance_4m_five_prefix_phase_benchmark marc_lzss_position_distance_4m_profile_benchmark)
+        if(MARC_BUILD_TESTS)
+            add_test(NAME marc_position_distance_4m_five_prefix_phase_benchmark_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DBENCHMARK=$<TARGET_FILE:marc_lzss_position_distance_4m_five_prefix_phase_benchmark>"
+                    "-DFIXTURE_GENERATOR=$<TARGET_FILE:marc_lzss_position_distance_4m_profile_benchmark>"
+                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-five-prefix-phase-smoke"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_five_prefix_phase_benchmark_smoke.cmake)
+        endif()
         if(WIN32)
             target_link_libraries(marc_lzss_position_distance_4m_profile_benchmark PRIVATE psapi)
         endif()

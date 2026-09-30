@@ -27933,3 +27933,44 @@ against frozen archives before timing. This stage is prototype correctness,
 not speed admission or public integration. Subsequent performance comparisons
 must use identical paths and repeated exclusive controls; do not infer a gain
 from prior phase totals measured under different conditions.
+
+## DD-1370: Repeated same-path four-MiB five-prefix phase comparison
+
+Keep all codec bodies, existing owners, public factories, format and defaults
+unchanged. Add a separate optional diagnostic that selects either retained
+single-prefix reference or exact five-prefix candidate, then calls the same
+scalar complete-frame encoder. Eligibility is three in all measured cases.
+Query and allocate independent finder storage before timing; do not give the
+trial the smaller reference layout or keep an unused reference index allocated.
+
+Use two duplicate reference controls and one trial in fresh, exclusive processes.
+Rotate their order by input and pass over three complete twelve-input passes.
+Retain all 108 observations, without warmup, discarded reruns or selecting a best
+pass. One observation per frame sums disjoint candidate and scalar-coding calls.
+Candidate time includes validation, index reset/search and token materialization;
+it is not pure dictionary search. Exclude I/O, query/allocation, oracle decode,
+token/frame comparisons and report formatting. Never compare old phase or owner
+totals as an optimization speedup; their absolute timing disparity is unresolved.
+
+Decode the frozen frame before each measured call into separate untimed oracle
+tokens and restore its raw bytes. Compare every selected token field, encoded
+complete-frame byte and consumed frame size outside the intervals. Emit a success
+report only after the entire archive matches, including strict final consumption.
+Oracle/input/archive buffers are diagnostic overhead outside codec policy charge.
+The separate full-frame oracle token array is 50,331,648 bytes in both modes.
+
+At the full four-MiB size, finder arrays are 17,039,360 reference bytes versus
+51,118,080 trial bytes. Zero-owner encode policy accounting is 281,286,093 versus
+315,364,813 bytes, an increase of 34,078,720 bytes. These are policy charges, not
+new physical-memory or whole-owner measurements. Preserve all failure invariance
+and failed-frame publication contracts; this diagnostic introduces no publication
+path. BM-0195 records repeated phase evidence; private owner integration and
+complete-stream qualification remain subsequent work.
+
+All 36 input/pass comparisons beat both controls. Additive corpus phase time
+falls by 73.764% to 73.929% against the control mean, while
+maximum input/pass control spread is 1.364%.
+This repeated phase evidence supports private owner integration next, retaining
+the original reference and bounded failure/publication tests. Complete-owner
+throughput and physical-memory effects must be measured after integration;
+this phase result does not establish those gains or public admission.

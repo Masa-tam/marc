@@ -8368,3 +8368,68 @@ inside matches, selected tokens, complete frame bytes, checked budgets/aliases
 and failure-publication contracts. Qualify any speed gain through exclusive
 repeated trials after correctness. Public four-MiB admission and external
 qualification remain separate stages.
+
+## BM-0195: Repeated four-MiB exact five-prefix phase comparison
+
+DD-1370 uses identical candidate-then-scalar-frame paths for two duplicate
+single-prefix references and one exact five-prefix trial, all with eligibility
+three. Three complete twelve-input passes rotate process order by member and
+pass. Each of 108 fresh processes runs exclusively, with one observation per
+frame and no warmup or discarded observations. Timing excludes allocation,
+I/O, oracle decoding, token/frame comparisons and reporting. Candidate time
+includes validation/reset/search/materialization; additive phase totals are
+neither pure search nor whole-stream owner throughput.
+
+Both compiler verification runs and all 513 measured frames preserve selected
+tokens, frozen archive bytes and restoration. Per pass and finder the corpus is
+211,938,580 raw bytes, 61,643,620 archive bytes, 57 frames, 28,533,369 tokens and
+110,846,666 modeled operations. Compression ratio remains 29.085606% of raw size.
+Measurements use one frozen timing build; the second compiler verifies bytes.
+
+| Pass | Reference 0 selection/coding/total (s) | Reference 1 selection/coding/total (s) | Trial selection/coding/total (s) | Total reduction vs control mean | Total control spread |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 318.218049/12.288496/330.506545 | 319.303258/12.249420/331.552678 | 74.080295/12.221833/86.302128 | 73.929% | 0.317% |
+| 2 | 318.593215/12.246264/330.839479 | 318.127592/12.205778/330.333370 | 74.032062/12.200520/86.232582 | 73.915% | 0.153% |
+| 3 | 318.590523/12.180406/330.770929 | 320.277720/12.245892/332.523612 | 74.776582/12.233235/87.009817 | 73.764% | 0.530% |
+
+Per-input totals below are the arithmetic means of all three passes, retaining
+every observation. Reduction compares the trial with the mean of both reference
+controls; negative values are regressions. Per-pass comparisons remain recorded.
+
+| Member | Reference 0 total (s) | Reference 1 total (s) | Trial total (s) | Total reduction |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 30.536785 | 30.590718 | 5.082022 | 83.372% |
+| mozilla | 74.197213 | 74.664294 | 20.987701 | 71.802% |
+| mr | 34.371664 | 34.335052 | 8.121976 | 76.358% |
+| nci | 30.297750 | 30.442361 | 9.755735 | 67.877% |
+| ooffice | 6.857983 | 6.858134 | 1.589578 | 76.822% |
+| osdb | 5.008854 | 4.996854 | 2.001710 | 59.989% |
+| reymont | 22.051568 | 22.069457 | 5.846245 | 73.499% |
+| samba | 19.449576 | 19.385142 | 4.769447 | 75.437% |
+| sao | 8.375852 | 8.379162 | 2.734286 | 67.362% |
+| webster | 95.370367 | 95.561770 | 22.697534 | 76.225% |
+| xml | 1.397720 | 1.403477 | 0.590697 | 57.825% |
+| x-ray | 2.790321 | 2.783466 | 2.337910 | 16.111% |
+
+Across 36 member/pass comparisons, the trial is faster than both controls in 36, slower than both in 0, and between them in 0. The maximum per-member/pass total control spread is 1.364%.
+
+Full-frame finder storage rises from 17,039,360 to 51,118,080 bytes; zero-owner
+codec policy accounting rises from 281,286,093 to 315,364,813 bytes. The additional
+34,078,720 bytes are a deterministic bound, not measured peak RSS. Both modes
+also allocate 50,331,648 oracle token bytes plus input/archive buffers outside
+that codec charge. No complete-owner or new process-memory gain is claimed.
+
+These same-path observations support assessing the private selection trial.
+Do not compare totals with BM-0193/0194 to infer another speedup or stream
+overhead; their absolute timing disparity remains unisolated. Private owner
+integration requires bounded-storage/failure-publication tests and subsequent
+complete-stream timing. Public profile admission and external qualification
+remain separate.
+
+All 36 input/pass comparisons beat both controls. Additive corpus phase time
+falls by 73.764% to 73.929% against the control mean, while
+maximum input/pass control spread is 1.364%.
+This repeated phase evidence supports private owner integration next, retaining
+the original reference and bounded failure/publication tests. Complete-owner
+throughput and physical-memory effects must be measured after integration;
+this phase result does not establish those gains or public admission.

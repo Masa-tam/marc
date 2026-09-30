@@ -9955,3 +9955,10 @@ implementation or optimization source is consulted.
 Transfer only first-party one-MiB five-prefix finder/candidate structure, private
 four-MiB reference/raw-frame helpers and their differential tests. No external
 codec or optimization implementation is consulted.
+
+## IR-1130: Four-MiB repeated five-prefix phase comparison
+
+Use first-party DD-1368 phase timing and DD-1369 exact five-prefix helpers,
+retained scalar frame coding and frozen reference archives. The token oracle
+uses the bounded repository decoder. No external codec or profiling structure
+is consulted.

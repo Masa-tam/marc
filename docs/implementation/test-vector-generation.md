@@ -18870,3 +18870,28 @@ compiler and 28,533,369 selected tokens per compiler. Counts and sizes agree.
 The original stream headers are retained; no trial streaming owner is introduced.
 No performance admission, public selection or hosted/external qualification is
 claimed by this untimed prototype stage.
+
+## TVG-1237: Four-MiB repeated same-path phase comparison
+
+The new optional diagnostic reuses frozen DD-1367 complete archives and the
+maintained twelve-member Silesia manifest. Both compiler builds pass smokes for
+empty input, the retained 259-byte A run and a mixed-pattern input, all three
+finder labels and verify/measure modes. Reject malformed headers, trailing
+archive bytes and unknown modes. Explicitly instrument the diagnostic and private
+five-prefix helpers for ASan/UBSan and pass the same smoke matrix. An initial
+diagnostic build missed the stream-header declaration include; adding that
+first-party header fixes it. Codec bodies are unchanged.
+
+Separate untimed corpus verification passes 24 checks, 57 frames per compiler,
+28,533,369 tokens, 211,938,580 raw bytes and 61,643,620 complete archive bytes per
+compiler. Every oracle token field, frozen frame byte and restored raw byte
+agrees; both compiler reports have identical counts and policy sizes.
+
+After verification and process audit, execute three complete exclusive passes
+with rotated reference-0/five-prefix/reference-1 order: 108 fresh processes,
+513 measured frames. All retain exact selected tokens, archive bytes and raw
+restoration. Keep executable/source/archive fingerprints, every observation,
+per-frame timings and control spread; no observations are discarded. BM-0195
+reports candidate, coding and additive totals separately. This is targeted
+diagnostic verification, not a new full codec suite, fuzz campaign, public
+admission or hosted/external qualification.
