@@ -18699,3 +18699,44 @@ span where a dynamic span was required; correct the fixture and repeat final
 checks. No codec fix was needed. This does not qualify raw dictionary search,
 public stream lifecycle, a complete repository suite, fresh fuzzing, performance
 or hosted/external execution.
+
+## TVG-1232: Four-MiB raw-input reference selection
+
+Twelve new cases cover the private exhaustive and three-byte-prefix selectors
+and raw-frame adapter. Compare all token fields for 312 small/random/repetitive
+inputs with eligibility 3, 4 and 5, and compare retained 1 MiB selection on a
+2,048-byte input where the additional window cannot affect the result.
+Verify nearest equal-length ties, overlapping distance-1 matches and indexing
+positions consumed inside matches. Query real histories at distances 1,048,577,
+2,097,152 and 4,194,301; reset the index and reject borrowing old history.
+
+Every one-byte value round-trips. The 259 copies of byte 65 select a literal
+followed by a length-258/distance-1 match and reproduce the independently
+calculated TVG-1231 payload/frame. A full four-MiB raw frame and a final 259-byte
+frame round-trip at correct sequence/committed positions. Wrong positions fail.
+
+Candidate capacity cuts, short finder storage, full supplied capacity charges,
+exact memory budgets and one-byte-under limits preserve token output. Direct
+finder initialization rejects misaligned storage before constructing its index.
+Raw-frame serialized capacity cuts, missing operation storage, raw/output,
+token/finder and metadata aliases, invalid policy and malformed payload preserve
+publication storage. Successful raw-frame bytes equal direct selected-token
+frame bytes. Failed decoding returns zero consumed bytes and preserves raw output.
+
+Both compiler targets pass 100 cases; one optional verified-corpus diagnostic
+is skipped in the normal 101-case run. ASan/UBSan passes 174 cases with the same
+optional diagnostic skipped in the 175-case run. Retained frame/token/Range/
+preflight, public 1 MiB factory/configuration and sanitizer regression cases are
+included. An initial tiny-budget fixture violated the independent configured
+block-size limit; correct that fixture and repeat final validation. No codec
+fix was needed. These are targeted checks, not a full suite, fresh fuzz campaign,
+performance result, public lifecycle admission or external qualification.
+
+Separately verify all twelve Silesia members against the maintained size/hash
+manifest. Both compiler builds round-trip all 57 full/final four-MiB frames and
+produce identical concatenated frame bytes for every member. Every raw-adapter
+frame also equals direct selected-token frame encoding. Exhaustive/indexed token
+differentials cover each frame's first 512 raw bytes, rather than the whole
+corpus. The diagnostic is untimed for qualification purposes and writes private
+frame fixtures, not publicly admitted archives. No throughput or compression
+ratio comparison is inferred from it.

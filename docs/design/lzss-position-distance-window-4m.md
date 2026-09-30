@@ -106,3 +106,11 @@ including checked serialization, reconstruction and failed-frame output privacy.
 Next, connect bounded reference token selection from raw input and qualify frame
 boundaries before a streaming owner or optimized finder/prepared/scratch transfer.
 These helper tests do not establish public lifecycle or performance qualification.
+
+DD-1365 and TVG-1232 connect bounded reference raw-input selection to complete
+private frame encoding and reconstruction. Exhaustive and nearest-first
+three-byte-prefix selectors preserve longest-match and nearest-tie rules with
+fixed eligibility. Full/final raw-frame positions, memory/capacity checks and
+publication privacy are tested. The next stage is a bounded private streaming
+owner with arbitrary input/output splits and whole-stream publication checks;
+public selection and optimization/performance qualification remain later work.

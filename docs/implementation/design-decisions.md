@@ -27807,3 +27807,28 @@ reset isolation, full diagnostic parity, corruption/truncation, exact workspace
 thresholds, aliases, counts, expansion and terminal failures. Keep production
 parsers/factories and existing formats unchanged; no public lifecycle, dictionary
 finder optimization, benchmark or new external qualification is implied.
+
+## DD-1365: Four-MiB raw-input reference token selection
+
+Add private exhaustive and exact three-byte-prefix reference selectors for
+variant 10. Search without a candidate budget, verify source bytes, select the
+longest match and retain the nearest distance on ties. An attainable maximum
+length permits an early stop because nearer candidates were visited first.
+Index every consumed raw
+position, including positions inside matches; overlap matches compare stable
+raw input. Fixed eligibility 3, 4 or 5 is inherited from the position-distance
+typed profile, not the byte-serialized LZSS cost rule. No adaptive cost estimate
+or search budget may change selection. This is an experimental typed profile.
+
+Use 32-bit nearest-first links and 65,536 heads; no five-prefix or prepared
+optimization is admitted. The workspace is zero for inputs shorter than three,
+otherwise four bytes times input extent plus head count. Caller limits remain
+authoritative. Token selection preserves output on validation/capacity failure
+by counting first when capacity is less than the maximum literal count.
+
+The raw-frame adapter charges all supplied capacities and concrete phase state
+including the serialized prefix before selecting. Token, operation and finder
+storage is discardable private scratch; failed serialized output is unchanged
+and must not be published. Raw input and configuration remain stable. Existing
+frame validation and canonical Range termination remain mandatory. Public
+parsers/factories and streaming lifecycle admission are separate later work.

@@ -9924,3 +9924,9 @@ vectors are consulted; new history/extent fixtures derive from these contracts.
 Use first-party DD-1361 through DD-1363, the 1 MiB complete-frame helpers,
 bounded preflight and explicit little-endian serialization. Independent Range
 interval arithmetic supplies a fixed serialized frame; no external source is used.
+
+## IR-1125: Four-MiB raw-input reference selection
+
+Use only repository-authored exhaustive matching, nearest-first prefix chains,
+typed-token candidates and transactional raw/frame adapters. No external
+implementation was consulted. DD-1365 defines the private selection policy.

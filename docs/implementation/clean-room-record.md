@@ -36705,3 +36705,29 @@ both bounds.
 - Scope: private complete-frame helpers only; no public lifecycle, dictionary
   finder transfer, benchmark, hosted CI or external qualification. No legal
   guarantee is asserted.
+
+## CR-1536: 2026-10-01 - Four-MiB raw-input reference selection
+
+- Author and reviewer: Codex; the maintainer authorized this development stage.
+- References: IR-1125, DD-1365, first-party exhaustive matching, prefix-chain
+  reference matching, typed candidates and transactional raw-frame adapters.
+- Independent task: connect bounded raw-input selection to the private four-MiB
+  frame reference, preserving longest/nearest selection, explicit eligibility,
+  checked capacities/aliases and failure privacy before public stream admission.
+- Similarity review: reuse first-party candidate/raw-adapter structure with the
+  reserved identity and prefix-state charge. Simplify the first-party index to
+  one three-byte chain, without dual/five-prefix or best-length probe shortcuts.
+  Existing production codec bodies and public factories remain unchanged.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test source.
+- Validation: TVG-1232, 100 targeted cases per compiler and 174 ASan/UBSan cases;
+  exhaustive differential selection, wide distances, full/final raw-frame
+  reconstruction, retained selection, budgets, aliases and failed-output privacy.
+  A configured-block test-fixture correction precedes final passing validation.
+- Corpus validation: maintained Silesia size/hash verification, twelve members,
+  57 frames per compiler, exact cross-compiler frame identity and full raw
+  round-trip; exhaustive selection differentials use each frame's first 512
+  bytes. No full-corpus exhaustive search or timed benchmark is claimed.
+- Scope: private reference selection and raw-frame integration only; no public
+  lifecycle, performance, hosted CI or external qualification. No legal
+  guarantee is asserted.
