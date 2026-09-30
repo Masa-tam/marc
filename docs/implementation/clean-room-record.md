@@ -36616,3 +36616,24 @@ both bounds.
 - Validation: documentation, arithmetic and scope checks. No larger-window
   performance, correctness or admission is claimed at this planning stage.
 - Scope: DD-1360 and its development plan; no legal guarantee is asserted.
+
+
+## CR-1532: 2026-09-30 - Reserve and validate the 4 MiB position-distance grammar
+
+- Author and reviewer: Codex; the maintainer authorized the next development stage.
+- References: IR-1121, DD-1361 and first-party 1 MiB grammar, bounded Range state,
+  typed-token validation and shared short-match preflight.
+- Independent task: define the additive identity and exact model/count limits,
+  implement private field grammar and checked decoder-side preflight, and derive
+  distance-boundary vectors without admitting a public codec.
+- Similarity review: reviewed first-party reuse and scoped new identity branches;
+  existing identity mappings and public factory behavior remain unchanged. New
+  tests derive fields and limits from the documented arithmetic and grammar.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1228; 86 targeted cases on each compiler and 117 ASan/UBSan
+  cases, including old-profile regressions. Documentation and scope checks also
+  pass. No hosted CI, external qualification or new benchmark is claimed.
+- Scope: format reservation, private grammar/state and metadata validation only;
+  payload encoder/decoder and public admission remain pending. No legal guarantee
+  is asserted.

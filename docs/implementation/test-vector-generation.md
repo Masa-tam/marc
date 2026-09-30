@@ -18532,3 +18532,41 @@ IX-0054 closes DD-1359's revision-specific gate using these reported results.
 TVG-1226's local full-suite, sanitizer, failed-frame and corpus evidence remains
 separate. This documentation step reruns no codec, hosted CI or external bundle
 verification and does not expand the unchanged schema-59 fixture's coverage.
+
+
+## TVG-1228: Reserved 4 MiB grammar and preflight vectors
+
+The private tuple `2/10 + 1/11 + 3/2` requires 46 contexts and 2,588 frequency
+entries. Hand-checkable length-three match operations are kind 1, length class 8,
+one-bit length extra 1, distance class c and c-bit distance extra E:
+
+| Distance D | Class c | Extra E |
+| --- | --- | --- |
+| 1,048,575 | 19 | 524,287 |
+| 1,048,576 | 20 | 0 |
+| 1,048,577 | 20 | 1 |
+| 2,097,152 | 21 | 0 |
+| 4,194,301 | 21 | 2,097,149 |
+| 4,194,304 | 22 | 0 |
+
+The final row is grammar-only: a fixed four-MiB frame cannot provide that much
+history plus a match. Its twenty-two zero bits are nevertheless required by the
+grammar. Invalid class-22 extra, class 23, wrong width, out-of-width extra and
+length-259 escape leave the field cursor at the rejected field. Typed-token
+tests independently enforce reconstructed history, frame extent and old-profile
+window limits while preserving failed metadata.
+
+Sixteen new cases cover every stream/header/descriptor/payload-prefix truncation,
+reserved fields, crossed identities, full/final frame bounds, exact concrete-state
+aggregate budgets and one-byte-under failures. Conservative `9F` and `33T`
+count ceilings are tested independently. Ten thousand deterministic byte/extent
+mutations check failed metadata preservation. Structural prefix/count fixtures
+are not valid entropy-payload or archive vectors; no Range payload is decoded.
+
+The dedicated executable passes 86/86 cases on each of two compilers, including
+old short-match, reduced-literal, position-distance, typed-token and public
+1 MiB factory/configuration regressions. ASan/UBSan additionally includes retained
+finder-scratch frame/stream and prepared-model cases, passing 117/117. This is
+targeted validation, not a complete repository suite or fresh fuzz campaign.
+Public 4 MiB selection remains closed; payload coding and public lifecycle
+qualification are subsequent stages. No performance result is claimed.

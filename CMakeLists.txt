@@ -506,6 +506,19 @@ if(MARC_BUILD_TOOLS)
 endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
+    add_executable(marc_position_distance_4m_preflight_tests
+        tests/lzss_position_distance_4m_preflight_tests.cpp
+        tests/lzss_short_match_preflight_tests.cpp
+        tests/lzss_reduced_literal_preflight_tests.cpp
+        tests/lzss_position_distance_preflight_tests.cpp
+        tests/lzss_typed_token_tests.cpp
+        tests/lzss_position_distance_1m_tokens_tests.cpp
+        tests/lzss_position_distance_1m_c_factory_tests.cpp
+        tests/lzss_position_distance_1m_c_config_tests.cpp)
+    target_compile_features(marc_position_distance_4m_preflight_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_4m_preflight_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_4m_preflight_tests PRIVATE marc::static GTest::gtest_main)
+    add_test(NAME marc_position_distance_4m_preflight_tests COMMAND marc_position_distance_4m_preflight_tests)
     add_executable(marc_position_distance_1m_finder_scratch_tests
         tests/lzss_position_distance_1m_finder_scratch_tests.cpp)
     target_compile_features(marc_position_distance_1m_finder_scratch_tests PRIVATE cxx_std_20)

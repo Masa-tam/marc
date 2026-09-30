@@ -8119,3 +8119,69 @@ before a decoded frame is published. Existing transactional APIs must retain
 their failure guarantees; any single-pass scratch helper is private and its
 partial output MUST be discarded on failure. No new algorithm ID or public
 selector is implied by this reservation.
+
+
+### Reserved 4 MiB position-distance Dynamic Range family
+
+Format 2.0 reserves exactly dictionary algorithm/variant `2/10`, context-model
+algorithm/variant `1/11` and entropy algorithm/variant `3/2`. Crossed pairs are
+contradictory. Reservation does not admit the tuple to public parsers, selectors
+or factories. The existing `2/9 + 1/10 + 3/2` meaning remains frozen.
+
+Dictionary variant 10 retains the 16-byte parameter layout, flags zero, minimum
+match length 3, maximum match length in 3..258 and window size in 1..4,194,304
+bytes. It inherits variant 9's token grammar, match-benefit rule, greedy longest
+match, nearest-distance tie break and overlap reconstruction. Frames reset all
+history and models, contain at most 4,194,304 raw bytes and use a fixed known
+original size. The reference frame/window size is 4,194,304. A final short frame
+is valid; empty input is header-only. A match must fit the remaining frame output
+and refer only to history already reconstructed in that frame.
+
+Contexts 0..14 and all literal selection/length escape rules remain context 10.
+Contexts 15..23 have alphabet 23, representing distance classes 0..22. Contexts
+`24+p`, p=0..21, have alphabet 2. The descriptor context count MUST equal 46.
+The ordinary alphabet prefix sums end at 2,544; binary model p starts at
+`2544+2*p`, yielding exactly 2,588 frequency entries. Frequencies start at one;
+updates/rescaling at total 32,768 inherit the exact context-10 rules.
+
+For distance D, c=floor(log2(D)) and E=D-2^c. Class zero emits no extra field;
+otherwise code all c bits of E using models 24..24+c-1 in increasing numeric
+bit position. Class 22 permits only E=0, and still codes/updates twenty-two zero
+bits. Nonzero class-22 extras, widths inconsistent with their preceding class,
+classes above 22 and the length-259 escape are invalid. History/frame checks may
+reject a grammatically valid distance: class 22 cannot be reached by a match in
+a fixed four-MiB frame because its history is shorter than that distance.
+
+Use the existing explicit little-endian 112-byte stream header, 64-byte frame
+header and 16-byte Range descriptor layouts. Require stream feature flags 1,
+entropy/context/parameter flags zero, no entropy block size, no hash descriptor,
+16-byte dictionary/entropy parameters and a 16-byte context extension. Reserved
+bytes are zero. The exact tuple/count above replaces only the identity/model
+fields; all other header layout rules remain those of the 1 MiB family.
+
+For nonempty raw size F and token count T, require `1 <= T <= F`,
+`2T <= events <= min(2F,5T)` and
+`events <= decisions <= min(9F,33T)`. A length-3 match uses at most three symbol
+choices, one length bit and twenty-two distance bits: twenty-six decisions.
+Any longer match uses at most thirty-two and consumes at least four raw bytes.
+Together with two-decision literals, this proves the `9F` bound. Require payload
+size at least five and at most `min(2*decisions+5,18F+5)`. The complete frame is
+`payload_size+80`, at most `18F+85`. At the full frame these conservative ceilings
+are 75,497,477 payload bytes and 75,497,557 serialized bytes.
+
+Range normalization, carry, five final shifts and canonical interval replay
+inherit the exact entropy-3/2 position-distance rules. Uniform length extras
+retain equiprobable intervals; distance extras use their adaptive binary models.
+Headers/descriptors, declared counts, payload extent, terminal state and reference
+history must all validate before a decoded frame is published. Prefix preflight
+alone cannot establish payload validity. Any private scratch failure is discarded.
+
+Checked decoder preflight charges the complete serialized extent, `T*sizeof`
+of the internal token type, F raw bytes and the concrete 46-context Range state,
+including grammar, counters, payload view and canonical replay state. Caller
+limits apply before allocation; failure leaves metadata/output unchanged.
+The future fixed profile requires explicit four-MiB frame/block limits,
+75,497,477-byte payload limit and a 512-MiB aggregate policy; the internal
+preflight does not raise caller limits. Exact encoder workspace queries and
+public lifecycle admission remain separate implementation work. Generic defaults
+and existing profiles are unchanged.

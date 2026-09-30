@@ -9896,3 +9896,10 @@ Use the first-party 1 MiB format, checked workspace and model layouts,
 BM-0191 replicated measurements, IX-0054 qualification and the existing
 contextual 4/16/64 MiB design progression. No external implementation or new
 algorithm reference is consulted.
+
+
+## IR-1121: Four-MiB position-distance format and bounded preflight
+
+Use first-party DD-1360 planning, the frozen 1 MiB position-distance format,
+private field cursor/model storage, shared prefix preflight and typed-token
+validators. No external implementation or new algorithm reference is consulted.

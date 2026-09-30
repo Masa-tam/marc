@@ -27705,3 +27705,30 @@ with format/decoder validation, then reference coding and differential transfer
 of the validated 1 MiB mechanisms. Measure complete profiles before drawing
 compression or speed conclusions. This step changes development direction;
 it introduces no codec admission or measured larger-window gain.
+
+
+## DD-1361: Reserve the additive 4 MiB position-distance identity and validator
+
+Reserve the exact tuple dictionary `2/10`, context `1/11`, entropy `3/2`.
+Require 46 contexts and 2,588 frequency entries, with distance classes 0..22
+and twenty-two adaptive distance-bit models. Preserve the literal/length grammar,
+per-frame reset and canonical Range arithmetic of the 1 MiB position-distance
+family. Wider distances are a new representation, not an existing variant option.
+
+A literal costs two decisions. A length-3 match costs at most twenty-six; a
+longer match costs at most thirty-two, so the conservative `9F` raw decision
+bound remains valid. Use `33T` as the conservative token decision bound,
+`2*decisions+5` payload bound and `18F+85` serialized frame bound. All arithmetic
+and concrete model/token/raw/payload charges remain checked before allocation.
+
+Implement a private field cursor, concrete bounded Range state and header/frame
+preflight. Extend only the internal typed-token variant validator for the new
+minimum-three/four-MiB grammar. Existing public stream parsers and factories
+continue rejecting the reserved tuple; no payload decoder or encoder is admitted
+by this step. Preflight success supplies bounded extents, not payload validity,
+and must not expose raw bytes. All failed metadata outputs remain unchanged.
+
+Define hand-checkable distance field vectors and test widths, history/output
+bounds, exact budgets, every prefix truncation, reserved bytes, crossed identities,
+full/final frame limits and mutations. Keep old validator branches and public
+1 MiB behavior covered by the same diagnostic regression executable.

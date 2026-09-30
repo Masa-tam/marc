@@ -77,3 +77,13 @@ when a frame is otherwise valid; count eligibility rather than assuming it.
 Larger windows may improve compression on distant repetitions while increasing
 encoding cost. The corpus results, rather than window size alone, determine
 whether this profile should progress to 16 MiB.
+
+
+## Exact reservation and preflight stage
+
+DD-1361 and the appended 4 MiB position-distance section in `docs/format.md`
+reserve `2/10 + 1/11 + 3/2` and define the complete decoder-visible model,
+counts and header rules. This supersedes the planning-stage lack of a numeric
+identity. Private grammar/state/preflight validation is the current stage;
+Range payload decoding, encoding, public selection and performance qualification
+remain subsequent work.
