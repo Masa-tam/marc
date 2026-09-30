@@ -9888,3 +9888,11 @@ protocol. No external implementation or new algorithm reference is consulted.
 Use first-party DD-1356 frame functions, DD-1357 streaming adapters, DD-1358
 replicated measurements and existing public-factory/error/workspace tests.
 No external implementation or new algorithm reference is consulted.
+
+
+## IR-1120: Transition from qualified 1 MiB to 4 MiB position-distance
+
+Use the first-party 1 MiB format, checked workspace and model layouts,
+BM-0191 replicated measurements, IX-0054 qualification and the existing
+contextual 4/16/64 MiB design progression. No external implementation or new
+algorithm reference is consulted.

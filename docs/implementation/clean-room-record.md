@@ -36601,3 +36601,18 @@ both bounds.
   not independently rerun. Documentation and scope checks are performed locally.
 - Scope: CI/external gate closure for the reported revision; no format, ABI,
   defaults or release-state change, and no legal guarantee is asserted.
+
+
+## CR-1531: 2026-09-30 - Plan the next position-distance window
+
+- Author and reviewer: Codex; the maintainer requested moving to the next window.
+- References: IR-1120, BM-0191, IX-0054 and first-party 1 MiB/large-window designs.
+- Independent task: choose an incremental 4 MiB target, identify distance/model
+  changes and memory costs, and stage reference/decoder validation before transfer.
+- Similarity review: design-only analysis of existing first-party requirements;
+  no implementation, algorithm structure or test-vector bytes are imported.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: documentation, arithmetic and scope checks. No larger-window
+  performance, correctness or admission is claimed at this planning stage.
+- Scope: DD-1360 and its development plan; no legal guarantee is asserted.

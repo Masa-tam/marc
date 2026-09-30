@@ -27682,3 +27682,26 @@ IX-0054 and TVG-1227 close this integration's revision-specific CI/external gate
 The reports remain distinct from local validation and are not attributed to the
 later documentation commit. Format, workspace, failure/publication contracts and
 release state remain unchanged.
+
+
+## DD-1360: Move the next position-distance development effort to 4 MiB
+
+Retain the qualified 1 MiB encoder as a stable reference and stop the current
+optimization campaign at BM-0191's reproducible 8.85% to 9.25% gain. Smaller
+incremental gains alone do not prove that all opportunities are exhausted;
+the maintainer requests moving effort to the next window size.
+
+Choose 4 MiB before 16 MiB, following the existing window progression and
+containing the memory and validation increment. Develop a separately identified
+position-distance Dynamic Range profile, initially retaining minimum/maximum
+match lengths 3/258. The existing contextual 4 MiB profile remains a comparison
+with distinct grammar and models.
+
+The development plan in `docs/design/lzss-position-distance-window-4m.md`
+derives the candidate distance-class/model expansion and identifies checked
+memory, scratch eligibility and finder-width questions. Exact variant IDs,
+format and resource policy must be established before implementation. Proceed
+with format/decoder validation, then reference coding and differential transfer
+of the validated 1 MiB mechanisms. Measure complete profiles before drawing
+compression or speed conclusions. This step changes development direction;
+it introduces no codec admission or measured larger-window gain.
