@@ -8202,3 +8202,100 @@ The original private owning adapter remains diagnostic-only.
 
 This records local integration readiness. Hosted CI and four-route external
 bundle verification must be recorded separately for the resulting revision.
+
+## BM-0193: Initial four-MiB complete-profile reference screen
+
+DD-1367 measures twelve manifest-verified Silesia members containing
+211,938,580 raw bytes. Compare the private four-MiB reference owner, qualified
+one-MiB public position-distance profile and existing public contextual four-MiB
+profile. Complete archives include stream headers and every frame prefix.
+
+All profiles use known sizes and 65,536-byte input/output chunks. Capture and
+restore complete archives with both compiler targets before measurement, then
+freeze their bytes and executable identities. TVG-1234 checks 72 complete streams,
+cross-compiler identity, retained reference frames and qualified one-MiB archives.
+The targeted smoke also passes on both compiler targets and with ASan/UBSan.
+
+Use one unchanged diagnostic executable for timing. Each member, profile
+and direction runs once in a fresh process, with profile order rotated/reversed
+across members. Time allocation, creation, process calls and destruction. Exclude
+file I/O, sink comparison and formatting. The private owner and public C interface
+adapters differ; creation includes their respective query/allocation paths.
+All 72 measured processes verify every produced byte. No build or unrelated test
+runs alongside timing. This is an initial screen, not replicated speed admission.
+
+| Profile | Complete archive bytes | Archive/raw | Encode sum (s) | Encode MiB/s | Decode sum (s) | Decode MiB/s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 4 MiB position-distance reference | 61,643,620 | 29.086% | 534.153934 | 0.378 | 6.954367 | 29.064 |
+| 1 MiB position-distance public | 63,558,293 | 29.989% | 28.878322 | 6.999 | 5.293731 | 38.181 |
+| 4 MiB contextual public | 61,992,826 | 29.250% | 150.028456 | 1.347 | 6.628007 | 30.495 |
+
+Throughput divides total raw MiB by the sum of the twelve observed codec times;
+these sums are not medians or averages of per-member percentage changes.
+
+Against 1 MiB position-distance public, the reference archive total changes by -3.012%;
+it is smaller on 11/12 members, larger on 1/12 and equal on 0/12.
+Against 4 MiB contextual public, the reference archive total changes by -0.563%;
+it is smaller on 5/12 members, larger on 7/12 and equal on 0/12.
+
+| Member | 4 MiB reference bytes | 1 MiB public bytes | 4 MiB contextual bytes |
+| --- | ---: | ---: | ---: |
+| dickens | 3,258,714 | 3,472,780 | 3,243,966 |
+| mozilla | 18,192,069 | 18,241,669 | 18,792,234 |
+| mr | 3,318,766 | 3,403,468 | 3,348,820 |
+| nci | 2,513,746 | 2,825,695 | 2,461,724 |
+| ooffice | 3,010,968 | 3,037,421 | 3,004,480 |
+| osdb | 3,452,162 | 3,544,894 | 3,262,734 |
+| reymont | 1,572,002 | 1,691,028 | 1,575,971 |
+| samba | 4,826,491 | 5,049,664 | 4,799,306 |
+| sao | 5,185,835 | 5,146,691 | 5,251,920 |
+| webster | 10,395,877 | 11,109,357 | 10,334,799 |
+| xml | 553,321 | 585,045 | 545,175 |
+| x-ray | 5,363,669 | 5,450,581 | 5,371,697 |
+
+| Member | Reference encode/decode (s) | 1 MiB encode/decode (s) | Contextual encode/decode (s) |
+| --- | ---: | ---: | ---: |
+| dickens | 83.797058 / 0.388985 | 1.632569 / 0.280628 | 7.919067 / 0.252153 |
+| mozilla | 81.142716 / 2.008224 | 7.697472 / 1.555552 | 35.488432 / 2.288852 |
+| mr | 40.173847 / 0.392401 | 2.464047 / 0.291414 | 21.734409 / 0.297207 |
+| nci | 38.978078 / 0.270327 | 2.857202 / 0.226914 | 20.005869 / 0.199439 |
+| ooffice | 8.486152 / 0.337141 | 0.745958 / 0.253249 | 1.396775 / 0.373223 |
+| osdb | 7.317705 / 0.382697 | 0.784358 / 0.286656 | 1.643555 / 0.365787 |
+| reymont | 62.666415 / 0.178018 | 1.835842 / 0.136576 | 11.367713 / 0.122515 |
+| samba | 22.398501 / 0.522935 | 2.189133 / 0.410380 | 6.697001 / 0.522866 |
+| sao | 18.323696 / 0.600531 | 1.004286 / 0.427068 | 2.300492 / 0.766484 |
+| webster | 163.112003 / 1.142022 | 6.250369 / 0.884084 | 39.797786 / 0.823122 |
+| xml | 1.699412 / 0.068316 | 0.314314 / 0.049454 | 0.620143 / 0.049778 |
+| x-ray | 6.058352 / 0.662771 | 1.102774 / 0.491755 | 1.057214 / 0.566581 |
+
+Query storage and measured process peaks are separate observations. The minimum
+query budget is the smallest configured internal-buffer budget the workspace
+query accepts; it is a policy threshold, not allocated bytes or codec RSS.
+Each profile retains its own query accounting rules. Queried buffer storage
+adds primary, secondary and views query sizes. Peak working set
+and peak commit are whole-process lifetime counters after codec destruction;
+input, frozen expected archive and runtime overhead contribute. Peak commit is
+the process pagefile-usage counter, not measured disk traffic. Report maxima
+across members, without subtracting unlike baselines or inferring codec-only RSS.
+
+| Profile / direction | Minimum query budget (bytes) | Queried buffers (bytes) | Maximum process working set (MiB) | Maximum process commit (MiB) |
+| --- | ---: | ---: | ---: | ---: |
+| 4 MiB position-distance reference / encode | 281,286,669 | 281,280,597 | 270.844 | 337.977 |
+| 4 MiB position-distance reference / decode | 130,029,573 | 130,023,509 | 126.609 | 193.473 |
+| 1 MiB position-distance public / encode | 79,435,637 | 79,429,717 | 130.109 | 145.141 |
+| 1 MiB position-distance public / decode | 32,511,893 | 32,505,941 | 85.340 | 100.293 |
+| 4 MiB contextual public / encode | 266,338,389 | 266,338,389 | 232.133 | 324.266 |
+| 4 MiB contextual public / decode | 113,246,293 | 113,246,293 | 115.359 | 178.008 |
+
+The reference is intentionally unoptimized: nearest-first single-prefix matching
+and scalar Range coding retain clear differential oracles. The public one-MiB
+profile already uses replicated finder/model/scratch optimizations. Contextual
+four-MiB uses a different grammar/model and minimum match length. Frame, window,
+finder, model and adapter differences prevent attributing these totals to window
+size alone. No individual phase bottleneck is inferred from complete timings.
+
+Preserve this baseline. Next, measure reference selection versus frame coding
+before transferring the retained exact finder optimizations, with selected-token
+and complete-byte differentials. Any speed admission needs repeated trials;
+public selection, full-suite/fuzz validation and external exchange qualification
+remain later stages. No existing public codec or format changes in this screen.

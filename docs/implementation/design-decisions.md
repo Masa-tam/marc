@@ -27858,3 +27858,26 @@ short/full frames, exact budgets and private aliases. Compare complete encoded
 bytes against independent header assembly and retained complete-frame helpers.
 Public parser/factory/profile admission and performance qualification remain
 separate work.
+
+## DD-1367: Initial complete-profile reference measurement
+
+Build an optional private diagnostic for position-distance four-MiB reference,
+public position-distance one-MiB and public contextual four-MiB profiles. First
+capture complete streams and verify raw restoration and cross-compiler bytes
+without qualifying timings. Freeze stream fixtures before exclusive timing.
+Use 65,536-byte input/output chunks and known original sizes for every profile.
+
+Time allocation, creation, process calls and destruction; exclude file I/O,
+fixture/sink comparison and formatting. Measure encoding and decoding in separate
+fresh processes. Record queried storage, the minimum budget admitted by query,
+and whole-process peak working set and peak commit counters separately. Input/expected-stream
+buffers and runtime overhead contribute to process peaks; these are not precise
+codec RSS. Query thresholds are policy charges, not measured allocations.
+
+The initial screen uses one measured run per member/direction/profile after
+untimed validation; it is not a replicated optimization/admission claim. Reverse
+or rotate profile order across members. Report summed times/bytes and per-member
+results rather than averaging percentage gains. Model, frame, eligibility and
+finder differences make this a profile comparison, not an isolated window study.
+Do not run unrelated builds/tests during meaningful timing. Preserve all prior
+fixtures and public formats; no new public profile is admitted.

@@ -9936,3 +9936,10 @@ implementation was consulted. DD-1365 defines the private selection policy.
 Use first-party one-MiB workspace queries, borrowed streaming transforms and
 owned wrappers, plus DD-1365 four-MiB reference raw/frame helpers. No external
 source or test implementation is consulted.
+
+## IR-1127: Complete-profile four-MiB reference diagnostic
+
+Use repository-authored complete-stream benchmark methodology, private DD-1366
+owners, qualified public one-MiB position-distance and existing contextual
+four-MiB C interfaces. No external codec implementation is consulted. Operating
+system process-memory counters are diagnostic observations, not codec bounds.

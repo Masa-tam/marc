@@ -18780,3 +18780,30 @@ capacity pauses. All twelve members and 57 frames restore the complete source
 bytes. Raw corpus tokenization/encoding is not rerun here. This is an untimed
 private lifecycle diagnostic, not public admission, hosted/external qualification
 or a performance claim.
+
+## TVG-1234: Four-MiB complete-profile diagnostic validation
+
+DD-1367 adds an optional diagnostic comparing private position-distance four-MiB,
+public position-distance one-MiB and public contextual four-MiB complete streams.
+The private reference codec and both public codec implementations are unchanged.
+Known sizes and 65,536-byte input/output chunks are used consistently.
+
+Each compiler passes the selected diagnostic smoke: empty and small inputs in
+verify, encode and decode modes for all three profiles; empty streams occupy
+112 bytes; invalid arguments and a malformed private stream are rejected.
+The same smoke passes with ASan/UBSan and explicitly instrumented private sources.
+These are targeted diagnostic checks, not a new full suite or fuzz campaign.
+
+Independently reverify the maintained Silesia size/hash manifest. Both compilers
+generate and restore all twelve inputs for each profile: 72 complete-stream
+checks. Complete archive bytes and query metadata match across compilers. The
+four-MiB reference frames match retained DD-1365 frame fixtures, with a separately
+assembled 112-byte stream header. Public one-MiB archives match the retained
+externally qualified integration archives byte for byte.
+
+Freeze the verified executables and complete archives before timing. Each of the
+72 separate encode/decode measurement processes must compare every emitted byte
+with its frozen archive or raw input and report success. BM-0193 records the
+initial measurements and their limits; these do not establish public four-MiB
+admission or replace revision-specific hosted/external qualification. Existing
+failure-publication and transactional guarantees retain TVG-1233 evidence.

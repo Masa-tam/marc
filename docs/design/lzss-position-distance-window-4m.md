@@ -123,3 +123,15 @@ profile diagnostic and measure compression ratio, encode/decode throughput and
 memory separately before transferring finder/model optimizations or considering
 public profile admission. Historical external qualification remains the one-MiB
 profile; private four-MiB tests do not replace it.
+
+DD-1367, TVG-1234 and BM-0193 complete the initial private complete-profile
+diagnostic. Both compiler builds preserve complete bytes and restoration for
+all twelve inputs in each of three profiles; exclusive encode/decode observations
+record ratio, throughput, query thresholds and whole-process peaks separately.
+The four-MiB reference archive total is smaller than the compared public totals,
+while its unoptimized encode path needs further investigation. This is not an
+isolated window comparison or repeated speed qualification. Next, split reference
+selection and frame-coding time before transferring exact finder optimizations;
+retain exhaustive/reference differentials and failed-frame publication rules.
+Public profile admission and revision-specific external qualification remain
+separate, and the qualified one-MiB profile is unchanged.

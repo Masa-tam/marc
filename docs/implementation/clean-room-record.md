@@ -36753,3 +36753,26 @@ both bounds.
 - Scope: private lifecycle reference only; public admission, benchmarks, new
   hosted CI and external qualification remain separate. No legal guarantee is
   asserted.
+
+## CR-1538: 2026-10-01 - Complete-profile four-MiB reference diagnostic
+
+- Author and reviewer: Codex; the maintainer authorized the next development stage.
+- References: IR-1127, DD-1367, first-party complete-stream benchmark methods,
+  private reference owners and existing public codec interfaces.
+- Independent task: add an optional complete-profile diagnostic, freeze verified
+  archives, then separately measure compression ratio, encode/decode time,
+  queried storage and whole-process memory peaks.
+- Similarity review: diagnostic orchestration uses repository-authored stream
+  contracts; no codec body or public factory changes. Private codecs remain
+  linked only into the optional diagnostic. The reserved header is assembled
+  independently and prior qualified archives remain exact.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party benchmark/optimization structures.
+- Validation: TVG-1234; both selected compiler smokes and ASan/UBSan smoke pass.
+  All 72 complete-stream correctness checks and 72 exclusive measurement processes
+  pass output identity/restoration. BM-0193 reports every corpus member and
+  distinguishes policy budgets from whole-process peaks. Scope, append-only
+  documentation and executable/fixture identity checks pass.
+- Scope: private initial profile screen only; no replicated optimization claim,
+  new full suite, fuzz campaign, public admission or hosted/external qualification.
+  No legal guarantee is asserted.
