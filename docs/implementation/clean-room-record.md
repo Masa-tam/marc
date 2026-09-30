@@ -36797,3 +36797,28 @@ both bounds.
 - Scope: private initial phase diagnostic only; no optimization admission,
   new full suite/fuzz, public profile or hosted/external qualification. No legal
   guarantee is asserted.
+
+## CR-1540: 2026-10-01 - Four-MiB exact five-prefix trial
+
+- Author and reviewer: Codex; the maintainer authorized the next development stage.
+- References: IR-1129, DD-1369, first-party one-MiB five-prefix finder/candidate,
+  retained four-MiB raw/frame helpers and their differential tests.
+- Independent task: transfer exact three/four/five-prefix selection into a
+  private four-MiB trial, preserve scalar coding and compare tokens/frame bytes
+  before any timing or public integration.
+- Similarity review: finder/candidate bodies match the first-party transfer with
+  names, explicit variant and input bounds changed to four MiB. Raw adapter
+  validation/serialization boundaries retain the reference structure, selecting
+  only the new candidate and charging its concrete state/capacities. No external
+  distinctive structure or source was consulted. Existing codec bodies and
+  public factory/format/workspace policies remain unchanged.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/tests.
+- Validation: TVG-1236; targeted compiler runs pass 129 cases each, ASan/UBSan
+  passes 203. Separate corpus differentials compare every selected token,
+  frozen complete frame and restored byte for twelve inputs / 57 frames on
+  both compilers. Scope, append-only documents and source/executable/fixture
+  identity checks pass.
+- Scope: private correctness trial only; no speed claim, new full-suite/fuzz,
+  streaming-owner/public admission or hosted/external qualification. No legal
+  guarantee is asserted.

@@ -27903,3 +27903,33 @@ qualify an optimization speedup. Different workloads and timing boundaries forbi
 subtracting these sums from BM-0193 to infer stream overhead. Preserve reference
 and failed-frame publication contracts; no codec implementation, public factory,
 format or workspace policy changes. Finder/model transfer remains subsequent work.
+
+## DD-1369: Private four-MiB exact five-prefix selection trial
+
+BM-0194 identifies reference token selection as the larger measured phase.
+Transfer the retained first-party three/four/five-byte prefix chains into a
+separate private variant-10 finder/candidate and raw-frame adapter. Do not change
+the single-prefix/exhaustive references, existing owners or public selectors.
+Keep the scalar frame/model coding path unchanged to isolate selection behavior.
+
+Use three 65,536-entry head arrays and three input-position link arrays, with
+checked uint32 indices and an impossible-live UINT32_MAX sentinel. For N >= 3,
+workspace is 12*(65,536+N) bytes; shorter input needs no index arrays. At four MiB
+this is 51,118,080 bytes, 34,078,720 above the single-prefix index. Finder queries
+charge input, active arrays and concrete finder state. Initialization borrows
+only queried active storage; candidate/raw adapters charge all supplied capacity.
+
+Search nearest matching three-byte and four-byte prefixes first, then complete
+five-byte candidates nearest first, retaining only strict length improvements.
+Verify collisions and bounds before comparisons, insert every consumed position
+including match interiors and short tails, and keep nearest equal-length ties.
+Eligibility remains fixed 3/4/5. Candidate failures preserve tokens; raw adapter
+failures preserve serialized output, with private token/index/operation scratch
+discardable. No failed frame is consumed or published.
+
+Require exhaustive/reference differentials, wide distances and full/final frame
+cases, exact capacity/budgets/alignment/aliases and cross-compiler corpus bytes
+against frozen archives before timing. This stage is prototype correctness,
+not speed admission or public integration. Subsequent performance comparisons
+must use identical paths and repeated exclusive controls; do not infer a gain
+from prior phase totals measured under different conditions.

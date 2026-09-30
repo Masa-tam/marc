@@ -18832,3 +18832,41 @@ BM-0194 records the initial phase evidence and its limitations. Codec bodies,
 public interfaces and memory policies are unchanged; transactional/failed-frame
 guarantees retain earlier reference validation, including TVG-1233. No new
 hosted/external qualification is implied.
+
+## TVG-1236: Four-MiB exact five-prefix trial differentials
+
+DD-1369 transfers the first-party one-MiB three/four/five-prefix chains into
+private four-MiB variant-10 helpers. Ten normal new cases cover query bounds,
+initialization failure invariance, reset/invalid advance, exhaustive token
+differentials, wide references/ties, capacity/aliases, full frames and raw adapter
+failures/final frames. A separate optional corpus case is not a normal-run claim.
+
+The small-input matrix checks 1,872 combinations of lengths, repetitive/random
+patterns, window sizes, maximum lengths and eligibility 3/4/5 against exhaustive
+selection. Twenty-five wide-distance/short-prefix probes compare against the
+exhaustive finder, including one-MiB minus/equal/plus one, two MiB and distance
+4,194,301 at the full four-MiB boundary. Overlap, nearest ties, consumed match
+interiors and three/four/five-byte tails retain exact reference behavior.
+
+Check exact query/candidate/raw budgets and one-byte-under failures, short or
+misaligned index storage, unused capacity accounting and input/configuration/
+output aliases. Failed initialization preserves the live finder and active
+scratch. Candidate failures preserve token output; raw adapter failures preserve
+serialized output. Full four-MiB selection/frame bytes match the single-prefix
+reference for eligibility 3/4/5. Final short raw-frame positions restore correctly;
+the retained literal-A plus length-258 distance-1 payload vector remains exact.
+
+Both targeted compiler runs pass 129 cases, with three optional diagnostics
+skipped in the 132-case run. ASan/UBSan passes 203 cases, with those same three
+skipped in the 206-case run. New private helpers are explicitly instrumented;
+existing frame/lifecycle/one-MiB regressions are retained. This is not a new
+complete suite or fuzz campaign.
+
+Separately reverify the maintained twelve-member Silesia manifest and frozen
+archive hashes. Both compilers compare every selected token from trial raw-frame
+encoding with single-prefix reference selection, every complete frame with the
+frozen archive and all restored raw bytes: 24 corpus checks, 57 frames per
+compiler and 28,533,369 selected tokens per compiler. Counts and sizes agree.
+The original stream headers are retained; no trial streaming owner is introduced.
+No performance admission, public selection or hosted/external qualification is
+claimed by this untimed prototype stage.

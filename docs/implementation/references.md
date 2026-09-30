@@ -9949,3 +9949,9 @@ system process-memory counters are diagnostic observations, not codec bounds.
 Use first-party phase benchmark methodology, DD-1365 candidate/frame helpers,
 DD-1366 queried storage and DD-1367 frozen complete streams. No external
 implementation or optimization source is consulted.
+
+## IR-1129: Four-MiB exact five-prefix trial
+
+Transfer only first-party one-MiB five-prefix finder/candidate structure, private
+four-MiB reference/raw-frame helpers and their differential tests. No external
+codec or optimization implementation is consulted.

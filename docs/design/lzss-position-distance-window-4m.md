@@ -145,3 +145,13 @@ Next, transfer the retained exact five-prefix finder under differential selected
 token/full-byte, bounded-workspace and failure-publication tests. Preserve the
 single-prefix/exhaustive reference paths and require repeated exclusive timing
 before accepting a speed claim. Public four-MiB admission remains later work.
+
+DD-1369 and TVG-1236 add a private exact five-prefix finder/candidate and raw-frame
+trial. Small exhaustive and wide-distance differentials, full/final frames and
+capacity/alias/failure tests pass. All selected corpus tokens, frozen complete
+frames and restored bytes agree on both compiler builds. Reference selection,
+scalar coding, existing owners and public interfaces remain unchanged. Next,
+measure reference and trial with identical phase paths and repeated exclusive
+controls before considering private owner integration and complete-stream timing.
+This correctness stage does not establish an optimization speedup or public
+four-MiB qualification.
