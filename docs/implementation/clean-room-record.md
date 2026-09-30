@@ -36658,3 +36658,26 @@ both bounds.
   comment are explicitly corrected without changing the inherited bitstream.
 - Scope: private operation coding only; no frame reconstruction, public admission,
   benchmark, hosted CI or external qualification. No legal guarantee is asserted.
+
+
+## CR-1534: 2026-10-01 - Four-MiB token bridging and private scratch
+
+- Author and reviewer: Codex; the maintainer authorized the next development stage.
+- References: IR-1123, DD-1361/DD-1362, first-party 1 MiB token bridge, typed-token
+  validation and transactional reconstruction.
+- Independent task: transfer the checked bridge to reserved variant 10 and the
+  scalar four-MiB Range core, preserve transactional failure behavior and allow
+  only discardable private scratch before whole-frame validation/publication.
+- Similarity review: first-party bridge reused with internal identity names and
+  the documented four-MiB/33T bounds. Existing production codec and reconstructor
+  bodies are unchanged. New expected history bytes and mapping fields derive
+  independently from the dictionary and field contracts.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1230, 69 targeted cases per compiler and 143 ASan/UBSan cases;
+  exact budgets, malformed parity, alias and failed-output tests. An alias-fixture
+  alignment correction precedes final successful validation. Documentation and
+  scope checks also pass.
+- Scope: private token bridge and existing reconstructor integration; no public
+  admission, serialized frame lifecycle, benchmark, hosted CI or external
+  qualification. No legal guarantee is asserted.

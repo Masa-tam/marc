@@ -9910,3 +9910,10 @@ validators. No external implementation or new algorithm reference is consulted.
 Use the first-party DD-1361 format, concrete Range state and field cursor,
 the retained scalar 1 MiB encoder/decoder paths and independently derived
 integer-interval vectors. No external implementation is consulted.
+
+
+## IR-1123: Four-MiB token bridge and bounded reconstruction
+
+Use first-party DD-1361/DD-1362, the retained 1 MiB token bridge, typed-token
+validator and transactional reconstructor. No external codec source or test
+vectors are consulted; new history/extent fixtures derive from these contracts.

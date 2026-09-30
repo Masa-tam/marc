@@ -8193,3 +8193,13 @@ frame validity. Complete count, canonical terminal and reference-history checks
 remain mandatory before publication. Length class 8 uses one extra bit:
 extra zero denotes length 3, and extra one denotes length 4, exactly as in the
 inherited short-length escape representation.
+
+Private four-MiB token bridging now maps fully validated variant-10 tokens and
+decodes payloads with the scalar operation core. Transactional token output is
+written only after complete payload, history, count and canonical checks; storage
+errors follow payload errors. A single-pass helper may leave a validated prefix
+only in discardable private token scratch. Capacity or alias failures use the
+transactional path. Reconstruction and publication require whole-call success;
+no failed prefix is a decoded frame. Token bridging charges token storage,
+payload and concrete decoder state, while frame preflight separately charges
+raw/serialized buffers and enforces expansion policy. Public admission is unchanged.

@@ -27754,3 +27754,29 @@ model rescaling, mutations, truncation, terminal/count errors and exact budgets.
 Compare literal-only bytes and errors against the retained 1 MiB reference path
 where model alphabets agree; match bytes are not expected to agree across formats.
 No frame coder, token mapper, selector or public factory is added at this stage.
+
+
+## DD-1363: Four-MiB token bridge with discardable single-pass scratch
+
+Connect validated internal variant 10 tokens to the DD-1362 scalar Range core.
+Retain the checked mapping, complete history/output validation and canonical
+terminal checks of the 1 MiB bridge, widening only the frame cap and token
+decision ceiling to four MiB and `33T`. The token bridge charges declared token
+bytes, payload extent and the concrete decoder state; raw reconstruction storage
+is separate and frame preflight additionally charges raw/serialized
+extents. No frame serializer or public parser/factory admission is implied.
+
+The validator writes no tokens. Transactional decoding validates the payload
+before capacity/alias errors, then runs a second pass into disjoint output.
+Single-pass scratch may retain only a validated token prefix on failure and
+must be discarded without reconstruction/publication. Insufficient capacity or
+aliases fall back to the transactional entry point, preserving exact error,
+position and count precedence. Inputs/configuration remain stable during calls.
+Successful tokens may pass to the existing transactional overlap-copy
+reconstructor with variant 10; raw output is not published until all checks pass.
+
+Test real four-MiB histories with distances above one MiB, full/final extents,
+minimum/maximum lengths, exact budgets, frame expansion and token total bounds, reset isolation,
+metadata aliases, malformed payload and canonical termination. Compare validator,
+transactional and scratch results, including every diagnostic field. Preserve
+existing code/format and generated artifacts; performance is not measured here.

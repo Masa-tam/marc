@@ -94,3 +94,9 @@ and canonical termination checks. It preserves concrete preflight state charges
 and does not admit public selectors. Next, implement token mapping and bounded
 transactional/private-scratch decoding with reconstruction/history checks, then
 complete reference frame coding before optimized transfer and measurement.
+
+DD-1363 adds the private token bridge, complete validation, transactional output
+and discardable single-pass scratch. TVG-1230 checks real histories above one MiB
+and exact four-MiB reconstruction using the existing typed-token reconstructor.
+This completes token-layer reference integration; reference frame serialization,
+bounded frame lifecycle and publication checks remain the next stage.

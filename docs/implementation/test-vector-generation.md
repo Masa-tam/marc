@@ -18616,3 +18616,43 @@ cases. An initial exact-budget fixture used an inconsistent generic block limit;
 correct the fixture, then repeat final validation. This is targeted validation,
 not a full repository suite or new fuzz campaign. No frame reconstruction,
 public 4 MiB lifecycle, speed result or external qualification is claimed.
+
+
+## TVG-1230: Four-MiB token bridge and reconstruction parity
+
+Thirteen cases cover private token mapping, validator, transactional decoding,
+single-pass discardable scratch and the existing variant-10 reconstructor.
+An independent small mapping uses literal 65 followed by distance-1/length-3:
+field values `0,65,1,8,0,0`, context IDs `0,3,1,13,0,23`, one length extra bit
+at the fifth field and distance alphabet 23 at the last field.
+
+Real histories use an initial 0..255 literal sequence and distance-256 overlap
+matches, plus final literals where necessary. A final distance-D/length-3 match
+copies the first three bytes. Distances 1,048,575, 1,048,576, 1,048,577, 2,097,152
+and 4,194,301 restore independently expected bytes; the last case is exactly
+4,194,304 raw bytes. Validator, transactional and scratch results agree in every
+diagnostic field. Default block limits reject the full frame; explicit bounded
+caller limits permit it. A declared raw extent above four MiB is rejected.
+
+Every length 3..258 maps and overlapping matches reconstruct correctly. Exact
+mapping and decode budgets accept the threshold and reject one byte under.
+All byte substitutions of a small payload, truncations, capacity cuts, count,
+table and total-limit errors retain transactional token sentinels. Scratch
+fallback preserves payload-error precedence and all positions/counts. Payload,
+descriptor, parameters, validation context and limits aliases leave input/output
+storage unchanged on rejection. Late noncanonical termination may leave a full
+validated prefix only in scratch, which is discarded without reconstruction.
+Previously committed output does not supply history across a frame reset.
+
+Raw reconstruction rejects invalid references, insufficient output and token/raw
+overlap without writing raw bytes. Empty token mapping is valid; empty payload
+decoding is not an empty data frame. A separate preflight test enforces expansion
+ratio without changing token-layer policy or failed requirements metadata.
+
+Both compilers pass 69/69 targeted cases, including prior four-MiB Range/preflight
+and public 1 MiB token/factory/configuration regressions. ASan/UBSan passes
+143/143 with retained old preflight, finder-scratch and prepared-model cases.
+An initial alias fixture requested weaker alignment than a contained metadata
+type; correct the fixture and repeat all final checks. No codec change was needed.
+This is token-layer validation, not a complete repository suite, serialized
+frame lifecycle, fresh fuzz campaign, benchmark or external qualification.
