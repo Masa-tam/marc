@@ -36584,3 +36584,20 @@ both bounds.
   smokes and all twelve old/new CLI comparisons pass. No legal guarantee.
 - Scope: local public integration validated; hosted CI and external verification
   are subsequent evidence, not inherited from the prior qualified revision.
+
+
+## CR-1530: 2026-09-30 - Finder-scratch external qualification record
+
+- Author and reviewer: Codex; evidence supplied by the maintainer.
+- References: DD-1359, TVG-1226 and the maintainer's CI/four-route verifier report
+  for revision `1099a84be8dae4b1b821e7ccef2cd3ad58272546`.
+- Task: record revision-specific external qualification and distinguish bundle
+  producers from verification consumers without adding local environment details.
+- Similarity review: documentation-only provenance record; no implementation,
+  algorithm structure or test-vector bytes change.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1227 and IX-0054; the reports are maintainer-supplied and were
+  not independently rerun. Documentation and scope checks are performed locally.
+- Scope: CI/external gate closure for the reported revision; no format, ABI,
+  defaults or release-state change, and no legal guarantee is asserted.

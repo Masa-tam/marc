@@ -1349,3 +1349,29 @@ Schema 59, its 69-archive inventory and the 8,193-byte exchange fixture remain
 unchanged; separate permanent tests cover full-window behavior. This record
 changes no implementation, format, ABI, defaults or release state and makes no
 claim about untested inputs or architectures.
+
+
+### IX-0054: Public finder-scratch encoder external verification complete
+
+The maintainer reported successful pushed CI and four successful verifier passes
+at revision `1099a84be8dae4b1b821e7ccef2cd3ad58272546`. Each final line identifies
+69 archives and that exact revision. The producer and consumer roles are:
+
+| Pass | Archive producer | Verification consumer |
+|---|---|---|
+| 1 | Windows CI | Ubuntu |
+| 2 | Ubuntu CI | Ubuntu |
+| 3 | External Ubuntu Clang | Same Ubuntu environment (self-verification) |
+| 4 | External Ubuntu Clang | Windows after transferring the bundle |
+
+The equal Ubuntu Clang labels identify the same producer and different consumer
+routes. These are maintainer-reported results; hosted CI and external runs were
+not independently rerun here.
+
+These reports close DD-1359's revision-specific CI/external exchange gate for
+the public finder-scratch encoder. TVG-1226's local full suites, sanitizers,
+failed-frame tests and twelve-member CLI comparisons remain separate evidence.
+Schema 59, its 69-archive inventory and the 8,193-byte exchange fixture remain
+unchanged; full-window coverage comes from separate permanent tests. This record
+changes no implementation, format, ABI, defaults or release state and makes no
+claim about untested inputs or architectures.

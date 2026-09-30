@@ -4194,3 +4194,14 @@ producer labels are distinguished by the reported consumer routes. The public
 profile remains outside the unchanged 42-profile baseline; format, workspace,
 failure/publication guarantees and release state are unchanged. TVG-1220 supplies
 local regression evidence; the external reports were not independently rerun.
+
+
+## 2026-09-30: Finder-scratch 1 MiB encoder external verification recorded
+
+IX-0054 records maintainer-reported successful hosted CI and four 69-archive
+verification routes at `1099a84be8dae4b1b821e7ccef2cd3ad58272546`. This closes
+the pending CI/external gate for DD-1359's finder-scratch integration. Producer
+and consumer roles distinguish the repeated Ubuntu Clang labels. The public
+profile remains outside the unchanged 42-profile baseline; format, workspace,
+failure/publication guarantees and release state are unchanged. TVG-1226 supplies
+local regression evidence; the external reports were not independently rerun.

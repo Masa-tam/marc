@@ -18518,3 +18518,17 @@ Historical codec bodies and binaries remain intact; three internal headers have
 comment-only changes preserved with original snapshots. Full-suite validation
 includes local interoperability-schema checks, but no fresh hosted CI, external
 bundle qualification or fuzz campaign is claimed.
+
+
+## TVG-1227: Finder-scratch revision external verification record
+
+Record the maintainer's successful pushed CI and four final verifier lines for
+revision `1099a84be8dae4b1b821e7ccef2cd3ad58272546`, each identifying 69 archives.
+The routes are Windows CI to Ubuntu, Ubuntu CI to Ubuntu, external Ubuntu Clang
+self-verification and the same external bundle verified after transfer to Windows.
+Producer labels alone do not identify the executing consumer.
+
+IX-0054 closes DD-1359's revision-specific gate using these reported results.
+TVG-1226's local full-suite, sanitizer, failed-frame and corpus evidence remains
+separate. This documentation step reruns no codec, hosted CI or external bundle
+verification and does not expand the unchanged schema-59 fixture's coverage.

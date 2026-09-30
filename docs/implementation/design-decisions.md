@@ -27674,3 +27674,11 @@ optional diagnostic smokes and all twelve old/new CLI byte/restoration checks.
 Admit the finder-scratch stream to the local public encoder selection while
 retaining prepared fallback and unchanged format/workspace contracts. Hosted CI
 and external qualification for the resulting revision remain pending.
+
+
+The maintainer subsequently reported successful pushed CI and all four
+69-archive verifier routes at `1099a84be8dae4b1b821e7ccef2cd3ad58272546`.
+IX-0054 and TVG-1227 close this integration's revision-specific CI/external gate.
+The reports remain distinct from local validation and are not attributed to the
+later documentation commit. Format, workspace, failure/publication contracts and
+release state remain unchanged.
