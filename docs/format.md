@@ -8203,3 +8203,16 @@ transactional path. Reconstruction and publication require whole-call success;
 no failed prefix is a decoded frame. Token bridging charges token storage,
 payload and concrete decoder state, while frame preflight separately charges
 raw/serialized buffers and enforces expansion policy. Public admission is unchanged.
+
+Private complete-frame helpers now serialize the reserved four-MiB representation
+from fully selected tokens and decode exactly one bounded frame. Header/descriptor
+bytes remain the layouts above. Encoding uses scalar reference planning/writing;
+its memory charge adds live operation storage and the larger of decoder state
+or encoder state plus an explicit 80-byte prefix array to serialized/token/raw
+extents. No unused caller capacity is charged. Decoder capacity/alias checks
+precede payload decoding; raw reconstruction follows complete canonical/token
+validation. Transactional failure preserves token and raw output; scratch failure
+may modify only private token scratch and consumes zero serialized bytes.
+Successful calls report the exact frame extent, leaving subsequent bytes to the
+caller. Raw-input token selection, stream lifecycle and public admission remain
+separate work; existing representations and limits are unchanged.

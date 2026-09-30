@@ -36681,3 +36681,27 @@ both bounds.
 - Scope: private token bridge and existing reconstructor integration; no public
   admission, serialized frame lifecycle, benchmark, hosted CI or external
   qualification. No legal guarantee is asserted.
+
+
+## CR-1535: 2026-10-01 - Private four-MiB reference frame helpers
+
+- Author and reviewer: Codex; the maintainer authorized the next development stage.
+- References: IR-1124, DD-1361 through DD-1363, first-party 1 MiB frame helpers,
+  scalar Range coding, token bridge and bounded preflight.
+- Independent task: integrate selected-token reference frame serialization and
+  reconstruction, charge the explicit prefix buffer, and preserve failed-frame
+  output privacy before raw-input selection or public stream integration.
+- Similarity review: first-party frame structure reused with additive identity,
+  scalar plan/write calls, checked prefix-state charge and written descriptor
+  consistency checks. Existing production sources and public factories unchanged.
+  Independent arithmetic generates the fixed payload/frame bytes; no compiled
+  codec is used to generate expected bytes.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1231, 89 targeted cases per compiler and 163 ASan/UBSan cases;
+  byte identity, full-window/final-frame reconstruction, exact budgets, aliases,
+  failed-output and first-prefix preservation. A span-fixture compilation fix
+  precedes all final checks. Documentation and scope checks also pass.
+- Scope: private complete-frame helpers only; no public lifecycle, dictionary
+  finder transfer, benchmark, hosted CI or external qualification. No legal
+  guarantee is asserted.

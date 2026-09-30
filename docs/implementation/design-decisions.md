@@ -27780,3 +27780,30 @@ minimum/maximum lengths, exact budgets, frame expansion and token total bounds, 
 metadata aliases, malformed payload and canonical termination. Compare validator,
 transactional and scratch results, including every diagnostic field. Preserve
 existing code/format and generated artifacts; performance is not measured here.
+
+
+## DD-1364: Private four-MiB complete-frame reference helpers
+
+Integrate the scalar Range core and validated token bridge with exact frame
+header/descriptor serialization and preflight. Encoding accepts already selected
+complete tokens; dictionary search and raw token selection remain later work.
+Use reference count-only planning and transactional payload writing rather than
+prepared or scratch encoding. Preserve serialized output on validation failure.
+The encode charge is the decoder preflight aggregate plus live operation bytes
+and any positive difference between encoder-state-plus-80-byte-prefix storage
+and decoder-state storage. The explicit prefix array is charged during writing.
+Only exact used extents are charged, not unused caller buffer capacity.
+
+Both decoder helpers check frame extents, workspace capacity and all aliases
+before token decoding. Transactional calls preserve token and raw output on
+failure. Scratch calls may modify only private token scratch; no failed frame
+is reconstructed or published. Canonical payload validation, reference history,
+raw extent and reconstruction must all succeed before reporting consumed bytes.
+One successful call consumes exactly one frame; following bytes belong to the
+caller. Inputs/configuration remain stable throughout each call.
+
+Test fixed little-endian frame bytes, real four-MiB history, final short frames,
+reset isolation, full diagnostic parity, corruption/truncation, exact workspace
+thresholds, aliases, counts, expansion and terminal failures. Keep production
+parsers/factories and existing formats unchanged; no public lifecycle, dictionary
+finder optimization, benchmark or new external qualification is implied.

@@ -100,3 +100,9 @@ and discardable single-pass scratch. TVG-1230 checks real histories above one Mi
 and exact four-MiB reconstruction using the existing typed-token reconstructor.
 This completes token-layer reference integration; reference frame serialization,
 bounded frame lifecycle and publication checks remain the next stage.
+
+DD-1364 and TVG-1231 complete private reference frame helpers for selected tokens,
+including checked serialization, reconstruction and failed-frame output privacy.
+Next, connect bounded reference token selection from raw input and qualify frame
+boundaries before a streaming owner or optimized finder/prepared/scratch transfer.
+These helper tests do not establish public lifecycle or performance qualification.

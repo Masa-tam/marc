@@ -9917,3 +9917,10 @@ integer-interval vectors. No external implementation is consulted.
 Use first-party DD-1361/DD-1362, the retained 1 MiB token bridge, typed-token
 validator and transactional reconstructor. No external codec source or test
 vectors are consulted; new history/extent fixtures derive from these contracts.
+
+
+## IR-1124: Private four-MiB complete-frame reference coding
+
+Use first-party DD-1361 through DD-1363, the 1 MiB complete-frame helpers,
+bounded preflight and explicit little-endian serialization. Independent Range
+interval arithmetic supplies a fixed serialized frame; no external source is used.

@@ -18656,3 +18656,46 @@ An initial alias fixture requested weaker alignment than a contained metadata
 type; correct the fixture and repeat all final checks. No codec change was needed.
 This is token-layer validation, not a complete repository suite, serialized
 frame lifecycle, fresh fuzz campaign, benchmark or external qualification.
+
+
+## TVG-1231: Four-MiB complete-frame serialization and output privacy
+
+Twelve new cases exercise private selected-token frame encoding, transactional
+decoding and token-scratch decoding. Independent Range interval arithmetic for
+literal 65 followed by a distance-1/length-258 match gives eight payload bytes:
+
+```text
+00 20 f5 46 da 80 90 00
+```
+
+The resulting frame is 88 bytes: magic MRF2, 64-byte header, sequence zero,
+259 raw bytes, two tokens, six events, twelve decisions, eight payload bytes,
+16-byte descriptor and 46 contexts. Explicit little-endian fields and every
+zero/reserved byte are compared against an independently assembled fixed array.
+Old 1 MiB and public parsers reject the new identity.
+
+Real distance histories at 1,048,575, 1,048,576, 1,048,577, 2,097,152 and
+4,194,301 restore independent expected bytes; the last reaches exactly four MiB.
+Each successful helper consumes only the frame, preserving the following byte.
+Full and final-short frame positions, reset isolation, all truncations and one-bit
+mutations at every byte, capacity cuts, count/descriptor/limit contradictions and complete
+diagnostic parity are tested. Failed transactional calls preserve tokens and raw
+bytes; failed scratch calls preserve raw bytes and report zero consumed bytes.
+A corrupted second/final frame cannot change the already decoded first prefix;
+its valid counterpart then reconstructs successfully.
+
+Decode preflight charges serialized extent, tokens, raw output and concrete
+decoder state. Encode additionally charges operations and any positive difference
+of encoder-state-plus-80-byte-prefix over decoder state. Exact thresholds and
+one-byte-under failures are tested. Encoder late expansion/workspace errors and
+input/workspace/output/metadata aliases preserve serialized output. Prefix-only
+preflight is explicitly insufficient for payload validation/publication.
+
+Both compilers pass 89/89 targeted cases, including prior four-MiB token/Range/
+preflight and retained 1 MiB frame/token/factory/configuration regressions.
+ASan/UBSan passes 163/163 with additional retained old preflight, finder-scratch
+and prepared-model cases. An initial capacity-cut fixture used a fixed-extent
+span where a dynamic span was required; correct the fixture and repeat final
+checks. No codec fix was needed. This does not qualify raw dictionary search,
+public stream lifecycle, a complete repository suite, fresh fuzzing, performance
+or hosted/external execution.
