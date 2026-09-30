@@ -8185,3 +8185,11 @@ The future fixed profile requires explicit four-MiB frame/block limits,
 preflight does not raise caller limits. Exact encoder workspace queries and
 public lifecycle admission remain separate implementation work. Generic defaults
 and existing profiles are unchanged.
+
+The private scalar operation encoder/decoder is implemented separately from
+frame and public admission. Its one-field decode result is committed only on
+successful grammar validation; earlier operations are private and do not establish
+frame validity. Complete count, canonical terminal and reference-history checks
+remain mandatory before publication. Length class 8 uses one extra bit:
+extra zero denotes length 3, and extra one denotes length 4, exactly as in the
+inherited short-length escape representation.

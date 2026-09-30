@@ -9903,3 +9903,10 @@ algorithm reference is consulted.
 Use first-party DD-1360 planning, the frozen 1 MiB position-distance format,
 private field cursor/model storage, shared prefix preflight and typed-token
 validators. No external implementation or new algorithm reference is consulted.
+
+
+## IR-1122: Private four-MiB Range reference coding
+
+Use the first-party DD-1361 format, concrete Range state and field cursor,
+the retained scalar 1 MiB encoder/decoder paths and independently derived
+integer-interval vectors. No external implementation is consulted.

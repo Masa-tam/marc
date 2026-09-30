@@ -18570,3 +18570,49 @@ finder-scratch frame/stream and prepared-model cases, passing 117/117. This is
 targeted validation, not a complete repository suite or fresh fuzz campaign.
 Public 4 MiB selection remains closed; payload coding and public lifecycle
 qualification are subsequent stages. No performance result is claimed.
+
+
+## TVG-1229: Private four-MiB scalar Range operation validation
+
+Correction to TVG-1228's introductory field sequence: length class 8 with extra
+zero denotes length 3; extra one denotes length 4. The retained boundary test
+used extra one and its comment is corrected. The inherited format and code were
+already consistent; the earlier explanation, not the representation, was wrong.
+
+Calculate intervals independently from positive frequency vectors initialized
+to one, integer division of the current range by total frequency, cumulative
+prefix sums, byte normalization below 2^24 and five final carry shifts. Adaptive
+distance bits update the separate position model; length bits remain uniform.
+Rescale a model reaching 32,768 using `(frequency+1)/2`. No compiled codec is
+invoked to generate these fixed bytes.
+
+For literals 97,98 followed by matches `(length,distance)` of `(3,1048575)`,
+`(258,2097152)` and `(4,4194304)`, the operation-layer vector has 19 events,
+84 decisions and 20 bytes:
+
+```text
+00 30 98 be 47 a1 87 dc ce 71 31 e9 01 e1 a0 47 53 00 00 00
+```
+
+This is a grammar/payload vector, not a reconstructible frame: its wide matches
+lack frame history. Independent malformed vectors are `00 f8 bb fa fe 00 00 00`
+with 26 decisions for length 3/distance class 22/extra 1, and
+`00 f1 aa aa a5 00` with 10 decisions for the forbidden length-class-7 extra 127.
+Both fail at the complete invalid field and leave the operation unchanged.
+
+Thirteen new cases cover every match length, distance width 0..22, near-one-MiB
+boundaries, ordinary and all binary model rescalings, mixed histories, resets,
+all byte mutations of the fixed payload, every payload truncation and decision
+cut, incomplete grammar, trailing bytes, noncanonical adjacent final code,
+model invariant failures and sticky lifecycle errors. Exact model/payload budgets,
+one-byte-under limits, output sentinels and operation/output overlap are checked.
+Literal-only payloads and malformed-operation errors match the retained 1 MiB
+reference path; wide match bytes intentionally have a different model alphabet.
+
+The targeted executable passes 56/56 tests on each compiler, including DD-1361
+preflight and public 1 MiB factory/configuration/token regressions. ASan/UBSan
+passes 130/130 with retained old preflight, finder-scratch and prepared-model
+cases. An initial exact-budget fixture used an inconsistent generic block limit;
+correct the fixture, then repeat final validation. This is targeted validation,
+not a full repository suite or new fuzz campaign. No frame reconstruction,
+public 4 MiB lifecycle, speed result or external qualification is claimed.

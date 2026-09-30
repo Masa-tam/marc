@@ -27732,3 +27732,25 @@ Define hand-checkable distance field vectors and test widths, history/output
 bounds, exact budgets, every prefix truncation, reserved bytes, crossed identities,
 full/final frame limits and mutations. Keep old validator branches and public
 1 MiB behavior covered by the same diagnostic regression executable.
+
+
+## DD-1362: Private scalar four-MiB Range operation coding
+
+Implement only the operation-layer reference encoder and decoder for DD-1361.
+Use scalar cumulative frequency lookup and generic binary model updates;
+prepared plans, scratch writes and optimized lookup are separate later work.
+The decoder owns exactly the concrete state already charged by preflight.
+Validate descriptor limits before payload access, keep decode errors sticky,
+and commit each operation only after its complete field and grammar validate.
+Partial successfully decoded operations remain private until all frame checks
+pass. Canonical interval replay and all five final carry shifts are mandatory.
+
+Encoding plans the complete grammar and byte count before writing; malformed
+operations, resource limits, overlap and insufficient output preserve payload
+and descriptor. Operations must remain stable across the two passes.
+Charge operation bytes, concrete model/writer/cursor storage and exact payload.
+Test independently calculated fixed bytes, every distance width, length escapes,
+model rescaling, mutations, truncation, terminal/count errors and exact budgets.
+Compare literal-only bytes and errors against the retained 1 MiB reference path
+where model alphabets agree; match bytes are not expected to agree across formats.
+No frame coder, token mapper, selector or public factory is added at this stage.

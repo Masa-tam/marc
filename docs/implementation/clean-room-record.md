@@ -36637,3 +36637,24 @@ both bounds.
 - Scope: format reservation, private grammar/state and metadata validation only;
   payload encoder/decoder and public admission remain pending. No legal guarantee
   is asserted.
+
+
+## CR-1533: 2026-10-01 - Private four-MiB scalar Range coding
+
+- Author and reviewer: Codex; the maintainer authorized the next development stage.
+- References: IR-1122, DD-1361, the first-party retained 1 MiB reference paths
+  and independently calculated integer-interval vectors described in TVG-1229.
+- Independent task: implement a scalar operation encoder and decoder with checked
+  budgets, unchanged format, sticky errors and canonical replay before transferring
+  optimized mechanisms or admitting any public frame codec.
+- Similarity review: first-party reference logic reused with widened model/state
+  names and bounds; optimized binary/literal paths, prepared plans and scratch
+  writers omitted. Existing production codec bodies and factory dispatch unchanged.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/test code.
+- Validation: TVG-1229, 56 targeted cases per compiler and 130 ASan/UBSan cases;
+  documentation, scope and arithmetic checks. Independent fixed vectors require
+  no compiled codec for generation. An earlier length-vector description and
+  comment are explicitly corrected without changing the inherited bitstream.
+- Scope: private operation coding only; no frame reconstruction, public admission,
+  benchmark, hosted CI or external qualification. No legal guarantee is asserted.

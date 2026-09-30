@@ -239,7 +239,7 @@ TEST(LzssPositionDistance4mGrammar, HandCheckableWideDistancesAndConstrainedExtr
         const auto put=[&](std::uint32_t value) {auto op=cursor.next().shape;op.value=value;return cursor.accept(op);};
         EXPECT_EQ(put(1),LzssFieldContextError::none);
         EXPECT_EQ(put(8),LzssFieldContextError::none);
-        EXPECT_EQ(put(1),LzssFieldContextError::none); // length three
+        EXPECT_EQ(put(1),LzssFieldContextError::none); // length four
         auto request=cursor.next();EXPECT_EQ(request.shape.alphabet_size,23);
         const auto c=std::bit_width(d)-1U;
         EXPECT_EQ(put(c),LzssFieldContextError::none);

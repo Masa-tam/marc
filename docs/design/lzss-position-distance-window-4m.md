@@ -87,3 +87,10 @@ counts and header rules. This supersedes the planning-stage lack of a numeric
 identity. Private grammar/state/preflight validation is the current stage;
 Range payload decoding, encoding, public selection and performance qualification
 remain subsequent work.
+
+The scalar operation-coding stage (DD-1362, TVG-1229) adds a private Range
+encoder/decoder with independent payload vectors, widened distance/model tests
+and canonical termination checks. It preserves concrete preflight state charges
+and does not admit public selectors. Next, implement token mapping and bounded
+transactional/private-scratch decoding with reconstruction/history checks, then
+complete reference frame coding before optimized transfer and measurement.
