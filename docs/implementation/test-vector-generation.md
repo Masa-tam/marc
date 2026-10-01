@@ -18953,3 +18953,32 @@ then retain 108 encode and 36 unchanged-decoder observations; check disjoint
 phase sums, each frame interval, expected frame counts and unchanged query
 budgets. All frozen bytes and restored inputs match. No new full-suite or fuzz
 campaign, public profile or external qualification is claimed.
+
+
+## TVG-1240: Four-MiB prepared mapping and frame differential
+
+Transfer first-party prepared-model tests: empty tokens, all 256 one-byte values,
+every match length 3..258, wide distances through two/four-MiB classes, model
+rescaling, invalid tokens/configuration, exact/one-under object charge, one-use
+write, short output and token/configuration/object aliases. Compare every result
+field and operation field, payload bytes and output sentinels with the retained
+planner/mapper. Borrowed configuration remains stable through write.
+
+The prepared raw adapter retains the A259 hand vector, exact/one-under full
+capacity charge, aliases, short output, wrong position and final-short frame at
+committed four MiB. Twenty-seven small patterned/random frame cases compare all
+operation fields and complete serialized buffers. Six independent failure cases
+check reference error categories and unchanged serialized output. Existing
+failed-second-frame streaming tests continue to pass through unchanged owners.
+
+Both targeted compiler runs pass 152 tests with five optional diagnostics skipped
+in the 157-case run. Explicit ASan/UBSan passes 226 tests with those five skipped
+in the 231-case run. Existing optional getenv/test-framework warnings remain.
+Separately run the optional prepared-frame diagnostic on all twelve verified
+corpus members for both compilers: 24 checks, 57 frames per compiler, raw
+211,938,580 bytes, 28,533,369 selected tokens and frozen archive inventory totaling
+61,643,620 bytes. Every selected token matches indexed reference selection;
+every encoded frame byte matches the frozen archive and restores its input.
+The adapter emits frames, so this is not a new streaming-owner/header test.
+No new full-suite, fuzz campaign, performance admission or external qualification
+is claimed.

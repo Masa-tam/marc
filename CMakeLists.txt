@@ -507,6 +507,11 @@ endif()
 
 if(MARC_BUILD_TESTS AND TARGET marc_static)
     add_executable(marc_position_distance_4m_frame_tests
+        src/context/lzss_position_distance_4m_prepared_model.cpp
+        src/frame/lzss_position_distance_4m_prepared_frame.cpp
+        src/frame/lzss_position_distance_4m_prepared_raw_frame_encoder.cpp
+        tests/lzss_position_distance_4m_prepared_model_tests.cpp
+        tests/lzss_position_distance_4m_prepared_frame_tests.cpp
         src/frame/lzss_position_distance_4m_five_prefix_encode_workspace.cpp
         src/frame/lzss_position_distance_4m_five_prefix_frame_streaming_encoder.cpp
         src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp

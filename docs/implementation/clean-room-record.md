@@ -36892,3 +36892,27 @@ both bounds.
   documentation checks pass. Deeper timing causes remain unverified.
 - Scope: private diagnostic attribution. Public admission, full-suite/fuzz and
   hosted/external qualification remain separate. No legal guarantee is asserted.
+
+
+## CR-1544: 2026-10-01 - Private four-MiB prepared mapping
+
+- Author and reviewer: Codex; the maintainer authorized the next development step.
+- References: IR-1133, DD-1373, retained first-party one-MiB prepared mapping,
+  four-MiB scalar frame/range/cursor and exact five-prefix raw adapter.
+- Independent task: transfer bounded one-use token mapping, add a separate
+  prepared frame/raw trial, preserve reference fallback and failure publication,
+  and prove field/frame equality before streaming or throughput admission.
+- Similarity review: model and tests intentionally transfer first-party one-MiB
+  structures to four-MiB names/bounds/grammar. Frame code retains first-party
+  scalar serialization, replacing only mapping orchestration; raw code retains
+  exact five-prefix selection and capacity checks. Old bodies remain unchanged.
+  New sources link only into private tests. No external expression is used.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft code and third-party optimization/test structures.
+- Validation: TVG-1240; both compiler runs and explicit ASan/UBSan pass. Twenty-four
+  optional corpus checks match indexed-reference tokens, all frozen frame bytes
+  and raw restoration. Scope, append-only documentation and source/archive/
+  executable identities pass.
+- Scope: private correctness trial. Owner integration, repeated performance and
+  memory admission, full-suite/fuzz, public admission and external qualification
+  remain separate. No legal guarantee is asserted.

@@ -215,3 +215,12 @@ almost entirely there. Current duplicate-control spread is at most 1.464%; the
 earlier large spread is not reproduced or explained. Preparation internals are
 the next optimization target, with a separately qualified prepared-model trial
 as a bounded first-party transfer candidate.
+
+
+DD-1373 qualifies a separate prepared token-mapping/frame/raw trial against the
+four-MiB scalar reference. One-use borrowed state fits the existing model-state
+bound and dies before scalar range coding or reference fallback. All indexed
+reference tokens, frozen corpus frame bytes and restoration match. Streaming
+owners remain unchanged; owner integration and repeated throughput/memory
+comparison are the next separate steps. No speedup or public admission is inferred
+from this private correctness stage.

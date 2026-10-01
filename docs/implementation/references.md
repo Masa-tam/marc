@@ -9975,3 +9975,10 @@ external codec, allocation or optimization implementation is consulted.
 Use only the first-party DD-1371 native owner diagnostic, retained owner lifecycle,
 DD-1370 phase methodology and frozen complete-stream corpus. No external codec,
 profiler, allocator or optimization implementation is consulted.
+
+
+## IR-1133: Private four-MiB prepared token mapping
+
+Use first-party one-MiB prepared-model mapping and its differential tests,
+four-MiB field cursor/planner, scalar frame encoder, exact five-prefix raw adapter
+and frozen reference archives. No external implementation is consulted.

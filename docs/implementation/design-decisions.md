@@ -28056,3 +28056,31 @@ run. Maximum duplicate-control spread is 1.464%, so the earlier 24.850% spread
 is not reproduced or explained. Prioritize bounded work inside frame preparation,
 such as a separately qualified first-party prepared-model transfer, while keeping
 deeper causes and historical absolute-time differences unverified.
+
+
+## DD-1373: Private four-MiB prepared mapping and frame trial
+
+Transfer the first-party one-MiB one-use mapping object to the four-MiB grammar.
+Prepare validates borrowed tokens/configuration and computes operation counts
+once; write maps those unchanged tokens without repeating the planner. Borrowed
+tokens and configuration must remain alive and unchanged until write. Charge the
+object in addition to planner cursor state, use checked arithmetic, preserve
+output on preflight failure and reject aliases before mutating overlapped state.
+Nonalias preparation failure invalidates readiness; a write is one-use, except
+an output/self overlap fails before changing readiness. No allocation occurs.
+
+Add separate private prepared-frame and fixed five-prefix raw adapters. Retain
+the scalar range coder, exact prefix/payload serialization and all existing
+capacity/alias/position checks. Destroy mapping state before range work or
+reference fallback. A static bound proves mapping object plus cursor fits the
+existing decoder/model-state charge. If prepare fails, invoke the retained frame
+encoder after the mapping scope ends, preserving its error precedence and budget
+behavior. The raw adapter charges every supplied capacity and retains private
+scratch semantics; serialized output is published only on successful frame coding.
+
+TVG-1240 checks mapping results/operations, malformed inputs, one-use state,
+exact/one-under budgets, aliases, full/wide and final-short frame behavior, frozen
+corpus bytes and restoration. Existing owners/public factories/decoders are
+unchanged. This stage qualifies private helper correctness; streaming owner
+integration, range-preparation transfer and repeated throughput/memory comparison
+remain separate. No performance gain or public admission is claimed.
