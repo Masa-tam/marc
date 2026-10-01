@@ -19182,3 +19182,33 @@ total executions across the explicit-source and CMake build routes.
 No codec source changes or new complete compiler suite/external qualification
 are claimed. Deterministic full-window/distance and failed-frame tests from
 earlier stages remain separate evidence. FZ-0053 records the finite campaign.
+
+
+## TVG-1249: Private four-MiB guarded C configuration and factory boundaries
+
+Transfer first-party C factory driving to a distinct private config/query/create
+adapter. Use the retained scalar raw-frame oracle and decoder, independently
+varying input/output chunks, zero-capacity calls, final input and Flush. Cover
+empty input, all 256 single bytes, repetitive/mixed classes, match boundaries,
+the default frame and a four-MiB-plus-one input with a one-byte final suffix.
+
+Fourteen private tests cover version/reserved/frame rejection, metadata and
+workspace overlap, insufficient/misaligned storage, query-output preservation,
+ordinary creation-output clearing and aliased-output preservation. Derive the
+minimum accepted aggregate budget independently by bounded binary search, then
+check exact/one-under creation and charge all unused supplied tails. A rejected
+tail budget must preserve every workspace byte before token construction.
+Input/output aliases with the opaque handle and each unused tail must leave
+handle/sentinel bytes unchanged and produce sticky zero-count errors.
+
+Exercise every truncation of a small multi-frame stream, corrupted payload,
+trailing input, malformed magic, unsupported ResetBlock and crossed window
+identities. Validate stable status/error positions and the independent published
+frame frontier; failed second-frame bytes remain private.
+
+Both compiler routes pass 227 ordinary private tests and skip ten optional corpus
+tests. The explicit-source ASan/UBSan route passes 301 and skips the same ten.
+Both C17 compile-only header checks pass. Initial header macro compilation failures
+were corrected with a private self-contained noexcept macro; the unsuccessful
+build evidence is retained. No full public suite, linked C consumer, new corpus,
+fuzz campaign or external exchange is claimed by this boundary prototype.

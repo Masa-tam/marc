@@ -37074,3 +37074,22 @@ both bounds.
   seeds and 2,000 executions each, artifact/source identity and append-only docs.
 - Scope: finite private safety/readiness evidence. No public admission, full-
   window fuzz coverage, new external qualification or legal guarantee asserted.
+
+
+## CR-1553: 2026-10-01 - Private four-MiB guarded C boundary prototype
+
+- Author/reviewer: Codex; maintainer approved progression.
+- References: IR-1142; first-party one-MiB config/factory/opaque-handle semantics,
+  four-MiB scratch owner, scalar oracle, retained decoder and checked workspaces.
+- Independent task/decisions: specify explicit four-MiB defaults, derive concrete
+  retained-state plus guard/handle budgets, charge full supplied capacities and
+  retain complete intervals for C process alias checks. Preserve transactional
+  metadata rejection, sticky terminal states and failed-frame publication bounds.
+- Known implementations intentionally not consulted: external codec/API sources,
+  copyleft code and third-party optimization or testing expression.
+- Validation: TVG-1249; two compiler private suites, explicit-source ASan/UBSan,
+  C17 compile-only header checks, exact handle definition and private-only linking.
+  Existing source/artifact identity and append-only documentation are checked.
+- Scope: private C-boundary proposal only. Public admission, complete corpus/C
+  fuzz qualification and integration/external gates remain pending. No new timing,
+  external qualification or legal guarantee is asserted.

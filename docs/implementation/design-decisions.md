@@ -28415,3 +28415,55 @@ Public adoption remains pending the listed C/config/CLI/inventory/full-suite and
 external gates. The original performance exception and unexplained control
 spread remain recorded. No factory, codec implementation, default, inventory or
 performance decision is changed by the readiness audit.
+
+
+## DD-1382: Private four-MiB configuration and guarded C boundary prototype
+
+Specify a distinct private configuration with the qualified C field types and
+version checks. Defaults explicitly select a four-MiB frame/window, matches
+3..258, 46 contexts/2588 entries, payload bound 75497477 and internal ceiling
+512 MiB. Preserve generic and public one-MiB defaults. Decode frame capacity is
+the configured ceiling capped at four MiB; reserved fields and limits are checked.
+
+Query actual concrete codec, boundary guard and opaque handle sizes before
+allocation. Full supplied workspace capacities are charged on creation, including
+unused tails, and their complete intervals must be disjoint from config/output
+metadata and each other. Query failure preserves its result. Creation failure
+clears a disjoint handle output but never writes through an aliased metadata
+output; reject bounds/limits before constructing token objects or codec state.
+
+A private guard retains complete workspace intervals and the C handle address.
+Process rejects input/output aliases with those intervals or guard state, then
+delegates to the unchanged codec. Error/end states are sticky; no zero-count
+Progress or failed frame publication is introduced. Keep distinct private
+factory names outside the public header/library exports and compile only into
+the dedicated private tests. The opaque handle definition must remain token-
+identical to the first-party implementation; existing generic process/destroy
+exercises the proposed C boundary without changing existing factories.
+
+Compare chunked encoding to the scalar oracle and retained decoding, malformed
+streams, exact/one-under aggregate budgets, full-tail/config/handle aliases and
+failed-second-frame privacy. Public C/CLI/inventory admission, full suites and
+revision-specific CI/external qualification remain separate.
+
+
+DD-1382 validation passes fourteen new private C-boundary tests together with
+the existing private suite: 227 ordinary tests per compiler route, with ten
+optional corpus tests skipped. The explicit-source ASan/UBSan suite passes 301
+ordinary tests, with the same ten skips. Both C17 compiler routes accept the
+private header in compile-only checks; this is not a linked C consumer test.
+
+Exact/one-under budgets include actual concrete codec, guard and opaque handle
+sizes. Full-tail capacity rejection precedes token construction and preserves
+workspace sentinels. Handle and unused-tail process aliases become sticky errors
+without writes. All byte values, partial/zero buffers, four-MiB-plus-one final
+suffix, scalar byte identity, malformed/truncated/trailing input and crossed
+one-/four-MiB identities pass the proposed C boundary. A failed second frame
+publishes only the already validated first frame.
+
+The adapter is linked only into private tests. Existing codec bodies, public
+headers/factories/defaults, library exports, CLI and exchange inventory remain
+unchanged. No new corpus campaign, timing, public admission or revision-specific
+external qualification is asserted. Next qualification must exercise this C
+boundary against complete frozen corpus streams and bounded malformed-input
+fuzzing before considering public integration.

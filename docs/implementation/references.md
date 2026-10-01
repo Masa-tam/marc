@@ -10040,3 +10040,10 @@ No external implementation or optimization source is consulted.
 Use first-party four-MiB format/preflight/reference/owner tests, BM-0200/BM-0201,
 the one-MiB stream fuzz harness and native C-factory/inventory integration.
 No external codec source or optimization structure is consulted.
+
+
+## IR-1142: Private four-MiB C boundary adapter
+
+Use first-party one-MiB C config/query/create and generic opaque handle/process/
+destroy, four-MiB checked workspace/codec tests and DD-1381 readiness requirements.
+No external codec or API implementation source is consulted.

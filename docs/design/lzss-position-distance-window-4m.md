@@ -264,3 +264,20 @@ The full four-MiB private encoder query is 315365389 bytes and decoder query is
 130029573 bytes; these are fixed workspace policy, not process-memory peaks or
 future public C query constants. Generic defaults cannot be silently widened.
 No new public API/profile/default/inventory identity is introduced by this audit.
+
+
+## DD-1382 private C boundary qualification
+
+A distinct private four-MiB configuration now initializes explicit resource
+ceilings and queries concrete codec, guard and opaque C handle storage. Creation
+charges all supplied capacities, including unused tails; process retains their
+complete intervals and protects the opaque handle from input/output aliasing.
+The fourteen new C-boundary tests preserve scalar stream bytes and sticky errors,
+reject crossed identities and prevent publication of a failed frame.
+
+TVG-1249 records two compiler private suites, sanitizer validation and C17
+compile-only header checks. Complete corpus streams and bounded fuzzing through
+this C adapter are the next private qualification. The public factory, CLI,
+static/shared exports, inventory and external gates from the readiness matrix
+remain pending. Existing public defaults and the qualified one-MiB inventory
+remain unchanged; private factory names do not constitute public API admission.
