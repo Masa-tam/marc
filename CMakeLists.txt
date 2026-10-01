@@ -51,6 +51,23 @@ if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
 endif()
 
 set(MARC_SOURCES
+    src/frame/lzss_position_distance_4m_workspace.cpp
+    src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
+    src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
+    src/frame/lzss_position_distance_4m_frame.cpp
+    src/context/lzss_position_distance_4m_tokens.cpp
+    src/entropy/lzss_position_distance_4m_range_encoder.cpp
+    src/entropy/lzss_position_distance_4m_range_decoder.cpp
+    src/frame/lzss_position_distance_4m_encode_workspace.cpp
+    src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
+    src/dictionary/lzss_position_distance_4m_match_finder.cpp
+    src/dictionary/lzss_position_distance_4m_candidate.cpp
+    src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
+    src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
+    src/frame/lzss_position_distance_4m_five_prefix_encode_workspace.cpp
+    src/frame/lzss_position_distance_4m_five_prefix_frame_streaming_encoder.cpp
+    src/frame/lzss_position_distance_4m_five_prefix_raw_frame_encoder.cpp
+    src/frame/lzss_position_distance_4m_c_factory.cpp
     src/context/lzss_position_distance_1m_prepared_model.cpp
     src/frame/lzss_position_distance_1m_prepared_frame.cpp
     src/frame/lzss_position_distance_1m_prepared_raw_frame_encoder.cpp
@@ -534,6 +551,8 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     target_link_libraries(marc_position_distance_4m_baseline_c_consumer PRIVATE marc_position_distance_4m_baseline_c_support)
     add_test(NAME marc_position_distance_4m_baseline_c_consumer COMMAND marc_position_distance_4m_baseline_c_consumer)
     add_executable(marc_position_distance_4m_frame_tests
+        tests/lzss_position_distance_4m_public_c_tests.cpp
+        tests/lzss_position_distance_4m_public_c_corpus_tests.cpp
         tests/lzss_position_distance_4m_baseline_c_adapter_tests.cpp
         tests/lzss_position_distance_4m_baseline_c_corpus_tests.cpp
         src/frame/lzss_position_distance_4m_c_adapter.cpp
@@ -2153,6 +2172,12 @@ if(MARC_BUILD_BENCHMARKS)
 endif()
 
 if(MARC_BUILD_FUZZERS)
+    add_executable(marc_fuzz_lzss_position_distance_4m_public fuzz/lzss_position_distance_4m_public_fuzz.cpp)
+    target_compile_features(marc_fuzz_lzss_position_distance_4m_public PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_distance_4m_public PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_distance_4m_public PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzss_position_distance_4m_public PRIVATE -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_distance_4m_public PRIVATE marc::static)
     if(NOT TARGET marc_static)
         message(FATAL_ERROR "MARC_BUILD_FUZZERS requires MARC_BUILD_STATIC=ON")
     endif()
@@ -4506,6 +4531,15 @@ if(MARC_BUILD_TESTS)
             set(consumer marc_position_distance_1m_c_${kind}_tests)
             add_executable(${consumer} tests/position_distance_1m_c_consumer.c)
             target_compile_features(${consumer} PRIVATE c_std_11)
+            target_link_libraries(${consumer} PRIVATE marc::${kind})
+            add_test(NAME ${consumer} COMMAND ${consumer})
+        endif()
+    endforeach()
+    foreach(kind IN ITEMS static shared)
+        if(TARGET marc_${kind})
+            set(consumer marc_position_distance_4m_c_${kind}_tests)
+            add_executable(${consumer} tests/position_distance_4m_c_consumer.c)
+            target_compile_features(${consumer} PRIVATE c_std_17)
             target_link_libraries(${consumer} PRIVATE marc::${kind})
             add_test(NAME ${consumer} COMMAND ${consumer})
         endif()

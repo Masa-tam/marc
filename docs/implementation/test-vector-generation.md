@@ -19270,3 +19270,30 @@ pass, totaling 48 C encodes and 48 C decodes. Each traversal covers 57 frames,
 hashes remain unchanged. No new timing or sanitizer/fuzz campaign is claimed;
 this is private static C boundary evidence rather than installed shared ABI or
 public CLI/inventory/external qualification.
+
+
+## TVG-1252: Public four-MiB C/static/shared boundary qualification
+
+Transfer the selected baseline's fourteen factory tests, complete-corpus driver
+and linked C17 consumer to actual public types and symbols. No distinct config
+object is accessed through another struct type. Check exact/one-under concrete
+state/guard/handle budgets, full capacities/tails, original metadata overlap,
+all byte values/chunking, crossed identities, stable errors and failed-frame privacy.
+
+Both compiler routes pass all 4087 CTest entries, including 255 ordinary
+four-MiB boundary tests and thirteen optional corpus skips in the frame suite.
+Both static/shared public C consumers compile, link and execute in build trees
+and fresh installed-package projects. Compare DLL exports with the earlier
+qualified library: preserve 157 symbols, add exactly three new public functions
+and export no private proposal names. Installed headers match the public source.
+
+All 24 explicit corpus test invocations pass two encoder/decoder schedules,
+totaling 48 complete C encodes and 48 complete C decodes. Each corpus traversal
+covers 57 frames, 211938580 raw and 61643620 archive bytes. Frozen streams,
+executable hashes, raw restoration, output and full-tail guards pass.
+
+The optional public C fuzz target transfers the first-party guarded scalar/C
+differential and independent failed-frame frontier. Its separately instrumented
+support library passes fifty initial seeds and 2000 ASan/UBSan/libFuzzer runs
+with seed 138501, unchanged original seeds and no reported finding/artifact.
+FZ-0055 records bounded coverage. CLI/inventory/external gates remain separate.

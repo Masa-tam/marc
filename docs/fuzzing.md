@@ -1211,3 +1211,21 @@ to 21, decoded/encoded results to 128/2048 bytes and calls to 32768. Compatible
 container annotation settings remain unchanged. Finite small-frame fuzzing
 complements deterministic full-window/distance tests; it does not establish
 exhaustive or full-window fuzz coverage or public/external qualification.
+
+
+### FZ-0055: Public four-MiB guarded C factory boundaries
+
+Transfer FZ-0054 driving to the actual public four-MiB config/query/create and
+generic process/destroy, using the selected scalar five-prefix implementation.
+Compare retained scalar decoder status/counts/raw/error positions, C encode
+chunk determinism, exact/one-under budgets, metadata/handle/full-tail guards and
+independently generated complete-frame publication frontiers.
+
+On 2026-10-01 the separately instrumented CMake library/target passes fifty
+initial boundary seeds and 2000 ASan/UBSan/libFuzzer executions with seed 138501,
+without a reported finding, artifact, guard/differential/frontier mismatch or
+initial seed change. Keep all initial/evolved cases and logs. Bounds remain
+8192 malformed input bytes, 64 generated raw bytes, frame capacity 21, decoded/
+encoded limits 128/2048 and 32768 calls. Compatible annotation settings remain
+unchanged. Finite small-frame coverage complements full-window/distance tests
+and does not establish exhaustive or external qualification.

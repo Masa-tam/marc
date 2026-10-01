@@ -320,3 +320,17 @@ The linked consumer in this stage uses private static support. It does not verif
 installed shared exports, a public header, CLI selection or schema 60. None of
 those pending changes is introduced here; existing schema 59 and 69 archives
 remain unchanged. Historical scratch timing exceptions remain documented.
+
+
+## DD-1385 public C/static/shared integration result
+
+The selected baseline now has a distinct public C config/init/query/create
+family. TVG-1252 qualifies both complete compiler suites, build-tree/installed
+static/shared C consumption, exact additive exports, complete frozen corpus
+streams and bounded public C fuzzing. Actual config handling, full-capacity
+budgets and failed-frame privacy remain unchanged from the qualified proposal.
+
+CLI selection and schema60/additive inventory are the next implementation
+boundaries. Generic defaults, old C families, schema59/69 archives and historical
+private timing decisions remain unchanged. New hosted CI and revision-specific
+external exchange are still required after subsequent integration.

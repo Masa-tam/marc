@@ -10061,3 +10061,10 @@ No external implementation or test expression is consulted.
 Use first-party DD-1372/BM-0197 complete five-prefix scalar owner comparisons,
 DD-1382 guarded C adapter, DD-1383 corpus qualification and existing C consumer
 and additive CLI/inventory integration patterns. No external source is consulted.
+
+
+## IR-1145: Additive public four-MiB C factory integration
+
+Use first-party DD-1384 selected scalar baseline, guarded factory, linked C
+consumer, boundary/corpus tests and public library/export integration patterns.
+No external codec/API implementation source is consulted.

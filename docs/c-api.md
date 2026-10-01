@@ -808,3 +808,29 @@ arrays. Decoder workspace, public struct layouts and encoded bytes are unchanged
 The factory still borrows only queried prefixes, performs two allocations and
 allocates nothing while processing. Earlier external evidence does not replace
 verification of this encoder revision.
+
+
+## Four-MiB position-distance C family
+
+`marc_lzss_position_distance_dynamic_range_4m_config_init()`,
+`marc_lzss_position_distance_dynamic_range_4m_workspace_requirements()` and
+`marc_lzss_position_distance_dynamic_range_4m_create()` provide a distinct
+fixed-window profile with dictionary/context variants 10/11, 46 contexts and
+2588 model entries. Only this family defaults to a four-MiB frame/window,
+payload ceiling 75497477 and internal ceiling 512 MiB; generic/one-MiB defaults
+and ABI version remain unchanged. Decoder capacity is min(max_frame_size,4194304)
+and ignores configured original_size/frame_size. Limits never enlarge wire bounds.
+
+Encode primary is raw and secondary serialized; decode reverses roles. Aligned
+views, every supplied workspace capacity and unused tails remain borrowed and
+charged until destruction. Aggregate checks include actual concrete codec,
+guard and opaque handle. Query errors preserve requirements. Ordinary creation
+failure clears a disjoint handle output; metadata aliases are rejected before
+writes. Process input/output must be disjoint from all retained capacities and
+the handle. No steady-state allocation occurs. Flush preserves frames,
+ResetBlock is unsupported, terminal states are sticky, and a failed frame
+publishes no raw bytes from that frame. Previously validated frames may remain.
+
+This is the third position-distance C family. CLI selection, new exchange
+inventory and revision-specific hosted/external qualification remain separate
+integration gates; earlier one-MiB reports do not qualify this family.

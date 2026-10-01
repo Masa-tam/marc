@@ -28560,3 +28560,51 @@ The selected baseline is qualified for the next public integration work, not
 declared publicly complete. Linked private static C consumption is distinct from
 installed static/shared ABI/export qualification. No new timing, sanitizer/fuzz
 campaign or external exchange is asserted in this stage.
+
+
+## DD-1385: Additive public four-MiB C factory and static/shared integration
+
+Add a distinct public config/init/query/create family using the selected
+five-prefix scalar baseline and retained decoder. Transfer checked field handling
+directly to the public config type; do not reinterpret distinct config objects.
+Preserve original caller metadata overlap checks, full supplied-capacity charging,
+actual concrete state/guard/opaque-handle budget and transactional failure rules.
+Use three new exported C symbols and required baseline sources only. Existing
+private candidates, factories, generic defaults and old exports remain unchanged.
+
+Qualify actual public functions with the transferred fourteen boundary tests,
+complete frozen corpus comparisons and C17 consumers linked to static/shared
+libraries, including installed package consumption. Compare export sets against
+the previous library and reject loss or accidental private exports. Run complete
+normal compiler suites and a bounded public-boundary sanitizer fuzz campaign.
+Keep wire tuple 10/11 and existing failed-frame publication/error contracts.
+
+Only the new profile defaults to a four-MiB frame/window, payload ceiling
+75497477 and internal ceiling 512 MiB. Query failure preserves requirements;
+disjoint creation output is null on failure, aliased metadata is unchanged.
+Full workspaces remain borrowed through destruction. Flush preserves frames,
+ResetBlock is unsupported and terminal codec states are sticky. CLI/schema60
+integration and revision-specific hosted/external verification are later gates;
+this stage does not declare the complete public profile externally qualified.
+
+
+DD-1385 validation passes all 4087 CTest entries in both compiler routes,
+including 255 ordinary private/public four-MiB boundary tests with thirteen
+optional corpus skips in their normal invocation. Public C17 static/shared
+consumers pass in both build trees and in fresh installed-package projects.
+DLL export comparison preserves all 157 previous symbols and adds exactly
+the three new functions, with identical export sets and no private exports.
+
+The actual public C factory passes every verified corpus member in both routes
+with two encoder/decoder schedules: 48 complete encodes and 48 complete decodes
+match frozen streams and original bytes. Each full traversal covers 57 frames,
+211938580 raw bytes and 61643620 archive bytes, with guarded output/full tails.
+The independently instrumented public C target passes fifty initial seeds and
+2000 ASan/UBSan/libFuzzer executions with seed 138501, without reported finding,
+artifact or differential/publication mismatch. Earlier unsuccessful tooling
+attempts and all previous artifacts remain retained.
+
+Public C/static/shared integration is qualified for these checks. Existing
+codec bodies, older C factories/defaults, private candidates, CLI selection and
+schema-59 inventory are unchanged. No new throughput comparison is asserted;
+CLI/schema60 and revision-specific hosted/external exchange remain later gates.

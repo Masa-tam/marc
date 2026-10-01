@@ -37130,3 +37130,23 @@ both bounds.
 - Scope: selected private integration baseline, with public installed/static/shared/
   CLI/inventory/external gates pending. No new performance, external qualification,
   exhaustive coverage or legal guarantee is asserted.
+
+
+## CR-1556: 2026-10-02 - Public four-MiB C and static/shared integration
+
+- Author/reviewer: Codex; maintainer approved progression.
+- References: IR-1145, selected scalar baseline and exact guarded C transfer,
+  first-party factory/consumer/corpus/fuzz and existing public build patterns.
+- Independent task/decisions: add distinct public config and three C exports,
+  keep original config metadata checks without type-punning, preserve concrete
+  budget/guard/failed-frame semantics and integrate required baseline dependencies.
+  Keep older factories/defaults, private candidates and inventory unchanged.
+- Known implementations intentionally not consulted: external codec/API source,
+  copyleft code and third-party optimization or testing expression.
+- Validation: TVG-1252/FZ-0055; both complete compiler suites, build-tree and
+  installed static/shared C consumers, exact additive export sets, all 24 corpus
+  invocations and 2000 instrumented public-boundary executions. Existing source/
+  artifact identity, first-party transfer and append-only documentation checked.
+- Scope: public C/static/shared boundary qualification. CLI/inventory/new hosted
+  and external gates remain pending. No new throughput comparison, exhaustive
+  coverage or legal guarantee is asserted.

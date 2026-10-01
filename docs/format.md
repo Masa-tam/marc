@@ -8259,3 +8259,14 @@ scalar-state workspace query charges actual stream/owner size and scalar
 model/writer/cursor plus prefix. Frames are published only after successful
 complete raw-frame coding; earlier committed frames survive later failure.
 No public factory, default limit, ABI or algorithm inventory changes.
+
+
+### Public four-MiB C integration boundary
+
+DD-1385 exposes the already specified four-MiB representation through a distinct
+C family using the selected five-prefix scalar encoder and retained decoder.
+The wire tuple, little-endian/LSB-first layout, canonical validation, limits and
+failed-frame publication remain unchanged. API default-resource selection and
+full borrowed-capacity charging are described in the C API documentation.
+CLI/exchange inventory and revision-specific external qualification remain
+later gates; no existing stream representation or identity is modified.
