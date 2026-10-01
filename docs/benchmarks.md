@@ -8590,3 +8590,88 @@ The earlier BM-0196 maximum duplicate-control spread was 24.850%. The present
 observations do not retrospectively attribute that earlier variation to a phase
 or explain the historical absolute-time differences. Their cause remains
 unverified even when this diagnostic's repetitions are closer together.
+
+
+## BM-0198: Repeated native four-MiB prepared owner comparison
+
+DD-1374 compares the scalar five-prefix owner with the prepared mapping owner
+through the same optional native driver. Range coding, finder, decoder, input/
+output chunks (65,536 bytes), format, frozen archives and workspace policy are
+shared. Preparation classifies a process call that consumes through a raw frame
+boundary and includes final input copying/frame work/same-call draining. Use
+one disjoint interval per create/process/destroy; factory creation includes
+query/allocation/init. Diagnostic query searches, I/O, sink comparisons and
+classification are untimed. Decoder process is unsplit and unchanged. Keep the
+earlier diagnostic sources/builds/results; do not subtract their totals as
+ownership overhead or use historical fluctuations to explain this run.
+
+Reverify the corpus and archives first. Three rotated complete passes retain
+108 encode and 36 unchanged-decoder observations in fresh exclusive processes.
+No warmup, discarded observation or rerun; no build/test overlaps measurement.
+Every complete stream byte and restored input matches, as do frame counts,
+per-frame/phase sums and minimum query budgets.
+
+| Pass | Scalar control 0 (s) | Scalar control 1 (s) | Prepared (s) | Prepared reduction vs control mean | Shared decode (s) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 87.182864 | 87.385784 | 85.965115 | 1.511% | 6.869607 |
+| 2 | 87.452341 | 87.189698 | 85.811400 | 1.729% | 6.900155 |
+| 3 | 87.338138 | 87.410001 | 86.809383 | 0.646% | 6.883055 |
+
+Prepared beats both controls in 32/36 comparisons, loses to both in 2 and lies between them in 2. Maximum member/pass duplicate-control spread is 4.125%.
+
+The trial misses the required improvement across every member/pass comparison.
+Retain the scalar five-prefix owner as the reference; the prepared owner remains
+a separate private candidate. No existing factory is changed.
+
+Pass three loses on webster (-1.117%) and xml (-1.944%); pass one lies between
+controls on dickens and nci. These observations are retained without reruns.
+
+
+| Member | Mean reduction vs control mean | Minimum / maximum reduction | Wins / losses / between |
+| --- | ---: | ---: | ---: |
+| dickens | 0.721% | 0.036% / 1.447% | 2 / 0 / 1 |
+| mozilla | 1.835% | 1.000% / 2.275% | 3 / 0 / 0 |
+| mr | 0.726% | 0.165% / 1.064% | 3 / 0 / 0 |
+| nci | 0.657% | 0.396% / 0.826% | 2 / 0 / 1 |
+| ooffice | 4.777% | 4.384% / 5.131% | 3 / 0 / 0 |
+| osdb | 4.203% | 3.139% / 5.223% | 3 / 0 / 0 |
+| reymont | 0.517% | 0.427% / 0.579% | 3 / 0 / 0 |
+| samba | 2.096% | 1.758% / 2.482% | 3 / 0 / 0 |
+| sao | 3.825% | 2.785% / 4.578% | 3 / 0 / 0 |
+| webster | 0.326% | -1.117% / 1.112% | 2 / 1 / 0 |
+| xml | 0.989% | -1.944% / 2.914% | 2 / 1 / 0 |
+| x-ray | 4.599% | 4.060% / 4.989% | 3 / 0 / 0 |
+
+
+| Pass | Path | Create (s) | Preparation calls (s) | Collection calls (s) | Drain/other calls (s) | Destroy (s) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | reference-0 | 0.273265 | 86.820775 | 0.014043 | 0.001489 | 0.073292 |
+| 1 | reference-1 | 0.271847 | 87.024809 | 0.014033 | 0.001494 | 0.073602 |
+| 1 | prepared-model | 0.272630 | 85.605071 | 0.013939 | 0.001470 | 0.072005 |
+| 2 | reference-0 | 0.272839 | 87.090568 | 0.013862 | 0.001484 | 0.073588 |
+| 2 | reference-1 | 0.273242 | 86.826726 | 0.014053 | 0.001473 | 0.074205 |
+| 2 | prepared-model | 0.271894 | 85.450153 | 0.013641 | 0.001505 | 0.074207 |
+| 3 | reference-0 | 0.271851 | 86.978157 | 0.014059 | 0.001505 | 0.072566 |
+| 3 | reference-1 | 0.271234 | 87.051016 | 0.013761 | 0.001378 | 0.072613 |
+| 3 | prepared-model | 0.271476 | 86.448509 | 0.013923 | 0.001492 | 0.073983 |
+
+
+Both encoder policy budgets are 315,365,389 bytes; finder storage is 51,118,080
+bytes and the unchanged decoder budget is 130,029,573 bytes. Query equivalence
+was checked, not assumed. Corpus raw/archive bytes remain 211,938,580/61,643,620.
+Physical counters below are whole-process lifetime peaks including input/archive/
+runtime, not isolated codec resident memory. Do not subtract independent maxima
+to infer allocations or interpret them as disk traffic.
+
+| Path | Peak working set (bytes) | Peak commit (bytes) |
+| --- | ---: | ---: |
+| encode-reference-0 | 318,087,168 | 388,571,136 |
+| encode-reference-1 | 318,054,400 | 388,554,752 |
+| encode-prepared-model | 318,066,688 | 388,538,368 |
+| decode-prepared-model | 132,714,496 | 202,858,496 |
+
+
+These results qualify only this private mapping-owner comparison. Range-preparation
+transfer, finder-scratch reuse, full-suite/fuzz, public admission and revision-specific
+external verification remain separate. Deeper/historical timing causes remain
+unverified; no hardware-independent performance guarantee is inferred.

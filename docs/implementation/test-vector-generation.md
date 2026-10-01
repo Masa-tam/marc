@@ -18982,3 +18982,30 @@ every encoded frame byte matches the frozen archive and restores its input.
 The adapter emits frames, so this is not a new streaming-owner/header test.
 No new full-suite, fuzz campaign, performance admission or external qualification
 is claimed.
+
+
+## TVG-1241: Prepared four-MiB streaming owner and native comparison
+
+Transfer the first-party fixed five-prefix lifecycle tests to the prepared
+stream/owner while keeping exhaustive/indexed scalar frame oracles. Test empty,
+one-byte, full/final and multi-frame inputs, eligibility 3/4/5, one-byte/random/
+zero-capacity output, input splits, Flush, latched/final suffix EndInput, sticky
+error/end, aliases, exact/one-under budgets and all supplied capacities. Check
+one preparation per frame and later-frame failure publishes only prior committed
+frames with remaining output sentinels intact. A separate query comparison checks
+all fields and concrete sizes against scalar owners at five frame capacities.
+
+Both compiler runs pass 166 tests with six optional diagnostics skipped in the
+172-case run. Explicit ASan/UBSan passes 240 tests with those six skipped in the
+246-case run. Native diagnostic smokes and explicit ASan/UBSan diagnostic smokes
+cover all three labels/modes on empty/A259/mixed/full/final frame cases. Existing
+optional getenv/test-framework warnings remain.
+
+Twenty-four optional prepared-owner corpus tests and twenty-four native diagnostic
+checks match frozen complete streams and restore all raw bytes; 57 frames per
+compiler, raw/archive bytes 211,938,580/61,643,620. Newly captured streams use
+separate destinations; all archives/source/executable hashes are checked. After
+verification and process audit, 144 exclusive rotated observations retain exact
+bytes, query thresholds, frame counts and disjoint phase/per-frame sums. BM-0198
+reports measured gains and physical memory separately from fixed policy budgets.
+No new full-suite/fuzz, public or external qualification is claimed.

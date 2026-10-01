@@ -28084,3 +28084,41 @@ corpus bytes and restoration. Existing owners/public factories/decoders are
 unchanged. This stage qualifies private helper correctness; streaming owner
 integration, range-preparation transfer and repeated throughput/memory comparison
 remain separate. No performance gain or public admission is claimed.
+
+
+## DD-1374: Private prepared owner and common-path admission comparison
+
+Add a separate prepared streaming encoder and owner using the existing checked
+five-prefix workspace and qualified prepared raw adapter. Charge actual concrete
+stream/owner sizes; verify query equivalence rather than assuming it. Retain
+allocation-before-process, aliases, per-frame reset, one preparation per frame,
+partial buffers, final suffix/latched EndInput, Flush and sticky end/error rules.
+Publish a frame only after prepared raw coding succeeds; earlier committed frames
+survive a later failure and no failed-frame bytes reach the caller.
+
+Keep old five-prefix owners and every prior diagnostic unchanged. Compare scalar
+five-prefix and prepared owners through a separate optional native diagnostic,
+duplicate scalar controls, rotated fresh exclusive processes and three complete
+passes. Use disjoint create/process/destroy intervals, known-boundary preparation
+classification and whole-process memory counters separate from workspace policy.
+All complete-stream bytes/restoration, query limits, frame counts and phase sums
+must match before accepting observations. Retain all observations without warmup
+or discarded reruns. Public admission, range preparation and finder scratch reuse
+remain separate; prepared mapping correctness alone establishes no owner speedup.
+
+
+The completed comparison retains exact complete streams and unchanged decoder
+behavior with equal encoder budgets of 315,365,389 bytes. BM-0198 records aggregate
+encode reductions of 0.646% to 1.729% against scalar-control means,
+32/36 wins against both controls and maximum control spread 4.125%.
+The trial misses the required improvement across every member/pass comparison.
+Retain the scalar five-prefix owner as the reference; the prepared owner remains
+a separate private candidate. No existing factory is changed.
+Range preparation and finder scratch reuse remain subsequent independent trials.
+
+The two losses are webster and xml in pass three; dickens and nci lie between
+controls in pass one. Preserve those observations. The scalar frame explicitly
+plans range operations, and encode_operations plans them again before writing.
+An independently qualified range prepare/write trial can target that repeated
+planning while preserving scalar token mapping, checked budgets and failure
+publication. Do not infer its gain from this mapping-only comparison.

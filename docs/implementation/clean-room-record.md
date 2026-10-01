@@ -36916,3 +36916,28 @@ both bounds.
 - Scope: private correctness trial. Owner integration, repeated performance and
   memory admission, full-suite/fuzz, public admission and external qualification
   remain separate. No legal guarantee is asserted.
+
+
+## CR-1545: 2026-10-01 - Private prepared four-MiB ownership
+
+- Author and reviewer: Codex; the maintainer authorized the next development step.
+- References: IR-1134, DD-1374, retained five-prefix owner/workspace lifecycle,
+  prepared mapping/frame/raw helpers and first-party native phase diagnostic.
+- Independent task: add a separate prepared stream/owner, retain checked queries,
+  failure privacy and chunking, then compare complete owners with scalar controls
+  through the same repeated exclusive timing/memory path.
+- Similarity review: four new owner/stream sources intentionally transfer
+  first-party five-prefix lifecycle, changing only concrete names and raw helper.
+  Existing workspace/header writer/decoder/scalar owners remain unchanged.
+  Diagnostic structure transfers the first-party native common driver and adds
+  the prepared owner. New code links only into private tests/optional diagnostic.
+  No external expression or allocation/profiling implementation is used.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft code and third-party optimization/ownership/test structures.
+- Validation: TVG-1241; both compiler tests/smokes and explicit ASan/UBSan pass.
+  Forty-eight separate corpus checks preserve complete frozen streams and raw
+  restoration. BM-0198 retains all 144 observations. Query equality, first-party
+  source transfer, private-only scope, identities and append-only docs pass.
+- Scope: private owner integration/comparison. Public admission, range preparation,
+  finder reuse, full-suite/fuzz and external qualification remain separate.
+  No legal guarantee is asserted.

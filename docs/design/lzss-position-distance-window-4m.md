@@ -224,3 +224,14 @@ reference tokens, frozen corpus frame bytes and restoration match. Streaming
 owners remain unchanged; owner integration and repeated throughput/memory
 comparison are the next separate steps. No speedup or public admission is inferred
 from this private correctness stage.
+
+
+DD-1374 integrates the prepared raw helper into a separate private streaming owner,
+preserving scalar controls, checked budgets and failed-frame privacy. Complete
+streams match frozen archives. BM-0198 observes 0.646% to 1.729% aggregate
+encode reduction with equal policy budgets and 32/36 wins against both controls.
+The trial misses the required improvement across every member/pass comparison.
+Retain the scalar five-prefix owner as the reference; the prepared owner remains
+a separate private candidate. No existing factory is changed.
+Range preparation and finder scratch reuse need separate trials; public admission
+and external qualification remain later boundaries.

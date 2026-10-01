@@ -9982,3 +9982,10 @@ profiler, allocator or optimization implementation is consulted.
 Use first-party one-MiB prepared-model mapping and its differential tests,
 four-MiB field cursor/planner, scalar frame encoder, exact five-prefix raw adapter
 and frozen reference archives. No external implementation is consulted.
+
+
+## IR-1134: Private four-MiB prepared streaming ownership
+
+Use first-party DD-1371 five-prefix owner/workspace lifecycle, DD-1373 prepared
+mapping/frame/raw helpers, DD-1372 call-phase diagnostic and frozen archives.
+No external codec, ownership, allocation or profiling implementation is consulted.
