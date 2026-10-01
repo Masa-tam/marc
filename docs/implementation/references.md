@@ -10054,3 +10054,10 @@ No external codec or API implementation source is consulted.
 Use first-party DD-1382 private C adapter, one-MiB public C fuzz driving,
 four-MiB streaming fuzz frontier/scalar differential and frozen corpus streams.
 No external implementation or test expression is consulted.
+
+
+## IR-1144: Four-MiB public integration baseline and linked C proposal
+
+Use first-party DD-1372/BM-0197 complete five-prefix scalar owner comparisons,
+DD-1382 guarded C adapter, DD-1383 corpus qualification and existing C consumer
+and additive CLI/inventory integration patterns. No external source is consulted.

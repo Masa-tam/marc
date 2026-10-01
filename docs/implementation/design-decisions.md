@@ -28514,3 +28514,49 @@ suites, additive inventory compatibility and new revision-specific hosted CI/
 external exchange remain separate integration gates. Historical performance
 exceptions/control spread remain recorded; this correctness qualification
 neither resolves them nor admits a public implementation.
+
+
+## DD-1384: Select the four-MiB integration baseline and qualify linked C consumption
+
+Select the five-prefix scalar owner as the public integration baseline: DD-1372/
+BM-0197 satisfies all 36 member/pass comparisons. Preserve finder-scratch as a
+separate private candidate; its BM-0200/BM-0201 intermediate result and unresolved
+control spread do not meet the original complete admission condition. Prepared
+mapping/range candidates remain separate. Do not revise historical decisions.
+
+Transfer the guarded private C adapter to distinct baseline factory symbols,
+changing only concrete encoder/workspace selection. Keep the same configuration,
+full-capacity charging, guard, handle definition, decoder and error semantics.
+Repeat its boundary and complete frozen corpus tests. Compile a standalone C17
+consumer and link/run it against the private baseline support and static library;
+exercise empty/small round-trip, tiny buffers, terminal states and crossed identity.
+This linked C test complements the earlier compile-only header check.
+
+Public integration must subsequently add distinct four-MiB C functions and CLI
+selection without widening generic or one-MiB defaults, preserve tuple 10/11 and
+existing exports, and run complete static/shared/export/CLI suites. Append one
+inventory identity while preserving the previous 69-entry prefix and qualify the
+new schema/version against old bundles. New hosted CI and revision-specific
+producer/consumer exchange are required after implementation. Selecting an
+integration baseline does not declare these remaining public gates complete.
+
+
+DD-1384 validation passes fourteen additional baseline C-boundary tests under
+both compiler routes, for 241 ordinary tests per route with twelve optional
+corpus skips. The linked C17 consumer also passes under both routes: five
+empty/small frame-boundary round-trips, crossed-identity rejection, tiny/zero
+buffers, full-tail sentinels and sticky terminal states. Its initial expectation
+for crossed identity was corrected from MalformedStream to the existing
+Unsupported status; no codec behavior was changed and failed evidence remains.
+
+All twelve verified corpus members pass the separate baseline C test in both
+routes with two encoder/decoder schedules, for 48 complete encodes and 48 decodes.
+The complete frozen streams and restored raw bytes match; output and unused-tail
+guards pass. The baseline adapter differs from the scratch proposal only by
+private function names and concrete encoder/workspace selection. Existing codec
+bodies, scratch proposal, defaults, exports and exchange inventory are unchanged.
+
+The selected baseline is qualified for the next public integration work, not
+declared publicly complete. Linked private static C consumption is distinct from
+installed static/shared ABI/export qualification. No new timing, sanitizer/fuzz
+campaign or external exchange is asserted in this stage.

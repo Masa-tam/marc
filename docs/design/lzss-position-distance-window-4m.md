@@ -297,3 +297,26 @@ linked standalone C consumption, static/shared/export/CLI full suites, additive
 inventory compatibility and revision-specific hosted CI/external exchange.
 The historical performance exception and control spread remain unresolved;
 successful correctness qualification does not revise the performance condition.
+
+
+## DD-1384 selected integration baseline and additive boundary plan
+
+Use the five-prefix scalar owner qualified by DD-1372/BM-0197 as the integration
+baseline. Finder-scratch remains private because the original complete performance
+condition remains unmet; successful correctness tests do not change that rule.
+The distinct baseline C adapter preserves the guard/config/decoder contract and
+passes boundary, linked C17 and complete corpus tests (TVG-1251).
+
+| Integration boundary | Concrete next change and required check |
+| --- | --- |
+| Public C | Add a distinct `marc_lzss_position_distance_dynamic_range_4m_config` and config-init/query/create functions; preserve ABI version/layout policy and old declarations; charge actual state/handle and full supplied capacities |
+| Resource defaults | Initialize only the new profile to a four-MiB frame/window, payload bound 75497477 and internal ceiling 512 MiB; keep generic and one-MiB defaults unchanged |
+| Static/shared exports | Add required baseline codec sources to library builds; verify installed C consumers and old/new symbols through both linkage modes before claiming public ABI qualification |
+| CLI | Add exact `lzss-position-distance-dynamic-range-4m` selection in `tools/marc_cli.cpp`, profile listing, argument/resource validation and round-trip/malformed/error tests; retain existing selections |
+| Exchange inventory | Append the new identity after the frozen 69 entries in bundle creation/verification; schema 60 and `marc-cli-v60` must retain schema-59 prefix order and reject reordered/new-invalid manifests while verifying older schemas |
+| Final qualification | Complete static/shared/CLI suites and frozen corpus bytes before hosted CI and revision-specific external producer/consumer exchange |
+
+The linked consumer in this stage uses private static support. It does not verify
+installed shared exports, a public header, CLI selection or schema 60. None of
+those pending changes is introduced here; existing schema 59 and 69 archives
+remain unchanged. Historical scratch timing exceptions remain documented.

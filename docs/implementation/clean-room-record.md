@@ -37111,3 +37111,22 @@ both bounds.
   Existing source/artifact identity, optional linking and append-only docs checked.
 - Scope: private correctness qualification only; no new timing, public admission,
   exhaustive fuzz coverage, external qualification or legal guarantee is asserted.
+
+
+## CR-1555: 2026-10-01 - Four-MiB integration baseline and linked C proposal
+
+- Author/reviewer: Codex; maintainer approved progression.
+- References: IR-1144, first-party BM-0197 qualified scalar owner, guarded scratch
+  C proposal, corpus/boundary tests and C consumer integration patterns.
+- Independent decisions/task: select the eligible scalar baseline without relaxing
+  the original performance condition; transfer only guarded adapter names and
+  concrete encoder/workspace connections, and add a linked standalone C17 consumer.
+  Preserve private candidates, historical evidence and additive integration gates.
+- Known implementations intentionally not consulted: external codec/API source,
+  copyleft code and third-party optimization or testing expression.
+- Validation: TVG-1251; two compiler boundary suites and linked C executions,
+  all 24 complete corpus invocations, unchanged codec/artifact identity, exact
+  first-party transfer, private-only linking and append-only documentation.
+- Scope: selected private integration baseline, with public installed/static/shared/
+  CLI/inventory/external gates pending. No new performance, external qualification,
+  exhaustive coverage or legal guarantee is asserted.

@@ -19245,3 +19245,28 @@ with seed 138301, unchanged initial seed hashes and no finding or artifact.
 FZ-0054 records the finite campaign. This complements existing full-window/
 distance tests; no exhaustive coverage, new standalone C consumer or public
 integration/external qualification is asserted.
+
+
+## TVG-1251: Five-prefix scalar C baseline and linked C17 consumption
+
+Transfer DD-1382's fourteen C factory tests and DD-1383's optional complete-corpus
+test to distinct baseline symbols. Preserve metadata/error/handle/tail checks,
+exact/one-under full-capacity budgets, scalar byte identity, four-MiB-plus-one
+final suffix and failed-frame privacy. Both compiler routes pass 241 ordinary
+tests and skip twelve optional corpus checks in normal CTest runs.
+
+Compile a standalone C17 translation unit and link it to the private scalar
+baseline support and existing static library. Empty, one-byte, 21/22-byte and
+49-byte inputs round-trip through one-byte input and seven-byte output buffers,
+with periodic zero output, guard/tail checks and sticky terminal status/error
+positions. Crossing the dictionary identity must return Unsupported without raw
+publication. Both routes compile, link and execute this consumer successfully.
+The initial incorrect MalformedStream expectation is retained as failed evidence.
+
+Separately run the baseline corpus test against every verified member and frozen
+complete archive under two input/output schedules per compiler: all 24 invocations
+pass, totaling 48 C encodes and 48 C decodes. Each traversal covers 57 frames,
+211938580 raw bytes and 61643620 archive bytes. Frozen archive and executable
+hashes remain unchanged. No new timing or sanitizer/fuzz campaign is claimed;
+this is private static C boundary evidence rather than installed shared ABI or
+public CLI/inventory/external qualification.

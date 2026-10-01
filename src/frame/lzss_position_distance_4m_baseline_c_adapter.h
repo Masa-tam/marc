@@ -1,0 +1,19 @@
+#ifndef MARC_PRIVATE_POSITION_DISTANCE_4M_BASELINE_C_ADAPTER_H
+#define MARC_PRIVATE_POSITION_DISTANCE_4M_BASELINE_C_ADAPTER_H
+#include "frame/lzss_position_distance_4m_c_adapter.h"
+/* Private five-prefix scalar integration baseline. Shared configuration and
+ * borrowed full-capacity contract; these names are neither installed nor exported. */
+#ifdef __cplusplus
+#define MARC_PRIVATE_BASELINE_NOEXCEPT noexcept
+extern "C" {
+#else
+#define MARC_PRIVATE_BASELINE_NOEXCEPT
+#endif
+marc_status marc_private_position_distance_4m_baseline_config_init(marc_direction,marc_private_position_distance_4m_config*) MARC_PRIVATE_BASELINE_NOEXCEPT;
+marc_status marc_private_position_distance_4m_baseline_workspace_requirements(const marc_private_position_distance_4m_config*,marc_workspace_requirements*) MARC_PRIVATE_BASELINE_NOEXCEPT;
+marc_status marc_private_position_distance_4m_baseline_create(const marc_private_position_distance_4m_config*,marc_buffer,marc_buffer,marc_buffer,marc_transform**) MARC_PRIVATE_BASELINE_NOEXCEPT;
+#ifdef __cplusplus
+}
+#endif
+#undef MARC_PRIVATE_BASELINE_NOEXCEPT
+#endif
