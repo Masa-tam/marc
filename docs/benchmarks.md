@@ -9025,3 +9025,107 @@ Proceed to a separately qualified counter-free private complete-owner trial
 with a predeclared exclusive protocol before deciding adoption. No new timing,
 BM record, measured process peak, throughput benefit or public admission is
 claimed here. Previous scratch/prepared exceptions remain unchanged.
+
+
+## BM-0202: Counter-free private prefix-end complete owner (DD-1393)
+
+Qualify TVG-1260 before timing, then declare three passes over all twelve
+members in manifest order. For each member/pass rotate control-0, end-probe
+and control-1 by the sum of their zero-based indices modulo three, followed
+by the unchanged decoder. Each observation uses a fresh process; retain all
+108 encodes and 36 decodes without warmup, discard or rerun until success.
+Both controls use the admitted five-prefix scalar complete owner, not the
+earlier three-prefix reference or unadmitted scratch/prepared candidates.
+The trial has no diagnostic counters and retains the same ownership policy.
+
+Window/frame are 4194304 bytes; input/output chunks are 65536 bytes. Both
+encoders charge 315365389 bytes at the measured query policy; unchanged
+decoder charge is 130029573. Add creation, input collection, complete frame
+preparation, draining and destruction intervals to obtain encode time.
+Preparation includes input copying and any drain performed in that call;
+it does not isolate search or range coding. Decode includes creation, process
+and destruction. File I/O, queries, sink comparison and memory sampling are
+untimed. Every observation checks full frozen archive or restored raw bytes.
+These private owner measurements do not measure the public C or CLI wrapper.
+
+The declared numerical screen requires all 36 trials strictly faster than
+both controls and maximum duplicate-control spread at most two percent.
+Initial process enumeration reported an error but was incorrectly accepted
+as an empty process list. An attempted interruption did not stop the
+controller; the original campaign continued. A later successful audit saw
+only the controller and its current owner among selected codec/build process
+names. The initial interval remains unverified. This makes the campaign
+exploratory evidence, regardless of its numerical screen. All individual
+observations and the audit incident are retained, with no replacement run.
+
+| Pass | Profile/mode | Total seconds | MiB/s |
+| ---: | --- | ---: | ---: |
+| 1 | control-0-encode | 87.4856509 | 2.3103 |
+| 1 | control-1-encode | 87.5531064 | 2.3085 |
+| 1 | end-probe-encode | 85.7390379 | 2.3574 |
+| 1 | end-probe-decode | 7.0212447 | 28.7870 |
+| 2 | control-0-encode | 87.6331908 | 2.3064 |
+| 2 | control-1-encode | 88.3782396 | 2.2870 |
+| 2 | end-probe-encode | 85.6803938 | 2.3590 |
+| 2 | end-probe-decode | 6.9882547 | 28.9229 |
+| 3 | control-0-encode | 87.4321339 | 2.3117 |
+| 3 | control-1-encode | 87.7049007 | 2.3046 |
+| 3 | end-probe-encode | 86.0260172 | 2.3495 |
+| 3 | end-probe-decode | 6.9901511 | 28.9150 |
+
+| Pass | Profile/mode | Create | Prepare | Collect | Drain | Decode process | Destroy (seconds) |
+| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | control-0-encode | 0.2726834 | 87.1211724 | 0.0143001 | 0.0015738 | 0.0000000 | 0.0759212 |
+| 1 | control-1-encode | 0.2760599 | 87.1863225 | 0.0143162 | 0.0015868 | 0.0000000 | 0.0748210 |
+| 1 | end-probe-encode | 0.2737026 | 85.3737863 | 0.0142863 | 0.0015266 | 0.0000000 | 0.0757361 |
+| 1 | end-probe-decode | 0.0747290 | 0.0000000 | 0.0000000 | 0.0000000 | 6.9289118 | 0.0176039 |
+| 2 | control-0-encode | 0.2745329 | 87.2697103 | 0.0142926 | 0.0015794 | 0.0000000 | 0.0730756 |
+| 2 | control-1-encode | 0.2738624 | 88.0156465 | 0.0144228 | 0.0015374 | 0.0000000 | 0.0727705 |
+| 2 | end-probe-encode | 0.2717059 | 85.3190000 | 0.0142027 | 0.0015018 | 0.0000000 | 0.0739834 |
+| 2 | end-probe-decode | 0.0738078 | 0.0000000 | 0.0000000 | 0.0000000 | 6.9007357 | 0.0137112 |
+| 3 | control-0-encode | 0.2737656 | 87.0611528 | 0.0144676 | 0.0016130 | 0.0000000 | 0.0811349 |
+| 3 | control-1-encode | 0.2724899 | 87.3435135 | 0.0142798 | 0.0016628 | 0.0000000 | 0.0729547 |
+| 3 | end-probe-encode | 0.2732390 | 85.6620383 | 0.0140898 | 0.0015579 | 0.0000000 | 0.0750922 |
+| 3 | end-probe-decode | 0.0751070 | 0.0000000 | 0.0000000 | 0.0000000 | 6.9007448 | 0.0142993 |
+
+| Member | Trials faster than both controls | Gain versus faster control, range across three passes |
+| --- | ---: | ---: |
+| dickens | 0/3 | -0.7913% .. -0.1633% |
+| mozilla | 3/3 | 1.8687% .. 5.3007% |
+| mr | 3/3 | 1.0519% .. 1.7797% |
+| nci | 3/3 | 4.1904% .. 5.8617% |
+| ooffice | 2/3 | -0.1298% .. 1.0150% |
+| osdb | 2/3 | -1.4338% .. 2.5591% |
+| reymont | 1/3 | -0.3275% .. 0.3110% |
+| samba | 3/3 | 1.4520% .. 3.0970% |
+| sao | 1/3 | -0.9789% .. 1.1555% |
+| webster | 2/3 | -0.2993% .. 0.9807% |
+| xml | 2/3 | -0.0561% .. 0.5148% |
+| x-ray | 1/3 | -0.9611% .. 0.4900% |
+
+There are 23 wins, 5 trials between controls and 8 losses.
+Maximum duplicate-control spread is 3.607395 percent
+(ooffice, pass 3: controls 1.5891026 and
+1.6464278 seconds; trial 1.5729737). The numerical screen
+does not pass. The audit limitation independently prevents admission. No cause
+for timing variation is established, and prior candidate exceptions remain.
+
+| Profile/mode | Maximum process peak working set bytes | Maximum process peak commit bytes |
+| --- | ---: | ---: |
+| control-0-encode | 318144512 | 388534272 |
+| control-1-encode | 318136320 | 388567040 |
+| end-probe-encode | 318144512 | 388546560 |
+| end-probe-decode | 132780032 | 202825728 |
+
+Process peaks include executable, allocator, input/archive/comparison buffers
+and codec allocations. They are separate observed maxima, not codec-only RSS,
+query charges or a subtraction-derived incremental peak. Every corpus pass
+represents 211938580 raw and 61643620 archive bytes in 57 frames, archive/raw
+ratio 0.290856058; neither representation nor compression ratio changes.
+Unchanged decoding is recorded as a control, with no decoder speedup claim.
+
+Keep the trial private. The earlier 45.3805502 percent reduction in extension
+comparisons is not an elapsed gain. A future measurement protocol must require
+explicit successful process audits before timing and retain the present
+exceptions; this campaign does not authorize public adoption or a repeat until
+success. No public format, default, ABI, selection or inventory changes occur.

@@ -1064,6 +1064,35 @@ if(MARC_BUILD_BENCHMARKS)
                     "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-phase-smoke"
                     -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_phase_benchmark_smoke.cmake)
         endif()
+        add_library(marc_position_distance_4m_end_probe_scalar_support STATIC
+            benchmarks/end_probe/dictionary/lzss_position_distance_4m_end_probe_scalar_finder.cpp
+            benchmarks/end_probe/dictionary/lzss_position_distance_4m_end_probe_scalar_candidate.cpp
+            benchmarks/end_probe/frame/lzss_position_distance_4m_end_probe_scalar_raw_frame_encoder.cpp
+            benchmarks/end_probe/frame/lzss_position_distance_4m_end_probe_scalar_encode_workspace.cpp
+            benchmarks/end_probe/frame/lzss_position_distance_4m_end_probe_scalar_frame_streaming_encoder.cpp
+            benchmarks/end_probe/frame/lzss_position_distance_4m_end_probe_scalar_owned_encoder.cpp
+            src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
+            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
+        target_compile_features(marc_position_distance_4m_end_probe_scalar_support PUBLIC cxx_std_20)
+        target_include_directories(marc_position_distance_4m_end_probe_scalar_support PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/end_probe ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_distance_4m_end_probe_scalar_support PUBLIC marc::static)
+        add_executable(marc_lzss_position_distance_4m_end_probe_owner_benchmark
+            benchmarks/lzss_position_distance_4m_end_probe_owner_benchmark.cpp)
+        target_link_libraries(marc_lzss_position_distance_4m_end_probe_owner_benchmark PRIVATE
+            marc_position_distance_4m_end_probe_scalar_support)
+        if(WIN32)
+            target_link_libraries(marc_lzss_position_distance_4m_end_probe_owner_benchmark PRIVATE psapi)
+        endif()
+        if(MARC_BUILD_TESTS)
+            add_executable(marc_position_distance_4m_end_probe_scalar_tests
+                tests/lzss_position_distance_4m_end_probe_scalar_tests.cpp
+                tests/lzss_position_distance_4m_end_probe_scalar_streaming_tests.cpp)
+            target_link_libraries(marc_position_distance_4m_end_probe_scalar_tests PRIVATE
+                marc_position_distance_4m_end_probe_scalar_support GTest::gtest_main)
+            add_test(NAME marc_position_distance_4m_end_probe_scalar_tests
+                COMMAND marc_position_distance_4m_end_probe_scalar_tests)
+        endif()
         add_executable(marc_lzss_position_distance_4m_end_probe_diagnostic
             benchmarks/lzss_position_distance_4m_end_probe_diagnostic.cpp
             benchmarks/lzss_position_distance_4m_end_probe_finder.cpp)

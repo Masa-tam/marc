@@ -19502,3 +19502,29 @@ bounds and all category conservation checks pass. Prior diagnostic source and
 artifacts, public source, fixed binaries, qualified libraries and frozen archive
 hashes remain intact. No old build-root CTest, full-suite rerun, new timing,
 fuzz campaign, public admission or external qualification is claimed.
+
+
+## TVG-1260: Counter-free prefix-end complete-owner qualification
+
+Transfer the first-party scalar and streaming-owner tests to the private
+counter-free counterpart. Both release compilers run 25 cases: 23 pass and
+two optional corpus cases skip. Coverage includes exact and one-byte-short
+budgets, live metadata/scratch failure invariance, all-region aliases and unused
+capacity, tails, wide references, nearest ties, all match eligibility policies,
+full-frame token/byte identity, arbitrary small chunks, starvation, flush/end
+behavior, sticky errors and failed-second-frame non-publication.
+
+The optional corpus skips are covered by a separate actual complete-owner
+qualification: twelve members times two profiles times two compilers give
+48 complete encodes and 48 unchanged-owner restorations. Every produced archive
+equals its frozen reference, covering 57 frames, 211938580 raw and 61643620
+archive bytes per traversal set. Both encoders have the same exact query budget
+315365389; decoder budget is 130029573.
+
+The trial, owner and test translation units with the test framework pass the
+same 23 cases under ASan/UBSan; unchanged linked primitives are not newly fully
+instrumented. Initial build/link integration failures were corrected and their
+logs retained. A fresh CMake build of the two new targets passes its one
+aggregate test. No old build-root CTest, new fuzz campaign or external gate is
+claimed. BM-0202 retains every timing observation; its failed initial process
+audit remains an explicit qualification limitation.

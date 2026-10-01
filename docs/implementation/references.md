@@ -10118,3 +10118,12 @@ the admitted five-prefix scalar finder and DD-1367 frozen corpus streams.
 Derive the extra rejection predicate from the necessary byte equality of any
 strictly longer match. No external optimization implementation, expression or
 test suite is consulted.
+
+
+## IR-1152: Counter-free private prefix-end complete owner
+
+Use first-party DD-1392's necessary-byte proof and differential records, the
+admitted five-prefix scalar finder and complete-owner implementation, existing
+owner phase harness, ownership/failure tests and DD-1367 frozen streams. Transfer
+the private counterpart without diagnostic counters and retain the established
+buffer policy. No external optimization implementation or test suite is used.

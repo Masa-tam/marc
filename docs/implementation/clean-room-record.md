@@ -37303,3 +37303,28 @@ both bounds.
   defaults, owner policy, inventory or fixed verification binary changes.
   No speed, process peak, fuzz, external, candidate-admission or legal guarantee
   claim. The extra predicate's elapsed benefit remains unmeasured.
+
+
+## CR-1564: Counter-free prefix-end private complete-owner trial
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized the next development step.
+- Task/prompt: carry DD-1392's necessary-byte predicate into a counter-free
+  complete owner, preserve failure invariance and failed-frame non-publication,
+  qualify complete identity, then record a predeclared performance trial.
+- References: IR-1152/DD-1393 and first-party scalar/owner/phase/test machinery
+  with frozen corpus archives. External implementations and copyleft source or
+  test expression were not consulted.
+- Expression/similarity review: intentional first-party transfer with private
+  symbol renames. Normalized file comparison isolates the sole finder predicate;
+  original ownership, validators, serialization and all other behavior remain.
+- Validation: TVG-1260; 23 passing cases and two optional skips per compiler,
+  partial ASan/UBSan, 48 actual complete encodes/restorations, one fresh aggregate
+  CMake test, frozen-byte equality and preserved source/artifact hashes. Initial
+  build/link failures and the performance audit incident remain recorded.
+- Performance: BM-0202 is exploratory because initial process enumeration
+  failed and an interruption was attempted. All observations are retained;
+  no rerun until success, causal noise attribution or public admission follows.
+- Scope: private support and measurements only; public ABI, representation,
+  defaults, selection, inventory and owner policy remain unchanged. No new
+  external qualification, fuzz campaign or legal guarantee is claimed.

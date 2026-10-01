@@ -28884,3 +28884,39 @@ retained observations before taking any timings. Require all-member identity,
 alias/budget/failure qualification for that counterpart before measuring it.
 No timing or BM record is added in this counter-selectivity stage, and previous
 scratch/prepared candidate exceptions remain unaltered.
+
+
+## DD-1393: Counter-free prefix-end complete-owner trial
+
+Transfer the admitted five-prefix finder, candidate, workspace, raw-frame,
+streaming and owned encoder to separate private benchmark support. Preserve
+their state layout, allocation policy, query arithmetic, insertion order,
+nearest ties, validators and publication contract. The only finder change is
+DD-1392's necessary byte comparison at best-length minus one, after the original
+best-length byte passes and only when best-length exceeds five. There are no
+diagnostic counters or timers inside this counterpart. Normalized first-party
+source comparison checks every transferred file; owner and streaming object
+sizes are also checked at compile time.
+
+TVG-1260 qualifies exact/short budgets, aliases including unused capacity,
+initialization failure invariance, split buffers, frame boundaries and sticky
+states. A failed second frame publishes only the earlier completed frame.
+Both complete encoders charge 315365389 bytes at the measured policy; the
+unchanged decoder charges 130029573. These are query budgets, not process peaks.
+All twelve complete streams equal their frozen references in both compilers.
+
+BM-0202 predeclares three passes, rotating the trial and duplicate admitted
+five-prefix controls, followed by unchanged decoding, with every observation
+retained. The numerical screen requires all 36 trials faster than both controls
+and duplicate-control spread at most two percent. It does not grant public
+admission. The initial process enumeration failed but was erroneously treated
+as an empty process list. An attempted interruption did not stop the controller;
+the original campaign continued without discarded observations or a replacement
+campaign. This audit limitation prevents treating the campaign as qualified
+exclusive admission evidence, regardless of its numerical screen. BM-0202
+records the exploratory results and limitations.
+
+The private trial does not change public selection, ABI, format, defaults,
+inventory or owner policy. Prior scratch/prepared exceptions remain. A future
+protocol must require explicit successful process enumeration and terminate
+before timing on audit errors; no timing-noise cause is inferred here.
