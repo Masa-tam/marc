@@ -36844,3 +36844,28 @@ both bounds.
 - Scope: repeated private phase comparison only. New owner/RSS, full-suite/fuzz,
   public profile and hosted/external qualification are separate. No legal
   guarantee is asserted.
+
+## CR-1542: 2026-10-01 - Private four-MiB five-prefix ownership
+
+- Author and reviewer: Codex; the maintainer authorized the next development stage.
+- References: IR-1131, DD-1371, retained reference workspace/stream/owner code,
+  first-party five-prefix raw adapter and repeated DD-1370 phase evidence.
+- Independent task: add a separate bounded five-prefix query and streaming owner,
+  retain frame-atomic failure publication and compare complete native owners
+  through the same repeated exclusive diagnostic and memory-counter path.
+- Similarity review: new query/stream/owner structures intentionally transfer
+  first-party reference lifecycle, replacing the finder/query/raw adapter and
+  removing selectable reference search. The shared stream header writer and
+  decoder remain unchanged. Diagnostic structure derives from the first-party
+  complete-profile benchmark with a common native Transform interface. No external
+  expression or implementation is used; existing production/reference bodies stay
+  unchanged and new sources link only into private tests and the optional diagnostic.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party optimization/allocation/test structures.
+- Validation: TVG-1238; both compiler tests/smokes and ASan/UBSan pass. Forty-eight
+  separate corpus checks cover 57 frames per compiler with exact frozen streams
+  and restoration. BM-0196 retains all 144 complete-owner observations. Scope,
+  append-only documentation and source/executable/archive identity checks pass.
+- Scope: private owner integration and repeated native comparison. New public
+  admission, full-suite/fuzz and hosted/external qualification are separate.
+  No legal guarantee is asserted.

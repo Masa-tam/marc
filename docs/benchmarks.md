@@ -8433,3 +8433,78 @@ This repeated phase evidence supports private owner integration next, retaining
 the original reference and bounded failure/publication tests. Complete-owner
 throughput and physical-memory effects must be measured after integration;
 this phase result does not establish those gains or public admission.
+
+## BM-0196: Repeated native four-MiB five-prefix owner comparison
+
+DD-1371 uses one common native Transform diagnostic for two duplicate reference
+owners and one private five-prefix owner. All use eligibility three, four-MiB
+frames, known original size and 65,536-byte input/output chunks. Three complete
+twelve-input passes rotate encode order by input and pass. After each encode
+triple, one fresh process measures the unchanged shared decoder. All 144 exclusive
+processes are retained: 108 encode and 36 decode, no warmup or discarded reruns.
+
+Encode/decode times include the owner creation query, allocation/initialization,
+all process calls and destruction. Format configuration, diagnostic query/budget
+search, I/O, sink comparison/capture and report formatting are outside clocks.
+Every encoded byte matches the frozen complete archive, and every decoded byte
+matches the original input. Each corpus observation covers raw 211,938,580 bytes,
+archive 61,643,620 bytes and 57 frames; ratio remains 29.085606%. Both compiler
+verification paths agree; one frozen build supplies the measurements.
+
+| Pass | Reference 0 encode (s) | Reference 1 encode (s) | Trial encode (s) | Reduction vs control mean | Control spread | Shared decode (s) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 502.899270 | 508.404386 | 108.331560 | 78.576% | 1.095% | 6.954504 |
+| 2 | 457.950879 | 469.415062 | 111.729770 | 75.904% | 2.503% | 6.932932 |
+| 3 | 397.976922 | 390.663994 | 87.850007 | 77.721% | 1.872% | 6.931407 |
+
+| Member | Reference 0 mean encode (s) | Reference 1 mean encode (s) | Trial mean encode (s) | Reduction vs control mean |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 46.601838 | 44.919997 | 6.843602 | 85.045% |
+| mozilla | 89.691873 | 88.826559 | 23.896950 | 73.227% |
+| mr | 49.654960 | 48.464771 | 8.931919 | 81.794% |
+| nci | 37.459594 | 38.542895 | 11.254593 | 70.384% |
+| ooffice | 8.311668 | 7.720829 | 1.880784 | 76.538% |
+| osdb | 6.664630 | 5.989862 | 2.661616 | 57.934% |
+| reymont | 32.733579 | 27.895894 | 7.121313 | 76.509% |
+| samba | 23.610648 | 24.242344 | 5.203121 | 78.254% |
+| sao | 9.166008 | 9.760934 | 3.574151 | 62.232% |
+| webster | 144.168200 | 154.797125 | 27.779486 | 81.416% |
+| xml | 1.487569 | 1.491405 | 0.685093 | 54.005% |
+| x-ray | 3.391790 | 3.508531 | 2.804484 | 18.714% |
+
+Across 36 input/pass comparisons, trial beats both controls in 36, loses to both in 0, and lies between them in 0. Maximum per-input/pass encode control spread is 24.850%. All observations are included; no unexplained variability is removed.
+
+Full-frame encode policy budget is 281,286,669 reference versus 315,365,389 trial:
+34,078,720 additional bytes. Raw/serialized storage remains 4,194,304/75,497,557;
+view storage is 201,588,736 reference versus 235,667,456 trial. Shared decode budget
+is 130,029,573 with 4,194,304 raw, 75,497,557 serialized and 50,331,648 token bytes.
+These accepted query thresholds are policy accounting, not physical memory.
+
+Process-memory observations below are maximum lifetime working-set and commit
+peaks across every member/pass, measured in fresh processes. They include input,
+archive and runtime state, and are neither isolated codec RSS nor disk traffic.
+Both file buffers are loaded before codec clocks; counters also retain earlier
+process peaks. Do not subtract separate-process maxima to infer exact allocations.
+
+| Path | Maximum pre-codec working set (bytes) | Maximum process peak working set (bytes) | Maximum process peak commit (bytes) |
+| --- | ---: | ---: | ---: |
+| encode-reference-0 | 74,694,656 | 283,963,392 | 354,398,208 |
+| encode-reference-1 | 74,694,656 | 283,971,584 | 354,406,400 |
+| encode-five-prefix | 74,686,464 | 318,058,496 | 388,517,888 |
+| decode-five-prefix | 74,678,272 | 132,734,976 | 202,850,304 |
+
+Only this common-path owner comparison establishes these observed differences.
+Do not compare BM-0193 or phase BM-0194/0195 totals as another speedup or subtract
+them to infer ownership overhead. Their different paths, storage and timing
+boundaries do not isolate those causes; the historical absolute-time disparity
+remains unverified. Shared decoder times are absolute observations, not a new
+decoder optimization. Public admission and revision-specific external
+qualification remain separate from this private integration.
+
+All 36 comparisons beat both controls, but time varies across passes and some
+duplicate controls differ substantially. Their cause has not been isolated.
+Next split native owner creation, process/frame preparation and destruction
+through a separate diagnostic before attributing the variability or transferring
+prepared-model/scratch optimizations. Keep the reference and all observations;
+the repeated relative gains are evidence for this private owner, not a precise
+hardware-independent performance guarantee or public admission.

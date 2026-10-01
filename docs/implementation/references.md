@@ -9962,3 +9962,9 @@ Use first-party DD-1368 phase timing and DD-1369 exact five-prefix helpers,
 retained scalar frame coding and frozen reference archives. The token oracle
 uses the bounded repository decoder. No external codec or profiling structure
 is consulted.
+
+## IR-1131: Private four-MiB five-prefix stream ownership
+
+Use first-party DD-1366 reference stream/workspace/owner lifecycle and DD-1369
+five-prefix raw-frame helpers. DD-1370 supplies repeated phase evidence. No
+external codec, allocation or optimization implementation is consulted.

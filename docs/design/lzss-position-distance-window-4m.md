@@ -173,3 +173,29 @@ This repeated phase evidence supports private owner integration next, retaining
 the original reference and bounded failure/publication tests. Complete-owner
 throughput and physical-memory effects must be measured after integration;
 this phase result does not establish those gains or public admission.
+
+DD-1371 and TVG-1238 add a separate private five-prefix encode query, borrowed
+streaming encoder and owned wrapper. Existing reference query/owner and decoder
+remain unchanged. Partial-buffer/flush/finish/alias/budget tests preserve complete
+frame publication; a later failure leaves only earlier frames published. Both
+compiler builds reproduce all twelve frozen streams and restore 57 frames.
+BM-0196 measures complete native owners with duplicate controls and rotated
+exclusive passes, including creation and destruction. Policy budgets and physical
+process peaks remain separate. Public profile admission and external qualification
+remain later stages; the qualified one-MiB profile is unchanged.
+
+The repeated complete-owner comparison records 75.904% to 78.576%
+aggregate encode reduction against the control mean. The trial beats both
+controls in 36 of 36 input/pass comparisons, loses to both in 0
+and lies between in 0; maximum control spread is 24.850%.
+Retain all observations and the larger memory budget. Future finder/model work
+must preserve exact complete streams and failure publication; public admission
+requires separate qualification.
+
+All 36 comparisons beat both controls, but time varies across passes and some
+duplicate controls differ substantially. Their cause has not been isolated.
+Next split native owner creation, process/frame preparation and destruction
+through a separate diagnostic before attributing the variability or transferring
+prepared-model/scratch optimizations. Keep the reference and all observations;
+the repeated relative gains are evidence for this private owner, not a precise
+hardware-independent performance guarantee or public admission.

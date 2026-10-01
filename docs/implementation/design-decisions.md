@@ -27974,3 +27974,54 @@ This repeated phase evidence supports private owner integration next, retaining
 the original reference and bounded failure/publication tests. Complete-owner
 throughput and physical-memory effects must be measured after integration;
 this phase result does not establish those gains or public admission.
+
+## DD-1371: Separate private four-MiB five-prefix encoder ownership
+
+Repeated DD-1370 comparisons support transferring exact five-prefix selection
+into a private streaming owner. Add separate encode query/partition/charge,
+borrowed streaming encoder and owned wrapper; preserve the reference helpers,
+owners and their smaller workspace layout. Keep the existing decoder and exact
+stream header/frame representation. Public selectors, defaults and ABI stay
+unchanged; this is not public four-MiB admission.
+
+For configured frame size F, retain F raw bytes, 18F+85 serialized bytes, F token
+slots and 2F operation slots. Use alignment-checked offsets and a five-prefix
+index of 12*(65,536+F) bytes for F>=3, zero otherwise. Charge checked concrete
+owner/model state and every supplied raw/serialized/view capacity before
+allocation or partition publication. Query and partition outputs stay unchanged
+on failure; the larger concrete finder state must fit the charged model bound.
+
+The owner snapshots configuration, checks the full query, then allocates once.
+Process never allocates or grows buffers. Borrowed storage and the object remain
+disjoint from process buffers. Fixed exact five-prefix search supports eligibility
+3/4/5 and preserves nearest ties. Retain reference lifecycle: Flush preserves
+frames, ResetBlock is unsupported, final input suffixes must be resubmitted with
+EndInput, latched final draining need not repeat the flag, and ended/error states
+remain sticky. Prepare each frame once, retain selected tokens through unchanged
+scalar coding and publish only after the raw-frame helper succeeds. Earlier
+committed frames survive a later failure; a failed frame publishes no bytes.
+
+Validate bounded layouts, exact/one-under budgets, overflow/alignment/aliases,
+partial buffers and full/final frame boundaries before complete-stream corpus
+verification. Complete-owner timing must compare reference and trial through
+identical repeated exclusive paths, including query/allocation/process/destruction,
+with physical process memory reported separately. Phase gains do not establish
+owner throughput or memory effects. Scratch reuse and prepared-model transfer
+remain subsequent optimizations.
+
+
+The repeated complete-owner comparison records 75.904% to 78.576%
+aggregate encode reduction against the control mean. The trial beats both
+controls in 36 of 36 input/pass comparisons, loses to both in 0
+and lies between in 0; maximum control spread is 24.850%.
+Retain all observations and the larger memory budget. Future finder/model work
+must preserve exact complete streams and failure publication; public admission
+requires separate qualification.
+
+All 36 comparisons beat both controls, but time varies across passes and some
+duplicate controls differ substantially. Their cause has not been isolated.
+Next split native owner creation, process/frame preparation and destruction
+through a separate diagnostic before attributing the variability or transferring
+prepared-model/scratch optimizations. Keep the reference and all observations;
+the repeated relative gains are evidence for this private owner, not a precise
+hardware-independent performance guarantee or public admission.

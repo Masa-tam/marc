@@ -18895,3 +18895,42 @@ per-frame timings and control spread; no observations are discarded. BM-0195
 reports candidate, coding and additive totals separately. This is targeted
 diagnostic verification, not a new full codec suite, fuzz campaign, public
 admission or hosted/external qualification.
+
+## TVG-1238: Private four-MiB five-prefix owner and complete-stream comparison
+
+Transfer first-party reference streaming tests into a separate private five-prefix
+suite while retaining reference raw/frame oracles. Cover empty/single/boundary
+inputs, frame sizes 1/3/21/257 and the full four-MiB size, eligibility 3/4/5,
+one-byte input/output and every small input chunk, variable chunks and zero output
+capacity. Flush preserves frames; input/output starvation never repeats frame
+preparation. Test delayed and latched EndInput, wrong final sizes, unsupported
+flags/ResetBlock, sticky errors/ended state and all live process-region aliases.
+
+Verify exact query and one-byte-under owner creation, short buffers, overflow,
+misalignment, configuration/metadata aliases and extra raw/serialized/view
+capacity charges. Failed query/partition outputs remain unchanged. Full layout
+retains raw/serialized/token/operation bounds and adds only the larger finder
+index. A second-frame expansion-limit failure emits only the earlier successful
+frame and keeps all remaining output sentinel bytes unchanged. Owned streams
+round-trip through the unchanged decoder at full/final boundaries.
+
+Both targeted compiler runs pass 142 tests, with four optional diagnostics skipped
+in the 146-case run. ASan/UBSan passes 216 tests, with those same four skipped in
+the 220-case run. Both complete-owner diagnostic smokes pass all three labels,
+verify/encode/decode modes and empty/A259/mixed inputs with identical stream bytes;
+explicitly instrumented diagnostic smokes also pass ASan/UBSan. Existing optional
+getenv and test-framework compiler warnings remain; no warning-free claim is made.
+
+Separately verify the maintained twelve-member corpus and frozen reference archive
+hashes. Twenty-four optional owner tests and twenty-four complete-stream diagnostic
+checks cover 57 frames per compiler, raw 211,938,580 and archive 61,643,620 bytes.
+Both compiler builds emit exact frozen complete streams and restore all raw bytes;
+counts and trial query budget 315,365,389 agree. Newly captured diagnostic streams
+use separate destinations; frozen reference archives are preserved.
+
+After verification and process audit, three rotated exclusive complete-owner
+passes retain 108 encode and 36 shared-decoder observations, without warmup or
+discarded reruns. Every emitted byte and restored byte matches. BM-0196 reports
+create/query/allocation/process/destruction time, workspace policy and whole-process
+memory peaks separately. No new full codec suite, fuzz campaign, public profile
+or hosted/external qualification is claimed.
