@@ -37191,3 +37191,21 @@ both bounds.
   preserved. Documentation is append-only without local environment details.
 - Remaining gates: actual-revision hosted CI and maintainer external exchange.
   No new performance/fuzz/full-window coverage or legal guarantee is asserted.
+
+
+## CR-1559: Schema-60 external evidence reconciliation
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer supplied the external results.
+- Task: record four reported 70-archive verifications for exact implementation
+  revision `02916f6fbf5ab6544d42fe432d019f91d088c2f6` and established route roles.
+- References: first-party DD-1387/IX-0055 and the maintainer's reports/earlier
+  role clarification; no external implementation source consulted.
+- Validation: DD-1388/IX-0056/TVG-1255. The four-direction external exchange gate
+  and successful GitHub CI completion were confirmed by the maintainer for the
+  same revision, closing the CI/external gate as reported. Independent rerun
+  and full-window coverage are not inferred. Documentation links/order and append-only scope
+  checked; all non-documentation source and qualified binary hashes preserved.
+- Scope: evidence only. Codec, format, ABI, limits, defaults, inventory and
+  release state remain unchanged. No new source similarity, performance, fuzz
+  coverage or legal guarantee is claimed.

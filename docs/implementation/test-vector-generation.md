@@ -19345,3 +19345,20 @@ assertion later failed and its transcript/incident remain retained. Previous
 codec/API/executable/reference-archive hashes are preserved. No new native
 full-suite, fuzz, timing or full-window exchange claim is made. DD-1386 carries
 separate native/full-window evidence; hosted/external qualification is pending.
+
+
+## TVG-1255: Maintainer-reported schema-60 external exchange
+
+On 2026-10-02 the maintainer supplied four successful results, each verifying
+70 archives at `02916f6fbf5ab6544d42fe432d019f91d088c2f6`. The established roles
+are Windows CI to Ubuntu, Ubuntu CI to Ubuntu, external Ubuntu Clang self-use,
+and the same external bundle transferred to Windows. The duplicate producer
+labels represent different consumers. IX-0056 preserves this attribution.
+
+These reports qualify the four external exchange directions for the existing
+schema-60 fixture and revision. They are not independently rerun here. Prior
+local complete-corpus/window tests, schema 1 through 60 compatibility and
+rehashed/reordered negatives remain separate. The maintainer subsequently
+confirmed successful GitHub CI completion for the same revision, closing the
+revision-specific CI and external exchange gate as reported. No new native, timing,
+fuzz, full-window or architecture coverage is claimed.

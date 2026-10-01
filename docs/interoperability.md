@@ -1407,3 +1407,30 @@ pending for the actual schema-60 revision:
 
 Earlier 69-archive reports do not qualify this new archive or revision. Local
 cross-compiler checks do not substitute for those external results.
+
+
+### IX-0056: Schema 60 four-direction external verification reported
+
+On 2026-10-02 the maintainer reported four successful verification results for
+revision `02916f6fbf5ab6544d42fe432d019f91d088c2f6`, each identifying 70 archives.
+Following the previously clarified producer/consumer roles, the results are:
+
+| Route | Producer | Consumer | Verified archives |
+| --- | --- | --- | --- |
+| 1 | Windows CI | Ubuntu | 70 |
+| 2 | Ubuntu CI | Ubuntu | 70 |
+| 3 | External Ubuntu Clang | Same Ubuntu environment | 70 |
+| 4 | Same external Ubuntu Clang bundle | Windows after transfer | 70 |
+
+The last two equal producer labels represent one bundle and two consumers,
+rather than two independently produced bundles. These are maintainer-reported
+results; the external executions were not independently rerun here.
+
+The reports close DD-1387's four-direction external exchange gate for schema 60
+at that exact implementation revision. They do not assert full-window coverage
+from the 8193-byte fixture; DD-1386's corpus/window tests and DD-1387's local
+inventory/negative tests remain separate evidence. The maintainer subsequently
+confirmed successful GitHub CI completion for the same revision. Together these
+reports close DD-1387's revision-specific CI and external exchange gate.
+This evidence update changes no codec, format, ABI, limits, defaults,
+archive inventory or release state.

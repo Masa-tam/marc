@@ -28685,3 +28685,16 @@ Local schema-60 integration is qualified for these tests. The complete compiler
 regression suites from DD-1386 remain separate evidence; they were not rerun in
 this script-only stage. New hosted CI and four maintainer external routes must
 still qualify the actual committed revision before closing the exchange gate.
+
+
+## DD-1388: Record schema-60 external verification evidence
+
+Record the maintainer's four 70-archive results for exact implementation revision
+`02916f6fbf5ab6544d42fe432d019f91d088c2f6` using the existing producer/consumer
+roles. The maintainer also confirmed successful GitHub CI completion for the
+same revision. IX-0056/TVG-1255 close its CI and four-direction external exchange
+gate as reported. These are not independent reruns or full-window tests.
+Retain the earlier local/native/fuzz
+and archive-prefix evidence and the recorded detail-log preservation incident.
+Make no implementation, representation, API, default, release or new optimization
+decision in this documentation-only update.
