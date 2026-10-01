@@ -10026,3 +10026,10 @@ implementation or optimization source is consulted.
 Use first-party scalar five-prefix lifecycle/workspace, DD-1378 finder-scratch
 helpers, common native owner diagnostic and frozen reference archives.
 No external implementation or optimization source is consulted.
+
+
+## IR-1140: Independent repetition of private four-MiB finder-scratch measurement
+
+Use first-party DD-1379/BM-0200 common owner diagnostic, validated scalar and
+finder-scratch paths, frozen archives and previous complete observations.
+No external implementation or optimization source is consulted.

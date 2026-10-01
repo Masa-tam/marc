@@ -8818,3 +8818,112 @@ system, cache or processor cause or architecture-independent gain is inferred.
 Prior mapping-only candidate and all diagnostics remain preserved. Public
 admission, full-suite/fuzz and external qualification are
 separate stages.
+
+
+## BM-0201: Predeclared complete finder-scratch owner repetition
+
+Use the same DD-1379/BM-0200 native executable and validated sources without
+rebuilding or modifying the codec. Reverse all twelve corpus members and use
+the complementary three permutations of two scalar five-prefix controls and
+the finder-scratch candidate. Three complete passes run 144 fresh exclusive
+processes, including 36 unchanged-decoder observations. No concurrent builds or
+tests, warmup, discarded observations or selected favourable reruns. Every stream
+matches frozen bytes and restores raw data; I/O, capture, queries and validation
+remain outside disjoint create/process/destroy clocks. Preparation classifies
+whole boundary calls including search, mapping, range coding and same-call drain.
+
+| Pass | Scalar 0 seconds | Scalar 1 seconds | Finder scratch seconds | Reduction versus control mean |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 88.8211713 | 89.9196927 | 83.7445270 | 6.2950% |
+| 2 | 92.0281719 | 92.2275925 | 85.5511094 | 7.1387% |
+| 3 | 90.2317418 | 92.2267965 | 83.5905327 | 8.3731% |
+
+Raw/archive bytes per pass remain 211,938,580/61,643,620 (29.0856% archived size).
+New evidence: 36 wins against both controls, 0 losses against both and 0 intermediate observations. Maximum member/pass control spread:
+17.2098%. The independent repetition improves against both controls in all 36 comparisons.
+Combined BM-0200/BM-0201 evidence: 71/72 wins, 0 losses and 1 intermediate observations; the historical nci intermediate
+observation is preserved. Public admission and the original strict comparison
+condition are not silently changed by this repetition.
+
+New exceptions retained: None.
+
+| Member | Mean reduction | Minimum | Maximum | Wins/losses/intermediate |
+| --- | ---: | ---: | ---: | ---: |
+| x-ray | 22.2410% | 17.9640% | 25.4307% | 3/0/0 |
+| xml | 7.7153% | 6.4495% | 8.3604% | 3/0/0 |
+| webster | 3.6631% | 2.9175% | 4.1947% | 3/0/0 |
+| sao | 15.1759% | 12.2532% | 17.8401% | 3/0/0 |
+| samba | 9.7641% | 8.4908% | 10.6251% | 3/0/0 |
+| reymont | 5.1510% | 2.2189% | 9.6558% | 3/0/0 |
+| osdb | 15.7702% | 9.8479% | 20.3740% | 3/0/0 |
+| ooffice | 13.6317% | 10.9367% | 15.9649% | 3/0/0 |
+| nci | 3.7732% | 2.0559% | 6.9537% | 3/0/0 |
+| mr | 4.4361% | 2.6467% | 7.1363% | 3/0/0 |
+| mozilla | 9.4325% | 6.9857% | 12.9730% | 3/0/0 |
+| dickens | 8.8993% | 6.2608% | 13.9337% | 3/0/0 |
+
+| Pass | Member | Scalar 0 seconds | Scalar 1 seconds | Trial seconds | Control spread |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 1 | x-ray | 2.3581920 | 2.4685671 | 1.7996396 | 4.6805% |
+| 1 | xml | 0.6217800 | 0.6297875 | 0.5736185 | 1.2878% |
+| 1 | webster | 22.7078633 | 23.6317152 | 22.4938159 | 4.0684% |
+| 1 | sao | 2.7705936 | 2.7771144 | 2.4339669 | 0.2354% |
+| 1 | samba | 4.7857985 | 4.8018280 | 4.3867790 | 0.3349% |
+| 1 | reymont | 5.8790748 | 5.9887808 | 5.7216021 | 1.8660% |
+| 1 | osdb | 2.0961328 | 2.0397916 | 1.7145751 | 2.7621% |
+| 1 | ooffice | 1.6045124 | 1.5945343 | 1.3441611 | 0.6258% |
+| 1 | nci | 9.9759704 | 10.0066392 | 9.7858971 | 0.3074% |
+| 1 | mr | 8.2149387 | 8.3153760 | 7.9737944 | 1.2226% |
+| 1 | mozilla | 22.6992871 | 22.5753179 | 20.7496226 | 0.5491% |
+| 1 | dickens | 5.1070277 | 5.0902407 | 4.7670547 | 0.3298% |
+| 2 | x-ray | 2.3492432 | 2.3552708 | 1.8035159 | 0.2566% |
+| 2 | xml | 0.6204472 | 0.6164035 | 0.5785398 | 0.6560% |
+| 2 | webster | 24.8949890 | 24.8072269 | 23.8086760 | 0.3538% |
+| 2 | sao | 2.9123328 | 2.7843815 | 2.3402082 | 4.5953% |
+| 2 | samba | 5.0302299 | 4.8421163 | 4.4338500 | 3.8849% |
+| 2 | reymont | 5.8596563 | 5.8682607 | 5.7338434 | 0.1468% |
+| 2 | osdb | 2.0791665 | 2.3174805 | 1.7504366 | 11.4620% |
+| 2 | ooffice | 1.6123427 | 1.6214681 | 1.4400696 | 0.5660% |
+| 2 | nci | 10.4870203 | 10.4403771 | 10.2219982 | 0.4468% |
+| 2 | mr | 8.6890315 | 8.3092397 | 7.8926085 | 4.5707% |
+| 2 | mozilla | 22.3969793 | 22.2914983 | 20.7833318 | 0.4732% |
+| 2 | dickens | 5.0967332 | 5.9738691 | 4.7640314 | 17.2098% |
+| 3 | x-ray | 2.3845775 | 2.5403092 | 2.0200898 | 6.5308% |
+| 3 | xml | 0.6252193 | 0.6252789 | 0.5729757 | 0.0095% |
+| 3 | webster | 24.0628130 | 23.3572670 | 22.7907711 | 3.0207% |
+| 3 | sao | 2.8621554 | 2.8376644 | 2.4100445 | 0.8631% |
+| 3 | samba | 4.8997513 | 4.9409980 | 4.3975783 | 0.8418% |
+| 3 | reymont | 6.0108761 | 6.7602808 | 5.7689980 | 12.4675% |
+| 3 | osdb | 2.0563102 | 2.1066912 | 1.8765170 | 2.4501% |
+| 3 | ooffice | 1.6499055 | 1.6661180 | 1.4259967 | 0.9826% |
+| 3 | nci | 11.2727494 | 10.0082913 | 9.9006106 | 12.6341% |
+| 3 | mr | 8.2001027 | 8.1953626 | 7.9807620 | 0.0578% |
+| 3 | mozilla | 21.1034090 | 24.1159334 | 19.6765163 | 14.2751% |
+| 3 | dickens | 5.1038724 | 5.0726017 | 4.7696727 | 0.6165% |
+
+| Pass | Control mean preparation seconds | Trial preparation seconds | Control mean other seconds | Trial other seconds |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 89.0062940 | 83.3799447 | 0.3641379 | 0.3645823 |
+| 2 | 91.7652513 | 85.1859781 | 0.3626309 | 0.3651313 |
+| 3 | 90.8671412 | 83.2298143 | 0.3621280 | 0.3607184 |
+
+Other seconds sum creation, collection/drain and destruction. These are complete
+owner observations; no isolated inner-loop or window-size-only speed is inferred.
+Fixed workspace policy remains 315365389 bytes for both encoders and 130029573
+for the unchanged decoder. Its corpus seconds per pass are
+6.8764914, 6.8846134, 6.9496224;
+no decoder optimization is claimed.
+
+| Mode/profile | Maximum process peak working set bytes | Maximum process peak commit bytes |
+| --- | ---: | ---: |
+| encode/reference-0 | 318164992 | 388546560 |
+| encode/reference-1 | 318169088 | 388562944 |
+| encode/finder-scratch | 318107648 | 388567040 |
+| decode/finder-scratch | 132804608 | 202858496 |
+
+Memory counters are whole-process peaks including input, archive and runtime,
+separate from fixed workspace policy. They are not codec-only RSS; independently
+observed maxima are not subtracted. Source/executable/frozen archive/prior artifact
+identities and all rotation, budget, frame and phase checks pass. Variation causes
+remain unverified. No implementation change, public/default switch, new full-suite,
+fuzz or external qualification occurs. All earlier evidence remains intact.

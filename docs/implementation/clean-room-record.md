@@ -37040,3 +37040,20 @@ both bounds.
   identity and append-only documentation checked before local commit.
 - Scope: private ownership and native comparison, with no public factory,
   external qualification or legal guarantee asserted.
+
+
+## CR-1551: 2026-10-01 - Predeclared private finder-scratch reproducibility check
+
+- Author/reviewer: Codex; maintainer approved progression.
+- References: IR-1140, first-party DD-1379/BM-0200 native common owner diagnostic,
+  qualified sources/executables and frozen reference archives.
+- Independent decisions/task: preserve the implementation and previous evidence,
+  predeclare one complete repetition with reversed corpus order and complementary
+  label permutations; retain all observations and the original intermediate case.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft code and third-party optimization/profiling structures.
+- Validation: TVG-1247; source/executable/corpus/archive/prior artifact identity,
+  all 144 byte/restoration/budget/frame/clock checks and append-only records.
+  BM-0201 records the complete verdict, separate from historical BM-0200.
+- Scope: reproducibility evidence only. No codec change, public admission,
+  selected rerun, new external qualification or legal guarantee is asserted.

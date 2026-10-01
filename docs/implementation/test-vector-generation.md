@@ -19137,3 +19137,21 @@ compiler. Source/archive and executable identities are checked before timing.
 All 144 fresh exclusive observations retain byte/restoration equality, budget
 315365389, frame counts, rotation, disjoint phase and per-frame sums. BM-0200
 reports results. No new full-suite/fuzz or external qualification is claimed.
+
+
+## TVG-1247: Complete finder-scratch independent measurement repetition
+
+Reuse the DD-1379 qualified native executable, scalar controls, unchanged
+decoder and frozen archives. Check executable, all tracked implementation and
+test sources, corpus members, archived streams and prior artifact identities.
+No codec source or test changes require rebuilding; the prior compiler/sanitizer
+qualification remains linked evidence, not newly rerun tests.
+
+Three complete passes reverse member order and use the complementary three
+label permutations. All 144 fresh exclusive processes check exact frozen stream
+bytes and restored raw bytes outside clocks, the fixed encode/decode budgets
+315365389/130029573, frame/preparation counts, phase/per-frame sums and process
+memory availability. Each encode pass covers all twelve members and 57 frames,
+211,938,580 raw and 61,643,620 archive bytes. Retain all observations, including
+intermediate or losing cases, together with BM-0200. BM-0201 reports the result.
+No new full-suite, fuzz, cross-compiler or external qualification is claimed.

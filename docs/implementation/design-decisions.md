@@ -28328,3 +28328,41 @@ phase/per-frame sums and process memory counters. The trial does not satisfy the
 Public factory admission remains separate. The earlier
 mapping-only/range-only candidates and all old diagnostics remain intact. No operating
 system/cache/processor cause is inferred from timing variability.
+
+
+## DD-1380: Predeclared complete finder-scratch reproducibility check
+
+BM-0200 reduced complete encode time by 6.14 to 7.70 percent, with 35 of 36
+comparisons faster than both controls and one intermediate observation. The
+intermediate second-pass nci trial was 0.0028866 seconds slower than the faster
+control, whose pair differed by 6.2213 percent. The cause is unverified.
+
+Run exactly one independent complete repetition with the unchanged validated
+native executable and sources. Reverse the corpus member order and use the
+complementary three permutations of the two scalar controls and finder-scratch
+candidate, rotating per member/pass. Predeclare three complete passes and 144
+fresh exclusive processes, including unchanged-decoder observations. Keep all
+streams byte-identical and restored, with identical budget/frame counts and
+common lifecycle/phase clocks; I/O and validation remain outside clocks.
+No builds or tests run concurrently, no warmup, discarded observation or selected
+favourable rerun. Preserve BM-0200 and all artifacts without replacement.
+
+Report aggregate and every member/pass result, control spread and process memory.
+Use the unchanged both-controls comparison rule for the new 36 comparisons and
+report the combined 72 comparisons without erasing the original exception.
+This stage tests repeatability, not a new implementation. No default/factory
+admission or environment-cause inference follows automatically, even if the
+independent repetition improves against both controls throughout.
+
+
+DD-1380 result: all 144 predeclared exclusive observations preserve frozen
+streams, restoration, budget, frame counts and common phase/per-frame sums.
+The same validated executable and sources remain unchanged; prior observations
+and all artifacts are retained. Aggregate time reductions versus control mean
+are 6.2950%, 7.1387%, 8.3731%. New comparisons: 36 wins against both controls, 0 losses against both and 0 intermediate observations; combined evidence:
+71/72 wins, 0 losses and 1 intermediate observations. The independent repetition improves against both controls in all 36 comparisons.
+
+BM-0201 reports every member/pass exception and control spread. The original
+BM-0200 intermediate nci observation remains part of the evidence. No source
+change, selected rerun, default switch or public admission occurs. Variation
+causes remain unverified; repeated timing alone does not establish them.
