@@ -28839,3 +28839,48 @@ Its effectiveness and overhead are unverified. Prove complete identity and
 failure guards before any predeclared exclusive complete-owner timing trial.
 No speed trial, new public selection or previous candidate admission occurs
 in this classification stage.
+
+
+## DD-1392: Private necessary-byte probe before match extension
+
+Create a separate private counter trial; retain DD-1391's diagnostic baseline
+and every public codec source unchanged. After the existing best-length byte
+passes, check the byte at best-length minus one only when the current best
+length exceeds five. A strictly longer match must agree at both offsets;
+rejecting a mismatch cannot discard an improving candidate. Keep the original
+five-byte prefix validation and scalar extension after both probes pass.
+Lengths through five, short tails and initial length-four candidates use the
+original path. Nearest equal-length ties remain unchanged because the existing
+best-length byte still rejects exact ties before the new probe.
+
+The best is strictly below the maximum whenever another candidate is examined;
+a maximum-length update immediately stops traversal. Both probe positions are
+inside the input, and candidate positions precede the current position. The
+new probe neither changes insertion nor candidate traversal. Do not reinterpret
+the prior filter as a complete-prefix proof or remove the extension validator.
+
+Add instance-local comparison/rejection counters for this probe; include the
+rejection category in the conserved candidate partition. Its counter instance
+is 424 bytes and the split harness codec charge 315365237, sixteen more than
+DD-1391; full-frame arrays remain 51118080. Query arithmetic, metadata/input
+alias validation, initialization failure invariance and successful reset rules
+remain intact. These diagnostic state charges are not public owner policy or
+measured process peaks. Counter overflow saturation remains explicit.
+
+TVG-1259 qualifies both compilers on 678 cases, twelve complete corpus members,
+57 frames, frozen token/frame/raw equality and unchanged baseline match-update,
+chain-visit, insertion, best-length-rejection and improving-extension counts.
+The probe performs 1006653744 comparisons and rejects 559581648 candidates.
+Extension comparisons decrease from 9645789313 to 5268477052, by 45.3805502
+percent; non-improving comparisons decrease by 46.4725631 percent. There is
+additional probe work, and chain visits remain unchanged. These counts do not
+predict elapsed-time savings, memory/cache effects or a complete-owner gain.
+
+This candidate is eligible for a separate performance trial, not public
+admission. Next create a counter-free private counterpart with identical
+predicate and preserved ownership/buffer policy. Predeclare exclusive fresh
+complete-owner comparisons, duplicate controls, member/pass rotation and all
+retained observations before taking any timings. Require all-member identity,
+alias/budget/failure qualification for that counterpart before measuring it.
+No timing or BM record is added in this counter-selectivity stage, and previous
+scratch/prepared candidate exceptions remain unaltered.

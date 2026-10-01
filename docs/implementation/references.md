@@ -10109,3 +10109,12 @@ the unchanged admitted scalar finder, DD-1367 frozen token/frame/raw oracles and
 existing failure guards. Derive the classification from this repository's own
 ordered best-length filter, prefix comparison and extension loop. No external
 implementation, optimization expression or test suite is consulted.
+
+
+## IR-1151: Four-MiB private additional prefix-end probe
+
+Use first-party DD-1391 candidate classification, DD-1390 diagnostic machinery,
+the admitted five-prefix scalar finder and DD-1367 frozen corpus streams.
+Derive the extra rejection predicate from the necessary byte equality of any
+strictly longer match. No external optimization implementation, expression or
+test suite is consulted.

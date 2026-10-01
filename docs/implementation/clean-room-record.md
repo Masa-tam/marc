@@ -37277,3 +37277,29 @@ both bounds.
   defaults, owner policy, inventory or fixed verification binary changes.
   No new speed, peak-memory, fuzz, external, candidate-admission or legal
   guarantee claim. A possible extra rejection predicate remains unmeasured.
+
+
+## CR-1563: Private necessary-byte rejection trial
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized the next development step.
+- Task/prompt: prototype a necessary byte comparison at best-length minus one,
+  qualify complete identity and failure guarantees, and determine selectivity
+  before an independent complete-owner performance trial.
+- References: IR-1151/DD-1392, first-party classification/finder/guard machinery
+  and frozen scalar streams. External implementations, including copyleft
+  source/test expression, were not consulted.
+- Expression/similarity review: intentional first-party diagnostic transfer
+  into a separate target, with privately renamed symbols and one independently
+  derived rejection predicate. Baseline diagnostic and public implementation
+  remain intact. The original traversal, nearest tie, insertion, validator and
+  serialization expression are preserved and differentially checked.
+- Validation: TVG-1259; 678 cases per compiler and partial ASan/UBSan, complete
+  twelve-member frozen token/frame/raw identity, unchanged improving/traversal
+  counts, conserved selectivity counters, public guard and malformed-report
+  tests, fresh targeted CMake checks and prior source/artifact hashes. An initial
+  test-transfer compile error was corrected; its build log was retained.
+- Scope: private counter trial only. No public ABI, format, codec selection,
+  defaults, owner policy, inventory or fixed verification binary changes.
+  No speed, process peak, fuzz, external, candidate-admission or legal guarantee
+  claim. The extra predicate's elapsed benefit remains unmeasured.

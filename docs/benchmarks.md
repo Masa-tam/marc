@@ -8993,3 +8993,35 @@ measure elapsed costs or predict a speed gain. A private additional necessary
 byte check may reject some shorter candidates before extension, but its cost
 and selectivity require differential qualification and a separate declared
 performance trial. Earlier scratch/prepared exceptions and non-admission remain.
+
+
+### Four-MiB private prefix-end probe selectivity (DD-1392)
+
+This separate counter trial takes no clocks and preserves the DD-1391 baseline.
+All twelve members, 57 frames and complete token/frame/raw identity pass in both
+compilers. The additional probe checks best-length minus one after the original
+best-length byte passes, only when the best exceeds five. It performs 1006653744
+comparisons and rejects 559581648 candidates, 55.5882945 percent of its probes.
+
+| Operation | DD-1391 baseline | Private probe trial |
+| --- | ---: | ---: |
+| Extension attempts | 1013986492 | 459754194 |
+| Five-byte prefix rejections | 9841253 | 4491903 |
+| Five-byte prefix comparisons | 5080082336 | 2303373506 |
+| Improving extension comparisons | 226656894 | 226656894 |
+| Non-improving extension comparisons | 9419132419 | 5041820158 |
+| Total extension comparisons | 9645789313 | 5268477052 |
+| Five-byte chain visits | 21577377133 | 21577377133 |
+| Current-best improvements | 22135643 | 22135643 |
+
+Extension comparisons decrease by 4377312261, or 45.3805502 percent, with
+1006653744 added probe comparisons. Non-improving extension work decreases
+46.4725631 percent. Distinct operations are not converted into elapsed costs
+or a speed forecast. Unchanged chain visits remain substantial, and the extra
+comparison has overhead. The 424-byte counter finder raises this split-harness
+codec charge by sixteen bytes to 315365237; public owner policy is unchanged.
+
+Proceed to a separately qualified counter-free private complete-owner trial
+with a predeclared exclusive protocol before deciding adoption. No new timing,
+BM record, measured process peak, throughput benefit or public admission is
+claimed here. Previous scratch/prepared exceptions remain unchanged.

@@ -19462,3 +19462,43 @@ Prior records, binaries, qualified libraries, test logs and frozen archives
 retain their hashes. Existing public factory failure/publication tests pass
 14 cases per compiler. No old build-root CTest, full-suite rerun, new timing,
 fuzz campaign or external qualification is claimed.
+
+
+## TVG-1259: Private prefix-end probe differential and selectivity
+
+Transfer first-party TVG-1258's 676 bounded diagnostic cases to the separate
+trial with its enlarged instance query and conserved new rejection category.
+Retain exact-budget/one-byte-short, live finder/counter/scratch failure
+invariance, input/metadata aliases, alignment, variant/size limits, invalid
+sequence/reset, nearest ties, wide references, small windows/tails, full-frame
+and admitted finder match/insertion-array differential.
+
+Add a length-eight-best fixture where an older candidate's byte at offset eight
+matches, but its offset-seven byte differs: one new probe rejection eliminates
+its length-six extension while preserving the length-eight match. The original
+fixture with matching offset seven still performs that shorter extension.
+Adjust only the generated hash-collider's later offset-seven byte to pass the
+new probe, preserving the independent five-byte-prefix rejection assertion.
+A five-byte best with a six-byte final suffix checks that the new probe is not
+used. These additions make 678 cases per compiler.
+
+Both release compilers and ASan/UBSan-instrumented trial/test/admitted-finder
+translation units pass 678 cases. Unchanged linked validator dependencies are
+not claimed as a new fully instrumented public decoder or fuzz campaign.
+Fresh CMake integration passes the two new targeted tests; the other compiler
+also passes the smoke script. Empty/repeated/patterned inputs pass; malformed
+header/truncation/trailing archives fail without report output. Argument,
+missing-file and bounded input/archive negatives pass, four per compiler.
+Existing public factory failure/publication tests pass 14 cases per compiler.
+
+Twenty-four fresh-process corpus traversals compare all twelve frozen streams,
+57 frames per compiler, 211938580 raw and 61643620 archive bytes per traversal
+set. Every token field, encoded frame and restored byte matches. New counters
+agree across compilers. Per-frame chain visits, insertion, find/advance calls,
+best-length rejections, match improvements and improving-extension work equal
+DD-1391 exactly. Prefix/extension work never increases; probe rejections equal
+the removed prefix rejections plus removed extension attempts. Aggregate uint64
+bounds and all category conservation checks pass. Prior diagnostic source and
+artifacts, public source, fixed binaries, qualified libraries and frozen archive
+hashes remain intact. No old build-root CTest, full-suite rerun, new timing,
+fuzz campaign, public admission or external qualification is claimed.
