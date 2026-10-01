@@ -18934,3 +18934,22 @@ discarded reruns. Every emitted byte and restored byte matches. BM-0196 reports
 create/query/allocation/process/destruction time, workspace policy and whole-process
 memory peaks separately. No new full codec suite, fuzz campaign, public profile
 or hosted/external qualification is claimed.
+
+
+## TVG-1239: Native four-MiB owner phase diagnostic
+
+Both targeted compiler runs pass the existing 142 private frame tests with four
+optional cases skipped. New diagnostic smokes compare all three labels in
+verify/encode/decode modes for empty input, A259, mixed bytes, a full four-MiB
+frame and a full frame plus one byte. Check zero, one and two preparation calls;
+complete archives match across labels. Explicit ASan/UBSan diagnostic builds pass
+these same bounded cases. Existing optional diagnostic/compiler warnings remain.
+
+Reverify the twelve-member corpus and frozen archives. Twenty-four optional owner
+differential tests and twenty-four new diagnostic full-stream checks cover 57
+frames per compiler with exact bytes and restoration. Untimed diagnostic phases
+are zero while preparation counts remain exact. Three rotated exclusive passes
+then retain 108 encode and 36 unchanged-decoder observations; check disjoint
+phase sums, each frame interval, expected frame counts and unchanged query
+budgets. All frozen bytes and restored inputs match. No new full-suite or fuzz
+campaign, public profile or external qualification is claimed.

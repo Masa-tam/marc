@@ -28025,3 +28025,34 @@ through a separate diagnostic before attributing the variability or transferring
 prepared-model/scratch optimizations. Keep the reference and all observations;
 the repeated relative gains are evidence for this private owner, not a precise
 hardware-independent performance guarantee or public admission.
+
+
+## DD-1372: Separate native owner call phases before further optimization
+
+Keep the previous optional diagnostic and codec bodies unchanged. Add a separate
+diagnostic with one clock interval per factory creation, process call and owner
+destruction. Classify each process interval after its call: a consuming call that
+reaches the next known raw frame boundary is preparation; another consuming call
+is collection; a zero-consumption call is drain/other. Fixed bounded chunks do not
+cross more than one frame boundary. Check preparation count against expected
+full/final frames and report each preparation interval. Empty streams have no
+preparation. Decode reports a single process category. Phase totals partition the
+same owner observations; they are not subtraction of different benchmarks.
+
+Preparation includes final input copying, frame work and same-call draining.
+Creation includes factory query/allocation/initialization. Report budget queries,
+I/O, comparisons and classification outside all intervals. Require exact complete
+stream bytes and raw restoration before accepting a result. Keep duplicate
+controls, rotated order, three complete exclusive passes and all observations.
+BM-0197 localizes the measured variation among calls; deeper causes remain
+unverified. Further prepared-model or finder-scratch work needs its own exact
+differential and repeated comparison. Failed frames remain private and existing
+failure invariants are preserved because no codec body changes.
+
+The completed repetitions place 95.189% to 99.969% of each encode observation
+in preparation calls. The five largest within-member/profile total differences
+also lie almost entirely in those calls; create/destroy are not dominant in this
+run. Maximum duplicate-control spread is 1.464%, so the earlier 24.850% spread
+is not reproduced or explained. Prioritize bounded work inside frame preparation,
+such as a separately qualified first-party prepared-model transfer, while keeping
+deeper causes and historical absolute-time differences unverified.

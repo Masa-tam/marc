@@ -9968,3 +9968,10 @@ is consulted.
 Use first-party DD-1366 reference stream/workspace/owner lifecycle and DD-1369
 five-prefix raw-frame helpers. DD-1370 supplies repeated phase evidence. No
 external codec, allocation or optimization implementation is consulted.
+
+
+## IR-1132: Native four-MiB owner phase attribution
+
+Use only the first-party DD-1371 native owner diagnostic, retained owner lifecycle,
+DD-1370 phase methodology and frozen complete-stream corpus. No external codec,
+profiler, allocator or optimization implementation is consulted.

@@ -199,3 +199,19 @@ through a separate diagnostic before attributing the variability or transferring
 prepared-model/scratch optimizations. Keep the reference and all observations;
 the repeated relative gains are evidence for this private owner, not a precise
 hardware-independent performance guarantee or public admission.
+
+
+DD-1372 and BM-0197 add a separate native owner call-phase diagnostic before
+further optimization. Retain the previous diagnostic, private reference and trial
+owners, exact complete streams and failure contracts. Disjoint create/process/
+destroy intervals and known-boundary process classification localize elapsed
+variation; they do not establish an internal or operating-system cause. Deeper
+prepared-model or finder-scratch changes need their own exact differential and
+repeated comparisons. Public admission remains a separate boundary.
+
+The completed phase diagnostic puts 95.189% to 99.969% of encode time in
+preparation calls and locates the five largest observed repetition differences
+almost entirely there. Current duplicate-control spread is at most 1.464%; the
+earlier large spread is not reproduced or explained. Preparation internals are
+the next optimization target, with a separately qualified prepared-model trial
+as a bounded first-party transfer candidate.

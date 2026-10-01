@@ -36869,3 +36869,26 @@ both bounds.
 - Scope: private owner integration and repeated native comparison. New public
   admission, full-suite/fuzz and hosted/external qualification are separate.
   No legal guarantee is asserted.
+
+
+## CR-1543: 2026-10-01 - Native four-MiB owner call attribution
+
+- Author and reviewer: Codex; the maintainer authorized the next development step.
+- References: IR-1132, DD-1372, retained first-party native owner diagnostic,
+  bounded lifecycle and frozen reference archives.
+- Independent task: add a separate optional call-phase diagnostic to locate
+  elapsed variation before further private four-MiB optimization.
+- Similarity review: the diagnostic intentionally transfers the first-party
+  common owner path and adds disjoint intervals and post-call classification.
+  All codec, previous diagnostic and public format bodies remain unchanged.
+  New code links only into its optional benchmark target. No external expression
+  or profiling structure is used.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft implementations and third-party allocator/profiling/test structures.
+- Validation: TVG-1239; both compiler tests/smokes and explicitly instrumented
+  ASan/UBSan diagnostic smokes pass; 48 separate corpus checks preserve frozen
+  streams and restoration. BM-0197 retains all 144 exclusive observations.
+  Source/executable/archive identity, private-only scope and append-only
+  documentation checks pass. Deeper timing causes remain unverified.
+- Scope: private diagnostic attribution. Public admission, full-suite/fuzz and
+  hosted/external qualification remain separate. No legal guarantee is asserted.

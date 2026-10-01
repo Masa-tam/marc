@@ -8508,3 +8508,85 @@ through a separate diagnostic before attributing the variability or transferring
 prepared-model/scratch optimizations. Keep the reference and all observations;
 the repeated relative gains are evidence for this private owner, not a precise
 hardware-independent performance guarantee or public admission.
+
+
+## BM-0197: Native four-MiB owner call phases
+
+DD-1372 adds a separate optional diagnostic, preserving the previous source,
+build and results. Use the same native reference and five-prefix owners, bounded
+65,536-byte input/output chunks, frozen complete archives and shared decoder.
+Report one disjoint clock interval for creation, each process call and destruction.
+Creation includes the factory's query, allocation and initialization; diagnostic
+budget searches, configuration construction, I/O, sink copies/comparisons and
+classification are outside clocks. Preparation calls consume through a known raw
+frame boundary; they include final input copying, frame validation/search/coding
+and any same-call drain. Other consuming calls are collection plus any drain;
+zero-consumption calls are drain/other. These labels do not isolate search, coding,
+pure copying or allocator internals. Decoder process calls remain unsplit.
+
+Three rotated passes retain all 108 encode and 36 shared-decoder observations,
+without warmup or discarded reruns. Every complete encoded archive and restored
+input matches. The phase sums equal owner totals and preparation counts equal
+the expected 57 frames per corpus pass/profile. No build or test overlaps timing.
+
+Corpus phase seconds, summed over twelve members:
+
+| Pass | Encode path | Create | Preparation calls | Collection calls | Drain/other calls | Destroy | Total |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | reference-0 | 0.272603 | 330.813435 | 0.013405 | 0.001496 | 0.060546 | 331.161485 |
+| 1 | reference-1 | 0.273855 | 330.586276 | 0.013495 | 0.001512 | 0.062194 | 330.937332 |
+| 1 | five-prefix | 0.272485 | 85.753101 | 0.014177 | 0.001466 | 0.074377 | 86.115607 |
+| 2 | reference-0 | 0.273120 | 330.630606 | 0.013701 | 0.001456 | 0.061293 | 330.980177 |
+| 2 | reference-1 | 0.273207 | 330.834191 | 0.013618 | 0.001569 | 0.062583 | 331.185167 |
+| 2 | five-prefix | 0.272480 | 85.645862 | 0.013941 | 0.001436 | 0.073492 | 86.007211 |
+| 3 | reference-0 | 0.274237 | 330.616430 | 0.013807 | 0.001477 | 0.063049 | 330.969000 |
+| 3 | reference-1 | 0.272588 | 330.883921 | 0.013950 | 0.001554 | 0.061642 | 331.233655 |
+| 3 | five-prefix | 0.272607 | 85.940522 | 0.014248 | 0.001514 | 0.074009 | 86.302900 |
+
+Preparation calls account for 95.189% to 99.969% of each encode
+owner observation. Maximum individual creation and destruction times across all
+observations are 0.024362 and 0.007169 seconds.
+
+For each member/profile, pair the lowest and highest complete-owner times across
+the three passes, then subtract their corresponding phases. Keep signed phase
+differences; other phases may decrease while the owner total increases. The five
+largest observed total differences are:
+
+| Member | Path | Total difference (s) | Preparation difference (s) | Other phases combined difference (s) |
+| --- | --- | ---: | ---: | ---: |
+| mozilla | reference-0 | 0.352504 | 0.352502 | 0.000003 |
+| mr | reference-0 | 0.272096 | 0.272531 | -0.000435 |
+| webster | five-prefix | 0.264633 | 0.264807 | -0.000174 |
+| samba | reference-0 | 0.202960 | 0.203069 | -0.000109 |
+| webster | reference-1 | 0.171539 | 0.170769 | 0.000770 |
+
+This pairing locates elapsed variation among native calls. It does not identify
+an operating-system, frequency, cache or algorithm-internal cause, and it does
+not explain historical differences by subtracting totals from other diagnostics.
+The existing policy budgets remain 281,286,669 reference encode, 315,365,389
+five-prefix encode and 130,029,573 shared decode bytes. Whole-process memory
+counters include input/archive/runtime and remain separate from codec policy.
+Raw/archive corpus sizes remain 211,938,580/61,643,620 bytes. No codec body,
+wire representation, public profile, interface or external inventory changes.
+
+Shared decoder owner totals are 6.890119, 6.929269, 6.892012 seconds. These are unchanged-decoder observations.
+
+
+Whole-process lifetime memory maxima, including input/archive/runtime:
+
+| Path | Peak working set (bytes) | Peak commit (bytes) |
+| --- | ---: | ---: |
+| encode-reference-0 | 284,004,352 | 354,394,112 |
+| encode-reference-1 | 284,004,352 | 354,418,688 |
+| encode-five-prefix | 318,058,496 | 388,550,656 |
+| decode-five-prefix | 132,739,072 | 202,842,112 |
+
+These counters are not isolated codec resident memory. Independent maxima must not be subtracted to infer allocations.
+
+The five-prefix owner beats both controls in 36/36 comparisons; maximum duplicate-control spread is 1.464%. All observations remain available.
+
+
+The earlier BM-0196 maximum duplicate-control spread was 24.850%. The present
+observations do not retrospectively attribute that earlier variation to a phase
+or explain the historical absolute-time differences. Their cause remains
+unverified even when this diagnostic's repetitions are closer together.
