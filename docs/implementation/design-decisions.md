@@ -28698,3 +28698,50 @@ Retain the earlier local/native/fuzz
 and archive-prefix evidence and the recorded detail-log preservation incident.
 Make no implementation, representation, API, default, release or new optimization
 decision in this documentation-only update.
+
+
+## DD-1389: Reconcile four-MiB phase evidence before the next trial
+
+Reanalyse preserved owner/selection/scratch datasets without taking new timings
+or replacing any observation. Validate complete member/pass/profile sets, finite
+nonnegative durations, verified flags, matching input/archive sizes and additive
+phase totals. Report weighted per-pass phase shares separately from per-member
+shares; rank members by median elapsed cost. Preserve every scratch exception
+and duplicate-control spread. A favourable repeat does not admit that candidate.
+
+Use the admitted five-prefix scalar baseline. Preparation contains dictionary
+selection plus frame coding, so its elapsed share cannot by itself identify
+finder initialization, chain traversal, byte extension, insertion or mapping.
+Distinguish the separate phase harness from complete-owner timing; do not subtract
+measurements from different campaigns to invent internal costs. Prioritize a
+bounded private subphase/counter diagnostic before a new optimization proposal.
+Keep public APIs, stream bytes, failure/publication contracts, schema60 inventory
+and the qualified external-verification binaries unchanged.
+
+
+DD-1389 reconciles 540 preserved observations across four campaigns and all
+twelve members. The admitted encoder's prior complete-owner harness spends
+99.5790 to 99.5801 percent of weighted per-pass time in preparation. Separately,
+its phase harness spends 85.8383 to 85.9404 percent in dictionary selection and
+the remainder in frame coding. These are different campaigns/denominators;
+they do not measure the current public C/CLI wrapper's overhead and must not
+be combined to invent an internal elapsed cost.
+
+Median complete-owner costs rank webster, mozilla and nci first, together
+61.7613 percent of the sum of member medians. These are priority diagnostic
+inputs, while all twelve members remain the differential validation set.
+BM-0200 still has 35 wins and one intermediate nci result: trial 10.0957861
+seconds versus controls 10.0928995/10.7208093. BM-0201 has 36 wins but maximum
+control spread 17.2098 percent. Both datasets and the original exception remain;
+scratch ownership is not admitted and variation's cause remains unverified.
+
+The next private diagnostic should separate finder initialization/reset,
+three-/four-/five-byte lookup traversal, prefix and extension comparisons,
+all-position insertion, token mapping and frame coding. Use bounded per-frame
+counters with explicit arithmetic limits, unchanged fixed eligibility three
+and nearest-distance tie rules. Prove complete token/stream identity and failure
+invariance before any timing. Keep counters out of the public codec hot path.
+Start with the three ranked inputs, then qualify all twelve and window/tail
+boundaries. A new speed proposal requires fresh predeclared exclusive complete
+owner comparisons, all observations retained and no rerun-until-success rule.
+This stage takes no new benchmark timings and changes no public implementation.

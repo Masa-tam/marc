@@ -10083,3 +10083,11 @@ Use first-party DD-1386 qualified command-line selection, existing schema-59
 bundle generator/verifier and schemas 1 through 59 compatibility tests, together
 with their preserved fixture/archive hashes. No external implementation or test
 expression is consulted.
+
+
+## IR-1148: Four-MiB preparation and candidate evidence review
+
+Use first-party BM-0197 complete-owner phases, DD-1369 five-prefix phase records,
+BM-0200/BM-0201 scratch-owner observations, admitted finder/encoder source and
+the verified corpus/frozen-stream records. No external optimization code or
+testing expression is consulted.

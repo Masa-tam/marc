@@ -37209,3 +37209,21 @@ both bounds.
 - Scope: evidence only. Codec, format, ABI, limits, defaults, inventory and
   release state remain unchanged. No new source similarity, performance, fuzz
   coverage or legal guarantee is claimed.
+
+
+## CR-1560: Four-MiB preparation evidence and next diagnostic
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized the next development step.
+- Task: reconcile existing phase/candidate evidence and select bounded private
+  subphase instrumentation before another optimization proposal.
+- References: IR-1148/DD-1389; first-party preserved measurement records,
+  admitted finder/owner source and existing comparison rules. No external
+  implementation or optimization expression consulted.
+- Validation: TVG-1256, all 540 archived observations, reproduction of prior
+  phase/comparison totals, nine negative/preservation cases, unchanged source
+  and qualified binary/dataset hashes, append-only documentation and links.
+- Scope: independent data-analysis tool and diagnostic design. No benchmark
+  executes, no candidate is admitted and no public codec, format, API, limits,
+  defaults or inventory changes. Different harnesses' phases remain distinct;
+  variability's cause is not inferred. No new speed/fuzz/legal guarantee claim.

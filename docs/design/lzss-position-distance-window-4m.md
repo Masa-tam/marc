@@ -366,3 +366,22 @@ New hosted CI and maintainer four-direction external exchange on the actual
 schema-60 commit are the remaining integration gate. Earlier schema59 reports
 do not close it. Further algorithm changes must preserve this qualified baseline
 and receive their own differential, safety and performance evidence.
+
+
+## DD-1389 preparation diagnosis priority
+
+The schema-60 implementation has maintainer-reported CI and four-direction
+external qualification in IX-0056. That qualified baseline remains unchanged.
+TVG-1256 reconciles earlier diagnostic datasets without taking new timings:
+weighted complete-owner preparation 99.5790 to 99.5801 percent, separately
+measured dictionary selection 85.8383 to 85.9404 percent. These do not measure
+current public-wrapper overhead and have different timing denominators.
+
+Webster, mozilla and nci together account for 61.7613 percent of the sum of
+member median owner times. The next private experiment should distinguish
+finder reset, lookup-chain traversal, comparisons/extensions and insertion,
+plus mapping and frame coding, with complete differential validation before
+timing. All twelve inputs remain necessary. Existing scratch/prepared-owner
+non-admission and unresolved control variation remain intact; no favourable
+repeat overrides the earlier exception. Public APIs, failure/privacy contracts,
+format and schema60 inventory are unchanged.

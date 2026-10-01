@@ -19362,3 +19362,24 @@ rehashed/reordered negatives remain separate. The maintainer subsequently
 confirmed successful GitHub CI completion for the same revision, closing the
 revision-specific CI and external exchange gate as reported. No new native, timing,
 fuzz, full-window or architecture coverage is claimed.
+
+
+## TVG-1256: Archived four-MiB phase reconciliation
+
+The first-party analysis tool validates 144 admitted-owner, 108 separate-phase,
+144 original scratch-owner and 144 scratch-repeat records: 540 in total.
+It checks verified flags, complete twelve-member/three-pass/profile sets,
+finite nonnegative additive phase times and shared input/archive sizes.
+Weighted owner preparation is 99.5790 to 99.5801 percent; separate selection
+share is 85.8383 to 85.9404 percent. Median-owner ranking identifies webster,
+mozilla and nci, together 61.7613 percent. No cross-campaign subtraction or
+current public C/CLI timing is inferred.
+
+Both scratch comparison counts and maximum control spreads reproduce the
+previous records exactly, including the original nci intermediate result.
+Independent negative cases reject missing/duplicate rows, negative/nonfinite
+time, unverified data, non-additive phases, contradictory sizes, oversized
+measurement input and existing output. All nine pass without publishing a
+report or altering the protected output. The tool bounds reads at 16 MiB and
+creates reports exclusively. Original dataset hashes and fixed verification
+binaries are unchanged. No native codec, fuzz or new timing test is claimed.
