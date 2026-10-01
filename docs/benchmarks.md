@@ -8959,3 +8959,37 @@ Five-byte visit counts rank mozilla (9149839318), mr (5171579616), and nci
 ranking and does not replace it. Next investigate candidate rejection and
 extension work privately before a new throughput proposal. Instrumentation
 overhead is not speed evidence, and previous candidate exceptions remain.
+
+
+### Four-MiB five-byte candidate classification (DD-1391)
+
+Extend DD-1390 without clocks. Both compilers agree on all twelve members and
+57 frames; every prior per-frame operation count, frozen token/frame byte and
+restored byte remains identical. The larger 408-byte diagnostic finder raises
+the split harness codec charge to 315365221 bytes, by 112 bytes. This is not
+the public owner policy or a measured process peak.
+
+| Five-byte candidate category | Count | Share of filtered candidates |
+| --- | ---: | ---: |
+| Best-length-byte rejection | 20553549388 | 95.2550871% |
+| Five-byte prefix rejection | 9841253 | 0.0456091% |
+| Extension attempt | 1013986492 | 4.6993037% |
+
+The fixed-window corpus has no five-byte out-of-window visits; a bounded fixture
+separately tests that category. Extension attempts partition into 22135643
+current-best improvements, zero equal results and 991850849 shorter results
+(97.8169687 percent of attempts). An improvement may be superseded later.
+Mismatch stops total 1013930224; maximum-length stops/updates total 56268.
+
+| Extension comparisons | Count | Share of extension comparisons |
+| --- | ---: | ---: |
+| Improving candidates | 226656894 | 2.3498014% |
+| Non-improving candidates | 9419132419 | 97.6501986% |
+
+Equal extension bytes split into 204577519 improving and 8427281570
+non-improving. Non-improving comparison counts rank nci (3392994178), mozilla
+(2839860818) and mr (2339117637) highest. These operation categories do not
+measure elapsed costs or predict a speed gain. A private additional necessary
+byte check may reject some shorter candidates before extension, but its cost
+and selectivity require differential qualification and a separate declared
+performance trial. Earlier scratch/prepared exceptions and non-admission remain.

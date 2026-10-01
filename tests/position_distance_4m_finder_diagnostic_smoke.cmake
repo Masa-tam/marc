@@ -29,6 +29,12 @@ foreach(member empty run small)
     if(NOT member STREQUAL "empty" AND NOT output MATCHES "frame_0_insertions_5=[0-9]+")
         message(FATAL_ERROR "Missing counter output")
     endif()
+    if(member STREQUAL "run" AND (NOT output MATCHES "frame_0_extension_attempts=1\n"
+        OR NOT output MATCHES "frame_0_improved_candidates=1\n"
+        OR NOT output MATCHES "frame_0_nonimproving_extension_comparisons=0\n"
+        OR NOT output MATCHES "frame_0_maximum_length_updates=1\n"))
+        message(FATAL_ERROR "Hand-checkable repeated-byte classification failed")
+    endif()
 endforeach()
 file(WRITE "${WORK}/bad.marc" "bad")
 file(COPY_FILE "${WORK}/small.marc" "${WORK}/trailing.marc")

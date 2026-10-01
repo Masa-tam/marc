@@ -190,18 +190,33 @@ LzssMatch LzssPositionDistance4mDiagnosticFinder::find_match(std::size_t p) cons
     first=input_[p+4]==input_[nearest+4]?nearest:heads_[2][bucket(input_,p,5)];
     for(auto c=first;c!=empty_link;c=links_[2][c]) {
         count(counters_.chain_visits[2]);
-        if(!in_window(c)) break;
+        if(!in_window(c)) {count(counters_.five_out_of_window);break;}
         count(counters_.candidate_filter_comparisons);
-        if(input_[p+best.length]!=input_[c+best.length] || !equal(c,5)) continue;
+        if(input_[p+best.length]!=input_[c+best.length]) {
+            count(counters_.best_length_rejections);continue;
+        }
+        if(!equal(c,5)) {count(counters_.five_prefix_rejections);continue;}
+        count(counters_.extension_attempts);
+        std::uint64_t comparisons{},equal_bytes{};
         std::size_t length=5;
         while(length<maximum) {
-            count(counters_.extension_comparisons);
+            count(counters_.extension_comparisons);++comparisons;
             if(input_[p+length]!=input_[c+length]) break;
-            count(counters_.extension_equal_bytes);++length;
+            count(counters_.extension_equal_bytes);++equal_bytes;++length;
         }
+        if(length==maximum)count(counters_.extension_limit_stops);
+        else count(counters_.extension_mismatch_stops);
         if(length>best.length) {
+            count(counters_.improved_candidates);
+            count(counters_.improving_extension_comparisons,comparisons);
+            count(counters_.improving_extension_equal_bytes,equal_bytes);
             best={static_cast<std::uint32_t>(p-c),static_cast<std::uint32_t>(length)};
-            if(length==maximum) break;
+            if(length==maximum) {count(counters_.maximum_length_updates);break;}
+        } else {
+            if(length==best.length)count(counters_.equal_candidates);
+            else count(counters_.shorter_candidates);
+            count(counters_.nonimproving_extension_comparisons,comparisons);
+            count(counters_.nonimproving_extension_equal_bytes,equal_bytes);
         }
     }
     return best;

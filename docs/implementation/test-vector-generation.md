@@ -19421,3 +19421,44 @@ tests pass 14 cases per compiler, including second-frame failure, truncation,
 crossed identities, workspace/metadata/tail guards and sticky terminal states.
 Linked static/shared C17 consumers also pass. No previous build-tree CTest runs,
 full-suite rerun, new timing, new fuzz or external gate is claimed.
+
+
+## TVG-1258: Five-byte candidate classification conservation
+
+Retain DD-1390's 672 cases with the enlarged instance's exact query budgets,
+initialization/counter/scratch failure invariance, metadata aliases, sequencing,
+window/tail/tie/full-frame and admitted finder differential. Add four bounded
+fixtures, making 676 per compiler. The first visits a nearest length-eight
+candidate, an older length-six candidate that nevertheless matches the byte at
+offset eight, and a candidate rejected at that offset. Assert one improvement,
+one shorter result, one best-length rejection, improving comparisons/equal
+bytes 4/3 and non-improving comparisons/equal bytes 2/1. A window-seventeen
+version asserts one out-of-window terminating visit.
+
+An independently generated deterministic five-byte hash collision retains
+fifth byte 'e' while changing the first byte. A newer true-prefix candidate
+starts traversal, followed by the collider; assert one prefix rejection and
+one extension attempt. Generation is capped at 1048576 candidates. A repeated
+five-byte prefix with a five-byte final suffix asserts a maximum-length update
+with zero extension comparisons. The existing nine-zero-byte overlap fixture
+also checks its single successful extension/update/limit stop. Every ordinary
+differential verifies all conservation identities and zero equal results.
+
+Both release compilers and ASan/UBSan-instrumented diagnostic/test/admitted
+finder translation units pass 676 cases. Linked unchanged validator dependencies
+are not claimed as a new fully instrumented public decoder or fuzz campaign.
+Both compiler smokes pass empty/repeated/patterned streams and three malformed
+header/truncation/trailing negatives with no failed report output. The repeated
+259-byte input also checks one extension, one improvement, one maximum update
+and zero non-improving comparisons. Argument/missing-file/raw-size/archive-size
+negatives remain bounded and publish no report, four per compiler.
+
+All twelve corpus members pass in fresh processes per compiler: 24 complete
+traversals, 57 frames per compiler, 211938580 raw and 61643620 archive bytes per
+traversal set. Every token field, encoded frame byte, restored raw byte and old
+per-frame counter matches the preserved DD-1390 record; all added counters agree
+across compilers, conserve their categories and fit checked uint64 aggregates.
+Prior records, binaries, qualified libraries, test logs and frozen archives
+retain their hashes. Existing public factory failure/publication tests pass
+14 cases per compiler. No old build-root CTest, full-suite rerun, new timing,
+fuzz campaign or external qualification is claimed.

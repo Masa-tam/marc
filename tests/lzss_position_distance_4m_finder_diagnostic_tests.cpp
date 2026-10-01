@@ -8,6 +8,7 @@
 #include <source_location>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace {
@@ -22,6 +23,18 @@ void require(bool condition,const std::source_location location=std::source_loca
 marc::core::DecoderLimits limits() {
     marc::core::DecoderLimits l{};l.max_block_size=4194304;
     l.max_compressed_payload_size=75497477;l.max_internal_buffered_bytes=512U*1024U*1024U;return l;
+}
+void partition(const LzssPositionDistance4mFinderCounters& c) {
+    require(c.chain_visits[2]==c.five_out_of_window+c.candidate_filter_comparisons);
+    require(c.candidate_filter_comparisons==c.best_length_rejections+c.five_prefix_rejections+c.extension_attempts);
+    require(c.extension_attempts==c.improved_candidates+c.equal_candidates+c.shorter_candidates);
+    require(c.extension_attempts==c.extension_limit_stops+c.extension_mismatch_stops);
+    require(c.extension_comparisons==c.improving_extension_comparisons+c.nonimproving_extension_comparisons);
+    require(c.extension_equal_bytes==c.improving_extension_equal_bytes+c.nonimproving_extension_equal_bytes);
+    require(c.maximum_length_updates==c.extension_limit_stops);
+    // A byte equality at current-best length either extends past that length
+    // or hides an earlier mismatch. Equal-length candidates cannot pass it.
+    require(c.equal_candidates==0);
 }
 void differential(std::span<const std::byte> raw,LzssParameters p) {
     const auto q=calculate_lzss_position_distance_4m_diagnostic_workspace(raw.size(),p,limits());
@@ -38,6 +51,7 @@ void differential(std::span<const std::byte> raw,LzssParameters p) {
         position+=step;++tokens;
     }
     const auto c=f.counters();
+    partition(c);
     require(!c.overflow&&!c.invalid_find_calls&&!c.invalid_advance_calls);
     require(c.find_calls==tokens&&c.advance_calls==tokens&&c.advanced_positions==raw.size());
     require(c.initialized_words==q.workspace_size/4);
@@ -133,11 +147,56 @@ void wide_and_ties() {
     require(c.insertions==std::array<std::uint64_t,3>{7,6,5});
     require(c.fast_path_comparisons==2&&c.candidate_filter_comparisons==1);
     require(c.extension_comparisons==3&&c.extension_equal_bytes==3);++cases;
+    partition(c);require(c.extension_attempts==1&&c.improved_candidates==1);
+    require(c.extension_limit_stops==1&&c.maximum_length_updates==1);
+}
+void classified_fixtures() {
+    const auto put=[](std::vector<std::byte>& raw,std::size_t p,std::string_view text) {
+        for(unsigned char b:text)raw[p++]=std::byte{b};
+    };
+    const auto run=[&](std::span<const std::byte> raw,std::size_t position,LzssParameters p) {
+        const auto q=calculate_lzss_position_distance_4m_diagnostic_workspace(raw.size(),p,limits());
+        std::vector<std::uint32_t> words(q.workspace_size/4);F f;
+        require(initialize_lzss_position_distance_4m_diagnostic_finder(raw,p,limits(),std::as_writable_bytes(std::span{words}),f)==E::none);
+        f.advance(0,position);
+        LzssExhaustiveMatchFinder oracle(raw,p);require(f.find_match(position)==oracle.find_match(position));
+        const auto c=f.counters();partition(c);++cases;return c;
+    };
+    std::vector<std::byte> raw(58,std::byte{0xff});
+    put(raw,0,"abcdeXQQR");put(raw,16,"abcdeXQZQ");put(raw,32,"abcdeXYZZ");put(raw,48,"abcdeXYZQ!");
+    auto c=run(raw,48,params);
+    require(c.best_length_rejections==1&&c.extension_attempts==2);
+    require(c.improved_candidates==1&&c.shorter_candidates==1&&c.five_prefix_rejections==0);
+    require(c.improving_extension_comparisons==4&&c.improving_extension_equal_bytes==3);
+    require(c.nonimproving_extension_comparisons==2&&c.nonimproving_extension_equal_bytes==1);
+    require(c.extension_mismatch_stops==2&&c.extension_limit_stops==0);
+    auto small=params;small.window_size=17;c=run(raw,48,small);
+    require(c.five_out_of_window==1&&c.extension_attempts==1&&c.chain_visits[2]==2);
+    // Independently generate a bounded first-party hash-collision seed. The
+    // fifth byte stays 'e'; a newer true prefix starts the five-byte chain.
+    const auto hash=[](std::uint32_t word) {
+        word^=UINT32_C(101)*UINT32_C(2246822519);word^=word>>11U;
+        return (word*UINT32_C(2654435761))>>16U;
+    };
+    const auto wanted=hash(UINT32_C(0x64636261));
+    std::uint32_t word{},rng=1391;bool found{};
+    for(std::size_t i=0;i<1048576;++i) {
+        rng=rng*UINT32_C(1664525)+UINT32_C(1013904223);
+        if((rng&255U)!=97U&&hash(rng)==wanted) {word=rng;found=true;break;}
+    }
+    require(found);raw.assign(58,std::byte{0xff});
+    for(std::size_t i=0;i<4;++i)raw[16+i]=std::byte((word>>(8*i))&255U);
+    raw[20]=std::byte{101};raw[24]=std::byte{81};
+    put(raw,32,"abcdeXYZZ");put(raw,48,"abcdeXYZQ!");
+    c=run(raw,48,params);require(c.five_prefix_rejections==1&&c.extension_attempts==1);
+    raw.resize(10);put(raw,0,"abcdeabcde");c=run(raw,5,params);
+    require(c.extension_attempts==1&&c.improved_candidates==1&&c.extension_comparisons==0);
+    require(c.extension_limit_stops==1&&c.maximum_length_updates==1);
 }
 }
 int main() {
     try {
-        query_and_failures();wide_and_ties();
+        query_and_failures();wide_and_ties();classified_fixtures();
         for(std::size_t n:{0U,1U,2U,3U,4U,5U,7U,16U,31U,64U,127U,259U,513U})
         for(unsigned pattern=0;pattern<3;++pattern) {
             std::vector<std::byte> raw(n);std::uint32_t rng=1390;

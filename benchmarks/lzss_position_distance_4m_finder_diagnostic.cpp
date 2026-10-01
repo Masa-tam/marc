@@ -94,7 +94,14 @@ int main(int argc,char** argv) {
         if(!std::equal(serialized.begin(),serialized.begin()+encoded.serialized_size,archive.begin()+cursor))return 1;
         const auto c=finder.counters();
         if(c.overflow||c.invalid_find_calls||c.invalid_advance_calls||c.find_calls!=count
-            ||c.advance_calls!=count||c.advanced_positions!=source.size())return 1;
+            ||c.advance_calls!=count||c.advanced_positions!=source.size()
+            ||c.chain_visits[2]!=c.five_out_of_window+c.candidate_filter_comparisons
+            ||c.candidate_filter_comparisons!=c.best_length_rejections+c.five_prefix_rejections+c.extension_attempts
+            ||c.extension_attempts!=c.improved_candidates+c.equal_candidates+c.shorter_candidates
+            ||c.extension_attempts!=c.extension_limit_stops+c.extension_mismatch_stops
+            ||c.extension_comparisons!=c.improving_extension_comparisons+c.nonimproving_extension_comparisons
+            ||c.extension_equal_bytes!=c.improving_extension_equal_bytes+c.nonimproving_extension_equal_bytes
+            ||c.maximum_length_updates!=c.extension_limit_stops||c.equal_candidates)return 1;
         reports.push_back({source.size(),count,encoded.operation_count,encoded.serialized_size,c});
         cursor+=encoded.serialized_size;
     }
@@ -116,6 +123,20 @@ int main(int argc,char** argv) {
         field("candidate_filter_comparisons",c.candidate_filter_comparisons);
         field("extension_comparisons",c.extension_comparisons);
         field("extension_equal_bytes",c.extension_equal_bytes);
+        field("five_out_of_window",c.five_out_of_window);
+        field("best_length_rejections",c.best_length_rejections);
+        field("five_prefix_rejections",c.five_prefix_rejections);
+        field("extension_attempts",c.extension_attempts);
+        field("improved_candidates",c.improved_candidates);
+        field("equal_candidates",c.equal_candidates);
+        field("shorter_candidates",c.shorter_candidates);
+        field("improving_extension_comparisons",c.improving_extension_comparisons);
+        field("improving_extension_equal_bytes",c.improving_extension_equal_bytes);
+        field("nonimproving_extension_comparisons",c.nonimproving_extension_comparisons);
+        field("nonimproving_extension_equal_bytes",c.nonimproving_extension_equal_bytes);
+        field("extension_limit_stops",c.extension_limit_stops);
+        field("extension_mismatch_stops",c.extension_mismatch_stops);
+        field("maximum_length_updates",c.maximum_length_updates);
         for(std::size_t j=0;j<3;++j) {
             const auto suffix=std::to_string(j+3);
             field("chain_visits_"+suffix,c.chain_visits[j]);

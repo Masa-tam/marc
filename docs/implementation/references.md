@@ -10100,3 +10100,12 @@ workspace/alias validators, DD-1367 frozen scalar streams, existing split-frame
 diagnostics and DD-1389 member priorities. Transfer the repository's own finder
 into a private diagnostic target and instrument actual operations. No external
 implementation, optimization expression or test suite is consulted.
+
+
+## IR-1150: Four-MiB five-byte candidate classification
+
+Use first-party DD-1390 private counter finder and preserved per-frame records,
+the unchanged admitted scalar finder, DD-1367 frozen token/frame/raw oracles and
+existing failure guards. Derive the classification from this repository's own
+ordered best-length filter, prefix comparison and extension loop. No external
+implementation, optimization expression or test suite is consulted.

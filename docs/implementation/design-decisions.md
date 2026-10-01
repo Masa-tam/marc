@@ -28789,3 +28789,53 @@ percent. They dominate this operation count, not a measured time share. The next
 private diagnostic can distinguish five-byte candidate rejection and extension
 work before proposing a semantics-preserving change. Earlier scratch/prepared
 candidates remain unadmitted; no new optimization is admitted here.
+
+
+## DD-1391: Classify private five-byte candidate rejection and extension
+
+Extend only DD-1390's private diagnostic finder and report. Preserve comparison
+order, traversal, tie rules, insertion, fixed eligibility three and every public
+codec path. Split the existing short-circuit condition without evaluating its
+prefix test when the best-length byte already differs. Count five-byte visits
+that terminate outside the window, best-length-byte rejections, five-byte prefix
+rejections and successful prefix candidates entering extension.
+
+Classify each extension by its result relative to the current best BEFORE its
+update: improved, equal or shorter. Count its actual comparisons and equal
+bytes separately for improving and non-improving candidates. An improvement
+may later be superseded; it is not necessarily the final emitted match. Also
+partition extension termination into mismatch and maximum-length stops. A
+maximum-length update ends traversal, as in the unchanged admitted finder.
+
+Require conservation identities for visits, filtered candidates, extension
+attempts, termination, comparisons and equal bytes. Keep every old per-frame
+count equal to DD-1390. Instance-local counters retain checked saturation and
+reset/failure rules. Per-frame bounds are unchanged; each new count is bounded
+by an existing candidate/extension count. The query charges the enlarged
+408-byte finder instance; arrays remain 51118080 bytes at the full frame.
+The split diagnostic harness charge increases by 112 bytes to 315365221.
+Bounded harness overhead and the public owner policy remain distinct.
+
+Equal-length extensions cannot pass the existing best-length-byte filter:
+if extension reaches that offset, its equal byte makes the match longer than
+the current best; an earlier mismatch makes it shorter. For current length
+four, a verified five-byte prefix already improves it. Exact ties are rejected
+without replacing the nearest match. Keep an equal-result counter and require
+zero to detect a classification or ordering regression.
+
+TVG-1258 passes all 676 diagnostic cases per compiler and complete twelve-member
+token/frame/raw/legacy-counter identity across both compilers. Of 21577377133
+filtered candidates, 20553549388 are rejected by the best-length byte and
+9841253 by the five-byte prefix; 1013986492 enter extension. Only 22135643
+improve the current best and 991850849 are shorter. Non-improving candidates
+use 9419132419 of 9645789313 extension comparisons, or 97.6501986 percent.
+These are operation counts, not elapsed-time shares or an achievable gain.
+
+Next consider a private additional necessary-byte check within the already
+known best prefix, such as at best-length minus one when beyond the five-byte
+prefix. A mismatch there safely excludes a strictly longer match; the existing
+best-length check must still run first and nearest tie behavior must remain.
+Its effectiveness and overhead are unverified. Prove complete identity and
+failure guards before any predeclared exclusive complete-owner timing trial.
+No speed trial, new public selection or previous candidate admission occurs
+in this classification stage.

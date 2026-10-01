@@ -37251,3 +37251,29 @@ both bounds.
   unchanged. No new speed, peak memory, fuzz, external qualification, candidate
   admission or legal guarantee claim. Initial test/configuration and sanitizer
   link failures were corrected and their diagnostic logs retained.
+
+
+## CR-1562: Private five-byte rejection and extension classification
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized the next development step.
+- Task/prompt: distinguish best-length rejection, prefix rejection and
+  improving/non-improving extension work with bounded private counters,
+  complete differential identity and existing failure/publication contracts.
+- References: IR-1150/DD-1391; first-party admitted finder, DD-1390 diagnostic
+  source/records, frozen scalar streams and existing guard tests. External
+  implementations, including copyleft expression/tests, were not consulted.
+- Expression/similarity review: incremental instrumentation of the explicitly
+  transferred first-party finder. The short-circuit order remains unchanged;
+  successful extension lengths, tie decisions and insertion arrays agree with
+  the unmodified admitted implementation. Collision fixtures derive from the
+  documented first-party hash arithmetic and an independently written bounded
+  deterministic generator, not an external test suite.
+- Validation: TVG-1258; 676 cases per compiler and partial ASan/UBSan, four
+  classified fixtures, twelve-member complete token/frame/raw/legacy-counter
+  equality, all conservation identities, public factory guards and malformed
+  report suppression, preserved source/artifact hashes and append-only docs.
+- Scope: private diagnostics only. No public codec, ABI, representation,
+  defaults, owner policy, inventory or fixed verification binary changes.
+  No new speed, peak-memory, fuzz, external, candidate-admission or legal
+  guarantee claim. A possible extra rejection predicate remains unmeasured.

@@ -31,6 +31,12 @@ struct LzssPositionDistance4mFinderCounters {
     std::uint64_t fast_path_comparisons{}, candidate_filter_comparisons{};
     std::uint64_t extension_comparisons{}, extension_equal_bytes{};
     std::uint64_t advance_calls{}, invalid_advance_calls{}, advanced_positions{};
+    // Exhaustive five-byte candidate partition, before changing the current best.
+    std::uint64_t five_out_of_window{}, best_length_rejections{}, five_prefix_rejections{};
+    std::uint64_t extension_attempts{}, improved_candidates{}, equal_candidates{}, shorter_candidates{};
+    std::uint64_t improving_extension_comparisons{}, improving_extension_equal_bytes{};
+    std::uint64_t nonimproving_extension_comparisons{}, nonimproving_extension_equal_bytes{};
+    std::uint64_t extension_limit_stops{}, extension_mismatch_stops{}, maximum_length_updates{};
     bool overflow{};
 };
 
