@@ -1666,6 +1666,17 @@ foreach(position_distance_contract IN ITEMS
         message(FATAL_ERROR "Missing public position-distance contract: ${position_distance_contract}")
     endif()
 endforeach()
+foreach(four_mib_cli_contract IN ITEMS
+        "## 4 MiB position-distance selector"
+        "lzss-position-distance-dynamic-range-4m"
+        "2/10 + 1/11"
+        "75497477-byte compressed-payload ceiling"
+        "536870912-byte aggregate ceiling")
+    string(FIND "${cli_content}" "${four_mib_cli_contract}" four_mib_cli_contract_offset)
+    if(four_mib_cli_contract_offset EQUAL -1)
+        message(FATAL_ERROR "Missing four-MiB CLI contract: ${four_mib_cli_contract}")
+    endif()
+endforeach()
 foreach(stale_position_distance_contract IN ITEMS
         "staged C factory integration" "not a complete public profile")
     string(FIND "${c_api_content}" "${stale_position_distance_contract}" stale_position_distance_offset)

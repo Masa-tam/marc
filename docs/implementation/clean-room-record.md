@@ -37150,3 +37150,23 @@ both bounds.
 - Scope: public C/static/shared boundary qualification. CLI/inventory/new hosted
   and external gates remain pending. No new throughput comparison, exhaustive
   coverage or legal guarantee is asserted.
+
+
+## CR-1557: Additive four-MiB command-line integration
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized continuation and local commits.
+- Task: add explicit four-MiB CLI dispatch through the admitted public C family;
+  preserve failed-frame privacy, file transactions and previous selections.
+- References: IR-1146/DD-1386; first-party CLI, public factory, transaction tests
+  and frozen corpus records. No external implementation or test expression used.
+- Intentionally not consulted: copyleft implementations, external codec source
+  or optimization structures. The scratch/prepared alternatives remain private.
+- Validation: TVG-1253, both complete 4089-entry suites, 27 boundary invocations
+  per route, and 24 complete CLI encodes/decodes with full frozen-byte identity
+  and original restoration. Previous source/artifact hashes and append-only
+  documentation are checked. The source comparison shows additive CLI/CMake
+  dispatch and independently written boundary tests; codec bodies are unchanged.
+- Scope: command-line integration. No new performance/fuzz/exhaustive coverage
+  or legal guarantee is asserted. Additive exchange and revision-specific hosted
+  and external verification remain pending.

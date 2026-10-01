@@ -640,3 +640,31 @@ and contextual 1 MiB reject each other's headers. There is no automatic
 selection or `--profile`/`--finder` override. The existing schema-58 bundle
 continues to contain its original 68 archives; qualification of the new profile
 will use a subsequent interoperability gate.
+
+
+## 4 MiB position-distance selector
+
+`lzss-position-distance-dynamic-range-4m` selects the separate four-MiB window
+and default frame, dictionary/context identity 2/10 + 1/11, entropy 3/2.
+It uses the admitted five-prefix scalar encoder with fixed eligibility three
+and the retained scalar decoder, through the public four-MiB C factory.
+
+```sh
+marc encode --codec lzss-position-distance-dynamic-range-4m input.bin output.marc
+marc decode --codec lzss-position-distance-dynamic-range-4m output.marc restored.bin
+```
+
+The selected initializer supplies 4194304-byte frame and block ceilings,
+75497477-byte compressed-payload ceiling and 536870912-byte aggregate ceiling.
+These are profile-local defaults; the CLI has no resource-limit override.
+There is no automatic profile selection or `--profile`/`--finder` override.
+An uppercase `4M` suffix is invalid usage. The 64-KiB and one-MiB selectors
+retain their existing meanings and reject the four-MiB identity, and conversely.
+
+The existing file transaction commits output only after complete stream success;
+a failed later frame leaves neither a destination nor its temporary output.
+Pre-existing destination or temporary files are refused and preserved.
+This adds an explicit experimental selection outside the baseline 42-profile
+matrix. Schema 59 and its 69 archives retain their existing inventory; adding
+the new exchange archive and revision-specific external verification are later
+qualification gates.

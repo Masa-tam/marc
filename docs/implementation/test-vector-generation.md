@@ -19297,3 +19297,27 @@ differential and independent failed-frame frontier. Its separately instrumented
 support library passes fifty initial seeds and 2000 ASan/UBSan/libFuzzer runs
 with seed 138501, unchanged original seeds and no reported finding/artifact.
 FZ-0055 records bounded coverage. CLI/inventory/external gates remain separate.
+
+
+## TVG-1253: Four-MiB CLI transactions and complete frozen streams
+
+First-party tests exercise the actual command-line application through the
+qualified public C factory. The standard round-trip test checks explicit
+dictionary/context/entropy identity, empty restoration, malformed input,
+strict trailing bytes, crossed older profiles and pre-existing output.
+A separate test retains each invocation's artifacts and diagnostics, and uses
+all-byte-pattern inputs at 4194303, 4194304 and 4194305 bytes. Independent header
+field mutations test dictionary/context crossings, selected frame/raw/payload
+limits, truncated stream/first/second frames and second-frame header/payload
+corruption. Mutual 64-KiB/one-MiB rejection and destination/temporary sentinels
+also pass. Each compiler route passes 27 boundary invocations and all 4089
+CTest entries, including public static/shared C consumers and tooling tests.
+
+The twelve corpus members are independently verified against their existing
+size/hash records before use. Both CLI routes encode each member into a fresh
+archive and decode into a fresh restored file. All 24 complete encodes equal
+DD-1367 frozen reference bytes and all 24 complete decodes equal original raw
+bytes; executable/reference hashes are checked before and after. Each traversal
+covers 57 frames, 211938580 raw and 61643620 archive bytes. Old artifacts are
+retained. Schema 59/69 archives remain unchanged; new exchange and hosted checks
+are separate gates. No new decoder body, timing or fuzz coverage is asserted.

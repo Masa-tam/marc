@@ -5380,6 +5380,27 @@ if(MARC_BUILD_TESTS)
                 "-DCLI_TRAILING_TEST=ON"
                 "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-position-distance-1m-test-$<CONFIG>"
                 -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        add_test(NAME marc_cli_lzss_position_distance_dynamic_range_4m_round_trip
+            COMMAND ${CMAKE_COMMAND}
+                "-DMARC_CLI=$<TARGET_FILE:marc_cli>"
+                "-DCLI_CODEC=lzss-position-distance-dynamic-range-4m"
+                "-DCLI_DICTIONARY_VARIANT=0a"
+                "-DCLI_CONTEXT_VARIANT=0b"
+                "-DCLI_ENTROPY_ALGORITHM=03"
+                "-DCLI_ENTROPY_VARIANT=02"
+                "-DCLI_REJECT_CODEC=lzss-position-distance-dynamic-range"
+                "-DCLI_REJECT_CODEC_2=lzss-position-distance-dynamic-range-1m"
+                "-DCLI_TRAILING_TEST=ON"
+                "-DTEST_DIR=${CMAKE_CURRENT_BINARY_DIR}/cli-position-distance-4m-test-$<CONFIG>"
+                -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_roundtrip.cmake)
+        if(Python3_Interpreter_FOUND)
+            add_test(NAME marc_cli_position_distance_4m_boundaries
+                COMMAND ${Python3_EXECUTABLE}
+                    ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_distance_4m_boundaries.py
+                    "$<TARGET_FILE:marc_cli>"
+                    "${CMAKE_CURRENT_BINARY_DIR}/cli-position-distance-4m-boundaries-$<CONFIG>")
+            set_tests_properties(marc_cli_position_distance_4m_boundaries PROPERTIES TIMEOUT 180)
+        endif()
         add_test(NAME marc_cli_position_distance_selection
             COMMAND ${CMAKE_COMMAND}
                 "-DMARC_CLI=$<TARGET_FILE:marc_cli>"

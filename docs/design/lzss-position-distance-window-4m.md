@@ -334,3 +334,19 @@ CLI selection and schema60/additive inventory are the next implementation
 boundaries. Generic defaults, old C families, schema59/69 archives and historical
 private timing decisions remain unchanged. New hosted CI and revision-specific
 external exchange are still required after subsequent integration.
+
+
+## DD-1386 command-line integration result
+
+The exact `lzss-position-distance-dynamic-range-4m` name now dispatches through
+the qualified public C initializer/query/factory with profile-local limits.
+TVG-1253 qualifies both complete suites, CLI boundary and file transactions,
+all twelve complete frozen streams and original restoration. The scalar codec
+bodies, older defaults, private candidate status and schema59 inventory remain
+unchanged. No new speed claim is made.
+
+The next boundary is schema60: append exactly one profile/archive after the
+existing 69 entries, preserve prior schemas and prefix/order, reject inconsistent
+identities and reordered inventory, then qualify the actual revision through
+new hosted CI and maintainer external exchange. Earlier one-MiB reports do not
+qualify this four-MiB exchange.

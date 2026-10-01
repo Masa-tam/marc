@@ -28608,3 +28608,41 @@ Public C/static/shared integration is qualified for these checks. Existing
 codec bodies, older C factories/defaults, private candidates, CLI selection and
 schema-59 inventory are unchanged. No new throughput comparison is asserted;
 CLI/schema60 and revision-specific hosted/external exchange remain later gates.
+
+
+## DD-1386: Explicit four-MiB command-line selection
+
+Add `lzss-position-distance-dynamic-range-4m` through the qualified DD-1385
+public C initializer, workspace query and factory. Preserve all previous names,
+defaults and codec bodies. The initializer alone supplies the selected profile's
+four-MiB frame/window/block limits, 75497477-byte payload ceiling and 512-MiB
+aggregate ceiling; the CLI has no resource-limit or finder override arguments.
+The exact dictionary/context identity remains 2/10 + 1/11, entropy 3/2.
+
+Keep fixed eligibility three and the admitted five-prefix scalar encoder.
+Validate listing, empty and multi-frame restoration, crossed identities,
+oversized headers, truncation, malformed payloads and whole-file transaction
+failure. Complete CLI streams must match all twelve frozen reference streams.
+Schema 59 and its 69-archive order stay unchanged in this stage. Schema 60 and
+revision-specific hosted/external exchange remain separate qualification gates.
+No new timing comparison or scratch/prepared-candidate admission is intended.
+
+
+DD-1386 validation passes all 4089 CTest entries in both compiler routes,
+including public static/shared C consumption and existing tooling suites.
+The new CLI round-trip checks identity 2/10 + 1/11 + 3/2, empty input, strict
+trailing-data rejection and existing-output protection. Each route also passes
+27 actual CLI boundary invocations: four-MiB minus one/equal/plus one inputs,
+three crossed identities, resource ceilings, header/frame truncation, malformed
+second frame/payload, mutual older-profile rejection and protected temporary
+files. Later-frame errors commit neither destination nor temporary output.
+
+All twelve independently verified corpus members pass actual CLI encode and
+decode in both routes: 24 complete encodes and 24 complete decodes. Each full
+traversal covers 57 frames, 211938580 raw bytes and 61643620 archive bytes.
+Complete archive bytes match DD-1367 frozen streams and restored bytes match
+the original members. Existing codec/public API/default/inventory source and
+historical artifact identity are preserved. No new fuzz campaign or throughput
+comparison is claimed; DD-1385's unchanged public boundary retains its evidence.
+The next gate is schema 60 with exactly one appended exchange profile, followed
+by revision-specific hosted CI and maintainer external exchange.

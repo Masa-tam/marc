@@ -834,3 +834,13 @@ publishes no raw bytes from that frame. Previously validated frames may remain.
 This is the third position-distance C family. CLI selection, new exchange
 inventory and revision-specific hosted/external qualification remain separate
 integration gates; earlier one-MiB reports do not qualify this family.
+
+
+## Four-MiB command-line use
+
+The explicit command-line codec `lzss-position-distance-dynamic-range-4m`
+uses the public four-MiB initializer, workspace query and factory above.
+It inherits their profile-local limits and failed-frame publication contract.
+The command-line file transaction commits its destination only after the
+entire stream succeeds. Existing C config layouts, exports and generic or
+one-MiB defaults are unchanged by this application integration.

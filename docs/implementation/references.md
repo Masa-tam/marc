@@ -10068,3 +10068,10 @@ and additive CLI/inventory integration patterns. No external source is consulted
 Use first-party DD-1384 selected scalar baseline, guarded factory, linked C
 consumer, boundary/corpus tests and public library/export integration patterns.
 No external codec/API implementation source is consulted.
+
+
+## IR-1146: Four-MiB command-line integration
+
+Use first-party DD-1385 public C factory, existing position-distance CLI dispatch,
+CLI file transaction tests and DD-1367 frozen complete corpus streams. No external
+implementation source or test expression is consulted.
