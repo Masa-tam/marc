@@ -37093,3 +37093,21 @@ both bounds.
 - Scope: private C-boundary proposal only. Public admission, complete corpus/C
   fuzz qualification and integration/external gates remain pending. No new timing,
   external qualification or legal guarantee is asserted.
+
+
+## CR-1554: 2026-10-01 - Private four-MiB C corpus and bounded fuzz qualification
+
+- Author/reviewer: Codex; maintainer approved progression.
+- References: IR-1143; first-party C factory fuzz driver, scalar four-MiB stream
+  harness/frontier checks, guarded adapter and frozen independently verified corpus.
+- Independent task/decisions: preserve implementation bodies while adding complete
+  frozen-stream C checks with two schedules, and a bounded optional C fuzz target
+  with scalar differential, independently generated frame ends, factory budgets,
+  metadata/handle/tail guards and failed-second-frame publication checks.
+- Known implementations intentionally not consulted: external codec/API sources,
+  copyleft code and third-party test or optimization expression.
+- Validation: TVG-1250/FZ-0054; both compiler private suites, all 24 corpus test
+  invocations, 48 complete C encodes/48 decodes and 2000 instrumented fuzz runs.
+  Existing source/artifact identity, optional linking and append-only docs checked.
+- Scope: private correctness qualification only; no new timing, public admission,
+  exhaustive fuzz coverage, external qualification or legal guarantee is asserted.

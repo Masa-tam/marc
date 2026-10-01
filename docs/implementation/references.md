@@ -10047,3 +10047,10 @@ No external codec source or optimization structure is consulted.
 Use first-party one-MiB C config/query/create and generic opaque handle/process/
 destroy, four-MiB checked workspace/codec tests and DD-1381 readiness requirements.
 No external codec or API implementation source is consulted.
+
+
+## IR-1143: Private four-MiB C adapter corpus and malformed-input qualification
+
+Use first-party DD-1382 private C adapter, one-MiB public C fuzz driving,
+four-MiB streaming fuzz frontier/scalar differential and frozen corpus streams.
+No external implementation or test expression is consulted.

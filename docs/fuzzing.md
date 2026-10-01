@@ -1190,3 +1190,24 @@ initial and evolved corpus cases and logs. Finite small-frame runs complement
 existing deterministic four-MiB/long-distance tests and do not establish
 exhaustive or full-window decoder coverage. Public factory, full-suite and
 revision-specific external qualification remain separate gates.
+
+
+### FZ-0054: Private four-MiB guarded C adapter boundaries
+
+Under DD-1383 add an optional C-boundary target with the retained scalar decoder
+as differential oracle. Generate valid literal streams independently of C
+encoding, record frame ends and reject truncated/forced failed-second-frame
+publication beyond the complete-frame frontier. Also exercise C encode chunk
+determinism, round-trip, exact/one-under factory budgets, metadata/handle aliases
+and full-capacity workspace tails. Terminal results and output sentinels are
+checked across partial/zero buffers and EndInput/Flush.
+
+On 2026-10-01 the separately instrumented CMake target passes fifty initial
+boundary seeds and 2000 ASan/UBSan/libFuzzer executions with seed 138301, without
+a reported finding, guard/differential/frontier mismatch or artifact. Initial
+seed hashes remain unchanged. Preserve initial/evolved cases and all logs.
+Malformed input is bounded to 8192 bytes, generated raw to 64, frame capacity
+to 21, decoded/encoded results to 128/2048 bytes and calls to 32768. Compatible
+container annotation settings remain unchanged. Finite small-frame fuzzing
+complements deterministic full-window/distance tests; it does not establish
+exhaustive or full-window fuzz coverage or public/external qualification.

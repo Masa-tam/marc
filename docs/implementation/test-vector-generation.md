@@ -19212,3 +19212,36 @@ Both C17 compile-only header checks pass. Initial header macro compilation failu
 were corrected with a private self-contained noexcept macro; the unsuccessful
 build evidence is retained. No full public suite, linked C consumer, new corpus,
 fuzz campaign or external exchange is claimed by this boundary prototype.
+
+
+## TVG-1250: Private four-MiB C corpus and bounded malformed-input qualification
+
+Add one optional corpus test that queries/creates a guarded C handle, compares
+every encoded byte with the complete frozen stream and compares every decoded
+byte with the independently verified original corpus member. Use input/output
+steps 8191/4093 and 65521/65519, periodic zero output, Flush and separate final
+input in the latter schedule. Guard output and every unused workspace tail,
+then verify repeated terminal status with different final/flush flags.
+
+Both compiler private suites pass 227 ordinary tests with eleven optional skips.
+Explicitly supply each of twelve verified corpus members and its frozen stream
+to the new test; all 24 invocations pass, totaling 48 complete C encodes and
+48 complete C decodes. Each complete corpus traversal covers 57 frames,
+211938580 raw bytes and 61643620 archive bytes. Frozen file and executable
+hashes are checked before and after. No throughput measurement is performed.
+
+The C fuzz target transfers first-party scalar stream comparison and independent
+generated-frame frontier checks. Bound malformed input to 8192 bytes, generated
+raw to 64, frame capacity to 21, decoded output to 128, encoded output to 2048
+and calls to 32768. Compare reference/C status, counts, raw bytes and byte/bit
+error positions, C encode chunk determinism and retained-decoder restoration.
+Exact/one-under budgets, query preservation, null ordinary creation output,
+config/output aliases and handle/full-tail process aliases are also exercised.
+
+Fifty initial seeds include empty/literal/match/final-suffix lengths, repetitive
+and mixed data, truncated magic and all ten direction/alias selectors. A
+separately instrumented CMake target passes 2000 ASan/UBSan/libFuzzer executions
+with seed 138301, unchanged initial seed hashes and no finding or artifact.
+FZ-0054 records the finite campaign. This complements existing full-window/
+distance tests; no exhaustive coverage, new standalone C consumer or public
+integration/external qualification is asserted.

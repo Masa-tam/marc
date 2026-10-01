@@ -281,3 +281,19 @@ this C adapter are the next private qualification. The public factory, CLI,
 static/shared exports, inventory and external gates from the readiness matrix
 remain pending. Existing public defaults and the qualified one-MiB inventory
 remain unchanged; private factory names do not constitute public API admission.
+
+
+## DD-1383 private C corpus and fuzz qualification
+
+TVG-1250 qualifies complete frozen-stream identity and restored raw bytes through
+the private C adapter for all twelve verified corpus members and both compiler
+routes, with two independent encode/decode schedules. FZ-0054 adds 2000 bounded
+instrumented executions with scalar differential, factory guards and independent
+failed-frame publication checks. Existing adapter/codec bodies, public defaults
+and exchange inventory remain unchanged.
+
+Public integration still needs an explicit implementation/admission decision,
+linked standalone C consumption, static/shared/export/CLI full suites, additive
+inventory compatibility and revision-specific hosted CI/external exchange.
+The historical performance exception and control spread remain unresolved;
+successful correctness qualification does not revise the performance condition.

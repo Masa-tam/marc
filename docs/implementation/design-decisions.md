@@ -28467,3 +28467,50 @@ unchanged. No new corpus campaign, timing, public admission or revision-specific
 external qualification is asserted. Next qualification must exercise this C
 boundary against complete frozen corpus streams and bounded malformed-input
 fuzzing before considering public integration.
+
+
+## DD-1383: Private four-MiB C adapter corpus and bounded fuzz qualification
+
+Preserve the DD-1382 adapter and codec bodies. Add an optional corpus boundary
+test with two independent chunk schedules, zero-capacity calls, Flush, separate
+final input, output/tail sentinels and sticky completion. Encode through the C
+handle against complete frozen streams, then decode to original verified bytes.
+Run every verified corpus member through both compiler routes; retain all logs.
+
+Add an optional instrumented private C fuzz target using first-party driving.
+Compare arbitrary malformed input through the C adapter and retained scalar
+decoder under different chunk schedules. Independently construct valid literal
+frames and track complete-frame ends; truncation and a forced failed second
+frame must publish only the validated frontier. Exercise C encoding/decoding
+chunk determinism for bounded raw inputs, workspace tails, config/output/handle
+aliases and exact/one-under budgets before construction. Bound arbitrary input
+to 8192 bytes, generated raw to 64 bytes, frame capacity to 21, decoded output
+to 128 bytes and driver calls to 32768. Use a separately instrumented CMake
+support library and predeclared 2000 executions with guarded initial seeds.
+
+This is private correctness qualification, without new timing or public API/
+CLI/export/inventory admission. Small-frame finite fuzzing does not replace
+existing full-window/distance tests or revision-specific external verification.
+
+
+DD-1383 validation passes both private compiler suites: 227 ordinary tests and
+eleven optional corpus skips per route. The new optional C corpus test then
+passes all twelve verified members in both routes, with two encoder and two
+decoder schedules per member. All complete streams match the frozen archives
+and restore the original bytes: 57 frames, 211938580 raw bytes and 61643620
+archive bytes per complete corpus traversal. Output/full-tail sentinels and
+sticky completion pass. These checks compare bytes outside any timing.
+
+The separately instrumented CMake C-boundary target passes fifty initial seeds
+and 2000 ASan/UBSan/libFuzzer executions with seed 138301. No finding, artifact,
+scalar/C differential, guard or publication-frontier mismatch is reported.
+All original seeds, evolved cases, logs and unsuccessful build evidence remain.
+An initial corpus-test trace macro name collision was corrected before the
+successful builds. The adapter and all existing codec bodies are unchanged.
+
+Private C corpus and bounded malformed-input qualification is complete for this
+stage. Linked standalone C consumption, public static/shared/export/CLI full
+suites, additive inventory compatibility and new revision-specific hosted CI/
+external exchange remain separate integration gates. Historical performance
+exceptions/control spread remain recorded; this correctness qualification
+neither resolves them nor admits a public implementation.
