@@ -10127,3 +10127,12 @@ admitted five-prefix scalar finder and complete-owner implementation, existing
 owner phase harness, ownership/failure tests and DD-1367 frozen streams. Transfer
 the private counterpart without diagnostic counters and retain the established
 buffer policy. No external optimization implementation or test suite is used.
+
+
+## IR-1153: Retained prefix-end evidence and strict process-audit gate
+
+Use first-party DD-1391/DD-1392 operation records and DD-1393's 144 preserved
+complete-owner observations, source hashes and audit incident. Recompute the
+existing comparisons without taking new clocks or running codecs. Derive the
+strict launch gate from the recorded enumeration-error/empty-output failure.
+No external optimization implementation, source or test suite is consulted.

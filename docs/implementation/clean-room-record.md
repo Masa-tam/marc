@@ -37328,3 +37328,26 @@ both bounds.
 - Scope: private support and measurements only; public ABI, representation,
   defaults, selection, inventory and owner policy remain unchanged. No new
   external qualification, fuzz campaign or legal guarantee is claimed.
+
+
+## CR-1565: Retained prefix-end review and explicit audit failure gate
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized the next step.
+- Task/prompt: investigate preserved regressions without inventing causes or
+  discarding measurements, and prevent unsuccessful process audits from
+  permitting measurement launch.
+- References: IR-1153/DD-1394 and first-party diagnostic, owner measurement and
+  audit-incident records. External implementation and copyleft expression were
+  not consulted.
+- Expression/similarity review: independently written bounded receipt validator
+  and callback gate using the existing strict enumeration idea; regression
+  tests target the recorded failure and operation-invocation boundary. No codec
+  implementation is changed or imported.
+- Validation: TVG-1261; thirteen unit cases, actual idle/denied/busy integration,
+  natural helper completion, untimed sentinel gate, all retained observations
+  and operation totals reconciled, append-only docs and prior hashes preserved.
+- Scope: development audit utility and retained evidence only. No new timing,
+  public selection, format, ABI, defaults, inventory, fixed binary, fuzz or
+  external qualification. The earlier trial remains unadmitted; no causal
+  timing explanation, new threshold or legal guarantee is asserted.

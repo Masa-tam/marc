@@ -9129,3 +9129,62 @@ comparisons is not an elapsed gain. A future measurement protocol must require
 explicit successful process audits before timing and retain the present
 exceptions; this campaign does not authorize public adoption or a repeat until
 success. No public format, default, ABI, selection or inventory changes occur.
+
+
+### Four-MiB retained prefix-end evidence and audit repair (DD-1394)
+
+Reanalyze the complete preserved BM-0202 dataset without new measurements.
+All 144 observations, rotated ordering, frozen-byte checks and 36 classifications
+reconcile: 23 wins, eight losses, five intermediate results. The original
+maximum control spread and process-audit limitation remain. The table joins
+DD-1392 operation categories to each member's existing faster-control timing
+range. These separate campaigns do not establish time per comparison.
+
+| Member | Wins/losses/between | Probe rejection % | Extension comparisons removed % | Removed extension comparisons / added probe | Existing gain range % |
+| --- | --- | ---: | ---: | ---: | ---: |
+| dickens | 0/2/1 | 82.1890 | 62.8547 | 1.2983 | -0.7913 .. -0.1633 |
+| mozilla | 3/0/0 | 60.8464 | 58.9954 | 3.3614 | 1.8687 .. 5.3007 |
+| mr | 3/0/0 | 8.0985 | 17.0740 | 4.0466 | 1.0519 .. 1.7797 |
+| nci | 3/0/0 | 50.4214 | 44.7762 | 5.7156 | 4.1904 .. 5.8617 |
+| ooffice | 2/0/1 | 71.2898 | 55.1125 | 2.2045 | -0.1298 .. 1.0150 |
+| osdb | 2/1/0 | 63.3866 | 34.0187 | 3.8560 | -1.4338 .. 2.5591 |
+| reymont | 1/1/1 | 70.7579 | 62.7522 | 2.0047 | -0.3275 .. 0.3110 |
+| samba | 3/0/0 | 83.7428 | 81.4235 | 13.6204 | 1.4520 .. 3.0970 |
+| sao | 1/1/1 | 74.1083 | 39.6775 | 1.0251 | -0.9789 .. 1.1555 |
+| webster | 2/1/0 | 85.5232 | 77.0654 | 4.6554 | -0.2993 .. 0.9807 |
+| xml | 2/0/1 | 69.5479 | 43.7725 | 6.0652 | -0.0561 .. 0.5148 |
+| x-ray | 1/2/0 | 74.4168 | 0.0155 | 0.0030 | -0.9611 .. 0.4900 |
+
+High rejection or removed-comparison percentage alone does not demonstrate
+speed benefit: dickens removes 62.8547 percent of extension comparisons yet
+is slower than the faster duplicate control in all three passes. Mr removes
+17.0740 percent and wins three times. Mozilla, mr, nci and samba have three
+wins each; the other members have mixed classifications. This does not prove
+a branch/cache/noise cause or justify choosing a corpus-specific path.
+
+`tools/benchmark_process_audit.py` provides an explicit receipt and idle launch
+gate for future protocols. For a standalone snapshot run:
+
+```console
+python -B tools/benchmark_process_audit.py
+```
+
+Exit zero requires a successfully enumerated empty snapshot; exit two reports
+an audit error and exit three reports active selected codec/build processes.
+Keep detailed receipts and command lines as local evidence. For orchestration,
+`run_after_idle(operation)` validates the snapshot before invoking the operation.
+An empty stdout, bare empty list or zero exit with stderr is an error. An
+operation failure is propagated without retry. The helper is read-only and
+does not terminate processes or change persistent execution policy.
+
+This is a selected-name snapshot, not a system-wide exclusivity lock. Freeze
+its scope and require it immediately before each fresh observation; retain
+audit errors and completed observations and stop on failure. Thirteen unit
+cases plus actual idle/denied/busy checks validate the gate. The busy helper
+finishes naturally; the following idle callback is an untimed sentinel.
+Repairing the audit does not retroactively qualify BM-0202 or admit its trial.
+
+Before a new predicate or campaign, obtain bounded per-best-length probe and
+rejected-extension categories. Current member totals cannot establish an
+application threshold. No new BM timing record, codec run, speedup claim or
+public adoption follows from this retained-evidence stage.

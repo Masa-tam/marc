@@ -19528,3 +19528,29 @@ logs retained. A fresh CMake build of the two new targets passes its one
 aggregate test. No old build-root CTest, new fuzz campaign or external gate is
 claimed. BM-0202 retains every timing observation; its failed initial process
 audit remains an explicit qualification limitation.
+
+
+## TVG-1261: Strict audit regression and retained-evidence reconciliation
+
+Thirteen unittest cases exercise the original zero-exit/access-denied/empty-
+stdout regression and ensure that the operation callback remains uncalled.
+Also reject blank output, bare lists, malformed/multiple JSON, duplicate keys,
+nonzero exit or stderr despite a success object, invalid/contradictory fields,
+invalid/duplicate process IDs, unsupported names, spawn failure, timeout and
+decoding errors. Valid idle success invokes the sentinel exactly once; an
+operation error propagates without retry. Case-insensitive names and absent
+command lines remain valid busy entries rather than false idle results.
+
+Actual integration returns zero with an explicit empty successful snapshot,
+two for denied enumeration and three while a harmless selected helper runs.
+The busy gate invokes no callback. Wait for the helper's natural completion,
+then verify one untimed idle sentinel invocation. No codec is run in this
+integration, no process is forcibly stopped and no timing campaign is executed.
+
+Independently reconcile all 144 retained observations, rotated order, 36
+comparison classifications and additive prepare/other phase differences.
+Match both compilers' twelve-member diagnostic records, unchanged traversal/
+improvement counts, 1006653744 added probes and 4377312261 removed extension
+comparisons. Check prior source/artifact, frozen archive and fixed binary hashes.
+The original audit and numerical failures remain; no old CTest, new decoder
+fuzz, full regression rerun or external verification is claimed.

@@ -28920,3 +28920,47 @@ The private trial does not change public selection, ABI, format, defaults,
 inventory or owner policy. Prior scratch/prepared exceptions remain. A future
 protocol must require explicit successful process enumeration and terminate
 before timing on audit errors; no timing-noise cause is inferred here.
+
+
+## DD-1394: Preserve failed probe evidence and reject unsuccessful audits
+
+Reconcile the retained DD-1393 trial with DD-1392 selectivity by member, retaining
+all 23 wins, eight losses, five intermediate observations and the failed audit.
+Use the faster duplicate control for total and phase differences. The count
+and timing records come from distinct campaigns; comparing their categories
+does not establish a causal cost model or permit converting comparisons into
+seconds. No new timing or public codec change occurs.
+
+Dickens rejects 82.1889681 percent of added probes and removes 62.8547199
+percent of extension comparisons, yet is slower than the faster control in all
+three passes (two losses and one intermediate result). Mr rejects only
+8.0985217 percent but wins three times. Saved extension comparisons per added
+probe are respectively 1.2983180 and 4.0466309. These observations refute using
+rejection percentage alone as a demonstrated speed criterion; they do not
+establish a threshold, branch/cache cause or corpus-specific selection policy.
+Mozilla, mr, nci and samba win all three comparisons. The other eight members
+have mixed classifications; all original exceptions remain.
+
+Add a standalone process-snapshot helper and a launch gate. Require successful
+enumeration with zero exit status, empty stderr, one explicit JSON object,
+success exactly true, consistent integer count and validated process entries.
+Empty stdout or a bare empty list is never proof of success. Duplicate keys,
+invalid fields, contradictory counts, invalid/duplicate IDs, spawn/timeout/
+decoding failures and active selected processes prevent invoking the operation.
+CLI exits are zero for idle success, two for audit failure and three for busy;
+the callback gate raises before invocation on either failure or busy. It does
+not retry failed operations or terminate other processes.
+
+The helper audits selected codec/build executable names. A snapshot is not a
+system-wide lock and cannot exclude starts after enumeration. Future protocols
+must freeze that scope, retain every receipt/failure and audit immediately
+before every observation; on failure retain completed observations and stop,
+without automatic retries until success. TVG-1261 verifies these boundaries.
+The retained trial remains unadmitted even after the helper is repaired.
+
+Next gather bounded per-current-best-length probe and rejected-extension work
+before proposing a different condition. Existing member totals do not contain
+that distribution. Do not select by corpus name or silently relax the original
+admission screen. A distinct candidate must requalify bytes, budgets, aliases,
+failure invariance and failed-frame non-publication before any fresh, separately
+declared timing campaign. The present protocol template executes no campaign.
