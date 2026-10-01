@@ -36941,3 +36941,22 @@ both bounds.
 - Scope: private owner integration/comparison. Public admission, range preparation,
   finder reuse, full-suite/fuzz and external qualification remain separate.
   No legal guarantee is asserted.
+
+
+## CR-1546: 2026-10-01 - Private four-MiB prepared range helper
+
+- Date: 2026-10-01. Author/reviewer: Codex; maintainer approves progression.
+- Task: independently qualify a borrowed prepare/write range helper that avoids
+  repeated planning, retaining scalar token mapping and five-prefix owner.
+- References: IR-1135, DD-1362 scalar range core and first-party one-MiB borrowed
+  lifecycle idea. Models, RangeWriter and run bodies transfer unchanged from
+  the repository's four-MiB scalar implementation. New guards and explicit
+  metadata charge are independently written for this private trial.
+- Known implementations intentionally not consulted: external codec sources,
+  copyleft code and external optimization/test/ownership structures.
+- Validation: TVG-1242, both native compiler targets, explicit ASan/UBSan and
+  24 frozen-payload comparisons pass. Source identity, private-only linking,
+  frozen artifacts and append-only documentation are checked before commit.
+- Scope: operation helper only; speed, physical memory, frame/owner integration,
+  public admission and external qualification remain separate. No legal
+  guarantee is asserted.

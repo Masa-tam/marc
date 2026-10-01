@@ -9989,3 +9989,11 @@ and frozen reference archives. No external implementation is consulted.
 Use first-party DD-1371 five-prefix owner/workspace lifecycle, DD-1373 prepared
 mapping/frame/raw helpers, DD-1372 call-phase diagnostic and frozen archives.
 No external codec, ownership, allocation or profiling implementation is consulted.
+
+
+## IR-1135: Private four-MiB prepared range helper
+
+Use the first-party DD-1362 scalar four-MiB range core and DD-1374 observation
+that frame planning is repeated by the scalar writing entry point. The one-MiB
+borrowed prepare/write interface supplies the lifecycle idea only. No external
+implementation is consulted; preserve the four-MiB scalar arithmetic and grammar.

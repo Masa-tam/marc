@@ -28122,3 +28122,41 @@ plans range operations, and encode_operations plans them again before writing.
 An independently qualified range prepare/write trial can target that repeated
 planning while preserving scalar token mapping, checked budgets and failure
 publication. Do not infer its gain from this mapping-only comparison.
+
+
+## DD-1375: Independent private four-MiB range prepare/write trial
+
+Keep scalar token mapping and the retained five-prefix owner unchanged. First
+qualify a separate operation helper: one counting run during prepare and one
+writing run during write, using the existing four-MiB models and field grammar.
+Charge retained plan metadata together with model, writer, cursor, operation
+bytes and planned payload. Borrow operations unchanged until write; own no buffer.
+Check aliases and arithmetic before touching aliased objects. Ordinary write
+attempts consume readiness; self/descriptor alias rejection preserves readiness
+because mutating it could modify caller storage. Failed preparation leaves the
+caller descriptor unchanged; failed write output is never consumable.
+
+This helper does not publish frames, alter a format, enter a public factory or
+replace the scalar owner. Frame integration and repeated native measurements
+follow only after this independent correctness and bounds qualification.
+
+
+DD-1375 validation: a separate private target retains the scalar core and adds
+the prepared helper. Its Models, RangeWriter and run bodies are identical to the
+first-party scalar four-MiB bodies. The state charge is the scalar charge plus
+sizeof(PreparedLzssPositionDistance4mEncode); exact and one-under tests prove the
+new threshold. Guard full output capacity against plan/descriptor aliases, and
+the used payload prefix against operation aliases. Alias/address-overflow
+preflight precedes readiness mutation; ordinary shortage/operation-overlap
+attempts consume readiness. No allocation is introduced.
+
+Both native compiler targets and explicit ASan/UBSan pass 31 ordinary tests;
+one optional corpus test is skipped in those ordinary runs. Twenty-four separate
+native corpus invocations replay 57 frozen frames per compiler, checking
+all 110846666 operations and byte-identical payloads in 61643620 archive bytes.
+This is range-only payload qualification, not a new whole-stream encode or raw
+restoration qualification. Frame prefix publication and scalar token mapping
+are unchanged because no frame helper or owner is modified. Integrate this
+range helper into a separate scalar-mapping frame/raw path next, retaining
+budget/error precedence and commit-only-on-success. Native speed, physical
+memory, owner integration and public/external admission remain unmeasured.

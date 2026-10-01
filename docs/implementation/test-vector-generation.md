@@ -19009,3 +19009,28 @@ verification and process audit, 144 exclusive rotated observations retain exact
 bytes, query thresholds, frame counts and disjoint phase/per-frame sums. BM-0198
 reports measured gains and physical memory separately from fixed policy budgets.
 No new full-suite/fuzz, public or external qualification is claimed.
+
+
+## TVG-1242: Private four-MiB prepared range differential tests
+
+Transfer first-party scalar range tests into a distinct prepared-helper suite,
+retaining the scalar suite and decoder unchanged. Every valid generated payload
+is additionally compared with scalar planning/writing. Cover the hand-checkable
+wide vector, every match length and distance width, all literal values, mixed
+histories, every binary model rescale, grammar faults, terminal/corruption
+behavior, exact/one-under limits, used-prefix overlap and untouched suffixes.
+
+New lifecycle tests cover write-before-prepare, repeat write, shortage consuming
+readiness, failed reprepare, object/descriptor/configuration aliases, descriptor
+in unused output capacity, operation overlap and pointer/count overflow. Mutate
+every operation field independently and compare scalar result/error positions.
+Borrowed operation stability remains a caller obligation, with no mutation
+detection promise. Successful encode output alone is consumable.
+
+MSVC and Clang each pass 31 ordinary tests with one optional skip; explicit
+current-core ASan/UBSan passes the same 31 tests. Independent native corpus runs
+validate source corpus and frozen archive hashes, decode every operation with
+the retained canonical decoder, prepare/write once and compare full payloads.
+Twenty-four invocations cover 12 members, 57 frames and 110846666 operations
+per compiler; source/archive bytes 211938580/61643620. No timing,
+new full suite/fuzz, raw restoration or frame publication claim is made.

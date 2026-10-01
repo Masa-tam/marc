@@ -8216,3 +8216,11 @@ may modify only private token scratch and consumes zero serialized bytes.
 Successful calls report the exact frame extent, leaving subsequent bytes to the
 caller. Raw-input token selection, stream lifecycle and public admission remain
 separate work; existing representations and limits are unchanged.
+
+
+Private DD-1375 range preparation retains the existing reserved four-MiB
+operation grammar, adaptive model resets, descriptor fields, carry termination
+and exact payload bytes. A separate one-use borrowed plan charges its metadata
+alongside scalar model/writer/cursor state and operation/payload extents. This
+range-only helper emits no header, publishes no frame and changes no factory,
+algorithm inventory, default limits or existing stream representation.
