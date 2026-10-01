@@ -28291,3 +28291,40 @@ the retained scalar five-prefix owner, checking query/phase peak, sticky failure
 and cross-frame publication before repeated native measurement. No speed or
 physical-memory improvement is inferred here; previous rejected trials remain
 separate, and no existing factory or stream representation is changed.
+
+
+## DD-1379: Independent finder-scratch four-MiB streaming owner
+
+Transfer the retained scalar five-prefix borrowed/owned lifecycle into a
+separate private owner using DD-1378 raw helpers. Preserve scalar token mapping
+and finder layout; scratch is reused only after tokenizer return, with checked
+bounds and scalar fallback. Do not compose unadmitted prepared mapping or range
+metadata. Query actual concrete owner sizes and simultaneous capacities.
+Preserve arbitrary chunking, final suffix, EndInput, Flush, sticky states and
+whole-frame publication only after success; earlier committed frames survive
+a later failure. Keep the retained scalar owners and public factories unchanged.
+
+Qualify whole frozen streams, restored raw bytes, aliases, bounds, exact budget
+and sanitizers before timing. Use two scalar five-prefix controls and the same
+decoder, three rotated complete passes of fresh exclusive native processes.
+Keep common lifecycle/phase clocks, all observations and loss cases. Fixed
+workspace policy and process memory remain separate. Performance admission
+requires repeatable gains; unresolved variation must not be attributed by guess.
+
+
+DD-1379 validation: both compiler targets pass 213 ordinary tests with ten
+optional skips; explicit current-source ASan/UBSan passes 287 with ten skips.
+Native and sanitizer diagnostic smokes pass all three labels/modes, empty,
+short, full and final frame cases. Twenty-four owner corpus tests and twenty-four
+native diagnostic captures match complete frozen streams and restore raw data:
+12 members, 57 frames, 211,938,580/61,643,620 raw/archive bytes per compiler.
+Full-window encode query is 315365389 bytes, versus scalar control 315365389;
+unchanged decoder query 130029573. Actual state and full capacities are charged explicitly, including
+exact/one-under query limits at every tested frame capacity.
+
+BM-0200 retains all 144 exclusive rotated observations (three passes, 108
+encodes and 36 unchanged decoder observations), including control spread,
+phase/per-frame sums and process memory counters. The trial does not satisfy the requirement to beat both controls in all 36 comparisons; retain the scalar owner as reference and the trial as a separate private candidate.
+Public factory admission remains separate. The earlier
+mapping-only/range-only candidates and all old diagnostics remain intact. No operating
+system/cache/processor cause is inferred from timing variability.

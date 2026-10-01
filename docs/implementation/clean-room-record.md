@@ -37020,3 +37020,23 @@ both bounds.
 - Scope: private applicability and helper correctness. Streaming ownership,
   performance/public admission and external verification remain separate.
   No legal guarantee is asserted.
+
+
+## CR-1550: 2026-10-01 - Private four-MiB finder-scratch streaming ownership
+
+- Author/reviewer: Codex; maintainer approved progression.
+- References: IR-1139, DD-1378 finder-scratch helpers and first-party workspace/
+  ownership/test/native diagnostic structures; frozen reference archives.
+- Independent decisions: retain scalar mapping, derive separate scalar-state
+  workspace, preserve actual-size/allocation-first ownership, bounded partial
+  buffers, sticky state and whole-frame commit. Owner bodies transfer unchanged
+  apart from concrete names and qualified helper/workspace connections.
+- Known implementations intentionally not consulted: external codec sources,
+  copyleft code and third-party optimization/ownership/profiling structures.
+- Validation: TVG-1246; both compiler tests/smokes, explicit ASan/UBSan and
+  diagnostic smokes and 48 whole-stream corpus checks pass. BM-0200 records
+  all 144 observations and their admission verdict. All timing
+  observations retained; first-party transfer, private linking, source/artifact
+  identity and append-only documentation checked before local commit.
+- Scope: private ownership and native comparison, with no public factory,
+  external qualification or legal guarantee asserted.

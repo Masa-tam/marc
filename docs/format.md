@@ -8251,3 +8251,11 @@ retained scalar path. Scratch is discardable on failure; serialized output is
 committed only after whole-frame validation and capacity success. The finder is
 charged once, with simultaneous supplied capacities and coder/prefix peak.
 No owner, public factory, format variant, inventory or default-limit changes.
+
+
+Private DD-1379 finder-scratch streaming ownership uses the existing reserved
+four-MiB stream/frame representation and scalar token mapping. A separate
+scalar-state workspace query charges actual stream/owner size and scalar
+model/writer/cursor plus prefix. Frames are published only after successful
+complete raw-frame coding; earlier committed frames survive later failure.
+No public factory, default limit, ABI or algorithm inventory changes.

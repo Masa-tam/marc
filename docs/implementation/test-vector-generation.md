@@ -19114,3 +19114,26 @@ all selected tokens and full frozen frame bytes, canonically decode/reconstruct
 all raw data; 12 members, 57 frames per compiler and 211,938,580/61,643,620 bytes.
 Existing compiler warnings remain. No owner, performance, new full-suite/fuzz,
 public or external qualification is claimed.
+
+
+## TVG-1246: Private finder-scratch four-MiB streaming ownership
+
+Transfer first-party five-prefix/prepared owner tests into a distinct finder-scratch
+suite. Keep separate scalar token/frame oracles and unchanged decoder. Cover
+empty/one-byte, frame boundaries and final suffixes, one-byte/random/zero-capacity
+buffers, Flush, latched EndInput, invalid flags, all live-buffer/object aliases,
+sticky states, single preparation per frame, exact/one-under budgets and a failed
+second frame exposing only the header and earlier committed frame. Query tests
+derive scalar model charge and actual concrete-type equality, and
+compare all layout fields at capacities 1, 3, 21, 257 and four MiB.
+
+Native targets each pass 213 tests with ten optional skips (223 total).
+Explicit current-source ASan/UBSan passes 287 with ten skips (297 total).
+Native and sanitizer diagnostic smokes cover three labels and modes for
+empty/A259/mixed/full/final frame cases. Existing compiler warnings remain.
+Twenty-four optional owner corpus tests and twenty-four independent native
+captures match frozen whole streams and restore every raw byte; 57 frames per
+compiler. Source/archive and executable identities are checked before timing.
+All 144 fresh exclusive observations retain byte/restoration equality, budget
+315365389, frame counts, rotation, disjoint phase and per-frame sums. BM-0200
+reports results. No new full-suite/fuzz or external qualification is claimed.

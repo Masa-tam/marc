@@ -10019,3 +10019,10 @@ Use first-party one-MiB finder-scratch lifecycle, scalar four-MiB range arithmet
 scalar token/frame mapping, fixed five-prefix selection and frozen reference
 archives. Do not compose the unadmitted prepared mapping/range owners. No external
 implementation or optimization source is consulted.
+
+
+## IR-1139: Private four-MiB finder-scratch streaming ownership
+
+Use first-party scalar five-prefix lifecycle/workspace, DD-1378 finder-scratch
+helpers, common native owner diagnostic and frozen reference archives.
+No external implementation or optimization source is consulted.

@@ -8744,3 +8744,77 @@ system, cache or processor cause or architecture-independent gain is inferred.
 Prior mapping-only candidate and all diagnostics remain preserved. Public
 admission, finder scratch reuse, full-suite/fuzz and external qualification are
 separate stages.
+
+
+## BM-0200: Private finder-scratch four-MiB common owner comparison
+
+Two scalar five-prefix controls versus the independent finder-scratch owner,
+with identical scalar token mapping, fixed eligibility three and unchanged
+decoder. Three complete passes rotate labels per member/pass, using 144 fresh
+exclusive processes, no warmup/discarded reruns. Creation/process/destruction
+clocks are disjoint; boundary calls classify complete preparation including
+same-call copies/drain. I/O, byte comparison, restoration, queries and capture
+remain outside clocks. Every observed stream matches frozen bytes and restores
+raw data. These are native observations, not an algorithm-only window comparison.
+
+| Pass | Scalar 0 seconds | Scalar 1 seconds | Finder scratch seconds | Reduction versus control mean |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 87.2604425 | 87.7423665 | 81.7369438 | 6.5878% |
+| 2 | 89.6540955 | 90.4755273 | 83.1257129 | 7.7046% |
+| 3 | 90.6316554 | 91.7119135 | 85.5698217 | 6.1444% |
+
+Raw/archive bytes remain 211,938,580/61,643,620 (29.0856% archived size).
+Wins against both controls: 35/36; losses: 0; between:
+1. Maximum within-member/pass control spread:
+6.3513%. The trial does not satisfy the requirement to beat both controls in all 36 comparisons; retain the scalar owner as reference and the trial as a separate private candidate.
+Exceptions retained: pass 2 nci (2.9891%, between)
+
+For that observation, scalar controls took 10.0928995 and 10.7208093 seconds;
+the trial took 10.0957861 seconds. It was 0.0028866 seconds slower than the
+faster control. The origin of this control spread and small ordering difference
+is unverified; this observation is retained without a selected rerun.
+
+| Member | Mean reduction | Minimum | Maximum | Wins/losses/between |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 6.3817% | 6.2343% | 6.5347% | 3/0/0 |
+| mozilla | 7.7725% | 6.3789% | 9.2281% | 3/0/0 |
+| mr | 4.1543% | 3.9287% | 4.4279% | 3/0/0 |
+| nci | 2.8100% | 2.3903% | 3.0507% | 2/0/1 |
+| ooffice | 14.9204% | 12.1545% | 19.0986% | 3/0/0 |
+| osdb | 15.6911% | 12.4943% | 18.0782% | 3/0/0 |
+| reymont | 2.6853% | 2.1719% | 3.1326% | 3/0/0 |
+| samba | 8.4104% | 6.8777% | 9.7632% | 3/0/0 |
+| sao | 15.8595% | 15.5542% | 16.1747% | 3/0/0 |
+| webster | 5.3445% | 3.0306% | 9.1440% | 3/0/0 |
+| xml | 8.3449% | 8.0841% | 8.8626% | 3/0/0 |
+| x-ray | 21.6391% | 16.6161% | 24.4739% | 3/0/0 |
+
+| Pass | Control mean preparation seconds | Trial preparation seconds | Control mean other seconds | Trial other seconds |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 87.1420122 | 81.3741771 | 0.3593923 | 0.3627667 |
+| 2 | 89.7022772 | 82.7619796 | 0.3625342 | 0.3637333 |
+| 3 | 90.8102023 | 85.2098301 | 0.3615821 | 0.3599916 |
+
+Other seconds sum creation, collection/drain and destruction. Preparation is
+the complete boundary call, including search, scalar mapping, range coding,
+prefix/copies and any same-call drain; no inner-loop-only speed is inferred.
+Workspace policy budgets are 315365389 bytes for the finder-scratch encoder,
+315365389 for scalar controls and 130029573 for the unchanged decoder. All
+query thresholds, frame/preparation counts, phase sums and per-frame sums pass.
+Decode corpus seconds per pass: 6.9300845, 6.9493474, 6.9280025.
+These are unchanged-decoder observations, not a decode optimization claim.
+
+| Mode/profile | Maximum process peak working set bytes | Maximum process peak commit bytes |
+| --- | ---: | ---: |
+| encode/reference-0 | 318148608 | 388538368 |
+| encode/reference-1 | 318164992 | 388554752 |
+| encode/finder-scratch | 318160896 | 388542464 |
+| decode/finder-scratch | 132808704 | 202866688 |
+
+Memory counters are whole-process working-set/commit peaks, including input,
+archive and runtime; they are separate from fixed workspace policy and are not
+codec-only RSS. Do not subtract independently observed maxima. No operating
+system, cache or processor cause or architecture-independent gain is inferred.
+Prior mapping-only candidate and all diagnostics remain preserved. Public
+admission, full-suite/fuzz and external qualification are
+separate stages.
