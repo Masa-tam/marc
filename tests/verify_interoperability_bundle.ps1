@@ -173,6 +173,8 @@ $schema58Profiles = $schema57Profiles + @(
     'lzss-position-distance-dynamic-range')
 $schema59Profiles = $schema58Profiles + @(
     'lzss-position-distance-dynamic-range-1m')
+$schema60Profiles = $schema59Profiles + @(
+    'lzss-position-distance-dynamic-range-4m')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -468,6 +470,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema59Profiles
+} elseif ($manifest.schema_version -eq 60) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v60') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema60Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }
@@ -509,6 +516,29 @@ foreach ($entry in $manifest.archives) {
         throw "Archive size or SHA-256 does not match: $codec"
     }
 
+    if ($codec -eq 'lzss-position-distance-dynamic-range-4m') {
+        $header = [byte[]]::new(112)
+        $stream = [System.IO.File]::OpenRead($archivePath)
+        try {
+            $offset = 0
+            while ($offset -lt $header.Length) {
+                $read = $stream.Read($header, $offset, $header.Length - $offset)
+                if ($read -eq 0) {
+                    throw '4 MiB position-distance archive header is truncated'
+                }
+                $offset += $read
+            }
+        } finally {
+            $stream.Dispose()
+        }
+        foreach ($field in @(@(4, 2), @(6, 0), @(12, 2), @(14, 10),
+                @(16, 3), @(18, 2), @(96, 1), @(98, 11))) {
+            if ($header[$field[0]] -ne $field[1] -or
+                    $header[$field[0] + 1] -ne 0) {
+                throw '4 MiB position-distance archive does not carry exact identity 2.0: 2/10 + 1/11 + 3/2'
+            }
+        }
+    }
     $decodedPath = Join-Path $resolvedOutput "$codec.decoded"
     $reencodedPath = Join-Path $resolvedOutput "$codec.marc"
     $cliCodec = if ($codec -eq 'lzss-contextual-rans-compact') {

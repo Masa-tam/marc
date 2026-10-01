@@ -28646,3 +28646,42 @@ historical artifact identity are preserved. No new fuzz campaign or throughput
 comparison is claimed; DD-1385's unchanged public boundary retains its evidence.
 The next gate is schema 60 with exactly one appended exchange profile, followed
 by revision-specific hosted CI and maintainer external exchange.
+
+
+## DD-1387: Schema 60 four-MiB position-distance exchange
+
+Append `lzss-position-distance-dynamic-range-4m` as archive 70 after the exact
+schema-59 prefix. Generate schema 60 with codec set `marc-cli-v60`; retain every
+older schema's ordered profile list, baseline 42 profiles and 8193-byte fixture.
+The generator and verifier require exact Format 2.0 identity 2/10 + 1/11 + 3/2.
+The verifier checks the bounded 112-byte header independently before invoking
+the four-MiB decoder. Header identity remains required even when the manifest
+hash has been recomputed after a mutation.
+
+Extend compatibility through schema 60, with new reordered and rehashed crossed
+identity negatives, and an optional fresh evidence directory retaining all test
+results. Compare both compiler-produced 70-archive bundles, preserve every old
+69-archive byte/hash, decode and re-encode using the opposite compiler's CLI.
+Keep codec bodies, APIs, limits, candidate admission and timing decisions intact.
+Hosted CI and four maintainer external producer/consumer routes must qualify
+the actual committed revision later; local tests do not close that gate.
+
+
+DD-1387 local validation passes schemas 1 through 60 with both admitted CLI
+executables, including reordered schema-60 inventory and a rehashed crossed
+four-MiB identity. The latter rejection occurs before creating four-MiB decoded
+or re-encoded output. Both newly produced 70-archive bundles contain identical archive bytes;
+their first 69 archive entries and complete bytes match the preserved schema-59
+reference. The 8193-byte fixture is unchanged. The appended four-MiB archive is
+1247 bytes with SHA-256
+`7b2e83edb38ff40b6402cb5bb90c577bb3bd81b4869337324b040e51d765365e`.
+Both opposite-compiler consumers restore and re-encode all 70 archives exactly.
+All 30 registered tooling subprocesses pass. A test-discovery attempt's log
+preservation assertion failed after those successful tests; its incident and
+retained transcripts are recorded separately. Codec, API, executable and frozen
+archive hashes remain unchanged; no new timing or fuzz claim is made.
+
+Local schema-60 integration is qualified for these tests. The complete compiler
+regression suites from DD-1386 remain separate evidence; they were not rerun in
+this script-only stage. New hosted CI and four maintainer external routes must
+still qualify the actual committed revision before closing the exchange gate.

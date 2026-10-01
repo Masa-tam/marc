@@ -37170,3 +37170,24 @@ both bounds.
 - Scope: command-line integration. No new performance/fuzz/exhaustive coverage
   or legal guarantee is asserted. Additive exchange and revision-specific hosted
   and external verification remain pending.
+
+
+## CR-1558: Additive schema-60 position-distance exchange
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized continuation and local commits.
+- Task: append exactly one exchange profile, preserve old ordered inventories
+  and byte streams, and reject reordered or rehashed crossed identities.
+- References: IR-1147/DD-1387, first-party exchange scripts, qualified CLI and
+  existing fixture/archive records. No external implementation source consulted.
+- Intentionally not consulted: copyleft codec/test expression or third-party
+  implementation structures. Existing scalar codec bodies remain unchanged.
+- Validation: TVG-1254, both schema 1 through 60 routes, exact 69-entry prefix,
+  identical new archive, opposite-compiler 70-entry restoration/re-encoding,
+  and 30 tooling subprocesses. The subsequent discovery preservation assertion
+  failure is recorded with retained transcripts; it is not a codec failure.
+- Similarity/scope review: additive first-party inventory/identity checks and
+  independently written negatives; previous codec, API and executable hashes
+  preserved. Documentation is append-only without local environment details.
+- Remaining gates: actual-revision hosted CI and maintainer external exchange.
+  No new performance/fuzz/full-window coverage or legal guarantee is asserted.

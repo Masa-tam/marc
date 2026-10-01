@@ -19321,3 +19321,27 @@ bytes; executable/reference hashes are checked before and after. Each traversal
 covers 57 frames, 211938580 raw and 61643620 archive bytes. Old artifacts are
 retained. Schema 59/69 archives remain unchanged; new exchange and hosted checks
 are separate gates. No new decoder body, timing or fuzz coverage is asserted.
+
+
+## TVG-1254: Schema 60 ordered exchange and rehashed identity rejection
+
+The existing fixture and profile-order oracle are retained. The generator adds
+only four-MiB position-distance as entry 70, and the verifier appends schema 60
+while preserving schemas 1 through 59. Both admitted CLI executables pass all
+schemas 1 through 60. New permanent negatives swap entries 69/70 and replace
+the four-MiB dictionary/context identity with 2/9 + 1/10 while updating the
+manifest SHA-256. The verifier checks a bounded 112-byte header before invoking
+the four-MiB decoder and rejects the crossed identity without that profile's
+decoded/re-encoded destination or temporary file. Existing reordered schema-58
+and schema-59 negatives remain tested.
+
+Both 70-archive bundles have identical ordered archive records and complete
+archive bytes. Their first 69 entries match the saved schema-59 reference bytes,
+sizes and hashes, with the same 8193-byte fixture. Entry 70 is 1247 bytes with
+SHA-256 `7b2e83edb38ff40b6402cb5bb90c577bb3bd81b4869337324b040e51d765365e`.
+Opposite-compiler consumers decode and re-encode all 70 entries exactly.
+All 30 registered tooling subprocesses pass; an orchestration preservation
+assertion later failed and its transcript/incident remain retained. Previous
+codec/API/executable/reference-archive hashes are preserved. No new native
+full-suite, fuzz, timing or full-window exchange claim is made. DD-1386 carries
+separate native/full-window evidence; hosted/external qualification is pending.

@@ -1375,3 +1375,35 @@ Schema 59, its 69-archive inventory and the 8,193-byte exchange fixture remain
 unchanged; full-window coverage comes from separate permanent tests. This record
 changes no implementation, format, ABI, defaults or release state and makes no
 claim about untested inputs or architectures.
+
+
+### IX-0055: Schema 60 - 4 MiB position-distance local qualification
+
+Current bundles use schema 60 and `marc-cli-v60`, containing 70 archives.
+Entries 1 through 69 retain the complete schema-59 order and byte streams;
+entry 70 is `lzss-position-distance-dynamic-range-4m` with exact Format 2.0
+identity 2/10 + 1/11 + 3/2. The generator validates this identity before recording
+the archive. The verifier independently checks its bounded header even when
+the manifest hash matches, then restores and canonically re-encodes the bytes.
+
+The shared fixture remains 8193 bytes and does not exercise its full window.
+TVG-1254 qualifies both local compiler routes, schemas 1 through 60, reordered
+inventory and rehashed crossed-identity negatives, unchanged old 69 archive
+bytes/hashes, and opposite-compiler consumption of all 70 entries. The new
+four-MiB archive is 1247 bytes, SHA-256
+`7b2e83edb38ff40b6402cb5bb90c577bb3bd81b4869337324b040e51d765365e`.
+DD-1386 supplies separate complete-corpus/full-window and native-suite evidence.
+
+Existing hosted workflows call the updated generator without changing their
+producer roles. Hosted CI and these four maintainer external routes remain
+pending for the actual schema-60 revision:
+
+| Route | Producer | Consumer |
+| --- | --- | --- |
+| 1 | Windows CI | Ubuntu |
+| 2 | Ubuntu CI | Ubuntu |
+| 3 | External Ubuntu Clang | Same Ubuntu environment |
+| 4 | Same external Ubuntu Clang bundle | Windows after transfer |
+
+Earlier 69-archive reports do not qualify this new archive or revision. Local
+cross-compiler checks do not substitute for those external results.

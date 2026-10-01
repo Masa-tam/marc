@@ -1417,6 +1417,12 @@ foreach(required_interoperability_section IN ITEMS
         "${interoperability_section_offset}")
 endforeach()
 foreach(required_current_interoperability_term IN ITEMS
+        "### IX-0055: Schema 60"
+        "marc-cli-v60"
+        "containing 70 archives"
+        "entry 70 is `lzss-position-distance-dynamic-range-4m`"
+        "2/10 + 1/11 + 3/2"
+        "7b2e83edb38ff40b6402cb5bb90c577bb3bd81b4869337324b040e51d765365e"
         "### IX-0051: Schema 59"
         "marc-cli-v59"
         "containing 69 archives"

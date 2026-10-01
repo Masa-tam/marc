@@ -350,3 +350,19 @@ existing 69 entries, preserve prior schemas and prefix/order, reject inconsisten
 identities and reordered inventory, then qualify the actual revision through
 new hosted CI and maintainer external exchange. Earlier one-MiB reports do not
 qualify this four-MiB exchange.
+
+
+## DD-1387 schema-60 local integration result
+
+The exchange generator now appends the explicit four-MiB CLI profile as archive
+70, and the verifier accepts schema60 while preserving schemas 1 through 59.
+TVG-1254 qualifies both local compatibility routes, unchanged old archive bytes,
+identical new archive, reordered/rehashed identity rejection and opposite-compiler
+consumption. The exchange fixture remains 8193 bytes; prior window-boundary and
+complete-corpus checks supply separate coverage. Codec/API/limit/default and
+private candidate admission are unchanged; no new timing or fuzz claim is made.
+
+New hosted CI and maintainer four-direction external exchange on the actual
+schema-60 commit are the remaining integration gate. Earlier schema59 reports
+do not close it. Further algorithm changes must preserve this qualified baseline
+and receive their own differential, safety and performance evidence.

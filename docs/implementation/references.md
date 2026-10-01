@@ -10075,3 +10075,11 @@ No external codec/API implementation source is consulted.
 Use first-party DD-1385 public C factory, existing position-distance CLI dispatch,
 CLI file transaction tests and DD-1367 frozen complete corpus streams. No external
 implementation source or test expression is consulted.
+
+
+## IR-1147: Additive four-MiB exchange inventory
+
+Use first-party DD-1386 qualified command-line selection, existing schema-59
+bundle generator/verifier and schemas 1 through 59 compatibility tests, together
+with their preserved fixture/archive hashes. No external implementation or test
+expression is consulted.

@@ -1,7 +1,9 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
-    [string]$MarcCli
+    [string]$MarcCli,
+
+    [string]$EvidenceDirectory
 )
 
 $ErrorActionPreference = 'Stop'
@@ -63,6 +65,15 @@ function Convert-Schema37To36([string]$Source, [string]$Destination) {
 $resolvedCli = (Resolve-Path -LiteralPath $MarcCli).Path
 $root = Join-Path ([System.IO.Path]::GetTempPath()) (
     'marc-interoperability-' + [System.Guid]::NewGuid().ToString('N'))
+if (-not [string]::IsNullOrEmpty($EvidenceDirectory)) {
+    $root = [System.IO.Path]::GetFullPath($EvidenceDirectory)
+    if (Test-Path -LiteralPath $root) {
+        throw 'Evidence directory already exists'
+    }
+}
+$schema60 = Join-Path $root 'schema60'
+$schema60Reordered = Join-Path $root 'schema60-reordered'
+$schema60Identity = Join-Path $root 'schema60-identity'
 $schema57 = Join-Path $root 'schema57'
 $schema59 = Join-Path $root 'schema59'
 $schema59Reordered = Join-Path $root 'schema59-reordered'
@@ -227,14 +238,78 @@ $schema56Profiles = $schema55Profiles + @(
 $schema57Profiles = $schema56Profiles + @(
     'lzss-contextual-adaptive-huffman-64m')
 $schema58Profiles = $schema57Profiles + @('lzss-position-distance-dynamic-range')
+$schema59Profiles = $schema58Profiles + @('lzss-position-distance-dynamic-range-1m')
 try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema59 `
+        -OutputDirectory $schema60 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    $latest = Get-Content -LiteralPath (Join-Path $schema60 'manifest.json') -Raw |
+        ConvertFrom-Json
+    if ($latest.schema_version -ne 60 -or $latest.codec_set -ne 'marc-cli-v60' -or
+            @($latest.archives).Count -ne 70 -or
+            $latest.archives[69].codec -ne 'lzss-position-distance-dynamic-range-4m') {
+        throw 'Schema 60 must append exactly one four-MiB position-distance archive'
+    }
+    for ($index = 0; $index -lt $schema59Profiles.Count; ++$index) {
+        if ($latest.archives[$index].codec -ne $schema59Profiles[$index]) {
+            throw 'Schema 60 changed the frozen schema-59 prefix'
+        }
+    }
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+        -MarcCli $resolvedCli `
+        -BundleDirectory $schema60 `
+        -OutputDirectory (Join-Path $root 'verified60')
+
+    Copy-Item -LiteralPath $schema60 -Destination $schema60Reordered -Recurse
+    $manifestPath = Join-Path $schema60Reordered 'manifest.json'
+    $changed = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+    $lastArchive = $changed.archives[69]
+    $changed.archives[69] = $changed.archives[68]
+    $changed.archives[68] = $lastArchive
+    Write-Manifest $manifestPath $changed
+    $rejected = $false
+    try {
+        & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+            -MarcCli $resolvedCli -BundleDirectory $schema60Reordered `
+            -OutputDirectory (Join-Path $root 'verified60-reordered')
+    } catch {
+        if ($_.Exception.Message -notlike 'Codec is out of schema order*') { throw }
+        $rejected = $true
+    }
+    if (-not $rejected) { throw 'Verifier accepted a reordered schema-60 manifest' }
+
+    Copy-Item -LiteralPath $schema60 -Destination $schema60Identity -Recurse
+    $manifestPath = Join-Path $schema60Identity 'manifest.json'
+    $changed = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+    $archivePath = Join-Path $schema60Identity $changed.archives[69].file
+    $bytes = [System.IO.File]::ReadAllBytes($archivePath)
+    $bytes[14] = 9
+    $bytes[98] = 10
+    [System.IO.File]::WriteAllBytes($archivePath, $bytes)
+    $changed.archives[69].sha256 = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
+    Write-Manifest $manifestPath $changed
+    $rejected = $false
+    $identityOutput = Join-Path $root 'verified60-identity'
+    try {
+        & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+            -MarcCli $resolvedCli -BundleDirectory $schema60Identity `
+            -OutputDirectory $identityOutput
+    } catch {
+        if ($_.Exception.Message -notlike '4 MiB position-distance archive does not carry exact identity*') { throw }
+        $rejected = $true
+    }
+    if (-not $rejected) { throw 'Verifier accepted a rehashed crossed schema-60 identity' }
+    foreach ($suffix in @('.decoded', '.decoded.tmp', '.marc', '.marc.tmp')) {
+        if (Test-Path -LiteralPath (Join-Path $identityOutput ("lzss-position-distance-dynamic-range-4m" + $suffix))) {
+            throw 'Identity rejection published four-MiB output'
+        }
+    }
+
+    Convert-Bundle $schema60 $schema59 59 'marc-cli-v59' $schema59Profiles
     $latest = Get-Content -LiteralPath (Join-Path $schema59 'manifest.json') -Raw |
         ConvertFrom-Json
     if ($latest.schema_version -ne 59 -or $latest.codec_set -ne 'marc-cli-v59' -or
@@ -660,9 +735,9 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 59'
+    Write-Host 'Verified interoperability schemas 1 through 60'
 } finally {
-    if (Test-Path -LiteralPath $root) {
+    if ([string]::IsNullOrEmpty($EvidenceDirectory) -and (Test-Path -LiteralPath $root)) {
         $resolvedRoot = [System.IO.Path]::GetFullPath($root)
         $temporaryRoot = [System.IO.Path]::GetFullPath([System.IO.Path]::GetTempPath()).TrimEnd(
             [System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar) +

@@ -668,3 +668,14 @@ This adds an explicit experimental selection outside the baseline 42-profile
 matrix. Schema 59 and its 69 archives retain their existing inventory; adding
 the new exchange archive and revision-specific external verification are later
 qualification gates.
+
+
+## Schema 60 exchange inventory
+
+Schema 60 (`marc-cli-v60`) appends `lzss-position-distance-dynamic-range-4m`
+as archive 70 after the unchanged schema-59 prefix of 69 archives. Its exact
+identity is 2/10 + 1/11 + 3/2. The generator and verifier validate that identity;
+all earlier schema profile lists and the 8193-byte fixture remain unchanged.
+This small exchange fixture does not cover the full four-MiB window. Complete
+corpus and window-boundary checks are separate evidence. Hosted CI and external
+producer/consumer verification must qualify the actual new revision.
