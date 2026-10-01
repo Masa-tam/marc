@@ -28240,3 +28240,54 @@ phase/per-frame sums and process memory counters. The trial does not satisfy the
 Public factory admission and finder scratch reuse remain separate. The earlier
 mapping-only candidate and all old diagnostics remain intact. No operating
 system/cache/processor cause is inferred from timing variability.
+
+
+## DD-1378: Independent private four-MiB finder scratch applicability
+
+All 57 frozen frames fit the conservative two-bytes-per-decision plus five
+termination-byte bound in both their actual-length and full-window finder spans.
+Maximum bound is 39,220,875 bytes; maximum actual payload is 3,368,593 bytes.
+These observations do not establish eligibility for arbitrary input.
+
+Keep scalar token planning/mapping. After the fixed five-prefix tokenizer returns,
+its finder object has expired; tokens, operations, raw data and configuration
+still remain live. Add a separate private single-writing-pass range helper using
+unchanged four-MiB scalar arithmetic. It may modify only discardable scratch on
+failure, and commits its descriptor only on success. Check conservative capacity,
+limits and aliases first; ineligible storage uses the retained scalar encoder.
+
+A frame helper writes payload into disjoint dead finder storage, validates all
+frame bounds and output capacity, then copies payload and prefix to serialized
+output only on complete success. Charge the finder once per lifetime, full
+supplied raw-adapter capacities, coder/decoder peak and explicit 80-byte prefix.
+Optional scratch rejection must preserve scalar error precedence via fallback.
+No streaming owner, default, ABI, format or performance admission at this stage.
+
+
+DD-1378 validation: separate private range/frame/raw helpers retain scalar
+mapping and unchanged four-MiB Models, RangeWriter and grammar-aware run bodies.
+The scratch writer scans only decision widths to establish a checked bound,
+then performs one writing run. Descriptor/configuration aliases are rejected
+before writes; invalid grammar may leave a discarded scratch prefix, never a
+committed descriptor. Ineligible bounds/capacities/limits use scalar fallback.
+
+Both compiler targets pass 199 ordinary tests with nine optional skips; explicit
+current-source ASan/UBSan passes 273 with nine skips. Cover scalar-reference
+payloads, all lengths/distances, binary-model rescaling, exact/one-under scratch
+bounds and limits, malformed-prefix disposal, metadata/address aliases, budget/
+capacity sweeps, late frame failures and repeated finder initialization after
+payload reuse, including two full four-MiB random frames with wide references.
+
+Twenty-four native corpus calls compare retained fixed five-prefix tokens,
+all complete frozen frame bytes and canonical/raw restoration. Every one of
+57 frames per compiler explicitly uses finder scratch; raw/archive bytes remain
+211,938,580/61,643,620. This qualifies helpers and storage eligibility for these
+fixtures, not all inputs or streaming ownership. Optional aliases, oversize,
+short scratch or budgets retain the bounded scalar path and serialized output.
+No new allocation, retained range plan or prepared mapping is introduced.
+
+Next qualify separate scalar-mapping finder-scratch streaming ownership against
+the retained scalar five-prefix owner, checking query/phase peak, sticky failure
+and cross-frame publication before repeated native measurement. No speed or
+physical-memory improvement is inferred here; previous rejected trials remain
+separate, and no existing factory or stream representation is changed.

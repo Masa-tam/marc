@@ -36999,3 +36999,24 @@ both bounds.
   identity and append-only documentation checked before local commit.
 - Scope: private ownership and native comparison, with no public factory,
   external qualification or legal guarantee asserted.
+
+
+## CR-1549: 2026-10-01 - Private four-MiB expired finder scratch trial
+
+- Author/reviewer: Codex; maintainer approved progression.
+- References: IR-1138; qualified first-party one-MiB scratch lifecycle/tests,
+  scalar four-MiB Models/RangeWriter/run, scalar mapping/frame and fixed
+  five-prefix selection, frozen reference archives.
+- Independent decisions: verify every frozen frame's conservative bound first;
+  retain scalar mapping and separate single-writing-pass range helper; protect
+  descriptor/configuration metadata, reuse only dead finder storage, charge
+  simultaneous capacities once, and publish only after complete frame checks.
+  Unadmitted prepared mapping/range ownership is not composed into this trial.
+- Known implementations intentionally not consulted: external codec, copyleft,
+  optimization, allocation or test source structures.
+- Validation: TVG-1245; both compiler targets, explicit ASan/UBSan, 24 corpus
+  differentials and first-party transfer/private linking/source/artifact identity
+  checks pass. Existing docs are preserved with append-only additions.
+- Scope: private applicability and helper correctness. Streaming ownership,
+  performance/public admission and external verification remain separate.
+  No legal guarantee is asserted.

@@ -8241,3 +8241,13 @@ metadata-aware workspace query charges actual stream/owner size and retained
 range/model/writer/cursor plus prefix. Frames are published only after successful
 complete raw-frame coding; earlier committed frames survive later failure.
 No public factory, default limit, ABI or algorithm inventory changes.
+
+
+Private DD-1378 finder-scratch helpers preserve the reserved four-MiB grammar,
+descriptor, header and payload bytes with scalar token mapping. After tokenizer
+return, dead finder storage may hold a payload under the checked bound of two
+bytes per decision plus five termination bytes. Ineligible scratch uses the
+retained scalar path. Scratch is discardable on failure; serialized output is
+committed only after whole-frame validation and capacity success. The finder is
+charged once, with simultaneous supplied capacities and coder/prefix peak.
+No owner, public factory, format variant, inventory or default-limit changes.

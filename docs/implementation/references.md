@@ -10011,3 +10011,11 @@ is consulted. Retain scalar token planning/mapping and the existing decoder.
 Use first-party five-prefix workspace/owner lifecycle, DD-1376 scalar-mapping
 range-prepared frame/raw helpers, DD-1374 common native diagnostic and frozen
 reference archives. No external optimization or ownership source is consulted.
+
+
+## IR-1138: Private four-MiB expired finder scratch trial
+
+Use first-party one-MiB finder-scratch lifecycle, scalar four-MiB range arithmetic,
+scalar token/frame mapping, fixed five-prefix selection and frozen reference
+archives. Do not compose the unadmitted prepared mapping/range owners. No external
+implementation or optimization source is consulted.

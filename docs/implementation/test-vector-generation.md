@@ -19084,3 +19084,33 @@ compiler. Source/archive and executable identities are checked before timing.
 All 144 fresh exclusive observations retain byte/restoration equality, budget
 315365461, frame counts, rotation, disjoint phase and per-frame sums. BM-0199
 reports results. No new full-suite/fuzz or external qualification is claimed.
+
+
+## TVG-1245: Private four-MiB expired finder scratch trial
+
+First verify frozen archive/source hashes and inspect every frame's declared
+decision bound and actual payload against actual-length and full finder spans.
+All 57 frames fit, with maximum bound/payload 39,220,875/3,368,593 bytes. This
+inventory does not prove eligibility outside the fixtures. First-party scalar
+range vectors and one-MiB scratch tests are transferred into separate suites;
+scalar mapping and four-MiB arithmetic remain the reference.
+
+Cover all match lengths/distance widths, literal patterns/rescaling, binary
+model rescaling, exact conservative bound and scalar-capacity fallback,
+exact/one-under budgets, malformed scratch prefix with unchanged descriptor,
+metadata/configuration and pointer-overflow rejection. Frame tests sweep budget,
+output/operation/scratch capacities, malformed tokens, model limits and position;
+compare complete reference diagnostics and sentinel output. Optional scratch
+aliases/oversize fall back without corrupting live regions. Successful payload
+generation followed by expansion-limit failure publishes no serialized bytes.
+
+Repeated raw-frame tests include frame sizes 1/2/3, short/65,536 and four MiB,
+full/final frames and wide-distance random data, proving finder initialization
+after its bytes have been reused. Exact raw aggregate and one-under limits retain
+reference admission. Native targets each pass 199 tests, nine optional skips
+(208 total); explicit current-source ASan/UBSan passes 273, nine skips (282 total).
+Twenty-four native corpus tests assert scratch use on every frame, compare
+all selected tokens and full frozen frame bytes, canonically decode/reconstruct
+all raw data; 12 members, 57 frames per compiler and 211,938,580/61,643,620 bytes.
+Existing compiler warnings remain. No owner, performance, new full-suite/fuzz,
+public or external qualification is claimed.
