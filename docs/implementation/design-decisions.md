@@ -28204,3 +28204,39 @@ for the subsequent independent range-prepared owner and compare against the
 retained scalar five-prefix owner. Metadata/query budgets, commit-only-on-success
 and cross-frame failure privacy need qualification there. No throughput or
 physical memory improvement is inferred from these untimed helper tests.
+
+
+## DD-1377: Independent range-prepared four-MiB streaming ownership
+
+Transfer the first-party borrowed/owned five-prefix lifecycle into a separate
+range-prepared path. Derive a separate checked workspace using retained range
+metadata, model/writer/cursor plus 80-byte prefix and actual owner sizes. Query
+equality is a result to verify, not an assumption. Preserve allocation before
+processing, arbitrary buffers, final suffix/EndInput, Flush and sticky states.
+Publish each frame only after the new raw helper succeeds; retain earlier
+committed frames on later failure. Keep scalar token mapping and old owners.
+
+Qualify budgets, aliases, failure privacy and whole frozen streams first. The
+optional native driver compares two scalar five-prefix controls against this
+range-only owner with common lifecycle clocks and unchanged decoder. Rotate
+three complete passes of fresh exclusive processes, retain all observations,
+and keep fixed workspace policy distinct from process memory counters. Public
+admission and finder scratch reuse remain separate decisions.
+
+
+DD-1377 validation: both compiler targets pass 184 ordinary tests with eight
+optional skips; explicit current-source ASan/UBSan passes 258 with eight skips.
+Native and sanitizer diagnostic smokes pass all three labels/modes, empty,
+short, full and final frame cases. Twenty-four owner corpus tests and twenty-four
+native diagnostic captures match complete frozen streams and restore raw data:
+12 members, 57 frames, 211,938,580/61,643,620 raw/archive bytes per compiler.
+Full-window encode query is 315365461 bytes, versus scalar control 315365389;
+unchanged decoder query 130029573. Metadata is charged explicitly, including
+exact/one-under query limits at every tested frame capacity.
+
+BM-0199 retains all 144 exclusive rotated observations (three passes, 108
+encodes and 36 unchanged decoder observations), including control spread,
+phase/per-frame sums and process memory counters. The trial does not satisfy the requirement to beat both controls in all 36 comparisons; retain the scalar owner as reference and the trial as a separate private candidate.
+Public factory admission and finder scratch reuse remain separate. The earlier
+mapping-only candidate and all old diagnostics remain intact. No operating
+system/cache/processor cause is inferred from timing variability.

@@ -8233,3 +8233,11 @@ included with model/writer/cursor and the 80-byte prefix in the checked peak.
 Raw adapters charge full supplied capacities before selection. The frame prefix
 is committed only after whole-payload success; failed output is not consumable.
 No streaming factory, inventory, limit default or representation changes.
+
+
+Private DD-1377 range-prepared streaming ownership uses the existing reserved
+four-MiB stream/frame representation and scalar token mapping. A separate
+metadata-aware workspace query charges actual stream/owner size and retained
+range/model/writer/cursor plus prefix. Frames are published only after successful
+complete raw-frame coding; earlier committed frames survive later failure.
+No public factory, default limit, ABI or algorithm inventory changes.

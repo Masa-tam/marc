@@ -10004,3 +10004,10 @@ implementation is consulted; preserve the four-MiB scalar arithmetic and grammar
 Use the first-party scalar frame encoder, five-prefix raw adapter, DD-1375
 prepared range helper and frozen reference archives. No external implementation
 is consulted. Retain scalar token planning/mapping and the existing decoder.
+
+
+## IR-1137: Private range-prepared four-MiB streaming owner
+
+Use first-party five-prefix workspace/owner lifecycle, DD-1376 scalar-mapping
+range-prepared frame/raw helpers, DD-1374 common native diagnostic and frozen
+reference archives. No external optimization or ownership source is consulted.

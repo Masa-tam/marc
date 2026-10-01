@@ -36979,3 +36979,23 @@ both bounds.
   artifact identities and append-only docs are checked before local commit.
 - Scope: frame/raw helper integration. No public factory, streaming owner,
   performance admission or external qualification. No legal guarantee asserted.
+
+
+## CR-1548: 2026-10-01 - Private four-MiB range-prepared streaming ownership
+
+- Author/reviewer: Codex; maintainer approved progression.
+- References: IR-1137, DD-1376 range-only helpers and first-party workspace/
+  ownership/test/native diagnostic structures; frozen reference archives.
+- Independent decisions: retain scalar mapping, derive separate metadata-aware
+  workspace, preserve actual-size/allocation-first ownership, bounded partial
+  buffers, sticky state and whole-frame commit. Owner bodies transfer unchanged
+  apart from concrete names and qualified helper/workspace connections.
+- Known implementations intentionally not consulted: external codec sources,
+  copyleft code and third-party optimization/ownership/profiling structures.
+- Validation: TVG-1244; both compiler tests/smokes, explicit ASan/UBSan and
+  diagnostic smokes and 48 whole-stream corpus checks pass. BM-0199 retains all
+  144 observations and the unmet improvement criterion. First-party transfer,
+  private linking, source/artifact
+  identity and append-only documentation checked before local commit.
+- Scope: private ownership and native comparison, with no public factory,
+  external qualification or legal guarantee asserted.

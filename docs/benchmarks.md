@@ -8675,3 +8675,72 @@ These results qualify only this private mapping-owner comparison. Range-preparat
 transfer, finder-scratch reuse, full-suite/fuzz, public admission and revision-specific
 external verification remain separate. Deeper/historical timing causes remain
 unverified; no hardware-independent performance guarantee is inferred.
+
+
+## BM-0199: Private range-prepared four-MiB common owner comparison
+
+Two scalar five-prefix controls versus the independent range-prepared owner,
+with identical scalar token mapping, fixed eligibility three and unchanged
+decoder. Three complete passes rotate labels per member/pass, using 144 fresh
+exclusive processes, no warmup/discarded reruns. Creation/process/destruction
+clocks are disjoint; boundary calls classify complete preparation including
+same-call copies/drain. I/O, byte comparison, restoration, queries and capture
+remain outside clocks. Every observed stream matches frozen bytes and restores
+raw data. These are native observations, not an algorithm-only window comparison.
+
+| Pass | Scalar 0 seconds | Scalar 1 seconds | Prepared range seconds | Reduction versus control mean |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 87.7324060 | 87.8649898 | 85.0355265 | 3.1472% |
+| 2 | 89.6270032 | 89.3665347 | 86.4431883 | 3.4119% |
+| 3 | 90.2621031 | 90.1527095 | 87.0666929 | 3.4817% |
+
+Raw/archive bytes remain 211,938,580/61,643,620 (29.0856% archived size).
+Wins against both controls: 33/36; losses: 3; between:
+0. Maximum within-member/pass control spread:
+8.0990%. The trial does not satisfy the requirement to beat both controls in all 36 comparisons; retain the scalar owner as reference and the trial as a separate private candidate.
+Exceptions retained: pass 2 nci (-2.9382%, loss); pass 3 dickens (-1.9980%, loss); pass 3 reymont (-7.9766%, loss)
+
+| Member | Mean reduction | Minimum | Maximum | Wins/losses/between |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 1.9190% | -1.9980% | 3.9373% | 2/1/0 |
+| mozilla | 5.0648% | 4.2922% | 5.7644% | 3/0/0 |
+| mr | 3.6859% | 2.4735% | 5.0148% | 3/0/0 |
+| nci | 0.9090% | -2.9382% | 4.7900% | 2/1/0 |
+| ooffice | 8.3003% | 6.6555% | 10.2879% | 3/0/0 |
+| osdb | 6.4059% | 4.5207% | 9.9111% | 3/0/0 |
+| reymont | -1.1219% | -7.9766% | 3.4237% | 2/1/0 |
+| samba | 4.2163% | 3.0592% | 5.7564% | 3/0/0 |
+| sao | 5.2256% | 3.3809% | 6.6350% | 3/0/0 |
+| webster | 2.3100% | 1.7106% | 2.8954% | 3/0/0 |
+| xml | 4.5363% | 3.6214% | 5.5644% | 3/0/0 |
+| x-ray | 10.8419% | 7.4483% | 13.0541% | 3/0/0 |
+
+| Pass | Control mean preparation seconds | Trial preparation seconds | Control mean other seconds | Trial other seconds |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 87.4378498 | 84.6750497 | 0.3608481 | 0.3604768 |
+| 2 | 89.1353455 | 86.0788785 | 0.3614235 | 0.3643098 |
+| 3 | 89.8451374 | 86.7025239 | 0.3622690 | 0.3641690 |
+
+Other seconds sum creation, collection/drain and destruction. Preparation is
+the complete boundary call, including search, scalar mapping, range coding,
+prefix/copies and any same-call drain; no inner-loop-only speed is inferred.
+Workspace policy budgets are 315365461 bytes for the range-prepared encoder,
+315365389 for scalar controls and 130029573 for the unchanged decoder. All
+query thresholds, frame/preparation counts, phase sums and per-frame sums pass.
+Decode corpus seconds per pass: 6.9623667, 6.9674336, 6.9595621.
+These are unchanged-decoder observations, not a decode optimization claim.
+
+| Mode/profile | Maximum process peak working set bytes | Maximum process peak commit bytes |
+| --- | ---: | ---: |
+| encode/reference-0 | 318111744 | 388558848 |
+| encode/reference-1 | 318160896 | 388546560 |
+| encode/prepared-range | 318156800 | 388550656 |
+| decode/prepared-range | 132784128 | 202833920 |
+
+Memory counters are whole-process working-set/commit peaks, including input,
+archive and runtime; they are separate from fixed workspace policy and are not
+codec-only RSS. Do not subtract independently observed maxima. No operating
+system, cache or processor cause or architecture-independent gain is inferred.
+Prior mapping-only candidate and all diagnostics remain preserved. Public
+admission, finder scratch reuse, full-suite/fuzz and external qualification are
+separate stages.

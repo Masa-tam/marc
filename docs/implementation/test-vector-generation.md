@@ -19061,3 +19061,26 @@ frozen reference archive and canonically decode/reconstruct raw data. Per
 compiler: 12 members, 57 frames, 28533369 selected tokens, 211938580/61643620
 raw/archive bytes. No new whole-stream owner, full-suite/fuzz, performance or
 external qualification is claimed.
+
+
+## TVG-1244: Private range-prepared four-MiB streaming ownership
+
+Transfer first-party five-prefix/prepared owner tests into a distinct range-only
+suite. Keep separate scalar token/frame oracles and unchanged decoder. Cover
+empty/one-byte, frame boundaries and final suffixes, one-byte/random/zero-capacity
+buffers, Flush, latched EndInput, invalid flags, all live-buffer/object aliases,
+sticky states, single preparation per frame, exact/one-under budgets and a failed
+second frame exposing only the header and earlier committed frame. Query tests
+derive retained-range model charge rather than assuming scalar equality, and
+compare all layout fields at capacities 1, 3, 21, 257 and four MiB.
+
+Native targets each pass 184 tests with eight optional skips (192 total).
+Explicit current-source ASan/UBSan passes 258 with eight skips (266 total).
+Native and sanitizer diagnostic smokes cover three labels and modes for
+empty/A259/mixed/full/final frame cases. Existing compiler warnings remain.
+Twenty-four optional owner corpus tests and twenty-four independent native
+captures match frozen whole streams and restore every raw byte; 57 frames per
+compiler. Source/archive and executable identities are checked before timing.
+All 144 fresh exclusive observations retain byte/restoration equality, budget
+315365461, frame counts, rotation, disjoint phase and per-frame sums. BM-0199
+reports results. No new full-suite/fuzz or external qualification is claimed.
