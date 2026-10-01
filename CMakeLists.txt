@@ -1064,6 +1064,30 @@ if(MARC_BUILD_BENCHMARKS)
                     "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-phase-smoke"
                     -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_phase_benchmark_smoke.cmake)
         endif()
+        add_executable(marc_lzss_position_distance_4m_finder_diagnostic
+            benchmarks/lzss_position_distance_4m_finder_diagnostic.cpp
+            benchmarks/lzss_position_distance_4m_diagnostic_finder.cpp)
+        target_compile_features(marc_lzss_position_distance_4m_finder_diagnostic PRIVATE cxx_std_20)
+        target_include_directories(marc_lzss_position_distance_4m_finder_diagnostic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_lzss_position_distance_4m_finder_diagnostic PRIVATE marc::static)
+        add_dependencies(marc_lzss_position_distance_4m_finder_diagnostic marc_lzss_position_distance_4m_profile_benchmark)
+        if(MARC_BUILD_TESTS)
+            add_executable(marc_position_distance_4m_finder_diagnostic_tests
+                tests/lzss_position_distance_4m_finder_diagnostic_tests.cpp
+                benchmarks/lzss_position_distance_4m_diagnostic_finder.cpp)
+            target_compile_features(marc_position_distance_4m_finder_diagnostic_tests PRIVATE cxx_std_20)
+            target_include_directories(marc_position_distance_4m_finder_diagnostic_tests PRIVATE
+                ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
+            target_link_libraries(marc_position_distance_4m_finder_diagnostic_tests PRIVATE marc::static)
+            add_test(NAME marc_position_distance_4m_finder_diagnostic_tests
+                COMMAND marc_position_distance_4m_finder_diagnostic_tests)
+            add_test(NAME marc_position_distance_4m_finder_diagnostic_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DDIAGNOSTIC=$<TARGET_FILE:marc_lzss_position_distance_4m_finder_diagnostic>"
+                    "-DFIXTURE_GENERATOR=$<TARGET_FILE:marc_lzss_position_distance_4m_profile_benchmark>"
+                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-finder-diagnostic-smoke"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_finder_diagnostic_smoke.cmake)
+        endif()
         add_executable(marc_lzss_position_distance_4m_five_prefix_phase_benchmark
             benchmarks/lzss_position_distance_4m_five_prefix_phase_benchmark.cpp
             src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp

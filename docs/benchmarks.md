@@ -8927,3 +8927,35 @@ observed maxima are not subtracted. Source/executable/frozen archive/prior artif
 identities and all rotation, budget, frame and phase checks pass. Variation causes
 remain unverified. No implementation change, public/default switch, new full-suite,
 fuzz or external qualification occurs. All earlier evidence remains intact.
+
+
+### Four-MiB finder operation diagnostics (DD-1390)
+
+This untimed private counter traversal is separate from BM-0197 through BM-0201.
+No benchmark observation or speed conclusion is added. Both compilers agree
+on all twelve members, 57 frames, complete frozen stream bytes and restored
+211938580 raw bytes. The split harness charges 315365109 codec bytes, including
+the 296-byte diagnostic finder instance; input/archive/oracle/report buffers
+are bounded harness overhead. This is not the public owner workspace policy,
+codec RSS or a measured process peak.
+
+| Operation | Complete twelve-member count |
+| --- | ---: |
+| Initialized head/link words | 647022396 |
+| Find calls / generated tokens | 28533369 |
+| Three-byte chain visits | 311699647 |
+| Four-byte chain visits | 113690608 |
+| Five-byte chain visits / candidate-filter comparisons | 21577377133 |
+| Five-byte prefix comparisons | 5080082336 |
+| Extension comparisons | 9645789313 |
+| Equal extension bytes | 8631859089 |
+| Three-/four-/five-byte insertions | 211938466 / 211938409 / 211938352 |
+| Frame-coded modeled operations | 110846666 |
+
+Five-byte visits are 98.0666511 percent of all chain visits. Visits and extension
+comparisons are different operations and cannot be combined into a time share.
+Five-byte visit counts rank mozilla (9149839318), mr (5171579616), and nci
+(3384461066) highest; this differs from the earlier complete-owner elapsed
+ranking and does not replace it. Next investigate candidate rejection and
+extension work privately before a new throughput proposal. Instrumentation
+overhead is not speed evidence, and previous candidate exceptions remain.

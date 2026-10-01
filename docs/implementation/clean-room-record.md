@@ -37227,3 +37227,27 @@ both bounds.
   executes, no candidate is admitted and no public codec, format, API, limits,
   defaults or inventory changes. Different harnesses' phases remain distinct;
   variability's cause is not inferred. No new speed/fuzz/legal guarantee claim.
+
+
+## CR-1561: Private four-MiB finder operation counters
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized the next development step.
+- Task/prompt: implement bounded private finder operation diagnostics with
+  exact token/stream differential and existing failure/publication guarantees.
+- References: IR-1149/DD-1390, admitted first-party scalar finder, existing
+  validators/frame diagnostics, frozen scalar streams and DD-1389 priorities.
+  External implementations, including copyleft source/tests, were not consulted.
+- Expression/similarity review: the diagnostic finder intentionally transfers
+  this repository's own admitted implementation, renames its private symbols
+  and adds counters. This first-party similarity is expected. Traversal, tie,
+  insertion and serialization behavior are checked against unchanged originals.
+- Validation: TVG-1257; 672 cases per compiler, diagnostic ASan/UBSan cases,
+  all twelve members and complete frozen token/frame/raw equality, matching
+  counters, malformed-report non-publication, existing public factory guards,
+  linked C17 consumers, fresh targeted CMake tests and source/artifact hashes.
+- Scope: private diagnostic code and targets only. Public codec/ABI/format,
+  defaults, ownership policy, inventory and fixed verification binaries remain
+  unchanged. No new speed, peak memory, fuzz, external qualification, candidate
+  admission or legal guarantee claim. Initial test/configuration and sanitizer
+  link failures were corrected and their diagnostic logs retained.

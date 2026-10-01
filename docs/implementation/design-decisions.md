@@ -28745,3 +28745,47 @@ Start with the three ranked inputs, then qualify all twelve and window/tail
 boundaries. A new speed proposal requires fresh predeclared exclusive complete
 owner comparisons, all observations retained and no rerun-until-success rule.
 This stage takes no new benchmark timings and changes no public implementation.
+
+
+## DD-1390: Private bounded finder counters before another speed trial
+
+Create a separate diagnostic copy of the admitted five-prefix scalar finder.
+Keep it outside the public library source list and selection paths. Preserve
+eligibility three, newest-to-oldest traversal, nearest equal-length tie,
+overlapping matches, all interior insertion and short tails. No stream, API,
+default, inventory or public ownership policy changes.
+
+Store instance-local uint64 counters for initialized words, find/advance calls,
+three-/four-/five-byte chain visits and actual prefix comparisons, fast-path
+comparisons, best-length filter comparisons, extension comparisons/equal bytes,
+positions advanced and per-prefix insertions. A chain visit includes the final
+out-of-window candidate; a byte comparison includes a mismatch. Insertions each
+represent one link write and one head write. Initialization reports the number
+of constructed words, including every link array. Counters reset only on
+successful initialization, and saturate with an overflow flag on arithmetic
+exhaustion without altering match selection. Per-frame limits bound visits by
+F squared per chain and extension comparisons by 258 times F squared, F at
+most 4194304; valid one-pass frame counts fit uint64. Aggregate checks reject
+out-of-range totals. Invalid-call counts remain separate from valid short tails.
+
+The workspace query includes the enlarged finder instance and its counters;
+initialization validates bounds, alignment and metadata/input overlap before
+any writes. Failure preserves both the live finder, including counters, and
+scratch. The diagnostic harness separately charges all codec buffers, range
+model state and the enlarged finder. Bounded input/archive/oracle/report buffers
+are harness overhead, not public codec memory or a process peak measurement.
+
+Independently restore every frozen frame and compare every generated token field
+and complete encoded frame byte before publishing a counter report. Run the
+three prioritized inputs first, then all twelve members. Take no clocks or new
+throughput observations. Counts identify operations to investigate; they do not
+assign elapsed time, cache causes or a speed benefit. Public failure-invariance
+and failed-frame non-publication contracts remain unchanged and are retested.
+
+TVG-1257 qualifies 672 diagnostic cases per compiler and complete corpus token,
+stream, restored-byte and counter identity: 24 traversals, 57 frames per compiler.
+Five-byte chain visits are 21577377133 of 22002767388 visits, or 98.0666511
+percent. They dominate this operation count, not a measured time share. The next
+private diagnostic can distinguish five-byte candidate rejection and extension
+work before proposing a semantics-preserving change. Earlier scratch/prepared
+candidates remain unadmitted; no new optimization is admitted here.

@@ -10091,3 +10091,12 @@ Use first-party BM-0197 complete-owner phases, DD-1369 five-prefix phase records
 BM-0200/BM-0201 scratch-owner observations, admitted finder/encoder source and
 the verified corpus/frozen-stream records. No external optimization code or
 testing expression is consulted.
+
+
+## IR-1149: Four-MiB finder operation diagnostics
+
+Use first-party DD-1369/DD-1384 admitted five-prefix scalar finder and its
+workspace/alias validators, DD-1367 frozen scalar streams, existing split-frame
+diagnostics and DD-1389 member priorities. Transfer the repository's own finder
+into a private diagnostic target and instrument actual operations. No external
+implementation, optimization expression or test suite is consulted.

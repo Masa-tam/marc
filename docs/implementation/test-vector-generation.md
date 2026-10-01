@@ -19383,3 +19383,41 @@ measurement input and existing output. All nine pass without publishing a
 report or altering the protected output. The tool bounds reads at 16 MiB and
 creates reports exclusively. Original dataset hashes and fixed verification
 binaries are unchanged. No native codec, fuzz or new timing test is claimed.
+
+
+## TVG-1257: Four-MiB private finder counter differential
+
+Run 672 deterministic diagnostic cases per compiler: query boundaries and exact
+budget/one-byte-short budget, initialization failures with live finder/counter
+and scratch preservation, real-buffer metadata/input aliases, alignment,
+unsupported variant and frame/block/output limits, invalid sequencing/reset,
+nearest ties, three-/four-/five-byte references around 64-KiB and one-MiB
+boundaries and up to the four-MiB final suffix. Small input lengths 0 through
+513 cover zero, period-seven and seeded binary data with four windows and four
+maximum match lengths. A full four-MiB patterned frame compares the admitted
+finder's matches and every link/head, including unborrowed scratch tails.
+
+A hand-checkable nine-zero-byte input has one literal then distance-one,
+length-eight match. It produces chain visits 1/1/1, prefix comparisons 3/4/5,
+insertions 7/6/5, two fast-path comparisons, one candidate-filter comparison,
+and three successful extension comparisons. Both release compilers and
+ASan/UBSan-instrumented diagnostic/test/admitted-finder translation units pass
+all 672 cases. Linked unchanged validation dependencies are not claimed as a
+new fully instrumented public decoder or fuzz campaign.
+
+All twelve independently verified corpus members match frozen complete scalar
+streams across both compilers: 24 traversals, 57 frames per compiler,
+211938580 raw and 61643620 archive bytes per traversal set. Every token field,
+encoded frame byte and restored raw byte matches; per-frame counters agree
+across compilers and satisfy bounds, insertion/initialization formulas and
+checked uint64 aggregation. Prior frozen archives and qualified public binary
+hashes remain unchanged.
+
+Fresh CMake integration passes the two new targeted tests; the diagnostic smoke
+also passes for the other compiler. Empty, repeated and patterned short streams
+pass; malformed header, truncation and trailing data fail without report output.
+Each smoke invocation retains a fresh destination. Existing public factory
+tests pass 14 cases per compiler, including second-frame failure, truncation,
+crossed identities, workspace/metadata/tail guards and sticky terminal states.
+Linked static/shared C17 consumers also pass. No previous build-tree CTest runs,
+full-suite rerun, new timing, new fuzz or external gate is claimed.
