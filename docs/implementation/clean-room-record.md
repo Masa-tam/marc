@@ -36960,3 +36960,22 @@ both bounds.
 - Scope: operation helper only; speed, physical memory, frame/owner integration,
   public admission and external qualification remain separate. No legal
   guarantee is asserted.
+
+
+## CR-1547: 2026-10-01 - Private four-MiB prepared range frame integration
+
+- Author/reviewer: Codex; maintainer approved progression.
+- Task: integrate the qualified borrowed range plan into separate frame/raw
+  helpers, preserving scalar token mapping and failed-frame privacy.
+- References: IR-1136, DD-1375 and first-party scalar frame/five-prefix raw
+  helpers, prepared-mapping differential tests and frozen reference archives.
+- Independent decisions: checked retained-plan/prefix peak charge, bounded
+  scalar retry after releasing a failed plan, and prefix publication after
+  successful payload completion. Existing scalar sources remain unchanged.
+- Known implementations intentionally not consulted: external codecs, copyleft
+  source and third-party optimization, ownership or test structures.
+- Validation: TVG-1243; both compiler targets, explicit ASan/UBSan and 24 corpus
+  differentials pass. First-party transfers, private-only linking, old source/
+  artifact identities and append-only docs are checked before local commit.
+- Scope: frame/raw helper integration. No public factory, streaming owner,
+  performance admission or external qualification. No legal guarantee asserted.

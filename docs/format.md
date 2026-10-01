@@ -8224,3 +8224,12 @@ and exact payload bytes. A separate one-use borrowed plan charges its metadata
 alongside scalar model/writer/cursor state and operation/payload extents. This
 range-only helper emits no header, publishes no frame and changes no factory,
 algorithm inventory, default limits or existing stream representation.
+
+
+Private DD-1376 range-prepared frame/raw helpers serialize the same reserved
+four-MiB header, descriptor and payload. Scalar token mapping is unchanged.
+One borrowed range plan replaces repeated range planning; its metadata is
+included with model/writer/cursor and the 80-byte prefix in the checked peak.
+Raw adapters charge full supplied capacities before selection. The frame prefix
+is committed only after whole-payload success; failed output is not consumable.
+No streaming factory, inventory, limit default or representation changes.

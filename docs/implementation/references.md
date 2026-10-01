@@ -9997,3 +9997,10 @@ Use the first-party DD-1362 scalar four-MiB range core and DD-1374 observation
 that frame planning is repeated by the scalar writing entry point. The one-MiB
 borrowed prepare/write interface supplies the lifecycle idea only. No external
 implementation is consulted; preserve the four-MiB scalar arithmetic and grammar.
+
+
+## IR-1136: Private scalar-mapping four-MiB prepared range frames
+
+Use the first-party scalar frame encoder, five-prefix raw adapter, DD-1375
+prepared range helper and frozen reference archives. No external implementation
+is consulted. Retain scalar token planning/mapping and the existing decoder.

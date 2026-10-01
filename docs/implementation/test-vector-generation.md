@@ -19034,3 +19034,30 @@ the retained canonical decoder, prepare/write once and compare full payloads.
 Twenty-four invocations cover 12 members, 57 frames and 110846666 operations
 per compiler; source/archive bytes 211938580/61643620. No timing,
 new full suite/fuzz, raw restoration or frame publication claim is made.
+
+
+## TVG-1243: Private scalar-mapping four-MiB prepared range frames
+
+Transfer the first-party prepared-mapping frame tests into a separate range-only
+suite. Retain scalar mapping and the existing scalar frame/decoder oracle. Cover
+27 small pattern/random lengths, the A259 eight-byte payload and 88-byte frame,
+final short frames at four-MiB committed position, exact full-capacity raw budgets,
+one-under storage budgets and output/finder aliases. Compare every operation
+field and complete output including untouched suffixes. Six independent invalid
+token/capacity/budget/position/parameter cases preserve serialized storage.
+
+New exact-frame tests compute peak charge from validated frame requirements,
+used operation bytes, and retained range state plus 80-byte prefix. One-under
+fails without touching output. A low-budget sweep exercises reference fallback
+after releasing the plan and compares reference error categories/subresults;
+trial aggregate shortages are explicitly accepted only as workspace limits.
+
+MSVC and Clang each pass 170 ordinary tests, seven optional skips (177 total).
+Explicit current-source ASan/UBSan passes 244, seven skips (251 total). Existing
+getenv and test-framework compiler warnings remain. Twenty-four independent
+native corpus tests revalidate source/archive hashes, compare retained fixed
+five-prefix token selection, then compare complete encoded frames against the
+frozen reference archive and canonically decode/reconstruct raw data. Per
+compiler: 12 members, 57 frames, 28533369 selected tokens, 211938580/61643620
+raw/archive bytes. No new whole-stream owner, full-suite/fuzz, performance or
+external qualification is claimed.

@@ -28160,3 +28160,47 @@ are unchanged because no frame helper or owner is modified. Integrate this
 range helper into a separate scalar-mapping frame/raw path next, retaining
 budget/error precedence and commit-only-on-success. Native speed, physical
 memory, owner integration and public/external admission remain unmeasured.
+
+
+## DD-1376: Private scalar-mapping four-MiB prepared range frames
+
+Create separate frame/raw helpers using the qualified DD-1375 range prepare/write
+interface. Preserve scalar token mapping, selected-token grammar, exact prefix
+and payload bytes. Charge retained range metadata with model/writer/cursor and
+the explicit 80-byte prefix. Raw adapters charge all supplied capacities before
+selection. Output is consumable only on whole-frame success; commit the prefix
+after payload success. No owner, public factory, format or default changes.
+
+A failed range prepare retries the scalar frame encoder after destroying the
+prepared object, retaining scalar preflight error precedence and a bounded
+fallback. Successful trial planning still enforces its explicit aggregate charge.
+Validate exact/one-under budgets, storage/alias/position/grammar failures, full
+frame bytes and canonical decode/raw restoration before owner integration or
+performance measurement.
+
+
+DD-1376 validation: separate range-prepared frame/raw entry points leave the
+retained scalar and mapping-prepared paths unchanged. Scalar token planning and
+mapping are transferred unchanged, as are the prefix serialization fields. The
+successful path uses one range counting run and one writing run. An explicit
+checked peak includes the retained plan, models, writer, cursor and prefix;
+frame preflight adds the excess over its decoder-state charge. Raw adapters
+charge full supplied capacities and the maximum sequential finder/coder state.
+
+Exact and one-under frame/raw budget tests pass. Small differential vectors and
+invalid token/storage/position/parameter/budget/alias cases retain output and
+reference errors; a budget sweep tests bounded fallback and failure precedence.
+Both native compiler targets pass 170 ordinary tests with seven optional skips;
+explicit current-source ASan/UBSan passes 244 with seven optional skips. Separate
+corpus tests cover 12 members and 57 frames per compiler, comparing all selected
+tokens against the retained fixed five-prefix selector, complete frozen frame
+bytes and restored raw bytes (211938580/61643620 source/archive bytes).
+This stage does not independently repeat the indexed-selector qualification;
+its unchanged five-prefix implementation was previously qualified against that
+reference. Frozen frame bytes remain the independent serialization oracle.
+
+No streaming owner or factory calls the new helper yet. Preserve scalar mapping
+for the subsequent independent range-prepared owner and compare against the
+retained scalar five-prefix owner. Metadata/query budgets, commit-only-on-success
+and cross-frame failure privacy need qualification there. No throughput or
+physical memory improvement is inferred from these untimed helper tests.
