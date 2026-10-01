@@ -1167,3 +1167,26 @@ pass without a reported finding or mismatch. Reference encoding, incremental
 stream decoding, malformed input, guards and failed-frame publication checks
 remain active. Compatible container annotations remain disabled. This finite
 campaign complements TVG-1176; it is not exhaustive malformed-input coverage.
+
+
+### FZ-0053: Private four-MiB decoder and finder-scratch stream boundaries
+
+Add optional private stream decoder and encode-stream differential libFuzzer
+targets under DD-1381. The decoder compares borrowed/owned paths, arbitrary
+malformed bytes, partial/zero output, terminal errors and generated-stream
+publication frontiers; a guaranteed failed second frame releases only earlier
+committed bytes. The encoder compares finder-scratch ownership to exhaustive
+scalar encoding and round-trips through the retained decoder, with guards and
+all three greedy eligibility policies.
+
+On 2026-10-01 each target passes forty initial boundary seeds and 2,000
+ASan/UBSan/libFuzzer executions with no reported finding or differential mismatch.
+Declared seeds are 138101 and 138102. Separately instrumented CMake executables
+repeat 2,000 executions each with seeds 138111 and 138112, for 8,000 total runs
+across both build routes. Decoder input/frame bounds are 8,192/21
+bytes; encoder raw/frame bounds are 128/1..64 bytes. Instrumented CMake targets
+build separately; runtime annotation settings remain consistent. Preserve all
+initial and evolved corpus cases and logs. Finite small-frame runs complement
+existing deterministic four-MiB/long-distance tests and do not establish
+exhaustive or full-window decoder coverage. Public factory, full-suite and
+revision-specific external qualification remain separate gates.

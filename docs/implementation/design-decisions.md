@@ -28366,3 +28366,52 @@ BM-0201 reports every member/pass exception and control spread. The original
 BM-0200 intermediate nci observation remains part of the evidence. No source
 change, selected rerun, default switch or public admission occurs. Variation
 causes remain unverified; repeated timing alone does not establish them.
+
+
+## DD-1381: Four-MiB readiness audit and bounded private streaming fuzzing
+
+Keep finder-scratch ownership private. BM-0201 repeats gains in all 36 new
+comparisons, but BM-0200 retains one intermediate result and duplicate controls
+vary by up to 17.2098 percent in the repetition. Do not silently replace the
+original both-controls condition or infer a variation cause. Readiness review
+separates performance evidence from public safety and compatibility admission.
+
+The four-MiB tuple, scalar decoder, five-prefix/scratch private owners and frozen
+complete streams are implemented. The C factory, CLI and exchange inventory
+still expose the qualified one-MiB profile; no four-MiB public adapter or dedicated
+stream fuzz targets exist. Add optional private ASan/UBSan/libFuzzer targets for
+decoder streaming and scratch encoder differential boundaries before public
+integration. Keep existing sources/factories and the inventory unchanged.
+
+Transfer first-party bounded fuzz driving: arbitrary malformed streams versus
+borrowed/owned decoders, sentinels, partial/zero buffers, Flush, EndInput and
+sticky errors. Generate valid literal streams, then truncate/mutate them, checking
+an independent complete-frame publication frontier and guaranteed failed second
+frame. Compare scratch owner encoding with exhaustive scalar encoding and the
+retained decoder for bounded raw inputs, all eligibility policies and frame sizes.
+Set input/call/output/workspace bounds explicitly. Finite small-frame campaigns
+complement, and do not replace, the existing full-window/distance unit tests.
+
+Public integration still needs a separate config/default resource policy and
+opaque-handle budget, C boundary alias/error tests, static/shared/CLI full suites,
+frozen archive checks, additive inventory/version compatibility and revision-
+specific hosted CI/external exchange. No public completion or new timing is
+claimed in this stage.
+
+
+DD-1381 validation adds two optional private streaming fuzz targets. Each
+passes 40 initial boundary seeds and 2,000 ASan/UBSan/libFuzzer executions with
+no reported crash, hang or differential/publication mismatch. The bounded
+decoder target accepts arbitrary input up to 8,192 bytes with frame limit 21;
+the encoder differential uses raw input up to 128 bytes and frames 1..64,
+including all three eligibility policies. Existing deterministic full-window and
+long-distance tests remain the applicable larger-boundary evidence. This finite
+campaign is not exhaustive coverage or a full-window fuzz qualification.
+
+The separately instrumented CMake build repeats 2,000 executions per target
+with different declared seeds, for 8,000 executions across both build routes.
+
+Public adoption remains pending the listed C/config/CLI/inventory/full-suite and
+external gates. The original performance exception and unexplained control
+spread remain recorded. No factory, codec implementation, default, inventory or
+performance decision is changed by the readiness audit.

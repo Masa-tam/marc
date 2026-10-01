@@ -235,3 +235,32 @@ Retain the scalar five-prefix owner as the reference; the prepared owner remains
 a separate private candidate. No existing factory is changed.
 Range preparation and finder scratch reuse need separate trials; public admission
 and external qualification remain later boundaries.
+
+
+## DD-1381 adoption readiness audit
+
+The reserved tuple and exact scalar decoder/reference are implemented. Private
+five-prefix/finder-scratch ownership preserves complete frozen archives, bounded
+workspace and failed-frame privacy. BM-0200/BM-0201 jointly retain 71 wins and
+one intermediate result across 72 comparisons, with no losses against both
+controls. The repetition alone wins all 36 comparisons; the original exception
+and maximum 17.2098-percent control spread remain unresolved evidence. This
+audit does not revise the performance condition or admit a public profile.
+
+TVG-1248/FZ-0053 add two bounded private stream fuzz targets. Public admission
+still requires the following separately reviewable integration work:
+
+| Boundary | Current evidence | Remaining qualification |
+| --- | --- | --- |
+| Format and codec | Reserved tuple, reference/decoder, frozen streams, full-window/distance tests | Preserve tuple and canonical validation at public boundaries |
+| Memory policy | Checked private encoder/decoder queries; finder charged once | Define public defaults and derive opaque C handle plus actual concrete state/capacities; do not equate owned and C query sizes by assumption |
+| C factory | Qualified one-MiB adapter is retained | Add distinct config/query/create with overlap, invalid configuration, budget and failed-output tests |
+| CLI/build | Four-MiB implementation remains private | Add additive selection and static/shared/export integration; run complete suites and frozen corpus comparisons |
+| Exchange inventory | Qualified one-MiB frozen inventory remains unchanged | Append a new identity with schema/prefix compatibility tests and bundle fixtures |
+| Fuzz and publication | Bounded private stream campaigns and deterministic failure tests | Public-boundary fuzzing and full integration regression without failed-frame release |
+| External verification | Prior reports cover the qualified one-MiB revision | New hosted CI and revision-specific producer/consumer exchange after integration |
+
+The full four-MiB private encoder query is 315365389 bytes and decoder query is
+130029573 bytes; these are fixed workspace policy, not process-memory peaks or
+future public C query constants. Generic defaults cannot be silently widened.
+No new public API/profile/default/inventory identity is introduced by this audit.

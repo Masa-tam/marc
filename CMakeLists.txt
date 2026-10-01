@@ -2151,6 +2151,51 @@ if(MARC_BUILD_FUZZERS)
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_lzss_position_distance_stream PRIVATE marc::static)
 
+    add_executable(marc_fuzz_lzss_position_distance_4m_stream
+        fuzz/lzss_position_distance_4m_stream_fuzz.cpp
+        src/frame/lzss_position_distance_4m_workspace.cpp
+        src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
+        src/frame/lzss_position_distance_4m_owned_decoder.cpp
+        src/frame/lzss_position_distance_4m_frame.cpp
+        src/context/lzss_position_distance_4m_tokens.cpp
+        src/entropy/lzss_position_distance_4m_range_encoder.cpp
+        src/entropy/lzss_position_distance_4m_range_decoder.cpp
+    )
+    target_compile_features(marc_fuzz_lzss_position_distance_4m_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_distance_4m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_distance_4m_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzss_position_distance_4m_stream PRIVATE -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_distance_4m_stream PRIVATE marc::static)
+
+    add_executable(marc_fuzz_lzss_position_distance_4m_encode_stream
+        fuzz/lzss_position_distance_4m_encode_stream_fuzz.cpp
+        src/frame/lzss_position_distance_4m_workspace.cpp
+        src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
+        src/frame/lzss_position_distance_4m_owned_decoder.cpp
+        src/frame/lzss_position_distance_4m_frame.cpp
+        src/context/lzss_position_distance_4m_tokens.cpp
+        src/entropy/lzss_position_distance_4m_range_encoder.cpp
+        src/entropy/lzss_position_distance_4m_range_decoder.cpp
+        src/frame/lzss_position_distance_4m_encode_workspace.cpp
+        src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
+        src/frame/lzss_position_distance_4m_raw_frame_encoder.cpp
+        src/dictionary/lzss_position_distance_4m_match_finder.cpp
+        src/dictionary/lzss_position_distance_4m_candidate.cpp
+        src/dictionary/lzss_position_distance_4m_five_prefix_finder.cpp
+        src/dictionary/lzss_position_distance_4m_five_prefix_candidate.cpp
+        src/entropy/lzss_position_distance_4m_scratch_range_encoder.cpp
+        src/frame/lzss_position_distance_4m_finder_scratch_encode_workspace.cpp
+        src/frame/lzss_position_distance_4m_finder_scratch_frame.cpp
+        src/frame/lzss_position_distance_4m_finder_scratch_raw_frame_encoder.cpp
+        src/frame/lzss_position_distance_4m_finder_scratch_frame_streaming_encoder.cpp
+        src/frame/lzss_position_distance_4m_finder_scratch_owned_encoder.cpp
+    )
+    target_compile_features(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_lzss_position_distance_4m_encode_stream PRIVATE marc::static)
+
     add_executable(marc_fuzz_lzss_position_distance_1m_frame
         fuzz/lzss_position_distance_1m_frame_fuzz.cpp)
     target_compile_features(marc_fuzz_lzss_position_distance_1m_frame PRIVATE cxx_std_20)

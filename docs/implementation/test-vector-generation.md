@@ -19155,3 +19155,30 @@ memory availability. Each encode pass covers all twelve members and 57 frames,
 211,938,580 raw and 61,643,620 archive bytes. Retain all observations, including
 intermediate or losing cases, together with BM-0200. BM-0201 reports the result.
 No new full-suite, fuzz, cross-compiler or external qualification is claimed.
+
+
+## TVG-1248: Private four-MiB streaming fuzz readiness boundaries
+
+Transfer the first-party one-MiB decoder streaming harness to the four-MiB
+identity/model, retaining separate borrowed/owned driving, stable terminal
+status/error positions and output sentinels. Generated valid literal frames
+provide an independent truncation publication frontier. A nonzero reserved byte
+in the second frame must produce an error with only the first frame published.
+Mutated input is also compared across partial/zero buffers and EndInput/Flush.
+
+The new encoder harness compares finder-scratch ownership at one-byte buffers
+against exhaustive scalar encoding with different chunk sizes, then restores
+through the retained decoder. Bound raw input to 128 bytes, frame capacity to
+1..64, total result to 16,384 bytes, workspace to two MiB and calls to 100,000.
+Decoder malformed input is bounded to 8,192 bytes, output to 128 bytes and
+calls to 32,768. The forty initial seeds include empty/one-byte, literal/match
+boundaries, frame/final suffix lengths and repeated/mixed data.
+
+Both optional harnesses pass 2,000 ASan/UBSan/libFuzzer executions with distinct
+declared seeds, unchanged initial corpus and no reported finding or artifact.
+CMake builds both targets against an independently instrumented support library.
+Its executables repeat 2,000 executions each with separate seeds, for 8,000
+total executions across the explicit-source and CMake build routes.
+No codec source changes or new complete compiler suite/external qualification
+are claimed. Deterministic full-window/distance and failed-frame tests from
+earlier stages remain separate evidence. FZ-0053 records the finite campaign.

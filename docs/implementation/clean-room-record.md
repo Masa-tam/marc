@@ -37057,3 +37057,20 @@ both bounds.
   BM-0201 records the complete verdict, separate from historical BM-0200.
 - Scope: reproducibility evidence only. No codec change, public admission,
   selected rerun, new external qualification or legal guarantee is asserted.
+
+
+## CR-1552: 2026-10-01 - Four-MiB readiness and private streaming fuzz boundaries
+
+- Author/reviewer: Codex; maintainer approved progression.
+- References: IR-1141, first-party one-MiB stream fuzz driving, four-MiB private
+  reference/owner/decoder tests, factory/inventory structures and BM-0200/BM-0201.
+- Independent task/decisions: audit unresolved adoption gates without altering
+  the performance rule; add bounded private fuzz targets with exhaustive encode
+  differential, separate decoder ownership and independent publication frontier.
+  Preserve measured bodies, public factories, defaults and frozen inventory.
+- Known implementations intentionally not consulted: external codec source,
+  copyleft code or third-party optimization/testing expression.
+- Validation: TVG-1248/FZ-0053; two optional instrumented targets, forty initial
+  seeds and 2,000 executions each, artifact/source identity and append-only docs.
+- Scope: finite private safety/readiness evidence. No public admission, full-
+  window fuzz coverage, new external qualification or legal guarantee asserted.

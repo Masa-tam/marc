@@ -10033,3 +10033,10 @@ No external implementation or optimization source is consulted.
 Use first-party DD-1379/BM-0200 common owner diagnostic, validated scalar and
 finder-scratch paths, frozen archives and previous complete observations.
 No external implementation or optimization source is consulted.
+
+
+## IR-1141: Four-MiB adoption readiness and private streaming fuzz boundaries
+
+Use first-party four-MiB format/preflight/reference/owner tests, BM-0200/BM-0201,
+the one-MiB stream fuzz harness and native C-factory/inventory integration.
+No external codec source or optimization structure is consulted.
