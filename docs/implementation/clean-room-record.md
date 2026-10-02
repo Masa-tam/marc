@@ -37446,3 +37446,28 @@ both bounds.
   remain. No source selection, format, ABI, defaults, inventory, fixed binary,
   new timing, fuzz, external qualification or legal guarantee. A future split
   preparation diagnostic is proposed, not executed or declared as a campaign.
+
+
+## CR-1570: Bounded private preparation-split report qualification
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized the diagnostic after DD-1398.
+- Task/prompt: distinguish tokenization from frame coding/validation in a
+  separate admitted-baseline diagnostic, qualify it with clocks disabled,
+  charge added state and retain failure/non-publication contracts.
+- References: IR-1158/DD-1399, first-party admitted frame pipeline, harness,
+  retained review and frozen corpus/guard records. No external implementation
+  or copyleft source/test expression was consulted.
+- Expression/similarity review: deliberate first-party transfer of eight frame
+  modules with private symbols, unchanged admitted dictionary calls and frame
+  coding. Added bounded samples, staged metadata, optional clock hooks, state
+  charges and whole-stream report export; no parsing, ties or insertion changes.
+- Validation: TVG-1266; two release compilers, partial ASan/UBSan, complete corpus
+  and fifteen/sixteen-frame boundary identity/restoration, exact diagnostic
+  metadata/charges, negative report guards and corrected fresh integration.
+  Initial expectation-failure artifacts are retained. Public/private/prior
+  hashes and append-only documentation are reviewed.
+- Scope: private clock-disabled qualification only. Enabled clocks are a future
+  runtime/measurement step, not a speed result. No public selection, format,
+  ABI, defaults, inventory, fixed binary, fuzz, external gate or legal guarantee.
+  Both earlier probe screens and non-admission remain unchanged.

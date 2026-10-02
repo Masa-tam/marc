@@ -10171,3 +10171,12 @@ qualified owner-phase harness. Review BM-0202 separately with its preserved
 initial audit limitation. Inspect first-party raw-frame composition to define
 what the preparation phase actually includes. No new codec execution, clocks,
 external implementation or test expression is used.
+
+
+## IR-1158: Preparation-split diagnostic from the admitted owner
+
+Use the first-party admitted five-prefix raw-frame/workspace/streaming/owner
+modules, DD-1398's retained phase review, existing failure/alias/chunk guards
+and frozen complete streams. Transfer the owner harness with separate private
+diagnostic symbols. No external implementation, optimization source or test
+expression is consulted.

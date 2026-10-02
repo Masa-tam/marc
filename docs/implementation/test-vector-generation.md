@@ -19674,3 +19674,43 @@ remain: first-pass mr total delta -0.0002761 seconds and third-pass x-ray
 Public/private qualified source, libraries, fixed binaries, frozen archives
 and captured previous artifacts remain hash-identical. Documentation appends
 only. No new build, CTest, decoder/fuzz campaign, timing or external gate runs.
+
+
+## TVG-1266: Preparation-split report and failure qualification without clocks
+
+Transfer fourteen admitted streaming/owner/workspace tests with diagnostic
+symbols and the added transient-state charge. Add six report-focused tests:
+withhold output before complete drain; withhold the entire report after a
+failed second frame; enforce sixteen-frame query/factory bounds and charge
+differences; handle empty owner completion and sticky errors; reject report
+output aliases with all retained buffers; and preserve raw sample/serialized
+output on invalid position, short output and diagnostic/input overlap.
+
+Both release compilers and partial ASan/UBSan pass nineteen tests. One optional
+corpus test skips without its environment inputs; mandatory verification runs
+separately across all twelve members. Sanitizers instrument the private frame
+pipeline, admitted finder/tokenizer and owner units, tests and framework;
+unchanged linked helpers are not a newly fully instrumented public decoder.
+
+Mandatory verification performs 48 complete corpus encodes and 48 restorations
+over two compilers and admitted-control/diagnostic profiles. All complete
+archives match their frozen bytes. Every diagnostic sample's raw bytes, token
+count and serialized bytes match the corresponding frozen frame header: all
+57 frames per compiler. Both split intervals and outer codec fields are zero.
+The diagnostic and admitted encode charges are exactly 315366093 and 315365389.
+
+Additional first-party zero vectors with fifteen and sixteen four-MiB frames
+produce eight encodes/restorations over both compilers/profiles, identical
+complete streams and exact bounded reports. Query/factory tests reject
+seventeen frames and overflow-scale original sizes without changing output.
+The empty harness path also verifies a zero-sample report and complete stream.
+Twelve argument, missing/oversized-input and output-write failure cases emit
+neither diagnostic report nor new archive. Clock-enabled modes are not run.
+
+An initial new test compared the committed prefix with a shorter stream's
+different original-size header. Correct the expectation to the full stream's
+prefix, retaining the failed sanitizer/CMake evidence and using fresh outputs
+and a new CMake root. The corrected targeted aggregate CTest passes. No old
+root CTest is invoked. Prior public/private sources, fixed binaries, libraries,
+frozen streams and captured artifacts remain hash-identical; public docs append.
+No new elapsed campaign, full-suite/fuzz run, adoption or external gate is claimed.

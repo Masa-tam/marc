@@ -1093,6 +1093,32 @@ if(MARC_BUILD_BENCHMARKS)
             add_test(NAME marc_position_distance_4m_end_probe_scalar_tests
                 COMMAND marc_position_distance_4m_end_probe_scalar_tests)
         endif()
+        add_library(marc_position_distance_4m_phase_split_support STATIC
+            benchmarks/phase_split/frame/lzss_position_distance_4m_phase_split_raw_frame_encoder.cpp
+            benchmarks/phase_split/frame/lzss_position_distance_4m_phase_split_encode_workspace.cpp
+            benchmarks/phase_split/frame/lzss_position_distance_4m_phase_split_frame_streaming_encoder.cpp
+            benchmarks/phase_split/frame/lzss_position_distance_4m_phase_split_owned_encoder.cpp
+            src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
+            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
+        target_compile_features(marc_position_distance_4m_phase_split_support PUBLIC cxx_std_20)
+        target_include_directories(marc_position_distance_4m_phase_split_support PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/phase_split ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_distance_4m_phase_split_support PUBLIC marc::static)
+        add_executable(marc_lzss_position_distance_4m_phase_split_owner_benchmark
+            benchmarks/lzss_position_distance_4m_phase_split_owner_benchmark.cpp)
+        target_link_libraries(marc_lzss_position_distance_4m_phase_split_owner_benchmark PRIVATE
+            marc_position_distance_4m_phase_split_support)
+        if(WIN32)
+            target_link_libraries(marc_lzss_position_distance_4m_phase_split_owner_benchmark PRIVATE psapi)
+        endif()
+        if(MARC_BUILD_TESTS)
+            add_executable(marc_position_distance_4m_phase_split_tests
+                tests/lzss_position_distance_4m_phase_split_streaming_tests.cpp)
+            target_link_libraries(marc_position_distance_4m_phase_split_tests PRIVATE
+                marc_position_distance_4m_phase_split_support GTest::gtest_main)
+            add_test(NAME marc_position_distance_4m_phase_split_tests
+                COMMAND marc_position_distance_4m_phase_split_tests)
+        endif()
         add_library(marc_position_distance_4m_probe17_scalar_support STATIC
             benchmarks/probe17/dictionary/lzss_position_distance_4m_probe17_scalar_finder.cpp
             benchmarks/probe17/dictionary/lzss_position_distance_4m_probe17_scalar_candidate.cpp

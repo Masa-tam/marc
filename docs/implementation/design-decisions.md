@@ -29117,3 +29117,49 @@ timing; preserve complete frozen bytes and raw restoration. Such diagnostic
 clocks would measure their instrumented path, not automatically prove owner
 speedup or identify an environmental cause. Any new timing requires a fresh
 declaration and strict persisted per-launch audit; this stage runs none.
+
+
+## DD-1399: Qualify a bounded private preparation-split diagnostic
+
+Create a separate private frame pipeline using the admitted five-prefix finder
+and tokenizer unchanged. Add two optional elapsed intervals to the raw-frame
+adapter: the complete tokenizer call and the complete frame encoder call.
+Raw validation is outside both intervals. Frame coding includes operation
+construction, validation, Range coding and serialization; it is not a pure
+Range-only interval. Input copying, other preparation checks and any drain
+remain outside the split intervals. No match policy or stream bytes change.
+
+Timing is selected at construction and defaults off. Clock reads occur only
+in the enabled branch; qualification runs only the disabled branch, with zero
+split and outer codec elapsed fields. Enabled-clock behavior and performance
+are not newly runtime-qualified here. Any future use needs a separately
+declared audited campaign and enabled-branch/conservation checks.
+
+Retain a fixed report of at most sixteen frame samples. Each records raw bytes,
+token count, serialized bytes and both intervals. Query/constructor reject more
+than sixteen frames before processing or allocation. At a four-MiB frame this
+covers at most 64 MiB; small-frame diagnostic streams have the same frame-count
+bound. Zero-input streams are valid. This is a private diagnostic bound, not
+a public format or default change.
+
+Report state is 656 bytes on the qualified builds. One transactional sample
+plus its clock point adds 48 transient state bytes; the complete owner charge
+is 315366093, 704 above the admitted 315365389. Full-frame arrays, output buffers
+and the unchanged decoder charge 130029573 remain the same. Calculate using
+concrete sizes and charge added state even with clocks disabled.
+
+The raw adapter rejects diagnostic metadata overlap with every input, scratch,
+output and configuration region before mutation, and copies the staged sample
+only after complete frame success. Scratch remains discardable as before.
+Streaming retains only successful samples and keeps earlier committed frames
+when a later frame fails. Report export requires a successfully ended stream,
+valid finite nonnegative intervals and disjoint output from the entire owner,
+streaming object and retained buffers. Export failures preserve caller output.
+Draining, starvation and repeat-ended calls do not repeat preparation or samples.
+
+The harness publishes diagnostics only after complete archive/raw verification
+and successful output writing. TVG-1266 qualifies bytes, budgets, report fields,
+failure/non-publication and boundary behavior. No private probe is admitted;
+public factories, format, ABI, defaults, inventory and fixed binaries remain
+unchanged. Instrumented clocks would describe that diagnostic path and cannot
+automatically prove owner speedup or identify environmental variation causes.

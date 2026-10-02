@@ -9477,3 +9477,36 @@ elapsed campaign, public admission or causal performance explanation is added.
 The next proposed diagnostic separates tokenization from frame coding/validation
 and must qualify bytes, budgets and failure/report-publication contracts before
 any separately declared instrumented timing.
+
+
+### Preparation-split diagnostic qualification without timing (DD-1399)
+
+Qualify a separate admitted-baseline private diagnostic before taking new
+clocks. Optional inner intervals cover the complete dictionary tokenizer call
+and complete frame coding/validation call. The latter includes Range coding
+and serialization; input copying, raw validation and other preparation/drain
+work remain outside the two intervals. These scopes cannot directly attribute
+unobserved CPU, scheduling, cache or branch causes.
+
+The bounded report retains up to sixteen successful frame samples and exports
+only after the stream successfully ends. Report state adds 656 bytes, staged
+sample/clock state 48 bytes: complete owner query 315366093, 704 above admitted
+315365389. Arrays/buffers and unchanged decode charge 130029573 are preserved.
+Caller/harness report copies are separate from the codec-owned allocation
+charge; no new process-peak measurement or codec-only resident memory is claimed.
+
+Both compilers verify all twelve complete frozen streams and raw restorations
+for admitted control and diagnostic: 48 encodes and 48 restorations. Report
+metadata matches all 57 corresponding frame headers per compiler. Additional
+fifteen/sixteen-frame zero-vector boundaries pass eight encodes/restorations;
+the private seventeen-frame bound and alias/failure/report guards are tested.
+Only disabled-clock verification runs, with all split and outer elapsed fields
+zero. No new BM record, enabled-hook performance result or public admission.
+
+A future instrumented campaign must first exercise enabled hooks and reconcile
+split intervals with their enclosing preparation calls, preserving exact bytes
+and report publication guards. Freeze a fresh protocol, qualified hashes and
+strict successful receipts before every launch; retain every observation and
+stop on audit/operation failure. Instrumented-path timing is diagnostic evidence,
+not an automatic speed claim for the unchanged counter-free owner. Preserve
+BM-0202/BM-0203 failures and all earlier artifacts without replacement.
