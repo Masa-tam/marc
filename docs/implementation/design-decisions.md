@@ -29202,3 +29202,62 @@ Do not claim identical layout or infer uninstrumented speed from these clocks.
 12 strict wins, 12 losses and 12 between-control observations; maximum duplicate-control spread 8.506055%. The declared 36-win/2% numerical screen fails. Regardless of that screen, this instrumented path is not public
 admission. Preserve earlier BM-0202/BM-0203 failures and their audit limitations.
 No public source, format, ABI, defaults, inventory or fixed binary changes.
+
+
+## DD-1401: Private bounded tokenizer call-scope qualification
+
+BM-0204 measured complete tokenization as 86.437078% to 86.679356% of corpus
+preparation, but did not separate initialization, search and insertion. Inspect
+the admitted implementation: initialize once per parse pass, then interleave
+find_match, token choice/store and advance for each token. Retain the admitted
+finder unchanged and deliberately transfer the first-party candidate into a
+private diagnostic, preserving eligibility, parsing, tie rules and insertion.
+
+Use one fixed-size aggregate sample, not per-token records: complete initialize,
+find_match and advance seconds; input/final-token metadata; parse-pass, find,
+advance and advanced-position counts; immutable call-time clock selection.
+Initialization includes finder validation and array initialization. Find is the
+complete existing search call. Advance includes validation, hash/bucket work,
+link/head insertion and position updates, not pure insertion alone. Token
+selection/store, counters, loop work, preflight and clock overhead remain outside
+the inner intervals; no disjoint pure-instruction costs are inferred.
+
+Clock-disabled qualification executes no clock reads. Optional enabled mode
+requires two reads per initialization and two per find/advance call: four per
+token, plus initialization reads. This can materially perturb a hot loop.
+Do not assert instrumented fractions equal uninstrumented fractions, subtract
+an assumed clock cost, compare separate campaigns as paired causal effects,
+or infer CPU/scheduling/cache/branch causes. Enabled mode is not executed here;
+first enabled observations must validate runtime values and conservation under
+a separately frozen audited protocol before any interpretation.
+
+The sample is 80 bytes and one live clock point 8 bytes in qualification:
+88 additional transient bytes, charged with all supplied capacities and finder
+state before mutation. Initialization's clock variable ends before parsing,
+so it does not coexist with the parsing clock variable. Caller report storage
+and verifier/oracle/file buffers are separate harness overhead. The harness's
+charged workspace bound is 315365037 bytes; this is not an owned-factory minimum,
+whole-process peak or change to admitted owner charge 315365389.
+
+Reject report overlap with input, tokens, workspace, parameters and limits before
+mutation. Keep output tokens and caller report unchanged on error; workspace
+remains scratch. Stage the report locally and copy only on complete tokenizer
+success. A short output buffer first performs the original count-only pass;
+if enough tokens fit, initialize and parse again. Counts include both passes,
+while final token_count describes the final output. No allocation or unbounded
+growth is introduced in tokenization. Empty input is a valid one-pass result.
+
+The finite verifier retains at most sixteen frame reports for its bounded input,
+checks each token against frozen decoded tokens, each frame's complete bytes
+and restored raw bytes, and publishes stdout only after the entire archive is
+verified. Later-frame failure withholds all reports; it writes no new archive.
+Existing streaming and failed-frame publication contracts are not modified.
+
+TVG-1268 qualifies disabled clocks over both release compilers, partial sanitizers,
+complete corpus and failure/report guards. Retain the initial object-name build
+collision and subsequent limit-fixture failure logs. Rename the harness source
+to avoid object collision; adjust fixture block limits to reach the intended
+memory-bound check, preserving existing validation precedence and codec behavior.
+Use fresh output directories and a new integration build. No public codec,
+format, ABI, default, inventory, fixed binary or admission change; no new timing
+result, fuzz campaign or external gate.

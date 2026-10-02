@@ -1093,6 +1093,24 @@ if(MARC_BUILD_BENCHMARKS)
             add_test(NAME marc_position_distance_4m_end_probe_scalar_tests
                 COMMAND marc_position_distance_4m_end_probe_scalar_tests)
         endif()
+        add_library(marc_position_distance_4m_tokenizer_scope_support STATIC
+            benchmarks/tokenizer_scope/lzss_position_distance_4m_tokenizer_scope.cpp)
+        target_compile_features(marc_position_distance_4m_tokenizer_scope_support PUBLIC cxx_std_20)
+        target_include_directories(marc_position_distance_4m_tokenizer_scope_support PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/tokenizer_scope ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_distance_4m_tokenizer_scope_support PUBLIC marc::static)
+        add_executable(marc_lzss_position_distance_4m_tokenizer_scope
+            benchmarks/lzss_position_distance_4m_tokenizer_scope_diagnostic.cpp)
+        target_link_libraries(marc_lzss_position_distance_4m_tokenizer_scope PRIVATE
+            marc_position_distance_4m_tokenizer_scope_support)
+        if(MARC_BUILD_TESTS)
+            add_executable(marc_position_distance_4m_tokenizer_scope_tests
+                tests/lzss_position_distance_4m_tokenizer_scope_tests.cpp)
+            target_link_libraries(marc_position_distance_4m_tokenizer_scope_tests PRIVATE
+                marc_position_distance_4m_tokenizer_scope_support GTest::gtest_main)
+            add_test(NAME marc_position_distance_4m_tokenizer_scope_tests
+                COMMAND marc_position_distance_4m_tokenizer_scope_tests)
+        endif()
         add_library(marc_position_distance_4m_phase_split_support STATIC
             benchmarks/phase_split/frame/lzss_position_distance_4m_phase_split_raw_frame_encoder.cpp
             benchmarks/phase_split/frame/lzss_position_distance_4m_phase_split_encode_workspace.cpp

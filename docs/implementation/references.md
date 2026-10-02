@@ -10194,3 +10194,18 @@ expression is consulted.
 - No external implementation, restricted source, copied test expression or
   new algorithm representation was consulted. This is instrumented diagnostic
   evidence, not a public optimization or a causal environmental measurement.
+
+
+## IR-1160: Bounded tokenizer-internal scope diagnostic
+
+- Date: 2026-10-02; author/reviewer: Codex.
+- First-party references: admitted FivePrefix candidate/finder, IR-1159/DD-1400
+  retained preparation split, bounded frame verifier and complete frozen corpus
+  token/frame/raw oracles. No external implementation or restricted expression
+  was consulted.
+- Task: qualify a separate finite-buffer diagnostic that retains the admitted
+  parsing/finder behavior and optionally accumulates complete initialization,
+  find-match and advance call intervals, with staged report publication.
+- Counting and clock-disabled qualification do not provide elapsed inner
+  proportions. Fine call-level clocks perturb the path; future enabled-mode
+  evidence cannot silently replace the coarser BM-0204 preparation split.

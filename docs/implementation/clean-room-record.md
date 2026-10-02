@@ -37491,3 +37491,26 @@ both bounds.
   claim, adoption, format/default/inventory change, new fuzz/external gate,
   environmental cause inference or legal guarantee. Retain both earlier
   failed probe screens and historical audit limitations without replacement.
+
+
+## CR-1572: Tokenizer-internal scope diagnostic qualification
+
+- Date: 2026-10-02; author/reviewer: Codex; maintainer approved continuation.
+- Task/prompt: separate complete tokenizer initialization/find/advance scopes
+  in a bounded private diagnostic, qualify disabled clocks and preserve failure
+  invariance and whole-verification report withholding.
+- References: IR-1160/DD-1401, admitted first-party candidate/finder, retained
+  BM-0204 observations, existing bounded frame verifier and frozen token/raw/
+  complete-frame oracles. No external or copyleft source/test expression used.
+- Expression/similarity review: deliberate first-party candidate/verifier
+  transfer; call the admitted finder unchanged. Add fixed aggregate counters,
+  optional clock hooks, state charging and staged success-only reports; do not
+  change parsing, tie breaks, advance/insertion or serialized representation.
+- Validation: TVG-1268; six targeted tests on two release compilers and partial
+  sanitizers, 24 complete corpus encodes/restorations, all 114 frame reports,
+  twenty negative report-withholding cases, two empty positive cases, corrected
+  fresh integration, retained failures and prior/public/fixed/frozen hashes.
+- Scope: private disabled-clock qualification. Fine call clocks can perturb
+  work and have not yet been executed. No new BM result, public selection,
+  format/default/ABI/inventory change, fixed-binary update, new fuzz/external
+  gate, environmental causal claim or legal guarantee.

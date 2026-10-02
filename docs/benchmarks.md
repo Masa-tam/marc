@@ -9562,3 +9562,39 @@ process working-set/pagefile samples for diagnostic encode are
 388562944 bytes.
 These are whole-process peaks, not codec-only resident memory or allocation
 charges. No public source, format, defaults, inventory or fixed binary changes.
+
+
+### Tokenizer-internal scope qualification without timing (DD-1401)
+
+Qualify an additional finite-buffer private diagnostic after BM-0204. Its
+optional intervals cover complete admitted finder initialization, find_match
+and advance calls. The finder itself is unchanged. Advance includes hashing,
+validation, insertion and position updates; tokenizer decisions/stores, counters,
+loop work, preflight and clock overhead remain outside those inner intervals.
+This is not pure insertion time or an unexplored search-branch attribution.
+
+An 80-byte staged aggregate and one live 8-byte clock point add 88 transient
+bytes, explicitly charged before mutation. No per-token records or tokenization
+allocation. The bounded verifier workspace charge 315365037 is separate from
+admitted owned-factory minimum 315365389 and from process-peak measurements;
+caller reports and file/oracle buffers remain bounded harness overhead.
+
+Six targeted tests, both release compilers, partial sanitizers and fresh targeted
+integration qualify clocks disabled. All 24 complete corpus re-encodes and 24
+restorations match their frozen/token/raw oracles; 114 frame reports have exact
+metadata/counts and all elapsed fields zero. Twenty negative executable cases
+withhold all reports, including failure after an earlier successful frame;
+two empty cases pass. Token and report failure invariance and exact added-state
+limits pass. Initial build/fixture failure artifacts remain retained.
+
+No new BM result: enabled hooks have not been run. Clock-enabled find and
+advance use four clock reads per token in total, plus initialization reads,
+which may materially perturb the hot loop. Any next enabled campaign must
+freeze hashes/order/counts/tolerance, validate the first and every enabled
+sample and conserve inner sums against the enclosing tokenizer call, persist
+strict successful selected-process receipts before every launch, and retain
+all evidence without warmup/discard/replacement/retries until success.
+Do not subtract an assumed timer cost, infer uninstrumented proportions or
+causal environmental effects, or reinterpret BM-0204 and failed probe screens
+as paired experiments. Public selection, format, defaults, inventory and fixed
+binaries remain unchanged; no speed/admission/fuzz/external-gate result.

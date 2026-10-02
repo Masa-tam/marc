@@ -19744,3 +19744,46 @@ Retain raw stdout, invocations, timestamps, observations and prior hashes;
 repeat the existing thirteen strict audit-helper regression cases. Append-only
 documentation and fixed/public/frozen/prior hashes are reviewed. This does not
 claim a new full-suite, sanitizer, fuzz or external interoperability gate.
+
+
+## TVG-1268: Tokenizer scope differential and report guards
+
+Six focused tests run with clocks disabled on both release compilers and a
+partial ASan/UBSan build. They exercise 427 admitted-versus-diagnostic parses:
+empty input, every one-byte value, repeated/periodic/generated binary data,
+eligibilities three/four/five, short-length boundaries and lengths around
+64-KiB, one-MiB and four-MiB boundaries. Compare all output tokens and the entire
+supplied finder workspace, including untouched tails, with the admitted parser.
+This tests unchanged insertion and parsing expression as well as final tokens.
+
+Also exercise exact short token capacity and the required count-only pass,
+capacity failure, invalid eligibility/parameters, frame/block/total limits,
+workspace shortage/misalignment, argument/report overlap, exact added-state
+memory limits and reuse. Failures preserve output tokens and the caller's whole
+report representation; preflight failures preserve workspace too. Counts on
+successful two-pass parsing include both traversals. Disabled elapsed fields
+are all zero and each successful full-capacity parse uses one pass.
+
+Mandatory complete-corpus verification runs twelve members on each compiler:
+24 complete re-encodes and 24 frozen-stream restorations. Frozen decoded tokens
+are the token oracle; every full encoded frame matches the frozen frame bytes,
+and restored raw bytes match the manifest-verified source. Verify all 57 frame
+reports per compiler, including raw/token/serialized counts, one parse pass,
+one find and advance call per token, and advanced positions equal raw size.
+Each compiler totals 211938580 raw and 61643620 archive bytes. All diagnostic
+and enclosing elapsed fields are zero. No new frozen stream is overwritten.
+
+Twenty negative executable cases cover arguments, missing/oversized files,
+invalid headers, later-frame truncation, raw mismatch after a committed earlier
+frame and trailing bytes. Each emits neither stdout report nor stderr, returns
+the expected failure status and writes no archive. Two empty positive cases
+validate zero frame reports using the unchanged admitted empty-stream oracle.
+
+The corrected integration targets build in a fresh root; its one targeted
+aggregate CTest passes. No old-root CTest is invoked. The initial build collision
+and invalid memory-limit fixture evidence are retained in their original output
+directories; only fresh outputs are used after corrections. Instrument the new
+candidate, admitted finder/candidate and test/framework sources in the partial
+sanitizer run; unchanged linked helpers are not newly fully instrumented public
+decoders. Review captured prior/public/fixed/frozen hashes and append-only docs.
+No enabled clocks, elapsed benchmark, full-suite/fuzz or external-gate claim.
