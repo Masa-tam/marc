@@ -19965,3 +19965,43 @@ Review all numerical classifications, script hashes, complete frozen/public/fixe
 prior hashes and append-only documentation without local environment details.
 No assumed timer subtraction, collision-count forecast, causal timing explanation,
 new full suite, fuzz or independently rerun external qualification is claimed.
+
+
+## TVG-1274: Bounded four-byte extension and complete-owner identity
+
+Date: 2026-10-03. Retain admitted FivePrefix's bounded token/frame/streaming tests
+in private word4 support. Add four-byte boundary cases derived from first-party
+word8 fixtures, with a unique five-byte start and controlled mismatch. For every
+mismatch position 5 through 258, all sixteen source/query alignments modulo
+four yield 4064 exhaustive/admitted comparisons. Exact allocations ending at
+the query's limit cover every length 5 through 258 with the same sixteen
+alignments: another 4064 comparisons, without relying on spare input capacity.
+
+Periodic overlaps at distances 1 through 24 use four alignments and fourteen
+maxima (5,6,8,9,10,12,13,14,16,17,18,253,257,258): 1344 longest/nearest cases.
+Reducing the window below each distance greater than one adds 1288 expiry cases.
+Three competing copies use lengths 5,8,9,10,12,13,14,17,258 in both far/near
+combinations and four alignments: 324 cases, including nearest ties and farther
+longer replacement. All 11084 cases compare full distance/length against both
+oracles, query charge equality and unused-workspace sentinels. Retain the 1872
+exhaustive token cases, wide references, eligibility policies and full frames.
+
+Both compilers pass 25 default tests with two optional corpus skips. Explicitly
+run the finite corpus token/frame test on twelve members per compiler: 24 actual
+tests, exactly one pass per invocation and no skips. Every typed token matches
+the indexed reference; full serialized frames match frozen archives and restore
+raw bytes. Each compiler totals 57 frames. Complete admitted/trial owners also
+pass twelve members on both compilers with qualification clocks disabled:
+48 encodes and 48 restorations. Each compiler/owner totals 211938580 raw bytes
+and 61643620 archive bytes, with complete frozen archive hashes and 57 frames.
+
+Retain exact-budget/one-byte-short, alignment/alias, unused capacity, metadata/
+output invariance, arbitrary chunking, Flush/EndInput, sticky failure and failed
+second-frame nonpublication tests. Partial ASan/UBSan passes the same 25 tests
+and two optional skips; private modules/tests are instrumented, retained support
+libraries are not fully instrumented. One targeted aggregate CTest passes in a
+fresh root; no old-root CTest invocation or discovery. Independent review checks
+normalized expression, complete bytes/tokens, exact charges, source/library/
+executable/frozen/public/fixed/prior hashes and append-only documentation without
+local environment details. No elapsed campaign, full suite, admission, new fuzz
+or independently rerun external validation is claimed.

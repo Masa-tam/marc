@@ -29462,3 +29462,41 @@ charges are 315365389 bytes; state, arrays and all buffers remain identical. Dec
 observations, not codec-only resident memory or allocation-budget substitutes.
 All complete stream bytes and raw restoration pass. No public source selection,
 format/ABI/default/inventory/fixed-binary change, new fuzz or external gate.
+
+
+## DD-1407: Qualify bounded four-byte extension before timing
+
+Date: 2026-10-03. DD-1406's eight-byte screen had 17 wins, 8 losses and 11 cases
+between controls, with maximum control spread 22.468392%. Preserve the complete
+failed screen without selecting or retrying it. Neither aggregate gain nor
+variation establishes a cause or predicts a benefit for another block width.
+
+Fork admitted first-party FivePrefix finder/candidate and bounded frame/stream/
+owner layers into separate private benchmark support. After the exact five-byte
+prefix and existing improvement probe, while maximum-length is at least four,
+copy four bytes from each region into separate uint32 locals using memcpy.
+Equal words advance length by four. A differing block stops word comparisons
+and resumes the original byte loop at the same block beginning. A tail shorter
+than four also uses the byte loop. Keep all hash heads/links, insertion order,
+traversal, maximum termination and equal-length nearest-distance rules.
+
+For candidate c<p and maximum<=N-p, length<=maximum and four<=maximum-length
+bound both p+length+4 and c+length+4 by N. Input is immutable, including overlapping
+match regions; the two copies have distinct local destinations. memcpy imposes
+no alignment/aliasing assumption. Comparing all four bytes for equality is
+independent of host endianness. No numeric bit ordering locates the mismatch.
+No new format variant, native serialization or SIMD/ISA requirement is introduced.
+
+Finder arrays remain 12*(65536+N) bytes for N>=3, zero below three, and 51118080
+bytes for a full frame. State, retained buffers and allocation charges remain:
+315365389 complete encode and 130029573 unchanged decode. Two fixed comparison
+locals are not additional retained/dynamic storage, a stack measurement or a
+process-peak result. Add no inner counters, report hooks, clocks or allocations.
+
+Qualify every mismatch and exact input tail through length258, all source/query
+alignments modulo four, overlaps, expired windows, and competing nearest/longer
+candidates around four-byte boundaries. Retain whole-token/frame/frozen-corpus
+identity, chunking, exact budgets and failure invariance/nonpublication. This
+stage asserts no elapsed gain or admission; no new BM record precedes real
+counter-free complete-owner measurements. Public selection/defaults/ABI/inventory
+and fixed verification binaries remain unchanged.

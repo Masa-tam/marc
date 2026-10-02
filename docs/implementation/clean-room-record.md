@@ -37627,3 +37627,27 @@ both bounds.
 - Scope: private screen fails: 17 wins, 8 losses and 11 between-controls cases. No automatic admission, public
   format/ABI/default/inventory/fixed-binary change, new fuzz/external gate, causal
   explanation or legal guarantee. Previous failed screens/audit limitations remain.
+
+
+## CR-1578: Private bounded four-byte extension qualification
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- Task/prompt: qualify four-byte extension after the failed eight-byte screen;
+  preserve indexes/ties/bytes, input bounds, memory charges and failure invariance/
+  nonpublication before timing. Preserve earlier failed screens and observations.
+- References: IR-1166/DD-1407, first-party admitted finder and bounded layers,
+  word8 boundary fixtures, exhaustive/indexed oracles, frozen corpus and retained
+  guards. No external or restricted implementation/source/test was consulted.
+- Independent expression: bounded four-byte memcpy/equality steps precede the
+  original byte loop. A different block resumes that loop at the same byte;
+  a short tail uses it directly. No numeric mismatch extraction, native
+  serialization, alignment/aliasing assumption, ISA contract or retained storage.
+  Eleven of twelve private modules are identical to admitted expression after
+  renaming; the finder adds only the reviewed bounded comparison block.
+- Validation: TVG-1274; 11084 boundary/oracle cases, two-compiler retained bounds/
+  failure/chunk tests, 24 full token/frame tests, 48 complete owner encodes and
+  restorations, partial sanitizers, fresh integration and independent source/
+  charge/hash/documentation review.
+- Scope: private qualification only; no elapsed gain/admission, assumed timer
+  subtraction, causal timing explanation, public format/ABI/default/inventory/
+  fixed-binary change, new fuzz/external gate or legal guarantee.

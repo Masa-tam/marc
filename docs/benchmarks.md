@@ -9933,3 +9933,28 @@ and their historical audit limitations. Specialized 1MiB width/noise records and
 BM-0205 instrumented tokenizer shares remain distinct; do not infer a collision
 forecast, subtract assumed timer overhead or claim an environmental cause.
 All prior artifacts and fixed verification binaries remain intact.
+
+
+## DD-1407: Private word4 qualification before complete-owner timing
+
+Date: 2026-10-03. Preserve BM-0207's failed eight-byte screen and all observations.
+This separate counter-free candidate uses four-byte memcpy/equality only in
+bounded match extension after the existing five-byte prefix/probe. A mismatch
+resumes the byte loop at that block's beginning, and a tail shorter than four
+uses the byte loop. Indexes, insertion/traversal, nearest ties and state/buffers
+remain admitted. No timing cause or benefit is inferred from another width.
+
+TVG-1274 passes two-compiler full token/frame and complete-owner differentials,
+including boundary/failure/nonpublication guards. Each compiler/owner produces
+61643620 archive bytes for 211938580 raw bytes across 57 frames, with full frozen
+identity and raw restoration. Qualification clocks are disabled; no inner
+counters/report hooks/clocks are added. No elapsed result or BM-0208 is recorded.
+
+Finder arrays stay 51118080 bytes at a full frame, complete encode charge
+315365389 and unchanged decode charge 130029573. Fixed comparison locals are
+not a stack-usage or process-peak measurement. A later counter-free complete-owner
+screen must include creation/collection/preparation/reset/drain/destruction,
+duplicate admitted controls, strict prelaunch receipts, all members/passes and
+exact bytes. Require all 36 strict wins and every control spread at most 2%.
+Do not retry until success, discard observations, subtract presumed clock cost,
+or infer a speedup from shorter word width. Public selection remains unchanged.

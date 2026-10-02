@@ -10281,3 +10281,18 @@ its retained thirteen-case regression evidence with a hash check; no new helper
 test run is claimed. Preserve prior failed probe/phase screens, their audit
 limitations and the specialized 1MiB width/noise results. No external or
 restricted source/test expression was consulted.
+
+
+## IR-1166: Private bounded four-byte match extension
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+First-party references: admitted FivePrefix finder/candidate, bounded frame and
+stream owners, exhaustive/indexed token oracles, complete frozen archives and
+failure/nonpublication guards. Preserve DD-1405's eight-byte qualification and
+DD-1406/BM-0207's failed screen, including every observation and its control
+variation. No external or restricted implementation/source/test was consulted.
+
+Task: independently qualify a counter-free four-byte extension of the admitted
+finder before timing. Keep indexes, traversal, improvement probes, nearest ties,
+retained state and stream representation. memcpy word equality is an internal
+comparison; it does not serialize native integers or require a particular ISA.
