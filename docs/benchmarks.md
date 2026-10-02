@@ -10195,3 +10195,39 @@ All three over-bound pairs are retained explicitly:
 These are complete-owner intervals for identical implementations. Listed spread
 values are rounded for display only; the 36-pair classification uses unrounded
 values. No observation is replaced, excluded or assigned an environmental cause.
+
+
+## DD-1412: Review BM-0209 preparation and frame differences
+
+Date: 2026-10-03. No fresh measurements or BM identifier. Reconcile all 84
+observations, 36 pairs and 342 preparation-call intervals. The original condition
+remains failed: 33 paired spreads within 2%, three over. Full encoded/restored
+identity, charges, record counts and strict receipts remain the retained evidence.
+
+| Member | Pair (1-based) | Complete difference (s) | Preparation difference (s) | Longer preparation frames |
+| --- | --- | --- | --- | --- |
+| dickens | 1 | 3.7512931000 | 3.7510239000 | 3/3 |
+| webster | 1 | 11.4379088000 | 11.4371054000 | 10/10 |
+| webster | 2 | 5.2616653000 | 5.2615811000 | 10/10 |
+
+Across all pairs, preparation contributes 99.8823430710% of the sum of absolute
+category differences; for the three exceptions, 99.9936570362%. Those exceptions are
+96.0388473015% of the sum of absolute complete paired differences. These are
+accounting shares of observed differences, not CPU/workload/variance fractions,
+causal evidence, timer costs or predicted gains. All 23 corresponding exception
+frames are longer on the slower side, so the observed difference spans later
+frames as well. One exception is encode ordinal 3 rather than only ordinal 1.
+
+Pairs 1/2/3 respectively have 10/12, 11/12 and 12/12 within 2%. The last subset's
+maximum 1.8146382811% does not supersede the declared all-36 criterion. No first
+pair is discarded, no campaign repeated and no earlier screen is repaired.
+The preparation category includes copying, dictionary/model/range/validation
+work and same-call drain; missing sub-call/environment observations remain
+unresolved. Do not infer hardware, allocation, scheduling or codec causes.
+
+Pause additional local performance trials with the scalar baseline unchanged;
+retain private scratch and all other candidates without admission. Small-window
+experience and this review do not prove global exhaustion. Future different
+window/layer or measurement designs must establish their own bounded scope.
+No source/harness/build/test/CTest, format/ABI/default/limit, inventory, fixed
+binary, fuzz or external gate change follows this retrospective review.

@@ -20123,3 +20123,28 @@ and floating-point computations reproduce all 36 paired classifications/totals.
 All-pairs <=2% condition FAIL: 33 within, 3 over;
 maximum 72.8503834513% at dickens, pair 1. No rounding before
 classification, replacement/discard/retry, causal attribution or public admission.
+
+
+## TVG-1279: Retained phase, frame and order reconciliation
+
+Date: 2026-10-03. Parse all twelve BM-0209 member logs and their 84 serialized
+samples independently of the stored aggregate. Validate original order, slots,
+encoder/decoder counts and charges, finite phase/frame values, complete interval
+sums and preparation/frame sums. Keep all 36 comparisons and unrounded 2% tests:
+33 within, three over. Recheck all twelve persisted successful zero-process
+receipts and timestamp ordering; retain exact raw/reference hashes.
+
+Compute slower-minus-faster signed differences in six categories and each
+corresponding preparation frame, conserving their complete/preparation totals.
+Count all 342 frame observations (171 paired frame positions), with all 23
+positions in the three exceptions longer on the slower side. Reproduce pair
+index 10/12, 11/12, 12/12 within-bound counts and later ordinal-3 exception.
+Preparation share of absolute category differences is 99.8823430710% overall and
+99.9936570362% in the exceptions, with explicitly stated difference denominators.
+
+Independently reproduce Decimal computations with floating-point calculations,
+checking samples, signed/absolute phase differences, every frame position,
+original classification/order and descriptive summaries. Preserve codec,
+harness, tests, fixed binary, frozen archives and prior artifacts by hashes;
+append public documents without local environment details. No fresh byte
+generation, timings, sanitizer/test/fuzz/CTest or external run is claimed.

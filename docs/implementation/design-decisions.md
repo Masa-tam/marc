@@ -29679,3 +29679,58 @@ strict launch receipts pass, with independent numerical reconciliation.
 Retain every result and the scalar baseline; do not retry the campaign or admit
 a candidate. Any next analysis should use these retained phase/chronology
 records, separating observed interval differences from unresolved causes.
+
+
+## DD-1412: Locate retained control differences and pause further local trials
+
+Date: 2026-10-03. Review all BM-0209 records, not only exceptions: 72 encode and
+twelve decode observations, 36 paired encodes and 342 recorded preparation-call
+intervals. Reconcile original 33-within/3-over classifications, all phase sums,
+frame/preparation sums, identical counts/bytes/charges and launch chronology.
+Ordinal positions establish order within each process; per-frame wall-clock
+timestamps, instruction counts, frequency/page-fault/scheduling data are absent.
+No fresh experiment fills those missing observations by inference.
+
+For every pair, orient signed phase and frame differences as slower minus
+faster. Signed phase differences conserve the complete interval difference;
+signed frame differences conserve preparation difference. Across all 36 pairs,
+preparation is 99.8823430710% of the sum of absolute phase differences. Across the
+three over-bound pairs it is 99.9936570362%. The three pairs account for
+96.0388473015% of the sum of absolute complete paired interval differences.
+These are difference-accounting denominators, not workload, variance, CPU cost,
+dictionary-search shares or a predicted optimization opportunity.
+
+Observed exceptions, in seconds (rounded only for display):
+
+| Member | Pair (1-based) | Complete difference | Preparation difference | Longer preparation frames |
+| --- | --- | --- | --- | --- |
+| dickens | 1 | 3.7512931000 | 3.7510239000 | 3/3 |
+| webster | 1 | 11.4379088000 | 11.4371054000 | 10/10 |
+| webster | 2 | 5.2616653000 | 5.2615811000 | 10/10 |
+
+Every corresponding frame in the three exceptions is longer on the slower side:
+3/3, 10/10 and 10/10. The difference is not confined to a first-frame interval.
+The slower encode ordinals are 1, 1 and 3 respectively; the later webster
+exception remains after its first pair. First-only exclusion is not justified.
+Pair-index counts are 10/12, 11/12 and 12/12 within 2%, with maxima 72.8503834513%,
+23.0658160751% and 1.8146382811%. The third-pair pattern is descriptive; selecting
+that subset cannot replace the original all-36 condition, which still fails.
+
+The outer preparation category includes input copying, dictionary work,
+validation/model/range work and same-call draining. These records cannot
+attribute its difference to an instruction, allocator, cache, frequency,
+scheduler, timer or codec policy. Do not subtract timer cost, combine older
+instrumented shares, impose affinity or claim a hardware remedy from this review.
+
+Pause additional local performance trials with the admitted scalar baseline
+intact. Current evidence does not justify another small finder variant or
+scratch admission. This is a priority decision, not proof of global exhaustion.
+Retain all private candidates, prior failed screens, original admission
+conditions and complete observations. A future measurement-infrastructure
+question needs a separate bounded design and distinguishable evidence, not a
+rerun of BM-0209 until favorable. Larger-window or different-layer work also
+needs its own bounded design; no automatic implementation is authorized here.
+
+No new BM, codec/source/harness change, build/test/CTest/fuzz/external gate,
+public format/ABI/default/limits, inventory or fixed binary change. Failure
+invariance, discardable private scratch and failed-frame nonpublication remain.

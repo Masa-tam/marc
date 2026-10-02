@@ -37727,3 +37727,17 @@ both bounds.
 - Result: FAIL all-pairs <=2% diagnostic; 33 within,
   3 over, maximum 72.8503834513%. No candidate or public admission,
   old evidence repair, numerical threshold relaxation or causal/legal guarantee.
+
+
+## CR-1583: Retained control interval review and priority boundary
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1171, BM-0209, DD-1410/1411 runner, complete retained phase/frame
+  records and launch receipts. No external/copyleft expression consulted.
+- Task: independently reconcile all control observations and identify observed
+  interval categories and ordinal positions without claiming an unmeasured cause.
+- Validation: TVG-1279; 84 samples, 36 comparisons, 342 frame observations,
+  twelve receipts, independent numeric/hash/append/scope reconciliation.
+- Decision: pause further local performance trials, retain the scalar baseline
+  and every failed screen. No scratch admission, selected rerun, threshold
+  relaxation, new instrumentation, global exhaustion or legal guarantee.

@@ -10338,3 +10338,13 @@ Use first-party DD-1410's qualified identical-control runner, unchanged scalar
 owners and decoder, frozen archives and strict process-audit helper. Independently
 test clock-enabled accounting with a synthetic clock before a declared real
 campaign. No external/restricted implementation or test expression consulted.
+
+
+## IR-1171: Review retained identical-control phase and chronology evidence
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+Use first-party BM-0209's complete 84 observations, 36 comparisons, outer phase
+and bounded frame records, frozen source/report topology and twelve strict
+launch receipts. Recompute all records, keeping the three over-bound pairs and
+both earlier/later traversal positions. Consult no external/restricted source
+or tests; create no fresh codec execution, timings, candidate or instrumentation.
