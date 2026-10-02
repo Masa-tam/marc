@@ -37710,3 +37710,20 @@ both bounds.
 - Similarity review: new expression is a first-party diagnostic orchestration
   wrapper; codec algorithms, format, public dispatch and memory charges unchanged.
   No external implementation consulted, public admission or legal guarantee.
+
+
+## CR-1582: Enabled identical-control diagnostic campaign
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1170, DD-1410/1411, unchanged first-party scalar owners/decoder,
+  retained frozen bytes and strict process-audit helper; no external/copyleft
+  source, tests, tables or implementation structure consulted.
+- Task: enable the already qualified outer intervals and bounded phase/frame
+  reporting; independently test synthetic clock accounting and transactional
+  failure before one declared identical-control repeatability campaign.
+- Validation: TVG-1278; eighteen tests on two compilers and partial sanitizers,
+  disabled entry checks, 84 real observations/36 pairs, twelve launch receipts,
+  independent numerical/phase/hash reconciliation and append-only scope review.
+- Result: FAIL all-pairs <=2% diagnostic; 33 within,
+  3 over, maximum 72.8503834513%. No candidate or public admission,
+  old evidence repair, numerical threshold relaxation or causal/legal guarantee.

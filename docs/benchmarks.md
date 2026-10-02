@@ -10150,3 +10150,48 @@ creation/allocation, process calls and destruction, excluding input/reference
 I/O, queries, comparisons and reports. This changed topology is a diagnostic;
 it does not establish public throughput, repair old campaigns, select a candidate,
 relax numerical thresholds, certify scratch or prove an environmental cause.
+
+
+## BM-0209: Within-process identical-control repeatability
+
+Date: 2026-10-03; DD-1411, TVG-1278. Exactly twelve canonical member processes,
+each with three newly created identical scalar FivePrefix owner pairs in order
+0/1, 1/0, 0/1, followed by unchanged decoder: 72 encode and twelve decode
+observations. One owner is alive, with immutable raw/reference storage. Measure
+complete creation/allocation, every process call and destruction; exclude file
+I/O, queries, comparisons/classification and reporting. Preparation includes
+input copying and same-call drain, not isolated search or entropy coding.
+
+Retain 65536-byte chunks, 64-MiB raw/128-MiB archive limits, sixteen-frame bound,
+codec charges 315365389/130029573, two fixed reports plus output buffer 68928,
+and separate 16-byte engine. These are explicit charges, not measured peak RSS.
+Exact frozen encoded bytes and raw restores pass; each traversal covers
+211938580 raw bytes, 61643620 archive bytes and 57 frames. All phase/frame sums
+and counts reconcile. Protocol/source/executable/orchestration are frozen before
+first timing, and twelve successful zero-process receipts precede each launch.
+No enabled warmup, observation removal, stopped campaign, replacement or retry.
+
+Spread is 100*(max(a,b)/min(a,b)-1), with unrounded 2% bound. All 36 pairs must
+meet it; outcome FAIL: 33 within, 3 over.
+Maximum 72.8503834513% at dickens, pair 1; first/second seconds
+8.9006044999999983 / 5.1493113999999993. Retain every observation.
+
+This measures repeatability of this within-process topology only, not public
+throughput or an optimization gain. Neither outcome admits scratch, modifies
+prior requirements or repairs prior failed screens. No environmental/timer-cost
+cause, scheduling remedy or cross-campaign speed ranking is inferred. Preserve
+scalar public selection, failure invariance, discardable scratch, failed-frame
+nonpublication and all historical observations. No format/ABI/default/limits,
+inventory, fixed binary, fuzz or external verification changes.
+
+All three over-bound pairs are retained explicitly:
+
+| Member | Pair (1-based) | First seconds | Second seconds | Spread % |
+| --- | --- | --- | --- | --- |
+| dickens | 1 | 8.9006044999999983 | 5.1493113999999993 | 72.8503834513 |
+| webster | 1 | 34.546594999999996 | 23.108686199999994 | 49.4961448739 |
+| webster | 2 | 28.0731942 | 22.811528899999999 | 23.0658160751 |
+
+These are complete-owner intervals for identical implementations. Listed spread
+values are rounded for display only; the 36-pair classification uses unrounded
+values. No observation is replaced, excluded or assigned an environmental cause.

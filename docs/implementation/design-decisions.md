@@ -29632,3 +29632,50 @@ busy/error without automatic retry and preserve every observation.
 
 No format, public factory/ABI/default/limit, inventory, fixed binary, new fuzz
 or external gate changes. The stream representation remains fully unchanged.
+
+
+## DD-1411: Declare a baseline-only within-process repeatability campaign
+
+Date: 2026-10-03. Extend only the diagnostic executable's mode and reporting;
+DD-1410's runner, schedule, ownership, bounded buffers and transactional report
+remain unchanged. Verify keeps clocks disabled; measure enables the existing
+complete create/process/destruction intervals. Print sufficient precision, all
+phase categories and bounded per-frame values after all seven traversals pass.
+Qualify enabled accounting with a deterministic injected clock and failure at
+every record; preserve complete report bytes on failure. Recheck the rebuilt
+entry path with disabled real-codec byte validation, without enabled warmup.
+
+Declare exactly twelve member processes in canonical manifest order, each with
+three identical-control pairs in order 0/1, 1/0, 0/1 and unchanged decoder last:
+72 encodes, twelve decodes, 36 pairs. All comparisons use complete creation,
+allocation, collect/preparation/drain and destruction, excluding file I/O,
+queries, comparisons/classification and reports. Pair spread is exactly
+100*(max(a,b)/min(a,b)-1), assessed without rounding. Retain the prior 2% bound:
+the diagnostic passes only if every one of 36 paired spreads is at most 2%.
+Report individual observations, pair/slot totals and all exceptions; do not pool
+prior campaigns, remove an initial pair, choose inputs or retry for success.
+
+Before each timed process, persist a fresh successful zero-selected-process
+receipt and timestamp before launch. Stop on busy/audit/execution error once
+the campaign starts and retain the incomplete evidence without automatic retry.
+Freeze source, binary, protocol and orchestration hashes before first timing.
+The initial snapshot may contain retained build workers; it does not authorize
+timing. Do independent preparation and qualification, then require a fresh idle
+audit for the campaign. No termination, scheduling changes or affinity policy.
+
+This tests repeatability of the changed within-process topology only. It is not
+public throughput, a candidate screen, repair of older failed evidence or a
+hardware/timer-cost explanation. Even a pass does not admit scratch or relax
+any prior candidate requirement. Scalar public selection, exact bytes, codec
+budgets, failed-frame nonpublication and failure invariance remain unchanged.
+No public format/ABI/default/limit, inventory, fixed binary, fuzz or external
+gate changes. A BM record is warranted only after real measurements occur.
+
+BM-0209 completes the declared twelve processes and 84 observations: 33 paired
+spreads are within 2%, three exceed it. Maximum 72.8503834513% is dickens pair 1;
+webster pairs 1 and 2 are 49.4961448739% and 23.0658160751%. The all-36 condition
+fails. Exact bytes, original charges, complete interval/frame conservation and
+strict launch receipts pass, with independent numerical reconciliation.
+Retain every result and the scalar baseline; do not retry the campaign or admit
+a candidate. Any next analysis should use these retained phase/chronology
+records, separating observed interval differences from unresolved causes.

@@ -10329,3 +10329,12 @@ unchanged complete decoder, bounded owner harness and frozen reference archives.
 Design an independent fixed schedule and transactional report wrapper without
 altering codec expression or consulting external/restricted implementations.
 This unit qualifies disabled clocks; it creates no benchmark observations.
+
+
+## IR-1170: Baseline-only repeatability measurement
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+Use first-party DD-1410's qualified identical-control runner, unchanged scalar
+owners and decoder, frozen archives and strict process-audit helper. Independently
+test clock-enabled accounting with a synthetic clock before a declared real
+campaign. No external/restricted implementation or test expression consulted.

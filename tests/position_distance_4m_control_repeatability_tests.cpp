@@ -69,6 +69,64 @@ TEST(ControlRepeatability, EmptyHasNoPreparation) {
     ASSERT_TRUE((run<Fake, ForbiddenClock>(engine, {}, {}, false, report)));
     for (const auto& s : report.samples) EXPECT_EQ(s.prepare_calls, 0U);
 }
+struct TickClock {
+    static inline std::size_t calls{};
+    static std::chrono::steady_clock::time_point now() {
+        return std::chrono::steady_clock::time_point{std::chrono::microseconds{++calls}};
+    }
+};
+TEST(ControlRepeatability, EnabledClockAccountsEveryCompleteOperation) {
+    Fake engine; Report report{}; TickClock::calls = 0;
+    ASSERT_TRUE((run<Fake, TickClock>(engine, raw, raw, true, report)));
+    EXPECT_TRUE(report.timed); EXPECT_EQ(report.completed, 7U);
+    EXPECT_EQ(TickClock::calls, 42U);
+    for (std::size_t i = 0; i < records; ++i) {
+        const auto& s = report.samples[i];
+        EXPECT_DOUBLE_EQ(s.create, 1e-6); EXPECT_DOUBLE_EQ(s.destroy, 1e-6);
+        EXPECT_DOUBLE_EQ(s.seconds(), 3e-6);
+        EXPECT_DOUBLE_EQ(s.collect, 0); EXPECT_DOUBLE_EQ(s.drain, 0);
+        EXPECT_DOUBLE_EQ(s.prepare, i < 6 ? 1e-6 : 0);
+        EXPECT_DOUBLE_EQ(s.decode, i < 6 ? 0 : 1e-6);
+        EXPECT_DOUBLE_EQ(s.frames[0], i < 6 ? 1e-6 : 0);
+    }
+    EXPECT_EQ(engine.peak, 1U); EXPECT_EQ(engine.active, 0U);
+}
+void enabled_failure(Fake& engine) {
+    Report report{}; report.completed = 123; report.samples[0].destroy = 456;
+    std::array<std::byte, sizeof(Report)> before{};
+    std::memcpy(before.data(), &report, sizeof(report));
+    TickClock::calls = 0;
+    EXPECT_FALSE((run<Fake, TickClock>(engine, raw, raw, true, report)));
+    EXPECT_EQ(std::memcmp(before.data(), &report, sizeof(report)), 0);
+    EXPECT_EQ(engine.active, 0U);
+}
+TEST(ControlRepeatability, EnabledFactoryFailureAtEveryRecordDiscardsTimings) {
+    for (std::size_t i = 1; i <= records; ++i) {
+        Fake e; e.fail_create = i; enabled_failure(e);
+        EXPECT_EQ(TickClock::calls, 6 * (i - 1) + 2);
+    }
+}
+TEST(ControlRepeatability, EnabledProcessFailureAtEveryRecordDiscardsTimings) {
+    for (std::size_t i = 1; i <= records; ++i) {
+        Fake e; e.fail_process = i; enabled_failure(e);
+        EXPECT_EQ(TickClock::calls, 6 * (i - 1) + 4);
+    }
+}
+TEST(ControlRepeatability, EnabledInvalidProgressAndBytesDiscardTimings) {
+    Fake stall; stall.stall = true; enabled_failure(stall);
+    EXPECT_EQ(stall.calls, 1U);
+    Fake wrong; wrong.mismatch = true; enabled_failure(wrong);
+}
+TEST(ControlRepeatability, EnabledEmptyAccountsHeaderDrainWithoutPreparation) {
+    Fake e; Report report{}; TickClock::calls = 0;
+    ASSERT_TRUE((run<Fake, TickClock>(e, {}, {}, true, report)));
+    EXPECT_EQ(TickClock::calls, 42U);
+    for (std::size_t i = 0; i < records; ++i) {
+        EXPECT_EQ(report.samples[i].prepare_calls, 0U);
+        EXPECT_DOUBLE_EQ(report.samples[i].drain, i < 6 ? 1e-6 : 0);
+        EXPECT_DOUBLE_EQ(report.samples[i].seconds(), 3e-6);
+    }
+}
 TEST(ControlRepeatability, FactoryFailureAtEveryRecordDiscardsReport) {
     for (std::size_t i = 1; i <= records; ++i) {
         Fake engine; engine.fail_create = i; unchanged_failure(engine);

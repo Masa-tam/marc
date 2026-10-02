@@ -20096,3 +20096,30 @@ hashes before/after agree. Eight negative CLI cases cover unsupported enabled
 mode, truncated expected archive, mismatched empty input and absent archive;
 every failure returns nonzero with empty stdout/stderr and no artifact output.
 No elapsed-performance, fuzz campaign, public admission or external gate follows.
+
+
+## TVG-1278: Enabled baseline-only repeatability evidence
+
+Date: 2026-10-03. Retain DD-1410's thirteen contract tests and add five synthetic
+enabled-clock tests: complete create/process/destruction accounting (42 calls
+for seven one-call traversals), creation and process failure at every record,
+invalid progress/bytes, and empty-stream drain without preparation. Entire
+caller report bytes remain unchanged on every failure; one owner is alive.
+Eighteen tests pass on two qualification compilers and partial address/undefined
+sanitizers. Retained support library is uninstrumented; no full-library coverage
+claim. Rebuilt executable entries pass disabled-clock complete-byte checks on
+one corpus member each (twelve encodes/two decodes); four invalid/missing-input
+entry cases return nonzero without stdout/stderr. No real enabled warmup or new
+CTest invocation. Prior fresh CMake qualification is preserved, not rerun.
+
+Freeze protocol/source/binary/scripts before timing. Twelve timed processes
+complete 72 scalar encodes and twelve unchanged decodes with exact frozen/raw
+bytes, original charges and fixed report storage. Each corpus traversal retains
+211938580 raw bytes, 61643620 archive bytes and 57 frames. All counts, finite
+nonnegative phases, frame/preparation sums and complete intervals reconcile.
+Persist twelve fresh successful zero-process receipts before launch and retain
+timestamps, command/result records and every observation. Independent Decimal
+and floating-point computations reproduce all 36 paired classifications/totals.
+All-pairs <=2% condition FAIL: 33 within, 3 over;
+maximum 72.8503834513% at dickens, pair 1. No rounding before
+classification, replacement/discard/retry, causal attribution or public admission.

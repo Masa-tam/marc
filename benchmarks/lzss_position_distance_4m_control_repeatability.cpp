@@ -1,5 +1,6 @@
 #include "position_distance_4m_control_engine.hpp"
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <string_view>
 #include <vector>
@@ -19,8 +20,10 @@ int main(int argc, char** argv) {
     namespace core = marc::core;
     namespace fi = marc::frame::internal;
     using namespace marc::benchmarks::control_repeatability;
-    // Qualification deliberately exposes only the clock-disabled mode.
-    if (argc != 4 || std::string_view(argv[3]) != "verify") return 2;
+    if (argc != 4) return 2;
+    const std::string_view mode = argv[3];
+    if (mode != "verify" && mode != "measure") return 2;
+    const bool timed = mode == "measure";
     try {
         std::vector<std::byte> raw, archive;
         if (!read(argv[1], raw, raw_limit) || !read(argv[2], archive, archive_limit)) return 2;
@@ -32,9 +35,10 @@ int main(int argc, char** argv) {
                 frame, limits(), dec) != core::ErrorCode::none) return 1;
         ScalarEngine engine(raw.size());
         Report report{};
-        if (!run(engine, raw, archive, false, report)) return 1;
+        if (!run(engine, raw, archive, timed, report)) return 1;
         // No archive, frame bytes or partial report is published by this tool.
-        std::cout << "verified=1\nclock_enabled=0\ncompleted=" << report.completed
+        std::cout << std::setprecision(17) << "verified=1\nclock_enabled=" << report.timed
+            << "\ncompleted=" << report.completed
             << "\ninput_bytes=" << raw.size() << "\narchive_bytes=" << archive.size()
             << "\nencoder_budget=" << enc.aggregate_bytes << "\ndecoder_budget=" << dec.aggregate_bytes
             << "\nreport_bytes=" << sizeof(Report) << "\ndiagnostic_storage=" << diagnostic_storage
@@ -44,6 +48,14 @@ int main(int argc, char** argv) {
             std::cout << "record_" << i << '=' << s.slot << ',' << s.encode << ',' << s.consumed
                 << ',' << s.produced << ',' << s.prepare_calls << ',' << s.collect_calls
                 << ',' << s.drain_calls << ',' << s.decode_calls << ',' << s.seconds() << '\n';
+            std::cout << "phases_" << i << '=' << s.create << ',' << s.collect << ',' << s.prepare
+                << ',' << s.drain << ',' << s.decode << ',' << s.destroy << '\n';
+            std::cout << "frames_" << i << '=';
+            for (std::size_t j = 0; j < s.prepare_calls; ++j) {
+                if (j) std::cout << ',';
+                std::cout << s.frames[j];
+            }
+            std::cout << '\n';
         }
     } catch (...) { return 1; }
 }
