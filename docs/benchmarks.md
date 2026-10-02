@@ -9684,3 +9684,114 @@ offset shorter collision chains; no benefit is inferred. A later full-owner
 campaign must retain exact-output qualification, duplicate admitted controls,
 strict process receipts, complete phase costs, all observations and the retained
 admission criteria. Public selection and earlier failed screens remain unchanged.
+
+
+## BM-0206: Four-MiB bucket18 complete-owner screen
+
+Date: 2026-10-02. Measure DD-1403's qualified counter-free owner with 18-bit
+five-prefix heads and retained 16-bit three/four-prefix heads. Compare duplicate
+admitted FivePrefix owners within the same qualified executable. MSVC C++20
+release flags are `/O2 /MD`; no rebuild or codec/harness change. Three canonical
+complete corpus passes rotate control-0/trial/control-1 for each member, followed
+by the unchanged decoder. Each observation has a fresh process and a persisted
+strict successful zero-selected-process audit receipt before invocation. All
+144 observations are retained; no warmup, discard, replacement or retry until
+success. Selected-name snapshots are not an OS lock or future quiescence proof.
+
+The complete-owner clocks include creation/allocation, raw collection, frame
+preparation/reset, drain and destruction with 65536-byte input/output chunks.
+File I/O, sink comparisons, query and memory sampling are excluded. No inner
+counters/report hooks/clocks are added. Both head initialization and the additional
+786432 bytes are included: admitted encode minimum 315365389, trial 316151821,
+unchanged decoder 130029573. State and all other buffers are unchanged. Complete
+archive/raw checks pass all observations. Each complete traversal has 211938580
+raw bytes and 61643620 archive bytes; each encode prepares 57 frames. DD-1403 is
+the two-compiler correctness evidence; this timing campaign uses one compiler.
+
+All encode observations follow. Gain uses the faster of the two controls;
+control spread is `(slower/faster-1)*100`. A win is strictly faster than both,
+a loss is no faster than either, and between is faster only than the slower
+control. No member or pass is removed.
+
+| Member | Pass | Control 0 s | Trial s | Control 1 s | Gain % | Control spread % | Result |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| dickens | 1 | 5.1303923 | 4.8889875 | 5.1531711 | 4.705387 | 0.443997 | win |
+| mozilla | 1 | 21.2053392 | 20.2606282 | 21.1375384 | 4.148592 | 0.320760 | win |
+| mr | 1 | 8.2514876 | 8.3282661 | 8.2486184 | -0.965588 | 0.034784 | loss |
+| nci | 1 | 10.0016284 | 10.1308177 | 10.0378348 | -1.291683 | 0.362005 | loss |
+| ooffice | 1 | 1.5995436 | 1.4411997 | 1.5752857 | 8.511853 | 1.539905 | win |
+| osdb | 1 | 1.9862603 | 1.8510626 | 2.0007581 | 6.806646 | 0.729904 | win |
+| reymont | 1 | 5.9089592 | 5.8392108 | 5.9342593 | 1.180384 | 0.428165 | win |
+| samba | 1 | 4.8077611 | 4.5971448 | 4.8158239 | 4.380756 | 0.167704 | win |
+| sao | 1 | 2.7173517 | 2.5460128 | 2.7057249 | 5.902747 | 0.429711 | win |
+| webster | 1 | 22.9122556 | 22.2131270 | 22.8866108 | 2.942698 | 0.112052 | win |
+| xml | 1 | 0.6217622 | 0.6077029 | 0.6254463 | 2.261202 | 0.592526 | win |
+| x-ray | 1 | 2.3130294 | 1.8094436 | 2.3255429 | 21.771699 | 0.541000 | win |
+| dickens | 2 | 5.0950604 | 4.8873878 | 5.1543133 | 4.075960 | 1.162948 | win |
+| mozilla | 2 | 21.3093493 | 20.1828570 | 21.2334959 | 4.948026 | 0.357235 | win |
+| mr | 2 | 8.2218600 | 8.2879861 | 8.2875966 | -0.804272 | 0.799534 | loss |
+| nci | 2 | 10.0326946 | 10.2456185 | 10.0363257 | -2.122300 | 0.036193 | loss |
+| ooffice | 2 | 1.5803699 | 1.4338573 | 1.6085660 | 9.270779 | 1.784146 | win |
+| osdb | 2 | 2.0008560 | 1.8648524 | 2.0401051 | 6.797271 | 1.961615 | win |
+| reymont | 2 | 5.9299219 | 5.8568188 | 5.8991089 | 0.716890 | 0.522333 | win |
+| samba | 2 | 4.8121667 | 4.6071343 | 4.8063995 | 4.145831 | 0.119990 | win |
+| sao | 2 | 2.7045733 | 2.5540504 | 2.7205578 | 5.565495 | 0.591017 | win |
+| webster | 2 | 22.9186602 | 22.1500545 | 22.8831831 | 3.203788 | 0.155036 | win |
+| xml | 2 | 0.6319581 | 0.6079503 | 0.6249696 | 2.723220 | 1.118214 | win |
+| x-ray | 2 | 2.4624456 | 1.7924930 | 2.3910673 | 25.033770 | 2.985207 | win |
+| dickens | 3 | 5.2578910 | 4.9054399 | 5.2473048 | 6.515057 | 0.201745 | win |
+| mozilla | 3 | 21.9702700 | 20.4703016 | 21.6565868 | 5.477711 | 1.448442 | win |
+| mr | 3 | 8.2542930 | 8.3259977 | 8.2837495 | -0.868696 | 0.356863 | loss |
+| nci | 3 | 10.0663209 | 10.1645050 | 10.0547430 | -1.091644 | 0.115149 | loss |
+| ooffice | 3 | 1.6376117 | 1.4872130 | 1.6222536 | 8.324260 | 0.946714 | win |
+| osdb | 3 | 2.0625797 | 1.9559545 | 2.0546212 | 4.802184 | 0.387346 | win |
+| reymont | 3 | 5.9163453 | 5.8365392 | 5.9315032 | 1.348909 | 0.256204 | win |
+| samba | 3 | 4.8589759 | 4.6394438 | 4.8920759 | 4.518073 | 0.681214 | win |
+| sao | 3 | 2.7373200 | 2.6209532 | 2.8187985 | 4.251122 | 2.976579 | win |
+| webster | 3 | 22.9825396 | 22.3885436 | 24.2180885 | 2.584553 | 5.376033 | win |
+| xml | 3 | 0.6175851 | 0.6201734 | 0.6282796 | -0.419100 | 1.731664 | between |
+| x-ray | 3 | 2.4003726 | 1.8683316 | 2.4430239 | 22.164934 | 1.776862 | win |
+
+| Pass | Control 0 corpus s | Trial corpus s | Control 1 corpus s | Per-member faster controls s | Gain % | Unchanged decode corpus s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 87.4557706 | 84.5136037 | 87.4466146 | 87.3235711 | 3.217880 | 6.9350082 |
+| 2 | 87.6999160 | 84.4710604 | 87.6856888 | 87.4736385 | 3.432552 | 6.9402054 |
+| 3 | 88.7621048 | 85.2833965 | 89.8510285 | 88.4029409 | 3.528779 | 6.9411028 |
+
+| Member | Unchanged decode pass 1 s | Pass 2 s | Pass 3 s |
+| --- | ---: | ---: | ---: |
+| dickens | 0.3735030 | 0.3793417 | 0.3792580 |
+| mozilla | 2.0105528 | 2.0081235 | 2.0123054 |
+| mr | 0.3894345 | 0.3891109 | 0.3930139 |
+| nci | 0.2736014 | 0.2724321 | 0.2770696 |
+| ooffice | 0.3421012 | 0.3379241 | 0.3398934 |
+| osdb | 0.3824197 | 0.3818272 | 0.3813005 |
+| reymont | 0.1792267 | 0.1820321 | 0.1793871 |
+| samba | 0.5278051 | 0.5266076 | 0.5202754 |
+| sao | 0.5928226 | 0.5917413 | 0.5896688 |
+| webster | 1.1381827 | 1.1363977 | 1.1446719 |
+| xml | 0.0678573 | 0.0673457 | 0.0659376 |
+| x-ray | 0.6575012 | 0.6673215 | 0.6583212 |
+
+The predeclared screen fails: 29 wins, 6 losses and 1 between-controls cases; maximum control
+spread 5.376033%. All 36 strict wins and every
+control spread at most 2% are required. Gain versus the faster control ranges
+from -2.122300% to
+25.033770%. Aggregate gain does not prove
+universal improvement, an optimal width or a cause of timing variation.
+
+| Profile/direction | Maximum process peak working set bytes | Maximum process peak commit bytes |
+| --- | ---: | ---: |
+| control-0-encode | 318144512 | 388579328 |
+| control-1-encode | 318144512 | 388567040 |
+| bucket18-encode | 318930944 | 389341184 |
+| bucket18-decode | 132780032 | 202854400 |
+
+Whole-process peaks include input/archive/runtime storage. They are not codec-only
+resident memory or substitutes for exact workspace charges. Keep the candidate
+private; no automatic admission, public format/ABI/default/inventory/fixed-binary
+change, new fuzz or external gate. Preserve BM-0202/BM-0203/BM-0204 failed screens
+and their historical audit limitations. Specialized 1MiB width/noise records and
+BM-0205 instrumented tokenizer shares remain distinct; do not infer a collision
+forecast, subtract assumed timer overhead or claim an environmental cause.
+All prior artifacts and fixed verification binaries remain intact.

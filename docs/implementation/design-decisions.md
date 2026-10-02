@@ -29352,3 +29352,36 @@ allocation/preparation/drain/destruction and memory, under the retained strict
 36-win and at-most-2% control-spread criteria. Do not subtract assumed clock
 overhead or claim a cause from diagnostic counters. No public/default/format/
 ABI/inventory/fixed-binary change, new fuzz campaign or external gate.
+
+
+## DD-1404: Declared complete-owner measurement of private bucket18
+
+Date: 2026-10-02. Freeze BM-0206 after DD-1403's complete token/frame/owner
+qualification; no codec/harness change or rebuild. Use one executable for the
+admitted duplicate controls and trial. Three canonical twelve-member passes
+rotate control-0, bucket18, control-1 left by (pass index plus member index)
+modulo three, with the unchanged complete decoder last. Every observation
+uses a fresh process. No warmup, discard, replacement or retry until success.
+
+Persist an explicit successful zero-selected-process receipt before each launch.
+Any enumeration error, invalid receipt or selected active process stops before
+invocation and preserves completed evidence. A snapshot is not an OS lock or
+future quiescence guarantee. All 144 launches have valid retained receipts.
+
+The predeclared screen requires all 36 trial encodes strictly faster than both
+controls and every duplicate-control spread at most 2%. BM-0206 fails:
+29 wins, 6 losses and 1 between-controls cases; maximum spread 5.376033%.
+No automatic public selection follows this screen. Retain the candidate privately,
+all observations and previous failed screens; infer neither an optimal width
+nor an environmental cause from this campaign. Specialized 1MiB width trials
+and fine-clock tokenizer shares remain distinct evidence.
+
+Include complete creation/allocation, raw collection, frame preparation/reset,
+draining and destruction. Exclude file I/O, sink comparisons, queries and memory
+sampling from codec clocks. No inner counters, report hooks or clocks are added.
+The enlarged head initialization is included in preparation. Admitted encode
+charge is 315365389 bytes, trial charge 316151821 (+786432); state and all other
+buffers remain. Decoder charge remains 130029573. Process peaks are whole-process
+observations, not codec-only resident memory or allocation-budget substitutes.
+All complete stream bytes and raw restoration pass. No public source selection,
+format/ABI/default/inventory/fixed-binary change, new fuzz or external gate.
