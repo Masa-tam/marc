@@ -20148,3 +20148,22 @@ original classification/order and descriptive summaries. Preserve codec,
 harness, tests, fixed binary, frozen archives and prior artifacts by hashes;
 append public documents without local environment details. No fresh byte
 generation, timings, sanitizer/test/fuzz/CTest or external run is claimed.
+
+
+## TVG-1280: Conditional larger-window arithmetic and lifetime review
+
+Review source and retained requirements without running a codec. Reproduce
+four-MiB encode/decode charges 315365389/130029573 and views 235667456; distinguish
+known state from unknown future ABI/state. Independently recompute each bulk
+formula, 512-MiB comparison, model topology and eight-MiB phase headroom 8388523.
+Enumerate lengths 3..258 and reachable classes 0..k-1 for k=22,23,24, checking
+short-length widths and the history-aware nine-decisions-per-byte inequality.
+Also retain the weaker grammar-only nine/ten ceilings and their payload effect.
+
+Inspect search-before-map call order, current disjointness and early operation
+construction: numerical phase sharing is not a supported aliased API call.
+Preserve source, fixed artifacts and prior evidence by hashes; append documents
+and directly check the new entries. The legacy supplemental-heading ordinal
+coverage limitation remains; standalone documentation validation is not proof
+of all supplemental sequence checks. No new vectors, build, tests, sanitizer,
+CTest, fuzz, timings or external qualification are claimed by this review.

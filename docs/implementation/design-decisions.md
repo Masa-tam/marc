@@ -29734,3 +29734,82 @@ needs its own bounded design; no automatic implementation is authorized here.
 No new BM, codec/source/harness change, build/test/CTest/fuzz/external gate,
 public format/ABI/default/limits, inventory or fixed binary change. Failure
 invariance, discardable private scratch and failed-frame nonpublication remain.
+
+
+## DD-1413: Larger-window feasibility before a new position-distance profile
+
+Date: 2026-10-03. Design review only, following DD-1412's pause in local
+performance trials. Eight and sixteen MiB are prospective candidates, not
+admitted configurations, selected identities or measured performance results.
+The current four-MiB C family explicitly selects a 512-MiB aggregate budget;
+this is a profile policy, not a universal repository ceiling. Generic defaults
+remain 128 MiB buffered, one MiB block, sixteen MiB frame/distance and 64 MiB
+payload. Increasing a caller limit cannot bypass the current four-MiB identity,
+frame, dictionary, alphabet or cursor restrictions.
+
+For conditional frame/window F = 2^k, retain independent frame history and the
+short-length grammar. A literal uses two range decisions. A length-three match
+uses at most k+4 decisions; other matches use at most k+10 and consume at least
+four bytes. The grammar-only integer ceilings are nine decisions per raw byte
+for k=23 and ten for k=24. Thus blindly inheriting the old nine-F proof is
+invalid for an expanded sixteen-MiB grammar.
+
+A stronger, conditional history proof is available when F=W: every valid match
+starts at position p, has distance <=p and ends within F. Because length >=3,
+p<=F-3, hence distance<2^k and its class is at most k-1. Length-three matches
+then cost at most k+3 decisions; others at most k+9. Both candidates satisfy
+the nine-F bound (27/3 and 33/4 at k=24). The grammatical endpoint distance W
+is unreachable inside an independently reset F=W frame. This reasoning must
+be incorporated into the future preflight/validator proof, including short
+final frames; it does not extend to retained cross-frame history or F>W.
+With that proof, the existing two-bytes-per-decision conservative bound would
+give payload <=18F+5 and serialized frame <=18F+85. Without it, the grammar-only
+sixteen-MiB alternative is <=20F+5, affecting every workspace/payload limit.
+
+The following conditional bulk allocations use the retained layout of
+twelve-byte tokens and sixteen-byte operations, F tokens, 2F operations and
+three 65,536-head prefix indexes with three F-link arrays of uint32 values.
+They reproduce existing query charges but are not new sizeof/query results.
+Finder = 12F+786432; separate encode bulk = 75F+786517; decode bulk = 31F+85.
+State, adapters, alignment changes and extra retained buffers are additional.
+
+| Candidate F=W | Separate encode bulk, bytes | Decode bulk, bytes | Encode bulk with hypothetical phase sharing, bytes |
+| --- | ---: | ---: | ---: |
+| 8 MiB | 629932117 | 260046933 | 528482389 |
+| 16 MiB | 1259077717 | 520093781 | 1056964693 |
+
+At four MiB, bulk 315359317 plus retained state charge 6072 reproduces encode
+315365389; decode 130023509 plus 6064 reproduces 130029573. Do not carry those
+state constants into an undeclared larger model. Separate eight-MiB encode
+already exceeds 512 MiB without state. Sixteen-MiB decode bulk is 496 MiB+85
+with the history proof; the grammar-only alternative is 528 MiB+85 and exceeds
+that policy without state. Neither figure is an admission or peak-memory claim.
+
+The scalar raw encoder finishes candidate tokenization before frame mapping
+and range encoding. Finder links are not passed to the latter call. This makes
+sharing finder storage with operation storage a design candidate: keep tokens
+alive and replace their combined charge with max(32F,12F+786432). Eight-MiB
+bulk then becomes 63F+85 = 504 MiB+85, leaving exactly 8388523 bytes before
+512 MiB for all other charged storage. Sixteen MiB still needs 1008 MiB+85.
+Current partitioning constructs operation objects before search, and current
+raw API rejects finder/operation overlap. Passing aliased spans to it is not
+valid. A new phase owner must explicitly handle object lifetime, alignment,
+capacity charging, overlap validation, resets, failure paths and publication.
+Actual complete state/adapter queries and all borrowed capacities remain
+required; this review does not prove that eight MiB fits.
+
+Straight model extension would use 24+k contexts and 2346+11k frequency entries:
+47/2599 for eight MiB, 48/2610 for sixteen MiB, versus current 46/2588. Nine
+distance-class alphabets expand from 23 to k+1; there are k binary extra-bit
+models. These are conditional topology counts, not ABI sizes or assigned IDs.
+The uint32 position/link sentinel can represent these positions, but current
+finder validation still rejects larger frames/variants. Existing generic
+sixteen-MiB contextual coding is a different model, not this future extension.
+
+Recommend an eight-MiB phase-workspace and failure-contract design next,
+retaining the 512-MiB policy as a design target. Defer sixteen-MiB implementation;
+it needs a materially different buffering strategy or separately reviewed
+resource policy. No automatic policy relaxation or projected throughput/ratio.
+Window choice and implementation remain later decisions after concrete complete
+resource accounting. No code, build/test/CTest/fuzz, timing/BM, external gate,
+identity reservation, inventory, public factory or fixed binary changes here.

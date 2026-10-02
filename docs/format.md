@@ -8270,3 +8270,26 @@ failed-frame publication remain unchanged. API default-resource selection and
 full borrowed-capacity charging are described in the C API documentation.
 CLI/exchange inventory and revision-specific external qualification remain
 later gates; no existing stream representation or identity is modified.
+
+
+### Prospective larger position-distance windows: design boundary
+
+DD-1413 reviews eight-/sixteen-MiB feasibility only. Neither size has a new
+position-distance wire identity or admitted profile. The current dictionary
+2/10, context 1/11, entropy 3/2 tuple and 46-context representation remain
+unchanged; increasing limits cannot reinterpret that tuple as a larger model.
+The existing generic sixteen-MiB contextual profile is a different grammar.
+
+A future independently reset F=W=2^k profile must define its own identity,
+distance-class alphabets, extra-bit models, endpoint validation and decision,
+payload, frame and aggregate bounds before implementation. For k=23/24 the
+conditional model topology is 47/48 contexts and 2599/2610 frequency entries.
+Preserving payload <=18F+5 at sixteen MiB requires the history-aware decision
+proof in DD-1413, rather than merely copying the old grammar-only ceiling.
+The legal grammatical endpoint W cannot be referenced inside a reset F=W
+frame. Cross-frame history would require a separate representation/design.
+
+Future workspace changes must retain failure invariance at existing guaranteed
+boundaries, discardable private scratch and validation of the entire frame
+before publication. This note reserves no IDs, changes no decoder acceptance
+or limits, and does not admit phase-sharing or any private four-MiB candidate.

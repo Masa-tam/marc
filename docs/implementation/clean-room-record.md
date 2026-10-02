@@ -37741,3 +37741,19 @@ both bounds.
 - Decision: pause further local performance trials, retain the scalar baseline
   and every failed screen. No scratch admission, selected rerun, threshold
   relaxation, new instrumentation, global exhaustion or legal guarantee.
+
+
+## CR-1584: Larger position-distance feasibility without implementation
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1172; first-party workspace, frame/finder/cursor/model sources,
+  profile/generic limits and retained four-MiB query evidence. No external or
+  copyleft source, tables, tests or implementation structure consulted.
+- Task: independently derive conditional larger-window storage, reachable
+  distance and model counts; separate design arithmetic from supported queries.
+- Validation: TVG-1280; integer/rational arithmetic, independent enumeration,
+  current charge reconciliation, source/artifact hashes and append/scope checks.
+- Decision: recommend an eight-MiB phase-owner resource/contract design before
+  implementation; retain the 512-MiB policy as a target, defer sixteen MiB.
+  No new IDs, profile admission, limit relaxation, performance prediction,
+  build/test/CTest/fuzz/external gate, codec modification or legal guarantee.

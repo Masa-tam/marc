@@ -10348,3 +10348,14 @@ and bounded frame records, frozen source/report topology and twelve strict
 launch receipts. Recompute all records, keeping the three over-bound pairs and
 both earlier/later traversal positions. Consult no external/restricted source
 or tests; create no fresh codec execution, timings, candidate or instrumentation.
+
+
+## IR-1172: Larger position-distance window feasibility
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+Use first-party four-MiB five-prefix workspace arithmetic, raw/frame encoder
+call order and overlap checks, decoder workspace, field cursor, short-length
+grammar, context layout, stream preflight, C configuration and generic limits.
+Reconcile retained four-MiB charges; examine conditional eight-/sixteen-MiB
+storage and model expansion without pretending existing queries support them.
+No external/copyleft implementation, expression, table or test consulted.
