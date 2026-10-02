@@ -37423,3 +37423,26 @@ both bounds.
   No public adoption, format, ABI, defaults, inventory or fixed binary changes;
   no new fuzz, external qualification or legal guarantee. Previous numerical
   and audit exceptions remain; no causal timing explanation is asserted.
+
+
+## CR-1569: Retained phase/frame dispersion review
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized review after BM-0203.
+- Task/prompt: locate retained complete-owner timing differences by measured
+  phase and corresponding frame, preserve all observations and failed screens,
+  and separate evidence from unobserved causes without new clocks.
+- References: IR-1157/DD-1398, first-party owner harness/raw-frame composition,
+  current audited and historical audit-limited campaign records. No external
+  implementation or copyleft source/test expression was consulted.
+- Expression/similarity review: no codec expression changes. Independent local
+  decimal arithmetic retains signed phase/frame contributions, all control
+  pairs, trial comparisons and same-profile pass ranges; a separate check
+  recomputes values from recorded observations.
+- Validation: TVG-1265; all 288 retained observations, 1026 encode frame times,
+  current launch receipts, phase/frame conservation, public/private/prior
+  hash preservation and append-only documentation without local environment.
+- Scope: untimed evidence review. Both failed screens and private non-admission
+  remain. No source selection, format, ABI, defaults, inventory, fixed binary,
+  new timing, fuzz, external qualification or legal guarantee. A future split
+  preparation diagnostic is proposed, not executed or declared as a campaign.

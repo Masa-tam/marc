@@ -10162,3 +10162,12 @@ Use first-party DD-1396's counter-free qualified owner, admitted five-prefix
 controls, complete frozen streams and DD-1394's strict process audit helper.
 Preserve DD-1393's observations and initial audit limitation. No external
 implementation, source or test expression is consulted.
+
+
+## IR-1157: Retained complete-owner phase and frame dispersion
+
+Use all first-party BM-0203 observations, launch receipts, declared order and
+qualified owner-phase harness. Review BM-0202 separately with its preserved
+initial audit limitation. Inspect first-party raw-frame composition to define
+what the preparation phase actually includes. No new codec execution, clocks,
+external implementation or test expression is used.

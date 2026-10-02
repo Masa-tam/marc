@@ -29071,3 +29071,49 @@ the codec clock. Process peaks are whole-process observations, not codec-only
 resident memory or allocation charges. All complete bytes, budgets and restored
 raw remain exact. Public source selection, format, ABI, defaults, inventory and
 fixed verification binaries are unchanged.
+
+
+## DD-1398: Localize retained variation without inferring its cause
+
+Reconcile all 144 BM-0203 observations using decimal arithmetic over recorded
+fields. For every same-member/pass control pair, subtract control-0 phases
+from control-1 phases and reconcile their sum with the complete-owner delta.
+Also reconcile corresponding frame deltas with preparation. Retain all 36
+pairs, including small differences and opposite signs. Repeat trial-versus-
+faster-control and same-profile three-pass comparisons without new clocks.
+
+Preparation has the largest absolute phase delta in all 36 current control
+pairs and all 36 same-profile encode pass-range comparisons. Across current
+control pairs, it contributes 99.816934
+percent of the sum of absolute phase deltas. This denominator is phase-delta
+magnitude, not elapsed work, variance or a causal fraction. Signed contributions
+can exceed 100 percent when smaller phases offset them; retain those signs.
+
+The largest current control spread, third-pass reymont, has total control-1
+minus control-0 delta -1.7512754 seconds. Preparation contributes
+-1.7502208 seconds; corresponding frame deltas
+are -1.5500986 and -0.2001222 seconds.
+Neither owner construction nor destruction explains most of that difference.
+This localizes the recorded difference to a measured call category only.
+
+Preparation includes final input copying, complete raw-frame work and any
+draining performed by that call. Raw-frame work includes dictionary tokenization
+and frame encoding/validation; the latter includes Range coding. Existing
+phase clocks cannot separate these components. CPU frequency, scheduling,
+unselected workloads, caches and branch behavior were not observed. A strict
+selected-name audit does not measure those causes. Unchanged decoder timing
+is a separate workload and cannot certify encode-time stability.
+
+BM-0202 is historical evidence with its audit limitation intact. Preparation
+leads 34 of its 36 control pairs; destruction leads two small-delta pairs.
+Do not pair different campaigns to claim a causal cutoff effect, remove
+outliers, rerun until success, tune a cutoff grid or relax either failed screen.
+Both private probe owners remain unadmitted. No public source or format changes.
+
+Next qualify a separate private diagnostic that distinguishes tokenization
+from frame coding/validation within preparation. Define phase boundaries,
+diagnostic state charges, alias/failure behavior and report publication before
+timing; preserve complete frozen bytes and raw restoration. Such diagnostic
+clocks would measure their instrumented path, not automatically prove owner
+speedup or identify an environmental cause. Any new timing requires a fresh
+declaration and strict persisted per-launch audit; this stage runs none.

@@ -19648,3 +19648,29 @@ classify aggregate gain as universal improvement. Public/private qualified
 sources, libraries, fixed binaries, frozen streams and captured prior artifacts
 remain hash-identical. Public documentation appends only; no local paths or
 environment details are added. No CTest or rebuild is needed in this stage.
+
+
+## TVG-1265: Retained phase and corresponding-frame arithmetic
+
+Read all 144 current and 144 historical observations without invoking codecs.
+Validate unique member/pass/profile/mode keys, positive totals, nonnegative
+phases, phase-total and frame-preparation conservation at recorded precision.
+Current launch receipts still validate explicit zero-process success before
+their corresponding invocation; the historical campaign is not retroactively
+qualified. Each campaign has 513 encode frame-time observations.
+
+For each campaign, retain 36 same-member/pass duplicate-control phase/frame
+pairs, 36 trial-versus-faster-control pairs and 48 same-profile three-pass
+range records, including twelve unchanged-decode ranges. Independently
+recompute signed deltas, absolute-phase magnitudes, leading phase counts,
+largest spread, pass totals and same-frame correspondence. Current complete
+corpus preparation shares are between 99.591055 and 99.654306 percent of elapsed
+encode totals; this elapsed denominator differs from phase-delta attribution.
+
+The third-pass reymont control pair retains both frame deltas and small
+offsetting collect/drain deltas. Historical leading-destruction exceptions
+remain: first-pass mr total delta -0.0002761 seconds and third-pass x-ray
+-0.0016034 seconds. Do not discard those cases or infer causes from them.
+Public/private qualified source, libraries, fixed binaries, frozen archives
+and captured previous artifacts remain hash-identical. Documentation appends
+only. No new build, CTest, decoder/fuzz campaign, timing or external gate runs.

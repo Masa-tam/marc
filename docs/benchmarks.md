@@ -9380,3 +9380,100 @@ The candidate remains private; no automatic public admission, format/ABI/
 default change, fuzz or external gate is claimed. Preserve BM-0202's failed
 screen and initial audit limitation without retroactively qualifying them.
 All prior artifacts and fixed verification binaries remain intact.
+
+
+### Retained owner-phase and corresponding-frame review (DD-1398)
+
+Review existing BM-0203 values without new clocks. Preparation has the largest
+absolute phase delta in every current duplicate-control pair. The table retains
+all 36 pairs: delta means control-1 minus control-0, and the preparation share
+uses the sum of absolute phase deltas as its denominator. It is not an elapsed
+work share, statistical variance or evidence of a cause.
+
+| Member | Pass | Total delta s | Preparation delta s | Preparation share of absolute phase deltas % |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 1 | -0.0061460 | -0.0062171 | 89.894448 |
+| mozilla | 1 | -0.0328326 | -0.0325840 | 99.049750 |
+| mr | 1 | -0.0221985 | -0.0220722 | 98.872509 |
+| nci | 1 | -0.3365003 | -0.3366663 | 99.915181 |
+| ooffice | 1 | 0.0507976 | 0.0511755 | 98.017828 |
+| osdb | 1 | -0.2197909 | -0.2198264 | 99.926587 |
+| reymont | 1 | 0.4653812 | 0.4645163 | 99.808405 |
+| samba | 1 | 0.1006548 | 0.1001940 | 99.542198 |
+| sao | 1 | 0.0264122 | 0.0264319 | 99.111696 |
+| webster | 1 | -1.9820239 | -1.9824193 | 99.980059 |
+| xml | 1 | -0.0014509 | -0.0014670 | 95.204101 |
+| x-ray | 1 | -0.1001994 | -0.1008685 | 99.283929 |
+| dickens | 2 | -0.0131176 | -0.0138899 | 94.732714 |
+| mozilla | 2 | 0.4332199 | 0.4335961 | 99.913312 |
+| mr | 2 | -0.0000129 | -0.0011559 | 49.336293 |
+| nci | 2 | 0.6253793 | 0.6257218 | 99.928949 |
+| ooffice | 2 | 0.1434000 | 0.1418582 | 98.780444 |
+| osdb | 2 | -0.0428120 | -0.0423495 | 98.375107 |
+| reymont | 2 | -0.7473906 | -0.7478224 | 99.941998 |
+| samba | 2 | -0.1213901 | -0.1222599 | 99.293590 |
+| sao | 2 | -0.1916854 | -0.1921442 | 99.761790 |
+| webster | 2 | -0.1231180 | -0.1237707 | 99.256841 |
+| xml | 2 | 0.0071044 | 0.0067645 | 92.001469 |
+| x-ray | 2 | -0.1009438 | -0.1002502 | 99.285542 |
+| dickens | 3 | 0.0906991 | 0.0901712 | 99.330134 |
+| mozilla | 3 | 0.3996351 | 0.4006138 | 99.756295 |
+| mr | 3 | -0.2049731 | -0.2044544 | 99.720574 |
+| nci | 3 | 2.7793406 | 2.7792096 | 99.971669 |
+| ooffice | 3 | -0.0450213 | -0.0454810 | 98.459707 |
+| osdb | 3 | -0.2304282 | -0.2305086 | 99.944328 |
+| reymont | 3 | -1.7512754 | -1.7502208 | 99.935752 |
+| samba | 3 | 0.0920666 | 0.0915153 | 99.302180 |
+| sao | 3 | -0.0829667 | -0.0821898 | 98.963643 |
+| webster | 3 | 1.1630450 | 1.1620133 | 99.911293 |
+| xml | 3 | -0.0450251 | -0.0453803 | 98.003658 |
+| x-ray | 3 | 0.0380770 | 0.0384299 | 99.043581 |
+
+Across those pairs, preparation contributes
+99.816934 percent of all absolute
+phase deltas. All 36 same-profile encode three-pass range comparisons also
+have preparation as their largest phase delta. Same-profile pass ranges are
+descriptive retained minima/maxima, not replacement observations or paired
+trial effects. The maximum trial range is reymont at 43.545870 percent; the
+unchanged decoder's maximum same-member range is 2.521023 percent, which does
+not prove stability of the different encode workload.
+
+| Pass | Profile | Total corpus s | Preparation s | Creation s | Collection s | Drain s | Destruction s |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | control-0 | 93.5396736 | 93.1732299 | 0.2772193 | 0.0139830 | 0.0017303 | 0.0735111 |
+| 1 | control-1 | 91.4817769 | 91.1134268 | 0.2769487 | 0.0141879 | 0.0015976 | 0.0756159 |
+| 1 | probe17 | 89.5597618 | 89.1935118 | 0.2769644 | 0.0143173 | 0.0016134 | 0.0733549 |
+| 2 | control-0 | 93.4732489 | 93.1094686 | 0.2757190 | 0.0142260 | 0.0016350 | 0.0722003 |
+| 2 | control-1 | 93.3418821 | 92.9737665 | 0.2789371 | 0.0139936 | 0.0015115 | 0.0736734 |
+| 2 | probe17 | 91.8843872 | 91.5184403 | 0.2757169 | 0.0140224 | 0.0015929 | 0.0746147 |
+| 3 | control-0 | 104.3660251 | 103.9970770 | 0.2771669 | 0.0143721 | 0.0017361 | 0.0756730 |
+| 3 | control-1 | 106.5691987 | 106.2007952 | 0.2776090 | 0.0141935 | 0.0015827 | 0.0750183 |
+| 3 | probe17 | 99.1067704 | 98.7407813 | 0.2755979 | 0.0139495 | 0.0016084 | 0.0748333 |
+
+Preparation accounts for 99.591055 through 99.654306 percent of these elapsed
+encode totals. Those elapsed shares are separate from the delta-magnitude
+shares above. The largest duplicate-control spread, third-pass reymont, has
+total delta -1.7512754 seconds and preparation delta -1.7502208 seconds. Its
+corresponding frame differences are retained below, with no comparison between
+different frame contents or lengths.
+
+| Frame index | Control 0 s | Control 1 s | Delta s |
+| ---: | ---: | ---: | ---: |
+| 0 | 6.3351667 | 4.7850681 | -1.5500986 |
+| 1 | 1.7044188 | 1.5042966 | -0.2001222 |
+
+Historical BM-0202 is reviewed separately, preserving its initial audit
+limitation: preparation leads 34 control pairs and destruction leads two
+small-delta pairs (mr pass one and x-ray pass three). Its preparation share
+of all absolute phase deltas is 98.503152
+percent. Different campaigns are not paired evidence of a cutoff effect.
+
+The preparation call includes input copy, dictionary tokenization, complete
+frame coding/validation and any drain in that call. It cannot isolate finder
+or Range costs. CPU frequency, scheduling, unselected workloads, cache and
+branch state are unobserved; selected-process audits do not identify them.
+Preserve both failed numerical screens and all observations. No new BM record,
+elapsed campaign, public admission or causal performance explanation is added.
+The next proposed diagnostic separates tokenization from frame coding/validation
+and must qualify bytes, budgets and failure/report-publication contracts before
+any separately declared instrumented timing.
