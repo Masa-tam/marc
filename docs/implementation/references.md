@@ -10370,3 +10370,12 @@ adapter capacity charging and decoder publication. Use DD-1413 arithmetic as
 conditional design inputs. Consult no external or restricted implementation.
 Distinguish a source-derived array-element cost from an unimplemented model's
 complete sizeof/query, and a future contract from current overlap acceptance.
+
+
+## IR-1174: Private phase-workspace prototype
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+Implement DD-1414's storage contract using first-party token/operation types,
+checked arithmetic, overlap helpers and independently written synthetic tests.
+No dictionary search, distance model, range coder or wire encoder is implemented
+by this prototype. No external/copyleft implementation or tests consulted.

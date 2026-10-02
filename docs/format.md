@@ -8310,3 +8310,13 @@ it cannot choose a different window representation to decode the same bytes.
 No automatic selection rule or efficiency threshold is defined by this note.
 The whole frame must validate before publication, with private failed scratch
 discardable and previously committed frames unaffected.
+
+
+### Private phase-workspace prototype boundary
+
+DD-1415 adds only internal storage and lifecycle helpers with synthetic tests.
+It implements no stream representation, accepts no new identity, and changes
+no existing four-MiB or generic contextual bytes, limits or decoder acceptance.
+A future larger-window profile still requires an exact separate format,
+bounded validator/model implementation and complete frame publication tests.
+Passing storage tests does not admit a profile or prove codec failure behavior.

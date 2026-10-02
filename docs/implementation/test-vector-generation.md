@@ -20192,3 +20192,24 @@ Preserve prior artifacts/source/fixed binaries, append-only public documents,
 and directly inspect supplemental IDs and scope. Standalone documentation
 validation retains the known supplemental-heading coverage limitation. No
 fresh codec, build/test/CTest, fuzz, timing/BM or external result is claimed.
+
+
+## TVG-1282: Private workspace lifecycle qualification
+
+Use independently written synthetic storage fixtures, not compressed vectors.
+Twelve tests exercise query/binding failures and their output/storage sentinels,
+frame bounds, checked retained/helper overflow, minimum and oversized borrowed
+regions, full-capacity budgeting, every outer-region pair plus owner/config
+overlap, misalignment and phase-state failures. Repeatedly overwrite finder and
+operation prefixes, checking that token sentinels survive. Exercise explicit
+error, destruction with either phase active, release/rebind and heap-call counts
+around binding/transitions/cleanup without assertions inside the measured scope.
+
+Run final tests with both compilers and a separately compiled ASan/UBSan test,
+helper and test-framework path. Leak detection is disabled; claim no leak proof.
+Preserve initial qualification artifacts when strengthening capacity coverage.
+Build the dedicated target and run its registered test only in a new build
+root; never reuse retained roots for CTest. Directly check new supplemental
+records, documentation append scope, fixed artifacts and prior source hashes.
+No codec bytes, round trips, full eight-MiB model charges, fuzz, timings or
+external archive verification are produced by these tests.

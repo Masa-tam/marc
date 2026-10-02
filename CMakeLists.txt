@@ -763,6 +763,12 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     target_include_directories(marc_position_distance_1m_bounded18_allocation_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_link_libraries(marc_position_distance_1m_bounded18_allocation_tests PRIVATE marc::static)
     add_test(NAME marc_position_distance_1m_bounded18_allocation COMMAND marc_position_distance_1m_bounded18_allocation_tests)
+    add_executable(marc_lzss_phase_workspace_tests tests/lzss_phase_workspace_tests.cpp)
+    target_compile_features(marc_lzss_phase_workspace_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_lzss_phase_workspace_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_lzss_phase_workspace_tests PRIVATE GTest::gtest_main)
+    add_test(NAME marc_lzss_phase_workspace COMMAND marc_lzss_phase_workspace_tests)
+
     add_executable(marc_position_distance_1m_five_prefix_allocation_tests
         tests/position_distance_1m_five_prefix_allocation_tests.cpp)
     target_compile_features(marc_position_distance_1m_five_prefix_allocation_tests PRIVATE cxx_std_20)

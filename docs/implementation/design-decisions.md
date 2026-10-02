@@ -29919,3 +29919,55 @@ synthetic phase data, before a new distance model/wire profile. Qualify concrete
 storage/lifetime/failure behavior and full-capacity accounting without changing
 current codecs, defaults, public API or private candidate admissions. New
 format definition and validator work remain subsequent explicit units.
+
+
+## DD-1415: Qualify a private phase-workspace prototype
+
+Date: 2026-10-03. Add an internal, header-only storage owner with no public ABI,
+codec integration, format identity or model. It bounds frame capacity to eight
+MiB for this prototype, calculates checked token/operation/finder capacities,
+aligns a shared phase region and charges sizeof(the concrete workspace owner)
+plus all borrowed capacities and explicitly supplied external/helper charges.
+The latter charges are caller inputs, not verified future codec state sizes.
+
+Query preserves its output on failure. Bind recomputes requirements, checks
+every address extent and region/owner/config overlap, base alignment, capacity
+and full aggregate before constructing token objects or publishing state.
+Binding is allowed only while unbound. The owner is noncopyable; caller storage
+must remain alive for its lifetime, and the caller must retire scoped finder
+objects and references before requesting the search-to-operation transition.
+
+The state sequence is unbound -> bound -> search -> operations -> bound.
+Search constructs the finder words; switching destroys their lifetimes before
+constructing operations. Finishing retires operations, preserving tokens.
+Explicit fail retires either active phase and enters sticky error; no transition
+is allowed until release, which destroys tokens and makes the owner unbound.
+Destruction also releases an active search/operation phase. Wrong-state calls
+return a state error without changing storage. Accessors expose phase objects
+only during their live phase; previously obtained spans must not be reused
+after a transition. Token contents remain private and discardable after fail.
+No allocation occurs in binding, transitions or cleanup.
+
+The qualified twelve-/sixteen-byte layout queries arena 369098752 and raw plus
+serialized plus arena 528482389 bytes at eight MiB. The query additionally
+charges the actual prototype owner and supplied external/helper bytes; its
+successful 512-MiB test is a storage-prototype result, not a complete eight-MiB
+model/codec resource query. Future range/model/adapter lifetime accounting and
+canonical-byte/failed-frame publication qualification remain required.
+No synthetic operation values are treated as valid codec tokens or streams.
+
+Twelve focused tests cover failed-query output preservation, invalid bounds,
+external/helper addition overflow, exact and one-byte-under budget, each short
+buffer, one-byte borrowed surplus in each region, outer/owner/config overlap,
+misalignment, repeated phase transitions with retained token sentinels,
+wrong-state invariance, sticky error, destruction/rebinding and no ordinary
+heap allocations during the lifecycle. Qualify with two compilers and a fully
+instrumented helper/test path under ASan/UBSan; disabled leak detection is not
+leak proof. Integrate only this test target in a fresh CMake build, leaving all
+current public codecs and their source untouched. This is not codec round-trip,
+fuzz, benchmark, automatic profile selection or public admission evidence.
+
+Next design gate: define a distinct larger position-distance representation and
+its model/validator/resource rules before implementing an encoder or decoder.
+Use the storage prototype as a candidate building block; prove complete state
+charges and frame publication with real codec qualification in later units.

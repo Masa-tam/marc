@@ -37772,3 +37772,16 @@ both bounds.
   resource queries and lifetime qualification remain pending. Preserve the
   512-MiB design target; reserve no IDs or profile, relax no limits, and claim
   no size-based efficiency threshold, codec test result or legal guarantee.
+
+
+## CR-1586: Independent storage prototype and synthetic qualification
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1174, DD-1414; first-party types, math and overlap helpers.
+- Task: implement private checked requirements/binding and explicit phase
+  object lifetimes, without consulting external/copyleft source or test suites.
+- Validation: TVG-1282; twelve lifecycle/storage tests with two compilers,
+  ASan/UBSan helper/test qualification, fresh dedicated CMake target/test,
+  document append/scope and prior source/artifact preservation checks.
+- Boundary: no new wire profile/model, public codec/API/default/limit change,
+  codec correctness/publication proof, benchmark, admission or legal guarantee.
