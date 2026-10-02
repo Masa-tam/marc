@@ -29261,3 +29261,48 @@ memory-bound check, preserving existing validation precedence and codec behavior
 Use fresh output directories and a new integration build. No public codec,
 format, ABI, default, inventory, fixed binary or admission change; no new timing
 result, fuzz campaign or external gate.
+
+
+## DD-1402: Outer-only tokenizer control with audited enabled intervals
+
+Add an outer-only mode to the existing private verifier: verify disables all
+clocks, outer measures the complete finite tokenizer call with inner clocks
+disabled, and timed enables both outer and inner clocks. Both measured modes
+use the same executable, admitted finder calls, aggregate counters, report
+layout, capacities and 88-byte diagnostic transient charge. The candidate,
+finder, tests and public sources are unchanged. Complete frozen token/raw/frame
+verification remains outside the measured tokenizer interval.
+
+Freeze hashes, three canonical rotated passes and duplicate outer controls
+before the first enabled clock. Retain all 108 fresh-process observations,
+without warmup, discard, replacement or retries until success. Afterwards,
+four declared later-frame failure observations exercise both measured modes
+and withhold every report. Persist a strict successful selected-process
+receipt before each of 112 launches. All receipts are idle; snapshots are
+not an OS lock or future quiescence or a causal environmental observation.
+
+Validate the first and every enabled observation before interpreting ratios:
+exact frame metadata/counts, finite nonnegative intervals, positive outer
+times and inner sums bounded by their enclosing tokenizer calls. Preserve
+signed residuals with tolerance max(1e-8 seconds, outer seconds times 1e-9).
+All 171 inner-enabled frame samples and all 513 measured frame reports pass;
+outer controls emit zero inner intervals. All complete bytes/restorations match.
+
+The observed mode difference includes clock reads, accumulations, branches
+and interactions in the instrumented path; it is not an isolated timer cost.
+Counters and report storage also remain in the outer-only diagnostic. Do not
+subtract that difference to reconstruct pure find/advance costs or silently
+equate these finite-call clocks with BM-0204 complete owned preparation time.
+27 of 36 duplicate-control pairs meet the predeclared 2% spread review threshold; maximum spread is 12.825013%. Retain every pair, including those exceeding the threshold; do not treat noisy individual contrasts as resolved instrumentation effects.
+
+BM-0205 records all corpus sums and instrumented shares. The complete find
+interval occupies 96.229255% to 96.303758% of instrumented
+outer time across passes. This is the observed existing search call, not a
+measurement of isolated search branches or proof of an uninstrumented fraction.
+Any next optimization must be independently justified, remain private first,
+preserve admitted bytes/ties/insertion and failure contracts, and undergo its
+own uninstrumented counter-free differential/timing admission process.
+
+No public selection, format, ABI, defaults, inventory, fixed binary, fuzz or
+external gate change. Earlier failed probe screens and audit limitations remain
+unchanged. No environmental cause, assumed calibration or public speed claim.

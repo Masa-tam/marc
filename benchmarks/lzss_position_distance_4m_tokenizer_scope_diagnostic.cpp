@@ -27,13 +27,15 @@ struct Report {
 };
 }
 
-// Private diagnostic harness: verify disables clocks; timed perturbs each finder call.
+// Private diagnostic: verify disables clocks; outer measures the tokenizer call;
+// timed also enables inner clocks and perturbs each finder call.
 // No public codec selection or report publication before complete verification.
 // Frozen frames independently supply both token and restored-byte oracles.
 int main(int argc,char** argv) {
     if(argc!=4)return 2;
-    const std::string mode=argv[3];if(mode!="verify"&&mode!="timed")return 2;
+    const std::string mode=argv[3];if(mode!="verify"&&mode!="outer"&&mode!="timed")return 2;
     const bool timed=mode=="timed";
+    const bool outer_timed=mode!="verify";
     std::vector<std::byte> input,archive;
     if(!read(argv[1],input,64U*1024U*1024U)||!read(argv[2],archive,128U*1024U*1024U))return 2;
     using namespace marc::frame::internal;
@@ -76,10 +78,10 @@ int main(int argc,char** argv) {
             ||!std::equal(source.begin(),source.end(),raw.begin()))return 1;
         TokenizerScopeSample sample{};
         using Clock=std::chrono::steady_clock;
-        const auto before=timed?Clock::now():Clock::time_point{};
+        const auto before=outer_timed?Clock::now():Clock::time_point{};
         const auto tokenized=tokenize_lzss_position_distance_4m_tokenizer_scope(
             source,stream.dictionary,limits,3,tokens,workspace,sample,timed);
-        const auto outer=timed?std::chrono::duration<double>(Clock::now()-before).count():0.0;
+        const auto outer=outer_timed?std::chrono::duration<double>(Clock::now()-before).count():0.0;
         if(tokenized.error!=LzssShortMatchCandidateError::none)return 1;
         const auto count=tokenized.token_count;
         if(count!=decoded.required_token_count)return 1;
@@ -101,7 +103,7 @@ int main(int argc,char** argv) {
             ||sample.find_seconds<0||sample.advance_seconds<0)return 1;
         const auto inner=sample.initialize_seconds+sample.find_seconds+sample.advance_seconds;
         if(!std::isfinite(outer)||outer<0||inner>outer+std::max(1e-8,outer*1e-9))return 1;
-        if(!timed&&(inner!=0||outer!=0))return 1;
+        if((!timed&&inner!=0)||(!outer_timed&&outer!=0))return 1;
         reports.push_back({source.size(),count,encoded.operation_count,encoded.serialized_size,sample,outer});
         cursor+=encoded.serialized_size;
     }
@@ -110,7 +112,7 @@ int main(int argc,char** argv) {
         <<"\nframes="<<reports.size()<<"\ncharged_workspace_budget="<<budget
         <<"\nfinder_bytes="<<trial.workspace_size
         <<"\ndiagnostic_transient_bytes="<<tokenizer_scope_transient_state_bytes
-        <<"\ntimed="<<timed<<'\n';
+        <<"\nmode="<<mode<<"\nouter_timed="<<outer_timed<<"\ntimed="<<timed<<'\n';
     for(std::size_t i=0;i<reports.size();++i) {
         const auto& r=reports[i];const auto& c=r.sample;
         const auto prefix="frame_"+std::to_string(i)+"_";

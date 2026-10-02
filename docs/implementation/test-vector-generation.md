@@ -19787,3 +19787,40 @@ candidate, admitted finder/candidate and test/framework sources in the partial
 sanitizer run; unchanged linked helpers are not newly fully instrumented public
 decoders. Review captured prior/public/fixed/frozen hashes and append-only docs.
 No enabled clocks, elapsed benchmark, full-suite/fuzz or external-gate claim.
+
+
+## TVG-1269: Outer-only control and enabled call-scope conservation
+
+Only the private harness's clock-mode selection and report labels change.
+Reuse the hash-identical qualified candidate/finder/test sources and libraries;
+build the harness in fresh outputs on both compilers. Clock-disabled mandatory
+qualification verifies all twelve corpus members per compiler: 24 complete
+encodes/restorations, 114 exact frame reports and zero inner/outer elapsed
+fields. Twenty retained negative vectors withhold reports and two empty vectors
+pass. Existing six-test/sanitizer/fresh-integration evidence is retained without
+claiming a newly repeated full suite, sanitizer, fuzz or old-root CTest run.
+
+Predeclare three rotated passes over duplicate outer-only controls and the
+inner-enabled mode. Retain 108 fresh-process observations with full frozen
+token/frame/raw identity. Each profile/pass totals 211938580 raw bytes,
+61643620 archive bytes and 57 frames. All 513 measured frame reports have
+one parse, find/advance calls equal token count and advanced positions equal
+raw size. All 171 enabled samples are finite and nonnegative; outer time is
+positive; split sums fit each frame and aggregate outer time within the
+declared max(1e-8, outer seconds times 1e-9) tolerance. Signed residuals are
+retained without clipping. Outer controls have zero inner interval fields.
+
+Four additional declared failure observations cover later-frame truncation
+and raw mismatch after an earlier successful frame, in outer-only and
+inner-enabled modes. They return the expected failure and emit neither
+stdout report nor stderr and write no archive. They are retained contract
+checks, not discarded measurements or replacement/warmup observations.
+All 112 launches have strict successful receipts persisted before invocation;
+busy or audit failure would stop before execution without automatic retry.
+
+Review retained timestamps/order/receipts, exact metadata/charges, complete
+corpus manifest and public/fixed/prior hashes. Independently reconcile Decimal
+and floating-point per-frame intervals/residuals, totals, proportions, paired
+observed differences and duplicate-control spreads. Review append-only public
+docs and absence of local environment details. No isolated-clock-cost,
+uninstrumented fraction, environmental cause or public-admission inference.

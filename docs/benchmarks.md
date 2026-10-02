@@ -9598,3 +9598,65 @@ Do not subtract an assumed timer cost, infer uninstrumented proportions or
 causal environmental effects, or reinterpret BM-0204 and failed probe screens
 as paired experiments. Public selection, format, defaults, inventory and fixed
 binaries remain unchanged; no speed/admission/fuzz/external-gate result.
+
+
+## BM-0205: Fine-clock path against duplicate outer-only tokenizer controls
+
+The DD-1402 private harness adds outer-only clocks around the same finite
+tokenizer call. Duplicate controls keep inner clocks disabled; the diagnostic
+enables four inner clock reads per token plus two per initialization and its
+accumulations. Executable, admitted finder, counters, report layout and buffer
+capacities are identical across modes. File I/O, allocations, frozen decoding,
+frame encoding/comparison, destruction and report printing are outside the
+measured interval. This is not complete owned-codec/preparation timing.
+
+After two-compiler clock-disabled complete-corpus/guard qualification, freeze
+three rotated passes over all twelve members: 108 retained fresh processes,
+without warmup, discard, replacement or retries until success. Four additional
+declared later-frame failure runs cover both measured modes and withhold all
+reports. Each of 112 launches has a strict successful selected-process receipt
+persisted before it. This snapshot is not an OS lock, future quiescence or a
+measurement of CPU/scheduling/cache/branch causes.
+
+All complete token/frame/raw comparisons match their oracles. All 513 measured
+frame records conserve counts and metadata; all 171 inner-enabled records have
+finite nonnegative intervals and positive outer time. Inner sums fit per-frame
+and aggregate outer times within max(1e-8 seconds, outer seconds times 1e-9).
+Signed residuals remain unmodified. Controls have zero inner intervals.
+
+The following corpus sums compare observed whole instrumented paths. The final
+column divides the instrumented corpus total by the sum of faster/slower
+duplicate controls chosen separately for each member, then subtracts one.
+Positive values mean the enabled path took longer. These differences include
+all mode interactions and are not isolated timer costs to subtract.
+
+| Pass | Outer control 0 seconds | Inner-enabled outer seconds | Outer control 1 seconds | Observed difference versus faster/slower member controls |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 75.621511 | 77.693037 | 75.305436 | 3.454006% / 2.459781% |
+| 2 | 75.977270 | 79.032006 | 75.740927 | 4.516573% / 3.850819% |
+| 3 | 76.544196 | 79.954989 | 76.698231 | 4.831485% / 3.874864% |
+
+
+The next table shows enabled intervals and their fractions of the enabled
+outer tokenizer interval. Initialize is the complete initialization call;
+find is the complete admitted search call; advance includes validation,
+hash/bucket work, insertion and position updates. The residual includes token
+choice/store, loop/counter work, preflight, reporting and clock overhead outside
+the inner intervals. These fractions do not reconstruct uninstrumented costs.
+
+| Pass | Initialize seconds | Find seconds | Advance seconds | Signed residual seconds | Instrumented outer shares: initialize / find / advance / residual |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 0.094601 | 74.763431 | 1.456043 | 1.378962 | 0.121763% / 96.229255% / 1.874097% / 1.774885% |
+| 2 | 0.094059 | 76.052102 | 1.502070 | 1.383775 | 0.119013% / 96.229497% / 1.900584% / 1.750905% |
+| 3 | 0.094310 | 76.999660 | 1.470028 | 1.390992 | 0.117954% / 96.303758% / 1.838569% / 1.739719% |
+
+
+27 of 36 duplicate-control pairs meet the predeclared 2% spread review threshold; maximum spread is 12.825013%. Retain every pair, including those exceeding the threshold; do not treat noisy individual contrasts as resolved instrumentation effects.
+
+No optimization admission screen is being applied to this diagnostic mode
+contrast, and no public speed result is claimed. Earlier BM-0202/BM-0203/BM-0204
+failures remain unchanged; this campaign is not a paired causal comparison with
+those campaigns. Added diagnostic state is still 88 transient bytes; the
+finite harness workspace bound remains 315365037, distinct from owned-factory
+minimum and whole-process peak. No new process-peak campaign or memory-saving
+claim. Public sources, format, defaults, inventory and fixed binaries remain.

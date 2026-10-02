@@ -37514,3 +37514,26 @@ both bounds.
   work and have not yet been executed. No new BM result, public selection,
   format/default/ABI/inventory change, fixed-binary update, new fuzz/external
   gate, environmental causal claim or legal guarantee.
+
+
+## CR-1573: Outer-only control and enabled tokenizer call-scope campaign
+
+- Date: 2026-10-02; author/reviewer: Codex; maintainer approved continuation.
+- Task/prompt: expose the fine-clock path's observed contrast using the same
+  tokenizer with outer-only clocks, preserve failure/report guards and qualify
+  bytes before the first strictly audited enabled observation.
+- References: IR-1161/DD-1402, first-party diagnostic/harness, frozen complete
+  token/frame/raw oracles, retained guards and strict process-audit helper.
+  No external or copyleft implementation/source/test expression consulted.
+- Expression review: only private harness mode selection/report labels change;
+  admitted finder and qualified candidate/counters/layout/capacities/charges
+  remain unchanged. No parsing, ties, insertion or wire changes.
+- Validation: TVG-1269/BM-0205; two-compiler disabled complete-corpus and guards,
+  108 fresh-process full-byte observations, 171 enabled interval checks and four
+  enabled report-withholding failure checks, with 112 persisted prelaunch idle
+  receipts; independent numerical/order/hash/documentation review.
+- Scope: whole instrumented-path contrast and instrumented call intervals,
+  not isolated timer cost or pure uninstrumented costs. No assumed timer
+  subtraction, causal environmental claim, public speed/admission, format/
+  ABI/default/inventory/fixed-binary change, new fuzz/external gate or legal
+  guarantee. Retain earlier failed screens and historical audit limitations.

@@ -10209,3 +10209,18 @@ expression is consulted.
 - Counting and clock-disabled qualification do not provide elapsed inner
   proportions. Fine call-level clocks perturb the path; future enabled-mode
   evidence cannot silently replace the coarser BM-0204 preparation split.
+
+
+## IR-1161: Same-tokenizer outer-only control and fine-clock contrast
+
+- Date: 2026-10-02; author/reviewer: Codex.
+- First-party references: IR-1160/DD-1401 bounded candidate and complete frozen
+  token/frame/raw verifier, retained corpus/report guards, strict audit helper
+  and earlier preparation split. No external implementation or restricted
+  source/test expression was consulted.
+- Task: add an outer-only timer selection in the existing private harness,
+  requalify complete bytes with clocks disabled, then observe the whole
+  inner-enabled path against duplicate outer-only controls in one executable.
+- This observes instrumented-path contrasts. It does not isolate the cost of
+  a clock call, permit assumed timer-cost subtraction, establish uninstrumented
+  proportions or provide an optimization/admission or causal environmental result.
