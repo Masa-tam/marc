@@ -29039,3 +29039,35 @@ claim. Any subsequent measurement requires a separately frozen protocol,
 duplicate admitted five-prefix controls, all observations and strict successful
 process audit receipts persisted before every observation. DD-1393's failed
 numerical and audit evidence remains; qualification grants no public admission.
+
+
+## DD-1397: Declared complete-owner measurement of the longer-best probe
+
+Freeze BM-0203 after DD-1396's complete qualification, without changing codec
+sources or rebuilding the executable. Measure three complete passes over the
+twelve members in canonical order. For each member/pass, rotate admitted
+control-0, probe17 and admitted control-1 left by (pass index plus member index)
+modulo three; observe the unchanged complete decoder last. Every observation
+uses a fresh process. No warmup, discard, replacement or retry until success.
+
+Persist an explicit successful zero-process audit immediately before every
+launch. Enumeration errors, malformed receipts or active selected processes
+stop before invoking the codec and preserve all completed evidence. The
+selected codec/build name snapshot is not an OS lock or proof of later
+quiescence. The campaign completes all 144 observations with successful
+receipts, unlike the preserved initial audit limitation of BM-0202.
+
+The frozen numerical screen requires all 36 trial encodes strictly faster
+than both controls and maximum duplicate-control spread at most two percent.
+BM-0203 fails this screen: 21 wins, 5 losses and 10 between-controls cases; maximum spread
+27.714940 percent. This screen grants no automatic
+public admission. Keep this owner private and retain the full-probe predecessor,
+diagnostic and their previous exceptions. Infer no cause for timing variation
+or an optimal threshold from these measurements.
+
+Creation, raw collection, complete frame preparation, draining and destruction
+are included. File I/O, sink comparisons, query and memory sampling are outside
+the codec clock. Process peaks are whole-process observations, not codec-only
+resident memory or allocation charges. All complete bytes, budgets and restored
+raw remain exact. Public source selection, format, ABI, defaults, inventory and
+fixed verification binaries are unchanged.

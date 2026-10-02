@@ -10154,3 +10154,11 @@ bounded preceding-best-length distribution, the admitted five-prefix control
 and existing frozen corpus streams. Implement only the independently proposed
 minimum preceding-best length of seventeen. No external implementation,
 optimization source or test expression is consulted.
+
+
+## IR-1156: Longer-best owner measurement with strict launch receipts
+
+Use first-party DD-1396's counter-free qualified owner, admitted five-prefix
+controls, complete frozen streams and DD-1394's strict process audit helper.
+Preserve DD-1393's observations and initial audit limitation. No external
+implementation, source or test expression is consulted.

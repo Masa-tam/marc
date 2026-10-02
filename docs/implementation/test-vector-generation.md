@@ -19622,3 +19622,29 @@ latching, exact allocation budgets and failed-second-frame non-publication are
 covered by the transferred guards. Earlier public sources, fixed verification
 binaries, frozen streams and captured prior artifacts remain hash-identical.
 No old-root CTest, elapsed campaign or external qualification is claimed.
+
+
+## TVG-1264: Declared observations and per-launch audit reconciliation
+
+Reuse DD-1396's two-compiler qualification and partial sanitizer guards; do not
+claim a new full-suite, fuzz or external run. Before timing, revalidate corpus
+manifest, frozen streams, qualified source/library/executable hashes and the
+completed qualification receipt. The existing audit helper's thirteen unit
+cases pass. Freeze the exact campaign order and script hashes before launch.
+
+Reconcile all 144 persisted zero-process success receipts with their matching
+invocations and observations, including receipt-before-start timestamps and
+canonical three-pass rotation. Each child succeeds without stderr, verifies
+complete archive bytes or complete restored raw, and reports the exact encode
+charge 315365389 or unchanged decode charge 130029573. The 108 encode and 36
+decode observations are retained without replacement. Validate positive finite
+elapsed totals, nonnegative phases, phase-total conservation, preparation-call
+counts and frame-time conservation. Each complete corpus traversal has 57
+frames and 61643620 archive bytes from 211938580 raw bytes.
+
+Independently recompute all 36 comparisons, gains, duplicate-control spreads,
+per-pass totals and process peaks. Preserve every prior exception; do not
+classify aggregate gain as universal improvement. Public/private qualified
+sources, libraries, fixed binaries, frozen streams and captured prior artifacts
+remain hash-identical. Public documentation appends only; no local paths or
+environment details are added. No CTest or rebuild is needed in this stage.

@@ -37400,3 +37400,26 @@ both bounds.
 - Scope: private qualification only. No speed claim, public adoption, format,
   ABI, defaults, inventory, fixed verification binary, fuzz, external gate or
   legal guarantee. The prior trial and diagnostic remain unadmitted.
+
+
+## CR-1568: Longer-best owner declared complete measurement
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized the next step after DD-1396.
+- Task/prompt: measure the qualified longer-best private owner against duplicate
+  admitted five-prefix controls, preserve failure contracts and all evidence,
+  and require strict successful process audits before each observation.
+- References: IR-1156/DD-1397, qualified first-party owner and corpus records,
+  strict audit helper and retained BM-0202 exceptions. No external or copyleft
+  implementation/test expression was consulted.
+- Expression/similarity review: no codec or harness expression changes; use
+  the hash-qualified executable. Local campaign orchestration persists launch
+  receipts before invocation and never replaces observations or retries a
+  failed audit/operation. Documentation records the complete numerical outcome.
+- Validation: TVG-1264/BM-0203; all 144 audited observations, complete archive/
+  restored raw identity, unchanged charges, order/phase reconciliation,
+  thirteen existing audit cases and public/private/prior hash preservation.
+- Scope: private measurement only; screen fails, with 21 wins, 5 losses and 10 between-controls cases.
+  No public adoption, format, ABI, defaults, inventory or fixed binary changes;
+  no new fuzz, external qualification or legal guarantee. Previous numerical
+  and audit exceptions remain; no causal timing explanation is asserted.
