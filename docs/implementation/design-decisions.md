@@ -29163,3 +29163,42 @@ failure/non-publication and boundary behavior. No private probe is admitted;
 public factories, format, ABI, defaults, inventory and fixed binaries remain
 unchanged. Instrumented clocks would describe that diagnostic path and cannot
 automatically prove owner speedup or identify environmental variation causes.
+
+
+## DD-1400: Enabled preparation-split diagnostic, without admission
+
+Run the qualified private diagnostic with enabled inner clocks for the first
+time. Freeze executable, source, library, corpus, stream and campaign/helper
+hashes before any timed invocation. Retain three rotated passes over twelve
+members: duplicate admitted controls and diagnostic encode, followed by the
+unchanged decoder, each in a fresh process. All 144 observations are retained,
+without warmup, exclusion, replacement or retries until success.
+
+Persist a successful strict selected-process audit before every invocation;
+busy or audit failure stops before codec execution. All 144 receipts are idle.
+This snapshot is not an operating-system lock or future quiescence guarantee.
+It does not observe CPU frequency, scheduling, cache or branch causes.
+
+Validate the enabled branch before ratios: timed flag, finite nonnegative
+intervals, exact frozen frame metadata and inner sums bounded by enclosing
+per-frame and aggregate preparation times. Predeclare decimal-print tolerance
+max(1e-8 seconds, enclosing seconds times 1e-9); retain signed residuals without
+clipping. All 171 diagnostic frame samples pass, with positive residuals.
+Every complete encoded stream and decoded raw member matches its oracle.
+
+The tokenization interval is the complete admitted FivePrefix tokenizer call, including initialization and insertion; it is not pure dictionary search. The frame interval is the complete encoder call, including operation materialization, validation, Range coding and serialization; it is not pure Range coding. Raw prevalidation, input copying, other preparation and drains remain outside both inner intervals.
+
+Corpus tokenization accounts for 86.437078% to 86.679356% of
+diagnostic preparation across the three passes. BM-0204 records full totals
+and member variation. This identifies the measured tokenizer as the dominant
+inner scope; it does not separate its finder, insertion and initialization.
+A next diagnostic may separate these scopes while preserving bytes, bounds
+and publication guards; do not adopt a finder shortcut from counts alone.
+
+The diagnostic owner is charged 315366093 bytes, 704 above admitted 315365389;
+the unchanged decoder is 130029573. Its report retrieval is inside outer
+destruction, and caller report storage is separate from codec-owned charge.
+Do not claim identical layout or infer uninstrumented speed from these clocks.
+12 strict wins, 12 losses and 12 between-control observations; maximum duplicate-control spread 8.506055%. The declared 36-win/2% numerical screen fails. Regardless of that screen, this instrumented path is not public
+admission. Preserve earlier BM-0202/BM-0203 failures and their audit limitations.
+No public source, format, ABI, defaults, inventory or fixed binary changes.

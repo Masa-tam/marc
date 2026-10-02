@@ -9510,3 +9510,55 @@ strict successful receipts before every launch; retain every observation and
 stop on audit/operation failure. Instrumented-path timing is diagnostic evidence,
 not an automatic speed claim for the unchanged counter-free owner. Preserve
 BM-0202/BM-0203 failures and all earlier artifacts without replacement.
+
+
+## BM-0204: Enabled private tokenization/frame preparation split
+
+Measure the DD-1399 qualified diagnostic with enabled optional inner clocks,
+without rebuilding. Three predeclared rotated passes over all twelve complete
+members retain duplicate admitted controls, diagnostic encode and unchanged
+decode: 144 fresh processes, 108 encodes and 36 restorations. No warmup,
+discard, replacement or retries until success. Every launch has a persisted
+strict successful selected-process audit; this is a snapshot, not an OS lock
+or an observation of CPU/scheduling/cache/branch causes.
+
+All full streams/restorations match their frozen or raw oracle. Validate the
+first and every enabled sample before interpreting ratios: all 171 frame
+metadata records match frozen headers; all inner intervals are finite and
+nonnegative, and inner sums fit enclosing preparation intervals. Tolerance is
+max(1e-8 seconds, enclosing seconds times 1e-9). Signed residuals are retained
+without clipping; all are positive. Outer phase and preparation sums conserve.
+
+The tokenization interval is the complete admitted FivePrefix tokenizer call, including initialization and insertion; it is not pure dictionary search. The frame interval is the complete encoder call, including operation materialization, validation, Range coding and serialization; it is not pure Range coding. Raw prevalidation, input copying, other preparation and drains remain outside both inner intervals.
+
+The following are corpus sums in each diagnostic pass. Shares divide inner
+times by enclosing preparation time; the residual is that preparation time
+minus both inner intervals. These are instrumented elapsed scopes, not pure
+finder/Range costs, statistical variance attribution or causal speed effects.
+
+| Pass | Preparation seconds | Tokenization seconds | Frame coding/validation seconds | Signed residual seconds | Tokenization share | Coding share |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 91.341152 | 79.173923 | 12.166662 | 0.000567 | 86.679356% | 13.320023% |
+| 2 | 88.780770 | 76.739503 | 12.040728 | 0.000539 | 86.437078% | 13.562315% |
+| 3 | 88.776028 | 76.739099 | 12.036390 | 0.000539 | 86.441240% | 13.558153% |
+
+
+Across individual member/pass aggregates, tokenization share spans
+50.949809% to
+95.498271%. Corpus aggregates
+must not be interpreted as the same distribution for every input.
+
+12 strict wins, 12 losses and 12 between-control observations; maximum duplicate-control spread 8.506055%. The declared 36-win/2% numerical screen fails. These owner-time comparisons do not establish an improvement for
+the uninstrumented owner. No automatic public adoption is allowed, regardless
+of the numerical screen. Earlier BM-0202/BM-0203 failures remain unchanged;
+historical audit limitations are not retroactively qualified, and separate
+campaigns are not paired causal experiments.
+
+Diagnostic codec-owned charge is 315366093 bytes, control 315365389 and decode
+130029573: 704 diagnostic bytes are explicitly charged. Report retrieval is
+inside outer destruction; caller report storage is separate. Maximum whole
+process working-set/pagefile samples for diagnostic encode are
+318156800 /
+388562944 bytes.
+These are whole-process peaks, not codec-only resident memory or allocation
+charges. No public source, format, defaults, inventory or fixed binary changes.

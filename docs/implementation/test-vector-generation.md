@@ -19714,3 +19714,33 @@ and a new CMake root. The corrected targeted aggregate CTest passes. No old
 root CTest is invoked. Prior public/private sources, fixed binaries, libraries,
 frozen streams and captured artifacts remain hash-identical; public docs append.
 No new elapsed campaign, full-suite/fuzz run, adoption or external gate is claimed.
+
+
+## TVG-1267: Enabled split samples and complete-stream conservation
+
+Use the existing qualified diagnostic executable without build or CTest.
+Verify the complete twelve-member corpus manifest and frozen archive hashes
+before the campaign and after it. Three rotated passes retain 108 complete
+encodes and 36 unchanged-decoder restorations in 144 fresh processes. Every
+launch has a persisted strict successful selected-process receipt before it.
+No observation is discarded, replaced, warmed up or retried until success.
+
+All complete streams match frozen bytes; restored raw bytes match the corpus.
+Each profile/pass totals 211938580 raw and 61643620 archive bytes; each encode
+profile/pass prepares 57 frames. Exact query charges are control 315365389,
+diagnostic 315366093 and unchanged decode 130029573.
+
+Every enabled diagnostic sample matches its frozen frame's raw-byte count,
+token count and serialized-byte count. All 171 samples are finite, nonnegative
+and marked timed; each inner sum fits its enclosing preparation interval.
+Aggregate split sums and per-frame preparation sums conserve outer phases
+within the predeclared max(1e-8, enclosing seconds times 1e-9) tolerance.
+Signed residuals are retained, with none negative. Controls and decoder emit
+no inner diagnostic fields. Outer phase sums conserve reported owner time.
+
+Decimal aggregation is independently checked using floating-point arithmetic,
+including all samples, order, receipts, comparisons, totals and proportions.
+Retain raw stdout, invocations, timestamps, observations and prior hashes;
+repeat the existing thirteen strict audit-helper regression cases. Append-only
+documentation and fixed/public/frozen/prior hashes are reviewed. This does not
+claim a new full-suite, sanitizer, fuzz or external interoperability gate.

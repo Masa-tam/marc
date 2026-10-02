@@ -37471,3 +37471,23 @@ both bounds.
   runtime/measurement step, not a speed result. No public selection, format,
   ABI, defaults, inventory, fixed binary, fuzz, external gate or legal guarantee.
   Both earlier probe screens and non-admission remain unchanged.
+
+
+## CR-1571: First enabled preparation-split diagnostic campaign
+
+- Date: 2026-10-02; author/reviewer: Codex; maintainer approved continuation.
+- Prompt/task: enable the qualified preparation clocks, preserve complete-byte
+  identity and failure/non-publication contracts, and evaluate inner scopes
+  under strict per-launch audit without public adoption.
+- References: IR-1159/DD-1400 and first-party qualification, frozen vectors,
+  harness, strict audit helper and retained prior measurement/review artifacts.
+  No external or copyleft implementation/source/test expression was consulted.
+- Expression review: no codec, harness, CMake or public-interface edit; reuse
+  the qualified optional hooks and admitted dictionary policy unchanged.
+- Validation: TVG-1267/BM-0204; 144 audited fresh-process observations,
+  complete bytes/restorations, 171 enabled frame metadata/conservation checks,
+  independent numerical review, captured hashes and documentation checks.
+- Conclusion: instrumented tokenizer/frame-call timing only. No public speed
+  claim, adoption, format/default/inventory change, new fuzz/external gate,
+  environmental cause inference or legal guarantee. Retain both earlier
+  failed probe screens and historical audit limitations without replacement.

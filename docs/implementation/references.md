@@ -10180,3 +10180,17 @@ modules, DD-1398's retained phase review, existing failure/alias/chunk guards
 and frozen complete streams. Transfer the owner harness with separate private
 diagnostic symbols. No external implementation, optimization source or test
 expression is consulted.
+
+
+## IR-1159: Enabled private preparation-split measurement
+
+- Date: 2026-10-02; author/reviewer: Codex.
+- First-party references: IR-1158/DD-1399 qualified bounded diagnostic,
+  admitted FivePrefix pipeline, existing owner harness, frozen complete corpus
+  streams and strict process-audit helper; retained DD-1398 phase review.
+- Task: enable the qualified hooks without rebuilding, verify runtime samples
+  before interpreting ratios, and measure tokenization versus complete frame
+  coding/validation under a frozen, audited three-pass protocol.
+- No external implementation, restricted source, copied test expression or
+  new algorithm representation was consulted. This is instrumented diagnostic
+  evidence, not a public optimization or a causal environmental measurement.
