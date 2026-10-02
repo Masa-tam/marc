@@ -29500,3 +29500,35 @@ identity, chunking, exact budgets and failure invariance/nonpublication. This
 stage asserts no elapsed gain or admission; no new BM record precedes real
 counter-free complete-owner measurements. Public selection/defaults/ABI/inventory
 and fixed verification binaries remain unchanged.
+
+
+## DD-1408: Declared complete-owner measurement of private word4
+
+Date: 2026-10-03. Freeze BM-0208 after DD-1407's complete token/frame/owner
+qualification; no codec/harness change or rebuild. Use one executable for the
+admitted duplicate controls and trial. Three canonical twelve-member passes
+rotate control-0, word4, control-1 left by (pass index plus member index)
+modulo three, with the unchanged complete decoder last. Every observation
+uses a fresh process. No warmup, discard, replacement or retry until success.
+
+Persist an explicit successful zero-selected-process receipt before each launch.
+Any enumeration error, invalid receipt or selected active process stops before
+invocation and preserves completed evidence. A snapshot is not an OS lock or
+future quiescence guarantee. All 144 launches have valid retained receipts.
+
+The predeclared screen requires all 36 trial encodes strictly faster than both
+controls and every duplicate-control spread at most 2%. BM-0208 fails:
+17 wins, 9 losses and 10 between-controls cases; maximum spread 20.329569%.
+No automatic public selection follows this screen. Retain the candidate privately,
+all observations and previous failed screens; infer neither a universally optimal comparison width
+nor an environmental cause from this campaign. Specialized 1MiB width trials
+and fine-clock tokenizer shares remain distinct evidence.
+
+Include complete creation/allocation, raw collection, frame preparation/reset,
+draining and destruction. Exclude file I/O, sink comparisons, queries and memory
+sampling from codec clocks. No inner counters, report hooks or clocks are added.
+Head initialization is included in preparation. Both encode
+charges are 315365389 bytes; state, arrays and all buffers remain identical. Decoder charge remains 130029573. Process peaks are whole-process
+observations, not codec-only resident memory or allocation-budget substitutes.
+All complete stream bytes and raw restoration pass. No public source selection,
+format/ABI/default/inventory/fixed-binary change, new fuzz or external gate.

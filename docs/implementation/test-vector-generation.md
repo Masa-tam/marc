@@ -20005,3 +20005,30 @@ normalized expression, complete bytes/tokens, exact charges, source/library/
 executable/frozen/public/fixed/prior hashes and append-only documentation without
 local environment details. No elapsed campaign, full suite, admission, new fuzz
 or independently rerun external validation is claimed.
+
+
+## TVG-1275: Word4 declared observations and independent reconciliation
+
+Date: 2026-10-03. Reuse DD-1407's two-compiler full token/frame/owner differential,
+failure invariance/nonpublication guards and partial sanitizer qualification.
+Revalidate complete corpus manifests, frozen archives and source/library/executable
+hashes before declaring the campaign. Retained thirteen-case strict audit-helper
+coverage is hash-checked and reused; no new tests, rebuild or CTest are required.
+
+Preserve 144 prelaunch zero-selected-process success receipts, invocations,
+observations and logs; match exact commands, receipt-before-start timestamps,
+canonical rotation and unique member/pass/profile/direction identities. All
+108 encodes and 36 unchanged decodes succeed without stderr, verify complete
+archive bytes or restored raw and report exact charges: 315365389 admitted
+encode, 315365389 trial encode, 130029573 decode. No observation is replaced.
+Each complete compiler-profile/pass traversal has 211938580 raw bytes and
+61643620 archive bytes; each encode traversal prepares 57 frames.
+
+Validate every observation before interpretation: finite positive elapsed total,
+finite nonnegative phases, phase-total conservation, frame metadata and preparation
+time/call conservation. Independently reconcile Decimal and floating-point
+comparisons, signed gains, duplicate-control spreads, totals and process peaks.
+Review all numerical classifications, script hashes, complete frozen/public/fixed/
+prior hashes and append-only documentation without local environment details.
+No assumed timer subtraction, collision-count forecast, causal timing explanation,
+new full suite, fuzz or independently rerun external qualification is claimed.

@@ -37651,3 +37651,24 @@ both bounds.
 - Scope: private qualification only; no elapsed gain/admission, assumed timer
   subtraction, causal timing explanation, public format/ABI/default/inventory/
   fixed-binary change, new fuzz/external gate or legal guarantee.
+
+
+## CR-1579: Private word4 complete-owner measurement
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- Task/prompt: measure the qualified private bounded four-byte extension owner against
+  duplicate admitted controls, retain all evidence and require a strict successful
+  process receipt before each observation. Preserve failure/publication contracts.
+- References: IR-1167/DD-1408, first-party bounded owner/stream/corpus qualification,
+  strict audit helper and prior width/probe/phase evidence. No external or copyleft
+  implementation/source/test expression consulted.
+- Expression review: reuse the hash-qualified executable without codec or harness
+  changes. Local orchestration fixes order and script hashes before launch, writes
+  receipts before invocation and never replaces an observation or retries a failed
+  campaign operation. Public changes are append-only numerical/provenance records.
+- Validation: TVG-1275/BM-0208; 144 audited complete-byte observations, exact budgets,
+  independent numerical/Decimal/order/phase/memory reconciliation, retained helper
+  regression coverage and public/private/fixed/frozen/prior hash preservation.
+- Scope: private screen fails: 17 wins, 9 losses and 10 between-controls cases. No automatic admission, public
+  format/ABI/default/inventory/fixed-binary change, new fuzz/external gate, causal
+  explanation or legal guarantee. Previous failed screens/audit limitations remain.

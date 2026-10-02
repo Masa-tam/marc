@@ -10296,3 +10296,14 @@ Task: independently qualify a counter-free four-byte extension of the admitted
 finder before timing. Keep indexes, traversal, improvement probes, nearest ties,
 retained state and stream representation. memcpy word equality is an internal
 comparison; it does not serialize native integers or require a particular ISA.
+
+
+## IR-1167: Word4 complete-owner screen with strict launch receipts
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+Use DD-1407's first-party counter-free qualified owner, admitted FivePrefix
+controls, complete frozen archives and the strict process audit helper. Reuse
+its retained thirteen-case regression evidence with a hash check; no new helper
+test run is claimed. Preserve prior failed probe/phase screens, their audit
+limitations and the specialized 1MiB width/noise results. No external or
+restricted source/test expression was consulted.
