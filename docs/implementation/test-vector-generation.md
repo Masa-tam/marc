@@ -19554,3 +19554,40 @@ improvement counts, 1006653744 added probes and 4377312261 removed extension
 comparisons. Check prior source/artifact, frozen archive and fixed binary hashes.
 The original audit and numerical failures remain; no old CTest, new decoder
 fuzz, full regression rerun or external verification is claimed.
+
+
+## TVG-1262: Current-best-length histogram conservation and complete identity
+
+Transfer DD-1391's 676 diagnostic cases with all budgets, alignment, metadata/
+input/finder aliases, initialization failure snapshots, invalid sequencing,
+small windows/tails, wide references, nearest ties, full-frame and complete
+admitted-finder insertion-array identity. Apply the histogram validator to the
+existing partitions. Add twelve checks, making 688 cases per compiler.
+
+A length-eight best with a would-rejected length-six older candidate still
+executes both original extensions; its bin has one probe/rejection, five prefix
+comparisons, two extension comparisons and one equal extension byte. A generated
+first-party prefix collider records one would-rejected prefix, one actual prefix
+comparison and zero extension work. Passing the extra byte preserves the same
+original prefix rejection without attributing it as removed work. Separate
+best-length six/eight/257 fixtures record a one-comparison rejected extension;
+an immediate 258 maximum stops before another probe. Fabricated forbidden-bin,
+overflow, inconsistent-total and overflowing-arithmetic records are rejected.
+
+Both release compilers and ASan/UBSan-instrumented diagnostic/test/admitted-finder
+translation units pass 688 cases. Unchanged linked validators are not a newly
+fully instrumented public decoder or fuzz campaign. A fresh CMake build passes
+the two targeted unit/smoke tests; the other compiler also passes the smoke
+script. Empty/repetitive/patterned positives pass; malformed header, truncation
+and trailing bytes fail with no report. Eight argument/missing-file/input-size
+negative cases also fail without report. An initial compiler-driver object-
+output integration failure is corrected in a fresh destination; its log remains.
+
+Twenty-four actual complete corpus traversals cover twelve frozen streams and
+57 frames per compiler, with exact token/frame/raw bytes and every original
+DD-1391 per-frame count. All histograms agree across compilers. Their checked
+sums equal DD-1392's 1006653744 probes, 559581648 rejections and 4377312261 removed
+extension comparisons, as well as actual removed prefix counts and equal bytes.
+Prior source/artifact, qualified library, fixed binary and frozen archive hashes
+remain intact. No old build-root CTest, new timing, full-suite rerun, decoder
+fuzz, public adoption or external qualification is claimed.

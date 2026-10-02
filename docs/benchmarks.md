@@ -9188,3 +9188,65 @@ Before a new predicate or campaign, obtain bounded per-best-length probe and
 rejected-extension categories. Current member totals cannot establish an
 application threshold. No new BM timing record, codec run, speedup claim or
 public adoption follows from this retained-evidence stage.
+
+
+### Four-MiB current-best-length necessary-byte distribution (DD-1395)
+
+This new diagnostic takes no clocks. It executes all original DD-1391 candidate
+work, observing which candidates the DD-1392 additional byte could reject, and
+attributes their actual work to the preceding best length. All original counts
+and frozen tokens/frame/raw bytes remain exact in both compilers. Counts sum
+to 1006653744 added probes, 559581648 would-rejections, 2776708830 removed prefix
+comparisons and 4377312261 removed extension comparisons; the removed extension
+equal-byte count is 3823079963. These match the actual DD-1392 differences.
+
+| Preceding best length | Added probes | Would-rejections | Removed prefix comparisons | Removed extension comparisons | Removed extension comparisons / probe |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 6..8 | 176959984 | 166725212 | 824437672 | 267825820 | 1.513482 |
+| 9..16 | 254339539 | 129008642 | 637171857 | 458936242 | 1.804424 |
+| 17..32 | 235984252 | 102612519 | 510768509 | 936976874 | 3.970506 |
+| 33..64 | 173479746 | 86766602 | 432311730 | 1363080381 | 7.857288 |
+| 65..128 | 98593065 | 40168488 | 200565307 | 595440687 | 6.039377 |
+| 129..257 | 67297158 | 34300185 | 171453755 | 755052257 | 11.219675 |
+
+Bins zero through five and 258 are zero. Would-rejected prefix failures have
+zero extension work; they are retained in the rejection/prefix distribution.
+No histogram count is converted into time or a CPU cost. The enlarged private
+finder state is 14928 bytes, split codec charge 315379741 and unchanged full-frame
+array charge 51118080; these are not public policy or process peaks.
+
+As a single future counter-free hypothesis, require preceding best at least
+seventeen for the additional probe. This descriptive cutoff retains
+575354221 probes (57.155127 percent) and
+3650550199 removable extension comparisons
+(83.397071 percent) of the full-probe distribution.
+The following table describes work retained by that condition, not a timing
+forecast or an admitted policy.
+
+| Member | Retained probes | Retained probe % | Retained removable extension comparisons | Retained removable extension % |
+| --- | ---: | ---: | ---: | ---: |
+| dickens | 1064948 | 6.2349 | 1689016 | 7.6165 |
+| mozilla | 170619323 | 33.7748 | 1104376950 | 65.0373 |
+| mr | 86505765 | 87.3680 | 400184149 | 99.8789 |
+| nci | 261306544 | 96.7384 | 1526544800 | 98.8781 |
+| ooffice | 575352 | 17.2709 | 1893482 | 25.7829 |
+| osdb | 857902 | 47.0841 | 5685464 | 80.9212 |
+| reymont | 6628622 | 33.9377 | 21581192 | 55.1174 |
+| samba | 16230856 | 60.5990 | 343052708 | 94.0360 |
+| sao | 0 | 0.0000 | 0 | 0.0000 |
+| webster | 30515974 | 50.0850 | 237540078 | 83.7459 |
+| xml | 1048917 | 69.2048 | 8002360 | 87.0501 |
+| x-ray | 18 | 0.0525 | 0 | 0.0000 |
+
+The longer-best hypothesis retains most removed extension work with fewer
+probes across the complete corpus, while substantially reducing probe counts
+on several earlier mixed/regressing members. Its extra condition still has
+overhead and chain traversal remains unchanged. This does not prove elapsed
+benefit, an optimal cutoff, cache/branch behavior or a cure for BM-0202's
+exceptions. Preserve the previous trial's non-admission and audit limitation.
+
+Before timing, qualify a distinct counter-free candidate on complete frozen
+bytes, exact budgets, aliases, failure invariance and failed-frame publication.
+Any future measurement must be separately declared, retain duplicate admitted
+controls and every observation, and require explicit successful process audits
+before each observation. No new BM timing record or public adoption occurs here.

@@ -37351,3 +37351,28 @@ both bounds.
   public selection, format, ABI, defaults, inventory, fixed binary, fuzz or
   external qualification. The earlier trial remains unadmitted; no causal
   timing explanation, new threshold or legal guarantee is asserted.
+
+
+## CR-1566: Current-best-length necessary-byte diagnostic distribution
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized the next development step.
+- Task/prompt: record bounded extra-probe and would-rejected original extension
+  work by the preceding best length, while preserving selection, failure
+  invariance, all original counters and complete frozen streams.
+- References: IR-1154/DD-1395 and first-party classifier, probe, guard, corpus
+  and retained measurement records. External implementation or copyleft source/
+  test expression was not consulted.
+- Expression/similarity review: intentional first-party diagnostic transfer
+  with private symbols, added observations and a checked histogram validator.
+  The original candidate work executes regardless of the additional comparison;
+  no original early rejection, update, tie, insertion or serialization is changed.
+- Validation: TVG-1262; 688 cases per compiler and partial ASan/UBSan, complete
+  twelve-member token/frame/raw identity, unchanged baseline counts, conserved
+  histogram/removed-work sums, malformed-report guards, fresh integration tests
+  and source/artifact preservation. The initial driver build failure is retained.
+- Scope: private untimed diagnostics. No public ABI, format, defaults, owner
+  policy, selection, inventory or fixed verification binary changes. No speed,
+  process peak, fuzz, external qualification, admission or legal guarantee is
+  claimed. A single longer-best condition is a future hypothesis requiring
+  separate counter-free qualification and declared measurement.

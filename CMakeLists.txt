@@ -1117,6 +1117,30 @@ if(MARC_BUILD_BENCHMARKS)
                     "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-end-probe-smoke"
                     -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_finder_diagnostic_smoke.cmake)
         endif()
+        add_executable(marc_lzss_position_distance_4m_probe_length_diagnostic
+            benchmarks/lzss_position_distance_4m_probe_length_diagnostic.cpp
+            benchmarks/lzss_position_distance_4m_probe_length_finder.cpp)
+        target_compile_features(marc_lzss_position_distance_4m_probe_length_diagnostic PRIVATE cxx_std_20)
+        target_include_directories(marc_lzss_position_distance_4m_probe_length_diagnostic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_lzss_position_distance_4m_probe_length_diagnostic PRIVATE marc::static)
+        add_dependencies(marc_lzss_position_distance_4m_probe_length_diagnostic marc_lzss_position_distance_4m_profile_benchmark)
+        if(MARC_BUILD_TESTS)
+            add_executable(marc_position_distance_4m_probe_length_tests
+                tests/lzss_position_distance_4m_probe_length_tests.cpp
+                benchmarks/lzss_position_distance_4m_probe_length_finder.cpp)
+            target_compile_features(marc_position_distance_4m_probe_length_tests PRIVATE cxx_std_20)
+            target_include_directories(marc_position_distance_4m_probe_length_tests PRIVATE
+                ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
+            target_link_libraries(marc_position_distance_4m_probe_length_tests PRIVATE marc::static)
+            add_test(NAME marc_position_distance_4m_probe_length_tests
+                COMMAND marc_position_distance_4m_probe_length_tests)
+            add_test(NAME marc_position_distance_4m_probe_length_smoke
+                COMMAND ${CMAKE_COMMAND}
+                    "-DDIAGNOSTIC=$<TARGET_FILE:marc_lzss_position_distance_4m_probe_length_diagnostic>"
+                    "-DFIXTURE_GENERATOR=$<TARGET_FILE:marc_lzss_position_distance_4m_profile_benchmark>"
+                    "-DWORK=${CMAKE_CURRENT_BINARY_DIR}/position-4m-probe-length-smoke"
+                    -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_4m_finder_diagnostic_smoke.cmake)
+        endif()
         add_executable(marc_lzss_position_distance_4m_finder_diagnostic
             benchmarks/lzss_position_distance_4m_finder_diagnostic.cpp
             benchmarks/lzss_position_distance_4m_diagnostic_finder.cpp)

@@ -10136,3 +10136,12 @@ complete-owner observations, source hashes and audit incident. Recompute the
 existing comparisons without taking new clocks or running codecs. Derive the
 strict launch gate from the recorded enumeration-error/empty-output failure.
 No external optimization implementation, source or test suite is consulted.
+
+
+## IR-1154: Current-best-length probe and rejected-extension distribution
+
+Use first-party DD-1391's diagnostic finder and tests, DD-1392's conserved
+probe/removal records, DD-1394's retained-regression analysis and DD-1367 frozen
+token/frame/raw oracles. Observe necessary-byte would-rejections while executing
+all original candidate work, then classify actual work by the preceding best
+length. No external optimization implementation or test suite is consulted.

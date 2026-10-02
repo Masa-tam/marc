@@ -28964,3 +28964,48 @@ that distribution. Do not select by corpus name or silently relax the original
 admission screen. A distinct candidate must requalify bytes, budgets, aliases,
 failure invariance and failed-frame non-publication before any fresh, separately
 declared timing campaign. The present protocol template executes no campaign.
+
+
+## DD-1395: Bounded current-best-length diagnostics without skipping work
+
+Create a separate private diagnostic finder from DD-1391. After the original
+best-length byte passes, observe DD-1392's extra byte at best-length minus one
+only when best-length exceeds five. Record that preceding length and whether
+the extra byte would reject; always continue the original five-prefix check
+and scalar extension. Never skip or reinterpret original work in this version.
+Original selection, ties, insertion, traversal and all original counters must
+remain exact. Observed rejected-extension comparisons are actual evaluations,
+not extrapolations or elapsed costs.
+
+Use 259 bounded bins indexed by preceding best length. Each holds probes,
+would-rejections, rejected-prefix candidates, rejected-extension attempts and
+their actual prefix/extension/equal-extension comparisons. Bins zero through
+five and 258 remain zero. The maximum-length update stops immediately, so the
+best is below the validated maximum, at most 258, whenever another candidate
+is visited. Both read positions remain bounded even with overlap references.
+Retain the original saturating counter helper. The prefix-counter difference
+is monotonic even at saturation; overflow makes the report invalid.
+
+The checked histogram validator rejects forbidden bins, arithmetic overflow,
+inconsistent sums, impossible comparison bounds and an overflow-marked record.
+Would-rejected extensions must be shorter: each stops at a mismatch, with
+comparisons from one through best-length minus five and equal comparisons one
+less. Preserve query/initialization alias and failure invariance over the whole
+enlarged object. Its state is 14928 bytes; the split diagnostic codec charge is
+315379741, an increase of 14520 over DD-1391. Full-frame arrays remain 51118080.
+These are private diagnostic charges, not public owner policy or process peaks.
+
+TVG-1262 proves complete identity and unchanged original per-frame counts in
+both compilers across all twelve members. Histogram sums exactly equal the
+DD-1392 added probes and actual removed prefix/extension work. Report output is
+committed only after every frame and the complete archive validate; malformed
+or oversized input publishes no diagnostic report.
+
+Short-best groups six through sixteen have fewer removed extension comparisons
+per added probe than the longer groups in this corpus. As one future hypothesis,
+retain the extra probe only at a preceding best length of at least seventeen.
+This is a bounded data-derived first trial, not an optimal threshold or a speed
+claim. The unchanged chain traversal and the new condition itself still cost
+work. Qualify a separate counter-free counterpart before any newly declared
+complete-owner timing; retain the failed earlier numerical/audit evidence and
+strict audit gate. No new timing or public admission occurs here.
