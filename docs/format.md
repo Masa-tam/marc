@@ -8293,3 +8293,20 @@ Future workspace changes must retain failure invariance at existing guaranteed
 boundaries, discardable private scratch and validation of the entire frame
 before publication. This note reserves no IDs, changes no decoder acceptance
 or limits, and does not admit phase-sharing or any private four-MiB candidate.
+
+
+### Larger-window phase storage and profile selection boundary
+
+DD-1414 specifies a prospective private workspace owner, without reserving an
+eight-MiB identity or changing decoder acceptance. Finder/operation lifetime
+sharing is an implementation resource design; it cannot change token choice,
+model update order, canonical bytes or validation of a subsequently specified
+profile. Existing disjointness APIs and transactional guarantees remain intact.
+
+Encode configuration may eventually select a profile using file size, resource
+budget and measured performance/ratio. A decoder must follow the stream's
+declared identity/parameters and reject unsupported or over-limit streams;
+it cannot choose a different window representation to decode the same bytes.
+No automatic selection rule or efficiency threshold is defined by this note.
+The whole frame must validate before publication, with private failed scratch
+discardable and previously committed frames unaffected.

@@ -10359,3 +10359,14 @@ grammar, context layout, stream preflight, C configuration and generic limits.
 Reconcile retained four-MiB charges; examine conditional eight-/sixteen-MiB
 storage and model expansion without pretending existing queries support them.
 No external/copyleft implementation, expression, table or test consulted.
+
+
+## IR-1173: Eight-MiB phase workspace and publication contract
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+Review first-party five-prefix candidate/finder lifetimes, workspace partition,
+streaming owner, raw/frame mapping and range planning/emission call order, C
+adapter capacity charging and decoder publication. Use DD-1413 arithmetic as
+conditional design inputs. Consult no external or restricted implementation.
+Distinguish a source-derived array-element cost from an unimplemented model's
+complete sizeof/query, and a future contract from current overlap acceptance.

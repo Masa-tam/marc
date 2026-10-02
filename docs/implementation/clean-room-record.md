@@ -37757,3 +37757,18 @@ both bounds.
   implementation; retain the 512-MiB policy as a target, defer sixteen MiB.
   No new IDs, profile admission, limit relaxation, performance prediction,
   build/test/CTest/fuzz/external gate, codec modification or legal guarantee.
+
+
+## CR-1585: Prospective phase owner and size-selection boundaries
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1173, DD-1413; first-party owner, candidate, finder, mapping,
+  entropy and adapter sources. No external/copyleft expression consulted.
+- Task: specify live-object transitions, full-capacity and peak-state ledger,
+  preflight failure invariance and whole-frame publication for a future owner.
+- Validation: TVG-1281; independent design arithmetic, call-order review,
+  existing source/artifact hashes and document append/scope checks.
+- Decision: bounded private workspace prototype next; concrete model/owner
+  resource queries and lifetime qualification remain pending. Preserve the
+  512-MiB design target; reserve no IDs or profile, relax no limits, and claim
+  no size-based efficiency threshold, codec test result or legal guarantee.

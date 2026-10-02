@@ -29813,3 +29813,109 @@ resource policy. No automatic policy relaxation or projected throughput/ratio.
 Window choice and implementation remain later decisions after concrete complete
 resource accounting. No code, build/test/CTest/fuzz, timing/BM, external gate,
 identity reservation, inventory, public factory or fixed binary changes here.
+
+
+## DD-1414: Eight-MiB phase owner, capacity accounting and failure boundary
+
+Date: 2026-10-03. Specify the next private workspace prototype before a wire
+profile. Eight MiB remains a candidate; matching generic contextual window
+sizes is not a format requirement. No implementation or identity reservation.
+
+Use three disjoint borrowed byte regions: raw, serialized and aligned arena.
+Keep a token prefix in the arena and one phase region for either finder words
+or operations. For frame capacity F, checked arithmetic computes token bytes
+F*sizeof(Token), operation capacity 2F*sizeof(Operation), and finder bytes
+12*(65536+F). The phase offset is token bytes rounded up to the maximum token,
+operation and uint32 alignment; phase capacity is max(finder, operations).
+Check the base and both typed offsets, every multiply/add/round-up, address
+extent, minimum capacity, full-capacity disjointness and metadata/owner overlap.
+Publish requirements/views only after all validation succeeds. Binding creates
+tokens only; it must not construct operations while finder words may be live.
+
+The proposed phase transitions and live objects are:
+
+| Phase | Token prefix | Shared phase region | Serialized region |
+| --- | --- | --- | --- |
+| Bound/collecting | live, private | no typed phase objects | unpublished |
+| Search | live, selected tokens written | uint32 heads/links and scoped finder | unpublished |
+| Mapping | live, validated/read | ModeledOperation objects | unpublished |
+| Range plan/emission | live, retained | operations read | private frame bytes |
+| Draining | live, retained | no typed phase objects | validated pending frame |
+| Terminal error | private, discardable | retired by phase cleanup | never pending failed frame |
+
+Search must return and destroy its finder before retiring all active head/link
+word lifetimes and constructing operations. Destroy operation objects before
+search is re-entered for another frame. Use explicit no-throw construction and
+destruction, counts recorded in the owner, and fresh typed views after each
+transition; never reuse stale spans/references across it. Cleanup handles every
+early return and terminal error without allocating, restoring scratch bytes or
+re-entering a completed frame. Keep tokens disjoint from the phase region and
+alive through both range plans and emission. Retire them when the owner releases
+its borrowed storage. Independent instances share no mutable global state.
+
+The current scalar candidate's scoped finder ends before its raw adapter calls
+frame mapping; the full-token-capacity path needs only one search. Mapping and
+range planning/emission are subsequent calls, with no retained finder access.
+The current APIs still reject overlapping finder/operation spans and construct
+operations at initial partition. Implement a distinct phase-aware owner/query
+later; do not weaken those existing checks or pass aliasing spans into them.
+Both initial partition and later transitions must have explicit object-lifetime
+contracts; simply replacing a sum by max in the query is insufficient.
+
+Charge all full supplied capacities for the entire borrowing lifetime, not
+only active prefixes or the current frame's used bytes. With R retained owner,
+adapter and other retained metadata, and H the peak simultaneously live helper
+state, require checked raw_capacity + serialized_capacity + arena_capacity +
+R + H <= caller budget. H includes nested simultaneous state, frame prefix and
+any live planning/canonical-validation objects; sequential range passes can
+share a peak charge, but overlapping helper lifetimes cannot. No hidden token,
+operation, finder, frame or verification copy is allowed. A later C adapter
+must reserve its handle/guard exactly once and charge oversized borrowed tails.
+Metadata stored inside an already charged arena is counted once; separately
+retained objects are additional. Query and creation must use the same ledger.
+
+For DD-1413's conditional twelve-/sixteen-byte layout and F=8388608, raw is
+8388608, serialized is 150995029, tokens are 100663296, finder is 101449728 and
+operations are 268435456 bytes. The phase arena is 369098752, so base storage
+is 528482389 bytes, leaving 8388523 within the 512-MiB target. Therefore the
+complete gate is R+H+alignment/capacity surplus <=8388523. Exact-size buffers
+pass only if the concrete new query proves that inequality; one-byte-under
+requirements and one-byte-over aggregate boundaries must be rejected.
+The prospective 2599 uint16 frequencies and 47 uint32 totals contain 5386 bytes
+of elements. This is not complete model/owner/helper sizeof, padding or a query
+result; current four-MiB state constants cannot establish the new gate. The
+design has a bounded path to fit, while concrete ABI/resource qualification
+remains pending. Decoder bulk is separately 260046933 plus decoder/owner state;
+it neither borrows encoder phase storage nor establishes an encoder fit.
+
+Failures before binding/phase mutation leave promised caller outputs and
+metadata unchanged. Once private search/mapping/entropy work begins, scratch
+may contain a failed prefix and is discardable; do not strengthen that into
+whole-scratch rollback or weaken existing transactional public helpers. For
+encode, pending length, committed raw count and draining state change only
+after successful complete frame validation/emission. For decode, range finish,
+canonical/count/history validation and raw reconstruction precede any raw
+publication. Failure is sticky and emits no bytes from the failed frame;
+earlier valid frames and stream headers already emitted are not rolled back.
+An error call may report earlier committed output, which must be distinguished
+from failed-frame bytes. Flush preserves boundaries; unsupported ResetBlock,
+final-suffix resubmission, one-byte output and repeated ended/error calls retain
+their documented behavior. Reset for a new independent frame also resets all
+history/models and reconstructs the proper phase objects after prior draining.
+
+Profile selection belongs at encode configuration; decoding follows declared
+wire identity and parameters, subject to resource limits. For a reset frame of
+N raw bytes, a match has distance <=N-3 when N>=3, so a file no larger than an
+existing smaller frame cannot exercise the larger distance range. Different
+alphabets can still change its encoded bytes/ratio. Fixed-capacity allocation
+does not shrink just because the final file/frame is short. File size, data
+repetition, memory budget, ratio and both throughputs are separate selection
+inputs; establish thresholds only with later measurements. No automatic
+selector, claimed efficiency advantage or new configurable profile here.
+
+Next: a private generic phase-workspace prototype with checked requirements,
+binding, transitions and cleanup, using existing token/operation layouts and
+synthetic phase data, before a new distance model/wire profile. Qualify concrete
+storage/lifetime/failure behavior and full-capacity accounting without changing
+current codecs, defaults, public API or private candidate admissions. New
+format definition and validator work remain subsequent explicit units.

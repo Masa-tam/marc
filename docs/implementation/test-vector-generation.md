@@ -20167,3 +20167,28 @@ and directly check the new entries. The legacy supplemental-heading ordinal
 coverage limitation remains; standalone documentation validation is not proof
 of all supplemental sequence checks. No new vectors, build, tests, sanitizer,
 CTest, fuzz, timings or external qualification are claimed by this review.
+
+
+## TVG-1281: Phase-workspace contract review and future qualification cases
+
+Reconcile the source call graph and DD-1414 checked offsets, lifetime table,
+full-capacity ledger and publication boundaries without running a codec.
+Independently calculate eight-MiB arena 369098752, bulk 528482389, remaining
+8388523 and model-array element bytes 5386; none is a new concrete ABI query.
+Review arithmetic at small/near-limit frame sizes and alignment boundaries;
+checking a design model is not executing the proposed C++ phase owner.
+
+For the later prototype require minimum/exact/oversized buffers, one-byte-under
+and aggregate one-byte-over cases, every disallowed outer/metadata overlap,
+misaligned typed offsets and arithmetic/address overflow. Verify query/bind
+output and storage sentinels on preflight failure; exercise search-to-map,
+map-to-drain, all early errors, repeated frame transitions and final release
+with explicit object cleanup. No stale finder/operation view may survive a
+transition. Test exact and shorter phase prefixes without hidden allocation or
+double charging. Full codec tests and immutable byte comparisons belong to
+later wire/codec integration; fake phase data cannot prove codec correctness.
+
+Preserve prior artifacts/source/fixed binaries, append-only public documents,
+and directly inspect supplemental IDs and scope. Standalone documentation
+validation retains the known supplemental-heading coverage limitation. No
+fresh codec, build/test/CTest, fuzz, timing/BM or external result is claimed.
