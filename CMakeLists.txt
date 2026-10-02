@@ -1195,6 +1195,35 @@ if(MARC_BUILD_BENCHMARKS)
             add_test(NAME marc_position_distance_4m_bucket18_tests
                 COMMAND marc_position_distance_4m_bucket18_tests)
         endif()
+        add_library(marc_position_distance_4m_word8_support STATIC
+            benchmarks/word8/dictionary/lzss_position_distance_4m_word8_finder.cpp
+            benchmarks/word8/dictionary/lzss_position_distance_4m_word8_candidate.cpp
+            benchmarks/word8/frame/lzss_position_distance_4m_word8_raw_frame_encoder.cpp
+            benchmarks/word8/frame/lzss_position_distance_4m_word8_encode_workspace.cpp
+            benchmarks/word8/frame/lzss_position_distance_4m_word8_frame_streaming_encoder.cpp
+            benchmarks/word8/frame/lzss_position_distance_4m_word8_owned_encoder.cpp
+            src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
+            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
+        target_compile_features(marc_position_distance_4m_word8_support PUBLIC cxx_std_20)
+        target_include_directories(marc_position_distance_4m_word8_support PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/word8 ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_distance_4m_word8_support PUBLIC marc::static)
+        add_executable(marc_lzss_position_distance_4m_word8_owner_benchmark
+            benchmarks/lzss_position_distance_4m_word8_owner_benchmark.cpp)
+        target_link_libraries(marc_lzss_position_distance_4m_word8_owner_benchmark PRIVATE
+            marc_position_distance_4m_word8_support)
+        if(WIN32)
+            target_link_libraries(marc_lzss_position_distance_4m_word8_owner_benchmark PRIVATE psapi)
+        endif()
+        if(MARC_BUILD_TESTS)
+            add_executable(marc_position_distance_4m_word8_tests
+                tests/lzss_position_distance_4m_word8_tests.cpp
+                tests/lzss_position_distance_4m_word8_streaming_tests.cpp)
+            target_link_libraries(marc_position_distance_4m_word8_tests PRIVATE
+                marc_position_distance_4m_word8_support GTest::gtest_main)
+            add_test(NAME marc_position_distance_4m_word8_tests
+                COMMAND marc_position_distance_4m_word8_tests)
+        endif()
         add_executable(marc_lzss_position_distance_4m_end_probe_diagnostic
             benchmarks/lzss_position_distance_4m_end_probe_diagnostic.cpp
             benchmarks/lzss_position_distance_4m_end_probe_finder.cpp)

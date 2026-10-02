@@ -29385,3 +29385,48 @@ buffers remain. Decoder charge remains 130029573. Process peaks are whole-proces
 observations, not codec-only resident memory or allocation-budget substitutes.
 All complete stream bytes and raw restoration pass. No public source selection,
 format/ABI/default/inventory/fixed-binary change, new fuzz or external gate.
+
+
+## DD-1405: Qualify bounded eight-byte extension before timing
+
+Date: 2026-10-02. DD-1404's bucket18 screen has repeated mr/nci losses and
+fails the retained admission criteria. Preserve that trial without selection.
+Six-prefix and lazy activation have substantial prior 1MiB trial/noise/policy
+records, DD-1329 through DD-1340, including unadmitted regressions. This trial
+does not repeat index widening, combine failed probes, select a corpus policy,
+or infer a timing cause from counters or earlier instrumented shares.
+
+Fork admitted first-party finder/candidate and bounded frame/stream/owner pairs
+into private benchmark support. Retain the three 65536-entry head tables and
+all three position-link arrays, the original mixer and insertion/traversal
+order. Change only extension after an exact five-byte prefix and the existing
+improvement probe. While maximum-length is at least eight, copy each region's
+eight bytes into a separate uint64 local with memcpy. Equal words advance
+length by eight. A different word stops block comparisons and resumes the
+original byte loop at that block's beginning; fewer than eight remaining bytes
+also use the byte loop. No differing word is skipped or used to locate a byte
+by numeric bit ordering. Maximum-length termination and nearest ties remain.
+
+At query position p with candidate c<p, maximum<=N-p. For length<=maximum and
+eight<=maximum-length, both p+length+8 and c+length+8 are bounded by N. No load
+crosses the supplied immutable input or an applicable match limit. Source
+regions may overlap; copies have distinct local destinations. memcpy avoids
+alignment/aliasing assumptions. Both words contain all eight source bytes;
+word equality is equivalent to byte equality independently of host byte order.
+This is an internal comparison, not native serialization or a SIMD/ISA contract.
+
+No retained fields or buffers are added. Finder arrays still use
+12*(65536+N) bytes for N>=3 and zero below three, full-frame 51118080 bytes.
+Complete owned charge stays 315365389; decoder stays 130029573. Two fixed
+comparison temporaries introduce no dynamically allocated/retained storage;
+these charges do not claim a new measurement of stack usage or process peaks.
+No inner counters/report hooks/clocks or allocation occurs in the extension.
+
+Qualification covers every mismatch position through length258, all source/
+query alignments modulo eight, complete/partial blocks, overlaps, competing
+equal-length candidates, small-window expiry, maximum length and final tails,
+against exhaustive and admitted finders. Retain whole-token/frame/corpus
+identity, exact budgets and existing failure/nonpublication guards. No public
+selection, format/ABI/default/inventory/fixed-binary change. Only independently
+qualified counter-free complete-owner timing can support a later admission
+decision; no elapsed benefit or new BM record is asserted in this stage.

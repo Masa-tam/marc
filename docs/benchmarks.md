@@ -9795,3 +9795,29 @@ and their historical audit limitations. Specialized 1MiB width/noise records and
 BM-0205 instrumented tokenizer shares remain distinct; do not infer a collision
 forecast, subtract assumed timer overhead or claim an environmental cause.
 All prior artifacts and fixed verification binaries remain intact.
+
+
+## DD-1405: Private word8 extension qualification before owner timing
+
+Date: 2026-10-02. Retain BM-0206's failed bucket18 screen and per-member
+regressions. This separate counter-free trial changes only bounded match
+extension: equal complete eight-byte blocks advance length; a different block
+and the final short tail use the original byte loop. All indexes, insertion,
+probes, traversal, tie rules and retained buffers/state remain admitted.
+Six-prefix/lazy history was reviewed; no width or adaptive selection is admitted.
+
+TVG-1272 passes two-compiler exhaustive/admitted boundary cases, full token/frame
+and complete-owner differentials. Each compiler/owner produces 61643620 archive
+bytes for 211938580 raw bytes across 57 frames, with complete frozen identity and
+raw restoration. Outer qualification clocks are disabled; no inner counters,
+report hooks or clocks are added. No elapsed observation or BM-0207 is recorded.
+
+Finder arrays remain 51118080 bytes at a full frame; complete owner charge stays
+315365389 and decoder charge 130029573. No extra retained fields/arrays or dynamic
+allocation in the extension; fixed comparison locals are not a new stack-usage or
+process-peak campaign. Byte grouping can do additional work for short mismatches;
+no benefit is inferred from counts, source shape or instrumented shares. A later
+counter-free complete-owner screen must include creation/reset/preparation/drain/
+destruction, duplicate admitted controls, strict prelaunch receipts, all members/
+passes, exact bytes and the retained admission criteria. Public selection and
+earlier failed screens remain unchanged.

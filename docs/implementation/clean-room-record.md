@@ -37581,3 +37581,28 @@ both bounds.
 - Scope: private screen fails: 29 wins, 6 losses and 1 between-controls cases. No automatic admission, public
   format/ABI/default/inventory/fixed-binary change, new fuzz/external gate, causal
   explanation or legal guarantee. Previous failed screens/audit limitations remain.
+
+
+## CR-1576: Private bounded eight-byte extension qualification
+
+- Date: 2026-10-02; author/reviewer: Codex; maintainer approved continuation.
+- Task/prompt: select a proof-preserving private candidate after bucket18 failed
+  its screen; preserve indexes/ties/bytes, bounds and failure/nonpublication
+  contracts before timing. Review existing six-prefix/lazy trials first.
+- References: IR-1164/DD-1405, admitted first-party finder and bounded layers,
+  earlier width/probe/index trials, exhaustive/indexed token oracles, complete
+  frozen corpus and retained guards. No external or copyleft source/test
+  expression was consulted.
+- Independent expression: add only bounded eight-byte memcpy/equality steps
+  before the existing byte extension loop. Differing blocks resume that loop
+  without skipping a byte. No serialization/native ordering, unaligned pointer
+  casts, SIMD/ISA requirement or dynamic/retained storage. Eleven of twelve
+  transferred modules are expression-identical after symbol/include renaming;
+  the finder difference is reviewed explicitly.
+- Validation: TVG-1272; 38424 new mismatch/tail/overlap/tie cases against both
+  oracles, two-compiler bounds/failure/chunk tests, 24 full token/frame comparisons,
+  48 complete owner encodes/restorations, partial sanitizers, fresh integration
+  and independent source/budget/hash/documentation review.
+- Scope: private qualification only; no elapsed benefit/admission, assumed
+  instrumentation subtraction, environmental cause, public format/ABI/default/
+  inventory/fixed-binary change, new fuzz/external gate or legal guarantee.

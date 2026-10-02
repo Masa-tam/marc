@@ -19893,3 +19893,48 @@ Review all numerical classifications, script hashes, complete frozen/public/fixe
 prior hashes and append-only documentation without local environment details.
 No assumed timer subtraction, collision-count forecast, causal timing explanation,
 new full suite, fuzz or independently rerun external qualification is claimed.
+
+
+## TVG-1272: Bounded word8 extension and complete-owner identity
+
+Date: 2026-10-02. Transfer first-party admitted FivePrefix tests into private
+word8 support without changing array/layout charges. Add independently generated
+binary fixtures with unique five-byte starts and controlled extension mismatches.
+Every mismatch position 5 through 258 across all 64 source/query alignments modulo
+eight yields 16256 cases against exhaustive and admitted finders. Exact allocations
+ending at the query's match limit cover all lengths 5 through 258 across the same
+64 alignments: another 16256 cases. These exercise every block lane and short tail
+without relying on spare input capacity.
+
+Periodic overlaps use distances 1 through 24, eight query alignments and 14
+maximum lengths around block/tail boundaries: 2688 longest/nearest cases plus
+2576 window-expired cases. Three competing copies use nine lengths around block
+boundaries, both far/near combinations and eight alignments: 648 cases, including
+equal-length nearest ties and replacement by a farther longer match. All 38424
+new cases compare the full distance/length with both oracles, exact queried
+charges and unused-workspace sentinels. Retain the original 1872 exhaustive token
+cases, wide references, small windows, policies and complete maximum frames.
+
+Both compilers pass 25 default tests; two optional corpus tests are skipped in
+those default runs. Explicitly execute the optional finite token/frame test on
+all twelve members on both compilers: 24 full token/frame differentials and
+frame restorations, no skips, 57 frames per compiler. Each finite typed token
+matches the retained indexed reference; serialized frames match complete frozen
+archives. Independently qualify complete admitted/trial owners on all twelve
+members on both compilers, with outer clocks disabled: 48 encodes and 48 raw
+restorations, exact archive hashes. Each compiler/owner totals 211938580 raw bytes,
+61643620 archive bytes and 57 frames.
+
+Retain exact-budget/one-byte-short, alias/alignment, unused capacity, metadata/
+output invariance, chunking, Flush/EndInput, sticky failure and failed-second-frame
+nonpublication guards. Partial ASan/UBSan passes the same 25 default tests with
+the two optional skips: private modules/tests are instrumented, retained support
+libraries are not fully instrumented. One targeted aggregate CTest passes in a
+fresh root; no old-root CTest invocation or discovery. Review normalized expression,
+complete manifests, source/library/executable/frozen/public/fixed/prior hashes,
+append-only documentation and absence of local environment details. The first
+optional corpus selection retained an old test name and ran zero tests; the
+one-test/no-skip guard rejected it. Preserve both logs as unexecuted evidence.
+Correct only the orchestration selector and use fresh output directories for
+all 24 real finite corpus tests; no codec change or rebuild is needed. No elapsed
+campaign, admission, full-suite, new fuzz or external run is claimed.

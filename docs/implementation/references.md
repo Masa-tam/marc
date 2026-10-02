@@ -10253,3 +10253,20 @@ its retained thirteen-case regression evidence with a hash check; no new helper
 test run is claimed. Preserve prior failed probe/phase screens, their audit
 limitations and the specialized 1MiB width/noise results. No external or
 restricted source/test expression was consulted.
+
+
+## IR-1164: Private bounded eight-byte match extension
+
+Date: 2026-10-02; author/reviewer: Codex; maintainer approved continuation.
+First-party references: admitted FivePrefix finder/candidate and bounded frame/
+stream/owner layers, exhaustive/indexed token oracles, frozen archives and
+failure/publication guards. Review DD-1329 through DD-1340 six-prefix/compact/
+rolling/lazy trials and DD-1403/DD-1404 bucket18 qualification/failed screen
+before proposing another index. These prior trials do not establish a benefit
+for changing extension comparisons. No external or restricted source/test
+expression was consulted.
+
+Task: qualify a separate counter-free owner which compares complete eight-byte
+blocks only inside the existing bounded match extension, with byte comparison
+for a differing block and the final short tail. Do not alter indexes, probes,
+traversal order, tie-breaking, arrays, retained state or stream representation.
