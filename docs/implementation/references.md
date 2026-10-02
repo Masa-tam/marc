@@ -10270,3 +10270,14 @@ Task: qualify a separate counter-free owner which compares complete eight-byte
 blocks only inside the existing bounded match extension, with byte comparison
 for a differing block and the final short tail. Do not alter indexes, probes,
 traversal order, tie-breaking, arrays, retained state or stream representation.
+
+
+## IR-1165: Word8 complete-owner screen with strict launch receipts
+
+Date: 2026-10-02; author/reviewer: Codex; maintainer approved continuation.
+Use DD-1405's first-party counter-free qualified owner, admitted FivePrefix
+controls, complete frozen archives and the strict process audit helper. Reuse
+its retained thirteen-case regression evidence with a hash check; no new helper
+test run is claimed. Preserve prior failed probe/phase screens, their audit
+limitations and the specialized 1MiB width/noise results. No external or
+restricted source/test expression was consulted.
