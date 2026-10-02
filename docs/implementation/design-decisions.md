@@ -29592,3 +29592,43 @@ default, memory limit, inventory, fuzz/external gate or fixed binary change.
 Failure invariance, discardable private scratch and failed-frame nonpublication
 remain required. Future larger-window or changed parsing/format work requires
 its own bounded design and exact identity before implementation.
+
+
+## DD-1410: Qualify a bounded baseline-only repeated-owner diagnostic
+
+Date: 2026-10-03. Ended finder tuning remains ended. Before enabled clocks,
+qualify six identical scalar FivePrefix encodes followed by one unchanged decode
+within one process. Three pairs use slot order 0/1, 1/0, 0/1; labels select no
+different implementation or storage policy. Each traversal freshly creates and
+destroys its owner; at most one owner is alive. There is no retained codec state
+between traversals, warmup, trial, early favorable-result stop or selected retry.
+
+Retain the existing 65536-byte input/output chunks, 64-MiB raw and 128-MiB archive
+limits and sixteen-frame maximum. Compare all emitted bytes against immutable
+expected storage, without capturing or publishing an archive. The caller report
+is committed only when all seven traversals validate. Any factory, process,
+progress, length or byte failure discards the temporary report and destroys the
+live owner; no partial stdout report or failed-frame bytes are published.
+Codec failure invariance and discardable scratch contracts remain unchanged.
+
+The encoder/decoder aggregate charges remain 315365389/130029573 bytes. Account
+separately for two fixed reports (caller and temporary), one 65536-byte output
+buffer, engine object and caller-owned raw/archive storage. No additional finder
+arrays, inner report/counter hooks or steady-state process allocations are added.
+These diagnostic storage charges are not public codec requirements or a claim
+about peak RSS; ordinary call stack, library/I/O storage and allocator overhead
+are not inferred from them.
+
+Qualification exposes only verify mode and never evaluates the clock on its
+disabled branch. Future enabled intervals would cover complete creation,
+allocation, each process call and destruction; comparisons, queries, file I/O
+and reports are outside. Preparation classification includes copying and same-call
+drain, not isolated search/entropy. Changed process topology measures that
+diagnostic topology, not public throughput or a repair of prior failed screens.
+Do not measure a candidate, admit scratch or relax prior numerical thresholds.
+Any future timed campaign needs a separately declared bounded schedule and fresh
+persisted strict successful zero-process receipt before every launch; stop on
+busy/error without automatic retry and preserve every observation.
+
+No format, public factory/ABI/default/limit, inventory, fixed binary, new fuzz
+or external gate changes. The stream representation remains fully unchanged.

@@ -20059,3 +20059,40 @@ Check current factory selection, public/fixed/frozen/prior/source/evidence hashe
 append-only documents and absence of local environment details. Keep historical
 scratch exception, control variability, partial sanitizer limits and failed
 screens. No new benchmark identifier or fresh external qualification is asserted.
+
+
+## TVG-1277: Baseline-only repeatability qualification
+
+Date: 2026-10-03. Independently authored harness tests inject an identity
+transform and a clock-call counter. Disabled qualification must make zero clock
+calls, use slot order 0/1, 1/0, 0/1 followed by decoder slot 2, hold at most one
+owner and destroy every successful creation. Empty input has no preparation;
+the maximum 64-MiB input has exactly sixteen preparation records per encode.
+Oversized raw/archive storage is rejected before owner creation or clock calls.
+
+Inject creation and process failure at every one of seven records, including
+after earlier successful traversals; compare the entire caller report's object
+bytes before/after failure. Reject invalid consumption, zero-progress starvation
+without looping, wrong bytes, shorter expected output and premature completion.
+Actual scalar owner queries accept their exact encoder/decoder aggregate budgets
+315365389/130029573 and reject one byte below without replacing the queried
+aggregate; under-budget creation fails. Truncate an independently generated
+single-frame stream: actual decoder returns an error, emits zero bytes and leaves
+the caller's sentinel output unchanged.
+
+Thirteen tests pass with both supported compilers and partial address/undefined
+sanitizer instrumentation. The diagnostic/owner wrappers and test framework are
+instrumented; the retained codec support library is not. This is not full-library
+sanitizer coverage. A fresh dedicated CMake root builds the diagnostic and test
+target; its single aggregate CTest passes. No retained root's CTest is invoked.
+
+Both qualified executables traverse all twelve independently verified Silesia
+members. Each traversal performs six complete encodes against immutable frozen
+reference archives, then one complete decode against raw input: 144 encodes and
+24 decodes overall. Per corpus traversal, raw bytes 211938580, archive bytes
+61643620 and 57 encode frames remain exact. All phase values are zero with clocks
+disabled, all six slot counters agree, charges remain unchanged, and archive
+hashes before/after agree. Eight negative CLI cases cover unsupported enabled
+mode, truncated expected archive, mismatched empty input and absent archive;
+every failure returns nonzero with empty stdout/stderr and no artifact output.
+No elapsed-performance, fuzz campaign, public admission or external gate follows.

@@ -1253,6 +1253,25 @@ if(MARC_BUILD_BENCHMARKS)
             add_test(NAME marc_position_distance_4m_word4_tests
                 COMMAND marc_position_distance_4m_word4_tests)
         endif()
+        add_library(marc_position_distance_4m_control_support STATIC
+            src/frame/lzss_position_distance_4m_five_prefix_owned_encoder.cpp
+            src/frame/lzss_position_distance_4m_owned_decoder.cpp)
+        target_compile_features(marc_position_distance_4m_control_support PUBLIC cxx_std_20)
+        target_include_directories(marc_position_distance_4m_control_support PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_distance_4m_control_support PUBLIC marc::static)
+        add_executable(marc_position_distance_4m_control_repeatability
+            benchmarks/lzss_position_distance_4m_control_repeatability.cpp)
+        target_link_libraries(marc_position_distance_4m_control_repeatability PRIVATE
+            marc_position_distance_4m_control_support)
+        if(MARC_BUILD_TESTS)
+            add_executable(marc_position_distance_4m_control_repeatability_tests
+                tests/position_distance_4m_control_repeatability_tests.cpp)
+            target_link_libraries(marc_position_distance_4m_control_repeatability_tests PRIVATE
+                marc_position_distance_4m_control_support GTest::gtest_main)
+            add_test(NAME marc_position_distance_4m_control_repeatability_tests
+                COMMAND marc_position_distance_4m_control_repeatability_tests)
+        endif()
         add_executable(marc_lzss_position_distance_4m_end_probe_diagnostic
             benchmarks/lzss_position_distance_4m_end_probe_diagnostic.cpp
             benchmarks/lzss_position_distance_4m_end_probe_finder.cpp)

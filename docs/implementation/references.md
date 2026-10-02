@@ -10319,3 +10319,13 @@ probe/width/word-comparison diagnostics and retained observations. Check actual
 one-/four-MiB factory dispatch against those decisions. No external or restricted
 implementation/source/test was consulted. This is evidence review, not another
 candidate, benchmark campaign, reference re-encoding or external verification.
+
+
+## IR-1169: Baseline-only repeatability diagnostic qualification
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+Use first-party DD-1409 review, retained scalar FivePrefix complete owner,
+unchanged complete decoder, bounded owner harness and frozen reference archives.
+Design an independent fixed schedule and transactional report wrapper without
+altering codec expression or consulting external/restricted implementations.
+This unit qualifies disabled clocks; it creates no benchmark observations.

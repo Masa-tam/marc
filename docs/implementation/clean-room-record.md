@@ -37692,3 +37692,21 @@ both bounds.
   resumes, with scratch as an existing focused option after justified evidence.
   Do not assert global exhaustion, inferred timer/counter costs, causal hardware
   explanation, public admission, new fuzz/external gate or legal guarantee.
+
+
+## CR-1581: Baseline-only repeated-owner diagnostic
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1169, DD-1410, admitted scalar FivePrefix and unchanged decoder,
+  first-party process-audit helper, retained owner harness and frozen archives.
+- Intentionally not consulted: external/copyleft implementation expression,
+  tests, tables or architecture. No codec source is copied or modified.
+- Task: independently implement a bounded identical-control schedule, complete
+  owner lifecycle checks and transactional fixed report; qualify disabled clocks
+  and exact bytes before considering future repeatability measurements.
+- Validation: TVG-1277; thirteen contract tests on both compilers and partial
+  sanitizers, fresh aggregate CTest, 144 complete frozen encodes, 24 raw restores,
+  eight CLI negatives, fixed/public/prior hashes and append-only document review.
+- Similarity review: new expression is a first-party diagnostic orchestration
+  wrapper; codec algorithms, format, public dispatch and memory charges unchanged.
+  No external implementation consulted, public admission or legal guarantee.

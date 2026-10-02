@@ -10119,3 +10119,34 @@ strict launch receipts, every observation and admission thresholds. Changing
 the harness answers a diagnostic question and does not revise past performance
 decisions or establish public throughput. No public format/ABI/default/inventory,
 fixed-binary, new fuzz/external gate or broader exhaustion claim is made.
+
+
+## DD-1410: Disabled-clock qualification for baseline repeatability
+
+Date: 2026-10-03. This is diagnostic qualification, with no new BM identifier or
+elapsed measurements. One process executes three pairs of identical newly
+created scalar FivePrefix owners in order 0/1, 1/0, 0/1, followed by an unchanged
+decoder. Exactly one owner is alive; raw/reference storage is immutable. A fixed
+seven-record report is published only after every traversal validates; failures
+discard it. The executable exposes only clock-disabled verify mode.
+
+The diagnostic retains 65536-byte chunks, 64-MiB raw/128-MiB archive limits and
+sixteen-frame reports. Encoder/decoder charges are 315365389/130029573 bytes;
+in qualified builds each report is 1696 bytes, the caller-plus-temporary reports
+and output buffer total 68928 bytes, with a separate 16-byte engine object.
+Caller-owned input/reference buffers are separate. These are explicit storage
+charges, not inferred whole-process peak memory.
+
+Both compilers pass thirteen contract tests, partial sanitizer coverage and all
+twelve Silesia members: 144 complete frozen encodes, 24 raw restores, unchanged
+hashes and zero clock values. Fresh CMake integration passes its aggregate CTest;
+eight CLI negatives publish no partial report. Preserve all earlier measurements,
+failed screens, scratch exception and admission conditions. Public baseline,
+format/ABI/default/limits, inventory and fixed binary remain unchanged.
+
+Only a later separately declared audited campaign can enable clocks and assess
+within-process control repeatability. Each future interval would include complete
+creation/allocation, process calls and destruction, excluding input/reference
+I/O, queries, comparisons and reports. This changed topology is a diagnostic;
+it does not establish public throughput, repair old campaigns, select a candidate,
+relax numerical thresholds, certify scratch or prove an environmental cause.
