@@ -37672,3 +37672,23 @@ both bounds.
 - Scope: private screen fails: 17 wins, 9 losses and 10 between-controls cases. No automatic admission, public
   format/ABI/default/inventory/fixed-binary change, new fuzz/external gate, causal
   explanation or legal guarantee. Previous failed screens/audit limitations remain.
+
+
+## CR-1580: Evidence-based boundary for the local finder-tuning campaign
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved evidence review.
+- Task/prompt: assess whether transferred smaller-window techniques leave a
+  justified next optimization, preserving all prior observations and contracts.
+- References: IR-1168/DD-1409, first-party public dispatch, smaller-window
+  integration decisions, four-MiB candidate/phase records and frozen evidence.
+  No external or restricted implementation/source/test expression consulted.
+- Independent work: retained-record reconciliation and explicit scope/denominator
+  review; no new codec expression, measurements, candidate policy or source change.
+  Preserve every failed screen, the historical audit limitation and scratch case.
+- Validation: TVG-1276; 1260 historical records, 252 numerical comparisons,
+  576 retained strict receipts, independent numerical and hash/scope/doc review.
+- Decision: stop the current local finder micro-tuning sweep; retain the scalar
+  baseline and private candidates. Prioritize measurement repeatability if work
+  resumes, with scratch as an existing focused option after justified evidence.
+  Do not assert global exhaustion, inferred timer/counter costs, causal hardware
+  explanation, public admission, new fuzz/external gate or legal guarantee.

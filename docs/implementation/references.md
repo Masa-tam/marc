@@ -10307,3 +10307,15 @@ its retained thirteen-case regression evidence with a hash check; no new helper
 test run is claimed. Preserve prior failed probe/phase screens, their audit
 limitations and the specialized 1MiB width/noise results. No external or
 restricted source/test expression was consulted.
+
+
+## IR-1168: Review retained optimization and measurement evidence
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation and
+asked whether the smaller-window work has nearly exhausted local opportunities.
+Use first-party DD-1329..DD-1360 index/lazy/prepared/scratch decisions,
+DD-1369..DD-1389 four-MiB transfer/integration/phase evidence, DD-1390..DD-1408
+probe/width/word-comparison diagnostics and retained observations. Check actual
+one-/four-MiB factory dispatch against those decisions. No external or restricted
+implementation/source/test was consulted. This is evidence review, not another
+candidate, benchmark campaign, reference re-encoding or external verification.

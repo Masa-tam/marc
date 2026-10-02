@@ -10070,3 +10070,52 @@ and their historical audit limitations. Specialized 1MiB width/noise records and
 BM-0205 instrumented tokenizer shares remain distinct; do not infer a collision
 forecast, subtract assumed timer overhead or claim an environmental cause.
 All prior artifacts and fixed verification binaries remain intact.
+
+
+## DD-1409: Retained candidate overview and next performance priority
+
+Date: 2026-10-03. This is a reanalysis of existing data, with no new BM record or
+timed invocation. Seven complete-owner campaigns use three twelve-member passes.
+Gain below is `(1 - trial sum / sum of per-member faster controls) * 100` within
+each original campaign; positive is faster. It differs from the older scratch
+reports' mean-control denominator. Do not rank absolute speeds across campaigns,
+pool a speedup, or treat different binaries/scopes as paired causal experiments.
+
+| Retained record | Candidate | Wins/losses/between | Pass 1 gain % | Pass 2 gain % | Pass 3 gain % | Maximum control spread % |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| BM-0200 | finder-scratch | 35/0/1 | 6.206058 | 6.946248 | 4.866263 | 6.351345 |
+| BM-0201 | finder-scratch | 36/0/0 | 5.495253 | 6.079014 | 5.227481 | 17.209767 |
+| BM-0202 | end-probe | 23/8/5 | 1.870284 | 2.115302 | 1.398430 | 3.607395 |
+| BM-0203 | probe17 | 21/5/10 | 1.407739 | 0.269601 | 2.842534 | 27.714940 |
+| BM-0206 | bucket18 | 29/6/1 | 3.217880 | 3.432552 | 3.528779 | 5.376033 |
+| BM-0207 | word8 | 17/8/11 | 1.608815 | 0.269600 | 1.736601 | 22.468392 |
+| BM-0208 | word4 | 17/9/10 | -1.565111 | 2.544288 | 0.774247 | 20.329569 |
+
+BM-0202 retains its failed initial process audit and is exploratory. BM-0200/
+BM-0201 retain their original scratch exception/control variation; the later
+strict helper and 2% screen do not retroactively certify them. BM-0203/BM-0206/
+BM-0207/BM-0208 each retain 144 successful prelaunch receipts but fail the fixed
+36-win/2%-spread screen. Exact output and bounded safety qualification remain
+distinct from performance admission. The unchanged decoder is a different
+workload and cannot certify encode-time stability.
+
+Separate historical diagnostic scopes remain: tokenization is
+86.437078..86.679356% of instrumented preparation; complete find calls are
+96.229255..96.303758% of instrumented finite tokenizer time. Neither is a pure
+instruction cost or an uninstrumented fraction; no multiplication, forecast,
+assumed timer subtraction or environmental explanation follows.
+
+End the current local finder-tuning sweep. Smaller-window prepared mapping and
+scratch mechanisms have been implemented and separately tried at four MiB;
+current four-MiB public selection remains scalar FivePrefix. Retain all private
+variants and original decisions. The scratch candidate's 71/72 wins and older
+mean-control aggregate reductions about 6.14..8.37% identify a focused option,
+with its original nci exception and 17.209767% repeat control spread unresolved.
+
+The next performance task, if resumed, is bounded control-only repeatability
+qualification before another optimization trial or scratch admission attempt.
+Preserve exact bytes, ownership boundaries, failure/nonpublication, charges,
+strict launch receipts, every observation and admission thresholds. Changing
+the harness answers a diagnostic question and does not revise past performance
+decisions or establish public throughput. No public format/ABI/default/inventory,
+fixed-binary, new fuzz/external gate or broader exhaustion claim is made.

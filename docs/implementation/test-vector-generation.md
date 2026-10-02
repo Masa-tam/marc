@@ -20032,3 +20032,30 @@ Review all numerical classifications, script hashes, complete frozen/public/fixe
 prior hashes and append-only documentation without local environment details.
 No assumed timer subtraction, collision-count forecast, causal timing explanation,
 new full suite, fuzz or independently rerun external qualification is claimed.
+
+
+## TVG-1276: Reconcile retained candidate and phase evidence without rerunning
+
+Date: 2026-10-03. Re-read seven 144-observation complete-owner datasets,
+the 144-observation preparation-split dataset and 108 finite tokenizer records.
+Use manifest-verified original inputs and retained archives; take no fresh codec
+measurements, re-encodes, CTest invocations or compiler/sanitizer/fuzz executions.
+The 1260 records are historical observations, not 1260 new test executions.
+
+Check full member/pass/profile/direction sets, verified flags, finite positive
+totals, nonnegative phases, phase-total and frame-preparation conservation,
+exact sizes/frame counts and unchanged allocation charges. Recompute all 252
+strict/between/loss comparisons and duplicate-control spreads before rounding.
+Reconcile original counts/aggregate metrics with retained summaries. Each corpus
+traversal retains 211938580 raw bytes, 61643620 archive bytes and 57 frames.
+Read the 576 old strict audit/invocation receipts in four later campaigns;
+retain their successful zero-process status and receipt-before-start timestamps.
+That provenance does not certify the earlier failed audit or a future idle state.
+
+Independently recompute numerical classifications and aggregates from raw records
+with a second numeric representation. Reconcile instrumented scope shares with
+their own raw samples and denominators; do not combine scopes into causal shares.
+Check current factory selection, public/fixed/frozen/prior/source/evidence hashes,
+append-only documents and absence of local environment details. Keep historical
+scratch exception, control variability, partial sanitizer limits and failed
+screens. No new benchmark identifier or fresh external qualification is asserted.

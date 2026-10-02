@@ -29532,3 +29532,63 @@ charges are 315365389 bytes; state, arrays and all buffers remain identical. Dec
 observations, not codec-only resident memory or allocation-budget substitutes.
 All complete stream bytes and raw restoration pass. No public source selection,
 format/ABI/default/inventory/fixed-binary change, new fuzz or external gate.
+
+
+## DD-1409: End the current local finder-tuning sweep and retain a focused option
+
+Date: 2026-10-03. Reconcile 1260 retained observations: seven complete-owner
+campaigns (1008), preparation-split diagnostic (144), and finite tokenizer-scope
+diagnostic (108). Recompute 252 candidate/control comparisons using recorded
+decimal values, complete member/pass sets, sizes, budgets and phase/frame sums.
+Check 576 preserved strict per-launch receipts in BM-0203/BM-0206/BM-0207/BM-0208.
+Keep BM-0202's failed initial process audit intact; do not retroactively certify
+earlier scratch campaigns with the later helper or threshold.
+
+The known smaller-window mechanisms have received substantial work: five-prefix
+selection, prepared operation mapping and finder-scratch Range payload storage.
+DD-1354 and DD-1359 admit the latter two one-MiB mechanisms after their separate
+validation. DD-1360 stops that campaign without asserting mathematical exhaustion.
+The current one-MiB public factory still selects the finder-scratch stream.
+The four-MiB factory deliberately selects scalar FivePrefix under DD-1384;
+prepared/range/scratch helpers remain separate private candidates. A successful
+smaller-window mechanism is not automatically admitted at the larger window.
+
+Recent extra probes, five-prefix head widening and four-/eight-byte extension
+all retain adverse input/pass comparisons. Some also have large control spreads.
+Counts saved, exact bytes, favorable sums or a noisier denominator do not establish
+universal benefit. The current 36-strict-win/2%-spread screens remain failed;
+preserve every observation and original admission condition. Changing a condition,
+adding a smaller comparison width, choosing inputs or rerunning until success is
+not the next action. End this local finder-tuning sweep with the admitted scalar
+baseline intact; this is a development-priority decision, not proof that every
+possible algorithm/layout optimization has been exhausted.
+
+The retained scratch option is more substantial than another word-width guess:
+BM-0200/BM-0201 have 71 wins, zero losses and one intermediate comparison in
+72 total. Their original aggregate reductions versus control mean are about
+6.14..8.37%, but the intermediate nci case and maximum repeat control spread
+17.209767% remain unresolved. No renewed admission follows this review. Gains
+against per-member faster controls use a different denominator, explicitly
+recomputed in the overview; do not interchange those metrics or pair campaigns.
+
+Preparation is the dominant owner call category. In the separate instrumented
+diagnostic, tokenization is 86.437078..86.679356% of preparation; complete find
+calls are 96.229255..96.303758% of instrumented finite tokenizer time. These
+scopes do not isolate individual instructions or establish uninstrumented cost
+fractions. Do not multiply the percentages into a projected speedup, subtract
+assumed timer overhead or infer scheduling/cache/branch causes from them.
+
+If performance work resumes, first qualify a bounded control-only repeatability
+diagnostic using the retained scalar owner, exact frozen bytes and explicit
+ownership/timing boundaries. It should answer whether identical baseline work
+has stable paired results before measuring a new candidate. Any changed harness
+topology measures that topology; it cannot retrofit public-throughput claims or
+repair earlier evidence. Declare every observation and stop on audit error/busy;
+retain all results and do not lower admission thresholds. Revisit scratch only
+after justified new measurement evidence and full relevant contract checks.
+
+No new clocks, measurements, candidate, public source selection, format/ABI,
+default, memory limit, inventory, fuzz/external gate or fixed binary change.
+Failure invariance, discardable private scratch and failed-frame nonpublication
+remain required. Future larger-window or changed parsing/format work requires
+its own bounded design and exact identity before implementation.
