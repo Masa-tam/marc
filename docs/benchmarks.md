@@ -9660,3 +9660,27 @@ those campaigns. Added diagnostic state is still 88 transient bytes; the
 finite harness workspace bound remains 315365037, distinct from owned-factory
 minimum and whole-process peak. No new process-peak campaign or memory-saving
 claim. Public sources, format, defaults, inventory and fixed binaries remain.
+
+
+## DD-1403: Private bucket18 qualification before owner timing
+
+Date: 2026-10-02. The private 4MiB trial refines only the five-prefix head
+partition to 18 bits. The specialized 1MiB width/noise evidence in BM-0174 through
+BM-0176 did not admit wider buckets and does not establish this trial's speed.
+BM-0205 fine-clock shares remain instrumented observations, without assumed
+timer-cost subtraction or transfer into uninstrumented performance claims.
+
+Two-compiler full token/frame and complete-owner qualification passes under
+TVG-1270. Every compiler/owner produces 61643620 archive bytes for 211938580 raw
+bytes across 57 frames; complete bytes/restorations match the frozen reference.
+No inner counters/clocks are added. Complete-owner qualification disables outer
+phase clocks, so no elapsed observation or BM-0206 is recorded here.
+
+The enlarged heads add 786432 checked buffer bytes. Finder arrays at a full
+frame are 51904512 bytes; owner minimum is 316151821 versus admitted 315365389,
+with unchanged state size and decoder minimum 130029573. These are workspace
+charges, not a new peak-memory campaign. Larger initialization/reset work may
+offset shorter collision chains; no benefit is inferred. A later full-owner
+campaign must retain exact-output qualification, duplicate admitted controls,
+strict process receipts, complete phase costs, all observations and the retained
+admission criteria. Public selection and earlier failed screens remain unchanged.

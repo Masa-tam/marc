@@ -29306,3 +29306,49 @@ own uninstrumented counter-free differential/timing admission process.
 No public selection, format, ABI, defaults, inventory, fixed binary, fuzz or
 external gate change. Earlier failed probe screens and audit limitations remain
 unchanged. No environmental cause, assumed calibration or public speed claim.
+
+
+## DD-1403: Qualify a private 4MiB five-prefix bucket18 owner
+
+Date: 2026-10-02. Retain DD-1402/BM-0205 as instrumented call-scope evidence,
+not a pure uninstrumented search fraction or a new optimization baseline.
+Review the specialized 1MiB width trials DD-1341 through DD-1343 before this
+proposal: their collision reduction and unstable speed did not admit width18.
+This is an independently qualified 4MiB instance, with no assumed transfer of
+performance. Earlier failed probe screens and audit limitations remain.
+
+Fork the admitted first-party finder/candidate and four bounded frame-layer
+pairs into private benchmark support. Only five-prefix heads change from 65536
+to 262144 entries; three/four-prefix heads remain 65536 each. Keep the original
+32-bit mixer and select its high 18 bits for five-prefix keys. The new partition
+refines high16: identical five-byte prefixes still share the same new bucket.
+Their newest-to-oldest order is unchanged, so every candidate able to improve
+the established four-byte match remains reachable. Removed old-bucket collisions
+have unequal five-byte prefixes and cannot improve that match. A nearest
+four-prefix match whose fifth byte agrees is already in the correct refined
+chain. Window expiry, skipped-position insertion, strict length improvement,
+nearest equal-length ties, eligibility, final tails and bytes are unchanged.
+
+For input N below 3, no head/link arrays exist. Otherwise array bytes are
+4*(2*65536+262144+3*N), checked before storage use. The additional charge is
+786432 bytes, with unchanged input, links, finder/object state and other owner
+buffers. At N=4194304 finder arrays require 51904512 bytes; complete owner minimum
+is 316151821 versus admitted 315365389. Decoder minimum remains 130029573.
+Initialization cost grows; neither smaller collision chains nor this budget
+difference establish elapsed improvement or whole-process peak memory.
+
+Validation preserves exact query boundaries, unchanged outputs/metadata on
+preflight failures, caller scratch rules, sticky errors and publication of only
+earlier successful frames on later-frame failure. The private code has no
+counters, report hooks or inner clocks. Complete owner verification disables
+its enclosing phase clocks. TVG-1270 covers two compilers, exhaustive/admitted
+collision oracles, full token/frame/archive identity, restoration, partial
+sanitizers and fresh integration.
+
+Qualification passes. This stage performs no owner timing or admission screen,
+and allocates no new BM record. Before selection, independently screen the
+counter-free full owner against duplicate admitted controls, including reset/
+allocation/preparation/drain/destruction and memory, under the retained strict
+36-win and at-most-2% control-spread criteria. Do not subtract assumed clock
+overhead or claim a cause from diagnostic counters. No public/default/format/
+ABI/inventory/fixed-binary change, new fuzz campaign or external gate.

@@ -19824,3 +19824,45 @@ and floating-point per-frame intervals/residuals, totals, proportions, paired
 observed differences and duplicate-control spreads. Review append-only public
 docs and absence of local environment details. No isolated-clock-cost,
 uninstrumented fraction, environmental cause or public-admission inference.
+
+
+## TVG-1270: Bucket18 bounds, collision oracles and full-owner identity
+
+Date: 2026-10-02. Transfer first-party admitted FivePrefix tests to private
+bucket18 support and adjust only required array charges. Add explicit extra-head
+charges at lengths 0,1,2,3,4,5 and 4194304, with identical finder state size.
+Generate six binary five-byte prefixes independently: enumerate x from zero,
+append x modulo 256 to little-endian low32(0x12345678+x*2654435761), and group
+the resulting prefixes by the retained hash. Freeze the first group with six
+members and at least three refined buckets. The fixed prefixes share old
+high16 bucket 7245 and occupy high18 buckets 28980,28981,28983, including
+remaining collisions. Repeat them with equal extensions, varied termination
+bytes and a final five-byte tail. Across three windows, six maximum lengths and
+three insertion steps (54 scenarios), compare every visited position with both
+exhaustive and admitted finders. Retain original exhaustive token, wide-distance,
+nearest-tie, maximum-frame, chunking, policy and negative fixtures.
+
+Both compilers pass 25 default tests; two optional corpus tests are skipped in
+those default runs. Explicitly execute the optional finite token/frame test for
+all twelve members on both compilers: 24 full token/frame differentials and
+frame restorations, no skips, 57 frames per compiler. Independently run each
+complete admitted/trial owner against all twelve frozen archives on both
+compilers, with clocks disabled: 48 encodes and 48 restorations. Each compiler/
+owner totals 211938580 raw bytes, 61643620 archive bytes and 57 frames. All archive
+hashes and restored raw bytes match; every finite typed token matches the
+retained indexed reference, with complete serialized frame equality.
+
+Retain exact-budget/one-byte-short, alignment, alias, oversized capacity,
+workspace/object metadata invariance, unused-storage sentinel, one-byte output,
+Flush/EndInput, sticky failure and failed-second-frame nonpublication checks.
+Partial ASan/UBSan passes the 25 default tests with the same two optional skips;
+new private modules and tests are instrumented, retained support libraries are
+not fully instrumented. One targeted aggregate CTest passes in a fresh build
+root; no CTest invocation or discovery occurs in an old root. The preliminary
+build precedes a review correction removing fixture self-range insertion; its
+outputs are retained and final qualification uses freshly built final sources.
+
+Preserve all previous artifacts. Review complete frozen/public/fixed/prior
+hashes, normalized module expressions, corpus manifests, exact budgets and
+append-only documentation. No elapsed campaign, admission, full-suite rerun,
+new fuzz or independently executed external gate is claimed.

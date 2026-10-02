@@ -37537,3 +37537,26 @@ both bounds.
   subtraction, causal environmental claim, public speed/admission, format/
   ABI/default/inventory/fixed-binary change, new fuzz/external gate or legal
   guarantee. Retain earlier failed screens and historical audit limitations.
+
+
+## CR-1574: Private 4MiB five-prefix bucket18 qualification
+
+- Date: 2026-10-02; author/reviewer: Codex; maintainer approved continuation.
+- Task/prompt: pursue candidate-chain optimization privately after the retained
+  tokenizer diagnostics, preserving exact token/stream behavior, bounded owner
+  charges, failure invariance and failed-frame nonpublication before timing.
+- References: IR-1162/DD-1403; first-party admitted finder and bounded layers,
+  retained specialized 1MiB width/noise records, independent exhaustive/indexed
+  token oracles and frozen complete corpus. No external or copyleft source/test
+  expression was consulted.
+- Independent decision: only high18 five-prefix partition and corresponding
+  checked storage layout/charge change. Equal-prefix relative order, all position
+  links, nearest ties, policies, serialization and owner state remain. Twelve
+  modules are first-party transfers; ten remain expression-identical after
+  symbol/include renaming, with finder/header changes reviewed explicitly.
+- Validation: TVG-1270; both-compiler bounds/failure/chunk tests, 54 collision
+  scenarios, 24 full token/frame differentials, 48 complete owner encodes/
+  restorations, partial sanitizers, fresh targeted integration and hash review.
+- Scope: private qualification only. No elapsed benefit/admission, assumed
+  instrumentation subtraction, environmental cause, public format/ABI/default/
+  inventory/fixed-binary change, new fuzz/external gate or legal guarantee.

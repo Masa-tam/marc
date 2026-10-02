@@ -10224,3 +10224,21 @@ expression is consulted.
 - This observes instrumented-path contrasts. It does not isolate the cost of
   a clock call, permit assumed timer-cost subtraction, establish uninstrumented
   proportions or provide an optimization/admission or causal environmental result.
+
+
+## IR-1162: Private 4MiB five-prefix bucket refinement
+
+- Date: 2026-10-02; author/reviewer: Codex; maintainer approved continuation.
+- First-party references: admitted 4MiB FivePrefix finder, candidate and bounded
+  frame/stream/owner layers; exhaustive and indexed token oracles, frozen complete
+  archives, retained memory and failed-frame publication tests.
+- Prior specialized width trials DD-1341/BM-0174 and noise studies DD-1342/
+  BM-0175, DD-1343/BM-0176 were reviewed. They concern 1MiB FivePrefix and did
+  not admit wider buckets. General HashChain cap studies DD-1155 through DD-1160
+  are distinct evidence and do not qualify this specialization.
+- Task: qualify a private 4MiB counter-free owner with 18-bit five-prefix heads,
+  retaining 16-bit three/four-prefix heads, the original full hash mixer, all
+  position links, traversal order, nearest ties and complete stream bytes.
+- No external or restricted implementation/source/test expression consulted.
+  Collisions removed by refinement cannot imply elapsed benefit; enlarged reset
+  work and memory must be included in a separate owner admission campaign.
