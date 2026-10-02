@@ -10145,3 +10145,12 @@ probe/removal records, DD-1394's retained-regression analysis and DD-1367 frozen
 token/frame/raw oracles. Observe necessary-byte would-rejections while executing
 all original candidate work, then classify actual work by the preceding best
 length. No external optimization implementation or test suite is consulted.
+
+
+## IR-1155: Longer-best necessary-byte probe qualification
+
+Use first-party DD-1393's counter-free private owner and guards, DD-1395's
+bounded preceding-best-length distribution, the admitted five-prefix control
+and existing frozen corpus streams. Implement only the independently proposed
+minimum preceding-best length of seventeen. No external implementation,
+optimization source or test expression is consulted.

@@ -19591,3 +19591,34 @@ extension comparisons, as well as actual removed prefix counts and equal bytes.
 Prior source/artifact, qualified library, fixed binary and frozen archive hashes
 remain intact. No old build-root CTest, new timing, full-suite rerun, decoder
 fuzz, public adoption or external qualification is claimed.
+
+
+## TVG-1263: Longer-best counter-free owner identity and failure contracts
+
+Transfer DD-1393's standalone finder/candidate/frame/streaming/owner guards.
+Add a cutoff fixture at preceding lengths 16, 17, 18 and 257, each with and
+without an older improvement and with two tail sizes. The nearest candidate
+establishes the best; the middle candidate passes the original best-length
+byte but fails the preceding byte. Compare the selected result with the
+exhaustive oracle, preserving the nearest equal-length tie or selecting the
+older improvement, including immediate maximum-length termination. These
+sixteen scenarios form one additional test.
+
+Both release compilers pass 24 standalone tests; two optional corpus tests
+are explicitly skipped without their environment inputs. Separate mandatory
+verification performs 48 complete owner encodes and 48 restorations across
+all twelve corpus members, both compilers and admitted-control/trial profiles.
+Every full archive equals its frozen stream byte for byte; the complete encode
+query is exactly 315365389. Each compiler/profile covers the same 57 frames.
+The fresh CMake root passes its single targeted aggregate test.
+
+The private pipeline, original control-owner units, tests and framework source
+also pass 24 tests with ASan/UBSan, with the same two optional skips. Unchanged
+linked static helpers are not newly instrumented; this is not a full public
+decoder or fuzz campaign. An initial boundary-fixture integer-type build error
+is corrected, retaining failed logs and artifacts and using fresh destinations.
+Failure snapshots, workspace/metadata/object aliases, one-byte outputs, end
+latching, exact allocation budgets and failed-second-frame non-publication are
+covered by the transferred guards. Earlier public sources, fixed verification
+binaries, frozen streams and captured prior artifacts remain hash-identical.
+No old-root CTest, elapsed campaign or external qualification is claimed.

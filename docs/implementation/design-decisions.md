@@ -29009,3 +29009,33 @@ claim. The unchanged chain traversal and the new condition itself still cost
 work. Qualify a separate counter-free counterpart before any newly declared
 complete-owner timing; retain the failed earlier numerical/audit evidence and
 strict audit gate. No new timing or public admission occurs here.
+
+
+## DD-1396: Counter-free owner with the extra probe at best length seventeen
+
+Create a separate private owner from DD-1393. Retain the original best-length
+byte rejection first, then compare the byte at best-length minus one only when
+the preceding best length is at least seventeen. Keep five-prefix equality,
+scalar extension, nearest-distance ties, traversal, all-position insertion,
+serialization and ownership policy unchanged. The full-probe predecessor and
+the distribution diagnostic remain separate and unadmitted.
+
+This extra byte is necessary for an improvement: a mismatch there proves the
+candidate cannot reach the preceding best length. The original maximum-length
+break ensures best is below the current bounded maximum before another
+candidate is visited. Both byte accesses remain within input even for overlap
+references, a shortened tail and the maximum match length of 258.
+
+The transfer changes no finder, streaming or owner layout and adds no counters
+or timers to codec modules. Complete encode query remains 315365389 bytes,
+with the existing arrays and buffers; the unchanged decode query is 130029573.
+Failure invariance, alias rejection, exact budgets, chunking, sticky errors and
+failed-frame non-publication retain their existing contracts. No public codec,
+format, ABI, default, inventory or factory selection changes.
+
+TVG-1263 qualifies complete frozen bytes and restoration before any timing.
+The seventeen cutoff is one hypothesis, not an optimal threshold or a speed
+claim. Any subsequent measurement requires a separately frozen protocol,
+duplicate admitted five-prefix controls, all observations and strict successful
+process audit receipts persisted before every observation. DD-1393's failed
+numerical and audit evidence remains; qualification grants no public admission.

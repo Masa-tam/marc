@@ -37376,3 +37376,27 @@ both bounds.
   process peak, fuzz, external qualification, admission or legal guarantee is
   claimed. A single longer-best condition is a future hypothesis requiring
   separate counter-free qualification and declared measurement.
+
+
+## CR-1567: Longer-best counter-free owner qualification
+
+- Date: 2026-10-02.
+- Author/reviewer: Codex; maintainer authorized the next development step.
+- Task/prompt: qualify a separate counter-free complete owner whose extra
+  necessary-byte probe starts at preceding best length seventeen; retain
+  failure invariance and failed-frame non-publication before measuring speed.
+- References: IR-1155/DD-1396 and first-party owner, diagnostic, guard and frozen
+  corpus records. No external implementation or copyleft source/test expression
+  was consulted.
+- Expression/similarity review: intentional first-party DD-1393 transfer with
+  private symbol/include names and only the probe cutoff changed in the codec.
+  Original traversal, equality, extension, insertion, tie and serialization
+  logic remains normalized-identical; a new exhaustive-oracle boundary fixture
+  exercises the cutoff and maximum/tail cases.
+- Validation: TVG-1263; both release compilers, partial ASan/UBSan, fresh CMake
+  integration, complete frozen archive/restored raw identity and unchanged
+  budgets. Initial test-build failure evidence is retained. Public source,
+  fixed binary and captured prior artifact hashes are preserved; docs append.
+- Scope: private qualification only. No speed claim, public adoption, format,
+  ABI, defaults, inventory, fixed verification binary, fuzz, external gate or
+  legal guarantee. The prior trial and diagnostic remain unadmitted.

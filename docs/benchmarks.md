@@ -9250,3 +9250,25 @@ bytes, exact budgets, aliases, failure invariance and failed-frame publication.
 Any future measurement must be separately declared, retain duplicate admitted
 controls and every observation, and require explicit successful process audits
 before each observation. No new BM timing record or public adoption occurs here.
+
+
+### Four-MiB longer-best probe owner qualification (DD-1396)
+
+Qualify a separate counter-free owner with the necessary-byte probe enabled
+only when the preceding best length is at least seventeen. The first-party
+DD-1395 distribution motivated this single hypothesis; retained comparison
+counts are not elapsed-time forecasts. Full-probe and diagnostic candidates
+remain separate and unadmitted.
+
+Both compilers verify all twelve full frozen streams and raw restorations for
+the admitted five-prefix control and trial: 48 encodes and 48 restorations,
+with exact complete-owner encode charge 315365389 bytes. The unchanged decoder
+charge remains 130029573; finder/streaming/owner layout, arrays and ownership
+policy remain unchanged. Standalone guards and the new cutoff-boundary oracle
+test pass, including failed-frame non-publication and failure invariance.
+
+Only the harness verification mode is run; codec elapsed clocks are disabled.
+No new BM timing record, performance result, peak-memory campaign or admission
+is claimed. Any next campaign must freeze duplicate admitted controls, all
+observations and the strict per-observation process audit gate. Qualification
+does not erase BM-0202's numerical failure or its initial audit limitation.
