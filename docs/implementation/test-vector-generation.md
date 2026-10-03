@@ -20650,3 +20650,37 @@ then add four mathematical fixtures for final21 cases, passing two compilers and
 full helper/test ASan/UBSan. Ten related private targets in a genuinely new
 build root pass210 cases. FZ-0065 completes10000 instrumented executions.
 No full8MiB/512MiB fit, speed, peak RSS, public or external gate is established.
+
+## TVG-1298: Large tight-capacity private eight-MiB frames
+
+Date: 2026-10-03. Independently generate full frame fixtures for repetitive
+1MiB/4MiB/8MiB raw input, using one literal followed by greedy length258 matches
+and eligible final match or literal tail. First-party mathematical field/Range
+and explicit prefix equations yield T/E/D/P and complete bytes; compiled
+production code is not a fixture generator. Counts are4066/16258/32515 tokens
+and payload sizes3602/14276/28507 bytes respectively. Tests compare exact bytes.
+
+Eight cases include those three sizes,8MiB periodic binary bytes,8MiB containing
+a repeated marker at distance4194305, final8MiB-minus-one at sequence1 and
+final4MiB-plus-one with frame capacity8MiB, plus numeric universal-capacity
+rejection before allocation. Repetitive/periodic output tokens obey independent
+greedy length/nearest-period equations; history case requires a match distance
+above4194304. All seven generated frames round-trip completely with guarded
+decode tails. Encode repeats deterministically; full-capacity exact budget
+passes and budget-minus-one preserves whole output/layout/bytes_written.
+
+Charge actual controller1008 bytes, vector capacities/spares and still-live
+earlier owners during all count/parse/map/Range/encode stages. Compare each
+nested charged sum to its phase total. Explicit destruction releases encoder
+private storage before decoder allocation; retain and charge raw oracle/frame
+owners and concrete decode controls. Every stage remains within512MiB for the
+admitted recipes, with maximal encode48304517 and decode25987857 bytes. The
+universal prospective ledger1233395411 is rejected numerically, without actual
+huge owners/fabricated spans or an encoder rejection claim for that case.
+
+Two compilers and fully instrumented helper/test ASan/UBSan builds pass8 cases.
+Seven full frame artifacts agree byte-for-byte across all three builds, with
+three independent mathematical fixture hashes also matching. Eleven related
+private targets in a genuinely new build root pass218 cases. Existing decoder,
+serializer and finite encoder production sources remain unchanged. No new
+fuzz campaign, timing, physical peak, all-input fit, public or external gate.

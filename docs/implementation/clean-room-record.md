@@ -38039,3 +38039,21 @@ both bounds.
   Preserve two initial test-condition failures/corrections; production unchanged.
 - Boundary: bounded small-frame qualification, not full8MiB512MiB fit or physical
   peak, throughput, streaming/public/external admission or legal guarantee.
+
+## CR-1602: Large private eight-MiB finite frame qualification
+
+- Date: 2026-10-03. Author/reviewer: Codex; user authorized the next private unit.
+- References: IR-1190/DD-1431 and unchanged first-party indexed/mapper/Range/
+  complete-frame contracts, independent mathematical writer and greedy recipes.
+  No external/copyleft implementation/source or external test suite consulted.
+- Task: qualify tight planned capacities at1/4/8MiB, complete-frame determinism,
+  upper-half history/final short frames, honest retained owners and budget failure.
+- Review: production unchanged; private tests charge actual full capacities,
+  named controller storage, earlier retained owners and concrete helper state.
+  Actual destruction releases encoder private owners before decode allocations;
+  numeric over-budget plans do not create fictional spans or measured owners.
+- Validation: TVG-1298 eight cases/two compilers/full ASan/UBSan; three independent
+  full mathematical fixtures, seven cross-build byte-identical artifacts,
+  eleven fresh targets218 cases and preserved source/artifact/document prefixes.
+- Boundary: recipe-specific512MiB logical admission, not universal input fit,
+  physical peak, performance, streaming/public/external or legal guarantee.

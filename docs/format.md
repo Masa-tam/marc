@@ -8589,3 +8589,10 @@ complete caller capacity, layout and bytes_written. Frame history starts empty;
 known original size and sequence admit exactly one full or final short frame.
 No stream coordinator, empty-stream encoding, checksum/hash integration, public
 identity, format variant or default is introduced.
+
+DD-1431 qualifies the unchanged private eight-MiB frame representation with
+tight capacities at1/4/8MiB raw sizes, upper-half distance history and final
+short frames. Independent repetitive-frame recipes match exact bytes, and
+complete private decoding reconstructs the original raw input. Capacity
+planning/probe qualification introduces no allocator API, new wire identity,
+checksum/hash field, stream coordination or public/default admission.

@@ -30927,3 +30927,48 @@ reservation=1233394403 before external retained owners, exceeding512MiB.
 This is a capacity bound, not simultaneous logical-count maxima or measured
 physical peak. Tight-capacity larger-frame admission, ownership reuse, streaming
 coordination, public profile/default/CLI and performance remain separate gates.
+
+## DD-1431: Large finite eight-MiB frames with tight full-owner capacities
+
+Date: 2026-10-03. Apply IR-1190 to qualify DD-1430 unchanged, using a test
+controller rather than admitting a new production allocator/coordinator.
+Allocate the bounded index only after projected budget admission. Existing
+zero-output indexed query reports output_too_small after exact token counting;
+accept only that specific error with validated F/T and aggregate agreement as
+a count probe. Allocate both token owners for T, then run the normal successful
+tokenizer. Derive exact E/D from its tokens, allocate both operation owners for
+E after admission, and validate the mapper. Zero-output Range query similarly
+reports payload_output_too_small after exact P counting; accept no other error
+as a count. Allocate caller/private whole-frame owners80+P+16 and separate
+private payload P only after projected admission; a successful full-capacity
+Range query confirms the complete plan before the unchanged frame encoder.
+Queries' error results are not generally reclassified as successful plans.
+
+Planning charges actual vector capacities, including spare capacity beyond live
+views, all still-live distinct owners and sizeof controller objects. Each
+helper's full local view/capacity/working plus retained remainder equals the
+same phase total. Earlier owners remain retained through all encoding phases.
+The controller is1008 bytes in qualified layouts; final encode separately
+charges its borrowed workspace/context descriptors and unchanged6708-byte
+production reservation. Equality succeeds, one byte less rejects before caller
+publication and preserves whole output/layout/bytes_written. Repeat encoding
+reuses the same owners; only a test checksum is retained for that comparison.
+Artifact byte equality across builds and mathematical vectors independently
+check complete streams. No synthetic spans or silent last-use memory reuse.
+
+Actual RAII destruction releases all private encoder owners before allocating
+decoder token/raw owners. Retain the original raw oracle and caller frame;
+charge their full capacities, decoder/controller objects and spare capacities
+in decoder admission. Every prospective allocation and actual stage ledger is
+checked against512MiB; this qualifies logical named storage, not allocator
+overhead, physical stack, sanitizer overhead or peak RSS.
+
+TVG-1298 qualifies repetitive1/4/8MiB,8MiB byte-period256,8MiB upper-half history,
+final8MiB-minus-one at sequence1 and final4MiB-plus-one in an8MiB-frame stream.
+Largest admitted encoding ledger is48304517 bytes; largest decoder ledger is
+25987857 bytes for these inputs. Full universal capacities still exceed the
+budget:1233394403 production owners/reservation before external controls; the
+test controller raises the prospective sum to1233395411. Reject that numerical
+plan before allocating its buffers, without fabricated spans or claiming an
+encoder invocation. Successful compressible cases do not imply all8MiB inputs
+fit. No production/API/wire/public/default/CLI, timing or external gate changes.

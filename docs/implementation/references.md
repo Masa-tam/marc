@@ -10517,3 +10517,12 @@ prefix preflight following DD-1428/1429. Independently derive declared field
 counts from the existing equations and generate finite greedy raw/frame fixtures
 with the retained mathematical interval writer. No external source, restricted
 implementation or external test suite consulted.
+
+## IR-1190: Large private eight-MiB frame capacity qualification
+
+Date: 2026-10-03. Qualify the unchanged DD-1430 finite composition with existing
+indexed count probes, typed mapper and scalar Range count probes. Independently
+generate greedy repetitive1/4/8MiB token recipes and exact framed bytes through
+the retained mathematical interval writer. Periodic greedy token equations,
+upper-half history and unchanged complete decoder provide additional checks.
+No external implementation/source or external test suite consulted.
