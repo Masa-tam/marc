@@ -10471,3 +10471,13 @@ field contexts and class equations in a test oracle, and reuse TVG-1286's
 mathematical fixed payloads unchanged. Compare mapped operations through the
 qualified scalar Range encoder, operation decoder and token decoder. No
 external implementation, copyleft source or imported test suite is consulted.
+
+## IR-1185: Private eight-MiB exhaustive raw token reference parser
+
+Date: 2026-10-03. Implement DD-1423's greedy longest/nearest policy from
+first-party canonical LZSS token cost and overlap rules, the eight-MiB parameter
+validator and checked arithmetic/overlap primitives. Author an independent
+oracle selecting descending phrase lengths before source positions; it calls
+no production finder/parser. Validate through the qualified mapper/Range/token
+helpers and independently reconstruct raw bytes. No external implementation,
+copyleft source or imported test suite is consulted.

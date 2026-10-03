@@ -1392,3 +1392,28 @@ crash, timeout, sanitizer or invariant finding. Preserve corpus and logs.
 Coverage is bounded finite mapping/history/transaction/differential; complete
 raw/frame/stream encoding, full composed ownership, performance, external
 verification and public admission remain separate gates.
+
+## FZ-0062: Private eight-MiB exhaustive raw reference parser differential
+
+Explicitly decode a16-byte header: output/scratch capacities as little-endian
+uint16, window uint32, maximum length/retained bytes/already-committed raw as
+three uint16, then minimum length and flags bytes. Remaining bytes are finite
+raw input, capped at128; both token capacities are0..128. Frame/block policy128,
+internal budget32768. Bound campaign input to144 bytes. Independent seeds cover
+empty/one-byte input, short literal-only runs, overlap, patterns, nearest ties,
+farther longer matches, distinct bytes, windows, maximum3 and invalid parameters.
+
+Two parser calls compare semantic results/tokens and guarded unused tails.
+Failures require committed0, whole original caller-output bytes and original
+metadata bytes unchanged. Success compares the independent descending-length
+oracle and forward reconstruction, then mapper/Range encoding/token decoding
+and raw reconstruction. No native serialization cast is used.
+
+Compile harness/parser/mapper/token/Range encoder/decoder/limits together with
+C++20 and `-fsanitize=fuzzer,address,undefined`. Preserve initial successful
+10000 executions. After correcting the simultaneous-result memory reservation,
+a separate final campaign completes10000 executions, seed1426, max_len144,
+timeout10, leak detection disabled, with no crash, timeout, sanitizer or
+invariant finding. Coverage is finite reference parsing/transaction/differential;
+indexed speed, complete frame/stream encoding, composed owner memory, external
+verification and public admission remain separate gates.

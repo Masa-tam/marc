@@ -37946,3 +37946,22 @@ both bounds.
   tests and failed build configuration logs.
 - Boundary: finite mapper only; no raw/frame/stream encoder, full owner/RSS fit,
   performance, external/public admission or legal guarantee.
+
+## CR-1597: Independent private eight-MiB exhaustive token reference parser
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1185, DD-1423..1425, first-party canonical LZSS cost, overlap,
+  token/field/Range rules and checked primitives. No external/copyleft source
+  or test suite consulted.
+- Task: implement finite longest/nearest reference parsing with minimum-five
+  eligibility, full raw/dual-token ledger and transactional output/metadata.
+- Review: bounds before search, normalized fields, overlap semantics, nearest
+  maximum-match stopping and complete private generation before commit. Add
+  second concurrently live result reservation; final working charge328.
+- Validation: TVG-1293 twenty tests with two compilers and ASan/UBSan, independent
+  exhaustive/seeded vectors, finite mapper/Range/token/raw differential, fresh
+  seven-target CMake tests and FZ-0062 final10000 executions. Initial successful
+  qualification artifacts remain preserved after ledger correction.
+- Boundary: finite reference parser only; no indexed performance claim,
+  complete frame/stream encoder, full owner/RSS fit, external/public admission
+  or legal guarantee.

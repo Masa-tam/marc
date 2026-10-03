@@ -30647,3 +30647,51 @@ phase lifetime reuse, complete owner memory fit, speed, external verification
 and public admission remain separate gates. Next: a private deterministic raw
 reference parser using the declared longest/nearest, minimum-five eligibility,
 with bounded storage and exhaustive/indexed differential before frame assembly.
+
+## DD-1426: Private eight-MiB exhaustive raw-to-token reference parser
+
+Date: 2026-10-03. Add a finite private correctness reference for nonempty raw
+frames1..8388608 bytes. History starts at zero for every call; already-committed
+raw bytes affect total-output accounting only. At each greedy parse position,
+examine legal distances in ascending order and compare up to the configured
+maximum length, capped at258 and remaining input. Replace the best only for a
+strictly longer match. A maximum-length match permits stopping because nearer
+distances were already examined. Choose a match only at length at least five:
+canonical baseline match cost9 is strictly below2L. Parameters still specify
+wire minimum3; maximum3/4 is valid and produces literals only. Overlap compares
+against the original finite raw input, which is equivalent to forward copying
+the eventual match. Literal/match unused fields are normalized to zero.
+
+Reference search has quadratic worst-case distance work, with bounded258-byte
+comparisons. It is not a throughput candidate; do not qualify arbitrary full
+eight-MiB random input performance from repetitive/small-vector tests. Before
+search, validate parameters, finite raw size, frame/block/total-output policy,
+checked capacity multiplication and aggregate storage. Count-only query reports
+exact tokens and raw size even when caller token capacities are insufficient.
+The transactional entry checks all full-region aliases, counts, generates into
+explicit private scratch, verifies query agreement and only then copies tokens
+and commits metadata. Every failure commits zero tokens and preserves the whole
+caller output and original metadata bytes; scratch is private/discardable.
+No allocation or shared mutable state is introduced.
+
+Charge the raw input view, BOTH complete token capacities, concrete working/
+control storage and separately retained owners, including spare raw-owner
+capacity. Qualified working charge is328: search working88, two plans80, two
+results64 and six-region reservation96. Reserve both outer transaction and query
+count-result objects that can be live together. Initial296-byte qualification
+artifacts are retained; final328-byte code is requalified. This conservative
+named-storage ledger is not physical stack/RSS or composed encoder memory fit.
+Position/length/count updates remain within the validated finite raw extent;
+distance is bounded by position and window, so every indexed byte is in input.
+
+Twenty tests pass with two compilers and fully compiled ASan/UBSan. Independent
+descending-length/source-position oracle covers exhaustive binary inputs of
+length1..10 across three windows, every one-byte value, seeded random/patterns,
+nearest ties, farther longer matches, window and length boundaries. A repetitive
+maximum-size frame reconstructs exactly. Parser-to-mapper-to-Range-to-token/raw
+differential, both capacities, parameters/policies, exact/under budgets,
+retained bytes, numeric overflow and full-tail/live aliases also pass.
+FZ-0062 final10000-run campaign passes; fresh CMake covers parser and six prior
+private layers. No wire/public change or complete frame publication is added.
+Next: exact-key indexed search with exhaustive token equality before finite
+frame assembly and separately qualified ownership/performance gates.

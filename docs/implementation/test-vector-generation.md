@@ -20510,3 +20510,32 @@ and unsuccessful build configurations. A genuinely fresh six-target CMake run
 passes mapper, Range encoder, frame/token/Range/prefix decoder tests. FZ-0061
 completes10000 bounded executions. This is finite helper qualification, not a
 raw/frame/stream encoder, full composed memory fit, speed or external gate.
+
+## TVG-1293: Private eight-MiB reference parse and raw reconstruction
+
+Date: 2026-10-03. Independently select candidate phrase lengths in descending
+order, then nearest source position, without calling a production parser/finder.
+Compare semantic token fields and reconstruct matches by forward overlap copy.
+Enumerate all2046 nonempty binary strings of length1..10 at windows1/3/8388608
+(6138 cases inside one test). Cover all256 one-byte inputs, explicit repetitive
+overlap, nearest ties, a farther longer match, window boundaries, lengths near
+258 and maximum-length parameters3/4/5/17/257/258, plus100 deterministic seeded
+random/pattern inputs. Maximum raw frame8388608 repetitive bytes produces32515
+tokens, ending in length253, and reconstructs exactly; this does not establish
+worst-case full-frame search throughput.
+
+Twenty tests include nonempty-frame policy, raw bounds, invalid parameters,
+both token capacities/count-only diagnostics, exact/one-byte-under full ledger,
+retained-owner bytes, numeric/total-output overflow, policies and complete unused
+tail/input/metadata aliases. Require whole caller-output and actual original
+metadata-byte invariance on failure. Successful independent tokens are compared
+by semantic fields, excluding unspecified padding. Five finite raw recipes also
+pass the mapper, Range encoder, token decoder and independent raw reconstruction.
+These sequential helper checks do not prove complete composed ownership fit.
+
+Initial twenty-test/fuzz/CMake artifacts remain; after adding a second concurrent
+result reservation, final working charge328 agrees across two compilers and
+fully compiled parser/mapper/token/Range/core/framework ASan/UBSan. Leak detection
+is disabled. Final twenty tests, a genuinely new seven-target CMake run and
+FZ-0062 final10000 executions pass. Frame/stream chunking/publication, indexed
+speed, complete memory/RSS and external gates remain later work.

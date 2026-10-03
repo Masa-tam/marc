@@ -8547,3 +8547,11 @@ history and exact T/E/D/F before committing its caller operation view and
 metadata. It accepts valid short3/4 matches independently of the later raw
 parser's minimum-five policy. Explicit scratch is private/discardable, and
 mapped operations do not establish a complete frame or authorize publication.
+
+DD-1426 implements a private exhaustive raw token parser for the reserved
+eight-MiB representation. It uses the already specified greedy longest/nearest
+and minimum-five eligibility, preserving valid wire3/4 matches for decoders and
+typed inputs. Nonempty finite raw frames start with empty history; an empty
+logical stream remains the later outer coordinator's responsibility. Tokens and
+metadata commit only on complete success. No wire identity, public profile or
+complete raw/frame/stream encoder is admitted by this finite parser.
