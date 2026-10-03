@@ -38464,3 +38464,26 @@ new timed/fuzz/external campaign, physical-memory claim, public integration or
 speedup is established. Late range/prefix inconsistency injection remains an
 explicit gap. Release-wide similarity review remains separate; no legal guarantee
 is claimed. Next isolated prepared-stream fuzz/replay qualification: CR-1623.
+
+
+## CR-1623: Private prepared-stream malformed and fuzz/replay qualification
+
+2026-10-04; author/reviewer: Codex. Task: qualify DD-1452 / IR-1211 / TVG-1319
+with isolated prepared-stream fuzz/replay, unchanged operation/safe stream
+oracles, complete retention and distinct candidate/mid-drain failure contracts.
+Repository-derived harness and deterministic recipes only; no external or
+restricted implementation source was consulted or translated.
+
+Review preserves every old codec/helper/fuzzer/replay source. Six tests / 744
+replay inputs pass both optimized routes and fully instrumented helper/test/
+framework address and undefined-behavior sanitizers, leak detection disabled.
+Full Packet tails and random-generator controls are reserved in final admission;
+intermediate successful builds remain saved. Related regression passes 26 targets
+/ 469 cases. Actual FZ-0070 completes 10,000 bounded sanitizer fuzz runs with
+151 initial seeds and seed 1452; no crash, hang or sanitizer finding observed.
+Independent wire-mutation decoder schedules retain identical bounded raw/terminal
+behavior. Candidate failure and already-valid-frame mid-drain prefixes are
+separate assertions. Late range/prefix inconsistency injection remains a gap.
+No new timing, external verification, physical-memory claim, production integration
+or speedup is established. Release-wide similarity review remains separate;
+no legal guarantee is claimed. Next measurement-recipe provenance: CR-1624.

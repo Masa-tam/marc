@@ -32321,3 +32321,47 @@ was required. No speedup, production integration, new fuzz or external validatio
 is claimed. Late range/prefix inconsistency injection remains unconfirmed.
 Next DD-1452 / IR-1211 / TVG-1319 / CR-1623: extend isolated malformed-input and
 fuzz replay coverage to the prepared stream before any timing or public decision.
+
+
+## DD-1452: Private prepared-stream malformed and fuzz/replay qualification
+
+2026-10-04. Add isolated prepared-stream fuzz and replay sources only. Keep every
+codec/helper, safe/reference encoder, old fuzzer/replay and private decoder source
+unchanged. Four destroyed encoding scopes compare operation stream, safe-owned
+stream, prepared whole-view and prepared chunked schedules. Compare wire, status,
+error category/position, consumed bytes and actual allocation-fault receipts;
+decode the resulting wire after encoder destruction. Enforce complete-frame
+boundaries for candidate generation failures. Distinct mid-drain unsupported-flag
+and alias errors add zero output and leave prefixes inside already validated
+frames; strict consumption exposes only complete earlier raw frames.
+
+A separate fixed retained result holds wire mutations: truncation, bit alteration,
+trailing bytes and selected header/frame fields. Decode each under independent
+whole-view and seven-byte input schedules, with zero output and one/64-byte output
+capacity, comparing complete raw output and stable terminal/error results. Mutated
+payload can remain valid when no integrity check exists; do not assert that every
+bit alteration must be rejected. Hard decoder limits bound total output to 256
+bytes, frames to 64 bytes and compressed payload to 1,240 bytes. Guard all full
+output tails and bound calls at 65,536. Terminal repeats add zero counts.
+
+The codec logical diagnostic ceiling is 8 MiB. Retain the complete five results,
+two decoder results, raw/controller/control arrays and full allocator receipts.
+Reserve the entire 264-byte replay Packet even for short callback input and the
+full replay random-generator control object. Prospective workspace admission and
+actual spare capacities remain charged; only real scope destruction releases
+owners. These logical reservations exclude hidden framework/allocator/runtime
+memory and are not resident-memory measurements. Intermediate successful builds
+remain retained; final qualification uses the strengthened retention accounting.
+
+Six replay tests comprise 744 deterministic inputs and pass both optimized
+compiler routes plus fully compiled helper/test/framework address and undefined-
+behavior sanitizers, with leak detection disabled. Fresh related regression:
+26 targets / 469 cases. FZ-0070 completes 10,000 actual libFuzzer runs with seed
+1452, 151 preserved initial seeds, max input 264 bytes and raw size 256 bytes,
+address/undefined-behavior instrumentation and a saved successful idle audit.
+No crash, hang or sanitizer finding is observed in that bounded campaign. This
+is not large-frame fuzz coverage, a throughput result or public integration.
+Late range/prefix inconsistency injection remains explicitly unconfirmed.
+Next DD-1453 / IR-1212 / TVG-1320 / CR-1624: define the isolated prepared-stream
+lifetime measurement recipe and admission ledger before audited timing or any
+production/speed decision. Preserve existing benchmark and stream oracles.

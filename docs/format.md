@@ -8786,3 +8786,14 @@ Generated cyclic, mixed, literal-only and far-distance cases also agree. A faile
 candidate second frame or tail exposes no candidate byte; strict known-size
 consumption rejects the incomplete stream and publishes only prior complete raw
 frames. This qualification adds no profile, algorithm ID or public format.
+
+
+### Private prepared-stream malformed/replay qualification (DD-1452)
+
+No format, profile or algorithm ID changes. Prepared encoding remains byte-exact
+with the unchanged operation and safe-owned streams under bounded schedule/fault
+replay. Failed candidates end at complete earlier frames; mid-drain API failures
+can retain prefixes inside validated frames but add zero output on the failing
+entry. Wire mutation decoding is bounded and schedule-independent. An altered
+payload without an integrity check can remain valid, so mutation tests distinguish
+stable decoding/error behavior from universal corruption detection.

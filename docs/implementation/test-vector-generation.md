@@ -21301,3 +21301,35 @@ Retain the initial harness failure caused by carrying one path's lower ceiling
 into the next; qualify the corrected independently admitted paths in new outputs.
 No new timed, fuzz or external campaign. Late range/prefix injection remains
 unconfirmed. Next isolated prepared-stream fuzz/replay gate: TVG-1319.
+
+
+## TVG-1319: Prepared-stream malformed and fuzz/replay vectors
+
+2026-10-04. Six isolated replay tests cover every byte, 165 size/frame/schedule/
+literal combinations, 17 actual allocation stages, 50 altered size/flag/profile/
+payload cases, 128 deterministic random packets and 128 wire-mutation/mid-drain
+packets: 744 total. Preserve prior owned replay source and compare separately
+destroyed operation, safe-owned, prepared whole and prepared chunked scopes.
+
+Candidate failures require complete prior wire boundaries. Mid-drain alias and
+unsupported-flag injection fails with zero counts and guarded output; the
+unchanged decoder exposes only complete prior raw frames from the partial wire.
+Separately mutate truncation, bits, trailing data and header/frame fields, then
+compare whole/seven-byte input and zero/one/64-byte output decoding. Cap decoded
+output at 256 bytes, frame size at 64, payload at 1,240 and calls at 65,536.
+
+Full fixed result arrays, raw/controller/observer controls, complete 264-byte
+Packet tails, replay random-generator storage, call views, allocator receipts
+and workspace spare capacities remain reserved under an explicit 8-MiB codec
+logical ceiling. Physical runtime/heap usage is not established. Final replay
+passes both optimized routes and fully instrumented helper/test/framework
+address/undefined-behavior sanitizers, leak detection disabled. Related fresh
+regression passes 26 targets / 469 cases.
+
+FZ-0070 is an actual 10,000-run address/undefined-behavior libFuzzer campaign,
+seed 1452, max input 264 bytes, raw 256 bytes, frames 1..64 bytes, per-input timeout
+10 seconds, 151 initial seeds including explicit mid-drain/mutation recipes.
+Save source bindings, build/run commands, seed hashes, corpus, pre-run idle audit
+and actual completion receipt. No crash/hang/sanitizer finding was observed.
+No new timing/external or large-frame fuzz claim; late range/prefix inconsistency
+injection remains unconfirmed. Next measurement-recipe gate: TVG-1320.

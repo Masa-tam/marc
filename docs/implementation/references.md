@@ -10706,3 +10706,14 @@ finite/owned-stream and operation-stream oracles, unchanged private decoder and
 independent large repetition vectors. No external implementation or source was
 consulted. This unit adds real large-stream tests; no new fuzz, timed or external
 campaign is established.
+
+
+## IR-1211: Private prepared-stream malformed and fuzz/replay qualification
+
+2026-10-04. Qualify DD-1452 using the repository's independently authored
+DD-1450 prepared coordinator, DD-1451 large-stream qualification, unchanged
+operation/safe-owned stream oracles and unchanged private decoder. Derive a new
+isolated harness from the repository's own prior owned-stream harness, leaving
+that source and its replay tests unchanged. No external implementation source
+was consulted. FZ-0070 records the actual bounded sanitizer fuzz run; no timing
+or external-validation campaign is added.
