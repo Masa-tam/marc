@@ -8708,3 +8708,11 @@ complete-frame representation. Fragment drain and allocation ownership do not
 alter IDs, variants, profile limits or wire bytes. Failed frames publish no bytes;
 output counts can include previous valid bytes produced in the same failing call.
 This isolated test-only transform does not change public codecs or CLI behavior.
+
+### Real-frame owned stream qualification (DD-1444)
+
+The private owned coordinator matches the unchanged stream representation for
+two one/eight-MiB repeat frames and an optional32-byte final frame. Failed second
+or short-tail frames expose no wire fragments. Previously emitted complete frames
+remain valid; a partial known-size stream is rejected by the unchanged decoder
+only after retaining the prior valid raw frames. No IDs or public paths change.

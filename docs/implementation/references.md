@@ -10638,3 +10638,10 @@ Date: 2026-10-04. Use the first-party DD-1442 generation owner, DD-1432
 known-size stream reference, independent complete-wire vectors and existing
 private decoder. Independently implement fixed allocation receipts, initialization
 admission and stream state control. No external implementation or test suite.
+
+## IR-1203: Real-frame owned stream qualification
+
+Date: 2026-10-04. Use first-party DD-1443 coordination and DD-1434 large stream
+fixtures, independent repeat-frame wire vectors, unchanged operation-based
+stream encoder and stream decoder. Independently add bounded typed allocation
+receipts and scoped phase reservations. No external source or test suite.

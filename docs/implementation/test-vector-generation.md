@@ -21110,3 +21110,39 @@ incorrect policy-fixture assumptions were corrected; all failed evidence is
 retained. Final scoped qualification reserves result buffers and separates decode
 consumers. No new fuzz, timed/external campaign or real large-stream qualification
 is claimed by these small-stream tests.
+
+## TVG-1311: Real owned streams, replacement peaks and short tails
+
+Date: 2026-10-04. Eight first-party tests use independently authored one/eight-MiB
+repeat frames, explicitly updated little-endian stream sizes/sequences and a
+32-byte repeat-frame fixture. The unchanged operation-based stream encoder
+agrees with expected whole wire in a separate scope. Owned encoding uses three
+input schedules and whole/one/seventeen/257-byte output capacities as applicable;
+zero output, deferred/repeated EndInput and neutral Flush are covered. The
+unchanged decoder compares each committed output fragment with the source and
+checks output guards, terminal status and sticky terminal calls.
+
+A fixed sixteen-receipt allocator wraps actual exact typed new[]/delete[] storage.
+Instrument before old-generation release and after real destruction; compare
+replacement live peaks5722124/43937266 and final short-tail live blocks
+5505253/42205413 with independent token/payload counts and unchanged full raw/
+index capacity. Caller/fixture/comparison, allocator, concrete controls, call
+views, workspaces and spare capacities remain in conservative scoped reservations.
+Reference, encode and decode codec owners are destroyed between phases. Caller
+reservation overlap is conservative; codec component reconciliation counts each
+owner once. Inclusive initial limits5565580/42265740 pass; one below allocates
+nothing. The initial one-MiB fixture was corrected to a coherent maximum block
+size after the first run rejected invalid configuration; failed evidence is kept.
+
+Inject failure at allocation8 (second-frame token) and13 (short-tail token).
+The earlier one/two complete frames remain wire-exact and decode byte-exact;
+then the incomplete stream fails. Counts include accepted failed-frame input
+and valid same-call output; guards and retained generation are preserved until
+actual destruction. Pending real-frame drain rejects an oversized complete call
+view before progress and keeps the full private publication unchanged.
+
+Both compiler routes and full test/helper/framework ASan/UBSan pass8 cases,
+leak detection disabled. All reported scalar properties and six complete/partial
+wire artifacts agree across all three routes. Related21 targets/411 cases pass
+in a fresh build. Input here is repetitive byte65; no general worst-case memory
+fit, speed, new fuzz/timed/external campaign or public integration is claimed.

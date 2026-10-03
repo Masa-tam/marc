@@ -38314,3 +38314,23 @@ pass in a fresh build. Existing source/artifact hashes and exact document prefix
 remain preserved except deliberate private test registration. No new fuzz/timed/
 external campaign, physical memory peak, universal fit, large-stream qualification,
 speedup, production integration, release similarity review or legal guarantee.
+
+## CR-1615: Real-frame owned stream qualification
+
+Date: 2026-10-04. Author/reviewer: Codex, user-approved continuation.
+Task: qualify unchanged private coordination on real one/eight-MiB frames,
+short tails, full scoped phase budgets, allocation failure and pending drain.
+Use first-party independently generated frame fixtures, stream reference and
+decoder only. Independently define fixed receipts, actual lifetime observations
+and phase reservations. External compressors and restricted source/test suites
+remain intentionally unconsulted.
+
+Review checks independent whole wire, separate codec scopes, actual destruction
+before owner subtraction, old/new generation peak, full short-tail raw/index
+owners, initial admission before allocation, truthful failure counts and no
+failed-frame output. Eight cases pass both compiler routes and full sanitizer
+builds with leak checking disabled; related21 targets/411 cases pass. Existing
+source/artifact hashes and document prefixes are preserved except deliberate
+private test registration. No new timing/fuzz/external campaign, worst-case fit,
+physical process-memory peak, speedup, production integration, release similarity
+review or legal guarantee is claimed.

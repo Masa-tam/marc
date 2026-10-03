@@ -31884,3 +31884,79 @@ Next gate: qualify real one/eight-MiB frames and full-frame-plus-short-tail stre
 with explicit scoped encode/decode/comparison owner ledgers, including pending
 fragment admission and replacement peaks. Then decide whether a dedicated
 stream fuzz campaign and measured comparison justify production integration.
+
+## DD-1444: One/eight-MiB owned streams and short-tail lifetime accounting
+
+Date: 2026-10-04. Add a separate test-only real-frame qualification target for
+the unchanged DD-1443 owned coordinator. No codec/reference/helper source,
+public library, CLI, defaults, format IDs or wire representation changes.
+
+Use independently authored repeat1m/repeat8m complete-frame fixtures, build the
+known-size stream header by explicit little-endian field updates, repeat two
+full frames with explicit sequence fields and optionally append the independent
+32-byte repeat frame. The input consists of byte65. For each successful shape,
+the unchanged operation-based stream encoder runs in its own destroyed scope
+and agrees with those complete-wire fixtures. The owned coordinator then runs
+whole-input, boundary-adjacent and deterministic irregular chunk schedules;
+output capacities are whole wire, one byte for one-MiB boundary runs, seventeen
+bytes for eight-MiB boundary runs and257 bytes for irregular runs. EndInput is
+repeated on the final suffix or deferred until all known input is accepted;
+Flush is neutral. Begin with zero output and prove no header/input progress.
+
+Bounded fixed allocator receipts wrap the unchanged default exact allocator.
+Report the complete allocator/instrumentation object plus256 callback bytes;
+no instrumentation vector grows. Each successful allocation records its actual
+full typed-array capacity. Actual typed deletion precedes subtraction from live
+bytes and clearing the corresponding receipt. Five current and five candidate
+generation blocks can coexist with initial raw/index. Compare observed block
+peak with full initial owners plus twice the independently known generation
+capacity: rawF + index4*(65536+F) + 2*(24*T + 3*P +160).
+
+Reserve complete caller/controller/fixture/comparison owners, named controls
+and separate whole call extents before allocation. Construct reference, owned
+encoder and decoder phases separately, releasing codec owners through scope
+exit rather than logical last use. Retained harness owners and call views form
+conservative reservations that can exceed their physical union; raw/index,
+current/candidate generations, coordinator/helper and allocator controls are
+reconciled once within the codec ledger. Prospective output/workspace admission
+precedes allocation and vector spare capacities remain counted. Old and new
+output-step owners coexist during decoder step replacement and are admitted
+before that assignment. These are bounded logical reservations, not RSS/stack,
+allocator overhead or universal fit for other inputs/profiles.
+
+Observed owned block peaks are5722124 bytes for one-MiB frames and43937266 for
+eight-MiB frames. After the32-byte final frame, live blocks remain5505253 and
+42205413 respectively: full raw/index plus the small current generation. Neither
+raw nor index shrinks at the short tail; their unused full-owner tails remain
+charged. With the complete whole-call harness reservation, successful encode
+phase ceilings are10007083/77781593 for exact two-frame streams and
+10007495/77782005 for short-tail streams. Reference and decode phases have their
+own explicit totals. These values qualify only the stated repetitive input.
+
+Inject an empty receipt at the first allocation of the second full generation,
+and at the first allocation of the32-byte third generation. Failed frames emit
+no fragments; earlier header/frame bytes and accepted raw input are accurately
+reported even when the failure occurs in the same call. Output guards remain
+unchanged. Decode the partial stream and require only the first full frame or
+two prior full frames, then malformed-stream error. The old generation remains
+allocated until coordinator destruction; all receipt records finally reach zero.
+Initial inclusive ceilings5565580/42265740 permit raw/index; one byte below
+calls no allocator. The one-MiB numeric fixture limits its maximum block to
+one MiB so the configuration remains valid below an eight-MiB internal ceiling.
+
+While the first real full-frame publication is pending, reject a complete output
+view one byte beyond the remaining logical allowance before any drain, input
+consumption or allocation. The independently validated full private publication
+remains byte-exact; full owner accounting includes any unused capacity.
+
+Eight tests pass both compiler routes and fully compiled test/helper/framework
+ASan/UBSan, leak checking disabled. All scalar ledger properties and six saved
+whole/partial wire artifacts agree across routes. Related21 targets/411 cases
+pass in a fresh build. No new timed, fuzz or external campaign, throughput result,
+incompressible/worst-case stream fit or production integration is claimed.
+
+Next gate: a dedicated bounded stream-coordinator fuzz/differential campaign,
+covering arbitrary binary data, frame/chunk/output schedules, flags, allocator
+failure points and sticky output contracts with explicit harness limits. Preserve
+all evidence. Only after that campaign should a separately admitted measured
+comparison inform production integration or further ownership optimization.
