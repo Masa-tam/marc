@@ -21247,3 +21247,27 @@ individual numeric threshold are distinct assertions. Concrete DD-1449 matrix
 reserves later large/tail, bounded fuzz and measured campaigns; none run in this
 design unit. Late range/prefix injection remains unconfirmed without an isolated
 and fully accounted test seam.
+
+
+## TVG-1317: Private prepared-owner small-stream differential qualification
+
+2026-10-04. The new isolated coordinator target contains 21 tests. Retain the
+five independent small-stream vectors and unchanged operation-stream oracle;
+add separately destroyed safe-owned/prepared lifetimes for sizes 0, 1, 7, 8, 9,
+31, 97 and 139. Exercise every small split, one-byte input/output, randomized
+chunking, deferred end, final suffixes, empty input, constructor faults,
+all five first-generation and five replacement allocation faults, wrong receipt
+capacities, full-region aliases, unsupported flags, external overflow, exact
+inclusive and one-byte-below budgets, and actual release receipts.
+
+New explicit mid-drain tests retain a complete first frame and seven bytes of
+an already validated second frame. Unsupported flags, overlapping call views
+and oversized full output admission each fail with 0/0, unchanged guards and no
+new allocation. After encoder destruction the unchanged private decoder returns
+malformed input and exactly the first eight raw bytes. This is distinct from
+candidate encoding failure, which never publishes the failed candidate.
+
+All 21 pass on both optimized compiler routes and fully instrumented helper,
+test and framework address/undefined-behavior sanitizers, with leak detection
+disabled. No new large prepared-stream, fuzz, timed or external campaign is
+claimed. The subsequent real large-stream qualification is TVG-1318.

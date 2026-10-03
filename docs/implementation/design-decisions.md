@@ -32242,3 +32242,40 @@ implement and qualify the additive small-stream coordinator in isolated tests,
 recording actual admission/controls and distinct mid-drain error coverage. Real
 large-frame, fuzz and separately audited measurements remain later gates. Late
 range/prefix injection remains an explicitly unconfirmed item without a test seam.
+
+
+## DD-1450: Private prepared-owner small-stream implementation
+
+2026-10-04. Add LzssPositionDistance8mPreparedStreamEncoder as an isolated
+known-size immutable-direction transform. Embed the qualified prepared finite
+owner and reuse the unchanged stream allocator interface. Preserve the old safe
+owned and operation stream implementations. The ten-receipt bridge tracks full
+current/candidate capacities until actual release; raw/index admission remains
+joint and precedes callbacks. Entry admission charges complete call views even
+while only draining. The owner partition retains raw spare tails, full index,
+caller controls, underlying allocator/callbacks and old/new generations.
+
+Derive working controls from actual coordinator size and the larger sequential
+helper requirement. In this qualification working_bytes is 12,740 and the
+coordinator object is 800 bytes; the previous safe coordinator remains 12,100.
+The inclusive replacement test records 262,642 allocation bytes and an exact
+281,366-byte admission including its supplied retained/call controls. One byte
+below rejects safely. These are logical reservations, not resident-memory or
+hidden allocator overhead measurements.
+
+Preserve accepted/validated counters, EndInput suffix repetition, neutral Flush,
+explicit final end, one-byte progress and sticky terminals. Candidate failure
+publishes no failed frame and retains truthful prior same-call output. Separate
+mid-drain flag/alias/budget errors add zero output on the failing entry, although
+prior calls may already have exposed a prefix of a validated frame. The unchanged
+private decoder publishes only complete earlier raw frames on that truncated
+wire. Do not claim sink rollback or complete-frame alignment for such API errors.
+
+Twenty-one small-stream tests pass on two optimized compiler routes and fully
+instrumented helper/test/framework address and undefined-behavior sanitizers;
+leak detection is disabled. A fresh isolated regression build also qualifies the
+existing 8 MiB targets. This adds no public codec, production source, default,
+format ID or CLI path. No speedup, large prepared-stream, new fuzz or external
+qualification is claimed. Late range/prefix injection remains unconfirmed.
+Next DD-1451 / IR-1210 / TVG-1318 / CR-1622: qualify real large prepared-stream
+lifetimes, retained capacities and failure prefixes before any fuzz or timing.

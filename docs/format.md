@@ -8763,3 +8763,15 @@ already valid frame can leave an incomplete wire prefix; this is not publication
 of an unvalidated candidate. The decoder still rejects incomplete known-size wire
 without exposing an unfinished raw frame. No ID, flag, profile or default changes,
 and this design establishes no new stream implementation or qualification.
+
+
+### Private prepared-owner small-stream qualification (DD-1450)
+
+The isolated prepared-owner coordinator emits the existing private 8 MiB
+position-distance stream representation. Header, frame prefix, token coding,
+range termination and frame-local resets are unchanged. It adds no format ID or
+public profile. Small vectors and both unchanged stream oracles agree exactly.
+Candidate encoding failure exposes no candidate frame. A mid-drain API error
+adds zero bytes on its failing entry but can leave earlier output ending inside
+an already validated frame; strict decoding rejects the incomplete known-size
+stream and exposes only prior complete raw frames.

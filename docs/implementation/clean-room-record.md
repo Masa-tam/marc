@@ -38419,3 +38419,26 @@ accepted/validated/end/drain state and candidate versus mid-drain error boundari
 Keep actual controller thresholds and later qualification unconfirmed until
 execution. No new implementation, stream/fuzz/timing/external evidence, speedup,
 physical memory, release similarity review or legal guarantee follows from design.
+
+
+## CR-1621: Private prepared-owner small-stream coordinator
+
+2026-10-04; author/reviewer: Codex. Task: implement DD-1449 using the independently
+qualified finite prepared owner while preserving unchanged stream oracles,
+complete capacity accounting and failure publication contracts. Repository
+references only: IR-1209, DD-1450 and TVG-1317. No external or restricted
+implementation source was consulted or translated.
+
+Additive private coordinator and isolated tests reuse the repository's own
+allocator/protocol machinery and replace only the finite owner. Review verifies
+unchanged production sources and old oracle files, ten full receipt lifetimes,
+checked ownership partition and terminal behavior. Twenty-one small tests pass
+on two optimized compiler routes and fully instrumented helper/test/framework
+address and undefined-behavior sanitizer builds; leak detection is disabled.
+Distinct mid-drain API failures preserve earlier wire prefixes and expose only
+complete prior raw frames through the unchanged decoder. Actual control
+reservations are recorded without resident-memory claims. No public integration,
+new large-stream qualification, fuzz campaign, timing, external verification or
+speedup is established. Late range/prefix injection remains unconfirmed.
+Further release-wide similarity review remains separate; no legal guarantee is
+claimed. Next real large prepared-stream qualification: CR-1622.
