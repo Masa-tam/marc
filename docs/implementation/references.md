@@ -10653,3 +10653,15 @@ stream encoder/decoder and exact allocator. Independently define a bounded input
 grammar, terminal/error oracle, fixed lifetime instrumentation and retained phase
 controls. No external codec source or test suite. Campaign evidence follows
 actual execution; a harness alone does not establish fuzz coverage.
+
+## IR-1205: Scoped owned-stream measurement
+
+Date: 2026-10-04. First-party DD-1443 coordinator, DD-1444 lifetime
+instrumentation, unchanged operation stream and decoder, and DD-1439 finite
+input recipes. Independently write a standalone diagnostic harness; no external
+implementation, source, corpus or timing framework is consulted.
+
+Measured qualification: BM-0210 records sixty admitted process invocations across
+ten conditions, three rounds and two compiler routes, with byte-exact wire/raw
+checks. DD-1446 records process/lifecycle throughput, ratios and complete logical
+reservations. No external implementation or new stream representation.

@@ -32016,3 +32016,109 @@ use independent actual scopes and preserve all results. Admit each reference
 phase before allocation; general inputs may require explicitly larger diagnostic
 limits rather than silently changing defaults. Do not infer physical memory peak
 or production readiness from logical reservations or this small fuzz campaign.
+
+## DD-1446: Separately admitted owned-stream comparison
+
+Date: 2026-10-04. Measure the unchanged operation stream against the private
+owned token stream without public integration. Predeclare three independent
+process rounds for each one/eight-MiB cyclic, distant-copy, random and mixed
+input. Add two identical cyclic frames at each frame size to expose actual
+replacement lifetimes. Alternate encoder order by round; decode the identical
+wire once with the unchanged private decoder. Reset history and models per frame,
+known source size, window eight MiB, minimum match three, maximum258, context47,
+range total32768. Whole remaining input/output views and EndInput are used.
+
+Recipes use xorshift32 seed1439, shifts13/17/5. Cyclic bytes are index modulo256;
+distant copies repeat a random prefix of one MiB plus17 bytes; random uses each
+low byte; mixed uses random every third65536-byte segment and index modulo7
+elsewhere. The one-MiB distant recipe equals random and is not an independent
+compression case. Planning counts exact token/event/payload capacities outside
+timing. The reference benefits from those counts; owned counting remains inside
+its process path. Report process and full lifecycle times separately, including
+reference workspace allocation/destruction in lifecycle, and owned generation
+allocations in process. Owned raw/index construction is included in lifecycle.
+Raw generation, planning, wire/raw comparison are outside timing.
+
+Admit an explicit one-GiB diagnostic logical ceiling before each allocation
+phase; defaults stay unchanged. Full vector capacities, caller views, result
+owners, conservative named controls, allocator callbacks and simultaneous old/new
+generations remain charged until actual destruction. Record reference/owned/
+decoder scopes separately; logical reservations exclude allocator overhead and
+physical RSS. Save strict successful zero-selected-process audit before every
+timed launch; busy/error stops without retry. Preserve all outputs and failures.
+This is a scoped audit, not a machine-wide exclusion guarantee. A benchmark
+campaign identifier is earned only by actual execution. Measurements must guide
+the next integration or storage-policy decision rather than imply readiness.
+
+Measured BM-0210: ten conditions, three independent process rounds in each of two
+compiler routes, sixty successful invocations. Every invocation checks complete
+reference/owned wire equality and exact decoded raw bytes. Independent planning
+counts are excluded from both times; the reference therefore has exact capacities
+in advance, while the owner repeats its own counting. These are comparisons of
+these qualified paths, not general compressor rankings. Each table range spans
+the two route medians of three rounds; individual round ranges remain in evidence.
+No uncertainty bound or physical-memory result is inferred from three samples.
+
+Throughput below is raw MiB/s. Each cell is process / full lifecycle throughput.
+Lifecycle includes construction, vector or typed allocation and real destruction;
+process includes bounded count/terminal checks and owned generation allocations,
+but excludes owned raw/index constructor allocations. The unchanged decoder runs
+once per identical wire, after both encoder scopes have ended. It establishes
+consumer throughput, not a separate decoder optimization.
+
+| Input | Reference encode | Owned encode | Unchanged decode |
+|---|---:|---:|---:|
+| 1 MiB cyclic | 227..259 / 187..210 | 103..111 / 94.6..102 | 733..841 / 590..643 |
+| 1 MiB distant (=random) | 2.77..3.18 / 2.66..3.07 | 1.24..1.36 / 1.24..1.36 | 8.37..9.72 / 8.1..9.43 |
+| 1 MiB random | 2.76..3.14 / 2.65..3.02 | 1.25..1.35 / 1.25..1.35 | 8.25..9.62 / 7.97..9.32 |
+| 1 MiB mixed | 10.6..13.2 / 9.96..12.3 | 5.09..5.91 / 5.07..5.87 | 22.2..24.7 / 21.4..23.8 |
+| 8 MiB cyclic | 239..260 / 208..224 | 104..109 / 98.5..104 | 715..838 / 601..692 |
+| 8 MiB distant | 19.4..21.8 / 18.5..21 | 8.76..9.4 / 8.71..9.34 | 61.6..67.9 / 59..65.1 |
+| 8 MiB random | 0.363..0.38 / 0.361..0.378 | 0.204..0.206 / 0.204..0.206 | 8.12..9.38 / 7.82..9.13 |
+| 8 MiB mixed | 3.23..3.44 / 3.17..3.39 | 1.36..1.43 / 1.36..1.43 | 24.1..27.5 / 23.1..26.7 |
+| 2 x 1 MiB cyclic | 228..261 / 207..233 | 103..110 / 99..105 | 743..854 / 658..744 |
+| 2 x 8 MiB cyclic | 235..256 / 219..237 | 103..109 / 100..106 | 728..822 / 667..745 |
+
+Logical reservations below include full retained source, both result wires, raw
+consumer output, vector spare capacity, complete call extents, conservative named
+controls/helpers and callbacks. They are inclusive phase reservations, not RSS.
+The owned peak includes simultaneous old/new blocks for the two-frame cases;
+actual typed receipts confirm those capacities and zero live blocks after actual
+destruction. Reference vector requests are not instrumented callback counts: the
+raw `allocations` field counts only owned typed-allocator callbacks (seven for one
+frame, twelve for two). A reference/decoder zero does not mean no allocations.
+
+| Input | Wire/raw % | Reference MiB | Owned MiB | Decoder MiB |
+|---|---:|---:|---:|---:|
+| 1 MiB cyclic | 0.38757 | 9.0181 | 8.3865 | 5.1236 |
+| 1 MiB distant (=random) | 100.13409 | 102.2683 | 38.2724 | 33.0146 |
+| 1 MiB random | 100.13409 | 102.2683 | 38.2724 | 33.0146 |
+| 1 MiB mixed | 37.81948 | 43.9765 | 19.5920 | 15.5804 |
+| 8 MiB cyclic | 0.34546 | 70.1528 | 65.1802 | 40.8698 |
+| 8 MiB distant | 12.81492 | 163.4051 | 95.0671 | 68.7616 |
+| 8 MiB random | 100.06559 | 816.2917 | 304.2959 | 264.0302 |
+| 8 MiB mixed | 33.85291 | 320.8063 | 145.5091 | 115.8375 |
+| 2 x 1 MiB cyclic | 0.38223 | 12.0294 | 11.5079 | 8.1349 |
+| 2 x 8 MiB cyclic | 0.34479 | 94.2354 | 90.0953 | 64.9524 |
+
+Decision: do not integrate the current owned stream as a speed optimization.
+Median lifecycle time is1.756..2.378 times the reference across these conditions;
+logical reservation decreases4.33..62.72 percent. The eight-MiB random case drops
+from816.2917 to304.2959 MiB, while remaining slower. Wire equality gives identical
+ratio for both paths; no ratio improvement is claimed. The separately admitted
+one-GiB diagnostic ceiling is needed for the operation reference and does not
+prove default-policy fit for arbitrary sources.
+
+Static call-structure review identifies five dictionary traversals per owned
+frame versus two in the unchanged operation frame: token demand counts once;
+frame demand tokenizes with count/write traversals; final frame encode repeats
+that count/write query. This is a source observation, not timed attribution of
+the regression. Next gate DD-1447 / IR-1206 / TVG-1314 / CR-1618: design a private
+owner-controlled continuation from its prepared token generation to final frame
+coding, reducing repeated parsing. Bind immutable raw/config/position, private
+validated tokens/counts/layout and exact admission; do not accept a caller-forged
+plan, drop validations, release old publication early or reuse buffers implicitly.
+Keep the reference and current safe owned path as differential oracles, then
+qualify wire/raw equality, failure invariance, frame publication, old/new lifetime
+and faults before another separately audited measurement. No production decision
+or implementation of that continuation is made by this measurement unit.

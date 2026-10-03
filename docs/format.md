@@ -8723,3 +8723,15 @@ The fuzz harness exercises the existing private representation and introduces no
 format or public profile. Publication is checked at complete-frame boundaries.
 A partial known-size stream remains malformed even when its prior frames decode;
 excess source input can instead leave a complete valid known-size wire.
+
+### Scoped owned-stream measurement (DD-1446)
+
+The standalone diagnostic compares identical existing private streams byte for
+byte and consumes them with the unchanged decoder. It adds no representation,
+algorithm ID, public profile or default. Frame history/model reset and publication
+contracts remain those of DD-1443. Diagnostic memory limits do not alter format
+limits or establish default-policy fit for arbitrary inputs.
+
+Measured qualification: sixty invocations preserve complete wire bytes and raw
+consumer bytes. The wire/raw ratio is identical for both paths. No publication
+or failure contract changes; existing private codec sources remain unchanged.

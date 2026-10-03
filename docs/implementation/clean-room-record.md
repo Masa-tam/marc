@@ -38354,3 +38354,22 @@ binds current source hashes and verifies preserved source/artifacts, exact docum
 prefixes and bounded first-party harness scope. No external source, speed result,
 physical peak, large arbitrary-input fit, public integration, release similarity
 review or legal guarantee is claimed.
+
+## CR-1617: Private scoped stream comparison
+
+Date: 2026-10-04. Author/reviewer: repository development agent. Task: independently
+write a standalone diagnostic comparison using first-party private transforms,
+input recipes and checked lifetime reservations. External codec source and test
+suites remain intentionally unconsulted. Review byte equality, exact raw decode,
+separate actual scopes, prospective admissions and real old/new deletion; bind
+source and process receipts before reporting actual measurements. No public
+integration, release similarity review or legal guarantee follows from this task.
+
+Completed review: actual BM-0210 completes sixty independently audited process
+invocations, exact wire/raw equality, retained scoped capacities and real owned
+block peaks/releases. Two fully instrumented cyclic diagnostic cases pass with
+leak checking disabled; timings excluded. Source-bound review checks unchanged
+codec/reference files, all preserved artifacts and five exact document prefixes.
+The slower owned path is not integrated; reducing redundant dictionary traversals
+is the next independently qualified private design gate. No new fuzz/external
+campaign, default-policy fit, physical memory or legal guarantee is claimed.

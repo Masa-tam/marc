@@ -21179,3 +21179,23 @@ prefix publication, real allocation lifetime, output guards and consumer committ
 raw bytes are checked. Zero output and terminal misuse are included. Unsupported
 flags are first-call/terminal cases; random corrupted wire and actual large frames
 are outside this grammar. This finite run count is evidence, not exhaustive proof.
+
+## TVG-1313: Scoped actual-frame stream measurements
+
+Date: 2026-10-04. Use the explicitly defined DD-1446 first-party recipes at
+one/eight MiB, and two identical cyclic frames at each size. Each invocation
+independently plans and admits capacities, ends reference and owned encoder
+scopes, checks complete wire equality and decodes exact raw bytes in a third
+scope. Require truthful process counts, bounded calls, no zero-progress result,
+stable terminal behavior and actual allocator release receipts. Three rounds,
+alternating encoder order, are specified before collecting data. Keep process
+and lifecycle timing, ratio and logical capacity reservations separate. No speed,
+physical memory or campaign-completion claim precedes actual evidence.
+
+Actual BM-0210 completes sixty invocations without a wire/raw/count/lifetime
+failure. All two-route count/capacity/length observations agree across three rounds.
+Both qualified paths preserve unchanged codec sources and previously admitted
+failure/fuzz evidence. Two cyclic diagnostic cases also pass with all harness and
+helpers instrumented for address/undefined checks, leak checking disabled; their
+times are excluded. This does not claim sanitizer coverage of all ten recipes,
+a new fuzz/external campaign or a fresh full regression-suite run.
