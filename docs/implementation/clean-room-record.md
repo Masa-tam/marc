@@ -38057,3 +38057,23 @@ both bounds.
   eleven fresh targets218 cases and preserved source/artifact/document prefixes.
 - Boundary: recipe-specific512MiB logical admission, not universal input fit,
   physical peak, performance, streaming/public/external or legal guarantee.
+
+## CR-1603: Private known-size eight-MiB stream coordination design
+
+- Date: 2026-10-03. Author/reviewer: Codex; user authorized the next private unit.
+- References: IR-1191/DD-1432, qualified finite encoder/header contracts,
+  unchanged private stream decoder and first-party mathematical interval writer.
+  No external/copyleft implementation/source or external test suite consulted.
+- Task: specify fixed known-size frame boundaries, empty/final-short/end-input
+  rules, validated-slot draining, per-frame vs whole-stream publication and
+  honest persistent/control/call-view retained accounting before implementation.
+- Review: no failed frame bytes, early prefix publication, silent owner reuse,
+  irreversible-observer rollback claim, unknown-original/hash/trailer feature
+  or public/default/CLI widening. New coordinator control C remains unknown.
+- Validation: TVG-1299 mathematical scheduling/failure/ledger/overflow traces;
+  independent36 normal/eight negative streams through unchanged compiled private
+  decoder,792 schedules each of two compilers/full ASan/UBSan; append-only and
+  retained source/artifact review. No new production/CMake/CTest/fuzz/timing.
+- Boundary: design and existing-decoder compatibility only, not implemented
+  stream encoder, concrete new memory fit, physical peak, public/external or
+  legal guarantee.

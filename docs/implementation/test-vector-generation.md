@@ -20684,3 +20684,33 @@ three independent mathematical fixture hashes also matching. Eleven related
 private targets in a genuinely new build root pass218 cases. Existing decoder,
 serializer and finite encoder production sources remain unchanged. No new
 fuzz campaign, timing, physical peak, all-input fit, public or external gate.
+
+## TVG-1299: Private known-size eight-MiB stream design and decoder compatibility
+
+Date: 2026-10-03. Independently create36 normal mathematical streams across
+frame sizes1/4/8 and empty, short, exact, two-frame and final-short original
+lengths, using repetitive/binary raw recipes. Header/frame equations agree
+with retained literal fixtures. Eight negatives corrupt the second payload or
+sequence, truncate header/last payload, add trailing data after normal/empty
+streams, or contradict declared original size. Expected raw output is only
+the previously validated frames, except trailing errors after all valid frames.
+
+Abstract encoder scheduling checks6210 input-split/output-capacity/final-input
+cases, with output capacities1/2/17/112/200 and either final data flags or empty
+end confirmation. All yield the same mathematical stream and no zero-count
+Progress. Another225 schedules inject a current-frame failure and preserve
+only header/earlier complete frames. Eighteen private publication-stage fault
+traces and81 symbolic C/retained/I/O ledger scenarios check commitment ordering
+and checked local-plus-retained equality. Four numeric cases reject overflow
+without fabricated memory spans. These are design-model traces, not evidence
+of implemented encoder state, callback rollback or concrete C storage.
+
+Feed all36 normal/eight negative streams through the unchanged private stream
+decoder in792 schedules per build: one/seven/full input chunks, output
+capacities1/2/17 and final-on-data/empty-final confirmation. Two compilers and
+fully instrumented dependency/harness ASan/UBSan builds pass, with exact raw
+bytes, tail guards, counts/progress, malformed categories and sticky terminal
+status/positions. This independently checks decoder compatibility and existing
+no-failed-frame publication. It does not execute a compiled stream encoder.
+No production/CMake changes, new CTest, fuzz, timing, physical peak, public or
+external gate. Preserve vectors/hashes and original document/artifact prefixes.

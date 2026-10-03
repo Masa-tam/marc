@@ -10526,3 +10526,12 @@ generate greedy repetitive1/4/8MiB token recipes and exact framed bytes through
 the retained mathematical interval writer. Periodic greedy token equations,
 upper-half history and unchanged complete decoder provide additional checks.
 No external implementation/source or external test suite consulted.
+
+## IR-1191: Private eight-MiB multi-frame stream coordination design
+
+Date: 2026-10-03. Reconcile first-party DD-1430/1431 finite-frame encoding and
+DD-1429 header serialization with the unchanged private stream decoder's
+incremental input, validated-frame draining and sticky terminal contracts.
+Independently build mathematical known-size multi-frame vectors and model
+input/output schedules, current-frame failure publication and retained ledgers.
+No external implementation/source or external test suite consulted.

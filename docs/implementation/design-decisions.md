@@ -30972,3 +30972,110 @@ test controller raises the prospective sum to1233395411. Reject that numerical
 plan before allocating its buffers, without fabricated spans or claiming an
 encoder invocation. Successful compressible cases do not imply all8MiB inputs
 fit. No production/API/wire/public/default/CLI, timing or external gate changes.
+
+## DD-1432: Private eight-MiB known-size multi-frame encoder coordination design
+
+Date: 2026-10-03. Apply IR-1191 to design the next private immutable Encode
+transform, retaining reserved dictionary11/context12 and entropy3/variant2.
+Construction supplies validated stream configuration with known original size,
+limits and full borrowed, disjoint workspace owners for its entire lifetime.
+Unknown original size, stored hash descriptors/checksums, alternate reset flags
+and public/profile/default/CLI admission remain unsupported. No allocator or
+actual encoder coordinator is introduced by this design.
+
+The exact stream is112-byte header followed by sequence0..k-1 complete80+P
+frames. Each frame resets dictionary history and Range statistics, covers
+min(frame_size, original_size-validated_raw) raw bytes and increments sequence
+only after successful complete encoding. Empty original size has the112-byte
+header and no frame. There is no end frame or invented trailer. All features/
+hash descriptors/side data/checksum lengths and reserved bytes remain zero.
+The decoder's known original size identifies the last frame; strict end-input
+confirmation still rejects any trailing bytes.
+
+Proposed states are header_prepare -> header_drain -> collecting -> encoding ->
+frame_drain, with frame_drain returning to collecting or awaiting_end;
+awaiting_end -> ended, and any active state may enter sticky error. Header
+serialization validates private scratch before any header fragment is drained.
+Collect into bounded private raw R until the exact next frame length is present.
+Call the unchanged finite encoder with distinct private publication slot U,
+frame scratch Q and payload scratch J. Only complete finish/count/prefix/limit
+validation commits U/layout/size. The slot then remains immutable throughout
+partial downstream draining. Do not collect or encode the next frame while
+header/frame bytes remain pending. Reset R's logical contents only after that
+drain; its allocated capacity and all other owners remain charged.
+
+There are three different commitment boundaries: input consumption into private
+R, successful whole-frame commitment to private U, and actual bytes produced
+downstream. Accepted raw position may lead validated_raw while a frame is
+collected. Advance validated_raw/sequence with checked arithmetic at successful
+private frame commitment, never at count-only query or failure. Advance emitted
+position only for actual output_produced. A frame that fails preparation never
+contributes downstream bytes; header and previously validated frame fragments
+already produced are retained. This is not whole-stream rollback. Error in a
+call may report bytes consumed or earlier valid output produced in that call.
+The existing finite helper's whole-U/layout/size failure invariant remains
+unchanged. If API misuse or later input error interrupts draining an already
+validated frame, its previously emitted fragments cannot be recalled; these
+fragments do not belong to a failed encoding frame.
+
+EndInput is final-suffix intent, not immediate completion: when output pressure
+prevents consumption of a supplied final suffix, the caller repeats EndInput
+on the remaining suffix until consumed. Latch end_seen only after that offered
+suffix is fully consumed, including empty final input. Premature end before
+declared original bytes is an error and never closes a shorter arbitrary frame.
+After original bytes are accepted, the final frame may be validated/drained
+before EndInput; awaiting_end then accepts only empty end confirmation. Extra
+raw input is rejected without unspecified consumption. EndOfStream requires
+exact original count, all header/frame bytes drained and end confirmation.
+Repeated ended calls return EndOfStream with zero counts; repeated errors
+return the same stable error and position with zero counts, matching decoder
+policy. Constructor/config/alias/flag failures are diagnosed before writes.
+
+Flush is neutral, preserving deterministic fixed frame boundaries; ResetBlock
+and unknown flag bits are unsupported. NeedOutput is reserved for pending
+validated/header bytes requiring output capacity, even with zero input count.
+Collection can consume input with no immediate output. NeedInput means no
+further work is possible without input/end confirmation; return Progress only
+when at least one count is nonzero. Zero output capacity cannot imply stream
+completion while bytes are pending. Every supported successful chunk schedule,
+including one-byte input/output and empty final input, must yield identical
+bytes; flags that deliberately close a different frame are not added here.
+
+Persistent buffer bulk B is full R + token pair + full uint32 index + operation
+pair + publication U + private Q + private J. U/Q/J remain distinct owners;
+Range output is a view of Q after byte80. Header storage, configuration, spans,
+state/counters, pending layout and query/overlap/call controls belong to new C.
+C MUST remain unknown until actual class/control objects exist. Largest known
+nested helper reservation is6708; header/prefix helpers are smaller. Proposed
+numeric admission is B+C+6708+external_retained with checked additions before
+construction. For this conservative private encoder, each process call also
+charges full borrowed input/output extents I/O and caller-reported owner spare
+capacity in retained storage before copying or consuming; alias checks include
+those full regions and the owner object. Existing decoder's workspace query is
+not changed by this encoder-side proposal. Budget-constrained successful call
+schedules retain identical encoding; large caller extents can be rejected.
+
+Every nested helper local view/full capacities/state plus checked retained
+remainder must equal the same current top ledger. R spare capacity, all private
+owners, C, external retained and current call views survive logically inactive
+phases unless actual lifetime destruction/release is proved. Header112 is a
+view of C-owned storage, not an extra duplicate buffer charge. This design
+neither borrows caller output as scratch nor assumes phase reuse. DD-1431's
+recipe-specific tight fit cannot establish a universal8MiB workspace; full
+universal bulk still exceeds512MiB before new C and call extents.
+
+No observer callback or stored hash feature is proposed inside this first
+private coordinator. A downstream HashTap observes exactly output_produced
+committed bytes once, including valid fragments, and cannot roll back after
+later failure. A raw-input tap defined over consumed bytes can observe private
+consumption even when that frame later fails; it must not be described as a
+successful-frame-only tap. Future committed-raw/hash callbacks need separate
+non-failing or staged publication contracts; irreversible observers do not
+silently acquire transactionality or introduce new trailer fields.
+
+TVG-1299 checks independent mathematical stream schedules and failure/ledger
+design traces plus compatibility through the unchanged compiled private
+decoder. It does not qualify a production stream encoder, its actual C, peak
+memory, timing, all-input fit, hash integration or public/external admission.
+Next: bounded borrowed-workspace implementation with numeric query, exact
+sizeof control ledger, arbitrary chunking and per-frame failure regressions.

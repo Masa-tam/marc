@@ -8596,3 +8596,14 @@ short frames. Independent repetitive-frame recipes match exact bytes, and
 complete private decoding reconstructs the original raw input. Capacity
 planning/probe qualification introduces no allocator API, new wire identity,
 checksum/hash field, stream coordination or public/default admission.
+
+DD-1432 designs private known-size stream coordination for the unchanged
+reserved eight-MiB format: one112-byte header, then exactly the complete frames
+required by original_size/frame_size, with zero feature/hash/checksum fields.
+Original size zero produces no frame; otherwise sequence starts at zero and
+the final frame has the exact remaining raw length. No explicit terminal frame
+or trailer is introduced. Physical input/output chunking and neutral Flush do
+not alter these bytes; ResetBlock is unsupported. Only fully prepared frames
+may be drained downstream, and a failed frame has no published bytes while
+previously validated output remains. This is a design, not stream encoder or
+public admission; unknown original size remains unsupported.
