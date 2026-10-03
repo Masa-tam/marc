@@ -8491,3 +8491,12 @@ canonical Range finish; explicit private scratch remains discardable on failure.
 Actual raw reconstruction, frame/stream publication and encoder remain later
 gates. Memory requirements for this finite helper include both full token
 buffer capacities and its actual working state, not a complete streaming ledger.
+
+DD-1420 provides a private finite eight-MiB complete-frame raw decoder for the
+reserved representation. It requires exactly the declared serialized frame
+extent, validates prefix/sequence, counts, token history/output and canonical
+Range termination, and reconstructs overlap matches into private raw scratch.
+Caller raw output and layout metadata commit only after complete success;
+failed private token/raw work remains discardable. Query success is not payload
+validity. No public variant, whole-stream/incremental decoder, hash extension,
+encoder or automatic profile selection is admitted by this helper.

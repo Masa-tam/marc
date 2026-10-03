@@ -10417,3 +10417,12 @@ four-MiB operation/token bridge and independent finite interval writer.
 Implement a separate eight-MiB validator without widening public variants or
 dispatch. No external or copyleft implementation is consulted. Fixtures are
 independent mathematical field recipes, not production encoder output.
+
+## IR-1179: Private eight-MiB complete-frame raw decoding
+
+Date: 2026-10-03. Use DD-1416..1419, the first-party prefix preflight, scalar
+Range/token helper, checked overlap/limits and mathematical token fixtures.
+Apply independently specified LZ overlap-copy semantics to validated tokens.
+No external or copyleft implementation is consulted. Complete-frame fixtures
+are formed by explicit little-endian mathematical header/descriptor fields
+and independently generated payloads, not a production encoder/serializer.

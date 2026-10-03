@@ -1284,3 +1284,30 @@ max_len2058, timeout10 under ASan/UBSan/libFuzzer with leak detection disabled.
 It completes without reported crash, timeout, sanitizer finding or invariant
 failure. Preserve initial/evolved corpus and logs. No exhaustive coverage,
 production raw/frame/stream decoder, performance or external gate is implied.
+
+### FZ-0058: Private eight-MiB finite-frame raw publication
+
+Date: 2026-10-03. The independent harness in
+`tests/lzss_position_distance_8m_frame_decoder_fuzz.cpp` supplies four bounded
+buffer capacities and a serialized frame to two private frame decoders. Compare
+results, full raw/typed workspaces and deterministic output. Every failure must
+preserve the entire caller raw buffer and original layout object representation,
+report no consumed/produced frame bytes and leave guards outside spans intact.
+Only successful frames are checked against an independent bounded token/raw
+oracle with explicit literal, history, match and overlap-copy rules.
+
+Input is eight capacity bytes (four little-endian uint16) and at most2128 frame
+bytes. Bounds are raw512, tokens64, events320, decisions2112, token capacities66,
+raw capacities514; serialized payload policy is2048 and internal budget65536.
+Initial mathematical prefixes/payloads from TVG-1287 include complete and zero
+raw-output-capacity cases. Header truncation and large-history boundaries are
+covered by permanent focused tests, not claimed as unbounded fuzz coverage.
+
+Compile harness, private frame decoder, prefix preflight, token helper, Range
+decoder and core limits together with C++20/src includes and
+`-fsanitize=fuzzer,address,undefined`, using a compatible runtime. The bounded
+campaign runs10000 executions with seed1420, max_len2136 and timeout10 under
+ASan/UBSan/libFuzzer, leak detection disabled, and finishes without reported
+crash, timeout, sanitizer finding or invariant failure. Preserve initial/evolved
+corpus and logs. This finite-frame boundary is not an incremental stream
+publication frontier, exhaustive proof, public codec or performance/external gate.

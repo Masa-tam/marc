@@ -30181,3 +30181,57 @@ independent bounded raw replay only after success. This test oracle is not a
 production raw decoder. A fresh CMake build also checks prior Range/preflight.
 Next: bounded private raw reconstruction and complete frame validation, deriving
 full simultaneous workspace requirements before frame-publication integration.
+
+## DD-1420: Private eight-MiB complete-frame transactional raw decoding
+
+Date: 2026-10-03. Add a finite internal frame decoder, keeping public variants,
+stream dispatch and encoder closed. Require one exact serialized frame extent:
+run the DD-1417 prefix/sequence/final-size validator, reject truncated payload
+or trailing frame bytes, then enforce complete working-memory requirements.
+Require two caller-owned private token buffers and private raw scratch distinct
+from caller raw output and layout metadata. All full spans and metadata must
+be pairwise disjoint and disjoint from input/context/referenced stream/limits.
+Input/configuration must remain stable during a call.
+
+Frame requirements return a plan by value. Charge complete serialized input
+once (the payload is a borrowed subspan, not a second owner), both full token
+capacities, both full raw capacities, concrete frame plan/result state, nested
+DD-1419 token-helper working state and separately retained owner bytes. The
+nested helper charge already includes Range state; do not add it twice.
+Delegate payload/model/expansion/aggregate bounds through its checked query,
+with header/raw/frame-state charges passed as separately retained bytes.
+This bounded finite-helper ledger does not claim machine stack/RSS, complete
+incremental stream state, encoder fit or performance.
+
+Decode and validate the complete token sequence and canonical Range finish
+before raw reconstruction. Revalidate each token's frame-local history/output
+bounds, then copy literal or overlap match to private raw scratch, bounded by
+declared raw size. Require exact final raw extent. Commit caller raw bytes and
+layout metadata only after all checks; failure leaves both unchanged. Private
+token/raw buffers are discardable and may retain prefixes. Previously committed
+frames are unaffected; this helper does not manage a whole stream.
+Storage/overlap checks precede payload decoding. Query success validates only
+prefix, extent, capacities and budgets, not the encoded payload. No hash feature
+is admitted by the reserved flags0/frame trailer0 profile in this unit.
+
+Qualification: twenty-four final focused tests pass in two compilers and
+ASan/UBSan, including actual raw reconstruction of all lengths, distance4194305
+after sufficient history, exact eight-MiB output, and a late canonical failure
+preserving that entire output. Guards cover both raw spans and metadata aliases,
+all truncations, full tails, exact budgets, overflows and policy limits. FZ-0058
+adds bounded deterministic whole-frame calls, raw/layout failure invariance and
+an independent small raw oracle. Initial twenty-two-test artifacts are retained.
+A fresh CMake build also runs prior token, Range and prefix targets.
+
+Qualified frame plan/result charge is256 bytes, nested token-helper charge5600,
+total5856 before buffers/serialized extent/retained owners. Scalar call metadata
+is not a physical stack/RSS claim. Serialized-owner allocation beyond the exact
+frame view belongs to the separately retained argument; a borrowed payload view
+does not duplicate the same owner. At full eight-MiB capacities and independent
+conservative prefix ceilings, the finite ledger is369104693 bytes before retained
+owner charges; those numerical ceilings are not a valid encoded frame or an
+actual peak-memory measurement. Large spare capacities are tested by query
+without allocating them. Complete incremental stream state and encoder fit
+remain unqualified. Next: private bounded stream-decoder ownership/state design,
+including partial input/output, per-frame publication and complete retained
+capacity accounting before implementation or public admission.

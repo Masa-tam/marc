@@ -37846,3 +37846,20 @@ both bounds.
   checks and source/artifact/append-only preservation review.
 - Boundary: finite token helper and test-only raw oracle; no production raw/
   frame/stream decoder, encoder, public admission, timings or legal guarantee.
+
+## CR-1591: Independent private eight-MiB complete-frame raw decoder
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1179, DD-1416..1419 and first-party prefix/token/Range/limits/
+  overlap rules. No external or copyleft implementation is consulted.
+- Task: implement bounded complete-frame raw reconstruction and checked full
+  workspace requirements; preserve caller raw/layout on every failure and
+  publish no failed frame. Keep public/whole-stream/encoder gates separate.
+- Fixtures: explicit independent little-endian mathematical frame prefixes
+  combined with independent token payloads; a separately specified stream
+  header and independent raw oracle. No production serializer generates them.
+- Validation: TVG-1287 final twenty-four focused tests, two compilers and
+  ASan/UBSan, fresh four-target CMake tests, FZ-0058 finite fuzz and source/
+  artifact/append-only review. Retain initial twenty-two-test qualification.
+- Boundary: finite private frame only; no incremental/public stream decoder,
+  encoder, complete stream memory/RSS or speed/external/legal guarantee.

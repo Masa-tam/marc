@@ -20334,3 +20334,38 @@ fresh CMake root also runs existing private Range and prefix targets. FZ-0057
 adds bounded transactional token fuzz; no benchmark/external gate or public
 raw/frame/stream codec admission is established. Prior failures and artifacts
 remain preserved; direct supplemental IDs supplement legacy ordinal checks.
+
+## TVG-1287: Private eight-MiB complete-frame raw vectors and publication guards
+
+Date: 2026-10-03. Construct fourteen80-byte frame prefixes using explicit
+little-endian fields, reserved zero bytes, exact event/decision/payload counts
+and47 contexts. Combine with TVG-1286's independently generated payloads; do
+not use a production frame encoder/serializer. A separately written112-byte
+known-size1 stream header connects the private parser to the literal41 frame.
+Mathematical prefix/payload hashes and counts are checked independently.
+
+Twenty-four final tests cover literal41, exact short overlap bytes, all lengths,
+actual raw history at distance4194305, exact8388608 raw bytes and full tail
+guards. The large frame's last-byte canonical corruption leaves all caller raw
+bytes and metadata unchanged, including when private token scratch has a
+validated prefix. Every truncation of the short frame is rejected; prefix-only,
+trailing input and arbitrary noncanonical payload cannot establish validity.
+Malformed before-history/endpoint/length/count/raw extents, crossed identities,
+reserved/header fields, sequence/final-short boundaries and a later failure
+preserving a previously committed frame are independently tested.
+
+Capacity tests cover all four buffers, exact and one-byte-under aggregate
+budgets, full spare capacities including large numeric query capacities,
+retained/arithmetic overflow, frame/block/payload/model/total/expansion limits,
+raw/raw and typed/typed/raw aliases, input/output/scratch overlap, metadata/raw/
+configuration and metadata/input aliasing using byte views of actual live
+objects. No invalid fabricated pointer spans are used. All failed calls preserve
+raw output and metadata; private work is discarded. Frame plan/result256 plus
+nested token-helper5600 is charged once, along with all spans/retained ownership.
+
+Final tests pass with two compilers and fully compiled frame/prefix/token/Range/
+limits/test framework under ASan/UBSan, leak detection disabled. A dedicated
+fresh CMake root also runs prior three private targets. Retain initial22-test
+qualification. FZ-0058 covers finite small whole-frame calls and an independent
+raw oracle; full-history boundaries remain focused tests. No production stream
+chunking, encoder, public admission, benchmark or external gate is established.
