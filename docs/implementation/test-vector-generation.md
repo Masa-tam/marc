@@ -20796,3 +20796,42 @@ No production fix was needed. No new fuzz, timing, physical peak, universal-inpu
 fit, public/default/CLI or external gate. Retain original source/artifact hashes
 and documentation byte prefixes; supplement legacy ordinal documentation checks
 with direct new-heading and append-only verification.
+
+
+## TVG-1302: Lazy token-field design and conditional resource bounds
+
+Date: 2026-10-03. Independently enumerate6144 length3..258/distance-class0..23
+combinations. Check generic D<=9L and, for encoder-domain L>=5,5D<=26L and
+24+6D<=36L. Explicit short-token counterexamples prevent applying the tighter
+raw-encoder policy to generic typed tokens. Check98304 normalization lower-bound
+cases over total1..32768 and three admitted range edges: unit>=512 and no more
+than two byte shifts. Carry/pending accounting and five finish shifts provide
+the separate mathematical P<=2D+5 derivation; enumerations supplement that proof.
+
+Generate27 valid independent token/payload/raw fixtures: single/all literals,
+all lengths including3/4, short overlap, literal/match rescaling, distance classes
+through12 with actual history, and20 deterministic mixed sequences. Lazy field
+generation equals retained mathematical materialized operations; both produce
+identical payloads, decisions and rescale counts. Replay raw references with
+history/size validation. Test-only token files explicitly use little-endian
+kind/literal/distance/length fields without native struct serialization; they are
+not a new repository stream representation. Keep raw/payload/count/hash records.
+
+Feed all27 fixtures through UNCHANGED compiled mapper, count-only operation Range
+query, operation encoder and private token decoder, comparing exact payloads and
+decoded tokens. Two compiler routes and all dependencies/harness instrumented with
+ASan/UBSan pass. This proves reference compatibility of design fixtures, not
+execution of a new token-Range encoder. Full reference-harness vector capacities
+and controls remain retained and reconcile local-plus-retained helper ledgers.
+
+Independently calculate8MiB fixed buffer505256517 and coupled344195247 bounds,
+old18F-buffer sum696516783 after removing operation pairs, and54 symbolic ledgers
+varying C+M/external/call extents with both admissible and rejected examples.
+Symbolic control choices are not actual sizeof or physical-memory measurements.
+Six checked64-bit overflow examples cover token/payload/frame/retained/raw-bound/
+call arithmetic. Default compressed-payload limit67108864 is separately recorded
+against encoder allocation bound87241527, without changing policy. Abstract216
+precommit failure-stage traces specify unchanged caller/descriptor and discardable
+scratch; they do not substitute for implemented late-failure or alias regressions.
+No production/CMake changes, new CTest/fuzz/timing/external or public admission.
+Preserve previous sources/artifacts and append-only documentation prefixes.

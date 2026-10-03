@@ -31181,3 +31181,108 @@ profile change, new fuzz campaign, timed benchmark or external admission occurs.
 The next design should address arbitrary-input memory admission and operation
 materialization before broadening the profile; the selected large-input gate
 alone does not resolve that resource requirement.
+
+
+## DD-1435: Private token-to-Range design without full operation staging
+
+Date: 2026-10-03. The unchanged eight-MiB reference frame path retains two full
+ModeledOperation buffers. Removing that pair while keeping the old18F+5 payload
+capacity still leaves696516783 buffer bytes at8MiB, above512MiB before controls,
+external owners or call views. Design a separate private finite typed-token
+Range helper, keeping the materialized reference, mapper, frame/stream helpers
+and all existing queries unchanged until independent differential qualification.
+This is a design, not a compiled new encoder or public/profile admission.
+
+Proposed query inputs are a stable complete token span, LZ parameters, declared
+raw/token/event/decision context, limits, both payload capacities and explicitly
+retained bytes. Check full extent multiplication/addition, numeric limits and
+metadata feasibility before traversal. Validate every token against parameters,
+raw history, unused fields and remaining declared raw size before bit_width,
+shifts or model access. Validate parameter minimum3, maximum3..258, window1..8MiB,
+zero flags, F in1..8MiB and configured raw/total/model limits. Generic typed input
+continues accepting valid lengths3/4. Declared bounds remain T<=F,2T<=E<=min(2F,5T)
+and E<=D<=min(9F,33T); exact raw/token/event/decision equality is required at end.
+
+Construct one pending field at a time from the unchanged grammar cursor; capture
+its field classification BEFORE acceptance advances the phase. Encode kind,
+literal or length class, optional length extra, distance class and optional
+distance extra in that exact order. Literal context uses the last literal event,
+not a reconstructed match-tail byte; previous kind remains initial0/literal1/
+match2. Length3/4 use class8 and one uniform extra bit. Other length classes
+0..7 encode uniform extra bits LSB first; distance extra bits use adaptive
+contexts24+bit, also LSB first. For every adaptive symbol/bit, compute cumulative
+and current frequency/total, encode, then increment and rescale at32768 using
+ceil(frequency/2), preserving every symbol. All47 models reset for every run.
+Do not batch updates or apply uniform coding to adaptive distance bits.
+
+A count traversal uses the full Range low/range/cache/pending state, adaptive
+models and five finish shifts with a count-only sink, without retaining an
+operation array or payload. It reports exact E,D,P and only a complete grammar
+boundary succeeds. The write traversal resets all state, repeats validated
+fields into a disjoint private payload scratch and finishes completely. Compare
+all resulting counts and P with the count plan before copying P bytes into caller
+output and committing descriptor. Any failure preserves every caller output byte
+and descriptor and returns zero committed bytes; private scratch is discardable.
+All full input/configuration/output/scratch/descriptor extents must be disjoint;
+borrowed input remains stable across both traversals. No callback, partial payload
+publication or output-as-scratch path. A frame coordinator may use the committed
+payload in its private frame slot, but still validates complete prefix/counts/
+limits before its existing single publication commit and subsequent draining.
+
+Proposed private error categories separate overlap, arithmetic, limits, parameters,
+invalid token, token/raw/event/decision count mismatch, payload shortage, invalid
+field and internal finish/count inconsistency, with token/operation indices and
+underlying token error where useful. This does not add public error/algorithm IDs.
+The implementation must establish actual sizeof state/query/control reservations:
+models, Range writer, cursor, one pending operation/token check, counters/results,
+plan/descriptor and full overlap table. New C and largest nested M remain unknown.
+Count-only and writing traversals do not implicitly release any caller allocation;
+all full token pairs/index/raw/publication/frame/payload capacities remain charged.
+Nested local plus retained remainder must equal the admitted top ledger.
+
+Resource derivation: before a decision, range>=2^24 and total<=32768, hence
+floor(range/total)>=512. With positive frequency, at most two byte normalizations
+restore range>=2^24. If S is total normalization shifts, carry/cache delay does
+not create extra bytes: initially pending=1, each shift increases pending or
+emits the prior pending group, and final pending>=1. The five finish shifts give
+P<=S+5<=2D+5. The count traversal still determines actual P; this bound is for
+allocation/admission and does not alter payload bytes or decoder validation.
+
+For CURRENT RAW ENCODER output only, every match length L>=5. Its class
+lc=floor(log2(L-4)) is0..7 and distance class dc<=23, so D_match=3+lc+dc<=26+lc.
+For every permitted L,5*D_match<=26*L and24+6*D_match<=36*L. Literals have D=2,
+raw length1 and token weight24+6D=36. Therefore D<=floor(26F/5) and
+24T+6D<=36F for that encoder domain. These are not generic typed-token bounds:
+length3 at dc22 violates both token inequalities. A valid-history generic frame
+can contain4194304 literal bytes,1398101 length3/distance4194304 matches and one
+final literal: F=8388608,T=5592406,D=44739236, exceeding the raw-encoder aggregate
+bound43620761. This symbolic valid stream is not generated by the greedy encoder.
+Such lengths remain valid subject
+to history and frame limits and must use generic bounds/exact count planning.
+
+Without operation arrays, fixed universal RAW ENCODER capacities T=F and
+Pmax=2*floor(26F/5)+5 give B=29F+262304+3Pmax for raw, index, token pair, two
+80+Pmax frame/publication slots and payload scratch. At8MiB,Dmax=43620761,
+Pmax=87241527,B=505256517, leaving31614395 bytes below512MiB for ALL actual C,M,
+external owners and call extents. This is a symbolic data-capacity result, not
+an admitted compiled profile. Bounded input/output views and honest retained
+source/output spares are necessary; large full call capacities can still fail.
+Pmax exceeds the unchanged default64MiB compressed-payload limit, so that limit
+can separately reject a frame. No default is raised: caller policy must explicitly
+permit a claimed bound, or actual dry-run P must satisfy its smaller limit.
+
+If exact T,D are validated before selecting payload capacities2D+5, the coupled
+buffer sum is5F+24T+6D+262319<=41F+262319=344195247 at8MiB. Indexed count-only
+planning first determines T using raw/index; tokenization retains both token
+owners. The frame planner validates tokens and derives declared E,D with checked
+field equations without storing operations. The generic token-Range query then
+independently validates those declared counts while computing exact P, rather
+than trusting metadata or inventing missing counts. Allocation/replacement must
+reserve old AND new capacities during coexistence, and actual scope destruction
+alone releases owners. Fixed borrowed-workspace stream APIs do not silently gain
+dynamic allocation. Generic short tokens, input/output owners, payload hard limits,
+unknown new controls and actual allocator capacities must each be admitted by
+real queries. Neither capacity formula establishes physical peak, performance,
+whole-stream rollback, arbitrary call fit or universal compiled8MiB acceptance.
+Next: implement only the separate bounded private token-Range helper and prove
+actual sizeof/query/failure behavior against the unchanged operation reference.

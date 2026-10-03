@@ -10557,3 +10557,14 @@ original-size/frame-size/sequence fields, without calling production serializers
 or encoders. Reconcile fixed borrowed-workspace stream encode/decode queries,
 actual vector capacities, retained source/expected/wire owners and concrete test
 controls. No external source, implementation or external test suite consulted.
+
+
+## IR-1194: Private typed-token Range traversal and resource design
+
+Date: 2026-10-03. Inspect first-party indexed minimum-five token selection,
+mapper token validation and field cursor, scalar operation Range normalization,
+carry/finish and adaptive update rules, plus private token decoding. Derive
+resource bounds independently from token lengths and decision counts. Compare
+lazy mathematical token-field traversal with retained materialized mathematical
+operations and the unchanged compiled mapper/operation encoder/token decoder.
+No external source, implementation or external test suite consulted.

@@ -8627,3 +8627,12 @@ encoding produce identical bytes; private consumer output equals every raw byte.
 Real later-frame encode shortage and malformed/truncated later frames preserve
 only previously validated publication. This gate does not admit a new public
 profile, arbitrary-input memory fit, default, unknown-size form or wire change.
+
+
+DD-1435 designs a private typed-token Range traversal producing the identical
+reserved eight-MiB payload and descriptor. Field order, adaptive updates,
+uniform/adaptive extra-bit distinction, five Range finish shifts and frame/stream
+publication contracts remain unchanged. Generic valid length3/4 tokens remain
+accepted; tighter allocation equations apply only to the current raw encoder's
+minimum-five selection policy. They do not replace decoder count/payload bounds,
+raise default limits, introduce a format variant or admit a public profile.

@@ -38124,3 +38124,27 @@ both bounds.
   no production helper change, new fuzz/performance/physical peak, universal
   resource fit, external admission or legal guarantee. No external source,
   implementation or external test suite was consulted.
+
+
+## CR-1606: Private typed-token Range and memory-admission design
+
+- Date: 2026-10-03.
+- Author/reviewer: repository implementation agent; user approved the next
+  arbitrary-input resource design after DD-1434's selected large stream gate.
+- References: IR-1194; first-party indexed selection, mapper/field cursor,
+  scalar Range writer/model rules and private token decoder; retained independent
+  mathematical interval writer and token equations.
+- Task: design lazy token-field traversal, count/write private payload transaction
+  and conditional capacity bounds without full ModeledOperation pair staging,
+  preserving exact bytes, generic short-token acceptance and failed-frame privacy.
+- Review: distinguish generic format validity from minimum-five raw policy;
+  classify bypass field before cursor transition; exact update/rescale/finish;
+  admit every actual owner and old/new coexistence. New C/M remain unknown,
+  defaults/payload limits unchanged; no universal compiled fit or public widening.
+- Validation: TVG-1302 mathematical bounds,27 independent lazy/materialized
+  payload fixtures through unchanged compiled references on two compiler routes
+  and full ASan/UBSan; symbolic ledgers/overflow/design traces; original hashes,
+  append-only docs and supplemented direct new-heading validation.
+- Boundary: design and reference-fixture compatibility only, not implemented
+  token-Range encoder, physical peak, performance, public/external or legal
+  guarantee. No external source/implementation/test suite was consulted.
