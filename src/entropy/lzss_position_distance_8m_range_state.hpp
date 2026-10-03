@@ -3,8 +3,8 @@
 #include "context/lzss_position_distance_8m_context_layout.hpp"
 #include "entropy/contextual_dynamic_range_decoder.hpp"
 namespace marc::entropy::internal {
-// Actual bounded storage charged by private preflight. No decoding yet.
-// A later decoder must use this state and qualify sizeof/lifetime agreement.
+// Bounded storage charged by private preflight and used by the private decoder.
+// The operation decoder statically asserts sizeof agreement with this type.
 struct LzssPositionDistance8mRangeState {
     std::array<std::uint16_t,2599> frequencies{};
     std::array<std::uint32_t,47> totals{};

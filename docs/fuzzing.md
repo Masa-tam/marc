@@ -1229,3 +1229,31 @@ initial seed change. Keep all initial/evolved cases and logs. Bounds remain
 encoded limits 128/2048 and 32768 calls. Compatible annotation settings remain
 unchanged. Finite small-frame coverage complements full-window/distance tests
 and does not establish exhaustive or external qualification.
+
+### FZ-0056: Private eight-MiB scalar Range operations
+
+Date: 2026-10-03. The independent harness in
+`tests/lzss_position_distance_8m_range_fuzz.cpp` instantiates two private
+operation decoders on identical borrowed payloads and verifies deterministic
+results/fields, unchanged caller operation on failure, sticky errors, consumed
+extent and bounded progress. It calls canonical finish only after the declared
+decisions are consumed. No operation or raw frame is published by this harness.
+
+Input is a two-byte little-endian decision count followed by up to2048 payload
+bytes, count0..4096, at most4096 successful field calls. Initial seeds include
+literal41, all literals, all distance classes, invalid length/distance and an
+incomplete token; their payloads come from TVG-1285's independent mathematical
+writer. These bounds intentionally exclude large rescaling sequences, which
+are covered by permanent focused tests instead. Reproducible standalone build:
+compile the harness, private eight-MiB Range decoder and core limits together
+with C++20, src includes and `-fsanitize=fuzzer,address,undefined`, using a
+compatible compiler/runtime. This is not a public codec target.
+
+The final bounded campaign uses seed1418, max_len2050, timeout10 and 10000
+executions under ASan/UBSan/libFuzzer, with leak detection disabled. A prior
+10000-execution campaign and all initial/evolved corpus entries are retained.
+Both complete without reported sanitizer finding, crash, timeout or invariant
+failure. Initial standalone fuzz linkage needed the runtime-compatible CRT;
+its failed build output is retained and is not counted as a fuzz execution.
+Coverage is finite and operation-only: no frame/history/raw reconstruction,
+stream chunking, publication-frontier or external qualification is claimed.

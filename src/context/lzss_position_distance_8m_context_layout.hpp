@@ -20,7 +20,7 @@ inline constexpr auto lzss_position_distance_8m_offsets=[] {
 }();
 static_assert(lzss_position_distance_8m_offsets[24]==2553);
 static_assert(lzss_position_distance_8m_offsets.back()==2599);
-// Storage declaration only; field transitions are later decoder work.
+// Plain bounded grammar storage; private field transitions are defined separately.
 struct LzssPositionDistance8mFieldState {
     enum class Phase : std::uint8_t {kind,literal,length,length_extra,distance,distance_extra};
     Phase phase{Phase::kind};

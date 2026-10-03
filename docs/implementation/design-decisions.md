@@ -30100,3 +30100,41 @@ Next: the private grammar-aware scalar Range operation decoder, using this
 state and the reserved model, with field/interval/canonical termination and
 output-invariance tests. Token/history reconstruction, complete frame decoding,
 encoder work and streaming/public admission remain subsequent gates.
+
+## DD-1418: Private eight-MiB scalar Range operation decoding
+
+Date: 2026-10-03. Use the exact DD-1417 state as the decoder's sole data member
+and assert equal sizeof, preserving the preflight charge. Field transitions
+operate on its plain cursor storage without adding state. Distance alphabets
+are 24; grouped adaptive extra fields have widths 1..23. Class 23 accepts only
+extra zero; class 22 accepts its complete extra range. Length class 7 extra127
+is invalid. Length extras use uniform binary intervals and do not update models.
+
+Begin resets all frequencies to one, totals to their alphabet sizes, grammar,
+counts and canonical replay. Validate descriptor shape, payload extent and
+caller payload/model/aggregate limits before reading the five-byte initial
+state. Decode_next uses only the grammar-selected context, decodes to a local
+operation and assigns caller output only after all field checks succeed.
+Reject output overlap with payload or decoder storage before decoding.
+Errors are sticky except alias rejection which returns without changing state.
+Successful operations remain PRIVATE, discardable scratch; no failed frame is
+published, and no token/history/raw reconstruction is implemented in this unit.
+
+Use integer scalar intervals and bounded forward frequency scanning, increment
+then ceil-half rescaling at total32768, LSB-first extra decisions and independent
+canonical carry replay. Finish requires complete grammar, exact event/decision
+counts and consumed payload, valid positive model totals and byte-exact replay
+including five terminal carry shifts. Repeated finish reports already_finished.
+No public selector/API/CLI or existing codec/default/limit changes. No optimizer
+or timed performance trial; complete future encoder/stream fit remains unknown.
+
+Qualification: TVG-1285 covers independently generated operation payloads,
+twenty-one final focused tests, two compilers and ASan/UBSan, plus a fresh
+dedicated CMake build of operation and prefix targets. Concrete decoder size
+remains 5488 bytes, identical to its charged sole state member. FZ-0056 records
+a finite sanitizer fuzz campaign only for this operation core. Neither these
+counts nor throughput reported by fuzz infrastructure is a performance result.
+Next: private operation-to-token assembly and history/output-bound validation,
+with token-scratch invariance and full canonical finish before frame publication.
+Public stream/header admission, encoder and complete simultaneous memory ledger
+remain separate later gates.

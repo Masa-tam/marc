@@ -37811,3 +37811,20 @@ both bounds.
   fresh dedicated CMake test, source/artifact preservation and append review.
 - Boundary: no existing codec/parser/default change, Range/token/raw decoding,
   frame-publication proof, public admission, performance or legal guarantee.
+
+## CR-1589: Independent eight-MiB scalar Range operation decoder
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1177, DD-1416/1417; first-party four-MiB scalar interval,
+  grammar and canonical carry mathematics; no external/copyleft consulted.
+- Task: implement private eight-MiB scalar operation decoding using the
+  charged state, preserving output invariance and failed-frame nonpublication.
+  Adapt first-party scalar code, with separate free grammar transitions on
+  existing storage, 24 distance classes and 23 adaptive binary models.
+- Fixtures: independent finite mathematical writer with explicit operation
+  recipes and carry finalization; production Range/cursor code is not used.
+  Literal41 agrees with the prior hand-checkable six-byte vector.
+- Validation: TVG-1285, twenty-one focused tests in two compilers and ASan/UBSan,
+  fresh CMake tests, FZ-0056 bounded fuzz, append-only/source/artifact review.
+- Boundary: operation scratch only; no token/history/raw/frame/stream decoder,
+  production encoder, public admission, optimization or legal guarantee.

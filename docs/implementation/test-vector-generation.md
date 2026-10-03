@@ -20266,3 +20266,38 @@ CTest, new codec round trip, fuzz, timings or external archive gate.
 Check exact source/CMake scope, unchanged old codec/fixed artifact hashes and
 append-only documents. Supplemental record IDs receive direct checks in
 addition to the legacy documentation validator's limited ordinal coverage.
+
+## TVG-1285: Private eight-MiB scalar Range vectors and failures
+
+Date: 2026-10-03. Generate finite payload fixtures with an independent integer
+interval writer: separate model arrays, explicit cumulative sums and forward
+LSB-first decisions, carry cache and five final shifts. No production encoder,
+decoder or field cursor generates the fixtures. Store fixed byte arrays in
+the tests. The DD-1416 literal41 vector remains 00207fffbf00. Compare decoded
+operations to separately prescribed sequences and require canonical finish.
+
+Coverage includes all 256 literals, all lengths3..258, all distance classes0..23
+and lower/upper extra values (class23 extra0 only), class22 extra1, mixed
+literal/match contexts, 70000 repeated literals (six model rescalings) and
+33000 class23 matches (26 rescalings, including all 23 binary models).
+These are operation-level sequences; top-class endpoints are not claims of
+valid dictionary history or reconstructed raw frames. Invalid length259 and
+class23 extra1 fail without changing caller output. Independent same-symbol
+noncanonical payload fails exact replay; individual bit mutations must either
+change the decoded literal or be rejected, since no checksum exists here.
+
+Twenty-one final focused tests additionally cover every truncation of the
+all-distance payload, initial descriptors and exact/one-byte-under state plus
+payload budgets, sticky errors/restart, incomplete grammar, count/trailing
+failures, grouped decision exhaustion, input/state aliases, model invariants
+and transactional grammar updates. Static state agreement and test properties
+retain 5488 bytes. Final tests pass with two compilers and fully compiled
+decoder/limits/test framework under ASan/UBSan, leak detection disabled.
+Fresh dedicated CMake qualification includes this target and the preceding
+nineteen-test preflight target. Initial failed budget fixture and successful
+nineteen-test outputs are retained; the fixture needed max_block_size to obey
+the existing validate_limits relationship before isolating memory thresholds.
+
+FZ-0056 covers only the private operation decoder. No frame publication,
+chunked byte-stream codec, production encoder, complete peak memory query,
+speed measurement or external cross-platform gate is established here.

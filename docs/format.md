@@ -8474,3 +8474,10 @@ in the checked aggregate, with separately retained owner/helper charges supplied
 by the caller. Actual Range/token/frame decoding and public admission remain
 later work. Existing parser acceptance, formats, defaults and inventory do not
 change. Private scratch and failed-frame publication guarantees remain intact.
+
+The DD-1418 private scalar Range operation decoder uses the reserved eight-MiB
+grammar, 47 models and canonical carry/finalization representation above.
+It exposes only internal operation decoding: successful operations are private
+scratch until later complete frame validation. It adds no public admission or
+bitstream variant; token/history bounds and raw frame publication remain later
+gates. The charged state layout remains the DD-1417 concrete storage.
