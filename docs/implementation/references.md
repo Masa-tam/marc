@@ -10490,3 +10490,12 @@ the private index over caller-owned live uint32 heads/links, checking complete
 keys before match comparison. Use the retained exhaustive reference and
 descending-length oracle unchanged, independent index invariants and qualified
 mapper/Range/token helpers. No external/copyleft source or test suite consulted.
+
+## IR-1187: Private eight-MiB finite frame composition and ownership design
+
+Date: 2026-10-03. Reconcile first-party DD-1423 and qualified indexed parser,
+mapper and scalar Range encoder contracts with the private112-byte stream
+header,80-byte frame prefix, decoder preflight and complete-frame publication
+rules. Independently calculate explicit byte layouts, boundary positions,
+full-capacity retained owners and nested helper ledgers; compare unchanged
+mathematical fixtures. No external/copyleft source or test suite consulted.

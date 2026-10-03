@@ -8561,3 +8561,12 @@ exhaustive policy. Its key/hash/link representation exists only in private
 workspace and is never serialized. Frames still require complete validation and
 finish before publication; neither private query nor token commitment publishes
 a frame. Reserved wire fields, public variants and defaults remain unchanged.
+
+DD-1428 designs finite frame assembly for the same reserved eight-MiB wire
+layout:64-byte frame header plus16-byte Range descriptor plus P payload bytes.
+F/T/E/D/P and sequence follow the existing private preflight rules; all reserved,
+side-data, checksum-trailer and descriptor flags remain zero. Stream hash
+descriptors remain absent. No CRC/hash trailer or alternate frame representation
+is introduced. Private prefix serialization is not frame publication: the
+outer assembler must finish and validate the complete frame before any caller
+frame bytes/metadata become committed. This design admits no public encoder.

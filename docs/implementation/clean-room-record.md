@@ -37982,3 +37982,21 @@ both bounds.
   harness wrong-call invariant stop/input/log; production code is unchanged.
 - Boundary: finite private parser only; no speed/full ownership/RSS gate,
   complete frame/stream encoder, external/public admission or legal guarantee.
+
+## CR-1599: Independent private eight-MiB finite frame composition design
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1187, DD-1423..1427, qualified first-party helper contracts,
+  reserved header/prefix/preflight and retained mathematical vectors.
+  No external/copyleft source or test suite consulted.
+- Task: specify complete F/T/E/D/P/sequence and publication ordering, zero
+  checksum/hash features, full disjoint capacities and nested retained ledger.
+- Review: payload output is a view of frame scratch; caller frame remains
+  untouched until final commit. Distinct private payload scratch is still
+  charged. Separate-owner universal bound exceeds512MiB; assembler C remains
+  unknown and no implicit phase-lifetime reuse is assumed.
+- Validation: TVG-1295 independent layout/vector/position/ledger/overflow and
+  abstract publication calculations, append-only/source/artifact review. Keep
+  initial driver namespace error/diagnostic and corrected completed results.
+- Boundary: design only; no implementation, actual frame round-trip/CTest/
+  fuzz/performance, full owner/RSS fit, public/external or legal guarantee.

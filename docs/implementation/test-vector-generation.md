@@ -20567,3 +20567,35 @@ qualified layouts. Fresh eight-target CMake tests pass. FZ-0063's initial harnes
 call-target mistake and input/log remain; corrected10000 executions pass with
 unchanged production code. No physical peak, throughput, complete frame/stream
 encoder, public admission or external qualification is established.
+
+## TVG-1295: Private eight-MiB frame layout and full ownership calculations
+
+Date: 2026-10-03. Use independently authored explicit little-endian layout
+equations and the retained mathematical field/interval writer, without launching
+or importing compiled production codecs. Reconstruct all14 existing80-byte
+prefix fixtures byte-for-byte; this includes negative payload/history recipes
+and is byte-layout comparison, not their admission. Check8 stream headers,
+including empty original, final short frame and large known original size.
+The literal112-byte header matches the retained independent fixture exactly.
+
+Five validated mathematical token recipes (literal, short overlap, all lengths,
+upper-half and maximum history) produce exact retained payload/prefix bytes,
+and finite80+P frame artifacts. Raw history/count equations are checked; these
+are independently generated design vectors, not production frame round-trips.
+The3/4-match recipes exercise valid typed grammar independently of minimum-five
+raw parse policy. An initial driver used the wrong nested writer namespace and
+stopped before creating frame artifacts; retain it and the diagnostic, then use
+the corrected driver for completed results.
+
+Check741 legal/illegal sequence/committed/raw-size cases and81 capacity scenarios
+across four nested ledgers. Include universal buffer bounds with logical smaller
+payload views, retained/spare capacities and several symbolic control values;
+every helper's charged views plus retained remainder equals the top sum exactly.
+Six numeric cases detect overflow without fabricated memory spans. Ten abstract
+publication traces inject failure before final commit and preserve caller bytes/
+metadata; they are state-design checks, not implementation invariance tests.
+
+Universal separate-owner full-frame bulk is1233387695 bytes, before5820 known
+helper reservation and unknown additional C/X. No full512MiB fit is inferred.
+No production/CMake target change, CTest, sanitizer/fuzz campaign, timing,
+physical peak, complete encoder/public admission or external check is performed.

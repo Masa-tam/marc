@@ -30747,3 +30747,99 @@ indexed calls, and qualify the corrected10000-run campaign. Production parser
 code is unchanged by that harness correction. No speed gate is claimed.
 Next: finite frame encoder composition and ownership planning, explicitly
 charging all simultaneously retained buffers before implementing publication.
+
+## DD-1428: Private eight-MiB finite frame encoder composition design
+
+Date: 2026-10-03. Design the finite assembler before implementation. A frame
+input must exactly equal min(configured frame size, original minus committed),
+with committed below known original size, divisible by frame size, and sequence
+equal to committed/frame size. Dictionary history resets at each frame. Empty
+logical input is a112-byte stream header and no frame, not an empty finite frame.
+Reserved dictionary11/context12/entropy3 variant2,47 contexts, model32768 and
+2599 frequency entries remain private. General public serializers still reject
+these reserved variants; no public selection/default is widened.
+
+Compose indexed parsing, validated token mapping, count-only Range planning,
+complete Range finish, private prefix serialization and final prefix preflight.
+T is parsed tokens, E mapped events, D mapped decisions, P finalized payload.
+Require exact agreement at every handoff and history/raw equality before using
+fields. E<=min(2F,5T), D<=min(9F,33T), P<=min(2D+5,18F+5), F1..8388608.
+The typed grammar still accepts3/4 matches; the raw parser emits minimum-five
+matches. The Range finish includes all five terminal carry shifts. Prefix
+preflight alone never proves payload/history validity; those follow from the
+qualified construction layers and require later real frame differential tests.
+
+Use explicit little-endian stores into private zero-initialized bytes:
+
+| Frame offset | Bytes | Value |
+| --- | --- | --- |
+| 0 | 4 | MRF2 |
+| 4 / 6 | 2 / 2 | header64 / flags0 |
+| 8 | 8 | sequence |
+| 16 / 20 / 24 / 28 / 32 | 4 each | F / T / E / D / P |
+| 36 / 40 / 44 | 4 each | descriptor16 / side-data0 / checksum-trailer0 |
+| 48 | 16 | reserved zero |
+| 64 / 68 / 72 / 74 / 76 | 4 / 4 / 2 / 2 / 4 | D / P / contexts47 / flags0 / reserved0 |
+| 80 | P | canonical payload |
+
+Total serialized frame is80+P. The112-byte stream header retains MARC/version2,
+64-byte common prefix, known original size, dictionary/entropy parameter blocks
+at64/80 and context description at96. Stream hash-descriptor count is0; frame
+checksum/side-data lengths and descriptor flags are0. There is no unspecified
+CRC/hash trailer to invent. Adding stored integrity features requires its own
+format/feature validation and tests. A future external HashTap remains a separate
+committed-byte boundary integration; abstract/native token memory is not a
+canonical hash boundary and irreversible observer updates cannot silently gain
+the frame's transactional contract.
+
+Initial composition uses disjoint raw, two token owners, index workspace, two
+operation owners, caller frame output, private whole-frame scratch and separate
+private payload scratch. Range output is a view of frame scratch after80, not
+another allocation. This third byte owner is necessary with the existing
+dual-payload Range helper while caller frame bytes must remain unchanged until
+complete frame success. Do not borrow caller output as private payload scratch.
+All spans/config/metadata are stable/disjoint in full capacity. Private tokens,
+operations, index and scratch may change on failure; caller frame and layout/
+metadata never do. After complete counts, canonical payload, prefix and limits
+succeed, copy exactly80+P and commit metadata in a final non-failing step.
+No pending prefix/payload may be exposed earlier; unused caller tails stay intact.
+
+Let R be raw-view bytes; T0/T1 full token capacities in bytes; I full index
+workspace bytes; O0/O1 full operation capacities; U caller frame capacity;
+Q whole-frame scratch capacity; J private payload capacity. B=R+T0+T1+I+O0+O1+
+U+Q+J. All retained allocations remain counted even after their contents become
+dead. Let C reserve actual future assembler/control/serializer objects, unknown
+until implemented, and X separately retained owners/spare raw capacity. Known
+largest helper reservation is5820, with parser384 and mapper448. Target checked
+ledger is B+C+X+5820; C must include every additional simultaneously live object,
+and this is not a physical stack/RSS or implemented complete-encoder bound.
+
+Nested retained amounts are total less the helper's own charged views/state,
+using checked subtraction only after full capacity validation. Indexed parsing
+owns R+T0+T1+I+384. Mapping owns12T+O0+O1+448: token-owner spare capacity and its
+other token owner remain retained. Range owns16E+(Q-80)+J+5820: prefix80, operation
+spares/other operation owner and all other allocations remain retained. Prefix
+preflight's declared decoder minimum is F+12T+(80+P)+5488; its retained remainder
+can reconcile to the same total, but does not create new physical raw/token/
+payload allocations or prove encoder fit. The full frame/payload views are
+counted once through their owner; unused tails are never omitted.
+
+At universal worst-case capacities T0=T1=12F, I=4F+262144, O0=O1=32F,
+U=Q=18F+85 and J=18F+5, B=147F+262319. At F8388608 this is1233387695 bytes;
+known helper reservation raises the floor to1233393515 before unknown C/X.
+It exceeds512MiB. These are universal capacity bounds, not a claim that all
+logical count/payload maxima occur simultaneously. Exact smaller capacities
+may admit compressible inputs; universal full-frame admission is not proven.
+Logical phase death does not reduce allocated capacity. Reuse requires explicit
+typed object lifetimes/alignment, overlap legality and tests, or actual release
+and reallocation; neither is silently assumed by this initial design. Do not
+substitute DD-1423's single-token/single-operation/one-owner bulk for this ledger.
+
+TVG-1295 independently checks14 prefix fixtures,8 stream headers, five exact
+mathematical payload/frame recipes,741 position cases,81 four-layer retained
+ledger scenarios,6 overflow cases and10 abstract publication traces. These
+qualify calculations only; no production encoder/frame round-trip, CTest,
+fuzz, speed, physical peak or public/external gate is established. Preserve an
+initial mathematical-driver namespace error and its correction. Next: private
+transactional stream-header/frame-prefix serializers with independent bytes and
+existing private parser/preflight differential before finite frame assembly.
