@@ -37912,3 +37912,20 @@ both bounds.
   checks and append-only/source/artifact review. No production source changes.
 - Boundary: design only; no new encoder, actual round-trip, fuzz/performance,
   complete encoder memory/RSS fit, external/public or legal guarantee.
+
+## CR-1595: Independent private eight-MiB scalar operation encoding
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1183, DD-1423, first-party scalar interval/carry/rescale,
+  declared eight-MiB fields and independently generated mathematical payloads.
+  No external/copyleft implementation or test suite consulted.
+- Task: implement finite private operation encoding with actual dual-payload
+  capacity ledger and transactional output/descriptor, retaining canonical
+  bytes and separate raw/history/frame/public gates.
+- Review: grammar before indices/shifts, checked capacities/aliases and complete
+  private finish before commitment; concrete working/control charge5820.
+- Validation: TVG-1291 twenty-one tests with two compilers and ASan/UBSan, fresh
+  five-target CMake tests and FZ-0060 corrected finite differential fuzz. Preserve
+  initial harness padding comparison stop/seed and test-registration failure.
+- Boundary: operation core only; no raw/frame/stream encoder, full owner/RSS fit,
+  benchmark, external/public admission or legal guarantee.

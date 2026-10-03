@@ -30538,3 +30538,67 @@ qualify actual model/writer/cursor/results and dual-output charges, compare
 fixed independent payloads and decode them through the qualified operation
 decoder. Raw parser/phase/frame/stream ownership and public/external admission
 remain later gates. No existing decoder, public format or default changes.
+
+## DD-1424: Private eight-MiB transactional scalar Range operation encoder
+
+Date: 2026-10-03. Add an internal finite operation encoder for the47-context
+grammar; keep public selectors, raw parser, token mapper and frame/stream encoder
+closed. Adapt first-party scalar integer interval/carry mathematics and reset
+all2599 frequencies to one at each finite call. Validate grammar shape before
+model indexing or shifts. Symbols use bounded cumulative scans and increment/
+ceil-half rescaling at32768. Length extras use uniform low-bit-first binary
+intervals without adaptive updates; distance extras use models24..46, one event
+per grouped field and one decision per bit. Validate length259 and class23
+nonzero extras as malformed operations. Require complete grammar and five
+terminal carry shifts. This core does not validate dictionary history/raw size;
+syntactic endpoint operations are valid here but invalid in complete frames.
+
+The plan returns counts, descriptor and checked requirements by value. Charge
+the full operation extent, both complete payload capacities, concrete working
+and conservative control storage, and separately retained owner bytes before
+the count-only traversal. Reject empty operations, more than16777216 operations,
+invalid limits, excessive table/model/payload, overflow and insufficient output
+or scratch. The operation count ceiling is a finite profile capacity bound;
+raw-frame/block/history semantics remain the later mapper/frame layer. Query
+success does not commit caller bytes or metadata.
+
+The transactional entry rejects pairwise overlap of full operation/limits/
+caller-output/private-scratch/descriptor extents before work. After successful
+planning, encode once into private scratch and require exact count/size agreement.
+Only then copy the complete payload and commit descriptor. Any failure returns
+bytes_committed0 and leaves the entire caller output and descriptor unchanged;
+private scratch is discardable. Stable borrowed inputs/configuration are required.
+Do not infer nonzero commitment from diagnostic payload_size or operation_count.
+Every unused caller/scratch tail is preserved and charged in full. No allocation
+occurs in planning or encoding, and separate calls share no mutable state.
+
+Concrete working-state charge is5820 bytes on qualified layouts: working model/
+writer/cursor/result object5488, two plan/result metadata reservations160,
+transaction-result48, descriptor12 and seven-region reservation112. The sum is
+deliberately conservative across differing control lifetimes; named live owners
+are counted, while scalar call metadata is not a physical stack/RSS measurement.
+This finite dual-payload helper ledger does not prove complete raw/frame encoder
+fit. Existing defaults and the DD-1423 one-versus-two-frame-owner distinction
+remain unchanged.
+
+Twenty-one final tests pass with two compilers and ASan/UBSan. Six independent
+fixed payload recipes cover hand literal, all literals/contexts, literal rescale,
+all lengths/upper-half extra, all distance classes and all adaptive-extra models
+rescaling. Exact bytes also decode to original operations through the qualified
+decoder. Tests cover determinism/reset, all incomplete match phases, malformed
+shapes/lengths/extras, both capacities, full tails, live metadata/input/config
+aliases, exact/one-byte-under aggregate budgets and numeric overflow. A late
+invalid operation preserves the whole caller output; a permanent zero-scratch
+seed checks the original descriptor object bytes, including padding.
+
+FZ-0060's initial harness compared unrelated descriptor padding and used a typed
+copy as an original-byte snapshot; it stopped at an invariant during seed load.
+Keep the input/log and diagnostic single-input execution. Correct the harness
+to compare descriptor values between instances and memcpy original bytes for
+failure invariance; encoder code is unchanged. The corrected10000-run campaign
+passes. Initial20-test artifacts and a duplicate new-target configure failure
+are retained; final fresh CMake tests cover encoder and four prior private
+layers. No speed/external/public/raw-frame encoding gate is established.
+Next: private validated eight-MiB token-to-operation mapper with exact full
+capacity/query contracts, independent token/field differential and history
+bounds before composing any raw/frame encoder.

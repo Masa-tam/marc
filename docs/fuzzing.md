@@ -1339,3 +1339,32 @@ runs10000 executions, seed1422, max_len4097 and timeout10 with leak detection
 disabled, completing without crash, timeout, sanitizer or invariant finding.
 Preserve corpus and logs. This is private bounded fuzz, not exhaustive proof,
 public profile/encoder admission, benchmark or external qualification.
+
+## FZ-0060: Private eight-MiB operation encoder transaction/differential
+
+Date: 2026-10-03. The harness in
+`tests/lzss_position_distance_8m_range_encoder_fuzz.cpp` reads two little-endian
+uint16 capacities followed by ten-byte field records: kind byte, context uint16,
+alphabet uint16, value uint32 and width byte. Decode these explicitly; never
+cast input bytes to a native operation. Bound input to2564 bytes/256 operations,
+both payload capacities0..512, payload/block policy512 and internal budget65536.
+Two calls compare result fields, caller/scratch bytes and descriptor values;
+failures require committed0, whole caller-output invariance and the actual
+original descriptor object bytes unchanged. Success also requires guarded
+unused tails and operation equality/full finish through the qualified decoder.
+
+Initial independent mathematical seeds include literals, lengths/classes,
+invalid length/endpoint extras and zero-output/scratch capacities. The first
+campaign stops during initial seed loading at a padding-unsafe harness invariant;
+retain input and logs. A diagnostic executes the fixed input once and does not
+constitute fuzz coverage. Compare unrelated descriptors by value, and snapshot
+original bytes with memcpy rather than a typed copy. Preserve that zero-scratch
+case as a permanent focused regression. Production encoder code is unchanged.
+
+Compile harness/encoder/decoder/limits together with C++20 and
+`-fsanitize=fuzzer,address,undefined`. The corrected campaign completes10000
+executions, seed1424, max_len2564, timeout10, leak detection disabled, with no
+crash, timeout, sanitizer or invariant finding. Keep both campaigns, diagnostic
+and corpus. Coverage is finite operation syntax/transaction/differential only;
+raw history, frame/stream encoder, public admission, performance and external
+qualification remain later gates.

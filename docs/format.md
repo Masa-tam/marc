@@ -8531,3 +8531,12 @@ baseline LZSS cost9<2L; eligibility is an encoder policy, not an encoded paramet
 or a restriction on valid3/4 match streams. Complete frames must succeed before
 the coordinator exposes bytes. Transactional finite output needs separate
 private scratch; its capacity cannot be omitted from the retained budget.
+
+DD-1424 implements only the private scalar operation encoder for those reserved
+fields and model updates. It preserves canonical payload bytes and requires
+complete grammar/five carry shifts before transactional output publication.
+Caller descriptor/output stay unchanged on failure; explicit private scratch
+may be discarded. The finite operation core accepts syntactic fields without
+proving raw history, so a successful class23 endpoint encoding cannot establish
+valid frame history. No public variant, raw/frame/stream encoder or automatic
+selection is admitted by this operation core.

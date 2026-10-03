@@ -10454,3 +10454,11 @@ frame encoder. Compare DD-1413..1416 phase-storage arithmetic with DD-1420..1422
 transactional decoder/publication contracts and actual47-context grammar.
 Use the independent mathematical fixture writer and canonical baseline LZSS
 cost specification. No external or copyleft implementation is consulted.
+
+## IR-1183: Private eight-MiB transactional scalar Range operation encoder
+
+Date: 2026-10-03. Apply DD-1423 using first-party scalar four-MiB interval,
+carry and model-rescale mathematics, the declared eight-MiB context layout and
+field grammar, and shared checked arithmetic/overlap/limits. Compare output
+against TVG-1285's independently generated mathematical payloads and the
+qualified eight-MiB operation decoder. No external or copyleft source consulted.

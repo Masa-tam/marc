@@ -20452,3 +20452,32 @@ Design checks pass12033 field-mapping cases,4175 finite exhaustive/key-index
 comparisons and13 budget/overflow cases. Three mathematical payloads match the
 retained literal, short-overlap and all-length vectors byte-for-byte. These
 counts qualify the independent design calculations only, not production code.
+
+## TVG-1291: Private eight-MiB Range encoder byte differential and invariance
+
+Date: 2026-10-03. Use TVG-1285's independent mathematical fixed payloads without
+a production encoder as their generator. Independently specify input fields
+for literal41, all256 literals,70000 repeated literals, lengths3..258 with
+distance4194305 extras, every distance-class boundary and33000 class23 matches.
+Compare exact payload bytes/counts, then decode them through the qualified
+operation decoder and compare every field and canonical finish. Endpoint
+recipes test field syntax only; no complete-frame history validity is claimed.
+
+Twenty-one final tests include grammar-incomplete phases, wrong kind/context/
+alphabet/value/width/unused fields, invalid259 length and endpoint extra,
+determinism/reset, both payload capacity shortages, full unused-tail aliases,
+input/live-descriptor/copied-limit aliases, model/table/payload policies, exact
+and one-byte-under aggregate budget, full-capacity overflow and late malformed
+operation invariance. Guard entire caller output and tails. A retained initial
+fuzz seed with output512/scratch0 is a permanent regression: explicitly snapshot
+actual descriptor bytes with memcpy and require all bytes unchanged on failure.
+Distinct successful descriptor instances are compared by value fields, not
+unspecified padding. No fabricated pointer spans are used.
+
+Tests pass with two compilers and fully compiled encoder/decoder/core/test
+framework ASan/UBSan, leak detection disabled. Concrete working charge5820 agrees
+on all qualified layouts. Keep initial20-test artifacts and the initial harness
+invariant stop; corrected FZ-0060 passes10000 runs. A genuinely fresh CMake root
+runs encoder plus prior frame/token/Range/prefix tests after correcting duplicate
+new-target registration. Public admission, raw/frame/stream encoding, peak RSS,
+performance and external verification remain separate gates.
