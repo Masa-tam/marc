@@ -38386,3 +38386,24 @@ range/prefix validations, transactional commit and real release requirements.
 Record qualification gaps explicitly. This design proves no new implementation,
 speedup, memory threshold, stream/fuzz coverage, release similarity result or legal
 guarantee. Existing implementation and artifacts remain unchanged.
+
+## CR-1619: Additive prepared-token finite owner
+
+Date: 2026-10-04. Author/reviewer: repository development agent, user-authorized
+continuation. Independently implement DD-1447 by adapting first-party safe owner
+control/receipt/transaction rules and composing unchanged token-range, serializer
+and preflight primitives. Existing owner/component tests supply regression cases;
+new four-scope differential recipes are independently authored. Restricted codec
+source and external test suites remain intentionally unconsulted.
+
+Review inaccessible private preparation, no final parser/query, full checked
+old/candidate admission, original aliases before snapshots, stable exact allocator
+contracts, unchanged range/prefix validations and commit/release order. Sixteen
+cases pass both compiler routes and full sanitizer compilation with leak checking
+disabled. Record actual controls;11108 working bytes are qualified observations,
+not a universal ABI constant. No late-failure injection, new stream/fuzz/timing/
+external campaign, physical RSS, speedup, release similarity review or legal
+guarantee follows from this finite prototype.
+
+Related23 targets/432 cases pass in a fresh build. Source-bound preservation and
+append-only documentation checks pass; public library/CLI sources remain unchanged.

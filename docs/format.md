@@ -8744,3 +8744,12 @@ with existing private position-distance frames. Parameter/count validation,
 payload finish, canonical descriptor/prefix and complete-frame publication remain
 mandatory. This design adds no ID, profile, flag, layout or default and establishes
 no implementation or interoperability result for a new path.
+
+### Prepared-token finite owner prototype (DD-1448)
+
+The additive private finite owner produces the same existing frame bytes as the
+operation reference and safe owner. Prepared is neither serialized nor a caller
+plan. Unchanged token-range validation/finish, explicit prefix serialization and
+complete prefix preflight precede complete candidate publication. No stream
+coordinator, ID, flag, public profile or default changes. Finite frame equality
+does not establish a new stream's failed-frame publication or chunking behavior.

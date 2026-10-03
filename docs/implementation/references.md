@@ -10672,3 +10672,10 @@ Date: 2026-10-04. Use first-party DD-1446 measurements and the unchanged storage
 adapter, token-frame/range encoders, serializer, preflight and exact allocator
 contracts. Independently define in-call preparation, full phase reservations and
 continuation qualification. No external source, algorithm or test suite is used.
+
+## IR-1207: Private prepared-token finite owner prototype
+
+Date: 2026-10-04. Use first-party DD-1447 and unchanged safe owner, storage
+adapter, token-frame/range encoders, operation reference, serializer/preflight and
+frame decoder. Adapt existing first-party owner lifetime tests and independently
+add four-scope differential recipes. No external implementation or test suite.

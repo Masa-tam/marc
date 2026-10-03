@@ -21212,3 +21212,24 @@ overflow, old/new lifetime and complete old-output/metadata invariance.
 No tests or new campaign execute in this design unit. Late range/prefix failure
 injection requires an explicitly isolated and accounted test seam; streaming,
 fuzz and measurement qualifications are later gates, not finite-owner claims.
+
+## TVG-1315: Prepared-token finite owner qualification
+
+Date: 2026-10-04. Sixteen tests pass two compiler routes and fully instrumented
+test/helper/framework address/undefined checks, leak checking disabled. Reuse five
+independent first-party complete-frame vectors and real typed allocation receipts.
+Check all five fresh/replacement fault stages, exact/under/over-capacity, pending
+refusal, inclusive/one-below budget, real old/new lifetime, destructor release,
+policy/overflow and original/current-publication aliases.
+
+The separate differential driver checks256 one-byte inputs, sixteen small
+size/pattern combinations, a subsequent short tail and literal-only input. Seven
+large cases cover one/eight-MiB cyclic, mixed, literal-only seeded random and
+eight-MiB distant copies. Xorshift seed1448 shifts13/17/5, cyclic index modulo256,
+mixed random every third65536-byte segment else index modulo7, distant random
+prefix1048593 bytes repeated. Each source/result owner remains retained across
+four actual codec scopes; admission precedes reference/owner/consumer allocation.
+Require byte equality against safe owner and operation frame, exact decoded raw
+bytes and helper aggregate agreement. Preserve old sources and prior campaigns.
+Late range/prefix inconsistency injection, arbitrary chunk streaming and new fuzz/
+timing/external qualification remain outside these executed finite tests.

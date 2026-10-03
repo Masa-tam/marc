@@ -1057,6 +1057,27 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     target_link_libraries(marc_position_distance_8m_owned_stream_encoder_tests PRIVATE GTest::gtest_main)
     add_test(NAME marc_position_distance_8m_owned_stream_encoder COMMAND marc_position_distance_8m_owned_stream_encoder_tests)
 
+    add_executable(marc_position_distance_8m_prepared_storage_owner_tests
+        tests/lzss_position_distance_8m_prepared_storage_owner_tests.cpp
+        src/frame/lzss_position_distance_8m_prepared_storage_owner.cpp
+        src/frame/lzss_position_distance_8m_storage_owner.cpp
+        src/frame/lzss_position_distance_8m_storage_adapter.cpp
+        src/frame/lzss_position_distance_8m_token_frame_encoder.cpp
+        src/entropy/lzss_position_distance_8m_token_range_encoder.cpp
+        src/frame/lzss_position_distance_8m_frame_encoder.cpp
+        src/dictionary/lzss_position_distance_8m_indexed.cpp
+        src/context/lzss_position_distance_8m_mapper.cpp
+        src/entropy/lzss_position_distance_8m_range_encoder.cpp
+        src/frame/lzss_position_distance_8m_serializer.cpp
+        src/frame/lzss_position_distance_8m_preflight.cpp
+        src/frame/lzss_position_distance_8m_frame_decoder.cpp
+        src/context/lzss_position_distance_8m_tokens.cpp
+        src/entropy/lzss_position_distance_8m_range_decoder.cpp src/core/limits.cpp)
+    target_compile_features(marc_position_distance_8m_prepared_storage_owner_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_8m_prepared_storage_owner_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_8m_prepared_storage_owner_tests PRIVATE GTest::gtest_main)
+    add_test(NAME marc_position_distance_8m_prepared_storage_owner COMMAND marc_position_distance_8m_prepared_storage_owner_tests)
+
     add_executable(marc_position_distance_8m_storage_owner_tests
         tests/lzss_position_distance_8m_storage_owner_tests.cpp
         src/frame/lzss_position_distance_8m_storage_owner.cpp

@@ -32152,3 +32152,62 @@ implement and qualify the additive finite owner in isolated tests, recording
 actual reservations and reachable failure coverage before stream integration or
 measurement. Late-failure injection without a production-excluded test seam
 remains an explicit unconfirmed item, not implied coverage.
+
+## DD-1448: Additive prepared-token finite owner
+
+Date: 2026-10-04. Implement a separate private prepared storage owner, isolated in
+a test-only target. Existing safe owner, stream coordinator, operation reference,
+adapter and generic frame/range paths are unchanged. Pending refusal, exact
+allocation/reconciliation and generation commit mirror the qualified safe path.
+An inaccessible non-copyable/non-movable in-call Prepared binds raw/index views,
+value copies of stream/limits/sequence/prior, candidate identity, exact token pair
+receipts and successful frame demand. No external factory or plan-consuming API.
+
+After byte allocations, re-admit the complete old/candidate ledger, check stable
+allocator controls and all original/current/candidate/preparation region aliases.
+Final continuation checks bound capacities/counts/profile and consumes const
+tokens through the unchanged token-range encoder, preserving count/write token
+validation and finish. Descriptor/count equality, unchanged prefix serialization
+and complete preflight with the same aggregate precede copying private publication
+and a no-throw generation swap. All failures preserve old publication, layout,
+length and pending; candidate RAII performs real deletion before receipt removal.
+No final dictionary query/tokenization occurs: successful static call structure is
+three traversals instead of five. No measured speedup is claimed.
+
+Working reservation is derived from actual controls and maximum nested helper: on
+the qualified routes11108 bytes,640 above the safe owner's10468. It includes the
+private preparation and simultaneous original/final region arrays. Full raw/index,
+unused token scratch, old/new blocks, caller/configuration/result owners, callback
+controls and external spares stay charged. Inclusive exact replacement budget and
+one below are tested; threshold depends on actual controls and retained owners.
+No implicit reuse, early old release, cached aggregate grant or default change.
+
+Sixteen tests include independent five complete-frame vectors, all256 byte values,
+small patterned/random/literal cases and a subsequent short tail, plus actual
+one/eight-MiB cyclic/mixed/literal-only random and eight-MiB distant copies. The
+differential driver uses four genuinely separate scopes: safe owner, operation
+frame reference, prepared owner and unchanged raw consumer, with full retained
+source/results and prospective admission. An explicit one-GiB diagnostic ceiling
+allows operation references; no universal default-policy fit follows. Other
+regression tests cover pending, all five initial/replacement allocation failures,
+exact/under/over-capacity, real old/new peak and destructor release, policy/overflow,
+original configuration/current publication aliases and invalid positions/empty raw.
+
+Both compiler routes and full test/helper/framework address/undefined sanitizer
+compilation pass sixteen tests, with leak checking disabled. Large cyclic
+qualification reports5634268 and43091949 encode reservation bytes for one/eight
+MiB in its specified harness; these are logical reservations, not physical RSS.
+The finite prototype emits no stream bytes. Late range/prefix inconsistency
+injection remains unconfirmed: no test seam is introduced and success/allocation
+fault tests do not imply that coverage. No new stream/chunk/fuzz/timing/external
+campaign or public integration is established by this finite qualification.
+
+Next gate DD-1449 / IR-1208 / TVG-1316 / CR-1620: design an additive private stream
+coordinator using this owner, deriving its actual controls and complete raw/index/
+old/candidate/call budgets. Keep the safe coordinator unchanged as oracle; specify
+chunking, deferred EndInput, pending drain, short-tail capacities, sticky errors and
+no failed-frame publication before implementing or measuring that stream.
+
+Related qualification:23 targets/432 cases pass in a fresh build root. Existing
+safe stream/owner and malformed-frame tests remain unchanged. Review binds the
+prototype sources and executed qualification; no retained build is reconfigured.
