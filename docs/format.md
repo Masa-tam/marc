@@ -8555,3 +8555,9 @@ typed inputs. Nonempty finite raw frames start with empty history; an empty
 logical stream remains the later outer coordinator's responsibility. Tokens and
 metadata commit only on complete success. No wire identity, public profile or
 complete raw/frame/stream encoder is admitted by this finite parser.
+
+DD-1427 adds private indexed raw token parsing with exact token equality to the
+exhaustive policy. Its key/hash/link representation exists only in private
+workspace and is never serialized. Frames still require complete validation and
+finish before publication; neither private query nor token commitment publishes
+a frame. Reserved wire fields, public variants and defaults remain unchanged.

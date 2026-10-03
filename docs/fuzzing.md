@@ -1417,3 +1417,30 @@ timeout10, leak detection disabled, with no crash, timeout, sanitizer or
 invariant finding. Coverage is finite reference parsing/transaction/differential;
 indexed speed, complete frame/stream encoding, composed owner memory, external
 verification and public admission remain separate gates.
+
+## FZ-0063: Private eight-MiB indexed parser transaction and differential
+
+Extend FZ-0062's explicitly decoded header with workspace excess-word uint16;
+the18-byte header is followed by at most128 raw bytes. Supplied live uint32
+workspace has65536+(field modulo129) words. Both token capacities are0..128,
+frame/block128 and internal budget1048576. Max input146 bytes. Independent
+seeds retain raw/tie/overlap/window/parameter/capacity cases; mutate all header
+fields and raw bytes without casting them to native codec objects.
+
+Two indexed calls compare result/token semantics, complete initialized index
+contents and guards. Failures commit zero and preserve original caller output
+and metadata bytes; private scratch/workspace are discardable. Success also
+compares the unchanged exhaustive parser and independent descending-length
+oracle, then mapper/Range/token/raw reconstruction. Workspace unused tails
+remain guarded and the entire capacity is charged.
+
+Initial harness migration left one call targeting the exhaustive parser, so its
+workspace stayed untouched and the equality invariant stopped during seed load
+on a one-byte raw seed. Keep input/log and record this as an incomplete campaign,
+not a codec defect or completed coverage. Correct that call to the indexed
+parser; the same seed remains in the corrected corpus. Production code unchanged.
+Compile all helpers/harness with C++20 and `-fsanitize=fuzzer,address,undefined`.
+The corrected campaign completes10000 executions, seed1427, max_len146,
+timeout10, leak detection disabled, with no crash, timeout, sanitizer or invariant
+finding. Indexed speed, full ownership, complete frame/stream encoding,
+external verification and public admission remain separate gates.

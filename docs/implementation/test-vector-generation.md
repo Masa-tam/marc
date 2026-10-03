@@ -20539,3 +20539,31 @@ fully compiled parser/mapper/token/Range/core/framework ASan/UBSan. Leak detecti
 is disabled. Final twenty tests, a genuinely new seven-target CMake run and
 FZ-0062 final10000 executions pass. Frame/stream chunking/publication, indexed
 speed, complete memory/RSS and external gates remain later work.
+
+## TVG-1294: Private eight-MiB indexed/exhaustive token equality
+
+Date: 2026-10-03. Keep the exhaustive parser and independent descending-length
+oracle unchanged. Compare every semantic token field and overlap-reconstructed
+raw bytes. Twenty tests cover256 one-byte values, short tails, nearest ties,
+farther longer candidates, overlaps, window expiry, lengths near258, maximum
+parameters3/4/5/17/257/258,100 seeded random/pattern inputs and all510 nonempty
+binary strings length1..8 across three windows (1530 cases within one test).
+Maximum repetitive raw8388608 yields32515 identical tokens in both parsers.
+
+Independently traverse all buckets: links strictly decrease, keys match buckets,
+every raw position with three remaining bytes appears exactly once, final two
+positions stay unindexed, and unused workspace tails retain guards. A generated
+pair of distinct24-bit keys sharing a bucket checks collision filtering. Verify
+inside-match history insertion and repeated calls with different raw lengths.
+Finite mapper/Range/token/raw differential also passes. Negative cases cover
+parameters, empty input, policy, both token capacities, workspace shortage,
+exact/one-byte-under full ledger, retained bytes, arithmetic/total overflow and
+complete unused-tail/input/metadata/workspace aliases. Default full-frame
+worst-case capacities are refused honestly before index work.
+
+Two compilers and fully compiled parser/reference/mapper/token/Range/core/gtest
+ASan/UBSan pass, leak detection disabled. Working charge384 agrees across all
+qualified layouts. Fresh eight-target CMake tests pass. FZ-0063's initial harness
+call-target mistake and input/log remain; corrected10000 executions pass with
+unchanged production code. No physical peak, throughput, complete frame/stream
+encoder, public admission or external qualification is established.

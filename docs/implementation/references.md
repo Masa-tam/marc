@@ -10481,3 +10481,12 @@ oracle selecting descending phrase lengths before source positions; it calls
 no production finder/parser. Validate through the qualified mapper/Range/token
 helpers and independently reconstruct raw bytes. No external implementation,
 copyleft source or imported test suite is consulted.
+
+## IR-1186: Private eight-MiB exact-key indexed token parsing
+
+Date: 2026-10-03. Apply DD-1423's bounded three-byte-prefix index idea and
+first-party exhaustive longest/nearest/minimum-five rules. Independently write
+the private index over caller-owned live uint32 heads/links, checking complete
+keys before match comparison. Use the retained exhaustive reference and
+descending-length oracle unchanged, independent index invariants and qualified
+mapper/Range/token helpers. No external/copyleft source or test suite consulted.

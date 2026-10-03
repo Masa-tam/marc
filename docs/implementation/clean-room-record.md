@@ -37965,3 +37965,20 @@ both bounds.
 - Boundary: finite reference parser only; no indexed performance claim,
   complete frame/stream encoder, full owner/RSS fit, external/public admission
   or legal guarantee.
+
+## CR-1598: Independent private eight-MiB indexed token parser
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1186, DD-1423..1426, first-party bounded index ideas, retained
+  exhaustive reference, independent oracle/invariants and qualified helpers.
+  No external/copyleft source or test suite consulted.
+- Task: implement exact-key/newest-first index, all consumed-position insertion,
+  reset/window/tie rules, full workspace ledger and transactional token metadata.
+- Review: exact keys before comparisons, decreasing bounded links, full-capacity
+  aliases/bounds before workspace writes and query agreement before commit.
+  Concrete named working charge384; preserve default budget refusal honestly.
+- Validation: TVG-1294 twenty tests with two compilers and ASan/UBSan, fresh
+  eight-target CMake and FZ-0063 corrected10000-run differential. Retain initial
+  harness wrong-call invariant stop/input/log; production code is unchanged.
+- Boundary: finite private parser only; no speed/full ownership/RSS gate,
+  complete frame/stream encoder, external/public admission or legal guarantee.

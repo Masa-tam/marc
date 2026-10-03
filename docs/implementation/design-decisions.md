@@ -30695,3 +30695,55 @@ FZ-0062 final10000-run campaign passes; fresh CMake covers parser and six prior
 private layers. No wire/public change or complete frame publication is added.
 Next: exact-key indexed search with exhaustive token equality before finite
 frame assembly and separately qualified ownership/performance gates.
+
+## DD-1427: Private eight-MiB exact-key indexed raw token parser
+
+Date: 2026-10-03. Preserve DD-1426's exhaustive parser unchanged as reference.
+Index three-byte keys in65536 buckets with one uint32 link per raw position.
+Build keys explicitly from raw bytes; bucket uses multiplication modulo2^32
+by0x9e3779b1 followed by the high16 bits. Hash collisions require full24-bit key
+equality before comparing remaining match bytes. Heads and links contain raw
+positions, with UINT32_MAX as sentinel; maximum raw8388608 fits safely.
+
+Reset all logical heads/links for every traversal. Insert EVERY consumed raw
+position, including positions inside an emitted match, when at least three raw
+bytes remain. Newest-first links strictly decrease. Stop after window expiry
+because all remaining links are older; accept only a strictly longer candidate
+and stop at the remaining/configured maximum for nearest ties. Validate link
+ordering/index bounds before access. Finite raw bounds prove all key/overlap
+comparison extents and position increments. Preserve normalized tokens,
+minimum-five eligibility and maximum3/4 literal-only behavior exactly.
+
+The caller supplies live uint32 workspace objects, avoiding byte-buffer alignment
+or object-lifetime assumptions. Required words are65536+F; charge the FULL supplied
+workspace capacity, full raw input view, BOTH full token capacities, concrete
+control and retained owners/spare input capacity. Qualified working charge384
+is search/index working128, two plans80, two results64 and seven regions112.
+Named-storage accounting is not a physical stack/RSS or composed encoder fit.
+Worst-case full eight-MiB dual tokens alone need192MiB; default128MiB budget
+correctly refuses the full-capacity call before searching. No default is widened.
+
+Count-only query writes/reset its explicitly private workspace and reports exact
+counts; insufficient token capacities may follow a successful private traversal.
+Check workspace/config/input aliases before touching it. The transactional entry
+checks all full regions, then query and repeated generation with a fresh index
+into private token scratch. Only exact count/raw agreement permits caller token
+copy and metadata commit. ANY failure commits zero and preserves whole caller
+output/metadata; private workspace and token scratch are discardable. Unused
+workspace/token tails remain preserved, while their capacities remain charged.
+No allocation/shared mutable state/public/frame publication is introduced.
+
+Twenty tests pass with two compilers and fully compiled ASan/UBSan. Compare every
+token against both exhaustive and independent descending-length references.
+Verify every indexed raw position appears once in the matching bucket, strict
+link decrease, last-two-byte exclusion, collision handling and inside-match
+insertion. Cover small exhaustive binary/window cases, random/patterns, nearest
+ties, farther longer matches, reset, maximum repetitive raw frame, limits,
+capacities/aliases/full-tail guards, ledger exact/under and overflow. Fresh
+eight-target CMake tests and corrected FZ-0063 complete successfully. Initial
+fuzz harness mistakenly called the exhaustive parser on one side, making the
+workspace equality check fail during seed load; retain input/log, correct both
+indexed calls, and qualify the corrected10000-run campaign. Production parser
+code is unchanged by that harness correction. No speed gate is claimed.
+Next: finite frame encoder composition and ownership planning, explicitly
+charging all simultaneously retained buffers before implementing publication.
