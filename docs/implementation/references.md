@@ -10462,3 +10462,12 @@ carry and model-rescale mathematics, the declared eight-MiB context layout and
 field grammar, and shared checked arithmetic/overlap/limits. Compare output
 against TVG-1285's independently generated mathematical payloads and the
 qualified eight-MiB operation decoder. No external or copyleft source consulted.
+
+## IR-1184: Private eight-MiB validated token-to-operation mapper
+
+Date: 2026-10-03. Implement DD-1423's field equations using the first-party
+eight-MiB token/history validator and grammar cursor. Independently enumerate
+field contexts and class equations in a test oracle, and reuse TVG-1286's
+mathematical fixed payloads unchanged. Compare mapped operations through the
+qualified scalar Range encoder, operation decoder and token decoder. No
+external implementation, copyleft source or imported test suite is consulted.

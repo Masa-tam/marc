@@ -30602,3 +30602,48 @@ layers. No speed/external/public/raw-frame encoding gate is established.
 Next: private validated eight-MiB token-to-operation mapper with exact full
 capacity/query contracts, independent token/field differential and history
 bounds before composing any raw/frame encoder.
+
+## DD-1425: Private eight-MiB transactional token-to-operation mapping
+
+Date: 2026-10-03. Add a finite private mapper with separate count-only query
+and transactional entry. Validate parameters, exact declared T/E/D/F, frame-local
+history, token unused fields and raw expansion before emitting any token's
+fields. Require complete grammar and exact final counts/raw size. Lengths3/4
+retain class8 with a one-bit extra; lengths5..258 and positive distances retain
+the reserved position-distance equations and context transitions. Endpoint
+distance8388608 cannot occur in a valid nonempty match within an eight-MiB frame.
+
+The checked aggregate charges the logical token input view, BOTH full operation
+capacities, actual working/control reservations and separately retained owners.
+Input-owner spare capacity belongs to retained bytes. Qualified working charge
+is448 bytes: cursor/result/pending/token-check working96, two plan reservations
+160, transaction result64, seven regions112 and token validation context16.
+This is a conservative named-storage ledger, not a physical stack/RSS measure.
+Validate raw/frame/block/total-output, table2599 and model32768 policies and all
+capacity/aggregate arithmetic. Compressed-payload/expansion policies belong to
+the subsequent payload/frame layers, since this helper consumes no payload.
+
+All full spans, configuration and metadata must be disjoint and stable. Query
+validates without writes; the entry repeats generation into explicit private
+scratch, checks query agreement, then copies operations and commits metadata.
+Any failure commits zero operations and leaves the whole caller output and
+original metadata bytes unchanged. Scratch is discardable; diagnostic partial
+counts never authorize publication. No allocation or shared mutable state is
+introduced. A mapped token sequence is not yet a published frame.
+
+Twenty-two tests pass with two compilers and fully compiled ASan/UBSan. Five
+independent fixed payloads cover literal, short overlap, all lengths, upper-half
+distance and maximum frame history; each also passes the independent field
+oracle, Range operation round-trip and token round-trip. Additional tests cover
+all literal contexts, every reachable distance class, reset/determinism,
+history/window/raw/count errors, unused fields, exact/under budgets, retained
+storage, numeric overflow, full-tail/live metadata/config aliases and a late
+invalid token. FZ-0061 completes10000 bounded differential executions. Fresh
+CMake tests include this mapper and five previously qualified private layers.
+Keep initial test artifacts and failed build configuration logs.
+
+This qualifies the finite mapper only. Complete raw/frame/stream encoding,
+phase lifetime reuse, complete owner memory fit, speed, external verification
+and public admission remain separate gates. Next: a private deterministic raw
+reference parser using the declared longest/nearest, minimum-five eligibility,
+with bounded storage and exhaustive/indexed differential before frame assembly.

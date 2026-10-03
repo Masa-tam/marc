@@ -37929,3 +37929,20 @@ both bounds.
   initial harness padding comparison stop/seed and test-registration failure.
 - Boundary: operation core only; no raw/frame/stream encoder, full owner/RSS fit,
   benchmark, external/public admission or legal guarantee.
+
+## CR-1596: Independent private eight-MiB token-to-operation mapping
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1184, DD-1423..1424, first-party token/history and field rules,
+  independent mathematical fixtures and an independently authored field oracle.
+  No external/copyleft implementation or test suite consulted.
+- Task: implement exact validated token mapping with dual-operation-capacity
+  ledger, transactional caller output/metadata and discardable private scratch.
+- Review: token validation precedes fields/shifts; complete grammar/raw/counts
+  precede commit. Full-capacity aliases, checked bounds and named working charge
+  448 retain failure invariance and forbid inferring frame publication.
+- Validation: TVG-1292 twenty-two tests with two compilers and ASan/UBSan, fresh
+  six-target CMake tests and FZ-0061 bounded differential fuzz. Preserve initial
+  tests and failed build configuration logs.
+- Boundary: finite mapper only; no raw/frame/stream encoder, full owner/RSS fit,
+  performance, external/public admission or legal guarantee.

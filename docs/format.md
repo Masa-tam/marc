@@ -8540,3 +8540,10 @@ may be discarded. The finite operation core accepts syntactic fields without
 proving raw history, so a successful class23 endpoint encoding cannot establish
 valid frame history. No public variant, raw/frame/stream encoder or automatic
 selection is admitted by this operation core.
+
+DD-1425 adds private token-to-operation mapping for the same reserved fields;
+there is no wire change or public admission. The mapper validates frame-local
+history and exact T/E/D/F before committing its caller operation view and
+metadata. It accepts valid short3/4 matches independently of the later raw
+parser's minimum-five policy. Explicit scratch is private/discardable, and
+mapped operations do not establish a complete frame or authorize publication.

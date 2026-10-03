@@ -1368,3 +1368,27 @@ crash, timeout, sanitizer or invariant finding. Keep both campaigns, diagnostic
 and corpus. Coverage is finite operation syntax/transaction/differential only;
 raw history, frame/stream encoder, public admission, performance and external
 qualification remain later gates.
+
+## FZ-0061: Private eight-MiB validated mapper transaction and differential
+
+Use an explicitly decoded16-byte header: output/scratch capacities, declared
+T/E/D/F as six little-endian uint16 values, then window as little-endian uint32.
+Follow with ten-byte token records: kind, literal, distance uint32, length uint32.
+Never cast fuzz bytes to native tokens. Bound input to656 bytes/64 tokens,
+operation capacities0..320, raw/frame/block policy512 and internal budget65536.
+Independent equation seeds cover literal contexts, short overlap, length classes,
+reachable history, before-history references, window errors and zero capacities.
+
+Two mapper calls compare result fields and zero commitment on failure. Require
+whole caller-output and actual original metadata bytes unchanged, using memcpy
+snapshots; compare unrelated operation/metadata instances by semantic fields.
+Success checks the independent field oracle, guarded caller/scratch tails,
+qualified Range encoding and token decoding back to the original sequence.
+
+Compile harness, mapper, token helper, Range encoder/decoder and limits together
+with C++20 and `-fsanitize=fuzzer,address,undefined`. The campaign completes10000
+executions, seed1425, max_len656, timeout10, leak detection disabled, with no
+crash, timeout, sanitizer or invariant finding. Preserve corpus and logs.
+Coverage is bounded finite mapping/history/transaction/differential; complete
+raw/frame/stream encoding, full composed ownership, performance, external
+verification and public admission remain separate gates.

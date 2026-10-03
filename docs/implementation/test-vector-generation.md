@@ -20481,3 +20481,32 @@ invariant stop; corrected FZ-0060 passes10000 runs. A genuinely fresh CMake root
 runs encoder plus prior frame/token/Range/prefix tests after correcting duplicate
 new-target registration. Public admission, raw/frame/stream encoding, peak RSS,
 performance and external verification remain separate gates.
+
+## TVG-1292: Private eight-MiB mapper field, byte and token differential
+
+Date: 2026-10-03. Independently author field equations without invoking the
+production cursor/mapper. Enumerate previous-kind contexts, literal buckets,
+short/long length classes, distance classes and low-first extra fields. Reuse
+unchanged TVG-1286 fixed payloads for literal, short overlap, all lengths3..258,
+distance4194305 and maximum raw history8388608. For each recipe compare every
+mapped operation field, exact Range payload bytes, operation decode/full finish
+and token decode back to the original input. Retained fixture generators do not
+use the new production mapper as an oracle.
+
+Twenty-two final tests additionally cover all256 literals/contexts, every
+reachable distance class0..22, repeated independent calls, history/window/raw
+overrun, invalid length/kind/unused fields, declared counts, invalid parameters,
+both capacity shortages, exact/one-byte-under full-capacity ledger and retained
+bytes, numeric overflow, limit policies, full unused-tail overlap and live
+metadata/config aliases detected before access. A late invalid token after69999
+literals preserves the whole caller output. Failure metadata is compared with
+a memcpy snapshot of its actual original bytes, including padding; independent
+operation instances are compared by semantic fields.
+
+Two compilers and fully compiled mapper/token/Range/core/test framework
+ASan/UBSan pass, with leak detection disabled. Working charge448 agrees on all
+qualified layouts. Keep initial20-test artifacts, subsequent22-test artifacts
+and unsuccessful build configurations. A genuinely fresh six-target CMake run
+passes mapper, Range encoder, frame/token/Range/prefix decoder tests. FZ-0061
+completes10000 bounded executions. This is finite helper qualification, not a
+raw/frame/stream encoder, full composed memory fit, speed or external gate.
