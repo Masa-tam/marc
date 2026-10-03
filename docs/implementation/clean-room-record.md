@@ -37798,3 +37798,16 @@ both bounds.
   arithmetic, design-vector reconciliation and source/artifact/append checks.
 - Boundary: documentary reservation only; no source, parser/model/codec/API
   admission, limit change, new timings/fuzz/external gate or legal guarantee.
+
+
+## CR-1588: Independent reserved-prefix parser and storage declaration
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1176, DD-1416 and its independently derived design vectors;
+  first-party byte/limits/overlap helpers. No external/copyleft consulted.
+- Task: implement private bounded stream/prefix validation, concrete model
+  storage and transactional metadata publication before actual decoding.
+- Validation: TVG-1284; nineteen final tests with two compilers and ASan/UBSan,
+  fresh dedicated CMake test, source/artifact preservation and append review.
+- Boundary: no existing codec/parser/default change, Range/token/raw decoding,
+  frame-publication proof, public admission, performance or legal guarantee.

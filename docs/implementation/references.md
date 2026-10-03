@@ -10389,3 +10389,13 @@ Format 2.0 offsets, four-MiB cursor/model/range/preflight rules, short-length
 equations and DD-1413..1415 storage contracts. Check ID availability before
 reservation; derive design vectors arithmetically without invoking a codec.
 No external/copyleft source, expression, tables or test suite consulted.
+
+
+## IR-1176: Private eight-MiB stream and frame-prefix preflight
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+Implement DD-1416's exact fields/model shape using first-party endian, overlap,
+limits and typed-frame structures. Use its independent empty/Literal design
+vectors for bounded parser tests; do not invoke a new encoder or Range decoder.
+Declare concrete state storage for checked charges, reserving its later use
+and sizeof agreement for decoder integration. No external/copyleft consulted.

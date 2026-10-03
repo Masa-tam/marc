@@ -20240,3 +20240,29 @@ Retain all prior sources/artifacts and fixed binaries, append public documents
 and directly inspect supplemental headings/scope. Standalone documentation
 validation does not close the known supplemental ordinal-coverage gap. No new
 build/test/CTest/fuzz, benchmark or external gate in this design-only unit.
+
+
+## TVG-1284: Eight-MiB bounded header/prefix qualification
+
+Use DD-1416's frozen mathematical header/Literal prefix and separately mutate
+each parameter/tuple/backend/flag/reserved byte. Test all 112 header truncations
+and all eighty prefix truncations, preserving header/consumed and layout/
+requirements sentinels on failure. Verify all model alphabets/offsets including
+binary model 46. Exercise caller limits, declared total/model-state budgets,
+exact and one-byte-under aggregate, explicit retained-charge overflow,
+block/payload/expansion limits, count/descriptor mismatches, sequencing/alignment
+and a final short frame. The uint64 committed endpoint must not wrap.
+
+Prefix-only and arbitrary-payload success cases explicitly separate bounded
+metadata parsing from payload validity. Full-frame count maxima are synthetic
+preflight vectors, not a compressed stream or decoded frame. Record actual
+Range-state sizeof from both compilers and the sanitizer build; do not infer
+the future stream owner or encoder memory from it. Final nineteen tests pass
+without skips; retain the earlier eighteen-test qualification. Compile the
+new preflight, limits and tests/framework for ASan/UBSan, disabling leak checking.
+Run only the dedicated registered test in a fresh CMake root; no retained-root
+CTest, new codec round trip, fuzz, timings or external archive gate.
+
+Check exact source/CMake scope, unchanged old codec/fixed artifact hashes and
+append-only documents. Supplemental record IDs receive direct checks in
+addition to the legacy documentation validator's limited ordinal coverage.

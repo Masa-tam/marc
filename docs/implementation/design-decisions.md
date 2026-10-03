@@ -30038,3 +30038,65 @@ and stream/frame-prefix preflight, with hand-checkable header/descriptor and
 malformed cases, before range decoding or encoding. Define any concrete model
 state used for charges and prove requirements output invariance. Public parsers
 stay closed; no automatic selection, optimization trial, benchmark or admission.
+
+
+## DD-1417: Private eight-MiB header and prefix validation
+
+Date: 2026-10-03. Implement a separate internal stream parser and frame-prefix
+preflight for reserved 2/11 + 1/12 + 3/2, without changing existing enums,
+public dispatch, limits or codec sources. New model constants define the exact
+47 alphabets and 2599-entry prefix offsets; a concrete Range state declaration
+contains frequencies/totals, grammar storage, payload/descriptor/counters and
+canonical replay storage. No field transitions or Range decoding are added.
+
+The parser requires the full 112-byte header, checks magic/version/size, tuple,
+flags/features, every reserved range, parameter/model shape and caller limits.
+It commits the parsed header and consumed=112 only on success. It may parse a
+header at the front of a larger input; strict whole-stream termination belongs
+to a later streaming decoder. The semantic header helper validates the fields
+present in the typed header; serialized algorithm/backend IDs are checked by
+the byte parser. Read helpers are used only at fixed offsets after the complete
+bounded header/descriptor is available.
+
+Frame-prefix preflight requires 64 header bytes and sixteen descriptor bytes.
+Check exact stream semantics, feature/reserved fields, coordinator alignment,
+expected_sequence=committed/frame_size, sequence, remaining full/final raw size,
+token/event/decision/payload bounds and descriptor agreement. Widen count
+arithmetic to uint64 after bounding raw/token extents; checked operations cover
+allocation/aggregate sums, retained charges and narrowing to size_t. Validate
+total/frame/block/payload/model/distance/match/expansion limits with the existing
+limits policy. Success reports the complete serialized extent even if input
+contains only its prefix; neither available payload nor its validity is claimed.
+
+All output regions must be disjoint from input, each other, context, referenced
+stream and limits. Aliasing/extent errors precede publication; both layout and
+requirements remain unchanged on every failure. Only the final successful
+assignment publishes metadata. No raw/token output or frame publication exists
+in this unit, and failed-frame contracts of existing codecs remain untouched.
+
+Requirements charge serialized extent + T*sizeof(Token) + raw extent + actual
+sizeof(new Range state) + supplied separately retained bytes. The retained
+argument must reflect later real owners/helpers; it is not discovered by this
+prefix API. On the qualified 64-bit layout state size is 5488, giving the
+synthetic full-frame maximum aggregate 260052421 bytes before additional
+retained charges. This is preflight accounting, not peak RSS, encoder accounting
+or complete future streaming-state qualification. Later decoding must use the
+declared state and qualify layout/sizeof/lifetime agreement.
+
+Nineteen final tests cover all truncated headers/prefixes, exact design vectors,
+all model groups/offsets, crossed tuples/backends/counts, every reserved byte,
+features/parameter bounds, caller/model-state/total limits, input-output alias,
+descriptor/count errors, exact and one-byte-under aggregate budgets, retained
+overflow, block/payload/expansion limits, aligned sequencing, final short frames
+and the committed uint64 endpoint without wrap. Prefix-only success and success
+with arbitrary payload bytes are explicitly tested: those bytes are not decoded.
+Initial eighteen-test qualification is retained when coverage is strengthened.
+Final tests pass with two compilers and fully compiled preflight/limits/tests
+and test framework under ASan/UBSan, with leak detection disabled. A dedicated
+target/test runs only in a fresh build root. No codec, fuzz, benchmark or public
+admission is established by these results.
+
+Next: the private grammar-aware scalar Range operation decoder, using this
+state and the reserved model, with field/interval/canonical termination and
+output-invariance tests. Token/history reconstruction, complete frame decoding,
+encoder work and streaming/public admission remain subsequent gates.

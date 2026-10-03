@@ -8462,3 +8462,15 @@ the initial literal unit is floor(floor(0xffffffff/2)/256)=8388607. The complete
 frame is 86 bytes and stream 198 bytes. A distance 4194305 has class 22, extra
 1 and 22 adaptive bits, starting with 1 then 21 zeros. Distance 8388608 has
 class 23, extra zero, but is history-invalid for any permitted complete frame.
+
+
+Private DD-1417 stream/header and frame-prefix parsing now validate this exact
+reserved identity, model shape, fields/counts, coordinator positions and caller
+limits. They commit metadata only after successful checks and reject output
+aliasing. Frame-prefix success requires only the eighty-byte prefix and reports
+the full required serialized extent; it does not validate, decode or publish a
+payload. Concrete 47-context Range storage is declared and included by sizeof
+in the checked aggregate, with separately retained owner/helper charges supplied
+by the caller. Actual Range/token/frame decoding and public admission remain
+later work. Existing parser acceptance, formats, defaults and inventory do not
+change. Private scratch and failed-frame publication guarantees remain intact.
