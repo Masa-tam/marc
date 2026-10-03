@@ -38192,3 +38192,27 @@ publication contracts. Initial prototype prefix-transfer failures are retained;
 their cause is not inferred. Explicit candidate field assembly passes final
 qualification. No production integration, performance improvement, universal
 large-frame fit, public release similarity review or legal guarantee is claimed.
+
+
+## CR-1609: Isolated operation-free finite frame implementation
+
+Date: 2026-10-03. Author/reviewer: Codex, with user-approved continuation.
+Task: implement only a separate private finite token-frame query/encoder from
+DD-1437, retaining reference byte generation, complete owner admission and
+no-failed-frame-publication contracts. Reuse first-party orchestration ideas,
+checked owner reconciliation, indexed tokenizer, token-Range helper and prefix
+primitives; retain original frame/stream implementations unchanged. First-party
+tests/fuzzer are adapted with independent mathematical expected frames, direct
+prefix checks, complete comparison ledgers and additional transaction tests.
+No external source, restricted implementation or external test suite consulted;
+known external compressor implementations remain intentionally unconsulted.
+
+Review checks validation-before-shift, full capacity/retained charge, all region
+aliases, dry/full/written count agreement, explicit descriptor/prefix fields,
+preflight agreement and final-only complete-frame commit. Both compiler routes
+and fully instrumented sanitizer builds pass28 tests. Related16 targets/345
+cases and FZ-0068 final10000 runs pass without finding; leak detection disabled.
+All existing artifacts/reference sources and documentation prefixes are reviewed
+for preservation. The initial prototype prefix cause remains unconfirmed and no
+compiler/production bug cause is inferred. No public release similarity review,
+universal large-frame fit, physical peak, speedup or legal guarantee is claimed.

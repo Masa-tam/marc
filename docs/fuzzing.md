@@ -1517,3 +1517,24 @@ Compile the harness and all helper/reference dependencies with C++20 and
 max_len128,timeout10,leak detection disabled, without crash, timeout, sanitizer
 or invariant finding. This finite small-input campaign does not qualify a new
 frame/stream coordinator, universal8MiB fit, physical peak or performance.
+
+
+## FZ-0068: Isolated private token-frame query/encoder publication
+
+Date: 2026-10-03. Mutate bounded1..128 raw bytes, token/index/private payload/
+caller output capacities, parameters, sequence, retained-owner and memory limits.
+Repeat encoding and compare status, exact counts/aggregate and complete output.
+For every failure require zero commit, whole output guards, original layout and
+written count. For success compare every complete frame byte against the unchanged
+operation/frame reference using its own workspace and explicit sufficient policy;
+decode through the unchanged frame consumer with all retained comparison owners
+and a separate sufficient policy, and compare every raw byte. Verify
+untouched caller tails. Unit tests separately qualify whole aliases, query-only
+mutation and exact full owner budgets with all comparison owners retained.
+
+Compile harness and all new/reference/decoder dependencies with C++20 and
+`-fsanitize=fuzzer,address,undefined`. Final campaign completes10000 executions,
+seed1438,max_len136,timeout10,leak detection disabled, without crash, timeout,
+sanitizer or invariant finding. Initial campaign is retained separately. These
+bounded finite cases do not qualify streaming schedules, arbitrary8MiB owner
+admission, physical peak, performance or external/public integration.

@@ -31408,3 +31408,66 @@ Next: implement only an isolated finite token-frame query/encoder, retaining the
 operation/frame reference. Validate prefix and complete payload privately before
 one final frame commit. Preserve whole caller output/layout/count on failure and
 existing no-failed-frame-publication contract before considering streaming.
+
+
+## DD-1438: Private operation-free finite frame query and encoder
+
+Date: 2026-10-03. Add a separate private finite raw-frame query/encoder using
+the DD-1436 token-to-Range helper. Existing operation/frame/stream encoders and
+decoders remain unchanged references; no public library/profile/CLI or streaming
+integration. Workspace contains private tokens, token scratch, index, frame and
+payload scratch. All workspace is discardable on failure; neither API allocates.
+
+The query first checks full workspace/input/configuration overlap and checked
+extents, then admits every full raw/output/workspace capacity, concrete controls
+and separately retained owners. Validate known-size stream semantics and exact
+frame sequence/position/size before indexed tokenization. Query writes private
+token/index workspace only; frame and payload scratch remain unchanged. Validate
+every resulting token before field arithmetic, derive checked T/E/D/F, and use
+the generic length3/4 escape equations. Raw parsing retains its minimum-five cost
+policy; the tighter raw resource bound is never a generic token validator.
+
+Reconcile each nested helper's local full views/state plus retained remainder to
+the same top owner ledger. Count P through the zero-capacity Range query including
+finish, then repeat the query with actual payload capacities. Compare all exact
+T/E/D/F/P across those passes. Require descriptor D/P/47 agreement, explicitly
+construct candidate prefix fields and validate them through the unchanged prefix
+query. An insufficient output capacity reports storage shortage with exact required
+size after otherwise valid private planning. Empty payload workspace permits P
+counting but reports storage shortage. Query success never proves payload validity
+or authorizes frame publication. Any error invalidates a returned plan.
+
+Before querying, the encoder additionally rejects whole caller output/layout/
+written overlap with all private spans and borrowed configuration, including
+unused tails. After query success encode only private payload, validate finished
+payload counts and descriptor against the plan, serialize the private prefix,
+and preflight the complete private frame. Compare the entire parsed layout,
+required size and retained-owner aggregate. Only then copy the complete frame
+and assign caller layout/written. Any failure commits zero and preserves WHOLE
+caller output/layout/written, including a previously successful frame. Private
+workspace may change. Borrowed inputs remain stable for the entire call.
+
+The actual helper charge is7524 bytes in both qualified compiler routes,
+including1504 simultaneous control/query/result/overlap/workspace/arithmetic
+bytes plus the largest sequential helper charge6020. Query and encoder reserve
+the same charge; inner helper ledger equality is checked. This is384 above the
+DD-1437 proposed schema and supersedes that estimate for this implementation.
+It is a named codec-owner charge, not physical stack/RSS. Allocation/replacement
+policy remains the controller's responsibility: retain all old/new owners and
+actual spares, and never treat phase completion as destruction.
+
+For the raw minimum-five policy's conditional worst-data request505256517, this
+implementation's charge gives505264041 before external owners/caller spares,
+leaving31606871 below512MiB. Those maxima were not allocated or encoded here;
+the unchanged payload hard limit can still reject actual P. This arithmetic does
+not establish universal compiled8MiB fit. Actual repeated1/4/8MiB differential
+cases match the reference byte for byte and decode exactly. The largest complete
+comparison harness charge is99482392, including both encoder workspaces, decode
+buffers and concrete harness controls. It is a scoped comparison ledger only.
+
+Direct serialized descriptor tests confirm D/P and47 at the defined byte offsets.
+The DD-1437 initial prototype discrepancy does not reproduce in the qualified
+actual implementation; its root cause remains unconfirmed, not inferred fixed.
+No default, wire ID, unknown-size form, hash observer or performance claim added.
+Next gate: qualify diverse large input/resource cases for this finite path before
+designing an operation-free private stream owner/coordinator and publication flow.

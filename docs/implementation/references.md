@@ -10589,3 +10589,14 @@ and unchanged finite frame reference. Reuse the27 mathematical token fixtures.
 Construct an isolated numerical capacity/query model and concrete proposed
 control schema, then qualify actual repeated1/4/8MiB raw inputs with the indexed
 parser and existing frame encoder. No external source or test suite consulted.
+
+
+## IR-1197: Isolated finite typed-token frame encoder
+
+Date: 2026-10-03. Implement the DD-1437 owner/query design using first-party
+indexed tokenization, generic token validation, DD-1436 token-to-Range query/
+encoding, prefix serialization and preflight. Retain the original operation/frame
+encoder as an independent differential route. Reuse independently authored
+complete-frame mathematical vectors and token-parsing oracle; adapt first-party
+transaction tests to the new private workspace and add query/owner/prefix checks.
+No external source, implementation or external test suite consulted.

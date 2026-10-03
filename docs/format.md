@@ -8653,3 +8653,13 @@ current encoder nor introduces a frame representation. Generic valid length3/4,
 the80-byte frame prefix, exact counts and descriptor, and private validation
 before publication remain required. Capacity/query success alone never permits
 publishing an unvalidated frame or relaxing a configured payload limit.
+
+
+DD-1438 adds an isolated private finite raw-frame encoder/query producing
+the exact existing reserved eight-MiB frame representation. It retains the
+minimum-five raw token selection and generic short-token field equations. Full
+private payload finish/count/descriptor validation, prefix serialization and
+preflight precede one complete-frame commit. Failure preserves whole caller
+output/layout/written; a successful planning query alone permits no publication.
+Existing frame/stream/public representations, limits and failure contracts remain
+unchanged. No new algorithm ID, profile, unknown-size or hash feature is admitted.
