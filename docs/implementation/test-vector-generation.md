@@ -21146,3 +21146,36 @@ leak detection disabled. All reported scalar properties and six complete/partial
 wire artifacts agree across all three routes. Related21 targets/411 cases pass
 in a fresh build. Input here is repetitive byte65; no general worst-case memory
 fit, speed, new fuzz/timed/external campaign or public integration is claimed.
+
+## TVG-1312: Bounded owned-stream fuzz grammar and replay
+
+Date: 2026-10-04. Define eight controls plus arbitrary raw bytes, maximum input264
+and raw256, frame1..64, literal-only or normal match bound, altered known size,
+flags, chunk/output schedules, payload policy and allocation failure1..17. Fixed
+wire/control/allocator storage and an8MiB codec ceiling bound every campaign case.
+Reference, owned and decoder codec owners use separate scopes with retained
+harness/source/spare reservations. Replay seeds will include byte values, size
+boundaries, control modes and every allocation stage. Actual campaign receipts,
+completed execution counts and qualification will be recorded after running.
+
+Replay qualification comprises256 single-byte values,165 size/frame/schedule/
+literal-only combinations,17 allocation-stage packets,50 altered-size/flag/
+profile/payload packets and128 deterministic random packets, total616. Five
+GTests pass both compiler routes and full test/helper/framework ASan/UBSan,
+leak checking disabled. No finding required an implementation correction or new
+crash regression. Related22 targets/416 cases pass in a fresh build.
+
+## FZ-0069: Bounded private owned-stream differential campaign
+
+Date: 2026-10-04. Actual instrumented standalone campaign completes10000
+executions with seed1445 and maximum input264. Initial corpus contains87 explicit
+seeds: empty/single/repeat/pattern/all-byte inputs with thirteen control modes,
+each allocation stage1..17 and five frame selections. Retain compile/run receipts,
+strict successful zero-process pre-run audit, final corpus and source-bound review.
+No assertion, sanitizer, timeout or crash finding; leak detection is disabled.
+The fixed replay suite and campaign use the same harness. Whole-reference and
+fragmented owned wire, consumed counts, error category/position, complete-frame
+prefix publication, real allocation lifetime, output guards and consumer committed
+raw bytes are checked. Zero output and terminal misuse are included. Unsupported
+flags are first-call/terminal cases; random corrupted wire and actual large frames
+are outside this grammar. This finite run count is evidence, not exhaustive proof.

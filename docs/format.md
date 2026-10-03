@@ -8716,3 +8716,10 @@ two one/eight-MiB repeat frames and an optional32-byte final frame. Failed secon
 or short-tail frames expose no wire fragments. Previously emitted complete frames
 remain valid; a partial known-size stream is rejected by the unchanged decoder
 only after retaining the prior valid raw frames. No IDs or public paths change.
+
+### Bounded owned-stream fuzz qualification (DD-1445)
+
+The fuzz harness exercises the existing private representation and introduces no
+format or public profile. Publication is checked at complete-frame boundaries.
+A partial known-size stream remains malformed even when its prior frames decode;
+excess source input can instead leave a complete valid known-size wire.

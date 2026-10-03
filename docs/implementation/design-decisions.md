@@ -31960,3 +31960,59 @@ covering arbitrary binary data, frame/chunk/output schedules, flags, allocator
 failure points and sticky output contracts with explicit harness limits. Preserve
 all evidence. Only after that campaign should a separately admitted measured
 comparison inform production integration or further ownership optimization.
+
+## DD-1445: Bounded arbitrary-input owned-stream fuzz oracle
+
+Date: 2026-10-04. Add a private standalone fuzz harness and deterministic replay
+tests without changing existing codec/reference/public sources. The grammar has
+an eight-byte control prefix and up to256 arbitrary raw bytes; frame size is
+1..64. Controls select normal/literal-only maximum match, early/excess declared
+size, deferred EndInput, neutral Flush, unsupported flags, invalid profile,
+payload ceiling, source/output schedule and an optional deterministic allocation
+failure among stages1..17. Input outside8..264 bytes is ignored by the harness.
+
+Admit bounded reference buffers before allocation under an explicit8MiB policy.
+Use fixed full result arrays, fixed driver controls and fixed allocator receipts;
+no instrumentation or wire accumulator grows. Count full harness/source views,
+vector spare capacities and callback controls. Harness/call reservations are
+conservative and can exceed physical union; codec owners are counted once by
+unchanged admission. Destroy reference and each owned encoder before consumer
+construction; never subtract owners on logical last use. No universal large-frame
+memory fit or physical process-memory bound follows from this small grammar.
+
+Compare the unchanged generous reference with a complete-view owned run and a
+fragmented owned run, including periodic zero output. Without an injected
+allocation failure, require identical terminal category, position, consumption
+and complete wire. Require the two owned schedules to agree even with failure.
+If allocation fails, require exactly a complete-frame prefix of the unchanged
+reference, stable out_of_memory and accepted input bounded by actual views.
+Parse only bounded complete frame sizes to derive committed raw count. Decode
+each owned result in a separate phase and compare every committed raw byte.
+An encoder error caused by excess input can still leave a complete known-size
+wire; its decoder must end successfully. An incomplete known-size prefix must
+fail after committing only prior valid frames. Treat these as separate contracts.
+
+Every call verifies input/output bounds, no zero-count Progress, output guards
+and bounded call count. Terminal calls with overlapping buffers/unknown flags
+must return the same terminal state/error and zero counts without modification.
+Fixed allocator receipts execute real typed allocation/deletion, retain old/new
+capacities through replacement and reach zero only after actual destruction.
+Campaign results and replay qualification will be appended after execution.
+
+Qualification: five replay tests exercise616 deterministic packets in both
+compiler routes and fully compiled test/helper/framework ASan/UBSan, leak checking
+disabled. Actual FZ-0069 completes10000 executions, seed1445, from87 explicit
+initial seeds without finding. Source and control caps remain as specified above.
+Unsupported flags are injected on the first process call and again on terminal
+calls; this campaign does not claim arbitrary mid-drain misuse coverage. It fuzzes
+encoder grammar and valid/partial output consumption, not arbitrary corrupted
+wire bytes or large-frame memory fit. Related22 targets/416 cases pass in a fresh
+build. No codec correction, benchmark or external validation was required.
+
+Next gate: a separately admitted measured comparison of the unchanged operation
+stream and owned token stream on representative one/eight-MiB inputs. Record
+encode/decode throughput, ratio and complete live owner reservations separately;
+use independent actual scopes and preserve all results. Admit each reference
+phase before allocation; general inputs may require explicitly larger diagnostic
+limits rather than silently changing defaults. Do not infer physical memory peak
+or production readiness from logical reservations or this small fuzz campaign.

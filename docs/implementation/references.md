@@ -10645,3 +10645,11 @@ Date: 2026-10-04. Use first-party DD-1443 coordination and DD-1434 large stream
 fixtures, independent repeat-frame wire vectors, unchanged operation-based
 stream encoder and stream decoder. Independently add bounded typed allocation
 receipts and scoped phase reservations. No external source or test suite.
+
+## IR-1204: Bounded owned-stream differential fuzz harness
+
+Date: 2026-10-04. Use the first-party private owned stream, unchanged operation
+stream encoder/decoder and exact allocator. Independently define a bounded input
+grammar, terminal/error oracle, fixed lifetime instrumentation and retained phase
+controls. No external codec source or test suite. Campaign evidence follows
+actual execution; a harness alone does not establish fuzz coverage.

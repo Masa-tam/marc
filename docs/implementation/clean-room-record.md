@@ -38334,3 +38334,23 @@ source/artifact hashes and document prefixes are preserved except deliberate
 private test registration. No new timing/fuzz/external campaign, worst-case fit,
 physical process-memory peak, speedup, production integration, release similarity
 review or legal guarantee is claimed.
+
+## CR-1616: Bounded owned-stream differential fuzzing
+
+Date: 2026-10-04. Author/reviewer: Codex, user-approved continuation.
+Task: independently implement a bounded fuzz grammar and resource/terminal oracle
+for DD-1443 ownership, using unchanged first-party reference and decoder. External
+compressors and restricted source/test suites remain intentionally unconsulted.
+Review will check preallocation admission, fixed instrumentation, actual lifetime
+release, complete-frame publication, truthful counts and consumer output. Record
+actual campaign and replay results after execution; no legal guarantee or public
+integration is implied by this harness design.
+
+Completed review: five replay tests/616 packets pass both compiler routes and
+full test/helper/framework ASan/UBSan, leak checking disabled; actual FZ-0069
+completes10000 runs without finding. Related22 targets/416 cases pass in a new
+build. No codec/reference correction or new crash regression was needed. Review
+binds current source hashes and verifies preserved source/artifacts, exact document
+prefixes and bounded first-party harness scope. No external source, speed result,
+physical peak, large arbitrary-input fit, public integration, release similarity
+review or legal guarantee is claimed.
