@@ -10579,3 +10579,13 @@ in the isolated helper; retain the materialized operation encoder as a separate
 reference. Use the previously generated 27 mathematical token/payload fixtures,
 unchanged mapper and token consumer for differential qualification. No external
 source, implementation or external test suite consulted.
+
+
+## IR-1196: Operation-free finite frame owner/query qualification
+
+Date: 2026-10-03. Use only first-party indexed token counting, generic token
+validation, the DD-1436 token-to-Range query, existing prefix serialization/query
+and unchanged finite frame reference. Reuse the27 mathematical token fixtures.
+Construct an isolated numerical capacity/query model and concrete proposed
+control schema, then qualify actual repeated1/4/8MiB raw inputs with the indexed
+parser and existing frame encoder. No external source or test suite consulted.

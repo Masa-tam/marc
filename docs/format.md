@@ -8645,3 +8645,11 @@ privately and commits only after complete validation, exact counts and Range
 finish. It adds no wire representation, algorithm ID, public profile or changed
 frame/stream failure-publication contract. The helper has no frame publication
 responsibility; existing frame and stream paths continue using their reference.
+
+
+DD-1437 qualifies a numerical private finite-frame owner/query model using
+the existing typed-token Range query and prefix rules. It neither replaces the
+current encoder nor introduces a frame representation. Generic valid length3/4,
+the80-byte frame prefix, exact counts and descriptor, and private validation
+before publication remain required. Capacity/query success alone never permits
+publishing an unvalidated frame or relaxing a configured payload limit.

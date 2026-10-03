@@ -38169,3 +38169,26 @@ pass15 targets/317 cases. FZ-0067 completes10000 executions without finding.
 Append-only documentation and retained-source/artifact integrity are reviewed.
 No public/external release similarity review, physical peak, speedup, universal
 large-frame fit or legal guarantee is claimed. No new external reference used.
+
+
+## CR-1608: Finite frame owner/query design qualification
+
+Date: 2026-10-03. Author/reviewer: Codex, with user-approved continuation.
+Task: qualify a finite frame owner/query ledger using DD-1436, including actual
+controls, all full capacities/spares/retained owners, checked E/D derivation,
+exact P and replacement coexistence, before any frame/stream integration.
+Use only first-party indexed/token/Range/prefix helpers, independent retained
+mathematical fixtures and the unchanged frame encoder. No external source,
+restricted implementation or external test suite consulted; known external
+compressor implementations remain intentionally unconsulted.
+
+The isolated design model passes27 fixture queries, three actual large repeated
+inputs,360 validation/admission checks and12 symbolic capacity requests in both
+compiler routes and fully instrumented sanitizer builds. Explicitly distinguish
+proposed controls from a production encoder, symbolic capacity admission from
+actual allocation, and scoped owner charges from physical process memory.
+Review preserves generic short tokens, hard/default limits and existing frame
+publication contracts. Initial prototype prefix-transfer failures are retained;
+their cause is not inferred. Explicit candidate field assembly passes final
+qualification. No production integration, performance improvement, universal
+large-frame fit, public release similarity review or legal guarantee is claimed.

@@ -20873,3 +20873,41 @@ Both compiler routes and fully instrumented test/helper/framework builds pass
 37 cases; related private regression targets pass15 targets/317 cases in a
 fresh dedicated build. FZ-0067 completes10000 sanitizer-backed fuzz executions.
 No timed benchmark or new external interchange campaign is performed here.
+
+
+## TVG-1304: Finite token-frame query model and scoped owner tests
+
+Date: 2026-10-03. Reuse27 independently generated mathematical token/raw/payload
+fixtures. Build a separate design query model over numerical full capacities.
+Validate generic tokens before bit-width/shift arithmetic; derive E/D/F, obtain
+exact P through the unchanged token-Range query and validate the candidate prefix
+with the unchanged serializer query. Include valid length3/4, all lengths3..258,
+rescale and distance/mixed fixtures. Reconcile all actual live fixture capacities,
+retained fixture bytes and concrete harness/helper reservations at each phase.
+The maximum27-case harness owner sum is4400544 bytes in all qualified routes.
+
+For actual repeated1/4/8MiB inputs, keep raw/index live through indexed count,
+exact tokenization, payload counting and complete-frame reference comparison.
+Admit actual capacities including all spares, never release an owner on phase
+completion. Count-only/model P and exact T/E/D match the unchanged frame encoder.
+At8MiB the model scoped owner sum is43079149 and reference sum47241005;
+reference operation owners are added explicitly, not hidden model dependencies.
+This establishes neither arbitrary-input acceptance nor a new encoder/publication
+path. Allocation enforcement remains a future implementation responsibility.
+
+Run360 checks across the30 cases for each insufficient raw/token-pair/index/
+frame/payload/output capacity, late invalid token, capacity/retained overflow,
+exact full-owner budget and one byte below. Query does not write caller output.
+Separately compile12 numerical maximum-capacity requests, covering a conditional
+minimum-five raw-policy ledger, exact remaining margin and one byte more, all
+seven capacity overflows, retained overflow and old/new frame coexistence. Do
+not allocate or encode these symbolic maxima. Generic short tokens retain their
+existing bounds, independent of the raw encoder's tighter resource equation.
+
+The concrete proposed control/helper schema is1120+6020=7140 bytes; it must be
+requalified against any actual implementation. Final two compiler routes and
+fully instrumented model/reference dependencies pass without sanitizer finding;
+leak detection disabled. Preserve initial prototype prefix failures and diagnostic
+observations; the initial root cause remains unconfirmed. Final explicit candidate
+field construction passes unchanged helper qualification. No production source,
+CMake target, CTest root, fuzz campaign, timed benchmark or external gate changed.

@@ -31336,3 +31336,75 @@ The default compressed-payload limit remains unchanged. Operation reference,
 finite frame/stream implementations, public profile/CLI/default and wire IDs
 remain unchanged. Next gate: design and qualify the finite frame owner/query
 ledger using this helper before integrating it into frame or stream publication.
+
+
+## DD-1437: Finite frame owner/query model without operation staging
+
+Date: 2026-10-03. Qualify a separate design model, without changing production
+sources, finite encoders, stream coordination, public profiles, defaults or wire
+representation. The proposed borrowed workspace retains a token pair, indexed
+parser workspace, private frame and private payload scratch. The caller also
+retains raw input and whole-frame output. There are no operation owners.
+
+For full capacities R,To,Ts,I,U,S,O and separately retained X, admission is
+R+12To+12Ts+4I+U+S+O+M+X. Every product/sum is checked before traversal;
+full capacities and spares survive phase changes. Logical completion does not
+release an owner. A proposed concrete simultaneous-control schema reserves1120
+bytes for parse/count/token validation, Range plan/result, prefix plan/result,
+layout/preflight, capacities, overlap and query/arithmetic controls. The largest
+sequential helper charge is6020, so this compiled design model reserves M=7140.
+These are model declarations, not a production encoder's qualified sizeof or
+physical stack/RSS measurement. Implementation must remeasure actual controls.
+
+Stage raw/index count to obtain exact T before selecting the token pair. With
+the pair live, validate every token against generic parameters and frame-local
+history before deriving checked E/D/F. Length3/4 escape8 remains accepted. Then
+run the existing token-Range query with zero payload capacities and reconcile
+its local view/helper plus retained remainder to the same full-owner ledger.
+Expected payload-shortage status supplies exact P after complete count/finish.
+Only after admission select U>=80+P, S>=P and O>=80+P. Reconcile the final Range
+query and prefix serializer query against that same ledger. Candidate descriptor
+fields are explicitly constructed from validated D/P and the specified47 models.
+This numerical query proves neither token/raw correspondence nor pointer alias
+safety; an encoder must obtain tokens from the reference-consistent parser and
+check full actual spans/configuration/metadata before writes. Any error makes a
+returned plan inadmissible; diagnostic fields alone authorize no publication.
+
+Before allocation, a controller must reserve declared capacity bounds plus all
+existing owners; if replacement is required, reserve old AND new capacities until
+actual destruction. Reconcile actual allocator capacities before helper use.
+Unspecified container growth is not an allocation guarantee: enforce bounded
+allocation or reject overcapacity. The borrowed workspace remains allocation-free.
+The design model does not introduce a dynamically allocating stream controller.
+
+For the current RAW encoder's minimum-five policy only, use D<=floor(26F/5)
+and24T+6D<=36F. Full worst-case buffers at8MiB total505256517; adding proposed
+M gives505263657, leaving31607255 below512MiB BEFORE all external owners and
+caller spares. The compiled numerical request admits exactly that remaining
+margin and rejects one byte more; old/new worst-frame coexistence also rejects.
+These maxima were not allocated or encoded. Exact T/D and P<=2D+5 yield a
+coupled buffer bound344195247 and proposed total344202387 before X/spares.
+Generic short tokens are outside the tighter raw-policy equations, never outside
+format validation. The unchanged default payload limit67108864 remains below
+the conservative raw-policy Pmax87241527; actual counted P must satisfy policy
+or the caller must explicitly select a different limit. No default is raised.
+
+The27 independent token cases reproduce declared E/D/P and pass existing prefix
+queries. Actual repeated1/4/8MiB input follows indexed count/tokenization and is
+compared with the unchanged complete-frame encoder. At8MiB,T=32515,E=130058,
+D=325142,P=28507; the model/harness admitted sum is43079149, and the reference
+sum47241005 includes additional operation owners. These scoped actual owner
+charges include harness controls and exclude test/runtime/process allocation.
+They qualify those inputs only, not universal compiled8MiB/512MiB acceptance.
+
+An initial prototype descriptor-transfer expression produced a rejected prefix;
+diagnostic observations and explicit candidate field construction yielded matching
+prefixes. The initial root cause is not established. Preserve the failed evidence
+and do not infer a production bug or compiler cause. Final uninstrumented helper
+routes qualify the explicit construction in both compilers and sanitizers; no
+production source was changed for the observation. A future implementation must
+repeat byte/descriptor/prefix and failure tests on its own concrete code.
+Next: implement only an isolated finite token-frame query/encoder, retaining the
+operation/frame reference. Validate prefix and complete payload privately before
+one final frame commit. Preserve whole caller output/layout/count on failure and
+existing no-failed-frame-publication contract before considering streaming.
