@@ -20369,3 +20369,25 @@ fresh CMake root also runs prior three private targets. Retain initial22-test
 qualification. FZ-0058 covers finite small whole-frame calls and an independent
 raw oracle; full-history boundaries remain focused tests. No production stream
 chunking, encoder, public admission, benchmark or external gate is established.
+
+## TVG-1288: Eight-MiB incremental decoder abstract contract checks
+
+Date: 2026-10-03. Independently model Header/Prefix/Payload/Draining/AwaitingEnd/
+Ended/Error with finite symbolic sections: header112, prefix80 and a six-byte
+payload. Frame validation is an explicit oracle outcome, not Range parsing.
+Use empty, single and two-frame recipes, final-short output, bad header/frame,
+trailing input and every truncation of the small two-frame recipe. Enumerate
+every input split with one-byte and larger output capacity; include one-byte
+input, empty output followed by drain, and EndInput on final input or a later
+empty call. Check consumed/produced extents, Progress only with progress,
+NeedOutput with pending raw, explicit terminal state, unchanged output tails,
+sticky errors/end and preservation of earlier valid frame output on failure.
+Keep model evidence private; it proves only finite abstract-contract examples.
+No production incremental decoder is executed and no new fuzz/performance or
+external qualification is claimed. Actual serialized fixtures, malformed input,
+aliases, budgets and concrete sizeof remain required for the next prototype.
+
+The finite model passes9378 abstract trace cases and111 checked-ledger cases.
+The latter verify equivalent direct/full-capacity and nested-helper retained
+charges, the conditional512MiB arithmetic and integer-overflow rejection.
+These are design checks only, not actual codec or physical memory measurements.

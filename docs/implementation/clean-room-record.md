@@ -37863,3 +37863,19 @@ both bounds.
   artifact/append-only review. Retain initial twenty-two-test qualification.
 - Boundary: finite private frame only; no incremental/public stream decoder,
   encoder, complete stream memory/RSS or speed/external/legal guarantee.
+
+## CR-1592: Independent private eight-MiB incremental ownership/state design
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1180, DD-1416..1420, first-party four-MiB coordinator and core
+  process/limits/overlap contracts. No external or copyleft source consulted.
+- Task: specify bounded incremental ownership, partial input/output, EndInput,
+  strict trailing behavior, frame-level publication and full retained charges
+  before implementation. Keep public dispatch and encoder closed.
+- Design review: compare first-party terminal/partial-input semantics, count
+  every full workspace and spare serialized owner once, and avoid duplicating
+  the nested Range state. Concrete owner/control sizes remain unqualified.
+- Validation: TVG-1288 finite independent abstract traces, append-only document
+  review and existing source/artifact preservation. No codec source changes.
+- Boundary: design model only; no actual incremental codec, round-trip, fuzz,
+  full stream/RSS fit, performance, external admission or legal guarantee.

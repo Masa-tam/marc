@@ -10426,3 +10426,13 @@ Apply independently specified LZ overlap-copy semantics to validated tokens.
 No external or copyleft implementation is consulted. Complete-frame fixtures
 are formed by explicit little-endian mathematical header/descriptor fields
 and independently generated payloads, not a production encoder/serializer.
+
+## IR-1180: Private eight-MiB incremental decoder ownership/state design
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+Use DD-1416..1420, the first-party four-MiB incremental decoder, core process
+statuses/flags and checked full-capacity helpers. Derive a bounded coordinator
+around the existing finite transactional frame decoder. Use an independently
+written abstract state simulator to examine partial-buffer and termination
+contracts; it neither parses a production payload nor validates codec output.
+No external implementation or copyleft source/test suite is consulted.

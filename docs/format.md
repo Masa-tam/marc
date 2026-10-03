@@ -8500,3 +8500,16 @@ Caller raw output and layout metadata commit only after complete success;
 failed private token/raw work remains discardable. Query success is not payload
 validity. No public variant, whole-stream/incremental decoder, hash extension,
 encoder or automatic profile selection is admitted by this helper.
+
+DD-1421 specifies the private incremental coordinator contract around that
+finite decoder; the serialized representation is unchanged. It collects the
+112-byte stream header,80-byte frame prefix and exact declared payload with
+bounded caller-owned storage. Each complete frame must pass all finite checks
+before any raw bytes from that frame are published. Drain its validated raw
+bytes before accepting the next frame. Frame-local dictionary/models reset.
+Strict whole-stream termination additionally requires EndInput and rejects
+trailing data; previously published valid frames, including a validated final
+frame, are not rolled back by a later stream error. Empty known-size streams
+contain only the header and still require explicit termination. This is an
+ownership/state design, not incremental decoder implementation or public
+admission; concrete layout, chunking and full retained budget need later gates.

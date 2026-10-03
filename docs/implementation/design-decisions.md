@@ -30235,3 +30235,117 @@ without allocating them. Complete incremental stream state and encoder fit
 remain unqualified. Next: private bounded stream-decoder ownership/state design,
 including partial input/output, per-frame publication and complete retained
 capacity accounting before implementation or public admission.
+
+## DD-1421: Private eight-MiB incremental decoder ownership and state contract
+
+Date: 2026-10-03. Design only: immutable decode direction, known original size,
+the reserved DD-1416 representation and the DD-1420 transactional frame helper.
+The first prototype shall borrow five disjoint, stable, caller-owned workspaces:
+serialized frame, token output, token scratch, validated raw frame and raw
+scratch. Their full allocation capacities must be supplied, including unused
+tails; an enclosing owner must declare any further retained storage separately.
+No allocation occurs inside this decoder. Keep public selectors, dispatch,
+CLI, defaults, encoder and hash extensions closed. Instances are noncopyable
+and not thread-safe; separate instances share no mutable state.
+
+The owner retains copied limits, spans, a112-byte header and80-byte prefix,
+parsed stream metadata, frame layout/requirements, collected/drained counters,
+absolute input/frame positions, validated raw extent, sequence, end-seen flag,
+state and sticky error. Define states Header, Prefix, Payload, Draining,
+AwaitingEnd, Ended and Error. Header collects exactly112 bytes before parsing;
+empty known input proceeds to AwaitingEnd. Prefix collects exactly80 bytes,
+validates identity/sequence/counts/final size and capacity before collecting
+payload. Copy prefix into serialized storage, collect the exact remaining
+payload, and invoke the finite decoder once on that complete frame view.
+Do not retain a second payload allocation or Range decoder between calls.
+
+Only complete helper success makes raw storage ready for publication. Advance
+validated raw extent and sequence with checked arithmetic, then enter Draining.
+Copy only validated raw bytes to caller output; do not accept any next-frame
+input until this frame is fully drained. Then reuse all five workspaces and
+enter Prefix or AwaitingEnd according to the known total. Validated raw extent
+is the preflight committed coordinate; caller-visible output may lag by the
+current undrained frame. Dictionary/model history resets at every frame.
+Failure of any frame publishes none of its raw bytes. Earlier valid bytes,
+including those emitted during the failing call, stay committed and are counted
+in output_produced. This is frame-level transactional publication, not a
+whole-stream rollback. Caller output beyond output_produced is unchanged.
+
+EndInput is attached to the supplied input span. Latch end-seen only after
+all of that span is consumed, even when blocked draining an earlier frame;
+the caller must resubmit any unconsumed final suffix with EndInput. Subsequent
+empty calls can drain pending raw bytes. New nonempty input after the latch
+is malformed. An incomplete header/prefix/payload at latched end is truncated;
+do not treat temporary starvation as termination. AwaitingEnd rejects any
+remaining input as strict trailing data without consuming the offending byte.
+With no more input it needs explicit EndInput before Ended. The final validated
+frame may already be published before trailing data is discovered, just like
+earlier validated frames; strict whole-stream success is withheld until Ended.
+
+Every return satisfies independent input/output bounds. Progress requires at
+least one nonzero count. Starvation returns Progress if this call advanced,
+otherwise NeedInput. Draining with remaining raw and exhausted output returns
+NeedOutput, including when this call consumed/produced bytes. EndOfStream is
+returned only after all raw is drained and strict termination established.
+Empty input/output is permitted; zero output does not imply end. Flush is
+boundary-neutral and cannot bypass validation or manufacture termination.
+ResetBlock/unknown flags fail unsupported before any buffer access or progress.
+Check full input/output/workspace/owner overlap with checked byte extents before
+advancing; misuse fails invalid_argument with zero counts and no output writes.
+Ended returns EndOfStream with zero counts on all later calls. Error returns
+the same error with zero counts on later calls. These terminal policies apply
+before inspecting later flags/input; callers must not submit another stream
+or trailing bytes to an already ended instance.
+
+Errors retain stable category and absolute byte position: header start for
+header validation, frame start for prefix/storage validation, payload start
+for finite payload/token/raw validation, current input position for truncation,
+trailing data and API misuse. Bit position is zero for this coordinator's
+coarse location. Preserve the helper detail privately. Checked arithmetic
+failure maps to limit_exceeded; unsupported identity/features to unsupported;
+invalid encoding to malformed_stream. Counts report only bytes actually
+copied/committed in the call, even on later failure. Checked counters must
+reject overflow before input/output mutation or publication. No zero-progress
+internal transition may repeat indefinitely.
+
+Charge ownership before processing: Cserialized + sizeof(Token)*(Ctokens +
+CscratchTokens) + CrawReady + CrawScratch + Hframe + O. Each multiplication
+and addition is checked separately. Hframe is the actual qualified finite
+frame plan/result plus nested token-helper charge, currently5856 bytes;
+its nested Range state is already included. O is sizeof(concrete owner),
+separately retained enclosing storage and the maximum simultaneously live
+control temporaries not already covered by owner/Hframe. Header/prefix arrays
+and embedded metadata are included in sizeof(owner), not counted again.
+Concrete control temporary types/lifetimes must establish that maximum before
+implementation can claim fit; this design does not assign an invented O.
+Also enforce all individual limits and validate every prefix before filling
+its payload. Constructor workspace admission must not infer a valid header
+or payload; a small insufficient workspace is rejected when required by prefix.
+
+For a complete view S, pass O + (Cserialized - S) as the finite helper's
+retained charge and pass both complete token/raw spans. Its own query adds S,
+the full four capacities and Hframe, yielding exactly the owner aggregate.
+Do not duplicate a borrowed payload, omit spare serialized capacity, or add
+another Range state. Account prefix/header parser temporaries and helper calls
+by actual overlapping lifetimes; a released temporary is not retained, but
+named objects still alive across a nested call are. Reuse requires no extra
+frame owner while Draining. Size queries cover logical retained storage, not
+allocator overhead, machine stack/RSS or external input/output buffers; any
+additional retained allocation belongs in O. All workspace tails participate
+in both charging and alias rejection.
+
+At independent full eight-MiB conservative capacities, the prior finite base
+is369104693 bytes. A512MiB policy target leaves167766219 bytes for O, conditional
+on actual layout, limits and caller capacities; this is neither a valid encoded
+maximum-frame example nor a measured/qualified whole-stream fit. Existing
+generic limits are unchanged. Header-only/empty streams still charge supplied
+capacities; no hidden exemption or silent limit increase is allowed.
+
+Design qualification uses a finite abstract state model for splits, starvation,
+EndInput, empty/final-short streams, truncation, late frame rejection, strict
+trailing data and sticky states. It does not execute an eight-MiB incremental
+codec. Next: concrete owner/query and private stream prototype, actual sizeof
+and temporary-lifetime ledger, one-byte/arbitrary-chunk tests with independent
+serialized fixtures, alias/full-capacity/overflow tests and sanitizer/fuzz
+qualification. Public admission, encoder, performance and external gates remain
+separate; do not count this design model as round-trip or decoder fuzz coverage.
