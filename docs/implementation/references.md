@@ -10696,3 +10696,13 @@ unchanged safe owned stream and operation stream remain differential oracles;
 independent hand-checkable stream vectors remain normative. No external
 implementation or source was consulted. This unit adds isolated small-stream
 qualification only, with no new timing, fuzz or external campaign.
+
+
+## IR-1210: Private prepared-owner large-stream qualification
+
+2026-10-04. Qualify DD-1451 from the repository's independently authored and
+qualified DD-1450 coordinator, DD-1448 prepared finite owner, unchanged safe
+finite/owned-stream and operation-stream oracles, unchanged private decoder and
+independent large repetition vectors. No external implementation or source was
+consulted. This unit adds real large-stream tests; no new fuzz, timed or external
+campaign is established.

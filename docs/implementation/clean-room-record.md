@@ -38442,3 +38442,25 @@ new large-stream qualification, fuzz campaign, timing, external verification or
 speedup is established. Late range/prefix injection remains unconfirmed.
 Further release-wide similarity review remains separate; no legal guarantee is
 claimed. Next real large prepared-stream qualification: CR-1622.
+
+
+## CR-1622: Real large private prepared-stream qualification
+
+2026-10-04; author/reviewer: Codex. Task: qualify actual one/eight-MiB frames,
+multiframe and short-tail lifetimes, independent oracles, full retained capacities
+and failed-candidate publication for DD-1451 / IR-1210 / TVG-1318. Repository
+references and independently generated recipes only. No external or restricted
+implementation source was consulted or translated.
+
+Add isolated tests and retain unchanged codec/helper and oracle sources. Ten
+large tests pass on two optimized compiler routes and fully instrumented
+helper/test/framework address and undefined-behavior sanitizers, leak detection
+disabled; related regression passes 25 targets / 463 cases. Four actual destroyed
+scopes compare independent repetition and generated cyclic/mixed/literal-only/
+far-distance wire and raw output. Full reservations, actual release receipts and
+failure raw prefixes remain explicit. The initial shared-harness-ceiling failure
+and corrected independent admission evidence are both retained. No codec change,
+new timed/fuzz/external campaign, physical-memory claim, public integration or
+speedup is established. Late range/prefix inconsistency injection remains an
+explicit gap. Release-wide similarity review remains separate; no legal guarantee
+is claimed. Next isolated prepared-stream fuzz/replay qualification: CR-1623.

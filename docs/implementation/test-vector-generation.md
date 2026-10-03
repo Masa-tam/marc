@@ -21271,3 +21271,33 @@ All 21 pass on both optimized compiler routes and fully instrumented helper,
 test and framework address/undefined-behavior sanitizers, with leak detection
 disabled. No new large prepared-stream, fuzz, timed or external campaign is
 claimed. The subsequent real large-stream qualification is TVG-1318.
+
+
+## TVG-1318: Real large prepared-stream differential tests
+
+2026-10-04. Ten isolated tests cover one/eight-MiB two-frame repetition, 32-byte
+final frames, whole input, frame-edge splits, randomized chunks, zero and bounded
+output, Flush and deferred EndInput. Whole-view repetition cases use separately
+destroyed unchanged safe-owned stream, operation stream, prepared stream and
+unchanged decoder, with independent expected bytes. Full capacities remain
+charged across all phases. Prospective and actual owners are admitted separately.
+
+Seven generated single-frame cases use four destroyed scopes: unchanged safe
+finite owner, unchanged operation stream, prepared stream, unchanged decoder.
+Cyclic/mixed/random literal-only recipes at one/eight MiB and far-distance
+repetition at eight MiB use deterministic repository-owned input generation.
+Charge full input/expected/wire/step capacities, controls, allocator callbacks,
+raw spare/index, old/current/candidate storage and full call extents. Repetition
+uses an explicit 512-MiB ceiling; generated cases use an explicit 1-GiB diagnostic
+ceiling. Logical reservations are neither resident memory nor hidden heap usage.
+
+Check initial inclusive/one-below admission, large replacement inclusive/one-below,
+second-frame and tail allocation failure with valid raw-prefix consumption,
+pending full output admission before drain, sticky terminal counts and actual
+release receipts. Both optimized compiler routes and fully instrumented
+helper/test/framework address/undefined-behavior sanitizers pass all ten tests,
+leak detection disabled. Fresh related regression: 25 targets / 463 cases.
+Retain the initial harness failure caused by carrying one path's lower ceiling
+into the next; qualify the corrected independently admitted paths in new outputs.
+No new timed, fuzz or external campaign. Late range/prefix injection remains
+unconfirmed. Next isolated prepared-stream fuzz/replay gate: TVG-1319.

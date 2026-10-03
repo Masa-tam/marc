@@ -32279,3 +32279,45 @@ format ID or CLI path. No speedup, large prepared-stream, new fuzz or external
 qualification is claimed. Late range/prefix injection remains unconfirmed.
 Next DD-1451 / IR-1210 / TVG-1318 / CR-1622: qualify real large prepared-stream
 lifetimes, retained capacities and failure prefixes before any fuzz or timing.
+
+
+## DD-1451: Real large private prepared-stream qualification
+
+2026-10-04. Add an isolated test target, preserving every existing codec/helper
+and oracle source. Exercise actual one- and eight-MiB frames, two full frames,
+a final 32-byte frame, chunk boundaries around frame edges, randomized input
+splits, one-byte/17-byte output, zero output, neutral Flush and deferred final
+end. Independent repetition vectors agree with separately destroyed unchanged
+safe-owned stream, operation stream and new prepared stream scopes, followed by
+the unchanged decoder. Retained harness capacities and complete call views stay
+charged; no clear or last-use discount and no old-release-to-fit admission.
+
+Seven generated single-frame cases use four actual scopes: unchanged safe finite
+owner producing the expected wire, unchanged operation stream, prepared stream,
+unchanged decoder. Cover cyclic, mixed and random literal-only data at one and
+eight MiB, plus eight-MiB far-distance repetition. Admit prospective allocations
+and reconcile actual capacities. Explicit diagnostic ceilings are 512 MiB for
+independent repetition tests and 1 GiB for generated cases. The largest generated
+operation-stream logical reservation is 839,338,087 bytes; its prepared allocation
+peak is 268,713,738 bytes. Those are different ledgers, not comparable total
+resident-memory measurements or evidence of universal 512-MiB admission.
+
+Initial admission one byte below rejects before callbacks; inclusive admission
+allocates exactly raw/index. At the large inclusive replacement threshold both
+current and candidate remain live until real old destruction. One byte below
+preserves the first full frame and adds no failed candidate frame. Explicit
+second-frame and short-tail allocation failures preserve one and two complete
+frames respectively, and the decoder exposes only those complete raw prefixes.
+Pending full-output admission rejects with zero counts and unchanged publication.
+The 21-test small-stream suite retains distinct mid-drain API-error coverage.
+
+Ten large tests pass on two optimized compiler routes and fully instrumented
+helper/test/framework address and undefined-behavior sanitizers; leak detection
+is disabled. The fresh related regression build passes 25 targets / 463 cases.
+An initial harness run exposed a shared ceiling carried from the first oracle
+into the next; retain that evidence and reset each separate path to its explicit
+diagnostic ceiling before independently deriving its admission. No codec change
+was required. No speedup, production integration, new fuzz or external validation
+is claimed. Late range/prefix inconsistency injection remains unconfirmed.
+Next DD-1452 / IR-1211 / TVG-1319 / CR-1623: extend isolated malformed-input and
+fuzz replay coverage to the prepared stream before any timing or public decision.

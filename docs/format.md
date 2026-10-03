@@ -8775,3 +8775,14 @@ Candidate encoding failure exposes no candidate frame. A mid-drain API error
 adds zero bytes on its failing entry but can leave earlier output ending inside
 an already validated frame; strict decoding rejects the incomplete known-size
 stream and exposes only prior complete raw frames.
+
+
+### Real large prepared-stream qualification (DD-1451)
+
+The private prepared-owner stream representation remains unchanged. Actual one-
+and eight-MiB frames, two full frames and a final short frame agree byte-for-byte
+with existing independent repetition vectors and unchanged stream oracles.
+Generated cyclic, mixed, literal-only and far-distance cases also agree. A failed
+candidate second frame or tail exposes no candidate byte; strict known-size
+consumption rejects the incomplete stream and publishes only prior complete raw
+frames. This qualification adds no profile, algorithm ID or public format.
