@@ -10379,3 +10379,13 @@ Implement DD-1414's storage contract using first-party token/operation types,
 checked arithmetic, overlap helpers and independently written synthetic tests.
 No dictionary search, distance model, range coder or wire encoder is implemented
 by this prototype. No external/copyleft implementation or tests consulted.
+
+
+## IR-1175: Reserved eight-MiB position-distance representation
+
+Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+Use first-party typed/context identity declarations and predicates, existing
+Format 2.0 offsets, four-MiB cursor/model/range/preflight rules, short-length
+equations and DD-1413..1415 storage contracts. Check ID availability before
+reservation; derive design vectors arithmetically without invoking a codec.
+No external/copyleft source, expression, tables or test suite consulted.

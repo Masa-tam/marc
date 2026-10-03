@@ -8320,3 +8320,145 @@ no existing four-MiB or generic contextual bytes, limits or decoder acceptance.
 A future larger-window profile still requires an exact separate format,
 bounded validator/model implementation and complete frame publication tests.
 Passing storage tests does not admit a profile or prove codec failure behavior.
+
+
+### Reserved 8 MiB position-distance Dynamic Range family
+
+Format 2.0 reserves exactly dictionary algorithm/variant **2/11**, context-model
+algorithm/variant **1/12**, entropy algorithm/variant **3/2**, and descriptor
+context count **47**. Crossed pairs/backends/counts are contradictory. This
+reservation implements or publicly admits no parser, model, codec, factory,
+CLI profile or archive. Existing identities and bytes remain frozen.
+
+Dictionary variant 11 extends variant 10's short-length token rules, greedy
+longest-match selection, nearest-distance tie break, stated match-benefit
+policy and bytewise overlap reconstruction. Dictionary parameters are the
+existing sixteen-byte little-endian window/minimum/maximum/flags fields: window
+1..8388608 bytes, minimum exactly 3, maximum 3..258, flags zero. Stream frame
+size is 1..8388608 raw bytes. The reference profile uses frame=window=8388608.
+Original size is an explicit known uint64 byte count, bounded by caller limits;
+no unknown-size mode is introduced. All history and models reset per frame.
+Empty input is header-only; no zero-raw-size frames occur. Nonfinal frames have
+the configured size, the final frame has the exact remaining raw size, and
+sequence starts at zero. Checked committed totals must equal original size.
+
+The stream header is exactly 112 bytes. All fields below are little-endian;
+reserved byte ranges are zero. There are no serialized native structures.
+
+| Offset | Bytes | Value/meaning |
+| ---: | ---: | --- |
+| 0 | 4 | ASCII MARC |
+| 4, 6 | 2 each | Major 2, minor 0 |
+| 8, 10 | 2 each | Prefix size 64, feature flags 1 |
+| 12, 14 | 2 each | Dictionary algorithm 2, variant 11 |
+| 16, 18 | 2 each | Entropy algorithm 3, variant 2 |
+| 20 | 4 | Configured raw frame size |
+| 24 | 4 | Entropy block size 0 |
+| 28, 32 | 4 each | Dictionary/entropy parameter sizes, both 16 |
+| 36 | 4 | Hash descriptor size 0 |
+| 40 | 8 | Known original raw byte count |
+| 48 | 4 | Context extension size 16 |
+| 52 | 12 | Reserved zero |
+| 64, 68, 72, 76 | 4 each | Window, minimum, maximum, flags |
+| 80 | 4 | Model total limit 32768 |
+| 84, 86 | 2 each | Context count 47, entropy flags 0 |
+| 88 | 8 | Reserved zero |
+| 96, 98 | 2 each | Context algorithm 1, variant 12 |
+| 100 | 4 | Context flags 0 |
+| 104 | 8 | Reserved zero |
+
+Each frame starts with the existing 64-byte header followed immediately by
+the 16-byte Range descriptor, then exactly payload_size bytes. Frame offsets:
+0..3 ASCII MRF2; uint16 size 64 at 4, flags 0 at 6; uint64 sequence at 8;
+uint32 raw size, token count, event count, decision count, payload size and
+descriptor size 16 at offsets 16,20,24,28,32,36 respectively; uint32 context
+side-data and checksum-trailer sizes zero at 40,44; reserved 48..63 zero.
+Descriptor-relative offsets are uint32 decisions at 0 and payload size at 4,
+uint16 context count 47 at 8 and flags zero at 10, reserved 12..15 zero.
+Descriptor decisions/payload must equal the frame fields. No hash, context side
+data, checksum, raw-bit padding field, extra trailer or entropy block is added.
+
+Context selection precedes accepting the current token. At reset previous kind
+is Start and no previous Literal exists. Kind values Literal=0, Match=1 use
+contexts Start=0, previous Literal=1, previous Match=2, all alphabet 2.
+A Literal uses context 3 (alphabet 256) before any preceding Literal token;
+otherwise context 4+(B>>5), 4..11, for the last Literal token byte B. It updates
+B and previous kind; a Match updates previous kind only. Reconstructed match
+bytes do not update B. Match length uses context 12+previous_kind, alphabet 9.
+
+For length 3/4, emit class 8 and one uniform bit 0/1. For lengths 5..258, set
+V=L-4, class=floor(log2 V) in 0..7, and extra=V-2^class in exactly class uniform
+bits. Omit the zero-width extra event. Reject width/value mismatches, classes
+outside 0..8 and class-7 extra 127 (length 259). Distance uses context
+15+length_class, 15..23, alphabet 24 (classes 0..23). Its D must be positive,
+<=window, <=history already reconstructed in this frame, and its match must
+fit the remaining declared frame output. Literal unused distance/length and
+Match unused literal fields are zero in the internal canonical token shape.
+
+For D, c=floor(log2 D) and E=D-2^c. Class 0 has no extra event. Otherwise code
+all c numeric bits of E, bit 0 first, using adaptive binary contexts 24+p,
+p=0..c-1. Class 23 permits only E=0 (D=8388608) and still codes/updates all
+23 zero bits. The endpoint is grammatical but cannot reference valid history
+inside a frame of at most 8388608 bytes. Reject nonzero class-23 extras, classes
+above 23, incorrect widths and history/output violations. These bits are Range
+decisions, not a separately packed raw-bit stream.
+
+Contexts 0..14 retain the four-MiB alphabets. Contexts 15..23 have alphabet 24;
+24..46 have alphabet 2. Prefix offsets are 0 (kind), 6 (Literal), 2310 (length),
+2337 (distance), 2553 (binary extras) and 2599 (end). Binary p starts at 2553+2p.
+Exactly 47 contexts and 2599 frequency entries are used; no model table is
+serialized. Frequencies initialize to one. After a symbol decision, increment
+its frequency and context total by one; at total 32768 replace each frequency
+with ceil(frequency/2) and recompute the total. Uniform length bits use fixed
+equiprobable intervals and do not update adaptive models. Reset every model
+and cursor at each frame start; all arithmetic is integer and checked.
+
+For nonempty frame raw size F and token count T, require 1<=T<=F,
+2T<=events<=min(2F,5T), events<=decisions<=min(9F,33T), and
+5<=payload_size<=min(2*decisions+5,18F+5). A symbol contributes one event and
+one decision; a nonzero-width uniform or adaptive extra contributes one event
+and width decisions. Maximum length-three cost is 3+1+23=27 decisions; longer
+matches cost at most 3+7+23=33 while producing at least four bytes. Literals
+cost two decisions. These facts prove the nine-F ceiling. At full frame the
+event ceiling is 16777216, decision ceiling 75497472, payload ceiling 150994949
+and complete serialized ceiling 150995029 (payload+80). Counts are uint32
+on wire; intermediate products, additions and narrowing are checked.
+
+Integer Range normalization/carry, forward bytes, five final carry shifts,
+uniform-bit intervals and canonical interval replay inherit entropy 3/2's
+four-MiB position-distance rules exactly. Model selection/counts are the
+extension above. The byte-oriented payload has no independent partial-byte
+padding; canonical replay must match every payload byte and terminal extent.
+Reject invalid intervals/states, truncated or extra payload, unfinished fields,
+count disagreement, invalid models and noncanonical termination. Strict stream
+decoding rejects bytes after the declared final frame or an empty stream header.
+
+Preflight checks the exact identity, flags/reserved bytes and parameters,
+position/remaining raw size, counts and descriptor, total/payload/frame/block/
+distance/match/model/expansion limits, and checked concrete aggregate before
+allocation or scratch mutation. It preserves promised metadata/output on error.
+Complete canonical/count/token/history validation and reconstruction precede
+publication; failed-frame raw bytes are never exposed. Explicit private scratch
+may retain a discardable prefix. Prior valid frames/header bytes are not rolled
+back, and prefix preflight alone never establishes frame validity.
+
+Decoder charges serialized extent + T*sizeof(Token) + F raw bytes + concrete
+model/owner and peak live validation state; streaming borrowing charges full
+supplied capacities. Future encoder phase sharing follows DD-1414/1415 and
+must charge concrete retained owner/adapter plus peak simultaneous helpers,
+all prefixes/plans and full borrowed tails. Existing prototype sizeof is not
+the new codec ledger. The fixed future profile has explicit eight-MiB frame,
+block and distance ceilings, match ceiling 258, model total 32768, 2599 entries,
+payload ceiling 150994949 and a 512-MiB aggregate target. Caller limits remain
+authoritative; no internal preflight raises them and generic defaults do not
+change. Concrete state/resource and codec qualification remain separate gates.
+
+Hand-checkable design vectors (not implemented-codec output): empty input uses
+the header fields above with original size zero and no frames. A single raw
+byte 41 uses original size one, one frame of raw/token count one, event/decision
+counts two, payload size six and descriptor count 47. Its payload is
+`00 20 7f ff bf 00`: start kind interval 0/2, then literal interval 65/256;
+the initial literal unit is floor(floor(0xffffffff/2)/256)=8388607. The complete
+frame is 86 bytes and stream 198 bytes. A distance 4194305 has class 22, extra
+1 and 22 adaptive bits, starting with 1 then 21 zeros. Distance 8388608 has
+class 23, extra zero, but is history-invalid for any permitted complete frame.

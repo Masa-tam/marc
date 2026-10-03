@@ -20213,3 +20213,30 @@ root; never reuse retained roots for CTest. Directly check new supplemental
 records, documentation append scope, fixed artifacts and prior source hashes.
 No codec bytes, round trips, full eight-MiB model charges, fuzz, timings or
 external archive verification are produced by these tests.
+
+
+## TVG-1283: Eight-MiB reservation arithmetic and future preflight vectors
+
+Check source declarations/predicates and previous reservations before assigning
+2/11 + 1/12 + 3/2. Independently derive all 47 alphabets/offsets, 2599 frequencies,
+256 permitted match lengths and distance-class boundary equations. Reconcile
+the 9F/33T decision and 2F/5T event bounds, full-frame ceilings and exact header/
+descriptor offsets. Construct empty-header and one-Literal-41 design vectors
+from explicit little-endian fields and independently check the six-byte payload
+with integer interval/carry arithmetic. These are mathematical vectors, not
+eight-MiB codec executions, round trips or accepted public streams.
+
+Future decoder-side tests must cover truncated headers/descriptors, every
+nonzero flag/reserved range, crossed tuples/backends/counts, zero/oversized
+frame/window/min/max, frame sequencing/final-short/total overflow, exact count
+bounds and one outside, descriptor disagreement, expansion/aggregate limits,
+output/metadata aliasing and failure invariance. Payload work later must add
+class 23 endpoint/nonzero extras, class 22 nonzero extras, length 259, wrong
+widths, unfinished fields, history/output violations, canonical/truncation/
+trailing mutations and failed-frame nonpublication. Prefix vectors do not
+substitute for those complete-payload tests.
+
+Retain all prior sources/artifacts and fixed binaries, append public documents
+and directly inspect supplemental headings/scope. Standalone documentation
+validation does not close the known supplemental ordinal-coverage gap. No new
+build/test/CTest/fuzz, benchmark or external gate in this design-only unit.

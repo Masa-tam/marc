@@ -37785,3 +37785,16 @@ both bounds.
   document append/scope and prior source/artifact preservation checks.
 - Boundary: no new wire profile/model, public codec/API/default/limit change,
   codec correctness/publication proof, benchmark, admission or legal guarantee.
+
+
+## CR-1587: Eight-MiB representation reservation and design vectors
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1175; first-party identity, format, cursor, Range, preflight
+  and workspace sources. No external/copyleft expression or vectors consulted.
+- Task: define the distinct tuple, model, counts, offsets, validation and
+  resource/publication contracts before any new encoder/decoder implementation.
+- Validation: TVG-1283; independent identity/offset/topology/length/interval
+  arithmetic, design-vector reconciliation and source/artifact/append checks.
+- Boundary: documentary reservation only; no source, parser/model/codec/API
+  admission, limit change, new timings/fuzz/external gate or legal guarantee.

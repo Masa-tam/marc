@@ -29971,3 +29971,70 @@ Next design gate: define a distinct larger position-distance representation and
 its model/validator/resource rules before implementing an encoder or decoder.
 Use the storage prototype as a candidate building block; prove complete state
 charges and frame publication with real codec qualification in later units.
+
+
+## DD-1416: Reserve eight-MiB position-distance grammar before implementation
+
+Date: 2026-10-03. Review source identity declarations/predicates and prior format
+reservations: dictionary variants 2..10 and context variants through 11 are
+occupied. Reserve only dictionary 2/11 + context 1/12 + entropy 3/2 for the
+eight-MiB extension. Documentation reservation is distinct from adding enum
+values, parser acceptance, a codec/model, public factory or archive inventory.
+Current formats and all current source remain unchanged.
+
+Define exact header/descriptor offsets, parameter/count/terminal rules and
+47-context topology in the format record below. The fixed future resource
+profile is frame/window 8388608, match range 3..258, model total 32768 and
+2599 frequency entries, with explicit eight-MiB frame/block limits, payload
+ceiling 150994949 and a 512-MiB aggregate design target. No helper may install
+higher caller limits; generic defaults and current profiles remain unchanged.
+The reserved grammar also permits smaller positive frames/windows within
+that ceiling, independently resetting all history/models per frame.
+
+For class 23, the only grammatical distance is 8388608: extra zero is coded
+through all 23 adaptive binary decisions, including model 46. It cannot refer
+to history inside a frame of at most that size. Grammar validity and history
+validity are separate checks; don't remove constrained bits or accept a failed
+frame. For class 22, extras are now fully representable, unlike the previous
+four-MiB model. This is why the old tuple cannot be reinterpreted.
+
+Three match symbol decisions plus at most seven uniform length bits and
+23 distance bits give a 33-decision grammar ceiling per token. A length-three
+match has at most 27 decisions; any longer match has at most 33 and consumes
+at least four raw bytes. With two-decision literals this independently proves
+decisions<=9*raw for every permitted frame/window, even before history rejects
+the endpoint. Event count is grouped by fields, not by distance bits:
+2T<=events<=min(2F,5T), events<=decisions<=min(9F,33T). All products and extent
+sums are checked before narrowing/allocating. These are conservative bounds,
+not predictions of payload size or compression efficiency.
+
+Reference design vectors include a header-only empty stream and one literal
+0x41. Its two decisions use initial contexts 0 and 3; normalized intervals give
+payload 00 20 7f ff bf 00, six bytes, plus an 80-byte frame prefix. The complete
+stream is 198 bytes. These are mathematical design vectors, not emitted or
+accepted by an implemented eight-MiB codec. Independently check field positions,
+closed-form interval arithmetic, model prefix sums and all length/bit classes.
+
+Decoder preflight must validate tuple/parameters/flags/reserved bytes, exact
+frame position and counts, descriptor agreement, bounds/expansion policy and
+concrete aggregate before allocation or scratch mutation. Payload finish must
+validate actual counts, extent, models and canonical replay. Token history and
+raw reconstruction precede publication; transactional outputs remain unchanged
+on error while explicit private scratch may retain a discardable prefix.
+Prefix success never establishes frame validity. Reject trailing data under
+strict stream policy and retain earlier committed frames on a later failure.
+
+The phase workspace prototype can contribute checked shared storage, but it
+does not account for the new model/stream owner automatically. Derive R and
+peak simultaneous H from concrete future types and nested lifetimes; charge
+full capacities once, including any adapters/prefix/plans. Eight-MiB encode
+base storage 528482389 leaves 8388523 for all additional charges under the
+512-MiB target. Decoder base 260046933 has its own ledger. Neither the
+5386-byte frequency/total element sum nor the 112-byte storage prototype is
+a complete codec state query. Qualification of that gate remains pending.
+
+Next implementation unit: decoder-side bounded parameter/identity/model-shape
+and stream/frame-prefix preflight, with hand-checkable header/descriptor and
+malformed cases, before range decoding or encoding. Define any concrete model
+state used for charges and prove requirements output invariance. Public parsers
+stay closed; no automatic selection, optimization trial, benchmark or admission.
