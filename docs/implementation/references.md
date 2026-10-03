@@ -10445,3 +10445,12 @@ transactional frame helper. Independent mathematical serialized fixtures from
 TVG-1287 supply real test streams; no production encoder is added or invoked.
 Use the previously independent state design to schedule partial input/output.
 No external implementation or copyleft source/test suite is consulted.
+
+## IR-1182: Private eight-MiB reference encoder and ownership design
+
+Date: 2026-10-03. Read first-party four-MiB exhaustive/indexed candidates,
+short-length token mapping, scalar Range writer/carry/rescale and finite raw
+frame encoder. Compare DD-1413..1416 phase-storage arithmetic with DD-1420..1422
+transactional decoder/publication contracts and actual47-context grammar.
+Use the independent mathematical fixture writer and canonical baseline LZSS
+cost specification. No external or copyleft implementation is consulted.

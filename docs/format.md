@@ -8521,3 +8521,13 @@ unchanged; public selectors/CLI and encoder admission remain closed. Its
 sizeof-based retained query counts all five full capacities and stream/control/
 finite-helper state, including serialized-owner spare capacity once. This
 logical budget is not a physical peak-memory or whole public-profile claim.
+
+DD-1423 designs a private reference encoder for the same reserved representation;
+it introduces no new wire identity or public admission. Literal and match fields,
+47-context updates, low-bit-first extras, canonical carry finish and independently
+reset frame history remain as specified above. The initial raw reference parser
+will select longest/nearest matches of length at least five using canonical
+baseline LZSS cost9<2L; eligibility is an encoder policy, not an encoded parameter
+or a restriction on valid3/4 match streams. Complete frames must succeed before
+the coordinator exposes bytes. Transactional finite output needs separate
+private scratch; its capacity cannot be omitted from the retained budget.

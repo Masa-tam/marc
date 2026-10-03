@@ -30408,3 +30408,133 @@ test setup/build registration, not decoder behavior. No optimization/timing,
 public admission or encoder is established. Next: independently specified
 eight-MiB encoder-side framing/ownership and finite reference encoder design;
 retain decoder qualification while leaving public gates separate.
+
+## DD-1423: Private eight-MiB reference encoder framing and ownership design
+
+Date: 2026-10-03. Design only, for reserved dictionary2/11, context1/12 and
+entropy3/2; do not widen existing public enums or dispatch. Implement in layers:
+finite scalar operation encoder, validated token-to-field mapper, independent
+reference raw parser, finite frame builder, then bounded stream coordinator.
+Reuse the already specified eight-MiB field grammar and independent decoder.
+Each frame starts with empty history, initial field state and every model
+frequency one. Neither encoder optimization nor public profile is admitted.
+
+The operation encoder accepts only the47-context grammar,2599 frequencies,
+maximum model total32768, lengths3..258 and distances1..8388608. Validate each
+operation's kind/context/alphabet/unused fields/extra width before indexing,
+shifting or updating the private state. Symbols use scalar integer cumulative
+scans. Uniform length extra bits use binary halves without model updates;
+distance extras use adaptive binary contexts24..46, low bit first. Each extra
+field is one event and contributes its width to decisions. Require complete
+grammar at finish, checked event/decision/payload counts, and the same five
+terminal carry shifts as the decoder's canonical replay. A class23 distance
+extra must be zero; length class7 extra127 is invalid. Parameters alone do not
+prove token history. Full-frame token mapping additionally validates every
+history/raw bound before field construction and requires exact final raw size.
+
+Length3/4 map to class8 with one uniform bit; for L>=5 let c=floor(log2(L-4)),
+extra=L-4-2^c, width=c. Distance uses c=floor(log2(distance)), extra=distance-2^c,
+width=c; omit zero-width fields. Literal emits kind0 then byte; match emits
+kind1, length class, optional length extra, distance class and optional extra.
+Context selection follows the eight-MiB field state, not a four-MiB constant.
+The first mapper materializes operations in explicit bounded storage; a later
+fused token-to-Range path must compare exact bytes and retains separate gates.
+For raw F and T tokens, E<=min(2F,5T), D<=min(9F,33T), P<=min(2D+5,18F+5),
+serialized frame<=18F+85. These are independent capacity ceilings, not actual
+maximizing streams. Endpoint distance8388608 cannot appear in a valid match
+inside an independently reset frame of at most8388608 bytes.
+
+The initial raw reference policy is greedy longest eligible match, nearest
+distance on equal length, maximum length bounded by remaining input and258.
+Use a minimum eligible length of five: canonical baseline dictionary cost
+is nine bytes for a match versus two per literal, so9<2L must hold. This is
+an explicit encoder choice before contextual entropy, not a promise that each
+substitution reduces adaptive Range bytes. It adds no serialized eligibility
+parameter. The typed representation/decoder still accepts3/4, and caller-supplied
+token fixtures must test those cases. Do not silently inherit older candidate
+eligibility3/4 into this reference policy. Other selection policies require
+their own independently defined cost, determinism and validation gates.
+
+Exhaustive nearest-first search is the small-vector oracle. A bounded exact
+three-byte-prefix index may serve larger frames:65536 uint32 heads and one
+uint32 link per raw position, with UINT32_MAX sentinel. Every skipped match
+position is inserted, tail positions with fewer than three bytes are omitted,
+window-expired candidates cannot match, and ties never replace a nearer match.
+Overlap comparisons use the finite raw input, with the same resulting forward
+copy semantics as decoding. Check positions before narrowing; all live positions
+are below8388608. Require equality of tokens against exhaustive search on small
+vectors. No chain-depth truncation, lazy parsing, five-prefix performance claim
+or copied four-MiB window/variant restriction is allowed. Finder helper/owner
+sizes and exact phase lifetimes remain to be declared and qualified.
+
+Define two explicit output contracts. A transactional finite entry receives
+caller output and disjoint private serialized/payload scratch; failure leaves
+the whole caller output and descriptor/layout metadata unchanged, reports zero
+committed bytes, and may leave discardable private prefixes. Validate all full
+capacities/aliases/budgets before private work, encode in scratch, verify exact
+finish/counts, then commit bytes and metadata. A counting pass may establish
+exact size without writing, but it is not proof that a later direct caller
+write cannot fail. Do not rely on a second-pass internal_error being impossible
+to satisfy invariance. Mutable borrowed input/configuration during a call is
+unsupported. Keep scratch and caller output tails guarded on every path.
+
+A separately named private scratch entry permits its serialized buffer to
+change on failure; that buffer is not downstream output. Metadata commits only
+on success. The future coordinator may use this entry because it exposes no
+frame bytes until the complete frame succeeds. An encode error discards scratch,
+never drains that frame, and preserves earlier successful frames. This explicit
+discardable contract must not replace or weaken any transactional entry.
+Both entries reset private model/finder state on a new independent frame.
+
+Frame construction validates stream identity, known original size, sequence,
+committed coordinate and exact final-short raw extent before coding. Use a
+private80-byte header/descriptor area with explicit little-endian stores,
+flags0, reserved0, side/trailer0 and47 contexts. Fill counts/payload size only
+after exact encoding success. A future stream header is112 bytes, known-size;
+empty input emits only that header. Header/frame serialization may not invoke
+the old public serializer by widening its accepted identities. Stream direction
+is immutable Encode; collect deterministic frame-sized raw blocks, close the
+last exact known-size block, drain only complete valid frames, and handle partial
+buffers/EndInput/Flush according to a separate coordinator design before coding
+that layer. Caller-I/O chunking must not change serialized bytes.
+
+Bounded ownership has distinct search and field/coding phases. Keep raw and
+tokens alive while retiring all finder objects/references before constructing
+operation objects over shared phase storage. Explicitly construct/destroy typed
+objects and obey alignment; do not pass aliased finder/operation spans into an
+old API that requires disjoint storage. The first three-prefix finder bulk is
+4F+262144 for F>=3; five-prefix bulk12F+786432 is a separate future option.
+Charge the full actual arena capacity once, including gaps/tails, with tokens
+plus aligned max(operation capacity,finder capacity). Every multiply/align/add
+is checked; phase failure cannot expose stale references or revive retired
+objects. Inputs, outputs, live metadata and full workspace spans are disjoint.
+
+Using qualified Token12/Operation16 layouts and independent full capacities,
+at F=8388608, tokens100663296, operations268435456, three-prefix finder33816576,
+serialized150995029 and raw8388608 give shared bulk528482389 bytes. Search
+finder and operation storage do not coexist, but token storage remains retained.
+All concrete owner/control/helper state H and separately retained storage are
+additional; the512MiB target leaves8388523 bytes before those charges. Do not
+copy a four-MiB state constant, infer H from2599 frequency entries, or claim
+complete encoder fit until real query types/lifetimes are qualified.
+
+That504MiB+85 bulk counts only one serialized frame owner. A transactional
+finite wrapper with both maximal caller serialized output and maximal private
+serialized scratch must add another150995029, totaling679477418 bytes before
+H/retained storage, already above512MiB. The future scratch-based coordinator
+can retain one private frame and drain committed prefixes to transient caller
+output; it cannot claim the same ledger for the two-owner transaction. All
+retained caller capacity is charged according to the entry contract; borrowed
+transient process I/O is not a hidden retained allocation. Smaller exact caller
+capacities may change admission, but a failed query must not raise limits or
+claim every conservative capacity corresponds to a valid encoded frame.
+
+Design checks independently map lengths/distances/contexts and generate finite
+Range payloads for comparison with retained mathematical vectors. Check raw
+reference tie/cost examples, phase/capacity equations and overflow. They do not
+execute a new production encoder or establish round-trip/performance/fuzz.
+Next: declare and implement the private transactional scalar operation encoder,
+qualify actual model/writer/cursor/results and dual-output charges, compare
+fixed independent payloads and decode them through the qualified operation
+decoder. Raw parser/phase/frame/stream ownership and public/external admission
+remain later gates. No existing decoder, public format or default changes.

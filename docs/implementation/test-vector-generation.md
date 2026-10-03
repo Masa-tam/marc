@@ -20427,3 +20427,28 @@ CMake tests include the four prior private layers; retain an initial duplicate
 target configure failure and use another fresh root after registration repair.
 FZ-0059 adds actual bounded scheduling fuzz; no performance/external/public
 or production encoder qualification is implied.
+
+## TVG-1290: Private eight-MiB reference encoder design mathematics
+
+Date: 2026-10-03. Independently calculate all256 literal fields, all lengths
+3..258, every distance-class lower/upper boundary and class22 upper-half
+distance4194305. Verify kind/literal/length/distance context association,
+uniform length extras versus adaptive binary distance contexts24..46,
+event/decision counts, endpoint history exclusion and invalid length259.
+A finite mathematical interval writer with explicit carry and five finish
+shifts reconstructs literal, short-overlap and all-length retained payloads;
+no new production encoder/mapper is used. This is design-vector arithmetic.
+
+Independently model nearest-tie greedy reference parsing with minimum length5,
+canonical9<2L cost, overlap, tails, window expiry and finite raw replay. Compare
+an exact three-byte-key index against exhaustive candidate enumeration on small
+generated binary/repetitive inputs; this mathematical index has no production
+bucket/link code. Check shared-phase capacity arithmetic, integer overflow and
+one-versus-two serialized-owner budgets. Preserve evidence privately. Concrete
+encoder/layout qualification, caller-output invariance tests, decoder differential,
+real frame round-trip, chunking, sanitizer/fuzz and performance remain later work.
+
+Design checks pass12033 field-mapping cases,4175 finite exhaustive/key-index
+comparisons and13 budget/overflow cases. Three mathematical payloads match the
+retained literal, short-overlap and all-length vectors byte-for-byte. These
+counts qualify the independent design calculations only, not production code.

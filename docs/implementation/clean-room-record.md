@@ -37896,3 +37896,19 @@ both bounds.
   Keep initial test-configuration/build-registration failures and corrections.
 - Boundary: private incremental decoder and logical budget only; no production
   encoder, public/external admission, RSS/speed or legal guarantee.
+
+## CR-1594: Independent private eight-MiB reference encoder ownership design
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1182, DD-1413..1416 and DD-1420..1422; first-party scalar
+  candidate/field/Range rules, canonical baseline cost and independent vectors.
+  No external or copyleft implementation was consulted.
+- Task: design reference encoder layers, deterministic longest/nearest policy,
+  exact reserved fields, explicit transactional/private-scratch distinction
+  and full-capacity phase lifetimes before implementing encoder code.
+- Review: one serialized owner versus two changes the memory ledger; retain
+  unknown concrete helper/owner charges and public admission as separate gates.
+- Validation: TVG-1290 independent mathematical mapping/interval/parser/budget
+  checks and append-only/source/artifact review. No production source changes.
+- Boundary: design only; no new encoder, actual round-trip, fuzz/performance,
+  complete encoder memory/RSS fit, external/public or legal guarantee.
