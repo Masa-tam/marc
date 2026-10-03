@@ -31286,3 +31286,53 @@ real queries. Neither capacity formula establishes physical peak, performance,
 whole-stream rollback, arbitrary call fit or universal compiled8MiB acceptance.
 Next: implement only the separate bounded private token-Range helper and prove
 actual sizeof/query/failure behavior against the unchanged operation reference.
+
+
+## DD-1436: Transactional private token-to-Range helper
+
+Date: 2026-10-03. Add an isolated allocation-free finite helper over immutable
+typed tokens, explicit parameters, declared T/E/D/F, limits, full caller payload
+capacity, full private scratch capacity and retained-owner bytes. No operation
+array is allocated or retained. Parameters and tokens use the unchanged bounded
+validator, including generic valid lengths3/4 and frame-local history. Metadata
+is bounded with the generic decoder-domain equations, never the minimum-five
+raw-encoder resource bound. Validate the complete token before field arithmetic.
+
+The query first admits checked token bytes plus both full payload capacities,
+concrete helper working bytes and retained owners. Validate frame/block/total
+output, table/model and payload limits, including checked prior output plus F.
+Traverse exact fields using the existing cursor and compute payload size with
+the complete count-only Range writer, including delayed carry and five finish
+shifts. Check exact T/E/D/F, not merely upper bounds. Count success requires both
+capacities to hold the counted P; zero-capacity queries report payload shortage
+after counting P and leave the proposed descriptor uncommitted.
+
+Before mutation the encoder rejects full-extent overlap among tokens, parameters,
+metadata, limits, both payload spans and descriptor. Reset writer, cursor and all
+47 models for the second traversal. Emit exclusively to private scratch, compare
+T/E/D/F/P with the admitted query, and only then copy P bytes and assign the
+descriptor. Any failure commits zero bytes and preserves every caller payload
+byte and descriptor; scratch is discardable. Borrowed inputs/configuration must
+remain stable across both traversals. Successful caller and scratch tails beyond
+P are unchanged. This is a finite helper, without streaming or frame publication.
+
+Field order, length escape8, uniform length extras, adaptive distance extras in
+LSB order, encode-before-update/rescale and the last-literal context behavior
+are unchanged. All model/field accesses are checked. The concrete helper charge
+is6020 bytes in both qualified compiler routes, including working model/writer/
+cursor/pending field/token validation/result and conservative simultaneous query,
+plan/result/descriptor/overlap/arithmetic controls. Token/plan/result object sizes
+are12/88/64 bytes. These are explicit owner charges, not physical stack or RSS.
+
+Qualification covers27 independent payload fixtures, all lengths3..258, both
+rescale paths and20 mixed sequences, plus valid histories for distance classes
+13..22, shortages, invalid late tokens/counts, full aliases, limit admission and
+one-byte budget rejection. The27-case differential harness reconciles all live
+backing capacities, concrete controls and maximum helper charge per phase;
+its largest admitted owner sum is9247494 bytes. That harness charge is distinct
+from a new frame owner's C and M, which have not been implemented or qualified.
+No universal8MiB/512MiB fit, speedup or physical peak follows from this helper.
+The default compressed-payload limit remains unchanged. Operation reference,
+finite frame/stream implementations, public profile/CLI/default and wire IDs
+remain unchanged. Next gate: design and qualify the finite frame owner/query
+ledger using this helper before integrating it into frame or stream publication.

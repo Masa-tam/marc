@@ -1500,3 +1500,20 @@ Compile the harness and every encoder/decoder dependency with C++20 and
 max_len72,timeout10,leak detection disabled, without crash, timeout, sanitizer
 or invariant finding. These are small bounded stream schedules; no large8MiB
 coordinator fit, physical peak, performance or public/external admission follows.
+
+
+## FZ-0067: Private typed-token Range query and transactional encoding
+
+Date: 2026-10-03. Derive bounded valid token sequences, including generic
+length3/4, uniform length extras and adaptive distance extras. Mutate late token
+fields, declared E/D/F, parameters, memory limits and both payload capacities.
+For success compare exact bytes against the unchanged mapper/operation encoder,
+decode all token fields with the unchanged consumer and repeat deterministically.
+For every error require zero committed bytes, unchanged whole caller payload
+and descriptor. Success also preserves caller tail bytes beyond counted P.
+
+Compile the harness and all helper/reference dependencies with C++20 and
+`-fsanitize=fuzzer,address,undefined`. Complete10000 executions,seed1436,
+max_len128,timeout10,leak detection disabled, without crash, timeout, sanitizer
+or invariant finding. This finite small-input campaign does not qualify a new
+frame/stream coordinator, universal8MiB fit, physical peak or performance.

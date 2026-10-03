@@ -10568,3 +10568,14 @@ resource bounds independently from token lengths and decision counts. Compare
 lazy mathematical token-field traversal with retained materialized mathematical
 operations and the unchanged compiled mapper/operation encoder/token decoder.
 No external source, implementation or external test suite consulted.
+
+
+## IR-1195: Bounded private typed-token Range implementation
+
+Date: 2026-10-03. Implement DD-1435 using only first-party token validation,
+field-cursor semantics, contextual Range arithmetic and adaptive model rules.
+Reuse the repository's independently authored scalar Range writer/model logic
+in the isolated helper; retain the materialized operation encoder as a separate
+reference. Use the previously generated 27 mathematical token/payload fixtures,
+unchanged mapper and token consumer for differential qualification. No external
+source, implementation or external test suite consulted.

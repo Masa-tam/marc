@@ -38148,3 +38148,24 @@ both bounds.
 - Boundary: design and reference-fixture compatibility only, not implemented
   token-Range encoder, physical peak, performance, public/external or legal
   guarantee. No external source/implementation/test suite was consulted.
+
+
+## CR-1607: Private token-to-Range implementation and qualification
+
+Date: 2026-10-03. Author/reviewer: Codex, with user-approved continuation.
+Task: implement only the separate bounded private typed-token Range query and
+transactional encoder designed in DD-1435, preserving generic short tokens,
+reference bytes, full output/descriptor failure invariants and owner admission.
+First-party scalar writer/model arithmetic is reused in the isolated helper;
+the original operation encoder, mapper and token decoder remain unchanged.
+No external implementation, restricted source or external test suite consulted.
+Known external compressor implementations remain intentionally unconsulted.
+
+Review checks field/context/update/extra-bit/finish order, validation before
+shifts, complete owner charging, full alias checks and private-only writes before
+commit. Track27 independent mathematical fixtures;37 deterministic tests pass in
+both compiler routes and fully instrumented sanitizer builds. Related regressions
+pass15 targets/317 cases. FZ-0067 completes10000 executions without finding.
+Append-only documentation and retained-source/artifact integrity are reviewed.
+No public/external release similarity review, physical peak, speedup, universal
+large-frame fit or legal guarantee is claimed. No new external reference used.

@@ -20835,3 +20835,41 @@ precommit failure-stage traces specify unchanged caller/descriptor and discardab
 scratch; they do not substitute for implemented late-failure or alias regressions.
 No production/CMake changes, new CTest/fuzz/timing/external or public admission.
 Preserve previous sources/artifacts and append-only documentation prefixes.
+
+
+## TVG-1303: Private token-to-Range differential and transaction tests
+
+Date: 2026-10-03. Track the27 independently generated DD-1435 fixtures as
+explicit hexadecimal payload bytes and little-endian ten-byte token recipes,
+with compact recipes for repeated literals/matches and distance-prefix history.
+The recipe serialization is test data only, not a new native-struct wire format.
+Expected payloads are from the retained independent mathematical generator,
+never from the new helper. Include every literal, lengths3..258, short overlap,
+70000-literal and70000-match rescale inputs, distance classes0..12 and20 seeded
+mixed sequences. Query P/E/D/F, compare the complete payload and descriptor with
+the unchanged mapper/operation encoder, then compare all decoded token fields
+with the unchanged private token consumer. Repeat encoding deterministically.
+
+The27-case harness allocates all comparison owners before qualification and
+uses their actual capacities plus concrete controls/max helper charge; every
+query/encode/decode phase reconciles local and retained bytes to that same sum.
+Maximum qualified owner sum9247494 bytes; helper6020, token12, plan88, result64.
+This is a scoped codec-owner ledger, excluding test-framework allocation and
+physical process/stack measurement. Additional constructed valid histories test
+distance classes13..22 with nonzero extras against the unchanged reference and
+token consumer. They do not assert a new8MiB frame coordinator admission.
+
+Negative tests exercise late unknown kind, unused fields, zero/out-of-history/
+window distances, invalid/configured lengths, parameters and declared counts,
+payload/frame/block/total/table/model limits, checked capacity/prior-output
+overflow, exact full-capacity plus retained budget and one byte below, short
+output or private scratch, whole-span aliases including unused tails, and aliases
+with configuration/descriptor. Failure verifies zero committed bytes, unchanged
+whole caller output and descriptor. Success verifies both untouched payload tails.
+The real finish path is exercised by every positive vector; no artificial carry
+failure or borrowed-input race is claimed as tested.
+
+Both compiler routes and fully instrumented test/helper/framework builds pass
+37 cases; related private regression targets pass15 targets/317 cases in a
+fresh dedicated build. FZ-0067 completes10000 sanitizer-backed fuzz executions.
+No timed benchmark or new external interchange campaign is performed here.

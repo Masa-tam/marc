@@ -8636,3 +8636,12 @@ publication contracts remain unchanged. Generic valid length3/4 tokens remain
 accepted; tighter allocation equations apply only to the current raw encoder's
 minimum-five selection policy. They do not replace decoder count/payload bounds,
 raise default limits, introduce a format variant or admit a public profile.
+
+
+DD-1436 implements the private typed-token-to-Range traversal from DD-1435.
+Its successful payload and descriptor equal the existing materialized-operation
+reference exactly, including generic valid length3/4 tokens. It stages payload
+privately and commits only after complete validation, exact counts and Range
+finish. It adds no wire representation, algorithm ID, public profile or changed
+frame/stream failure-publication contract. The helper has no frame publication
+responsibility; existing frame and stream paths continue using their reference.
