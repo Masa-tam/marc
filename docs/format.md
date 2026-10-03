@@ -8663,3 +8663,14 @@ preflight precede one complete-frame commit. Failure preserves whole caller
 output/layout/written; a successful planning query alone permits no publication.
 Existing frame/stream/public representations, limits and failure contracts remain
 unchanged. No new algorithm ID, profile, unknown-size or hash feature is admitted.
+
+### Large finite private token-frame qualification (DD-1439)
+
+The existing eight-MiB representation and profile parameters are unchanged.
+Large cyclic, seeded random, mixed and distant-copy inputs produce complete
+frames identical to the original operation-based encoder. Maximum-match-length
+three retains its existing minimum-five raw parser policy and can therefore
+produce all-literal frames; typed length3/4 decoding remains valid. The private
+encoder's failure cases preserve all caller frame bytes/layout/count and commit
+zero bytes, including after a previously successful frame. No new algorithm ID,
+wire variant, public profile, default, stream owner or CLI behavior is introduced.

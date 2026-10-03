@@ -31471,3 +31471,51 @@ actual implementation; its root cause remains unconfirmed, not inferred fixed.
 No default, wire ID, unknown-size form, hash observer or performance claim added.
 Next gate: qualify diverse large input/resource cases for this finite path before
 designing an operation-free private stream owner/coordinator and publication flow.
+
+## DD-1439: Diverse large token-frame owners and failure boundaries
+
+Date: 2026-10-03. Qualify the private finite encoder before designing a stream
+owner. Nine cases cover sizes immediately below/above one and four MiB, eight
+MiB, all-byte cyclic input, random/mixed input, copies farther than one MiB and
+a final short frame at nonzero sequence. Two cyclic cases select the existing
+maximum-match-length three parameter: raw minimum-five policy then emits only
+literals. This qualifies T=F; it is not a claim about incompressible eight-MiB
+input under the default match parameter. The random one-MiB case uses maximum
+match length258. Generic typed length3/4 acceptance is unchanged.
+
+A reference-only one-GiB test policy admits both full operation arrays. Count
+T/E/D/P before requesting operation/payload storage, check nominal requests
+before allocation and reconcile observed capacities before each helper call.
+Actually destroy reference tokens/index/operations/frame/scratch/output before
+constructing the new workspace. Keep raw and saved complete expected frame live
+and charged. The new route uses a separate512-MiB policy. Charge full owner
+capacities, unused tails, borrowed inputs, conservative concrete fixture-control
+reservation and actual sequential helper state. Reconcile local plus retained
+bytes with the same phase ledger. No capacity is removed merely because a view
+is shortened or a phase finishes. Private tokens are reused for decoding, while
+all still-live new encoder owners remain charged. These are bounded test owner
+plans, not a general allocation controller or physical peak measurement.
+
+The eight-MiB all-literal case has T=8388608, E=16777216, D=16777216 and
+P=5260201. Qualified reference/encode/decode phase charges are respectively
+801452364/264582268/281357816 bytes, including saved expected data and conservative
+controls. The reference phase exceeds512 MiB and uses its explicitly separate
+policy; simultaneous retention of both complete workspaces is not claimed to fit.
+Other qualified inputs require different capacities. Actual helper reservation
+remains7524 bytes. No universal eight-MiB fit or default-limit change follows.
+
+Complete wire bytes match the original encoder and every decoded byte matches
+raw input. An exact inclusive owner budget admits the query; one byte less
+rejects the encoder. Output shortage, missing private payload scratch, payload
+limit, total-output policy, block limit and a private view overlapping unused
+caller output tails preserve the whole prior caller frame, layout and written
+count with committed0. Private workspace may change. Stable errors are checked
+for budget/storage/range/parser/alias cases; total/payload policy rejection may
+arise at the applicable validator. No failed frame is published. Existing private
+implementation and all production/reference sources are unchanged.
+
+Both compiler routes and fully instrumented sanitizer qualification pass nine
+cases; related17 targets/354 cases pass. Leak detection is disabled. No timing,
+fuzz or external campaign is introduced. Next work is a separately documented
+private stream owner/coordinator design with allocation/replacement coexistence
+and per-frame publication contracts; this qualification does not integrate it.

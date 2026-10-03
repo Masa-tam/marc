@@ -10600,3 +10600,12 @@ encoder as an independent differential route. Reuse independently authored
 complete-frame mathematical vectors and token-parsing oracle; adapt first-party
 transaction tests to the new private workspace and add query/owner/prefix checks.
 No external source, implementation or external test suite consulted.
+
+## IR-1198: Diverse large finite token-frame qualification
+
+Date: 2026-10-03. Extend the first-party DD-1438 private frame tests with
+independently generated cyclic binary, mixed segments, seeded xorshift bytes
+and distant copies. Compare complete frames against the unchanged operation
+encoder and decode with the unchanged frame decoder. Reference and new encoder
+owners occupy separate lexical scopes; saved expected bytes remain charged.
+No external source, implementation or test suite consulted.

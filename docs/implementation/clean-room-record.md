@@ -38216,3 +38216,23 @@ All existing artifacts/reference sources and documentation prefixes are reviewed
 for preservation. The initial prototype prefix cause remains unconfirmed and no
 compiler/production bug cause is inferred. No public release similarity review,
 universal large-frame fit, physical peak, speedup or legal guarantee is claimed.
+
+## CR-1610: Diverse large finite token-frame qualification
+
+Date: 2026-10-03. Author/reviewer: Codex, user-approved continuation.
+Task: qualify DD-1438 with large diverse raw inputs and resource/publication
+boundaries before stream-owner design. Extend first-party testing patterns with
+independently generated cyclic, xorshift/mixed and distant-copy data. Use existing
+encoder/decoder sources unchanged. No external or restricted implementation,
+external test suite or new algorithm reference consulted; known external
+compressor implementations remain intentionally unconsulted.
+
+Review covers actual reference-scope destruction, saved expected owner charge,
+full observed capacities and unused tails, conservative concrete controls,
+nominal allocation admission, nested retained reconciliation and preserved
+caller output/layout/count on failure. Nine cases pass both compiler routes and
+fully instrumented sanitizer builds; related17 targets/354 cases pass. Leak
+checking is disabled. Documentation prefixes and existing artifacts are checked
+for preservation. No production integration, speedup, universal512-MiB fit,
+physical peak, new fuzz/external campaign, public release similarity review or
+legal guarantee is claimed. The earlier prototype cause remains unconfirmed.
