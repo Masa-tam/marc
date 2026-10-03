@@ -38000,3 +38000,23 @@ both bounds.
   initial driver namespace error/diagnostic and corrected completed results.
 - Boundary: design only; no implementation, actual frame round-trip/CTest/
   fuzz/performance, full owner/RSS fit, public/external or legal guarantee.
+
+## CR-1600: Private eight-MiB transactional header/prefix serializers
+
+- Date: 2026-10-03. Author/reviewer: Codex; user authorized the next private unit.
+- References: IR-1188, DD-1428/1429, first-party private semantics/preflight and
+  unchanged independent112-byte header/14 prefix fixtures. No external/copyleft
+  implementation, source comments, tables or tests consulted.
+- Task: independently write explicit little-endian private serializers with
+  fixed scratch, complete failure invariance, full-region alias validation,
+  concrete working ledger and existing decoder policy checks.
+- Review: no public serializer/profile/enum/CLI/default change, no heap or native
+  serialization. Prefix validity and private commitment never publish a failed
+  complete frame. Whole output and metadata change only after scratch validation.
+- Validation: TVG-1296 twenty cases with two compilers/full ASan/UBSan, nine fresh
+  related test targets, FZ-0064 actual10000-run campaign, document-prefix and
+  retained-artifact hashes. Preserve initial test-setup failure and correction;
+  no production defect found by that failure.
+- Boundary: no complete frame encoder, new timing, physical/full-owner memory
+  fit, public/external admission or legal guarantee. Future assembler control
+  storage remains to be measured from its actual objects.

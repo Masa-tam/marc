@@ -10499,3 +10499,12 @@ header,80-byte frame prefix, decoder preflight and complete-frame publication
 rules. Independently calculate explicit byte layouts, boundary positions,
 full-capacity retained owners and nested helper ledgers; compare unchanged
 mathematical fixtures. No external/copyleft source or test suite consulted.
+
+## IR-1188: Private eight-MiB transactional header and prefix serialization
+
+Date: 2026-10-03. Independently implement DD-1428's explicit112-byte stream
+header and80-byte frame prefix using first-party private stream semantics and
+prefix preflight. Compare the unchanged independent header and14 prefix fixtures.
+Charge concrete fixed scratch/control objects separately from decoder admission
+requirements; use private scratch before committing caller bytes. No external
+source, restricted implementation or external test suite consulted.

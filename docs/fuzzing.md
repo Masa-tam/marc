@@ -1444,3 +1444,21 @@ The corrected campaign completes10000 executions, seed1427, max_len146,
 timeout10, leak detection disabled, with no crash, timeout, sanitizer or invariant
 finding. Indexed speed, full ownership, complete frame/stream encoding,
 external verification and public admission remain separate gates.
+
+## FZ-0064: Private eight-MiB stream-header/frame-prefix serializer transaction
+
+Date: 2026-10-03. Independent14 frame-prefix fixtures seed a128-byte input shape
+with trailing stream-parameter, capacity, sequence/committed and retained-owner
+controls. Full-capacity guard snapshots require zero commitment and unchanged
+caller bytes/bytes_written for every error. Two identical calls compare complete
+output, metadata and stable errors; query and entry results agree. Success
+checks untouched tails and unchanged private stream-parser/prefix-preflight
+differential. Negative payload recipes are prefix checks only, never evidence
+of valid complete frames. Live alias and overflow boundaries are additionally
+covered by TVG-1296's deterministic cases.
+
+Compile harness and all serializer/preflight/limit helpers with C++20 and
+`-fsanitize=fuzzer,address,undefined`. Campaign completes10000 executions,
+seed1429, max_len128, timeout10, leak detection disabled, with no crash, timeout,
+sanitizer or invariant finding. No complete frame publication, public admission,
+external interoperability or performance claim follows from this campaign.

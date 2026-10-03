@@ -20599,3 +20599,27 @@ Universal separate-owner full-frame bulk is1233387695 bytes, before5820 known
 helper reservation and unknown additional C/X. No full512MiB fit is inferred.
 No production/CMake target change, CTest, sanitizer/fuzz campaign, timing,
 physical peak, complete encoder/public admission or external check is performed.
+
+## TVG-1296: Private eight-MiB transactional header/prefix serialization
+
+Date: 2026-10-03. Independently read fields from unchanged112-byte header and
+14 prefix fixtures; require byte-for-byte serialization equality for admitted
+prefixes and independent count-bound rejection otherwise. Prefix admission
+does not imply that their payload/history recipes are valid. Check empty and
+large original sizes, nonzero sequence/final short frame, every capacity below
+112/80, unsupported features/identities/parameters, wrong counts/descriptors,
+sequence/raw position, block/payload/model policy and repeated determinism.
+Snapshot complete output/metadata on every failure, including live overlapping
+inputs/configs/metadata and unused output tails. Exact full-capacity plus
+retained-owner and concrete working budgets pass at equality and reject one
+byte less. Numeric query/retained overflows use no fabricated memory spans.
+Separate decoder admission is enforced even when serializer-only bytes fit.
+
+Twenty cases pass with two compilers and fully instrumented helper/test
+ASan/UBSan builds. A genuinely new build root runs nine related private targets
+(189 cases), including serializer20 and unchanged indexed/reference/mapper/
+Range encoder/frame/token/Range decoder/preflight tests. FZ-0064 completes10000
+instrumented executions. Keep the initial one-case test expectation failure:
+set matching sequence before testing end-position rejection, then restore it
+before the empty-original case. Production implementation unchanged. No timing,
+physical peak, complete frame encoder, public or external gate is established.

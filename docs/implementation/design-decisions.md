@@ -30843,3 +30843,41 @@ fuzz, speed, physical peak or public/external gate is established. Preserve an
 initial mathematical-driver namespace error and its correction. Next: private
 transactional stream-header/frame-prefix serializers with independent bytes and
 existing private parser/preflight differential before finite frame assembly.
+
+## DD-1429: Private eight-MiB transactional stream-header and frame-prefix serializers
+
+Date: 2026-10-03. Apply IR-1188 and DD-1428 without public admission. Count-only
+queries and finite serializers accept only the existing reserved dictionary11,
+context12, entropy3/variant2 profile and existing limit/sequence/count rules.
+Explicit little-endian stores build zero-initialized112-byte stream-header or
+80-byte frame-prefix private arrays, then unchanged private parser/preflight
+validates the result and semantic equality before a single caller copy.
+Reserved bytes, descriptor flags, hash descriptors, side data and checksum
+trailers remain zero. Success writes exactly112/80 bytes and leaves excess
+capacity untouched. ANY failure commits zero and preserves the entire caller
+output capacity and bytes_written. Full input/config/output/metadata regions
+must be disjoint and borrowed inputs stable; overlaps in unused output tails
+are rejected too. No heap allocation, native-struct serialization or payload
+publication is introduced.
+
+Query accounting adds full output capacity, separately retained owners and the
+sizeof-derived named working reservation, checking addition overflow before
+budget and capacity admission. Working reservations are424 stream /664 prefix
+bytes in the qualified layout: fixed scratch plus parsed values, two plans,
+result, outer/nested region arrays, and prefix requirements/FrameBounds. These
+are logical concrete object reservations, not physical stack or peak RSS.
+Existing decoder admission is checked independently: its5488-byte model and
+minimal frame requirements are not serializer allocations, and serializer
+storage fitting alone must not bypass that policy. Sequence rejection precedes
+raw-size rejection exactly as in preflight. Header/prefix validity does not
+prove payload/history validity; even negative payload fixtures may have valid
+prefixes. A prefix success is never complete-frame publication.
+
+TVG-1296 qualifies independent bytes, error invariance, capacity/alias/overflow
+and exact ledger boundaries; FZ-0064 exercises deterministic transaction and
+parser/preflight differential. The initial position test expected raw-size
+failure while its sequence was mismatched; correct the test setup, keeping the
+initial failed result. Production semantics did not change. Complete frame
+assembler control storage remains unknown; DD-1428's full separate-owner
+capacity bound and publication gate remain in force. No speed, full-memory-fit,
+public profile, CLI, default, archive count or external admission claim.

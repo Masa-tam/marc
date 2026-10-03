@@ -8570,3 +8570,13 @@ descriptors remain absent. No CRC/hash trailer or alternate frame representation
 is introduced. Private prefix serialization is not frame publication: the
 outer assembler must finish and validate the complete frame before any caller
 frame bytes/metadata become committed. This design admits no public encoder.
+
+DD-1429 implements private112-byte stream-header and80-byte frame-prefix
+serialization for the reserved eight-MiB representation already specified.
+Explicit little-endian fields and zero reserved/unsupported-feature bytes
+match the independent fixtures; unchanged private parser/preflight validates
+scratch before commitment. Capacity, alias, arithmetic, policy and semantic
+failures preserve all caller bytes and bytes_written. Prefix commitment is
+private metadata construction only: complete payload finish, count agreement
+and whole-frame validation must precede any later full-frame publication.
+No payload representation, checksum/hash field or public wire identity changes.
