@@ -38020,3 +38020,22 @@ both bounds.
 - Boundary: no complete frame encoder, new timing, physical/full-owner memory
   fit, public/external admission or legal guarantee. Future assembler control
   storage remains to be measured from its actual objects.
+
+## CR-1601: Private finite complete-frame encoder composition
+
+- Date: 2026-10-03. Author/reviewer: Codex; user authorized the next private unit.
+- References: IR-1189, DD-1428/1429/1430 and independently authored first-party
+  indexed/field/Range/prefix/preflight contracts and mathematical interval writer.
+  No external/copyleft implementation or test suite consulted.
+- Task: compose finite raw parsing, mapping, Range finish and frame prefix with
+  full distinct-owner accounting and one complete publication after validation.
+- Review: no caller writes before all private stages finish; no failed prefix/
+  frame publication, implicit owner reuse, allocation, public enum/CLI/default
+  widening or new wire representation. Concrete working6708 bytes replaces the
+  previous unknown assembler control for this finite entry only.
+- Validation: TVG-1297 final21 cases with two compilers/full ASan/UBSan,
+  independent mathematical byte fixtures, complete decoder/oracle differential,
+  ten fresh related targets210 cases and FZ-0065 actual10000 executions.
+  Preserve two initial test-condition failures/corrections; production unchanged.
+- Boundary: bounded small-frame qualification, not full8MiB512MiB fit or physical
+  peak, throughput, streaming/public/external admission or legal guarantee.

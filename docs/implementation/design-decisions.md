@@ -30881,3 +30881,49 @@ initial failed result. Production semantics did not change. Complete frame
 assembler control storage remains unknown; DD-1428's full separate-owner
 capacity bound and publication gate remain in force. No speed, full-memory-fit,
 public profile, CLI, default, archive count or external admission claim.
+
+## DD-1430: Private finite eight-MiB complete-frame encoder transaction
+
+Date: 2026-10-03. Apply IR-1189 and DD-1428's all-disjoint finite composition.
+The entry takes one nonempty exact raw frame, validation context and caller-owned
+private workspace: two live typed-token spans, live uint32 index, two operation
+spans, private whole-frame span and separate payload scratch. Public output,
+layout and bytes_written remain unchanged on ANY failure; private workspace
+is discardable. Full regions include input/config/workspace descriptor and
+metadata; unused-capacity overlaps are rejected before any helper writes.
+Frame-local history resets on every call; known original size, divisible
+committed position, expected sequence and exact final short-frame size follow
+the unchanged prefix rules. Empty logical streams and unknown-original streams
+remain outside this finite entry.
+
+Checked top accounting sums raw view, both full token capacities, full index,
+both full operation capacities, full caller output, full private frame and
+payload capacities, external retained bytes and concrete working reservation.
+The reservation is sizeof Working + result +15 regions, plus the largest
+nested helper reservation:888+5820=6708 bytes in qualified layouts. All named
+outer helper results/counts/layouts/requirements stay accounted for throughout;
+scalar call metadata is not a physical stack measurement. Range output is a
+view of private frame.subspan80, never an additional owner or caller scratch.
+Each nested local view/capacity/working sum plus checked retained remainder
+equals the top sum. Token/operation spare capacities and owners from earlier
+phases remain retained. Final preflight's conceptual decoder minimum and
+retained remainder also equal the top sum; conceptual model bytes are not an
+extra actual model allocation. No phase-death/reuse or heap allocation assumed.
+
+Run indexed parse, derive exact T/E/D/F, map validated operations, Range count
+plan and capacity check, Range encode/finish into private payload then private
+frame, and check planned/actual P/E/D. Construct zero-feature prefix privately,
+then final preflight validates exact serialized size and aggregate agreement.
+Only after all checks copy the entire80+P frame once and commit layout/size.
+No partial prefix or failed frame reaches caller output. Raw-history validity
+comes from indexed construction and mapper validation; the production entry
+does not add a duplicate decoder pass. Tests compare the complete private
+decoder and independent descending-length oracle and mathematical bytes.
+
+TVG-1297 qualifies small bounded frames, exact budget boundaries and failures;
+FZ-0065 adds complete-frame differential transaction fuzz. Universal separate
+owners still require1233387695 buffer bytes at8MiB, now plus6708 concrete
+reservation=1233394403 before external retained owners, exceeding512MiB.
+This is a capacity bound, not simultaneous logical-count maxima or measured
+physical peak. Tight-capacity larger-frame admission, ownership reuse, streaming
+coordination, public profile/default/CLI and performance remain separate gates.

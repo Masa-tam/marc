@@ -10508,3 +10508,12 @@ prefix preflight. Compare the unchanged independent header and14 prefix fixtures
 Charge concrete fixed scratch/control objects separately from decoder admission
 requirements; use private scratch before committing caller bytes. No external
 source, restricted implementation or external test suite consulted.
+
+## IR-1189: Private eight-MiB finite complete-frame encoder composition
+
+Date: 2026-10-03. Compose first-party qualified indexed parsing, typed-field
+mapping, scalar Range finish, transactional prefix serialization and unchanged
+prefix preflight following DD-1428/1429. Independently derive declared field
+counts from the existing equations and generate finite greedy raw/frame fixtures
+with the retained mathematical interval writer. No external source, restricted
+implementation or external test suite consulted.

@@ -20623,3 +20623,30 @@ instrumented executions. Keep the initial one-case test expectation failure:
 set matching sequence before testing end-position rejection, then restore it
 before the empty-original case. Production implementation unchanged. No timing,
 physical peak, complete frame encoder, public or external gate is established.
+
+## TVG-1297: Private finite eight-MiB complete-frame encoding
+
+Date: 2026-10-03. Compare exact complete literal fixture bytes, four independently
+generated raw/greedy-field/mathematical-Range/prefix recipes (repeat, pattern,
+nearest-distance tie and binary), all256 one-byte values, match-length boundaries,
+binary patterns and32 reproducible random/repetitive frames. Successful frames
+round-trip through the unchanged complete private decoder; decoded tokens equal
+the independent descending-length/nearest-distance parser. Check nonzero
+sequence/final short frame and repeated whole-output determinism.
+
+Whole output, native layout snapshot and bytes_written remain unchanged for
+invalid stream/position, empty/inexact frame, token/index/operation/payload/
+private-frame capacity, every caller capacity below86, late expansion-policy
+rejection, exact budget-minus-one, retained overflow, full live aliases and
+unused output metadata tails. Every distinct full capacity plus6708 concrete
+working reservation and external retained owners is charged at equality.
+Unused index capacity growth cannot be hidden by smaller logical contents.
+
+Initial20-case run had two test-condition errors: expansion_slack still admitted
+the intended rejected frame, and max_block_size exceeded the lowered exact
+budget, making the limit configuration invalid. Preserve failed logs; set slack0
+and block32 respectively, without production changes. Corrected20 cases pass;
+then add four mathematical fixtures for final21 cases, passing two compilers and
+full helper/test ASan/UBSan. Ten related private targets in a genuinely new
+build root pass210 cases. FZ-0065 completes10000 instrumented executions.
+No full8MiB/512MiB fit, speed, peak RSS, public or external gate is established.

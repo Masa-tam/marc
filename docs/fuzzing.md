@@ -1462,3 +1462,22 @@ Compile harness and all serializer/preflight/limit helpers with C++20 and
 seed1429, max_len128, timeout10, leak detection disabled, with no crash, timeout,
 sanitizer or invariant finding. No complete frame publication, public admission,
 external interoperability or performance claim follows from this campaign.
+
+## FZ-0065: Private finite eight-MiB complete-frame encoder transaction
+
+Date: 2026-10-03. Bounded1..128 raw bytes and eight control bytes mutate token,
+operation, frame/payload/caller capacities, stream minimum, sequence, internal
+budget and retained-owner bytes. First-party one-byte, repetitive, pattern and
+binary seeds include both success and shortage controls. Two identical calls
+compare stable result, full caller bytes and size. ANY failure commits zero,
+preserving every caller byte, native layout snapshot and bytes_written. Success
+guards unused output tails and round-trips through the unchanged complete
+private frame decoder, including raw-size and exact raw-byte equality.
+Deterministic TVG-1297 cases supplement live alias, exact ledger and overflow
+boundaries and independently generated mathematical frame bytes.
+
+Compile harness and every encoder/decoder dependency with C++20 and
+`-fsanitize=fuzzer,address,undefined`. Campaign completes10000 executions,
+seed1430,max_len136,timeout10,leak detection disabled, without crash, timeout,
+sanitizer or invariant finding. This does not qualify large8MiB capacities,
+physical peak, performance, streaming coordinator or public/external admission.

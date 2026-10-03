@@ -8580,3 +8580,12 @@ failures preserve all caller bytes and bytes_written. Prefix commitment is
 private metadata construction only: complete payload finish, count agreement
 and whole-frame validation must precede any later full-frame publication.
 No payload representation, checksum/hash field or public wire identity changes.
+
+DD-1430 adds a private finite complete-frame encoder for the same reserved
+eight-MiB representation. Indexed greedy raw tokens, validated modeled fields
+and scalar Range finish determine exact T/E/D/P; private zero-feature prefix
+and final preflight precede a single80+P caller commit. Every failure preserves
+complete caller capacity, layout and bytes_written. Frame history starts empty;
+known original size and sequence admit exactly one full or final short frame.
+No stream coordinator, empty-stream encoding, checksum/hash integration, public
+identity, format variant or default is introduced.
