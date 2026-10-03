@@ -38276,3 +38276,22 @@ preserved except the deliberate private test-target registration. No actual
 allocator/destruction qualification, new fuzz/timed/external campaign, stream
 integration, universal fit, speedup, public release similarity review or legal
 guarantee is claimed. Earlier prototype cause remains unconfirmed.
+
+## CR-1613: Bounded private generation ownership
+
+Date: 2026-10-04. Author/reviewer: Codex, user-approved continuation.
+Task: implement separate bounded generation allocation and real failure rollback
+from DD-1441, without production integration. Independently define typed exact
+allocator receipts, bounded fixed fault instrumentation and generation RAII/swap.
+Use existing first-party admission/demand/finite encoder and independent complete
+wire vectors/decoder. No external or restricted source/test suite consulted;
+known external compressors remain intentionally unconsulted.
+
+Review checks admission before allocation, real capacity before helper use,
+retained old/partial generations, callback controls, actual destruction before
+receipt release, unchanged old publication on failure and validated-only pending
+activation. Thirteen tests pass both compiler routes/full sanitizer builds and
+related19 targets/384 cases, leak checking disabled. Existing artifacts/source
+hashes and document prefixes remain preserved except deliberate test registration.
+No stream integration, universal fit, physical peak, speedup, new fuzz/timed/external
+campaign, public release similarity review or legal guarantee is claimed.

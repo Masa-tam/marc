@@ -8692,3 +8692,11 @@ prefix policy checks, without serializing or publishing any frame. A successful
 demand does not validate a finished payload; actual frame encoding and preflight
 remain mandatory. On failure the whole caller demand/receipt object is unchanged.
 No wire ID, layout, public profile, limit, default or stream behavior changes.
+
+### Private generation owner (DD-1442)
+
+The owner uses unchanged finite encoding and preflight before exposing a complete
+private frame. Pending publication is immutable until a coordinator acknowledges
+full drain; no drain or stream state machine is implemented in this unit. Allocation
+or validation failure retains the previous frame/layout/length and publishes no
+new frame. Existing wire IDs, profiles, defaults and CLI behavior are unchanged.

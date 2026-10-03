@@ -10624,3 +10624,10 @@ Date: 2026-10-04. Implement DD-1440 numeric admission and two-stage demand
 preparation from first-party indexed count, finite token-frame query and prefix
 query. Independent complete-frame mathematical vectors and existing decoder
 provide consumers. No external implementation, source or test suite consulted.
+
+## IR-1201: Bounded private generation owner and allocation faults
+
+Date: 2026-10-04. Implement the DD-1441 admission/demand contract using an
+independent exact typed-array allocator, first-party finite encoder and existing
+independent complete-wire vectors/decoder. Deterministic allocator callbacks
+exercise real candidate allocation and deletion. No external source or test suite.

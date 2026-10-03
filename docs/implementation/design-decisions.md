@@ -31728,3 +31728,81 @@ Next gate is a separate bounded block owner that enforces these admitted request
 before allocation, reconciles real extents, preserves old generations until actual
 destruction and proves partial allocation/rollback with deterministic faults.
 Then qualify the private coordinator against complete-stream reference bytes.
+
+## DD-1442: Private generation allocation, rollback and validated replacement
+
+Date: 2026-10-04. Add a separate private generation owner and exact allocator,
+registered only in an isolated test target. Raw/index remain borrowed full views;
+this is not the complete stream raw/index owner or coordinator. No existing
+codec/reference/library/default/CLI/format path changes.
+
+The allocator receives exact admitted element counts and returns typed live
+array ownership plus the full actual capacity. Default allocation uses checked
+products and value-initialized nothrow new[], translating allocation exceptions
+into an empty receipt. Default release executes delete[] before clearing the
+receipt. Allocator controls report a complete independent object region and a
+separate conservative callback-working reservation. Default callback controls
+reserve128 bytes; the fixed-instrumentation fault allocator reserves256. The
+allocator must outlive the owner, must not reenter it, and must provide unique
+storage disjoint from every other live allocation/input/control object. The
+allocation bound must be honored before allocating. The owner checks returned
+capacity before any helper; deliberately violating overcapacity callbacks are
+used to verify detection/cleanup, not to claim prevention of allocator misconduct.
+
+Every encode creates a fresh candidate generation: token pair, private frame,
+payload scratch and publication slot. There is no implicit reuse, destructive
+clear or allocation retry. Old generation capacities remain charged through
+successful token demand, partial candidate allocation, frame demand and each
+next-block admission. DD-1441 numeric admission runs before each allocator call;
+exact capacity is checked and reconciled before any helper sees storage. Require
+nonempty exact receipts for these minimum requests; null means out_of_memory,
+under/overcapacity means limit_exceeded. Candidate RAII releases all acquired
+blocks on every failure, with accounting receipts cleared only after destruction.
+
+Token demand is prepared with old owners/control/allocator reservations retained;
+frame demand sees the candidate token pair as local views, without requesting it
+twice. All subsequent numeric ledgers include old, partial and next request. The
+complete candidate is passed to the unchanged finite token-frame encoder with
+local plus retained equal to the same top ledger. Require aggregate agreement,
+exact planned frame length and serialized layout size before a no-throw generation
+swap, layout/length assignment and pending activation. Only after that swap are
+old blocks destroyed. Failure preserves old generation, frame layout/length and
+pending state. The borrowed index is private/discardable. No stream output bytes
+are drained by this owner; its publication accessor exposes only a fully validated
+private frame. Pending frames block all new encoding/allocation until a trusted
+coordinator acknowledges complete drain. This acknowledgment is a caller contract,
+not a drain implementation or proof that a consumer accepted bytes.
+
+The qualified owner reservation is10468 bytes:1736 bytes of concrete persistent/
+candidate/call controls plus the maximum sequential helper8732. Allocator object,
+callback-working reservation and additional caller owners are charged separately.
+Raw/index spare owner tails, external observers and whole call views outside the
+borrowed spans must be supplied in retained bytes. Helper controls are logical
+conservative reservations, not physical stack/RSS or allocator runtime overhead.
+An old/new replacement that cannot fit rejects; prior owners are not dropped to
+force admission. Future stream construction must separately admit raw/index
+allocation and all stream/header/caller owners.
+
+Thirteen tests pass both compiler routes and fully instrumented test/helper/
+framework ASan/UBSan, leak detection disabled. Inject an empty receipt at each
+of five fresh and replacement allocations, and actually delete earlier candidate
+arrays. Old allocation records/publication/layout remain unchanged. Test each
+under/overcapacity, immutable pending publication, budget/overflow/policy/alias
+rejection, destructor cleanup and successful old/new coexistence before old
+release. Exact inclusive replacement budget passes; one byte below may acquire
+the admitted token pair, then rejects the full frame request and rolls that pair
+back before any byte-block allocation. Fixed allocation records count live blocks
+without allocating instrumentation buffers; deletion events follow real delete[].
+
+Five independent complete-frame vectors match the private publication exactly.
+Real one/eight-MiB cyclic input uses the default allocator and round-trips through
+the unchanged decoder. Qualified encode phase charges5633628/43091309 include
+complete live owners plus conservative harness/control reservations; decoder
+consumers reconcile additional full owners against their own phase total.
+Related19 targets/384 cases pass in a fresh build. No new timed/fuzz/external
+campaign, universal memory fit, physical peak or speedup is claimed.
+
+Next gate: isolate a known-size private coordinator around the qualified owner,
+including initialization/raw-index admission, full call-view budgets, header/frame
+fragment drain, final-input state and sticky errors. Prove whole-stream reference
+bytes, chunking and no-failed-frame publication before any production integration.

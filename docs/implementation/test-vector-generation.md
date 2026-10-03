@@ -21047,3 +21047,33 @@ cases pass in a fresh build. Initial missing-index error classification prompted
 an explicit minimum-index check before interpreting count observations; original
 indexed implementation is unchanged. No speed, physical memory, allocator fault,
 new fuzz or external interchange result is claimed.
+
+## TVG-1309: Real generation allocation and rollback qualification
+
+Date: 2026-10-04. Thirteen first-party tests qualify typed exact allocation,
+complete private publication, pending guard, each of five fresh/replacement
+allocation failures, each under/overcapacity report, old/new simultaneous live
+bytes, destructor cleanup, inclusive/one-below replacement budget and preallocation
+policy/overflow/alias rejection. A fixed64-record allocator executes real typed
+new[] for successful requests and real delete[] before lifetime/accounting events;
+injected failures return empty receipts. No process-memory exhaustion is induced.
+Overcapacity injection intentionally violates the allocator bound contract and
+qualifies rejection/cleanup only. Callback uniqueness/nonreentrancy are required.
+
+After replacement failures, compare the complete old publication and layout,
+old live allocation records, live bytes/block count and inactive pending state.
+Only candidate blocks may be destroyed. Successful replacement reaches twice
+the equal generation's live bytes before five old blocks are deleted. Confirm
+all current blocks are destroyed when the owner leaves scope. Instrumentation
+has bounded fixed storage and is included in the allocator controls ledger.
+
+Literal prefix/payload plus independently authored repeat/pattern/tie/binary
+complete frames match owner publication. One/eight-MiB cyclic i modulo256 input
+uses the exact default allocator, records actual scoped encode charges and
+round-trips with additional decoder owners reconciled against a full phase ledger.
+Both compiler routes and full test/helper/framework ASan/UBSan pass13 cases,
+leak detection disabled; working10468 and charges5633628/43091309 agree across
+routes. Related19 targets/384 cases pass in a fresh build. Initial missing namespace
+termination was corrected before successful compilation; failed build evidence
+is retained. No stream/chunk/drain, benchmark, physical peak or new fuzz/external
+campaign is claimed by these owner tests.
