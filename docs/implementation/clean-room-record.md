@@ -38373,3 +38373,16 @@ codec/reference files, all preserved artifacts and five exact document prefixes.
 The slower owned path is not integrated; reducing redundant dictionary traversals
 is the next independently qualified private design gate. No new fuzz/external
 campaign, default-policy fit, physical memory or legal guarantee is claimed.
+
+## CR-1618: Prepared-token continuation design review
+
+Date: 2026-10-04. Author/reviewer: repository development agent, user-authorized
+continuation. Independently derive a private one-call owner preparation and final
+continuation from first-party source contracts and measured DD-1446 evidence.
+External compressors and restricted source/test suites remain unconsulted.
+Review the inaccessible preparation authority, stable borrow/allocator boundary,
+original alias checks before snapshots, complete capacities/controls, unchanged
+range/prefix validations, transactional commit and real release requirements.
+Record qualification gaps explicitly. This design proves no new implementation,
+speedup, memory threshold, stream/fuzz coverage, release similarity result or legal
+guarantee. Existing implementation and artifacts remain unchanged.

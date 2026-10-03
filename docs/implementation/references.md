@@ -10665,3 +10665,10 @@ Measured qualification: BM-0210 records sixty admitted process invocations acros
 ten conditions, three rounds and two compiler routes, with byte-exact wire/raw
 checks. DD-1446 records process/lifecycle throughput, ratios and complete logical
 reservations. No external implementation or new stream representation.
+
+## IR-1206: Owner-private prepared-token continuation design
+
+Date: 2026-10-04. Use first-party DD-1446 measurements and the unchanged storage
+adapter, token-frame/range encoders, serializer, preflight and exact allocator
+contracts. Independently define in-call preparation, full phase reservations and
+continuation qualification. No external source, algorithm or test suite is used.

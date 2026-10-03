@@ -21199,3 +21199,16 @@ failure/fuzz evidence. Two cyclic diagnostic cases also pass with all harness an
 helpers instrumented for address/undefined checks, leak checking disabled; their
 times are excluded. This does not claim sanitizer coverage of all ten recipes,
 a new fuzz/external campaign or a fresh full regression-suite run.
+
+## TVG-1314: Prepared-token continuation qualification design
+
+Date: 2026-10-04. Specify four separately admitted actual scopes: unchanged
+operation reference, safe owner, new finite owner, and unchanged raw consumer,
+retaining full source/results/controls. Use independent existing wire
+vectors plus every byte, repeat/cyclic/random inputs, position/short-tail and
+one/eight-MiB finite recipes. The DD-1447 design matrix requires pending refusal,
+all five initial/replacement allocation stages, exact/one-below policy, aliases,
+overflow, old/new lifetime and complete old-output/metadata invariance.
+No tests or new campaign execute in this design unit. Late range/prefix failure
+injection requires an explicitly isolated and accounted test seam; streaming,
+fuzz and measurement qualifications are later gates, not finite-owner claims.

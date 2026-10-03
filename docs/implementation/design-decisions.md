@@ -32122,3 +32122,33 @@ Keep the reference and current safe owned path as differential oracles, then
 qualify wire/raw equality, failure invariance, frame publication, old/new lifetime
 and faults before another separately audited measurement. No production decision
 or implementation of that continuation is made by this measurement unit.
+
+## DD-1447: Owner-private prepared-token continuation
+
+Date: 2026-10-04. Design an additive private finite owner that reuses tokens from
+successful frame demand, removing only the final repeated dictionary count/write
+query. Intended traversal count falls from five to three; no speedup is measured
+or promised. Keep the reference and current safe owner/stream unchanged as oracles.
+The complete design and qualification matrix are in
+`docs/design/lzss-position-distance-8m-prepared-token-continuation.md`.
+
+Preparation is private, non-transferable and confined to one synchronous encode
+call; no external plan can authorize consumption. Bind raw/index and exact
+candidate token receipt identities, immutable value snapshots of configuration/
+limits/position and validated counts/layout. Original aliases must be checked
+before snapshots. Re-admit full old/candidate capacities and real controls after
+each allocation; preparation's prior aggregate is not a later allocation grant.
+
+Keep unchanged token-range count/write validation, actual finish/count/descriptor
+agreement, prefix serialization and complete prefix preflight before copying and
+committing one complete candidate generation. Preserve old publication/layout/
+length/pending on every failure; actual deletion follows commit, never logical
+last use. Keep unused scratch/index capacities charged. Derive new controls/helper
+working bytes from actual types; old numerical thresholds cannot be assumed.
+
+This unit implements no continuation or stream coordinator and runs no new timed,
+fuzz or external campaign. Next gate DD-1448 / IR-1207 / TVG-1315 / CR-1619:
+implement and qualify the additive finite owner in isolated tests, recording
+actual reservations and reachable failure coverage before stream integration or
+measurement. Late-failure injection without a production-excluded test seam
+remains an explicit unconfirmed item, not implied coverage.

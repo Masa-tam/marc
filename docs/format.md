@@ -8735,3 +8735,12 @@ limits or establish default-policy fit for arbitrary inputs.
 Measured qualification: sixty invocations preserve complete wire bytes and raw
 consumer bytes. The wire/raw ratio is identical for both paths. No publication
 or failure contract changes; existing private codec sources remain unchanged.
+
+### Owner-private continuation design (DD-1447)
+
+The prepared token state is an in-call private control, never serialized or
+accepted from a stream. The intended frame representation remains byte-exact
+with existing private position-distance frames. Parameter/count validation,
+payload finish, canonical descriptor/prefix and complete-frame publication remain
+mandatory. This design adds no ID, profile, flag, layout or default and establishes
+no implementation or interoperability result for a new path.
