@@ -38236,3 +38236,22 @@ checking is disabled. Documentation prefixes and existing artifacts are checked
 for preservation. No production integration, speedup, universal512-MiB fit,
 physical peak, new fuzz/external campaign, public release similarity review or
 legal guarantee is claimed. The earlier prototype cause remains unconfirmed.
+
+## CR-1611: Private token-stream ownership design
+
+Date: 2026-10-03. Author/reviewer: Codex, user-approved continuation.
+Task: independently specify private operation-free known-size stream ownership,
+allocation admission, generation replacement and frame-only publication using
+first-party finite/stream/status/serializer code and DD-1439 qualified facts.
+No external source or restricted implementation consulted; known external
+compressor implementations remain intentionally unconsulted.
+
+Review distinguishes live-owner/actual-destruction accounting from view lengths,
+preparation demand from diagnostic error plans, private validated activation from
+public output drain, and per-frame publication from whole-call rollback. An
+independent numerical model checks nine retained T/E/D/P rows, conditional budget
+boundaries, overflow and an inadmissible replacement peak. Future concrete owner/
+control sizes and allocator behavior remain unqualified. Five document prefixes
+and all existing source/artifact hashes are checked. No source implementation,
+new compiler/sanitizer/fuzz/timed/external campaign, stream integration, public
+release similarity review, universal fit, speedup or legal guarantee is claimed.

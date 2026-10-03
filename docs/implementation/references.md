@@ -10609,3 +10609,11 @@ and distant copies. Compare complete frames against the unchanged operation
 encoder and decode with the unchanged frame decoder. Reference and new encoder
 owners occupy separate lexical scopes; saved expected bytes remain charged.
 No external source, implementation or test suite consulted.
+
+## IR-1199: Private token-stream owner and coordinator design
+
+Date: 2026-10-03. Design from first-party DD-1438 finite token-frame helpers,
+DD-1439 qualified owners, current private stream coordination and status/limits
+contracts. Inspect serializer/preflight and retained-owner admission semantics.
+Independently calculate conditional phase and replacement ledgers; no external
+source, implementation or test suite consulted. No new implementation reference.

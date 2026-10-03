@@ -31519,3 +31519,132 @@ cases; related17 targets/354 cases pass. Leak detection is disabled. No timing,
 fuzz or external campaign is introduced. Next work is a separately documented
 private stream owner/coordinator design with allocation/replacement coexistence
 and per-frame publication contracts; this qualification does not integrate it.
+
+## DD-1440: Private operation-free stream ownership and publication design
+
+Date: 2026-10-03. Design a separate private known-size Encode transform and its
+bounded workspace owner. This unit documents contracts and checks a numerical
+model; it does not implement a stream encoder, allocation adapter or public API.
+Keep the operation-based stream reference, current finite token-frame helper,
+wire IDs, parameters, limits and defaults unchanged. Direction is immutable;
+unknown original size and ResetBlock remain unsupported. Flush is byte-neutral.
+
+The proposed owner retains raw storage R and index I for the stream lifetime.
+Initially request R=min(frame_size,original_size) and I=65536+R for nonempty
+input; empty streams need neither raw nor index. Raw history resets per frame.
+A generation contains a token pair, private frame U, payload scratch S and a
+separate publication slot V; it contains no operation array. A frame's exact
+request is To=Ts=T,U=V=80+P,S=P. Actual full extents may be larger and remain
+charged. Reuse a generation only if every capacity suffices. Growth creates a
+candidate generation; old owners remain alive until validation, no-throw swap
+and actual destruction. Prepare another frame only after publication has fully
+drained. This first design rejects an inadmissible replacement peak rather than
+silently destroying old storage, shrinking views or retrying allocation.
+
+For each phase, checked admission is
+A=R+4I+B_old+B_candidate+C_persistent+C_call+H_phase+X+J+K,
+where B=12To+12Ts+U+S+V, J/K are the whole supplied input/output view extents and
+X contains every other retained owner and caller capacity outside those views.
+The owner/header/layout/error/counters, generation handles, candidate metadata,
+allocation receipts and optional external observer state must be charged exactly
+once. The embedded112-byte header is included in the concrete persistent owner
+size, not added again. Actual implementation must declare and qualify all
+simultaneously live controls; no new owner/control sizeof is asserted here.
+H_phase is the maximum of helpers that truly execute sequentially, including
+indexed preparation, token-frame encoding and header/prefix serialization; any
+simultaneously live helper state is added instead. Existing frame helper7524 is
+qualified, not the entire future stream reservation. Decoder owners are absent
+from encode unless a comparison or consumer actually retains them, then enter X.
+
+The allocation interface must receive an admitted explicit element-capacity
+request, use checked size products and enforce a declared maximum extent before
+allocation. Unspecified vector growth is unsuitable for this contract. Charge
+live old blocks plus every candidate block already allocated and the next new
+request before calling the allocator. Reconcile actual reported full extents
+with the reservation before helper use. Overcapacity, allocation failure or
+limit failure discards candidate storage and releases reservations only after
+actual destruction. No allocator overhead or physical peak claim is made: this
+is a logical full-owner byte limit. A future exact-block implementation must
+separately document allocator behavior and failure handling.
+
+Preparation freezes the complete raw frame and validates stream/position/F and
+hard limits. Indexed count observations select a token request; admit and obtain
+the pair, then tokenize and validate each token before checked T/E/D derivation.
+Count Range payload including finish to obtain P. Independently check every
+count, descriptor D/P/47,80+P arithmetic, hard payload/frame/block/total policy
+and prefix query before requesting frame/payload/publication blocks. The
+preparation adapter must return a distinct successful storage demand only after
+those checks. Expected zero-capacity shortages in existing queries are count
+observations: an error plan does not authorize allocation by itself, encoding
+or publication. The adapter's success is not proof of a finished payload.
+Admit each additional block against the same live-generation ledger; do not
+charge an already allocated candidate token pair twice as a new request.
+
+Once all actual blocks are admitted, run the unchanged full finite token-frame
+query and encoder into an inactive private publication slot, using full private
+spans and retained remainder A-local. Charge raw storage tails beyond F, stream
+controls, old/candidate owners and whole call views in that remainder. Require
+local<=A and every nested aggregate to equal A. Check all independent argument
+regions, unused tails and candidate versus old storage for overlap. Reject call
+views or allocated storage overlapping any live owner/control object. Do not
+compare an owner with its own embedded configuration/metadata as independent
+objects; nested helpers check their actual argument subobjects. Stable raw and
+configuration last across count/write passes.
+No pending publication may be used as encoder scratch or resized while draining.
+
+States are Initializing -> HeaderDrain -> Collecting -> Preparing -> FrameDrain
+-> Collecting or AwaitingEnd -> Ended, with sticky Error from any state.
+Initialization validates known-size semantics and admits initial raw/index owners
+before activating the privately serialized header. Empty input emits only the
+existing112-byte header. Collecting accepts at most the exact next frame size.
+Preparing computes next validated count/sequence with checked arithmetic before
+encoding. Activate FrameDrain only after finite-helper success, complete-prefix/
+payload preflight, exact size/layout/count agreement and reconciled aggregate.
+Generation swap, counter updates and activation must be no-throw; only then may
+bytes drain. The publication slot is immutable until completely drained. No next
+raw input is accepted during HeaderDrain or FrameDrain unless draining finishes
+and Collecting is reached in that call. No extra pending frame/raw buffer exists.
+
+Accepted raw bytes and validated raw bytes are separate counters. Allocation or
+frame failure may report input already copied and earlier valid output emitted
+in the same call; report both counts exactly. Bytes beyond output_produced stay
+unchanged. A failed frame emits zero of its bytes, its pending layout/length and
+validated/sequence counters never activate, and earlier committed output remains
+valid. Private inactive workspace may change. This does not promise rollback of
+an entire process call or stream header. Argument/alias/flags/budget checks before
+any call progress return0/0 and preserve the whole call output. Error is sticky.
+
+NeedOutput requires undrained validated header/frame bytes and no remaining
+output capacity. NeedInput requires no pending output and genuinely missing raw
+input or final EndInput; never Progress with0/0. EndInput latches only once that
+call's entire supplied input is consumed; repeat it with any unconsumed suffix.
+Early final input is malformed, excess input remains unconsumed at the first
+excess byte, and exact known size without EndInput waits for final confirmation.
+EndOfStream occurs after final header/frame drain and final-input confirmation;
+repeated calls return EndOfStream with0/0. No implicit frame boundary from Flush.
+Caller HashTap observers process committed bytes exactly once through reported
+counts; no new embedded hashes or hash descriptors are introduced. Any observer
+owners still alive count in X or actual controls; no observer failure is hidden.
+
+Error categories: invalid configuration/alias -> invalid_argument; unsupported
+flags -> unsupported; checked extent/budget/policy failure -> limit_exceeded;
+allocation failure -> out_of_memory; early/excess input -> malformed_stream;
+validated-count/descriptor/preflight disagreement -> internal_error. Preserve
+helper-specific diagnostic cause privately. Failed-frame errors identify its
+validated raw start; truncation/input misuse identify the accepted position.
+
+The independently checked numerical model uses DD-1439 exact T/E/D/P, minimal
+nominal extents and frame helper7524, excluding future stream controls/J/K/X.
+For eight-MiB all literals, single-generation base is259320063 bytes and equal
+old/new replacement peak476427418; only60443494 remains for all omitted owners.
+Using full T=F and the unchanged64-MiB payload cap gives444866052 before omitted
+owners, but equal replacement847519396 already exceeds512 MiB. These are symbolic
+requests, not allocated or encoded maxima; hard actual payload policy still
+applies. DD-1439 concrete harness totals remain unchanged. No universal fit,
+speedup, implemented allocator or stream qualification follows.
+
+Next gate: implement and qualify a separate private numeric admission/storage-
+demand adapter with actual control declarations and deterministic allocation
+fault/replacement tests; then implement isolated coordinator behavior and prove
+whole-stream byte equality, split-buffer/finish/error contracts before considering
+production integration. Existing reference paths remain available throughout.

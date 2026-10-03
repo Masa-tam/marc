@@ -8674,3 +8674,13 @@ produce all-literal frames; typed length3/4 decoding remains valid. The private
 encoder's failure cases preserve all caller frame bytes/layout/count and commit
 zero bytes, including after a previously successful frame. No new algorithm ID,
 wire variant, public profile, default, stream owner or CLI behavior is introduced.
+
+### Proposed private token-stream coordination (DD-1440)
+
+The proposed known-size private encoder retains the existing112-byte stream
+header and80-byte frame prefix plus finished payload. Empty input has only the
+stream header. Every published frame is completely validated privately before
+its first fragment; a later failed frame may leave the valid header and earlier
+frames published, but none of the failed frame. Flush does not alter bytes and
+ResetBlock remains unsupported. This design introduces no format/profile/ID,
+hash descriptor, default, CLI change or implemented stream path.

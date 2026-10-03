@@ -20980,3 +20980,38 @@ instrumentation, with leak detection disabled. Related17 targets/354 tests pass
 in a fresh build. Initial test-only header/configuration/expected-error mistakes
 were corrected; final cases pass with production sources unchanged. This is not
 a benchmark, physical memory measurement, fuzz or external interchange campaign.
+
+## TVG-1307: Token-stream design model and future qualification gates
+
+Date: 2026-10-03. Reuse the nine measured DD-1439 T/E/D/P rows without re-encoding.
+An independently written checked integer model calculates nominal generation
+B=24T+3P+160 and raw/index base=F+4(65536+F), then includes the qualified7524-byte
+frame helper. Derive conditional remaining budget before unknown stream controls,
+whole call input/output and external owners. Check inclusive limit/one above,
+unsigned64-bit product/sum overflow and coexistence of equal old/new generations.
+No worst-case allocation, compiled stream sizeof or physical memory measurement.
+All nine arithmetic rows and default-payload-capped replacement rejection pass.
+
+Future executable gates, not results of this documentation unit:
+
+- Admission: exact budget and one below, every typed product/sum overflow,
+  whole supplied views, hidden caller tails, header/observer/control reservations,
+  old plus partial candidate requests, actual allocator overcapacity, each
+  allocation failure, rollback/no leak, no helper use before capacity reconciliation.
+- Preparation: exact T/E/D/P against finite reference; stale/error diagnostic
+  plans never authorize blocks/publication; prefix/hard limits validated before
+  large requests; malformed counts and invalid raw/frame/sequence policy reject.
+- Generations: reuse versus growth, all-literal/distant/mixed multi-frame order,
+  reject replacement peak even when steady-state fits; swap only after validation,
+  actual destruction before released charge and immutable pending publication.
+- Coordination: empty stream, every small split,1-byte input/output, zero output,
+  early/excess/missing/repeated EndInput, final short frame, neutral Flush,
+  unsupported ResetBlock, sticky error/end, no Progress0/0; exact consumed/produced
+  counts and untouched output suffixes when valid earlier bytes precede an error.
+- Wire/publication: old/new whole-stream byte equality; allocation/storage/payload/
+  prefix failures after successful frames never publish failed-frame fragments;
+  only complete validated frame lengths/layouts activate; no repeated observer
+  updates. Charge reference and decode owners whenever still alive.
+
+Both compiler routes, fully instrumented sanitizers, appropriate regression and
+fuzz campaigns are required for future code; no such new campaign is claimed here.
