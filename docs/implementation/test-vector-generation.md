@@ -21233,3 +21233,17 @@ Require byte equality against safe owner and operation frame, exact decoded raw
 bytes and helper aggregate agreement. Preserve old sources and prior campaigns.
 Late range/prefix inconsistency injection, arbitrary chunk streaming and new fuzz/
 timing/external qualification remain outside these executed finite tests.
+
+## TVG-1316: Prepared-owner stream qualification design
+
+Date: 2026-10-04. Specify independent existing stream fixtures plus split/output/
+flush/repeated-final schedules, empty/early/excess/post-latched input and sticky
+terminal/count rules. Initial raw/index faults and per-frame five allocation
+stages must preserve real owner lifetimes and exclude failed candidates. Test
+full pending-call policy/aliases and mid-drain misuse separately: failing entry
+adds0/0, prior output can end within a valid frame, and decoder raw remains private
+until a complete frame validates. Admitted oracle equality and each controller's
+individual numeric threshold are distinct assertions. Concrete DD-1449 matrix
+reserves later large/tail, bounded fuzz and measured campaigns; none run in this
+design unit. Late range/prefix injection remains unconfirmed without an isolated
+and fully accounted test seam.

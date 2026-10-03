@@ -8753,3 +8753,13 @@ plan. Unchanged token-range validation/finish, explicit prefix serialization and
 complete prefix preflight precede complete candidate publication. No stream
 coordinator, ID, flag, public profile or default changes. Finite frame equality
 does not establish a new stream's failed-frame publication or chunking behavior.
+
+### Prepared-owner stream design (DD-1449)
+
+The planned additive coordinator retains existing known-size private header and
+frame representations, frame-local history/model resets and neutral Flush. Only
+complete validated candidate frames can drain. An API error midway through an
+already valid frame can leave an incomplete wire prefix; this is not publication
+of an unvalidated candidate. The decoder still rejects incomplete known-size wire
+without exposing an unfinished raw frame. No ID, flag, profile or default changes,
+and this design establishes no new stream implementation or qualification.

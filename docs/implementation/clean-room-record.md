@@ -38407,3 +38407,15 @@ guarantee follows from this finite prototype.
 
 Related23 targets/432 cases pass in a fresh build. Source-bound preservation and
 append-only documentation checks pass; public library/CLI sources remain unchanged.
+
+## CR-1620: Prepared-owner stream design review
+
+Date: 2026-10-04. Author/reviewer: repository development agent, user-authorized
+continuation. Independently compose first-party coordinator and prepared finite
+owner contracts. External compressors and restricted source/test suites remain
+unconsulted. Review full-owner partition equations, initial admission before both
+callbacks, fixed receipt/deletion order, immutable direction/configuration,
+accepted/validated/end/drain state and candidate versus mid-drain error boundaries.
+Keep actual controller thresholds and later qualification unconfirmed until
+execution. No new implementation, stream/fuzz/timing/external evidence, speedup,
+physical memory, release similarity review or legal guarantee follows from design.

@@ -10679,3 +10679,10 @@ Date: 2026-10-04. Use first-party DD-1447 and unchanged safe owner, storage
 adapter, token-frame/range encoders, operation reference, serializer/preflight and
 frame decoder. Adapt existing first-party owner lifetime tests and independently
 add four-scope differential recipes. No external implementation or test suite.
+
+## IR-1208: Prepared-owner stream coordinator design
+
+Date: 2026-10-04. Use first-party DD-1443 safe coordinator state/receipt rules,
+DD-1447 preparation contracts, qualified DD-1448 finite owner and unchanged stream
+decoder. Independently define admission composition and state/publication tests.
+No external implementation, test suite or new algorithm source is consulted.

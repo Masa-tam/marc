@@ -32211,3 +32211,34 @@ no failed-frame publication before implementing or measuring that stream.
 Related qualification:23 targets/432 cases pass in a fresh build root. Existing
 safe stream/owner and malformed-frame tests remain unchanged. Review binds the
 prototype sources and executed qualification; no retained build is reconfigured.
+
+## DD-1449: Additive prepared-owner stream design
+
+Date: 2026-10-04. Specify a separate private known-size encode transform embedding
+the qualified prepared owner. Keep safe and operation coordinators, finite owners,
+allocator interfaces/definitions and decoder unchanged. Concrete ownership,
+admission equations, state transitions and test matrix are in
+`docs/design/lzss-position-distance-8m-prepared-stream-coordinator.md`.
+
+Derive new controller controls from actual types; the old12100-byte reservation
+and finite640-byte increment do not establish a new threshold. Admit raw/index
+together before constructor callbacks; validate the private header before drain.
+Ten fixed bridge receipts retain full current/candidate capacities until actual
+release. Every process entry charges complete call views before input/drain,
+including pending-only calls. Owner admission partitions embedded controls while
+retaining full raw spare tail/index, bridge/allocator callbacks, old/new blocks,
+caller/results/observers. No cached grant, implicit reuse or early old release.
+
+Preserve accepted/validated counters, end latch, neutral Flush, pending drain,
+waiting for explicit final end and sticky terminal behavior. Candidate failure
+publishes no candidate byte and preserves truthful earlier same-call counts.
+Mid-drain API errors can leave a prefix inside an already validated frame; the
+failing entry adds0/0, and the unchanged decoder exposes no unfinished raw frame.
+Do not conflate those prefixes with candidate-allocation failure boundaries.
+
+No coordinator implementation, compile, timing/fuzz/external campaign or speedup
+is established in this design unit. Next DD-1450 / IR-1209 / TVG-1317 / CR-1621:
+implement and qualify the additive small-stream coordinator in isolated tests,
+recording actual admission/controls and distinct mid-drain error coverage. Real
+large-frame, fuzz and separately audited measurements remain later gates. Late
+range/prefix injection remains an explicitly unconfirmed item without a test seam.
