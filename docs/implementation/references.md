@@ -10717,3 +10717,13 @@ isolated harness from the repository's own prior owned-stream harness, leaving
 that source and its replay tests unchanged. No external implementation source
 was consulted. FZ-0070 records the actual bounded sanitizer fuzz run; no timing
 or external-validation campaign is added.
+
+
+## IR-1212: Private prepared-stream lifetime measurement recipe
+
+2026-10-04. Define DD-1453 from the repository's own BM-0210 benchmark recipe,
+qualified DD-1450 coordinator, DD-1451 large streams and DD-1452 bounded fuzz.
+Preserve all existing sources and evidence. No external implementation or source
+was consulted. The new design document defines three-path common ownership,
+prospective/actual admission and separate process/lifecycle intervals; it adds
+no benchmark implementation, actual timing, fuzz or external campaign.

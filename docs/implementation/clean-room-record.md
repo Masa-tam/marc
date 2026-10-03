@@ -38487,3 +38487,23 @@ separate assertions. Late range/prefix inconsistency injection remains a gap.
 No new timing, external verification, physical-memory claim, production integration
 or speedup is established. Release-wide similarity review remains separate;
 no legal guarantee is claimed. Next measurement-recipe provenance: CR-1624.
+
+
+## CR-1624: Private prepared-stream lifetime measurement design
+
+2026-10-04; author/reviewer: Codex. Task: define DD-1453 / IR-1212 / TVG-1320
+with unchanged operation/safe-owned/prepared paths, complete prospective/actual
+retention and separately bounded process/lifecycle intervals. References are
+first-party benchmark, coordinator, large-stream and bounded-fuzz contracts;
+no external or restricted implementation source was consulted or translated.
+
+The new design retains original benchmark/codec/helper/allocator/decoder sources
+and existing evidence. Review covers twelve recipes, actual short-tail planning,
+five common owners and guard tails, named controls, independent thresholds,
+current/candidate coexistence until real frees, six balanced permutations,
+untimed qualification before strict audited launches and separate ledger/time
+reporting. This unit adds no implementation or actual timing/fuzz/external
+campaign, production selection, performance or physical-memory claim. Late
+range/prefix inconsistency injection remains an explicit gap. Release-wide
+similarity review remains separate; no legal guarantee is claimed. Next isolated
+untimed implementation provenance: CR-1625.

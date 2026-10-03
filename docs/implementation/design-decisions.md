@@ -32365,3 +32365,43 @@ Late range/prefix inconsistency injection remains explicitly unconfirmed.
 Next DD-1453 / IR-1212 / TVG-1320 / CR-1624: define the isolated prepared-stream
 lifetime measurement recipe and admission ledger before audited timing or any
 production/speed decision. Preserve existing benchmark and stream oracles.
+
+
+## DD-1453: Three-path prepared-stream lifetime measurement design
+
+2026-10-04. Define docs/design/lzss-position-distance-8m-prepared-stream-measurement.md.
+Compare unchanged operation and safe-owned encoders with the qualified prepared
+encoder in three separately destroyed scopes, followed by independent unchanged
+decoders. Keep the original benchmark, codec/helper/allocator/decoder sources,
+production selection, defaults and IDs unchanged. No timed executable is added.
+
+Preserve the ten prior input recipes and add one/eight-MiB cyclic two-frame
+streams with a 32-byte cyclic tail. Plan actual per-frame token/event/payload
+counts outside timing; never borrow single-byte repetition tail counts. Keep
+five full common raw/wire/decode owners, fixed guard tails and concrete controls/
+observers alive and charged through all paths. Derive per-path prospective and
+actual ledgers, including raw spare/index, full call views, workspace capacities,
+old/current/candidate storage, callbacks and real destruction. Initial explicit
+1-GiB diagnostic policy does not alter defaults or establish universal fit.
+
+For ownership use G_j=24*T_j+3*P_j+160 and the maximum initial/adjacent generation
+sum, not a full-size-tail assumption. Derive working/Driver/control reservations
+from actual built types and queries. Prepared and safe thresholds are independent;
+no old grant reuse, implicit allocation reuse, clear/last-use discount or early
+old release. Numeric admission precedes lifecycle start; lifecycle includes
+allocation, actual-capacity readmission, initialization, drive and real frees.
+Process starts after construction/admission. Planning/common allocation and
+complete equality/digest/guard comparisons stay outside both measured intervals,
+while common owners remain fully counted. Decode comparisons use fresh scopes.
+
+Qualify a separate untimed mode first on both optimized routes and fully compiled
+helper/test sanitizer routes. Twelve cases and six path permutations plan 144
+future timed launches across two routes. Save a successful strict idle audit
+immediately before every actual launch; busy/error stops without automatic retry.
+Six samples report raw values and min/median/max with matched interval ratios;
+compare prepared/safe and prepared/operation separately. No sanitizer throughput,
+historical timing reuse, pooled grand speedup, physical-memory or decoder-causal
+claim. No new campaign label or performance result is established here.
+Late range/prefix inconsistency injection remains unconfirmed. Next DD-1454 /
+IR-1213 / TVG-1321 / CR-1625 implements and qualifies the isolated untimed
+measurement diagnostic; actual audited timing remains a later gate.

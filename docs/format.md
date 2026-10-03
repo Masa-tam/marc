@@ -8797,3 +8797,12 @@ can retain prefixes inside validated frames but add zero output on the failing
 entry. Wire mutation decoding is bounded and schedule-independent. An altered
 payload without an integrity check can remain valid, so mutation tests distinguish
 stable decoding/error behavior from universal corruption detection.
+
+
+### Private prepared-stream measurement recipe (DD-1453)
+
+The planned diagnostic compares three existing encoders under identical private
+8-MiB position-distance parameters. Per-frame planning includes the actual cyclic
+short tail; complete wire and raw equality are mandatory before a timing sample
+is accepted. No format, profile, algorithm ID, codec selection or encoder/decoder
+behavior changes. This design establishes no new throughput or external result.

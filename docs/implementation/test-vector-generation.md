@@ -21333,3 +21333,29 @@ Save source bindings, build/run commands, seed hashes, corpus, pre-run idle audi
 and actual completion receipt. No crash/hang/sanitizer finding was observed.
 No new timing/external or large-frame fuzz claim; late range/prefix inconsistency
 injection remains unconfirmed. Next measurement-recipe gate: TVG-1320.
+
+
+## TVG-1320: Private prepared-stream measurement qualification plan
+
+2026-10-04. Define twelve deterministic recipes: one/eight-MiB single frames for
+cyclic, distant-prefix, random and mixed patterns; two identical cyclic full
+frames at each size; and two cyclic full frames plus their first 32 raw bytes.
+Retain the prior ten recipes without relabeling old measurements. Use the same
+unsigned xorshift seed 1439, frame resets and private model parameters. Derive
+per-frame counts in destroyed untimed planning scopes, including actual tails.
+
+The next diagnostic has an explicit untimed mode with no clock calls or timing
+samples. Qualify all recipes and six path permutations, complete common owners/
+guard tails/controls, per-path admission, real receipt lifetimes, wire/raw/digest
+identity and independent consumers. Preserve existing correctness/fuzz suites.
+Fresh build and helper/test sanitizer qualification precede any timed campaign.
+
+Future measurement plans six independent invocations per case/optimized route,
+144 launches total with all three-path permutations. Save strict successful
+selected-process count-zero audit immediately before each actual launch; busy or
+failed enumeration stops without automatic retry. Record full source/executable
+bindings, commands, order, admission and logical/allocation ledgers, actual
+completion, six raw process/lifecycle durations and matched min/median/max.
+No implementation, timing, fuzz, external campaign or new benchmark label is
+established in this design unit. Late range/prefix inconsistency injection remains
+unconfirmed. Next isolated untimed implementation qualification: TVG-1321.
