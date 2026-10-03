@@ -30138,3 +30138,46 @@ Next: private operation-to-token assembly and history/output-bound validation,
 with token-scratch invariance and full canonical finish before frame publication.
 Public stream/header admission, encoder and complete simultaneous memory ledger
 remain separate later gates.
+
+## DD-1419: Private eight-MiB transactional token assembly
+
+Date: 2026-10-03. Add an independent internal short-length token validator
+with window1..8388608, minimum3, maximum3..258, flags0. Frame history starts
+at zero: match distance must be positive, within window and already produced
+raw bytes. Validate unused fields, token kinds, lengths and checked next raw
+extent. Overlap matches are permitted, but expansion cannot exceed declared
+frame size. Return validation metadata by value; failure commits no next size.
+
+The Range-to-token bridge accepts separate caller token output and explicit
+discardable token scratch. Validate parameters, frame/count/descriptor bounds,
+total output and exact full-capacity memory requirements before decoding.
+Check full output and scratch extents against all borrowed inputs/configuration
+and each other. Decode once to local token state, validate history/output
+extent, then append only validated tokens to private scratch. Finish the exact
+event/decision grammar and canonical Range payload; require exact final raw
+extent before copying the complete token sequence to caller output. All failures
+leave caller output unchanged; private scratch may retain a discardable prefix.
+Unused output/scratch capacity is preserved, though it is charged in full.
+
+Requirements include payload, both complete typed buffer capacities, actual
+Range decoder and concrete assembly working-state storage, plus a separately
+retained caller charge. Checked arithmetic and narrowing reject overflow;
+query metadata is returned by value. This finite helper ledger is not a full
+stream/frame/encoder peak memory proof. Error precedence is parameters/counts/
+bounds/capacity/overlap before payload decoding, then token/finish/raw checks.
+No raw reconstruction, frame publication, public selector, encoder or timing
+is included. Earlier committed frames remain unaffected by these private calls.
+
+Qualification: twenty-two focused tests pass with two compilers and ASan/UBSan.
+The concrete assembly state includes the Range decoder, pending token/operation
+and result; its charge also includes the simultaneously retained requirements
+object, totaling5600 bytes on qualified layouts. Capacity and retained charges
+are added separately. Frame/block/total/payload/model and expansion limits are
+checked by the shared bounded policy. Fixed independent fixtures cover valid
+overlap, all lengths, distance4194305 after sufficient frame history, and exact
+eight-MiB output, plus malformed history/counts/finish, alias and budget cases.
+FZ-0057 fuzzes finite transactional token calls with deterministic results and
+independent bounded raw replay only after success. This test oracle is not a
+production raw decoder. A fresh CMake build also checks prior Range/preflight.
+Next: bounded private raw reconstruction and complete frame validation, deriving
+full simultaneous workspace requirements before frame-publication integration.

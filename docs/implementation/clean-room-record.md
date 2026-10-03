@@ -37828,3 +37828,21 @@ both bounds.
   fresh CMake tests, FZ-0056 bounded fuzz, append-only/source/artifact review.
 - Boundary: operation scratch only; no token/history/raw/frame/stream decoder,
   production encoder, public admission, optimization or legal guarantee.
+
+## CR-1590: Independent private eight-MiB token/history bridge
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1178 and DD-1416..1418; independently implemented first-party
+  typed-token rules, scalar Range and finite fixture writer. No external or
+  copyleft implementation was consulted.
+- Task: add a private eight-MiB token validator and single-pass scratch assembly
+  with full canonical finish before transactional caller output. Keep public
+  variants/dispatch unchanged and preserve failed-frame nonpublication.
+- Fixtures: independently written typed-token recipes and separate field/model
+  mathematics produce fixed payloads; no production encoder generates them.
+  Hand-checkable literal41 and short overlap complement full-history boundaries.
+- Validation: TVG-1286 twenty-two focused tests with two compilers and ASan/UBSan,
+  fresh CMake private targets, FZ-0057 finite fuzz, capacity/bounds/output/alias
+  checks and source/artifact/append-only preservation review.
+- Boundary: finite token helper and test-only raw oracle; no production raw/
+  frame/stream decoder, encoder, public admission, timings or legal guarantee.

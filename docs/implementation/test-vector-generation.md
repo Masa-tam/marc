@@ -20301,3 +20301,36 @@ the existing validate_limits relationship before isolating memory thresholds.
 FZ-0056 covers only the private operation decoder. No frame publication,
 chunked byte-stream codec, production encoder, complete peak memory query,
 speed measurement or external cross-platform gate is established here.
+
+## TVG-1286: Eight-MiB token/history and transactional output vectors
+
+Date: 2026-10-03. Use the independent finite interval writer from TVG-1285,
+with separately defined literal/match recipes and explicit field contexts.
+No production encoder/cursor generates fixture bytes. Fourteen fixed payloads
+include literal41, short overlap lengths3/4/258, all lengths3..258, a repeated
+distance1 history followed by distance4194305, and exactly8388608 raw bytes.
+The long-history recipes account for each produced byte before the final
+reference. The exact-boundary recipe has32515 tokens; the last match length253.
+Malformed recipes cover first-token matches, before-history/window violations,
+invalid length259, endpoint distance8388608 and extra tokens. Metadata mutations
+independently produce raw overrun/shortfall, bad counts, truncation and limits.
+
+Twenty-two tests compare typed token fields and tail sentinels, validate an
+independent short raw-copy oracle, and require exact counts/raw size and Range
+finish before caller output changes. Every failure leaves the entire caller
+span unchanged; a failing late canonical payload may retain validated scratch.
+Tests cover parameters/kinds/unused fields, match length/history/window/output,
+unreachable distance endpoint, all payload truncations, canonical/extra-token
+failures, full-capacity aliasing including unused tails, exact and one-byte-under
+memory budgets, retained/capacity/committed arithmetic, total/frame/block/
+payload/model/expansion limits and short storage. Query metadata is returned
+by value and is not payload validity. Qualified working-state charge5600 bytes
+includes assembly state and its requirements object; buffer capacities/payload/
+retained storage are additional. This is not a complete streaming/RSS query.
+
+Tests pass with two compilers and fully compiled helper/Range/limits/tests and
+test framework under ASan/UBSan, with leak detection disabled. A dedicated
+fresh CMake root also runs existing private Range and prefix targets. FZ-0057
+adds bounded transactional token fuzz; no benchmark/external gate or public
+raw/frame/stream codec admission is established. Prior failures and artifacts
+remain preserved; direct supplemental IDs supplement legacy ordinal checks.

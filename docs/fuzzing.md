@@ -1257,3 +1257,30 @@ failure. Initial standalone fuzz linkage needed the runtime-compatible CRT;
 its failed build output is retained and is not counted as a fuzz execution.
 Coverage is finite and operation-only: no frame/history/raw reconstruction,
 stream chunking, publication-frontier or external qualification is claimed.
+
+### FZ-0057: Private eight-MiB transactional token assembly
+
+Date: 2026-10-03. The standalone harness in
+`tests/lzss_position_distance_8m_tokens_fuzz.cpp` supplies declared raw/token/
+event/decision counts, independent output/scratch capacities and payload to
+two token bridge calls. Compare results, entropy counters and both complete
+buffers; require unchanged caller output on failure and untouched tails.
+Only after success independently replay tokens into a bounded raw array,
+checking distance/history/overlap/length/output extent. That oracle does not
+constitute production raw/frame publication or incremental stream coverage.
+
+Input has ten metadata bytes (four little-endian uint16 counts, two byte
+capacities) followed by at most2048 payload bytes. Bounds are raw512, tokens64,
+events320, decisions2112 and capacities66; decoder frame/block/input limits
+and a65536-byte internal budget are explicit. Initial finite mathematical
+recipes from TVG-1286 provide complete and zero-output-capacity seeds, including
+overlap and invalid history/length/endpoint cases. Large-history boundaries
+remain permanent focused tests rather than fuzz claims.
+
+Compile harness, private token bridge, private Range decoder and core limits
+together with C++20/src includes and `-fsanitize=fuzzer,address,undefined`, using
+a compatible runtime. The bounded campaign runs10000 executions, seed1419,
+max_len2058, timeout10 under ASan/UBSan/libFuzzer with leak detection disabled.
+It completes without reported crash, timeout, sanitizer finding or invariant
+failure. Preserve initial/evolved corpus and logs. No exhaustive coverage,
+production raw/frame/stream decoder, performance or external gate is implied.

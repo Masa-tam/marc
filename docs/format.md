@@ -8481,3 +8481,13 @@ It exposes only internal operation decoding: successful operations are private
 scratch until later complete frame validation. It adds no public admission or
 bitstream variant; token/history bounds and raw frame publication remain later
 gates. The charged state layout remains the DD-1417 concrete storage.
+
+DD-1419 adds private eight-MiB operation-to-token assembly with frame-local
+history/output validation. It does not introduce a public variant selector or
+new representation. Match distances cannot exceed preceding raw bytes, so the
+syntactic class23/extra0 endpoint cannot be valid at a match within an eight-MiB
+frame. Caller token output is committed only after full token/raw extent and
+canonical Range finish; explicit private scratch remains discardable on failure.
+Actual raw reconstruction, frame/stream publication and encoder remain later
+gates. Memory requirements for this finite helper include both full token
+buffer capacities and its actual working state, not a complete streaming ledger.
