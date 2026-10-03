@@ -8700,3 +8700,11 @@ private frame. Pending publication is immutable until a coordinator acknowledges
 full drain; no drain or stream state machine is implemented in this unit. Allocation
 or validation failure retains the previous frame/layout/length and publishes no
 new frame. Existing wire IDs, profiles, defaults and CLI behavior are unchanged.
+
+### Private owned stream coordination (DD-1443)
+
+The private coordinator emits the unchanged112-byte stream header and validated
+complete-frame representation. Fragment drain and allocation ownership do not
+alter IDs, variants, profile limits or wire bytes. Failed frames publish no bytes;
+output counts can include previous valid bytes produced in the same failing call.
+This isolated test-only transform does not change public codecs or CLI behavior.

@@ -10631,3 +10631,10 @@ Date: 2026-10-04. Implement the DD-1441 admission/demand contract using an
 independent exact typed-array allocator, first-party finite encoder and existing
 independent complete-wire vectors/decoder. Deterministic allocator callbacks
 exercise real candidate allocation and deletion. No external source or test suite.
+
+## IR-1202: Private owned stream coordination
+
+Date: 2026-10-04. Use the first-party DD-1442 generation owner, DD-1432
+known-size stream reference, independent complete-wire vectors and existing
+private decoder. Independently implement fixed allocation receipts, initialization
+admission and stream state control. No external implementation or test suite.

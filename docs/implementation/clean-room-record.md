@@ -38295,3 +38295,22 @@ related19 targets/384 cases, leak checking disabled. Existing artifacts/source
 hashes and document prefixes remain preserved except deliberate test registration.
 No stream integration, universal fit, physical peak, speedup, new fuzz/timed/external
 campaign, public release similarity review or legal guarantee is claimed.
+
+## CR-1614: Private owned stream coordination
+
+Date: 2026-10-04. Author/reviewer: Codex, user-approved continuation.
+Task: independently implement and qualify DD-1443 initialization admission,
+operation-free owner coordination, validated drain and known-size final state.
+Use only first-party owner/admission/finite helpers, stream reference, independent
+wire vectors and decoder. External compressors and restricted source/test suites
+remain unconsulted. No new algorithm or changed representation.
+
+Review checks initial admission before either allocator call, stable allocator
+controls, full live receipt accounting, nested control reconciliation, pending
+immutability, drain acknowledgment, truthful same-call failure counts, unchanged
+output tail and sticky terminal states. Nineteen tests pass both compiler routes
+and full sanitizer builds, leak detection disabled; related20 targets/403 cases
+pass in a fresh build. Existing source/artifact hashes and exact document prefixes
+remain preserved except deliberate private test registration. No new fuzz/timed/
+external campaign, physical memory peak, universal fit, large-stream qualification,
+speedup, production integration, release similarity review or legal guarantee.

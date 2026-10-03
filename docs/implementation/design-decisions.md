@@ -31806,3 +31806,81 @@ Next gate: isolate a known-size private coordinator around the qualified owner,
 including initialization/raw-index admission, full call-view budgets, header/frame
 fragment drain, final-input state and sticky errors. Prove whole-stream reference
 bytes, chunking and no-failed-frame publication before any production integration.
+
+## DD-1443: Private operation-free owned stream coordinator
+
+Date: 2026-10-04. Add a separate test-only known-size Encode transform around
+the unchanged DD-1442 generation owner. No existing codec/library/CLI/default,
+reference source or wire variant changes. The coordinator owns an exact raw
+block and typed index block; the generation owner continues to borrow their
+views. Extend the private allocator contract with exact typed index allocation;
+all receipts own unique disjoint arrays, callbacks are noexcept/nonreentrant,
+controls remain stable and the allocator outlives the coordinator. The default
+index allocator checks products and catches allocation exceptions before
+returning an empty receipt. Actual deletion precedes receipt clearing.
+
+Before either initial allocation, admit both complete prospective raw/index
+requests together with the concrete coordinator, embedded header/state/owner,
+allocator object, callback and conservative sequential helper controls plus
+external retained owners. Raw capacity is min(frame_size, original_size); index
+capacity is65536 plus raw capacity. Empty input allocates neither. Validate and
+serialize the private112-byte header before activation. Allocation failure is
+sticky and publishes no header. Require exact receipts and disjoint controls
+before processing. A trusted allocator must obey the bound before allocation;
+under/overcapacity injections only qualify detection and eventual cleanup.
+
+A fixed bridge records up to ten full generation block receipts: five current
+and five candidate. It adds no dynamic instrumentation storage. Current blocks
+remain charged after drain; replacement continues through the unchanged owner's
+old/partial/new admission and rollback. Process checks complete call input/output
+views against raw/index, coordinator, allocator and every full live generation,
+including spare tails and drained publications, before any progress. Checked
+budgets include all those owner capacities and external observer/caller tails.
+Unknown flags and ResetBlock reject; Flush is neutral. Sticky error/ended checks
+precede new flag/buffer validation.
+
+The qualified logical working reservation is12100 bytes, including concrete
+coordinator800, separate call controls, bridge callbacks and maximum sequential
+owner/header helper reservations. Embedded owner/bridge/header are counted once;
+underlying allocator object/callbacks and external owners are separate. Nested
+owner admission receives the remaining coordinator controls, raw tail, full call
+views and external owners. Its own persistent/bridge/allocator/raw/index and
+old/new generation charges complete that same reservation. These are conservative
+logical codec reservations, not physical allocator overhead, stack/RSS or a
+universal memory-fit claim. Caller tests reserve bounded result buffers and
+comparison owners; decoder consumers execute after encoder destruction in their
+own charged phase. Test-harness reservations may conservatively exceed live use.
+
+Drain header and only completely validated owner publication in arbitrary
+fragments. Acknowledge the owner only after every byte has drained, then permit
+next-frame collection. Accepted bytes, validated raw bytes and frame sequence
+remain separate. EndInput latches only when the supplied input has been fully
+consumed; callers repeat it on an unconsumed final suffix. Exact known-size input
+without EndInput waits for the final signal. Early end fails at accepted position;
+excess bytes remain unconsumed. No Progress with zero counts. A failing call may
+truthfully report an earlier header/valid frame and copied raw input; the failed
+frame produces no fragment and the output suffix remains unchanged.
+
+Nineteen first-party tests pass both compiler routes and fully compiled test,
+helper and framework ASan/UBSan with leak detection disabled. Independent small
+vectors match at every split, capacities1/17/200 and both final-signal styles.
+One-byte and forty deterministic randomized schedules match the unchanged
+whole-stream reference; unchanged stream decoding accepts complete output and
+retains only prior frames on early end. Inject failure at both initialization
+allocations and all five first/replacement generation allocations, each
+under/overcapacity, unsupported flags, full-owner aliases, pending call budget,
+payload and prefix expansion policies, early/excess/late final input and retained
+size overflow. No actual system-memory exhaustion is induced.
+
+The equal-frame replacement test records actual live block peak262642 bytes;
+with complete controls, allocator, retained and full call views, exact logical
+limit280726 succeeds. One byte below rejects the replacement, destroys candidate
+blocks and retains prior output. Initial raw/index exact limit succeeds and one
+below prevents all allocations. All real allocation records disappear at object
+destruction. Related20 targets/403 cases pass in a fresh build. No new timed,
+fuzz or external campaign, large-stream memory fit or speedup is claimed.
+
+Next gate: qualify real one/eight-MiB frames and full-frame-plus-short-tail streams
+with explicit scoped encode/decode/comparison owner ledgers, including pending
+fragment admission and replacement peaks. Then decide whether a dedicated
+stream fuzz campaign and measured comparison justify production integration.

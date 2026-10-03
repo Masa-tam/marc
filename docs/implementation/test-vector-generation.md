@@ -21077,3 +21077,36 @@ routes. Related19 targets/384 cases pass in a fresh build. Initial missing names
 termination was corrected before successful compilation; failed build evidence
 is retained. No stream/chunk/drain, benchmark, physical peak or new fuzz/external
 campaign is claimed by these owner tests.
+
+## TVG-1310: Owned stream state and allocation qualification
+
+Date: 2026-10-04. Nineteen first-party tests cover independent small complete-wire
+vectors at every input split, one-byte output, capacities17/200, deferred/final
+EndInput and neutral Flush. Forty fixed-seed randomized input schedules and a
+one-byte multiframe run match the unchanged operation-based stream reference.
+Decode consumers run after encode-owner destruction; retain bounded source,
+comparison and result owners in their own conservative phase reservation.
+
+A fixed-record typed allocator really allocates and deletes arrays. Inject empty
+receipts at initial raw/index and each five first/replacement generation stages;
+compare all earlier valid output, byte positions, committed counts, output guards,
+remaining live blocks and final destruction. Inject exact-bound contract violations
+as under/overcapacity receipts at all twelve stages to qualify rejection/cleanup,
+without claiming prevention of an allocator's own misconduct. Test pending
+publication blocks next allocation until its final fragment drains, full raw/index
+and generation spare-tail aliases, coordinator alias, same-call overlap, sticky
+error/EOS, zero output, early/excess input, waiting final signal and input after
+latched final signal. Payload and prefix expansion policies reject before any
+failed frame drains. External-size overflow rejects before initial allocation.
+
+Initial admission at the inclusive limit permits both requests; one byte below
+calls neither allocator. Actual replacement block peak262642 reconciles to
+logical280726 including working12100/coordinator800, allocator controls, retained
+and whole call buffers. Inclusive limit succeeds; one below keeps the first frame
+and rolls back candidate allocations. Both compiler routes and full test/helper/
+framework ASan/UBSan pass19 cases, leak checking disabled. Related20 targets/403
+cases pass in a fresh build. Initial inherited-overload compilation failure and
+incorrect policy-fixture assumptions were corrected; all failed evidence is
+retained. Final scoped qualification reserves result buffers and separates decode
+consumers. No new fuzz, timed/external campaign or real large-stream qualification
+is claimed by these small-stream tests.
