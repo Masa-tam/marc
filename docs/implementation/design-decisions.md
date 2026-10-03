@@ -31648,3 +31648,83 @@ demand adapter with actual control declarations and deterministic allocation
 fault/replacement tests; then implement isolated coordinator behavior and prove
 whole-stream byte equality, split-buffer/finish/error contracts before considering
 production integration. Existing reference paths remain available throughout.
+
+## DD-1441: Checked private admission and validated storage demands
+
+Date: 2026-10-04. Add a separate private adapter, used only by an isolated test
+target. Existing finite/stream/reference/decoder/library paths remain unchanged.
+The adapter allocates nothing, drains no bytes and implements no stream state
+machine. It establishes numeric request and preparation contracts for a future
+bounded owner; an actual allocator/lifetime controller is still required.
+
+The admission ledger names raw/index capacities, old generation, partial live
+candidate, next requested generation, persistent/call controls, full input/output
+views, external retained bytes and helper bytes. Each generation contains token
+pair/frame/payload/publication capacities. Check every typed product and sum,
+validate limits and reserve actual adapter controls before granting the request.
+Old and partial owners remain charged; no capacity disappears on phase completion.
+Reconciliation first re-admits the full original request, rejects each reported
+actual extent above its declared bound, then recomputes admission using actual
+extents. An actual small result cannot bypass an unadmitted large request.
+Receipts are caller-supplied numeric extents, not observed allocator/deallocation
+proof; the future owner must enforce the request and report its full real extent.
+No automatic release, retry, allocation exception handling or destruction is
+implemented here. Numeric helper reservation is920 bytes on qualified routes.
+
+Token preparation validates full independent regions, current owner admission,
+known-size stream/frame/sequence position and hard limits. Require at least
+65536+F live index entries before invoking indexed count: the original count
+query uses output_too_small both for missing index workspace and zero token
+capacity. Only a completed, reconciled count with exact F and nonzero T<=F may
+select the token pair. Checked24T is added to the still-live ledger and admitted
+before returning a successful demand. This is a new pair request: any existing
+pair remains in retained owners. Empty raw input is not a finite frame demand.
+
+Frame preparation receives the already owned full token pair/index, charges all
+extents plus retained owners and invokes the unchanged finite query with no
+frame/payload/output storage. Its expected shortage is only an observation.
+Require exact raw/token/event/decision/P agreement, checked80+P and bounded
+integer conversion. Explicitly construct every descriptor/header field with
+D/P/47; then successfully execute the existing prefix query with an admitted
+numeric80-byte capacity. Prefix validation checks count/descriptor, payload,
+frame/block/total and expansion policy before a demand can be returned. Only then
+admit the additional U=V=80+P and S=P request while all prior owners remain live.
+The token pair is already in the current ledger and is not requested twice.
+Other old/candidate blocks, raw tails, caller view owners and borrowed owner/
+configuration storage outside the declared helper controls belong in retained
+bytes. The numeric ledger likewise requires those persistent/call controls from
+its caller. Reuse of already sufficient frame buffers remains the finite query's job;
+this adapter specifically grants fresh blocks. Borrowed raw/config remain stable.
+
+Demand helper reservation is8732 bytes:1208 for declared simultaneous controls
+plus qualified maximum7524 for sequential finite/indexed/prefix-query work.
+The numeric prefix80-byte capacity is included in that sequential reservation.
+Each nested local plus retained ledger reconciles with the same top charge.
+These are concrete logical helper reservations, not physical stack/RSS or future
+stream-owner sizeof. No whole-input512-MiB fit is implied.
+
+All errors preserve the entire caller admission/demand object representation.
+Private tokens/index may change during preparation. Success grants only the
+specified numeric storage request under that call's stable inputs/ledger; it
+proves neither a finished payload nor publication permission. The future owner
+must re-admit live/replacement extents before allocation and reconcile real
+receipts. Actual full encoding must still perform its full query, count/prefix/
+payload validation and final commit. Existing failed-frame publication and
+finite-encoder failure invariants are unchanged.
+
+Seventeen tests pass both compiler routes and full test/helper/framework
+ASan/UBSan instrumentation; leak detection disabled. Check exact/one-below peak,
+all typed product and sum overflow, old/partial coexistence, each overcapacity,
+request re-admission, aliases including unused token tails, policy/position/
+index/token shortages, prefix expansion rejection, retained/spare views, max-
+match3 all literals and a nonzero-sequence final short frame. Five independent
+complete frames match existing encoding. Real one/eight-MiB cyclic input prepares,
+encodes and decodes with all still-live comparison owners charged; scoped totals
+32788769/260404506 bytes, including conservative fixture controls. Related18
+private targets/371 cases pass in a fresh build. No new fuzz/timed/external
+campaign, allocator fault/destruction qualification or stream integration.
+
+Next gate is a separate bounded block owner that enforces these admitted requests
+before allocation, reconciles real extents, preserves old generations until actual
+destruction and proves partial allocation/rollback with deterministic faults.
+Then qualify the private coordinator against complete-stream reference bytes.

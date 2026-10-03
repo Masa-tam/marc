@@ -38255,3 +38255,24 @@ control sizes and allocator behavior remain unqualified. Five document prefixes
 and all existing source/artifact hashes are checked. No source implementation,
 new compiler/sanitizer/fuzz/timed/external campaign, stream integration, public
 release similarity review, universal fit, speedup or legal guarantee is claimed.
+
+## CR-1612: Private checked storage-demand implementation
+
+Date: 2026-10-04. Author/reviewer: Codex, user-approved continuation.
+Task: independently implement DD-1440 admission/reconciliation and successful
+storage-demand preparation before bounded allocation/stream integration. Reuse
+first-party queries/validators and independently authored mathematical vectors;
+existing implementation/reference paths are untouched. No external/restricted
+source or test suite consulted; known external compressor implementations remain
+intentionally unconsulted.
+
+Review covers every typed product and sum, retained old/partial requests, extent
+receipt bounds, minimum-index verification before interpreting shortage,
+explicit descriptor construction, successful prefix policy before grant and
+complete caller metadata preservation. Seventeen tests pass both compiler routes
+and full sanitizer instrumentation; related18 targets/371 cases pass, leak
+checking disabled. Existing source/artifact hashes and document prefixes are
+preserved except the deliberate private test-target registration. No actual
+allocator/destruction qualification, new fuzz/timed/external campaign, stream
+integration, universal fit, speedup, public release similarity review or legal
+guarantee is claimed. Earlier prototype cause remains unconfirmed.

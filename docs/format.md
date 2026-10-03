@@ -8684,3 +8684,11 @@ its first fragment; a later failed frame may leave the valid header and earlier
 frames published, but none of the failed frame. Flush does not alter bytes and
 ResetBlock remains unsupported. This design introduces no format/profile/ID,
 hash descriptor, default, CLI change or implemented stream path.
+
+### Private storage-demand adapter (DD-1441)
+
+The new private adapter returns storage requirements after raw/typed-field/count/
+prefix policy checks, without serializing or publishing any frame. A successful
+demand does not validate a finished payload; actual frame encoding and preflight
+remain mandatory. On failure the whole caller demand/receipt object is unchanged.
+No wire ID, layout, public profile, limit, default or stream behavior changes.

@@ -21015,3 +21015,35 @@ Future executable gates, not results of this documentation unit:
 
 Both compiler routes, fully instrumented sanitizers, appropriate regression and
 fuzz campaigns are required for future code; no such new campaign is claimed here.
+
+## TVG-1308: Storage admission, demand and reconciliation tests
+
+Date: 2026-10-04. Seventeen first-party tests exercise numeric exact/one-below
+admission; all old/partial/request token products, index product and total sums;
+old/partial coexistence; actual extent below/equal/above each request field; a
+small actual report cannot bypass an unadmitted request. Reported extents are
+numeric observations: no real allocator fault or destruction campaign is claimed.
+
+Preparation tests cover literal/repeated counts, max-match3 all literals,
+prospective token/frame-block peak, whole-view spares and external retained bytes,
+invalid stream/sequence/total policy, empty raw, too-short index/token pair,
+retained overflow, independent-region/unused-tail aliases and metadata preservation.
+A Range count that passes but fails prefix expansion policy must never grant
+frame storage. Snapshot the complete caller demand/receipt object on every
+rejection, including after a successful demand. Index/token scratch is private.
+
+Five independent complete-wire vectors combine the literal prefix/payload and
+existing repeat/pattern/tie/binary vectors. Consumers allocate the demanded blocks
+and invoke the unchanged encoder for exact wire comparison. Real one/eight-MiB
+cyclic bytes i modulo256 prepare and round-trip; all live raw/token/index/frame/
+payload/publication/decoded/scratch capacities, metadata and conservative fixture
+controls are reconciled in the complete consumer phase. No old operation arrays
+are hidden, because this test consumer does not construct them.
+
+Both compiler routes and fully instrumented test/helper/framework ASan/UBSan pass
+all17 tests; leak detection disabled. Concrete helper reservations920/8732 and
+large scoped totals32788769/260404506 match across routes. Related18 targets/371
+cases pass in a fresh build. Initial missing-index error classification prompted
+an explicit minimum-index check before interpreting count observations; original
+indexed implementation is unchanged. No speed, physical memory, allocator fault,
+new fuzz or external interchange result is claimed.

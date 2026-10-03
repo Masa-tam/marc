@@ -10617,3 +10617,10 @@ DD-1439 qualified owners, current private stream coordination and status/limits
 contracts. Inspect serializer/preflight and retained-owner admission semantics.
 Independently calculate conditional phase and replacement ledgers; no external
 source, implementation or test suite consulted. No new implementation reference.
+
+## IR-1200: Private storage admission and successful demand adapter
+
+Date: 2026-10-04. Implement DD-1440 numeric admission and two-stage demand
+preparation from first-party indexed count, finite token-frame query and prefix
+query. Independent complete-frame mathematical vectors and existing decoder
+provide consumers. No external implementation, source or test suite consulted.
