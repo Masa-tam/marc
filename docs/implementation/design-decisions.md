@@ -31079,3 +31079,56 @@ decoder. It does not qualify a production stream encoder, its actual C, peak
 memory, timing, all-input fit, hash integration or public/external admission.
 Next: bounded borrowed-workspace implementation with numeric query, exact
 sizeof control ledger, arbitrary chunking and per-frame failure regressions.
+
+
+## DD-1433: Bounded private known-size eight-MiB StreamEncoder
+
+Date: 2026-10-03. Implement the immutable Encode transform described in DD-1432
+with fixed borrowed raw, publication, token/scratch, index, operation/scratch,
+frame and payload buffers. No allocation occurs in the coordinator. Constructor
+validation completes the private112-byte header before its first fragment drains.
+No new input is collected while a header or validated frame remains pending.
+A complete raw frame is encoded through the unchanged finite-frame transaction
+into the private publication slot. Only a successful result with the exact
+aggregate ledger commits validated raw length and sequence and starts draining.
+Failure leaves publication/layout/written unchanged in that helper and publishes
+no bytes belonging to the failed frame. Earlier validated output is preserved;
+there is no whole-stream rollback. Misuse or a later call-budget rejection can
+interrupt an already validated frame's drain without undoing earlier fragments.
+
+Input accepted into private raw storage, validated frame progress and emitted
+output remain separate. EndInput is latched only when the offered final suffix
+is completely consumed, including empty confirmation. Repeat it on an unconsumed
+suffix. Declared original size determines every frame length; premature end does
+not invent a short frame. Exact original size without EndInput waits for input
+confirmation, and additional input is rejected without consuming that excess.
+Flush is neutral; ResetBlock and unknown flags fail before emission/consumption.
+Ended/error repeats return zero counts and sticky status/error/position. Progress
+always has a positive count. Full input/output/workspace/coordinator extents must
+be disjoint. Constructor errors are retained for the first process call.
+
+The numeric query sums full capacities, not used lengths: B = raw + publication
++ both token capacities*12 + index capacity*4 + both operation capacities*16
++ frame + payload. On the qualified64-bit layout the owner is720 bytes and named
+conservative controls864 bytes, giving C=1584. Controls explicitly reserve query
+and capacity records, frame context, process/serialization result, twelve overlap
+regions, five typed-size products, six summation operands, scalar cursors and
+constructor argument copies. Compute these with sizeof rather than assuming the
+layout on other architectures. The shared largest helper reservation is6708.
+Base = B+C+6708+external retained bytes; each process call additionally charges
+its full input/output extents before any copying. Spare external owners must be
+reported by the caller. Header112 is already inside the owner; it is a local
+view for serializer reconciliation, not a second allocation. Each nested finite
+helper's local ledger plus retained remainder equals the admitted top total.
+This is conservative logical live-storage accounting, not physical peak/RSS.
+
+Numeric universal8MiB capacities give B=1233387695 and base=1233395987 before
+external and call extents, exceeding the512MiB policy. No universal-input fit or
+implicit phase-owner release is claimed. Fixed capacities may reject a later
+frame: deterministic error classification maps dependency shortages to
+limit_exceeded and impossible admitted position/count/stream inconsistencies to
+internal_error. API/configuration, unsupported flags and raw-length misuse retain
+separate stable categories. External hash taps observe only their specified
+committed boundary; no observer, hash field, unknown-size encoding, CLI/default
+or public profile is added. Large compiled coordinator qualification remains a
+separate next step; small schedule correctness is not a large-memory fit claim.

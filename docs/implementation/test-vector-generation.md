@@ -20714,3 +20714,41 @@ status/positions. This independently checks decoder compatibility and existing
 no-failed-frame publication. It does not execute a compiled stream encoder.
 No production/CMake changes, new CTest, fuzz, timing, physical peak, public or
 external gate. Preserve vectors/hashes and original document/artifact prefixes.
+
+
+## TVG-1300: Compiled private eight-MiB stream encoder schedules and failures
+
+Date: 2026-10-03. Preserve DD-1432's36 mathematical normal streams and eight
+negative streams verbatim in tracked fixtures. Actual encoding of every normal
+stream matches its independent bytes across1344 small-input split schedules:
+all splits, output capacities1/17/200 and final-on-data/empty-final confirmation.
+One-byte input/output with neutral Flush also matches. Feed encoded streams and
+all negative fixtures through the unchanged private stream decoder; verify exact
+successful raw prefixes, guards, malformed handling and bounded progress.
+Random recipes through513 raw bytes compare arbitrary schedules with full-input
+encoding and the existing consumer. The mathematical fixtures, not the encoder,
+define the independently expected bytes; random full-input comparisons alone
+are not an independent compression oracle.
+
+Twenty-eight deterministic cases cover empty zero borrowed capacities, final
+short raw storage, header/frame zero-output pressure, exact-size end confirmation,
+premature end before/after a good frame, excess input, input after latched end,
+sticky terminals, ResetBlock/unknown flags, invalid construction, every borrowed
+buffer alias and full input/output overlap. Real second-frame token, operation,
+publication, frame and payload shortages retain only earlier good output, with
+unchanged publication slot on storage failure. Per-call budget rejection during
+validated draining writes nothing on that call. Exact aggregate admission and
+one-byte-under rejection, unused capacities, retained owners, numeric overflow
+and universal8MiB pre-allocation rejection are checked without fabricated spans.
+Record actual sizeof owner720/control864/helper6708 and universal arithmetic.
+
+Both supported compiler routes and a fully instrumented dependency/test build
+with ASan/UBSan pass all28 cases. A fresh build tree runs13 related private
+CTest targets,271 cases. FZ-0066 executes10000 bounded schedule/storage-failure
+mutations with the unchanged stream consumer. Retain the initial three failed
+budget tests: their block limit exceeded the test's aggregate budget and caused
+invalid configuration before the intended boundary; correcting the test block
+limit yields the qualified runs. No production fix was inferred from that setup.
+No timed benchmark, physical peak measurement, external interoperability,
+public/default/CLI admission or large coordinator capacity qualification is
+claimed. Original source/artifact hashes and document byte prefixes are retained.

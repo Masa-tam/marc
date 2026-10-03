@@ -38077,3 +38077,26 @@ both bounds.
 - Boundary: design and existing-decoder compatibility only, not implemented
   stream encoder, concrete new memory fit, physical peak, public/external or
   legal guarantee.
+
+
+## CR-1604: Private eight-MiB known-size stream encoder
+
+- Date: 2026-10-03.
+- Author/reviewer: repository implementation agent; user authorized the next
+  private implementation step following DD-1432.
+- References: IR-1192; first-party finite-frame encoder/header serializer,
+  independent mathematical stream fixtures and unchanged private stream decoder.
+- Task: independently implement fixed borrowed-workspace Encode coordination,
+  numeric full-capacity query, exact helper-retained reconciliation, arbitrary
+  partial buffers and current-frame failure publication without changing format.
+- Review: full extents disjoint and admitted before copying; no failed frame
+  drains, early prefix publication, silent allocated-owner reuse or whole-stream
+  rollback claim. sizeof-based owner/control accounting includes input/output
+  extents and reported external owners. No public/CLI/default/hash widening.
+- Validation: TVG-1300's28 cases on two compiler routes/full ASan/UBSan,
+  independent split-vector and unchanged-consumer differential, fresh13-target
+  CTest271 cases and FZ-0066's10000 mutations. Preserve initial budget-test setup
+  failures and qualified corrections, existing artifacts and append-only docs.
+- Boundary: private bounded coordinator only; no large-frame stream fit, physical
+  peak, performance, external admission or legal guarantee. No external source,
+  implementation or external test suite was consulted.

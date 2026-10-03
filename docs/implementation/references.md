@@ -10535,3 +10535,14 @@ incremental input, validated-frame draining and sticky terminal contracts.
 Independently build mathematical known-size multi-frame vectors and model
 input/output schedules, current-frame failure publication and retained ledgers.
 No external implementation/source or external test suite consulted.
+
+
+## IR-1192: Private eight-MiB known-size stream encoder implementation
+
+Date: 2026-10-03. Independently implement DD-1432 using the first-party finite
+frame encoder, header serializer, checked arithmetic, buffer-overlap checks and
+core transform statuses. Retain the independently generated mathematical stream
+fixtures; compare actual encoder schedules and the unchanged private decoder.
+Explicitly account for borrowed capacities, coordinator/control storage,
+per-call spans and retained external owners before any consumption or emission.
+No external implementation/source or external test suite consulted.

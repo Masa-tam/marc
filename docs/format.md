@@ -8607,3 +8607,13 @@ not alter these bytes; ResetBlock is unsupported. Only fully prepared frames
 may be drained downstream, and a failed frame has no published bytes while
 previously validated output remains. This is a design, not stream encoder or
 public admission; unknown original size remains unsupported.
+
+
+DD-1433 implements the DD-1432 private known-size stream encoder without changing
+any reserved eight-MiB wire bytes: exactly one112-byte header and the required
+80+P complete frames with consecutive sequences and exact final raw length.
+Empty original input emits the header only. Stream chunks and neutral Flush do
+not change serialization. A frame is entirely validated in a private publication
+slot before draining; errors never publish a failed frame. Earlier validated
+fragments remain committed. The coordinator adds no algorithm ID, public profile,
+terminal marker, unknown-size form, hash/checksum/trailer or default selection.

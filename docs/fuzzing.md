@@ -1481,3 +1481,22 @@ Compile harness and every encoder/decoder dependency with C++20 and
 seed1430,max_len136,timeout10,leak detection disabled, without crash, timeout,
 sanitizer or invariant finding. This does not qualify large8MiB capacities,
 physical peak, performance, streaming coordinator or public/external admission.
+
+
+## FZ-0066: Private known-size eight-MiB stream encoder scheduling
+
+Date: 2026-10-03. Mutate1..16-byte frame sizes, bounded0..64 raw bytes, original
+size discrepancies, token/operation/private storage capacities, input chunks,
+output capacities and final-on-data/empty-final schedules. Compare full and split
+encoding for identical terminal categories and published bytes. Verify counts,
+no zero-count Progress, guarded output tails and sticky terminal status/position.
+Feed each published byte sequence through the unchanged private stream decoder;
+its successful raw output must be an exact prefix of the supplied raw input.
+Successful complete encoding must decode all raw bytes and reach end-of-stream.
+Deterministic TVG-1300 tests additionally cover live alias and exact budget bounds.
+
+Compile the harness and every encoder/decoder dependency with C++20 and
+`-fsanitize=fuzzer,address,undefined`. Complete10000 executions,seed1433,
+max_len72,timeout10,leak detection disabled, without crash, timeout, sanitizer
+or invariant finding. These are small bounded stream schedules; no large8MiB
+coordinator fit, physical peak, performance or public/external admission follows.
