@@ -20752,3 +20752,47 @@ limit yields the qualified runs. No production fix was inferred from that setup.
 No timed benchmark, physical peak measurement, external interoperability,
 public/default/CLI admission or large coordinator capacity qualification is
 claimed. Original source/artifact hashes and document byte prefixes are retained.
+
+
+## TVG-1301: Compiled private large stream boundaries and retained budgets
+
+Date: 2026-10-03. Independently construct seven mathematical streams from
+retained first-party repetitive1/4/8MiB frames, literal112-byte header and
+32-byte frame. For each frame size, define two full frames and two full frames
+plus32 final bytes. Adjust only explicit frame size/original size/sequence fields;
+no production codec generates the expected bytes. The seventh expected stream
+contains the header declaring two8MiB frames and only its first complete frame,
+as the expected published prefix of a real later-frame encoding failure.
+
+Nine deterministic tests exercise18 successful encoding schedules: full input
+and output, splits immediately before/at/after full-frame boundaries, and seeded
+varied chunks with257-byte output. Boundary schedules use one-byte output for
+the1MiB recipes and17-byte output for the larger recipes. Final-on-data and empty
+end confirmation with neutral Flush produce the same expected bytes. Consume
+with full or seven-byte wire chunks, initial zero output and65537-byte subsequent
+output, comparing each produced range with the retained original input. Check
+consumption/production bounds, guarded capacity tails, no zero-count Progress,
+call bounds, exact byte totals and sticky terminal status/error positions.
+
+Two real second-frame failure schedules use a251-byte alphabet at8MiB, exceeding
+the independently selected repetitive token capacity. Header and first complete
+frame remain byte-exact and the failed frame has no emitted bytes. Consumer
+failure preserves exactly the first8MiB raw frame. Independent second-sequence
+corruption and last-payload-byte truncation also preserve only that first frame.
+Numeric exact admission and one-byte-under rejection precede all allocation in
+a separate8MiB prospective-budget test. Every allocated capacity and persistent
+control is retained until actual scope destruction; encoder buffers are destroyed
+before decoder allocation, and output replacement reserves old plus new owners.
+
+Both compiler routes and fully instrumented dependencies/test support with
+ASan/UBSan pass all nine tests. Seven captured stream artifacts are byte-identical
+between all three routes and independently match mathematical bytes/hashes.
+Fresh CTest runs14 related private targets,280 cases. Qualified controller/call
+controls are552/376 bytes; maximum logical encoder admission81073556 bytes and
+consumer/planning admission34778951 bytes. Preserve initial passing runs whose
+test bookkeeping omitted temporary old/new output-buffer coexistence; final
+runs include it before allocation and in the conservative reported maximum.
+No production fix was needed. No new fuzz, timing, physical peak, universal-input
+fit, public/default/CLI or external gate. Retain original source/artifact hashes
+and documentation byte prefixes; supplement legacy ordinal documentation checks
+with direct new-heading and append-only verification.

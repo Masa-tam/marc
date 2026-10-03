@@ -38100,3 +38100,27 @@ both bounds.
 - Boundary: private bounded coordinator only; no large-frame stream fit, physical
   peak, performance, external admission or legal guarantee. No external source,
   implementation or external test suite was consulted.
+
+
+## CR-1605: Private large multi-frame stream qualification
+
+- Date: 2026-10-03.
+- Author/reviewer: repository implementation agent; user approved the next
+  large compiled coordinator qualification following DD-1433.
+- References: IR-1193, existing independently generated mathematical large and
+  short complete-frame vectors, private stream encoder/decoder numeric queries.
+- Task: qualify fixed bounded1/4/8MiB recipes, two full frames/final short frame,
+  split schedules and actual later-frame failure while retaining all allocated
+  owners and independently comparing stream bytes without production oracles.
+- Review: no early failed-frame publication, implicit logical owner release,
+  arbitrary-input512MiB claim or public/default/CLI/format widening. Initial
+  bookkeeping was corrected to reserve simultaneous old/new output storage
+  before replacement; initial and final passing evidence remains preserved.
+- Validation: TVG-1301's nine tests on two compiler routes/full ASan/UBSan,
+  seven independent mathematical stream artifact matches and fresh14-target
+  CTest280 cases. Exact prospective budget/one-under and sizeof-based owner
+  accounting, append-only docs and retained source/artifact hashes verified.
+- Boundary: selected bounded large recipes and compiled private coordinator;
+  no production helper change, new fuzz/performance/physical peak, universal
+  resource fit, external admission or legal guarantee. No external source,
+  implementation or external test suite was consulted.

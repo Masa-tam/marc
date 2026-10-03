@@ -8617,3 +8617,13 @@ not change serialization. A frame is entirely validated in a private publication
 slot before draining; errors never publish a failed frame. Earlier validated
 fragments remain committed. The coordinator adds no algorithm ID, public profile,
 terminal marker, unknown-size form, hash/checksum/trailer or default selection.
+
+
+DD-1434 qualifies the unchanged private eight-MiB known-size stream format at
+1/4/8MiB frame sizes with two full frames and an optional32-byte final frame.
+Independent expected streams modify only the explicit original size, frame size
+and frame sequence fields of retained mathematical fixtures. Full and split
+encoding produce identical bytes; private consumer output equals every raw byte.
+Real later-frame encode shortage and malformed/truncated later frames preserve
+only previously validated publication. This gate does not admit a new public
+profile, arbitrary-input memory fit, default, unknown-size form or wire change.

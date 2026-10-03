@@ -31132,3 +31132,52 @@ separate stable categories. External hash taps observe only their specified
 committed boundary; no observer, hash field, unknown-size encoding, CLI/default
 or public profile is added. Large compiled coordinator qualification remains a
 separate next step; small schedule correctness is not a large-memory fit claim.
+
+
+## DD-1434: Private large multi-frame coordinator qualification
+
+Date: 2026-10-03. Qualify DD-1433's unchanged compiled coordinator for selected
+bounded mathematical recipes with1/4/8MiB frames, two complete frames, and two
+complete frames followed by a32-byte final frame. Fixed token/event/payload
+capacities come from independent equations and retained fixtures, not a
+production count probe. Allocate full raw/index, both token/operation buffers,
+publication/frame/payload slots after numeric prospective admission. Successful
+streams match the independent112-byte header plus sequence-adjusted80+P frames
+exactly across full, boundary and deterministic varied input/output schedules.
+Models and dictionary history reset independently for each frame; identical raw
+full frames produce identical complete frame bytes apart from sequence.
+
+The test controller owns raw source, expected wire, published wire and call
+output buffers. Keep their full actual capacities and used static fixtures
+counted during encoder/decoder calls. Source and call-view extents are reserved
+conservatively even when that duplicates a subset view; this is not a physical
+allocation or peak-memory assertion. Concrete controller storage is552 bytes,
+outer call-control reservation376 bytes and used mathematical fixtures46824
+bytes on the qualified64-bit layout. Production owner/control/helper reservations
+remain those of DD-1433. Workspaces stay allocated and charged for the entire
+encoder scope. Destroy the whole encoder/workspace scope before constructing
+consumer buffers, while retaining all source/expected/wire/controller owners.
+When replacing call output storage, reserve both old and new capacities before
+allocation; lower the actual-owner ledger only after completed replacement has
+really destroyed the old allocation. Include this planning reservation in the
+reported conservative consumer maximum.
+
+The selected recipes' maximum logical admission is81073556 encoder bytes and
+34778951 decoder/planning bytes, below the512MiB policy. Maximum original input
+is16777248 bytes, comprising two8MiB frames plus32 bytes. Prospective exact-budget
+and one-byte-under queries run before allocation. These limits qualify these
+explicit capacities and recipes only. Universal arbitrary8MiB capacities remain
+1233395987 bytes before external/call extents and do not fit the policy.
+No silent phase reuse, allocation-release assumption or universal-input claim.
+
+A second8MiB frame using a251-byte repeating alphabet exceeds the fixed token
+capacity selected for the first repetitive frame. Real encoding failure publishes
+exactly the independent header and first frame, with no second-frame bytes.
+The unchanged consumer returns that first raw frame, then rejects premature end.
+Malformed second sequence and truncated second payload likewise publish only the
+first validated raw frame. Stable terminal counts/status/positions and output
+capacity guards remain enforced. No production helper/format/default/CLI/public
+profile change, new fuzz campaign, timed benchmark or external admission occurs.
+The next design should address arbitrary-input memory admission and operation
+materialization before broadening the profile; the selected large-input gate
+alone does not resolve that resource requirement.

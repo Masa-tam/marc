@@ -10546,3 +10546,14 @@ fixtures; compare actual encoder schedules and the unchanged private decoder.
 Explicitly account for borrowed capacities, coordinator/control storage,
 per-call spans and retained external owners before any consumption or emission.
 No external implementation/source or external test suite consulted.
+
+
+## IR-1193: Private eight-MiB large multi-frame stream qualification
+
+Date: 2026-10-03. Reuse the independently generated first-party1/4/8MiB
+repetitive complete-frame fixtures, mathematical32-byte short-frame fixture
+and literal stream header. Construct expected streams by explicit little-endian
+original-size/frame-size/sequence fields, without calling production serializers
+or encoders. Reconcile fixed borrowed-workspace stream encode/decode queries,
+actual vector capacities, retained source/expected/wire owners and concrete test
+controls. No external source, implementation or external test suite consulted.
