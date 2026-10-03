@@ -23,6 +23,8 @@ struct LzssPositionDistance8mTokenRequirements {
       dictionary::internal::LzssTypedTokenError::none};
   LzssContextualRangeDecodeError error{LzssContextualRangeDecodeError::none};
 };
+// Concrete finite helper charge, including its simultaneously live query.
+[[nodiscard]] std::size_t lzss_position_distance_8m_token_working_bytes() noexcept;
 // Full capacities are charged; query success does not validate payload bytes.
 [[nodiscard]] LzssPositionDistance8mTokenRequirements
 query_lzss_position_distance_8m_tokens(

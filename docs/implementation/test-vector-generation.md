@@ -20391,3 +20391,39 @@ The finite model passes9378 abstract trace cases and111 checked-ledger cases.
 The latter verify equivalent direct/full-capacity and nested-helper retained
 charges, the conditional512MiB arithmetic and integer-overflow rejection.
 These are design checks only, not actual codec or physical memory measurements.
+
+## TVG-1289: Actual private eight-MiB incremental decoder fixtures and guards
+
+Date: 2026-10-03. Use TVG-1287's independently specified stream header/frame
+prefixes and TVG-1286's independent payloads. Construct empty known-size,
+two literal frames and short-overlap plus final literal streams by explicit
+little-endian size/sequence fields; never invoke a production serializer or
+encoder. Expected raw literal/overlap bytes are derived independently.
+
+Twenty-five tests exercise every split of the198-byte literal stream with
+output capacities1/17 and EndInput on final input or later empty call; one-byte
+input/output on two frames,32 deterministic random chunk schedules with final
+short frame, zero-capacity blocking and final-suffix resubmission. Check empty
+termination, Flush neutrality, unsupported flags, sticky terminal results,
+all two-frame truncations, unconsumed strict trailing bytes, and a canonical
+second-frame failure preserving the first frame emitted in the same call.
+Every failed frame contributes no raw; caller tails remain guarded.
+
+Actual raw checks include all lengths, history distance4194305, exact8388608
+bytes and a late canonical corruption preserving an entire guarded caller
+output. Capacity checks cover all five workspaces before payload collection,
+full-tail workspace/caller/live-owner aliases, copied limits, exact/one-byte-
+under budgets, spare serialized capacity and checked numeric overflow. Query
+properties owner736/control360/helper5856 match two compilers and ASan/UBSan.
+Pure full-capacity numeric query succeeds with explicit512MiB; no huge synthetic
+frame allocation or physical memory claim is made. Counter overflow is guarded
+in code; no impractically enormous input-position test is claimed.
+
+Tests pass with two compilers and fully compiled decoder/helper/core/test
+framework under ASan/UBSan, leak detection disabled. Initial23-pass/two-fail
+budget artifacts are retained: reduce test block limit to satisfy the shared
+block-size/internal-budget prerequisite before testing exact budget. Fresh
+CMake tests include the four prior private layers; retain an initial duplicate
+target configure failure and use another fresh root after registration repair.
+FZ-0059 adds actual bounded scheduling fuzz; no performance/external/public
+or production encoder qualification is implied.

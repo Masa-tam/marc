@@ -37879,3 +37879,20 @@ both bounds.
   review and existing source/artifact preservation. No codec source changes.
 - Boundary: design model only; no actual incremental codec, round-trip, fuzz,
   full stream/RSS fit, performance, external admission or legal guarantee.
+
+## CR-1593: Independent private eight-MiB incremental decoder
+
+- Date: 2026-10-03; author/reviewer: Codex; maintainer approved continuation.
+- References: IR-1181, DD-1421, first-party finite decoder, status/limits/overlap
+  contracts and independent mathematical serialized fixtures. No external or
+  copyleft implementation/test suite is consulted.
+- Task: implement caller-owned bounded stream decoding with exact retained
+  capacities, partial I/O, explicit termination and failed-frame nonpublication;
+  leave public selectors, encoder and defaults unchanged.
+- Design review: compare coordinator to the independent state contract; charge
+  actual owner/control and nested finite helper once, including full tails.
+- Validation: TVG-1289 twenty-five tests in two compilers and ASan/UBSan, fresh
+  five-layer CMake tests, FZ-0059 finite scheduling fuzz and preservation review.
+  Keep initial test-configuration/build-registration failures and corrections.
+- Boundary: private incremental decoder and logical budget only; no production
+  encoder, public/external admission, RSS/speed or legal guarantee.

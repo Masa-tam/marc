@@ -1311,3 +1311,31 @@ ASan/UBSan/libFuzzer, leak detection disabled, and finishes without reported
 crash, timeout, sanitizer finding or invariant failure. Preserve initial/evolved
 corpus and logs. This finite-frame boundary is not an incremental stream
 publication frontier, exhaustive proof, public codec or performance/external gate.
+
+## FZ-0059: Private eight-MiB incremental scheduling and committed frontier
+
+Date: 2026-10-03. The harness in
+`tests/lzss_position_distance_8m_stream_decoder_fuzz.cpp` accepts one schedule
+selector followed by at most4096 stream bytes. Compare complete-input scheduling
+against bounded partial input/output, including zero output capacity followed
+by capacity, final suffixes and sticky terminal calls. Verify independent
+consumption/production bounds, guarded caller tails, no zero-count Progress,
+identical committed raw prefix and stable total consumption/error positions.
+A separate finite traversal validates complete frames through the already
+qualified helper and compares that committed frontier. This oracle shares the
+finite decoder, so it tests coordinator publication/scheduling and does not
+claim independent Range or raw codec conformance.
+
+Bounds: frame/raw512, each token capacity512, serialized workspace4096,
+payload policy4096, total output65536, internal budget65536, positive output
+capacity1..32 after bounded starvation, and fewer than100000 calls. Initial
+corpus uses independent mathematical small valid/invalid frames, empty/two
+frame streams, truncations, trailing data and late canonical failure; production
+encoder/serializer is not invoked. Large history remains focused tests.
+
+Compile the harness and all private stream/frame/prefix/token/Range/core sources
+together with C++20 and `-fsanitize=fuzzer,address,undefined`. The finite campaign
+runs10000 executions, seed1422, max_len4097 and timeout10 with leak detection
+disabled, completing without crash, timeout, sanitizer or invariant finding.
+Preserve corpus and logs. This is private bounded fuzz, not exhaustive proof,
+public profile/encoder admission, benchmark or external qualification.

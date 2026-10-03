@@ -8513,3 +8513,11 @@ frame, are not rolled back by a later stream error. Empty known-size streams
 contain only the header and still require explicit termination. This is an
 ownership/state design, not incremental decoder implementation or public
 admission; concrete layout, chunking and full retained budget need later gates.
+
+DD-1422 implements that coordinator as a private caller-workspace prototype.
+Actual partial input/output tests validate its frame-publication and strict
+termination contract. Serialized IDs, fields and model representation remain
+unchanged; public selectors/CLI and encoder admission remain closed. Its
+sizeof-based retained query counts all five full capacities and stream/control/
+finite-helper state, including serialized-owner spare capacity once. This
+logical budget is not a physical peak-memory or whole public-profile claim.

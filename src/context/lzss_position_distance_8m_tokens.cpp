@@ -84,6 +84,9 @@ bool read_token(WorkingState &w) noexcept {
   return true;
 }
 } // namespace
+std::size_t lzss_position_distance_8m_token_working_bytes() noexcept {
+  return working_bytes;
+}
 dictionary::internal::LzssTypedTokenError
 validate_lzss_position_distance_8m_parameters(
     const dictionary::internal::LzssParameters &p,

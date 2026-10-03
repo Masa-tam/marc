@@ -10436,3 +10436,12 @@ around the existing finite transactional frame decoder. Use an independently
 written abstract state simulator to examine partial-buffer and termination
 contracts; it neither parses a production payload nor validates codec output.
 No external implementation or copyleft source/test suite is consulted.
+
+## IR-1181: Private eight-MiB bounded incremental stream decoder
+
+Date: 2026-10-03. Implement DD-1421 using first-party core status/overlap/limits,
+the private112-byte header and80-byte prefix parsers, and DD-1420's complete
+transactional frame helper. Independent mathematical serialized fixtures from
+TVG-1287 supply real test streams; no production encoder is added or invoked.
+Use the previously independent state design to schedule partial input/output.
+No external implementation or copyleft source/test suite is consulted.

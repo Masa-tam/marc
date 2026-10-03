@@ -30349,3 +30349,62 @@ and temporary-lifetime ledger, one-byte/arbitrary-chunk tests with independent
 serialized fixtures, alias/full-capacity/overflow tests and sanitizer/fuzz
 qualification. Public admission, encoder, performance and external gates remain
 separate; do not count this design model as round-trip or decoder fuzz coverage.
+
+## DD-1422: Concrete private eight-MiB incremental decoder prototype
+
+Date: 2026-10-03. Implement the DD-1421 coordinator with five stable disjoint
+caller workspaces and no allocation. The concrete owner embeds limits, spans,
+header/prefix arrays, stream/layout/requirements, counters, sticky state/error
+and private frame-error detail. Header/Prefix/Payload collect exact extents;
+validate header and prefix before payload buffering. Invoke DD-1420 once per
+complete frame, with full token/raw spans and retained serialized spare capacity.
+Only successful complete validation transitions to Draining. Check validated
+raw/sequence increments before helper publication; drain before accepting any
+next frame. Preserve independent consumed/produced counts on later failure.
+Previously valid output stays committed; no failed frame contributes raw bytes.
+
+EndInput latches after consuming its whole supplied span; final suffixes must
+retain the flag on resubmission. Empty calls drain pending raw. Strict trailing
+bytes are not consumed, AwaitingEnd requires explicit termination, and header/
+prefix/payload truncation at end fails. Flush remains neutral; ResetBlock and
+unknown flags fail before progress. Full input/output/workspace/owner extents
+are checked before any buffer copy. Ended and Error return sticky zero-count
+results before inspecting subsequent input/flags. Errors retain coarse absolute
+positions per DD-1421, with no global mutable state or public dispatch change.
+
+The numeric workspace query charges full five capacities, sizeof(owner), an
+explicit control reservation, finite frame plan/result and the nested token
+helper, plus caller-retained enclosing storage. Expose the nested helper's
+existing sizeof-based charge through a read-only private accessor; do not
+duplicate its model or hardcode a substituted state size. Control reservation
+conservatively sums the concrete stream/header/parser layout/requirements,
+query result, borrowed validation context, parsed-size object and eight-region
+overlap table, even where lifetimes differ. Persistent copies are already in
+the owner; this conservatism is deliberate. Scalars are call metadata; the
+query does not claim physical stack, allocator overhead, RSS or caller I/O.
+
+Qualified owner736, control reservation360 and finite helper5856 bytes agree
+in two compiler layouts and sanitizer tests. The finite decode receives
+owner/control/extra plus serialized capacity minus its exact view; all four
+token/raw full capacities remain charged. Constructor admission enforces the
+aggregate, and header/prefix enforce individual limits before payload copy.
+Exact and one-byte-under budgets, spare serialized capacity and arithmetic
+overflow are checked. Existing defaults stay unchanged. The independent
+conservative full-capacity numeric ledger is369105789 bytes before separately
+retained caller storage; it passes an explicit512MiB query. This is a logical
+bounded storage query, not a valid maximum-sized encoded frame, physical peak
+measurement, encoder fit or public profile qualification.
+
+Twenty-five actual incremental tests pass in two compilers and ASan/UBSan:
+every small input split, one-byte input/output, random final-short scheduling,
+all small two-frame truncations, strict trailing and late failed-frame guards,
+actual all-length/upper-half/exact-eight-MiB raw output, and late canonical
+failure preserving an entire eight-MiB caller output. A fresh CMake build also
+checks prior private frame/token/Range/prefix tests. FZ-0059 checks scheduling
+equivalence and the finite-helper committed frontier; its shared finite helper
+is not an independent Range oracle. Initial budget-test configuration failures
+and duplicate test-target configure failure are retained; corrections affect
+test setup/build registration, not decoder behavior. No optimization/timing,
+public admission or encoder is established. Next: independently specified
+eight-MiB encoder-side framing/ownership and finite reference encoder design;
+retain decoder qualification while leaving public gates separate.
