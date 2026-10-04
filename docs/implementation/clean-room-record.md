@@ -38678,3 +38678,7 @@ docs/design/lzss-position-distance-8m-public-encoder.md.
 ### CR-1639: public decoder implementation review
 
 2026-10-04, author/reviewer Codex. DD-1468 adds an independently written C boundary and tests over unchanged repository-owned private decoders. No external implementation source was consulted. Review binds current source/library/object hashes, three-route identical finite decoder records, static/shared C consumers, registered CTests, exact document prefixes and preserved prior artifacts. Qualification is limited to its finite cases; maximum public boundaries, bounded decoder fuzz, CLI/exchange admission and release similarity review remain subsequent obligations. Failed build/test attempts remain diagnostic artifacts and are excluded from passing results.
+
+### CR-1640: maximum public decoder provenance and review
+
+2026-10-04, author/reviewer Codex. DD-1469 adds independent token/raw recipes and a diagnostic target over unchanged repository-owned implementations. No external implementation was consulted. Review binds three-route source/library hashes and identical finite records, original public documentation prefixes, prior artifact preservation and unchanged production-source registration. Maximum token/raw capacities and late-frame invariants were executed; bounded decoder fuzz, CLI/exchange admission and release similarity review remain subsequent obligations. Actual CMake/CTest qualification is recorded separately from matrix executions.

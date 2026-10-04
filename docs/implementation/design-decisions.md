@@ -32666,3 +32666,7 @@ Define a distinct decoder config, capacity-only requirements result and five-buf
 ### DD-1468: admitted explicit public decoder boundary
 
 Implemented separate decoder config, requirements and five-buffer descriptor without altering the wire grammar or private decoder. Actual capacities, full declared I/O, public controls/guard/handle and conservative private owner/helper charges are reserved before two scalar allocations. Alignment, divisibility and full-tail aliases are guarded; typed lifetimes end after decoder destruction. Source-bound qualification passed on three optimized/instrumented routes. No CLI or generic reader admission is added; maximum public frame boundaries and bounded decoder fuzz remain subsequent gates.
+
+### DD-1469: maximum decoder boundaries at exact reservation
+
+Three source-bound optimized/instrumented routes passed 23 grouped checks each, with identical recipes, output/raw-slot digests and error positions. Maximum five-buffer capacities were retained while actual decoding succeeded at the exact public query budget; one-byte-lower budget refused creation before typed lifetimes. Production code, ABI, limits defaults and wire grammar are unchanged. Frame-local distance F is unreachable with a nonempty match in a raw frame of size F: the valid tested distances are F-3 and F-258, both class 22. This is finite boundary qualification; bounded public decoder fuzz remains the next gate.

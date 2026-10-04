@@ -10833,3 +10833,7 @@ DD-1467 uses the repository-owned eight-MiB stream/frame decoders, prefix and to
 ### IR-1227: public five-buffer decoder implementation
 
 DD-1468 uses repository-owned stream/frame decoders, prefix/token validators, full-capacity resource query, C dispatcher and DD-1467 contract. New wrapper and tests were authored independently; no external implementation was consulted. See docs/design/lzss-position-distance-8m-public-decoder-implementation.md.
+
+### IR-1228: maximum public decoder boundary qualification
+
+DD-1469 uses unchanged repository-owned public factories, private decoder, token-range encoder and bounded serializers. Independent recipes exercise maximum raw/token counts and maximum feasible distances for length-three and length-258 matches, with public encoder streams at adjacent frame lengths. No external implementation was consulted. See docs/design/lzss-position-distance-8m-public-decoder-max.md.

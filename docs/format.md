@@ -8914,3 +8914,7 @@ The decoder proposal in docs/design/lzss-position-distance-8m-public-decoder.md 
 ### DD-1468: explicit decoder factory without representation changes
 
 The new public C decoder retains dictionary 2/11, context 1/12 and entropy 3/2 with 47 contexts and range total 32768. Existing bounded window 1..8388608 and maximum-match 3..258 headers remain valid within limits. Single-pass token scratch and raw scratch precede frame publication. Failed frames leave the entire validated raw slot unchanged and publish no downstream bytes; earlier validated frames remain committed. Serialized/tokens/scratch and private candidate layout are not public unchanged-on-error outputs.
+
+### DD-1469: maximum public decode vectors without wire changes
+
+Independent eight-MiB frames use 8388608 literals or a literal seed followed by a length-three/length-258 match at distance 8388605/8388350. Both matches remain within current history and exercise distance class 22. No valid distance-class-23 match is claimed. Public encoder streams cover raw lengths immediately below, equal to and above 8388608 plus two full frames. Strict finish/truncation/reference/prefix/limit/trailing failures preserve failed-frame nonpublication and the entire prior maximum raw slot. No new format variant or generic parser admission occurs.

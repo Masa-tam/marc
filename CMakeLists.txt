@@ -6680,6 +6680,13 @@ if(MARC_BUILD_TESTS)
         target_link_libraries(marc_position_distance_8m_public_decoder_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_8m_public_decoder_tests
             COMMAND marc_position_distance_8m_public_decoder_tests)
+        add_executable(marc_position_distance_8m_public_decoder_max_tests
+            tests/lzss_position_distance_8m_public_decoder_max_tests.cpp)
+        target_compile_features(marc_position_distance_8m_public_decoder_max_tests PRIVATE cxx_std_20)
+        target_include_directories(marc_position_distance_8m_public_decoder_max_tests PRIVATE src)
+        target_link_libraries(marc_position_distance_8m_public_decoder_max_tests PRIVATE marc::static)
+        add_test(NAME marc_position_distance_8m_public_decoder_max_tests
+            COMMAND marc_position_distance_8m_public_decoder_max_tests)
     endif()
     foreach(linkage IN ITEMS static shared)
         if(TARGET marc_${linkage})
