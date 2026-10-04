@@ -10775,3 +10775,8 @@ postcondition violations. Object symbols verify isolation and direct real
 delegation. No external or restricted implementation source was consulted.
 Final qualification binds source, per-object options, link inputs, binaries
 and results; it includes no new timing or fuzz campaign.
+
+
+## IR-1217: Prepared eight-MiB integration scope
+
+2026-10-04. DD-1458 uses only first-party public header, CLI, four-MiB factory, private eight-MiB preflight/coordinator/owner, BM-0211 and DD-1457 evidence. No external implementation was consulted. Define explicit internal memory-oriented scope and separate match-bearing, adapter, maximum-frame and public promotion gates. See docs/design/lzss-position-distance-8m-prepared-integration-scope.md. This source review is not another campaign.

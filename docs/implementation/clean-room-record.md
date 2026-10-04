@@ -38609,3 +38609,8 @@ not claimed; existing helper-atomicity tests remain distinct. No speedup,
 physical-memory or public-adoption conclusion follows. Release-wide similarity
 review remains separate; no legal guarantee is made. Next scope provenance:
 CR-1629.
+
+
+## CR-1629: Prepared integration scope provenance
+
+2026-10-04. Author/reviewer: Codex. Task: define eight-MiB prepared integration scope from current first-party API/source boundaries, BM-0211 tradeoff and DD-1457 bounded late-fault results. Independently authored design, no external source or restricted implementation consulted. Review checks preserved source/evidence hashes, append-only records and unchanged representation/public scope. No new helper, adapter, benchmark, fuzz or release qualification is claimed.

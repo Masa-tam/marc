@@ -21520,3 +21520,8 @@ this synthetic finite matrix; original helper failure atomicity, arbitrary
 match tokens/profiles, maximum-frame injection and new malformed-stream fuzz
 are distinct and unestablished here. No external run is added. Next gate:
 TVG-1325.
+
+
+## TVG-1325: Prepared integration acceptance design
+
+Design only: inspect current sources and preserved BM-0211/DD-1457 evidence without new codec execution, timing or fuzz. DD-1459 must confirm actual literal/match composition in a fresh deterministic fixture before six-mode injection; qualify owner and coordinator contexts with ordinary companions and real-release ledgers. Maximum-frame and adapter/public matrices are separate gates. Existing cyclic-only 192 checks retain their bounded scope.

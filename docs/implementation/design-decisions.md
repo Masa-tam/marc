@@ -32595,3 +32595,8 @@ tokens/profiles, maximum-frame fault injection and new fuzz are unestablished.
 No public adoption/default/CLI/format or external result. Next DD-1458 /
 IR-1217 / TVG-1325 / CR-1629 defines subsequent adoption/integration scope
 from measured tradeoffs and bounded fault evidence; no promotion is implied.
+
+
+## DD-1458: Prepared eight-MiB integration scope
+
+Retain operation as speed baseline and prepared as a private memory-oriented candidate. First qualify match-bearing late faults, then a private known-size owning adapter with complete prospective/actual budgets and allocator lifetime. Input size alone does not select a strategy. Public ABI, CLI, defaults and source registration require later concrete gates. The detailed stages and acceptance criteria are recorded in docs/design/lzss-position-distance-8m-prepared-integration-scope.md.
