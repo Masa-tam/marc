@@ -8863,3 +8863,8 @@ Prepared storage does not change private eight-MiB dictionary 2/11, context 1/12
 ### DD-1459 match-bearing qualification preserves representation
 
 No format, ID, profile or model changes. The known-size 160-byte fixture uses full frames of 64 bytes and a 32-byte tail with dictionary 2/11, context 1/12 and entropy 3/2. Ordinary wire length is 394 bytes, validated boundaries 112/206/300/394. Failure output stops at the target boundary; staged failing calls write zero and sticky errors retain prior validated raw position 0/64/128. No failed frame is exposed.
+
+
+### DD-1460 owning-adapter design leaves bytes unchanged
+
+The proposed private wrapper preserves concrete original_size, dictionary 2/11, context 1/12, entropy 3/2, 47 contexts and total 32768. It changes ownership and boundary validation only, without a new format identity, profile or unknown-size sentinel. Flush remains neutral and ResetBlock unsupported. Failed-frame privacy, valid-prefix counts and original delegated error positions remain mandatory. No adapter has been implemented or admitted by this design.

@@ -10785,3 +10785,8 @@ and results; it includes no new timing or fuzz campaign.
 ## IR-1218: Match-bearing prepared-owner late failures
 
 2026-10-04. Execute DD-1459 using first-party DD-1458, the existing DD-1457 standalone driver design, unchanged scoped seam and unchanged helpers/owner/coordinator. Add a separate match-bearing driver; no external implementation was consulted. Bind sources, per-object substitutions, ordinary/isolated links, symbols, binaries and results. No new timing or fuzz campaign.
+
+
+## IR-1219: Private prepared owning-adapter design
+
+2026-10-04. First-party sources only: prepared/owned stream headers and implementations, storage-owner allocator contract, exact allocation helpers, DD-1458 integration scope and DD-1459 bounded results. No external or restricted implementation consulted. Define stable owned lifetime, twelve typed receipts and conservative full-capacity accounting. See docs/design/lzss-position-distance-8m-private-owning-adapter.md. No adapter execution or new campaign occurs at this design gate.

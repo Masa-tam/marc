@@ -38619,3 +38619,8 @@ CR-1629.
 ## CR-1630: Match-bearing late-failure qualification
 
 2026-10-04. Author/reviewer: Codex. Task: qualify DD-1458 next bounded unit with a new independently checked repeated-pattern fixture using the repository own unchanged seam/helpers. Derived the new driver from first-party DD-1457 tests, preserving the old source. No external or restricted implementation consulted. Review checks dependency substitutions only in the isolated owner object, real-helper delegation, 192 source-bound checks, exact compositions/counts/errors, actual releases, retained hashes and append-only public records. No production integration or release similarity-review completion is claimed. Next DD-1460 / IR-1219 / TVG-1327 / CR-1631 specifies the concrete private owning adapter allocator, complete capacity/lifetime budget and acceptance matrix before implementing it.
+
+
+## CR-1631: Private owning-adapter design provenance
+
+2026-10-04. Author/reviewer: Codex. Task: specify the concrete private owning adapter after DD-1459. Independently authored from first-party allocator/coordinator contracts and prior evidence, preserving all existing source and artifacts. No external implementation consulted. Review validates original destructor ordering, allocator controls boundary, checked conservative budget definitions, source-bound scope, append-only public records and documentation. No new code, runtime qualification or release similarity completion claimed. Next DD-1461 / IR-1220 / TVG-1328 / CR-1632 implements and qualifies the private adapter in new standalone files without changing public registrations.

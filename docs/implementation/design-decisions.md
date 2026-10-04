@@ -32605,3 +32605,8 @@ Retain operation as speed baseline and prepared as a private memory-oriented can
 ## DD-1459: Qualified bounded match-bearing late failures
 
 Add a separate standalone driver without CMake or production changes. Each 64-byte frame repeats values 0..6 from a reset local position; the final frame has 32 bytes. Independently decode each ordinary oracle frame before arming a fault, require seven literals and one distance-seven match (length 57 for full frames, 25 for tail), and compare raw bytes. Three routes each pass 56 isolated checks plus eight ordinary controls: 168 isolated and 24 companion checks. Six synthetic postcondition modes preserve old publication and failed-frame privacy. This closes the bounded match-bearing gap only; maximum-frame, arbitrary token composition and adapter/public admission remain separate.
+
+
+## DD-1460: Concrete private owning-adapter contract
+
+Define a private known-size Transform owning a bounded receipt allocator and in-place unchanged prepared coordinator. Construct allocator first and destroy it last; prevent copy/move. Retain operation speed baseline and safe oracle. Charge complete adapter, declared call capacities, external retained owners, allocator controls, helper working maximum and all current/candidate capacities. Preserve conservative duplication explicitly; no hidden grant subtraction, pooling, early release, retry or fallback. Whole-adapter call overlap guard is distinct from internal allocator controls. Query reports fixed/initial reservations with deferred per-frame admission. Full contract and implementation matrix are in docs/design/lzss-position-distance-8m-private-owning-adapter.md; no implementation or public promotion is completed.
