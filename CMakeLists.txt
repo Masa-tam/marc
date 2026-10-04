@@ -487,6 +487,7 @@ set(MARC_SOURCES
     src/entropy/lzss_position_distance_16m_token_range_encoder.cpp
     src/frame/lzss_position_distance_16m_frame_encoder.cpp
     src/frame/lzss_position_distance_16m_token_frame_encoder.cpp
+    src/dictionary/lzss_position_distance_16m_compact.cpp
     src/marc.cpp
 )
 
@@ -6970,4 +6971,29 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_position_distance_16m_token_frame PRIVATE
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_position_distance_16m_token_frame PRIVATE marc::static)
+endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_distance_16m_compact_tests
+        tests/lzss_position_distance_16m_compact_tests.cpp
+        src/dictionary/lzss_position_distance_16m_compact.cpp
+        src/context/lzss_position_distance_16m_tokens.cpp
+        src/entropy/lzss_position_distance_16m_range_decoder.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_distance_16m_compact_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_16m_compact_tests PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_16m_compact_tests PRIVATE GTest::gtest_main)
+    add_test(NAME marc_position_distance_16m_compact COMMAND marc_position_distance_16m_compact_tests)
+    set_tests_properties(marc_position_distance_16m_compact PROPERTIES TIMEOUT 60)
+endif()
+
+if(MARC_BUILD_FUZZERS)
+    add_executable(marc_fuzz_position_distance_16m_compact tests/lzss_position_distance_16m_compact_fuzz.cpp)
+    target_compile_features(marc_fuzz_position_distance_16m_compact PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_distance_16m_compact PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_distance_16m_compact PRIVATE
+        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_position_distance_16m_compact PRIVATE -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_position_distance_16m_compact PRIVATE marc::static)
 endif()

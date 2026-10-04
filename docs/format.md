@@ -8977,3 +8977,8 @@ DD-1481 traverses the defined typed-token grammar directly into the existing six
 ### Sixteen-MiB complete finite frame encoder contract
 
 DD-1482 connects the existing sixteen-MiB token and Range representation to its complete frame prefix. It changes no algorithm identity, field order or framing representation. Independent expected bytes must use dictionary variant twelve, context variant thirteen and forty-eight contexts. Complete stream/owning factories and CLI admission remain pending.
+
+
+### Sixteen-MiB private compact storage contract
+
+DD-1483 reuses the baseline canonical LZSS byte-token serialization only inside private encoder storage. The sixteen-MiB wire payload remains the same modeled-field Range representation and complete frame. Compact storage bytes are not emitted as a new frame format or algorithm variant. No native token structure is serialized or cast onto byte storage.
