@@ -32687,3 +32687,8 @@ Admit exactly lzss-position-distance-dynamic-range-8m through a dedicated public
 ### DD-1473: schema-61 eight-MiB exchange admission
 
 Emit schema 61 and marc-cli-v61 with exactly 71 ordered archives, appending lzss-position-distance-dynamic-range-8m after the frozen 70-entry schema-60 prefix. Retain the 8193-byte fixture, stable first 42 profiles and all earlier schema lists. Admit the entire manifest and bounded exact identities before launching any codec, then compare decoded bytes and complete deterministic re-encoding. Preserve the existing CLI transaction and failed-frame nonpublication. Local source-bound bundle and historical compatibility qualification do not close revision-specific hosted CI or external exchange obligations. See docs/design/lzss-position-distance-8m-exchange.md.
+
+
+### DD-1474: bounded watchdogs for two-full-frame stress encoding
+
+The maintainer reported that the first noncompressible two-full-frame encoding exceeded the test's 120-second subprocess limit in CI. Give only the two stress encode/re-encode calls a finite 600-second watchdog; retain 120 seconds for other calls and 30 seconds for the usage probe. Set the registered boundary CTest's whole-test timeout to 1800 seconds. Preserve the complete fixture, all 67 invocations, deterministic re-encoding, negative cases and output transaction assertions. Save partial stdout/stderr and the timeout value before propagating TimeoutExpired. Codec implementation, budgets, format and exchange inventory are unchanged. Local passing results do not establish a successful CI rerun.

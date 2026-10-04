@@ -38699,3 +38699,8 @@ docs/design/lzss-position-distance-8m-public-encoder.md.
 ### CR-1644: schema-61 exchange provenance and review
 
 2026-10-04, author/reviewer Codex. DD-1473 independently extends repository-owned inventory/validation scripts and retains the frozen prior lists, fixture and codec implementation. No external implementation consulted or copied. Review binds script/tool/library hashes, exact public documentation prefixes, local deterministic bundle comparisons, directed rejection receipts and historical schema compatibility. Earlier diagnostic script failures are retained and excluded. Production sources, public ABI, CLI defaults and codec grammar are unchanged. This is not revision-specific hosted CI/external admission or release similarity review.
+
+
+### CR-1645: boundary-watchdog correction provenance
+
+2026-10-05, author/reviewer Codex. DD-1474 independently corrects repository-owned test watchdog policy in response to the maintainer's CI traceback. No external implementation consulted or copied. Source/hash review, unchanged 67-record replay and injected timeout diagnostics qualify the local correction. Core codecs, public ABI, logical memory policy, failure publication contract and schema-61 inventory remain unchanged. Earlier authoring/preflight diagnostics are retained separately; edited files were restored to verified original bytes before the accepted preflight. Prior known administrative-log preservation exception remains explicitly recorded. CI and revision-specific external admission are pending; this is not release similarity review.

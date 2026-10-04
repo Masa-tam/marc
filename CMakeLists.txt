@@ -6727,5 +6727,7 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
             COMMAND ${Python3_EXECUTABLE}
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_distance_8m_boundaries.py
                 $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli8m-boundaries)
+        set_tests_properties(marc_cli_position_distance_8m_boundaries
+            PROPERTIES TIMEOUT 1800)
     endif()
 endif()

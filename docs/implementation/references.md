@@ -10854,3 +10854,8 @@ DD-1472 implements DD-1471 using repository-owned public encoder/decoder contrac
 ### IR-1232: eight-MiB exchange inventory references
 
 DD-1473 uses repository-owned DD-1471/1472 command-line and exchange contracts, the frozen schema-60 generator/verifier and historical compatibility tests. No external implementation source consulted. See docs/design/lzss-position-distance-8m-exchange.md.
+
+
+### IR-1233: eight-MiB boundary-test watchdog references
+
+DD-1474 uses the repository-owned DD-1472 boundary test, CTest registration and the maintainer's reported CI TimeoutExpired traceback. No external implementation source consulted. The report identifies the stress encoder's subprocess watchdog; it is not a codec error return.

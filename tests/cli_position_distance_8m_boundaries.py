@@ -4,10 +4,15 @@ import struct,subprocess,sys,tempfile,json,hashlib
 cli=Path(sys.argv[1]).resolve();parent=Path(sys.argv[2]);parent.mkdir(parents=True,exist_ok=True)
 root=Path(tempfile.mkdtemp(prefix='run-',dir=parent));codec='lzss-position-distance-dynamic-range-8m';F=8388608;serial=0;records=[]
 def sha(b):return hashlib.sha256(b).hexdigest()
-def invoke(direction,source,output,selected=codec,expected=0,extra=()):
+def invoke(direction,source,output,selected=codec,expected=0,extra=(),timeout=120):
  global serial
  serial+=1;args=[str(cli),direction,'--codec',selected,*extra,str(source),str(output)]
- r=subprocess.run(args,capture_output=True,timeout=120)
+ try:
+  r=subprocess.run(args,capture_output=True,timeout=timeout)
+ except subprocess.TimeoutExpired as error:
+  with (root/f'command-{serial}.log').open('xb') as f:
+   f.write((error.stdout or b'')+(error.stderr or b'')+f'\nTimed out after {timeout} seconds\n'.encode())
+  raise
  with (root/f'command-{serial}.log').open('xb') as f:f.write(r.stdout+r.stderr)
  assert r.returncode==expected,(serial,args,r.returncode,r.stderr)
  records.append(dict(command=serial,direction=direction,codec=selected,exit=expected))
@@ -30,11 +35,12 @@ for n in (0,1,256,F-1,F,F+1,2*F):
  streams[n]=wire
  records.append(dict(raw=n,wire_bytes=len(wire),wire_sha256=sha(wire),raw_sha256=sha(data)))
 # Two incompressible full frames exercise retained and candidate generations.
+# Their encode work needs a larger finite watchdog on slower test runners.
 data=hashlib.shake_256(b'marc independent DD-1472 incompressible recipe').digest(2*F)
 with (root/'stress-input.bin').open('xb') as f:f.write(data)
-invoke('encode',root/'stress-input.bin',root/'stress.marc')
+invoke('encode',root/'stress-input.bin',root/'stress.marc',timeout=600)
 invoke('decode',root/'stress.marc',root/'stress-decoded.bin');assert (root/'stress-decoded.bin').read_bytes()==data
-invoke('encode',root/'stress-decoded.bin',root/'stress-again.marc');wire_stress=(root/'stress.marc').read_bytes();assert (root/'stress-again.marc').read_bytes()==wire_stress
+invoke('encode',root/'stress-decoded.bin',root/'stress-again.marc',timeout=600);wire_stress=(root/'stress.marc').read_bytes();assert (root/'stress-again.marc').read_bytes()==wire_stress
 records.append(dict(recipe='shake256-two-full-frames',raw=len(data),wire_bytes=len(wire_stress),wire_sha256=sha(wire_stress),raw_sha256=sha(data)))
 small=bytearray(streams[256]);struct.pack_into('<I',small,20,256);struct.pack_into('<I',small,64,1);struct.pack_into('<I',small,72,3)
 with (root/'bounded-header.marc').open('xb') as f:f.write(small)
