@@ -151,7 +151,8 @@ $profiles = @(
     'lzss-contextual-adaptive-huffman-64m',
     'lzss-position-distance-dynamic-range',
     'lzss-position-distance-dynamic-range-1m',
-    'lzss-position-distance-dynamic-range-4m'
+    'lzss-position-distance-dynamic-range-4m',
+    'lzss-position-distance-dynamic-range-8m'
 )
 $entries = @()
 foreach ($profile in $profiles) {
@@ -195,6 +196,19 @@ foreach ($profile in $profiles) {
             if ($archiveBytes[$field[0]] -ne $field[1] -or
                     $archiveBytes[$field[0] + 1] -ne 0) {
                 throw '4 MiB position-distance archive does not carry exact identity 2.0: 2/10 + 1/11 + 3/2'
+            }
+        }
+    }
+    if ($profile -eq 'lzss-position-distance-dynamic-range-8m') {
+        $archiveBytes = [System.IO.File]::ReadAllBytes($archivePath)
+        if ($archiveBytes.Length -lt 112) {
+            throw '8 MiB position-distance archive header is truncated'
+        }
+        foreach ($field in @(@(4, 2), @(6, 0), @(12, 2), @(14, 11),
+                @(16, 3), @(18, 2), @(96, 1), @(98, 12))) {
+            if ($archiveBytes[$field[0]] -ne $field[1] -or
+                    $archiveBytes[$field[0] + 1] -ne 0) {
+                throw '8 MiB position-distance archive does not carry exact identity 2.0: 2/11 + 1/12 + 3/2'
             }
         }
     }
@@ -458,8 +472,8 @@ foreach ($profile in $profiles) {
 }
 
 $manifest = [ordered]@{
-    schema_version = 60
-    codec_set = 'marc-cli-v60'
+    schema_version = 61
+    codec_set = 'marc-cli-v61'
     source_revision = $SourceRevision
     platform = $Platform
     compiler = $Compiler

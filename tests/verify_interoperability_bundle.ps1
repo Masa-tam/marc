@@ -175,6 +175,8 @@ $schema59Profiles = $schema58Profiles + @(
     'lzss-position-distance-dynamic-range-1m')
 $schema60Profiles = $schema59Profiles + @(
     'lzss-position-distance-dynamic-range-4m')
+$schema61Profiles = $schema60Profiles + @(
+    'lzss-position-distance-dynamic-range-8m')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -475,6 +477,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema60Profiles
+} elseif ($manifest.schema_version -eq 61) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v61') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema61Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }
@@ -539,6 +546,37 @@ foreach ($entry in $manifest.archives) {
             }
         }
     }
+    if ($codec -eq 'lzss-position-distance-dynamic-range-8m') {
+        $header = [byte[]]::new(112)
+        $stream = [System.IO.File]::OpenRead($archivePath)
+        try {
+            $offset = 0
+            while ($offset -lt $header.Length) {
+                $read = $stream.Read($header, $offset, $header.Length - $offset)
+                if ($read -eq 0) {
+                    throw '8 MiB position-distance archive header is truncated'
+                }
+                $offset += $read
+            }
+        } finally {
+            $stream.Dispose()
+        }
+        foreach ($field in @(@(4, 2), @(6, 0), @(12, 2), @(14, 11),
+                @(16, 3), @(18, 2), @(96, 1), @(98, 12))) {
+            if ($header[$field[0]] -ne $field[1] -or
+                    $header[$field[0] + 1] -ne 0) {
+                throw '8 MiB position-distance archive does not carry exact identity 2.0: 2/11 + 1/12 + 3/2'
+            }
+        }
+    }
+    ++$verified
+}
+
+# Admit the entire manifest before launching any codec or creating decoded files.
+$verified = 0
+foreach ($entry in $manifest.archives) {
+    $codec = [string]$entry.codec
+    $archivePath = Join-Path $resolvedBundle $entry.file
     $decodedPath = Join-Path $resolvedOutput "$codec.decoded"
     $reencodedPath = Join-Path $resolvedOutput "$codec.marc"
     $cliCodec = if ($codec -eq 'lzss-contextual-rans-compact') {

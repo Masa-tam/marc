@@ -8930,3 +8930,8 @@ The proposed eight-MiB command-line selection retains Format 2.0, dictionary 2/1
 ### DD-1472: command-line selection retains the eight-MiB grammar
 
 The explicit eight-MiB selection writes existing Format 2.0, dictionary 2/11, context 1/12 and entropy 3/2. Fixed command-line encoder parameters are window/frame 8388608, matches 3..258, 47 contexts and range total 32768. The decoder accepts smaller legal header parameters within the unchanged validators and explicit limits. Ownership, source-bound query sizes and logical budgets are not serialized. Strict termination/trailing checks and failed-frame nonpublication remain unchanged; no archive inventory or stream version update.
+
+
+### DD-1473: exchange schema 61 retains Format 2.0
+
+Bundle schema 61 and codec set marc-cli-v61 append archive 71, lzss-position-distance-dynamic-range-8m. Its existing stream identity is Format 2.0, dictionary 2/11, context 1/12 and entropy 3/2. Exact little-endian 16-bit values at offsets 4/6, 12/14, 16/18 and 96/98 are respectively 2/0, 2/11, 3/2 and 1/12. Neither schema metadata nor whole-manifest preflight changes codec bytes, limits, strict termination or publication contracts.

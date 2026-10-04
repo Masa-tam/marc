@@ -38694,3 +38694,8 @@ docs/design/lzss-position-distance-8m-public-encoder.md.
 ### CR-1643: eight-MiB command-line provenance and review
 
 2026-10-04, author/reviewer Codex. DD-1472 independently connects repository-owned public boundaries to the existing file transaction using checked opaque storage and bounded I/O. No external implementation source consulted or copied. Review binds source/library hashes, identical final three-route records, isolated allocation receipts, private operation comparison, registered CTests, exact documentation prefixes and preserved prior artifacts. Existing core codecs, C ABI and schema-60 inventory are unchanged. Earlier trials and the initial missing-reference-dependency link failure remain excluded diagnostic evidence. This is not release similarity review or revision-specific CI/external admission.
+
+
+### CR-1644: schema-61 exchange provenance and review
+
+2026-10-04, author/reviewer Codex. DD-1473 independently extends repository-owned inventory/validation scripts and retains the frozen prior lists, fixture and codec implementation. No external implementation consulted or copied. Review binds script/tool/library hashes, exact public documentation prefixes, local deterministic bundle comparisons, directed rejection receipts and historical schema compatibility. Earlier diagnostic script failures are retained and excluded. Production sources, public ABI, CLI defaults and codec grammar are unchanged. This is not revision-specific hosted CI/external admission or release similarity review.

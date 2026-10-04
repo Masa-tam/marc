@@ -32682,3 +32682,8 @@ Propose exactly lzss-position-distance-dynamic-range-8m with a dedicated early b
 ### DD-1472: explicit eight-MiB command-line connection
 
 Admit exactly lzss-position-distance-dynamic-range-8m through a dedicated public-C-only owning encoder/five-buffer decoder helper. Preserve existing profiles and defaults, source exhaustion/draining, whole-file transaction and failed-frame nonpublication. Set the explicit one-GiB logical policy and charge complete source-bound controls, capacities and retained generations without fallback or budget increases. Three routes passed identical 67-invocation final records each; separate allocation refusal and registered regression tests passed. The schema-60 inventory remains unchanged; schema 61 and external qualification are subsequent obligations.
+
+
+### DD-1473: schema-61 eight-MiB exchange admission
+
+Emit schema 61 and marc-cli-v61 with exactly 71 ordered archives, appending lzss-position-distance-dynamic-range-8m after the frozen 70-entry schema-60 prefix. Retain the 8193-byte fixture, stable first 42 profiles and all earlier schema lists. Admit the entire manifest and bounded exact identities before launching any codec, then compare decoded bytes and complete deterministic re-encoding. Preserve the existing CLI transaction and failed-frame nonpublication. Local source-bound bundle and historical compatibility qualification do not close revision-specific hosted CI or external exchange obligations. See docs/design/lzss-position-distance-8m-exchange.md.

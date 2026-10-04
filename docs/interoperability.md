@@ -1434,3 +1434,26 @@ confirmed successful GitHub CI completion for the same revision. Together these
 reports close DD-1387's revision-specific CI and external exchange gate.
 This evidence update changes no codec, format, ABI, limits, defaults,
 archive inventory or release state.
+
+
+### IX-0057: Schema 61 - eight-MiB position-distance local qualification
+
+Current producers emit schema 61 and marc-cli-v61 with exactly 71 archives.
+Entries 1 through 70 preserve the frozen schema-60 order and byte streams;
+entry 71 is lzss-position-distance-dynamic-range-8m with exact Format 2.0
+identity 2/11 + 1/12 + 3/2. The 8193-byte fixture and first 42 stable profiles
+are unchanged. Consumers retain schemas 1 through 60.
+
+The verifier admits all entries before starting codec work. Directed malformed
+manifest tests reject downgrade/missing/duplicate/order/codec-set/hash/size and
+rehashed identity/header tampering with no decoded or re-encoded output.
+Local source-bound tools generate and verify identical complete bundles;
+historical schema compatibility and a frozen-prefix producer comparison pass.
+These local results do not establish maximum-window coverage from a small fixture.
+
+Hosted CI and four external consumer roles remain pending for the actual
+schema-61 revision: consume each of the two hosted producer bundles, then consume
+one independently produced external bundle on its own platform and on the other
+platform. Repeated producer labels describe those two consumer roles. Earlier
+schema-60 receipts do not qualify this inventory or revision. No new external
+execution or release state is inferred here.
