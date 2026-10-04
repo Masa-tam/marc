@@ -888,3 +888,50 @@ generic dispatcher still rejects null nonempty buffers before dispatch.
 Prior valid frames and the header remain committed when a subsequent frame
 fails. Exact contracts, qualified scope and pending decoder work are recorded
 in docs/design/lzss-position-distance-8m-public-encoder.md.
+
+### Explicit eight-MiB position-distance decoder
+
+The DD-1468 boundary adds `marc_lzss_position_distance_dynamic_range_8m_decoder_config_init()`,
+`marc_lzss_position_distance_dynamic_range_8m_decoder_workspace_requirements()`
+and `marc_lzss_position_distance_dynamic_range_8m_create_decoder()`.
+The distinct decoder config has no original size, encoder strategy or direction
+field; those stream parameters are validated from the header. Initialization is
+a template requiring explicit remaining limits and memory budget.
+
+Initialize query result `struct_size` and `abi_version` and zero its reserved
+field. A rejected query leaves it unchanged. `MARC_LZSS_POSITION_DISTANCE_8M_CAPACITY_ONLY`
+reserves capacities; it does not validate a stream or promise payload admission.
+Let F=min(max_frame_size,max_block_size,8388608), P=min(max_compressed_payload_size,18F+5).
+Recommendations are 80+P serialized bytes, F opaque token elements in each of
+two aligned typed workspaces, and F bytes in each of two raw workspaces. The
+query reports actual token size through byte capacities and actual alignment;
+there is no public token struct. The header retains bounded window 1..8388608
+and maximum match 3..258 within caller limits, with 2599 model entries.
+
+The five-buffer descriptor owns no storage. All full capacities remain borrowed
+until transform destruction; tokens and token_scratch must be aligned and exact
+multiples of the reported token element size. Larger capacities are accepted
+only when the full tails also fit the memory budget. Configuration and descriptor
+metadata are copied. The factory starts and ends private token object lifetimes;
+caller storage must not contain other live objects or be accessed while active.
+
+The full reservation includes all five actual buffer capacities, private owner,
+controls/helpers, public guard/handle/controls, declared external retained bytes
+and FULL declared input/output capacities. The last two are charged even for
+shorter calls. Checked overflow or budget refusal is LIMIT_EXCEEDED; malformed
+metadata, alignment, divisibility, capacity or overlap is INVALID_ARGUMENT.
+Scalar allocation refusal is OUT_OF_MEMORY. An aliased output slot is unchanged;
+after disjoint metadata/output validation, creation failure leaves it null.
+Two scalar allocations precede token lifetime construction and readiness.
+No workspace growth, retry, fallback or budget transfer occurs.
+
+Serialized, tokens, token_scratch and raw_scratch are discardable working storage
+on error. A failed frame leaves the entire validated raw slot unchanged and
+contributes no downstream bytes. Previously validated frames may already have
+drained during the failing call or before a strict trailing-data error. The
+private stream candidate layout is not a public unchanged-on-error guarantee.
+Flush is neutral, ResetBlock is unsupported, terminal states are sticky for
+valid buffers, and the generic dispatcher's null nonempty-buffer check retains
+precedence. Call-capacity and alias errors consume/produce zero bytes and report
+accepted encoded position; delegated errors preserve private categories/positions.
+This explicit boundary does not yet add command-line selection or a generic reader family.

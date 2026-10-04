@@ -10829,3 +10829,7 @@ docs/design/lzss-position-distance-8m-public-encoder.md.
 ### IR-1226: public five-buffer decoder boundary
 
 DD-1467 uses the repository-owned eight-MiB stream/frame decoders, prefix and token validators, DD-1466 encoder boundary and existing C dispatcher. See docs/design/lzss-position-distance-8m-public-decoder.md. No external implementation was consulted. This is a design review with no new codec execution.
+
+### IR-1227: public five-buffer decoder implementation
+
+DD-1468 uses repository-owned stream/frame decoders, prefix/token validators, full-capacity resource query, C dispatcher and DD-1467 contract. New wrapper and tests were authored independently; no external implementation was consulted. See docs/design/lzss-position-distance-8m-public-decoder-implementation.md.

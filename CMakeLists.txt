@@ -52,6 +52,9 @@ endif()
 
 set(MARC_SOURCES
     src/frame/lzss_position_distance_8m_c_factory.cpp
+    src/frame/lzss_position_distance_8m_decoder_c_factory.cpp
+    src/frame/lzss_position_distance_8m_stream_decoder.cpp
+    src/frame/lzss_position_distance_8m_frame_decoder.cpp
     src/frame/lzss_position_distance_8m_owning_adapter.cpp
     src/frame/lzss_position_distance_8m_owning_delegate.cpp
     src/frame/lzss_position_distance_8m_prepared_stream_encoder.cpp
@@ -6670,6 +6673,13 @@ if(MARC_BUILD_TESTS)
         target_link_libraries(marc_position_distance_8m_public_encoder_tests PRIVATE marc::static)
         add_test(NAME marc_position_distance_8m_public_encoder_tests
             COMMAND marc_position_distance_8m_public_encoder_tests)
+        add_executable(marc_position_distance_8m_public_decoder_tests
+            tests/lzss_position_distance_8m_public_decoder_tests.cpp)
+        target_compile_features(marc_position_distance_8m_public_decoder_tests PRIVATE cxx_std_20)
+        target_include_directories(marc_position_distance_8m_public_decoder_tests PRIVATE src)
+        target_link_libraries(marc_position_distance_8m_public_decoder_tests PRIVATE marc::static)
+        add_test(NAME marc_position_distance_8m_public_decoder_tests
+            COMMAND marc_position_distance_8m_public_decoder_tests)
     endif()
     foreach(linkage IN ITEMS static shared)
         if(TARGET marc_${linkage})
@@ -6679,6 +6689,12 @@ if(MARC_BUILD_TESTS)
             target_link_libraries(marc_position_distance_8m_c_${linkage}_consumer PRIVATE marc::${linkage})
             add_test(NAME marc_position_distance_8m_c_${linkage}_consumer
                 COMMAND marc_position_distance_8m_c_${linkage}_consumer)
+            add_executable(marc_position_distance_8m_decoder_c_${linkage}_consumer
+                tests/lzss_position_distance_8m_decoder_c_consumer.c)
+            target_compile_features(marc_position_distance_8m_decoder_c_${linkage}_consumer PRIVATE c_std_17)
+            target_link_libraries(marc_position_distance_8m_decoder_c_${linkage}_consumer PRIVATE marc::${linkage})
+            add_test(NAME marc_position_distance_8m_decoder_c_${linkage}_consumer
+                COMMAND marc_position_distance_8m_decoder_c_${linkage}_consumer)
         endif()
     endforeach()
 endif()

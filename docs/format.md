@@ -8910,3 +8910,7 @@ docs/design/lzss-position-distance-8m-public-encoder.md.
 ### DD-1467: proposed public decoder boundary without wire changes
 
 The decoder proposal in docs/design/lzss-position-distance-8m-public-decoder.md retains dictionary 2/11, context 1/12 and entropy 3/2. Existing header bounds, token grammar, canonical termination and strict trailing-data checks remain authoritative. Five private workspaces do not become wire fields. A failed frame is never published; previously validated frames may already have drained. This design does not admit a generic reader or CLI selector.
+
+### DD-1468: explicit decoder factory without representation changes
+
+The new public C decoder retains dictionary 2/11, context 1/12 and entropy 3/2 with 47 contexts and range total 32768. Existing bounded window 1..8388608 and maximum-match 3..258 headers remain valid within limits. Single-pass token scratch and raw scratch precede frame publication. Failed frames leave the entire validated raw slot unchanged and publish no downstream bytes; earlier validated frames remain committed. Serialized/tokens/scratch and private candidate layout are not public unchanged-on-error outputs.

@@ -38674,3 +38674,7 @@ docs/design/lzss-position-distance-8m-public-encoder.md.
 ### CR-1638: decoder boundary design provenance
 
 2026-10-04, author/reviewer Codex. Independently specified DD-1467 from repository-owned private decoder/query/preflight/token and C boundary sources and DD-1466 evidence. No external source implementation was consulted or copied. Review binds source hashes, prior artifact preservation and exact documentation prefixes. The five-buffer lifecycle, checked sizing and publication contract are proposals pending DD-1468 implementation and qualification. This review is not a release similarity review or a new runtime qualification.
+
+### CR-1639: public decoder implementation review
+
+2026-10-04, author/reviewer Codex. DD-1468 adds an independently written C boundary and tests over unchanged repository-owned private decoders. No external implementation source was consulted. Review binds current source/library/object hashes, three-route identical finite decoder records, static/shared C consumers, registered CTests, exact document prefixes and preserved prior artifacts. Qualification is limited to its finite cases; maximum public boundaries, bounded decoder fuzz, CLI/exchange admission and release similarity review remain subsequent obligations. Failed build/test attempts remain diagnostic artifacts and are excluded from passing results.

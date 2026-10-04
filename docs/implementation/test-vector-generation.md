@@ -21597,3 +21597,7 @@ docs/design/lzss-position-distance-8m-public-encoder.md.
 ### TVG-1334: decoder ABI design qualification plan
 
 Review DD-1467 capacity equations, full-tail reservation, typed alignment/lifetimes and the distinction between immutable raw publication storage and discardable scratch. Bind unchanged source and previous artifacts by hashes and verify append-only documentation. DD-1468 must execute public/private differential, scalar refusal, alias, capacity, malformed stream and partial-buffer checks; maximum-frame and bounded fuzz qualification remain explicit subsequent obligations. New codec checks, timing launches and fuzz runs in this design gate: zero.
+
+### TVG-1335: public decoder finite qualification
+
+Three source-bound routes passed 98 grouped C++ rows each (294 matrix rows), including private/public comparisons, whole and partial buffers, empty/all-byte/frame-boundary inputs, all strict truncations of the small multiframe fixture, malformed headers/counts/range payloads, invalid LZ distance, original-size contradiction, expansion and trailing-data failures. Separate alias/capacity/divisibility/alignment/overflow/scalar-refusal tests passed. Whole raw slots, downstream tails, previous committed frames and stable errors were checked. Six static/shared C consumer launches passed; two routes each passed six registered CTests, including prior encoder regressions. Grouped every-byte and truncation loops are not inflated into row counts. No throughput, maximum public frame or fuzz campaign is claimed; the complete repository suite was not run.
