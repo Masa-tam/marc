@@ -10810,3 +10810,10 @@ and results; it includes no new timing or fuzz campaign.
 ## IR-1223: Maximum-frame selected late-failure qualification
 
 2026-10-04. Execute DD-1463 using unchanged first-party indexed parser, prepared owner/coordinator, owning adapter, operation/safe oracles and decoder. Add separate maximum-frame late/typed allocation observer seams and a standalone diagnostic derivative; preserve the earlier 64-byte seams. No external or restricted implementation consulted. Actual candidate plans and independent expansion precede injections. Bind three routes, six untimed process launches and 120 final matrix rows to exact sources/options/object substitutions/symbols/binaries; prerequisites remain separate from row counts. No new timing or fuzz campaign.
+
+### IR-1224: Eight-MiB public integration proposal
+
+DD-1465 uses the repository's existing four-MiB C factory, private eight-MiB
+owning adapter, operation encoder and scratch decoder as first-party references.
+See `docs/design/lzss-position-distance-8m-public-integration-proposal.md`.
+No external implementation was consulted; no new codec execution is claimed.

@@ -32638,3 +32638,12 @@ Implement the DD-1463 finite matrix in three new standalone test files without c
 Three final routes each pass 29 isolated and 11 ordinary rows: 120 checks, 54 injected faults and 66 controls, grouped into six untimed launches. Each launch independently establishes three fixture prerequisites before their fault rows. Both distant candidates produce the required terminal match in each full frame: distance/position 8388603 with length 5, and 8388350 with length 258, in class 22. Independent token validation/overlap expansion, operation/safe/adapter wire equality and unchanged complete-stream decoding pass. Cyclic raw/wire hashes remain identical to DD-1462.
 
 Full snapshot capacities and nested seam work remain charged before allocation. Largest recorded oracle adapter logical reservation is 112336303 bytes under the diagnostic 1073741824-byte policy; this includes retained diagnostic owners and conservative duplication, not RSS or default-budget suitability. Failures retain limit_exceeded at prior raw 0/8388608/16777216, bit zero. All five failed candidate blocks actually release; publication stays pristine. Modes 2..5 at maximum size, exact distance 8388608/class 23 and exhaustive maximum-frame splitting remain outside this evidence. No speed, public profile, default, CLI or exchange change. Next DD-1465 / IR-1224 / TVG-1332 / CR-1636 defines a concrete public integration proposal and explicit resource/strategy admission from the preserved speed/memory evidence.
+
+### DD-1465: Explicit prepared owning public encoder boundary
+
+The `docs/design/lzss-position-distance-8m-public-integration-proposal.md`
+selects an explicit prepared owning encoder first, with a distinct configuration,
+initial-only resource query and mandatory caller-specified budget. It preserves
+conservative duplicate charges, deferred generation admission, sticky errors,
+known-size input and failed-frame privacy. Operation remains the speed baseline;
+decoder, CLI and exchange admission follow separate gates. This is design only.

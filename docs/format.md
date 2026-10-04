@@ -8888,3 +8888,10 @@ No format identity or model changes. Proposed distant matches remain in the exis
 ### DD-1464 selected maximum-frame qualification preserves bytes
 
 No identity or representation changes: private known-size dictionary 2/11, context 1/12, entropy 3/2, 47 contexts and total 32768 remain unchanged. Confirmed distance-class-22 full-frame matches use distance 8388603/length 5 and 8388350/length 258. New complete full/full/tail wire lengths are 57398 and 57387 bytes. Selected failure output ends at the independently validated preceding boundary; staged failing calls emit zero. A complete failed frame is never exposed or passed to the decoder as a stream. Exact eight-MiB distance/class 23, unknown-size input and public compatibility are not established here.
+
+### DD-1465 public integration proposal status
+
+The `docs/design/lzss-position-distance-8m-public-integration-proposal.md`
+preserves the private reserved representation and requests no wire change.
+It does not admit the profile to a generic public parser or introduce a selector.
+Concrete original size remains required; no unknown-size sentinel is added.

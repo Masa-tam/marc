@@ -21570,3 +21570,11 @@ F=8388608, input F+F+32. Cyclic control remains the DD-1462 recipe and hash. New
 Each of two optimized routes and one fully address/undefined-instrumented route with leak detection disabled passes 29 isolated plus 11 ordinary rows: 120 final checks (54 faults, 66 controls) over six untimed launches. Eighteen fixture prerequisite preparations are separate, not additional matrix rows. Confirm real successful-stage arrivals and exactly one injection for modes 1/6; bind only three owner dependency substitutions and six adapter allocation substitutions in their respective isolated objects. Mode-zero ordinary/isolated functional results and all rows across routes agree. Direct owner checks full initialized token fields/byte blocks plus publication pointer/length/pending and all fourteen layout fields. Adapter checks full old contents/capacities through a typed read-only observer and exact valid-prefix/sentinel behavior; no owner metadata accessor is added. Actual candidate publication remains untouched and payload is written before failure. Genuine destruction produces zero receipts with deletes equalling allocations.
 
 For cyclic/M=5/M=258 fixtures, full block peaks are 43951138/43937614/43937356 bytes; reserved whole snapshot capacities are 873057/866295/866166 bytes. Corresponding oracle adapter logical reservations including retained owners/views/controls are 112336303/112313187/112312745 bytes; operation oracle reservations are 99839002/98767054/98766400. Logical totals under the diagnostic one-GiB policy are not RSS or universal/default fit. Replacement M=258 failures publish 28706 earlier-valid bytes, consume 16777216 raw bytes and retain position 8388608/bit zero; staged failure adds zero output. Existing six-mode small-frame evidence remains distinct. No new timing, fuzz, external exchange or maximum-frame all-six-mode/exhaustive-split claim.
+
+### TVG-1332: Public-boundary qualification plan
+
+DD-1465 defines future configuration/alias, full-capacity, exact-budget,
+allocation-failure, generation-replacement, partial-buffer, terminal-state and
+known-size checks in the `docs/design/lzss-position-distance-8m-public-integration-proposal.md`.
+DD-1464 evidence remains unchanged. No new vectors or codec runs were generated
+at this design gate; public consumer, decoder and exchange checks remain pending.

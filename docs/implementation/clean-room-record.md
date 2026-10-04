@@ -38646,3 +38646,14 @@ The first independent review stopped because its single-frame Python maximum exp
 ## CR-1635: Maximum-frame selected-fault provenance and review
 
 2026-10-04. Author/reviewer: Codex. Task: implement and qualify DD-1463 selected maximum-frame faults and distant candidates, preserving existing sources/artifacts. Derive a separate standalone driver from first-party diagnostics, add explicit-context late and typed allocation observer seams, and independently validate/expand every actual token before injection. No external or restricted implementation consulted. Review binds 120 final checks/54 faults/66 controls and six untimed launches to actual sources/options/symbols/binaries, candidate distances/classes, complete admission/snapshot capacities, old state, failed-frame privacy, genuine releases, ordinary companions, cross-route equality, historical hashes and append-only records. No production admission, performance improvement or release similarity completion claimed. Next DD-1465 / IR-1224 / TVG-1332 / CR-1636 specifies concrete public integration scope with explicit resource/strategy admission; promotion is not implied by this finite private matrix.
+
+### CR-1636: Public integration proposal provenance
+
+Date: 2026-10-04. Author/reviewer: Codex. Task: propose an explicit eight-MiB
+owning encoder API from repository-owned reference sources and qualified private
+contracts, preserving failure invariants and bounded resource admission.
+See `docs/design/lzss-position-distance-8m-public-integration-proposal.md`.
+External implementations were not consulted. Review covers first-party source
+bindings, prior artifact preservation and append-only documentation; it makes
+no release similarity-review or public codec completion claim. No implementation
+or generated codec code was added.
