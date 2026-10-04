@@ -38657,3 +38657,16 @@ External implementations were not consulted. Review covers first-party source
 bindings, prior artifact preservation and append-only documentation; it makes
 no release similarity-review or public codec completion claim. No implementation
 or generated codec code was added.
+
+### CR-1637: Public owning encoder boundary provenance
+
+Date: 2026-10-04. Author/reviewer: Codex. Task: implement the DD-1465 explicit
+prepared owning C encoder, preserve known-size and failure contracts, account
+for complete public owners/controls/capacities, and qualify normal and isolated
+boundaries plus C consumers. Use only repository-owned first-party sources and
+prior independent diagnostics; no restricted implementation consulted.
+Three routes pass the final finite campaign. Review binds sources, objects,
+symbols, exports, binaries, resource formulas, prefixes and prior artifacts.
+Earlier link/expectation/diagnostic-driver failures remain separately recorded.
+This is no release similarity-review or complete public codec claim. See
+docs/design/lzss-position-distance-8m-public-encoder.md.

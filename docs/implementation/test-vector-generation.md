@@ -21578,3 +21578,18 @@ allocation-failure, generation-replacement, partial-buffer, terminal-state and
 known-size checks in the `docs/design/lzss-position-distance-8m-public-integration-proposal.md`.
 DD-1464 evidence remains unchanged. No new vectors or codec runs were generated
 at this design gate; public consumer, decoder and exchange checks remain pending.
+
+### TVG-1333: Public owning encoder boundary qualification
+
+Three source-bound routes each pass 41 ordinary and 84 isolated grouped rows,
+plus static/shared C consumers: 375 C++ rows and six C-consumer launches.
+Use a deterministic 160-byte repeated-seven pattern with 64/64/32 frames and
+retained independent operation/decode oracles; group empty plus all 256 byte
+values in one row per C++ launch. Confirm byte equality, guards, sticky states,
+metadata/full-capacity overlap, exact/below/deferred budgets, 17 typed allocation
+refusals, two scalar factory refusals and six late modes with zero controls.
+Separately build the three new targets from final CMake and pass their registered
+CTests; this does not represent a complete repository test-suite run.
+Earlier failed expectations/results are preserved separately. No new timing,
+fuzz, exhaustive split or public maximum-frame campaign. See
+docs/design/lzss-position-distance-8m-public-encoder.md.

@@ -447,6 +447,29 @@ typedef struct marc_lzss_position_distance_dynamic_range_4m_config {
     uint64_t expansion_slack;
 } marc_lzss_position_distance_dynamic_range_4m_config;
 
+/* Explicit known-size eight-MiB encoder; no decoder or generic profile alias.
+ * init produces a template: remaining zero limits must be configured explicitly.
+ * Capacity fields bound full process extents, including unused tails. */
+#define MARC_LZSS_POSITION_DISTANCE_8M_PREPARED_OWNING UINT32_C(1)
+#define MARC_LZSS_POSITION_DISTANCE_8M_INITIAL_ONLY UINT32_C(1)
+typedef struct marc_lzss_position_distance_dynamic_range_8m_config {
+    uint32_t struct_size, abi_version, encoder_strategy, reserved;
+    uint64_t original_size;
+    uint32_t frame_size, reserved2;
+    uint64_t max_total_output_size, max_frame_size, max_block_size;
+    uint64_t max_compressed_payload_size, max_internal_buffered_bytes;
+    uint64_t max_lz_distance, max_lz_match_length;
+    uint64_t max_entropy_table_entries, max_range_model_total;
+    uint64_t max_expansion_ratio, expansion_slack;
+    uint64_t external_retained_bytes, input_capacity_bytes, output_capacity_bytes;
+} marc_lzss_position_distance_dynamic_range_8m_config;
+typedef struct marc_lzss_position_distance_dynamic_range_8m_resources {
+    uint32_t struct_size, abi_version;
+    uint64_t external_charge_bytes, fixed_bytes, initial_raw_bytes;
+    uint64_t initial_index_entries, initial_bytes;
+    uint32_t admission_scope, reserved;
+} marc_lzss_position_distance_dynamic_range_8m_resources;
+
 typedef struct marc_lzss_contextual_dynamic_range_config {
     uint32_t struct_size;
     uint32_t abi_version;
@@ -1340,6 +1363,24 @@ MARC_API marc_status marc_lzss_position_distance_dynamic_range_4m_create(
     const marc_lzss_position_distance_dynamic_range_4m_config* config,
     marc_buffer primary_workspace, marc_buffer secondary_workspace,
     marc_buffer views_workspace, marc_transform** transform) MARC_NOEXCEPT;
+
+/* Logical resource accounting includes full capacities and conservatively
+ * duplicated owner/control/helper charges; it is not RSS. Query is unchanged
+ * on failure. INITIAL_ONLY admits no future candidate generation: budget
+ * refusal can occur later, without exposing bytes of the failed frame.
+ * create has no caller workspace or allocator; config need not remain alive.
+ * A disjoint output pointer is null on failure; aliased metadata is unchanged.
+ * Flush is neutral; ResetBlock unsupported. Repeat EndInput on a final suffix.
+ * Terminal states are sticky for valid buffers; the generic process entry still
+ * rejects null nonempty buffers before dispatch. Previous frames remain valid. */
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_8m_config_init(
+    marc_lzss_position_distance_dynamic_range_8m_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_8m_resource_requirements(
+    const marc_lzss_position_distance_dynamic_range_8m_config* config,
+    marc_lzss_position_distance_dynamic_range_8m_resources* requirements) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_8m_create_encoder(
+    const marc_lzss_position_distance_dynamic_range_8m_config* config,
+    marc_transform** transform) MARC_NOEXCEPT;
 
 MARC_API marc_status marc_lzss_contextual_dynamic_range_config_init(
     marc_direction direction,

@@ -844,3 +844,47 @@ It inherits their profile-local limits and failed-frame publication contract.
 The command-line file transaction commits its destination only after the
 entire stream succeeds. Existing C config layouts, exports and generic or
 one-MiB defaults are unchanged by this application integration.
+
+## Eight-MiB position-distance prepared owning encoder (encoder only)
+
+Use the separate `marc_lzss_position_distance_dynamic_range_8m_config` with
+`marc_lzss_position_distance_dynamic_range_8m_config_init()` and
+`marc_lzss_position_distance_dynamic_range_8m_create_encoder()`. The factory
+selects immutable encoding direction and accepts no caller workspace or
+allocator. The public decoder and command-line profile are not yet provided.
+
+Initialization is a template, not a ready-to-create default configuration.
+It selects `MARC_LZSS_POSITION_DISTANCE_8M_PREPARED_OWNING` (1), frame/window/block
+8388608, match limit 258 and model total 32768. Set concrete `original_size`,
+all remaining limits, declared external retained bytes and full input/output
+capacity bounds before querying/creating. Internal budget, total output limit,
+payload limit, table limit and expansion ratio start at zero and must be set;
+table limit must be at least 2599. Zero budget never means unlimited. There is
+no unknown-size sentinel, automatic strategy selection or smaller-window change.
+
+`marc_lzss_position_distance_dynamic_range_8m_resource_requirements()` fills
+`marc_lzss_position_distance_dynamic_range_8m_resources`: metadata, external
+charge, fixed reservation, initial raw bytes, initial index entries, initial
+total and `MARC_LZSS_POSITION_DISTANCE_8M_INITIAL_ONLY` admission scope.
+This admits only initial storage. Every later generation is admitted alongside
+retained old blocks; an insufficient budget can fail after creation, with no
+bytes of the failed frame published. Logical accounting conservatively includes
+the complete handle, guard, adapter, controls, helper reserves and complete
+declared call capacities, including unused tails. It is not process RSS.
+
+Failed queries preserve the result. Overlap between config and result/handle
+output is rejected without modification. Otherwise creation clears the handle
+output on failure and publishes only after initial construction succeeds.
+Config need not remain alive afterwards. Invalid configuration or process
+capacity/overlap maps to INVALID_ARGUMENT; resource overflow/refusal maps to
+LIMIT_EXCEEDED; real initial allocation failure maps to OUT_OF_MEMORY.
+
+Use `marc_transform_process()` and `marc_transform_destroy()` as usual.
+Input and output must be disjoint from each other, all owned storage and the
+entire handle/guard. Only committed bytes and accepted input count. Flush is
+neutral; ResetBlock and unknown flags are unsupported. Repeat EndInput on an
+unconsumed final suffix. Error/end results are sticky for valid buffers; the
+generic dispatcher still rejects null nonempty buffers before dispatch.
+Prior valid frames and the header remain committed when a subsequent frame
+fails. Exact contracts, qualified scope and pending decoder work are recorded
+in docs/design/lzss-position-distance-8m-public-encoder.md.

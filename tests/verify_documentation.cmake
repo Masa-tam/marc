@@ -1690,7 +1690,7 @@ foreach(stale_position_distance_contract IN ITEMS
         message(FATAL_ERROR "Stale position-distance status: ${stale_position_distance_contract}")
     endif()
 endforeach()
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 1")
 foreach(one_mib_contract IN ITEMS
         "marc_lzss_position_distance_dynamic_range_1m_config_init()"
         "marc_lzss_position_distance_dynamic_range_1m_workspace_requirements()"
@@ -1711,11 +1711,23 @@ foreach(four_mib_contract IN ITEMS
         message(FATAL_ERROR "Missing 4 MiB position-distance C API contract: ${four_mib_contract}")
     endif()
 endforeach()
+foreach(eight_mib_encoder_contract IN ITEMS
+        "marc_lzss_position_distance_dynamic_range_8m_config_init()"
+        "marc_lzss_position_distance_dynamic_range_8m_resource_requirements()"
+        "marc_lzss_position_distance_dynamic_range_8m_create_encoder()"
+        "MARC_LZSS_POSITION_DISTANCE_8M_INITIAL_ONLY"
+        "encoder only")
+    string(FIND "${c_api_content}" "${eight_mib_encoder_contract}" eight_mib_offset)
+    if(eight_mib_offset EQUAL -1)
+        message(FATAL_ERROR "Missing 8 MiB encoder C API contract: ${eight_mib_encoder_contract}")
+    endif()
+endforeach()
 if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
     message(FATAL_ERROR
         "C API initializer count ${c_api_profile_count} must contain the "
         "${cli_profile_count} CLI profiles plus five experimental profiles "
-        "and three public position-distance families")
+        "and three existing public position-distance families plus "
+        "one encoder-only eight-MiB family")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
     "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")

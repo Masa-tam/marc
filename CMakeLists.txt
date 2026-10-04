@@ -51,6 +51,24 @@ if(NOT MARC_BUILD_SHARED AND NOT MARC_BUILD_STATIC)
 endif()
 
 set(MARC_SOURCES
+    src/frame/lzss_position_distance_8m_c_factory.cpp
+    src/frame/lzss_position_distance_8m_owning_adapter.cpp
+    src/frame/lzss_position_distance_8m_owning_delegate.cpp
+    src/frame/lzss_position_distance_8m_prepared_stream_encoder.cpp
+    src/frame/lzss_position_distance_8m_prepared_storage_owner.cpp
+    src/frame/lzss_position_distance_8m_owned_stream_encoder.cpp
+    src/frame/lzss_position_distance_8m_storage_owner.cpp
+    src/frame/lzss_position_distance_8m_storage_adapter.cpp
+    src/frame/lzss_position_distance_8m_token_frame_encoder.cpp
+    src/frame/lzss_position_distance_8m_frame_encoder.cpp
+    src/frame/lzss_position_distance_8m_serializer.cpp
+    src/frame/lzss_position_distance_8m_preflight.cpp
+    src/dictionary/lzss_position_distance_8m_indexed.cpp
+    src/context/lzss_position_distance_8m_mapper.cpp
+    src/context/lzss_position_distance_8m_tokens.cpp
+    src/entropy/lzss_position_distance_8m_token_range_encoder.cpp
+    src/entropy/lzss_position_distance_8m_range_encoder.cpp
+    src/entropy/lzss_position_distance_8m_range_decoder.cpp
     src/frame/lzss_position_distance_4m_workspace.cpp
     src/frame/lzss_position_distance_4m_frame_streaming_decoder.cpp
     src/frame/lzss_position_distance_4m_frame_streaming_encoder.cpp
@@ -6637,4 +6655,30 @@ if(MARC_BUILD_TESTS)
                 PROPERTIES TIMEOUT 600)
         endif()
     endif()
+endif()
+if(MARC_BUILD_TESTS)
+    if(TARGET marc_static)
+        add_executable(marc_position_distance_8m_public_encoder_tests
+            tests/lzss_position_distance_8m_public_encoder_tests.cpp
+            tests/lzss_position_distance_8m_owning_allocator_seam.cpp
+            tests/lzss_position_distance_8m_late_fault_seam.cpp
+            src/frame/lzss_position_distance_8m_stream_encoder.cpp
+            src/frame/lzss_position_distance_8m_stream_decoder.cpp
+            src/frame/lzss_position_distance_8m_frame_decoder.cpp)
+        target_compile_features(marc_position_distance_8m_public_encoder_tests PRIVATE cxx_std_20)
+        target_include_directories(marc_position_distance_8m_public_encoder_tests PRIVATE src tests)
+        target_link_libraries(marc_position_distance_8m_public_encoder_tests PRIVATE marc::static)
+        add_test(NAME marc_position_distance_8m_public_encoder_tests
+            COMMAND marc_position_distance_8m_public_encoder_tests)
+    endif()
+    foreach(linkage IN ITEMS static shared)
+        if(TARGET marc_${linkage})
+            add_executable(marc_position_distance_8m_c_${linkage}_consumer
+                tests/lzss_position_distance_8m_public_c_consumer.c)
+            target_compile_features(marc_position_distance_8m_c_${linkage}_consumer PRIVATE c_std_17)
+            target_link_libraries(marc_position_distance_8m_c_${linkage}_consumer PRIVATE marc::${linkage})
+            add_test(NAME marc_position_distance_8m_c_${linkage}_consumer
+                COMMAND marc_position_distance_8m_c_${linkage}_consumer)
+        endif()
+    endforeach()
 endif()

@@ -10817,3 +10817,11 @@ DD-1465 uses the repository's existing four-MiB C factory, private eight-MiB
 owning adapter, operation encoder and scratch decoder as first-party references.
 See `docs/design/lzss-position-distance-8m-public-integration-proposal.md`.
 No external implementation was consulted; no new codec execution is claimed.
+
+### IR-1225: Eight-MiB public encoder implementation references
+
+DD-1466 uses first-party DD-1465, the unchanged owning adapter/coordinator,
+exact allocator, private validators and operation/decode oracles. Register the
+existing internal range decoder required by token validation without exposing
+a public decoder. No external implementation consulted. See
+docs/design/lzss-position-distance-8m-public-encoder.md.

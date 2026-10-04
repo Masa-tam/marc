@@ -8895,3 +8895,14 @@ The `docs/design/lzss-position-distance-8m-public-integration-proposal.md`
 preserves the private reserved representation and requests no wire change.
 It does not admit the profile to a generic public parser or introduce a selector.
 Concrete original size remains required; no unknown-size sentinel is added.
+
+### DD-1466 encoder-only public boundary for the reserved eight-MiB identity
+
+The explicit prepared owning C encoder writes the unchanged dictionary
+algorithm 2/variant 11, context algorithm 1/variant 12 and entropy 3/variant 2
+representation with 47 contexts and range total 32768. Concrete original size
+and a frame of 1..8388608 bytes are required. No wire alteration, generic public
+parser admission, unknown-size sentinel or CLI selector is added. Failed frames
+publish no bytes; the stream header and preceding valid frames can be committed.
+The public decoder remains pending. See
+docs/design/lzss-position-distance-8m-public-encoder.md.

@@ -32647,3 +32647,14 @@ initial-only resource query and mandatory caller-specified budget. It preserves
 conservative duplicate charges, deferred generation admission, sticky errors,
 known-size input and failed-frame privacy. Operation remains the speed baseline;
 decoder, CLI and exchange admission follow separate gates. This is design only.
+
+### DD-1466: Qualify the explicit prepared owning encoder C boundary
+
+Implement the distinct known-size template, INITIAL_ONLY resource query and
+create_encoder with opaque ownership and complete public guard/handle/control
+charges. Preserve conservative duplicate reserves and per-generation admission;
+failed frames remain private. Three routes pass 375 grouped C++ rows and six
+static/shared C consumers; all final records agree. Detailed scope and limits:
+docs/design/lzss-position-distance-8m-public-encoder.md. Encoder only; no public
+decoder, generic selector, CLI, default-memory or speed claim. Next DD-1467
+defines the public decoder workspace/admission contract.
