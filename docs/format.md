@@ -8883,3 +8883,8 @@ No stream identity, profile, model or serialization changes. The private known-s
 ### DD-1463 maximum-frame fault design preserves representation
 
 No format identity or model changes. Proposed distant matches remain in the existing private known-size eight-MiB representation. Distance class 22 is a required candidate observation, not a completed vector; class 23 and exact eight-MiB distance cannot be inferred from these reset-frame raw inputs. New test seams operate only after real helper success and never publish a failed frame. Prefix boundaries derive from complete ordinary frame lengths with checked arithmetic. Public registration and unknown-size support remain separate.
+
+
+### DD-1464 selected maximum-frame qualification preserves bytes
+
+No identity or representation changes: private known-size dictionary 2/11, context 1/12, entropy 3/2, 47 contexts and total 32768 remain unchanged. Confirmed distance-class-22 full-frame matches use distance 8388603/length 5 and 8388350/length 258. New complete full/full/tail wire lengths are 57398 and 57387 bytes. Selected failure output ends at the independently validated preceding boundary; staged failing calls emit zero. A complete failed frame is never exposed or passed to the decoder as a stream. Exact eight-MiB distance/class 23, unknown-size input and public compatibility are not established here.
