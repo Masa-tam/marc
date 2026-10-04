@@ -10879,3 +10879,8 @@ DD-1477 uses the repository-owned eight-MiB finite frame transaction and DD-1476
 ### IR-1237: sixteen-MiB borrowed incremental frame consumer
 
 DD-1478 uses the repository-owned eight-MiB stream state machine and DD-1477's complete sixteen-MiB finite frame consumer. Header/prefix collection, exact payload admission, validated-frame draining and sticky terminal states are retained under distinct types and functions. Independent fixed-layout streams use TVG-1344's mathematical wire generator; a separate finite-frame traversal is the scheduling fuzz oracle. No external implementation source was consulted.
+
+
+### IR-1238: sixteen-MiB exhaustive parsing reference
+
+DD-1479 uses repository-owned eight-MiB reference parsing and the distinct sixteen-MiB token validator. The independent test oracle selects descending phrase lengths and then the nearest source position; it does not call the production matcher. Hand-constructed far-reference inputs and scalar token reconstruction supplement that bounded oracle. No external implementation source was consulted.

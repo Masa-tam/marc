@@ -482,6 +482,7 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_16m_serializer.cpp
     src/frame/lzss_position_distance_16m_frame_decoder.cpp
     src/frame/lzss_position_distance_16m_stream_decoder.cpp
+    src/dictionary/lzss_position_distance_16m_reference.cpp
     src/marc.cpp
 )
 
@@ -6830,4 +6831,36 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_position_distance_16m_stream PRIVATE
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_position_distance_16m_stream PRIVATE marc::static)
+endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_distance_16m_reference_tests
+        tests/lzss_position_distance_16m_reference_tests.cpp
+        src/dictionary/lzss_position_distance_16m_reference.cpp
+        src/context/lzss_position_distance_16m_mapper.cpp
+        src/context/lzss_position_distance_16m_tokens.cpp
+        src/entropy/lzss_position_distance_16m_range_encoder.cpp
+        src/entropy/lzss_position_distance_16m_range_decoder.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_distance_16m_reference_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_16m_reference_tests PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_16m_reference_tests PRIVATE GTest::gtest_main)
+    add_test(NAME marc_position_distance_16m_reference
+        COMMAND marc_position_distance_16m_reference_tests)
+    set_tests_properties(marc_position_distance_16m_reference PROPERTIES TIMEOUT 180)
+endif()
+
+if(MARC_BUILD_FUZZERS)
+    add_executable(marc_fuzz_position_distance_16m_reference
+        tests/lzss_position_distance_16m_reference_fuzz.cpp)
+    target_compile_features(marc_fuzz_position_distance_16m_reference PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_distance_16m_reference PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_distance_16m_reference PRIVATE
+        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_position_distance_16m_reference PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_position_distance_16m_reference PRIVATE marc::static)
 endif()
