@@ -21451,3 +21451,36 @@ recorded timings do not establish a causal decoder improvement. The explicit
 one-GiB policy is diagnostic, and logical/workspace ledgers do not measure
 resident memory. No large-frame fuzz or external verification is added here.
 Late range/prefix inconsistency injection remains unconfirmed.
+
+
+## TVG-1323: Adoption evidence review and planned bounded late refusals
+
+2026-10-04. Recalculate the preserved BM-0211 six raw samples per interval
+for each optimized build and twelve cases; verify all 144 recorded audits,
+commands/results, source/executable bindings and the 24 separate matched
+median ratios. This is evidence review, not a new benchmark launch. All
+prepared/safe medians are below one; all prepared/operation medians exceed
+one. Confirm all per-case logical/allocation ledgers and the eight-MiB random
+allocation saving of exactly 512 MiB without a resident-memory claim.
+
+Plan R1/R2/P1/P2/P3/P4 as specified in DD-1456's separate design. Each shim
+first proves real helper success, then injects once at the chosen prior raw
+position/context. Require exact delegate/stage counts to reject an early
+failure or missed hook. Plan frame64 with two full cyclic frames and a32-byte
+cyclic tail, original160, first/second/tail targets and single-call/staged
+publication. Six modes times fresh/replacement give12 owner checks; six
+times three frame targets times two publication styles give36 stream checks.
+Add8 disarmed controls and8 ordinary companion controls per build. Proposed
+three-route execution is168 isolated checks plus24 companion controls.
+All counts are planned; no new fault check, CTest or fuzz was run here.
+
+Check old generation fields/bytes/layout/length/pending, full capacity
+snapshots, sentinel suffix, exact consumed/published counts, sticky code and
+prior-validated error position, real candidate deletion and zero live receipts
+after destruction. Do not require zero whole-call output when earlier valid
+frames were committed. Account for complete test/shim/observer/trace/allocator
+controls and simultaneous helper state in addition to all owners/call views.
+A synthetic successful-helper postcondition violation tests defensive owner
+commit; it does not prove the helper's original failure atomicity or decoder
+malformed-input/fuzz coverage. Original suites remain source-bound, not rerun.
+Late range/prefix injection remains unconfirmed. Next actual gate: TVG-1324.

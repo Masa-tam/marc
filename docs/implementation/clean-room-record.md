@@ -38560,3 +38560,26 @@ Late range/prefix inconsistency injection remains unconfirmed, and no new
 fuzz or external campaign is claimed. Release-wide similarity review and
 any adoption decision remain separate; no legal guarantee is claimed.
 Next decision/failure-gate provenance: CR-1627.
+
+
+## CR-1627: Prepared adoption assessment and isolated fault-test design
+
+2026-10-04; author/reviewer: Codex. Task: assess preserved BM-0211 time and
+memory tradeoffs and define DD-1447's source-isolated late-failure seam under
+DD-1456 / IR-1215 / TVG-1323. Use only first-party measurements and existing
+private owner/coordinator/range/serializer/preflight source. No external or
+restricted source was consulted or translated. No implementation expression
+from another project is used.
+
+Review covers independent median/ledger recomputation, explicit slower-than-
+operation limitation, ordinary/private-oracle roles, three dependency-name
+substitutions scoped to one separately compiled owner object, direct real
+helper delegation, one-shot bounded controls, no exposed Prepared/plan factory,
+full added-control reservations, fresh/replacement ownership and correct
+same-call earlier-valid-frame accounting. Compilation/symbol isolation and
+actual six-mode arrival remain future checks. Preserve all current sources,
+artifacts and append-only records; no production behavior or defaults change.
+No new benchmark, actual injected failure, fuzz or external run is claimed.
+Late range/prefix injection remains unconfirmed. Release-wide similarity
+review is separate and no legal guarantee is made. Next seam implementation
+and actual qualification provenance: CR-1628.

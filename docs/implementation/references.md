@@ -10750,3 +10750,15 @@ old benchmark, codecs, allocator and decoder as unchanged oracles. Complete
 untimed qualification and source review before actual BM-0211 measurements.
 The separate campaign recipe is documented in
 docs/design/lzss-position-distance-8m-prepared-stream-campaign.md.
+
+
+## IR-1215: Prepared-stream adoption and late-failure seam design
+
+2026-10-04. Assess DD-1456 solely from preserved first-party BM-0211
+measurements, DD-1447's private seam requirement and unchanged owner/coordinator,
+range encoder, serializer and preflight sources. Recompute all 24 matched
+case medians from the 144 saved audited samples without launching a benchmark.
+No external or restricted implementation source was consulted. The additive
+design docs/design/lzss-position-distance-8m-prepared-adoption-gate.md defines
+a dependency seam isolated to one test owner translation unit and a future
+bounded failure matrix; no injection code or coverage is established here.

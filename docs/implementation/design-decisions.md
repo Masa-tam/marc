@@ -32494,3 +32494,46 @@ range/prefix inconsistency injection remains unconfirmed. Next DD-1456 /
 IR-1215 / TVG-1323 / CR-1627 evaluates the time/memory adoption tradeoff and
 plans the remaining failure-contract gate before any public integration.
 No integration decision or additional negative-test result is established here.
+
+
+## DD-1456: Keep the prepared memory candidate and define the failure gate
+
+2026-10-04. Independently recompute BM-0211's preserved 144 audited samples
+and all 24 matched case medians, retaining separate builds and intervals.
+Prepared is faster than safe ownership and slower than operation in every
+tested case. Retain operation as the speed baseline, prepared as a private
+memory-oriented candidate and safe as an independent oracle. No public
+adoption, default or automatic input-size selector follows from this evidence.
+
+Prepared's logical reservation is lower than operation in every measured case,
+640 bytes greater than safe, with the same allocation peak as safe. In the
+eight-MiB random recipe, allocation savings against operation are exactly
+536870912 bytes; complete logical savings are 536865896 bytes. These preserve
+all benchmark owners/call views and do not measure resident memory or prove
+admission under another configured policy. Input length alone cannot express
+actual token/event/payload/retained-owner/adjacent-generation requirements.
+
+Honor DD-1447 by first defining a source-isolated test seam. Substitute only
+three dependency names in a separately compiled unchanged owner translation
+unit; shims delegate to the unchanged real helpers and inject only after
+original success. The ordinary coordinator remains unchanged. No substitutions
+or shims may enter production libraries, CMake sources, existing tests or
+benchmarks. Preserve Prepared's private issuance and nontransferable lifetime.
+Source/symbol isolation and actual branch arrival are future qualification
+requirements, not completed checks. Six planned range/prefix modes cover
+late error returns, descriptor mismatch, prefix length, actual invalid magic
+and reparsed layout mismatch. All shim/controller/trace and nested helper
+controls must be charged in extra retained bytes without old-grant reuse.
+
+The design specifies twelve owner refusals, thirty-six coordinator refusals
+and eight disarmed controls per isolated build, plus eight ordinary companion
+controls. Three planned routes total 168 isolated checks and 24 companion
+controls. Owner refusals preserve old publication/layout/pending and really
+free the candidate. A stream error may commit earlier VALID frames in the
+same call; verify the exact valid prefix and counts, untouched suffix, sticky
+error position and zero receipt ledger after actual destruction. Staged calls
+separately require zero failed-frame output. Proposed bounded limits are not
+passed admission claims. No actual injection, new timing/fuzz or public
+integration occurs here; late range/prefix coverage remains unconfirmed.
+Next DD-1457 / IR-1216 / TVG-1324 / CR-1628 implements and qualifies the seam
+and matrix, before any later adoption/integration gate.

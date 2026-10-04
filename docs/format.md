@@ -8828,3 +8828,15 @@ range model, checksum, limit, public selector or default changes. All private
 working storage, current/candidate coexistence, real release ordering and
 failed-frame publication contracts remain unchanged. Late range/prefix
 inconsistency injection is still unconfirmed.
+
+
+### DD-1456 adoption assessment preserves the format and publication boundary
+
+The prepared-stream adoption/failure-gate design changes no representation,
+profile, ID, limits or defaults. Test-only dependency substitutions are planned
+for an isolated owner object and cannot enter a public codec or stream. Late
+range/prefix injection remains unconfirmed. The required failed-frame contract
+is unchanged: preserve old private publication on owner refusal, and expose no
+bytes of a failing stream frame. Earlier valid bytes committed in the same
+failing process call remain legitimate and must match reported output counts.
+The test design does not establish another complete stream or decoder variant.
