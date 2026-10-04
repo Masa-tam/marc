@@ -8815,3 +8815,16 @@ unchanged decoder raw output, deterministic SHA-256 digests and intact guards
 for all twelve recipes and six path orders. Actual short tails use their stream
 sequence and cumulative raw position. No format, profile, ID, default or public
 encoder/decoder behavior changes; no throughput or external result follows.
+
+
+### DD-1455 private benchmark does not change a stream representation
+
+The additive prepared-stream benchmark records process and complete lifecycle
+durations only in diagnostic output. BM-0211 confirms byte-identical operation,
+safe and prepared wires and identical raw output for the twelve DD-1453
+recipes and six encoder orders on two optimized builds, following 216 untimed
+qualification launches. No header, algorithm/variant ID, token serialization,
+range model, checksum, limit, public selector or default changes. All private
+working storage, current/candidate coexistence, real release ordering and
+failed-frame publication contracts remain unchanged. Late range/prefix
+inconsistency injection is still unconfirmed.

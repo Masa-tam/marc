@@ -32446,3 +32446,51 @@ No codec fix or failed timing sample is involved. Late range/prefix inconsistenc
 injection remains unconfirmed. Next DD-1455 / IR-1214 / TVG-1322 / CR-1626
 defines and executes the separately audited measurement gate if authorized;
 no new benchmark label is assigned until an actual campaign is run.
+
+
+## DD-1455: Execute the private prepared-stream measurement gate
+
+2026-10-04. Add a separate explicit --untimed/--measure benchmark after
+DD-1454. Untimed mode reads no clock and emits no durations. Qualify twelve
+recipes and six permutations on three builds before measurement, including
+fully instrumented address/undefined checks with leak detection disabled.
+All 216 untimed launches match preserved raw/wire digests, guards, counts,
+actual plans and allocation ledgers. Fourteen allocation faults and four
+admission checks pass on each build. Existing unchanged suites retain their
+source-bound 26-target/469-case qualification; they were not rerun here.
+
+BM-0211 executes exactly 144 sequential measured launches: two optimized
+builds, twelve recipes and six balanced orders. Immediately before each
+launch save a successful strict selected-process count-zero audit. All pass
+without retry, replacement sample or measured warm-up. The snapshot is not
+a global lock. Complete wire/raw comparisons, SHA-256 and guards are outside
+both intervals while all five owners remain charged. Process measures drive
+through count/status/sticky-terminal checks. Lifecycle includes fresh workspace
+or allocator construction, actual-capacity readmission, initialization,
+replacement releases, destruction, real frees and zero-receipt reconciliation.
+Planning and prospective numeric admission are outside both intervals.
+
+Actual Driver size is 960 bytes, common controls 3360 and allocator controls
+312. All retained capacities and complete call views remain charged, with no
+last-use discount, grant reuse, early release or implicit buffer reuse. The
+maximum complete logical reservations are operation 864339542, safe 327473006
+and prepared 327473646 bytes. The eight-MiB random recipe's allocation peaks
+are operation 805584602 and both owners 268713690 bytes. These are logical
+and workspace ledgers, not resident-memory measurements or hidden allocation
+accounting. The explicit one-GiB diagnostic policy changes no public limit.
+
+For each build/case, six-sample lifecycle median ratios prepared/safe are
+0.59851..0.61964 in build A and 0.59820..0.63573 in build B;
+prepared/operation ratios are 1.19518..1.42221 and 1.27372..1.43315,
+respectively. Thus prepared improves the safe ownership path in every tested
+case while remaining slower than operation in every tested case. Report
+per-case matched medians and ranges; do not pool builds, select best samples,
+reuse historical timings or infer a decoder speedup. TVG-1322 records all
+matched ratios; private evidence retains six raw values, throughput, sizes,
+digests, compression ratios, audits and full ledgers.
+
+No production target, codec selection, CLI, default or format changes. Late
+range/prefix inconsistency injection remains unconfirmed. Next DD-1456 /
+IR-1215 / TVG-1323 / CR-1627 evaluates the time/memory adoption tradeoff and
+plans the remaining failure-contract gate before any public integration.
+No integration decision or additional negative-test result is established here.

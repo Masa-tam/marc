@@ -21387,3 +21387,67 @@ timing samples, actual benchmark, new fuzz campaign or external campaign occur.
 Preserve the initial diagnostic-only failures and corrected qualification logs.
 Late range/prefix inconsistency injection remains unconfirmed. Next measurement
 gate: TVG-1322; strict idle audits precede each future actual timed launch.
+
+
+## TVG-1322: Qualified three-path audited measurement
+
+2026-10-04. Reproduce all twelve DD-1453 recipes and six permutations in the
+separate DD-1455 tool. Cases 0..3 use one one-MiB frame with patterns cyclic,
+long-distance, random and mixed; cases 4..7 use one eight-MiB frame with the
+same pattern order. Cases 8/9 use two identical full cyclic frames at one/eight
+MiB; cases 10/11 add the first 32 cyclic bytes as a final short frame. Use
+actual frame sequence and cumulative prior raw size, exact per-frame T/E/P,
+guarded owners and preserved independently regenerated raw SHA-256 values.
+
+Three builds times twelve cases times six orders = 216 untimed launches pass,
+including address/undefined instrumentation throughout the helper sources with
+leak detection disabled. Each build passes fourteen allocation faults and four
+threshold checks. No clock reads or timing samples occur during qualification.
+The unchanged related 26-target/469-case suites are carried by exact source
+bindings from DD-1454; no fresh CTest or fuzz campaign is claimed.
+
+After source review and actual selected-name discovery, BM-0211 completes
+144 sequential audited timed launches, all without retry. Every process has
+its own immediately preceding saved successful count-zero audit. All wires,
+raw bytes, SHA-256 values, guards, counts, sticky termination, full capacity
+ledgers and actual deletion receipts match qualification. Each path retains
+six raw process and lifecycle durations, min/median/max, matched throughput,
+allocation peak/final live and complete logical reservation. Compression ratio
+is separately W/N. Median is the mean of the middle two sorted values.
+
+The following values are median(prepared)/median(oracle) for the same build,
+case and interval; below one means less time. Values are rounded to five
+decimals. Builds A and B remain separate, with no pooled or best-sample result.
+
+| Build | Case | Prepared/safe process | Prepared/safe lifecycle | Prepared/operation process | Prepared/operation lifecycle |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| A | 0 | 0.59174 | 0.61832 | 1.36628 | 1.27557 |
+| A | 1 | 0.59906 | 0.59959 | 1.33317 | 1.28488 |
+| A | 2 | 0.59925 | 0.59987 | 1.33280 | 1.28391 |
+| A | 3 | 0.60334 | 0.60500 | 1.25820 | 1.19518 |
+| A | 4 | 0.59739 | 0.61872 | 1.36251 | 1.30076 |
+| A | 5 | 0.60001 | 0.60214 | 1.33379 | 1.28429 |
+| A | 6 | 0.59841 | 0.59851 | 1.43238 | 1.42221 |
+| A | 7 | 0.59905 | 0.59947 | 1.42161 | 1.39934 |
+| A | 8 | 0.60056 | 0.61542 | 1.38301 | 1.33242 |
+| A | 9 | 0.60117 | 0.61385 | 1.36874 | 1.33309 |
+| A | 10 | 0.60660 | 0.61964 | 1.38676 | 1.33413 |
+| A | 11 | 0.60083 | 0.61229 | 1.37420 | 1.34279 |
+| B | 0 | 0.60373 | 0.63573 | 1.40607 | 1.30899 |
+| B | 1 | 0.59772 | 0.59837 | 1.39085 | 1.34321 |
+| B | 2 | 0.59886 | 0.59940 | 1.39170 | 1.34501 |
+| B | 3 | 0.60456 | 0.60732 | 1.34623 | 1.27372 |
+| B | 4 | 0.59187 | 0.61190 | 1.42918 | 1.35308 |
+| B | 5 | 0.59926 | 0.60144 | 1.40120 | 1.35981 |
+| B | 6 | 0.60051 | 0.60063 | 1.35436 | 1.34869 |
+| B | 7 | 0.59778 | 0.59820 | 1.44906 | 1.43315 |
+| B | 8 | 0.59167 | 0.60639 | 1.41789 | 1.35716 |
+| B | 9 | 0.60192 | 0.61247 | 1.43488 | 1.39007 |
+| B | 10 | 0.59769 | 0.61356 | 1.43912 | 1.37690 |
+| B | 11 | 0.60399 | 0.61427 | 1.42235 | 1.38055 |
+
+All three fresh consumers use the same unchanged decoder. Their separately
+recorded timings do not establish a causal decoder improvement. The explicit
+one-GiB policy is diagnostic, and logical/workspace ledgers do not measure
+resident memory. No large-frame fuzz or external verification is added here.
+Late range/prefix inconsistency injection remains unconfirmed.

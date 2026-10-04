@@ -38530,3 +38530,33 @@ external campaign, speedup, physical-memory or production-integration claim.
 Late range/prefix inconsistency injection remains unconfirmed. Release-wide
 similarity review remains separate; no legal guarantee is claimed. Next
 measurement-gate provenance: CR-1626.
+
+
+## CR-1626: Private prepared-stream benchmark and actual measurement
+
+2026-10-04; author/reviewer: Codex. Task: independently adapt the first-party
+DD-1454 diagnostic into a separate DD-1455 benchmark, qualify untimed mode,
+review exact intervals and perform the audited campaign. References are the
+repository's own DD-1453 recipe, qualified helpers, old oracles and SHA-256.
+No external or restricted implementation source was consulted or translated.
+
+Review covers monotonic conditional clock use, strict mode/selector parsing,
+actual contexts and cyclic tails, complete owners/controls/call views,
+prospective and actual-capacity admission, current/candidate coexistence,
+receipt deletion after real frees, fresh encoder/decoder lifetimes, equality
+outside both intervals, untimed source-bound qualification and before-each
+strict process audits. All 216 untimed and 144 measured launches pass.
+Fourteen allocation faults and four thresholds pass per qualification build;
+full helper instrumentation has address/undefined checks with leak detection
+disabled. Existing unchanged correctness suites are source-bound, not rerun.
+BM-0211 is assigned only after the first actual measured process launch.
+Raw durations, orders, identity, full ledgers and partial-preservation policy
+are retained. No failed sample is discarded or retried.
+
+Prepared improves the safe owner but remains slower than operation in every
+tested case; preserve this limitation alongside memory savings. No codec,
+allocator, decoder, format, production selection or default is changed.
+Late range/prefix inconsistency injection remains unconfirmed, and no new
+fuzz or external campaign is claimed. Release-wide similarity review and
+any adoption decision remain separate; no legal guarantee is claimed.
+Next decision/failure-gate provenance: CR-1627.

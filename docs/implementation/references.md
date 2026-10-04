@@ -10738,3 +10738,15 @@ identity. No external implementation source was consulted. The additive tool
 has an explicit untimed mode; no clock is read and no timing sample is emitted.
 Old benchmark, codec, allocator, format helpers and production sources remain
 unchanged. Actual audited measurement is a later gate.
+
+
+## IR-1214: Audited private prepared-stream measurement
+
+2026-10-04. Implement DD-1455 from the first-party DD-1454 untimed
+diagnostic and DD-1453 interval/ownership recipe. The additive standalone
+benchmark uses the standard monotonic steady clock; no external codec source
+or restricted implementation was consulted. Retain the untimed diagnostic,
+old benchmark, codecs, allocator and decoder as unchanged oracles. Complete
+untimed qualification and source review before actual BM-0211 measurements.
+The separate campaign recipe is documented in
+docs/design/lzss-position-distance-8m-prepared-stream-campaign.md.
