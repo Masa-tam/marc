@@ -8868,3 +8868,8 @@ No format, ID, profile or model changes. The known-size 160-byte fixture uses fu
 ### DD-1460 owning-adapter design leaves bytes unchanged
 
 The proposed private wrapper preserves concrete original_size, dictionary 2/11, context 1/12, entropy 3/2, 47 contexts and total 32768. It changes ownership and boundary validation only, without a new format identity, profile or unknown-size sentinel. Flush remains neutral and ResetBlock unsupported. Failed-frame privacy, valid-prefix counts and original delegated error positions remain mandatory. No adapter has been implemented or admitted by this design.
+
+
+### DD-1461 private wrapper preserves stream contracts
+
+The new private owning adapter preserves known-size dictionary 2/11, context 1/12 and entropy 3/2. Confirmed match-bearing wire remains 394 bytes with boundaries 112/206/300/394 and identical operation/safe output; literal-heavy control remains 530 bytes. Unchanged decoder round trips both. Failed calls expose only earlier valid bytes; staged late failures emit zero. Input/capacity/whole-object overlap guards return sticky invalid_argument with zero counts at the prior accepted input position; delegated core errors retain their code/position. Ended results remain sticky even with invalid follow-up arguments. No new representation or unknown-size support is introduced.

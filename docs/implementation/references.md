@@ -10790,3 +10790,8 @@ and results; it includes no new timing or fuzz campaign.
 ## IR-1219: Private prepared owning-adapter design
 
 2026-10-04. First-party sources only: prepared/owned stream headers and implementations, storage-owner allocator contract, exact allocation helpers, DD-1458 integration scope and DD-1459 bounded results. No external or restricted implementation consulted. Define stable owned lifetime, twelve typed receipts and conservative full-capacity accounting. See docs/design/lzss-position-distance-8m-private-owning-adapter.md. No adapter execution or new campaign occurs at this design gate.
+
+
+## IR-1220: Private prepared owning-adapter implementation
+
+2026-10-04. Implement DD-1460 from first-party exact allocator, prepared coordinator and ownership contracts. Add private adapter/query/delegate and standalone tests without production registration. Reuse independently authored DD-1459 fixture/oracles in a separate driver, preserving all old sources. Six delegate substitutions apply only to the isolated adapter translation unit, three existing late-fault substitutions only to the isolated owner. No external implementation consulted. Final source-bound qualification comprises 450 checks, distinct from earlier development results; no new benchmark or fuzz.

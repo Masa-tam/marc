@@ -38624,3 +38624,8 @@ CR-1629.
 ## CR-1631: Private owning-adapter design provenance
 
 2026-10-04. Author/reviewer: Codex. Task: specify the concrete private owning adapter after DD-1459. Independently authored from first-party allocator/coordinator contracts and prior evidence, preserving all existing source and artifacts. No external implementation consulted. Review validates original destructor ordering, allocator controls boundary, checked conservative budget definitions, source-bound scope, append-only public records and documentation. No new code, runtime qualification or release similarity completion claimed. Next DD-1461 / IR-1220 / TVG-1328 / CR-1632 implements and qualifies the private adapter in new standalone files without changing public registrations.
+
+
+## CR-1632: Private owning-adapter provenance and review
+
+2026-10-04. Author/reviewer: Codex. Task: implement DD-1460 ownership/budget/boundary design and qualify independently against first-party oracles and unchanged decoder. New files only for adapter, exact delegation and tests; old implementation/test/benchmark sources unchanged. No external or restricted implementation consulted. Review binds final sources/options/link objects/symbols/binaries to 450 final checks, full retained capacities, fault arrivals, real release, public prefixes and preserved artifacts. Intermediate extra-test failures concerned expected Progress and oracle composition counters; retained separately and corrected in the new driver. No production admission or release similarity completion claimed. Next DD-1462 / IR-1221 / TVG-1329 / CR-1633 qualifies the private adapter at maximum frame size with literal-heavy/match-heavy full and tail inputs and complete actual admission ledgers before any public proposal.
