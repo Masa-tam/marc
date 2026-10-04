@@ -1457,3 +1457,25 @@ one independently produced external bundle on its own platform and on the other
 platform. Repeated producer labels describe those two consumer roles. Earlier
 schema-60 receipts do not qualify this inventory or revision. No new external
 execution or release state is inferred here.
+
+
+### IX-0058: Schema 61 four-direction external verification reported
+
+On 2026-10-05 the maintainer confirmed push and successful GitHub CI completion,
+and supplied four successful 71-archive verifier reports at revision
+e3a4ee916fd90687fa73614210a23c46b58e3ebe, including the DD-1474 watchdog correction.
+
+The reported roles are consumption of each of the two CI-produced bundles,
+then consumption of one independently produced external bundle on its own
+platform and on the other consumer platform. The last two reports name the
+same producer and represent two consumer roles, not an additional producer.
+All reports refer to the same revision and complete schema-61 inventory.
+
+These maintainer-reported results close DD-1473's revision-specific CI and
+four-direction external exchange gate at that revision. The executions were
+not independently rerun by the agent. The small 8193-byte fixture establishes
+exchange and deterministic re-encoding; maximum-window and failed-frame
+publication evidence remains in the separate prior qualifications. The earlier
+timeout report is superseded by the successful CI report for the corrected
+revision. No codec, format, ABI, limits, defaults, inventory or release state
+is changed by this evidence update.

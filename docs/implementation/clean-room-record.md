@@ -38704,3 +38704,8 @@ docs/design/lzss-position-distance-8m-public-encoder.md.
 ### CR-1645: boundary-watchdog correction provenance
 
 2026-10-05, author/reviewer Codex. DD-1474 independently corrects repository-owned test watchdog policy in response to the maintainer's CI traceback. No external implementation consulted or copied. Source/hash review, unchanged 67-record replay and injected timeout diagnostics qualify the local correction. Core codecs, public ABI, logical memory policy, failure publication contract and schema-61 inventory remain unchanged. Earlier authoring/preflight diagnostics are retained separately; edited files were restored to verified original bytes before the accepted preflight. Prior known administrative-log preservation exception remains explicitly recorded. CI and revision-specific external admission are pending; this is not release similarity review.
+
+
+### CR-1646: schema-61 reported external evidence update
+
+2026-10-05, author/reviewer Codex. Recorded the maintainer's successful GitHub CI and four 71-archive external verifier reports for e3a4ee916fd90687fa73614210a23c46b58e3ebe. The reports close the revision-specific exchange gate following DD-1474; they are attributed reports, not independently rerun external executions. Reviewed identical revision/count, four consumer roles and exact public documentation prefixes. No external implementation source consulted, runtime implementation changed or release similarity review claimed. Detailed execution environment information remains in private evidence. The known older administrative-log preservation exception remains recorded and is not retroactively corrected by these reports.
