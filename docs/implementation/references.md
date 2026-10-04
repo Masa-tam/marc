@@ -10841,3 +10841,7 @@ DD-1469 uses unchanged repository-owned public factories, private decoder, token
 ### IR-1229: bounded public decoder mutation references
 
 DD-1470 uses repository-owned public factories, private stream decoder, finite frame helper, serializers and DD-1469 boundaries. The test reuses independently authored local seed/raw recipes and defines a deterministic xorshift mutation schedule. No external implementation was consulted. See docs/design/lzss-position-distance-8m-public-decoder-fuzz.md.
+
+### IR-1230: command-line and exchange integration references
+
+DD-1471 uses repository-owned eight-MiB public factories and resource contracts, the existing bounded command-line file loop and transaction, exact selection tests, and schema-60 generator/verifier compatibility rules. No external implementation was consulted. See docs/design/lzss-position-distance-8m-cli-exchange.md.

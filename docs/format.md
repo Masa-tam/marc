@@ -8922,3 +8922,7 @@ Independent eight-MiB frames use 8388608 literals or a literal seed followed by 
 ### DD-1470: mutation qualification preserves frame publication
 
 No header, token, model, termination, algorithm identifier or wire representation changes. The campaign validates strict trailing input, bounded malformed inputs and chunk-independent committed bytes using the existing grammar. A verified complete frame may remain pending with NeedOutput at zero downstream capacity; failed frames never enter the raw publication slot. Previously validated frames may already have drained. Private candidate layout and working scratch remain discardable on failure.
+
+### DD-1471: proposed integration without new wire representation
+
+The proposed eight-MiB command-line selection retains Format 2.0, dictionary 2/11, context 1/12 and entropy 3/2 with 47 contexts and range total 32768. Workspace ownership and profile-local logical budgets are not wire fields. Schema 61 is a later exchange-inventory proposal, not a stream version change or current inventory update. Strict trailing checks, concrete bounded original size, canonical termination and failed-frame nonpublication remain authoritative.
