@@ -8962,3 +8962,8 @@ DD-1478 implements incremental consumption of the previously defined sixteen-MiB
 ### Sixteen-MiB private encoder parsing status
 
 DD-1479 implements the defined longest-match/nearest-tie reference token selection for a finite sixteen-MiB raw frame. Match eligibility preserves the canonical baseline cost rule 9 < 2L, hence lengths three and four remain valid only as wire grammar in this parser's profile. Token selection does not alter distance classes, field models, framing or stream bytes. Complete frame/stream encoding and public factory/CLI admission remain pending.
+
+
+### Sixteen-MiB private indexed parsing status
+
+DD-1480 adds exact indexed selection under the existing sixteen-MiB profile. It produces the same tokens as the exhaustive parser; no distance class, modeled field, frame or stream representation changes. Public encoder/factory/CLI admission remains pending.

@@ -1559,3 +1559,12 @@ Actual harness and all reachable helper sources are compiled with libFuzzer and 
 Date: 2026-10-05. Mutate at most 128 raw bytes and a 16-byte parameter/capacity header. Compare selected tokens with the independent descending-length oracle, repeated results, exact counts and scalar raw reconstruction. Guard caller tokens and metadata on every refusal. Valid results additionally traverse distinct sixteen-MiB mapping, Range coding and token decoding and compare every raw byte. Capacities, window, match bounds, flags and resource/count overflow are bounded or rejected before traversal.
 
 Actual harness and all reachable helpers are freshly compiled with libFuzzer and address/undefined-behavior instrumentation. Complete 10,000 runs, seed 1479, maximum input length 144 and per-input timeout 10, without crash, timeout, sanitizer or invariant finding. Leak detection is disabled. This bounded reference/parser differential does not establish indexed lookup, maximum incompressible performance, physical peak, whole-frame/stream encoding, public resource admission or release readiness.
+
+
+## FZ-0072: bounded sixteen-MiB indexed parser differential
+
+Date: 2026-10-05. Mutate at most 128 raw bytes and an 18-byte parameter/capacity header. Compare exact indexed tokens with the exhaustive parser and independent descending-length oracle. Check repeated results, private workspace guards, exact counts, scalar overlap reconstruction, and complete caller/metadata preservation on every refusal. Valid results also traverse sixteen-MiB mapping, Range coding and token decoding.
+
+The actual harness and reachable helpers are freshly compiled with libFuzzer and address/undefined-behavior instrumentation. Complete 10,000 runs, seed 14800, maximum input length 146 and per-input timeout ten, without crash, timeout, sanitizer or invariant finding. Leak detection is disabled. This bounded differential does not qualify maximum incompressible encoding, physical peak of a complete encoder, prepared ownership, public resource admission or release readiness.
+
+The scaled index uses 1,048,576 heads. Its bounded fuzz fixture admits the real complete workspace under a 16-MiB harness-only budget; this does not change any public resource limit. Preserve the earlier 65,536-head campaign separately.

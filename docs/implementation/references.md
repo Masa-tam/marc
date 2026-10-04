@@ -10884,3 +10884,8 @@ DD-1478 uses the repository-owned eight-MiB stream state machine and DD-1477's c
 ### IR-1238: sixteen-MiB exhaustive parsing reference
 
 DD-1479 uses repository-owned eight-MiB reference parsing and the distinct sixteen-MiB token validator. The independent test oracle selects descending phrase lengths and then the nearest source position; it does not call the production matcher. Hand-constructed far-reference inputs and scalar token reconstruction supplement that bounded oracle. No external implementation source was consulted.
+
+
+### IR-1239: sixteen-MiB indexed dictionary parsing
+
+DD-1480 adapts the repository-owned eight-MiB index to the distinct sixteen-MiB parser contract. The exhaustive sixteen-MiB parser and independent descending-length oracle remain separate comparison routes. The candidate-extension predicate follows directly from nearest-first traversal and longest-match selection; no external implementation source was consulted.
