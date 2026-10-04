@@ -8952,3 +8952,8 @@ DD-1476 implements finite helpers for the reserved position-distance tuple dicti
 ### Sixteen-MiB complete finite frame consumer status
 
 DD-1477 now consumes the exact 64-byte frame header, 16-byte Range descriptor and declared payload for the reserved sixteen-MiB tuple. A finite call rejects either truncated or trailing frame bytes, validates frame-local history and canonical termination, reconstructs exactly the declared raw extent, and publishes only a fully successful frame. Failures preserve both caller raw output and frame layout. This implementation status does not change the specified stream bytes, existing variants or generic public parser admission; whole-stream support remains pending.
+
+
+### Sixteen-MiB private incremental decoder status
+
+DD-1478 implements incremental consumption of the previously defined sixteen-MiB stream representation. Frame-local models/history reset independently, including a short final frame; the known original size determines the expected sequence and raw extent. Empty streams contain only the fixed header. A frame is validated completely before any of its raw bytes are exposed through partial output buffers. Error and ended states are sticky. Existing generic public parser/factory admission and older representations are unchanged; this private decoder alone does not complete the profile.
