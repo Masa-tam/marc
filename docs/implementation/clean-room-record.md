@@ -38507,3 +38507,26 @@ campaign, production selection, performance or physical-memory claim. Late
 range/prefix inconsistency injection remains an explicit gap. Release-wide
 similarity review remains separate; no legal guarantee is claimed. Next isolated
 untimed implementation provenance: CR-1625.
+
+
+## CR-1625: Private untimed measurement diagnostic
+
+2026-10-04; author/reviewer: Codex. Task: implement and qualify DD-1454 /
+IR-1213 / TVG-1321 as an additive standalone first-party diagnostic. Adapt the
+repository's own old benchmark driver and unchanged qualified helpers; reuse
+its SHA-256 implementation. No external or restricted implementation source
+was consulted or translated. Old benchmark, codecs, allocators, decoder,
+production selection and stream format remain unchanged.
+
+Review covers exact recipes and cyclic tails, actual validation context, five
+common guarded owners, concrete controls/hash reservations, prospective joint
+admission and actual readmission, complete call views, per-path thresholds,
+current/candidate coexistence until real deletion, fresh lifetimes, all orders,
+three consumers and digest identity. Qualification and fault/admission gates
+pass without reading a clock. Selected-name discovery uses a real waiting
+untimed process. Initial diagnostic-only configuration/verifier failures are
+retained; corrected runs use fresh destinations. No actual timing, new fuzz or
+external campaign, speedup, physical-memory or production-integration claim.
+Late range/prefix inconsistency injection remains unconfirmed. Release-wide
+similarity review remains separate; no legal guarantee is claimed. Next
+measurement-gate provenance: CR-1626.

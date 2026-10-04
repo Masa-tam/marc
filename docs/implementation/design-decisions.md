@@ -32405,3 +32405,44 @@ claim. No new campaign label or performance result is established here.
 Late range/prefix inconsistency injection remains unconfirmed. Next DD-1454 /
 IR-1213 / TVG-1321 / CR-1625 implements and qualifies the isolated untimed
 measurement diagnostic; actual audited timing remains a later gate.
+
+
+## DD-1454: Qualify the additive three-path untimed diagnostic
+
+2026-10-04. Add tools/lzss_position_distance_8m_prepared_stream_diagnostic.cpp
+as a private standalone diagnostic, without a public target or selection change.
+Require --untimed frame_bytes pattern kind order. Twelve DD-1453 recipes and
+six balanced permutations compare operation, safe and prepared encoders in
+fresh destroyed scopes, followed by three separately destroyed unchanged
+decoder scopes. A separate audit probe waits for input without reading a clock.
+
+Plan each actual frame, including the cyclic 32-byte tail, with its sequence
+and cumulative prior raw length. Destroy planning owners before encoder entry.
+Jointly admit the three guarded wire owners and guarded decoded destination
+plus retained raw, concrete controls and maximum phase before allocation;
+readmit actual capacities. All five owners remain fully charged throughout.
+Separate logical reservations from allocated workspace/receipt peaks. SHA-256
+objects, digest arrays and conservative transform/observer controls are charged.
+
+Derive operation maxima from actual per-frame T/E/P. Independently derive safe
+and prepared thresholds from actual working_bytes(), allocator object/callback
+controls, complete input/output views and initial/adjacent generation peaks.
+Real exact deletion precedes receipt removal; require zero live receipts after
+destruction. No early release, implicit reuse, last-use discount or grant reuse.
+The explicit one-GiB ceiling changes no defaults and establishes no resident
+memory, universal-fit or performance claim.
+
+Untimed qualification covers twelve cases and six orders on three builds,
+including fully instrumented helper code with address/undefined checks and
+leak detection disabled. All wires, raw bytes, digests, guards, ledgers, counts
+and sticky terminal results agree. Fourteen initial/candidate allocation faults
+and four inclusive/one-below admission checks preserve failed-frame privacy
+and release all receipts. Related unchanged correctness suites remain passing.
+The executable is discovered by the unchanged selected-process audit.
+
+Initial diagnostic-only limit configuration and wire-length verifier mistakes
+were corrected with retained failed evidence and fresh output destinations.
+No codec fix or failed timing sample is involved. Late range/prefix inconsistency
+injection remains unconfirmed. Next DD-1455 / IR-1214 / TVG-1322 / CR-1626
+defines and executes the separately audited measurement gate if authorized;
+no new benchmark label is assigned until an actual campaign is run.

@@ -21359,3 +21359,31 @@ completion, six raw process/lifecycle durations and matched min/median/max.
 No implementation, timing, fuzz, external campaign or new benchmark label is
 established in this design unit. Late range/prefix inconsistency injection remains
 unconfirmed. Next isolated untimed implementation qualification: TVG-1321.
+
+
+## TVG-1321: Untimed three-path diagnostic qualification
+
+2026-10-04. Reproduce the DD-1453 twelve seed-1439 recipes exactly, including
+two identical cyclic full frames plus their first 32 bytes at both frame sizes.
+Advance the unsigned generator at every first-frame byte. Independently query
+actual per-frame token/event/payload counts with real validation contexts,
+retaining and charging planner owners until destruction. Keep fixed guard tails
+outside process views and keep all five common capacities in every ledger.
+
+Execute 12 cases times 6 argument permutations on each of three builds: 216
+untimed qualification invocations. Every invocation has three encoder and
+three fresh decoder scopes. Verify wire/raw/digest equality across orders and
+builds, full prospective/actual admission, allocation peak/final live formulas,
+real destruction, bounded counts, guards and sticky terminal results. Add 14
+allocation-fault and 4 threshold checks per build. Address/undefined checks
+compile the diagnostic and helpers; leak detection is disabled. Existing small,
+large, malformed and replay suites provide additional unchanged gates.
+
+Bind binaries to source hashes and save per-invocation parameters, frame plans,
+working/control sizes, ledgers and completion. Independently recompute wire
+length and owned generation peaks from recorded plans. Verify discovery of
+the actual waiting diagnostic by the unchanged process audit. No clock reads,
+timing samples, actual benchmark, new fuzz campaign or external campaign occur.
+Preserve the initial diagnostic-only failures and corrected qualification logs.
+Late range/prefix inconsistency injection remains unconfirmed. Next measurement
+gate: TVG-1322; strict idle audits precede each future actual timed launch.

@@ -10727,3 +10727,14 @@ Preserve all existing sources and evidence. No external implementation or source
 was consulted. The new design document defines three-path common ownership,
 prospective/actual admission and separate process/lifecycle intervals; it adds
 no benchmark implementation, actual timing, fuzz or external campaign.
+
+
+## IR-1213: Private untimed prepared-stream diagnostic
+
+2026-10-04. Implement DD-1454 from the first-party DD-1453 recipe,
+BM-0210 source, qualified prepared coordinator and unchanged operation/safe
+oracles and decoder. Reuse the repository SHA-256 primitive for raw/wire
+identity. No external implementation source was consulted. The additive tool
+has an explicit untimed mode; no clock is read and no timing sample is emitted.
+Old benchmark, codec, allocator, format helpers and production sources remain
+unchanged. Actual audited measurement is a later gate.

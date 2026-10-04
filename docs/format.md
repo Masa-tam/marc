@@ -8806,3 +8806,12 @@ The planned diagnostic compares three existing encoders under identical private
 short tail; complete wire and raw equality are mandatory before a timing sample
 is accepted. No format, profile, algorithm ID, codec selection or encoder/decoder
 behavior changes. This design establishes no new throughput or external result.
+
+
+### Private untimed prepared-stream diagnostic (DD-1454)
+
+The additive diagnostic requires byte-exact operation/safe/prepared wires,
+unchanged decoder raw output, deterministic SHA-256 digests and intact guards
+for all twelve recipes and six path orders. Actual short tails use their stream
+sequence and cumulative raw position. No format, profile, ID, default or public
+encoder/decoder behavior changes; no throughput or external result follows.
