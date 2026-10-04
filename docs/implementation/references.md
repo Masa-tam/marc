@@ -10837,3 +10837,7 @@ DD-1468 uses repository-owned stream/frame decoders, prefix/token validators, fu
 ### IR-1228: maximum public decoder boundary qualification
 
 DD-1469 uses unchanged repository-owned public factories, private decoder, token-range encoder and bounded serializers. Independent recipes exercise maximum raw/token counts and maximum feasible distances for length-three and length-258 matches, with public encoder streams at adjacent frame lengths. No external implementation was consulted. See docs/design/lzss-position-distance-8m-public-decoder-max.md.
+
+### IR-1229: bounded public decoder mutation references
+
+DD-1470 uses repository-owned public factories, private stream decoder, finite frame helper, serializers and DD-1469 boundaries. The test reuses independently authored local seed/raw recipes and defines a deterministic xorshift mutation schedule. No external implementation was consulted. See docs/design/lzss-position-distance-8m-public-decoder-fuzz.md.

@@ -38682,3 +38682,7 @@ docs/design/lzss-position-distance-8m-public-encoder.md.
 ### CR-1640: maximum public decoder provenance and review
 
 2026-10-04, author/reviewer Codex. DD-1469 adds independent token/raw recipes and a diagnostic target over unchanged repository-owned implementations. No external implementation was consulted. Review binds three-route source/library hashes and identical finite records, original public documentation prefixes, prior artifact preservation and unchanged production-source registration. Maximum token/raw capacities and late-frame invariants were executed; bounded decoder fuzz, CLI/exchange admission and release similarity review remain subsequent obligations. Actual CMake/CTest qualification is recorded separately from matrix executions.
+
+### CR-1641: public decoder mutation provenance and review
+
+2026-10-04, author/reviewer Codex. DD-1470 independently combines repository-owned factory, decoder and finite-frame contracts with reproducible input mutations and schedules. No external implementation was consulted or copied. Review binds final source/library hashes, identical three-route records, per-case reproduction data, actual registered CTest, exact documentation prefixes and preserved prior artifacts. Existing production sources, headers and source registration are unchanged. Initial diagnostic trials and a duplicate CMake test-registration failure are retained separately and excluded from final qualification. This finite campaign is not a release similarity review, exhaustive fuzz proof or complete command-line/exchange admission.
