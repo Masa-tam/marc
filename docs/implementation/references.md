@@ -10800,3 +10800,8 @@ and results; it includes no new timing or fuzz campaign.
 ## IR-1221: Maximum-frame private adapter qualification
 
 2026-10-04. DD-1462 derives a new standalone diagnostic from the first-party prepared-stream diagnostic, using unchanged operation/safe encoders, owning adapter, allocator delegation and decoder. Actual per-frame token/event/payload plans determine admission before large output allocations. No external or restricted implementation consulted. Bind three routes, ordinary/isolated objects and 24 untimed launches to their exact sources, symbols and binaries. Existing timing and bounded late-fault evidence remain separate.
+
+
+## IR-1222: Maximum-frame late-failure and distant-match design
+
+2026-10-04. DD-1463 uses first-party DD-1461/DD-1462 evidence, indexed parser/token grammar, prepared owner/coordinator, adapter delegates and bounded late/allocator seams. The old late seam contains a prior/64 sequence assertion; define a new context-selected seam without modifying it. Independently specify marker/zero candidate inputs and explicit admission/atomicity checks. No external or restricted implementation consulted. See docs/design/lzss-position-distance-8m-max-late-distance-qualification.md. Design only, no new codec execution.

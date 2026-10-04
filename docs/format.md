@@ -8878,3 +8878,8 @@ The new private owning adapter preserves known-size dictionary 2/11, context 1/1
 ### DD-1462 maximum-frame qualification preserves representation
 
 No stream identity, profile, model or serialization changes. The private known-size eight-MiB representation retains dictionary 2/11, context 1/12, entropy 3/2, 47 contexts and total 32768. Full-frame operation/safe/adapter wires are byte-identical and decoded by the unchanged decoder. Exact-budget refusal exposes only the 112-byte stream header for a first-frame failure, or the complete preceding frame for a replacement failure; the failed frame and untouched sentinel suffix remain private. Delegated limit_exceeded positions remain the prior validated raw boundary. This diagnostic adds no public compatibility or unknown-size protocol.
+
+
+### DD-1463 maximum-frame fault design preserves representation
+
+No format identity or model changes. Proposed distant matches remain in the existing private known-size eight-MiB representation. Distance class 22 is a required candidate observation, not a completed vector; class 23 and exact eight-MiB distance cannot be inferred from these reset-frame raw inputs. New test seams operate only after real helper success and never publish a failed frame. Prefix boundaries derive from complete ordinary frame lengths with checked arithmetic. Public registration and unknown-size support remain separate.
