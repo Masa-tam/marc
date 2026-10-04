@@ -10780,3 +10780,8 @@ and results; it includes no new timing or fuzz campaign.
 ## IR-1217: Prepared eight-MiB integration scope
 
 2026-10-04. DD-1458 uses only first-party public header, CLI, four-MiB factory, private eight-MiB preflight/coordinator/owner, BM-0211 and DD-1457 evidence. No external implementation was consulted. Define explicit internal memory-oriented scope and separate match-bearing, adapter, maximum-frame and public promotion gates. See docs/design/lzss-position-distance-8m-prepared-integration-scope.md. This source review is not another campaign.
+
+
+## IR-1218: Match-bearing prepared-owner late failures
+
+2026-10-04. Execute DD-1459 using first-party DD-1458, the existing DD-1457 standalone driver design, unchanged scoped seam and unchanged helpers/owner/coordinator. Add a separate match-bearing driver; no external implementation was consulted. Bind sources, per-object substitutions, ordinary/isolated links, symbols, binaries and results. No new timing or fuzz campaign.

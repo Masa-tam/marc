@@ -32600,3 +32600,8 @@ from measured tradeoffs and bounded fault evidence; no promotion is implied.
 ## DD-1458: Prepared eight-MiB integration scope
 
 Retain operation as speed baseline and prepared as a private memory-oriented candidate. First qualify match-bearing late faults, then a private known-size owning adapter with complete prospective/actual budgets and allocator lifetime. Input size alone does not select a strategy. Public ABI, CLI, defaults and source registration require later concrete gates. The detailed stages and acceptance criteria are recorded in docs/design/lzss-position-distance-8m-prepared-integration-scope.md.
+
+
+## DD-1459: Qualified bounded match-bearing late failures
+
+Add a separate standalone driver without CMake or production changes. Each 64-byte frame repeats values 0..6 from a reset local position; the final frame has 32 bytes. Independently decode each ordinary oracle frame before arming a fault, require seven literals and one distance-seven match (length 57 for full frames, 25 for tail), and compare raw bytes. Three routes each pass 56 isolated checks plus eight ordinary controls: 168 isolated and 24 companion checks. Six synthetic postcondition modes preserve old publication and failed-frame privacy. This closes the bounded match-bearing gap only; maximum-frame, arbitrary token composition and adapter/public admission remain separate.

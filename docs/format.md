@@ -8858,3 +8858,8 @@ and maximum-frame injection do not follow from this finite matrix.
 ### DD-1458 integration scope preserves the private representation
 
 Prepared storage does not change private eight-MiB dictionary 2/11, context 1/12, entropy 3/2, 47 contexts or total 32768. The existing path has concrete original_size and no unknown-size protocol. This design registers no public profile or ID and changes no bytes. Failed frames remain private; earlier validated bytes may be reported by the failing call. Public admission and exchange remain later gates.
+
+
+### DD-1459 match-bearing qualification preserves representation
+
+No format, ID, profile or model changes. The known-size 160-byte fixture uses full frames of 64 bytes and a 32-byte tail with dictionary 2/11, context 1/12 and entropy 3/2. Ordinary wire length is 394 bytes, validated boundaries 112/206/300/394. Failure output stops at the target boundary; staged failing calls write zero and sticky errors retain prior validated raw position 0/64/128. No failed frame is exposed.

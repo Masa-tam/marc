@@ -21525,3 +21525,8 @@ TVG-1325.
 ## TVG-1325: Prepared integration acceptance design
 
 Design only: inspect current sources and preserved BM-0211/DD-1457 evidence without new codec execution, timing or fuzz. DD-1459 must confirm actual literal/match composition in a fresh deterministic fixture before six-mode injection; qualify owner and coordinator contexts with ordinary companions and real-release ledgers. Maximum-frame and adapter/public matrices are separate gates. Existing cyclic-only 192 checks retain their bounded scope.
+
+
+## TVG-1326: Bounded repeated-pattern late-fault matrix
+
+Raw byte i is ((i mod 64) mod 7), for i=0..159. Independently decoded composition is seven literals and one match per frame, distance seven, full/tail lengths 57/25. Before injection require exact token counts, layout equality and raw equality. Reuse six unchanged seam modes across fresh/replacement owner and first/second/tail single/staged coordinator. Each of three routes passes 56 isolated plus eight ordinary controls. Whole-stream SHA256 is 2429acea954e8ab55ed7d984bd0c5281b23273459a186d7db817ed7d04f5cb34. Final zero receipts are checked after real destruction; full token fields and all 14 layout fields preserve old generations. Fixture owners 579008 bytes, extra retained charge 595868, shim working 13100 and operation-oracle logical reservation 882656, under the diagnostic 1048576-byte ceiling. Each generation is 394 bytes; replacement coexists with the complete previous 394 bytes. Logical accounting is not resident memory or universal fit. Two optimized routes and a fully address/undefined-instrumented route with leak detection disabled pass; no new timing, fuzz or external verification is claimed.

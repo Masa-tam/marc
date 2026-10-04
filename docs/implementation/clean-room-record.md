@@ -38614,3 +38614,8 @@ CR-1629.
 ## CR-1629: Prepared integration scope provenance
 
 2026-10-04. Author/reviewer: Codex. Task: define eight-MiB prepared integration scope from current first-party API/source boundaries, BM-0211 tradeoff and DD-1457 bounded late-fault results. Independently authored design, no external source or restricted implementation consulted. Review checks preserved source/evidence hashes, append-only records and unchanged representation/public scope. No new helper, adapter, benchmark, fuzz or release qualification is claimed.
+
+
+## CR-1630: Match-bearing late-failure qualification
+
+2026-10-04. Author/reviewer: Codex. Task: qualify DD-1458 next bounded unit with a new independently checked repeated-pattern fixture using the repository own unchanged seam/helpers. Derived the new driver from first-party DD-1457 tests, preserving the old source. No external or restricted implementation consulted. Review checks dependency substitutions only in the isolated owner object, real-helper delegation, 192 source-bound checks, exact compositions/counts/errors, actual releases, retained hashes and append-only public records. No production integration or release similarity-review completion is claimed. Next DD-1460 / IR-1219 / TVG-1327 / CR-1631 specifies the concrete private owning adapter allocator, complete capacity/lifetime budget and acceptance matrix before implementing it.
