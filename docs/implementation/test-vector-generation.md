@@ -21633,3 +21633,10 @@ Use a fresh CMake/CTest registration directory and an unchanged source-bound CLI
 ### TVG-1342: sixteen-MiB hand recipes and cursor obligations
 
 Independently sum context alphabets 3*2+9*256+3*9+9*25+24*2=2610 and require 48 contexts. Check initial/literal/kind history, every length class, all 25 distance classes and extra widths, class-24 zero-only residual and class-7 forbidden length residual127. Invalid shape/context/alphabet/value/width operations must leave cursor bytes unchanged. Reachable maximum-frame references are length3/d16777213 and length258/d16776958, both class23, not exact-window class24. Cursor tests do not establish entropy/frame decoding, maximum memory, throughput, public API, CLI or exchange completion. Later stages must execute those full obligations with preserved failure invariants.
+
+
+### TVG-1343: independent sixteen-MiB finite core vectors
+
+tests/lzss_position_distance_16m_reference_vectors.py independently generates six deterministic Range payloads from explicit token recipes and integer field rules. The binary envelope is M16V0001, a little-endian 32-bit case count, then length-prefixed ASCII names, five little-endian 32-bit counts T/E/N/R/P, and P payload bytes. The native test constructs its token recipes separately, checks every payload byte, decodes operations and tokens, then reconstructs raw bytes by scalar overlapping copies.
+
+Cases are literal, overlap, all match lengths, 40,000 repeated literals crossing model rescaling, and full-frame final matches of length 3/distance 16,777,213 and length 258/distance 16,776,958. The far recipes fill history with short-distance overlap tokens. They exercise full raw extent and reachable far references, but do not represent an incompressible frame or maximum token/operation storage. The concatenated reference envelope has 114,758 bytes and SHA-256 e8c2f46d693130294040409d4231b430d1c8cddaeb4abd302896bc8caf78c13e. Fixed stream/frame prefixes additionally cover every truncation and selected identity/reserved/count mutations with output and metadata guards. These are finite deterministic tests, not a fuzz campaign or performance benchmark.

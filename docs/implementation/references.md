@@ -10864,3 +10864,8 @@ DD-1474 uses the repository-owned DD-1472 boundary test, CTest registration and 
 ### IR-1234: sixteen-MiB position-distance definition references
 
 DD-1475 derives the new profile from repository-owned 64-KiB through eight-MiB contracts and the mathematical extension of distance classes. Existing field cursor, canonical Range rules, typed-frame layout and failure invariants are implementation references; no external implementation consulted. See docs/design/lzss-position-distance-16m.md. The full objective includes measured bounded factories, CLI and exchange admission, not just a small grammar helper.
+
+
+### IR-1235: sixteen-MiB finite Range and token helpers
+
+DD-1476 uses the repository-owned eight-MiB mapper, scalar integer Range coder, private token scratch contract and fixed prefix validators as design references. The distinct sixteen-MiB files use DD-1475's 48 contexts, 2610 frequencies and 25 distance classes. No external source implementation was consulted. A separate Python description derives field decisions, cumulative probabilities, delayed carry and deterministic rescaling directly from the documented mathematics; it supplies finite conformance payloads independently of the C++ implementation.
