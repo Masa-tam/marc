@@ -10825,3 +10825,7 @@ exact allocator, private validators and operation/decode oracles. Register the
 existing internal range decoder required by token validation without exposing
 a public decoder. No external implementation consulted. See
 docs/design/lzss-position-distance-8m-public-encoder.md.
+
+### IR-1226: public five-buffer decoder boundary
+
+DD-1467 uses the repository-owned eight-MiB stream/frame decoders, prefix and token validators, DD-1466 encoder boundary and existing C dispatcher. See docs/design/lzss-position-distance-8m-public-decoder.md. No external implementation was consulted. This is a design review with no new codec execution.

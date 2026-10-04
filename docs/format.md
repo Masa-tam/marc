@@ -8906,3 +8906,7 @@ parser admission, unknown-size sentinel or CLI selector is added. Failed frames
 publish no bytes; the stream header and preceding valid frames can be committed.
 The public decoder remains pending. See
 docs/design/lzss-position-distance-8m-public-encoder.md.
+
+### DD-1467: proposed public decoder boundary without wire changes
+
+The decoder proposal in docs/design/lzss-position-distance-8m-public-decoder.md retains dictionary 2/11, context 1/12 and entropy 3/2. Existing header bounds, token grammar, canonical termination and strict trailing-data checks remain authoritative. Five private workspaces do not become wire fields. A failed frame is never published; previously validated frames may already have drained. This design does not admit a generic reader or CLI selector.

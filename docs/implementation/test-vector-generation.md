@@ -21593,3 +21593,7 @@ CTests; this does not represent a complete repository test-suite run.
 Earlier failed expectations/results are preserved separately. No new timing,
 fuzz, exhaustive split or public maximum-frame campaign. See
 docs/design/lzss-position-distance-8m-public-encoder.md.
+
+### TVG-1334: decoder ABI design qualification plan
+
+Review DD-1467 capacity equations, full-tail reservation, typed alignment/lifetimes and the distinction between immutable raw publication storage and discardable scratch. Bind unchanged source and previous artifacts by hashes and verify append-only documentation. DD-1468 must execute public/private differential, scalar refusal, alias, capacity, malformed stream and partial-buffer checks; maximum-frame and bounded fuzz qualification remain explicit subsequent obligations. New codec checks, timing launches and fuzz runs in this design gate: zero.

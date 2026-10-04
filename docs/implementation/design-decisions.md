@@ -32658,3 +32658,7 @@ static/shared C consumers; all final records agree. Detailed scope and limits:
 docs/design/lzss-position-distance-8m-public-encoder.md. Encoder only; no public
 decoder, generic selector, CLI, default-memory or speed claim. Next DD-1467
 defines the public decoder workspace/admission contract.
+
+### DD-1467: explicit five-buffer public decoder proposal
+
+Define a distinct decoder config, capacity-only requirements result and five-buffer descriptor. Charge actual retained capacities, public owners/controls and full declared call capacities through the unchanged private query. Preserve bounded header parameters and raw-slot/frame publication guarantees; private working buffers remain discardable on failure. The proposed ABI and lifecycle are specified in docs/design/lzss-position-distance-8m-public-decoder.md. DD-1468 is the implementation gate; no public decoder API is added here.

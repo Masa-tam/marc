@@ -38670,3 +38670,7 @@ symbols, exports, binaries, resource formulas, prefixes and prior artifacts.
 Earlier link/expectation/diagnostic-driver failures remain separately recorded.
 This is no release similarity-review or complete public codec claim. See
 docs/design/lzss-position-distance-8m-public-encoder.md.
+
+### CR-1638: decoder boundary design provenance
+
+2026-10-04, author/reviewer Codex. Independently specified DD-1467 from repository-owned private decoder/query/preflight/token and C boundary sources and DD-1466 evidence. No external source implementation was consulted or copied. Review binds source hashes, prior artifact preservation and exact documentation prefixes. The five-buffer lifecycle, checked sizing and publication contract are proposals pending DD-1468 implementation and qualification. This review is not a release similarity review or a new runtime qualification.
