@@ -38709,3 +38709,8 @@ docs/design/lzss-position-distance-8m-public-encoder.md.
 ### CR-1646: schema-61 reported external evidence update
 
 2026-10-05, author/reviewer Codex. Recorded the maintainer's successful GitHub CI and four 71-archive external verifier reports for e3a4ee916fd90687fa73614210a23c46b58e3ebe. The reports close the revision-specific exchange gate following DD-1474; they are attributed reports, not independently rerun external executions. Reviewed identical revision/count, four consumer roles and exact public documentation prefixes. No external implementation source consulted, runtime implementation changed or release similarity review claimed. Detailed execution environment information remains in private evidence. The known older administrative-log preservation exception remains recorded and is not retroactively corrected by these reports.
+
+
+### CR-1647: sixteen-MiB definition and field-model provenance
+
+2026-10-05, author/reviewer Codex. DD-1475 independently extends the repository-owned eight-MiB field grammar to the explicitly defined sixteen-MiB identity. Task: preserve earlier formats and outputs, verify new context sums/distance widths and transactional cursor failure, then continue full reference/optimized/factory/CLI/exchange development with measured limits. No external implementation consulted or copied. Two source-bound compiler routes pass 489 cursor recipes each; this proves only the field model. Existing source hashes and public prefixes are retained. The full profile remains incomplete: resource measurements, real encode/decode, public API, CLI and bundle admission are subsequent required work, not waived completion criteria. This is not release similarity review.

@@ -6731,3 +6731,13 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
             PROPERTIES TIMEOUT 1800)
     endif()
 endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_distance_16m_field_cursor_tests
+        tests/lzss_position_distance_16m_field_cursor_tests.cpp)
+    target_compile_features(marc_position_distance_16m_field_cursor_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_16m_field_cursor_tests PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    add_test(NAME marc_position_distance_16m_field_cursor
+        COMMAND marc_position_distance_16m_field_cursor_tests)
+endif()

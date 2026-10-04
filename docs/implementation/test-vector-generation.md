@@ -21628,3 +21628,8 @@ Retain the independently authored 8193-byte fixture and exact frozen 70-entry pr
 ### TVG-1341: boundary-watchdog correction qualification
 
 Use a fresh CMake/CTest registration directory and an unchanged source-bound CLI binary to run the actual registered boundary test. All 67 invocation and raw/wire records must equal DD-1472's prior final records. Inspect the explicit 1800-second CTest property and the two 600-second child calls; other child limits remain unchanged. Separately inject TimeoutExpired into the actual invocation helper without launching a codec, require preservation of partial stdout/stderr and the finite timeout value, and require exception propagation. No fixture or malformed-input check is removed. No full production rebuild, complete repository suite or successful CI rerun is claimed.
+
+
+### TVG-1342: sixteen-MiB hand recipes and cursor obligations
+
+Independently sum context alphabets 3*2+9*256+3*9+9*25+24*2=2610 and require 48 contexts. Check initial/literal/kind history, every length class, all 25 distance classes and extra widths, class-24 zero-only residual and class-7 forbidden length residual127. Invalid shape/context/alphabet/value/width operations must leave cursor bytes unchanged. Reachable maximum-frame references are length3/d16777213 and length258/d16776958, both class23, not exact-window class24. Cursor tests do not establish entropy/frame decoding, maximum memory, throughput, public API, CLI or exchange completion. Later stages must execute those full obligations with preserved failure invariants.
