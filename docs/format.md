@@ -8947,3 +8947,8 @@ For nonempty raw R, tokens T, events E, decisions N and payload P: 1<=T<=R, 2T<=
 ### Sixteen-MiB private helper implementation status
 
 DD-1476 implements finite helpers for the reserved position-distance tuple dictionary 2/12, context 1/13 and entropy 3/2, retaining the representation defined above. The dedicated prefix parser accepts only that tuple; existing generic parsers and public factories are unchanged. A successful 80-byte frame preflight establishes bounds only and does not validate payload contents or authorize publication. Token reconstruction is committed only after exact counts, history, canonical Range termination and resource checks succeed. Complete public stream support remains pending.
+
+
+### Sixteen-MiB complete finite frame consumer status
+
+DD-1477 now consumes the exact 64-byte frame header, 16-byte Range descriptor and declared payload for the reserved sixteen-MiB tuple. A finite call rejects either truncated or trailing frame bytes, validates frame-local history and canonical termination, reconstructs exactly the declared raw extent, and publishes only a fully successful frame. Failures preserve both caller raw output and frame layout. This implementation status does not change the specified stream bytes, existing variants or generic public parser admission; whole-stream support remains pending.

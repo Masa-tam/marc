@@ -1538,3 +1538,10 @@ seed1438,max_len136,timeout10,leak detection disabled, without crash, timeout,
 sanitizer or invariant finding. Initial campaign is retained separately. These
 bounded finite cases do not qualify streaming schedules, arbitrary8MiB owner
 admission, physical peak, performance or external/public integration.
+
+
+## FZ-0069: bounded sixteen-MiB finite frame transaction
+
+Date: 2026-10-05. tests/lzss_position_distance_16m_frame_fuzz.cpp mutates complete finite frame bytes and four private/public capacity fields. Input is at most 2136 bytes, raw extent at most 512, token count at most 64, events at most 320 and decisions at most 2176. Seeds include valid literals, overlap and short length families, plus canonical invalid history, length and distance recipes. Decode twice and compare deterministic result categories, exact counts, raw buffers and private tokens. Every failure requires zero publication and unchanged whole caller raw output and layout; every success is compared with independent scalar raw reconstruction and untouched tails.
+
+The actual harness and every reachable helper are compiled with address/undefined-behavior instrumentation and libFuzzer. Complete 10,000 runs, seed 1477, maximum length 2136 and per-input timeout 10, without crash, timeout, sanitizer or invariant finding. Leak detection is disabled. CMake includes an optional target under the existing fuzz configuration; this local campaign compiled the reachable helper set directly. Directed native tests separately cover full raw-frame far references. The bounded campaign does not establish maximum-window fuzz coverage, streaming schedules, public memory admission, peak memory, encoder behavior or release readiness.
