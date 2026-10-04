@@ -38583,3 +38583,29 @@ No new benchmark, actual injected failure, fuzz or external run is claimed.
 Late range/prefix injection remains unconfirmed. Release-wide similarity
 review is separate and no legal guarantee is made. Next seam implementation
 and actual qualification provenance: CR-1628.
+
+
+## CR-1628: Source-isolated late-failure implementation and qualification
+
+2026-10-04; author/reviewer: Codex. Task: implement DD-1457's independently
+designed DD-1456 seam/matrix while preserving Prepared privacy, failure
+invariants and production sources. Use only first-party design, types,
+original helpers and oracle/decoder/SHA primitives. No external or restricted
+implementation source was consulted or translated.
+
+Review covers one-translation-unit substitutions, normal/isolated/delegating
+object symbols, scoped controller, original-success and one-shot arrival,
+full added controls, retained snapshot capacity, deletion before receipt
+clearing, old-generation preservation and correct same-call valid-prefix
+accounting. Three final builds pass168 isolated checks plus24 ordinary
+controls, including fully address/undefined-instrumented helpers with leak
+detection disabled. Initial reporting outputs/build-command failure remain
+retained; final source-bound results are separate and not pooled. No existing
+codec/helper/CMake source change, timing or new fuzz.
+
+Close only the six-mode finite synthetic late-range/prefix gap. Maximum-frame
+injection, arbitrary token/profile failures and external verification are
+not claimed; existing helper-atomicity tests remain distinct. No speedup,
+physical-memory or public-adoption conclusion follows. Release-wide similarity
+review remains separate; no legal guarantee is made. Next scope provenance:
+CR-1629.

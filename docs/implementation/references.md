@@ -10762,3 +10762,16 @@ No external or restricted implementation source was consulted. The additive
 design docs/design/lzss-position-distance-8m-prepared-adoption-gate.md defines
 a dependency seam isolated to one test owner translation unit and a future
 bounded failure matrix; no injection code or coverage is established here.
+
+
+## IR-1216: Isolated prepared-owner late-failure qualification
+
+2026-10-04. Implement DD-1457 from first-party DD-1456/TVG-1323 and
+unchanged owner, coordinator, range, serializer, preflight and oracle sources.
+Add standalone driver/scoped seam sources under tests without production or
+CMake integration. Rename three dependency references only while compiling
+the isolated owner object. Shims call unchanged real helpers before synthetic
+postcondition violations. Object symbols verify isolation and direct real
+delegation. No external or restricted implementation source was consulted.
+Final qualification binds source, per-object options, link inputs, binaries
+and results; it includes no new timing or fuzz campaign.

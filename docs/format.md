@@ -8840,3 +8840,16 @@ is unchanged: preserve old private publication on owner refusal, and expose no
 bytes of a failing stream frame. Earlier valid bytes committed in the same
 failing process call remain legitimate and must match reported output counts.
 The test design does not establish another complete stream or decoder variant.
+
+
+### DD-1457 bounded late faults preserve publication contracts
+
+Isolated test-owner substitutions change no stream format, profile, ID, model,
+default or production behavior. Six-mode bounded qualification proves old
+owner-publication preservation and failed-frame privacy in first/second/tail
+contexts. A failing call may publish the header and earlier valid frames and
+consume failing raw bytes; output ends exactly before the failed frame.
+Staged failing calls write zero bytes and sticky error position stays at the
+prior validated boundary. The test-only synthetic seam establishes no new
+stream variant or external interoperability. Broader late-failure input space
+and maximum-frame injection do not follow from this finite matrix.

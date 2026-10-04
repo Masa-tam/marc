@@ -32537,3 +32537,61 @@ passed admission claims. No actual injection, new timing/fuzz or public
 integration occurs here; late range/prefix coverage remains unconfirmed.
 Next DD-1457 / IR-1216 / TVG-1324 / CR-1628 implements and qualifies the seam
 and matrix, before any later adoption/integration gate.
+
+
+## DD-1457: Qualify six bounded late-failure modes in an isolated owner
+
+2026-10-04. Add tests/lzss_position_distance_8m_late_fault_seam.hpp/.cpp and
+tests/lzss_position_distance_8m_late_failure_tests.cpp. Preserve every existing
+owner/coordinator/helper/test/benchmark source, CMake list, public API and
+format. Normal owner references original dependencies; the independently
+compiled isolated owner references only three test alternatives; the shim
+object defines alternatives and references original real helpers. Per-object
+options, link inputs and symbols confirm no duplicate owner or build-wide
+substitutions. No injection seam enters a production target. Prepared remains
+private and no caller-forgeable plan is added.
+
+A scoped thread-local controller checks original success and exact context
+before one injection. R1/R2 refuse after successful range writing, P1 after
+successful prefix writing, P2 after valid reparse with altered prefix length,
+P3 through actual invalid-magic rejection, and P4 through changed reparsed
+sequence/layout. The observable error stays limit_exceeded. Dirty candidate
+frame bytes never reach its pristine publication block. An earlier failure
+or missed hook fails qualification. Synthetic successful-helper postcondition
+violations test owner commit defenses, not helper failure atomicity or external
+malformed-stream detection. Those existing tests remain separate.
+
+Final source-bound qualification passes56 isolated checks and8 ordinary
+companion controls per build: three builds give168 isolated checks plus24
+controls. Fully instrument helper sources with address/undefined checks and
+leak detection disabled. Disarmed wires match ordinary prepared, safe owner
+and operation oracles; fresh unchanged consumers reproduce raw bytes. No
+clock or benchmark is used. The earlier reporting version also passed192
+checks and is retained separately, without pooling either batch.
+
+The cyclic160-byte fixture uses full64/full64/tail32 and now passes proposed
+one-MiB diagnostic admission. Concrete fixture578960, added shim working13100,
+external reservation595740 and operation-oracle logical882528 bytes are charged.
+These are conservative logical/control ledgers, not resident-memory or
+universal-fit claims. Full fixed snapshot capacities, original/candidate
+generations, raw/index and complete call views stay charged. Allocator capture
+is read-only observation, not fault injection or input mutation. Real deletion
+precedes receipt clearing.
+
+Owner refusals preserve publication pointer/full old bytes/all layout fields/
+length/pending and actually free five candidate blocks. Stream refusals retain
+exact earlier-valid prefixes and untouched sentinel suffixes; staged failing
+calls produce zero. Sticky errors survive repeated and invalid-flags calls.
+Positions are prior validated0/64/128, while accepted raw may be64/128/160.
+Zero/one-byte drains and bounded call guards pass. Final rows follow actual
+destruction and report zero live receipts with calls equalling real deletes.
+
+An initial build-command quoting error prevented compilation; retained logs
+and fresh destinations correct it without codec changes. Added reporting then
+records actual errors/post-destruction ledgers and repeats qualification in
+fresh destinations. Preserve all earlier evidence. Close the late range/prefix
+gap only for these six synthetic modes and this finite matrix. Arbitrary match
+tokens/profiles, maximum-frame fault injection and new fuzz are unestablished.
+No public adoption/default/CLI/format or external result. Next DD-1458 /
+IR-1217 / TVG-1325 / CR-1629 defines subsequent adoption/integration scope
+from measured tradeoffs and bounded fault evidence; no promotion is implied.

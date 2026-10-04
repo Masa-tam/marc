@@ -21484,3 +21484,39 @@ A synthetic successful-helper postcondition violation tests defensive owner
 commit; it does not prove the helper's original failure atomicity or decoder
 malformed-input/fuzz coverage. Original suites remain source-bound, not rerun.
 Late range/prefix injection remains unconfirmed. Next actual gate: TVG-1324.
+
+
+## TVG-1324: Actual isolated late-refusal matrix
+
+2026-10-04. Execute DD-1456 with cyclic full64/full64/tail32 raw and actual
+sequence/prior contexts. All six R1/R2/P1/P2/P3/P4 modes require real delegate
+success, the intended stage and exactly one injection. Twelve owner checks
+cover fresh/acknowledged replacement; thirty-six stream checks cover three
+failed frames and single-call/staged publication. Eight disarmed controls
+compare against eight separately linked ordinary-owner controls. Final
+three-build qualification is168 isolated checks plus24 companion controls,
+all passing and source/binary/symbol bound. Address/undefined instrumentation
+includes helpers with leak detection disabled. The earlier192-check reporting
+version is preserved separately and not pooled into final192 qualification.
+No new CTest, fuzz or benchmark is claimed; unchanged old suites remain
+source-bound.
+
+Compare owner frames and the complete530-byte stream against operation/safe
+oracles and ordinary prepared controls, SHA-256 and fresh unchanged consumers.
+Fault modes preserve old initialized token fields, full byte buffers/layout/
+length/pending, prove privately dirty candidate frame bytes with zero candidate
+publication, and reconcile real five-block deletion. Output guards and exact
+valid-prefix counts pass. Error code is limit_exceeded; position0/64/128 for
+failed raw64/64/32, accepted64/128/160. Sticky invalid-flags calls consume/write
+zero. Staged drains exercise zero and one-byte capacity before failed-call
+output0. Final records follow destruction, report live_after_destroy0 and
+calls equalling deletes. All test/shim/observer/trace/allocator controls, full
+snapshot capacities, old/new coexistence and call extents are charged.
+
+Object reference/definition checks prove normal/isolated/delegating symbol
+mapping. One-MiB admission is passed for this bounded fixture, not a physical
+memory or universal-fit result. The former late range/prefix gap is closed for
+this synthetic finite matrix; original helper failure atomicity, arbitrary
+match tokens/profiles, maximum-frame injection and new malformed-stream fuzz
+are distinct and unestablished here. No external run is added. Next gate:
+TVG-1325.
