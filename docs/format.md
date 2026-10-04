@@ -8873,3 +8873,8 @@ The proposed private wrapper preserves concrete original_size, dictionary 2/11, 
 ### DD-1461 private wrapper preserves stream contracts
 
 The new private owning adapter preserves known-size dictionary 2/11, context 1/12 and entropy 3/2. Confirmed match-bearing wire remains 394 bytes with boundaries 112/206/300/394 and identical operation/safe output; literal-heavy control remains 530 bytes. Unchanged decoder round trips both. Failed calls expose only earlier valid bytes; staged late failures emit zero. Input/capacity/whole-object overlap guards return sticky invalid_argument with zero counts at the prior accepted input position; delegated core errors retain their code/position. Ended results remain sticky even with invalid follow-up arguments. No new representation or unknown-size support is introduced.
+
+
+### DD-1462 maximum-frame qualification preserves representation
+
+No stream identity, profile, model or serialization changes. The private known-size eight-MiB representation retains dictionary 2/11, context 1/12, entropy 3/2, 47 contexts and total 32768. Full-frame operation/safe/adapter wires are byte-identical and decoded by the unchanged decoder. Exact-budget refusal exposes only the 112-byte stream header for a first-frame failure, or the complete preceding frame for a replacement failure; the failed frame and untouched sentinel suffix remain private. Delegated limit_exceeded positions remain the prior validated raw boundary. This diagnostic adds no public compatibility or unknown-size protocol.

@@ -10795,3 +10795,8 @@ and results; it includes no new timing or fuzz campaign.
 ## IR-1220: Private prepared owning-adapter implementation
 
 2026-10-04. Implement DD-1460 from first-party exact allocator, prepared coordinator and ownership contracts. Add private adapter/query/delegate and standalone tests without production registration. Reuse independently authored DD-1459 fixture/oracles in a separate driver, preserving all old sources. Six delegate substitutions apply only to the isolated adapter translation unit, three existing late-fault substitutions only to the isolated owner. No external implementation consulted. Final source-bound qualification comprises 450 checks, distinct from earlier development results; no new benchmark or fuzz.
+
+
+## IR-1221: Maximum-frame private adapter qualification
+
+2026-10-04. DD-1462 derives a new standalone diagnostic from the first-party prepared-stream diagnostic, using unchanged operation/safe encoders, owning adapter, allocator delegation and decoder. Actual per-frame token/event/payload plans determine admission before large output allocations. No external or restricted implementation consulted. Bind three routes, ordinary/isolated objects and 24 untimed launches to their exact sources, symbols and binaries. Existing timing and bounded late-fault evidence remain separate.
