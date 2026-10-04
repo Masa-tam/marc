@@ -10894,3 +10894,8 @@ DD-1480 adapts the repository-owned eight-MiB index to the distinct sixteen-MiB 
 ### IR-1240: sixteen-MiB token-direct Range coding
 
 DD-1481 uses the repository-owned eight-MiB token-direct integer Range traversal, the distinct sixteen-MiB field cursor and the independent integer/field description in tests/lzss_position_distance_16m_reference_vectors.py. Reuse semantic token fixtures while recomputing expected payloads for the twenty-five-symbol distance model and twenty-four adaptive extra contexts. Do not use earlier-profile expected bytes as sixteen-MiB vectors. No external implementation source is consulted.
+
+
+### IR-1241: sixteen-MiB complete finite frame encoding
+
+DD-1482 uses first-party eight-MiB materialized-operation and token-direct frame encoders, distinct sixteen-MiB indexed parsing, token-direct Range coding, serializer and preflight. Independent frame layout and Range equations remain the conformance route; earlier-profile expected frames are not sixteen-MiB vectors. No external implementation source is consulted.

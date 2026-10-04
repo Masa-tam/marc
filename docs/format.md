@@ -8972,3 +8972,8 @@ DD-1480 adds exact indexed selection under the existing sixteen-MiB profile. It 
 ### Sixteen-MiB private token-direct payload encoding status
 
 DD-1481 traverses the defined typed-token grammar directly into the existing sixteen-MiB Range payload representation. It changes no stream identity, field order, context, adaptive update or canonical finishing byte. Complete frame/stream encoding and public factory/CLI admission remain pending.
+
+
+### Sixteen-MiB complete finite frame encoder contract
+
+DD-1482 connects the existing sixteen-MiB token and Range representation to its complete frame prefix. It changes no algorithm identity, field order or framing representation. Independent expected bytes must use dictionary variant twelve, context variant thirteen and forty-eight contexts. Complete stream/owning factories and CLI admission remain pending.
