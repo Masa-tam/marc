@@ -679,3 +679,32 @@ all earlier schema profile lists and the 8193-byte fixture remain unchanged.
 This small exchange fixture does not cover the full four-MiB window. Complete
 corpus and window-boundary checks are separate evidence. Hosted CI and external
 producer/consumer verification must qualify the actual new revision.
+
+## 8 MiB position-distance selector
+
+Use the same explicit selection for both directions:
+
+```console
+marc encode --codec lzss-position-distance-dynamic-range-8m input.bin output.marc
+marc decode --codec lzss-position-distance-dynamic-range-8m output.marc restored.bin
+```
+
+This experimental selection uses window/frame/block 8388608 bytes, matches
+3..258 and exact identity 2/11 + 1/12 + 3/2. It uses the prepared owning encoder
+and five-buffer decoder under an explicit 1073741824-byte codec logical policy,
+150994949-byte payload ceiling and 1099511627776-byte raw output ceiling.
+Call buffers are 65536 bytes each; entropy entries/range total are 2599/32768,
+expansion ratio/slack are 1024/1048576. Full decoder capacities are retained
+even for small files. Allocation or prospective generation refusal fails the
+invocation without increasing limits, retrying or switching strategy; initial
+encoder query success alone is not complete-stream admission. These bounds
+do not assert resident-memory fit or include file-library/allocator overhead.
+
+There is no automatic file-size selection, profile/finder/resource override or
+uppercase 8M alias. Existing codec names, defaults and smaller-window meanings
+are unchanged. The decoder accepts bounded smaller legal header parameters.
+Failed frames are never published. Whole-file output is committed only after
+complete success; a failing invocation removes its own temporary output while
+preserving pre-existing destination/temporary files. Schema 60 retains its 70
+archives; schema 61 with the additional archive and external revision-specific
+verification remains a subsequent gate.

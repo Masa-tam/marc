@@ -38690,3 +38690,7 @@ docs/design/lzss-position-distance-8m-public-encoder.md.
 ### CR-1642: command-line and exchange design review
 
 2026-10-04, author/reviewer Codex. Independently designed DD-1471 from repository-owned public boundaries, file-reader/transaction behavior and frozen schema-60 exchange code. No external implementation was consulted or copied. Review binds inspected source hashes, exact public documentation prefixes and preserved prior artifacts. Production sources, C ABI, build/test registration, command-line behavior and bundle inventory remain unchanged. The proposed policy, new selection and schema are unexecuted design obligations; this is neither runtime qualification nor a release similarity review.
+
+### CR-1643: eight-MiB command-line provenance and review
+
+2026-10-04, author/reviewer Codex. DD-1472 independently connects repository-owned public boundaries to the existing file transaction using checked opaque storage and bounded I/O. No external implementation source consulted or copied. Review binds source/library hashes, identical final three-route records, isolated allocation receipts, private operation comparison, registered CTests, exact documentation prefixes and preserved prior artifacts. Existing core codecs, C ABI and schema-60 inventory are unchanged. Earlier trials and the initial missing-reference-dependency link failure remain excluded diagnostic evidence. This is not release similarity review or revision-specific CI/external admission.

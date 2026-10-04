@@ -1,4 +1,5 @@
 #include <marc/marc.h>
+#include "lzss_position_distance_8m_cli.hpp"
 
 #include <algorithm>
 #include <cstdint>
@@ -196,6 +197,7 @@ enum class Codec {
     lzss_position_distance_dynamic_range,
     lzss_position_distance_dynamic_range_1m,
     lzss_position_distance_dynamic_range_4m,
+    lzss_position_distance_dynamic_range_8m,
     lzss_contextual_rans,
     lzss_contextual_rans_1m,
     lzss_contextual_rans_4m,
@@ -1572,6 +1574,8 @@ bool process_file(const marc_direction direction,
                   const Codec codec,
                   const std::uint64_t source_size,
                   std::ifstream& source, std::ofstream& sink) {
+    if (codec == Codec::lzss_position_distance_dynamic_range_8m)
+        return marc_cli_8m::process_file(direction, source_size, source, sink);
     marc_checksum_raw_config checksum_config{};
     marc_blocked_huffman_config blocked_huffman_config{};
     marc_adaptive_huffman_config adaptive_huffman_config{};
@@ -2413,6 +2417,7 @@ void usage() {
                  "lzss-contextual-dynamic-range-64m, "
                  "lzss-position-distance-dynamic-range, lzss-position-distance-dynamic-range-1m, "
                  "lzss-position-distance-dynamic-range-4m, "
+                 "lzss-position-distance-dynamic-range-8m, "
                  "lzss-contextual-rans, lzss-contextual-rans-1m, "
                  "lzss-contextual-rans-4m, lzss-contextual-rans-16m, "
                  "lzss-contextual-rans-64m, "
@@ -2503,6 +2508,8 @@ int main(const int argc, const char* const argv[]) {
             codec = Codec::lzss_position_distance_dynamic_range_1m;
         else if (name == "lzss-position-distance-dynamic-range-4m")
             codec = Codec::lzss_position_distance_dynamic_range_4m;
+        else if (name == "lzss-position-distance-dynamic-range-8m")
+            codec = Codec::lzss_position_distance_dynamic_range_8m;
         else if (name == "lzss-contextual-rans")
             codec = Codec::lzss_contextual_rans;
         else if (name == "lzss-contextual-rans-1m")

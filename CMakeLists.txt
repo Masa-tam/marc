@@ -6712,3 +6712,20 @@ if(MARC_BUILD_TESTS)
         endif()
     endforeach()
 endif()
+
+if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
+    add_executable(marc_cli_position_distance_8m_allocation_tests
+        tests/cli_position_distance_8m_allocation_tests.cpp)
+    target_compile_features(marc_cli_position_distance_8m_allocation_tests PRIVATE cxx_std_20)
+    target_link_libraries(marc_cli_position_distance_8m_allocation_tests PRIVATE marc::static)
+    add_test(NAME marc_cli_position_distance_8m_allocation
+        COMMAND marc_cli_position_distance_8m_allocation_tests
+            ${CMAKE_CURRENT_BINARY_DIR}/cli8m-allocation)
+    find_package(Python3 COMPONENTS Interpreter QUIET)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_cli_position_distance_8m_boundaries
+            COMMAND ${Python3_EXECUTABLE}
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_distance_8m_boundaries.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli8m-boundaries)
+    endif()
+endif()

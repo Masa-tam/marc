@@ -10845,3 +10845,7 @@ DD-1470 uses repository-owned public factories, private stream decoder, finite f
 ### IR-1230: command-line and exchange integration references
 
 DD-1471 uses repository-owned eight-MiB public factories and resource contracts, the existing bounded command-line file loop and transaction, exact selection tests, and schema-60 generator/verifier compatibility rules. No external implementation was consulted. See docs/design/lzss-position-distance-8m-cli-exchange.md.
+
+### IR-1231: eight-MiB command-line implementation references
+
+DD-1472 implements DD-1471 using repository-owned public encoder/decoder contracts, the bounded file loop and unchanged file transaction. Independent raw recipes, a private operation reference and isolated allocation receipts validate the connection. No external implementation source consulted. See docs/design/lzss-position-distance-8m-cli-implementation.md.

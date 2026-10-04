@@ -8926,3 +8926,7 @@ No header, token, model, termination, algorithm identifier or wire representatio
 ### DD-1471: proposed integration without new wire representation
 
 The proposed eight-MiB command-line selection retains Format 2.0, dictionary 2/11, context 1/12 and entropy 3/2 with 47 contexts and range total 32768. Workspace ownership and profile-local logical budgets are not wire fields. Schema 61 is a later exchange-inventory proposal, not a stream version change or current inventory update. Strict trailing checks, concrete bounded original size, canonical termination and failed-frame nonpublication remain authoritative.
+
+### DD-1472: command-line selection retains the eight-MiB grammar
+
+The explicit eight-MiB selection writes existing Format 2.0, dictionary 2/11, context 1/12 and entropy 3/2. Fixed command-line encoder parameters are window/frame 8388608, matches 3..258, 47 contexts and range total 32768. The decoder accepts smaller legal header parameters within the unchanged validators and explicit limits. Ownership, source-bound query sizes and logical budgets are not serialized. Strict termination/trailing checks and failed-frame nonpublication remain unchanged; no archive inventory or stream version update.
