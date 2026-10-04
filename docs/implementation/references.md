@@ -10889,3 +10889,8 @@ DD-1479 uses repository-owned eight-MiB reference parsing and the distinct sixte
 ### IR-1239: sixteen-MiB indexed dictionary parsing
 
 DD-1480 adapts the repository-owned eight-MiB index to the distinct sixteen-MiB parser contract. The exhaustive sixteen-MiB parser and independent descending-length oracle remain separate comparison routes. The candidate-extension predicate follows directly from nearest-first traversal and longest-match selection; no external implementation source was consulted.
+
+
+### IR-1240: sixteen-MiB token-direct Range coding
+
+DD-1481 uses the repository-owned eight-MiB token-direct integer Range traversal, the distinct sixteen-MiB field cursor and the independent integer/field description in tests/lzss_position_distance_16m_reference_vectors.py. Reuse semantic token fixtures while recomputing expected payloads for the twenty-five-symbol distance model and twenty-four adaptive extra contexts. Do not use earlier-profile expected bytes as sixteen-MiB vectors. No external implementation source is consulted.

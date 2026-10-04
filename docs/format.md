@@ -8967,3 +8967,8 @@ DD-1479 implements the defined longest-match/nearest-tie reference token selecti
 ### Sixteen-MiB private indexed parsing status
 
 DD-1480 adds exact indexed selection under the existing sixteen-MiB profile. It produces the same tokens as the exhaustive parser; no distance class, modeled field, frame or stream representation changes. Public encoder/factory/CLI admission remains pending.
+
+
+### Sixteen-MiB private token-direct payload encoding status
+
+DD-1481 traverses the defined typed-token grammar directly into the existing sixteen-MiB Range payload representation. It changes no stream identity, field order, context, adaptive update or canonical finishing byte. Complete frame/stream encoding and public factory/CLI admission remain pending.

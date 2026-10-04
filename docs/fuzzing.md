@@ -1568,3 +1568,10 @@ Date: 2026-10-05. Mutate at most 128 raw bytes and an 18-byte parameter/capacity
 The actual harness and reachable helpers are freshly compiled with libFuzzer and address/undefined-behavior instrumentation. Complete 10,000 runs, seed 14800, maximum input length 146 and per-input timeout ten, without crash, timeout, sanitizer or invariant finding. Leak detection is disabled. This bounded differential does not qualify maximum incompressible encoding, physical peak of a complete encoder, prepared ownership, public resource admission or release readiness.
 
 The scaled index uses 1,048,576 heads. Its bounded fuzz fixture admits the real complete workspace under a 16-MiB harness-only budget; this does not change any public resource limit. Preserve the earlier 65,536-head campaign separately.
+
+
+## FZ-0073: bounded sixteen-MiB token-direct Range differential
+
+Date: 2026-10-05. Construct bounded typed-token recipes from inputs of at most 128 bytes. Mutate late token kind/length/distance, declared event/decision/raw counts, flags, memory and output/scratch capacities. Valid tokens traverse token-direct and materialized-operation Range paths, compare every payload byte, decode and compare every token, and repeat for determinism. Every refusal preserves the complete caller output and descriptor with zero committed bytes.
+
+The actual harness and reachable helpers are freshly compiled with libFuzzer and address/undefined-behavior instrumentation. Complete 10,000 runs, seed 1481, maximum input length 128 and per-input timeout ten, without crash, timeout, sanitizer or invariant finding. Leak detection is disabled. Directed native tests separately cover the high reachable distance classes and full-frame far references. This bounded differential does not qualify complete frame/stream encoding, prepared lifetime, physical peak of a public encoder, public memory policy or release readiness.

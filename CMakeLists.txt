@@ -484,6 +484,7 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_16m_stream_decoder.cpp
     src/dictionary/lzss_position_distance_16m_reference.cpp
     src/dictionary/lzss_position_distance_16m_indexed.cpp
+    src/entropy/lzss_position_distance_16m_token_range_encoder.cpp
     src/marc.cpp
 )
 
@@ -6897,4 +6898,36 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_position_distance_16m_indexed PRIVATE
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_position_distance_16m_indexed PRIVATE marc::static)
+endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_distance_16m_token_range_tests
+        tests/lzss_position_distance_16m_token_range_tests.cpp
+        src/entropy/lzss_position_distance_16m_token_range_encoder.cpp
+        src/context/lzss_position_distance_16m_mapper.cpp
+        src/context/lzss_position_distance_16m_tokens.cpp
+        src/entropy/lzss_position_distance_16m_range_encoder.cpp
+        src/entropy/lzss_position_distance_16m_range_decoder.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_distance_16m_token_range_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_16m_token_range_tests PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_16m_token_range_tests PRIVATE GTest::gtest_main)
+    add_test(NAME marc_position_distance_16m_token_range
+        COMMAND marc_position_distance_16m_token_range_tests)
+    set_tests_properties(marc_position_distance_16m_token_range PROPERTIES TIMEOUT 60)
+endif()
+
+if(MARC_BUILD_FUZZERS)
+    add_executable(marc_fuzz_position_distance_16m_token_range
+        tests/lzss_position_distance_16m_token_range_fuzz.cpp)
+    target_compile_features(marc_fuzz_position_distance_16m_token_range PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_distance_16m_token_range PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_distance_16m_token_range PRIVATE
+        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_position_distance_16m_token_range PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_position_distance_16m_token_range PRIVATE marc::static)
 endif()
