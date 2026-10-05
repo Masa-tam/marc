@@ -39067,3 +39067,20 @@ fixed-path build are preserved. Source revision attribution uses clean source
 and recorded binary/source hashes, not an unimplemented embedded revision API.
 No external source is consulted; no release or new hosted/external success is
 inferred from local qualification.
+
+
+### CR-1672: generated token-vector constant initialization correction
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: reproduce and correct the reported large constexpr vector initialization
+failure without changing vector semantics or codec behavior.
+References: IR-1259/DD-1500/TVG-1367, first-party generator and diagnostics.
+The reported failure is reproduced before editing. Literal array extents
+replace scanning during view construction, while retaining constexpr storage.
+All twenty-nine generated rows preserve their complete semantic fields. The
+corrected header passes default and separately bounded constant evaluation,
+a clean configured build and affected typed/compact suites, with a second
+compiler route confirming those suites. Review preserves all production
+sources, public ABI, fixed runtime, earlier artifacts and vector bytes.
+No external implementation is consulted; no wire, budget or release-state
+change follows this test-fixture portability correction.

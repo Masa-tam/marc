@@ -33092,3 +33092,17 @@ manifests must identify the actual final source revision and producer binary.
 Hosted CI and external consumer reports belong to their specific revisions
 and are not inferred from local exchange tests. Existing wire, ABI, defaults,
 limits and release state do not change.
+
+
+### DD-1500: bounded constant initialization of large test literals
+
+The generated thirty-two-MiB token-vector array remains constexpr. Construct
+its string views through a template receiving a literal array reference and
+passing its extent minus one to the pointer-and-length constructor. The
+pointer-only view constructor scans each large literal and can exceed a
+compiler's default constant-evaluation step budget across the whole array.
+Literal extents avoid that scan without increasing compiler limits, switching
+to dynamic initialization or changing any expected token/payload byte. Apply
+the same construction in the generator so regeneration retains the correction.
+Codec implementation, stream representation, public ABI and runtime limits
+remain unchanged.

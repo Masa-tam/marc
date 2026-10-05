@@ -11019,3 +11019,12 @@ historical conversion and guarded negative cases. Add only the qualified
 DD-1488/DD-1497/DD-1498 profile and preserve the independently generated
 8,193-byte fixture and prior seventy-two archive representations.
 No external implementation or source consultation.
+
+
+### IR-1259: finite token-vector literal extent
+
+Use the repository-owned thirty-two-MiB token-vector generator, independent
+Range equations and compiler diagnostics for constant-evaluation limits.
+The length of a string literal's array includes its terminator; construct each
+view from its pointer and array extent minus one. No external implementation
+source or generated payload from another implementation is consulted.

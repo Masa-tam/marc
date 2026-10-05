@@ -20,9 +20,10 @@ def generate():
     pattern = r'\{\s*"([^"]+)"\s*,\s*((?:"[0-9a-f]*"\s*)+),\s*((?:"[0-9a-f]*"\s*)+),\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\}'
     rows = re.findall(pattern, data.decode('ascii'))
     assert len(rows) == 29
-    header = '#ifndef MARC_TEST_POSITION_DISTANCE32M_TOKEN_RANGE_VECTORS_HPP\n#define MARC_TEST_POSITION_DISTANCE32M_TOKEN_RANGE_VECTORS_HPP\n#include <string_view>\n#include <array>\nnamespace token_range_vectors {\nstruct Vector { std::string_view name, tokens, payload; unsigned f,t,e,d; };\ninline constexpr std::array<Vector,29> vectors{{\n'
+    header = '#ifndef MARC_TEST_POSITION_DISTANCE32M_TOKEN_RANGE_VECTORS_HPP\n#define MARC_TEST_POSITION_DISTANCE32M_TOKEN_RANGE_VECTORS_HPP\n#include <string_view>\n#include <array>\n#include <cstddef>\nnamespace token_range_vectors {\n// Use the literal extent without scanning large strings during constant evaluation.\ntemplate<std::size_t N>\nconstexpr std::string_view literal_view(const char (&value)[N]) noexcept {\n    return {value, N - 1};\n}\nstruct Vector { std::string_view name, tokens, payload; unsigned f,t,e,d; };\ninline constexpr std::array<Vector,29> vectors{{\n'
     def quoted(value):
-        return '\n'.join('"' + part + '"' for part in textwrap.wrap(value, 960)) if value else '""'
+        parts = '\n'.join('"' + part + '"' for part in textwrap.wrap(value, 960)) if value else '""'
+        return 'literal_view(' + parts + ')'
     for name, token_parts, unused_old_payload, *unused_old_counts in rows:
         token_hex = ''.join(re.findall(r'"([0-9a-f]*)"', token_parts))
         if token_hex:
@@ -37,7 +38,7 @@ def generate():
             assert name == 'distance_classes'
             tokens = [(0, 65, 0, 0)] * 4096 + [(1, 0, 1 << i, 5) for i in range(13)]
         payload, events, decisions, raw = oracle.encode(tokens)
-        header += '{"' + name + '",' + quoted(token_hex) + ',' + quoted(payload.hex()) + f',{raw},{len(tokens)},{events},{decisions}' + '},\n'
+        header += '{' + quoted(name) + ',' + quoted(token_hex) + ',' + quoted(payload.hex()) + f',{raw},{len(tokens)},{events},{decisions}' + '},\n'
     return header + '}};\n} // namespace token_range_vectors\n#endif\n'
 
 if __name__ == '__main__':

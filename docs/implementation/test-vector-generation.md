@@ -22003,3 +22003,17 @@ retained and inspected against their distinct codec inventories. Each route
 passes twenty-seven guarded schema-63 rejection cases with zero codec launches
 and zero output files. Fixture revisions are explicitly synthetic and do not
 stand in for revision-bound final producers or external consumer evidence.
+
+
+### TVG-1367: constant-evaluation portability of token vectors
+
+Regenerate all twenty-nine thirty-two-MiB token/Range vectors with IR-1259 and
+DD-1500 literal views. Compare every semantic name, token hex string, expected
+payload hex string and F/T/E/D count with the retained original header; all
+fields are identical. Regeneration changes only the C++ view construction.
+The original header reproduces a constant-evaluation step-limit failure. The
+corrected header compiles with the default budget and a separate ten-thousand-
+step budget. A complete clean configured production/test build and the typed
+and compact Range regression suites pass; a second compiler route also passes
+both affected suites. No production compiler limit is raised and no fixture
+is shortened to obtain success.
