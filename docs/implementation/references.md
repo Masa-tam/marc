@@ -10904,3 +10904,8 @@ DD-1482 uses first-party eight-MiB materialized-operation and token-direct frame
 ### IR-1242: private sixteen-MiB compact token storage
 
 DD-1483 uses the repository-owned LZSS canonical byte-token representation, distinct sixteen-MiB indexed match selection and typed-token validator, and token-direct integer Range arithmetic. Inspection of the existing eight-MiB owner confirms it retains typed-token pairs; it is a lifetime/admission reference, not an existing compact token implementation. No external implementation source is consulted.
+
+
+### IR-1243: sixteen-MiB compact Range and frame composition
+
+DD-1484 uses only repository-owned canonical LZSS byte serialization, the distinct sixteen-MiB typed validator/field cursor, integer Range arithmetic, explicit frame layout and indexed selection. Earlier materialized and typed-direct encoder paths remain independent comparison references. No external implementation source is consulted.

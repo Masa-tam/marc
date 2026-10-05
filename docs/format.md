@@ -8982,3 +8982,8 @@ DD-1482 connects the existing sixteen-MiB token and Range representation to its 
 ### Sixteen-MiB private compact storage contract
 
 DD-1483 reuses the baseline canonical LZSS byte-token serialization only inside private encoder storage. The sixteen-MiB wire payload remains the same modeled-field Range representation and complete frame. Compact storage bytes are not emitted as a new frame format or algorithm variant. No native token structure is serialized or cast onto byte storage.
+
+
+### Sixteen-MiB compact encoder prefix validation
+
+DD-1484 introduces private compact-storage Range/frame/prefix helpers without changing any serialized field or algorithm identity. The compact prefix validator applies the same sixteen-MiB wire constraints as the existing typed prefix validator. Its storage accounting reflects a complete compact owner, not a materialized typed-token array. Prefix success proves only the bounded prefix and its declared policy, never the entropy payload or a frame's eligibility for publication. Public decoder and typed-prefix admission remain unchanged.
