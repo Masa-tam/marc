@@ -33071,3 +33071,24 @@ overhead. Every failed file operation preserves existing targets and removes
 only the temporary file created by that invocation. Failed frame bytes never
 reach output; earlier committed frame bytes may reside in the temporary file
 until transaction rollback. Exchange registration is a subsequent gate.
+
+
+### DD-1499: schema-63 thirty-two-MiB exchange admission
+
+Append `lzss-position-distance-dynamic-range-32m` as archive 73 under schema 63
+and `marc-cli-v63`. Freeze schema 62's seventy-two-entry order and all older
+lists. Generator and verifier require exact format 2.0, dictionary 2/13,
+context 1/14 and entropy 3/2, including both bytes of every identity field.
+Admit the complete manifest, file names, counts/order/duplicates, file sizes,
+input/archive hashes and the new fixed header before launching any codec or
+publishing decoded/re-encoded files. A valid hash cannot excuse a wrong
+identity. Historical schemas remain genuine inventories, not a changed
+schema number on the latest list. Preserve prior producer bytes and compare
+complete raw and wire output across independent local production builds.
+The 8,193-byte exchange fixture is separate from full-window resource,
+chunking, allocation failure and failed-frame publication evidence.
+Comparison manifests use explicit synthetic revision metadata; deliverable
+manifests must identify the actual final source revision and producer binary.
+Hosted CI and external consumer reports belong to their specific revisions
+and are not inferred from local exchange tests. Existing wire, ABI, defaults,
+limits and release state do not change.

@@ -11010,3 +11010,12 @@ No external source consultation.
 Use the first-party sixteen-MiB CLI storage/file loop and transaction,
 DD-1488/DD-1497, complete public queries and independent integer frame oracle.
 No external implementation or source is consulted.
+
+
+### IR-1258: thirty-two-MiB append-only exchange
+
+Use repository-owned schema-62 generation, complete-manifest validation,
+historical conversion and guarded negative cases. Add only the qualified
+DD-1488/DD-1497/DD-1498 profile and preserve the independently generated
+8,193-byte fixture and prior seventy-two archive representations.
+No external implementation or source consultation.

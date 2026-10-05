@@ -1509,3 +1509,33 @@ executions or inspect the hosted CI run. The small 8193-byte exchange fixture
 does not replace the separately qualified maximum-window, memory-limit and
 failed-frame nonpublication tests. This evidence update changes no codec,
 format, ABI, limits, defaults, inventory or release state.
+
+
+### IX-0061: schema-63 thirty-two-MiB exchange gate
+
+Schema 63 and `marc-cli-v63` append `lzss-position-distance-dynamic-range-32m`
+as archive 73 with exact identity 2/13 + 1/14 + 3/2. Preserve the schema-62
+prefix of seventy-two archives and the independent 8193-byte fixture.
+Qualify generation, decoding, deterministic re-encoding, all genuine schemas
+1..63 and guarded whole-manifest rejection before any codec launch.
+Maximum-window, resource and failed-frame behavior have separate evidence.
+
+IX-0060's maintainer-reported CI and four external 72-archive results apply to
+8e8a77c55957ea334fbf3632f6e9c1d7500f32b4. They are not evidence for the new
+73-archive integration revision. Local qualification, final producer metadata,
+hosted CI and external reports are attributed separately; the maintainer
+performs push and provides revision-specific external results.
+
+Local qualification for IX-0061 passes all 4,041 tests in the complete
+configured suite and three independently rebuilt production CLI routes.
+All seventy-three archives decode and deterministically re-encode; the entire
+old seventy-two-archive prefix is byte-identical to a separately frozen bundle
+from the prior qualified runtime. The three producer bundles have identical
+input and archive bytes. Preserved genuine schema inventories 1..63 all pass,
+including the historical name conversion. Each route rejects twenty-seven new
+schema-63 negatives before any codec launch or output publication; previous
+schema-specific guards remain in the complete suite. Instrumentation covers
+the whole production library with address/undefined-behavior checking and leak
+detection disabled. Synthetic fixture revision metadata is kept separate from
+final clean-source revision-bound producer bundles. Hosted CI and the four
+external consumer roles for the new revision remain maintainer-owned gates.

@@ -9052,3 +9052,15 @@ payload cap is below the normative mathematical ceiling and is a deliberate
 application resource restriction. Full counts/history/canonical finish remain
 mandatory. Existing output files are preserved; a failed invocation removes
 its own temporary file. Schema-63 exchange remains a separate gate.
+
+
+### Thirty-two-MiB exchange identity
+
+DD-1499 appends the existing dictionary 2/13 + context 1/14 + entropy 3/2
+profile as archive 73 in schema 63, `marc-cli-v63`. This is an exchange manifest
+extension and introduces no stream field. Preserve all older stream bytes and
+inventories. Generator and verifier check both bytes of version and algorithm
+identity fields. Complete manifest admission precedes decoder execution;
+frame counts, history, bounds and canonical finish still belong to the
+qualified codec validator. Small exchange fixtures do not prove maximum-window
+admission or replace failed-frame nonpublication tests.

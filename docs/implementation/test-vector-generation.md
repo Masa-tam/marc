@@ -21978,3 +21978,28 @@ Exercise each real fallible allocation with actual deletion and borrowed
 workspace lifetime ordering. Derive the full-generation bound from the public
 initial query and configured R/P. Recheck the previous sixteen-MiB CLI after
 its formerly unsupported thirty-two-MiB name becomes a supported selection.
+
+
+### TVG-1366: genuine schema-63 and frozen prefix exchange
+
+Generate the unchanged independent 8,193-byte fixture with the retained prior
+producer, freeze all seventy-two prior archives and compare every byte with
+new producers. Verify decode plus deterministic re-encode of all seventy-three
+archives. Exercise genuine inventories for schemas 1..63, retaining the
+schema-36/37 canonical-name conversion and every previous membership list.
+Twenty-seven new guarded mutations cover false downgrade, codec set,
+missing/duplicate/order, sizes/hashes, truncation, dictionary/context selectors
+and both bytes at offsets 4/6/12/14/16/18/96/98. Rehash identity mutations so
+identity validation itself must reject them. Require zero codec launches and
+zero decoded/re-encoded files for every negative, including a bad final entry
+after seventy-two valid entries. This small fixture does not replace the
+qualified complete 32 MiB CLI boundary and resource tests.
+
+Qualification: the complete configured suite passes 4,041 tests. Three fresh
+production CLI routes pass generation, round-trip, deterministic re-encoding,
+byte equality for all seventy-three entries and preservation of the frozen
+seventy-two-entry prefix. Actual historical manifests for schemas 1..63 are
+retained and inspected against their distinct codec inventories. Each route
+passes twenty-seven guarded schema-63 rejection cases with zero codec launches
+and zero output files. Fixture revisions are explicitly synthetic and do not
+stand in for revision-bound final producers or external consumer evidence.

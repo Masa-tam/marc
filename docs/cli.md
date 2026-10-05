@@ -770,3 +770,16 @@ accepted. Failed frames never publish; existing targets and temporary files
 are preserved. Only whole-stream success commits the output file. This
 experimental selection is separate from the unchanged 42-profile baseline
 table. Schema-63/archive-73 exchange registration is a subsequent gate.
+
+
+## Schema 63 exchange inventory
+
+Schema 63 (`marc-cli-v63`) appends `lzss-position-distance-dynamic-range-32m`
+as archive 73 after the frozen 72-entry schema-62 prefix. Its exact identity is
+2/13 + 1/14 + 3/2. The independent 8193-byte fixture and every older inventory
+remain unchanged. Entire-manifest admission precedes codec launch and output
+publication, including the final archive's version, dictionary, context and
+entropy identity. A rehashed wrong identity remains invalid. Full-window and
+failed-frame behavior is established separately by public and actual CLI
+qualifications. Hosted CI and four external consumer routes require reports
+for the final new revision; local tests do not close those external gates.

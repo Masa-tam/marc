@@ -2128,3 +2128,22 @@ foreach(thirty_two_mib_c_contract IN ITEMS
         message(FATAL_ERROR "Missing thirty-two-MiB C contract: ${thirty_two_mib_c_contract}")
     endif()
 endforeach()
+
+
+foreach(thirty_two_mib_exchange_contract IN ITEMS
+        "## Schema 63 exchange inventory" "marc-cli-v63" "archive 73"
+        "2/13 + 1/14 + 3/2" "8193-byte")
+    string(FIND "${cli_content}" "${thirty_two_mib_exchange_contract}" thirty_two_mib_exchange_offset)
+    if(thirty_two_mib_exchange_offset EQUAL -1)
+        message(FATAL_ERROR "Missing thirty-two-MiB exchange contract: ${thirty_two_mib_exchange_contract}")
+    endif()
+endforeach()
+foreach(thirty_two_mib_measurement_contract IN ITEMS
+        "## BM-0210: Complete thirty-two-MiB CLI resource observation"
+        "67,108,864" "67,147,853" "378,281,984" "239,865,856"
+        "single observations are not medians")
+    string(FIND "${benchmark_content}" "${thirty_two_mib_measurement_contract}" thirty_two_mib_measurement_offset)
+    if(thirty_two_mib_measurement_offset EQUAL -1)
+        message(FATAL_ERROR "Missing thirty-two-MiB resource observation: ${thirty_two_mib_measurement_contract}")
+    endif()
+endforeach()

@@ -39043,3 +39043,27 @@ Old core implementation and ABI files are byte-identical. The forty-two-row
 baseline inventory remains separate from additional experimental selections;
 the actual CLI name count grows from seventy-two to seventy-three, with fifty-six
 public direction/configuration initializers. Exchange remains a separate gate.
+
+
+### CR-1671: thirty-two-MiB exchange integration
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: append schema 63/archive 73 to qualified public/CLI integration,
+preserving every earlier archive and manifest admission before codec launch.
+References: IR-1258/DD-1499/TVG-1366 and first-party exchange scripts.
+No external or copyleft implementation source is consulted. Qualification,
+source-preservation and similarity review follow native exchange tests.
+
+Qualification and review: the complete configured suite passes 4,041 tests;
+three freshly built production routes agree on all seventy-three archives,
+retain every old archive byte and reject twenty-seven new guarded manifest
+cases each before launching a codec. All genuine schemas 1..63 are qualified
+with retained inventories. Address/undefined-behavior instrumentation covers
+the whole production library; leak detection is disabled. Review confirms
+unchanged core implementation, public ABI, CLI implementation and build list;
+only append-only exchange selection/identity admission and its first-party
+negative/schema tests change executable behavior. Previous evidence and the
+fixed-path build are preserved. Source revision attribution uses clean source
+and recorded binary/source hashes, not an unimplemented embedded revision API.
+No external source is consulted; no release or new hosted/external success is
+inferred from local qualification.

@@ -10231,3 +10231,39 @@ experience and this review do not prove global exhaustion. Future different
 window/layer or measurement designs must establish their own bounded scope.
 No source/harness/build/test/CTest, format/ABI/default/limit, inventory, fixed
 binary, fuzz or external gate change follows this retrospective review.
+
+
+## BM-0210: Complete thirty-two-MiB CLI resource observation
+
+Date: 2026-10-06. Observe one complete actual CLI encode/decode pair using
+two full 33,554,432-byte frames, 65,536-byte I/O, a 67,108,864-byte payload cap
+and a 536,870,912-byte codec-accounting policy. The independent input is
+SHAKE-256 of `marc independent DD-1498 incompressible recipe`, requested for
+67,108,864 bytes. Source and archive are files outside the measured process;
+the child process has no retained whole-input or whole-wire collector.
+
+| Quantity | Observation |
+| --- | ---: |
+| Raw bytes | 67,108,864 |
+| Archive bytes, including headers | 67,147,853 |
+| Archive/raw ratio | 1.000580981 |
+| Encode elapsed seconds | 71.935057 |
+| Decode elapsed seconds | 8.037551 |
+| Encode throughput, MiB/s of raw input | 0.889691 |
+| Decode throughput, MiB/s of raw output | 7.962625 |
+| Encode process peak resident bytes | 378,281,984 |
+| Decode process peak resident bytes | 239,865,856 |
+
+The complete raw SHA-256 is `d13fab31b66c8277dfc57b323f256a868b9b36bfb8175b96cd824f784f24f274`; the archive SHA-256 is
+`042834e1336f28cc55c49f255238fd4cc68475e257eecd7df8841b089d69bae9`. The measured archive is byte-identical to the separately
+qualified deterministic CLI fixture, and every restored byte agrees. These
+single observations are not medians, cross-host predictions or a comparative
+speed claim. Process peaks include runtime/file-library/allocator overhead;
+codec policy counts declared owners, controls and retained generations and
+is not an OS resident-memory guarantee. Complete initial-query plus candidate
+admission remains mandatory. The conservative full-generation backing/control
+bound is initial query + 2R + 4P + 240; three local compiler/instrumentation
+routes admit it below policy. Maximum-window boundaries, late-frame failure,
+real allocation refusals and arbitrary chunking have separate test evidence.
+Environment-specific evidence remains private. Exchange and hosted/external
+gates are not inferred from this resource observation.

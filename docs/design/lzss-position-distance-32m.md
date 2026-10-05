@@ -142,3 +142,27 @@ do not remove full-window cases to make admission or timeouts pass.
 Only after qualification should public API/CLI policy and append-only exchange
 integration be chosen. The current 72 archives, selectors and fixed executable
 are unchanged. No external implementation source was consulted.
+
+## Qualified implementation status, 2026-10-06
+
+The design gates above now have separate local evidence for bounded reference
+and indexed dictionaries, typed and compact Range paths, finite frame encode/
+decode, borrowed and owning streaming, six distinct public C entry points and
+an explicit CLI selector. Complete maximum-window boundaries, arbitrary
+chunking, valid short wire matches, all allocation refusals, exact/one-below
+resource admission and late failed-frame nonpublication are qualified. The
+old sixteen-MiB typed workspace ABI and all earlier representations remain
+unchanged. Whole-library address/undefined-behavior instrumentation and bounded
+fuzz campaigns have separate evidence; no source from external implementations
+was consulted.
+
+DD-1498 selects a 536,870,912-byte explicit CLI codec-accounting policy and
+67,108,864-byte payload cap after complete owner/backing admission and actual
+CLI process measurements; BM-0210 reports time, ratio and process peaks for two
+full incompressible frames. Global defaults and the baseline codec matrix stay
+unchanged. Schema 63/archive 73 is appended after freezing the old seventy-two
+archives. The complete configured suite passes 4,041 tests, three local
+production routes agree on all archive bytes and genuine schemas 1..63 pass.
+This supersedes the prospective implementation status above. Hosted CI and
+revision-specific external exchange remain separate maintainer-owned gates;
+local qualification does not establish their success.
