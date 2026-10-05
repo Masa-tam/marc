@@ -949,3 +949,31 @@ Maximum native public experiments with 65,536-byte input/output capacities, a 67
 
 
 The public entry points are `marc_lzss_position_distance_dynamic_range_16m_config_init()`, `marc_lzss_position_distance_dynamic_range_16m_resource_requirements()` and `marc_lzss_position_distance_dynamic_range_16m_create_encoder()` for encoding; `marc_lzss_position_distance_dynamic_range_16m_decoder_config_init()`, `marc_lzss_position_distance_dynamic_range_16m_decoder_workspace_requirements()` and `marc_lzss_position_distance_dynamic_range_16m_create_decoder()` for decoding. Configured entropy capacity must admit the 2,610 model entries.
+
+
+### Thirty-two-MiB position-distance factories
+
+The separate `marc_lzss_position_distance_dynamic_range_32m_*` encoder and
+decoder configurations select dictionary variant 13 and context variant 14.
+The owning encoder's resource query admits initial raw/index storage and all
+wrapper, allocator, call-capacity and external-retained charges; every frame
+candidate is admitted again before allocation. `INITIAL_ONLY` is not a promise
+that later frames will fit. Initializers set profile fields; applications supply
+other limits and full retained/input/output capacities explicitly.
+
+The decoder query is `CAPACITY_ONLY`, not payload validation. Its five borrowed
+buffers are byte workspaces: serialized frame, compact records, compact record
+scratch, raw bytes and raw scratch. For admitted frame capacity R, each record
+buffer has at least 3R bytes, `token_alignment` is one and
+`record_capacity_bytes` counts bytes. No typed-token construction or element
+count is imposed. All full actual buffer capacities are charged at creation;
+excess tails and other live owners outside the call views belong in the
+external-retained charge. All five buffers must remain disjoint and alive until
+transform destruction. Configuration and buffer metadata are copied.
+
+Direction is immutable, Flush is neutral, ResetBlock is rejected, and terminal
+results are sticky. A failed frame contributes no output; earlier completed
+frames may be returned by the same Error call. Metadata-query failures preserve
+the complete output object. Existing sixteen-MiB typed buffer declarations and
+factories retain their ABI and behavior. CLI limits and exchange selection are
+separate application integration work.

@@ -10995,3 +10995,11 @@ Use the first-party sixteen-MiB compact owner and known-size encoder,
 DD-1488/DD-1495 and qualified thirty-two-MiB finite helpers. Preserve exact
 allocation receipts, live previous publications and callback control extents.
 No external implementation or source reference is consulted.
+
+
+### IR-1256: thirty-two-MiB public compact factories
+
+Use the first-party sixteen-MiB owning adapter, concrete allocation delegate
+and C factories, and the qualified thirty-two-MiB compact byte decoder and
+owning encoder. Preserve old public declarations and distinct typed lifetimes.
+No external source consultation.

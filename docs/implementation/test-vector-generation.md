@@ -21949,3 +21949,15 @@ cases. Independently construct full repeated and far-distance stream bytes
 using the integer model and explicit serialization; test F-1/F/F+1/2F/2F+1
 with full frame size, complete raw reconstruction and failed later-frame
 non-publication. Track real allocation lifetimes without reducing the window.
+
+
+### TVG-1364: thirty-two-MiB public factories and C byte buffers
+
+Test old-profile compatibility, metadata/reserved fields, failed-query output
+invariance, exact/one-below capacity budgets, full aliases, all one-byte values,
+chunk schedules and corrupt later frames. Isolate concrete encoder allocation
+delegates to fail each initial and second-frame candidate request, while using
+real deletion and tracking every live owner. Compile a real C consumer for
+both directions, including unaligned byte workspaces and copied configurations.
+Retain full-window independent stream and owned resource tests at the public
+boundary rather than replacing them with tiny frames.

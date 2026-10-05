@@ -9025,3 +9025,18 @@ The private finite reference now parses and serializes this identity and
 validates its typed fields and canonical Range payload. Its compact token
 scratch representation is internal and does not change the above wire bytes.
 Public factory, CLI and exchange admission remain separate integration work.
+
+
+### Thirty-two-MiB public factory admission
+
+DD-1497 connects the DD-1488 representation to distinct public factories.
+Dictionary 2/13, context 1/14, entropy 3/2, 49 contexts and 2,621 frequencies
+remain unchanged. Compact record byte buffers are private working storage;
+they introduce no new wire field or token serialization. Decoder capacity
+queries retain the generic wire lengths three/four and conservatively reserve
+3R record bytes per buffer. Encoder prefix admission is separate and cannot
+weaken decoder validation. A complete frame must pass canonical Range finish,
+counts, history and raw extent checks before any of its raw bytes are exposed.
+Explicit caller payload limits may be below the mathematical 20R+5 ceiling and
+are checked before allocation. CLI selection and schema-63 exchange admission
+remain separate integration gates.

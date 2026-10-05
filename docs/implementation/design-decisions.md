@@ -33025,3 +33025,21 @@ distinct from decoder min(3R,9T) staging. Stream direction is immutable, termina
 states sticky, Flush neutral and ResetBlock unsupported. Failed frame bytes
 never drain. Explicit large-profile limits remain test configurations until
 complete owned resource measurements justify CLI policy.
+
+
+### DD-1497: separate thirty-two-MiB public factory contracts
+
+Add distinct thirty-two-MiB configurations, capacity queries and factories.
+Encoder initial admission covers the wrapper, callback receipts, coordinator,
+raw/index allocations and full declared call/external capacities. Frame
+candidates retain separate complete admission; initial success never promises
+future payload admission. The decoder borrows five byte workspaces for its
+whole lifetime: serialized, compact records, compact scratch, raw and raw
+scratch. Its conservative record capacities are each 3R bytes, alignment one;
+there is no typed-token placement construction or token element count. Full
+actual buffers are charged at creation, not only requested minima. Queries
+prove capacities, never stream validity. Preserve all old typed ABI layouts.
+Configuration is copied; immutable direction, aliases, sticky terminal states
+and failed-frame non-publication remain enforced at the public boundary.
+Initializers set only profile fields; callers supply limits and capacities.
+No global defaults or CLI policy changes in this public gate.

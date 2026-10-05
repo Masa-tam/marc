@@ -495,6 +495,10 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_32m_compact_frame_encoder.cpp
     src/frame/lzss_position_distance_32m_compact_owner.cpp
     src/frame/lzss_position_distance_32m_owned_stream_encoder.cpp
+    src/frame/lzss_position_distance_32m_owning_adapter.cpp
+    src/frame/lzss_position_distance_32m_owning_delegate.cpp
+    src/frame/lzss_position_distance_32m_c_factory.cpp
+    src/frame/lzss_position_distance_32m_decoder_c_factory.cpp
     src/frame/lzss_position_distance_16m_token_frame_encoder.cpp
     src/dictionary/lzss_position_distance_16m_compact.cpp
     src/dictionary/lzss_position_distance_32m_compact.cpp
@@ -7315,4 +7319,31 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
         --tool $<TARGET_FILE:marc_position_distance_32m_owned_conformance>
         --root ${CMAKE_CURRENT_BINARY_DIR}/position-distance-32m-owned-conformance)
     set_tests_properties(marc_position_distance_32m_owned_conformance PROPERTIES TIMEOUT 1200)
+endif()
+
+if(MARC_BUILD_TESTS AND TARGET marc_static)
+    add_executable(marc_position_distance_32m_public_tests tests/lzss_position_distance_32m_public_tests.cpp)
+    target_compile_features(marc_position_distance_32m_public_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_32m_public_tests PRIVATE src)
+    target_link_libraries(marc_position_distance_32m_public_tests PRIVATE marc_static GTest::gtest_main)
+    add_test(NAME marc_position_distance_32m_public COMMAND marc_position_distance_32m_public_tests)
+    set_tests_properties(marc_position_distance_32m_public PROPERTIES TIMEOUT 900)
+    add_executable(marc_position_distance_32m_public_fault_tests tests/lzss_position_distance_32m_public_fault_tests.cpp)
+    target_compile_features(marc_position_distance_32m_public_fault_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_32m_public_fault_tests PRIVATE src)
+    target_link_libraries(marc_position_distance_32m_public_fault_tests PRIVATE marc_static GTest::gtest_main)
+    add_test(NAME marc_position_distance_32m_public_faults COMMAND marc_position_distance_32m_public_fault_tests)
+    set_tests_properties(marc_position_distance_32m_public_faults PROPERTIES TIMEOUT 900)
+    add_executable(marc_position_distance_32m_public_c_consumer tests/lzss_position_distance_32m_public_c_consumer.c)
+    target_link_libraries(marc_position_distance_32m_public_c_consumer PRIVATE marc_static)
+    set_target_properties(marc_position_distance_32m_public_c_consumer PROPERTIES LINKER_LANGUAGE CXX)
+    add_test(NAME marc_position_distance_32m_public_c COMMAND marc_position_distance_32m_public_c_consumer)
+    add_executable(marc_position_distance_32m_public_conformance tests/lzss_position_distance_32m_public_conformance.cpp)
+    target_compile_features(marc_position_distance_32m_public_conformance PRIVATE cxx_std_20)
+    target_link_libraries(marc_position_distance_32m_public_conformance PRIVATE marc_static)
+    add_test(NAME marc_position_distance_32m_public_conformance
+        COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_32m_owned_conformance.py
+        --tool $<TARGET_FILE:marc_position_distance_32m_public_conformance>
+        --root ${CMAKE_CURRENT_BINARY_DIR}/position-distance-32m-public-conformance)
+    set_tests_properties(marc_position_distance_32m_public_conformance PROPERTIES TIMEOUT 1200)
 endif()

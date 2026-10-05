@@ -38983,3 +38983,32 @@ an owning decoder or CLI memory policy. Similarity review uses first-party
 adaptation and independent closed parse/serialization recipes only; no external
 source consultation. Previous implementation files and public defaults remain
 unchanged. Owning decoder, public interfaces and exchange are separate gates.
+
+
+### CR-1669: thirty-two-MiB owning adapter and public factories
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: expose distinct factories and full resource queries around the qualified
+compact encoder/decoder, preserving previous typed interfaces. References:
+IR-1256/DD-1497/TVG-1364 and first-party code. No external or copyleft source
+consulted. Qualification and similarity review follow native tests.
+
+Qualification: three compiler/instrumentation routes pass ten new public
+cases, two concrete allocation-failure cases, seven previous-profile public
+regressions, two real C consumers, seven full public independent streams and
+seven owning-stream regressions. Public F-1/F/F+1/2F/2F+1 and far F-5/F-258
+streams agree completely with the integer oracle and raw reconstruction;
+a corrupt second full frame publishes only the first frame. Generic wire
+lengths three/four pass one-byte input/output public decoding. Unaligned byte
+workspaces, copied metadata lifetimes, exact/one-below admission and excess
+record-capacity tails retain their stated contracts. Every initial and later
+candidate allocation failure is checked with actual deletion. A shared-library
+C import consumer also passes both directions. The new public fuzz campaign
+completes 10,000 address/undefined-behavior iterations (leak detection disabled),
+without a finding. A separate two-frame incompressible public experiment
+reconstructs every seeded raw byte and preserves the previous finite wire size
+while including complete wrapper and external collector charges. It does not
+establish CLI policy. Similarity review: first-party adaptation and independent
+integer/serialization recipes; no external source consultation. Old public
+declarations and implementation files remain unchanged; two distinct new
+initializers are appended. CLI and exchange remain separate gates.
