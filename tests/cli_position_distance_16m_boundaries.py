@@ -83,7 +83,7 @@ for suffix in ('','.tmp'):
  invoke('decode',root/'encoded-256.marc',output,expected=1);assert protected.read_bytes()==mark
  assert (not output.exists()) if suffix else (not Path(str(output)+'.tmp').exists())
 for direction in ('encode','decode'):
- for near in (codec+'x','lzss-position-distance-dynamic-range-16M','lzss-position-distance-dynamic-range-32m'):
+ for near in (codec+'x','lzss-position-distance-dynamic-range-16M','lzss-position-distance-dynamic-range-32mx'):
   output=root/f'usage-{serial}.bin';invoke(direction,source,output,near,2);assert not output.exists() and not Path(str(output)+'.tmp').exists()
  for flag in ('--finder','--profile','--memory'):
   output=root/f'usage-{serial}.bin';invoke(direction,source,output,expected=2,extra=(flag,'8m'));assert not output.exists() and not Path(str(output)+'.tmp').exists()

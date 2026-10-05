@@ -21961,3 +21961,20 @@ real deletion and tracking every live owner. Compile a real C consumer for
 both directions, including unaligned byte workspaces and copied configurations.
 Retain full-window independent stream and owned resource tests at the public
 boundary rather than replacing them with tiny frames.
+
+
+### TVG-1365: actual thirty-two-MiB CLI transaction and allocation
+
+Run the actual CLI at empty, one byte, every byte, F-1/F/F+1/2F/2F+1 with full
+F=33,554,432. Check both directions, deterministic re-encoding, distinct wire
+identity and complete far F-5 frame equality against the independent integer
+oracle. Generate two full incompressible frames from a labeled SHAKE-256
+recipe; retain raw/encoded/decoded artifacts and command timings. Keep finite
+600-second stress encode watchdogs and a 1,800-second whole boundary watchdog;
+do not shrink the window to meet timing. Check malformed limits, truncation,
+late-frame corruption, expansion refusal, trailing bytes, cross-profile
+rejection, exact names and existing output/temporary-file sentinels.
+Exercise each real fallible allocation with actual deletion and borrowed
+workspace lifetime ordering. Derive the full-generation bound from the public
+initial query and configured R/P. Recheck the previous sixteen-MiB CLI after
+its formerly unsupported thirty-two-MiB name becomes a supported selection.

@@ -977,3 +977,21 @@ frames may be returned by the same Error call. Metadata-query failures preserve
 the complete output object. Existing sixteen-MiB typed buffer declarations and
 factories retain their ABI and behavior. CLI limits and exchange selection are
 separate application integration work.
+
+
+The explicit thirty-two-MiB CLI application sets a 32 MiB frame/window,
+64 MiB payload cap, 65,536-byte input/output calls and 512 MiB internal codec
+policy. This does not change the public initializer defaults. Capacity queries
+include complete wrapper and caller grants; every subsequent encoder candidate
+is admitted again while retaining the previous publication. These limits are
+codec accounting, not a promise about OS resident memory or all valid wire
+streams. The CLI preserves existing targets and commits only successful
+whole-file output transactions.
+
+The distinct public entry points are
+`marc_lzss_position_distance_dynamic_range_32m_config_init()`,
+`marc_lzss_position_distance_dynamic_range_32m_resource_requirements()` and
+`marc_lzss_position_distance_dynamic_range_32m_create_encoder()`;
+`marc_lzss_position_distance_dynamic_range_32m_decoder_config_init()`,
+`marc_lzss_position_distance_dynamic_range_32m_decoder_workspace_requirements()`
+and `marc_lzss_position_distance_dynamic_range_32m_create_decoder()`.

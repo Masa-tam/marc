@@ -1690,7 +1690,7 @@ foreach(stale_position_distance_contract IN ITEMS
         message(FATAL_ERROR "Stale position-distance status: ${stale_position_distance_contract}")
     endif()
 endforeach()
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2 + 2")
 foreach(one_mib_contract IN ITEMS
         "marc_lzss_position_distance_dynamic_range_1m_config_init()"
         "marc_lzss_position_distance_dynamic_range_1m_workspace_requirements()"
@@ -1738,7 +1738,7 @@ if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
         "C API initializer count ${c_api_profile_count} must contain the "
         "${cli_profile_count} CLI profiles plus five experimental profiles "
         "and three existing public position-distance families plus "
-        "two separate eight-MiB and two separate sixteen-MiB direction initializers")
+        "two separate eight-MiB, two separate sixteen-MiB and two separate thirty-two-MiB direction initializers")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
     "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")
@@ -2102,5 +2102,29 @@ foreach(sixteen_mib_cli_contract IN ITEMS
     string(FIND "${cli_content}" "${sixteen_mib_cli_contract}" sixteen_mib_cli_offset)
     if(sixteen_mib_cli_offset EQUAL -1)
         message(FATAL_ERROR "Missing sixteen-MiB CLI contract: ${sixteen_mib_cli_contract}")
+    endif()
+endforeach()
+
+
+foreach(thirty_two_mib_cli_contract IN ITEMS
+        "## 32 MiB position-distance selector"
+        "lzss-position-distance-dynamic-range-32m"
+        "2/13 + 1/14 + 3/2" "33554432-byte"
+        "536870912-byte" "67108864-byte" "2621/32768")
+    string(FIND "${cli_content}" "${thirty_two_mib_cli_contract}" thirty_two_mib_cli_offset)
+    if(thirty_two_mib_cli_offset EQUAL -1)
+        message(FATAL_ERROR "Missing thirty-two-MiB CLI contract: ${thirty_two_mib_cli_contract}")
+    endif()
+endforeach()
+foreach(thirty_two_mib_c_contract IN ITEMS
+        "marc_lzss_position_distance_dynamic_range_32m_config_init()"
+        "marc_lzss_position_distance_dynamic_range_32m_resource_requirements()"
+        "marc_lzss_position_distance_dynamic_range_32m_create_encoder()"
+        "marc_lzss_position_distance_dynamic_range_32m_decoder_config_init()"
+        "marc_lzss_position_distance_dynamic_range_32m_decoder_workspace_requirements()"
+        "marc_lzss_position_distance_dynamic_range_32m_create_decoder()")
+    string(FIND "${c_api_content}" "${thirty_two_mib_c_contract}" thirty_two_mib_c_offset)
+    if(thirty_two_mib_c_offset EQUAL -1)
+        message(FATAL_ERROR "Missing thirty-two-MiB C contract: ${thirty_two_mib_c_contract}")
     endif()
 endforeach()

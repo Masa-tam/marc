@@ -33043,3 +33043,31 @@ Configuration is copied; immutable direction, aliases, sticky terminal states
 and failed-frame non-publication remain enforced at the public boundary.
 Initializers set only profile fields; callers supply limits and capacities.
 No global defaults or CLI policy changes in this public gate.
+
+
+### DD-1498: explicit thirty-two-MiB CLI resource policy
+
+Select `lzss-position-distance-dynamic-range-32m` explicitly. Its immutable
+direction uses the qualified public factories and the existing atomic output
+transaction. Configure frame/window/block capacity 33,554,432 bytes, payload
+cap 67,108,864 bytes, 65,536-byte input/output buffers, 2,621 model entries,
+1 TiB total output, expansion ratio 1,024 with 1 MiB slack, and a 512 MiB
+internal codec-accounting policy. This is an application limit; streams above
+the payload cap may be valid wire streams but are rejected before publication.
+It does not change public initializer defaults or older profile policies.
+
+Admit decoder control and all five actual byte-workspace extents before the
+first workspace allocation. Preserve byte alignment one for compact records;
+all borrowed storage outlives the handle. Charge complete retained file-loop
+controls and prospective I/O capacities. Encoder initial admission includes
+actual public/coordinator/allocator controls, raw/index and call grants.
+A conservative full-generation bound adds 2R compact bytes, the retained
+P+80-byte publication, candidate frame and publication of P+80 each, and P
+payload bytes to that complete initial grant: initial + 2R + 4P + 240.
+No sequential helper grant is discounted. Each candidate still receives exact
+independent runtime admission before allocation; the bound is not wire
+validation. Codec accounting is separate from OS resident memory or allocator
+overhead. Every failed file operation preserves existing targets and removes
+only the temporary file created by that invocation. Failed frame bytes never
+reach output; earlier committed frame bytes may reside in the temporary file
+until transaction rollback. Exchange registration is a subsequent gate.

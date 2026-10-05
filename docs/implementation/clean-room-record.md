@@ -39012,3 +39012,34 @@ establish CLI policy. Similarity review: first-party adaptation and independent
 integer/serialization recipes; no external source consultation. Old public
 declarations and implementation files remain unchanged; two distinct new
 initializers are appended. CLI and exchange remain separate gates.
+
+
+### CR-1670: thirty-two-MiB CLI file integration
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: integrate the qualified public compact factories into an explicit CLI
+selection with complete resource admission and atomic file behavior.
+References: IR-1257/DD-1498/TVG-1365 and repository-owned CLI tests.
+No external or copyleft source is consulted. Qualification follows native
+tests; this entry alone does not establish exchange or release completion.
+
+Qualification: three fresh compiler/instrumentation routes pass nine selected
+checks each, including eighty actual thirty-two-MiB CLI invocations per route,
+full F-1/F/F+1/2F/2F+1 round trips and deterministic bytes, independent complete
+far F-5 frame equality, two full SHAKE-256 frames, malformed and later-frame
+rollback, existing file sentinels, exact names and cross-profile rejection.
+Every nine decoder and ten encoder fallible requests have real deletion and
+file cleanup checked; borrowed owners outlive both factory objects. The
+conservative complete-generation bound is derived from the initial public
+query and stays below the configured policy. Previous eight/sixteen-MiB CLI,
+new public regression cases and documentation/inventory checks also pass.
+The address/undefined-behavior route uses whole-library instrumentation with
+leak detection disabled. A separate actual CLI two-frame experiment confirms
+the same deterministic wire hash and complete raw reconstruction while
+measuring encode/decode process memory and elapsed time without an in-process
+raw or wire collector. Similarity review uses only first-party adaptation and
+independent integer/serialization recipes; no external source consultation.
+Old core implementation and ABI files are byte-identical. The forty-two-row
+baseline inventory remains separate from additional experimental selections;
+the actual CLI name count grows from seventy-two to seventy-three, with fifty-six
+public direction/configuration initializers. Exchange remains a separate gate.

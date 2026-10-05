@@ -11003,3 +11003,10 @@ Use the first-party sixteen-MiB owning adapter, concrete allocation delegate
 and C factories, and the qualified thirty-two-MiB compact byte decoder and
 owning encoder. Preserve old public declarations and distinct typed lifetimes.
 No external source consultation.
+
+
+### IR-1257: thirty-two-MiB explicit CLI integration
+
+Use the first-party sixteen-MiB CLI storage/file loop and transaction,
+DD-1488/DD-1497, complete public queries and independent integer frame oracle.
+No external implementation or source is consulted.

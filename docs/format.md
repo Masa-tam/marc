@@ -9040,3 +9040,15 @@ counts, history and raw extent checks before any of its raw bytes are exposed.
 Explicit caller payload limits may be below the mathematical 20R+5 ceiling and
 are checked before allocation. CLI selection and schema-63 exchange admission
 remain separate integration gates.
+
+
+### Thirty-two-MiB explicit CLI limits
+
+DD-1498 selects the existing dictionary 2/13 + context 1/14 + entropy 3/2 wire
+representation through `lzss-position-distance-dynamic-range-32m`. No wire
+field changes. The CLI admits a 32 MiB frame/window, 64 MiB compressed payload,
+65,536-byte input/output calls and a 512 MiB codec-accounting policy. The
+payload cap is below the normative mathematical ceiling and is a deliberate
+application resource restriction. Full counts/history/canonical finish remain
+mandatory. Existing output files are preserved; a failed invocation removes
+its own temporary file. Schema-63 exchange remains a separate gate.

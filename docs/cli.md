@@ -742,3 +742,31 @@ as archive 72 after the frozen 71-entry schema-61 prefix. The 8193-byte fixture
 is unchanged. Whole-manifest admission precedes codec execution. Small-bundle
 exchange qualification is separate from maximum-window tests and from hosted
 CI and external reports for the actual new revision.
+
+
+## 32 MiB position-distance selector
+
+```console
+marc encode --codec lzss-position-distance-dynamic-range-32m input.bin output.marc
+marc decode --codec lzss-position-distance-dynamic-range-32m output.marc restored.bin
+```
+
+The distinct experimental selection uses 2/13 + 1/14 + 3/2, 33554432-byte
+window/frame/block and matches 3..258. It uses the compact owning encoder and
+five byte-workspace decoder under an explicit 536870912-byte codec policy,
+67108864-byte payload cap and 1099511627776-byte raw output limit. Calls use
+65536 bytes each; model entries/total are 2621/32768, expansion ratio/slack
+are 1024/1048576. Query all capacities before allocation and charge complete
+controls, I/O views and retained generations. Actual per-frame admission is
+mandatory after initial creation. Refusal does not increase limits or retry.
+The policy counts codec ownership, not file-library internals, allocator
+overhead or OS resident memory. The payload cap is deliberately smaller than
+the maximum valid wire payload and may reject otherwise valid streams.
+
+Selection is explicit and case-sensitive. There is no automatic file-size
+selection or finder/profile/memory override. Older selectors and global
+defaults keep their meanings. Legal smaller bounded header parameters remain
+accepted. Failed frames never publish; existing targets and temporary files
+are preserved. Only whole-stream success commits the output file. This
+experimental selection is separate from the unchanged 42-profile baseline
+table. Schema-63/archive-73 exchange registration is a subsequent gate.
