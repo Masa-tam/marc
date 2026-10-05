@@ -8992,3 +8992,8 @@ DD-1484 introduces private compact-storage Range/frame/prefix helpers without ch
 ### Sixteen-MiB owning encoder publication contract
 
 DD-1485 introduces private owning compact storage and known-size streaming coordination for the existing sixteen-MiB representation. Headers, fields, Range payloads and frame boundaries are unchanged. A frame enters the drain state only after complete payload finish, count agreement and prefix validation. Allocation or policy failure publishes no part of that frame and preserves previously validated publications. Prior valid bytes already drained remain committed.
+
+
+### Sixteen-MiB public capacity and publication boundary
+
+DD-1486 adds distinct C encoder/decoder factories for the existing sixteen-MiB representation. Encoder resource queries admit initial owned storage only; complete later candidates are checked separately. Decoder queries describe five complete borrowed workspace capacities and do not validate a payload. A frame drains only after complete validation. Public construction, allocation or policy failure cannot publish a failed frame. The serialized capacity obeys both wire bounds and caller payload policy.

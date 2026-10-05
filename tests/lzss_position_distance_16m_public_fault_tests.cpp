@@ -1,0 +1,68 @@
+#include "marc/marc.h"
+#include "frame/lzss_position_distance_16m_owning_adapter.hpp"
+#include <gtest/gtest.h>
+#include <algorithm>
+#include <array>
+#include <vector>
+// Standalone link seam: replace only the concrete delegate boundary. Every
+// successful return still uses the real exact allocator and actual deletion.
+namespace fault16m {
+thread_local std::size_t calls{},fail{},live{};
+}
+namespace marc::frame::internal {
+LzssPositionDistance16mOwnedBytes owning16m_bytes(LzssPositionDistance16mExactStreamAllocator &a,std::size_t n) noexcept {
+ if(++fault16m::calls==fault16m::fail)return {};
+ auto b=a.bytes(n);fault16m::live+=b.capacity;return b;
+}
+LzssPositionDistance16mOwnedIndex owning16m_indices(LzssPositionDistance16mExactStreamAllocator &a,std::size_t n) noexcept {
+ if(++fault16m::calls==fault16m::fail)return {};
+ auto b=a.indices(n);fault16m::live+=4*b.capacity;return b;
+}
+void owning16m_release_bytes(LzssPositionDistance16mExactStreamAllocator &a,LzssPositionDistance16mOwnedBytes&b) noexcept {
+ auto n=b.capacity;a.release(b);fault16m::live-=n;
+}
+void owning16m_release_indices(LzssPositionDistance16mExactStreamAllocator &a,LzssPositionDistance16mOwnedIndex&b) noexcept {
+ auto n=4*b.capacity;a.release(b);fault16m::live-=n;
+}
+}
+namespace {
+auto config(std::size_t n){
+ marc_lzss_position_distance_dynamic_range_16m_config c{};
+ EXPECT_EQ(marc_lzss_position_distance_dynamic_range_16m_config_init(&c),MARC_STATUS_OK);
+ c.original_size=n;c.frame_size=32;c.max_frame_size=c.max_block_size=32;
+ c.max_total_output_size=1048576;c.max_compressed_payload_size=65536;
+ c.max_internal_buffered_bytes=16*1048576;c.max_entropy_table_entries=2610;
+ c.max_expansion_ratio=1048576;c.expansion_slack=1048576;
+ c.input_capacity_bytes=33;c.output_capacity_bytes=4096;c.external_retained_bytes=65536;return c;
+}
+TEST(PublicFault16m, BothInitialOwnerAllocationsFailBeforeHandlePublication){
+ for(std::size_t fail:{1u,2u}){
+  fault16m::calls=0;fault16m::fail=fail;ASSERT_EQ(fault16m::live,0u);
+  auto c=config(33);marc_transform*h{};
+  EXPECT_EQ(marc_lzss_position_distance_dynamic_range_16m_create_encoder(&c,&h),MARC_STATUS_OUT_OF_MEMORY);
+  EXPECT_EQ(h,nullptr);EXPECT_EQ(fault16m::live,0u);EXPECT_EQ(fault16m::calls,fail);
+ }
+ fault16m::fail=0;
+}
+TEST(PublicFault16m, AllSecondCandidateFailuresPublishOnlyPreviouslyFinishedFrame){
+ fault16m::calls=fault16m::fail=0;
+ std::array<std::uint8_t,33> raw{};raw.fill(65);std::array<std::uint8_t,4096> good{};
+ auto c=config(33);marc_transform*h{};
+ ASSERT_EQ(marc_lzss_position_distance_dynamic_range_16m_create_encoder(&c,&h),MARC_STATUS_OK);
+ auto reference=marc_transform_process(h,{raw.data(),raw.size()},{good.data(),good.size()},MARC_PROCESS_END_INPUT);
+ ASSERT_EQ(reference.status,MARC_STATUS_END_OF_STREAM);marc_transform_destroy(h);ASSERT_EQ(fault16m::live,0u);
+ std::uint32_t payload{};for(unsigned i=0;i<4;++i)payload|=std::uint32_t(good[144+i])<<(8*i);
+ auto prior_size=192+payload;
+ for(std::size_t fail:{7u,8u,9u,10u}){
+  fault16m::calls=0;fault16m::fail=fail;h=nullptr;std::array<std::uint8_t,4096> output{};output.fill(0xa5);
+  ASSERT_EQ(marc_lzss_position_distance_dynamic_range_16m_create_encoder(&c,&h),MARC_STATUS_OK);
+  auto r=marc_transform_process(h,{raw.data(),raw.size()},{output.data(),output.size()},MARC_PROCESS_END_INPUT);
+  EXPECT_EQ(r.status,MARC_STATUS_OUT_OF_MEMORY);EXPECT_EQ(r.input_consumed,raw.size());EXPECT_EQ(r.output_produced,prior_size);
+  EXPECT_TRUE(std::equal(output.begin(),output.begin()+prior_size,good.begin()));
+  EXPECT_TRUE(std::all_of(output.begin()+prior_size,output.end(),[](auto b){return b==0xa5;}));
+  auto sticky=marc_transform_process(h,{nullptr,0},{output.data(),output.size()},0);EXPECT_EQ(sticky.status,r.status);EXPECT_EQ(sticky.output_produced,0u);
+  marc_transform_destroy(h);EXPECT_EQ(fault16m::live,0u);EXPECT_EQ(fault16m::calls,fail);
+ }
+ fault16m::fail=0;
+}
+}

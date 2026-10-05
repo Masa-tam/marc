@@ -1956,6 +1956,72 @@ MARC_API marc_status marc_lzss_position_distance_dynamic_range_8m_create_decoder
     const marc_lzss_position_distance_dynamic_range_8m_decoder_config* config,
     const marc_lzss_position_distance_dynamic_range_8m_decoder_buffers* buffers,
     marc_transform** transform) MARC_NOEXCEPT;
+#define MARC_LZSS_POSITION_DISTANCE_16M_COMPACT_OWNING UINT32_C(1)
+#define MARC_LZSS_POSITION_DISTANCE_16M_INITIAL_ONLY UINT32_C(1)
+typedef struct marc_lzss_position_distance_dynamic_range_16m_config {
+    uint32_t struct_size, abi_version, encoder_strategy, reserved;
+    uint64_t original_size;
+    uint32_t frame_size, reserved2;
+    uint64_t max_total_output_size, max_frame_size, max_block_size;
+    uint64_t max_compressed_payload_size, max_internal_buffered_bytes;
+    uint64_t max_lz_distance, max_lz_match_length;
+    uint64_t max_entropy_table_entries, max_range_model_total;
+    uint64_t max_expansion_ratio, expansion_slack;
+    uint64_t external_retained_bytes, input_capacity_bytes, output_capacity_bytes;
+} marc_lzss_position_distance_dynamic_range_16m_config;
+typedef struct marc_lzss_position_distance_dynamic_range_16m_resources {
+    uint32_t struct_size, abi_version;
+    uint64_t external_charge_bytes, fixed_bytes, initial_raw_bytes;
+    uint64_t initial_index_entries, initial_bytes;
+    uint32_t admission_scope, reserved;
+} marc_lzss_position_distance_dynamic_range_16m_resources;
+
+/* Five borrowed workspaces; opaque token storage, never a wire representation.
+ * This decoder has its own configuration and immutable decode direction. */
+#define MARC_LZSS_POSITION_DISTANCE_16M_CAPACITY_ONLY UINT32_C(1)
+typedef struct marc_lzss_position_distance_dynamic_range_16m_decoder_config {
+    uint32_t struct_size, abi_version, reserved, reserved2;
+    uint64_t max_total_output_size, max_frame_size, max_block_size;
+    uint64_t max_compressed_payload_size, max_internal_buffered_bytes;
+    uint64_t max_lz_distance, max_lz_match_length;
+    uint64_t max_entropy_table_entries, max_range_model_total;
+    uint64_t max_expansion_ratio, expansion_slack;
+    uint64_t external_retained_bytes, input_capacity_bytes, output_capacity_bytes;
+} marc_lzss_position_distance_dynamic_range_16m_decoder_config;
+typedef struct marc_lzss_position_distance_dynamic_range_16m_decoder_requirements {
+    uint32_t struct_size, abi_version, admission_scope, reserved;
+    uint64_t serialized_bytes, token_bytes, token_scratch_bytes;
+    uint64_t raw_bytes, raw_scratch_bytes, token_alignment, token_elements;
+    uint64_t minimum_aggregate_bytes;
+} marc_lzss_position_distance_dynamic_range_16m_decoder_requirements;
+typedef struct marc_lzss_position_distance_dynamic_range_16m_decoder_buffers {
+    uint32_t struct_size, abi_version, reserved, reserved2;
+    marc_buffer serialized, tokens, token_scratch, raw, raw_scratch;
+} marc_lzss_position_distance_dynamic_range_16m_decoder_buffers;
+
+/* Sixteen-MiB position-distance profile. Initializers set profile fields only;
+ * callers explicitly supply remaining limits and full retained/call capacities.
+ * Encoder admission queries cover initial storage; each frame is admitted again.
+ * Decoder queries cover capacities, not validation of a serialized stream. */
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_16m_config_init(
+    marc_lzss_position_distance_dynamic_range_16m_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_16m_resource_requirements(
+    const marc_lzss_position_distance_dynamic_range_16m_config* config,
+    marc_lzss_position_distance_dynamic_range_16m_resources* requirements) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_16m_create_encoder(
+    const marc_lzss_position_distance_dynamic_range_16m_config* config,
+    marc_transform** transform) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_16m_decoder_config_init(
+    marc_lzss_position_distance_dynamic_range_16m_decoder_config* config) MARC_NOEXCEPT;
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_16m_decoder_workspace_requirements(
+    const marc_lzss_position_distance_dynamic_range_16m_decoder_config* config,
+    marc_lzss_position_distance_dynamic_range_16m_decoder_requirements* requirements) MARC_NOEXCEPT;
+/* All five full capacities remain borrowed until transform destruction. */
+MARC_API marc_status marc_lzss_position_distance_dynamic_range_16m_create_decoder(
+    const marc_lzss_position_distance_dynamic_range_16m_decoder_config* config,
+    const marc_lzss_position_distance_dynamic_range_16m_decoder_buffers* buffers,
+    marc_transform** transform) MARC_NOEXCEPT;
+
 MARC_API marc_process_result marc_transform_process(
     marc_transform* transform, marc_const_buffer input, marc_buffer output,
     marc_process_flags flags) MARC_NOEXCEPT;

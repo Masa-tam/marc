@@ -1607,3 +1607,10 @@ Date: 2026-10-05. Four control bytes select bounded frame size, call chunks, all
 Independently decode every fully published frame with the unchanged finite decoder. An error may preserve the header and earlier complete frames, but cannot leave a prefix or fragment of a failed frame. Every reconstructed byte agrees with the accepted raw prefix; successful termination reconstructs all input.
 
 The actual harness and reachable helpers are freshly built with libFuzzer and address/undefined-behavior instrumentation. Complete 10,000 runs, seed 1485, maximum input length 132 and per-input timeout ten, without crash, timeout, sanitizer or invariant finding. Leak detection is disabled. Directed allocation/publication tests and separate actual full-size native experiments supplement this bounded campaign. Public memory policy, factory/CLI and exchange integration remain pending.
+
+
+## FZ-0078: sixteen-MiB public C construction, dispatch and borrowed workspaces
+
+Date: 2026-10-05. Four control bytes followed by at most 64 raw bytes select memory/ABI/reserved configuration refusals, call chunks, output capacities, decoder workspace aliases and late payload corruption. Actual public factory/process/destruction calls exercise a fully instrumented production library. Successful streams reconstruct every byte; rejected construction leaves no handle; any encoder failure has at most the fixed header published. A corrupted single frame produces zero raw bytes. Check committed counts, unused output tails and sticky error state.
+
+Complete 1,000 libFuzzer runs, seed 1486, maximum input length 68 and per-input timeout ten, without crash, timeout, sanitizer or invariant finding. Address/undefined-behavior instrumentation covers the production library and harness; leak detection is disabled. Directed multiple-frame/allocation/alias tests and separate full-size native public experiments supplement this bounded campaign. CLI and exchange integration remain pending.

@@ -1690,7 +1690,7 @@ foreach(stale_position_distance_contract IN ITEMS
         message(FATAL_ERROR "Stale position-distance status: ${stale_position_distance_contract}")
     endif()
 endforeach()
-math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2")
+math(EXPR expected_c_api_profile_count "${cli_profile_count} + 5 + 3 + 2 + 2")
 foreach(one_mib_contract IN ITEMS
         "marc_lzss_position_distance_dynamic_range_1m_config_init()"
         "marc_lzss_position_distance_dynamic_range_1m_workspace_requirements()"
@@ -1738,7 +1738,7 @@ if(NOT c_api_profile_count EQUAL expected_c_api_profile_count)
         "C API initializer count ${c_api_profile_count} must contain the "
         "${cli_profile_count} CLI profiles plus five experimental profiles "
         "and three existing public position-distance families plus "
-        "two separate eight-MiB direction initializers")
+        "two separate eight-MiB and two separate sixteen-MiB direction initializers")
 endif()
 list(FILTER c_api_config_initializers INCLUDE REGEX
     "marc_lzss_contextual_(dynamic_range|rans|tans|adaptive_huffman|blocked_huffman)_config_init")
@@ -2076,3 +2076,19 @@ message(STATUS
     "${interoperability_record_count} interoperability records, and "
     "${benchmark_record_count} benchmark records, and "
     "${fuzzing_campaign_count} fuzzing campaign records")
+
+foreach(sixteen_mib_public_contract IN ITEMS
+        "marc_lzss_position_distance_dynamic_range_16m_config_init()"
+        "marc_lzss_position_distance_dynamic_range_16m_resource_requirements()"
+        "marc_lzss_position_distance_dynamic_range_16m_create_encoder()"
+        "marc_lzss_position_distance_dynamic_range_16m_decoder_config_init()"
+        "marc_lzss_position_distance_dynamic_range_16m_decoder_workspace_requirements()"
+        "marc_lzss_position_distance_dynamic_range_16m_create_decoder()"
+        "MARC_LZSS_POSITION_DISTANCE_16M_COMPACT_OWNING"
+        "MARC_LZSS_POSITION_DISTANCE_16M_INITIAL_ONLY"
+        "MARC_LZSS_POSITION_DISTANCE_16M_CAPACITY_ONLY")
+    string(FIND "${c_api_content}" "${sixteen_mib_public_contract}" sixteen_mib_public_offset)
+    if(sixteen_mib_public_offset EQUAL -1)
+        message(FATAL_ERROR "Missing sixteen-MiB C API contract: ${sixteen_mib_public_contract}")
+    endif()
+endforeach()

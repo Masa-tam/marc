@@ -10914,3 +10914,8 @@ DD-1484 uses only repository-owned canonical LZSS byte serialization, the distin
 ### IR-1244: sixteen-MiB compact ownership and stream coordination
 
 DD-1485 adapts repository-owned trusted allocator, ownership-admission and known-size stream coordination concepts to the separate sixteen-MiB compact helpers. The earlier prepared owner remains a lifetime reference, not a compact-storage implementation. No external implementation source is consulted.
+
+
+### IR-1245: sixteen-MiB public ownership and borrowed decoder boundary
+
+DD-1486 uses repository-owned smaller-window C boundary and allocator-ledger contracts as references, adapting the distinct compact sixteen-MiB owner and existing borrowed sixteen-MiB decoder. No external implementation source is consulted.

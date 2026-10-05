@@ -935,3 +935,17 @@ valid buffers, and the generic dispatcher's null nonempty-buffer check retains
 precedence. Call-capacity and alias errors consume/produce zero bytes and report
 accepted encoded position; delegated errors preserve private categories/positions.
 This explicit boundary does not yet add command-line selection or a generic reader family.
+
+
+### Sixteen-MiB position-distance factories
+
+The distinct `marc_lzss_position_distance_dynamic_range_16m_*` API uses the sixteen-MiB stream identity. Encoder configuration selects `MARC_LZSS_POSITION_DISTANCE_16M_COMPACT_OWNING`. Configuration initializers set structural/ABI and profile fields; callers supply the remaining limits, known original size, external retained bytes and full input/output capacities explicitly. Existing APIs and global defaults remain unchanged.
+
+`resource_requirements` admits initial raw/index/control ownership only, indicated by `MARC_LZSS_POSITION_DISTANCE_16M_INITIAL_ONLY`. Every later frame charges its whole candidate and retained previous publication before allocation; successful initial creation cannot guarantee a later frame fits. Oversized calls, aliases, unsupported flags, allocation failures and hard-limit refusals report stable public categories. An error call may contain earlier complete frame bytes but contains no bytes of the failed frame. Configuration is copied; the caller need not retain it. EndInput accompanies each unconsumed final suffix; Flush is neutral, ResetBlock unsupported, and terminal status is sticky.
+
+The separate decoder `decoder_workspace_requirements` returns `MARC_LZSS_POSITION_DISTANCE_16M_CAPACITY_ONLY` capacities for serialized bytes, two opaque aligned token stores and two raw stores. All full capacities remain borrowed until destruction and must be disjoint from each other, controls and calls. Token storage is workspace, never a native wire representation. The serialized request is limited by the smaller of the wire maximum and configured compressed-payload limit, plus the frame prefix. Queries do not validate payloads. Preserve actual token alignment, element multiples and all backing tails when supplying buffers.
+
+Maximum native public experiments with 65,536-byte input/output capacities, a 67,108,864-byte payload limit, explicitly retained controls and an explicit 536,870,912-byte internal policy reconstruct two full pseudo-random frames. For the measured controls, the decoder query reports 503,653,744 bytes, with exact/one-below admission proven. Different caller capacities or external owners change the requirement and may refuse. This measured policy does not replace explicit capacity queries or change global defaults. Late payload corruption publishes no part of that frame; earlier validated output stays committed.
+
+
+The public entry points are `marc_lzss_position_distance_dynamic_range_16m_config_init()`, `marc_lzss_position_distance_dynamic_range_16m_resource_requirements()` and `marc_lzss_position_distance_dynamic_range_16m_create_encoder()` for encoding; `marc_lzss_position_distance_dynamic_range_16m_decoder_config_init()`, `marc_lzss_position_distance_dynamic_range_16m_decoder_workspace_requirements()` and `marc_lzss_position_distance_dynamic_range_16m_create_decoder()` for decoding. Configured entropy capacity must admit the 2,610 model entries.
