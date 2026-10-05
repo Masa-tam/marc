@@ -1598,3 +1598,12 @@ Date: 2026-10-05. Eight control bytes select bounded private capacities, caller 
 Independently parse the same bytes as possible canonical records using explicit tag/length/little-endian equations. Compare syntax-complete compact Range encoding with the unchanged typed-direct encoder, including invalid history/count refusal. Malformed or truncated records cannot publish a payload. Refusals preserve the complete previous descriptor and every caller output byte. Canonical literal and short-match seeds supplement the arbitrary syntax mutations.
 
 The actual harness and reachable helpers are freshly built with libFuzzer and address/undefined-behavior instrumentation. Complete 10,000 runs, seed 1484, maximum input length 136 and per-input timeout ten, without crash, timeout, sanitizer or invariant finding. Leak detection is disabled. Directed mathematical/full-frame/prefix tests and a separate actual full-size input experiment supplement this bounded campaign. Owning/prepared generations, whole-stream chunking and public integration remain pending.
+
+
+## FZ-0077: sixteen-MiB owning stream allocation and publication
+
+Date: 2026-10-05. Four control bytes select bounded frame size, call chunks, allocation refusal and memory policy, followed by at most 128 raw bytes. Vary Flush, ResetBlock, EndInput suffixes, partial output and terminal calls. Check the core progress/count contract, unchanged unused output tails, sticky errors/end states and actual destruction of all owned blocks.
+
+Independently decode every fully published frame with the unchanged finite decoder. An error may preserve the header and earlier complete frames, but cannot leave a prefix or fragment of a failed frame. Every reconstructed byte agrees with the accepted raw prefix; successful termination reconstructs all input.
+
+The actual harness and reachable helpers are freshly built with libFuzzer and address/undefined-behavior instrumentation. Complete 10,000 runs, seed 1485, maximum input length 132 and per-input timeout ten, without crash, timeout, sanitizer or invariant finding. Leak detection is disabled. Directed allocation/publication tests and separate actual full-size native experiments supplement this bounded campaign. Public memory policy, factory/CLI and exchange integration remain pending.

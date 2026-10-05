@@ -8987,3 +8987,8 @@ DD-1483 reuses the baseline canonical LZSS byte-token serialization only inside 
 ### Sixteen-MiB compact encoder prefix validation
 
 DD-1484 introduces private compact-storage Range/frame/prefix helpers without changing any serialized field or algorithm identity. The compact prefix validator applies the same sixteen-MiB wire constraints as the existing typed prefix validator. Its storage accounting reflects a complete compact owner, not a materialized typed-token array. Prefix success proves only the bounded prefix and its declared policy, never the entropy payload or a frame's eligibility for publication. Public decoder and typed-prefix admission remain unchanged.
+
+
+### Sixteen-MiB owning encoder publication contract
+
+DD-1485 introduces private owning compact storage and known-size streaming coordination for the existing sixteen-MiB representation. Headers, fields, Range payloads and frame boundaries are unchanged. A frame enters the drain state only after complete payload finish, count agreement and prefix validation. Allocation or policy failure publishes no part of that frame and preserves previously validated publications. Prior valid bytes already drained remain committed.

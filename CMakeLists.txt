@@ -491,6 +491,8 @@ set(MARC_SOURCES
     src/entropy/lzss_position_distance_16m_compact_range_encoder.cpp
     src/frame/lzss_position_distance_16m_compact_prefix.cpp
     src/frame/lzss_position_distance_16m_compact_frame_encoder.cpp
+    src/frame/lzss_position_distance_16m_compact_owner.cpp
+    src/frame/lzss_position_distance_16m_owned_stream_encoder.cpp
     src/marc.cpp
 )
 
@@ -7042,4 +7044,49 @@ if(MARC_BUILD_FUZZERS)
     target_link_options(marc_fuzz_position_distance_16m_compact_frame PRIVATE
         -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_position_distance_16m_compact_frame PRIVATE marc::static)
+endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_distance_16m_owned_tests
+        tests/lzss_position_distance_16m_owned_tests.cpp
+        src/core/status.cpp
+        src/frame/lzss_position_distance_16m_compact_owner.cpp
+        src/frame/lzss_position_distance_16m_owned_stream_encoder.cpp
+        src/entropy/lzss_position_distance_16m_compact_range_encoder.cpp
+        src/frame/lzss_position_distance_16m_compact_prefix.cpp
+        src/dictionary/lzss_position_distance_16m_compact.cpp
+        src/frame/lzss_position_distance_16m_compact_frame_encoder.cpp
+        src/frame/lzss_position_distance_16m_token_frame_encoder.cpp
+        src/frame/lzss_position_distance_16m_frame_encoder.cpp
+        src/frame/lzss_position_distance_16m_frame_decoder.cpp
+        src/frame/lzss_position_distance_16m_serializer.cpp
+        src/frame/lzss_position_distance_16m_preflight.cpp
+        src/dictionary/lzss_position_distance_16m_indexed.cpp
+        src/entropy/lzss_position_distance_16m_token_range_encoder.cpp
+        src/context/lzss_position_distance_16m_mapper.cpp
+        src/context/lzss_position_distance_16m_tokens.cpp
+        src/entropy/lzss_position_distance_16m_range_encoder.cpp
+        src/entropy/lzss_position_distance_16m_range_decoder.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_distance_16m_owned_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_16m_owned_tests PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_16m_owned_tests PRIVATE GTest::gtest_main)
+    add_test(NAME marc_position_distance_16m_owned
+        COMMAND marc_position_distance_16m_owned_tests)
+    set_tests_properties(marc_position_distance_16m_owned PROPERTIES TIMEOUT 60)
+endif()
+
+if(MARC_BUILD_FUZZERS)
+    add_executable(marc_fuzz_position_distance_16m_owned
+        tests/lzss_position_distance_16m_owned_fuzz.cpp)
+    target_compile_features(marc_fuzz_position_distance_16m_owned PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_position_distance_16m_owned PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_position_distance_16m_owned PRIVATE
+        -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer
+        -Wall -Wextra -Wpedantic)
+    target_link_options(marc_fuzz_position_distance_16m_owned PRIVATE
+        -fsanitize=fuzzer,address,undefined)
+    target_link_libraries(marc_fuzz_position_distance_16m_owned PRIVATE marc::static)
 endif()

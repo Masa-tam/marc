@@ -10909,3 +10909,8 @@ DD-1483 uses the repository-owned LZSS canonical byte-token representation, dist
 ### IR-1243: sixteen-MiB compact Range and frame composition
 
 DD-1484 uses only repository-owned canonical LZSS byte serialization, the distinct sixteen-MiB typed validator/field cursor, integer Range arithmetic, explicit frame layout and indexed selection. Earlier materialized and typed-direct encoder paths remain independent comparison references. No external implementation source is consulted.
+
+
+### IR-1244: sixteen-MiB compact ownership and stream coordination
+
+DD-1485 adapts repository-owned trusted allocator, ownership-admission and known-size stream coordination concepts to the separate sixteen-MiB compact helpers. The earlier prepared owner remains a lifetime reference, not a compact-storage implementation. No external implementation source is consulted.
