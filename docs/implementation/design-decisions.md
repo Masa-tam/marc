@@ -32843,3 +32843,29 @@ validation before raw publication. Existing sixteen-MiB factories stay intact.
 Measure actual complete controls, retained generations, all borrowed capacities,
 encode/decode peaks, equality and failure behavior before deciding public API,
 CLI budget/watchdogs or any exchange addition.
+
+### DD-1489: thirty-two-MiB bounded reference and private compact token decoder
+
+Implement the DD-1488 identity with a separate 49-context/2621-frequency model,
+field cursor, mapper, range reference, token validator and finite header/prefix
+helpers. Retain range normalization at 2^24; increasing the window does not
+change that arithmetic. The finite operation encoder admits up to 2F events,
+subject to charging the actual supplied operation span and both byte buffers.
+
+Retain the typed-token decoder as a reference. Add a separate byte-buffer token
+decoder which decodes each token once into private scratch, validates history
+and raw counts, and completes canonical range termination before copying any
+records to caller output. A literal record is tag zero followed by its byte;
+a match record is tag one followed by explicit LE32 distance and LE32 length.
+These records are private working storage, not a new stream representation.
+
+Require each record buffer to cover min(3R,9T) bytes. Every match occupies nine
+bytes and produces at least three raw bytes; a literal occupies two and produces
+one. Thus both bounds hold independently, including valid length-three/four
+wire matches. Charge the full capacities, payload, concrete helper state and
+caller-declared retained state with checked arithmetic. Reject any overlap of
+either writable span with payload, configuration or the committed-size output.
+On failure, preserve all caller output bytes and that committed-size output;
+scratch remains private and discardable. Do not reconstruct or publish a prefix
+from failed scratch. This finite token helper does not establish the memory
+policy or publication contract of the future complete stream factory.

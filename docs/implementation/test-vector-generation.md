@@ -21758,3 +21758,31 @@ No new wire encoder/decoder, public API, CLI or bundle is qualified here. Future
 tests must cover independent frames, arbitrary chunks, F-1/F/F+1, retained
 generations, reachable far distances, length-three/four wire cases, allocation
 refusals, exact complete budgets and late failures before publication.
+
+### TVG-1356: thirty-two-MiB finite reference and compact record differential tests
+
+An independently authored integer Range oracle emits six finite recipes:
+one literal, overlapping length-three/four matches with changing literals,
+every length 3..258, model rescaling through 40000 literals, and complete
+33554432-byte frames ending in distances F-3 and F-258. Native mapper and Range
+output must equal every oracle payload byte. Scalar overlap reconstruction
+checks every raw byte. Separate field-cursor tests enumerate all nine length
+classes and all 26 distance classes, including the class-25 residual constraint.
+
+Compare every compact tag and little-endian distance/length with the typed
+reference. Check exact full-capacity admission, one-byte-below refusal,
+undersized output/scratch, count/model mismatch, integer addition overflow,
+buffer aliasing, every short-payload truncation, final canonical-byte corruption
+and extra trailing payload. Failed compact decoding must preserve the entire
+caller output and its committed-size sentinel; successful decoding preserves
+the unused output tail. Header and frame-prefix cases likewise retain output
+metadata and byte guards on failure. These finite helpers do not qualify a
+complete streaming factory, public API, CLI or exchange bundle.
+
+The finite suite passes with two CTest cases on each of three native compiler
+and instrumentation routes, including address/undefined-behavior sanitizers.
+A reproducible seeded libFuzzer campaign completes 10000 inputs through both
+token decoders and the new Range decoder, comparing failure categories,
+validated counts, successful records and scalar reconstruction. The campaign
+checks full caller output and committed-size invariance on every failure.
+Leak detection is disabled; no leak qualification is claimed.

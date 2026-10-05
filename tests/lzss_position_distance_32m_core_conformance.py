@@ -1,0 +1,27 @@
+"""Generate independent finite vectors and run the private native core test."""
+import argparse
+from pathlib import Path
+import subprocess
+import tempfile
+from lzss_position_distance_32m_reference_vectors import write
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--tool', required=True)
+    parser.add_argument('--root', required=True)
+    args = parser.parse_args()
+    root = Path(args.root)
+    root.mkdir(parents=True, exist_ok=True)
+    evidence = Path(tempfile.mkdtemp(prefix='run-', dir=root))
+    vectors = evidence / 'independent-vectors.bin'
+    write(vectors)
+    result = subprocess.run([args.tool, str(vectors)], capture_output=True, timeout=120)
+    (evidence / 'stdout.log').write_bytes(result.stdout)
+    (evidence / 'stderr.log').write_bytes(result.stderr)
+    print(result.stdout.decode('utf-8'), end='')
+    print(result.stderr.decode('utf-8'), end='')
+    if result.returncode:
+        raise SystemExit(result.returncode)
+
+if __name__ == '__main__':
+    main()

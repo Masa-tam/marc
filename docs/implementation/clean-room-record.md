@@ -38811,3 +38811,19 @@ codec behavior. No future decoder execution, throughput, complete control charge
 public memory budget or release completion is inferred. Existing source, ABI,
 CLI, exchange bytes and fixed executable remain unchanged. The next implementation
 must retain a reference path and independently qualified private publication.
+
+### CR-1661: thirty-two-MiB finite reference and compact token implementation
+
+2026-10-05, author/reviewer Codex. Task: implement the next bounded
+position-distance model and reference, then qualify private compact-token
+decoding before integrating the complete larger-window stream. IR-1248 lists
+the repository-owned sources used. No external implementation was consulted.
+
+Review checks the separate new identity, frequency layout, count bounds,
+unchanged 2^24 normalization, explicit private record serialization, checked
+full-capacity accounting and whole-output publication after canonical finish.
+Independent mathematical payloads and typed/compact differential comparisons
+cover full-window far references and wire length-three/four matches. Existing
+codec, ABI and exchange implementations are preserved. Complete factory,
+allocation, streaming, CLI and external qualification remain separate gates;
+finite helper tests do not imply release completion.

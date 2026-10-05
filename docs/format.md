@@ -9020,3 +9020,8 @@ The conservative count bounds are 1<=T<=R, 2T<=E<=min(2R,5T),
 E<=N<=min(10R,35T), 5<=P<=min(2N+5,20R+5). Maximum bounded payload/frame
 sizes are 671088645/671088725 bytes. Caller limits precede allocation and may
 be smaller. No new selection flag, automatic mode or exchange entry is added.
+
+The private finite reference now parses and serializes this identity and
+validates its typed fields and canonical Range payload. Its compact token
+scratch representation is internal and does not change the above wire bytes.
+Public factory, CLI and exchange admission remain separate integration work.

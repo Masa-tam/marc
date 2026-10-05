@@ -10932,3 +10932,11 @@ DD-1488 uses repository-owned sixteen-MiB representation, field-count recipes,
 numeric ownership queries, compact record grammar and public resource contracts.
 The larger context layout and bounds are independently derived from the distance
 extension. No external implementation source is consulted.
+
+### IR-1248: thirty-two-MiB bounded reference and compact token decoding
+
+DD-1489 adapts repository-owned sixteen-MiB model, field cursor, transactional
+mapper, range encoder/decoder, token validator and finite framing helpers.
+The private compact record representation follows DD-1488 and explicit
+repository little-endian helpers. Independent mathematical recipes generate
+the new payloads; no external implementation source is consulted.
