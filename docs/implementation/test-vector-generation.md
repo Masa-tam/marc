@@ -21939,3 +21939,13 @@ all full-region aliases and preservation of prior frame/layout/written count.
 Keep full 32 MiB frames in the differential owner ledger, without shrinking the
 maximum window or changing global defaults. Independently specified repeated
 and unique-prefix/zero-history/far F-5/F-258 recipes supply whole-frame bytes.
+
+
+### TVG-1363: thirty-two-MiB owning publication and stream validation
+
+Adapt first-party allocation-receipt, candidate-refusal, retained-publication,
+whole-capacity exact/one-below, callback/full-region alias and partial-buffer
+cases. Independently construct full repeated and far-distance stream bytes
+using the integer model and explicit serialization; test F-1/F/F+1/2F/2F+1
+with full frame size, complete raw reconstruction and failed later-frame
+non-publication. Track real allocation lifetimes without reducing the window.

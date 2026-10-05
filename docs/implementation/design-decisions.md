@@ -33008,3 +33008,20 @@ P<=min(2N+5,20R+5). No public decoder admission is routed through the encoder
 prefix. The distinct private prefix serializer retains whole-output failure
 invariance and explicit little-endian fields. Public stream ownership and CLI
 memory policy remain separate gates.
+
+
+### DD-1496: thirty-two-MiB compact ownership and stream commit
+
+Keep a distinct thirty-two-MiB owner and known-size stream encoder. Prepare
+compact dictionary records once, query exact payload bytes, admit all candidate
+allocations while retaining the previous publication, then finish and validate
+the complete candidate before swapping publication. Logical drain never
+releases the old publication. Every failed allocation or validation retains
+its full prior bytes, layout, length and pending status. Exact allocator
+receipts and control extents are stable and disjoint. Count borrowed raw/index,
+actual allocated extents, callback controls and external retained owners before
+each allocation; no hidden phase release. Encoder prefix admission remains
+distinct from decoder min(3R,9T) staging. Stream direction is immutable, terminal
+states sticky, Flush neutral and ResetBlock unsupported. Failed frame bytes
+never drain. Explicit large-profile limits remain test configurations until
+complete owned resource measurements justify CLI policy.

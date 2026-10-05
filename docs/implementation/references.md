@@ -10987,3 +10987,11 @@ DD-1495 adapts repository-owned sixteen-MiB operation-array, typed-direct and
 compact complete-frame transactions. Regenerate whole-frame bytes with the
 independent thirty-two-MiB mathematical Range oracle and explicit frame layout.
 No external implementation is consulted.
+
+
+### IR-1255: thirty-two-MiB compact publication and owning encoder
+
+Use the first-party sixteen-MiB compact owner and known-size encoder,
+DD-1488/DD-1495 and qualified thirty-two-MiB finite helpers. Preserve exact
+allocation receipts, live previous publications and callback control extents.
+No external implementation or source reference is consulted.

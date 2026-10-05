@@ -38955,3 +38955,31 @@ Similarity review: first-party adaptation plus independently authored closed
 parse and integer serialization recipes; no external source consultation.
 All previous implementation files are unchanged. Public ownership, CLI limits
 and exchange qualification remain separate work.
+
+
+### CR-1668: thirty-two-MiB compact owner and owning stream encoder
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: connect the qualified compact frame records to exact owning publication
+and known-size streaming, preserve retained generations, allocation admission
+and failed-frame non-publication. References: IR-1255/DD-1496/TVG-1363 and
+first-party implementations. No external or copyleft source consulted.
+Qualification and similarity review follow native tests and resource diagnosis.
+
+Qualification: three compiler/instrumentation routes each pass sixteen owning
+publication/stream cases, thirty-three finite compact frame regressions, three
+finite full-frame recipes and seven independently serialized owning-stream
+recipes. Full F-1/F/F+1/2F/2F+1 and far F-5/F-258 streams agree byte-for-byte
+with the integer oracle and reconstruct all raw bytes. Corrupting the second
+full frame publishes only the first full frame. Candidate allocation refusals,
+full retained-publication ledgers, exact/one-below admission, draining status,
+chunk schedules, terminal states and aliases preserve the documented contract.
+The new owning fuzz campaign completes 10,000 address/undefined-behavior
+iterations (leak detection disabled), without a finding. A separate seeded
+incompressible two-frame experiment checks actual allocation lifetimes and
+all regenerated raw bytes, with full external collector capacity retained.
+Its measured process scope includes a borrowed decoder, and does not establish
+an owning decoder or CLI memory policy. Similarity review uses first-party
+adaptation and independent closed parse/serialization recipes only; no external
+source consultation. Previous implementation files and public defaults remain
+unchanged. Owning decoder, public interfaces and exchange are separate gates.
