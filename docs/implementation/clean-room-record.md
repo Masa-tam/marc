@@ -38928,3 +38928,30 @@ Similarity review: first-party adaptation, independent explicit serialization
 and retained typed/mathematical comparisons; no external source consultation.
 All previous implementation files are byte-identical. No public API, frame
 representation, global limit or CLI selector is changed by this finite gate.
+
+
+### CR-1667: thirty-two-MiB finite frame encoder adaptation
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: connect operation-array/typed-direct references and compact private
+record encoding to complete thirty-two-MiB frame transactions, keeping output
+invariance and decoder staging rules. References: IR-1254, DD-1495, TVG-1362
+and first-party prior implementations; independent integer/prefix recipes.
+No external or copyleft implementation or test suite is consulted.
+Qualification and similarity review are appended after native checks; public
+ownership, CLI and exchange are not completed by this finite gate.
+
+Qualification: three compiler/instrumentation routes each pass twenty-eight
+typed-direct frame cases, thirty-three compact frame cases and three full
+thirty-two-MiB closed parse recipes. Operation-array, typed-direct and compact
+frames agree; independent complete-frame bytes and reconstructed raw bytes
+agree for full repetition and distances F-5/F-258. Full-capacity exact admission
+succeeds and one-byte-below admission preserves the entire previous frame,
+layout and written count. A prefix-only directed case confirms the decoder
+min(3R,9T) floor remains intact while the encoder charges actual record capacity.
+Both new frame fuzz campaigns complete 10,000 iterations with address and
+undefined-behavior checks (leak detection disabled), without a finding.
+Similarity review: first-party adaptation plus independently authored closed
+parse and integer serialization recipes; no external source consultation.
+All previous implementation files are unchanged. Public ownership, CLI limits
+and exchange qualification remain separate work.

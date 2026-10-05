@@ -21925,3 +21925,17 @@ typed direct Range and typed token decoding. Directed cases cover legal wire
 lengths three/four, unreachable reset-frame distance F, late malformed records,
 all truncations and extra syntax, counts/limits/overflow, full-capacity aliases,
 exact budget versus one below and prior payload/descriptor preservation.
+
+
+### TVG-1362: thirty-two-MiB whole-frame encode differential
+
+Regenerate literal, repeated, pattern, nearest-tie and binary whole-frame
+fixtures from the independent thirty-two-MiB integer Range equations and
+explicit MRF2 header/descriptor. Compare operation-array, typed-direct and
+compact frame encoders and existing frame reconstruction. Check queries before
+selecting payload storage, every workspace shortage, strict sequence/position,
+counts/limits/overflow, exact full retained-capacity admission versus one below,
+all full-region aliases and preservation of prior frame/layout/written count.
+Keep full 32 MiB frames in the differential owner ledger, without shrinking the
+maximum window or changing global defaults. Independently specified repeated
+and unique-prefix/zero-history/far F-5/F-258 recipes supply whole-frame bytes.

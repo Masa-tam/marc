@@ -10979,3 +10979,11 @@ No external implementation is consulted.
 DD-1494 adapts the repository-owned sixteen-MiB compact parser and explicit
 byte-record Range traversal, retaining the qualified thirty-two-MiB typed
 references and independent TVG-1360 payloads. No external source is consulted.
+
+
+### IR-1254: thirty-two-MiB complete finite frame encoding
+
+DD-1495 adapts repository-owned sixteen-MiB operation-array, typed-direct and
+compact complete-frame transactions. Regenerate whole-frame bytes with the
+independent thirty-two-MiB mathematical Range oracle and explicit frame layout.
+No external implementation is consulted.

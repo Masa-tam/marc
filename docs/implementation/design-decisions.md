@@ -32985,3 +32985,26 @@ and declared retained owners in parsing; charge the full immutable record view,
 both payload capacities and retained unused backing storage in Range encoding.
 Perform full region alias and checked arithmetic admission before mutation.
 No public ownership, frame commit, global limit or CLI budget is introduced.
+
+
+### DD-1495: thirty-two-MiB complete frame encoder transactions
+
+Retain an operation-array frame reference, add typed-direct frame encoding and
+connect the qualified compact dictionary/Range helpers. Validate complete
+raw/frame position, dictionary counts, Range finish, prefix serialization and
+matching prefix metadata before committing the whole caller frame and layout.
+Any failure preserves the whole output, layout and written count; every helper
+workspace remains private and discardable. Charge all full workspace/output/raw
+capacities plus concrete helper controls and declared retained owners across
+phases. Logical phase completion does not release a live owner.
+
+Use a separate compact_encode_prefix entry for known encoder records, requiring
+at least 2T bytes and charging the full declared compact capacity. This is a
+syntax/resource check only and does not establish token or payload validity.
+Keep the existing decoder compact_frame_prefix entry and its min(3R,9T) record
+floor unchanged, including valid wire lengths three/four. Both wire validators
+enforce DD-1488's 49-context/2,621-frequency layout and N<=min(10R,35T),
+P<=min(2N+5,20R+5). No public decoder admission is routed through the encoder
+prefix. The distinct private prefix serializer retains whole-output failure
+invariance and explicit little-endian fields. Public stream ownership and CLI
+memory policy remain separate gates.
