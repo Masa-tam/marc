@@ -22079,3 +22079,29 @@ whole-library ASan/UBSan and Ubuntu Clang. A seeded 10,000-run ASan/UBSan frame
 fuzz campaign compares typed/compact failure publication and scalar raw output
 with no finding; leak detection is disabled. This does not qualify arbitrary
 stream chunking, public allocation callbacks, CLI policy or exchange bundles.
+
+
+### TVG-1371: sixty-four-MiB incremental stream and lifetime qualification
+
+Generate sixteen independent streams: six field/frame recipes, five semantic
+malformations, empty input, two small frames, two full frames, late canonical
+failure and late invalid history. Compare every output byte and the exact
+committed prefix with the mathematical expectations. Exercise every split for
+small inputs, one-byte input and output (including 2F raw output), random chunks,
+bounded output starvation, delayed EndInput, neutral Flush, ResetBlock refusal,
+sticky terminal errors/end, strict trailing bytes and truncation.
+
+Replace the old fixed 100-million test-call guard with a bounded call limit
+derived from supplied input and maximum expected raw output; retain the entire
+two-window one-byte schedule. Allocate and retain every maximum backing for
+successful and corrupted-second-frame cases. Verify aggregate accounting,
+old-512-MiB refusal, exact/one-below admission and unchanged prior raw backing.
+Independent literal payloads are regenerated from the new model. Contract
+tests prohibit allocation throughout construction/process, check all workspace
+pair aliases, input/output/owner aliases, each capacity/retained overflow and
+late-frame preservation. Four native routes pass five field/core/frame/stream
+tests each. A seeded 10,000-run whole-library ASan/UBSan stream campaign compares
+one-shot and split schedules, error positions, terminal states, output guards
+and failed-frame nonpublication with no finding; leak detection is disabled.
+Owning callback allocation failures and encoder/CLI/bundle qualification remain
+separate requirements of the active full goal.

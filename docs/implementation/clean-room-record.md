@@ -39147,3 +39147,21 @@ Initial full-frame testing exposed insufficient generic 128-MiB admission;
 only test grants were made explicit, with product defaults unchanged. Similarity
 review is scoped to repository-owned components; no legal guarantee or completed
 public sixty-four-MiB codec is claimed.
+
+
+### CR-1677: sixty-four-MiB borrowed stream qualification
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: no-allocation reserved-profile streaming decoder and complete workspace
+query, arbitrary chunking and prior-frame preservation on failure.
+References: IR-1263/DD-1504/TVG-1371 and first-party bounded stream contracts.
+No external implementation source is consulted. Review stable borrowed regions,
+checked full capacity arithmetic, immutable direction, finish/drain states,
+failure positions and publication only after complete frame success. Preserve
+all previous implementation bytes, public ABI, formats, limits and runtime.
+One new production unit agrees with independent sixteen-stream expectations
+on four native routes. Allocation prohibition, full maximum backing, two-window
+one-byte output, aliases, overflow and exact/one-below contracts pass. A seeded
+10,000-run instrumented stream campaign reports no finding. Similarity review
+is scoped to repository-owned components; no legal guarantee or completed
+public sixty-four-MiB codec is claimed.

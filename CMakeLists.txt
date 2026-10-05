@@ -531,6 +531,7 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_64m_serializer.cpp
     src/frame/lzss_position_distance_64m_frame_decoder.cpp
     src/frame/lzss_position_distance_64m_compact_frame_decoder.cpp
+    src/frame/lzss_position_distance_64m_stream_decoder.cpp
     src/marc.cpp
 )
 
@@ -7412,5 +7413,25 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
                 --tool $<TARGET_FILE:marc_position_distance_64m_frame_tests>
                 --root ${CMAKE_CURRENT_BINARY_DIR}/position-distance-64m-frame)
         set_tests_properties(marc_position_distance_64m_frame_conformance PROPERTIES TIMEOUT 480)
+    endif()
+endif()
+
+if(MARC_BUILD_TESTS AND TARGET marc_static)
+    add_executable(marc_position_distance_64m_stream_contract_tests tests/lzss_position_distance_64m_stream_contract_tests.cpp)
+    target_compile_features(marc_position_distance_64m_stream_contract_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_64m_stream_contract_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_64m_stream_contract_tests PRIVATE marc::static)
+    add_test(NAME marc_position_distance_64m_stream_contract COMMAND marc_position_distance_64m_stream_contract_tests)
+    find_package(Python3 COMPONENTS Interpreter QUIET)
+    if(Python3_Interpreter_FOUND)
+        add_executable(marc_position_distance_64m_stream_tests tests/lzss_position_distance_64m_stream_tests.cpp)
+        target_compile_features(marc_position_distance_64m_stream_tests PRIVATE cxx_std_20)
+        target_include_directories(marc_position_distance_64m_stream_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_distance_64m_stream_tests PRIVATE marc::static)
+        add_test(NAME marc_position_distance_64m_stream_conformance
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_64m_stream_conformance.py
+                --tool $<TARGET_FILE:marc_position_distance_64m_stream_tests>
+                --root ${CMAKE_CURRENT_BINARY_DIR}/position-distance-64m-stream)
+        set_tests_properties(marc_position_distance_64m_stream_conformance PROPERTIES TIMEOUT 1200)
     endif()
 endif()

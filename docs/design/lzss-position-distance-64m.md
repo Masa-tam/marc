@@ -192,3 +192,15 @@ and malformed recipes pass four native routes, including maximum-size far
 references and full five-buffer capacity accounting. Generic defaults remain
 unchanged. This does not yet qualify streaming, public ownership, CLI policy or
 archive-74 exchange.
+
+
+## Borrowed stream qualification (DD-1504)
+
+A private no-allocation streaming decoder now collects bounded frames into
+borrowed disjoint workspaces, validates and reconstructs before draining, and
+keeps prior validated output when a later frame fails. Complete workspace
+queries include actual capacities, owner, controls, helpers and separately
+retained bytes. Sixteen mathematical streams pass arbitrary split, starvation,
+delayed finish, sticky terminal and full two-frame one-byte output schedules on
+four native routes. Owning/public factories, dictionary encoders, CLI resource
+policy and archive-74 exchange remain pending.

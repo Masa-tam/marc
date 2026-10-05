@@ -33174,3 +33174,26 @@ old 512-MiB policy are insufficient for their tested complete extents; defaults
 remain unchanged. Explicit test grants and exact/one-below queries establish
 finite admission, not a public or CLI policy. Complete stream ownership and
 resource measurements remain required before selecting that policy.
+
+
+### DD-1504: sixty-four-MiB no-allocation borrowed streaming and full query
+
+Borrow five full-capacity, disjoint workspaces for the entire decoder lifetime.
+Keep header, prefix, payload, draining, awaiting-end, ended and error states
+distinct. Validate and reconstruct a complete frame before making any byte of
+it available to downstream. A failed later frame publishes no bytes of that
+frame and preserves the raw backing of the preceding validated frame.
+EndInput accompanies the unconsumed final suffix until it is consumed; finish
+may require later output draining. Flush is neutral, ResetBlock unsupported,
+and terminal states are sticky. Do not return Progress with zero counts.
+
+The complete numeric workspace query charges full serialized/record/raw
+capacities, concrete owner, conservative parser/control storage, helper state
+and caller-declared separately retained owners. Never subtract a borrowed grant
+or prior publication. The maximum diagnostic backing remains 671,088,720 bytes;
+adding 7,064 control/helper bytes and 977,042 declared fixture/output-retention
+bytes gives 672,072,826 bytes in the tested full two-frame configuration.
+Exact admission succeeds, one-below refuses without consuming or publishing,
+and the old 512-MiB grant refuses. Generic limits remain unchanged; explicit
+test grants are not a public or CLI policy. This borrowed helper allocates no
+memory and does not implement the future owning/public callbacks.

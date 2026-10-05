@@ -11057,3 +11057,12 @@ complete-frame transaction and explicit mathematical frame generator. Generate
 fresh reserved-identity headers, descriptors and Range payloads from equations.
 Use scalar forward overlap copy and checked little-endian record reads. No
 external implementation source is consulted.
+
+
+### IR-1263: sixty-four-MiB bounded borrowed stream decoder
+
+Use IR-1262/DD-1501..DD-1503, current first-party thirty-two-MiB borrowed stream
+contracts and the new sixty-four-MiB mathematical field/frame generators.
+Generate distinct headers and descriptors for independent whole streams.
+Regenerate the two literal hand payloads directly from the new model equations;
+their literal intervals remain unchanged. No external source is consulted.
