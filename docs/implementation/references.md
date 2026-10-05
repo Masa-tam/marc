@@ -10964,3 +10964,11 @@ DD-1492 adapts the repository-owned sixteen-MiB exhaustive reference and
 complete hash-chain parser to the qualified thirty-two-MiB parameters. The
 independently authored exhaustive test parser and scalar reconstruction remain
 separate from production traversal. No external implementation is consulted.
+
+
+### IR-1252: thirty-two-MiB direct token Range encoding
+
+DD-1493 adapts the repository-owned sixteen-MiB finite token Range encoder.
+Recompute every payload fixture with the independently authored thirty-two-MiB
+integer model equations from TVG-1355; previous payload bytes are not relabeled.
+No external implementation is consulted.

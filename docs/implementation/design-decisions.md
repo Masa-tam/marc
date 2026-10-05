@@ -32945,3 +32945,21 @@ commit zero tokens and preserve the whole output and metadata; private scratch
 is discardable. These helpers neither admit a public stream nor change global
 limits. Later compact encoder and public ownership must account for their own
 complete simultaneously retained buffers.
+
+
+### DD-1493: thirty-two-MiB scalar typed-token Range transaction
+
+Traverse typed tokens directly through the qualified thirty-two-MiB field
+cursor and adaptive model bank without allocating a materialized operation
+array. Preserve the separate field-operation encoder as a comparison path.
+Use 49 contexts, 2,621 frequencies, 26 distance classes and up to 25 adaptive
+distance-extra bits. The normalization threshold remains 2^24 and the five-byte
+canonical finish is unchanged. Validate the DD-1488 bounds N<=min(10R,35T).
+
+Count and validate the complete finite token sequence before writing private
+payload scratch; commit the whole payload and descriptor only after finish.
+All failures preserve the full caller output and descriptor, with zero bytes
+committed. Charge the full typed input, both full byte capacities, concrete
+working controls and retained caller bytes, with checked arithmetic and full
+region alias checks. This reference does not admit an owning public stream or
+choose a CLI memory policy. Compact token traversal remains a separate gate.

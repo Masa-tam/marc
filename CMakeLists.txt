@@ -487,6 +487,7 @@ set(MARC_SOURCES
     src/dictionary/lzss_position_distance_32m_indexed.cpp
     src/dictionary/lzss_position_distance_16m_indexed.cpp
     src/entropy/lzss_position_distance_16m_token_range_encoder.cpp
+    src/entropy/lzss_position_distance_32m_token_range_encoder.cpp
     src/frame/lzss_position_distance_16m_frame_encoder.cpp
     src/frame/lzss_position_distance_16m_token_frame_encoder.cpp
     src/dictionary/lzss_position_distance_16m_compact.cpp
@@ -7240,4 +7241,13 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
     target_link_libraries(marc_position_distance_32m_indexed_tests PRIVATE marc_static GTest::gtest_main)
     add_test(NAME marc_position_distance_32m_indexed COMMAND marc_position_distance_32m_indexed_tests)
     set_tests_properties(marc_position_distance_32m_indexed PROPERTIES TIMEOUT 900)
+endif()
+
+if(MARC_BUILD_TESTS AND TARGET marc_static)
+    add_executable(marc_position_distance_32m_token_range_tests tests/lzss_position_distance_32m_token_range_tests.cpp)
+    target_compile_features(marc_position_distance_32m_token_range_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_32m_token_range_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_32m_token_range_tests PRIVATE marc_static GTest::gtest_main)
+    add_test(NAME marc_position_distance_32m_token_range COMMAND marc_position_distance_32m_token_range_tests)
+    set_tests_properties(marc_position_distance_32m_token_range PROPERTIES TIMEOUT 900)
 endif()

@@ -21893,3 +21893,18 @@ reachable distances F-5 and F-258. Preserve caller output and metadata for
 invalid parameters, all capacities, exact budget versus one below, arithmetic
 overflow and full-span aliases. These are finite dictionary tests; public
 stream, allocation failure and CLI qualification remain separate gates.
+
+
+### TVG-1360: thirty-two-MiB direct token Range equations and transactions
+
+Retain the first-party twenty-nine semantic token recipes from TVG-1348, but
+regenerate every expected payload and count with the independent thirty-two-MiB
+integer model equations. Full-frame far3/far258 recipes use F=33,554,432.
+Compare direct scalar traversal, materialized field-operation encoding,
+independent payload bytes and token decoding; check all length classes,
+distance classes through reachable class 24 and literal/match model rescaling.
+Check malformed late tokens, declarations, every capacity, aliases, exact
+budget versus one below and unreachable reset-frame distance F. Separately
+exercise a full-frame seeded all-literal token sequence under its actual
+finite retained-capacity ledger; no dictionary search or CLI performance is
+inferred from a scalar token entropy experiment.

@@ -38876,3 +38876,29 @@ preserving all prior tokens and metadata. Old tracked implementation files
 remain byte-identical. Similarity review: repository-owned adaptation and
 separate descending-length oracle only; no external source consultation.
 Public ownership, CLI and exchange are not qualified by these finite tests.
+
+
+### CR-1665: thirty-two-MiB direct finite token Range adaptation
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: add a direct finite typed-token Range transaction for DD-1488 while
+retaining the operation-array reference and whole-output failure invariants.
+References: IR-1252, DD-1493, TVG-1360 and repository-owned prior stages.
+All expected payloads are regenerated from the independent integer equations;
+the older profile's encoded bytes are not used as expected thirty-two-MiB
+payloads. No external or copyleft implementation or test suite is consulted.
+Qualification and similarity review are recorded after native checks.
+
+Qualification: three compiler/instrumentation routes each pass the forty-case
+finite token Range suite (twenty-nine regenerated mathematical payloads and
+eleven directed transaction tests). Owner-capacity receipts agree across
+routes. The whole production library is instrumented for address/undefined
+behavior checks, with leak detection disabled; the new encoder fuzz completes
+10,000 iterations without a finding. A full 33,554,432-token seeded literal
+frame encodes and decodes every token, checks default-budget refusal and exact
+versus one-byte-below retained-capacity ledgers. This resource experiment
+includes the typed reference decoder and is not a public/CLI memory policy.
+Similarity review: first-party adaptation, independent integer regeneration
+and preserved operation-array comparison only; no external source consulted.
+Previous implementations are byte-identical and existing public APIs remain
+unchanged. Compact encoding, ownership and exchange remain separate gates.
