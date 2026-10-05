@@ -118,12 +118,12 @@ Error parse_lzss_position_distance_32m_stream_header(
   consumed = 112;
   return Error::none;
 }
-Error preflight_lzss_position_distance_32m_frame_prefix(
-    std::span<const std::byte> input,
-    const TypedContextFrameValidationContext &c,
-    TypedContextFrameLayout &output,
-    LzssPositionDistance32mFrameRequirements &requirements,
-    std::size_t retained) noexcept {
+static Error
+preflight_frame_prefix(std::span<const std::byte> input,
+                       const TypedContextFrameValidationContext &c,
+                       TypedContextFrameLayout &output,
+                       LzssPositionDistance32mFrameRequirements &requirements,
+                       std::size_t retained, bool compact) noexcept {
   const auto alias = output_preflight(
       std::array{Region{&output, sizeof(output)},
                  Region{&requirements, sizeof(requirements)}},
@@ -189,10 +189,18 @@ Error preflight_lzss_position_distance_32m_frame_prefix(
       result.descriptor.context_count != 49)
     return Error::invalid_descriptor;
   std::uint64_t serialized{}, tokens{}, working{}, model{}, aggregate{};
-  if (!core::checked_add(p, std::uint64_t{80}, serialized) ||
+  std::uint64_t compact_raw_bound{};
+  if ((compact &&
+       !core::checked_multiply(raw, std::uint64_t{3}, compact_raw_bound)) ||
       !core::checked_multiply(
-          t, std::uint64_t{sizeof(dictionary::internal::LzssTypedToken)},
-          tokens) ||
+          t,
+          compact ? std::uint64_t{9}
+                  : std::uint64_t{sizeof(dictionary::internal::LzssTypedToken)},
+          tokens))
+    return Error::arithmetic_overflow;
+  if (compact)
+    tokens = std::min(tokens, compact_raw_bound);
+  if (!core::checked_add(p, std::uint64_t{80}, serialized) ||
       !core::checked_add(serialized, tokens, working) ||
       !core::checked_add(working, raw, working) ||
       !core::checked_add(
@@ -229,5 +237,23 @@ Error preflight_lzss_position_distance_32m_frame_prefix(
   output = result;
   requirements = r;
   return Error::none;
+}
+Error preflight_lzss_position_distance_32m_frame_prefix(
+    std::span<const std::byte> input,
+    const TypedContextFrameValidationContext &context,
+    TypedContextFrameLayout &output,
+    LzssPositionDistance32mFrameRequirements &requirements,
+    std::size_t retained) noexcept {
+  return preflight_frame_prefix(input, context, output, requirements, retained,
+                                false);
+}
+Error preflight_lzss_position_distance_32m_compact_frame_prefix(
+    std::span<const std::byte> input,
+    const TypedContextFrameValidationContext &context,
+    TypedContextFrameLayout &output,
+    LzssPositionDistance32mFrameRequirements &requirements,
+    std::size_t retained) noexcept {
+  return preflight_frame_prefix(input, context, output, requirements, retained,
+                                true);
 }
 } // namespace marc::frame::internal

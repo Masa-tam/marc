@@ -46,5 +46,13 @@ preflight_lzss_position_distance_32m_frame_prefix(
     std::span<const std::byte>, const TypedContextFrameValidationContext &,
     TypedContextFrameLayout &, LzssPositionDistance32mFrameRequirements &,
     std::size_t retained_state_bytes = 0) noexcept;
+// Same wire validation, using the compact record bound min(3R,9T) for the
+// prefix's staging-storage floor. Complete caller capacities are charged by
+// the compact frame/stream queries before decoding or publication.
+[[nodiscard]] LzssPositionDistance32mPreflightError
+preflight_lzss_position_distance_32m_compact_frame_prefix(
+    std::span<const std::byte>, const TypedContextFrameValidationContext &,
+    TypedContextFrameLayout &, LzssPositionDistance32mFrameRequirements &,
+    std::size_t retained_state_bytes = 0) noexcept;
 } // namespace marc::frame::internal
 #endif

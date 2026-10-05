@@ -38827,3 +38827,15 @@ cover full-window far references and wire length-three/four matches. Existing
 codec, ABI and exchange implementations are preserved. Complete factory,
 allocation, streaming, CLI and external qualification remain separate gates;
 finite helper tests do not imply release completion.
+
+### CR-1662: thirty-two-MiB finite compact frame reconstruction
+
+2026-10-05, author/reviewer Codex. Task: extend the qualified compact token path
+to complete finite frame reconstruction and private publication. IR-1249 records
+the first-party transaction and independent recipe references. No external
+implementation was consulted. Review checks explicit record parsing, history
+and raw-size validation, canonical finish before reconstruction, exact complete
+capacity accounting, disjoint buffers and previous-publication invariance.
+Typed prefix behavior and the earlier typed reconstruction reference are
+retained. Complete stream/public/CLI/exchange integration and release
+qualification are not inferred from this finite stage.

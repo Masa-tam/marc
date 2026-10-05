@@ -32869,3 +32869,26 @@ On failure, preserve all caller output bytes and that committed-size output;
 scratch remains private and discardable. Do not reconstruct or publish a prefix
 from failed scratch. This finite token helper does not establish the memory
 policy or publication contract of the future complete stream factory.
+
+### DD-1490: thirty-two-MiB finite typed and compact frame transactions
+
+Retain a finite typed-token frame decoder as the reconstruction reference.
+The primary compact frame path preflights one exact serialized frame, decodes
+once to private compact record scratch, validates canonical Range termination,
+reads records through explicit little-endian helpers and reconstructs into
+private raw scratch. Revalidate every token against history and declared raw
+size, and require exact record consumption and raw length. Only then copy the
+whole raw frame to caller output and commit its layout. Every failed frame
+returns zero committed input/raw counts and preserves the entire caller raw
+span and layout, including a previous successful publication.
+
+Share wire-prefix validation between explicit typed and compact entry points.
+The typed entry retains its original typed-token staging floor; the compact
+entry uses min(3R,9T) for one private record staging buffer. Neither prefix
+success proves payload validity or substitutes for the complete frame query.
+The complete compact query charges both full record capacities, both full raw
+capacities, serialized extent, separately retained serialized-owner capacity,
+the concrete reconstruction state and nested token helper. All writable spans
+and layout must be disjoint from input, configuration and each other. Caller
+limits are applied before token decoding. Stream ownership, public admission,
+CLI limits and allocator failure qualification remain subsequent work.

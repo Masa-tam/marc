@@ -21786,3 +21786,40 @@ token decoders and the new Range decoder, comparing failure categories,
 validated counts, successful records and scalar reconstruction. The campaign
 checks full caller output and committed-size invariance on every failure.
 Leak detection is disabled; no leak qualification is claimed.
+
+### TVG-1357: thirty-two-MiB whole-frame transactions and full backing capacities
+
+Independently serialized stream headers and complete frames exercise the six
+finite Range recipes and five malformed token sequences: an initial match,
+late history violation, length 259, distance F+1 and distance F with insufficient
+history. Typed and compact frame paths reconstruct every accepted raw byte.
+Exact/one-below budgets, all four workspace shortages, overlapping workspaces,
+prefix mutation, truncation, trailing frame data, crossed identity, sequence,
+total output limits and retained-capacity overflow preserve caller raw output
+and layout. A successful frame followed by corrupted payload retains the whole
+previous publication. Length-three/four overlap and full F-3/F-258 references
+remain in the independent recipes.
+
+An additional real F-byte decode supplies two 3F record buffers, two F raw
+buffers and a serialized backing of 64 MiB plus 80 bytes: 335544400 backing bytes.
+The exact query adds concrete frame/reconstruction and token helper state;
+decode succeeds at that complete finite-helper budget and refuses one byte
+below it. Corruption at canonical finish preserves every previously published
+raw byte and layout. These are actual frame-decoder executions, not array-only
+allocation diagnostics; they do not establish complete future factory controls
+or a CLI policy.
+
+Three native compiler/instrumentation routes each pass the field, token/core
+and whole-frame conformance cases. Address/undefined-behavior instrumentation
+includes the complete production library. A seeded libFuzzer campaign completes
+10000 whole-frame inputs, comparing typed and compact errors, committed counts,
+raw reconstruction and full raw/layout invariance. Leak detection is disabled.
+
+The qualified finite-helper total for the five full capacities is 335550344
+bytes, including 5944 bytes of concrete frame/reconstruction and nested token
+helper state. These sizeof-dependent controls are queried rather than encoded
+as a portable constant. A separate process running the complete finite
+transaction suite observes peak working set 340369408 bytes and peak pagefile
+339582976 bytes. That process measurement includes the finite typed reference
+and repeated success/failure checks; it is not a complete stream/public/CLI
+measurement or a throughput benchmark.

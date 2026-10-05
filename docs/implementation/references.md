@@ -10940,3 +10940,10 @@ mapper, range encoder/decoder, token validator and finite framing helpers.
 The private compact record representation follows DD-1488 and explicit
 repository little-endian helpers. Independent mathematical recipes generate
 the new payloads; no external implementation source is consulted.
+
+### IR-1249: thirty-two-MiB whole-frame compact reconstruction
+
+DD-1490 adapts the repository-owned sixteen-MiB finite frame transaction and
+the independently qualified thirty-two-MiB compact token helper. Independent
+explicit header/frame recipes wrap the mathematical Range oracle. No external
+implementation source is consulted.
