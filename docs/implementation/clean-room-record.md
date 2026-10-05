@@ -39084,3 +39084,18 @@ compiler route confirming those suites. Review preserves all production
 sources, public ABI, fixed runtime, earlier artifacts and vector bytes.
 No external implementation is consulted; no wire, budget or release-state
 change follows this test-fixture portability correction.
+
+
+### CR-1673: revision-specific external evidence reconciliation
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: record the maintainer's successful hosted CI and four schema-63,
+73-archive external consumer reports for
+8c5b4d00c9dcb487d4e1215754d4cd8456e6fc51.
+IX-0062 records the evidence and closes DD-1499/IX-0061's external gate for
+that revision. Two CI producers and one independent producer cover four
+consumer roles; repeated producer labels are not new producers. Agent-local
+qualification remains separately attributed. No independent hosted CI
+inspection or external rerun is claimed. This append-only evidence update
+changes no implementation, fixture, stream, ABI, limits, defaults, runtime
+binary, inventory or release state; no external implementation is consulted.

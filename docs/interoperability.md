@@ -1539,3 +1539,27 @@ the whole production library with address/undefined-behavior checking and leak
 detection disabled. Synthetic fixture revision metadata is kept separate from
 final clean-source revision-bound producer bundles. Hosted CI and the four
 external consumer roles for the new revision remain maintainer-owned gates.
+
+
+### IX-0062: maintainer-reported schema-63 external completion
+
+On 2026-10-06 the maintainer confirmed push and successful GitHub CI completion
+and supplied four successful 73-archive verifier reports, all at revision
+8c5b4d00c9dcb487d4e1215754d4cd8456e6fc51.
+
+The reported consumer roles are the CI-produced Windows bundle consumed on
+an external Ubuntu consumer, the CI-produced Ubuntu bundle consumed on that
+consumer, an independently produced external bundle self-consumed, and that
+same external bundle consumed on Windows. The last two identical producer
+labels identify two consumer roles for one producer; they are not counted as
+two independent producers. All four reports cover the schema-63 inventory.
+
+These maintainer-reported results close DD-1499/IX-0061's revision-specific
+hosted CI and four-direction external exchange gate after the DD-1500 test-
+fixture correction. They supersede the pending external status for this
+revision. The agent did not inspect the hosted CI run independently or rerun
+these external executions. The 8193-byte exchange fixture complements the
+separate maximum-window, resource, allocation-failure and failed-frame
+nonpublication evidence; it does not establish a new performance result.
+This evidence update changes no codec, format, ABI, limits, defaults,
+inventory or release state.
