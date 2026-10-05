@@ -38902,3 +38902,29 @@ Similarity review: first-party adaptation, independent integer regeneration
 and preserved operation-array comparison only; no external source consulted.
 Previous implementations are byte-identical and existing public APIs remain
 unchanged. Compact encoding, ownership and exchange remain separate gates.
+
+
+### CR-1666: thirty-two-MiB compact dictionary and Range adaptation
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: adapt the first-party compact private dictionary parser and explicit
+byte-record Range consumer to DD-1488/1494 while retaining qualified typed
+references, independent serialization and independently regenerated payloads.
+References: IR-1253, DD-1494 and TVG-1361. No external or copyleft source,
+comments, tables or test suite is consulted. Qualification and similarity
+review follow native checks; public/CLI admission remains a later gate.
+
+Qualification: three compiler/instrumentation routes each pass three CTest
+entries: nine compact dictionary cases, thirty-seven compact Range cases and
+forty typed-direct Range regression cases. Full 32 MiB repeated/far F-5/F-258
+input produces identical compact and typed token records under exact finite
+capacity admission. Both new fuzz campaigns complete 10,000 iterations with
+address/undefined-behavior checks (leak detection disabled), without a finding.
+A full seeded all-literal frame agrees byte-for-byte with the previously
+qualified typed payload and reconstructs every compact token record; default
+and one-byte-below budget refusals preserve output and metadata. Its finite
+retained-buffer peak excludes raw reconstruction, ownership and CLI.
+Similarity review: first-party adaptation, independent explicit serialization
+and retained typed/mathematical comparisons; no external source consultation.
+All previous implementation files are byte-identical. No public API, frame
+representation, global limit or CLI selector is changed by this finite gate.

@@ -10972,3 +10972,10 @@ DD-1493 adapts the repository-owned sixteen-MiB finite token Range encoder.
 Recompute every payload fixture with the independently authored thirty-two-MiB
 integer model equations from TVG-1355; previous payload bytes are not relabeled.
 No external implementation is consulted.
+
+
+### IR-1253: thirty-two-MiB compact dictionary and Range traversal
+
+DD-1494 adapts the repository-owned sixteen-MiB compact parser and explicit
+byte-record Range traversal, retaining the qualified thirty-two-MiB typed
+references and independent TVG-1360 payloads. No external source is consulted.

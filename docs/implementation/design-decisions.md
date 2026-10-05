@@ -32963,3 +32963,25 @@ committed. Charge the full typed input, both full byte capacities, concrete
 working controls and retained caller bytes, with checked arithmetic and full
 region alias checks. This reference does not admit an owning public stream or
 choose a CLI memory policy. Compact token traversal remains a separate gate.
+
+
+### DD-1494: thirty-two-MiB compact private encoder records
+
+Parse raw input once into private discardable byte records, using the same
+complete index, longest/nearest rule and minimum-five eligibility as DD-1492.
+Emit literal tag 0 plus byte, or match tag 1 plus explicit LE32 distance and
+LE32 length. Do not allocate native typed arrays or cast bytes to token structs.
+For this encoder's minimum-five policy, the private record count is at most
+2R; decoder-valid lengths three/four require the separate 3R bound and remain
+accepted by the generic compact Range consumer. Private parser partial writes
+on failure are never a public token publication.
+
+Traverse compact records through the DD-1493 cursor/model/finish rules and
+retain the typed direct encoder as a reference. Validate complete record syntax,
+history, raw/token/event/decision counts and canonical Range finish before
+committing caller payload and descriptor. Reader failure preserves its token
+and cursor. Charge full raw/index/record capacities, concrete helper controls
+and declared retained owners in parsing; charge the full immutable record view,
+both payload capacities and retained unused backing storage in Range encoding.
+Perform full region alias and checked arithmetic admission before mutation.
+No public ownership, frame commit, global limit or CLI budget is introduced.

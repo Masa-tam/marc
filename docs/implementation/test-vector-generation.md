@@ -21908,3 +21908,20 @@ budget versus one below and unreachable reset-frame distance F. Separately
 exercise a full-frame seeded all-literal token sequence under its actual
 finite retained-capacity ledger; no dictionary search or CLI performance is
 inferred from a scalar token entropy experiment.
+
+
+### TVG-1361: thirty-two-MiB compact encoder differential
+
+Compare independently serialized exhaustive-oracle tokens with private compact
+dictionary output on every byte, binary patterns, nearest ties, overlap, window
+expiry, maximum lengths and short tails. Check reader syntax and atomic
+refusals for all tags and truncations, explicit little-endian words, full-region
+aliases, pre-mutation budget refusal and private capacity shortages. At full
+32 MiB, compare compact records and typed parsing for repeated input and
+reachable far F-5/F-258 references, without reducing the frame size.
+
+All twenty-nine independent TVG-1360 payloads must agree with compact Range,
+typed direct Range and typed token decoding. Directed cases cover legal wire
+lengths three/four, unreachable reset-frame distance F, late malformed records,
+all truncations and extra syntax, counts/limits/overflow, full-capacity aliases,
+exact budget versus one below and prior payload/descriptor preservation.
