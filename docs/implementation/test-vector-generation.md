@@ -21823,3 +21823,55 @@ transaction suite observes peak working set 340369408 bytes and peak pagefile
 339582976 bytes. That process measurement includes the finite typed reference
 and repeated success/failure checks; it is not a complete stream/public/CLI
 measurement or a throughput benchmark.
+
+
+### TVG-1358: thirty-two-MiB incremental publication and borrowed lifetime
+
+Six independent accepted single-frame recipes, five malformed token recipes,
+empty input, two small frames, two full 33554432-byte frames and two late-error
+streams form sixteen independent cases. Exercise neutral Flush, delayed empty
+EndInput, input starvation, output starvation, random chunks, every input split
+on small streams and one-byte input/output schedules on full frames. The call
+bound accommodates the full 67108864-byte two-frame output. Every accepted
+schedule reconstructs identical raw bytes; failures expose only previously
+successful frames. Repeated calls preserve terminal category and position.
+
+A separate contract test covers every pair of five borrowed workspaces,
+input/output overlap with every workspace and owner, input/output overlap with
+each other, overflow in all six numeric capacity/retained positions and exact
+versus one-byte-below complete admission. Literal payloads for two contrasting
+one-byte frames come from the independent mathematical oracle. A final-byte
+corruption in the second frame leaves the first raw workspace byte intact,
+publishes only the first frame and preserves the public output tail. Global
+replacement new/new[] abort if called during constructor/process/query checks;
+the guarded operations complete without C++ allocation. This is not allocator
+failure qualification for a future owning public factory.
+
+The maximum-workspace stream case supplies 335544400 backing bytes and the
+queried 7040-byte owner/control/helper ledger. Both contrasting full frames
+succeed at an exact budget that also charges the two actual caller wire
+capacities and output capacity (521662 separately retained bytes in this
+fixture). The complete admission is 336073102 bytes. A canonical failure in the
+second frame preserves every byte of the first 33554432-byte raw workspace;
+one-byte-below construction consumes and produces nothing. These measured
+sizeof/capacity values are fixture-specific and are not a future public/CLI
+policy.
+
+Qualification completed 2026-10-06. Five native tests pass on each of three
+compiler/instrumentation routes, including the complete production-source
+library under address/undefined-behavior instrumentation. The sixteen recipes
+exercise 2780 chunk schedules plus two actual maximum-capacity stream runs.
+The ordinary full stream case completes in approximately 23 seconds and the
+instrumented case in 244.84 seconds. A 900-second native subprocess watchdog
+and 1200-second CTest watchdog retain margin for the measured instrumented
+full-window schedules; these are decoder conformance limits, not future CLI
+encode watchdogs.
+
+A reproducible seeded libFuzzer campaign completes 10000 inputs, comparing
+whole and split/starved schedules against a separate finite-frame traversal's
+committed frontier. This qualifies coordination, not independent Range math.
+Leak detection is disabled. A separate process running the complete borrowed
+stream conformance observes peak working set 340766720 bytes and peak pagefile
+339972096 bytes. The measurement includes the maximum five-buffer two-frame
+success/late-error cases and full one-byte-output schedules, and excludes the
+future public boundary and CLI.

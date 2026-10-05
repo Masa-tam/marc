@@ -32892,3 +32892,31 @@ the concrete reconstruction state and nested token helper. All writable spans
 and layout must be disjoint from input, configuration and each other. Caller
 limits are applied before token decoding. Stream ownership, public admission,
 CLI limits and allocator failure qualification remain subsequent work.
+
+
+### DD-1491: thirty-two-MiB compact borrowed decoder stream
+
+Use five full-lifetime borrowed workspaces: serialized frame storage, two
+compact record buffers and two raw buffers. Require all full capacities and
+the concrete owner to be mutually disjoint. Each process call additionally
+rejects input/output overlap with each other, any full workspace or the owner.
+Do not allocate inside construction or processing. Preserve the existing
+header/prefix/payload/draining/awaiting-end state model, independent input and
+output counts, deterministic chunk behavior and sticky error/ended states.
+Flush is neutral; ResetBlock and unknown flags are rejected before consumption.
+
+At prefix admission use the compact min(3R,9T) record requirement and reject
+insufficient workspaces before collecting payload. Decode exactly one complete
+frame through the qualified compact transaction before draining any of its
+bytes. Failed frames publish no raw bytes; the prior raw workspace publication
+remains intact, including when a later error shares a call with output from a
+successful prior frame. EndInput accompanies a final suffix until consumed;
+strict completion rejects missing final bytes and trailing input.
+
+The numeric workspace query charges all five full capacities, sizeof(owner),
+conservatively reserved parser/control objects, exact named compact frame and
+reconstruction state, nested token helper and caller-declared retained bytes.
+Expose the frame helper's concrete working-byte query so stream and finite
+queries share the reconstruction-state charge. Query success is capacity
+admission, not payload validation or an RSS prediction. Complete public
+boundary, allocator ownership, encoder, CLI and exchange remain later gates.

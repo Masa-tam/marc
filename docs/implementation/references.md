@@ -10947,3 +10947,12 @@ DD-1490 adapts the repository-owned sixteen-MiB finite frame transaction and
 the independently qualified thirty-two-MiB compact token helper. Independent
 explicit header/frame recipes wrap the mathematical Range oracle. No external
 implementation source is consulted.
+
+
+### IR-1250: thirty-two-MiB compact borrowed stream coordination
+
+DD-1491 adapts the repository-owned sixteen-MiB borrowed stream coordinator,
+its numeric full-capacity ledger and independently qualified thirty-two-MiB
+compact frame transaction. Explicit independent single/two-frame recipes
+exercise scheduling and publication. No external implementation source is
+consulted.

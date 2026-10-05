@@ -38839,3 +38839,16 @@ capacity accounting, disjoint buffers and previous-publication invariance.
 Typed prefix behavior and the earlier typed reconstruction reference are
 retained. Complete stream/public/CLI/exchange integration and release
 qualification are not inferred from this finite stage.
+
+
+### CR-1663: thirty-two-MiB compact borrowed stream provenance
+
+2026-10-05, author/reviewer Codex. Task: coordinate the independently qualified
+compact finite decoder over arbitrary chunks while preserving prior-frame
+publication and full borrowed-storage bounds. IR-1250 records the first-party
+sources. No external implementation was consulted. Review checks the five
+byte-buffer capacities, nested reconstruction-state charge, complete workspace
+alias policy, status/count invariants, final suffix semantics and sticky
+terminals. Independent single/two-frame recipes and allocation-guarded contract
+tests cover actual scheduling and prior publication. Public factory ownership,
+encoder and CLI/exchange qualification remain separate work.

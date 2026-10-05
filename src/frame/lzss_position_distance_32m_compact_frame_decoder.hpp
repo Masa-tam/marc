@@ -35,6 +35,10 @@ struct LzssPositionDistance32mCompactFrameDecodePlan {
   LzssPositionDistance32mCompactFrameDecodeError error{
       LzssPositionDistance32mCompactFrameDecodeError::none};
 };
+// Concrete frame/result and private reconstruction state used by complete
+// queries.
+[[nodiscard]] std::size_t
+lzss_position_distance_32m_compact_frame_working_bytes() noexcept;
 // Requires one EXACT complete frame, including payload (no trailing bytes).
 // Full compact-record/raw capacities and serialized extent are charged.
 // Retained bytes include separately owned state and serialized-owner capacity

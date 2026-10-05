@@ -38,6 +38,11 @@ Error overlap(const std::array<Region, 5> &writes,
   return Error::none;
 }
 } // namespace
+std::size_t lzss_position_distance_32m_compact_frame_working_bytes() noexcept {
+  return sizeof(LzssPositionDistance32mCompactFrameDecodePlan) +
+         sizeof(LzssPositionDistance32mCompactFrameDecodeResult) +
+         sizeof(ReconstructionState);
+}
 LzssPositionDistance32mCompactFrameDecodePlan
 query_lzss_position_distance_32m_compact_frame_decode(
     std::span<const std::byte> input,
@@ -63,9 +68,7 @@ query_lzss_position_distance_32m_compact_frame_decode(
   q.token_context = {h.token_count, h.event_count, h.decision_count,
                      h.uncompressed_size, c.output_already_committed};
   q.frame_state_bytes =
-      sizeof(LzssPositionDistance32mCompactFrameDecodePlan) +
-      sizeof(LzssPositionDistance32mCompactFrameDecodeResult) +
-      sizeof(ReconstructionState);
+      lzss_position_distance_32m_compact_frame_working_bytes();
   // Payload is a view of the same serialized owner: charge only header here.
   std::size_t additional{};
   if (!core::checked_add(std::size_t{80}, raw_capacity, additional) ||
