@@ -32805,3 +32805,41 @@ Add the exact `lzss-position-distance-dynamic-range-16m` selection in both direc
 Retain the outer file transaction: complete success commits the destination, failures discard only the invocation's temporary output, and pre-existing destination/temporary files are refused and preserved. A failed frame never drains. Qualify actual full-window adjacent extents, contrasted and incompressible two-frame inputs, exact identities, late prefix/payload/finish/truncation failures, aliases and every allocation refusal. Use finite watchdogs justified by measurements and retain failure evidence.
 
 Schema 62 and `marc-cli-v62` append the new codec as archive 72 after the frozen schema-61 order and bytes. Preserve the independent 8,193-byte fixture and schemas 1..61. Admit the entire manifest, codec identity, file sizes and hashes before any codec launch. Reject relabeled downgrade, codec set, missing/duplicate/order, hashes, sizes and rehashed header/identity mutations. Small bundles do not prove maximum-window behavior. New hosted CI/external verification belongs to its actual revision and is not inferred from prior receipts.
+
+
+### DD-1488: thirty-two-MiB definition and resource diagnosis before implementation
+
+The maintainer selects thirty-two-MiB design and resource diagnosis as the next
+step. Reserve a separate Format 2.0 identity 2/13 + 1/14 + 3/2, frame/window
+maximum 33554432, 49 contexts and 2621 frequency entries. The complete definition
+is docs/design/lzss-position-distance-32m.md. Distance classes are 0..25; the
+largest grammar distance is not reachable in a nonempty reset frame. Preserve
+all prior representations, defaults, APIs, CLI selections and the 72-entry
+exchange inventory. This decision does not expose a new codec or select its
+CLI resource policy.
+
+Use a proved conservative decision bound min(10R,35T), with payload bound
+min(2N+5,20R+5). A reachable class-24 length-three token takes 28 decisions, so
+the older per-token nine-decisions-per-byte argument cannot be reused unchanged.
+This does not claim that the tighter whole-frame 9R bound has been disproved;
+such a bound would require a separate history-aware proof. Do not copy the
+older 18R payload ceiling as an assumption.
+
+At a diagnostic 64-MiB payload capacity, five typed-token backing arrays with
+the measured 12-byte token representation require 939524176 bytes before
+controls. Actual separate-process allocation and full touching succeeds.
+Compact decoder record pairs at 3R each require 335544400 backing bytes; their
+separate allocation/touch also succeeds. These are array diagnostics, not
+thirty-two-MiB decoder executions, complete future factory queries, throughput
+benchmarks or a chosen policy. Existing sixteen-MiB numeric queries check
+capacity addition, exact/one-below refusal and overflow only as a labeled proxy.
+
+Prioritize a private compact-token decoder experiment after the new bounded
+model/field reference. A valid wire stream may contain length-three/four
+matches: encoder-only 2R compact capacity is insufficient for decoding, whereas
+3R covers nine-byte matches of at least three raw bytes and two-byte literals.
+Retain private scratch, whole prior-publication invariance and canonical-finish
+validation before raw publication. Existing sixteen-MiB factories stay intact.
+Measure actual complete controls, retained generations, all borrowed capacities,
+encode/decode peaks, equality and failure behavior before deciding public API,
+CLI budget/watchdogs or any exchange addition.

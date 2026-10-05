@@ -9002,3 +9002,21 @@ DD-1486 adds distinct C encoder/decoder factories for the existing sixteen-MiB r
 ### Sixteen-MiB command-line identity and exchange admission
 
 DD-1487 exposes the existing sixteen-MiB identity through an exact explicit selection. Its payload policy may be smaller than the mathematical wire ceiling and is checked before allocation. Schema 62 appends this identity as archive 72; earlier entries and schemas remain unchanged. Manifest hashes and exact identity are admission checks preceding codec execution; full payload validation remains the decoder's obligation.
+
+
+### Reserved thirty-two-MiB position-distance representation
+
+DD-1488 reserves Format 2.0 dictionary 2/13, context 1/14 and entropy 3/2 for
+the independently defined thirty-two-MiB position-distance profile. It remains
+unsupported by production factories, parsers and CLI at this design stage.
+docs/design/lzss-position-distance-32m.md specifies the extension of the existing
+112-byte known-size header, 64-byte frame prefix and 16-byte Range descriptor.
+All earlier identities and byte streams remain unchanged.
+
+The frame/window maximum is 33554432; wire lengths remain 3..258. Distance
+classes 0..25 use a 26-symbol model and extra contexts 24..48. There are 49
+contexts and 2621 flattened frequencies. The descriptor declares 49 contexts.
+The conservative count bounds are 1<=T<=R, 2T<=E<=min(2R,5T),
+E<=N<=min(10R,35T), 5<=P<=min(2N+5,20R+5). Maximum bounded payload/frame
+sizes are 671088645/671088725 bytes. Caller limits precede allocation and may
+be smaller. No new selection flag, automatic mode or exchange entry is added.

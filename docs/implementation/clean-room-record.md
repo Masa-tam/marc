@@ -38794,3 +38794,20 @@ Complete production-library builds on three routes support actual C/C++ consumer
 2026-10-05, author/reviewer Codex. Task: connect the independently authored sixteen-MiB public factories to an explicit CLI file loop and append schema 62/archive 72. Adapt only repository-owned smaller-window lifetime/allocation/file-transaction and exchange-admission concepts. No external implementation source was consulted; references are recorded in IR-1246.
 
 Similarity review compares the new helper and allocation tests with the declared first-party adaptation, verifies unchanged existing codec/ABI sources and checks append-only inventory and preserved prior bytes. Three complete production-source library/CLI routes qualify actual full-window and malformed-file behavior, including address/undefined-behavior instrumentation with leak detection disabled. The independent mathematical whole-frame oracle reaches distance 16777211. The configured native regression suite, genuine historical schemas and guarded pre-launch negative matrix pass. Earlier implementation and sanitizer qualification failures remain in their original evidence; this integration does not erase them. Hosted CI, external exchange and release qualification are attributed separately to their actual revisions.
+
+
+### CR-1660: thirty-two-MiB design and diagnostic provenance
+
+2026-10-05, author/reviewer Codex. Task: define the next position-distance window
+and diagnose resource growth before implementation, as selected by the
+maintainer. IR-1247 records the first-party representation, numeric ownership
+query and compact-record references. No external implementation was consulted.
+
+Independent layout/count arithmetic and the existing-library proxy are checked
+against each other where applicable. Separate real allocation/touch experiments
+record array capacities and physical peaks. Review explicitly distinguishes
+projection, existing query results and actual array measurements from unimplemented
+codec behavior. No future decoder execution, throughput, complete control charge,
+public memory budget or release completion is inferred. Existing source, ABI,
+CLI, exchange bytes and fixed executable remain unchanged. The next implementation
+must retain a reference path and independently qualified private publication.

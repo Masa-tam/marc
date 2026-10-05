@@ -21733,3 +21733,28 @@ Boundary inputs include empty/all-byte data, immediately below/at/above the sixt
 The earlier separately measured public-dispatch incompressible experiment has 33554432 raw and 33574647 encoded bytes (encoded/raw ratio approximately 1.000602), 11258 ms encode and 3863 ms decode. Separate encoder/decoder processes report physical peaks of 194101248 and 508076032 bytes respectively. Complete minimum decoder ownership is 503653744 bytes for that experiment's controls and capacities. These are single-run observations for a different fixture, not the CLI fixture's physical peaks or a resident-memory guarantee.
 
 Schema 62 adds exactly one archive after the frozen schema-61 order. All 72 archive byte streams agree across three local production routes; the first 71 and the independent 8193-byte input agree with an unchanged prior producer. Genuine schemas 1..62 pass, while 27 schema-62 mutations are rejected before a guarded codec entry point can run or any output file is published. Finite full-window watchdogs remain distinct from small exchange fixtures. Single file-loop timings are retained as observations, not median throughput claims. Revision-specific hosted CI and external exchange remain pending the maintainer's new reports.
+
+
+### TVG-1355: thirty-two-MiB layout and resource diagnostics
+
+Independent finite arithmetic checks enumerate 6656 length/distance-class
+combinations, verify 49 alphabets/2621 frequencies and all group offsets, and
+prove conservative event/decision bounds and frame ceilings. A length-three
+class-24 token demonstrates why the prior per-token 9R argument is not directly
+reusable; no tighter whole-frame bound is claimed disproved. Valid repeated
+overlap matches of length three show the decoder compact 3R bound and a small
+counterexample to importing the encoder's 2R bound.
+
+An out-of-tree diagnostic links the unchanged production library and checks its
+existing sixteen-MiB numeric capacity ledger on projected capacities, including
+exact/one-below refusal and addition overflow. It does not execute a larger-window
+decoder or claim to query the future factory. Separate fresh processes allocate
+and touch all five proposed thirty-two-MiB backings: 939524176 typed bytes and
+335544400 compact bytes. Observed physical peaks are respectively 943939584 and
+339959808 bytes. These one-shot array experiments exclude future codec controls
+and are not codec speed, compression ratio or memory-policy measurements.
+
+No new wire encoder/decoder, public API, CLI or bundle is qualified here. Future
+tests must cover independent frames, arbitrary chunks, F-1/F/F+1, retained
+generations, reachable far distances, length-three/four wire cases, allocation
+refusals, exact complete budgets and late failures before publication.

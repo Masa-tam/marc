@@ -10924,3 +10924,11 @@ DD-1486 uses repository-owned smaller-window C boundary and allocator-ledger con
 ### IR-1246: sixteen-MiB file loop and append-only exchange inventory
 
 DD-1487 uses repository-owned smaller-window CLI lifetime/file transaction and exchange admission scripts, together with the independently authored sixteen-MiB public factories. No external implementation source is consulted.
+
+
+### IR-1247: thirty-two-MiB format and resource diagnostic references
+
+DD-1488 uses repository-owned sixteen-MiB representation, field-count recipes,
+numeric ownership queries, compact record grammar and public resource contracts.
+The larger context layout and bounds are independently derived from the distance
+extension. No external implementation source is consulted.
