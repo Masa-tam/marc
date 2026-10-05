@@ -22035,3 +22035,25 @@ No actual new codec, future control query or CLI budget is inferred from these
 array observations. Future qualification must include F-1/F/F+1/2F/2F+1,
 short wire matches, far F-3/F-258/F-5, arbitrary chunking, malformed intervals,
 all allocation refusals, exact/one-below admission and failed-frame nonpublication.
+
+
+### TVG-1369: sixty-four-MiB finite core differential qualification
+
+Use six newly generated mathematical recipes: literal, overlap (lengths three
+and four), every legal length, adaptive rescaling, far F-3 and far F-258.
+The last two reach the full 67,108,864-byte raw size. Native mapping and Range
+encoding must equal every independent payload byte and metadata count.
+Compare typed and compact single-pass decoding record by record, then
+reconstruct and compare every raw byte using a scalar overlap copy.
+
+Test field transitions for every length/distance class, invalid endpoint
+residuals, incomplete phases, every truncated header/prefix, altered little-
+endian IDs/reserved fields and a coherent old-window identity. Test canonical
+finish corruption, truncation, extra bytes, contradictory counts, complete
+capacity accounting, arithmetic overflow, aliases, exact and one-below limits,
+whole output/tail invariance and unchanged publication metadata on failure.
+Four native routes pass both field/core tests: MSVC, ClangCL, whole-library
+ASan/UBSan and Ubuntu Clang. A bounded 10,000-run seeded ASan/UBSan decoder
+fuzz campaign compares typed/compact records and failure invariants with no
+finding; leak detection is disabled. These finite tests do not qualify public
+streaming, full arbitrary chunking, allocation callbacks or CLI policy.

@@ -171,3 +171,13 @@ The first-party `tests/lzss_position_distance_64m_reference_vectors.py` regenera
 | far258 | 67108864 | 260113 | 1040451 | 2601147 | 227740 |
 
 For literal A (65), the kind interval uses floor(0xffffffff/2)=0x7fffffff. The literal interval unit is floor(0x7fffffff/256)=0x007fffff, and low is 65 times that unit, 0x207fffbf. One normalization followed by canonical finish gives `00207fffbf00`. The overlap recipe (literal A, D1/L3, D1/L4, literal B, D2/L258) gives `0020f9041443c157b205c7`. These expected payloads still require future native differential qualification.
+
+
+## Finite native core qualification (DD-1502)
+
+The six independent recipes above now agree with private native field mapping,
+reference Range encoding, typed/compact single-pass decoding and scalar raw
+reconstruction on four compiler/instrumentation routes. Canonical failures do
+not publish caller token output. This supersedes the earlier pending native
+recipe qualification only. Whole-frame reconstruction, streaming, public
+factories, complete resource policy, CLI and archive-74 exchange remain pending.

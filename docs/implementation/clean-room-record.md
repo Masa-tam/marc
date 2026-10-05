@@ -39114,3 +39114,19 @@ No external implementation source is consulted. Preserve old implementation,
 public ABI, build configuration, fixtures, runtime and all prior artifacts.
 Public factories, CLI policy and schema-64/archive-74 admission remain required
 work; design/resource evidence alone does not complete the requested goal.
+
+
+### CR-1675: sixty-four-MiB finite reference core qualification
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: implement reserved sixty-four-MiB field/model validators, checked
+metadata parser/serializer, reference Range and private compact-token decoder.
+References: IR-1261/DD-1502/TVG-1369 and current first-party components.
+No external implementation source is consulted. Seven new production units
+preserve old source bytes, public ABI, stream representations and runtime.
+Review model offsets, Range normalization, endpoint grammar, widened count
+products, full capacity accounting and publication ordering independently.
+Four native routes agree with newly generated mathematical recipes; a seeded
+10,000-run instrumented decoder campaign reports no finding. Similarity review
+is scoped to these changes against repository-owned components; no legal
+guarantee or completed sixty-four-MiB public codec is claimed.

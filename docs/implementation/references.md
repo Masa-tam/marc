@@ -11038,3 +11038,13 @@ contracts. Derive the new class/context/count ceilings independently by integer
 arithmetic. Separate allocation-only diagnostics from future codec-process
 measurements. Do not consult external implementation source or infer future
 control sizes from an older factory query.
+
+
+### IR-1261: sixty-four-MiB bounded finite core and private token decoding
+
+Use IR-1260/DD-1501 and current first-party thirty-two-MiB field, Range,
+validator, preflight, serializer and private compact-token components.
+Generate new payloads with the independent sixty-four-MiB integer equations;
+do not reuse an older-window payload or external implementation expression.
+Retain Range normalization at 2^24 and derive actual model storage from the
+new 50-context/2,632-frequency layout.

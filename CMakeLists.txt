@@ -522,6 +522,13 @@ set(MARC_SOURCES
     src/entropy/lzss_position_distance_32m_range_decoder.cpp
     src/frame/lzss_position_distance_32m_preflight.cpp
     src/frame/lzss_position_distance_32m_serializer.cpp
+    src/context/lzss_position_distance_64m_mapper.cpp
+    src/context/lzss_position_distance_64m_tokens.cpp
+    src/context/lzss_position_distance_64m_compact_tokens.cpp
+    src/entropy/lzss_position_distance_64m_range_encoder.cpp
+    src/entropy/lzss_position_distance_64m_range_decoder.cpp
+    src/frame/lzss_position_distance_64m_preflight.cpp
+    src/frame/lzss_position_distance_64m_serializer.cpp
     src/marc.cpp
 )
 
@@ -7363,5 +7370,30 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
             COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_distance_32m_boundaries.py
                 $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli32m-boundaries)
         set_tests_properties(marc_cli_position_distance_32m_boundaries PROPERTIES TIMEOUT 1800)
+    endif()
+endif()
+
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_distance_64m_field_cursor_tests
+        tests/lzss_position_distance_64m_field_cursor_tests.cpp)
+    target_compile_features(marc_position_distance_64m_field_cursor_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_64m_field_cursor_tests PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    add_test(NAME marc_position_distance_64m_field_cursor
+        COMMAND marc_position_distance_64m_field_cursor_tests)
+endif()
+if(MARC_BUILD_TESTS AND TARGET marc_static)
+    find_package(Python3 COMPONENTS Interpreter QUIET)
+    if(Python3_Interpreter_FOUND)
+        add_executable(marc_position_distance_64m_core_tests
+            tests/lzss_position_distance_64m_core_tests.cpp)
+        target_compile_features(marc_position_distance_64m_core_tests PRIVATE cxx_std_20)
+        target_include_directories(marc_position_distance_64m_core_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        target_link_libraries(marc_position_distance_64m_core_tests PRIVATE marc::static)
+        add_test(NAME marc_position_distance_64m_core_conformance
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8 ${CMAKE_CURRENT_SOURCE_DIR}/tests/lzss_position_distance_64m_core_conformance.py
+                --tool $<TARGET_FILE:marc_position_distance_64m_core_tests>
+                --root ${CMAKE_CURRENT_BINARY_DIR}/position-distance-64m-core)
+        set_tests_properties(marc_position_distance_64m_core_conformance PROPERTIES TIMEOUT 480)
     endif()
 endif()

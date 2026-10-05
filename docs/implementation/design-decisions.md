@@ -33130,3 +33130,25 @@ consume 512 MiB; serialized storage and controls cannot be admitted by the old
 payload cap, watchdog, public factory or exchange entry is selected here.
 The complete requested goal still includes reference/optimized codecs,
 streaming, public ABI, actual resources, CLI and schema-64/archive-74 exchange.
+
+
+### DD-1502: sixty-four-MiB finite reference core and compact publication
+
+Implement private distinct helpers for the reserved 2/14 + 1/15 identity.
+Use distance alphabet 27, extra-bit contexts through class 26, and the exact
+10R/36T/20R count ceilings. The endpoint class accepts only zero residual;
+history and raw-length validation still make it unreachable in a valid reset
+frame. Admit reference operation counts up to 2F, matching E<=2R rather than
+confusing semantic events with raw bytes. Keep canonical five-byte finish and
+Range normalization at 2^24.
+
+Compact decoding performs one Range pass into private scratch. Only after
+counts, history, raw length and canonical termination succeed may it copy
+records and update the committed byte count. On any failure the whole caller
+output and commit metadata remain unchanged. Queries charge complete actual
+output/scratch capacities, borrowed payload, concrete working state and
+separately retained state; validate arithmetic and disjoint regions first.
+Use the generic min(3R,9T) record floor, including legal short wire matches.
+Header/prefix success validates metadata, not the payload. This finite core
+does not yet provide complete frame reconstruction, stream factories, CLI
+admission or exchange publication; those remain part of the active goal.
