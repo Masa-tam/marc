@@ -1488,3 +1488,24 @@ Schema 62 and marc-cli-v62 append lzss-position-distance-dynamic-range-16m as ar
 Genuine manifests for schemas 1..62 pass. Twenty-seven new negative cases include false downgrade, codec set, count/order/duplicate, hash/size, truncation and rehashed dictionary/context/version identity bytes. A guarded entry point proves rejection before any codec launch; no decoded/re-encoded file appears. Maximum-window and failed-frame publication remain separately qualified by actual CLI and public-core tests, rather than inferred from small bundles.
 
 IX-0058's maintainer-reported CI and four external 71-archive results apply only to e3a4ee916fd90687fa73614210a23c46b58e3ebe. Hosted CI and four-direction 72-archive external exchange for the new integration revision have not yet been reported. The maintainer performs push and supplies those results; local qualification is not described as external verification.
+
+
+### IX-0060: schema-62 four-direction external verification reported
+
+On 2026-10-05 the maintainer confirmed push and successful GitHub CI completion,
+and supplied four successful 72-archive verifier reports at revision
+8e8a77c55957ea334fbf3632f6e9c1d7500f32b4.
+
+The reported roles are consumption of each of the two CI-produced bundles,
+then consumption of one independently produced external bundle on its own
+platform and on the other consumer platform. The last two reports identify
+the same producer and represent two consumer roles, not an additional producer.
+All four reports identify the same revision and complete schema-62 inventory.
+
+These maintainer-reported results close DD-1487's revision-specific hosted CI
+and four-direction external exchange gate. They supersede IX-0059's pending
+status for that revision. The agent did not independently rerun those external
+executions or inspect the hosted CI run. The small 8193-byte exchange fixture
+does not replace the separately qualified maximum-window, memory-limit and
+failed-frame nonpublication tests. This evidence update changes no codec,
+format, ABI, limits, defaults, inventory or release state.

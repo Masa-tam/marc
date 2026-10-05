@@ -98,3 +98,13 @@ from repository-owned prior work and the mathematical distance extension.
 DD-1475 through DD-1487 now supply the distinct bounded model/cursor, validators, reference/indexed/compact parsing, canonical Range coding, finite frames, borrowed transactional decoder, compact owning stream encoder, public C factories, explicit CLI and schema-62 exchange integration. Earlier sections retain the representation and implementation sequence. Existing formats, global defaults, public layouts and smaller-window byte streams are preserved.
 
 Directed arbitrary-chunk and malformed-stream tests, independently generated whole-frame vectors, instrumented fuzz campaigns, actual full-window and retained-generation experiments, allocation refusals and explicit-capacity measurements qualify the local implementation. TVG-1354 and IX-0059 record actual CLI and append-only exchange checks. The compact encoder and decoder have separately measured speed, compression ratio and physical memory observations; these single-run observations are not median optimization benchmarks. The CLI's explicit 536870912-byte logical policy remains separate from resident memory and global defaults. Hosted CI/external exchange for the integration revision remain pending and no release qualification is inferred.
+
+
+## Reported integration CI and external exchange
+
+IX-0060 records the maintainer's successful hosted CI and all four 72-archive
+external exchange reports for 8e8a77c55957ea334fbf3632f6e9c1d7500f32b4.
+This closes the integration revision's CI and exchange gates previously marked
+pending in the local qualification status. Separate full-window, resource and
+failed-frame tests remain the basis of their respective guarantees; the external
+executions were reported by the maintainer and were not rerun by the agent.
