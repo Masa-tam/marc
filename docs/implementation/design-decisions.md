@@ -33152,3 +33152,25 @@ Use the generic min(3R,9T) record floor, including legal short wire matches.
 Header/prefix success validates metadata, not the payload. This finite core
 does not yet provide complete frame reconstruction, stream factories, CLI
 admission or exchange publication; those remain part of the active goal.
+
+
+### DD-1503: sixty-four-MiB finite frame publication and full capacity admission
+
+Require exactly one complete serialized frame: reject truncation and trailing
+bytes. A metadata query neither validates payload bytes nor permits publication.
+Validate disjoint full token/raw spans, input, configuration and layout output
+before writes. Decode through private typed reference or compact records,
+validate history/lengths, and reconstruct only in private raw scratch. Publish
+raw bytes and layout together only after all token, canonical-finish and raw
+checks succeed. On any failure report zero consumed/produced bytes and retain
+the complete caller output and previous layout; private scratch is discardable.
+
+Charge complete record/raw capacities, the serialized owner including capacity
+beyond its payload view, helper state and separately retained owners with
+checked arithmetic. The full compact diagnostic uses two 3F record buffers,
+two F raw buffers and a 2F+80 serialized capacity, totaling 671,088,720 backing
+bytes before concrete helper controls. Both the generic 128-MiB default and the
+old 512-MiB policy are insufficient for their tested complete extents; defaults
+remain unchanged. Explicit test grants and exact/one-below queries establish
+finite admission, not a public or CLI policy. Complete stream ownership and
+resource measurements remain required before selecting that policy.

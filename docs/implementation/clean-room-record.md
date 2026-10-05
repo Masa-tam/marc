@@ -39130,3 +39130,20 @@ Four native routes agree with newly generated mathematical recipes; a seeded
 10,000-run instrumented decoder campaign reports no finding. Similarity review
 is scoped to these changes against repository-owned components; no legal
 guarantee or completed sixty-four-MiB public codec is claimed.
+
+
+### CR-1676: sixty-four-MiB complete-frame transaction qualification
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: private typed/compact complete-frame queries, reconstruction and atomic
+raw/layout publication with failure invariance and complete capacity admission.
+References: IR-1262/DD-1503/TVG-1370 and repository-owned thirty-two-MiB helpers.
+No external implementation source is consulted. Review exact extent, region
+alias checks, checked ledger, history/overlap copying and final publication
+order. Two new production units preserve all previous source bytes, public ABI
+and representations. Independent eleven-recipe conformance agrees on four
+native routes; a 10,000-run instrumented frame campaign reports no finding.
+Initial full-frame testing exposed insufficient generic 128-MiB admission;
+only test grants were made explicit, with product defaults unchanged. Similarity
+review is scoped to repository-owned components; no legal guarantee or completed
+public sixty-four-MiB codec is claimed.

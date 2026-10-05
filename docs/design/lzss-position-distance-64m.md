@@ -181,3 +181,14 @@ reconstruction on four compiler/instrumentation routes. Canonical failures do
 not publish caller token output. This supersedes the earlier pending native
 recipe qualification only. Whole-frame reconstruction, streaming, public
 factories, complete resource policy, CLI and archive-74 exchange remain pending.
+
+
+## Finite complete-frame qualification (DD-1503)
+
+Private typed and compact complete-frame helpers now validate exact frame
+extent, decode canonical tokens, reconstruct in private raw scratch and commit
+raw output/layout together only after full success. Eleven independent valid
+and malformed recipes pass four native routes, including maximum-size far
+references and full five-buffer capacity accounting. Generic defaults remain
+unchanged. This does not yet qualify streaming, public ownership, CLI policy or
+archive-74 exchange.

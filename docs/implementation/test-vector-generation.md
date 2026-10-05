@@ -22057,3 +22057,25 @@ ASan/UBSan and Ubuntu Clang. A bounded 10,000-run seeded ASan/UBSan decoder
 fuzz campaign compares typed/compact records and failure invariants with no
 finding; leak detection is disabled. These finite tests do not qualify public
 streaming, full arbitrary chunking, allocation callbacks or CLI policy.
+
+
+### TVG-1370: sixty-four-MiB complete-frame differential/failure qualification
+
+Serialize independent mathematical headers/prefixes/payloads for six valid
+recipes and five malformed recipes: initial match, late invalid history,
+length 259, distance beyond the window and distance equal to the whole window
+without sufficient history. Compare typed and compact raw bytes, exact frame
+extent and layout; reconstruct every byte of full F far-3/far-258 recipes.
+
+Test every small-frame truncation, altered prefix fields, invalid sequence and
+format identities, extra bytes, canonical-finish mutation, undersized each
+workspace, aliases, retained-byte overflow, exact/one-below limits and guarded
+tails. Successful prior output/layout remain byte-identical after a later bad
+frame. Allocate all five maximum compact backings, retain serialized excess,
+verify aggregate admission, reject the old 512-MiB grant and prove exact success
+followed by one-below and corrupted-finish failure without publication.
+Four native routes pass three field/core/frame tests each: MSVC, ClangCL,
+whole-library ASan/UBSan and Ubuntu Clang. A seeded 10,000-run ASan/UBSan frame
+fuzz campaign compares typed/compact failure publication and scalar raw output
+with no finding; leak detection is disabled. This does not qualify arbitrary
+stream chunking, public allocation callbacks, CLI policy or exchange bundles.

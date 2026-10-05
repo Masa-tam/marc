@@ -11048,3 +11048,12 @@ Generate new payloads with the independent sixty-four-MiB integer equations;
 do not reuse an older-window payload or external implementation expression.
 Retain Range normalization at 2^24 and derive actual model storage from the
 new 50-context/2,632-frequency layout.
+
+
+### IR-1262: sixty-four-MiB complete-frame transaction and reconstruction
+
+Use IR-1261/DD-1501..DD-1502, the first-party thirty-two-MiB typed/compact
+complete-frame transaction and explicit mathematical frame generator. Generate
+fresh reserved-identity headers, descriptors and Range payloads from equations.
+Use scalar forward overlap copy and checked little-endian record reads. No
+external implementation source is consulted.
