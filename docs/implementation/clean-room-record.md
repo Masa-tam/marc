@@ -39099,3 +39099,18 @@ qualification remains separately attributed. No independent hosted CI
 inspection or external rerun is claimed. This append-only evidence update
 changes no implementation, fixture, stream, ABI, limits, defaults, runtime
 binary, inventory or release state; no external implementation is consulted.
+
+
+### CR-1674: sixty-four-MiB definition and resource diagnosis
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: begin the full sixty-four-MiB codec-to-exchange goal with a precise format,
+independent count/field recipes and bounded resource diagnosis.
+References: IR-1260/DD-1501/TVG-1368 and first-party thirty-two-MiB components.
+Derive 50 contexts/2,632 frequencies and 10R/36T/20R ceilings by integer
+arithmetic. Fresh processes allocate/touch complete proposed typed and compact
+backings; they do not execute a new decoder or include its future controls.
+No external implementation source is consulted. Preserve old implementation,
+public ABI, build configuration, fixtures, runtime and all prior artifacts.
+Public factories, CLI policy and schema-64/archive-74 admission remain required
+work; design/resource evidence alone does not complete the requested goal.

@@ -11028,3 +11028,13 @@ Range equations and compiler diagnostics for constant-evaluation limits.
 The length of a string literal's array includes its terminator; construct each
 view from its pointer and array extent minus one. No external implementation
 source or generated payload from another implementation is consulted.
+
+
+### IR-1260: sixty-four-MiB position-distance definition and resource ledger
+
+Use first-party DD-1488..DD-1500 position-distance specifications, bounded
+model/field equations, reference generators, compact storage and transaction
+contracts. Derive the new class/context/count ceilings independently by integer
+arithmetic. Separate allocation-only diagnostics from future codec-process
+measurements. Do not consult external implementation source or infer future
+control sizes from an older factory query.

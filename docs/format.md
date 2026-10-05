@@ -9064,3 +9064,21 @@ identity fields. Complete manifest admission precedes decoder execution;
 frame counts, history, bounds and canonical finish still belong to the
 qualified codec validator. Small exchange fixtures do not prove maximum-window
 admission or replace failed-frame nonpublication tests.
+
+
+### Reserved sixty-four-MiB position-distance representation
+
+DD-1501 reserves Format 2.0 dictionary 2/14, context 1/15 and entropy 3/2.
+The full definition is docs/design/lzss-position-distance-64m.md. The existing
+112-byte known-size stream header, 64-byte frame header and 16-byte Range
+descriptor retain their exact offsets, reserved-zero fields and little-endian
+encoding. Distance classes 0..26 use 27-symbol distance models and extra-bit
+contexts 24..49. There are 50 contexts and 2,632 flattened frequencies.
+The frame/window maximum is 67,108,864, wire lengths remain 3..258 and Range
+normalization remains 2^24. Count ceilings are 1<=T<=R,
+2T<=E<=min(2R,5T), E<=N<=min(10R,36T), 5<=P<=min(2N+5,20R+5).
+Maximum normative payload/serialized-frame sizes are 1,342,177,285 and
+1,342,177,365 bytes, both within existing 32-bit fields. These format ceilings
+are not allocation-policy grants. Prior identities/bytes remain unchanged.
+No production parser, factory, CLI selector or exchange archive admits this
+reserved identity at the design stage; integration requires separate evidence.

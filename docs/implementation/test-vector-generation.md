@@ -22017,3 +22017,21 @@ step budget. A complete clean configured production/test build and the typed
 and compact Range regression suites pass; a second compiler route also passes
 both affected suites. No production compiler limit is raised and no fixture
 is shortened to obtain success.
+
+
+### TVG-1368: sixty-four-MiB field/count and resource design evidence
+
+DD-1501 independently enumerates all 256 legal wire lengths and 27 grammatical
+distance classes: 6,912 combinations. Every match has at most 36 decisions and
+at most ten decisions per raw byte. A length-three class-25 match uses 29
+decisions, so the old nine-per-byte token proof cannot be reused. Check model
+alphabets/offsets, all conservative count ceilings, unsigned field widths and
+complete five-backing capacity formulas without narrowing the valid grammar.
+Independent first-party Range equations supply finite literal, overlap, length,
+rescale and maximum-frame distance recipes for future native conformance.
+Allocation-only measurements retain all five arrays and force page contact
+in separate fresh processes; typed stride is diagnosed, not serialized.
+No actual new codec, future control query or CLI budget is inferred from these
+array observations. Future qualification must include F-1/F/F+1/2F/2F+1,
+short wire matches, far F-3/F-258/F-5, arbitrary chunking, malformed intervals,
+all allocation refusals, exact/one-below admission and failed-frame nonpublication.

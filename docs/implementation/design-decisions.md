@@ -33106,3 +33106,27 @@ to dynamic initialization or changing any expected token/payload byte. Apply
 the same construction in the generator so regeneration retains the correction.
 Codec implementation, stream representation, public ABI and runtime limits
 remain unchanged.
+
+
+### DD-1501: sixty-four-MiB position-distance format and diagnostic scope
+
+Reserve Format 2.0 dictionary 2/14, context 1/15 and entropy 3/2, with frame/
+window maximum 67,108,864 bytes. Preserve the existing header/prefix layout,
+wire lengths three through 258, strict encoder cost 9<2L and canonical finish.
+Distance classes zero through 26 require a 27-symbol distance model and 26
+adaptive extra-bit contexts: 50 contexts and 2,632 frequencies. Keep Range
+normalization at 2^24, independent of the window maximum. The safe decision
+ceilings are min(10R,36T), with payload min(2N+5,20R+5); all frame fields still
+fit their existing unsigned 32-bit representations. The class-26 endpoint is
+grammatical but cannot fit a match inside a valid reset frame.
+
+Use the private two-byte literal/nine-byte match representation while retaining
+a clear typed reference. Generic short wire matches require the separate 3R
+decoder bound; the encoder's 2R bound is insufficient. Retain old publications,
+all callback/control owners and full prospective candidate capacities in
+admission. At maximum R, two compact record buffers and two raw buffers alone
+consume 512 MiB; serialized storage and controls cannot be admitted by the old
+512-MiB policy. Diagnose whole proposed backings first. No CLI memory limit,
+payload cap, watchdog, public factory or exchange entry is selected here.
+The complete requested goal still includes reference/optimized codecs,
+streaming, public ABI, actual resources, CLI and schema-64/archive-74 exchange.
