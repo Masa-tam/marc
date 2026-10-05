@@ -1479,3 +1479,12 @@ publication evidence remains in the separate prior qualifications. The earlier
 timeout report is superseded by the successful CI report for the corrected
 revision. No codec, format, ABI, limits, defaults, inventory or release state
 is changed by this evidence update.
+
+
+### IX-0059: schema-62 sixteen-MiB local exchange qualification
+
+Schema 62 and marc-cli-v62 append lzss-position-distance-dynamic-range-16m as archive 72, with exact identity 2/12 + 1/13 + 3/2. The unchanged prior producer and three freshly linked local production routes agree on every byte of the independent 8193-byte input and frozen first 71 archives. All 72 archives agree across the new routes and pass decode plus deterministic re-encode checks. Comparison fixtures use explicit synthetic metadata; deliverable manifests identify the actual integration revision and producer binary.
+
+Genuine manifests for schemas 1..62 pass. Twenty-seven new negative cases include false downgrade, codec set, count/order/duplicate, hash/size, truncation and rehashed dictionary/context/version identity bytes. A guarded entry point proves rejection before any codec launch; no decoded/re-encoded file appears. Maximum-window and failed-frame publication remain separately qualified by actual CLI and public-core tests, rather than inferred from small bundles.
+
+IX-0058's maintainer-reported CI and four external 71-archive results apply only to e3a4ee916fd90687fa73614210a23c46b58e3ebe. Hosted CI and four-direction 72-archive external exchange for the new integration revision have not yet been reported. The maintainer performs push and supplies those results; local qualification is not described as external verification.

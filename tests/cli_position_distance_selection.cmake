@@ -21,7 +21,7 @@ function(reject_selection)
 endfunction()
 
 foreach(direction IN ITEMS encode decode)
-    foreach(suffix IN ITEMS 16m 64m)
+    foreach(suffix IN ITEMS 32m 64m)
         reject_selection(${direction} --codec lzss-position-distance-dynamic-range-${suffix})
     endforeach()
     reject_selection(${direction} --codec lzss-position-distance-dynamic-range --finder hash-chain-exact)

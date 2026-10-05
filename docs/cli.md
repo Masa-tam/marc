@@ -708,3 +708,37 @@ complete success; a failing invocation removes its own temporary output while
 preserving pre-existing destination/temporary files. Schema 60 retains its 70
 archives; schema 61 with the additional archive and external revision-specific
 verification remains a subsequent gate.
+
+
+## 16 MiB position-distance selector
+
+```console
+marc encode --codec lzss-position-distance-dynamic-range-16m input.bin output.marc
+marc decode --codec lzss-position-distance-dynamic-range-16m output.marc restored.bin
+```
+
+This separate experimental selection uses exact identity 2/12 + 1/13 + 3/2,
+window/frame/block 16777216 bytes and matches 3..258. The compact owning encoder
+and five-workspace decoder use an explicit 536870912-byte logical internal
+policy and 67108864-byte payload ceiling. Call buffers are 65536 bytes each;
+model entries/total are 2610/32768, raw ceiling is 1099511627776 bytes and
+expansion ratio/slack are 1024/1048576. Complete controls, backing capacities
+and retained publications are charged. Initial encoder admission does not
+guarantee later frames fit. Refusals do not retry with larger limits. These
+logical bounds are not a resident-memory promise and exclude file-library
+internals and allocator overhead.
+
+There is no uppercase 16M alias or automatic file-size selection, finder,
+profile or memory override. Older selections and global defaults remain
+unchanged. The decoder accepts bounded smaller legal header parameters.
+Failed frames never publish; the destination commits only after complete
+stream success. Pre-existing destinations and temporary files are preserved.
+This selection remains outside the unchanged 42-profile baseline table.
+
+## Schema 62 exchange inventory
+
+Schema 62 (`marc-cli-v62`) appends `lzss-position-distance-dynamic-range-16m`
+as archive 72 after the frozen 71-entry schema-61 prefix. The 8193-byte fixture
+is unchanged. Whole-manifest admission precedes codec execution. Small-bundle
+exchange qualification is separate from maximum-window tests and from hosted
+CI and external reports for the actual new revision.

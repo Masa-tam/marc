@@ -72,6 +72,7 @@ if (-not [string]::IsNullOrEmpty($EvidenceDirectory)) {
     }
 }
 $schema61 = Join-Path $root 'schema61'
+$schema62 = Join-Path $root 'schema62'
 $schema60 = Join-Path $root 'schema60'
 $schema60Reordered = Join-Path $root 'schema60-reordered'
 $schema60Identity = Join-Path $root 'schema60-identity'
@@ -241,14 +242,33 @@ $schema57Profiles = $schema56Profiles + @(
 $schema58Profiles = $schema57Profiles + @('lzss-position-distance-dynamic-range')
 $schema59Profiles = $schema58Profiles + @('lzss-position-distance-dynamic-range-1m')
 $schema60Profiles = $schema59Profiles + @('lzss-position-distance-dynamic-range-4m')
+$schema61Profiles = $schema60Profiles + @('lzss-position-distance-dynamic-range-8m')
 try {
     $null = New-Item -ItemType Directory -Path $root
     & (Join-Path $PSScriptRoot 'create_interoperability_bundle.ps1') `
         -MarcCli $resolvedCli `
-        -OutputDirectory $schema61 `
+        -OutputDirectory $schema62 `
         -Platform 'local-schema-test' `
         -Compiler 'local-schema-test' `
         -SourceRevision ('0' * 40)
+    $latest = Get-Content -LiteralPath (Join-Path $schema62 'manifest.json') -Raw | ConvertFrom-Json
+    if ($latest.schema_version -ne 62 -or $latest.codec_set -ne 'marc-cli-v62' -or
+            @($latest.archives).Count -ne 72 -or
+            $latest.archives[71].codec -ne 'lzss-position-distance-dynamic-range-16m') {
+        throw 'Schema 62 must append exactly one sixteen-MiB position-distance archive'
+    }
+    for ($index = 0; $index -lt $schema61Profiles.Count; ++$index) {
+        if ($latest.archives[$index].codec -ne $schema61Profiles[$index]) {
+            throw 'Schema 62 changed the frozen schema-61 prefix'
+        }
+    }
+    & (Join-Path $PSScriptRoot 'verify_interoperability_bundle.ps1') `
+        -MarcCli $resolvedCli -BundleDirectory $schema62 `
+        -OutputDirectory (Join-Path $root 'verified62')
+    & (Join-Path $PSScriptRoot 'interoperability_schema62_negatives.ps1') `
+        -MarcCli $resolvedCli -BundleDirectory $schema62 `
+        -EvidenceDirectory (Join-Path $root 'schema62-negatives')
+    Convert-Bundle $schema62 $schema61 61 'marc-cli-v61' $schema61Profiles
     $latest = Get-Content -LiteralPath (Join-Path $schema61 'manifest.json') -Raw | ConvertFrom-Json
     if ($latest.schema_version -ne 61 -or $latest.codec_set -ne 'marc-cli-v61' -or
             @($latest.archives).Count -ne 71 -or
@@ -755,7 +775,7 @@ try {
         -BundleDirectory $schema1 `
         -OutputDirectory (Join-Path $root 'verified1')
 
-    Write-Host 'Verified interoperability schemas 1 through 61'
+    Write-Host 'Verified interoperability schemas 1 through 62'
 } finally {
     if ([string]::IsNullOrEmpty($EvidenceDirectory) -and (Test-Path -LiteralPath $root)) {
         $resolvedRoot = [System.IO.Path]::GetFullPath($root)

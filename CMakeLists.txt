@@ -7129,3 +7129,20 @@ if(MARC_BUILD_FUZZERS AND MARC_BUILD_STATIC)
     target_link_options(marc_fuzz_position_distance_16m_public PRIVATE -fsanitize=fuzzer,address,undefined)
     target_link_libraries(marc_fuzz_position_distance_16m_public PRIVATE marc::static)
 endif()
+
+if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
+    add_executable(marc_cli_position_distance_16m_allocation_tests
+        tests/cli_position_distance_16m_allocation_tests.cpp)
+    target_compile_features(marc_cli_position_distance_16m_allocation_tests PRIVATE cxx_std_20)
+    target_link_libraries(marc_cli_position_distance_16m_allocation_tests PRIVATE marc::static)
+    add_test(NAME marc_cli_position_distance_16m_allocation
+        COMMAND marc_cli_position_distance_16m_allocation_tests ${CMAKE_CURRENT_BINARY_DIR}/cli16m-allocation)
+    set_tests_properties(marc_cli_position_distance_16m_allocation PROPERTIES TIMEOUT 120)
+    find_package(Python3 COMPONENTS Interpreter QUIET)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_cli_position_distance_16m_boundaries
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_distance_16m_boundaries.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli16m-boundaries)
+        set_tests_properties(marc_cli_position_distance_16m_boundaries PROPERTIES TIMEOUT 1800)
+    endif()
+endif()

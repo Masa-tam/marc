@@ -8997,3 +8997,8 @@ DD-1485 introduces private owning compact storage and known-size streaming coord
 ### Sixteen-MiB public capacity and publication boundary
 
 DD-1486 adds distinct C encoder/decoder factories for the existing sixteen-MiB representation. Encoder resource queries admit initial owned storage only; complete later candidates are checked separately. Decoder queries describe five complete borrowed workspace capacities and do not validate a payload. A frame drains only after complete validation. Public construction, allocation or policy failure cannot publish a failed frame. The serialized capacity obeys both wire bounds and caller payload policy.
+
+
+### Sixteen-MiB command-line identity and exchange admission
+
+DD-1487 exposes the existing sixteen-MiB identity through an exact explicit selection. Its payload policy may be smaller than the mathematical wire ceiling and is checked before allocation. Schema 62 appends this identity as archive 72; earlier entries and schemas remain unchanged. Manifest hashes and exact identity are admission checks preceding codec execution; full payload validation remains the decoder's obligation.

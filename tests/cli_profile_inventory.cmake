@@ -67,3 +67,11 @@ execute_process(
 if(NOT near_miss_result EQUAL 2)
     message(FATAL_ERROR "CLI accepted a near-miss Contextual tANS profile")
 endif()
+
+string(REGEX MATCHALL "lzss-position-distance-dynamic-range-16m" position_distance_sixteen_matches "${usage_text}")
+list(LENGTH position_distance_sixteen_matches position_distance_sixteen_count)
+string(FIND "${usage_text}" "lzss-position-distance-dynamic-range-8m," position_distance_eight_offset)
+string(FIND "${usage_text}" "lzss-position-distance-dynamic-range-16m," position_distance_sixteen_offset)
+if(NOT position_distance_sixteen_count EQUAL 1 OR position_distance_eight_offset EQUAL -1 OR position_distance_sixteen_offset LESS_EQUAL position_distance_eight_offset)
+    message(FATAL_ERROR "Sixteen-MiB position-distance CLI identity is missing, duplicated or unordered")
+endif()

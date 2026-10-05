@@ -2092,3 +2092,15 @@ foreach(sixteen_mib_public_contract IN ITEMS
         message(FATAL_ERROR "Missing sixteen-MiB C API contract: ${sixteen_mib_public_contract}")
     endif()
 endforeach()
+
+foreach(sixteen_mib_cli_contract IN ITEMS
+        "## 16 MiB position-distance selector"
+        "lzss-position-distance-dynamic-range-16m"
+        "2/12 + 1/13 + 3/2"
+        "536870912-byte" "67108864-byte"
+        "## Schema 62 exchange inventory" "archive 72" "marc-cli-v62")
+    string(FIND "${cli_content}" "${sixteen_mib_cli_contract}" sixteen_mib_cli_offset)
+    if(sixteen_mib_cli_offset EQUAL -1)
+        message(FATAL_ERROR "Missing sixteen-MiB CLI contract: ${sixteen_mib_cli_contract}")
+    endif()
+endforeach()

@@ -10919,3 +10919,8 @@ DD-1485 adapts repository-owned trusted allocator, ownership-admission and known
 ### IR-1245: sixteen-MiB public ownership and borrowed decoder boundary
 
 DD-1486 uses repository-owned smaller-window C boundary and allocator-ledger contracts as references, adapting the distinct compact sixteen-MiB owner and existing borrowed sixteen-MiB decoder. No external implementation source is consulted.
+
+
+### IR-1246: sixteen-MiB file loop and append-only exchange inventory
+
+DD-1487 uses repository-owned smaller-window CLI lifetime/file transaction and exchange admission scripts, together with the independently authored sixteen-MiB public factories. No external implementation source is consulted.
