@@ -32920,3 +32920,28 @@ Expose the frame helper's concrete working-byte query so stream and finite
 queries share the reconstruction-state charge. Query success is capacity
 admission, not payload validation or an RSS prediction. Complete public
 boundary, allocator ownership, encoder, CLI and exchange remain later gates.
+
+
+### DD-1492: thirty-two-MiB reference and indexed dictionary encoding
+
+For the format defined in DD-1488, add finite allocation-free token parsers.
+Retain the exhaustive reference before adapting the indexed path. Both choose
+the longest eligible match and the nearest distance on equal length. Match
+eligibility remains five bytes, because canonical serialized cost is strictly
+better only when 9 < 2L; decoder-valid lengths three and four remain valid wire
+cases without becoming encoder choices.
+
+The index keeps 1,048,576 heads and one uint32 link per supplied raw byte.
+Insert every consumed position with at least three remaining bytes, verify
+the full three-byte key after hashing, traverse nearest-first chains and apply
+window expiry without a candidate cutoff. Reset the index for each finite
+frame. Its query may modify private workspace but never public tokens or
+metadata. The exhaustive query may take quadratic time on arbitrary input.
+
+Charge the full raw span, both full token capacities, the full indexed
+workspace where applicable, concrete working objects and retained caller
+bytes. Check all arithmetic and aliases before mutation. On any failure,
+commit zero tokens and preserve the whole output and metadata; private scratch
+is discardable. These helpers neither admit a public stream nor change global
+limits. Later compact encoder and public ownership must account for their own
+complete simultaneously retained buffers.

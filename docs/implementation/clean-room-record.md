@@ -38852,3 +38852,27 @@ alias policy, status/count invariants, final suffix semantics and sticky
 terminals. Independent single/two-frame recipes and allocation-guarded contract
 tests cover actual scheduling and prior publication. Public factory ownership,
 encoder and CLI/exchange qualification remain separate work.
+
+
+### CR-1664: thirty-two-MiB dictionary reference and indexed adaptation
+
+Date: 2026-10-06. Author/reviewer: Codex with repository checks.
+Task: retain an exhaustive finite dictionary reference and adapt the
+repository-owned full hash-chain parser to the thirty-two-MiB profile, proving
+identical tokens, longest/nearest/minimum-five policy, reconstruction, bounded
+admission and whole-output failure invariants. References: IR-1251, DD-1492,
+TVG-1359 and prior independently authored repository implementations.
+No external implementation, copyleft source, naming or test suite is consulted.
+No new wire representation or public API is introduced at this gate.
+Qualification results are appended after the native checks finish.
+
+Qualification: three compiler/instrumentation routes each pass seven CTest
+entries, including the 22-case reference and 21-case indexed dictionary
+suites and the qualified compact decoder regressions. Each dictionary fuzz
+campaign completes 10,000 iterations with address/undefined-behavior checks
+(leak detection disabled). Full-window repetitive and reachable F-5/F-258
+recipes agree, with exact finite budget success and one-byte-below rejection
+preserving all prior tokens and metadata. Old tracked implementation files
+remain byte-identical. Similarity review: repository-owned adaptation and
+separate descending-length oracle only; no external source consultation.
+Public ownership, CLI and exchange are not qualified by these finite tests.

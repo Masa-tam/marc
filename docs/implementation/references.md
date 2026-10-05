@@ -10956,3 +10956,11 @@ its numeric full-capacity ledger and independently qualified thirty-two-MiB
 compact frame transaction. Explicit independent single/two-frame recipes
 exercise scheduling and publication. No external implementation source is
 consulted.
+
+
+### IR-1251: thirty-two-MiB finite dictionary parsing
+
+DD-1492 adapts the repository-owned sixteen-MiB exhaustive reference and
+complete hash-chain parser to the qualified thirty-two-MiB parameters. The
+independently authored exhaustive test parser and scalar reconstruction remain
+separate from production traversal. No external implementation is consulted.

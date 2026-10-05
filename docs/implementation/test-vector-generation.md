@@ -21875,3 +21875,21 @@ stream conformance observes peak working set 340766720 bytes and peak pagefile
 339972096 bytes. The measurement includes the maximum five-buffer two-frame
 success/late-error cases and full one-byte-output schedules, and excludes the
 future public boundary and CLI.
+
+
+### TVG-1359: thirty-two-MiB dictionary differential recipes
+
+Compare exhaustive production parsing, complete indexed parsing and an
+independently authored exhaustive oracle on small binary inputs, seeded
+patterns, overlap, nearest ties, longer matches, short tails, hash collisions
+and window expiry. Reconstruct every accepted token sequence with a separate
+scalar history copier. Check mapper/Range/token/raw composition using the
+thirty-two-MiB alphabet of 26 distance classes.
+
+At the full 33,554,432-byte frame, repeated A yields one literal, 130,055
+matches of length 258 and a final length-241 match (130,057 total tokens).
+Unique prefixes followed by zero history and identical final phrases exercise
+reachable distances F-5 and F-258. Preserve caller output and metadata for
+invalid parameters, all capacities, exact budget versus one below, arithmetic
+overflow and full-span aliases. These are finite dictionary tests; public
+stream, allocation failure and CLI qualification remain separate gates.
