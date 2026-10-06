@@ -10372,3 +10372,24 @@ extent, malformed descriptions, seeded token sequences and output invariance,
 pass in two interpreter environments. Public codec/CLI/ABI and archive inventory
 remain unchanged. Broader corpus, native speed and directional resource
 measurements remain separate qualification steps.
+## BM-0214: full-corpus position rANS component comparison
+
+DD-1514 qualifies all 211,938,580 Silesia input bytes in 207 independent
+frames of at most 1 MiB. Both candidates use the same minimum-match-five
+token sequence, isolating model/entropy changes. Native control and candidate
+decoding reconstruct each frame; final-source requalification reproduces all
+descriptor and payload bytes. The size accounting includes the same entropy
+metadata scope and excludes outer stream/frame headers and integrity trailers.
+
+| Components | position rANS | contextual rANS |
+|---|---:|---:|
+| Descriptor bytes | 571,270 | 1,012,904 |
+| Payload bytes | 63,202,676 | 64,163,039 |
+| Total | 63,773,946 | 65,175,943 |
+
+The position model is 2.1511% smaller in aggregate; all twelve members are
+smaller individually. This meets the selected component comparison criterion.
+It is not a public archive or minimum-match-three end-to-end comparison.
+No Dynamic Range ratio gates adoption. Native throughput and directional
+process peaks remain unmeasured; report them separately after frame/finder
+integration. Huffman memory and rANS/tANS speed advantages remain hypotheses.

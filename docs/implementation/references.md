@@ -11138,3 +11138,8 @@ implementation or new external source consulted.
 Use first-party DD-1512, the PDRX version 2 diagnostic and the existing
 repository little-endian and bounded rANS contracts. No external implementation
 source is consulted for DD-1513.
+### IR-1273: position rANS typed-token bridge
+
+Use first-party typed dictionary variant 9, the existing position-distance
+field cursor, short-length escape grammar and DD-1513 scalar rANS primitives.
+No additional external source is consulted for DD-1514.

@@ -22301,3 +22301,21 @@ renormalization, unused active contexts, exact decision counts and trailing
 payload. Failed descriptor operations retain destinations; failed decoder
 begin retains the previous decoder; failed reads retain symbol destinations.
 This qualifies internal primitives, not outer grammar or frame publication.
+### TVG-1381: position rANS typed-token and full-frame differentials
+
+Seed 1514 independently generates 200 valid typed-token sequences. The
+diagnostic derives exact descriptors/payloads and raw bytes; native planning,
+encoding, private token decoding and reconstruction must agree. Ten full
+1-MiB frames exercise distance 1, 2, 3, 4, 7, 8, 65535, 65536, 65537 and
+1048573. Optional retained pilot files add twelve real distributions.
+Native tests also cover every literal, match lengths 3..258, empty input,
+literal predecessors separated by matches, output capacities and overlaps,
+total-size overflow, exact aggregate bounds and private scratch prefix
+discard. Failure precedence must agree between ordinary and scratch paths.
+
+The permanent `marc_fuzz_lzss_position_rans_1m_tokens` target runs bounded
+arbitrary/mutated descriptor and payload inputs plus generated valid frames.
+It compares validation, transactional and scratch status, output guards and
+the transactional failure invariant. The initial ASan/UBSan run completed
+10,000 inputs with no finding. The fuzzer source also has a portable compile
+smoke target; streaming and frame-publication fuzzing remain later work.

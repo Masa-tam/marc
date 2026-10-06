@@ -33376,3 +33376,10 @@ fixed private storage, validate canonical mode selection and bounds, then
 commit the descriptor. Serialize through fixed staging so every failure leaves
 the caller's output and count unchanged. Existing codec identities stay intact;
 outer identity, lifecycle, CLI and exchange admission are subsequent work.
+### DD-1514: connect typed tokens without decision materialization
+
+Use the existing minimum-three 1 MiB dictionary grammar with forward modeled
+fields and reverse token traversal. Share the field cursor on decoding.
+Preserve transactional validation-before-write and provide an explicitly
+discardable single-pass token scratch path for later frame integration.
+Bounds and failure precedence are defined in `docs/design/lzss-position-rans-1m.md`.

@@ -71,3 +71,37 @@ model only on success. Reverse writer first measures exact payload extent
 without writes, then emits into exact-size private scratch. It may modify
 private scratch before detecting an error; frame encoders must never publish
 that scratch before every subsequent validation succeeds.
+
+## DD-1514 typed-token boundary
+
+Connect the existing typed dictionary variant 9 (window at most 1 MiB,
+minimum length 3, maximum at most 258) without allocating modeled operations
+or materializing decisions. A forward field cursor supplies the model;
+reverse token traversal supplies the writer. Reverse literal contexts are
+found with one monotonically decreasing predecessor cursor, keeping traversal
+linear in tokens. Both traversals must reproduce the finite diagnostic bytes.
+
+Planning validates the entire typed frame and counts before assigning its
+descriptor. Encoding plans first, checks capacities and disjointness against
+every input/configuration/output region, then writes. Configuration and input
+must remain immutable during a call. The measured reverse pass proves the
+exact payload capacity before the emitting pass; descriptor output is committed
+last. All deterministic admission failures leave caller outputs unchanged.
+
+Token decoding derives requested fields from the same cursor, rejects invalid
+short-length escapes and impossible distance extras, and validates each token's
+history and raw extent before accepting it. A validation pass writes nothing;
+transactional decode validates first, then checks output capacity/overlap and
+repeats to commit. A separate single-pass private-scratch entry point may retain
+a prefix on failure and must never feed reconstruction/publication unless the
+entire operation succeeds. Capacity/overlap failures use the transactional
+path to retain error precedence. Counts require tokens <= raw <= 1 MiB,
+events <= 5*tokens and <= 2*raw, decisions <= 31*tokens and <= 9*raw, and
+payload <= 2*decisions+8 and <= 18*raw+8. Empty isolated input has zero counts.
+
+Aggregate admission includes token storage, encoded descriptor/payload bytes
+and a conservative 64 KiB fixed working allowance covering nested fixed
+model/descriptor/cursor objects. This is a bounded admission allowance, not
+a process resident memory measurement; outer frame/finder generations need
+additional accounting. Output-already-committed contributes to the total
+output ceiling through checked addition.

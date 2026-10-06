@@ -39352,3 +39352,21 @@ plus 12 retained pilot descriptor/payload pairs on each route. Native models
 and payloads are byte-identical to the diagnostic reference. No native speed,
 process peak, full-corpus, typed-token, outer frame, public lifecycle, CLI or
 exchange completion is claimed by these primitive tests.
+### CR-1688: position rANS typed-token boundary and corpus qualification
+
+2026-10-06 through 2026-10-07; author/reviewer: Codex. IR-1273 / DD-1514
+connect first-party dictionary variant 9, short-length escapes, field cursor
+and scalar rANS. No external source was consulted. Similarity review finds
+intentional shared first-party field/state rules and the repository's
+transactional validation pattern; no copied third-party expression is used.
+
+Both native compiler routes qualify 200 generated token sequences, ten full
+window distance cases and twelve retained pilots. The ordinary decoder
+retains failed outputs; private scratch prefixes are explicitly discardable.
+Aggregate ceilings, overlaps, arithmetic overflow and malformed/count cases
+pass. The ASan/UBSan fuzzer completes 10,000 inputs without a finding. BM-0214
+records all 207 corpus frames with native control/candidate roundtrips and
+byte-preserving final-source requalification. These results do not admit a
+public frame/profile, CLI or exchange inventory. Existing identities and
+generated artifacts remain intact; native speed and process peaks are later
+qualification requirements.
