@@ -22261,3 +22261,14 @@ These are local fixture observations with explicitly synthetic revisions;
 final clean-source production bindings and runtime publication are separate
 steps. Hosted CI and four external consumer reports remain maintainer-owned
 gates for the new revision. No external implementation was consulted.
+
+
+### TVG-1378: position-distance rANS diagnostic vectors
+
+Independently construct literals, overlap matches, every length 3..258,
+distance classes and one-MiB history edges. Compare scalar rANS decisions
+with an independent forward inverse, token/raw reconstruction and deterministic
+re-encoding. Negative cases cover truncation, sizes, masks, records, coder state,
+digest, trailing data and transactional destination invariance. Native corpus
+exports use one immutable token sequence per frame and retain separate
+minimum-match-three and minimum-match-five observations.

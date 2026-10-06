@@ -10303,3 +10303,37 @@ or dictionary cutoffs. Obsolete unsupported64m expectations are preserved in
 private failed evidence and narrowly corrected to unsupported128m; selection
 and uniqueness/order are requalified. Environment evidence remains private.
 Archive-74 exchange and hosted/external verification are separate gates.
+
+
+## BM-0212: position-distance rANS finite-frame pilot
+
+DD-1511 compares only the first 1,048,576 bytes of each of the twelve Silesia
+members: twelve frames / 12,582,912 raw bytes per tokenization control. This
+is not a full-corpus result. Each frame is tokenized once and the same tokens
+feed its backend comparisons. The native Dynamic Range encode/decode and
+existing contextual rANS encode/decode controls reproduce the tokens; the
+independent diagnostic rANS reproduces tokens and raw bytes. Native and Python
+modeled-decision sequences agree. All twenty-four comparisons pass.
+
+The primary minimum-match-three tokens use the exact indexed position-distance
+candidate grammar. The separate minimum-match-five control uses HashChain
+Exact and permits existing contextual rANS. Never compare across these rows
+as an isolated entropy effect. All component sizes below exclude outer stream
+and frame headers and hashes; Dynamic Range includes its 16-byte descriptor
+per frame, and both rANS columns include their serialized model descriptions.
+
+| Token control | Position Dynamic Range bytes | Position rANS bytes | Existing contextual rANS bytes | Position rANS versus Range | Position rANS versus contextual rANS |
+|---|---:|---:|---:|---:|---:|
+| Minimum match 3 | 4,774,084 | 4,833,034 | Incompatible token variant | +1.235% | Not compared |
+| Minimum match 5 | 4,730,251 | 4,784,191 | 4,839,026 | +1.140% | -1.133% |
+
+For the primary row, rANS payload is 4,778,642 bytes versus Range payload
+4,773,892; the additional sparse rANS models occupy 54,392 bytes. For the
+shared control, rANS payload is 4,730,718 and its models 53,473, versus
+contextual rANS payload 4,771,284 and models 67,742. The result supports
+further model/descriptor investigation, not replacing the current Dynamic
+Range profile or asserting a public archive compression improvement. The
+Python diagnostic is not a native throughput benchmark. Peak memory, full
+corpus behavior, streaming lifecycle, production allocation refusals and
+public interchange are not qualified by this pilot. Existing guarantees
+and public formats are unchanged.

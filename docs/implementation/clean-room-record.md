@@ -39290,3 +39290,25 @@ This documentation-only reconciliation uses no external implementation,
 changes no algorithm or format, and claims no new performance measurement,
 release qualification or legal guarantee. Hosted success is not attributed
 to the subsequent documentation-only commit.
+
+
+### CR-1685: position-distance rANS diagnostic provenance
+
+Date: 2026-10-06. Author/reviewer: Codex automated implementation and review.
+User-directed entropy comparison; references IR-1270/DD-1511/TVG-1378.
+Reuse first-party field grammar and arithmetic ideas in a private finite
+diagnostic. No external codec implementation, imported vector or restricted
+source consulted. Public compatibility and allocator/lifecycle qualification
+remain outside this diagnostic. Similarity review and measured results follow
+implementation; no performance improvement or legal guarantee asserted.
+
+
+CR-1685 qualification addendum: six registered finite-frame regression groups
+pass, including 200 independent seeded token sequences, all byte values,
+lengths, history edges, malformed streams and failure-output invariance.
+Twenty-four bounded corpus comparisons reconstruct exactly; native control
+decoders and native/Python modeled decisions agree. BM-0212 records the
+limited first-frame result and unfavorable comparison with Dynamic Range.
+Similarity review covers first-party reuse and independently expressed Python
+forward inverse; no outside implementation consulted. This is not production
+codec completion or a throughput/memory qualification.

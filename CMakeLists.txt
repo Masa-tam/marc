@@ -17,6 +17,7 @@ option(MARC_BUILD_EXAMPLES "Build marc examples" ${PROJECT_IS_TOP_LEVEL})
 option(MARC_BUILD_TOOLS "Build marc command-line tools" ${PROJECT_IS_TOP_LEVEL})
 option(MARC_BUILD_BENCHMARKS "Build marc benchmark tools" OFF)
 option(MARC_BUILD_FUZZERS "Build marc Clang/libFuzzer targets" OFF)
+option(MARC_BUILD_ENTROPY_DIAGNOSTICS "Build private entropy comparison tools" OFF)
 option(MARC_FUZZ_DISABLE_STRING_ANNOTATION
     "Match Windows libFuzzer built without std::string ASan annotations" OFF)
 option(MARC_FUZZ_DISABLE_VECTOR_ANNOTATION
@@ -7574,5 +7575,23 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
             COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_distance_64m_boundaries.py
                 $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli64m-boundaries)
         set_tests_properties(marc_cli_position_distance_64m_boundaries PROPERTIES TIMEOUT 3600)
+    endif()
+endif()
+
+# Finite DD-1511 diagnostic; no public codec or exchange inventory entry.
+if(MARC_BUILD_ENTROPY_DIAGNOSTICS AND TARGET marc_static)
+    add_executable(marc_position_distance_rans_export tools/position_distance_rans_export.cpp)
+    target_compile_features(marc_position_distance_rans_export PRIVATE cxx_std_20)
+    target_include_directories(marc_position_distance_rans_export PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_link_libraries(marc_position_distance_rans_export PRIVATE marc::static)
+endif()
+
+if(MARC_BUILD_TESTS)
+    find_package(Python3 COMPONENTS Interpreter QUIET)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_distance_rans_diagnostic
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_distance_rans_diagnostic_tests.py)
+        set_tests_properties(marc_position_distance_rans_diagnostic PROPERTIES TIMEOUT 120)
     endif()
 endif()

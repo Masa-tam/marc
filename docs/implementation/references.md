@@ -11119,3 +11119,10 @@ Use DD-1501/DD-1508/DD-1509, qualified public/CLI components and the
 repository-authored schema-63 producer, whole-manifest verifier, genuine
 historical inventories and prelaunch negative guards. No external
 implementation or vectors consulted.
+
+
+### IR-1270: position-distance rANS diagnostic references
+
+Use repository-authored DD-1318, DD-1511, the 1 MiB field cursor, scalar rANS
+arithmetic, normalization and entropy-backend contract. No external source or
+implementation consulted for this experiment.

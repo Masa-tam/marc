@@ -33347,3 +33347,14 @@ routes. Before fixed runtime publication save the entire previous build, then
 replace only exe/dll at the established path; retain caches/tests/PDBs and
 never rebuild a sealed stage. Hosted CI and maintainer external verification
 remain explicit later observations, never inferred from local success.
+
+
+### DD-1511: isolate the position-distance rANS experiment
+
+First define the private representation and bounds in
+`docs/design/position-distance-rans-diagnostic.md`.
+Keep the immutable token sequence constant in each comparison. Diagnose the
+minimum-match-three position-distance sequence separately from a shared
+minimum-match-five control usable by existing contextual rANS. Retain sparse
+model overhead in results, preserve transactional publication and all public
+formats, and do not assume compression improvement before measurement.

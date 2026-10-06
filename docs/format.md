@@ -9114,3 +9114,11 @@ context 1/15 and fifty contexts; this manifest addition changes no compression
 bytes. Whole-manifest validation, including complete sixteen-bit new
 identity/count fields, precedes any codec invocation. Earlier manifest schemas
 preserve their exact inventories and codec_set rules.
+
+
+### Private position-distance rANS diagnostic
+
+DD-1511's PDRX diagnostic (`docs/design/position-distance-rans-diagnostic.md`)
+defines a finite experimental container before its implementation. It is not
+a MARC stream, public codec variant or interoperability inventory entry.
+Existing format identities and public admission rules remain unchanged.
