@@ -783,3 +783,33 @@ entropy identity. A rehashed wrong identity remains invalid. Full-window and
 failed-frame behavior is established separately by public and actual CLI
 qualifications. Hosted CI and four external consumer routes require reports
 for the final new revision; local tests do not close those external gates.
+
+
+## 64 MiB position-distance selector
+
+```console
+marc encode --codec lzss-position-distance-dynamic-range-64m input.bin output.marc
+marc decode --codec lzss-position-distance-dynamic-range-64m output.marc restored.bin
+```
+
+This distinct experimental selector uses dictionary 2/14, context 1/15 and
+entropy 3/2, with 67108864-byte window/frame/block and wire matches 3..258.
+It connects the compact owning encoder and five byte-workspace decoder under
+an explicit 1073741824-byte codec admission policy, 134217728-byte payload cap
+and 1099511627776-byte raw output limit. Calls use 65536 bytes each; model
+entries/total are 2632/32768, expansion ratio/slack are 1024/1048576. Before
+encoder creation, the complete initial public query plus 2F + 4Pcap + 240 must
+fit the policy, retaining all old/candidate generations and initial controls.
+Query every decoder capacity before allocation. Actual per-frame admission
+remains mandatory; refusal never increases limits or retries. The policy counts
+codec ownership, not file-library internals, allocator overhead or OS resident
+memory. The payload cap is smaller than the maximum valid wire payload and
+may reject otherwise valid streams.
+
+Selection is explicit and case-sensitive. There is no automatic file-size
+selection or finder/profile/memory override. Generic defaults and every prior
+selector retain their meanings. Smaller legal bounded header parameters remain
+accepted. Failed frames never publish, and pre-existing targets and temporary
+files are preserved. Only whole-stream success commits the output file. This
+experimental selection is separate from the unchanged 42-profile baseline
+table. Schema-64/archive-74 exchange registration is a subsequent gate.

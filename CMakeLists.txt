@@ -7558,3 +7558,21 @@ if(MARC_BUILD_TESTS AND TARGET marc_static)
         --root ${CMAKE_CURRENT_BINARY_DIR}/position-distance-64m-public-conformance)
     set_tests_properties(marc_position_distance_64m_public_conformance PROPERTIES TIMEOUT 1200)
 endif()
+
+
+if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
+    add_executable(marc_cli_position_distance_64m_allocation_tests
+        tests/cli_position_distance_64m_allocation_tests.cpp)
+    target_compile_features(marc_cli_position_distance_64m_allocation_tests PRIVATE cxx_std_20)
+    target_link_libraries(marc_cli_position_distance_64m_allocation_tests PRIVATE marc::static)
+    add_test(NAME marc_cli_position_distance_64m_allocation
+        COMMAND marc_cli_position_distance_64m_allocation_tests ${CMAKE_CURRENT_BINARY_DIR}/cli64m-allocation)
+    set_tests_properties(marc_cli_position_distance_64m_allocation PROPERTIES TIMEOUT 900)
+    find_package(Python3 COMPONENTS Interpreter QUIET)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_cli_position_distance_64m_boundaries
+            COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_position_distance_64m_boundaries.py
+                $<TARGET_FILE:marc_cli> ${CMAKE_CURRENT_BINARY_DIR}/cli64m-boundaries)
+        set_tests_properties(marc_cli_position_distance_64m_boundaries PROPERTIES TIMEOUT 3600)
+    endif()
+endif()

@@ -83,3 +83,11 @@ string(FIND "${usage_text}" "lzss-position-distance-dynamic-range-32m," position
 if(NOT position_distance_thirty_two_count EQUAL 1 OR position_distance_previous_offset EQUAL -1 OR position_distance_thirty_two_offset LESS_EQUAL position_distance_previous_offset)
     message(FATAL_ERROR "Thirty-two-MiB position-distance CLI identity is missing, duplicated or unordered")
 endif()
+
+string(REGEX MATCHALL "lzss-position-distance-dynamic-range-64m" position_distance_sixty_four_matches "${usage_text}")
+list(LENGTH position_distance_sixty_four_matches position_distance_sixty_four_count)
+string(FIND "${usage_text}" "lzss-position-distance-dynamic-range-32m," position_distance_previous_offset)
+string(FIND "${usage_text}" "lzss-position-distance-dynamic-range-64m," position_distance_sixty_four_offset)
+if(NOT position_distance_sixty_four_count EQUAL 1 OR position_distance_previous_offset EQUAL -1 OR position_distance_sixty_four_offset LESS_EQUAL position_distance_previous_offset)
+    message(FATAL_ERROR "Sixty-four-MiB position-distance CLI identity is missing, duplicated or unordered")
+endif()

@@ -11104,3 +11104,10 @@ encoder factory and compact decoder factory. Use the independent integer
 oracle for generic wire lengths three/four and complete full-window streams.
 Extend the first-party seeded resource experiment through the public boundary.
 No external implementation or test suite consulted.
+
+
+### IR-1268: sixty-four-MiB explicit CLI references
+
+Sixty-four-MiB explicit CLI uses repository DD-1501/DD-1508 and the
+independently authored thirty-two-MiB CLI/file-transaction and allocation
+receipts. No external implementation or new source was consulted.

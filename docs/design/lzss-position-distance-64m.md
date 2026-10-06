@@ -257,3 +257,6 @@ remain unchanged and two new ones are appended. Four routes, previous profile
 regressions and a shared C client qualify the lifecycle. Full seeded public
 resource experiments reproduce the private bytes without establishing CLI policy.
 Explicit CLI selection, measured CLI grants and archive-74 exchange remain required.
+
+
+Explicit CLI qualification (DD-1509) adds a separate selector, full 64 MiB boundaries and two full incompressible frames. Candidate admission uses initial query + 2F + 4Pcap + 240, including every complete control/call/external owner. A 1 GiB grant and Pcap=128 MiB leave room for the conservative bound; every actual query is checked at runtime. The decoder admits all five complete byte capacities before allocation. Full-file atomic publication uses the established temporary-output transaction. Archive-74 exchange qualification remains a separate subsequent step.

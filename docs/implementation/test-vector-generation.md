@@ -22218,3 +22218,17 @@ Full public resource diagnostics include their collectors and retained controls;
 two seeded incompressible frames reproduce every raw byte and the qualified
 private stream's complete wire length. Phase times include generation, storage
 initialization and collection and are not isolated codec throughput.
+
+
+### TVG-1376: sixty-four-MiB full-window CLI recipes
+
+Sixty-four-MiB CLI recipes preserve the previous profile boundaries at
+0/1/256/F-1/F/F+1/2F/2F+1 with F=67,108,864, exact second-generation
+determinism and the independent finite Range oracle at distance F-5. SHAKE256
+of ASCII marc independent DD-1509 incompressible recipe yields two complete
+frames; both encode executions must agree and decoding must recover every
+byte. Negative fixtures mutate lengths, IDs, second-frame finish/Range/prefix,
+truncation and trailing data; actual file transactions preserve existing
+destination/temp files. Concrete allocation receipts exercise every fallible
+allocation and verify release order. These first-party recipes do not reuse
+another implementation's vectors.

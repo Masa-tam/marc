@@ -9097,3 +9097,6 @@ five. Decoder admission retains min(3R,9T) and public worst-case 3R backing;
 encoder compact-prefix admission does not lower these decoder floors.
 Distinct public directions and complete-frame validation precede raw release.
 Previous formats and their public decoding/encoding paths remain unchanged.
+
+
+Sixty-four-MiB explicit CLI (DD-1509) selects the previously specified Format 2.0 dictionary 2/14, entropy 3/2, context 1/15 and fifty contexts. The selector lzss-position-distance-dynamic-range-64m introduces no new stream bytes. Its finite limits are 67,108,864-byte frames/windows, 134,217,728-byte payloads and a distinct 1,073,741,824-byte internal admission grant; smaller legal frame/window limits remain decodable under the same model. The SDK and generic CLI defaults are unchanged.

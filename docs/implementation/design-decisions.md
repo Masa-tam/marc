@@ -33303,3 +33303,25 @@ Check all full-region aliases and arithmetic. Sticky terminals, partial buffers,
 canonical finish and complete-frame nonpublication survive the public boundary.
 Queries preserve complete result structures on failure; safe factory failures
 leave no handle. Diagnostic resource grants select neither global nor CLI policy.
+
+
+### DD-1509: sixty-four-MiB explicit CLI admission and transaction
+
+Explicit sixty-four-MiB position-distance CLI. Select only lzss-position-
+distance-dynamic-range-64m, dictionary 2/14 and context 1/15. The existing
+whole-file temporary-output transaction encloses the new public transforms.
+Use a distinct 1 GiB internal admission limit and a 128 MiB payload cap;
+retain 65,536-byte input/output calls and fifty contexts. Before encoder
+creation require the complete initial public resource query plus 2F compact
+bytes, four payload caps and 240 prefix bytes to fit the limit. This includes
+old publication, candidate frame/payload/publication and every initial control
+without discount. Query and validate all five decoder capacities before any
+workspace allocation; charge complete external owners and calls. This is an
+aggregate codec admission policy, not a process RSS limit. Generic defaults
+and previous explicit profiles remain unchanged. Full two-frame incompressible
+public diagnostics took about 424 seconds including generation/collection; use
+finite 1,200-second child watchdogs for each stress encode and a 3,600-second
+boundary-suite deadline, retaining both full frames and repeat encoding.
+Qualification must measure the actual CLI; these bounds do not claim CLI
+throughput. Allocation failure, malformed later frames or file errors must
+never publish a destination or delete a pre-existing destination/temp file.

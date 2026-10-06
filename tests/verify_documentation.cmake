@@ -2157,3 +2157,12 @@ foreach(sixty_four_mib_c_contract IN ITEMS
         message(FATAL_ERROR "Missing sixty-four-MiB C contract: ${sixty_four_mib_c_contract}")
     endif()
 endforeach()
+
+foreach(sixty_four_mib_cli_contract IN ITEMS
+        "DD-1509" "lzss-position-distance-dynamic-range-64m"
+        "1,073,741,824" "134,217,728")
+    string(FIND "${format_content}" "${sixty_four_mib_cli_contract}" sixty_four_mib_cli_offset)
+    if(sixty_four_mib_cli_offset EQUAL -1)
+        message(FATAL_ERROR "Missing sixty-four-MiB CLI format contract: ${sixty_four_mib_cli_contract}")
+    endif()
+endforeach()

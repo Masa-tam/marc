@@ -1026,3 +1026,6 @@ repeated on unconsumed final suffixes. No failed frame is released; an error cal
 may include output from an earlier fully validated frame. Actual complete
 capacities, aliases, retained owners and controls are checked before publication.
 No generic memory default or CLI policy is changed by this API addition.
+
+
+For the sixty-four-MiB public owning encoder, callers may conservatively admit complete candidates using initial_bytes + 2F + 4Pcap + 240, including the retained old publication and all new generations. This never discounts complete initial controls and does not change INITIAL_ONLY resource query semantics or public initializer defaults. The payload cap remains an explicit caller choice.

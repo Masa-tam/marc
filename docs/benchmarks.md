@@ -10267,3 +10267,39 @@ routes admit it below policy. Maximum-window boundaries, late-frame failure,
 real allocation refusals and arbitrary chunking have separate test evidence.
 Environment-specific evidence remains private. Exchange and hosted/external
 gates are not inferred from this resource observation.
+
+
+## BM-0211: Complete sixty-four-MiB CLI resource observation
+
+Date: 2026-10-06. One actual CLI encode/decode pair uses two full 67,108,864-byte
+frames, 65,536-byte calls, a 134,217,728-byte payload cap and a distinct
+1,073,741,824-byte codec admission policy. SHAKE-256 of ASCII
+`marc independent DD-1509 incompressible recipe` supplies 134,217,728 bytes.
+Input/archive files are outside the child process; no complete raw or wire
+diagnostic collector is retained within that process.
+
+| Quantity | Observation |
+| --- | ---: |
+| Raw bytes | 134,217,728 |
+| Archive bytes including headers | 134,294,393 |
+| Archive/raw ratio | 1.000571199 |
+| Encode elapsed seconds | 413.054077 |
+| Encode throughput, MiB/s of raw bytes | 0.309887 |
+| Encode process peak resident bytes | 748,302,336 |
+| Decode elapsed seconds | 16.579132 |
+| Decode throughput, MiB/s of raw bytes | 7.720549 |
+| Decode process peak resident bytes | 475,471,872 |
+
+The raw SHA-256 is `5c6429868df2e6cdf7dc2b5b46201be82e38b62c4386ab44b8ccfb2a22224d5b` and archive SHA-256 is
+`3ada005b48a69872941d9accdca7d52fd33e48606b22af6b397eb53347f08fc8`. The archive equals the separately qualified deterministic
+fixture and every restored byte agrees. These single observations are not
+medians, cross-host predictions or a comparative speed claim. Process peaks
+include runtime/file-library/allocator overhead; codec policy charges complete
+controls, calls, owners and old/candidate generations and is not an OS resident
+memory guarantee. Four compiler/instrumentation routes admit the conservative
+initial query + 2F + 4Pcap + 240 bound below policy. Complete F boundaries,
+late-frame failures and concrete allocation refusals pass without smaller input
+or dictionary cutoffs. Obsolete unsupported64m expectations are preserved in
+private failed evidence and narrowly corrected to unsupported128m; selection
+and uniqueness/order are requalified. Environment evidence remains private.
+Archive-74 exchange and hosted/external verification are separate gates.

@@ -39235,3 +39235,16 @@ specified 14/15, assert both bytes and fifty contexts, and requalify fully.
 Prior declarations and fifty-six initializer definitions remain unchanged;
 exactly two distinct new initializers are added. Similarity review is scoped
 to first-party code; no legal guarantee or completed CLI/exchange is claimed.
+
+
+### CR-1682: sixty-four-MiB explicit CLI implementation
+
+Date: 2026-10-06. Author/reviewer: Codex automated implementation and review.
+User-directed sixty-four-MiB CLI extension. References are IR-1268 and
+repository-authored DD-1509; no external source consulted. Adaptation
+preserves the prior CLI transaction and uses the qualified public lifecycle
+with a separate complete admission proof. Full-window oracle, negative-file
+and allocation qualification is required before this phase is accepted; local
+environment and native receipts remain outside public documents.
+
+CLI qualification addendum (CR-1682): four compiler/instrumentation routes pass eleven distinct targeted entries each, including complete F boundaries, full 2F incompressible determinism, independent far-distance bytes and real allocation refusals. Preserve the obsolete unsupported64m selector failure and its narrow128m correction. SDK/core bytes and previous selectors are retained. Similarity review is scoped to repository-authored reuse; no external implementation consulted and no legal guarantee claimed. Actual CLI resource observation is BM-0211; exchange remains pending.
