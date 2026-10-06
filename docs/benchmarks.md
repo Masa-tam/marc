@@ -10393,3 +10393,25 @@ It is not a public archive or minimum-match-three end-to-end comparison.
 No Dynamic Range ratio gates adoption. Native throughput and directional
 process peaks remain unmeasured; report them separately after frame/finder
 integration. Huffman memory and rANS/tANS speed advantages remain hypotheses.
+## BM-0215: native position rANS complete archive ratios
+
+The owned streaming encoder tokenizes and encodes all 211,938,580 raw bytes
+of the twelve-member corpus into 207 frames. Each candidate archive includes
+its stream and frame headers, and its owned decoder reconstructs all raw
+bytes. The existing contextual-rANS CLI independently encodes and decodes
+the same files with the same one-MiB frame size.
+
+| Fixed match eligibility | Position archive bytes | Contextual rANS archive bytes | Aggregate change | Members smaller |
+|---|---:|---:|---:|---:|
+| 3 | 64,164,429 | 65,190,535 | -1.5740% | 7/12 |
+| 5 | 63,788,538 | 65,190,535 | -2.1506% | 12/12 |
+
+Both policies use the new minimum-three decoder grammar. The fixed-five
+candidate's descriptors and payloads agree byte for byte with all 207 earlier
+source-bound independent model/token fixtures. These are complete archive
+sizes, including outer headers; Dynamic Range size is not an admission gate.
+Runs combining candidate encoding and decoding do not establish directional
+throughput. Conservatively queried retained workspaces are approximately
+43.82 MiB for encoding and 31.07 MiB for decoding; these are configured
+representation capacities, not measured process peaks. Public lifecycle,
+native directional speed, process peak and CLI admission remain separate work.

@@ -39388,3 +39388,21 @@ frame output. TVG-1382/1383 record bounds, chunking, compatibility, allocation
 and sanitizer checks. Existing identities and retained generated artifacts
 remain intact. These internal results do not establish a public profile,
 CLI or exchange bundle, native speed improvement or measured process peak.
+### CR-1690: owned position rANS encoder/decoder and token policy
+
+2026-10-07; author/reviewer: Codex. IR-1276 and DD-1517/1518/1519 reuse the
+first-party exact prefix finder, fixed token grammar and qualified native rANS
+frame boundary. The task requires deterministic chunked streams, admission
+before allocation, bounded retained storage and failed-frame non-publication.
+No external implementation was consulted. Similarity review identifies shared
+first-party finder/state/bounds contracts and an independently written small
+exhaustive token reference; no third-party expression is introduced.
+
+TVG-1384 covers reference bytes, fixed eligibility three/five, chunking,
+allocation cleanup, exact budgets, malformed lifecycle and both encoder and
+decoder failed-frame withholding. The ASan/UBSan owned fuzzer completed 10,000
+inputs without a finding. BM-0215 uses complete native candidate/control
+archives, with fixed-five sizes smaller for every corpus member. Earlier
+fixed-three archives and qualified binaries are retained. No directional
+throughput or process-peak superiority is inferred from roundtrip runs.
+Public profile/API, CLI and exchange admission remain separate qualification.

@@ -11154,3 +11154,9 @@ DD-1516 uses first-party Transform status rules, checked overlap helpers,
 DD-1515 preflight structures and private token/raw frame reconstruction.
 Tests and fuzz inputs are independently generated from these representations.
 No additional external source or implementation was consulted.
+### IR-1276: owned position rANS stream lifecycle
+
+DD-1517 uses the first-party exact three/four/five-byte prefix finder, variant-9
+token candidate, DD-1515 frame encoder, DD-1516 borrowed decoder and checked
+workspace admission rules. Exhaustive matching remains the independent
+first-party token reference. No external implementation is consulted.

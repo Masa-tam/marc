@@ -33398,3 +33398,26 @@ at construction and avoid process allocations. Enter raw draining only after
 complete-frame scratch validation succeeds, preserving previously committed
 frames while withholding any failed frame. Document immutable limits, final
 suffix handling, sticky states and flags in `docs/design/lzss-position-rans-1m.md`.
+### DD-1517: owned position rANS stream lifecycle
+
+Use the fixed min-three exact prefix finder and retain raw, typed-token,
+serialized and finder workspaces without entropy operation/decision arrays.
+Check the complete aggregate before allocating. The encoder prepares each
+frame privately before draining; the owner decoder wraps DD-1516 with its
+overhead included. Known length, immutable direction, unchanged Flush bytes,
+sticky completion/errors and allocation-free process calls follow the core
+contract. See `docs/design/lzss-position-rans-1m.md` for workspace accounting.
+### DD-1518: compare token eligibility using native position rANS archives
+
+Retain the min-three decoder grammar and add private fixed eligibility 3/5
+to the owned encoder. Compare complete native archives rather than inferring
+the effect of token parsing from shared-token entropy components. Preserve
+reference and chunking agreement for both policies. Public policy admission
+is separate from this diagnostic; no old representation changes.
+### DD-1519: select fixed-five position rANS encoder eligibility
+
+Native complete-corpus archives satisfy the contextual rANS size criterion
+for all twelve members at fixed-five eligibility. Make this the owner default
+and planned public encoder policy, while retaining private fixed-three tests.
+Dictionary variant 9 still admits lengths 3..258 on decoding. BM-0215 records
+the actual archive comparison; speed and measured process peak remain pending.

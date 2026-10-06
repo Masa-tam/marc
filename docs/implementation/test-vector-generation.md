@@ -22352,3 +22352,28 @@ streams. It checks termination, status/count invariants, guards, identical
 output/error positions and sticky terminal states. Its initial ASan/UBSan run
 completed 10,000 inputs without a finding. This qualifies internal borrowed
 decoding; public factory, encoder and CLI lifecycle remain separate work.
+### TVG-1384: owned position rANS streaming lifecycle
+
+Seed 1517 generates raw inputs at frame capacities 1, 2, 3, 17 and 257, including
+empty, one byte, exact boundaries and three-frame final-short cases. Fixed
+eligibility three and five must reproduce independently written exhaustive
+nearest-first matching and identical complete archive bytes across input/output
+capacities 1, 7 and 4096, injected zero output and Flush. Every one-byte symbol
+and an alphabet sequence also roundtrip. Every process call checks committed
+output guards, count/status invariants, sticky completion and no C++ allocations.
+
+Query outputs remain unchanged below the exact aggregate budget. Creation
+refuses that budget before allocation, succeeds at the exact budget, and
+returns out_of_memory with complete cleanup when each individual allocation
+is faulted. Other tests cover premature EndInput, invalid eligibility,
+unsupported ResetBlock, failed frame preparation and a corrupted later frame
+with no failed frame output. A stream whose declared frame exceeds decoder
+capacity is rejected even if its final raw frame would fit. The permanent owned
+fuzzer compares both chunked
+encodings, roundtrips and whole/chunked malformed decode results. Its initial
+ASan/UBSan run completed 10,000 inputs without a finding.
+
+All twelve corpus members are natively encoded and decoded under each policy;
+contextual-rANS CLI control archives independently roundtrip the same inputs.
+BM-0215 records their complete archive sizes. Fixed-five components additionally
+agree with all 207 independently qualified frame descriptors and payloads.

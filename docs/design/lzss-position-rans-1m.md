@@ -199,3 +199,61 @@ zero counts. Flush preserves framing. ResetBlock and unknown flags are
 unsupported. Empty input starvation and zero output capacity are normal;
 Progress always has nonzero consumption or production. Input/output must also
 be disjoint from each other, the decoder object and retained workspaces.
+
+## DD-1517 owned streaming encoder and decoder
+
+Owned creation first validates configuration and computes all retained buffer
+capacities, object bytes and the existing 64 KiB bounded-call allowance with
+checked arithmetic. It refuses an insufficient aggregate budget before any
+allocation. Allocation failure returns out_of_memory and releases earlier
+allocations. Requirements outputs remain unchanged on refusal. No process
+call allocates or grows storage.
+
+The encoder retains one raw frame, at most frame_size typed tokens, serialized
+capacity `18*frame_size+5182` and the existing exact three/four/five-prefix
+finder workspace. Eligibility is fixed at three. Greedy longest matching and
+nearest distance on ties preserve variant-9 token semantics. The exhaustive
+matcher remains a small-input reference. There are no materialized entropy
+operation or decision arrays. Models and dictionary history reset per frame.
+
+The encoder emits the fixed stream header, collects exactly one frame, prepares
+private tokens and serialized bytes, then drains that complete successful frame.
+Failure cannot publish a partial frame. Known original length is enforced;
+premature EndInput, additional raw input, ResetBlock and unknown flags fail.
+Flush does not change bytes or frame boundaries. Zero-byte final EndInput is
+valid once all declared raw bytes have arrived. Ended and error states are
+sticky. The owned decoder retains serialized/raw/token buffers and wraps the
+borrowed decoder, charging owner overhead in its admission calculation.
+The decoder capacity also caps the admitted stream frame size; a large declared
+frame cannot bypass that cap merely because its final raw extent is small.
+
+Workspace capacity is a conservative representation bound, not measured
+process peak. Compression ratio, directional throughput and process peak
+remain independently qualified before public defaults and CLI admission.
+
+## DD-1518 entropy-independent token eligibility diagnostic
+
+The decoder grammar continues to accept match lengths 3..258. A private
+encoder diagnostic may select fixed eligibility three or five, without changing
+the dictionary parameters, frame grammar or model layout. Eligibility changes
+greedy token selection; it is not a decoder-visible representation change.
+Each fixed policy must retain exhaustive nearest-first reference agreement
+and identical bytes across chunking. Compare complete native archives and
+roundtrips against contextual rANS before selecting the public encoder policy.
+Do not infer throughput from runs that combine candidate encoding and decoding.
+
+## DD-1519 fixed-five encoder policy admission
+
+Complete native archives over all twelve corpus members show fixed-three
+eligibility reduces aggregate bytes by 1.5740% but grows five members versus
+contextual rANS. Fixed-five eligibility reduces aggregate bytes by 2.1506%
+and is smaller for every member. Its 207 frame descriptors and payloads equal
+the earlier independently qualified shared-token components. Both native
+candidates and the contextual control roundtrip every member.
+
+Select fixed-five eligibility as the owned encoder default and the future
+public profile policy. Retain fixed-three as a private diagnostic. This leaves
+the minimum-three decoder grammar intact and does not use Dynamic Range
+compression as an admission criterion. No two-policy trial or adaptive choice
+is made in the production inner loop. Directional speed and measured process
+peak remain required before CLI resource/default qualification.
