@@ -33325,3 +33325,25 @@ boundary-suite deadline, retaining both full frames and repeat encoding.
 Qualification must measure the actual CLI; these bounds do not claim CLI
 throughput. Allocation failure, malformed later frames or file errors must
 never publish a destination or delete a pre-existing destination/temp file.
+
+
+### DD-1510: append-only schema-64 exchange and fixed runtime publication
+
+Append exactly lzss-position-distance-dynamic-range-64m as archive 74 after
+the unchanged schema-63 prefix. Schema 64 identifies marc-cli-v64; preserve
+all earlier schema inventories, leaf names and representations. Validate every
+manifest entry, size, SHA-256, ordered codec and new 112-byte header before
+any codec launch. Require exact little-endian sixteen-bit
+version/algorithm/variant/context-count fields: 2.0, dictionary 2/14, context
+1/15, entropy 3/2 and fifty contexts, including all high bytes. Wrong
+dictionary/context/count, rehashed header corruption, truncation,
+reordered/duplicate/missing entries and downgrade must publish no file and
+launch no codec. Freeze all prior 73 archives from the verified prior runtime
+before editing producer/verifier; compare every prior byte/hash with each new
+producer. Keep full clean-source bindings and distinguish synthetic
+compatibility metadata from production revisions. Generate independently built
+producer bundles and verify re-encoding plus restored bytes across local
+routes. Before fixed runtime publication save the entire previous build, then
+replace only exe/dll at the established path; retain caches/tests/PDBs and
+never rebuild a sealed stage. Hosted CI and maintainer external verification
+remain explicit later observations, never inferred from local success.

@@ -22232,3 +22232,32 @@ truncation and trailing data; actual file transactions preserve existing
 destination/temp files. Concrete allocation receipts exercise every fallible
 allocation and verify release order. These first-party recipes do not reuse
 another implementation's vectors.
+
+
+### TVG-1377: schema-64 full identity and historical inventories
+
+Reuse the unchanged independent 8,193-byte common exchange recipe. Require
+archive 74 to carry the qualified sixty-four-MiB tuple and fifty-context word,
+and preserve all first 73 archives byte-for-byte. Produce actual schema-1..64
+manifests with their genuine profile inventories; schema 1 has no codec_set
+and later schema N uses marc-cli-vN. Thirty new negatives consist of twelve
+named manifest/header failures plus both bytes of nine sixteen-bit fields at
+offsets 4,6,12,14,16,18,84,96,98; rehash changed archives to reach identity
+admission. A launch-marker guard must remain absent and output directories
+contain zero files. Old schema-63 negatives remain unchanged. Qualified clean-
+source production metadata must not be substituted for all-zero synthetic
+compatibility source IDs.
+
+Local qualification for IX-0063 passes all 4,062 tests in the complete
+configured suite. Three independently rebuilt production CLI routes generate
+identical input and all seventy-four archive bytes. Each self-verifies and all
+six distinct producer/consumer pairs restore and deterministically re-encode.
+Every old seventy-three archive byte agrees with a separately frozen bundle
+from the prior qualified runtime. Genuine manifests for schemas 1..64 retain
+their actual inventories, including the historical name conversion. Each new
+producer route passes thirty schema-64 rejection cases with zero codec launches
+and zero output files; schema-63's unchanged twenty-seven cases also pass.
+These are local fixture observations with explicitly synthetic revisions;
+final clean-source production bindings and runtime publication are separate
+steps. Hosted CI and four external consumer reports remain maintainer-owned
+gates for the new revision. No external implementation was consulted.

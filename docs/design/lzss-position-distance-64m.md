@@ -260,3 +260,27 @@ Explicit CLI selection, measured CLI grants and archive-74 exchange remain requi
 
 
 Explicit CLI qualification (DD-1509) adds a separate selector, full 64 MiB boundaries and two full incompressible frames. Candidate admission uses initial query + 2F + 4Pcap + 240, including every complete control/call/external owner. A 1 GiB grant and Pcap=128 MiB leave room for the conservative bound; every actual query is checked at runtime. The decoder admits all five complete byte capacities before allocation. Full-file atomic publication uses the established temporary-output transaction. Archive-74 exchange qualification remains a separate subsequent step.
+
+## Qualified implementation status, 2026-10-06
+
+Separate local evidence covers the bounded reference/indexed dictionary,
+typed/compact Range coding, finite frames, borrowed/owning streams, six public
+C functions and an explicit CLI selector. Four compiler/instrumentation routes
+pass complete maximum-window boundaries, full two-frame incompressible bytes,
+independent far-distance vectors and concrete allocation refusals. Failed
+frames remain private and failed operations preserve previously published
+output. Whole-library address/undefined-behavior campaigns have separate
+evidence with leak detection disabled and actual cleanup receipts.
+
+DD-1509 selects a 1,073,741,824-byte codec-accounting policy and 134,217,728-byte
+payload cap only after complete owner/backing/generation admission and actual
+CLI measurements. The largest qualified candidate bound is 1,011,108,200 bytes;
+the complete query for the actual ABI must pass policy before any allocation.
+BM-0211 records actual time, ratio and process peaks for two full incompressible
+frames. Generic defaults and prior formats remain unchanged. Schema 64 appends
+archive 74 after preserving all prior 73 archive bytes. The complete configured
+suite passes 4,062 tests; three local producer routes agree on every archive
+and genuine schemas 1..64 pass. This supersedes prospective implementation
+status above. Final production revision attribution, hosted CI and external
+exchange must be recorded independently; local success does not establish
+external success.

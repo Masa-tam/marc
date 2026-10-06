@@ -1563,3 +1563,30 @@ separate maximum-window, resource, allocation-failure and failed-frame
 nonpublication evidence; it does not establish a new performance result.
 This evidence update changes no codec, format, ABI, limits, defaults,
 inventory or release state.
+
+
+### IX-0063: sixty-four-MiB exchange qualification plan
+
+Schema 64 / marc-cli-v64 appends only lzss-position-distance-dynamic-range-64m
+as the seventy-fourth archive after the unchanged seventy-three-profile
+prefix. Exact identity is Format 2.0 dictionary 2/14 + context 1/15 + entropy
+3/2, with fifty contexts. DD-1510 requires a frozen prior byte comparison,
+genuine schema-1..64 inventories and whole-manifest prelaunch rejection,
+including rehashed low/high identity bytes and context count. Input remains
+the independent 8,193-byte recipe. Local source-bound producer/consumer and
+historical qualification is pending; future hosted CI and four maintainer
+external routes must be reported separately.
+
+Local qualification for IX-0063 passes all 4,062 tests in the complete
+configured suite. Three independently rebuilt production CLI routes generate
+identical input and all seventy-four archive bytes. Each self-verifies and all
+six distinct producer/consumer pairs restore and deterministically re-encode.
+Every old seventy-three archive byte agrees with a separately frozen bundle
+from the prior qualified runtime. Genuine manifests for schemas 1..64 retain
+their actual inventories, including the historical name conversion. Each new
+producer route passes thirty schema-64 rejection cases with zero codec launches
+and zero output files; schema-63's unchanged twenty-seven cases also pass.
+These are local fixture observations with explicitly synthetic revisions;
+final clean-source production bindings and runtime publication are separate
+steps. Hosted CI and four external consumer reports remain maintainer-owned
+gates for the new revision. No external implementation was consulted.

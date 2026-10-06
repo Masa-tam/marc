@@ -181,6 +181,8 @@ $schema62Profiles = $schema61Profiles + @(
     'lzss-position-distance-dynamic-range-16m')
 $schema63Profiles = $schema62Profiles + @(
     'lzss-position-distance-dynamic-range-32m')
+$schema64Profiles = $schema63Profiles + @(
+    'lzss-position-distance-dynamic-range-64m')
 if ($manifest.schema_version -eq 1) {
     if ($null -ne $manifest.PSObject.Properties['codec_set']) {
         throw 'Schema 1 interoperability manifests must not declare a codec set'
@@ -496,6 +498,11 @@ if ($manifest.schema_version -eq 1) {
         throw "Unsupported interoperability codec set: $($manifest.codec_set)"
     }
     $expectedProfiles = $schema63Profiles
+} elseif ($manifest.schema_version -eq 64) {
+    if ([string]$manifest.codec_set -ne 'marc-cli-v64') {
+        throw "Unsupported interoperability codec set: $($manifest.codec_set)"
+    }
+    $expectedProfiles = $schema64Profiles
 } else {
     throw "Unsupported interoperability manifest version: $($manifest.schema_version)"
 }
@@ -626,6 +633,29 @@ foreach ($entry in $manifest.archives) {
             if ($header[$field[0]] -ne $field[1] -or
                     $header[$field[0] + 1] -ne 0) {
                 throw '32 MiB position-distance archive does not carry exact identity 2.0: 2/13 + 1/14 + 3/2'
+            }
+        }
+    }
+    if ($codec -eq 'lzss-position-distance-dynamic-range-64m') {
+        $header = [byte[]]::new(112)
+        $stream = [System.IO.File]::OpenRead($archivePath)
+        try {
+            $offset = 0
+            while ($offset -lt $header.Length) {
+                $read = $stream.Read($header, $offset, $header.Length - $offset)
+                if ($read -eq 0) {
+                    throw '64 MiB position-distance archive header is truncated'
+                }
+                $offset += $read
+            }
+        } finally {
+            $stream.Dispose()
+        }
+        foreach ($field in @(@(4, 2), @(6, 0), @(12, 2), @(14, 14),
+                @(16, 3), @(18, 2), @(84, 50), @(96, 1), @(98, 15))) {
+            if ($header[$field[0]] -ne $field[1] -or
+                    $header[$field[0] + 1] -ne 0) {
+                throw '64 MiB position-distance archive does not carry exact identity 2.0: 2/14 + 1/15 + 3/2, fifty contexts'
             }
         }
     }

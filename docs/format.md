@@ -9100,3 +9100,17 @@ Previous formats and their public decoding/encoding paths remain unchanged.
 
 
 Sixty-four-MiB explicit CLI (DD-1509) selects the previously specified Format 2.0 dictionary 2/14, entropy 3/2, context 1/15 and fifty contexts. The selector lzss-position-distance-dynamic-range-64m introduces no new stream bytes. Its finite limits are 67,108,864-byte frames/windows, 134,217,728-byte payloads and a distinct 1,073,741,824-byte internal admission grant; smaller legal frame/window limits remain decodable under the same model. The SDK and generic CLI defaults are unchanged.
+
+
+### Schema-64 exchange metadata
+
+Schema 64 uses codec_set marc-cli-v64 and an ordered complete inventory of 74
+archives: the unchanged schema-63 inventory followed by lzss-position-
+distance-dynamic-range-64m. Manifest input/archive descriptors retain their
+canonical leaf file name, byte size and SHA-256; source revision is a full Git
+object ID, and production CLI hashes bind the actual clean build. The new
+archive uses the already specified Format 2.0 dictionary 2/14, entropy 3/2,
+context 1/15 and fifty contexts; this manifest addition changes no compression
+bytes. Whole-manifest validation, including complete sixteen-bit new
+identity/count fields, precedes any codec invocation. Earlier manifest schemas
+preserve their exact inventories and codec_set rules.

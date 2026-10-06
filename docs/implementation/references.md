@@ -11111,3 +11111,11 @@ No external implementation or test suite consulted.
 Sixty-four-MiB explicit CLI uses repository DD-1501/DD-1508 and the
 independently authored thirty-two-MiB CLI/file-transaction and allocation
 receipts. No external implementation or new source was consulted.
+
+
+### IR-1269: sixty-four-MiB archive exchange references
+
+Use DD-1501/DD-1508/DD-1509, qualified public/CLI components and the
+repository-authored schema-63 producer, whole-manifest verifier, genuine
+historical inventories and prelaunch negative guards. No external
+implementation or vectors consulted.

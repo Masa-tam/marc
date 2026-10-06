@@ -39248,3 +39248,29 @@ and allocation qualification is required before this phase is accepted; local
 environment and native receipts remain outside public documents.
 
 CLI qualification addendum (CR-1682): four compiler/instrumentation routes pass eleven distinct targeted entries each, including complete F boundaries, full 2F incompressible determinism, independent far-distance bytes and real allocation refusals. Preserve the obsolete unsupported64m selector failure and its narrow128m correction. SDK/core bytes and previous selectors are retained. Similarity review is scoped to repository-authored reuse; no external implementation consulted and no legal guarantee claimed. Actual CLI resource observation is BM-0211; exchange remains pending.
+
+
+### CR-1683: sixty-four-MiB exchange extension plan
+
+Date: 2026-10-06. Author/reviewer: Codex automated implementation and review.
+References: IR-1269/DD-1510/TVG-1377 and current first-party schema-63
+machinery. Task: append one qualified profile, preserve old bytes and
+inventories, admit complete manifests before native calls, bind true build
+revisions and retain the fixed runtime location. No external source or
+imported tests used. Qualification and similarity review are pending until
+local evidence passes; no hosted/external success or legal guarantee is
+asserted.
+
+Local qualification for IX-0063 passes all 4,062 tests in the complete
+configured suite. Three independently rebuilt production CLI routes generate
+identical input and all seventy-four archive bytes. Each self-verifies and all
+six distinct producer/consumer pairs restore and deterministically re-encode.
+Every old seventy-three archive byte agrees with a separately frozen bundle
+from the prior qualified runtime. Genuine manifests for schemas 1..64 retain
+their actual inventories, including the historical name conversion. Each new
+producer route passes thirty schema-64 rejection cases with zero codec launches
+and zero output files; schema-63's unchanged twenty-seven cases also pass.
+These are local fixture observations with explicitly synthetic revisions;
+final clean-source production bindings and runtime publication are separate
+steps. Hosted CI and four external consumer reports remain maintainer-owned
+gates for the new revision. No external implementation was consulted.
