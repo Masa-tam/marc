@@ -123,6 +123,9 @@ set(MARC_SOURCES
     src/frame/lzss_position_distance_workspace.cpp
     src/frame/lzss_position_distance_frame_streaming_encoder.cpp
     src/frame/lzss_contextual_rans_format.cpp
+    src/frame/lzss_position_rans_1m_format.cpp
+    src/frame/lzss_position_rans_1m_frame.cpp
+    src/frame/lzss_position_rans_1m_stream_decoder.cpp
     src/frame/lzss_contextual_blocked_huffman_format.cpp
     src/frame/lzss_contextual_blocked_huffman_frame_decoder.cpp
     src/frame/lzss_contextual_blocked_huffman_frame_encoder.cpp
@@ -7583,6 +7586,50 @@ if(MARC_BUILD_TESTS AND MARC_BUILD_TOOLS AND TARGET marc_static)
 endif()
 
 # Finite DD-1511 diagnostic; no public codec or exchange inventory entry.
+if(MARC_BUILD_TESTS)
+    add_executable(marc_position_rans_1m_stream_decoder_tests
+        tests/position_rans_1m_stream_decoder_tests.cpp
+        src/frame/lzss_position_rans_1m_stream_decoder.cpp
+        src/frame/lzss_position_rans_1m_format.cpp
+        src/frame/lzss_position_rans_1m_frame.cpp
+        src/context/lzss_position_rans_1m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_1m_format.cpp
+        src/entropy/position_rans_1m_encoder.cpp
+        src/entropy/position_rans_1m_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_position_rans_1m_stream_decoder_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_1m_stream_decoder_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_rans_1m_stream_decoder COMMAND marc_position_rans_1m_stream_decoder_tests)
+    add_library(marc_position_rans_1m_stream_fuzz_compile_smoke OBJECT
+        fuzz/lzss_position_rans_1m_stream_fuzz.cpp)
+    target_compile_features(marc_position_rans_1m_stream_fuzz_compile_smoke PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_1m_stream_fuzz_compile_smoke PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_executable(marc_position_rans_1m_frame_tests
+        tests/position_rans_1m_frame_tests.cpp
+        src/frame/lzss_position_rans_1m_format.cpp
+        src/frame/lzss_position_rans_1m_frame.cpp
+        src/context/lzss_position_rans_1m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_1m_format.cpp
+        src/entropy/position_rans_1m_encoder.cpp
+        src/entropy/position_rans_1m_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp
+        src/frame/lzss_contextual_rans_format.cpp
+        src/context/lzss_field_context.cpp
+        src/entropy/contextual_rans_format.cpp
+        src/entropy/contextual_compact_model.cpp)
+    target_compile_features(marc_position_rans_1m_frame_tests PRIVATE cxx_std_20)
+    target_include_directories(marc_position_rans_1m_frame_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    add_test(NAME marc_position_rans_1m_frames COMMAND marc_position_rans_1m_frame_tests)
+endif()
+
 if(MARC_BUILD_FUZZERS)
     add_executable(marc_fuzz_lzss_position_rans_1m_tokens
         fuzz/lzss_position_rans_1m_tokens_fuzz.cpp
@@ -7598,6 +7645,24 @@ if(MARC_BUILD_FUZZERS)
     target_include_directories(marc_fuzz_lzss_position_rans_1m_tokens PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
     target_compile_options(marc_fuzz_lzss_position_rans_1m_tokens PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
     target_link_options(marc_fuzz_lzss_position_rans_1m_tokens PRIVATE -fsanitize=fuzzer,address,undefined)
+    add_executable(marc_fuzz_lzss_position_rans_1m_stream
+        fuzz/lzss_position_rans_1m_stream_fuzz.cpp
+        src/frame/lzss_position_rans_1m_stream_decoder.cpp
+        src/frame/lzss_position_rans_1m_format.cpp
+        src/frame/lzss_position_rans_1m_frame.cpp
+        src/context/lzss_position_rans_1m_tokens.cpp
+        src/context/lzss_short_length_escape.cpp
+        src/entropy/position_rans_1m_format.cpp
+        src/entropy/position_rans_1m_encoder.cpp
+        src/entropy/position_rans_1m_decoder.cpp
+        src/dictionary/lzss_typed_token.cpp
+        src/dictionary/lzss_typed_reconstructor.cpp
+        src/dictionary/lzss_format.cpp
+        src/core/limits.cpp)
+    target_compile_features(marc_fuzz_lzss_position_rans_1m_stream PRIVATE cxx_std_20)
+    target_include_directories(marc_fuzz_lzss_position_rans_1m_stream PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    target_compile_options(marc_fuzz_lzss_position_rans_1m_stream PRIVATE -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer)
+    target_link_options(marc_fuzz_lzss_position_rans_1m_stream PRIVATE -fsanitize=fuzzer,address,undefined)
 endif()
 
 if(MARC_BUILD_TESTS)
@@ -7639,6 +7704,18 @@ endif()
 if(MARC_BUILD_TESTS)
     find_package(Python3 COMPONENTS Interpreter QUIET)
     if(Python3_Interpreter_FOUND)
+        add_test(NAME marc_position_rans_1m_frame_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_1m_frame_differential.py
+                $<TARGET_FILE:marc_position_rans_1m_frame_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-rans-1m-frame-differential)
+        set_tests_properties(marc_position_rans_1m_frame_differential PROPERTIES TIMEOUT 600)
+        add_test(NAME marc_position_rans_1m_stream_differential
+            COMMAND ${Python3_EXECUTABLE} -B -X utf8
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_1m_stream_differential.py
+                $<TARGET_FILE:marc_position_rans_1m_stream_decoder_tests>
+                ${CMAKE_CURRENT_BINARY_DIR}/position-rans-1m-stream-differential)
+        set_tests_properties(marc_position_rans_1m_stream_differential PROPERTIES TIMEOUT 600)
         add_test(NAME marc_position_rans_1m_token_differential
             COMMAND ${Python3_EXECUTABLE} -B -X utf8
                 ${CMAKE_CURRENT_SOURCE_DIR}/tests/position_rans_1m_token_differential.py

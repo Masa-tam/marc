@@ -33383,3 +33383,18 @@ fields and reverse token traversal. Share the field cursor on decoding.
 Preserve transactional validation-before-write and provide an explicitly
 discardable single-pass token scratch path for later frame integration.
 Bounds and failure precedence are defined in `docs/design/lzss-position-rans-1m.md`.
+### DD-1515: reserve a separate outer rANS identity and commit frames atomically
+
+Define exact additive identity `2/9 + 1/10 + 4/4` before frame encoders.
+Use typed minimum-three dictionary validation and keep old parsers closed to
+the new entropy variant. Header and descriptor preflight precedes payload
+buffering; raw reconstruction follows successful whole token/rANS validation.
+Provide transactional and discardable token-scratch frame paths with unchanged
+failed raw output. Complete framing is defined in `docs/design/lzss-position-rans-1m.md`.
+### DD-1516: decode borrowed streams through bounded header/model/payload states
+
+Preflight each variable extent before collecting it. Charge retained storage
+at construction and avoid process allocations. Enter raw draining only after
+complete-frame scratch validation succeeds, preserving previously committed
+frames while withholding any failed frame. Document immutable limits, final
+suffix handling, sticky states and flags in `docs/design/lzss-position-rans-1m.md`.

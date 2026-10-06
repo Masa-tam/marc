@@ -39370,3 +39370,21 @@ byte-preserving final-source requalification. These results do not admit a
 public frame/profile, CLI or exchange inventory. Existing identities and
 generated artifacts remain intact; native speed and process peaks are later
 qualification requirements.
+### CR-1689: position rANS outer frames and borrowed decoding
+
+2026-10-07; author/reviewer: Codex. IR-1274/1275 and DD-1515/1516 define an
+additive 2/9 + 1/10 + 4/4 stream identity, bounded complete-frame helpers and
+a borrowed streaming decoder. The task requires keeping failed outputs
+unchanged at transactional boundaries and withholding every failed frame's
+raw bytes. No external implementation was consulted. Similarity review
+identifies intentional reuse of first-party framing constants, endian helpers,
+typed-token grammar and preflight-before-publication policy; no third-party
+expression is introduced.
+
+Independent frame and whole-stream fixtures pass on two native compiler
+routes. Full retained corpus raw bytes agree across 207 frames; later-frame
+failure tests preserve already committed earlier frames and expose no failed
+frame output. TVG-1382/1383 record bounds, chunking, compatibility, allocation
+and sanitizer checks. Existing identities and retained generated artifacts
+remain intact. These internal results do not establish a public profile,
+CLI or exchange bundle, native speed improvement or measured process peak.

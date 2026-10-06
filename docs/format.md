@@ -9136,3 +9136,11 @@ DD-1513 in `docs/design/lzss-position-rans-1m.md` defines a separate native
 sixteen-byte metadata prefix plus PDRX v2 compact model, bounded to 5110 bytes.
 It is an internal descriptor boundary, not an admitted stream identity.
 Existing entropy `4/3` and context variant identities are unchanged.
+### Position-distance 1 MiB rANS variant 4
+
+DD-1515 in `docs/design/lzss-position-rans-1m.md` defines exact typed identity
+dictionary `2/9`, context `1/10`, entropy `4/4`, with a 112-byte stream header
+and 64-byte frame header followed by a canonical compact descriptor and scalar
+rANS payload. The private complete-frame boundary validates this additive
+representation. Existing contextual entropy `4/3` and Dynamic Range `3/2`
+admission remain unchanged. Public/CLI/exchange admission is later work.

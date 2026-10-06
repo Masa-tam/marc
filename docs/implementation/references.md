@@ -11143,3 +11143,14 @@ source is consulted for DD-1513.
 Use first-party typed dictionary variant 9, the existing position-distance
 field cursor, short-length escape grammar and DD-1513 scalar rANS primitives.
 No additional external source is consulted for DD-1514.
+### IR-1274: position rANS complete-frame representation
+
+Use the first-party MARC 2.0 typed prefix and MRF2 layout, DD-1513/1514 native
+descriptor/token boundary and existing typed reconstruction and limits helpers.
+No external source is consulted for DD-1515.
+### IR-1275: borrowed position rANS stream decoder
+
+DD-1516 uses first-party Transform status rules, checked overlap helpers,
+DD-1515 preflight structures and private token/raw frame reconstruction.
+Tests and fuzz inputs are independently generated from these representations.
+No additional external source or implementation was consulted.

@@ -22319,3 +22319,36 @@ It compares validation, transactional and scratch status, output guards and
 the transactional failure invariant. The initial ASan/UBSan run completed
 10,000 inputs with no finding. The fuzzer source also has a portable compile
 smoke target; streaming and frame-publication fuzzing remain later work.
+### TVG-1382: position rANS outer-frame differential fixtures
+
+Seed 1515 independently packs the complete 112-byte stream header and 64-byte
+MRF2 header around diagnostic descriptors and payloads. Two hundred generated
+frames vary stream position and final short-frame size. Ten full-window frames
+cover near, 64-KiB boundary and maximum reachable distances. Optional retained
+corpus receipts add all 207 frames without rebuilding their source producers.
+Native helpers reproduce these bytes and reconstruct the expected raw output.
+Compatibility tests require the new and contextual-rANS parsers to reject
+each other's identity, including a mixed entropy variant. Header truncations,
+reserved fields, exact resource bounds and transactional failure outputs are
+covered. A late terminal-state error may dirty private token scratch, but raw
+output remains unchanged.
+
+### TVG-1383: borrowed streaming position rANS decoder
+
+Seed 1516 independently constructs twenty three-frame streams with a final
+short frame and an empty stream. Optional source-bound corpus components add
+twelve whole streams with 207 frames. Native decoding varies input/output
+chunks, zero output capacity, Flush and final EndInput; it verifies committed
+output guards, repeated terminal states and zero process-time C++ allocations.
+Small-stream tests cut input at every byte, corrupt a later frame's terminal
+state and require only the earlier successful frame to appear. They also
+cover trailing input, zero-byte final EndInput, unsupported ResetBlock,
+workspace and I/O overlaps, exact constructor budgets and workspace refusal
+before descriptor consumption.
+
+The permanent stream fuzzer compares whole-input and seven-byte-input,
+one-byte-output runs for arbitrary, generated valid, mutated and truncated
+streams. It checks termination, status/count invariants, guards, identical
+output/error positions and sticky terminal states. Its initial ASan/UBSan run
+completed 10,000 inputs without a finding. This qualifies internal borrowed
+decoding; public factory, encoder and CLI lifecycle remain separate work.

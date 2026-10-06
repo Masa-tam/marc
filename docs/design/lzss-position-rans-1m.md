@@ -105,3 +105,97 @@ model/descriptor/cursor objects. This is a bounded admission allowance, not
 a process resident memory measurement; outer frame/finder generations need
 additional accounting. Output-already-committed contributes to the total
 output ceiling through checked addition.
+
+## DD-1515 outer representation and complete-frame boundary
+
+Reserve dictionary `2/9`, context `1/10`, entropy `4/4` for this profile.
+The existing contextual rANS entropy `4/3` grammar remains unchanged and
+rejects this identity. This additive format is initially admitted only by
+the new private frame helpers; public/CLI/exchange admission follows later.
+
+The stream header is 112 bytes: common MARC 2.0 prefix of 64 bytes,
+16 dictionary parameter bytes, 16 entropy parameter bytes and a 16-byte
+context extension. Exact offsets and fields:
+
+| Offset | Type | Value |
+|---:|---|---|
+| 0 | 4 bytes | ASCII MARC |
+| 4, 6 | u16, u16 | major 2, minor 0 |
+| 8, 10 | u16, u16 | prefix bytes 64, flags 1 (typed-token pipeline) |
+| 12, 14 | u16, u16 | dictionary 2, variant 9 |
+| 16, 18 | u16, u16 | entropy 4, variant 4 |
+| 20 | u32 | frame size in raw bytes, 1..1048576 |
+| 24 | u32 | entropy block size 0 (outer frame controls the block) |
+| 28, 32, 36 | u32 each | dictionary bytes 16, entropy bytes 16, hash bytes 0 |
+| 40 | u64 | known original raw size, including zero |
+| 48 | u32 | context extension bytes 16 |
+| 52 | 12 bytes | zero reserved |
+| 64, 68, 72, 76 | u32 each | window 1048576, minimum match 3, maximum match 258, flags 0 |
+| 80, 81 | u8 each | table log 12, state count 1 |
+| 82 | u16 | context count 44 |
+| 84 | u32 | frequency entries 2566 |
+| 88, 92 | u32 each | entropy flags 0, reserved 0 |
+| 96, 98 | u16 each | context algorithm 1, variant 10 |
+| 100 | u32 | context flags 0 |
+| 104 | 8 bytes | zero reserved |
+
+Dictionary parsing uses the typed variant's validator, not the byte-oriented
+minimum-five parameter validator. No unknown-size marker is supported. Empty
+stream consists solely of its header. Frame size is immutable and may be
+smaller than the fixed dictionary window. Each frame resets history and models.
+All integers retain little-endian order; there are no separate packed bits
+or padding after the byte-renormalized entropy payload.
+
+Each frame is 64 bytes of MRF2 header, then DD-1513 descriptor, then payload.
+Header fields: magic at 0, size u16=64 at 4, flags u16=0 at 6, sequence u64
+at 8, raw bytes u32 at 16, token count u32 at 20, event count u32 at 24,
+decision count u32 at 28, payload bytes u32 at 32, descriptor bytes u32 at 36,
+context side data bytes u32=0 at 40, checksum trailer bytes u32=0 at 44 and
+16 zero reserved bytes at 48. No raw fallback is admitted. This profile has
+no stored hash descriptors/trailers; composable external HashTap remains usable.
+
+Sequence starts at zero and corresponds exactly to committed_raw/frame_size;
+committed raw is aligned to the frame size. Every nonfinal frame has exactly
+frame_size raw bytes; final has the exact remaining known raw bytes. Nonempty
+frames require the DD-1514 count bounds; descriptor is 22..5110 bytes and
+payload is 8..18*raw+8 bytes. Validate the 64-byte header before any variable
+buffering, then the complete bounded descriptor before accepting payload.
+Preflight success proves sizes and model canonicality, not payload validity.
+
+The exact serialized ceiling is `18*frame_size+5182`. Complete-frame admission
+accounts for serialized bytes, `token_count*sizeof(LzssTypedToken)`, raw bytes
+and the DD-1514 fixed working allowance, plus all configured expansion/count
+ceilings. Output requirements are committed only on successful preflight.
+The reference model's 2566 frequency entries count against the configured
+entropy table entry ceiling; no 4096-slot-per-context decode tables are built.
+Finite frame decode consumes exactly one frame and allows the caller's
+subsequent bytes; the streaming layer must reject extra bytes after the stream.
+Transactional failure retains token and raw outputs. Scratch decode may retain
+private tokens but always retains failed raw output. Reconstruction and frame
+publication begin only after token grammar, history, sizes and rANS terminal
+conditions succeed. Whole-stream publication is atomic per frame, not per
+stream; an earlier successful frame remains committed if a later frame fails.
+
+## DD-1516 borrowed streaming decoder
+
+The borrowed decoder owns no dynamic storage. Supplied serialized, token and
+raw workspaces are disjoint and live for its lifetime. Constructor admission
+charges all supplied capacities, the decoder object, optional owner overhead
+and the 64 KiB bounded call allowance. Reject overlap, invalid limits and
+overflow before processing. Calls allocate nothing and never grow workspaces.
+
+Collect the stream header, then each 64-byte frame header. Validate counts and
+required workspace capacities before collecting the bounded descriptor;
+validate the descriptor before collecting payload. Only successful complete
+scratch-frame decoding enters the draining state. No bytes of a failed frame
+reach caller output, including a late terminal-state error. Earlier successfully
+drained frames remain committed. Error positions are absolute stream offsets.
+
+EndInput is remembered once the supplied final suffix has been consumed.
+Callers resubmit any unconsumed suffix with EndInput still set. Finish drains
+all pending raw bytes, rejects trailing stream bytes and then returns EndOfStream.
+Ended/error states are sticky; repeated ended calls return EndOfStream with
+zero counts. Flush preserves framing. ResetBlock and unknown flags are
+unsupported. Empty input starvation and zero output capacity are normal;
+Progress always has nonzero consumption or production. Input/output must also
+be disjoint from each other, the decoder object and retained workspaces.
